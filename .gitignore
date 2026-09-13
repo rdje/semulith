@@ -17,3 +17,7 @@ git_message_brief.txt
 
 # mdBook build output (regenerate with `make book`, never tracked)
 /docs/book/book
+
+# Python bytecode from the tracked tools under scripts/ — generated, never tracked
+__pycache__/
+*.py[cod]
