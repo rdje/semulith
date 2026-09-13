@@ -65,9 +65,16 @@ verify_package() {
     printf '%s\n' "$extra" | sed 's/^/    /'; bad=1
   fi
 
-  local frozen=0 relocated=0 live=0
-  while IFS=$'\t' read -r kind mpath cpath; do
+  local frozen=0 relocated=0 live=0 line
+  # ⛔ NOT `IFS=$'\t' read`: tab is IFS *whitespace*, so an empty field collapses and shifts
+  # every later column — a row with a missing `current_path` would parse as a different row
+  # entirely. Translate to a non-whitespace separator first. (Found by the sibling routing
+  # checker's own RED arm; fixed here too because it is the same defect class, not a symptom.)
+  while IFS= read -r line; do
+    case "$line" in ''|'#'*) continue ;; esac
+    IFS=$'\x1f' read -r kind mpath cpath <<<"${line//$'\t'/$'\x1f'}"
     case "$kind" in ''|'#'*) continue ;; esac
+    [ -n "$cpath" ] || { echo "  INCOMPLETE disposition row for '$mpath' — no current_path"; bad=1; continue; }
     local want target
     want="$(awk -v p="$mpath" 'NF>=2 && $2==p {print $1}' "$manifest")"
     target="$base/$cpath"
@@ -151,6 +158,9 @@ self_test() {
   arm "RED relocated target missing"   1 "MISSING (relocated) nowhere/reloc.txt"
   base_disp | sed 's/^live/invented/' > "$t/pkg/dispositions.tsv"
   arm "RED unknown disposition name"   1 "UNKNOWN disposition 'invented'"
+  # The empty-field arm: with `IFS=$'\t' read` this row silently parsed as a DIFFERENT row.
+  { base_disp | grep -v '^live'; printf 'live\tlive.txt\t\n'; } > "$t/pkg/dispositions.tsv"
+  arm "RED disposition row incomplete" 1 "INCOMPLETE disposition row for 'live.txt'"
   rm -rf "$t"
   printf 'DELIVERY-PROVENANCE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

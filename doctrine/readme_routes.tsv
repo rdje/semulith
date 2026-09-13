@@ -1,0 +1,66 @@
+# doctrine/readme_routes.tsv — the routed-destination registry required by README_POLICY.md
+# ("Routing pressure closure"). DATA ONLY: no prose, no derived values, no duplicated counts.
+#
+# Moving content out of the README is not enough if the destination becomes an unbounded
+# neighbouring sink. Every destination the landing page routes to — as a reader's navigation
+# target, or as an author's overflow target named by the guard's own failure hint — has a row
+# here with a class, an owner, a pressure control, and where the class demands it, numeric
+# ceilings. An unclassified destination is a failed adoption.
+#
+# columns:
+#   destination        repo-root-relative path (a trailing / means a directory family)
+#   route_class        reader_navigation | author_overflow | both
+#   lifecycle          hot_live | partitioned | generated_index | append_history | frozen | normative
+#   owner              what governs its size and lifecycle
+#   health_lines       advisory target: LINES for a file, FILE COUNT for a directory family; 0 = ungoverned
+#   health_bytes       advisory target: BYTES for a file, AGGREGATE BYTES for a family; 0 = ungoverned
+#   ceiling_lines      enforced ceiling on the same axis as health_lines; 0 = ungoverned
+#   ceiling_bytes      enforced ceiling on the same axis as health_bytes; 0 = ungoverned
+#
+# A partitioned family's required control is a bounded index PLUS file-count and aggregate
+# ceilings — splitting a monolith without bounding the collection moves the same append
+# pressure one level down. Family measurements at adoption: docs/tasks/ 5 files / 39,131 B;
+# docs/decisions/ 5 / 8,246; docs/knowledge/ 4 / 6,834; docs/book/ 3 / 947;
+# docs/provenance/ 5 / 10,860. `docs/` itself stays ungoverned as an umbrella: every family
+# inside it carries its own bound, and double-counting would make one row fire for another's
+# growth. Its members are the terminals.
+#
+# ⛔ Ceilings are DERIVED from this project's own trimmed surfaces, never copied from another
+# project. Raising one requires a reviewed decision that the surface's contract expanded.
+#
+# Derivation, SEMULITH-PKG.4, measured on the trimmed surfaces:
+#   README.md         67 lines / 3,719 B -> health = today, ceiling ~1.27x lines, ~1.31x bytes
+#   MEMORY.md         24 lines / 1,380 B -> health ~1.25x; ceiling stays the layer-A contract (50/7168)
+#   LIVE_STATUS.md    33 lines / 2,066 B -> health ~1.36x; ceiling ~2.7x (it gains a row per milestone)
+#   docs/TASK_TREE.md 52 lines / 2,651 B -> health ~1.25x; ceiling ~2.1x (one row per ACTIVE tree only)
+#   CHANGELOG.md     222 lines / 16,228 B -> health 24 KiB; ceiling 64 KiB, then shard
+#   DEV_NOTES.md      50 lines /  3,759 B -> health 12 KiB; ceiling 48 KiB, then shard
+#   KNOWLEDGE_MAP.md  39 lines /  2,418 B -> derived file; health 8 KiB, ceiling 32 KiB
+# A health target set AT today's size fires on the next line and teaches its reader to ignore
+# it; these sit a deliberate band below their ceiling instead.
+#
+#destination	route_class	lifecycle	owner	health_lines	health_bytes	ceiling_lines	ceiling_bytes
+README.md	both	hot_live	README-STABILITY doctrine	67	3719	85	4864
+README_POLICY.md	reader_navigation	normative	this policy; changes by reviewed decision	0	0	0	0
+MEMORY.md	reader_navigation	hot_live	MEMORY-ARCH doctrine (layer A caps)	30	1792	50	7168
+LIVE_STATUS.md	reader_navigation	hot_live	COMMIT.md; rows are states, not prose	45	2816	90	6144
+ROADMAP.md	both	normative	the plan; superseded by version, not appended to	0	0	0	24576
+RULES.md	reader_navigation	normative	stable rule IDs; changes by reviewed decision	0	0	0	16384
+TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	12288
+COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288
+CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192
+AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096
+MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally owned	0	0	0	32768
+DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480
+CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	24576	0	65536
+DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	12288	0	49152
+KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768
+docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0
+docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	65	3584	110	8192
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	12	65536	25	262144
+docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072
+docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304
+docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	20	65536	60	393216
+docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536
+docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768
+docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384

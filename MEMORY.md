@@ -14,11 +14,10 @@
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
 - **Active tree:** `SEMULITH-PKG` (ingest planning package v0.2 under the spine).
-- **Frontier leaf:** `SEMULITH-PKG.4` — refresh `README_POLICY.md`, set reviewed caps.
-- **Next action:** adopt the director's current `README_POLICY.md` revision under a fenced
-  adoption note, derive line/byte caps from the trimmed landing page, enforce them in
-  `scripts/check_doctrines.project.sh`, and close the routing-destination inventory. Then `.5`
-  (mdBook). Then open `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into trees.
-- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0004 (leaf SEMULITH-PKG.3)`.
+- **Frontier leaf:** `SEMULITH-PKG.5` — make the mdBook the review surface.
+- **Next action:** grow `docs/book/` from the template skeleton into the reviewable window on
+  the ingested package (`make book` green, `SUMMARY.md` mapping the contracts, claim scope
+  stated). Then open `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into task-trees.
+- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0005 (leaf SEMULITH-PKG.4)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

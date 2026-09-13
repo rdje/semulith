@@ -42,10 +42,14 @@ every human, identically.
 | --- | --- | --- |
 | `DELIVERY-PROVENANCE` | every row of a delivered `MANIFEST.sha256` carries exactly one declared **disposition** (`frozen-in-place` / `relocated` / `live`), held as data in the package's `dispositions.tsv`, and the first two still hash to the delivered bytes. ⭐ The asymmetry is the point: an undeclared manifest row, or a disposition for a path the manifest never listed, is how a row quietly leaves coverage. ⚠️ Honest limit: it proves the delivered bytes are still the bytes, never that the delivered content was correct | `scripts/check_delivery_provenance.sh` |
 | `FIXTURE-FINGERPRINT` | every tracked JSON/JSONL object carrying both `path` and `sha256` names a file that exists and still hashes to that value — `CLAIM_VERIFICATION.md` §5B: a constant that is a function of the repository is derived or gated, never carried. Excludes `docs/provenance/**` (owned above) and records naming inputs absent from this repository, so an unverifiable hash cannot masquerade as a checked one | `scripts/check_fixture_fingerprints.sh` |
+| `README-ROUTING-CLOSURE` | every destination the landing page links to — **and every path-shaped destination the README guard actually emits in its failure guidance** — has a row in `doctrine/readme_routes.tsv` with a route class, a lifecycle class, an owner, and the ceilings its class requires; the ceilings are enforced and the health targets reported. ⭐ Founding measurement upstream: a README cap displaced its pressure into an unchecked neighbouring status file that reached **1,547,057 bytes**, 94.7% of it dated changelog content — the cap was green throughout. Two tiers on purpose: a health target prints, a ceiling blocks. The registry, not a script or prose, owns the landing page's own caps | `scripts/check_readme_routes.sh` |
 
-Both ship a `--self-test` whose RED arms assert the **reason** as well as the verdict, both
-were fired RED against the real corpus before being registered, and both **refuse** (exit 2)
-rather than pass if their own self-test stops discriminating.
+Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each
+was fired RED before being registered, and each **refuses** (exit 2) rather than passing if its
+own self-test stops discriminating. Two defects were caught by those arms rather than by
+review: `IFS=$'\t' read` collapsing empty TSV fields and shifting every later column, and a
+self-test leaking its temp root into the real run through an environment variable that prefixed
+a *function* call. Both would have produced a green gate judging the wrong thing.
 
 **Project-specific doctrines go in `scripts/check_doctrines.project.sh`** (the pluggable
 slot) — never in the universal driver. That is where a project adds the equivalent of its

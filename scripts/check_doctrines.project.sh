@@ -18,6 +18,7 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 PROJECT_DOCTRINES=(
   "DELIVERY-PROVENANCE|every delivered manifest row has a declared disposition, and the frozen ones still hash to the delivered bytes|scripts/check_delivery_provenance.sh"
   "FIXTURE-FINGERPRINT|every record pinning a file's sha256 still describes the tree — a carried constant is derived or gated, never trusted|scripts/check_fixture_fingerprints.sh"
+  "README-ROUTING-CLOSURE|every destination the landing page routes to is governed, exists, and stays under its ceiling — a cap that only displaces pressure has not removed it|scripts/check_readme_routes.sh"
 )
 
 fails=0

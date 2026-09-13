@@ -9,9 +9,10 @@ summarize the snapshot in every commit-workflow completion message.
 | Area | Status | Notes |
 | --- | --- | --- |
 | Discipline spine (`bedrock` 0.6.1) | Done | memory architecture · task-trees · commit workflow · doctrine enforcement · mdBook skeleton |
-| Planning package v0.2 ingested | Mostly Done | `SEMULITH-PKG` — docs landed, standard adopted, fingerprints gated; README policy (`.4`) and book sync (`.5`) pending |
+| Planning package v0.2 ingested | Mostly Done | `SEMULITH-PKG` — docs landed, standard adopted, fingerprints gated, routes closed; book sync (`.5`) pending |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A claim tags and §7 constant sweep not yet mechanized |
-| Project doctrines (`DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`) | Done | 15 self-test arms; both fired RED on the real corpus before registration |
+| Project doctrines (3 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE` — 26 self-test arms, all fired RED before registration |
+| README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
 | Roadmap converted to task-trees | Not Started | `SEMULITH-TREES` — P0–P7 plus the cross-cutting lanes |
 
 ## Roadmap milestones (`ROADMAP.md` §6)

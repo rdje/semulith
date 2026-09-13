@@ -31,11 +31,154 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - Live docs (`MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`) and the mdBook
   reflect the ingested state in the same commit as the change that caused it.
 
-## Acceptance Checklist (current leaf — `SEMULITH-PKG.3`)
+## Acceptance Checklist (current leaf — `SEMULITH-PKG.4`)
 
-Enforced by the `TASK-ACCEPTANCE` doctrine (`scripts/check_task_acceptance.sh`). Each box
-carries the command that was run and the output it produced; the leg each box answers is in
-`docs/tasks/TEMPLATE.md`.
+Enforced by the `TASK-ACCEPTANCE` doctrine. Each box carries the command that was run and the
+output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the landing page's guard was not judging *this*
+  project, and its routing had no closure. (a) `README-STABILITY` ran on the template's
+  deliberately generous defaults — `README-STABILITY: OK — README.md is 67/300 lines,
+  3719/16384 bytes` — i.e. the page could quadruple before the guard noticed, and
+  `README_POLICY.md` itself says those illustrative values must be replaced after a local trim.
+  (b) The policy's *Routing pressure closure* section was absent from this repository's copy:
+  the local body was 74 lines / 7,669 bytes against the director's current 159-line /
+  8,279-byte revision. (c) A cap with no closure only *relocates* append pressure — the
+  policy's own measurement is a routed-to status file that reached `1,547,057 bytes`, 94.7%
+  dated changelog content, while the README guard stayed green.
+- [x] **ADDRESSED (verified)** — the neutral body is now the director's revision, imported
+  unedited and verified: `body sha256:
+  77a1e9348ec24d9ec5f0c97ae1ac2d634f7e7e3e150504759af3c0182d6eefec`, `matches recorded: True`.
+  Caps are derived, not copied: `wc -lc README.md` → `67 3719`, ceilings set to `85 / 4864`
+  (~1.3×), and the guard now judges against them — `registry caps applied: README-STABILITY:
+  OK — README.md is 67/85 lines, 3719/4864 bytes.` Closure is enforced:
+  `README-ROUTING-CLOSURE: ok (24 governed destination(s))`, covering every README link target
+  **and** every path-shaped destination the guard actually emits. Partitioned families carry
+  file-count and aggregate ceilings measured at adoption (`docs/tasks/` 5 files / 39,131 B,
+  `docs/decisions/` 5 / 8,246, `docs/knowledge/` 4 / 6,834, `docs/book/` 3 / 947,
+  `docs/provenance/` 5 / 10,860).
+- [x] **NO REGRESSION** — leg 2: `README-ROUTING-CLOSURE --self-test: 11 pass / 0 fail`,
+  8 of them RED arms (ungoverned link target, missing file destination, missing directory
+  destination, unknown route_class, unknown lifecycle, absent owner, byte ceiling exceeded,
+  family over aggregate bytes) each asserting the **reason**, not just the verdict. Two real
+  defects were caught by those arms rather than by review: `IFS=$'\t' read` collapses empty
+  TSV fields because tab is IFS *whitespace*, so `printf 'a\tb\tc\t\t0\n'` read as
+  `f4='0' f5=''` — every column after an empty field shifted, and the row still parsed; and
+  a self-test that passed its root as an environment variable prefixing a *function* call
+  leaked that variable into the caller, so the real run resolved all 24 destinations against a
+  deleted temp directory and reported `MISSING` for every one. The first defect was fixed in
+  `check_delivery_provenance.sh` too — same class, not a symptom — and given its own RED arm
+  (`DELIVERY-PROVENANCE --self-test: 9 pass / 0 fail`). Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+- [x] **FIX** — `README_POLICY.md` rebuilt as a fenced Semulith adoption note over the
+  unedited neutral body; `doctrine/readme_routes.tsv` added as the data owner of every route
+  and every cap; `scripts/check_readme_routes.sh` added and registered in the project slot.
+- [x] **LOCKSTEP** — leg 3: the ceilings are enforced on every commit, so a stale target fails
+  rather than rots. `DOCTRINE_ENFORCEMENT.md` mirror, `TOOLBOX.md` row,
+  `docs/decisions/decision_readme-routing-closure.md` (+ index row), `MEMORY.md`,
+  `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit. Two gaps are **named, not
+  hidden**: the `append_history` shard tool does not exist (its ceiling is the trigger that
+  opens the leaf building it), and full live-document-size containment is deliberately not
+  adopted — the largest live surface is 16,228 bytes and there is no measured pressure.
+
+## Task Tree
+
+- ID: `SEMULITH-PKG`
+  Status: `active`
+  Goal: ingest the delivered planning package v0.2 under the spine
+  Children: `SEMULITH-PKG.1`, `SEMULITH-PKG.2`, `SEMULITH-PKG.3`, `SEMULITH-PKG.4`, `SEMULITH-PKG.5`
+
+- ID: `SEMULITH-PKG.1`
+  Status: `done`
+  Goal: land the delivered package (deduped), restore the README landing page, freeze delivery provenance.
+  Acceptance: enforcer green; no duplicate document; every delivered file tracked or relocated with a recorded reason.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0002`
+
+- ID: `SEMULITH-PKG.2`
+  Status: `done`
+  Goal: adopt the claim-verification standard as this project's definition of "checked".
+  Acceptance: `docs/CLAIM_VERIFICATION.md` present with a fenced local-adoption note naming owner, date and authority; linked from `README.md`; an adoption decision record exists; the three legs are named in the task-tree template's checklist guidance.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0003`
+
+- ID: `SEMULITH-PKG.3`
+  Status: `done`
+  Goal: gate the fingerprint claims that can rot.
+  Acceptance: a tracked check re-derives the `frozen-in-place` and `relocated` manifest rows and reports the `live` rows as declared drift; every pinned `sha256` is re-derived; both go RED against a deliberately corrupted input **with the right reason**; both registered in `scripts/check_doctrines.project.sh`.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0004`
+
+- ID: `SEMULITH-PKG.4`
+  Status: `done`
+  Goal: refresh `README_POLICY.md` to the director's current revision and set this project's reviewed caps.
+  Acceptance: the policy body matches the revision the director named, under a fenced local-adoption note; line and byte caps derived from the trimmed landing page with modest headroom and enforced in the project slot; every destination the README routes to has a named owner and pressure control, or is recorded as debt with an owning leaf.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0005`
+
+- ID: `SEMULITH-PKG.5`
+  Status: `pending`
+  Goal: make the mdBook the reviewable window onto the ingested package.
+  Acceptance: `make book` succeeds; `SUMMARY.md` maps the package's contracts; the book states the project's actual claim scope rather than implying capability.
+  Verification: `pending`
+  Commit: `pending`
+
+## Current Frontier
+
+| Order | Leaf | Status | Why next |
+| --- | --- | --- | --- |
+| 1 | `SEMULITH-PKG.5` | `pending` | the book is the director's review surface; it must describe what was ingested, and it is still the template's two-page skeleton |
+
+Census behind row 2, over the population that would refute it — any tracked script, hook, or
+enforcer entry that re-derives a recorded fingerprint:
+
+```
+$ git grep -lE 'sources\.json|MANIFEST\.sha256|sha256|shasum' -- scripts knowledge-map .githooks | wc -l
+0
+$ grep -ciE 'fingerprint|sha256|hash' scripts/check_doctrines.sh scripts/check_doctrines.project.sh
+scripts/check_doctrines.sh:0
+scripts/check_doctrines.project.sh:0
+```
+
+So the two live fingerprint claims in this tree — `examples/sources.json` pinning
+`examples/synthetic-spec.md`, and the `frozen-in-place` manifest rows — are held by no check
+at all. Leaf `.3` is what makes the claim false.
+
+## Decisions
+
+- `2026-09-13`: the delivered design documents are ingested **verbatim**. Their technical
+  content is a reviewed input; changing it is a separate owned decision, not ingestion work.
+- `2026-09-13`: delivery provenance is frozen and its live rows are declared — see
+  [`decision_delivery-provenance-is-frozen.md`](../decisions/decision_delivery-provenance-is-frozen.md).
+- `2026-09-13`: `RULES.md` stays at the repository root — it is live normative doctrine
+  referenced as `RULES.md` by `README.md` and `ROADMAP.md`, not delivery provenance.
+- `2026-09-13`: `docs/knowledge/` opened as the retrievable lesson layer, so
+  `LESSON-PROMOTION` has a real destination rather than a declined default.
+- `2026-09-13`: "checked" is defined by the three legs — see
+  [`decision_claim-verification-adopted.md`](../decisions/decision_claim-verification-adopted.md).
+- `2026-09-13`: the landing page's caps and routes are registry data, not script constants —
+  see [`decision_readme-routing-closure.md`](../decisions/decision_readme-routing-closure.md).
+
+## Open Questions
+
+- Do the `PACKAGE_CHECKS.md` schema results reproduce here? `python3 -c "import jsonschema"`
+  → `ModuleNotFoundError`, so they are **cited, not re-derivable in this repository**
+  ([`re-derivable-vs-cited-evidence`](../knowledge/re-derivable-vs-cited-evidence.md)).
+  Owner: `SEMULITH-TREES` routes this to the P1 checker lane, where rule `RUST-01` makes the
+  re-derivation a Rust deliverable rather than a Python dependency. Does not block this tree.
+
+## Blockers
+
+- None.
+
+## Completed-leaf evidence (archive)
+
+The current leaf's checklist lives above; a completed leaf's checklist is moved here verbatim
+so its evidence stays in layer B rather than only in git history. Only the *first* checklist
+in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
+
+### `SEMULITH-PKG.3` — gate the fingerprint claims that can rot
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1 (*re-derive*): the repository carried two
   fingerprint claims that **no command re-derived**, so each was true on the day it was
@@ -85,101 +228,6 @@ carries the command that was run and the output it produced; the leg each box an
   `TOOLBOX.md` gained the toolbox table with the invocations, `DELIVERY.md` now points at the
   data owner instead of repeating its counts, and `MEMORY.md` / `LIVE_STATUS.md` /
   `CHANGELOG.md` are updated in this commit.
-
-## Task Tree
-
-- ID: `SEMULITH-PKG`
-  Status: `active`
-  Goal: ingest the delivered planning package v0.2 under the spine
-  Children: `SEMULITH-PKG.1`, `SEMULITH-PKG.2`, `SEMULITH-PKG.3`, `SEMULITH-PKG.4`, `SEMULITH-PKG.5`
-
-- ID: `SEMULITH-PKG.1`
-  Status: `done`
-  Goal: land the delivered package (deduped), restore the README landing page, freeze delivery provenance.
-  Acceptance: enforcer green; no duplicate document; every delivered file tracked or relocated with a recorded reason.
-  Verification: see the Verification Log.
-  Commit: `SEMULITH-PKG-0002`
-
-- ID: `SEMULITH-PKG.2`
-  Status: `done`
-  Goal: adopt the claim-verification standard as this project's definition of "checked".
-  Acceptance: `docs/CLAIM_VERIFICATION.md` present with a fenced local-adoption note naming owner, date and authority; linked from `README.md`; an adoption decision record exists; the three legs are named in the task-tree template's checklist guidance.
-  Verification: see the Verification Log.
-  Commit: `SEMULITH-PKG-0003`
-
-- ID: `SEMULITH-PKG.3`
-  Status: `done`
-  Goal: gate the fingerprint claims that can rot.
-  Acceptance: a tracked check re-derives the `frozen-in-place` and `relocated` manifest rows and reports the `live` rows as declared drift; every pinned `sha256` is re-derived; both go RED against a deliberately corrupted input **with the right reason**; both registered in `scripts/check_doctrines.project.sh`.
-  Verification: see the Verification Log.
-  Commit: `SEMULITH-PKG-0004`
-
-- ID: `SEMULITH-PKG.4`
-  Status: `pending`
-  Goal: refresh `README_POLICY.md` to the director's current revision and set this project's reviewed caps.
-  Acceptance: the policy body matches the revision the director named, under a fenced local-adoption note; line and byte caps derived from the trimmed landing page with modest headroom and enforced in the project slot; every destination the README routes to has a named owner and pressure control, or is recorded as debt with an owning leaf.
-  Verification: `pending`
-  Commit: `pending`
-
-- ID: `SEMULITH-PKG.5`
-  Status: `pending`
-  Goal: make the mdBook the reviewable window onto the ingested package.
-  Acceptance: `make book` succeeds; `SUMMARY.md` maps the package's contracts; the book states the project's actual claim scope rather than implying capability.
-  Verification: `pending`
-  Commit: `pending`
-
-## Current Frontier
-
-| Order | Leaf | Status | Why next |
-| --- | --- | --- | --- |
-| 1 | `SEMULITH-PKG.4` | `pending` | the landing page's caps are still the template's generous defaults, so the guard is not yet judging this project |
-| 2 | `SEMULITH-PKG.5` | `pending` | the book is the director's review surface; it must describe what was ingested |
-
-Census behind row 2, over the population that would refute it — any tracked script, hook, or
-enforcer entry that re-derives a recorded fingerprint:
-
-```
-$ git grep -lE 'sources\.json|MANIFEST\.sha256|sha256|shasum' -- scripts knowledge-map .githooks | wc -l
-0
-$ grep -ciE 'fingerprint|sha256|hash' scripts/check_doctrines.sh scripts/check_doctrines.project.sh
-scripts/check_doctrines.sh:0
-scripts/check_doctrines.project.sh:0
-```
-
-So the two live fingerprint claims in this tree — `examples/sources.json` pinning
-`examples/synthetic-spec.md`, and the `frozen-in-place` manifest rows — are held by no check
-at all. Leaf `.3` is what makes the claim false.
-
-## Decisions
-
-- `2026-09-13`: the delivered design documents are ingested **verbatim**. Their technical
-  content is a reviewed input; changing it is a separate owned decision, not ingestion work.
-- `2026-09-13`: delivery provenance is frozen and its live rows are declared — see
-  [`decision_delivery-provenance-is-frozen.md`](../decisions/decision_delivery-provenance-is-frozen.md).
-- `2026-09-13`: `RULES.md` stays at the repository root — it is live normative doctrine
-  referenced as `RULES.md` by `README.md` and `ROADMAP.md`, not delivery provenance.
-- `2026-09-13`: `docs/knowledge/` opened as the retrievable lesson layer, so
-  `LESSON-PROMOTION` has a real destination rather than a declined default.
-- `2026-09-13`: "checked" is defined by the three legs — see
-  [`decision_claim-verification-adopted.md`](../decisions/decision_claim-verification-adopted.md).
-
-## Open Questions
-
-- Do the `PACKAGE_CHECKS.md` schema results reproduce here? `python3 -c "import jsonschema"`
-  → `ModuleNotFoundError`, so they are **cited, not re-derivable in this repository**
-  ([`re-derivable-vs-cited-evidence`](../knowledge/re-derivable-vs-cited-evidence.md)).
-  Owner: `SEMULITH-TREES` routes this to the P1 checker lane, where rule `RUST-01` makes the
-  re-derivation a Rust deliverable rather than a Python dependency. Does not block this tree.
-
-## Blockers
-
-- None.
-
-## Completed-leaf evidence (archive)
-
-The current leaf's checklist lives above; a completed leaf's checklist is moved here verbatim
-so its evidence stays in layer B rather than only in git history. Only the *first* checklist
-in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
 
 ### `SEMULITH-PKG.2` — adopt the claim-verification standard
 
@@ -255,6 +303,10 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `2026-09-13` | `SEMULITH-PKG.3` | `check_fixture_fingerprints.sh --self-test` | `7 pass / 0 fail` (5 RED arms) |
 | `2026-09-13` | `SEMULITH-PKG.3` | both controls fired RED on the real corpus | each named the right file and reason; `rc=1`, restored `rc=0` |
 | `2026-09-13` | `SEMULITH-PKG.3` | `scripts/check_doctrines.sh` (13 checks) | `all doctrines green`, `rc=0` |
+| `2026-09-13` | `SEMULITH-PKG.4` | imported policy body SHA-256 vs source | `matches recorded: True` |
+| `2026-09-13` | `SEMULITH-PKG.4` | `check_readme_routes.sh --self-test` | `11 pass / 0 fail` (8 RED arms) |
+| `2026-09-13` | `SEMULITH-PKG.4` | `check_delivery_provenance.sh --self-test` after the TSV fix | `9 pass / 0 fail` |
+| `2026-09-13` | `SEMULITH-PKG.4` | `scripts/check_readme_routes.sh` | `ok (24 governed destination(s))`, caps `67/85` lines, `3719/4864` bytes |
 
 ## Commit Log
 
@@ -263,6 +315,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `SEMULITH-PKG.1` | `SEMULITH-PKG-0002 (leaf SEMULITH-PKG.1): ingest planning package v0.2 under the spine` | 15 delivered files landed, 1 duplicate deleted, 3 provenance files frozen |
 | `SEMULITH-PKG.2` | `SEMULITH-PKG-0003 (leaf SEMULITH-PKG.2): adopt the claim-verification standard` | standard imported verbatim under an adoption note; legs named in the leaf template |
 | `SEMULITH-PKG.3` | `SEMULITH-PKG-0004 (leaf SEMULITH-PKG.3): gate the fingerprint claims that can rot` | two project doctrines, 15 self-test arms, both fired RED on the real corpus |
+| `SEMULITH-PKG.4` | `SEMULITH-PKG-0005 (leaf SEMULITH-PKG.4): close the README routing loop with reviewed caps` | policy refreshed; 24 destinations governed; 2 defects caught by the new check's own RED arms |
 
 ## Changelog
 
@@ -273,3 +326,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 - `2026-09-13`: `SEMULITH-PKG.3` completed — `DELIVERY-PROVENANCE` and `FIXTURE-FINGERPRINT`
   are registered project doctrines; the counts they report are derived, not carried. Leaf `.4`
   split out of `.3` so the README policy refresh is owned explicitly rather than bundled.
+- `2026-09-13`: `SEMULITH-PKG.4` completed — the README policy is refreshed to the director's
+  current revision, this project's caps are derived from its own trimmed page, and all 24
+  routed destinations are governed. Two gaps named rather than hidden: the append-history
+  shard tool, and the deferred live-document-size containment adoption.

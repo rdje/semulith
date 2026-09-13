@@ -4,6 +4,31 @@ Completed work and its validation, newest first. Entries above the `bedrock-scaf
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.
 
+## `SEMULITH-PKG.4` — the README cap now judges this project, and its routes are closed
+
+- Refreshed `README_POLICY.md` to the director's current revision: neutral body imported
+  unedited (`sha256 77a1e934…6eefec`, 159 lines / 8,279 bytes) under a fenced Semulith adoption
+  note. The previous local copy predated the *Routing pressure closure* section entirely.
+- **Caps derived, not copied.** `README.md` measures 67 lines / 3,719 bytes after its trim;
+  ceilings are 85 lines / 4,864 bytes. The guard had been running the template's deliberately
+  generous `300 / 16384`, i.e. the page could have quadrupled unnoticed.
+- Added **`README-ROUTING-CLOSURE`**: 24 destinations governed — every README link target and
+  every path-shaped destination the guard *actually emits* in its failure guidance — each with
+  a route class, a lifecycle class, an owner, and the ceilings its class requires. Partitioned
+  families carry file-count and aggregate bounds, because splitting a monolith without bounding
+  the collection moves the same append pressure one level down.
+- The registry (`doctrine/readme_routes.tsv`) owns the numbers; the checker re-runs the neutral
+  README guard *with* them, so there is no second place a cap can be written.
+- ⛔ **Two defects caught by the new check's own RED arms, not by review.** `IFS=$'\t' read`
+  collapses empty TSV fields — tab is IFS whitespace — so every column after an empty field
+  shifted while the row still parsed; and a self-test passed its root through an environment
+  variable prefixing a *function* call, which bash keeps in the caller, so the real run
+  resolved all 24 destinations against a deleted temp directory. The first was fixed in
+  `check_delivery_provenance.sh` too, as the same class rather than a symptom.
+- Named gaps, not hidden ones: the append-history shard tool does not exist (its ceiling is the
+  trigger that opens the leaf building it), and full live-document-size containment is
+  deliberately deferred — the largest live surface is 16,228 bytes.
+
 ## `SEMULITH-PKG.3` — the fingerprint claims are gated instead of carried
 
 - Two claims in this repository were re-derived by **nothing**, measured:
