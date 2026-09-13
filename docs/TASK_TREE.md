@@ -50,7 +50,7 @@ on the same commit. One commit per completed leaf.
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
-| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `proposed` | `.1` — profile dossier `rv64i-lab-v0` (gate `G0`) | repo-local |
+| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `active` | `.2` — state inventory (gate `G0`; `.1` done) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `proposed` | `.1` — crate skeleton (gate `G1`, blocked on `G0`) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |

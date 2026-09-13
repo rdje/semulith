@@ -13,12 +13,12 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** none. `SEMULITH-PKG` and `SEMULITH-TREES` are both `done`.
-- **Next tree:** `P0-PROFILE` — frontier leaf `.1`, the `rv64i-lab-v0` profile dossier.
-- **Next action:** execute `P0-PROFILE.1` — pin the RV64I specification revision by exact
-  locator and write the `rv64i-lab-v0` dossier: instruction scope, entry state, memory
-  boundaries, access/misalignment policy, fetch rules, environment-trap reporting; every field
-  source-linked or a recorded open question with an owner.
-- **Latest commit:** see `git log -1` — `SEMULITH-TREES-0012 (leaf SEMULITH-TREES.4)`.
+- **Active tree:** `P0-PROFILE` (gate `G0`) — 1 of 9 leaves done.
+- **Frontier leaf:** `P0-PROFILE.2` — the state inventory.
+- **Next action:** `P0-PROFILE.2` — the state inventory (x0..x31, pc, widths, aliases, reset
+  values, and any pending state that can influence a future observation), each entry
+  source-linked. The specification is already pinned: run `scripts/fetch_sources.sh` to restore
+  `target/sources/riscv-v20260120/` (untracked) before reading locators.
+- **Latest commit:** see `git log -1` — `SEMULITH-P0-0013 (leaf P0-PROFILE.1)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

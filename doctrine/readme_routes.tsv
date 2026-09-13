@@ -53,7 +53,11 @@
 #                      right thing: a tree whose archive should be compacted or split.
 #
 # Derivation, SEMULITH-PKG.4, measured on the trimmed surfaces:
-#   README.md         67 lines / 3,719 B -> health = today, ceiling ~1.27x lines, ~1.31x bytes
+#   README.md         67 lines / 3,719 B -> ceiling ~1.27x lines, ~1.31x bytes. Its health was
+#                      first set AT today's size and fired on the very next row added (68 lines
+#                      / 3,820 B, P0-PROFILE.1) — the same miscalibration this header warns
+#                      about, committed in the file that warns about it. Re-set to 78 / 4,352,
+#                      between the reviewed page and its untouched ceiling.
 #   MEMORY.md         24 lines / 1,380 B -> health ~1.25x; ceiling stays the layer-A contract (50/7168)
 #   LIVE_STATUS.md    33 lines / 2,066 B -> health ~1.36x; ceiling ~2.7x (it gains a row per milestone)
 #   docs/TASK_TREE.md 52 lines / 2,651 B -> health ~1.25x; ceiling ~2.1x (one row per ACTIVE tree only)
@@ -64,7 +68,7 @@
 # it; these sit a deliberate band below their ceiling instead.
 #
 #destination	route_class	lifecycle	owner	health_lines	health_bytes	ceiling_lines	ceiling_bytes
-README.md	both	hot_live	README-STABILITY doctrine	67	3719	85	4864	0
+README.md	both	hot_live	README-STABILITY doctrine	78	4352	85	4864	0
 README_POLICY.md	reader_navigation	normative	this policy; changes by reviewed decision	0	0	0	0	0
 MEMORY.md	reader_navigation	hot_live	MEMORY-ARCH doctrine (layer A caps)	30	1792	50	7168	0
 LIVE_STATUS.md	reader_navigation	hot_live	COMMIT.md; rows are states, not prose	45	4096	90	6144	0
@@ -85,6 +89,7 @@ docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf eviden
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
+profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	12	65536	30	262144	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

@@ -1,5 +1,33 @@
 # CHANGELOG.md
 
+## `P0-PROFILE.1` — the project has a subject: `rv64i-lab-v0`
+
+- **The specification is acquired and pinned, not cited.** `docs/SOURCES_AND_NAMING.md` listed
+  candidate URLs, which `SRC-03` refuses to treat as established availability. Reachability was
+  established first (`HTTP 200`), then three artifacts were fetched and fingerprinted:
+  `intro.html` `3d65f713…`, `rv32.html` `3b20e92f…`, `rv64.html` `6eadb316…` — all three
+  re-derived by `scripts/fetch_sources.sh --verify-only` as `MATCH`.
+- `profiles/rv64i-lab-v0/` records **20 decisions**, each with a statement and a source locator,
+  split by **authority**: 12 `architecture`, 6 `execution-environment`, 2 `laboratory`. That
+  field is the load-bearing one — a laboratory policy over an `UNSPECIFIED` case must never read
+  as an architectural rule, or a reference that chose differently is recorded as a defect.
+- Instruction scope **enumerated, not counted from memory**: 40 base + 12 RV64I additions = 52,
+  and the agreement is now gated rather than checked once.
+- Added **`PROFILE-CONSISTENCY`**: declared counts must equal the enumeration, and every
+  decision must carry an authority and a source. 8 self-test arms; fired on the real dossier
+  (`COUNT DRIFT … enumerates 51, count_total = 52`).
+- Added `scripts/fetch_sources.sh`, deliberately **not** a commit gate: it needs the network,
+  and a gate that fails for reasons unrelated to the change is a gate people bypass. Its ledger
+  states plainly what a digest does and does not pin — the rendering, not the normative text.
+- ⛔ That tool's own RED control exposed a defect in it: an unanchored `sed` capture left a
+  trailing comment in `work_dir`, so the fetch wrote into a directory literally named
+  `…riscv-v20260120   # repo-volume, untracked` **while reporting three green MATCHes**. A
+  verdict can be correct about the bytes and wrong about where it read them.
+- The README's own health target had been set *at* today's size and fired on the very row this
+  leaf added — the miscalibration `SEMULITH-TREES.4` documented, committed in the file that
+  documents it. Re-set between the reviewed page and its untouched ceiling.
+
+
 ## `SEMULITH-TREES.4` — the task-tree family is bounded per part, not only in aggregate
 
 - Bounds written for a three-tree repository were governing an eleven-lane one: `docs/tasks/`

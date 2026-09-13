@@ -1,0 +1,51 @@
+# profiles/rv64i-lab-v0/sources.toml — the pinned specification sources for this profile.
+#
+# ⛔ WHAT A HASH HERE DOES AND DOES NOT PIN. `sha256` is the digest of the rendered HTML page
+# as served at `retrieved`. The **normative identity** is `revision` plus the chapter's own
+# stated version. A site template change alters the digest without altering the specification,
+# and a specification erratum could in principle alter the text without altering the URL. So a
+# digest mismatch is a signal to RE-READ and re-confirm the locators, not proof of a semantic
+# change — and a digest match is not proof that the normative text is unchanged either, only
+# that the artifact we read is the artifact you are reading.
+#
+# Re-derive with `scripts/fetch_sources.sh` (on demand; it needs the network, so it is
+# deliberately NOT a commit gate).
+#
+# Terms: not yet resolved. These artifacts are READ, not redistributed — they are fetched into
+# the untracked `target/sources/` working area and no copy is committed. Rule SRC-01 requires
+# the actual applicable terms to be recorded before relying on or shipping an artifact;
+# "shipping" is the part not yet reached. Open question OQ-4 in DOSSIER.md owns it.
+
+revision = "v20260120"
+base_url = "https://docs.riscv.org/reference/isa/v20260120/unpriv"
+retrieved = "2026-09-13"
+work_dir = "target/sources/riscv-v20260120"   # repo-volume, untracked
+
+[[source]]
+id = "RVI-INTRO"
+file = "intro.html"
+title = "Introduction :: RISC-V Ratified Specifications Library"
+sha256 = "3d65f713115bfd58f783fcebcce3f243f508d0af71bbac79a59e5ff79e13bf0c"
+bytes = 69772
+http_status = 200
+supplies = "execution-environment interface (EEI) and hart definitions; the four trap effects; the meaning of UNSPECIFIED"
+
+[[source]]
+id = "RVI-RV32I"
+file = "rv32.html"
+title = "1.1. RV32I Base Integer Instruction Set, Version 2.1"
+chapter_version = "2.1"
+sha256 = "3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec"
+bytes = 107630
+http_status = 200
+supplies = "the base integer ISA that RV64I modifies: register state, formats, control transfer, load/store, FENCE, ECALL/EBREAK, HINTs"
+
+[[source]]
+id = "RVI-RV64I"
+file = "rv64.html"
+title = "3.1. RV64I Base Integer Instruction Set, Version 2.1"
+chapter_version = "2.1"
+sha256 = "6eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd"
+bytes = 49246
+http_status = 200
+supplies = "the RV64I deltas: XLEN=64, the *W instruction family, 6-bit shift amounts, LWU/LD/SD, RV64I HINT table"
