@@ -1,5 +1,32 @@
 # CHANGELOG.md
 
+Completed work and its validation, newest first. Entries above the `bedrock-scaffold` rule
+are this project's; entries below it are the discipline spine this repository was created
+from, retained because the spine is still live code here.
+
+## `SEMULITH-PKG.1` — planning package v0.2 ingested under the spine
+
+- Landed the delivered package: `RULES.md`, ten design documents under `docs/`, three JSON
+  Schema starters, and seven synthetic fixtures — verbatim. Their technical content is a
+  reviewed input and was not edited.
+- **Removed a duplicate owner.** `docs/SEMULITH_ARCHOGEN_INTEGRATION.md` was byte-identical to
+  `docs/ARCHOGEN_INTEGRATION.md`, absent from the delivery manifest and referenced by nothing.
+  Two files owning one contract is rule `OWN-01`'s failure in its cheapest form.
+- **Restored the landing page.** The delivered `README.md` had replaced it, dropping the link
+  that makes its size caps traceable; `scripts/check_doctrines.sh` was red on
+  `README-STABILITY` until this commit.
+- **Froze the delivery provenance.** `MANIFEST.sha256`, `DESIGN_INPUTS.json` and
+  `PACKAGE_CHECKS.md` moved verbatim to `docs/provenance/planning-package-v0.2/` with a
+  `DELIVERY.md` that gives each of the 25 manifest rows one of three dispositions — 21
+  `frozen-in-place`, 2 `relocated`, 2 `live`. A root-level manifest listing `README.md` and
+  `ROADMAP.md` was a check whose failure was already scheduled.
+- Opened `docs/knowledge/` as the retrievable layer, with the two cards this slice earned.
+- Validation: `scripts/check_doctrines.sh` → `=== all doctrines green ===` (13 checks);
+  `make check` → `test result: ok. 1 passed`.
+
+---
+
+
 ## bedrock-scaffold 0.6.1 — creating a project is foolproof through its first commit
 
 `BEDROCK-MAINTENANCE.2.7`.

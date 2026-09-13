@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:semulith:planning:v0.2:evidence",
+  "title": "Semulith evidence starter",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+    },
+    "profile_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "requirement_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "obligation_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "method": {
+      "enum": [
+        "source-review",
+        "directed-test",
+        "differential-test",
+        "hardware-observation",
+        "bounded-exhaustive",
+        "checked-proof",
+        "mutation-test"
+      ]
+    },
+    "status": {
+      "enum": [
+        "planned",
+        "passed",
+        "failed",
+        "incomplete",
+        "stale"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "source-review",
+            "reference-model",
+            "hardware",
+            "manual-derivation",
+            "test-runner",
+            "proof-checker"
+          ]
+        },
+        "provenance_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "shared_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "independence": {
+          "type": "object",
+          "properties": {
+            "classification": {
+              "enum": [
+                "unknown",
+                "shared-definition",
+                "partly-independent",
+                "independently-derived"
+              ]
+            },
+            "scope": {
+              "type": "string",
+              "minLength": 1
+            },
+            "justification": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "classification",
+            "scope",
+            "justification"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "kind",
+        "provenance_refs",
+        "shared_dependencies",
+        "independence"
+      ],
+      "additionalProperties": false
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "procedure": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "name",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "result_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "proof": {
+      "type": "object",
+      "properties": {
+        "proposition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "checker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "bounds": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "proposition",
+        "checker",
+        "assumptions",
+        "bounds",
+        "artifact_ids"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "profile_ids",
+    "requirement_ids",
+    "obligation_ids",
+    "method",
+    "status",
+    "producer",
+    "inputs",
+    "artifacts",
+    "limitations"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "passed",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "procedure",
+          "tool_versions",
+          "result_summary"
+        ],
+        "properties": {
+          "inputs": {
+            "minItems": 1
+          },
+          "artifacts": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "passed"
+          },
+          "method": {
+            "const": "checked-proof"
+          }
+        },
+        "required": [
+          "status",
+          "method"
+        ]
+      },
+      "then": {
+        "required": [
+          "proof"
+        ]
+      }
+    }
+  ]
+}

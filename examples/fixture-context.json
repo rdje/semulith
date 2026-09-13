@@ -1,0 +1,24 @@
+{
+  "fixture_only": true,
+  "profiles": [
+    {
+      "id": "synthetic-u16-v1",
+      "claim": "Synthetic schema illustration only; implementation is planned."
+    }
+  ],
+  "obligations": [
+    {
+      "id": "OB-SYN16-ADD",
+      "required_method": "directed-test",
+      "scope": "A1 examples plus boundary cases; test adequacy remains a future review."
+    },
+    {
+      "id": "OB-SYN16-INPUT",
+      "required_method": "directed-test",
+      "check_ids": [
+        "CHK-SYN16-INPUT-RANGE"
+      ],
+      "scope": "Reject -1 and 65536; accept valid boundary operands."
+    }
+  ]
+}

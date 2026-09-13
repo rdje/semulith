@@ -6,4 +6,5 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
-| _none yet_ | | |
+| [`decision_delivery-provenance-is-frozen.md`](decision_delivery-provenance-is-frozen.md) | `decision` | a delivered manifest records what arrived; its live rows are declared, not silently drifting |
+| [`decision_public-repository-no-confidential-content.md`](decision_public-repository-no-confidential-content.md) | `project` | the repo is public and carries nothing confidential, so evidence is recorded unredacted |

@@ -48,4 +48,5 @@ on the same commit. One commit per completed leaf.
 
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | `.1` — bootstrapped from bedrock; seed your first real tree from `ROADMAP.md` | repo-local |
+| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `active` | `.2` — adopt the claim-verification standard | repo-local |
+| [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |

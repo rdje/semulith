@@ -1,0 +1,21 @@
+{
+  "package_version": "0.2",
+  "date": "2026-09-13",
+  "inputs": [
+    {
+      "id": "roadmap-v0.1",
+      "file_name": "CPU_DSP_Software_Modeling_Roadmap_v0.1.md",
+      "sha256": "592356937e0f1dfbe42efb39c6af15c57ea5e23ea00e835931f70e897998e24d"
+    },
+    {
+      "id": "cpu-roadmap-review",
+      "file_name": "Review_of_CPU_DSP_Modeling_Roadmap_v0_1.md",
+      "sha256": "2f02b5ea2239fefc00d02d4f2cfb250eb918e23c5ce033f2b950e1a016d6f6ae"
+    },
+    {
+      "id": "archogen-roadmap-revision-2.0",
+      "file_name": "os-generation-roadmap-revised-v2.md",
+      "sha256": "d45ee7bbab1207ba428195baaf043c0e96bb7e70cb875ec807c9d40a8445e0e4"
+    }
+  ]
+}

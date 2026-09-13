@@ -1,0 +1,11 @@
+{
+  "fixture_only": true,
+  "sources": [
+    {
+      "id": "SRC-SYN16",
+      "path": "synthetic-spec.md",
+      "version": "1",
+      "sha256": "12787d5932eba395a8904c347db55f22501fe889f73d5533726b4864502ca43f"
+    }
+  ]
+}

@@ -1,74 +1,66 @@
-# bedrock — a Rust project discipline-spine template
+# Semulith
 
-**bedrock** is a starting point for a new Rust project that ships with a battle-tested
-*discipline spine* already wired in: durable memory, task-tree tracking, a strict commit
-workflow, mechanical doctrine enforcement, a knowledge map, and an mdBook — all
-project-neutral. Copy it, drop in your roadmap, and grow the project with that spine as its
-backbone.
+**Semulith builds trustworthy CPU and DSP software models in Rust, then composes validated
+processor profiles into boards and complete computers capable of running Linux.** The first
+deliverable is the processor: one canonical executable definition, a reference interpreter,
+and reproducible evidence for a precisely stated supported profile.
 
-## Why a spine
+Semulith also has a concrete consumer: **archogen**, which generates specific-purpose
+operating systems from its eADL source of truth and needs explicit platform contracts to
+execute and validate them against.
 
-Discipline that lives in an agent's head evaporates on session loss, a model switch, or a
-new contributor. bedrock puts the discipline **in the repo** and enforces it at the **git
-level** (pre-commit hook + CI), so it holds for any agent — Claude Code, Codex, Gemini,
-Cursor, a custom runner — or a human, identically.
+> **Claim scope.** No CPU implementation, conformance result, or accepted processor profile
+> is claimed. `schemas/` and `examples/` are data-contract starters whose evidence records
+> are deliberately `planned`. *Semulith* is a proposed name; no crate, repository, domain, or
+> trademark has been reserved. See [`LIVE_STATUS.md`](LIVE_STATUS.md) for what is actually built.
 
-## What's inside (the spine)
+## Start here
 
-| File / dir | What it gives you |
+| Read | For |
 | --- | --- |
-| `CLAUDE.md` / `AGENTS.md` | harness-neutral agent bootstrap (read this first) |
-| `MEMORY_ARCHITECTURE.md` | the durable 4-layer memory model (A resume pointer · B task-trees · C decisions · D git) |
-| `docs/TASK_TREE.md` + `docs/tasks/` | task-tree tracking — nothing changes without a leaf |
-| `COMMIT.md` | the strict, repeatable commit workflow |
-| `DOCTRINE_ENFORCEMENT.md` + `scripts/check_doctrines.sh` | the mechanical enforcer (registry + universal checks + a project slot) |
-| `TOOLBOX.md` | the tools-first diagnostic doctrine |
-| `KNOWLEDGE_MAP.md` + `knowledge-map/` | a derived, drift-proof orientation map |
-| `docs/book/` | an mdBook skeleton — the public docs surface |
-| `.githooks/` + `.github/workflows/` | the E3 (hook) + E4 (CI) enforcement layers |
-| `MEMORY.md` · `CHANGELOG.md` · `DEV_NOTES.md` · `LIVE_STATUS.md` | the seeded live-docs |
-| `ROADMAP.md` | **the one file you replace** — your project's roadmap |
-| `Cargo.toml` · `crates/` · `Makefile` | a minimal Rust workspace + `make check`/`make gate` |
+| [`ROADMAP.md`](ROADMAP.md) | direction, decisions, milestones P0–P7, dependency graph, acceptance gates |
+| [`RULES.md`](RULES.md) | the short normative engineering rules, with stable IDs |
+| [`docs/`](docs/) | the detailed contracts — architecture, evidence and gates, CPU/environment, archogen |
+| [`CLAUDE.md`](CLAUDE.md) · [`AGENTS.md`](AGENTS.md) | the agent bootstrap: how work is tracked, evidenced, and committed here |
+| [`docs/book/`](docs/book/) | the mdBook — the reviewable narrative surface |
 
-## Use it
+## Layout
 
-**Option A — `cargo generate` (Rust-native):**
+| Path | What lives there |
+| --- | --- |
+| `crates/` | the Rust workspace |
+| `schemas/` · `examples/` | starter data contracts and their synthetic, explicitly planned fixtures |
+| `docs/tasks/` · [`docs/TASK_TREE.md`](docs/TASK_TREE.md) | task-trees — every change is owned by a leaf **before** it is made |
+| [`docs/decisions/`](docs/decisions/) | durable cross-cutting decisions and facts (memory layer C) |
+| `docs/provenance/` | frozen delivery records for supplied design inputs |
+| `scripts/` · `.githooks/` · `.github/workflows/` | the mechanical doctrine enforcement |
 
-```bash
-cargo generate --git <this-repo-url> --name <project>
-```
+## Commands
 
-**Option B — GitHub "Use this template"** (enable the *Template repository* setting).
+| Command | Does |
+| --- | --- |
+| `make gate` | run the doctrine enforcer — also the pre-commit hook and CI |
+| `make check` | `cargo fmt --check` + `clippy -D warnings` + `cargo test --all` |
+| `make book` | build the mdBook |
+| `make hooks` | activate the git hooks once per clone (`core.hooksPath=.githooks`) |
 
-Then, either way, `cd <project>` and finalize with one command:
+## How this repository works
 
-1. `./scripts/bootstrap.sh <project>` — installs the git hooks, sets the crate + roadmap name,
-   generates the Knowledge Map, verifies the enforcer, and seeds the leaf that owns this step —
-   then **commit with the command it prints**. The canonical post-copy step for both paths
-   (option A needs `cargo install cargo-generate`).
-2. Replace `ROADMAP.md` with your project's roadmap, then create your first task-tree
-   (`cp docs/tasks/TEMPLATE.md docs/tasks/<TREE-ID>.md`) and register it in `docs/TASK_TREE.md`.
-3. Grow the project one task-tree leaf at a time, committed via `COMMIT.md`.
+- **Nothing changes without a task-tree leaf first.** The leaf carries the goal, the
+  acceptance checklist, the evidence, and the commit — see [`docs/TASK_TREE.md`](docs/TASK_TREE.md).
+- **Durable memory is four layers**: [`MEMORY.md`](MEMORY.md) (resume pointer) ·
+  `docs/tasks/` (work) · [`docs/decisions/`](docs/decisions/) (facts) · git (history).
+  Defined in [`MEMORY_ARCHITECTURE.md`](MEMORY_ARCHITECTURE.md).
+- **Diagnose tools-first** ([`TOOLBOX.md`](TOOLBOX.md)), commit per [`COMMIT.md`](COMMIT.md),
+  and expect every mechanizable rule to be gated ([`DOCTRINE_ENFORCEMENT.md`](DOCTRINE_ENFORCEMENT.md)).
+- **Evidence is a claim with a named scope.** Finite testing is tested evidence, never
+  universal proof; a reference that shares an ancestor is not a second opinion. See
+  [`docs/EVIDENCE_AND_GATES.md`](docs/EVIDENCE_AND_GATES.md).
 
-## Keep the spine current
+This landing page is governed by [`README_POLICY.md`](README_POLICY.md) and mechanically
+capped on **both** line and byte count. Route changing detail to its canonical home above
+rather than growing this file.
 
-bedrock improves over time. To pull the latest **project-neutral** spine (doctrine docs,
-hooks, universal checks) into a project you already created — without touching your
-roadmap, task-trees, decisions, or code — run:
+## License
 
-```bash
-./scripts/update_scaffold.sh <bedrock-repo-url>
-```
-
-The scaffold version is recorded in `DOCTRINE_VERSION`.
-
-This README is deliberately a **landing page**, governed by [`README_POLICY.md`](README_POLICY.md)
-and mechanically capped (line **and** byte) by the `README-STABILITY` doctrine. Route changing
-detail to its canonical home rather than growing this file.
-
-## The non-negotiables (full detail in `CLAUDE.md`)
-
-- Nothing changes without a **task-tree leaf** first.
-- Record durable facts/decisions in `docs/decisions/`.
-- Commit per `COMMIT.md`; the hooks + CI enforce the doctrines.
-- Keep **roadmap ↔ code ↔ docs** in lockstep, always.
+Dual-licensed under MIT or Apache-2.0.

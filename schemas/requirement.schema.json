@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:semulith:planning:v0.2:requirement",
+  "title": "Semulith requirement starter",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+    },
+    "profile_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "kind": {
+      "enum": [
+        "instruction",
+        "decode",
+        "state",
+        "numeric",
+        "memory",
+        "event",
+        "environment",
+        "configuration",
+        "invariant",
+        "device",
+        "composition"
+      ]
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "source_id",
+          "locator"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "applicability": {
+      "enum": [
+        "included",
+        "excluded",
+        "conditional"
+      ]
+    },
+    "research_status": {
+      "enum": [
+        "resolved",
+        "partial",
+        "unresolved"
+      ]
+    },
+    "implementation_status": {
+      "enum": [
+        "planned",
+        "partial",
+        "implemented",
+        "not-applicable"
+      ]
+    },
+    "source_semantics": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "enum": [
+            "defined",
+            "implementation-defined",
+            "unspecified",
+            "undefined",
+            "reserved",
+            "unpredictable",
+            "source-specific",
+            "not-applicable"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "category",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "risk": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "obligation_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "implementation_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "artifact_id",
+          "locator"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:/-]*$"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "id",
+    "profile_ids",
+    "kind",
+    "statement",
+    "source_refs",
+    "applicability",
+    "research_status",
+    "implementation_status",
+    "source_semantics",
+    "risk",
+    "obligation_ids",
+    "dependencies",
+    "implementation_refs",
+    "evidence_ids"
+  ],
+  "additionalProperties": false
+}
