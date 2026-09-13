@@ -60,7 +60,7 @@ docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave t
 docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	12	65536	25	262144
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304
-docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	20	65536	60	393216
+docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384

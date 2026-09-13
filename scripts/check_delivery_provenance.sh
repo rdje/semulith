@@ -108,10 +108,15 @@ verify_package() {
   return "$bad"
 }
 
+SELFTEST_TMP() {  # repo-volume scratch: project-created temporary workspaces must not
+  # land on another filesystem (and $TMPDIR is one). /target is already untracked.
+  local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"
+}
+
 # ── self-test: the controls must be seen RED, or they are not known to work ──────────────────
 self_test() {
   local t pass=0 fail=0 out
-  t="$(mktemp -d)"; mkdir -p "$t/pkg" "$t/tree/moved"
+  t="$(SELFTEST_TMP)"; mkdir -p "$t/pkg" "$t/tree/moved"
   printf 'good\n' > "$t/tree/frozen.txt"
   printf 'good\n' > "$t/tree/moved/reloc.txt"
   printf 'anything\n' > "$t/tree/live.txt"

@@ -48,5 +48,5 @@ on the same commit. One commit per completed leaf.
 
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `active` | `.2` — adopt the claim-verification standard | repo-local |
+| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (5/5 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |

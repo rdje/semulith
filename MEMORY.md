@@ -13,11 +13,12 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `SEMULITH-PKG` (ingest planning package v0.2 under the spine).
-- **Frontier leaf:** `SEMULITH-PKG.5` — make the mdBook the review surface.
-- **Next action:** grow `docs/book/` from the template skeleton into the reviewable window on
-  the ingested package (`make book` green, `SUMMARY.md` mapping the contracts, claim scope
-  stated). Then open `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into task-trees.
-- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0005 (leaf SEMULITH-PKG.4)`.
+- **Active tree:** `SEMULITH-PKG` — 5 leaves done; `.6` open to fix this project's code-path declaration.
+- **Frontier leaf:** `SEMULITH-PKG.6` — declare `.doctrine/code_paths.txt`.
+- **Next action:** the default code-path pattern matches `docs/book/src/*.md` (prose) and
+  misses `doctrine/*.tsv` (real gate data) — declare `.doctrine/code_paths.txt`, then fire
+  `TASK-ACCEPTANCE` RED to prove it still catches a real code change. Then open
+  `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into task-trees.
+- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0006 (leaf SEMULITH-PKG.5)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

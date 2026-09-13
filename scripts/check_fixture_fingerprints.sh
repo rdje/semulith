@@ -109,9 +109,14 @@ sys.exit(1 if findings else 0)
 PY
 }
 
+SELFTEST_TMP() {  # repo-volume scratch: project-created temporary workspaces must not
+  # land on another filesystem (and $TMPDIR is one). /target is already untracked.
+  local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"
+}
+
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(mktemp -d)"; mkdir -p "$t/fix"
+  t="$(SELFTEST_TMP)"; mkdir -p "$t/fix"
   printf 'payload\n' > "$t/fix/spec.md"
   local h; h="$(python3 -c "import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" "$t/fix/spec.md")"
   write_ledger() { printf '{"sources":[{"id":"S","path":"spec.md","sha256":"%s"}]}\n' "$1" > "$t/fix/sources.json"; }

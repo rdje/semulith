@@ -4,6 +4,31 @@ Completed work and its validation, newest first. Entries above the `bedrock-scaf
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.
 
+## `SEMULITH-PKG.5` — the book becomes the review surface
+
+- Grew `docs/book/` from the template's 3-file skeleton to a **27-chapter manual**: claim scope,
+  live status, every milestone with its gate and its dependency edges, all nine delivered
+  contracts, the data contracts with a worked example, and the working discipline.
+- **Drift-proof by construction.** The status, rules and glossary chapters `{{#include}}` the
+  live files; each contract chapter includes the canonical document verbatim under an
+  orientation blockquote. The book never paraphrases a contract, because a paraphrase is a
+  second owner and `OWN-01` says there is one.
+- Verified rendered rather than referenced: `mdbook build` `rc=0`; `book internal links
+  unresolved: none`, `book includes unresolved: none`, SUMMARY coverage complete in both
+  directions, and included content spot-checked in the built HTML.
+- ⛔ **Two defects a passing build would not have caught.** The Mermaid fence rendered as raw
+  source in mdBook — the director would have read Mermaid syntax instead of a graph — and is
+  replaced by an explicit edge table that renders everywhere. And the build output contaminated
+  the routing-closure measurement (`92 files / 2,738,590 bytes` by `find`, against `3` tracked
+  at the same instant), so family measurement now counts tracked files and `/docs/book/book` is
+  gitignored.
+- `docs/book/`'s health and ceiling were **re-reviewed, not silently exceeded**: 20 files /
+  64 KiB was written for a skeleton, the surface's contract genuinely expanded, and the registry
+  now carries 40 / 128 KiB health and 80 / 512 KiB ceiling with the derivation recorded.
+- The three project checks' self-test fixtures moved from `$TMPDIR` to
+  `target/doctrine-selftest`: a project-created temporary workspace must stay on the
+  repository's own volume.
+
 ## `SEMULITH-PKG.4` — the README cap now judges this project, and its routes are closed
 
 - Refreshed `README_POLICY.md` to the director's current revision: neutral body imported

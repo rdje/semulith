@@ -1,10 +1,11 @@
 [book]
-title = "Project Book"
-description = "The public-facing documentation surface. Keep it in lockstep with the code (see COMMIT.md)."
-authors = ["<your name>"]
+title = "Semulith"
+description = "Trustworthy CPU and DSP software models in Rust, and the evidence discipline that makes their claims mean something."
+authors = ["Semulith maintainers"]
 language = "en"
 src = "src"
 
 [output.html]
 default-theme = "rust"
 git-repository-url = ""
+no-section-label = false

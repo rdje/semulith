@@ -69,15 +69,24 @@ governed() { # $1 target  $2 file with one destination per line
   return 1
 }
 
+# Count a directory family's members. The registry governs the REPOSITORY, so the real run
+# counts TRACKED files: `docs/book/` measured 92 files / 2,738,590 bytes with `find` because
+# mdbook's build output sits inside it, against 3 tracked files — a generated artifact would
+# otherwise fire a ceiling written for authored content.
+family_files() { # $1 base  $2 dest  $3 mode(git|find)
+  if [ "$3" = git ]; then git -C "$1" ls-files -- "$2" | sed "s|^|$1/|"
+  else find "$1/$2" -type f; fi
+}
+
 # $1 = registry path, $2 = README path, $3 = 1 to enforce ceilings, $4 = root the destinations
-# resolve against.
+# resolve against, $5 = family listing mode (git|find).
 # ⛔ The base is a PARAMETER, not an environment variable. It was an env var for one revision,
 # and `VAR=x verify_routes …` in the self-test leaked VAR into the caller — bash keeps an
 # assignment that prefixes a *function* invocation — so the real run then resolved every
 # destination against the self-test's already-deleted temp directory and reported all 24 as
 # MISSING. A control must not be able to contaminate the thing it checks.
 verify_routes() {
-  local registry="$1" readme="$2" enforce="$3" base="$4" bad=0 tmp
+  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" bad=0 tmp
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
   tmp="$(mktemp -d)"
@@ -114,8 +123,8 @@ verify_routes() {
           # file-count and aggregate ceilings, so the two numeric axes mean files and total
           # bytes here rather than lines and bytes. Splitting a monolith without bounding the
           # resulting collection just moves the same append pressure one level down.
-          n=$(find "$base/$dest" -type f | wc -l | tr -d ' ')
-          b=$(find "$base/$dest" -type f -exec cat {} + 2>/dev/null | wc -c | tr -d ' ')
+          n=$(family_files "$base" "$dest" "$mode" | wc -l | tr -d ' ')
+          b=$(family_files "$base" "$dest" "$mode" | tr '\n' '\0' | xargs -0 cat 2>/dev/null | wc -c | tr -d ' ')
           if [ "${cl:-0}" -gt 0 ] && [ "$n" -gt "$cl" ]; then
             echo "  OVER CEILING $dest: $n files > $cl"; bad=1; fi
           if [ "${cb:-0}" -gt 0 ] && [ "$b" -gt "$cb" ]; then
@@ -145,16 +154,21 @@ verify_routes() {
   return "$bad"
 }
 
+SELFTEST_TMP() {  # repo-volume scratch: project-created temporary workspaces must not
+  # land on another filesystem (and $TMPDIR is one). /target is already untracked.
+  local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"
+}
+
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(mktemp -d)"; mkdir -p "$t/docs"
+  t="$(SELFTEST_TMP)"; mkdir -p "$t/docs"
   printf '# L\n\nSee [a](docs/) and [b](KEEP.md).\n' > "$t/README.md"
   printf 'x\n' > "$t/KEEP.md"; printf 'y\n' > "$t/docs/inner.md"
   reg() { printf '%s\n' "$@" > "$t/routes.tsv"; }
   R_DOCS=$'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0'
   R_KEEP=$'KEEP.md\tboth\thot_live\towner\t0\t0\t5\t64'
   arm() { # name expected_rc expected_substring
-    out="$(verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" 2>&1)"; rc=$?
+    out="$(verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" find 2>&1)"; rc=$?
     if [ "$rc" != "$2" ]; then
       fail=$((fail+1)); printf 'README-ROUTING-CLOSURE self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$1" "$2" "$rc" "$out" >&2
     elif [ -n "$3" ] && ! printf '%s' "$out" | grep -qF "$3"; then
@@ -195,7 +209,7 @@ self_test >/dev/null 2>&1 || {
 }
 
 fail=0
-out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT")" || fail=1
+out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git)" || fail=1
 
 # (2) every path-shaped destination the guard actually emits must be governed
 dests="$(mktemp)"; awk -F'\t' '!/^#/ && NF>=8 {print $1}' "$REGISTRY" > "$dests"

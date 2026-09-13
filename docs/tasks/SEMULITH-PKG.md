@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `SEMULITH-PKG`
-- Status: `active`
+- Status: `done`
 - Roadmap lane: project foundation (precedes P0)
 - Created: `2026-09-13`
 - Owner: repo-local workflow
@@ -31,61 +31,58 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - Live docs (`MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`) and the mdBook
   reflect the ingested state in the same commit as the change that caused it.
 
-## Acceptance Checklist (current leaf — `SEMULITH-PKG.4`)
+## Acceptance Checklist (current leaf — `SEMULITH-PKG.5`)
 
 Enforced by the `TASK-ACCEPTANCE` doctrine. Each box carries the command that was run and the
 output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the landing page's guard was not judging *this*
-  project, and its routing had no closure. (a) `README-STABILITY` ran on the template's
-  deliberately generous defaults — `README-STABILITY: OK — README.md is 67/300 lines,
-  3719/16384 bytes` — i.e. the page could quadruple before the guard noticed, and
-  `README_POLICY.md` itself says those illustrative values must be replaced after a local trim.
-  (b) The policy's *Routing pressure closure* section was absent from this repository's copy:
-  the local body was 74 lines / 7,669 bytes against the director's current 159-line /
-  8,279-byte revision. (c) A cap with no closure only *relocates* append pressure — the
-  policy's own measurement is a routed-to status file that reached `1,547,057 bytes`, 94.7%
-  dated changelog content, while the README guard stayed green.
-- [x] **ADDRESSED (verified)** — the neutral body is now the director's revision, imported
-  unedited and verified: `body sha256:
-  77a1e9348ec24d9ec5f0c97ae1ac2d634f7e7e3e150504759af3c0182d6eefec`, `matches recorded: True`.
-  Caps are derived, not copied: `wc -lc README.md` → `67 3719`, ceilings set to `85 / 4864`
-  (~1.3×), and the guard now judges against them — `registry caps applied: README-STABILITY:
-  OK — README.md is 67/85 lines, 3719/4864 bytes.` Closure is enforced:
-  `README-ROUTING-CLOSURE: ok (24 governed destination(s))`, covering every README link target
-  **and** every path-shaped destination the guard actually emits. Partitioned families carry
-  file-count and aggregate ceilings measured at adoption (`docs/tasks/` 5 files / 39,131 B,
-  `docs/decisions/` 5 / 8,246, `docs/knowledge/` 4 / 6,834, `docs/book/` 3 / 947,
-  `docs/provenance/` 5 / 10,860).
-- [x] **NO REGRESSION** — leg 2: `README-ROUTING-CLOSURE --self-test: 11 pass / 0 fail`,
-  8 of them RED arms (ungoverned link target, missing file destination, missing directory
-  destination, unknown route_class, unknown lifecycle, absent owner, byte ceiling exceeded,
-  family over aggregate bytes) each asserting the **reason**, not just the verdict. Two real
-  defects were caught by those arms rather than by review: `IFS=$'\t' read` collapses empty
-  TSV fields because tab is IFS *whitespace*, so `printf 'a\tb\tc\t\t0\n'` read as
-  `f4='0' f5=''` — every column after an empty field shifted, and the row still parsed; and
-  a self-test that passed its root as an environment variable prefixing a *function* call
-  leaked that variable into the caller, so the real run resolved all 24 destinations against a
-  deleted temp directory and reported `MISSING` for every one. The first defect was fixed in
-  `check_delivery_provenance.sh` too — same class, not a symptom — and given its own RED arm
-  (`DELIVERY-PROVENANCE --self-test: 9 pass / 0 fail`). Whole gate:
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the director reviews the book rather than the code,
+  and the book was still the template's skeleton. Census before this leaf:
+  `git ls-files docs/book | wc -l` → `3` (`book.toml`, `SUMMARY.md`, `introduction.md`), whose
+  content was the scaffold's own instructions to replace them — `grep -c 'Replace this page'
+  docs/book/src/introduction.md` → `1`, and `book.toml` still carried `title = "Project Book"`
+  and `authors = ["<your name>"]`. So the one surface the director reads described no part of
+  the project that had just been ingested.
+- [x] **ADDRESSED (verified)** — the book is now a 27-chapter manual covering claim scope, live
+  status, every milestone with its gate, all nine delivered contracts, the data contracts with
+  a worked example, and the working discipline. `mdbook build docs/book` → `INFO HTML book
+  written to …/docs/book/book`, `rc=0`. Coverage and link checks over the source:
+  `book internal links unresolved: none`, `book includes unresolved: none`,
+  `in SUMMARY but absent: none`, `page absent from SUMMARY: none`, `chapters: 27`.
+  ⭐ The drift-proofing is the design: the status, rules and glossary chapters `{{#include}}`
+  `LIVE_STATUS.md`, `RULES.md` and `docs/GLOSSARY.md`, and each contract chapter includes the
+  canonical document verbatim under an orientation blockquote — verified rendered, not merely
+  referenced (`G-PORTABILITY row present: True`, `orientation blockquote present: True`,
+  `SCP-01` and `Canonical definition` each found once in the built HTML). The book cannot
+  paraphrase a contract, so it cannot become a second owner of one.
+- [x] **NO REGRESSION** — leg 2: writing the book exposed two defects that a build alone would
+  not have caught, and both were fired as controls. (a) The Mermaid fence rendered as raw
+  source: `grep -o 'class="language-mermaid"' docs/book/book/plan/overview.html` → present,
+  i.e. the director would have read Mermaid syntax instead of a graph; replaced by an explicit
+  edge table, after which `mermaid fences in book: 0`. (b) The build output contaminated the
+  routing-closure measurement: `OVER CEILING docs/book/: 92 files > 60` and
+  `2738590 aggregate bytes > 393216`, because `find` counted mdbook's untracked HTML —
+  `git ls-files docs/book | wc -l` → `3` at the same instant. The family measurement now counts
+  **tracked** files, `/docs/book/book` is gitignored, and the re-run is
+  `README-ROUTING-CLOSURE: ok (24 governed destination(s))`. Self-tests after the change:
+  `9 pass / 0 fail`, `7 pass / 0 fail`, `11 pass / 0 fail`. Whole gate:
   `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
   `test result: ok. 1 passed; 0 failed`, `rc=0`.
-- [x] **FIX** — `README_POLICY.md` rebuilt as a fenced Semulith adoption note over the
-  unedited neutral body; `doctrine/readme_routes.tsv` added as the data owner of every route
-  and every cap; `scripts/check_readme_routes.sh` added and registered in the project slot.
-- [x] **LOCKSTEP** — leg 3: the ceilings are enforced on every commit, so a stale target fails
-  rather than rots. `DOCTRINE_ENFORCEMENT.md` mirror, `TOOLBOX.md` row,
-  `docs/decisions/decision_readme-routing-closure.md` (+ index row), `MEMORY.md`,
-  `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit. Two gaps are **named, not
-  hidden**: the `append_history` shard tool does not exist (its ceiling is the trigger that
-  opens the leaf building it), and full live-document-size containment is deliberately not
-  adopted — the largest live surface is 16,228 bytes and there is no measured pressure.
+- [x] **FIX** — `docs/book/` grown to 27 chapters plus `book.toml` and `SUMMARY.md`;
+  `/docs/book/book` added to `.gitignore`; `family_files()` in `check_readme_routes.sh` counts
+  tracked files on the real run; the three project checks' self-test fixtures moved from
+  `$TMPDIR` to `$ROOT/target/doctrine-selftest`, because a project-created temporary workspace
+  must stay on the repository's own volume.
+- [x] **LOCKSTEP** — leg 3: `docs/book/`'s health and ceiling were **re-reviewed** rather than
+  silently exceeded — 20 files / 64 KiB was written for a skeleton, and the surface's contract
+  genuinely expanded, so the registry now carries 40 / 128 KiB health and 80 / 512 KiB ceiling
+  with the derivation recorded in its header. `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md`
+  updated in this commit.
 
 ## Task Tree
 
 - ID: `SEMULITH-PKG`
-  Status: `active`
+  Status: `done`
   Goal: ingest the delivered planning package v0.2 under the spine
   Children: `SEMULITH-PKG.1`, `SEMULITH-PKG.2`, `SEMULITH-PKG.3`, `SEMULITH-PKG.4`, `SEMULITH-PKG.5`
 
@@ -118,17 +115,17 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
   Commit: `SEMULITH-PKG-0005`
 
 - ID: `SEMULITH-PKG.5`
-  Status: `pending`
+  Status: `done`
   Goal: make the mdBook the reviewable window onto the ingested package.
   Acceptance: `make book` succeeds; `SUMMARY.md` maps the package's contracts; the book states the project's actual claim scope rather than implying capability.
-  Verification: `pending`
-  Commit: `pending`
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0006`
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SEMULITH-PKG.5` | `pending` | the book is the director's review surface; it must describe what was ingested, and it is still the template's two-page skeleton |
+| — | — | — | **tree complete.** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
 
 Census behind row 2, over the population that would refute it — any tracked script, hook, or
 enforcer entry that re-derives a recorded fingerprint:
@@ -177,6 +174,54 @@ at all. Leaf `.3` is what makes the claim false.
 The current leaf's checklist lives above; a completed leaf's checklist is moved here verbatim
 so its evidence stays in layer B rather than only in git history. Only the *first* checklist
 in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
+
+### `SEMULITH-PKG.4` — refresh the README policy and close its routing loop
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the landing page's guard was not judging *this*
+  project, and its routing had no closure. (a) `README-STABILITY` ran on the template's
+  deliberately generous defaults — `README-STABILITY: OK — README.md is 67/300 lines,
+  3719/16384 bytes` — i.e. the page could quadruple before the guard noticed, and
+  `README_POLICY.md` itself says those illustrative values must be replaced after a local trim.
+  (b) The policy's *Routing pressure closure* section was absent from this repository's copy:
+  the local body was 74 lines / 7,669 bytes against the director's current 159-line /
+  8,279-byte revision. (c) A cap with no closure only *relocates* append pressure — the
+  policy's own measurement is a routed-to status file that reached `1,547,057 bytes`, 94.7%
+  dated changelog content, while the README guard stayed green.
+- [x] **ADDRESSED (verified)** — the neutral body is now the director's revision, imported
+  unedited and verified: `body sha256:
+  77a1e9348ec24d9ec5f0c97ae1ac2d634f7e7e3e150504759af3c0182d6eefec`, `matches recorded: True`.
+  Caps are derived, not copied: `wc -lc README.md` → `67 3719`, ceilings set to `85 / 4864`
+  (~1.3×), and the guard now judges against them — `registry caps applied: README-STABILITY:
+  OK — README.md is 67/85 lines, 3719/4864 bytes.` Closure is enforced:
+  `README-ROUTING-CLOSURE: ok (24 governed destination(s))`, covering every README link target
+  **and** every path-shaped destination the guard actually emits. Partitioned families carry
+  file-count and aggregate ceilings measured at adoption (`docs/tasks/` 5 files / 39,131 B,
+  `docs/decisions/` 5 / 8,246, `docs/knowledge/` 4 / 6,834, `docs/book/` 3 / 947,
+  `docs/provenance/` 5 / 10,860).
+- [x] **NO REGRESSION** — leg 2: `README-ROUTING-CLOSURE --self-test: 11 pass / 0 fail`,
+  8 of them RED arms (ungoverned link target, missing file destination, missing directory
+  destination, unknown route_class, unknown lifecycle, absent owner, byte ceiling exceeded,
+  family over aggregate bytes) each asserting the **reason**, not just the verdict. Two real
+  defects were caught by those arms rather than by review: `IFS=$'\t' read` collapses empty
+  TSV fields because tab is IFS *whitespace*, so `printf 'a\tb\tc\t\t0\n'` read as
+  `f4='0' f5=''` — every column after an empty field shifted, and the row still parsed; and
+  a self-test that passed its root as an environment variable prefixing a *function* call
+  leaked that variable into the caller, so the real run resolved all 24 destinations against a
+  deleted temp directory and reported `MISSING` for every one. The first defect was fixed in
+  `check_delivery_provenance.sh` too — same class, not a symptom — and given its own RED arm
+  (`DELIVERY-PROVENANCE --self-test: 9 pass / 0 fail`). Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+- [x] **FIX** — `README_POLICY.md` rebuilt as a fenced Semulith adoption note over the
+  unedited neutral body; `doctrine/readme_routes.tsv` added as the data owner of every route
+  and every cap; `scripts/check_readme_routes.sh` added and registered in the project slot.
+- [x] **LOCKSTEP** — leg 3: the ceilings are enforced on every commit, so a stale target fails
+  rather than rots. `DOCTRINE_ENFORCEMENT.md` mirror, `TOOLBOX.md` row,
+  `docs/decisions/decision_readme-routing-closure.md` (+ index row), `MEMORY.md`,
+  `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit. Two gaps are **named, not
+  hidden**: the `append_history` shard tool does not exist (its ceiling is the trigger that
+  opens the leaf building it), and full live-document-size containment is deliberately not
+  adopted — the largest live surface is 16,228 bytes and there is no measured pressure.
 
 ### `SEMULITH-PKG.3` — gate the fingerprint claims that can rot
 
@@ -307,6 +352,10 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `2026-09-13` | `SEMULITH-PKG.4` | `check_readme_routes.sh --self-test` | `11 pass / 0 fail` (8 RED arms) |
 | `2026-09-13` | `SEMULITH-PKG.4` | `check_delivery_provenance.sh --self-test` after the TSV fix | `9 pass / 0 fail` |
 | `2026-09-13` | `SEMULITH-PKG.4` | `scripts/check_readme_routes.sh` | `ok (24 governed destination(s))`, caps `67/85` lines, `3719/4864` bytes |
+| `2026-09-13` | `SEMULITH-PKG.5` | `mdbook build docs/book` | `HTML book written`, `rc=0` |
+| `2026-09-13` | `SEMULITH-PKG.5` | book link / include / SUMMARY coverage | `none` unresolved in all four directions; `chapters: 27` |
+| `2026-09-13` | `SEMULITH-PKG.5` | three project checks' self-tests after the tracked-file fix | `9 / 7 / 11 pass, 0 fail` |
+| `2026-09-13` | `SEMULITH-PKG.5` | `scripts/check_doctrines.sh` (13 checks) + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
 
 ## Commit Log
 
@@ -316,6 +365,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `SEMULITH-PKG.2` | `SEMULITH-PKG-0003 (leaf SEMULITH-PKG.2): adopt the claim-verification standard` | standard imported verbatim under an adoption note; legs named in the leaf template |
 | `SEMULITH-PKG.3` | `SEMULITH-PKG-0004 (leaf SEMULITH-PKG.3): gate the fingerprint claims that can rot` | two project doctrines, 15 self-test arms, both fired RED on the real corpus |
 | `SEMULITH-PKG.4` | `SEMULITH-PKG-0005 (leaf SEMULITH-PKG.4): close the README routing loop with reviewed caps` | policy refreshed; 24 destinations governed; 2 defects caught by the new check's own RED arms |
+| `SEMULITH-PKG.5` | `SEMULITH-PKG-0006 (leaf SEMULITH-PKG.5): grow the book into the review surface` | 3 chapters to 27; contracts included verbatim, never paraphrased |
 
 ## Changelog
 
@@ -330,3 +380,5 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
   current revision, this project's caps are derived from its own trimmed page, and all 24
   routed destinations are governed. Two gaps named rather than hidden: the append-history
   shard tool, and the deferred live-document-size containment adoption.
+- `2026-09-13`: `SEMULITH-PKG.5` completed and **the tree is done**. The book is the review
+  surface, 27 chapters, with every contract included verbatim rather than paraphrased.
