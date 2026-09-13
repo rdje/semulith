@@ -23,6 +23,7 @@ PROJECT_DOCTRINES=(
   "PROFILE-CONSISTENCY|a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source — a laboratory policy must never read as an architectural rule|scripts/check_profile_consistency.sh"
   "FRONTIER-SYNC|the task-tree index mirrors the trees it indexes — the frontier leaf, the status and the leaf counts are re-derived, never remembered|scripts/check_frontier_sync.sh"
   "REGISTRY-MIRROR|the doctrine documents list exactly the doctrines the drivers register — a mirror that falls behind withholds a guarantee rather than inventing one|scripts/check_registry_mirror.sh"
+  "TREE-CLAIMS|every LIVE document states leaf counts, the active trees and the frontier leaf exactly as the trees do — scope read from the routes registry, so history is never rewritten|scripts/check_tree_claims.sh"
 )
 
 fails=0

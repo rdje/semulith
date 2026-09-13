@@ -38,6 +38,18 @@ lesson nobody can retrieve by question is a lesson nobody has.
   helper, fired RED by deleting one `;`. A helper that ignores surplus arguments is what made the
   swallow silent; refusing them is what makes it loud.
 
+- The third mirror had **not** drifted, and the leaf says so instead of manufacturing a defect.
+  For a prevention leaf the falsification is the load-bearing box: four controls, each breaking a
+  real claim in `MEMORY.md`/`LIVE_STATUS.md` and restored with `git checkout --`.
+- A gate's scope can be data someone already wrote down. `TREE-CLAIMS` reads the `hot_live` rows
+  of `doctrine/readme_routes.tsv` rather than carrying a file list — which also gets the
+  `append_history` exclusion right for free: history must never be rewritten to match today.
+- ⭐ The gates now catch each other. Registering a doctrine without mirroring it failed inside the
+  same commit; the same omission had survived two prior registrations unnoticed.
+- A rule keyed on words fires on prose about the rule. The frontier check matched any line
+  mentioning "frontier leaf" and double-reported; anchoring it on the label fixed it, and the
+  narrowing was re-fired RED — narrowing a gate is precisely the edit that can silently disable it.
+
 ## _(2026-09-13)_ — a delivered package is not ingested until its rot sources are removed
 
 - Planning package v0.2 arrived in the worktree as 15 untracked files plus two modified

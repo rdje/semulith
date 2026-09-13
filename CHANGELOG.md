@@ -1,5 +1,42 @@
 # CHANGELOG.md
 
+## SEMULITH-MIR-0019 (leaf MIRROR-DRIFT.3) — gate the live documents' tree claims
+
+**What changed.** The third and last mirror on the resume path. `MEMORY.md` and `LIVE_STATUS.md`
+state facts that `docs/tasks/` owns — how many leaves a tree has, how many are done, which tree
+is active, which leaf is next. Thirteen such claims, held by zero instruments.
+
+- **New doctrine `TREE-CLAIMS`** (`scripts/check_tree_claims.sh`): leaf totals, done counts, the
+  frontier leaf and the set of active trees, all re-derived from the trees.
+- **Its scope is data, not a list.** It reads the `hot_live` rows of `doctrine/readme_routes.tsv`,
+  so a live surface registered tomorrow is covered tomorrow with no edit to the script — and
+  `append_history` files are excluded deliberately, because a changelog line reading "2 of 9
+  leaves" was true when it was written and rewriting it would corrupt the record.
+- **Tree `MIRROR-DRIFT` closed, 3 of 3.** Index, doctrine documents and live docs are all gated.
+
+**Validation.** This leaf had **no drift to repair** — the census at `.1` predicted it and the
+gate confirmed it: `TREE-CLAIMS: ok (3 live document(s) …)`, `rc=0`. A mirror that happens to be
+correct today is not a checked mirror, so the falsification came from breaking the real documents
+on purpose and watching each control fire: `COUNT DRIFT MEMORY.md: '2 of 9 leaves' for
+MIRROR-DRIFT; the tree has 2 of 3`; `DONE FRONTIER … the tree records it 'done'`;
+`MISSING ACTIVE MEMORY.md: 'P0-PROFILE' is 'active' and the pointer does not name it`;
+`COUNT DRIFT LIVE_STATUS.md: '13 leaves' for P1-LAB; the tree has 12`. Each restored.
+`--self-test` → `12 pass / 0 fail`, 12 arms written and 12 run.
+
+⭐ **The gates now catch each other.** Registering `TREE-CLAIMS` without adding its rows to the
+two doctrine documents failed immediately — `NOT MIRRORED … 'TREE-CLAIMS' is registered and has
+no row`, in both — which is `MIRROR-DRIFT.2`'s gate catching `.3`'s omission inside the same
+commit. The identical omission had previously survived two registrations unnoticed.
+
+⛔ Two of this leaf's own instruments were corrected by other gates rather than by review. A
+first cut of the frontier rule matched any line *mentioning* "frontier leaf" and fired twice on
+`MEMORY.md`, once on the pointer and once on a sentence describing it — a rule that fires on
+prose teaches its reader to re-word the prose, so it is now anchored on the label, and the
+narrowing was re-fired RED to prove it had not been disabled. And `SEAM-INTEGRITY` refused this
+leaf's `ADDRESSED` box for carrying an assertion instead of a command; the box now carries the
+census and its output.
+
+
 ## SEMULITH-MIR-0018 (leaf MIRROR-DRIFT.2) — gate the doctrine documents against the registry
 
 **What changed.** Two documents restate the doctrine registry that lives in two shell arrays:

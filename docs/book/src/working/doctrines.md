@@ -44,6 +44,7 @@ These ship with the discipline spine and are project-neutral:
 | `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
 | `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next |
 | `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |
+| `TREE-CLAIMS` | every live document's leaf counts, active trees and frontier leaf match `docs/tasks/` |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than
@@ -60,8 +61,11 @@ by reading it. Three documents restate facts that a machine-readable file alread
 | `docs/TASK_TREE.md`'s frontier column | each tree's own *Current Frontier* | `COMMIT.md`: update it "only if the frontier changes" |
 | this chapter, and `DOCTRINE_ENFORCEMENT.md` | the two registry arrays in the driver scripts | by hand, when someone remembered |
 | `LIVE_STATUS.md`'s leaf counts | the `- ID:` entries in each tree | by hand |
+| `MEMORY.md`'s active tree and frontier leaf | the same trees | by hand |
 
-Both of the first two had drifted, and the shape of each drift is worth more than the fix.
+The first two had drifted; the last two had not. All four are now gated, because a mirror that
+happens to be correct today is not a checked mirror — it is an unchecked one that has not been
+caught yet. The shape of each drift is worth more than the fix.
 
 **The index named a finished leaf.** It pointed at `P0-PROFILE.2` — already `done` — while the
 tree named `.5`. One row of fourteen was wrong, which sounds like a low rate until you notice
@@ -81,6 +85,41 @@ produce, and a generated file invites hand edits that are silently discarded. Bo
 the **source** authoritative and say so in their failure text — *"the tree is authoritative"*,
 *"the registry is authoritative"* — because editing a summary to match its record is safe, while
 editing a record to match its summary destroys the evidence.
+
+### The scope of a gate can be data someone already wrote down
+
+`TREE-CLAIMS` needed to know which documents are *live* — a changelog entry reading "2 of 9
+leaves" was true the day it was written, and rewriting history to match today would corrupt the
+record the changelog exists to keep. That distinction was already recorded, once, in the
+`lifecycle` column of `doctrine/readme_routes.tsv`: `hot_live` for `MEMORY.md`, `LIVE_STATUS.md`
+and the landing page; `append_history` for `CHANGELOG.md` and `DEV_NOTES.md`. So the gate reads
+its own scope from that registry instead of carrying a list. A new live surface is covered the
+day it is registered, and no one has to remember to extend a script.
+
+That gate had **no drift to repair** — the census found every leaf count and both pointer claims
+already correct. Prevention, not repair, and the leaf says so rather than manufacturing a
+defect. Its falsification came from breaking the real documents on purpose and watching each
+control fire:
+
+```
+COUNT DRIFT MEMORY.md: '2 of 9 leaves' for MIRROR-DRIFT; the tree has 2 of 3
+DONE FRONTIER MEMORY.md: names 'MIRROR-DRIFT.1' as the frontier; the tree records it `done`
+MISSING ACTIVE MEMORY.md: 'P0-PROFILE' is `active` and the pointer does not name it
+COUNT DRIFT LIVE_STATUS.md: '13 leaves' for P1-LAB; the tree has 12
+```
+
+### The gates now catch each other
+
+Registering `TREE-CLAIMS` without adding its rows to these two tables produced, immediately:
+
+```
+REGISTRY-MIRROR: a doctrine document no longer mirrors the enforcer registry.
+  NOT MIRRORED DOCTRINE_ENFORCEMENT.md: 'TREE-CLAIMS' is registered and has no row …
+  NOT MIRRORED doctrines.md: 'TREE-CLAIMS' is registered and has no row …
+```
+
+That is the whole argument for gating mirrors rather than remembering them. The omission that
+previously survived two registrations unnoticed now survives about ninety seconds.
 
 ## The self-test that ran a third of its arms
 
