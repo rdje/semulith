@@ -8,23 +8,24 @@ summarize the snapshot in every commit-workflow completion message.
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Discipline spine (`bedrock` 0.6.1) | Done | memory architecture · task-trees · commit workflow · doctrine enforcement · mdBook skeleton |
-| Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, standard adopted, fingerprints gated, routes closed, book grown |
-| Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A claim tags and §7 constant sweep not yet mechanized |
-| Project doctrines (8 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS` — 97 self-test arms, all fired RED before registration |
-| Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the scaffold re-sync list, and watched behaviourally by `SEAM-INTEGRITY` |
-| README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
-| mdBook is the review surface | Done | 27 chapters; contracts included verbatim so the book cannot become a second owner; its doctrine chapter is now gated against the registry |
-| Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) — 3 of 3 leaves; every mirror on the resume path gated: the index (`FRONTIER-SYNC`), the two doctrine documents (`REGISTRY-MIRROR`), the live docs (`TREE-CLAIMS`). The §7 constant sweep stays unmechanized |
+| Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
+| Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
+| Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
+| Project doctrines (8 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS` — 101 self-test arms, all fired RED before registration |
+| Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the re-sync list, watched by `SEAM-INTEGRITY` |
+| README policy + routing closure | Done | caps 85 lines / 4,864 B; 24 destinations governed; containment deferred with a trigger |
+| mdBook is the review surface | Done | 27 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |
+| Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 3/3 — index, doctrine documents and live docs all gated |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
-| Reference models acquired | Done | 3 obtained and pinned (Sail RISC-V 0.14, Spike `1e05ddac`, QEMU 11.1.1), ACT located and deliberately unacquired; re-derived by `scripts/fetch_references.sh`. Usability is `P0-PROFILE.6`; independence is `P0-PROFILE.7`; neither is claimed |
+| Reference models acquired | Done | 3 obtained and pinned (Sail RISC-V 0.14, Spike `1e05ddac`, QEMU 11.1.1); ACT located, unacquired. `scripts/fetch_references.sh` re-derives every pin |
+| Matched-profile evidence path | Done | `P0-PROFILE.6` — 2 models agree over 15 aligned steps incl. a trap; 12 spec-derived values; 4 differences; reproduces. `scripts/run_smoke.py`. Independence unexamined |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
-| P0 — profile and evidence access | G0 | In Progress | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 3 of 9 leaves; profile + state pinned and gated; 3 reference models obtained and matched-configured, none yet *usable*; the gate is `incomplete` |
+| P0 — profile and evidence access | G0 | In Progress | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 4 of 9 leaves; profile + state pinned; 2 models exercised and agreeing over 15 aligned steps; independence unexamined; the gate is `incomplete` |
 | P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |

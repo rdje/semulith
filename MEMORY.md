@@ -13,15 +13,15 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `P0-PROFILE` (gate `G0`) — 3 of 9 leaves done.
-- **Frontier leaf:** `P0-PROFILE.6` — the matched-profile smoke test.
-- **Next action:** `P0-PROFILE.6` — run a real experiment against a matched reference and
-  reproduce it: independently encoded arithmetic **and** an access/trap case. Three models are
-  obtained and configured (`scripts/fetch_references.sh --verify-only` re-derives all six pins);
-  none is *usable* until this leaf passes. Needs `.8`-style guest programs — encode them by hand
-  rather than with a toolchain, so expected values come from the specification, not a model.
-  ⛔ Do not treat our default+override merge as Sail's own report: it will not emit its effective
-  configuration. See [`decision_reference-acquisition-route`](docs/decisions/decision_reference-acquisition-route.md).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0020 (leaf P0-PROFILE.5)`.
+- **Active tree:** `P0-PROFILE` (gate `G0`) — 4 of 9 leaves done.
+- **Frontier leaf:** `P0-PROFILE.7` — the independence inventory.
+- **Next action:** `P0-PROFILE.7` (`EVD-04`). Two models now AGREE over 15 aligned steps — worth
+  exactly as much as their independence, which is unexamined. Record per subsystem whether
+  `sail-riscv`, `spike` and `qemu` share semantic code or expected-result derivation; ACT derives
+  its results from a configured Sail model, so that pair is known-correlated. Record unknown
+  ancestry as unknown. The `lineage` field on each candidate in `references.toml` is the input.
+- **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
+  `scripts/run_smoke.py` (both need `target/refs/`, untracked).
+- **Latest commit:** see `git log -1` — `SEMULITH-P0-0021 (leaf P0-PROFILE.6)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

@@ -136,3 +136,67 @@ what = "dump the effective (merged) configuration the Sail model actually ran wi
 command = "sail_riscv_sim --config-override <override> --print-default-config"
 outcome = "NOT SUPPORTED — the dump ignores the override. Byte-compared against the plain default: identical."
 consequence = "⛔ A real limitation with evidential weight. `docs/EVIDENCE_AND_GATES.md` §5 requires the EFFECTIVE configuration to be recorded exactly, and this model will not emit it. So the effective configuration is recorded as (release 0.14 default) + (the tracked override), and the merge is OURS, not the model's. The cross-check the model DOES emit is `--print-isa-string`, which is why that string is pinned above. Owner of closing the gap: P0-PROFILE.6, which must not treat our merge as the model's own report."
+
+# ───────────────────────────────────────────── the matched-profile experiments (P0-PROFILE.6)
+# ⛔ A REFERENCE IS NOT USABLE UNTIL ONE OF THESE PASSES (`docs/EVIDENCE_AND_GATES.md` §5). These
+# records are what changed `sail-riscv` and `spike` from "obtained" to "exercised".
+#
+# ⚠️ AND A PASS IS NOT A PROOF. It means: for THESE inputs, two models agreed with each other and
+# with values derived from the specification, and the run reproduced. Finite differential testing
+# is tested evidence, never universal trace inclusion — and two models sharing semantic ancestry
+# can agree while both being wrong (`EVD-04`, owned by `P0-PROFILE.7`).
+#
+# Re-run every row with `scripts/run_smoke.py`.
+
+[[experiment]]
+id = "smoke-arith"
+program = "guests/smoke-arith.s"
+instructions = 12
+models = ["sail-riscv", "spike"]
+sail_invocation = "sail_riscv_sim --config-override reference/sail-rv64i-lab-v0.override.json --inst-limit 12 --trace-instr --trace-gpr --trace-exception --trace-output <file> <elf>"
+spike_invocation = "spike --isa=rv64i --priv=m -l --log-commits --log=<file> --instructions=17 <elf>"
+elf_sha256 = "59b0029bcf33fa36"
+verdict = "AGREE over 12 aligned step(s)"
+expectations = "12 of 12 specification-derived expected values matched, each with its source locator in guests/smoke-arith.expected.toml"
+reproduced = "yes — a second run produced a byte-identical trace, sha256 29d34aaa8218111b…"
+exercises = "D-LUI-AUIPC, D-WSUFFIX, D-SHAMT (both the 6-bit and the 5-bit form), x0 hardwired zero, 64-bit wrapping addition"
+control = "falsifying one expected value (srai's all-ones result changed to 1) failed the run: 'step 5 (srai x6, x4, 63): expected {x6: 1}, observed {x6: 18446744073709551615}'"
+
+[[experiment]]
+id = "smoke-trap"
+program = "guests/smoke-trap.s"
+instructions = 3
+models = ["sail-riscv", "spike"]
+sail_invocation = "as above, --inst-limit 3"
+spike_invocation = "as above, --instructions=8"
+elf_sha256 = "05551a3a22afcbbc"
+verdict = "AGREE over 3 aligned step(s), including the trap: cause 0x04 (misaligned load), tval 0x0000000080000401, on both models"
+expectations = "no separate expectations file; the expected observation IS the trap, and D-MISALIGN-DATA states it"
+reproduced = "yes — byte-identical second run, sha256 32f5f132fc965719…"
+exercises = "D-MISALIGN-DATA — a misaligned 4-byte load raising address-misaligned rather than being handled invisibly"
+control = "⭐ the decisive one. Flipping the Sail configuration's misaligned policy back to 'handled invisibly' — changing NOTHING else, same ELF — produced a real divergence: 'FIRST DIVERGENCE at aligned step 2 … sail-riscv writes=[(x1, 0)] … spike writes=[]'. The two models agree BECAUSE the profile is matched, which is what makes 'matched profile' a checked claim rather than a hopeful one."
+
+# ─────────────────────────────────────── differences observed while running, not assumed absent
+[[difference]]
+id = "DIFF-ELF-STRICTNESS"
+kind = "harness"
+observed = "Spike refuses an ELF with no section header table — `Assertion failed: (from_le(eh->e_shstrndx) < from_le(eh->e_shnum)), elfloader.cc:116` — while the Sail model loads and runs it."
+resolution = "The guest writer emits a conformant section header table. An input only one comparator accepts is not a matched experiment, so the artifact was fixed rather than the invocation."
+
+[[difference]]
+id = "DIFF-RESET-VECTOR"
+kind = "harness"
+observed = "Spike executes a 5-instruction built-in reset vector at 0x1000 before transferring to the ELF entry; the Sail model begins at the entry point directly."
+resolution = "Both traces are aligned on the first step whose pc equals the declared entry. Comparing step 0 with step 0 would report a divergence that is purely a harness difference."
+
+[[difference]]
+id = "DIFF-TRAP-RECORD-SHAPE"
+kind = "trace vocabulary"
+observed = "Spike emits NO commit record for a trapping instruction — it prints the disassembly line and the exception, and nothing commits. The Sail model records the trapping instruction as a step carrying the trap."
+resolution = "The adapter reassembles Spike's split record into the one step both models describe, using Spike's own disassembly line for the pc and encoding. ⛔ Before this was handled, the comparator reported `AGREE over 2 aligned step(s)` for a run in which one model trapped and the other stopped — a green verdict on a truncated trace. A shorter trace is now a non-agreeing verdict that must be explained."
+
+[[difference]]
+id = "DIFF-FETCH-GRANULARITY"
+kind = "observable"
+observed = "The Sail model performs TWO 16-bit fetch reads per 32-bit instruction (`mem[X,0x…0] -> 0x0513`, `mem[X,0x…2] -> 0x0010`), even with IALIGN=32 and no compressed extension."
+resolution = "Recorded, not normalized. `D-FETCH-IMPLICIT` says every executed instruction entails an implicit fetch read; it does not say how many. This is below the granularity this profile observes, but a future memory-access comparison would see it, so it is written down before it surprises someone."

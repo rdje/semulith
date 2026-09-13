@@ -1,5 +1,62 @@
 # CHANGELOG.md
 
+## SEMULITH-P0-0021 (leaf P0-PROFILE.6) — run the matched-profile experiment, and the control that makes it mean something
+
+**What changed.** `G0`'s second criterion — *an actual evidence path works* — is met. Two guest
+programs run on two independently built reference models configured to the same profile, agree
+with each other and with values derived from the specification, and reproduce byte for byte.
+
+| Experiment | Exercises | Result |
+| --- | --- | --- |
+| `smoke-arith` | `LUI` sign-extension, the `*W` family, 6-bit **and** 5-bit shift amounts, wrapping addition | `AGREE over 12 aligned step(s)`; 12 of 12 specification-derived values match |
+| `smoke-trap` | a misaligned 4-byte load (`D-MISALIGN-DATA`) | `AGREE over 3`, including cause `0x04`, `tval 0x80000401` on both |
+
+- `scripts/riscv_asm.py` — an RV64I assembler and ELF writer that reads its encodings from the
+  pinned tables and **carries no opcode of its own**, so a typo cannot invent an instruction.
+- `scripts/compare_traces.py` — first-divergence comparison with a versioned exception adapter
+  grounded in the pinned cause table. Ships 8 self-test arms.
+- `scripts/run_smoke.py` — the whole path in one command.
+- Tracked guest sources, and `smoke-arith.expected.toml`: 12 expected values, each with its
+  derivation and its source locator, **written before the program was run**.
+- `PROFILE-CONSISTENCY` gains 4 rules — an experiment claiming agreement must name the control
+  that was observed failing.
+
+⭐ **The control is the point.** Two models agreeing is a weak result until the agreement is shown
+to be doing work. Flipping the Sail configuration's misaligned policy back to "handled invisibly"
+— same ELF, nothing else changed — produced `FIRST DIVERGENCE at aligned step 2`: one model
+loaded, the other trapped. The models agree *because* the profile is matched, and that is now a
+measurement. It also resolves `OQ-3`: the laboratory's contained-trap choice is expressible in
+the reference's configuration, so no comparator normalization is needed.
+
+⛔ **The comparator was caught reporting a false pass, by running it.** Comparing only the
+overlapping prefix, it printed `AGREE over 2 aligned step(s)` for a run in which one model trapped
+and the other stopped emitting records. A shorter trace is now a non-agreeing verdict that must be
+explained. Promoted to
+[`docs/knowledge/a-shorter-trace-is-not-agreement.md`](docs/knowledge/a-shorter-trace-is-not-agreement.md).
+
+⛔ **The pinned specification does not contain instruction encodings.** Measured: zero seven-bit
+patterns across all six pinned artifacts; the format diagrams are images (31 in the RV32I chapter
+alone). The semantics are all there in prose — the half that matters for expected values — so
+encodings come from a separately pinned `riscv-opcodes`, recorded as its own provenance. That
+source is upstream of both models, so encoding agreement is **not** independent evidence.
+⭐ It contains exactly **52** instructions for this profile's extension set, and `P0-PROFILE.1`
+enumerated exactly 52 by hand from the prose without using it. Symmetric difference: none.
+
+**Four differences enumerated, not smoothed over.** Spike refuses an ELF with no section header
+table while Sail loads it; Spike runs a built-in reset vector before the entry; Spike emits no
+commit record for a trapping instruction; Sail performs two 16-bit fetch reads per 32-bit
+instruction.
+
+⚠️ **Scope, stated plainly.** This is evidence for *these inputs on these two models*. It is not
+universal trace inclusion, and two models with shared ancestry can agree while both are wrong —
+which is why `P0-PROFILE.7`, the independence inventory, is now the frontier.
+
+**Validation.** `scripts/run_smoke.py` → all checks PASS. Two controls fired RED (un-match the
+profile; falsify one expected value). `compare_traces.py --self-test` → `8 pass / 0 fail`, 8
+written and 8 run. `check_profile_consistency.sh --self-test` → `30 pass / 0 fail`, with
+`NO CONTROL` fired RED on the real dossier. Gate green; `make check` `1 passed`; book renders.
+
+
 ## SEMULITH-P0-0020 (leaf P0-PROFILE.5) — obtain three reference models and pin exactly which they are
 
 **What changed.** The project had a subject and no second opinion about it. It now has three

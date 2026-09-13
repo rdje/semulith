@@ -23,6 +23,11 @@
 #      digest AND how it is invoked. ⭐ And every candidate must carry a `lineage` field, because
 #      `EVD-04`'s question — do two comparators share semantic ancestry? — is precisely the field
 #      that gets skipped when three models are sitting there apparently agreeing.
+#   6. An EXPERIMENT that claims agreement must record the CONTROL that was observed failing.
+#      ⭐ This is `TOOLBOX.md`'s rule one level up: a gate never seen RED is not known to work,
+#      and a *comparison* never seen to diverge is not known to detect divergence. An
+#      experiment row saying "the two models agree" with no control is the most convincing
+#      wrong record a project can hold, because it is true and worthless at the same time.
 #
 # ⚠️ HONEST LIMIT, stated rather than implied: this proves the file is INTERNALLY consistent and
 # that every decision cites something. It cannot check the citation against the specification —
@@ -180,6 +185,25 @@ for toml_path in sorted(root.glob("*/profile.toml")):
                     findings.append(
                         f"NO REASON  {name}/{cid}: status is '{st}' with no status_reason; "
                         f"SRC-02 makes an honest 'no route' legitimate, but it has to say why")
+            for x in rf.get("experiment", []):
+                xid = x.get("id", "<unnamed>")
+                for k in ("program", "models", "verdict", "reproduced"):
+                    if not x.get(k):
+                        findings.append(
+                            f"THIN EXPERIMENT {name}/{xid}: no '{k}' — an experiment record "
+                            f"without it cannot be re-run or judged")
+                if not x.get("control"):
+                    findings.append(
+                        f"NO CONTROL {name}/{xid}: the experiment reports a verdict with no "
+                        f"control that was observed FAILING. A comparison never seen to diverge "
+                        f"is not known to detect divergence")
+            for dfn in rf.get("difference", []):
+                did2 = dfn.get("id", "<unnamed>")
+                for k in ("kind", "observed", "resolution"):
+                    if not dfn.get(k):
+                        findings.append(
+                            f"THIN DIFFERENCE {name}/{did2}: no '{k}' — gate G0 asks for "
+                            f"differences to be enumerated, which means stated and dispositioned")
             for a in rf.get("attempt", []):
                 for k in ("what", "outcome", "consequence"):
                     if not a.get(k):
@@ -333,6 +357,23 @@ status_reason = \"r\"
 origin = \"o\"
 lineage = \"l\"";                                             arm "RED   a duplicate candidate id" 1 "DUPLICATE CANDIDATE"
   refs 'not = toml = at = all';                               arm "RED   an unparseable dossier"    1 "UNPARSEABLE"
+  EXP="$FULL
+[[experiment]]
+id = \"e1\"
+program = \"g.s\"
+models = [\"c1\"]
+verdict = \"AGREE\"
+reproduced = \"yes\"
+control = \"observed failing when a value was falsified\"
+[[difference]]
+id = \"d1\"
+kind = \"harness\"
+observed = \"they differ\"
+resolution = \"normalized\""
+  refs "$EXP";                                                arm "GREEN a complete experiment record" 0 "__CHECKED__ 1"
+  refs "$(printf '%s' "$EXP" | grep -v '^control = ')";       arm "RED   agreement with no control" 1 "NO CONTROL"
+  refs "$(printf '%s' "$EXP" | grep -v '^reproduced = ')";    arm "RED   an experiment that never reproduced" 1 "THIN EXPERIMENT"
+  refs "$(printf '%s' "$EXP" | grep -v '^observed = ')";      arm "RED   a difference with nothing observed" 1 "THIN DIFFERENCE"
   rm -f "$t/p/references.toml"
 
   rm -rf "$t"
