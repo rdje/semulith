@@ -15,6 +15,7 @@ live tree is maintained against the task-trees.
 | `MANIFEST.sha256` | the delivered file manifest, **verbatim**, with the paths it carried at delivery |
 | `DESIGN_INPUTS.json` | SHA-256 fingerprints of the three supplied design-input documents, **verbatim** |
 | `PACKAGE_CHECKS.md` | the checks the package author reports having run on the package, **verbatim** |
+| `dispositions.tsv` | **the machine-readable owner** of each manifest row's disposition — data, not prose |
 
 ## Why this is frozen and not a live check
 
@@ -26,15 +27,21 @@ failure, and a check that always fails teaches its reader to skip it.
 
 So the rows are split by disposition, and the split is declared here rather than implied.
 
-| Disposition | Count | Rows | Meaning |
-| --- | --- | --- | --- |
-| `frozen-in-place` | 21 | `RULES.md`, `docs/*.md` (10), `examples/*` (7), `schemas/*` (3) | still at the delivered path with the delivered bytes; a change to one is a deliberate, task-tree-owned edit of a reviewed input |
-| `relocated` | 2 | `DESIGN_INPUTS.json`, `PACKAGE_CHECKS.md` | identical bytes, moved into this directory; the manifest row's path is the delivery path, not the current one |
-| `live` | 2 | `README.md`, `ROADMAP.md` | owned by this repository from ingestion onward; the manifest row records the delivered bytes and is expected to disagree with the working tree |
+Every row of `MANIFEST.sha256` carries exactly **one** disposition, declared as data in
+`dispositions.tsv`. There is no fourth, unstated category — a manifest row with no
+disposition, or a disposition naming a path the manifest does not list, is a breach.
+
+| Disposition | Meaning |
+| --- | --- |
+| `frozen-in-place` | still at the delivered path with the delivered bytes; changing one is a deliberate, task-tree-owned edit of a reviewed input |
+| `relocated` | identical bytes, moved; the manifest row's path is the delivery path and `current_path` is where it lives now |
+| `live` | owned by this repository from ingestion onward; the manifest row records the delivered bytes and is *expected* to disagree with the working tree |
 
 `scripts/check_delivery_provenance.sh` re-derives the `frozen-in-place` and `relocated` rows
-against the live tree on every commit and reports the `live` rows as declared drift. That
-script, not this document, is the enforcement.
+against the live tree on every commit, asserts that the manifest and the disposition ledger
+cover exactly the same row set, and prints the per-disposition counts. **That script, not this
+document, is the enforcement** — the counts are derived on every run rather than carried here,
+because a number synchronized by hand is a number that goes stale silently.
 
 ## Design inputs
 

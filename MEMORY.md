@@ -14,11 +14,11 @@
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
 - **Active tree:** `SEMULITH-PKG` (ingest planning package v0.2 under the spine).
-- **Frontier leaf:** `SEMULITH-PKG.3` — gate the fingerprint claims that can rot.
-- **Next action:** write `scripts/check_delivery_provenance.sh` + a fixture-fingerprint check,
-  prove each goes RED against a corrupted input, register both in
-  `scripts/check_doctrines.project.sh`, and tighten the README caps there. Then `.4` (mdBook
-  sync). Then open `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into trees.
-- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0003 (leaf SEMULITH-PKG.2)`.
+- **Frontier leaf:** `SEMULITH-PKG.4` — refresh `README_POLICY.md`, set reviewed caps.
+- **Next action:** adopt the director's current `README_POLICY.md` revision under a fenced
+  adoption note, derive line/byte caps from the trimmed landing page, enforce them in
+  `scripts/check_doctrines.project.sh`, and close the routing-destination inventory. Then `.5`
+  (mdBook). Then open `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into trees.
+- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0004 (leaf SEMULITH-PKG.3)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

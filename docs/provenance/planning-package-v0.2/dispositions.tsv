@@ -1,0 +1,28 @@
+# disposition	manifest_path	current_path
+# machine-readable owner of the row dispositions described in DELIVERY.md.
+# verified by scripts/check_delivery_provenance.sh on every commit.
+relocated	DESIGN_INPUTS.json	docs/provenance/planning-package-v0.2/DESIGN_INPUTS.json
+relocated	PACKAGE_CHECKS.md	docs/provenance/planning-package-v0.2/PACKAGE_CHECKS.md
+live	README.md	README.md
+live	ROADMAP.md	ROADMAP.md
+frozen-in-place	RULES.md	RULES.md
+frozen-in-place	docs/ARCHITECTURE.md	docs/ARCHITECTURE.md
+frozen-in-place	docs/ARCHOGEN_INTEGRATION.md	docs/ARCHOGEN_INTEGRATION.md
+frozen-in-place	docs/CPU_ENVIRONMENT.md	docs/CPU_ENVIRONMENT.md
+frozen-in-place	docs/EVIDENCE_AND_GATES.md	docs/EVIDENCE_AND_GATES.md
+frozen-in-place	docs/GLOSSARY.md	docs/GLOSSARY.md
+frozen-in-place	docs/IMPLEMENTATION_GUIDE.md	docs/IMPLEMENTATION_GUIDE.md
+frozen-in-place	docs/INFORMATION_CATALOG.md	docs/INFORMATION_CATALOG.md
+frozen-in-place	docs/REVIEW_DISPOSITION.md	docs/REVIEW_DISPOSITION.md
+frozen-in-place	docs/RISKS_AND_DECISIONS.md	docs/RISKS_AND_DECISIONS.md
+frozen-in-place	docs/SOURCES_AND_NAMING.md	docs/SOURCES_AND_NAMING.md
+frozen-in-place	examples/README.md	examples/README.md
+frozen-in-place	examples/contract-obligations.jsonl	examples/contract-obligations.jsonl
+frozen-in-place	examples/evidence.jsonl	examples/evidence.jsonl
+frozen-in-place	examples/fixture-context.json	examples/fixture-context.json
+frozen-in-place	examples/requirements.jsonl	examples/requirements.jsonl
+frozen-in-place	examples/sources.json	examples/sources.json
+frozen-in-place	examples/synthetic-spec.md	examples/synthetic-spec.md
+frozen-in-place	schemas/contract-obligation.schema.json	schemas/contract-obligation.schema.json
+frozen-in-place	schemas/evidence.schema.json	schemas/evidence.schema.json
+frozen-in-place	schemas/requirement.schema.json	schemas/requirement.schema.json

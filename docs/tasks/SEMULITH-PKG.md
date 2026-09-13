@@ -31,47 +31,67 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - Live docs (`MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`) and the mdBook
   reflect the ingested state in the same commit as the change that caused it.
 
-## Acceptance Checklist (current leaf — `SEMULITH-PKG.2`)
+## Acceptance Checklist (current leaf — `SEMULITH-PKG.3`)
 
 Enforced by the `TASK-ACCEPTANCE` doctrine (`scripts/check_task_acceptance.sh`). Each box
-carries the command that was run and the output it produced. The previous leaf's checklist is
-preserved in the Verification Log below, not deleted.
+carries the command that was run and the output it produced; the leg each box answers is in
+`docs/tasks/TEMPLATE.md`.
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — the repository had no definition of *checked*, and the
-  gap was already producing wrong reporting. Census of the standard's presence before this
-  leaf: `git ls-files | grep -ci claim_verification` → `0`. Meanwhile
-  `docs/provenance/planning-package-v0.2/PACKAGE_CHECKS.md` reports schema results this
-  environment cannot reproduce — `python3 -c "import jsonschema"` → `ModuleNotFoundError: No
-  module named 'jsonschema'` — and nothing in the repository said whether such a result may
-  be counted. `RULES.md` `EVD-01`…`EVD-10` specify what evidence must *contain*; none of them
-  specifies what must be true before a measurement becomes evidence at all.
-- [x] **ADDRESSED (verified)** — `docs/CLAIM_VERIFICATION.md` now exists, 321 lines / 20,715
-  bytes, of which the imported body is byte-identical to its source: recomputed
-  `imported body sha256: 9f99df25209c43afb74d77e348dd2d0cdb68ce96cf17a4f272ede8328f6046bd`
-  against `source sha256: 9f99df25209c43afb74d77e348dd2d0cdb68ce96cf17a4f272ede8328f6046bd`,
-  `byte-identical: True`. Presence census after: `git ls-files | grep -ci claim_verification`
-  → `1`. The three legs are now named in `docs/tasks/TEMPLATE.md`, so every future leaf's
-  checklist states which question each box answers.
-- [x] **NO REGRESSION** — `scripts/check_doctrines.sh` → `=== all doctrines green ===`,
-  `rc=0` (13 checks); `README-STABILITY: OK — README.md is 67/300 lines, 3719/16384 bytes`;
-  `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`. Every relative link target in
-  the changed files resolves (`link targets missing: none`). Leg 2 named honestly: the only
-  falsification run here is the byte-identity recomputation — there is no oracle for "is this
-  the right standard to adopt", and that is a judgement the director's standing policy made,
-  not a measurement this leaf performed.
-- [x] **FIX** — imported the standard verbatim under a fenced local-adoption note that records
-  authority, date, provenance hash, non-upstream independence, the mapping from each leg to the
-  machinery that already holds it here, and the one gap that is *not* yet mechanized.
-- [x] **LOCKSTEP** — `README.md` links it, `docs/decisions/decision_claim-verification-adopted.md`
-  records the adoption with its index row, `docs/tasks/TEMPLATE.md` names the legs,
-  `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1 (*re-derive*): the repository carried two
+  fingerprint claims that **no command re-derived**, so each was true on the day it was
+  written and unfalsifiable afterwards. Census over the population that would refute it —
+  any tracked script, hook, or enforcer entry touching a recorded fingerprint:
+  `git grep -lE 'sources\.json|MANIFEST\.sha256|sha256|shasum' -- scripts knowledge-map
+  .githooks | wc -l` → `0`, and
+  `grep -ciE 'fingerprint|sha256|hash' scripts/check_doctrines.sh scripts/check_doctrines.project.sh`
+  → `scripts/check_doctrines.sh:0`, `scripts/check_doctrines.project.sh:0`. The two claims
+  were `examples/sources.json` pinning `examples/synthetic-spec.md`, and the 23 `frozen-in-place`
+  + `relocated` rows of the delivered manifest. This is `CLAIM_VERIFICATION.md` §5B exactly:
+  a constant that is a function of the repository was *carried*, not derived or gated.
+- [x] **ADDRESSED (verified)** — same census after: → `3`
+  (`scripts/check_delivery_provenance.sh`, `scripts/check_fixture_fingerprints.sh`,
+  `scripts/check_doctrines.project.sh`). Both checks now run on every commit and report what
+  they actually re-derived:
+  `DELIVERY-PROVENANCE: ok` / `docs/provenance/planning-package-v0.2: 21 frozen-in-place,
+  2 relocated re-derived; 2 live row(s) declared`, and
+  `FIXTURE-FINGERPRINT: ok (1 pinned fingerprint(s) re-derived)`.
+  The `21 / 2 / 2` split is now **derived on every run** rather than carried in prose —
+  `DELIVERY.md`'s hand-written counts were deleted for that reason.
+- [x] **NO REGRESSION** — leg 2 (*falsify*): both controls were **fired RED against the real
+  corpus**, not only against synthetic fixtures. Appending one byte to `docs/GLOSSARY.md` →
+  `DRIFTED (frozen-in-place) docs/GLOSSARY.md`, `rc=1`, and the frozen count dropped `21` → `20`;
+  appending one byte to `examples/synthetic-spec.md` → `DRIFTED examples/sources.json:1 —
+  'synthetic-spec.md'` with both hashes printed, `rc=1`. Both returned to `rc=0` on restore.
+  Synthetic arms assert the verdict **and** the reason:
+  `DELIVERY-PROVENANCE --self-test: 8 pass / 0 fail` (5 RED arms: frozen byte changed,
+  relocated byte changed, undeclared manifest row, orphan disposition, unknown disposition
+  name) and `FIXTURE-FINGERPRINT --self-test: 7 pass / 0 fail` (5 RED arms: pinned file
+  changed, malformed hash, well-formed wrong hash, pinned file absent, unparseable record).
+  Whole gate after: `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`;
+  `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`; `bash -n` parses all three
+  scripts (`shellcheck: not installed` on this host — named, not hidden).
+  ⭐ This leaf also had to widen `.doctrine/evidence_tokens.txt` to get its own census evidence
+  past `TASK-ACCEPTANCE`, so the obvious risk is that the widening made that gate vacuous. It
+  was fired RED to check: replacing this very box's content with the prose *"I looked at it
+  carefully and I am confident"* → `TASK-ACCEPTANCE: … the 'ROOT CAUSE' box is ticked but
+  carries no tool-output evidence`, `rc=1`; restoring → `task-acceptance: OK`, `rc=0`. The
+  gate still discriminates.
+- [x] **FIX** — `dispositions.tsv` added as the machine-readable owner of each manifest row's
+  treatment; `scripts/check_delivery_provenance.sh` and `scripts/check_fixture_fingerprints.sh`
+  added, each refusing (exit 2) rather than passing if its own self-test stops discriminating;
+  both registered in `scripts/check_doctrines.project.sh`.
+- [x] **LOCKSTEP** — leg 3 (*durability*): the producers are tracked, and the gate fails when
+  a claim goes stale. `DOCTRINE_ENFORCEMENT.md` gained the project-doctrine registry mirror,
+  `TOOLBOX.md` gained the toolbox table with the invocations, `DELIVERY.md` now points at the
+  data owner instead of repeating its counts, and `MEMORY.md` / `LIVE_STATUS.md` /
+  `CHANGELOG.md` are updated in this commit.
 
 ## Task Tree
 
 - ID: `SEMULITH-PKG`
   Status: `active`
   Goal: ingest the delivered planning package v0.2 under the spine
-  Children: `SEMULITH-PKG.1`, `SEMULITH-PKG.2`, `SEMULITH-PKG.3`, `SEMULITH-PKG.4`
+  Children: `SEMULITH-PKG.1`, `SEMULITH-PKG.2`, `SEMULITH-PKG.3`, `SEMULITH-PKG.4`, `SEMULITH-PKG.5`
 
 - ID: `SEMULITH-PKG.1`
   Status: `done`
@@ -88,13 +108,20 @@ preserved in the Verification Log below, not deleted.
   Commit: `SEMULITH-PKG-0003`
 
 - ID: `SEMULITH-PKG.3`
+  Status: `done`
+  Goal: gate the fingerprint claims that can rot.
+  Acceptance: a tracked check re-derives the `frozen-in-place` and `relocated` manifest rows and reports the `live` rows as declared drift; every pinned `sha256` is re-derived; both go RED against a deliberately corrupted input **with the right reason**; both registered in `scripts/check_doctrines.project.sh`.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0004`
+
+- ID: `SEMULITH-PKG.4`
   Status: `pending`
-  Goal: gate the fingerprint claims that can rot, and tighten the README caps to reviewed values.
-  Acceptance: a tracked `scripts/check_delivery_provenance.sh` re-derives the `frozen-in-place` and `relocated` manifest rows and reports the `live` rows as declared drift; `examples/sources.json` fingerprints are re-derived; both go RED against a deliberately corrupted input; registered in `scripts/check_doctrines.project.sh`; reviewed README caps enforced there.
+  Goal: refresh `README_POLICY.md` to the director's current revision and set this project's reviewed caps.
+  Acceptance: the policy body matches the revision the director named, under a fenced local-adoption note; line and byte caps derived from the trimmed landing page with modest headroom and enforced in the project slot; every destination the README routes to has a named owner and pressure control, or is recorded as debt with an owning leaf.
   Verification: `pending`
   Commit: `pending`
 
-- ID: `SEMULITH-PKG.4`
+- ID: `SEMULITH-PKG.5`
   Status: `pending`
   Goal: make the mdBook the reviewable window onto the ingested package.
   Acceptance: `make book` succeeds; `SUMMARY.md` maps the package's contracts; the book states the project's actual claim scope rather than implying capability.
@@ -105,8 +132,8 @@ preserved in the Verification Log below, not deleted.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SEMULITH-PKG.3` | `pending` | this tree's fingerprint claims are re-derived by nothing, so they rot silently |
-| 2 | `SEMULITH-PKG.4` | `pending` | the book is the director's review surface; it must describe what was ingested |
+| 1 | `SEMULITH-PKG.4` | `pending` | the landing page's caps are still the template's generous defaults, so the guard is not yet judging this project |
+| 2 | `SEMULITH-PKG.5` | `pending` | the book is the director's review surface; it must describe what was ingested |
 
 Census behind row 2, over the population that would refute it — any tracked script, hook, or
 enforcer entry that re-derives a recorded fingerprint:
@@ -154,6 +181,37 @@ The current leaf's checklist lives above; a completed leaf's checklist is moved 
 so its evidence stays in layer B rather than only in git history. Only the *first* checklist
 in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
 
+### `SEMULITH-PKG.2` — adopt the claim-verification standard
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the repository had no definition of *checked*, and the
+  gap was already producing wrong reporting. Census of the standard's presence before this
+  leaf: `git ls-files | grep -ci claim_verification` → `0`. Meanwhile
+  `docs/provenance/planning-package-v0.2/PACKAGE_CHECKS.md` reports schema results this
+  environment cannot reproduce — `python3 -c "import jsonschema"` → `ModuleNotFoundError: No
+  module named 'jsonschema'` — and nothing in the repository said whether such a result may
+  be counted. `RULES.md` `EVD-01`…`EVD-10` specify what evidence must *contain*; none of them
+  specifies what must be true before a measurement becomes evidence at all.
+- [x] **ADDRESSED (verified)** — `docs/CLAIM_VERIFICATION.md` now exists, 321 lines / 20,715
+  bytes, of which the imported body is byte-identical to its source: recomputed
+  `imported body sha256: 9f99df25209c43afb74d77e348dd2d0cdb68ce96cf17a4f272ede8328f6046bd`
+  against `source sha256: 9f99df25209c43afb74d77e348dd2d0cdb68ce96cf17a4f272ede8328f6046bd`,
+  `byte-identical: True`. Presence census after: `git ls-files | grep -ci claim_verification`
+  → `1`. The three legs are now named in `docs/tasks/TEMPLATE.md`, so every future leaf's
+  checklist states which question each box answers.
+- [x] **NO REGRESSION** — `scripts/check_doctrines.sh` → `=== all doctrines green ===`,
+  `rc=0` (13 checks); `README-STABILITY: OK — README.md is 67/300 lines, 3719/16384 bytes`;
+  `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`. Every relative link target in
+  the changed files resolves (`link targets missing: none`). Leg 2 named honestly: the only
+  falsification run here is the byte-identity recomputation — there is no oracle for "is this
+  the right standard to adopt", and that is a judgement the director's standing policy made,
+  not a measurement this leaf performed.
+- [x] **FIX** — imported the standard verbatim under a fenced local-adoption note that records
+  authority, date, provenance hash, non-upstream independence, the mapping from each leg to the
+  machinery that already holds it here, and the one gap that is *not* yet mechanized.
+- [x] **LOCKSTEP** — `README.md` links it, `docs/decisions/decision_claim-verification-adopted.md`
+  records the adoption with its index row, `docs/tasks/TEMPLATE.md` names the legs,
+  `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
+
 ### `SEMULITH-PKG.1` — land the delivered package, restore the landing page, freeze provenance
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the package was dropped into the worktree outside the
@@ -193,6 +251,10 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `2026-09-13` | `SEMULITH-PKG.2` | imported-body SHA-256 vs source | `byte-identical: True` (`9f99df25…6046bd`) |
 | `2026-09-13` | `SEMULITH-PKG.2` | `scripts/check_doctrines.sh` (13 checks) | `all doctrines green`, `rc=0` |
 | `2026-09-13` | `SEMULITH-PKG.2` | `make check` | `test result: ok. 1 passed`, `rc=0` |
+| `2026-09-13` | `SEMULITH-PKG.3` | `check_delivery_provenance.sh --self-test` | `8 pass / 0 fail` (5 RED arms) |
+| `2026-09-13` | `SEMULITH-PKG.3` | `check_fixture_fingerprints.sh --self-test` | `7 pass / 0 fail` (5 RED arms) |
+| `2026-09-13` | `SEMULITH-PKG.3` | both controls fired RED on the real corpus | each named the right file and reason; `rc=1`, restored `rc=0` |
+| `2026-09-13` | `SEMULITH-PKG.3` | `scripts/check_doctrines.sh` (13 checks) | `all doctrines green`, `rc=0` |
 
 ## Commit Log
 
@@ -200,6 +262,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | --- | --- | --- |
 | `SEMULITH-PKG.1` | `SEMULITH-PKG-0002 (leaf SEMULITH-PKG.1): ingest planning package v0.2 under the spine` | 15 delivered files landed, 1 duplicate deleted, 3 provenance files frozen |
 | `SEMULITH-PKG.2` | `SEMULITH-PKG-0003 (leaf SEMULITH-PKG.2): adopt the claim-verification standard` | standard imported verbatim under an adoption note; legs named in the leaf template |
+| `SEMULITH-PKG.3` | `SEMULITH-PKG-0004 (leaf SEMULITH-PKG.3): gate the fingerprint claims that can rot` | two project doctrines, 15 self-test arms, both fired RED on the real corpus |
 
 ## Changelog
 
@@ -207,3 +270,6 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
   tracked, the enforcer is green, and the rot sources it arrived with are removed.
 - `2026-09-13`: `SEMULITH-PKG.2` completed — the claim-verification standard is project-owned
   and the leaf template names which leg each checklist box answers.
+- `2026-09-13`: `SEMULITH-PKG.3` completed — `DELIVERY-PROVENANCE` and `FIXTURE-FINGERPRINT`
+  are registered project doctrines; the counts they report are derived, not carried. Leaf `.4`
+  split out of `.3` so the README policy refresh is owned explicitly rather than bundled.

@@ -28,12 +28,24 @@ because predicate P is false" before writing a single line of fix.
 
 ## This project's toolbox
 
-<!-- Fill this in as your project grows. List each diagnostic tool, what question it
-answers (WHY / WHERE / how-much), and how to invoke it (binary, flag, env var). The next
-agent should be able to reach for the right tool without reading the source. -->
+Every diagnostic here is **tracked**, so a number it produced can be re-derived by the next
+reader — that is leg 3 of `docs/CLAIM_VERIFICATION.md`, and an instrument living in a scratch
+directory is a "trust me" with extra steps.
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
-| `<your-probe>` | does input X pass/fail, and where does it stop? | `<command>` |
-| `<your-tracer>` | which function/rule owns the failure? | `<command>` |
-| `<your-counter>` | how much / how often (the measured metric)? | `<command>` |
+| `scripts/check_doctrines.sh` | which doctrine is breached, and where? (the whole registry, one verdict per rule) | `make gate` |
+| `scripts/check_delivery_provenance.sh` | has a delivered file drifted from the bytes we were given, and is every manifest row's treatment declared? | `scripts/check_delivery_provenance.sh` |
+| `scripts/check_fixture_fingerprints.sh` | does every pinned `sha256` still describe the file it names? | `scripts/check_fixture_fingerprints.sh` |
+| any project check's `--self-test` | does this gate still discriminate — do its RED arms fail for the right reason? | `scripts/check_<name>.sh --self-test` |
+| `make check` | does the workspace build, lint clean at `-D warnings`, and pass its tests? | `make check` |
+| `git log -S'<token>'` | when did this string enter or leave the tree, and in which work unit? | `git log -S'<token>' --oneline` |
+
+⛔ **A gate that has never been observed RED is not known to work.** Before trusting any check
+added here, fire it against a deliberately broken input — both project checks above were fired
+against the real corpus (a byte appended to `docs/GLOSSARY.md`; a byte appended to
+`examples/synthetic-spec.md`) and each named the right file and the right reason before being
+registered.
+
+<!-- Add each new diagnostic as a row: what question it answers (WHY / WHERE / how-much) and
+how to invoke it. The next agent should reach for the right tool without reading the source. -->

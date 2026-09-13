@@ -4,6 +4,30 @@ Completed work and its validation, newest first. Entries above the `bedrock-scaf
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.
 
+## `SEMULITH-PKG.3` — the fingerprint claims are gated instead of carried
+
+- Two claims in this repository were re-derived by **nothing**, measured:
+  `git grep -lE 'sources\.json|MANIFEST\.sha256|sha256|shasum' -- scripts knowledge-map .githooks | wc -l`
+  → `0` before, `3` after. They were `examples/sources.json`'s pin on `synthetic-spec.md`, and
+  the 23 frozen + relocated rows of the delivered manifest.
+- Added **`DELIVERY-PROVENANCE`**: every manifest row carries exactly one disposition, declared
+  as data in `dispositions.tsv`; `frozen-in-place` and `relocated` rows are re-hashed, `live`
+  rows are existence-checked. An undeclared row or an orphan disposition is a breach — that
+  asymmetry is how a row quietly leaves coverage.
+- Added **`FIXTURE-FINGERPRINT`**: any tracked JSON/JSONL object carrying both `path` and
+  `sha256` must name a file that exists and still hashes to that value. Deliberately excludes
+  records naming inputs absent from this repository, so an unverifiable hash cannot masquerade
+  as a checked one.
+- **Both controls were fired RED against the real corpus**, not only synthetic fixtures: one
+  byte appended to `docs/GLOSSARY.md` and to `examples/synthetic-spec.md` each produced the
+  right file, the right reason, and `rc=1`; both restored to `rc=0`. Self-tests assert the
+  reason as well as the verdict — `8 pass / 0 fail` and `7 pass / 0 fail`, 10 RED arms between
+  them. Each check refuses (exit 2) rather than passing if its self-test stops discriminating.
+- `DELIVERY.md`'s hand-written `21 / 2 / 2` counts were deleted: the checker derives them on
+  every run. One derived source beats N synchronized copies.
+- `DOCTRINE_ENFORCEMENT.md` gained the project-doctrine registry mirror; `TOOLBOX.md` gained
+  the toolbox table with each tool's question and invocation.
+
 ## `SEMULITH-PKG.2` — the claim-verification standard is project-owned
 
 - Imported `docs/CLAIM_VERIFICATION.md` verbatim (body SHA-256 `9f99df25…6046bd`, verified

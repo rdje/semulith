@@ -5,3 +5,27 @@
 probes: [0-9]+ pass / [0-9]+ fail
 # The doctrine driver prints this:
 === all doctrines green ===
+#
+# ── added by SEMULITH-PKG.3, each priced against evidence this project actually pastes ──
+#
+# ⭐ `git grep` and `wc -l` are the CENSUS instruments, and their absence from the universal
+# list is a measured cross-doctrine inconsistency, not a preference: GAP-CLAIM-CENSUS names
+# `git grep -n '<symbol>' -- src scripts | wc -l` in its own failure hint and accepts
+# `git grep|grep -r|…|wc -l` as a valid census, while TASK-ACCEPTANCE's default signature
+# family recognises `git ls-files|log -S|rev-list|…` and NOT `git grep`. An author who obeys
+# one doctrine's instruction therefore produces evidence the sibling doctrine rejects.
+# See docs/knowledge/census-instrument-signature-gap.md.
+git grep -[a-zA-Z]
+wc -[lc]
+#
+# This repository's own gate verdict lines — the output an author re-runs and pastes.
+(MEMORY-ARCH|DOCPATH|TASK-TREE-OWNERSHIP|TASK-ACCEPTANCE|WAIVER-ROUTING|README-STABILITY|LIVE-DOC-CURRENCY|LESSON-PROMOTION|ROUTING-EVIDENCE|GAP-CLAIM-CENSUS|TABLE-ARITY-RATCHET|KNOWLEDGE-MAP|DELIVERY-PROVENANCE|FIXTURE-FINGERPRINT):
+#
+# Content-hash instruments and the hashes they print — this project pins fingerprints, so a
+# recorded digest IS the tool output.
+(sha256sum|shasum -a 256|[0-9a-f]{32,64})
+#
+# A gate's own discrimination controls, and the Python interpreter's failure banner
+# (cited when a check cannot be re-derived in this environment).
+--self-test
+(ModuleNotFoundError|Traceback \(most recent call last\))

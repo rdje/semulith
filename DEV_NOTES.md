@@ -23,6 +23,15 @@ lesson nobody can retrieve by question is a lesson nobody has.
 - Two byte-identical copies of the archogen integration contract shipped together. Both
   passed every gate. Promoted:
   [`docs/knowledge/duplicate-document-ownership.md`](docs/knowledge/duplicate-document-ownership.md).
+- ⛔ **Two sibling doctrines disagreed about what an instrument is.** `GAP-CLAIM-CENSUS` prints
+  `git grep -n '<symbol>' -- src scripts | wc -l` in its own failure hint and accepts it as a
+  census; `TASK-ACCEPTANCE`'s default signature family recognises `git ls-files|log -S|…` and
+  **not** `git grep` or `wc -l`. Obeying one gate produced evidence the other refused. Fixed
+  through the sanctioned `.doctrine/evidence_tokens.txt` seam, never by weakening the evidence
+  — and the widened gate was then fired RED (a prose-only box → `rc=1`) to prove it still
+  discriminates. Promoted:
+  [`docs/knowledge/census-instrument-signature-gap.md`](docs/knowledge/census-instrument-signature-gap.md).
+  Upstream owner: this is a `bedrock` template defect, not a Semulith one.
 
 ## _(2026-09-04)_ — a template's trial must include the first commit
 
