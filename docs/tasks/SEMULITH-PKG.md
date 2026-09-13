@@ -31,60 +31,52 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - Live docs (`MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`) and the mdBook
   reflect the ingested state in the same commit as the change that caused it.
 
-## Acceptance Checklist (current leaf — `SEMULITH-PKG.5`)
+## Acceptance Checklist (current leaf — `SEMULITH-PKG.6`)
 
 Enforced by the `TASK-ACCEPTANCE` doctrine. Each box carries the command that was run and the
 output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the director reviews the book rather than the code,
-  and the book was still the template's skeleton. Census before this leaf:
-  `git ls-files docs/book | wc -l` → `3` (`book.toml`, `SUMMARY.md`, `introduction.md`), whose
-  content was the scaffold's own instructions to replace them — `grep -c 'Replace this page'
-  docs/book/src/introduction.md` → `1`, and `book.toml` still carried `title = "Project Book"`
-  and `authors = ["<your name>"]`. So the one surface the director reads described no part of
-  the project that had just been ingested.
-- [x] **ADDRESSED (verified)** — the book is now a 27-chapter manual covering claim scope, live
-  status, every milestone with its gate, all nine delivered contracts, the data contracts with
-  a worked example, and the working discipline. `mdbook build docs/book` → `INFO HTML book
-  written to …/docs/book/book`, `rc=0`. Coverage and link checks over the source:
-  `book internal links unresolved: none`, `book includes unresolved: none`,
-  `in SUMMARY but absent: none`, `page absent from SUMMARY: none`, `chapters: 27`.
-  ⭐ The drift-proofing is the design: the status, rules and glossary chapters `{{#include}}`
-  `LIVE_STATUS.md`, `RULES.md` and `docs/GLOSSARY.md`, and each contract chapter includes the
-  canonical document verbatim under an orientation blockquote — verified rendered, not merely
-  referenced (`G-PORTABILITY row present: True`, `orientation blockquote present: True`,
-  `SCP-01` and `Canonical definition` each found once in the built HTML). The book cannot
-  paraphrase a contract, so it cannot become a second owner of one.
-- [x] **NO REGRESSION** — leg 2: writing the book exposed two defects that a build alone would
-  not have caught, and both were fired as controls. (a) The Mermaid fence rendered as raw
-  source: `grep -o 'class="language-mermaid"' docs/book/book/plan/overview.html` → present,
-  i.e. the director would have read Mermaid syntax instead of a graph; replaced by an explicit
-  edge table, after which `mermaid fences in book: 0`. (b) The build output contaminated the
-  routing-closure measurement: `OVER CEILING docs/book/: 92 files > 60` and
-  `2738590 aggregate bytes > 393216`, because `find` counted mdbook's untracked HTML —
-  `git ls-files docs/book | wc -l` → `3` at the same instant. The family measurement now counts
-  **tracked** files, `/docs/book/book` is gitignored, and the re-run is
-  `README-ROUTING-CLOSURE: ok (24 governed destination(s))`. Self-tests after the change:
-  `9 pass / 0 fail`, `7 pass / 0 fail`, `11 pass / 0 fail`. Whole gate:
-  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
-  `test result: ok. 1 passed; 0 failed`, `rc=0`.
-- [x] **FIX** — `docs/book/` grown to 27 chapters plus `book.toml` and `SUMMARY.md`;
-  `/docs/book/book` added to `.gitignore`; `family_files()` in `check_readme_routes.sh` counts
-  tracked files on the real run; the three project checks' self-test fixtures moved from
-  `$TMPDIR` to `$ROOT/target/doctrine-selftest`, because a project-created temporary workspace
-  must stay on the repository's own volume.
-- [x] **LOCKSTEP** — leg 3: `docs/book/`'s health and ceiling were **re-reviewed** rather than
-  silently exceeded — 20 files / 64 KiB was written for a skeleton, and the surface's contract
-  genuinely expanded, so the registry now carries 40 / 128 KiB health and 80 / 512 KiB ceiling
-  with the derivation recorded in its header. `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md`
-  updated in this commit.
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `TASK-ACCEPTANCE`'s built-in code-path default,
+  `(^|/)(crates|src|scripts)/|\.(rs|sh)$|(^|/)Makefile$`, is wrong for this repository in
+  **both** directions. Measured over all 125 tracked files with
+  `git ls-files | grep -cE "$DEF"` → `54` matched, of which:
+  **over-match** — `git ls-files | grep -E "$DEF" | grep -c '^docs/book/src/'` → `28`, mdBook
+  prose matching on the `src/` path segment, so leaf `.5` was asked for a full code-acceptance
+  checklist for paragraphs; **under-match** —
+  `git ls-files | grep -E '\.tsv$|^\.githooks/|^\.doctrine/|^Cargo\.' | grep -vE "$DEF"`
+  lists `doctrine/readme_routes.tsv`, `docs/provenance/planning-package-v0.2/dispositions.tsv`,
+  `.doctrine/README.md`, `.doctrine/evidence_tokens.txt`, `.githooks/commit-msg`,
+  `.githooks/pre-commit`, `Cargo.lock`, `Cargo.toml` — eight files that genuinely change what
+  the repository does, invisible to the gate. The two registries are the *ceilings and
+  dispositions the checks enforce*: editing one changes a verdict without touching a script.
+- [x] **ADDRESSED (verified)** — `.doctrine/code_paths.txt` declares the allow-list. Same
+  census after: `35 of 125` matched; `git ls-files 'docs/book/src' | grep -cE "$CODE_RE"` →
+  `0`; and all eight previously-invisible files now match. The seam is the sanctioned
+  mechanism — the alternative is editing the neutral check to hardcode this project's paths,
+  which turns a portable standard into a fork of it.
+- [x] **NO REGRESSION** — leg 2: narrowing a gate's scope is exactly the change that can
+  silently disable it, so all three outcomes were fired and observed, not reasoned about.
+  **A** — a real code change with no owning leaf (`crates/app/src/main.rs` touched, staged
+  alone): `rc=1`, `TASK-ACCEPTANCE: a CODE change is staged but NO owning task-tree leaf
+  (docs/tasks/*.md) is.` **B** — gate *data* with no owning leaf (`doctrine/readme_routes.tsv`
+  touched, staged alone), which the default could not see at all: `rc=1`, same refusal.
+  **C** — book prose alone (`docs/book/src/claim-scope.md`), which the default wrongly
+  refused: `rc=0`. The working tree was restored after each control (`git status --short`
+  clean apart from this leaf's own new file). Whole gate: `scripts/check_doctrines.sh` →
+  `=== all doctrines green ===`, `rc=0`; `make check` → `test result: ok. 1 passed; 0 failed`.
+- [x] **FIX** — `.doctrine/code_paths.txt` added, with the measurement that motivates each
+  group written into the file so the next reader sees the evidence and not just the list.
+- [x] **LOCKSTEP** — leg 3: the declaration is consumed by the gate on every commit, so a
+  wrong line fails rather than rots. `DOCTRINE_ENFORCEMENT.md` records the seam,
+  `docs/book/src/working/doctrines.md` states it in the review surface, and `MEMORY.md`,
+  `LIVE_STATUS.md` and `CHANGELOG.md` are updated in this commit.
 
 ## Task Tree
 
 - ID: `SEMULITH-PKG`
   Status: `done`
   Goal: ingest the delivered planning package v0.2 under the spine
-  Children: `SEMULITH-PKG.1`, `SEMULITH-PKG.2`, `SEMULITH-PKG.3`, `SEMULITH-PKG.4`, `SEMULITH-PKG.5`
+  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.6`
 
 - ID: `SEMULITH-PKG.1`
   Status: `done`
@@ -114,6 +106,13 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
   Verification: see the Verification Log.
   Commit: `SEMULITH-PKG-0005`
 
+- ID: `SEMULITH-PKG.6`
+  Status: `done`
+  Goal: declare what counts as a code change here, after leaf `.5` hit the default's boundary.
+  Acceptance: `.doctrine/code_paths.txt` declares an allow-list measured against the whole tracked corpus; book prose is no longer classified as code; gate data and hooks now are; all three outcomes fired and observed.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0007`
+
 - ID: `SEMULITH-PKG.5`
   Status: `done`
   Goal: make the mdBook the reviewable window onto the ingested package.
@@ -125,7 +124,7 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | **tree complete.** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
+| — | — | — | **tree complete (6/6).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
 
 Census behind row 2, over the population that would refute it — any tracked script, hook, or
 enforcer entry that re-derives a recorded fingerprint:
@@ -174,6 +173,51 @@ at all. Leaf `.3` is what makes the claim false.
 The current leaf's checklist lives above; a completed leaf's checklist is moved here verbatim
 so its evidence stays in layer B rather than only in git history. Only the *first* checklist
 in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
+
+### `SEMULITH-PKG.5` — grow the book into the review surface
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the director reviews the book rather than the code,
+  and the book was still the template's skeleton. Census before this leaf:
+  `git ls-files docs/book | wc -l` → `3` (`book.toml`, `SUMMARY.md`, `introduction.md`), whose
+  content was the scaffold's own instructions to replace them — `grep -c 'Replace this page'
+  docs/book/src/introduction.md` → `1`, and `book.toml` still carried `title = "Project Book"`
+  and `authors = ["<your name>"]`. So the one surface the director reads described no part of
+  the project that had just been ingested.
+- [x] **ADDRESSED (verified)** — the book is now a 27-chapter manual covering claim scope, live
+  status, every milestone with its gate, all nine delivered contracts, the data contracts with
+  a worked example, and the working discipline. `mdbook build docs/book` → `INFO HTML book
+  written to …/docs/book/book`, `rc=0`. Coverage and link checks over the source:
+  `book internal links unresolved: none`, `book includes unresolved: none`,
+  `in SUMMARY but absent: none`, `page absent from SUMMARY: none`, `chapters: 27`.
+  ⭐ The drift-proofing is the design: the status, rules and glossary chapters `{{#include}}`
+  `LIVE_STATUS.md`, `RULES.md` and `docs/GLOSSARY.md`, and each contract chapter includes the
+  canonical document verbatim under an orientation blockquote — verified rendered, not merely
+  referenced (`G-PORTABILITY row present: True`, `orientation blockquote present: True`,
+  `SCP-01` and `Canonical definition` each found once in the built HTML). The book cannot
+  paraphrase a contract, so it cannot become a second owner of one.
+- [x] **NO REGRESSION** — leg 2: writing the book exposed two defects that a build alone would
+  not have caught, and both were fired as controls. (a) The Mermaid fence rendered as raw
+  source: `grep -o 'class="language-mermaid"' docs/book/book/plan/overview.html` → present,
+  i.e. the director would have read Mermaid syntax instead of a graph; replaced by an explicit
+  edge table, after which `mermaid fences in book: 0`. (b) The build output contaminated the
+  routing-closure measurement: `OVER CEILING docs/book/: 92 files > 60` and
+  `2738590 aggregate bytes > 393216`, because `find` counted mdbook's untracked HTML —
+  `git ls-files docs/book | wc -l` → `3` at the same instant. The family measurement now counts
+  **tracked** files, `/docs/book/book` is gitignored, and the re-run is
+  `README-ROUTING-CLOSURE: ok (24 governed destination(s))`. Self-tests after the change:
+  `9 pass / 0 fail`, `7 pass / 0 fail`, `11 pass / 0 fail`. Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+- [x] **FIX** — `docs/book/` grown to 27 chapters plus `book.toml` and `SUMMARY.md`;
+  `/docs/book/book` added to `.gitignore`; `family_files()` in `check_readme_routes.sh` counts
+  tracked files on the real run; the three project checks' self-test fixtures moved from
+  `$TMPDIR` to `$ROOT/target/doctrine-selftest`, because a project-created temporary workspace
+  must stay on the repository's own volume.
+- [x] **LOCKSTEP** — leg 3: `docs/book/`'s health and ceiling were **re-reviewed** rather than
+  silently exceeded — 20 files / 64 KiB was written for a skeleton, and the surface's contract
+  genuinely expanded, so the registry now carries 40 / 128 KiB health and 80 / 512 KiB ceiling
+  with the derivation recorded in its header. `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md`
+  updated in this commit.
 
 ### `SEMULITH-PKG.4` — refresh the README policy and close its routing loop
 
@@ -356,6 +400,8 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `2026-09-13` | `SEMULITH-PKG.5` | book link / include / SUMMARY coverage | `none` unresolved in all four directions; `chapters: 27` |
 | `2026-09-13` | `SEMULITH-PKG.5` | three project checks' self-tests after the tracked-file fix | `9 / 7 / 11 pass, 0 fail` |
 | `2026-09-13` | `SEMULITH-PKG.5` | `scripts/check_doctrines.sh` (13 checks) + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
+| `2026-09-13` | `SEMULITH-PKG.6` | code-path census over 125 tracked files | default `54` matched (28 prose over-matched, 8 real files missed) → declared `35`, prose `0` |
+| `2026-09-13` | `SEMULITH-PKG.6` | three fired controls A/B/C | `rc=1`, `rc=1`, `rc=0` — refuses code, refuses gate data, passes prose |
 
 ## Commit Log
 
@@ -366,6 +412,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `SEMULITH-PKG.3` | `SEMULITH-PKG-0004 (leaf SEMULITH-PKG.3): gate the fingerprint claims that can rot` | two project doctrines, 15 self-test arms, both fired RED on the real corpus |
 | `SEMULITH-PKG.4` | `SEMULITH-PKG-0005 (leaf SEMULITH-PKG.4): close the README routing loop with reviewed caps` | policy refreshed; 24 destinations governed; 2 defects caught by the new check's own RED arms |
 | `SEMULITH-PKG.5` | `SEMULITH-PKG-0006 (leaf SEMULITH-PKG.5): grow the book into the review surface` | 3 chapters to 27; contracts included verbatim, never paraphrased |
+| `SEMULITH-PKG.6` | `SEMULITH-PKG-0007 (leaf SEMULITH-PKG.6): declare what counts as a code change here` | default over-matched 28 prose files and missed 8 real ones; all three outcomes fired |
 
 ## Changelog
 
@@ -380,5 +427,8 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
   current revision, this project's caps are derived from its own trimmed page, and all 24
   routed destinations are governed. Two gaps named rather than hidden: the append-history
   shard tool, and the deferred live-document-size containment adoption.
-- `2026-09-13`: `SEMULITH-PKG.5` completed and **the tree is done**. The book is the review
-  surface, 27 chapters, with every contract included verbatim rather than paraphrased.
+- `2026-09-13`: `SEMULITH-PKG.5` completed. The book is the review surface, 27 chapters, with
+  every contract included verbatim rather than paraphrased.
+- `2026-09-13`: `SEMULITH-PKG.6` completed and **the tree is done**. Leaf `.5` hitting the
+  code-path default's boundary was the gate reporting a missing capability, so the boundary was
+  measured and declared rather than worked around.

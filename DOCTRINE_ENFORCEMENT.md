@@ -51,6 +51,13 @@ review: `IFS=$'\t' read` collapsing empty TSV fields and shifting every later co
 self-test leaking its temp root into the real run through an environment variable that prefixed
 a *function* call. Both would have produced a green gate judging the wrong thing.
 
+### The declared seams (`.doctrine/`)
+
+| File | Consumed by | This project's declaration |
+| --- | --- | --- |
+| `code_paths.txt` | `TASK-ACCEPTANCE` | what counts as a **code change** here. The built-in default was measured wrong in both directions over all 125 tracked files: it matched **28** files of mdBook prose on the `src/` path segment, and missed **8** files that genuinely change behaviour — the two gate-data registries (`doctrine/readme_routes.tsv`, `docs/provenance/*/dispositions.tsv`), the `.doctrine/` seams themselves, both `.githooks/`, and `Cargo.toml`/`Cargo.lock`. Narrowing a gate can silently disable it, so all three outcomes were fired: code with no leaf → `rc=1`, gate data with no leaf → `rc=1`, prose alone → `rc=0` |
+| `evidence_tokens.txt` | `TASK-ACCEPTANCE` | this project's instrument signatures, added to the universal defaults — including `git grep` and `wc -l`, which `GAP-CLAIM-CENSUS` names in its own failure hint while the acceptance gate's defaults did not recognise them |
+
 **Project-specific doctrines go in `scripts/check_doctrines.project.sh`** (the pluggable
 slot) — never in the universal driver. That is where a project adds the equivalent of its
 own build gates, format checks, invariant proofs, etc.

@@ -4,6 +4,24 @@ Completed work and its validation, newest first. Entries above the `bedrock-scaf
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.
 
+## `SEMULITH-PKG.6` — what counts as a code change here is declared, not inherited
+
+- `TASK-ACCEPTANCE`'s built-in code-path default is wrong for this repository in **both**
+  directions, measured over all 125 tracked files: it matched **28** files of mdBook prose on
+  the `src/` path segment, and missed **8** files that genuinely change behaviour — both
+  gate-data registries, the `.doctrine/` seams, both git hooks, and `Cargo.toml`/`Cargo.lock`.
+  A registry holds the ceilings and dispositions the checks enforce: editing one changes a
+  verdict without touching a script.
+- `.doctrine/code_paths.txt` declares the allow-list, with the measurement that motivates each
+  group written into the file. Matched: `35 of 125`; prose: `0`.
+- ⛔ **Narrowing a gate can silently disable it**, so all three outcomes were fired and
+  observed rather than reasoned about: code with no owning leaf → `rc=1`; gate data with no
+  owning leaf → `rc=1` (invisible to the default); prose alone → `rc=0` (wrongly refused
+  before). The working tree was restored after each.
+- Recorded in `DOCTRINE_ENFORCEMENT.md` and in the book's doctrine chapter, together with the
+  sibling seam: `evidence_tokens.txt` exists because `GAP-CLAIM-CENSUS` recommends `git grep …
+  | wc -l` while the acceptance gate's default signatures did not recognise it.
+
 ## `SEMULITH-PKG.5` — the book becomes the review surface
 
 - Grew `docs/book/` from the template's 3-file skeleton to a **27-chapter manual**: claim scope,

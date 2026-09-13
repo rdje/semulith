@@ -13,12 +13,11 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `SEMULITH-PKG` — 5 leaves done; `.6` open to fix this project's code-path declaration.
-- **Frontier leaf:** `SEMULITH-PKG.6` — declare `.doctrine/code_paths.txt`.
-- **Next action:** the default code-path pattern matches `docs/book/src/*.md` (prose) and
-  misses `doctrine/*.tsv` (real gate data) — declare `.doctrine/code_paths.txt`, then fire
-  `TASK-ACCEPTANCE` RED to prove it still catches a real code change. Then open
-  `SEMULITH-TREES` to convert `ROADMAP.md` P0–P7 into task-trees.
-- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0006 (leaf SEMULITH-PKG.5)`.
+- **Active tree:** none. `SEMULITH-PKG` is `done` (6/6 leaves).
+- **Next tree:** `SEMULITH-TREES` — convert `ROADMAP.md` into task-trees.
+- **Next action:** open `SEMULITH-TREES` — convert `ROADMAP.md` P0–P7, the DSP lane, the
+  multicore lane and the archogen lane into task-trees registered in `docs/TASK_TREE.md`, then
+  start P0 (`rv64i-lab-v0` profile dossier, and a reference smoke test that actually runs).
+- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0007 (leaf SEMULITH-PKG.6)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

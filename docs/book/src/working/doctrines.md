@@ -58,6 +58,25 @@ carrying **138,403 bytes**, with one line of 18,816. Line and byte caps are comp
 redundancy: neither wrapped prose nor very long lines can bypass the budget. Never raise a cap
 to fit content.
 
+## The seams, and why they are not a loophole
+
+A neutral check is adapted to a project through `.doctrine/`, never by editing the check:
+
+- **`code_paths.txt`** declares what counts as a code change here. The built-in default was
+  measured wrong in both directions over all 125 tracked files — it classified 28 files of
+  mdBook prose as code because their path contains `src/`, and it could not see the two
+  registries that hold the gates' own ceilings and dispositions, the `.doctrine/` seams, both
+  git hooks, and `Cargo.toml`/`Cargo.lock`.
+- **`evidence_tokens.txt`** declares this project's instrument signatures. It exists because
+  `GAP-CLAIM-CENSUS` prints `git grep … | wc -l` in its own failure hint while
+  `TASK-ACCEPTANCE`'s default signature family did not recognise either command — obeying one
+  gate produced evidence the other refused.
+
+⛔ Narrowing a gate's scope is precisely the change that can silently disable it, so a seam
+edit is only trusted after the outcomes are **fired and observed**: a real code change with no
+owning leaf must still be refused, gate data with no owning leaf must now be refused, and prose
+alone must pass. A seam that has not been fired is an assertion.
+
 ## Adding one
 
 Write `scripts/check_<name>.sh` — cheap, deterministic, read-only, self-describing, nonzero on
