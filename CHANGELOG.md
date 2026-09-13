@@ -1,5 +1,48 @@
 # CHANGELOG.md
 
+## SEMULITH-P0-0029 (leaf P0-PROFILE.9) — gate `G0` is run, and reads `incomplete`
+
+**What changed.** The P0 tree is closed at 9/9 and **gate `G0` has been run**. Its report is
+generated, not written: `scripts/gate_report.py` derives it from the profile, the requirements,
+the obligations, the reference dossier and the guest expectations — all tracked — so it
+regenerates byte-identically in a fresh clone with no reference binaries present.
+
+**Verdict: `incomplete`**, for a measured reason: *66 declared checks, 0 implemented*. All three
+criteria are met — semantics resolved (every requirement sourced; 2 honestly `partial` with their
+open question in-record), an evidence path that works (2 experiments, 2 models, reproduced), and
+differences enumerated (4 differences, 6 independence records across 4 verdict classes).
+
+- `EVIDENCE_POLICY.md` — five obligation classes and what closes each, **declared before any model
+  exists** (`crates/` still holds the scaffold's placeholder), which is the whole point of
+  `EVD-03`: an implementation that picks its own evidence afterwards picks what it can produce.
+- `scripts/gate_report.py` — **no code path reaches `passed`** while declared checks exceed
+  implemented ones.
+- `GATE-REPORT` doctrine — the tracked report must equal a freshly derived one. Fired RED by
+  hand-editing exactly the word that matters: `incomplete` → `passed` fails the commit, quoting
+  both lines.
+
+⛔ **The generator was wrong twice, both times in the direction that inflates the verdict.** Asked
+how many checks are implemented, it first grepped the whole tree for the id *pattern* and counted
+`EVIDENCE_POLICY.md`, a document that merely describes the naming convention. Narrowed to
+`scripts/`, it still counted `check_requirements.sh`, which tests for the `-POS`/`-NEG` suffix
+while enforcing that the ids exist — *a gate about checks is not a check*. Both said `1` where the
+truth is `0`. A gate report that cannot tell a mention from an implementation does not stay wrong
+by one; it drifts toward the comfortable answer, and the comfortable answer is the one `EVD-08`
+forbids.
+
+⛔ **The evidence policy's own first draft stated class populations and got two wrong** — reading
+the profile's *authority* distribution (14/8) instead of the requirements' *category* distribution
+(13/10), which is precisely the non-mechanical mapping this profile documents. The counts were
+removed from the policy; the generated report derives them.
+
+⚠️ **What `incomplete` means.** Not that the milestone failed — its criteria are met. That the
+declared evidence does not yet exist, which is the correct state for a milestone whose job was to
+establish what evidence would be required. `P1-LAB` is where the 66 checks acquire fixtures.
+
+**Validation.** `GATE-REPORT --self-test: 3 pass / 0 fail`, fired RED on the real report. Gate
+green; `make check` `1 passed`; `run_smoke.py` ok; `fetch_references.sh --verify-only` 11 of 11.
+
+
 ## SEMULITH-P0-0028 (leaf P0-PROFILE.8) — the third guest program, and a bit layout derived rather than typed
 
 **What changed.** `P0-PROFILE.6` left this leaf **blocked on a source, not on effort**: branches

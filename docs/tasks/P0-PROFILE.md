@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `P0-PROFILE`
-- Status: `active`
+- Status: `done` (gate `G0` run; verdict `incomplete`, and that verdict is the deliverable)
 - Roadmap lane: `ROADMAP.md` §6 → **P0 — Select and establish the first experiment**
 - Gate: `G0`
 - Depends on: nothing
@@ -96,15 +96,17 @@ environment contract, three representative guest programs, and the evidence-obli
   Commit: `SEMULITH-P0-0028`
 
 - ID: `P0-PROFILE.9` — **evidence-obligation policy and the `G0` report**
-  Status: `pending`
+  Status: `done`
   Goal: declare, *before* implementation, what kind of evidence each obligation class requires (`EVD-03`); then generate the gate report from pinned inputs.
   Acceptance: the report names inputs, commands, actual results and limitations (`EVD-08`), and reads `passed` or `incomplete` — never `passed` with a missing required check.
+  Verification: the policy declared before any model exists; the report GENERATED from tracked inputs and gated; verdict `incomplete` on 66 declared checks against 0 implemented.
+  Commit: `SEMULITH-P0-0029`
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P0-PROFILE.9` | `pending` | the last leaf, and the gate report. It declares what evidence each obligation class requires (`EVD-03`) and then generates the `G0` report from pinned inputs. ⚠️ It must read `incomplete` wherever a required check is missing — 66 checks are *declared* and none is implemented — and `passed` is not available to it |
+| — | — | — | **tree complete (9/9).** Gate `G0` has been RUN and reads **`incomplete`** — its three criteria are met, and 66 declared checks are unimplemented, which is the honest reason it is not `passed`. The next tree is `P1-LAB`: the three crates, the graph checker and the mutation suite, which is where those 66 checks acquire fixtures. Open it only with the repository clean (the pivot rule). |
 
 ## Decisions
 
@@ -173,7 +175,90 @@ than a failure.
 
 - None.
 
-## Acceptance Checklist (current leaf — `P0-PROFILE.8`)
+## Acceptance Checklist (current leaf — `P0-PROFILE.9`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: eight leaves had produced a profile, a state
+  inventory, 25 requirements, 33 obligations, three reference models and three guest programs —
+  and **nothing said whether `G0` passed.** `EVD-03` also requires the *kind* of evidence each
+  obligation needs to be declared BEFORE the implementation that would otherwise choose whatever
+  evidence it can most easily produce. Census before this leaf:
+
+  ```
+  $ git ls-files profiles | grep -cE 'EVIDENCE_POLICY|G0-REPORT'
+  0
+  $ git ls-files crates                      # what would have shaped the policy, if it existed
+  crates/app/Cargo.toml
+  crates/app/src/main.rs                     # still the scaffold's placeholder
+  ```
+
+  The second command is the point: the policy is declared while **there is no model**, so nothing
+  in it can have been reverse-engineered from what a model currently happens to do.
+
+- [x] **ADDRESSED (verified)** — `EVIDENCE_POLICY.md` declares five obligation classes and what
+  closes each, and `G0-REPORT.md` is **generated** from tracked inputs:
+
+  ```
+  $ scripts/gate_report.py rv64i-lab-v0
+  wrote profiles/rv64i-lab-v0/G0-REPORT.md
+  $ head -8 profiles/rv64i-lab-v0/G0-REPORT.md | tail -1
+  **Verdict: `incomplete`.**
+  $ scripts/check_gate_report.sh
+  GATE-REPORT: ok (1 generated report(s) in sync with their inputs)
+  ```
+
+  The verdict is `incomplete` for a stated, measured reason — **66 declared checks, 0
+  implemented** — and all three `G0` criteria are recorded as met: semantics resolved (every
+  requirement sourced, 2 honestly `partial` with their open question named), an evidence path that
+  works (2 experiments, 2 models, reproduced), and differences enumerated (4 recorded differences,
+  6 independence records across 4 verdict classes).
+  ⭐ The report reads nothing untracked, so it regenerates byte-identically in a fresh clone with
+  no reference binaries present — which is what lets a gate check it for staleness at all.
+
+- [x] **NO REGRESSION** — leg 2. `scripts/check_gate_report.sh --self-test` → `3 pass / 0 fail`,
+  and the gate was fired RED on the **real** report by hand-editing exactly the word that matters:
+
+  ```
+  $ sed -i 's/`incomplete`/`passed`/' profiles/rv64i-lab-v0/G0-REPORT.md && scripts/check_gate_report.sh
+  GATE-REPORT: profiles/rv64i-lab-v0/G0-REPORT.md is out of sync with the inputs it is generated from.
+      8c8
+      < **Verdict: `incomplete`.**
+      ---
+      > **Verdict: `passed`.**
+  ```
+
+  Restored to `ok`. Whole gate `=== all doctrines green ===`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `scripts/run_smoke.py` → `ok`;
+  `scripts/fetch_references.sh --verify-only` → 11 of 11 `MATCH`.
+  ⛔ **The generator was wrong twice before it was right, and both errors inflated the verdict.**
+  Asked which checks are implemented, it first grepped the whole tree for the id *pattern* and
+  counted `EVIDENCE_POLICY.md` — a document that merely describes the naming convention. Narrowed
+  to `scripts/`, it still counted `check_requirements.sh`, which tests for the `-POS`/`-NEG`
+  suffix as part of enforcing that the ids exist — *a gate about checks is not a check*. Both
+  reported `1 are implemented` where the truth is `0`. The measure is now exact: take the concrete
+  ids the contract declares and ask which any tracked executable names. A gate report that cannot
+  tell a mention from an implementation is a gate report that will eventually read `passed`.
+  ⛔ And the evidence policy's own first draft stated class populations **and got two wrong** — by
+  reading the profile's *authority* distribution (14/8) instead of the requirements' *category*
+  distribution (13/10), which is exactly the non-mechanical mapping this profile documents. The
+  counts were removed from the policy entirely; the generated report derives them.
+
+- [x] **FIX** — `profiles/rv64i-lab-v0/EVIDENCE_POLICY.md` (declared first, and carrying no
+  counts), `scripts/gate_report.py` (derives the report from tracked inputs, with no code path to
+  `passed` while declared checks exceed implemented ones), `profiles/rv64i-lab-v0/G0-REPORT.md`
+  (generated), and `scripts/check_gate_report.sh` registered as `GATE-REPORT`.
+
+- `promotion: declined (the lesson IS the GATE-REPORT doctrine header and gate_report.py's docstring — both state the mention-versus-implementation rule and why 'passed' is unreachable; a card would restate them verbatim)`
+
+- [x] **LOCKSTEP** — leg 3: the report is regenerated and compared on every commit, so the verdict
+  cannot be reached with an editor. `DOSSIER.md`, the book's P0 chapter, `MEMORY.md`,
+  `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit, and the tree closed.
+  ⚠️ **What `G0 = incomplete` does and does not mean.** It does **not** mean the milestone failed:
+  its three criteria are met and recorded. It means the declared evidence does not yet exist,
+  which is the correct state for a milestone whose job was to *establish* what evidence would be
+  required. `P1-LAB` is where the 66 checks acquire fixtures, and `passed` becomes reachable only
+  then.
+
+### `P0-PROFILE.8` — the third guest program
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: this leaf was **blocked on a source, not on effort**,
   and `.6` had recorded exactly why. The B and J formats scatter their immediate across

@@ -26,6 +26,7 @@ PROJECT_DOCTRINES=(
   "TREE-CLAIMS|every LIVE document states leaf counts, the active trees and the frontier leaf exactly as the trees do — scope read from the routes registry, so history is never rewritten|scripts/check_tree_claims.sh"
   "DERIVED-COUNTS|a live document that states a count of something this repository can enumerate has it RE-DERIVED — a running total is a memory of a measurement, not a measurement|scripts/check_derived_counts.sh"
   "RECORD-SCHEMA|every tracked record file validates against its schema, cites only sources the profile pinned, and states what its profile states — a catalogue that looks checkable and is not is worse than none|scripts/check_requirements.sh"
+  "GATE-REPORT|the tracked gate report is still the function of its inputs that generated it — a hand-edited report is how a project comes to hold a verdict nothing produced|scripts/check_gate_report.sh"
 )
 
 fails=0

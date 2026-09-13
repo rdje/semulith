@@ -13,15 +13,19 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `P0-PROFILE` (gate `G0`) — 8 of 9 leaves done. `.9` is the last.
-- **Frontier leaf:** `P0-PROFILE.9` — the evidence-obligation policy and the `G0` report.
-- **Next action:** `P0-PROFILE.9`. Declare, per obligation class, what KIND of evidence it
-  requires (`EVD-03`) — written before the implementation that would otherwise pick whatever
-  evidence is easiest — then generate the `G0` report from pinned inputs. ⛔ It must name inputs,
-  commands, actual results and limitations (`EVD-08`) and read **`incomplete`**: 66 checks are
-  declared and none implemented, so `passed` is not available to it.
+- **Active tree:** none — every tree is `done` or `proposed`.
+- **Just closed:** the P0 tree, 9/9. Gate `G0` has been RUN and reads **`incomplete`**: its three
+  criteria are met, and 66 declared checks are unimplemented, which is the stated reason.
+  `incomplete` is the deliverable, not a failure.
+- **Frontier leaf:** `P1-LAB.1` — the crate skeleton. Open `P1-LAB` next.
+- **Next action:** `P1-LAB.1`. Create `semulith-core`, `semulith-verify`, `semulith-cli`
+  (`docs/ARCHITECTURE.md` §4); `crates/app/` is still the scaffold's placeholder. Then `P1-LAB`
+  is where the **66 declared checks acquire fixtures** — until they do, `G0` cannot read `passed`.
+  Two findings are already routed in: the delivered `examples/` records are referentially
+  inconsistent (a first corpus for the graph checker), and `D-JALR-LSB` needs a mutation-suite
+  control because both references clear the bit.
 - **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
   `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0028 (leaf P0-PROFILE.8)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-P0-0029 (leaf P0-PROFILE.9)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

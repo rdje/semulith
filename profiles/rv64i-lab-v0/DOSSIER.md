@@ -142,6 +142,14 @@ RV64I chapter. The unprivileged specification says the EEI defines the initial s
 program (`RVI-INTRO`), and this harness's choice of zero is not something a guest may rely on
 elsewhere.
 
+## Gate `G0` — run, verdict `incomplete`
+
+[`G0-REPORT.md`](G0-REPORT.md) is **generated** from tracked inputs by `scripts/gate_report.py`
+and gated for staleness, so the verdict cannot be reached with an editor. All three criteria are
+met; the verdict is `incomplete` because **66 declared checks have 0 implementations**.
+[`EVIDENCE_POLICY.md`](EVIDENCE_POLICY.md) declares what each obligation class must be shown by —
+written before any model exists, which is the whole point of `EVD-03`.
+
 ## The environment contract
 
 [`ENVIRONMENT.md`](ENVIRONMENT.md) is `rv64i-lab-env-v0`, the second of `SCP-01`'s four artifacts,

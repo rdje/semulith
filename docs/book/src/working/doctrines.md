@@ -47,6 +47,7 @@ These ship with the discipline spine and are project-neutral:
 | `TREE-CLAIMS` | every live document's leaf counts, active trees and frontier leaf match `docs/tasks/` |
 | `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
 | `RECORD-SCHEMA` | every record file validates, cites only pinned sources, and states what its profile states |
+| `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than
