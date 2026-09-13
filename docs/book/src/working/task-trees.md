@@ -43,6 +43,22 @@ Do not pivot to a different tree while the repository is dirty. Handoff-ready me
 modified or untracked work except the task-tree file itself. Finish the leaf, get clean, then
 switch — even when asked to switch immediately.
 
+## Every lane of the plan, and who owns it
+
+Included live from `docs/TASK_TREE.md`, so this map cannot drift from the index the repository
+maintains:
+
+{{#include ../../../TASK_TREE.md:trees}}
+
+A milestone tree's **acceptance criteria are its gate** — quoted from
+`docs/EVIDENCE_AND_GATES.md`, not restated, because a restated gate is a second owner. Its
+leaves each cite the roadmap section, task card, rule ID or catalog entry they derive from, so
+a reader refutes a leaf by reading one paragraph rather than by trusting the tree.
+
+⚠️ That citation is the strongest control available for a prose-to-structure conversion, and it
+is weaker than a test. The honest statement is: the plan is the oracle for these trees, and
+nothing mechanically proves a tree still matches it.
+
 ## Why this shape
 
 A session can be lost at any moment: a crash, a context reset, a change of tool, a change of

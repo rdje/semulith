@@ -1,5 +1,32 @@
 # CHANGELOG.md
 
+## `SEMULITH-TREES.4` — the task-tree family is bounded per part, not only in aggregate
+
+- Bounds written for a three-tree repository were governing an eleven-lane one: `docs/tasks/`
+  measured `17` files / `133,074` bytes against a `65,536` health target set at 5 files /
+  39,131 bytes, with one member (`SEMULITH-PKG.md`) at `35,395`.
+- Added **`ceiling_part_bytes`**, the ninth registry column. `README_POLICY.md` requires a
+  partitioned family to carry per-part, file-count **and** aggregate ceilings; only the last two
+  existed, so one member could become the monolith the split was meant to avoid, invisibly.
+  Fired on the real corpus: it named `docs/tasks/SEMULITH-PKG.md` at `35395 > 20000`.
+- ⭐ **Health targets are calibrated by lifecycle.** A *hot/live* surface's target sits just
+  above today's reviewed size, because unexpected growth is the signal. An *append_history*
+  surface's belongs near its ceiling, because growth is expected and the only useful warning is
+  that the shard threshold is approaching. `CHANGELOG.md` crossing a 24 KiB target within a day
+  was a miscalibrated instrument, not a finding; it and `DEV_NOTES.md` moved to 75% of their
+  ceilings, which were not touched. Four health warnings became zero.
+- The per-part control exposed a defect in itself: it first printed an **absolute** path, which
+  `DOCPATH` would refuse inside a task leaf — so an author pasting this tool's output as
+  evidence would have been blocked by a different gate for a defect in this one.
+- The book's task-tree chapter now includes the live tree index by mdBook anchor, so the map of
+  who owns which lane cannot drift from `docs/TASK_TREE.md`.
+- `.doctrine/evidence_tokens.txt`'s enumerated list of doctrine names had fallen behind the
+  registry for the second time, refusing this leaf's own honest evidence. It is now the
+  **shape** every gate prints rather than a list of their names — verified against five real
+  verdict lines, and fired RED afterwards to confirm the generalization did not make the gate
+  vacuous.
+
+
 ## `SEMULITH-TREES.3` — every roadmap lane now has an owner
 
 - Five trees created and registered: **`P5-BOARD`** (7 leaves, gate `BOARD`), **`AG-OS`**

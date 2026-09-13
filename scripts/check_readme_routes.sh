@@ -90,7 +90,7 @@ verify_routes() {
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
   tmp="$(mktemp -d)"
-  awk -F'\t' '!/^#/ && NF>=8 {print $1}' "$registry" > "$tmp/destinations"
+  awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$registry" > "$tmp/destinations"
   [ -s "$tmp/destinations" ] || { echo "  EMPTY registry $registry"; rm -rf "$tmp"; return 1; }
 
   # (1) every linked destination is governed
@@ -101,14 +101,14 @@ verify_routes() {
   done < <(readme_link_targets "$readme")
 
   # (3)+(4) rows: existence, classes, ceilings, health
-  local dest rclass life owner hl hb cl cb n b line
+  local dest rclass life owner hl hb cl cb cp n b line big
   # ⛔ NOT `IFS=$'\t' read`: tab is IFS *whitespace*, so consecutive tabs COLLAPSE and every
   # column after an empty field shifts left — silently, and the row still parses. Measured by
   # this script's own "no owner declared" arm, which passed while reading the owner as `0`.
   # Translating to a non-whitespace separator first preserves empty fields.
   while IFS= read -r line; do
     case "$line" in ''|'#'*) continue ;; esac
-    IFS=$'\x1f' read -r dest rclass life owner hl hb cl cb <<<"${line//$'\t'/$'\x1f'}"
+    IFS=$'\x1f' read -r dest rclass life owner hl hb cl cb cp <<<"${line//$'\t'/$'\x1f'}"
     case "$dest" in ''|'#'*) continue ;; esac
     case " $KNOWN_ROUTE_CLASSES " in *" $rclass "*) ;; *)
       echo "  UNKNOWN route_class '$rclass' for $dest"; bad=1 ;; esac
@@ -133,6 +133,20 @@ verify_routes() {
             echo "  health: $dest holds $n files (target $hl)"; fi
           if [ "${hb:-0}" -gt 0 ] && [ "$b" -gt "$hb" ]; then
             echo "  health: $dest holds $b aggregate bytes (target $hb)"; fi
+          # Per-PART ceiling. A partitioned family's required control is a bounded index PLUS
+          # per-part, file-count and aggregate ceilings: an aggregate bound alone permits one
+          # member to become the monolith the split was meant to avoid.
+          if [ "${cp:-0}" -gt 0 ]; then
+            big="$(family_files "$base" "$dest" "$mode" | while IFS= read -r one; do
+                     printf '%s\t%s\n' "$(wc -c < "$one" | tr -d ' ')" "$one"; done | sort -rn | head -1)"
+            # Report the member RELATIVE to the base. An absolute path here is unusable as
+            # evidence: the DOCPATH doctrine refuses a checkout-specific path in a tracked
+            # document, so an author pasting this line into a task leaf would be blocked by a
+            # different gate for a defect in this one.
+            if [ -n "$big" ] && [ "${big%%	*}" -gt "$cp" ]; then
+              echo "  OVER CEILING $dest: part ${big#*	}" | sed "s|$base/||"
+              echo "    ${big%%	*} bytes > $cp"; bad=1; fi
+          fi
           ;;
       *)  [ -f "$base/$dest" ] || { echo "  MISSING destination file $dest"; bad=1; continue; }
           [ "$enforce" = 1 ] || continue
@@ -165,8 +179,8 @@ self_test() {
   printf '# L\n\nSee [a](docs/) and [b](KEEP.md).\n' > "$t/README.md"
   printf 'x\n' > "$t/KEEP.md"; printf 'y\n' > "$t/docs/inner.md"
   reg() { printf '%s\n' "$@" > "$t/routes.tsv"; }
-  R_DOCS=$'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0'
-  R_KEEP=$'KEEP.md\tboth\thot_live\towner\t0\t0\t5\t64'
+  R_DOCS=$'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t0'
+  R_KEEP=$'KEEP.md\tboth\thot_live\towner\t0\t0\t5\t64\t0'
   arm() { # name expected_rc expected_substring
     out="$(verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" find 2>&1)"; rc=$?
     if [ "$rc" != "$2" ]; then
@@ -177,24 +191,26 @@ self_test() {
   }
   reg "$R_DOCS" "$R_KEEP";                       arm "GREEN every route governed"   0 ""
   reg "$R_DOCS";                                 arm "RED   link target ungoverned" 1 "UNGOVERNED link target 'KEEP.md'"
-  reg "$R_DOCS" "$R_KEEP" $'GONE.md\tboth\thot_live\towner\t0\t0\t0\t0'
+  reg "$R_DOCS" "$R_KEEP" $'GONE.md\tboth\thot_live\towner\t0\t0\t0\t0\t0'
                                                  arm "RED   destination missing"    1 "MISSING destination file GONE.md"
-  reg "$R_DOCS" "$R_KEEP" $'nosuch/\tauthor_overflow\tpartitioned\towner\t0\t0\t0\t0'
+  reg "$R_DOCS" "$R_KEEP" $'nosuch/\tauthor_overflow\tpartitioned\towner\t0\t0\t0\t0\t0'
                                                  arm "RED   directory destination missing" 1 "MISSING destination directory nosuch/"
-  reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t1' "$R_KEEP"
+  reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t1\t0' "$R_KEEP"
                                                  arm "RED   family over aggregate bytes" 1 "OVER CEILING docs/: 2 aggregate bytes > 1"
-  reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0' "$R_KEEP"
+  reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t1' "$R_KEEP"
+                                                 arm "RED   family part over per-part ceiling" 1 "OVER CEILING docs/: part"
+  reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t0' "$R_KEEP"
                                                  arm "GREEN family within its bounds"   0 ""
-  reg "$R_DOCS" $'KEEP.md\tinvented\thot_live\towner\t0\t0\t0\t0'
+  reg "$R_DOCS" $'KEEP.md\tinvented\thot_live\towner\t0\t0\t0\t0\t0'
                                                  arm "RED   unknown route_class"    1 "UNKNOWN route_class 'invented'"
-  reg "$R_DOCS" $'KEEP.md\tboth\tinvented\towner\t0\t0\t0\t0'
+  reg "$R_DOCS" $'KEEP.md\tboth\tinvented\towner\t0\t0\t0\t0\t0'
                                                  arm "RED   unknown lifecycle"      1 "UNKNOWN lifecycle 'invented'"
-  reg "$R_DOCS" $'KEEP.md\tboth\thot_live\t\t0\t0\t0\t0'
+  reg "$R_DOCS" $'KEEP.md\tboth\thot_live\t\t0\t0\t0\t0\t0'
                                                  arm "RED   no owner declared"      1 "NO OWNER declared for KEEP.md"
-  reg "$R_DOCS" $'KEEP.md\tboth\thot_live\towner\t0\t0\t0\t1'
+  reg "$R_DOCS" $'KEEP.md\tboth\thot_live\towner\t0\t0\t0\t1\t0'
                                                  arm "RED   byte ceiling exceeded"  1 "OVER CEILING KEEP.md: 2 bytes > 1"
   printf 'x\nx\nx\n' > "$t/KEEP.md"
-  reg "$R_DOCS" $'KEEP.md\tboth\thot_live\towner\t1\t0\t9\t0'
+  reg "$R_DOCS" $'KEEP.md\tboth\thot_live\towner\t1\t0\t9\t0\t0'
                                                  arm "GREEN health target only warns" 0 "health: KEEP.md is 3 lines (target 1)"
   rm -rf "$t"
   printf 'README-ROUTING-CLOSURE --self-test: %d pass / %d fail\n' "$pass" "$fail"
@@ -212,7 +228,7 @@ fail=0
 out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git)" || fail=1
 
 # (2) every path-shaped destination the guard actually emits must be governed
-dests="$(mktemp)"; awk -F'\t' '!/^#/ && NF>=8 {print $1}' "$REGISTRY" > "$dests"
+dests="$(mktemp)"; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"
 while IFS= read -r t; do
   [ -n "$t" ] || continue
   governed "$t" "$dests" || { out="$out"$'\n'"  UNGOVERNED emitted-hint destination '$t' — the guard routes authors there and nothing bounds it"; fail=1; }
@@ -241,6 +257,6 @@ if [ "$fail" -ne 0 ]; then
   exit 1
 fi
 printf 'README-ROUTING-CLOSURE: ok (%s governed destination(s))\n' \
-  "$(awk -F'\t' '!/^#/ && NF>=8' "$REGISTRY" | wc -l | tr -d ' ')"
+  "$(awk -F'\t' '!/^#/ && NF>=9' "$REGISTRY" | wc -l | tr -d ' ')"
 printf '%s\n' "$out" | grep -E '^  (health:|registry caps applied:)' || true
 exit 0

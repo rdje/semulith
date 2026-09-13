@@ -16,10 +16,22 @@
 #   health_bytes       advisory target: BYTES for a file, AGGREGATE BYTES for a family; 0 = ungoverned
 #   ceiling_lines      enforced ceiling on the same axis as health_lines; 0 = ungoverned
 #   ceiling_bytes      enforced ceiling on the same axis as health_bytes; 0 = ungoverned
+#   ceiling_part_bytes directory families only: the largest single member may not exceed this.
+#                      An aggregate bound alone permits one member to become the monolith the
+#                      split was meant to avoid. 0 = ungoverned.
 #
-# A partitioned family's required control is a bounded index PLUS file-count and aggregate
-# ceilings — splitting a monolith without bounding the collection moves the same append
-# pressure one level down. Family measurements at adoption: docs/tasks/ 5 files / 39,131 B;
+# A partitioned family's required control is a bounded index PLUS per-part, file-count and
+# aggregate ceilings — splitting a monolith without bounding the collection moves the same
+# append pressure one level down, and bounding only the aggregate lets one member become the
+# monolith.
+#
+# ⭐ THE TWO LIFECYCLES CALIBRATE HEALTH TARGETS DIFFERENTLY, and conflating them is why the
+# first cut produced noise. For a HOT/LIVE surface the health target sits just above today's
+# reviewed size, because unexpected growth is the thing worth knowing about. For an
+# APPEND_HISTORY surface it belongs near the CEILING, because growth is expected and the only
+# useful warning is "the shard threshold is approaching". CHANGELOG.md was given 24 KiB health
+# against a 64 KiB ceiling when it measured 16 KiB; it crossed that target within a day of
+# ordinary work, which is a miscalibrated instrument, not a finding. Family measurements at adoption: docs/tasks/ 5 files / 39,131 B;
 # docs/decisions/ 5 / 8,246; docs/knowledge/ 4 / 6,834; docs/book/ 3 / 947;
 # docs/provenance/ 5 / 10,860. `docs/` itself stays ungoverned as an umbrella: every family
 # inside it carries its own bound, and double-counting would make one row fire for another's
@@ -27,6 +39,18 @@
 #
 # ⛔ Ceilings are DERIVED from this project's own trimmed surfaces, never copied from another
 # project. Raising one requires a reviewed decision that the surface's contract expanded.
+#
+# Re-derivation, SEMULITH-TREES.4, measured once the roadmap conversion made the corpus final:
+#   LIVE_STATUS.md     36 lines / 3,297 B  -> health 45 / 4 KiB (it gains a row per milestone)
+#   docs/TASK_TREE.md  68 lines / 4,277 B  -> health 85 / 5 KiB (one row per ACTIVE tree)
+#   CHANGELOG.md      352 lines / 25,814 B -> health 48 KiB: 75% of its 64 KiB shard threshold
+#   DEV_NOTES.md       50 lines /  3,759 B -> health 36 KiB: 75% of its 48 KiB shard threshold
+#   docs/tasks/        17 files / 133,074 B, largest member SEMULITH-PKG.md at 35,395 B
+#                      -> health 24 files / 192 KiB; ceiling 40 / 384 KiB; per-part 64 KiB.
+#                      Eleven milestone trees will each grow as their leaves gain evidence —
+#                      SEMULITH-PKG.md reached 35 KiB with seven leaves archived — so the
+#                      per-part ceiling is the one that actually bites, and it bites on the
+#                      right thing: a tree whose archive should be compacted or split.
 #
 # Derivation, SEMULITH-PKG.4, measured on the trimmed surfaces:
 #   README.md         67 lines / 3,719 B -> health = today, ceiling ~1.27x lines, ~1.31x bytes
@@ -40,27 +64,27 @@
 # it; these sit a deliberate band below their ceiling instead.
 #
 #destination	route_class	lifecycle	owner	health_lines	health_bytes	ceiling_lines	ceiling_bytes
-README.md	both	hot_live	README-STABILITY doctrine	67	3719	85	4864
-README_POLICY.md	reader_navigation	normative	this policy; changes by reviewed decision	0	0	0	0
-MEMORY.md	reader_navigation	hot_live	MEMORY-ARCH doctrine (layer A caps)	30	1792	50	7168
-LIVE_STATUS.md	reader_navigation	hot_live	COMMIT.md; rows are states, not prose	45	2816	90	6144
-ROADMAP.md	both	normative	the plan; superseded by version, not appended to	0	0	0	24576
-RULES.md	reader_navigation	normative	stable rule IDs; changes by reviewed decision	0	0	0	16384
-TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	12288
-COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288
-CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192
-AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096
-MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally owned	0	0	0	32768
-DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480
-CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	24576	0	65536
-DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	12288	0	49152
-KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768
-docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0
-docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	65	3584	110	8192
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	12	65536	25	262144
-docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072
-docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304
-docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288
-docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536
-docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768
-docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384
+README.md	both	hot_live	README-STABILITY doctrine	67	3719	85	4864	0
+README_POLICY.md	reader_navigation	normative	this policy; changes by reviewed decision	0	0	0	0	0
+MEMORY.md	reader_navigation	hot_live	MEMORY-ARCH doctrine (layer A caps)	30	1792	50	7168	0
+LIVE_STATUS.md	reader_navigation	hot_live	COMMIT.md; rows are states, not prose	45	4096	90	6144	0
+ROADMAP.md	both	normative	the plan; superseded by version, not appended to	0	0	0	24576	0
+RULES.md	reader_navigation	normative	stable rule IDs; changes by reviewed decision	0	0	0	16384	0
+TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	12288	0
+COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288	0
+CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192	0
+AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0
+MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally owned	0	0	0	32768	0
+DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480	0
+CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
+DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
+KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
+docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0
+docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	85	5120	110	8192	0
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	24	196608	40	393216	65536
+docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
+docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
+docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
+docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
+docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
+docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

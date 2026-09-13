@@ -19,7 +19,14 @@ git grep -[a-zA-Z]
 wc -[lc]
 #
 # This repository's own gate verdict lines — the output an author re-runs and pastes.
-(MEMORY-ARCH|DOCPATH|TASK-TREE-OWNERSHIP|TASK-ACCEPTANCE|WAIVER-ROUTING|README-STABILITY|LIVE-DOC-CURRENCY|LESSON-PROMOTION|ROUTING-EVIDENCE|GAP-CLAIM-CENSUS|TABLE-ARITY-RATCHET|KNOWLEDGE-MAP|DELIVERY-PROVENANCE|FIXTURE-FINGERPRINT):
+# ⛔ This was an ENUMERATED list of doctrine names and it fell behind the registry twice: a new
+# project doctrine printed a verdict the gate did not recognise, and the author's honest
+# evidence was refused. A list that must be edited whenever a sibling file changes is a list
+# that will be stale. The pattern below matches the SHAPE every gate here prints —
+# SCREAMING-KEBAB identifier, colon, space — so a new doctrine is covered on the day it exists.
+# Its over-match (any such identifier in prose) is bounded by the same honest limit the whole
+# doctrine carries: it proves the author cited something re-runnable, never that it is true.
+[A-Z][A-Z0-9]+(-[A-Z0-9]+)+: 
 #
 # Content-hash instruments and the hashes they print — this project pins fingerprints, so a
 # recorded digest IS the tool output.

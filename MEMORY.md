@@ -13,11 +13,12 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `SEMULITH-TREES` — represent the whole roadmap as task-trees.
-- **Frontier leaf:** `SEMULITH-TREES.4` — re-review `docs/tasks/` bounds; sync the book.
-- **Next action:** all 11 lanes are trees. Re-review `docs/tasks/` health/ceiling against the
-  final corpus (it is over its health target, written when three trees existed), add the book's
-  task-tree map, then execute `P0-PROFILE.1` — the `rv64i-lab-v0` dossier.
-- **Latest commit:** see `git log -1` — `SEMULITH-TREES-0011 (leaf SEMULITH-TREES.3)`.
+- **Active tree:** none. `SEMULITH-PKG` and `SEMULITH-TREES` are both `done`.
+- **Next tree:** `P0-PROFILE` — frontier leaf `.1`, the `rv64i-lab-v0` profile dossier.
+- **Next action:** execute `P0-PROFILE.1` — pin the RV64I specification revision by exact
+  locator and write the `rv64i-lab-v0` dossier: instruction scope, entry state, memory
+  boundaries, access/misalignment policy, fetch rules, environment-trap reporting; every field
+  source-linked or a recorded open question with an owner.
+- **Latest commit:** see `git log -1` — `SEMULITH-TREES-0012 (leaf SEMULITH-TREES.4)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

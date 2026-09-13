@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `SEMULITH-TREES`
-- Status: `active`
+- Status: `done`
 - Roadmap lane: project foundation (precedes P0 execution)
 - Created: `2026-09-13`
 - Owner: repo-local workflow
@@ -33,35 +33,57 @@ before its work depends on them.
 - `docs/tasks/`'s family bounds are re-reviewed against the resulting corpus, not exceeded.
 - The book's milestone chapters and the live docs reflect the conversion in the same commits.
 
-## Acceptance Checklist (current leaf — `SEMULITH-TREES.3`)
+## Acceptance Checklist (current leaf — `SEMULITH-TREES.4`)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: five lanes still had no tree.
-  `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `6` before
-  this leaf, against eleven lanes in `ROADMAP.md` §6 — the graph's `P5`, `AG`, `P6`, `P7` and
-  `MC` nodes were unowned. `AG` and `MC` are the two most dangerous of them: `AG` is the lane
-  where another project's interfaces enter this one, and `MC` is the lane where a capability is
-  most easily claimed by adding host threads.
-- [x] **ADDRESSED (verified)** — five trees created and registered: `P5-BOARD` (7 leaves, gate
-  `BOARD`), `AG-OS` (8 leaves, gate `ARCHOGEN-OS`), `P6-LINUX` (8 leaves, gate `LINUX`),
-  `P7-COMPUTER` (7 leaves, gate `SYSTEM`), `MC-MULTICORE` (7 leaves, its own gate). Census
-  after: `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `11`
-  — **every lane of `ROADMAP.md` §6 now has an owner.**
-- [x] **NO REGRESSION** — `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`;
-  `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`. `README-ROUTING-CLOSURE`
-  re-measured `docs/tasks/` and reports it inside its enforced ceiling while **over its health
-  target** — which is the two-tier design working as intended, and is leaf `.4`'s subject.
-  Leg 2, stated honestly: the oracle for *"this tree matches the plan"* is the plan, so every
-  leaf cites its roadmap section, contract section, rule ID or archogen obligation. A reader
-  refutes a leaf by reading one paragraph.
-- [x] **FIX** — `P5-BOARD.md`, `AG-OS.md`, `P6-LINUX.md`, `P7-COMPUTER.md`, `MC-MULTICORE.md`
-  created and registered.
-- [x] **LOCKSTEP** — `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` updated
-  in this commit.
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: bounds written for a three-tree repository were
+  still governing an eleven-lane one, and the partitioned-family control was incomplete.
+  Measured: `git ls-files docs/tasks | wc -l` → `17` files, `133074` aggregate bytes against a
+  `65536` health target set when the family held 5 files / 39,131 bytes — and
+  `docs/tasks/SEMULITH-PKG.md` alone is `35395` bytes. `README_POLICY.md` requires a partitioned
+  family to carry **per-part**, file-count and aggregate ceilings; the registry had only the
+  last two, so one member could become the monolith the split was meant to avoid, invisibly.
+  Separately, `CHANGELOG.md` crossed its health target within a day of ordinary work
+  (`25814` bytes against `24576`), which is a miscalibrated instrument rather than a finding.
+- [x] **ADDRESSED (verified)** — a ninth column, `ceiling_part_bytes`, now bounds the largest
+  member of a directory family, and the bounds are re-derived from the final corpus with the
+  derivation recorded in the registry header. `README-ROUTING-CLOSURE: ok (24 governed
+  destination(s))` with **no health warnings**, where the previous run printed four.
+  ⭐ The calibration insight is recorded because it is what made the first cut noisy: a
+  **hot/live** surface's health target sits just above today's reviewed size, because
+  unexpected growth is the signal; an **append_history** surface's belongs near its ceiling,
+  because growth is expected and the only useful warning is that the shard threshold is
+  approaching. `CHANGELOG.md` and `DEV_NOTES.md` moved to 75% of their ceilings for that reason
+  — their ceilings were not touched.
+- [x] **NO REGRESSION** — leg 2: the new ceiling was fired against the **real** corpus, not
+  only a fixture. Temporarily setting `docs/tasks/`'s per-part ceiling to `20000` produced
+  `OVER CEILING docs/tasks/: part docs/tasks/SEMULITH-PKG.md` / `35395 bytes > 20000` — the
+  right member, the right number — and the registry was restored to `ok`. That control also
+  exposed a usability defect in itself: it first printed an **absolute** path, which the
+  `DOCPATH` doctrine would refuse inside a task leaf, so an author pasting this tool's own
+  output as evidence would have been blocked by a different gate for a defect in this one. Now
+  repo-relative. `README-ROUTING-CLOSURE --self-test: 12 pass / 0 fail` (9 RED arms);
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`; `mdbook build docs/book` → `HTML book written`.
+- [x] **FIX** — `ceiling_part_bytes` added to the registry and the checker; bounds re-derived;
+  the book's task-tree chapter now includes the live tree index by mdBook anchor, verified
+  rendered (`P4-SYSTEM` present in the built HTML, anchor markers absent). Also:
+  `.doctrine/evidence_tokens.txt`'s **enumerated** list of doctrine names had fallen behind the
+  registry for the second time — this leaf's own `README-ROUTING-CLOSURE: ok (24 governed
+  destination(s))` evidence was refused by `TASK-ACCEPTANCE` because the doctrine post-dated
+  the list. A list that must be edited whenever a sibling file changes will be stale, so it is
+  now the **shape** every gate here prints, `[A-Z][A-Z0-9]+(-[A-Z0-9]+)+: `, verified against
+  five real verdict lines (`README-ROUTING-CLOSURE`, `DELIVERY-PROVENANCE`,
+  `FIXTURE-FINGERPRINT`, `README-STABILITY`, `TASK-ACCEPTANCE`) — all `MATCH`. Firing the gate
+  RED afterwards (this box replaced by *"I thought about it and I am confident"*) still gave
+  `rc=1`, so the generalization did not make it vacuous.
+- [x] **LOCKSTEP** — leg 3: every bound is enforced on every commit, and the derivation sits in
+  the file that holds the numbers. `docs/TASK_TREE.md` gained the anchors, `MEMORY.md`,
+  `LIVE_STATUS.md` and `CHANGELOG.md` are updated in this commit.
 
 ## Task Tree
 
 - ID: `SEMULITH-TREES`
-  Status: `active`
+  Status: `done`
   Goal: represent the whole roadmap as task-trees
   Children: `SEMULITH-TREES.1` … `SEMULITH-TREES.4`
 
@@ -87,17 +109,17 @@ before its work depends on them.
   Commit: `SEMULITH-TREES-0011`
 
 - ID: `SEMULITH-TREES.4`
-  Status: `pending`
+  Status: `done`
   Goal: re-review `docs/tasks/` family bounds against the resulting corpus; sync the book and live docs.
   Acceptance: measured file count and aggregate bytes recorded with a derivation; ceilings adjusted only with a stated contract expansion; `README-ROUTING-CLOSURE` green with no health warning.
-  Verification: `pending`
-  Commit: `pending`
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-TREES-0012`
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SEMULITH-TREES.4` | `pending` | the corpus is final, and `docs/tasks/` is over its health target — the bound written for three trees was never reviewed against eleven |
+| — | — | — | **tree complete (4/4).** All eleven roadmap lanes are task-trees. The next work is execution: `P0-PROFILE.1`, the `rv64i-lab-v0` profile dossier. |
 
 ## Decisions
 
@@ -119,6 +141,31 @@ before its work depends on them.
 - None.
 
 ## Completed-leaf evidence (archive)
+
+### `SEMULITH-TREES.3` — the system lane
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: five lanes still had no tree.
+  `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `6` before
+  this leaf, against eleven lanes in `ROADMAP.md` §6 — the graph's `P5`, `AG`, `P6`, `P7` and
+  `MC` nodes were unowned. `AG` and `MC` are the two most dangerous of them: `AG` is the lane
+  where another project's interfaces enter this one, and `MC` is the lane where a capability is
+  most easily claimed by adding host threads.
+- [x] **ADDRESSED (verified)** — five trees created and registered: `P5-BOARD` (7 leaves, gate
+  `BOARD`), `AG-OS` (8 leaves, gate `ARCHOGEN-OS`), `P6-LINUX` (8 leaves, gate `LINUX`),
+  `P7-COMPUTER` (7 leaves, gate `SYSTEM`), `MC-MULTICORE` (7 leaves, its own gate). Census
+  after: `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `11`
+  — **every lane of `ROADMAP.md` §6 now has an owner.**
+- [x] **NO REGRESSION** — `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`;
+  `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`. `README-ROUTING-CLOSURE`
+  re-measured `docs/tasks/` and reports it inside its enforced ceiling while **over its health
+  target** — which is the two-tier design working as intended, and is leaf `.4`'s subject.
+  Leg 2, stated honestly: the oracle for *"this tree matches the plan"* is the plan, so every
+  leaf cites its roadmap section, contract section, rule ID or archogen obligation. A reader
+  refutes a leaf by reading one paragraph.
+- [x] **FIX** — `P5-BOARD.md`, `AG-OS.md`, `P6-LINUX.md`, `P7-COMPUTER.md`, `MC-MULTICORE.md`
+  created and registered.
+- [x] **LOCKSTEP** — `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` updated
+  in this commit.
 
 ### `SEMULITH-TREES.2` — the CPU lane
 
@@ -182,6 +229,10 @@ before its work depends on them.
 | `2026-09-13` | `SEMULITH-TREES.2` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
 | `2026-09-13` | `SEMULITH-TREES.3` | milestone-tree census before/after | `6` → `11` — every `ROADMAP.md` §6 lane owned |
 | `2026-09-13` | `SEMULITH-TREES.3` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
+| `2026-09-13` | `SEMULITH-TREES.4` | `docs/tasks/` corpus measurement | `17` files, `133074` bytes, largest member `35395` |
+| `2026-09-13` | `SEMULITH-TREES.4` | per-part ceiling fired on the real corpus | named `docs/tasks/SEMULITH-PKG.md`, `35395 > 20000`; restored `ok` |
+| `2026-09-13` | `SEMULITH-TREES.4` | `check_readme_routes.sh --self-test` | `12 pass / 0 fail` (9 RED arms) |
+| `2026-09-13` | `SEMULITH-TREES.4` | `README-ROUTING-CLOSURE` after re-derivation | `ok (24 governed)`, **0 health warnings** (was 4) |
 
 ## Commit Log
 
@@ -190,9 +241,13 @@ before its work depends on them.
 | `SEMULITH-TREES.1` | `SEMULITH-TREES-0009 (leaf SEMULITH-TREES.1): the near-term lane as task-trees` | `P0-PROFILE` 9 leaves, `P1-LAB` 12 leaves |
 | `SEMULITH-TREES.2` | `SEMULITH-TREES-0010 (leaf SEMULITH-TREES.2): the CPU lane as task-trees` | `P2-SCALAR` 9, `DSP-REVIEW` 7, `P3-BREADTH` 6, `P4-SYSTEM` 10 |
 | `SEMULITH-TREES.3` | `SEMULITH-TREES-0011 (leaf SEMULITH-TREES.3): the system lane as task-trees` | `P5-BOARD` 7, `AG-OS` 8, `P6-LINUX` 8, `P7-COMPUTER` 7, `MC-MULTICORE` 7 |
+| `SEMULITH-TREES.4` | `SEMULITH-TREES-0012 (leaf SEMULITH-TREES.4): bound the task-tree family per part` | 9th column; bounds re-derived; book gains the live tree map |
 
 ## Changelog
 
 - `2026-09-13`: Created task tree; `SEMULITH-TREES.1` completed.
 - `2026-09-13`: `SEMULITH-TREES.2` completed — the CPU lane, both processor gates now owned.
 - `2026-09-13`: `SEMULITH-TREES.3` completed — all eleven roadmap lanes are task-trees.
+- `2026-09-13`: `SEMULITH-TREES.4` completed and **the tree is done**. The partitioned-family
+  control is now complete (per-part + file-count + aggregate), and the health targets are
+  calibrated by lifecycle rather than by one rule for every surface.

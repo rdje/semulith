@@ -15,7 +15,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Doctrine seams declared | Done | `.doctrine/code_paths.txt` and `evidence_tokens.txt`, each measured against the tracked corpus and fired |
 | README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
 | mdBook is the review surface | Done | 27 chapters; contracts included verbatim so the book cannot become a second owner |
-| Roadmap converted to task-trees | Mostly Done | `SEMULITH-TREES` — all 11 lanes are trees; `.4` re-reviews family bounds and the book |
+| Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 
