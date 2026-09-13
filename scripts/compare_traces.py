@@ -65,11 +65,15 @@ TRAP_NAMES: dict[str, int] = {
     "fetch-access-fault": 0x01,
     "illegal-instruction": 0x02,
     "misaligned-store": 0x06,
+    "load-access-fault": 0x05,
+    "store-access-fault": 0x07,
     # spike 1.1.1-dev spellings
     "trap_load_address_misaligned": 0x04,
     "trap_instruction_access_fault": 0x01,
     "trap_illegal_instruction": 0x02,
     "trap_store_address_misaligned": 0x06,
+    "trap_load_access_fault": 0x05,
+    "trap_store_access_fault": 0x07,
 }
 
 

@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `P0-PROFILE`
-- Status: `done` (gate `G0` run; verdict `incomplete`, and that verdict is the deliverable)
+- Status: `done` (reopened once, for `.10` — a measured defect the first nine leaves carried)
 - Roadmap lane: `ROADMAP.md` §6 → **P0 — Select and establish the first experiment**
 - Gate: `G0`
 - Depends on: nothing
@@ -95,6 +95,13 @@ environment contract, three representative guest programs, and the evidence-obli
   Verification: 3 programs (arithmetic, control flow, memory/fault); 28 expected values and 3 negative observations, all sourced; both models agree over all three; the B/J layouts derived from a pinned table rather than typed.
   Commit: `SEMULITH-P0-0028`
 
+- ID: `P0-PROFILE.10` — **match the PLATFORM, not only the instruction set**
+  Status: `done`
+  Goal: the matched-profile override configured the ISA and nothing else, so the reference kept a device-bearing default platform underneath a correct ISA string. Configure the platform, correct every claim that rested on the unconfigured one, and hold the repair with a negative fixture.
+  Acceptance: the probes that exposed it now fault; the original guests still agree; every refuted claim is corrected at its source, not reworded.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-P0-0031`
+
 - ID: `P0-PROFILE.9` — **evidence-obligation policy and the `G0` report**
   Status: `done`
   Goal: declare, *before* implementation, what kind of evidence each obligation class requires (`EVD-03`); then generate the gate report from pinned inputs.
@@ -106,7 +113,7 @@ environment contract, three representative guest programs, and the evidence-obli
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | **tree complete (9/9).** Gate `G0` has been RUN and reads **`incomplete`** — its three criteria are met, and 66 declared checks are unimplemented, which is the honest reason it is not `passed`. The next tree is `P1-LAB`: the three crates, the graph checker and the mutation suite, which is where those 66 checks acquire fixtures. Open it only with the repository clean (the pivot rule). |
+| — | — | — | **tree complete (10/10), reopened once.** Gate `G0` has been RUN and reads **`incomplete`** — its three criteria are met, and 66 declared checks are unimplemented, which is the honest reason it is not `passed`. ⛔ `.10` corrected a defect the first nine leaves carried: the profile was matched on its instruction set and not on its platform. The next tree is `MODEL-BOOKS` (unblocked by `.10`), then `P1-LAB`. Open either only with the repository clean (the pivot rule). |
 
 ## Decisions
 
@@ -175,7 +182,86 @@ than a failure.
 
 - None.
 
-## Acceptance Checklist (current leaf — `P0-PROFILE.9`)
+## Acceptance Checklist (current leaf — `P0-PROFILE.10`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: the override at
+  `reference/sail-rv64i-lab-v0.override.json` set `base`, `memory.misaligned` and `extensions`.
+  WHY: `--print-isa-string` returned `rv64i_zvl32b` and that was read as *"matched"* — but an ISA
+  string describes an **instruction set**, not a machine. Underneath it the reference kept its
+  default platform. Established by probe rather than by reading the config:
+
+  ```
+  $ grep -c '"platform"' profiles/rv64i-lab-v0/reference/sail-rv64i-lab-v0.override.json
+  0                                    # the platform was never configured, only the ISA
+  $ sail_riscv_sim --config-override <override> --trace-clint  probe-time.elf
+  [5] ld x1, 0x0(x10)
+  clint[0x000000000000BFF8] -> 0x0000000000000002
+  x1 <- 0x0000000000000002
+  [6] ld x2, 0x0(x10)
+  clint[0x000000000000BFF8] -> 0x0000000000000003     # ADVANCING
+  ```
+
+  A guest read a monotonically advancing time source with a **plain load** — no CSR instruction —
+  which is why excluding `Zicsr` never excluded reading time. Four committed claims are refuted:
+  `OB-ENV-VIRTUAL-TIME` ("no time source is modelled"), `OB-ENV-EVENT-DELIVERY` ("no interrupt
+  controller ... no privileged mode"), `D-MAIN-VS-IO` ("no I/O region is declared") and
+  `privilege_modes = []` — every trace line in this repository reads `[M]`, because a RISC-V hart
+  is always in at least machine mode.
+  ⛔ This is the `zero-hits-absence-or-blindness` lesson in a new costume: not an instrument that
+  could not see, but **an instrument answering a narrower question than the one asked**. It gave a
+  single confident string, and the string was true.
+
+- [x] **ADDRESSED (verified)** — corrected at source, not reworded. The override now configures
+  `platform.clint.supported = false`, the interrupt generator off, all three machine interrupt
+  sources off, and `memory.regions` reduced to the single MainMemory region the profile declares.
+  Before → after on the two probes, same binaries:
+
+  ```
+  before: clint[0x…BFF8] -> 0x2 ; x1 <- 0x2          # a device answered
+  after : trapping from M to M to handle load-access-fault
+          handling exc#load-access-fault … tval=0x000000000200BFF8
+  ```
+
+  `profile.toml` gains `D-PLATFORM` and corrects `D-MAIN-VS-IO` and `privilege_modes = ["M"]`;
+  decisions 25 → 26, requirements 25 → 26, obligations 33 → 34, all regenerated and validating
+  (`RECORD-SCHEMA: ok (5 record file(s) …)`). Recorded differences 4 → 6.
+
+- [x] **NO REGRESSION** — leg 2, and the load-bearing measurement is that the repair changed
+  nothing it should not: `scripts/run_smoke.py` → all three original guests still
+  `AGREE over 12 / 13 / 3 aligned step(s)` and reproduce byte-identically. The repair is held
+  permanently by a **tracked negative fixture**, `guests/guest-no-device.s`, which reads CLINT
+  `mtime` and must fault — so a device becoming reachable again turns the run red rather than
+  quiet. Whole gate `=== all doctrines green ===`; `make check` →
+  `test result: ok. 1 passed; 0 failed`.
+  ⭐ **Spike is not platform-matched and cannot be**, which is enumerated rather than fixed. It
+  services the same device load (`mem 0x0000000002000000`); its interruptor is built in and
+  `--device` only *adds* MMIO plugins; and `-m0x80000000:0x10000` kills its own reset vector
+  (`trap_instruction_access_fault, epc 0x0000000000001000`). `SRC-02` makes that a legitimate
+  result that **bounds** the claim: any guest touching `0x1000` or `0x0200_0000..0x11ff_ffff`
+  behaves differently on the two references. The three original guests touch neither — which is
+  now a **stated precondition rather than luck**.
+  ⚠️ Honest scope of the repair: it makes the SAIL reference match the profile. It does not make
+  the profile's environment contract true of every reference, and `DIFF-PLATFORM-SPIKE` says so.
+
+- [x] **FIX** — the override gains `platform` and a MainMemory-only `memory.regions`;
+  `profile.toml` gains `D-PLATFORM` and corrects two claims; the two refuted obligations are
+  rewritten to say *why* the absence is real (a platform property, not an instruction-set one);
+  `guest-no-device.s` + expectations added; the comparator learns the access-fault spellings; the
+  runner honours a recorded `cross_model = false` and **prints the skip** rather than applying it
+  silently.
+
+- `promotion: declined (the lesson is recorded where it bites — ENVIRONMENT.md's closing section, DIFF-PLATFORM-DEFAULT, and this box; the existing zero-hits-absence-or-blindness card already carries the neighbouring rule and a second card would restate both)`
+
+- [x] **LOCKSTEP** — leg 3: the repair is re-run by `scripts/run_smoke.py` on demand and the
+  corrected records are re-validated on every commit. `G0-REPORT.md` regenerated (6 differences,
+  26 requirements, 34 obligations, 68 declared checks); `DOSSIER.md`, `ENVIRONMENT.md`,
+  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⚠️ **What this says about `G0`.** Criterion 3 is *differences enumerated, not assumed absent* —
+  and for four leaves this profile carried differences it had assumed absent. The verdict stays
+  `incomplete` for the same reason as before (68 declared checks, 0 implemented), but criterion 3
+  is now met on evidence rather than on an unexamined configuration.
+
+### `P0-PROFILE.9` — the evidence policy and the gate report
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: eight leaves had produced a profile, a state
   inventory, 25 requirements, 33 obligations, three reference models and three guest programs —

@@ -203,6 +203,19 @@ experiment the condition for calling a reference usable, and that is `P0-PROFILE
 establishes is narrower and worth stating exactly: *we have these binaries, this is which ones
 they are, and each can be configured to something close to this profile.*
 
+### A matched profile is matched on its platform, not only its instruction set
+
+⛔ For four leaves this profile was matched on its **ISA alone**. The override set `extensions`
+and left the reference's default platform in place — a core-local interruptor, an interrupt
+generator and two I/O regions — under a correct ISA string. A probe read `mtime` at `0x0200_BFF8`
+with a plain load and watched it advance. `P0-PROFILE.10` configured the platform, corrected the
+four claims that rested on it (`D-MAIN-VS-IO`, `privilege_modes`, and two environment
+obligations), added `D-PLATFORM`, and holds the repair with `guests/guest-no-device.s`.
+
+The instrument is the lesson: `--print-isa-string` describes an instruction set, and reading it as
+a whole-configuration verdict is what let the gap survive. See `DIFF-PLATFORM-DEFAULT` and
+`DIFF-PLATFORM-SPIKE` in [`references.toml`](references.toml).
+
 ### Two differences that are already known, before any instruction has been run
 
 **The Sail model cannot be configured to exactly `extensions = []`.** Driven down from its

@@ -141,15 +141,28 @@ def experiment(name: str) -> None:
 
     check_expected(name, sail_trace)
 
-    try:
-        a = align(parse_sail(sail_trace.read_text()), ENTRY, "sail")
-        b = align(parse_spike(spike_log.read_text()), ENTRY, "spike")
-        ok, report = compare(a, b, ("sail-riscv", "spike"))
-    except CompareError as exc:
-        ok, report = False, str(exc)
-    say(ok, f"{name}: sail-riscv vs spike", report.splitlines()[0])
-    if not ok:
-        print("\n".join("      " + l for l in report.splitlines()[1:]))
+    # ⚠️ A program may DISABLE the cross-model comparison, and only for a reason recorded as an
+    # enumerated difference — not for convenience. `guest-no-device` is the case: Spike's
+    # core-local interruptor is built in and cannot be removed from the command line, so running
+    # it there would measure a known platform difference rather than a semantic disagreement.
+    # The skip is printed, never silent: an unreported skip is how a suite quietly shrinks.
+    spec = GUESTS / f"{name}.expected.toml"
+    cross = True
+    if spec.is_file():
+        cross = tomllib.loads(spec.read_text()).get("cross_model", True)
+    if not cross:
+        print(f"  SKIP  {name}: sail-riscv vs spike  "
+              f"disabled — see difference DIFF-PLATFORM-SPIKE in references.toml")
+    else:
+        try:
+            a = align(parse_sail(sail_trace.read_text()), ENTRY, "sail")
+            b = align(parse_spike(spike_log.read_text()), ENTRY, "spike")
+            ok, report = compare(a, b, ("sail-riscv", "spike"))
+        except CompareError as exc:
+            ok, report = False, str(exc)
+        say(ok, f"{name}: sail-riscv vs spike", report.splitlines()[0])
+        if not ok:
+            print("\n".join("      " + l for l in report.splitlines()[1:]))
 
     repeat = OUT / f"{name}.sail.rerun.trace"
     run_sail(elf, n, repeat)
@@ -164,15 +177,15 @@ def main() -> int:
                   file=sys.stderr)
             return 2
     print(f"matched-profile experiment for {PROFILE}")
-    for name in ("smoke-arith", "guest-control", "smoke-trap"):
+    for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device"):
         experiment(name)
     print()
     if failures:
         print(f"run_smoke: FAILED ({len(failures)} check(s)): {', '.join(failures)}",
               file=sys.stderr)
         return 1
-    print("run_smoke: ok — both experiments agree across two models, match the "
-          "specification-derived expectations, and reproduce")
+    print("run_smoke: ok — every program matches its specification-derived expectations and "
+          "reproduces; every cross-model comparison that is enabled agrees")
     return 0
 
 

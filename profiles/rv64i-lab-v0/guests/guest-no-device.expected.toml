@@ -1,0 +1,61 @@
+# guest-no-device.expected.toml — expected observations for `guest-no-device.s`.
+#
+# ⛔ The expected observation is a FAULT, and x1 must never be written. A model whose platform
+# still carries a core-local interruptor returns a time value here instead — which is exactly what
+# the matched reference did before `P0-PROFILE.10`, and exactly what no positive expectation would
+# have caught.
+
+program = "guest-no-device.s"
+entry = "0x80000000"
+instructions = 6
+never_written = ["x1"]
+
+# ⚠️ CROSS-MODEL COMPARISON IS DISABLED FOR THIS PROGRAM, and the reason is a recorded difference
+# rather than a convenience: Spike's core-local interruptor is built into the simulator and cannot
+# be removed from the command line, and its reset vector requires a region at 0x1000 that a
+# main-memory-only map removes. Sail's platform is configurable and IS matched; Spike's is not.
+# Running this program on Spike therefore measures the enumerated difference DIFF-PLATFORM-SPIKE,
+# not a semantic disagreement. See references.toml.
+cross_model = false
+
+[[step]]
+n = 0
+insn = "addi x10, x0, 1"
+writes = { x10 = "0x0000000000000001" }
+derivation = "Building the device base arithmetically; LUI cannot produce a positive 0x0200_0000 in one step here."
+source = "RVI-RV32I §1.1.4"
+
+[[step]]
+n = 1
+insn = "slli x10, x10, 25"
+writes = { x10 = "0x0000000002000000" }
+derivation = "1 << 25 = 0x0200_0000, the default platform's core-local interruptor base."
+source = "RVI-RV64I §3.1.2.1"
+
+[[step]]
+n = 2
+insn = "lui x11, 0xc"
+writes = { x11 = "0x000000000000C000" }
+derivation = "U-immediate 0xC occupies bits 31..12, giving 0xC000; the value is positive so sign extension is a no-op."
+source = "RVI-RV64I §3.1.2.1"
+
+[[step]]
+n = 3
+insn = "addi x11, x11, -8"
+writes = { x11 = "0x000000000000BFF8" }
+derivation = "0xC000 - 8 = 0xBFF8, the mtime offset within the interruptor."
+source = "RVI-RV32I §1.1.4"
+
+[[step]]
+n = 4
+insn = "add x10, x10, x11"
+writes = { x10 = "0x000000000200BFF8" }
+derivation = "The full device address."
+source = "RVI-RV32I §1.1.4"
+
+[[step]]
+n = 5
+insn = "ld x1, x10, 0"
+writes = { }
+derivation = "0x0200_BFF8 lies outside every region the laboratory platform declares, so the access raises a load access-fault and x1 is NOT written. ⛔ Before the platform was matched this same instruction returned a monotonically advancing value (observed: 2, then 3), which is the defect this fixture exists to prevent recurring."
+source = "RVI-RV32I §1.1.6; RVI-INTRO, Memory — decisions D-ADDRESS-SPACE and D-PLATFORM"

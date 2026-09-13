@@ -201,6 +201,18 @@ kind = "observable"
 observed = "The Sail model performs TWO 16-bit fetch reads per 32-bit instruction (`mem[X,0x…0] -> 0x0513`, `mem[X,0x…2] -> 0x0010`), even with IALIGN=32 and no compressed extension."
 resolution = "Recorded, not normalized. `D-FETCH-IMPLICIT` says every executed instruction entails an implicit fetch read; it does not say how many. This is below the granularity this profile observes, but a future memory-access comparison would see it, so it is written down before it surprises someone."
 
+[[difference]]
+id = "DIFF-PLATFORM-DEFAULT"
+kind = "configuration — CORRECTED, not merely recorded"
+observed = "⛔ The matched-profile override configured the INSTRUCTION SET and nothing else. `--print-isa-string` read `rv64i_zvl32b`, which was taken as \"matched\" — but it answers a narrower question than that. Underneath the correct ISA the reference kept its default platform: a core-local interruptor at 0x0200_0000, a simple interrupt generator at 0x0C00_0000, machine software/timer/external interrupts all `supported: true`, and TWO IOMemory regions (0x1000 and 0x0200_0000..0x11ff_ffff). Measured by probe: a guest read CLINT `mtime` at 0x0200_BFF8 with a plain `ld` — no CSR instruction needed — and the value ADVANCED across reads (2, then 3)."
+resolution = "CORRECTED at P0-PROFILE.10, not enumerated away. The override now sets `platform.clint.supported = false`, the interrupt generator off, all three machine interrupt sources off, and `memory.regions` to the single MainMemory region the profile declares. Both probes now raise `load-access-fault` (tval 0x0200_0000 and 0x0200_BFF8), and all three original guests still agree over 28 aligned steps. The repair is held by a tracked negative fixture, `guests/guest-no-device.s`, which fails the run if a device becomes reachable again. ⭐ The lesson is the instrument: an ISA string describes an instruction set, and reading it as a whole-configuration verdict is what let this survive four leaves."
+
+[[difference]]
+id = "DIFF-PLATFORM-SPIKE"
+kind = "platform — IRREDUCIBLE with the available controls"
+observed = "Spike is NOT platform-matched and cannot be, from its command line. It services the same load from 0x0200_0000 (`x1 0x0 … mem 0x0000000002000000`): its core-local interruptor is built into the simulator, and `spike --help` offers no option to remove it — `--device` only ADDS MMIO plugins. Restricting the map with `-m0x80000000:0x10000` does not help either: Spike's own reset vector lives at 0x1000 and the run then dies with `trap_instruction_access_fault, epc 0x0000000000001000`."
+resolution = "Enumerated rather than fixed, which `SRC-02` makes a legitimate result that BOUNDS a claim. The consequence is stated precisely: any guest touching 0x1000 or 0x0200_0000..0x11ff_ffff will behave differently on the two references. The three original guests touch neither, which is why they agree — and that is now a STATED PRECONDITION rather than luck. `guest-no-device` disables its cross-model comparison for this reason, and the skip is printed on every run rather than silently applied."
+
 # ──────────────────────────────────────────── the independence inventory (P0-PROFILE.7, EVD-04)
 # ⛔ TWO TOOLS WITH DIFFERENT NAMES ARE NOT TWO OPINIONS. `EVD-04` requires shared semantic code
 # or shared expected-result derivation to be EXAMINED per subsystem, and both known common

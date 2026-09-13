@@ -28,7 +28,9 @@ xlen = 64
 ilen = 32
 ialign = 32
 extensions = []                      # none. No C, M, A, F, D, Zicsr, Zifencei.
-privilege_modes = []                 # none modelled: unprivileged base ISA only
+privilege_modes = ["M"]              # M-mode ONLY. Not "none": a RISC-V hart is always
+                                     # in at least machine mode, and every reference trace
+                                     # line reads `[M]`. S, U and H are excluded.
 sources = ["RVI-INTRO", "RVI-RV32I", "RVI-RV64I"]
 
 # ─────────────────────────────────────────────────────────────── architectural state
@@ -221,5 +223,13 @@ note = "Catalog C13. A prime differential-testing trap: the model and a caching 
 [[decision]]
 id = "D-MAIN-VS-IO"
 authority = "execution-environment"
-statement = "All declared regions are MAIN MEMORY: reads and writes have no visible side effects. No I/O region is declared, which is why D-MISALIGN-DATA can raise address-misaligned rather than substituting access-fault."
+statement = "Every region this profile declares is MAIN MEMORY: reads and writes have no visible side effects. The profile declares no I/O region, which is why D-MISALIGN-DATA can raise address-misaligned rather than substituting access-fault. A reference whose default platform supplies I/O regions must be configured to remove them before it is a matched profile — see D-PLATFORM."
 source = "RVI-INTRO, Memory"
+note = "Corrected by P0-PROFILE.10. The earlier wording asserted that no I/O region is declared FULL STOP, which was true of the profile and false of the matched reference: its default platform placed a CLINT at 0x0200_0000 and a second I/O region at 0x1000, and a probe read CLINT mtime with a plain load."
+
+[[decision]]
+id = "D-PLATFORM"
+authority = "laboratory"
+statement = "The laboratory platform declares exactly one region — the MainMemory region of the harness memory map — and NO devices: no core-local interruptor, no interrupt generator, and no machine software, timer or external interrupt source. A reference model is not matched to this profile until its platform is configured to the same shape, not merely its instruction set."
+source = "RVI-INTRO, RISC-V Software Execution Environments and Harts"
+note = "Added by P0-PROFILE.10 after a measured defect: the matched-profile override configured the ISA and nothing else, so the reference kept a QEMU-virt-shaped platform underneath a correct ISA string. `--print-isa-string` answers a narrower question than 'is this matched', and reading it as the whole answer is what let the gap survive four leaves."

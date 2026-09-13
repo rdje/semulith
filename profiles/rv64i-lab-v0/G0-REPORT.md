@@ -10,7 +10,7 @@
 ## Why this verdict
 
 `EVD-08` forbids a report that reads `passed` while a required check is missing. This
-profile declares **66 required checks** across 33 obligations, of
+profile declares **68 required checks** across 34 obligations, of
 which **0 are implemented** —
 measured by taking each concrete check id the contract declares and asking whether any
 tracked executable under `scripts/` or `crates/` names it. Not asserted, and not inferred
@@ -21,11 +21,11 @@ generator has no code path that would produce it while that is true.
 
 | Input | Contents |
 | --- | --- |
-| `profile.toml` | 25 decisions, 52 mnemonics, XLEN 64, extensions `[]` |
-| `requirements.jsonl` | 25 requirements |
-| `contract-obligations.jsonl` | 33 obligations, 66 declared checks |
-| `references.toml` | 4 candidates, 2 experiments, 6 independence records, 4 recorded differences |
-| `guests/*.expected.toml` | 3 programs, 28 expected steps, 3 negative observations |
+| `profile.toml` | 26 decisions, 52 mnemonics, XLEN 64, extensions `[]` |
+| `requirements.jsonl` | 26 requirements |
+| `contract-obligations.jsonl` | 34 obligations, 68 declared checks |
+| `references.toml` | 4 candidates, 2 experiments, 6 independence records, 6 recorded differences |
+| `guests/*.expected.toml` | 4 programs, 34 expected steps, 4 negative observations |
 
 ## Criterion 1 — foundational semantics are resolved
 
@@ -34,7 +34,7 @@ Every requirement carries a source locator, and its research status is recorded.
 | Semantic class | Requirements |
 | --- | --- |
 | `defined` | 13 |
-| `implementation-defined` | 10 |
+| `implementation-defined` | 11 |
 | `reserved` | 1 |
 | `unspecified` | 1 |
 
@@ -65,6 +65,8 @@ trap as well as arithmetic.
 | `DIFF-RESET-VECTOR` | harness |
 | `DIFF-TRAP-RECORD-SHAPE` | trace vocabulary |
 | `DIFF-FETCH-GRANULARITY` | observable |
+| `DIFF-PLATFORM-DEFAULT` | configuration — CORRECTED, not merely recorded |
+| `DIFF-PLATFORM-SPIKE` | platform — IRREDUCIBLE with the available controls |
 
 | Independence: subsystem | Pair | Verdict |
 | --- | --- | --- |
@@ -81,7 +83,7 @@ pair reads exactly like an independent one.
 
 ## Limitations (`EVD-08`)
 
-1. **66 checks are declared and 0 implemented.** They name
+1. **68 checks are declared and 0 implemented.** They name
    fixtures a later milestone builds. This is the reason for the verdict.
 2. **No CPU model exists.** `crates/` holds the scaffold's placeholder; every requirement is
    `implementation_status: planned`. Nothing here is evidence about an implementation.

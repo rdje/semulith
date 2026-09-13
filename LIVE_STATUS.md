@@ -19,8 +19,8 @@ summarize the snapshot in every commit-workflow completion message.
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
 | Reference models acquired | Done | 3 obtained and pinned (Sail RISC-V 0.14, Spike `1e05ddac`, QEMU 11.1.1); ACT located, unacquired. `scripts/fetch_references.sh` re-derives every pin |
-| Matched-profile evidence path | Done | `P0-PROFILE.6`/`.8` — **3 guest programs** (arithmetic, control flow, memory/fault); 2 models agree over 28 aligned steps; 28 spec-derived values + 3 negative observations; 4 differences; all reproduce. `scripts/run_smoke.py` |
-| Requirements catalogue seeded | Done | `P0-PROFILE.3` — 25 machine-readable records, one per decision, validated by a tracked schema validator |
+| Matched-profile evidence path | Done | `P0-PROFILE.6`/`.8`/`.10` — **4 guest programs** (arithmetic, control flow, memory/fault); 2 models agree over 28 aligned steps; 34 spec-derived values + 4 negative observations; 6 differences; all reproduce. `scripts/run_smoke.py` |
+| Requirements catalogue seeded | Done | `P0-PROFILE.3` — 26 machine-readable records, one per decision, validated by a tracked schema validator |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 33 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 66 checks **declared not implemented** |
 | Reference independence inventoried | Done | `P0-PROFILE.7` — 6 pairs, 4 verdict classes. FP is **shared**: 184 of 199 SoftFloat files byte-identical, routed to `P4-SYSTEM.7`. Encoding is not shared. 2 QEMU pairs unexamined, recorded as such |
 
@@ -28,7 +28,7 @@ summarize the snapshot in every commit-workflow completion message.
 
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
-| P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 9/9 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 66 declared checks unimplemented. `incomplete` is the deliverable |
+| P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented. Reopened for `.10`: the profile had been matched on its ISA and **not its platform** |
 | P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite. Where the 66 declared checks acquire fixtures |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
