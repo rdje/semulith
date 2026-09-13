@@ -142,11 +142,10 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 ## Blockers
 
-- ⛔ **Deferred behind `P0-PROFILE.10`.** Reviewing this tree's own premise found that the first
-  model's environment contract asserts things the matched reference does not satisfy — the
-  platform was never configured, only the ISA. A model book that documented that contract would
-  document something false, and a materials bill is only worth writing over a corrected model.
-  `MODEL-BOOKS.1` resumes once `.10` lands.
+- ✅ **Unblocked.** `P0-PROFILE.10` landed: the platform is now matched, four refuted claims are
+  corrected at source, and the two irreducible reference differences are enumerated. The materials
+  bill is now worth writing, and it has one more thing to say — that a "matched profile" is
+  matched on its platform as well as its instruction set.
 
 ## Acceptance Checklist (current leaf — `MODEL-BOOKS.1`)
 
