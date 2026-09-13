@@ -18,11 +18,19 @@
 #                 statement is IDENTICAL to the decision's. Two files stating the same rule in
 #                 different words is how a catalogue quietly stops describing its profile.
 #   5. LINKED     every id in `dependencies` names a requirement that exists in the same file.
+#   6. OBLIGED    every `obligation_ids` entry names an obligation the profile's contract defines,
+#                 and every obligation carries BOTH a positive and a negative required check.
+#                 ⭐ Positive-only checks are how a contract comes to describe only the cases that
+#                 already work: `docs/CPU_ENVIRONMENT.md` §4 asks for negative fixtures that must
+#                 be reported as CONTRACT VIOLATIONS rather than target exceptions.
+#   7. AUTHORITY  an obligation whose requirement is architecturally `defined` must itself carry
+#                 `authority: architecture`. ⛔ This is the mechanical form of the contract's first
+#                 rule — *laboratory policy cannot override an architectural requirement* — and it
+#                 bites in the direction that matters: labelling an ISA rule as a harness choice
+#                 is what turns a defect into a "profile difference" and makes it unfalsifiable.
 #
-# ⚠️ KNOWN GAP, named rather than hidden: `obligation_ids` are NOT checked against anything,
-# because the obligations they name are defined by the environment contract, which is
-# `P0-PROFILE.4` and does not exist yet. The ids are minted here for `.4` to define. When `.4`
-# lands, this check gains a sixth rule; until then the link is declared and unverified.
+# ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
+# rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
 #
 # ⛔ The validator it calls REFUSES on any JSON Schema keyword it does not implement, so a schema
 # gaining a new keyword breaks this gate loudly rather than silently widening what passes.
@@ -50,6 +58,8 @@ SCHEMA_FOR = {
     "evidence.jsonl": "evidence.schema.json",
     "contract-obligations.jsonl": "contract-obligation.schema.json",
 }
+# contract authority vocabulary, for rule 7
+ARCH_AUTHORITY = "architecture"
 
 # ⛔ Exclude `target/` only when it is the FIRST component RELATIVE TO ROOT. A first cut wrote
 # `"target" not in p.parts`, which tests the ABSOLUTE path — and this check's own self-test
@@ -119,6 +129,44 @@ for rf in record_files:
                     f"DANGLING DEP {rf.name} [{r['id']}]: depends on '{dep}', which no record "
                     f"in this file defines")
 
+    # 6 + 7. OBLIGED / AUTHORITY — against the contract in the same PROFILE directory.
+    # ⛔ Scoped to a catalogue that sits beside a `profile.toml`. The shipped `examples/` files
+    # are frozen delivery artifacts illustrating the SCHEMA, not a profile's contract, and they
+    # are referentially inconsistent as delivered — which `--audit` reports without failing,
+    # because a `frozen-in-place` artifact must not be edited to satisfy a later rule.
+    ob_file = rf.parent / "contract-obligations.jsonl"
+    if ob_file.is_file() and (rf.parent / "profile.toml").is_file():
+        try:
+            obs = [json.loads(l) for l in ob_file.read_text().splitlines() if l.strip()]
+        except json.JSONDecodeError:
+            obs = None
+        if obs is not None:
+            by_ob = {o.get("id"): o for o in obs}
+            for o in obs:
+                checks = o.get("required_checks", [])
+                if not any(c.endswith("-POS") for c in checks) or \
+                   not any(c.endswith("-NEG") for c in checks):
+                    findings.append(
+                        f"NO NEGATIVE CHECK {ob_file.name} [{o.get('id')}]: required_checks "
+                        f"{checks} lack a positive AND a negative fixture — a contract with only "
+                        f"positive checks describes the cases that already work")
+            for r in recs:
+                for oid in r.get("obligation_ids", []):
+                    o = by_ob.get(oid)
+                    if o is None:
+                        findings.append(
+                            f"UNDEFINED OBLIGATION {rf.name} [{r['id']}]: names '{oid}', which "
+                            f"{ob_file.name} does not define")
+                        continue
+                    cat = (r.get("source_semantics") or {}).get("category")
+                    if cat == "defined" and o.get("authority") != ARCH_AUTHORITY:
+                        findings.append(
+                            f"AUTHORITY DOWNGRADE {ob_file.name} [{oid}]: its requirement "
+                            f"'{r['id']}' is architecturally 'defined', but the obligation claims "
+                            f"authority '{o.get('authority')}'. Laboratory policy cannot override "
+                            f"an architectural requirement, and mislabelling one is how a defect "
+                            f"becomes an unfalsifiable 'profile difference'")
+
     # 4. COVERAGE — against the profile this catalogue belongs to
     prof = rf.parent / "profile.toml"
     if prof.is_file():
@@ -146,7 +194,7 @@ self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
   t="$(SELFTEST_TMP)"; mkdir -p "$t/schemas" "$t/p" "$t/scripts"
-  cp schemas/requirement.schema.json "$t/schemas/"
+  cp schemas/requirement.schema.json schemas/contract-obligation.schema.json "$t/schemas/"
   ln -sf "$ROOT/scripts/validate_records.py" "$t/scripts/validate_records.py"
 
   argc() {
@@ -201,6 +249,18 @@ statement = "S"
 source = "SRC-A §1"'
   printf 'not json at all\n' > "$t/p/requirements.jsonl";      arm "RED   a malformed record line" 1 "not valid JSON"
   : > "$t/p/requirements.jsonl";                               arm "RED   an empty record file"   1 "contains no records"
+  # ---- rules 6 and 7: the contract ---------------------------------------------------------
+  OB='{"id":"OB-A","contract_id":"c","contract_version":"0","profile_ids":["p"],"direction":"cpu-guarantee","statement":"S","authority":"architecture","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"parameters":{},"dependencies":[],"required_checks":["CHK-A-POS","CHK-A-NEG"]}'
+  obligations() { argc 1 "$#" obligations || return; printf '%s\n' "$1" > "$t/p/contract-obligations.jsonl"; }
+  fixture "$REC"; obligations "$OB";                          arm "GREEN requirement, contract and profile agree" 0 "__CHECKED__ 2"
+  obligations "$(printf '%s' "$OB" | sed 's/"CHK-A-POS","CHK-A-NEG"/"CHK-A-POS"/')"
+                                                              arm "RED   an obligation with no negative fixture" 1 "NO NEGATIVE CHECK"
+  obligations "$(printf '%s' "$OB" | sed 's/"id":"OB-A"/"id":"OB-OTHER"/')"
+                                                              arm "RED   a requirement names an undefined obligation" 1 "UNDEFINED OBLIGATION"
+  obligations "$(printf '%s' "$OB" | sed 's/"authority":"architecture"/"authority":"laboratory"/')"
+                                                              arm "RED   an architectural rule labelled a laboratory choice" 1 "AUTHORITY DOWNGRADE"
+  obligations "$OB"
+  rm -f "$t/p/contract-obligations.jsonl"
   fixture "$REC"; cp "$t/p/requirements.jsonl" "$t/p/mystery.jsonl"
                                                               arm "RED   a record file no schema governs" 1 "UNGOVERNED"
   rm -f "$t/p/mystery.jsonl"
@@ -210,6 +270,38 @@ source = "SRC-A §1"'
   printf 'RECORD-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
+
+# --audit: report referential problems in record files the gate deliberately does NOT enforce,
+# so a known gap stays re-derivable instead of becoming prose someone has to remember.
+if [ "${1:-}" = "--audit" ]; then
+python3 - <<'AUDITPY'
+import json, pathlib
+for d in sorted({p.parent for p in pathlib.Path(".").rglob("*.jsonl") if "target" not in p.parts}):
+    rq, ob = d / "requirements.jsonl", d / "contract-obligations.jsonl"
+    if not (rq.is_file() and ob.is_file()):
+        continue
+    enforced = (d / "profile.toml").is_file()
+    reqs = [json.loads(l) for l in rq.read_text().splitlines() if l.strip()]
+    obs = [json.loads(l) for l in ob.read_text().splitlines() if l.strip()]
+    defined = {o["id"] for o in obs}
+    named = {oid for r in reqs for oid in r.get("obligation_ids", [])}
+    print(f"{d}/  ({'ENFORCED' if enforced else 'advisory - frozen delivery artifacts'})")
+    print(f"  requirements {len(reqs)} | obligations {len(obs)}")
+    print(f"  named but undefined : {sorted(named - defined) or 'none'}")
+    # An environment ASSUMPTION is a thing the harness must satisfy; no CPU requirement names
+    # one, so "unnamed" is correct for it and only a cpu-guarantee going unnamed is a finding.
+    by_dir = {o["id"]: o.get("direction") for o in obs}
+    unnamed = sorted(defined - named)
+    print(f"  unnamed environment-assumptions (expected) : "
+          f"{[i for i in unnamed if by_dir.get(i) == 'environment-assumption'] or 'none'}")
+    print(f"  unnamed cpu-guarantees (a finding)        : "
+          f"{[i for i in unnamed if by_dir.get(i) != 'environment-assumption'] or 'none'}")
+    missing_neg = [o["id"] for o in obs
+                   if not any(c.endswith("-NEG") for c in o.get("required_checks", []))]
+    print(f"  obligations with no negative check : {missing_neg or 'none'}")
+AUDITPY
+  exit 0
+fi
 
 [ "${1:-}" = "--self-test" ] && { self_test; exit $?; }
 

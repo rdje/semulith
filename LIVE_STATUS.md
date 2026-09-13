@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (10 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS`, `DERIVED-COUNTS`, `RECORD-SCHEMA` — 133 self-test arms, all fired RED before registration |
+| Project doctrines (10 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS`, `DERIVED-COUNTS`, `RECORD-SCHEMA` — 137 self-test arms, all fired RED before registration |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the re-sync list, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 25 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 27 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |
@@ -20,14 +20,15 @@ summarize the snapshot in every commit-workflow completion message.
 
 | Reference models acquired | Done | 3 obtained and pinned (Sail RISC-V 0.14, Spike `1e05ddac`, QEMU 11.1.1); ACT located, unacquired. `scripts/fetch_references.sh` re-derives every pin |
 | Matched-profile evidence path | Done | `P0-PROFILE.6` — 2 models agree over 15 aligned steps incl. a trap; 12 spec-derived values; 4 differences; reproduces. `scripts/run_smoke.py` |
-| Requirements catalogue seeded | Done | `P0-PROFILE.3` — 25 machine-readable records, one per decision, validated by a tracked schema validator; `obligation_ids` await `.4` |
+| Requirements catalogue seeded | Done | `P0-PROFILE.3` — 25 machine-readable records, one per decision, validated by a tracked schema validator |
+| Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 33 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 66 checks **declared not implemented** |
 | Reference independence inventoried | Done | `P0-PROFILE.7` — 6 pairs, 4 verdict classes. FP is **shared**: 184 of 199 SoftFloat files byte-identical, routed to `P4-SYSTEM.7`. Encoding is not shared. 2 QEMU pairs unexamined, recorded as such |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
-| P0 — profile and evidence access | G0 | In Progress | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 6 of 9 leaves; profile, state and a 25-record requirements catalogue; 2 models agree over 15 aligned steps with their independence inventoried; the gate is `incomplete` |
+| P0 — profile and evidence access | G0 | In Progress | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 7 of 9 leaves; profile, state, a 25-record requirements catalogue and a 33-obligation environment contract; 2 models agree over 15 aligned steps with their independence inventoried; the gate is `incomplete` |
 | P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |

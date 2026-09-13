@@ -61,9 +61,11 @@ environment contract, three representative guest programs, and the evidence-obli
   Commit: `SEMULITH-P0-0026`
 
 - ID: `P0-PROFILE.4` — **environment contract v0** *(task card `T002`)*
-  Status: `pending`
+  Status: `done`
   Goal: the versioned assumption/guarantee set from `docs/CPU_ENVIRONMENT.md` §2–§3 — address units, access widths, virtual-time domain, permitted event-delivery points, ordering constraints — each with its authority (`architecture` / `implementation-profile` / `platform` / `laboratory`).
   Acceptance: laboratory policy nowhere overrides an architectural requirement; positive **and negative** fixtures defined for each obligation.
+  Verification: 33 obligations (25 CPU guarantees, 8 environment assumptions); all 10 §2 boundary items dispositioned; 66 checks declared; both rules fired RED on the real contract.
+  Commit: `SEMULITH-P0-0027`
 
 - ID: `P0-PROFILE.5` — **reference candidate dossier** *(task card `T001`, part 1)*
   Status: `done`
@@ -100,9 +102,8 @@ environment contract, three representative guest programs, and the evidence-obli
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P0-PROFILE.4` | `pending` | the environment contract; `.3` has now minted the 25 `OB-*` obligation ids it must define, and `RECORD-SCHEMA` carries a named gap until it does |
-| 2 | `P0-PROFILE.8` | `pending` | three representative guest programs; needs a readable source for the B and J immediate layouts, which `.6` established this project does not yet have |
-| 3 | `P0-PROFILE.9` | `pending` | the evidence-obligation policy and the `G0` report — last, because it declares what evidence each obligation class requires and must not be written after seeing what is easy to produce |
+| 1 | `P0-PROFILE.8` | `pending` | three representative guest programs. ⛔ Blocked on a readable source for the **B and J immediate layouts**, which `.6` established this project does not have — the pinned specification renders them as images. Resolve that first; `smoke-arith`/`smoke-trap` deliberately avoid both formats |
+| 2 | `P0-PROFILE.9` | `pending` | the evidence-obligation policy and the `G0` report — last on purpose, because it declares what evidence each obligation class requires and must not be written after seeing what is easy to produce |
 
 ## Decisions
 
@@ -171,7 +172,104 @@ than a failure.
 
 - None.
 
-## Acceptance Checklist (current leaf — `P0-PROFILE.3`)
+## Acceptance Checklist (current leaf — `P0-PROFILE.4`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `.3` minted 25 `OB-*` obligation ids and nothing
+  defined them; the gate said so in its own header as a **named gap**. More broadly, `SCP-01`
+  needs four artifacts and only two existed. Census before this leaf:
+
+  ```
+  $ scripts/check_requirements.sh --audit | grep -A1 'profiles/'
+  profiles/rv64i-lab-v0/  (ENFORCED)
+    requirements 25 | obligations 0
+  $ git ls-files profiles | grep -c 'obligation\|ENVIRONMENT'
+  0
+  ```
+
+  WHERE it bit: `docs/CPU_ENVIRONMENT.md` §3 requires five things represented **explicitly** —
+  address units, access widths, virtual-time domain, event-delivery point, ordering — and two of
+  them turn out to be *"none"* for this profile. A "none" that is simply absent from a contract is
+  indistinguishable from one nobody considered.
+
+- [x] **ADDRESSED (verified)** — 33 obligations: 25 CPU guarantees (one per decision, generated
+  from the requirements so the ids close by construction) and 8 environment assumptions.
+
+  ```
+  $ scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (5 record file(s) validate and agree with their profile)
+  $ scripts/check_requirements.sh --audit
+  profiles/rv64i-lab-v0/  (ENFORCED)
+    requirements 25 | obligations 33
+    named but undefined : none
+    unnamed cpu-guarantees (a finding)        : none
+    obligations with no negative check : none
+  ```
+
+  Obligation ids resolving went from `0 of 25` to `25 of 25` — **`.3`'s named gap is closed**, and
+  closed by a rule rather than by assertion. All ten of §2's boundary items are dispositioned in
+  `ENVIRONMENT.md`: four in scope, **six out of scope each with its reason**, because an
+  undispositioned row is how a boundary silently leaves coverage. 66 checks declared, a positive
+  and a negative for every obligation.
+  ⭐ Two obligations are *"none"* and say why, which is the leaf's most useful output.
+  `OB-ENV-VIRTUAL-TIME`: no clock, cycle or instruction counter is architecturally readable, and
+  the harness's retired-instruction count is explicitly **not target-visible** so it may never
+  justify guest-observable behaviour. `OB-ENV-EVENT-DELIVERY`: no asynchronous interrupt is
+  deliverable *by construction* — there is no controller, mode or CSR with which to enable, mask
+  or report one, so the contract has no legal delivery point to specify.
+
+- [x] **NO REGRESSION** — leg 2. Both new rules were fired RED on the **real** contract:
+  setting `OB-SHAMT`'s checks to positives only gave
+  `NO NEGATIVE CHECK … lack a positive AND a negative fixture`, and relabelling `OB-WSUFFIX` as a
+  laboratory choice gave `AUTHORITY DOWNGRADE contract-obligations.jsonl [OB-WSUFFIX]: its
+  requirement 'REQ-D-WSUFFIX' is architecturally 'defined' …`. Both restored.
+  ⭐ That second rule is the mechanical form of the contract's first sentence — *laboratory policy
+  cannot override an architectural requirement* — and it bites in the direction that matters:
+  mislabelling an ISA rule as a harness choice is how a real defect becomes an unfalsifiable
+  "profile difference".
+  `scripts/check_requirements.sh --self-test` → `15 pass / 0 fail` (11 → 15); 15 arms written,
+  15 run. Whole gate `=== all doctrines green ===`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `scripts/run_smoke.py` → still `ok`.
+
+- [x] **FIX** — `profiles/rv64i-lab-v0/contract-obligations.jsonl` (33 records),
+  `profiles/rv64i-lab-v0/ENVIRONMENT.md` (the contract, the authority mapping, the ten-row
+  boundary disposition), and rules 6–7 in `RECORD-SCHEMA` with a `--audit` mode.
+
+- `promotion: declined (both points are stated in ENVIRONMENT.md and in the RECORD-SCHEMA header, and the routed finding lives in this leaf's own ROUTING EVIDENCE section where the next reader of the tree will meet it)`
+
+- [x] **LOCKSTEP** — leg 3: the contract is validated and cross-checked against the requirements
+  on every commit, so an obligation cannot be dropped or downgraded silently. `DOSSIER.md` links
+  the contract; the book's P0 chapter gains the section; `MEMORY.md`, `LIVE_STATUS.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md` in this commit.
+  ⚠️ **Stated plainly: the 66 checks are DECLARED, not implemented.** They name fixtures `P1-LAB`
+  will build; nothing executes them today. That is `EVD-03` working as intended — the required
+  evidence is declared before the implementation that would be tempted to choose evidence it can
+  most easily produce — but it must never be read as 66 passing checks.
+
+## ROUTING EVIDENCE — the delivered examples' referential inconsistency, routed to `P1-LAB`
+
+- **What was measured, here:** the new rules fired first not on this profile but on the *shipped*
+  planning-package examples. `scripts/check_requirements.sh --audit`:
+  `examples/` → `requirements 2 | obligations 1`, `named but undefined: ['OB-SYN16-ADD',
+  'OB-SYN16-INPUT']`, `obligations with no negative check: ['CE-SYN16-INPUT']`. **Both** example
+  requirements point at obligations that do not exist, and the one obligation that does exist is
+  named by nobody.
+- **Does it reproduce outside the family it is sent to?** Yes — it is a property of the delivered
+  files, independent of any tree. It is routed rather than fixed because those files are
+  `frozen-in-place` in `docs/provenance/planning-package-v0.2/dispositions.tsv`: editing them to
+  satisfy a rule written later would destroy the record of what was delivered, which is the whole
+  point of freezing them.
+- **Why `P1-LAB`:** referential integrity across requirement / implementation / test / evidence
+  links is `P1-LAB`'s graph checker (`ROADMAP.md` §P1, *"schema validation alone is not
+  sufficient; referential integrity and dependency checks are required"*). This is that checker's
+  first real corpus, and a corpus with known-broken links is worth more than a clean one.
+- **What would make the routing wrong:** if the examples were ever un-frozen and adopted as a live
+  fixture, the defect would become fixable here instead. `DELIVERY-PROVENANCE` would have to record
+  that disposition change first, and nothing proposes it.
+- **How the finding stays visible meanwhile:** `--audit` re-derives it on demand and labels it
+  `advisory - frozen delivery artifacts`, so it is a command rather than a paragraph someone has
+  to remember.
+
+### `P0-PROFILE.3` — the requirements catalogue
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `SCP-01` requires a support claim to identify four
   artifacts — a versioned profile, an environment contract, an observation contract and the

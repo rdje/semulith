@@ -1,5 +1,46 @@
 # CHANGELOG.md
 
+## SEMULITH-P0-0027 (leaf P0-PROFILE.4) — the environment contract, and the two obligations that are "none"
+
+**What changed.** `rv64i-lab-env-v0`: **33 obligations** (25 CPU guarantees, 8 environment
+assumptions), the second of `SCP-01`'s four artifacts. `P0-PROFILE.3`'s named gap — 25 obligation
+ids checked against nothing — is **closed by a rule**, not by assertion: obligation ids resolving
+went from `0 of 25` to `25 of 25`.
+
+- `profiles/rv64i-lab-v0/contract-obligations.jsonl` — generated from the requirements, so the ids
+  close by construction rather than by transcription.
+- `profiles/rv64i-lab-v0/ENVIRONMENT.md` — the contract, the authority mapping, and all ten
+  boundary items from `docs/CPU_ENVIRONMENT.md` §2 dispositioned: **4 in scope, 6 out with reasons**.
+- `RECORD-SCHEMA` gains rules 6 and 7, plus a `--audit` mode.
+
+⭐ **Rule 7 is the mechanical form of the contract's first sentence.** *Laboratory policy cannot
+override an architectural requirement*: an obligation whose requirement is architecturally
+`defined` must carry `authority: architecture`. Fired RED on the real contract —
+`AUTHORITY DOWNGRADE … [OB-WSUFFIX]: its requirement 'REQ-D-WSUFFIX' is architecturally 'defined',
+but the obligation claims authority 'laboratory'`. Mislabelling an ISA rule as a harness choice is
+how a defect becomes an unfalsifiable "profile difference".
+
+⭐ **Two assumptions are "none", and say why.** No virtual time is architecturally readable (no
+CSRs, no `Zicntr`/`Zihpm`), and the harness's retired-instruction count is explicitly *not
+target-visible*. No asynchronous event is deliverable **by construction** — no controller, mode or
+CSR exists to enable, mask or report one, so there is no legal delivery point to specify. A "none"
+that is merely absent is indistinguishable from one nobody considered.
+
+⚠️ **The 66 checks are DECLARED, not implemented.** They name fixtures `P1-LAB` will build.
+`EVD-03` working as intended — required evidence declared before the implementation that would be
+tempted to choose evidence it can easily produce — never 66 passing checks.
+
+🔎 **Routed to `P1-LAB`:** the rules fired first on the *shipped* planning-package examples, not on
+this profile. Both example requirements name obligations that do not exist, and the one obligation
+defined is named by nobody and declares no negative check. Those files are `frozen-in-place`, so
+they are not edited to satisfy a later rule; the finding goes to the milestone that builds the
+referential graph checker, and `--audit` keeps it re-derivable.
+
+**Validation.** `RECORD-SCHEMA --self-test: 15 pass / 0 fail`, 15 written and 15 run; both new
+rules fired RED on the real contract and restored. Gate green; `make check` `1 passed`; book
+renders; smoke test still `ok`.
+
+
 ## SEMULITH-P0-0026 (leaf P0-PROFILE.3) — the requirements catalogue, and a validator that refuses what it cannot check
 
 **What changed.** The profile's 25 decisions were prose in a TOML file. They are now

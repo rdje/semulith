@@ -142,6 +142,20 @@ RV64I chapter. The unprivileged specification says the EEI defines the initial s
 program (`RVI-INTRO`), and this harness's choice of zero is not something a guest may rely on
 elsewhere.
 
+## The environment contract
+
+[`ENVIRONMENT.md`](ENVIRONMENT.md) is `rv64i-lab-env-v0`, the second of `SCP-01`'s four artifacts,
+with [`contract-obligations.jsonl`](contract-obligations.jsonl) as its 33 machine-readable records
+(25 CPU guarantees, 8 environment assumptions) and
+[`requirements.jsonl`](requirements.jsonl) as the 25 requirements they discharge.
+
+Two of its assumptions are **"none"**, and say why: no virtual time exists (no CSR, `Zicntr` or
+`Zihpm`, so nothing is architecturally readable, and the harness's instruction count is not
+target-visible), and no asynchronous event is deliverable *by construction* (no controller, mode
+or CSR with which to enable, mask or report one). Six of the ten boundary items in
+`docs/CPU_ENVIRONMENT.md` §2 are out of scope, each with its reason — an undispositioned row is
+how a boundary silently leaves coverage.
+
 ## The reference models, and what having three of them does not mean
 
 [`references.toml`](references.toml) is the candidate dossier. Three models were obtained and
