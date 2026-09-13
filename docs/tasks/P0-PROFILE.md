@@ -109,6 +109,26 @@ environment contract, three representative guest programs, and the evidence-obli
   `docs/ARCHOGEN_INTEGRATION.md` §6 says a provisional machine-mode profile may be smaller than
   the Linux profile — compare during `.1` when archogen's target decision is available.
 
+## Director input wanted (does not block `.3`/`.4`)
+
+`P0-PROFILE.5`/`.6` require a **real** reference model, and acquiring one is the first activity
+in this project whose cost is not obviously bounded:
+
+- **Sail RISC-V** generates a C++ simulator and supports JSON configuration, which is the best
+  fit for a matched-profile experiment — but building it needs an OCaml/opam toolchain, and
+  policy 13 (project data on the repository volume) means `OPAMROOT` and the build prefix must
+  be redirected under the repo rather than into `~/.opam`.
+- **Spike** is a second implementation path with a lighter C++ build, but its subsystems'
+  independence from Sail has to be examined rather than inferred (`EVD-04`).
+- A **prebuilt binary**, if one exists for this host, would shorten the path — at the cost of
+  knowing less about its effective configuration, which `docs/EVIDENCE_AND_GATES.md` §5
+  requires to be recorded exactly.
+
+The default, absent other direction, is: attempt Sail from source with a repo-local `OPAMROOT`,
+record the actual outcome either way, and fall back to Spike if the build is not tractable.
+`SRC-02` makes an honest *"no reference route"* a legitimate result that bounds the claim rather
+than a failure.
+
 ## Blockers
 
 - None.
