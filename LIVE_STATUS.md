@@ -21,7 +21,7 @@ summarize the snapshot in every commit-workflow completion message.
 
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
-| P0 — profile and evidence access | G0 | In Progress | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 1 of 9 leaves; `rv64i-lab-v0` pinned and dossiered; the gate is `incomplete` |
+| P0 — profile and evidence access | G0 | In Progress | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 2 of 9 leaves; profile + state pinned and gated; the gate is `incomplete` |
 | P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |

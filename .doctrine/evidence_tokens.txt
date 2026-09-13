@@ -15,7 +15,12 @@ probes: [0-9]+ pass / [0-9]+ fail
 # family recognises `git ls-files|log -S|rev-list|…` and NOT `git grep`. An author who obeys
 # one doctrine's instruction therefore produces evidence the sibling doctrine rejects.
 # See docs/knowledge/census-instrument-signature-gap.md.
-git grep -[a-zA-Z]
+# ⛔ Any `grep` invocation, not just `git grep`. The first cut declared `git grep` alone and was
+# refused a third time, on `grep -ci reset` — a plain enumeration over the pinned specification.
+# GAP-CLAIM-CENSUS accepts `git grep|grep -r|grep -c|grep -l|grep -o|grep -n|grep -w` as a
+# census; an instrument one gate accepts as a census is an instrument the sibling gate should
+# accept as evidence, so the two lists are aligned here instead of patched case by case.
+grep -[a-zA-Z]
 wc -[lc]
 #
 # This repository's own gate verdict lines — the output an author re-runs and pastes.

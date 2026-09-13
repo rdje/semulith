@@ -47,9 +47,11 @@ environment contract, three representative guest programs, and the evidence-obli
   Commit: `SEMULITH-P0-0013`
 
 - ID: `P0-PROFILE.2` — **state inventory**
-  Status: `pending`
+  Status: `done`
   Goal: registers, widths, aliases, overlaps, reset values, and any hidden or pending state that can influence a future supported observation (`SEM-08`, catalog `C02`).
   Acceptance: each entry source-linked; alias interactions stated, not implied.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-P0-0014`
 
 - ID: `P0-PROFILE.3` — **requirements catalog seed**
   Status: `pending`
@@ -90,8 +92,9 @@ environment contract, three representative guest programs, and the evidence-obli
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P0-PROFILE.2` | `pending` | the state inventory is the next thing every later leaf indexes into |
-| 2 | `P0-PROFILE.5` | `pending` | `T001` may feed corrections back into `.1`, so the reference dossier should not wait long |
+| 1 | `P0-PROFILE.5` | `pending` | `T001` may feed corrections back into `.1`, so the reference dossier should not wait; `OQ-2` and `OQ-3` are both blocked on it |
+| 2 | `P0-PROFILE.3` | `pending` | the requirements catalog turns the 25 decisions into checkable obligations |
+| 3 | `P0-PROFILE.4` | `pending` | the environment contract needs `.3`'s obligation IDs to reference |
 
 ## Decisions
 
@@ -110,7 +113,55 @@ environment contract, three representative guest programs, and the evidence-obli
 
 - None.
 
-## Acceptance Checklist (current leaf — `P0-PROFILE.1`)
+## Acceptance Checklist (current leaf — `P0-PROFILE.2`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.1` recorded the profile's *decisions* but not
+  its *state*, and `SEM-08` requires the required state to include hidden or pending information
+  that can influence a future supported observation. Census before this leaf:
+  `git ls-files profiles | grep -c state.json` → `0`. Reading the pinned sources for it also
+  surfaced three architectural rules the profile had not recorded, each found by reading rather
+  than assumed: the address space is **circular** with computations wrapping modulo 2^XLEN;
+  every executed instruction entails an **implicit** fetch read; and the fetch-accessible and
+  load-accessible location sets **may differ**, with the choice delegated to the EEI
+  (`RVI-INTRO`, *Memory*).
+- [x] **ADDRESSED (verified)** — `state.json` records 32×64-bit integer registers, `x0`
+  hardwired zero, and `pc`, and enumerates **7 hidden-state candidates**, all absent:
+  `hidden state: 0 entries; candidates checked: 7`, `all candidates absent: True`. The profile
+  gained five decisions (`D-ADDR-WRAP`, `D-FETCH-IMPLICIT`, `D-FETCH-MAP`, `D-CODE-VISIBILITY`,
+  `D-MAIN-VS-IO`), taking it to 25. The reset claim was **measured**, not assumed:
+  `grep -ci reset rv32.txt rv64.txt` → `rv32.txt:0`, `rv64.txt:0`, so reset values for
+  `x1..x31` are a laboratory declaration and are labelled one.
+- [x] **NO REGRESSION** — leg 2: the gate was extended and then fired, on the real dossier, for
+  both new rules. Removing the census gave `UNEARNED NONE rv64i-lab-v0/state.json: hidden_state
+  is empty with no census…`, `rc=1`; setting `xlen` to 32 gave `XLEN MISMATCH rv64i-lab-v0:
+  state.json 32 != profile.toml 64`; both restored to `ok`.
+  `PROFILE-CONSISTENCY --self-test: 13 pass / 0 fail` (11 RED arms). Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+  ⛔ This leaf's own evidence was refused by `TASK-ACCEPTANCE` for the **third** time in this
+  repository — on `grep -ci reset`, a plain enumeration over the pinned specification, which
+  `GAP-CLAIM-CENSUS` accepts as a census while the acceptance gate's signatures did not. The
+  first two fixes were additions and each held only until the next new thing existed; this one
+  aligns the two lists on *any* `grep` invocation, because an instrument one gate accepts as a
+  census is an instrument the other should accept as evidence. Fired RED afterwards (a
+  prose-only box → `rc=1`) to prove the widening did not make the gate vacuous. Recorded in
+  [`census-instrument-signature-gap`](../knowledge/census-instrument-signature-gap.md).
+  ⭐ The falsifying question for this leaf was *"is 'no hidden state' a finding or an
+  omission?"* — and the honest answer is that it is only true **because of what the profile
+  excludes**, which is why the census records the reason per candidate and why
+  `D-CODE-VISIBILITY` notes that a caching implementation would have hidden state and would
+  still be legal.
+- [x] **FIX** — `profiles/rv64i-lab-v0/state.json` added; five decisions added to
+  `profile.toml`; `check_profile_consistency.sh` extended to require `state.json` to agree with
+  `profile.toml` on id, XLEN and register count, to accept `software-convention` as an authority
+  only inside `state.json`, and to refuse an empty `hidden_state` with no census.
+- [x] **LOCKSTEP** — leg 3: the agreement between the two files is re-derived every commit, so a
+  contradiction fails rather than rots. `DOSSIER.md` gains the state section and the two new
+  semantic traps; `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
+
+## Completed-leaf evidence (archive)
+
+### `P0-PROFILE.1` — pin RV64I and write the dossier
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the project had no profile, so nothing it might
   build had a defined subject. Census before this leaf: `git ls-files profiles | wc -l` → `0`,
@@ -164,15 +215,23 @@ environment contract, three representative guest programs, and the evidence-obli
 | `2026-09-13` | `P0-PROFILE.1` | `check_profile_consistency.sh --self-test` | `8 pass / 0 fail` (7 RED arms) |
 | `2026-09-13` | `P0-PROFILE.1` | both instruments fired RED on the real corpus | `COUNT DRIFT … 51 vs 52`; `DIFFERS rv64.html` — each restored to `ok` |
 | `2026-09-13` | `P0-PROFILE.1` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
+| `2026-09-13` | `P0-PROFILE.2` | reset-value claim measured against the sources | `grep -ci reset` → `rv32.txt:0`, `rv64.txt:0` |
+| `2026-09-13` | `P0-PROFILE.2` | hidden-state census | `0` entries, `7` candidates checked, all absent |
+| `2026-09-13` | `P0-PROFILE.2` | `check_profile_consistency.sh --self-test` | `13 pass / 0 fail` (11 RED arms) |
+| `2026-09-13` | `P0-PROFILE.2` | both new rules fired RED on the real dossier | `UNEARNED NONE`; `XLEN MISMATCH 32 != 64` — restored `ok` |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `P0-PROFILE.1` | `SEMULITH-P0-0013 (leaf P0-PROFILE.1): pin RV64I and write the rv64i-lab-v0 dossier` | 20 sourced decisions; 52 mnemonics; 5 open questions |
+| `P0-PROFILE.2` | `SEMULITH-P0-0014 (leaf P0-PROFILE.2): the state inventory, and a census for its "none"` | 25 decisions; 7 hidden-state candidates checked |
 
 ## Changelog
 
 - `2026-09-13`: Created from `ROADMAP.md` §P0 and task cards `T000`–`T002` by `SEMULITH-TREES.1`.
 - `2026-09-13`: `P0-PROFILE.1` completed — the project now has a subject. The specification is
   acquired and pinned rather than cited, and the profile's own claims are gated.
+- `2026-09-13`: `P0-PROFILE.2` completed. Reading the sources for the state inventory surfaced
+  three architectural rules the profile had missed, which is the argument for doing `.2` by
+  reading rather than by recalling `.1`.

@@ -30,6 +30,23 @@ a portable standard into someone else's workflow.
 leaf whose evidence is chosen for the grep rather than for the question, which is the failure
 mode the gate exists to prevent.
 
+## It happened three times, and the third fix was different
+
+| # | The refused evidence | The patch |
+| --- | --- | --- |
+| 1 | `git grep -lE … \| wc -l` — a census the sibling gate recommends | declared `git grep` and `wc` |
+| 2 | `README-ROUTING-CLOSURE: ok (24 governed destination(s))` — a new project doctrine's own verdict line | replaced the **enumerated list of doctrine names** with the *shape* every gate prints |
+| 3 | `grep -ci reset rv32.txt rv64.txt` — a plain enumeration over a pinned specification | replaced `git grep` with **any** `grep` invocation, aligning with the census gate's own accepted list |
+
+The first two patches were additions; each held until the next new thing existed. Only the
+third and second kind of fix — *match the shape, not the instance* — stopped the pattern. ⭐ **A
+list that must be edited whenever a sibling file changes is a list that will be stale.** If you
+find yourself declaring a token for the third time, the declaration is the wrong shape.
+
+After each widening the gate was fired RED on a prose-only box (`rc=1`) to prove it still
+discriminates. Widening a gate's acceptance is exactly the change that can make it vacuous, and
+"it still looks strict" is not a measurement.
+
 ## Why this generalises
 
 Two gates written at different times share no vocabulary unless something forces them to. A

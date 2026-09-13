@@ -13,12 +13,13 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `P0-PROFILE` (gate `G0`) — 1 of 9 leaves done.
-- **Frontier leaf:** `P0-PROFILE.2` — the state inventory.
-- **Next action:** `P0-PROFILE.2` — the state inventory (x0..x31, pc, widths, aliases, reset
-  values, and any pending state that can influence a future observation), each entry
-  source-linked. The specification is already pinned: run `scripts/fetch_sources.sh` to restore
-  `target/sources/riscv-v20260120/` (untracked) before reading locators.
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0013 (leaf P0-PROFILE.1)`.
+- **Active tree:** `P0-PROFILE` (gate `G0`) — 2 of 9 leaves done.
+- **Frontier leaf:** `P0-PROFILE.5` — the reference candidate dossier.
+- **Next action:** `P0-PROFILE.5` — the reference candidate dossier (Sail RISC-V, Spike, ACT4):
+  actual availability, build, configuration, invocation, trace granularity, injection
+  capability, terms and hashes. `SRC-03` means a candidate that cannot be obtained is recorded
+  as such, with the attempt. It unblocks `OQ-2` and `OQ-3` in the profile dossier.
+  Run `scripts/fetch_sources.sh` first to restore `target/sources/` (untracked).
+- **Latest commit:** see `git log -1` — `SEMULITH-P0-0014 (leaf P0-PROFILE.2)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

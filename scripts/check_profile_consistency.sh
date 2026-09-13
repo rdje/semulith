@@ -10,6 +10,13 @@
 #   2. A DECISION loses its authority or its source. The whole point of the `authority` field is
 #      that a `laboratory` policy must never be mistaken for an `architecture` rule — an
 #      unsourced decision is exactly how that mistake becomes permanent.
+#   3. An EMPTY `hidden_state` list in `state.json` is a universal claim over a set — "nothing
+#      else can influence a future observation" — and it is false the moment one such thing
+#      exists. So an empty list must be backed by a CENSUS that enumerates what was considered
+#      and found absent. This is `GAP-CLAIM-CENSUS` applied to data rather than to prose: an
+#      unearned "none" is indistinguishable from a "none" nobody looked for.
+#   4. `state.json` and `profile.toml` must AGREE. Two files describing the same processor is
+#      the cheapest place for a contradiction to hide.
 #
 # ⚠️ HONEST LIMIT, stated rather than implied: this proves the file is INTERNALLY consistent and
 # that every decision cites something. It cannot check the citation against the specification —
@@ -30,6 +37,10 @@ import sys, pathlib, tomllib
 
 root = pathlib.Path(sys.argv[1])
 AUTHORITIES = {"architecture", "execution-environment", "laboratory"}
+# `software-convention` is legal only in state.json, for ABI roles: the calling convention is
+# neither architecture nor an EEI choice, and recording an ABI name as architectural is the
+# mistake `docs/INFORMATION_CATALOG.md` §6 names explicitly.
+STATE_AUTHORITIES = AUTHORITIES | {"software-convention"}
 findings, checked = [], 0
 
 for toml_path in sorted(root.glob("*/profile.toml")):
@@ -58,6 +69,57 @@ for toml_path in sorted(root.glob("*/profile.toml")):
         if a is not None and b is not None and declared is not None and a + b != declared:
             findings.append(
                 f"PARTS DRIFT {name}: count_base {a} + count_rv64i_additions {b} != {declared}")
+
+    # ---- state.json, when present: agreement with profile.toml, and an earned census ----
+    state_path = toml_path.parent / "state.json"
+    if state_path.is_file():
+        import json
+        try:
+            st = json.loads(state_path.read_text())
+        except Exception as e:
+            findings.append(f"UNPARSEABLE {name}/state.json — {e}")
+            st = None
+        if st is not None:
+            if st.get("profile_id") != d.get("profile", {}).get("id"):
+                findings.append(
+                    f"ID MISMATCH {name}: state.json profile_id "
+                    f"{st.get('profile_id')!r} != profile.toml id {d.get('profile', {}).get('id')!r}")
+            if st.get("xlen") != d.get("profile", {}).get("xlen"):
+                findings.append(
+                    f"XLEN MISMATCH {name}: state.json {st.get('xlen')} != profile.toml "
+                    f"{d.get('profile', {}).get('xlen')}")
+            want_regs = d.get("state", {}).get("integer_registers")
+            got_regs = (st.get("integer_registers") or {}).get("count")
+            if want_regs is not None and got_regs != want_regs:
+                findings.append(
+                    f"REG COUNT MISMATCH {name}: state.json {got_regs} != profile.toml {want_regs}")
+            def authorities(o):
+                if isinstance(o, dict):
+                    if "authority" in o and isinstance(o["authority"], str):
+                        yield o["authority"]
+                    for v in o.values():
+                        yield from authorities(v)
+                elif isinstance(o, list):
+                    for v in o:
+                        yield from authorities(v)
+            for a in authorities(st):
+                if a not in STATE_AUTHORITIES:
+                    findings.append(
+                        f"BAD AUTHORITY {name}/state.json: '{a}' not in {sorted(STATE_AUTHORITIES)}")
+            if "hidden_state" in st and not st["hidden_state"]:
+                census = st.get("hidden_state_census")
+                cands = (census or {}).get("candidates_checked") or []
+                if not cands:
+                    findings.append(
+                        f"UNEARNED NONE {name}/state.json: hidden_state is empty with no census. "
+                        f"'nothing else can influence a future observation' is a claim over a set, "
+                        f"false the moment one exists — enumerate what was considered.")
+                else:
+                    for c in cands:
+                        if "present" not in c or not c.get("why"):
+                            findings.append(
+                                f"THIN CENSUS {name}/state.json: candidate "
+                                f"{c.get('candidate','<unnamed>')!r} lacks present/why")
 
     decisions = d.get("decision", [])
     if not decisions:
@@ -111,6 +173,30 @@ EOF
     else pass=$((pass+1)); fi
   }
   good;                                                       arm "GREEN consistent profile"  0 "__CHECKED__ 1"
+  # state.json arms
+  good; cat > "$t/p/state.json" <<'EOF'
+{"profile_id": "p1", "xlen": 64, "integer_registers": {"count": 4},
+ "hidden_state": [], "hidden_state_census": {"candidates_checked": [{"candidate": "c", "present": false, "why": "w"}]}}
+EOF
+  printf '[profile]\nid = "p1"\nxlen = 64\n[state]\ninteger_registers = 4\n' >> "$t/p/profile.toml"
+                                                              arm "GREEN state agrees with profile" 0 "__CHECKED__ 1"
+  python3 -c "
+import json,pathlib,sys
+p=pathlib.Path(sys.argv[1]); d=json.loads(p.read_text()); d.pop('hidden_state_census'); p.write_text(json.dumps(d))" "$t/p/state.json"
+                                                              arm "RED   empty hidden_state, no census" 1 "UNEARNED NONE"
+  python3 -c "
+import json,pathlib,sys
+p=pathlib.Path(sys.argv[1]); d=json.loads(p.read_text()); d['xlen']=32; p.write_text(json.dumps(d))" "$t/p/state.json"
+                                                              arm "RED   xlen disagrees"        1 "XLEN MISMATCH"
+  python3 -c "
+import json,pathlib,sys
+p=pathlib.Path(sys.argv[1]); d=json.loads(p.read_text()); d['xlen']=64; d['integer_registers']={'count':9}; p.write_text(json.dumps(d))" "$t/p/state.json"
+                                                              arm "RED   register count disagrees" 1 "REG COUNT MISMATCH"
+  python3 -c "
+import json,pathlib,sys
+p=pathlib.Path(sys.argv[1]); d=json.loads(p.read_text()); d['integer_registers']={'count':4,'authority':'vibes'}; p.write_text(json.dumps(d))" "$t/p/state.json"
+                                                              arm "RED   state authority unknown" 1 "BAD AUTHORITY"
+  rm -f "$t/p/state.json"
   good; sed -i.bak 's/count_total = 3/count_total = 4/' "$t/p/profile.toml"
                                                               arm "RED   count drifts from enumeration" 1 "COUNT DRIFT"
   good; sed -i.bak 's/count_base = 2/count_base = 9/' "$t/p/profile.toml"

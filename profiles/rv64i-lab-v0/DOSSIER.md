@@ -5,9 +5,11 @@ attached to anything here, no gate has been run, and `SCP-01` requires a support
 identify a versioned profile, an environment contract, an observation contract *and* the
 applicable specification revisions — this dossier is the first of those four.
 
-Machine-readable form: [`profile.toml`](profile.toml). Pinned sources:
-[`sources.toml`](sources.toml). Both are gated — `PROFILE-CONSISTENCY` re-derives the declared
-counts from the enumeration and refuses a decision that carries no authority or no source.
+Machine-readable form: [`profile.toml`](profile.toml) and [`state.json`](state.json). Pinned
+sources: [`sources.toml`](sources.toml). All are gated — `PROFILE-CONSISTENCY` re-derives the
+declared counts from the enumeration, refuses a decision that carries no authority or no
+source, requires `state.json` to agree with `profile.toml`, and refuses an empty `hidden_state`
+list that carries no census.
 
 ## What this profile is
 
@@ -83,6 +85,18 @@ are reported to the harness as a typed environment-trap outcome. This is precise
 `TargetEvent` and `ModelError` must be different types: *"the guest asked the environment for
 something"* is not *"the model cannot do this"* (`SEM-01`, `SEM-02`).
 
+**The address space is circular.** *"memory address computations done by the hardware ignore
+overflow and instead wrap around modulo 2^XLEN"* (`RVI-INTRO`, *Memory*). Host pointer
+arithmetic does not behave this way, which is precisely the class `SEM-05` exists for: host
+pointers do not supply guest semantics.
+
+**Code visibility is a laboratory choice, and a reference that disagrees is not wrong.** Without
+the Zifencei extension — absent from this profile — the base ISA permits a hart to cache
+fetchable bytes and never re-read main memory (`RVI-INTRO`, *Memory*). This model re-reads on
+every fetch, which is legal, but a guest may not rely on it and a caching reference model is
+equally legal. The comparator must report such a divergence as a **profile difference**, not a
+defect. This is catalog `C13`, and it is the kind of case a final-state checksum never surfaces.
+
 **No ordering claim.** `FENCE` is decoded and must not trap; with one hart, no external devices
 and an in-order model it has no observable effect. `FENCE.TSO` (fm=1000, pred=RW, succ=RW) is
 accepted and implemented as `FENCE RW,RW`, which the specification states is correct
@@ -101,8 +115,35 @@ Each has an owner and a due point. None blocks writing `profile.toml`; all block
 | **OQ-4** | What are the actual applicable terms for the specification artifacts, and does anything here get redistributed? Nothing is committed today; `SRC-01` requires the terms before it is. | `P0-PROFILE.5` | before any artifact is shipped |
 | **OQ-5** | Is `pc` after an `ECALL`/`EBREAK` requested trap defined by this harness, or left to the harness contract? The base ISA gives no answer without a privileged mode. | `P0-PROFILE.4` | `G0` |
 
+## The state inventory, and why "no hidden state" is a checked claim
+
+[`state.json`](state.json) records 32 integer registers of 64 bits (`x0` hardwired to zero) and
+`pc`, and then does the part that matters: it **enumerates seven candidates for hidden state and
+shows each absent** — CSRs, the reservation set, floating-point registers and `fcsr`, vector
+state, privilege and trap state, instruction-fetch cache state, and pending or partially
+committed effects. An empty list with no census is an unearned claim, and the gate refuses one.
+
+Two entries in that census are worth reading. *Instruction-fetch cache state* is absent only
+because of `D-CODE-VISIBILITY`: a caching implementation would have hidden state there and would
+still be architecturally legal. And *pending effects* are absent because no instruction in RV64I
+base is a multi-step or restartable suboperation — which is exactly what makes this a good first
+experiment, since snapshot and replay reduce to the register file, `pc` and memory. **Every
+extension added later reopens this census.**
+
+Register **ABI names are software convention, not architecture.** Only the three roles the ISA
+chapter itself names — `x1` return address, `x5` alternate link, `x2` stack pointer — are
+recorded, with authority `software-convention`. The rest belong to the calling-convention
+document, which has not been fetched, so they are absent rather than assumed
+(`docs/INFORMATION_CATALOG.md` §6, *Instruction semantics versus ABI*).
+
+Reset values for `x1..x31` are a **laboratory** declaration, and that was measured rather than
+assumed: the string `reset` appears **0 times** in the RV32I chapter and **0 times** in the
+RV64I chapter. The unprivileged specification says the EEI defines the initial state of the
+program (`RVI-INTRO`), and this harness's choice of zero is not something a guest may rely on
+elsewhere.
+
 ## What is deliberately absent
 
-No `state.json` (leaf `.2`), no `requirements.jsonl` (leaf `.3`), no environment contract
+No `requirements.jsonl` (leaf `.3`), no environment contract
 (leaf `.4`), no reference dossier (leaf `.5`), and no evidence of any kind. The `G0` gate is
 `incomplete` and will read `incomplete` until `P0-PROFILE.9`.

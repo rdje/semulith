@@ -1,5 +1,35 @@
 # CHANGELOG.md
 
+## `P0-PROFILE.2` — the state inventory, and a census for its "none"
+
+- `state.json` records 32×64-bit integer registers, `x0` hardwired zero, and `pc` — and then
+  does the part that matters: it **enumerates seven candidates for hidden state and shows each
+  absent**. CSRs, the reservation set, floating-point and `fcsr`, vector state, privilege and
+  trap state, instruction-fetch cache state, pending or partially committed effects.
+- ⭐ *"No hidden state"* is only true **because of what the profile excludes**, so the census
+  records the reason per candidate. A caching fetch implementation *would* have hidden state
+  there and would still be architecturally legal without Zifencei.
+- Reading the sources for the inventory surfaced **three architectural rules leaf `.1` had
+  missed**: the address space is circular and address computation wraps modulo 2^XLEN; every
+  executed instruction entails an implicit fetch read; and the fetch-accessible and
+  load-accessible sets may differ, with the choice delegated to the EEI. Five decisions added,
+  taking the profile to 25 (14 architecture, 8 execution-environment, 3 laboratory).
+- The reset claim is **measured, not assumed**: `grep -ci reset` over the pinned chapters →
+  `rv32.txt:0`, `rv64.txt:0`. Reset values for `x1..x31` are a laboratory declaration and are
+  labelled one.
+- Register **ABI names are software convention, not architecture**. Only the three roles the ISA
+  chapter itself names are recorded; the rest belong to the calling-convention document, which
+  has not been fetched, so they are absent rather than assumed.
+- `PROFILE-CONSISTENCY` extended: `state.json` must agree with `profile.toml` on id, XLEN and
+  register count, and an **empty `hidden_state` with no census is refused** — `GAP-CLAIM-CENSUS`
+  applied to data rather than prose. Both new rules fired RED on the real dossier.
+- ⛔ `TASK-ACCEPTANCE` refused this leaf's own evidence for the **third** time, on `grep -ci`.
+  The first two fixes were additions that each held until the next new thing existed; this one
+  aligns the acceptance gate with the census gate's own accepted instrument list. A list that
+  must be edited whenever a sibling file changes is a list that will be stale — if you are
+  declaring a token for the third time, the declaration is the wrong shape.
+
+
 ## `P0-PROFILE.1` — the project has a subject: `rv64i-lab-v0`
 
 - **The specification is acquired and pinned, not cited.** `docs/SOURCES_AND_NAMING.md` listed
