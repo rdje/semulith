@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## `SEMULITH-TREES.3` — every roadmap lane now has an owner
+
+- Five trees created and registered: **`P5-BOARD`** (7 leaves, gate `BOARD`), **`AG-OS`**
+  (8 leaves, gate `ARCHOGEN-OS`), **`P6-LINUX`** (8 leaves, gate `LINUX`), **`P7-COMPUTER`**
+  (7 leaves, gate `SYSTEM`), **`MC-MULTICORE`** (7 leaves, its own gate). Milestone-tree
+  census: `6` → `11` — every lane of `ROADMAP.md` §6 is owned.
+- `AG-OS.1` is deliberately *"inspect the real eADL and plan interfaces"*: no eADL grammar or
+  typed API has been supplied, so designing the adapter first would design against a guess.
+- `AG-OS.6` pre-commits the shared-trust inventory: if the hosted playground reuses Semulith
+  device transitions, their agreement is shared-model evidence, not an independent hardware
+  comparison. Semulith does not become independent by being a separate project.
+- `MC-MULTICORE.5` is written so that **silence is the honest state**: if the weak-memory
+  exploration leaf is not done, the project does not claim weak-memory coverage.
+- `P5-BOARD.4` makes an unmatched CPU assumption a **rejection** of the composition rather than
+  a note, which is what keeps the CPU-first ordering meaningful once integration bugs appear.
+
+
 ## `SEMULITH-TREES.2` — the CPU lane, where both processor gates live
 
 - Four trees created and registered: **`P2-SCALAR`** (9 leaves, gate `CPU-LAB`),

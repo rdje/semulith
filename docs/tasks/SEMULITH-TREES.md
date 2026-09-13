@@ -33,29 +33,28 @@ before its work depends on them.
 - `docs/tasks/`'s family bounds are re-reviewed against the resulting corpus, not exceeded.
 - The book's milestone chapters and the live docs reflect the conversion in the same commits.
 
-## Acceptance Checklist (current leaf — `SEMULITH-TREES.2`)
+## Acceptance Checklist (current leaf — `SEMULITH-TREES.3`)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the CPU lane — where both processor gates sit — had
-  no trees. `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `2`
-  before this leaf, against four CPU-lane sections in the plan
-  (`grep -c '^### P2\|^### P3\|^### P4' ROADMAP.md` → `3`, plus the **D** node that §6's graph
-  makes a separate prerequisite of `BREADTH`). `CPU-LAB` and `CPU-SYSTEM` are the two gates the
-  whole project's credibility rests on, and neither had an owner.
-- [x] **ADDRESSED (verified)** — four trees created and registered: `P2-SCALAR` (9 leaves, gate
-  `CPU-LAB`), `DSP-REVIEW` (7 leaves, no gate of its own — a precondition of `BREADTH`),
-  `P3-BREADTH` (6 leaves, gate `BREADTH`), `P4-SYSTEM` (10 leaves, gate `CPU-SYSTEM`). Census
-  after: `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `6`.
-  Each tree's acceptance criteria **are** its gate, quoted from
-  `docs/EVIDENCE_AND_GATES.md` §7 rather than restated.
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: five lanes still had no tree.
+  `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `6` before
+  this leaf, against eleven lanes in `ROADMAP.md` §6 — the graph's `P5`, `AG`, `P6`, `P7` and
+  `MC` nodes were unowned. `AG` and `MC` are the two most dangerous of them: `AG` is the lane
+  where another project's interfaces enter this one, and `MC` is the lane where a capability is
+  most easily claimed by adding host threads.
+- [x] **ADDRESSED (verified)** — five trees created and registered: `P5-BOARD` (7 leaves, gate
+  `BOARD`), `AG-OS` (8 leaves, gate `ARCHOGEN-OS`), `P6-LINUX` (8 leaves, gate `LINUX`),
+  `P7-COMPUTER` (7 leaves, gate `SYSTEM`), `MC-MULTICORE` (7 leaves, its own gate). Census
+  after: `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `11`
+  — **every lane of `ROADMAP.md` §6 now has an owner.**
 - [x] **NO REGRESSION** — `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`;
   `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`. `README-ROUTING-CLOSURE`
-  re-measured the grown `docs/tasks/` family and stayed inside its bounds. Leg 2, stated
-  honestly: the only oracle for *"this tree matches the plan"* is the plan, so every leaf cites
-  the roadmap section, task card, rule ID or catalog entry it derives from — a reader refutes a
-  leaf by reading one paragraph. That is the strongest control available for a prose-to-
-  structure conversion, and it is weaker than a test.
-- [x] **FIX** — `P2-SCALAR.md`, `DSP-REVIEW.md`, `P3-BREADTH.md`, `P4-SYSTEM.md` created and
-  registered in `docs/TASK_TREE.md`.
+  re-measured `docs/tasks/` and reports it inside its enforced ceiling while **over its health
+  target** — which is the two-tier design working as intended, and is leaf `.4`'s subject.
+  Leg 2, stated honestly: the oracle for *"this tree matches the plan"* is the plan, so every
+  leaf cites its roadmap section, contract section, rule ID or archogen obligation. A reader
+  refutes a leaf by reading one paragraph.
+- [x] **FIX** — `P5-BOARD.md`, `AG-OS.md`, `P6-LINUX.md`, `P7-COMPUTER.md`, `MC-MULTICORE.md`
+  created and registered.
 - [x] **LOCKSTEP** — `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` updated
   in this commit.
 
@@ -81,11 +80,11 @@ before its work depends on them.
   Commit: `SEMULITH-TREES-0010`
 
 - ID: `SEMULITH-TREES.3`
-  Status: `pending`
+  Status: `done`
   Goal: the system lane — `P5-BOARD`, `AG-OS`, `P6-LINUX`, `P7-COMPUTER`, `MC-MULTICORE`.
   Acceptance: five trees, each naming its gate, its dependencies and its roadmap section; registered.
-  Verification: `pending`
-  Commit: `pending`
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-TREES-0011`
 
 - ID: `SEMULITH-TREES.4`
   Status: `pending`
@@ -98,8 +97,7 @@ before its work depends on them.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SEMULITH-TREES.3` | `pending` | the system lane completes roadmap coverage |
-| 2 | `SEMULITH-TREES.4` | `pending` | bounds and the book are re-reviewed once the corpus is final, not per tree |
+| 1 | `SEMULITH-TREES.4` | `pending` | the corpus is final, and `docs/tasks/` is over its health target — the bound written for three trees was never reviewed against eleven |
 
 ## Decisions
 
@@ -121,6 +119,32 @@ before its work depends on them.
 - None.
 
 ## Completed-leaf evidence (archive)
+
+### `SEMULITH-TREES.2` — the CPU lane
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the CPU lane — where both processor gates sit — had
+  no trees. `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `2`
+  before this leaf, against four CPU-lane sections in the plan
+  (`grep -c '^### P2\|^### P3\|^### P4' ROADMAP.md` → `3`, plus the **D** node that §6's graph
+  makes a separate prerequisite of `BREADTH`). `CPU-LAB` and `CPU-SYSTEM` are the two gates the
+  whole project's credibility rests on, and neither had an owner.
+- [x] **ADDRESSED (verified)** — four trees created and registered: `P2-SCALAR` (9 leaves, gate
+  `CPU-LAB`), `DSP-REVIEW` (7 leaves, no gate of its own — a precondition of `BREADTH`),
+  `P3-BREADTH` (6 leaves, gate `BREADTH`), `P4-SYSTEM` (10 leaves, gate `CPU-SYSTEM`). Census
+  after: `git ls-files 'docs/tasks/*.md' | grep -vc 'TEMPLATE\|BOOTSTRAP\|SEMULITH-'` → `6`.
+  Each tree's acceptance criteria **are** its gate, quoted from
+  `docs/EVIDENCE_AND_GATES.md` §7 rather than restated.
+- [x] **NO REGRESSION** — `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`;
+  `make check` → `test result: ok. 1 passed; 0 failed`, `rc=0`. `README-ROUTING-CLOSURE`
+  re-measured the grown `docs/tasks/` family and stayed inside its bounds. Leg 2, stated
+  honestly: the only oracle for *"this tree matches the plan"* is the plan, so every leaf cites
+  the roadmap section, task card, rule ID or catalog entry it derives from — a reader refutes a
+  leaf by reading one paragraph. That is the strongest control available for a prose-to-
+  structure conversion, and it is weaker than a test.
+- [x] **FIX** — `P2-SCALAR.md`, `DSP-REVIEW.md`, `P3-BREADTH.md`, `P4-SYSTEM.md` created and
+  registered in `docs/TASK_TREE.md`.
+- [x] **LOCKSTEP** — `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` updated
+  in this commit.
 
 ### `SEMULITH-TREES.1` — the near-term lane
 
@@ -156,6 +180,8 @@ before its work depends on them.
 | `2026-09-13` | `SEMULITH-TREES.1` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
 | `2026-09-13` | `SEMULITH-TREES.2` | milestone-tree census before/after | `2` → `6` |
 | `2026-09-13` | `SEMULITH-TREES.2` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
+| `2026-09-13` | `SEMULITH-TREES.3` | milestone-tree census before/after | `6` → `11` — every `ROADMAP.md` §6 lane owned |
+| `2026-09-13` | `SEMULITH-TREES.3` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
 
 ## Commit Log
 
@@ -163,8 +189,10 @@ before its work depends on them.
 | --- | --- | --- |
 | `SEMULITH-TREES.1` | `SEMULITH-TREES-0009 (leaf SEMULITH-TREES.1): the near-term lane as task-trees` | `P0-PROFILE` 9 leaves, `P1-LAB` 12 leaves |
 | `SEMULITH-TREES.2` | `SEMULITH-TREES-0010 (leaf SEMULITH-TREES.2): the CPU lane as task-trees` | `P2-SCALAR` 9, `DSP-REVIEW` 7, `P3-BREADTH` 6, `P4-SYSTEM` 10 |
+| `SEMULITH-TREES.3` | `SEMULITH-TREES-0011 (leaf SEMULITH-TREES.3): the system lane as task-trees` | `P5-BOARD` 7, `AG-OS` 8, `P6-LINUX` 8, `P7-COMPUTER` 7, `MC-MULTICORE` 7 |
 
 ## Changelog
 
 - `2026-09-13`: Created task tree; `SEMULITH-TREES.1` completed.
 - `2026-09-13`: `SEMULITH-TREES.2` completed — the CPU lane, both processor gates now owned.
+- `2026-09-13`: `SEMULITH-TREES.3` completed — all eleven roadmap lanes are task-trees.

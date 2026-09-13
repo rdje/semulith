@@ -15,7 +15,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Doctrine seams declared | Done | `.doctrine/code_paths.txt` and `evidence_tokens.txt`, each measured against the tracked corpus and fired |
 | README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
 | mdBook is the review surface | Done | 27 chapters; contracts included verbatim so the book cannot become a second owner |
-| Roadmap converted to task-trees | In Progress | `SEMULITH-TREES` — 6 of 11 lanes are trees; the system lane remains |
+| Roadmap converted to task-trees | Mostly Done | `SEMULITH-TREES` — all 11 lanes are trees; `.4` re-reviews family bounds and the book |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 
@@ -27,10 +27,10 @@ summarize the snapshot in every commit-workflow completion message.
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
-| P5 — board model | BOARD | Not Started | — |
-| archogen OS integration | ARCHOGEN-OS | Not Started | — |
-| P6 — Linux userspace | LINUX | Not Started | — |
-| P7 — useful headless computer | SYSTEM | Not Started | — |
-| Separate multicore CPU work | multicore gate | Not Started | — |
+| P5 — board model | BOARD | Not Started | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 7 leaves; composition against the CPU contract |
+| archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |
+| P6 — Linux userspace | LINUX | Not Started | [`P6-LINUX`](docs/tasks/P6-LINUX.md) — 8 leaves; a banner is not a pass |
+| P7 — useful headless computer | SYSTEM | Not Started | [`P7-COMPUTER`](docs/tasks/P7-COMPUTER.md) — 7 leaves; the declared suite is the claim |
+| Separate multicore CPU work | multicore gate | Not Started | [`MC-MULTICORE`](docs/tasks/MC-MULTICORE.md) — 7 leaves; host threads are not multicore |
 
 No gate has been run. Every row above is project state, not a conformance claim.

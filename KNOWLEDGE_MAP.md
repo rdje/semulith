@@ -29,13 +29,18 @@
 
 ## Active task-trees
 
+- [`AG-OS.md`](docs/tasks/AG-OS.md)
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
+- [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
 - [`P0-PROFILE.md`](docs/tasks/P0-PROFILE.md)
 - [`P1-LAB.md`](docs/tasks/P1-LAB.md)
 - [`P2-SCALAR.md`](docs/tasks/P2-SCALAR.md)
 - [`P3-BREADTH.md`](docs/tasks/P3-BREADTH.md)
 - [`P4-SYSTEM.md`](docs/tasks/P4-SYSTEM.md)
+- [`P5-BOARD.md`](docs/tasks/P5-BOARD.md)
+- [`P6-LINUX.md`](docs/tasks/P6-LINUX.md)
+- [`P7-COMPUTER.md`](docs/tasks/P7-COMPUTER.md)
 - [`SEMULITH-PKG.md`](docs/tasks/SEMULITH-PKG.md)
 - [`SEMULITH-TREES.md`](docs/tasks/SEMULITH-TREES.md)
 
