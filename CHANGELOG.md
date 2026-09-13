@@ -1,5 +1,63 @@
 # CHANGELOG.md
 
+## SEMULITH-P0-0023 (leaf P0-PROFILE.7) — the independence inventory, and the 184 files that are the same file
+
+**What changed.** `P0-PROFILE.6` recorded that two models agree over 15 aligned steps. That
+sentence is worth exactly as much as their independence, and nothing had examined it. Six pairs
+are now inventoried per subsystem, across four verdict classes.
+
+| Subsystem | Pair | Verdict |
+| --- | --- | --- |
+| instruction encoding | sail ↔ spike | **not shared** |
+| floating point | sail ↔ spike | **shared** |
+| integer semantics | sail ↔ spike | no evidence of sharing |
+| expected-result derivation | act4 ↔ sail | **shared** |
+| all | qemu ↔ sail, qemu ↔ spike | **not examined** |
+
+⛔ **The headline: the two models run the same floating-point source.** Both vendor Berkeley
+SoftFloat — Sail Release 3e (326 files), Spike Release 3d (263). Of the 199 `.c` files present in
+both copies, **184 are byte-identical** once the release-number comment is normalized;
+`f64_add.c` differs by exactly one line. A Sail-versus-Spike floating-point comparison executes
+one implementation twice. **Nothing currently held is affected** — this profile declares no
+floating point — so it is routed to `P4-SYSTEM.7` with the measurement, and recorded in
+[`reference_softfloat-shared-ancestry`](docs/decisions/reference_softfloat-shared-ancestry.md).
+
+⭐ **The encoding row cuts the other way, and was not anticipated.** Spike generates `encoding.h`
+from `riscv-opcodes` (`c1d9bdf`); the Sail model hand-writes 59 files of `encdec` mappings and
+never mentions `riscv-opcodes` under `model/`. Our assembler takes its encodings from
+`riscv-opcodes` — so it shares an ancestor with Spike and **not** with Sail, which makes Sail
+decoding our bytes an independent confirmation and Spike doing so not one. Independence is a
+property of a pair and a subsystem, never of a tool.
+
+⛔ **An instrument answered blind and nearly became a finding.** `strings | grep -ci softfloat`
+returned `0` for *both* binaries. `nm -a` showed why that was blindness: Spike carries 649,743
+symbols and 495 softfloat-shaped ones; the Sail release binary carries 400 symbols in total. The
+source was cloned instead — at `29e6158`, the exact commit the binary's own `--build-info` names.
+
+**New gate rule with real teeth:** an experiment may not compare two models whose independence has
+never been examined. Fired RED on the real dossier: `UNEXAMINED PAIR rv64i-lab-v0/smoke-arith …
+'not-examined' is a legal verdict, silence is not`. `--self-test` → `36 pass / 0 fail`, 36 arms
+written and 36 run.
+
+**Housekeeping forced by a ceiling, not a preference.** `docs/tasks/P0-PROFILE.md` crossed the
+per-part ceiling (73,317 B > 65,536). The completed-leaf evidence was split, unedited, to
+`docs/tasks/archive/` — the response the registry's own header prescribes. Verified that this did
+not move pressure somewhere ungoverned: `git ls-files` is recursive, so the archive still counts
+toward the family aggregate (240,293 B against a 393,216 ceiling).
+
+🔎 `LIVE_STATUS.md` claimed "24 destinations governed" while the registry holds 25 rows and the
+gate prints 25 — stale since `SEMULITH-P0-0013`. Corrected. The *class* — a live document
+restating a count a registry owns — is not yet mechanized; `TREE-CLAIMS` covers task-tree facts
+only. Owner: `MIRROR-DRIFT.4`, opened next.
+
+🔎 **A gate boundary worth reporting.** `TASK-ACCEPTANCE` requires *every* staged `docs/tasks/*.md`
+to carry a ticked checklist, which cannot distinguish the leaf that **owns** a change from a tree
+that merely **receives** a routed finding. Annotating `P4-SYSTEM.7` with this leaf's measurement
+therefore had to land as its own commit, because P4 has not started and ticking its template
+would be a lie. The split is correct; the gate's inability to tell the two apart is the defect,
+and an author hitting a gate's boundary is the highest-signal report that gate can receive.
+
+
 ## SEMULITH-P0-0021 (leaf P0-PROFILE.6) — run the matched-profile experiment, and the control that makes it mean something
 
 **What changed.** `G0`'s second criterion — *an actual evidence path works* — is met. Two guest

@@ -13,15 +13,15 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `P0-PROFILE` (gate `G0`) — 4 of 9 leaves done.
-- **Frontier leaf:** `P0-PROFILE.7` — the independence inventory.
-- **Next action:** `P0-PROFILE.7` (`EVD-04`). Two models now AGREE over 15 aligned steps — worth
-  exactly as much as their independence, which is unexamined. Record per subsystem whether
-  `sail-riscv`, `spike` and `qemu` share semantic code or expected-result derivation; ACT derives
-  its results from a configured Sail model, so that pair is known-correlated. Record unknown
-  ancestry as unknown. The `lineage` field on each candidate in `references.toml` is the input.
+- **Active tree:** `P0-PROFILE` (gate `G0`) — 5 of 9 leaves done.
+- **Frontier leaf:** `P0-PROFILE.3` — the requirements catalog seed.
+- **Next action:** `P0-PROFILE.3`. Turn the 25 sourced decisions in `profile.toml` into
+  `requirement.schema.json` records: `source_semantics` must distinguish defined /
+  implementation-defined / unspecified / reserved, and `research_status` stays separate from
+  `implementation_status`. No record may claim `resolved` research status without a real
+  `source_refs` locator. `.4` (the environment contract) needs `.3`'s obligation IDs.
 - **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
   `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0021 (leaf P0-PROFILE.6)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-P0-0023 (leaf P0-PROFILE.7)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

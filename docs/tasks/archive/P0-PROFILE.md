@@ -1,0 +1,452 @@
+# `P0-PROFILE` — completed-leaf evidence (archive)
+
+> Split out of [`../P0-PROFILE.md`](../P0-PROFILE.md) on `2026-09-14`, when that file crossed the
+> `docs/tasks/` per-part ceiling (73,317 bytes against 65,536). The registry that sets the ceiling
+> names this as the intended response — *"the per-part ceiling is the one that actually bites, and
+> it bites on the right thing: a tree whose archive should be compacted or split"* — so the
+> ceiling was obeyed rather than raised.
+>
+> ⛔ **Nothing here is edited when it moves.** These are the acceptance checklists exactly as they
+> were accepted at commit time; an archive that gets tidied is no longer evidence of what was
+> claimed. The live tree keeps the frontier, the decisions, the open questions, the current
+> leaf's checklist and both logs.
+>
+> This directory is deliberately a subdirectory: `FRONTIER-SYNC` treats every `docs/tasks/*.md`
+> as a tree needing an index row, and an archive is not a tree.
+
+## The archive
+
+### `P0-PROFILE.6` — the matched-profile experiment, and its control
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `.5` left three models obtained and **none usable**,
+  because `docs/EVIDENCE_AND_GATES.md` §5 makes a reproduced matched experiment the condition and
+  no program had ever been run. Census before this leaf: `ls profiles/rv64i-lab-v0/guests
+  2>/dev/null | wc -l` → `0`; no trace, no comparator, no expected-value record existed anywhere
+  in the tree. WHERE the work had to start was itself a measurement: the pinned specification
+  turned out not to contain the instruction encodings at all.
+
+  ```
+  $ grep -cE '[01]{7}' intro.html rv32.html rv64.html intro.txt rv32.txt rv64.txt
+  0  0  0  0  0  0
+  $ grep -c '<img' rv32.html rv64.html
+  31  11
+  ```
+
+  The format diagrams are **images**. The semantics are all present in prose — which is the half
+  that matters for expected values — so encodings were pinned separately from `riscv-opcodes`,
+  and that separate provenance is recorded rather than blurred into "the specification says so".
+
+- [x] **ADDRESSED (verified)** — the evidence path now works end to end in one command:
+
+  ```
+  $ scripts/run_smoke.py
+    PASS  smoke-arith: 12 specification-derived expectations
+    PASS  smoke-arith: sail-riscv vs spike  AGREE over 12 aligned step(s)
+    PASS  smoke-arith: reproduces  sha256 29d34aaa8218111b…
+    PASS  smoke-trap: sail-riscv vs spike  AGREE over 3 aligned step(s)
+    PASS  smoke-trap: reproduces  sha256 32f5f132fc965719…
+  run_smoke: ok — both experiments agree across two models, match the
+  specification-derived expectations, and reproduce
+
+  $ shasum -a 256 target/refs/guests/*.sail.trace
+  29d34aaa8218111b2d797d78e1d3d38fd72a9f05846dc9c2b9cb89627a33228d  smoke-arith.sail.trace
+  32f5f132fc965719888e5c5fb697a9b6a9a659679f29fb303b276f2a2edb255c  smoke-trap.sail.trace
+  $ grep -c '^\[\|^x[0-9]' target/refs/guests/smoke-arith.sail.trace
+  23
+  ```
+
+  Before → after: guest programs `0` → `2`; models that have executed a matched program `0` → `2`;
+  specification-derived expected values checked `0` → `12`, each carrying its own derivation and
+  source locator; profile/reference differences enumerated `0` → `4`. The trap case agrees on the
+  architectural detail and not merely the outcome: cause `0x04`, `tval 0x0000000080000401`, on
+  both models. ⭐ An unplanned corroboration fell out of it: the pinned encoding table contains
+  exactly **52** instructions for this profile's extension set, and `.1` enumerated exactly 52 by
+  hand from the prose without using it — `symmetric difference: NONE`.
+
+- [x] **NO REGRESSION** — leg 2, and for this leaf falsification is the whole argument.
+  ⭐ **The decisive control**: the Sail configuration's misaligned policy was flipped back to
+  "handled invisibly", with the same ELF and nothing else changed, and the run failed exactly
+  where it should — `FIRST DIVERGENCE at aligned step 2 … sail-riscv writes=[('x1', 0)] …
+  spike writes=[]`. One model loaded, the other trapped. **The two models agree because the
+  profile is matched**, which turns that sentence from a hope into a measurement. A second
+  control falsified one expected value — `step 5 (srai x6, x4, 63): expected {x6: 1}, observed
+  {x6: 18446744073709551615}` — proving the expectations are connected to the run.
+  `scripts/compare_traces.py --self-test` → `8 pass / 0 fail`: 7 RED arms asserting the reason
+  (a differing register, a differing trap *cause*, a differing *tval*, a truncated trace, an
+  unknown exception spelling, a trace that never reaches the entry, an exception with no record
+  of its instruction) and 1 GREEN. 8 arms written, 8 run.
+  `check_profile_consistency.sh --self-test` → `30 pass / 0 fail` (26 → 30), and the new
+  `NO CONTROL` rule was fired RED on the real dossier:
+  `NO CONTROL rv64i-lab-v0/smoke-trap: … A comparison never seen to diverge is not known to
+  detect divergence`. Whole gate `=== all doctrines green ===`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `make book` → `HTML book written`.
+  ⛔ **The comparator was caught reporting a false pass, by running it.** Its first version
+  compared only the overlapping prefix and printed `AGREE over 2 aligned step(s)` for the
+  misaligned-load run — in which Sail trapped and Spike simply stopped emitting records. The
+  prefixes did agree; the observation did not. A shorter trace is now a non-agreeing verdict that
+  must be explained before the run counts as evidence.
+
+- [x] **FIX** — `scripts/riscv_asm.py` (an RV64I assembler that reads its encodings from the
+  pinned tables and carries no opcode of its own; it **refuses** the B and J formats rather than
+  typing a bit layout from memory), `scripts/compare_traces.py` (first-divergence comparison with
+  a documented, versioned exception adapter grounded in the pinned cause table),
+  `scripts/run_smoke.py` (the whole path in one command), two tracked guest sources, the
+  specification-derived expectations, and four new gate rules for experiments and differences.
+
+- [x] **LOCKSTEP** — leg 3: the experiment is re-runnable by one tracked command and its records
+  are gated, so an experiment row can no longer claim agreement without a control.
+  `references.toml` gains 2 experiments and 4 differences; `DOSSIER.md`, the book's P0 chapter,
+  `TOOLBOX.md` (2 rows), `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in
+  this commit, and the lesson promoted to
+  [`a-shorter-trace-is-not-agreement`](../knowledge/a-shorter-trace-is-not-agreement.md).
+  ⚠️ Stated rather than implied: this is evidence **for these inputs on these two models**. It is
+  not universal trace inclusion, and two models with shared ancestry can agree while both are
+  wrong — which is why `.7` is now the frontier rather than a later tidy-up.
+
+## Acceptance Checklist (current leaf — `P0-PROFILE.5`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the project had a subject and no second opinion about
+  it. Census before this leaf, over everything that could have constituted a reference route:
+  `git ls-files profiles | grep -c reference` → `0`; `ls target/refs 2>/dev/null | wc -l` → `0`;
+  and `docs/SOURCES_AND_NAMING.md` listed candidate URLs, which `SRC-03` explicitly refuses to
+  treat as established availability. Availability was therefore *established*, not assumed:
+
+  ```
+  $ for u in …/riscv/sail-riscv …/riscv-software-src/riscv-isa-sim …/riscv-non-isa/riscv-arch-test
+  200  200  301   # the third redirects to riscv/riscv-arch-test — a locator that has moved
+  ```
+
+  ⛔ And identity was checked separately from availability, which is the part that paid:
+  `brew info --formula sail` → *"CLI toolkit to provision and deploy WordPress applications to
+  DigitalOcean"*, `https://sailed.io`, GPL-3.0-only. **An exact name collision with the Sail ISA
+  specification language.** The formula existed, the name matched, and it was the wrong software.
+  Recording "Sail is available from the package manager" would have been false in precisely the
+  way `SRC-03` exists to prevent.
+
+- [x] **ADDRESSED (verified)** — before → after, measured by the tool that now owns the claim:
+  `scripts/fetch_references.sh --verify-only` → **six re-derivations, all `MATCH`**, `rc=0` —
+  the Sail release asset, the Sail binary, the Spike source commit, the Spike binary, the
+  read-only QEMU binary, and *the matched-profile ISA string the model reports about itself*:
+
+  ```
+  MATCH    sail-riscv asset  target/refs/sail-riscv-Mac-arm64.tar.gz
+  MATCH    spike source commit  1e05ddac3a6c351bfc0aeed0cf3a68940e7200ab
+  MATCH    qemu binary (host toolchain, read-only)  /opt/homebrew/bin/qemu-system-riscv64
+  MATCH    matched-profile ISA string  rv64i_zvl32b
+  fetch_references: ok (rv64i-lab-v0)
+  ```
+
+  Reference models obtained and runnable went from `0` to `3`; recorded candidates from `0` to
+  `4`; recorded failed attempts from `0` to `3`. The Sail model was driven from its default
+  `rv64imafdcbvh_…` (96 supported extensions, `grep -c '"supported": true'` → `106` entries in
+  the dump) down to **`rv64i_zvl32b`**, and Spike accepts `--isa=rv64i --priv=m`.
+
+- [x] **NO REGRESSION** — leg 2. Every instrument added here was fired RED before being trusted,
+  on the **real** corpus and not only on fixtures.
+  `scripts/fetch_references.sh`: corrupting a pinned digest gave
+  `DIFFERS spike binary … pinned 000000000080ccafb96ab076c91967adf6df119b05c5b926ed49a033efe57836a3
+  actual 8fdf43ac80…`; flipping `M` back on in the tracked override gave
+  `DIFFERS matched-profile ISA string … pinned rv64i_zvl32b actual rv64im_zvl32b`. Both restored
+  to `MATCH`.
+  `PROFILE-CONSISTENCY` gained 13 rules for `references.toml` and was fired RED **on the real
+  dossier** twice: deleting QEMU's `lineage` gave `NO LINEAGE rv64i-lab-v0/qemu: EVD-04 asks
+  whether two comparators share semantic ancestry…`, and claiming ACT was `obtained` gave six
+  `UNEARNED OBTAINED rv64i-lab-v0/act4: status is 'obtained' with no 'binary'…` findings.
+  `--self-test` → `PROFILE-CONSISTENCY --self-test: 26 pass / 0 fail` (13 pre-existing + 13 new).
+  Arm accounting per this session's own lesson: `grep -cE '(^|[; ])arm "'` → `26`, reported `26`.
+  The same reconciliation was run over **every** project harness —
+  `delivery-provenance 9/9, fixture-fingerprint 7/7, readme-routes 12/12, profile-consistency
+  26/26`, and `seam-integrity 9/9` on its own `score` idiom — so no harness in this repository is
+  silently skipping arms. Whole gate `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `make book` → `HTML book written`.
+  ⭐ The falsifying question was *"does having three binaries mean anything?"* — and the honest
+  answer is **no**, which is why the gate now refuses a candidate with no `lineage`. ACT derives
+  its expected results from a *configured Sail model*, so ACT agreeing with Sail is one semantics
+  answering twice. Spike and QEMU are *plausibly* independent; plausible is a hypothesis.
+  `P0-PROFILE.7` owns it and this leaf claims nothing.
+
+- [x] **FIX** — `profiles/rv64i-lab-v0/references.toml` (the dossier: 4 candidates, 3 attempts),
+  `profiles/rv64i-lab-v0/reference/sail-rv64i-lab-v0.override.json` (the tracked matched-profile
+  configuration), `scripts/fetch_references.sh` (acquire and re-verify, repo-local),
+  `check_profile_consistency.sh` extended to gate the dossier's shape, and a decision record
+  superseding the roadmap's cost estimate.
+
+- [x] **LOCKSTEP** — leg 3: every recorded digest, the Spike commit and the model's own ISA
+  string are re-derivable by one tracked command, and the dossier's shape is re-checked on every
+  commit. `DOSSIER.md` gains the references section and `OQ-4` is partly answered;
+  `docs/decisions/decision_reference-acquisition-route.md` records what this supersedes;
+  `TOOLBOX.md` gains the tool; the book's P0 chapter gains *"What acquisition actually found"*;
+  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⛔ **Two limits are recorded rather than rounded away**, because `G0` asks for differences to be
+  *enumerated, not assumed absent*. (1) Sail cannot be configured to exactly `extensions = []`;
+  it bottoms out at `rv64i_zvl32b`, a vestigial minimum vector-length class the model instantiates
+  even with the vector unit `Disabled`. (2) Sail **will not emit its effective configuration** —
+  `--print-default-config` ignores `--config-override` and the two dumps are byte-identical — so
+  the effective configuration is *(default) + (our tracked override)* and **that merge is ours,
+  not the model's account of itself**. `P0-PROFILE.6` must not upgrade it into the model's word.
+
+## Acceptance Checklist (current leaf — `P0-PROFILE.2`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.1` recorded the profile's *decisions* but not
+  its *state*, and `SEM-08` requires the required state to include hidden or pending information
+  that can influence a future supported observation. Census before this leaf:
+  `git ls-files profiles | grep -c state.json` → `0`. Reading the pinned sources for it also
+  surfaced three architectural rules the profile had not recorded, each found by reading rather
+  than assumed: the address space is **circular** with computations wrapping modulo 2^XLEN;
+  every executed instruction entails an **implicit** fetch read; and the fetch-accessible and
+  load-accessible location sets **may differ**, with the choice delegated to the EEI
+  (`RVI-INTRO`, *Memory*).
+- [x] **ADDRESSED (verified)** — `state.json` records 32×64-bit integer registers, `x0`
+  hardwired zero, and `pc`, and enumerates **7 hidden-state candidates**, all absent:
+  `hidden state: 0 entries; candidates checked: 7`, `all candidates absent: True`. The profile
+  gained five decisions (`D-ADDR-WRAP`, `D-FETCH-IMPLICIT`, `D-FETCH-MAP`, `D-CODE-VISIBILITY`,
+  `D-MAIN-VS-IO`), taking it to 25. The reset claim was **measured**, not assumed:
+  `grep -ci reset rv32.txt rv64.txt` → `rv32.txt:0`, `rv64.txt:0`, so reset values for
+  `x1..x31` are a laboratory declaration and are labelled one.
+- [x] **NO REGRESSION** — leg 2: the gate was extended and then fired, on the real dossier, for
+  both new rules. Removing the census gave `UNEARNED NONE rv64i-lab-v0/state.json: hidden_state
+  is empty with no census…`, `rc=1`; setting `xlen` to 32 gave `XLEN MISMATCH rv64i-lab-v0:
+  state.json 32 != profile.toml 64`; both restored to `ok`.
+  `PROFILE-CONSISTENCY --self-test: 13 pass / 0 fail` (11 RED arms). Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+  ⛔ This leaf's own evidence was refused by `TASK-ACCEPTANCE` for the **third** time in this
+  repository — on `grep -ci reset`, a plain enumeration over the pinned specification, which
+  `GAP-CLAIM-CENSUS` accepts as a census while the acceptance gate's signatures did not. The
+  first two fixes were additions and each held only until the next new thing existed; this one
+  aligns the two lists on *any* `grep` invocation, because an instrument one gate accepts as a
+  census is an instrument the other should accept as evidence. Fired RED afterwards (a
+  prose-only box → `rc=1`) to prove the widening did not make the gate vacuous. Recorded in
+  [`census-instrument-signature-gap`](../knowledge/census-instrument-signature-gap.md).
+  ⭐ The falsifying question for this leaf was *"is 'no hidden state' a finding or an
+  omission?"* — and the honest answer is that it is only true **because of what the profile
+  excludes**, which is why the census records the reason per candidate and why
+  `D-CODE-VISIBILITY` notes that a caching implementation would have hidden state and would
+  still be legal.
+- [x] **FIX** — `profiles/rv64i-lab-v0/state.json` added; five decisions added to
+  `profile.toml`; `check_profile_consistency.sh` extended to require `state.json` to agree with
+  `profile.toml` on id, XLEN and register count, to accept `software-convention` as an authority
+  only inside `state.json`, and to refuse an empty `hidden_state` with no census.
+- [x] **LOCKSTEP** — leg 3: the agreement between the two files is re-derived every commit, so a
+  contradiction fails rather than rots. `DOSSIER.md` gains the state section and the two new
+  semantic traps; `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
+
+### `P0-PROFILE.5` — obtain three reference models and pin which they are
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the project had a subject and no second opinion about
+  it. Census before this leaf, over everything that could have constituted a reference route:
+  `git ls-files profiles | grep -c reference` → `0`; `ls target/refs 2>/dev/null | wc -l` → `0`;
+  and `docs/SOURCES_AND_NAMING.md` listed candidate URLs, which `SRC-03` explicitly refuses to
+  treat as established availability. Availability was therefore *established*, not assumed:
+
+  ```
+  $ for u in …/riscv/sail-riscv …/riscv-software-src/riscv-isa-sim …/riscv-non-isa/riscv-arch-test
+  200  200  301   # the third redirects to riscv/riscv-arch-test — a locator that has moved
+  ```
+
+  ⛔ And identity was checked separately from availability, which is the part that paid:
+  `brew info --formula sail` → *"CLI toolkit to provision and deploy WordPress applications to
+  DigitalOcean"*, `https://sailed.io`, GPL-3.0-only. **An exact name collision with the Sail ISA
+  specification language.** The formula existed, the name matched, and it was the wrong software.
+  Recording "Sail is available from the package manager" would have been false in precisely the
+  way `SRC-03` exists to prevent.
+
+- [x] **ADDRESSED (verified)** — before → after, measured by the tool that now owns the claim:
+  `scripts/fetch_references.sh --verify-only` → **six re-derivations, all `MATCH`**, `rc=0` —
+  the Sail release asset, the Sail binary, the Spike source commit, the Spike binary, the
+  read-only QEMU binary, and *the matched-profile ISA string the model reports about itself*:
+
+  ```
+  MATCH    sail-riscv asset  target/refs/sail-riscv-Mac-arm64.tar.gz
+  MATCH    spike source commit  1e05ddac3a6c351bfc0aeed0cf3a68940e7200ab
+  MATCH    qemu binary (host toolchain, read-only)  /opt/homebrew/bin/qemu-system-riscv64
+  MATCH    matched-profile ISA string  rv64i_zvl32b
+  fetch_references: ok (rv64i-lab-v0)
+  ```
+
+  Reference models obtained and runnable went from `0` to `3`; recorded candidates from `0` to
+  `4`; recorded failed attempts from `0` to `3`. The Sail model was driven from its default
+  `rv64imafdcbvh_…` (96 supported extensions, `grep -c '"supported": true'` → `106` entries in
+  the dump) down to **`rv64i_zvl32b`**, and Spike accepts `--isa=rv64i --priv=m`.
+
+- [x] **NO REGRESSION** — leg 2. Every instrument added here was fired RED before being trusted,
+  on the **real** corpus and not only on fixtures.
+  `scripts/fetch_references.sh`: corrupting a pinned digest gave
+  `DIFFERS spike binary … pinned 000000000080ccafb96ab076c91967adf6df119b05c5b926ed49a033efe57836a3
+  actual 8fdf43ac80…`; flipping `M` back on in the tracked override gave
+  `DIFFERS matched-profile ISA string … pinned rv64i_zvl32b actual rv64im_zvl32b`. Both restored
+  to `MATCH`.
+  `PROFILE-CONSISTENCY` gained 13 rules for `references.toml` and was fired RED **on the real
+  dossier** twice: deleting QEMU's `lineage` gave `NO LINEAGE rv64i-lab-v0/qemu: EVD-04 asks
+  whether two comparators share semantic ancestry…`, and claiming ACT was `obtained` gave six
+  `UNEARNED OBTAINED rv64i-lab-v0/act4: status is 'obtained' with no 'binary'…` findings.
+  `--self-test` → `PROFILE-CONSISTENCY --self-test: 26 pass / 0 fail` (13 pre-existing + 13 new).
+  Arm accounting per this session's own lesson: `grep -cE '(^|[; ])arm "'` → `26`, reported `26`.
+  The same reconciliation was run over **every** project harness —
+  `delivery-provenance 9/9, fixture-fingerprint 7/7, readme-routes 12/12, profile-consistency
+  26/26`, and `seam-integrity 9/9` on its own `score` idiom — so no harness in this repository is
+  silently skipping arms. Whole gate `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `make book` → `HTML book written`.
+  ⭐ The falsifying question was *"does having three binaries mean anything?"* — and the honest
+  answer is **no**, which is why the gate now refuses a candidate with no `lineage`. ACT derives
+  its expected results from a *configured Sail model*, so ACT agreeing with Sail is one semantics
+  answering twice. Spike and QEMU are *plausibly* independent; plausible is a hypothesis.
+  `P0-PROFILE.7` owns it and this leaf claims nothing.
+
+- [x] **FIX** — `profiles/rv64i-lab-v0/references.toml` (the dossier: 4 candidates, 3 attempts),
+  `profiles/rv64i-lab-v0/reference/sail-rv64i-lab-v0.override.json` (the tracked matched-profile
+  configuration), `scripts/fetch_references.sh` (acquire and re-verify, repo-local),
+  `check_profile_consistency.sh` extended to gate the dossier's shape, and a decision record
+  superseding the roadmap's cost estimate.
+
+- [x] **LOCKSTEP** — leg 3: every recorded digest, the Spike commit and the model's own ISA
+  string are re-derivable by one tracked command, and the dossier's shape is re-checked on every
+  commit. `DOSSIER.md` gains the references section and `OQ-4` is partly answered;
+  `docs/decisions/decision_reference-acquisition-route.md` records what this supersedes;
+  `TOOLBOX.md` gains the tool; the book's P0 chapter gains *"What acquisition actually found"*;
+  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⛔ **Two limits are recorded rather than rounded away**, because `G0` asks for differences to be
+  *enumerated, not assumed absent*. (1) Sail cannot be configured to exactly `extensions = []`;
+  it bottoms out at `rv64i_zvl32b`, a vestigial minimum vector-length class the model instantiates
+  even with the vector unit `Disabled`. (2) Sail **will not emit its effective configuration** —
+  `--print-default-config` ignores `--config-override` and the two dumps are byte-identical — so
+  the effective configuration is *(default) + (our tracked override)* and **that merge is ours,
+  not the model's account of itself**. `P0-PROFILE.6` must not upgrade it into the model's word.
+
+## Acceptance Checklist (current leaf — `P0-PROFILE.2`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.1` recorded the profile's *decisions* but not
+  its *state*, and `SEM-08` requires the required state to include hidden or pending information
+  that can influence a future supported observation. Census before this leaf:
+  `git ls-files profiles | grep -c state.json` → `0`. Reading the pinned sources for it also
+  surfaced three architectural rules the profile had not recorded, each found by reading rather
+  than assumed: the address space is **circular** with computations wrapping modulo 2^XLEN;
+  every executed instruction entails an **implicit** fetch read; and the fetch-accessible and
+  load-accessible location sets **may differ**, with the choice delegated to the EEI
+  (`RVI-INTRO`, *Memory*).
+- [x] **ADDRESSED (verified)** — `state.json` records 32×64-bit integer registers, `x0`
+  hardwired zero, and `pc`, and enumerates **7 hidden-state candidates**, all absent:
+  `hidden state: 0 entries; candidates checked: 7`, `all candidates absent: True`. The profile
+  gained five decisions (`D-ADDR-WRAP`, `D-FETCH-IMPLICIT`, `D-FETCH-MAP`, `D-CODE-VISIBILITY`,
+  `D-MAIN-VS-IO`), taking it to 25. The reset claim was **measured**, not assumed:
+  `grep -ci reset rv32.txt rv64.txt` → `rv32.txt:0`, `rv64.txt:0`, so reset values for
+  `x1..x31` are a laboratory declaration and are labelled one.
+- [x] **NO REGRESSION** — leg 2: the gate was extended and then fired, on the real dossier, for
+  both new rules. Removing the census gave `UNEARNED NONE rv64i-lab-v0/state.json: hidden_state
+  is empty with no census…`, `rc=1`; setting `xlen` to 32 gave `XLEN MISMATCH rv64i-lab-v0:
+  state.json 32 != profile.toml 64`; both restored to `ok`.
+  `PROFILE-CONSISTENCY --self-test: 13 pass / 0 fail` (11 RED arms). Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+  ⛔ This leaf's own evidence was refused by `TASK-ACCEPTANCE` for the **third** time in this
+  repository — on `grep -ci reset`, a plain enumeration over the pinned specification, which
+  `GAP-CLAIM-CENSUS` accepts as a census while the acceptance gate's signatures did not. The
+  first two fixes were additions and each held only until the next new thing existed; this one
+  aligns the two lists on *any* `grep` invocation, because an instrument one gate accepts as a
+  census is an instrument the other should accept as evidence. Fired RED afterwards (a
+  prose-only box → `rc=1`) to prove the widening did not make the gate vacuous. Recorded in
+  [`census-instrument-signature-gap`](../knowledge/census-instrument-signature-gap.md).
+  ⭐ The falsifying question for this leaf was *"is 'no hidden state' a finding or an
+  omission?"* — and the honest answer is that it is only true **because of what the profile
+  excludes**, which is why the census records the reason per candidate and why
+  `D-CODE-VISIBILITY` notes that a caching implementation would have hidden state and would
+  still be legal.
+- [x] **FIX** — `profiles/rv64i-lab-v0/state.json` added; five decisions added to
+  `profile.toml`; `check_profile_consistency.sh` extended to require `state.json` to agree with
+  `profile.toml` on id, XLEN and register count, to accept `software-convention` as an authority
+  only inside `state.json`, and to refuse an empty `hidden_state` with no census.
+- [x] **LOCKSTEP** — leg 3: the agreement between the two files is re-derived every commit, so a
+  contradiction fails rather than rots. `DOSSIER.md` gains the state section and the two new
+  semantic traps; `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
+
+### `P0-PROFILE.2` — the state inventory, and a census for its "none"
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.1` recorded the profile's *decisions* but not
+  its *state*, and `SEM-08` requires the required state to include hidden or pending information
+  that can influence a future supported observation. Census before this leaf:
+  `git ls-files profiles | grep -c state.json` → `0`. Reading the pinned sources for it also
+  surfaced three architectural rules the profile had not recorded, each found by reading rather
+  than assumed: the address space is **circular** with computations wrapping modulo 2^XLEN;
+  every executed instruction entails an **implicit** fetch read; and the fetch-accessible and
+  load-accessible location sets **may differ**, with the choice delegated to the EEI
+  (`RVI-INTRO`, *Memory*).
+- [x] **ADDRESSED (verified)** — `state.json` records 32×64-bit integer registers, `x0`
+  hardwired zero, and `pc`, and enumerates **7 hidden-state candidates**, all absent:
+  `hidden state: 0 entries; candidates checked: 7`, `all candidates absent: True`. The profile
+  gained five decisions (`D-ADDR-WRAP`, `D-FETCH-IMPLICIT`, `D-FETCH-MAP`, `D-CODE-VISIBILITY`,
+  `D-MAIN-VS-IO`), taking it to 25. The reset claim was **measured**, not assumed:
+  `grep -ci reset rv32.txt rv64.txt` → `rv32.txt:0`, `rv64.txt:0`, so reset values for
+  `x1..x31` are a laboratory declaration and are labelled one.
+- [x] **NO REGRESSION** — leg 2: the gate was extended and then fired, on the real dossier, for
+  both new rules. Removing the census gave `UNEARNED NONE rv64i-lab-v0/state.json: hidden_state
+  is empty with no census…`, `rc=1`; setting `xlen` to 32 gave `XLEN MISMATCH rv64i-lab-v0:
+  state.json 32 != profile.toml 64`; both restored to `ok`.
+  `PROFILE-CONSISTENCY --self-test: 13 pass / 0 fail` (11 RED arms). Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+  ⛔ This leaf's own evidence was refused by `TASK-ACCEPTANCE` for the **third** time in this
+  repository — on `grep -ci reset`, a plain enumeration over the pinned specification, which
+  `GAP-CLAIM-CENSUS` accepts as a census while the acceptance gate's signatures did not. The
+  first two fixes were additions and each held only until the next new thing existed; this one
+  aligns the two lists on *any* `grep` invocation, because an instrument one gate accepts as a
+  census is an instrument the other should accept as evidence. Fired RED afterwards (a
+  prose-only box → `rc=1`) to prove the widening did not make the gate vacuous. Recorded in
+  [`census-instrument-signature-gap`](../knowledge/census-instrument-signature-gap.md).
+  ⭐ The falsifying question for this leaf was *"is 'no hidden state' a finding or an
+  omission?"* — and the honest answer is that it is only true **because of what the profile
+  excludes**, which is why the census records the reason per candidate and why
+  `D-CODE-VISIBILITY` notes that a caching implementation would have hidden state and would
+  still be legal.
+- [x] **FIX** — `profiles/rv64i-lab-v0/state.json` added; five decisions added to
+  `profile.toml`; `check_profile_consistency.sh` extended to require `state.json` to agree with
+  `profile.toml` on id, XLEN and register count, to accept `software-convention` as an authority
+  only inside `state.json`, and to refuse an empty `hidden_state` with no census.
+- [x] **LOCKSTEP** — leg 3: the agreement between the two files is re-derived every commit, so a
+  contradiction fails rather than rots. `DOSSIER.md` gains the state section and the two new
+  semantic traps; `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
+
+### `P0-PROFILE.1` — pin RV64I and write the dossier
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: the project had no profile, so nothing it might
+  build had a defined subject. Census before this leaf: `git ls-files profiles | wc -l` → `0`,
+  and no specification artifact had been acquired — `docs/SOURCES_AND_NAMING.md` listed
+  candidate URLs, which rule `SRC-03` explicitly refuses to treat as established availability.
+  Reachability was therefore established first, not assumed:
+  `curl -sS -o /dev/null -w '%{http_code}' …/unpriv/rv64.html` → `200`.
+- [x] **ADDRESSED (verified)** — three specification artifacts acquired, fingerprinted and
+  pinned: `intro.html` `3d65f713…13bf0c` (69,772 B), `rv32.html` `3b20e92f…3ad75ec`
+  (107,630 B), `rv64.html` `6eadb316…f13abd` (49,246 B), each `HTTP 200`, all three re-derived
+  by `scripts/fetch_sources.sh --verify-only` → `MATCH`, `MATCH`, `MATCH`, `rc=0`. The profile
+  records **20 decisions** — 12 `architecture`, 6 `execution-environment`, 2 `laboratory` —
+  each with a statement and a source locator, and an instruction scope enumerated rather than
+  counted from memory: `enumerated mnemonics: 52; declared count_total: 52; agree: True`
+  (40 base + 12 RV64I additions, verified against `RVI-RV64I` §3.1.2–§3.1.3).
+- [x] **NO REGRESSION** — leg 2: both new instruments were fired RED, with the reason asserted.
+  `PROFILE-CONSISTENCY --self-test: 8 pass / 0 fail` (7 RED arms: count drift, parts that do
+  not sum, unknown authority, an uncited decision, a duplicate id, a profile with no decisions,
+  an unparseable file), and fired against the **real** dossier — deleting one mnemonic gave
+  `COUNT DRIFT rv64i-lab-v0: [scope] enumerates 51 mnemonic(s), count_total = 52`, `rc=1`,
+  restored `ok`. `fetch_sources.sh` fired against a corrupted pin gave
+  `DIFFERS rv64.html pinned 0000…` with the re-read instruction, `rc=1`, restored `rc=0`.
+  ⛔ That second control also exposed a defect in the tool itself: an unanchored `sed` capture
+  left the ledger line's trailing comment in `work_dir`, so the fetch created a directory
+  literally named `target/sources/riscv-v20260120   # repo-volume, untracked` **while still
+  reporting three green MATCHes** — a verdict correct about the bytes and wrong about where it
+  read them. Found by listing the directory rather than trusting the green. Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+- [x] **FIX** — `profiles/rv64i-lab-v0/` created with `profile.toml` (machine-readable, gated),
+  `sources.toml` (pinned artifacts with an explicit statement of what a digest does and does
+  not pin) and `DOSSIER.md` (the narrative, the five open questions with owners and due points,
+  and what is deliberately absent). `scripts/check_profile_consistency.sh` and
+  `scripts/fetch_sources.sh` added; the first registered as a project doctrine, the second
+  deliberately **not** a gate because it needs the network.
+- [x] **LOCKSTEP** — leg 3: the dossier's internal claims are re-derived on every commit and
+  its sources are re-derivable on demand. `profiles/` registered in `doctrine/readme_routes.tsv`
+  with its own bounds; `README.md` layout row; `DOCTRINE_ENFORCEMENT.md` mirror; `TOOLBOX.md`
+  gains both tools; `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` updated in this commit.
+  ⭐ The README's own health target had been set **at** today's size and fired on the very row
+  this leaf added — the exact miscalibration `SEMULITH-TREES.4` documented, committed in the
+  file that documents it. Re-set to `78 / 4352`, between the reviewed page and its untouched
+  ceiling.
+

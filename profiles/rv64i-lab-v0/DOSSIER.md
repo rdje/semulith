@@ -162,6 +162,20 @@ finding. `EVD-04` requires shared ancestry to be **examined per subsystem**, and
 the gate refuses a candidate that omits it, because an unasked independence question reads
 exactly like an answered one.
 
+### The independence inventory, in one table
+
+| Subsystem | Pair | Verdict |
+| --- | --- | --- |
+| instruction encoding | sail ↔ spike | **not shared** — spike generates from `riscv-opcodes`; sail hand-writes 59 `encdec` files |
+| floating point | sail ↔ spike | **shared** — 184 of 199 vendored SoftFloat files byte-identical |
+| integer semantics | sail ↔ spike | no evidence of sharing (weaker than *not shared*, deliberately) |
+| expected-result derivation | act4 ↔ sail | **shared** — ACT computes with a configured Sail model |
+| all | qemu ↔ sail, qemu ↔ spike | **not examined** — recorded, because an omitted pair reads like an independent one |
+
+The floating-point row is routed to `P4-SYSTEM.7`; see
+[`reference_softfloat-shared-ancestry`](../../docs/decisions/reference_softfloat-shared-ancestry.md).
+Nothing in this profile is affected — it declares no floating point.
+
 ⛔ **And none of them is usable yet.** `docs/EVIDENCE_AND_GATES.md` §5 makes a real matched-profile
 experiment the condition for calling a reference usable, and that is `P0-PROFILE.6`. What `.5`
 establishes is narrower and worth stating exactly: *we have these binaries, this is which ones

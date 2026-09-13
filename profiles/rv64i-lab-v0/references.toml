@@ -200,3 +200,54 @@ id = "DIFF-FETCH-GRANULARITY"
 kind = "observable"
 observed = "The Sail model performs TWO 16-bit fetch reads per 32-bit instruction (`mem[X,0x…0] -> 0x0513`, `mem[X,0x…2] -> 0x0010`), even with IALIGN=32 and no compressed extension."
 resolution = "Recorded, not normalized. `D-FETCH-IMPLICIT` says every executed instruction entails an implicit fetch read; it does not say how many. This is below the granularity this profile observes, but a future memory-access comparison would see it, so it is written down before it surprises someone."
+
+# ──────────────────────────────────────────── the independence inventory (P0-PROFILE.7, EVD-04)
+# ⛔ TWO TOOLS WITH DIFFERENT NAMES ARE NOT TWO OPINIONS. `EVD-04` requires shared semantic code
+# or shared expected-result derivation to be EXAMINED per subsystem, and both known common
+# ancestry and UNKNOWN ancestry to be recorded — neither independence nor correlation assumed.
+#
+# ⚠️ Read `verdict` as a statement about the EVIDENCE, not about the world. `not-shared` means a
+# measurement looked and found no sharing; `not-examined` means nobody looked yet, and it is
+# recorded rather than omitted precisely because an omission reads like independence.
+
+[[independence]]
+subsystem = "instruction encoding"
+pair = ["sail-riscv", "spike"]
+verdict = "not-shared"
+evidence = "Spike's `riscv/encoding.h` declares itself auto-generated from riscv-opcodes (commit c1d9bdf) in its own header comment. The Sail model hand-writes its encodings: 59 files under `model/` define `mapping clause encdec`, and `riscv-opcodes` occurs ZERO times anywhere under `model/` (it appears in exactly one file in the whole repository, `test/first_party/src/common/encoding.h`, which is test scaffolding and not the model)."
+consequence = "⭐ This cuts in a direction worth stating: OUR assembler derives its encodings from riscv-opcodes, so it shares an ancestor with SPIKE and not with SAIL. Sail decoding our bytes as intended is therefore a genuinely independent confirmation of the encoding; Spike doing so is not."
+
+[[independence]]
+subsystem = "floating point"
+pair = ["sail-riscv", "spike"]
+verdict = "shared"
+evidence = "Both vendor Berkeley SoftFloat. Sail: `dependencies/softfloat/berkeley-softfloat-3/`, Release 3e (2018-01-20), 326 source files. Spike: `softfloat/`, Release 3d, 263 source files, 495 softfloat-shaped symbols in the built binary. Census over the overlap: 199 `.c` files exist in BOTH copies, and once the release-number comment line is normalized, 184 of the 199 are BYTE-IDENTICAL. The 15 that differ are the genuine 3d-to-3e changes, mostly rounding and bf16 conversion."
+consequence = "⛔ THE SINGLE MOST IMPORTANT ROW IN THIS FILE. For 184 shared files the two models do not merely share an ancestor — they run the same source. A differential floating-point test between them would, for those operations, be testing ONE implementation twice and reporting agreement. This profile has no floating point, so nothing here is affected today; P4 has floating point, and its evidence plan must not count Sail-versus-Spike as independent numeric confirmation. Routed to P4-SYSTEM."
+
+[[independence]]
+subsystem = "integer semantics"
+pair = ["sail-riscv", "spike"]
+verdict = "no-evidence-of-sharing"
+evidence = "`grep -ril sail` over Spike's C++, headers and makefiles returns zero files. The Sail model mentions `spike` in 10 files, and the mentions under `model/` are device-tree `compatible` strings (`ucbbar,spike-bare-dev`) — platform naming for OS compatibility, not semantics."
+consequence = "⚠️ Deliberately NOT recorded as `not-shared`. Absence of a textual reference is weak evidence: it rules out one implementation importing the other, and says nothing about two authors having read the same third source, which for an ISA model is the normal case. This is the strongest claim the available evidence supports, and the smoke test's 15 agreeing steps rest on it."
+
+[[independence]]
+subsystem = "expected-result derivation"
+pair = ["act4", "sail-riscv"]
+verdict = "shared"
+evidence = "ACT computes its expected results using a CONFIGURED SAIL MODEL. Recorded as a known fact from the project's supplied design inputs (`ROADMAP.md` §1, `docs/EVIDENCE_AND_GATES.md`) rather than re-measured here, because ACT was deliberately not acquired at P0-PROFILE.5."
+consequence = "ACT agreeing with sail-riscv is one semantics answering twice. ACT remains valuable as EXTERNAL TESTS — a corpus someone else chose, which is a different kind of value from a second opinion — but it can never serve as independent confirmation of the Sail model."
+
+[[independence]]
+subsystem = "all"
+pair = ["qemu", "sail-riscv"]
+verdict = "not-examined"
+evidence = "none. QEMU was obtained as a pre-existing host binary at P0-PROFILE.5 and its source has not been read. No measurement has been made."
+consequence = "Recorded as unexamined rather than omitted, because an omitted pair reads exactly like an independent one. QEMU is not used as a comparator in any evidence this project currently holds, so nothing rests on it. Owner: whichever leaf first proposes QEMU as a comparator — it must do this examination before the agreement is counted."
+
+[[independence]]
+subsystem = "all"
+pair = ["qemu", "spike"]
+verdict = "not-examined"
+evidence = "none, for the same reason as the row above."
+consequence = "Same disposition. Two unexamined pairs are listed separately rather than as one 'QEMU unexamined' row, because independence is a property of a PAIR and a subsystem, not of a tool."

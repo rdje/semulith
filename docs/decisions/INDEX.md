@@ -12,3 +12,4 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [`decision_readme-routing-closure.md`](decision_readme-routing-closure.md) | `decision` | the landing page's caps and every destination it routes to are data in a registry, enforced |
 | [`decision_public-repository-no-confidential-content.md`](decision_public-repository-no-confidential-content.md) | `project` | the repo is public and carries nothing confidential, so evidence is recorded unredacted |
 | [`decision_reference-acquisition-route.md`](decision_reference-acquisition-route.md) | `decision` | three reference models obtained and runnable; having a binary is not having evidence, and none of them is yet independent |
+| [`reference_softfloat-shared-ancestry.md`](reference_softfloat-shared-ancestry.md) | `reference` | Sail and Spike run the same floating-point source — 184 of 199 shared files byte-identical, so FP differential testing between them is one opinion |

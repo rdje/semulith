@@ -28,6 +28,13 @@
 #      and a *comparison* never seen to diverge is not known to detect divergence. An
 #      experiment row saying "the two models agree" with no control is the most convincing
 #      wrong record a project can hold, because it is true and worthless at the same time.
+#   7. Every PAIR of models an experiment compares must have an INDEPENDENCE row. ⭐ This is the
+#      rule with real teeth, and it is `EVD-04` made mechanical: two tools with different names
+#      are not two opinions, and the moment a project records "model A and model B agree" it has
+#      taken a position on their independence whether or not it has looked. An unexamined pair
+#      reads exactly like an independent one, so the gate requires the row to EXIST — it does not
+#      require the verdict to be favourable. `not-examined` is a legal, honest answer; silence
+#      is not.
 #
 # ⚠️ HONEST LIMIT, stated rather than implied: this proves the file is INTERNALLY consistent and
 # that every decision cites something. It cannot check the citation against the specification —
@@ -197,6 +204,45 @@ for toml_path in sorted(root.glob("*/profile.toml")):
                         f"NO CONTROL {name}/{xid}: the experiment reports a verdict with no "
                         f"control that was observed FAILING. A comparison never seen to diverge "
                         f"is not known to detect divergence")
+            # 7. every compared pair has an independence row (the verdict may be anything)
+            INDEPENDENCE_VERDICTS = {
+                "shared", "not-shared", "no-evidence-of-sharing", "not-examined"}
+            examined: set[frozenset] = set()
+            for ind in rf.get("independence", []):
+                pair = ind.get("pair") or []
+                label = "/".join(pair) if pair else "<unpaired>"
+                if len(pair) != 2:
+                    findings.append(
+                        f"BAD PAIR   {name}/{label}: an independence record names "
+                        f"{len(pair)} model(s); independence is a property of a PAIR")
+                else:
+                    examined.add(frozenset(pair))
+                    for m in pair:
+                        if m not in seen:
+                            findings.append(
+                                f"UNKNOWN MODEL {name}/{label}: '{m}' is not a candidate "
+                                f"in this dossier")
+                if ind.get("verdict") not in INDEPENDENCE_VERDICTS:
+                    findings.append(
+                        f"BAD VERDICT {name}/{label}: '{ind.get('verdict')}' not in "
+                        f"{sorted(INDEPENDENCE_VERDICTS)}")
+                for k in ("subsystem", "evidence", "consequence"):
+                    if not ind.get(k):
+                        findings.append(
+                            f"THIN INDEPENDENCE {name}/{label}: no '{k}' — "
+                            f"EVD-04 asks for the examination, not the conclusion")
+            for x in rf.get("experiment", []):
+                models = x.get("models") or []
+                for i in range(len(models)):
+                    for j in range(i + 1, len(models)):
+                        if frozenset((models[i], models[j])) not in examined:
+                            findings.append(
+                                f"UNEXAMINED PAIR {name}/{x.get('id','<unnamed>')}: the "
+                                f"experiment compares '{models[i]}' with '{models[j]}' and no "
+                                f"independence record examines that pair. Recording that two "
+                                f"models agree takes a position on their independence whether "
+                                f"or not anyone looked; 'not-examined' is a legal verdict, "
+                                f"silence is not")
             for dfn in rf.get("difference", []):
                 did2 = dfn.get("id", "<unnamed>")
                 for k in ("kind", "observed", "resolution"):
@@ -374,6 +420,34 @@ resolution = \"normalized\""
   refs "$(printf '%s' "$EXP" | grep -v '^control = ')";       arm "RED   agreement with no control" 1 "NO CONTROL"
   refs "$(printf '%s' "$EXP" | grep -v '^reproduced = ')";    arm "RED   an experiment that never reproduced" 1 "THIN EXPERIMENT"
   refs "$(printf '%s' "$EXP" | grep -v '^observed = ')";      arm "RED   a difference with nothing observed" 1 "THIN DIFFERENCE"
+  # ---- independence (EVD-04) -------------------------------------------------------------
+  C2='
+[[candidate]]
+id = "c2"
+role = "second"
+status = "not obtained"
+status_reason = "not needed for this fixture"
+origin = "https://example.invalid/2"
+lineage = "unknown"'
+  IND_ROW='
+[[independence]]
+subsystem = "integer"
+pair = ["c1", "c2"]
+verdict = "not-examined"
+evidence = "none"
+consequence = "owner named"'
+  refs "$EXP$C2$IND_ROW";                                     arm "GREEN an independence record parses" 0 "__CHECKED__ 1"
+  refs "$EXP$C2$(printf '%s' "$IND_ROW" | sed 's/not-examined/probably fine/')"
+                                                              arm "RED   an unknown independence verdict" 1 "BAD VERDICT"
+  refs "$EXP$C2$(printf '%s' "$IND_ROW" | sed 's/pair = \["c1", "c2"\]/pair = ["c1"]/')"
+                                                              arm "RED   independence claimed of one model" 1 "BAD PAIR"
+  refs "$EXP$C2$(printf '%s' "$IND_ROW" | sed '/^evidence = /d')"
+                                                              arm "RED   an independence verdict with no examination" 1 "THIN INDEPENDENCE"
+  refs "$EXP$C2$(printf '%s' "$IND_ROW" | sed 's/pair = \["c1", "c2"\]/pair = ["c1", "c9"]/')"
+                                                              arm "RED   independence names a model that is not a candidate" 1 "UNKNOWN MODEL"
+  # an experiment comparing TWO models with no independence record for that pair
+  refs "$(printf '%s' "$EXP" | sed 's/^models = \["c1"\]/models = ["c1", "c2"]/')$C2"
+                                                              arm "RED   two models compared, pair never examined" 1 "UNEXAMINED PAIR"
   rm -f "$t/p/references.toml"
 
   rm -rf "$t"
