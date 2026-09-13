@@ -66,6 +66,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Status: `pending`
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
+  ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
 
 - ID: `P4-SYSTEM.8` — **faults, restart and partial progress**
   Status: `pending`
@@ -100,6 +101,9 @@ This gate authorises the planned next engineering stage: board implementation.
 - Exact privilege specification revision. Due before `.2` depends on it (`RK03`).
 - Which Rust floating-point implementation, if any, qualifies. Due before `.7` completes; until
   then floating point is **not** part of the profile.
+- What supplies an **independent** numeric expected value, given that both available reference
+  models descend from the same SoftFloat source? Routed in from `P0-PROFILE.7` with its
+  measurement; due before `.7` can call any numeric comparison independent.
 
 ## Blockers
 
@@ -128,3 +132,7 @@ This gate authorises the planned next engineering stage: board implementation.
 ## Changelog
 
 - `2026-09-13`: Created from `ROADMAP.md` §P4 and task card `T011` by `SEMULITH-TREES.2`.
+- `2026-09-14`: received a routed finding from `P0-PROFILE.7` — Sail and Spike share Berkeley
+  SoftFloat, 184 of 199 overlapping files byte-identical. `.7`'s ancestry inventory now starts
+  from a measurement instead of a suspicion, and its "independent numeric fixtures" requirement
+  has a concrete constraint to satisfy.
