@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `SEMULITH-PKG`
-- Status: `done` (reopened once for `.7`, a defect in `.6`)
+- Status: `done` (reopened for `.7` and `.8`, each a defect in the leaf before it)
 - Roadmap lane: project foundation (precedes P0)
 - Created: `2026-09-13`
 - Owner: repo-local workflow
@@ -31,47 +31,59 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - Live docs (`MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`) and the mdBook
   reflect the ingested state in the same commit as the change that caused it.
 
-## Acceptance Checklist (current leaf — `SEMULITH-PKG.7`)
+## Acceptance Checklist (current leaf — `SEMULITH-PKG.8`)
 
-Enforced by the `TASK-ACCEPTANCE` doctrine. Each box carries the command that was run and the
-output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.6` narrowed the code definition and dropped
-  two files it never measured. `git ls-files | grep -E "$DEFAULT" | grep -vE "$DECLARED" | grep
-  -v '^docs/book/src/'` returned `docs/tasks/artifacts/task_acceptance/run_task_acceptance_probes.sh`
-  and `docs/tasks/artifacts/waiver_routing/run_waiver_routing_probes.sh` — both `-rwxr-xr-x`,
-  and both emitting the `probes: N pass / N fail` line that `.doctrine/evidence_tokens.txt`
-  declares as an accepted evidence signature. Editing one changes what evidence an author may
-  cite, so they are code by the file's own stated test. The cause is a pattern written too
-  narrowly: `^scripts/.*\.sh$` anchored a rule whose real subject is *any shell script*. Leaf
-  `.6`'s own census excluded prose from its difference set and therefore never surfaced them —
-  the census answered the question it was given rather than the one that mattered.
-- [x] **ADDRESSED (verified)** — `\.sh$` is now unanchored. Re-measured with
-  `git ls-files | grep -cE "$DECLARED"` and its siblings over 126 tracked files:
-  `matched: 38`, `book prose classified as code: 0`, `probe drivers classified as code: 2`, and
-  `git ls-files | grep -E "$DEFAULT" | grep -vE "$DECLARED" | grep -vc '^docs/book/src/'` → `0`.
-  The declared set is now
-  exactly the default's set **plus 12** behaviour-governing files it could not see
-  (`.doctrine/*` ×3, `.githooks/*` ×2, `.github/workflows/*` ×2, `Cargo.toml`, `Cargo.lock`,
-  `rust-toolchain.toml`, and the two gate-data `.tsv` registries) **minus 28**, all of them
-  under `docs/book/src/`.
-- [x] **NO REGRESSION** — leg 2: the falsifying question is *"does this widening re-admit the
-  prose the leaf was written to exclude?"*, and it is answered by the same command in both
-  directions above: `28 / 28` of the dropped files are prose, `0` are not. Whole gate:
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaves `.6`/`.7` fixed three spine defects through
+  `.doctrine/` seams, and the fixes **failed open**. Moved both seam files aside and re-ran the
+  full enforcer: `✅ TASK-ACCEPTANCE …`, `=== all doctrines green ===`, `rc=0`. Three repairs
+  silently reverted and nothing said a word. A census of what could notice —
+  `grep -rlE 'code_paths\.txt|evidence_tokens\.txt' scripts/ .githooks/ knowledge-map/` — returned
+  exactly one file, `scripts/check_task_acceptance.sh`, which *consumes* the seams and does not
+  *require* them. Worse, `sed -n '/^NEUTRAL=(/,/^)/p' scripts/update_scaffold.sh` listed both
+  repaired checks, so a scaffold update would have reverted any source fix too.
+- [x] **ADDRESSED (verified)** — the three defects are now repaired **in the checks**, and the
+  proof is that they hold with the seams removed. With both seam files moved aside:
+  `git ls-files 'docs/book/src' | grep -cE "$(scripts/check_task_acceptance.sh --print-code-re)"`
+  → `0` (historically `28`); hooks, workflows and manifest covered `6/6` (was `0`); census
+  instruments accepted `5/5` (`grep -ci`, `git grep … | wc -l`, `sed -n`, `comm -`, `uniq -c`).
+  `scripts/check_task_acceptance.sh --print-sig` now returns `1144` chars and contains both the
+  imported census list and the gate-verdict shape. Entries still on the `update_scaffold.sh`
+  overwrite list for the two repaired checks: `0`.
+- [x] **NO REGRESSION** — leg 2: `SEAM-INTEGRITY --self-test: 9 pass / 0 fail`, and its RED arms
+  are the ones that matter — losing the tokens regresses a committed box, the historical
+  unanchored pattern over-matches prose, a narrowed pattern under-matches behaviour files, an
+  acceptance set that ignores the census list, and a missing census gate. The real run guards
+  **68 already-committed acceptance boxes**: `SEAM-INTEGRITY: ok (68 committed acceptance box(es)
+  still accepted; classification properties hold)`. With the seams removed it correctly goes
+  `RED` on the lost project-specific coverage rather than green. Whole gate:
   `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
   `test result: ok. 1 passed; 0 failed`, `rc=0`.
-- [x] **FIX** — one pattern generalized from `^scripts/.*\.sh$` to `\.sh$`, with the reason
-  recorded beside it in the file so the next reader does not re-narrow it.
-- [x] **LOCKSTEP** — leg 3: the declaration is consumed on every commit, and the set-difference
-  command in this box is the durable re-derivation. `CHANGELOG.md` and `MEMORY.md` updated in
-  this commit; `DOCTRINE_ENFORCEMENT.md`'s seam row already states the measurement method.
+  ⛔ **Three defects in my own work were caught by this leaf's own self-test, not by review.**
+  An arm composed through `bash -c` mangled a pattern so it asserted nothing and reported PASS;
+  a replacement fixture held the literal text `\n` instead of newlines, so the family under test
+  was never present and the arm again reported PASS; and `check_seam_integrity.sh` mirrored the
+  acceptance gate's composition by hand, so when the gate gained a fourth input the check scored
+  against the old three and reported a vocabulary gap that did not exist. The third is why the
+  gate now **prints its own effective rules** (`--print-sig`, `--print-code-re`) and this check
+  consumes them instead of re-deriving them.
+- [x] **FIX** — at source in `scripts/check_task_acceptance.sh`: `src/` anchored to the
+  repository root; `^\.githooks/`, `^\.github/workflows/`, `^Cargo\.(toml|lock)$` added;
+  `CENSUS_RE` imported from `scripts/check_gap_claims.sh` so the two gates share one vocabulary
+  by construction; the gate-verdict shape added; `--print-sig`/`--print-code-re` exposed. In
+  `scripts/update_scaffold.sh`: both repaired checks removed from the `NEUTRAL` re-sync list
+  with the reason recorded. Added `scripts/check_seam_integrity.sh` and registered it.
+- [x] **LOCKSTEP** — leg 3: the repairs are now watched behaviourally from four directions —
+  a deleted seam, a narrowed pattern, a scaffold overwrite, and a spine update that stops
+  consuming the seam. `docs/decisions/reference_upstream-spine-defects.md` rewritten with the
+  what-lives-where table, `DOCTRINE_ENFORCEMENT.md` mirror, `TOOLBOX.md` rows, the book's
+  doctrine chapter, `MEMORY.md`, `LIVE_STATUS.md` and `CHANGELOG.md` updated in this commit.
 
 ## Task Tree
 
 - ID: `SEMULITH-PKG`
   Status: `done`
   Goal: ingest the delivered planning package v0.2 under the spine
-  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.7`
+  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.8`
 
 - ID: `SEMULITH-PKG.1`
   Status: `done`
@@ -101,6 +113,13 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
   Verification: see the Verification Log.
   Commit: `SEMULITH-PKG-0005`
 
+- ID: `SEMULITH-PKG.8`
+  Status: `done`
+  Goal: fix the three spine defects AT SOURCE in this repository, and make any revert of them detectable.
+  Acceptance: each defect holds fixed with both `.doctrine/` seam files removed; the repaired checks are off the scaffold re-sync list; a registered doctrine asserts the behaviour rather than the presence of a file.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0016`
+
 - ID: `SEMULITH-PKG.7`
   Status: `done`
   Goal: restore the shell-script coverage that `.6` dropped without measuring it.
@@ -126,7 +145,7 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | **tree complete (7/7).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
+| — | — | — | **tree complete (8/8).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
 
 Census behind row 2, over the population that would refute it — any tracked script, hook, or
 enforcer entry that re-derives a recorded fingerprint:
@@ -175,6 +194,38 @@ at all. Leaf `.3` is what makes the claim false.
 The current leaf's checklist lives above; a completed leaf's checklist is moved here verbatim
 so its evidence stays in layer B rather than only in git history. Only the *first* checklist
 in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
+
+### `SEMULITH-PKG.7` — restore the shell-script coverage the narrowing dropped
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.6` narrowed the code definition and dropped
+  two files it never measured. `git ls-files | grep -E "$DEFAULT" | grep -vE "$DECLARED" | grep
+  -v '^docs/book/src/'` returned `docs/tasks/artifacts/task_acceptance/run_task_acceptance_probes.sh`
+  and `docs/tasks/artifacts/waiver_routing/run_waiver_routing_probes.sh` — both `-rwxr-xr-x`,
+  and both emitting the `probes: N pass / N fail` line that `.doctrine/evidence_tokens.txt`
+  declares as an accepted evidence signature. Editing one changes what evidence an author may
+  cite, so they are code by the file's own stated test. The cause is a pattern written too
+  narrowly: `^scripts/.*\.sh$` anchored a rule whose real subject is *any shell script*. Leaf
+  `.6`'s own census excluded prose from its difference set and therefore never surfaced them —
+  the census answered the question it was given rather than the one that mattered.
+- [x] **ADDRESSED (verified)** — `\.sh$` is now unanchored. Re-measured with
+  `git ls-files | grep -cE "$DECLARED"` and its siblings over 126 tracked files:
+  `matched: 38`, `book prose classified as code: 0`, `probe drivers classified as code: 2`, and
+  `git ls-files | grep -E "$DEFAULT" | grep -vE "$DECLARED" | grep -vc '^docs/book/src/'` → `0`.
+  The declared set is now
+  exactly the default's set **plus 12** behaviour-governing files it could not see
+  (`.doctrine/*` ×3, `.githooks/*` ×2, `.github/workflows/*` ×2, `Cargo.toml`, `Cargo.lock`,
+  `rust-toolchain.toml`, and the two gate-data `.tsv` registries) **minus 28**, all of them
+  under `docs/book/src/`.
+- [x] **NO REGRESSION** — leg 2: the falsifying question is *"does this widening re-admit the
+  prose the leaf was written to exclude?"*, and it is answered by the same command in both
+  directions above: `28 / 28` of the dropped files are prose, `0` are not. Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+- [x] **FIX** — one pattern generalized from `^scripts/.*\.sh$` to `\.sh$`, with the reason
+  recorded beside it in the file so the next reader does not re-narrow it.
+- [x] **LOCKSTEP** — leg 3: the declaration is consumed on every commit, and the set-difference
+  command in this box is the durable re-derivation. `CHANGELOG.md` and `MEMORY.md` updated in
+  this commit; `DOCTRINE_ENFORCEMENT.md`'s seam row already states the measurement method.
 
 ### `SEMULITH-PKG.6` — declare what counts as a code change here
 
@@ -454,6 +505,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `SEMULITH-PKG.5` | `SEMULITH-PKG-0006 (leaf SEMULITH-PKG.5): grow the book into the review surface` | 3 chapters to 27; contracts included verbatim, never paraphrased |
 | `SEMULITH-PKG.6` | `SEMULITH-PKG-0007 (leaf SEMULITH-PKG.6): declare what counts as a code change here` | default over-matched 28 prose files and missed 8 real ones; all three outcomes fired |
 | `SEMULITH-PKG.7` | `SEMULITH-PKG-0008 (leaf SEMULITH-PKG.7): restore shell-script coverage the narrowing dropped` | `.6`'s census asked the wrong question; two executable probe drivers had left the gate |
+| `SEMULITH-PKG.8` | `SEMULITH-PKG-0016 (leaf SEMULITH-PKG.8): fix the spine defects at source, and watch the fix` | seams failed open; three defects repaired in the checks; `SEAM-INTEGRITY` added |
 
 ## Changelog
 
@@ -473,6 +525,9 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 - `2026-09-13`: `SEMULITH-PKG.6` completed. Leaf `.5` hitting the code-path default's boundary
   was the gate reporting a missing capability, so the boundary was measured and declared rather
   than worked around.
-- `2026-09-13`: `SEMULITH-PKG.7` completed and **the tree is done (7/7)**. The tree was reopened
+- `2026-09-13`: `SEMULITH-PKG.8` completed and **the tree is done (8/8)**. The three spine
+  defects are repaired in the checks themselves; the seams keep only what is genuinely
+  project-specific; and `SEAM-INTEGRITY` makes any revert loud.
+- `2026-09-13`: `SEMULITH-PKG.7` completed. The tree was reopened
   because `.6`'s own census had excluded prose from its difference set and so could not see the
   two executable probe drivers it was dropping — a census answers the question it is given.

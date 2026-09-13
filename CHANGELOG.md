@@ -1,5 +1,33 @@
 # CHANGELOG.md
 
+## `SEMULITH-PKG.8` — the spine defects are fixed at source, and the fix is watched
+
+- ⛔ **The `.doctrine/` seam fixes failed open.** Both seam files moved aside, full enforcer
+  re-run: `=== all doctrines green ===`, `rc=0`. Three repairs silently reverted and nothing
+  said a word. *A fix whose disappearance is undetectable is not a fix; it is a configuration
+  that happens to be present.* Worse, both repaired checks were on `update_scaffold.sh`'s
+  re-sync list, so a scaffold update would have reverted a source fix too.
+- **Repaired in `scripts/check_task_acceptance.sh`:** `src/` anchored to the repository root (a
+  root `src/` is a source tree; one inside a docs tree is not); `^\.githooks/`,
+  `^\.github/workflows/` and `^Cargo\.(toml|lock)$` added; and `CENSUS_RE` **imported** from
+  `check_gap_claims.sh` so the two gates share one vocabulary by construction — 19 instruments
+  the acceptance gate previously refused.
+- Proven with the seams removed, so only the source fixes are in play: prose classified as code
+  `0` (was 28), behaviour families `6/6` (was 0), census instruments `5/5`.
+- Both repaired checks removed from `update_scaffold.sh`'s `NEUTRAL` list, reason recorded.
+- Added **`SEAM-INTEGRITY`**, which asserts **behaviour, not presence**: 68 already-committed
+  acceptance boxes must still be accepted, prose must not be code, behaviour families must be,
+  and the two gates must agree on what an instrument is. It catches a deleted seam, a narrowed
+  pattern, a scaffold overwrite, or a spine update that stops consuming the seam.
+- The acceptance gate now prints its own effective rules (`--print-sig`, `--print-code-re`) so
+  no sibling re-implements them — added after this leaf's own check mirrored the composition by
+  hand and scored against a stale copy of it.
+- ⛔ **Three defects in this leaf's own work were caught by its self-test, not by review**: an
+  arm whose pattern was mangled by `bash -c` quoting, a fixture holding the literal text `\n`
+  instead of newlines, and the mirrored composition above. The first two reported PASS while
+  asserting nothing.
+
+
 ## `P0-PROFILE.2` — the state inventory, and a census for its "none"
 
 - `state.json` records 32×64-bit integer registers, `x0` hardwired zero, and `pc` — and then

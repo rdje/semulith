@@ -61,7 +61,7 @@ on the same commit. One commit per completed leaf.
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
-| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (7/7 leaves complete) | repo-local |
+| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (8/8 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
 
 Milestone trees are `proposed` until their first leaf starts. Each names its gate, its

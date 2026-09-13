@@ -20,6 +20,6 @@
   capability, terms and hashes. `SRC-03` means a candidate that cannot be obtained is recorded
   as such, with the attempt. It unblocks `OQ-2` and `OQ-3` in the profile dossier.
   Run `scripts/fetch_sources.sh` first to restore `target/sources/` (untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0014 (leaf P0-PROFILE.2)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0016 (leaf SEMULITH-PKG.8)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

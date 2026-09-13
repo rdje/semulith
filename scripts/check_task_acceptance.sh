@@ -36,13 +36,72 @@ set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
 # ── what counts as a code change ─────────────────────────────────────────────────────────────
-default_code_re='(^|/)(crates|src|scripts)/|\.(rs|sh)$|(^|/)Makefile$'
+# ⛔ `^(crates|src|scripts)/`, NOT `(^|/)(…)/`. The unanchored form matches the `src/` segment
+# ANYWHERE in a path, so an mdBook whose sources live in `docs/book/src/` has every page
+# classified as a code change. Measured on this repository: 28 of 125 tracked files, all prose.
+# A `src/` at the repository root is the conventional source tree; a `src/` deep inside a docs
+# tree is not, and no project is served by conflating them.
+#
+# ⭐ The three families appended below are behaviour-governing in ANY git project with a Rust
+# workspace, and the original default could not see a single one of them: the hooks that gate
+# commits, the CI workflows that gate merges, and the manifest/lockfile that decide what is
+# built. Measured on this repository: 6 files invisible to the gate that owns code changes.
+# Project-specific paths (a gate-data registry, a doctrine seam) stay in .doctrine/code_paths.txt
+# where they belong — this line carries only what is true of every consumer.
+default_code_re='^(crates|src|scripts)/|\.(rs|sh)$|(^|/)Makefile$|^\.githooks/|^\.github/workflows/|^Cargo\.(toml|lock)$'
 if [ -f .doctrine/code_paths.txt ]; then
   code_re="$(grep -vE '^\s*(#|$)' .doctrine/code_paths.txt | paste -sd'|' -)"
   [ -n "$code_re" ] || code_re="$default_code_re"
 else
   code_re="$default_code_re"
 fi
+
+# ── evidence signatures ──────────────────────────────────────────────────────────────────────
+# Universal defaults. Every entry is either standard Rust/Cargo tooling (this template is a Rust
+# scaffold, so these apply to ANY consumer) or plain build-flow forensics available in ANY
+# project. ⛔ No entry may name a specific project's tool.
+#
+# ⚠️ PRICED AGAINST A REAL CORPUS, and the first cut was TOO NARROW — measured, not guessed.
+# The first version of this list rejected a leaf whose boxes cited `awk version 20200816`,
+# `probes: 3 pass / 6 fail` and `exit=0`: all genuinely tool-emitted, none matched. That is the
+# failure mode where *a signature family that does not fit the real corpus becomes a gate authors
+# learn to waive*. Generic result shapes (`exit=N`, `rc=N`, `N pass / N fail`, version banners)
+# were added because they are what tools actually print — not to make the gate easier.
+DEFAULT_SIG='error\[E[0-9]{4}\]|could not compile|clippy::[a-z_]{3,}|panicked at|assertion (failed|`)|test result: (ok|FAILED)|running [0-9]+ tests?|cargo (test|build|bench|flamegraph)|flamegraph|self-time|call-graph|/usr/bin/sample|\bspindump\b|\bperf (record|stat)\b|\bvalgrind\b|git (ls-files|log -S|log --all -S|rev-list|fsck|reflog|diff-tree|merge-base|cat-file|show )|\bshellcheck\b|bash -n |sh -n |make -n |make --dry-run|\bE2BIG\b|\bENOSPC\b|\bEACCES\b|\bARG_MAX\b|exit(ed)?[ =:](code )?[0-9]+|\brc=[0-9]+|PIPESTATUS|[0-9]+ (pass|passed|ok)[ ,/]+[0-9]+ (fail|failed)|version [0-9]{4,}|[0-9]+\.[0-9]+\.[0-9]+'
+SIG="$DEFAULT_SIG"
+
+# ⭐ ONE VOCABULARY FOR "AN INSTRUMENT", SHARED BY CONSTRUCTION. GAP-CLAIM-CENSUS accepts a list
+# of enumerating commands as a valid census, and prints `git grep -n '<symbol>' … | wc -l` in its
+# own failure hint. This check's defaults did not recognise `git grep`, `grep -c` or `wc -l` at
+# all — so an author who obeyed one doctrine produced evidence the other refused. Measured on
+# this repository: that happened THREE times before the divergence was fixed rather than patched.
+#
+# Importing the sibling's own list makes the two gates agree by construction instead of by
+# vigilance. ⚠️ The honest cost: this check now has a soft dependency on a sibling file. It is
+# declared, not hidden, and it degrades to the defaults above if that file is absent or changes
+# shape — a missing import loses coverage, it never loosens the gate.
+if [ -f scripts/check_gap_claims.sh ]; then
+  census_re="$(sed -n "s/^CENSUS_RE='\(.*\)'$/\1/p" scripts/check_gap_claims.sh | head -1)"
+  [ -n "$census_re" ] && SIG="$SIG|$census_re"
+fi
+
+# Any gate's verdict line: a SCREAMING-KEBAB identifier, a colon, a space. Every check in this
+# family prints one, so an author pasting a gate's real output is citing a re-runnable command.
+SIG="$SIG|[A-Z][A-Z0-9]+(-[A-Z0-9]+)+: "
+
+if [ -f .doctrine/evidence_tokens.txt ]; then
+  extra="$(grep -vE '^\s*(#|$)' .doctrine/evidence_tokens.txt | paste -sd'|' -)"
+  [ -n "$extra" ] && SIG="$SIG|$extra"
+fi
+
+# ⭐ Expose the EFFECTIVE rules so no other check has to re-implement this composition. A sibling
+# that mirrors these three inputs by hand drifts the moment one of them changes, and the drift is
+# invisible — which is the class of defect this file already carries two fixes for.
+case "${1:-}" in
+  --print-sig)     printf '%s\n' "$SIG"; exit 0 ;;
+  --print-code-re) printf '%s\n' "$code_re"; exit 0 ;;
+esac
+
 
 staged="$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)"
 [ -n "$staged" ] || exit 0
@@ -71,23 +130,7 @@ if [ ! -s "$tmp/leaves.txt" ]; then
   exit 1
 fi
 
-# ── evidence signatures ──────────────────────────────────────────────────────────────────────
-# Universal defaults. Every entry is either standard Rust/Cargo tooling (this template is a Rust
-# scaffold, so these apply to ANY consumer) or plain build-flow forensics available in ANY
-# project. ⛔ No entry may name a specific project's tool.
-#
-# ⚠️ PRICED AGAINST A REAL CORPUS, and the first cut was TOO NARROW — measured, not guessed.
-# The first version of this list rejected a leaf whose boxes cited `awk version 20200816`,
-# `probes: 3 pass / 6 fail` and `exit=0`: all genuinely tool-emitted, none matched. That is the
-# failure mode where *a signature family that does not fit the real corpus becomes a gate authors
-# learn to waive*. Generic result shapes (`exit=N`, `rc=N`, `N pass / N fail`, version banners)
-# were added because they are what tools actually print — not to make the gate easier.
-DEFAULT_SIG='error\[E[0-9]{4}\]|could not compile|clippy::[a-z_]{3,}|panicked at|assertion (failed|`)|test result: (ok|FAILED)|running [0-9]+ tests?|cargo (test|build|bench|flamegraph)|flamegraph|self-time|call-graph|/usr/bin/sample|\bspindump\b|\bperf (record|stat)\b|\bvalgrind\b|git (ls-files|log -S|log --all -S|rev-list|fsck|reflog|diff-tree|merge-base|cat-file|show )|\bshellcheck\b|bash -n |sh -n |make -n |make --dry-run|\bE2BIG\b|\bENOSPC\b|\bEACCES\b|\bARG_MAX\b|exit(ed)?[ =:](code )?[0-9]+|\brc=[0-9]+|PIPESTATUS|[0-9]+ (pass|passed|ok)[ ,/]+[0-9]+ (fail|failed)|version [0-9]{4,}|[0-9]+\.[0-9]+\.[0-9]+'
-SIG="$DEFAULT_SIG"
-if [ -f .doctrine/evidence_tokens.txt ]; then
-  extra="$(grep -vE '^\s*(#|$)' .doctrine/evidence_tokens.txt | paste -sd'|' -)"
-  [ -n "$extra" ] && SIG="$SIG|$extra"
-fi
+
 
 # The three hard-gated boxes. FIX / REPRODUCE / LOCKSTEP are good practice but not blocked, so
 # an honest author is never forced to invent evidence for a box that does not apply.

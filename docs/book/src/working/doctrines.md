@@ -77,6 +77,25 @@ edit is only trusted after the outcomes are **fired and observed**: a real code 
 owning leaf must still be refused, gate data with no owning leaf must now be refused, and prose
 alone must pass. A seam that has not been fired is an assertion.
 
+### A seam was the wrong place for three of those fixes
+
+The defects the seams were compensating for are **repaired in the checks themselves**. The
+reason is a measurement: with both seam files moved aside, the full enforcer printed
+`=== all doctrines green ===` and `rc=0`. Three fixes had silently reverted and nothing said a
+word. *A fix whose disappearance is undetectable is not a fix.*
+
+What belongs where is not arbitrary. The anchored `src/`, the three universally
+behaviour-governing path families, and the shared census vocabulary are true of **every**
+consumer of the template — repairing them in the check is a repair, not a fork. This project's
+own gate *data* and *instrument signatures* stay in `.doctrine/`, because a neutral check cannot
+know they exist. And both repaired checks were removed from `update_scaffold.sh`'s re-sync list,
+so a scaffold update cannot quietly undo them.
+
+`SEAM-INTEGRITY` then guards all of it by asserting **behaviour rather than presence** — every
+acceptance box already committed must still be accepted, and the two gates must still agree on
+what an instrument is. That last rule is the structural one: the divergence between those two
+lists refused honest evidence three times before it was fixed rather than patched.
+
 ## Adding one
 
 Write `scripts/check_<name>.sh` — cheap, deterministic, read-only, self-describing, nonzero on

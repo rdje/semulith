@@ -21,6 +21,15 @@ else
 fi
 
 # The project-NEUTRAL spine — safe to overwrite because it never carries project content.
+#
+# ⛔ scripts/check_task_acceptance.sh and scripts/check_gap_claims.sh were REMOVED from this
+# list. This repository carries source fixes in them (an unanchored `src/` that classified 28
+# files of mdBook prose as code; three families of behaviour-governing files the default could
+# not see; and a signature set that refused the census instruments its sibling gate recommends).
+# Re-syncing them would silently revert those fixes — and a fix whose disappearance is
+# undetectable is not a fix. SEAM-INTEGRITY would still catch the revert behaviourally, but a
+# tool should not be quietly undoing a repair and relying on another tool to notice.
+# See docs/decisions/reference_upstream-spine-defects.md; carry the fixes upstream instead.
 NEUTRAL=(
   MEMORY_ARCHITECTURE.md
   DOCTRINE_ENFORCEMENT.md
@@ -40,11 +49,9 @@ NEUTRAL=(
   scripts/check_no_background_jobs.sh
   scripts/check_lesson_promotion.sh
   scripts/check_routing_evidence.sh
-  scripts/check_gap_claims.sh
   scripts/check_table_arity.sh
   scripts/check_readme_stability.sh
   scripts/check_waiver_routing.sh
-  scripts/check_task_acceptance.sh
   .doctrine/README.md
   scripts/check_docpaths.sh
   scripts/check_task_tree_ownership.sh
