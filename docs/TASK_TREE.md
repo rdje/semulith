@@ -51,6 +51,10 @@ on the same commit. One commit per completed leaf.
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `active` | `.2` — the CPU lane as task-trees | repo-local |
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `proposed` | `.1` — profile dossier `rv64i-lab-v0` (gate `G0`) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `proposed` | `.1` — crate skeleton (gate `G1`, blocked on `G0`) | repo-local |
+| [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
+| [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |
+| [`P3-BREADTH`](tasks/P3-BREADTH.md) | `proposed` | `.1` — apply the interface findings (gate `BREADTH`) | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `proposed` | `.1` — resolve the profile (gate `CPU-SYSTEM`) | repo-local |
 | [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (7/7 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
 

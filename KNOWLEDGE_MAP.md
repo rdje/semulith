@@ -30,8 +30,12 @@
 ## Active task-trees
 
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
+- [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
 - [`P0-PROFILE.md`](docs/tasks/P0-PROFILE.md)
 - [`P1-LAB.md`](docs/tasks/P1-LAB.md)
+- [`P2-SCALAR.md`](docs/tasks/P2-SCALAR.md)
+- [`P3-BREADTH.md`](docs/tasks/P3-BREADTH.md)
+- [`P4-SYSTEM.md`](docs/tasks/P4-SYSTEM.md)
 - [`SEMULITH-PKG.md`](docs/tasks/SEMULITH-PKG.md)
 - [`SEMULITH-TREES.md`](docs/tasks/SEMULITH-TREES.md)
 

@@ -15,7 +15,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Doctrine seams declared | Done | `.doctrine/code_paths.txt` and `evidence_tokens.txt`, each measured against the tracked corpus and fired |
 | README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
 | mdBook is the review surface | Done | 27 chapters; contracts included verbatim so the book cannot become a second owner |
-| Roadmap converted to task-trees | In Progress | `SEMULITH-TREES` — 2 of 11 lanes are trees (`P0-PROFILE`, `P1-LAB`) |
+| Roadmap converted to task-trees | In Progress | `SEMULITH-TREES` — 6 of 11 lanes are trees; the system lane remains |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 
@@ -23,10 +23,10 @@ summarize the snapshot in every commit-workflow completion message.
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Not Started | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 9 leaves; select `rv64i-lab-v0`, prove a real reference path |
 | P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite |
-| P2 — validated RV64I profile | CPU-LAB | Not Started | — |
-| DSP specification and stress review | — | Not Started | — |
-| P3 — shared interfaces + real DSP slice | BREADTH | Not Started | — |
-| P4 — Linux CPU profile | CPU-SYSTEM | Not Started | — |
+| P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
+| DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
+| P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |
+| P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
 | P5 — board model | BOARD | Not Started | — |
 | archogen OS integration | ARCHOGEN-OS | Not Started | — |
 | P6 — Linux userspace | LINUX | Not Started | — |

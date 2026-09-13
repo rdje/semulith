@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## `SEMULITH-TREES.2` — the CPU lane, where both processor gates live
+
+- Four trees created and registered: **`P2-SCALAR`** (9 leaves, gate `CPU-LAB`),
+  **`DSP-REVIEW`** (7 leaves, a precondition of `BREADTH` rather than a gate of its own),
+  **`P3-BREADTH`** (6 leaves, gate `BREADTH`), **`P4-SYSTEM`** (10 leaves, gate `CPU-SYSTEM`).
+  Milestone-tree census: `2` → `6`.
+- Each tree's acceptance criteria **are** its gate, quoted from `docs/EVIDENCE_AND_GATES.md` §7
+  rather than restated — a restated gate is a second owner.
+- Several leaves exist specifically to stop a claim from drifting: `P2-SCALAR.5` records ACT4
+  results as external tests with Sail-derived expected values rather than a second semantics;
+  `P2-SCALAR.8` keeps both native hosts mandatory and reads `incomplete` when the
+  infrastructure is missing; `P3-BREADTH.3` demands the evidence path *before* a real DSP
+  subset is implemented; `P4-SYSTEM.7` blocks floating point until a named Rust backend passes
+  qualification, with no native-float fallback.
+
+
 ## `SEMULITH-TREES.1` — the near-term lane is task-trees, not prose
 
 - The roadmap existed only as prose: milestone trees before this leaf, `0`; milestone sections
