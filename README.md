@@ -53,9 +53,10 @@ execute and validate them against.
   Defined in [`MEMORY_ARCHITECTURE.md`](MEMORY_ARCHITECTURE.md).
 - **Diagnose tools-first** ([`TOOLBOX.md`](TOOLBOX.md)), commit per [`COMMIT.md`](COMMIT.md),
   and expect every mechanizable rule to be gated ([`DOCTRINE_ENFORCEMENT.md`](DOCTRINE_ENFORCEMENT.md)).
-- **Evidence is a claim with a named scope.** Finite testing is tested evidence, never
-  universal proof; a reference that shares an ancestor is not a second opinion. See
-  [`docs/EVIDENCE_AND_GATES.md`](docs/EVIDENCE_AND_GATES.md).
+- **Evidence is a claim with named legs.** A number is checked when it is *re-derived*,
+  *falsified*, and *durable* — [`docs/CLAIM_VERIFICATION.md`](docs/CLAIM_VERIFICATION.md).
+  Finite testing is tested evidence, never universal proof, and a reference that shares an
+  ancestor is not a second opinion — [`docs/EVIDENCE_AND_GATES.md`](docs/EVIDENCE_AND_GATES.md).
 
 This landing page is governed by [`README_POLICY.md`](README_POLICY.md) and mechanically
 capped on **both** line and byte count. Route changing detail to its canonical home above

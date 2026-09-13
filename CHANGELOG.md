@@ -4,6 +4,19 @@ Completed work and its validation, newest first. Entries above the `bedrock-scaf
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.
 
+## `SEMULITH-PKG.2` — the claim-verification standard is project-owned
+
+- Imported `docs/CLAIM_VERIFICATION.md` verbatim (body SHA-256 `9f99df25…6046bd`, verified
+  byte-identical after import) under a fenced local-adoption note recording authority, date,
+  provenance, and that the originating project is **not** an upstream.
+- "Checked" now means three dimensionally different questions — **re-derive**, **falsify**,
+  **durability** — and a missing leg is *named in the claim* rather than omitted.
+- `docs/tasks/TEMPLATE.md` now states which leg each checklist box answers, so the mapping is
+  in front of every future author instead of in a standard they might not open.
+- Adoption recorded as `docs/decisions/decision_claim-verification-adopted.md`, including the
+  one gap that is **not** yet mechanized (§5A claim tags, §7 constant sweep) and who owns it.
+- Validation: `scripts/check_doctrines.sh` → `all doctrines green` (13 checks); `make check` → ok.
+
 ## `SEMULITH-PKG.1` — planning package v0.2 ingested under the spine
 
 - Landed the delivered package: `RULES.md`, ten design documents under `docs/`, three JSON

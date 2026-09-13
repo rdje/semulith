@@ -69,6 +69,14 @@ else can re-run.
 - [ ] **FIX** — <the minimal change made> *(not hard-gated)*
 - [ ] **LOCKSTEP** — <docs / contracts / index updated, or N/A + reason> *(not hard-gated)*
 
+⭐ The boxes above are the three legs of `docs/CLAIM_VERIFICATION.md` wearing this repository's
+names: **ROOT CAUSE** is leg 1 (*re-derive* — does one command reproduce it from the source?),
+**NO REGRESSION** carries leg 2 (*falsify* — what would make this false, and did the control
+ever go RED?), and **LOCKSTEP** carries leg 3 (*durability* — is the producer tracked, and does
+anything fail when the claim goes stale?). Two passes of the same question are one pass. If a
+leg is missing, **name it in the box** — a claim with a named gap is usable; a claim with a
+hidden gap is the defect.
+
 ⚠️ If none of the built-in evidence signatures fit your defect class, do **not** fake one and do
 **not** quietly drop the box: declare your own tool's signature in `.doctrine/evidence_tokens.txt`
 (see `.doctrine/README.md`). If you find yourself wanting to waive the gate instead, write the
