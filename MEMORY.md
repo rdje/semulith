@@ -13,13 +13,19 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `MODEL-BOOKS` (0 of 6 leaves), now unblocked.
-- **Frontier leaf:** `MODEL-BOOKS.1` — the book structure and the complete materials bill.
-- **Next action:** `MODEL-BOOKS.1`. One mdBook per processor model at `docs/models/<profile-id>/`:
-  the complete materials list (every specification artifact, encoding table, reference model and
-  internal contract, pinned by exact identity, GENERATED from `sources.toml`/`references.toml` so
-  a digest cannot rot) and the methodology that turned those documents into the model. Prose
-  first; tables only where a list is the honest form.
+- **Active trees:** `MODEL-METHOD` (1 of 6) and `MODEL-BOOKS` (0 of 6).
+- **Frontier leaf:** `MODEL-METHOD.2` — the materials requirement schema and catalogue.
+- **Next action:** `MODEL-METHOD.2`. `docs/INFORMATION_CATALOG.md` states *what must be known* to
+  model a processor in 24 categories (C01–C24) plus DSP questions in §5. Nothing states **which
+  material supplies each**, nor which are supplied by **nothing**. Build the record type binding
+  category → material → disposition (`covered` / `missing` / `not-applicable` **with reason**),
+  as JSON Lines under a JSON Schema so `RECORD-SCHEMA` and the tracked validator apply. Then `.3`
+  censuses `rv64i-lab-v0`, `.4` acquires what is missing and reachable (including: does the
+  specification **PDF** carry the encoding tables as text?), `.5` writes the method in prose, and
+  `.6` mechanizes *no coding without the source of truth*.
+- **Format decision (mine, recorded in the tree):** JSON Lines + JSON Schema, not S-expressions —
+  the data is records, not trees, and the repo already gates JSONL. S-expressions are parked for
+  the canonical *executable semantics* in `P1-LAB`, with a stated trigger.
 - **Just closed:** `P0-PROFILE` 10/10. Gate `G0` run, verdict **`incomplete`** (68 declared
   checks, 0 implemented — the deliverable, not a failure). ⛔ Reopened for `.10` after a measured
   defect the first nine leaves carried: the profile was matched on its **instruction set and not
@@ -29,6 +35,6 @@
 - **Then:** `P1-LAB.1` — the crate skeleton; where the 68 declared checks acquire fixtures.
 - **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
   `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0031 (leaf P0-PROFILE.10)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-MM-0033 (leaf MODEL-METHOD.1)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

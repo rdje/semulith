@@ -54,6 +54,8 @@ trace_granularity = "per instruction, and per effect within it: --trace-instr, -
 injection = "--gdb-server-port <n> (GDB remote: register and memory write, single step) and --rvfi-dii <port> (RVFI Direct Instruction Injection). --inst-limit bounds a run."
 matched_config = "reference/sail-rv64i-lab-v0.override.json"
 matched_isa_string = "rv64i_zvl32b"
+matched_isa_string_source = "observed — `sail_riscv_sim --config-override <cfg> --print-isa-string`"
+matched_scope = "⛔ THE ISA STRING ESTABLISHES THE INSTRUCTION SET AND NOTHING ELSE. It does not establish the platform, the memory map, the devices, the memory attributes or the semantics. Reading it as a whole-configuration verdict is precisely the defect P0-PROFILE.10 corrected. The platform is matched separately, by configuration, and compared against the model's own device tree with `scripts/compare_platforms.py`."
 terms = "BSD-2-Clause (the sail-riscv model). Read and executed locally; no copy is committed and nothing is redistributed."
 lineage = "The Sail RISC-V model is the RISC-V International reference formal model, written in the Sail ISA description language. Any tool that DERIVES expected results from it — notably ACT's reference signatures — shares an ancestor with it. Input to P0-PROFILE.7; not resolved here."
 
@@ -77,6 +79,8 @@ trace_granularity = "commit level: --log-commits prints the committed instructio
 injection = "built-in interactive debug mode (-d) with register/memory read-write and single step; OpenOCD/GDB via --rbb-port."
 matched_config = "command line only: --isa=rv64i --priv=m"
 matched_isa_string = "rv64i"
+matched_isa_string_source = "observed — `spike --isa=rv64i --priv=m --dump-dts <elf>` reports `riscv,isa = \"rv64i\"`. ⛔ CORRECTED at MODEL-METHOD.1: this value was previously the command-line INPUT recorded in an observation's slot, never read back. Spike has no --print-isa option, so nobody had confirmed it configured what it was told. The device tree is the read-back, and the control is that it tracks the input: `--isa=rv64im` reports `rv64im`."
+matched_scope = "As above — the instruction set only. Spike's platform is NOT matched and cannot be: its device tree advertises clint@2000000, plic@c000000 and ns16550@10000000, an Sv57 MMU and 16 PMP regions. See DIFF-PLATFORM-SPIKE."
 terms = "BSD-3-Clause (Regents of the University of California). Built and executed locally; no copy is committed."
 lineage = "An independently written C++ interpreter, historically the RISC-V golden model and older than the Sail model. Independence from Sail is PLAUSIBLE and NOT established — P0-PROFILE.7 owns examining it per subsystem rather than inferring it."
 
@@ -95,6 +99,8 @@ trace_granularity = "translation-block level by default; per-instruction with on
 injection = "GDB remote via -s/-S (register and memory write, single step)."
 matched_config = "command line only: -cpu rv64i"
 matched_isa_string = "not printed by QEMU; the CPU model is named rv64i and the ISA is not emitted as a string"
+matched_isa_string_source = "NOT OBSERVED. QEMU emits no ISA string, so nothing has been read back from it at all."
+matched_scope = "Nothing is established. QEMU has never been configured, run or compared in this project — it is `obtained` and un-exercised, and this field exists so that its emptiness is visible rather than inferred from an absent row."
 terms = "GPL-2.0-only. Installed on this host before this project existed; used read-only as a toolchain dependency and never modified, copied or redistributed."
 lineage = "A dynamic binary translator whose RISC-V target was written independently of both Sail and Spike. The most promising of the three for EVD-04, and still an input to P0-PROFILE.7 rather than a conclusion."
 cross_volume = "YES — this binary lives on /dev/disk3s1s1, not the repository volume. It is a pre-existing operating-system-level toolchain, read-only, never written to, and nothing this project owns is stored beside it. Recorded here because the data-locality policy requires every cross-volume dependency to be explicitly identified rather than silently used."

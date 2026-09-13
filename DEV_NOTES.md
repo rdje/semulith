@@ -8,6 +8,22 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-14)_ — answer a narrow instrument with a wider one, and state the wider one's scope
+
+- The sweep found **one further instance**, worse than the founding one: Spike's
+  `matched_isa_string` was the command-line INPUT sitting in an observation's slot. Spike has no
+  `--print-isa`, so nobody had confirmed it configured what it was told. Now read back from
+  `--dump-dts`, with a control (`--isa=rv64im` → `rv64im`) proving it is an observation, not an echo.
+- ⭐ The replacement is a principle with a tool behind it: claim a match against the model's own
+  self-description at the **widest granularity it offers**. Both models emit a device tree; the
+  comparison shows 4 of 4 platform fields disagreeing and four devices only Spike advertises.
+- ⚠️ **The wide instrument has its own scope and must say so**, or it becomes the next narrow one.
+  A device tree is what a platform ADVERTISES — not semantics, not memory attributes — and Sail's
+  still lists a `timebase-frequency` and an `htif` node with no device behind them.
+- The durable answer to "are there others?" is not "no". It is that a new one **cannot be added**
+  without declaring what it does not establish — rule 5b, fired RED on the real dossier.
+- Promotion is explicitly declined in the owning leaf, with the reason.
+
 ## _(2026-09-14)_ — an instrument that answers a narrower question than the one you asked
 
 - ⛔ **The profile was matched on its instruction set and not its platform, for four leaves.** The

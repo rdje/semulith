@@ -181,6 +181,16 @@ for toml_path in sorted(root.glob("*/profile.toml")):
                         f"NO LINEAGE {name}/{cid}: EVD-04 asks whether two comparators share "
                         f"semantic ancestry; a candidate with no lineage field leaves that "
                         f"unasked, and unasked reads exactly like independent")
+                # 5b. a scalar standing for a configuration declares its scope and its source
+                if c.get("matched_isa_string"):
+                    for k in ("matched_scope", "matched_isa_string_source"):
+                        if not c.get(k):
+                            findings.append(
+                                f"UNSCOPED SCALAR {name}/{cid}: pins 'matched_isa_string' with no "
+                                f"'{k}'. A scalar standing for a configuration must say what it "
+                                f"does NOT establish and where it was read from — an instrument "
+                                f"answering a narrower question than the one asked is the harder "
+                                f"defect, because its answer is correct")
                 if st == "obtained":
                     for k in OBTAINED_REQUIRED:
                         if not c.get(k):
@@ -445,6 +455,17 @@ consequence = "owner named"'
                                                               arm "RED   an independence verdict with no examination" 1 "THIN INDEPENDENCE"
   refs "$EXP$C2$(printf '%s' "$IND_ROW" | sed 's/pair = \["c1", "c2"\]/pair = ["c1", "c9"]/')"
                                                               arm "RED   independence names a model that is not a candidate" 1 "UNKNOWN MODEL"
+  # ---- 5b: a scalar standing for a configuration declares its scope ------------------------
+  SCALAR='
+matched_isa_string = "rv64i"
+matched_isa_string_source = "observed"
+matched_scope = "the instruction set only"'
+  refs "$(printf '%s' "$EXP" | sed "s|^lineage = .*|&$(printf '%s' "$SCALAR" | tr '\n' '\001' | sed 's/\x01/\\n/g')|")$C2$IND_ROW"
+                                                              arm "GREEN a scoped scalar"        0 "__CHECKED__ 1"
+  refs "$(printf '%s' "$EXP" | sed "s|^lineage = .*|&\nmatched_isa_string = \"rv64i\"\nmatched_isa_string_source = \"observed\"|")$C2$IND_ROW"
+                                                              arm "RED   a scalar with no scope" 1 "UNSCOPED SCALAR"
+  refs "$(printf '%s' "$EXP" | sed "s|^lineage = .*|&\nmatched_isa_string = \"rv64i\"\nmatched_scope = \"isa only\"|")$C2$IND_ROW"
+                                                              arm "RED   a scalar with no source" 1 "UNSCOPED SCALAR"
   # an experiment comparing TWO models with no independence record for that pair
   refs "$(printf '%s' "$EXP" | sed 's/^models = \["c1"\]/models = ["c1", "c2"]/')$C2"
                                                               arm "RED   two models compared, pair never examined" 1 "UNEXAMINED PAIR"
