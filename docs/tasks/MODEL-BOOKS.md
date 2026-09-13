@@ -26,6 +26,15 @@ Explanation stays **essentially prose**. Code and data snippets appear only wher
 point faster than a paragraph would; tables are used for the materials list, where a list is the
 honest form.
 
+⭐ **And the book carries a second mandate: it is a teaching text.**
+`decision_dual-mandate-production-and-teaching` makes every model both signoff production work and
+material a student can learn to build production models from — including models capable of running
+real compiled code. Concretely, for this tree: the reasoning is recoverable and not just the
+result; **the mistakes stay in**, because a matched profile that matched only an instruction set
+and a comparator that called a truncated trace agreement are the most instructive pages available;
+the *order* of the work is justified rather than listed; and each chapter is written so a reader
+could **build** from it rather than only agree with it.
+
 ## Why this is a gap, stated as a measurement
 
 Everything a reviewer needs about `rv64i-lab-v0` already exists — and exists as **13 files of
@@ -59,6 +68,12 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
    source document to the check that will test it — so the pipeline is demonstrated, not asserted.
 4. `make book` builds every book, and the project book routes to each model book.
 5. Prose dominates. A chapter that is mostly listing is a chapter that has not been written yet.
+6. ⭐ Each chapter passes the teaching test: **could a reader build something from this, or only
+   agree with it?** Where the project got something wrong, the book says what the wrong instrument
+   reported and why it was believed — removing that to look competent removes the lesson.
+7. The model's ability to run real compiled code is stated with its **limits**, derived from the
+   extension set rather than asserted: no `M` means runtime multiply calls, no `A` means no
+   atomics, no `F`/`D` means a soft-float ABI.
 
 ## Task Tree
 

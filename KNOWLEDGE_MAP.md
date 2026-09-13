@@ -51,6 +51,7 @@
 
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
+- [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)
 - [`decision_public-repository-no-confidential-content.md`](docs/decisions/decision_public-repository-no-confidential-content.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)

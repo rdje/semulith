@@ -9,6 +9,8 @@ Supersedes: roadmap v0.1 as the current plan; preserves v0.1 as historical mater
 
 **Build trustworthy CPU and DSP software models in Rust, then compose validated processor profiles into boards and complete computers capable of running Linux.** All Rust implementation is AI-assisted.
 
+Every model carries a **dual mandate** added `2026-09-14`: it must be signoff, production-grade work **and** serve as educational material from which a student can learn to build production-grade CPU/DSP models capable of running real compiled code (C, Rust, …). These are one artifact with two mandates — the per-model mdBook is the teaching text, the profile and its evidence are the production artifact it teaches from. See [`docs/decisions/decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md); it also records what "runs real code" demands of a materials list that the ISA chapters do not own.
+
 Semulith also has a concrete system-modeling consumer: **archogen**, the user's project that generates specific-purpose operating systems from its eADL source of truth. Semulith will execute and help validate those OSes against explicit platform contracts. Linux remains a general-purpose integration workload and the software-computer north star; an archogen OS can be an earlier, smaller system workload.
 
 The first deliverable is the processor: an executable definition, a reference interpreter, and reproducible evidence for a precise supported profile. Board implementation follows validation of the processor profile it will use. A controlled memory/event harness is part of processor testing, not a premature board implementation.

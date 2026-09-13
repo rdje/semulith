@@ -44,6 +44,30 @@ implementation cannot begin over an uncovered category without a gate saying so.
 3. The method is documented in prose, following at least one real rule end to end.
 4. A gate prevents implementation beginning while a category the declared scope *needs* is
    `missing` — the director's rule, mechanized: no coding without the source of truth.
+5. ⭐ **The catalogue covers what running REAL COMPILED CODE requires**, not only what executing
+   instructions requires. `decision_dual-mandate-production-and-teaching` makes "capable of running
+   real code (C, Rust)" a stated target, and that pulls in materials the ISA chapters do not own:
+   the psABI, the ELF specification, a startup and runtime contract, the compiler-runtime
+   intrinsics a no-`M` soft-float target will call, and a program-exit convention. Catalogue
+   category `C20` is where they land, and it is currently supplied by nothing.
+
+   Census behind that last clause, over every population that could refute it — the pinned
+   specification artifacts, and any pinned material naming an ABI or ELF source:
+
+   ```
+   $ grep -oE '^id = "[^"]+"' profiles/rv64i-lab-v0/sources.toml
+   RVI-INTRO   RVI-RV32I   RVI-RV64I          # three unprivileged ISA chapters, nothing else
+   $ git grep -clE 'psABI|calling.convention|elf.specification' -- profiles/*/sources.toml profiles/*/references.toml | wc -l
+   0
+   $ grep -c 'software-convention' profiles/rv64i-lab-v0/state.json
+   3                                          # the ISA chapters DISCLAIM the ABI; state.json says so
+   ```
+
+   The third number is the interesting one: the profile already records three register roles as
+   `software-convention` precisely because the ISA chapter does not own them. Nothing yet pins the
+   document that does.
+6. Every material record states **what it teaches**, not only what it specifies — the catalogue is
+   an input to a teaching text, and a material nobody can learn from is a citation.
 
 ## Format decision — and why not S-expressions, yet
 
@@ -95,19 +119,26 @@ recorded so it can be overturned on evidence rather than taste:
 - ID: `MODEL-METHOD.4` — **acquire what the census says is missing and reachable**
   Status: `pending`
   Goal: obtain and pin the materials the census identifies as needed for the *declared* scope, and
-  record as `SRC-02` results those that cannot be obtained. ⭐ Includes the outstanding question
+  record as `SRC-02` results those that cannot be obtained. ⭐ Includes the **run-real-code** set,
+  which the ISA chapters do not own: the RISC-V psABI, the ELF specification, a startup/runtime
+  contract, the compiler-runtime intrinsics a no-`M` soft-float target calls, and a program-exit
+  convention. ⚠️ This is what makes `state.json`'s `software-convention` register roles
+  load-bearing: once real code runs, the calling convention stops being background reading. ⭐ Includes the outstanding question
   from `MODEL-BOOKS.2`: does the specification's **PDF** rendering carry the instruction-format
   tables as selectable text? If so, encodings can be re-sourced from the primary document and the
   shared-ancestry position improves.
   Acceptance: every acquisition pinned with a digest and re-derivable; every failure recorded with
   its attempt.
 
-- ID: `MODEL-METHOD.5` — **the method, in prose**
+- ID: `MODEL-METHOD.5` — **the method, in prose, written to be learned from**
   Status: `pending`
   Goal: document → decision → requirement → obligation → check, with the judgement calls named:
   authority versus semantic class, what makes an expected value *derived* rather than copied, and
-  when a disagreement is a profile difference rather than a defect.
-  Acceptance: one rule followed end to end by name; the non-mechanical steps identified as such.
+  when a disagreement is a profile difference rather than a defect. ⭐ Written so a student could
+  apply it to a processor this project has never modelled — which means the **order** of the steps
+  is justified, not merely listed, and the rejected alternatives are kept.
+  Acceptance: one rule followed end to end by name; the non-mechanical steps identified as such;
+  a reader could carry the method to a different ISA without this project's documents.
 
 - ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
   Status: `pending`
