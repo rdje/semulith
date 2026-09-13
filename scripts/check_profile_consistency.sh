@@ -17,6 +17,12 @@
 #      unearned "none" is indistinguishable from a "none" nobody looked for.
 #   4. `state.json` and `profile.toml` must AGREE. Two files describing the same processor is
 #      the cheapest place for a contradiction to hide.
+#   5. `references.toml` records REFERENCE CANDIDATES, and a candidate list is the easiest
+#      document in a project to fill in from reputation. `SRC-03` forbids recording availability
+#      that has not been established, so an `obtained` candidate must name the binary AND its
+#      digest AND how it is invoked. ⭐ And every candidate must carry a `lineage` field, because
+#      `EVD-04`'s question — do two comparators share semantic ancestry? — is precisely the field
+#      that gets skipped when three models are sitting there apparently agreeing.
 #
 # ⚠️ HONEST LIMIT, stated rather than implied: this proves the file is INTERNALLY consistent and
 # that every decision cites something. It cannot check the citation against the specification —
@@ -121,6 +127,66 @@ for toml_path in sorted(root.glob("*/profile.toml")):
                                 f"THIN CENSUS {name}/state.json: candidate "
                                 f"{c.get('candidate','<unnamed>')!r} lacks present/why")
 
+    # ---- references.toml, when present: the reference candidate dossier ----------------
+    refs_path = toml_path.parent / "references.toml"
+    if refs_path.is_file():
+        STATUSES = {"obtained", "not obtained", "reachable, not acquired"}
+        # An `obtained` candidate claims we HAVE it. These are the fields that make the claim
+        # checkable rather than remembered.
+        OBTAINED_REQUIRED = ("binary", "binary_sha256", "invocation", "trace_granularity",
+                             "injection", "terms")
+        try:
+            rf = tomllib.loads(refs_path.read_text())
+        except Exception as e:
+            findings.append(f"UNPARSEABLE {name}/references.toml — {e}")
+            rf = None
+        if rf is not None:
+            if rf.get("profile") != d.get("profile", {}).get("id"):
+                findings.append(
+                    f"REF PROFILE MISMATCH {name}: references.toml profile "
+                    f"{rf.get('profile')!r} != profile.toml id {d.get('profile', {}).get('id')!r}")
+            cands = rf.get("candidate", [])
+            if not cands:
+                findings.append(
+                    f"NO CANDIDATES {name}/references.toml: a reference dossier with no candidate "
+                    f"records nothing — an empty list is not the same as an examined one")
+            seen = set()
+            for c in cands:
+                cid = c.get("id", "<unnamed>")
+                if cid in seen:
+                    findings.append(f"DUPLICATE CANDIDATE {name}: '{cid}' appears twice")
+                seen.add(cid)
+                st = c.get("status")
+                if st not in STATUSES:
+                    findings.append(
+                        f"BAD STATUS {name}/{cid}: '{st}' not in {sorted(STATUSES)}")
+                if not c.get("role"):
+                    findings.append(f"NO ROLE    {name}/{cid}: candidate states no role")
+                if not c.get("origin"):
+                    findings.append(f"NO ORIGIN  {name}/{cid}: candidate cites no origin")
+                if not c.get("lineage"):
+                    findings.append(
+                        f"NO LINEAGE {name}/{cid}: EVD-04 asks whether two comparators share "
+                        f"semantic ancestry; a candidate with no lineage field leaves that "
+                        f"unasked, and unasked reads exactly like independent")
+                if st == "obtained":
+                    for k in OBTAINED_REQUIRED:
+                        if not c.get(k):
+                            findings.append(
+                                f"UNEARNED OBTAINED {name}/{cid}: status is 'obtained' with no "
+                                f"'{k}' — SRC-03 forbids recording availability that has not "
+                                f"been established")
+                elif not c.get("status_reason"):
+                    findings.append(
+                        f"NO REASON  {name}/{cid}: status is '{st}' with no status_reason; "
+                        f"SRC-02 makes an honest 'no route' legitimate, but it has to say why")
+            for a in rf.get("attempt", []):
+                for k in ("what", "outcome", "consequence"):
+                    if not a.get(k):
+                        findings.append(
+                            f"THIN ATTEMPT {name}/references.toml: an attempt record lacks '{k}' "
+                            f"— an attempt without its consequence is a note, not evidence")
+
     decisions = d.get("decision", [])
     if not decisions:
         findings.append(f"NO DECISIONS {name}: a profile with no recorded decision records nothing")
@@ -164,7 +230,17 @@ statement = "s"
 source = "§1"
 EOF
   }
+  # ⛔ STRICT ARITY — docs/knowledge/self-test-arms-that-never-ran.md. A helper that ignores
+  # surplus arguments swallows the whole following command when a `;` is missing, silently.
+  argc() {
+    [ "$2" -eq "$1" ] && return 0
+    fail=$((fail+1))
+    printf 'PROFILE-CONSISTENCY self-test HARNESS: %s() got %s argument(s), expected %s — a missing `;` before `arm` swallows it\n' \
+      "$3" "$2" "$1" >&2
+    return 1
+  }
   arm() { # name expected_rc expected_substring
+    argc 3 "$#" arm || return
     out="$(check_profiles "$t" 2>&1)"; rc=$?
     if [ "$rc" != "$2" ]; then
       fail=$((fail+1)); printf 'PROFILE-CONSISTENCY self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$1" "$2" "$rc" "$out" >&2
@@ -214,6 +290,51 @@ p.write_text(s.split("[[decision]]")[0])
 PY
                                                               arm "RED   no decisions at all"  1 "NO DECISIONS"
   printf 'not = toml = at = all\n' > "$t/p/profile.toml";     arm "RED   unparseable profile"  1 "UNPARSEABLE"
+  # ---- references.toml: the reference candidate dossier ------------------------------------
+  good; printf '[profile]\nid = "p1"\n' >> "$t/p/profile.toml"
+  refs() { argc 1 "$#" refs || return; printf '%s\n' "$1" > "$t/p/references.toml"; }
+  FULL='profile = "p1"
+[[candidate]]
+id = "c1"
+role = "oracle"
+status = "obtained"
+origin = "https://example.invalid"
+lineage = "written independently"
+binary = "b"
+binary_sha256 = "deadbeef"
+invocation = "b --run"
+trace_granularity = "per instruction"
+injection = "gdb"
+terms = "BSD-2-Clause"
+[[attempt]]
+what = "tried x"
+outcome = "failed"
+consequence = "recorded"'
+  refs "$FULL";                                               arm "GREEN complete reference dossier" 0 "__CHECKED__ 1"
+  refs "$(printf '%s' "$FULL" | grep -v '^lineage')";         arm "RED   a candidate with no lineage" 1 "NO LINEAGE"
+  refs "$(printf '%s' "$FULL" | grep -v '^binary_sha256')";   arm "RED   obtained with no digest"   1 "UNEARNED OBTAINED"
+  refs "$(printf '%s' "$FULL" | grep -v '^invocation')";      arm "RED   obtained with no invocation" 1 "UNEARNED OBTAINED"
+  refs "$(printf '%s' "$FULL" | sed 's/^status = "obtained"/status = "rumoured"/')"
+                                                              arm "RED   an unknown status"         1 "BAD STATUS"
+  refs "$(printf '%s' "$FULL" | sed 's/^status = "obtained"/status = "not obtained"/')"
+                                                              arm "RED   not obtained with no reason" 1 "NO REASON"
+  refs "$(printf '%s' "$FULL" | grep -v '^role')";            arm "RED   a candidate with no role"  1 "NO ROLE"
+  refs "$(printf '%s' "$FULL" | grep -v '^origin')";          arm "RED   a candidate citing nothing" 1 "NO ORIGIN"
+  refs "$(printf '%s' "$FULL" | sed 's/^profile = "p1"/profile = "other"/')"
+                                                              arm "RED   dossier names another profile" 1 "REF PROFILE MISMATCH"
+  refs "$(printf '%s' "$FULL" | grep -v '^consequence')";     arm "RED   an attempt with no consequence" 1 "THIN ATTEMPT"
+  refs 'profile = "p1"';                                      arm "RED   a dossier with no candidate" 1 "NO CANDIDATES"
+  refs "$FULL
+[[candidate]]
+id = \"c1\"
+role = \"dup\"
+status = \"not obtained\"
+status_reason = \"r\"
+origin = \"o\"
+lineage = \"l\"";                                             arm "RED   a duplicate candidate id" 1 "DUPLICATE CANDIDATE"
+  refs 'not = toml = at = all';                               arm "RED   an unparseable dossier"    1 "UNPARSEABLE"
+  rm -f "$t/p/references.toml"
+
   rm -rf "$t"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -231,7 +352,8 @@ body="$(printf '%s' "$out" | grep -v '^__CHECKED__ ' || true)"
 if [ "$rc" -ne 0 ]; then
   { echo "PROFILE-CONSISTENCY: a profile dossier contradicts itself or cites nothing."
     printf '%s\n' "$body" | sed 's/^/  /'
-    echo "  Fix the enumeration or the count — never the count alone to make them agree."; } >&2
+    echo "  The SOURCE is authoritative: fix the enumeration, the citation or the evidence —"
+    echo "  never the summary alone to make the two agree."; } >&2
   exit 1
 fi
 printf 'PROFILE-CONSISTENCY: ok (%s profile dossier(s) internally consistent)\n' "${count:-0}"

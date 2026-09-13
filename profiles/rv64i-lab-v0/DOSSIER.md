@@ -112,7 +112,7 @@ Each has an owner and a due point. None blocks writing `profile.toml`; all block
 | **OQ-1** | Does archogen's `rt-static-up-v1` need machine-mode features this profile excludes? `docs/ARCHOGEN_INTEGRATION.md` §6 warns against promising that unprivileged RV64I alone suffices. | `AG-OS` / this leaf on re-open | before `P1-LAB.1` fixes the crate boundary |
 | **OQ-2** | Which reference models treat `SLLIW` `imm[5]!=0` as reserved versus illegal, and how is the difference reported rather than counted as a mismatch? | `P0-PROFILE.5`/`.6` | `G0` |
 | **OQ-3** | Is `D-MISALIGN-DATA`'s contained-trap choice expressible in the selected reference's configuration, or must it be normalized at the comparator? A normalization needs a source-grounded justification (`EVD-05`). | `P0-PROFILE.6` | `G0` |
-| **OQ-4** | What are the actual applicable terms for the specification artifacts, and does anything here get redistributed? Nothing is committed today; `SRC-01` requires the terms before it is. | `P0-PROFILE.5` | before any artifact is shipped |
+| **OQ-4** | What are the actual applicable terms for the specification artifacts, and does anything here get redistributed? Nothing is committed today; `SRC-01` requires the terms before it is. **Partly answered by `.5`:** the *reference models'* terms are now recorded (BSD-2-Clause, BSD-3-Clause, GPL-2.0-only, Apache-2.0) and none is redistributed. The *specification* artifacts' terms remain open. | `P0-PROFILE.5` (models, done) / `.9` (specification) | before any artifact is shipped |
 | **OQ-5** | Is `pc` after an `ECALL`/`EBREAK` requested trap defined by this harness, or left to the harness contract? The base ISA gives no answer without a privileged mode. | `P0-PROFILE.4` | `G0` |
 
 ## The state inventory, and why "no hidden state" is a checked claim
@@ -141,6 +141,56 @@ assumed: the string `reset` appears **0 times** in the RV32I chapter and **0 tim
 RV64I chapter. The unprivileged specification says the EEI defines the initial state of the
 program (`RVI-INTRO`), and this harness's choice of zero is not something a guest may rely on
 elsewhere.
+
+## The reference models, and what having three of them does not mean
+
+[`references.toml`](references.toml) is the candidate dossier. Three models were obtained and
+run on this host, and one test corpus was located but deliberately not acquired:
+
+| Candidate | Status | Matched to this profile by | Reports itself as |
+| --- | --- | --- | --- |
+| **Sail RISC-V 0.14** | obtained (prebuilt `Mac-arm64` binary) | [`reference/sail-rv64i-lab-v0.override.json`](reference/sail-rv64i-lab-v0.override.json) | `rv64i_zvl32b` |
+| **Spike 1.1.1-dev** | obtained (source build, commit `1e05ddac`) | `--isa=rv64i --priv=m` | `rv64i` |
+| **QEMU 11.1.1** | obtained (pre-existing host toolchain, read-only) | `-cpu rv64i` | *(no ISA string emitted)* |
+| **ACT (`act4`)** | reachable, not acquired | — | — |
+
+⛔ **Three models is not three opinions.** ACT computes its expected results with a *configured
+Sail model*, so agreement between ACT and candidate 1 is one semantics answering twice. Spike
+and QEMU are plausibly independent of Sail and of each other — *plausibly*, which is not a
+finding. `EVD-04` requires shared ancestry to be **examined per subsystem**, and
+`P0-PROFILE.7` owns that. The `lineage` field on every candidate is the input to that leaf, and
+the gate refuses a candidate that omits it, because an unasked independence question reads
+exactly like an answered one.
+
+⛔ **And none of them is usable yet.** `docs/EVIDENCE_AND_GATES.md` §5 makes a real matched-profile
+experiment the condition for calling a reference usable, and that is `P0-PROFILE.6`. What `.5`
+establishes is narrower and worth stating exactly: *we have these binaries, this is which ones
+they are, and each can be configured to something close to this profile.*
+
+### Two differences that are already known, before any instruction has been run
+
+**The Sail model cannot be configured to exactly `extensions = []`.** Driven down from its
+default `rv64imafdcbvh_…` (96 supported extensions) it reaches `rv64i_zvl32b` — the base plus a
+vestigial minimum vector-length class that survives because the model always instantiates a
+`VLEN` even with the vector unit `Disabled`. No vector instruction decodes, so the difference is
+believed benign; it is recorded rather than rounded away, because `G0` asks for differences to
+be *enumerated*, not assumed absent.
+
+**The Sail model will not tell us what configuration it actually ran with.**
+`--print-default-config` ignores `--config-override`; the two dumps are byte-identical. So the
+effective configuration is recorded as *(release 0.14 default) + (the tracked override)*, and
+**that merge is ours, not the model's report of itself.** The one self-description the model does
+emit is `--print-isa-string`, which is why `rv64i_zvl32b` is pinned and re-derived by
+`scripts/fetch_references.sh`. `P0-PROFILE.6` must not treat our merge as the model's own word.
+
+### What the acquisition attempt cost, versus what it was expected to cost
+
+The task-tree budgeted this leaf on building Sail from source through an OCaml/opam toolchain.
+That turned out not to be necessary: release 0.14 publishes a native binary for this host's exact
+architecture. The attempt that *did* fail is recorded too — the host package manager's `sail`
+formula is a WordPress deployment tool for DigitalOcean, an exact name collision with the Sail
+ISA language. Recording "Sail is available from the package manager" would have been false in
+precisely the way `SRC-03` exists to prevent.
 
 ## What is deliberately absent
 

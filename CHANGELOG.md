@@ -1,5 +1,57 @@
 # CHANGELOG.md
 
+## SEMULITH-P0-0020 (leaf P0-PROFILE.5) — obtain three reference models and pin exactly which they are
+
+**What changed.** The project had a subject and no second opinion about it. It now has three
+reference models, obtained and run on this host, each configured as close to `rv64i-lab-v0` as it
+can be, and each pinned so the next reader knows exactly which binary produced a number.
+
+| Candidate | Status | Matched by | Self-report |
+| --- | --- | --- | --- |
+| Sail RISC-V 0.14 (prebuilt `Mac-arm64`) | obtained | a tracked JSON override | `rv64i_zvl32b` |
+| Spike 1.1.1-dev (source build `1e05ddac`) | obtained | `--isa=rv64i --priv=m` | `rv64i` |
+| QEMU 11.1.1 (pre-existing host toolchain) | obtained | `-cpu rv64i` | emits none |
+| ACT, `act4` branch | reachable, **not acquired** | — | — |
+
+- `profiles/rv64i-lab-v0/references.toml` — the dossier: 4 candidates, 3 recorded attempts.
+- `profiles/rv64i-lab-v0/reference/sail-rv64i-lab-v0.override.json` — the tracked matched profile.
+- `scripts/fetch_references.sh` — acquires and re-verifies, entirely on the repository volume.
+- `PROFILE-CONSISTENCY` extended with 13 rules for the dossier, including one that **refuses a
+  candidate with no `lineage`**.
+- `docs/decisions/decision_reference-acquisition-route.md` supersedes the roadmap's cost estimate.
+
+**The budget was wrong in the project's favour.** The plan priced this on building Sail through
+an OCaml/opam toolchain. Release 0.14 publishes a native binary for this host's architecture, so
+Sail became the *cheapest* candidate. Spike built against the system toolchain with no new
+dependency installed; QEMU was already present and offers a CPU model named `rv64i`.
+
+⛔ **One attempt failed and it is the instructive one.** The host package manager's `sail` formula
+is a CLI for deploying WordPress sites to DigitalOcean — an exact name collision. The lookup
+succeeded; the referent was wrong. Promoted to
+[`docs/knowledge/availability-is-not-identity.md`](docs/knowledge/availability-is-not-identity.md).
+
+⛔ **Two profile/reference differences are enumerated, not rounded away.** Sail cannot be
+configured to exactly `extensions = []` — from 96 supported extensions it bottoms out at
+`rv64i_zvl32b`, a vestigial minimum vector-length class instantiated even with the vector unit
+disabled. And Sail **will not emit its effective configuration**: `--print-default-config`
+ignores `--config-override` and the dumps are byte-identical, so the effective configuration is
+*(default) + (our tracked override)* and that merge is ours, not the model's account of itself.
+
+⛔ **Three models is not three opinions, and this commit claims neither usability nor
+independence.** ACT derives its expected results from a configured Sail model. Spike and QEMU are
+*plausibly* independent — a hypothesis. `P0-PROFILE.6` decides usability by running an
+experiment; `P0-PROFILE.7` examines ancestry per subsystem.
+
+**Validation.** `scripts/fetch_references.sh --verify-only` → six re-derivations, all `MATCH`,
+`rc=0`. Fired RED on two controls: a corrupted digest → `DIFFERS spike binary`; re-enabling `M`
+in the tracked override → `DIFFERS matched-profile ISA string … pinned rv64i_zvl32b actual
+rv64im_zvl32b`. The 13 new dossier rules fired RED **on the real dossier**: `NO LINEAGE …/qemu`
+and six `UNEARNED OBTAINED …/act4`. `PROFILE-CONSISTENCY --self-test: 26 pass / 0 fail`, 26 arms
+written and 26 run — and the same reconciliation was run across every project harness (`9/9`,
+`7/7`, `12/12`, `26/26`, and `9/9` on seam-integrity's own idiom), so none is skipping arms.
+Gate green; `make check` `1 passed`; `make book` renders.
+
+
 ## SEMULITH-MIR-0019 (leaf MIRROR-DRIFT.3) — gate the live documents' tree claims
 
 **What changed.** The third and last mirror on the resume path. `MEMORY.md` and `LIVE_STATUS.md`

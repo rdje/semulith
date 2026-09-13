@@ -1,0 +1,138 @@
+# profiles/rv64i-lab-v0/references.toml — the reference candidate dossier for `rv64i-lab-v0`.
+#
+# ⛔ EVERY FIELD HERE IS AN OBSERVED FACT. Rule `SRC-03` forbids recording availability that has
+# not been established, and this file is where that rule bites hardest: a candidate list is the
+# easiest document in a project to fill in from reputation. Each `obtained` row below was run on
+# this host; each `not_obtained` row records the attempt and what stopped it.
+#
+# ⚠️ WHAT THIS FILE DOES NOT CLAIM. Nothing here says a reference is USABLE. `P0-PROFILE.6` is
+# the leaf that runs a matched-profile experiment and reproduces it, and `docs/EVIDENCE_AND_GATES.md`
+# §5 makes that the gate: a reference is not usable until a real experiment has passed against it.
+# These rows say "we have it, we can configure it, and this is exactly which it is".
+#
+# ⚠️ AND NOTHING HERE IS AN INDEPENDENCE CLAIM. Three obtained models is not three opinions —
+# `EVD-04` requires shared semantic ancestry to be examined rather than inferred from the fact
+# that the binaries differ. `P0-PROFILE.7` owns that, and the `lineage` field below is its input,
+# not its answer.
+#
+# Re-derive with `scripts/fetch_references.sh [--verify-only]`. It needs the network and a
+# compiler, so it is deliberately NOT a commit gate — the same reasoning as `fetch_sources.sh`.
+
+profile = "rv64i-lab-v0"
+retrieved = "2026-09-14"
+work_dir = "target/refs"
+
+# The host matters and is therefore recorded: two of the three candidates below were obtained in
+# a form that is specific to it (a prebuilt Mac-arm64 binary; a source build against the system
+# toolchain). On another host the same commands can produce a different answer, and `SRC-03`
+# makes that a fact to re-establish rather than inherit.
+[host]
+os = "macOS 26.6.2 (build 25G83)"
+kernel = "Darwin 25.6.0"
+arch = "arm64"
+cxx = "Apple clang (/usr/bin/clang)"
+note = "The repository volume is /dev/disk7s1; the shared toolchain prefix /opt/homebrew is on /dev/disk3s1s1. They are DIFFERENT volumes, which is why every artifact this project owns is built or unpacked under `target/refs/` and nothing is installed into the shared prefix (policy: project data locality)."
+
+# ───────────────────────────────────────────────────────────── candidate 1: Sail RISC-V
+[[candidate]]
+id = "sail-riscv"
+role = "primary oracle candidate"
+status = "obtained"
+kind = "prebuilt release binary"
+origin = "https://github.com/riscv/sail-riscv"
+release = "0.14"
+released = "2026-09-05"
+asset = "sail-riscv-Mac-arm64.tar.gz"
+asset_sha256 = "340ab7080871b191b0e719b5ed5be34f4725704dfe52a5aeb50ea36be277464e"
+asset_bytes = 2038243
+http_status = 200
+binary = "target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim"
+binary_sha256 = "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf"
+build_info = "Sail RISC-V release 0.14; git 29e6158; Sail 0.20.2 (opam-v2.5.1); AppleClang 21.0.0.21000101; CLI11 2.6.2; ELFIO 3.12; JSONCONS 1.8.1; ASIO 103600"
+invocation = "sail_riscv_sim --config-override <override.json> [--trace...] <elf>"
+trace_granularity = "per instruction, and per effect within it: --trace-instr, --trace-gpr, --trace-csr, --trace-mem, --trace-exception, --trace-interrupt, --trace-pma, --trace-pmp, --trace-step; --trace enables all but TLB/PTW/gdbserver. Output to --trace-output <file>."
+injection = "--gdb-server-port <n> (GDB remote: register and memory write, single step) and --rvfi-dii <port> (RVFI Direct Instruction Injection). --inst-limit bounds a run."
+matched_config = "reference/sail-rv64i-lab-v0.override.json"
+matched_isa_string = "rv64i_zvl32b"
+terms = "BSD-2-Clause (the sail-riscv model). Read and executed locally; no copy is committed and nothing is redistributed."
+lineage = "The Sail RISC-V model is the RISC-V International reference formal model, written in the Sail ISA description language. Any tool that DERIVES expected results from it — notably ACT's reference signatures — shares an ancestor with it. Input to P0-PROFILE.7; not resolved here."
+
+# ───────────────────────────────────────────────────────────── candidate 2: Spike
+[[candidate]]
+id = "spike"
+role = "second implementation"
+status = "obtained"
+kind = "source build"
+origin = "https://github.com/riscv-software-src/riscv-isa-sim"
+source_commit = "1e05ddac3a6c351bfc0aeed0cf3a68940e7200ab"
+source_authored = "2026-09-11"
+release_assets = "none — the latest tagged release (v1.1.0, 2021-12-17) publishes no binaries, so a source build is the only route"
+binary = "target/refs/spike-build/spike"
+binary_sha256 = "8fdf43ac80ccafb96ab076c91967adf6df119b05c5b926ed49a033efe57836a3"
+version = "Spike RISC-V ISA Simulator 1.1.1-dev"
+build_prefix = "target/refs/spike-prefix"
+build_note = "configure + make -j8 against the system toolchain; `dtc` 1.8.1 was ALREADY present and is used read-only. Boost is documented as a prerequisite in configure.ac but configure succeeded (rc=0) without it, so nothing was installed into the shared prefix."
+invocation = "spike --isa=rv64i --priv=m --log-commits --instructions=<n> <elf>"
+trace_granularity = "commit level: --log-commits prints the committed instruction with its register and memory writes; -l/--log gives an execution log; spike-dasm decodes it."
+injection = "built-in interactive debug mode (-d) with register/memory read-write and single step; OpenOCD/GDB via --rbb-port."
+matched_config = "command line only: --isa=rv64i --priv=m"
+matched_isa_string = "rv64i"
+terms = "BSD-3-Clause (Regents of the University of California). Built and executed locally; no copy is committed."
+lineage = "An independently written C++ interpreter, historically the RISC-V golden model and older than the Sail model. Independence from Sail is PLAUSIBLE and NOT established — P0-PROFILE.7 owns examining it per subsystem rather than inferring it."
+
+# ───────────────────────────────────────────────────────────── candidate 3: QEMU
+[[candidate]]
+id = "qemu"
+role = "third implementation, discovered during this leaf"
+status = "obtained"
+kind = "pre-existing host toolchain, used read-only"
+origin = "https://www.qemu.org"
+version = "QEMU emulator version 11.1.1"
+binary = "/opt/homebrew/bin/qemu-system-riscv64"
+binary_sha256 = "03725d89f81f327c7e95dd6129dc7e9a6440d49d7158ade0d558efa9d6bd56f3"
+invocation = "qemu-system-riscv64 -machine virt -cpu rv64i -bios none -nographic -d in_asm,cpu,int -D <log> -kernel <elf>"
+trace_granularity = "translation-block level by default; per-instruction with one-insn-per-tb. -d cpu dumps the register file before each block, -d in_asm the target assembly, -d int exceptions."
+injection = "GDB remote via -s/-S (register and memory write, single step)."
+matched_config = "command line only: -cpu rv64i"
+matched_isa_string = "not printed by QEMU; the CPU model is named rv64i and the ISA is not emitted as a string"
+terms = "GPL-2.0-only. Installed on this host before this project existed; used read-only as a toolchain dependency and never modified, copied or redistributed."
+lineage = "A dynamic binary translator whose RISC-V target was written independently of both Sail and Spike. The most promising of the three for EVD-04, and still an input to P0-PROFILE.7 rather than a conclusion."
+cross_volume = "YES — this binary lives on /dev/disk3s1s1, not the repository volume. It is a pre-existing operating-system-level toolchain, read-only, never written to, and nothing this project owns is stored beside it. Recorded here because the data-locality policy requires every cross-volume dependency to be explicitly identified rather than silently used."
+
+# ───────────────────────────────────────────────────────────── candidate 4: ACT
+[[candidate]]
+id = "act4"
+role = "external test suite, not a model"
+status = "reachable, not acquired"
+kind = "test corpus"
+origin = "https://github.com/riscv/riscv-arch-test"
+redirect_note = "the locator in docs/SOURCES_AND_NAMING.md is riscv-non-isa/riscv-arch-test, which now 301-redirects to riscv/riscv-arch-test — recorded because a redirect that is followed silently is a locator that has quietly changed"
+default_branch = "act4"
+http_status = 200
+license = "Apache-2.0"
+last_pushed = "2026-09-13"
+tags_listed = 30
+tag_shape = "ctp-release-<short-sha>-<date>, e.g. ctp-release-dcffc6b-2026-01-01"
+status_reason = "Deliberately NOT acquired by this leaf. ACT is a test corpus, not a reference model; it belongs to the evidence campaign, and acquiring it before a model can run a single instruction would be inventory rather than progress. Owner: P0-PROFILE.9 (the evidence-obligation policy) and P2-SCALAR."
+lineage = "ACT computes expected results using a CONFIGURED SAIL MODEL. It therefore shares an ancestor with candidate 1 by construction, and agreement between ACT and sail-riscv is NOT two opinions. This is the single most important lineage fact in this file and it is recorded before any evidence rests on it."
+
+# ───────────────────────────────────────────────────────── attempts that did NOT work out
+# `SRC-02` makes an honest "no route" a legitimate result that bounds a claim. These are the
+# routes that were tried and rejected, recorded so the next reader does not retry them blind.
+
+[[attempt]]
+what = "install the Sail toolchain from the host package manager"
+command = "brew info --formula sail"
+outcome = "WRONG PROJECT — a name collision. `brew`'s `sail` 0.10.9 is \"CLI toolkit to provision and deploy WordPress applications to DigitalOcean\" (https://sailed.io, GPL-3.0-only). It is not the Sail ISA specification language."
+consequence = "Recording \"sail is available via brew\" would have been false in exactly the way SRC-03 exists to prevent: the name matched, the formula existed, and it was the wrong software. Identity was checked, not assumed."
+
+[[attempt]]
+what = "build Sail from source with a repository-local OPAMROOT, the default the task-tree proposed"
+outcome = "NOT NEEDED — superseded by an observed fact. Release 0.14 publishes `sail-riscv-Mac-arm64.tar.gz`, a prebuilt native binary for this host's exact architecture. The OCaml/opam toolchain the tree budgeted for is not required to RUN the model."
+consequence = "The tree's \"Director input wanted\" section priced this leaf on an OCaml build that no longer has to happen. Building from source remains the route if the model must be MODIFIED, and it is unattempted, so no claim is made about its tractability here."
+
+[[attempt]]
+what = "dump the effective (merged) configuration the Sail model actually ran with"
+command = "sail_riscv_sim --config-override <override> --print-default-config"
+outcome = "NOT SUPPORTED — the dump ignores the override. Byte-compared against the plain default: identical."
+consequence = "⛔ A real limitation with evidential weight. `docs/EVIDENCE_AND_GATES.md` §5 requires the EFFECTIVE configuration to be recorded exactly, and this model will not emit it. So the effective configuration is recorded as (release 0.14 default) + (the tracked override), and the merge is OURS, not the model's. The cross-check the model DOES emit is `--print-isa-string`, which is why that string is pinned above. Owner of closing the gap: P0-PROFILE.6, which must not treat our merge as the model's own report."

@@ -13,3 +13,4 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`re-derivable-vs-cited-evidence.md`](re-derivable-vs-cited-evidence.md) | a document reports a check that passed elsewhere — may this project rely on it? |
 | [`census-instrument-signature-gap.md`](census-instrument-signature-gap.md) | my census evidence was rejected by the acceptance gate — is my evidence weak, or the gate? |
 | [`self-test-arms-that-never-ran.md`](self-test-arms-that-never-ran.md) | my gate's self-test says `N pass / 0 fail` — how do I know N is all the arms I wrote? |
+| [`availability-is-not-identity.md`](availability-is-not-identity.md) | the package manager has a formula with the right name — is it the right software? |
