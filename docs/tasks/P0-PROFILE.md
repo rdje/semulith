@@ -89,9 +89,11 @@ environment contract, three representative guest programs, and the evidence-obli
   Commit: `SEMULITH-P0-0023`
 
 - ID: `P0-PROFILE.8` — **three representative guest programs**
-  Status: `pending`
+  Status: `done`
   Goal: small freestanding programs that exercise arithmetic, control flow, and a memory/fault boundary, with independently derived expected observations.
   Acceptance: expected values are derived from the specification, not from any model's output.
+  Verification: 3 programs (arithmetic, control flow, memory/fault); 28 expected values and 3 negative observations, all sourced; both models agree over all three; the B/J layouts derived from a pinned table rather than typed.
+  Commit: `SEMULITH-P0-0028`
 
 - ID: `P0-PROFILE.9` — **evidence-obligation policy and the `G0` report**
   Status: `pending`
@@ -102,8 +104,7 @@ environment contract, three representative guest programs, and the evidence-obli
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P0-PROFILE.8` | `pending` | three representative guest programs. ⛔ Blocked on a readable source for the **B and J immediate layouts**, which `.6` established this project does not have — the pinned specification renders them as images. Resolve that first; `smoke-arith`/`smoke-trap` deliberately avoid both formats |
-| 2 | `P0-PROFILE.9` | `pending` | the evidence-obligation policy and the `G0` report — last on purpose, because it declares what evidence each obligation class requires and must not be written after seeing what is easy to produce |
+| 1 | `P0-PROFILE.9` | `pending` | the last leaf, and the gate report. It declares what evidence each obligation class requires (`EVD-03`) and then generates the `G0` report from pinned inputs. ⚠️ It must read `incomplete` wherever a required check is missing — 66 checks are *declared* and none is implemented — and `passed` is not available to it |
 
 ## Decisions
 
@@ -172,7 +173,109 @@ than a failure.
 
 - None.
 
-## Acceptance Checklist (current leaf — `P0-PROFILE.4`)
+## Acceptance Checklist (current leaf — `P0-PROFILE.8`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: this leaf was **blocked on a source, not on effort**,
+  and `.6` had recorded exactly why. The B and J formats scatter their immediate across
+  non-adjacent bits, and that layout is one of the things the pinned specification renders only as
+  an image. Re-measured here, and the prose was read to be sure it was not hiding the layout:
+
+  ```
+  $ grep -cE '[01]{7}' intro.html rv32.html rv64.html intro.txt rv32.txt rv64.txt
+  0  0  0  0  0  0
+  ```
+
+  The prose gives the SEMANTICS — *"the J-immediate encodes a signed offset in multiples of 2
+  bytes … added to the address of the jump instruction"*, *"the conditional branch range is
+  ±4 KiB"* — and never a bit position. `scripts/riscv_asm.py` refused both formats rather than
+  typing a layout from memory, which is why `smoke-arith` and `smoke-trap` contain no control flow.
+
+- [x] **ADDRESSED (verified)** — the layout is now **derived from a pinned machine-readable table**,
+  `riscv-opcodes`' own `src/riscv_opcodes/constants.py`:
+
+  ```
+  "bimm12hi": "imm[12|10:5]"    "bimm12lo": "imm[4:1|11]"
+  "jimm20":   "imm[20|10:1|11|19:12]"
+  ```
+
+  ⭐ The derivation is **self-validating**: the bits each descriptor accounts for must total
+  exactly the width of the field it fills, and `load_immediate_layout()` refuses the table
+  otherwise. All four reconcile — `imm20` 20/20, `bimm12hi` 7/7, `bimm12lo` 5/5, `jimm20` 20/20.
+  A layout this module cannot reconcile is a layout it will not use.
+  Guest programs went from `2` to `3`, and the third is the one that needed this:
+
+  ```
+  $ scripts/run_smoke.py
+    PASS  guest-control: assembled  12 instruction(s), 13 executed step(s)
+    PASS  guest-control: 13 specification-derived expectations
+    PASS  guest-control: 2 register(s) that must never be written
+    PASS  guest-control: sail-riscv vs spike  AGREE over 13 aligned step(s)
+  run_smoke: ok
+  ```
+
+  Expected values went from 12 to **28 across three programs**, plus **3 negative observations**,
+  each with its derivation and source locator — counted rather than asserted:
+
+  ```
+  $ grep -c '^\[\[step\]\]' profiles/rv64i-lab-v0/guests/*.expected.toml
+  guest-control.expected.toml:13   smoke-arith.expected.toml:12   smoke-trap.expected.toml:3
+  $ shasum -a 256 target/refs/guests/guest-control.elf
+  e9cd138de6562acae810cbcefc56ecd658b65d2de70bcf7634c45e8cc65f7504
+  ```
+ An independent decoder confirmed the scrambled
+  immediates before any model ran them: `spike-dasm` returned `bnez ra, pc - 4` and
+  `jal sp, pc + 0x8` for the offsets requested.
+  The acquisition tool gained the strongest cheap control available, now permanent:
+  `MATCH encoding tables vs profile scope  52 == 52, symmetric difference NONE`.
+
+- [x] **NO REGRESSION** — leg 2. ⭐ The negative observations were fired RED **behaviourally**, by
+  breaking the program rather than the expectation: changing `jal x5, over` to `jal x5, 4` so the
+  jump skips nothing gave `guest-control: 2 register(s) that must never be written — but ['x6']
+  were written`, plus five shifted positive expectations. That is what a negative fixture is for:
+  a control transfer that fails to skip writes a register nobody was watching.
+  Two further controls on the acquisition tool: a corrupted encoding digest →
+  `DIFFERS encoding source constants.py`; removing `FENCE` from the profile →
+  `DIFFERS encoding tables vs profile scope … tables enumerate 52, profile declares 51,
+  symmetric difference: fence`. Both restored.
+  Whole gate `=== all doctrines green ===`; `make check` → `test result: ok. 1 passed; 0 failed`;
+  all three programs reproduce byte-identically; `RECORD-SCHEMA` still `ok`.
+  ⛔ **A control that PASSED is recorded as a finding, not quietly dropped.** Replacing the JALR
+  offset `+13` with `+12` changed nothing — both land on `0x80000028`, *because* the low bit is
+  cleared. So the landing address alone does not discriminate `D-JALR-LSB`; what discriminates is
+  that execution continues normally instead of attempting the misaligned fetch a model keeping the
+  odd bit would make. Both available references clear the bit, so **the failing branch of that
+  test has never been observed here**. It is tested evidence for the behaviour, not a
+  discrimination between two behaviours, and the expectations file says so in a `limit` field.
+  Owner of a real control: `P1-LAB`'s validator mutation suite, which can mutate *our* model.
+  ⛔ The runner was also caught conflating **assembled instructions** with **executed steps** —
+  equal for straight-line code, and wrong the moment a loop exists (`guest-control` has 12
+  instructions and runs 13). The bound now comes from the expectations file.
+
+- [x] **FIX** — `scripts/riscv_asm.py` gains `load_immediate_layout()` (parse + reconcile),
+  B/J encoding, and two-pass label resolution; `guest-control.s` and expectations for it and for
+  `smoke-trap`; `run_smoke.py` checks `never_written` and bounds by executed steps;
+  `references.toml` gains the pinned `[[encoding_source]]` with four file digests;
+  `fetch_references.sh` re-derives them and the 52-vs-52 cross-check.
+
+- `promotion: declined (the derive-and-reconcile rule is stated in riscv_asm.py's docstring, the negative-fixture rule in ENVIRONMENT.md, and the JALR limit in the expectations file itself — which is where the next reader of that test will meet it)`
+
+- [x] **LOCKSTEP** — leg 3: all three programs are re-run by one command and every encoding input
+  is re-derivable by another. `DOSSIER.md`, the book's P0 chapter, `MEMORY.md`, `LIVE_STATUS.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⚠️ Stated plainly: the encoding source is upstream of **Spike** and not of **Sail**, so Sail
+  decoding these bytes is an independent confirmation and Spike doing so is not — the
+  `[[independence]]` record for the encoding subsystem already says this, and these programs do
+  not change it.
+  ⛔ **A ceiling fired during this leaf and was obeyed, not raised.** `CHANGELOG.md` crossed its
+  bound (`OVER CEILING CHANGELOG.md: 66708 bytes > 65536`), and the routes registry's own owner
+  column prescribes the response — *"git history is canonical; shard when the ceiling fires"*. The
+  pre-`P0-PROFILE.5` entries moved **unedited** to `docs/changelog/2026-09-pre-p0.md`, leaving
+  `CHANGELOG.md` at 32,487 bytes. The new directory was **registered in the same commit that
+  created it**, with its own per-part, file-count and aggregate ceilings: sharding a capped file
+  into an ungoverned neighbour is the exact failure that registry exists to prevent, and it would
+  have looked like a fix. `README-ROUTING-CLOSURE: ok (26 governed destination(s))`.
+
+### `P0-PROFILE.4` — the environment contract
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `.3` minted 25 `OB-*` obligation ids and nothing
   defined them; the gate said so in its own header as a **named gap**. More broadly, `SCP-01`

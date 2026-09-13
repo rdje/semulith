@@ -40,6 +40,14 @@
 # ⛔ Ceilings are DERIVED from this project's own trimmed surfaces, never copied from another
 # project. Raising one requires a reviewed decision that the surface's contract expanded.
 #
+# Derivation, P0-PROFILE.8, when CHANGELOG.md crossed its 64 KiB ceiling and was sharded:
+#   docs/changelog/  1 file / 35,480 B at adoption. Health 6 files / 192 KiB; ceiling 20 / 384 KiB;
+#                    per-part 64 KiB — the SAME per-part bound CHANGELOG.md itself carries, so a
+#                    shard that grows past it is sharded again rather than becoming a new monolith.
+#                    ⛔ Registered in the same commit that created the directory: sharding a capped
+#                    file into an UNGOVERNED neighbour is the exact failure this registry exists to
+#                    prevent, and it would have looked like a fix.
+#
 # Re-derivation, SEMULITH-TREES.4, measured once the roadmap conversion made the corpus final:
 #   LIVE_STATUS.md     36 lines / 3,297 B  -> health 45 / 4 KiB (it gains a row per milestone)
 #   docs/TASK_TREE.md  68 lines / 4,277 B  -> health 85 / 5 KiB (one row per ACTIVE tree)
@@ -81,6 +89,7 @@ AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0
 MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally owned	0	0	0	32768	0
 DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
+docs/changelog/	author_overflow	append_history	sharded CHANGELOG history; entries are never edited after the shard	6	196608	20	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
 docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0

@@ -1,0 +1,31 @@
+# smoke-trap.expected.toml — expected observations for `smoke-trap.s`.
+#
+# The expected observation here is a TRAP, not a value, which is the whole reason this program
+# exists: `G0` requires the evidence path to carry a failure case, because a model that computes
+# correctly and misreports faults is invisible to arithmetic-only differential testing.
+
+program = "smoke-trap.s"
+entry = "0x80000000"
+instructions = 3
+never_written = ["x1"]
+
+[[step]]
+n = 0
+insn = "addi x10, x0, 1"
+writes = { x10 = "0x0000000000000001" }
+derivation = "Building the main-memory base arithmetically; LUI cannot produce a positive 0x8000_0000."
+source = "RVI-RV32I §1.1.4"
+
+[[step]]
+n = 1
+insn = "slli x10, x10, 31"
+writes = { x10 = "0x0000000080000000" }
+derivation = "1 << 31 at 64 bits is the base of the declared MainMemory region."
+source = "RVI-RV64I §3.1.2.1"
+
+[[step]]
+n = 2
+insn = "lw x1, x10, 1025"
+writes = { }
+derivation = "The effective address is 0x80000000 + 1025 = 0x80000401, which is NOT 4-byte aligned. This profile does not handle misaligned accesses invisibly, so the access raises an address-misaligned exception delivered as a contained trap. ⭐ x1 is therefore NEVER WRITTEN — a model that quietly serviced the misaligned load would write it, which is the negative observation that distinguishes the two behaviours. Observed on both references as cause 0x04 with tval = 0x0000000080000401."
+source = "RVI-RV32I §1.1.6 (the EEI defines whether misaligned accesses are handled invisibly) — decision D-MISALIGN-DATA"

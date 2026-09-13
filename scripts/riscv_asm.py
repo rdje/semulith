@@ -28,13 +28,23 @@ the encoding. It is independent for SEMANTICS, which is what the differential te
 for. The mitigation applied is a second decoder from a different codebase: `spike-dasm` is asked
 to disassemble the bytes this module emits, and must return the mnemonics that were requested.
 
-⛔ SCOPE LIMIT, deliberate. Only instruction formats whose immediates are CONTIGUOUS are
-supported: R, I, I-shift, S and U. The B and J formats scramble their immediate across
-non-adjacent fields, and that scrambling is exactly what lives in the images this project cannot
-read — so encoding a branch here would mean typing a layout from memory, which is the thing this
-module exists to avoid. Control flow is owned by `P0-PROFILE.8`, which must first establish a
-readable source for those two layouts. `assemble()` raises on any unsupported format rather than
-guessing.
+⛔ THE B AND J SCRAMBLE IS DERIVED, NOT TYPED. Those two formats spread their immediate across
+non-adjacent fields, and that layout is one of the things the pinned specification renders only as
+an image. It is NOT typed here: `riscv-opcodes`'s `src/riscv_opcodes/constants.py` states it in
+machine-readable form —
+
+    "imm20":    "imm[31:12]"
+    "bimm12hi": "imm[12|10:5]"        "bimm12lo": "imm[4:1|11]"
+    "jimm20":   "imm[20|10:1|11|19:12]"
+
+— and this module parses those descriptors. The derivation is SELF-VALIDATING: the bits a
+descriptor accounts for must total exactly the width of the field it fills (7, 5, 20, 20), and
+`load_immediate_layout()` refuses the table if any of them disagrees. A layout this module cannot
+reconcile is a layout it will not use.
+
+⚠️ Every immediate here is in BYTES and the low bit is not encoded: the specification states that
+B- and J-immediates encode "signed offsets in multiples of 2 bytes". An odd offset is refused
+rather than silently truncated.
 """
 
 from __future__ import annotations
@@ -45,10 +55,12 @@ import struct
 from dataclasses import dataclass
 from pathlib import Path
 
-# Formats whose immediate occupies one contiguous field. See the scope limit above.
+# Formats whose immediate occupies one contiguous field.
 CONTIGUOUS_OPERANDS = {
     "rd", "rs1", "rs2", "imm12", "imm20", "shamtd", "shamtw", "imm12hi", "imm12lo",
 }
+# Fields whose immediate is spread across non-adjacent bits; the layout is read from the pinned
+# descriptor table rather than written down here.
 SCRAMBLED_OPERANDS = {"jimm20", "bimm12hi", "bimm12lo"}
 
 
@@ -72,6 +84,48 @@ def _place(hi: int, lo: int, value: int) -> int:
     if value < 0 or value >= (1 << width):
         raise AsmError(f"value {value:#x} does not fit in bits [{hi}:{lo}] ({width} bits)")
     return value << lo
+
+
+def load_immediate_layout(path: Path, arg_lut: dict[str, tuple[int, int]]) -> dict[str, list[tuple[int, int]]]:
+    """The bit layout of each scrambled immediate field, from riscv-opcodes' own table.
+
+    Returns, per field, the immediate bit ranges it carries in MSB-to-LSB order — so
+    `bimm12hi` -> [(12, 12), (10, 5)] means its top bit holds imm[12] and the rest holds
+    imm[10:5].
+
+    ⛔ REFUSES a layout whose accounted bits do not total the field's width. That check is what
+    makes parsing a foreign table safe: a descriptor this module misreads almost certainly
+    produces the wrong total, and a silently wrong immediate is an instruction that assembles and
+    jumps to the wrong address.
+    """
+    text = path.read_text()
+    body = re.search(r"\{(.*?)\n\}", text[text.index('"imm20"') - 200:], re.S)
+    if not body:
+        raise AsmError(f"{path}: no immediate descriptor table found — the table format changed")
+    raw = dict(re.findall(r'"([a-z0-9_]+)":\s*"([^"]+)"', body.group(1)))
+
+    out: dict[str, list[tuple[int, int]]] = {}
+    for field in sorted(SCRAMBLED_OPERANDS):
+        if field not in raw:
+            raise AsmError(f"{path}: no descriptor for {field!r}")
+        # the table is LaTeX-decorated in the source: `$\vert$` stands for the separator
+        inner = re.fullmatch(r"imm\[(.*)\]", re.sub(r"\$\\+vert\$", "|", raw[field]))
+        if not inner:
+            raise AsmError(f"{path}: {field!r} descriptor {raw[field]!r} is not an imm[...] form")
+        parts: list[tuple[int, int]] = []
+        for piece in inner.group(1).split("|"):
+            hi, lo = (int(x) for x in piece.split(":")) if ":" in piece else (int(piece),) * 2
+            parts.append((hi, lo))
+        accounted = sum(hi - lo + 1 for hi, lo in parts)
+        fhi, flo = arg_lut[field]
+        width = fhi - flo + 1
+        if accounted != width:
+            raise AsmError(
+                f"{path}: {field!r} descriptor {raw[field]!r} accounts for {accounted} bit(s) but "
+                f"the field is {width} wide. This module will not use a layout it cannot "
+                f"reconcile — a silently wrong immediate is a jump to the wrong address.")
+        out[field] = parts
+    return out
 
 
 def load_arg_lut(path: Path) -> dict[str, tuple[int, int]]:
@@ -126,6 +180,7 @@ class Assembler:
     def __init__(self, opcodes_dir: Path) -> None:
         self.arg_lut = load_arg_lut(opcodes_dir / "arg_lut.csv")
         self.insns = load_encodings([opcodes_dir / "rv_i", opcodes_dir / "rv64_i"])
+        self.imm_layout = load_immediate_layout(opcodes_dir / "constants.py", self.arg_lut)
 
     # -- operand parsing ---------------------------------------------------------------
     @staticmethod
@@ -148,19 +203,18 @@ class Assembler:
                            f"(rv_i, rv64_i) — this assembler carries no opcodes of its own")
         insn = self.insns[name]
         for op in insn.operands:
-            if op in SCRAMBLED_OPERANDS:
-                raise AsmError(
-                    f"{name!r} uses the {op!r} field, whose immediate is scrambled across "
-                    f"non-adjacent bits. That layout lives only in the specification's FIGURES, "
-                    f"which are images this project cannot read — encoding it would mean typing "
-                    f"a bit layout from memory. Owner: P0-PROFILE.8.")
-            if op not in CONTIGUOUS_OPERANDS:
+            if op not in CONTIGUOUS_OPERANDS and op not in SCRAMBLED_OPERANDS:
                 raise AsmError(f"{name!r} uses operand field {op!r}, which this assembler "
                                f"does not support")
 
         word = 0
         for hi, lo, val in insn.fixed:
             word |= _place(hi, lo, val)
+
+        # ---- scrambled immediates: B-type and J-type ---------------------------------------
+        scrambled = [op for op in insn.operands if op in SCRAMBLED_OPERANDS]
+        if scrambled:
+            return self._encode_scrambled(name, insn, args, word, scrambled)
 
         # S-type splits ONE immediate across two fields; every other supported format is 1:1.
         if "imm12hi" in insn.operands and "imm12lo" in insn.operands:
@@ -202,16 +256,89 @@ class Assembler:
                 word |= _place(hi, lo, sh)
         return word
 
-    def assemble(self, lines: list[str]) -> list[tuple[int, str]]:
-        """Assemble source lines into (word, original-text) pairs."""
-        out = []
+    def _place_scrambled(self, field: str, imm: int) -> int:
+        """Scatter `imm`'s bits into `field` per the pinned descriptor, MSB piece first."""
+        hi, lo = self.arg_lut[field]
+        value, pos = 0, hi - lo + 1
+        for bhi, blo in self.imm_layout[field]:
+            n = bhi - blo + 1
+            pos -= n
+            value |= ((imm >> blo) & ((1 << n) - 1)) << pos
+        return _place(hi, lo, value)
+
+    def _encode_scrambled(self, name, insn, args, word, scrambled) -> int:
+        """B-type (`beq rs1, rs2, off`) and J-type (`jal rd, off`). Offsets are BYTES."""
+        if "jimm20" in scrambled:                                   # J-type: rd, offset
+            if len(args) != 2:
+                raise AsmError(f"{name} expects 2 operands (rd, offset), got {len(args)}")
+            word |= _place(*self.arg_lut["rd"], self._reg(args[0]))
+            imm, bits, field = self._imm(args[1]), 21, "jimm20"
+        else:                                                       # B-type: rs1, rs2, offset
+            if len(args) != 3:
+                raise AsmError(f"{name} expects 3 operands (rs1, rs2, offset), got {len(args)}")
+            word |= _place(*self.arg_lut["rs1"], self._reg(args[0]))
+            word |= _place(*self.arg_lut["rs2"], self._reg(args[1]))
+            imm, bits, field = self._imm(args[2]), 13, None
+
+        # The specification: B- and J-immediates encode "signed offsets in multiples of 2 bytes".
+        # Bit 0 is therefore not encoded at all, and an odd offset is refused rather than
+        # silently truncated into a jump somewhere else.
+        if imm % 2:
+            raise AsmError(f"{name}: offset {imm} is odd; B- and J-immediates encode signed "
+                           f"offsets in MULTIPLES OF 2 BYTES, so bit 0 is not encoded")
+        lim = 1 << (bits - 1)
+        if not -lim <= imm < lim:
+            raise AsmError(f"{name}: offset {imm} is outside the signed {bits}-bit range "
+                           f"[{-lim}, {lim - 1}]")
+        u = imm & ((1 << bits) - 1)
+        if field:
+            word |= self._place_scrambled(field, u)
+        else:
+            word |= self._place_scrambled("bimm12hi", u)
+            word |= self._place_scrambled("bimm12lo", u)
+        return word
+
+    def assemble(self, lines: list[str], base: int = 0) -> list[tuple[int, str]]:
+        """Assemble source lines into (word, original-text) pairs.
+
+        Two passes, because a branch may target a label defined later. A bare name where an
+        offset is expected is resolved to `target - pc`, which is what the specification means by
+        "added to the address of the branch instruction".
+        """
+        stmts: list[tuple[int, str, str, list[str]]] = []   # (pc, text, mnemonic, args)
+        labels: dict[str, int] = {}
+        pc = base
         for raw in lines:
             text = raw.split("#", 1)[0].strip()
             if not text:
                 continue
+            while text.endswith(":") or ":" in text.split()[0]:
+                name, _, text = text.partition(":")
+                name = name.strip()
+                if name in labels:
+                    raise AsmError(f"label {name!r} is defined twice")
+                labels[name] = pc
+                text = text.strip()
+                if not text:
+                    break
+            if not text:
+                continue
             mnemonic, _, rest = text.partition(" ")
             args = [a.strip() for a in rest.split(",") if a.strip()]
-            out.append((self.encode(mnemonic, args), text))
+            stmts.append((pc, text, mnemonic, args))
+            pc += 4
+
+        out = []
+        for at, text, mnemonic, args in stmts:
+            resolved = []
+            for a in args:
+                if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a) and not re.fullmatch(r"x\d+", a):
+                    if a not in labels:
+                        raise AsmError(f"{text!r}: label {a!r} is never defined")
+                    resolved.append(str(labels[a] - at))
+                else:
+                    resolved.append(a)
+            out.append((self.encode(mnemonic, resolved), text))
         return out
 
 

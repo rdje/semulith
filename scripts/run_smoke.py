@@ -100,11 +100,39 @@ def check_expected(name: str, trace: Path) -> None:
     say(not bad, f"{name}: {len(exp['step'])} specification-derived expectations",
         "" if not bad else "; ".join(bad))
 
+    # ⭐ NEGATIVE observations. A control transfer that fails to skip, or a misaligned access that
+    # is quietly serviced, writes a register the program says must stay untouched — and a checker
+    # that only inspects the registers it EXPECTS to change cannot see either. These registers are
+    # named in the expectations file and must appear in no step's writes.
+    never = exp.get("never_written") or []
+    if never:
+        written = {reg for st in steps for reg, _ in st.writes}
+        violated = sorted(set(never) & written)
+        say(not violated, f"{name}: {len(never)} register(s) that must never be written",
+            "" if not violated else f"but {violated} were written")
+
+
+def executed_steps(name: str, assembled: int) -> int:
+    """How many steps the program RUNS, which is not how many instructions it contains.
+
+    ⛔ A first cut bounded every run at the assembled instruction count. That is correct only for
+    straight-line code: `guest-control` contains 12 instructions and executes 13, because its loop
+    body runs three times and two instructions are jumped over. The bound therefore comes from the
+    expectations file, which declares the executed step count, and falls back to the assembled
+    count only for a program with no expectations.
+    """
+    spec = GUESTS / f"{name}.expected.toml"
+    if spec.is_file():
+        return tomllib.loads(spec.read_text())["instructions"]
+    return assembled
+
 
 def experiment(name: str) -> None:
     print(f"\n== {name} ==")
-    elf, n = build(name)
-    say(True, f"{name}: assembled", f"{n} instruction(s), elf sha256 {sha256(elf)[:16]}…")
+    elf, assembled = build(name)
+    n = executed_steps(name, assembled)
+    say(True, f"{name}: assembled",
+        f"{assembled} instruction(s), {n} executed step(s), elf sha256 {sha256(elf)[:16]}…")
 
     sail_trace = OUT / f"{name}.sail.trace"
     run_sail(elf, n, sail_trace)
@@ -136,7 +164,7 @@ def main() -> int:
                   file=sys.stderr)
             return 2
     print(f"matched-profile experiment for {PROFILE}")
-    for name in ("smoke-arith", "smoke-trap"):
+    for name in ("smoke-arith", "guest-control", "smoke-trap"):
         experiment(name)
     print()
     if failures:

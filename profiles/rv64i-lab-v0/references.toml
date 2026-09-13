@@ -251,3 +251,49 @@ pair = ["qemu", "spike"]
 verdict = "not-examined"
 evidence = "none, for the same reason as the row above."
 consequence = "Same disposition. Two unexamined pairs are listed separately rather than as one 'QEMU unexamined' row, because independence is a property of a PAIR and a subsystem, not of a tool."
+
+# ─────────────────────────────────────── the ENCODING source (P0-PROFILE.6 and .8)
+# ⛔ THE PINNED SPECIFICATION DOES NOT CONTAIN INSTRUCTION ENCODINGS. Measured over all six pinned
+# artifacts: `grep -cE '[01]{7}'` -> 0 for every one, because the format diagrams are IMAGES (31
+# in the RV32I chapter alone). The SEMANTICS are all present in prose — which is the half that
+# matters for expected values — but the bit layouts had to come from somewhere else, and that
+# somewhere is recorded here as its own provenance rather than blurred into "the specification".
+#
+# ⚠️ SHARED ANCESTRY, stated: this source is upstream of SPIKE (whose `encoding.h` declares itself
+# generated from it at commit c1d9bdf) and NOT of SAIL (which hand-writes 59 files of `encdec`
+# mappings and never mentions it under `model/`). So Sail decoding our bytes as intended is an
+# independent confirmation of the encoding; Spike doing so is not. See the `[[independence]]`
+# record for the encoding subsystem.
+#
+# ⭐ Unplanned corroboration: `rv_i` + `rv64_i` enumerate exactly 52 instructions for this
+# profile's extension set, and `P0-PROFILE.1` enumerated exactly 52 by hand from the prose without
+# using them. Symmetric difference: NONE.
+
+[[encoding_source]]
+id = "RISCV-OPCODES"
+origin = "https://github.com/riscv/riscv-opcodes"
+license = "BSD-3-Clause (RISC-V International, 2022)"
+retrieved = "2026-09-14"
+work_dir = "target/refs/riscv-opcodes"
+supplies = "instruction fixed bits and operand lists (rv_i, rv64_i); operand field positions (arg_lut.csv); and the B/J scrambled-immediate layouts (constants.py)"
+note = "constants.py was acquired at P0-PROFILE.8 specifically for the B and J immediate layouts, which spread an immediate across non-adjacent bits. scripts/riscv_asm.py PARSES those descriptors and refuses any whose accounted bits do not total the field width (7, 5, 20, 20) — a layout it cannot reconcile is one it will not use."
+
+[[encoding_source.file]]
+name = "rv_i"
+sha256 = "146e297ddbe346f325d993aaf56d7006f1bfde39df584b888b221543def17b97"
+bytes = 4415
+
+[[encoding_source.file]]
+name = "rv64_i"
+sha256 = "262cbd0884fe1383fcb7c42070cbc73e309d0452ff8d00b38452a4dee7cfa7f5"
+bytes = 947
+
+[[encoding_source.file]]
+name = "arg_lut.csv"
+sha256 = "cdc61339ffe379c0cd24ad2dc20e57deda95e1da663f94fccb5969d191a8e136"
+bytes = 1971
+
+[[encoding_source.file]]
+name = "constants.py"
+sha256 = "101c5b8a4169a47f80ff6175a19339cf332eb09f3b09489df6ccabd40afe629b"
+bytes = 8950

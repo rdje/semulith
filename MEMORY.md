@@ -13,16 +13,15 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** `P0-PROFILE` (gate `G0`) — 7 of 9 leaves done. Remaining: `.8`, `.9`.
-- **Frontier leaf:** `P0-PROFILE.8` — three representative guest programs.
-- **Next action:** `P0-PROFILE.8`, and it is **blocked on a source, not on effort**. The programs
-  must exercise arithmetic, control flow and a memory/fault boundary — but control flow needs the
-  B and J immediate layouts, and `.6` measured that the pinned specification does not contain
-  them (the format diagrams are images; zero 7-bit patterns across all six artifacts).
-  `scripts/riscv_asm.py` REFUSES those two formats rather than typing a layout from memory.
-  Resolve the encoding source first, pin it, then write the programs.
+- **Active tree:** `P0-PROFILE` (gate `G0`) — 8 of 9 leaves done. `.9` is the last.
+- **Frontier leaf:** `P0-PROFILE.9` — the evidence-obligation policy and the `G0` report.
+- **Next action:** `P0-PROFILE.9`. Declare, per obligation class, what KIND of evidence it
+  requires (`EVD-03`) — written before the implementation that would otherwise pick whatever
+  evidence is easiest — then generate the `G0` report from pinned inputs. ⛔ It must name inputs,
+  commands, actual results and limitations (`EVD-08`) and read **`incomplete`**: 66 checks are
+  declared and none implemented, so `passed` is not available to it.
 - **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
   `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0027 (leaf P0-PROFILE.4)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-P0-0028 (leaf P0-PROFILE.8)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

@@ -122,7 +122,69 @@ if [ -n "$QEMU_BIN" ]; then
   fi
 fi
 
-# ---- 4. the matched configuration must still produce the recorded ISA string -----------------
+# ---- 4. the ENCODING source: the bit layouts the pinned specification renders only as images --
+ENC_DIR="$(python3 - "$LEDGER" <<'PY'
+import tomllib, pathlib, sys
+d = tomllib.loads(pathlib.Path(sys.argv[1]).read_text())
+es = d.get("encoding_source") or []
+print(es[0]["work_dir"] if es else "")
+PY
+)"
+if [ -n "$ENC_DIR" ]; then
+  mkdir -p "$ENC_DIR"
+  while IFS=$'\t' read -r fname fsha; do
+    [ -n "$fname" ] || continue
+    dest="$ENC_DIR/$fname"
+    if [ "$VERIFY_ONLY" -eq 0 ] && [ ! -f "$dest" ]; then
+      # constants.py lives under src/riscv_opcodes/; the tables live at the repository root.
+      case "$fname" in
+        *.py) sub="src/riscv_opcodes/$fname" ;;
+        *)    sub="$fname" ;;
+      esac
+      say "FETCH    riscv-opcodes/$sub"
+      curl -sSL --max-time 120 -o "$dest" \
+        "https://raw.githubusercontent.com/riscv/riscv-opcodes/master/$sub" \
+        || bad "FETCH FAILED riscv-opcodes/$sub"
+    fi
+    verify_hash "$dest" "$fsha" "encoding source $fname"
+  done < <(python3 - "$LEDGER" <<'PY'
+import tomllib, pathlib, sys
+d = tomllib.loads(pathlib.Path(sys.argv[1]).read_text())
+for es in d.get("encoding_source", []):
+    for f in es.get("file", []):
+        print(f"{f['name']}\t{f['sha256']}")
+PY
+)
+  # ⭐ The strongest cheap check on the encoding tables: the profile declares 52 mnemonics and the
+  # tables must enumerate exactly those 52. Two independent routes to one closed set.
+  if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.toml" <<'PY'
+import sys, pathlib, tomllib, re
+enc, prof = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+names = set()
+for f in ("rv_i", "rv64_i"):
+    for raw in (enc / f).read_text().splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if line and not line.startswith("$"):
+            names.add(line.split()[0])
+scope = tomllib.loads(prof.read_text())["scope"]
+declared = {m.lower() for v in scope.values() if isinstance(v, list) for m in v}
+diff = sorted(names ^ declared)
+print(f"{len(names)}\t{len(declared)}\t{','.join(diff) if diff else 'NONE'}")
+PY
+)"; then
+    n_enc="$(printf '%s' "$out" | cut -f1)"; n_prof="$(printf '%s' "$out" | cut -f2)"
+    diff="$(printf '%s' "$out" | cut -f3)"
+    if [ "$diff" = "NONE" ]; then
+      say "MATCH    encoding tables vs profile scope  $n_enc == $n_prof, symmetric difference NONE"
+    else
+      bad "DIFFERS  encoding tables vs profile scope
+           tables enumerate $n_enc, profile declares $n_prof
+           symmetric difference: $diff"
+    fi
+  fi
+fi
+
+# ---- 5. the matched configuration must still produce the recorded ISA string -----------------
 # The strongest cheap check here: the model's OWN report of what it is configured as.
 SAIL_BIN="$(get sail-riscv binary)"; CFG="profiles/$PROFILE/$(get sail-riscv matched_config)"
 WANT_ISA="$(get sail-riscv matched_isa_string)"
