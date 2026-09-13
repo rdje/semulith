@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `SEMULITH-PKG`
-- Status: `done`
+- Status: `done` (reopened once for `.7`, a defect in `.6`)
 - Roadmap lane: project foundation (precedes P0)
 - Created: `2026-09-13`
 - Owner: repo-local workflow
@@ -31,52 +31,47 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - Live docs (`MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`) and the mdBook
   reflect the ingested state in the same commit as the change that caused it.
 
-## Acceptance Checklist (current leaf — `SEMULITH-PKG.6`)
+## Acceptance Checklist (current leaf — `SEMULITH-PKG.7`)
 
 Enforced by the `TASK-ACCEPTANCE` doctrine. Each box carries the command that was run and the
 output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `TASK-ACCEPTANCE`'s built-in code-path default,
-  `(^|/)(crates|src|scripts)/|\.(rs|sh)$|(^|/)Makefile$`, is wrong for this repository in
-  **both** directions. Measured over all 125 tracked files with
-  `git ls-files | grep -cE "$DEF"` → `54` matched, of which:
-  **over-match** — `git ls-files | grep -E "$DEF" | grep -c '^docs/book/src/'` → `28`, mdBook
-  prose matching on the `src/` path segment, so leaf `.5` was asked for a full code-acceptance
-  checklist for paragraphs; **under-match** —
-  `git ls-files | grep -E '\.tsv$|^\.githooks/|^\.doctrine/|^Cargo\.' | grep -vE "$DEF"`
-  lists `doctrine/readme_routes.tsv`, `docs/provenance/planning-package-v0.2/dispositions.tsv`,
-  `.doctrine/README.md`, `.doctrine/evidence_tokens.txt`, `.githooks/commit-msg`,
-  `.githooks/pre-commit`, `Cargo.lock`, `Cargo.toml` — eight files that genuinely change what
-  the repository does, invisible to the gate. The two registries are the *ceilings and
-  dispositions the checks enforce*: editing one changes a verdict without touching a script.
-- [x] **ADDRESSED (verified)** — `.doctrine/code_paths.txt` declares the allow-list. Same
-  census after: `35 of 125` matched; `git ls-files 'docs/book/src' | grep -cE "$CODE_RE"` →
-  `0`; and all eight previously-invisible files now match. The seam is the sanctioned
-  mechanism — the alternative is editing the neutral check to hardcode this project's paths,
-  which turns a portable standard into a fork of it.
-- [x] **NO REGRESSION** — leg 2: narrowing a gate's scope is exactly the change that can
-  silently disable it, so all three outcomes were fired and observed, not reasoned about.
-  **A** — a real code change with no owning leaf (`crates/app/src/main.rs` touched, staged
-  alone): `rc=1`, `TASK-ACCEPTANCE: a CODE change is staged but NO owning task-tree leaf
-  (docs/tasks/*.md) is.` **B** — gate *data* with no owning leaf (`doctrine/readme_routes.tsv`
-  touched, staged alone), which the default could not see at all: `rc=1`, same refusal.
-  **C** — book prose alone (`docs/book/src/claim-scope.md`), which the default wrongly
-  refused: `rc=0`. The working tree was restored after each control (`git status --short`
-  clean apart from this leaf's own new file). Whole gate: `scripts/check_doctrines.sh` →
-  `=== all doctrines green ===`, `rc=0`; `make check` → `test result: ok. 1 passed; 0 failed`.
-- [x] **FIX** — `.doctrine/code_paths.txt` added, with the measurement that motivates each
-  group written into the file so the next reader sees the evidence and not just the list.
-- [x] **LOCKSTEP** — leg 3: the declaration is consumed by the gate on every commit, so a
-  wrong line fails rather than rots. `DOCTRINE_ENFORCEMENT.md` records the seam,
-  `docs/book/src/working/doctrines.md` states it in the review surface, and `MEMORY.md`,
-  `LIVE_STATUS.md` and `CHANGELOG.md` are updated in this commit.
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: leaf `.6` narrowed the code definition and dropped
+  two files it never measured. `git ls-files | grep -E "$DEFAULT" | grep -vE "$DECLARED" | grep
+  -v '^docs/book/src/'` returned `docs/tasks/artifacts/task_acceptance/run_task_acceptance_probes.sh`
+  and `docs/tasks/artifacts/waiver_routing/run_waiver_routing_probes.sh` — both `-rwxr-xr-x`,
+  and both emitting the `probes: N pass / N fail` line that `.doctrine/evidence_tokens.txt`
+  declares as an accepted evidence signature. Editing one changes what evidence an author may
+  cite, so they are code by the file's own stated test. The cause is a pattern written too
+  narrowly: `^scripts/.*\.sh$` anchored a rule whose real subject is *any shell script*. Leaf
+  `.6`'s own census excluded prose from its difference set and therefore never surfaced them —
+  the census answered the question it was given rather than the one that mattered.
+- [x] **ADDRESSED (verified)** — `\.sh$` is now unanchored. Re-measured with
+  `git ls-files | grep -cE "$DECLARED"` and its siblings over 126 tracked files:
+  `matched: 38`, `book prose classified as code: 0`, `probe drivers classified as code: 2`, and
+  `git ls-files | grep -E "$DEFAULT" | grep -vE "$DECLARED" | grep -vc '^docs/book/src/'` → `0`.
+  The declared set is now
+  exactly the default's set **plus 12** behaviour-governing files it could not see
+  (`.doctrine/*` ×3, `.githooks/*` ×2, `.github/workflows/*` ×2, `Cargo.toml`, `Cargo.lock`,
+  `rust-toolchain.toml`, and the two gate-data `.tsv` registries) **minus 28**, all of them
+  under `docs/book/src/`.
+- [x] **NO REGRESSION** — leg 2: the falsifying question is *"does this widening re-admit the
+  prose the leaf was written to exclude?"*, and it is answered by the same command in both
+  directions above: `28 / 28` of the dropped files are prose, `0` are not. Whole gate:
+  `scripts/check_doctrines.sh` → `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`, `rc=0`.
+- [x] **FIX** — one pattern generalized from `^scripts/.*\.sh$` to `\.sh$`, with the reason
+  recorded beside it in the file so the next reader does not re-narrow it.
+- [x] **LOCKSTEP** — leg 3: the declaration is consumed on every commit, and the set-difference
+  command in this box is the durable re-derivation. `CHANGELOG.md` and `MEMORY.md` updated in
+  this commit; `DOCTRINE_ENFORCEMENT.md`'s seam row already states the measurement method.
 
 ## Task Tree
 
 - ID: `SEMULITH-PKG`
   Status: `done`
   Goal: ingest the delivered planning package v0.2 under the spine
-  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.6`
+  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.7`
 
 - ID: `SEMULITH-PKG.1`
   Status: `done`
@@ -106,6 +101,13 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
   Verification: see the Verification Log.
   Commit: `SEMULITH-PKG-0005`
 
+- ID: `SEMULITH-PKG.7`
+  Status: `done`
+  Goal: restore the shell-script coverage that `.6` dropped without measuring it.
+  Acceptance: the declared set is the default's set minus prose only; the two probe drivers are code again; re-measured in both directions.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0008`
+
 - ID: `SEMULITH-PKG.6`
   Status: `done`
   Goal: declare what counts as a code change here, after leaf `.5` hit the default's boundary.
@@ -124,7 +126,7 @@ output it produced; the leg each box answers is in `docs/tasks/TEMPLATE.md`.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | **tree complete (6/6).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
+| — | — | — | **tree complete (7/7).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
 
 Census behind row 2, over the population that would refute it — any tracked script, hook, or
 enforcer entry that re-derives a recorded fingerprint:
@@ -173,6 +175,43 @@ at all. Leaf `.3` is what makes the claim false.
 The current leaf's checklist lives above; a completed leaf's checklist is moved here verbatim
 so its evidence stays in layer B rather than only in git history. Only the *first* checklist
 in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sits below it.
+
+### `SEMULITH-PKG.6` — declare what counts as a code change here
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `TASK-ACCEPTANCE`'s built-in code-path default,
+  `(^|/)(crates|src|scripts)/|\.(rs|sh)$|(^|/)Makefile$`, is wrong for this repository in
+  **both** directions. Measured over all 125 tracked files with
+  `git ls-files | grep -cE "$DEF"` → `54` matched, of which:
+  **over-match** — `git ls-files | grep -E "$DEF" | grep -c '^docs/book/src/'` → `28`, mdBook
+  prose matching on the `src/` path segment, so leaf `.5` was asked for a full code-acceptance
+  checklist for paragraphs; **under-match** —
+  `git ls-files | grep -E '\.tsv$|^\.githooks/|^\.doctrine/|^Cargo\.' | grep -vE "$DEF"`
+  lists `doctrine/readme_routes.tsv`, `docs/provenance/planning-package-v0.2/dispositions.tsv`,
+  `.doctrine/README.md`, `.doctrine/evidence_tokens.txt`, `.githooks/commit-msg`,
+  `.githooks/pre-commit`, `Cargo.lock`, `Cargo.toml` — eight files that genuinely change what
+  the repository does, invisible to the gate. The two registries are the *ceilings and
+  dispositions the checks enforce*: editing one changes a verdict without touching a script.
+- [x] **ADDRESSED (verified)** — `.doctrine/code_paths.txt` declares the allow-list. Same
+  census after: `35 of 125` matched; `git ls-files 'docs/book/src' | grep -cE "$CODE_RE"` →
+  `0`; and all eight previously-invisible files now match. The seam is the sanctioned
+  mechanism — the alternative is editing the neutral check to hardcode this project's paths,
+  which turns a portable standard into a fork of it.
+- [x] **NO REGRESSION** — leg 2: narrowing a gate's scope is exactly the change that can
+  silently disable it, so all three outcomes were fired and observed, not reasoned about.
+  **A** — a real code change with no owning leaf (`crates/app/src/main.rs` touched, staged
+  alone): `rc=1`, `TASK-ACCEPTANCE: a CODE change is staged but NO owning task-tree leaf
+  (docs/tasks/*.md) is.` **B** — gate *data* with no owning leaf (`doctrine/readme_routes.tsv`
+  touched, staged alone), which the default could not see at all: `rc=1`, same refusal.
+  **C** — book prose alone (`docs/book/src/claim-scope.md`), which the default wrongly
+  refused: `rc=0`. The working tree was restored after each control (`git status --short`
+  clean apart from this leaf's own new file). Whole gate: `scripts/check_doctrines.sh` →
+  `=== all doctrines green ===`, `rc=0`; `make check` → `test result: ok. 1 passed; 0 failed`.
+- [x] **FIX** — `.doctrine/code_paths.txt` added, with the measurement that motivates each
+  group written into the file so the next reader sees the evidence and not just the list.
+- [x] **LOCKSTEP** — leg 3: the declaration is consumed by the gate on every commit, so a
+  wrong line fails rather than rots. `DOCTRINE_ENFORCEMENT.md` records the seam,
+  `docs/book/src/working/doctrines.md` states it in the review surface, and `MEMORY.md`,
+  `LIVE_STATUS.md` and `CHANGELOG.md` are updated in this commit.
 
 ### `SEMULITH-PKG.5` — grow the book into the review surface
 
@@ -402,6 +441,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `2026-09-13` | `SEMULITH-PKG.5` | `scripts/check_doctrines.sh` (13 checks) + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
 | `2026-09-13` | `SEMULITH-PKG.6` | code-path census over 125 tracked files | default `54` matched (28 prose over-matched, 8 real files missed) → declared `35`, prose `0` |
 | `2026-09-13` | `SEMULITH-PKG.6` | three fired controls A/B/C | `rc=1`, `rc=1`, `rc=0` — refuses code, refuses gate data, passes prose |
+| `2026-09-13` | `SEMULITH-PKG.7` | set difference, both directions, over 126 tracked files | declared = default **+12** behaviour-governing, **−28** prose; nothing else dropped |
 
 ## Commit Log
 
@@ -413,6 +453,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `SEMULITH-PKG.4` | `SEMULITH-PKG-0005 (leaf SEMULITH-PKG.4): close the README routing loop with reviewed caps` | policy refreshed; 24 destinations governed; 2 defects caught by the new check's own RED arms |
 | `SEMULITH-PKG.5` | `SEMULITH-PKG-0006 (leaf SEMULITH-PKG.5): grow the book into the review surface` | 3 chapters to 27; contracts included verbatim, never paraphrased |
 | `SEMULITH-PKG.6` | `SEMULITH-PKG-0007 (leaf SEMULITH-PKG.6): declare what counts as a code change here` | default over-matched 28 prose files and missed 8 real ones; all three outcomes fired |
+| `SEMULITH-PKG.7` | `SEMULITH-PKG-0008 (leaf SEMULITH-PKG.7): restore shell-script coverage the narrowing dropped` | `.6`'s census asked the wrong question; two executable probe drivers had left the gate |
 
 ## Changelog
 
@@ -429,6 +470,9 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
   shard tool, and the deferred live-document-size containment adoption.
 - `2026-09-13`: `SEMULITH-PKG.5` completed. The book is the review surface, 27 chapters, with
   every contract included verbatim rather than paraphrased.
-- `2026-09-13`: `SEMULITH-PKG.6` completed and **the tree is done**. Leaf `.5` hitting the
-  code-path default's boundary was the gate reporting a missing capability, so the boundary was
-  measured and declared rather than worked around.
+- `2026-09-13`: `SEMULITH-PKG.6` completed. Leaf `.5` hitting the code-path default's boundary
+  was the gate reporting a missing capability, so the boundary was measured and declared rather
+  than worked around.
+- `2026-09-13`: `SEMULITH-PKG.7` completed and **the tree is done (7/7)**. The tree was reopened
+  because `.6`'s own census had excluded prose from its difference set and so could not see the
+  two executable probe drivers it was dropping — a census answers the question it is given.

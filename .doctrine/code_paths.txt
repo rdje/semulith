@@ -24,8 +24,14 @@
 ^rust-toolchain\.toml$
 (^|/)Makefile$
 
-# Executable discipline: the enforcer, its checks, the hooks, and CI
-^scripts/.*\.sh$
+# Executable discipline: any shell script, wherever it lives, plus the hooks and CI.
+# ⛔ `\.sh$` is deliberately unanchored. A first cut wrote `^scripts/.*\.sh$`, which silently
+# dropped the two executable probe drivers under `docs/tasks/artifacts/` — and those emit the
+# `probes: N pass / N fail` line declared in `evidence_tokens.txt`, so editing one changes what
+# evidence an author is allowed to cite. The over-match this file exists to fix was never about
+# `.sh`; it was about the `src/` path segment.
+\.sh$
+^scripts/
 ^knowledge-map/scripts/
 ^\.githooks/
 ^\.github/workflows/

@@ -4,6 +4,18 @@ Completed work and its validation, newest first. Entries above the `bedrock-scaf
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.
 
+## `SEMULITH-PKG.7` — the narrowing had dropped two files nobody measured
+
+- `.6` wrote `^scripts/.*\.sh$`, anchoring a rule whose real subject is *any shell script*. It
+  silently removed `docs/tasks/artifacts/*/run_*_probes.sh` — both executable, both emitting the
+  `probes: N pass / N fail` line that `.doctrine/evidence_tokens.txt` declares as an accepted
+  evidence signature — from the gate's view.
+- ⛔ **`.6`'s census excluded prose from its difference set**, so it could not see them. A census
+  answers the question it is given; asking it in both directions is what makes it a control.
+- `\.sh$` is now unanchored, with the reason recorded beside it. Re-measured over 126 tracked
+  files: the declared set is exactly the built-in default **plus 12** behaviour-governing files
+  it could not see, **minus 28**, all of them mdBook prose. Nothing else is dropped.
+
 ## `SEMULITH-PKG.6` — what counts as a code change here is declared, not inherited
 
 - `TASK-ACCEPTANCE`'s built-in code-path default is wrong for this repository in **both**
