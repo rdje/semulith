@@ -1,5 +1,49 @@
 # CHANGELOG.md
 
+## SEMULITH-MIR-0025 (leaf MIRROR-DRIFT.4) — re-derive the counts the live docs carry
+
+**What changed.** `MIRROR-DRIFT.1`–`.3` gated what live documents say about *task-trees*. They
+said nothing about any other countable population, and the gap closed itself in the most
+convincing way available: **within one working session this repository committed two such numbers
+wrong.**
+
+- `LIVE_STATUS.md` claimed `24 destinations governed`; the registry held **25** rows — stale since
+  `SEMULITH-P0-0013` added the `profiles/` row.
+- It claimed `107 self-test arms`; the real total was **112**.
+
+Neither was a typo. Both were maintained as **running totals** — take the number already written
+down, add what you just contributed, write the sum back. ⭐ *A running total is a memory of a
+measurement, not a measurement*, and nothing recomputed either one.
+
+- **New doctrine `DERIVED-COUNTS`** (`scripts/check_derived_counts.sh`): routed destinations,
+  registered doctrines, book chapters and self-test arms are each re-derived from the population
+  they summarise. `--list` prints every covered claim, its enumerator and its current value, so a
+  claim and its producer travel together. Scope comes from the routes registry's `hot_live` rows,
+  so history is never rewritten.
+- **It caught its own registration.** Adding the doctrine made the repository hold nine project
+  doctrines where the page said eight, and the gate blocked the commit until the number was
+  re-derived rather than incremented.
+
+⛔ **The first cut was wrong in the worst possible direction and a GREEN arm found it.** Extraction
+used `sed -nE "s/.*${pat}.*/\1/p"`, whose leading `.*` is greedy: on `12 widgets` it consumed the
+`1` and captured `2`. A drifting count could have read as a matching one — a gate reporting
+agreement about the wrong number. Extraction is now taken off the front of a `grep -o` match, and
+a pattern that does not begin with its `([0-9]+)` group is refused rather than parsed.
+
+**The `TASK-ACCEPTANCE` recipient-tree boundary is documented, not relaxed.** That gate requires
+every staged `docs/tasks/*.md` to carry a ticked checklist and cannot distinguish the leaf that
+*owns* a change from a tree that merely *receives* a routed finding. The obvious fix — require
+only one staged leaf to pass — was rejected: it reopens the measured "co-staged unrelated leaf
+supplies the evidence" hole that box-scoping was hardened to close. The workflow instead is that a
+routed annotation lands as its own doc-only commit, which is also independently better because the
+annotation stays separately revertible.
+
+**Validation.** `--self-test` → `10 pass / 0 fail` (8 RED arms), 10 written and 10 run. Fired RED
+on the real corpus before the repair and green after. Gate green; `make check` `1 passed`; book
+renders; `scripts/run_smoke.py` still `ok`, so the P0 evidence path is undisturbed.
+Tree `MIRROR-DRIFT` complete at 4/4.
+
+
 ## SEMULITH-P0-0023 (leaf P0-PROFILE.7) — the independence inventory, and the 184 files that are the same file
 
 **What changed.** `P0-PROFILE.6` recorded that two models agree over 15 aligned steps. That

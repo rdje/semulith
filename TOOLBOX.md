@@ -42,6 +42,7 @@ directory is a "trust me" with extra steps.
 | `scripts/check_frontier_sync.sh` | does the task-tree index still name the leaf the tree itself calls next? | `scripts/check_frontier_sync.sh` |
 | `scripts/check_registry_mirror.sh` | do the doctrine documents still list exactly the doctrines that are registered? | `scripts/check_registry_mirror.sh` |
 | `scripts/check_tree_claims.sh` | does a live document state a leaf count, an active tree or a frontier leaf the trees contradict? | `scripts/check_tree_claims.sh` |
+| `scripts/check_derived_counts.sh --list` | which counts in the live docs are re-derived, by what command, and what do they currently come to? | `scripts/check_derived_counts.sh [--list]` |
 | `scripts/check_seam_integrity.sh` | have this repo's repairs to the neutral checks quietly stopped working? | `scripts/check_seam_integrity.sh` |
 | `scripts/check_task_acceptance.sh --print-sig` | what does the acceptance gate actually accept as evidence right now? | `scripts/check_task_acceptance.sh --print-sig \| --print-code-re` |
 | `scripts/fetch_references.sh` | is the reference model I am comparing against the one the dossier pins, and is it still configured to this profile? | `scripts/fetch_references.sh [--verify-only] [<profile>]` |

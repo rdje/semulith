@@ -24,6 +24,7 @@ PROJECT_DOCTRINES=(
   "FRONTIER-SYNC|the task-tree index mirrors the trees it indexes — the frontier leaf, the status and the leaf counts are re-derived, never remembered|scripts/check_frontier_sync.sh"
   "REGISTRY-MIRROR|the doctrine documents list exactly the doctrines the drivers register — a mirror that falls behind withholds a guarantee rather than inventing one|scripts/check_registry_mirror.sh"
   "TREE-CLAIMS|every LIVE document states leaf counts, the active trees and the frontier leaf exactly as the trees do — scope read from the routes registry, so history is never rewritten|scripts/check_tree_claims.sh"
+  "DERIVED-COUNTS|a live document that states a count of something this repository can enumerate has it RE-DERIVED — a running total is a memory of a measurement, not a measurement|scripts/check_derived_counts.sh"
 )
 
 fails=0

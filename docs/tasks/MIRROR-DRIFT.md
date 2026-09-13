@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `MIRROR-DRIFT`
-- Status: `done`
+- Status: `done` (reopened once, for `.4` — a mirror class the first three leaves did not cover)
 - Roadmap lane: project foundation (cross-cutting; serves every lane)
 - Gate: none — this tree adds gates rather than passing one
 - Depends on: nothing
@@ -71,11 +71,34 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
   Verification: see the Verification Log.
   Commit: `SEMULITH-MIR-0019`
 
+- ID: `MIRROR-DRIFT.4` — **derived counts in live documents**
+  Status: `done`
+  Goal: `.1`–`.3` gated what live documents say about *task-trees*. They do not cover what a live
+  document says about any other enumerable population — registry rows, registered doctrines, book
+  chapters, self-test arms. Measured in one session: `LIVE_STATUS.md` said `24 destinations
+  governed` against a 25-row registry (stale since `SEMULITH-P0-0013`), and `107 self-test arms`
+  against an actual 112. **Both were written by hand as running totals and both were wrong.**
+  Acceptance: every such count in a `hot_live` document is re-derived from the population it
+  summarises; fired RED on the real corpus before the repair; the enumerations are named in the
+  gate so the next reader can re-run them.
+  Also in scope: record the `TASK-ACCEPTANCE` recipient-tree boundary found while routing the
+  SoftFloat finding — deciding whether it is a defect to fix or a workflow to document.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-MIR-0025`
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
+| — | — | — | **tree complete (4/4).** Four mirror classes gated: the task-tree index (`FRONTIER-SYNC`), the doctrine documents (`REGISTRY-MIRROR`), task-tree facts in the live docs (`TREE-CLAIMS`), and every other derived count in them (`DERIVED-COUNTS`). The next work is `P0-PROFILE.3`. Open it only with the repository clean (the pivot rule). |
+
+<details><summary>The state at 3/3, before the reopen</summary>
+
+| Order | Leaf | Status | Why next |
+| --- | --- | --- | --- |
 | — | — | — | **tree complete (3/3).** Every mirror on the resume path is gated: the index by `FRONTIER-SYNC`, the two doctrine documents by `REGISTRY-MIRROR`, the live docs by `TREE-CLAIMS`. The next work is execution: `P0-PROFILE.5`, the reference candidate dossier. Open it only with the repository clean (the pivot rule). |
+
+</details>
 
 ## Decisions
 
@@ -85,6 +108,15 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
   cell per tree. A fix that edits the summary to match the record is safe; a fix that edits the
   record to match its summary destroys information. The gate's failure message says so, so the
   next reader does not have to re-derive the choice.
+- `2026-09-14` (`.4`): the `TASK-ACCEPTANCE` recipient-tree boundary is **documented, not
+  relaxed.** The gate requires every staged `docs/tasks/*.md` to carry a ticked checklist, which
+  cannot distinguish the leaf that OWNS a change from a tree that merely RECEIVES a routed
+  finding. The obvious fix — require only *one* staged leaf to pass — was rejected: that is
+  exactly the "co-staged unrelated leaf supplies the evidence" hole the box-scoping was hardened
+  to close, and reopening it would trade a real soundness property for an inconvenience. The
+  workflow is therefore: **a routed annotation lands as its own doc-only commit**, where the gate
+  does not apply because no code is staged. That is also independently better — the annotation is
+  separately revertible. Demonstrated by `SEMULITH-P0-0024`.
 - `2026-09-14`: this tree adds **gates**, not generators. A derived `docs/TASK_TREE.md` would
   also have prevented the drift, and was rejected: the "why next" column carries reasoning that
   no generator can produce, and a generated file invites hand edits that are silently discarded.
@@ -101,6 +133,67 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 ## Blockers
 
 - None.
+
+## Acceptance Checklist (current leaf — `MIRROR-DRIFT.4`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: `.1`–`.3` gated what live documents say about
+  *task-trees* and nothing else. WHY the gap mattered was not argued — it was **measured, twice,
+  in the same session that closed it**. Both numbers were maintained as RUNNING TOTALS: the
+  author took the number already written down, added their contribution, and wrote the sum back.
+
+  ```
+  $ grep -cv '^#\|^$' doctrine/readme_routes.tsv     # LIVE_STATUS said "24 destinations governed"
+  25
+  $ scripts/check_derived_counts.sh --list | grep arms  # LIVE_STATUS said "107 self-test arms"
+  self-test arms         arm_total                          112
+  ```
+
+  The first had been stale since `SEMULITH-P0-0013` added the `profiles/` row; the second was
+  wrong by five because a base that already did not reconcile was being incremented.
+  ⭐ **A running total is a memory of a measurement, not a measurement.** Nothing recomputed
+  either, so both drifted quietly and were committed as fact.
+
+- [x] **ADDRESSED (verified)** — before → after on the symptom, same command:
+  `scripts/check_derived_counts.sh` → `rc=1`, `COUNT DRIFT LIVE_STATUS.md: claims '107'
+  self-test arms; the repository has 112  [arm_total]`; after re-deriving both numbers →
+  `DERIVED-COUNTS: ok (4 derived count claim(s) re-derived)`, `rc=0`. Derived count claims held
+  by an instrument went from `0` to `4`.
+  ⭐ **The gate caught its own registration**, which is the cleanest demonstration available:
+  adding `DERIVED-COUNTS` to the project driver made the repository hold nine project doctrines
+  where the page said eight, and the gate said so before the commit could land —
+  `COUNT DRIFT LIVE_STATUS.md: claims '8' project doctrines; the repository has 9`. Both numbers
+  were then **re-derived by running the enumerators**, not by adding one.
+
+- [x] **NO REGRESSION** — leg 2. `scripts/check_derived_counts.sh --self-test` →
+  `DERIVED-COUNTS --self-test: 10 pass / 0 fail` — 8 RED arms asserting the reason (stale count,
+  count ahead of the population, one of two claims drifting, the population changing under a
+  fixed number, a two-digit claim misread, an enumerator producing nothing, a pattern whose
+  number is not first) and 2 GREEN. Arm accounting: `10` written, `10` run.
+  ⛔ **One of those arms exists because the first cut was wrong in the worst possible direction.**
+  Extraction used `sed -nE "s/.*${pat}.*/\1/p"`, whose leading `.*` is greedy: on `12 widgets`
+  it consumed the `1` and captured `2`. A drifting count could therefore read as a matching one —
+  a gate that reports agreement about the wrong number. Caught by a GREEN arm that failed:
+  `COUNT DRIFT LIVE.md: claims '2' widgets; the repository has 12`. Extraction is now `grep -o`
+  off the front of the match, and a pattern that does not begin with its `([0-9]+)` group is
+  REFUSED rather than parsed.
+  Whole gate `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `make book` → `HTML book written`;
+  `scripts/run_smoke.py` → still `ok`, so the P0 evidence path is undisturbed.
+
+- [x] **FIX** — `scripts/check_derived_counts.sh` registered as `DERIVED-COUNTS`, with `--list`
+  printing every covered claim, its enumerator and the value it currently derives, so the claim
+  and its producer travel together. The `TASK-ACCEPTANCE` boundary is resolved in the Decisions
+  section above: **documented, not relaxed**, because the obvious relaxation reopens a measured
+  soundness hole.
+
+- `promotion: declined (the lesson IS the DERIVED-COUNTS doctrine — a card would restate the gate's own header, its --list output and the book chapter that already narrates it; docs/knowledge/ is past its health target at 21,661 of 20,480 bytes)`
+
+- [x] **LOCKSTEP** — leg 3: four derived counts are re-derived on every commit, so a running
+  total cannot be committed wrong again. `DOCTRINE_ENFORCEMENT.md` and the book chapter gain the
+  row (enforced by `REGISTRY-MIRROR`, not by memory), `TOOLBOX.md` the diagnostic;
+  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⚠️ Honest limit, stated in the gate itself: it checks the counts it can enumerate. A count whose
+  population the script cannot enumerate is invisible to it, which is why `--list` exists.
 
 ## Acceptance Checklist (current leaf — `MIRROR-DRIFT.3`)
 
@@ -245,6 +338,148 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
   finding rather than an excuse.
 
 ## Completed-leaf evidence (archive)
+
+### `MIRROR-DRIFT.3` — the live documents' tree claims
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: WHERE is `MEMORY.md` and `LIVE_STATUS.md`; WHY is the
+  same mechanism as `.1` and `.2` — a number that is a function of `docs/tasks/` written by hand
+  and compared with its source by nothing. The census, run at `.1` and re-run here, is that these
+  two had **not** drifted. That is the honest finding and this leaf records it rather than
+  manufacturing a defect to justify itself:
+
+  ```
+  $ scripts/check_tree_claims.sh; echo "rc=$?"
+  TREE-CLAIMS: ok (3 live document(s) state nothing the trees contradict)
+  rc=0
+  ```
+
+  All 11 `N leaves` claims in `LIVE_STATUS.md` and both `MEMORY.md` pointer claims were
+  re-derived from `grep -cE '^- ID: .<TREE>\.[0-9]+.'` over every tree and agreed exactly.
+  ⭐ A mirror that happens to be correct today is not a checked mirror — it is an unchecked one
+  that has not been caught yet. `.1` and `.2` are what that looks like after a few weeks.
+
+- [x] **ADDRESSED (verified)** — with nothing to repair, "before → after" is measured on
+  **coverage**, not on a symptom. The population, and what held it before this leaf:
+
+  ```
+  $ grep -cE '[0-9]+ (of [0-9]+ )?leaves?' MEMORY.md LIVE_STATUS.md README.md
+  README.md:0
+  LIVE_STATUS.md:12
+  MEMORY.md:1
+  $ git grep -lE 'leaves?\b' $(git rev-parse HEAD) -- scripts knowledge-map/scripts | wc -l
+  0
+  $ scripts/check_tree_claims.sh
+  TREE-CLAIMS: ok (3 live document(s) state nothing the trees contradict)
+  ```
+
+  **13 live claims, held by 0 instruments, now held by 1.** The classes checked went from none to
+  four: leaf totals, done counts, the frontier leaf, and the set of active trees.
+  ⭐ The scope is **data, not a list** — the gate reads the `hot_live` rows of
+  `doctrine/readme_routes.tsv` (`README.md`, `MEMORY.md`, `LIVE_STATUS.md`, `docs/TASK_TREE.md`),
+  so a live surface registered tomorrow is covered tomorrow with no edit to the script, and
+  `append_history` files are excluded on purpose: a `CHANGELOG.md` line reading `2 of 9 leaves`
+  was true when written, and rewriting it would corrupt the record the changelog exists to keep.
+
+- [x] **NO REGRESSION** — leg 2, and for a prevention leaf this is the load-bearing box. The gate
+  was fired RED four times against the **real** documents, not only against fixtures, by breaking
+  each claim class in turn and restoring it with `git checkout --`:
+
+  ```
+  COUNT DRIFT MEMORY.md: '2 of 9 leaves' for MIRROR-DRIFT; the tree has 2 of 3
+  DONE FRONTIER MEMORY.md: names 'MIRROR-DRIFT.1' as the frontier; the tree records it `done`
+  MISSING ACTIVE MEMORY.md: 'P0-PROFILE' is `active` and the pointer does not name it
+  COUNT DRIFT LIVE_STATUS.md: '13 leaves' for P1-LAB; the tree has 12
+  ```
+
+  `scripts/check_tree_claims.sh --self-test` → `TREE-CLAIMS --self-test: 12 pass / 0 fail` —
+  1 GREEN and 11 RED arms, **three of the eleven** asserting `rc=2` refusal rather than a verdict
+  (`NO LIVE DOCS`, `NO TREES`, `NO ROUTES`), so a check that cannot establish its own scope
+  refuses instead of reporting agreement. Arm
+  accounting: `grep -cE '(^|[; ])arm "' scripts/check_tree_claims.sh` → `12`, self-test reports
+  `12`. Whole gate `=== all doctrines green ===`, `rc=0`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `make book` → `HTML book written`.
+  ⭐ **The gates now catch each other, and that was observed rather than hoped.** Registering
+  `TREE-CLAIMS` without adding its rows to the two doctrine documents produced, immediately:
+  `NOT MIRRORED DOCTRINE_ENFORCEMENT.md: 'TREE-CLAIMS' is registered and has no row` and the same
+  for `doctrines.md`, `rc=1` — `.2`'s gate catching `.3`'s omission inside the same commit. The
+  identical omission survived two prior registrations unnoticed.
+
+- [x] **FIX** — `scripts/check_tree_claims.sh` added and registered as `TREE-CLAIMS`. Its scope is
+  derived from `doctrine/readme_routes.tsv`; `docs/TASK_TREE.md` is excluded because
+  `FRONTIER-SYNC` owns it and two gates reporting one breach twice is noise, not depth.
+
+- [x] **LOCKSTEP** — leg 3: all three mirrors on the resume path are now re-derived on every
+  commit. `DOCTRINE_ENFORCEMENT.md` and the book chapter gain the `TREE-CLAIMS` row (enforced by
+  `REGISTRY-MIRROR`, not by memory), `TOOLBOX.md` the diagnostic row, the book a section on
+  deriving a gate's scope from data and one on the gates catching each other; `MEMORY.md`,
+  `LIVE_STATUS.md`, `CHANGELOG.md` and `DEV_NOTES.md` updated in this commit. The tree's Open
+  Question — "is there a mirror nothing here covers?" — is answered below rather than left open.
+
+## Acceptance Checklist (current leaf — `MIRROR-DRIFT.2`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: WHERE is `docs/book/src/working/doctrines.md`; WHY is
+  that two documents restate a registry held in two shell arrays, and nothing compared them.
+  `DOCTRINE_ENFORCEMENT.md` even calls itself "the human-readable mirror of the enforcer
+  registry" — a mirror is exactly the artifact that needs a gate. Measured by extracting the
+  registered ids from both drivers and the id-shaped table rows from both documents:
+
+  ```
+  $ scripts/check_registry_mirror.sh; echo "rc=$?"
+  REGISTRY-MIRROR: a doctrine document no longer mirrors the enforcer registry.
+    NOT MIRRORED doctrines.md: 'FRONTIER-SYNC' is registered and has no row …
+    NOT MIRRORED doctrines.md: 'PROFILE-CONSISTENCY' is registered and has no row …
+    NOT MIRRORED doctrines.md: 'SEAM-INTEGRITY' is registered and has no row …
+  rc=1
+  ```
+
+  ⭐ The direction of the error is the finding. A mirror that falls behind never **invents** a
+  guarantee — it quietly **withholds** one, and it withholds it on the surface the director
+  reviews instead of the code. The book claimed three project doctrines while five were
+  registered and running, so the review surface understated the repository's own enforcement by
+  40% and looked entirely healthy doing it.
+
+- [x] **ADDRESSED (verified)** — before → after on the symptom, same command:
+  `scripts/check_registry_mirror.sh` → `rc=1` with three `NOT MIRRORED` findings (above), then
+  after the chapter was repaired → `REGISTRY-MIRROR: ok (2 document(s) mirror the registry)`,
+  `rc=0`. The gate also fired in the **opposite** direction during the repair, unprompted and
+  correctly: listing `REGISTRY-MIRROR` in the book one step before registering it produced
+  `PHANTOM doctrines.md: 'REGISTRY-MIRROR' has a row but is registered nowhere`, `rc=1` — a
+  document promising a gate that does not run is the more dangerous of the two drifts, and it was
+  caught on the real corpus rather than only in a fixture.
+
+- [x] **NO REGRESSION** — leg 2: `scripts/check_registry_mirror.sh --self-test` →
+  `REGISTRY-MIRROR --self-test: 11 pass / 0 fail` — 10 RED arms asserting the reason
+  (`NOT MIRRORED`, `PHANTOM`, `COUNT DRIFT`, `UNREADABLE COUNT`, `WRONG SECTION` in both
+  directions, `NOT EXECUTABLE`, `NO CHECK`, `NO MIRROR`) plus a refusal arm asserting `rc=2`
+  when the registry parses to nothing. Arm accounting per this tree's own lesson —
+  `grep -nE '(^|[; ])arm "' scripts/check_registry_mirror.sh | wc -l` → `11`, and the self-test
+  reports `11`: every arm written is an arm that ran. Whole gate: `scripts/check_doctrines.sh`
+  → `=== all doctrines green ===`, `rc=0`; `make check` → `test result: ok. 1 passed; 0 failed`;
+  `make book` → `INFO HTML book written to …/docs/book/book`, so the repaired chapter renders.
+  ⭐ The durable half of leg 2 is that the class found at `.1` is now **mechanically** caught,
+  not merely written down. Both self-test harnesses gained a strict-arity guard on every fixture
+  helper, and it was fired RED by re-introducing the original defect — deleting one `;`:
+
+  ```
+  FRONTIER-SYNC self-test HARNESS: index() got 6 argument(s), expected 2 — a missing `;` before `arm` swallows it
+  FRONTIER-SYNC --self-test: 15 pass / 1 fail
+  ```
+
+  Restored, `16 pass / 0 fail`. A helper that ignores surplus arguments is what made the swallow
+  silent; refusing them is what makes it loud.
+
+- [x] **FIX** — `scripts/check_registry_mirror.sh` added and registered as `REGISTRY-MIRROR`.
+  The book chapter gained the three missing rows and two new sections that document the family
+  honestly — what drifted, in which direction, and why a gate was chosen over a generator.
+  `argc` guards added to both self-test harnesses.
+
+- [x] **LOCKSTEP** — leg 3: both mirrors are now re-derived on every commit, so neither can fall
+  behind a registration again without the commit failing. `DOCTRINE_ENFORCEMENT.md` gains the
+  `REGISTRY-MIRROR` row, `TOOLBOX.md` the diagnostic row, the book its three rows and the
+  narrative; `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` and `DEV_NOTES.md` updated in this
+  commit. The gap `.1` declared — "the book is deliberately not updated by this leaf, owner
+  `MIRROR-DRIFT.2`" — is closed by this commit, which is what makes that declaration a routed
+  finding rather than an excuse.
 
 ### `MIRROR-DRIFT.2` — gate the doctrine documents against the registry
 
@@ -415,6 +650,12 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 | `2026-09-14` | `MIRROR-DRIFT.3` | four controls, each breaking a real claim class | `COUNT DRIFT` ×2, `DONE FRONTIER`, `MISSING ACTIVE` — all restored |
 | `2026-09-14` | `MIRROR-DRIFT.3` | `check_tree_claims.sh --self-test`, arms written vs run | `12 pass / 0 fail`; `12` written, `12` ran |
 | `2026-09-14` | `MIRROR-DRIFT.3` | the interlock: registering a doctrine without mirroring it | `REGISTRY-MIRROR` → `NOT MIRRORED … 'TREE-CLAIMS'` in both documents, `rc=1` |
+| `2026-09-14` | `MIRROR-DRIFT.4` | census of derived counts in the live docs | 2 of 4 were wrong: `24` vs `25`, `107` vs `112` |
+| `2026-09-14` | `MIRROR-DRIFT.4` | `check_derived_counts.sh` on the real corpus, before | `COUNT DRIFT … claims '107' self-test arms; the repository has 112` |
+| `2026-09-14` | `MIRROR-DRIFT.4` | the gate catches its own registration | `claims '8' project doctrines; the repository has 9` |
+| `2026-09-14` | `MIRROR-DRIFT.4` | after re-deriving (not incrementing) | `ok (4 derived count claim(s) re-derived)`, `rc=0` |
+| `2026-09-14` | `MIRROR-DRIFT.4` | `--self-test`, arms written vs run | `10 pass / 0 fail`; `10` written, `10` ran |
+| `2026-09-14` | `MIRROR-DRIFT.4` | the greedy-extraction defect, caught by a GREEN arm | `claims '2' widgets` for a `12 widgets` claim — fixed and armed |
 
 ## Commit Log
 
@@ -423,6 +664,7 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 | `MIRROR-DRIFT.1` | `SEMULITH-MIR-0017 (leaf MIRROR-DRIFT.1): gate the task-tree index against the trees` | 14 RED arms; one real drift repaired |
 | `MIRROR-DRIFT.2` | `SEMULITH-MIR-0018 (leaf MIRROR-DRIFT.2): gate the doctrine documents against the registry` | 10 RED arms; the book under-reported 2 of 5 project doctrines |
 | `MIRROR-DRIFT.3` | `SEMULITH-MIR-0019 (leaf MIRROR-DRIFT.3): gate the live documents' tree claims` | 11 RED arms; no drift to repair — scope read from the routes registry |
+| `MIRROR-DRIFT.4` | `SEMULITH-MIR-0025 (leaf MIRROR-DRIFT.4): re-derive the counts the live docs carry` | 8 RED arms; 2 real drifts, both self-inflicted running totals |
 
 ## Changelog
 
@@ -436,3 +678,6 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 - `2026-09-14`: `MIRROR-DRIFT.3` completed and the tree closed (3/3). Every mirror on the resume
   path is gated, and the gates now catch each other: registering a doctrine without mirroring it
   failed inside the same commit that registered it.
+- `2026-09-14`: reopened for `.4`. Two derived counts were committed wrong in a single session —
+  both maintained as running totals — which is a mirror class the first three leaves did not
+  cover. `.4` closes it and the tree is complete at 4/4.

@@ -45,6 +45,7 @@ These ship with the discipline spine and are project-neutral:
 | `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next |
 | `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |
 | `TREE-CLAIMS` | every live document's leaf counts, active trees and frontier leaf match `docs/tasks/` |
+| `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than
@@ -62,6 +63,7 @@ by reading it. Three documents restate facts that a machine-readable file alread
 | this chapter, and `DOCTRINE_ENFORCEMENT.md` | the two registry arrays in the driver scripts | by hand, when someone remembered |
 | `LIVE_STATUS.md`'s leaf counts | the `- ID:` entries in each tree | by hand |
 | `MEMORY.md`'s active tree and frontier leaf | the same trees | by hand |
+| `LIVE_STATUS.md`'s "N destinations governed", "N registered", "N self-test arms" | the registry, the drivers, the checks | by hand, as **running totals** |
 
 The first two had drifted; the last two had not. All four are now gated, because a mirror that
 happens to be correct today is not a checked mirror — it is an unchecked one that has not been
@@ -85,6 +87,36 @@ produce, and a generated file invites hand edits that are silently discarded. Bo
 the **source** authoritative and say so in their failure text — *"the tree is authoritative"*,
 *"the registry is authoritative"* — because editing a summary to match its record is safe, while
 editing a record to match its summary destroys the evidence.
+
+### A running total is not a measurement
+
+The first three leaves gated what live documents say about *task-trees*. They said nothing about
+any other countable population, and the gap closed itself in the most convincing way available:
+within a single working session this repository committed **two** such numbers wrong.
+
+`LIVE_STATUS.md` claimed *24 destinations governed* while the registry held 25 rows — stale since
+the commit that added the `profiles/` row. It also claimed *107 self-test arms* when the real
+total was **112**. Neither was a typo. Both were maintained the same way: someone took the number
+that was already written down, added what they had just contributed, and wrote the sum back.
+
+That is the failure mode in one sentence. **A running total is a memory of a measurement, not a
+measurement** — and nothing recomputes it, so it drifts quietly and confidently.
+
+`DERIVED-COUNTS` re-derives each one from the population it summarises, and prints the command it
+used, so the claim and its producer travel together:
+
+```
+$ scripts/check_derived_counts.sh --list
+CLAIM                  ENUMERATOR                                          VALUE
+routed destinations    grep -cv '^#\|^$' doctrine/readme_routes.tsv        25
+project doctrines      grep -cE '^  "[A-Z]' …/check_doctrines.project.sh    9
+book chapters          grep -cE '^\s*-? ?\[' docs/book/src/SUMMARY.md      27
+self-test arms         arm_total                                           122
+```
+
+It caught its own registration, which is the neatest demonstration available: registering the new
+doctrine made the repository hold nine project doctrines where the page said eight, and the gate
+said so before the commit could land.
 
 ### The scope of a gate can be data someone already wrote down
 

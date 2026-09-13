@@ -18,10 +18,10 @@
 - **Next action:** `P0-PROFILE.3`. Turn the 25 sourced decisions in `profile.toml` into
   `requirement.schema.json` records: `source_semantics` must distinguish defined /
   implementation-defined / unspecified / reserved, and `research_status` stays separate from
-  `implementation_status`. No record may claim `resolved` research status without a real
-  `source_refs` locator. `.4` (the environment contract) needs `.3`'s obligation IDs.
+  `implementation_status`. No record may claim `resolved` research without a real `source_refs`
+  locator. `.4` (the environment contract) needs `.3`'s obligation IDs.
 - **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
   `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-P0-0023 (leaf P0-PROFILE.7)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-MIR-0025 (leaf MIRROR-DRIFT.4)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.
