@@ -48,5 +48,12 @@ on the same commit. One commit per completed leaf.
 
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (5/5 leaves complete) | repo-local |
+| [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `active` | `.2` — the CPU lane as task-trees | repo-local |
+| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `proposed` | `.1` — profile dossier `rv64i-lab-v0` (gate `G0`) | repo-local |
+| [`P1-LAB`](tasks/P1-LAB.md) | `proposed` | `.1` — crate skeleton (gate `G1`, blocked on `G0`) | repo-local |
+| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (7/7 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
+
+Milestone trees are `proposed` until their first leaf starts. Each names its gate, its
+dependencies, and the `ROADMAP.md` section it derives from, so it can be checked against the
+plan rather than trusted. Remaining lanes are converted by `SEMULITH-TREES.2`/`.3`.

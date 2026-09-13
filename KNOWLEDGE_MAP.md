@@ -30,7 +30,10 @@
 ## Active task-trees
 
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
+- [`P0-PROFILE.md`](docs/tasks/P0-PROFILE.md)
+- [`P1-LAB.md`](docs/tasks/P1-LAB.md)
 - [`SEMULITH-PKG.md`](docs/tasks/SEMULITH-PKG.md)
+- [`SEMULITH-TREES.md`](docs/tasks/SEMULITH-TREES.md)
 
 ## Decision records
 

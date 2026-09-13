@@ -15,14 +15,14 @@ summarize the snapshot in every commit-workflow completion message.
 | Doctrine seams declared | Done | `.doctrine/code_paths.txt` and `evidence_tokens.txt`, each measured against the tracked corpus and fired |
 | README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
 | mdBook is the review surface | Done | 27 chapters; contracts included verbatim so the book cannot become a second owner |
-| Roadmap converted to task-trees | Not Started | `SEMULITH-TREES` — P0–P7 plus the cross-cutting lanes |
+| Roadmap converted to task-trees | In Progress | `SEMULITH-TREES` — 2 of 11 lanes are trees (`P0-PROFILE`, `P1-LAB`) |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
-| P0 — profile and evidence access | G0 | Not Started | select `rv64i-lab-v0`; prove a real reference path |
-| P1 — processor laboratory | G1 | Not Started | `semulith-core` / `-verify` / `-cli`; graph + evidence checker |
+| P0 — profile and evidence access | G0 | Not Started | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) — 9 leaves; select `rv64i-lab-v0`, prove a real reference path |
+| P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | — |
 | DSP specification and stress review | — | Not Started | — |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | — |

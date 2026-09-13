@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## `SEMULITH-TREES.1` — the near-term lane is task-trees, not prose
+
+- The roadmap existed only as prose: milestone trees before this leaf, `0`; milestone sections
+  in `ROADMAP.md`, `8`, plus three cross-cutting lanes. A lane with no tree has no frontier, no
+  acceptance record and no owner — exactly what the task-tree doctrine exists to prevent.
+- **`P0-PROFILE`** (9 leaves, gate `G0`): the `rv64i-lab-v0` dossier, state inventory,
+  requirements seed, environment contract, reference dossier, the matched-profile smoke test
+  that a reference is not usable without, the independence inventory, three guest programs, and
+  the evidence-obligation policy declared *before* implementation.
+- **`P1-LAB`** (12 leaves, gate `G1`): the three crates, arithmetic primitives, state, the
+  environment boundary, the four typed outcome families, the canonical definition skeleton, the
+  graph checker, the first execution slice, the validator mutation suite, replay and reduction,
+  the performance baseline, and the gate report.
+- Every leaf cites the `ROADMAP.md` section or `docs/IMPLEMENTATION_GUIDE.md` task card it
+  derives from, so a reader can refute it by reading one paragraph rather than trusting it.
+
+
 Completed work and its validation, newest first. Entries above the `bedrock-scaffold` rule
 are this project's; entries below it are the discipline spine this repository was created
 from, retained because the spine is still live code here.

@@ -13,11 +13,11 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active tree:** none. `SEMULITH-PKG` is `done` (7/7 leaves).
-- **Next tree:** `SEMULITH-TREES` — convert `ROADMAP.md` into task-trees.
-- **Next action:** open `SEMULITH-TREES` — convert `ROADMAP.md` P0–P7, the DSP lane, the
-  multicore lane and the archogen lane into task-trees registered in `docs/TASK_TREE.md`, then
-  start P0 (`rv64i-lab-v0` profile dossier, and a reference smoke test that actually runs).
-- **Latest commit:** see `git log -1` — `SEMULITH-PKG-0008 (leaf SEMULITH-PKG.7)`.
+- **Active tree:** `SEMULITH-TREES` — represent the whole roadmap as task-trees.
+- **Frontier leaf:** `SEMULITH-TREES.2` — the CPU lane (`P2-SCALAR`, `DSP-REVIEW`, `P3-BREADTH`, `P4-SYSTEM`).
+- **Next action:** create `P2-SCALAR`, `DSP-REVIEW`, `P3-BREADTH`, `P4-SYSTEM` (`.2`), then the
+  system lane (`.3`), then re-review `docs/tasks/` bounds and the book (`.4`). After that,
+  execute `P0-PROFILE.1` — the `rv64i-lab-v0` dossier.
+- **Latest commit:** see `git log -1` — `SEMULITH-TREES-0009 (leaf SEMULITH-TREES.1)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.
