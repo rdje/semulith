@@ -50,7 +50,7 @@ on the same commit. One commit per completed leaf.
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
-| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `active` | `.3` — requirements catalog seed (gate `G0`; 5 of 9 leaves done) | repo-local |
+| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `active` | `.4` — environment contract v0 (gate `G0`; 6 of 9 leaves done) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `proposed` | `.1` — crate skeleton (gate `G1`, blocked on `G0`) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |

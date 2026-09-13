@@ -1,5 +1,62 @@
 # CHANGELOG.md
 
+## SEMULITH-P0-0026 (leaf P0-PROFILE.3) — the requirements catalogue, and a validator that refuses what it cannot check
+
+**What changed.** The profile's 25 decisions were prose in a TOML file. They are now
+**25 machine-readable requirement records**, generated from `profile.toml` rather than
+transcribed, each carrying its source locator, its semantic category, its risk, its dependencies
+and the obligation id the environment contract will define.
+
+- `profiles/rv64i-lab-v0/requirements.jsonl` — 25 records, all valid. Citations: `RVI-RV32I` ×12,
+  `RVI-RV64I` ×8, `RVI-INTRO` ×8, no empty locator. 23 `resolved`, **2 honestly `partial`** with
+  their open question named inside the record (`REQ-D-SHIFTW-RESERVED` → `OQ-2`,
+  `REQ-D-ECALL-EBREAK` → `OQ-5`). All `implementation_status: planned` — no CPU code exists.
+- `scripts/validate_records.py` — a JSON Schema validator for exactly the 17 keywords this
+  project's three schemas use, **censused rather than guessed**.
+- `scripts/check_requirements.sh`, registered as `RECORD-SCHEMA`.
+
+⛔ **Why a tracked validator rather than a dependency.** `jsonschema`, `fastjsonschema` and
+`pydantic` are all absent on this host, and installing one would put a dependency store on a
+different volume from the repository. A vendored copy under `target/` would leave the gate
+depending on an untracked directory. 180 tracked lines work from a fresh clone.
+
+⭐ **Its soundness property is the refusal, not the coverage.** A partial validator that silently
+ignores a keyword reports `valid` for a document it never fully checked. This one raises:
+`REFUSED: schema uses ['maximum'], which this validator does not implement`. A schema gaining a
+keyword breaks the gate loudly instead of quietly widening what passes.
+
+⭐ **`source_semantics` is not a mechanical function of the profile's `authority` field**, and the
+judgement table says so. `laboratory` covers both *"the specification says UNSPECIFIED and we
+chose"* (`D-RESERVED-DECODE` → `unspecified`) and *"the specification delegates to the EEI and we
+chose"* (`D-ENTRY-STATE`, `D-CODE-VISIBILITY` → `implementation-defined`). Collapsing them would
+record a laboratory policy as an architectural rule — the exact failure `profile.toml`'s own
+header warns about.
+
+**The sharpest new rule:** a record may not be `research_status: resolved` while carrying an
+`OPEN:` note. Both halves are individually true, which is what makes the pair the most convenient
+lie a requirements catalogue can tell.
+
+**Validation.** Validator fired RED across 12 controls, one per rule class plus the refusal.
+`RECORD-SCHEMA --self-test: 11 pass / 0 fail`, 11 written and 11 run. Fired RED on the **real**
+catalogue three times: `STATEMENT DRIFT`, `RESOLVED WITH AN OPEN QUESTION`, `UNPINNED SOURCE`.
+The three shipped example files now validate for the first time — a claim nothing previously
+checked. Gate green; `make check` `1 passed`; book renders; smoke test still `ok`.
+
+⛔ **Two defects in this leaf's own instruments were found by their arms.** The gate excluded
+`target/` by absolute path, filtering away its own fixtures (ten arms failed with *"no .jsonl
+record file found"*); and the cross-checks re-parsed a file that had already failed to parse, so a
+malformed record **crashed** the gate instead of failing it. A traceback is not a verdict.
+
+⚠️ **Named gap:** the 25 `OB-*` obligation ids are checked against nothing, because the
+environment contract that defines them is `P0-PROFILE.4` — now the frontier. `evidence_ids` are
+deliberately empty: real evidence exists from `.6`, but evidence *records* are `.9`'s deliverable
+and a dangling id would be worse than none.
+
+**Housekeeping.** Three stale per-leaf checklists had accumulated in `P0-PROFILE.md` instead of
+being archived; they are now in `docs/tasks/archive/`, unedited. Live tree 24,768 bytes, archive
+55,397 of a 65,536 per-part ceiling — the archive will need splitting or compaction before long.
+
+
 ## SEMULITH-MIR-0025 (leaf MIRROR-DRIFT.4) — re-derive the counts the live docs carry
 
 **What changed.** `MIRROR-DRIFT.1`–`.3` gated what live documents say about *task-trees*. They
