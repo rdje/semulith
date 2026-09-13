@@ -48,7 +48,7 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
   Commit: `SEMULITH-MIR-0017`
 
 - ID: `MIRROR-DRIFT.2` — **the doctrine documents mirror the enforcer registry**
-  Status: `pending`
+  Status: `done`
   Goal: `DOCTRINE_ENFORCEMENT.md` and `docs/book/src/working/doctrines.md` both restate the
   doctrine registry held in the two driver scripts. Measured today: the book chapter is missing
   `PROFILE-CONSISTENCY` and `SEAM-INTEGRITY` — the two most recently registered — so the surface
@@ -56,6 +56,8 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
   Acceptance: every registered id appears in both mirrors and every id in a mirror is registered;
   the count sentence ("Thirteen checks run today") is derived or gated; fired RED on the real
   tree before the repair.
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-MIR-0018`
 
 - ID: `MIRROR-DRIFT.3` — **the live docs' derived numbers**
   Status: `pending`
@@ -71,8 +73,7 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MIRROR-DRIFT.2` | `pending` | the drift is already measured and it is on the book — the surface the director reviews instead of the code |
-| 2 | `MIRROR-DRIFT.3` | `pending` | same mechanism, no measured drift yet; prevention after repair |
+| 1 | `MIRROR-DRIFT.3` | `pending` | the last mirror on the resume path; the census says it has not drifted yet, so this leaf is prevention and must say so rather than manufacture a defect |
 
 ## Decisions
 
@@ -97,7 +98,75 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 
 - None.
 
-## Acceptance Checklist (current leaf — `MIRROR-DRIFT.1`)
+## Acceptance Checklist (current leaf — `MIRROR-DRIFT.2`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: WHERE is `docs/book/src/working/doctrines.md`; WHY is
+  that two documents restate a registry held in two shell arrays, and nothing compared them.
+  `DOCTRINE_ENFORCEMENT.md` even calls itself "the human-readable mirror of the enforcer
+  registry" — a mirror is exactly the artifact that needs a gate. Measured by extracting the
+  registered ids from both drivers and the id-shaped table rows from both documents:
+
+  ```
+  $ scripts/check_registry_mirror.sh; echo "rc=$?"
+  REGISTRY-MIRROR: a doctrine document no longer mirrors the enforcer registry.
+    NOT MIRRORED doctrines.md: 'FRONTIER-SYNC' is registered and has no row …
+    NOT MIRRORED doctrines.md: 'PROFILE-CONSISTENCY' is registered and has no row …
+    NOT MIRRORED doctrines.md: 'SEAM-INTEGRITY' is registered and has no row …
+  rc=1
+  ```
+
+  ⭐ The direction of the error is the finding. A mirror that falls behind never **invents** a
+  guarantee — it quietly **withholds** one, and it withholds it on the surface the director
+  reviews instead of the code. The book claimed three project doctrines while five were
+  registered and running, so the review surface understated the repository's own enforcement by
+  40% and looked entirely healthy doing it.
+
+- [x] **ADDRESSED (verified)** — before → after on the symptom, same command:
+  `scripts/check_registry_mirror.sh` → `rc=1` with three `NOT MIRRORED` findings (above), then
+  after the chapter was repaired → `REGISTRY-MIRROR: ok (2 document(s) mirror the registry)`,
+  `rc=0`. The gate also fired in the **opposite** direction during the repair, unprompted and
+  correctly: listing `REGISTRY-MIRROR` in the book one step before registering it produced
+  `PHANTOM doctrines.md: 'REGISTRY-MIRROR' has a row but is registered nowhere`, `rc=1` — a
+  document promising a gate that does not run is the more dangerous of the two drifts, and it was
+  caught on the real corpus rather than only in a fixture.
+
+- [x] **NO REGRESSION** — leg 2: `scripts/check_registry_mirror.sh --self-test` →
+  `REGISTRY-MIRROR --self-test: 11 pass / 0 fail` — 10 RED arms asserting the reason
+  (`NOT MIRRORED`, `PHANTOM`, `COUNT DRIFT`, `UNREADABLE COUNT`, `WRONG SECTION` in both
+  directions, `NOT EXECUTABLE`, `NO CHECK`, `NO MIRROR`) plus a refusal arm asserting `rc=2`
+  when the registry parses to nothing. Arm accounting per this tree's own lesson —
+  `grep -nE '(^|[; ])arm "' scripts/check_registry_mirror.sh | wc -l` → `11`, and the self-test
+  reports `11`: every arm written is an arm that ran. Whole gate: `scripts/check_doctrines.sh`
+  → `=== all doctrines green ===`, `rc=0`; `make check` → `test result: ok. 1 passed; 0 failed`;
+  `make book` → `INFO HTML book written to …/docs/book/book`, so the repaired chapter renders.
+  ⭐ The durable half of leg 2 is that the class found at `.1` is now **mechanically** caught,
+  not merely written down. Both self-test harnesses gained a strict-arity guard on every fixture
+  helper, and it was fired RED by re-introducing the original defect — deleting one `;`:
+
+  ```
+  FRONTIER-SYNC self-test HARNESS: index() got 6 argument(s), expected 2 — a missing `;` before `arm` swallows it
+  FRONTIER-SYNC --self-test: 15 pass / 1 fail
+  ```
+
+  Restored, `16 pass / 0 fail`. A helper that ignores surplus arguments is what made the swallow
+  silent; refusing them is what makes it loud.
+
+- [x] **FIX** — `scripts/check_registry_mirror.sh` added and registered as `REGISTRY-MIRROR`.
+  The book chapter gained the three missing rows and two new sections that document the family
+  honestly — what drifted, in which direction, and why a gate was chosen over a generator.
+  `argc` guards added to both self-test harnesses.
+
+- [x] **LOCKSTEP** — leg 3: both mirrors are now re-derived on every commit, so neither can fall
+  behind a registration again without the commit failing. `DOCTRINE_ENFORCEMENT.md` gains the
+  `REGISTRY-MIRROR` row, `TOOLBOX.md` the diagnostic row, the book its three rows and the
+  narrative; `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md` and `DEV_NOTES.md` updated in this
+  commit. The gap `.1` declared — "the book is deliberately not updated by this leaf, owner
+  `MIRROR-DRIFT.2`" — is closed by this commit, which is what makes that declaration a routed
+  finding rather than an excuse.
+
+## Completed-leaf evidence (archive)
+
+### `MIRROR-DRIFT.1` — gate the task-tree index against the trees
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1: WHERE is `docs/TASK_TREE.md`'s `P0-PROFILE` row;
   WHY is that `COMMIT.md` makes updating it conditional ("update `docs/TASK_TREE.md` … **only if
@@ -190,12 +259,19 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
 | `2026-09-14` | `MIRROR-DRIFT.1` | leaf-count re-derivation vs `LIVE_STATUS.md` / `MEMORY.md` | 11 of 11 counts and both pointer claims agree |
 | `2026-09-14` | `MIRROR-DRIFT.1` | project-doctrine table fragments in `DOCTRINE_ENFORCEMENT.md` | 3 fragments before, `rows: 8` in one table after |
 | `2026-09-14` | `MIRROR-DRIFT.1` | `scripts/check_doctrines.sh` + `make check` | `all doctrines green`, `rc=0`; `test result: ok. 1 passed` |
+| `2026-09-14` | `MIRROR-DRIFT.2` | `check_registry_mirror.sh` on the real documents, before | `rc=1`: 3 × `NOT MIRRORED` on the book chapter |
+| `2026-09-14` | `MIRROR-DRIFT.2` | the same gate, in the opposite direction, unprompted | `PHANTOM … registered nowhere`, `rc=1` — a document promising a gate that does not run |
+| `2026-09-14` | `MIRROR-DRIFT.2` | `check_registry_mirror.sh` after the repair | `ok (2 document(s) mirror the registry)`, `rc=0` |
+| `2026-09-14` | `MIRROR-DRIFT.2` | `check_registry_mirror.sh --self-test`, arms written vs run | `11 pass / 0 fail`; `11` written, `11` ran |
+| `2026-09-14` | `MIRROR-DRIFT.2` | the new `argc` guard fired RED by deleting one `;` | `index() got 6 argument(s), expected 2`; `15 pass / 1 fail`, restored `16 / 0` |
+| `2026-09-14` | `MIRROR-DRIFT.2` | `scripts/check_doctrines.sh` + `make check` + `make book` | `all doctrines green`; `1 passed`; `HTML book written` |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `MIRROR-DRIFT.1` | `SEMULITH-MIR-0017 (leaf MIRROR-DRIFT.1): gate the task-tree index against the trees` | 14 RED arms; one real drift repaired |
+| `MIRROR-DRIFT.2` | `SEMULITH-MIR-0018 (leaf MIRROR-DRIFT.2): gate the doctrine documents against the registry` | 10 RED arms; the book under-reported 2 of 5 project doctrines |
 
 ## Changelog
 
@@ -203,3 +279,6 @@ by a conditional manual step is not a mirror; it is a copy with a half-life.
   disagreed about which leaf was next, and the index was the one that was wrong.
 - `2026-09-14`: `MIRROR-DRIFT.1` completed. The index is now a checked mirror rather than a
   remembered one.
+- `2026-09-14`: `MIRROR-DRIFT.2` completed. The review surface can no longer under-report the
+  repository's own enforcement, and the silent-arm-swallow found at `.1` is now caught by a
+  guard rather than remembered.

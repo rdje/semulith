@@ -22,6 +22,7 @@ PROJECT_DOCTRINES=(
   "SEAM-INTEGRITY|the source fixes and declared seams still do their job — every committed acceptance box is still accepted, prose is not code, behaviour files are, and the two gates agree on what an instrument is|scripts/check_seam_integrity.sh"
   "PROFILE-CONSISTENCY|a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source — a laboratory policy must never read as an architectural rule|scripts/check_profile_consistency.sh"
   "FRONTIER-SYNC|the task-tree index mirrors the trees it indexes — the frontier leaf, the status and the leaf counts are re-derived, never remembered|scripts/check_frontier_sync.sh"
+  "REGISTRY-MIRROR|the doctrine documents list exactly the doctrines the drivers register — a mirror that falls behind withholds a guarantee rather than inventing one|scripts/check_registry_mirror.sh"
 )
 
 fails=0

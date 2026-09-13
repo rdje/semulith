@@ -241,7 +241,21 @@ self_test() {
   local t pass=0 fail=0 out rc
   t="$(SELFTEST_TMP)"; mkdir -p "$t/tasks"
 
+  # ⛔ STRICT ARITY. A fixture helper that ignores its extra arguments will swallow a whole
+  # following command when a `;` is missing — `index a b arm NAME 1 WHY` is ONE call, and the
+  # arm vanishes with no error. That measured defect ran 4 of 14 arms and reported `0 fail`.
+  # See docs/knowledge/self-test-arms-that-never-ran.md.
+  argc() { # argc <expected> <got> <helper>
+    [ "$2" -eq "$1" ] && return 0
+    fail=$((fail+1))
+    printf '%s self-test HARNESS: %s() got %s argument(s), expected %s — a missing `;` before `arm` swallows it\n' \
+      "FRONTIER-SYNC" "$3" "$2" "$1" >&2
+    return 1
+  }
+
+
   tree() { # tree() <id> <metadata-status> <frontier-leaf-or-dash> <frontier-status> <leaf1-status> <leaf2-status>
+    argc 6 "$#" tree || return
     cat > "$t/tasks/$1.md" <<EOF
 # $1: synthetic
 
@@ -268,6 +282,7 @@ self_test() {
 EOF
   }
   index() { # index() <status-cell> <frontier-cell>
+    argc 2 "$#" index || return
     cat > "$t/TASK_TREE.md" <<EOF
 # index
 

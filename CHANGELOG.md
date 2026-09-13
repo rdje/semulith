@@ -1,5 +1,39 @@
 # CHANGELOG.md
 
+## SEMULITH-MIR-0018 (leaf MIRROR-DRIFT.2) — gate the doctrine documents against the registry
+
+**What changed.** Two documents restate the doctrine registry that lives in two shell arrays:
+`DOCTRINE_ENFORCEMENT.md`, which calls itself "the human-readable mirror of the enforcer
+registry", and the mdBook chapter `docs/book/src/working/doctrines.md`. Nothing compared either
+with the arrays, and the book had fallen behind: it listed **3** project doctrines while **5**
+were registered and running.
+
+- **New doctrine `REGISTRY-MIRROR`** (`scripts/check_registry_mirror.sh`). Every registered id
+  has a row in both documents; every id-shaped row is actually registered; project doctrines sit
+  under the project heading and universal ones do not; every registered path exists and is
+  executable; and a sentence of the form `<N> checks run today` states the real universal count.
+  The **registry is authoritative**, and the failure text says so.
+- **The book chapter repaired and grown.** The three missing rows added, plus two new sections
+  that document the family honestly: which mirrors drifted, in which direction, and why a gate
+  was chosen over a generator.
+- **The silent-arm-swallow found at `.1` is now caught, not just written down.** Both self-test
+  harnesses gained a strict-arity guard on every fixture helper, so a missing `;` before an `arm`
+  call fails the self-test instead of deleting it.
+
+**Validation.** Fired RED on the real documents before the repair — three `NOT MIRRORED`
+findings, `rc=1` — and green after: `REGISTRY-MIRROR: ok (2 document(s) mirror the registry)`,
+`rc=0`. The gate also fired in the **opposite** direction unprompted, catching a book row added
+one step before its registration: `PHANTOM doctrines.md: 'REGISTRY-MIRROR' has a row but is
+registered nowhere`. A document promising a gate that does not run is the more dangerous drift,
+and it was caught on the real corpus.
+
+`--self-test` → `11 pass / 0 fail` (10 RED arms plus a refusal arm asserting `rc=2`), with arms
+written (`11`) reconciled against arms run (`11`). The new `argc` guard was fired RED by
+deleting one `;`: `index() got 6 argument(s), expected 2`, `15 pass / 1 fail`, restored to
+`16 pass / 0 fail`. Whole gate `all doctrines green`; `make check` `1 passed`; `make book`
+`HTML book written`.
+
+
 ## SEMULITH-MIR-0017 (leaf MIRROR-DRIFT.1) — gate the task-tree index against the trees
 
 **What changed.** `docs/TASK_TREE.md` is a hand-kept mirror of the task-trees under

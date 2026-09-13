@@ -40,11 +40,75 @@ These ship with the discipline spine and are project-neutral:
 | `DELIVERY-PROVENANCE` | every delivered manifest row carries exactly one declared disposition, and the frozen ones still hash to the delivered bytes |
 | `FIXTURE-FINGERPRINT` | every record pinning a file's `sha256` still describes the tree |
 | `README-ROUTING-CLOSURE` | every destination the landing page routes to is governed, exists, and stays under its ceiling |
+| `PROFILE-CONSISTENCY` | a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source |
+| `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
+| `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next |
+| `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than
 passing if its own self-test stops discriminating. A check that cannot judge must never report
 that the rule holds.
+
+## A document that restates a registry is a mirror, and mirrors rot
+
+The last two rows above exist because of a defect found by resuming this repository rather than
+by reading it. Three documents restate facts that a machine-readable file already owns:
+
+| The mirror | Its source of truth | How it was kept |
+| --- | --- | --- |
+| `docs/TASK_TREE.md`'s frontier column | each tree's own *Current Frontier* | `COMMIT.md`: update it "only if the frontier changes" |
+| this chapter, and `DOCTRINE_ENFORCEMENT.md` | the two registry arrays in the driver scripts | by hand, when someone remembered |
+| `LIVE_STATUS.md`'s leaf counts | the `- ID:` entries in each tree | by hand |
+
+Both of the first two had drifted, and the shape of each drift is worth more than the fix.
+
+**The index named a finished leaf.** It pointed at `P0-PROFILE.2` — already `done` — while the
+tree named `.5`. One row of fourteen was wrong, which sounds like a low rate until you notice
+*which* row: the only `active` tree. A resuming session is routed `MEMORY.md` → the index row →
+that tree's frontier, and only an active tree's row is ever read. The drift rate on rows anyone
+follows was 1 in 1, and the recovery procedure itself was what broke.
+
+**This chapter under-reported its own project.** It listed three project doctrines while five
+were registered and running. That direction matters: a mirror that falls behind never invents a
+guarantee, it quietly *withholds* one — and it does so on the surface a reviewer reads instead
+of the code. `REGISTRY-MIRROR` also gates the sentence "Thirteen checks run today", because a
+count typed by hand is a constant that is a function of the repository.
+
+The fix in both cases is a gate rather than a generator. A generated index would also have
+prevented the drift, and was rejected: the "why next" column carries reasoning no generator can
+produce, and a generated file invites hand edits that are silently discarded. Both gates make
+the **source** authoritative and say so in their failure text — *"the tree is authoritative"*,
+*"the registry is authoritative"* — because editing a summary to match its record is safe, while
+editing a record to match its summary destroys the evidence.
+
+## The self-test that ran a third of its arms
+
+`FRONTIER-SYNC`'s controls were written, run, and reported `4 pass / 0 fail`. Fourteen arms
+existed; four executed. Ten `arm` calls shared a physical line with the fixture call before them
+with no `;` between, so the shell passed `arm` and its arguments as surplus parameters to a
+function that reads two — discarded without an error of any kind. Adding the separator produced
+`13 pass / 1 fail`, and that one failure was a real defect in the gate.
+
+The rule this repository already had — *a gate never observed RED is not known to work* — was
+being applied one level too low. It belongs to the self-test as well, and the check is a
+subtraction: count the arms you wrote, compare it with the number reported.
+
+```
+$ grep -c '  arm "' scripts/check_frontier_sync.sh
+16
+$ scripts/check_frontier_sync.sh --self-test
+FRONTIER-SYNC --self-test: 16 pass / 0 fail
+```
+
+Both self-test harnesses now carry a strict-arity guard on every fixture helper, so the silent
+swallow is a loud failure instead of a lesson someone has to remember:
+
+```
+FRONTIER-SYNC self-test HARNESS: index() got 6 argument(s), expected 2 —
+  a missing `;` before `arm` swallows it
+FRONTIER-SYNC --self-test: 15 pass / 1 fail
+```
 
 ## Two doctrines that are easy to misread
 

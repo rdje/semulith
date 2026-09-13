@@ -29,6 +29,15 @@ lesson nobody can retrieve by question is a lesson nobody has.
   Right in the file, wrong on the page — one column over from what `TABLE-ARITY-RATCHET`
   catches, and no gate sees a blank line.
 
+- The same mechanism, one document over: `docs/book/src/working/doctrines.md` listed 3 project
+  doctrines while 5 were registered. A mirror that falls behind never **invents** a guarantee —
+  it **withholds** one, on the surface a reviewer reads instead of the code. Gated by
+  `REGISTRY-MIRROR`, which also caught the opposite direction unprompted (`PHANTOM`: a row added
+  one step before its registration).
+- The durable fix for the swallowed arms is a strict-arity guard on every self-test fixture
+  helper, fired RED by deleting one `;`. A helper that ignores surplus arguments is what made the
+  swallow silent; refusing them is what makes it loud.
+
 ## _(2026-09-13)_ — a delivered package is not ingested until its rot sources are removed
 
 - Planning package v0.2 arrived in the worktree as 15 untracked files plus two modified
