@@ -50,7 +50,7 @@ on the same commit. One commit per completed leaf.
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
-| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `active` | `.2` — state inventory (gate `G0`; `.1` done) | repo-local |
+| [`P0-PROFILE`](tasks/P0-PROFILE.md) | `active` | `.5` — reference candidate dossier (gate `G0`; 2 of 9 leaves done) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `proposed` | `.1` — crate skeleton (gate `G1`, blocked on `G0`) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |
@@ -61,6 +61,7 @@ on the same commit. One commit per completed leaf.
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
+| [`MIRROR-DRIFT`](tasks/MIRROR-DRIFT.md) | `active` | `.2` — the doctrine documents mirror the registry | repo-local |
 | [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (8/8 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
 

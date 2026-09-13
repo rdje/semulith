@@ -8,6 +8,27 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-14)_ — a self-test reports the arms it ran, not the arms you wrote
+
+- `docs/TASK_TREE.md` and the tree it indexes disagreed about which leaf was next: the index
+  said `P0-PROFILE.2`, the tree said `.5`, and `.2` was `done`. `COMMIT.md` updates that index
+  "only if the frontier changes" — a CONDITIONAL manual step, which is the shape that rots. One
+  row of fourteen had drifted, and it was the only `active` tree: the single row the documented
+  resume path (`MEMORY.md` → index → frontier) actually reads. A 1-in-14 drift rate is not the
+  number that matters; a 1-in-1 rate on the followed row is. Gated by `FRONTIER-SYNC`.
+- ⛔ **The new gate's own self-test printed `4 pass / 0 fail` while running four of fourteen
+  arms.** Ten `arm` calls sat on the same physical line as the fixture call before them with no
+  `;`, so bash passed `arm` and its three arguments as extra positional parameters to a function
+  reading only `$1` and `$2` — discarded in silence, no error of any kind. Adding the separator
+  gave `13 pass / 1 fail`, and that one failure was a real defect: two opposite drift directions
+  shared a single message. Caught by counting the arms written against the arms reported, not by
+  reading the code. Promoted:
+  [`docs/knowledge/self-test-arms-that-never-ran.md`](docs/knowledge/self-test-arms-that-never-ran.md).
+- Two blank lines inside `DOCTRINE_ENFORCEMENT.md`'s project-doctrine table split it into three
+  GFM fragments, so two registered doctrines rendered as literal `| … |` text instead of rows.
+  Right in the file, wrong on the page — one column over from what `TABLE-ARITY-RATCHET`
+  catches, and no gate sees a blank line.
+
 ## _(2026-09-13)_ — a delivered package is not ingested until its rot sources are removed
 
 - Planning package v0.2 arrived in the worktree as 15 untracked files plus two modified

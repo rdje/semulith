@@ -33,6 +33,7 @@
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
 - [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
+- [`MIRROR-DRIFT.md`](docs/tasks/MIRROR-DRIFT.md)
 - [`P0-PROFILE.md`](docs/tasks/P0-PROFILE.md)
 - [`P1-LAB.md`](docs/tasks/P1-LAB.md)
 - [`P2-SCALAR.md`](docs/tasks/P2-SCALAR.md)

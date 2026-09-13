@@ -1,5 +1,47 @@
 # CHANGELOG.md
 
+## SEMULITH-MIR-0017 (leaf MIRROR-DRIFT.1) — gate the task-tree index against the trees
+
+**What changed.** `docs/TASK_TREE.md` is a hand-kept mirror of the task-trees under
+`docs/tasks/`, updated by a *conditional* step in `COMMIT.md` ("only if the frontier changes")
+and compared with its source by nothing. It had drifted: the index named `P0-PROFILE.2` as the
+next leaf while the tree named `.5`, and `.2` was already `done`. One row of fourteen — and the
+one that rotted was the only `active` tree, which is the only row the documented resume path
+(`MEMORY.md` → the index row → the tree's frontier) ever reads.
+
+- **New doctrine `FRONTIER-SYNC`** (`scripts/check_frontier_sync.sh`, registered in the project
+  slot). It compares six properties, all of them functions of the tree: the frontier leaf, that
+  neither document points at a `done` leaf, the status cells, any `A/B leaves complete` or
+  `A of B leaves done` count, index↔tree closure in both directions, and that every leaf id
+  named actually exists. The **tree is authoritative** and the failure message says so, because
+  editing a summary to match its record is safe while editing the record to match its summary
+  destroys the evidence.
+- **New task-tree `MIRROR-DRIFT`** — every hand-kept mirror of a machine-readable source is
+  gated. `.1` done; `.2` (the doctrine documents vs the enforcer registry) and `.3` (the live
+  docs' derived numbers) are scoped with their measurements already taken.
+- `DOCTRINE_ENFORCEMENT.md`'s project-doctrine table was split into three GFM fragments by two
+  stray blank lines, so two registered doctrines rendered as literal text rather than rows.
+  Repaired; the table now holds all six.
+
+**Validation.** `check_frontier_sync.sh --self-test` → `16 pass / 0 fail` (14 RED arms, each
+asserting the reason, plus two arms that assert `rc=2` refusal rather than a silent pass). Fired
+RED against the **real** index before the repair — `FRONTIER DRIFT P0-PROFILE: index says '.2',
+tree's Current Frontier says 'P0-PROFILE.5'`, `rc=1` — and green after:
+`ok (15 tree(s) mirrored by docs/TASK_TREE.md)`, `rc=0`. Whole gate `all doctrines green`,
+`rc=0`; `make check` `test result: ok. 1 passed; 0 failed`.
+
+⛔ **The self-test lied first.** Its opening run printed `4 pass / 0 fail` while executing four
+of fourteen arms: ten `arm` calls shared a physical line with the fixture call before them, so
+bash handed them to a function that reads `$1`/`$2` and discards the rest — silently. Adding the
+separator gave `13 pass / 1 fail`, and that failure was a genuine defect in the gate. Promoted
+to [`docs/knowledge/self-test-arms-that-never-ran.md`](docs/knowledge/self-test-arms-that-never-ran.md).
+
+⚠️ The mdBook's doctrine chapter is knowingly **not** updated by this commit. It already omitted
+two registered doctrines; adding this one by hand would repair the symptom and destroy the
+evidence `MIRROR-DRIFT.2` needs, whose acceptance requires firing its gate RED on the real
+drift. Owner: `MIRROR-DRIFT.2`, the next commit.
+
+
 ## `SEMULITH-PKG.8` — the spine defects are fixed at source, and the fix is watched
 
 - ⛔ **The `.doctrine/` seam fixes failed open.** Both seam files moved aside, full enforcer

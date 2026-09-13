@@ -11,10 +11,11 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory architecture · task-trees · commit workflow · doctrine enforcement · mdBook skeleton |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, standard adopted, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A claim tags and §7 constant sweep not yet mechanized |
-| Project doctrines (5 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY` — 45 self-test arms, all fired RED before registration |
+| Project doctrines (6 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC` — 61 self-test arms, all fired RED before registration |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the scaffold re-sync list, and watched behaviourally by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | reviewed caps 85 lines / 4,864 bytes; 24 destinations governed; containment doctrine deferred with a trigger |
 | mdBook is the review surface | Done | 27 chapters; contracts included verbatim so the book cannot become a second owner |
+| Hand-kept mirrors gated | In Progress | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) — 1 of 3 leaves; `FRONTIER-SYNC` gates the task-tree index (14 RED arms); the doctrine documents and the live docs' derived numbers remain |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
