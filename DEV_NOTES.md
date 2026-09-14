@@ -8,6 +8,28 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-14)_ — breadth by composing proven parts, not by gating them less
+
+- ⛔ **I proposed the wrong lever and it was rejected.** Facing "model as much as possible" against
+  "signoff-grade", I suggested tiering models into `exploratory` (ungated) and `accepted` (gated).
+  That buys breadth by creating a second class of model nobody can trust, and the classes would
+  blur the first time one cited the other. The right lever is **composition**: assemble proven
+  small models. Breadth by reuse of evidence, never by absence of it.
+- Grounded rather than invented: both pinned references already compose from fragments —
+  riscv-opcodes 111 extension files, sail-riscv 34 extension dirs / 59 encoding files — and this
+  project already had the other half (an empty `extensions = []` seam, 8 environment-assumptions).
+- ⭐ **Encoding union is DECIDABLE, so composition is a verdict.** Two instructions collide exactly
+  when `(a.value ^ b.value) & a.mask & b.mask == 0`, searched exhaustively. Proven: owned RV64I +
+  an unseen `M` fragment = 65 instructions, no collision. Fired RED on a realistic mistake —
+  composing a fragment already contained — giving 37 named collisions and a rejection.
+- ⚠️ Semantics are the hard axis and are NOT decidable: an extension can change a base
+  instruction's meaning. A fragment must *declare* that it refines base behaviour; a silent
+  override is a defect, not a composition.
+- 🔎 LIVE_STATUS.md went **over its ceiling** because I had been writing narrative into a status
+  table whose owner column literally says "rows are states, not prose". Trimmed to states; the
+  gate was right and the fix was the one the registry prescribes.
+- Promotion is explicitly declined in the owning leaf, with the reason.
+
 ## _(2026-09-14)_ — owning a source means building without it
 
 - ⛔ The repository did not own its model's encodings: the assembler read `target/refs/riscv-opcodes`,

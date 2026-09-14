@@ -35,6 +35,7 @@
 - [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
 - [`MIRROR-DRIFT.md`](docs/tasks/MIRROR-DRIFT.md)
 - [`MODEL-BOOKS.md`](docs/tasks/MODEL-BOOKS.md)
+- [`MODEL-COMPOSE.md`](docs/tasks/MODEL-COMPOSE.md)
 - [`MODEL-METHOD.md`](docs/tasks/MODEL-METHOD.md)
 - [`P0-PROFILE.md`](docs/tasks/P0-PROFILE.md)
 - [`P1-LAB.md`](docs/tasks/P1-LAB.md)
@@ -51,6 +52,7 @@
 
 - [`decision_canonical-definition-input.md`](docs/decisions/decision_canonical-definition-input.md)
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
+- [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)

@@ -18,17 +18,18 @@ summarize the snapshot in every commit-workflow completion message.
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — the index, the doctrine documents, task-tree facts, and every other derived count in the live docs |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
-| Reference models acquired | Done | 3 obtained and pinned (Sail RISC-V 0.14, Spike `1e05ddac`, QEMU 11.1.1); ACT located, unacquired. `scripts/fetch_references.sh` re-derives every pin |
-| Matched-profile evidence path | Done | `P0-PROFILE.6`/`.8`/`.10` — **4 guest programs** (arithmetic, control flow, memory/fault); 2 models agree over 28 aligned steps; 34 spec-derived values + 4 negative observations; 6 differences; all reproduce. `scripts/run_smoke.py` |
+| Reference models acquired | Done | Sail 0.14, Spike `1e05ddac`, QEMU 11.1.1 pinned; ACT located. `scripts/fetch_references.sh` |
+| Matched-profile evidence path | Done | 4 guests, 2 models, 34 spec-derived values, 4 negative observations, 6 differences; `scripts/run_smoke.py` |
 | Requirements catalogue seeded | Done | `P0-PROFILE.3` — 26 machine-readable records, one per decision, validated by a tracked schema validator |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 33 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 66 checks **declared not implemented** |
-| Reference independence inventoried | Done | `P0-PROFILE.7` — 6 pairs, 4 verdict classes. FP is **shared**: 184 of 199 SoftFloat files byte-identical, routed to `P4-SYSTEM.7`. Encoding is not shared. 2 QEMU pairs unexamined, recorded as such |
+| Reference independence inventoried | Done | 6 pairs, 4 verdicts; FP **shared** (184/199 files identical), routed to `P4-SYSTEM.7` |
 
-| North star: model as much as possible, start small | In Progress | `decision_one-definition-one-book` — CPUs, MCUs, DSPs, devices, boards, SoCs; a unit's **kind** and **layer** decide what it may own. 1 unit registered today |
-| Dual mandate: production **and** teaching | In Progress | `decision_dual-mandate-production-and-teaching` — every model is signoff work AND material a student learns from; mistakes stay in the record. Carried by `MODEL-BOOKS` and `MODEL-METHOD` |
-| Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) — 2 of 10 leaves. The repo now **owns its encodings** (`encoding.sexp`, builds with the upstream hidden); **semantics are absent** — `.9` |
-| Modelling method + materials | In Progress | same tree — C01–C24 exist; **nothing binds a category to a material** yet (`.2`–`.4`) |
-| Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) — 6 leaves; **one canonical definition, one mdBook**: materials, gaps, method, model, evidence. 1 unit exists (`rv64i-lab-v0`, kind `cpu`) |
+| North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 1 unit today |
+| Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
+| Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 1/6 — encoding union decidable and built (65 compose, 37 collisions rejected) |
+| Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 2/10 — encodings owned; semantics absent |
+| Modelling method + materials | In Progress | same tree — no category→material binding yet |
+| Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 0/6 — one definition, one mdBook |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 

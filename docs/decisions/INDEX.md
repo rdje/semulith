@@ -16,3 +16,4 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [`decision_dual-mandate-production-and-teaching.md`](decision_dual-mandate-production-and-teaching.md) | `decision` | every model is production-grade AND a teaching text; the mistakes stay in the record because they are the instructive part |
 | [`decision_one-definition-one-book.md`](decision_one-definition-one-book.md) | `decision` | one canonical definition, one mdBook, one materials bill; kind and layer decide what a unit may own |
 | [`decision_canonical-definition-input.md`](decision_canonical-definition-input.md) | `decision` | one canonical definition per unit as a set of format-fit files; S-expressions for encodings and semantics, records stay JSON |
+| [`decision_composition-model.md`](decision_composition-model.md) | `decision` | breadth comes from composing proven models, not from gating them less; union with conflict detection, and assumption/guarantee discharge |

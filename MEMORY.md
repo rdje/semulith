@@ -13,26 +13,16 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `MODEL-METHOD` (2 of 10) and `MODEL-BOOKS` (0 of 6).
-- **Frontier leaf:** `MODEL-METHOD.9` — `semantics.sexp`, what each instruction *does*.
-- **Next action:** `MODEL-METHOD.9`. The canonical definition is the single source of truth a
-  generator engine reads (`decision_canonical-definition-input`): a **set of format-fit files**,
-  S-expressions for `encoding.sexp` and `semantics.sexp`, records staying JSON/TOML. `.8` closed
-  the encoding half — the repo now owns its encodings and **builds with the untracked upstream
-  hidden**. Semantics are the other half and **nothing machine-executable exists yet**: every
-  instruction in the declared scope needs an expression carrying the source locator it was derived
-  from, so a reviewer can check the expression against the sentence. Then `.7` (no duplicated
-  fact), `.10` (is the definition SUFFICIENT for an engine — the precondition for writing model
-  code), `.2`–`.4` (materials schema, census, acquisition), `.5`–`.6` (method, no-coding gate).
-- **Just closed:** `P0-PROFILE` 10/10. Gate `G0` run, verdict **`incomplete`** (68 declared
-  checks, 0 implemented — the deliverable, not a failure). ⛔ Reopened for `.10` after a measured
-  defect the first nine leaves carried: the profile was matched on its **instruction set and not
-  its platform**, so the reference kept a core-local interruptor a guest could read `mtime` from
-  with a plain load. Corrected at source; held by the negative fixture `guest-no-device.s`.
-  Spike's platform is **not** matchable and that is enumerated (`DIFF-PLATFORM-SPIKE`).
-- **Then:** `P1-LAB.1` — the crate skeleton; where the 68 declared checks acquire fixtures.
-- **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
-  `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-MM-0037 (leaf MODEL-METHOD.8)`.
+- **Active trees:** `MODEL-COMPOSE` (1/6), `MODEL-METHOD` (2/10), `MODEL-BOOKS` (0/6).
+- **Frontier leaf:** `MODEL-COMPOSE.2` — the fragment form.
+- **Next action:** `MODEL-COMPOSE.2`. Breadth comes from composing proven models, never from
+  gating them less (`decision_composition-model`). `.1` built the decidable half — 65 instructions
+  compose, 37 real collisions rejected. `.2` gives a fragment its form and pins the `M` fragment
+  `.1` used, which is still unpinned. ⛔ No RV64IM profile exists: `.1` proved the *decoder*
+  composes, not the semantics.
+- **Also open:** `MODEL-METHOD.9` (semantics — nothing machine-executable exists), `.10` (is the
+  definition sufficient for an engine — the precondition for writing model code), `MODEL-BOOKS.1`.
+- **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.
+- **Latest commit:** see `git log -1` — `SEMULITH-MC-0038 (leaf MODEL-COMPOSE.1)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.
