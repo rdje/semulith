@@ -226,6 +226,25 @@ recorded so it can be overturned on evidence rather than taste:
   Acceptance: fired RED by removing one instruction's semantics; `P1-LAB` cites this check rather
   than a judgement call.
 
+- ID: `MODEL-METHOD.11` — **the primary-source corpus: a local cache that holds no absolute path**
+  Status: `done`
+  Goal: a curated corpus of vendor ISA/architecture manuals became available (`chipdoc`, 3,684
+  files / 1.5 GB, 196 PDFs, explicitly curated *"to build software emulators (ISS) that run real
+  C/C++/Rust software"*). It lives **outside this repository**, so naming it directly would put an
+  absolute path in a tracked file — the exact thing Policy 12 forbids, because the repository must
+  survive being moved to another filesystem. Give materials a home, an identity and a resolver that
+  is relative all the way down.
+  Acceptance: a tracked S-expression catalogue keyed by material id carrying title, revision,
+  `sha256`, licence and a **repo-root-relative** cache path; a gitignored `.materials/` cache; a
+  resolver that verifies the digest and, when a material is absent, refuses with the command that
+  populates it; the external corpus reached **only** through an environment variable the repository
+  never stores; `grep` for the corpus's absolute path across tracked files returns 0.
+  ⛔ Sequenced before `.2`–`.4` deliberately: the census cannot record *where a material is* until
+  "where" has a form that does not break when the repository moves.
+  Verification: 22 materials catalogued and fetched, every digest verified; `0` tracked files name
+  the corpus root; 15 self-test arms, 9 of them RED about paths.
+  Commit: `SEMULITH-MM-0042`
+
 - ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
   Status: `pending`
   Goal: a gate that refuses model implementation for a profile while a category its declared scope
@@ -266,224 +285,115 @@ recorded so it can be overturned on evidence rather than taste:
 
 - None.
 
-## Acceptance Checklist (current leaf — `MODEL-METHOD.9`)
+## Acceptance Checklist (current leaf — `MODEL-METHOD.11`)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nowhere. **Nothing machine-executable existed.**
-  A generator engine reading the canonical definition found configuration, state, provenance,
-  environment assumptions and — after `.8` — encodings, and still could not produce an interpreter,
-  because what each instruction *does* was recorded only as English prose in a decision's
-  `statement` field. Census:
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nowhere — the gap was an absence. A curated
+  corpus of vendor ISA/architecture manuals became available, and this repository had **no form in
+  which to say that a material exists and where a copy is**:
 
   ```
-  $ git ls-files | grep -c -E 'sem(antics)?\.sexp'
-  0
-  $ grep -c '^\[\[decision\]\]' profiles/rv64i-lab-v0/profile.toml
-  26                     # 26 rules, all prose, none executable
-  ```
-
-- [x] **ADDRESSED (verified)** — `definitions/riscv/rv64i.sem.sexp`: **52 of 52** declared
-  instructions, each an expression, each citing the locator it was derived from.
-
-  ```
-  $ scripts/check_semantics.py definitions/riscv/rv64i.sexp definitions/riscv/rv64i.sem.sexp
-    52 of 52 declared instruction(s) have checked semantics
-  ```
-
-  ⭐ **Widths are always explicit**, because an implicit width is exactly where two models silently
-  disagree. `addiw` is `(sext 64 (trunc 32 (add (trunc 32 (reg rs1)) (sext 32 (imm imm12)))))` —
-  which says the whole of `D-WSUFFIX` in one line and can be checked against the sentence that
-  produced it.
-  ⛔ **Generated and authored content are in different files on purpose.** `rv64i.sexp` is
-  generated from a machine-readable table and regenerated whenever that table moves; putting
-  hand-derived semantics in the same file would mean a regeneration destroys them. Different
-  provenance, different file.
-
-- [x] **NO REGRESSION** — leg 2. The language is **32 forms**, each added because an RV64I
-  instruction needed it and none in anticipation, and the checker refuses everything else. Four
-  controls, each fired on the real file:
-
-  ```
-  1 declared instruction(s) have NO semantics: sraw
-  [add]: unknown form 'multiply'. The language is deliberately small and this checker refuses
-         what it cannot state the meaning of
-  [sub]: 'imm12' is not an operand this instruction has (it provides ['rd', 'rs1', 'rs2'])
-  [and]: cites no specification locator. A semantic rule with no source is a rule nobody can
-         check against the document it came from
-  ```
-
-  All restored. Whole gate `=== all doctrines green ===`; `make check` →
-  `test result: ok. 1 passed; 0 failed`; `scripts/run_smoke.py` → `ok`, undisturbed.
-  ⚠️ **What a green result here does NOT mean, stated because the number invites the stronger
-  reading.** `52 of 52` says the semantics are *well-formed, complete and cited*. It does not say
-  they are **correct**. Proving that is a differential experiment against a reference model — which
-  is what `P0-PROFILE.6` does for three guest programs today, and what `P1-LAB` must do at scale.
-  A definition that says something checkable is not yet a definition that says something true.
-
-- [x] **FIX** — `definitions/riscv/rv64i.sem.sexp` and `scripts/check_semantics.py`.
-
-- `promotion: declined (the two rules — explicit widths, and generated content never sharing a file with authored content — are stated in rv64i.sem.sexp's own header, which is the first thing anyone writing a second semantics fragment reads)`
-
-- [x] **LOCKSTEP** — leg 3: the semantics are checked against the encodings they accompany, so an
-  instruction cannot be added to one without the other noticing. `TOOLBOX.md`, `MEMORY.md`,
-  `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
-  ⛔ `riscv/m`'s semantics are **absent and that is correct**: `rv64i-lab-v0` does not compose `M`,
-  and writing semantics for a fragment no unit uses would be inventory. `MODEL-COMPOSE.6` owns what
-  happens when a composed fragment *refines* base behaviour.
-
-### `MODEL-METHOD.8` — owning the encodings
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/riscv_asm.py` constructed its
-  `Assembler` from `target/refs/riscv-opcodes` — a **network-acquired, untracked** directory. WHY it
-  matters is not tidiness: the repository did not own the encodings of its own model, so a fresh
-  clone could not build one, and the project's own rule — *a constant that is a function of an
-  external document is derived or gated, never assumed present* — was being broken by its own
-  tooling. Measured:
-
-  ```
-  $ git ls-files | grep -c riscv-opcodes
-  0
-  $ git ls-files profiles/rv64i-lab-v0 | grep -cE 'encod|semant'
+  $ git ls-files | grep -ciE 'materials|catalog'
   0
   ```
 
-  ⛔ The same census found the larger gap this leaf does **not** close: **no executable semantics
-  exist**. A generator engine reading the canonical definition today finds configuration, state,
-  provenance and environment assumptions — and neither of the two things it most needs. `.9` owns
-  the second.
+  WHY the obvious fix is wrong: the corpus lives outside the repository, so the direct route —
+  write its path in a tracked file — plants an absolute path, which Policy 12 forbids because the
+  repository must survive being moved to another filesystem. And it fails *quietly*: after a move
+  the path simply stops existing and every tool reports "not found" about a document that is
+  sitting right there, sending the reader after the wrong problem. The census leaves (`.2`–`.4`)
+  all need to record *where a material is*, so "where" needed a form first.
 
-- [x] **ADDRESSED (verified)** — `profiles/rv64i-lab-v0/encoding.sexp` is generated, tracked and
-  read by the assembler: 52 instructions, 12 operand fields, 3 scattered-immediate layouts, each
-  carrying the upstream file it came from and that file's digest. Before → after on the census
-  that defined the gap:
-
-  ```
-  $ git ls-files profiles/rv64i-lab-v0 | grep -c encoding
-  1                                      # was 0
-  $ grep -c '^  (insn ' profiles/rv64i-lab-v0/encoding.sexp
-  52
-  ```
-
-  ⭐ **The test that actually settles it** is not that the file exists, but that the model builds
-  without the untracked directory — so the upstream was **moved aside** and the whole evidence path
-  re-run:
+- [x] **ADDRESSED (verified)** — leg 2. Paths compose from two roots and the catalogue knows only
+  one of them: `cache-path` is relative to `cache-root`, which is relative to the repository root;
+  `corpus-path` is relative to a corpus root supplied at run time through a **named environment
+  variable the repository never stores**. 22 materials and 2 measured gaps catalogued:
 
   ```
-  $ mv target/refs/riscv-opcodes /tmp/ro-hidden && scripts/run_smoke.py
-  run_smoke: ok — every program matches its specification-derived expectations and reproduces;
-  every cross-model comparison that is enabled agrees
+  $ python3 scripts/materials.py --fetch
+    ok  ARM-A-DDI0487M.c -> .materials/arm/arm-a-profile-ddi0487mc.pdf (125,757,212 B, sha256 verified)
+    …  22 of 22 fetched, every digest verified
+  $ du -sh .materials   ->  233M   (same volume as the repository — Policy 13)
   ```
 
-  Four guest programs assembled, executed on two references and reproduced, with the source of the
-  encodings absent from disk. That is what "the repository owns its encodings" has to mean.
-
-- [x] **NO REGRESSION** — leg 2. Ownership without re-derivation is a copy, so
-  `fetch_references.sh` now regenerates the file from the pinned tables and compares:
-  `MATCH owned encodings agree with the pinned upstream`. Fired RED by changing **one bit** of one
-  instruction's `funct3` — `(14 12 0x7)` to `(14 12 0x6)` in `and` — which produced
-  `DIFFERS profiles/rv64i-lab-v0/encoding.sexp no longer matches what the pinned tables generate`
-  with the differing line quoted. Restored to `MATCH`.
-  The S-expression reader carries the same refusal discipline as the schema validator and its
-  controls were fired: nested forms and comments parse; an unterminated list, a stray `)` and an
-  unterminated string are all refused by name. Whole gate `=== all doctrines green ===`;
-  `make check` → `test result: ok. 1 passed; 0 failed`; `fetch_references.sh --verify-only` → 12 of
-  12 `MATCH`.
-  ⛔ **The reader was caught by its own first real input.** Its tokenizer stripped `;` comments
-  line by line *before* tokenizing, which is wrong in two ways a reader meets immediately: a `;`
-  **inside a string** truncated the string, and a string could not span lines. Generating this
-  project's own encoding file hit the second within minutes. It is now a single stream scan, where
-  whether a `;` starts a comment depends on whether a string is open — which is the only way that
-  question can be answered correctly.
-
-- [x] **FIX** — `scripts/sexp.py` (a reader for exactly the shapes these files use, refusing the
-  rest), `scripts/gen_encoding.py`, the tracked `encoding.sexp`, `riscv_asm.py` reading the
-  canonical definition, and the re-derivation in `fetch_references.sh`.
-
-- `promotion: declined (the lesson — ownership is proved by building with the source removed — is stated in gen_encoding.py's header and demonstrated by this leaf's own verification row; the reader's comment/string defect is stated in sexp.py's parse docstring where anyone editing it will meet it)`
-
-- [x] **LOCKSTEP** — leg 3: the owned encodings are re-derived on demand against the pinned tables,
-  and the model builds without them. `TOOLBOX.md` gains both tools; `MEMORY.md`, `LIVE_STATUS.md`,
-  `CHANGELOG.md` and `DEV_NOTES.md` updated in this commit.
-  ⚠️ Stated plainly: this makes the repository own its encodings. It does **not** make the
-  canonical definition sufficient — semantics are still absent, and `.10` is the leaf that turns
-  *"the engine can extract all it needs"* from an intention into a verdict.
-
-### `MODEL-METHOD.1` — the narrower-instrument sweep
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. `P0-PROFILE.10` corrected one instance of a pattern and
-  left the general question open: *which other "matched" claims rest on an instrument answering a
-  narrower question?* WHERE: every pinned scalar in `references.toml` that stands for a
-  configuration. The sweep enumerated them and checked each rather than reasoning about them:
+  The property the whole design exists for, measured on the tracked tree:
 
   ```
-  $ grep -cE 'matched_isa_string|matched_config' profiles/rv64i-lab-v0/references.toml
-  6
-  $ spike --help | grep -icE 'print.*isa|dump.*isa'
+  $ git grep -c -I --cached -e 'livework' -- .     # the corpus root, in any tracked file
   0
+  $ grep -c '/Volumes/' <a file that has one>      # control: the instrument can see one
+  1
   ```
 
-  ⛔ **A second instance, and worse than the first.** `spike.matched_isa_string = "rv64i"` was the
-  command-line **input** recorded in an observation's slot. Spike has no `--print-isa` option, so
-  nobody had ever confirmed it configured what it was told. The first instance was a narrow
-  reading; this one was not a reading at all.
+  Four tracked files do contain the *string* `/Volumes/…`, and each is accounted for: two are
+  prose warning against it, one is the `DOCPATH` gate's own detection pattern, and one is a RED
+  self-test fixture that must hold an absolute path to prove it is refused. **None is a path to
+  anything.**
 
-- [x] **ADDRESSED (verified)** — the scalar is now **read back**, from a surface Spike does offer:
-
-  ```
-  $ spike --isa=rv64i  --priv=m --dump-dts <elf> | grep riscv,isa    ->  riscv,isa = "rv64i"
-  $ spike --isa=rv64im --priv=m --dump-dts <elf> | grep riscv,isa    ->  riscv,isa = "rv64im"
-  ```
-
-  The second line is the control: the read-back tracks the input, so it is an observation and not
-  an echo. ⭐ **And the replacement principle is now an instrument.** Both models emit a device
-  tree — the widest self-description either offers — so `scripts/compare_platforms.py` compares
-  them field by field instead of trusting a scalar:
+  The resolver refuses rather than approximates — 15 arms, every RED one about a path that would
+  break on a move:
 
   ```
-  FIELD                  sail (matched)           spike (matched)          agree
-  riscv,isa              "rv64i_zvl32b"           "rv64i"                  NO
-  mmu-type               "riscv,none"             "riscv,sv57"             NO
-  riscv,pmpregions       <absent>                 <0x10>                   NO
-  timebase-frequency     <500000000>              <0x989680>               NO
-  devices only spike advertises: clint@2000000, cpu@0, ns16550@10000000, plic@c000000
+  $ python3 scripts/materials.py --self-test
+    ok  RED  an ABSOLUTE cache-path is refused        ok  RED  a cache-path climbing out with '..' is refused
+    ok  RED  an ABSOLUTE corpus-path is refused       ok  RED  a cached file with the wrong digest is refused
+    ok  RED  an ABSOLUTE cache-root is refused        ok  RED  an absent material refuses WITH the command that fixes it
+    ok  GREEN resolve returns a REPO-ROOT-RELATIVE path
+  materials --self-test: 15 pass / 0 fail
   ```
 
-  **4 of 4 platform fields disagree and Spike advertises four devices Sail does not** — a UART, a
-  platform interrupt controller, an interruptor and a CPU node, plus an Sv57 MMU and 16 PMP
-  regions. None of that is visible in an ISA string, which is the entire point.
+- [x] **NO REGRESSION** — leg 3. Nothing that existed changed behaviour; the leaf is additive.
+  Re-run in full:
 
-- [x] **NO REGRESSION** — leg 2. The discipline is enforced rather than remembered: rule 5b in
-  `PROFILE-CONSISTENCY` refuses a pinned `matched_isa_string` that does not declare **both** what
-  it does not establish and where it was read from. Fired RED on the real dossier:
-  `UNSCOPED SCALAR rv64i-lab-v0/spike: pins 'matched_isa_string' with no 'matched_scope'`.
-  `--self-test` → `39 pass / 0 fail` (36 → 39); 39 arms written, 39 run. Whole gate
-  `=== all doctrines green ===`; `make check` → `test result: ok. 1 passed; 0 failed`;
-  `scripts/run_smoke.py` → `ok`, so the evidence path is undisturbed.
-  ⚠️ **The wide instrument has its own scope, and the module says so rather than implying it.** A
-  device tree describes what a platform *advertises* — not semantics, not memory attributes — and
-  it carries residue: Sail's tree still advertises a `timebase-frequency` and an `htif` node with
-  no device behind them. **Wider is not complete**, so the honest claim is "these fields agree",
-  never "the models match". Recording that is what stops this instrument becoming the next
-  narrow one.
+  ```
+  $ python3 scripts/sexp.py --self-test        -> 18 pass / 0 fail
+  $ python3 scripts/check_semantics.py …       -> 52 of 52 declared instruction(s) have checked semantics
+  $ python3 scripts/run_smoke.py | tail -1     -> run_smoke: ok — every program matches …
+  $ bash scripts/check_doctrines.sh            -> all doctrines green
+  ```
 
-- [x] **FIX** — `scripts/compare_platforms.py` added; `matched_scope` and
-  `matched_isa_string_source` added to all three candidates (including QEMU, whose emptiness is
-  now visible rather than inferred from an absent row); rule 5b registered with three arms.
+  ⛔ `.materials/` is gitignored and holds 233 MB of third-party documents: the repository
+  catalogues their identity, revision, digest and licence, and redistributes none of them.
 
-- `promotion: declined (the lesson is stated in compare_platforms.py's docstring and in rule 5b's header, both of which a reader meets before they could act on it; the existing zero-hits-absence-or-blindness card carries the neighbouring failure mode, so a new card would be cross-references only)`
+- [x] **LOCKSTEP** — `materials/` registered in `doctrine/readme_routes.tsv` **in the commit that
+  creates it**, with its ceilings derived from its own measured size (the lesson the CHANGELOG
+  shard left in that file's header); `TOOLBOX.md` gains the resolver row; `.gitignore` gains the
+  cache with the reason written beside it. `CHANGELOG.md` had 1,326 B of headroom against its
+  64 KiB ceiling, so it was sharded first — 64,210 → 28,188 B, 11 entries moved to
+  `docs/changelog/2026-09-p0-to-mirror.md` (36,268 B, under the 64 KiB per-part bound).
 
-- [x] **LOCKSTEP** — leg 3: the scope declarations are gated on every commit and the platform
-  comparison is a tracked command. `TOOLBOX.md` gains the instrument; `MEMORY.md`,
-  `LIVE_STATUS.md`, `CHANGELOG.md` and `DEV_NOTES.md` updated in this commit.
-  ⛔ **The answer to the open question, stated plainly: one further instance existed, it is fixed,
-  and the pattern is now gated.** I am not claiming there are no others — I am claiming that a new
-  one cannot be *added* without declaring its scope, which is the only durable form of that answer.
+## ROUTING EVIDENCE
 
-- `promotion: declined (the boundary is owned by docs/CPU_ENVIRONMENT.md §5 and INFORMATION_CATALOG.md, which this tree cites rather than restates; the derived rule — a layer the model does not own is not a gap — is stated in this tree's own layer section where a reader meets it before building the catalogue)`
+Two findings measured here are **not** this tree's to fix, and both are recorded in the catalogue
+as first-class `(gap …)` records rather than as prose someone must remember:
+
+- `GAP-AMD64-APM` — probed `find . -iname '*APM*' -o -iname '*AMD64*' -o -iname '*24592*'` → no
+  match. The corpus's `amd/` directory holds exactly one document, an IOMMU specification. **There
+  is no AMD instruction-set manual**, so an x86-64 unit built from this corpus would rest on
+  Intel's description of the architecture alone. Reproduces outside the family: the probe is over
+  the whole corpus, not over `amd/`.
+- `GAP-INTEL-SDM-VOL1` — probed `find . -iname '*253665*' -o -iname '*Vol1*'` → no match, while
+  Volumes 2, 3 and 4 are present. Volume 1 carries the basic execution environment, data types and
+  register overview — the architectural **state** a model declares first. An x86 unit could not
+  state its state from this corpus alone.
+
+Both belong to `MODEL-METHOD.3`, the coverage census, which is where a gap becomes a disposition.
+Neither is routed to another tree; neither is worked around here.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-14` | `MODEL-METHOD.11` | corpus survey: files, PDFs, vendors | 3,684 files / 1.5 GB / 196 PDFs across 23 vendors |
+| `2026-09-14` | `MODEL-METHOD.11` | `materials.py --self-test` | `15 pass / 0 fail`; 9 RED arms about paths |
+| `2026-09-14` | `MODEL-METHOD.11` | `materials.py --fetch` (22 materials) | 22 of 22, every sha256 verified, 233 MB |
+| `2026-09-14` | `MODEL-METHOD.11` | Policy 12: corpus root in any tracked file | `0` files; control confirms the probe can see one |
+| `2026-09-14` | `MODEL-METHOD.11` | Policy 13: cache volume vs repo volume | both `/dev/disk7s1` |
+| `2026-09-14` | `MODEL-METHOD.11` | is the RISC-V PDF the artifact the profile pins? | NO — `20260911 Intermediate` vs pinned `v20260120` |
+| `2026-09-14` | `MODEL-METHOD.11` | do our 52 citations resolve in that PDF? | NO — it numbers RV32I §2.1 / RV64I §2.2; we cite §1.1 / §3.1 |
+| `2026-09-14` | `MODEL-METHOD.11` | RISC-V ISA manual licence, read from the document | CC-BY-4.0 — bears on `OQ-4` / rule `SRC-01` |
+| `2026-09-14` | `MODEL-METHOD.11` | gap probe: AMD64 ISA manual | absent; `amd/` holds one IOMMU spec |
+| `2026-09-14` | `MODEL-METHOD.11` | gap probe: Intel SDM Volume 1 | absent; Vols 2/3/4 present |
+| `2026-09-14` | `MODEL-METHOD.11` | regression: sexp, semantics, smoke, doctrines | 18/0, 52 of 52, ok, all green |
 | `2026-09-14` | `MODEL-METHOD.1` | sweep over every pinned configuration scalar | 1 further instance found: Spike's ISA was an input, not a read-back |
 | `2026-09-14` | `MODEL-METHOD.1` | Spike ISA read-back, with its control | `rv64i` → `rv64i`; `rv64im` → `rv64im` |
 | `2026-09-14` | `MODEL-METHOD.1` | `compare_platforms.py` on both matched models | 4 of 4 fields disagree; 4 devices only Spike advertises |
@@ -502,6 +412,7 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.11` | `SEMULITH-MM-0042 (leaf MODEL-METHOD.11): materials get an identity, and no path that breaks on a move` | 22 materials, 2 measured gaps, 0 absolute paths |
 | `MODEL-METHOD.9` | `SEMULITH-MM-0040 (leaf MODEL-METHOD.9): the semantics, 52 of 52, every rule cited` | well-formed and cited — NOT verified correct |
 | `MODEL-METHOD.8` | `SEMULITH-MM-0037 (leaf MODEL-METHOD.8): the repository owns its encodings` | builds with the upstream hidden; re-derivation fired RED |
 | `MODEL-METHOD.1` | `SEMULITH-MM-0033 (leaf MODEL-METHOD.1): answer the narrower-instrument sweep with a wider instrument` | 1 further instance found and fixed; the pattern gated |

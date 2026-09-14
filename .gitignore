@@ -21,3 +21,9 @@ git_message_brief.txt
 # Python bytecode from the tracked tools under scripts/ — generated, never tracked
 __pycache__/
 *.py[cod]
+
+# Primary-source materials cache (scripts/materials.py --fetch). Large third-party documents:
+# this repository catalogues their identity, revision, digest and licence in the tracked
+# materials/catalog.sexp, and does not redistribute the documents themselves. An empty cache is
+# the normal state of a fresh clone, not a fault.
+/.materials

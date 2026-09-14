@@ -13,15 +13,17 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `SOT-FORMAT` (1/9), `MODEL-METHOD` (3/10), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6).
+- **Active trees:** `SOT-FORMAT` (1/9), `MODEL-METHOD` (4/11), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6).
 - **Frontier leaf:** `SOT-FORMAT.8` — the book describes no part of the canonical definition.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression,
   **composable and extensible to new constructs in the same format**. This **supersedes** the
   per-file format split in `decision_canonical-definition-input` — composition is a merge, and
   three formats are three merge semantics.
-- **Next action:** ⚠️ **shard `CHANGELOG.md` first** — 64,210 B against a 65,536 B ceiling, so the
-  next ordinary entry blocks a commit mid-work (procedure: `docs/changelog/`, already registered).
-  Then `SOT-FORMAT.8` (the book's canonical-definition chapter describes no part of the canonical
+- **Materials:** 22 primary sources catalogued in `materials/catalog.sexp` (RISC-V, Arm A/R/M,
+  Intel SDM 2-4, Power, SPARC, OpenRISC, 6 TI DSPs, MSP430, Z80, W65C02S) + 2 measured gaps.
+  Documents cached in gitignored `.materials/`; `scripts/materials.py --fetch` repopulates it, and
+  the corpus location comes from `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
+- **Next action:** `SOT-FORMAT.8` (the book's canonical-definition chapter describes no part of the canonical
   definition — measured drift), then `.1`, the schema language written in itself.
   ⛔ Order matters: the schema language lands **before** any record is converted, or the migration
   spends a window with `RECORD-SCHEMA`'s 15 fired arms replaced by "it parses".

@@ -40,6 +40,20 @@
 # ⛔ Ceilings are DERIVED from this project's own trimmed surfaces, never copied from another
 # project. Raising one requires a reviewed decision that the surface's contract expanded.
 #
+# Derivation, MODEL-METHOD.11, when the primary-source catalogue got a home:
+#   materials/       1 file / 25,409 B at adoption (catalog.sexp, 22 materials + 2 measured gaps).
+#                    Health 4 files / 64 KiB; ceiling 12 / 256 KiB; per-part 128 KiB. ⭐ The axis
+#                    that moves here is BYTES PER FILE, not file count: a catalogue grows by
+#                    material, and each material carries prose about what it supplies and why.
+#                    So the per-part bound is the one that will bite, and when it does the right
+#                    split is by corpus or by architecture family, not by date. Registered in the
+#                    same commit that created the directory, for the reason the CHANGELOG shard
+#                    records below.
+#                    ⛔ `.materials/` — the fetched document cache — is NOT a routed destination
+#                    and has no row: it is gitignored, holds no tracked content, and is rebuilt by
+#                    `scripts/materials.py --fetch`. A registry row would claim the repository
+#                    governs bytes it does not carry.
+#
 # Derivation, MODEL-COMPOSE.2, when reusable definition fragments got their own home:
 #   definitions/     2 files / 10,074 B at adoption (riscv/rv64i.sexp, riscv/m.sexp). Health 12
 #                    files / 128 KiB; ceiling 30 / 256 KiB; per-part 64 KiB. A fragment is one
@@ -111,3 +125,4 @@ profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSI
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0
+materials/	reader_navigation	partitioned	the primary-source catalogue; one record per document, identity and licence tracked, bytes not	4	65536	12	262144	131072
