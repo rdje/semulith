@@ -407,3 +407,14 @@ lesson nobody can retrieve by question is a lesson nobody has.
 - The reader every source of truth in the repository depends on had **no self-test at all**, and
   I was one leaf away from building a schema layer on top of it. Read the foundation before you
   stand on it; 18 arms cost twenty minutes and the first three were RED.
+
+## _(2026-09-14)_ — a survey that returns results is not a survey that returned all of them
+
+- Catalogued 22 processor manuals from a 3,684-file corpus by enumerating vendor directory names
+  from memory. A re-sweep by PATH SHAPE found eight more, including the entire M68000 architecture
+  (filed under `nxp/m68k/` — NXP inherited Motorola via Freescale) and every board-class document
+  in the corpus. Promoted to
+  [`a-survey-that-found-things-can-still-have-missed-things`](docs/knowledge/a-survey-that-found-things-can-still-have-missed-things.md).
+- The giveaway I ignored: my own probe named a `motorola/` directory that does not exist. A probe
+  naming something absent is a signal; I read it as nothing. Read the COMPLEMENT of any classifier
+  before trusting it.

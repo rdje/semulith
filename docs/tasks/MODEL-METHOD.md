@@ -265,6 +265,27 @@ recorded so it can be overturned on evidence rather than taste:
   self-test arms; absent-evidence control refuses.
   Commit: `SEMULITH-MM-0043`
 
+- ID: `MODEL-METHOD.13` — **the corpus moved, and my survey had sampled rather than swept**
+  Status: `done`
+  Goal: the corpus advanced three commits (`4201f50` → `3c45e81`) and both gaps this project
+  measured are now closed at the source — 5 AMD64 APM volumes and Intel SDM Volume 1 imported.
+  It also **moved** the RISC-V PDF, which breaks `--fetch` for a catalogued material today. And a
+  re-survey found that my first pass **sampled by guessing vendor directory names** (`zilog`,
+  `wdc`, `openrisc`, …) instead of sweeping by path, so it missed eight processor-class documents
+  including an entire architecture, M68000, which sits under `nxp/m68k/` rather than a `motorola/`
+  directory that does not exist.
+  Acceptance: the catalogue is re-derived from a **path sweep**, not a sample, and says so; the
+  corpus revision is re-pinned and drift from it is detected rather than discovered; both gap
+  records are closed **with evidence and kept**, never deleted; the pinned `v20260120` HTML
+  snapshot (72 pages + a verifying manifest) becomes a first-class material, which makes
+  `check_citations.py` runnable from the cache **offline**; `--fetch` succeeds for every material.
+  ⭐ The corroboration is worth recording on its own: chipdoc independently acquired the
+  `v20260120` snapshot by its own route, and its digests for `intro`, `rv32` and `rv64` equal the
+  ones committed in `sources.toml`. Two acquisitions, one set of bytes.
+  Verification: 22 → 36 materials, 36 of 36 fetched; both gaps closed with evidence; citations
+  resolve 52 of 52 **offline**; 20 self-test arms.
+  Commit: `SEMULITH-MM-0044`
+
 - ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
   Status: `pending`
   Goal: a gate that refuses model implementation for a profile while a category its declared scope
@@ -305,80 +326,120 @@ recorded so it can be overturned on evidence rather than taste:
 
 - None.
 
-## Acceptance Checklist (current leaf — `MODEL-METHOD.12`)
+## Acceptance Checklist (current leaf — `MODEL-METHOD.13`)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/check_semantics.py:112`, which asks
-  whether a rule *carries* a citation:
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. Two causes, one in the corpus and one in me.
 
-  ```python
-  if not _sexp.children(s, "source"):
-      errors.append(f"{where}: cites no specification locator …")
-  ```
-
-  WHY that is not enough: a citation that points at a section which does not exist still carries.
-  Presence was checked; **resolution was not**, so the sentence *"52 of 52, every rule cited"* could
-  only ever be settled by a person going and looking. And the second half of the cause was in
-  `sources.toml`, which recorded `revision = "v20260120"` and no **publication** — so the natural
-  place to look for it was the wrong one.
-
-  This surfaced as an external challenge, which reported — correctly on every observation — that
-  `riscv/riscv-isa-manual` has no `2026-01-20` tag, that its January PDFs number RV32I §2 and
-  RV64I §4, and that §1.1 / §3.1 is what you get only when `Introduction` is unnumbered front
-  matter. It concluded the pin matched no public build.
-
-- [x] **ADDRESSED (verified)** — leg 2. **The challenge is refuted, re-derived from the primary
-  artifact before it was either defended or conceded.** The two are different *publications* of one
-  specification: `docs.riscv.org` (the Ratified Specifications Library, pinned here) renders
-  `Introduction` as unnumbered front matter exactly as the report deduced, so RV32I is §1.1 and
-  RV64I §3.1.
+  WHERE (1): `materials/catalog.sexp`, `RVI-ISA-PDF-20260911`'s `corpus-path`. The corpus moved the
+  file (`git diff --name-status` reports `R100`, a pure rename), so a tracked record became false:
 
   ```
-  $ curl … docs.riscv.org/reference/isa/v20260120/unpriv/{intro,rv32,rv64}.html
-    HTTP 200 / 200 / 200 — and byte-identical to the pinned copies AND to the committed digests
-  $ python3 -c '…extract <h1>-<h6> from the pinned rv64.html…'
-    3.1. RV64I …   3.1.1. Register State   3.1.2. Integer Computational Instructions
-    3.1.2.1. Integer Register-Immediate   3.1.2.2. Integer Register-Register   3.1.3. Load and Store
+  $ python3 scripts/materials.py --fetch RVI-ISA-PDF-20260911
+    REFUSED RVI-ISA-PDF-20260911: not at $SEMULITH_CHIPDOC_ROOT/risc-v/isa/current/riscv-isa-manual_…pdf
   ```
 
-  `scripts/check_citations.py` now makes that a verdict rather than a look:
+  WHY: the catalogue pins a corpus revision (`4201f50`) but nothing compared it against the
+  checkout, so a moved path could only ever be discovered by a failing fetch.
+
+  WHERE (2): my survey method. I enumerated by **guessing vendor directory names** — `zilog`,
+  `wdc`, `openrisc`, `openpower`, `sparc`, `ti`, `arm`, `amd`, `intel` — rather than sweeping by
+  path. Every probe returned relevant results, so nothing signalled absence. Re-swept by path:
 
   ```
-  $ python3 scripts/check_citations.py
-  citations: definitions/riscv/rv64i.sem.sexp against RISC-V Ratified Specifications Library (docs.riscv.org)
-    ok  RVI-RV32I §1.1.4   13 instruction(s)   …   ok  RVI-RV64I §3.1.3  11 instruction(s)
-    52 of 52 instruction citations resolve in the pinned artifact (9 distinct locator(s), 3 pinned source(s))
-  $ python3 scripts/check_citations.py --self-test        -> 10 pass / 0 fail
+  $ find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
   ```
 
-  ⛔ And it refuses instead of passing when its evidence is absent — the control that matters most,
-  because this tool's evidence is untracked and needs the network:
+  Eight documents missed, including the **entire M68000 architecture** (under `nxp/m68k/` — NXP
+  inherited Motorola through Freescale) and **every board-class document in the corpus** (three
+  ESP32 SoC manuals, two Raspberry Pi datasheets), which is the whole material base for `P5-BOARD`.
+  ⭐ The giveaway I ignored: my own probe named a `motorola/` directory that does not exist.
+
+- [x] **ADDRESSED (verified)** — leg 2. Corpus re-pinned `4201f50` → `3c45e81`; the moved path
+  corrected; the catalogue re-derived from the sweep and carrying a `derivation` field that names
+  the sweep command, so the method can be judged rather than believed. 22 → **36 materials**:
 
   ```
-  $ mv target/sources/riscv-v20260120 … && python3 scripts/check_citations.py ; echo $?
-  REFUSED: the pinned artifacts are not present at target/sources/riscv-v20260120 … Fetch them:
-      scripts/fetch_sources.sh
-  1
+  $ python3 scripts/materials.py --fetch     ->  36 of 36 ok, every sha256 verified
+  $ python3 scripts/materials.py --self-test ->  20 pass / 0 fail  (was 15)
   ```
 
-  `sources.toml` now names its publication **and the one it is not**, because the next person to
-  check this will start where the last one did.
-
-- [x] **NO REGRESSION** — leg 3. The pin did not move and no semantic file changed; the leaf adds an
-  instrument and a disambiguation.
+  **Both gaps this project measured are closed at the source, three commits after it reported
+  them** — and closed **with evidence and kept**, never deleted, because a deleted gap erases the
+  fact that the question was asked:
 
   ```
-  $ python3 scripts/check_semantics.py …    -> 52 of 52 declared instruction(s) have checked semantics
-  $ python3 scripts/materials.py --self-test -> 15 pass / 0 fail   (catalogue still valid)
-  $ python3 scripts/run_smoke.py | tail -1   -> run_smoke: ok …
-  $ bash scripts/check_doctrines.sh          -> all doctrines green
+  GAP-AMD64-APM        (status resolved)  5 AMD64 APM volumes imported at e401a56
+                       (residual …)       AMD's doc hub is not scriptable; a newer revision could exist
+  GAP-INTEL-SDM-VOL1   (status resolved)  SDM Vol 1 (253665 rev 092, 600 pp) imported at 98de100
   ```
 
-- [x] **LOCKSTEP** — `TOOLBOX.md` gains the resolver row; the catalogue's `RVI-ISA-PDF-20260911`
-  note records the settled finding; knowledge card
-  [`a-version-string-is-not-an-identity`](../knowledge/a-version-string-is-not-an-identity.md);
-  the declined substitution recorded as `(gap GAP-RISCV-JAN-2026-PDF)`.
+  ⭐ **A material that is not one file.** The pinned `v20260120` HTML snapshot is 72 pages; a
+  snapshot identified by the digest of one page is not identified at all. `kind snapshot` names a
+  `manifest`, whose digest is the material's identity and whose entries verify every page:
+
+  ```
+  ok  RVI-PINNED-V20260120 -> .materials/riscv/pinned-v20260120 (6,229 B, sha256 verified,
+                                                                 72 manifest entries verified)
+  ```
+
+  ⭐ **And that ends a real fragility.** The citation evidence lived only in an untracked working
+  area that needs the network — the reason `check_citations.py` could not be a gate. It now runs
+  from the manifest-verified cache, **offline**, and says which route it used:
+
+  ```
+  via fetched working area target/sources/riscv-v20260120        -> 52 of 52 resolve
+  via materials cache .materials/riscv/pinned-v20260120/unpriv   -> 52 of 52 resolve
+      (manifest-verified, offline)
+  ```
+
+  ⛔ Corpus drift is now **detected, not discovered**: `--list` and `--verify` compare the
+  catalogued revision against `git -C $ROOT rev-parse HEAD` and say so.
+
+  ⭐ **Independent corroboration of the pin.** chipdoc acquired the `v20260120` snapshot by its own
+  route; its digests for `intro`, `rv32` and `rv64` **equal** those committed in `sources.toml`,
+  and its `SHA256SUMS` verifies 72 of 72. Two acquisitions, two parties, one set of bytes — which
+  is the one thing last leaf's external challenge could not have produced by agreement.
+
+- [x] **NO REGRESSION** — leg 3. ⛔ The S-expression reader **refused this leaf's own first draft**
+  of the catalogue — the generator had written literal `\uXXXX` escapes — and refused it by name:
+
+  ```
+  SexpError: materials/catalog.sexp:41: unknown escape '\u' in string. The reader refuses rather
+  than guessing what it was meant to be
+  ```
+
+  That is `SOT-FORMAT.7`'s closed escape table doing exactly the job it was built for, one leaf
+  later, on content rather than on a fixture. Four escapes replaced with the characters themselves;
+  the reader was not touched. Full re-run:
+
+  ```
+  $ python3 scripts/sexp.py --self-test          -> 18 pass / 0 fail
+  $ python3 scripts/check_citations.py           -> 52 of 52 (both routes)
+  $ python3 scripts/check_semantics.py …         -> 52 of 52 declared instruction(s)
+  $ python3 scripts/run_smoke.py | tail -1       -> run_smoke: ok …
+  $ bash scripts/check_doctrines.sh              -> all doctrines green
+  ```
+
+- [x] **LOCKSTEP** — knowledge card
+  [`a-survey-that-found-things-can-still-have-missed-things`](../knowledge/a-survey-that-found-things-can-still-have-missed-things.md),
+  promoted from the dated `DEV_NOTES.md` lesson; `TOOLBOX.md` already carries the resolver rows;
+  `materials/` stays within its registry ceilings (43,462 B against a 131,072 B per-part bound).
 
 ## ROUTING EVIDENCE
+
+`MODEL-METHOD.13` — the sweep surfaced **every board-class document in the corpus**, which belongs
+to `P5-BOARD` and not to this tree: three ESP32 SoC manuals, the RP2040 and the RP2350 datasheets.
+Measured and catalogued rather than routed as prose, with two pairings worth the next reader's
+attention. `RP2040-DS` pairs exactly with `ARM-M-DDI0419E` — a 374-page architecture manual and the
+part built around it, processor and board in two documents, which is the cleanest available test of
+this project's layer boundary. `RP2350-DS` describes a part carrying **both** an Arm Cortex-M33 and
+a Hazard3 RISC-V core on one die, software-selectable: if `MODEL-COMPOSE`'s slots are real, one
+board description should compose with either processor. Reproduces outside the family: the sweep
+was over the whole corpus by path, not over `raspberry-pi/`.
+
+`ESP32-C3-TRM` is the one this project reaches first — a shipping RISC-V SoC whose UART and
+interrupt matrix are specified in the document where the director said they belong.
+
 
 `MODEL-METHOD.12` — the interim substitution offered by the external investigation (pull the
 2026-01-17 / 01-21 release PDFs as "the closest official match") is **declined**, and the reason is
@@ -427,6 +488,15 @@ Neither is routed to another tree; neither is worked around here.
 | `2026-09-14` | `MODEL-METHOD.12` | `check_citations.py --self-test` | `10 pass / 0 fail` |
 | `2026-09-14` | `MODEL-METHOD.12` | control: working area removed | REFUSED with the fetch command, `exit=1` — no silent pass |
 | `2026-09-14` | `MODEL-METHOD.12` | licence of the docs.riscv.org rendering | only `Copyright © RISC-V International®` — no CC-BY; `OQ-4` stays open |
+| `2026-09-14` | `MODEL-METHOD.13` | corpus commits since the catalogued revision | 3 (`4201f50` → `3c45e81`), 88 files, +345,967 lines |
+| `2026-09-14` | `MODEL-METHOD.13` | `--fetch` of the moved RISC-V PDF, before the fix | REFUSED — a tracked record was false |
+| `2026-09-14` | `MODEL-METHOD.13` | path sweep vs the sampled first survey | 8 documents missed, incl. all of M68000 and every board document |
+| `2026-09-14` | `MODEL-METHOD.13` | chipdoc's snapshot digests vs this project's `sources.toml` | `intro`/`rv32`/`rv64` all EQUAL — independent acquisition |
+| `2026-09-14` | `MODEL-METHOD.13` | `SHA256SUMS` of the pinned snapshot | 72 OK / 0 FAILED |
+| `2026-09-14` | `MODEL-METHOD.13` | `materials.py --self-test` after snapshot support | `20 pass / 0 fail` (was 15) |
+| `2026-09-14` | `MODEL-METHOD.13` | `materials.py --fetch` (36 materials) | 36 of 36, digests verified, 72 manifest entries |
+| `2026-09-14` | `MODEL-METHOD.13` | `check_citations.py` with the working area removed | 52 of 52 **offline**, via the manifest-verified cache |
+| `2026-09-14` | `MODEL-METHOD.13` | the reader on this leaf's own first draft | REFUSED: `unknown escape '\u'` — content fixed, reader untouched |
 | `2026-09-14` | `MODEL-METHOD.1` | sweep over every pinned configuration scalar | 1 further instance found: Spike's ISA was an input, not a read-back |
 | `2026-09-14` | `MODEL-METHOD.1` | Spike ISA read-back, with its control | `rv64i` → `rv64i`; `rv64im` → `rv64im` |
 | `2026-09-14` | `MODEL-METHOD.1` | `compare_platforms.py` on both matched models | 4 of 4 fields disagree; 4 devices only Spike advertises |
@@ -445,6 +515,7 @@ Neither is routed to another tree; neither is worked around here.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.13` | `SEMULITH-MM-0044 (leaf MODEL-METHOD.13): the corpus moved, and my survey had sampled` | 36 materials; both gaps closed; citations resolve offline |
 | `MODEL-METHOD.12` | `SEMULITH-MM-0043 (leaf MODEL-METHOD.12): a citation that is present is not a citation that resolves` | challenge refuted; 52 of 52 resolve |
 | `MODEL-METHOD.11` | `SEMULITH-MM-0042 (leaf MODEL-METHOD.11): materials get an identity, and no path that breaks on a move` | 22 materials, 2 measured gaps, 0 absolute paths |
 | `MODEL-METHOD.9` | `SEMULITH-MM-0040 (leaf MODEL-METHOD.9): the semantics, 52 of 52, every rule cited` | well-formed and cited — NOT verified correct |

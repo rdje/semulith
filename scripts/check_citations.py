@@ -129,6 +129,27 @@ def check(sources_toml: Path, work_dir: Path, semantics: Path) -> int:
     return 0
 
 
+def _work_dir(cfg: dict) -> tuple[Path, str]:
+    """Where the pinned pages are RIGHT NOW, and which route found them.
+
+    The fetched working area is the primary route. ⛔ But it is untracked and needs the network,
+    which is what kept this check off the gate list. The materials cache is the second route: the
+    same snapshot, verified against a manifest covering all 72 pages, reproducible OFFLINE. Which
+    route was used is PRINTED, because a check whose evidence could come from two places and does
+    not say which is a check whose result cannot be reproduced.
+    """
+    wd = REPO / cfg["work_dir"]
+    if wd.is_dir():
+        return wd, f"fetched working area {cfg['work_dir']}"
+    try:
+        import materials as _m
+        cat = _m.load()
+        rel = _m.resolve(cat, "RVI-PINNED-V20260120")
+        return REPO / rel / "unpriv", f"materials cache {rel}/unpriv (manifest-verified, offline)"
+    except Exception:                                   # noqa: BLE001 — fall back to the refusal
+        return wd, f"fetched working area {cfg['work_dir']}"
+
+
 def main(argv: list[str]) -> int:
     if len(argv) >= 2 and argv[1] == "--self-test":
         return _selftest()
@@ -136,9 +157,11 @@ def main(argv: list[str]) -> int:
     st = prof / "sources.toml"
     try:
         cfg = tomllib.loads(st.read_text())
-        wd = REPO / cfg["work_dir"]
+        wd, route = _work_dir(cfg)
         sem = REPO / "definitions" / "riscv" / "rv64i.sem.sexp"
-        print(f"citations: {sem.relative_to(REPO)} against {cfg.get('publication', '(publication not named)')}")
+        print(f"citations: {sem.relative_to(REPO)} against "
+              f"{cfg.get('publication', '(publication not named)')}")
+        print(f"           via {route}")
         return check(st, wd, sem)
     except (CitationError, _sexp.SexpError, KeyError, OSError) as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)

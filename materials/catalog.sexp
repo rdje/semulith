@@ -34,8 +34,14 @@
     (id "chipdoc")
     (title "chipdoc — curated documentation for digital components, chips, interfaces and protocols")
     (kind git-repository)
-    (revision "4201f50")
+    (revision "3c45e81")
     (env-var "SEMULITH_CHIPDOC_ROOT")
+    (derivation "Re-derived 2026-09-14 by a PATH SWEEP, not a sample:
+                 find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
+                 ⭐ The first pass guessed vendor directory names instead and missed eight
+                 documents, among them the ENTIRE M68000 architecture — which lives under
+                 nxp/m68k/, not a motorola/ directory that does not exist. A catalogue assembled by
+                 guessing where things are records the surveyor's expectations, not the corpus.")
     (note "Curated, in its own words, to expose enough behaviour to reconstruct implementable
            intent AND to build software emulators that run real C/C++/Rust software — which is
            this project's north star stated by someone else, independently. 3684 files, 196 PDFs.
@@ -70,7 +76,7 @@
                        the original authors, and this and future versions of this document will be
                        released under the same license.\"")
     (corpus "chipdoc")
-    (corpus-path "risc-v/isa/current/riscv-isa-manual_2026-09-11_RISC-V_Unprivileged_and_Privileged_ISA.pdf")
+    (corpus-path "risc-v/isa/reference/github-riscv-isa-manual/2026-09-11/riscv-isa-manual_2026-09-11_RISC-V_Unprivileged_and_Privileged_ISA.pdf")
     (cache-path "riscv/riscv-isa-manual-20260911.pdf")
     (sha256 "70cb3c0b1de50d4f932a0ae6a5406891766aa741f6e2399f279e3e3af22a6fd4")
     (bytes 5529517)
@@ -160,6 +166,11 @@
   ;; ------------------------------------------------------------------------------------
   ;; Gaps: what was LOOKED FOR and is not here. A census that records only what it found
   ;; cannot be distinguished from one that did not look.
+  ;;
+  ;; ⛔ A RESOLVED GAP IS KEPT, NEVER DELETED. It carries (status resolved) and the evidence
+  ;; that closed it. Deleting it would erase the fact that the question was ever asked, and the
+  ;; next surveyor would have to rediscover both the absence and the fix. Two of the three below
+  ;; were closed by the corpus itself, three commits after this project measured and reported them.
   ;; ------------------------------------------------------------------------------------
   (gap
     (id "GAP-AMD64-APM")
@@ -168,7 +179,18 @@
     (result "no match; the corpus's amd/ directory holds one document, an IO Virtualization
              (IOMMU) specification, which is system IP and not an instruction set")
     (consequence "there is no AMD instruction-set manual in this corpus. An x86-64 unit derived
-                  from it would rest on Intel's description of the architecture only."))
+                  from it would rest on Intel's description of the architecture only.")
+    (status resolved)
+    (resolved-on "2026-09-14")
+    (resolved-by "the corpus imported all 5 AMD64 APM volumes at commit e401a56 — Vol 1
+                  Application Programming (24592 Rev 3.23, 392 pp), Vol 2 System Programming
+                  (24593 Rev 3.41, 833 pp), Vol 3 General-Purpose and System Instructions
+                  (24594 Rev 3.36, 696 pp), Vol 4 128/256-bit Media (26568 Rev 3.25, 1049 pp),
+                  Vol 5 64-bit Media and x87 (26569 Rev 3.16, 368 pp). Verified here by digest;
+                  all five are catalogued below.")
+    (residual "the corpus records that AMD's current doc hub is not scriptable, so a newer APM
+               revision could exist and not be captured. A gap CLOSED is not a gap that cannot
+               reopen."))
 
   (gap
     (id "GAP-INTEL-SDM-VOL1")
@@ -506,4 +528,283 @@
     (note "An MCU document, so it crosses the layer boundary on purpose: CPU in one half, PERIPHERALS
            in the other. It is the natural first test of whether `processor` and `board` really are
            separable, because here one vendor document describes both."))
+
+  ;; ------------------------------------------------------------------------------------
+  ;; A material that is not one file. ⛔ Its identity is its MANIFEST's digest: a snapshot
+  ;; identified by the digest of one of its pages is not identified at all.
+  ;; ------------------------------------------------------------------------------------
+  (material
+    (id "RVI-PINNED-V20260120")
+    (title "RISC-V Ratified Specifications Library, version segment v20260120 — full HTML snapshot")
+    (revision "v20260120")
+    (release-kind ratified)
+    (kind snapshot)
+    (manifest "SHA256SUMS")
+    (pages 72)
+    (licence "unrecorded")
+    (licence-evidence "the served pages carry only \"Copyright © RISC-V International®\" and no
+                       CC-BY statement, unlike the GitHub PDF — read, not assumed. OQ-4 stays open
+                       for this rendering, which is why the snapshot is cached and not tracked.")
+    (corpus "chipdoc")
+    (corpus-path "risc-v/isa/pinned/v20260120")
+    (cache-path "riscv/pinned-v20260120")
+    (sha256 "f77463370c2fe52513a9803917c30b717f6169f2164d0c848b85c2fcd817530b")
+    (bytes 6229)
+    (supplies "⭐ THE ARTIFACT THIS PROJECT ACTUALLY CITES — 46 unprivileged + 24 privileged pages,
+               an index and a bibliography. All 52 semantic citations in rv64i.sem.sexp resolve
+               against it, and against no other publication of this specification.")
+    (status authoritative)
+    (note "This ends a real fragility. The citation evidence lived only in target/sources/, an
+           UNTRACKED working area that needs the network to rebuild, which is why
+           scripts/check_citations.py could never be a commit gate. Cached here it is
+           reproducible offline from a manifest that verifies all 72 pages.
+           ⭐ INDEPENDENT CORROBORATION, and it is worth more than it looks: chipdoc acquired this
+           snapshot by its own route and its digests for intro, rv32 and rv64 EQUAL the ones
+           committed in profiles/rv64i-lab-v0/sources.toml. Two acquisitions, two parties, one set
+           of bytes — which is the one thing the external challenge to this pin could not have
+           produced by agreement.")) 
+
+  (material
+    (id "AMD64-APM-VOL1")
+    (title "AMD64 Architecture Programmer's Manual, Volume 1: Application Programming (24592)")
+    (revision "Rev 3.23 2020-10")
+    (release-kind final)
+    (pages 392)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "amd/isa/apm/current/24592_Rev3.23_2020-10_AMD64_APM_Vol1_Application_Programming.pdf")
+    (cache-path "amd/amd64-apm-vol1-24592.pdf")
+    (sha256 "bc34c4426baaa4c0aa3fbca8205f29e555c9a9b7e6d93bcd33625a8bfae75537")
+    (bytes 2496645)
+    (supplies "the AMD64 application programming model: registers, data types, addressing")
+    (status reference-only)
+    (note "⭐ Closes GAP-AMD64-APM. AMD64 is the architecture x86-64 actually IS — Intel implements AMD's
+           64-bit extension — so for an x86-64 unit this is not a second opinion about the same
+           document, it is the other author of the same architecture. That makes Intel-vs-AMD a
+           genuine independence axis for x86, in the EVD-04 sense, which the RISC-V unit does not
+           have available to it."))
+
+  (material
+    (id "AMD64-APM-VOL2")
+    (title "AMD64 Architecture Programmer's Manual, Volume 2: System Programming (24593)")
+    (revision "Rev 3.41 2023-06")
+    (release-kind final)
+    (pages 833)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "amd/isa/apm/current/24593_Rev3.41_2023-06_AMD64_APM_Vol2_System_Programming.pdf")
+    (cache-path "amd/amd64-apm-vol2-24593.pdf")
+    (sha256 "6a330e406ffe39893b09f56925969cf16ac35cbbebd961f9ed9a630189a917ff")
+    (bytes 20303609)
+    (supplies "paging, protection, interrupts, system registers and SVM virtualization")
+    (status reference-only)
+    (note "Closes GAP-AMD64-APM, with Vols 1 and 3-5."))
+
+  (material
+    (id "AMD64-APM-VOL3")
+    (title "AMD64 Architecture Programmer's Manual, Volume 3: General-Purpose and System Instructions (24594)")
+    (revision "Rev 3.36 2024-03")
+    (release-kind final)
+    (pages 696)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "amd/isa/apm/current/24594_Rev3.36_2024-03_AMD64_APM_Vol3_General-Purpose_and_System_Instructions.pdf")
+    (cache-path "amd/amd64-apm-vol3-24594.pdf")
+    (sha256 "4d8eff047a237895dfa4433111511088a80b40dde9e2012f9b652113ee58a00e")
+    (bytes 16745121)
+    (supplies "every general-purpose and system instruction: encoding, operation, exceptions")
+    (status reference-only)
+    (note "The volume that pairs with Intel SDM Vol 2 — two independent descriptions of one
+           instruction set, which is exactly the kind of pair a differential argument needs."))
+
+  (material
+    (id "AMD64-APM-VOL4")
+    (title "AMD64 Architecture Programmer's Manual, Volume 4: 128-Bit and 256-Bit Media Instructions (26568)")
+    (revision "Rev 3.25 2021-11")
+    (release-kind final)
+    (pages 1049)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "amd/isa/apm/current/26568_Rev3.25_2021-11_AMD64_APM_Vol4_128-Bit_and_256-Bit_Media_Instructions.pdf")
+    (cache-path "amd/amd64-apm-vol4-26568.pdf")
+    (sha256 "6fc81538046b83ca3cacb8afc209c3d3f1aa0e0ca1e15161b04fdf3e0348912e")
+    (bytes 3570599)
+    (supplies "SSE and AVX media instructions")
+    (status reference-only)
+    (note "Closes GAP-AMD64-APM."))
+
+  (material
+    (id "AMD64-APM-VOL5")
+    (title "AMD64 Architecture Programmer's Manual, Volume 5: 64-Bit Media and x87 Floating-Point Instructions (26569)")
+    (revision "Rev 3.16 2021-11")
+    (release-kind final)
+    (pages 368)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "amd/isa/apm/current/26569_Rev3.16_2021-11_AMD64_APM_Vol5_64-Bit_Media_and_x87_FP_Instructions.pdf")
+    (cache-path "amd/amd64-apm-vol5-26569.pdf")
+    (sha256 "8c8c63c5e285c50faac2e7d474cf5046f5fcccb54673f464f57a8cb171ef0767")
+    (bytes 1129228)
+    (supplies "MMX and x87 floating-point")
+    (status reference-only)
+    (note "Closes GAP-AMD64-APM."))
+
+  (material
+    (id "X86-SDM-VOL1-253665")
+    (title "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture")
+    (revision "253665 rev 092 2026-06")
+    (release-kind final)
+    (pages 600)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "intel/isa/sdm/current/253665_2026-06_Intel_64_IA-32_SDM_Vol1_Basic_Architecture.pdf")
+    (cache-path "x86/intel-sdm-vol1-253665.pdf")
+    (sha256 "9d862bd7592d9fdd9f747c91d5e85be23ae3103f77185d1dcf7c5eb7277e5bdb")
+    (bytes 3645716)
+    (supplies "the basic execution environment, data types and register overview")
+    (status reference-only)
+    (note "⭐ Closes GAP-INTEL-SDM-VOL1, three commits after this project measured and reported the
+           absence. This is the volume an x86 unit STARTS from: architectural state is declared
+           before anything else, and Volumes 2-4 assume it rather than define it."))
+
+  (material
+    (id "M68000-PRM")
+    (title "M68000 Family Programmer's Reference Manual (M68000PRM)")
+    (revision "1992")
+    (release-kind final)
+    (pages 646)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "nxp/m68k/current/M68000PRM_1992_M68000_Programmers_Reference_Manual.pdf")
+    (cache-path "motorola/m68000-prm.pdf")
+    (sha256 "06e4864b78da0e815054cead9326b7ec9914661f240fd39a455f2061ff47c4e8")
+    (bytes 4725896)
+    (supplies "the complete 68000-family programmer's model, instruction set and addressing modes")
+    (status candidate)
+    (note "⛔ MISSED BY THE FIRST SURVEY, and the reason is instructive: it is filed under nxp/m68k/,
+           because NXP inherited Motorola's semiconductor business through Freescale. A sweep by
+           vendor name would have to know a thirty-year corporate history to find it; a sweep by
+           PATH finds it immediately. A strong `start small` candidate in its own right — a CISC
+           architecture with variable-length encoding, which is a genuinely different decoding
+           problem from every fixed-width RISC in this catalogue."))
+
+  (material
+    (id "ARM-CORTEX-A76-TRM")
+    (title "Arm Cortex-A76 Core Technical Reference Manual (100798)")
+    (revision "r4p1 2020-07-31")
+    (release-kind final)
+    (pages 620)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "arm/processors/cortex-a/cortex-a76/current/100798_0401_00_2020-07-31_Cortex_A76_Technical_Reference_Manual.pdf")
+    (cache-path "arm/cortex-a76-trm-100798.pdf")
+    (sha256 "ea16a7af56045572125e0be1f6be8877eaef1e37d67133d8fb5dbcb96f7f9e57")
+    (bytes 2527677)
+    (supplies "one IMPLEMENTATION of the A-profile architecture: its IMPLEMENTATION DEFINED choices, caches, errata")
+    (status reference-only)
+    (note "The architecture manual says what is architecturally required; this says what one part
+           actually does where the architecture leaves it open. `IMPLEMENTATION DEFINED` is exactly
+           where a model must declare a choice rather than inherit one, so an architecture manual
+           alone is not sufficient to model a PART."))
+
+  (material
+    (id "ESP32-TRM")
+    (title "ESP32 Technical Reference Manual")
+    (revision "v5.8 2025-07")
+    (release-kind final)
+    (pages 784)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "espressif/mcu/esp32/current/esp32_trm_v5.8_2025-07_ESP32_Technical_Reference_Manual.pdf")
+    (cache-path "espressif/esp32-trm.pdf")
+    (sha256 "4ba58e9fa0405ec2bf80b912a29b483f6edc8c4b2b1058201913a2fe37e582f0")
+    (bytes 10173126)
+    (supplies "a complete SoC: Xtensa LX6 cores, memory map, and every on-chip peripheral")
+    (status candidate)
+    (note "`P5-BOARD` material. A whole SoC in one document — the layer boundary this project draws
+           between processor and board runs straight through it."))
+
+  (material
+    (id "ESP32-S3-TRM")
+    (title "ESP32-S3 Technical Reference Manual")
+    (revision "v1.8 2026-03")
+    (release-kind final)
+    (pages 1531)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "espressif/mcu/esp32-s3/current/esp32-s3_trm_v1.8_2026-03_ESP32-S3_Technical_Reference_Manual.pdf")
+    (cache-path "espressif/esp32-s3-trm.pdf")
+    (sha256 "4484bf8a69035ec42a731c58c64ada6fbd1f1618c5559409f134d9ea083f444f")
+    (bytes 15215232)
+    (supplies "the ESP32-S3 SoC: dual Xtensa LX7, vector extensions, peripherals")
+    (status candidate)
+    (note "`P5-BOARD` material."))
+
+  (material
+    (id "ESP32-C3-TRM")
+    (title "ESP32-C3 Technical Reference Manual")
+    (revision "v1.4 2026-03")
+    (release-kind final)
+    (pages 903)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "espressif/mcu/esp32-c3/current/esp32-c3_trm_v1.4_2026-03_ESP32-C3_Technical_Reference_Manual.pdf")
+    (cache-path "espressif/esp32-c3-trm.pdf")
+    (sha256 "90ef825653e7a2657dc1bb294041aace9f9b69da87d775c2f1b5bd11eb317423")
+    (bytes 9623028)
+    (supplies "a shipping RISC-V SoC: RV32IMC core, memory map, peripherals, interrupt matrix")
+    (status wanted)
+    (note "⭐ THE MOST DIRECTLY USEFUL BOARD DOCUMENT IN THE CATALOGUE for this project's current path.
+           Its core is RISC-V, so it is the first real unit where this project's own RV work becomes
+           the processor half of a board — and the UART and interrupt controller the director set
+           aside as `board, not processor` are specified here, in the document where they belong."))
+
+  (material
+    (id "RP2040-DS")
+    (title "RP2040 Datasheet")
+    (revision "RP-008371-DS-1 2025-02-20")
+    (release-kind final)
+    (pages 642)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "raspberry-pi/mcu/rp2040/current/RP-008371-DS-1_2025-02-20_RP2040_Datasheet.pdf")
+    (cache-path "raspberry-pi/rp2040-ds.pdf")
+    (sha256 "be56fbb75ba0ae9e26558a73c93ac3e75c2ad4e6878d3b6703de2a76d886ea8c")
+    (bytes 5301205)
+    (supplies "dual Cortex-M0+ (Armv6-M), the memory map, PIO and every peripheral")
+    (status candidate)
+    (note "`P5-BOARD` material, and it pairs exactly with ARM-M-DDI0419E: the architecture manual gives
+           the 374-page instruction set, this gives the part built around it. Processor and board,
+           two documents, one system — the cleanest test of the layer boundary in the catalogue."))
+
+  (material
+    (id "RP2350-DS")
+    (title "RP2350 Datasheet")
+    (revision "2025-07-29")
+    (release-kind final)
+    (pages 1380)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "raspberry-pi/mcu/rp2350/current/RP2350_2025-07-29_RP2350_Datasheet.pdf")
+    (cache-path "raspberry-pi/rp2350-ds.pdf")
+    (sha256 "2877d0f270fb6d6a57943bee58aaad536aa027bea1e5b1c4ce2541a3230d4be8")
+    (bytes 7968417)
+    (supplies "Cortex-M33 AND Hazard3 RISC-V cores selectable on one die, plus peripherals")
+    (status candidate)
+    (note "⭐ A part that ships BOTH an Arm and a RISC-V core on one die, software-selectable. If a
+           composition model is real, the same board description should compose with either
+           processor — which makes this the sharpest available test of `MODEL-COMPOSE`'s slots."))
 )

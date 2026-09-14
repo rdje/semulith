@@ -38,6 +38,12 @@ CATALOG = "materials/catalog.sexp"
 
 REQUIRED = ("title", "revision", "licence", "corpus", "corpus-path", "cache-path", "sha256", "bytes")
 
+# ⛔ A MATERIAL IS NOT ALWAYS ONE FILE. The RISC-V pin is a 72-page HTML snapshot, and a snapshot
+# whose identity is "the digest of one of its pages" is not identified at all. A `snapshot` names a
+# MANIFEST inside itself; the manifest's digest is the material's identity, and the manifest's
+# entries verify every page. One extra field and one extra branch buys a whole shape of material.
+KINDS = ("document", "snapshot")
+
 
 class MaterialError(Exception):
     """A refusal. A material that cannot be resolved is never approximated."""
@@ -97,6 +103,17 @@ def load(path: Path | None = None) -> dict:
             raise MaterialError(f"{where}: names corpus {rec['corpus']!r}, which is not declared")
         if len(rec["sha256"]) != 64 or any(c not in "0123456789abcdef" for c in rec["sha256"]):
             raise MaterialError(f"{where}: sha256 is not 64 lowercase hex characters")
+        kinds = _sexp.children(m, "kind")
+        rec["kind"] = str(kinds[0][1]) if kinds else "document"
+        if rec["kind"] not in KINDS:
+            raise MaterialError(f"{where}: kind {rec['kind']!r} is not one of {', '.join(KINDS)}")
+        if rec["kind"] == "snapshot":
+            man = _sexp.children(m, "manifest")
+            if not man:
+                raise MaterialError(
+                    f"{where}: a snapshot must name its (manifest …). Without one its sha256 "
+                    f"would identify a single page and say nothing about the other 71.")
+            rec["manifest"] = _relative("manifest", str(man[0][1]), where)
         materials[mid] = rec
     if not materials:
         raise MaterialError(f"{path}: declares no material")
@@ -120,22 +137,64 @@ def resolve(cat: dict, mid: str, repo: Path | None = None) -> str:
     rec = cat["materials"][mid]
     rel = f"{cat['cache_root']}/{rec['cache_path']}"
     full = repo / rel
-    if not full.exists():
+    probe = full / rec["manifest"] if rec["kind"] == "snapshot" else full
+    if not probe.exists():
         env = cat["corpora"][rec["corpus"]]["env_var"]
         raise MaterialError(
             f"{mid}: not in the local cache at {rel}. The cache is gitignored, so an empty one is "
             f"the normal state of a fresh clone, not a fault. Populate it:\n"
             f"    export {env}=<path to the {rec['corpus']} checkout>\n"
             f"    scripts/materials.py --fetch {mid}")
-    got = _digest(full)
+    got = _digest(probe)
     if got != rec["sha256"]:
         raise MaterialError(
-            f"{mid}: the cached copy at {rel} is NOT the catalogued document.\n"
+            f"{mid}: the cached copy at {rel} is NOT the catalogued "
+            f"{'snapshot (its manifest differs)' if rec['kind'] == 'snapshot' else 'document'}.\n"
             f"    catalogued sha256 {rec['sha256']}\n"
             f"    cached     sha256 {got}\n"
             f"A material is identified by its digest, not by its filename. Re-fetch it, or if the "
             f"document genuinely changed, update the catalogue in a leaf that says why.")
     return rel
+
+
+def _verify_manifest(root: Path, manifest: str) -> tuple[int, int]:
+    """Check every entry of a `shasum`-style manifest. Returns (checked, failed)."""
+    n = bad = 0
+    for line in (root / manifest).read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        digest, _, name = line.partition("  ")
+        if not name:
+            continue
+        n += 1
+        f = root / name.lstrip("*").strip()
+        if not f.exists() or _digest(f) != digest.strip():
+            bad += 1
+    return n, bad
+
+
+def corpus_drift(cat: dict) -> list[str]:
+    """⛔ The corpus is a MOVING repository, and the catalogue pins one revision of it. A path that
+    moved upstream is the failure this reports: the digests still protect the BYTES, but nothing
+    else notices that the record now describes a layout that is gone."""
+    import subprocess
+    out = []
+    for cid, c in sorted(cat["corpora"].items()):
+        root = os.environ.get(c["env_var"])
+        if not root:
+            continue
+        try:
+            at = subprocess.run(["git", "-C", root, "rev-parse", "--short", "HEAD"],
+                                capture_output=True, text=True, timeout=15)
+        except OSError:
+            continue
+        head = at.stdout.strip()
+        if head and head != c["revision"]:
+            out.append(f"corpus {cid!r}: catalogued at {c['revision']}, checkout is at {head}. "
+                       f"Digests still protect the bytes, but a path that MOVED upstream will "
+                       f"only show up as a failed --fetch. Re-derive the catalogue.")
+    return out
 
 
 def fetch(cat: dict, ids: list[str], repo: Path | None = None) -> int:
@@ -157,15 +216,31 @@ def fetch(cat: dict, ids: list[str], repo: Path | None = None) -> int:
             rc = 1; continue
         dst = repo / cat["cache_root"] / rec["cache_path"]
         dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, dst)
-        got = _digest(dst)
+        if rec["kind"] == "snapshot":
+            if dst.exists():
+                shutil.rmtree(dst)
+            shutil.copytree(src, dst)
+            probe = dst / rec["manifest"]
+        else:
+            shutil.copy2(src, dst)
+            probe = dst
+        got = _digest(probe)
         if got != rec["sha256"]:
-            dst.unlink()
+            shutil.rmtree(dst) if rec["kind"] == "snapshot" else dst.unlink()
             print(f"  REFUSED {mid}: copied, digest {got[:16]}… != catalogued "
                   f"{rec['sha256'][:16]}…; the copy was removed rather than kept", file=sys.stderr)
             rc = 1; continue
+        extra = ""
+        if rec["kind"] == "snapshot":
+            n, bad = _verify_manifest(dst, rec["manifest"])
+            if bad:
+                shutil.rmtree(dst)
+                print(f"  REFUSED {mid}: {bad} of {n} manifest entries do not verify; the copy "
+                      f"was removed rather than kept", file=sys.stderr)
+                rc = 1; continue
+            extra = f", {n} manifest entries verified"
         print(f"  ok      {mid}  -> {cat['cache_root']}/{rec['cache_path']}  "
-              f"({int(rec['bytes']):,} B, sha256 verified)")
+              f"({int(rec['bytes']):,} B, sha256 verified{extra})")
     return rc
 
 
@@ -177,6 +252,8 @@ def main(argv: list[str]) -> int:
         if len(argv) == 1 or argv[1] == "--list":
             print(f"{CATALOG}: {len(cat['materials'])} material(s), cache root "
                   f"{cat['cache_root']}/ (gitignored)")
+            for d in corpus_drift(cat):
+                print(f"  \u26a0\ufe0f  {d}")
             for mid, rec in sorted(cat["materials"].items()):
                 try:
                     where = resolve(cat, mid)
@@ -196,7 +273,11 @@ def main(argv: list[str]) -> int:
                     resolve(cat, mid); print(f"  ok      {mid}")
                 except MaterialError as exc:
                     print(f"  {exc}", file=sys.stderr); bad += 1
-            print(f"materials --verify: {len(cat['materials']) - bad} verified / {bad} unresolved")
+            drift = corpus_drift(cat)
+            for d in drift:
+                print(f"  \u26a0\ufe0f  {d}", file=sys.stderr)
+            print(f"materials --verify: {len(cat['materials']) - bad} verified / {bad} unresolved"
+                  f"{f' / {len(drift)} corpus revision drift' if drift else ''}")
             return 1 if bad else 0
     except (MaterialError, _sexp.SexpError) as exc:
         print(f"REFUSED: {exc}", file=sys.stderr); return 1
@@ -278,6 +359,47 @@ def _selftest() -> int:
         '(materials (schema-version 1) (cache-root ".materials") '
         '(corpus (id "c") (title "t") (kind git-repository) (revision "r") (env-var "X")))',
         "declares no material"))
+
+    # --- snapshots: a material that is a directory is identified by its manifest, not a page
+    SNAP = textwrap.dedent('''\
+        (materials
+          (schema-version 1) (cache-root ".materials")
+          (corpus (id "c") (title "t") (kind git-repository) (revision "r") (env-var "X_ROOT"))
+          (material (id "S1") (title "t") (revision "1") (licence "l") (corpus "c") (kind snapshot)
+                    %s (corpus-path "snap") (cache-path "snap")
+                    (sha256 "%s") (bytes 3)))
+        ''')
+    arm("RED   a snapshot with no (manifest …) is refused",
+        lambda: refuses(SNAP % ("", D3), "must name its (manifest"))
+    arm("RED   an unknown material kind is refused",
+        lambda: refuses(SNAP.replace("(kind snapshot)", "(kind tarball)") % ('(manifest "M")', D3),
+                        "is not one of"))
+    arm("RED   a snapshot manifest path that is absolute is refused",
+        lambda: refuses(SNAP % ('(manifest "/etc/M")', D3), "is ABSOLUTE"))
+
+    def snapshot_ok() -> None:
+        d = written(SNAP % ('(manifest "SHA256SUMS")', hashlib.sha256(
+            b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  a.txt\n").hexdigest()))
+        s = d / ".materials" / "snap"; s.mkdir(parents=True)
+        (s / "a.txt").write_bytes(b"abc")
+        (s / "SHA256SUMS").write_bytes(
+            b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  a.txt\n")
+        cat = load(d / "materials" / "catalog.sexp")
+        assert resolve(cat, "S1", repo=d) == ".materials/snap", "snapshot did not resolve"
+        n, bad = _verify_manifest(s, "SHA256SUMS")
+        assert (n, bad) == (1, 0), f"manifest check gave {(n, bad)}"
+    arm("GREEN a snapshot resolves through its manifest, and the manifest verifies", snapshot_ok)
+
+    def snapshot_tampered() -> None:
+        d = written(SNAP % ('(manifest "SHA256SUMS")', hashlib.sha256(
+            b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  a.txt\n").hexdigest()))
+        s = d / ".materials" / "snap"; s.mkdir(parents=True)
+        (s / "a.txt").write_bytes(b"TAMPERED")
+        (s / "SHA256SUMS").write_bytes(
+            b"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  a.txt\n")
+        n, bad = _verify_manifest(s, "SHA256SUMS")
+        assert (n, bad) == (1, 1), f"a tampered page passed the manifest check: {(n, bad)}"
+    arm("RED   a tampered page inside a verifying snapshot is caught", snapshot_tampered)
 
     # --- resolution: absence and mismatch are different refusals, and both name the fix
     def absent() -> None:
