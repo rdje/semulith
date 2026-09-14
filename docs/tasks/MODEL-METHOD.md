@@ -104,7 +104,15 @@ assumption the CPU records and a board later satisfies.
 6. Every material record states **what it teaches**, not only what it specifies — the catalogue is
    an input to a teaching text, and a material nobody can learn from is a citation.
 
-## Format decision — and why not S-expressions, yet
+## ⚡ The S-expression trigger has FIRED — see `decision_canonical-definition-input`
+
+The trigger written below — *"the first time a material must carry a nested semantic expression
+rather than a citation"* — fired on `2026-09-14`, when the canonical definition had to become the
+input a generator engine reads. The answer: **a set of format-fit files**, with S-expressions for
+`encoding.sexp` and `semantics.sexp` and the record files unchanged. The reasoning below stands
+for the *materials catalogue*, which is still records; it is the semantics that needed trees.
+
+## Format decision for the materials catalogue — and why not S-expressions there
 
 **The catalogue is JSON Lines against a JSON Schema.** The call was mine and the reasoning is
 recorded so it can be overturned on evidence rather than taste:
@@ -182,26 +190,65 @@ recorded so it can be overturned on evidence rather than taste:
   Acceptance: one rule followed end to end by name; the non-mechanical steps identified as such;
   a reader could carry the method to a different ISA without this project's documents.
 
+- ID: `MODEL-METHOD.7` — **the canonical definition: what it is and what each file owns**
+  Status: `pending`
+  Goal: document the definition as a set of format-fit files with a **no-duplicated-fact** rule —
+  which file owns configuration, state, encodings, semantics, requirements, obligations and
+  provenance — and gate that rule, since "single source of truth" means *one owner per fact*
+  rather than *one file*.
+  Acceptance: every fact kind has exactly one owning file; a gate refuses a fact stated in two.
+
+- ID: `MODEL-METHOD.8` — **own the encodings: `encoding.sexp`**
+  Status: `done`
+  Goal: close the measured gap that the repository does **not own its encodings** — the assembler
+  reads them from `target/refs/riscv-opcodes`, which is untracked, so a fresh clone cannot build a
+  model. Derive `encoding.sexp` from the pinned table, track it, and gate that it still agrees.
+  Acceptance: `git ls-files` shows the encodings tracked; the assembler reads the tracked file; a
+  gate fires RED when the tracked file and the pinned upstream disagree.
+  Verification: the full evidence path builds with the upstream directory HIDDEN; re-derivation fired RED on a one-bit edit.
+  Commit: `SEMULITH-MM-0037`
+
+- ID: `MODEL-METHOD.9` — **the semantics: `semantics.sexp`**
+  Status: `pending`
+  Goal: what each of the declared instructions *does*, as expressions, each carrying the source
+  locator it was derived from so a reviewer can check the expression against the sentence.
+  Acceptance: every instruction in the declared scope has semantics; every form cites a locator;
+  the file parses under a tracked reader that **refuses** a form it does not implement.
+
+- ID: `MODEL-METHOD.10` — **the extraction contract: is the definition SUFFICIENT?**
+  Status: `pending`
+  Goal: state what a generator engine must be able to extract, and check it — every declared
+  instruction has an encoding **and** semantics **and** a requirement; every state element has a
+  reset; every obligation has its checks. ⭐ This turns *"the engine can extract all it needs"*
+  from an intention into a verdict, and that verdict is the precondition for writing model code.
+  Acceptance: fired RED by removing one instruction's semantics; `P1-LAB` cites this check rather
+  than a judgement call.
+
 - ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
   Status: `pending`
   Goal: a gate that refuses model implementation for a profile while a category its declared scope
   requires is `missing`. The rule is the director's; this makes it enforceable rather than
   remembered.
   Acceptance: fired RED against a deliberately uncovered category; `P1-LAB`'s precondition is the
-  gate's verdict rather than a judgement call.
+  gate's verdict rather than a judgement call. Composes with `.10`: a category may be covered while
+  the definition is still insufficient, and both must pass.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.2` | `pending` | the schema the census needs, now that the instruments it will rest on have been checked |
-| 2 | `MODEL-METHOD.3` | `pending` | the census, whose `missing` rows drive acquisition |
-| 3 | `MODEL-METHOD.4` | `pending` | acquisition, including the outstanding PDF-encoding question |
+| 1 | `MODEL-METHOD.9` | `pending` | the semantics — nothing machine-executable exists today, so this is the substance of the canonical definition and the half a generator engine most needs |
+| 2 | `MODEL-METHOD.7` | `pending` | the no-duplicated-fact rule, now that a second definition file exists to duplicate into |
+| 3 | `MODEL-METHOD.10` | `pending` | the extraction contract: is the definition SUFFICIENT for an engine? |
 
 ## Decisions
 
 - `2026-09-14`: the catalogue is **JSON Lines against a JSON Schema**, not S-expressions — see the
   format section above, including the trigger that would re-open it.
+- `2026-09-14`: the canonical definition is a **set of format-fit files**, not one file, and
+  "single source of truth" is preserved by a no-duplicated-fact rule. S-expressions for encodings
+  and semantics; records stay JSON/TOML because they are records and are already gated. See
+  [`decision_canonical-definition-input`](../decisions/decision_canonical-definition-input.md).
 - `2026-09-14`: `docs/INFORMATION_CATALOG.md` remains the **single owner** of what must be known.
   This tree adds a *material* and a *disposition* per category; it does not restate the category
   definitions, because a second copy of a taxonomy is a second thing to keep correct.
@@ -217,7 +264,84 @@ recorded so it can be overturned on evidence rather than taste:
 
 - None.
 
-## Acceptance Checklist (current leaf — `MODEL-METHOD.1`)
+## Acceptance Checklist (current leaf — `MODEL-METHOD.8`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/riscv_asm.py` constructed its
+  `Assembler` from `target/refs/riscv-opcodes` — a **network-acquired, untracked** directory. WHY it
+  matters is not tidiness: the repository did not own the encodings of its own model, so a fresh
+  clone could not build one, and the project's own rule — *a constant that is a function of an
+  external document is derived or gated, never assumed present* — was being broken by its own
+  tooling. Measured:
+
+  ```
+  $ git ls-files | grep -c riscv-opcodes
+  0
+  $ git ls-files profiles/rv64i-lab-v0 | grep -cE 'encod|semant'
+  0
+  ```
+
+  ⛔ The same census found the larger gap this leaf does **not** close: **no executable semantics
+  exist**. A generator engine reading the canonical definition today finds configuration, state,
+  provenance and environment assumptions — and neither of the two things it most needs. `.9` owns
+  the second.
+
+- [x] **ADDRESSED (verified)** — `profiles/rv64i-lab-v0/encoding.sexp` is generated, tracked and
+  read by the assembler: 52 instructions, 12 operand fields, 3 scattered-immediate layouts, each
+  carrying the upstream file it came from and that file's digest. Before → after on the census
+  that defined the gap:
+
+  ```
+  $ git ls-files profiles/rv64i-lab-v0 | grep -c encoding
+  1                                      # was 0
+  $ grep -c '^  (insn ' profiles/rv64i-lab-v0/encoding.sexp
+  52
+  ```
+
+  ⭐ **The test that actually settles it** is not that the file exists, but that the model builds
+  without the untracked directory — so the upstream was **moved aside** and the whole evidence path
+  re-run:
+
+  ```
+  $ mv target/refs/riscv-opcodes /tmp/ro-hidden && scripts/run_smoke.py
+  run_smoke: ok — every program matches its specification-derived expectations and reproduces;
+  every cross-model comparison that is enabled agrees
+  ```
+
+  Four guest programs assembled, executed on two references and reproduced, with the source of the
+  encodings absent from disk. That is what "the repository owns its encodings" has to mean.
+
+- [x] **NO REGRESSION** — leg 2. Ownership without re-derivation is a copy, so
+  `fetch_references.sh` now regenerates the file from the pinned tables and compares:
+  `MATCH owned encodings agree with the pinned upstream`. Fired RED by changing **one bit** of one
+  instruction's `funct3` — `(14 12 0x7)` to `(14 12 0x6)` in `and` — which produced
+  `DIFFERS profiles/rv64i-lab-v0/encoding.sexp no longer matches what the pinned tables generate`
+  with the differing line quoted. Restored to `MATCH`.
+  The S-expression reader carries the same refusal discipline as the schema validator and its
+  controls were fired: nested forms and comments parse; an unterminated list, a stray `)` and an
+  unterminated string are all refused by name. Whole gate `=== all doctrines green ===`;
+  `make check` → `test result: ok. 1 passed; 0 failed`; `fetch_references.sh --verify-only` → 12 of
+  12 `MATCH`.
+  ⛔ **The reader was caught by its own first real input.** Its tokenizer stripped `;` comments
+  line by line *before* tokenizing, which is wrong in two ways a reader meets immediately: a `;`
+  **inside a string** truncated the string, and a string could not span lines. Generating this
+  project's own encoding file hit the second within minutes. It is now a single stream scan, where
+  whether a `;` starts a comment depends on whether a string is open — which is the only way that
+  question can be answered correctly.
+
+- [x] **FIX** — `scripts/sexp.py` (a reader for exactly the shapes these files use, refusing the
+  rest), `scripts/gen_encoding.py`, the tracked `encoding.sexp`, `riscv_asm.py` reading the
+  canonical definition, and the re-derivation in `fetch_references.sh`.
+
+- `promotion: declined (the lesson — ownership is proved by building with the source removed — is stated in gen_encoding.py's header and demonstrated by this leaf's own verification row; the reader's comment/string defect is stated in sexp.py's parse docstring where anyone editing it will meet it)`
+
+- [x] **LOCKSTEP** — leg 3: the owned encodings are re-derived on demand against the pinned tables,
+  and the model builds without them. `TOOLBOX.md` gains both tools; `MEMORY.md`, `LIVE_STATUS.md`,
+  `CHANGELOG.md` and `DEV_NOTES.md` updated in this commit.
+  ⚠️ Stated plainly: this makes the repository own its encodings. It does **not** make the
+  canonical definition sufficient — semantics are still absent, and `.10` is the leaf that turns
+  *"the engine can extract all it needs"* from an intention into a verdict.
+
+### `MODEL-METHOD.1` — the narrower-instrument sweep
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. `P0-PROFILE.10` corrected one instance of a pattern and
   left the general question open: *which other "matched" claims rest on an instrument answering a
@@ -299,11 +423,17 @@ recorded so it can be overturned on evidence rather than taste:
 | `2026-09-14` | `MODEL-METHOD.1` | `compare_platforms.py` on both matched models | 4 of 4 fields disagree; 4 devices only Spike advertises |
 | `2026-09-14` | `MODEL-METHOD.1` | rule 5b fired RED on the real dossier | `UNSCOPED SCALAR …/spike` |
 | `2026-09-14` | `MODEL-METHOD.1` | `check_profile_consistency.sh --self-test` | `39 pass / 0 fail`; 39 written, 39 run |
+| `2026-09-14` | `MODEL-METHOD.8` | census: encodings owned by the repo, semantics present | `0` and `0` — both absent |
+| `2026-09-14` | `MODEL-METHOD.8` | the whole evidence path with the upstream MOVED ASIDE | `run_smoke: ok` — 4 guests, 2 models, reproduced |
+| `2026-09-14` | `MODEL-METHOD.8` | re-derivation fired RED on a one-bit `funct3` edit | `DIFFERS … no longer matches what the pinned tables generate` |
+| `2026-09-14` | `MODEL-METHOD.8` | S-expression reader controls | 7 pass / 0 fail, incl. `;` inside a string and a string spanning lines |
+| `2026-09-14` | `MODEL-METHOD.8` | `fetch_references.sh --verify-only` | 12 of 12 `MATCH` |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.8` | `SEMULITH-MM-0037 (leaf MODEL-METHOD.8): the repository owns its encodings` | builds with the upstream hidden; re-derivation fired RED |
 | `MODEL-METHOD.1` | `SEMULITH-MM-0033 (leaf MODEL-METHOD.1): answer the narrower-instrument sweep with a wider instrument` | 1 further instance found and fixed; the pattern gated |
 
 ## Changelog

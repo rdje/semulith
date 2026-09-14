@@ -174,13 +174,61 @@ def load_encodings(paths: list[Path]) -> dict[str, Insn]:
     return out
 
 
+def load_canonical_encoding(path: Path) -> tuple[dict, dict, dict]:
+    """Read `encoding.sexp` — the encodings the REPOSITORY owns.
+
+    ⛔ THIS IS THE PATH THAT MATTERS. The assembler used to read an untracked, network-acquired
+    directory, so a fresh clone could not build a model at all. The canonical definition is
+    tracked, so the model's encodings travel with the repository and a gate re-derives them
+    against the pinned upstream when that upstream is present.
+    """
+    import sexp as _sexp
+    forms = _sexp.read_file(path)
+    if len(forms) != 1 or _sexp.head(forms[0], str(path)) != "encoding":
+        raise AsmError(f"{path}: expected exactly one (encoding …) form")
+    enc = forms[0]
+
+    arg_lut: dict[str, tuple[int, int]] = {}
+    for f in _sexp.children(enc, "field"):
+        arg_lut[str(_sexp.field(f, "name"))] = (int(_sexp.field(f, "hi")),
+                                                int(_sexp.field(f, "lo")))
+    layout: dict[str, list[tuple[int, int]]] = {}
+    for sc in _sexp.children(enc, "scatter"):
+        name = str(_sexp.field(sc, "name"))
+        hi, lo = int(_sexp.field(sc, "hi")), int(_sexp.field(sc, "lo"))
+        arg_lut[name] = (hi, lo)
+        pieces = [(int(a), int(b)) for a, b in _sexp.children(sc, "pieces")[0][1:]]
+        accounted = sum(a - b + 1 for a, b in pieces)
+        if accounted != hi - lo + 1:
+            raise AsmError(
+                f"{path}: scatter {name!r} accounts for {accounted} bit(s) but the field is "
+                f"{hi - lo + 1} wide — a layout this module cannot reconcile is one it will not "
+                f"use, because a silently wrong immediate is a jump to the wrong address")
+        layout[name] = pieces
+
+    insns: dict[str, Insn] = {}
+    for i in _sexp.children(enc, "insn"):
+        name = str(_sexp.field(i, "name"))
+        fixed = tuple((int(a), int(b), int(c)) for a, b, c in _sexp.children(i, "fixed")[0][1:])
+        ops = tuple(str(o) for o in _sexp.children(i, "operands")[0][1:])
+        insns[name] = Insn(name, fixed, ops, str(_sexp.field(i, "from")))
+    if not insns:
+        raise AsmError(f"{path}: no instructions — an empty encoding is not a valid one")
+    return arg_lut, insns, layout
+
+
 class Assembler:
     """Encodes one instruction at a time. Refuses whatever it cannot derive."""
 
-    def __init__(self, opcodes_dir: Path) -> None:
-        self.arg_lut = load_arg_lut(opcodes_dir / "arg_lut.csv")
-        self.insns = load_encodings([opcodes_dir / "rv_i", opcodes_dir / "rv64_i"])
-        self.imm_layout = load_immediate_layout(opcodes_dir / "constants.py", self.arg_lut)
+    def __init__(self, source: Path) -> None:
+        """`source` is either a profile's `encoding.sexp` (the canonical definition, preferred)
+        or the pinned upstream table directory (used only by `gen_encoding.py` to build it)."""
+        if source.is_file():
+            self.arg_lut, self.insns, self.imm_layout = load_canonical_encoding(source)
+            return
+        self.arg_lut = load_arg_lut(source / "arg_lut.csv")
+        self.insns = load_encodings([source / "rv_i", source / "rv64_i"])
+        self.imm_layout = load_immediate_layout(source / "constants.py", self.arg_lut)
 
     # -- operand parsing ---------------------------------------------------------------
     @staticmethod

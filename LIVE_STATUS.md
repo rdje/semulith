@@ -26,7 +26,8 @@ summarize the snapshot in every commit-workflow completion message.
 
 | North star: model as much as possible, start small | In Progress | `decision_one-definition-one-book` — CPUs, MCUs, DSPs, devices, boards, SoCs; a unit's **kind** and **layer** decide what it may own. 1 unit registered today |
 | Dual mandate: production **and** teaching | In Progress | `decision_dual-mandate-production-and-teaching` — every model is signoff work AND material a student learns from; mistakes stay in the record. Carried by `MODEL-BOOKS` and `MODEL-METHOD` |
-| Modelling method + materials | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) — 1 of 6 leaves; the sweep answered. C01–C24 exist; **nothing binds a category to a material** yet |
+| Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) — 2 of 10 leaves. The repo now **owns its encodings** (`encoding.sexp`, builds with the upstream hidden); **semantics are absent** — `.9` |
+| Modelling method + materials | In Progress | same tree — C01–C24 exist; **nothing binds a category to a material** yet (`.2`–`.4`) |
 | Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) — 6 leaves; **one canonical definition, one mdBook**: materials, gaps, method, model, evidence. 1 unit exists (`rv64i-lab-v0`, kind `cpu`) |
 
 ## Roadmap milestones (`ROADMAP.md` §6)

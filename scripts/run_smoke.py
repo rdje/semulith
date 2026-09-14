@@ -57,7 +57,7 @@ def sha256(path: Path) -> str:
 
 
 def build(name: str) -> tuple[Path, int]:
-    asm = Assembler(ROOT / "target/refs/riscv-opcodes")
+    asm = Assembler(ROOT / f"profiles/{PROFILE}/encoding.sexp")
     words = asm.assemble((GUESTS / f"{name}.s").read_text().splitlines())
     payload = b"".join(w.to_bytes(4, "little") for w, _ in words)
     OUT.mkdir(parents=True, exist_ok=True)

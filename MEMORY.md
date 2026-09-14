@@ -13,19 +13,17 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `MODEL-METHOD` (1 of 6) and `MODEL-BOOKS` (0 of 6).
-- **Frontier leaf:** `MODEL-METHOD.2` — the materials requirement schema and catalogue.
-- **Next action:** `MODEL-METHOD.2`. `docs/INFORMATION_CATALOG.md` states *what must be known* to
-  model a processor in 24 categories (C01–C24) plus DSP questions in §5. Nothing states **which
-  material supplies each**, nor which are supplied by **nothing**. Build the record type binding
-  category → material → disposition (`covered` / `missing` / `not-applicable` **with reason**),
-  as JSON Lines under a JSON Schema so `RECORD-SCHEMA` and the tracked validator apply. Then `.3`
-  censuses `rv64i-lab-v0`, `.4` acquires what is missing and reachable (including: does the
-  specification **PDF** carry the encoding tables as text?), `.5` writes the method in prose, and
-  `.6` mechanizes *no coding without the source of truth*.
-- **Format decision (mine, recorded in the tree):** JSON Lines + JSON Schema, not S-expressions —
-  the data is records, not trees, and the repo already gates JSONL. S-expressions are parked for
-  the canonical *executable semantics* in `P1-LAB`, with a stated trigger.
+- **Active trees:** `MODEL-METHOD` (2 of 10) and `MODEL-BOOKS` (0 of 6).
+- **Frontier leaf:** `MODEL-METHOD.9` — `semantics.sexp`, what each instruction *does*.
+- **Next action:** `MODEL-METHOD.9`. The canonical definition is the single source of truth a
+  generator engine reads (`decision_canonical-definition-input`): a **set of format-fit files**,
+  S-expressions for `encoding.sexp` and `semantics.sexp`, records staying JSON/TOML. `.8` closed
+  the encoding half — the repo now owns its encodings and **builds with the untracked upstream
+  hidden**. Semantics are the other half and **nothing machine-executable exists yet**: every
+  instruction in the declared scope needs an expression carrying the source locator it was derived
+  from, so a reviewer can check the expression against the sentence. Then `.7` (no duplicated
+  fact), `.10` (is the definition SUFFICIENT for an engine — the precondition for writing model
+  code), `.2`–`.4` (materials schema, census, acquisition), `.5`–`.6` (method, no-coding gate).
 - **Just closed:** `P0-PROFILE` 10/10. Gate `G0` run, verdict **`incomplete`** (68 declared
   checks, 0 implemented — the deliverable, not a failure). ⛔ Reopened for `.10` after a measured
   defect the first nine leaves carried: the profile was matched on its **instruction set and not
@@ -35,6 +33,6 @@
 - **Then:** `P1-LAB.1` — the crate skeleton; where the 68 declared checks acquire fixtures.
 - **Re-run the evidence path any time:** `scripts/fetch_references.sh --verify-only` then
   `scripts/run_smoke.py` (both need `target/refs/`, untracked).
-- **Latest commit:** see `git log -1` — `SEMULITH-MM-0033 (leaf MODEL-METHOD.1)`.
+- **Latest commit:** see `git log -1` — `SEMULITH-MM-0037 (leaf MODEL-METHOD.8)`.
 - **In-flight uncommitted work:** none.
 - **Blockers:** none.

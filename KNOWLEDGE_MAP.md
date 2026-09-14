@@ -49,6 +49,7 @@
 
 ## Decision records
 
+- [`decision_canonical-definition-input.md`](docs/decisions/decision_canonical-definition-input.md)
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)

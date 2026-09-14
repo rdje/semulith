@@ -8,6 +8,24 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-14)_ — owning a source means building without it
+
+- ⛔ The repository did not own its model's encodings: the assembler read `target/refs/riscv-opcodes`,
+  untracked and network-acquired, so a fresh clone could not build a model. The project's own rule
+  was being broken by its own tooling.
+- ⭐ **The test that settles ownership is not that a file exists — it is that the build works with
+  the source moved aside.** `mv target/refs/riscv-opcodes /tmp/ … && run_smoke.py` → ok: four
+  guests assembled, run on two references and reproduced, with the encodings' origin absent.
+- Ownership without re-derivation is a copy, so the agreement is gated and was fired RED on a
+  one-bit `funct3` edit.
+- ⛔ The new S-expression reader was caught by its own first real input: it stripped `;` comments
+  line by line before tokenizing, so a `;` INSIDE a string truncated it and a string could not span
+  lines. Generating our own encoding file hit that within minutes. Whether a `;` starts a comment
+  depends on whether a string is open — that question cannot be answered by a prior pass.
+- The S-expression trigger fired and was answered on merit: trees get S-expressions, records keep
+  JSON/TOML and their working gates. "Single source of truth" = one owner per fact, not one file.
+- Promotion is explicitly declined in the owning leaf, with the reason.
+
 ## _(2026-09-14)_ — a category the layer does not own is not "missing"
 
 - Devices are **board / SoC** material, not CPU material. The processor layer ends at the
