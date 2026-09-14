@@ -13,7 +13,7 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `SOT-FORMAT` (1/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6).
+- **Active trees:** `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (1/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6).
 - **Frontier leaf:** `SOT-FORMAT.8` — the book describes no part of the canonical definition.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression,
   **composable and extensible to new constructs in the same format**. This **supersedes** the
@@ -40,4 +40,8 @@
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.
 - **Latest commit:** see `git log -1`.
 - **In-flight uncommitted work:** none.
-- **Blockers:** none.
+- ⛔ **Do not push.** Cadence is 300 commits (currently 45); below that a push is exceptional
+  and **only the director may approve it** — `decision_push-cadence`. The `pre-push` hook
+  refuses; `SEMULITH_PUSH_APPROVED` carries the director's reason and is never set on an
+  agent's own judgement.
+- **Blockers:** `SOT-FORMAT.9` only — LinkedSpec's integration document is not finished.

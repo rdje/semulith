@@ -53,6 +53,7 @@ directory is a "trust me" with extra steps.
 | `scripts/check_encoding_disjoint.py` | do these definition fragments COMPOSE — does any word match two instructions? | `scripts/check_encoding_disjoint.py <fragment…>` |
 | `scripts/check_citations.py` | do the semantic citations RESOLVE — does every § they name exist in the artifact the profile pins? | `scripts/check_citations.py [<profile>]` |
 | `scripts/check_semantics.py` | are this fragment's semantics well-formed, complete and cited? | `scripts/check_semantics.py <fragment.sexp> <semantics.sexp>` |
+| `scripts/check_push_cadence.sh` | may this push happen now, or is it exceptional and awaiting the director? | `scripts/check_push_cadence.sh [--status \| --gate \| --self-test]` |
 | `scripts/check_seam_integrity.sh` | have this repo's repairs to the neutral checks quietly stopped working? | `scripts/check_seam_integrity.sh` |
 | `scripts/check_task_acceptance.sh --print-sig` | what does the acceptance gate actually accept as evidence right now? | `scripts/check_task_acceptance.sh --print-sig \| --print-code-re` |
 | `scripts/fetch_references.sh` | is the reference model I am comparing against the one the dossier pins, and is it still configured to this profile? | `scripts/fetch_references.sh [--verify-only] [<profile>]` |

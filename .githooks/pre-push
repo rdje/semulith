@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# .githooks/pre-push — the push boundary. See COMMIT.md "Pushing" and docs/tasks/PUSH-DISCIPLINE.md.
+#
+# ⛔ This hook refuses rather than warns. A push is outward-facing: once the bytes reach a server
+# they may be kept, cached, mirrored or indexed whatever happens locally afterwards, so the moment
+# to decide is BEFORE, and a printed warning is read after.
+set -euo pipefail
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec bash "$here/scripts/check_push_cadence.sh" --gate

@@ -65,6 +65,33 @@ apply to code changes.
 9. In the completion message, report: the commit ID, the exact commit message, the tracked
    files in the commit, the current `LIVE_STATUS.md` snapshot, and whether it changed.
 
+## Pushing (separate from committing, and governed differently)
+
+⛔ **A push is not a commit.** A commit is local and reversible — reword it, drop it, rebase it, and
+nothing outside this disk ever knew. A push sends bytes to a server that may keep, cache, mirror or
+index them regardless of what happens here afterwards. So the two acts are governed differently.
+
+- **Cadence: push every 300 commits.** Below that, a push is *exceptional*.
+- **An exceptional push requires the director's approval.** The director grants it; the environment
+  variable only carries it, with the reason they gave:
+
+  ```
+  SEMULITH_PUSH_APPROVED='<the director's reason>' git push
+  ```
+
+- ⛔ **An agent may not supply that approval on its own judgement.** The single failure this rule
+  exists to prevent is a capable assistant deciding, reasonably and unilaterally, that this
+  particular push is surely fine.
+- The `pre-push` hook refuses rather than warns, because a warning at an outward-facing boundary is
+  read after the bytes have left. Check the current standing at any time:
+
+  ```
+  scripts/check_push_cadence.sh --status
+  ```
+
+The cadence number lives in `scripts/check_push_cadence.sh` and nowhere else; the number stated
+above is checked against it by that script's own self-test.
+
 ## Pre-commit safety rules
 
 - Do not add `git_message_brief.txt` to git.
