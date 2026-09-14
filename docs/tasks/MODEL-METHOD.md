@@ -1,10 +1,10 @@
-# MODEL-METHOD: the method for modelling a processor, and the materials that method requires
+# MODEL-METHOD: the method for modelling a unit, and the materials that method requires
 
 ## Metadata
 
 - Tree ID: `MODEL-METHOD`
 - Status: `active`
-- Roadmap lane: cross-cutting; precedes implementation for **every** model, CPU or DSP
+- Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
 - Unlocks: `MODEL-BOOKS` (which renders this), and a defensible start to `P1-LAB`
@@ -48,8 +48,13 @@ itself"*, and `docs/CPU_ENVIRONMENT.md` §5 defines the board composition gate �
 assumption, identify the board/device guarantee satisfying it*. `P5-BOARD` is the tree that owns
 the other side.
 
-⭐ **This has a sharp consequence for the catalogue, and it is why the boundary is stated before
-the schema is written.** A category the processor layer does not own is **not `missing`**. Marking
+⭐ **The layer names the OWNER, not merely a deferral.** `C19 Platform, devices and interconnect`
+is `deferred-to-board` for a CPU and `covered` for a board — the same category in the same
+catalogue, answered by a different unit. That is why the catalogue is keyed on a **unit** rather
+than on a processor profile: a board's census and a CPU's census are the same schema answered
+differently, which is what makes adding the second unit cheap.
+
+**And it is why the boundary is stated before the schema is written.** A category the processor layer does not own is **not `missing`**. Marking
 `C19 Platform, devices and interconnect` as `missing` for a CPU model would manufacture an
 acquisition task for material the model must never contain, and would make the census read as a
 deficiency when it is a correct scope. The disposition vocabulary therefore carries a **layer**,
@@ -136,8 +141,10 @@ recorded so it can be overturned on evidence rather than taste:
   Status: `pending`
   Goal: a record type binding each `docs/INFORMATION_CATALOG.md` category to the material kind
   that supplies it, with a **layer** (`processor` / `board` / `system`) and a disposition per
-  model, and the DSP-specific questions of §5 carried as their own categories rather than folded
-  into the CPU ones.
+  **modelled unit**, plus the small registry of units themselves (id, kind, layer, book). The
+  DSP-specific questions of §5 are carried as their own categories rather than folded into the CPU
+  ones. ⛔ Start small: one unit exists, the registry has one row, and nothing is pre-built for
+  kinds that have never been exercised.
   Acceptance: schema added; every category represented with an explicit layer; a `board`-layer
   category may not be dispositioned `missing` for a processor model; validates under
   `RECORD-SCHEMA`.

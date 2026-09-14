@@ -24,9 +24,10 @@ summarize the snapshot in every commit-workflow completion message.
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 33 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 66 checks **declared not implemented** |
 | Reference independence inventoried | Done | `P0-PROFILE.7` — 6 pairs, 4 verdict classes. FP is **shared**: 184 of 199 SoftFloat files byte-identical, routed to `P4-SYSTEM.7`. Encoding is not shared. 2 QEMU pairs unexamined, recorded as such |
 
+| North star: model as much as possible, start small | In Progress | `decision_one-definition-one-book` — CPUs, MCUs, DSPs, devices, boards, SoCs; a unit's **kind** and **layer** decide what it may own. 1 unit registered today |
 | Dual mandate: production **and** teaching | In Progress | `decision_dual-mandate-production-and-teaching` — every model is signoff work AND material a student learns from; mistakes stay in the record. Carried by `MODEL-BOOKS` and `MODEL-METHOD` |
 | Modelling method + materials | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) — 1 of 6 leaves; the sweep answered. C01–C24 exist; **nothing binds a category to a material** yet |
-| Per-model books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) — 6 leaves; one mdBook per model: its materials bill and its methodology |
+| Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) — 6 leaves; **one canonical definition, one mdBook**: materials, gaps, method, model, evidence. 1 unit exists (`rv64i-lab-v0`, kind `cpu`) |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 

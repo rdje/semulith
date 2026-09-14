@@ -1,4 +1,4 @@
-# MODEL-BOOKS: one reviewable book per processor model — its materials, and its methodology
+# MODEL-BOOKS: one reviewable book per modelled unit — its materials, and its methodology
 
 ## Metadata
 
@@ -13,8 +13,10 @@
 
 ## Goal
 
-Give **every CPU/DSP model its own mdBook**, which does two things the project cannot currently
-do for a reader:
+Give **every modelled unit its own mdBook** — CPU, MCU, DSP, device, board, SoC — describing how it
+went **from PDFs, specifications and descriptions to a fully functional model**. One canonical
+definition, one book (`decision_one-definition-one-book`). Each does two things the project cannot
+currently do for a reader:
 
 1. **States the complete, detailed list of materials** used to specify that model's functionality
    — every specification document, encoding table, reference model and internal contract — each
@@ -59,8 +61,9 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 ## Acceptance Criteria
 
-1. Every directory under `profiles/` has a book, and a gate says so — a model without one is a
-   model whose materials are unreviewable.
+1. Every **registered modelled unit** has a book, and a gate says so — a unit without one is a
+   unit whose materials are unreviewable. Today exactly one unit exists (`rv64i-lab-v0`, kind
+   `cpu`); the requirement is structural so the second is cheap rather than a redesign.
 2. The materials list is **complete**: every document that contributed to the model appears, with
    its exact identity (locator, revision, digest, size, retrieval date), what it supplies, what it
    does **not** supply, and its terms. Generated from the pinned data and gated against it.
@@ -79,8 +82,9 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 - ID: `MODEL-BOOKS.1` — **the book structure, and the complete materials bill**
   Status: `pending`
-  Goal: establish `docs/models/<profile-id>/` as the per-model book (repeatable for every future
-  model), and write the materials chapter: every specification artifact, encoding table, reference
+  Goal: establish `docs/models/<unit-id>/` as the per-unit book — repeatable for every future unit
+  of **any kind**, since a board's book and a CPU's book differ in content and not in shape — and
+  write the materials chapter: every specification artifact, encoding table, reference
   model and internal contract, generated from `sources.toml` / `references.toml` so a digest cannot
   rot, with prose around each explaining its role.
   Acceptance: the generated material tables agree with the pinned data and a gate fails if not;
@@ -139,8 +143,10 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 ## Decisions
 
-- `2026-09-14`: a model book lives at **`docs/models/<profile-id>/`**, beside the project book
-  rather than inside `profiles/`. `profiles/<id>/` stays machine-readable data that gates consume;
+- `2026-09-14`: a unit's book lives at **`docs/models/<unit-id>/`**, beside the project book
+  rather than inside `profiles/`. The path is keyed on the **unit**, not on `profiles/`, because a
+  board or a device is a modelled unit and is not a processor profile — `profiles/` stays the home
+  of processor profiles specifically. `profiles/<id>/` stays machine-readable data that gates consume;
   `docs/models/<id>/` is the narrative a human reads. Putting the book inside the profile directory
   would have mixed the two and pushed a prose tree under bounds calibrated for data files.
 - `2026-09-14`: the book **generates or gates** every fact it restates from the profile. This tree
