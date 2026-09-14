@@ -396,3 +396,14 @@ lesson nobody can retrieve by question is a lesson nobody has.
   control under `pipefail` (`grep -c` prints 0 and exits 1). A self-test with only GREEN arms would have passed both.
 - The neutrality bar is measured, not felt: `grep -ciE 'grammar|parser|…'` over each ported script → 0, after the
   generic uses of "corpus" and "grammar" were re-worded ("tree", "syntax") so the count means what it says.
+
+## _(2026-09-14)_ — a parser's error paths say nothing about the content it returns
+
+- `"".join(buf).encode().decode("unicode_escape")` is a **Latin-1** decoder. Every `§` in this
+  project's semantics fragment came back as `Â§`, every `—` as three characters of noise — all 52
+  specification citations, corrupted on read, by a reader that raised no error and by a suite in
+  which no instrument was pointed at fidelity. Promoted to
+  [`a-parse-without-error-is-not-a-faithful-read`](docs/knowledge/a-parse-without-error-is-not-a-faithful-read.md).
+- The reader every source of truth in the repository depends on had **no self-test at all**, and
+  I was one leaf away from building a schema layer on top of it. Read the foundation before you
+  stand on it; 18 arms cost twenty minutes and the first three were RED.

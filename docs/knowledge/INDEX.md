@@ -16,3 +16,4 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`availability-is-not-identity.md`](availability-is-not-identity.md) | the package manager has a formula with the right name — is it the right software? |
 | [`a-shorter-trace-is-not-agreement.md`](a-shorter-trace-is-not-agreement.md) | my differential comparison says the two models agree — over how many steps? |
 | [`zero-hits-absence-or-blindness.md`](zero-hits-absence-or-blindness.md) | my search returned zero hits — is that absence, or is my instrument blind? |
+| [`a-parse-without-error-is-not-a-faithful-read.md`](a-parse-without-error-is-not-a-faithful-read.md) | my reader parsed the file without error — can I trust the strings it handed back? |

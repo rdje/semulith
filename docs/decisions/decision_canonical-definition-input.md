@@ -2,7 +2,10 @@
 
 - **Type:** `decision`
 - **Date:** `2026-09-14`
-- **Status:** `active`
+- **Status:** `superseded in part` — the per-file **format split** below is replaced by
+  [[decision_one-format-every-source-of-truth]] (`2026-09-14`): every source of truth is
+  S-expression. The **no-duplicated-fact rule** and the reasons for choosing S-expressions for
+  encodings and semantics are unchanged and still govern.
 - **Owner / source:** director instruction, `2026-09-14`; the deferred S-expression trigger from
   `MODEL-METHOD`, now fired
 
@@ -48,7 +51,9 @@ That form is readable, diffable, reviewable **against the specification prose by
 parseable by about eighty lines of code. It is also the form the ISA-formalism tradition converged
 on — Sail, ACL2 and SMT-LIB all shape semantics this way, for this reason.
 
-⛔ **And the records stay as they are.** Converting `requirements.jsonl` to S-expressions would
+⛔ ~~**And the records stay as they are.**~~ **SUPERSEDED, and the reasoning is kept because it is
+the instructive part.** The argument below is sound about *shape* and answers the wrong question:
+composition is a merge, and three formats are three merge semantics. Original text: Converting `requirements.jsonl` to S-expressions would
 discard a validator and a doctrine that have both been fired RED, in exchange for nothing: those
 files are *records*, not trees. Using one format everywhere would be tidiness bought with working
 instruments.

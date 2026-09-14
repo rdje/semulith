@@ -64,6 +64,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `active` | `.3` — assumption/guarantee discharge (2 of 6 leaves done) | repo-local |
 | [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` | `.10` — the extraction contract (3 of 10 leaves done) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
+| [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `active` | `.8` — the book describes no part of the canonical definition (1 of 9 leaves done) | repo-local |
 | [`MIRROR-DRIFT`](tasks/MIRROR-DRIFT.md) | `done` (reopened once, for `.4` — a mirror class the first three leaves did not cover) | — (4/4 leaves complete) | repo-local |
 | [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (8/8 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
