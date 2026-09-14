@@ -109,9 +109,16 @@ regions. `P0-PROFILE.10` configured the platform, corrected every claim that had
 unconfigured one, and left behind a negative fixture (`guests/guest-no-device.s`) that fails the
 run if a device becomes reachable again.
 
-⚠️ **And the repair does not reach every reference.** Spike's interruptor is built into the
-simulator; its `--device` option only *adds* MMIO plugins, and restricting its memory map kills
-its own reset vector. That is recorded as `DIFF-PLATFORM-SPIKE` rather than smoothed over, with
-the consequence stated exactly: any guest touching `0x1000` or `0x0200_0000..0x11ff_ffff` behaves
-differently on the two references. The three original guests touch neither — a **stated
-precondition**, not luck.
+⚠️ **And the repair does not reach every reference — because the difference is a LAYER one.**
+Spike ships a CPU *and a small board*: an interruptor, a platform interrupt controller and a UART,
+not separable from its command line. A processor model owns none of those. So what
+`DIFF-PLATFORM-SPIKE` measures is **how much board each reference drags in**, and the consequence
+is stated exactly: any guest touching `0x1000` or `0x0200_0000..0x11ff_ffff` behaves differently on
+the two references. The three original guests touch neither — a **stated precondition**, not luck.
+
+⛔ **This is the boundary that keeps a processor model a processor model.** A UART, an interrupt
+controller or an interconnect belongs to a board / SoC / ASIC model — `P5-BOARD` — and this
+contract's job at that line is to state what the CPU **assumes**, so a board can later be checked
+against it (`docs/CPU_ENVIRONMENT.md` §5). Every device named anywhere in this profile appears in
+exactly one role: something a reference brings that we exclude. None is modelled here, and none
+should be.

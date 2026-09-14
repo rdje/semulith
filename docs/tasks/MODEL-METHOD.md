@@ -34,11 +34,41 @@ implementation cannot begin over an uncovered category without a gate saying so.
 - Not an acquisition of every conceivable document. A category irrelevant to a declared scope is
   marked `not-applicable` **with its reason**, which is a different statement from `missing`.
 
+## The layer boundary — what a CPU/DSP model is NOT
+
+⛔ **Devices are not CPU material.** A UART, an interrupt controller, an interruptor, a DMA engine
+or an interconnect belongs to a **board / SoC / ASIC** model, not to a processor model. This
+project pipecleans by modelling **CPUs and DSPs first**, and the processor layer ends at the
+CPU/environment boundary: the CPU states what it *assumes* of its environment, and a later board
+model states what it *guarantees*.
+
+The project's own contracts already own this line and are cited rather than restated:
+`docs/INFORMATION_CATALOG.md` says plainly that *"C19–C21 are not all properties of the CPU
+itself"*, and `docs/CPU_ENVIRONMENT.md` §5 defines the board composition gate — *for every CPU
+assumption, identify the board/device guarantee satisfying it*. `P5-BOARD` is the tree that owns
+the other side.
+
+⭐ **This has a sharp consequence for the catalogue, and it is why the boundary is stated before
+the schema is written.** A category the processor layer does not own is **not `missing`**. Marking
+`C19 Platform, devices and interconnect` as `missing` for a CPU model would manufacture an
+acquisition task for material the model must never contain, and would make the census read as a
+deficiency when it is a correct scope. The disposition vocabulary therefore carries a **layer**,
+and `deferred-to-board` is a first-class answer distinct from both `missing` and `not-applicable`.
+
+⚠️ It also corrects a framing in the previous leaf. "Capable of running real code" needs a console
+and a program-exit convention — and **those are board concerns**. What the *processor* layer owes
+real code is narrower and entirely within it: the psABI, the ELF contract, the entry/startup state,
+and the compiler-runtime intrinsics a no-`M` soft-float target calls. The exit convention is an
+assumption the CPU records and a board later satisfies.
+
 ## Acceptance Criteria
 
 1. Every catalogue category has, per model, exactly one disposition: `covered` (naming the
-   material and its locator), `missing` (naming what would close it), or `not-applicable` (with
-   the reason). No category may be silently absent.
+   material and its locator), `missing` (naming what would close it), `deferred-to-board` (owned by
+   a later board/SoC model, with the assumption the CPU records in its place), or
+   `not-applicable` (with the reason). No category may be silently absent.
+   ⛔ `deferred-to-board` and `missing` must never be conflated: one is a correct scope, the other
+   is an acquisition task, and a census that merges them reports a healthy model as deficient.
 2. The catalogue is machine-readable, schema-validated, and gated — a coverage claim is a query,
    not a sentence someone wrote.
 3. The method is documented in prose, following at least one real rule end to end.
@@ -105,15 +135,20 @@ recorded so it can be overturned on evidence rather than taste:
 - ID: `MODEL-METHOD.2` — **the materials requirement: schema and catalogue**
   Status: `pending`
   Goal: a record type binding each `docs/INFORMATION_CATALOG.md` category to the material kind
-  that supplies it, with a disposition per model, and the DSP-specific questions of §5 carried as
-  their own categories rather than folded into the CPU ones.
-  Acceptance: schema added; every category represented; validates under `RECORD-SCHEMA`.
+  that supplies it, with a **layer** (`processor` / `board` / `system`) and a disposition per
+  model, and the DSP-specific questions of §5 carried as their own categories rather than folded
+  into the CPU ones.
+  Acceptance: schema added; every category represented with an explicit layer; a `board`-layer
+  category may not be dispositioned `missing` for a processor model; validates under
+  `RECORD-SCHEMA`.
 
 - ID: `MODEL-METHOD.3` — **the coverage census for `rv64i-lab-v0`**
   Status: `pending`
   Goal: fill the catalogue for the first model honestly. Expected outcome is that a **minority**
-  of categories are covered — the profile excludes privilege, translation, floating point, vectors,
-  atomics and devices — and the value is in the `missing` rows, not the `covered` ones.
+  of categories are covered — the profile excludes privilege, translation, floating point, vectors
+  and atomics — and the value is in the `missing` rows, not the `covered` ones. ⛔ Device and
+  interconnect categories are **`deferred-to-board`**, not missing: they are `P5-BOARD`'s to own,
+  and the CPU records an assumption in their place.
   Acceptance: no category absent; each `missing` row names what would close it.
 
 - ID: `MODEL-METHOD.4` — **acquire what the census says is missing and reachable**
@@ -245,6 +280,8 @@ recorded so it can be overturned on evidence rather than taste:
   ⛔ **The answer to the open question, stated plainly: one further instance existed, it is fixed,
   and the pattern is now gated.** I am not claiming there are no others — I am claiming that a new
   one cannot be *added* without declaring its scope, which is the only durable form of that answer.
+
+- `promotion: declined (the boundary is owned by docs/CPU_ENVIRONMENT.md §5 and INFORMATION_CATALOG.md, which this tree cites rather than restates; the derived rule — a layer the model does not own is not a gap — is stated in this tree's own layer section where a reader meets it before building the catalogue)`
 
 ## Verification Log
 

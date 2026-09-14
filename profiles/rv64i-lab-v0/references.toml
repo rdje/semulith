@@ -215,9 +215,9 @@ resolution = "CORRECTED at P0-PROFILE.10, not enumerated away. The override now 
 
 [[difference]]
 id = "DIFF-PLATFORM-SPIKE"
-kind = "platform — IRREDUCIBLE with the available controls"
+kind = "layer — the reference bundles a BOARD with its CPU"
 observed = "Spike is NOT platform-matched and cannot be, from its command line. It services the same load from 0x0200_0000 (`x1 0x0 … mem 0x0000000002000000`): its core-local interruptor is built into the simulator, and `spike --help` offers no option to remove it — `--device` only ADDS MMIO plugins. Restricting the map with `-m0x80000000:0x10000` does not help either: Spike's own reset vector lives at 0x1000 and the run then dies with `trap_instruction_access_fault, epc 0x0000000000001000`."
-resolution = "Enumerated rather than fixed, which `SRC-02` makes a legitimate result that BOUNDS a claim. The consequence is stated precisely: any guest touching 0x1000 or 0x0200_0000..0x11ff_ffff will behave differently on the two references. The three original guests touch neither, which is why they agree — and that is now a STATED PRECONDITION rather than luck. `guest-no-device` disables its cross-model comparison for this reason, and the skip is printed on every run rather than silently applied."
+resolution = "⭐ The right framing is a LAYER one, not a configuration one: Spike ships a CPU *and a small board* — an interruptor, a platform interrupt controller and a UART — and does not separate them. A processor model owns neither, so what is being measured here is how much board each reference drags in. Enumerated rather than fixed, which `SRC-02` makes a legitimate result that BOUNDS a claim. The consequence is stated precisely: any guest touching 0x1000 or 0x0200_0000..0x11ff_ffff will behave differently on the two references. The three original guests touch neither, which is why they agree — and that is now a STATED PRECONDITION rather than luck. `guest-no-device` disables its cross-model comparison for this reason, and the skip is printed on every run rather than silently applied."
 
 # ──────────────────────────────────────────── the independence inventory (P0-PROFILE.7, EVD-04)
 # ⛔ TWO TOOLS WITH DIFFERENT NAMES ARE NOT TWO OPINIONS. `EVD-04` requires shared semantic code

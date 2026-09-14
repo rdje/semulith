@@ -66,7 +66,7 @@ trap as well as arithmetic.
 | `DIFF-TRAP-RECORD-SHAPE` | trace vocabulary |
 | `DIFF-FETCH-GRANULARITY` | observable |
 | `DIFF-PLATFORM-DEFAULT` | configuration — CORRECTED, not merely recorded |
-| `DIFF-PLATFORM-SPIKE` | platform — IRREDUCIBLE with the available controls |
+| `DIFF-PLATFORM-SPIKE` | layer — the reference bundles a BOARD with its CPU |
 
 | Independence: subsystem | Pair | Verdict |
 | --- | --- | --- |
