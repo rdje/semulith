@@ -13,13 +13,13 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `MODEL-COMPOSE` (1/6), `MODEL-METHOD` (2/10), `MODEL-BOOKS` (0/6).
-- **Frontier leaf:** `MODEL-COMPOSE.2` — the fragment form.
-- **Next action:** `MODEL-COMPOSE.2`. Breadth comes from composing proven models, never from
-  gating them less (`decision_composition-model`). `.1` built the decidable half — 65 instructions
-  compose, 37 real collisions rejected. `.2` gives a fragment its form and pins the `M` fragment
-  `.1` used, which is still unpinned. ⛔ No RV64IM profile exists: `.1` proved the *decoder*
-  composes, not the semantics.
+- **Active trees:** `MODEL-COMPOSE` (2/6), `MODEL-METHOD` (2/10), `MODEL-BOOKS` (0/6).
+- **Frontier leaf:** `MODEL-COMPOSE.3` — assumption/guarantee discharge.
+- **Next action:** `MODEL-COMPOSE.3`, the inter-unit operator. Its first input already exists: the
+  **8 environment-assumptions** `rv64i-lab-v0` carries, written before any board did. Every
+  sub-unit assumption must be matched by a named guarantee or the composition is REJECTED
+  (`CPU_ENVIRONMENT` §5, made mechanical). `.1` built the intra-unit operator (union, decidable);
+  `.2` gave fragments a form and a home under `definitions/`, reusable across units.
 - **Also open:** `MODEL-METHOD.9` (semantics — nothing machine-executable exists), `.10` (is the
   definition sufficient for an engine — the precondition for writing model code), `MODEL-BOOKS.1`.
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.

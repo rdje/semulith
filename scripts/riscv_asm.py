@@ -188,6 +188,31 @@ def load_canonical_encoding(path: Path) -> tuple[dict, dict, dict]:
         raise AsmError(f"{path}: expected exactly one (encoding …) form")
     enc = forms[0]
 
+    # ⭐ A unit COMPOSES fragments; it never carries a copy of an instruction. Resolve the named
+    # fragments and union them here, so the assembler reads exactly what the composition declares.
+    comp = _sexp.children(enc, "compose")
+    if comp:
+        root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
+        names = [str(_sexp.field(comp[0], "base", str(path)))]
+        names += [str(x) for x in _sexp.children(comp[0], "extensions")[0][1:]]
+        merged: list[Sexp] = ["fragment"]
+        declared: set[str] = set()
+        for name in names:
+            frag_path = root / (name + ".sexp")
+            if not frag_path.is_file():
+                raise AsmError(f"{path}: composes {name!r}, but {frag_path} does not exist")
+            frag = _sexp.read_file(frag_path)[0]
+            declared.add(str(_sexp.field(frag, "id", str(frag_path))))
+            for req in _sexp.children(frag, "requires")[0][1:]:
+                if str(req) not in declared:
+                    raise AsmError(
+                        f"{path}: fragment {name!r} requires {str(req)!r}, which this composition "
+                        f"does not provide before it. A fragment with an unmet dependency composes "
+                        f"by luck, not by construction.")
+            merged += [c for c in frag if isinstance(c, list)
+                       and c and c[0] in ("field", "scatter", "insn")]
+        enc = merged
+
     arg_lut: dict[str, tuple[int, int]] = {}
     for f in _sexp.children(enc, "field"):
         arg_lut[str(_sexp.field(f, "name"))] = (int(_sexp.field(f, "hi")),

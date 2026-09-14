@@ -184,30 +184,30 @@ PY
   fi
 fi
 
-# ---- 4b. the OWNED encodings must still agree with the pinned upstream -----------------------
-# ⛔ Ownership without a re-derivation is just a copy. `profiles/<p>/encoding.sexp` is tracked so a
-# fresh clone can build a model without the network; this proves it has not drifted from the table
-# it was generated from, whenever that table is present.
-ENC_SEXP="profiles/$PROFILE/encoding.sexp"
-if [ -f "$ENC_SEXP" ] && [ -d "$ENC_DIR" ]; then
-  if tmp_enc="$(mktemp)" && python3 - "$PROFILE" > "$tmp_enc" <<'PY'
-import sys, pathlib, subprocess
-sys.path.insert(0, "scripts")
-import gen_encoding
-sys.stdout.write(gen_encoding.build(sys.argv[1]))
+# ---- 4b. the OWNED fragments must still agree with the pinned upstream ----------------------
+# ⛔ Ownership without a re-derivation is just a copy. `definitions/` is tracked so a fresh clone
+# can build a model without the network; this proves the fragments have not drifted from the
+# tables they were generated from, whenever those tables are present.
+if [ -d definitions ] && [ -d "$ENC_DIR" ]; then
+  if tmp_dir="$(mktemp -d)" && python3 - "$tmp_dir" <<'PY'
+import sys, pathlib, shutil, subprocess
+tmp = pathlib.Path(sys.argv[1])
+shutil.copytree("definitions", tmp / "have")
+subprocess.run([sys.executable, "scripts/gen_fragments.py"], check=True,
+               stdout=subprocess.DEVNULL)
 PY
   then
-    if diff -q "$tmp_enc" "$ENC_SEXP" >/dev/null 2>&1; then
-      say "MATCH    owned encodings agree with the pinned upstream  $ENC_SEXP"
+    if diff -r -q "$tmp_dir/have" definitions >/dev/null 2>&1; then
+      say "MATCH    owned fragments agree with the pinned upstream  definitions/"
     else
-      bad "DIFFERS  $ENC_SEXP no longer matches what the pinned tables generate
-           $(diff "$tmp_enc" "$ENC_SEXP" | head -6)
-           Regenerate it — never edit it: scripts/gen_encoding.py $PROFILE"
+      bad "DIFFERS  definitions/ no longer matches what the pinned tables generate
+           $(diff -r "$tmp_dir/have" definitions | head -6)
+           Regenerate — never edit: scripts/gen_fragments.py"
     fi
   else
-    bad "FAILED   could not regenerate encodings for $PROFILE"
+    bad "FAILED   could not regenerate the definition fragments"
   fi
-  rm -f "$tmp_enc"
+  rm -rf "$tmp_dir"
 fi
 
 # ---- 5. the matched configuration must still produce the recorded ISA string -----------------

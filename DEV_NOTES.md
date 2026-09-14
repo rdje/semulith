@@ -8,6 +8,23 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-14)_ — a refactor of the source of truth must not move the evidence
+
+- The unit carried 52 instructions inside itself; a base ISA is shared by every profile that
+  composes it. Split into `definitions/riscv/{rv64i,m}.sexp`, and the unit now NAMES what it
+  composes and owns nothing. Census: instructions in the unit 52 → 0; in `definitions/` 0 → 65.
+- ⭐ **The acceptance test was that nothing observable moved**: all four guest ELF digests are
+  byte-identical after the split, across two models. A source-of-truth refactor that perturbs the
+  evidence has changed the model, whatever the author intended.
+- A fragment DECLARES its dependencies; composing the M extension without its base is refused. A
+  fragment with a hidden dependency composes by luck, not by construction.
+- `definitions/` was registered in the routes registry in the same commit that created it. A new
+  tracked family nothing governs is how pressure escapes — measured once already in this project.
+- 🔎 Three references to the old generator name survive in CHANGELOG and a completed checklist.
+  Left alone: historical records are true as written, and `append_history` exists to stop exactly
+  that tidying.
+- Promotion is explicitly declined in the owning leaf, with the reason.
+
 ## _(2026-09-14)_ — breadth by composing proven parts, not by gating them less
 
 - ⛔ **I proposed the wrong lever and it was rejected.** Facing "model as much as possible" against

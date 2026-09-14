@@ -293,7 +293,7 @@ origin = "https://github.com/riscv/riscv-opcodes"
 license = "BSD-3-Clause (RISC-V International, 2022)"
 retrieved = "2026-09-14"
 work_dir = "target/refs/riscv-opcodes"
-supplies = "instruction fixed bits and operand lists (rv_i, rv64_i); operand field positions (arg_lut.csv); and the B/J scrambled-immediate layouts (constants.py)"
+supplies = "instruction fixed bits and operand lists for the RV64I base (rv_i, rv64_i) and the M extension (rv_m, rv64_m); operand field positions (arg_lut.csv); and the B/J scrambled-immediate layouts (constants.py). The M files are pinned because MODEL-COMPOSE.1 composed them against the base and MODEL-COMPOSE.2 made the result a tracked fragment — a fragment composed from an unpinned source would be a model built on something nobody can re-derive."
 note = "constants.py was acquired at P0-PROFILE.8 specifically for the B and J immediate layouts, which spread an immediate across non-adjacent bits. scripts/riscv_asm.py PARSES those descriptors and refuses any whose accounted bits do not total the field width (7, 5, 20, 20) — a layout it cannot reconcile is one it will not use."
 
 [[encoding_source.file]]
@@ -310,6 +310,16 @@ bytes = 947
 name = "arg_lut.csv"
 sha256 = "cdc61339ffe379c0cd24ad2dc20e57deda95e1da663f94fccb5969d191a8e136"
 bytes = 1971
+
+[[encoding_source.file]]
+name = "rv_m"
+sha256 = "1a53ea03820b7044de4f0f04d207c1e4fc0ced46deb2c6ed4a3ca268fa37ddbe"
+bytes = 432
+
+[[encoding_source.file]]
+name = "rv64_m"
+sha256 = "112bf223a31b7cc51761ce1572a8a35c2502ab2c5a6e318db80c0601b587480e"
+bytes = 297
 
 [[encoding_source.file]]
 name = "constants.py"

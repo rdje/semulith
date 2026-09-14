@@ -54,11 +54,13 @@ evidence**, never by absence of it.
   Commit: `SEMULITH-MC-0038`
 
 - ID: `MODEL-COMPOSE.2` — **the fragment: what composes, and what a unit names**
-  Status: `pending`
+  Status: `done`
   Goal: a fragment is a complete, independently checkable description of one thing; a unit names
   the fragments it unions. Give both a form in the canonical definition.
   Acceptance: `rv64i-lab-v0` re-expressed as base + (empty) extension list without changing a
   single observable; a fragment with a hidden dependency is refused.
+  Verification: all four guest ELF digests byte-identical after the refactor; two refusals fired; the M fragment pinned.
+  Commit: `SEMULITH-MC-0039`
 
 - ID: `MODEL-COMPOSE.3` — **assumption / guarantee discharge**
   Status: `pending`
@@ -90,9 +92,9 @@ evidence**, never by absence of it.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-COMPOSE.2` | `pending` | the fragment form, now that one composition has actually been performed and the `M` fragment used to do it is still unpinned |
-| 2 | `MODEL-COMPOSE.3` | `pending` | the inter-unit operator, whose first input already exists — 8 assumptions `rv64i-lab-v0` carries |
-| 3 | `MODEL-COMPOSE.4` | `pending` | slots, which is what makes top-down composition checkable before its parts exist |
+| 1 | `MODEL-COMPOSE.3` | `pending` | the inter-unit operator — assumption/guarantee discharge. Its first input already exists: the 8 assumptions `rv64i-lab-v0` carries, written before any board did |
+| 2 | `MODEL-COMPOSE.4` | `pending` | slots, which is what makes top-down composition checkable before its parts exist |
+| 3 | `MODEL-COMPOSE.6` | `pending` | semantic refinement points — the hard axis, and it needs `MODEL-METHOD.9`'s semantics to exist first |
 
 ## Decisions
 
@@ -113,7 +115,80 @@ evidence**, never by absence of it.
 
 - None.
 
-## Acceptance Checklist (current leaf — `MODEL-COMPOSE.1`)
+## Acceptance Checklist (current leaf — `MODEL-COMPOSE.2`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `profiles/rv64i-lab-v0/encoding.sexp` carried
+  all 52 instructions **inside the unit**. WHY that fails the composition model: a base ISA is
+  shared by every profile that uses it, so a second RV64 profile would have copied 52 instructions
+  that then had to be kept equal — the exact duplication `decision_canonical-definition-input`'s
+  no-duplicated-fact rule exists to prevent, in the one place most tempting to copy. Census:
+
+  ```
+  $ grep -c '^  (insn ' profiles/rv64i-lab-v0/encoding.sexp
+  52                       # owned by ONE unit, reusable by none
+  $ git ls-files definitions | wc -l
+  0
+  ```
+
+- [x] **ADDRESSED (verified)** — fragments have a form and a home. `definitions/riscv/rv64i.sexp`
+  (52 instructions, the operand fields and scattered-immediate layouts a base owes its extensions)
+  and `definitions/riscv/m.sexp` (13 instructions, `(requires "riscv/rv64i")`). The unit now
+  **names** what it composes and carries no instruction of its own:
+
+  ```
+  (compose (base "riscv/rv64i") (extensions))
+  ```
+
+  Before → after on the census that defined the gap:
+
+  ```
+  $ grep -c '^  (insn ' profiles/rv64i-lab-v0/encoding.sexp
+  0                                    # was 52 — the unit owns no instruction
+  $ grep -ch '^  (insn ' definitions/riscv/*.sexp | paste -sd+ - | bc
+  65                                   # 52 base + 13 M, reusable by any unit
+  $ git ls-files definitions | wc -l
+  2                                    # was 0
+  ```
+
+  ⭐ **The acceptance test is that nothing observable moved.** A refactor of the source of truth
+  must not perturb the evidence, so all four guest programs were re-assembled and re-run:
+  `elf sha256` → `59b0029bcf33fa36`, `e9cd138de6562aca`, `05551a3a22afcbbc`, `aadc2c618c84ad78` —
+  **byte-identical to before the split**, across two reference models, all reproducing.
+  The `M` fragment used in `.1` is now **pinned** (`rv_m`, `rv64_m` digests in `references.toml`):
+  a fragment composed from an unpinned source is a model built on something nobody can re-derive.
+
+- [x] **NO REGRESSION** — leg 2. Two refusals, both fired:
+  - composing `riscv/m` **without** its base → `fragment 'riscv/m' requires 'riscv/rv64i', which
+    this composition does not provide before it. A fragment with an unmet dependency composes by
+    luck, not by construction.`
+  - composing a fragment that does not exist → `composes 'riscv/nope', but
+    definitions/riscv/nope.sexp does not exist`.
+
+  The fragments are re-derived against the pinned tables by `fetch_references.sh`, fired RED on a
+  one-nibble `funct3` edit to `mul`: `DIFFERS definitions/ no longer matches what the pinned tables
+  generate`, with the line quoted. Restored to `MATCH`. `fetch_references.sh --verify-only` → all
+  `MATCH`; whole gate `=== all doctrines green ===`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `scripts/run_smoke.py` → `ok`.
+  ⭐ The tracked generator reproduces the fragments **byte-for-byte** — `git diff --stat
+  definitions/` after regeneration is empty — so the generator is the owner and the files are not
+  a hand-maintained copy of its output.
+
+- [x] **FIX** — `definitions/` created and **registered in the routes registry in the same commit**
+  (a new tracked family that nothing governs is how pressure escapes); `scripts/gen_fragments.py`
+  replacing the single-profile generator; `riscv_asm.py` resolving a composition and checking
+  declared dependencies; `rv_m`/`rv64_m` pinned.
+
+- `promotion: declined (the rule — a source-of-truth refactor must not move the evidence — is demonstrated by this leaf's own digest row and stated in encoding.sexp's header, which anyone composing a second profile reads first)`
+
+- [x] **LOCKSTEP** — leg 3: fragments are re-derived on demand, compositions are checked before
+  adoption, and the unit owns no instruction. `TOOLBOX.md`, `MEMORY.md`, `LIVE_STATUS.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⚠️ Note on the rename: three references to the old generator name survive in `CHANGELOG.md` and
+  in `MODEL-METHOD.8`'s completed checklist. They are **left alone deliberately** — both are
+  historical records, true when written, and rewriting them to match today is exactly what the
+  `append_history` lifecycle exists to prevent.
+
+### `MODEL-COMPOSE.1` — encoding-space disjointness
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nothing in this repository could decide whether
   two definition fragments compose. WHY it mattered enough to build first: the project's route to
@@ -192,11 +267,17 @@ evidence**, never by absence of it.
 | `2026-09-14` | `MODEL-COMPOSE.1` | compose owned RV64I + `M` fragments | 52 + 8 + 5 = 65, no collision, no duplicate name |
 | `2026-09-14` | `MODEL-COMPOSE.1` | control: compose with a fragment already contained | 37 collisions named with masks, `rc=1`, REJECTED |
 | `2026-09-14` | `MODEL-COMPOSE.1` | unplanned refusal: an empty fragment | `REFUSED … an empty fragment is not a valid one` |
+| `2026-09-14` | `MODEL-COMPOSE.2` | all four guest ELF digests after the refactor | byte-identical to before; 2 models still agree |
+| `2026-09-14` | `MODEL-COMPOSE.2` | compose an extension without its required base | `REFUSED … requires 'riscv/rv64i'` |
+| `2026-09-14` | `MODEL-COMPOSE.2` | compose a fragment that does not exist | `REFUSED … does not exist` |
+| `2026-09-14` | `MODEL-COMPOSE.2` | fragment re-derivation fired RED on a `funct3` edit | `DIFFERS definitions/ …` — restored |
+| `2026-09-14` | `MODEL-COMPOSE.2` | generator reproduces the fragments | `git diff --stat definitions/` empty |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-COMPOSE.2` | `SEMULITH-MC-0039 (leaf MODEL-COMPOSE.2): fragments get a form and a home` | nothing observable moved; M pinned |
 | `MODEL-COMPOSE.1` | `SEMULITH-MC-0038 (leaf MODEL-COMPOSE.1): encoding composition is a verdict, not a hope` | 65 compose; 37 collisions rejected in the control |
 
 ## Changelog

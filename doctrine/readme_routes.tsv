@@ -40,6 +40,14 @@
 # ⛔ Ceilings are DERIVED from this project's own trimmed surfaces, never copied from another
 # project. Raising one requires a reviewed decision that the surface's contract expanded.
 #
+# Derivation, MODEL-COMPOSE.2, when reusable definition fragments got their own home:
+#   definitions/     2 files / 10,074 B at adoption (riscv/rv64i.sexp, riscv/m.sexp). Health 12
+#                    files / 128 KiB; ceiling 30 / 256 KiB; per-part 64 KiB. A fragment is one
+#                    ISA base or one extension, so the FILE COUNT is the axis that will move —
+#                    RISC-V alone has over a hundred ratified extensions — while any single
+#                    fragment stays small. Registered in the same commit that created the
+#                    directory, for the reason the CHANGELOG shard records below.
+#
 # Derivation, P0-PROFILE.8, when CHANGELOG.md crossed its 64 KiB ceiling and was sharded:
 #   docs/changelog/  1 file / 35,480 B at adoption. Health 6 files / 192 KiB; ceiling 20 / 384 KiB;
 #                    per-part 64 KiB — the SAME per-part bound CHANGELOG.md itself carries, so a
@@ -89,6 +97,7 @@ AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0
 MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally owned	0	0	0	32768	0
 DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
+definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
 docs/changelog/	author_overflow	append_history	sharded CHANGELOG history; entries are never edited after the shard	6	196608	20	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0

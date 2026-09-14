@@ -47,7 +47,7 @@ directory is a "trust me" with extra steps.
 | `scripts/gate_report.py` | what does the gate actually say right now, and why is it not `passed`? | `scripts/gate_report.py <profile> [--stdout]` |
 | `scripts/compare_platforms.py` | what platform does each reference actually advertise, and where does it differ from the profile and from the other model? | `scripts/compare_platforms.py` |
 | `scripts/sexp.py` | does this canonical-definition file parse, and what does it declare? | `scripts/sexp.py <file.sexp>` |
-| `scripts/gen_encoding.py` | regenerate a profile's owned encodings from the pinned tables | `scripts/gen_encoding.py <profile>` |
+| `scripts/gen_fragments.py` | regenerate the reusable definition fragments from the pinned tables | `scripts/gen_fragments.py` |
 | `scripts/check_encoding_disjoint.py` | do these definition fragments COMPOSE — does any word match two instructions? | `scripts/check_encoding_disjoint.py <fragment…>` |
 | `scripts/check_seam_integrity.sh` | have this repo's repairs to the neutral checks quietly stopped working? | `scripts/check_seam_integrity.sh` |
 | `scripts/check_task_acceptance.sh --print-sig` | what does the acceptance gate actually accept as evidence right now? | `scripts/check_task_acceptance.sh --print-sig \| --print-code-re` |
