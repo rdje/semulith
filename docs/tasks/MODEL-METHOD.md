@@ -209,11 +209,13 @@ recorded so it can be overturned on evidence rather than taste:
   Commit: `SEMULITH-MM-0037`
 
 - ID: `MODEL-METHOD.9` — **the semantics: `semantics.sexp`**
-  Status: `pending`
+  Status: `done`
   Goal: what each of the declared instructions *does*, as expressions, each carrying the source
   locator it was derived from so a reviewer can check the expression against the sentence.
   Acceptance: every instruction in the declared scope has semantics; every form cites a locator;
   the file parses under a tracked reader that **refuses** a form it does not implement.
+  Verification: 52 of 52 instructions, every rule cited; 4 controls fired RED; the language is 32 forms, each added because an instruction needed it.
+  Commit: `SEMULITH-MM-0040`
 
 - ID: `MODEL-METHOD.10` — **the extraction contract: is the definition SUFFICIENT?**
   Status: `pending`
@@ -237,9 +239,9 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.9` | `pending` | the semantics — nothing machine-executable exists today, so this is the substance of the canonical definition and the half a generator engine most needs |
-| 2 | `MODEL-METHOD.7` | `pending` | the no-duplicated-fact rule, now that a second definition file exists to duplicate into |
-| 3 | `MODEL-METHOD.10` | `pending` | the extraction contract: is the definition SUFFICIENT for an engine? |
+| 1 | `MODEL-METHOD.10` | `pending` | the extraction contract. Both halves now exist — encodings and semantics — so *"the engine can extract all it needs"* can finally become a **verdict**, and that verdict is the precondition for writing model code |
+| 2 | `MODEL-METHOD.7` | `pending` | the no-duplicated-fact rule, now that several definition files exist to duplicate between |
+| 3 | `MODEL-METHOD.2` | `pending` | the materials schema and census |
 
 ## Decisions
 
@@ -264,7 +266,71 @@ recorded so it can be overturned on evidence rather than taste:
 
 - None.
 
-## Acceptance Checklist (current leaf — `MODEL-METHOD.8`)
+## Acceptance Checklist (current leaf — `MODEL-METHOD.9`)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nowhere. **Nothing machine-executable existed.**
+  A generator engine reading the canonical definition found configuration, state, provenance,
+  environment assumptions and — after `.8` — encodings, and still could not produce an interpreter,
+  because what each instruction *does* was recorded only as English prose in a decision's
+  `statement` field. Census:
+
+  ```
+  $ git ls-files | grep -c -E 'sem(antics)?\.sexp'
+  0
+  $ grep -c '^\[\[decision\]\]' profiles/rv64i-lab-v0/profile.toml
+  26                     # 26 rules, all prose, none executable
+  ```
+
+- [x] **ADDRESSED (verified)** — `definitions/riscv/rv64i.sem.sexp`: **52 of 52** declared
+  instructions, each an expression, each citing the locator it was derived from.
+
+  ```
+  $ scripts/check_semantics.py definitions/riscv/rv64i.sexp definitions/riscv/rv64i.sem.sexp
+    52 of 52 declared instruction(s) have checked semantics
+  ```
+
+  ⭐ **Widths are always explicit**, because an implicit width is exactly where two models silently
+  disagree. `addiw` is `(sext 64 (trunc 32 (add (trunc 32 (reg rs1)) (sext 32 (imm imm12)))))` —
+  which says the whole of `D-WSUFFIX` in one line and can be checked against the sentence that
+  produced it.
+  ⛔ **Generated and authored content are in different files on purpose.** `rv64i.sexp` is
+  generated from a machine-readable table and regenerated whenever that table moves; putting
+  hand-derived semantics in the same file would mean a regeneration destroys them. Different
+  provenance, different file.
+
+- [x] **NO REGRESSION** — leg 2. The language is **32 forms**, each added because an RV64I
+  instruction needed it and none in anticipation, and the checker refuses everything else. Four
+  controls, each fired on the real file:
+
+  ```
+  1 declared instruction(s) have NO semantics: sraw
+  [add]: unknown form 'multiply'. The language is deliberately small and this checker refuses
+         what it cannot state the meaning of
+  [sub]: 'imm12' is not an operand this instruction has (it provides ['rd', 'rs1', 'rs2'])
+  [and]: cites no specification locator. A semantic rule with no source is a rule nobody can
+         check against the document it came from
+  ```
+
+  All restored. Whole gate `=== all doctrines green ===`; `make check` →
+  `test result: ok. 1 passed; 0 failed`; `scripts/run_smoke.py` → `ok`, undisturbed.
+  ⚠️ **What a green result here does NOT mean, stated because the number invites the stronger
+  reading.** `52 of 52` says the semantics are *well-formed, complete and cited*. It does not say
+  they are **correct**. Proving that is a differential experiment against a reference model — which
+  is what `P0-PROFILE.6` does for three guest programs today, and what `P1-LAB` must do at scale.
+  A definition that says something checkable is not yet a definition that says something true.
+
+- [x] **FIX** — `definitions/riscv/rv64i.sem.sexp` and `scripts/check_semantics.py`.
+
+- `promotion: declined (the two rules — explicit widths, and generated content never sharing a file with authored content — are stated in rv64i.sem.sexp's own header, which is the first thing anyone writing a second semantics fragment reads)`
+
+- [x] **LOCKSTEP** — leg 3: the semantics are checked against the encodings they accompany, so an
+  instruction cannot be added to one without the other noticing. `TOOLBOX.md`, `MEMORY.md`,
+  `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md` updated in this commit.
+  ⛔ `riscv/m`'s semantics are **absent and that is correct**: `rv64i-lab-v0` does not compose `M`,
+  and writing semantics for a fragment no unit uses would be inventory. `MODEL-COMPOSE.6` owns what
+  happens when a composed fragment *refines* base behaviour.
+
+### `MODEL-METHOD.8` — owning the encodings
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/riscv_asm.py` constructed its
   `Assembler` from `target/refs/riscv-opcodes` — a **network-acquired, untracked** directory. WHY it
@@ -428,11 +494,15 @@ recorded so it can be overturned on evidence rather than taste:
 | `2026-09-14` | `MODEL-METHOD.8` | re-derivation fired RED on a one-bit `funct3` edit | `DIFFERS … no longer matches what the pinned tables generate` |
 | `2026-09-14` | `MODEL-METHOD.8` | S-expression reader controls | 7 pass / 0 fail, incl. `;` inside a string and a string spanning lines |
 | `2026-09-14` | `MODEL-METHOD.8` | `fetch_references.sh --verify-only` | 12 of 12 `MATCH` |
+| `2026-09-14` | `MODEL-METHOD.9` | census: machine-executable semantics before this leaf | `0` files; 26 rules, all prose |
+| `2026-09-14` | `MODEL-METHOD.9` | `check_semantics.py` on the real fragment | `52 of 52 declared instruction(s) have checked semantics` |
+| `2026-09-14` | `MODEL-METHOD.9` | 4 controls: missing, unknown form, bad operand, no source | each refused by name; all restored |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.9` | `SEMULITH-MM-0040 (leaf MODEL-METHOD.9): the semantics, 52 of 52, every rule cited` | well-formed and cited — NOT verified correct |
 | `MODEL-METHOD.8` | `SEMULITH-MM-0037 (leaf MODEL-METHOD.8): the repository owns its encodings` | builds with the upstream hidden; re-derivation fired RED |
 | `MODEL-METHOD.1` | `SEMULITH-MM-0033 (leaf MODEL-METHOD.1): answer the narrower-instrument sweep with a wider instrument` | 1 further instance found and fixed; the pattern gated |
 
