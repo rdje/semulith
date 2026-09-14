@@ -51,6 +51,7 @@ directory is a "trust me" with extra steps.
 | `scripts/sexp.py --self-test` | does the reader still return the bytes the file contains — escapes, non-ASCII, strings holding `;` ? | `scripts/sexp.py --self-test` |
 | `scripts/gen_fragments.py` | regenerate the reusable definition fragments from the pinned tables | `scripts/gen_fragments.py` |
 | `scripts/check_encoding_disjoint.py` | do these definition fragments COMPOSE — does any word match two instructions? | `scripts/check_encoding_disjoint.py <fragment…>` |
+| `scripts/check_citations.py` | do the semantic citations RESOLVE — does every § they name exist in the artifact the profile pins? | `scripts/check_citations.py [<profile>]` |
 | `scripts/check_semantics.py` | are this fragment's semantics well-formed, complete and cited? | `scripts/check_semantics.py <fragment.sexp> <semantics.sexp>` |
 | `scripts/check_seam_integrity.sh` | have this repo's repairs to the neutral checks quietly stopped working? | `scripts/check_seam_integrity.sh` |
 | `scripts/check_task_acceptance.sh --print-sig` | what does the acceptance gate actually accept as evidence right now? | `scripts/check_task_acceptance.sh --print-sig \| --print-code-re` |

@@ -17,3 +17,4 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`a-shorter-trace-is-not-agreement.md`](a-shorter-trace-is-not-agreement.md) | my differential comparison says the two models agree — over how many steps? |
 | [`zero-hits-absence-or-blindness.md`](zero-hits-absence-or-blindness.md) | my search returned zero hits — is that absence, or is my instrument blind? |
 | [`a-parse-without-error-is-not-a-faithful-read.md`](a-parse-without-error-is-not-a-faithful-read.md) | my reader parsed the file without error — can I trust the strings it handed back? |
+| [`a-version-string-is-not-an-identity.md`](a-version-string-is-not-an-identity.md) | someone says my pinned source does not exist — is my pin wrong, or are we reading different publications? |

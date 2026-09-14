@@ -16,6 +16,26 @@
 # the actual applicable terms to be recorded before relying on or shipping an artifact;
 # "shipping" is the part not yet reached. Open question OQ-4 in DOSSIER.md owns it.
 
+# ⛔ NAME THE PUBLICATION, NOT JUST THE VERSION. `v20260120` identifies nothing on its own, and
+# that ambiguity has already cost someone real work: an external investigation searched
+# github.com/riscv/riscv-isa-manual for a `v20260120` release, found the tags jump 2026-01-17 →
+# 2026-01-21, found that the release PDFs number RV32I §2 and RV64I §4, and concluded that this
+# profile's §1.1 / §3.1 citations matched no public build. The deduction was right and the
+# conclusion was wrong: these are TWO DIFFERENT PUBLICATIONS of the same specification.
+#
+#   github.com/riscv/riscv-isa-manual  — the source repository and its release PDFs. Numbers
+#                                        "Introduction" as Chapter 1, so RV32I is §2, RV64I §4.
+#   docs.riscv.org  (pinned here)      — the RISC-V Ratified Specifications Library. Renders
+#                                        "Introduction" as unnumbered front matter, so RV32I is
+#                                        §1.1 and RV64I is §3.1 — which is what every locator in
+#                                        definitions/riscv/rv64i.sem.sexp uses.
+#
+# Verified 2026-09-14: all three pinned URLs return HTTP 200 and bytes identical to the digests
+# below, and `scripts/check_citations.py` resolves 52 of 52 citations against them. A version
+# string without its publication is not an identity.
+
+publication = "RISC-V Ratified Specifications Library (docs.riscv.org)"
+not_this_publication = "github.com/riscv/riscv-isa-manual releases — different section numbering"
 revision = "v20260120"
 base_url = "https://docs.riscv.org/reference/isa/v20260120/unpriv"
 retrieved = "2026-09-13"

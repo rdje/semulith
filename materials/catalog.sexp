@@ -45,6 +45,19 @@
   ;; ------------------------------------------------------------------------------------
   ;; Materials.
   ;; ------------------------------------------------------------------------------------
+  (gap
+    (id "GAP-RISCV-JAN-2026-PDF")
+    (looked-for "the January 2026 riscv-isa-manual release PDFs (2026-01-17 / 2026-01-21), the
+                 closest official release to this profile's pinned docs.riscv.org revision")
+    (probe "not in this corpus; offered by an external investigation as an interim substitute")
+    (result "DECLINED as a substitute, deliberately. Swapping them in would replace the artifact
+             every one of the 52 citations resolves against with one that numbers its chapters
+             differently, turning 52 resolving citations into 52 unresolvable ones — a strictly
+             worse position reached by acquiring more material.")
+    (consequence "they may be catalogued LATER as additional reference materials, under their own
+                  ids, never as `RVI-RV32I` or `RVI-RV64I`. Acquiring a document and repointing a
+                  pin are two different decisions and only the first is cheap."))
+
   (material
     (id "RVI-ISA-PDF-20260911")
     (title "The RISC-V Instruction Set Manual — Volume I Unprivileged and Volume II Privileged")
@@ -71,6 +84,14 @@
            (2) SECTION NUMBERING. This manual numbers RV32I §2.1 and RV64I §2.2. The pinned HTML
                numbers them §1.1 and §3.1, which is what all 52 semantic citations use. A reader
                holding this PDF cannot follow a single one of our locators.
+           SETTLED 2026-09-14, after an external investigation challenged the pin: the two are
+           DIFFERENT PUBLICATIONS of the same specification, not a right one and a wrong one.
+           github.com/riscv/riscv-isa-manual numbers `Introduction` as Chapter 1, so RV32I is §2
+           and RV64I §4; docs.riscv.org (the Ratified Specifications Library, which this profile
+           pins) renders `Introduction` as unnumbered front matter, so RV32I is §1.1 and RV64I
+           §3.1. The pinned URLs return HTTP 200 with bytes identical to the recorded digests and
+           `scripts/check_citations.py` resolves 52 of 52. See
+           docs/knowledge/a-version-string-is-not-an-identity.md.
            So it is catalogued as a reference the project may READ — for breadth, for the
            privileged architecture, for extensions the HTML set does not cover — and never as the
            authority a requirement cites. Reconciling the two is owned by `MODEL-METHOD.3`."))

@@ -245,6 +245,26 @@ recorded so it can be overturned on evidence rather than taste:
   the corpus root; 15 self-test arms, 9 of them RED about paths.
   Commit: `SEMULITH-MM-0042`
 
+- ID: `MODEL-METHOD.12` — **a citation that is present is not a citation that resolves**
+  Status: `done`
+  Goal: an external investigation challenged this profile's pinned source, reporting that no
+  public build of `riscv-isa-manual` produces the §1.1 / §3.1 numbering all 52 semantic citations
+  use. Re-derived: the challenge is **refuted** — 52 of 52 resolve in the pinned artifact, which is
+  live, HTTP 200 and byte-identical to the committed digests. But the challenge was only possible
+  because **nothing checked that a citation resolves**: `check_semantics.py` asks whether a
+  citation is *present*, and a citation that points nowhere is still present. Close that, and close
+  the ambiguity in `sources.toml` that made the wrong publication a reasonable guess.
+  Acceptance: a tracked instrument resolves every semantic citation against the pinned artifacts
+  and names the offending locator on failure, fired RED on a locator that does not exist; it
+  refuses with instructions when the artifacts are not fetched rather than reporting success;
+  `sources.toml` names its **publication**, not just a version string.
+  ⛔ Not a commit gate: the artifacts are fetched, untracked and need the network, and the
+  rendering declares no redistribution licence (`OQ-4`), so a fresh clone cannot run it. A gate
+  that silently passes when its evidence is absent is the defect, not the fix.
+  Verification: challenge refuted — 52 of 52 resolve, pinned URLs live and byte-identical; 10
+  self-test arms; absent-evidence control refuses.
+  Commit: `SEMULITH-MM-0043`
+
 - ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
   Status: `pending`
   Goal: a gate that refuses model implementation for a profile while a category its declared scope
@@ -285,83 +305,89 @@ recorded so it can be overturned on evidence rather than taste:
 
 - None.
 
-## Acceptance Checklist (current leaf — `MODEL-METHOD.11`)
+## Acceptance Checklist (current leaf — `MODEL-METHOD.12`)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nowhere — the gap was an absence. A curated
-  corpus of vendor ISA/architecture manuals became available, and this repository had **no form in
-  which to say that a material exists and where a copy is**:
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/check_semantics.py:112`, which asks
+  whether a rule *carries* a citation:
 
-  ```
-  $ git ls-files | grep -ciE 'materials|catalog'
-  0
-  ```
-
-  WHY the obvious fix is wrong: the corpus lives outside the repository, so the direct route —
-  write its path in a tracked file — plants an absolute path, which Policy 12 forbids because the
-  repository must survive being moved to another filesystem. And it fails *quietly*: after a move
-  the path simply stops existing and every tool reports "not found" about a document that is
-  sitting right there, sending the reader after the wrong problem. The census leaves (`.2`–`.4`)
-  all need to record *where a material is*, so "where" needed a form first.
-
-- [x] **ADDRESSED (verified)** — leg 2. Paths compose from two roots and the catalogue knows only
-  one of them: `cache-path` is relative to `cache-root`, which is relative to the repository root;
-  `corpus-path` is relative to a corpus root supplied at run time through a **named environment
-  variable the repository never stores**. 22 materials and 2 measured gaps catalogued:
-
-  ```
-  $ python3 scripts/materials.py --fetch
-    ok  ARM-A-DDI0487M.c -> .materials/arm/arm-a-profile-ddi0487mc.pdf (125,757,212 B, sha256 verified)
-    …  22 of 22 fetched, every digest verified
-  $ du -sh .materials   ->  233M   (same volume as the repository — Policy 13)
+  ```python
+  if not _sexp.children(s, "source"):
+      errors.append(f"{where}: cites no specification locator …")
   ```
 
-  The property the whole design exists for, measured on the tracked tree:
+  WHY that is not enough: a citation that points at a section which does not exist still carries.
+  Presence was checked; **resolution was not**, so the sentence *"52 of 52, every rule cited"* could
+  only ever be settled by a person going and looking. And the second half of the cause was in
+  `sources.toml`, which recorded `revision = "v20260120"` and no **publication** — so the natural
+  place to look for it was the wrong one.
+
+  This surfaced as an external challenge, which reported — correctly on every observation — that
+  `riscv/riscv-isa-manual` has no `2026-01-20` tag, that its January PDFs number RV32I §2 and
+  RV64I §4, and that §1.1 / §3.1 is what you get only when `Introduction` is unnumbered front
+  matter. It concluded the pin matched no public build.
+
+- [x] **ADDRESSED (verified)** — leg 2. **The challenge is refuted, re-derived from the primary
+  artifact before it was either defended or conceded.** The two are different *publications* of one
+  specification: `docs.riscv.org` (the Ratified Specifications Library, pinned here) renders
+  `Introduction` as unnumbered front matter exactly as the report deduced, so RV32I is §1.1 and
+  RV64I §3.1.
 
   ```
-  $ git grep -c -I --cached -e 'livework' -- .     # the corpus root, in any tracked file
-  0
-  $ grep -c '/Volumes/' <a file that has one>      # control: the instrument can see one
+  $ curl … docs.riscv.org/reference/isa/v20260120/unpriv/{intro,rv32,rv64}.html
+    HTTP 200 / 200 / 200 — and byte-identical to the pinned copies AND to the committed digests
+  $ python3 -c '…extract <h1>-<h6> from the pinned rv64.html…'
+    3.1. RV64I …   3.1.1. Register State   3.1.2. Integer Computational Instructions
+    3.1.2.1. Integer Register-Immediate   3.1.2.2. Integer Register-Register   3.1.3. Load and Store
+  ```
+
+  `scripts/check_citations.py` now makes that a verdict rather than a look:
+
+  ```
+  $ python3 scripts/check_citations.py
+  citations: definitions/riscv/rv64i.sem.sexp against RISC-V Ratified Specifications Library (docs.riscv.org)
+    ok  RVI-RV32I §1.1.4   13 instruction(s)   …   ok  RVI-RV64I §3.1.3  11 instruction(s)
+    52 of 52 instruction citations resolve in the pinned artifact (9 distinct locator(s), 3 pinned source(s))
+  $ python3 scripts/check_citations.py --self-test        -> 10 pass / 0 fail
+  ```
+
+  ⛔ And it refuses instead of passing when its evidence is absent — the control that matters most,
+  because this tool's evidence is untracked and needs the network:
+
+  ```
+  $ mv target/sources/riscv-v20260120 … && python3 scripts/check_citations.py ; echo $?
+  REFUSED: the pinned artifacts are not present at target/sources/riscv-v20260120 … Fetch them:
+      scripts/fetch_sources.sh
   1
   ```
 
-  Four tracked files do contain the *string* `/Volumes/…`, and each is accounted for: two are
-  prose warning against it, one is the `DOCPATH` gate's own detection pattern, and one is a RED
-  self-test fixture that must hold an absolute path to prove it is refused. **None is a path to
-  anything.**
+  `sources.toml` now names its publication **and the one it is not**, because the next person to
+  check this will start where the last one did.
 
-  The resolver refuses rather than approximates — 15 arms, every RED one about a path that would
-  break on a move:
+- [x] **NO REGRESSION** — leg 3. The pin did not move and no semantic file changed; the leaf adds an
+  instrument and a disambiguation.
 
   ```
-  $ python3 scripts/materials.py --self-test
-    ok  RED  an ABSOLUTE cache-path is refused        ok  RED  a cache-path climbing out with '..' is refused
-    ok  RED  an ABSOLUTE corpus-path is refused       ok  RED  a cached file with the wrong digest is refused
-    ok  RED  an ABSOLUTE cache-root is refused        ok  RED  an absent material refuses WITH the command that fixes it
-    ok  GREEN resolve returns a REPO-ROOT-RELATIVE path
-  materials --self-test: 15 pass / 0 fail
+  $ python3 scripts/check_semantics.py …    -> 52 of 52 declared instruction(s) have checked semantics
+  $ python3 scripts/materials.py --self-test -> 15 pass / 0 fail   (catalogue still valid)
+  $ python3 scripts/run_smoke.py | tail -1   -> run_smoke: ok …
+  $ bash scripts/check_doctrines.sh          -> all doctrines green
   ```
 
-- [x] **NO REGRESSION** — leg 3. Nothing that existed changed behaviour; the leaf is additive.
-  Re-run in full:
-
-  ```
-  $ python3 scripts/sexp.py --self-test        -> 18 pass / 0 fail
-  $ python3 scripts/check_semantics.py …       -> 52 of 52 declared instruction(s) have checked semantics
-  $ python3 scripts/run_smoke.py | tail -1     -> run_smoke: ok — every program matches …
-  $ bash scripts/check_doctrines.sh            -> all doctrines green
-  ```
-
-  ⛔ `.materials/` is gitignored and holds 233 MB of third-party documents: the repository
-  catalogues their identity, revision, digest and licence, and redistributes none of them.
-
-- [x] **LOCKSTEP** — `materials/` registered in `doctrine/readme_routes.tsv` **in the commit that
-  creates it**, with its ceilings derived from its own measured size (the lesson the CHANGELOG
-  shard left in that file's header); `TOOLBOX.md` gains the resolver row; `.gitignore` gains the
-  cache with the reason written beside it. `CHANGELOG.md` had 1,326 B of headroom against its
-  64 KiB ceiling, so it was sharded first — 64,210 → 28,188 B, 11 entries moved to
-  `docs/changelog/2026-09-p0-to-mirror.md` (36,268 B, under the 64 KiB per-part bound).
+- [x] **LOCKSTEP** — `TOOLBOX.md` gains the resolver row; the catalogue's `RVI-ISA-PDF-20260911`
+  note records the settled finding; knowledge card
+  [`a-version-string-is-not-an-identity`](../knowledge/a-version-string-is-not-an-identity.md);
+  the declined substitution recorded as `(gap GAP-RISCV-JAN-2026-PDF)`.
 
 ## ROUTING EVIDENCE
+
+`MODEL-METHOD.12` — the interim substitution offered by the external investigation (pull the
+2026-01-17 / 01-21 release PDFs as "the closest official match") is **declined**, and the reason is
+recorded where the next person will meet it, in `materials/catalog.sexp` as `GAP-RISCV-JAN-2026-PDF`.
+Measured: those PDFs number RV32I §2 and RV64I §4, so adopting them would turn 52 resolving
+citations into 52 unresolvable ones — a strictly worse position reached by acquiring *more*
+material. They may be catalogued later under their own ids as additional references; acquiring a
+document and repointing a pin are two decisions and only the first is cheap.
+
 
 Two findings measured here are **not** this tree's to fix, and both are recorded in the catalogue
 as first-class `(gap …)` records rather than as prose someone must remember:
@@ -394,6 +420,13 @@ Neither is routed to another tree; neither is worked around here.
 | `2026-09-14` | `MODEL-METHOD.11` | gap probe: AMD64 ISA manual | absent; `amd/` holds one IOMMU spec |
 | `2026-09-14` | `MODEL-METHOD.11` | gap probe: Intel SDM Volume 1 | absent; Vols 2/3/4 present |
 | `2026-09-14` | `MODEL-METHOD.11` | regression: sexp, semantics, smoke, doctrines | 18/0, 52 of 52, ok, all green |
+| `2026-09-14` | `MODEL-METHOD.12` | pinned artifacts on disk vs committed digests | 3 of 3 MATCH, byte-identical |
+| `2026-09-14` | `MODEL-METHOD.12` | pinned URLs re-fetched live | HTTP 200 ×3, identical to the pinned copies |
+| `2026-09-14` | `MODEL-METHOD.12` | headings published by the pinned rv64.html | `3.1`, `3.1.1`, `3.1.2`, `3.1.2.1`, `3.1.2.2`, `3.1.3`, `3.1.4` |
+| `2026-09-14` | `MODEL-METHOD.12` | `check_citations.py` on the real profile | **52 of 52** resolve — the challenge is refuted |
+| `2026-09-14` | `MODEL-METHOD.12` | `check_citations.py --self-test` | `10 pass / 0 fail` |
+| `2026-09-14` | `MODEL-METHOD.12` | control: working area removed | REFUSED with the fetch command, `exit=1` — no silent pass |
+| `2026-09-14` | `MODEL-METHOD.12` | licence of the docs.riscv.org rendering | only `Copyright © RISC-V International®` — no CC-BY; `OQ-4` stays open |
 | `2026-09-14` | `MODEL-METHOD.1` | sweep over every pinned configuration scalar | 1 further instance found: Spike's ISA was an input, not a read-back |
 | `2026-09-14` | `MODEL-METHOD.1` | Spike ISA read-back, with its control | `rv64i` → `rv64i`; `rv64im` → `rv64im` |
 | `2026-09-14` | `MODEL-METHOD.1` | `compare_platforms.py` on both matched models | 4 of 4 fields disagree; 4 devices only Spike advertises |
@@ -412,6 +445,7 @@ Neither is routed to another tree; neither is worked around here.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.12` | `SEMULITH-MM-0043 (leaf MODEL-METHOD.12): a citation that is present is not a citation that resolves` | challenge refuted; 52 of 52 resolve |
 | `MODEL-METHOD.11` | `SEMULITH-MM-0042 (leaf MODEL-METHOD.11): materials get an identity, and no path that breaks on a move` | 22 materials, 2 measured gaps, 0 absolute paths |
 | `MODEL-METHOD.9` | `SEMULITH-MM-0040 (leaf MODEL-METHOD.9): the semantics, 52 of 52, every rule cited` | well-formed and cited — NOT verified correct |
 | `MODEL-METHOD.8` | `SEMULITH-MM-0037 (leaf MODEL-METHOD.8): the repository owns its encodings` | builds with the upstream hidden; re-derivation fired RED |

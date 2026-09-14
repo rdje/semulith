@@ -62,7 +62,7 @@ on the same commit. One commit per completed leaf.
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `active` | `.3` — assumption/guarantee discharge (2 of 6 leaves done) | repo-local |
-| [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` | `.10` — the extraction contract (4 of 11 leaves done) | repo-local |
+| [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` | `.10` — the extraction contract (5 of 12 leaves done) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `active` | `.8` — the book describes no part of the canonical definition (1 of 9 leaves done) | repo-local |
 | [`MIRROR-DRIFT`](tasks/MIRROR-DRIFT.md) | `done` (reopened once, for `.4` — a mirror class the first three leaves did not cover) | — (4/4 leaves complete) | repo-local |
