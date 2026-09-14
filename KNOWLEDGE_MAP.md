@@ -63,3 +63,4 @@
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
 - [`reference_softfloat-shared-ancestry.md`](docs/decisions/reference_softfloat-shared-ancestry.md)
 - [`reference_upstream-spine-defects.md`](docs/decisions/reference_upstream-spine-defects.md)
+- [`reference_what-running-real-rust-actually-requires.md`](docs/decisions/reference_what-running-real-rust-actually-requires.md)
