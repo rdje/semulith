@@ -1,0 +1,21 @@
+binary : /Volumes/SSD/Documents/github/semulith/.app-data/target/debug/lispish_file
+grammar: /Volumes/SSD/Documents/github/semulith/vendor/linkedspec/specs/Lispish.spec
+
+  MATCH     01-control-one-line.sexp     ["r",["a","x y"]]
+  MATCH     02-control-parens.sexp       ["r",["a","see (2) ok"]]
+  MATCH     03-control-tab.sexp          ["r",["a","x\ty"]]
+  MATCH     04-control-cr.sexp           ["r",["a","x\ry"]]
+  DIFFERS   05-lf-data-only.sexp        
+              want: ["r",["a","x\ny"]]
+              got : ["r",["a","x","y"]]   (exit 0)
+  DIFFERS   06-lf-indented.sexp         
+              want: ["r",["a","x\n   y"]]
+              got : ["r",["a","x","y"]]   (exit 0)
+  DIFFERS   07-lf-sibling-follows.sexp  
+              want: ["r",["a","x\n   y"],["b","z"]]
+              got : ["r",["a","x","y) (b z"]]   (exit 0)
+  DIFFERS   08-lf-close-paren.sexp      
+              want: ["r",["a","p\n   q) r"],["b","z"]]
+              got : ["r",["a","p","q"],"r) (b z"]   (exit 0)
+
+LS-001: 4 matched / 4 differed

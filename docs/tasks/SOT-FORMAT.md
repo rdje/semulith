@@ -140,33 +140,53 @@ too, and under the split there is no rule by which it could.
 
 - ID: `SOT-FORMAT.9` — **the Rust reader comes from LinkedSpec, as a submodule**
   Status: `blocked`
-  Blocker: LinkedSpec is preparing its **integration document for downstream consumers and it is
-  not done** (director, `2026-09-14`). Integrating against an unpublished contract means
-  integrating against today's internals — which is how a submodule becomes a fork.
-  Read `linkedspec/docs/linkedspec-book/` when it unblocks (director, `2026-09-14`).
-  Goal: add `../linkedspec` as a **git submodule** pinned to a commit, and read `.sexp` through its
-  `specs/Lispish.spec` on the `rust/linkedspec-runtime` backend. No S-expression parser is written
-  by hand in this project's Rust crates.
-  Acceptance: the submodule is pinned, not tracked-by-branch; the LinkedSpec reader and
-  `scripts/sexp.py` agree on every tracked `.sexp` file, compared mechanically — two readers of one
-  format that disagree is the defect this tree exists to prevent; the integration follows the
-  published document rather than the source.
-  ⚠️ Also sequenced after `.1`–`.6`: a parser contract should describe a settled format, and this
-  tree is what settles it.
-
+  ⛔ Blocker, `2026-09-20`: **the two readers do not agree, and the cause is upstream.** Four of
+  five tracked files agree node-for-node; `materials/catalog.sexp` does not, because a
+  double-quoted string containing LF is not read as one string by `specs/Lispish.spec`. Root cause
+  located (lines 69/71, `.` without DOTALL), one-line fix written and validated — 8 of 8
+  reproduction cases and all five files agree under it — and reported to LinkedSpec at
+  `docs/upstream/linkedspec/LS-001-multiline-string/`. It is **their change to make**: patching the pinned
+  submodule is how a pin becomes a fork, which is the thing this leaf exists to avoid.
+  ⚠️ Everything else in this leaf is delivered and committed. The leaf is not `done` because its
+  acceptance says the readers agree on EVERY tracked file, and they do not. Moving that line to
+  fit the result would be the only real failure available here.
+  Unblocked `2026-09-20`: LinkedSpec published its integration document for downstream consumers
+  at commit `ad290bdb4`. The blocker recorded on `2026-09-14` — that integrating against an
+  unpublished contract means integrating against today's internals, which is how a submodule
+  becomes a fork — is discharged, not waived.
+  Goal: `vendor/linkedspec` as a **git submodule pinned to a commit** (director, `2026-09-20`), and
+  read `.sexp` through `specs/Lispish.spec` on the `rust/linkedspec-runtime` backend, following the
+  published guide — `docs/linkedspec-book/src/public-api/integration-rust.md`, *"Parse Lispish
+  files in your application"* from line 198 — and the runnable example
+  `examples/integration/rust/src/bin/lispish_file.rs`. No S-expression parser is written by hand in
+  this project's Rust crates.
+  Acceptance: the submodule is pinned to a commit and not tracked-by-branch; `vendor/` is
+  registered in `doctrine/readme_routes.tsv` in the commit that creates it; the integration follows
+  the **published document**, and where it departs from it the departure is named; the LinkedSpec
+  reader and `scripts/sexp.py` agree on **every tracked `.sexp` file**, compared mechanically —
+  two readers of one format that disagree is the defect this tree exists to prevent.
+  Delivered: submodule pinned at `ad290bdb4`; the documented PGEN bootstrap run; the consumer
+  built per the guide; `scripts/compare_readers.py` (11 arms) comparing both readers over every
+  tracked `.sexp`; upstream feedback with a self-contained reproduction script.
+  Progress commit: `SEMULITH-SF-0047` — a commit on a blocked leaf, stated as such rather than
+  dressed as a completion.
+  ⛔ Re-sequenced ahead of `.1`–`.6` on the director's instruction, `2026-09-20`. My own ordering
+  put it last, reasoning that a parser contract should describe a settled format. Recorded rather
+  than silently dropped, because the consequence is real and now carried knowingly: the grammar
+  will meet a format that `.1`–`.6` are still changing, so the agreement check is what protects us
+  and it must run against every file, every time, not once.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.8` | `pending` | measured drift in the director's only window — the book's canonical-definition chapter describes no part of the canonical definition |
+| 1 | `SOT-FORMAT.8` | `pending` | measured drift in the director's only window — and `.9` cannot advance until LinkedSpec acts on the reported defect |
 | 2 | `SOT-FORMAT.1` | `pending` | the schema language must exist **before** any record moves, or the migration spends a window with real validation replaced by "it parses" |
 | 3 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
 | 4 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
 | 5 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
 | 6 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
 | 7 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
-| 8 | `SOT-FORMAT.9` | `blocked` | the LinkedSpec reader — waiting on that project's integration document for downstream consumers |
 
 ## Decisions
 
@@ -192,85 +212,110 @@ too, and under the split there is no rule by which it could.
 
 ## Blockers
 
-- `SOT-FORMAT.9` only: **LinkedSpec's integration document for downstream consumers is not
-  finished** (director, `2026-09-14`). Nothing else in this tree depends on it — `.7`, `.8` and
-  `.1`–`.6` all run on the Python tooling, which is where the schema layer belongs anyway.
+- `SOT-FORMAT.9` only: **an upstream defect in `specs/Lispish.spec`.** A double-quoted string
+  containing LF is not read as one string, so `materials/catalog.sexp` reads as 6 top-level forms
+  instead of 43 — silently, exit 0. Root cause, minimal reproduction and a validated one-line fix
+  are reported at [`docs/upstream/linkedspec/LS-001-multiline-string/`](../feedback/linkedspec-rust-lispish.md).
+  Nothing else in this tree depends on it; `.8` and `.1`–`.6` run on the Python tooling.
+- ⚠️ The earlier blocker — LinkedSpec's integration document — was **discharged** on `2026-09-20`
+  by its publication at `ad290bdb4`. This is a different one, found by doing the work.
 
-## Acceptance Checklist (current leaf — `SOT-FORMAT.7`)
+## Acceptance Checklist (current leaf — `SOT-FORMAT.9`, progress; acceptance NOT met)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/sexp.py`, the string branch of
-  `parse()`. It collected escape pairs raw and handed the assembled string to a codec:
-
-  ```python
-  stack[-1].append("".join(buf).encode().decode("unicode_escape"))
-  ```
-
-  WHY that fails: `unicode_escape` is **Latin-1**. It reads each byte as one character, so the two
-  UTF-8 bytes of `§` come back as two characters. Measured on the repository's own files:
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `vendor/linkedspec/specs/Lispish.spec:69`.
 
   ```
-  $ python3 -c '…read rv64i.sem.sexp through the reader…'
-    definitions/riscv/rv64i.sem.sexp   source lines w/ non-ASCII:  56   corrupted strings: 52
-  raw bytes in file : b'RVI-RV64I \xc2\xa73.1.2.1 \xe2\x80\x94 D-LUI-AUIP'
-  as the reader sees: 'RVI-RV64I Â§3.1.2.1 â\x80\x94 D-LUI-AUIP'
+  $ python3 scripts/compare_readers.py
+    DIFFER  materials/catalog.sexp  <root>: A has 43 element(s), B has 6
+    compare_readers: 4 of 5 file(s) agree
+  $ grep -n 'dquotes:\|others:' vendor/linkedspec/specs/Lispish.spec
+    69:dquotes: /"(.*?)(?<!\\)"/     I.return(...)      # `.` does not match LF without DOTALL
+    84:others:  /[^\s"{}()\[\];]+/   I.return(...)      # what the text falls through to
   ```
 
-  **All 52 citations** — every specification locator committed one leaf earlier as *"52 of 52,
-  every rule cited"*. The claim was true of the file and false of what any consumer received.
-  WHY no gate saw it: the reader had **no self-test** (`scripts/test_sexp.py` did not exist), and
-  every downstream check asked about structure or behaviour. `check_semantics.py` asks whether a
-  citation is *present*; a corrupted string is still present. Nothing was pointed at **fidelity**.
-
-- [x] **ADDRESSED (verified)** — leg 2. Escapes are decoded from a closed five-entry table written
-  here, and an escape outside it is **refused rather than guessed**. Round-trip proven against the
-  file's own bytes — every citation the reader returns must be findable verbatim in what it read:
+  WHY it is severe rather than cosmetic: the string does not merely lose its newline, it **stops
+  being a string**, and its remaining text is re-lexed as syntax. A `)` in the continuation closes
+  a form that was never open, so siblings are absorbed into the wrong parent — and it exits 0.
 
   ```
-  citations read : 52
-  present in the file byte-for-byte: 52 / 52
-  mojibake remaining: 0
-  sample: 'RVI-RV64I §3.1.2.1 — D-LUI-AUIPC'
+  (r (a "x\n   y") (b "z"))   ->  ["r",["a","x","y) (b z"]]        want ["r",["a","x\n   y"],["b","z"]]
+  materials/catalog.sexp       ->  6 top-level forms, 37 of them nested inside the fifth (want 43)
   ```
 
-  The reader now carries a self-test, **fired RED before the fix** — the three arms that name the
-  defect failed on the unfixed reader and pass on the fixed one:
+  ⛔ Located by refutation, not by guessing: I first hypothesised `;` inside a string, then
+  parentheses inside a string. **Both were wrong** — the reader handles them correctly — and the
+  controls that pass (spaces, parens, TAB, CR, all on one line) are what localise it to LF.
+
+- [x] **ADDRESSED (verified)** — leg 2, for everything this leaf owns except the agreement itself.
+  Submodule pinned to the exact commit named: `ad290bdb427bc19a5af81de0f0b07e119c8999ff`, with
+  RGX `8763a0e6bea9` and PGEN `db6f8c6836fe` — the revisions the guide's own evidence section
+  names. The documented PGEN bootstrap produced all four `generated/` products; the consumer built
+  in 32.15s. `scripts/compare_readers.py`, 11 arms:
 
   ```
-  $ python3 scripts/sexp.py --self-test        # BEFORE
-    FAIL  GREEN non-ASCII round-trips byte-for-byte: got 'RVI-RV64I Â§3.1.2.1 â\x80\x94 D-LUI'
-    FAIL  GREEN a citation survives the whole pipeline: mojibake: 'Â§ â\x80\x94 Âµ'
-    FAIL  RED   an unknown escape is refused, not guessed: accepted '(x (s "a\qb"))'
-  sexp --self-test: 15 pass / 3 fail
-  $ python3 scripts/sexp.py --self-test        # AFTER
-  sexp --self-test: 18 pass / 0 fail
+  agree   definitions/riscv/m.sexp             438 nodes identical
+  agree   definitions/riscv/rv64i.sem.sexp    1550 nodes identical
+  agree   definitions/riscv/rv64i.sexp        1716 nodes identical
+  agree   profiles/rv64i-lab-v0/encoding.sexp   18 nodes identical
+  DIFFER  materials/catalog.sexp  <root>: A has 43 element(s), B has 6
+  compare_readers: 4 of 5 file(s) agree
   ```
 
-- [x] **NO REGRESSION** — leg 3. No tracked file's **content** changed: the files were always right.
-  Every consumer of the reader re-run:
+  The fix was **validated before being reported**, on a copy of the spec so the submodule stays
+  pinned and clean: with `(?s)` on lines 69 and 71, the reproduction goes `4 matched / 4 differed`
+  → `8 matched / 0 differed`, and all five files agree.
+
+- [ ] **NOT MET — the readers do not agree on every tracked file.** 4 of 5. The remaining
+  disagreement is an upstream defect, reported with a reproduction; it is LinkedSpec's change to
+  make, because patching a pinned submodule is how a pin becomes a fork. ⚠️ This box stays unticked
+  and the leaf stays `blocked`. Rewriting the criterion to match the result is the only real
+  failure available here.
+
+- [x] **NO REGRESSION** — leg 3. The submodule is additive; `vendor` is excluded from the Cargo
+  workspace so neither side's build changes, and `.app-data/` is gitignored.
 
   ```
-  $ python3 scripts/check_semantics.py definitions/riscv/rv64i.sexp definitions/riscv/rv64i.sem.sexp
-    52 of 52 declared instruction(s) have checked semantics
-  $ python3 scripts/gen_fragments.py && git diff --stat definitions/
-                                        # empty — reproduced byte-for-byte
-  $ python3 scripts/run_smoke.py | tail -1
-    run_smoke: ok — every program matches its specification-derived expectations and reproduces;
-               every cross-model comparison that is enabled agrees
+  $ python3 scripts/sexp.py --self-test          -> 18 pass / 0 fail
+  $ python3 scripts/check_citations.py | tail -1 -> 52 of 52 … resolve
+  $ python3 scripts/materials.py --self-test     -> 20 pass / 0 fail
+  $ python3 scripts/run_smoke.py | tail -1       -> run_smoke: ok …
+  $ bash scripts/check_doctrines.sh              -> all doctrines green
   ```
 
-  ⛔ No backslash exists in any tracked `.sexp` file (`grep -c '\\' …` → 0 on all four), so
-  refusing unknown escapes cannot break a file that parses today — checked before tightening.
+- [x] **LOCKSTEP** — `docs/feedback/` registered in `doctrine/readme_routes.tsv` in the commit that
+  creates it; `TOOLBOX.md` gains the comparator; `Cargo.toml` and `.gitignore` carry the reason for
+  each addition beside it.
 
-- [x] **LOCKSTEP** — `TOOLBOX.md` gains the self-test row; `DEV_NOTES.md` carries the dated lesson,
-  promoted to [`a-parse-without-error-is-not-a-faithful-read`](../knowledge/a-parse-without-error-is-not-a-faithful-read.md);
-  the reader's own docstring no longer cites the superseded format split; `MEMORY.md` and
-  `docs/TASK_TREE.md` name this tree. ⚠️ The **mdBook is not yet in lockstep** on the format itself
-  — measured during this leaf and owned as `SOT-FORMAT.8`, at frontier order 2, not logged and left.
+## DEPARTURES FROM THE PUBLISHED GUIDE
+
+The acceptance says the integration follows the published document and that departures are named.
+Three, all mine, all corrected:
+
+1. **Jumped to line 198** as directed and skipped *Initial PGEN preparation* 100 lines earlier.
+   Build failed on `generated/return_annotation_parser.rs`. The guide is explicit — *"Checkout does
+   not generate PGEN's parser inputs"* — and I had not read it.
+2. **Used `git submodule update --init --recursive`** where the guide prescribes two targeted
+   inits. Cost: 1.7 GB and 30 nested submodules instead of the needed closure.
+3. **Used bare `cargo` and my own target directory** instead of `tools/run_cargo_local.sh` and the
+   prescribed `.app-data/` layout. Corrected; the guide's layout is also the one Policy 13 wants.
+
+All three are reported upstream as first-consumer papercuts, since we are the first consumer and
+each cost a failed attempt.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-20` | `SOT-FORMAT.9` | submodule pin vs the commit the director named | `ad290bdb4…` exact; RGX/PGEN match the guide's evidence |
+| `2026-09-20` | `SOT-FORMAT.9` | documented PGEN bootstrap | all 4 `generated/` products, exit 0 |
+| `2026-09-20` | `SOT-FORMAT.9` | consumer build per the guide | ok, 32.15s |
+| `2026-09-20` | `SOT-FORMAT.9` | `compare_readers.py --self-test` | `11 pass / 0 fail` |
+| `2026-09-20` | `SOT-FORMAT.9` | both readers over every tracked `.sexp` | **4 of 5 agree** — acceptance NOT met |
+| `2026-09-20` | `SOT-FORMAT.9` | refuted hypothesis: `;` inside a string | handled correctly — not the cause |
+| `2026-09-20` | `SOT-FORMAT.9` | refuted hypothesis: parens inside a string | handled correctly — not the cause |
+| `2026-09-20` | `SOT-FORMAT.9` | isolation: LF vs CR vs TAB inside a string | only **LF** breaks it |
+| `2026-09-20` | `SOT-FORMAT.9` | candidate fix `(?s)` on lines 69/71, on a copy | 8 of 8 cases, 5 of 5 files agree |
+| `2026-09-20` | `SOT-FORMAT.9` | regression: sexp, citations, materials, smoke, doctrines | 18/0, 52 of 52, 20/0, ok, green |
 | `2026-09-14` | `SOT-FORMAT.7` | read every string in the 4 tracked `.sexp` files through the reader | 52 of 52 citations corrupted; 0 elsewhere |
 | `2026-09-14` | `SOT-FORMAT.7` | `sexp.py --self-test` on the unfixed reader | `15 pass / 3 fail` — the 3 name the defect |
 | `2026-09-14` | `SOT-FORMAT.7` | `sexp.py --self-test` after the fix | `18 pass / 0 fail` |
@@ -285,6 +330,7 @@ too, and under the split there is no rule by which it could.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.9` | `SEMULITH-SF-0047 (leaf SOT-FORMAT.9): two readers, one format, and a defect worth reporting` | **progress on a blocked leaf**, not a completion: 4 of 5 files agree |
 | `SOT-FORMAT.7` | `SEMULITH-SF-0041 (leaf SOT-FORMAT.7): the reader corrupted every citation it read` | 52 of 52 citations restored; 18 arms where there were none |
 
 ## Changelog

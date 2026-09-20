@@ -19,15 +19,11 @@
   **composable and extensible to new constructs in the same format**. This **supersedes** the
   per-file format split in `decision_canonical-definition-input` — composition is a merge, and
   three formats are three merge semantics.
-- **Materials:** 36 primary sources in `materials/catalog.sexp` — RISC-V (incl. the pinned
-  v20260120 HTML snapshot, manifest-verified), Arm A/R/M + Cortex-A76, Intel SDM 1-4, AMD64 APM
-  1-5, Power, SPARC, OpenRISC, M68000, 6 TI DSPs, MSP430, Z80, W65C02S, ESP32 x3, RP2040/RP2350.
-  Cached in gitignored `.materials/`; `scripts/materials.py --fetch` repopulates it and the corpus
-  location comes from `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file. Corpus pinned at
-  `3c45e81`; drift from it is reported by `--list`/`--verify`.
-- **Citations:** `scripts/check_citations.py` resolves 52 of 52 against the pinned artifact, and
-  runs **offline** from the materials cache. The pin is docs.riscv.org (Ratified Specifications
-  Library), NOT github.com/riscv/riscv-isa-manual — different chapter numbering; see
+- **Materials:** 36 primary sources in `materials/catalog.sexp` (corpus pinned `3c45e81`). Cached
+  in gitignored `.materials/` by `scripts/materials.py --fetch`; the corpus location comes from
+  `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
+- **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
+  docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — different chapter numbering; read
   `docs/knowledge/a-version-string-is-not-an-identity.md` before touching it.
 - **Next action:** `SOT-FORMAT.8` (the book's canonical-definition chapter describes no part of the canonical
   definition — measured drift), then `.1`, the schema language written in itself.
@@ -44,4 +40,8 @@
   and **only the director may approve it** — `decision_push-cadence`. The `pre-push` hook
   refuses; `SEMULITH_PUSH_APPROVED` carries the director's reason and is never set on an
   agent's own judgement.
-- **Blockers:** `SOT-FORMAT.9` only — LinkedSpec's integration document is not finished.
+- **Blockers:** `SOT-FORMAT.9` only — upstream defect `LS-001` in `docs/upstream/` (a multi-line
+  quoted string is not one string to Lispish). ⛔ Do NOT patch the submodule; a validated one-line
+  fix is reported and is theirs to apply.
+- **LinkedSpec:** `vendor/linkedspec` pinned `ad290bdb4`; build needs the documented PGEN
+  bootstrap; `.app-data/` holds cargo home + target. `compare_readers.py`: 4 of 5 files agree.

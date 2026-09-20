@@ -1,0 +1,8 @@
+  (v 20260911)     -> ["r",["v","20260911"]]
+  (v "20260911")   -> ["r",["v","20260911"]]
+  (v 1.0)          -> ["r",["v","1.0"]]
+  (v "1.0")        -> ["r",["v","1.0"]]
+
+  SAME VALUE: bare and quoted numeric are indistinguishable.
+  SAME VALUE: bare and quoted version are indistinguishable.
+  => a consumer cannot round-trip, and cannot recover the source token kind.

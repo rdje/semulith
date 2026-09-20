@@ -67,7 +67,11 @@ ARCH_AUTHORITY = "architecture"
 # arms failed with "no .jsonl record file found". The arms caught it; a reviewer would not have.
 def _excluded(p):
     rel = p.relative_to(root).parts
-    return bool(rel) and rel[0] == "target"
+    # ⛔ `vendor` joins `target` here for the same reason and a sharper one: a vendored submodule
+    # is ANOTHER PROJECT'S tree. Its records answer to its schemas, not ours, and judging them by
+    # our contract produces findings nobody in this repository can act on. Measured when
+    # vendor/linkedspec arrived carrying php_phpt_inventory.jsonl.
+    return bool(rel) and rel[0] in ("target", "vendor")
 
 record_files = sorted(p for p in root.rglob("*.jsonl") if not _excluded(p))
 if not record_files:
@@ -276,7 +280,8 @@ source = "SRC-A §1"'
 if [ "${1:-}" = "--audit" ]; then
 python3 - <<'AUDITPY'
 import json, pathlib
-for d in sorted({p.parent for p in pathlib.Path(".").rglob("*.jsonl") if "target" not in p.parts}):
+_SKIP = {"target", "vendor"}
+for d in sorted({p.parent for p in pathlib.Path(".").rglob("*.jsonl") if not _SKIP & set(p.parts)}):
     rq, ob = d / "requirements.jsonl", d / "contract-obligations.jsonl"
     if not (rq.is_file() and ob.is_file()):
         continue

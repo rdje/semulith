@@ -1,0 +1,22 @@
+# LS-003 evidence — measured 2026-09-20 at pin ad290bdb4, macOS arm64, rustc 1.95.0
+
+git submodule update --init --recursive vendor/linkedspec
+  vendor/linkedspec total on disk : 1.7 GB
+  nested submodules initialised   : 30
+  (riscv-arch-test, neorv32, Cores-VeeR-EL2, cocotb, picolibc, riscv-dv, friscv,
+   axi-crossbar, PoC/osvvm, Rudi-RV32I, pcre2, sljit, pgen, ...)
+
+documented two-step init (rgx, then rgx/subs/pgen)
+  retrieves the dependency closure the Rust build actually uses
+
+workspace absorption, verbatim:
+  error: current package believes it's in a workspace when it's not:
+  current:   .../vendor/linkedspec/examples/integration/rust/Cargo.toml
+  workspace: .../Cargo.toml
+
+missing bootstrap product, verbatim:
+  error: couldn't read `.../generated/return_annotation_parser.rs`: No such file or directory
+
+what worked exactly as documented:
+  generated/ after bootstrap: ebnf.rs regex_parser.rs return_annotation_parser.rs semantic_annotation_parser.rs
+  consumer build: Finished `dev` profile in 32.15s

@@ -27,3 +27,9 @@ __pycache__/
 # materials/catalog.sexp, and does not redistribute the documents themselves. An empty cache is
 # the normal state of a fresh clone, not a fault.
 /.materials
+
+# LinkedSpec application-owned data: cargo home, target dir, cache and scratch for the vendored
+# submodule, as its integration guide prescribes (docs/linkedspec-book/src/public-api/
+# integration-rust.md, "Keep preparation and build products local"). Repo-local by design, so
+# Policy 13 holds: every byte lives on the repository's own volume.
+/.app-data

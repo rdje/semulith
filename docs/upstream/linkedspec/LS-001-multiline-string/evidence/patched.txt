@@ -1,0 +1,13 @@
+binary : /Volumes/SSD/Documents/github/semulith/.app-data/target/debug/lispish_file
+grammar: /private/tmp/claude-501/-Volumes-SSD-Documents-github-semulith/f91c757d-e3d9-4cfd-ae8e-b4c50ae968bd/scratchpad/Lispish-dotall.spec
+
+  MATCH     01-control-one-line.sexp     ["r",["a","x y"]]
+  MATCH     02-control-parens.sexp       ["r",["a","see (2) ok"]]
+  MATCH     03-control-tab.sexp          ["r",["a","x\ty"]]
+  MATCH     04-control-cr.sexp           ["r",["a","x\ry"]]
+  MATCH     05-lf-data-only.sexp         ["r",["a","x\ny"]]
+  MATCH     06-lf-indented.sexp          ["r",["a","x\n   y"]]
+  MATCH     07-lf-sibling-follows.sexp   ["r",["a","x\n   y"],["b","z"]]
+  MATCH     08-lf-close-paren.sexp       ["r",["a","p\n   q) r"],["b","z"]]
+
+LS-001: 8 matched / 0 differed

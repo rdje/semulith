@@ -1,0 +1,9 @@
+# case file	expected value (what a conventional S-expression reader produces)
+01-control-one-line.sexp	["r",["a","x y"]]
+02-control-parens.sexp	["r",["a","see (2) ok"]]
+03-control-tab.sexp	["r",["a","x\ty"]]
+04-control-cr.sexp	["r",["a","x\ry"]]
+05-lf-data-only.sexp	["r",["a","x\ny"]]
+06-lf-indented.sexp	["r",["a","x\n   y"]]
+07-lf-sibling-follows.sexp	["r",["a","x\n   y"],["b","z"]]
+08-lf-close-paren.sexp	["r",["a","p\n   q) r"],["b","z"]]

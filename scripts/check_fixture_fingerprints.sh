@@ -41,7 +41,11 @@ python3 - "$1" <<'PY'
 import hashlib, json, os, sys
 
 root = sys.argv[1]
-EXCLUDE = ("docs/provenance", ".git", "target")
+# ⛔ `vendor` is excluded for a reason worth keeping: when vendor/linkedspec arrived, this scan
+# walked 1.7 GB of another project's tree and died with RecursionError on a deeply nested JSON
+# document of theirs. It did not mis-report — it crashed, which is the better of the two failures
+# but still a gate that stopped judging. Our fixtures are ours; a submodule's are not.
+EXCLUDE = ("docs/provenance", ".git", "target", "vendor")
 findings, checked = [], 0
 
 def pins(obj, out):
