@@ -1,5 +1,5 @@
-binary : /Volumes/SSD/Documents/github/semulith/.app-data/target/debug/lispish_file
-grammar: /Volumes/SSD/Documents/github/semulith/vendor/linkedspec/specs/Lispish.spec
+binary : <your build>/lispish_file
+grammar: specs/Lispish.spec  (as shipped at pin ad290bdb4)
 
   MATCH     01-control-one-line.sexp     ["r",["a","x y"]]
   MATCH     02-control-parens.sexp       ["r",["a","see (2) ok"]]

@@ -40,6 +40,15 @@
 # ⛔ Ceilings are DERIVED from this project's own trimmed surfaces, never copied from another
 # project. Raising one requires a reviewed decision that the surface's contract expanded.
 #
+# Re-derivation, UPSTREAM-TRACK.1 (2026-09-20), when the aggregate fired at 396,273 B over 393,216:
+#   docs/tasks/  25 files / 396,273 B; largest member P0-PROFILE.md at 50,097 B. Raised to
+#                health 32 / 320 KiB, ceiling 48 / 640 KiB. ⛔ PER-PART STAYS 64 KiB — the
+#                aggregate answers "how many lanes does this project track", the per-part answers
+#                "has one tree become a monolith", and only the first question changed. Grounds
+#                and the rejected alternatives (compaction, a subdirectory that would have broken
+#                FRONTIER-SYNC's flat link pattern) are in
+#                docs/decisions/decision_task-tree-family-bound.md.
+#
 # Derivation, SOT-FORMAT.9, when this project became LinkedSpec's first downstream consumer:
 #   docs/upstream/  23 files / 24 KiB at adoption, across 3 issues. Health 60 files / 256 KiB;
 #                   ceiling 150 / 1 MiB; per-part 32 KiB. ⭐ THE AXIS IS FILE COUNT, not bytes: an
@@ -127,7 +136,7 @@ DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowled
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
 docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0
 docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	85	5120	110	8192	0
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	24	196608	40	393216	65536
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	32	327680	48	655360	65536
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768

@@ -44,6 +44,7 @@ These ship with the discipline spine and are project-neutral:
 | `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
 | `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next |
 | `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |
+| `UPSTREAM-INDEX` | a defect raised against a dependency is tracked like our own: each issue is a self-contained subtree under `docs/upstream/` whose `issue.sexp` owns its id, severity, state and dated history, and every index of it is a checked mirror — because self-containment and a second source of truth cannot both hold |
 | `TREE-CLAIMS` | every live document's leaf counts, active trees and frontier leaf match `docs/tasks/` |
 | `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
 | `RECORD-SCHEMA` | every record file validates, cites only pinned sources, and states what its profile states |

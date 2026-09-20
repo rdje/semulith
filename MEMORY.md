@@ -13,7 +13,7 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (1/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6).
+- **Active trees:** `UPSTREAM-TRACK` (1/3), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (1/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6).
 - **Frontier leaf:** `SOT-FORMAT.8` — the book describes no part of the canonical definition.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression,
   **composable and extensible to new constructs in the same format**. This **supersedes** the

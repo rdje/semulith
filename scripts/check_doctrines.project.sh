@@ -23,6 +23,7 @@ PROJECT_DOCTRINES=(
   "PROFILE-CONSISTENCY|a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source — a laboratory policy must never read as an architectural rule|scripts/check_profile_consistency.sh"
   "FRONTIER-SYNC|the task-tree index mirrors the trees it indexes — the frontier leaf, the status and the leaf counts are re-derived, never remembered|scripts/check_frontier_sync.sh"
   "REGISTRY-MIRROR|the doctrine documents list exactly the doctrines the drivers register — a mirror that falls behind withholds a guarantee rather than inventing one|scripts/check_registry_mirror.sh"
+  "UPSTREAM-INDEX|a defect raised against a dependency is tracked like our own — the issue subtree owns its state and is self-contained, and every index of it is a checked mirror|scripts/check_upstream_index.sh"
   "TREE-CLAIMS|every LIVE document states leaf counts, the active trees and the frontier leaf exactly as the trees do — scope read from the routes registry, so history is never rewritten|scripts/check_tree_claims.sh"
   "DERIVED-COUNTS|a live document that states a count of something this repository can enumerate has it RE-DERIVED — a running total is a memory of a measurement, not a measurement|scripts/check_derived_counts.sh"
   "RECORD-SCHEMA|every tracked record file validates against its schema, cites only sources the profile pinned, and states what its profile states — a catalogue that looks checkable and is not is worse than none|scripts/check_requirements.sh"
