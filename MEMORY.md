@@ -36,7 +36,8 @@
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.
 - **Latest commit:** see `git log -1`.
 - **In-flight uncommitted work:** none.
-- ⛔ **Do not push.** Cadence is 300 commits (currently 45); below that a push is exceptional
+- ⛔ **Do not push.** Cadence is 300 commits — `scripts/check_push_cadence.sh --status` says where
+  we stand, because a count typed here is wrong the next commit. Below cadence a push is exceptional
   and **only the director may approve it** — `decision_push-cadence`. The `pre-push` hook
   refuses; `SEMULITH_PUSH_APPROVED` carries the director's reason and is never set on an
   agent's own judgement.
