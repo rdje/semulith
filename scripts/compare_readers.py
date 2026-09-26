@@ -19,10 +19,31 @@ finding behind a pile of expected ones:
 
   STRUCTURE  the tree shape and the atoms, after applying the SAME numeric interpretation to both.
              This is the layer that must be identical, and a difference here is a genuine defect.
-  CLASS      differences that follow from what each reader is FOR, enumerated rather than counted:
+  CLASS      differences that follow from what each reader is FOR, enumerated rather than counted.
              Lispish returns atoms as text and discards the symbol/quoted-string distinction, so
              `0x0` and `(name rd)` reach it as strings. Applying sexp.py's own `_atom` to Lispish's
              text is what makes the two comparable without pretending the difference is absent.
+
+             Two families are enumerated, both of them consequences of Lispish's PUBLISHED
+             extraction contract (docs/linkedspec-book/src/public-api/integration-rust.md), not
+             defects, and both surfaced in materials/catalog.sexp only once LS-001 was fixed:
+
+             quoted-numeric   a string that QUOTES a numeric spelling (`"20260911"`) reaches
+                              Lispish as text; `_atom` then types it as int. sexp.py kept it a
+                              string because it saw the quotes. Same bytes, same token — the
+                              quote-kind Lispish discards (tracked upstream as LS-002) is the only
+                              information lost. Class iff `sexp._atom(A_text) == B` exactly, so a
+                              different number (`20260912`) can never be masked.
+             escape-retention Lispish retains escape sequences verbatim (`\\"` stays backslash +
+                              quote — the guide documents exactly this); sexp.py decodes them per
+                              the format's table (`\\"` -> `"`). Class iff decoding B with
+                              sexp.py's OWN escape table reproduces A exactly; anything that does
+                              not decode (or decodes differently) stays a REAL difference, loud.
+
+             The durable answer to both families is upstream's SExprDocumentV1 document grammar
+             (tagged token kinds, lexemes, no number conversion or escape decoding) — the guide
+             steers document consumers to it. Adopting it for this harness is a future SOT-FORMAT
+             leaf; until then the enumeration above is what keeps "agree" meaning "same structure".
 """
 
 from __future__ import annotations
@@ -110,6 +131,58 @@ def first_difference(a, b, path: str = "") -> str | None:
     return None if a == b else f"{path or '<root>'}: A={a!r}  B={b!r}"
 
 
+def _decode_escapes(text: str) -> str:
+    """sexp.py's escape table applied to retained text. Raises ValueError on anything the
+    canonical reader would refuse (unknown escape, trailing backslash) — those stay REAL."""
+    out, i, n = [], 0, len(text)
+    while i < n:
+        if text[i] != "\\":
+            out.append(text[i]); i += 1; continue
+        if i + 1 >= n:
+            raise ValueError("unterminated escape")
+        esc = text[i + 1]
+        if esc not in _sexp._ESCAPES:
+            raise ValueError(f"unknown escape \\{esc}")
+        out.append(_sexp._ESCAPES[esc]); i += 2
+    return "".join(out)
+
+
+def classify_atom(a: object, b: object) -> str | None:
+    """A documented CLASS family label, or None for a REAL value difference.
+
+    Both families follow from Lispish's published extraction contract, not from a defect;
+    both are anchored to exact byte meaning so they cannot mask a genuine difference:
+    quoted-numeric requires sexp._atom(A's text) == B's int EXACTLY, escape-retention
+    requires decoding B with sexp.py's own table to reproduce A EXACTLY.
+    """
+    if isinstance(a, str) and isinstance(b, int) and not isinstance(b, bool) \
+            and _sexp._atom(a, 0) == b:
+        return "quoted-numeric (Lispish discards quote-kind; upstream LS-002)"
+    if isinstance(a, str) and isinstance(b, str) and "\\" in b:
+        try:
+            if _decode_escapes(b) == a:
+                return "escape-retention (Lispish retains escapes verbatim; sexp.py decodes)"
+        except ValueError:
+            return None
+    return None
+
+
+def differences(a: object, b: object, path: str = ""):
+    """Every differing position as (path, kind, a_val, b_val); kind is "shape" (structural,
+    always a defect) or "atom" (same shape, differing value — then classified by the caller)."""
+    if isinstance(a, list) != isinstance(b, list):
+        yield (path or "<root>", "shape", a, b); return
+    if isinstance(a, list):
+        if len(a) != len(b):
+            yield (path or "<root>", "shape",
+                   f"A has {len(a)} element(s), B has {len(b)}", ""); return
+        for i, (x, y) in enumerate(zip(a, b)):
+            yield from differences(x, y, f"{path}[{i}]")
+        return
+    if a != b:
+        yield (path or "<root>", "atom", a, b)
+
+
 def compare(paths: list[Path]) -> int:
     bad = 0
     for p in paths:
@@ -118,13 +191,23 @@ def compare(paths: list[Path]) -> int:
             b = normalise_b(read_b(p))
         except (CompareError, _sexp.SexpError) as exc:
             print(f"  REFUSED {p.relative_to(REPO)}: {exc}", file=sys.stderr); bad += 1; continue
-        d = first_difference(a, b)
         n = sum(1 for _ in _walk(a))
-        if d:
+        diffs = list(differences(a, b))
+        structural = [d for d in diffs if d[1] == "shape"]
+        classes, real = [], []
+        for d in diffs:
+            if d[1] == "shape":
+                continue
+            label = classify_atom(d[2], d[3])
+            (classes if label else real).append((d, label))
+        if structural or real:
+            d = first_difference(a, b)
             print(f"  DIFFER  {p.relative_to(REPO)}  ({n} nodes)\n            {d}", file=sys.stderr)
             bad += 1
         else:
             print(f"  agree   {str(p.relative_to(REPO)):44} {n:>6} nodes identical")
+            for d, label in classes:
+                print(f"  class   {p.relative_to(REPO)} {d[0]}: A={d[2]!r} B={d[3]!r} — {label}")
     print(f"\ncompare_readers: {len(paths) - bad} of {len(paths)} file(s) agree")
     return 1 if bad else 0
 
@@ -203,6 +286,29 @@ def _selftest() -> int:
         lambda: eq(normalise_a([_sexp.Symbol("rd"), "rd"]), ["rd", "rd"]))
     arm("RED   normalisation cannot invent agreement between different tokens",
         lambda: diff(normalise_a([_sexp.Symbol("rd")]), normalise_b(["rs1"]), "A='rd'"))
+    arm("GREEN a quoted numeric string classifies as quote-kind loss (LS-002)",
+        lambda: eq(classify_atom("20260911", 20260911),
+                   "quoted-numeric (Lispish discards quote-kind; upstream LS-002)"))
+    arm("GREEN a hex-quoted numeric string classifies the same way",
+        lambda: eq(classify_atom("0x10", 16),
+                   "quoted-numeric (Lispish discards quote-kind; upstream LS-002)"))
+    arm("RED   a DIFFERENT number is not class — the rule cannot mask a real value change",
+        lambda: eq(classify_atom("20260911", 20260912), None))
+    arm("RED   a non-numeric string against an int is not class",
+        lambda: eq(classify_atom("v0.2", 2), None))
+    arm("GREEN an escape-retained string classifies when decoding B reproduces A exactly",
+        lambda: eq(classify_atom('says "hi"', 'says \\"hi\\"'),
+                   "escape-retention (Lispish retains escapes verbatim; sexp.py decodes)"))
+    arm("RED   retained text that does NOT decode to A stays a REAL difference",
+        lambda: eq(classify_atom('says "hi"', 'says \\q"hi\\"'), None))
+    arm("RED   a trailing backslash cannot decode and stays REAL",
+        lambda: eq(classify_atom("x", "x\\"), None))
+    arm("RED   two unequal plain strings are a REAL difference",
+        lambda: eq(classify_atom("abc", "abd"), None))
+    arm("GREEN differences() reports every position, shape and atom, not just the first", lambda: (
+        eq([(d[0], d[1]) for d in differences(["a", ["b", 1], ["c", 2]], ["a", ["b", 1], ["c", 3]])],
+           [("[2][1]", "atom")]),
+        eq([d[1] for d in differences(["a"], ["a", "b"])], ["shape"])))
     arm("RED   an unbuilt consumer refuses instead of reporting agreement", lambda: (
         lambda saved: (_try_read_b_missing(), globals().__setitem__("BIN", saved))[0])(BIN))
 

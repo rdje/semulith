@@ -13,7 +13,7 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (1/3), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (1/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8 housekeeping).
+- **Active trees:** `UPSTREAM-TRACK` (1/3), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (2/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8 housekeeping).
 - **Frontier leaf:** `SOT-FORMAT.8` — the book describes no part of the canonical definition.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression,
   **composable and extensible to new constructs in the same format**. This **supersedes** the
@@ -41,8 +41,8 @@
   and **only the director may approve it** — `decision_push-cadence`. The `pre-push` hook
   refuses; `SEMULITH_PUSH_APPROVED` carries the director's reason and is never set on an
   agent's own judgement.
-- **Blockers:** `SOT-FORMAT.9` only — upstream defect `LS-001` in `docs/upstream/` (a multi-line
-  quoted string is not one string to Lispish). ⛔ Do NOT patch the submodule; a validated one-line
-  fix is reported and is theirs to apply.
-- **LinkedSpec:** `vendor/linkedspec` pinned `ad290bdb4`; build needs the documented PGEN
-  bootstrap; `.app-data/` holds cargo home + target. `compare_readers.py`: 4 of 5 files agree.
+- **Blockers:** none — `SOT-FORMAT.9` unblocked `2026-09-26`: upstream shipped the LS-001 fix, the
+  pin moved to `a8d34c845`, our repro re-ran 8/0. ⛔ Never patch the submodule; adopt by moving the pin.
+- **LinkedSpec:** pinned `a8d34c845` (ships LS-001 fix `8259719f8`; RGX `8763a0e6` unchanged).
+  Build: documented RGX bootstrap; `.app-data/` holds cargo home + target. `compare_readers.py`:
+  5 of 5 files agree; residue = two CLASS families (quoted-numeric = LS-002, escape-retention).

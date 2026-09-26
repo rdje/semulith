@@ -6,13 +6,30 @@
 | **Project** | LinkedSpec (`rdje/linkedspec`) |
 | **Component** | `specs/Lispish.spec`, lines 69 and 71 |
 | **Severity** | `high` — wrong results with **no error**; the consumer cannot detect it |
-| **State** | `draft` |
+| **State** | `verified` `2026-09-26` — re-run against the adopted pin, see *Resolution* below |
 | **Raised** | `2026-09-20` by semulith, first consumer of the Rust backend |
 | **Affects** | `ad290bdb4` (rgx `8763a0e6bea9`, pgen `db6f8c6836fe`); see `../README.md` |
 | **Blocks** | semulith leaf `SOT-FORMAT.9` — two readers of one format must agree |
-| **Fix** | [`fix/dotall.patch`](fix/dotall.patch) — two characters, validated here, **not** applied upstream |
+| **Fix** | upstream `8259719f8`, shipped at `a8d34c845` — the reported `(?s)` DOTALL form, verbatim; candidate at [`fix/dotall.patch`](fix/dotall.patch) |
 | **Reproduce** | `bash repro.sh <lispish_file> [Lispish.spec]` |
 | **Validate** | [`VALIDATE.md`](VALIDATE.md) — what is in this sub-tree, how to reproduce, how to check the fix |
+
+## Resolution
+
+`2026-09-26`, on the director's instruction after upstream shipped the fix: semulith advanced its
+pin to `a8d34c84595d46c24cd1820d5fc0414261706412`, rebuilt the consumer per the guide, and re-ran
+this sub-tree's own reproduction against the new binary and grammar:
+
+```
+$ bash repro.sh <new lispish_file> <new Lispish.spec>
+  LS-001: 8 matched / 0 differed
+```
+
+The readers then agreed on **all five** of semulith's tracked `.sexp` files (5 of 5 under the
+consumer's two-reader comparison), which is what discharged `SOT-FORMAT.9`. The only residue is
+two documented CLASS families (quoted-numeric typing, escape retention) that follow from
+Lispish's published extraction contract — enumerated by that comparison, tracked upstream as
+LS-002, not this defect.
 
 ## Summary
 

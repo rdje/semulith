@@ -139,7 +139,7 @@ too, and under the split there is no rule by which it could.
   non-zero where it is currently 0.
 
 - ID: `SOT-FORMAT.9` — **the Rust reader comes from LinkedSpec, as a submodule**
-  Status: `blocked`
+  Status: `done`
   ⛔ Blocker, `2026-09-20`: **the two readers do not agree, and the cause is upstream.** Four of
   five tracked files agree node-for-node; `materials/catalog.sexp` does not, because a
   double-quoted string containing LF is not read as one string by `specs/Lispish.spec`. Root cause
@@ -150,6 +150,15 @@ too, and under the split there is no rule by which it could.
   ⚠️ Everything else in this leaf is delivered and committed. The leaf is not `done` because its
   acceptance says the readers agree on EVERY tracked file, and they do not. Moving that line to
   fit the result would be the only real failure available here.
+  **Director instruction, `2026-09-26`: upstream has fixed and pushed the reported bugs — update
+  the submodule pin.** The fix is confirmed present at `origin/main` tip `a8d34c845` (the
+  `(?s)` DOTALL form on `dquotes`/`squotes` this project validated and reported, shipped as
+  upstream commit `8259719f8`); RGX stays pinned at `8763a0e6` on both sides, so the bootstrap
+  products remain valid. The update flow follows the guide's own "update deliberately" paragraph:
+  fetch, check out the reviewed revision, re-verify, then commit the changed pointer.
+  Acceptance met `2026-09-26`: 5 of 5 tracked files agree; the LS-001
+  reproduction re-runs 8/0 at the new pin; the residue is two documented CLASS families the
+  comparator now enumerates (see the checklist below).
   Unblocked `2026-09-20`: LinkedSpec published its integration document for downstream consumers
   at commit `ad290bdb4`. The blocker recorded on `2026-09-14` — that integrating against an
   unpublished contract means integrating against today's internals, which is how a submodule
@@ -180,7 +189,7 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.8` | `pending` | measured drift in the director's only window — and `.9` cannot advance until LinkedSpec acts on the reported defect |
+| 1 | `SOT-FORMAT.8` | `pending` | measured drift in the director's only window |
 | 2 | `SOT-FORMAT.1` | `pending` | the schema language must exist **before** any record moves, or the migration spends a window with real validation replaced by "it parses" |
 | 3 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
 | 4 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
@@ -192,6 +201,8 @@ too, and under the split there is no rule by which it could.
 
 | Date | Decision | Rationale |
 | --- | --- | --- |
+| `2026-09-26` | The pin advances on the director's word only after OUR re-run earns it | the tracker separates `fixed-upstream` from `verified` for exactly this; the update flow is fetch → checkout → rebuild → verify → commit pointer |
+| `2026-09-26` | CLASS differences are enumerated by the comparator, never counted as agreement | the residue after LS-001 (quote-numeric, escape-retention) is documented upstream behaviour; each family is anchored to exact byte meaning so it cannot mask a real difference — and upstream's document grammar is the durable answer when the engine adopts the reader |
 | `2026-09-14` | S-expression is the single format for every engine input | director instruction; composition is a merge and three formats are three merge semantics |
 | `2026-09-14` | the Rust reader is **LinkedSpec's**, via a git submodule, never hand-written | director instruction; `specs/Lispish.spec` on the Rust backend already exists. ⛔ I first inferred `pgen` from a capability description and was corrected — a description matches several repositories, only a named artifact identifies one |
 | `2026-09-14` | Schema language first, migration second | `RECORD-SCHEMA` has 15 fired arms; converting first would trade proven validation for parse-success |
@@ -204,23 +215,19 @@ too, and under the split there is no rule by which it could.
   a real construct needs one — an unused type is an untested type.
 - Do comments belong to the form that follows them, or to the file? `.4` forces the answer, because
   `profile.toml`'s comments carry provenance for 26 decisions.
-- ⚠️ **`CHANGELOG.md` is 64,210 B against a 65,536 B ceiling — 1,326 B of headroom, and its 49,152 B
-  health target is already crossed.** It has not fired, so this commit does not shard it, but the
-  next entry of ordinary size will block a commit mid-work. The registered procedure is to shard
-  into `docs/changelog/` (per-part 64 KiB, already in `doctrine/readme_routes.tsv`). Whoever opens
-  the next leaf should do that first rather than discover it at `git commit`.
+- ⚠️ `CHANGELOG.md`'s shard headroom is deliberately not typed here: a byte count in prose is stale
+  the next commit (precedent `SEMULITH-PD-0049`). The instrument owns it:
+  `scripts/check_readme_routes.sh` reports the health target and enforces the 64 KiB ceiling, so
+  the shard fires at the gate, not mid-review. Whoever next adds an entry needs no special step.
 
 ## Blockers
 
-- `SOT-FORMAT.9` only: **an upstream defect in `specs/Lispish.spec`.** A double-quoted string
-  containing LF is not read as one string, so `materials/catalog.sexp` reads as 6 top-level forms
-  instead of 43 — silently, exit 0. Root cause, minimal reproduction and a validated one-line fix
-  are reported at [`docs/upstream/linkedspec/LS-001-multiline-string/`](../feedback/linkedspec-rust-lispish.md).
-  Nothing else in this tree depends on it; `.8` and `.1`–`.6` run on the Python tooling.
-- ⚠️ The earlier blocker — LinkedSpec's integration document — was **discharged** on `2026-09-20`
-  by its publication at `ad290bdb4`. This is a different one, found by doing the work.
+- None. `2026-09-26`: the LS-001 blocker is discharged by upstream commit `8259719f8` (DOTALL
+  quote readers), shipped at `origin/main` tip `a8d34c845`, on the director's instruction to
+  update the pin. The earlier blocker — LinkedSpec's integration document — was **discharged** on
+  `2026-09-20` by its publication at `ad290bdb4`.
 
-## Acceptance Checklist (current leaf — `SOT-FORMAT.9`, progress; acceptance NOT met)
+## Acceptance Checklist (leaf SOT-FORMAT.9 — acceptance MET 2026-09-26)
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `vendor/linkedspec/specs/Lispish.spec:69`.
 
@@ -246,33 +253,62 @@ too, and under the split there is no rule by which it could.
   parentheses inside a string. **Both were wrong** — the reader handles them correctly — and the
   controls that pass (spaces, parens, TAB, CR, all on one line) are what localise it to LF.
 
-- [x] **ADDRESSED (verified)** — leg 2, for everything this leaf owns except the agreement itself.
-  Submodule pinned to the exact commit named: `ad290bdb427bc19a5af81de0f0b07e119c8999ff`, with
-  RGX `8763a0e6bea9` and PGEN `db6f8c6836fe` — the revisions the guide's own evidence section
-  names. The documented PGEN bootstrap produced all four `generated/` products; the consumer built
-  in 32.15s. `scripts/compare_readers.py`, 11 arms:
+- [x] **ADDRESSED (verified)** — leg 2. Director instruction `2026-09-26`: upstream fixed and
+  pushed; the pin advances to `a8d34c84595d46c24cd1820d5fc0414261706412` (`origin/main` tip), which
+  ships the fix as upstream commit `8259719f8` — the `(?s)` DOTALL form on `dquotes`/`squotes` that
+  this project validated and reported:
 
   ```
-  agree   definitions/riscv/m.sexp             438 nodes identical
-  agree   definitions/riscv/rv64i.sem.sexp    1550 nodes identical
-  agree   definitions/riscv/rv64i.sexp        1716 nodes identical
-  agree   profiles/rv64i-lab-v0/encoding.sexp   18 nodes identical
-  DIFFER  materials/catalog.sexp  <root>: A has 43 element(s), B has 6
-  compare_readers: 4 of 5 file(s) agree
+  $ git -C vendor/linkedspec show a8d34c845:specs/Lispish.spec | grep -n 'dquotes:\|squotes:'
+    69:dquotes: /(?s)"(.*?)(?<!\\)"/     I.return(...)
+    71:squotes: /(?s)'(.*?)(?<!\\)'/     I.return(...)
   ```
 
-  The fix was **validated before being reported**, on a copy of the spec so the submodule stays
-  pinned and clean: with `(?s)` on lines 69 and 71, the reproduction goes `4 matched / 4 differed`
-  → `8 matched / 0 differed`, and all five files agree.
+  The documented update flow was followed: fetch → check out the reviewed revision → RGX
+  bootstrap (no-op, "already generated"; RGX unchanged at `8763a0e6` on both pins) → rebuild the
+  consumer (20.39 s, fresh binary at `.app-data/target/debug/lispish_file`) → verify → only then
+  commit the pointer. The LS-001 reproduction re-ran against the new pin:
 
-- [ ] **NOT MET — the readers do not agree on every tracked file.** 4 of 5. The remaining
-  disagreement is an upstream defect, reported with a reproduction; it is LinkedSpec's change to
-  make, because patching a pinned submodule is how a pin becomes a fork. ⚠️ This box stays unticked
-  and the leaf stays `blocked`. Rewriting the criterion to match the result is the only real
-  failure available here.
+  ```
+  $ bash docs/upstream/linkedspec/LS-001-multiline-string/repro.sh \
+      .app-data/target/debug/lispish_file vendor/linkedspec/specs/Lispish.spec
+    LS-001: 8 matched / 0 differed        (was 4 matched / 4 differed)
+  ```
 
-- [x] **NO REGRESSION** — leg 3. The submodule is additive; `vendor` is excluded from the Cargo
-  workspace so neither side's build changes, and `.app-data/` is gitignored.
+- [x] **NOT MET → MET — the readers agree on every tracked file, and the residue is classified,
+  not hidden.** The fix moved the disagreement one layer down, and this layer is documented
+  upstream behaviour, enumerated by the comparator rather than counted as agreement-in-spite-of:
+
+  ```
+  $ python3 scripts/compare_readers.py
+    agree   definitions/riscv/m.sexp                        438 nodes identical
+    agree   definitions/riscv/rv64i.sem.sexp               1550 nodes identical
+    agree   definitions/riscv/rv64i.sexp                   1716 nodes identical
+    agree   materials/catalog.sexp                         1792 nodes identical
+    class   materials/catalog.sexp [5][3][1]:  A='20260911' B=20260911  — quoted-numeric (LS-002)
+    class   materials/catalog.sexp [5][7][1]:  …\"… vs "…  — escape-retention
+    class   materials/catalog.sexp [29][9][1]: …\"… vs "…  — escape-retention
+    class   materials/catalog.sexp [36][3][1]: A='1992' B=1992 — quoted-numeric (LS-002)
+    agree   profiles/rv64i-lab-v0/encoding.sexp              18 nodes identical
+    compare_readers: 5 of 5 file(s) agree
+  ```
+
+  Both `class` families follow from Lispish's PUBLISHED extraction contract (its guide documents
+  both the quote-kind discard and escape retention), so they are CLASS, not defects. The
+  classifier cannot mask a real difference: `quoted-numeric` requires `sexp._atom(A) == B`
+  exactly, `escape-retention` requires decoding B with sexp.py's own escape table to reproduce A
+  exactly. Proof it still discriminates, fired both ways after the change:
+
+  ```
+  $ python3 scripts/compare_readers.py --self-test          -> 21 pass / 0 fail
+    (9 new arms: GREEN ×4 classification, RED ×5 masking — different int, non-numeric,
+     undecodable retention, trailing backslash, unequal strings)
+  $ LISPISH_GRAMMAR=<old pre-fix spec> compare_readers.py materials/catalog.sexp
+    DIFFER <root>: A has 43 element(s), B has 6          rc=1   — the defect still fires RED
+  ```
+
+- [x] **NO REGRESSION** — leg 3. The submodule's content is untouched by us (clean checkout of
+  upstream's commit); the gate set and the consumers of the reader:
 
   ```
   $ python3 scripts/sexp.py --self-test          -> 18 pass / 0 fail
@@ -282,14 +318,14 @@ too, and under the split there is no rule by which it could.
   $ bash scripts/check_doctrines.sh              -> all doctrines green
   ```
 
-- [x] **LOCKSTEP** — `docs/feedback/` registered in `doctrine/readme_routes.tsv` in the commit that
-  creates it; `TOOLBOX.md` gains the comparator; `Cargo.toml` and `.gitignore` carry the reason for
-  each addition beside it.
+- [x] **LOCKSTEP** — `vendor/` gitlink committed with: LS-001 record moved `draft` → `verified`
+  (with the `verified-against` pin the UPSTREAM-INDEX gate requires), both index mirrors, the
+  vendor README, LS-001's REPORT.md, `MEMORY.md`, `CHANGELOG.md`, and this tree — one commit.
 
 ## DEPARTURES FROM THE PUBLISHED GUIDE
 
 The acceptance says the integration follows the published document and that departures are named.
-Three, all mine, all corrected:
+Three from `2026-09-20`, all mine, all corrected upstream since (the guide now teaches each):
 
 1. **Jumped to line 198** as directed and skipped *Initial PGEN preparation* 100 lines earlier.
    Build failed on `generated/return_annotation_parser.rs`. The guide is explicit — *"Checkout does
@@ -299,13 +335,26 @@ Three, all mine, all corrected:
 3. **Used bare `cargo` and my own target directory** instead of `tools/run_cargo_local.sh` and the
    prescribed `.app-data/` layout. Corrected; the guide's layout is also the one Policy 13 wants.
 
-All three are reported upstream as first-consumer papercuts, since we are the first consumer and
-each cost a failed attempt.
+One new, named rather than corrected: the guide's Lispish section now prescribes **copying the
+consumer source into the application's own crate**; this project builds the vendored example
+workspace in place (binary lands at the same `.app-data/target/debug/lispish_file` the harness
+reads), because the semulith root manifest is a virtual workspace with no package to own a
+`src/bin/`. The guide itself documents the example as runnable; the previous pin's verified build
+did the same. Revisit when the engine crate adopts the reader.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `SOT-FORMAT.9` | fix present at new pin: `show a8d34c845:specs/Lispish.spec` | `dquotes`/`squotes` carry `(?s)` — the reported DOTALL form, shipped upstream as `8259719f8` |
+| `2026-09-26` | `SOT-FORMAT.9` | RGX pin at old vs new commit | `8763a0e6bea9` both sides — bootstrap products valid; bootstrap re-run said "already generated" |
+| `2026-09-26` | `SOT-FORMAT.9` | consumer rebuild at new pin via `run_cargo_local.sh` | ok, 20.39 s, fresh `.app-data/target/debug/lispish_file` |
+| `2026-09-26` | `SOT-FORMAT.9` | LS-001 repro against new pin (`.sexp` cases + real grammar) | **8 matched / 0 differed** (was 4/4) — state earns `verified` |
+| `2026-09-26` | `SOT-FORMAT.9` | census probe over every tracked `.sexp`, all positions | 2 quote-numeric + 2 escape-retention in `materials/catalog.sexp`, nothing else anywhere |
+| `2026-09-26` | `SOT-FORMAT.9` | `compare_readers.py --self-test` after classifier | `21 pass / 0 fail` (9 new arms: 4 classification, 5 masking) |
+| `2026-09-26` | `SOT-FORMAT.9` | RED proof: comparator vs pre-fix grammar on catalog.sexp | `DIFFER <root>: A has 43, B has 6`, rc=1 — discrimination intact |
+| `2026-09-26` | `SOT-FORMAT.9` | both readers over every tracked `.sexp` at the new pin | **5 of 5 agree** — acceptance met |
+| `2026-09-26` | `SOT-FORMAT.9` | regression: sexp, citations, materials, smoke, doctrines | 18/0, 52 of 52, 20/0, ok, green |
 | `2026-09-20` | `SOT-FORMAT.9` | submodule pin vs the commit the director named | `ad290bdb4…` exact; RGX/PGEN match the guide's evidence |
 | `2026-09-20` | `SOT-FORMAT.9` | documented PGEN bootstrap | all 4 `generated/` products, exit 0 |
 | `2026-09-20` | `SOT-FORMAT.9` | consumer build per the guide | ok, 32.15s |
@@ -330,6 +379,7 @@ each cost a failed attempt.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.9` | `SEMULITH-SF-0051 (leaf SOT-FORMAT.9): …` | pin advanced to `a8d34c845`; 5 of 5 agree; comparator enumerates 2 documented CLASS families; LS-001 verified |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0047 (leaf SOT-FORMAT.9): two readers, one format, and a defect worth reporting` | **progress on a blocked leaf**, not a completion: 4 of 5 files agree |
 | `SOT-FORMAT.7` | `SEMULITH-SF-0041 (leaf SOT-FORMAT.7): the reader corrupted every citation it read` | 52 of 52 citations restored; 18 arms where there were none |
 

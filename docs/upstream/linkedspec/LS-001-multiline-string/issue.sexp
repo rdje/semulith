@@ -14,7 +14,7 @@
   (title "a double-quoted string containing LF is not one string")
   (component "specs/Lispish.spec lines 69 and 71")
   (severity high)
-  (state draft)
+  (state verified)
   (blocks "SOT-FORMAT.9")
 
   (affects
@@ -27,9 +27,18 @@
     (available yes)
     (validated-by-us yes)
     (patch "fix/dotall.patch")
-    (evidence "8 of 8 reproduction cases pass; all 5 of our tracked .sexp files then agree"))
+    (upstream-fix "8259719f8198a1280c8d91d07a9797ef39e036a8")
+    (evidence "8 of 8 reproduction cases pass at the adopted pin; all 5 of our tracked .sexp
+               files agree node-for-node; the fix shipped upstream is the reported (?s) form
+               verbatim"))
 
   (history
     (event (date "2026-09-20") (state draft)
            (note "found while integrating the Rust backend; root cause located by refuting two
-                  wrong hypotheses first, reproduction reduced to 8 files of a few bytes each"))))
+                  wrong hypotheses first, reproduction reduced to 8 files of a few bytes each"))
+    (event (date "2026-09-26") (state verified)
+           (verified-against "a8d34c84595d46c24cd1820d5fc0414261706412")
+           (note "pin advanced on the director's instruction after upstream shipped the fix as
+                  8259719f8; our self-contained repro.sh re-ran against the new binary and grammar:
+                  8 matched / 0 differed (was 4/4); the consumer's two-reader comparison then
+                  agreed on all five of its tracked .sexp files — SOT-FORMAT.9's block discharges"))))

@@ -16,7 +16,7 @@ Two of the three issues below are findable **only because** the guide is that ex
 
 | ID | Title | Severity | State | Fix validated by us? |
 | --- | --- | --- | --- | --- |
-| [`LS-001`](LS-001-multiline-string/REPORT.md) | a double-quoted string containing LF is not one string | `high` | `draft` | **yes** — one-line patch, 8/8 cases |
+| [`LS-001`](LS-001-multiline-string/REPORT.md) | a double-quoted string containing LF is not one string | `high` | `verified` | **yes** — upstream shipped the reported patch (`8259719f8` @ `a8d34c845`); our repro re-ran 8/0 and all 5 tracked files agree |
 | [`LS-002`](LS-002-atom-typing/REPORT.md) | quoted and bare atoms are indistinguishable | `medium` | `draft` | no — design question, not a patch |
 | [`LS-003`](LS-003-guide-papercuts/REPORT.md) | three first-consumer papercuts in the integration guide | `low` | `draft` | n/a — documentation |
 
