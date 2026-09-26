@@ -90,6 +90,21 @@ for d in sorted(p for p in up.glob("*/*") if p.is_dir()):
                     bad.append(f"UNEARNED    {f['id']}: repro artifact {r[1]!r} is not a file "
                                f"inside the issue subtree. A maintainer copying the directory "
                                f"out must carry the evidence with it.")
+            # a verified state must also tell upstream, in the same envelope (UPSTREAM-TRACK.4)
+            pins = [str(c[1]) for e in events for c in S.children(e, "verified-against")
+                    if len(c) == 2]
+            note = d / "VERIFIED.md"
+            if not note.is_file():
+                bad.append(f"UNANNOUNCED {f['id']}: state is `verified` but the subtree carries "
+                           f"no VERIFIED.md — the reply to upstream travels in the same "
+                           f"envelope as the report it answers.")
+            else:
+                nt = note.read_text()
+                for p in pins:
+                    if p not in nt:
+                        bad.append(f"UNANNOUNCED {f['id']}: VERIFIED.md does not name the pin "
+                                   f"the record was verified against ({p[:12]}…); the note "
+                                   f"and the record must agree.")
     f["dir"] = d
     issues[f["id"]] = f
 
@@ -284,8 +299,30 @@ EOF
 | **Severity** | \`high\` |
 | **State** | \`verified\` |
 EOF
+  printf 'verified against a8d34c84595d46c24cd1820d5fc0414261706412 by re-running the reproduction\n' \
+    > "$tmp/docs/upstream/linkedspec/LS-001-a/VERIFIED.md"
   idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
-  arm "GREEN \`verified\` with a pin and the captured re-run inside the subtree" 0 "__CHECKED__ 1"
+  arm "GREEN \`verified\` with a pin, the captured re-run and the consumer note" 0 "__CHECKED__ 1"
+
+  reset; mk LS-001-a LS-001 verified high
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
+(issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
+       (severity high) (state verified)
+       (history (event (date "2026-09-26") (state verified)
+                       (verified-against "a8d34c84595d46c24cd1820d5fc0414261706412")
+                       (repro "evidence/verified.txt"))))
+EOF
+  mkdir -p "$tmp/docs/upstream/linkedspec/LS-001-a/evidence"
+  printf '8 matched / 0 differed\n' > "$tmp/docs/upstream/linkedspec/LS-001-a/evidence/verified.txt"
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/REPORT.md" <<EOF
+| **ID** | \`LS-001\` |
+| **Severity** | \`high\` |
+| **State** | \`verified\` |
+EOF
+  printf 'verified against 9999999999999999999999999999999999999999 which is not the record pin\n' \
+    > "$tmp/docs/upstream/linkedspec/LS-001-a/VERIFIED.md"
+  idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
+  arm "RED   \`verified\` whose VERIFIED.md names a different pin than the record" 1 "does not name the pin"
 
   reset; mk wrongly-named-dir LS-001 draft high; idx "$ln_" "$ln_"
   arm "RED   a directory whose name does not carry its id" 1 "NAME DRIFT"

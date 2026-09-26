@@ -82,6 +82,25 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
   leaves it blocks, so exposure is visible without reading every record.
   Acceptance: the figure is derived by a command, never typed; `DERIVED-COUNTS` owns it.
 
+- ID: `UPSTREAM-TRACK.4` — **the consumer tells upstream: `VERIFIED.md` lives in the issue subtree**
+  Status: `done`
+  ⭐ Director instruction, `2026-09-26`: the verification acknowledgment to LinkedSpec is a
+  git-tracked note inside the bug's own directory, for the upstream maintainer to read in place.
+  The subtree is already the envelope a maintainer copies out — the reply travels in the same
+  envelope as the report it answers.
+  Goal: a `verified` issue carries `VERIFIED.md` beside `REPORT.md` — addressed upstream: what
+  shipped, what we re-ran against which pin, the result, what it unblocks, and where the residue
+  (if any) is classified. The `UPSTREAM-INDEX` gate requires the note for every `verified` state
+  and checks it names the same pin as the record, so the note cannot drift or be forgotten.
+  Acceptance: `VERIFIED.md` exists for both currently verified issues (LS-001, LS-003), is
+  self-contained (nothing outside the subtree), and names the `verified-against` pin; the gate
+  refuses a `verified` without the note and a note whose pin disagrees with the record — fired
+  RED on the missing-note state before the notes landed; self-test arms for both refusals.
+  Verification: `2026-09-26` — 17 pass / 0 fail; the strengthened gate fired RED on the real
+  LS-001 and LS-003 ("carries no VERIFIED.md") before the notes existed; green after, with both
+  notes naming the record's pin.
+  Commit: `SEMULITH-UT-0055`
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -220,6 +239,10 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `UPSTREAM-TRACK.4` | `--self-test` after the gate extension | `17 pass / 0 fail` (16 → 17 arms: the wrong-pin note refused) |
+| `2026-09-26` | `UPSTREAM-TRACK.4` | the gate on the real tracker BEFORE the notes | `UNANNOUNCED LS-001`, `UNANNOUNCED LS-003`, rc=1 — fired RED on the exact state the leaf exists to refuse |
+| `2026-09-26` | `UPSTREAM-TRACK.4` | `VERIFIED.md` written for LS-001 and LS-003 | self-contained, addressed upstream, each names the record's `verified-against` pin |
+| `2026-09-26` | `UPSTREAM-TRACK.4` | the gate after the notes | `ok (3 issue record(s) mirrored by both indices)` |
 | `2026-09-26` | `UPSTREAM-TRACK.2` | `--self-test` after hardening | `16 pass / 0 fail` (12 → 16 arms) |
 | `2026-09-26` | `UPSTREAM-TRACK.2` | the gate on the real tracker BEFORE the artifact | `UNEARNED LS-001 … captures no (repro …)`, rc=1 — the exact failure the leaf exists to refuse |
 | `2026-09-26` | `UPSTREAM-TRACK.2` | LS-001 repro re-captured into its subtree | `evidence/verified-a8d34c845.txt`: `8 matched / 0 differed` |
@@ -238,6 +261,7 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `UPSTREAM-TRACK.4` | `SEMULITH-UT-0055 (leaf UPSTREAM-TRACK.4): …` | VERIFIED.md in the issue subtree for both verified issues; gate requires the note and the pin match |
 | `UPSTREAM-TRACK.2` | `SEMULITH-UT-0052 (leaf UPSTREAM-TRACK.2): …` | verified now requires the captured re-run; fired RED on the real LS-001; all three issues in earned states |
 | `UPSTREAM-TRACK.1` | `SEMULITH-UT-0048 (leaf UPSTREAM-TRACK.1): the issue owns its state, the indices are mirrors` | caught 3 real violations in its own tracker |
 

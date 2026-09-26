@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-UT-0055 (leaf UPSTREAM-TRACK.4) — the reply travels in the same envelope
+
+Director instruction `2026-09-26`: the verification acknowledgment to LinkedSpec is a
+git-tracked note inside the bug's own directory. The subtree was already the envelope a
+maintainer copies out — `VERIFIED.md` is now the reply inside that envelope, beside the report
+it answers: what shipped, what we re-ran against which pin, the result, what it unblocks, and
+where the residue lives (for LS-001: classified under LS-002, not this defect).
+
+The note is gated, not just written: `UPSTREAM-INDEX` refuses a `verified` state whose subtree
+carries no `VERIFIED.md`, and refuses a note that does not name the pin the record was verified
+against — the note and the record must agree the way the indices and the record must agree.
+Fired RED on the real tracker against both LS-001 and LS-003 before the notes existed; 17 arms
+(16 → 17) with the wrong-pin refusal; green after, both notes self-contained and pin-consistent.
+
 ## SEMULITH-SF-0054 (leaf SOT-FORMAT.1) — the schema language, written in itself
 
 The gap was "it parses": an S-expression reader accepts anything syntactically, so a mistyped
