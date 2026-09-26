@@ -30,7 +30,7 @@ SEVERITIES="high medium low"
 
 scan() {
 python3 - "$1" "$2" "$3" <<'PY'
-import pathlib, re, sys
+import os, pathlib, re, sys
 sys.path.insert(0, str(pathlib.Path(sys.argv[1]) / "scripts"))
 import sexp as S
 
@@ -65,13 +65,31 @@ for d in sorted(p for p in up.glob("*/*") if p.is_dir()):
         bad.append(f"DUP ID      {f['id']} declared by two directories")
     if not d.name.startswith(f["id"] + "-"):
         bad.append(f"NAME DRIFT  {d.relative_to(root)} does not start with its id {f['id']!r}")
-    # a verified state must name what it was verified against
+    # a verified state must name what it was verified against AND carry the captured re-run
+    # inside the subtree — a pin quoted from a changelog plus a result quoted from memory is
+    # two claims, not evidence (leaf UPSTREAM-TRACK.2).
     if f["state"] == "verified":
-        pins = [c for c in S.children(form, "history") for c in S.children(c, "event")]
         text = rec.read_text()
+        events = [c for c in S.children(form, "history") for c in S.children(c, "event")]
         if "verified-against" not in text:
             bad.append(f"UNEARNED    {f['id']}: state is `verified` but the record names no "
                        f"(verified-against …) pin. A fix we have not re-run is a claim.")
+        else:
+            repros = [r for e in events for r in S.children(e, "repro")]
+            if not repros:
+                bad.append(f"UNEARNED    {f['id']}: `verified` names a pin but captures no "
+                           f"(repro …) re-run output inside the subtree. The pin retires the "
+                           f"changelog claim; only the captured output retires ours.")
+            for r in repros:
+                if len(r) != 2 or not isinstance(r[1], str):
+                    bad.append(f"UNEARNED    {f['id']}: (repro …) must be a single artifact "
+                               f"path, got {r!r}")
+                    continue
+                rp = (d / r[1]).resolve()
+                if not str(rp).startswith(str(d.resolve()) + os.sep) or not rp.is_file():
+                    bad.append(f"UNEARNED    {f['id']}: repro artifact {r[1]!r} is not a file "
+                               f"inside the issue subtree. A maintainer copying the directory "
+                               f"out must carry the evidence with it.")
     f["dir"] = d
     issues[f["id"]] = f
 
@@ -208,6 +226,66 @@ EOF
 
   reset; mk LS-001-a LS-001 verified high; idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
   arm "RED   \`verified\` without the pin it was verified against" 1 "UNEARNED"
+
+  reset; mk LS-001-a LS-001 verified high
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
+(issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
+       (severity high) (state verified)
+       (history (event (date "2026-09-26") (state verified)
+                       (verified-against "a8d34c845"))))
+EOF
+  printf '| **State** | `verified` |\n' > /dev/null
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/REPORT.md" <<EOF
+| **State** | \`verified\` |
+EOF
+  idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
+  arm "RED   \`verified\` with a pin but no captured re-run artifact" 1 "captures no"
+
+  reset; mk LS-001-a LS-001 verified high
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
+(issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
+       (severity high) (state verified)
+       (history (event (date "2026-09-26") (state verified)
+                       (verified-against "a8d34c845")
+                       (repro "evidence/missing.txt"))))
+EOF
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/REPORT.md" <<EOF
+| **State** | \`verified\` |
+EOF
+  idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
+  arm "RED   \`verified\` whose repro artifact does not exist" 1 "not a file inside"
+
+  reset; mk LS-001-a LS-001 verified high
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
+(issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
+       (severity high) (state verified)
+       (history (event (date "2026-09-26") (state verified)
+                       (verified-against "a8d34c845")
+                       (repro "../outside.txt"))))
+EOF
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/REPORT.md" <<EOF
+| **State** | \`verified\` |
+EOF
+  idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
+  arm "RED   \`verified\` whose repro artifact escapes the subtree" 1 "not a file inside"
+
+  reset; mk LS-001-a LS-001 verified high
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
+(issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
+       (severity high) (state verified)
+       (history (event (date "2026-09-26") (state verified)
+                       (verified-against "a8d34c845")
+                       (repro "evidence/verified.txt"))))
+EOF
+  mkdir -p "$tmp/docs/upstream/linkedspec/LS-001-a/evidence"
+  printf '8 matched / 0 differed\n' > "$tmp/docs/upstream/linkedspec/LS-001-a/evidence/verified.txt"
+  cat > "$tmp/docs/upstream/linkedspec/LS-001-a/REPORT.md" <<EOF
+| **ID** | \`LS-001\` |
+| **Severity** | \`high\` |
+| **State** | \`verified\` |
+EOF
+  idx '| [`LS-001`](x) | t | `high` | `verified` |' '| [`LS-001`](x) | t | `high` | `verified` |'
+  arm "GREEN \`verified\` with a pin and the captured re-run inside the subtree" 0 "__CHECKED__ 1"
 
   reset; mk wrongly-named-dir LS-001 draft high; idx "$ln_" "$ln_"
   arm "RED   a directory whose name does not carry its id" 1 "NAME DRIFT"

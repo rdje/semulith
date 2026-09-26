@@ -38,6 +38,7 @@
                   wrong hypotheses first, reproduction reduced to 8 files of a few bytes each"))
     (event (date "2026-09-26") (state verified)
            (verified-against "a8d34c84595d46c24cd1820d5fc0414261706412")
+           (repro "evidence/verified-a8d34c845.txt")
            (note "pin advanced on the director's instruction after upstream shipped the fix as
                   8259719f8; our self-contained repro.sh re-ran against the new binary and grammar:
                   8 matched / 0 differed (was 4/4); the consumer's two-reader comparison then

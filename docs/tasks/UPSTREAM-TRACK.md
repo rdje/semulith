@@ -62,12 +62,19 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
   Commit: `SEMULITH-UT-0048`
 
 - ID: `UPSTREAM-TRACK.2` — **a `verified` state must carry the re-run that earned it**
-  Status: `pending`
+  Status: `done`
   Goal: `fixed-upstream` → `verified` is the transition where a consumer inherits a regression if
   it is taken on trust. Require the evidence in the record: the new pin, the date, and the
   reproduction output.
   Acceptance: a record claiming `verified` without a pin and a captured re-run is refused; fired
   RED on exactly that.
+  Verification: `16 pass / 0 fail` (12 → 16 arms: pin-without-repro, missing artifact, escaping
+  artifact refused, pin+artifact accepted); the strengthened gate fired RED on the REAL LS-001
+  record — verified with a pin but no captured output — before the artifact landed; all three
+  issues then earned their states: LS-001 `verified` (repro 8/0 captured),
+  LS-003 `verified` (guide remedies exercised, transcript captured), LS-002 `acknowledged`
+  (upstream `.83.1 owned`).
+  Commit: `SEMULITH-UT-0052`
 
 - ID: `UPSTREAM-TRACK.3` — **age and exposure, derived**
   Status: `pending`
@@ -79,8 +86,48 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `UPSTREAM-TRACK.2` | `pending` | the transition that matters is the one nobody wants to slow down |
-| 2 | `UPSTREAM-TRACK.3` | `pending` | derivation is only worth building once there is history to derive from |
+| 1 | `UPSTREAM-TRACK.3` | `pending` | derivation is only worth building once there is history to derive from — and three issues with dated events are history |
+
+## Acceptance Checklist (leaf UPSTREAM-TRACK.2)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. The `verified` check named a pin but not the output:
+
+  ```
+  $ bash scripts/check_upstream_index.sh   (after the pin update, before this leaf)
+  UPSTREAM-INDEX: ok (3 issue record(s) mirrored by both indices)     ← the hole
+  ```
+
+  WHY a pin alone is not evidence: the pin retires upstream's changelog claim, but OUR claim —
+  "we re-ran it and it passed" — still rested on the event's prose. A maintainer copying the
+  subtree out carried an assertion, not the run.
+
+- [x] **ADDRESSED (verified)** — leg 2. `scan()` now requires, for every `verified` record, a
+  `(repro "…")` in the verified event naming a file that EXISTS inside the subtree:
+
+  ```
+  $ bash scripts/check_upstream_index.sh --self-test
+  UPSTREAM-INDEX --self-test: 16 pass / 0 fail
+    (4 new arms, all RED-named: pin-but-no-repro, repro-missing, repro-escaping, pin+repro ok)
+  $ bash scripts/check_upstream_index.sh        # against the real tracker, artifact not yet written
+    UNEARNED  LS-001: `verified` names a pin but captures no (repro …) re-run output
+    rc=1                                          ← fired RED on the real record, not just fixtures
+  ```
+
+  Then the artifacts landed and every state became earned: LS-001 `verified` with
+  `evidence/verified-a8d34c845.txt` (the captured `8 matched / 0 differed`), LS-003 `verified`
+  with its exercised-remedies transcript, LS-002 `acknowledged` (no re-run owed — upstream owns
+  the design question).
+
+- [x] **NO REGRESSION** — leg 3.
+
+  ```
+  $ bash scripts/check_upstream_index.sh -> ok (3 issue record(s) mirrored by both indices)
+  $ python3 scripts/compare_readers.py --self-test -> 21 pass / 0 fail
+  $ bash scripts/check_doctrines.sh -> all doctrines green
+  ```
+
+- [x] **LOCKSTEP** — both index mirrors and all three REPORT.md tables carry the new states in
+  the same commit; MEMORY/TASK_TREE counts re-derived; CHANGELOG entry.
 
 ## Decisions
 
@@ -100,7 +147,7 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 - None.
 
-## Acceptance Checklist (current leaf — `UPSTREAM-TRACK.1`)
+## Acceptance Checklist (leaf UPSTREAM-TRACK.1 — done `2026-09-20`, kept as evidence)
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nowhere yet, and that is the finding. The same
   facts were stated in three places with nothing checking them:
@@ -173,6 +220,12 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `UPSTREAM-TRACK.2` | `--self-test` after hardening | `16 pass / 0 fail` (12 → 16 arms) |
+| `2026-09-26` | `UPSTREAM-TRACK.2` | the gate on the real tracker BEFORE the artifact | `UNEARNED LS-001 … captures no (repro …)`, rc=1 — the exact failure the leaf exists to refuse |
+| `2026-09-26` | `UPSTREAM-TRACK.2` | LS-001 repro re-captured into its subtree | `evidence/verified-a8d34c845.txt`: `8 matched / 0 differed` |
+| `2026-09-26` | `UPSTREAM-TRACK.2` | LS-003 remedies exercised at the new pin | transcript captured; bootstrap no-op by exit status, build 20.39 s, sweep 5/5 |
+| `2026-09-26` | `UPSTREAM-TRACK.2` | LS-002 acknowledgment | upstream `8259719f8`: "LS-002 … remains .83.1 owned" |
+| `2026-09-26` | `UPSTREAM-TRACK.2` | the gate after the artifacts | `ok (3 issue record(s) mirrored by both indices)` |
 | `2026-09-20` | `UPSTREAM-TRACK.1` | census: places stating an issue's facts / gates checking them | 3 places / `0` gates |
 | `2026-09-20` | `UPSTREAM-TRACK.1` | `--self-test`, first run | `8 pass / 4 fail` — the FIXTURE was wrong, not the gate |
 | `2026-09-20` | `UPSTREAM-TRACK.1` | `--self-test`, after the fixture fix | `12 pass / 0 fail`, 10 of them RED |
@@ -185,6 +238,7 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `UPSTREAM-TRACK.2` | `SEMULITH-UT-0052 (leaf UPSTREAM-TRACK.2): …` | verified now requires the captured re-run; fired RED on the real LS-001; all three issues in earned states |
 | `UPSTREAM-TRACK.1` | `SEMULITH-UT-0048 (leaf UPSTREAM-TRACK.1): the issue owns its state, the indices are mirrors` | caught 3 real violations in its own tracker |
 
 ## Changelog

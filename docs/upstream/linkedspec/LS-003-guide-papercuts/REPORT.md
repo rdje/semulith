@@ -6,7 +6,7 @@
 | **Project** | LinkedSpec (`rdje/linkedspec`) |
 | **Component** | `docs/linkedspec-book/src/public-api/integration-rust.md` |
 | **Severity** | `low` — nothing here is wrong; each cost us one failed attempt |
-| **State** | `draft` |
+| **State** | `verified` `2026-09-26` — guide remedies re-read and exercised, see `evidence/verified-a8d34c845.txt` |
 | **Raised** | `2026-09-20` |
 | **Affects** | `ad290bdb4` |
 | **Reproduce** | not scripted — documentation observations. Verbatim errors and measurements in [`evidence.txt`](evidence.txt) |

@@ -1,0 +1,44 @@
+# LS-003 verification — captured 2026-09-26
+
+The three papercuts were documentation observations against the guide at `ad290bdb4`. The
+guide at the adopted pin `a8d34c845` was re-read section by section and each remedy was then
+**exercised, not just found**, during the pin update of the same day:
+
+## 1. Workspace absorption — REMEDIED AND EXERCISED
+
+The new guide carries a dedicated section, *"Applications with a Cargo workspace"*, before any
+build step: exclude the vendored checkout in the host root manifest, do not add a second
+`[workspace]` table, with the exact failure quoted. Exercised: the consumer repository's root
+manifest excludes the vendor path and the dependency build no longer stops with "current
+package believes it's in a workspace when it is not".
+
+## 2. File-parsing section reachable without prerequisites — REMEDIED AND EXERCISED
+
+The new *"Parse Lispish files in your application"* opens with: *"If you arrived directly at
+this section, first complete source checkout, workspace setup, when applicable, local storage,
+and RGX preparation."* — each a link to the prerequisite section. Exercised: the preparation
+was completed in order (local storage env, RGX bootstrap, metadata, build) before any file was
+parsed; no step failed.
+
+## 3. Bare cargo instead of the maintained wrapper — REMEDIED AND EXERCISED
+
+The new *"Keep preparation and build products local"* section prescribes the maintained
+wrapper, application-owned storage under the repo, and explicitly forbids saving expanded
+machine-specific paths into manifests. Exercised, captured transcript:
+
+```
+$ bash vendor/linkedspec/tools/project_data_run.sh env -u CARGO_TARGET_DIR \
+    make -C <rgx checkout> bootstrap
+  [rgx] PGEN parser already generated — nothing to bootstrap.   (exit 0)
+    ➞ the guide's own warning applied: an intermediate progress message is not the overall
+      command result; the exit status was checked, not the banner.
+$ bash vendor/linkedspec/tools/run_cargo_local.sh build \
+    --manifest-path <examples/integration/rust/Cargo.toml>
+  Finished `dev` profile in 20.39s                            (exit 0)
+  fresh consumer binary at the prescribed target location
+$ <consumer> --grammar <shipped Lispish.spec> <catalogue>      (via the two-reader sweep)
+  compare_readers: 5 of 5 file(s) agree
+```
+
+All three papercuts are closed by upstream's own publication; this subtree's earlier
+`evidence.txt` remains as the historical record of what the first integration cost.

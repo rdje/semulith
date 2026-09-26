@@ -6,7 +6,7 @@
   (title "quoted and bare atoms are indistinguishable")
   (component "specs/Lispish.spec parent rules, as documented")
   (severity medium)
-  (state draft)
+  (state acknowledged)
   (blocks "")
 
   (affects
@@ -22,4 +22,10 @@
   (history
     (event (date "2026-09-20") (state draft)
            (note "documented behaviour; raised for its consequence on a format that is written as
-                  well as read, which the documentation does not draw out"))))
+                  well as read, which the documentation does not draw out"))
+    (event (date "2026-09-26") (state acknowledged)
+           (note "upstream took ownership: the fix commit for LS-001 (8259719f8) records 'LS-002
+                  and related kind/strict requirements remain .83.1 owned' — acknowledged by
+                  name, scheduled in their own task system. Seen live in this consumer: the
+                  quoted-numeric residue our two-reader comparison now classifies rather than
+                  counts as agreement"))))

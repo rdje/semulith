@@ -6,7 +6,7 @@
 | **Project** | LinkedSpec (`rdje/linkedspec`) |
 | **Component** | `specs/Lispish.spec` — the parent rules, as documented |
 | **Severity** | `medium` — correct per the documented contract; blocks a use the contract does not claim |
-| **State** | `draft` |
+| **State** | `acknowledged` `2026-09-26` — upstream took ownership (`.83.1 owned`, commit `8259719f8`) |
 | **Raised** | `2026-09-20` |
 | **Affects** | `ad290bdb4`; see `../README.md` |
 | **Blocks** | nothing today; would block using Lispish for a format that is **written** as well as read |

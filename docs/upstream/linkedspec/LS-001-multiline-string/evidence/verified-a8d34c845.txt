@@ -1,0 +1,20 @@
+# LS-001 verification — captured 2026-09-26
+#
+# Command: bash repro.sh <lispish_file> [Lispish.spec] (see VALIDATE.md), run in the
+# consumer repository against the rebuilt consumer binary and the grammar shipped at the
+# adopted pin. Pin and build evidence live in the consumer's own tracker; this file
+# carries the reproduction output itself, so the copy-out check of VALIDATE.md holds.
+#
+binary : .app-data/target/debug/lispish_file
+grammar: vendor/linkedspec/specs/Lispish.spec
+
+  MATCH     01-control-one-line.sexp     ["r",["a","x y"]]
+  MATCH     02-control-parens.sexp       ["r",["a","see (2) ok"]]
+  MATCH     03-control-tab.sexp          ["r",["a","x\ty"]]
+  MATCH     04-control-cr.sexp           ["r",["a","x\ry"]]
+  MATCH     05-lf-data-only.sexp         ["r",["a","x\ny"]]
+  MATCH     06-lf-indented.sexp          ["r",["a","x\n   y"]]
+  MATCH     07-lf-sibling-follows.sexp   ["r",["a","x\n   y"],["b","z"]]
+  MATCH     08-lf-close-paren.sexp       ["r",["a","p\n   q) r"],["b","z"]]
+
+LS-001: 8 matched / 0 differed
