@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1) — the first §8 cleanup, measured and recorded
+
+Session-directive §8 requires an artifact cleanup roughly every 24 h, tracked in
+`docs/ARTIFACT_CLEANUP.md`. The file did not exist — the "no file → clean this session" trigger
+fired — so the cleanup owns a task-tree now, the same as any other change.
+
+**Census before deleting anything** — 22 `.bin` under `target/`, 18 under `.app-data/target/`,
+all of them cargo incremental caches in the directive's enumerated scope; 7 crate **source**
+fixtures under `.app-data/cargo-home/` (inputs, not artifacts — kept); 13 reference-run logs
+under `target/refs/` (kept: evidence trails, 1.3 MB, outside the enumerated cargo dirs).
+
+**Measured, not asserted:** 40 files / 341 MB deleted (`.app-data` 1.4 G → 1.1 G); zero after;
+`git status` shows only the intended tracked files. The record is overwrite-only — one date and
+one line per run, so the file can never become the changelog it exists to prevent — and it is a
+governed live surface from its first commit (registered in `doctrine/readme_routes.tsv`).
+
 ## SEMULITH-UT-0048 (leaf UPSTREAM-TRACK.1) — the issue owns its state, the indices are mirrors
 
 **Two director instructions that turn out to be one design.** *"For each vendor keep an index of

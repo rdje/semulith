@@ -1,0 +1,140 @@
+# ARTIFACT-CLEANUP: generated artifacts never outlive their usefulness
+
+## Metadata
+
+- Tree ID: `ARTIFACT-CLEANUP`
+- Status: `active`
+- Roadmap lane: cross-cutting maintenance; session-directive §8 (cleanup ~every 24 h, tracked in `docs/ARTIFACT_CLEANUP.md`)
+- Gate: none of its own — housekeeping kept honest by the doctrine enforcer and the census it records
+- Created: `2026-09-26`
+- Owner: repo-local workflow
+
+## Goal
+
+Keep generated artifacts from accumulating across sessions: roughly every 24 hours, census the
+repository's artifact locations, delete only what is 100% safe (provably regenerable outputs, never
+inputs), and record the run in `docs/ARTIFACT_CLEANUP.md` so the next session knows when the last
+cleanup happened and what it removed.
+
+## Non-Goals
+
+- **Never tracked content.** Anything git tracks is out of scope by construction.
+- **Never inputs, only outputs.** Dependency source data (crate test fixtures under
+  `.app-data/cargo-home/`), the `.materials/` fetch cache (network-expensive to rebuild), and
+  `vendor/` are inputs or caches of inputs — deleting any of them is not "cleanup", it is damage.
+- **Not a space reclamation project.** The point is housekeeping and a verified procedure, not
+  megabytes; a 1.3 MB regenerable evidence log can be worth more than the space it costs.
+
+## Acceptance Criteria
+
+1. A dated census (counts and bytes by directory) exists before any deletion, and the after-state
+   is measured, not asserted.
+2. Only items in the session-directive's enumerated safe scope — cargo incremental caches and
+   stray `.bin`/`.log` in `target/release`, `target/debug/incremental`, `target/debug/deps` (and
+   the same under the prescribed `.app-data/` build home) — are deleted, unless a later leaf
+   extends the scope with per-class evidence.
+3. `docs/ARTIFACT_CLEANUP.md` is overwritten with the date and a one-line summary each run; it
+   never accumulates history.
+4. The doctrine enforcer is green after every cleanup commit.
+
+## Task Tree
+
+- ID: `ARTIFACT-CLEANUP`
+  Status: `active`
+  Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
+  Children: `ARTIFACT-CLEANUP.1`
+
+- ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
+  Status: `done`
+  Goal: run the first §8 cleanup; create `docs/ARTIFACT_CLEANUP.md` (overwrite-only record);
+  register the record as a governed live surface in `doctrine/readme_routes.tsv` in the same
+  commit that creates it.
+  Acceptance: census recorded in this leaf; only cargo incremental `.bin` caches deleted (40
+  files expected from the pre-change census); record carries the date and a one-line summary;
+  registry row added; `git status` clean apart from intended files; `check_doctrines.sh` green.
+  Verification: `2026-09-26` — census, classification, post-delete re-census, gate; all in the
+  Verification Log below.
+  Commit: `SEMULITH-AC-0050`
+
+## Current Frontier
+
+| Order | Leaf | Status | Why next |
+| --- | --- | --- | --- |
+| — | — | — | `.1` done; the next cleanup is time-triggered (~24 h), so no pending leaf exists between runs |
+
+## Decisions
+
+- `2026-09-26`: scope is the directive's enumerated cargo scope and nothing else without
+  per-class evidence. The `.app-data/cargo-home/**/tests/data/*.bin` files are crate **source**
+  fixtures (inputs), not artifacts — deleting them would be damage wearing a cleanup's clothes.
+
+## Open Questions
+
+- Do `target/refs/*.log` (spike build logs, smoke guest outputs) join the deletion scope? They
+  are regenerable but are evidence trails of the last reference run; at 1.3 MB they cost nothing.
+  Deferred until their size or staleness makes them a question again.
+
+## Blockers
+
+- None.
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.1)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the record file §8 names did not exist; the directive's own
+  trigger ("file does not exist → run a cleanup during this session") fired. WHERE the artifacts
+  were, from the pre-delete census:
+
+  ```
+  $ find target .app-data -path '*incremental*' -name '*.bin' | wc -l               -> 40
+  $ find target .app-data -path '*incremental*' -name '*.bin' -exec du -ch {} +     -> 341M total
+    (22 files under target/…/incremental, 18 under .app-data/target/debug/incremental)
+  $ find .app-data \( -name '*.bin' -o -name '*.log' \) | grep -v incremental        -> 7 files,
+    all .app-data/cargo-home/registry/src/**/tests/data/*.bin  (digest, sha2 — crate source
+    fixtures, i.e. INPUTS; deleting inputs is damage, not cleanup — kept)
+  ```
+
+- [x] **ADDRESSED (verified)** — before → after, measured:
+
+  ```
+  BEFORE: 40 incremental .bin / 341M; .app-data 1.4G
+  $ find target .app-data -path '*incremental*' -name '*.bin' -delete
+  AFTER:  find … '*.bin' | wc -l -> 0;  .app-data 1.1G;  target unchanged (its .bin were the
+          linkedspec consumer caches; the superproject target/ still holds its build outputs)
+  $ git status --porcelain   -> only the intended tracked files (tree, index, record, registry, changelog)
+  ```
+
+- [x] **NO REGRESSION** — nothing executable changed; the enforcer re-run after staging:
+
+  ```
+  $ bash scripts/check_doctrines.sh   -> === all doctrines green ===
+  ```
+
+  The deleted caches are cargo outputs; the next `make check` / consumer build regenerates them
+  (a cold incremental cache is slower, never wrong).
+
+- [x] **FIX** — deleted the 40 enumerated-scope caches; created `docs/ARTIFACT_CLEANUP.md`
+  (overwrite-only record); registered it in `doctrine/readme_routes.tsv` in the same commit.
+
+- [x] **LOCKSTEP** — `docs/TASK_TREE.md` row added; CHANGELOG entry; registry derivation comment;
+  LIVE_STATUS unchanged (no project-area row describes housekeeping); MEMORY.md unchanged (the
+  frontier did not move).
+
+## Verification Log
+
+| Date | Leaf | Checks | Result |
+| --- | --- | --- | --- |
+| `2026-09-26` | `ARTIFACT-CLEANUP.1` | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` | 40 files / 341 M, all in cargo incremental dirs |
+| `2026-09-26` | `ARTIFACT-CLEANUP.1` | kept-items classification: `.bin`/`.log` outside incremental | 7 crate-source fixtures (inputs), 13 `target/refs/*.log` (evidence) — kept |
+| `2026-09-26` | `ARTIFACT-CLEANUP.1` | post-delete re-census + `du -sh` | 0 incremental .bin; `.app-data` 1.4 G → 1.1 G |
+| `2026-09-26` | `ARTIFACT-CLEANUP.1` | `bash scripts/check_doctrines.sh` | all doctrines green |
+
+## Commit Log
+
+| Leaf | Commit subject or reference | Notes |
+| --- | --- | --- |
+| `ARTIFACT-CLEANUP.1` | `SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1): …` | first §8 cleanup; record + registry row in the creating commit |
+
+## Changelog
+
+- `2026-09-26`: Created. First leaf opened the same day, because the record file §8 names did not
+  exist — the trigger condition "file does not exist → run a cleanup during this session" fired.

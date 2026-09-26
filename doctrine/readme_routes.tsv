@@ -116,6 +116,13 @@
 # A health target set AT today's size fires on the next line and teaches its reader to ignore
 # it; these sit a deliberate band below their ceiling instead.
 #
+# Derivation, ARTIFACT-CLEANUP.1, when the §8 cleanup record got its home:
+#   docs/ARTIFACT_CLEANUP.md  4 lines / 470 B at adoption. Health 6 / 768; ceiling 12 / 1,536.
+#                    One overwrite-only entry per cleanup — history would defeat its purpose
+#                    (the file exists to say when the LAST run happened), so the ceilings are
+#                    pure guard rails against accidental append. Registered in the same commit
+#                    that created it.
+#
 #destination	route_class	lifecycle	owner	health_lines	health_bytes	ceiling_lines	ceiling_bytes
 README.md	both	hot_live	README-STABILITY doctrine	78	4352	85	4864	0
 README_POLICY.md	reader_navigation	normative	this policy; changes by reviewed decision	0	0	0	0	0
@@ -133,6 +140,7 @@ CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
 docs/changelog/	author_overflow	append_history	sharded CHANGELOG history; entries are never edited after the shard	6	196608	20	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
+docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 overwrite-only record, one entry per cleanup	6	768	12	1536	0
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
 docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0
 docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	85	5120	110	8192	0

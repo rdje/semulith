@@ -30,6 +30,7 @@
 ## Active task-trees
 
 - [`AG-OS.md`](docs/tasks/AG-OS.md)
+- [`ARTIFACT-CLEANUP.md`](docs/tasks/ARTIFACT-CLEANUP.md)
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
 - [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
