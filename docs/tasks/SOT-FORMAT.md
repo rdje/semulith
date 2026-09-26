@@ -125,13 +125,43 @@ too, and under the split there is no rule by which it could.
   Commit: `SEMULITH-SF-0054`
 
 - ID: `SOT-FORMAT.2` — **the constructs already in use, declared as data**
-  Status: `pending`
+  Status: `done`
   Goal: `encoding`, `fragment` and `semantics` get schema files. `scripts/check_semantics.py`'s
   hard-coded 32-form language moves out of Python and into `schema/`, so a new semantic form is a
   data change.
   Acceptance: the 32 forms are data; `52 of 52 declared instruction(s) have checked semantics` is
   reproduced **byte-identically**; the four controls of `MODEL-METHOD.9` still fire RED; adding a
   33rd form requires no Python edit (demonstrated, then reverted).
+  Result: met, `2026-09-27`. The schema language gained exactly one new declaration kind —
+  `(operator …)`, the named boundary of criterion 2's ⚠️ — and `schema/encoding.sexp`,
+  `schema/fragment.sexp`, `schema/semantics.sexp` declare every construct in the three corpus
+  families, including the three positional mini-languages (`fixed` triples, `operands` lists,
+  `pieces` pairs) and the 32-form semantics expression language. `check_semantics.py` loads its
+  form table from `schema/semantics.sexp` through the kernel's loader; its walk, messages and exit
+  codes are unchanged (one refusal message now names the schema instead of the FORMS table it
+  pointed at, which no longer exists). Gate registration of the schema layer stays deferred to
+  `.6` — the tree's own sequencing; this leaf proves the layer by recorded corpus verification
+  and 15 new self-test arms.
+  Design (recorded before code, `2026-09-27`): the corpus was read before building, the way `.1`
+  did — and the record grammar of `schema.sexp` does NOT fit three positional mini-languages the
+  real files use: fragment `(fixed (31 25 0x0) …)` triples, `(operands rd rs1 rs2)` symbol lists,
+  `(pieces (12 12) …)` integer pairs; and the semantics effect bodies are a 32-head expression
+  language with per-head arity, not `(name value)` field lists at all. Declaring only the record
+  layer would have forced either refusing the real corpus or ignoring shapes — both dishonest.
+  Named boundary (the ⚠️ of acceptance criterion 2): the schema language gains exactly ONE new
+  declaration kind, `(operator (name SYM) (fixed N) | (variadic) [(min N)] [(arg SPEC)])`, parsed
+  by the same kernel meta-level that already parses `(construct …)`/`(field …)`. `SPEC` is
+  `symbol|integer|string|expr` or a fixed-length list of those (`(arg (integer integer integer))`
+  for `fixed` triples); `expr` — the default — is an atom or an operator form, which is precisely
+  the recursion `check_semantics.py` already implements, so operand scoping (a cross-file fact:
+  the encoding provides the operands) stays in the checker while structure and arity become data.
+  Consequences, stated: a new construct OR a new operator is a schema file edit, zero Python; a
+  FIFTH declaration kind would change the kernel again — the same boundary a database draws
+  between adding a table and adding a column type. `check_semantics.py` loads the operator table
+  from `schema/semantics.sexp` through the kernel's loader and keeps its walk, messages and exit
+  codes unchanged. Gate registration of the schema layer is deliberately deferred to `.6` (the
+  tree's own sequencing — `.6` IS the `SOURCE-FORMAT` gate); this leaf proves the layer by
+  recorded corpus verification and new self-test arms instead.
 
 - ID: `SOT-FORMAT.3` — **the records: requirements and obligations**
   Status: `pending`
@@ -241,16 +271,17 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
-| 2 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
-| 3 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
-| 4 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
-| 5 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
+| 1 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
+| 2 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
+| 3 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
+| 4 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
 
 ## Decisions
 
 | Date | Decision | Rationale |
 | --- | --- | --- |
+| `2026-09-27` | Operators are the one new declaration kind `.2` adds; a fifth kind changes the kernel again | the corpus writes three positional mini-languages no record grammar can state; bending the generated files to fit would have forked the generator and every consumer — the boundary from criterion 2's ⚠️, crossed once, on purpose |
+| `2026-09-27` | The schema layer never reads a second file | operand scoping (a cross-file fact: the encoding provides the operands) stayed in `check_semantics.py` — the moment a check needs two sources of truth it belongs to a consumer, not the schema |
 | `2026-09-26` | The pin advances on the director's word only after OUR re-run earns it | the tracker separates `fixed-upstream` from `verified` for exactly this; the update flow is fetch → checkout → rebuild → verify → commit pointer |
 | `2026-09-26` | CLASS differences are enumerated by the comparator, never counted as agreement | the residue after LS-001 (quote-numeric, escape-retention) is documented upstream behaviour; each family is anchored to exact byte meaning so it cannot mask a real difference — and upstream's document grammar is the durable answer when the engine adopts the reader |
 | `2026-09-14` | S-expression is the single format for every engine input | director instruction; composition is a merge and three formats are three merge semantics |
@@ -282,6 +313,57 @@ too, and under the split there is no rule by which it could.
   quote readers), shipped at `origin/main` tip `a8d34c845`, on the director's instruction to
   update the pin. The earlier blocker — LinkedSpec's integration document — was **discharged** on
   `2026-09-20` by its publication at `ad290bdb4`.
+
+## Acceptance Checklist (leaf SOT-FORMAT.2)
+
+- [x] **REPRODUCE / ISSUE** — the problem, shown (not asserted):
+
+  ```
+  $ sed -n '26,43p' scripts/check_semantics.py          # before the fix
+    FORMS: dict[str, int | None] = { "reg": 1, "pc": 0, … "trap": 2 }     # the language, as a Python literal
+  $ ls schema/
+    schema.sexp                                          # a schema for the schema language only —
+                                                         # encoding/fragment/semantics had no schema at all
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: the record grammar of `schema.sexp` cannot state
+  the positional mini-languages the corpus actually writes, and the semantics checker enumerated
+  the language itself — "extensible by data" was true only for record-shaped constructs. WHERE:
+  the gap sat between `schema/schema.sexp` and `definitions/riscv/{rv64i,m}.sexp` +
+  `rv64i.sem.sexp` (three shapes: `(fixed (31 25 0x0) …)` triples, `(operands rd rs1 rs2)`
+  symbol lists, 32-head effect expressions), and at the FORMS dict in `scripts/check_semantics.py`.
+
+- [x] **FIX** — leg 2. One new declaration kind, `(operator (name SYM) (fixed N) | (variadic)
+  [(min N)] [(arg SPEC)])`, kernel-parsed next to `(construct …)`/`(field …)`; three schema files
+  (`encoding`, `fragment`, `semantics`); `check_semantics.py` loads the form table from
+  `schema/semantics.sexp` through the kernel's loader. New constructs and new operators are data;
+  a fifth kind would change the kernel — the named boundary.
+
+- [x] **ADDRESSED (verified)** — leg 3, the acceptance criteria, each re-derived:
+
+  ```
+  $ grep -c '^(operator' schema/semantics.sexp
+    32                                                   # the 32 forms are data
+  $ python3 scripts/check_semantics.py definitions/riscv/rv64i.sexp definitions/riscv/rv64i.sem.sexp
+    …  52 of 52 declared instruction(s) have checked semantics          (diff vs baseline: identical)
+  $ # four MODEL-METHOD.9 controls: missing / unknown-form / bad-operand / no-source
+    → each rc 1, refused by name (three byte-identical; unknown-form's message now names the schema)
+  $ # 33rd form: append one (operator …) line, no Python touched
+    unknown form 'rot' rc 1 → 1 of 1 declared instruction(s) have checked semantics rc 0 → reverted
+  ```
+
+- [x] **NO REGRESSION** — leg 4. `sexp --self-test` `18/0`; `check_sexp_schema --self-test`
+  `31/0`; `materials --self-test` `20/0`; `check_citations.py` `52 of 52`; `run_smoke.py` `ok`;
+  `gen_fragments.py` regeneration byte-identical (`git diff --stat -- definitions/` empty);
+  `check_encoding_disjoint.py` `the fragments COMPOSE`; `bash scripts/check_doctrines.sh`
+  `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — `TOOLBOX.md` row updated; `docs/ARCHITECTURE.md` §1.3 brought current (it
+  still described the schema layer as "specified as `SOT-FORMAT.1`, not yet built" — stale since
+  `SEMULITH-SF-0054`); `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md` (+ its lesson promoted to
+  `docs/knowledge/the-corpus-writes-shapes-my-grammar-cannot-state.md`), `docs/TASK_TREE.md`
+  and this tree in the same commit. Gate registration of the schema layer is deferred to `.6`
+  per the tree's frontier — stated here so the deferral is a decision, not a gap.
 
 ## Acceptance Checklist (leaf SOT-FORMAT.9 — acceptance MET 2026-09-26)
 
@@ -483,6 +565,15 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `SOT-FORMAT.2` | the 32 forms are data — `grep -c '^(operator' schema/semantics.sexp` | `32` |
+| `2026-09-27` | `SOT-FORMAT.2` | `52 of 52` before→after diff of `check_semantics.py rv64i.sexp rv64i.sem.sexp` | **byte-identical**, rc 0 both (baselines in `target/doctrine_scratch/sf2/`) |
+| `2026-09-27` | `SOT-FORMAT.2` | MODEL-METHOD.9 controls missing / operand / no-source, before→after | **byte-identical**, rc 1, each refused by name |
+| `2026-09-27` | `SOT-FORMAT.2` | MODEL-METHOD.9 control unknown-form, before→after | rc 1, names `'widget'`; the message now points at `schema/semantics.sexp` instead of the FORMS table it named (the only output change; the table no longer exists) |
+| `2026-09-27` | `SOT-FORMAT.2` | 33rd form, zero Python: append `(operator (name rot) (fixed 2))` to `schema/semantics.sexp`, run a one-instruction fragment using `(rot …)` | `unknown form 'rot'` rc 1 → `1 of 1 declared instruction(s) have checked semantics` rc 0; structurally conformant too; **reverted** — schema back to 32 operators, `rot` refused again |
+| `2026-09-27` | `SOT-FORMAT.2` | corpus validation: encoding/fragment(+m)/semantics against the new schemas | all `check_sexp_schema: ok — … conforms` |
+| `2026-09-27` | `SOT-FORMAT.2` | `check_sexp_schema.py --self-test` | `31 pass / 0 fail` (16 → 31; 15 new operator arms, every RED arm asserting its reason) |
+| `2026-09-27` | `SOT-FORMAT.2` | regression: sexp, materials, citations, smoke, gen_fragments regeneration, encoding-disjoint | `18/0`, `20/0`, `52 of 52`, `ok`, `git diff --stat -- definitions/` empty, `the fragments COMPOSE` |
+| `2026-09-27` | `SOT-FORMAT.2` | `bash scripts/check_doctrines.sh` | `=== all doctrines green ===` (after staging; the three new schema files join `compare_readers`' sweep at tracking — it enumerates `git ls-files '*.sexp'`, and re-run post-stage shows **9 of 9 agree**, document layer zero class notes) |
 | `2026-09-26` | `SOT-FORMAT.10` | consumer probe of the document grammar on a synthetic file | tagged kinds + raw lexemes confirmed (`"20260911"` → kind string; escapes verbatim; `0x10` → number) |
 | `2026-09-26` | `SOT-FORMAT.10` | `--self-test` | `28 pass / 0 fail` |
 | `2026-09-26` | `SOT-FORMAT.10` | corpus sweep, both layers | **6 of 6 agree**; document layer zero class notes; Lispish layer unchanged (same four CLASS notes); schema.sexp itself passes both layers |
@@ -526,6 +617,7 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.2` | `SEMULITH-SF-0057 (leaf SOT-FORMAT.2): …` | the operator kind; three domain schemas; the 32 forms are data; 52/52 byte-identical; 31 schema arms |
 | `SOT-FORMAT.1` | `SEMULITH-SF-0054 (leaf SOT-FORMAT.1): …` | the schema language in itself; 16 arms; fixpoint green; schema/ registered in the creating commit |
 | `SOT-FORMAT.8` | `SEMULITH-SF-0053 (leaf SOT-FORMAT.8): …` | ARCHITECTURE.md gains §1.1–§1.3; the director's window shows the format now |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0051 (leaf SOT-FORMAT.9): …` | pin advanced to `a8d34c845`; 5 of 5 agree; comparator enumerates 2 documented CLASS families; LS-001 verified |

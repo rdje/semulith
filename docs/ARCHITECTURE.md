@@ -73,15 +73,27 @@ once everything is one format.
 ### 1.3 The schema layer
 
 An S-expression reader accepts anything syntactically, so "it parses" is not validation. The
-declared next layer (specified as `SOT-FORMAT.1`, not yet built) declares every construct — its
-head, its fields, their arity and value types, whether they repeat — as data in `schema/`, and
-refuses an undeclared construct, an unknown field, a wrong arity or a wrong value type **by
-name**, never silently. Adding a domain construct — a register file, a memory map, a peripheral —
-then requires a schema file and zero lines of reader code. The schema language is written in
-itself, and its own description validating under itself is the fixpoint that proves
-extensibility rather than asserting it. Until that layer lands, per-construct validation lives
-where it already runs: `check_semantics.py` for the semantic forms, `check_encoding_disjoint.py`
-for composition, and the tracked JSON-schema validator for records.
+schema layer declares every construct — its head, its fields, their arity and value types,
+whether they repeat — as data in `schema/`, and refuses an undeclared construct, an unknown
+field, a wrong arity or a wrong value type **by name**, never silently. Adding a domain
+construct — a register file, a memory map, a peripheral — then requires a schema file and zero
+lines of reader code. The schema language is written in itself, and its own description
+validating under itself is the fixpoint that proves extensibility rather than asserting it
+(`scripts/check_sexp_schema.py <file.sexp> <schema.sexp>`; `schema/schema.sexp` is the language
+in itself).
+
+Built today: the language (`schema/schema.sexp`, four declaration kinds — `(schema …)`,
+`(construct …)`, `(field …)`, and `(operator …)` for positional mini-languages the record
+grammar cannot state, such as the fragment files' `(fixed (31 25 0x0) …)` triples and the
+semantics effect expressions), plus one schema per corpus family — `encoding.sexp`,
+`fragment.sexp`, `semantics.sexp` — under which the tracked corpus validates; the semantics'
+32-form language is data there, and `scripts/check_semantics.py` loads it. The layer
+deliberately never reads a second file: checks that need two sources of truth (operand scoping
+against the encoding, coverage of the declared instructions) live in the consumers. The
+remaining engine inputs — records, configuration — are converted behind this layer by
+`SOT-FORMAT.3`–`.5`, and the `SOURCE-FORMAT` gate that refuses any source outside the format
+lands at `.6`; until then, the tracked JSON-schema validator keeps checking the records, and
+`check_semantics.py`/`check_encoding_disjoint.py` keep checking what they already checked.
 
 These executable definitions belong on the engine/model side of the archogen boundary. They are not implementation syntax to add to eADL. eADL may describe the offered hardware contracts; a versioned adapter connects archogen's resolved implementation plan to Semulith models and composition.
 

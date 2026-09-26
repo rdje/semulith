@@ -8,6 +8,23 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the corpus's grammar is not the designed grammar (SOT-FORMAT.2)
+
+- The schema language gained its fourth declaration kind — `(operator …)` for positional
+  mini-languages — and `encoding`/`fragment`/`semantics` got schema files. `check_semantics.py`'s
+  32-form table is now data in `schema/semantics.sexp`; the 52-of-52 verdict is byte-identical
+  and the four MODEL-METHOD.9 controls still fire RED. A 33rd form is a schema edit, demonstrated
+  and reverted. Recorded as `SOT-FORMAT.2`, commit `SEMULITH-SF-0057`.
+- ⭐ **Designing a grammar from the files already read is sampling, and sampling found the same
+  trap twice.** `.1` refuted its own tidy pair grammar by reading the corpus first; `.2` then
+  built a record-only language that fit every file consulted and still could not state
+  `(fixed (31 25 0x0) …)`, `(operands rd rs1 rs2)`, or the semantics expressions. Promoted as
+  [`docs/knowledge/the-corpus-writes-shapes-my-grammar-cannot-state.md`](docs/knowledge/the-corpus-writes-shapes-my-grammar-cannot-state.md).
+- The schema layer validates structure and arity; operand scoping stayed in `check_semantics.py`
+  because it is a cross-file fact (the encoding provides the operands). Layering rule: the schema
+  layer never reads a second file — the moment a check needs two sources of truth, it belongs to
+  a consumer, not the schema.
+
 ## _(2026-09-27)_ — the star gets a start condition (ROADMAP v0.3)
 
 - ⭐ **A plan that cannot say when its first milestone starts is not yet a plan.** The vacuum

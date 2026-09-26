@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMILITH-SF-0057 (leaf SOT-FORMAT.2) — the constructs already in use, declared as data
+
+The schema layer leaves paper: `schema/encoding.sexp`, `schema/fragment.sexp` and
+`schema/semantics.sexp` declare every construct the three corpus families write — records and
+positional mini-languages alike. The schema language gains exactly one new declaration kind,
+`(operator (name SYM) (fixed N) | (variadic) [(min N)] [(arg SPEC)])`, for the shapes no record
+grammar can state: `(fixed (31 25 0x0) …)` triples, `(operands rd rs1 rs2)` lists, the
+`(pieces (12 12) …)` pairs, and the semantics effect expressions. `scripts/check_semantics.py`
+now loads its 32-form table from `schema/semantics.sexp` — a new semantic form is a schema
+edit, zero lines of Python (demonstrated with a 33rd form, then reverted). The `52 of 52`
+verdict is byte-identical; the four MODEL-METHOD.9 controls still fire RED. Kernel self-test
+`16 → 31 arms`; the whole corpus validates against its schema; `compare_readers` sweeps the
+three new files the moment they are tracked (`9 of 9 agree`, document layer zero class notes).
+The layer that never reads a second file: operand scoping stays in the checker. Gate
+registration stays deferred to `SOT-FORMAT.6` per the tree's frontier. Tree `SOT-FORMAT` at
+5/10.
+
 ## SEMULITH-RM-0059 (leaf ROADMAP-V3.3) — ROADMAP v0.3: the star gets a start condition
 
 `ROADMAP.md` supersedes v0.2 (the house pattern: the delivery manifest and git carry the old

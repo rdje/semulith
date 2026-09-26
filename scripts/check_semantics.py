@@ -3,8 +3,16 @@
 
 ⛔ THE LANGUAGE IS DELIBERATELY TINY, and the checker REFUSES anything outside it. A semantics
 notation that quietly accepts an unknown operator produces a definition whose meaning nobody can
-state — which is worse than no definition, because it looks like one. Every form below was added
+state — which is worse than no definition, because it looks like one. Every form was added
 because an RV64I instruction needed it; none was added in anticipation.
+
+⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — the 32 operators and their arity — lives
+as `(operator …)` declarations in `schema/semantics.sexp` (SOT-FORMAT.2) and is loaded below
+through the schema kernel; adding a semantic form is a schema edit, zero lines of Python. This
+file owns what the schema cannot state: whether a bare symbol is an operand the instruction
+actually has (the encoding provides the operands — a cross-file fact), whether every declared
+instruction is covered, and whether every rule cites the specification locator it was derived
+from.
 
 ⚠️ WHAT THIS CHECKS AND WHAT IT DOES NOT. It checks that the semantics are *well-formed, complete
 and cited*: every declared instruction has an effect, every form is known, every operand it names
@@ -20,29 +28,42 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-import sexp as _sexp  # noqa: E402
+import sexp as _sexp                        # noqa: E402
+import check_sexp_schema as _schema         # noqa: E402
 
-# Every operator, with its arity. Arity `None` means variadic (at least one argument).
-FORMS: dict[str, int | None] = {
-    # values
-    "reg": 1, "pc": 0, "imm": 1, "lit": 1,
-    # integer arithmetic and logic, all on XLEN-wide two's-complement values
-    "add": 2, "sub": 2, "and": 2, "or": 2, "xor": 2,
-    "shl": 2, "shr": 2, "sar": 2,          # shr logical, sar arithmetic
-    "slt": 2, "sltu": 2,                    # set-less-than, signed and unsigned
-    "eq": 2, "ne": 2, "lt": 2, "ltu": 2, "ge": 2, "geu": 2,
-    # width manipulation — explicit, because implicit width is where models diverge
-    "trunc": 2, "sext": 2, "zext": 2,
-    "bits": 3,                              # (bits hi lo v)
-    # memory
-    "load": 3,                              # (load width signed? addr)
-    "store": 3,                             # (store width addr value)
-    # effects
-    "set": 2, "set-pc": 1, "seq": None, "nop": 0, "if": 3,
-    "trap": 2,                              # (trap cause tval)
-}
+REPO = Path(__file__).resolve().parent.parent
+LANGUAGE = REPO / "schema" / "semantics.sexp"
+
+# The operator table, loaded from schema/semantics.sexp by load_language(): head -> arity,
+# where `None` means variadic (at least one argument), exactly the mapping this walk implements.
+FORMS: dict[str, int | None] = {}
+
 # Operand names an instruction may reference come from its encoding, plus these implicit ones.
 IMPLICIT = {"pc", "xlen"}
+
+
+def load_language() -> None:
+    """The semantic language, AS DATA: `(operator …)` declarations in schema/semantics.sexp.
+
+    A variadic operator with a minimum other than 1 has no faithful mapping here (this walk
+    states "at least one") — refused loudly rather than silently approximated.
+    """
+    try:
+        _, operators = _schema.load_schema(LANGUAGE)
+    except (_schema.SchemaError, _sexp.SexpError) as exc:
+        raise SemError(f"the semantic language itself does not read: {exc}")
+    forms: dict[str, int | None] = {}
+    for name, op in operators.items():
+        if op.fixed is not None:
+            forms[name] = op.fixed
+        elif op.min == 1:
+            forms[name] = None
+        else:
+            raise SemError(f"({name} …) is variadic with min {op.min}, which this checker "
+                           f"cannot state — the language admits only fixed arities or "
+                           f"\"at least one\"")
+    FORMS.clear()
+    FORMS.update(forms)
 
 
 class SemError(Exception):
@@ -62,8 +83,9 @@ def check_expr(form, where: str, allowed: set[str]) -> None:
     op = str(form[0])
     if op not in FORMS:
         raise SemError(f"{where}: unknown form {op!r}. The language is deliberately small and this "
-                       f"checker refuses what it cannot state the meaning of — add the form to "
-                       f"FORMS with its arity, or express the rule with the forms that exist")
+                       f"checker refuses what it cannot state the meaning of — declare the form "
+                       f"with its arity in schema/semantics.sexp, or express the rule with the "
+                       f"forms that exist")
     arity = FORMS[op]
     args = form[1:]
     if arity is None:
@@ -78,6 +100,11 @@ def check_expr(form, where: str, allowed: set[str]) -> None:
 def main(argv: list[str]) -> int:
     if len(argv) != 3:
         print("usage: check_semantics.py <fragment.sexp> <semantics.sexp>", file=sys.stderr)
+        return 2
+    try:
+        load_language()
+    except SemError as exc:
+        print(f"REFUSED: {exc}", file=sys.stderr)
         return 2
     enc_path, sem_path = Path(argv[1]), Path(argv[2])
     try:
