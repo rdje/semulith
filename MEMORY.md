@@ -11,38 +11,38 @@
 
 ## Current state
 
-- **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
-  is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (4/10), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8 housekeeping).
-- **Frontier leaf:** `SOT-FORMAT.2` — the constructs already in use, declared as data.
-- **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression,
-  **composable and extensible to new constructs in the same format**. This **supersedes** the
-  per-file format split in `decision_canonical-definition-input` — composition is a merge, and
-  three formats are three merge semantics.
+- **Project:** semulith — trustworthy CPU/DSP software models in Rust; `ROADMAP.md` v0.3 is the
+  plan. No CPU code exists yet.
+- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (4/10), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8), `ROADMAP-V3` (1/3 — the v0.3 reachability package).
+- **Frontier leaf:** `ROADMAP-V3.2` — every lane names its consuming milestone.
+- **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
+- **Direction (delegated, 2026-09-27):** `ROADMAP-V3` adopted ("sota, signoff and
+  production-grade") — P1's start condition is `SOT-FORMAT.2` + `MODEL-METHOD.10`; the semantics
+  **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names
+  its consuming milestone (`decision_lane-consumption`).
 - **Materials:** 36 primary sources in `materials/catalog.sexp` (corpus pinned `3c45e81`). Cached
   in gitignored `.materials/` by `scripts/materials.py --fetch`; the corpus location comes from
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
   docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — different chapter numbering; read
-  `docs/knowledge/a-version-string-is-not-an-identity.md` before touching it.
-- **Next action:** `SOT-FORMAT.2` (the constructs already in `.sexp` declared as data in `schema/`;
-  the `52 of 52` verdict must reproduce byte-identically; kernel question for integer tuples like
-  `(pieces (12 12))` noted in the tree). ⛔ Records move only behind the schema layer, never before.
+  `docs/knowledge/a-version-string-is-not-an-identity.md` first.
+- **Next action:** `ROADMAP-V3.2` then `ROADMAP-V3.3` (ROADMAP v0.3 — P1 start condition; G1
+  sharpened to a compiled guest under first-divergence comparison); then `SOT-FORMAT.2` — the
+  constructs in `.sexp` declared as data in `schema/`; the `52 of 52` verdict must reproduce
+  byte-identically. ⛔ Records move only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-COMPOSE.3`
   (assumption/guarantee discharge — needs `SOT-FORMAT.5`'s record merge), `MODEL-BOOKS.1`.
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.
-- **Latest commit:** see `git log -1`.
-- **In-flight uncommitted work:** none.
+- **Latest commit:** see `git log -1`. **In-flight uncommitted work:** none.
 - ⛔ **Do not push.** Cadence is 300 commits — `scripts/check_push_cadence.sh --status` says where
-  we stand, because a count typed here is wrong the next commit. Below cadence a push is exceptional
-  and **only the director may approve it** — `decision_push-cadence`. The `pre-push` hook
-  refuses; `SEMULITH_PUSH_APPROVED` carries the director's reason and is never set on an
-  agent's own judgement.
-- **Blockers:** none — `SOT-FORMAT.9` unblocked `2026-09-26`: upstream shipped the LS-001 fix, the
-  pin moved to `a8d34c845`, our repro re-ran 8/0. ⛔ Never patch the submodule; adopt by moving the pin.
-- **LinkedSpec:** pinned `a8d34c845` (ships LS-001 fix `8259719f8`; RGX `8763a0e6` unchanged).
-  `.app-data/` holds cargo home + target. `compare_readers.py` is a three-reader sweep:
-  Lispish (carries the two CLASS families as the LS-guard) and SExprDocumentV1 via `sexpr_file`
-  (document layer — 6 of 6 files, zero class notes; the engine's read path).
+  we stand. Below cadence a push is exceptional and **only the director may approve it** —
+  `decision_push-cadence`. The pre-push hook refuses; `SEMULITH_PUSH_APPROVED` carries the
+  director's reason and is never set on an agent's own judgement.
+- **Blockers:** none — `SOT-FORMAT.9` unblocked `2026-09-26`: upstream shipped the LS-001 fix,
+  the pin moved to `a8d34c845`, our repro re-ran 8/0. ⛔ Never patch the submodule; adopt by
+  moving the pin.
+- **LinkedSpec:** pinned `a8d34c845` (LS-001 fix `8259719f8` shipped; RGX `8763a0e6` unchanged).
+  `compare_readers.py` sweeps every tracked `.sexp`: Lispish (carries the two CLASS families as
+  the LS-guard) and SExprDocumentV1 via `sexpr_file` (the engine's read path).

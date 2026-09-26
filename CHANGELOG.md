@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-RM-0057 (leaf ROADMAP-V3.1) — the semantics data is the execution authority
+
+Director-delegated decision (`2026-09-27`: "the decision is yours to make but it got to be sota,
+signoff and production-grade") resolving the open contradiction between `docs/ARCHITECTURE.md`
+§1.1 (semantics are data) and §2 (canonical Rust semantic functions): P1 executes the 32-form
+semantics data directly — a definitional interpreter, keeping exactly one owned implementation
+per rule (OWN-01); compiled or IR handlers enter only as generated, fingerprinted artifacts
+behind an observational-equivalence regression. The pattern is the one this project's own pinned
+Sail reference uses: the interpreter is the reference behaviour; compilation of the same
+semantics is a derived artifact that must agree with it. Revisit conditions named: a measured
+P2/P4 performance need, or the explicit semantic-IR migration decision. Record:
+`docs/decisions/decision_interpreter-before-compiler.md`; tree `ROADMAP-V3` registered (1/3).
+
 ## LS-002 → `verified` — the design question closes with a re-run, not a changelog
 
 Upstream confirmed the kind-strict grammar (`77d7b3db1`) and the native adapter (`df845ce61`)
