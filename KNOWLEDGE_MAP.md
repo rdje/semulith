@@ -61,6 +61,7 @@
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)
 - [`decision_interpreter-before-compiler.md`](docs/decisions/decision_interpreter-before-compiler.md)
+- [`decision_lane-consumption.md`](docs/decisions/decision_lane-consumption.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
 - [`decision_public-repository-no-confidential-content.md`](docs/decisions/decision_public-repository-no-confidential-content.md)

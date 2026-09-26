@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMILITH-RM-0058 (leaf ROADMAP-V3.2) — every lane names the milestone that consumes it
+
+The sequencing vacuum, measured rather than asserted: `27` commits since any milestone tree
+was last touched, and that touch was P0 closure. The roadmap's warning ("evidence tooling does
+not become an unrelated research product") becomes an operational rule: every cross-cutting
+tree's Metadata declares `Consumed by:` — milestone plus latest consumption point; lanes
+without a named consumer are descoped at the next roadmap revision; new lanes must name a
+consumer at proposal. First application covers all seven current lanes. The mechanical census
+gate is **proposed to the director, not registered** — new governance is announced before it is
+tasked. Record: `docs/decisions/decision_lane-consumption.md`; tree `ROADMAP-V3` at 2/3.
+
 ## SEMULITH-RM-0057 (leaf ROADMAP-V3.1) — the semantics data is the execution authority
 
 Director-delegated decision (`2026-09-27`: "the decision is yours to make but it got to be sota,

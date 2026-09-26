@@ -42,7 +42,7 @@ first book increment alongside).
   revisit conditions; INDEX row added; MEMORY-ARCH doctrine green.
 
 - ID: `ROADMAP-V3.2` — **every lane names the milestone that consumes it**
-  Status: `pending`
+  Status: `done`
   Goal: convert the roadmap's warning sentence ("evidence tooling … does not become an
   unrelated research product") into an operational rule with a first application over the
   current lanes.
@@ -65,8 +65,43 @@ first book increment alongside).
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ROADMAP-V3.2` | `pending` | the consumption rule is a stated precondition of the v0.3 text |
-| 2 | `ROADMAP-V3.3` | `pending` | the revision folds both records in |
+| 1 | `ROADMAP-V3.3` | `pending` | the revision folds both records in |
+
+## Acceptance Checklist (leaf ROADMAP-V3.2)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: the gap between the milestone chain and
+  the work executing on it, counted rather than asserted:
+
+  ```
+  $ git log --format='%H %s' -1 -- docs/tasks/P0-PROFILE.md docs/tasks/P1-LAB.md docs/tasks/P2-SCALAR.md docs/tasks/P3-BREADTH.md docs/tasks/P4-SYSTEM.md docs/tasks/P5-BOARD.md docs/tasks/P6-LINUX.md docs/tasks/P7-COMPUTER.md docs/tasks/AG-OS.md docs/tasks/MC-MULTICORE.md docs/tasks/DSP-REVIEW.md
+  74b081097ef0b3e04786f049006571d8cceed9a6 SEMULITH-P0-0031 (leaf P0-PROFILE.10): the profile was matched on its ISA and not its platform
+  $ git log --oneline 74b0810..HEAD | wc -l
+  27
+  ```
+
+  27 commits since any milestone tree was last touched — and that touch was P0 closure, not
+  P1 progress. WHY severe: an unexamined default ("finish the infrastructure first") was
+  spending the project's entire velocity on lanes the dependency graph never schedules against
+  the star.
+- [x] **ADDRESSED (verified)** — leg 2. `docs/decisions/decision_lane-consumption.md` states
+  the rule (Metadata declares `Consumed by:` + latest consumption point; no-consumer lanes are
+  descoped at the revision; new lanes name a consumer at proposal), applies it to all seven
+  current lanes in a table, and marks the mechanical census gate as director-pending rather
+  than registering it unilaterally. Existence and shape derived:
+
+  ```
+  $ grep -c '^  | ' docs/decisions/decision_lane-consumption.md
+  9
+  $ grep -n 'Mechanical arm' docs/decisions/decision_lane-consumption.md | head -1
+  9:- **Mechanical arm:** a census gate over tree Metadata is **proposed, not yet registered**;
+  ```
+- [x] **NO REGRESSION** — leg 3. No source file touched; `bash scripts/check_doctrines.sh`
+  reports `=== all doctrines green ===` at commit time; the schema and reader instruments
+  stay green (`16 pass / 0 fail`, `18 pass / 0 fail` — same runs as leaf `.1`).
+- [x] **FIX** — the decision record above; INDEX row added; `MEMORY.md` names the pending
+  census gate so the proposal is not lost.
+- [x] **LOCKSTEP** — `docs/decisions/INDEX.md`, this tree, `docs/TASK_TREE.md` count,
+  `MEMORY.md`, `CHANGELOG.md` — one commit.
 
 ## Decisions
 
@@ -126,12 +161,15 @@ first book increment alongside).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 | `2026-09-27` | `ROADMAP-V3.1` | `bash scripts/check_doctrines.sh` | all doctrines green (pre-staging) |
+| `2026-09-27` | `ROADMAP-V3.2` | `bash scripts/check_doctrines.sh` | `=== all doctrines green ===` at commit time |
+| `2026-09-27` | `ROADMAP-V3.2` | vacuum re-derived: `git log --oneline 74b0810..HEAD \| wc -l` | `27` commits since any milestone tree was touched |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `ROADMAP-V3.1` | `SEMULITH-RM-0057 (leaf ROADMAP-V3.1): the semantics data is the execution authority` | decision record + tree registered |
+| `ROADMAP-V3.2` | `SEMILITH-RM-0058 (leaf ROADMAP-V3.2): every lane names the milestone that consumes it` | decision record + INDEX row; census gate proposed to the director, not registered |
 
 ## Changelog
 
