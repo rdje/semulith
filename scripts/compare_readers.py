@@ -1,25 +1,27 @@
 #!/usr/bin/env python3
-"""Do this project's two S-expression readers agree on every tracked `.sexp` file?
+"""Do this project's S-expression readers agree on every tracked `.sexp` file?
 
 Two readers of one format that disagree is the defect `SOT-FORMAT` exists to prevent, and it is a
 defect that hides: each reader is self-consistent, each passes its own tests, and the disagreement
 only ever shows up as a model that behaves differently depending on which tool built it.
 
   A  scripts/sexp.py                  the Python tooling's reader — strict, refuses on malformed input
-  B  LinkedSpec `specs/Lispish.spec`  the published Rust route, via examples/.../lispish_file
+  B  LinkedSpec `specs/Lispish.spec`  the historical extraction route, via examples/.../lispish_file
+  C  LinkedSpec `specs/SExprDocumentV1.spec`  the document grammar, via examples/.../sexpr_file
 
 ⛔ THEY DO NOT AGREE BY CONSTRUCTION, and this tool exists to say exactly where. The published
 integration guide is explicit that Lispish "extracts the first parenthesized form. It can skip
 malformed or extra text. A successful value does not establish that the complete file is valid",
 and that applications "requiring strict document validation or multiple top-level forms need an
-explicit grammar/contract for those requirements."
+explicit grammar/contract for those requirements." The document grammar IS that contract, and the
+comparison runs it as a separate layer.
 
-So the comparison is deliberately in two layers, because collapsing them would hide the real
-finding behind a pile of expected ones:
+So the comparison is deliberately layered, because collapsing it would hide the real finding
+behind a pile of expected ones:
 
   STRUCTURE  the tree shape and the atoms, after applying the SAME numeric interpretation to both.
              This is the layer that must be identical, and a difference here is a genuine defect.
-  CLASS      differences that follow from what each reader is FOR, enumerated rather than counted.
+  CLASS (B only)  differences that follow from what reader B is FOR, enumerated rather than counted.
              Lispish returns atoms as text and discards the symbol/quoted-string distinction, so
              `0x0` and `(name rd)` reach it as strings. Applying sexp.py's own `_atom` to Lispish's
              text is what makes the two comparable without pretending the difference is absent.
@@ -40,10 +42,14 @@ finding behind a pile of expected ones:
                               sexp.py's OWN escape table reproduces A exactly; anything that does
                               not decode (or decodes differently) stays a REAL difference, loud.
 
-             The durable answer to both families is upstream's SExprDocumentV1 document grammar
-             (tagged token kinds, lexemes, no number conversion or escape decoding) — the guide
-             steers document consumers to it. Adopting it for this harness is a future SOT-FORMAT
-             leaf; until then the enumeration above is what keeps "agree" meaning "same structure".
+  DOCUMENT (C)  reader C keeps token kinds and RAW lexemes — no number conversion, no escape
+             decoding, every form in the file. Both CLASS families die by construction: a quoted
+             number arrives tagged `string`, so the quote-kind is never lost; a string's escapes
+             are decoded on OUR side with sexp.py's own table, so interpretation is anchored to
+             the canonical reader. This layer compares EVERY top-level form (B compares the
+             first, per its contract) and has no CLASS layer: lexeme-level equality is exact or
+             it is a defect. It is also the read path the engine will adopt, so a green sweep
+             here is evidence for that decision, not just hygiene.
 """
 
 from __future__ import annotations
@@ -63,6 +69,8 @@ BIN = REPO / ".app-data/target/debug/lispish_file"
 # pinned submodule. A grammar edit inside vendor/ would make the submodule dirty, and a dirty
 # submodule is how a pin quietly becomes a fork.
 GRAMMAR = Path(os.environ.get("LISPISH_GRAMMAR", REPO / "vendor/linkedspec/specs/Lispish.spec"))
+BIN_C = REPO / ".app-data/target/debug/sexpr_file"
+GRAMMAR_C = REPO / "vendor/linkedspec/specs/SExprDocumentV1.spec"
 
 
 class CompareError(Exception):
@@ -114,6 +122,59 @@ def read_b(path: Path) -> object:
     if not out:
         raise CompareError(f"{path.relative_to(REPO)}: the LinkedSpec reader returned no value")
     return json.loads(out)
+
+
+def read_c(path: Path) -> object:
+    """The document grammar's value for one file: every top-level form, tagged and raw."""
+    if not BIN_C.exists():
+        raise CompareError(
+            f"the document consumer is not built at {BIN_C.relative_to(REPO)}. Build it as the "
+            f"integration guide prescribes — vendor/linkedspec/docs/linkedspec-book/src/"
+            f"public-api/integration-rust.md — then re-run. An unbuilt reader is not an agreeing "
+            f"reader.")
+    if not GRAMMAR_C.exists():
+        raise CompareError(f"the document grammar is missing at {GRAMMAR_C.relative_to(REPO)}; "
+                           f"is the submodule initialised?")
+    r = subprocess.run([str(BIN_C), "--grammar", str(GRAMMAR_C), str(path)],
+                       capture_output=True, text=True, timeout=120)
+    if r.returncode != 0:
+        raise CompareError(f"{path.relative_to(REPO)}: the document reader exited "
+                           f"{r.returncode}: {r.stderr.strip()[:200]}")
+    line = r.stdout.strip()
+    if not line:
+        raise CompareError(f"{path.relative_to(REPO)}: the document reader returned no value")
+    obj = json.loads(line)
+    if obj.get("format") != "linkedspec-sexpr-v1" or "forms" not in obj:
+        raise CompareError(f"{path.relative_to(REPO)}: not a document-grammar value: {line[:120]}")
+    return obj["forms"]
+
+
+def normalise_c(node) -> object:
+    """The document grammar's tagged node -> sexp.py's value, using ONLY sexp.py's own tables.
+
+    Kinds and raw lexemes do the work: a quoted number arrives tagged `string` and stays one
+    (the quoted-numeric family cannot arise); a string's escapes are decoded here with
+    sexp.py's `_ESCAPES`, not by the reader (escape-retention cannot arise); number/symbol
+    lexemes pass through `_atom` exactly as sexp.py types the same bare text.
+    """
+    if not isinstance(node, dict) or "kind" not in node:
+        raise CompareError(f"unexpected document node {node!r}")
+    kind = node["kind"]
+    if kind == "list":
+        return [normalise_c(i) for i in node.get("items", [])]
+    lexeme = node.get("lexeme")
+    if not isinstance(lexeme, str):
+        raise CompareError(f"a {kind} token without a string lexeme: {node!r}")
+    if kind == "string":
+        if len(lexeme) < 2 or not lexeme.startswith('"') or not lexeme.endswith('"'):
+            raise CompareError(f"a string lexeme must keep its quotes: {lexeme!r}")
+        try:
+            return _decode_escapes(lexeme[1:-1])
+        except ValueError as exc:
+            raise CompareError(f"a string lexeme sexp.py itself would refuse: {exc}") from exc
+    if kind in ("number", "symbol"):
+        return _sexp._atom(lexeme, 0)
+    raise CompareError(f"unknown token kind {kind!r}")
 
 
 def first_difference(a, b, path: str = "") -> str | None:
@@ -187,11 +248,16 @@ def compare(paths: list[Path]) -> int:
     bad = 0
     for p in paths:
         try:
-            a = normalise_a(_sexp.read_file(p)[0])
+            a_forms = _sexp.read_file(p)
+            a = normalise_a(a_forms[0])                # layer B: the first form, per Lispish
             b = normalise_b(read_b(p))
+            a_all = [normalise_a(f) for f in a_forms]  # layer C: every form, tagged lexemes
+            c = [normalise_c(f) for f in read_c(p)]
         except (CompareError, _sexp.SexpError) as exc:
             print(f"  REFUSED {p.relative_to(REPO)}: {exc}", file=sys.stderr); bad += 1; continue
         n = sum(1 for _ in _walk(a))
+        n_all = sum(1 for _ in _walk(a_all))
+        ok = True
         diffs = list(differences(a, b))
         structural = [d for d in diffs if d[1] == "shape"]
         classes, real = [], []
@@ -202,10 +268,19 @@ def compare(paths: list[Path]) -> int:
             (classes if label else real).append((d, label))
         if structural or real:
             d = first_difference(a, b)
-            print(f"  DIFFER  {p.relative_to(REPO)}  ({n} nodes)\n            {d}", file=sys.stderr)
+            print(f"  DIFFER  {p.relative_to(REPO)}  ({n} nodes, lispish)\n            {d}",
+                  file=sys.stderr)
+            ok = False
+        c_diff = first_difference(a_all, c)
+        if c_diff:
+            print(f"  DIFFER  {p.relative_to(REPO)}  ({n_all} nodes, document)\n"
+                  f"            {c_diff}", file=sys.stderr)
+            ok = False
+        if not ok:
             bad += 1
         else:
-            print(f"  agree   {str(p.relative_to(REPO)):44} {n:>6} nodes identical")
+            print(f"  agree   {str(p.relative_to(REPO)):44} {n:>6} nodes identical "
+                  f"[lispish]; {n_all} nodes, {len(a_all)} form(s) [document]")
             for d, label in classes:
                 print(f"  class   {p.relative_to(REPO)} {d[0]}: A={d[2]!r} B={d[3]!r} — {label}")
     print(f"\ncompare_readers: {len(paths) - bad} of {len(paths)} file(s) agree")
@@ -265,6 +340,46 @@ def _selftest() -> int:
         d = first_difference(a, b)
         assert d is not None, f"no difference reported between {a!r} and {b!r}"
         assert needle in d, f"difference reported for the wrong reason: {d}"
+    def agrees(a, b):
+        assert first_difference(a, b) is None, f"{a!r} != {b!r}"
+    def refuses_c(node, needle):
+        try:
+            normalise_c(node)
+        except CompareError as exc:
+            assert needle in str(exc), f"refused for the wrong reason: {exc}"
+        else:
+            raise AssertionError(f"no refusal for {node!r}")
+
+    arm("GREEN document layer: a quoted number stays a string — the LS-002 class cannot arise",
+        lambda: agrees(normalise_a(['tag', '20260911']),
+                       normalise_c({'kind': 'list', 'items': [
+                           {'kind': 'symbol', 'lexeme': 'tag'},
+                           {'kind': 'string', 'lexeme': '"20260911"'}]})))
+    arm("GREEN document layer: escapes decode with sexp.py's own table",
+        lambda: eq(normalise_c({'kind': 'string', 'lexeme': '"a\\"q"'}), 'a"q'))
+    arm("GREEN document layer: number and symbol lexemes type through sexp.py's _atom",
+        lambda: (eq(normalise_c({'kind': 'number', 'lexeme': '0x10'}), 16),
+                 eq(normalise_c({'kind': 'symbol', 'lexeme': '0b1010'}), 10)))
+    arm("RED   document layer: differing lexemes refuse — no interpretive escape hatch",
+        lambda: diff(normalise_a(['tag', '20260911']),
+                     normalise_c({'kind': 'list', 'items': [
+                         {'kind': 'symbol', 'lexeme': 'tag'},
+                         {'kind': 'string', 'lexeme': '"20260912"'}]}),
+                     "A='20260911'"))
+    arm("RED   document layer: a lexeme sexp.py would refuse is refused, not guessed",
+        lambda: refuses_c({'kind': 'string', 'lexeme': '"a\\qb"'}, "would refuse"))
+    arm("GREEN document layer: EVERY form is compared, not the first",
+        lambda: agrees([normalise_a(f) for f in _sexp.parse('(v 1 "1") (done)')],
+                       [normalise_c(f) for f in [
+                           {'kind': 'list', 'items': [
+                               {'kind': 'symbol', 'lexeme': 'v'},
+                               {'kind': 'number', 'lexeme': '1'},
+                               {'kind': 'string', 'lexeme': '"1"'}]},
+                           {'kind': 'list', 'items': [
+                               {'kind': 'symbol', 'lexeme': 'done'}]}]]))
+    arm("RED   an unbuilt document consumer refuses instead of reporting agreement", lambda: (
+        lambda saved: (_try_read_c_missing(),
+                       globals().__setitem__("BIN_C", saved))[0])(BIN_C))
 
     arm("GREEN identical trees report no difference",
         lambda: eq(first_difference(["a", ["b", 1]], ["a", ["b", 1]]), None))
@@ -332,6 +447,17 @@ def _try_read_b_missing():
         assert "not built" in str(exc), f"refused for the wrong reason: {exc}"
     else:
         raise AssertionError("an unbuilt consumer was not refused")
+
+
+def _try_read_c_missing():
+    global BIN_C
+    BIN_C = REPO / ".app-data/target/debug/does-not-exist"
+    try:
+        read_c(REPO / "profiles/rv64i-lab-v0/encoding.sexp")
+    except CompareError as exc:
+        assert "not built" in str(exc), f"refused for the wrong reason: {exc}"
+    else:
+        raise AssertionError("an unbuilt document consumer was not refused")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-SF-0056 (leaf SOT-FORMAT.10) — the document grammar joins the agreement sweep
+
+Director decision on the recorded candidate: adopt SExprDocumentV1 **additively** — a third
+reader in `compare_readers.py`, never a replacement. The Lispish layer stays as what it is (the
+LS-001/LS-002 regression guard, CLASS notes and all); the new document layer answers both CLASS
+families by construction — tagged kinds keep `"20260911"` a `string` (quoted-numeric cannot
+arise), raw lexemes decoded on OUR side with sexp.py's own escape table (escape-retention
+cannot arise) — and it compares **every** form in every file, not the first. 28 self-test arms
+(7 new), and the falsifiable acceptance was exceeded: **6 of 6** tracked files agree in the
+document layer with ZERO class notes, because `schema/schema.sexp` itself joined the corpus and
+passes both layers — the schema language's fixpoint now also verifies through the document
+grammar. Upstream's instruction for LS-002 verification ("use `sexpr_file` with
+`SExprDocumentV1.spec`; the lispish_file adapter is insufficient") describes exactly this
+layer — which is what the next commit uses to close LS-002.
+
 ## SEMULITH-UT-0055 (leaf UPSTREAM-TRACK.4) — the reply travels in the same envelope
 
 Director instruction `2026-09-26`: the verification acknowledgment to LinkedSpec is a

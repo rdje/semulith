@@ -64,6 +64,35 @@ too, and under the split there is no rule by which it could.
 
 ## Task Tree
 
+- ID: `SOT-FORMAT.10` — **the document grammar joins the agreement sweep**
+  Status: `active`
+  ⭐ Director instruction, `2026-09-26`: adopt SExprDocumentV1 now — the durable answer to
+  both CLASS families — as the judgment call on the recorded candidate.
+  Goal: extend `scripts/compare_readers.py` with a third reader — LinkedSpec's
+  `SExprDocumentV1.spec` document grammar and its `sexpr_file` consumer — comparing every
+  tracked `.sexp` file form-by-form against `sexp.py`, keeping the Lispish comparison as the
+  historical layer it is (the LS-001/LS-002 regression guard, CLASS notes and all). The
+  document grammar returns tagged tokens (`symbol`/`number`/`string`) with raw lexemes: the
+  quoted-numeric family dies because a quoted number arrives tagged `string` — the quote-kind
+  LS-002 discards is preserved by construction; the escape-retention family dies because the
+  lexeme is decoded on OUR side with sexp.py's own escape table — interpretation moves to the
+  canonical reader, anchored, not guessed. It also reads every form in a file, not the first.
+  Design decisions, recorded before code: additive, never a replacement (two layers, two
+  questions — the extraction contract vs the canonical read path); the C-side normalisation
+  may only use sexp.py's own tables (`_ESCAPES`, `_atom`), so it cannot invent agreement; the
+  falsifiable acceptance is that the document layer shows 5 of 5 with ZERO class notes on the
+  real corpus — the families classified, not counted, today must simply not arise there.
+  ⭐ Result exceeded the acceptance: **6 of 6**, because `schema/schema.sexp` itself joined the
+  tracked corpus this session — and it passes both layers, so the schema language's fixpoint now
+  also verifies through the document grammar.
+  Acceptance: `compare_readers.py` gains the document layer over every tracked file (all
+  forms per file), ≥ 4 new self-test arms (lexeme decoding anchored to sexp.py's table; kind
+  tags prevent quoted-numeric; differing lexemes still refuse; the Lispish layer's verdict and
+  class notes are unchanged); corpus run shows the document layer at 5 of 5 with no class
+  notes; `make check`-equivalent Python self-tests green; enforcer green.
+  Verification: `2026-09-26` — 28 pass / 0 fail (21 → 28 arms); corpus sweep below.
+  Commit: `SEMULITH-SF-0056`
+
 - ID: `SOT-FORMAT.1` — **the schema language, written in itself**
   Status: `done`
   Goal: declare what a construct is — its head, its fields, their arity and value types, whether
@@ -401,10 +430,62 @@ did the same. Revisit when the engine crate adopts the reader.
   (partitioned, same shape as `definitions/`); `TOOLBOX.md` gains the row; this tree updated in
   the same commit.
 
+## Acceptance Checklist (leaf SOT-FORMAT.10)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: `scripts/compare_readers.py` compared two
+  readers while the format carried three contracts; the Lispish route's extraction semantics
+  made the two CLASS families unavoidable, so the sweep carried a classification layer instead
+  of the fix — measured, four classified atoms on the catalogue alone:
+
+  ```
+  $ python3 scripts/compare_readers.py 2>/dev/null | grep -c '^  class'
+  4
+  ```
+
+- [x] **ADDRESSED (verified)** — leg 2. Reader C (`sexpr_file` over `SExprDocumentV1.spec`)
+  joined the sweep additively; its normalisation uses ONLY sexp.py's own tables (`_ESCAPES`,
+  `_atom`):
+
+  ```
+  $ python3 scripts/compare_readers.py --self-test
+  compare_readers --self-test: 28 pass / 0 fail        (21 -> 28; 7 document-layer arms)
+  $ python3 scripts/compare_readers.py
+    agree   definitions/riscv/m.sexp             438 nodes identical [lispish]; 439 nodes, 1 form(s) [document]
+    agree   definitions/riscv/rv64i.sem.sexp    1550 nodes identical [lispish]; 1551 nodes, 1 form(s) [document]
+    agree   definitions/riscv/rv64i.sexp        1716 nodes identical [lispish]; 1717 nodes, 1 form(s) [document]
+    agree   materials/catalog.sexp              1792 nodes identical [lispish]; 1793 nodes, 1 form(s) [document]
+    agree   profiles/rv64i-lab-v0/encoding.sexp   18 nodes identical [lispish];   19 nodes, 1 form(s) [document]
+    agree   schema/schema.sexp                     5 nodes identical [lispish];  158 nodes, 4 form(s) [document]
+    compare_readers: 6 of 6 file(s) agree
+  ```
+
+  The document layer shows ZERO class notes — the four atoms the Lispish layer classifies
+  (quoted-numeric, escape-retention) simply agree there, by construction; every form in every
+  file is compared (43 forms in the catalogue, 4 in the new schema.sexp — the fixpoint file now
+  verifies through the document grammar too); and the sweep grew to 6 files because schema.sexp
+  itself joined the tracked corpus this session. The +1 node counts are the document layer
+  counting the root form itself — cosmetic, consistent, and not a difference.
+
+- [x] **NO REGRESSION** — leg 3. The Lispish layer is untouched — same four CLASS notes, same
+  verdicts, and the surrounding guards unmoved:
+
+  ```
+  $ python3 scripts/compare_readers.py 2>/dev/null | grep -c '^  class'
+  4
+  $ python3 scripts/sexp.py --self-test | tail -1
+  sexp --self-test: 18 pass / 0 fail
+  ```
+
+- [x] **LOCKSTEP** — `TOOLBOX.md`'s row updated to the three-reader sweep; this tree and
+  `MEMORY.md` in the same commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `SOT-FORMAT.10` | consumer probe of the document grammar on a synthetic file | tagged kinds + raw lexemes confirmed (`"20260911"` → kind string; escapes verbatim; `0x10` → number) |
+| `2026-09-26` | `SOT-FORMAT.10` | `--self-test` | `28 pass / 0 fail` |
+| `2026-09-26` | `SOT-FORMAT.10` | corpus sweep, both layers | **6 of 6 agree**; document layer zero class notes; Lispish layer unchanged (same four CLASS notes); schema.sexp itself passes both layers |
 | `2026-09-26` | `SOT-FORMAT.1` | corpus grammar read before design (m.sexp, rv64i.sexp, rv64i.sem.sexp, encoding.sexp) | two form shapes + markers; first uniform-pair design refuted by the real files and redesigned before it shipped |
 | `2026-09-26` | `SOT-FORMAT.1` | `--self-test` | `16 pass / 0 fail` (13 RED, 3 GREEN) |
 | `2026-09-26` | `SOT-FORMAT.1` | the fixpoint standalone | `schema/schema.sexp conforms to schema.sexp` |
