@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-SF-0054 (leaf SOT-FORMAT.1) — the schema language, written in itself
+
+The gap was "it parses": an S-expression reader accepts anything syntactically, so a mistyped
+head or field was invisible. `schema/schema.sexp` now declares the language in itself —
+`(construct (name …) (field …)…)`, atom fields, form fields in the corpus's two house shapes
+(`(source (file …) …)` whole-list and `(effect (set …))` value-held), `(empty yes)` markers
+for the corpus's `(requires)`/`(extensions)` idiom, `(values …)` spellings, sibling repetition —
+and `scripts/check_sexp_schema.py` (16 arms, 13 RED, each naming its construct, field and
+reason) validates any file against any schema. The fixpoint is the proof, not a slogan:
+`schema.sexp` conforms to `schema.sexp`.
+
+⭐ The first design assumed a tidy uniform `(name value)` pair grammar — and the real corpus
+refuted it before it shipped. Reading `rv64i.sexp`/`rv64i.sem.sexp` first is what made the
+language fit the files `.2` must declare; an invented grammar would have met the corpus as an
+argument. `schema/` is registered in `doctrine/readme_routes.tsv` in its creating commit, and
+`TOOLBOX.md` gains the row.
+
 ## SEMULITH-SF-0053 (leaf SOT-FORMAT.8) — the contract names its format at last
 
 The mdBook chapter *"Architecture and canonical definitions"* includes `docs/ARCHITECTURE.md`

@@ -13,8 +13,8 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (2/3), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (3/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8 housekeeping).
-- **Frontier leaf:** `SOT-FORMAT.1` — the schema language, written in itself.
+- **Active trees:** `UPSTREAM-TRACK` (2/3), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (4/9), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8 housekeeping).
+- **Frontier leaf:** `SOT-FORMAT.2` — the constructs already in use, declared as data.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression,
   **composable and extensible to new constructs in the same format**. This **supersedes** the
   per-file format split in `decision_canonical-definition-input` — composition is a merge, and
@@ -25,10 +25,12 @@
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
   docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — different chapter numbering; read
   `docs/knowledge/a-version-string-is-not-an-identity.md` before touching it.
-- **Next action:** `SOT-FORMAT.1` (the schema language written in itself — `schema/schema.sexp`
-  validating under itself, ≥6 RED arms, `schema/` registered in the same commit), then `.2`.
-  ⛔ Order matters: the schema language lands **before** any record is converted, or the migration
-  spends a window with `RECORD-SCHEMA`'s 15 fired arms replaced by "it parses".
+- **Next action:** `SOT-FORMAT.2` (the constructs already in `.sexp` — encoding, fragment,
+  semantics — declared as data in `schema/`; `check_semantics.py`'s 32 forms move out of Python;
+  the `52 of 52` verdict must reproduce byte-identically). ⚠️ One kernel question `.2` must answer
+  first: integer-headed data tuples like `(pieces (12 12))` need a declared shape the four atom
+  types don't cover — expect one small kernel extension, owned and armed in `.2` itself.
+  ⛔ Then `.3`/`.4` (records and configuration move) — only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-COMPOSE.3`

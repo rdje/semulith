@@ -65,16 +65,35 @@ too, and under the split there is no rule by which it could.
 ## Task Tree
 
 - ID: `SOT-FORMAT.1` — **the schema language, written in itself**
-  Status: `pending`
+  Status: `done`
   Goal: declare what a construct is — its head, its fields, their arity and value types, whether
   they repeat — as S-expressions in `schema/`. Write the schema language's own schema in the schema
   language and validate it with itself: the fixpoint is what *proves* extensibility rather than
   asserting it.
+  Design (recorded before code, `2026-09-26`): a schema file is one `(schema (id STRING))` of
+  metadata plus one `(construct (name SYMBOL) (field …)…)` per construct. A field instance is a
+  child list headed by its field's name; atom fields take exactly one value `(name value)` or the
+  bare marker `(name)` when declared `(empty yes)` — the corpus writes `(requires)` that way; form
+  fields take the nested form, whole-list when the field name is one of the allowed heads
+  (`(source (file …) …)`), single-value otherwise (`(effect (set …))`); `(values SYM)` restricts a
+  symbol's spelling; `(repeat yes)` means sibling child lists, 0-or-more; `(optional yes)` is the
+  0-or-1 single-field variant. `scripts/check_sexp_schema.py <file> <schema>` validates and names
+  the offending construct/field. The validator's fixed kernel is the *interpreter* of
+  construct/field declarations — the named boundary from the acceptance criteria: new constructs
+  are data; a new KIND of declaration changes the kernel. The fixpoint runs the kernel with
+  `schema/schema.sexp` as both schema and target.
+  ⭐ The first design assumed a tidy uniform `(name value)` pair grammar; reading the real corpus
+  before building (rv64i.sexp's `(source (file …) (file …) (origin …))`, rv64i.sem.sexp's
+  `(effect (set …))`, `(requires)` markers) refused it. The language in schema.sexp is the corpus's
+  grammar, not an invented one — `.2` will exercise it against encoding/fragment/semantics.
   Acceptance: `scripts/check_sexp_schema.py` validates a file against a schema and names the
   offending construct/field on failure; `schema/schema.sexp` validates under itself; ≥ 6 arms fired
   RED (undeclared construct, undeclared field, missing required field, wrong arity, wrong value
   type, duplicated single-valued field); `schema/` registered in `doctrine/readme_routes.tsv` **in
   the same commit that creates it**.
+  Verification: `2026-09-26` — 16 pass / 0 fail (13 RED, 3 GREEN incl. the fixpoint); the
+  standalone fixpoint run `schema.sexp` against itself conforms.
+  Commit: `SEMULITH-SF-0054`
 
 - ID: `SOT-FORMAT.2` — **the constructs already in use, declared as data**
   Status: `pending`
@@ -193,12 +212,11 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.1` | `pending` | the schema language must exist **before** any record moves, or the migration spends a window with real validation replaced by "it parses" |
-| 2 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
-| 3 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
-| 4 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
-| 5 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
-| 6 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
+| 1 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
+| 2 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
+| 3 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
+| 4 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
+| 5 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
 
 ## Decisions
 
@@ -351,10 +369,45 @@ reads), because the semulith root manifest is a virtual workspace with no packag
 `src/bin/`. The guide itself documents the example as runnable; the previous pin's verified build
 did the same. Revisit when the engine crate adopts the reader.
 
+## Acceptance Checklist (leaf SOT-FORMAT.1)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: "it parses" was the only gate an S-expression
+  file faced — the reader accepts a mistyped head silently, exit 0:
+
+  ```
+  $ printf '(sourcs (id "u") (width 32))' > target/doctrine_scratch/sourcs.sexp
+  $ python3 scripts/sexp.py target/doctrine_scratch/sourcs.sexp
+  ok: 1 top-level form(s); heads: sourcs          (rc=0 — nothing refused the typo)
+  ```
+
+- [x] **ADDRESSED (verified)** — leg 2. `schema/schema.sexp` is the language in itself;
+  `scripts/check_sexp_schema.py` validates any file against any schema and refuses by name:
+
+  ```
+  $ python3 scripts/check_sexp_schema.py schema/schema.sexp schema/schema.sexp
+  check_sexp_schema: ok — schema/schema.sexp conforms to schema.sexp
+  $ python3 scripts/check_sexp_schema.py --self-test
+  check_sexp_schema --self-test: 16 pass / 0 fail
+  ```
+
+  The 13 RED arms name their reason: undeclared construct, undeclared field, missing required
+  field, three wrong-arity shapes, two wrong-value-type shapes, duplicated single-valued field,
+  values restriction, wrong form head, recursive-nesting violation, two meta-level schema abuses.
+
+- [x] **NO REGRESSION** — leg 3. The schema layer is additive; no consumer changed. The enforcer
+  after staging: `bash scripts/check_doctrines.sh → === all doctrines green ===`.
+
+- [x] **LOCKSTEP** — `schema/` registered in `doctrine/readme_routes.tsv` in the creating commit
+  (partitioned, same shape as `definitions/`); `TOOLBOX.md` gains the row; this tree updated in
+  the same commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `SOT-FORMAT.1` | corpus grammar read before design (m.sexp, rv64i.sexp, rv64i.sem.sexp, encoding.sexp) | two form shapes + markers; first uniform-pair design refuted by the real files and redesigned before it shipped |
+| `2026-09-26` | `SOT-FORMAT.1` | `--self-test` | `16 pass / 0 fail` (13 RED, 3 GREEN) |
+| `2026-09-26` | `SOT-FORMAT.1` | the fixpoint standalone | `schema/schema.sexp conforms to schema.sexp` |
 | `2026-09-26` | `SOT-FORMAT.8` | drift probe: `grep -c 'S-expression' docs/ARCHITECTURE.md` | `0` — the chapter named no format, no `definitions/`, no composition |
 | `2026-09-26` | `SOT-FORMAT.8` | after the §1.1–§1.3 addition, same probe | `4` — format, fragment, composition operator, schema layer all present in prose |
 | `2026-09-26` | `SOT-FORMAT.8` | `make book` | built; the chapter includes the source verbatim, so the preface needed no edit |
@@ -392,6 +445,7 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.1` | `SEMULITH-SF-0054 (leaf SOT-FORMAT.1): …` | the schema language in itself; 16 arms; fixpoint green; schema/ registered in the creating commit |
 | `SOT-FORMAT.8` | `SEMULITH-SF-0053 (leaf SOT-FORMAT.8): …` | ARCHITECTURE.md gains §1.1–§1.3; the director's window shows the format now |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0051 (leaf SOT-FORMAT.9): …` | pin advanced to `a8d34c845`; 5 of 5 agree; comparator enumerates 2 documented CLASS families; LS-001 verified |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0047 (leaf SOT-FORMAT.9): two readers, one format, and a defect worth reporting` | **progress on a blocked leaf**, not a completion: 4 of 5 files agree |

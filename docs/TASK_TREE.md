@@ -64,7 +64,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `active` | `.3` — assumption/guarantee discharge (2 of 6 leaves done) | repo-local |
 | [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` | `.10` — the extraction contract (6 of 13 leaves done) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
-| [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `active` | `.1` — the schema language, written in itself (3 of 9 leaves done) | repo-local |
+| [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `active` | `.2` — the constructs already in use, declared as data (4 of 9 leaves done) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `active` | `.3` — age and exposure, derived (2 of 3 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |
