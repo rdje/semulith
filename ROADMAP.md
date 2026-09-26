@@ -1,9 +1,11 @@
-# CPU/DSP Modeling Roadmap v0.2
+# CPU/DSP Modeling Roadmap v0.3
 
-Date: 2026-09-13  
+Date: 2026-09-27  
 Working name: **Semulith**  
 Status: reviewed design proposal; no CPU implementation or conformance result is claimed.  
-Supersedes: roadmap v0.1 as the current plan; preserves v0.1 as historical material.
+Supersedes: roadmap v0.2 as the current plan. v0.2 (delivered 2026-09-13 in the planning
+package) remains byte-exact in `docs/provenance/planning-package-v0.2/MANIFEST.sha256` and in
+git history; v0.1's disposition is recorded in the same package's DELIVERY.md.
 
 ## 1. Direction and decisions
 
@@ -13,19 +15,21 @@ Supersedes: roadmap v0.1 as the current plan; preserves v0.1 as historical mater
 
 Every model carries a **dual mandate** added `2026-09-14`: it must be signoff, production-grade work **and** serve as educational material from which a student can learn to build production-grade CPU/DSP models capable of running real compiled code (C, Rust, …). These are one artifact with two mandates — the per-model mdBook is the teaching text, the profile and its evidence are the production artifact it teaches from. See [`docs/decisions/decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md); it also records what "runs real code" demands of a materials list that the ISA chapters do not own.
 
+**Cross-cutting lanes carry a named consumer (added `2026-09-27`, `decision_lane-consumption`).** Every non-milestone task tree declares the milestone its work is consumed by and the point by which it must be consumed; a lane without a named consumer at a revision is descoped or closed there. This is the operational form of the rule already stated below — evidence tooling supports the milestones; it does not become an unrelated research product.
+
 Semulith also has a concrete system-modeling consumer: **archogen**, the user's project that generates specific-purpose operating systems from its eADL source of truth. Semulith will execute and help validate those OSes against explicit platform contracts. Linux remains a general-purpose integration workload and the software-computer north star; an archogen OS can be an earlier, smaller system workload.
 
 The first deliverable is the processor: an executable definition, a reference interpreter, and reproducible evidence for a precise supported profile. Board implementation follows validation of the processor profile it will use. A controlled memory/event harness is part of processor testing, not a premature board implementation.
 
 Processor breadth and the software computer are successive deliverables. Evidence tooling supports both; it does not become an unrelated research product. Exact physical timing, every architecture, and a graphical desktop are not prerequisites for the first CPU release.
 
-| Decision | v0.2 choice | Revisit condition |
+| Decision | v0.3 choice | Revisit condition |
 |---|---|---|
 | First CPU | Small **RV64I** profile in a specified laboratory execution environment | Align width/features with archogen's named first target at P0 if that makes another choice more useful |
 | RV32 detour | Not required; validate scalar machinery directly at 64 bits | A real RV32 deliverable is requested |
 | Semantic authority | One versioned canonical executable definition per processor, with source provenance | Representation may evolve; authority must remain singular |
-| Initial representation | Structured encoding/state/profile data plus typed Rust semantic functions | Add a semantic IR/importer when exercised targets demonstrate a benefit |
-| Initial backend | Readable Rust interpreter with efficient target-specific state | Optimize only with equivalent evidence and measured need |
+| Execution authority | The semantics data executes directly: P1's definitional interpreter evaluates the declared semantic forms; compiled handlers enter only as generated, fingerprinted artifacts behind an observational-equivalence regression | A measured P2/P4 performance need, or the explicit semantic-IR migration decision (`decision_interpreter-before-compiler`) |
+| Initial backend | Readable definitional interpreter over the semantics data | Optimize only with equivalent evidence and measured need |
 | DSP strategy | Real-spec interface review, synthetic stress cases, then a bounded real DSP slice | Oracle/evidence availability determines the real target; no automatic postponement until Linux |
 | Reference strategy | Configured Sail and Spike candidates; ACT4 external tests; provenance recorded per subsystem | Actual smoke tests or coverage reveal unsuitable references |
 | Production numeric code | Rust; external C/C++ tools may be development-time references | An explicit architecture decision is required for production FFI |
@@ -36,20 +40,25 @@ Processor breadth and the software computer are successive deliverables. Evidenc
 
 These choices make the first task actionable while leaving specification-dependent parameters to P0. Selecting RV64I is not a claim that the laboratory already constitutes a fully specified privileged processor.
 
-## 2. What changed after review
+## 2. What changed in v0.3
 
-- Split short normative rules from explanation and detailed contracts.
-- Added one canonical executable authority per processor and a generated-artifact ownership map.
-- Made requirement, implementation, test, dependency, and evidence links machine-readable from P1.
-- Defined repeatable gates, conservative change-impact selection, full release validation, and evidence invalidation.
-- Specified CPU/environment assumptions and guarantees as a separate versioned contract.
-- Required actual reference smoke tests and an independence inventory before committing to a target's validation claims.
-- Added early performance constraints, explicit numeric-backend selection criteria, and a separate multicore path.
-- Retained DSP architectural pressure early, without making a large unverified DSP implementation mandatory.
-- Corrected the review's conflation of finite differential testing with proof and of multiple tools with independent semantic references.
-- Added a risk register, glossary, schema starters, initial task cards, and a disposition for M1–M19.
+v0.3 closes the gap between the milestone chain and the work executing on it — measured at
+adoption: 27 commits since any milestone tree had been touched, and that touch was P0 closure.
 
-The complete information catalog remains 24 categories. This revision reorganizes and operationalizes it rather than discarding its scope.
+- **P1 gains a start condition** (§6): the schema layer declares the constructs the engine
+  reads (`SOT-FORMAT.2`) and the extraction contract answers sufficiency (`MODEL-METHOD.10`).
+  The remaining format-migration leaves are consumed by later milestones, not by P1's start.
+- **The execution-authority contradiction is resolved** (§1 table): semantics are data and the
+  data executes — interpreter first, compilation only as a derived, equivalence-regressed
+  artifact — instead of the two unreconciled authorities v0.2 carried.
+- **P1's gate is sharpened to the star-facing proof** (§6): a compiled freestanding guest
+  program retires under first-divergence comparison, with the first book increment alongside.
+- **Cross-cutting lanes carry a named consumer** (§1): descope-or-close at each revision.
+
+v0.2's review deltas remain in git history and the delivery manifest. The reading and
+ownership table (§3), the single-source-of-truth contract (§4), the correctness stance (§5),
+the milestone graph (§6, sequencing notes aside), and the naming note (§8) are unchanged from
+v0.2.
 
 ## 3. Reading and ownership
 
@@ -74,7 +83,7 @@ This is a planning package, not an implemented framework. Its schemas establish 
 
 ## 4. A single source of truth, with independent evidence
 
-Each processor has one canonical definition containing its encodings, state, executable semantics, configuration constraints, and provenance. Files may be modular, but a semantic rule has one owned implementation. Generated artifacts carry the canonical-definition and generator fingerprints and are not edited directly.
+Each processor has one canonical definition containing its encodings, state, executable semantics, configuration constraints, and provenance. Files may be modular, but a semantic rule has one owned implementation — for the first deliverable that implementation is the semantics data itself, executed by the reference interpreter (§1); generated handlers are derived views of it, never a second authority. Generated artifacts carry the canonical-definition and generator fingerprints and are not edited directly.
 
 Decoders, execution backends, disassemblers, documentation, and coverage obligations can derive from that definition. Generation is incremental: not every output is implemented at the first milestone.
 
@@ -117,7 +126,7 @@ flowchart TD
   P7 --> SMP
 ```
 
-The DSP path gates a stable cross-architecture API claim. It does not require waiting for a complete DSP before extending a validated CPU toward Linux. Shared changes from that path still revalidate every affected CPU profile. The graph describes work dependencies, not an instruction to deploy multiple coding agents.
+The DSP path gates a stable cross-architecture API claim. It does not require waiting for a complete DSP before extending a validated CPU toward Linux. Shared changes from that path still revalidate every affected CPU profile. The graph describes work dependencies, not an instruction to deploy multiple coding agents. Cross-cutting lanes sit outside this graph and are governed by the consumption rule (§1).
 
 ### P0 — Select and establish the first experiment
 
@@ -131,6 +140,12 @@ Deliver a state inventory, requirements catalog seed, environment contract, thre
 
 ### P1 — Build the processor laboratory
 
+**Start condition (added v0.3):** P1 starts once the schema layer declares the constructs the
+engine reads (`SOT-FORMAT.2`) and the extraction contract answers whether the definition is
+sufficient for an engine (`MODEL-METHOD.10` — a P1 entry input, cited by `P1-LAB`'s evidence
+machinery, not a parallel effort). The remaining format-migration leaves are consumed by P3+
+composition and the generator's later needs; they do not gate P1.
+
 Create three initial Rust crates for core modeling, verification, and CLI control. Implement target arithmetic primitives, state, controlled memory responses, fault/event injection, deterministic stepping, explicit outcome types, and input replay.
 
 Establish one canonical definition, source-linked requirement IDs, annotations/manifests linking code to requirements, tests declaring exercised obligations, and a graph checker. Generate the gate report from pinned inputs. Schema validation alone is not sufficient; referential integrity and dependency checks are required.
@@ -139,7 +154,7 @@ Implement a vertical instruction slice with an independently encoded program and
 
 Measure a baseline workload on a named host with allocation counts and trace settings. Prefer allocation-free scalar execution and no diagnostic formatting in the normal path. Set regression thresholds after repeated measurements characterize noise; do not invent a universal MIPS target.
 
-**Gate G1:** failures are replayable; model limitations differ from target traps; malformed evidence links are rejected; known validator mutations are detected; the measured baseline is recorded.
+**Gate G1:** failures are replayable; model limitations differ from target traps; malformed evidence links are rejected; known validator mutations are detected; the measured baseline is recorded; and a **compiled freestanding guest program retires under first-divergence comparison** against a pinned reference — the star-facing proof, not a hand-encoded toy. C is the first guest path: real Rust is only fractionally executable on `rv64i-lab-v0` and no riscv64i Rust target exists (`decision_reference_what-running-real-rust-actually-requires`). The dual mandate applies from the first slice: the mdBook increment narrating it ships in the same milestone (`MODEL-BOOKS.1` consumed here).
 
 ### P2 — Validate the first RV64I profile
 
@@ -193,21 +208,13 @@ Add persistent block storage, file workloads, networking, reset/reboot, and syst
 
 Graphics, keyboard/pointer input, and a desktop are a subsequent product increment with an explicit device list and performance budget, preserving the long-term personal-computer ambition without hiding its work inside P7.
 
-### Separate multicore and optimization work
-
-Multicore first extends and revalidates the CPU/environment memory model, atomicity, reservations, event delivery, and progress. A deterministic sequentially consistent execution mode is a legitimate initial design if its produced executions satisfy the selected architecture; it does not explore all weaker outcomes. SMP Linux is a later integration test.
-
-Broader weak-memory exploration uses a separately selected existing operational or axiomatic checker and a pinned litmus corpus. Do not build a research-grade memory-model checker as an incidental emulator feature.
-
-Profile-guided optimization and JIT work retain the reference interpreter and observational-equivalence regression path. Measured performance limitations may justify earlier optimization, but never skipped CPU gates or altered semantics.
-
 ## 7. First tasks and revision boundary
 
 The first tasks are: establish profile and sources; demonstrate reference access; specify the environment boundary; implement the canonical model skeleton; build the graph/evidence checker; execute the first independent fixture; validate the validator; complete the scalar profile.
 
 Detailed task cards are in `docs/IMPLEMENTATION_GUIDE.md`. Task completion records actual commands, artifacts, and results; AI agreement or generated lines of code do not count as evidence.
 
-v0.3 should incorporate outcomes from the profile/reference experiment, concrete state/effect API examples, and qualified dependency choices. No arbitrary elapsed-time estimate is attached before those facts exist. The roadmap versions are independent of CPU release versions.
+v0.4 should incorporate the outcomes of the P1 first slice: the execution-authority decision in use over the real definition, the extraction contract's findings, and the measured baseline. No arbitrary elapsed-time estimate is attached before those facts exist. The roadmap versions are independent of CPU release versions.
 
 ## 8. Naming
 

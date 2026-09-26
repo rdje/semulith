@@ -3,9 +3,10 @@
 ## Metadata
 
 - Tree ID: `ROADMAP-V3`
-- Status: `active`
+- Status: `done`
 - Roadmap lane: the plan itself — `ROADMAP.md`
 - Gate: none (the plan; consumed by every milestone gate downstream)
+- Consumed by: the v0.4 revision at P1 first-slice completion (`decision_lane-consumption`)
 - Depends on: director delegation `2026-09-27` — *"the decision is yours to make but it got
   to be sota, signoff and production-grade"*
 - Unlocks: `P1-LAB` start conditions; the v0.4 revision boundary
@@ -52,7 +53,7 @@ first book increment alongside).
   director-pending; INDEX row added.
 
 - ID: `ROADMAP-V3.3` — **ROADMAP v0.3: the star gets a start condition**
-  Status: `pending`
+  Status: `done`
   Goal: supersede v0.2 (house pattern: manifest + git carry the bytes) with the adopted
   package: P1 start condition (`SOT-FORMAT.2` + `MODEL-METHOD.10`), the lane-consumption rule
   in §1, the execution-authority row in the decision table, P1 deliverables/G1 sharpened
@@ -65,7 +66,7 @@ first book increment alongside).
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ROADMAP-V3.3` | `pending` | the revision folds both records in |
+| — | — | — | the tree is complete (3/3 leaves done); its consumer is the v0.4 revision at P1 first-slice completion |
 
 ## Acceptance Checklist (leaf ROADMAP-V3.2)
 
@@ -156,6 +157,53 @@ first book increment alongside).
   pointer, `CHANGELOG.md` entry — staged together, verified by `git status --short` naming
   exactly these paths plus the record.
 
+## Acceptance Checklist (leaf ROADMAP-V3.3)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: the three gaps in the plan itself, each
+  named where v0.2 left it: (a) P1 had no start condition — `git show 4b2fbb1:ROADMAP.md`
+  (the tree before this leaf) is the v0.2 text, and
+  `git show 4b2fbb1:ROADMAP.md | grep -c 'Start condition'` prints `0`; (b) no sequencing rule for
+  cross-cutting lanes (the §1 consumption rule's absence, counted in leaf `.2`); (c) two
+  unreconciled execution authorities (leaf `.1`'s grep — `docs/ARCHITECTURE.md:40` vs `:96`).
+  WHY severe: the star was unreachable not because any milestone was wrong, but because
+  nothing in the plan decided when the first one could start.
+- [x] **ADDRESSED (verified)** — leg 2. `ROADMAP.md` is v0.3: the start condition lives in the
+  P1 section, the consumption rule and the execution-authority table row in §1, the sharpened
+  G1 and the v0.4 trigger in §6/§7 — and both decision records are cited from the plan:
+
+  ```
+  $ grep -ci 'start condition' ROADMAP.md
+  2
+  $ grep -c 'decision_lane-consumption\|decision_interpreter-before-compiler' ROADMAP.md
+  2
+  $ wc -c < ROADMAP.md
+  24065
+  ```
+
+  24,065 bytes against the 24,576 registry ceiling, and v0.2 stays recoverable byte-exact:
+  `docs/provenance/planning-package-v0.2/MANIFEST.sha256` still carries its delivered hash and
+  `scripts/check_delivery_provenance.sh` reports `3 live row(s) declared` with no breach.
+- [x] **NO REGRESSION** — leg 3. `LIVE_STATUS.md`'s ungated count corrected while under review:
+  the `MODEL-METHOD` row read `3/10` (a spelling no gate re-derives; the tree is at 6 of 13)
+  and now states `6 of 13` in the gated form. `bash scripts/check_doctrines.sh` reports
+  `=== all doctrines green ===` at commit time.
+- [x] **FIX** — the v0.3 rewrite (this commit) plus the LIVE_STATUS correction and the
+  `MEMORY.md` pointer; no source file modified.
+- [x] **LOCKSTEP** — `ROADMAP.md`, this tree, `docs/TASK_TREE.md` row, `MEMORY.md`, `CHANGELOG.md`,
+  `LIVE_STATUS.md`, `DEV_NOTES.md` — one commit.
+
+## Routing evidence
+
+- `2026-09-27`: while adopting `.3`, measured a status anomaly in `SOT-FORMAT.10` — its
+  acceptance checklist is fully ticked and its commit (`SEMILITH-SF-0056`) is recorded, yet the
+  leaf's `Status:` line reads `active`, so every derived count counts it not-done. WHERE:
+  `docs/tasks/SOT-FORMAT.md`, leaf `.10` Status field. Routed to `SOT-FORMAT.2`'s lockstep
+  (the next leaf that legitimately opens that tree's file). Reproduces outside the family:
+  yes — the class is general (any leaf can tick boxes while its Status line lags, and no
+  standing check compares the two); the durable fix is the proposed LEAF-CLOSURE census
+  (director-pending, announced `2026-09-27`), which would refuse exactly this shape at
+  commit time.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
@@ -163,6 +211,8 @@ first book increment alongside).
 | `2026-09-27` | `ROADMAP-V3.1` | `bash scripts/check_doctrines.sh` | all doctrines green (pre-staging) |
 | `2026-09-27` | `ROADMAP-V3.2` | `bash scripts/check_doctrines.sh` | `=== all doctrines green ===` at commit time |
 | `2026-09-27` | `ROADMAP-V3.2` | vacuum re-derived: `git log --oneline 74b0810..HEAD \| wc -l` | `27` commits since any milestone tree was touched |
+| `2026-09-27` | `ROADMAP-V3.3` | `wc -c < ROADMAP.md` | `24065` ≤ `24576` ceiling; delivery-provenance `3 live row(s) declared` |
+| `2026-09-27` | `ROADMAP-V3.3` | `bash scripts/check_doctrines.sh` | `=== all doctrines green ===` at commit time |
 
 ## Commit Log
 
@@ -170,6 +220,7 @@ first book increment alongside).
 | --- | --- | --- |
 | `ROADMAP-V3.1` | `SEMULITH-RM-0057 (leaf ROADMAP-V3.1): the semantics data is the execution authority` | decision record + tree registered |
 | `ROADMAP-V3.2` | `SEMILITH-RM-0058 (leaf ROADMAP-V3.2): every lane names the milestone that consumes it` | decision record + INDEX row; census gate proposed to the director, not registered |
+| `ROADMAP-V3.3` | `SEMILITH-RM-0059 (leaf ROADMAP-V3.3): ROADMAP v0.3 — the star gets a start condition` | v0.3 supersedes v0.2; LIVE_STATUS `6 of 13` correction; tree complete 3/3 |
 
 ## Changelog
 
