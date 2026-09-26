@@ -15,7 +15,73 @@ The canonical processor definition is a versioned package. Its initial layout is
 | `requirements.jsonl` | Traceable statements of obligations and evidence policy | Verification dossier |
 | `environment/*.toml` | Versioned assumptions/guarantees and their test obligations | CPU/environment contract |
 
-This is a proposed repository layout. Only the planning schemas/examples in this package exist now. File formats may evolve, but OWN-01 remains: one executable owner for each semantic rule.
+This is a proposed repository layout. Only the planning schemas/examples in this package exist now. File formats may evolve — and have: §1.1–§1.3 describe the format the canonical definition actually uses today, the fragment and its composition operator, and the schema layer that turns "it parses" into validation. OWN-01 remains: one executable owner for each semantic rule.
+
+### 1.1 One format: every engine input is an S-expression
+
+The table above is the v0.2 proposal, and its per-file formats — JSON for encodings, Rust
+sources for semantics, TOML for profiles — have been superseded by one decision (director,
+2026-09-14, `decision_one-format-every-source-of-truth`): **every source of truth the generator
+engine reads is one format, S-expression data**. The reason is composition, not tidiness: a
+board that composes two processors must merge their definitions, requirements, obligations and
+pinned sources, and a merge is only definable when both sides are the same kind of thing — three
+formats would be three merge semantics.
+
+What exists in that format today:
+
+- `definitions/` holds reusable fragments (§1.2), and a profile composes them with its own
+  `encoding.sexp`. All of it parses with the project's reader `scripts/sexp.py` and with the
+  LinkedSpec Rust route (`specs/Lispish.spec` on the vendored submodule — no S-expression parser
+  is hand-written in this project's crates). The two readers are compared mechanically on every
+  tracked `.sexp` file by `scripts/compare_readers.py`, which reports agreement file by file and
+  refuses an unbuilt or disagreeing reader rather than counting it as agreeing; the comparison
+  classifies the two documented reader-contract differences (quoted-numeric typing, escape
+  retention) instead of mistaking them for agreement or for defects.
+- **Semantics are data, cited.** `definitions/riscv/rv64i.sem.sexp` expresses each instruction's
+  semantics in the same format, every rule carrying a citation into the pinned specification
+  snapshot; `scripts/check_semantics.py` reports 52 of 52 declared instructions with checked
+  semantics — well-formed, complete and cited. *Cited is not verified*: correctness against the
+  specification is a differential experiment against an independent reference (P1/P2). This does
+  not change §2's generation boundary — the execution backend is still generated dispatch over
+  canonical handlers; the data is the definition those handlers derive from.
+- The starter **records** (`requirements.jsonl`, `contract-obligations.jsonl`) and profile
+  **configuration** (`sources.toml`, `profile.toml`) are still in the formats the package
+  shipped. They are exactly the inputs the one-format migration moves next (`SOT-FORMAT.3`/`.4`),
+  behind the schema layer (§1.3) so that validation is never replaced by "it parses" mid-move.
+
+### 1.2 Fragments, and the composition operator
+
+A **fragment** is a complete, independently checkable description of one thing — one ISA base,
+one extension, one semantics set. It lives in `definitions/` rather than inside a profile
+because a base ISA is shared by every profile that composes it; copying it per profile would be
+the duplication composition exists to avoid. Each fragment declares its `id`, its `kind`, the
+fragments it `requires` — the M extension requires the base because it reuses the base's operand
+fields and defines none of its own; a fragment with a hidden dependency is a fragment that
+composes by luck — and the pinned `source` files it was generated from. Fragments are generated
+by `scripts/gen_fragments.py` from pinned upstream tables and are changed by regeneration, not
+by hand.
+
+**Composition** is the operator that makes a unit from fragments: a unit's encoding space is the
+union of its fragments' encoding spaces, and the union is decided, not hoped.
+`scripts/check_encoding_disjoint.py` refuses any word that two instructions both claim, so a
+profile that composes an extension overlapping its base fails loudly. Encoding composition is
+decidable and checked today (`MODEL-COMPOSE.1`/`.2`); merging records and obligations across a
+composition boundary — the assumption/guarantee discharge — is designed
+(`decision_composition-model`) and lands with `SOT-FORMAT.5`, because a merge is only definable
+once everything is one format.
+
+### 1.3 The schema layer
+
+An S-expression reader accepts anything syntactically, so "it parses" is not validation. The
+declared next layer (specified as `SOT-FORMAT.1`, not yet built) declares every construct — its
+head, its fields, their arity and value types, whether they repeat — as data in `schema/`, and
+refuses an undeclared construct, an unknown field, a wrong arity or a wrong value type **by
+name**, never silently. Adding a domain construct — a register file, a memory map, a peripheral —
+then requires a schema file and zero lines of reader code. The schema language is written in
+itself, and its own description validating under itself is the fixpoint that proves
+extensibility rather than asserting it. Until that layer lands, per-construct validation lives
+where it already runs: `check_semantics.py` for the semantic forms, `check_encoding_disjoint.py`
+for composition, and the tracked JSON-schema validator for records.
 
 These executable definitions belong on the engine/model side of the archogen boundary. They are not implementation syntax to add to eADL. eADL may describe the offered hardware contracts; a versioned adapter connects archogen's resolved implementation plan to Semulith models and composition.
 

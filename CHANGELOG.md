@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-SF-0053 (leaf SOT-FORMAT.8) — the contract names its format at last
+
+The mdBook chapter *"Architecture and canonical definitions"* includes `docs/ARCHITECTURE.md`
+verbatim, and that document named no format, no `definitions/` directory and no composition —
+four commits had introduced all three, and the director's only window showed none of it
+(`grep -c 'S-expression'` → 0). The drift is closed at the source document: §1.1 records the
+one-format decision and what exists in it today (fragments, cited semantics at 52 of 52, the
+two-reader agreement check), §1.2 defines the fragment and the composition operator that is
+*decided, not hoped* (`check_encoding_disjoint.py`), §1.3 states the schema layer's contract and
+labels it specified-not-built. Built claims name their instruments; pending layers say pending;
+the one count that moves (`5 of 5`) was rephrased to "agreement file by file" so the prose
+cannot drift. `make book` builds; the chapter preface needed no edit — that was the point.
+
+Also: a knowledge card for the session's other lesson — a director-named action runs first,
+right after context recovery; standing cadences queue behind it.
+
 ## SEMULITH-UT-0052 (leaf UPSTREAM-TRACK.2) — `verified` must carry the re-run that earned it
 
 The tracker already refused a `verified` with no pin. It now refuses the next hole too: a

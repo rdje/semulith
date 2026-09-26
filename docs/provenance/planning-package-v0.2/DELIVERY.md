@@ -72,3 +72,14 @@ Exactly one delivered file was not ingested: `docs/SEMULITH_ARCHOGEN_INTEGRATION
 was byte-identical to `docs/ARCHOGEN_INTEGRATION.md`, absent from `MANIFEST.sha256`, and
 referenced by nothing. Two files owning one document contradicts rule `OWN-01`, so the
 unlisted copy was deleted and the manifest-named path kept.
+
+## Disposition changes
+
+- `2026-09-26` — `docs/ARCHITECTURE.md` reclassified `frozen-in-place` → `live`, owned by
+  leaf `SOT-FORMAT.8`. The file is the architecture contract that the mdBook includes verbatim,
+  and the codebase's format decision — one S-expression format, fragments, the composition
+  operator, the schema layer — had landed in code while the contract still named no format at
+  all (`grep -c 'S-expression'` → 0). A frozen architecture document that contradicts the tree
+  it governs is the drift this ledger exists to record honestly, not to paper over. The
+  delivered bytes remain in `MANIFEST.sha256` as the delivery record; from this date the file
+  is owned by this repository and is expected to evolve with the format it describes.

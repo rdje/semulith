@@ -129,7 +129,7 @@ too, and under the split there is no rule by which it could.
   Commit: `SEMULITH-SF-0041`
 
 - ID: `SOT-FORMAT.8` — **the book does not describe the format it calls a contract**
-  Status: `pending`
+  Status: `done`
   Goal: the mdBook chapter *"Architecture and canonical definitions"* includes `docs/ARCHITECTURE.md`,
   which names no format, no `definitions/` directory and no composition — four commits introduced
   all three. The director's only window shows none of it. Close the drift at the source document,
@@ -137,6 +137,10 @@ too, and under the split there is no rule by which it could.
   Acceptance: `docs/ARCHITECTURE.md` describes the format, the fragment, the composition operator
   and the schema layer in prose; the book builds; `grep -c 'S-expression' docs/ARCHITECTURE.md` is
   non-zero where it is currently 0.
+  Verification: `2026-09-26` — see the log; built-state claims in the new §1.1–§1.3 name their
+  instruments, pending layers are labeled specified-not-built, and the one mutable count was
+  rephrased to "agreement file by file" rather than a numeral that drifts.
+  Commit: `SEMULITH-SF-0053`
 
 - ID: `SOT-FORMAT.9` — **the Rust reader comes from LinkedSpec, as a submodule**
   Status: `done`
@@ -189,13 +193,12 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.8` | `pending` | measured drift in the director's only window |
-| 2 | `SOT-FORMAT.1` | `pending` | the schema language must exist **before** any record moves, or the migration spends a window with real validation replaced by "it parses" |
-| 3 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
-| 4 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
-| 5 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
-| 6 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
-| 7 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
+| 1 | `SOT-FORMAT.1` | `pending` | the schema language must exist **before** any record moves, or the migration spends a window with real validation replaced by "it parses" |
+| 2 | `SOT-FORMAT.2` | `pending` | the constructs already in `.sexp` are the cheapest proof the schema layer holds, and they carry a verdict (`52 of 52`) that must not move |
+| 3 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
+| 4 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
+| 5 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
+| 6 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
 
 ## Decisions
 
@@ -219,6 +222,12 @@ too, and under the split there is no rule by which it could.
   the next commit (precedent `SEMULITH-PD-0049`). The instrument owns it:
   `scripts/check_readme_routes.sh` reports the health target and enforces the 64 KiB ceiling, so
   the shard fires at the gate, not mid-review. Whoever next adds an entry needs no special step.
+- 💡 The durable answer to both CLASS families in `compare_readers.py` is upstream's
+  `SExprDocumentV1` document grammar — tagged token kinds, lexemes, no number conversion or escape
+  decoding — which its guide steers document consumers to. Adopting it for the engine's reader
+  (and probably retiring the Lispish adapter from the harness) is a candidate leaf for after
+  `.2`; it would eliminate the quote-numeric and escape-retention enumeration at the source
+  rather than classifying it forever.
 
 ## Blockers
 
@@ -346,6 +355,10 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `SOT-FORMAT.8` | drift probe: `grep -c 'S-expression' docs/ARCHITECTURE.md` | `0` — the chapter named no format, no `definitions/`, no composition |
+| `2026-09-26` | `SOT-FORMAT.8` | after the §1.1–§1.3 addition, same probe | `4` — format, fragment, composition operator, schema layer all present in prose |
+| `2026-09-26` | `SOT-FORMAT.8` | `make book` | built; the chapter includes the source verbatim, so the preface needed no edit |
+| `2026-09-26` | `SOT-FORMAT.8` | claim audit of the new prose against instruments | every built-state claim names its tool (sexp self-test, compare_readers, check_semantics 52/52, check_encoding_disjoint); the schema layer is labeled specified-not-built; the mutable count rephrased to "agreement file by file" |
 | `2026-09-26` | `SOT-FORMAT.9` | fix present at new pin: `show a8d34c845:specs/Lispish.spec` | `dquotes`/`squotes` carry `(?s)` — the reported DOTALL form, shipped upstream as `8259719f8` |
 | `2026-09-26` | `SOT-FORMAT.9` | RGX pin at old vs new commit | `8763a0e6bea9` both sides — bootstrap products valid; bootstrap re-run said "already generated" |
 | `2026-09-26` | `SOT-FORMAT.9` | consumer rebuild at new pin via `run_cargo_local.sh` | ok, 20.39 s, fresh `.app-data/target/debug/lispish_file` |
@@ -379,6 +392,7 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.8` | `SEMULITH-SF-0053 (leaf SOT-FORMAT.8): …` | ARCHITECTURE.md gains §1.1–§1.3; the director's window shows the format now |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0051 (leaf SOT-FORMAT.9): …` | pin advanced to `a8d34c845`; 5 of 5 agree; comparator enumerates 2 documented CLASS families; LS-001 verified |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0047 (leaf SOT-FORMAT.9): two readers, one format, and a defect worth reporting` | **progress on a blocked leaf**, not a completion: 4 of 5 files agree |
 | `SOT-FORMAT.7` | `SEMULITH-SF-0041 (leaf SOT-FORMAT.7): the reader corrupted every citation it read` | 52 of 52 citations restored; 18 arms where there were none |
