@@ -47,5 +47,5 @@ Silence is what makes something `high`. A crash is recoverable; a plausible wron
 | ID | Project | Title | Severity | State | Blocks |
 | --- | --- | --- | --- | --- | --- |
 | [`LS-001`](linkedspec/LS-001-multiline-string/REPORT.md) | LinkedSpec | a double-quoted string containing LF is not one string | `high` | `verified` | `SOT-FORMAT.9` |
-| [`LS-002`](linkedspec/LS-002-atom-typing/REPORT.md) | LinkedSpec | quoted and bare atoms are indistinguishable | `medium` | `acknowledged` | — |
+| [`LS-002`](linkedspec/LS-002-atom-typing/REPORT.md) | LinkedSpec | quoted and bare atoms are indistinguishable | `medium` | `verified` | — |
 | [`LS-003`](linkedspec/LS-003-guide-papercuts/REPORT.md) | LinkedSpec | three first-consumer papercuts in the integration guide | `low` | `verified` | — |

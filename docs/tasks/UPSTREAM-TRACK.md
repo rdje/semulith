@@ -239,6 +239,9 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-26` | `UPSTREAM-TRACK.4` (regime) | LS-002 ancestry claim checked mechanically | `merge-base --is-ancestor`: `77d7b3db1` and `df845ce61` both in `a8d34c845` — upstream's claim verified, not trusted |
+| `2026-09-26` | `UPSTREAM-TRACK.4` (regime) | LS-002 cases re-run with the prescribed instrument (`sexpr_file` + `SExprDocumentV1.spec`) | all four quoted/bare pairs distinguishable by kind; transcript captured in the subtree |
+| `2026-09-26` | `UPSTREAM-TRACK.4` (regime) | LS-002 state `acknowledged` → `verified` | record, REPORT, VERIFIED.md and both index mirrors in one commit; gate green |
 | `2026-09-26` | `UPSTREAM-TRACK.4` | `--self-test` after the gate extension | `17 pass / 0 fail` (16 → 17 arms: the wrong-pin note refused) |
 | `2026-09-26` | `UPSTREAM-TRACK.4` | the gate on the real tracker BEFORE the notes | `UNANNOUNCED LS-001`, `UNANNOUNCED LS-003`, rc=1 — fired RED on the exact state the leaf exists to refuse |
 | `2026-09-26` | `UPSTREAM-TRACK.4` | `VERIFIED.md` written for LS-001 and LS-003 | self-contained, addressed upstream, each names the record's `verified-against` pin |

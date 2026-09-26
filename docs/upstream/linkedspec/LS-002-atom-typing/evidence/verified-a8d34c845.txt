@@ -1,0 +1,22 @@
+# LS-002 verification — captured 2026-09-26
+#
+# Upstream confirmed the kind-strict grammar (77d7b3db1) and the native file adapter
+# (df845ce61) are ancestors of the published pin a8d34c845 — verified here:
+#
+#   merge-base --is-ancestor 77d7b3db1 a8d34c845  -> yes
+#   merge-base --is-ancestor df845ce61 a8d34c845  -> yes
+#
+# The reproduction from the report era showed bare and quoted atoms arriving
+# indistinguishable through the historical extraction adapter. Re-running the SAME
+# four cases through the document grammar (sexpr_file with SExprDocumentV1.spec,
+# per upstream instruction) — tagged kinds are returned, so a consumer can now
+# round-trip the source token kind:
+#
+#   01-bare-numeric.sexp -> {"format":"linkedspec-sexpr-v1","forms":[{"items":[{"kind":"symbol","lexeme":"r"},{"items":[{"kind":"symbol","lexeme":"v"},{"kind":"number","lexeme":"20260911"}],"kind":"list"}],"kind":"list"}]}
+#   02-quoted-numeric.sexp -> {"format":"linkedspec-sexpr-v1","forms":[{"items":[{"kind":"symbol","lexeme":"r"},{"items":[{"kind":"symbol","lexeme":"v"},{"kind":"string","lexeme":"\"20260911\""}],"kind":"list"}],"kind":"list"}]}
+#   03-quoted-version.sexp -> {"format":"linkedspec-sexpr-v1","forms":[{"items":[{"kind":"symbol","lexeme":"r"},{"items":[{"kind":"symbol","lexeme":"v"},{"kind":"string","lexeme":"\"1.0\""}],"kind":"list"}],"kind":"list"}]}
+#   04-bare-version.sexp -> {"format":"linkedspec-sexpr-v1","forms":[{"items":[{"kind":"symbol","lexeme":"r"},{"items":[{"kind":"symbol","lexeme":"v"},{"kind":"number","lexeme":"1.0"}],"kind":"list"}],"kind":"list"}]}
+#
+# 01 vs 02: kind number vs kind string — the quoted numeric is distinguishable.
+# 03 vs 04: kind number vs kind string again — 1.0 matches the grammar's number
+#           regex, and quoted stays string. All four cases: kinds distinguishable.

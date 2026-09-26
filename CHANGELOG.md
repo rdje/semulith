@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## LS-002 → `verified` — the design question closes with a re-run, not a changelog
+
+Upstream confirmed the kind-strict grammar (`77d7b3db1`) and the native adapter (`df845ce61`)
+are ancestors of the published pin `a8d34c845` — checked mechanically here with
+`merge-base --is-ancestor`, not taken on their word — and prescribed the verification
+instrument: `sexpr_file` with `SExprDocumentV1.spec` (the old `lispish_file` adapter is
+insufficient). That instrument is exactly what `SOT-FORMAT.10` just added: LS-002's own four
+cases re-run through the document layer return distinct kinds for every quoted/bare pair, and
+the consumer's whole corpus agrees with its canonical reader there with zero classified
+residue. The record gains the `verified-against` pin and the captured transcript; `VERIFIED.md`
+carries the reply to upstream in the same envelope as the report. All three of this project's
+LinkedSpec issues are now `verified`.
+
 ## SEMULITH-SF-0056 (leaf SOT-FORMAT.10) — the document grammar joins the agreement sweep
 
 Director decision on the recorded candidate: adopt SExprDocumentV1 **additively** — a third
