@@ -9,3 +9,5 @@
 //! **nor** `semulith-cli`. The verification harness and the CLI consume this
 //! crate; never the reverse. Behaviour lands leaf by leaf under `P1-LAB`; the
 //! skeleton exists so the boundary holds from the first commit.
+
+pub mod arith;

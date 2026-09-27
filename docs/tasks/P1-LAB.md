@@ -48,9 +48,23 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   declared now and first exercised by `P1-LAB.2`+.
 
 - ID: `P1-LAB.2` — **target arithmetic primitives** *(task card `T005`)*
-  Status: `pending`
+  Status: `done`
   Goal: source-linked widths and operations with explicit intermediate precision, truncation, sign/zero extension, and shift corner cases (`SEM-03`).
   Acceptance: boundary cases plus **exhaustive checks at a tractably reduced width**; host-mode consistency verified rather than assumed.
+  Result: met, `2026-09-27`. `semulith-core::arith` — 18 primitives (ALU reg/imm, shifts, word ops,
+  extension/extraction, LUI/AUIPC offset), each with a SEM-03 contract and a source link to its
+  requirement record and pinned locator (`REQ-D-XLEN/ALU-REG/ALU-IMM/SHAMT/WSUFFIX/LUI-AUIPC/
+  LOAD-EXT`). Verification: boundary cases at XLEN, an **8-bit exhaustive layer** over every
+  `(x, y)` / `(x, shamt)` / `(x, width)` against references formulated on a different host
+  width (multiply-as-shift, De Morgan, u16/u128 paths), and a boundary-heavy 100k-draw sweep
+  of the word ops against a u64-width reference. The exhaustive layer caught a real test-design
+  defect — signed comparison and arithmetic shift are width-sensitive — fixed by embedding the
+  narrow signed view at XLEN (the lesson is promoted to
+  `docs/knowledge/reduced-width-verification-of-signed-ops.md`). Unmasked shift amounts panic
+  (`debug_assert`) instead of silently wrapping: a decoder bug must not become a plausible
+  wrong result. The requirements' `implementation_status` stays `planned` — these are the
+  executable halves; the obligations name instruction-level checks that need the interpreter
+  (`.8`) to exercise state writeback.
 
 - ID: `P1-LAB.3` — **architectural state**
   Status: `pending`
@@ -106,7 +120,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.2` | `pending` | every other leaf lands inside these crates; arithmetic primitives are the crate's first real content |
+| 1 | `P1-LAB.3` | `pending` | architectural state — the primitives need registers and pc to compose against |
 
 ## Decisions
 
@@ -185,10 +199,60 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   `DOCTRINE_ENFORCEMENT.md`, `TOOLBOX.md`, `.github/workflows/doctrines.yml` and this tree —
   one commit, with [`PORT-WEB.1`](PORT-WEB.md) (the browser half of the skeleton).
 
+## Acceptance Checklist (leaf P1-LAB.2)
+
+- [x] **REPRODUCE / ISSUE** — SEM-03's demand as it stood: no numeric operation existed, so
+  widths/signedness/intermediate precision were nowhere stated in code:
+
+  ```
+  $ git ls-files 'crates/**/*.rs' | xargs wc -l
+  3 crates/semulith-cli/src/main.rs       # the whole workspace: docs and a println
+  5 crates/semulith-core/src/lib.rs
+  5 crates/semulith-verify/src/lib.rs
+  3 crates/semulith-verify/src/fixtures.rs
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the laboratory's first real content had no home: the
+  semantics data (`definitions/riscv/rv64i.sem.sexp`) names the operations (`add`, `shl`,
+  `sext`, `bits`, …) but nothing executable implemented them, and the ALU/shift requirements
+  (`REQ-D-ALU-REG`, `REQ-D-ALU-IMM`, `REQ-D-SHAMT`, `REQ-D-WSUFFIX`) carried
+  `implementation_status planned`. WHERE, measured: `grep -c 'pub fn' crates/semulith-core/src`
+  → `0` before this leaf.
+
+- [x] **FIX** — `semulith-core::arith`: one function per semantics-data operation, each
+  contract stating width, signedness, intermediate precision, truncation, exceptional
+  behavior (SEM-03), source-linked by requirement id + locator; `shamt64`/`shamt32` own the
+  REQ-D-SHAMT masking; unmasked amounts panic in debug instead of silently wrapping.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ cargo test -p semulith-core 2>&1 | grep "test result"
+  test result: ok. 12 passed; 0 failed; ...    # 5 boundary + 4 exhaustive + 1 should_panic + 2 word-op suites
+  ```
+
+  The exhaustive layer is genuinely exhaustive: every `(x, y)` in `0..=255²` for add/sub/
+  and/or/xor/slt/sltu, every `(x, shamt)` in `256 × 0..8` for the shifts, every `(x, from)`
+  for `sext`, every `(lo, hi)` window for `bits` — each against a different-host-width
+  reference. The first run FAILED on exactly the class of mistake the acceptance names
+  (`slt`/`sar` compared without embedding the signed view — `test result: FAILED. 10 passed;
+  2 failed`), which is the host-mode-consistency assumption being verified rather than
+  assumed; the fix is in the test design, the primitives were right.
+
+- [x] **NO REGRESSION** — `cargo clippy --all-targets --all-features -- -D warnings` clean;
+  `make gate` → `=== all doctrines green ===`; the new lesson is promoted, not dropped:
+  `docs/knowledge/reduced-width-verification-of-signed-ops.md` + INDEX row, same commit.
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, the book's P1 chapter, the knowledge layer, and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `P1-LAB.2` | `cargo test -p semulith-core` | 12 passed / 0 failed (incl. 8-bit exhaustive suites) |
+| `2026-09-27` | `P1-LAB.2` | first exhaustive run | FAILED 2 (slt/sar width-sensitivity) → test design fixed, re-run green |
+| `2026-09-27` | `P1-LAB.2` | `clippy -D warnings`, `make gate` | clean / all doctrines green |
 | `2026-09-27` | `P1-LAB.1` | `cargo fmt --check` + `clippy -D warnings` + `cargo test --all` | 5 suites ok, 0 warnings |
 | `2026-09-27` | `P1-LAB.1` | `cargo build --workspace --target wasm32-unknown-unknown` | rc=0 (with `PORT-WEB.1`) |
 | `2026-09-27` | `P1-LAB.1` | `make gate` | `=== all doctrines green ===` |
@@ -197,9 +261,11 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.2` | `SEMILITH-PL-0002 (leaf P1-LAB.2): …` | arithmetic primitives, verified exhaustively at reduced width |
 | `P1-LAB.1` | `SEMILITH-PL-0001 (leaf P1-LAB.1, PORT-WEB.1): …` | the crate skeleton and the Wasm gate land in one commit, as PORT-WEB.1's acceptance requires |
 
 ## Changelog
 
-- `2026-09-27`: Leaf `.1` done — the three crates exist and build for host and Wasm; the tree is
-  `active`, the frontier moves to `.2` (target arithmetic primitives).
+- `2026-09-27`: Leaf `.2` done — `semulith-core::arith`, 18 SEM-03 primitives with source
+  links, verified by boundary + 8-bit-exhaustive suites; the frontier moves to `.3`
+  (architectural state). Leaf `.1` done the same day — the three crates + the Wasm gate.
