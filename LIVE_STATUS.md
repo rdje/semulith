@@ -14,7 +14,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Project doctrines (18 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS`, `DERIVED-COUNTS`, `RECORD-SCHEMA`, `GATE-REPORT`, `UPSTREAM-INDEX`, `SHARD-FREEZE`, `SOURCE-FORMAT`, `UNIT-COMPOSITION`, `SEMANTICS`, `EXTRACTION`, `FACT-OWNERSHIP` — 220 self-test arms, all fired RED before registration |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the re-sync list, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
-| mdBook is the review surface | Done | 27 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |
+| mdBook is the review surface | Done | 28 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — the index, the doctrine documents, task-tree facts, and every other derived count in the live docs |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
@@ -28,7 +28,7 @@ summarize the snapshot in every commit-workflow completion message.
 | North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 1 unit today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
-| Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 11 of 13 leaves — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
+| Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 12 of 13 leaves — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
 | Modelling method + materials | In Progress | same tree — no category→material binding yet |
 | Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 0/6 — one definition, one mdBook |
 

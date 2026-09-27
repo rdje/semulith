@@ -20,6 +20,7 @@
 
 # The contracts
 
+- [The method](contracts/method.md)
 - [Engineering rules](contracts/rules.md)
 - [Architecture and canonical definitions](contracts/architecture.md)
 - [The CPU/environment contract](contracts/cpu-environment.md)

@@ -13,9 +13,9 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` v0.3 is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (11/13), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
+- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (12/13), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
 - **Closed `2026-09-27`:** `SOT-FORMAT` (10/10) and `DOC-SHARDING` earlier; `MODEL-COMPOSE`'s slots leaf joined them the same day — slots are data (zero kernel lines), the unit's composed encoding space is decided and gated as the 15th doctrine (`UNIT-COMPOSITION`), and partial is declared, never inferred. `MODEL-COMPOSE` joined them (6/6 — composition is a verdict, a discharge, and a materializable unit).
-- **Frontier leaf:** `MODEL-METHOD.5` — the method in prose, written to be learned from. The acquisitions landed (`.4`): the run-real-code set — psABI, System V ELF, the generic syscall header, the compiler-rt builtins inventory — is digest-pinned and cached under `.materials/run-real-code/`, and the PDF question is answered YES (the format tables ARE selectable text; 1.96 MB extracts clean). SRC-02 records: the pinned-revision release PDF not located; the chipdoc route unavailable here ($SEMULITH_CHIPDOC_ROOT unset).
+- **Frontier leaf:** `MODEL-METHOD.6` — no coding without the source of truth, mechanized: a gate refusing model implementation while a category the declared scope requires is `missing` — the last leaf; the method itself is written (`.5`: `docs/METHOD.md`, carried verbatim by the book).
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
 - **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted — P1's start condition is `SOT-FORMAT.2` (now done) + `MODEL-METHOD.10`; the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone (`decision_lane-consumption`).
 - **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm is a first-class target from the first crate (`decision_browser-wasm-target`); lane `PORT-WEB` (proposed, consumed by `P1-LAB`) owns it, leaf `.1` activates with `P1-LAB.1`.
@@ -24,7 +24,7 @@
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
   docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Next action:** `MODEL-METHOD.5` — the method in prose: document → decision → requirement → obligation → check, with the judgement calls named and the rejected alternatives kept, written so a student could apply it to an unfamiliar processor. P1-LAB remains unblocked. ⛔ Everything moves only behind the schema layer, never before.
+- **Next action:** `MODEL-METHOD.6` — the coding-without-SOT gate: fired RED against a deliberately uncovered category, composing with the extraction contract. Then the MODEL-METHOD tree closes (13/13) and P1-LAB's precondition is a verdict. ⛔ Everything moves only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-BOOKS.1` (the book structure and the complete materials bill). `MODEL-COMPOSE`'s discharge operator landed; its frontier is slots.

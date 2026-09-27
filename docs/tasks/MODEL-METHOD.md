@@ -271,7 +271,7 @@ recorded so it can be overturned on evidence rather than taste:
       `OB-ENV-EVENT-DELIVERY`); the hosted-form anchors are the two acquisitions above.
 
 - ID: `MODEL-METHOD.5` — **the method, in prose, written to be learned from**
-  Status: `pending`
+  Status: `done`
   Goal: document → decision → requirement → obligation → check, with the judgement calls named:
   authority versus semantic class, what makes an expected value *derived* rather than copied, and
   when a disagreement is a profile difference rather than a defect. ⭐ Written so a student could
@@ -279,6 +279,23 @@ recorded so it can be overturned on evidence rather than taste:
   is justified, not merely listed, and the rejected alternatives are kept.
   Acceptance: one rule followed end to end by name; the non-mechanical steps identified as such;
   a reader could carry the method to a different ISA without this project's documents.
+
+  Result: met, `2026-09-27`. `docs/METHOD.md` — one self-contained document, 9.3 KB, written to
+  be carried off this repository — walks document → decision → requirement → obligation →
+  check with the order justified at each step and the rejected alternatives kept. One rule
+  (the shift-amount rule) is followed end to end by name, and its two non-mechanical steps are
+  flagged inside the walk. A closing section names the four steps no gate can take (choosing
+  the publication, classing the fact, judging the authority, classifying the disagreement) —
+  everything else is declared mechanical, which is the method's discipline stated as a rule.
+  The mdBook carries it verbatim under The contracts, the way the book handles every source
+  document. The carryability probe: outside the worked example, the body references no tool,
+  path, or id this project owns.
+  Design (recorded before code, `2026-09-27`): the deliverable is one self-contained document,
+  `docs/METHOD.md` — the method must be carryable OFF this repository, so it cannot live only in
+  the mdBook's narrative or scattered across leaf checklists. The document is written against the
+  method this session actually exercised (eleven leaves of it), with the rejected alternatives
+  kept, and it names the non-mechanical steps honestly: pinning a source, judging an authority,
+  choosing a profile over a reference's default — the steps no gate can take for you.
 
 - ID: `MODEL-METHOD.7` — **the canonical definition: what it is and what each file owns**
   Status: `done`
@@ -459,7 +476,7 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.5` | `pending` | the method in prose, written to be learned from |
+| 1 | `MODEL-METHOD.6` | `pending` | no coding without the source of truth, mechanized — the gate P1-LAB cites |
 
 ## Decisions
 
@@ -492,10 +509,57 @@ acceptance checklists and routing evidence for every `done` leaf (`.2`–`.4`, `
 not raised. The live tree keeps the frontier, the decisions, the open questions and both
 logs.
 
+## Acceptance Checklist (leaf MODEL-METHOD.5)
+
+- [x] **REPRODUCE / ISSUE** — the method as it stood: exercised eleven times this session but
+  written nowhere a reader could carry it:
+
+  ```
+  $ ls docs/METHOD.md 2>&1
+  ls: docs/METHOD.md: No such file or directory
+  $ grep -rl 'the method' docs/*.md 2>/dev/null | wc -l
+  0                                             # no method document anywhere in docs/
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a method that exists only as the history of
+  its exercise cannot be learned from — the rejected alternatives die with the session that
+  rejected them, and the judgement calls look like mechanics. WHERE: measured, not read —
+
+  ```
+  $ git ls-files 'docs/*.md' | xargs grep -l 'no gate can take\|document → decision' 2>/dev/null | wc -l
+  0                                             # the spine lived only in leaf checklists
+  ```
+
+  Nothing in `docs/` carried the method a reader could take away.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ grep -c 'shift-amount rule' docs/METHOD.md
+  1                                             # one rule followed end to end, by name
+  $ grep -A8 'no gate can take' docs/METHOD.md | grep -c '^[0-9]\.\|^[0-9]\.'
+  4                                             # the non-mechanical steps, identified as such
+  $ make book 2>&1 | tail -1
+  INFO HTML book written ...                      # the book carries it verbatim
+  $ grep -nE 'scripts/|schema/|\.sexp|rv64i-lab-v0|RECORD-SCHEMA' docs/METHOD.md \
+      | grep -vE 'SHAMT' | wc -l
+  0                                             # no project-only dependency outside the example
+  ```
+
+- [x] **NO REGRESSION** — `make book` builds; sexp 18/0; kernel 50/0; RECORD-SCHEMA 33/0;
+  whole gate green after staging.
+
+- `promotion: declined (the framing is the document's own closing section).`
+
+- [x] **LOCKSTEP** — `docs/book/` chapter + SUMMARY row; `MEMORY.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-METHOD.5` | census, pre-code | no method document anywhere in `docs/` |
+| `2026-09-27` | `MODEL-METHOD.5` | the acceptance probes | the SHAMT walk present; 4 non-mechanical steps named; book builds; no project-only dependency outside the worked example |
 | `2026-09-27` | `MODEL-METHOD.4` | network probes | psABI gh-pages: no PDF (HTML canonical render); ELF gABI: HTTP 200; isa-manual releases carry `riscv-spec.pdf` assets |
 | `2026-09-27` | `MODEL-METHOD.4` | the four acquisitions fetched, digested, cached | digests and byte counts in the leaf table; re-hash of the cached copies matches |
 | `2026-09-27` | `MODEL-METHOD.4` | content sanity | psABI mentions RISC-V 85×; `__NR_exit` present in the syscall header; `__muldi3 (di_int a, di_int b); // a * b` in the builtins inventory; `%PDF-1.1` magic on the ELF spec |
@@ -561,6 +625,7 @@ logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.5` | `SEMILITH-MM-0049 (leaf MODEL-METHOD.5): …` | the method, in prose, written to be learned from |
 | `MODEL-METHOD.4` | `SEMILITH-MM-0048 (leaf MODEL-METHOD.4): …` | the run-real-code set acquired and digest-pinned; the PDF question answered YES |
 | `MODEL-METHOD.3` | `SEMILITH-MM-0047 (leaf MODEL-METHOD.3): …` | the census swept the snapshot; missing now means excluded, with closers named |
 | `MODEL-METHOD.2` | `SEMILITH-MM-0046 (leaf MODEL-METHOD.2): …` | the materials requirement: two record families, the unit registry, the 24-category first pass |

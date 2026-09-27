@@ -8,6 +8,20 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the method, in prose, written to be learned from (MODEL-METHOD.5)
+
+Root cause this leaf closes: the method existed only as the history of its exercise — eleven
+leaves of it — and a method that lives only in its own history cannot be learned from. The
+document is written against what the session actually did, with the rejections kept, and it
+names the four judgement calls (publication, class, authority, disagreement classification)
+rather than letting them look like mechanics.
+
+The acceptance probe worth keeping: the body of docs/METHOD.md references no project-owned
+tool, path, or id outside the worked example — the carryability claim is checked, not
+asserted. The mdBook carries the document verbatim, the house pattern for every source doc.
+
+Lessons: declined here (the framing is the document's own closing section).
+
 ## _(2026-09-27)_ — the run-real-code set is acquired, and the PDF question is answered (MODEL-METHOD.4)
 
 Root cause this leaf closes: the census (" + bt + ".3" + bt + ") named the run-real-code set as the
