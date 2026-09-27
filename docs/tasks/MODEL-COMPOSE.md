@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `MODEL-COMPOSE`
-- Status: `active`
+- Status: `done` (6/6 leaves complete `2026-09-27`; composition is
+  a verdict, a discharge, and a materializable unit)
 - Roadmap lane: cross-cutting; the mechanism by which breadth is reached without lowering the bar
 - Gate: contributes the composition verdict a composed unit must pass
 - Depends on: `decision_composition-model`, `MODEL-METHOD.8` (the definition must be owned before
@@ -155,9 +156,42 @@ evidence**, never by absence of it.
     move a single observable — all four guest ELF digests byte-identical and `run_smoke` ok.
 
 - ID: `MODEL-COMPOSE.5` — **nesting: a composition is a unit**
-  Status: `pending`
+  Status: `done`
   Goal: `computer → board → soc → {cpu, device}` uses one record shape at every level.
   Acceptance: a two-level composition is checked by the same code as a one-level one.
+
+  Result: met, `2026-09-27`. `schema/composition.sexp` — `(composition (id …) (part …))`, zero
+  kernel lines — and `scripts/compose_units.py` materialize a composition into an ordinary
+  unit directory: the parts merge through `merge_units(…)` (the same code), the three
+  catalogues write through the single mapping owners, and an `encoding.sexp` derives when
+  exactly one part carries one. The acceptance, run: a board materialized from the real
+  profile's parts (26 requirements, 34 obligations, 3 sources, the 52-instruction encoding)
+  self-merges, discharges 8/8, and resolves through the encoding read path — every check the
+  unmodified one-level tools already own. Two ISA-carrying parts refuse with the
+  multiprocessor boundary named; part paths resolve against the manifest, the way
+  fragment-root resolves against its document. The tree closes 6/6.
+  Design (recorded before code, `2026-09-27`), the merge/discharge machinery read first:
+  - **A board is materialized, then ordinary.** A composition manifest —
+    `schema/composition.sexp`: `(composition (id STRING) (part STRING…))`, parts by
+    repository-relative path — names the unit parts; `scripts/compose_units.py <manifest>
+    <out-dir>` merges them with `merge_units(…)` (the SAME code, no fork) and derives an
+    ordinary unit directory: `requirements.sexp`, `contract-obligations.sexp`, `sources.sexp`
+    written through the single mapping owners, plus an `encoding.sexp` when exactly one part
+    carries one. The result is checked by the unchanged tools — `merge_records` self-merge,
+    `discharge_assumptions`, `UNIT-COMPOSITION`'s read path — which IS the acceptance: a
+    two-level composition checked by the same code as a one-level one, proven by running it.
+  - **Provenance is kept, not rewritten.** Merged records keep their origin units'
+    `profile_ids` (the membership union `SOT-FORMAT.5` chose); the board does not overwrite
+    where its facts came from. The encoding derivation rewrites only the document's own
+    `profile` field to the composition id — identity, not content.
+  - **Named boundary: exactly one ISA-carrying part.** A board with two encoding-carrying
+    parts is a multiprocessor, and multiprocessors need the address-space assignment operator
+    the tree's open question already defers — refused by name today, earned from a real case
+    the day one exists. A part set with no encoding derives a pure-record board (legal).
+  - **No new doctrine gate**: the derived files are ordinary corpus wherever they land, so
+    RECORD-SCHEMA / UNIT-COMPOSITION / SEMANTICS cover them without change. What a TRACKED
+    board will need is a freshness proof (manifest → derived bytes, the `gen_fragments`
+    precedent) — real with the first tracked board, named here so it is a decision, not a gap.
 
 - ID: `MODEL-COMPOSE.6` — **semantic refinement points**
   Status: `done`
@@ -211,7 +245,7 @@ evidence**, never by absence of it.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-COMPOSE.5` | `pending` | nesting — a composition is itself a unit; one record shape at every level, decided by the same code |
+| — | — | — | the tree is complete (6/6 leaves done); composition is a verdict, a discharge, and a materializable unit |
 
 ## Decisions
 
@@ -576,10 +610,71 @@ evidence**, never by absence of it.
   commit; `LIVE_STATUS.md` re-derived (16 doctrines, 199 arms); `TOOLBOX.md` rows;
   `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
 
+## Acceptance Checklist (leaf MODEL-COMPOSE.5)
+
+- [x] **REPRODUCE / ISSUE** — the nesting claim as it stood: composition produced VERDICTS
+  (`.1`–`.4`, `.6`) but nothing produced a UNIT from them. Census before this leaf:
+
+  ```
+  $ git ls-files scripts | grep -c 'compose_units'
+  0                                             # a composition was not materializable
+  $ grep -c 'composition' schema/schema.sexp schema/*.sexp 2>/dev/null | grep -v ':0' | wc -l
+  0                                             # and had no manifest vocabulary
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: `computer → board → soc → {cpu, device}`
+  uses one record shape at every level ONLY IF a board's records exist as an ordinary unit
+  directory — otherwise every level above one needs new check code, and the shape is not
+  one, it is one-plus-a-special-case. WHERE: measured, not read —
+
+  ```
+  $ git ls-files scripts | grep -c 'compose_units'
+  0                                             # a composition was not materializable
+  $ grep -l 'composition' schema/*.sexp | wc -l
+  0                                             # and had no manifest vocabulary
+  ```
+
+  The merge/discharge verdicts consumed unit directories; nothing derived a directory from a
+  composition.
+
+- [x] **FIX** — `schema/composition.sexp` (data) + `scripts/compose_units.py`: manifest
+  schema-validated; parts merged by `merge_units(…)` — the same code, no fork; catalogues
+  written through the single mapping owners; encoding derived under the exactly-one-ISA rule
+  with the multiprocessor boundary named.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived; the acceptance IS the
+  same-code run:
+
+  ```
+  $ python3 scripts/compose_units.py --self-test
+  compose_units --self-test: 9 pass / 0 fail
+  $ python3 scripts/compose_units.py target/doctrine_scratch/mc5/board.sexp target/doctrine_scratch/mc5/profiles/board-demo
+  composed unit 'board-demo': 26 requirement(s), 34 obligation(s), 3 source(s); encoding derived from …/parts/cpu
+  $ python3 scripts/merge_records.py …/board-demo …/board-demo     # SAME unmodified code
+  composed: 26 requirement(s), 34 obligation(s) (26 cpu-guarantee, 8 environment-assumption) …
+  $ python3 scripts/discharge_assumptions.py …/board-demo          # SAME unmodified code
+  all 8 environment-assumption(s) discharged by named guarantee(s) — the composition holds
+  $ # board encoding through C.load_fragment — the SAME read path: 52 instruction(s)
+  ```
+
+- [x] **NO REGRESSION** — merge 18 pass / 0 fail; discharge 6 pass / 0 fail; tool 9 pass /
+  0 fail; sexp 18/0; kernel 50/0; RECORD-SCHEMA 23/0; UNIT-COMPOSITION 8/0; SEMANTICS 7/0;
+  readers 28/28 (schema/composition.sexp swept); whole gate green after staging.
+
+- `promotion: declined (the "materialize, then stay ordinary" rule is stated in the tool's
+  docstring and this leaf, where the first tracked board will meet it).`
+
+- [x] **LOCKSTEP** — `TOOLBOX.md` gains the instrument; `MEMORY.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit. No new doctrine gate: the
+  derived files are ordinary corpus, covered wherever they land; the tracked-board freshness
+  proof is named as the first tracked board's job.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-COMPOSE.5` | `--self-test` | `9 pass / 0 fail` — materialization, same-code merge/discharge, no-parts, ghost part, multiprocessor boundary, schema refusal |
+| `2026-09-27` | `MODEL-COMPOSE.5` | real corpus: board from the profile's parts | `board-demo`: 26 req + 34 ob + 3 src + 52-insn encoding; self-merge, 8/8 discharge, encoding read path — all unmodified |
 | `2026-09-27` | `MODEL-COMPOSE.6` | tool `--self-test` | `8 pass / 0 fail` — declared refinement accepted, silent/double/lie/arity/schema arms each naming their reason |
 | `2026-09-27` | `MODEL-COMPOSE.6` | gate `--self-test` | `7 pass / 0 fail` — pair coverage, citation-less rule, silent override across a unit, empty-corpus refusal, named skip |
 | `2026-09-27` | `MODEL-COMPOSE.6` | real run | `ok (3 check(s))` — rv64i 52/52, refinement rule trivial on one fragment, citations 52/52 via the offline cache |
@@ -609,6 +704,7 @@ evidence**, never by absence of it.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-COMPOSE.5` | `SEMILITH-MC-0043 (leaf MODEL-COMPOSE.5): …` | a composition materializes into an ordinary unit; the tree closes 6/6 |
 | `MODEL-COMPOSE.6` | `SEMILITH-MC-0042 (leaf MODEL-COMPOSE.6): …` | refinement points declared, the semantics corpus gated; 16th doctrine |
 | `MODEL-COMPOSE.4` | `SEMILITH-MC-0041 (leaf MODEL-COMPOSE.4): …` | slots declared, the unit union decided and gated; 15th doctrine |
 | `MODEL-COMPOSE.3` | `SEMILITH-MC-0040 (leaf MODEL-COMPOSE.3): …` | assumption/guarantee discharge decides over the merged union; 8/8 on the real corpus; fired RED by removing one guarantee |

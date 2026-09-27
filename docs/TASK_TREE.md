@@ -61,7 +61,7 @@ on the same commit. One commit per completed leaf.
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
-| [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `active` | `.5` — nesting: a composition is itself a unit (5 of 6 leaves done) | repo-local |
+| [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `done` | — (6/6 leaves complete; a composition is a verdict, a discharge, and a materializable unit) | repo-local |
 | [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` | `.10` — the extraction contract (6 of 13 leaves done) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |

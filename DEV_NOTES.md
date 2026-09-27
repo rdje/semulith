@@ -8,6 +8,37 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — a composition is an ordinary unit, and the tree closes (MODEL-COMPOSE.5)
+
+Root cause this leaf closes: composition produced verdicts (encoding union, record merge,
+assumption/guarantee discharge, slots, refinement) but nothing produced a UNIT from them —
+`computer -> board -> soc -> {cpu, device}` had one record shape at level one and no shape at
+all above it. The fix is deliberately boring: `compose_units.py` merges the parts with
+`merge_units(…)` — the same code, no fork — and writes an ordinary unit directory through the
+single mapping owners. Boring is the point: the acceptance is that a two-level composition is
+checked by the same code as a one-level one, and the way to get that is to not write new check
+code at all.
+
+Design choices, stated: part paths resolve against the manifest's own directory (the way
+fragment-root resolves against its document); provenance is kept, not rewritten — merged
+records keep their origin units' `profile_ids`, the board overwrites only the encoding
+document's own identity field; exactly one ISA-carrying part (two is a multiprocessor — the
+address-space operator stays refused-until-earned); no new doctrine gate, because the derived
+files are ordinary corpus covered by the existing gates wherever they land. The tracked-board
+freshness proof (manifest -> derived bytes, the gen_fragments precedent) is the first tracked
+board's job, named in the leaf.
+
+Measured en route: the first implementation read only the first `(part …)` child of the
+manifest — every multi-part composition silently halved. The self-test's census arm caught it
+(2 obligations where 3 were owed). A census that counts is the cheapest oracle there is.
+
+Validation: `--self-test` 9/0; real corpus board through unmodified `merge_records`,
+`discharge_assumptions`, and the encoding read path (26/34/3 + 52 instructions). Regression:
+whole guard set green.
+
+Lessons: declined here (the materialize-then-stay-ordinary rule is stated in the tool's
+docstring and the owning leaf).
+
 ## _(2026-09-27)_ — a silent override is refused, and the execution authority gets its gate (MODEL-COMPOSE.6)
 
 Root cause this leaf closes: two measurements, one design. (1) The refinement edge had no
@@ -605,29 +636,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
 - A rule keyed on words fires on prose about the rule. The frontier check matched any line
   mentioning "frontier leaf" and double-reported; anchoring it on the label fixed it, and the
   narrowing was re-fired RED — narrowing a gate is precisely the edit that can silently disable it.
-
-## _(2026-09-13)_ — a delivered package is not ingested until its rot sources are removed
-
-- Planning package v0.2 arrived in the worktree as 15 untracked files plus two modified
-  tracked ones, and every problem it carried was invisible to a reader: `shasum -a 256 -c
-  MANIFEST.sha256` printed 25 × `OK` and `rc=0`. The manifest was *correct and already
-  doomed* — two of its rows (`README.md`, `ROADMAP.md`) name files this repository exists to
-  change. A control whose failure is scheduled is not a control.
-- The enforcer found the one defect a human review had not: `scripts/check_doctrines.sh` →
-  `README-STABILITY: README.md no longer links README_POLICY.md`. The delivered README was a
-  perfectly good package front page and a policy breach, because replacing a landing page
-  silently drops whatever contract the landing page carried. Promoted:
-  [`docs/knowledge/re-derivable-vs-cited-evidence.md`](docs/knowledge/re-derivable-vs-cited-evidence.md).
-- Two byte-identical copies of the archogen integration contract shipped together. Both
-  passed every gate. Promoted:
-  [`docs/knowledge/duplicate-document-ownership.md`](docs/knowledge/duplicate-document-ownership.md).
-- ⛔ **Two sibling doctrines disagreed about what an instrument is.** `GAP-CLAIM-CENSUS` prints
-  `git grep -n '<symbol>' -- src scripts | wc -l` in its own failure hint and accepts it as a
-  census; `TASK-ACCEPTANCE`'s default signature family recognises `git ls-files|log -S|…` and
-  **not** `git grep` or `wc -l`. Obeying one gate produced evidence the other refused. Fixed
-  through the sanctioned `.doctrine/evidence_tokens.txt` seam, never by weakening the evidence
-  — and the widened gate was then fired RED (a prose-only box → `rc=1`) to prove it still
-  discriminates. Promoted:
-  [`docs/knowledge/census-instrument-signature-gap.md`](docs/knowledge/census-instrument-signature-gap.md).
-  Upstream owner: this is a `bedrock` template defect, not a Semulith one.
 

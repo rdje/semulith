@@ -13,9 +13,9 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` v0.3 is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (5/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
-- **Closed `2026-09-27`:** `SOT-FORMAT` (10/10) and `DOC-SHARDING` earlier; `MODEL-COMPOSE`'s slots leaf joined them the same day — slots are data (zero kernel lines), the unit's composed encoding space is decided and gated as the 15th doctrine (`UNIT-COMPOSITION`), and partial is declared, never inferred.
-- **Frontier leaf:** `MODEL-COMPOSE.5` — nesting: a composition is itself a unit, one record shape at every level (`computer → board → soc → {cpu, device}`), decided by the same code at one or two levels. The semantics corpus is gated now (16th doctrine `SEMANTICS`): well-formed, complete, cited, and a silent semantic override is refused by name.
+- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (6/13), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
+- **Closed `2026-09-27`:** `SOT-FORMAT` (10/10) and `DOC-SHARDING` earlier; `MODEL-COMPOSE`'s slots leaf joined them the same day — slots are data (zero kernel lines), the unit's composed encoding space is decided and gated as the 15th doctrine (`UNIT-COMPOSITION`), and partial is declared, never inferred. `MODEL-COMPOSE` joined them (6/6 — composition is a verdict, a discharge, and a materializable unit).
+- **Frontier leaf:** `MODEL-METHOD.10` — the extraction contract: is the definition sufficient for an engine? With composition done (6/6 — a verdict, a discharge, a materializable unit), the last open half of P1's start condition is the definition's sufficiency.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
 - **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted — P1's start condition is `SOT-FORMAT.2` (now done) + `MODEL-METHOD.10`; the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone (`decision_lane-consumption`).
 - **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm is a first-class target from the first crate (`decision_browser-wasm-target`); lane `PORT-WEB` (proposed, consumed by `P1-LAB`) owns it, leaf `.1` activates with `P1-LAB.1`.
@@ -24,7 +24,7 @@
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
   docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Next action:** `MODEL-COMPOSE.5` — nesting: prove a two-level composition is checked by the same code as a one-level one, on the record shape everything above (merge, discharge, slots, refinement) already reads. P1's start condition stays half-met (`MODEL-METHOD.10` open). ⛔ Everything moves only behind the schema layer, never before.
+- **Next action:** `MODEL-METHOD.10` — the extraction contract: enumerate what an engine must extract from the canonical definition and close every gap; P1's start condition (`SOT-FORMAT.2` + `MODEL-METHOD.10`) is half-met until it lands. ⛔ Everything moves only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-BOOKS.1` (the book structure and the complete materials bill). `MODEL-COMPOSE`'s discharge operator landed; its frontier is slots.
