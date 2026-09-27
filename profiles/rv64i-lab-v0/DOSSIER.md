@@ -153,9 +153,9 @@ written before any model exists, which is the whole point of `EVD-03`.
 ## The environment contract
 
 [`ENVIRONMENT.md`](ENVIRONMENT.md) is `rv64i-lab-env-v0`, the second of `SCP-01`'s four artifacts,
-with [`contract-obligations.jsonl`](contract-obligations.jsonl) as its 33 machine-readable records
-(25 CPU guarantees, 8 environment assumptions) and
-[`requirements.jsonl`](requirements.jsonl) as the 25 requirements they discharge.
+with [`contract-obligations.sexp`](contract-obligations.sexp) as its 34 machine-readable records
+(26 CPU guarantees, 8 environment assumptions) and
+[`requirements.sexp`](requirements.sexp) as the 26 requirements they discharge.
 
 Two of its assumptions are **"none"**, and say why: no virtual time exists (no CSR, `Zicntr` or
 `Zihpm`, so nothing is architecturally readable, and the harness's instruction count is not

@@ -47,7 +47,7 @@ These ship with the discipline spine and are project-neutral:
 | `UPSTREAM-INDEX` | a defect raised against a dependency is tracked like our own: each issue is a self-contained subtree under `docs/upstream/` whose `issue.sexp` owns its id, severity, state and dated history, and every index of it is a checked mirror — because self-containment and a second source of truth cannot both hold |
 | `TREE-CLAIMS` | every live document's leaf counts, active trees and frontier leaf match `docs/tasks/` |
 | `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
-| `RECORD-SCHEMA` | every record file validates, cites only pinned sources, and states what its profile states |
+| `RECORD-SCHEMA` | every record file validates on its track (JSONL by schema, catalogues by the schema layer), cites only pinned sources, and states what its profile states |
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
 | `SHARD-FREEZE` | the sharded changelog history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards |
 

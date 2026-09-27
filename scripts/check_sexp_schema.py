@@ -27,6 +27,7 @@ list.
 
 from __future__ import annotations
 
+import re
 import sys
 import tempfile
 from pathlib import Path
@@ -86,11 +87,20 @@ def _pairs(form, where: str) -> list[tuple[str, object]]:
 
 
 class Field:
-    """One field declaration, kernel-parsed."""
+    """One field declaration, kernel-parsed.
+
+    Since `SOT-FORMAT.3` a field may carry optional FACETS the record contracts already
+    demanded of the JSON schemas: `(pattern "…")` and `(min-length N)` constrain string
+    values (regex search, JSON-Schema `pattern` semantics; minimum length); `(min N)` and
+    `(unique yes)` constrain repeated fields (at least N occurrences; no two occurrences
+    equal). Facets are data in the schema file, like `(values …)` — declaring them is not a
+    kernel change.
+    """
 
     def __init__(self, where: str, form):
         g = _group(_pairs(form, where), where,
-                   single=("name", "type", "repeat", "optional", "empty"),
+                   single=("name", "type", "repeat", "optional", "empty",
+                           "pattern", "min-length", "min", "unique"),
                    multi=("head", "values"))
         if "name" not in g:
             raise SchemaError(f"{where}: a (field …) needs exactly one (name SYM)")
@@ -124,7 +134,7 @@ class Field:
         if "empty" in g and self.type == "form":
             raise SchemaError(f"{where}: field {self.name}: (empty yes) is for atom fields — "
                               f"a form field's emptiness is its construct's business")
-        for flag in ("repeat", "optional", "empty"):
+        for flag in ("repeat", "optional", "empty", "unique"):
             v = g.get(flag)
             if v is None:
                 setattr(self, flag, False)
@@ -134,6 +144,45 @@ class Field:
                 raise SchemaError(f"{where}: field {self.name}: ({flag} …) is yes or no, "
                                   f"got {v!r}")
             setattr(self, flag, v == "yes")
+        # facets ---------------------------------------------------------------------------------
+        self.pattern = None
+        if "pattern" in g:
+            if self.type != "string":
+                raise SchemaError(f"{where}: field {self.name}: (pattern …) constrains a "
+                                  f"string field, not type {self.type!r}")
+            pat = g["pattern"]
+            if not isinstance(pat, str) or isinstance(pat, S.Symbol):
+                raise SchemaError(f"{where}: field {self.name}: (pattern …) takes a quoted "
+                                  f"regex string, got {pat!r}")
+            try:
+                re.compile(pat)
+            except re.error as exc:
+                raise SchemaError(f"{where}: field {self.name}: (pattern …) is not a valid "
+                                  f"regex: {exc}") from exc
+            self.pattern = pat
+        self.min_length = None
+        if "min-length" in g:
+            if self.type != "string":
+                raise SchemaError(f"{where}: field {self.name}: (min-length …) constrains a "
+                                  f"string field, not type {self.type!r}")
+            n = g["min-length"]
+            if not isinstance(n, int) or isinstance(n, bool) or n < 0:
+                raise SchemaError(f"{where}: field {self.name}: (min-length N) takes one "
+                                  f"non-negative integer, got {n!r}")
+            self.min_length = n
+        self.min = None
+        if "min" in g:
+            if not self.repeat:
+                raise SchemaError(f"{where}: field {self.name}: (min N) belongs to a "
+                                  f"(repeat yes) field — it counts occurrences")
+            n = g["min"]
+            if not isinstance(n, int) or isinstance(n, bool) or n < 0:
+                raise SchemaError(f"{where}: field {self.name}: (min N) takes one "
+                                  f"non-negative integer, got {n!r}")
+            self.min = n
+        if self.unique and not self.repeat:
+            raise SchemaError(f"{where}: field {self.name}: (unique yes) belongs to a "
+                              f"(repeat yes) field — singularity is its own constraint")
 
 
 class Construct:
@@ -307,6 +356,12 @@ def _check_atom(fld: Field, value, where: str) -> None:
         if not isinstance(value, str) or isinstance(value, S.Symbol) or isinstance(value, bool):
             raise SchemaError(f'{where}: field "{fld.name}" has wrong value type — want '
                               f'string, got {value!r}')
+        if fld.min_length is not None and len(value) < fld.min_length:
+            raise SchemaError(f'{where}: field "{fld.name}" is shorter than min-length '
+                              f'{fld.min_length}, got {value!r}')
+        if fld.pattern is not None and not re.search(fld.pattern, value):
+            raise SchemaError(f'{where}: field "{fld.name}" value {value!r} does not match '
+                              f'/{fld.pattern}/')
         return
     # symbol
     if not isinstance(value, S.Symbol):
@@ -393,6 +448,7 @@ def validate_form(form, constructs: dict[str, Construct], operators: dict[str, O
         raise SchemaError(f'{where}: undeclared construct "{head}"')
     c = constructs[head]
     counts: dict[str, int] = {}
+    seen: dict[str, list] = {}
     for child in form[1:]:
         if not isinstance(child, list) or isinstance(child, S.Symbol) or not child:
             raise SchemaError(f'{where}: construct "{head}": expected a (field value) child '
@@ -411,6 +467,7 @@ def validate_form(form, constructs: dict[str, Construct], operators: dict[str, O
         if fld.type == "form":
             if fname in fld.heads:
                 validate_form(child, constructs, operators, where)   # (source (file …) …)
+                seen.setdefault(fname, []).append(child)
             else:
                 if len(child) != 2 or not isinstance(child[1], list) \
                         or isinstance(child[1], S.Symbol):
@@ -423,6 +480,7 @@ def validate_form(form, constructs: dict[str, Construct], operators: dict[str, O
                     raise SchemaError(f'{where}: construct "{head}" field "{fname}": form '
                                       f'head "{inner}" is not one of {sorted(fld.heads)}')
                 validate_form(child[1], constructs, operators, where)  # (effect (set …))
+                seen.setdefault(fname, []).append(child[1])
         else:
             if len(child) == 1:
                 if fld.type is None or fld.empty:
@@ -439,10 +497,22 @@ def validate_form(form, constructs: dict[str, Construct], operators: dict[str, O
                                   f'— an atom field is (name value), got {len(child)} '
                                   f'element(s) in {child!r}')
             _check_atom(fld, child[1], f'{where}: construct "{head}"')
+            seen.setdefault(fname, []).append(child[1])
     for fname, fld in c.fields.items():
-        if not fld.repeat and not fld.optional and counts.get(fname, 0) == 0:
+        n = counts.get(fname, 0)
+        if not fld.repeat and not fld.optional and n == 0:
             raise SchemaError(f'{where}: construct "{head}": missing required field '
                               f'"{fname}"')
+        if fld.repeat and fld.min is not None and n < fld.min:
+            raise SchemaError(f'{where}: construct "{head}": field "{fname}" appears {n} '
+                              f'time(s), min is {fld.min} — an empty list is not a citation')
+        if fld.repeat and fld.unique:
+            vals = seen.get(fname, [])
+            for i in range(len(vals)):
+                for j in range(i + 1, len(vals)):
+                    if vals[i] == vals[j]:
+                        raise SchemaError(f'{where}: construct "{head}": field "{fname}" '
+                                          f'repeats {vals[i]!r} — unique means written once')
 
 
 def validate_file(path: Path, constructs: dict[str, Construct],
@@ -667,6 +737,58 @@ def _selftest() -> int:
         lambda: refuses_schema('(schema (id "s"))\n(construct (name dual) '
                                '(field (name x) (type string)))\n(operator (name dual) (fixed 1))',
                                "both as a construct"))
+
+    # --- facets: the record contracts' discriminating power, as data (`SOT-FORMAT.3`) ----------
+    TOYFAC = """(schema (id "toyfac"))
+
+(construct (name rec)
+  (field (name id) (type string) (pattern "^[A-Z][A-Z0-9-]*$"))
+  (field (name title) (type string) (min-length 1))
+  (field (name tag) (type symbol) (repeat yes) (min 1) (unique yes)
+         (values red) (values blue))
+  (field (name alias) (type string) (repeat yes) (unique yes) (optional yes)))"""
+
+    arm("GREEN facets hold — pattern, min-length, min and unique all satisfied",
+        lambda: accepts('(rec (id "REQ-X") (title "t") (tag red) (tag blue) '
+                        '(alias "a") (alias "b"))', TOYFAC))
+    arm("RED   a pattern mismatch is refused by name",
+        lambda: refuses('(rec (id "req-x") (title "t") (tag red))', TOYFAC,
+                        "does not match"))
+    arm("RED   a min-length violation is refused by name",
+        lambda: refuses('(rec (id "REQ-X") (title "") (tag red))', TOYFAC,
+                        "shorter than min-length"))
+    arm("RED   a repeat below its min is refused — an empty list is not a citation",
+        lambda: refuses('(rec (id "REQ-X") (title "t"))', TOYFAC, "min is 1"))
+    arm("RED   a unique repeat refusing a duplicated value",
+        lambda: refuses('(rec (id "REQ-X") (title "t") (tag red) (tag red))', TOYFAC,
+                        "unique"))
+    arm("RED   a unique string repeat refusing a duplicated value",
+        lambda: refuses('(rec (id "REQ-X") (title "t") (tag red) (alias "a") '
+                        '(alias "a"))', TOYFAC, "unique"))
+    arm("RED   the meta-level refuses a pattern on a non-string field",
+        lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
+                               '(field (name n) (type integer) (pattern "^x$")))',
+                               "(pattern …) constrains a string"))
+    arm("RED   the meta-level refuses min-length on a non-string field",
+        lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
+                               '(field (name n) (type integer) (min-length 1)))',
+                               "(min-length …) constrains a string"))
+    arm("RED   the meta-level refuses min on a non-repeating field",
+        lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
+                               '(field (name n) (type string) (min 1)))',
+                               "(min N) belongs to a (repeat yes)"))
+    arm("RED   the meta-level refuses unique on a non-repeating field",
+        lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
+                               '(field (name n) (type string) (unique yes)))',
+                               "(unique yes) belongs to a (repeat yes)"))
+    arm("RED   the meta-level refuses an invalid regex",
+        lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
+                               '(field (name n) (type string) (pattern "^[(")))',
+                               "not a valid regex"))
+    arm("RED   the meta-level refuses a non-integer min-length",
+        lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
+                               '(field (name n) (type string) (min-length one)))',
+                               "(min-length N) takes one non-negative integer"))
 
     arm("GREEN the fixpoint: schema.sexp validates under itself",
         lambda: accepts((REPO / "schema/schema.sexp").read_text(),

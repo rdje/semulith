@@ -44,10 +44,11 @@ What exists in that format today:
   specification is a differential experiment against an independent reference (P1/P2). This does
   not change §2's generation boundary — the execution backend is still generated dispatch over
   canonical handlers; the data is the definition those handlers derive from.
-- The starter **records** (`requirements.jsonl`, `contract-obligations.jsonl`) and profile
-  **configuration** (`sources.toml`, `profile.toml`) are still in the formats the package
-  shipped. They are exactly the inputs the one-format migration moves next (`SOT-FORMAT.3`/`.4`),
-  behind the schema layer (§1.3) so that validation is never replaced by "it parses" mid-move.
+- The profile **records** are in the format now: `requirements.sexp` (26) and
+  `contract-obligations.sexp` (34), converted by `SOT-FORMAT.3` behind the schema layer (§1.3),
+  with the round-trip against the retired JSONL proven byte-identical, not asserted. The
+  remaining **configuration** inputs (`sources.toml`, `profile.toml`, `state.json`) are exactly
+  what `SOT-FORMAT.4` moves next.
 
 ### 1.2 Fragments, and the composition operator
 
@@ -85,15 +86,21 @@ in itself).
 Built today: the language (`schema/schema.sexp`, four declaration kinds — `(schema …)`,
 `(construct …)`, `(field …)`, and `(operator …)` for positional mini-languages the record
 grammar cannot state, such as the fragment files' `(fixed (31 25 0x0) …)` triples and the
-semantics effect expressions), plus one schema per corpus family — `encoding.sexp`,
-`fragment.sexp`, `semantics.sexp` — under which the tracked corpus validates; the semantics'
-32-form language is data there, and `scripts/check_semantics.py` loads it. The layer
-deliberately never reads a second file: checks that need two sources of truth (operand scoping
-against the encoding, coverage of the declared instructions) live in the consumers. The
-remaining engine inputs — records, configuration — are converted behind this layer by
-`SOT-FORMAT.3`–`.5`, and the `SOURCE-FORMAT` gate that refuses any source outside the format
-lands at `.6`; until then, the tracked JSON-schema validator keeps checking the records, and
-`check_semantics.py`/`check_encoding_disjoint.py` keep checking what they already checked.
+semantics effect expressions; field declarations since `SOT-FORMAT.3` also carry optional
+facets — `(pattern …)`, `(min-length N)`, `(min N)`, `(unique yes)` — the record contracts
+demanded and the layer now states as data), plus one schema per corpus family — `encoding.sexp`,
+`fragment.sexp`, `semantics.sexp`, `requirements.sexp`, `contract-obligations.sexp` — under
+which the tracked corpus validates; the semantics' 32-form language is data there, and
+`scripts/check_semantics.py` loads it. The profile's requirement and obligation catalogues are
+in the format behind this layer (`SOT-FORMAT.3`), read through the single mapping owner
+`scripts/records_sexp.py`; the frozen `examples/` JSONL stay JSONL on purpose, still validated
+by the tracked JSON-schema validator. The layer deliberately never reads a second file: checks
+that need two sources of truth (operand scoping against the encoding, coverage of the declared
+instructions, citation against a profile's pinned sources) live in the consumers. The remaining
+engine input — configuration — is converted behind this layer by `SOT-FORMAT.4`, records learn
+to merge across a composition boundary at `.5`, and the `SOURCE-FORMAT` gate that refuses any
+source outside the format lands at `.6`; until then, `check_semantics.py`/
+`check_encoding_disjoint.py` keep checking what they already checked.
 
 These executable definitions belong on the engine/model side of the archogen boundary. They are not implementation syntax to add to eADL. eADL may describe the offered hardware contracts; a versioned adapter connects archogen's resolved implementation plan to Semulith models and composition.
 

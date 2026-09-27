@@ -29,6 +29,30 @@ lesson nobody can retrieve by question is a lesson nobody has.
   (12 → 13 doctrines, 157 → 169 arms) — re-derived by `check_derived_counts.sh --list`, never
   incremented by hand.
 
+## _(2026-09-27)_ — the records move behind the schema layer, and the schema layer grows facets (SOT-FORMAT.3)
+
+- `profiles/rv64i-lab-v0/{requirements,contract-obligations}.jsonl` are retired;
+  `{requirements,contract-obligations}.sexp` (26 + 34 records) validate under
+  `schema/{requirements,contract-obligations}.sexp`, and the round-trip is proven byte-identical,
+  not reviewed. `RECORD-SCHEMA` re-fires its 15 scenarios on the converted form plus the schema
+  layer's own refusals (22 arms); `gate_report.py` reads through `records_sexp.py` and the G0
+  report diff is input names only.
+- ⭐ **A schema layer must not be weaker than the contract it replaces.** The JSON schemas
+  carried `pattern`/`minItems`/`uniqueItems`/`minLength`; a straight conversion would have
+  evaporated them, so the `(field …)` kind grew four optional facets instead — the `.2`
+  boundary one level down (a new KIND changes the kernel; facets on the existing kind are the
+  language). And `parameters` was worse than weak: the JSON schema's own
+  `additionalProperties` banned the arrays three obligations write, and the validator never
+  descended into it — a lie the green gate could not see. Typed wrappers now refuse a float, a
+  mixed list or a nested value by name.
+- Two implementation shapes worth keeping: form heads must be `Symbol`, never plain strings —
+  a plain-string head renders quoted and reads back as data (the schema layer caught it:
+  "expected a form headed by a symbol"); and catalogue discovery must exclude the schema
+  directory, because the schemas deliberately share their basenames with the catalogues.
+- Measured en route and fixed in passing: `LIVE_STATUS.md` carried the contract at 33
+  obligations / 66 checks; the files have said 34 / 68 since `P0-PROFILE.10` — a count in a
+  live surface that no gate enumerates. Re-derived, and the row now matches the files.
+
 ## _(2026-09-27)_ — the corpus's grammar is not the designed grammar (SOT-FORMAT.2)
 
 - The schema language gained its fourth declaration kind — `(operator …)` for positional

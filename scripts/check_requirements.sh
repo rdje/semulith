@@ -6,34 +6,42 @@
 # its schema, or that cites a source the project never pinned, is worse than no catalogue: it is a
 # catalogue that looks checkable and is not.
 #
-# What is checked, beyond schema validity:
-#   1. SCHEMA     every tracked `.jsonl` record file validates against its declared schema.
-#   2. CITED      every `source_refs.source_id` in a profile's requirements names a source that
-#                 profile's `sources.toml` actually pins. `SRC-03` again, one layer up: a locator
-#                 into a document nobody acquired is not a citation.
-#   3. RESOLVED   a record claiming `research_status: resolved` may not also carry an `OPEN:` note.
-#                 ⭐ "Resolved with a known open question" is the single most convenient lie a
-#                 requirements catalogue can tell, because both halves are individually true.
-#   4. COVERAGE   every `[[decision]]` in `profile.toml` has a requirement, and the requirement's
-#                 statement is IDENTICAL to the decision's. Two files stating the same rule in
-#                 different words is how a catalogue quietly stops describing its profile.
-#   5. LINKED     every id in `dependencies` names a requirement that exists in the same file.
-#   6. OBLIGED    every `obligation_ids` entry names an obligation the profile's contract defines,
-#                 and every obligation carries BOTH a positive and a negative required check.
-#                 ⭐ Positive-only checks are how a contract comes to describe only the cases that
-#                 already work: `docs/CPU_ENVIRONMENT.md` §4 asks for negative fixtures that must
-#                 be reported as CONTRACT VIOLATIONS rather than target exceptions.
-#   7. AUTHORITY  an obligation whose requirement is architecturally `defined` must itself carry
-#                 `authority: architecture`. ⛔ This is the mechanical form of the contract's first
-#                 rule — *laboratory policy cannot override an architectural requirement* — and it
-#                 bites in the direction that matters: labelling an ISA rule as a harness choice
-#                 is what turns a defect into a "profile difference" and makes it unfalsifiable.
+# Two tracks, since `SOT-FORMAT.3` moved the profile catalogues behind the schema layer:
+#
+#   JSONL — every tracked `.jsonl` record file validates against its declared JSON schema
+#           (the frozen `examples/` delivery artifacts stay JSONL on purpose). Power: structural.
+#   SEXP  — every `requirements.sexp` / `contract-obligations.sexp` catalogue validates against
+#           its schema-layer schema (`schema/requirements.sexp`, `schema/contract-obligations.sexp`)
+#           AND carries the cross-checks, now read through scripts/records_sexp.py:
+#     2. CITED      every `source_refs.source_id` names a source the profile's `sources.toml` pins.
+#                   `SRC-03` again, one layer up: a locator into a document nobody acquired is
+#                   not a citation.
+#     3. RESOLVED   a record claiming `research_status: resolved` may not also carry an `OPEN:` note.
+#                   ⭐ "Resolved with a known open question" is the single most convenient lie a
+#                   requirements catalogue can tell, because both halves are individually true.
+#     4. COVERAGE   every `[[decision]]` in `profile.toml` has a requirement, and the requirement's
+#                   statement is IDENTICAL to the decision's. Two files stating the same rule in
+#                   different words is how a catalogue quietly stops describing its profile.
+#     5. LINKED     every id in `dependencies` names a record that exists in the same file.
+#     6. OBLIGED    every `obligation_ids` entry names an obligation the profile's contract defines,
+#                   and every obligation carries BOTH a positive and a negative required check.
+#                   ⭐ Positive-only checks are how a contract comes to describe only the cases
+#                   that already work: `docs/CPU_ENVIRONMENT.md` §4 asks for negative fixtures that
+#                   must be reported as CONTRACT VIOLATIONS rather than target exceptions.
+#     7. AUTHORITY  an obligation whose requirement is architecturally `defined` must itself carry
+#                   `authority: architecture`. ⛔ This is the mechanical form of the contract's
+#                   first rule — *laboratory policy cannot override an architectural requirement* —
+#                   and it bites in the direction that matters: labelling an ISA rule as a harness
+#                   choice is what turns a defect into a "profile difference" and makes it
+#                   unfalsifiable.
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
 #
-# ⛔ The validator it calls REFUSES on any JSON Schema keyword it does not implement, so a schema
-# gaining a new keyword breaks this gate loudly rather than silently widening what passes.
+# ⛔ Both validators REFUSE rather than guess: the JSON one on any keyword it does not implement;
+# the schema layer by name on an undeclared construct, field, arity, value type or FACET
+# (pattern / min-length / min / unique — SOT-FORMAT.3). A schema gaining power breaks the gate
+# loudly rather than silently widening what passes.
 #
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
@@ -45,40 +53,40 @@ command -v python3 >/dev/null 2>&1 || {
 
 check_records() {
 python3 - "$1" <<'PY'
-import json, re, sys, pathlib, tomllib
+import json, pathlib, sys, tomllib
 sys.path.insert(0, "scripts")
 from validate_records import validate_jsonl, UnsupportedSchema
+import sexp as S
+import records_sexp as R
+import check_sexp_schema as K
 
 root = pathlib.Path(sys.argv[1])
-findings, checked = [], 0
+findings, checked = [], []
 
-# which schema governs which record file, by basename
+# which JSON schema governs which JSONL record file, by basename
 SCHEMA_FOR = {
     "requirements.jsonl": "requirement.schema.json",
     "evidence.jsonl": "evidence.schema.json",
     "contract-obligations.jsonl": "contract-obligation.schema.json",
 }
-# contract authority vocabulary, for rule 7
+# which schema-layer schema governs which converted catalogue, by basename
+SEXP_SCHEMA_FOR = {
+    "requirements.sexp": "schema/requirements.sexp",
+    "contract-obligations.sexp": "schema/contract-obligations.sexp",
+}
 ARCH_AUTHORITY = "architecture"
 
-# ⛔ Exclude `target/` only when it is the FIRST component RELATIVE TO ROOT. A first cut wrote
-# `"target" not in p.parts`, which tests the ABSOLUTE path — and this check's own self-test
-# fixtures live under `target/doctrine-selftest/`, so every fixture was filtered away and ten
-# arms failed with "no .jsonl record file found". The arms caught it; a reviewer would not have.
+# ⛔ Exclude `target/` only when it is the FIRST component RELATIVE TO ROOT (the self-test
+# fixtures live under target/doctrine-selftest/, and an absolute-path test would filter every
+# fixture away and fail the arms with "nothing found"). `vendor` joins it for the same reason
+# and a sharper one: a vendored submodule is ANOTHER PROJECT'S tree.
 def _excluded(p):
     rel = p.relative_to(root).parts
-    # ⛔ `vendor` joins `target` here for the same reason and a sharper one: a vendored submodule
-    # is ANOTHER PROJECT'S tree. Its records answer to its schemas, not ours, and judging them by
-    # our contract produces findings nobody in this repository can act on. Measured when
-    # vendor/linkedspec arrived carrying php_phpt_inventory.jsonl.
     return bool(rel) and rel[0] in ("target", "vendor")
 
-record_files = sorted(p for p in root.rglob("*.jsonl") if not _excluded(p))
-if not record_files:
-    print("NO RECORDS no .jsonl record file found — this check cannot judge")
-    print("__CHECKED__ 0"); sys.exit(2)
-
-for rf in record_files:
+# ---------------------------------------------------------------- the JSONL track (unchanged)
+jsonl_files = sorted(p for p in root.rglob("*.jsonl") if not _excluded(p))
+for rf in jsonl_files:
     schema_name = SCHEMA_FOR.get(rf.name)
     if schema_name is None:
         findings.append(f"UNGOVERNED {rf}: no schema is declared for this record file")
@@ -87,109 +95,146 @@ for rf in record_files:
     if not schema.is_file():
         findings.append(f"NO SCHEMA  {rf}: {schema} does not exist")
         continue
-    checked += 1
-    # 1. SCHEMA
+    checked.append(str(rf.relative_to(root)))
     try:
         for err in validate_jsonl(rf, schema):
             findings.append(f"INVALID    {err}")
     except UnsupportedSchema as exc:
         print(f"UNSUPPORTED {exc}"); print("__CHECKED__ 0"); sys.exit(2)
 
-    if rf.name != "requirements.jsonl":
+# ------------------------------------------------------- the SEXP track (the profile records)
+# A file named requirements.sexp / contract-obligations.sexp is a catalogue everywhere EXCEPT
+# under schema/ — the schemas themselves carry the same basenames, and judging a schema as its
+# own target is how a gate reports its own grammar as a records violation.
+schema_dir = root / "schema"
+catalogues = sorted({p for name in SEXP_SCHEMA_FOR for p in root.rglob(name)
+                     if not _excluded(p) and schema_dir not in p.parents})
+if not jsonl_files and not catalogues:
+    print("NO RECORDS no .jsonl record file and no converted catalogue found — "
+          "this check cannot judge")
+    print("__CHECKED__ 0"); sys.exit(2)
+
+for cat in catalogues:
+    schema_rel = SEXP_SCHEMA_FOR[cat.name]
+    schema = root / schema_rel
+    if not schema.is_file():
+        findings.append(f"NO SCHEMA  {cat}: {schema} does not exist")
         continue
-    # ⛔ The cross-checks below need parsed records. A file that failed to parse has already been
-    # reported by rule 1, and re-parsing it here would CRASH the gate rather than fail it — a
-    # traceback is not a verdict. Caught by the malformed-line arm, not by review.
+    checked.append(str(cat.relative_to(root)))
+    # 1. SCHEMA — the schema layer refuses by name: undeclared construct/field, wrong arity,
+    #    wrong value type, and every FACET the record contracts carry.
     try:
-        recs = [json.loads(l) for l in rf.read_text().splitlines() if l.strip()]
-    except json.JSONDecodeError:
+        constructs, operators = K.load_schema(schema)
+        errors = K.validate_file(cat, constructs, operators)
+    except (K.SchemaError, S.SexpError) as exc:
+        print(f"UNSUPPORTED {schema_rel}: {exc}"); print("__CHECKED__ 0"); sys.exit(2)
+    for e in errors:
+        findings.append(f"INVALID    {e}")
+    if errors:
+        continue                    # a catalogue the layer refuses cannot be cross-checked
+    try:
+        recs = R.load(cat)
+    except (R.RecordRefused, S.SexpError) as exc:
+        findings.append(f"UNREADABLE {cat.relative_to(root)}: conforms to its schema but does "
+                        f"not map to records — {exc}")
         continue
-    ids = {r.get("id") for r in recs}
+    if not recs:
+        findings.append(f"INVALID    {cat.relative_to(root)}: contains no records — an empty "
+                        f"catalogue is not a valid one")
+        continue
+    by_id = {r.get("id"): r for r in recs}
 
-    # 2. CITED — only for a requirements file living inside a profile directory
-    sources_toml = rf.parent / "sources.toml"
-    if sources_toml.is_file():
-        pinned = {s["id"] for s in tomllib.loads(sources_toml.read_text()).get("source", [])}
-        for r in recs:
-            for sr in r.get("source_refs", []):
-                if sr["source_id"] not in pinned:
-                    findings.append(
-                        f"UNPINNED SOURCE {rf.name} [{r['id']}]: cites '{sr['source_id']}', which "
-                        f"{sources_toml.name} does not pin — a locator into a document nobody "
-                        f"acquired is not a citation")
-
-    for r in recs:
-        # 3. RESOLVED
-        detail = (r.get("source_semantics") or {}).get("detail", "")
-        if r.get("research_status") == "resolved" and "OPEN:" in detail:
-            findings.append(
-                f"RESOLVED WITH AN OPEN QUESTION {rf.name} [{r['id']}]: research_status is "
-                f"'resolved' and the record still carries an OPEN note. Both halves can be true "
-                f"separately; together they are a catalogue lying about its own completeness")
-        # 5. LINKED
-        for dep in r.get("dependencies", []):
-            if dep not in ids:
-                findings.append(
-                    f"DANGLING DEP {rf.name} [{r['id']}]: depends on '{dep}', which no record "
-                    f"in this file defines")
-
-    # 6 + 7. OBLIGED / AUTHORITY — against the contract in the same PROFILE directory.
-    # ⛔ Scoped to a catalogue that sits beside a `profile.toml`. The shipped `examples/` files
-    # are frozen delivery artifacts illustrating the SCHEMA, not a profile's contract, and they
-    # are referentially inconsistent as delivered — which `--audit` reports without failing,
-    # because a `frozen-in-place` artifact must not be edited to satisfy a later rule.
-    ob_file = rf.parent / "contract-obligations.jsonl"
-    if ob_file.is_file() and (rf.parent / "profile.toml").is_file():
-        try:
-            obs = [json.loads(l) for l in ob_file.read_text().splitlines() if l.strip()]
-        except json.JSONDecodeError:
-            obs = None
-        if obs is not None:
-            by_ob = {o.get("id"): o for o in obs}
-            for o in obs:
-                checks = o.get("required_checks", [])
-                if not any(c.endswith("-POS") for c in checks) or \
-                   not any(c.endswith("-NEG") for c in checks):
-                    findings.append(
-                        f"NO NEGATIVE CHECK {ob_file.name} [{o.get('id')}]: required_checks "
-                        f"{checks} lack a positive AND a negative fixture — a contract with only "
-                        f"positive checks describes the cases that already work")
+    if cat.name == "requirements.sexp":
+        # 2. CITED — beside a profile's sources.toml
+        sources_toml = cat.parent / "sources.toml"
+        if sources_toml.is_file():
+            pinned = {s["id"] for s in tomllib.loads(sources_toml.read_text()).get("source", [])}
             for r in recs:
-                for oid in r.get("obligation_ids", []):
-                    o = by_ob.get(oid)
-                    if o is None:
+                for sr in r.get("source_refs", []):
+                    if sr["source_id"] not in pinned:
                         findings.append(
-                            f"UNDEFINED OBLIGATION {rf.name} [{r['id']}]: names '{oid}', which "
-                            f"{ob_file.name} does not define")
-                        continue
-                    cat = (r.get("source_semantics") or {}).get("category")
-                    if cat == "defined" and o.get("authority") != ARCH_AUTHORITY:
-                        findings.append(
-                            f"AUTHORITY DOWNGRADE {ob_file.name} [{oid}]: its requirement "
-                            f"'{r['id']}' is architecturally 'defined', but the obligation claims "
-                            f"authority '{o.get('authority')}'. Laboratory policy cannot override "
-                            f"an architectural requirement, and mislabelling one is how a defect "
-                            f"becomes an unfalsifiable 'profile difference'")
+                            f"UNPINNED SOURCE {cat.name} [{r['id']}]: cites "
+                            f"'{sr['source_id']}', which {sources_toml.name} does not pin — "
+                            f"a locator into a document nobody acquired is not a citation")
+        for r in recs:
+            # 3. RESOLVED
+            detail = (r.get("source_semantics") or {}).get("detail", "")
+            if r.get("research_status") == "resolved" and "OPEN:" in detail:
+                findings.append(
+                    f"RESOLVED WITH AN OPEN QUESTION {cat.name} [{r['id']}]: research_status "
+                    f"is 'resolved' and the record still carries an OPEN note. Both halves can "
+                    f"be true separately; together they are a catalogue lying about its own "
+                    f"completeness")
+            # 5. LINKED
+            for dep in r.get("dependencies", []):
+                if dep not in by_id:
+                    findings.append(
+                        f"DANGLING DEP {cat.name} [{r['id']}]: depends on '{dep}', which no "
+                        f"record in this file defines")
 
-    # 4. COVERAGE — against the profile this catalogue belongs to
-    prof = rf.parent / "profile.toml"
-    if prof.is_file():
-        decisions = tomllib.loads(prof.read_text()).get("decision", [])
-        by_id = {r.get("id"): r for r in recs}
-        for dec in decisions:
-            rid = f"REQ-{dec['id']}"
-            if rid not in by_id:
+        # 6 + 7. OBLIGED / AUTHORITY — against the contract in the same PROFILE directory
+        ob_file = cat.parent / "contract-obligations.sexp"
+        if ob_file.is_file() and (cat.parent / "profile.toml").is_file():
+            try:
+                obs = R.load(ob_file)
+            except (R.RecordRefused, S.SexpError):
+                obs = None
+            if obs is not None:
+                by_ob = {o.get("id"): o for o in obs}
+                for o in obs:
+                    checks = o.get("required_checks", [])
+                    if not any(c.endswith("-POS") for c in checks) or \
+                       not any(c.endswith("-NEG") for c in checks):
+                        findings.append(
+                            f"NO NEGATIVE CHECK contract-obligations.sexp [{o.get('id')}]: "
+                            f"required_checks {checks} lack a positive AND a negative fixture — "
+                            f"a contract with only positive checks describes the cases that "
+                            f"already work")
+                for r in recs:
+                    for oid in r.get("obligation_ids", []):
+                        o = by_ob.get(oid)
+                        if o is None:
+                            findings.append(
+                                f"UNDEFINED OBLIGATION {cat.name} [{r['id']}]: names '{oid}', "
+                                f"which contract-obligations.sexp does not define")
+                            continue
+                        cat_ = (r.get("source_semantics") or {}).get("category")
+                        if cat_ == "defined" and o.get("authority") != ARCH_AUTHORITY:
+                            findings.append(
+                                f"AUTHORITY DOWNGRADE contract-obligations.sexp [{oid}]: its "
+                                f"requirement '{r['id']}' is architecturally 'defined', but the "
+                                f"obligation claims authority '{o.get('authority')}'. Laboratory "
+                                f"policy cannot override an architectural requirement, and "
+                                f"mislabelling one is how a defect becomes an unfalsifiable "
+                                f"'profile difference'")
+
+        # 4. COVERAGE — against the profile this catalogue belongs to
+        prof = cat.parent / "profile.toml"
+        if prof.is_file():
+            decisions = tomllib.loads(prof.read_text()).get("decision", [])
+            for dec in decisions:
+                rid = f"REQ-{dec['id']}"
+                if rid not in by_id:
+                    findings.append(
+                        f"UNCOVERED DECISION {cat.name}: profile.toml decision '{dec['id']}' "
+                        f"has no requirement '{rid}'")
+                elif by_id[rid].get("statement") != dec.get("statement"):
+                    findings.append(
+                        f"STATEMENT DRIFT {cat.name} [{rid}]: the requirement no longer states "
+                        f"what profile.toml's '{dec['id']}' states")
+
+    else:  # contract-obligations.sexp — the NO NEGATIVE CHECK arm is fired standalone too
+        for o in recs:
+            checks = o.get("required_checks", [])
+            if not any(c.endswith("-POS") for c in checks) or \
+               not any(c.endswith("-NEG") for c in checks):
                 findings.append(
-                    f"UNCOVERED DECISION {rf.name}: profile.toml decision '{dec['id']}' has no "
-                    f"requirement '{rid}'")
-            elif by_id[rid].get("statement") != dec.get("statement"):
-                findings.append(
-                    f"STATEMENT DRIFT {rf.name} [{rid}]: the requirement no longer states what "
-                    f"profile.toml's '{dec['id']}' states")
+                    f"NO NEGATIVE CHECK {cat.name} [{o.get('id')}]: required_checks {checks} "
+                    f"lack a positive AND a negative fixture")
 
 for f in findings:
     print(f)
-print(f"__CHECKED__ {checked}")
+print(f"__CHECKED__ {len(checked)}")
 sys.exit(1 if findings else 0)
 PY
 }
@@ -197,9 +242,8 @@ PY
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/schemas" "$t/p" "$t/scripts"
+  t="$(SELFTEST_TMP)"; mkdir -p "$t/schemas" "$t/p"
   cp schemas/requirement.schema.json schemas/contract-obligation.schema.json "$t/schemas/"
-  ln -sf "$ROOT/scripts/validate_records.py" "$t/scripts/validate_records.py"
 
   argc() {
     [ "$2" -eq "$1" ] && return 0
@@ -207,10 +251,9 @@ self_test() {
     printf 'RECORD-SCHEMA self-test HARNESS: %s() got %s argument(s), expected %s — a missing `;` before `arm` swallows it\n' "$3" "$2" "$1" >&2
     return 1
   }
-  REC='{"id":"REQ-D-A","profile_ids":["p"],"kind":"state","statement":"S","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"applicability":"included","research_status":"resolved","implementation_status":"planned","source_semantics":{"category":"defined","detail":"d"},"risk":"low","obligation_ids":["OB-A"],"dependencies":[],"implementation_refs":[],"evidence_ids":[]}'
-  fixture() { argc 1 "$#" fixture || return; printf '%s\n' "$1" > "$t/p/requirements.jsonl"; }
-  profile() { argc 1 "$#" profile || return; printf '%s\n' "$1" > "$t/p/profile.toml"; }
-  sources() { argc 1 "$#" sources || return; printf '%s\n' "$1" > "$t/p/sources.toml"; }
+  REQ='{"id":"REQ-D-A","profile_ids":["p"],"kind":"state","statement":"S","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"applicability":"included","research_status":"resolved","implementation_status":"planned","source_semantics":{"category":"defined","detail":"d"},"risk":"low","obligation_ids":["OB-A"],"dependencies":[],"implementation_refs":[],"evidence_ids":[]}'
+  OB='{"id":"OB-A","contract_id":"c","contract_version":"0","profile_ids":["p"],"direction":"cpu-guarantee","statement":"S","authority":"architecture","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"parameters":{},"dependencies":[],"required_checks":["CHK-A-POS","CHK-A-NEG"]}'
+
   arm() {
     argc 3 "$#" arm || return
     out="$(check_records "$t" 2>&1)"; rc=$?
@@ -221,6 +264,23 @@ self_test() {
     else pass=$((pass+1)); fi
   }
 
+  sources() { argc 1 "$#" sources || return; printf '%s\n' "$1" > "$t/p/sources.toml"; }
+  profile() { argc 1 "$#" profile || return; printf '%s\n' "$1" > "$t/p/profile.toml"; }
+  reqs()    { argc 1 "$#" reqs || return; python3 -c "
+import json, pathlib, sys
+sys.path.insert(0, '$ROOT/scripts')
+import records_sexp as R
+recs = [json.loads(l) for l in '''$1'''.split('|||') if l.strip()]
+pathlib.Path('$t/p/requirements.sexp').write_text(R.dump(recs))"; }
+  obs()     { argc 1 "$#" obs || return; python3 -c "
+import json, pathlib, sys
+sys.path.insert(0, '$ROOT/scripts')
+import records_sexp as R
+recs = [json.loads(l) for l in '''$1'''.split('|||') if l.strip()]
+pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
+  # schema-layer access: the fixture root must SEE schema/ for load_schema — symlink it
+  ln -sfn "$ROOT/schema" "$t/schema"
+
   sources '[[source]]
 id = "SRC-A"
 file = "a.html"'
@@ -229,46 +289,57 @@ id = "D-A"
 authority = "architecture"
 statement = "S"
 source = "SRC-A §1"'
-  fixture "$REC";                                             arm "GREEN a covered, cited, valid record" 0 "__CHECKED__ 1"
-  fixture "$(printf '%s' "$REC" | sed 's/"risk":"low"/"risk":"apocalyptic"/')"
-                                                              arm "RED   a record that fails its schema" 1 "INVALID"
-  fixture "$(printf '%s' "$REC" | sed 's/"SRC-A"/"SRC-NOWHERE"/')"
+  reqs "$REQ";                                                arm "GREEN a covered, cited, valid record" 0 "__CHECKED__ 1"
+  # ---- the schema layer's own refusals, on the converted form -------------------------------
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['risk']='apocalyptic'; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   a record the schema layer refuses (bad enum symbol)" 1 "is not one of"
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['source_refs']=[]; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   an empty citation list — min 1 (an empty list is not a citation)" 1 "min is 1"
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['obligation_ids']=['OB-A','OB-A']; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   a duplicated obligation — unique" 1 "unique"
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['id']='1BAD'; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   an id the pattern refuses" 1 "does not match"
+  printf '%s\n' '(requirement (id "REQ-D-A") (broken' > "$t/p/requirements.sexp"
+                                                              arm "RED   a record that does not even parse" 1 "does not even parse"
+  : > "$t/p/requirements.sexp";                               arm "RED   an empty catalogue" 1 "contains no records"
+  # ---- the cross-checks on the converted form ------------------------------------------------
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['source_refs']=[{'source_id':'SRC-NOWHERE','locator':'§1'}]; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   cites a source nobody pinned" 1 "UNPINNED SOURCE"
-  fixture "$(printf '%s' "$REC" | sed 's/"detail":"d"/"detail":"d OPEN: something"/')"
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['source_semantics']['detail']='d OPEN: something'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   resolved while carrying an open question" 1 "RESOLVED WITH AN OPEN QUESTION"
-  fixture "$(printf '%s' "$REC" | sed 's/"dependencies":\[\]/"dependencies":["REQ-D-GHOST"]/')"
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['dependencies']=['REQ-D-GHOST']; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   depends on a record that does not exist" 1 "DANGLING DEP"
-  fixture "$(printf '%s' "$REC" | sed 's/"statement":"S"/"statement":"something else"/')"
+  reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['statement']='something else'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   the requirement no longer states the decision" 1 "STATEMENT DRIFT"
   profile '[[decision]]
 id = "D-B"
 authority = "architecture"
 statement = "T"
 source = "SRC-A §2"'
-  fixture "$REC";                                             arm "RED   a profile decision with no requirement" 1 "UNCOVERED DECISION"
+  reqs "$REQ";                                                arm "RED   a profile decision with no requirement" 1 "UNCOVERED DECISION"
   profile '[[decision]]
 id = "D-A"
 authority = "architecture"
 statement = "S"
 source = "SRC-A §1"'
-  printf 'not json at all\n' > "$t/p/requirements.jsonl";      arm "RED   a malformed record line" 1 "not valid JSON"
-  : > "$t/p/requirements.jsonl";                               arm "RED   an empty record file"   1 "contains no records"
-  # ---- rules 6 and 7: the contract ---------------------------------------------------------
-  OB='{"id":"OB-A","contract_id":"c","contract_version":"0","profile_ids":["p"],"direction":"cpu-guarantee","statement":"S","authority":"architecture","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"parameters":{},"dependencies":[],"required_checks":["CHK-A-POS","CHK-A-NEG"]}'
-  obligations() { argc 1 "$#" obligations || return; printf '%s\n' "$1" > "$t/p/contract-obligations.jsonl"; }
-  fixture "$REC"; obligations "$OB";                          arm "GREEN requirement, contract and profile agree" 0 "__CHECKED__ 2"
-  obligations "$(printf '%s' "$OB" | sed 's/"CHK-A-POS","CHK-A-NEG"/"CHK-A-POS"/')"
+  reqs "$REQ"; obs "$OB";                                     arm "GREEN requirement, contract and profile agree" 0 "__CHECKED__ 2"
+  obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['required_checks']=['CHK-A-POS']; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   an obligation with no negative fixture" 1 "NO NEGATIVE CHECK"
-  obligations "$(printf '%s' "$OB" | sed 's/"id":"OB-A"/"id":"OB-OTHER"/')"
+  obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['id']='OB-OTHER'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   a requirement names an undefined obligation" 1 "UNDEFINED OBLIGATION"
-  obligations "$(printf '%s' "$OB" | sed 's/"authority":"architecture"/"authority":"laboratory"/')"
+  obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['authority']='laboratory'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   an architectural rule labelled a laboratory choice" 1 "AUTHORITY DOWNGRADE"
-  obligations "$OB"
-  rm -f "$t/p/contract-obligations.jsonl"
-  fixture "$REC"; cp "$t/p/requirements.jsonl" "$t/p/mystery.jsonl"
-                                                              arm "RED   a record file no schema governs" 1 "UNGOVERNED"
+  obs "$OB"
+  rm -f "$t/p/requirements.sexp";                             arm "RED   an obligation catalogue alone still checks" 0 "__CHECKED__ 1"
+  reqs "$REQ"; rm -f "$t/p/contract-obligations.sexp"
+  # ---- the JSONL track (examples stay JSONL) -------------------------------------------------
+  printf '%s\n' "$REQ" > "$t/p/requirements.jsonl";           arm "GREEN a JSONL record validates on the old track" 0 "__CHECKED__ 2"
+  printf 'not json at all\n' > "$t/p/mystery.jsonl";          arm "RED   a record file no schema governs" 1 "UNGOVERNED"
   rm -f "$t/p/mystery.jsonl"
-  rm -f "$t/p/requirements.jsonl";                             arm "REFUSE nothing to check at all" 2 "NO RECORDS"
+  printf 'not json at all\n' > "$t/p/requirements.jsonl";     arm "RED   a malformed JSONL line" 1 "not valid JSON"
+  : > "$t/p/requirements.jsonl";                              arm "RED   an empty JSONL record file" 1 "contains no records"
+  rm -f "$t/p/requirements.jsonl" "$t/p/requirements.sexp" "$t/p/contract-obligations.sexp"
+                                                              arm "REFUSE nothing to check at all" 2 "NO RECORDS"
 
   rm -rf "$t"
   printf 'RECORD-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
@@ -279,22 +350,30 @@ source = "SRC-A §1"'
 # so a known gap stays re-derivable instead of becoming prose someone has to remember.
 if [ "${1:-}" = "--audit" ]; then
 python3 - <<'AUDITPY'
-import json, pathlib
-_SKIP = {"target", "vendor"}
-for d in sorted({p.parent for p in pathlib.Path(".").rglob("*.jsonl") if not _SKIP & set(p.parts)}):
-    rq, ob = d / "requirements.jsonl", d / "contract-obligations.jsonl"
-    if not (rq.is_file() and ob.is_file()):
+import json, pathlib, sys
+sys.path.insert(0, "scripts")
+import records_sexp as R
+_SKIP = {"target", "vendor", "schema"}
+dirs = sorted({p.parent for p in pathlib.Path(".").rglob("*")
+               if p.suffix in (".jsonl", ".sexp") and not _SKIP & set(p.parts)})
+for d in dirs:
+    rq = d / "requirements.sexp"
+    ob = d / "contract-obligations.sexp"
+    if not (rq.is_file() or ob.is_file() or (d / "requirements.jsonl").is_file()):
         continue
     enforced = (d / "profile.toml").is_file()
-    reqs = [json.loads(l) for l in rq.read_text().splitlines() if l.strip()]
-    obs = [json.loads(l) for l in ob.read_text().splitlines() if l.strip()]
-    defined = {o["id"] for o in obs}
-    named = {oid for r in reqs for oid in r.get("obligation_ids", [])}
+    def load(p):
+        if p.is_file():
+            return R.load(p) if p.suffix == ".sexp" else \
+                [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
+        return None
+    reqs = load(rq) or load(d / "requirements.jsonl") or []
+    obs = load(ob) or load(d / "contract-obligations.jsonl") or []
     print(f"{d}/  ({'ENFORCED' if enforced else 'advisory - frozen delivery artifacts'})")
     print(f"  requirements {len(reqs)} | obligations {len(obs)}")
+    defined = {o["id"] for o in obs}
+    named = {oid for r in reqs for oid in r.get("obligation_ids", [])}
     print(f"  named but undefined : {sorted(named - defined) or 'none'}")
-    # An environment ASSUMPTION is a thing the harness must satisfy; no CPU requirement names
-    # one, so "unnamed" is correct for it and only a cpu-guarantee going unnamed is a finding.
     by_dir = {o["id"]: o.get("direction") for o in obs}
     unnamed = sorted(defined - named)
     print(f"  unnamed environment-assumptions (expected) : "

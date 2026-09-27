@@ -1,8 +1,9 @@
 # `rv64i-lab-env-v0` — the environment contract for `rv64i-lab-v0`
 
 - **Contract id:** `rv64i-lab-env-v0`  · **version:** `0` · **profile:** `rv64i-lab-v0`
-- **Records:** [`contract-obligations.jsonl`](contract-obligations.jsonl) — 33 obligations
-  (25 CPU guarantees, 8 environment assumptions), gated by `RECORD-SCHEMA`.
+- **Records:** [`contract-obligations.sexp`](contract-obligations.sexp) — 34 obligations
+  (26 CPU guarantees, 8 environment assumptions), gated by `RECORD-SCHEMA` behind the schema layer
+  (`SOT-FORMAT.3`).
 
 `docs/CPU_ENVIRONMENT.md` §1: *a CPU is validated under explicit environment assumptions, and the
 laboratory must demonstrate that it satisfies them.* This file is those assumptions for the first

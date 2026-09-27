@@ -164,11 +164,46 @@ too, and under the split there is no rule by which it could.
   recorded corpus verification and new self-test arms instead.
 
 - ID: `SOT-FORMAT.3` — **the records: requirements and obligations**
-  Status: `pending`
+  Status: `done`
   Goal: convert `requirements.jsonl` (26) and `contract-obligations.jsonl` (34) to the format.
+  Design (recorded before code, `2026-09-27`):
+  - ⭐ The JSON contract carries discriminating power the record grammar cannot state: regex
+    patterns on ids, `minItems`/`uniqueItems` on lists, `minLength` on prose. Rather than let that
+    power evaporate into consumers, the `(field …)` kind grows four optional FACETS —
+    `(pattern "…")` and `(min-length N)` on string fields, `(min N)` and `(unique yes)` on
+    repeated fields — parsed by the same kernel meta-level. This is the `.2` boundary one level
+    down: a new KIND would change the kernel; optional facets on the existing kind are the
+    language saying honestly what the corpus's contracts already said. `schema/schema.sexp` gains
+    the facet fields so the fixpoint keeps describing the whole language.
+  - One form per record, house style (`materials/catalog.sexp`): `(requirement …)` /
+    `(obligation …)`; JSON keys are the field names verbatim, so the mapping has no translation
+    table to drift. Enums become symbols under `(values …)` (typos refused by name); prose and
+    identifiers stay strings; empty lists are absence (repeat fields), as the grammar already
+    says. Measured latent defect fixed by the move: the JSON validator never descended into
+    `parameters.additionalProperties`, so the schema's own `type: [string, number, boolean,
+    null]` silently excluded the arrays three obligations actually write (`legal_access_widths_bits`
+    and kin). The S-expression schema states values honestly: `(value (int …)|(str …)|(true)|
+    (false)|(null)|(ints …)|(strs …))` — typed wrappers, no unchecked bag. Floats have no
+    S-expression atom and appear nowhere in the corpus; a float parameter is refused, and the day
+    one is needed is a schema decision, not a silent guess.
+  - The mapping lives in one tracked owner, `scripts/records_sexp.py` (JSON-shaped dicts ↔
+    forms); `scripts/convert_records.py` drives it for the migration and proves losslessness:
+    `jsonl → sexp → jsonl` re-derived and compared field-by-field, and the re-dumped JSONL
+    byte-identical to the source file. `RECORD-SCHEMA` re-fires its arms against the converted
+    fixtures; `validate_records.py` keeps the JSONL that stays JSONL (`examples/`, frozen
+    delivery artifacts) and its requirement/obligation power transfers to the schema layer —
+    the transfer demonstrated by the 15 arms, not claimed.
+  - Open question carried forward: `profiles/` per-part ceiling (32 KiB) vs the converted
+     file sizes — measured at conversion time; if the compact form exceeds it, the re-derivation
+     follows the `docs/tasks/` precedent with grounds recorded here.
   Acceptance: round-trip proves losslessness field-by-field; `RECORD-SCHEMA`'s 15 arms are re-fired
   RED against the converted form; `scripts/validate_records.py` either reads the new format or is
   retired with its power transferred, and the transfer is demonstrated, not claimed.
+  Verification: `2026-09-27` — see the checklist below; converter 9/0; kernel 31 → 43 arms;
+    round-trip byte-identical both catalogues; `RECORD-SCHEMA` 15 → 22 arms, every RED scenario
+    re-fired on the converted form; `compare_readers` 13 of 13; full enforcer green.
+  Commit: `SEMULITH-SF-0058`
+  DEV_NOTES lesson (`2026-09-27`): promotion: declined (both shapes recorded in this leaf; a card is due if a second consumer trips them).
 
 - ID: `SOT-FORMAT.4` — **configuration, state and provenance**
   Status: `pending`
@@ -271,15 +306,17 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.3` | `pending` | records next, because `RECORD-SCHEMA` is the gate with the most to lose |
-| 2 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
-| 3 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
-| 4 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
+| 1 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
+| 2 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
+| 3 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
 
 ## Decisions
 
 | Date | Decision | Rationale |
 | --- | --- | --- |
+| `2026-09-27` | Field FACETS — `(pattern …)`, `(min-length N)`, `(min N)`, `(unique yes)` — extend `(field …)`; they are not a fifth declaration kind | the JSON record contracts carried discriminating power (id regexes, minItems, uniqueItems, minLength) that the record grammar could not state; evaporating it into consumers would make the schema layer weaker than the contract it replaces. The same boundary as `.2`, one level down: a new KIND changes the kernel, facets on the existing kind are the language |
+| `2026-09-27` | `parameters` values are typed wrappers — `(int …)/(str …)/(true)/(false)/(null)/(ints …)/(strs …)` — not an open map | the JSON schema's `additionalProperties` silently excluded the arrays three obligations actually write, and the validator never descended into it; the honest format states what the corpus holds and REFUSES a float, a mixed list or a nested value by name — the day one is needed is a schema decision, not a guessed translation |
+| `2026-09-27` | Catalogue discovery excludes the `schema/` directory | the schemas share their basenames with the catalogues (`schema/requirements.sexp` IS named `requirements.sexp`); a gate that judged a schema as its own target would report its own grammar as a records violation — measured by the reworked gate's first self-test run |
 | `2026-09-27` | Operators are the one new declaration kind `.2` adds; a fifth kind changes the kernel again | the corpus writes three positional mini-languages no record grammar can state; bending the generated files to fit would have forked the generator and every consumer — the boundary from criterion 2's ⚠️, crossed once, on purpose |
 | `2026-09-27` | The schema layer never reads a second file | operand scoping (a cross-file fact: the encoding provides the operands) stayed in `check_semantics.py` — the moment a check needs two sources of truth it belongs to a consumer, not the schema |
 | `2026-09-26` | The pin advances on the director's word only after OUR re-run earns it | the tracker separates `fixed-upstream` from `verified` for exactly this; the update flow is fetch → checkout → rebuild → verify → commit pointer |
@@ -561,10 +598,89 @@ did the same. Revisit when the engine crate adopts the reader.
 - [x] **LOCKSTEP** — `TOOLBOX.md`'s row updated to the three-reader sweep; this tree and
   `MEMORY.md` in the same commit.
 
+## Acceptance Checklist (leaf SOT-FORMAT.3)
+
+- [x] **REPRODUCE / ISSUE** — the split the tree exists to end, shown at the records:
+
+  ```
+  $ ls profiles/rv64i-lab-v0/*.jsonl
+    requirements.jsonl  contract-obligations.jsonl          # 26 + 34 records, JSON Lines
+  $ ls schema/ | grep -c 'requirements\|obligations'
+    0                                                       # the schema layer declares nothing for them
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — tool-backed. WHY: the record grammar of `schema.sexp` could
+  state structure but not the contracts' discriminating detail — id shapes, non-empty prose,
+  at-least-one citations, uniqueness — so a straight conversion would have been strictly weaker
+  than the JSON Schema it replaced, and `parameters` was worse: the JSON schema's own
+  `additionalProperties: {type: [string, number, boolean, null]}` excluded the arrays three
+  obligations write, and the tracked validator never descended into it, so the lie was unmeasured.
+  WHERE: the gap sat between `schema/schema.sexp`'s `(field …)` kind and
+  `schemas/{requirement,contract-obligation}.schema.json`'s pattern/minItems/uniqueItems/
+  minLength/additionalProperties keywords.
+
+  ```
+  $ python3 - <<'PY'
+  > import json
+  > ob = json.loads(open("profiles/rv64i-lab-v0/contract-obligations.jsonl").readline())
+  > print("legal_access_widths_bits" in ob["parameters"], type(ob["parameters"]["legal_access_widths_bits"]).__name__)
+  False list        # hmm — first record is OB-XLEN; the arrays live in OB-ENV-ACCESS-WIDTHS
+  $ grep -o 'legal_access_widths_bits[^]]*]' profiles/rv64i-lab-v0/contract-obligations.jsonl | head -1
+  legal_access_widths_bits": [8, 16, 32, 64]     # an array, under a schema whose additionalProperties bans arrays
+  ```
+
+- [x] **FIX** — four optional field FACETS in the kernel (`(pattern …)`, `(min-length N)`,
+  `(min N)`, `(unique yes)`), declared in `schema/schema.sexp` so the fixpoint keeps describing
+  the whole language; two record schemas with JSON keys verbatim as field names and enums under
+  `(values …)`; `parameters` as typed wrappers; the mapping owned solely by
+  `scripts/records_sexp.py`; the migration and its proof in `scripts/convert_records.py`.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/convert_records.py verify profiles/rv64i-lab-v0/requirements.jsonl \
+      profiles/rv64i-lab-v0/requirements.sexp
+    round-trip ok: 26 requirements record(s), field-by-field equal and byte-identical on re-dump
+  $ python3 scripts/convert_records.py verify .../contract-obligations.jsonl .../contract-obligations.sexp
+    round-trip ok: 34 contract-obligations record(s), field-by-field equal and byte-identical
+  $ python3 scripts/check_sexp_schema.py profiles/rv64i-lab-v0/requirements.sexp schema/requirements.sexp
+    check_sexp_schema: ok — requirements.sexp conforms to requirements.sexp
+  $ python3 scripts/check_sexp_schema.py profiles/rv64i-lab-v0/contract-obligations.sexp \
+      schema/contract-obligations.sexp
+    check_sexp_schema: ok — contract-obligations.sexp conforms to contract-obligations.sexp
+  $ bash scripts/check_requirements.sh --self-test
+    RECORD-SCHEMA --self-test: 22 pass / 0 fail        # the 15 old scenarios re-fired on the
+                                                       # converted form + 4 facet arms + 1 standalone
+  $ bash scripts/check_requirements.sh
+    RECORD-SCHEMA: ok (5 record file(s) validate and agree with their profile)
+  $ scripts/gate_report.py rv64i-lab-v0 && git diff --stat -- profiles/rv64i-lab-v0/G0-REPORT.md
+    # diff: input names only; 26 requirements, 34 obligations, 68 checks, verdict unchanged
+  ```
+
+- [x] **NO REGRESSION** — `sexp --self-test` 18/0; kernel 43/0 (31 → 43; fixpoint green);
+  `convert_records --self-test` 9/0; `check_semantics.py` 52 of 52 byte-identical verdict;
+  `run_smoke.py` ok (4 guests, both models, reproduce); `compare_readers.py` **13 of 13 agree**
+  (the two catalogues and two schemas joined the sweep; zero class notes); `check_citations.py`
+  52 of 52; `materials.py --self-test` 20/0; profile dossier sizes 19,545 + 28,449 B — under the
+  `profiles/` 32 KiB per-part ceiling, so no re-derivation was needed.
+
+- [x] **LOCKSTEP** — `docs/ARCHITECTURE.md` §1.1/§1.3 current; `LIVE_STATUS.md` (catalogue rows,
+  and the stale 33-obligation/66-check row re-derived to 34/68 — a drift found while migrating,
+  fixed in passing); `profiles/rv64i-lab-v0/{DOSSIER,ENVIRONMENT,G0-REPORT}.md`; both doctrine
+  mirrors' `RECORD-SCHEMA` rows; `TOOLBOX.md` (two rows); `MEMORY.md`; `DEV_NOTES.md` (dated
+  entry; promotion declined in this leaf); `CHANGELOG.md`; `docs/TASK_TREE.md` — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `SOT-FORMAT.3` | round-trip, both catalogues | byte-identical on re-dump; 26 + 34 records field-by-field equal |
+| `2026-09-27` | `SOT-FORMAT.3` | kernel self-test | `43 pass / 0 fail` (31 → 43; 12 facet arms, each RED arm naming its reason) |
+| `2026-09-27` | `SOT-FORMAT.3` | RECORD-SCHEMA self-test | `22 pass / 0 fail` — the 15 old scenarios on the converted form + facet refusals + standalone-obligation arm |
+| `2026-09-27` | `SOT-FORMAT.3` | RECORD-SCHEMA real run | ok, 5 record file(s): 3 frozen-example JSONL + 2 converted catalogues |
+| `2026-09-27` | `SOT-FORMAT.3` | `compare_readers.py` corpus sweep | **13 of 13 agree**, zero class notes (catalogues + record schemas joined) |
+| `2026-09-27` | `SOT-FORMAT.3` | regression: semantics / smoke / citations / materials | 52 of 52 · ok · 52 of 52 · 20/0 |
+| `2026-09-27` | `SOT-FORMAT.3` | per-part ceiling probe | 19,545 B + 28,449 B vs 32,768 — no registry re-derivation needed |
 | `2026-09-27` | `SOT-FORMAT.2` | the 32 forms are data — `grep -c '^(operator' schema/semantics.sexp` | `32` |
 | `2026-09-27` | `SOT-FORMAT.2` | `52 of 52` before→after diff of `check_semantics.py rv64i.sexp rv64i.sem.sexp` | **byte-identical**, rc 0 both (baselines in `target/doctrine_scratch/sf2/`) |
 | `2026-09-27` | `SOT-FORMAT.2` | MODEL-METHOD.9 controls missing / operand / no-source, before→after | **byte-identical**, rc 1, each refused by name |
@@ -617,7 +733,8 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
-| `SOT-FORMAT.2` | `SEMULITH-SF-0057 (leaf SOT-FORMAT.2): …` | the operator kind; three domain schemas; the 32 forms are data; 52/52 byte-identical; 31 schema arms |
+| `SOT-FORMAT.3` | `SEMILITH-SF-0058 (leaf SOT-FORMAT.3): …` | the records behind the schema layer; field facets; typed parameters; byte-identical round-trip; 22 record arms |
+| `SOT-FORMAT.2` | `SEMILITH-SF-0057 (leaf SOT-FORMAT.2): …` | the operator kind; three domain schemas; the 32 forms are data; 52/52 byte-identical; 31 schema arms |
 | `SOT-FORMAT.1` | `SEMULITH-SF-0054 (leaf SOT-FORMAT.1): …` | the schema language in itself; 16 arms; fixpoint green; schema/ registered in the creating commit |
 | `SOT-FORMAT.8` | `SEMULITH-SF-0053 (leaf SOT-FORMAT.8): …` | ARCHITECTURE.md gains §1.1–§1.3; the director's window shows the format now |
 | `SOT-FORMAT.9` | `SEMULITH-SF-0051 (leaf SOT-FORMAT.9): …` | pin advanced to `a8d34c845`; 5 of 5 agree; comparator enumerates 2 documented CLASS families; LS-001 verified |

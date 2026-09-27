@@ -44,6 +44,8 @@ directory is a "trust me" with extra steps.
 | `scripts/check_tree_claims.sh` | does a live document state a leaf count, an active tree or a frontier leaf the trees contradict? | `scripts/check_tree_claims.sh` |
 | `scripts/check_derived_counts.sh --list` | which counts in the live docs are re-derived, by what command, and what do they currently come to? | `scripts/check_derived_counts.sh [--list]` |
 | `scripts/validate_records.py` | does this record file satisfy its schema, line by line? | `scripts/validate_records.py <records.jsonl> <schema.json>` |
+| `scripts/records_sexp.py` | how does a converted catalogue map to records — and back? (the single owner of the JSON↔S-expression record mapping) | imported by the gate and `gate_report.py`; `R.load(path)`, `R.dump(records)` |
+| `scripts/convert_records.py` | did the record conversion lose anything — proven, not reviewed? | `scripts/convert_records.py to-sexp \| to-jsonl \| verify <a> <b>`; `--verify` re-derives the JSONL byte-identically |
 | `scripts/gate_report.py` | what does the gate actually say right now, and why is it not `passed`? | `scripts/gate_report.py <profile> [--stdout]` |
 | `scripts/compare_platforms.py` | what platform does each reference actually advertise, and where does it differ from the profile and from the other model? | `scripts/compare_platforms.py` |
 | `scripts/sexp.py` | does this canonical-definition file parse, and what does it declare? | `scripts/sexp.py <file.sexp>` |

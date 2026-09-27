@@ -28,6 +28,13 @@
 ;; symbol-typed field may restrict its spellings with repeated (values SYM)
 ;; pairs; (repeat yes) allows more than one occurrence.
 ;;
+;; FACETS (SOT-FORMAT.3) refine a field without a new declaration kind:
+;;   (pattern "regex")    — a string field's value must match (re.search, JSON-Schema semantics)
+;;   (min-length N)       — a string field's value holds at least N characters
+;;   (min N)              — a (repeat yes) field occurs at least N times — an empty list is
+;;                          not a citation
+;;   (unique yes)         — a (repeat yes) field writes no value twice
+;;
 ;; ⭐ THE FIXPOINT: this file must validate under itself —
 ;;   python3 scripts/check_sexp_schema.py schema/schema.sexp schema/schema.sexp
 ;; — which is what proves "extensible by data" instead of asserting it.
@@ -49,4 +56,8 @@
   (field (name values) (type symbol) (repeat yes) (optional yes))
   (field (name repeat) (type symbol) (values yes) (values no) (optional yes))
   (field (name optional) (type symbol) (values yes) (values no) (optional yes))
-  (field (name empty) (type symbol) (values yes) (values no) (optional yes)))
+  (field (name empty) (type symbol) (values yes) (values no) (optional yes))
+  (field (name pattern) (type string) (optional yes))
+  (field (name min-length) (type integer) (optional yes))
+  (field (name min) (type integer) (optional yes))
+  (field (name unique) (type symbol) (values yes) (values no) (optional yes)))

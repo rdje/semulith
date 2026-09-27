@@ -13,8 +13,8 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` v0.3 is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (5/10), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
-- **Frontier leaf:** `SOT-FORMAT.3` — the records (`requirements.jsonl` 26, `contract-obligations.jsonl` 34) to the format; round-trip proves losslessness. `schema/` now declares `encoding`/`fragment`/`semantics` — constructs AND operators are data; a new declaration KIND changes the kernel.
+- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (6/10), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
+- **Frontier leaf:** `SOT-FORMAT.4` — configuration, state and provenance (`profile.toml`, `state.json`, `sources.toml`, `references.toml`) to the format. `.3` is done: the records moved (`requirements.sexp` 26, `contract-obligations.sexp` 34), round-trip byte-identical, `RECORD-SCHEMA` re-armed on the converted form (22 arms). `schema/` now declares `encoding`/`fragment`/`semantics`/`requirements`/`contract-obligations` — constructs, operators and field facets are data; a new declaration KIND changes the kernel.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
 - **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted — P1's start condition is `SOT-FORMAT.2` (now done) + `MODEL-METHOD.10`; the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone (`decision_lane-consumption`).
 - **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm is a first-class target from the first crate (`decision_browser-wasm-target`); lane `PORT-WEB` (proposed, consumed by `P1-LAB`) owns it, leaf `.1` activates with `P1-LAB.1`.
@@ -22,18 +22,19 @@
   in gitignored `.materials/` by `scripts/materials.py --fetch`; the corpus location comes from
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
-  docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — different chapter numbering; read
-  `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Next action:** `SOT-FORMAT.3` — records to the format. P1's v0.3 start condition is now
-  half-met (`.2` done; `MODEL-METHOD.10` still open — the extraction contract). ⛔ Records move
-  only behind the schema layer, never before.
+  docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
+- **Next action:** `SOT-FORMAT.4` — the remaining conversions; merge (`.5`) and the
+  `SOURCE-FORMAT` gate (`.6`) follow. P1's start condition stays half-met (`MODEL-METHOD.10`
+  open). ⛔ Everything moves only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-COMPOSE.3`
   (assumption/guarantee discharge — needs `SOT-FORMAT.5`'s record merge), `MODEL-BOOKS.1`.
-  `DOC-SHARDING` closed 2026-09-27: the fired CHANGELOG ceiling answered by `shard_history.py` +
-  the `SHARD-FREEZE` doctrine (13 registered, 169 arms); headroom restored (62 KiB head);
-  `DEV_NOTES.md` keeps the live trigger.
+  `DOC-SHARDING` closed 2026-09-27 (shard tool + `SHARD-FREEZE`; headroom restored).
+  ⭐ Director input to schedule (no pivot taken): chipdoc's corpus carries a semulith feed
+  (`$SEMULITH_CHIPDOC_ROOT/SEMULITH.md` → `catalog/semulith-proposals.sexp`: psABI, SBI, BRS,
+  U-Boot, DT, FU540, virtio, ACT + a standing offer to fetch more); a MODEL-METHOD catalogue
+  slice consumes it when that frontier opens.
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.
 - **Latest commit:** see `git log -1`. **In-flight uncommitted work:** none.
 - ⛔ **Do not push.** Cadence is 300 commits — `scripts/check_push_cadence.sh --status` says where
