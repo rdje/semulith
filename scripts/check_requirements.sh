@@ -34,6 +34,12 @@
 #                   and it bites in the direction that matters: labelling an ISA rule as a harness
 #                   choice is what turns a defect into a "profile difference" and makes it
 #                   unfalsifiable.
+#     8. UNIQUE-ID  a catalogue may not carry two records with the same id. Found by SOT-FORMAT.5
+#                   (design probe, `target/doctrine_scratch/dupprobe`): the id → record map used
+#                   for the cross-checks silently collapsed duplicates (last wins), so a catalogue
+#                   could contradict itself — same id, different content — and stay green, rc=0.
+#                   A catalogue that repeats an id is a catalogue lying about its own identity,
+#                   and every rule below would have checked only the survivor.
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -143,7 +149,18 @@ for cat in catalogues:
         findings.append(f"INVALID    {cat.relative_to(root)}: contains no records — an empty "
                         f"catalogue is not a valid one")
         continue
-    by_id = {r.get("id"): r for r in recs}
+    # 8. UNIQUE-ID — the cross-checks index records by id; a duplicate silently collapses
+    #    (last wins) and every rule below would check only the survivor. Refuse, naming both.
+    by_id: dict = {}
+    for r in recs:
+        rid = r.get("id")
+        if rid in by_id:
+            findings.append(
+                f"DUPLICATE ID {cat.relative_to(root)}: record '{rid}' appears more than "
+                f"once — a catalogue that contradicts itself cannot be checked; the later "
+                f"record silently overwrote the earlier one")
+        else:
+            by_id[rid] = r
 
     if cat.name == "requirements.sexp":
         # 2. CITED — beside a profile's sources.sexp (`SOT-FORMAT.4`: read via the mapping)
@@ -310,6 +327,8 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
                                                               arm "RED   a duplicated obligation — unique" 1 "unique"
   reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['id']='1BAD'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   an id the pattern refuses" 1 "does not match"
+  reqs "$REQ|||$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['risk']='critical'; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   a catalogue with a duplicated id — last-wins collapses it" 1 "DUPLICATE ID"
   printf '%s\n' '(requirement (id "REQ-D-A") (broken' > "$t/p/requirements.sexp"
                                                               arm "RED   a record that does not even parse" 1 "does not even parse"
   : > "$t/p/requirements.sexp";                               arm "RED   an empty catalogue" 1 "contains no records"

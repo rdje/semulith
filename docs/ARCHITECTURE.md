@@ -73,10 +73,12 @@ by hand.
 union of its fragments' encoding spaces, and the union is decided, not hoped.
 `scripts/check_encoding_disjoint.py` refuses any word that two instructions both claim, so a
 profile that composes an extension overlapping its base fails loudly. Encoding composition is
-decidable and checked today (`MODEL-COMPOSE.1`/`.2`); merging records and obligations across a
-composition boundary — the assumption/guarantee discharge — is designed
-(`decision_composition-model`) and lands with `SOT-FORMAT.5`, because a merge is only definable
-once everything is one format.
+decidable and checked today (`MODEL-COMPOSE.1`/`.2`); the records compose the same way
+(`SOT-FORMAT.5`): `scripts/merge_records.py` unions two units' requirements, obligations and
+pinned sources by id — same id must mean the same content, a source id must pin the same bytes,
+and every dependency, obligation link and citation must resolve across the union or the
+composition is refused with the conflicting fact named. The assumption/guarantee discharge —
+`docs/CPU_ENVIRONMENT.md` §5 — reads that merged view (`MODEL-COMPOSE.3`).
 
 ### 1.3 The schema layer
 
