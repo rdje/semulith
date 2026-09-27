@@ -16,7 +16,7 @@ every possible environment response.
 `authority` from the contract's four-value vocabulary, which is *not* the profile's three-value
 one. The mapping is stated once, here, and applied mechanically:
 
-| `profile.toml` authority | contract authority | meaning |
+| `profile.sexp` authority | contract authority | meaning |
 | --- | --- | --- |
 | `architecture` | `architecture` | the ISA states it; nobody has latitude |
 | `execution-environment` | `implementation-profile` | the ISA delegates it to the EEI; **we** chose |
@@ -68,10 +68,10 @@ undispositioned row is how a boundary silently leaves coverage.
 | --- | --- | --- |
 | Fetch | **in scope** — `OB-ENV-FETCH-SUPPLY` | 32-bit fetch from a declared executable region; no extraneous or side-effecting fetch |
 | Data access | **in scope** — `OB-ENV-ACCESS-WIDTHS`, `OB-MISALIGN-DATA` | widths honoured; misaligned access raises `AlignmentException` and is exercised by `smoke-trap` |
-| Translation/protection | **out of scope** | no MMU/MPU and no supervisor/user mode; `profile.toml` declares `privilege_modes = ["M"]` — machine mode only, which is the minimum a hart can have |
+| Translation/protection | **out of scope** | no MMU/MPU and no supervisor/user mode; `profile.sexp` declares `(privilege_modes "M")` — machine mode only, which is the minimum a hart can have |
 | Interrupts | **out of scope** | the laboratory platform declares **no controller and no source**. ⚠️ Not "no mode, no CSR": those were the wrong reasons, and `P0-PROFILE.10` corrected them |
 | Counter input | **out of scope** — see `OB-ENV-VIRTUAL-TIME` | `Zicntr`/`Zihpm` excluded **and** no device exposes a counter as MMIO. Both halves are required |
-| Reservations | **out of scope** | the `A` extension is absent; `state.json`'s census records the reservation set as one of seven hidden-state candidates, all absent |
+| Reservations | **out of scope** | the `A` extension is absent; `state.sexp`'s census records the reservation set as one of seven hidden-state candidates, all absent |
 | Reset | **in scope** — `OB-ENV-RESET` | cold reset only; entry state declared; no retained state to order |
 | Waiting | **out of scope** | no `WFI` without privileged modes, and no timer or interrupt could wake one |
 | Code visibility | **in scope** — `OB-CODE-VISIBILITY` | the model re-reads memory per fetch; ⚠️ **a legal implementation choice, not an architectural guarantee** — without `Zifencei` a caching reference is equally correct and will legitimately disagree |

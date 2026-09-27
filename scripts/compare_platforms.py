@@ -32,6 +32,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+import dossier_sexp as D                                # noqa: E402
+
 ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
                            capture_output=True, text=True, check=True).stdout.strip())
 
@@ -64,7 +67,13 @@ def devices(dts: str) -> list[str]:
 
 
 def main() -> int:
-    cfg = ROOT / "profiles/rv64i-lab-v0/reference/sail-rv64i-lab-v0.override.json"
+    # the tracked truth is the .sexp; the JSON the model reads is derived from it
+    # (SOT-FORMAT.4 — see run_smoke.py for the same pattern)
+    if not (ROOT / "profiles/rv64i-lab-v0/reference/sail-rv64i-lab-v0.override.sexp").is_file():
+        print("compare_platforms: the tracked override sail-rv64i-lab-v0.override.sexp is "
+              "missing", file=sys.stderr)
+        return 2
+    cfg = D.materialize_sail_override(ROOT, "rv64i-lab-v0")
     elf = ROOT / "target/refs/guests/smoke-arith.elf"
     for p in (cfg, elf):
         if not p.exists():

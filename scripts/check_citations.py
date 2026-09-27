@@ -28,11 +28,11 @@ from __future__ import annotations
 
 import re
 import sys
-import tomllib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sexp as _sexp                                                   # noqa: E402
+import dossier_sexp as _D                                               # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 HEADING = re.compile(r"<h[1-6][^>]*>(.*?)</h[1-6]>", re.S)
@@ -64,8 +64,8 @@ def _rel(p: Path) -> str:
         return p.as_posix()
 
 
-def published(sources_toml: Path, work_dir: Path) -> dict[str, set[str]]:
-    cfg = tomllib.loads(sources_toml.read_text())
+def published(sources_sexp: Path, work_dir: Path) -> dict[str, set[str]]:
+    cfg = _D.load_sources(sources_sexp)   # SOT-FORMAT.4: the ledger behind the mapping
     if not work_dir.is_dir():
         raise CitationError(
             f"the pinned artifacts are not present at {_rel(work_dir)}. They are fetched, "
@@ -78,7 +78,7 @@ def published(sources_toml: Path, work_dir: Path) -> dict[str, set[str]]:
             raise CitationError(f"{s['id']}: {_rel(p)} is missing; run scripts/fetch_sources.sh")
         out[s["id"]] = headings(p.read_text())
     if not out:
-        raise CitationError(f"{_rel(sources_toml)} declares no [[source]]")
+        raise CitationError(f"{_rel(sources_sexp)} declares no (source …) form")
     return out
 
 
@@ -100,15 +100,15 @@ def citations(semantics: Path) -> dict[tuple[str, str], list[str]]:
     return out
 
 
-def check(sources_toml: Path, work_dir: Path, semantics: Path) -> int:
-    have = published(sources_toml, work_dir)
+def check(sources_sexp: Path, work_dir: Path, semantics: Path) -> int:
+    have = published(sources_sexp, work_dir)
     want = citations(semantics)
     bad, total = [], 0
     for (sid, num), insns in sorted(want.items()):
         total += len(insns)
         if sid not in have:
             bad.append(f"  §{num} ({len(insns)} instruction(s)) cites source {sid!r}, which "
-                       f"{sources_toml.name} does not pin")
+                       f"{sources_sexp.name} does not pin")
         elif num not in have[sid]:
             near = sorted(n for n in have[sid] if n.startswith(num.split(".")[0]))
             bad.append(f"  {sid} §{num} ({len(insns)} instruction(s), e.g. {insns[0]}) does not "
@@ -154,9 +154,9 @@ def main(argv: list[str]) -> int:
     if len(argv) >= 2 and argv[1] == "--self-test":
         return _selftest()
     prof = REPO / "profiles" / (argv[1] if len(argv) > 1 else "rv64i-lab-v0")
-    st = prof / "sources.toml"
+    st = prof / "sources.sexp"
     try:
-        cfg = tomllib.loads(st.read_text())
+        cfg = _D.load_sources(st)
         wd, route = _work_dir(cfg)
         sem = REPO / "definitions" / "riscv" / "rv64i.sem.sexp"
         print(f"citations: {sem.relative_to(REPO)} against "
@@ -187,9 +187,9 @@ def _selftest() -> int:
         d = Path(tempfile.mkdtemp())
         (d / "w").mkdir()
         (d / "w" / "a.html").write_text(html)
-        (d / "sources.toml").write_text('work_dir = "w"\n[[source]]\nid = "S"\nfile = "a.html"\n')
+        (d / "sources.sexp").write_text('(sources (work_dir "w") (source (id "S") (file "a.html")))\n')
         (d / "s.sexp").write_text(sem)
-        return d / "sources.toml", d / "w", d / "s.sexp"
+        return d / "sources.sexp", d / "w", d / "s.sexp"
 
     H = "<h2>3.1. Thing</h2><h3>3.1.2. Sub</h3><h4>3.1.2.1. Deep</h4>"
     def sem(loc): return f'(semantics (sem (insn add) (source "{loc} — why")))'

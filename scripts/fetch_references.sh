@@ -25,15 +25,18 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 VERIFY_ONLY=0
 [ "${1:-}" = "--verify-only" ] && { VERIFY_ONLY=1; shift; }
 PROFILE="${1:-rv64i-lab-v0}"
-LEDGER="profiles/$PROFILE/references.toml"
+LEDGER="profiles/$PROFILE/references.sexp"
 [ -f "$LEDGER" ] || { echo "fetch_references: no ledger at $LEDGER" >&2; exit 2; }
 
 command -v python3 >/dev/null 2>&1 || { echo "fetch_references: python3 is required" >&2; exit 2; }
 command -v shasum  >/dev/null 2>&1 || { echo "fetch_references: shasum is required" >&2; exit 2; }
 
+# SOT-FORMAT.4: the ledger is S-expression, read through dossier_sexp (the mapping owner).
 WORK="$(python3 -c "
-import tomllib,sys,pathlib
-print(tomllib.loads(pathlib.Path(sys.argv[1]).read_text()).get('work_dir','target/refs'))" "$LEDGER")"
+import sys, pathlib
+sys.path.insert(0, 'scripts')
+import dossier_sexp as D
+print(D.load_references(pathlib.Path(sys.argv[1])).get('work_dir', 'target/refs'))" "$LEDGER")"
 mkdir -p "$WORK"
 
 rc=0
@@ -42,8 +45,10 @@ bad()  { printf '%s\n' "$*" >&2; rc=1; }
 
 # ---- read the ledger into shell-friendly lines: id<TAB>key<TAB>value -------------------------
 FIELDS="$(python3 - "$LEDGER" <<'PY'
-import tomllib, pathlib, sys
-d = tomllib.loads(pathlib.Path(sys.argv[1]).read_text())
+import pathlib, sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+d = D.load_references(pathlib.Path(sys.argv[1]))
 for c in d.get("candidate", []):
     for k in ("id","status","origin","release","asset","asset_sha256","binary","binary_sha256",
               "source_commit","matched_config","matched_isa_string"):
@@ -124,8 +129,10 @@ fi
 
 # ---- 4. the ENCODING source: the bit layouts the pinned specification renders only as images --
 ENC_DIR="$(python3 - "$LEDGER" <<'PY'
-import tomllib, pathlib, sys
-d = tomllib.loads(pathlib.Path(sys.argv[1]).read_text())
+import pathlib, sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+d = D.load_references(pathlib.Path(sys.argv[1]))
 es = d.get("encoding_source") or []
 print(es[0]["work_dir"] if es else "")
 PY
@@ -148,8 +155,10 @@ if [ -n "$ENC_DIR" ]; then
     fi
     verify_hash "$dest" "$fsha" "encoding source $fname"
   done < <(python3 - "$LEDGER" <<'PY'
-import tomllib, pathlib, sys
-d = tomllib.loads(pathlib.Path(sys.argv[1]).read_text())
+import pathlib, sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+d = D.load_references(pathlib.Path(sys.argv[1]))
 for es in d.get("encoding_source", []):
     for f in es.get("file", []):
         print(f"{f['name']}\t{f['sha256']}")
@@ -157,8 +166,10 @@ PY
 )
   # ⭐ The strongest cheap check on the encoding tables: the profile declares 52 mnemonics and the
   # tables must enumerate exactly those 52. Two independent routes to one closed set.
-  if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.toml" <<'PY'
-import sys, pathlib, tomllib, re
+  if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.sexp" <<'PY'
+import sys, pathlib, re
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
 enc, prof = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
 names = set()
 for f in ("rv_i", "rv64_i"):
@@ -166,7 +177,7 @@ for f in ("rv_i", "rv64_i"):
         line = raw.split("#", 1)[0].strip()
         if line and not line.startswith("$"):
             names.add(line.split()[0])
-scope = tomllib.loads(prof.read_text())["scope"]
+scope = D.load_profile(prof)["scope"]
 declared = {m.lower() for v in scope.values() if isinstance(v, list) for m in v}
 diff = sorted(names ^ declared)
 print(f"{len(names)}\t{len(declared)}\t{','.join(diff) if diff else 'NONE'}")
@@ -212,8 +223,19 @@ fi
 
 # ---- 5. the matched configuration must still produce the recorded ISA string -----------------
 # The strongest cheap check here: the model's OWN report of what it is configured as.
+# SOT-FORMAT.4: the tracked truth is the .sexp; the JSON the model reads is derived from it
+# (untracked, repo volume) before the check — one source of truth, one foreign-tool rendering.
 SAIL_BIN="$(get sail-riscv binary)"; CFG="profiles/$PROFILE/$(get sail-riscv matched_config)"
 WANT_ISA="$(get sail-riscv matched_isa_string)"
+if [[ "$CFG" == *.json ]] && [ -f "${CFG%.json}.sexp" ]; then
+  python3 - "$PROFILE" <<'PYCFG'
+import pathlib, sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+D.materialize_sail_override(pathlib.Path(".").resolve(), sys.argv[1])
+PYCFG
+  CFG="target/refs/$(basename "$CFG")"
+fi
 if [ -x "$SAIL_BIN" ] && [ -f "$CFG" ] && [ -n "$WANT_ISA" ]; then
   got_isa="$("$SAIL_BIN" --config-override "$CFG" --print-isa-string 2>&1)"
   if [ "$got_isa" = "$WANT_ISA" ]; then say "MATCH    matched-profile ISA string  $got_isa"

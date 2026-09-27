@@ -21,12 +21,12 @@ from __future__ import annotations
 import hashlib
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from compare_traces import align, compare, parse_sail, parse_spike, CompareError  # noqa: E402
 from riscv_asm import Assembler, write_elf64  # noqa: E402
+import dossier_sexp as D                                # noqa: E402
 
 ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
                            capture_output=True, text=True, check=True).stdout.strip())
@@ -34,7 +34,10 @@ PROFILE = "rv64i-lab-v0"
 ENTRY = 0x80000000
 SAIL = ROOT / "target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim"
 SPIKE = ROOT / "target/refs/spike-build/spike"
-CONFIG = ROOT / f"profiles/{PROFILE}/reference/sail-{PROFILE}.override.json"
+# SOT-FORMAT.4: the tracked truth is profiles/.../reference/sail-*.override.sexp; the JSON the
+# Sail model reads is DERIVED from it on each run (untracked, repo volume) — one source of
+# truth, one foreign-tool rendering (dossier_sexp.materialize_sail_override).
+OVERRIDE_SEXP = ROOT / f"profiles/{PROFILE}/reference/sail-{PROFILE}.override.sexp"
 GUESTS = ROOT / f"profiles/{PROFILE}/guests"
 OUT = ROOT / "target/refs/guests"
 
@@ -66,9 +69,13 @@ def build(name: str) -> tuple[Path, int]:
     return elf, len(words)
 
 
+def config() -> Path:
+    return D.materialize_sail_override(ROOT, PROFILE)
+
+
 def run_sail(elf: Path, limit: int, out: Path) -> None:
     subprocess.run(
-        [str(SAIL), "--config-override", str(CONFIG), "--inst-limit", str(limit),
+        [str(SAIL), "--config-override", str(config()), "--inst-limit", str(limit),
          "--trace-instr", "--trace-gpr", "--trace-exception",
          "--trace-output", str(out), str(elf)],
         capture_output=True, text=True, check=False)
@@ -83,10 +90,10 @@ def run_spike(elf: Path, limit: int, out: Path) -> None:
 
 
 def check_expected(name: str, trace: Path) -> None:
-    spec = GUESTS / f"{name}.expected.toml"
+    spec = GUESTS / f"{name}.expected.sexp"
     if not spec.is_file():
         return
-    exp = tomllib.loads(spec.read_text())
+    exp = D.load_expectations(spec)
     steps = align(parse_sail(trace.read_text()), ENTRY, "sail")
     if len(steps) != exp["instructions"]:
         say(False, f"{name}: step count", f"expected {exp['instructions']}, observed {len(steps)}")
@@ -121,9 +128,9 @@ def executed_steps(name: str, assembled: int) -> int:
     expectations file, which declares the executed step count, and falls back to the assembled
     count only for a program with no expectations.
     """
-    spec = GUESTS / f"{name}.expected.toml"
+    spec = GUESTS / f"{name}.expected.sexp"
     if spec.is_file():
-        return tomllib.loads(spec.read_text())["instructions"]
+        return D.load_expectations(spec)["instructions"]
     return assembled
 
 
@@ -146,13 +153,13 @@ def experiment(name: str) -> None:
     # core-local interruptor is built in and cannot be removed from the command line, so running
     # it there would measure a known platform difference rather than a semantic disagreement.
     # The skip is printed, never silent: an unreported skip is how a suite quietly shrinks.
-    spec = GUESTS / f"{name}.expected.toml"
+    spec = GUESTS / f"{name}.expected.sexp"
     cross = True
     if spec.is_file():
-        cross = tomllib.loads(spec.read_text()).get("cross_model", True)
+        cross = D.load_expectations(spec).get("cross_model", True)
     if not cross:
         print(f"  SKIP  {name}: sail-riscv vs spike  "
-              f"disabled — see difference DIFF-PLATFORM-SPIKE in references.toml")
+              f"disabled — see difference DIFF-PLATFORM-SPIKE in references.sexp")
     else:
         try:
             a = align(parse_sail(sail_trace.read_text()), ENTRY, "sail")
@@ -171,10 +178,11 @@ def experiment(name: str) -> None:
 
 
 def main() -> int:
-    for tool in (SAIL, SPIKE, CONFIG):
+    for tool in (SAIL, SPIKE, OVERRIDE_SEXP):
         if not tool.exists():
-            print(f"run_smoke: {tool} is missing — run scripts/fetch_references.sh first",
-                  file=sys.stderr)
+            print(f"run_smoke: {tool} is missing — the tracked override or a reference binary "
+                  f"is absent (the override is tracked; binaries come from "
+                  f"scripts/fetch_references.sh)", file=sys.stderr)
             return 2
     print(f"matched-profile experiment for {PROFILE}")
     for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device"):

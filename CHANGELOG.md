@@ -1,5 +1,39 @@
 # CHANGELOG.md
 
+## SEMILITH-SF-0059 (leaf SOT-FORMAT.4) — the dossier moves behind the schema layer, commentary and all
+
+The profile dossier retires its last TOML/JSON: `profile.toml` (26 decisions), `state.json`,
+`sources.toml`, `references.toml`, the matched Sail override and the four guest expectation
+files are now one S-expression document form each — `profile.sexp`, `state.sexp`,
+`sources.sexp`, `references.sexp`, `reference/sail-rv64i-lab-v0.override.sexp`,
+`guests/*.expected.sexp` — validated by six new schemas (`schema/{profile,state,sources,
+references,override,expectations}.sexp`). `convert_dossier.py --verify` proves the migration
+the way `.3` did: every document re-derives field-for-field from its source, and the comment
+census is exact line by line.
+
+⭐ **Comments became first-class forms.** The schema kernel reserves one head — `(comment "…")`,
+inert at any position, never declared, never forbidden — and the dossier's 158 comment lines
+(the warnings, the provenance, the "why" of 26 decisions) survive as data a merge can carry
+instead of syntax a parser drops. A typo'd `commment` is still refused by name; a construct,
+operator or field named `comment` is refused as dead vocabulary. The open question the tree
+carried — do comments belong to the form or the file — is answered: to the file, as an ordered
+annotation stream.
+
+**Consumers changed at the seam, not in their logic.** Every gate and tool keeps receiving the
+exact dicts `tomllib`/`json` produced, now through the single mapping owner
+`scripts/dossier_sexp.py` — which is what makes the verdicts mechanical rather than hopeful:
+`PROFILE-CONSISTENCY`'s 39 arms re-fire on converted fixtures (rule 5b included), `run_smoke`
+and `compare_platforms` are unmoved, the regenerated G0 report's diff is input names only, and
+the Sail override's JSON is *derived* from the tracked `.sexp` on every run — byte-identical to
+the original it replaces, the `.sexp` the single source of truth. `compare_readers` sweeps 28
+of 28 files across all three readers. Measured en route: the DOSSIER's "no gate has been run"
+was stale (`G0` has run; verdict `incomplete`) — corrected; `schema/` reached its file-count
+ceiling at exactly 12 and was re-derived to 24, grounds recorded in the registry; the
+`profiles/` per-part re-derivation `.3` carried open was not needed (`references.sexp` is
+30,012 B against 32,768).
+
+====
+
 ## SEMILITH-SF-0058 (leaf SOT-FORMAT.3) — the records move behind the schema layer
 
 `profiles/rv64i-lab-v0/{requirements,contract-obligations}.jsonl` (26 + 34 records) retire into

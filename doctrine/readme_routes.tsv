@@ -130,6 +130,18 @@
 #                    grows by construct the way definitions/ grows by fragment. Registered in the
 #                    same commit that created the directory.
 #
+# Re-derivation, SOT-FORMAT.4, when the schema layer became the home of every dossier family:
+#   schema/          12 files / 34,072 B (schema.sexp the fixpoint + one schema per corpus
+#                    family: encoding, fragment, semantics, requirements, contract-obligations,
+#                    profile, state, sources, references, override, expectations). Health 16
+#                    files / 128 KiB; ceiling 24 / 512 KiB; per-part STAYS 64 KiB. Grounds: the
+#                    director's one-format decision (2026-09-14) is the surface's contract
+#                    expanding — the dossier moved behind the layer, so its six construct
+#                    families each gained a schema, the same shape as the records at `.3`.
+#                    The per-part axis is unchanged: one schema stays one family's grammar,
+#                    readable in a sitting. This is the docs/tasks/ precedent: an expanded
+#                    contract re-derives the count axis, never the per-part one.
+#
 #destination	route_class	lifecycle	owner	health_lines	health_bytes	ceiling_lines	ceiling_bytes
 README.md	both	hot_live	README-STABILITY doctrine	78	4352	85	4864	0
 README_POLICY.md	reader_navigation	normative	this policy; changes by reviewed decision	0	0	0	0	0
@@ -145,7 +157,7 @@ MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally ow
 DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
-schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	4	65536	12	262144	65536
+schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	16	131072	24	524288	65536
 docs/changelog/	author_overflow	append_history	sharded CHANGELOG history; entries are never edited after the shard	6	196608	20	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 overwrite-only record, one entry per cleanup	6	768	12	1536	0

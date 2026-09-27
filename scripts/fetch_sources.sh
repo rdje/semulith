@@ -23,10 +23,11 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 verify_only=0
 if [ "${1:-}" = "--verify-only" ]; then verify_only=1; shift; fi
 profile="${1:-rv64i-lab-v0}"
-ledger="profiles/$profile/sources.toml"
+ledger="profiles/$profile/sources.sexp"
 
 [ -f "$ledger" ] || { echo "fetch-sources: no ledger at $ledger" >&2; exit 2; }
 command -v curl >/dev/null 2>&1 || { echo "fetch-sources: curl is not on PATH" >&2; exit 2; }
+command -v python3 >/dev/null 2>&1 || { echo "fetch-sources: python3 is not on PATH" >&2; exit 2; }
 
 sha256_of() {
   if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | cut -d' ' -f1
@@ -35,23 +36,36 @@ sha256_of() {
 }
 sha256_of /dev/null >/dev/null 2>&1 || { echo "fetch-sources: no sha256 tool on PATH" >&2; exit 2; }
 
-# ⛔ `[^"]*` and a trailing `.*`, not `.*`: an unanchored greedy capture leaves the line's
-# trailing comment in the result. Measured — `work_dir` came back as
-# `target/sources/riscv-v20260120   # repo-volume, untracked` and the fetch created a
-# directory with that literal name, while still reporting three green MATCHes. A verdict can
-# be correct about the bytes and wrong about where it read them.
-field() { sed -n "s/^$1 *= *\"\([^\"]*\)\".*/\1/p" "$ledger" | head -1; }
+# SOT-FORMAT.4: the ledger is S-expression, read through dossier_sexp — the mapping owner.
+# This retires the sed line-extraction (and its measured trailing-comment hazard: a greedy
+# capture once returned `work_dir` with the line's comment attached, and the fetch created a
+# directory with that literal name while reporting green MATCHes). Values come from the
+# parsed document now; comments are data, and a verdict cannot be right about the bytes and
+# wrong about where it read them.
+field() { python3 - "$ledger" "$1" <<'PYFIELD'
+import sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+doc = D.load_sources(sys.argv[1])
+print(doc.get(sys.argv[2], ""))
+PYFIELD
+}
 base_url="$(field base_url)"; work_dir="$(field work_dir)"; revision="$(field revision)"
 [ -n "$base_url" ] && [ -n "$work_dir" ] || { echo "fetch-sources: ledger lacks base_url/work_dir" >&2; exit 2; }
 mkdir -p "$work_dir"
 
 printf 'fetch-sources: profile %s, revision %s -> %s\n' "$profile" "$revision" "$work_dir"
 differs=0; checked=0
-# Read the [[source]] blocks: file + sha256, in order.
-paste -d'\t' \
-  <(sed -n 's/^file *= *"\([^"]*\)".*/\1/p' "$ledger") \
-  <(sed -n 's/^sha256 *= *"\([^"]*\)".*/\1/p' "$ledger") \
-| while IFS=$'\t' read -r f want; do
+# The (source …) blocks, in order: file + sha256 per row, from the parsed document.
+pins() { python3 - "$ledger" <<'PYPINS'
+import sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+for s in D.load_sources(sys.argv[1]).get("source", []):
+    print(f"{s['file']}\t{s['sha256']}")
+PYPINS
+}
+pins | while IFS=$'\t' read -r f want; do
     [ -n "$f" ] || continue
     code="$(curl -sS --max-time 60 -o "$work_dir/$f" -w '%{http_code}' "$base_url/$f" 2>/dev/null)"
     got="$(sha256_of "$work_dir/$f" 2>/dev/null)"
@@ -70,9 +84,7 @@ paste -d'\t' \
 # The loop above runs in a subshell, so re-derive the verdict here for the exit code.
 if [ "$verify_only" = 1 ]; then
   bad=0
-  paste -d'\t' \
-    <(sed -n 's/^file *= *"\([^"]*\)".*/\1/p' "$ledger") \
-    <(sed -n 's/^sha256 *= *"\([^"]*\)".*/\1/p' "$ledger") > "$work_dir/.pins"
+  pins > "$work_dir/.pins"
   while IFS=$'\t' read -r f want; do
     [ -n "$f" ] || continue
     [ -f "$work_dir/$f" ] || { bad=1; continue; }

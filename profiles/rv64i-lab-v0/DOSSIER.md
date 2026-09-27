@@ -1,15 +1,17 @@
 # `rv64i-lab-v0` — profile dossier
 
 The first experiment's development profile. **Development, not accepted**: no evidence is
-attached to anything here, no gate has been run, and `SCP-01` requires a support claim to
+attached to anything here, no gate has passed — `G0`'s generated report reads `incomplete` —
+and `SCP-01` requires a support claim to
 identify a versioned profile, an environment contract, an observation contract *and* the
 applicable specification revisions — this dossier is the first of those four.
 
-Machine-readable form: [`profile.toml`](profile.toml) and [`state.json`](state.json). Pinned
-sources: [`sources.toml`](sources.toml). All are gated — `PROFILE-CONSISTENCY` re-derives the
-declared counts from the enumeration, refuses a decision that carries no authority or no
-source, requires `state.json` to agree with `profile.toml`, and refuses an empty `hidden_state`
-list that carries no census.
+Machine-readable form: [`profile.sexp`](profile.sexp) and [`state.sexp`](state.sexp) — one
+S-expression document form each since `SOT-FORMAT.4`, validated against `schema/profile.sexp`
+and `schema/state.sexp`. Pinned sources: [`sources.sexp`](sources.sexp). All are gated —
+`PROFILE-CONSISTENCY` re-derives the declared counts from the enumeration, refuses a decision
+that carries no authority or no source, requires `state.sexp` to agree with `profile.sexp`, and
+refuses an empty `hidden_state` list that carries no census.
 
 ## What this profile is
 
@@ -22,7 +24,7 @@ list that carries no census.
 | Privilege modes | **none modelled** — unprivileged base ISA only |
 | Harts | 1 |
 | Endianness | little (an execution-environment choice) |
-| Instruction scope | 40 base + 12 RV64I additions = **52**, enumerated in `profile.toml` |
+| Instruction scope | 40 base + 12 RV64I additions = **52**, enumerated in `profile.sexp` |
 
 Selecting RV64I is **not** a claim that the laboratory constitutes a fully specified privileged
 processor. It is the smallest scope in which real scalar machinery can be validated at 64 bits
@@ -30,7 +32,7 @@ without a 32-bit detour.
 
 ## The three authorities, and why the distinction is load-bearing
 
-Every decision in `profile.toml` carries one:
+Every decision in `profile.sexp` carries one:
 
 - **`architecture`** — the specification states it. We have no choice. *(12 decisions)*
 - **`execution-environment`** — the specification explicitly delegates it to the EEI, and this
@@ -105,7 +107,7 @@ claims nothing about memory ordering.
 
 ## Open questions
 
-Each has an owner and a due point. None blocks writing `profile.toml`; all block the `G0` gate.
+Each has an owner and a due point. None blocks writing `profile.sexp`; all block the `G0` gate.
 
 | ID | Question | Owner | Due |
 | --- | --- | --- | --- |
@@ -117,7 +119,7 @@ Each has an owner and a due point. None blocks writing `profile.toml`; all block
 
 ## The state inventory, and why "no hidden state" is a checked claim
 
-[`state.json`](state.json) records 32 integer registers of 64 bits (`x0` hardwired to zero) and
+[`state.sexp`](state.sexp) records 32 integer registers of 64 bits (`x0` hardwired to zero) and
 `pc`, and then does the part that matters: it **enumerates seven candidates for hidden state and
 shows each absent** — CSRs, the reservation set, floating-point registers and `fcsr`, vector
 state, privilege and trap state, instruction-fetch cache state, and pending or partially
@@ -166,12 +168,12 @@ how a boundary silently leaves coverage.
 
 ## The reference models, and what having three of them does not mean
 
-[`references.toml`](references.toml) is the candidate dossier. Three models were obtained and
+[`references.sexp`](references.sexp) is the candidate dossier. Three models were obtained and
 run on this host, and one test corpus was located but deliberately not acquired:
 
 | Candidate | Status | Matched to this profile by | Reports itself as |
 | --- | --- | --- | --- |
-| **Sail RISC-V 0.14** | obtained (prebuilt `Mac-arm64` binary) | [`reference/sail-rv64i-lab-v0.override.json`](reference/sail-rv64i-lab-v0.override.json) | `rv64i_zvl32b` |
+| **Sail RISC-V 0.14** | obtained (prebuilt `Mac-arm64` binary) | [`reference/sail-rv64i-lab-v0.override.sexp`](reference/sail-rv64i-lab-v0.override.sexp) (the model reads the derived JSON) | `rv64i_zvl32b` |
 | **Spike 1.1.1-dev** | obtained (source build, commit `1e05ddac`) | `--isa=rv64i --priv=m` | `rv64i` |
 | **QEMU 11.1.1** | obtained (pre-existing host toolchain, read-only) | `-cpu rv64i` | *(no ISA string emitted)* |
 | **ACT (`act4`)** | reachable, not acquired | — | — |
@@ -214,7 +216,7 @@ obligations), added `D-PLATFORM`, and holds the repair with `guests/guest-no-dev
 
 The instrument is the lesson: `--print-isa-string` describes an instruction set, and reading it as
 a whole-configuration verdict is what let the gap survive. See `DIFF-PLATFORM-DEFAULT` and
-`DIFF-PLATFORM-SPIKE` in [`references.toml`](references.toml).
+`DIFF-PLATFORM-SPIKE` in [`references.sexp`](references.sexp).
 
 ### Two differences that are already known, before any instruction has been run
 

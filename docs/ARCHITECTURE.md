@@ -47,8 +47,15 @@ What exists in that format today:
 - The profile **records** are in the format now: `requirements.sexp` (26) and
   `contract-obligations.sexp` (34), converted by `SOT-FORMAT.3` behind the schema layer (§1.3),
   with the round-trip against the retired JSONL proven byte-identical, not asserted. The
-  remaining **configuration** inputs (`sources.toml`, `profile.toml`, `state.json`) are exactly
-  what `SOT-FORMAT.4` moves next.
+  remaining **configuration** inputs moved with `SOT-FORMAT.4`: `profile.sexp` (the
+  `[profile]`/`[state]`/`[scope]` tables and all 26 `[[decision]]` records), `state.sexp`,
+  `sources.sexp`, `references.sexp`, the matched-profile override `reference/sail-rv64i-lab-v0.
+  override.sexp`, and the guest expectations `guests/*.expected.sexp` are all one document form
+  each, validated against six schemas, with the round-trip against the retired TOML/JSON proven
+  field-for-field and the files' commentary surviving as first-class `(comment "…")` forms —
+  the format's reserved annotation head, never dropped. The one foreign-tool input — the Sail
+  model reads JSON — is derived from its `.sexp` on every run (`target/refs/…override.json`,
+  byte-identical to the tracked original), so the `.sexp` stays the single source of truth.
 
 ### 1.2 Fragments, and the composition operator
 
@@ -89,15 +96,18 @@ grammar cannot state, such as the fragment files' `(fixed (31 25 0x0) …)` trip
 semantics effect expressions; field declarations since `SOT-FORMAT.3` also carry optional
 facets — `(pattern …)`, `(min-length N)`, `(min N)`, `(unique yes)` — the record contracts
 demanded and the layer now states as data), plus one schema per corpus family — `encoding.sexp`,
-`fragment.sexp`, `semantics.sexp`, `requirements.sexp`, `contract-obligations.sexp` — under
-which the tracked corpus validates; the semantics' 32-form language is data there, and
-`scripts/check_semantics.py` loads it. The profile's requirement and obligation catalogues are
-in the format behind this layer (`SOT-FORMAT.3`), read through the single mapping owner
-`scripts/records_sexp.py`; the frozen `examples/` JSONL stay JSONL on purpose, still validated
-by the tracked JSON-schema validator. The layer deliberately never reads a second file: checks
-that need two sources of truth (operand scoping against the encoding, coverage of the declared
-instructions, citation against a profile's pinned sources) live in the consumers. The remaining
-engine input — configuration — is converted behind this layer by `SOT-FORMAT.4`, records learn
+`fragment.sexp`, `semantics.sexp`, `requirements.sexp`, `contract-obligations.sexp` and, since
+`SOT-FORMAT.4`, `profile.sexp`, `state.sexp`, `sources.sexp`, `references.sexp`,
+`override.sexp`, `expectations.sexp` — under which the tracked corpus validates; the semantics'
+32-form language is data there, and `scripts/check_semantics.py` loads it. The profile's
+requirement and obligation catalogues are in the format behind this layer (`SOT-FORMAT.3`), and
+its whole dossier with them (`.4`), each family read through the single mapping owner —
+`scripts/records_sexp.py` for the catalogues, `scripts/dossier_sexp.py` for the dossier — so the
+correspondence lives in exactly one place per family; the frozen `examples/` JSONL stay JSONL on
+purpose, still validated by the tracked JSON-schema validator. The layer deliberately never reads
+a second file: checks that need two sources of truth (operand scoping against the encoding,
+coverage of the declared instructions, citation against a profile's pinned sources) live in the
+consumers. Configuration, state and provenance converted behind this layer at `.4`; records learn
 to merge across a composition boundary at `.5`, and the `SOURCE-FORMAT` gate that refuses any
 source outside the format lands at `.6`; until then, `check_semantics.py`/
 `check_encoding_disjoint.py` keep checking what they already checked.

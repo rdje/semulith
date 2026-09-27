@@ -13,13 +13,13 @@
 #   SEXP  — every `requirements.sexp` / `contract-obligations.sexp` catalogue validates against
 #           its schema-layer schema (`schema/requirements.sexp`, `schema/contract-obligations.sexp`)
 #           AND carries the cross-checks, now read through scripts/records_sexp.py:
-#     2. CITED      every `source_refs.source_id` names a source the profile's `sources.toml` pins.
+#     2. CITED      every `source_refs.source_id` names a source the profile's `sources.sexp` pins.
 #                   `SRC-03` again, one layer up: a locator into a document nobody acquired is
 #                   not a citation.
 #     3. RESOLVED   a record claiming `research_status: resolved` may not also carry an `OPEN:` note.
 #                   ⭐ "Resolved with a known open question" is the single most convenient lie a
 #                   requirements catalogue can tell, because both halves are individually true.
-#     4. COVERAGE   every `[[decision]]` in `profile.toml` has a requirement, and the requirement's
+#     4. COVERAGE   every (decision …) in `profile.sexp` has a requirement, and the requirement's
 #                   statement is IDENTICAL to the decision's. Two files stating the same rule in
 #                   different words is how a catalogue quietly stops describing its profile.
 #     5. LINKED     every id in `dependencies` names a record that exists in the same file.
@@ -53,11 +53,12 @@ command -v python3 >/dev/null 2>&1 || {
 
 check_records() {
 python3 - "$1" <<'PY'
-import json, pathlib, sys, tomllib
+import json, pathlib, sys
 sys.path.insert(0, "scripts")
 from validate_records import validate_jsonl, UnsupportedSchema
 import sexp as S
 import records_sexp as R
+import dossier_sexp as D
 import check_sexp_schema as K
 
 root = pathlib.Path(sys.argv[1])
@@ -145,17 +146,25 @@ for cat in catalogues:
     by_id = {r.get("id"): r for r in recs}
 
     if cat.name == "requirements.sexp":
-        # 2. CITED — beside a profile's sources.toml
-        sources_toml = cat.parent / "sources.toml"
-        if sources_toml.is_file():
-            pinned = {s["id"] for s in tomllib.loads(sources_toml.read_text()).get("source", [])}
-            for r in recs:
-                for sr in r.get("source_refs", []):
-                    if sr["source_id"] not in pinned:
-                        findings.append(
-                            f"UNPINNED SOURCE {cat.name} [{r['id']}]: cites "
-                            f"'{sr['source_id']}', which {sources_toml.name} does not pin — "
-                            f"a locator into a document nobody acquired is not a citation")
+        # 2. CITED — beside a profile's sources.sexp (`SOT-FORMAT.4`: read via the mapping)
+        sources_sexp = cat.parent / "sources.sexp"
+        if sources_sexp.is_file():
+            try:
+                pinned = {s["id"] for s in D.load_sources(sources_sexp).get("source", [])}
+            except D.DossierError:
+                pinned = None
+            if pinned is None:
+                findings.append(
+                    f"UNREADABLE {sources_sexp.name}: the pinned-source ledger does not map — "
+                    f"a catalogue citing documents a ledger nobody can read proves nothing")
+            else:
+                for r in recs:
+                    for sr in r.get("source_refs", []):
+                        if sr["source_id"] not in pinned:
+                            findings.append(
+                                f"UNPINNED SOURCE {cat.name} [{r['id']}]: cites "
+                                f"'{sr['source_id']}', which {sources_sexp.name} does not pin — "
+                                f"a locator into a document nobody acquired is not a citation")
         for r in recs:
             # 3. RESOLVED
             detail = (r.get("source_semantics") or {}).get("detail", "")
@@ -174,7 +183,7 @@ for cat in catalogues:
 
         # 6 + 7. OBLIGED / AUTHORITY — against the contract in the same PROFILE directory
         ob_file = cat.parent / "contract-obligations.sexp"
-        if ob_file.is_file() and (cat.parent / "profile.toml").is_file():
+        if ob_file.is_file() and (cat.parent / "profile.sexp").is_file():
             try:
                 obs = R.load(ob_file)
             except (R.RecordRefused, S.SexpError):
@@ -209,19 +218,27 @@ for cat in catalogues:
                                 f"'profile difference'")
 
         # 4. COVERAGE — against the profile this catalogue belongs to
-        prof = cat.parent / "profile.toml"
+        prof = cat.parent / "profile.sexp"
         if prof.is_file():
-            decisions = tomllib.loads(prof.read_text()).get("decision", [])
-            for dec in decisions:
-                rid = f"REQ-{dec['id']}"
-                if rid not in by_id:
-                    findings.append(
-                        f"UNCOVERED DECISION {cat.name}: profile.toml decision '{dec['id']}' "
-                        f"has no requirement '{rid}'")
-                elif by_id[rid].get("statement") != dec.get("statement"):
-                    findings.append(
-                        f"STATEMENT DRIFT {cat.name} [{rid}]: the requirement no longer states "
-                        f"what profile.toml's '{dec['id']}' states")
+            try:
+                decisions = D.load_profile(prof).get("decision", [])
+            except D.DossierError:
+                decisions = None
+            if decisions is None:
+                findings.append(
+                    f"UNREADABLE {prof.name}: the profile's decisions do not map — coverage "
+                    f"against a dossier nobody can read proves nothing")
+            else:
+                for dec in decisions:
+                    rid = f"REQ-{dec['id']}"
+                    if rid not in by_id:
+                        findings.append(
+                            f"UNCOVERED DECISION {cat.name}: profile.sexp decision '{dec['id']}' "
+                            f"has no requirement '{rid}'")
+                    elif by_id[rid].get("statement") != dec.get("statement"):
+                        findings.append(
+                            f"STATEMENT DRIFT {cat.name} [{rid}]: the requirement no longer "
+                            f"states what profile.sexp's '{dec['id']}' states")
 
     else:  # contract-obligations.sexp — the NO NEGATIVE CHECK arm is fired standalone too
         for o in recs:
@@ -264,8 +281,8 @@ self_test() {
     else pass=$((pass+1)); fi
   }
 
-  sources() { argc 1 "$#" sources || return; printf '%s\n' "$1" > "$t/p/sources.toml"; }
-  profile() { argc 1 "$#" profile || return; printf '%s\n' "$1" > "$t/p/profile.toml"; }
+  sources() { argc 1 "$#" sources || return; printf '%s\n' "$1" > "$t/p/sources.sexp"; }
+  profile() { argc 1 "$#" profile || return; printf '%s\n' "$1" > "$t/p/profile.sexp"; }
   reqs()    { argc 1 "$#" reqs || return; python3 -c "
 import json, pathlib, sys
 sys.path.insert(0, '$ROOT/scripts')
@@ -281,14 +298,8 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
   # schema-layer access: the fixture root must SEE schema/ for load_schema — symlink it
   ln -sfn "$ROOT/schema" "$t/schema"
 
-  sources '[[source]]
-id = "SRC-A"
-file = "a.html"'
-  profile '[[decision]]
-id = "D-A"
-authority = "architecture"
-statement = "S"
-source = "SRC-A §1"'
+  sources '(sources (source (id "SRC-A") (file "a.html")))'
+  profile '(profile (decision (id "D-A") (authority architecture) (statement "S") (source "SRC-A §1")))'
   reqs "$REQ";                                                arm "GREEN a covered, cited, valid record" 0 "__CHECKED__ 1"
   # ---- the schema layer's own refusals, on the converted form -------------------------------
   reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['risk']='apocalyptic'; print(json.dumps(r,ensure_ascii=False))")"
@@ -311,17 +322,9 @@ source = "SRC-A §1"'
                                                               arm "RED   depends on a record that does not exist" 1 "DANGLING DEP"
   reqs "$(printf '%s' "$REQ" | python3 -c "import json,sys; r=json.load(sys.stdin); r['statement']='something else'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   the requirement no longer states the decision" 1 "STATEMENT DRIFT"
-  profile '[[decision]]
-id = "D-B"
-authority = "architecture"
-statement = "T"
-source = "SRC-A §2"'
+  profile '(profile (decision (id "D-B") (authority architecture) (statement "T") (source "SRC-A §2")))'
   reqs "$REQ";                                                arm "RED   a profile decision with no requirement" 1 "UNCOVERED DECISION"
-  profile '[[decision]]
-id = "D-A"
-authority = "architecture"
-statement = "S"
-source = "SRC-A §1"'
+  profile '(profile (decision (id "D-A") (authority architecture) (statement "S") (source "SRC-A §1")))'
   reqs "$REQ"; obs "$OB";                                     arm "GREEN requirement, contract and profile agree" 0 "__CHECKED__ 2"
   obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['required_checks']=['CHK-A-POS']; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   an obligation with no negative fixture" 1 "NO NEGATIVE CHECK"
@@ -361,7 +364,7 @@ for d in dirs:
     ob = d / "contract-obligations.sexp"
     if not (rq.is_file() or ob.is_file() or (d / "requirements.jsonl").is_file()):
         continue
-    enforced = (d / "profile.toml").is_file()
+    enforced = (d / "profile.sexp").is_file()
     def load(p):
         if p.is_file():
             return R.load(p) if p.suffix == ".sexp" else \

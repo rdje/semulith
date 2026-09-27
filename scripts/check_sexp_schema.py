@@ -42,6 +42,30 @@ class SchemaError(Exception):
     """A refusal. One error names the construct, the field, and the reason."""
 
 
+# --------------------------------------------------------------------------- the comment form
+# `SOT-FORMAT.4`: comments are FIRST-CLASS FORMS. `(comment "line" …)` is the format's reserved
+# annotation head — part of its surface, like whitespace, not a domain construct. It may appear
+# anywhere a form may appear (top level, inside a construct, in a schema file); validation skips
+# it, and no schema may declare or forbid it. Everything else is still refused by name, and a
+# typo'd `commment` is refused exactly as before. The head is reserved: a construct, operator or
+# field named `comment` is refused, because the exemption would make it dead vocabulary.
+
+def _is_comment(form) -> bool:
+    return isinstance(form, list) and bool(form) and isinstance(form[0], S.Symbol) \
+        and str(form[0]) == "comment"
+
+
+def _check_comment(form, where: str) -> None:
+    """A comment form carries one or more plain strings — nothing else."""
+    if len(form) < 2:
+        raise SchemaError(f"{where}: (comment …) carries at least one string, got none — "
+                          f"an empty comment is silence, and silence is not annotation")
+    for arg in form[1:]:
+        if not isinstance(arg, str) or isinstance(arg, S.Symbol) or isinstance(arg, bool):
+            raise SchemaError(f"{where}: a comment line is a plain string, got {arg!r}")
+
+
+
 # --------------------------------------------------------------------------- schema loading
 # The kernel: it understands exactly three forms — schema, construct, field — and nothing
 # else. A schema file that abuses them is refused here, at the meta level, before any target
@@ -108,6 +132,9 @@ class Field:
         if not isinstance(name, S.Symbol):
             raise SchemaError(f"{where}: field name must be a bare symbol, got {name!r}")
         self.name = str(name)
+        if self.name == "comment":
+            raise SchemaError(f"{where}: field name 'comment' is reserved — the annotation form "
+                              f"is skipped everywhere, so a field with that name is dead vocabulary")
         if "type" not in g:
             if g.get("empty") != "yes":
                 raise SchemaError(f"{where}: field {self.name!r} has no (type …) — a marker "
@@ -201,6 +228,10 @@ class Construct:
 
 def _declare(constructs: dict[str, Construct], form, where: str) -> None:
     children = [c for c in form[1:] if isinstance(c, list) and c]
+    for c in children:
+        if _is_comment(c):
+            _check_comment(c, where)                  # annotations may annotate declarations
+    children = [c for c in children if not _is_comment(c)]
     name_forms = [c for c in children if c[0] == "name"]
     field_forms = [c for c in children if isinstance(c[0], str) and c[0] == "field"]
     stray = [c for c in children
@@ -212,6 +243,10 @@ def _declare(constructs: dict[str, Construct], form, where: str) -> None:
         raise SchemaError(f"{where}: a (construct …) needs exactly one (name SYM), got "
                           f"{len(name_forms)}")
     c = Construct(where, name_forms[0][1], field_forms)
+    if c.name == "comment":
+        raise SchemaError(f"{where}: construct name 'comment' is reserved for the annotation "
+                          f"form — validation skips it, so a construct with that name is dead "
+                          f"vocabulary")
     if c.name in constructs:
         raise SchemaError(f"{where}: construct {c.name!r} declared twice")
     constructs[c.name] = c
@@ -317,6 +352,9 @@ def load_schema(path: Path) -> tuple[dict[str, Construct], dict[str, Operator]]:
             raise SchemaError(f'{path.name}: a schema is made of (schema …)/(construct …)/'
                               f'(operator …) forms, got {form!r}')
         head = S.head(form, str(path))
+        if _is_comment(form):
+            _check_comment(form, str(path))
+            continue
         if head == "schema":
             continue                        # the metadata form: (schema (id STRING))
         if head == "construct":
@@ -324,6 +362,9 @@ def load_schema(path: Path) -> tuple[dict[str, Construct], dict[str, Operator]]:
             continue
         if head == "operator":
             op = Operator(f"{path.name}", form)
+            if op.name == "comment":
+                raise SchemaError(f"{path.name}: operator name 'comment' is reserved for the "
+                                  f"annotation form")
             if op.name in constructs:
                 raise SchemaError(f"{path.name}: {op.name!r} is declared both as a construct "
                                   f"and as an operator")
@@ -453,6 +494,9 @@ def validate_form(form, constructs: dict[str, Construct], operators: dict[str, O
         if not isinstance(child, list) or isinstance(child, S.Symbol) or not child:
             raise SchemaError(f'{where}: construct "{head}": expected a (field value) child '
                               f'list, got {child!r}')
+        if _is_comment(child):
+            _check_comment(child, where)              # the annotation form is skipped, checked
+            continue
         if not isinstance(child[0], S.Symbol):
             raise SchemaError(f'{where}: construct "{head}": a field name must be a bare '
                               f'symbol, got {child[0]!r}')
@@ -526,6 +570,12 @@ def validate_file(path: Path, constructs: dict[str, Construct],
     for form in forms:
         if not isinstance(form, list) or not form:
             errors.append(f"{path.name}: top level holds a non-form {form!r}")
+            continue
+        if _is_comment(form):
+            try:
+                _check_comment(form, path.name)
+            except SchemaError as exc:
+                errors.append(str(exc))
             continue
         try:
             validate_form(form, constructs, operators, path.name)
@@ -789,6 +839,26 @@ def _selftest() -> int:
         lambda: refuses_schema(TOYFAC + '\n(construct (name bad) '
                                '(field (name n) (type string) (min-length one)))',
                                "(min-length N) takes one non-negative integer"))
+
+    # --- the comment form: first-class annotations (`SOT-FORMAT.4`) ---------------------------
+    arm("GREEN a comment form is allowed anywhere — top level and inside a construct",
+        lambda: accepts('(comment "why this file exists") '
+                        '(unit (id "u") (width 32) (comment "why 32"))', TOY))
+    arm("RED   an empty comment is refused — silence is not annotation",
+        lambda: refuses('(comment)', TOY, "at least one string"))
+    arm("RED   a comment line that is not a string is refused",
+        lambda: refuses('(comment 42)', TOY, "plain string"))
+    arm("RED   a comment holding a nested form is refused",
+        lambda: refuses('(unit (id "u") (width 32) (comment (why)))', TOY, "plain string"))
+    arm("RED   the typo commment is still refused by name",
+        lambda: refuses('(unit (id "u") (width 32) (commment "why"))', TOY,
+                        'undeclared field "commment"'))
+    arm("RED   a construct named comment is refused — the head is reserved",
+        lambda: refuses_schema(TOY + '\n(construct (name comment) (field (name x) (type string)))',
+                               "reserved"))
+    arm("RED   a field named comment is refused — the head is reserved",
+        lambda: refuses_schema(TOY + '\n(construct (name unit2) '
+                               '(field (name comment) (type string)))', "reserved"))
 
     arm("GREEN the fixpoint: schema.sexp validates under itself",
         lambda: accepts((REPO / "schema/schema.sexp").read_text(),

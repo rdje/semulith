@@ -206,13 +206,53 @@ too, and under the split there is no rule by which it could.
   DEV_NOTES lesson (`2026-09-27`): promotion: declined (both shapes recorded in this leaf; a card is due if a second consumer trips them).
 
 - ID: `SOT-FORMAT.4` — **configuration, state and provenance**
-  Status: `pending`
+  Status: `done`
   Goal: convert `profile.toml` (26 decisions), `state.json`, `sources.toml`, `references.toml`, the
   reference override JSON and the guest expectation TOMLs.
   Acceptance: `PROFILE-CONSISTENCY`'s 39 arms re-fired RED, including rule 5b; `run_smoke.py` and
   `compare_platforms.py` produce identical verdicts; comments in the TOML sources survive as
   first-class form, since a comment-rich human-authored file was the original argument for TOML and
   losing it would be a real regression.
+  Result: met, `2026-09-27`. All nine documents converted and verified; the kernel carries one
+  reserved `comment` head; six schemas joined the layer; every consumer reads through the new
+  mapping owner. (The DOSSIER's stale "no gate has been run" line was found and corrected in
+  passing — `G0` has run; its verdict reads `incomplete`.)
+  ⚠ Built-shape correction to the design below, recorded, not silently diverging:
+  booleans shipped as the SYMBOL values `true`/`false` (`(cacheable true)`), not `(true)`/
+  `(false)` wrappers — `(values …)` already types them; wrappers would add constructs for
+  nothing.
+  Design (recorded before code, `2026-09-27`), the corpus read in full first, the way `.1`–`.3` did:
+  - ⭐ **Comments become first-class forms — the kernel gains ONE reserved head.** `(comment
+    "line" …)` is inert data allowed at ANY position (top level, inside constructs, in schema
+    files): validation skips it, the mapping owners skip it, and no schema may declare or forbid
+    it. This answers the tree's open question: a comment belongs to the FILE as an ordered
+    annotation stream, conventionally placed before the form it annotates (after, when it trailed
+    a value inline). It is part of the format's surface, not a new declaration kind — criterion
+    2's boundary is unchanged, and `commment` is still refused by name.
+  - **One root form per file**, named for the document: `(profile …)`, `(state …)`, `(sources …)`,
+    `(references …)`, `(override …)`, `(expectations …)`. TOML tables and `[[array]]` blocks
+    nest and repeat as forms; JSON objects nest the same way.
+  - **The mapping lives in one new owner, `scripts/dossier_sexp.py`** (parallel to
+    `records_sexp.py`): keys verbatim as field names (no translation table); strings VERBATIM
+    (a hex address stays a string, so the round-trip is exact); floats refused; booleans → the
+    symbols `true`/`false` (see the correction above); scalar arrays → repeated atom fields,
+    empty arrays → absence (the `.3` rules); arrays of objects → repeated form fields;
+    dynamic-keyed maps (guest `writes`, override `extensions`) → entry forms — a schema cannot
+    declare a hundred extension names, and a wildcard would gut "undeclared is refused by name".
+    `authority` (the one closed project enum) is a symbol under `(values …)`; vocabularies the
+    dossier merely RECORDS stay strings — PROFILE-CONSISTENCY keeps owning them.
+  - **Consumers change at the seam, not in their logic**: every gate/tool keeps receiving the
+    exact dicts `tomllib`/`json` produced, so "identical verdicts" is a data equality. The Sail
+    override's JSON is a foreign-tool input, derived from the tracked `.sexp` into `target/refs/`
+    on every run — the `.sexp` stays the single source of truth.
+  - **Losslessness is proven like `.3`, shaped like this corpus**: `convert_dossier.py verify`
+    re-derives TOML/JSON → data → forms → data field-for-field, plus a comment census (every
+    TOML comment line appears as a comment-form string, in order) and schema validation. TOML
+    re-dump byte-identity is NOT claimed — the files are hand-formatted; data identity + comment
+    survival is the honest claim.
+  - **Six new schema files** (`schema/{profile,state,sources,references,override,expectations}.sexp`)
+    type-check the dossier; completeness stays with PROFILE-CONSISTENCY's 39 arms (`.6` owns the
+    permanent `SOURCE-FORMAT` gate); the registry's `schema/` ceiling was re-derived with grounds.
 
 - ID: `SOT-FORMAT.5` — **record merge: the thing the split made impossible**
   Status: `pending`
@@ -306,14 +346,15 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.4` | `pending` | configuration last of the conversions — 39 arms and two comparators ride on it |
-| 2 | `SOT-FORMAT.5` | `pending` | merge is only definable once everything is one format |
-| 3 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moves |
+| 1 | `SOT-FORMAT.5` | `pending` | merge is only definable now that everything is one format |
+| 2 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moved |
 
 ## Decisions
 
 | Date | Decision | Rationale |
 | --- | --- | --- |
+| `2026-09-27` | The kernel reserves ONE head — `(comment "…")`, inert at any position; schemas may not declare or forbid it | comments are the format's surface, like whitespace; declaring them per-schema would duplicate the exemption and re-introduce the loss the leaf exists to prevent |
+| `2026-09-27` | Booleans are the symbol values `true`/`false`, not wrapper forms | `(values …)` already types and restricts them; wrappers would add two nullary constructs per schema for zero discriminating power — the built-shape correction to `.4`'s design, recorded in the leaf |
 | `2026-09-27` | Field FACETS — `(pattern …)`, `(min-length N)`, `(min N)`, `(unique yes)` — extend `(field …)`; they are not a fifth declaration kind | the JSON record contracts carried discriminating power (id regexes, minItems, uniqueItems, minLength) that the record grammar could not state; evaporating it into consumers would make the schema layer weaker than the contract it replaces. The same boundary as `.2`, one level down: a new KIND changes the kernel, facets on the existing kind are the language |
 | `2026-09-27` | `parameters` values are typed wrappers — `(int …)/(str …)/(true)/(false)/(null)/(ints …)/(strs …)` — not an open map | the JSON schema's `additionalProperties` silently excluded the arrays three obligations actually write, and the validator never descended into it; the honest format states what the corpus holds and REFUSES a float, a mixed list or a nested value by name — the day one is needed is a schema decision, not a guessed translation |
 | `2026-09-27` | Catalogue discovery excludes the `schema/` directory | the schemas share their basenames with the catalogues (`schema/requirements.sexp` IS named `requirements.sexp`); a gate that judged a schema as its own target would report its own grammar as a records violation — measured by the reworked gate's first self-test run |
@@ -331,8 +372,10 @@ too, and under the split there is no rule by which it could.
 
 - Does the schema language need value types beyond symbol, string, integer and list? Deferred until
   a real construct needs one — an unused type is an untested type.
-- Do comments belong to the form that follows them, or to the file? `.4` forces the answer, because
-  `profile.toml`'s comments carry provenance for 26 decisions.
+- ➡️ ANSWERED by `.4` (`2026-09-27`): a comment belongs to the FILE as an ordered annotation
+  stream — a first-class `(comment "…")` form, positioned before the form it annotates by house
+  convention (after, when it trailed a value inline). The kernel reserves the head; the question
+  kept its promise: `profile.toml`'s 27 comment lines all survived as data.
 - ⚠️ `CHANGELOG.md`'s shard headroom is deliberately not typed here: a byte count in prose is stale
   the next commit (precedent `SEMULITH-PD-0049`). The instrument owns it:
   `scripts/check_readme_routes.sh` reports the health target and enforces the 64 KiB ceiling, so
@@ -670,10 +713,51 @@ did the same. Revisit when the engine crate adopts the reader.
   mirrors' `RECORD-SCHEMA` rows; `TOOLBOX.md` (two rows); `MEMORY.md`; `DEV_NOTES.md` (dated
   entry; promotion declined in this leaf); `CHANGELOG.md`; `docs/TASK_TREE.md` — one commit.
 
+## Acceptance Checklist (leaf SOT-FORMAT.4)
+
+- [x] **REPRODUCE / ISSUE** — the split the tree exists to end, shown at the dossier:
+  `ls profiles/rv64i-lab-v0/*.toml *.json` listed `profile.toml  references.toml  sources.toml
+  state.json` beside the S-expression corpus; `grep -c '^#' references.toml` -> `65` — a fifth
+  of that file was commentary `tomllib` discarded on every read.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — tool-backed. WHY: a comment-rich human-authored document
+  cannot lose its commentary, and a merge cannot read three formats. WHERE: `grep -lE 'tomllib|
+  json\.loads' scripts/*.py scripts/*.sh` -> eight files: both record gates, `gate_report.py`,
+  `run_smoke.py`, `compare_platforms.py`, both fetch scripts, `check_citations.py` — every one
+  parsing a source of truth outside the format.
+
+- [x] **FIX** — one reserved `comment` head in the kernel (annotations skipped, never declared);
+  `scripts/dossier_sexp.py` the single mapping owner; `scripts/convert_dossier.py` the migration
+  and its proof; six schema files; consumers changed at the seam (same dicts, new loader); the
+  Sail override's JSON derived from the tracked `.sexp` on every run.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+  `convert_dossier.py verify` on all nine documents -> each `round-trip ok`, field-for-field
+  equal, comment census exact, schema-conformant; `check_profile_consistency.sh --self-test`
+  -> `39 pass / 0 fail` (rule 5b included); `run_smoke.py` -> `ok` and `compare_platforms.py`
+  -> `4 of 4` — identical verdicts.
+
+- [x] **NO REGRESSION** — kernel 50/0; dossier 11/0; converter 12/0; RECORD-SCHEMA 22/0;
+  `sexp --self-test` 18/0; `check_semantics.py` and `check_citations.py` 52 of 52 each;
+  `fetch_references.sh --verify-only` ok (incl. the 52 == 52 scope cross-check through
+  `profile.sexp`); the regenerated G0 report diffs in input names only, every count byte-stable;
+  `compare_readers.py` sweeps 28 of 28 files across all three readers.
+
+- [x] **LOCKSTEP** — `docs/ARCHITECTURE.md` §1.1/§1.3; the profile's `DOSSIER.md` /
+  `ENVIRONMENT.md` / `G0-REPORT.md`; both doctrine mirrors' `RECORD-SCHEMA` row; `TOOLBOX.md`
+  (two rows); `doctrine/readme_routes.tsv` (`schema/` re-derived, grounds recorded);
+  `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md` (lesson promoted to
+  `docs/knowledge/portable-shell-fixtures-keep-mutations-whole-line.md`), `docs/TASK_TREE.md`
+  and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `SOT-FORMAT.4` | `convert_dossier.py verify`, all nine documents | each `round-trip ok` — field-for-field equal, comment census exact (27 + 35 + 65 + 12 + 12 + 5 + 12 lines), schema-conformant |
+| `2026-09-27` | `SOT-FORMAT.4` | self-tests: kernel · dossier · converter · PROFILE-CONSISTENCY · RECORD-SCHEMA | `50/0` (7 comment arms) · `11/0` · `12/0` · `39/0` (rule 5b re-fired) · `22/0` — all on the converted form |
+| `2026-09-27` | `SOT-FORMAT.4` | `run_smoke.py` / `compare_platforms.py` / materialized Sail JSON | `ok` and `4 of 4` — identical verdicts; the derived JSON byte-identical to the tracked original |
+| `2026-09-27` | `SOT-FORMAT.4` | ceilings + sweep | `references.sexp` 30,012 B < 32,768 (no `profiles/` re-derivation needed); `schema/` re-derived 12 → 24; `compare_readers` 28 of 28 agree (3 documented LS-002 class notes in `sources.sexp` comment strings) |
 | `2026-09-27` | `SOT-FORMAT.3` | round-trip, both catalogues | byte-identical on re-dump; 26 + 34 records field-by-field equal |
 | `2026-09-27` | `SOT-FORMAT.3` | kernel self-test | `43 pass / 0 fail` (31 → 43; 12 facet arms, each RED arm naming its reason) |
 | `2026-09-27` | `SOT-FORMAT.3` | RECORD-SCHEMA self-test | `22 pass / 0 fail` — the 15 old scenarios on the converted form + facet refusals + standalone-obligation arm |
@@ -733,6 +817,7 @@ did the same. Revisit when the engine crate adopts the reader.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.4` | `SEMILITH-SF-0059 (leaf SOT-FORMAT.4): …` | the dossier behind the schema layer; the reserved comment head; six schemas; 39 arms re-fired; byte-identical override derivation |
 | `SOT-FORMAT.3` | `SEMILITH-SF-0058 (leaf SOT-FORMAT.3): …` | the records behind the schema layer; field facets; typed parameters; byte-identical round-trip; 22 record arms |
 | `SOT-FORMAT.2` | `SEMILITH-SF-0057 (leaf SOT-FORMAT.2): …` | the operator kind; three domain schemas; the 32 forms are data; 52/52 byte-identical; 31 schema arms |
 | `SOT-FORMAT.1` | `SEMULITH-SF-0054 (leaf SOT-FORMAT.1): …` | the schema language in itself; 16 arms; fixpoint green; schema/ registered in the creating commit |

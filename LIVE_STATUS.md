@@ -21,6 +21,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Reference models acquired | Done | Sail 0.14, Spike `1e05ddac`, QEMU 11.1.1 pinned; ACT located. `scripts/fetch_references.sh` |
 | Matched-profile evidence path | Done | 4 guests, 2 models, 34 spec-derived values, 4 negative observations, 6 differences; `scripts/run_smoke.py` |
 | Requirements catalogue seeded | Done | `P0-PROFILE.3` — 26 machine-readable records, one per decision; in the one format since `SOT-FORMAT.3`, validated by the schema layer |
+| Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; `PROFILE-CONSISTENCY`'s 39 arms re-fired; the dossier's commentary survives as first-class `(comment …)` forms; the Sail JSON is derived from the tracked `.sexp`, byte-identical |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 34 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 68 checks **declared not implemented** |
 | Reference independence inventoried | Done | 6 pairs, 4 verdicts; FP **shared** (184/199 files identical), routed to `P4-SYSTEM.7` |
 

@@ -8,6 +8,25 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the dossier moves behind the schema layer (SOT-FORMAT.4)
+
+- All nine dossier documents converted — `profile.sexp` (26 decisions), `state.sexp`,
+  `sources.sexp`, `references.sexp`, the matched override and the four guest expectations —
+  each verified field-for-field against its retired TOML/JSON with the comment census exact
+  (158 comment lines survive as first-class `(comment …)` forms). Kernel: one reserved comment
+  head, 7 new arms (50/0). `PROFILE-CONSISTENCY`: 39 arms re-fired on the converted form.
+  Consumers changed at the seam via the new mapping owner `scripts/dossier_sexp.py`; the Sail
+  JSON derives from the tracked `.sexp` byte-identically; `run_smoke`/`compare_platforms`
+  unmoved.
+- ⭐ **A mutation arm and the defect it simulates must fail for the same reason.** Three
+  fixture-shape failures while re-firing the 39 arms — a field line carrying its form's close
+  paren (a `grep -v` arm unbalanced the fixture), BSD sed refusing multiline replacements
+  (CI runs GNU sed; `gsed` on the author's machine is not a dependency the gate may take), and
+  `${var/pat/repl}` terminating at an inner quote (the replacement silently never happened).
+  Every fix was the same shape: one field per line, closes on their own lines, whole-line
+  mutations only. Promoted to
+  [`docs/knowledge/portable-shell-fixtures-keep-mutations-whole-line.md`](docs/knowledge/portable-shell-fixtures-keep-mutations-whole-line.md).
+
 ## _(2026-09-27)_ — the fired ceiling gets its sharder, and the freeze gets its proof (DOC-SHARDING.1)
 
 - `CHANGELOG.md` crossed its 64 KiB ceiling with 9 bytes of headroom; this slice built the

@@ -10,6 +10,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 | Card | Answers |
 | --- | --- |
 | [`the-corpus-writes-shapes-my-grammar-cannot-state.md`](the-corpus-writes-shapes-my-grammar-cannot-state.md) | my schema validates the files it was designed from — why does it refuse the real corpus? |
+| [`portable-shell-fixtures-keep-mutations-whole-line.md`](portable-shell-fixtures-keep-mutations-whole-line.md) | my self-test arm fails "for the wrong reason" — is the gate broken, or is my fixture's shape feeding the mutation through a different path? |
 | [`director-named-actions-run-first.md`](director-named-actions-run-first.md) | the director named an action mid-startup — where does it go in the queue? |
 | [`duplicate-document-ownership.md`](duplicate-document-ownership.md) | two tracked files are byte-identical — which one is canonical, and what proves it? |
 | [`re-derivable-vs-cited-evidence.md`](re-derivable-vs-cited-evidence.md) | a document reports a check that passed elsewhere — may this project rely on it? |
