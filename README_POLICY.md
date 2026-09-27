@@ -25,9 +25,10 @@
   target set at today's size fires on the next line, so each sits a band below its ceiling.
 - **Transition debt, stated rather than hidden.** `CHANGELOG.md` and `DEV_NOTES.md` are
   append-only histories whose declared pressure control is *shard when the ceiling fires*. The
-  sharding tool does not exist yet; their ceilings (64 KiB / 48 KiB against today's 16 KiB /
-  3.7 KiB) are the trigger that opens the leaf which builds it. This is recorded debt with an
-  owner, not an exemption.
+  trigger fired for `CHANGELOG.md` (`DOC-SHARDING.1`, `2026-09-27`): the sharder
+  (`scripts/shard_history.py`), the freeze manifest, and the `SHARD-FREEZE` check now exist, and
+  the fired ceiling was answered by sharding — never by raising the cap. `DEV_NOTES.md` keeps the
+  trigger: the same tool serves it when its ceiling fires.
 - **Full live-document-size containment is deliberately NOT adopted yet.** That programme
   governs every long-lived document family, and this repository has no measured pressure to
   justify it: the largest live surface is `CHANGELOG.md` at 16,228 bytes. The trigger is

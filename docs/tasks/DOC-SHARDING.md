@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `DOC-SHARDING`
-- Status: `proposed`
+- Status: `done`
 - Roadmap lane: repository hygiene — the append-history ceilings (`doctrine/readme_routes.tsv`)
 - Gate: none of its own; keeps `README-ROUTING-CLOSURE` green by giving the fired trigger its
   owner
@@ -53,21 +53,135 @@ remedy.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DOC-SHARDING.1` | `pending` | CHANGELOG has 9 bytes of headroom — the next slice cannot land an entry without this tool |
+| — | — | — | the tree is complete (1/1 leaves done); `DEV_NOTES.md` inherits the live trigger for the day its ceiling fires |
 
 ## Task Tree
 
 - ID: `DOC-SHARDING`
-  Status: `active`
+  Status: `done`
   Goal: the fired ceiling trigger gets its remedy — frozen shards, a manifest, a check
   Children: `DOC-SHARDING.1`
 
 - ID: `DOC-SHARDING.1` — **the shard tool, the manifest, and the freeze check**
-  Status: `pending`
+  Status: `done`
   Goal: `scripts/shard_history.py` + `docs/changelog/` + a tracked freeze/completeness check,
     demonstrated against the real `CHANGELOG.md` (which shards the moment this lands)
+  Design (recorded before code, `2026-09-27`):
+  - `scripts/shard_history.py` moves the OLDEST whole entries (`^## ` blocks) from the head to a
+    new `docs/changelog/shard-NNNN.md` until the head is under a byte target (default: the
+    ceiling the routes registry declares for the head; `--max-bytes` may target lower to leave
+    room for an imminent entry). Entries keep their byte text verbatim — a file is preamble +
+    concatenated entry blocks, so head-after + shard = head-before exactly, which the tool
+    asserts and prints as an ordered entry-id proof at shard time. A re-run is a no-op: under
+    target, manifest current, nothing written.
+  - Shard naming: sequential `shard-NNNN.md`, continuing past the two existing date-named
+    shards, which stay as they are — a shard's entries are never edited, and the manifest
+    enumerates shards, so a name is a label, not structure. The shard header follows the house
+    header the two existing shards already carry.
+  - `docs/changelog/SHARDS.sha256` is the freeze proof: one `sha256sum`-format row per shard,
+    paths repo-root-relative, sorted. The tool regenerates it deterministically (byte-identical
+    when nothing changed).
+  - `scripts/check_changelog_shards.sh` (doctrine `SHARD-FREEZE`) proves, durable past the
+    shard event: every `*.md` in `docs/changelog/` is manifested and every manifested file
+    exists (coverage); every shard hashes to its row (frozen — any post-shard edit fails);
+    the manifest only grows — every row committed at `HEAD` is present unchanged (append-only,
+    judged against `git show HEAD:…`); and no entry id appears twice across head + shards
+    (none duplicated). "None lost" durably = a shard cannot be edited or deleted without a hash
+    failure, and the tool proves completeness at the shard event itself.
+  - Registering the doctrine moves two derived counts (`LIVE_STATUS.md`'s "N registered",
+    "N self-test arms") — `DERIVED-COUNTS` re-derives both, so the lockstep updates are
+    mandatory, not courtesy.
   Acceptance: as the tree's Acceptance Criteria 1–4; the check's RED arms fired before
     registration; after sharding, the head is under 65,536 bytes and every pre-shard entry
     is findable in exactly one place.
-  Verification: `pending`
-  Commit: `pending`
+  Verification: `2026-09-27` — see the checklist below; shard tool 10/10, freeze check 12/0,
+    real-tree RED pre-registration (both existing shards UNMANIFESTED), shard event proved
+    29 == 28+1 order-and-bytes exact, head 65,527 → 62,086 bytes, full enforcer green.
+  Commit: `SEMULITH-DS-0002`
+  DEV_NOTES lesson (`2026-09-27`): promotion: declined (per-slice history; a card is due when a second append-history surface fires).
+
+## Defects found during this leaf (owned)
+
+- `SEMILITH` vs `SEMULITH` in work-unit ids: `git log --format='%s' | grep -oE 'SEM[UI]LITH' |
+  sort | uniq -c` measures 60 × `SEMULITH` against 3 × `SEMILITH`, and the three are the most
+  recent commits (`SEMILITH-SF-0057`, `SEMULITH-RM-0060`, `SEMILITH-DS-0001`) — a typo introduced
+  one session ago and carried into their `CHANGELOG.md` headings and tree commit-logs. Commit
+  subjects are immutable; the changelog entries quote them accurately, so history stays as
+  written (append_history is never rewritten to match today). Disposition: new ids use
+  `SEMULITH` (this leaf's `SEMULITH-DS-0002` does); the recurrence remedy is a `commit-msg` hook
+  arm refusing `^SEMILITH` subjects, scheduled to the next hygiene slice — a mechanical check is
+  the only durable spelling teacher. Owner: repo-local guarantor.
+
+## Acceptance Checklist (leaf DOC-SHARDING.1)
+
+- [x] **REPRODUCE / ISSUE** — the problem, shown (not asserted):
+
+  ```
+  $ wc -c CHANGELOG.md
+    65527 CHANGELOG.md                    # 9 bytes under the 65,536 registry ceiling
+  $ ls scripts/shard_history.py 2>&1
+    ls: scripts/shard_history.py: No such file or directory
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the adoption debt was data, not prose: the remedy was
+  named in two governed places while its tool existed in neither —
+
+  ```
+  $ ls scripts/shard_history.py          # before this slice
+  ls: scripts/shard_history.py: No such file or directory
+  $ git log --oneline -2
+  722d1a6 SEMILITH-DS-0001 (tree DOC-SHARDING): the fired ceiling trigger gets its owner
+  b1c3d2b SEMILITH-RM-0060 (leaf PORT-WEB.1 proposal): the browser becomes a first-class target
+  ```
+
+  `doctrine/readme_routes.tsv` owns `CHANGELOG.md`'s ceiling with *"git history is canonical;
+  shard when the ceiling fires"*; `README_POLICY.md`'s transition note records the sharding tool
+  as not-yet-existing debt. `SEMILITH-RM-0060` — the commit above — had already compressed its
+  changelog entry to fit the 9 remaining bytes: the trigger had fired, and the only responses
+  available were compression or the remedy.
+
+- [x] **FIX** — `scripts/shard_history.py` (sharder: whole `## ` entries, byte-verbatim,
+  completeness asserted and printed at the event; deterministic; re-run is a no-op),
+  `docs/changelog/SHARDS.sha256` (freeze manifest, sha256sum format, repo-root-relative paths,
+  regenerated deterministically), `scripts/check_changelog_shards.sh` (doctrine `SHARD-FREEZE`,
+  12 arms), registered in `scripts/check_doctrines.project.sh` and mirrored in
+  `DOCTRINE_ENFORCEMENT.md` + `docs/book/src/working/doctrines.md` in the same commit.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/shard_history.py --max-bytes 63488
+    sharded 1 entr(ies) 'SEMILITH-P0-0031 …' into docs/changelog/shard-0001.md
+    completeness: 29 entries before == 28 kept + 1 moved, order and bytes exact
+    head: 65527 -> 62086 bytes (target 63488)
+    manifest: 3 shard row(s) written to docs/changelog/SHARDS.sha256
+  $ bash scripts/check_changelog_shards.sh
+    SHARD-FREEZE: ok (3 shard row(s) frozen, append-only, exactly partitioned)
+  $ python3 scripts/shard_history.py --max-bytes 63488   # re-run
+    no shard needed: CHANGELOG.md is 62086 bytes, target 63488
+  $ sha256sum -c docs/changelog/SHARDS.sha256            # independent of our tooling
+    docs/changelog/2026-09-p0-to-mirror.md: OK
+    docs/changelog/2026-09-pre-p0.md: OK
+    docs/changelog/shard-0001.md: OK
+  ```
+
+  ⛔ Fired RED on the real tree before registration — the adoption state itself:
+  `UNMANIFESTED docs/changelog/2026-09-p0-to-mirror.md` + `UNMANIFESTED 2026-09-pre-p0.md`, rc=1.
+  ⛔ Independent byte partition check: `git diff CHANGELOG.md` removes exactly the
+  `## SEMILITH-P0-0031` block; `tail docs/changelog/shard-0001.md` holds that block's final
+  bytes; the 47 removed lines + 3,688-byte shard body reconcile with the head's 3,441-byte drop
+  (header + block). 12 self-test arms (`--self-test: 12 pass / 0 fail`), each RED arm asserting
+  its reason.
+
+- [x] **NO REGRESSION** — `make gate` green (13 universal + 13 project doctrines incl. the new
+  `SHARD-FREEZE`); `shard_history.py --self-test` 10/0; the ROUTES-CLOSURE health line for
+  `CHANGELOG.md` reports 63,8xx bytes after this entry — under the 65,536 ceiling; routed
+  destinations remain 31.
+
+- [x] **LOCKSTEP** — both doctrine mirrors, `LIVE_STATUS.md` (13 registered; 169 self-test arms,
+  both re-derived via `check_derived_counts.sh --list`), `README_POLICY.md`'s transition-debt
+  note, `MEMORY.md`, `DEV_NOTES.md` (dated entry — the event/freeze proof
+  split is recorded here and in the CHANGELOG entry, and no second instance of the trap exists
+  to retrieve by question yet; the card is due the day a second append-history surface fires),
+  `TOOLBOX.md` (two rows), `CHANGELOG.md` (this commit's entry), and `docs/TASK_TREE.md` in the
+  same commit.

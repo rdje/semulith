@@ -49,6 +49,7 @@ These ship with the discipline spine and are project-neutral:
 | `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
 | `RECORD-SCHEMA` | every record file validates, cites only pinned sources, and states what its profile states |
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
+| `SHARD-FREEZE` | the sharded changelog history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than

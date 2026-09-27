@@ -8,6 +8,27 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the fired ceiling gets its sharder, and the freeze gets its proof (DOC-SHARDING.1)
+
+- `CHANGELOG.md` crossed its 64 KiB ceiling with 9 bytes of headroom; this slice built the
+  remedy the registry's owner column had always named: `scripts/shard_history.py` (moves the
+  oldest whole `## ` entries byte-verbatim into `docs/changelog/shard-NNNN.md`, rewrites the
+  head under target, regenerates `SHARDS.sha256`), the adoption manifest covering the two
+  existing date-named shards, and the `SHARD-FREEZE` doctrine check. One entry (`P0-0031`,
+  3.4 KiB) moved; the head went 65,527 → 62,086 bytes — leaving room for this entry itself.
+- ⭐ **The completeness proof belongs to the shard event; the freeze proof belongs to the
+  manifest.** The tool can assert "head-before == head-after + shard, order and bytes exact"
+  because it holds both sides at the event; no later check can, the past head is gone. What the
+  durable check can prove is everything after: every shard hashes to its row (an edit fails with
+  both digests named), the manifest only grows against `git show HEAD:…`, and no `## ` heading
+  appears twice across head and shards. Splitting the two halves is what makes each half
+  checkable.
+- Fired RED on the real tree before registration — the manifest did not exist yet, so the check
+  reported both existing shards `UNMANIFESTED` (rc 1), the exact adoption gap. 12 self-test
+  arms; the full gate re-run after registration moved `LIVE_STATUS.md`'s derived counts
+  (12 → 13 doctrines, 157 → 169 arms) — re-derived by `check_derived_counts.sh --list`, never
+  incremented by hand.
+
 ## _(2026-09-27)_ — the corpus's grammar is not the designed grammar (SOT-FORMAT.2)
 
 - The schema language gained its fourth declaration kind — `(operator …)` for positional
