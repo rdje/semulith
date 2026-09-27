@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -55,6 +55,29 @@ cleanup happened and what it removed.
   Verification: `2026-09-26` — census, classification, post-delete re-census, gate; all in the
   Verification Log below.
   Commit: `SEMULITH-AC-0050`
+
+- ID: `ARTIFACT-CLEANUP.2` — **the sanctioned-watcher exemption, data-owned**
+  Status: `done`
+  Goal: the director ruled (`2026-09-27`) that CHIPDOC's ChipdocWatcher — which holds an open
+  handle on `materials/catalog.sexp` by design — "will stay there. It shouldn't bother you. Do
+  not worry about it from now on." Encode the ruling so the handoff census stops crying wolf:
+  a sanctioned-exemptions registry the check reads as data, with the detection itself untouched
+  (the pattern-free census stays; only director-ruled standing processes are exempt).
+  Acceptance: `check_no_background_jobs.sh` prints `handoff: OK` with the watcher running; the
+  discrimination control shows the same process flags the moment its row is absent; an agent
+  may propose a row but only the director's ruling lands one.
+  Design (recorded before code, `2026-09-27`): the census header refutes list-matching as
+  DETECTION ("a census built from a list of things you thought of cannot see the thing you did
+  not") — so the exemption is shaped as a RULING, not a vocabulary: `doctrine/sanctioned_processes.tsv`
+  carries executable-substring / ruling / date; the check excludes matching command lines from
+  both arms (a sanctioned watcher holds repo handles AND names repo paths by design); the
+  header records why a sanctioned list is principled where a detection list is not (auditable,
+  reversible, director-owned). Tracked-content gates are unaffected — the exemption covers the
+  handoff census only.
+  Verification: `2026-09-27` — the real check prints `handoff: OK` with PID 36462 alive; the
+  control probe (row absent) flags the same process again. Both directions in the log below.
+  Commit: `SEMILITH-AC-0051`
+  `promotion: declined (the propose-vs-dispose discipline is stated in the registry header).`
 
 ## Current Frontier
 
@@ -127,11 +150,14 @@ cleanup happened and what it removed.
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | kept-items classification: `.bin`/`.log` outside incremental | 7 crate-source fixtures (inputs), 13 `target/refs/*.log` (evidence) — kept |
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | post-delete re-census + `du -sh` | 0 incremental .bin; `.app-data` 1.4 G → 1.1 G |
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | `bash scripts/check_doctrines.sh` | all doctrines green |
+| `2026-09-27` | `ARTIFACT-CLEANUP.2` | `bash scripts/check_no_background_jobs.sh` (live) | `handoff: OK` with the watcher (PID 36462) running — exemption fires |
+| `2026-09-27` | `ARTIFACT-CLEANUP.2` | control probe (the row absent) | the same process flags again — the exemption, not blindness, is what changed |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `ARTIFACT-CLEANUP.2` | `SEMILITH-AC-0051 (leaf ARTIFACT-CLEANUP.2): …` | the sanctioned-watcher exemption, data-owned; the census stops crying wolf |
 | `ARTIFACT-CLEANUP.1` | `SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1): …` | first §8 cleanup; record + registry row in the creating commit |
 
 ## Changelog

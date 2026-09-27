@@ -40,7 +40,7 @@
   we stand. Below cadence a push is exceptional and **only the director may approve it** —
   `decision_push-cadence`. The pre-push hook refuses; `SEMULITH_PUSH_APPROVED` carries the
   director's reason and is never set on an agent's own judgement.
-- **Blockers:** none — `SOT-FORMAT.9` unblocked `2026-09-26`: upstream shipped the LS-001 fix,
+- **Blockers:** none — `SOT-FORMAT.9` unblocked `2026-09-26`: upstream shipped the LS-001 fix, **Sanctioned standing process:** CHIPDOC's ChipdocWatcher watches the chipdoc catalog and `materials/catalog.sexp` (director ruling 2026-09-27: it stays; do not kill it, do not flag it — `doctrine/sanctioned_processes.tsv` exempts it from the handoff census, `ARTIFACT-CLEANUP.2`).
   the pin moved to `a8d34c845`, our repro re-ran 8/0. ⛔ Never patch the submodule; adopt by
   moving the pin.
 - **LinkedSpec:** pinned `a8d34c845` (LS-001 fix `8259719f8` shipped; RGX `8763a0e6` unchanged).

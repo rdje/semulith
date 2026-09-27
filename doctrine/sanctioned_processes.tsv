@@ -1,0 +1,11 @@
+# sanctioned_processes.tsv — the handoff census's standing exemptions.
+#
+# WHO MAY ADD A ROW: the director, and only the director. A sanctioned process is a RULING,
+# not a detection — `check_no_background_jobs.sh` stays pattern-free in what it CENSUSES
+# (property-based: repo handles, repo-named command lines, inherited cwds); this list only
+# exempts processes the director has ruled are SUPPOSED to be there, with the ruling recorded
+# so the exemption is auditable and reversible. An agent may PROPOSE a row (in a task-tree
+# leaf); it lands only with the director's word, the same discipline as the push cadence.
+#
+# executable-substring	ruling	since
+ChipdocWatcher.app/Contents/MacOS/chipdoc-fswatch	Director ruling 2026-09-27: CHIPDOC's documentation watcher, sanctioned standing process — it watches the chipdoc catalog and this repository's materials/catalog.sexp and starts looking for documentation on the project's behalf. "It will stay there. Do not worry about it from now on." Exempt from the handoff census; tracked-content gates are unaffected.	2026-09-27

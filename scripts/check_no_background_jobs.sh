@@ -36,6 +36,15 @@
 # both arms. It excludes the caller's own ancestry, and this script plus the harness wrapper are
 # also excluded by name because that ancestry walk can truncate when an intermediate shell exits.
 #
+# SANCTIONED EXEMPTIONS — a RULING, not a detection (ARTIFACT-CLEANUP.2, director 2026-09-27).
+# Detection stays pattern-free: one property-based census over every process this uid runs. What
+# this file adds is only the standing exemptions the director has ruled are SUPPOSED to be there —
+# processes like CHIPDOC's ChipdocWatcher, which holds an open handle on materials/catalog.sexp
+# BY DESIGN. The exemption is data in doctrine/sanctioned_processes.tsv (who, the ruling, since),
+# so it is auditable and reversible; an agent proposes, only the director disposes. Without this
+# the census cried wolf at every handoff and the check was training its readers to ignore it.
+# Tracked-content gates are unaffected — the exemption covers the handoff census only.
+#
 # Usage:  bash scripts/check_no_background_jobs.sh [--all]
 #   --all  also list ADVISORY rows (inherited-cwd session infrastructure); never changes the exit code
 # Exit:   0 = no project work running · 1 = project work still running · 2 = usage error
@@ -80,6 +89,24 @@ handles_of()   { printf '%s\n' "$LSOF" | awk -v p="$1" '$1==p {print $3; exit}';
 SNAP="$(ps -Ao pid=,etime=,command= 2>/dev/null)"
 BLOCKING=""; ADVISORY=""
 
+# Sanctioned exemptions: the director's standing rulings, read as data (see the header). A row
+# matches when its executable-substring appears in the command line; matched rows skip BOTH arms
+# (a sanctioned watcher holds repo handles and names repo paths by design).
+SANCTIONED=""
+SANCTIONED_TSV="$REPO_ROOT/doctrine/sanctioned_processes.tsv"
+if [ -f "$SANCTIONED_TSV" ]; then
+  SANCTIONED="$(grep -v '^#' "$SANCTIONED_TSV" | cut -f1 | sed '/^$/d')"
+fi
+is_sanctioned() {
+  local pat
+  while IFS= read -r pat; do
+    [ -n "$pat" ] && case "$1" in *"$pat"*) return 0 ;; esac
+  done <<EOF
+$SANCTIONED
+EOF
+  return 1
+}
+
 while IFS= read -r line; do
   line="${line#"${line%%[![:space:]]*}"}"     # ps PADS its pid column; without this trim the pid
   [ -n "$line" ] || continue                  # below is EMPTY and the exclusion silently never fires
@@ -90,6 +117,7 @@ while IFS= read -r line; do
   case "$cmd" in
     *check_no_background_jobs.sh*|*.claude/shell-snapshots*|*/.codex/*|*/.cursor/*) continue ;;
   esac
+  is_sanctioned "$cmd" && continue
 
   h="$(handles_of "$pid")"; h="${h:-0}"
   incwd=0; cwd_in_repo "$pid" && incwd=1
