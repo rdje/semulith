@@ -45,6 +45,13 @@
 #                   derived mirror, and a mirror that drifts is a fact stated in two ungoverned
 #                   (MODEL-METHOD.7). The 8 environment-assumptions keep their own statements:
 #                   the arm keys on the parameter, not the direction.
+#    10. UNITS       the modelled-unit registry (materials/units.sexp) is never empty — a census
+#                   over no units is a claim about nothing (MODEL-METHOD.2).
+#    11. LAYERS      a category-need dispositioned `missing` owes a reason, a `covered` row names
+#                   its material, and a board-layer category may not be `missing` for a processor
+#                   unit — `missing` means the unit REQUIRED it; the honest word for never-needed
+#                   is `out-of-scope` (MODEL-METHOD.2). Checked against the units registry
+#                   beside the catalogue: layer claims without a registry prove nothing.
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -85,6 +92,8 @@ SCHEMA_FOR = {
 SEXP_SCHEMA_FOR = {
     "requirements.sexp": "schema/requirements.sexp",
     "contract-obligations.sexp": "schema/contract-obligations.sexp",
+    "units.sexp": "schema/units.sexp",
+    "category-needs.sexp": "schema/category-needs.sexp",
 }
 ARCH_AUTHORITY = "architecture"
 
@@ -156,9 +165,10 @@ for cat in catalogues:
         continue
     # 8. UNIQUE-ID — the cross-checks index records by id; a duplicate silently collapses
     #    (last wins) and every rule below would check only the survivor. Refuse, naming both.
+    #    Category-need records key on (category, unit) — they carry no id field.
     by_id: dict = {}
     for r in recs:
-        rid = r.get("id")
+        rid = r.get("id") or (r.get("category"), r.get("unit"))
         if rid in by_id:
             findings.append(
                 f"DUPLICATE ID {cat.relative_to(root)}: record '{rid}' appears more than "
@@ -281,6 +291,49 @@ for cat in catalogues:
                             f"STATEMENT DRIFT {cat.name} [{rid}]: the requirement no longer "
                             f"states what profile.sexp's '{dec['id']}' states")
 
+    elif cat.name == "units.sexp":
+        if not recs:
+            findings.append(f"EMPTY REGISTRY {cat.relative_to(root)}: the modelled-unit "
+                            f"registry carries no unit — a census over nothing")
+
+    elif cat.name == "category-needs.sexp":
+        # MODEL-METHOD.2: layer × disposition honesty. A `missing` row means the unit REQUIRES
+        # the category (so a reason is owed); a board-layer category dispositioned `missing`
+        # for a processor unit is a lie about what was required — the unit never owed
+        # board-layer information, and the honest word is `out-of-scope`.
+        unit_kinds: dict[str, str] = {}
+        units_path = cat.parent / "units.sexp"
+        if units_path.is_file():
+            try:
+                unit_kinds = {u.get("id"): u.get("kind") for u in R.load(units_path)}
+            except (R.RecordRefused, S.SexpError):
+                findings.append(
+                    f"UNREADABLE {units_path.name}: the unit registry beside {cat.name} does "
+                    f"not map — layer checks against a registry nobody can read prove nothing")
+        else:
+            findings.append(
+                f"NO REGISTRY {cat.relative_to(root)}: no units.sexp beside {cat.name} — "
+                f"layer dispositions cannot be checked without the registry they describe")
+        for r in recs:
+            where = f"{cat.name} [{r.get('category')} for {r.get('unit')}]"
+            kind = r.get("disposition")
+            if kind == "missing":
+                if not r.get("reason"):
+                    findings.append(
+                        f"REASONLESS MISSING {where}: disposition 'missing' claims the unit "
+                        f"requires this category — say why it is owed and absent")
+                if r.get("layer") == "board" and \
+                        unit_kinds.get(r.get("unit")) == "processor":
+                    findings.append(
+                        f"LAYER LIE {where}: a board-layer category dispositioned 'missing' "
+                        f"for a processor unit — the unit never owed board-layer information. "
+                        f"The honest disposition is 'out-of-scope'; 'missing' smuggles a "
+                        f"requirement in through the back door")
+            if kind == "covered" and not r.get("material"):
+                findings.append(
+                    f"UNEVIDENCED COVERED {where}: disposition 'covered' names no material — "
+                    f"covered by WHAT?")
+
     else:  # contract-obligations.sexp — the NO NEGATIVE CHECK arm is fired standalone too
         for o in recs:
             checks = o.get("required_checks", [])
@@ -387,6 +440,32 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
   obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['parameters']={'requirement_id':'REQ-D-GHOST'}; r['statement']='S'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   a mirror of a requirement that does not exist" 1 "MIRROR WITHOUT SOURCE"
   rm -f "$t/p/contract-obligations.sexp"
+  # ---- rules 10+11: the unit registry and the layer rule (MODEL-METHOD.2) ---------------------
+  units() { argc 1 "$#" units || return; python3 -c "
+import json, pathlib, sys
+sys.path.insert(0, '$ROOT/scripts')
+import records_sexp as R
+recs = [json.loads(l) for l in '''$1'''.split('|||') if l.strip()]
+pathlib.Path('$t/p/units.sexp').write_text(R.dump(recs))"; }
+  needs() { argc 1 "$#" needs || return; python3 -c "
+import json, pathlib, sys
+sys.path.insert(0, '$ROOT/scripts')
+import records_sexp as R
+recs = [json.loads(l) for l in '''$1'''.split('|||') if l.strip()]
+pathlib.Path('$t/p/category-needs.sexp').write_text(R.dump(recs))"; }
+  rm -f "$t/p/units.sexp" "$t/p/category-needs.sexp"
+  BOARD_MISSING='{"category":"C19","layer":"board","kind":"datasheet","unit":"p","disposition":"missing","reason":"x"}'
+  needs "$BOARD_MISSING";                                      arm "RED   layer claims without the registry they describe" 1 "NO REGISTRY"
+  units '{"id":"p","kind":"processor","layer":"processor","book":"b"}'
+  needs "$BOARD_MISSING";                                      arm "RED   the acceptance's rule: a board-layer 'missing' for a processor" 1 "LAYER LIE"
+  needs '{"category":"C07","layer":"processor","kind":"isa-manual","unit":"p","disposition":"missing"}'
+                                                               arm "RED   a 'missing' that owes no reason" 1 "REASONLESS MISSING"
+  needs '{"category":"C01","layer":"processor","kind":"isa-manual","unit":"p","disposition":"covered"}'
+                                                               arm "RED   a 'covered' naming no material" 1 "UNEVIDENCED COVERED"
+  needs '{"category":"C01","layer":"processor","kind":"isa-manual","unit":"p","disposition":"covered","material":"M"}|||{"category":"C07","layer":"processor","kind":"isa-manual","unit":"p","disposition":"missing","reason":"F/D excluded"}'
+                                                               arm "GREEN a registry and an honest census" 0 "__CHECKED__ 3"
+  : > "$t/p/units.sexp"; needs "$BOARD_MISSING";                          arm "RED   an empty unit registry" 1 "contains no records"
+  rm -f "$t/p/units.sexp" "$t/p/category-needs.sexp"
   # ---- the JSONL track (examples stay JSONL) -------------------------------------------------
   printf '%s\n' "$REQ" > "$t/p/requirements.jsonl";           arm "GREEN a JSONL record validates on the old track" 0 "__CHECKED__ 2"
   printf 'not json at all\n' > "$t/p/mystery.jsonl";          arm "RED   a record file no schema governs" 1 "UNGOVERNED"

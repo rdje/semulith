@@ -145,12 +145,40 @@ def obligation_to_dict(form) -> dict:
     return out
 
 
+def unit_to_dict(form) -> dict:
+    S.head(form, "unit")
+    return {"id": _s(S.field(form, "id")),
+            "kind": _s(S.field(form, "kind")),
+            "layer": _s(S.field(form, "layer")),
+            "book": _s(S.field(form, "book"))}
+
+
+def category_need_to_dict(form) -> dict:
+    S.head(form, "category-need")
+    out = {"category": _s(S.field(form, "category")),
+           "layer": _s(S.field(form, "layer")),
+           "kind": _s(S.field(form, "kind")),
+           "unit": _s(S.field(form, "unit")),
+           "disposition": _s(S.field(form, "disposition"))}
+    reason = S.children(form, "reason")
+    if reason:
+        out["reason"] = _s(reason[0][1])
+    material = S.children(form, "material")
+    if material:
+        out["material"] = _s(material[0][1])
+    return out
+
+
 def form_to_dict(form) -> dict:
     head = S.head(form)
     if head == "requirement":
         return requirement_to_dict(form)
     if head == "obligation":
         return obligation_to_dict(form)
+    if head == "unit":
+        return unit_to_dict(form)
+    if head == "category-need":
+        return category_need_to_dict(form)
     raise RecordRefused(f"not a record form: {form!r}")
 
 
@@ -191,6 +219,24 @@ def _json_to_value(name, v):
 
 def dict_to_form(rec: dict):
     """The record dict -> its form. Field order follows the dict, i.e. the JSON key order."""
+    if "book" in rec:                                    # a modelled-unit registry row
+        return [S.Symbol("unit"),
+                _pair("id", rec["id"]),
+                _pair("kind", S.Symbol(rec["kind"])),
+                _pair("layer", S.Symbol(rec["layer"])),
+                _pair("book", rec["book"])]
+    if "disposition" in rec:                             # a category-need row
+        form = [S.Symbol("category-need"),
+                _pair("category", rec["category"]),
+                _pair("layer", S.Symbol(rec["layer"])),
+                _pair("kind", rec["kind"]),
+                _pair("unit", rec["unit"]),
+                _pair("disposition", S.Symbol(rec["disposition"]))]
+        if rec.get("reason"):
+            form.append(_pair("reason", rec["reason"]))
+        if rec.get("material"):
+            form.append(_pair("material", rec["material"]))
+        return form
     if "kind" in rec:                                    # a requirement
         return [S.Symbol("requirement"),
                 _pair("id", rec["id"]),

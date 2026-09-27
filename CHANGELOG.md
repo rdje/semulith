@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMILITH-MM-0046 (leaf MODEL-METHOD.2) — the materials requirement: what each unit owes its model
+
+The catalogue of documents gains the requirement layer: `schema/units.sexp` +
+`schema/category-needs.sexp` declare two record families (zero kernel lines), and
+`materials/units.sexp` + `materials/category-needs.sexp` carry the one-row registry and all 24
+INFORMATION_CATALOG categories for `rv64i-lab-v0` — each bound to the material kind that
+supplies it, at its layer, with an honest disposition. The vocabulary distinguishes ABSENT from
+NEVER-NEEDED: `missing` (a reason is owed — C07/C08/C12/C15/C16/C18, excluded subsystems) versus
+`out-of-scope` (C17/C19–C21, board-layer facts a processor never owed). RECORD-SCHEMA rules 10–11
+enforce it — the acceptance's shape, a board-layer `missing` for a processor, refuses as
+`LAYER LIE` — 6 new arms, 32 total, 7 record files green. The DSP-specific questions of the
+catalog's §5 ride as their own D-category ids, admitted by the schema and pre-built for nobody.
+
 ## SEMILITH-MM-0045 (leaf MODEL-METHOD.7) — the no-duplicated-fact rule is a registry, and every mirror is governed
 
 "Single source of truth" now means one owner per fact, mechanized. `doctrine/fact_ownership.tsv`

@@ -8,6 +8,32 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the materials requirement: what each unit owes its model (MODEL-METHOD.2)
+
+Root cause this leaf closes: the materials side recorded documents (who/what/where) but
+nothing recorded what information a unit OWES its model — no category-to-material binding, no
+unit registry, no layer. The fix walks the .3 path a third time: schema declares, the mapping
+owner carries, RECORD-SCHEMA gates.
+
+Design choices, stated: the disposition vocabulary is the point — `missing` means the unit
+REQUIRES the category (a reason is owed), `out-of-scope` means it never owed it, and the
+acceptance's rule is the mechanical form of that honesty (a board-layer `missing` for a
+processor is a lie about what was required). The unit registry keys the layer rule: layer
+claims without a registry prove nothing, so the gate refuses those too. The duplicate-id arm
+grew a per-family key — category-need records have no `id`; they key on (category, unit),
+and the first cut that assumed `id` reported every need as a duplicate of None. The
+`dict_to_form` dispatch also had to move its specific keys first: units and
+category-needs both carry a `kind` field, which collided with the requirement
+branch until `book`/`disposition` dispatched first — a measured,
+not hypothetical, ordering constraint.
+
+Validation: RECORD-SCHEMA 32/0 (was 26); 7 record files green; the 24-row first honest pass
+(8 covered, 6 missing-with-reason, 4 partial, 6 out-of-scope). The .3 census revises
+dispositions against evidence from here.
+
+Lessons: declined here (the ABSENT-vs-NEVER-NEEDED vocabulary is stated in the schema header
+and the owning leaf).
+
 ## _(2026-09-27)_ — the no-duplicated-fact rule is a registry, and every mirror is governed (MODEL-METHOD.7)
 
 Root cause this leaf closes: the no-duplicated-fact rule lived only in
@@ -626,27 +652,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   (393,216 aggregate, 65,536 per part) and nothing is breached, but `P0-PROFILE.md` is at 49,521 B
   — 76% of the per-part ceiling — because completed-leaf evidence accumulates in-tree by design.
   The mechanism intended for this is archive compaction, and no tree has needed it yet.
-
-## _(2026-09-14)_ — availability is not identity, and a budget can be wrong in your favour
-
-- ⛔ **The package manager had a formula called `sail`. It deploys WordPress sites to
-  DigitalOcean.** An exact name collision with the Sail ISA specification language: the lookup
-  succeeded, the version was current, the licence was real, and the referent was wrong. Had the
-  check been `brew info sail >/dev/null && echo available`, the dossier would carry a sentence
-  that is false, sourced and reproducible. Identity needs a field only the real thing can
-  produce — here `--build-info`, which prints an upstream release, a git sha and the compiler.
-  Promoted: [`docs/knowledge/availability-is-not-identity.md`](docs/knowledge/availability-is-not-identity.md).
-- The roadmap priced reference acquisition as the first activity whose cost was *not obviously
-  bounded*, assuming an OCaml/opam build of Sail. Release 0.14 ships a native binary for this
-  host's architecture, so Sail was the **cheapest** candidate, not the dearest. Three models
-  obtained in one leaf. The estimate was wrong; the reasoning behind it ("acquisition is work
-  with observable outcomes") was right and is untouched.
-- ⛔ **The Sail model will not tell you what configuration it ran with.**
-  `--print-default-config` ignores `--config-override` — byte-identical dumps. `EVIDENCE_AND_GATES`
-  §5 wants the *effective* configuration, so it is recorded as (default) + (tracked override)
-  with the merge explicitly labelled **ours**. The model's one self-description is
-  `--print-isa-string`, which is why `rv64i_zvl32b` is pinned and re-derived.
-- Having three binaries is not having three opinions. The gate now refuses a candidate whose
-  `lineage` field is missing, because an unasked independence question reads exactly like an
-  answered one.
 

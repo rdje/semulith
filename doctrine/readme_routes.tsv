@@ -149,7 +149,13 @@ MEMORY.md	reader_navigation	hot_live	MEMORY-ARCH doctrine (layer A caps)	30	1792
 LIVE_STATUS.md	reader_navigation	hot_live	COMMIT.md; rows are states, not prose	45	4096	90	6144	0
 ROADMAP.md	both	normative	the plan; superseded by version, not appended to	0	0	0	24576	0
 RULES.md	reader_navigation	normative	stable rule IDs; changes by reviewed decision	0	0	0	16384	0
-TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	12288	0
+# Re-derivation, MODEL-METHOD.2 (2026-09-27), when the instrument count outgrew the derived cap:
+#   TOOLBOX.md  12,622 B of 12,288 B — the surface's own contract ("one row per tracked
+#               diagnostic") expanded with the work it records: 20 instruments at derivation,
+#               27 after this session's doctrine gates and checkers. The row count, not the
+#               prose, is the growth. Ceiling 12 KiB -> 16 KiB; health stays 0 (an instrument
+#               list does not warm the way a narrative does — a row arrives, not a paragraph).
+TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	16384	0
 COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288	0
 CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192	0
 AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0

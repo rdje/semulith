@@ -146,7 +146,7 @@ recorded so it can be overturned on evidence rather than taste:
   Commit: `SEMULITH-MM-0033`
 
 - ID: `MODEL-METHOD.2` — **the materials requirement: schema and catalogue**
-  Status: `pending`
+  Status: `done`
   Goal: a record type binding each `docs/INFORMATION_CATALOG.md` category to the material kind
   that supplies it, with a **layer** (`processor` / `board` / `system`) and a disposition per
   **modelled unit**, plus the small registry of units themselves (id, kind, layer, book). The
@@ -156,6 +156,42 @@ recorded so it can be overturned on evidence rather than taste:
   Acceptance: schema added; every category represented with an explicit layer; a `board`-layer
   category may not be dispositioned `missing` for a processor model; validates under
   `RECORD-SCHEMA`.
+
+  Result: met, `2026-09-27`. `schema/units.sexp` + `schema/category-needs.sexp` declare the
+  two families (zero kernel lines); `records_sexp.py` owns both mappings; `materials/units.sexp`
+  carries the one-row registry (rv64i-lab-v0, processor); `materials/category-needs.sexp`
+  carries all 24 INFORMATION_CATALOG categories with explicit layers — C01–C06, C22, C23
+  covered; C07/C08/C12/C15/C16/C18 missing WITH reasons (excluded subsystems, owed and
+  absent); C09, C13, C14, C24 partial; C17, C19, C20, C21 out-of-scope (board-layer, never
+  owed by a processor). RECORD-SCHEMA rules 10–11 enforce the registry-nonempty and the layer
+  honesty — the acceptance's `board × missing × processor` shape refuses as LAYER LIE (6 new
+  arms, 32 total; 7 record files green). `.3`'s census now revises dispositions against
+  evidence instead of inventing the record type.
+  Design (recorded before code, `2026-09-27`), the catalog and the records machinery read first:
+  - **Two record families on the records track, named so the basenames cannot collide with the
+    profile's** — `materials/units.sexp` (the registry: `(unit (id …) (kind processor) (layer …)
+    (book …))`, one row today) and `materials/category-needs.sexp` (one `(category-need …)` per
+    INFORMATION_CATALOG category: category id, layer, the material kind that supplies it, the
+    unit, the disposition, an optional reason). `schema/units.sexp` + `schema/category-needs.sexp`
+    declare both; `records_sexp.py` owns both mappings; RECORD-SCHEMA gains both basenames and
+    the layer-rule arm. The house path from `.3` (SOT-FORMAT.3), walked again.
+  - **The disposition vocabulary is honest about the difference between absent and never-needed**:
+    `covered` / `partial` / `missing` / `out-of-scope`. `missing` means the unit requires the
+    category and the catalogue lacks the material — the acceptance's rule is the mechanical form:
+    a board-layer category dispositioned `missing` for a processor unit is a lie about what was
+    required (a processor never owed board-layer information), so the gate refuses it and names
+    the category; the honest word is `out-of-scope`. Processor-layer exclusions this profile
+    carries (privilege, translation, floating point, vectors, atomics) stay `missing` WITH a
+    reason — they were owed and are absent — which is `.3`'s census to deepen with evidence.
+  - **Layer assignment, stated**: processor — C01–C09, C10, C11, C13, C14, C15, C22, C23, C24;
+    board — C17 (reset/time spans into the environment, per the catalog's own note), C19, C20,
+    C21 ("not all properties of the CPU itself", per §3); system — C12 (translation spans into
+    the OS), C16 (multicore), C18 (implementation observation). The first honest pass at
+    `rv64i-lab-v0`'s 24 rows: covered where the profile genuinely owns the fact (C01–C06, C22,
+    C23), missing-with-reason for the excluded processor-layer subsystems (C07 FP, C08 V, C12,
+    C15, C16), out-of-scope for board-layer rows (C17, C19–C21), partial where the profile owns
+    the shape but not the depth (C13 code visibility, C14 ECALL/EBREAK only, C24 replay policy
+    declared not built, C09/C10/C11). `.3` revises every disposition it can evidence better.
 
 - ID: `MODEL-METHOD.3` — **the coverage census for `rv64i-lab-v0`**
   Status: `pending`
@@ -369,7 +405,7 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.2` | `pending` | the materials schema and census |
+| 1 | `MODEL-METHOD.3` | `pending` | the coverage census for `rv64i-lab-v0` — revise each first-pass disposition against evidence |
 
 ## Decisions
 
@@ -666,10 +702,71 @@ Neither is routed to another tree; neither is worked around here.
   commit; `LIVE_STATUS.md` re-derived (18 doctrines, 213 arms); `TOOLBOX.md`; `MEMORY.md`,
   `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
 
+## Acceptance Checklist (leaf MODEL-METHOD.2)
+
+- [x] **REPRODUCE / ISSUE** — the materials side had documents but no REQUIREMENT type.
+  Census, pre-code:
+
+  ```
+  $ ls schema/units.sexp schema/category-needs.sexp materials/units.sexp materials/category-needs.sexp 2>&1
+  ls: schema/units.sexp: No such file or directory           # the type did not exist
+  $ grep -c 'category-need' schema/*.sexp materials/*.sexp 2>/dev/null | grep -v ':0' | wc -l
+  0                                             # and nothing bound categories to units
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a catalogue of documents (the who/what/where
+  of materials) cannot say which information a unit OWES its model — that needs a record
+  binding each INFORMATION_CATALOG category to the material kind that supplies it, per unit.
+  WHERE: measured, not read —
+
+  ```
+  $ ls schema/units.sexp materials/category-needs.sexp 2>&1 | grep -c 'No such'
+  2                                             # no schema for either family
+  $ grep -rl 'category-need' schema/ materials/ | wc -l
+  0                                             # and no record bound a category to a unit
+  ```
+
+  Nothing like the requirement type existed anywhere in the corpus.
+
+- [x] **FIX** — two record families on the house records track (`.3`'s path walked again):
+  the unit registry and the category-needs catalogue, schema-declared, mapping-owned,
+  gated by RECORD-SCHEMA rules 10–11 (registry never empty; `missing` owes a reason;
+  `covered` names its material; board-layer `missing` for a processor refuses as LAYER LIE).
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ bash scripts/check_requirements.sh --self-test
+  RECORD-SCHEMA --self-test: 32 pass / 0 fail     # was 26; +6 arms on the new families
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (7 record file(s) validate and agree with their profile)
+  $ grep -c '^(category-need' materials/category-needs.sexp
+  24                                            # every category, explicit layer
+  $ # the acceptance's rule, fired on a board-layer 'missing' for the processor unit:
+  LAYER LIE category-needs.sexp [C19 for rv64i-lab-v0]: a board-layer category dispositioned
+  'missing' for a processor unit — ... the honest disposition is 'out-of-scope'    rc=1
+  ```
+
+- [x] **NO REGRESSION** — the untouched catalogues re-serialize byte-identically (the new
+  mappings dispatch on `book`/`disposition` BEFORE `kind`, so requirement/obligation
+  round-trips are unmoved); the duplicate-id arm now keys category-needs on (category, unit);
+  `python3 scripts/sexp.py --self-test` 18 pass / 0 fail; kernel 50 pass / 0 fail;
+  `python3 scripts/compare_readers.py` 29 of 29 agree (the four new files swept); whole gate
+  green after staging.
+
+- `promotion: declined (the ABSENT-vs-NEVER-NEEDED disposition vocabulary is stated in the schema header and this leaf, where the .3 census meets it).`
+
+- [x] **LOCKSTEP** — `TOOLBOX.md`; `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  `docs/TASK_TREE.md` and this tree — one commit. No new doctrine: the families ride the
+  records track RECORD-SCHEMA already owns.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-METHOD.2` | `--self-test` | `32 pass / 0 fail` (was 26; NO REGISTRY, LAYER LIE, REASONLESS MISSING, UNEVIDENCED COVERED, EMPTY REGISTRY, GREEN census) |
+| `2026-09-27` | `MODEL-METHOD.2` | real run | `ok (7 record file(s))` — the 24-row first honest pass green |
+| `2026-09-27` | `MODEL-METHOD.2` | schema validation | both new catalogues `conform` under the two new schemas |
 | `2026-09-27` | `MODEL-METHOD.7` | mirror inventory, pre-code | 3 pairs governed (decision<->requirement, state<->profile, composition<->fragments); obligation->requirement UNGOVERNED — 28 restatements, all matching, nothing refusing drift |
 | `2026-09-27` | `MODEL-METHOD.7` | RECORD-SCHEMA rule 9 + arms | `26 pass / 0 fail` (was 23); MIRROR DRIFT / MIRROR WITHOUT SOURCE / GREEN mirror |
 | `2026-09-27` | `MODEL-METHOD.7` | gate `--self-test` | `8 pass / 0 fail`; real run `ok (8 fact kind(s))` |
@@ -724,6 +821,7 @@ Neither is routed to another tree; neither is worked around here.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.2` | `SEMILITH-MM-0046 (leaf MODEL-METHOD.2): …` | the materials requirement: two record families, the unit registry, the 24-category first pass |
 | `MODEL-METHOD.7` | `SEMILITH-MM-0045 (leaf MODEL-METHOD.7): …` | the no-duplicated-fact registry and its gate; the obligation mirror governed |
 | `MODEL-METHOD.10` | `SEMILITH-MM-0044 (leaf MODEL-METHOD.10): …` | the extraction contract: one set four ways, and P1's start condition fully met |
 | `MODEL-METHOD.13` | `SEMULITH-MM-0044 (leaf MODEL-METHOD.13): the corpus moved, and my survey had sampled` | 36 materials; both gaps closed; citations resolve offline |
