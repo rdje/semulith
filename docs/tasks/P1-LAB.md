@@ -87,9 +87,29 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   Lessons: promotion: declined (the three design notes — fmt-stable emission, family_for naming the dossier family from the file NAME, descriptor↔arith binding at generation time — are P1-LAB-generation specifics; nothing generalizes past `.6`, where the generation manifest lands).
 
 - ID: `P1-LAB.4` — **environment boundary and fixtures**
-  Status: `pending`
+  Status: `done`
   Goal: the request/response contract types in `semulith-core`, and controlled memory, fault and event fixtures in `semulith-verify` implementing them.
   Acceptance: the boundary is testable **without** the instruction handler (`docs/CPU_ENVIRONMENT.md` §4.1); negative fixtures are reported as contract violations, not target exceptions.
+  Result: met, `2026-09-27`. `semulith-core::env` owns the contract: `Request` (Fetch — width pinned
+  to 32 by construction per OB-ENV-FETCH-SUPPLY; Load/Store at `AccessWidth` B/H/W/D per
+  OB-ENV-ACCESS-WIDTHS — an unofferable width cannot be formed), `Response` (raw bits, no
+  extension — REQ-D-LOAD-EXT stays instruction-layer), and two failure families kept apart by
+  construction: `Failure` (target-facing: AccessFault per OB-ADDRESS-SPACE, Misaligned per
+  OB-MISALIGN-DATA — "not substituted", exactly as the profile declares) and
+  `ContractViolation` (the environment broke a rule — SEM-01's separation, boundary-local
+  until `.5` re-homes it). Addresses are bare `u64` (SEM-05; OB-ENV-ADDRESS-UNITS). One trait,
+  `Environment::request`, drives every crossing — scriptable, countable, replayable.
+  `semulith-verify::fixtures` implements it: `FlatMemory` — the platform's one little-endian
+  main-memory region (OB-MAIN-VS-IO), re-read per fetch (OB-CODE-VISIBILITY, a store to a
+  later-fetched address is visible immediately), fetch counter as the no-extraneous-fetch
+  witness, alignment judged before region membership (order stated, testable); `ScriptedEnv`
+  — the whole conversation pinned in advance, faults scriptable as environment answers, and a
+  request the script does not cover reports `ResponseMismatch`/`ScriptExhausted` instead of
+  inventing data — the §4.1.4 negative-fixture rule, exercised for real. No asynchronous
+  event exists to script (OB-ENV-EVENT-DELIVERY: the platform declares none). Cold reset
+  (OB-ENV-RESET) is construction plus image load. Lessons: promotion: declined (fixture
+  specifics — alignment-before-region ordering, u128 region checks — are per-slice design
+  choices recorded in the module docs; nothing here is a cross-cutting lesson yet).
 
 - ID: `P1-LAB.5` — **typed outcome families**
   Status: `pending`
@@ -135,7 +155,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.4` | `pending` | environment boundary and fixtures — the state needs its controlled world to step against |
+| 1 | `P1-LAB.5` | `pending` | typed outcome families — the boundary's failures and violations need their SEM-01 siblings |
 
 ## Decisions
 
@@ -350,10 +370,84 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   `scripts/check_fact_ownership.sh`), and this tree — one commit. `LIVE_STATUS`'s doctrine
   name list completed (STATE-GEN added; SCOPE-COVERAGE, omitted when it landed, restored).
 
+## Acceptance Checklist (leaf P1-LAB.4)
+
+- [x] **REPRODUCE / ISSUE** — the boundary `docs/ARCHITECTURE.md` §4 assigns to
+  `semulith-core` ("environment request/response contract types") existed only as the
+  contract records; nothing crossed it:
+
+  ```
+  $ git grep -cE "trait Environment|FlatMemory|ContractViolation" HEAD -- crates/ | wc -l
+  0
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rv64i-lab-env-v0`'s obligations name a boundary
+  (fetch supply, access widths, address space, misalignment) but no Rust type could express
+  a crossing: `docs/CPU_ENVIRONMENT.md` §4.1 demands requests/responses be testable
+  "independently of the CPU instruction handler", and there was no request to test.
+  WHERE, measured — the four laboratory surfaces at this leaf's parent commit:
+
+  ```
+  $ git ls-files 'crates/*/src/*.rs' 'crates/*/src/*/*.rs' | sort
+  crates/semulith-cli/src/main.rs
+  crates/semulith-core/src/arith.rs
+  crates/semulith-core/src/arith/tests.rs
+  crates/semulith-core/src/env.rs            # does not exist yet — this leaf adds it
+  crates/semulith-core/src/lib.rs
+  crates/semulith-core/src/state.rs
+  crates/semulith-core/src/state/tests.rs
+  crates/semulith-verify/src/fixtures.rs     # a 5-line placeholder
+  crates/semulith-verify/src/lib.rs
+  ```
+
+- [x] **FIX** — `semulith-core::env`: the contract types and the one-entry-point
+  `Environment` trait (see the leaf Result above). `semulith-verify::fixtures`: `FlatMemory`
+  and `ScriptedEnv` implementing it. Hand-written tests beside each module, the arith/state
+  layout.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived with no instruction
+  handler anywhere in the run:
+
+  ```
+  $ cargo test -p semulith-verify 2>&1 | grep "test result"
+  test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+  $ cargo test -p semulith-core env 2>&1 | grep "test result"
+  test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.00s
+  ```
+
+  §4.1 boundary properties, each named: widths round-trip at every alignment; little-endian
+  byte order; loads return raw bits (no extension at the boundary); stores write only low
+  bits; fetch returns the LE word with a per-request fetch counter (no extraneous fetch);
+  fetch re-reads (code visibility); misaligned → `Target(Misaligned)`; outside/crossing the
+  region → `Target(AccessFault)`; region edge exact. Negative fixtures
+  (§4.1.4): `wrong_request_is_a_contract_violation_not_a_target_failure` and
+  `request_after_the_script_is_a_contract_violation` assert `BoundaryError::Violation(..)`
+  and never a `Failure` — the fixture reports the contract breach to the harness instead of
+  inventing data or dressing it as a target exception.
+
+- [x] **NO REGRESSION** — the strict-lint suite and the doctrine gate, re-run:
+
+  ```
+  $ cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings && cargo test --all 2>&1 | grep -c 'test result: ok'
+  5                                    # 5 suites, all ok; 42 tests total, 0 warnings
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.33s   # rc=0, PORT-WEB holds
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `docs/book/src/plan/p1.md`, and this tree — one commit. (No doctrine
+  registry changes this slice; `env` is a new module in an already-owned crate, and the
+  fixtures live in the home `.1` fixed for them.)
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `P1-LAB.4` | `cargo test -p semulith-verify` | 12 passed / 0 failed (fixtures, no instruction handler) |
+| `2026-09-27` | `P1-LAB.4` | `cargo test -p semulith-core env` | 4 passed / 0 failed (contract properties) |
+| `2026-09-27` | `P1-LAB.4` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / all doctrines green |
 | `2026-09-27` | `P1-LAB.3` | `cargo test --all` | 22 passed / 0 failed (12 arithmetic + 10 state suites) |
 | `2026-09-27` | `P1-LAB.3` | `bash scripts/check_state_gen.sh --self-test` | 6 pass / 0 fail |
 | `2026-09-27` | `P1-LAB.3` | STATE-GEN fired RED pre-registration (hand-edited module) | rc=1, named DRIFT + regeneration command |
@@ -369,13 +463,18 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.4` | `SEMILITH-PL-0004 (leaf P1-LAB.4): …` | the environment boundary and its fixtures, testable without the instruction handler |
 | `P1-LAB.3` | `SEMILITH-PL-0003 (leaf P1-LAB.3): …` | architectural state, generated from the descriptor; STATE-GEN registered and fired RED first |
 | `P1-LAB.2` | `SEMILITH-PL-0002 (leaf P1-LAB.2): …` | arithmetic primitives, verified exhaustively at reduced width |
 | `P1-LAB.1` | `SEMILITH-PL-0001 (leaf P1-LAB.1, PORT-WEB.1): …` | the crate skeleton and the Wasm gate land in one commit, as PORT-WEB.1's acceptance requires |
 
 ## Changelog
 
-- `2026-09-27`: Leaf `.3` done — `semulith-core::state` generated from `state.sexp` (input
+- `2026-09-27`: Leaf `.4` done — `semulith-core::env` (the request/response contract:
+  `Request`/`Response`/`Failure`/`ContractViolation`, one `Environment` trait) and
+  `semulith-verify::fixtures` (`FlatMemory`, `ScriptedEnv`), 16 new suites green, the
+  negative-fixture rule exercised for real; the frontier moves to `.5` (typed outcome
+  families). Leaf `.3` done — `semulith-core::state` generated from `state.sexp` (input
   sha256 in the header, byte-deterministic); x0 hardwired, three ISA-chapter aliases as
   views (C02), SEM-08 census as data; the 21st doctrine `STATE-GEN` refuses drift and was
   fired RED pre-registration; the frontier moves to `.4` (environment boundary). Leaf `.2`

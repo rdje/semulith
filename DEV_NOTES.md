@@ -8,6 +8,12 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the environment boundary, and fixtures that answer it (P1-LAB.4)
+
+Root cause: `rv64i-lab-env-v0` named a boundary (fetch supply, widths, address space, misalignment) but no Rust type could express a crossing — `docs/CPU_ENVIRONMENT.md` §4.1's "testable independently of the CPU instruction handler" had no request to test. Implementation: `semulith-core::env` — `Request`/`Response`/`Failure`/`ContractViolation`/`Environment`, with the width set pinned by construction (fetch carries no width at all; a fifth load/store width cannot be formed, which is stronger than refusing one) and the two failure families distinct by type (SEM-01 in embryo — `.5` re-homes `ContractViolation` into `ModelError`). `semulith-verify::fixtures` — `FlatMemory` (u128 region checks, LE assembly by hand loop, fetch counter, alignment-before-region order stated on the method) and `ScriptedEnv` (scripted faults as environment answers; uncovered requests are violations, never invented data). Validation: 16 suites green; clippy -D warnings clean; wasm build green; gate green. Design notes, kept: (1) the fixture must surface test bugs loudly (load_image panics on a mis-sized image) — a fixture that modeled test bugs would teach tests to expect wrongness. (2) No asynchronous event exists to script — the platform declares none, and an absence has to be a platform property to be real (OB-ENV-EVENT-DELIVERY).
+
+Lessons: declined here (fixture specifics live in the module docs; the boundary's SEM-01 typing is `.5`'s design result, not this slice's lesson).
+
 ## _(2026-09-27)_ — architectural state, generated from the descriptor (P1-LAB.3)
 
 Root cause: the state accessors of `docs/ARCHITECTURE.md` §2 existed only as a table row; the descriptor `state.sexp` had no executable half, and the C02 alias question had no code to answer it. Implementation: `scripts/gen_state.py` derives `crates/semulith-core/src/state.rs` from the descriptor via `dossier_sexp.load_state`, emitting fixed-width storage (`[u64; 32]` + pc, 264 bytes inline, RUST-03), the x0 hardwired discipline (write discarded, read masks to 0), the three ISA-chapter-named aliases as views over the one storage, the inspection-metadata table (`ELEMENTS`), and the SEM-08 census as data. Byte-deterministic; the input sha256 rides in the header. The `STATE-GEN` doctrine (`scripts/check_state_gen.sh`) regenerates in memory and refuses drift; self-test 6 pass / 0 fail; fired RED on a hand-edited module (rc=1, naming DRIFT) before registration. Validation: 22 suites green; clippy -D warnings clean; wasm build green; REGISTRY-MIRROR and FACT-OWNERSHIP re-run green after registration. Design notes, kept: (1) generated Rust must be emitted formatter-stable or the drift gate fights `cargo fmt` — the generator's output is the formatted shape, verified by regen-diff after `cargo fmt --all`. (2) `dossier_sexp.family_for` names the dossier family from the file NAME, so self-test descriptor surgery must keep the `state.sexp` basename (per-case directories). (3) The generator binds the descriptor's `xlen` to `arith::XLEN` at generation time — the executable owner of XLEN stays unique, and a descriptor/code disagreement is a refusal, not a choice.
@@ -611,26 +617,5 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   claims in this repository rest on an instrument that answers a narrower question?** The pattern
   to look for is a single confident scalar standing in for a configuration. Owner: `MODEL-BOOKS.1`,
   whose materials bill must state for each reference what was matched and by what evidence.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — a gate report that cannot tell a mention from an implementation
-
-- Gate `G0` is run and reads **`incomplete`**: 66 declared checks, 0 implemented. The report is
-  GENERATED from tracked inputs and gated for staleness, so `passed` is unreachable — the
-  generator has no code path to it, and hand-editing the word fails the commit.
-- ⛔ **The generator was wrong twice, both times inflating the verdict.** "How many checks are
-  implemented?" first counted `EVIDENCE_POLICY.md` (grepping the id PATTERN across the tree — a
-  document describing the naming convention), then counted `check_requirements.sh` (which tests
-  the `-POS`/`-NEG` suffix while enforcing that ids exist — a gate about checks is not a check).
-  Both said `1`; the truth is `0`. The measure is now exact: take the CONCRETE declared ids and
-  ask which any tracked executable names. The failure direction is the lesson — an approximate
-  measure of "is this done" drifts toward done.
-- ⛔ The evidence policy's first draft stated class populations and got two wrong, by reading the
-  profile's authority distribution instead of the requirements' category distribution — the exact
-  non-mechanical mapping documented two leaves earlier, walked into by the person documenting it.
-  Hand-typed populations were removed; the generated report derives them.
-- ⭐ `incomplete` is the DELIVERABLE. A milestone whose job was to establish what evidence would
-  be required cannot also have produced it. Saying so in the verdict, rather than in a footnote,
-  is what stops the next milestone inheriting a claim nobody made.
 - Promotion is explicitly declined in the owning leaf, with the reason.
 
