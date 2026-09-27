@@ -40,6 +40,11 @@
 #                   could contradict itself — same id, different content — and stay green, rc=0.
 #                   A catalogue that repeats an id is a catalogue lying about its own identity,
 #                   and every rule below would have checked only the survivor.
+#     9. MIRROR     an obligation carrying parameters.requirement_id restates that requirement's
+#                   statement, so the pair must state EXACTLY the same fact — the obligation is a
+#                   derived mirror, and a mirror that drifts is a fact stated in two ungoverned
+#                   (MODEL-METHOD.7). The 8 environment-assumptions keep their own statements:
+#                   the arm keys on the parameter, not the direction.
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -233,6 +238,25 @@ for cat in catalogues:
                                 f"policy cannot override an architectural requirement, and "
                                 f"mislabelling one is how a defect becomes an unfalsifiable "
                                 f"'profile difference'")
+                # 9. MIRROR — an obligation that names its requirement restates it; the two must
+                #    state the same fact (MODEL-METHOD.7). Keyed on the obligation's own
+                #    parameter, not the direction: environment-assumptions keep their statements.
+                for o in obs:
+                    mirror_rid = (o.get("parameters") or {}).get("requirement_id")
+                    if not mirror_rid:
+                        continue
+                    r = by_id.get(mirror_rid)
+                    if r is None:
+                        findings.append(
+                            f"MIRROR WITHOUT SOURCE contract-obligations.sexp [{o.get('id')}]: "
+                            f"names '{mirror_rid}' as its requirement, which "
+                            f"{cat.name} does not define — a mirror of nothing")
+                    elif o.get("statement") != r.get("statement"):
+                        findings.append(
+                            f"MIRROR DRIFT contract-obligations.sexp [{o.get('id')}]: names "
+                            f"'{mirror_rid}' as its requirement but states a different fact. "
+                            f"An obligation is a derived mirror of its requirement; a mirror "
+                            f"that drifts is one fact stated two ways")
 
         # 4. COVERAGE — against the profile this catalogue belongs to
         prof = cat.parent / "profile.sexp"
@@ -354,6 +378,15 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
   obs "$OB"
   rm -f "$t/p/requirements.sexp";                             arm "RED   an obligation catalogue alone still checks" 0 "__CHECKED__ 1"
   reqs "$REQ"; rm -f "$t/p/contract-obligations.sexp"
+  # ---- rule 9 MIRROR: an obligation naming its requirement restates it ------------------------
+  reqs "$REQ"; obs "$OB"
+  obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['parameters']={'requirement_id':'REQ-D-A'}; r['statement']='S'; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "GREEN an obligation mirrored on its requirement" 0 "__CHECKED__ 2"
+  obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['parameters']={'requirement_id':'REQ-D-A'}; r['statement']='something else'; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   an obligation that drifted from its requirement" 1 "MIRROR DRIFT"
+  obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['parameters']={'requirement_id':'REQ-D-GHOST'}; r['statement']='S'; print(json.dumps(r,ensure_ascii=False))")"
+                                                              arm "RED   a mirror of a requirement that does not exist" 1 "MIRROR WITHOUT SOURCE"
+  rm -f "$t/p/contract-obligations.sexp"
   # ---- the JSONL track (examples stay JSONL) -------------------------------------------------
   printf '%s\n' "$REQ" > "$t/p/requirements.jsonl";           arm "GREEN a JSONL record validates on the old track" 0 "__CHECKED__ 2"
   printf 'not json at all\n' > "$t/p/mystery.jsonl";          arm "RED   a record file no schema governs" 1 "UNGOVERNED"

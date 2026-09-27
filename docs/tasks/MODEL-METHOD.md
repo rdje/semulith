@@ -191,12 +191,44 @@ recorded so it can be overturned on evidence rather than taste:
   a reader could carry the method to a different ISA without this project's documents.
 
 - ID: `MODEL-METHOD.7` — **the canonical definition: what it is and what each file owns**
-  Status: `pending`
+  Status: `done`
   Goal: document the definition as a set of format-fit files with a **no-duplicated-fact** rule —
   which file owns configuration, state, encodings, semantics, requirements, obligations and
   provenance — and gate that rule, since "single source of truth" means *one owner per fact*
   rather than *one file*.
   Acceptance: every fact kind has exactly one owning file; a gate refuses a fact stated in two.
+
+  Result: met, `2026-09-27`. `doctrine/fact_ownership.tsv` names the one owning file per fact
+  kind (8 kinds), the legal derived mirrors, and the governing doctrine; `FACT-OWNERSHIP`
+  (18th doctrine, `scripts/check_fact_ownership.sh`, 8 arms) verifies one owner each, owners
+  exist, every mirror names a REGISTERED governor, and the corpus's four restatement pairs are
+  all named. The inventory found one mirror with NO governor — 28 obligations restate their
+  requirement's statement, all matching today but free to drift — so RECORD-SCHEMA gained rule
+  9 (MIRROR: an obligation naming its `requirement_id` must state exactly what that requirement
+  states, 3 new arms, 26 total). The acceptance's shape — a fact stated in two, refused — is
+  the gate's UNGOVERNED MIRROR and UNREGISTERED MIRROR PAIR arms, both fired.
+  Design (recorded before code, `2026-09-27`), the corpus's mirrors inventoried first:
+  - ⭐ **The corpus already lives on derived mirrors — the rule must govern them, not pretend
+    they don't exist.** Measured inventory: decisions↔requirements state the same fact in two
+    files, governed by RECORD-SCHEMA rule 4 (statement identity); state↔profile, governed by
+    PROFILE-CONSISTENCY rule 4 (agreement); the encoding composition↔its fragments, governed
+    by UNIT-COMPOSITION (resolve + decide). ⛔ And one mirror with NO governor, measured:
+    28 obligations carry a `requirement_id` and restate that requirement's statement — all
+    matching today, but nothing REFUSES the day one drifts. That is the leaf's concrete fix:
+    the governor gets built, then the registry names it.
+  - **The ownership registry is data, beside the routes registry it mirrors in shape** —
+    `doctrine/fact_ownership.tsv`: fact kind · the ONE owning file · its legal mirrors · the
+    doctrine governing each mirror pair. The gate (`FACT-OWNERSHIP`, 18th doctrine) verifies:
+    every owner exists; every fact kind has exactly one owner; every mirror names a governor;
+    every governor is a REGISTERED doctrine that actually runs; and the corpus's enumerated
+    mirror pairs are all named in the registry — a duplication the registry does not know
+    about is the refusal. "One owner per fact; every mirror governed; nothing stated in two
+    ungoverned."
+  - **The new governor arm** (RECORD-SCHEMA): an obligation carrying
+    `parameters.requirement_id` must state EXACTLY what that requirement states — refused by
+    name with both statements' file and id. The 8 environment-assumptions keep their own
+    statements (they assume, they do not mirror); the arm keys on the parameter, not the
+    direction.
 
 - ID: `MODEL-METHOD.8` — **own the encodings: `encoding.sexp`**
   Status: `done`
@@ -337,8 +369,7 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 2 | `MODEL-METHOD.7` | `pending` | the no-duplicated-fact rule, now that several definition files exist to duplicate between |
-| 3 | `MODEL-METHOD.2` | `pending` | the materials schema and census |
+| 1 | `MODEL-METHOD.2` | `pending` | the materials schema and census |
 
 ## Decisions
 
@@ -570,10 +601,79 @@ Neither is routed to another tree; neither is worked around here.
   (DOSSIER/ENVIRONMENT/LIVE_STATUS rows) to 28/36/72; `TOOLBOX.md`; `MEMORY.md`,
   `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
 
+## Acceptance Checklist (leaf MODEL-METHOD.7)
+
+- [x] **REPRODUCE / ISSUE** — the rule as it stood: `decision_canonical-definition-input`
+  states the no-duplicated-fact rule in prose, nothing mechanizes it. Census, pre-code:
+
+  ```
+  $ ls doctrine/fact_ownership.tsv 2>&1
+  ls: doctrine/fact_ownership.tsv: No such file or directory
+  $ grep -c 'MIRROR' scripts/check_requirements.sh
+  0                                             # obligation->requirement restatement: ungoverned
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: the corpus legitimately DERIVES facts into
+  mirrors (a requirement restates a decision; an obligation restates its requirement), and a
+  mirror with no governor is one fact stated in two, free to drift — the exact failure the
+  prose rule names. WHERE: measured, not read —
+
+  ```
+  $ grep -c 'MIRROR' scripts/check_requirements.sh
+  0                                             # obligation->requirement: no governor at all
+  $ python3 - <<'PY'
+  > obs = records_sexp.load("profiles/rv64i-lab-v0/contract-obligations.sexp")
+  > print(sum(1 for o in obs if o["parameters"].get("requirement_id")))   # -> 28
+  > PY
+  ```
+
+  Three mirror pairs were governed (decision<->requirement by RECORD-SCHEMA rule 4;
+  state<->profile by PROFILE-CONSISTENCY; composition<->fragments by UNIT-COMPOSITION); the
+  obligation->requirement pair was not — 28 restatements, all matching today, free to drift.
+
+  ```
+  $ python3 - <<'PY'   # 28 obligations restate a requirement's statement; nothing enforces it
+  > obs = records_sexp.load("profiles/rv64i-lab-v0/contract-obligations.sexp")
+  > print(sum(1 for o in obs if o["parameters"].get("requirement_id")))   # -> 28
+  > PY
+  ```
+
+- [x] **FIX** — the registry as data (`doctrine/fact_ownership.tsv`, beside the routes
+  registry in shape); the governor where it belongs (RECORD-SCHEMA rule 9 — the mirror check
+  keys on the obligation's own `requirement_id`); the gate verifying the registry holds and is
+  complete against the corpus's actual pairs.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ bash scripts/check_requirements.sh --self-test
+  RECORD-SCHEMA --self-test: 26 pass / 0 fail     # was 23; +3 mirror arms
+  $ bash scripts/check_fact_ownership.sh --self-test
+  FACT-OWNERSHIP --self-test: 8 pass / 0 fail
+  $ bash scripts/check_fact_ownership.sh
+  FACT-OWNERSHIP: ok (8 fact kind(s): one owner each, every mirror governed)
+  $ # the acceptance's shape, fired: an ungoverned mirror in the registry
+  UNGOVERNED MIRROR state: '...' restates '...' with no governing doctrine          rc=1
+  ```
+
+- [x] **NO REGRESSION** — `bash scripts/check_requirements.sh --self-test` 26 pass / 0
+  fail + real run green on the 28 real mirrors; PROFILE-CONSISTENCY 39/0; the whole guard
+  set and the enforcer green after staging.
+
+- `promotion: declined (the "govern every mirror or refuse it" rule is stated in the gate's header and this leaf, where anyone adding a fact kind meets it).`
+
+- [x] **LOCKSTEP** — `scripts/check_doctrines.project.sh` + both mirrors in the registering
+  commit; `LIVE_STATUS.md` re-derived (18 doctrines, 213 arms); `TOOLBOX.md`; `MEMORY.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-METHOD.7` | mirror inventory, pre-code | 3 pairs governed (decision<->requirement, state<->profile, composition<->fragments); obligation->requirement UNGOVERNED — 28 restatements, all matching, nothing refusing drift |
+| `2026-09-27` | `MODEL-METHOD.7` | RECORD-SCHEMA rule 9 + arms | `26 pass / 0 fail` (was 23); MIRROR DRIFT / MIRROR WITHOUT SOURCE / GREEN mirror |
+| `2026-09-27` | `MODEL-METHOD.7` | gate `--self-test` | `8 pass / 0 fail`; real run `ok (8 fact kind(s))` |
+| `2026-09-27` | `MODEL-METHOD.7` | the acceptance's shapes fired | UNGOVERNED MIRROR and UNREGISTERED MIRROR PAIR, both rc=1 |
 | `2026-09-27` | `MODEL-METHOD.10` | contract as stated, run pre-code | requirement leg FAILS: no `insns` link; ALU family (13 instructions) uncovered |
 | `2026-09-27` | `MODEL-METHOD.10` | tool `--self-test` | `6 pass / 0 fail`; gate `--self-test` `3 pass / 0 fail` |
 | `2026-09-27` | `MODEL-METHOD.10` | real corpus | `SUFFICIENT for an engine: 52 instructions, each with encoding + semantics + requirement` |
@@ -624,6 +724,7 @@ Neither is routed to another tree; neither is worked around here.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.7` | `SEMILITH-MM-0045 (leaf MODEL-METHOD.7): …` | the no-duplicated-fact registry and its gate; the obligation mirror governed |
 | `MODEL-METHOD.10` | `SEMILITH-MM-0044 (leaf MODEL-METHOD.10): …` | the extraction contract: one set four ways, and P1's start condition fully met |
 | `MODEL-METHOD.13` | `SEMULITH-MM-0044 (leaf MODEL-METHOD.13): the corpus moved, and my survey had sampled` | 36 materials; both gaps closed; citations resolve offline |
 | `MODEL-METHOD.12` | `SEMULITH-MM-0043 (leaf MODEL-METHOD.12): a citation that is present is not a citation that resolves` | challenge refuted; 52 of 52 resolve |

@@ -8,6 +8,31 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the no-duplicated-fact rule is a registry, and every mirror is governed (MODEL-METHOD.7)
+
+Root cause this leaf closes: the no-duplicated-fact rule lived only in
+`decision_canonical-definition-input` prose, while the corpus it governs had grown
+derived mirrors — and one of them (28 obligations restating their requirement's statement,
+measured) had NO governor at all. The fix is shaped like the routes registry beside which it
+lives: `doctrine/fact_ownership.tsv` names one owner per fact kind, each legal mirror, and
+the governing doctrine; the FACT-OWNERSHIP gate verifies the registry holds AND is complete
+against the corpus's actual restatement pairs — a completeness claim needs a census, so the
+four real pairs are enumerated in the gate.
+
+Design choices, stated: the registry's mirror column means "a file that restates the owner's
+fact" — direction matters, and getting it uniform (owner owns; mirror derives) took one
+measured failure (the encoding pair's family prefix did not match one way; symmetric
+directory-prefix matching fixed it). The governor belongs in the family gate, not the
+registry: RECORD-SCHEMA rule 9 keys on the obligation's own `requirement_id` (the 8
+environment-assumptions keep their own statements — the arm keys on the parameter, not the
+direction).
+
+Validation: RECORD-SCHEMA 26/0 (was 23) + real run green on the 28 real mirrors; gate 8/0;
+both acceptance shapes fired. Whole enforcer green.
+
+Lessons: declined here (the govern-every-mirror rule is stated in the gate's header and the
+owning leaf).
+
 ## _(2026-09-27)_ — the extraction contract: one set, four ways (MODEL-METHOD.10)
 
 Root cause this leaf closes: every per-family check proved its own leg, and nothing proved
