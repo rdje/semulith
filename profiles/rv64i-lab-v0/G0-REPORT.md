@@ -10,7 +10,7 @@
 ## Why this verdict
 
 `EVD-08` forbids a report that reads `passed` while a required check is missing. This
-profile declares **68 required checks** across 34 obligations, of
+profile declares **72 required checks** across 36 obligations, of
 which **0 are implemented** —
 measured by taking each concrete check id the contract declares and asking whether any
 tracked executable under `scripts/` or `crates/` names it. Not asserted, and not inferred
@@ -21,9 +21,9 @@ generator has no code path that would produce it while that is true.
 
 | Input | Contents |
 | --- | --- |
-| `profile.sexp` | 26 decisions, 52 mnemonics, XLEN 64, extensions `[]` |
-| `requirements.sexp` | 26 requirements |
-| `contract-obligations.sexp` | 34 obligations, 68 declared checks |
+| `profile.sexp` | 28 decisions, 52 mnemonics, XLEN 64, extensions `[]` |
+| `requirements.sexp` | 28 requirements |
+| `contract-obligations.sexp` | 36 obligations, 72 declared checks |
 | `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 6 recorded differences |
 | `guests/*.expected.sexp` | 4 programs, 34 expected steps, 4 negative observations |
 
@@ -33,7 +33,7 @@ Every requirement carries a source locator, and its research status is recorded.
 
 | Semantic class | Requirements |
 | --- | --- |
-| `defined` | 13 |
+| `defined` | 15 |
 | `implementation-defined` | 11 |
 | `reserved` | 1 |
 | `unspecified` | 1 |
@@ -83,7 +83,7 @@ pair reads exactly like an independent one.
 
 ## Limitations (`EVD-08`)
 
-1. **68 checks are declared and 0 implemented.** They name
+1. **72 checks are declared and 0 implemented.** They name
    fixtures a later milestone builds. This is the reason for the verdict.
 2. **No CPU model exists.** `crates/` holds the scaffold's placeholder; every requirement is
    `implementation_status: planned`. Nothing here is evidence about an implementation.

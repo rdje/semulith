@@ -8,6 +8,36 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the extraction contract: one set, four ways (MODEL-METHOD.10)
+
+Root cause this leaf closes: every per-family check proved its own leg, and nothing proved
+the legs described the SAME instruction set. Measured pre-code: no requirement↔instruction
+link existed, and the ALU family (13 instructions) had no requirement at all — the contract
+as stated failed the real corpus on the requirement leg.
+
+The fix is two-handed, and both halves matter. Corpus: `(insns …)` on the schema
+(kind-agnostic — a memory-kind requirement names FENCE, an event-kind names ECALL and
+EBREAK), two new D/REQ/OB triples whose statements are grounded in the corpus's own
+semantics (the §1.1.4 effects, including SLTIU's sign-then-unsigned quirk — the statements
+must match the decisions exactly, `RECORD-SCHEMA` rule 4, and the semantic file is the
+corpus's own authority for what the spec says). Tool: `check_extraction.py` requires
+SCOPE == ENCODING == SEMANTICS == REQUIREMENTS — one set, four ways — plus resets and
+checks. Gating: `EXTRACTION` (17th doctrine), because P1-LAB must cite a verdict that
+runs.
+
+Measured en route: `RECORD-SCHEMA` caught a wrong obligation id (`OB-D-ALU-REG`
+vs `OB-ALU-REG`) mid-curation — a gate earning its keep on the authoring side, not just
+the review side. And `R.dump` drops file headers: a load→modify→dump rewrite must
+re-prepend the `;;` header or the diff shows comment loss. The curation script now
+does, and the diff is minimal (11 insns additions + 2+2+2 new records).
+
+Validation: tool 6/0, gate 3/0; real corpus SUFFICIENT; the acceptance's RED on a copy with
+one sem rule removed (`does not cover: add`). REGRESSION: RECORD-SCHEMA 23/0,
+PROFILE-CONSISTENCY 39/0, GATE-REPORT re-derived 28/28/36/72, whole gate green.
+
+Lessons: declined here (the integrative-pattern rule is stated in the tool's docstring and
+the owning leaf).
+
 ## _(2026-09-27)_ — a composition is an ordinary unit, and the tree closes (MODEL-COMPOSE.5)
 
 Root cause this leaf closes: composition produced verdicts (encoding union, record merge,
@@ -594,46 +624,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
 - Having three binaries is not having three opinions. The gate now refuses a candidate whose
   `lineage` field is missing, because an unasked independence question reads exactly like an
   answered one.
-
-## _(2026-09-14)_ — a self-test reports the arms it ran, not the arms you wrote
-
-- `docs/TASK_TREE.md` and the tree it indexes disagreed about which leaf was next: the index
-  said `P0-PROFILE.2`, the tree said `.5`, and `.2` was `done`. `COMMIT.md` updates that index
-  "only if the frontier changes" — a CONDITIONAL manual step, which is the shape that rots. One
-  row of fourteen had drifted, and it was the only `active` tree: the single row the documented
-  resume path (`MEMORY.md` → index → frontier) actually reads. A 1-in-14 drift rate is not the
-  number that matters; a 1-in-1 rate on the followed row is. Gated by `FRONTIER-SYNC`.
-- ⛔ **The new gate's own self-test printed `4 pass / 0 fail` while running four of fourteen
-  arms.** Ten `arm` calls sat on the same physical line as the fixture call before them with no
-  `;`, so bash passed `arm` and its three arguments as extra positional parameters to a function
-  reading only `$1` and `$2` — discarded in silence, no error of any kind. Adding the separator
-  gave `13 pass / 1 fail`, and that one failure was a real defect: two opposite drift directions
-  shared a single message. Caught by counting the arms written against the arms reported, not by
-  reading the code. Promoted:
-  [`docs/knowledge/self-test-arms-that-never-ran.md`](docs/knowledge/self-test-arms-that-never-ran.md).
-- Two blank lines inside `DOCTRINE_ENFORCEMENT.md`'s project-doctrine table split it into three
-  GFM fragments, so two registered doctrines rendered as literal `| … |` text instead of rows.
-  Right in the file, wrong on the page — one column over from what `TABLE-ARITY-RATCHET`
-  catches, and no gate sees a blank line.
-
-- The same mechanism, one document over: `docs/book/src/working/doctrines.md` listed 3 project
-  doctrines while 5 were registered. A mirror that falls behind never **invents** a guarantee —
-  it **withholds** one, on the surface a reviewer reads instead of the code. Gated by
-  `REGISTRY-MIRROR`, which also caught the opposite direction unprompted (`PHANTOM`: a row added
-  one step before its registration).
-- The durable fix for the swallowed arms is a strict-arity guard on every self-test fixture
-  helper, fired RED by deleting one `;`. A helper that ignores surplus arguments is what made the
-  swallow silent; refusing them is what makes it loud.
-
-- The third mirror had **not** drifted, and the leaf says so instead of manufacturing a defect.
-  For a prevention leaf the falsification is the load-bearing box: four controls, each breaking a
-  real claim in `MEMORY.md`/`LIVE_STATUS.md` and restored with `git checkout --`.
-- A gate's scope can be data someone already wrote down. `TREE-CLAIMS` reads the `hot_live` rows
-  of `doctrine/readme_routes.tsv` rather than carrying a file list — which also gets the
-  `append_history` exclusion right for free: history must never be rewritten to match today.
-- ⭐ The gates now catch each other. Registering a doctrine without mirroring it failed inside the
-  same commit; the same omission had survived two prior registrations unnoticed.
-- A rule keyed on words fires on prose about the rule. The frontier check matched any line
-  mentioning "frontier leaf" and double-reported; anchoring it on the label fixed it, and the
-  narrowing was re-fired RED — narrowing a gate is precisely the edit that can silently disable it.
 

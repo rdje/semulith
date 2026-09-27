@@ -53,6 +53,7 @@ These ship with the discipline spine and are project-neutral:
 | `SOURCE-FORMAT` | every source of truth the engine extracts from is in the one format — a retired-format file in a source-of-truth family is refused by name, and every `.sexp` there parses with the one reader |
 | `UNIT-COMPOSITION` | a unit's composed encoding space is decided — schema-conformant document, fragments resolved through the one shared resolver, collision-free union, and partial compositions declared rather than inferred |
 | `SEMANTICS` | the execution authority's corpus holds — every semantics document is well-formed, complete and cited; a silent semantic override across fragments is refused; locators resolve offline, with a named skip when the cache cannot judge |
+| `EXTRACTION` | the definition is sufficient for an engine — every declared instruction has an encoding, semantics and a requirement (one set, four ways); every state element a reset; every obligation its checks |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than

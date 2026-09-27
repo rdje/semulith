@@ -218,13 +218,51 @@ recorded so it can be overturned on evidence rather than taste:
   Commit: `SEMULITH-MM-0040`
 
 - ID: `MODEL-METHOD.10` — **the extraction contract: is the definition SUFFICIENT?**
-  Status: `pending`
+  Status: `done`
   Goal: state what a generator engine must be able to extract, and check it — every declared
   instruction has an encoding **and** semantics **and** a requirement; every state element has a
   reset; every obligation has its checks. ⭐ This turns *"the engine can extract all it needs"*
   from an intention into a verdict, and that verdict is the precondition for writing model code.
   Acceptance: fired RED by removing one instruction's semantics; `P1-LAB` cites this check rather
   than a judgement call.
+
+  Result: met, `2026-09-27`. The contract as stated fired RED on the real corpus — measured:
+  the ALU family (13 instructions) had no requirement at all. The leaf extended the catalogue
+  (D/REQ/OB-ALU-REG and -IMM, statements grounded in the corpus's own §1.1.4 semantics), added
+  the `(insns …)` coverage link to 11 requirements, and `scripts/check_extraction.py` now
+  decides the integrative claim — SCOPE == ENCODING == SEMANTICS == REQUIREMENTS, one set four
+  ways, plus every state element reset and every obligation checked both ways. The real corpus
+  is SUFFICIENT (52 instructions, each with all three; the G0 report re-derived to 28/28/36/72
+  in the same commit). The acceptance fired RED on a real-corpus copy with one instruction's
+  semantics removed (`scope declares 1 instruction(s) the semantics set does not cover: add`).
+  `EXTRACTION` registered as the 17th project doctrine — P1-LAB cites a verdict that runs.
+  Design (recorded before code, `2026-09-27`), the contract read against the corpus first:
+  - ⭐ **The contract as stated fires RED on the real corpus today — measured, and the point.**
+    The scope declares 52 instructions; the encoding union and the semantics cover 52; but the
+    requirement leg fails: only 7 instruction-kind requirements exist, and even generous
+    family-mapping leaves the whole ALU family (ADD/SUB/SLT/SLTU/XOR/OR/AND + the immediates
+    ADDI/SLTI/SLTIU/XORI/ORI/ANDI) with no requirement at all. A contract that passes over that
+    is the intention restated. So this leaf extends the catalogue where the contract demands
+    it: two new decision/requirement/obligation triples (D-ALU-REG, D-ALU-IMM), and an explicit
+    instruction-coverage link on every requirement that names specific instructions.
+  - **The link is data, added the way the layer allows**: `schema/requirements.sexp` gains
+    `(insns …)` — an optional repeated string field, kind-agnostic (FENCE is a memory-kind
+    requirement that names one instruction; ECALL-EBREAK an event-kind naming two). Every
+    requirement whose statement commits specific instructions names them; reserved/hint decode
+    requirements name none (they cover code points, not instructions).
+  - **The contract is one equality across four sets + two smaller legs.**
+    `scripts/check_extraction.py <unit-dir>` derives: SCOPE (the profile's declared names),
+    ENCODING (the composed union), SEMANTICS (checked semantics coverage), REQUIREMENTS
+    (∪ requirement.insns) — and requires all four EQUAL. Plus: every state element in
+    `state.sexp` carries a `reset` (the corpus already does — integer_registers and pc); every
+    obligation carries a positive AND a negative check. A gap names itself, the instruction,
+    and the set that's short.
+  - **Consequences, stated before code**: the catalogue grows (2 decisions, 2 requirements,
+    2 obligations) and the tracked G0 report regenerates (more requirements → more checks,
+    verdict unchanged) — `GATE-REPORT` re-derives the new bytes and is part of this commit.
+    The ALU statements are sourced from the pinned chapters (RV32I §1.1.4 computational
+    instructions; overflow-wrap and signed-comparison facts the corpus already states for
+    kin instructions), with locators a reader can check.
 
 - ID: `MODEL-METHOD.11` — **the primary-source corpus: a local cache that holds no absolute path**
   Status: `done`
@@ -299,7 +337,6 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.10` | `pending` | the extraction contract. Both halves now exist — encodings and semantics — so *"the engine can extract all it needs"* can finally become a **verdict**, and that verdict is the precondition for writing model code |
 | 2 | `MODEL-METHOD.7` | `pending` | the no-duplicated-fact rule, now that several definition files exist to duplicate between |
 | 3 | `MODEL-METHOD.2` | `pending` | the materials schema and census |
 
@@ -466,10 +503,82 @@ as first-class `(gap …)` records rather than as prose someone must remember:
 Both belong to `MODEL-METHOD.3`, the coverage census, which is where a gap becomes a disposition.
 Neither is routed to another tree; neither is worked around here.
 
+## Acceptance Checklist (leaf MODEL-METHOD.10)
+
+- [x] **REPRODUCE / ISSUE** — the contract as stated, run against the corpus before any code:
+
+  ```
+  $ python3 - <<'PY'   # the requirement leg, measured
+  > reqs = records_sexp.load("profiles/rv64i-lab-v0/requirements.sexp")
+  > insns = {i for r in reqs for i in r.get("insns", [])}   # {} — the link did not exist
+  > PY
+  $ # and with the link curated on the 7 instruction-kind requirements alone:
+  $ # the ALU family (add sub slt sltu xor or and + addi slti sltiu xori ori andi) has NO requirement
+  ```
+
+  The catalogue itself failed the contract's requirement leg — 13 instructions uncovered. That
+  is the leaf's real finding, and fixing the corpus is part of the fix.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: every per-family check (ENCODING, SEMANTICS,
+  RECORD-SCHEMA) proved its own leg, and nothing proved they described the SAME instruction
+  set — the integrative claim was the gap. WHERE: measured, not read —
+
+  ```
+  $ grep -c 'insns' schema/requirements.sexp
+  0                                             # no requirement↔instruction link existed
+  $ grep -c 'ALU' profiles/rv64i-lab-v0/requirements.sexp
+  0                                             # the ALU family: no requirement record at all
+  ```
+
+  The catalogue itself failed the contract's requirement leg; fixing the corpus is part of
+  the fix, not a waiver of it.
+
+- [x] **FIX** — data first: `(insns …)` on `schema/requirements.sexp` (kind-agnostic;
+  FENCE names one instruction, ECALL-EBREAK two); the catalogue extended where the contract
+  demands it (D/REQ/OB-ALU-REG, D/REQ/OB-ALU-IMM, statements grounded in the corpus's own
+  §1.1.4 semantics — including SLTIU's sign-then-unsigned quirk); `check_extraction.py`
+  decides one-set-four-ways plus the reset and checks legs; `EXTRACTION` registered as the
+  17th doctrine so P1-LAB cites a verdict that runs.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/check_extraction.py --self-test
+  check_extraction --self-test: 6 pass / 0 fail
+  $ bash scripts/check_extraction.sh --self-test
+  EXTRACTION --self-test: 3 pass / 0 fail
+  $ python3 scripts/check_extraction.py profiles/rv64i-lab-v0
+  the definition is SUFFICIENT for an engine: 52 instructions, each with encoding +
+  semantics + requirement; reset everywhere; obligations checked both ways
+  $ # the acceptance, on a real-corpus copy with one instruction's semantics removed:
+  $ python3 scripts/check_extraction.py <copy>
+  REFUSED — scope declares 1 instruction(s) the semantics set does not cover: add   rc=1
+  ```
+
+- [x] **NO REGRESSION** — `bash scripts/check_requirements.sh --self-test` 23 pass / 0
+  fail + real run green (it caught a wrong obligation id mid-curation — `OB-D-ALU-REG` vs
+  `OB-ALU-REG` — fixed before commit); `bash scripts/check_profile_consistency.sh` 39 arms +
+  real run green; GATE-REPORT re-derived (28/28/36/72, verdict unchanged); the catalogue diff
+  is minimal (11 insns additions, 2+2+2 new records, headers preserved); the round-trip owner
+  carries `insns` and untouched records re-serialize byte-identically; whole gate green after
+  staging.
+
+- `promotion: declined (the "one set, four ways" pattern is stated in the tool's docstring).`
+
+- [x] **LOCKSTEP** — `scripts/check_doctrines.project.sh` + both mirrors in the registering
+  commit; `LIVE_STATUS.md` re-derived (17 doctrines, 202 arms); the count-bearing docs
+  (DOSSIER/ENVIRONMENT/LIVE_STATUS rows) to 28/36/72; `TOOLBOX.md`; `MEMORY.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-METHOD.10` | contract as stated, run pre-code | requirement leg FAILS: no `insns` link; ALU family (13 instructions) uncovered |
+| `2026-09-27` | `MODEL-METHOD.10` | tool `--self-test` | `6 pass / 0 fail`; gate `--self-test` `3 pass / 0 fail` |
+| `2026-09-27` | `MODEL-METHOD.10` | real corpus | `SUFFICIENT for an engine: 52 instructions, each with encoding + semantics + requirement` |
+| `2026-09-27` | `MODEL-METHOD.10` | the acceptance's RED (real-corpus copy, one sem rule removed) | `does not cover: add`, rc=1 |
+| `2026-09-27` | `MODEL-METHOD.10` | gates on the extended catalogue | RECORD-SCHEMA 23/0 + green (caught a wrong obligation id, fixed); PROFILE-CONSISTENCY 39/0 + green; GATE-REPORT re-derived 28/28/36/72 |
 | `2026-09-14` | `MODEL-METHOD.11` | corpus survey: files, PDFs, vendors | 3,684 files / 1.5 GB / 196 PDFs across 23 vendors |
 | `2026-09-14` | `MODEL-METHOD.11` | `materials.py --self-test` | `15 pass / 0 fail`; 9 RED arms about paths |
 | `2026-09-14` | `MODEL-METHOD.11` | `materials.py --fetch` (22 materials) | 22 of 22, every sha256 verified, 233 MB |
@@ -515,6 +624,7 @@ Neither is routed to another tree; neither is worked around here.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.10` | `SEMILITH-MM-0044 (leaf MODEL-METHOD.10): …` | the extraction contract: one set four ways, and P1's start condition fully met |
 | `MODEL-METHOD.13` | `SEMULITH-MM-0044 (leaf MODEL-METHOD.13): the corpus moved, and my survey had sampled` | 36 materials; both gaps closed; citations resolve offline |
 | `MODEL-METHOD.12` | `SEMULITH-MM-0043 (leaf MODEL-METHOD.12): a citation that is present is not a citation that resolves` | challenge refuted; 52 of 52 resolve |
 | `MODEL-METHOD.11` | `SEMULITH-MM-0042 (leaf MODEL-METHOD.11): materials get an identity, and no path that breaks on a move` | 22 materials, 2 measured gaps, 0 absolute paths |

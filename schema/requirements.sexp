@@ -21,6 +21,8 @@
          (values memory) (values event) (values environment) (values configuration)
          (values invariant) (values device) (values composition))
   (field (name statement) (type string) (min-length 1))
+  (field (name insns) (type string) (repeat yes) (optional yes)
+         (pattern "^[a-z0-9._]+$"))
   (field (name source_refs) (type form) (head source_refs) (repeat yes) (min 1) (unique yes))
   (field (name applicability) (type symbol) (values included) (values excluded)
          (values conditional))
