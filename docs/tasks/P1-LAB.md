@@ -112,9 +112,22 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   choices recorded in the module docs; nothing here is a cross-cutting lesson yet).
 
 - ID: `P1-LAB.5` — **typed outcome families**
-  Status: `pending`
+  Status: `done`
   Goal: `TargetEvent`, `Advance`, `ModelError`, `UndefinedCase` as separate types (`SEM-01`).
   Acceptance: a target exception can be delivered and execution continue; an unimplemented instruction cannot be reported as an illegal-instruction trap.
+  Result: met, `2026-09-27`. `semulith-core::outcome` owns the four families, and nothing converts
+  between them: `TargetEvent` (`Exception` with the unprivileged cause vocabulary — each cause named
+  by its rule; `RequestedTrap` for ECALL/EBREAK), `Advance` (`Completed`, `Stop{reason}` — no
+  waiting or partial advance, platform facts recorded in the type's docs), `ModelError`
+  (`Unimplemented`/`InvalidDescription`/`InconsistentState`/`ContractViolation` — `.4`'s
+  boundary-local violation family re-homed), `UndefinedCase` (`ReservedDecode` — the
+  REQ-D-RESERVED-DECODE case carried as its own outcome, never auto-converted to an exception).
+  A step returns `StepOutcome`, one of the four; `.8` produces it, the harness matches it.
+  Tests prove the acceptance with a stub stepper (test code, not production semantics): a
+  delivered `Breakpoint` trap is recorded by the harness and the next instruction still runs;
+  the unimplemented arm is a `ModelError`, and the exhaustive match shows extracting an
+  `IllegalInstruction` trap from it has no typed expression. Lessons: promotion: declined
+  (family shapes are `.8`'s design consumer; nothing here generalizes past this module).
 
 - ID: `P1-LAB.6` — **canonical definition skeleton** *(task card `T003`)*
   Status: `pending`
@@ -155,7 +168,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.5` | `pending` | typed outcome families — the boundary's failures and violations need their SEM-01 siblings |
+| 1 | `P1-LAB.6` | `pending` | canonical definition skeleton — OWN-01/OWN-03's generation manifest over the encodings, state and semantics |
 
 ## Decisions
 
@@ -441,14 +454,77 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   registry changes this slice; `env` is a new module in an already-owned crate, and the
   fixtures live in the home `.1` fixed for them.)
 
+## Acceptance Checklist (leaf P1-LAB.5)
+
+- [x] **REPRODUCE / ISSUE** — SEM-01's separation existed only as a rules document; no Rust
+  type could say "target event", "model error", or "undefined case" distinctly:
+
+  ```
+  $ git grep -cE "StepOutcome|ModelError|UndefinedCase" HEAD -- crates/ | wc -l
+  0
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `docs/ARCHITECTURE.md` §5 assigns the four families
+  to `semulith-core` ("use separate typed families") and notes "precise enum shapes are a
+  P1 design result"; that design result had no home — the laboratory could report a
+  contract violation (`.4`) but had nowhere to put a trap, a stop, a gap, or a reserved
+  word. WHERE, measured: the `outcome` module this leaf adds is the fifth module in
+  `semulith-core`; before it, four.
+
+  ```
+  $ git ls-files 'crates/semulith-core/src/*.rs' | sort
+  crates/semulith-core/src/arith.rs
+  crates/semulith-core/src/env.rs
+  crates/semulith-core/src/lib.rs
+  crates/semulith-core/src/outcome.rs   # does not exist yet — this leaf adds it
+  crates/semulith-core/src/state.rs
+  ```
+
+- [x] **FIX** — `semulith-core::outcome`: the four families as enums with named,
+  source-linked variants (see the leaf Result), plus `StepOutcome`, the step-level sum a
+  harness matches on. `env::ContractViolation` re-homes into `ModelError` by a `From` impl
+  in this module; `BoundaryError` stays boundary-local until `.8`'s instruction layer
+  converts its `Target` arm into `TargetEvent`.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ cargo test -p semulith-core outcome 2>&1 | grep "test result"
+  test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 26 filtered out; finished in 0.00s
+  ```
+
+  Clause one — `a_delivered_exception_lets_execution_continue`: a stub program
+  [add, break, add] runs under a harness that records the delivered `Breakpoint` trap and
+  steps on; the register shows both adds ran and pc advanced past all three. Clause two —
+  `an_unimplemented_instruction_is_not_an_illegal_instruction_trap`: the stub's
+  `Missing` arm produces `Failed(ModelError::Unimplemented)`, and the exhaustive match in
+  the test demonstrates that reaching an `IllegalInstruction` `Exception` from a
+  `Failed` value has no typed expression. Family distinctness, the `ContractViolation`
+  re-homing, and the `UndefinedCase`-is-not-`Exception` separation each carry their own
+  suite.
+
+- [x] **NO REGRESSION** — the strict-lint suite and the doctrine gate, re-run:
+
+  ```
+  $ cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings && cargo test --all 2>&1 | grep -c 'test result: ok'
+  5                                    # 5 suites, all ok; 43 tests total, 0 warnings
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s   # rc=0, PORT-WEB holds
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `docs/book/src/plan/p1.md` (the families section now describes the
+  landed types), and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `P1-LAB.5` | `cargo test -p semulith-core outcome` | 5 passed / 0 failed (delivery-continues, unimplemented≠trap, distinctness, re-home, reserved) |
+| `2026-09-27` | `P1-LAB.5` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / all doctrines green |
 | `2026-09-27` | `P1-LAB.4` | `cargo test -p semulith-verify` | 12 passed / 0 failed (fixtures, no instruction handler) |
-| `2026-09-27` | `P1-LAB.4` | `cargo test -p semulith-core env` | 4 passed / 0 failed (contract properties) |
-| `2026-09-27` | `P1-LAB.4` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / all doctrines green |
-| `2026-09-27` | `P1-LAB.3` | `cargo test --all` | 22 passed / 0 failed (12 arithmetic + 10 state suites) |
 | `2026-09-27` | `P1-LAB.3` | `bash scripts/check_state_gen.sh --self-test` | 6 pass / 0 fail |
 | `2026-09-27` | `P1-LAB.3` | STATE-GEN fired RED pre-registration (hand-edited module) | rc=1, named DRIFT + regeneration command |
 | `2026-09-27` | `P1-LAB.3` | `clippy -D warnings`, `make gate`, wasm build | clean / all doctrines green / rc=0 |
@@ -463,6 +539,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.5` | `SEMILITH-PL-0005 (leaf P1-LAB.5): …` | the four SEM-01 outcome families as types; delivery-continues and unimplemented≠trap proven |
 | `P1-LAB.4` | `SEMILITH-PL-0004 (leaf P1-LAB.4): …` | the environment boundary and its fixtures, testable without the instruction handler |
 | `P1-LAB.3` | `SEMILITH-PL-0003 (leaf P1-LAB.3): …` | architectural state, generated from the descriptor; STATE-GEN registered and fired RED first |
 | `P1-LAB.2` | `SEMILITH-PL-0002 (leaf P1-LAB.2): …` | arithmetic primitives, verified exhaustively at reduced width |
@@ -470,14 +547,14 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 ## Changelog
 
-- `2026-09-27`: Leaf `.4` done — `semulith-core::env` (the request/response contract:
-  `Request`/`Response`/`Failure`/`ContractViolation`, one `Environment` trait) and
-  `semulith-verify::fixtures` (`FlatMemory`, `ScriptedEnv`), 16 new suites green, the
-  negative-fixture rule exercised for real; the frontier moves to `.5` (typed outcome
-  families). Leaf `.3` done — `semulith-core::state` generated from `state.sexp` (input
-  sha256 in the header, byte-deterministic); x0 hardwired, three ISA-chapter aliases as
-  views (C02), SEM-08 census as data; the 21st doctrine `STATE-GEN` refuses drift and was
-  fired RED pre-registration; the frontier moves to `.4` (environment boundary). Leaf `.2`
-  done the same day — `semulith-core::arith`, verified by boundary + 8-bit-exhaustive
-  suites; the frontier moves to `.3` (architectural state). Leaf `.1` done the same day —
-  the three crates + the Wasm gate.
+- `2026-09-27`: Leaf `.5` done — `semulith-core::outcome`: `TargetEvent`/`Advance`/`ModelError`/
+  `UndefinedCase` as distinct types with `StepOutcome` the step-level sum; a delivered trap
+  proven non-stopping and an unimplemented instruction proven not-an-illegal-instruction-
+  trap; `env`'s `ContractViolation` re-homed into `ModelError`; the frontier moves to `.6`
+  (canonical definition skeleton). Leaf `.4` done — `semulith-core::env` (the
+  request/response contract) and `semulith-verify::fixtures` (`FlatMemory`, `ScriptedEnv`),
+  the negative-fixture rule exercised for real; the frontier moves to `.5`. Leaf `.3` done —
+  `semulith-core::state` generated from `state.sexp`; the 21st doctrine `STATE-GEN` refuses
+  drift; the frontier moves to `.4`. Leaf `.2` done — `semulith-core::arith`, verified by
+  boundary + 8-bit-exhaustive suites; the frontier moves to `.3`. Leaf `.1` done — the three
+  crates + the Wasm gate.

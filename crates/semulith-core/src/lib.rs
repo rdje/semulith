@@ -12,4 +12,5 @@
 
 pub mod arith;
 pub mod env;
+pub mod outcome;
 pub mod state;

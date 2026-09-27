@@ -8,6 +8,12 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — four typed outcome families, SEM-01 made structural (P1-LAB.5)
+
+Root cause: SEM-01's separation lived only in `RULES.md`; the laboratory could report a contract violation (`.4`) but had no type for a trap, a stop, a gap, or a reserved word — and a single error enum is the classic way that distinction dies. Implementation: `semulith-core::outcome` — the four families as enums with named, source-linked variants, `StepOutcome` the step-level sum, and `From<env::ContractViolation> for ModelError` the one legal crossing (a harness violation IS a model error). No other `From` between families exists, on purpose. Validation: 5 suites green; clippy -D warnings clean; wasm green; gate green. Design notes, kept: (1) the acceptance's "delivered and execution continue" is a property of the HARNESS composition, so the test owns a stub stepper — production semantics stay with `.8`. (2) ExceptionCause carries no cause *numbers* — this profile models no privileged CSR to hold them, and inventing numbers would be a second fact.
+
+Lessons: declined here (the family shapes are `.8`'s design consumer; nothing generalizes past this module).
+
 ## _(2026-09-27)_ — the environment boundary, and fixtures that answer it (P1-LAB.4)
 
 Root cause: `rv64i-lab-env-v0` named a boundary (fetch supply, widths, address space, misalignment) but no Rust type could express a crossing — `docs/CPU_ENVIRONMENT.md` §4.1's "testable independently of the CPU instruction handler" had no request to test. Implementation: `semulith-core::env` — `Request`/`Response`/`Failure`/`ContractViolation`/`Environment`, with the width set pinned by construction (fetch carries no width at all; a fifth load/store width cannot be formed, which is stronger than refusing one) and the two failure families distinct by type (SEM-01 in embryo — `.5` re-homes `ContractViolation` into `ModelError`). `semulith-verify::fixtures` — `FlatMemory` (u128 region checks, LE assembly by hand loop, fetch counter, alignment-before-region order stated on the method) and `ScriptedEnv` (scripted faults as environment answers; uncovered requests are violations, never invented data). Validation: 16 suites green; clippy -D warnings clean; wasm build green; gate green. Design notes, kept: (1) the fixture must surface test bugs loudly (load_image panics on a mis-sized image) — a fixture that modeled test bugs would teach tests to expect wrongness. (2) No asynchronous event exists to script — the platform declares none, and an absence has to be a platform property to be real (OB-ENV-EVENT-DELIVERY).
@@ -595,27 +601,5 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   still lists a `timebase-frequency` and an `htif` node with no device behind them.
 - The durable answer to "are there others?" is not "no". It is that a new one **cannot be added**
   without declaring what it does not establish — rule 5b, fired RED on the real dossier.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — an instrument that answers a narrower question than the one you asked
-
-- ⛔ **The profile was matched on its instruction set and not its platform, for four leaves.** The
-  override set `extensions` and left the reference's default platform underneath: a core-local
-  interruptor, an interrupt generator, two I/O regions. A guest read CLINT `mtime` with a PLAIN
-  LOAD and watched it advance (2 → 3). Excluding `Zicsr` removes the CSR *instructions*, not the
-  device — and a device exposes time as ordinary MMIO.
-- ⭐ **This is a distinct failure mode from `zero-hits-absence-or-blindness`.** That one was an
-  instrument that could not see. This one is an instrument that **answered a different question**:
-  `--print-isa-string` returned `rv64i_zvl32b`, which is *true*, and describes an instruction set
-  rather than a machine. A confident, correct, narrower answer is harder to doubt than a zero.
-- Four committed claims were refuted by one probe. All corrected at source; the repair is held by
-  a tracked negative fixture that must fault.
-- Spike's platform is irreducible with the available controls, so it is ENUMERATED, and the
-  consequence is stated exactly rather than left implicit: the original guests agree because they
-  touch neither device region — a stated precondition, not luck.
-- 🔎 The general question this raises, and it is not yet answered: **which other "matched"
-  claims in this repository rest on an instrument that answers a narrower question?** The pattern
-  to look for is a single confident scalar standing in for a configuration. Owner: `MODEL-BOOKS.1`,
-  whose materials bill must state for each reference what was matched and by what evidence.
 - Promotion is explicitly declined in the owning leaf, with the reason.
 
