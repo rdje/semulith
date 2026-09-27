@@ -14,13 +14,10 @@
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` v0.3 is the plan. No CPU code exists yet.
 - **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (5/10), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
-- **Frontier leaf:** `SOT-FORMAT.3` — the records (`requirements.jsonl` 26, `contract-obligations.jsonl` 34) to the format; round-trip proves losslessness field-by-field.
-- **Schema layer:** `schema/` now declares `encoding`, `fragment`, `semantics` (+ the language itself). The semantics' 32 forms are data; `check_semantics.py` loads them. Adding a construct/operator = a schema edit; a new declaration KIND changes the kernel (`operator` is the fourth kind).
+- **Frontier leaf:** `SOT-FORMAT.3` — the records (`requirements.jsonl` 26, `contract-obligations.jsonl` 34) to the format; round-trip proves losslessness. `schema/` now declares `encoding`/`fragment`/`semantics` — constructs AND operators are data; a new declaration KIND changes the kernel.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
-- **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted ("sota, signoff and
-  production-grade") — P1's start condition is `SOT-FORMAT.2` + `MODEL-METHOD.10`; the semantics
-  **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names
-  its consuming milestone (`decision_lane-consumption`). After `.2`: `P1-LAB.1` (crate skeleton).
+- **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted — P1's start condition is `SOT-FORMAT.2` (now done) + `MODEL-METHOD.10`; the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone (`decision_lane-consumption`).
+- **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm is a first-class target from the first crate (`decision_browser-wasm-target`); lane `PORT-WEB` (proposed, consumed by `P1-LAB`) owns it, leaf `.1` activates with `P1-LAB.1`.
 - **Materials:** 36 primary sources in `materials/catalog.sexp` (corpus pinned `3c45e81`). Cached
   in gitignored `.materials/` by `scripts/materials.py --fetch`; the corpus location comes from
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.

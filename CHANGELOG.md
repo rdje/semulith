@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RM-0060 — browser/Wasm target
+
+`decision_browser-wasm-target`; lane `PORT-WEB` (consumed by `P1-LAB`).
+
 ## SEMILITH-SF-0057 (leaf SOT-FORMAT.2) — the constructs already in use, declared as data
 
 The schema layer leaves paper: `schema/encoding.sexp`, `schema/fragment.sexp` and

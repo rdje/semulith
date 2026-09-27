@@ -19,6 +19,10 @@ Every model carries a **dual mandate** added `2026-09-14`: it must be signoff, p
 
 Semulith also has a concrete system-modeling consumer: **archogen**, the user's project that generates specific-purpose operating systems from its eADL source of truth. Semulith will execute and help validate those OSes against explicit platform contracts. Linux remains a general-purpose integration workload and the software-computer north star; an archogen OS can be an earlier, smaller system workload.
 
+**Portability direction, stated `2026-09-27` (director): everything must also run in the
+browser — JS + Wasm is a first-class target, not a late port.** The constraint lands at P1's
+crate skeleton (lane `PORT-WEB`, `decision_browser-wasm-target`).
+
 The first deliverable is the processor: an executable definition, a reference interpreter, and reproducible evidence for a precise supported profile. Board implementation follows validation of the processor profile it will use. A controlled memory/event harness is part of processor testing, not a premature board implementation.
 
 Processor breadth and the software computer are successive deliverables. Evidence tooling supports both; it does not become an unrelated research product. Exact physical timing, every architecture, and a graphical desktop are not prerequisites for the first CPU release.
@@ -36,6 +40,7 @@ Processor breadth and the software computer are successive deliverables. Evidenc
 | First Linux system | Single-core console Linux reaching userspace and executing a program | Later headless networking/storage and optional desktop releases |
 | archogen integration | Realize eADL HW contracts through engine-selected Semulith models; validate the resolved platform and OS requirements | Inspect the actual eADL typed representation before fixing the adapter |
 | Multicore | Separate CPU extension and validation milestone | It never arrives merely by adding host threads |
+| Portability target | The engine and models build for the browser (`wasm32`, JS + Wasm) from the first crate; native is a build mode (`decision_browser-wasm-target`) | A need that breaks the Wasm target |
 | Public name | Semulith is proposed, not reserved | Namespace screening before publication or a preferred user name |
 
 These choices make the first task actionable while leaving specification-dependent parameters to P0. Selecting RV64I is not a claim that the laboratory already constitutes a fully specified privileged processor.

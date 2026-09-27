@@ -46,6 +46,7 @@
 - [`P5-BOARD.md`](docs/tasks/P5-BOARD.md)
 - [`P6-LINUX.md`](docs/tasks/P6-LINUX.md)
 - [`P7-COMPUTER.md`](docs/tasks/P7-COMPUTER.md)
+- [`PORT-WEB.md`](docs/tasks/PORT-WEB.md)
 - [`PUSH-DISCIPLINE.md`](docs/tasks/PUSH-DISCIPLINE.md)
 - [`ROADMAP-V3.md`](docs/tasks/ROADMAP-V3.md)
 - [`SEMULITH-PKG.md`](docs/tasks/SEMULITH-PKG.md)
@@ -55,6 +56,7 @@
 
 ## Decision records
 
+- [`decision_browser-wasm-target.md`](docs/decisions/decision_browser-wasm-target.md)
 - [`decision_canonical-definition-input.md`](docs/decisions/decision_canonical-definition-input.md)
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
