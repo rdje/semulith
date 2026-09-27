@@ -66,6 +66,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `active` | `.3` — the records: requirements and obligations (5 of 10 leaves done) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
+| [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `proposed` | `.1` — the shard tool for the fired CHANGELOG ceiling (consumed by the next slice) | repo-local |
 | [`PORT-WEB`](tasks/PORT-WEB.md) | `proposed` | `.1` — the crate skeleton builds for Wasm from P1 first slice (consumed by `P1-LAB`) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `active` | `.3` — age and exposure, derived (3 of 4 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |

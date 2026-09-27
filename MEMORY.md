@@ -30,7 +30,9 @@
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-COMPOSE.3`
-  (assumption/guarantee discharge — needs `SOT-FORMAT.5`'s record merge), `MODEL-BOOKS.1`.
+  (assumption/guarantee discharge — needs `SOT-FORMAT.5`'s record merge), `MODEL-BOOKS.1`,
+  `DOC-SHARDING.1` (CHANGELOG ceiling fired — 9 bytes headroom; the shard tool owns the remedy
+  and the next slice cannot land without it).
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction.
 - **Latest commit:** see `git log -1`. **In-flight uncommitted work:** none.
 - ⛔ **Do not push.** Cadence is 300 commits — `scripts/check_push_cadence.sh --status` says where
