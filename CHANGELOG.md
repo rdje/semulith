@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMILITH-MC-0040 (leaf MODEL-COMPOSE.3) — assumption/guarantee discharge is a verdict
+
+The composition claim is conditional no longer in name only. `scripts/discharge_assumptions.py` is
+the mechanical form of `docs/CPU_ENVIRONMENT.md` §5: every `environment-assumption` in
+the merged obligation set must be discharged by named guarantees — every dependency resolving
+to an obligation whose direction is a guarantee — or the composition is rejected naming the
+assumption and the reason. The profile's own 8 assumptions discharge 8/8 today, every edge
+printed (`OB-ENV-RESET -> 'OB-ENTRY-STATE' (cpu-guarantee)`, and kin); a unit
+carrying only the reset guarantee discharges `OB-ENV-RESET` across the boundary; and
+removing that one guarantee rejects the composition from both halves of the corpus (`DANGLING DEP`
+on the assumption, `UNDEFINED OBLIGATION` on the requirement). Discharge-specific refusals
+proven on fixtures: a demand pointing at a demand (`UNDISCHARGED CHAIN`), an assumption
+naming no guarantee (`UNDISCHARGEABLE`) — and the complement, stated so nobody reverses
+it: an unclaimed guarantee is not an error.
+
+`SOT-FORMAT`'s census did the design work: the discharge edge already existed in the
+corpus as obligation dependencies — the operator made it a verdict instead of a hope.
+
 ## SEMILITH-SF-0061 (leaf SOT-FORMAT.6) — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes
 
 The 14th project doctrine is registered: `scripts/check_source_format.sh` refuses a source of

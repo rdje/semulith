@@ -77,8 +77,11 @@ decidable and checked today (`MODEL-COMPOSE.1`/`.2`); the records compose the sa
 (`SOT-FORMAT.5`): `scripts/merge_records.py` unions two units' requirements, obligations and
 pinned sources by id — same id must mean the same content, a source id must pin the same bytes,
 and every dependency, obligation link and citation must resolve across the union or the
-composition is refused with the conflicting fact named. The assumption/guarantee discharge —
-`docs/CPU_ENVIRONMENT.md` §5 — reads that merged view (`MODEL-COMPOSE.3`).
+composition is refused with the conflicting fact named. And the composition claim is
+conditional no longer in name only: `scripts/discharge_assumptions.py` is the mechanical form
+of `docs/CPU_ENVIRONMENT.md` §5 — every `environment-assumption` must be discharged by a named
+guarantee in the merged unit, or the composition is rejected naming it (`MODEL-COMPOSE.3`; the
+profile's own 8 assumptions discharge 8/8 today).
 
 ### 1.3 The schema layer
 

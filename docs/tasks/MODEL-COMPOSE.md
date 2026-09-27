@@ -63,11 +63,47 @@ evidence**, never by absence of it.
   Commit: `SEMULITH-MC-0039`
 
 - ID: `MODEL-COMPOSE.3` — **assumption / guarantee discharge**
-  Status: `pending`
+  Status: `done`
   Goal: the inter-unit operator, and the mechanical form of `docs/CPU_ENVIRONMENT.md` §5. Every
   sub-unit `environment-assumption` is matched by a named guarantee or the composition is rejected.
   Acceptance: fired RED by removing one guarantee; the 8 assumptions `rv64i-lab-v0` already carries
   are the first real input.
+  Result: met, `2026-09-27`. `scripts/discharge_assumptions.py` decides discharge over the
+  `merge_units(…)` union: the profile alone discharges 8/8 with every edge printed
+  (`OB-ENV-RESET -> 'OB-ENTRY-STATE' (cpu-guarantee)`, and kin); a unit split carrying only
+  `OB-ENTRY-STATE` discharges `OB-ENV-RESET` across the boundary; removing the guarantee
+  rejects the composition naming it (`DANGLING DEP` + `UNDEFINED OBLIGATION` — both halves of
+  the corpus catch it). Discharge-specific refusals proven on synthetic fixtures: a demand
+  pointing at a demand (`UNDISCHARGED CHAIN`), an assumption naming no guarantee
+  (`UNDISCHARGEABLE`), and the complement — an unclaimed guarantee is not an error.
+  Design (recorded before code, `2026-09-27`), read against the contract, the schema and `.5`'s
+  measured corpus facts:
+  - ⭐ **The discharge edge already exists in the corpus — the operator makes it a verdict, not a
+    hope.** `SOT-FORMAT.5`'s census measured it: every `environment-assumption`'s `dependencies`
+    point at `cpu-guarantee` obligations (`OB-ENV-RESET` → `OB-ENTRY-STATE`, and kin). The rule,
+    mechanical: **an assumption is discharged when every dependency resolves in the union to an
+    obligation whose direction is a guarantee** — the rule keys on *not* `environment-assumption`,
+    so the day the vocabulary earns a third value (a device's guarantee) it is accepted by
+    construction. That vocabulary extension is deliberately NOT this leaf: it is a `(values …)`
+    data change the day a real device unit exists, named here so nobody discovers the boundary
+    as a surprise.
+  - **Refusals, each named.** A dependency that resolves to nothing is already refused by
+    `merge_units`' closure (`DANGLING DEP`) — removing one guarantee fires RED there, naming the
+    assumption and the missing guarantee; that IS the acceptance's fired-RED, and where it lands
+    is recorded honestly rather than re-implemented. The discharge-specific refusals: a dependency
+    landing on another `environment-assumption` is an undischarged chain (a demand pointing at a
+    demand, not a supply); an assumption carrying NO dependency names no guarantee and is
+    undischargeable by construction. Both refused by name.
+  - **The deliverable is `scripts/discharge_assumptions.py`** — a checker consuming
+    `merge_units(…)` (never re-implementing the union): it prints each discharge edge
+    (`OB-ENV-RESET -> OB-ENTRY-STATE (cpu-guarantee)`) and either
+    `all N environment-assumption(s) discharged by named guarantee(s) — the composition holds`
+    or a refusal. Importable, so the engine and future board composition read the same verdict.
+  - Real-corpus proof plan: (1) `rv64i-lab-v0` alone discharges 8/8 — the lab discharges its
+    CPU's own assumptions today; (2) cross-unit — a scratch unit split carrying only
+    `OB-ENTRY-STATE` discharges the rest's `OB-ENV-RESET` across the boundary; (3) the
+    acceptance's RED — one guarantee removed → the composition is rejected naming it; (4) the
+    discharge-specific REDs — a chain and a zero-dependency assumption, synthetic.
 
 - ID: `MODEL-COMPOSE.4` — **slots: top-down composition with holes**
   Status: `pending`
@@ -92,9 +128,8 @@ evidence**, never by absence of it.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-COMPOSE.3` | `pending` | the inter-unit operator — assumption/guarantee discharge. Its first input already exists: the 8 assumptions `rv64i-lab-v0` carries, written before any board did |
-| 2 | `MODEL-COMPOSE.4` | `pending` | slots, which is what makes top-down composition checkable before its parts exist |
-| 3 | `MODEL-COMPOSE.6` | `pending` | semantic refinement points — the hard axis, and it needs `MODEL-METHOD.9`'s semantics to exist first |
+| 1 | `MODEL-COMPOSE.4` | `pending` | slots — top-down composition with holes, checkable before the parts exist |
+| 2 | `MODEL-COMPOSE.6` | `pending` | semantic refinement points — the hard axis, needs `MODEL-METHOD.9`'s semantics to exist first |
 
 ## Decisions
 
@@ -259,10 +294,80 @@ evidence**, never by absence of it.
   decidable in general and is `.6`'s problem: an extension can change a base instruction's
   behaviour, and a silent override is a defect rather than a composition.
 
+## Acceptance Checklist (leaf MODEL-COMPOSE.3)
+
+- [x] **REPRODUCE / ISSUE** — §5's gate as it stood: a sentence in a document, nothing deciding
+  it. Census before this leaf:
+
+  ```
+  $ git ls-files scripts | grep -c 'discharge'
+  0                                             # "identify the guarantee or reject": no owner
+  $ grep -n 'environment-assumption' profiles/rv64i-lab-v0/contract-obligations.sexp | wc -l
+  8                                             # the first real input, checked by nothing
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a conditional composition claim ("the CPU is
+  validated under explicit environment assumptions") is only as strong as the demonstration
+  that the assumptions hold, and the demonstration lived only in prose. WHERE: measured on the
+  corpus, not assumed — the discharge edge already exists as obligation `dependencies`, every
+  one of the 8 assumptions' deps pointing at `cpu-guarantee` obligations (`SOT-FORMAT.5`'s
+  census), so the operator's job was to make that edge a verdict, not to invent it:
+
+  ```
+  $ python3 - <<'PY'
+  > obs = records_sexp.load("profiles/rv64i-lab-v0/contract-obligations.sexp")
+  > env = [o for o in obs if o["direction"] == "environment-assumption"]
+  > print(all(d in {o["id"] for o in obs if o["direction"] == "cpu-guarantee"}
+  >           for o in env for d in o["dependencies"]))     # -> True
+  ```
+
+- [x] **FIX** — `scripts/discharge_assumptions.py`: an assumption is discharged when every
+  dependency resolves in the `merge_units(…)` union to an obligation whose direction is a
+  guarantee (the rule keys on "not environment-assumption", so a future device-guarantee value
+  is accepted by construction); refusals: `UNDISCHARGED CHAIN` (demand → demand),
+  `UNDISCHARGEABLE` (no dependency names a guarantee). The union's own closure owns the
+  missing-guarantee case — removing one guarantee fires there, and where the RED lands is
+  recorded honestly rather than re-implemented.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/discharge_assumptions.py --self-test
+  discharge_assumptions --self-test: 6 pass / 0 fail
+  $ python3 scripts/discharge_assumptions.py profiles/rv64i-lab-v0
+  … 8 edges printed (OB-ENV-RESET -> 'OB-ENTRY-STATE' (cpu-guarantee), and kin) …
+  all 8 environment-assumption(s) discharged by named guarantee(s) — the composition holds
+  $ # cross-unit: the profile minus OB-ENTRY-STATE + a unit carrying only that guarantee
+  $ python3 scripts/discharge_assumptions.py target/doctrine_scratch/mc3/cpu target/doctrine_scratch/mc3/reset-harness
+  all 8 environment-assumption(s) discharged … — the composition holds
+  $ # the acceptance's RED — the guarantee removed entirely:
+  $ python3 scripts/discharge_assumptions.py target/doctrine_scratch/mc3/noreset
+  DANGLING DEP obligation 'OB-ENV-RESET' … depends on 'OB-ENTRY-STATE', which no unit provides
+  UNDEFINED OBLIGATION requirement 'REQ-D-ENTRY-STATE' … names 'OB-ENTRY-STATE', …   rc=1
+  ```
+
+- [x] **NO REGRESSION** — `scripts/merge_records.py --self-test` 18 pass / 0 fail;
+  `scripts/discharge_assumptions.py --self-test` 6 pass / 0 fail;
+  `scripts/check_source_format.sh --self-test` 7 pass / 0 fail; sexp 18 pass / 0 fail; kernel
+  50/0; RECORD-SCHEMA 23/0; semantics 52/52; citations 52/52; materials 20/0; smoke ok;
+  readers 28/28; whole gate green after staging.
+
+- `promotion: declined (the rule — discharge keys on "not an assumption", so new guarantee
+  directions are accepted by construction — is stated in the tool's docstring and this leaf,
+  where anyone extending the direction vocabulary meets it).`
+
+- [x] **LOCKSTEP** — `TOOLBOX.md` gains the instrument; `MEMORY.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-COMPOSE.3` | `--self-test` | `6 pass / 0 fail` — incl. the acceptance control (guarantee removed → `DANGLING DEP` + `UNDEFINED OBLIGATION`) |
+| `2026-09-27` | `MODEL-COMPOSE.3` | real corpus, profile alone | 8/8 discharged, every edge printed (`OB-ENV-RESET -> 'OB-ENTRY-STATE' (cpu-guarantee)`, and kin) |
+| `2026-09-27` | `MODEL-COMPOSE.3` | cross-unit (cpu minus `OB-ENTRY-STATE` + a unit carrying only it) | all 8 discharged across the boundary |
+| `2026-09-27` | `MODEL-COMPOSE.3` | the acceptance's RED — guarantee removed entirely | rejected naming `OB-ENV-RESET` and `OB-ENTRY-STATE`, rc=1 |
+| `2026-09-27` | `MODEL-COMPOSE.3` | corpus census | every one of the 8 assumptions' deps lands on a `cpu-guarantee` — the edge the operator makes a verdict |
 | `2026-09-14` | `MODEL-COMPOSE.1` | grounding: do the references compose from fragments? | riscv-opcodes 111 files; sail-riscv 34 dirs / 59 encoding files |
 | `2026-09-14` | `MODEL-COMPOSE.1` | compose owned RV64I + `M` fragments | 52 + 8 + 5 = 65, no collision, no duplicate name |
 | `2026-09-14` | `MODEL-COMPOSE.1` | control: compose with a fragment already contained | 37 collisions named with masks, `rc=1`, REJECTED |
@@ -277,6 +382,7 @@ evidence**, never by absence of it.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-COMPOSE.3` | `SEMILITH-MC-0040 (leaf MODEL-COMPOSE.3): …` | assumption/guarantee discharge decides over the merged union; 8/8 on the real corpus; fired RED by removing one guarantee |
 | `MODEL-COMPOSE.2` | `SEMULITH-MC-0039 (leaf MODEL-COMPOSE.2): fragments get a form and a home` | nothing observable moved; M pinned |
 | `MODEL-COMPOSE.1` | `SEMULITH-MC-0038 (leaf MODEL-COMPOSE.1): encoding composition is a verdict, not a hope` | 65 compose; 37 collisions rejected in the control |
 

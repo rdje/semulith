@@ -13,9 +13,9 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` v0.3 is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
+- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (3/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
 - **Closed `2026-09-27`:** `SOT-FORMAT` (10/10) — the `SOURCE-FORMAT` gate (14th project doctrine) refuses any source of truth outside the format across the four families; the format split cannot return by accident. `DOC-SHARDING` closed the same day.
-- **Frontier leaf:** `MODEL-COMPOSE.3` — assumption/guarantee discharge: its merge input exists (the record merge's `merge_units(…)` + direction census), so the inter-unit operator — every sub-unit `environment-assumption` matched by a named guarantee or the composition is rejected — is the next slice. The 8 assumptions `rv64i-lab-v0` carries are the first real input.
+- **Frontier leaf:** `MODEL-COMPOSE.4` — slots: top-down composition with holes, checkable before the parts exist. The discharge operator landed (the profile's 8 environment-assumptions discharge 8/8 by named guarantees; removing one guarantee rejects the composition naming it).
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
 - **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted — P1's start condition is `SOT-FORMAT.2` (now done) + `MODEL-METHOD.10`; the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone (`decision_lane-consumption`).
 - **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm is a first-class target from the first crate (`decision_browser-wasm-target`); lane `PORT-WEB` (proposed, consumed by `P1-LAB`) owns it, leaf `.1` activates with `P1-LAB.1`.
@@ -24,10 +24,10 @@
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
   docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Next action:** `MODEL-COMPOSE.3` — the assumption/guarantee discharge (`docs/CPU_ENVIRONMENT.md` §5 in mechanical form): match every sub-unit `environment-assumption` against a named guarantee or reject the composition, fired RED by removing one guarantee; the 8 assumptions `rv64i-lab-v0` carries are the first real input, read through `merge_units(…)`. P1's start condition stays half-met (`MODEL-METHOD.10` open). ⛔ Everything moves only behind the schema layer, never before.
+- **Next action:** `MODEL-COMPOSE.4` — slots: a composition may declare an unbound slot with its requirements, so shape, address space and unmet requirements are checkable before the parts exist; partial is declared, never inferred from silence. P1's start condition stays half-met (`MODEL-METHOD.10` open). ⛔ Everything moves only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
-- **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-COMPOSE.3`
+- **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-BOOKS.1` (the book structure and the complete materials bill). `MODEL-COMPOSE`'s discharge operator landed; its frontier is slots.
   (assumption/guarantee discharge — its merge input, `scripts/merge_records.py`, exists),
   `MODEL-BOOKS.1`.
   ⭐ Director input to schedule (no pivot taken): chipdoc's corpus carries a semulith feed

@@ -8,6 +8,37 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — assumption/guarantee discharge is a verdict (MODEL-COMPOSE.3)
+
+Root cause this leaf closes: a conditional composition claim ("the CPU is validated under
+explicit environment assumptions") is only as strong as the demonstration that the assumptions
+hold — and the demonstration lived only in `docs/CPU_ENVIRONMENT.md` §5 prose. The
+design insight, measured before any code: the discharge edge already exists in the corpus as
+obligation dependencies — `SOT-FORMAT.5`'s census showed all 8 environment-assumptions
+depending on `cpu-guarantee` obligations. The operator's job was to make that edge a
+verdict, not to invent it.
+
+The rule: an assumption is discharged when every dependency resolves in the `merge_units(…)`
+union to an obligation whose direction is a guarantee — keying on "not environment-assumption"
+so a future device-guarantee value is accepted by construction (the vocabulary extension is
+deliberately not this leaf; it is a `(values …)` data change the day a real device
+unit exists). Refusals: the missing guarantee fires in the union's closure (`DANGLING DEP`)
+— where the acceptance's RED lands is recorded honestly, not re-implemented — while a chain
+(demand → demand, `UNDISCHARGED CHAIN`) and a zero-dependency assumption (`UNDISCHARGEABLE`)
+are the discharge-specific refusals. Complement stated in the tool: an unclaimed guarantee is
+not an error.
+
+Validation: `discharge_assumptions.py --self-test` 6/0; real corpus 8/8 with every edge
+printed; cross-unit discharge (a unit carrying only `OB-ENTRY-STATE`); guarantee removed →
+rejected naming it, from both the assumption and the requirement side. Regression: merge 18/0,
+SOURCE-FORMAT 7/0, sexp 18/0, kernel 50/0, RECORD-SCHEMA 23/0, semantics 52/52, citations
+52/52, materials 20/0, smoke ok, readers 28/28; whole gate green.
+
+Lessons: declined here (the "new direction values accepted by construction" rule is stated in
+the tool's docstring and the owning leaf, where anyone extending the vocabulary meets it).
+
+## _(2026-09-27)_ — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes (SOT-FORMAT.6)
+
 ## _(2026-09-27)_ — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes (SOT-FORMAT.6)
 
 Root cause this leaf closes: retirement recorded only in prose decays. Every source of truth was
