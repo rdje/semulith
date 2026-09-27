@@ -8,6 +8,32 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the run-real-code set is acquired, and the PDF question is answered (MODEL-METHOD.4)
+
+Root cause this leaf closes: the census (" + bt + ".3" + bt + ") named the run-real-code set as the
+reachable acquisition, and nothing pinned it. Four fetches, four digests, one cache, one
+answered question.
+
+Design choices, stated — the home problem consumed the design time, and the answer is worth
+keeping: every natural home refused these documents for a MEASURED reason. The profile's
+sources.sexp composes base_url/file (one origin; this set is four); the materials catalogue's
+fetch seam copies from an $ENV-rooted corpus (no URL kind); docs/provenance manifests list
+tracked bytes (third-party documents are not redistributed — the same doctrine that keeps
+.materials/ gitignored). So the tracked record is the leaf's digest table plus the cache
+README, and a materials.py URL kind is the named candidate only if a second web set arrives.
+Two pins are branch-pinned (master/main) — the digest is the protection; locator-stable pins
+are P1-LAB's refinement.
+
+The PDF question answered YES with extraction evidence (funct7/rs2/rs1/funct3 as clean text
+cells; 1.96 MB extract). SRC-02: the v20260120-tagged release asset was not found (three
+release pages searched); chipdoc unavailable here.
+
+Validation: every cached copy re-hashed to the recorded digest; content sanity per document;
+RECORD-SCHEMA green on the revised C20 census row; whole gate green.
+
+Lessons: declined here (the home-selection reasoning is stated in the leaf, where the next
+acquisition meets it).
+
 ## _(2026-09-27)_ — the census sweeps the snapshot, and missing changes its meaning (MODEL-METHOD.3)
 
 Root cause this leaf closes: the .2 first pass wrote dispositions from the profile's
@@ -618,38 +644,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   staged leaf to pass would reopen the co-staged-leaf hole that box-scoping exists to close, so a
   routed annotation lands as its own doc-only commit instead. The lesson's promotion is
   explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — 184 of 199 files are the same file, and an instrument that answered blind
-
-- ⛔ **The two reference models run the SAME floating-point source.** Both vendor Berkeley
-  SoftFloat; 199 `.c` files exist in both copies and **184 are byte-identical** once the release
-  comment is normalized (sail 3e, spike 3d; `f64_add.c` differs by one line). A Sail-vs-Spike FP
-  comparison executes one implementation twice. No current evidence is affected — this profile
-  has no floating point — so it is routed to `P4-SYSTEM.7` with its measurement. Recorded:
-  [`reference_softfloat-shared-ancestry`](docs/decisions/reference_softfloat-shared-ancestry.md).
-- ⛔ **`strings | grep -c softfloat` returned 0 for both binaries and that was BLINDNESS, not
-  absence.** `nm -a` showed why: spike carries 649,743 symbols, the Sail release binary 400. A
-  stripped binary cannot answer the question. The `0` was one step away from being written down
-  as a finding; the source was cloned instead, at the exact commit the binary's `--build-info`
-  reports. Pick the instrument that can see, then read it.
-- ⭐ Independence cuts in unexpected directions. Encoding is **not** shared — spike generates
-  `encoding.h` from `riscv-opcodes` while the Sail model hand-writes 59 `encdec` files and never
-  mentions it — so *our* assembler shares an ancestor with spike and not with sail, which makes
-  sail decoding our bytes an independent confirmation and spike doing so not one.
-- `docs/tasks/P0-PROFILE.md` hit the per-part **ceiling** (73,317 B > 65,536) and the completed-leaf
-  evidence was split to `docs/tasks/archive/`, unedited. The ceiling was obeyed, not raised, which
-  is what the registry's own header prescribes. Checked that the split did not move pressure
-  somewhere ungoverned: `git ls-files -- docs/tasks` is recursive, so the archive still counts
-  toward the family aggregate (240,293 B against a 393,216 ceiling).
-- 🔎 **A new mirror-drift instance, outside what `MIRROR-DRIFT` gated.** `LIVE_STATUS.md` claimed
-  "24 destinations governed" while `doctrine/readme_routes.tsv` holds 25 rows and the gate prints
-  25 — stale since `SEMULITH-P0-0013` added the `profiles/` row. Corrected here; the *class*
-  (a live document restating a count that a registry owns) is not yet mechanized, and `TREE-CLAIMS`
-  only covers task-tree facts. Owner: `MIRROR-DRIFT.4`, opened next.
-- 🔎 `TASK-ACCEPTANCE` requires every staged `docs/tasks/*.md` to carry a ticked checklist. It
-  cannot tell the leaf that OWNS a change from a tree that RECEIVES a routed finding, so
-  annotating `P4-SYSTEM.7` had to be split into its own commit — P4 has not started and ticking
-  its template would be a lie. Splitting is the right answer; the gate not distinguishing the two
-  roles is the defect. Owner: `MIRROR-DRIFT.4` alongside the registry-count class.
-- Promoted: [`docs/knowledge/zero-hits-absence-or-blindness.md`](docs/knowledge/zero-hits-absence-or-blindness.md).
 
