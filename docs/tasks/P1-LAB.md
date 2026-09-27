@@ -130,9 +130,30 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   (family shapes are `.8`'s design consumer; nothing here generalizes past this module).
 
 - ID: `P1-LAB.6` — **canonical definition skeleton** *(task card `T003`)*
-  Status: `pending`
+  Status: `done`
   Goal: owned encodings, state and semantics plus a deterministic generation manifest carrying definition, generator, configuration and source fingerprints (`OWN-01`, `OWN-03`).
   Acceptance: **no duplicate executable owner** for any semantic rule; regeneration is byte-deterministic and CI detects drift.
+  Result: met, `2026-09-28`. `scripts/gen_definition.py` lowers the unit's canonical definition into
+  `semulith-core::definition`: the 12 declared operand fields (scatters attached), the 52
+  instructions' decode rows (mask/value/operands/upstream-table/citation), and every semantics
+  rule's effect tree as a typed `Sem` value — lowered from `definitions/riscv/rv64i.sem.sexp`,
+  the execution authority (`decision_interpreter-before-compiler`), never handwritten. OWN-03's
+  manifest rides as data (`MANIFEST`): the four canonical inputs by path and sha256, the
+  generator named and content-hashed, the configuration (profile/ilen/fragments) as data, and
+  the upstream source fingerprints the fragment pins. Regeneration is byte-deterministic and
+  formatter-stable; the 22nd doctrine `DEF-GEN` (`scripts/check_definition_gen.sh`) regenerates
+  in memory and refuses drift; fired RED against a hand-edited module before registration. The
+  generator re-derives the SEMANTICS doctrine's checks it emits through — schema validation for
+  every input, the binding rule (split `imm12`/`bimm12`, `shamt`), the MODEL-COMPOSE.6
+  refinement rule, completeness — and refuses by name what it cannot emit (another unit, an
+  unsupported ilen, an instruction without semantics, an operand the encoding does not provide,
+  a missing semantics document, a non-literal width). `decode(word)` is generated dispatch
+  metadata; evaluation stays with `.8`. Ten Rust suites re-derive the generation-time invariants
+  on the emitted data (manifest completeness, alphabetical completeness, fixed-bit disjointness,
+  self-decode, scatter accounting, the binding rule, the FENCE-decoration ratchet). The
+  owner→mirror pairs (encodings, semantics, state → `definition.rs`) are registered in
+  `doctrine/fact_ownership.tsv` and its census. Lessons: promotion — declined (the fmt-stable
+  fully-broken emission trick is a P1-LAB-generation specific; see the checklist's design notes).
 
 - ID: `P1-LAB.7` — **graph and report checker** *(task card `T004`)*
   Status: `pending`
@@ -168,7 +189,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.6` | `pending` | canonical definition skeleton — OWN-01/OWN-03's generation manifest over the encodings, state and semantics |
+| 1 | `P1-LAB.7` | `pending` | graph and report checker — T004; malformed evidence links refused, and `PACKAGE_CHECKS.md`'s schema results re-derived in Rust (RUST-01) |
 
 ## Decisions
 
@@ -183,6 +204,14 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   generator refuses unknown descriptor shapes by name — a generator that guesses is a second
   definition. Reset stays a laboratory declaration supplied by the environment (entry address
   is a parameter, never a constant in the model).
+- `2026-09-28` (`.6`): the canonical definition is **lowered, not hand-coded**: encodings,
+  semantics trees and the OWN-03 manifest generate into `semulith-core::definition` by
+  `scripts/gen_definition.py`; drift is the `DEF-GEN` doctrine's refusal. The generator is the
+  executable owner of the *lowering* and re-derives the SEMANTICS doctrine's checks it emits
+  through (schema validation, operand binding, the refinement rule, completeness) rather than
+  trusting them — a mirror that cannot re-derive its rule is a hope, not a derivation. The
+  semantics DATA remains the one executable owner of every rule (OWN-01); `decode` is dispatch
+  metadata, and evaluation stays with `.8`.
 
 ## Open Questions
 
@@ -518,10 +547,113 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   `docs/TASK_TREE.md`, `docs/book/src/plan/p1.md` (the families section now describes the
   landed types), and this tree — one commit.
 
+## Acceptance Checklist (leaf P1-LAB.6)
+
+- [x] **REPRODUCE / ISSUE** — the canonical definition had no executable half: the encodings
+  and semantics the SEMANTICS gate checks existed only as documents; nothing in the workspace
+  could consume them, and OWN-01/OWN-03's "one owned executable implementation per rule,
+  generated artifacts with a manifest" had no artifact and no manifest:
+
+  ```
+  $ git grep -cE "DefinitionManifest|InsnDef|pub fn decode" HEAD -- crates/ | wc -l
+  0
+  $ git ls-files 'crates/semulith-core/src/*.rs' | sort
+  crates/semulith-core/src/arith.rs
+  crates/semulith-core/src/arith/tests.rs
+  crates/semulith-core/src/env.rs
+  crates/semulith-core/src/env/tests.rs
+  crates/semulith-core/src/lib.rs
+  crates/semulith-core/src/outcome.rs
+  crates/semulith-core/src/outcome/tests.rs
+  crates/semulith-core/src/state.rs
+  crates/semulith-core/src/state/tests.rs   # no definition module — this leaf adds it
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the definition files were checkable (SEMANTICS: 52/52)
+  but not consumable: `docs/ARCHITECTURE.md` §2 assigns "decoder and decoded-operation types"
+  to the encoding definitions as a GENERATION, and no generator performed it; `.3` had proven
+  the pattern for state alone, and OWN-03's manifest (definition, generator, configuration and
+  source fingerprints) existed nowhere. WHERE, measured — nine modules before this leaf, and
+  the definition lands as the tenth file with its tests beside it:
+
+  ```
+  $ git ls-files 'crates/semulith-core/src/*.rs' | wc -l
+  9
+  $ git ls-files 'crates/semulith-core/src/*.rs' | sort | tail -1
+  crates/semulith-core/src/state/tests.rs   # definition.rs and definition/tests.rs land next
+  ```
+
+- [x] **FIX** — `scripts/gen_definition.py` lowers `profiles/rv64i-lab-v0/encoding.sexp`
+  (composing `definitions/riscv/rv64i.sexp` through the one shared resolver, `riscv_asm.
+  load_canonical_encoding`) plus `definitions/riscv/rv64i.sem.sexp` into
+  `crates/semulith-core/src/definition.rs`: `FIELDS` (12, scatters attached), `INSNS` (52,
+  sorted, with mask/value/operands/from/citation), the `Sem` effect trees, `decode`, and
+  `MANIFEST` — OWN-03's manifest as data. The generator re-derives every check it emits
+  through: schema validation per input, the SEMANTICS binding rule, the MODEL-COMPOSE.6
+  refinement rule, completeness, fixed-field sanity — refusing by name what it cannot emit.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  OWN-01 (no duplicate executable owner): the effect trees are lowered from the semantics
+  data; the only handwritten Rust is tests, which re-derive invariants on the data rather
+  than restating rules:
+
+  ```
+  $ cargo test -p semulith-core definition 2>&1 | grep "test result"
+  test result: ok. 10 passed; 0 failed; ...    # manifest, completeness, disjointness,
+                                               # binding rule, FENCE ratchet, scatter accounting
+  ```
+
+  OWN-03 (manifest carrying definition, generator, configuration and source fingerprints):
+  `MANIFEST.inputs` names all four canonical inputs by path and sha256; `MANIFEST.generator`
+  names `scripts/gen_definition.py` with its content hash; `profile`/`ilen`/`fragments` carry
+  the configuration; `MANIFEST.sources` carries the `rv_i`/`rv64_i` pins from the fragment.
+  Regeneration is byte-deterministic and CI-detected:
+
+  ```
+  $ bash scripts/check_definition_gen.sh --self-test
+  DEF-GEN --self-test: 8 pass / 0 fail
+  $ printf '\n// hand edit\n' >> crates/semulith-core/src/definition.rs
+  $ bash scripts/check_definition_gen.sh
+  gen_definition: DRIFT — crates/semulith-core/src/definition.rs no longer matches ...
+  DEF-GEN: FAIL ... Regenerate — never edit: python3 scripts/gen_definition.py   # rc=1
+  $ python3 scripts/gen_definition.py && bash scripts/check_definition_gen.sh
+  DEF-GEN: ok (crates/semulith-core/src/definition.rs matches the canonical definition,
+  encoding sha256 93a2d4718a50b60c)                                                # rc=0
+  ```
+
+  Fired RED against the real module (hand edit, rc=1, diff naming the appended bytes) before
+  registration — the rite caught a real defect first: a relative `--encoding` path crashed
+  `relative_to` and the check collapsed the crash to rc=1 (a verdict) instead of rc=2 (a
+  refusal); fixed in the generator (`repo_rel`) and in the check (rc 2 propagates as REFUSED).
+
+- [x] **NO REGRESSION** — the strict-lint suite, the Wasm target, and the doctrine gate,
+  re-run with the doctrine registered:
+
+  ```
+  $ cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings \
+      && cargo test --all 2>&1 | grep -c 'test result: ok'
+  5                                    # 5 suites, all ok; 53 tests total, 0 warnings
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev' profile [unoptimized + debuginfo] target(s) in 0.54s   # rc=0, PORT-WEB holds
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===          # 22 doctrines, including the new DEF-GEN
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `docs/book/src/plan/p1.md`, `docs/book/src/working/doctrines.md`,
+  `DOCTRINE_ENFORCEMENT.md`, `TOOLBOX.md`, `doctrine/fact_ownership.tsv` (+ its census in
+  `scripts/check_fact_ownership.sh`), and this tree — one commit. (TOOLBOX also gains the
+  rows `.3` owed: `gen_state.py`/`check_state_gen.sh` were missing from the tool table.)
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-28` | `P1-LAB.6` | `cargo test -p semulith-core definition` | 10 passed / 0 failed (manifest, completeness, disjointness, binding, FENCE ratchet, scatter) |
+| `2026-09-28` | `P1-LAB.6` | `bash scripts/check_definition_gen.sh --self-test` | 8 pass / 0 fail |
+| `2026-09-28` | `P1-LAB.6` | DEF-GEN fired RED pre-registration (hand-edited module) | rc=1, naming DRIFT + regeneration command |
+| `2026-09-28` | `P1-LAB.6` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / 22 doctrines green |
 | `2026-09-27` | `P1-LAB.5` | `cargo test -p semulith-core outcome` | 5 passed / 0 failed (delivery-continues, unimplemented≠trap, distinctness, re-home, reserved) |
 | `2026-09-27` | `P1-LAB.5` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / all doctrines green |
 | `2026-09-27` | `P1-LAB.4` | `cargo test -p semulith-verify` | 12 passed / 0 failed (fixtures, no instruction handler) |
@@ -539,6 +671,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.6` | `SEMILITH-PL-0006 (leaf P1-LAB.6): …` | the canonical definition, generated: decode tables, lowered semantics trees, OWN-03's manifest; DEF-GEN registered and fired RED first |
 | `P1-LAB.5` | `SEMILITH-PL-0005 (leaf P1-LAB.5): …` | the four SEM-01 outcome families as types; delivery-continues and unimplemented≠trap proven |
 | `P1-LAB.4` | `SEMILITH-PL-0004 (leaf P1-LAB.4): …` | the environment boundary and its fixtures, testable without the instruction handler |
 | `P1-LAB.3` | `SEMILITH-PL-0003 (leaf P1-LAB.3): …` | architectural state, generated from the descriptor; STATE-GEN registered and fired RED first |
@@ -547,6 +680,13 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 ## Changelog
 
+- `2026-09-28`: Leaf `.6` done — `semulith-core::definition`: the canonical definition
+  GENERATED (`scripts/gen_definition.py`): 12 fields, 52 decode rows, the semantics effect
+  trees lowered from the execution authority, `decode`, and OWN-03's manifest as data
+  (definition, generator, configuration and source fingerprints); the 22nd doctrine `DEF-GEN`
+  refuses drift and fired RED on a hand-edited module before registration; the owner→mirror
+  pairs (encodings, semantics, state) are registered in `doctrine/fact_ownership.tsv`; the
+  frontier moves to `.7` (graph and report checker).
 - `2026-09-27`: Leaf `.5` done — `semulith-core::outcome`: `TargetEvent`/`Advance`/`ModelError`/
   `UndefinedCase` as distinct types with `StepOutcome` the step-level sum; a delivered trap
   proven non-stopping and an unimplemented instruction proven not-an-illegal-instruction-

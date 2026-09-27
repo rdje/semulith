@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (21 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 237 arms, all fired RED before registration; the list is not mirrored here (a hand-kept name list is how SCOPE-COVERAGE's row went missing for a milestone) |
+| Project doctrines (22 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 245 arms, all fired RED before registration; the list is not mirrored here (a hand-kept name list is how SCOPE-COVERAGE's row went missing for a milestone) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the re-sync list, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 28 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |
@@ -37,7 +37,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented. Reopened for `.10`: the profile had been matched on its ISA and **not its platform** |
-| P1 — processor laboratory | G1 | In Progress | [`P1-LAB`](docs/tasks/P1-LAB.md) 5/12 — three crates, host + Wasm; arithmetic verified; state generated; the boundary crossed; outcomes typed |
+| P1 — processor laboratory | G1 | In Progress | [`P1-LAB`](docs/tasks/P1-LAB.md) 6/12 — three crates, host + Wasm; arithmetic verified; state generated; the boundary crossed; outcomes typed; the canonical definition generated with its OWN-03 manifest |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |

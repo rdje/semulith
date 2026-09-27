@@ -37,6 +37,7 @@ PROJECT_DOCTRINES=(
   "SHARD-FREEZE|the sharded append-history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards|scripts/check_changelog_shards.sh"
   "PORT-WEB|the crate skeleton builds for the browser target — the workspace compiles for wasm32-unknown-unknown, so a host-only API cannot slip into the engine unnoticed; fired RED before registration|scripts/check_wasm_build.sh"
   "STATE-GEN|the generated state module is still the byte-exact function of the state descriptor that generated it — a hand-edited accessor is how a descriptor and its executable half quietly become two facts; fired RED before registration|scripts/check_state_gen.sh"
+  "DEF-GEN|the generated definition module is still the byte-exact function of the canonical definition that generated it — encoding tables, lowered semantics trees, and OWN-03's manifest with definition, generator, configuration and source fingerprints; a hand-edited decode row or effect tree is OWN-01's duplicate owner arriving as drift; fired RED before registration|scripts/check_definition_gen.sh"
 )
 
 fails=0

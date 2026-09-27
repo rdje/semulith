@@ -11,6 +11,7 @@
 //! skeleton exists so the boundary holds from the first commit.
 
 pub mod arith;
+pub mod definition;
 pub mod env;
 pub mod outcome;
 pub mod state;

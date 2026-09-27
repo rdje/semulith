@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0006 (leaf P1-LAB.6) — the canonical definition, generated
+
+- `semulith-core::definition` exists, and it is generated: `scripts/gen_definition.py` lowers the unit's canonical definition — `profiles/rv64i-lab-v0/encoding.sexp` composing `definitions/riscv/rv64i.sexp` through the one shared resolver, plus `definitions/riscv/rv64i.sem.sexp`, the execution authority — into 12 operand fields (scatters attached), 52 decode rows (mask/value/operands/upstream-table/locator), and every semantics rule's effect tree as a typed `Sem` value. OWN-01 holds structurally: the semantics DATA owns each rule; there is no handwritten second copy, and the interpreter slice (`.8`) will evaluate exactly these trees. `decode(word)` is generated fixed-bit dispatch; a word no entry matches is reserved-decode, the caller's classification.
+- OWN-03's manifest rides as data (`MANIFEST`): the four canonical inputs by path and sha256, the generator named and content-hashed, the configuration (profile/ilen/fragments) as data, and the `rv_i`/`rv64_i` upstream pins from the fragment. The 22nd registered doctrine, `DEF-GEN` (`scripts/check_definition_gen.sh`), regenerates in memory and refuses drift with the regeneration command; its 8-arm self-test re-runs before every judgement; fired RED against a hand-edited module before registration — the rite caught a real defect (a relative `--encoding` path crashed `relative_to`, and the check collapsed an unjudgeable crash to rc=1; the generator now refuses out-of-repo inputs by name and the check propagates rc=2 as REFUSED). The owner→mirror pairs (encodings, semantics, state → `definition.rs`) are registered in `doctrine/fact_ownership.tsv` and its census.
+- The generator re-derives every check it emits through — schema validation per input, the SEMANTICS binding rule (split `imm12`/`bimm12`, `shamt`), the MODEL-COMPOSE.6 refinement rule, completeness, fixed-field sanity — and refuses by name: another unit, an unsupported ilen, an instruction without semantics, an operand the encoding does not provide, a missing semantics document, a non-literal width. FENCE's `fm`/`pred`/`succ` stay declared-but-unfielded with a test ratchet naming the three decorations.
+- Verification: 10 new definition suites green; `make check` 5 suites / 53 tests / 0 warnings; wasm build green; `make gate` green with 22 doctrines (245 arms). TOOLBOX gains the rows `.3` owed (`gen_state.py`/`check_state_gen.sh` were missing from the tool table).
+- Lockstep: MEMORY/LIVE_STATUS/TASK_TREE/book P1 + doctrines chapters and this tree; frontier moves to `.7` (graph and report checker).
+
 ## SEMILITH-PL-0005 (leaf P1-LAB.5) — four typed outcome families, SEM-01 made structural
 
 - `semulith-core::outcome`: `TargetEvent` (`Exception` with the unprivileged cause vocabulary, each cause named by its rule; `RequestedTrap` for ECALL/EBREAK — delivery is a data event, not a stop command), `Advance` (`Completed`, `Stop{reason}` — no waiting/partial advance, platform facts recorded in the docs), `ModelError` (`Unimplemented`/`InvalidDescription`/`InconsistentState`/`ContractViolation` — `.4`'s boundary-local violation re-homed), `UndefinedCase` (`ReservedDecode` — REQ-D-RESERVED-DECODE's case carried as its own outcome, never auto-converted to an exception). `StepOutcome` is the step-level sum `.8` produces and the harness matches.
@@ -740,67 +748,4 @@ plainly, so it remains a decision someone made rather than an oversight nobody r
 New tree `PUSH-DISCIPLINE` (3 leaves). `.2` is next and is Policy 16's unenforced half: full CI
 runs before a push, and nothing enforces it — the pre-commit hook covers only the "selected checks
 for ordinary commits" side.
-
-## SEMULITH-MM-0044 (leaf MODEL-METHOD.13) — the corpus moved, and my survey had sampled rather than swept
-
-**What changed at the source.** The primary-source corpus advanced three commits (`4201f50` →
-`3c45e81`) and closed **both gaps this project measured and reported**, three commits after
-reporting them: five AMD64 APM volumes imported (`e401a56`), Intel SDM Volume 1 imported
-(`98de100`). It also pinned the full `v20260120` docs.riscv.org snapshot and **moved** the RISC-V
-PDF — which made a tracked record in this repository false:
-
-```
-$ python3 scripts/materials.py --fetch RVI-ISA-PDF-20260911
-  REFUSED: not at $SEMULITH_CHIPDOC_ROOT/risc-v/isa/current/riscv-isa-manual_…pdf
-```
-
-**What changed in my method, which is the more useful half.** The first survey enumerated by
-**guessing vendor directory names** from memory. Every probe returned relevant results, so nothing
-signalled absence. Re-swept by path shape instead, eight documents had been missed — including the
-**entire M68000 architecture** (filed under `nxp/m68k/`, because NXP inherited Motorola through
-Freescale) and **every board-class document in the corpus**: three ESP32 SoC manuals and the
-RP2040 and RP2350 datasheets, which is the whole material base for `P5-BOARD`.
-
-⭐ The giveaway I ignored: my own probe named a `motorola/` directory that does not exist. A probe
-naming something absent is a signal, and I read it as nothing.
-
-The catalogue now carries a `derivation` field naming the sweep command, so the method can be
-judged rather than believed. **22 → 36 materials**, 36 of 36 fetched and digest-verified.
-
-**Both gaps closed with evidence, and kept.** A deleted gap erases the fact that the question was
-ever asked, so each carries `(status resolved)`, what closed it, and — for AMD — a `(residual …)`
-noting their doc hub is not scriptable, so a newer revision could exist uncaptured. A gap closed is
-not a gap that cannot reopen.
-
-⭐ **A material that is not one file.** The pinned snapshot is 72 HTML pages, and a snapshot
-identified by the digest of one page is not identified at all. `kind snapshot` names a `manifest`
-whose digest is the material's identity and whose entries verify every page — `72 manifest entries
-verified` on fetch, and a tampered page inside a verifying snapshot is caught (new RED arm).
-
-⭐ **That ends a real fragility.** The citation evidence lived only in an untracked working area
-needing the network — the reason `check_citations.py` could not be a gate. It now runs from the
-manifest-verified cache, **offline**, and prints which route it used:
-
-```
-via fetched working area target/sources/riscv-v20260120        -> 52 of 52 resolve
-via materials cache .materials/riscv/pinned-v20260120/unpriv   -> 52 of 52 resolve
-```
-
-⭐ **Independent corroboration of the pin challenged last leaf.** chipdoc acquired the `v20260120`
-snapshot by its own route; its digests for `intro`, `rv32` and `rv64` **equal** those committed in
-`sources.toml`, and its manifest verifies 72 of 72. Two acquisitions, two parties, one set of bytes
-— the one thing an agreement between us could not have produced.
-
-⛔ **The reader refused this leaf's own first draft.** The catalogue generator emitted literal
-`\uXXXX` escapes and `scripts/sexp.py` rejected the file by name — `unknown escape '\u'`. That is
-`SOT-FORMAT.7`'s closed escape table doing its job one leaf later, on real content rather than a
-fixture. The content was fixed; the reader was not touched.
-
-Corpus drift is now **detected rather than discovered**: `--list` and `--verify` compare the
-catalogued revision against the checkout's `HEAD`.
-
-**Knowledge.** [`a-survey-that-found-things-can-still-have-missed-things`](docs/knowledge/a-survey-that-found-things-can-still-have-missed-things.md)
-— a zero prompts "is my instrument blind?"; twenty-two results prompt nothing at all. Enumerate by
-a property of the thing, never a list of names you wrote from memory, and read what your
-enumeration excluded before you believe it.
 

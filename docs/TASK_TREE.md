@@ -51,7 +51,7 @@ on the same commit. One commit per completed leaf.
 | --- | --- | --- | --- |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `done` (reopened once, for `.10` — a measured defect the first nine leaves carried) | — (10/10 leaves complete) | repo-local |
-| [`P1-LAB`](tasks/P1-LAB.md) | `active` | `.6` — canonical definition skeleton (5 of 12 leaves done; outcomes typed, SEM-01 structural) | repo-local |
+| [`P1-LAB`](tasks/P1-LAB.md) | `active` | `.7` — graph and report checker (6 of 12 leaves done; the canonical definition now generated with its OWN-03 manifest) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `proposed` | `.1` — apply the interface findings (gate `BREADTH`) | repo-local |
@@ -66,7 +66,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
-| [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `done` | — (1/1 leaves complete; `SHARD-FREEZE` registered) | repo-local |
+| [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `active` (reopened for `.2` — the DEV_NOTES ceiling fired, 49,145 of 49,152 bytes) | `.2` — the DEV_NOTES shard path | repo-local |
 | [`PORT-WEB`](tasks/PORT-WEB.md) | `done` | — (1/1 leaves complete; the crate skeleton builds for `wasm32-unknown-unknown` from its first slice, gated by `PORT-WEB`) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `active` | `.3` — age and exposure, derived (3 of 4 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |

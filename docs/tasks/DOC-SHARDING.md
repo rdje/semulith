@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `DOC-SHARDING`
-- Status: `done`
+- Status: `active` (reopened `2026-09-28` for `.2` — the `DEV_NOTES.md` trigger fired; leaf
+  `.1` landed `2026-09-27`)
 - Roadmap lane: repository hygiene — the append-history ceilings (`doctrine/readme_routes.tsv`)
 - Gate: none of its own; keeps `README-ROUTING-CLOSURE` green by giving the fired trigger its
   owner
@@ -14,7 +15,7 @@
   at 24,522 of 24,576 after the same unit. The debt was recorded at adoption
   (`README_POLICY.md`): the ceilings "are the trigger that opens the leaf which builds it"
 - Unlocks: unconstrained changelog entries again; the same tool later serves `DEV_NOTES.md`
-  (48 KiB ceiling, ~37 KiB today, no headroom pressure yet)
+  — whose trigger fired `2026-09-28` (leaf `.2` owns the remedy)
 - Created: `2026-09-27`
 - Owner: repo-local workflow
 
@@ -53,14 +54,34 @@ remedy.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | the tree is complete (1/1 leaves done); `DEV_NOTES.md` inherits the live trigger for the day its ceiling fires |
+| 1 | `DOC-SHARDING.2` | `pending` | the `DEV_NOTES.md` ceiling fired — measured `2026-09-28`: 49,145 of 49,152 bytes after `SEMILITH-PL-0006` compressed its entry to fit; the `.1` remedy is CHANGELOG-specific (shard naming, manifest, freeze check all scoped to `docs/changelog/`), so the only responses today are compression or this leaf |
 
 ## Task Tree
 
 - ID: `DOC-SHARDING`
-  Status: `done`
+  Status: `active` (reopened `2026-09-28` for the fired `DEV_NOTES.md` trigger)
   Goal: the fired ceiling trigger gets its remedy — frozen shards, a manifest, a check
-  Children: `DOC-SHARDING.1`
+  Children: `DOC-SHARDING.1` (done), `DOC-SHARDING.2`
+
+- ID: `DOC-SHARDING.2` — **the DEV_NOTES shard path**
+  Status: `pending`
+  Goal: `DEV_NOTES.md` gets the same lifecycle `CHANGELOG.md` has: when its ceiling fires, its
+    oldest dated entries move to frozen shards under a repository-relative directory with their
+    own manifest, and a tracked check proves frozen + exactly-partitioned.
+  Trigger (measured `2026-09-28`, leaf `P1-LAB.6`): `DEV_NOTES.md` at 49,145 of its 49,152-byte
+    registry ceiling after its entry was compressed to fit — the same fired-trigger shape
+    `.1` records for `CHANGELOG.md` (9 bytes then, 7 now). Compression is the response the
+    registry names as the inferior one.
+  Scope notes: `scripts/shard_history.py`, `docs/changelog/SHARDS.sha256`, and
+    `scripts/check_changelog_shards.sh` are all scoped to `CHANGELOG.md` (shard-NNNN naming
+    inside `docs/changelog/`). Generalize deliberately — a `--head`/`--shard-dir`/`--manifest`
+    parameterization or a reviewed parallel path — and register the new shard directory in
+    `doctrine/readme_routes.tsv` in the same commit that creates it. `SHARD-FREEZE` extends to
+    the new manifest or a sibling check lands beside it, fired RED before registration.
+  Acceptance: sharding `DEV_NOTES.md` moves whole dated entries byte-verbatim, rewrites the
+    head under its ceiling, the freeze/completeness check proves the partition durably, and a
+    re-run is a no-op.
+  Blockers: none — consumed by the commit workflow (every slice adds a `DEV_NOTES.md` entry).
 
 - ID: `DOC-SHARDING.1` — **the shard tool, the manifest, and the freeze check**
   Status: `done`
