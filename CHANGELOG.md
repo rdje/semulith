@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0001 (leaf P1-LAB.1, PORT-WEB.1) — the laboratory gets its three crates, and the browser target gets its gate
+
+- `P1-LAB.1`: `crates/app` (the `semulith` placeholder) replaced by the three laboratory crates, wired per `docs/ARCHITECTURE.md` §4 — `semulith-core` depends on nothing (`Cargo.lock` carries no dependencies block for it), `semulith-verify` holds the fixtures home and depends on core only, `semulith-cli` (binary name `semulith`, ROADMAP.md §8) calls both. `make check` green at `-D warnings`; `cargo tree` shows the one-directional edges.
+- `PORT-WEB.1` (same commit, as its acceptance requires): the workspace builds for `wasm32-unknown-unknown` from the first slice, enforced by the 20th registered doctrine, `scripts/check_wasm_build.sh` — it refuses with install instructions when the rustup target is absent, re-runs its 4-arm self-test before every judgement, and was fired RED against the real workspace (a `std::os::unix` import in `semulith-core`, refused naming `lib.rs:13`) before registration. CI's doctrines workflow now installs the Wasm target. No host-only API exists yet; the build itself is the standing proof.
+- Docs in lockstep: mirrors in `DOCTRINE_ENFORCEMENT.md`, the book's doctrines chapter, `TOOLBOX.md`; `LIVE_STATUS.md` re-derived (20 registered, 231 self-test arms; P1 In Progress, 1/12) with a stale MODEL-METHOD row corrected; the book's P1 chapter now states the crates exist and build for host and Wasm. Fixed in passing: a layer-A typo (`sexr_file` → `sexpr_file`); the `DOCTRINE_ENFORCEMENT.md` ceiling re-derived 20 → 24 KiB in the routes registry (the 20th doctrine row is the surface's contract expanding, the same grounds as the TOOLBOX raise). Both append heads sharded again the day they were sharded — the pressure valve working as designed; the `docs/changelog/` file-count ceiling re-derived 20 → 40 in the same commit (the family now carries shards for two append heads — the derivation is recorded in the registry).
+
+Validation: `make gate` green (20 doctrines); `make check` green (fmt + clippy -D warnings + 5 test suites); `bash scripts/check_wasm_build.sh --self-test` → 4 pass / 0 fail.
+
 ## SEMILITH-AC-0051 (leaf ARTIFACT-CLEANUP.2) — the sanctioned watcher is a ruling, not a false positive
 
 The director ruled CHIPDOC's ChipdocWatcher ("it will stay there — do not worry about it from
@@ -881,64 +889,4 @@ counts.
 that creates it, ceilings derived from its own measured size. `CHANGELOG.md` had 1,326 B of
 headroom against its 64 KiB ceiling and was sharded first: 64,210 → 28,188 B, 11 entries moved to
 `docs/changelog/2026-09-p0-to-mirror.md`.
-
-## SEMULITH-SF-0041 (leaf SOT-FORMAT.7) — the reader corrupted every citation it read
-
-**What changed.** `scripts/sexp.py` decoded string escapes by handing the assembled string to
-`.encode().decode("unicode_escape")`. That codec is **Latin-1**: it reads each byte as one
-character, so the two UTF-8 bytes of `§` came back as `Â§` and an em dash came back as three
-characters of noise.
-
-**All 52 specification citations** in `definitions/riscv/rv64i.sem.sexp` were corrupted on read —
-every locator committed one leaf earlier as *"52 of 52, every rule cited"*. The claim was true of
-the file and false of what any consumer received:
-
-```
-raw bytes in file : b'RVI-RV64I \xc2\xa73.1.2.1 \xe2\x80\x94 D-LUI-AUIP'
-as the reader sees: 'RVI-RV64I Â§3.1.2.1 â\x80\x94 D-LUI-AUIP'
-```
-
-**Why nothing caught it.** The reader that every source of truth in this repository depends on had
-**no self-test at all**. Downstream, every instrument asked about structure or behaviour —
-`check_semantics.py` asks whether a citation is *present*, and a corrupted string is still present.
-None was pointed at **fidelity**, which is a separate property and has to be asserted separately.
-
-**The fix.** Escapes are decoded from a closed five-entry table written in the file, and an escape
-outside it is refused rather than guessed — the same soundness stance the module already claimed
-for structure. A UTF-8 file needs no escape for non-ASCII at all. The reader now carries 18 arms,
-three of them fired RED before the fix:
-
-```
-$ python3 scripts/sexp.py --self-test     # BEFORE → 15 pass / 3 fail
-$ python3 scripts/sexp.py --self-test     # AFTER  → 18 pass / 0 fail
-$ round-trip: each citation verbatim in the file's own bytes → 52 / 52, mojibake 0
-```
-
-No tracked file's content changed. The files were always right.
-
-**Direction (director, `2026-09-14`).** Two instructions landed and are now durable records rather
-than conversation:
-
-- *Every source of truth is one format* — S-expression, composable, and **extensible to new
-  constructs in the same format**. This supersedes the per-file format split in
-  `decision_canonical-definition-input`: composition is a merge, and three formats are three merge
-  semantics, so under the split a board composing two processors could union their encodings and
-  nothing else. New tree `SOT-FORMAT`, 9 leaves.
-- *The parser is not written here.* The Rust reader comes from **LinkedSpec**
-  (`specs/Lispish.spec` on its Rust backend), added as a **git submodule** pinned to a commit.
-  ⛔ I first inferred `pgen` from the capability description — *many backends, Rust among them,
-  parses many formats* — and was corrected. The failure mode is general and worth keeping: a
-  capability description matches several repositories; only a named artifact identifies one.
-  ⛔ **Blocked:** LinkedSpec is preparing its integration document for downstream consumers and it
-  is not finished, so `SOT-FORMAT.9` waits for it rather than integrating against internals.
-
-**Also measured, and owned rather than logged.** The mdBook chapter *"Architecture and canonical
-definitions"* includes `docs/ARCHITECTURE.md`, which names no format, no `definitions/` directory
-and no composition operator — all three introduced over the four preceding commits. The director's
-only window into the project shows none of the work. `SOT-FORMAT.8`, at frontier order 2.
-
-**Knowledge.** [`a-parse-without-error-is-not-a-faithful-read`](docs/knowledge/a-parse-without-error-is-not-a-faithful-read.md)
-— a parser's error paths are all about structure; it proves nothing about content until a test
-compares what it returned with what it read. A test corpus of `foo` and `bar` cannot tell a correct
-decoder from a Latin-1 one.
 

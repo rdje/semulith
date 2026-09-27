@@ -51,7 +51,7 @@ on the same commit. One commit per completed leaf.
 | --- | --- | --- | --- |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `done` (reopened once, for `.10` — a measured defect the first nine leaves carried) | — (10/10 leaves complete) | repo-local |
-| [`P1-LAB`](tasks/P1-LAB.md) | `proposed` | `.1` — crate skeleton (gate `G1`; `G0` has now been run) | repo-local |
+| [`P1-LAB`](tasks/P1-LAB.md) | `active` | `.2` — target arithmetic primitives (1 of 12 leaves done; the three crates build for host and Wasm) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `proposed` | `.1` — apply the interface findings (gate `BREADTH`) | repo-local |
@@ -67,7 +67,7 @@ on the same commit. One commit per completed leaf.
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
 | [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `done` | — (1/1 leaves complete; `SHARD-FREEZE` registered) | repo-local |
-| [`PORT-WEB`](tasks/PORT-WEB.md) | `proposed` | `.1` — the crate skeleton builds for Wasm from P1 first slice (consumed by `P1-LAB`) | repo-local |
+| [`PORT-WEB`](tasks/PORT-WEB.md) | `done` | — (1/1 leaves complete; the crate skeleton builds for `wasm32-unknown-unknown` from its first slice, gated by `PORT-WEB`) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `active` | `.3` — age and exposure, derived (3 of 4 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |
 | [`ROADMAP-V3`](tasks/ROADMAP-V3.md) | `done` | — (3/3 leaves complete; consumed by the v0.4 revision at P1 first slice) | repo-local |

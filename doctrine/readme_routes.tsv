@@ -160,11 +160,25 @@ COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288	0
 CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192	0
 AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0
 MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally owned	0	0	0	32768	0
-DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	20480	0
+# Re-derivation, SEMILITH-PL-0001 (2026-09-27), when the 20th doctrine row crossed the cap:
+#   DOCTRINE_ENFORCEMENT.md  20,417 B of 20,480 B — one doctrine row from refusal. The row
+#               count IS this surface's contract (a mirror of the enforcer registry), so the
+#               20th registered doctrine expanding it is the contract expanding, the same
+#               grounds as the TOOLBOX.md raise above. Ceiling 20 KiB -> 24 KiB; health stays
+#               0 (a doctrine row arrives, not a paragraph).
+DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	24576	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
 schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	16	131072	24	524288	65536
-docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	20	393216	65536
+# Re-derivation, SEMILITH-PL-0001 (2026-09-27), when the family hit its file-count ceiling:
+#   docs/changelog/  22 files at the breach — the family carries shards for TWO append heads
+#               (CHANGELOG.md and DEV_NOTES.md, both sharded from 2026-09-27), and a working
+#               day shards each head more than once, so the FILE-COUNT axis the original
+#               derivation calibrated on one head moved ~4x. The axis that protects CONTENT
+#               stays untouched: per-part 64 KiB and the 384 KiB aggregate are unchanged, so
+#               one member still cannot become a monolith and the collection still cannot
+#               bloat. Ceiling files 20 -> 40; the next reader should watch the AGGREGATE.
+docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	40	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 overwrite-only record, one entry per cleanup	6	768	12	1536	0
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0

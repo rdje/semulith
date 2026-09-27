@@ -1,0 +1,17 @@
+# semulith-verify — the verification harness around semulith-core: controlled memory,
+# fault and event fixtures implementing the core environment boundary for tests, plus the
+# source/evidence graph, adapters, comparators and reducer (docs/ARCHITECTURE.md §4).
+# Boundary rule: never supplies production instruction semantics — a semantic rule has
+# one owner, and it is not here.
+[package]
+name = "semulith-verify"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Verification harness: controlled fixtures and evidence machinery around semulith-core"
+
+[lints]
+workspace = true
+
+[dependencies]
+semulith-core = { version = "0.1.0", path = "../semulith-core" }

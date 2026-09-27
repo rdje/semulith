@@ -35,6 +35,7 @@ PROJECT_DOCTRINES=(
   "SCOPE-COVERAGE|no model code starts against an uncovered scope — a unit's registry declares the categories its scope requires, and the gate refuses the day a required category is missing or has no census row; P1-LAB's precondition is this verdict, composed with (never duplicated from) EXTRACTION|scripts/check_scope_coverage.sh"
   "GATE-REPORT|the tracked gate report is still the function of its inputs that generated it — a hand-edited report is how a project comes to hold a verdict nothing produced|scripts/check_gate_report.sh"
   "SHARD-FREEZE|the sharded append-history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards|scripts/check_changelog_shards.sh"
+  "PORT-WEB|the crate skeleton builds for the browser target — the workspace compiles for wasm32-unknown-unknown, so a host-only API cannot slip into the engine unnoticed; fired RED before registration|scripts/check_wasm_build.sh"
 )
 
 fails=0

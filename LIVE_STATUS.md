@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (19 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS`, `DERIVED-COUNTS`, `RECORD-SCHEMA`, `GATE-REPORT`, `UPSTREAM-INDEX`, `SHARD-FREEZE`, `SOURCE-FORMAT`, `UNIT-COMPOSITION`, `SEMANTICS`, `EXTRACTION`, `FACT-OWNERSHIP` — 227 self-test arms, all fired RED before registration |
+| Project doctrines (20 registered) | Done | `DELIVERY-PROVENANCE`, `FIXTURE-FINGERPRINT`, `README-ROUTING-CLOSURE`, `PROFILE-CONSISTENCY`, `SEAM-INTEGRITY`, `FRONTIER-SYNC`, `REGISTRY-MIRROR`, `TREE-CLAIMS`, `DERIVED-COUNTS`, `RECORD-SCHEMA`, `GATE-REPORT`, `UPSTREAM-INDEX`, `SHARD-FREEZE`, `SOURCE-FORMAT`, `UNIT-COMPOSITION`, `SEMANTICS`, `EXTRACTION`, `FACT-OWNERSHIP`, `PORT-WEB` — 231 arms, all fired RED before registration |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the re-sync list, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 28 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |
@@ -29,7 +29,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
 | Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 13 of 13 leaves — closed — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
-| Modelling method + materials | In Progress | same tree — no category→material binding yet |
+| Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`) |
 | Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 0/6 — one definition, one mdBook |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
@@ -37,7 +37,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented. Reopened for `.10`: the profile had been matched on its ISA and **not its platform** |
-| P1 — processor laboratory | G1 | Not Started | [`P1-LAB`](docs/tasks/P1-LAB.md) — 12 leaves; the three crates, graph checker, mutation suite. Where the 66 declared checks acquire fixtures |
+| P1 — processor laboratory | G1 | In Progress | [`P1-LAB`](docs/tasks/P1-LAB.md) 1/12 — three crates exist, building for host and Wasm (`P1-LAB.1`, `PORT-WEB`) |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |

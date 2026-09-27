@@ -3,5 +3,20 @@
 version = 4
 
 [[package]]
-name = "semulith"
+name = "semulith-cli"
 version = "0.1.0"
+dependencies = [
+ "semulith-core",
+ "semulith-verify",
+]
+
+[[package]]
+name = "semulith-core"
+version = "0.1.0"
+
+[[package]]
+name = "semulith-verify"
+version = "0.1.0"
+dependencies = [
+ "semulith-core",
+]

@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `P1-LAB`
-- Status: `proposed`
+- Status: `active` (first leaf landed `2026-09-27`; was `proposed`)
 - Roadmap lane: `ROADMAP.md` §6 → **P1 — Build the processor laboratory**
 - Gate: `G1`
 - Depends on: `P0-PROFILE` (gate `G0`)
@@ -35,9 +35,17 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 ## Task Tree
 
 - ID: `P1-LAB.1` — **crate skeleton**
-  Status: `pending`
+  Status: `done`
   Goal: replace the placeholder crate with `semulith-core`, `semulith-verify`, `semulith-cli`, wired to the ownership rules in `docs/ARCHITECTURE.md` §4.
   Acceptance: `semulith-core` depends on neither of the others; `semulith-verify` contains the test fixtures; `make check` green at `-D warnings`.
+  Result: met, `2026-09-27`. `crates/app` (the `semulith` placeholder) is replaced by the three
+  laboratory crates. `semulith-core` has **no** dependencies (`Cargo.lock`: the `semulith-core`
+  package lists none); `semulith-verify` carries the fixtures home (`pub mod fixtures;` — filled
+  by `P1-LAB.4`) and depends only on core; `semulith-cli` (binary name `semulith`, ROADMAP.md §8)
+  depends on both and duplicates nothing. The workspace builds for the host and for
+  `wasm32-unknown-unknown` in the same commit — the browser half of this skeleton is
+  [`PORT-WEB.1`](PORT-WEB.md), landed in the same commit by design. The dependency edges are
+  declared now and first exercised by `P1-LAB.2`+.
 
 - ID: `P1-LAB.2` — **target arithmetic primitives** *(task card `T005`)*
   Status: `pending`
@@ -98,7 +106,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.1` | `pending` | every other leaf lands inside these crates |
+| 1 | `P1-LAB.2` | `pending` | every other leaf lands inside these crates; arithmetic primitives are the crate's first real content |
 
 ## Decisions
 
@@ -122,26 +130,76 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 - `P0-PROFILE` gate `G0`. Building the laboratory before the profile is resolved would bake
   unresolved choices into code.
 
-## Acceptance Checklist (filled per leaf at execution time)
+## Acceptance Checklist (leaf P1-LAB.1)
 
-- [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
-- [ ] **ADDRESSED (verified)** — <measured before → after>
-- [ ] **NO REGRESSION** — <the suite or gate re-run, and its result>
-- [ ] **FIX** — <the change made>
-- [ ] **LOCKSTEP** — <docs, contracts and indexes updated>
+- [x] **REPRODUCE / ISSUE** — the tree as it stood: one placeholder crate, not three laboratory crates:
+
+  ```
+  $ ls crates/
+  app
+  $ grep '^name' crates/app/Cargo.toml
+  name = "semulith"        # the starter crate, owns nothing of the laboratory
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the laboratory's crate boundary existed only as a table in
+  `docs/ARCHITECTURE.md` §4; nothing in `crates/` implemented it, so there was no place the
+  schema-sufficient definition (`EXTRACTION` verdict) could be consumed from. WHERE, measured:
+
+  ```
+  $ git ls-files crates | sort
+  crates/app/Cargo.toml
+  crates/app/src/main.rs        # two files, the whole of the Rust workspace
+  ```
+
+- [x] **FIX** — replaced `crates/app` with `semulith-core` (no dependencies), `semulith-verify`
+  (`fixtures` module home, depends on core only), `semulith-cli` (bin `semulith`, depends on
+  both). Each crate's docs state its ownership rule from day one; behaviour stays with its
+  owning leaf (`P1-LAB.2`+).
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ grep -A2 'name = "semulith-core"' Cargo.lock
+  name = "semulith-core"
+  version = "0.1.0"          # no [dependencies] block: core depends on neither other crate
+  $ cargo tree --workspace --prefix none | sort -u | head -4
+  semulith-cli v0.1.0 (.../crates/semulith-cli)
+  semulith-core v0.1.0 (.../crates/semulith-core)
+  semulith-verify v0.1.0 (.../crates/semulith-verify)
+  semulith-verify v0.1.0 (.../crates/semulith-verify) (*)
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s   # rc=0
+  ```
+
+- [x] **NO REGRESSION** — the strict-lint suite, re-run on the new workspace:
+
+  ```
+  $ cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings && cargo test --all 2>&1 | grep -c 'test result: ok'
+  5                                    # 5 suites, all ok, 0 warnings at -D warnings
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `docs/book/src/plan/p1.md`, `docs/book/src/working/doctrines.md`,
+  `DOCTRINE_ENFORCEMENT.md`, `TOOLBOX.md`, `.github/workflows/doctrines.yml` and this tree —
+  one commit, with [`PORT-WEB.1`](PORT-WEB.md) (the browser half of the skeleton).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| — | — | not started | — |
+| `2026-09-27` | `P1-LAB.1` | `cargo fmt --check` + `clippy -D warnings` + `cargo test --all` | 5 suites ok, 0 warnings |
+| `2026-09-27` | `P1-LAB.1` | `cargo build --workspace --target wasm32-unknown-unknown` | rc=0 (with `PORT-WEB.1`) |
+| `2026-09-27` | `P1-LAB.1` | `make gate` | `=== all doctrines green ===` |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
-| — | `pending` | `pending` |
+| `P1-LAB.1` | `SEMILITH-PL-0001 (leaf P1-LAB.1, PORT-WEB.1): …` | the crate skeleton and the Wasm gate land in one commit, as PORT-WEB.1's acceptance requires |
 
 ## Changelog
 
-- `2026-09-13`: Created from `ROADMAP.md` §P1 and task cards `T003`–`T007` by `SEMULITH-TREES.1`.
+- `2026-09-27`: Leaf `.1` done — the three crates exist and build for host and Wasm; the tree is
+  `active`, the frontier moves to `.2` (target arithmetic primitives).

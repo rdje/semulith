@@ -8,6 +8,12 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the laboratory crates and the Wasm gate (P1-LAB.1, PORT-WEB.1)
+
+Root cause: the crate boundary was a `docs/ARCHITECTURE.md` §4 table with no crates behind it, and the browser target was a decision with no instrument. Implementation: three crates with one-directional edges (`cli → {core, verify}`, `verify → core`, `core →` nothing — the wiring IS the deliverable at `.1`; behaviour stays with its owning leaf); `scripts/check_wasm_build.sh` registered as the `PORT-WEB` doctrine — preflight refuses when the rustup target is absent (exit 2), the 4-arm self-test re-runs before every judgement, the verdict is a plain `cargo build --workspace --target wasm32-unknown-unknown`. Validation: `make check` green (5 suites, 0 warnings at `-D warnings`); self-test 4 pass / 0 fail; fired RED on a real `std::os::unix` import (rc=1, naming `lib.rs:13`); `make gate` green after registration. Design notes, kept: (1) the self-test caught my own first cut — bin crates want `src/main.rs`, not `src/bin.rs`, and cargo fails builds with rc=101, not 1; a control never run RED is not known to work. (2) Scratch builds pass `--target-dir` inside the temp dir — the measured family defect is self-test state leaking into the real run through environment variables.
+
+Lessons: declined here (both notes are recorded in the PORT-WEB.1 leaf checklist).
+
 ## _(2026-09-27)_ — the sanctioned watcher is a ruling, not a false positive (ARTIFACT-CLEANUP.2)
 
 The director ruled CHIPDOC's ChipdocWatcher stays, and the census stopped crying wolf the
@@ -649,24 +655,5 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   name obligations that do not exist. They are `frozen-in-place` delivery artifacts, so they are
   not edited to satisfy a rule written later — routed to `P1-LAB`'s graph checker, with `--audit`
   keeping the finding a command rather than a paragraph.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — a partial validator must refuse, not skip
-
-- No JSON Schema library exists on this host and installing one would put a dependency store off
-  the repository volume, so the validator is 180 tracked lines covering exactly the 17 keywords a
-  census of `schemas/*.json` found. ⛔ **The soundness property is the REFUSAL.** A partial
-  validator that silently ignores an unimplemented keyword reports `valid` for a document it never
-  fully checked — so this one raises `UnsupportedSchema`, and a schema gaining a keyword breaks
-  the gate loudly instead of widening what passes.
-- ⭐ `source_semantics.category` is **not** a function of the profile's `authority`. `laboratory`
-  covers both "the spec says UNSPECIFIED and we chose" and "the spec delegates to the EEI and we
-  chose"; collapsing them records a laboratory policy as an architectural rule.
-- The sharpest gate rule this leaf adds: `research_status: resolved` may not coexist with an
-  `OPEN:` note. Both halves are true separately, which is what makes the pair convenient.
-- ⛔ Two defects in the new gate were found by its own arms, not by review. It excluded `target/`
-  by ABSOLUTE path — and its own fixtures live under `target/doctrine-selftest/`, so all ten arms
-  failed with "no .jsonl record file found". And the cross-checks re-parsed a file that had
-  already failed to parse, crashing the gate rather than failing it: a traceback is not a verdict.
 - Promotion is explicitly declined in the owning leaf, with the reason.
 
