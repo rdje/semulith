@@ -8,6 +8,24 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — no coding without the source of truth, mechanized (MODEL-METHOD.6)
+
+Root cause this leaf closes: the rule was the director's prose and nothing enforced it. The
+design turn: the census already said which categories are missing, but 'missing' alone cannot
+block coding — the excluded subsystems (C07/C08/...) are missing and must stay legal. The gate
+needs the scope to DECLARE what it requires; the registry gained (requires …) and the refusal
+keys on required × missing. rv64i-lab-v0 declares its 14 in-scope categories; the six
+excluded ones stay legal because they are not required.
+
+Composed, not duplicated: SCOPE-COVERAGE says the facts are OWNED; EXTRACTION says they are
+EXTRACTABLE; both must pass before P1-LAB writes code. MODEL-METHOD closes 13/13 — the
+method, the census, the acquisitions, and the coding gate all landed in one session.
+
+Validation: gate 7/0; real run '1 unit(s) may code'; RED fired pre-registration; whole
+enforcer green (19 doctrines, 227 arms).
+
+Lessons: declined here (the OWN-vs-EXTRACT composition rule is stated in the gate's header).
+
 ## _(2026-09-27)_ — the method, in prose, written to be learned from (MODEL-METHOD.5)
 
 Root cause this leaf closes: the method existed only as the history of its exercise — eleven

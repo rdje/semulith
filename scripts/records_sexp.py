@@ -147,10 +147,14 @@ def obligation_to_dict(form) -> dict:
 
 def unit_to_dict(form) -> dict:
     S.head(form, "unit")
-    return {"id": _s(S.field(form, "id")),
-            "kind": _s(S.field(form, "kind")),
-            "layer": _s(S.field(form, "layer")),
-            "book": _s(S.field(form, "book"))}
+    out = {"id": _s(S.field(form, "id")),
+           "kind": _s(S.field(form, "kind")),
+           "layer": _s(S.field(form, "layer")),
+           "book": _s(S.field(form, "book"))}
+    req = S.children(form, "requires")
+    if req:
+        out["requires"] = [_s(x) for x in req[0][1:]]
+    return out
 
 
 def category_need_to_dict(form) -> dict:
@@ -220,11 +224,14 @@ def _json_to_value(name, v):
 def dict_to_form(rec: dict):
     """The record dict -> its form. Field order follows the dict, i.e. the JSON key order."""
     if "book" in rec:                                    # a modelled-unit registry row
-        return [S.Symbol("unit"),
+        form = [S.Symbol("unit"),
                 _pair("id", rec["id"]),
                 _pair("kind", S.Symbol(rec["kind"])),
                 _pair("layer", S.Symbol(rec["layer"])),
                 _pair("book", rec["book"])]
+        if rec.get("requires"):
+            form += _repeated("requires", rec["requires"])
+        return form
     if "disposition" in rec:                             # a category-need row
         form = [S.Symbol("category-need"),
                 _pair("category", rec["category"]),

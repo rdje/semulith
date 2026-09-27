@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMILITH-MM-0050 (leaf MODEL-METHOD.6) — no coding without the source of truth, and MODEL-METHOD closes
+
+The director's rule is a gate now. The unit registry gains `(requires …)` — the categories a
+unit's scope declares — and `SCOPE-COVERAGE` (19th doctrine, 7 arms) refuses the day a required
+category is `missing` or has no census row, fired RED before registration on a scratch unit whose
+required category was absent. A unit with an undeclared scope refuses too: code may not start
+against a scope never declared. `rv64i-lab-v0` declares its 14 in-scope categories, and the
+verdict reads `1 unit(s) may code — every required category covered` — P1-LAB's precondition is a
+verdict, composed with EXTRACTION (coverage says the facts are OWNED; extraction says they are
+EXTRACTABLE). **`MODEL-METHOD` closes at 13/13**: the method in prose, the census, the
+acquisitions, and the coding gate all landed; every P1 precondition is mechanical.
+
 ## SEMILITH-MM-0049 (leaf MODEL-METHOD.5) — the method, in prose, written to be learned from
 
 `docs/METHOD.md` is the method this project actually exercised this session, written to be

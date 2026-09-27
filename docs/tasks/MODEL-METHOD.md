@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `MODEL-METHOD`
-- Status: `active`
+- Status: `done` (13/13 leaves complete `2026-09-27`; the method, the census,
+  the acquisitions, and the coding gate all landed)
 - Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
@@ -270,6 +271,16 @@ recorded so it can be overturned on evidence rather than taste:
       contract already owns entry state and the ECALL/EBREAK exit convention (`D-ENTRY-STATE`,
       `OB-ENV-EVENT-DELIVERY`); the hosted-form anchors are the two acquisitions above.
 
+
+  Result: met, `2026-09-27`. The unit registry gained `(requires …)` — the categories a
+  unit's scope declares — and `SCOPE-COVERAGE` (19th doctrine, `scripts/check_scope_coverage.sh`,
+  7 arms) refuses the day a required category is `missing` or has no census row, fired RED
+  before registration on a scratch unit whose required category was absent. `rv64i-lab-v0`
+  declares its 14 in-scope categories; the verdict reads `1 unit(s) may code — every required
+  category covered` — **P1-LAB's precondition is now a gate's verdict, not a judgement call**,
+  composed with EXTRACTION (coverage says the facts are OWNED; extraction says they are
+  EXTRACTABLE; both must pass). The tree closes at 13/13.
+
 - ID: `MODEL-METHOD.5` — **the method, in prose, written to be learned from**
   Status: `done`
   Goal: document → decision → requirement → obligation → check, with the judgement calls named:
@@ -464,7 +475,7 @@ recorded so it can be overturned on evidence rather than taste:
   Commit: `SEMULITH-MM-0044`
 
 - ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
-  Status: `pending`
+  Status: `done`
   Goal: a gate that refuses model implementation for a profile while a category its declared scope
   requires is `missing`. The rule is the director's; this makes it enforceable rather than
   remembered.
@@ -476,7 +487,7 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.6` | `pending` | no coding without the source of truth, mechanized — the gate P1-LAB cites |
+| — | — | — | the tree is complete (13/13 leaves done); the method, the census, the acquisitions, and the coding gate all land |
 
 ## Decisions
 
@@ -554,10 +565,65 @@ logs.
 - [x] **LOCKSTEP** — `docs/book/` chapter + SUMMARY row; `MEMORY.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
 
+## Acceptance Checklist (leaf MODEL-METHOD.6)
+
+- [x] **REPRODUCE / ISSUE** — the director's rule as it stood: prose in the roadmap, nothing
+  enforcing it. Census, pre-code:
+
+  ```
+  $ git ls-files scripts | grep -c 'scope_coverage'
+  0                                             # nothing refused uncovered-scope coding
+  $ grep -c 'requires' materials/units.sexp schema/units.sexp
+  0                                             # and no unit declared what its scope requires
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: "no coding without the source of truth" is
+  only as real as the thing that refuses — an intention a gate doesn't carry decays the first
+  busy week. WHERE: measured, not read —
+
+  ```
+  $ grep -c 'requires' materials/units.sexp schema/units.sexp
+  0                                             # no unit could even DECLARE its scope
+  $ grep -rl 'scope' scripts/check_doctrines.project.sh | wc -l
+  0                                             # and no gate keyed the census to a coding decision
+  ```
+
+  The census dispositions existed; the vocabulary to act on them did not.
+
+- [x] **FIX** — the registry gains `(requires …)` (data, zero kernel lines); SCOPE-COVERAGE
+  checks required × census: missing or absent refuses by name; a unit with an undeclared
+  scope refuses too (code may not start against a scope never declared).
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ bash scripts/check_scope_coverage.sh --self-test
+  SCOPE-COVERAGE --self-test: 7 pass / 0 fail
+  $ bash scripts/check_scope_coverage.sh
+  SCOPE-COVERAGE: ok (1 unit(s) may code — every required category covered)
+  $ # fired RED before registration, on a scratch unit whose required category is missing:
+  MISSING REQUIRED units.sexp [ghost requires C02]: the census disposition is 'missing' …
+  ```
+
+- [x] **NO REGRESSION** — `bash scripts/check_requirements.sh --self-test` 33 pass / 0
+  fail + real run green with the registry's new field; `bash scripts/check_extraction.sh
+  --self-test` 3 pass / 0 fail + real run green; whole gate green after staging (19
+  doctrines, 227 arms).
+
+- `promotion: declined (the "coverage says OWNED, extraction says EXTRACTABLE" composition
+  rule is stated in the gate's header and this leaf).`
+
+- [x] **LOCKSTEP** — `scripts/check_doctrines.project.sh` + both mirrors in the registering
+  commit; `LIVE_STATUS.md` re-derived; `TOOLBOX.md`; `MEMORY.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-METHOD.6` | `--self-test` | `7 pass / 0 fail` — MISSING REQUIRED, UNCOVERED REQUIRED, UNDECLARED SCOPE, NO CENSUS, both GREEN arms, empty-corpus refusal |
+| `2026-09-27` | `MODEL-METHOD.6` | RED before registration (scratch unit, required category missing) | `MISSING REQUIRED [ghost requires C02]` |
+| `2026-09-27` | `MODEL-METHOD.6` | real run | `ok (1 unit(s) may code)` — rv64i-lab-v0 declares 14 required categories, all covered |
 | `2026-09-27` | `MODEL-METHOD.5` | census, pre-code | no method document anywhere in `docs/` |
 | `2026-09-27` | `MODEL-METHOD.5` | the acceptance probes | the SHAMT walk present; 4 non-mechanical steps named; book builds; no project-only dependency outside the worked example |
 | `2026-09-27` | `MODEL-METHOD.4` | network probes | psABI gh-pages: no PDF (HTML canonical render); ELF gABI: HTTP 200; isa-manual releases carry `riscv-spec.pdf` assets |
@@ -625,6 +691,7 @@ logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.6` | `SEMILITH-MM-0050 (leaf MODEL-METHOD.6): …` | no coding without the source of truth, mechanized; the tree closes 13/13 |
 | `MODEL-METHOD.5` | `SEMILITH-MM-0049 (leaf MODEL-METHOD.5): …` | the method, in prose, written to be learned from |
 | `MODEL-METHOD.4` | `SEMILITH-MM-0048 (leaf MODEL-METHOD.4): …` | the run-real-code set acquired and digest-pinned; the PDF question answered YES |
 | `MODEL-METHOD.3` | `SEMILITH-MM-0047 (leaf MODEL-METHOD.3): …` | the census swept the snapshot; missing now means excluded, with closers named |
