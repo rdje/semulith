@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMILITH-SF-0061 (leaf SOT-FORMAT.6) — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes
+
+The 14th project doctrine is registered: `scripts/check_source_format.sh` refuses a source of
+truth outside the one format — a tracked `.toml` / `.json` / `.jsonl` / `.yaml` under
+`definitions/`, `schema/`, `profiles/`, `materials/` is named and refused (the FORMAT arm,
+fired RED before registration against a scratch copy of the real corpus with one planted
+`profile.toml`), and every `.sexp` there must parse with the one reader (PARSES). The real
+corpus — 28 source-of-truth files — is green. Retirement in prose decays; the gate is the
+decay's answer. Both doctrine mirrors (`DOCTRINE_ENFORCEMENT.md`, the mdBook) carry the row in
+the registering commit; LIVE_STATUS's 14 doctrines / 184 arms are re-derived, not remembered.
+
+The supersession chain was verified, not assumed: `decision_canonical-definition-input` has
+carried its replacement since `SEMILITH-SF-0041`. Two stale lines surfaced while reading for
+this leaf — the replacement record's own *How to apply* still said "write the EBNF in `pgen`"
+against its director-corrected body (LinkedSpec), and both INDEX descriptions repeated it —
+corrected in passing, with the reason recorded in the record. **SOT-FORMAT closes at 10/10.**
+
 ## SEMILITH-SF-0060 (leaf SOT-FORMAT.5) — the record merge is definable, and it decides
 
 The union this tree exists for is now checked: `scripts/merge_records.py` merges two units'
@@ -939,40 +956,5 @@ correction is normal, not a failure of the decision.
 ⚠️ A book is written for a model that is **not yet finished**, and says so. The first will describe
 a model whose gate reads `incomplete` — hiding that until the model is done would make the book a
 retrospective rather than a method, and the method is the transferable part.
-
-
-## SEMULITH-MM-0035: the layer boundary — a UART is not CPU material
-
-**What changed.** A scoping correction that arrived before it could do damage: devices belong to a
-**board / SoC / ASIC** model, not to a processor model. This project pipecleans by modelling CPUs
-and DSPs first, and the processor layer ends at the CPU/environment boundary — the CPU states what
-it *assumes*, and a later board model states what it *guarantees*.
-
-The project's contracts already own this line, so it is cited rather than restated:
-`docs/INFORMATION_CATALOG.md` says *"C19–C21 are not all properties of the CPU itself"*, and
-`docs/CPU_ENVIRONMENT.md` §5 is the board composition gate.
-
-⭐ **The sharp consequence is for the materials catalogue, which is why this landed before its
-schema was written.** A category the processor layer does not own is **not `missing`**. Marking
-`C19 Platform, devices and interconnect` as missing for a CPU model would manufacture an
-acquisition task for material the model must never contain, and would report a correct scope as a
-deficiency. The disposition vocabulary now carries a **layer**, and `deferred-to-board` is a
-first-class answer distinct from both `missing` and `not-applicable`.
-
-⚠️ **It also corrects a framing from the previous leaf.** "Capable of running real code" needs a
-console and a program-exit convention — and **those are board concerns**. What the *processor*
-layer owes real code is narrower and wholly inside it: the psABI, the ELF contract, the
-entry/startup state, and the compiler-runtime intrinsics a no-`M` soft-float target calls.
-
-**`DIFF-PLATFORM-SPIKE` is reframed as a layer difference, not a configuration one.** Spike ships a
-CPU *and a small board* — an interruptor, a PLIC and a UART — and does not separate them. What that
-record measures is **how much board each reference drags in**, which is a more useful thing to know
-than "the config would not take".
-
-**Checked rather than assumed:** every device named anywhere in `rv64i-lab-v0` appears in exactly
-one role — something a reference brings that the profile excludes. Word-boundary grep over the
-profile's own files finds mentions only in notes explaining the exclusion; no decision, no
-requirement and no obligation models a device. The earlier apparent hits in `sources.toml` and
-`DOSSIER.md` were substrings of *implicit* and *explicit*.
 
 

@@ -64,7 +64,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `active` | `.3` — assumption/guarantee discharge (2 of 6 leaves done) | repo-local |
 | [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` | `.10` — the extraction contract (6 of 13 leaves done) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
-| [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `active` | `.6` — the `SOURCE-FORMAT` gate (9 of 10 leaves done) | repo-local |
+| [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
 | [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `done` | — (1/1 leaves complete; `SHARD-FREEZE` registered) | repo-local |
 | [`PORT-WEB`](tasks/PORT-WEB.md) | `proposed` | `.1` — the crate skeleton builds for Wasm from P1 first slice (consumed by `P1-LAB`) | repo-local |

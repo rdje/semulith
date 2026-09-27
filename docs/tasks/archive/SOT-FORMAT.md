@@ -372,3 +372,117 @@ did the same. Revisit when the engine crate adopts the reader.
   `docs/knowledge/portable-shell-fixtures-keep-mutations-whole-line.md`), `docs/TASK_TREE.md`
   and this tree — one commit.
 
+
+### Split two (`2026-09-27`, same commit as `.6`)
+
+The `.5` checklist joined the archive when the `.6` work pushed the live tree
+over the per-part ceiling again — same rule, obeyed twice in a day.
+
+## Acceptance Checklist (leaf SOT-FORMAT.5)
+
+- [x] **REPRODUCE / ISSUE** — the split the tree exists to end, shown at the composition
+  boundary: §1.2 of `docs/ARCHITECTURE.md` promised "merging records and obligations across a
+  composition boundary … lands with `SOT-FORMAT.5`", and nothing in the repository could do it.
+  Census before this leaf:
+
+  ```
+  $ git ls-files scripts | grep -E 'merge|compose' | grep -v encoding_disjoint
+  (no output)                                        # union of records: no rule, no tool
+  $ grep -n 'by_id = ' scripts/check_requirements.sh
+  by_id = {r.get("id"): r for r in recs}             # and, measured below, silently collapsing
+  ```
+
+  ⭐ Two defects surfaced while designing the fix, probe-backed (TOOLS-FIRST, both before any
+  code was written):
+  1. **RECORD-SCHEMA never refused duplicate record ids.** Two records sharing an id collapsed
+     in the `by_id` map (last wins), so a catalogue could contradict itself and stay green:
+
+     ```
+     $ # scratch catalogue, two REQ-D-A records differing in 'risk', gate body extracted verbatim
+     $ python3 target/doctrine_scratch/dupprobe/gate_body.py target/doctrine_scratch/dupprobe
+     __CHECKED__ 1                                    # rc=0 — nothing refused the contradiction
+     ```
+
+  2. **Obligation `dependencies` were never checked at all** (the gate checks requirements'
+     only), and the corpus's environment-assumptions depend on *obligations*
+     (`OB-ENV-RESET` → `OB-ENTRY-STATE`), not on requirements — a namespace fact that had to be
+     measured, not assumed:
+
+     ```
+     $ # the merge's first closure run on the real profile (obligation deps looked up wrong)
+     DANGLING DEP obligation 'OB-ENV-RESET' depends on 'OB-ENTRY-STATE', which no unit provides
+     # yet OB-ENTRY-STATE IS an obligation record — 34 of 34 exist; the corpus is mixed-kind:
+     # cpu-guarantees depend on requirements, environment-assumptions on guarantees
+     ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a merge is only definable over one format,
+  and even with one format it is only *checkable* if ids are unique within each side and
+  references resolve across the union. WHERE: measured, not read —
+
+  ```
+  $ grep -n 'by_id = ' scripts/check_requirements.sh          # the gate's id → record map
+  by_id = {r.get("id"): r for r in recs}     # last wins: a duplicate id silently collapses
+  $ python3 target/doctrine_scratch/dupprobe/gate_body.py target/doctrine_scratch/dupprobe
+  __CHECKED__ 1                              # rc=0 — a self-contradicting catalogue stays green
+  ```
+
+  The gap sat between `scripts/records_sexp.py` (the mapping, which has no opinion about
+  duplicates) and that map; and between the gate's rule 5 (requirements-only dependency check)
+  and the obligation records' `dependencies`, which no rule owned.
+
+- [x] **FIX** — `scripts/merge_records.py`: the merge rule as data (key = id, content equality
+  on collision, `profile_ids` union, sources full-pin equality, closure over the union,
+  direction census for `.3`); RECORD-SCHEMA rule 8 (UNIQUE-ID) as the one owner of catalogue
+  discipline, with a fired RED arm. The merge reads only through the mapping owners and parses
+  nothing itself.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/merge_records.py --self-test
+  merge_records --self-test: 18 pass / 0 fail        # 10 GREEN unions, 8 RED contradictions
+  $ python3 scripts/merge_records.py profiles/rv64i-lab-v0 profiles/rv64i-lab-v0
+  composed: 26 requirement(s), 34 obligation(s) (26 cpu-guarantee, 8 environment-assumption),
+            3 source(s) from 2 unit(s)              # the units COMPOSE — idempotent self-merge
+  $ # genuine contradiction, fired RED on real data (one statement edited in a copied unit):
+  CONFLICT requirement 'REQ-D-XLEN' between units 'profiles/rv64i-lab-v0' and
+  'target/doctrine_scratch/sf5/edited': field 'statement' differs — 'profiles/rv64i-lab-v0':
+  'XLEN = 64. …' vs 'target/doctrine_scratch/sf5/edited': 'XLEN = 32, edited …'   rc=1
+  $ # the composition-boundary case — an extension unit needing the base's REQ-D-XLEN:
+  $ python3 scripts/merge_records.py profiles/rv64i-lab-v0 target/doctrine_scratch/sf5/ext
+  composed: 27 requirement(s), 35 obligation(s) (27 cpu-guarantee, 8 environment-assumption),
+            4 source(s) from 2 unit(s)              # the units COMPOSE
+  $ python3 scripts/merge_records.py target/doctrine_scratch/sf5/ext        # base withheld:
+  DANGLING DEP requirement 'REQ-EXT-DEMO' … depends on 'REQ-D-XLEN', which no unit provides
+  ```
+
+  And the RECORD-SCHEMA fix, before → after on the same probe:
+
+  ```
+  $ python3 target/doctrine_scratch/dupprobe/gate_body.py target/doctrine_scratch/dupprobe
+  DUPLICATE ID p/requirements.sexp: record 'REQ-D-A' appears more than once — …   rc=1
+  $ bash scripts/check_requirements.sh --self-test
+  RECORD-SCHEMA --self-test: 23 pass / 0 fail        # was 22; +1 DUPLICATE-ID arm
+  ```
+
+- [x] **NO REGRESSION** — sexp 18/0; kernel 50/0; merge 18/0; RECORD-SCHEMA 23/0 and its real
+  run green (`5 record file(s) validate and agree with their profile` — the real catalogues
+  carry no duplicate ids, so rule 8 bites nothing that exists); `check_semantics.py` 52 of 52;
+  `check_citations.py` 52 of 52; `materials.py --self-test` 20/0; `run_smoke.py` ok;
+  `compare_readers.py` 28 of 28 agree; the regenerated G0 report diffs in nothing;
+  `make check` green. Whole gate green after staging.
+
+- `promotion: recorded (the duplicate-id lesson is general — an id-keyed lookup that silently
+  collapses duplicates turns a self-contradicting catalogue green; the gate now carries the
+  rule, the lesson card is docs/knowledge/a-duplicate-id-is-a-contradiction-not-a-shadowing.md).
+  The mixed-namespace dependency fact is declined here — it is measured, owned and enforced by
+  merge_records.py's closure, where anyone extending the record families will meet it.`
+
+- [x] **LOCKSTEP** — `docs/ARCHITECTURE.md` §1.2 (the merge is no longer "lands with
+  `SOT-FORMAT.5`" — it is checked today, the tool named); `TOOLBOX.md` gains the instrument;
+  `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md` (177 arms re-derived),
+  `docs/TASK_TREE.md` and this tree — one commit. Maintenance the growth fired, same commit:
+  this tree's done-leaf checklists split to `docs/tasks/archive/SOT-FORMAT.md` (per-part
+  ceiling obeyed, not raised — the P0-PROFILE precedent) and `CHANGELOG.md`'s oldest entry
+  sharded to `docs/changelog/shard-0003.md` (SHARD-FREEZE verified: 5 rows, exact partition).
+

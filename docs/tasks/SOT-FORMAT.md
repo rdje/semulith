@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `SOT-FORMAT`
-- Status: `active`
+- Status: `done` (10/10 leaves complete `2026-09-27`; `.6` registered the `SOURCE-FORMAT` gate
+  and closed the tree)
 - Roadmap lane: cross-cutting; the input side of the model generator engine
 - Gate: contributes `SOURCE-FORMAT` — a source of truth outside the format is refused
 - Depends on: `scripts/sexp.py` (the reader, already fired), `MODEL-COMPOSE.2` (fragments)
@@ -318,12 +319,46 @@ too, and under the split there is no rule by which it could.
     cross-boundary dependency resolves in the union.
 
 - ID: `SOT-FORMAT.6` — **the `SOURCE-FORMAT` gate, and the superseding record**
-  Status: `pending`
+  Status: `done`
   Goal: a doctrine gate that refuses a source of truth outside the format, so the split cannot
   return by accident. Supersede `decision_canonical-definition-input` in place; update the mdBook.
   Acceptance: gate registered in `scripts/check_doctrines.project.sh` with a `--self-test` fired RED
   before registration; the superseded decision carries its replacement and its reason; mdBook and
   `DOCTRINE_ENFORCEMENT.md` mirror the registry (checked by `REGISTRY-MIRROR`, not by eye).
+  Result: met, `2026-09-27`. `scripts/check_source_format.sh` registered as the 14th project
+  doctrine; the real corpus (28 source-of-truth files under `definitions/`, `schema/`,
+  `profiles/`, `materials/`) is green; the FORMAT arm fired RED before registration against a
+  scratch copy of the real corpus with one planted `profile.toml`. The supersession chain was
+  verified rather than assumed: the retired record has carried its replacement since
+  `SEMILITH-SF-0041`; two stale `pgen` lines found while reading for this leaf (the replacement
+  record's own *How to apply*, and both INDEX descriptions) are corrected, with the reason in
+  the record. The tree is 10/10 and closes.
+  Design (recorded before code, `2026-09-27`), reading the retired decision and the registry first:
+  - ⭐ **The supersession chain is already half-built, and verified, not assumed:**
+    `decision_canonical-definition-input` has carried `Status: superseded in part — the per-file
+    format split … replaced by [[decision_one-format-every-source-of-truth]]` since
+    `SEMILITH-SF-0041`, and the replacement record carries the matching `Supersedes:` line. What
+    remains is the gate itself, the registry mirrors, and two stale lines FOUND while reading for
+    this leaf (§15): the replacement record's own *How to apply* still says "Write the EBNF in
+    `pgen` and generate it" — contradicting its body, which settled on LinkedSpec at `.9` — and
+    `docs/decisions/INDEX.md` row repeats the stale `pgen` claim in both descriptions. Both are
+    corrected in passing, with the reason recorded here.
+  - **Corpus: the four source-of-truth families the routes registry governs** — `definitions/`,
+    `schema/`, `profiles/`, `materials/` (registry rows with per-part bounds, the single owner of
+    which families hold sources of truth). Scope per the tree's non-goals: `examples/` stays JSONL
+    (frozen delivery artifacts, the `.3` decision), `docs/` stays Markdown, and under `profiles/`
+    the dossier prose (`*.md`) and guest programs (`*.s`) are not sources of truth. The gate
+    refuses exactly the split's shapes: a tracked `.toml` / `.json` / `.jsonl` / `.yaml` in any of
+    the four families (FORMAT arm), and a tracked `.sexp` there that does not parse with
+    `scripts/sexp.py` (PARSES arm — "in the format" means the one reader reads it). An empty corpus
+    is REFUSED (nothing to judge), the same discipline the record gates carry.
+  - **Schema coverage is deliberately NOT this gate's lane.** RECORD-SCHEMA owns the record
+    catalogues, PROFILE-CONSISTENCY the dossier, the kernel the fixpoint, `compare_readers.py`
+    the reader agreement — two gates reporting one breach is noise. `SOURCE-FORMAT` owns exactly
+    one question: *nothing outside the format, nothing unreadable inside it.*
+  - Live-count consequences, re-derived at commit: project doctrines 13 → 14 (LIVE_STATUS row),
+    self-test arms + the new gate's, mirrored in `DOCTRINE_ENFORCEMENT.md`'s project table and the
+    mdBook `doctrines` chapter in the same commit. On completion the tree is 10/10 and closes.
 
 - ID: `SOT-FORMAT.7` — **the reader corrupts every non-ASCII string, and has no self-test**
   Status: `done`
@@ -401,7 +436,7 @@ too, and under the split there is no rule by which it could.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `SOT-FORMAT.6` | `pending` | the gate can only be green after the last file moved — and `.5` has now moved it |
+| — | — | — | the tree is complete (10/10 leaves done); `MODEL-COMPOSE.3` reads its merged view next |
 
 ## Decisions
 
@@ -452,126 +487,91 @@ too, and under the split there is no rule by which it could.
   update the pin. The earlier blocker — LinkedSpec's integration document — was **discharged** on
   `2026-09-20` by its publication at `ad290bdb4`.
 
-## Acceptance Checklist (leaf SOT-FORMAT.5)
+## Acceptance Checklist (leaf SOT-FORMAT.6)
 
-- [x] **REPRODUCE / ISSUE** — the split the tree exists to end, shown at the composition
-  boundary: §1.2 of `docs/ARCHITECTURE.md` promised "merging records and obligations across a
-  composition boundary … lands with `SOT-FORMAT.5`", and nothing in the repository could do it.
-  Census before this leaf:
-
-  ```
-  $ git ls-files scripts | grep -E 'merge|compose' | grep -v encoding_disjoint
-  (no output)                                        # union of records: no rule, no tool
-  $ grep -n 'by_id = ' scripts/check_requirements.sh
-  by_id = {r.get("id"): r for r in recs}             # and, measured below, silently collapsing
-  ```
-
-  ⭐ Two defects surfaced while designing the fix, probe-backed (TOOLS-FIRST, both before any
-  code was written):
-  1. **RECORD-SCHEMA never refused duplicate record ids.** Two records sharing an id collapsed
-     in the `by_id` map (last wins), so a catalogue could contradict itself and stay green:
-
-     ```
-     $ # scratch catalogue, two REQ-D-A records differing in 'risk', gate body extracted verbatim
-     $ python3 target/doctrine_scratch/dupprobe/gate_body.py target/doctrine_scratch/dupprobe
-     __CHECKED__ 1                                    # rc=0 — nothing refused the contradiction
-     ```
-
-  2. **Obligation `dependencies` were never checked at all** (the gate checks requirements'
-     only), and the corpus's environment-assumptions depend on *obligations*
-     (`OB-ENV-RESET` → `OB-ENTRY-STATE`), not on requirements — a namespace fact that had to be
-     measured, not assumed:
-
-     ```
-     $ # the merge's first closure run on the real profile (obligation deps looked up wrong)
-     DANGLING DEP obligation 'OB-ENV-RESET' depends on 'OB-ENTRY-STATE', which no unit provides
-     # yet OB-ENTRY-STATE IS an obligation record — 34 of 34 exist; the corpus is mixed-kind:
-     # cpu-guarantees depend on requirements, environment-assumptions on guarantees
-     ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a merge is only definable over one format,
-  and even with one format it is only *checkable* if ids are unique within each side and
-  references resolve across the union. WHERE: measured, not read —
+- [x] **REPRODUCE / ISSUE** — the split the gate exists to prevent, shown as a return path.
+  Every source of truth is converted (`.1`–`.5`), but nothing refused the split's re-entry: a
+  single `profile.toml` copied back from an old branch would sit in `profiles/` untracked by
+  any gate, and the merge rule `.5` defines would be meaningless again. Census before this leaf:
 
   ```
-  $ grep -n 'by_id = ' scripts/check_requirements.sh          # the gate's id → record map
-  by_id = {r.get("id"): r for r in recs}     # last wins: a duplicate id silently collapses
-  $ python3 target/doctrine_scratch/dupprobe/gate_body.py target/doctrine_scratch/dupprobe
-  __CHECKED__ 1                              # rc=0 — a self-contradicting catalogue stays green
+  $ git ls-files scripts | grep -c 'check_source_format'
+  0                                             # no gate owned "outside the format"
+  $ grep -c 'SOURCE-FORMAT' scripts/check_doctrines.project.sh DOCTRINE_ENFORCEMENT.md
+  0                                             # not in the registry or its mirrors
   ```
 
-  The gap sat between `scripts/records_sexp.py` (the mapping, which has no opinion about
-  duplicates) and that map; and between the gate's rule 5 (requirements-only dependency check)
-  and the obligation records' `dependencies`, which no rule owned.
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: retirement recorded only in prose decays —
+  decisions are read at adoption time and never again, while files are copied and exported
+  every week. WHERE: measured, not read —
 
-- [x] **FIX** — `scripts/merge_records.py`: the merge rule as data (key = id, content equality
-  on collision, `profile_ids` union, sources full-pin equality, closure over the union,
-  direction census for `.3`); RECORD-SCHEMA rule 8 (UNIQUE-ID) as the one owner of catalogue
-  discipline, with a fired RED arm. The merge reads only through the mapping owners and parses
-  nothing itself.
+  ```
+  $ grep -c 'SOURCE-FORMAT' scripts/check_doctrines.project.sh DOCTRINE_ENFORCEMENT.md
+  0                                             # no gate owned "outside the format"
+  $ git log -S'superseded in part' --oneline -- docs/decisions/decision_canonical-definition-input.md
+  4d0659a SEMILITH-SF-0041 …                   # the supersession predates this leaf
+  ```
+
+  The corpus boundary existed only as this tree's non-goals (`examples/` stays JSONL;
+  `docs/` stays Markdown), and no check enumerated the four source-of-truth families.
+
+- [x] **FIX** — `scripts/check_source_format.sh`: FORMAT arm (a tracked
+  `.toml`/`.json`/`.jsonl`/`.yaml` under `definitions/`, `schema/`, `profiles/`, `materials/`
+  is refused by name), PARSES arm (every tracked `.sexp` there parses with `scripts/sexp.py`),
+  empty-corpus refusal, `--self-test` with 7 arms, registered as the 14th project doctrine;
+  both mirrors updated in the same commit.
 
 - [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
 
   ```
-  $ python3 scripts/merge_records.py --self-test
-  merge_records --self-test: 18 pass / 0 fail        # 10 GREEN unions, 8 RED contradictions
-  $ python3 scripts/merge_records.py profiles/rv64i-lab-v0 profiles/rv64i-lab-v0
-  composed: 26 requirement(s), 34 obligation(s) (26 cpu-guarantee, 8 environment-assumption),
-            3 source(s) from 2 unit(s)              # the units COMPOSE — idempotent self-merge
-  $ # genuine contradiction, fired RED on real data (one statement edited in a copied unit):
-  CONFLICT requirement 'REQ-D-XLEN' between units 'profiles/rv64i-lab-v0' and
-  'target/doctrine_scratch/sf5/edited': field 'statement' differs — 'profiles/rv64i-lab-v0':
-  'XLEN = 64. …' vs 'target/doctrine_scratch/sf5/edited': 'XLEN = 32, edited …'   rc=1
-  $ # the composition-boundary case — an extension unit needing the base's REQ-D-XLEN:
-  $ python3 scripts/merge_records.py profiles/rv64i-lab-v0 target/doctrine_scratch/sf5/ext
-  composed: 27 requirement(s), 35 obligation(s) (27 cpu-guarantee, 8 environment-assumption),
-            4 source(s) from 2 unit(s)              # the units COMPOSE
-  $ python3 scripts/merge_records.py target/doctrine_scratch/sf5/ext        # base withheld:
-  DANGLING DEP requirement 'REQ-EXT-DEMO' … depends on 'REQ-D-XLEN', which no unit provides
+  $ bash scripts/check_source_format.sh --self-test
+  SOURCE-FORMAT --self-test: 7 pass / 0 fail     # 3 GREEN, 4 RED, each naming its reason
+  $ bash scripts/check_source_format.sh
+  SOURCE-FORMAT: ok (28 source-of-truth file(s) under definitions/ schema/ profiles/
+  materials/, all in the one format)
+  $ # RED before registration, against a scratch copy of the REAL corpus + one planted .toml:
+  OUTSIDE FORMAT profiles/p/profile.toml: a .toml file inside a source-of-truth family — refused
+  $ grep -c '^  "[A-Z]' scripts/check_doctrines.project.sh
+  14                                             # registered
   ```
 
-  And the RECORD-SCHEMA fix, before → after on the same probe:
+  Supersession, verified not assumed: the retired record has carried `Status: superseded in
+  part — … replaced by [[decision_one-format-every-source-of-truth]]` since `SEMILITH-SF-0041`
+  (shown by `git log -S'superseded in part'`). Two stale lines found while reading for this
+  leaf and corrected in passing: the replacement record's *How to apply* said "Write the EBNF
+  in `pgen`" against its own body (LinkedSpec, director-corrected `2026-09-14`), and both INDEX
+  descriptions repeated it.
 
-  ```
-  $ python3 target/doctrine_scratch/dupprobe/gate_body.py target/doctrine_scratch/dupprobe
-  DUPLICATE ID p/requirements.sexp: record 'REQ-D-A' appears more than once — …   rc=1
-  $ bash scripts/check_requirements.sh --self-test
-  RECORD-SCHEMA --self-test: 23 pass / 0 fail        # was 22; +1 DUPLICATE-ID arm
-  ```
+- [x] **NO REGRESSION** — `scripts/check_derived_counts.sh --list` re-derives 14 doctrines /
+  184 arms against LIVE_STATUS; REGISTRY-MIRROR passes (both mirrors list exactly the
+  registered set); the full enforcer green after staging.
 
-- [x] **NO REGRESSION** — sexp 18/0; kernel 50/0; merge 18/0; RECORD-SCHEMA 23/0 and its real
-  run green (`5 record file(s) validate and agree with their profile` — the real catalogues
-  carry no duplicate ids, so rule 8 bites nothing that exists); `check_semantics.py` 52 of 52;
-  `check_citations.py` 52 of 52; `materials.py --self-test` 20/0; `run_smoke.py` ok;
-  `compare_readers.py` 28 of 28 agree; the regenerated G0 report diffs in nothing;
-  `make check` green. Whole gate green after staging.
+- `promotion: declined (the corpus-boundary lesson — a scope that lives only in a tree's
+  non-goals is a scope nobody enforces — is demonstrated by this leaf's own census arms and
+  stated in the gate's header, where anyone registering a new family will meet it).`
 
-- `promotion: recorded (the duplicate-id lesson is general — an id-keyed lookup that silently
-  collapses duplicates turns a self-contradicting catalogue green; the gate now carries the
-  rule, the lesson card is docs/knowledge/a-duplicate-id-is-a-contradiction-not-a-shadowing.md).
-  The mixed-namespace dependency fact is declined here — it is measured, owned and enforced by
-  merge_records.py's closure, where anyone extending the record families will meet it.`
-
-- [x] **LOCKSTEP** — `docs/ARCHITECTURE.md` §1.2 (the merge is no longer "lands with
-  `SOT-FORMAT.5`" — it is checked today, the tool named); `TOOLBOX.md` gains the instrument;
-  `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md` (177 arms re-derived),
-  `docs/TASK_TREE.md` and this tree — one commit. Maintenance the growth fired, same commit:
-  this tree's done-leaf checklists split to `docs/tasks/archive/SOT-FORMAT.md` (per-part
-  ceiling obeyed, not raised — the P0-PROFILE precedent) and `CHANGELOG.md`'s oldest entry
-  sharded to `docs/changelog/shard-0003.md` (SHARD-FREEZE verified: 5 rows, exact partition).
+- [x] **LOCKSTEP** — `DOCTRINE_ENFORCEMENT.md` and the mdBook `doctrines` chapter carry the
+  new row in the registering commit; `LIVE_STATUS.md` (14 doctrines, 184 arms, re-derived);
+  the two corrected decision records + INDEX; `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  `docs/TASK_TREE.md`, this tree — one commit. The tree closes at 10/10.
 
 ## Completed-leaf evidence
 
 Archived to [`archive/SOT-FORMAT.md`](archive/SOT-FORMAT.md) — the full, unedited acceptance
-checklists for every `done` leaf (`.1`–`.4`, `.7`–`.10`). Split out when this file crossed its
-per-part ceiling (79,270 bytes against 65,536); the ceiling was obeyed, not raised. The live
-tree keeps the frontier, the decisions, the open questions, the current leaf's checklist and
-both logs.
+checklists for every `done` leaf (`.1`–`.5`, `.7`–`.10`). Split out across two events on
+`2026-09-27` (after `.5`, then after `.6`), each time the live file crossed its per-part
+ceiling; the ceiling was obeyed, not raised. The live tree keeps the frontier, the decisions,
+the open questions, the final leaf's checklist and both logs.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `SOT-FORMAT.6` | `--self-test` | `7 pass / 0 fail` — 3 GREEN, 4 RED, each naming its reason |
+| `2026-09-27` | `SOT-FORMAT.6` | real run | `ok (28 source-of-truth file(s) … all in the one format)` |
+| `2026-09-27` | `SOT-FORMAT.6` | RED before registration (scratch copy of the real corpus + one planted `profile.toml`) | `OUTSIDE FORMAT profiles/p/profile.toml … refused` |
+| `2026-09-27` | `SOT-FORMAT.6` | supersession chain | `git log -S'superseded in part'` → present since `SEMILITH-SF-0041`; two stale `pgen` lines corrected in the replacement record and both INDEX rows |
+| `2026-09-27` | `SOT-FORMAT.6` | counts re-derived | `check_derived_counts.sh --list`: 14 doctrines, 184 arms; `REGISTRY-MIRROR` green |
 | `2026-09-27` | `SOT-FORMAT.5` | merge `--self-test` | `18 pass / 0 fail` — 10 GREEN union arms, 8 RED contradiction arms, each naming its fact |
 | `2026-09-27` | `SOT-FORMAT.5` | real profile idempotent self-merge | 26 req + 34 ob (26 cpu-guarantee, 8 environment-assumption) + 3 src — COMPOSE |
 | `2026-09-27` | `SOT-FORMAT.5` | genuine contradiction on real data (one statement edited in a copied unit) | `CONFLICT requirement 'REQ-D-XLEN' … field 'statement' differs`, both units named, `rc=1` |
@@ -641,6 +641,7 @@ both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `SOT-FORMAT.6` | `SEMILITH-SF-0061 (leaf SOT-FORMAT.6): …` | the SOURCE-FORMAT gate registered; the supersession verified and tidied; the tree closes 10/10 |
 | `SOT-FORMAT.5` | `SEMILITH-SF-0060 (leaf SOT-FORMAT.5): …` | the record merge is definable and checked; RECORD-SCHEMA gains UNIQUE-ID; two probe-found defects closed |
 | `SOT-FORMAT.4` | `SEMILITH-SF-0059 (leaf SOT-FORMAT.4): …` | the dossier behind the schema layer; the reserved comment head; six schemas; 39 arms re-fired; byte-identical override derivation |
 | `SOT-FORMAT.3` | `SEMILITH-SF-0058 (leaf SOT-FORMAT.3): …` | the records behind the schema layer; field facets; typed parameters; byte-identical round-trip; 22 record arms |

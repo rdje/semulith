@@ -97,7 +97,11 @@ yet means integrating against today's internals, which is how a submodule become
 - **Adding a source of truth?** It is `.sexp`, and its constructs are declared in `schema/`.
 - **Adding a construct?** Write the schema file. If you are editing Python to add a construct, the
   schema layer has a hole and the hole is the bug.
-- **Needing a parser in Rust?** Write the EBNF in `pgen` and generate it.
+- **Needing a parser in Rust?** It comes from LinkedSpec, via the vendored submodule
+  (`SOT-FORMAT.9`) — no S-expression parser is hand-written in this project's crates. Corrected
+  `2026-09-27` (`SOT-FORMAT.6`): this bullet still said `pgen`, contradicting the record's own
+  body above, which the director corrected on `2026-09-14` — *"Not it is not PGEN. It is
+  LinkedSpec with the Rust backend and the Lispish.spec."*
 
 Related: [[decision_canonical-definition-input]], [[decision_composition-model]],
 [[decision_one-definition-one-book]], [[a-parse-without-error-is-not-a-faithful-read]].

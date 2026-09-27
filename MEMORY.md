@@ -13,8 +13,9 @@
 
 - **Project:** semulith — trustworthy CPU/DSP software models in Rust; planning package v0.2
   is the design input, `ROADMAP.md` v0.3 is the plan. No CPU code exists yet.
-- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `SOT-FORMAT` (9/10), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
-- **Frontier leaf:** `SOT-FORMAT.6` — the `SOURCE-FORMAT` gate, refusing any source of truth outside the format. `.5` is done: the record merge is definable and checked — `scripts/merge_records.py` unions two units' requirements/obligations/sources by id (same id ⇒ same content, `profile_ids` unions, sources full-pin equality, references resolve across the union) — the real profile self-composes (26+34+3), an edited copy is refused naming the field, and `MODEL-COMPOSE.3` can read the merged view (`merge_units(…)` + direction census). Two probe-found defects closed en route: RECORD-SCHEMA rule 8 (UNIQUE-ID — duplicate ids collapsed silently) and the obligation-dependency namespace (guarantees→requirements, assumptions→guarantees), both measured, not assumed.
+- **Active trees:** `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-METHOD` (6/13), `MODEL-COMPOSE` (2/6), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
+- **Closed `2026-09-27`:** `SOT-FORMAT` (10/10) — the `SOURCE-FORMAT` gate (14th project doctrine) refuses any source of truth outside the format across the four families; the format split cannot return by accident. `DOC-SHARDING` closed the same day.
+- **Frontier leaf:** `MODEL-COMPOSE.3` — assumption/guarantee discharge: its merge input exists (the record merge's `merge_units(…)` + direction census), so the inter-unit operator — every sub-unit `environment-assumption` matched by a named guarantee or the composition is rejected — is the next slice. The 8 assumptions `rv64i-lab-v0` carries are the first real input.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible to new constructs in the same format — composition is a merge, and three formats are three merge semantics (`decision_one-format-every-source-of-truth`).
 - **Direction (delegated, 2026-09-27):** `ROADMAP.md` **v0.3** adopted — P1's start condition is `SOT-FORMAT.2` (now done) + `MODEL-METHOD.10`; the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone (`decision_lane-consumption`).
 - **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm is a first-class target from the first crate (`decision_browser-wasm-target`); lane `PORT-WEB` (proposed, consumed by `P1-LAB`) owns it, leaf `.1` activates with `P1-LAB.1`.
@@ -23,12 +24,12 @@
   `$SEMULITH_CHIPDOC_ROOT`, never from a tracked file.
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is
   docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Next action:** `SOT-FORMAT.6` — register the `SOURCE-FORMAT` gate in `scripts/check_doctrines.project.sh` (a source of truth outside the format is refused; `--self-test` fired RED before registration), supersede `decision_canonical-definition-input` in place, mirror the registry in the mdBook and `DOCTRINE_ENFORCEMENT.md`. Then `MODEL-COMPOSE.3` (assumption/guarantee discharge — its merge input exists now). P1's start condition stays half-met (`MODEL-METHOD.10` open). ⛔ Everything moves only behind the schema layer, never before.
+- **Next action:** `MODEL-COMPOSE.3` — the assumption/guarantee discharge (`docs/CPU_ENVIRONMENT.md` §5 in mechanical form): match every sub-unit `environment-assumption` against a named guarantee or reject the composition, fired RED by removing one guarantee; the 8 assumptions `rv64i-lab-v0` carries are the first real input, read through `merge_units(…)`. P1's start condition stays half-met (`MODEL-METHOD.10` open). ⛔ Everything moves only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**. Proving
   correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-METHOD.10` (is the definition sufficient for an engine), `MODEL-COMPOSE.3`
-  (assumption/guarantee discharge — needs `SOT-FORMAT.5`'s record merge), `MODEL-BOOKS.1`.
-  `DOC-SHARDING` closed 2026-09-27 (shard tool + `SHARD-FREEZE`; headroom restored).
+  (assumption/guarantee discharge — its merge input, `scripts/merge_records.py`, exists),
+  `MODEL-BOOKS.1`.
   ⭐ Director input to schedule (no pivot taken): chipdoc's corpus carries a semulith feed
   (`$SEMULITH_CHIPDOC_ROOT/SEMULITH.md` → `catalog/semulith-proposals.sexp`: psABI, SBI, BRS,
   U-Boot, DT, FU540, virtio, ACT + a standing offer to fetch more); a MODEL-METHOD catalogue

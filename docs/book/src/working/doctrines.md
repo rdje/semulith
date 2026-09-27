@@ -50,6 +50,7 @@ These ship with the discipline spine and are project-neutral:
 | `RECORD-SCHEMA` | every record file validates on its track (JSONL by schema, catalogues by the schema layer), cites only pinned sources, and states what its profile states |
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
 | `SHARD-FREEZE` | the sharded changelog history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards |
+| `SOURCE-FORMAT` | every source of truth the engine extracts from is in the one format — a retired-format file in a source-of-truth family is refused by name, and every `.sexp` there parses with the one reader |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each was
 fired RED before being registered, and each **refuses** — exit 2, not exit 0 — rather than
