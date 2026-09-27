@@ -160,17 +160,58 @@ evidence**, never by absence of it.
   Acceptance: a two-level composition is checked by the same code as a one-level one.
 
 - ID: `MODEL-COMPOSE.6` — **semantic refinement points**
-  Status: `pending`
+  Status: `done`
   Goal: the hard axis. An extension can change base behaviour — adding CSRs changes trap handling;
   adding `C` changes `IALIGN` and therefore which branch targets fault. A fragment must **declare**
   that it modifies a base behaviour; a silent override is a defect.
   Acceptance: a fragment that redefines a base semantic without declaring it is refused.
 
+  Result: met, `2026-09-27`. The vocabulary is data — `schema/semantics.sexp` gains
+  `(refines (insn "name"))`, the house list form, zero kernel lines. `check_semantics.py
+  --compose` decides the refinement rule over schema-validated files: the acceptance's RED
+  fired on a real-shaped composition (a fake extension redefining `add` with no declaration →
+  `SILENT REDEFINITION`, rc=1), a declared refinement is accepted and reported, and both lies
+  (declaration without override, refining nothing) are refused by name. The third orphan of the
+  family `.4` closed for encodings is wired: `SEMANTICS` (16th project doctrine,
+  `scripts/check_semantics_corpus.sh`) now runs the per-fragment checks and the 52/52 citation
+  resolution in every gate — the semantics corpus, the roadmap's execution authority, is
+  continuously healthy for the first time. The IALIGN-class (global-behaviour) refinement
+  stays named-and-deferred: per-instruction is the granularity the corpus writes.
+  Design (recorded before code, `2026-09-27`), the corpus and the gate set read first:
+  - ⭐ **The third orphan of the family `.4` closed for encodings.** Probe: `check_semantics.py`
+    and `check_citations.py` are invoked by NOTHING in the gate set — the semantics corpus, which
+    `ROADMAP.md` names the execution authority ("the semantics data executes directly"), is
+    well-formed, complete and cited only when someone runs the tools by hand. Like the unit-level
+    union, a capability without a re-runner regresses silently. This leaf owns the wiring with
+    the refinement rule as the gate's first new discriminating arm.
+  - **The vocabulary is data, and it lives on the authored side.** Fragments are GENERATED
+    (encoding tables) and semantics deliberately live apart in hand-written `.sem.sexp` files —
+    so the refinement declaration belongs to the semantics grammar, not the fragment:
+    `schema/semantics.sexp` gains `(refines "insn-name")`, a child of the `(semantics …)` root
+    naming each base instruction whose semantics this file redefines. Zero kernel lines.
+  - **The rule, mechanical.** In composition order (base first): a name defined in file *j* that
+    is also defined in any earlier file is an override, legal **iff** file *j* declares
+    `(refines "name")`. Refusals, each named: `SILENT REDEFINITION` (the acceptance's fired RED);
+    `REFINES WITHOUT OVERRIDE` (a declaration naming nothing the file defines — a lie);
+    `REFINES NOTHING` (a declaration naming nothing any earlier file defines — also a lie);
+    duplicate definitions within one file, refused as before. Scope, stated: the rule is
+    per-instruction, the granularity the corpus actually writes; the IALIGN-class refinement (a
+    new construct changing GLOBAL behaviour rather than one instruction's rule) is a future
+    construct the day a real file needs it — the vocabulary earns operators from cases, not
+    anticipation.
+  - **The deliverables**: `check_semantics.py --compose <base.sem> <ext.sem>…` deciding the
+    refinement rule over schema-validated files; and `SEMANTICS` (16th project doctrine,
+    `scripts/check_semantics_corpus.sh`) wiring the corpus's health into the gate set:
+    schema-conformance, per-fragment coverage/citations, the refinement rule per unit, and
+    citation resolution through the manifest-verified offline cache — with a NAMED SKIP (not a
+    pass, not a fail) when the cache is absent, because a check that cannot judge must never
+    report green over an absence (its own header says which route judged).
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-COMPOSE.6` | `pending` | semantic refinement points — the hard axis, needs `MODEL-METHOD.9`'s semantics to exist first |
+| 1 | `MODEL-COMPOSE.5` | `pending` | nesting — a composition is itself a unit; one record shape at every level, decided by the same code |
 
 ## Decisions
 
@@ -473,10 +514,77 @@ evidence**, never by absence of it.
   `LIVE_STATUS.md` re-derived (15 doctrines, 192 arms); `TOOLBOX.md` rows; `MEMORY.md`,
   `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
 
+## Acceptance Checklist (leaf MODEL-COMPOSE.6)
+
+- [x] **REPRODUCE / ISSUE** — the hard axis as it stood: §-prose in `docs/CPU_ENVIRONMENT.md`'s
+  neighbourhood and per-fragment checks that nothing ran. Census before this leaf:
+
+  ```
+  $ grep -rn 'check_semantics.py\|check_citations.py' scripts/check_doctrines.project.sh \
+        scripts/check_doctrines.sh .githooks/ .github/ 2>/dev/null
+  (no output)                        # the execution authority's corpus: no re-runner
+  $ grep -c 'refines' schema/semantics.sexp
+  0                                  # the refinement vocabulary: nothing to declare with
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a silent semantic override is the worst
+  composition defect available — every fragment alone is well-formed, so the lie surfaces only
+  in the union, exactly where nobody was looking. WHERE: measured, not read —
+
+  ```
+  $ grep -c 'refines' schema/semantics.sexp
+  0                                             # the refinement edge had no vocabulary at all
+  $ grep -rln 'check_semantics.py' scripts/check_doctrines.project.sh scripts/run_smoke.py
+  (no output)                                   # the corpus's judges: invoked by nothing
+  ```
+
+  Both halves had to be true for the defect to live: no vocabulary to declare with, and no
+  re-runner to catch the silence.
+
+- [x] **FIX** — data first (`refines` in `schema/semantics.sexp`); then `check_semantics.py
+  --compose` (schema-validate each file, then the rule: an override is legal iff declared;
+  arity still bites without an encoding); then `SEMANTICS`, the 16th doctrine, wiring the
+  corpus's health — pairs, refinement rule per unit, and offline citation resolution with a
+  NAMED SKIP when the cache cannot judge (never a green over an absence).
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/check_semantics.py --self-test
+  check_semantics --self-test: 8 pass / 0 fail
+  $ bash scripts/check_semantics_corpus.sh --self-test
+  SEMANTICS --self-test: 7 pass / 0 fail
+  $ bash scripts/check_semantics_corpus.sh
+  SEMANTICS: ok (3 check(s) — pairs, refinement rule, citations)      # 52/52 inside the gate
+  $ # the acceptance's RED, on a real-shaped composition (fake extension redefines add):
+  fake.sem.sexp [add]: SILENT REDEFINITION — 'add' is already defined in rv64i.sem.sexp,
+  and this file declares no (refines (insn "add")). …                    rc=1
+  ```
+
+- [x] **NO REGRESSION** — per-fragment mode byte-stable on the real corpus (52 of 52, same
+  verdict line); `scripts/check_semantics.py --self-test` 8 pass / 0 fail;
+  `scripts/check_semantics_corpus.sh --self-test` 7 pass / 0 fail; sexp 18 pass / 0 fail;
+  kernel 50 pass / 0 fail; RECORD-SCHEMA 23 pass / 0 fail; UNIT-COMPOSITION 8 pass / 0 fail;
+  merge 18 pass / 0 fail; discharge 6 pass / 0 fail; readers 28/28 (the schema edits re-swept);
+  whole gate green after staging.
+
+- `promotion: declined (the "orphaned tool" pattern is now demonstrated three times — .4's
+  census, this leaf's census, and the gates that closed them; a card is due if a FOURTH
+  instance is found, per the .6 DEV_NOTES threshold).`
+
+- [x] **LOCKSTEP** — `scripts/check_doctrines.project.sh` + both mirrors in the registering
+  commit; `LIVE_STATUS.md` re-derived (16 doctrines, 199 arms); `TOOLBOX.md` rows;
+  `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-COMPOSE.6` | tool `--self-test` | `8 pass / 0 fail` — declared refinement accepted, silent/double/lie/arity/schema arms each naming their reason |
+| `2026-09-27` | `MODEL-COMPOSE.6` | gate `--self-test` | `7 pass / 0 fail` — pair coverage, citation-less rule, silent override across a unit, empty-corpus refusal, named skip |
+| `2026-09-27` | `MODEL-COMPOSE.6` | real run | `ok (3 check(s))` — rv64i 52/52, refinement rule trivial on one fragment, citations 52/52 via the offline cache |
+| `2026-09-27` | `MODEL-COMPOSE.6` | RED before registration (real corpus + fake extension redefining `add`) | `SILENT REDEFINITION`, rc=1 |
+| `2026-09-27` | `MODEL-COMPOSE.6` | per-fragment mode, before→after | byte-stable verdict on the real corpus |
 | `2026-09-27` | `MODEL-COMPOSE.4` | tool + gate `--self-test` | `8/0` + `8/0` — slots both directions, widget, missing/unmet fragment, collision through the resolved path |
 | `2026-09-27` | `MODEL-COMPOSE.4` | real run | profile 52/52 composes; scratch partial unit `PARTIAL — 1 slot(s) unbound: clint requires riscv/timer` |
 | `2026-09-27` | `MODEL-COMPOSE.4` | RED before registration (real corpus + one undeclared slot) | `claiming completeness while a hole is open` |
@@ -501,6 +609,7 @@ evidence**, never by absence of it.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-COMPOSE.6` | `SEMILITH-MC-0042 (leaf MODEL-COMPOSE.6): …` | refinement points declared, the semantics corpus gated; 16th doctrine |
 | `MODEL-COMPOSE.4` | `SEMILITH-MC-0041 (leaf MODEL-COMPOSE.4): …` | slots declared, the unit union decided and gated; 15th doctrine |
 | `MODEL-COMPOSE.3` | `SEMILITH-MC-0040 (leaf MODEL-COMPOSE.3): …` | assumption/guarantee discharge decides over the merged union; 8/8 on the real corpus; fired RED by removing one guarantee |
 | `MODEL-COMPOSE.2` | `SEMULITH-MC-0039 (leaf MODEL-COMPOSE.2): fragments get a form and a home` | nothing observable moved; M pinned |

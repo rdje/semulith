@@ -8,6 +8,32 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — a silent override is refused, and the execution authority gets its gate (MODEL-COMPOSE.6)
+
+Root cause this leaf closes: two measurements, one design. (1) The refinement edge had no
+vocabulary — nothing in `schema/semantics.sexp` could declare "this extension changes that
+base behaviour", so a silent override was indistinguishable from a composed corpus. (2) The two
+tools that judge the semantics corpus — `check_semantics.py` (well-formed, complete, cited)
+and `check_citations.py` (52/52 locators resolve) — were invoked by NOTHING in the gate set;
+the corpus the engine will execute was healthy only when someone ran them by hand. The third
+orphan of the family `MODEL-COMPOSE.4` closed for encodings — the same probe, the same
+shape, the same fix: wire the capability into the gate set or watch it rot.
+
+Design choices, stated: the declaration lives on the AUTHORED side (the `.sem.sexp` files),
+never in the generated fragments — generated and hand-derived content have different provenance
+and must not share a file, the `rv64i.sem.sexp` header's own rule. The compose mode
+schema-validates each file first and refuses a violating FILE as a rejection (rc=1), reserving
+rc=2 for a broken language. The citation arm NAMED-SKIPs when neither the fetched area nor the
+manifest-verified cache exists — a check that cannot judge never reports green.
+
+Validation: tool `--self-test` 8/0 (declared refinement accepted; silent/double/lie/arity/schema
+arms each naming their reason); gate `--self-test` 7/0; real run `ok (3 check(s))` with
+52/52 citations inside the gate for the first time; the acceptance's RED on a real-shaped
+composition. Per-fragment mode byte-stable.
+
+Lessons: declined here (the "orphaned tool" pattern is now demonstrated three times; a knowledge
+card is due on a FOURTH instance — that is the threshold, stated so the count is honest).
+
 ## _(2026-09-27)_ — slots are data, and the unit's union is decided again (MODEL-COMPOSE.4)
 
 Root cause this leaf closes: two substrate defects found by probe before any code. (1) Since
@@ -604,31 +630,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   discriminates. Promoted:
   [`docs/knowledge/census-instrument-signature-gap.md`](docs/knowledge/census-instrument-signature-gap.md).
   Upstream owner: this is a `bedrock` template defect, not a Semulith one.
-
-## _(2026-09-04)_ — a template's trial must include the first commit
-
-- Every gate was green on the generated project and the first commit still failed: the doctrines judge STAGED
-  code, and nothing had been staged until the user tried. Trial the path a user walks, to its end.
-- `grep -c` prints `0` and exits 1. `$(grep -c … || echo 0)` therefore yields `0⏎0` — a second line — which
-  here started a flush-left line inside a checklist bullet and hid its evidence from the box-scoped extractor.
-  Capture the count, then default the empty case; never append a fallback to grep's own output.
-
-## _(2026-09-04)_ — a green gate that judges nothing is the class a template must not ship
-
-- Two of the four doctrine ports in `.2.6` were wrong on first run and their own RED self-test arms said so:
-  a `python3 - <<'PY'` detector whose stdin was the heredoc (every arm read 0 rows), and a `grep -c … | grep -qx 0`
-  control under `pipefail` (`grep -c` prints 0 and exits 1). A self-test with only GREEN arms would have passed both.
-- The neutrality bar is measured, not felt: `grep -ciE 'grammar|parser|…'` over each ported script → 0, after the
-  generic uses of "corpus" and "grammar" were re-worded ("tree", "syntax") so the count means what it says.
-
-## _(2026-09-14)_ — a parser's error paths say nothing about the content it returns
-
-- `"".join(buf).encode().decode("unicode_escape")` is a **Latin-1** decoder. Every `§` in this
-  project's semantics fragment came back as `Â§`, every `—` as three characters of noise — all 52
-  specification citations, corrupted on read, by a reader that raised no error and by a suite in
-  which no instrument was pointed at fidelity. Promoted to
-  [`a-parse-without-error-is-not-a-faithful-read`](docs/knowledge/a-parse-without-error-is-not-a-faithful-read.md).
-- The reader every source of truth in the repository depends on had **no self-test at all**, and
-  I was one leaf away from building a schema layer on top of it. Read the foundation before you
-  stand on it; 18 arms cost twenty minutes and the first three were RED.
 

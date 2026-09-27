@@ -19,7 +19,11 @@
 (construct (name semantics)
   (field (name fragment) (type string))
   (field (name xlen) (type integer))
-  (field (name sem) (type form) (head sem) (repeat yes)))
+  (field (name sem) (type form) (head sem) (repeat yes))
+  (field (name refines) (type form) (head refines) (repeat yes) (optional yes)))
+
+(construct (name refines)
+  (field (name insn) (type string)))
 
 (construct (name sem)
   (field (name insn) (type symbol))
