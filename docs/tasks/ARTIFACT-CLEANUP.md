@@ -146,6 +146,8 @@ cleanup happened and what it removed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-28` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` + per-dir `uniq -c` | 132 files / 720 M, all in cargo `*/incremental/*` dirs (`target/` own + wasm32 profiles, `.app-data/target/` vendored-consumer builds); 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; 7 crate-source fixtures kept |
+| `2026-09-28` | `ARTIFACT-CLEANUP` (time-triggered run) | post-delete re-census + `du -sh` | 0 incremental `.bin`; `.app-data` 2.0 G → 1.4 G, `target` 3.1 G → 3.0 G; `git status` clean apart from intended files; `bash scripts/check_doctrines.sh` green |
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` | 40 files / 341 M, all in cargo incremental dirs |
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | kept-items classification: `.bin`/`.log` outside incremental | 7 crate-source fixtures (inputs), 13 `target/refs/*.log` (evidence) — kept |
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | post-delete re-census + `du -sh` | 0 incremental .bin; `.app-data` 1.4 G → 1.1 G |

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMILITH-AC-0052 (tree ARTIFACT-CLEANUP) — the 2026-09-28 cleanup run
+
+- §8 time-triggered run (last record `2026-09-26`): pre-delete census 132 cargo incremental-cache `.bin` files / 720 MB, every one under a cargo `*/incremental/*` directory (`target/` own + wasm32 profiles, `.app-data/target/` vendored-consumer builds); 0 stray `.bin`/`.log` in `target/release` / `target/debug/deps`; the 7 `.app-data/cargo-home/**/tests/data/*.bin` crate-source fixtures classified inputs and kept. Post-delete re-census: 0 incremental `.bin`; `.app-data` 2.0 G → 1.4 G. Record overwritten (latest entry only) and the run evidenced in the tree's Verification Log; enforcer green.
+
 ## SEMILITH-PL-0006 (leaf P1-LAB.6) — the canonical definition, generated
 
 - `semulith-core::definition` exists, and it is generated: `scripts/gen_definition.py` lowers the unit's canonical definition — `profiles/rv64i-lab-v0/encoding.sexp` composing `definitions/riscv/rv64i.sexp` through the one shared resolver, plus `definitions/riscv/rv64i.sem.sexp`, the execution authority — into 12 operand fields (scatters attached), 52 decode rows (mask/value/operands/upstream-table/locator), and every semantics rule's effect tree as a typed `Sem` value. OWN-01 holds structurally: the semantics DATA owns each rule; there is no handwritten second copy, and the interpreter slice (`.8`) will evaluate exactly these trees. `decode(word)` is generated fixed-bit dispatch; a word no entry matches is reserved-decode, the caller's classification.
