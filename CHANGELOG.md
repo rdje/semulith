@@ -1,5 +1,26 @@
 # CHANGELOG.md
 
+## SEMILITH-MC-0041 (leaf MODEL-COMPOSE.4) — slots are data, and the unit's union is decided again
+
+Top-down composition with holes is real, and it is declared, never inferred: `compose`
+gains `(status complete|partial)` and `(slot (id …) (requires …))` in
+`schema/encoding.sexp` — zero kernel lines. A partial composition passes the checks
+that apply and is reported partial (`PARTIAL — 1 slot(s) unbound: clint requires riscv/timer`);
+a composition claiming completeness while a hole is open is refused, and a partial declaration
+with nothing unbound is refused too — both directions of the silence rule.
+
+⭐ The substrate was two measured defects, not one. Since `MODEL-COMPOSE.2` moved the
+instructions into fragments, nothing decided the unit's composed encoding space — the disjointness
+checker read compositions its own way and could no longer read a unit at all. And it never
+schema-validated its input (a planted `(widget "x")` passed silently). Both are closed:
+one resolver (`riscv_asm.resolve_composition`) now serves the assembler and the
+checker, the composition document and each resolved fragment validate against the schema layer
+before unioning, and `UNIT-COMPOSITION` (15th project doctrine) decides every tracked
+unit — the profile composes 52/52. Two more latent bugs of the same family surfaced in the
+resolver itself (`[0]`-indexed children the 0-or-more grammar does not guarantee) and are
+fixed with arms proving the absent-marker paths. Nothing observable moved: every guest still
+assembles, matches, and reproduces.
+
 ## SEMILITH-MC-0040 (leaf MODEL-COMPOSE.3) — assumption/guarantee discharge is a verdict
 
 The composition claim is conditional no longer in name only. `scripts/discharge_assumptions.py` is
@@ -937,42 +958,5 @@ single-file-ness.
 sufficient: **semantics are still absent** — the decisions are English prose and nothing
 machine-executable exists. `MODEL-METHOD.9` owns that, and `.10` turns *"the engine can extract all
 it needs"* from an intention into a verdict that gates writing model code at all.
-
-
-## SEMULITH-MM-0036: one canonical definition, one book — the unit that grows
-
-**What changed.** The north star, stated and made structural: Semulith models **as much as
-possible** — CPUs, MCUs, DSPs, devices, boards, SoCs, eventually whole computers — and **starts
-small and grows**. The structural consequence:
-
-> **The unit of modelling is the unit of documentation.** Every canonical definition gets its own
-> mdBook, its own materials bill and its own coverage census, describing how it went **from PDFs,
-> specifications and descriptions to a fully functional model**.
-
-`docs/ARCHITECTURE.md` already named the unit — *"later devices and boards receive their own
-canonical definitions"* — so this adopts existing vocabulary rather than inventing a parallel one.
-What it adds is that a definition is not complete until the book explaining how it was built exists
-beside it.
-
-**Kind and layer decide what a unit may own.** A `cpu`/`mcu`/`dsp` owns instruction semantics and
-its environment *assumptions*, never devices. A `device` owns one device's contract. A
-`board`/`soc` owns composition, never the semantics of the parts it composes.
-
-⭐ **The layer names the OWNER, not merely a deferral** — and that is what makes a coverage census
-honest. `C19 Platform, devices and interconnect` is `deferred-to-board` for a CPU and `covered` for
-a board: the same category, the same catalogue, a different unit answering it. It is also why the
-catalogue is keyed on a **unit** rather than a processor profile — a board's census and a CPU's
-census become the same schema answered differently, which is what makes the second unit cheap
-instead of a redesign.
-
-**Starting small, deliberately.** Exactly one unit exists: `rv64i-lab-v0`, kind `cpu`. Nothing is
-pre-built for units that do not — no board directory, no device schema, no speculative chapters.
-⛔ And the kinds table is a **hypothesis** until a second unit tests it; `MCU` and `SoC` in
-particular have never been exercised, and the first board or DSP is expected to correct it. That
-correction is normal, not a failure of the decision.
-
-⚠️ A book is written for a model that is **not yet finished**, and says so. The first will describe
-a model whose gate reads `incomplete` — hiding that until the model is done would make the book a
-retrospective rather than a method, and the method is the transferable part.
 
 

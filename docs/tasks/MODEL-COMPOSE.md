@@ -106,11 +106,53 @@ evidence**, never by absence of it.
     discharge-specific REDs — a chain and a zero-dependency assumption, synthetic.
 
 - ID: `MODEL-COMPOSE.4` — **slots: top-down composition with holes**
-  Status: `pending`
+  Status: `done`
   Goal: a composition may declare an unbound slot with its requirements, so shape, address space
   and unmet requirements are checkable **before the parts exist**.
   Acceptance: a partial composition passes the checks that apply and is reported partial; a
   composition claiming completeness with an unbound slot is rejected.
+  Result: met, `2026-09-27`. The vocabulary is data — `compose` gained `(status complete|partial)`
+  and `(slot (id …) (requires …))` in `schema/encoding.sexp`, zero kernel lines. The composition
+  checker now consumes the ONE shared resolver (`riscv_asm.resolve_composition`, extracted), and
+  `UNIT-COMPOSITION` (15th project doctrine, `scripts/check_unit_composition.sh`) decides every
+  tracked unit: the profile composes 52/52 today; a real-shaped partial unit reports
+  `PARTIAL — 1 slot(s) unbound: clint requires riscv/timer`; the completeness claim with a hole
+  fires RED. The substrate defects that would have made the verdict a claim without legs — the
+  unit-level union undecided since `.2`, the checker not schema-validating its input — are closed
+  and gated.
+  Design (recorded before code, `2026-09-27`), grounded in three measured facts read from the
+  code first:
+  - ⭐ **Two substrate defects, probe-measured, own this leaf's shape.** (1) Since `MODEL-COMPOSE.2`
+    moved the 52 instructions into fragments, `check_encoding_disjoint.py` can no longer consume a
+    unit's `encoding.sexp` — probe: `check_encoding_disjoint.py profiles/rv64i-lab-v0/encoding.sexp`
+    → `REFUSED … yielded no instructions`, rc=2, and no gate invokes the tool on the unit's
+    fragments, so **nothing today decides the unit's composed encoding space**; `.1`'s capability
+    silently regressed the day `.2` landed. (2) The tool never schema-validates its input — probe:
+    a `compose` with an undeclared `(widget "x")` field passes it silently (the schema layer
+    refuses the same file by name). Slots live in the compose form, so both defects are this
+    leaf's substrate: a slot verdict on a document nobody validates, over a union nobody decided,
+    would be a claim without legs.
+  - **The vocabulary is data (zero kernel lines).** `compose` gains an optional
+    `(status SYMBOL {complete|partial})` and a repeated `(slot …)` child; `slot` is one
+    `(id SYMBOL)` and `(requires STRING…)` — the fragment ids the bound unit must provide.
+    `partial` is DECLARED, never inferred from silence: a composition with slots but no
+    `(status partial)` is claiming completeness while unbound → refused; `(status partial)` with
+    no slots declares a hole that isn't there → refused. A slot's `requires` are NOT
+    existence-checked — requiring a part that does not exist yet is the point of a slot.
+  - **One resolver, two consumers.** The compose→fragments resolution is extracted from
+    `riscv_asm.load_canonical_encoding` into `resolve_composition(…)`; the assembler and
+    `check_encoding_disjoint.py` both consume it — a second hand-written resolver is how the
+    `.2` regression happened. The checker, given a unit's `encoding.sexp`: schema-validates it
+    against `schema/encoding.sexp` (the widget gap, closed), resolves and unions the bound
+    parts, decides the encoding verdict as today, then applies the slot rules and prints
+    `PARTIAL — N slot(s) unbound: <id> requires …` when declared.
+  - **The verdict must run somewhere (§15/§16).** Restored capability that no gate invokes is
+    the defect restated, so the leaf registers `UNIT-COMPOSITION` (15th project doctrine,
+    `scripts/check_unit_composition.sh`): every tracked unit's composition is schema-conformant,
+    its fragments resolve with dependencies met, its union is collision-free, and partial is
+    declared, never inferred. Fired RED on all three refusal shapes before registration.
+  - **No-regression proof is the `.2` precedent**: the assembler's resolution refactor must not
+    move a single observable — all four guest ELF digests byte-identical and `run_smoke` ok.
 
 - ID: `MODEL-COMPOSE.5` — **nesting: a composition is a unit**
   Status: `pending`
@@ -128,8 +170,7 @@ evidence**, never by absence of it.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-COMPOSE.4` | `pending` | slots — top-down composition with holes, checkable before the parts exist |
-| 2 | `MODEL-COMPOSE.6` | `pending` | semantic refinement points — the hard axis, needs `MODEL-METHOD.9`'s semantics to exist first |
+| 1 | `MODEL-COMPOSE.6` | `pending` | semantic refinement points — the hard axis, needs `MODEL-METHOD.9`'s semantics to exist first |
 
 ## Decisions
 
@@ -359,10 +400,88 @@ evidence**, never by absence of it.
 - [x] **LOCKSTEP** — `TOOLBOX.md` gains the instrument; `MEMORY.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
 
+## Acceptance Checklist (leaf MODEL-COMPOSE.4)
+
+- [x] **REPRODUCE / ISSUE** — the two substrate defects, probe-measured before any code:
+
+  ```
+  $ python3 scripts/check_encoding_disjoint.py profiles/rv64i-lab-v0/encoding.sexp
+  REFUSED … yielded no instructions — an empty fragment is not a valid one      rc=2
+  $ # since MODEL-COMPOSE.2 moved the instructions into fragments, the unit-level union
+  $ # has no decider — and nothing invokes the tool on the unit's fragments:
+  $ git ls-files scripts .github .githooks | grep check_encoding_disjoint
+  scripts/check_encoding_disjoint.py        # referenced by nothing that runs
+  $ # and the tool never schema-validates its input:
+  $ # a compose with an undeclared (widget "x") passes it silently
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a verdict that runs on documents nobody
+  validates, over a union nobody decided, is a claim without legs — and a capability
+  (`.1`'s unit-level union) can regress silently when a refactor (`.2`) changes what the
+  checker reads while nothing re-runs it. WHERE: `check_encoding_disjoint.py` read
+  `insn` forms only; `riscv_asm.py` held the compose→fragments resolution inline, unshared.
+  Two more latent bugs of the same family surfaced in the resolver itself while testing —
+  `children(…, "extensions")[0]` and `children(…, "requires")[0]` indexed a first child the
+  0-or-more grammar does not guarantee (absence is schema-legal; the corpus always writes the
+  markers, so both IndexErrors were live but unfired). Fixed in the extraction, arms proving
+  the absent-marker paths.
+
+  ```
+  $ grep -n 'children(comp\[0\], "extensions")\[0\]\|children(frag, "requires")\[0\]' scripts/riscv_asm.py
+  (no output)                                     # both unfired IndexErrors, closed
+  ```
+
+- [x] **FIX** — data first: `schema/encoding.sexp` gains `(status …)` and `(slot …)`, zero
+  kernel lines. Then one resolver: `riscv_asm.resolve_composition(…)` extracted and consumed by
+  the assembler and the checker alike. Then the checker: schema-validates the composition
+  document AND each resolved fragment against the schema layer before unioning; applies the
+  slot rules (partial is declared, never inferred — both directions); reports
+  `PARTIAL — N slot(s) unbound: <id> requires …` with the union verdict standing. Then the
+  wiring: `UNIT-COMPOSITION` registered as the 15th project doctrine, fired RED before
+  registration (real corpus + one undeclared slot → `claiming completeness while a hole is
+  open`).
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/check_encoding_disjoint.py --self-test
+  check_encoding_disjoint --self-test: 8 pass / 0 fail
+  $ bash scripts/check_unit_composition.sh --self-test
+  UNIT-COMPOSITION --self-test: 8 pass / 0 fail
+  $ bash scripts/check_unit_composition.sh
+  UNIT-COMPOSITION: ok (1 unit composition(s) decided)
+  $ python3 scripts/check_encoding_disjoint.py profiles/rv64i-lab-v0/encoding.sexp
+  composed set: 52 instruction(s) … the fragments COMPOSE.              # the union, restored
+  $ python3 scripts/check_encoding_disjoint.py target/doctrine_scratch/mc4partial/profiles/board/encoding.sexp
+  … the fragments COMPOSE. … PARTIAL — 1 slot(s) unbound:
+    clint requires riscv/timer                                            rc=0
+  ```
+
+- [x] **NO REGRESSION** — the `.2` precedent as proof: the assembler's resolution is refactored,
+  not rewritten — `scripts/run_smoke.py` ok, every guest matches its expectations and reproduces;
+  `scripts/merge_records.py --self-test` 18 pass / 0 fail;
+  `scripts/discharge_assumptions.py --self-test` 6 pass / 0 fail; sexp 18 pass / 0 fail; kernel
+  50 pass / 0 fail; RECORD-SCHEMA 23 pass / 0 fail; semantics 52/52; citations 52/52; materials
+  20/0; readers 28/28; whole gate green after staging.
+
+- `promotion: declined (the "capability without a re-runner regresses silently" lesson is
+  demonstrated by this leaf's own census and stated in the gate's header, where anyone
+  restoring a capability will meet it).`
+
+- [x] **LOCKSTEP** — `scripts/check_doctrines.project.sh` + both mirrors
+  (`DOCTRINE_ENFORCEMENT.md`, the mdBook doctrines chapter) in the registering commit;
+  `LIVE_STATUS.md` re-derived (15 doctrines, 192 arms); `TOOLBOX.md` rows; `MEMORY.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-COMPOSE.4` | tool + gate `--self-test` | `8/0` + `8/0` — slots both directions, widget, missing/unmet fragment, collision through the resolved path |
+| `2026-09-27` | `MODEL-COMPOSE.4` | real run | profile 52/52 composes; scratch partial unit `PARTIAL — 1 slot(s) unbound: clint requires riscv/timer` |
+| `2026-09-27` | `MODEL-COMPOSE.4` | RED before registration (real corpus + one undeclared slot) | `claiming completeness while a hole is open` |
+| `2026-09-27` | `MODEL-COMPOSE.4` | the substrate probes | unit union undecided since `.2` (REFUSED rc=2); widget passed silently; two unfired resolver IndexErrors, all closed |
+| `2026-09-27` | `MODEL-COMPOSE.4` | no-regression | `run_smoke` ok after the resolver extraction — nothing observable moved |
 | `2026-09-27` | `MODEL-COMPOSE.3` | `--self-test` | `6 pass / 0 fail` — incl. the acceptance control (guarantee removed → `DANGLING DEP` + `UNDEFINED OBLIGATION`) |
 | `2026-09-27` | `MODEL-COMPOSE.3` | real corpus, profile alone | 8/8 discharged, every edge printed (`OB-ENV-RESET -> 'OB-ENTRY-STATE' (cpu-guarantee)`, and kin) |
 | `2026-09-27` | `MODEL-COMPOSE.3` | cross-unit (cpu minus `OB-ENTRY-STATE` + a unit carrying only it) | all 8 discharged across the boundary |
@@ -382,6 +501,7 @@ evidence**, never by absence of it.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-COMPOSE.4` | `SEMILITH-MC-0041 (leaf MODEL-COMPOSE.4): …` | slots declared, the unit union decided and gated; 15th doctrine |
 | `MODEL-COMPOSE.3` | `SEMILITH-MC-0040 (leaf MODEL-COMPOSE.3): …` | assumption/guarantee discharge decides over the merged union; 8/8 on the real corpus; fired RED by removing one guarantee |
 | `MODEL-COMPOSE.2` | `SEMULITH-MC-0039 (leaf MODEL-COMPOSE.2): fragments get a form and a home` | nothing observable moved; M pinned |
 | `MODEL-COMPOSE.1` | `SEMULITH-MC-0038 (leaf MODEL-COMPOSE.1): encoding composition is a verdict, not a hope` | 65 compose; 37 collisions rejected in the control |

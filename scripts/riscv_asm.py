@@ -174,6 +174,47 @@ def load_encodings(paths: list[Path]) -> dict[str, Insn]:
     return out
 
 
+def resolve_composition(enc, path: Path):
+    """Resolve a unit's `compose` form into one synthetic `(fragment …)` form.
+
+    ⭐ A unit COMPOSES fragments; it never carries a copy of an instruction. ONE RESOLVER owns
+    the name → fragment-file resolution (missing fragment, unmet `requires` — both refused by
+    name), consumed by the assembler and by the composition checker alike. A second
+    hand-written resolver is how a silent regression happens: `MODEL-COMPOSE.2` moved the
+    instructions into fragments, and the disjointness checker — reading compositions its own
+    way — quietly lost the ability to read a unit at all (measured, `MODEL-COMPOSE.4`).
+    """
+    import sexp as _sexp
+    comp = _sexp.children(enc, "compose")
+    if not comp:
+        return enc
+    root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
+    names = [str(_sexp.field(comp[0], "base", str(path)))]
+    # repeat fields are 0-or-more: a compose with no (extensions) marker composes the base
+    # alone — the corpus writes the bare marker, but the grammar does not require it
+    ext = _sexp.children(comp[0], "extensions")
+    names += [str(x) for x in (ext[0][1:] if ext else [])]
+    merged = ["fragment"]
+    declared: set[str] = set()
+    for name in names:
+        frag_path = root / (name + ".sexp")
+        if not frag_path.is_file():
+            raise AsmError(f"{path}: composes {name!r}, but {frag_path} does not exist")
+        frag = _sexp.read_file(frag_path)[0]
+        declared.add(str(_sexp.field(frag, "id", str(frag_path))))
+        # 0-or-more like extensions: a fragment with no (requires) marker depends on nothing
+        reqs = _sexp.children(frag, "requires")
+        for req in (reqs[0][1:] if reqs else []):
+            if str(req) not in declared:
+                raise AsmError(
+                    f"{path}: fragment {name!r} requires {str(req)!r}, which this composition "
+                    f"does not provide before it. A fragment with an unmet dependency composes "
+                    f"by luck, not by construction.")
+        merged += [c for c in frag if isinstance(c, list)
+                   and c and c[0] in ("field", "scatter", "insn")]
+    return merged
+
+
 def load_canonical_encoding(path: Path) -> tuple[dict, dict, dict]:
     """Read `encoding.sexp` — the encodings the REPOSITORY owns.
 
@@ -188,30 +229,9 @@ def load_canonical_encoding(path: Path) -> tuple[dict, dict, dict]:
         raise AsmError(f"{path}: expected exactly one (encoding …) form")
     enc = forms[0]
 
-    # ⭐ A unit COMPOSES fragments; it never carries a copy of an instruction. Resolve the named
-    # fragments and union them here, so the assembler reads exactly what the composition declares.
-    comp = _sexp.children(enc, "compose")
-    if comp:
-        root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
-        names = [str(_sexp.field(comp[0], "base", str(path)))]
-        names += [str(x) for x in _sexp.children(comp[0], "extensions")[0][1:]]
-        merged: list[Sexp] = ["fragment"]
-        declared: set[str] = set()
-        for name in names:
-            frag_path = root / (name + ".sexp")
-            if not frag_path.is_file():
-                raise AsmError(f"{path}: composes {name!r}, but {frag_path} does not exist")
-            frag = _sexp.read_file(frag_path)[0]
-            declared.add(str(_sexp.field(frag, "id", str(frag_path))))
-            for req in _sexp.children(frag, "requires")[0][1:]:
-                if str(req) not in declared:
-                    raise AsmError(
-                        f"{path}: fragment {name!r} requires {str(req)!r}, which this composition "
-                        f"does not provide before it. A fragment with an unmet dependency composes "
-                        f"by luck, not by construction.")
-            merged += [c for c in frag if isinstance(c, list)
-                       and c and c[0] in ("field", "scatter", "insn")]
-        enc = merged
+    # A unit composes fragments; it never carries a copy of an instruction. The resolver is
+    # shared with the composition checker — see resolve_composition for why there is one.
+    enc = resolve_composition(enc, path)
 
     arg_lut: dict[str, tuple[int, int]] = {}
     for f in _sexp.children(enc, "field"):

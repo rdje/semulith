@@ -28,6 +28,7 @@ PROJECT_DOCTRINES=(
   "DERIVED-COUNTS|a live document that states a count of something this repository can enumerate has it RE-DERIVED — a running total is a memory of a measurement, not a measurement|scripts/check_derived_counts.sh"
   "RECORD-SCHEMA|every tracked record file validates against its schema, cites only sources the profile pinned, and states what its profile states — a catalogue that looks checkable and is not is worse than none|scripts/check_requirements.sh"
   "SOURCE-FORMAT|every source of truth the engine extracts from is in the one format — a retired-format file in a source-of-truth family is refused by name, and every .sexp there parses with the one reader, so the split cannot return by accident|scripts/check_source_format.sh"
+  "UNIT-COMPOSITION|a unit's composed encoding space is decided — the composition document is schema-conformant, its fragments resolve with dependencies met through the one shared resolver, the union is collision-free, and a partial composition is declared, never inferred from silence|scripts/check_unit_composition.sh"
   "GATE-REPORT|the tracked gate report is still the function of its inputs that generated it — a hand-edited report is how a project comes to hold a verdict nothing produced|scripts/check_gate_report.sh"
   "SHARD-FREEZE|the sharded append-history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards|scripts/check_changelog_shards.sh"
 )

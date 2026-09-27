@@ -8,6 +8,35 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — slots are data, and the unit's union is decided again (MODEL-COMPOSE.4)
+
+Root cause this leaf closes: two substrate defects found by probe before any code. (1) Since
+`MODEL-COMPOSE.2` moved instructions into fragments, NOTHING decided the unit's composed
+encoding space — the disjointness checker read compositions its own way, could no longer read a
+unit's `encoding.sexp` at all (probe: REFUSED, "yielded no instructions"), and no gate
+invoked the tool on the unit's fragments. (2) The checker never schema-validated its input — a
+planted `(widget "x")` in a real `compose` passed silently. A slot verdict on a
+document nobody validates, over a union nobody decided, would be a claim without legs.
+
+The fix, in order: data first (`(status …)` and `(slot …)` in `schema/encoding.sexp`,
+zero kernel lines); then ONE resolver — `riscv_asm.resolve_composition(…)` extracted and
+shared by the assembler and the checker (a second hand-written resolver is how the `.2`
+regression happened); then the checker validates the document and each resolved fragment against
+the schema layer before unioning; then `UNIT-COMPOSITION` (15th doctrine) wires the
+verdict into the gate set — a restored capability that no gate invokes is the defect restated.
+
+⭐ Two more latent bugs of the same family surfaced in the resolver while testing:
+`children(…, "extensions")[0]` and `children(…, "requires")[0]` index a
+first child the 0-or-more grammar does not guarantee — absence is schema-legal; the corpus
+always writes the markers, so both IndexErrors were live but unfired. The self-test's fixtures
+omit the markers and prove the paths. The `.2` precedent as no-regression proof: the
+resolver is refactored, not rewritten — `run_smoke` ok, nothing observable moved.
+
+Lessons: declined here (the "capability without a re-runner" lesson is stated in the gate's
+header, where anyone restoring a capability meets it).
+
+## _(2026-09-27)_ — assumption/guarantee discharge is a verdict (MODEL-COMPOSE.3)
+
 ## _(2026-09-27)_ — assumption/guarantee discharge is a verdict (MODEL-COMPOSE.3)
 
 Root cause this leaf closes: a conditional composition claim ("the CPU is validated under
@@ -603,13 +632,3 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   I was one leaf away from building a schema layer on top of it. Read the foundation before you
   stand on it; 18 arms cost twenty minutes and the first three were RED.
 
-## _(2026-09-14)_ — a survey that returns results is not a survey that returned all of them
-
-- Catalogued 22 processor manuals from a 3,684-file corpus by enumerating vendor directory names
-  from memory. A re-sweep by PATH SHAPE found eight more, including the entire M68000 architecture
-  (filed under `nxp/m68k/` — NXP inherited Motorola via Freescale) and every board-class document
-  in the corpus. Promoted to
-  [`a-survey-that-found-things-can-still-have-missed-things`](docs/knowledge/a-survey-that-found-things-can-still-have-missed-things.md).
-- The giveaway I ignored: my own probe named a `motorola/` directory that does not exist. A probe
-  naming something absent is a signal; I read it as nothing. Read the COMPLEMENT of any classifier
-  before trusting it.
