@@ -36,6 +36,7 @@ PROJECT_DOCTRINES=(
   "GATE-REPORT|the tracked gate report is still the function of its inputs that generated it — a hand-edited report is how a project comes to hold a verdict nothing produced|scripts/check_gate_report.sh"
   "SHARD-FREEZE|the sharded append-history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards|scripts/check_changelog_shards.sh"
   "PORT-WEB|the crate skeleton builds for the browser target — the workspace compiles for wasm32-unknown-unknown, so a host-only API cannot slip into the engine unnoticed; fired RED before registration|scripts/check_wasm_build.sh"
+  "STATE-GEN|the generated state module is still the byte-exact function of the state descriptor that generated it — a hand-edited accessor is how a descriptor and its executable half quietly become two facts; fired RED before registration|scripts/check_state_gen.sh"
 )
 
 fails=0

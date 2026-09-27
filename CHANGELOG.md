@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0003 (leaf P1-LAB.3) — architectural state, generated from the descriptor
+
+- `semulith-core::state` exists, and it is generated: `scripts/gen_state.py` derives `state.rs` from `profiles/rv64i-lab-v0/state.sexp` through `dossier_sexp` (the single mapping owner), byte-deterministically, with the input's sha256 in the module header (OWN-03). The generator is deliberately narrow — it refuses, naming the construct, any descriptor shape it cannot emit (another profile, a non-64 width, an unmapped special register, a missing SEM-08 census). The 21st registered doctrine, `STATE-GEN` (`scripts/check_state_gen.sh`), re-runs its 6-arm self-test before judging and refuses drift with the regeneration command; fired RED against a hand-edited module before registration. The owner→mirror pair is registered in `doctrine/fact_ownership.tsv`.
+- The state: 32 × 64-bit integer registers + pc, 264 bytes inline, no heap (RUST-03); x0 hardwired zero (write discarded, read yields 0); the three ISA-chapter-named roles (x1 return address, x2 stack pointer, x5 alternate link) emitted as alias views over the one storage — C02's "does writing one alias affect every other view" answered by 10 test suites; laboratory reset per REQ-D-ENTRY-STATE/OB-ENV-RESET (x1..x31 = 0, pc = environment-supplied entry); SEM-08's hidden-state census carried as data (7 candidates checked, none present).
+- Verification: 22 test suites green (12 arithmetic + 10 state); `cargo clippy --all-targets --all-features -- -D warnings` clean; workspace still builds for `wasm32-unknown-unknown`; `make gate` green with the doctrine registered and both mirrors (DOCTRINE_ENFORCEMENT.md, the book's doctrines chapter) in sync.
+- Lockstep: `LIVE_STATUS.md` re-derived (21 registered, 237 self-test arms; P1 3/12); the name list in the doctrines row completed (STATE-GEN added; SCOPE-COVERAGE, omitted when it landed, restored); `MEMORY.md`, `docs/TASK_TREE.md`, the book's P1 chapter, and this tree updated. The frontier moves to `.4` (environment boundary and fixtures).
+
 ## SEMILITH-PL-0002 (leaf P1-LAB.2) — target arithmetic primitives, verified exhaustively at reduced width
 
 - `semulith-core::arith`: 18 SEM-03 primitives — ALU register/immediate ops, shifts with the REQ-D-SHAMT masks as named functions, the `*W` word ops (REQ-D-WSUFFIX), `sext`/`bits` extraction and extension, LUI/AUIPC offset formation. Each contract states width, signedness, intermediate precision, truncation, exceptional behavior; each doc comment source-links the requirement record and pinned locator (REQ-D-ALU-REG/IMM, REQ-D-SHAMT, REQ-D-WSUFFIX, REQ-D-LUI-AUIPC, REQ-D-LOAD-EXT, REQ-D-XLEN). Unmasked shift amounts panic in debug instead of silently wrapping.
@@ -841,61 +848,4 @@ rendering, and the pinned HTML is still read, never redistributed.
 **Knowledge.** [`a-version-string-is-not-an-identity`](docs/knowledge/a-version-string-is-not-an-identity.md)
 — a version names a point in time within one publication; across publications it identifies
 nothing, and section numbers are exactly the part that will not survive the crossing.
-
-## SEMULITH-MM-0042 (leaf MODEL-METHOD.11) — materials get an identity, and no path that breaks on a move
-
-**What changed.** A curated corpus of vendor ISA and architecture manuals became available —
-3,684 files, 1.5 GB, 196 PDFs across 23 vendors, curated in its own words *"to build software
-emulators (ISS) that run real C/C++/Rust software"*. This repository had no form in which to say
-that a material exists and where a copy of it is (`git ls-files | grep -ci materials` → 0).
-
-The obvious route is the wrong one. The corpus lives **outside** the repository, so writing its
-path into a tracked file plants an absolute path — which Policy 12 forbids, because the repository
-must survive being moved to another filesystem. And it fails *quietly*: after a move the path stops
-existing and every tool reports "not found" about a document sitting right there.
-
-**The shape that solves it.** Paths compose from two roots, and the catalogue knows only one:
-
-```
-cache      <repo root>/<cache-root>/<cache-path>    both halves tracked and relative
-corpus     $<env-var>/<corpus-path>                 the left half NEVER tracked
-```
-
-The environment variable is the seam. The operator sets it once; git never sees it. Measured on
-the tracked tree, with a control proving the probe can see such a path:
-
-```
-$ git grep -c -I --cached -e 'livework' -- .    ->  0 tracked files name the corpus root
-```
-
-**What is catalogued.** 22 materials — RISC-V (unified ISA + ELF psABI), Arm (A-profile,
-Armv7-A/R, Armv8-M, Armv7-M, Armv6-M), Intel SDM Volumes 2-4, Power ISA 3.1C, SPARC 2015,
-OpenRISC 1000, six TI DSP CPU guides, MSP430, Z80, W65C02S — each with revision, page count,
-sha256, licence and what it supplies. All 22 fetched and digest-verified into the gitignored
-`.materials/` (233 MB, same volume as the repository). The repository catalogues identity and
-redistributes nothing.
-
-⭐ **Two measured gaps, recorded as first-class `(gap …)` records rather than remembered:**
-
-- **No AMD instruction-set manual.** `amd/` holds exactly one document, an IOMMU specification. An
-  x86-64 unit built from this corpus would rest on Intel's description of the architecture alone.
-- **No Intel SDM Volume 1.** Volumes 2, 3 and 4 are present; Volume 1 — Basic Architecture, the
-  execution environment, data types and register overview — is absent. An x86 unit could not state
-  its architectural **state** from this corpus.
-
-⭐ **And the RISC-V PDF is not our RISC-V.** It is `20260911: Intermediate Release`; the profile
-pins `v20260120`. It also numbers RV32I §2.1 and RV64I §2.2, where the pinned HTML numbers them
-§1.1 and §3.1 — so **not one of our 52 semantic citations resolves in it**. Catalogued
-`reference-only`, never as the authority a requirement cites. Its licence, read from the document,
-is **CC-BY-4.0**, which bears directly on `OQ-4` and rule `SRC-01`.
-
-⭐ **Scale, as an argument rather than an opinion.** The Arm A-profile manual is **17,145 pages and
-126 MB** — eighteen times the RISC-V manual. Beside it sit Armv6-M at 374 pages and the W65C02S
-datasheet at 32, both complete architectures. That spread is `start small and grow` stated in page
-counts.
-
-**Housekeeping in lockstep.** `materials/` registered in `doctrine/readme_routes.tsv` in the commit
-that creates it, ceilings derived from its own measured size. `CHANGELOG.md` had 1,326 B of
-headroom against its 64 KiB ceiling and was sharded first: 64,210 → 28,188 B, 11 entries moved to
-`docs/changelog/2026-09-p0-to-mirror.md`.
 

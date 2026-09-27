@@ -1,0 +1,344 @@
+#!/usr/bin/env python3
+"""gen_state.py — generate `semulith-core`'s architectural-state module from the profile's
+state descriptor (P1-LAB.3; OWN-01/OWN-03).
+
+The state accessors and inspection metadata DERIVE from `state.sexp` — the descriptor is
+the authority (docs/ARCHITECTURE.md §2), the generated module is its derived mirror, and
+the pair is governed by the STATE-GEN doctrine (`scripts/check_state_gen.sh`): drift is
+`regenerate and diff`, never a hand edit. Emission is byte-deterministic — the same
+descriptor bytes always yield the same module bytes, and the input's sha256 rides in the
+module header so a reviewer can name the exact bytes the code derives from.
+
+The generator REFUSES (exit 2, naming the construct) on any descriptor shape it does not
+know how to emit: another profile id, a non-64 width, a special register it has no mapping
+for, a missing reset, an alias outside x1..x31. A descriptor that grew is generator work,
+never silently guessed — that is how "generated" stays a claim instead of a hope.
+
+Usage:
+  python3 scripts/gen_state.py                 # regenerate the committed module
+  python3 scripts/gen_state.py --check         # exit 0 iff the committed module is current
+  python3 scripts/gen_state.py --state S --arith A --out O   # explicit paths (self-tests)
+"""
+from __future__ import annotations
+
+import argparse
+import difflib
+import hashlib
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+import dossier_sexp as D                                # noqa: E402
+
+PROFILE = "rv64i-lab-v0"
+STATE = ROOT / "profiles" / PROFILE / "state.sexp"
+ARITH = ROOT / "crates" / "semulith-core" / "src" / "arith.rs"
+OUT = ROOT / "crates" / "semulith-core" / "src" / "state.rs"
+
+# The one executable owner of XLEN is `arith::XLEN` (REQ-D-XLEN, P1-LAB.2). The generator
+# binds the descriptor to it at generation time; the STATE-GEN doctrine then refuses the
+# day the two could drift apart in the generated mirror.
+XLEN_RE = re.compile(r"pub const XLEN: u32 = (\d+);")
+SUPPORTED_WIDTH = 64
+
+
+class Refusal(Exception):
+    """The descriptor (or the arith owner) says something this generator cannot emit."""
+
+
+def snake(role: str) -> str:
+    ident = re.sub(r"[^A-Za-z0-9]+", "_", role).strip("_").upper()
+    if not ident or not ident[0].isalpha():
+        raise Refusal(f"alias role {role!r} yields no legal constant identifier")
+    return ident
+
+
+def rust_str(text: str) -> str:
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def load_checked(state_path: Path, arith_path: Path) -> tuple[dict, int]:
+    doc = D.load_state(state_path)
+    m = XLEN_RE.search(arith_path.read_text(encoding="utf-8"))
+    if not m:
+        raise Refusal(f"{arith_path.name}: no `pub const XLEN: u32 = N;` — the generator "
+                      "cannot bind the descriptor to the one XLEN owner")
+    arith_xlen = int(m.group(1))
+    if doc["xlen"] != arith_xlen:
+        raise Refusal(f"xlen mismatch: state.sexp declares {doc['xlen']}, arith::XLEN is "
+                      f"{arith_xlen} — one fact, one owner; resolve the descriptor, do not "
+                      "pick a side in the generator")
+    return doc, arith_xlen
+
+
+def validate(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dict]:
+    if doc["profile_id"] != PROFILE:
+        raise Refusal(f"profile_id {doc['profile_id']!r} — this generator is scoped to "
+                      f"{PROFILE!r}; a second profile is generator work, not a config knob")
+    ir = doc["integer_registers"]
+    count = ir["count"]
+    if ir["width_bits"] != SUPPORTED_WIDTH:
+        raise Refusal(f"integer_registers width_bits {ir['width_bits']} — masked fixed-width "
+                      "storage for nonstandard widths is generator work "
+                      "(docs/ARCHITECTURE.md §4), not silently assumed")
+    if ir["ids"] != f"x0..x{count - 1}":
+        raise Refusal(f"integer_registers ids {ir['ids']!r} do not enumerate x0..x{count - 1}")
+    if not ir["x0"]["hardwired_zero"]:
+        raise Refusal("x0 is not declared hardwired_zero — the emitted read/write discipline "
+                      "assumes the descriptor's x0 rule; emit something else instead")
+    if "reset" not in ir:
+        raise Refusal("integer_registers has no reset — REQ-D-ENTRY-STATE is unowned")
+    regs = doc["special_registers"]
+    for r in regs:
+        if r["id"] != "pc":
+            raise Refusal(f"special register {r['id']!r} has no emission mapping — extend "
+                          "the generator behind the schema layer, never guess")
+        if r["width_bits"] != SUPPORTED_WIDTH:
+            raise Refusal(f"special register {r['id']!r} width_bits {r['width_bits']} — "
+                          "same refusal as the integer file")
+    if not regs:
+        raise Refusal("no special registers declared — pc is required (RVI-RV32I §1.1.1)")
+    census = doc.get("hidden_state_census")
+    if census is None:
+        raise Refusal("no hidden_state_census (SEM-08) — the universal claim that no hidden "
+                      "state exists must be earned by the census, not inferred from silence")
+    named = []
+    seen: set[str] = set()
+    for n in ir["named_by_the_isa_chapter"]:
+        m = re.fullmatch(r"x(\d+)", n["reg"])
+        if not m or not 1 <= int(m.group(1)) < count:
+            raise Refusal(f"named register {n['reg']!r} is not x1..x{count - 1} — aliasing "
+                          "outside the integer file has no emission mapping")
+        ident = snake(n["role"])
+        if ident in seen:
+            raise Refusal(f"alias role {n['role']!r} collides after naming — rename in the "
+                          "descriptor, not by hand here")
+        seen.add(ident)
+        named.append({"index": int(m.group(1)), "ident": ident, **n})
+    return named, regs, census
+
+
+def emit(doc: dict, named: list[dict], regs: list[dict], census: dict,
+         state_sha: str) -> str:
+    ir = doc["integer_registers"]
+    count = ir["count"]
+    width = ir["width_bits"]
+    x0_source = ir["x0"]["source"]
+    pc = regs[0]
+
+    w = []
+    a = w.append
+    a("//! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;")
+    a("//! drift between this module and the descriptor it derives from is refused by the")
+    a("//! STATE-GEN doctrine (`scripts/check_state_gen.sh`). The state accessors and")
+    a("//! inspection metadata derive from the state/alias descriptors (docs/ARCHITECTURE.md")
+    a("//! §2), never maintained by hand.")
+    a(f"//! Source: `profiles/{PROFILE}/state.sexp` (sha256 `{state_sha}`).")
+    a("//!")
+    a(f"//! Architectural state of `{PROFILE}`: {count} × {width}-bit integer registers")
+    a("//! (x0 hardwired to zero) and the 64-bit program counter. — REQ-D-XLEN,")
+    a("//! REQ-D-ENTRY-STATE (RVI-RV32I §1.1.1; RVI-RV64I §3.1.1)")
+    a("")
+    a(f"/// Number of integer registers in the architectural register file. — REQ-D-XLEN")
+    a(f"pub const INTEGER_COUNT: usize = {count};")
+    a("")
+    for n in sorted(named, key=lambda d: d["index"]):
+        a(f"/// x{n['index']} — alias view, {rust_str(n['role'])} (software convention named")
+        a(f"/// by the ISA chapter; authority {n['authority']} — {n['source']}).")
+        a("/// Aliases are views over ONE storage: a value written through one name is visible")
+        a("/// through every other (catalog C02).")
+        a(f"pub const {n['ident']}: u8 = {n['index']};")
+        a("")
+    a("/// The architectural register file and program counter: one fixed-width storage,")
+    a("/// every alias a view over it. 33 × 8 bytes inline, no heap — common scalar execution")
+    a("/// takes no per-access allocation (RUST-03).")
+    a("pub struct ArchitecturalState {")
+    a("    regs: [u64; INTEGER_COUNT],")
+    a("    pc: u64,")
+    a("}")
+    a("")
+    a("impl ArchitecturalState {")
+    a("    /// Fresh state at the laboratory reset for `entry` (REQ-D-ENTRY-STATE).")
+    a("    #[must_use]")
+    a("    pub fn zeroed_at(entry: u64) -> Self {")
+    a("        Self {")
+    a("            regs: [0; INTEGER_COUNT],")
+    a("            pc: entry,")
+    a("        }")
+    a("    }")
+    a("")
+    a("    /// The laboratory reset (REQ-D-ENTRY-STATE, OB-ENV-RESET): x1..x31 = 0 — a harness")
+    a("    /// declaration the base ISA leaves to the execution environment, not an")
+    a("    /// architectural guarantee — and pc = the loaded image's declared entry address,")
+    a("    /// supplied by the environment. x0 needs no action: it is hardwired to zero.")
+    a("    pub fn reset(&mut self, entry: u64) {")
+    a("        self.regs = [0; INTEGER_COUNT];")
+    a("        self.pc = entry;")
+    a("    }")
+    a("")
+    a("    /// Architectural read of `x(index)`. x0 reads as 0, always — hardwired zero,")
+    a("    /// \"a write to it is discarded; a read of it yields 0\" (RVI-RV32I §1.1.1).")
+    a("    /// Contract: `index < INTEGER_COUNT`; an out-of-range index is a model error")
+    a("    /// (SEM-01) and panics rather than silently reading another register.")
+    a("    #[must_use]")
+    a("    pub fn read_x(&self, index: u8) -> u64 {")
+    a("        debug_assert!(")
+    a("            index < INTEGER_COUNT as u8,")
+    a("            \"read_x: index {index} out of range\"")
+    a("        );")
+    a("        if index == 0 {")
+    a("            0")
+    a("        } else {")
+    a("            self.regs[index as usize]")
+    a("        }")
+    a("    }")
+    a("")
+    a("    /// Architectural write of `x(index)`; a write to x0 is discarded (hardwired zero).")
+    a("    /// Same index contract as [`Self::read_x`].")
+    a("    pub fn write_x(&mut self, index: u8, value: u64) {")
+    a("        debug_assert!(")
+    a("            index < INTEGER_COUNT as u8,")
+    a("            \"write_x: index {index} out of range\"")
+    a("        );")
+    a("        if index != 0 {")
+    a("            self.regs[index as usize] = value;")
+    a("        }")
+    a("    }")
+    a("")
+    a("    /// The program counter: the address of the current instruction (RVI-RV32I §1.1.1).")
+    a("    /// Compositions that advance it (pc+4 sequencing, taken targets) are instruction-")
+    a("    /// layer rules; they land with the interpreter slice (P1-LAB.8).")
+    a("    #[must_use]")
+    a("    pub fn pc(&self) -> u64 {")
+    a("        self.pc")
+    a("    }")
+    a("")
+    a("    /// Set the program counter (a control transfer's target).")
+    a("    pub fn set_pc(&mut self, value: u64) {")
+    a("        self.pc = value;")
+    a("    }")
+    a("}")
+    a("")
+    a("/// Static inspection metadata for one architectural state element — what observers,")
+    a("/// divergence reports and the gate report read. Values, not storage: reading this")
+    a("/// table never touches architectural state and never allocates.")
+    a("pub struct StateElement {")
+    a("    pub name: &'static str,")
+    a("    pub width_bits: u32,")
+    a("    pub class: StateClass,")
+    a("    /// Software-convention role the ISA chapter itself names; `None` where the")
+    a("    /// descriptor records none (ABI names are a calling convention, not")
+    a("    /// architecture — see the descriptor's note).")
+    a("    pub role: Option<&'static str>,")
+    a("    pub source: &'static str,")
+    a("}")
+    a("")
+    a("/// Which kind of state an element is; the class set is descriptor-driven, so it is")
+    a("/// generated with the elements rather than hand-extended.")
+    a("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
+    a("pub enum StateClass {")
+    a("    IntegerRegister,")
+    a("    SpecialRegister,")
+    a("}")
+    a("")
+    roles = {n["index"]: n["role"] for n in named}
+    a(f"/// The {count} integer registers followed by the special registers, in descriptor")
+    a("/// order: one row per state element, the observer's whole view of the file.")
+    a(f"pub const ELEMENTS: [StateElement; {count + len(regs)}] = [")
+    for i in range(count):
+        role = roles.get(i)
+        source = x0_source if i == 0 else ir["source"]
+        a("    StateElement {")
+        a(f"        name: {rust_str(f'x{i}')},")
+        a(f"        width_bits: {width},")
+        a("        class: StateClass::IntegerRegister,")
+        a(f"        role: {f'Some({rust_str(role)})' if role else 'None'},")
+        a(f"        source: {rust_str(source)},")
+        a("    },")
+    for r in regs:
+        a("    StateElement {")
+        a(f"        name: {rust_str(r['id'])},")
+        a(f"        width_bits: {r['width_bits']},")
+        a("        class: StateClass::SpecialRegister,")
+        a("        role: None,")
+        a(f"        source: {rust_str(r['source'])},")
+        a("    },")
+    a("];")
+    a("")
+    a("/// SEM-08: required state includes hidden or pending information that can influence")
+    a("/// future supported observations. This profile's census answers NO — per candidate,")
+    a("/// with the reason — and the answer is carried as data so the interpreter, the gate")
+    a("/// report and the reviewer read the same sentence. Every extension added later")
+    a("/// reopens the census (the descriptor's own consequence).")
+    a("pub struct HiddenStateCandidate {")
+    a("    pub candidate: &'static str,")
+    a("    pub present: bool,")
+    a("    pub why: &'static str,")
+    a("}")
+    a("")
+    a("pub struct HiddenStateCensus {")
+    a("    pub question: &'static str,")
+    a("    pub answer: &'static str,")
+    a("    pub candidates: &'static [HiddenStateCandidate],")
+    a("    pub consequence: &'static str,")
+    a("}")
+    a("")
+    a("pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {")
+    a(f"    question: {rust_str(census['question'])},")
+    a(f"    answer: {rust_str(census['answer'])},")
+    a("    candidates: &[")
+    for c in census["candidates_checked"]:
+        a("        HiddenStateCandidate {")
+        a(f"            candidate: {rust_str(c['candidate'])},")
+        a(f"            present: {'true' if c['present'] else 'false'},")
+        a(f"            why: {rust_str(c['why'])},")
+        a("        },")
+    a("    ],")
+    a(f"    consequence: {rust_str(census['consequence'])},")
+    a("};")
+    a("")
+    a("#[cfg(test)]")
+    a("mod tests;")
+    a("")
+    return "\n".join(w)
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--state", type=Path, default=STATE)
+    ap.add_argument("--arith", type=Path, default=ARITH)
+    ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--check", action="store_true",
+                    help="exit 0 iff the committed module already matches regeneration")
+    args = ap.parse_args(argv)
+
+    try:
+        doc, arith_xlen = load_checked(args.state, args.arith)
+        named, regs, census = validate(doc, arith_xlen)
+        text = emit(doc, named, regs, census,
+                    hashlib.sha256(args.state.read_bytes()).hexdigest())
+    except (Refusal, D.DossierError) as exc:
+        print(f"gen_state: REFUSED — {exc}", file=sys.stderr)
+        return 2
+
+    if args.check:
+        committed = args.out.read_text(encoding="utf-8") if args.out.exists() else ""
+        if committed == text:
+            return 0
+        diff = "\n".join(difflib.unified_diff(
+            committed.splitlines(), text.splitlines(),
+            fromfile=str(args.out), tofile=f"{args.out} (regenerated)", n=2))
+        print(f"gen_state: DRIFT — {args.out} no longer matches {args.state}:\n"
+              f"{diff}\n"
+              f"Regenerate — never edit: python3 scripts/gen_state.py", file=sys.stderr)
+        return 1
+
+    args.out.write_text(text, encoding="utf-8")
+    print(f"gen_state: wrote {args.out} ({len(text)} bytes)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

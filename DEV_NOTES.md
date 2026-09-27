@@ -8,6 +8,12 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — architectural state, generated from the descriptor (P1-LAB.3)
+
+Root cause: the state accessors of `docs/ARCHITECTURE.md` §2 existed only as a table row; the descriptor `state.sexp` had no executable half, and the C02 alias question had no code to answer it. Implementation: `scripts/gen_state.py` derives `crates/semulith-core/src/state.rs` from the descriptor via `dossier_sexp.load_state`, emitting fixed-width storage (`[u64; 32]` + pc, 264 bytes inline, RUST-03), the x0 hardwired discipline (write discarded, read masks to 0), the three ISA-chapter-named aliases as views over the one storage, the inspection-metadata table (`ELEMENTS`), and the SEM-08 census as data. Byte-deterministic; the input sha256 rides in the header. The `STATE-GEN` doctrine (`scripts/check_state_gen.sh`) regenerates in memory and refuses drift; self-test 6 pass / 0 fail; fired RED on a hand-edited module (rc=1, naming DRIFT) before registration. Validation: 22 suites green; clippy -D warnings clean; wasm build green; REGISTRY-MIRROR and FACT-OWNERSHIP re-run green after registration. Design notes, kept: (1) generated Rust must be emitted formatter-stable or the drift gate fights `cargo fmt` — the generator's output is the formatted shape, verified by regen-diff after `cargo fmt --all`. (2) `dossier_sexp.family_for` names the dossier family from the file NAME, so self-test descriptor surgery must keep the `state.sexp` basename (per-case directories). (3) The generator binds the descriptor's `xlen` to `arith::XLEN` at generation time — the executable owner of XLEN stays unique, and a descriptor/code disagreement is a refusal, not a choice.
+
+Lessons: declined here (all three notes are P1-LAB-generation specifics; nothing here generalizes past `.6`, where the generation manifest lands).
+
 ## _(2026-09-27)_ — target arithmetic primitives, and the width-sensitivity trap (P1-LAB.2)
 
 Implementation: `semulith-core::arith`, one function per semantics-data operation, contracts written to SEM-03 (width/signedness/intermediate precision/truncation/exceptional behavior per function), source links as doc comments naming requirement ids + pinned locators. The first code content in the workspace. Validation: 12 test suites — boundary at XLEN, 8-bit-exhaustive against different-host-width references (multiply-as-shift, De Morgan), 100k-draw word-op sweep; clippy -D warnings clean; gate green. Design notes, kept: (1) the exhaustive layer caught the signed-op width-sensitivity trap on its first run — `slt`/`sar` compared against an `i8` reference without embedding the signed view at XLEN; the primitives were right, the test was wrong, and the trap is now a knowledge card. (2) Unmasked shift amounts panic via `debug_assert` rather than silently wrapping — a decoder bug must not produce a plausible-looking wrong result; the masking rule lives in `shamt64`/`shamt32` next to the REQ-D-SHAMT citation. (3) `implementation_status` on the requirements stays `planned` until the interpreter can exercise instruction-level obligations — do not inflate status to match enthusiasm.
@@ -626,23 +632,5 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
 - ⭐ `incomplete` is the DELIVERABLE. A milestone whose job was to establish what evidence would
   be required cannot also have produced it. Saying so in the verdict, rather than in a footnote,
   is what stops the next milestone inheriting a claim nobody made.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — derive the layout, and report the control that passed
-
-- The B/J immediate scramble is **derived** from a pinned descriptor table, not typed. The
-  derivation validates itself: the bits a descriptor accounts for must total its field width
-  (7, 5, 20, 20) or the table is refused. A layout the assembler cannot reconcile is one it will
-  not use — which is the same shape as the validator's refusal rule from the previous leaf.
-- ⭐ **Negative observations earn their place.** `never_written` catches a jump that failed to
-  skip, which a checker watching only the registers it expects to change cannot see. Fired RED by
-  breaking the PROGRAM (jump to the next instruction), not the expectation.
-- ⛔ **A control that passed is still a result.** `jalr +13` vs `+12` land identically *because*
-  the low bit is cleared, so the landing address does not discriminate D-JALR-LSB. Both references
-  clear the bit, so the failing branch was never observed. Recorded as a `limit` in the
-  expectations file rather than letting a green result imply a discrimination it did not make.
-  Owner of a real control: P1-LAB's mutation suite, which can mutate OUR model.
-- Assembled instructions are not executed steps. Equal for straight-line code; wrong the moment a
-  loop exists. The run bound now comes from the expectations file.
 - Promotion is explicitly declined in the owning leaf, with the reason.
 

@@ -11,6 +11,7 @@
 # fact kind	owner (exactly one; the fact is stated here)	mirror (a file that restates it)	governed_by
 configuration	profiles/rv64i-lab-v0/profile.sexp	-	-
 state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+state	profiles/rv64i-lab-v0/state.sexp	crates/semulith-core/src/state.rs	STATE-GEN
 encodings	definitions/riscv/	profiles/rv64i-lab-v0/encoding.sexp	UNIT-COMPOSITION
 semantics	definitions/riscv/	-	-
 requirements	profiles/rv64i-lab-v0/profile.sexp	profiles/rv64i-lab-v0/requirements.sexp	RECORD-SCHEMA

@@ -51,6 +51,7 @@ These ship with the discipline spine and are project-neutral:
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
 | `SHARD-FREEZE` | the sharded changelog history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards |
 | `PORT-WEB` | the crate skeleton builds for the browser target — the workspace compiles for `wasm32-unknown-unknown`, so a host-only API cannot slip into the engine unnoticed |
+| `STATE-GEN` | the generated state module is still what the state descriptor generates — drift is refused, and the generator refuses shapes it cannot emit rather than silently guessing |
 | `SOURCE-FORMAT` | every source of truth the engine extracts from is in the one format — a retired-format file in a source-of-truth family is refused by name, and every `.sexp` there parses with the one reader |
 | `UNIT-COMPOSITION` | a unit's composed encoding space is decided — schema-conformant document, fragments resolved through the one shared resolver, collision-free union, and partial compositions declared rather than inferred |
 | `SEMANTICS` | the execution authority's corpus holds — every semantics document is well-formed, complete and cited; a silent semantic override across fragments is refused; locators resolve offline, with a named skip when the cache cannot judge |

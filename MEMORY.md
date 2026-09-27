@@ -11,21 +11,17 @@
 
 ## Current state
 
-- **Project:** semulith — trustworthy CPU/DSP software models in Rust; `ROADMAP.md` v0.3 is the plan. CPU work has the laboratory crates and their arithmetic core; no instruction executes yet.
-- **Active trees:** `P1-LAB` (2/12), `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
+- **Project:** semulith — trustworthy CPU/DSP software models in Rust; `ROADMAP.md` v0.3 is the plan. The laboratory has crates, arithmetic, and generated architectural state; no instruction executes yet.
+- **Active trees:** `P1-LAB` (3/12), `UPSTREAM-TRACK` (3/4), `PUSH-DISCIPLINE` (1/3), `MODEL-BOOKS` (0/6), `ARTIFACT-CLEANUP` (1/1 — recurring §8).
 - **Closed `2026-09-27`:** `PORT-WEB` (1/1 — the skeleton builds for wasm32 from its first slice, doctrine `PORT-WEB` fired RED); `MODEL-METHOD` (13/13), `MODEL-COMPOSE` (6/6), `SOT-FORMAT` (10/10), `DOC-SHARDING` (1/1).
-- **Frontier leaf:** `P1-LAB.3` — architectural state: generated state accessors, aliases, inspection metadata.
-- **Just landed:** `P1-LAB.2` — `semulith-core::arith`, 18 SEM-03 primitives source-linked to
-  the requirement records, verified by boundary + 8-bit-exhaustive suites (the signed-op
-  width-sensitivity trap, caught and promoted to `docs/knowledge/`). `P1-LAB.1` — the three
-  crates, wired per `docs/ARCHITECTURE.md` §4, and the workspace builds for
-  `wasm32-unknown-unknown` on every commit (`scripts/check_wasm_build.sh`, 20th doctrine).
+- **Frontier leaf:** `P1-LAB.4` — environment boundary and fixtures: the request/response contract types in `semulith-core`, controlled memory/fault/event fixtures in `semulith-verify`.
+- **Just landed:** `P1-LAB.3` — `semulith-core::state` generated from `state.sexp` by `scripts/gen_state.py` (input sha256 in the header, byte-deterministic); 21st doctrine `STATE-GEN` (`scripts/check_state_gen.sh`) refuses drift, fired RED pre-registration, pair registered in `doctrine/fact_ownership.tsv`. 32×u64 + pc inline (RUST-03, 264 B), x0 hardwired, three ISA-chapter aliases as views (C02, 10 suites), SEM-08 census as data. `P1-LAB.2` — `semulith-core::arith`, 18 SEM-03 primitives verified exhaustively at reduced width.
 - **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression, composable and extensible in the same format (`decision_one-format-every-source-of-truth`).
 - **Direction (delegated, 2026-09-27):** the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone.
 - **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm first-class from the first crate; now a gate, not a hope (`PORT-WEB`).
 - **Materials:** 36 primary sources in `materials/catalog.sexp` (corpus `3c45e81`), cached in gitignored `.materials/` by `scripts/materials.py --fetch`; the corpus root comes from `$SEMULITH_CHIPDOC_ROOT`, never a tracked file. Run-real-code set pinned at `.materials/run-real-code/` (psABI, ELF gABI, syscall header, compiler-rt inventory).
 - **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Next action:** `P1-LAB.3` — architectural state in `semulith-core`: state descriptors, aliases (writing one alias affects every other view), fixed-width storage with no per-access allocation (`RUST-03`). ⛔ Everything moves only behind the schema layer, never before.
+- **Next action:** `P1-LAB.4` — the environment request/response contract in `semulith-core` and controlled memory/fault/event fixtures in `semulith-verify`, testable without the instruction handler (`docs/CPU_ENVIRONMENT.md` §4.1). ⛔ Everything moves only behind the schema layer, never before.
 - ⚠️ `52 of 52` semantics means well-formed, complete and **cited** — not **correct**; correctness is a differential experiment against a reference model.
 - **Also open:** `MODEL-BOOKS.1` (book structure + the complete materials bill), `UPSTREAM-TRACK.3`, `PUSH-DISCIPLINE.2`. ⭐ Director input to schedule (no pivot taken): chipdoc's corpus carries a semulith feed (`$SEMULITH_CHIPDOC_ROOT/SEMULITH.md` → `catalog/semulith-proposals.sexp`: psABI, SBI, BRS, U-Boot, DT, FU540, virtio, ACT); a MODEL-METHOD catalogue slice consumes it when that frontier opens.
 - **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction. **Latest commit:** `git log -1`. **In-flight uncommitted work:** none.

@@ -67,9 +67,24 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   (`.8`) to exercise state writeback.
 
 - ID: `P1-LAB.3` — **architectural state**
-  Status: `pending`
-  Goal: generated state accessors and inspection metadata from the state descriptors, including aliases and required pending state (`SEM-08`).
+  Status: `done`
+  Goal: generated state accessors and inspection metadata from the state descriptors, including aliases and required pending state (SEM-08).
   Acceptance: writing one alias correctly affects every other view (catalog `C02`); fixed-width storage, no per-access allocation (`RUST-03`).
+  Result: met, `2026-09-27`. `semulith-core::state` is GENERATED from `profiles/rv64i-lab-v0/state.sexp` by
+  `scripts/gen_state.py` (through `dossier_sexp.load_state`, the single mapping owner; byte-deterministic;
+  the input sha256 rides in the module header — OWN-03). One fixed-width storage: `[u64; 32]` + pc,
+  264 bytes inline, no heap (RUST-03 — the API returns values from references, so per-access allocation
+  is not possible by construction). x0 hardwired: write discarded, read masks to 0. The three roles the
+  ISA chapter names (x1/x2/x5) are emitted as alias constants — views over the one storage, C02's
+  question answered in both directions and held by tests. `ELEMENTS` carries the inspection metadata
+  (name/width/class/role/source per element); the SEM-08 hidden-state census rides as data (7 candidates
+  checked, none present — the recorded justification that replay reduces to registers, pc and memory).
+  The generator REFUSES by name any shape it cannot emit (another profile, non-64 width, unmapped
+  special register, missing census). The 21st doctrine `STATE-GEN` (`scripts/check_state_gen.sh`)
+  regenerates in memory and refuses drift; fired RED against a hand-edited module before registration;
+  the owner→mirror pair is registered in `doctrine/fact_ownership.tsv`. Reset is the laboratory
+  declaration (REQ-D-ENTRY-STATE/OB-ENV-RESET: x1..x31 = 0, pc = environment-supplied entry).
+  Lessons: promotion: declined (the three design notes — fmt-stable emission, family_for naming the dossier family from the file NAME, descriptor↔arith binding at generation time — are P1-LAB-generation specifics; nothing generalizes past `.6`, where the generation manifest lands).
 
 - ID: `P1-LAB.4` — **environment boundary and fixtures**
   Status: `pending`
@@ -120,7 +135,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.3` | `pending` | architectural state — the primitives need registers and pc to compose against |
+| 1 | `P1-LAB.4` | `pending` | environment boundary and fixtures — the state needs its controlled world to step against |
 
 ## Decisions
 
@@ -130,6 +145,11 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 - `2026-09-13`: the reference interpreter is **not** an external oracle — it executes the
   canonical handlers, so its agreement with them is structural, not evidential
   (`docs/ARCHITECTURE.md` §2).
+- `2026-09-27` (`.3`): state accessors and inspection metadata are **generated from the state
+  descriptor** by `scripts/gen_state.py`; drift is the `STATE-GEN` doctrine's refusal, and the
+  generator refuses unknown descriptor shapes by name — a generator that guesses is a second
+  definition. Reset stays a laboratory declaration supplied by the environment (entry address
+  is a parameter, never a constant in the model).
 
 ## Open Questions
 
@@ -246,10 +266,98 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 - [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
   `docs/TASK_TREE.md`, the book's P1 chapter, the knowledge layer, and this tree — one commit.
 
+## Acceptance Checklist (leaf P1-LAB.3)
+
+- [x] **REPRODUCE / ISSUE** — the laboratory's architectural state existed only as a descriptor;
+  nothing executable implemented it, and C02's alias question had no code to answer it:
+
+  ```
+  $ git ls-files 'crates/**/*.rs' | sort
+  crates/semulith-cli/src/main.rs
+  crates/semulith-core/src/arith.rs
+  crates/semulith-core/src/arith/tests.rs
+  crates/semulith-core/src/lib.rs
+  crates/semulith-verify/src/fixtures.rs
+  crates/semulith-verify/src/lib.rs
+  $ git grep -c "ArchitecturalState" HEAD -- crates/
+  0 matches — no architectural state existed
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `state.sexp` (the authority, EXTRACTION-cited) had no
+  executable half: `docs/ARCHITECTURE.md` §2 assigns "state accessors and inspection
+  metadata" to the "state/alias definitions" as a DERIVATION, and no generator or hand code
+  performed it. WHERE, measured — no accessor, alias, or state type existed anywhere in the
+  workspace at this leaf's parent commit:
+
+  ```
+  $ git grep -c 'ArchitecturalState' HEAD -- crates/ | wc -l
+  0
+  ```
+
+  The register file, pc, aliases, and the SEM-08 census lived in exactly one place — the
+  descriptor itself.
+
+- [x] **FIX** — `scripts/gen_state.py` derives `crates/semulith-core/src/state.rs` from
+  `profiles/rv64i-lab-v0/state.sexp` through `dossier_sexp.load_state` (the single mapping
+  owner), emitting: fixed-width storage (`[u64; 32]` + pc), the x0 hardwired discipline, the
+  three ISA-chapter aliases as index views, the `ELEMENTS` inspection table, and the
+  hidden-state census as data. Byte-deterministic; input sha256 in the module header (OWN-03).
+  Hand-written tests live beside it in `state/tests.rs` (the arith layout). Drift is gated by
+  the `STATE-GEN` doctrine (`scripts/check_state_gen.sh`, registered 21st, fired RED against a
+  hand-edited module before registration); the owner→mirror pair is registered in
+  `doctrine/fact_ownership.tsv`.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ cargo test -p semulith-core state 2>&1 | grep "test result"
+  test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.01s
+  ```
+
+  Catalog C02 ("does writing one alias correctly affect every other view?"): ten suites,
+  including `alias_write_is_visible_through_every_view` (both directions for all three named
+  aliases) and `one_storage_means_every_view_agrees` (distinct value per register, read back
+  through every view — a copied alias file would disagree). RUST-03:
+  `state_is_33_words_inline` asserts `size_of::<ArchitecturalState>() == 33 * 8`; the
+  accessors take `&self`/`&mut self` and return `u64`, so no per-access allocation exists in
+  the API by construction. SEM-08: `census_records_every_candidate_checked_and_none_present`
+  re-derives the census from the generated data. Reset/entry state and x0 discipline each
+  carry their own suite. Generation itself is the acceptance's "generated" claim, kept
+  honest:
+
+  ```
+  $ bash scripts/check_state_gen.sh
+  STATE-GEN: ok (crates/semulith-core/src/state.rs matches profiles/rv64i-lab-v0/state.sexp, sha256 ff53fb04f3ed7ac2)
+  $ bash scripts/check_state_gen.sh --self-test
+  STATE-GEN --self-test: 6 pass / 0 fail
+  ```
+
+- [x] **NO REGRESSION** — the strict-lint suite and the doctrine gate, re-run on the new
+  workspace:
+
+  ```
+  $ cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings && cargo test --all 2>&1 | grep -c 'test result: ok'
+  5                                    # 5 suites, all ok; 22 tests, 0 warnings at -D warnings
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s   # rc=0, PORT-WEB holds
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===          # 21 doctrines, including the new STATE-GEN
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `docs/book/src/plan/p1.md`, `docs/book/src/working/doctrines.md`,
+  `DOCTRINE_ENFORCEMENT.md`, `doctrine/fact_ownership.tsv` (+ its census in
+  `scripts/check_fact_ownership.sh`), and this tree — one commit. `LIVE_STATUS`'s doctrine
+  name list completed (STATE-GEN added; SCOPE-COVERAGE, omitted when it landed, restored).
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `P1-LAB.3` | `cargo test --all` | 22 passed / 0 failed (12 arithmetic + 10 state suites) |
+| `2026-09-27` | `P1-LAB.3` | `bash scripts/check_state_gen.sh --self-test` | 6 pass / 0 fail |
+| `2026-09-27` | `P1-LAB.3` | STATE-GEN fired RED pre-registration (hand-edited module) | rc=1, named DRIFT + regeneration command |
+| `2026-09-27` | `P1-LAB.3` | `clippy -D warnings`, `make gate`, wasm build | clean / all doctrines green / rc=0 |
 | `2026-09-27` | `P1-LAB.2` | `cargo test -p semulith-core` | 12 passed / 0 failed (incl. 8-bit exhaustive suites) |
 | `2026-09-27` | `P1-LAB.2` | first exhaustive run | FAILED 2 (slt/sar width-sensitivity) → test design fixed, re-run green |
 | `2026-09-27` | `P1-LAB.2` | `clippy -D warnings`, `make gate` | clean / all doctrines green |
@@ -261,11 +369,16 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.3` | `SEMILITH-PL-0003 (leaf P1-LAB.3): …` | architectural state, generated from the descriptor; STATE-GEN registered and fired RED first |
 | `P1-LAB.2` | `SEMILITH-PL-0002 (leaf P1-LAB.2): …` | arithmetic primitives, verified exhaustively at reduced width |
 | `P1-LAB.1` | `SEMILITH-PL-0001 (leaf P1-LAB.1, PORT-WEB.1): …` | the crate skeleton and the Wasm gate land in one commit, as PORT-WEB.1's acceptance requires |
 
 ## Changelog
 
-- `2026-09-27`: Leaf `.2` done — `semulith-core::arith`, 18 SEM-03 primitives with source
-  links, verified by boundary + 8-bit-exhaustive suites; the frontier moves to `.3`
-  (architectural state). Leaf `.1` done the same day — the three crates + the Wasm gate.
+- `2026-09-27`: Leaf `.3` done — `semulith-core::state` generated from `state.sexp` (input
+  sha256 in the header, byte-deterministic); x0 hardwired, three ISA-chapter aliases as
+  views (C02), SEM-08 census as data; the 21st doctrine `STATE-GEN` refuses drift and was
+  fired RED pre-registration; the frontier moves to `.4` (environment boundary). Leaf `.2`
+  done the same day — `semulith-core::arith`, verified by boundary + 8-bit-exhaustive
+  suites; the frontier moves to `.3` (architectural state). Leaf `.1` done the same day —
+  the three crates + the Wasm gate.

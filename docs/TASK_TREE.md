@@ -51,7 +51,7 @@ on the same commit. One commit per completed leaf.
 | --- | --- | --- | --- |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `done` (reopened once, for `.10` — a measured defect the first nine leaves carried) | — (10/10 leaves complete) | repo-local |
-| [`P1-LAB`](tasks/P1-LAB.md) | `active` | `.3` — architectural state (2 of 12 leaves done; arithmetic primitives verified exhaustively at reduced width) | repo-local |
+| [`P1-LAB`](tasks/P1-LAB.md) | `active` | `.4` — environment boundary and fixtures (3 of 12 leaves done; architectural state generated from the descriptor, alias views verified) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `proposed` | `.1` — complete the declared scope (gate `CPU-LAB`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `proposed` | `.1` — apply the interface findings (gate `BREADTH`) | repo-local |
