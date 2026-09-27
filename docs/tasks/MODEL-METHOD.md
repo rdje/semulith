@@ -194,13 +194,29 @@ recorded so it can be overturned on evidence rather than taste:
     declared not built, C09/C10/C11). `.3` revises every disposition it can evidence better.
 
 - ID: `MODEL-METHOD.3` — **the coverage census for `rv64i-lab-v0`**
-  Status: `pending`
+  Status: `done`
   Goal: fill the catalogue for the first model honestly. Expected outcome is that a **minority**
   of categories are covered — the profile excludes privilege, translation, floating point, vectors
   and atomics — and the value is in the `missing` rows, not the `covered` ones. ⛔ Device and
   interconnect categories are **`deferred-to-board`**, not missing: they are `P5-BOARD`'s to own,
   and the CPU records an assumption in their place.
   Acceptance: no category absent; each `missing` row names what would close it.
+
+
+  Result: met, `2026-09-27`. The census swept the cached snapshot rather than trusting the
+  first pass, and the evidence revised it: all 8 covered categories' subject matter verified
+  present in the pinned pages, and — the measured surprise — the excluded subsystems' chapters
+  (f/d/q/v/a-st-ext, rvwmo, counters, zicsr, zifencei) are IN the same snapshot. `missing`
+  therefore means the profile excludes the subsystem (the facts are not part of this unit's
+  model), not "material absent" — every one of the 6 missing rows now names its closer (a
+  profile revision against snapshot chapters for C07/C08/C16; the separate Privileged
+  Architecture manual for C12/C14/C15; the Debug specification for C18). Device and
+  interconnect categories (C19/C20/C21) moved from `out-of-scope` to the new
+  `deferred-to-board` disposition — P5-BOARD owns them and the CPU records an environment
+  assumption in their place — and the census now reads: 10 covered, 4 partial, 6 missing (all
+  closers named), 3 deferred-to-board, 1 out-of-scope (C17, contract-owned). RECORD-SCHEMA
+  rule 12 (UNRESOLVED MATERIAL) keeps every named material honest against catalog.sexp; 33
+  arms.
 
 - ID: `MODEL-METHOD.4` — **acquire what the census says is missing and reachable**
   Status: `pending`
@@ -405,7 +421,7 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.3` | `pending` | the coverage census for `rv64i-lab-v0` — revise each first-pass disposition against evidence |
+| 1 | `MODEL-METHOD.4` | `pending` | acquire what the census says is missing and reachable — the run-real-code set and the PDF question |
 
 ## Decisions
 
@@ -760,10 +776,76 @@ Neither is routed to another tree; neither is worked around here.
   `docs/TASK_TREE.md` and this tree — one commit. No new doctrine: the families ride the
   records track RECORD-SCHEMA already owns.
 
+## Acceptance Checklist (leaf MODEL-METHOD.3)
+
+- [x] **REPRODUCE / ISSUE** — the first pass's claims as they stood: dispositions written
+  before any evidence, with reasons asserting material absence nobody had checked. The census
+  question: which rows survive contact with the pinned snapshot?
+
+  ```
+  $ ls .materials/riscv/pinned-v20260120/unpriv/*.html | wc -l
+  45                                            # the snapshot's pages, present in the cache
+  $ grep -c 'absent from the catalogue' materials/category-needs.sexp
+  4                                             # first-pass reasons asserting absence — unchecked
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a first pass writes dispositions from the
+  profile's exclusions; a census must EVIDENCE them — and the evidence (the snapshot holds the
+  excluded chapters) flips the meaning of `missing` from "material absent" to "subsystem
+  excluded from this unit's model". WHERE: measured page-by-page against the cache:
+
+  ```
+  $ ls .materials/riscv/pinned-v20260120/unpriv/*.html | wc -l
+  45                                            # the snapshot's pages, present in the cache
+  $ grep -c 'absent from the catalogue' materials/category-needs.sexp
+  4                                             # first-pass absence claims, none checked
+  $ # the covered categories' subjects were then found in the pinned pages (C01<->rv64
+  $ # Register State, C03<->rv32 Base Instruction Formats, C22<->intro UNSPECIFIED), and the
+  $ # excluded chapters are present too: a-st-ext.html, rvwmo.html, v-st-ext.html, ...
+  ```
+
+- [x] **FIX** — revise the 24 rows: every `missing` reason now names what would close it
+  (profile revision against snapshot chapters, or the separate Privileged/Debug volumes);
+  C19/C20/C21 become `deferred-to-board` (new disposition value, zero kernel lines);
+  RECORD-SCHEMA rule 12 (UNRESOLVED MATERIAL) keeps every named `material` honest against
+  catalog.sexp — 1 new arm, 33 total.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ grep -c '^(category-need' materials/category-needs.sexp
+  24                                            # no category absent
+  $ python3 - <<'PY'   # every missing row names a closer
+  > needs = records_sexp.load("materials/category-needs.sexp")
+  > print(all(n.get("reason") for n in needs if n["disposition"] == "missing"))   # -> True
+  > PY
+  $ bash scripts/check_requirements.sh --self-test
+  RECORD-SCHEMA --self-test: 33 pass / 0 fail     # +1 UNRESOLVED MATERIAL arm
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (7 record file(s) validate and agree with their profile)
+  ```
+
+  Final census: 10 covered, 4 partial, 6 missing (closers named), 3 deferred-to-board,
+  1 out-of-scope — the minority covered, exactly as the leaf predicted, and the value is in
+  the missing rows.
+
+- [x] **NO REGRESSION** — `python3 scripts/sexp.py --self-test` 18 pass / 0 fail; kernel 50/0;
+  materials " + bt + "--self-test" + bt + " 20/0; whole gate green after staging.
+
+- `promotion: declined (the "missing means excluded-by-the-profile, not material-absent"
+  distinction is stated in the catalogue header and this leaf, where the .4 acquisition meets
+  it).`
+
+- [x] **LOCKSTEP** — the census rows and schema header; `MEMORY.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-27` | `MODEL-METHOD.3` | census sweep against the cached snapshot | all 8 covered categories' subjects found in the pinned pages; the excluded chapters (a/d/f/q/v-st-ext, rvwmo, counters, zicsr, zifencei) present in the same snapshot |
+| `2026-09-27` | `MODEL-METHOD.3` | revised census | 24 rows: 10 covered, 4 partial, 6 missing (each naming its closer), 3 deferred-to-board, 1 out-of-scope |
+| `2026-09-27` | `MODEL-METHOD.3` | RECORD-SCHEMA rule 12 + arm | `33 pass / 0 fail` (was 32); UNRESOLVED MATERIAL fired RED pre-registration |
 | `2026-09-27` | `MODEL-METHOD.2` | `--self-test` | `32 pass / 0 fail` (was 26; NO REGISTRY, LAYER LIE, REASONLESS MISSING, UNEVIDENCED COVERED, EMPTY REGISTRY, GREEN census) |
 | `2026-09-27` | `MODEL-METHOD.2` | real run | `ok (7 record file(s))` — the 24-row first honest pass green |
 | `2026-09-27` | `MODEL-METHOD.2` | schema validation | both new catalogues `conform` under the two new schemas |
@@ -821,6 +903,7 @@ Neither is routed to another tree; neither is worked around here.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.3` | `SEMILITH-MM-0047 (leaf MODEL-METHOD.3): …` | the census swept the snapshot; missing now means excluded, with closers named |
 | `MODEL-METHOD.2` | `SEMILITH-MM-0046 (leaf MODEL-METHOD.2): …` | the materials requirement: two record families, the unit registry, the 24-category first pass |
 | `MODEL-METHOD.7` | `SEMILITH-MM-0045 (leaf MODEL-METHOD.7): …` | the no-duplicated-fact registry and its gate; the obligation mirror governed |
 | `MODEL-METHOD.10` | `SEMILITH-MM-0044 (leaf MODEL-METHOD.10): …` | the extraction contract: one set four ways, and P1's start condition fully met |

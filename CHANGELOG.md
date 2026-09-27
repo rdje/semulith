@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMILITH-MM-0047 (leaf MODEL-METHOD.3) — the census sweeps the snapshot, and missing changes its meaning
+
+The coverage census for `rv64i-lab-v0` did what a first pass cannot: it opened the pinned
+snapshot and checked. Every covered category's subject matter is present in the pinned pages —
+and, the measured surprise, so are the excluded subsystems' chapters (a/d/f/q/v-st-ext, rvwmo,
+counters, zicsr, zifencei). `missing` therefore never meant "material absent"; it means the
+profile EXCLUDES the subsystem, and all six missing rows now name what would close them: a
+profile revision against snapshot chapters (C07/C08/C16), the separate Privileged Architecture
+manual (C12/C14/C15), the Debug specification (C18). Device and interconnect categories became
+the new `deferred-to-board` disposition — P5-BOARD's to own, with the CPU recording an
+environment assumption in their place. Final census: 10 covered, 4 partial, 6 missing with
+closers, 3 deferred-to-board, 1 out-of-scope. RECORD-SCHEMA rule 12 (UNRESOLVED MATERIAL) keeps
+every named material honest against the catalogue; 33 arms.
+
 ## SEMILITH-MM-0046 (leaf MODEL-METHOD.2) — the materials requirement: what each unit owes its model
 
 The catalogue of documents gains the requirement layer: `schema/units.sexp` +

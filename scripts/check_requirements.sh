@@ -49,9 +49,13 @@
 #                   over no units is a claim about nothing (MODEL-METHOD.2).
 #    11. LAYERS      a category-need dispositioned `missing` owes a reason, a `covered` row names
 #                   its material, and a board-layer category may not be `missing` for a processor
-#                   unit — `missing` means the unit REQUIRED it; the honest word for never-needed
-#                   is `out-of-scope` (MODEL-METHOD.2). Checked against the units registry
-#                   beside the catalogue: layer claims without a registry prove nothing.
+#                   unit — `missing` means the unit REQUIRED it; the honest words for never-needed
+#                   is `out-of-scope`, and for P5-BOARD's categories `deferred-to-board`
+#                   (MODEL-METHOD.2/3). Checked against the units registry beside the catalogue:
+#                   layer claims without a registry prove nothing.
+#    12. MATERIAL    a category-need naming a `material` names one catalog.sexp actually holds —
+#                   a covered-by that names no document is the same lie as a citation into a
+#                   document nobody acquired (MODEL-METHOD.3).
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -314,6 +318,22 @@ for cat in catalogues:
             findings.append(
                 f"NO REGISTRY {cat.relative_to(root)}: no units.sexp beside {cat.name} — "
                 f"layer dispositions cannot be checked without the registry they describe")
+        material_ids: set[str] = set()
+        catalog_path = cat.parent / "catalog.sexp"
+        if catalog_path.is_file():
+            try:
+                cat_root = S.read_file(catalog_path)[0]
+                material_ids = {str(S.field(m, "id"))
+                                for m in S.children(cat_root, "material")}
+            except (S.SexpError, IndexError):
+                findings.append(
+                    f"UNREADABLE {catalog_path.name}: the materials catalogue beside "
+                    f"{cat.name} does not map — material references against a catalogue "
+                    f"nobody can read prove nothing")
+        else:
+            findings.append(
+                f"NO CATALOGUE {cat.relative_to(root)}: no catalog.sexp beside {cat.name} "
+                f"— material references cannot be resolved without the catalogue they name")
         for r in recs:
             where = f"{cat.name} [{r.get('category')} for {r.get('unit')}]"
             kind = r.get("disposition")
@@ -327,12 +347,21 @@ for cat in catalogues:
                     findings.append(
                         f"LAYER LIE {where}: a board-layer category dispositioned 'missing' "
                         f"for a processor unit — the unit never owed board-layer information. "
-                        f"The honest disposition is 'out-of-scope'; 'missing' smuggles a "
-                        f"requirement in through the back door")
+                        f"The honest disposition is 'deferred-to-board' (P5-BOARD owns it and "
+                        f"the CPU records an assumption in its place) or 'out-of-scope'; "
+                        f"'missing' smuggles a requirement in through the back door")
             if kind == "covered" and not r.get("material"):
                 findings.append(
                     f"UNEVIDENCED COVERED {where}: disposition 'covered' names no material — "
                     f"covered by WHAT?")
+            # 12. MATERIAL: a row naming a material names one the catalogue actually holds —
+            #    a covered-by that names nothing is the same lie as a citation into a document
+            #    nobody acquired (MODEL-METHOD.3).
+            if r.get("material") and r["material"] not in material_ids:
+                findings.append(
+                    f"UNRESOLVED MATERIAL {where}: names '{r['material']}', which "
+                    f"catalog.sexp does not hold — covered by a document nobody acquired is "
+                    f"not covered")
 
     else:  # contract-obligations.sexp — the NO NEGATIVE CHECK arm is fired standalone too
         for o in recs:
@@ -462,6 +491,15 @@ pathlib.Path('$t/p/category-needs.sexp').write_text(R.dump(recs))"; }
                                                                arm "RED   a 'missing' that owes no reason" 1 "REASONLESS MISSING"
   needs '{"category":"C01","layer":"processor","kind":"isa-manual","unit":"p","disposition":"covered"}'
                                                                arm "RED   a 'covered' naming no material" 1 "UNEVIDENCED COVERED"
+  python3 - <<PYEOF
+import pathlib
+pathlib.Path('$t/p/catalog.sexp').write_text(
+    '(materials (schema-version 1) (cache-root ".materials")\n'
+    '(material (id "M") (title "t") (revision "r") (release-kind ratified) (kind snapshot)\n'
+    '(licence "l") (corpus-path "c") (cache-path "c") (sha256 "' + 'a' * 64 + '")))\n')
+PYEOF
+  needs '{"category":"C01","layer":"processor","kind":"isa-manual","unit":"p","disposition":"covered","material":"GHOST-DOC"}'
+                                                               arm "RED   a covered-by that names no held document" 1 "UNRESOLVED MATERIAL"
   needs '{"category":"C01","layer":"processor","kind":"isa-manual","unit":"p","disposition":"covered","material":"M"}|||{"category":"C07","layer":"processor","kind":"isa-manual","unit":"p","disposition":"missing","reason":"F/D excluded"}'
                                                                arm "GREEN a registry and an honest census" 0 "__CHECKED__ 3"
   : > "$t/p/units.sexp"; needs "$BOARD_MISSING";                          arm "RED   an empty unit registry" 1 "contains no records"

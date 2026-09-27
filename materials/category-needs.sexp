@@ -1,10 +1,15 @@
-;; category-needs.sexp — the category-needs catalogue (MODEL-METHOD.2). One
-;; (category-need …) per docs/INFORMATION_CATALOG.md category per unit; validate with
+;; category-needs.sexp — the category-needs catalogue (MODEL-METHOD.2, census revised by
+;; MODEL-METHOD.3). One (category-need …) per docs/INFORMATION_CATALOG.md category per unit;
+;; validate with
 ;;   python3 scripts/check_sexp_schema.py category-needs.sexp schema/category-needs.sexp
-;; Dispositions are honest about ABSENT vs NEVER-NEEDED: `missing` (a reason is owed) means
-;; the unit requires the category and the catalogue lacks the material; `out-of-scope` means
-;; the unit never owed it. This file is the first honest pass — MODEL-METHOD.3 revises every
-;; disposition it can evidence better.
+;; Dispositions are honest about ABSENT vs NEVER-NEEDED vs OWNED-ELSEWHERE: `missing` (a reason
+;; is owed, naming what would close it) means the unit requires the category and the facts are
+;; not part of this unit's model — the profile EXCLUDES the subsystem; `out-of-scope` means the
+;; unit never owed it; `deferred-to-board` means P5-BOARD owns it and the CPU records an
+;; assumption in its place. The census evidence (2026-09-27): every `covered` row's subject
+;; matter was found in the pinned snapshot's pages, and the excluded subsystems' chapters
+;; (f/d/q/v/a-st-ext, rvwmo, counters, zicsr) are present in that same snapshot — `missing`
+;; rows close with a profile revision, not (mostly) with new material.
 
 (category-need (category "C01") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
 (category-need (category "C02") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
@@ -12,21 +17,21 @@
 (category-need (category "C04") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
 (category-need (category "C05") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
 (category-need (category "C06") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
-(category-need (category "C07") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "F and D are excluded from this profile; the numerics material that would supply C07 is therefore absent from the catalogue. Reopen with the first F/D unit."))
-(category-need (category "C08") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "V is excluded from this profile; the vector material is absent. Reopen with the first vector unit."))
-(category-need (category "C09") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition partial) (reason "In-order, single-hart, one-operation-at-a-time is declared (no interlock or forwarding questions arise); packet/issue-group semantics are absent by construction.") (material "RVI-PINNED-V20260120"))
+(category-need (category "C07") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "F and D are excluded from this profile, so floating-point numerics are not part of this unit's model. Closing: an F/D-admitting profile revision; the pinned snapshot's f-st-ext, d-st-ext and q-st-ext chapters already carry the facts.") (material "RVI-PINNED-V20260120"))
+(category-need (category "C08") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "V is excluded from this profile, so vector semantics are not part of this unit's model. Closing: a vector unit; v-st-ext.html is already in the pinned snapshot.") (material "RVI-PINNED-V20260120"))
+(category-need (category "C09") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition partial) (reason "In-order, single-hart, one-operation-at-a-time is declared (no interlock, forwarding or issue-group questions arise); the sequencing facts the category asks for are absent by construction, not by gap.") (material "RVI-PINNED-V20260120"))
 (category-need (category "C10") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
 (category-need (category "C11") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
-(category-need (category "C12") (layer system) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "Translation is excluded (no MMU, no S/U modes); the translation material is absent. Reopen with the first translated unit."))
-(category-need (category "C13") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition partial) (reason "Code visibility is decided as a laboratory policy (re-fetch every instruction); the Zifencei maintenance questions are absent from this profile by exclusion.") (material "RVI-PINNED-V20260120"))
-(category-need (category "C14") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition partial) (reason "Only requested traps (ECALL/EBREAK) exist; interrupt sources, nesting and delivery are all excluded with no privilege modes.") (material "RVI-PINNED-V20260120"))
-(category-need (category "C15") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "Privilege modes beyond M are not modelled; the system-programming material is absent. Reopen with the first privileged unit."))
-(category-need (category "C16") (layer system) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "One hart, no atomics: the memory-consistency and multicore material is absent. Reopen with MC-MULTICORE."))
-(category-need (category "C17") (layer board) (kind "datasheet") (unit "rv64i-lab-v0") (disposition out-of-scope) (reason "Reset and time are the harness's concern in this laboratory (the CPU/environment contract owns them); no board exists to supply them."))
-(category-need (category "C18") (layer system) (kind "debug-spec") (unit "rv64i-lab-v0") (disposition missing) (reason "No debug entry, trace, or counters exist in this profile (Zicntr/Zihpm excluded); the debug material is absent."))
-(category-need (category "C19") (layer board) (kind "datasheet") (unit "rv64i-lab-v0") (disposition out-of-scope) (reason "The laboratory declares exactly one main-memory region and no devices; platform and device documentation is the board's, and no board is modelled."))
-(category-need (category "C20") (layer board) (kind "abi-spec") (unit "rv64i-lab-v0") (disposition out-of-scope) (reason "ABI, loader and system-call conventions belong to the environment the board provides; this unit models the processor only."))
-(category-need (category "C21") (layer board) (kind "datasheet") (unit "rv64i-lab-v0") (disposition out-of-scope) (reason "External input and co-simulation scheduling are the harness/board's boundary; the processor unit does not own them."))
+(category-need (category "C12") (layer system) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "Translation is excluded (no MMU, no S/U modes). Closing: the RISC-V Privileged Architecture manual — a separate volume, absent from this unprivileged snapshot — pinned at the first translated unit."))
+(category-need (category "C13") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition partial) (reason "Code visibility is decided as a laboratory policy (re-fetch every instruction); the Zifencei maintenance questions are absent from this profile by exclusion (zifencei.html is in the snapshot, unused).") (material "RVI-PINNED-V20260120"))
+(category-need (category "C14") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition partial) (reason "Only requested traps (ECALL/EBREAK) exist; interrupt sources, nesting, and delivery are excluded with the privilege modes. Closing: the Privileged Architecture manual at the first privileged unit.") (material "RVI-PINNED-V20260120"))
+(category-need (category "C15") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "Privilege modes beyond M are not modelled. Closing: the RISC-V Privileged Architecture manual (a separate volume) pinned at the first privileged unit."))
+(category-need (category "C16") (layer system) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition missing) (reason "One hart and no atomics: the memory-consistency questions are excluded from this unit's model. Closing: MC-MULTICORE's unit — rvwmo.html and a-st-ext.html are already in the pinned snapshot; what is missing is the multicore profile and its tests, not the material.") (material "RVI-PINNED-V20260120"))
+(category-need (category "C17") (layer board) (kind "datasheet") (unit "rv64i-lab-v0") (disposition out-of-scope) (reason "Reset and time are the harness's concern in this laboratory — the CPU/environment contract owns them as assumptions (OB-ENV-RESET, OB-ENV-VIRTUAL-TIME), so the processor unit does not owe this category; the board that replaces the harness will."))
+(category-need (category "C18") (layer system) (kind "debug-spec") (unit "rv64i-lab-v0") (disposition missing) (reason "No debug entry, trace, or counters exist in this profile (Zicntr/Zihpm excluded). Closing: the RISC-V Debug specification, a separate document, at the first debuggable unit; counters.html and zicsr.html in the snapshot supply the counter questions once CSRs are in."))
+(category-need (category "C19") (layer board) (kind "datasheet") (unit "rv64i-lab-v0") (disposition deferred-to-board) (reason "Device and interconnect categories are P5-BOARD's to own, not the CPU's: the laboratory declares exactly one main-memory region and no devices, and the CPU records an environment assumption (OB-ENV-*) in this category's place."))
+(category-need (category "C20") (layer board) (kind "abi-spec") (unit "rv64i-lab-v0") (disposition deferred-to-board) (reason "The program environment (loader, ABI, system calls) is the environment the board provides; the run-real-code set (psABI, ELF, exit convention) is MODEL-METHOD.4's acquisition, on behalf of the first runnable unit, not this processor unit's own coverage."))
+(category-need (category "C21") (layer board) (kind "datasheet") (unit "rv64i-lab-v0") (disposition deferred-to-board) (reason "External input and co-simulation scheduling are the harness/board boundary; the processor unit records its replay contract (OB-ENV-ORDERING) and defers the input categories to the board that drives it."))
 (category-need (category "C22") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
 (category-need (category "C23") (layer processor) (kind "isa-manual") (unit "rv64i-lab-v0") (disposition covered) (material "RVI-PINNED-V20260120"))
-(category-need (category "C24") (layer processor) (kind "model-contract") (unit "rv64i-lab-v0") (disposition partial) (reason "The observation contract declares determinism, replay-relevant state and stop reasons; snapshot/versioning policy is declared for P1, not yet built."))
+(category-need (category "C24") (layer processor) (kind "model-contract") (unit "rv64i-lab-v0") (disposition partial) (reason "The observation contract declares determinism, replay-relevant state and stop reasons; snapshot and versioning policy are declared for P1, not yet built — closing is P1-LAB's evidence, not new material."))

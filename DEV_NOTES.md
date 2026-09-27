@@ -8,6 +8,30 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-27)_ — the census sweeps the snapshot, and missing changes its meaning (MODEL-METHOD.3)
+
+Root cause this leaf closes: the .2 first pass wrote dispositions from the profile's
+exclusions, and four of its reasons asserted material absence nobody had checked. The census
+evidenced every covered row against the cached snapshot and corrected the mistake the
+evidence revealed: the excluded subsystems' chapters are IN the snapshot — a-st-ext, rvwmo,
+v-st-ext, f/d/q-st-ext, counters, zicsr, zifencei. So `missing` means the profile excludes
+the subsystem (the facts are not part of this unit's model), not that the material is absent.
+That flip matters downstream: .4's acquisition list is now honestly short — the run-real-code
+set and the privileged/debug VOLUMES, not chapters the snapshot already carries.
+
+Design choices, stated: `deferred-to-board` is a new disposition value (zero kernel lines)
+because device and interconnect categories are P5-BOARD's to own, and the CPU records an
+environment assumption in their place — the leaf's own rule. RECORD-SCHEMA rule 12 keeps every
+named material resolvable against catalog.sexp, so a covered-by that names a document nobody
+acquired is refused like an unpinned citation. The census counts: 10 covered, 4 partial, 6
+missing (closers named), 3 deferred-to-board, 1 out-of-scope (C17 — contract-owned).
+
+Validation: the page-level sweep (each covered category's subject found in its pinned page);
+RECORD-SCHEMA 33/0 (was 32) + real run green; whole gate green.
+
+Lessons: declined here (the excluded-vs-absent distinction is stated in the catalogue header
+and the owning leaf).
+
 ## _(2026-09-27)_ — the materials requirement: what each unit owes its model (MODEL-METHOD.2)
 
 Root cause this leaf closes: the materials side recorded documents (who/what/where) but
@@ -628,28 +652,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   its template would be a lie. Splitting is the right answer; the gate not distinguishing the two
   roles is the defect. Owner: `MIRROR-DRIFT.4` alongside the registry-count class.
 - Promoted: [`docs/knowledge/zero-hits-absence-or-blindness.md`](docs/knowledge/zero-hits-absence-or-blindness.md).
-
-## _(2026-09-14)_ — the pinned spec has no encodings, and a shorter trace is not agreement
-
-- ⛔ **The specification we pinned does not contain instruction encodings.** Census over all six
-  artifacts: `grep -cE '[01]{7}'` -> 0 every time; the format diagrams are images (31 in the
-  RV32I chapter). The SEMANTICS are all present in prose, which is the half expected values need,
-  so encodings were pinned separately from `riscv-opcodes` and recorded as a *different*
-  provenance. That source is upstream of both models, so encoding agreement is not independent
-  evidence — only semantic agreement is, and that is what the experiment tests.
-- ⭐ Unplanned corroboration: the encoding table holds exactly 52 instructions for this extension
-  set, and `P0-PROFILE.1` enumerated exactly 52 by hand from the prose without it. Symmetric
-  difference: none. Two independent routes to the same closed set.
-- ⛔ **The comparator reported a false pass and running it is what found that.** Walking only the
-  overlapping prefix, it printed `AGREE over 2 aligned step(s)` for a run where one model trapped
-  and the other stopped. The prefixes agreed; the observation did not. Promoted:
-  [`docs/knowledge/a-shorter-trace-is-not-agreement.md`](docs/knowledge/a-shorter-trace-is-not-agreement.md).
-- ⭐ **Two models agreeing means nothing until the agreement is shown to be doing work.** Flipping
-  one configuration key — the misaligned policy — with the same binary produced a real first
-  divergence. That control is why "matched profile" is now a measurement. The project gate now
-  refuses an experiment record that claims agreement without naming such a control.
-- 🔎 `docs/tasks/` crossed its advisory health target (214,002 B against 196,608). Not a ceiling
-  (393,216 aggregate, 65,536 per part) and nothing is breached, but `P0-PROFILE.md` is at 49,521 B
-  — 76% of the per-part ceiling — because completed-leaf evidence accumulates in-tree by design.
-  The mechanism intended for this is archive compaction, and no tree has needed it yet.
 
