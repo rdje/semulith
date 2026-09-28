@@ -214,46 +214,13 @@ fn data_crossings_by_step(crossings: &[Crossing]) -> Vec<(usize, Crossing)> {
     out
 }
 
-/// The pinned data-crossing census of the four tracked guests: the load/store crossings each
-/// `.s` source declares, with the answer's class (`faulted` = the boundary answered a target
-/// failure). Fetches are accounted separately by the one-fetch-per-step count. Justifications:
-/// - `smoke-arith.s`: one `sd x9, 1024(x10)` — the program's single data access (step 11).
-/// - `guest-control.s`: no load or store instruction exists in the program.
-/// - `smoke-trap.s`: the misaligned `lw` raises before the boundary is crossed
-///   (D-MISALIGN-DATA) — zero data crossings.
-/// - `guest-no-device.s`: one `ld x1, 0(x10)` at 0x0200_BFF8 — outside every declared
-///   region, so the crossing is recorded and answered AccessFault (step 5).
-fn pinned_census(name: &str) -> &'static [(usize, Request, bool)] {
-    match name {
-        "smoke-arith" => &[(
-            11,
-            Request::Store {
-                width: AccessWidth::D,
-                addr: 0x8000_0400,
-                data: 0xFFFF_FFFF_0000_0001,
-            },
-            false,
-        )],
-        "guest-control" => &[],
-        "smoke-trap" => &[],
-        "guest-no-device" => &[(
-            5,
-            Request::Load {
-                width: AccessWidth::D,
-                addr: 0x0200_BFF8,
-            },
-            true,
-        )],
-        _ => panic!("unknown guest {name}"),
-    }
-}
-
 // ---- the instrument itself: the census pin -----------------------------------------------------
 
 #[test]
 fn the_data_crossing_census_pins_all_four_guests() {
     // The extra-access arm detects through this census; the census itself is pinned here so
-    // the instrument cannot drift silently either.
+    // the instrument cannot drift silently either. The table itself lives with the suite's
+    // public surface (`super::pinned_census`) — this test pins its CONTENT against the runs.
     let want_stop = |name: &str| match name {
         "smoke-trap" | "guest-no-device" => Stop::Trap,
         _ => Stop::Budget,

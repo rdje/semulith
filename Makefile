@@ -1,7 +1,7 @@
 # Makefile — standard commands. `make gate` = the doctrine enforcer; `make check` = Rust.
 SHELL := /usr/bin/env bash
 
-.PHONY: help gate check fmt clippy test book hooks bootstrap update-scaffold
+.PHONY: help gate check fmt clippy test book bench smoke-bench hooks bootstrap update-scaffold
 
 help:
 	@echo "make gate            - run the doctrine enforcer (scripts/check_doctrines.sh)"
@@ -10,6 +10,8 @@ help:
 	@echo "make clippy          - cargo clippy --all-targets -- -D warnings"
 	@echo "make test            - cargo test --all"
 	@echo "make book            - build the mdBook (requires mdbook)"
+	@echo "make bench           - build the browser bench's wasm module (scripts/build_bench.sh)"
+	@echo "make smoke-bench     - verify the bench engine headlessly (scripts/smoke_bench.js)"
 	@echo "make hooks           - install the git hooks (core.hooksPath=.githooks)"
 	@echo "make bootstrap       - first-time project bootstrap"
 	@echo "make update-scaffold - pull the latest bedrock spine (set URL=<bedrock-repo>)"
@@ -33,6 +35,12 @@ test:
 
 book:
 	mdbook build docs/book
+
+bench:
+	scripts/build_bench.sh
+
+smoke-bench:
+	node scripts/smoke_bench.js
 
 hooks:
 	git config core.hooksPath .githooks

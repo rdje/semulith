@@ -22,6 +22,13 @@
 //!   run stopped on a trap or the step budget (a target observation, not an
 //!   error); 1 — the model reported a model error or an undefined case; 2 —
 //!   usage, unreadable inputs, or an ELF the loader refuses.
+//! - `semulith demo [--guest NAME] [--mutate NAME] [--json]` — run a tracked guest
+//!   under the real or a mutated model (`LAB-BENCH.1`) and print the full
+//!   observation trace with the judgement: the pinned expectation verdict, and —
+//!   for mutated models — the first divergence against the clean run. Text for
+//!   humans; `--json` emits the same shape the browser bench consumes. Exit
+//!   codes: 0 — expectations met; 1 — a designated mutant broke them (the
+//!   detector working, not an error); 2 — usage or an unknown name.
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -31,12 +38,15 @@ use semulith_verify::elf;
 use semulith_verify::fixtures::FlatMemory;
 use semulith_verify::graph::{check_bundle, Bundle};
 use semulith_verify::json::{self, Json};
+use semulith_verify::mutate::MUTATIONS;
+use semulith_verify::report;
 use semulith_verify::run::Stop;
 use semulith_verify::schema;
 
 const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
-                     \x20       semulith run <elf> [--steps N] [--base ADDR] [--size BYTES]\n";
+                     \x20       semulith run <elf> [--steps N] [--base ADDR] [--size BYTES]\n\
+                     \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n";
 
 /// The platform's declared MainMemory region: base and size from the matched
 /// profile (`reference/sail-rv64i-lab-v0.override.sexp` names the same region).
@@ -56,6 +66,7 @@ fn main() -> ExitCode {
             check_examples(&root)
         }
         Some("run") => run_guest(&args[1..]),
+        Some("demo") => demo(&args[1..]),
         _ => {
             eprint!("{USAGE}");
             ExitCode::from(2)
@@ -244,6 +255,133 @@ fn run_guest(args: &[String]) -> ExitCode {
             eprintln!("run: undefined case: {case:?}");
             ExitCode::from(1)
         }
+    }
+}
+
+/// `semulith demo` — run a tracked guest under the real or a mutated model and print the
+/// trace with its judgement. The detector's verdicts are the exit code: a mutant that is
+/// caught exits 1 on purpose — that is the tool working, not an error.
+fn demo(args: &[String]) -> ExitCode {
+    let mut guest: Option<&str> = None;
+    let mut mutation = "none";
+    let mut json_out = false;
+    for arg in args {
+        if let Some(name) = arg.strip_prefix("--guest=") {
+            guest = Some(name);
+        } else if let Some(name) = arg.strip_prefix("--mutate=") {
+            mutation = name;
+        } else if arg == "--json" {
+            json_out = true;
+        } else if arg.starts_with("--") {
+            return usage(&format!("demo: unknown option {arg}"));
+        } else {
+            return usage("demo: unknown operand (options take --name=value form)");
+        }
+    }
+    let guest = match guest {
+        Some(name) => name,
+        None => {
+            return usage(&format!(
+                "demo: --guest is required (one of: {}; mutations: {})",
+                semulith_verify::guests::GUESTS
+                    .iter()
+                    .map(|g| g.name)
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                MUTATIONS
+                    .iter()
+                    .map(|(name, _)| *name)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ))
+        }
+    };
+    let run = match report::run_guest(guest, mutation) {
+        Ok(run) => run,
+        Err(why) => {
+            eprintln!("demo: {why}");
+            return usage("demo: see --guest / --mutate");
+        }
+    };
+    if json_out {
+        println!("{}", report::to_json(&run));
+    } else {
+        print!("{}", demo_text(&run));
+    }
+    if run.expectations_met && run.census_met {
+        ExitCode::from(0)
+    } else {
+        ExitCode::from(1)
+    }
+}
+
+/// The human rendering of one judged run: the trace, then the verdict story.
+fn demo_text(run: &report::GuestRun) -> String {
+    let mut out = format!(
+        "== {} under '{}' (entry {:#018x}) ==\n",
+        run.guest, run.mutation, run.entry
+    );
+    for (n, step) in run.trace.steps.iter().enumerate() {
+        let name = decode(step.word).map_or("<undecodable>", |insn| insn.name);
+        out.push_str(&format!(
+            "  [{n}] 0x{:016x} (0x{:08x}) {:<10}",
+            step.pc, step.word, name
+        ));
+        let mut notes = Vec::new();
+        for (reg, value) in &step.writes {
+            notes.push(format!("x{reg} <- 0x{value:016x}"));
+        }
+        if let Some((cause, tval)) = step.trap {
+            notes.push(format!("trap cause=0x{cause:02x} tval=0x{tval:016x}"));
+        }
+        if !notes.is_empty() {
+            out.push_str("   ");
+            out.push_str(&notes.join(";  "));
+        }
+        out.push('\n');
+    }
+    out.push_str(&format!(
+        "stop: {}   data crossings: {} (census pins {})\n",
+        stop_name(&run.trace.stop),
+        run.data_crossings,
+        run.census_pinned
+    ));
+    if run.expectations_met {
+        out.push_str("verdict: the pinned specification-derived expectations hold");
+        if run.census_met {
+            out.push_str("; the crossing census agrees\n");
+        } else {
+            out.push_str(
+                "\nverdict: THE CROSSING CENSUS DISAGREES — the trace never betrayed it:\n",
+            );
+            out.push_str(&format!(
+                "  {} data crossing(s) where the guest's source declares {} — an access the architectural observation vocabulary cannot see\n",
+                run.data_crossings, run.census_pinned
+            ));
+        }
+    } else {
+        out.push_str("verdict: EXPECTATIONS BROKEN — the detector's answer:\n");
+        match &run.divergence {
+            Some(d) => out.push_str(&format!(
+                "  FIRST DIVERGENCE at aligned step {}: {}\n",
+                d.at, d.what
+            )),
+            None => out.push_str(&format!(
+                "  the trace still agrees — caught by the crossing census ({} data crossing(s))\n",
+                run.data_crossings
+            )),
+        }
+    }
+    out
+}
+
+fn stop_name(stop: &Stop) -> &'static str {
+    match stop {
+        Stop::Budget => "budget",
+        Stop::Trap => "trap",
+        Stop::FetchFault { .. } => "fetch fault",
+        Stop::Failed(_) => "model error",
+        Stop::Undefined(_) => "undefined case",
     }
 }
 

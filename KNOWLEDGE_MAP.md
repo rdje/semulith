@@ -34,6 +34,7 @@
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
 - [`DOC-SHARDING.md`](docs/tasks/DOC-SHARDING.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
+- [`LAB-BENCH.md`](docs/tasks/LAB-BENCH.md)
 - [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
 - [`MIRROR-DRIFT.md`](docs/tasks/MIRROR-DRIFT.md)
 - [`MODEL-BOOKS.md`](docs/tasks/MODEL-BOOKS.md)

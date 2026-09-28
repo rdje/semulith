@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>semulith — the laboratory bench</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg: #0d1117; --panel: #161b22; --line: #30363d; --fg: #e6edf3;
+          --dim: #8b949e; --accent: #58a6ff; --bad: #f85149; --good: #3fb950; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  header { padding: 20px 28px 12px; border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font-size: 18px; letter-spacing: 0.04em; }
+  header h1 span { color: var(--accent); }
+  header p { margin: 6px 0 0; color: var(--dim); font-size: 12.5px; }
+  #controls { display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+              padding: 14px 28px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  label { color: var(--dim); font-size: 12.5px; display: flex; gap: 8px; align-items: center; }
+  select, button { background: var(--bg); color: var(--fg); border: 1px solid var(--line);
+                   border-radius: 6px; padding: 6px 10px; font: inherit; }
+  button { cursor: pointer; border-color: var(--accent); color: var(--accent); }
+  button:hover { background: #12233a; }
+  #mutation-story { color: var(--dim); font-size: 12.5px; }
+  #verdict { margin: 0; padding: 12px 28px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  #verdict.ok { color: var(--good); }
+  #verdict.bad { color: var(--bad); }
+  #traces { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 1100px) { #traces { grid-template-columns: 1fr; } }
+  .pane { padding: 12px 28px 28px; }
+  .pane h2 { font-size: 13px; color: var(--dim); margin: 8px 0; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  td { padding: 2px 10px 2px 0; vertical-align: top; white-space: nowrap; }
+  td.notes { white-space: normal; color: var(--dim); }
+  tr.diverged td { background: #2d1418; color: #ffb3ae; }
+  tr.diverged td:first-child { color: var(--bad); font-weight: 700; }
+  footer { padding: 16px 28px 32px; color: var(--dim); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>semulith <span>— the laboratory bench</span></h1>
+  <p>a tracked guest, executing under the definitional interpreter — or under one of the
+     validator suite's mutations. pick a model, run it, and watch the differential answer.</p>
+</header>
+<div id="controls">
+  <label>guest <select id="guest"></select></label>
+  <label>model <select id="mutation"></select></label>
+  <button id="run">run</button>
+  <span id="mutation-story"></span>
+</div>
+<p id="verdict"></p>
+<div id="traces">
+  <div class="pane"><h2 id="clean-title">clean trace</h2><table id="clean"></table></div>
+  <div class="pane"><h2 id="mut-title">mutated trace</h2><table id="mut"></table></div>
+</div>
+<footer>the engine is the same code the commit gate tests — <code>run</code>, <code>mutate</code>,
+  and the pinned guests, compiled to wasm. <code>scripts/smoke_bench.js</code> verifies this page's
+  engine headlessly with node; <code>semulith demo</code> is the same run on the CLI.</footer>
+<script src="main.js"></script>
+</body>
+</html>

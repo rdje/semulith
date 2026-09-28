@@ -13,5 +13,11 @@ description = "Verification harness: controlled fixtures and evidence machinery 
 [lints]
 workspace = true
 
+[lib]
+# The rlib serves the workspace; the cdylib is the browser bench module
+# (`bench/index.html` imports `bench/semulith_verify.wasm`, built and copied by
+# `scripts/build_bench.sh`; LAB-BENCH.1). One crate, one engine, two link shapes.
+crate-type = ["rlib", "cdylib"]
+
 [dependencies]
 semulith-core = { version = "0.1.0", path = "../semulith-core" }

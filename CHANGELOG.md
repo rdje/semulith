@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMILITH-LB-0001 (leaf LAB-BENCH.1) — the laboratory bench: feel the tool while it builds
+
+- `semulith demo [--guest NAME] [--mutate NAME] [--json]` runs a tracked guest under the real or a mutated model and prints the full observation trace with the judgement — the pinned expectation verdict and, for mutants, the first divergence named, or the crossing-census story when the trace never betrays the mutation (the phantom-load arm). Exit codes make the detector legible: 0 clean, 1 a caught mutant, 2 usage.
+- The browser bench: `bench/index.html` over a std-only wasm module (`semulith-verify`'s cdylib with an `extern "C"` surface in `src/wasm.rs` — no wasm-bindgen, no new dependency, RUST-01 untouched). Guest × model selectors render both traces side by side with the first divergence highlighted; `make bench` builds the module, `scripts/smoke_bench.js` verifies the page's engine headlessly with node (8 arms: clean × 4 guests, the three trace-level mutants at their .9-pinned steps, the census arm at 7-vs-0). Same `run`/`mutate` engine the commit gate tests; the JSON shape is shared with `demo --json`.
+- `semulith-verify` gains `report` (the demo/bench judgement: the `.9` anchor made reusable — architectural expectations and the crossing census as two separate verdicts, because the phantom-load arm keeps one while breaking the other) and promotes the suite's pinned census table to the public surface.
+- Verification: 158 tests green across 5 suites (93 verify incl. 5 report suites); clippy `-D warnings` clean; wasm workspace build rc=0 (PORT-WEB holds with the new cdylib); `make gate` 23 doctrines green; smoke_bench 8/0. Book P1 gains "The laboratory bench"; TOOLBOX gains the two bench tools.
+
 ## SEMILITH-PL-0009 (leaf P1-LAB.9) — the validator mutation suite; a differential that is known to disagree
 
 - `semulith-core::exec::step_over` and `semulith-verify::run::run_over` parameterize the single execution path over the instruction table — production delegates with `definition::INSNS`; the table scan applies exactly the predicate the generated `decode` documents, pinned by a core suite over every canonical word, operand-varied encodings, and unclaimed words. A mutation is data the one evaluator consumes (OWN-01); there is no second implementation of any rule.

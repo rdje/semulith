@@ -37,6 +37,7 @@
 //! generated artifact to refuse.
 
 use semulith_core::definition::{InsnDef, Sem, INSNS};
+use semulith_core::env::{AccessWidth, Request};
 
 /// Leak one rebuilt tree node into the suite's test arena. The suite mutates at most a
 /// handful of small trees per test run; leaking them (rather than threading lifetimes
@@ -142,6 +143,108 @@ pub fn table_without(name: &str) -> Vec<InsnDef> {
 pub fn sext_to_zext(sem: &Sem) -> Option<Sem> {
     match sem {
         Sem::Sext(width, v) => Some(Sem::Zext(*width, v)),
+        _ => None,
+    }
+}
+
+/// The named mutations the demo and the browser bench expose — `(name, one-line story)`. `none`
+/// is the real model; the rest are the `.9` suite's arms chosen for how visible they are.
+pub const MUTATIONS: &[(&str, &str)] = &[
+    ("none", "the real model — the reference trace"),
+    (
+        "zext-addi",
+        "addi zero-extends its immediate instead of sign-extending",
+    ),
+    (
+        "jal-no-link",
+        "jal transfers but suppresses the pc+4 link write",
+    ),
+    (
+        "jalr-odd-bit",
+        "jalr keeps the odd target bit (D-JALR-LSB dropped)",
+    ),
+    (
+        "phantom-load",
+        "addi performs a discarded extra byte load (the census arm)",
+    ),
+];
+
+/// The pinned data-crossing census of the four tracked guests: the load/store crossings each
+/// `.s` source declares, with the answer's class (`faulted` = the boundary answered a target
+/// failure), tagged with the executing step. The `.9` suite pins this table and detects the
+/// extra-access arm against it; the demo and bench report against it. Justifications:
+/// - `smoke-arith.s`: one `sd x9, 1024(x10)` — the program's single data access (step 11).
+/// - `guest-control.s`: no load or store instruction exists in the program.
+/// - `smoke-trap.s`: the misaligned `lw` raises before the boundary is crossed
+///   (D-MISALIGN-DATA) — zero data crossings.
+/// - `guest-no-device.s`: one `ld x1, 0(x10)` at 0x0200_BFF8 — outside every declared
+///   region, so the crossing is recorded and answered AccessFault (step 5).
+pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
+    match guest {
+        "smoke-arith" => &[(
+            11,
+            Request::Store {
+                width: AccessWidth::D,
+                addr: 0x8000_0400,
+                data: 0xFFFF_FFFF_0000_0001,
+            },
+            false,
+        )],
+        "guest-control" => &[],
+        "smoke-trap" => &[],
+        "guest-no-device" => &[(
+            5,
+            Request::Load {
+                width: AccessWidth::D,
+                addr: 0x0200_BFF8,
+            },
+            true,
+        )],
+        _ => &[],
+    }
+}
+
+/// The instruction table for a named [`MUTATIONS`] entry.
+#[must_use]
+pub fn table_for(mutation: &str) -> Option<Vec<InsnDef>> {
+    match mutation {
+        "none" => Some(INSNS.iter().map(|insn| InsnDef { ..*insn }).collect()),
+        "zext-addi" => Some(table_with_effect("addi", sext_to_zext)),
+        "jal-no-link" => Some(table_with_effect("jal", |sem| match sem {
+            Sem::Seq(steps)
+                if steps.len() == 2
+                    && matches!(steps[0], Sem::Set(..))
+                    && matches!(steps[1], Sem::SetPc(..)) =>
+            {
+                Some(rebuild(steps[1], &|_| None))
+            }
+            _ => None,
+        })),
+        "jalr-odd-bit" => Some(table_with_effect("jalr", |sem| match sem {
+            Sem::And(a, b) if matches!(&**b, Sem::Lit(v) if *v == (-2i64) as u64) => {
+                Some(rebuild(a, &|_| None))
+            }
+            _ => None,
+        })),
+        "phantom-load" => Some(table_with_row("addi", |insn| {
+            // The suite's phantom-load arm at the region base: a discarded byte load before
+            // the real effect — invisible to the trace, visible only in the crossing census.
+            let phantom = Sem::Seq(Box::leak(
+                vec![
+                    leak(Sem::Load(
+                        leak(Sem::Lit(8)),
+                        leak(Sem::Lit(0)),
+                        leak(Sem::Lit(0x8000_0000)),
+                    )),
+                    leak(rebuild(insn.effect, &|_| None)),
+                ]
+                .into_boxed_slice(),
+            ));
+            InsnDef {
+                effect: leak(phantom),
+                ..*insn
+            }
+        })),
         _ => None,
     }
 }
