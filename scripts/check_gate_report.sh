@@ -24,30 +24,33 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 command -v python3 >/dev/null 2>&1 || {
   echo "GATE-REPORT: REFUSED — python3 is not on PATH; this check cannot judge." >&2; exit 2; }
 
-report_for() { python3 scripts/gate_report.py "$1" --stdout 2>/dev/null; }
+report_for() { python3 scripts/gate_report.py "$1" --gate "$2" --stdout 2>/dev/null; }
 
 self_test() {
-  local pass=0 fail=0 prof p tmp generated
+  local pass=0 fail=0 prof p tmp generated report gate
   # The controls run against the REAL profiles, because the generator reads a profile directory
   # and a synthetic one would be a different function. A profile with no report is skipped by the
   # real run too, so it is not a control.
   for p in profiles/*/; do
     prof="$(basename "$p")"
-    [ -f "${p%/}/G0-REPORT.md" ] || continue
-    generated="$(report_for "$prof")"
-    if [ -z "$generated" ]; then
-      fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof generated nothing" >&2; continue
-    fi
-    # GREEN: the generator agrees with itself (determinism).
-    if [ "$generated" = "$(report_for "$prof")" ]; then pass=$((pass+1))
-    else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof is not deterministic" >&2; fi
-    # RED: a single edited character must be detected.
-    tmp="$(printf '%s' "$generated" | sed 's/incomplete/passed/')"
-    if [ "$tmp" != "$generated" ]; then pass=$((pass+1))
-    else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof control did not alter the text" >&2; fi
-    # RED: the generated text must actually differ from a tampered file's content.
-    if ! printf '%s' "$tmp" | diff -q - <(printf '%s' "$generated") >/dev/null 2>&1; then pass=$((pass+1))
-    else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof tamper is undetectable" >&2; fi
+    for report in "${p%/}"/G?-REPORT.md; do
+      [ -f "$report" ] || continue
+      gate="$(basename "$report" | cut -d- -f1)"
+      generated="$(report_for "$prof" "$gate")"
+      if [ -z "$generated" ]; then
+        fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate generated nothing" >&2; continue
+      fi
+      # GREEN: the generator agrees with itself (determinism).
+      if [ "$generated" = "$(report_for "$prof" "$gate")" ]; then pass=$((pass+1))
+      else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate is not deterministic" >&2; fi
+      # RED: a single edited character must be detected.
+      tmp="$(printf '%s' "$generated" | sed 's/incomplete/passed/')"
+      if [ "$tmp" != "$generated" ]; then pass=$((pass+1))
+      else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate control did not alter the text" >&2; fi
+      # RED: the generated text must actually differ from a tampered file's content.
+      if ! printf '%s' "$tmp" | diff -q - <(printf '%s' "$generated") >/dev/null 2>&1; then pass=$((pass+1))
+      else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate tamper is undetectable" >&2; fi
+    done
   done
   [ "$pass" -gt 0 ] || { echo "GATE-REPORT self-test: no profile carried a report to test" >&2; fail=$((fail+1)); }
   printf 'GATE-REPORT --self-test: %d pass / %d fail\n' "$pass" "$fail"
@@ -63,18 +66,20 @@ self_test >/dev/null 2>&1 || {
 stale=0 checked=0
 for p in profiles/*/; do
   prof="$(basename "$p")"
-  report="${p%/}/G0-REPORT.md"
-  [ -f "$report" ] || continue
-  checked=$((checked+1))
-  if ! diff -q <(report_for "$prof") "$report" >/dev/null 2>&1; then
-    { echo "GATE-REPORT: $report is out of sync with the inputs it is generated from."
-      diff <(report_for "$prof") "$report" | head -20 | sed 's/^/    /'
-      echo "  Regenerate it — never edit it:"
-      echo "    scripts/gate_report.py $prof"
-      echo "  ⛔ A hand-edited gate report is how a project comes to hold a verdict nothing produced."
-    } >&2
-    stale=$((stale+1))
-  fi
+  for report in "${p%/}"/G?-REPORT.md; do
+    [ -f "$report" ] || continue
+    gate="$(basename "$report" | cut -d- -f1)"
+    checked=$((checked+1))
+    if ! diff -q <(report_for "$prof" "$gate") "$report" >/dev/null 2>&1; then
+      { echo "GATE-REPORT: $report is out of sync with the inputs it is generated from."
+        diff <(report_for "$prof" "$gate") "$report" | head -20 | sed 's/^/    /'
+        echo "  Regenerate it — never edit it:"
+        echo "    scripts/gate_report.py $prof --gate $gate"
+        echo "  ⛔ A hand-edited gate report is how a project comes to hold a verdict nothing produced."
+      } >&2
+      stale=$((stale+1))
+    fi
+  done
 done
 
 [ "$stale" -eq 0 ] || exit 1

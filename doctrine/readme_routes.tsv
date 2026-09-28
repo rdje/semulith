@@ -185,7 +185,15 @@ schema/	reader_navigation	partitioned	the schema language and per-family constru
 #               DEV_NOTES.md now shards into this family from 2026-09-28 (DOC-SHARDING.2):
 #               2 entries into shard-0027.md, head 48,954 -> 46,212, completeness proved at
 #               the event and frozen by the 29-row manifest.
-docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	40	393216	65536
+# Re-derivation, SEMILITH-PL-0012 (2026-09-29), when the family hit the file-count ceiling
+#               again: 41 files at the breach (38 shards + the two pre-shard files + the
+#               manifest). The family grows one file per shard EVENT by design — a fixed
+#               count ceiling is a calendar, not a bound — so the count doubles again and
+#               the content axes stay exactly where they were: per-part 64 KiB and the 384
+#               KiB aggregate are unchanged; SHARD-FREEZE pins the exact partition (every
+#               shard hashed, the manifest append-only), which is the real count invariant.
+#               Ceiling files 40 -> 80; the next reader should watch the AGGREGATE.
+docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	80	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 overwrite-only record, one entry per cleanup	6	768	12	1536	0
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0012 (leaf P1-LAB.12) — the G1 gate report; P1-LAB completes with the gate honest
+
+- `scripts/gate_report.py --gate G1` generates `profiles/rv64i-lab-v0/G1-REPORT.md` from tracked inputs only — byte-stable in a fresh clone, the G0 path byte-unchanged (verified by diff). Each of the SIX `ROADMAP.md` §6 G1 criteria is measured from tracked files by concrete name (the G0 lesson: an id-shaped pattern in prose is not evidence): replay/reduce machinery + CLI wiring + suite counts; the four outcome families + the SEM-02 arm; the graph checker + `check-examples`; the mutation suite's 11 arms and 4 model-level mutants; the recorded baseline; the guest census. The generator has no code path to `passed` while a criterion stands unmet — EVD-08's forbidden outcome, generalized.
+- Scoping the leaf surfaced a drift: this tree's G1 acceptance listed five criteria where the roadmap states six (ROADMAP-V3.3's sharpening never re-synced into the tree). Repaired in-tree: criterion 6 absorbed with its standing named. **Verdict: `incomplete`** — criteria 1–5 met; criterion 6 (the compiled freestanding guest, C first) unmet as written: `guests/` holds 4 assembly and 0 C guests; the assembled guests' 34/34 first-divergence result against sail-riscv and spike is recorded as the partial standing; owner `P2-SCALAR.5`, with ROUTING EVIDENCE in the leaf (what reproduces outside the tree, what was measured, what would make the routing wrong).
+- `profiles/rv64i-lab-v0/baseline.sexp` freezes the `.11` measurement as data (the references.sexp experiment-record precedent): host, config, all 16 cells, the static/dyn ratios, the RUST-02 agreement, `(thresholds none)` — validated field-by-field by the generator and parsed by all three tracked readers.
+- GATE-REPORT discovers `G?-REPORT.md` per profile and covers both gates (self-test 6/0; RED probes: tampered G1 report named rc=1, baseline removal flips criterion 5, unknown gate refused rc=2). No new doctrine; the registry row's prose now spans G0 and G1. P1-LAB.md archives its `.11` checklist and the completed leaves' design detail (per-part ceiling obeyed, not raised).
+- Verification: `make gate` 23 doctrines green; 189 tests across 5 suites unchanged (no Rust change); wasm build rc=0; book builds. Lockstep: MEMORY/LIVE_STATUS (P1 12/12, gate verdict recorded)/TASK_TREE/CHANGELOG/DEV_NOTES + book P1 ("Gate G1" carries the verdict and its reason) and this tree — P1-LAB is done; P2-SCALAR and DSP-REVIEW are unlocked.
+
 ## SEMILITH-PL-0011 (leaf P1-LAB.11) — the performance baseline; the laboratory measures itself
 
 - `semulith-verify::bench` is the measurement harness (RUST-04): four programmatically generated workload mixes — arithmetic (no data memory), control (alternating branches + jal/jalr), memory (stores and loads at all four widths), fault (model-side misaligned load/store + environment-side out-of-region load every iteration, under the stated delivery-continues policy) — each a counted loop ending in EBREAK, with every generated word pinned to `definition::decode` by the decode round-trip suite so the encoder cannot drift from the definition it feeds. The three ARCHITECTURE §6 modes run under one counting environment: `run_untraced` (no observation constructed), `run_instrumented<O: Observer + ?Sized>` (the Step stream via `run`'s own snapshot/diff/trap-mapping), `run_diagnostic` (+ the crossing log via `run`'s own `Recording`). `agree` states RUST-02 as data — steps, stop, final state, census, and every recorded stream — and the CLI refuses (exit 1) on disagreement.
@@ -553,27 +561,4 @@ cannot drift. `make book` builds; the chapter preface needed no edit — that wa
 
 Also: a knowledge card for the session's other lesson — a director-named action runs first,
 right after context recovery; standing cadences queue behind it.
-
-## SEMULITH-UT-0052 (leaf UPSTREAM-TRACK.2) — `verified` must carry the re-run that earned it
-
-The tracker already refused a `verified` with no pin. It now refuses the next hole too: a
-`verified` whose event names a pin but captures no `(repro …)` output **inside the subtree** —
-the pin retires upstream's changelog claim, but only the captured run retires ours. Four new
-self-test arms (pin-without-repro, artifact missing, artifact escaping the subtree, pin+artifact
-accepted); `16 pass / 0 fail`.
-
-⛔ **Fired RED on the real tracker before any artifact existed** — the strengthened gate refused
-LS-001's just-committed `verified` ("captures no (repro …) re-run output", rc=1). Then the
-evidence landed and every state became earned, not asserted:
-
-- **LS-001 → `verified`** — the reproduction re-ran and was captured into the subtree itself:
-  `evidence/verified-a8d34c845.txt`, `8 matched / 0 differed`. A maintainer copying the issue
-  directory out now carries the proof with it.
-- **LS-003 → `verified`** — the three first-consumer papercuts are remedied in the guide at the
-  adopted pin, and each remedy was *exercised* during the pin update (workspace exclusion,
-  prerequisite chain, maintained wrapper), transcript captured — exit statuses, not banners,
-  per the guide's own warning.
-- **LS-002 → `acknowledged`** — upstream took ownership by name: the LS-001 fix commit records
-  "LS-002 and related kind/strict requirements remain .83.1 owned". No re-run owed; the design
-  question is theirs until it ships.
 

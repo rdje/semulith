@@ -3,6 +3,12 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-29)_ — the G1 gate report: the sixth criterion the tree had forgotten (P1-LAB.12)
+
+Root cause, two of them. (1) The G0 generator was single-gate by construction — `build()` hardcoded the G0 criteria and `G0-REPORT.md`, and its inputs were the dossier alone, while the laboratory's evidence lives in Rust code and in a baseline that existed only as terminal output. (2) Scoping the report surfaced a drift with teeth: P1-LAB's acceptance listed five G1 criteria where `ROADMAP.md` §6 states six — ROADMAP-V3.3's sharpening (the compiled freestanding guest, C first) was never re-synced into the tree, and nothing gated a tree's criteria against the roadmap's gate text. The drift was found only because a leaf had to score the gate. Implementation: one generator, one drift check, both gates — `gate_report.py --gate G1` with `build_g1` measuring each criterion from tracked files by concrete name (never an id-shaped pattern — the G0 lesson); `baseline.sexp` freezes the `.11` measurement as validated data (`(thresholds none)` enforced by the parser); `check_gate_report.sh` discovers `G?-REPORT.md` per profile. Validation: G1-REPORT.md reads `incomplete` naming criterion 6 (4 `.s` guests, 0 `.c`; owner `P2-SCALAR.5`, routing evidence in the leaf); self-test 6/0; RED probes — a tampered report named rc=1, the baseline removed flips criterion 5, `--gate G9` refused rc=2; G0 output byte-identical.
+
+Lesson, promoted to this record and parked in the tree's Open Questions as a candidate doctrine: **when the roadmap is revised, every tree's gate criteria must be re-read against it** — a tree's acceptance list is a mirror of roadmap text, and ungated mirrors drift (the MIRROR-DRIFT lesson at a new surface). A `ROADMAP-TREE-CRITERIA` gate needs a designed criterion-id scheme first; candidate, not scheduled. Design notes, kept: the verdict rule generalizes EVD-08 — no code path to `passed` over an unmet criterion; the report re-derives counts and names from sources and deliberately does NOT re-run suites (the un-fakeable leg is the commit gate); the G0 precedent governs the close — a milestone's leaves complete while its gate reads `incomplete`, and the report keeps the reason visible every commit.
+
 ## _(2026-09-28)_ — the performance baseline: noise first, thresholds never (P1-LAB.11)
 
 Root cause: gate `G1`'s fifth criterion and ARCHITECTURE §6's three benchmark modes had no instrument — every runner was correctness-oriented (`run_over` stops at the first trap, always records crossings: one fused mode), no allocation counting existed, and the zero-dependency rule (RUST-01) rules out the usual benchmarking crates, so the harness is ours. Implementation: `semulith-verify::bench` — programmatically generated mixes whose every word is decode-round-trip-pinned to the generated definition (the encoders are harness data, .9's standing); one counting environment wrapper makes the census comparable across modes without recording it; the instrumented runner is generic over `Observer`, so static-vs-dynamic is literally one function instantiated two ways, measured as two cells. The fault mix needed a stated harness policy: a delivered exception is observed and execution resumes at pc+4 (delivery-continues, ARCHITECTURE §5) — `run_over` could never drive it. Validation: 10 suites — decode round-trip for every word of every mix; per-mix census proving each mix exercises its own class (the misaligned pair never crosses the boundary; only the out-of-region ld faults at it); the pc+4 continuation pinned; four-mode agreement at test budgets; the allocator counting a known allocation (≥-assertions — sibling tests allocate concurrently); stats pinned on known inputs. Measured on the named host: untraced 47–54 ns/step; instrumented +24–40%; diagnostic +4–8% further; static/dyn ×0.974–1.002 — the parked dispatch question answered within noise. Noise spread 1.7–7.4% per cell, one 113% scheduler outlier; no threshold set (RUST-04).
@@ -405,41 +411,4 @@ full enforcer green. `SOT-FORMAT` closes 10/10.
 Lessons: declined here (the corpus-boundary lesson is demonstrated by the gate's own census arms
 and stated in its header); the pgen-staleness observation is general but thin — one instance,
 recorded in the corrected record and this note; a second instance would earn a knowledge card.
-
-## _(2026-09-27)_ — the record merge is definable, and it decides (SOT-FORMAT.5)
-
-Root cause this leaf closes: composition is a merge, and with everything in one format the
-records' union finally has a rule. Design (recorded in the leaf, before code): a unit is a
-directory carrying `requirements.sexp` / `contract-obligations.sexp` / `sources.sexp` by name,
-read through the single mapping owners (`records_sexp.py`, `dossier_sexp.py`) — the merge
-parses nothing itself. Merge key is `id`; on collision every field must be equal except
-`profile_ids`, which is membership and unions; sources collide on full pins (same id + different
-`sha256` = two texts of one specification). After the union, every reference must resolve in
-it — requirements' `dependencies`/`obligation_ids`/`source_refs`, obligations' likewise.
-
-Two measured defects, both found by probe before any code was written:
-
-1. **RECORD-SCHEMA never refused duplicate record ids.** The gate built `by_id` as a dict
-   comprehension — last wins, silent. A scratch catalogue with two `REQ-D-A` records differing
-   in `risk` returned `rc=0`. Fixed as rule 8 (UNIQUE-ID) with a fired RED arm; self-test
-   22 → 23.
-2. **Obligation `dependencies` were checked against nothing**, and the first closure run on the
-   real profile reported `OB-ENV-RESET` → `OB-ENTRY-STATE` as dangling — because the check
-   looked only in requirements. Measured truth: every cpu-guarantee depends on its requirement
-   (`OB-XLEN` → `REQ-D-XLEN`), every environment-assumption on the guarantees it discharges
-   (`OB-ENV-RESET` → `OB-ENTRY-STATE`). An obligation's dependency now resolves against
-   requirements ∪ obligations; a requirement's against requirements — inferred from all 42
-   real records, zero dangling.
-
-Validation: `merge_records.py --self-test` 18/0 (10 GREEN unions, 8 RED contradictions, each
-naming its fact); the real profile self-composes (26 req + 34 ob + 3 src); an edited copy is
-refused naming field and both values; a scratch extension unit composes against the base and is
-refused by name without it. Regression: sexp 18/0, kernel 50/0, RECORD-SCHEMA 23/0 + real run
-green, semantics 52/52, citations 52/52, materials 20/0, smoke ok, readers 28/28, G0 diff
-empty, `make check` green.
-
-Lessons: promoted — `docs/knowledge/a-duplicate-id-is-a-contradiction-not-a-shadowing.md`
-(the id-keyed dict that collapses duplicates is the same failure in any gate). The
-mixed-namespace dependency fact is declined here: measured, owned and enforced by
-`merge_records.py`'s closure, where anyone extending the record families meets it.
 

@@ -16,13 +16,21 @@ check it for staleness.
 explicitly, and it is the one verdict this generator refuses to produce: the criterion below
 counts declared checks against implemented ones, and 66 against 0 cannot round up.
 
-Usage:  scripts/gate_report.py <profile>          write the report
-        scripts/gate_report.py <profile> --stdout print it instead
+Usage:  scripts/gate_report.py <profile>                   write the G0 report
+        scripts/gate_report.py <profile> --gate G1         write the G1 report
+        scripts/gate_report.py <profile> [--gate G] --stdout   print instead
+
+G1 (`P1-LAB.12`): the laboratory gate's report over the same dossier, evaluated against the
+SIX criteria `ROADMAP.md` §6 states for `G1` — each measured from tracked files by concrete
+name, never asserted — plus the recorded baseline (`baseline.sexp`). The verdict is `passed`
+only while all six criteria are met: EVD-08's forbidden outcome generalized, so the generator
+has no code path to `passed` over an unmet criterion.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -33,6 +41,7 @@ ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
 sys.path.insert(0, str(ROOT / "scripts"))
 import records_sexp as R                                # noqa: E402
 import dossier_sexp as D                                # noqa: E402
+import sexp as S                                        # noqa: E402
 
 
 def build(profile: str) -> str:
@@ -188,15 +197,279 @@ def build(profile: str) -> str:
     return "\n".join(L) + "\n"
 
 
+# ---------------------------------------------------------------------------
+# Gate G1 — the processor laboratory (`P1-LAB.12`). Same doctrine as G0: derived entirely
+# from tracked files, byte-stable in a fresh clone, and structurally unable to read
+# `passed` while a criterion's evidence is missing. Each criterion below names the
+# CONCRETE tracked artifact that evidences it — the G0 lesson (an id-shaped pattern in
+# prose is not a check) applied to the laboratory.
+# ---------------------------------------------------------------------------
+
+G1_BENCH_MIXES = ("arithmetic", "control", "memory", "fault")
+G1_BENCH_MODES = ("untraced", "instrumented", "instrumented-dyn", "diagnostic")
+
+
+def _subform(form: S.Sexp, name: str, where: str) -> list:
+    """The single child form `(name …)`, refusing absence and duplication alike."""
+    found = S.children(form, name)
+    if len(found) != 1:
+        raise S.SexpError(f"{where}: expected exactly one ({name} …), found {len(found)}")
+    return found[0]
+
+
+def _baseline_status(path: Path) -> tuple[dict | None, str | None]:
+    """Parse and structurally validate the recorded baseline. Returns (data, problem):
+    exactly one is None. A missing field is a problem named, never a passed-over silence."""
+    if not path.exists():
+        return None, "baseline.sexp is absent"
+    try:
+        forms = S.parse(path.read_text(), where=path.name)
+        if len(forms) != 1 or S.head(forms[0], path.name) != "baseline":
+            return None, "expected exactly one (baseline …) form"
+        form = forms[0]
+        if str(S.field(form, "for-gate", path.name)) != "G1":
+            return None, "the record is not marked (for-gate G1)"
+        host = _subform(form, "host", path.name)
+        for key in ("cpu", "kernel", "rustc"):
+            S.field(host, key, path.name)
+        config = _subform(form, "config", path.name)
+        for key in ("iterations", "warmup", "reps"):
+            S.field(config, key, path.name)
+        S.field(form, "rederive", path.name)
+        S.field(form, "agreement", path.name)
+        if str(S.field(form, "thresholds", path.name)) != "none":
+            return None, "the record claims thresholds — RUST-04 forbids them here"
+        mixes = S.children(form, "mix")
+        by_name = {str(S.field(m, "name", path.name)): m for m in mixes}
+        if sorted(by_name) != sorted(G1_BENCH_MIXES):
+            return None, f"mixes are {sorted(by_name)}, expected {sorted(G1_BENCH_MIXES)}"
+        for name, mix in by_name.items():
+            cells = S.children(mix, "cell")
+            modes = {str(S.field(c, "mode", path.name)) for c in cells}
+            if modes != set(G1_BENCH_MODES):
+                return None, f"mix {name}: modes are {sorted(modes)}"
+            for cell in cells:
+                for key in ("ns-per-step", "min", "max", "spread-ppm",
+                            "allocs-per-step", "bytes-per-step"):
+                    S.field(cell, key, path.name)
+            S.field(mix, "static-dyn-ratio", path.name)
+        return {"form": form, "mixes": by_name}, None
+    except S.SexpError as exc:
+        return None, str(exc)
+
+
+def build_g1(profile: str) -> str:
+    d = ROOT / "profiles" / profile
+    D.load_profile(d / "profile.sexp")
+    obs = R.load(d / "contract-obligations.sexp")
+    guests_expected = sorted((d / "guests").glob("*.expected.sexp"))
+    guests_s = sorted((d / "guests").glob("*.s"))
+    guests_c = sorted((d / "guests").glob("*.c"))
+
+    def tracked(rel: str) -> str:
+        return (ROOT / rel).read_text()
+
+    # — criterion probes: concrete artifact names, each refusing absent evidence —
+    cli = tracked("crates/semulith-cli/src/main.rs")
+    replay_cmds = [c for c in ("bundle", "replay", "reduce") if f'Some("{c}")' in cli]
+    replay_rs = (ROOT / "crates/semulith-verify/src/replay.rs").exists()
+    reduce_rs = (ROOT / "crates/semulith-verify/src/reduce.rs").exists()
+    replay_tests = tracked("crates/semulith-verify/src/replay/tests.rs").count("#[test]")
+    reduce_tests = tracked("crates/semulith-verify/src/reduce/tests.rs").count("#[test]")
+
+    outcome = tracked("crates/semulith-core/src/outcome.rs")
+    families = [n for n in ("pub enum TargetEvent", "pub enum Advance",
+                            "pub enum ModelError", "pub enum UndefinedCase")
+                if n in outcome]
+    mutate_tests = tracked("crates/semulith-verify/src/mutate/tests.rs")
+    mutation_arms = mutate_tests.count("#[test]")
+    sem02_arm = ("illegal_instruction_substituted_for_a_limitation_is_detected"
+                 in mutate_tests)
+    mutate_src = tracked("crates/semulith-verify/src/mutate.rs")
+    table = mutate_src.split("pub const MUTATIONS")[1].split("];")[0]
+    mutants = [m for m in re.findall(r'\(\s*"([a-z0-9-]+)"', table) if m != "none"]
+
+    graph_rs = (ROOT / "crates/semulith-verify/src/graph.rs").exists()
+    graph_tests = tracked("crates/semulith-verify/src/graph/tests.rs").count("#[test]")
+    check_examples = 'Some("check-examples")' in cli
+
+    baseline, baseline_problem = _baseline_status(d / "baseline.sexp")
+
+    met = {
+        1: replay_rs and reduce_rs and len(replay_cmds) == 3
+           and replay_tests > 0 and reduce_tests > 0,
+        2: len(families) == 4 and sem02_arm,
+        3: graph_rs and check_examples and graph_tests > 0,
+        4: mutation_arms >= 11 and len(mutants) >= 4,
+        5: baseline is not None,
+        6: len(guests_c) > 0,
+    }
+    verdict = "passed" if all(met.values()) else "incomplete"
+
+    L: list[str] = []
+    A = L.append
+    A(f"# Gate `G1` report — `{profile}` (P1: the processor laboratory)")
+    A("")
+    A("<!-- DERIVED — DO NOT EDIT. Regenerated by `scripts/gate_report.py --gate G1`; the")
+    A("     `GATE-REPORT` doctrine fails the commit if this file and its inputs disagree.")
+    A("     Edit the INPUTS: the laboratory crates, the CLI, baseline.sexp, guests/. -->")
+    A("")
+    A(f"**Verdict: `{verdict}`.**")
+    A("")
+    A("## Why this verdict")
+    A("")
+    unmet = [n for n, ok in met.items() if not ok]
+    A("`EVD-08` forbids a report that reads `passed` while a required criterion's evidence")
+    A("is missing. Each of the six `ROADMAP.md` §6 `G1` criteria below is measured from")
+    A("tracked files by concrete name — a criterion without its artifact is unmet, and this")
+    A("generator has no code path to `passed` while one is.")
+    if unmet:
+        A("")
+        A(f"Unmet: **{', '.join(f'criterion {n}' for n in unmet)}** — named in its section"
+          " below.")
+    A("")
+    A("## Inputs (all tracked; this report reads nothing untracked)")
+    A("")
+    A("| Input | Contents |")
+    A("| --- | --- |")
+    A("| `crates/semulith-core`, `-verify`, `-cli` | the laboratory: interpreter, evidence machinery, command surface |")
+    A(f"| `contract-obligations.sexp` | {len(obs)} obligations (the environment contract the laboratory serves) |")
+    A(f"| `guests/` | {len(guests_s)} assembly guests, {len(guests_c)} C guests, {len(guests_expected)} expectation documents |")
+    missing = "MISSING — " + str(baseline_problem)
+    A(f"| `baseline.sexp` | {'the recorded performance baseline' if baseline else missing} |")
+    A("")
+    A("## Criterion 1 — failures are replayable from recorded inputs")
+    A("")
+    A("The recorded input bundle (`replay.rs`) and the minimizer (`reduce.rs`) exist as")
+    A(f"tracked code; the CLI wires {len(replay_cmds)}/3 commands (`bundle`, `replay`,")
+    A(f"`reduce`); the suites carry {replay_tests} replay and {reduce_tests} reduction arms,")
+    A("run by the commit gate on every commit.")
+    A("")
+    A(f"**Status: {'met' if met[1] else 'NOT met — a named artifact above is absent'}.**")
+    A("")
+    A("## Criterion 2 — model limitations are distinguishable from target traps")
+    A("")
+    A(f"`outcome.rs` defines {len(families)}/4 outcome families as separate types")
+    A("(`TargetEvent`, `Advance`, `ModelError`, `UndefinedCase` — nothing converts between")
+    A("them, `SEM-01`). The SEM-02 arm (`illegal_instruction_substituted_for_a_limitation_")
+    A(f"is_detected`) {'is present' if sem02_arm else 'is ABSENT'}: a limitation dressed as")
+    A("an illegal-instruction trap is caught by name.")
+    A("")
+    A(f"**Status: {'met' if met[2] else 'NOT met — a family or the SEM-02 arm is absent'}.**")
+    A("")
+    A("## Criterion 3 — malformed evidence links are rejected")
+    A("")
+    A(f"The graph and report checker (`graph.rs`, {graph_tests} suites) enforces the")
+    A("`EVIDENCE_AND_GATES.md` §3 invariants over the frozen records — orphan ids, stale")
+    A("hashes, unsupported `passed` claims, missing evidence, deleted links — and")
+    A(f"`semulith check-examples` {'is' if check_examples else 'is NOT'} wired. Schema")
+    A("validity alone is never the verdict.")
+    A("")
+    A(f"**Status: {'met' if met[3] else 'NOT met — the checker or its command is absent'}.**")
+    A("")
+    A("## Criterion 4 — known validator mutations are detected")
+    A("")
+    A(f"The mutation suite carries **{mutation_arms} designated arms** (the eight EVD-09")
+    A("classes, the JALR odd-bit arm, the crossing-census pin, the suppression exhibit) and")
+    A(f"the model-level seam holds **{len(mutants)} named mutants** ({', '.join(mutants)}).")
+    A("Every arm asserts detection at a designated step with the field named.")
+    A("")
+    A(f"**Status: {'met' if met[4] else 'NOT met — the suite shrank below its designated arms'}.**")
+    A("")
+    A("## Criterion 5 — the performance baseline is measured on a named host")
+    A("")
+    if baseline:
+        form = baseline["form"]
+        host = _subform(form, "host", "baseline.sexp")
+        config = _subform(form, "config", "baseline.sexp")
+        A(f"Host: **{S.field(host, 'cpu')}**; {S.field(host, 'kernel')}; built by"
+          f" `{S.field(host, 'rustc')}`. Config: iterations={S.field(config, 'iterations')},")
+        A(f"warmup={S.field(config, 'warmup')}, reps={S.field(config, 'reps')}. Re-derive:"
+          f" `{S.field(form, 'rederive')}`. Median ns/step (the full record, including")
+        A("min/max and bytes/step, is `baseline.sexp`):")
+        A("")
+        A("| Mix | Untraced | Instrumented | Instr. (dyn) | Diagnostic | Allocs/step | Spread |")
+        A("| --- | --- | --- | --- | --- | --- | --- |")
+        for name in G1_BENCH_MIXES:
+            mix = baseline["mixes"][name]
+            cells = {str(S.field(c, "mode")): c for c in S.children(mix, "cell")}
+            row = [f"| {name}"]
+            for mode in G1_BENCH_MODES:
+                row.append(str(S.field(cells[mode], "ns-per-step")))
+            row.append(f"{S.field(cells['untraced'], 'allocs-per-step')} → "
+                       f"{S.field(cells['diagnostic'], 'allocs-per-step')}")
+            spreads = [int(S.field(c, "spread-ppm")) for c in cells.values()]
+            row.append(f"{min(spreads) / 10000:.1f}–{max(spreads) / 10000:.1f}%")
+            A(" | ".join(row) + " |")
+        A("")
+        ratios = [float(S.field(baseline["mixes"][n], "static-dyn-ratio"))
+                  for n in G1_BENCH_MIXES]
+        A(f"Static vs dynamic observer dispatch: ×{min(ratios):.3f}–×{max(ratios):.3f}"
+          " across the mixes — within the")
+        A("measured noise. The record states `(thresholds none)`; the spread above is what a")
+        A("future threshold must be set from (RUST-04).")
+    else:
+        A(f"**No recorded baseline.** {baseline_problem}. The measurement exists as a")
+        A("command (`semulith bench`) but the baseline is not recorded as data — the")
+        A("criterion is unmet until it is.")
+    A("")
+    A(f"**Status: {'met' if met[5] else 'NOT met — the baseline is not recorded as data'}.**")
+    A("")
+    A("## Criterion 6 — a compiled freestanding guest retires under first-divergence comparison")
+    A("")
+    A(f"`guests/` holds **{len(guests_s)} assembly guests** and **{len(guests_c)} C guests**.")
+    A("The four tracked guests ARE freestanding programs — assembled by the tracked assembler")
+    A("from `.s` sources — and they retire under first-divergence comparison against TWO")
+    A("pinned references (sail-riscv and spike, 34/34 aligned steps; re-run:")
+    A("`scripts/run_semulith_smoke.py`). But the roadmap's clause names a **compiled** guest")
+    A("with **C as the first guest path**, and no C-toolchain guest exists in this tree.")
+    A("")
+    A("**Status: NOT met as written.** The assembled-guest differential is real and recorded;")
+    A("the C path is the gap. Owner: `P2-SCALAR.5` (external and directed campaigns).")
+    A("")
+    A("## Limitations (`EVD-08`)")
+    A("")
+    A("1. **The verdict is `incomplete`, and criterion 6 is why.** A gate report exists to say")
+    A("   exactly this, exactly here.")
+    A("2. **Criteria 1–5 are evidenced by the presence and shape of tracked machinery**, whose")
+    A("   every claim is exercised by the commit gate (`make check`) — this report re-derives")
+    A("   counts and names from the sources, it does not re-run the suites. The un-fakeable")
+    A("   leg is the gate itself.")
+    A("3. **The baseline is one host's measurement session**, frozen as data with its noise;")
+    A("   it is not a portable constant and sets no threshold.")
+    A("4. **Finite differential testing is not proof** (EVD-01): the guests, suites and")
+    A("   differentials are tested evidence for the cases they exercise.")
+    A("")
+    A("## Commands that re-derive this report's inputs")
+    A("")
+    A("```")
+    A("make check                                       # every suite this report counts")
+    A("cargo run --release -p semulith-cli -- bench     # the baseline (this host's numbers)")
+    A("python3 scripts/run_semulith_smoke.py            # the live three-way differential")
+    A("scripts/check_doctrines.sh                       # the whole gate registry")
+    A("```")
+    A("")
+    return "\n".join(L) + "\n"
+
+
 def main(argv: list[str]) -> int:
     if len(argv) < 2:
-        print("usage: gate_report.py <profile> [--stdout]", file=sys.stderr)
+        print("usage: gate_report.py <profile> [--gate G0|G1] [--stdout]", file=sys.stderr)
         return 2
-    text = build(argv[1])
+    gate = "G0"
+    for i, arg in enumerate(argv[2:], start=2):
+        if arg == "--gate" and i + 1 < len(argv):
+            gate = argv[i + 1]
+        elif arg.startswith("--gate="):
+            gate = arg.split("=", 1)[1]
+    if gate not in ("G0", "G1"):
+        print(f"gate_report: unknown gate '{gate}' (G0 or G1)", file=sys.stderr)
+        return 2
+    text = build(argv[1]) if gate == "G0" else build_g1(argv[1])
     if "--stdout" in argv:
         sys.stdout.write(text)
         return 0
-    out = ROOT / "profiles" / argv[1] / "G0-REPORT.md"
+    out = ROOT / "profiles" / argv[1] / f"{gate}-REPORT.md"
     out.write_text(text)
     print(f"wrote {out.relative_to(ROOT)} ({len(text)} bytes)")
     return 0

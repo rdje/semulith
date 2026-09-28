@@ -57,7 +57,7 @@ directory is a "trust me" with extra steps.
 | `scripts/check_semantics_corpus.sh` | does the semantics corpus hold — every sem file checked against its fragment, refinements declared, locators resolving offline? | `scripts/check_semantics_corpus.sh [--self-test]` (SEMANTICS doctrine) |
 | `scripts/check_source_format.sh` | is every source of truth still in the one format — or did the retired split return? | `scripts/check_source_format.sh [--self-test]` — refuses a tracked `.toml`/`.json`/`.jsonl`/`.yaml` under `definitions/ schema/ profiles/ materials/` and any `.sexp` there that `sexp.py` refuses |
 | `scripts/convert_records.py` | did the record conversion lose anything — proven, not reviewed? | `scripts/convert_records.py to-sexp \| to-jsonl \| verify <a> <b>`; `--verify` re-derives the JSONL byte-identically |
-| `scripts/gate_report.py` | what does the gate actually say right now, and why is it not `passed`? | `scripts/gate_report.py <profile> [--stdout]` |
+| `scripts/gate_report.py` | what does the gate actually say right now, and why is it not `passed`? | `scripts/gate_report.py <profile> [--gate G0|G1] [--stdout]` |
 | `scripts/check_unit_composition.sh` | is every tracked unit's composed encoding space decided — schema-conformant document, fragments resolved, collision-free union, partial declared? | `scripts/check_unit_composition.sh [--self-test]` (UNIT-COMPOSITION doctrine; decides every `profiles/*/encoding.sexp`) |
 | `scripts/compare_platforms.py` | what platform does each reference actually advertise, and where does it differ from the profile and from the other model? | `scripts/compare_platforms.py` |
 | `scripts/sexp.py` | does this canonical-definition file parse, and what does it declare? | `scripts/sexp.py <file.sexp>` |
