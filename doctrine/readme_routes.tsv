@@ -172,12 +172,19 @@ definitions/	reader_navigation	partitioned	reusable definition fragments; one fi
 schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	16	131072	24	524288	65536
 # Re-derivation, SEMILITH-PL-0001 (2026-09-27), when the family hit its file-count ceiling:
 #   docs/changelog/  22 files at the breach — the family carries shards for TWO append heads
-#               (CHANGELOG.md and DEV_NOTES.md, both sharded from 2026-09-27), and a working
+#               (CHANGELOG.md sharded from 2026-09-27, DOC-SHARDING.1), and a working
 #               day shards each head more than once, so the FILE-COUNT axis the original
 #               derivation calibrated on one head moved ~4x. The axis that protects CONTENT
 #               stays untouched: per-part 64 KiB and the 384 KiB aggregate are unchanged, so
 #               one member still cannot become a monolith and the collection still cannot
 #               bloat. Ceiling files 20 -> 40; the next reader should watch the AGGREGATE.
+# Defect fixed, SEMULITH-DS-0003 (2026-09-28): the comment above claimed DEV_NOTES.md was
+#               already sharded — it was not (DOC-SHARDING.2 was still pending and the head
+#               stood at 49,145 of its 49,152-byte ceiling). The claim described the designed
+#               end-state as the present one; the tooling made the check honest instead.
+#               DEV_NOTES.md now shards into this family from 2026-09-28 (DOC-SHARDING.2):
+#               2 entries into shard-0027.md, head 48,954 -> 46,212, completeness proved at
+#               the event and frozen by the 29-row manifest.
 docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	40	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 overwrite-only record, one entry per cleanup	6	768	12	1536	0

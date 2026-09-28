@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (22 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 245 arms, all fired RED before registration; the list is not mirrored here (a hand-kept name list is how SCOPE-COVERAGE's row went missing for a milestone) |
+| Project doctrines (22 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 247 arms, all fired RED before registration; the list is not mirrored here (a hand-kept name list is how SCOPE-COVERAGE's row went missing for a milestone) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, off the re-sync list, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 28 chapters; contracts included verbatim; its doctrine chapter is gated against the registry |

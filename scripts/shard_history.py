@@ -8,6 +8,11 @@ file) into a new `docs/changelog/shard-NNNN.md`, rewrites the head under its tar
 regenerates `docs/changelog/SHARDS.sha256` — the freeze proof consumed by
 `scripts/check_changelog_shards.sh` (`SHARD-FREEZE`).
 
+TWO HEADS, ONE PARTITION FAMILY (DOC-SHARDING.2). `docs/changelog/` carries the shards of
+every append-history head, today `CHANGELOG.md` and `DEV_NOTES.md` (the registry row says so).
+The shard header names the head it was cut from and that head's registry ceiling — a shard's
+provenance is its first line, not folklore.
+
 WHY WHOLE ENTRIES, BYTE-VERBATIM. A sharded history is only trustworthy if the partition is
 provably lossless, so a file is treated as preamble + concatenated entry blocks, and every
 moved block keeps its exact bytes (a block includes the blank-line separation after it, so
@@ -102,16 +107,17 @@ def next_shard_name(shard_dir: Path) -> str:
 
 
 SHARD_HEADER = (
-    "# CHANGELOG shard — {first} … {last}\n"
+    "# {head} shard — {first} … {last}\n"
     "\n"
-    "> Sharded from `CHANGELOG.md` when it crossed its 64 KiB ceiling (`doctrine/readme_routes.tsv`).\n"
+    "> Sharded from `{head}.md` when it crossed its {kib} KiB ceiling "
+    "(`doctrine/readme_routes.tsv`).\n"
     "> Entries in a shard are **never edited after the shard** — git history is canonical.\n"
     "\n"
 )
 
 
 def shard(root: Path, head_rel: str, shard_dir_rel: str, manifest_rel: str,
-          max_bytes: int, dry_run: bool = False) -> list[str]:
+          max_bytes: int, ceiling_bytes: int, dry_run: bool = False) -> list[str]:
     log: list[str] = []
     head = root / head_rel
     shard_dir = root / shard_dir_rel
@@ -142,7 +148,10 @@ def shard(root: Path, head_rel: str, shard_dir_rel: str, manifest_rel: str,
         body = "".join(b for _, b in moved)
         first_id = moved[0][0].split()[0]
         last_id = moved[-1][0].split()[0]
-        shard_text = SHARD_HEADER.format(first=first_id, last=last_id) + body
+        head_stem = head_rel[:-3] if head_rel.endswith(".md") else head_rel
+        shard_text = SHARD_HEADER.format(head=head_stem,
+                                         kib=ceiling_bytes // 1024,
+                                         first=first_id, last=last_id) + body
         after_text = preamble + "".join(b for _, b in kept)
         # The completeness proof, at the shard event, in both directions and both axes:
         # order (kept prefix + moved suffix == original sequence) and bytes (reassembly exact).
@@ -203,7 +212,7 @@ def self_test() -> int:
 
         def run(root: Path, max_bytes: int, dry: bool = False):
             return shard(root, "CHANGELOG.md", "docs/changelog",
-                         "docs/changelog/SHARDS.sha256", max_bytes, dry_run=dry)
+                         "docs/changelog/SHARDS.sha256", max_bytes, 1024, dry_run=dry)
 
         def mkroot(text: str) -> Path:
             (td / "CHANGELOG.md").write_text(text)
@@ -270,6 +279,41 @@ def self_test() -> int:
         arm("RED   a head with no entries is refused",
             lambda: eq("no '## ' entries" in str(_caught(lambda: run(td, 1024))), True))
 
+        # DOC-SHARDING.2 — the header names the head it was cut from and that head's own
+        # registry ceiling (two heads share docs/changelog/; provenance is the first line).
+        (td / "doctrine/readme_routes.tsv").write_text(
+            "# registry\n"
+            "CHANGELOG.md\tauthor_overflow\tappend_history\towner\t0\t49152\t0\t65536\t0\n"
+            "DEV_NOTES.md\tauthor_overflow\tappend_history\towner\t0\t36864\t0\t49152\t0\n")
+        # heads are newest-first files, like the real DEV_NOTES.md
+        (td / "DEV_NOTES.md").write_text(
+            "# DEV_NOTES.md\n\n## _(2026-09-28)_ — new note (X.2)\nbody\n"
+            "## _(2026-09-27)_ — old note (X.1)\nbody\n")
+        out = shard(td, "DEV_NOTES.md", "docs/changelog",
+                    "docs/changelog/SHARDS.sha256", 70, 49152)
+        dev_shard = [p for p in sorted((td / "docs/changelog").glob("shard-*.md"))
+                     if "# DEV_NOTES shard" in p.read_text()]
+        arm("GREEN a DEV_NOTES shard is named and headed as DEV_NOTES, 48 KiB",
+            lambda: (
+                eq(len(dev_shard), 1),
+                (lambda s: (
+                    eq(s.startswith("# DEV_NOTES shard — _(2026-09-27)_"), True),
+                    eq("`DEV_NOTES.md`" in s, True),
+                    eq("crossed its 48 KiB ceiling" in s, True),
+                    eq("64 KiB" in s, False)))(
+                    dev_shard[0].read_text())))
+        arm("GREEN re-sharding CHANGELOG keeps the .1 header shape (64 KiB, named CHANGELOG)",
+            lambda: (
+                mkroot(fixture(["n3", "o3"])),
+                (lambda logs: (
+                    eq(any("sharded" in l for l in logs), True),
+                    (lambda p: (
+                        eq(p.read_text().startswith("# CHANGELOG shard — o3"), True),
+                        eq("crossed its 64 KiB ceiling" in p.read_text(), True)))(
+                        sorted((td / "docs/changelog").glob("shard-*.md"))[-1])))(
+                    shard(td, "CHANGELOG.md", "docs/changelog",
+                          "docs/changelog/SHARDS.sha256", 50, 65536))))
+
     print(f"shard_history --self-test: {passed} pass / {failed} fail")
     return 1 if failed else 0
 
@@ -297,10 +341,10 @@ def main(argv: list[str]) -> int:
         return self_test()
     root = Path(args.root)
     try:
-        target = args.max_bytes if args.max_bytes is not None \
-            else registry_ceiling(root, args.head)
+        ceiling = registry_ceiling(root, args.head)
+        target = args.max_bytes if args.max_bytes is not None else ceiling
         for line in shard(root, args.head, args.shard_dir, args.manifest, target,
-                          dry_run=args.dry_run):
+                          ceiling, dry_run=args.dry_run):
             print(line)
     except ShardRefused as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)

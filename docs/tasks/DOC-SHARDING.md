@@ -3,8 +3,8 @@
 ## Metadata
 
 - Tree ID: `DOC-SHARDING`
-- Status: `active` (reopened `2026-09-28` for `.2` — the `DEV_NOTES.md` trigger fired; leaf
-  `.1` landed `2026-09-27`)
+- Status: `done` (reopened `2026-09-28` for `.2` — the `DEV_NOTES.md` trigger; `.2` landed the
+  same day; the family now serves both append heads)
 - Roadmap lane: repository hygiene — the append-history ceilings (`doctrine/readme_routes.tsv`)
 - Gate: none of its own; keeps `README-ROUTING-CLOSURE` green by giving the fired trigger its
   owner
@@ -54,17 +54,17 @@ remedy.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DOC-SHARDING.2` | `pending` | the `DEV_NOTES.md` ceiling fired — measured `2026-09-28`: 49,145 of 49,152 bytes after `SEMILITH-PL-0006` compressed its entry to fit; the `.1` remedy is CHANGELOG-specific (shard naming, manifest, freeze check all scoped to `docs/changelog/`), so the only responses today are compression or this leaf |
+| — | — | — | `.2` done (`2026-09-28`); both append heads shard into `docs/changelog/` under one frozen manifest — the next cleanup is time-triggered, as ARTIFACT-CLEANUP's is |
 
 ## Task Tree
 
 - ID: `DOC-SHARDING`
-  Status: `active` (reopened `2026-09-28` for the fired `DEV_NOTES.md` trigger)
+  Status: `done`
   Goal: the fired ceiling trigger gets its remedy — frozen shards, a manifest, a check
-  Children: `DOC-SHARDING.1` (done), `DOC-SHARDING.2`
+  Children: `DOC-SHARDING.1` (done), `DOC-SHARDING.2` (done)
 
 - ID: `DOC-SHARDING.2` — **the DEV_NOTES shard path**
-  Status: `pending`
+  Status: `done`
   Goal: `DEV_NOTES.md` gets the same lifecycle `CHANGELOG.md` has: when its ceiling fires, its
     oldest dated entries move to frozen shards under a repository-relative directory with their
     own manifest, and a tracked check proves frozen + exactly-partitioned.
@@ -72,16 +72,19 @@ remedy.
     registry ceiling after its entry was compressed to fit — the same fired-trigger shape
     `.1` records for `CHANGELOG.md` (9 bytes then, 7 now). Compression is the response the
     registry names as the inferior one.
-  Scope notes: `scripts/shard_history.py`, `docs/changelog/SHARDS.sha256`, and
-    `scripts/check_changelog_shards.sh` are all scoped to `CHANGELOG.md` (shard-NNNN naming
-    inside `docs/changelog/`). Generalize deliberately — a `--head`/`--shard-dir`/`--manifest`
-    parameterization or a reviewed parallel path — and register the new shard directory in
-    `doctrine/readme_routes.tsv` in the same commit that creates it. `SHARD-FREEZE` extends to
-    the new manifest or a sibling check lands beside it, fired RED before registration.
-  Acceptance: sharding `DEV_NOTES.md` moves whole dated entries byte-verbatim, rewrites the
-    head under its ceiling, the freeze/completeness check proves the partition durably, and a
-    re-run is a no-op.
-  Blockers: none — consumed by the commit workflow (every slice adds a `DEV_NOTES.md` entry).
+  Result: met, `2026-09-28`. Generalization, not a fork: `scripts/shard_history.py` takes each
+    head's ceiling from the registry row and writes a shard header naming the head it was cut
+    from and that head's own ceiling — `# DEV_NOTES shard … crossed its 48 KiB ceiling` — while
+    CHANGELOG's header stays byte-identical to `.1`'s shape (self-test arm). The shard family
+    stays ONE: `docs/changelog/` already carried the registry row for both heads (file-count
+    ceiling raised for exactly this at `SEMILITH-PL-0001`), so no second directory was created
+    or registered. `scripts/check_changelog_shards.sh` learns the two-head family: one COVERAGE/
+    FROZEN/APPEND-ONLY scan over the shared manifest, and the UNIQUE leg scans both live heads +
+    shards, so an entry heading carried twice anywhere fails. First event: 2 entries moved to
+    `docs/changelog/shard-0027.md`, head 48,954 → 46,212 bytes, `31 == 29 kept + 2 moved`
+    proved at the event, manifest 28 → 29 rows. Both tools fired RED on the real tree
+    pre-commit (probe record below); self-tests 12/0 and 14/0.
+  Commit: `SEMILITH-DS-0003`
 
 - ID: `DOC-SHARDING.1` — **the shard tool, the manifest, and the freeze check**
   Status: `done`
@@ -132,6 +135,84 @@ remedy.
   `SEMULITH` (this leaf's `SEMULITH-DS-0002` does); the recurrence remedy is a `commit-msg` hook
   arm refusing `^SEMILITH` subjects, scheduled to the next hygiene slice — a mechanical check is
   the only durable spelling teacher. Owner: repo-local guarantor.
+
+## Defects found during `.2` (owned, fixed in the same commit)
+
+- The registry comment on the `docs/changelog/` row claimed both heads were "sharded from
+  `2026-09-27`" — DEV_NOTES.md had no shards (this leaf was still pending; the head stood at
+  49,145 of 49,152 bytes). Designed end-state stated as present fact; corrected in
+  `doctrine/readme_routes.tsv` with the fix cited.
+- Two stray duplicate headings inside `DEV_NOTES.md` (a heading line repeated with no body
+  above the MODEL-COMPOSE.3 and SOT-FORMAT.6 entries) — found by the new two-head UNIQUE leg
+  on its first run; the old leg never scanned DEV_NOTES.md. Both removed; each entry exists
+  exactly once. Disposition: the UNIQUE leg stays strict (intra-head duplication is a real
+  defect class), the corpus is clean.
+
+## Acceptance Checklist (leaf DOC-SHARDING.2)
+
+- [x] **REPRODUCE / ISSUE** — the fired trigger, measured:
+
+  ```
+  $ wc -c DEV_NOTES.md
+  49145 DEV_NOTES.md                     # 7 bytes under the 49,152 registry ceiling
+  $ python3 scripts/shard_history.py --head DEV_NOTES.md --max-bytes 47104 --dry-run
+  (works — the paths were parameterized — but the shard header it would write names CHANGELOG)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the shard header was hardcoded to CHANGELOG's identity
+  (`# CHANGELOG shard … 64 KiB`), and the freeze check hardcoded CHANGELOG as the only live
+  head. WHERE, measured — the old tool run against a DEV_NOTES fixture writes a provenance-lie
+  header (rc=0, RED probe recorded):
+
+  ```
+  $ python3 old_shard_history.py --root "$PWD" --head DEV_NOTES.md --max-bytes 70
+  sharded 1 entr(ies) '_(2026-09-27)_ — old note (X.1)' … into docs/changelog/shard-0001.md
+  $ head -1 docs/changelog/shard-0001.md
+  # CHANGELOG shard — _(2026-09-27)_ …            # a DEV_NOTES shard claiming CHANGELOG provenance
+  ```
+
+- [x] **FIX** — generalize both tools (no fork): `shard_history.py` derives the header from the
+  head's registry row (head stem + ceiling KiB; CHANGELOG's emission stays byte-identical to
+  `.1`, asserted by a self-test arm); `check_changelog_shards.sh` takes the live heads as
+  arguments, scans the shared partition once, and fires its UNIQUE leg across both heads +
+  shards. The shard family stays one: `docs/changelog/` already carried the two-head registry
+  row (file-count ceiling raised for it at `SEMILITH-PL-0001`), so no new directory was needed.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ python3 scripts/shard_history.py --head DEV_NOTES.md --max-bytes 47104
+  sharded 2 entr(ies) '_(2026-09-14)_ — a category the layer does not own is not "missing"' … into docs/changelog/shard-0027.md
+  completeness: 31 entries before == 29 kept + 2 moved, order and bytes exact
+  head: 48954 -> 46212 bytes (target 47104)
+  manifest: 29 shard row(s) written to docs/changelog/SHARDS.sha256
+  $ python3 scripts/shard_history.py --head DEV_NOTES.md --max-bytes 47104   # re-run
+  no shard needed: DEV_NOTES.md is 46212 bytes, target 47104
+  $ bash scripts/check_changelog_shards.sh
+  SHARD-FREEZE: ok (29 shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)
+  $ bash scripts/check_changelog_shards.sh --self-test
+  SHARD-FREEZE --self-test: 14 pass / 0 fail          # was 12; two new arms
+  $ python3 scripts/shard_history.py --self-test
+  shard_history --self-test: 12 pass / 0 fail         # was 10; two new arms
+  ```
+
+  ⛔ Real-tree RED probes before the tools were trusted with the head: the check flagged a
+  scratch shard carrying a live DEV_NOTES heading (`DUPLICATED ENTRY … shard-0099-probe.md`,
+  rc=1); the old sharder wrote a CHANGELOG-provenanced DEV_NOTES shard (probe above). Both
+  probes cleaned up after capture; the check then exposed the two stray duplicate headings in
+  DEV_NOTES.md itself (defects section above).
+
+- [x] **NO REGRESSION** — the full enforcer with both mirrors updated:
+  `make gate` → `=== all doctrines green ===` (SHARD-FREEZE green on the real 29-row
+  partition; REGISTRY-MIRROR green across `DOCTRINE_ENFORCEMENT.md` and the book chapter);
+  CHANGELOG's re-shard path keeps `.1`'s header shape (self-test arm).
+
+- [x] **LOCKSTEP** — `DEV_NOTES.md` (sharded head + this slice's dated entry), `CHANGELOG.md`
+  (entry), `MEMORY.md`, `LIVE_STATUS.md` (self-test arm count re-derived), `docs/TASK_TREE.md`
+  (tree closed), the doctrine mirrors (`DOCTRINE_ENFORCEMENT.md` + `docs/book/src/working/
+  doctrines.md`), `doctrine/readme_routes.tsv` (false two-heads claim corrected), and this tree
+  — one commit. No new doctrine registered (SHARD-FREEZE extended in place); the routed-
+  destination count is unchanged (no new directory).
 
 ## Acceptance Checklist (leaf DOC-SHARDING.1)
 

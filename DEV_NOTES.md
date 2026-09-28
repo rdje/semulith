@@ -8,6 +8,14 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-28)_ — DEV_NOTES joins the shard family, and a lying header is a defect (DOC-SHARDING.2)
+
+Root cause this leaf closes: `DEV_NOTES.md` stood at 49,145 of its 49,152-byte ceiling with the remedy unbuilt — `.1`'s sharder, manifest and freeze check were all scoped to `CHANGELOG.md`, so the only responses were compression or this leaf. Implementation: generalization, not a fork — `scripts/shard_history.py` takes the registry ceiling per head and writes a shard header that names the head it was cut from and that head's own ceiling (`# DEV_NOTES shard … crossed its 48 KiB ceiling`; CHANGELOG keeps its byte-identical `.1` shape, asserted); `scripts/check_changelog_shards.sh` learns the two-head family — one partition scan over both live heads + shards, so an entry heading carried twice anywhere fails, with a fired RED probe (a scratch shard holding a live DEV_NOTES heading) recorded in the leaf. First event: 2 entries into `docs/changelog/shard-0027.md`, head 48,954 → 46,212, `31 == 29 kept + 2 moved` proved at the event, 29-row manifest frozen. Validation: sharder self-test 12/0 (two new arms), SHARD-FREEZE self-test 14/0 (two new arms), real-tree RED probes for both tools, gate green.
+
+Defects found and fixed, same slice: (1) the registry comment on `docs/changelog/` claimed DEV_NOTES was "sharded from 2026-09-27" — designed end-state stated as present fact; corrected with the fix cited. (2) Two stray duplicate headings inside `DEV_NOTES.md` (a heading line repeated with no body, one above MODEL-COMPOSE.3's entry and one above SOT-FORMAT.6's) — the new two-head UNIQUE leg found them within a minute of first running; the old leg never looked at DEV_NOTES.md. Both removed; the entries themselves exist exactly once.
+
+Lessons: declined here (the probe-discipline lesson — pass `--root` explicitly when probing path-aware tools; a default derived from `git rev-parse` reached the REAL repository mid-probe and the tool's own refusal was the only thing that prevented it writing into `docs/changelog/` — is stated in this entry, which is where anyone running shard probes meets it).
+
 ## _(2026-09-28)_ — the canonical definition, generated (P1-LAB.6)
 
 Root cause: the definition was checkable but not consumable — SEMANTICS proved 52/52 cited, but no executable artifact carried the facts and OWN-03's manifest existed nowhere. Implementation: `scripts/gen_definition.py` generates `crates/semulith-core/src/definition.rs` from the encoding composition plus the semantics data: `FIELDS` with scatters, 52 `INSNS` decode rows, `Sem` effect trees, `decode`, and `MANIFEST` (inputs+sha256, generator hash, configuration as data, upstream source pins); the generator re-derives the SEMANTICS checks it emits through and refuses unknown shapes by name. The 22nd doctrine `DEF-GEN` refuses drift; self-test 8/0, fired RED. Validation: 10 definition suites green; clippy clean; wasm green; gate green (22 doctrines / 245 arms). Kept: emit effect trees fully broken per line so generator shape and rustfmt's agree (drift compares content, never formatting); an unjudgeable input must refuse (rc=2), not report a verdict — the RED-firing rite caught `relative_to` crashing on a relative `--encoding`.
@@ -305,8 +313,6 @@ header, where anyone restoring a capability meets it).
 
 ## _(2026-09-27)_ — assumption/guarantee discharge is a verdict (MODEL-COMPOSE.3)
 
-## _(2026-09-27)_ — assumption/guarantee discharge is a verdict (MODEL-COMPOSE.3)
-
 Root cause this leaf closes: a conditional composition claim ("the CPU is validated under
 explicit environment assumptions") is only as strong as the demonstration that the assumptions
 hold — and the demonstration lived only in `docs/CPU_ENVIRONMENT.md` §5 prose. The
@@ -333,8 +339,6 @@ SOURCE-FORMAT 7/0, sexp 18/0, kernel 50/0, RECORD-SCHEMA 23/0, semantics 52/52, 
 
 Lessons: declined here (the "new direction values accepted by construction" rule is stated in
 the tool's docstring and the owning leaf, where anyone extending the vocabulary meets it).
-
-## _(2026-09-27)_ — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes (SOT-FORMAT.6)
 
 ## _(2026-09-27)_ — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes (SOT-FORMAT.6)
 
@@ -572,40 +576,5 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   depends on whether a string is open — that question cannot be answered by a prior pass.
 - The S-expression trigger fired and was answered on merit: trees get S-expressions, records keep
   JSON/TOML and their working gates. "Single source of truth" = one owner per fact, not one file.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — a category the layer does not own is not "missing"
-
-- Devices are **board / SoC** material, not CPU material. The processor layer ends at the
-  CPU/environment boundary: the CPU states assumptions, a board later states guarantees
-  (`docs/CPU_ENVIRONMENT.md` §5, and `INFORMATION_CATALOG.md`'s own note that C19–C21 are not all
-  properties of the CPU).
-- ⭐ The consequence lands on the materials census, and it would have been a real defect: marking
-  `C19 Platform, devices and interconnect` as `missing` for a CPU model manufactures an acquisition
-  task for material the model must never contain, and reports a **correct scope as a deficiency**.
-  The disposition vocabulary now carries a LAYER, and `deferred-to-board` is distinct from both
-  `missing` and `not-applicable`. Caught before the schema was written, which is the only cheap
-  moment to catch it.
-- ⚠️ It also corrected my own framing of "runs real code": the console and the program-exit
-  convention are BOARD concerns. What the processor layer owes real code is the psABI, the ELF
-  contract, entry/startup state and the compiler-runtime intrinsics — and nothing else.
-- `DIFF-PLATFORM-SPIKE` is a LAYER difference, not a configuration one: Spike ships a CPU and a
-  small board together. The record now measures how much board each reference drags in.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — answer a narrow instrument with a wider one, and state the wider one's scope
-
-- The sweep found **one further instance**, worse than the founding one: Spike's
-  `matched_isa_string` was the command-line INPUT sitting in an observation's slot. Spike has no
-  `--print-isa`, so nobody had confirmed it configured what it was told. Now read back from
-  `--dump-dts`, with a control (`--isa=rv64im` → `rv64im`) proving it is an observation, not an echo.
-- ⭐ The replacement is a principle with a tool behind it: claim a match against the model's own
-  self-description at the **widest granularity it offers**. Both models emit a device tree; the
-  comparison shows 4 of 4 platform fields disagreeing and four devices only Spike advertises.
-- ⚠️ **The wide instrument has its own scope and must say so**, or it becomes the next narrow one.
-  A device tree is what a platform ADVERTISES — not semantics, not memory attributes — and Sail's
-  still lists a `timebase-frequency` and an `htif` node with no device behind them.
-- The durable answer to "are there others?" is not "no". It is that a new one **cannot be added**
-  without declaring what it does not establish — rule 5b, fired RED on the real dossier.
 - Promotion is explicitly declined in the owning leaf, with the reason.
 

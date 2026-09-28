@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # scripts/check_changelog_shards.sh — SHARD-FREEZE (project doctrine).
 #
-# `CHANGELOG.md` is an append_history surface: when it crosses its ceiling, its oldest entries
-# move to frozen shards under `docs/changelog/` (`scripts/shard_history.py`). A shard is a promise
-# — its bytes never change after the shard event — and a manifest is only as good as the check
-# that reads it. This is that check.
+# `CHANGELOG.md` and `DEV_NOTES.md` are append_history surfaces: when one crosses its ceiling,
+# its oldest entries move to frozen shards under `docs/changelog/` (`scripts/shard_history.py`)
+# — one shard family carries both heads (the registry row says so; a shard's first line names
+# the head it was cut from). A shard is a promise — its bytes never change after the shard
+# event — and a manifest is only as good as the check that reads it. This is that check.
 #
 # What is proved, durable past the shard event itself (the tool proves completeness AT the event;
 # these legs keep the promise afterwards):
@@ -16,11 +17,16 @@
 #   3. APPEND-ONLY every row committed at HEAD is present, unchanged, in the working manifest —
 #                  history may grow, it may never be rewritten. Judged against
 #                  `git show HEAD:docs/changelog/SHARDS.sha256`.
-#   4. UNIQUE      no `## ` entry heading appears twice across the head and the shards — a
-#                  duplicated entry means the partition lost or copied history.
+#   4. UNIQUE      no `## ` entry heading appears twice across the live heads and the shards —
+#                  the heads are independent histories, but a heading carried twice anywhere in
+#                  the family means the partition lost or copied an entry (or a head repeats its
+#                  own), and with unit-id/date-prefixed headings a real collision cannot fire
+#                  spuriously.
 #
 # ⛔ Fired RED on the real tree before registration: the adoption commit adds the manifest, so the
 # tree without it reports every shard UNMANIFESTED (shown in the task leaf DOC-SHARDING.1).
+# ⛔ Fired RED again when DOC-SHARDING.2 taught the check the two-head family: a scratch shard
+# carrying a live DEV_NOTES.md heading was flagged DUPLICATED ENTRY (probe recorded in the leaf).
 #
 # ⚠️ HONEST LIMIT: it proves the partition is frozen, complete and unrewritten from the first
 # committed manifest onward. The shard EVENT's completeness (head-before == head-after + shard,
@@ -34,14 +40,15 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 command -v python3 >/dev/null 2>&1 || {
   echo "SHARD-FREEZE: REFUSED — python3 is not on PATH; this check cannot judge." >&2; exit 2; }
 
-# $1 root  $2 head rel  $3 shard dir rel  $4 manifest rel  $5 previous-manifest file ("" = none)
+# $1 root  $2 shard dir rel  $3 manifest rel  $4 previous-manifest file ("" = none)
+# $5... live append-history heads (rels)
 check_shards() {
 python3 - "$@" <<'PY'
 import hashlib, re, sys, pathlib
 
 root = pathlib.Path(sys.argv[1])
-head_rel, shard_rel, manifest_rel, prev_path = sys.argv[2:6]
-head = root / head_rel
+shard_rel, manifest_rel, prev_path = sys.argv[2:5]
+heads = [root / h for h in sys.argv[5:]]
 shard_dir = root / shard_rel
 manifest = root / manifest_rel
 findings = []
@@ -120,7 +127,7 @@ if prev_path:
 
 # 4. UNIQUE ------------------------------------------------------------------------
 seen: dict[str, str] = {}
-for label, path in [("head", head)] + [(p.name, p) for p in shards]:
+for label, path in [(h.name, h) for h in heads] + [(p.name, p) for p in shards]:
     if not path.is_file():
         continue
     for eid in ENTRY.findall(path.read_text()):
@@ -152,20 +159,22 @@ self_test() {
     return 1
   }
 
-  HEAD="$t/CHANGELOG.md"; SDIR="$t/docs/changelog"; MAN="$t/docs/changelog/SHARDS.sha256"
+  HEAD="$t/CHANGELOG.md"; HEAD2="$t/DEV_NOTES.md"; SDIR="$t/docs/changelog"; MAN="$t/docs/changelog/SHARDS.sha256"
   FAKE64="$(head -c 64 /dev/zero | tr '\0' 'a')"
   prev() { argc 1 "$#" prev || return; printf '%s' "$1" > "$t/prev.sha256"; }
 
   shard1() { printf '# shard\n\n## entry-old\nbody\n' > "$SDIR/2026-09-a.md"; }
   shard2() { printf '# shard\n\n## entry-older\nbody\n' > "$SDIR/shard-0001.md"; }
-  headf()  { printf '# CHANGELOG.md\n\n## entry-new\nbody\n' > "$HEAD"; }
+  headf()  { printf '# CHANGELOG.md\n\n## entry-new\nbody\n' > "$HEAD"
+             printf '# DEV_NOTES.md\n\n## entry-live\nbody\n' > "$HEAD2"; }
   manifest() { # manifest <extra-rows...>
     rm -f "$t/prev.sha256"
     { sha256sum "$SDIR"/*.md 2>/dev/null | sed "s|$t/||"
       for extra in "$@"; do printf '%s\n' "$extra"; done; } > "$MAN"
   }
-  run() { check_shards "$t" "CHANGELOG.md" "docs/changelog" "docs/changelog/SHARDS.sha256" \
-            "$([ -f "$t/prev.sha256" ] && printf '%s' "$t/prev.sha256")"; }
+  run() { check_shards "$t" "docs/changelog" "docs/changelog/SHARDS.sha256" \
+            "$([ -f "$t/prev.sha256" ] && printf '%s' "$t/prev.sha256")" \
+            "CHANGELOG.md" "DEV_NOTES.md"; }
   arm() { # arm <name> <expected-rc> <expected-substring>
     argc 3 "$#" arm || return
     out="$(run 2>&1)"; rc=$?
@@ -213,7 +222,15 @@ $(printf '0%s  docs/changelog/shard-0001.md' "$(sha256sum "$SDIR/shard-0001.md" 
   shard1; shard2; headf; printf '# CHANGELOG.md\n\n## entry-old\nalso here\n' > "$HEAD"
   manifest
                                                               arm "RED   an entry duplicated across head and shard" 1 "DUPLICATED ENTRY"
+  # DOC-SHARDING.2 — the family carries two live heads; every heading is unique across
+  # heads and shards (unit-id/date prefixes make a spurious collision impossible).
   shard1; shard2; headf; manifest
+                                                              arm "GREEN two live heads share one frozen partition" 0 "__CHECKED__ 2"
+  shard1; shard2; headf
+  printf '# DEV_NOTES shard — probe\n\n## entry-live\nstolen from the live head\n' > "$SDIR/shard-0002.md"
+  manifest
+                                                              arm "RED   a shard carrying either live head's entry" 1 "DUPLICATED ENTRY"
+  rm "$SDIR/shard-0002.md"; shard1; shard2; headf; manifest
   cp "$MAN" "$t/prev.sha256"
                                                               arm "GREEN committed rows unchanged under an append-only manifest" 0 "__CHECKED__ 2"
   rm -rf "$t"
@@ -229,7 +246,8 @@ self_test >/dev/null 2>&1 || {
 
 prev="$(mktemp)"
 if git show HEAD:"docs/changelog/SHARDS.sha256" > "$prev" 2>/dev/null; then :; else rm -f "$prev"; prev=""; fi
-out="$(check_shards "$ROOT" "CHANGELOG.md" "docs/changelog" "docs/changelog/SHARDS.sha256" "$prev")"
+out="$(check_shards "$ROOT" "docs/changelog" "docs/changelog/SHARDS.sha256" "$prev" \
+        "CHANGELOG.md" "DEV_NOTES.md")"
 rc=$?
 rm -f "$prev"
 count="$(printf '%s' "$out" | sed -n 's/^__CHECKED__ //p')"
@@ -246,5 +264,5 @@ if [ "$rc" -ne 0 ]; then
     echo "  to make the check pass; shard_history.py grows the partition, it never rewrites it."; } >&2
   exit 1
 fi
-printf 'SHARD-FREEZE: ok (%s shard row(s) frozen, append-only, exactly partitioned)\n' "${count:-0}"
+printf 'SHARD-FREEZE: ok (%s shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)\n' "${count:-0}"
 exit 0

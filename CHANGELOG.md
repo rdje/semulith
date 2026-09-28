@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMILITH-DS-0003 (leaf DOC-SHARDING.2) — DEV_NOTES joins the shard family
+
+- `DEV_NOTES.md` gets `CHANGELOG.md`'s lifecycle, by generalization rather than a fork: `scripts/shard_history.py` writes a shard header naming the head it was cut from and that head's own registry ceiling (`# DEV_NOTES shard … 48 KiB`; CHANGELOG's `.1` header shape stays byte-identical, self-test arm), and `scripts/check_changelog_shards.sh` learns the two-head family — one COVERAGE/FROZEN/APPEND-ONLY scan over the shared `docs/changelog/` manifest, UNIQUE across both live heads + shards. First event: 2 entries to `shard-0027.md`, `31 == 29+2` proved at the event, head 48,954 → 46,212, 29-row manifest frozen.
+- Both tools fired RED on the real tree pre-commit (a scratch shard carrying a live DEV_NOTES heading; the old sharder writing CHANGELOG-provenanced DEV_NOTES shards). The new UNIQUE leg then exposed two stray duplicate headings inside DEV_NOTES.md itself — removed; each entry exists exactly once. The registry comment that claimed DEV_NOTES was already sharded (designed end-state stated as present fact) is corrected.
+- Verification: sharder self-test 12/0, SHARD-FREEZE self-test 14/0, gate green; doctrine mirrors and the routed-destination count (31, unchanged — one family, not a new directory) in sync.
+
 ## SEMILITH-AC-0052 (tree ARTIFACT-CLEANUP) — the 2026-09-28 cleanup run
 
 - §8 time-triggered run (last record `2026-09-26`): pre-delete census 132 cargo incremental-cache `.bin` files / 720 MB, every one under a cargo `*/incremental/*` directory (`target/` own + wasm32 profiles, `.app-data/target/` vendored-consumer builds); 0 stray `.bin`/`.log` in `target/release` / `target/debug/deps`; the 7 `.app-data/cargo-home/**/tests/data/*.bin` crate-source fixtures classified inputs and kept. Post-delete re-census: 0 incremental `.bin`; `.app-data` 2.0 G → 1.4 G. Record overwritten (latest entry only) and the run evidenced in the tree's Verification Log; enforcer green.

@@ -66,7 +66,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.1` — the book structure and the complete materials bill | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
-| [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `active` (reopened for `.2` — the DEV_NOTES ceiling fired, 49,145 of 49,152 bytes) | `.2` — the DEV_NOTES shard path | repo-local |
+| [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `done` | — (2/2 leaves complete; both append heads shard into `docs/changelog/` under one frozen manifest) | repo-local |
 | [`PORT-WEB`](tasks/PORT-WEB.md) | `done` | — (1/1 leaves complete; the crate skeleton builds for `wasm32-unknown-unknown` from its first slice, gated by `PORT-WEB`) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `active` | `.3` — age and exposure, derived (3 of 4 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |

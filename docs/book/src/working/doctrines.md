@@ -49,7 +49,7 @@ These ship with the discipline spine and are project-neutral:
 | `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
 | `RECORD-SCHEMA` | every record file validates on its track (JSONL by schema, catalogues by the schema layer), cites only pinned sources, and states what its profile states |
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
-| `SHARD-FREEZE` | the sharded changelog history is frozen and whole — every shard hashes to its manifest row, the manifest only grows, and no entry is duplicated across head and shards |
+| `SHARD-FREEZE` | the sharded append-history is frozen and whole — every shard under `docs/changelog/` hashes to its manifest row, the manifest only grows, and no entry heading is duplicated across the live heads (`CHANGELOG.md`, `DEV_NOTES.md`) and their shards — one shard family, two heads, a shard's first line naming the head it was cut from |
 | `PORT-WEB` | the crate skeleton builds for the browser target — the workspace compiles for `wasm32-unknown-unknown`, so a host-only API cannot slip into the engine unnoticed |
 | `STATE-GEN` | the generated state module is still what the state descriptor generates — drift is refused, and the generator refuses shapes it cannot emit rather than silently guessing |
 | `DEF-GEN` | the generated definition module is still what the canonical definition generates — decode tables, lowered semantics trees, and the OWN-03 manifest with definition, generator, configuration and source fingerprints; drift is refused, the generator refuses shapes it cannot emit rather than silently guessing, and a check that cannot judge refuses rather than passing |
