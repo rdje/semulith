@@ -146,6 +146,8 @@ cleanup happened and what it removed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` + per-dir `uniq -c` | 169 files / 272 M, all in cargo `*/incremental/*` dirs (139 `target/debug/incremental`, 30 `target/wasm32-unknown-unknown/debug/incremental`); 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; `target/refs/*.log` kept by standing policy; 7 crate-source fixtures kept |
+| `2026-09-29` | `ARTIFACT-CLEANUP` (time-triggered run) | post-delete re-census + `du -sh` | 0 incremental `.bin`; `target` 3.4 G → 3.2 G, `.app-data` unchanged at 1.4 G; `git status` clean apart from intended files |
 | `2026-09-28` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` + per-dir `uniq -c` | 132 files / 720 M, all in cargo `*/incremental/*` dirs (`target/` own + wasm32 profiles, `.app-data/target/` vendored-consumer builds); 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; 7 crate-source fixtures kept |
 | `2026-09-28` | `ARTIFACT-CLEANUP` (time-triggered run) | post-delete re-census + `du -sh` | 0 incremental `.bin`; `.app-data` 2.0 G → 1.4 G, `target` 3.1 G → 3.0 G; `git status` clean apart from intended files; `bash scripts/check_doctrines.sh` green |
 | `2026-09-26` | `ARTIFACT-CLEANUP.1` | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` | 40 files / 341 M, all in cargo incremental dirs |
@@ -159,10 +161,17 @@ cleanup happened and what it removed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `ARTIFACT-CLEANUP` (run) | `SEMILITH-AC-0053 (tree ARTIFACT-CLEANUP): …` | the 2026-09-29 cleanup — 169 incremental caches, 272 MB |
+| `ARTIFACT-CLEANUP` (run) | `SEMILITH-AC-0052 (tree ARTIFACT-CLEANUP): …` | the 2026-09-28 cleanup — 132 incremental caches, 720 MB |
 | `ARTIFACT-CLEANUP.2` | `SEMILITH-AC-0051 (leaf ARTIFACT-CLEANUP.2): …` | the sanctioned-watcher exemption, data-owned; the census stops crying wolf |
 | `ARTIFACT-CLEANUP.1` | `SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1): …` | first §8 cleanup; record + registry row in the creating commit |
 
 ## Changelog
+
+- `2026-09-29`: Time-triggered §8 run (the `2026-09-28` run was >24 h old): 169 incremental
+  `.bin` caches deleted (272 MB; 139 `target/debug`, 30 wasm32); 0 stray `.bin`/`.log` in the
+  enumerated locations; `target/refs/*.log` and the cargo-home fixtures kept by policy.
+  `docs/ARTIFACT_CLEANUP.md` overwritten with the one-line record.
 
 - `2026-09-26`: Created. First leaf opened the same day, because the record file §8 names did not
   exist — the trigger condition "file does not exist → run a cleanup during this session" fired.
