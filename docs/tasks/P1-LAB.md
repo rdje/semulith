@@ -314,9 +314,95 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   nothing new generalizes past this leaf. The frontier moves to `.10` (replay and reduction).
 
 - ID: `P1-LAB.10` — **replay and reduction**
-  Status: `pending`
+  Status: `done`
   Goal: an input bundle that replays the same result, and a minimizer whose output retains the original divergence.
   Acceptance: a seed is accompanied by algorithm/version and the actual relevant event choices — a bare seed is insufficient.
+  Design (recorded before code, `2026-09-28`): two pieces, both on the verify side per
+  `docs/ARCHITECTURE.md` §4 ("adapters, comparators, reducer" — replay is evidence machinery
+  beside them; no core change, the `.9` table seam is reused as-is).
+  1. `semulith-verify::replay` — the recorded input bundle (G-REPLAY's "recorded definitions,
+     tools, inputs, and event choices"; ARCHITECTURE §7's "a seed without the generator version
+     and event stream is insufficient"):
+     - `Bundle { algorithm, platform, entry, image, events, budget, recorded }`, JSON both
+       ways (hand-rolled writer like `report::to_json`; parsed through the crate's own `json`
+       reader with named-field errors — a document missing any accompaniment fails parse
+       naming the field, so the bare-seed refusal is structural, not policy).
+     - `algorithm` — the identity, flattened from `semulith-core::definition::MANIFEST` at
+       record time (profile, ilen, generator name+sha256, every input pin) plus the harness
+       version and the `model` under test (`"production"` or `"mutant:<name>"` resolved
+       through `mutate::table_for`). At replay every pin is re-compared against the live
+       MANIFEST and a mismatch is refused by name; an unknown mutation name likewise.
+     - `platform` — the FlatMemory region declaration `{base, size}` (the environment
+       policy); `entry` — the laboratory reset's pc (x1..x31 = 0 is the profile's declared
+       reset, REQ-D-ENTRY-STATE, so it rides as documentation, not data).
+     - `image` — the guest words plus the sha256 of the little-endian image bytes, recomputed
+       and compared at replay (a tampered word is refused by name).
+     - `events` — the actual relevant event choices, recorded as data:
+       `DeclaredNone { obligation: "OB-ENV-EVENT-DELIVERY" }` is this platform's choice (no
+       asynchronous event exists). Any other claim is refused by name as not-this-platform;
+       scripted-env replay joins when a tracked consumer needs it (Open Question below).
+     - `budget` — the step bound; `recorded` — the result: the observation steps plus the
+       stop's canonical render, compared rendered (deterministic Debug; Failed/Undefined
+       stops carry data no round-trip could rebuild typed, and rendering loses nothing).
+     - `replay()` rebuilds the environment from the bundle, re-runs the recorded model over
+       it, and reports `Replays` or `Mismatch` — the recorded-vs-replay first divergence via
+       `run::compare`, step and field named.
+  2. `semulith-verify::reduce` — the minimizer (EVD-02's minimized discrepancy; P2's "retain
+     minimized discrepancies"):
+     - `Case { model, reference, entry, region_size, budget }` — the differential's two
+       tables (in the suite/CLI: a `.9` mutant against production `INSNS`), the laboratory
+       platform facts, the step bound.
+     - `reduce(case, words)`: the property is the first divergence of model-vs-reference on
+       the candidate — `compare(reference_steps, model_steps, ("reference", "model"))` —
+       and retention is the ORIGINAL divergence exactly: same `at`, same `what`. Identical
+       prefix semantics make a same-step retained divergence byte-identical (values, pc,
+       tval included); a removal that shifts the step or changes the field is correctly
+       rejected. Classic ddmin over word indices (ILEN 32 ⇒ one word = one observation
+       step); every accepted removal preserves the property, so the result ALWAYS retains —
+       the invariant is structural, and `Reduction { words, retained, evaluations }` carries
+       the witness count.
+     - Named boundary: a case whose observations do not diverge — the phantom-load census
+       arm is the standing example, a wrong behaviour the observation vocabulary cannot
+       see — is refused `NoDivergence`: observation reduction cannot retain what
+       observations do not carry (the `.9` census lesson, reused).
+  3. `semulith-cli` — the laboratory surface: `semulith bundle --guest=X --mutate=Y` writes
+     the bundle JSON; `semulith replay <file>` re-derives and judges it; `semulith reduce
+     --guest=X --mutate=Y` prints the minimized program with its retained divergence. Exit
+     codes keep the `.9` convention: a caught divergence is the tool working, not an error.
+  Suite (Rust tests, `make check` — same standing as `.9`; no new doctrine, no generated
+  artifact): replay round-trips every tracked guest under the production model and the
+  zext-addi mutant; tamper arms (image word, entry, region, budget, manifest pin, event
+  claim, missing accompaniment) are each refused by name; reduction minimizes
+  zext-addi/guest-control to the 2-word divergent prefix (step 1, the x1 write),
+  jal-no-link to the 4-word prefix (step 7, the x5 link write), jalr-odd-bit to the 9-word
+  prefix (step 10, `InstructionAddressMisaligned` tval `0x80000029` — the fixture note's
+  prediction, retained through minimization); every minimized result carries an exhaustive
+  1-minimality witness (no single-word deletion retains), and phantom-load is refused
+  `NoDivergence` by name.
+  Result: met, `2026-09-28`. `semulith-verify::replay` is the recorded input bundle:
+  algorithm pins flattened from `definition::MANIFEST` (profile, ilen, generator name+sha256,
+  every input pin) plus the harness version and the `production`/`mutant:<name>` model, the
+  platform region, the entry, the image words with a sha256 guard, the recorded event choice
+  (`DeclaredNone`, OB-ENV-EVENT-DELIVERY named), the step budget, and the recorded steps plus
+  the stop's canonical render. `replay()` checks identity by name — definition pins against
+  the live manifest, then the image digest against the bundle's own words — and walks
+  recorded-vs-replayed through `run::compare`, so a drifted result is named at its first
+  differing observation. JSON both ways through the crate's own reader and a hand-rolled
+  writer; a document missing any accompaniment fails parse naming the field — the bare-seed
+  refusal is structural. `semulith-verify::reduce` is the ddmin minimizer: retention is the
+  original first divergence exactly (same step, same field description — identical prefix
+  semantics make the whole divergence byte-identical), every accepted removal preserves it
+  structurally, and `Reduction` re-derives the retained divergence from the minimized words.
+  The named boundary holds: phantom-load (the census class) is refused `NoDivergence` —
+  observation reduction cannot retain what observations do not carry. `semulith-cli` gains
+  `bundle` (write the bundle JSON), `replay` (re-derive and judge it), and `reduce` (print
+  the minimized program with its retained divergence); all three exercised end to end. The
+  `.9` acceptance checklist archives to [`archive/P1-LAB.md`](archive/P1-LAB.md) (per-part
+  ceiling obeyed). No new doctrine (no generated artifact; the suite guards replay fidelity
+  and discriminating power, not drift). Lessons: promotion — declined (the ddmin
+  retention-invariant and the bare-seed-structural-refusal are this leaf's design notes,
+  recorded in the module docs; the census-class boundary is the `.9` lesson reused, not a
+  new one). The frontier moves to `.11` (performance baseline).
 
 - ID: `P1-LAB.11` — **performance baseline**
   Status: `pending`
@@ -332,7 +418,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.10` | `pending` | replay and reduction — T008; the `.9` suite produces the divergences a reducer must retain while minimizing |
+| 1 | `P1-LAB.11` | `pending` | performance baseline — T-pending; measure the noise before any threshold (`RUST-04`) |
 
 ## Decisions
 
@@ -379,6 +465,11 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 - Static versus dynamic dispatch for the diagnostic observer: chosen on **measured** cost, not
   assumed to be free (`docs/ARCHITECTURE.md` §6). Resolved by `.11`.
 - Benchmark host, sample sizes and thresholds: no threshold before the noise is characterized.
+- Scripted-environment replay: `ScriptedEnv`'s pinned conversation is an event stream a bundle
+  does not yet record (`replay::Events` carries only the platform's declared-none choice,
+  and refuses other claims by name). Joins when a tracked consumer needs it — a fault-injection
+  campaign that must replay its scripted faults is the natural first consumer. Does not block
+  `.11`.
 
 ## Blockers
 
@@ -386,68 +477,76 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   unresolved choices into code.
 
 
-## Acceptance Checklist (leaf P1-LAB.9)
+## Acceptance Checklist (leaf P1-LAB.10)
 
-- [x] **REPRODUCE / ISSUE** — the EVD-09 demand as it stood after `.8`: the differential could
-  only ever AGREE — the comparator had RED arms on hand-written streams, and the four guests
-  passed, but no known-wrong model had ever been run through the laboratory, so "detects"
-  was a claim without tested evidence:
+- [x] **REPRODUCE / ISSUE** — G-REPLAY's demand as it stood after `.9`: a divergence the
+  differential caught existed only as a test's in-memory value — nothing recorded the inputs
+  that produced it, so "failures are replayable from recorded inputs" (gate `G1`'s first
+  criterion) and T007's "replay/reduction preserves mismatch" had no artifact and no
+  minimizer at all:
 
   ```
-  $ git grep -l "table_with_effect\|run_over\|step_over" HEAD -- crates/ | wc -l
-  0                                      # no mutation seam; nothing could be mutated
+  $ git ls-files 'crates/*' | xargs grep -ln "Bundle\|ddmin\|first-divergence retention" | wc -l
+  0                    # no recorded input bundle; no reducer; the vocabulary existed in run.rs only
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — `.8` built the observation vocabulary and the comparator
-  but the definition sat behind `exec::step`'s static call: a wrong model could only be run by
-  forking the evaluator — an OWN-01 violation — so no mutation suite could exist. WHERE,
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.8`/`.9` built the observation vocabulary, the
+  comparator, and the mutation seam, but a result was never *recorded*: there was no type
+  carrying what ARCHITECTURE §7 says identity is — code/generator versions, initial state,
+  guest image, environment policy, event choices — so no run could be re-derived from
+  recorded inputs, and EVD-02's minimized discrepancy had no minimizer to produce it. WHERE,
   measured at the parent commit:
 
   ```
-  $ git grep -n "decode(word)\|pub fn step" HEAD -- crates/semulith-core/src/exec.rs | wc -l
-  2                                            # one static step entry, one static decode call
-  $ git ls-files 'crates/*' | xargs grep -ln "step_over" | wc -l
-  0                                            # the table parameter existed nowhere
+  $ git grep -n "pub fn replay\|pub fn reduce" HEAD -- crates/ | wc -l
+  0                                            # the recorder and the minimizer existed nowhere
+  $ git ls-files 'crates/*' | xargs grep -ln "struct Bundle" | wc -l
+  0                                            # nothing recorded a run's inputs
   ```
 
-- [x] **FIX** — `exec::step_over` / `run::run_over` take the instruction table; production
-  delegates with `INSNS`. `semulith-verify::mutate`: a tree transformer + table builders +
-  eleven arms. Model-level mutations are data through the one evaluator; observation-level
-  arms (deferred trap, SEM-02 substitution, stale entry, suppression exhibit) are documented
-  as such — a wrong behaviour that can only exist as harness code is mutated at the harness
-  boundary, never smuggled into the semantics data.
+- [x] **FIX** — `semulith-verify::replay`: the `Bundle` (algorithm pins flattened from
+  `definition::MANIFEST` + harness version + `production`/`mutant:<name>` model, platform
+  region, entry, image words with a sha256 guard, the recorded event choice
+  `DeclaredNone { OB-ENV-EVENT-DELIVERY }`, the step budget, and the recorded steps + stop
+  render), JSON both ways through the crate's own reader/writer, and `replay()` that checks
+  identity by name and then walks recorded-vs-replayed through `run::compare`.
+  `semulith-verify::reduce`: the ddmin minimizer over the guest word sequence, retention =
+  the original first divergence exactly (same step, same field), with the structural
+  invariant that every accepted removal retains. `semulith-cli` gains `bundle`, `replay`,
+  and `reduce`. No core change — the `.9` table seam is reused as-is.
 
-- [x] **ADDRESSED (verified)** — every designated class, detected at its designated step:
+- [x] **ADDRESSED (verified)** —
 
   ```
-  $ cargo test -p semulith-verify mutate 2>&1 | grep "test result"
-  test result: ok. 11 passed; 0 failed; ...   # 8 EVD-09 classes + JALR arm + census + suppression
-  $ cargo test -p semulith-core exec 2>&1 | grep "test result"
-  test result: ok. 25 passed; 0 failed; ...   # + the generated-table/decode equivalence pin
+  $ cargo test -p semulith-verify 2>&1 | grep "test result"
+  test result: ok. 114 passed; 0 failed; ...   # +15 replay suites, +6 reduce suites
   ```
 
-  Divergences named, per arm: sign extension → x1 @ step 1 (guest-control); suppressed write
-  → x5 @ step 7; JALR odd bit → trap @ step 10, tval 0x80000029 (the fixture note's
-  prediction); wrong cause → cause @ step 0; SEM-02 substitution → trap @ step 0; extra
-  access → crossing census (trace agrees); overbroad mask → x1 @ step 2 + the hidden-bit
-  witness; shifted delivery → missing trap @ step 2; stale entry → pc @ step 0; suppression →
-  a writes-blind comparator shown agreeing with a caught mutant.
+  All four tracked guests replay identically under the production model (round-trip through
+  JSON, mutant bundle included); every tamper arm — image word, entry, region, budget,
+  generator pin, input pin, dropped pin, scripted event claim, missing accompaniment — is
+  refused or named-mismatched; zext-addi minimizes to the 2-word prefix (x1 @ step 1),
+  jal-no-link to 4 words (x5 @ step 7), jalr-odd-bit to 9 words (trap @ step 10, tval
+  0x80000029 re-derived from the minimized program — the fixture note's prediction,
+  retained); every minimized result carries an exhaustive 1-minimality witness; phantom-load
+  is refused `NoDivergence` by name (the census class is not reducible on observations).
+  CLI exercised end to end: `bundle` → `replay` identical (rc 0), `reduce` prints the
+  minimized program, a hand-corrupted bundle is refused with the digest named (rc 1).
 
 - [x] **NO REGRESSION** — `cargo fmt --all -- --check`, `clippy -D warnings`, `cargo test --all`
-  (5 suites ok), wasm build rc=0, `make gate` green; the archive split obeys the per-part
-  ceiling (P1-LAB.md 61 KiB ≤ 65,536; archive holds the unedited `.1`–`.8` checklists), and the
-  family aggregate is re-derived with the documented grounds (lanes 25 → 32; per-part
-  untouched — `decision_task-tree-family-bound-rederivation.md`).
+  (5 suites ok, 65 core + 114 verify), wasm build rc=0, `make gate` green; the live file
+  stays under the per-part ceiling by archiving `.9`'s checklist (P1-LAB.md ≤ 65,536;
+  archive holds the unedited `.1`–`.9`).
 
-- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md` (+shard), `LIVE_STATUS.md`, `docs/TASK_TREE.md`
-  (9/12), `docs/decisions/` (+INDEX) for the bound re-derivation, the book's P1 chapter
-  ("Validating the validator" now describes the landed suite), and this tree — one commit. No
-  doctrine-registry change: no new doctrine, no generated artifact.
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md` (+shard), `LIVE_STATUS.md`, `DEV_NOTES.md`
+  (+shard), `docs/TASK_TREE.md` (10/12), the book's P1 chapter ("Replay and reduction" now
+  describes the landed machinery), and this tree — one commit. No doctrine-registry change:
+  no new doctrine, no generated artifact.
 
 ## Completed-leaf evidence
 
 Archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) — the full, unedited acceptance checklists
-for every `done` leaf (`.1`–`.8`), split out on `2026-09-28` when the live file crossed its
+for every `done` leaf (`.1`–`.9`), split out on `2026-09-28` when the live file crossed its
 per-part ceiling; the ceiling was obeyed, not raised, per the `SOT-FORMAT` precedent. The live
 tree keeps the frontier, the decisions, the open questions, the blockers, the final leaf's
 checklist and both logs.
@@ -456,6 +555,10 @@ checklist and both logs.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-28` | `P1-LAB.10` | `cargo test -p semulith-verify` | 114 passed / 0 failed (+15 replay — round-trips, tamper/omission arms; +6 reduce — the three prefix minimizations with 1-minimality witnesses, the NoDivergence boundary) |
+| `2026-09-28` | `P1-LAB.10` | `make check`, wasm build | 5 suites ok (65 core + 114 verify) / rc=0 |
+| `2026-09-28` | `P1-LAB.10` | CLI end-to-end: `bundle` → `replay` → `reduce`, plus a hand-corrupted bundle | replay identical rc=0; jalr-odd-bit 12 → 9 words, retained step 10; phantom-load refused by name rc=1; tampered image refused naming the digest rc=1 |
+| `2026-09-28` | `P1-LAB.10` | `make gate` | 23 doctrines green |
 | `2026-09-28` | `P1-LAB.9` | `cargo test -p semulith-verify` | 88 passed / 0 failed (mutate 11 — nine designated arms + the census pin + the suppression exhibit; run 16 incl. the four guest suites; graph/schema/fixtures/json/pattern/sha256/elf unchanged) |
 | `2026-09-28` | `P1-LAB.9` | `cargo test -p semulith-core exec` | 25 passed / 0 failed (+ the generated-table scan pinned to `definition::decode`) |
 | `2026-09-28` | `P1-LAB.9` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / 23 doctrines green |
@@ -492,6 +595,7 @@ checklist and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.10` | `SEMILITH-PL-0010 (leaf P1-LAB.10): …` | replay and reduction in `semulith-verify::{replay, reduce}`; `semulith bundle`/`replay`/`reduce`; the `.9` checklist archives per the per-part ceiling |
 | `P1-LAB.9` | `SEMILITH-PL-0009 (leaf P1-LAB.9): …` | the validator mutation suite in `semulith-verify::mutate` (11 arms); the `step_over`/`run_over` table seam with the generated-decode equivalence pin; `.1`–`.8` checklists archived per the per-part ceiling |
 | `P1-LAB.7` | `SEMILITH-PL-0007 (leaf P1-LAB.7): …` | the graph and report checker in `semulith-verify`; PACKAGE_CHECKS rows re-derived in Rust; RECORD-SCHEMA two-engine, fired RED on a mutated record first |
 | `P1-LAB.6` | `SEMILITH-PL-0006 (leaf P1-LAB.6): …` | the canonical definition, generated: decode tables, lowered semantics trees, OWN-03's manifest; DEF-GEN registered and fired RED first |
@@ -504,6 +608,19 @@ checklist and both logs.
 
 ## Changelog
 
+- `2026-09-28`: Leaf `.10` done — replay and reduction (T008's second half; G-REPLAY,
+  EVD-02): `semulith-verify::replay` records the input bundle — algorithm pins flattened
+  from `definition::MANIFEST` (plus the harness version and the `production`/`mutant:<name>`
+  model), the platform region, the entry, the image words with a sha256 guard, the recorded
+  event choice (`DeclaredNone`, OB-ENV-EVENT-DELIVERY named), the step budget, and the
+  recorded steps + stop render — and `replay()` re-derives it, checking identity by name
+  and naming the first differing observation on drift. `semulith-verify::reduce` is the
+  ddmin minimizer whose retention is the original first divergence exactly (same step,
+  same field); every accepted removal preserves it structurally, each result carries an
+  exhaustive 1-minimality witness, and census-class wrong behaviour (phantom-load) is
+  refused `NoDivergence` by name. `semulith-cli` gains `bundle`/`replay`/`reduce`. The
+  `.9` checklist archives to `archive/P1-LAB.md` (per-part ceiling obeyed). The frontier
+  moves to `.11` (performance baseline).
 - `2026-09-28`: Leaf `.9` done — the validator mutation suite (T007, EVD-09): `semulith-core::exec::step_over` and `semulith-verify::run::run_over` parameterize the single execution path over the instruction table (production delegates with `definition::INSNS`; the scan is pinned to the generated `decode`), and `semulith-verify::mutate` runs eleven arms — the eight designated wrong-behaviour classes, the JALR odd-bit arm the fixture note names (fault at 0x80000029, predicted), the four-guest data-crossing census pin, and the comparison-suppression exhibit. Every guest arm re-derives the pinned expectations against the real model before judging the mutant; divergences are asserted at their designated steps, fields named. Completed-leaf checklists `.1`–`.8` archive to `archive/P1-LAB.md` (per-part ceiling obeyed); the family aggregate is re-derived to 1 MiB per `decision_task-tree-family-bound-rederivation.md` (lanes grew 25 → 32; per-part stays 64 KiB). The frontier moves to `.10` (replay and reduction).
 - `2026-09-28`: Leaf `.8` done — the first execution slice: `semulith-core::exec`, the
   definitional interpreter, evaluates the generated `Sem` trees (the semantics data stays

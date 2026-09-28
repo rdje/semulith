@@ -29,16 +29,34 @@
 //!   humans; `--json` emits the same shape the browser bench consumes. Exit
 //!   codes: 0 — expectations met; 1 — a designated mutant broke them (the
 //!   detector working, not an error); 2 — usage or an unknown name.
+//! - `semulith bundle --guest NAME [--mutate NAME]` — record the replay bundle
+//!   (`P1-LAB.10`): run the guest under the named model and write the input bundle
+//!   JSON (algorithm pins, platform, image digest, the recorded event choice, the
+//!   step bound, and the recorded result) to stdout. Exit codes: 0 — recorded;
+//!   2 — usage or an unknown name.
+//! - `semulith replay <file.json>` — re-derive a recorded bundle's result from its
+//!   recorded inputs (G-REPLAY). Identity is checked first — definition pins, then
+//!   the image digest — and a drifted result is reported at the first differing
+//!   observation. Exit codes: 0 — the replay is identical; 1 — a named mismatch or
+//!   a refused identity; 2 — usage, unreadable input, or a malformed bundle.
+//! - `semulith reduce --guest NAME --mutate NAME` — minimize the guest against the
+//!   differential while retaining the original first divergence exactly (EVD-02),
+//!   and print the minimized program with its retained divergence. Exit codes:
+//!   0 — minimized; 1 — the case has no first-divergence to retain (the census
+//!   class: a wrong behaviour observations cannot see); 2 — usage or an unknown
+//!   name.
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-use semulith_core::definition::decode;
+use semulith_core::definition::{decode, INSNS};
 use semulith_verify::elf;
 use semulith_verify::fixtures::FlatMemory;
 use semulith_verify::graph::{check_bundle, Bundle};
 use semulith_verify::json::{self, Json};
-use semulith_verify::mutate::MUTATIONS;
+use semulith_verify::mutate::{table_for, MUTATIONS};
+use semulith_verify::reduce;
+use semulith_verify::replay::{Bundle as ReplayBundle, CaseSpec, Replay};
 use semulith_verify::report;
 use semulith_verify::run::Stop;
 use semulith_verify::schema;
@@ -46,7 +64,10 @@ use semulith_verify::schema;
 const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
                      \x20       semulith run <elf> [--steps N] [--base ADDR] [--size BYTES]\n\
-                     \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n";
+                     \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n\
+                     \x20       semulith bundle --guest NAME [--mutate NAME]\n\
+                     \x20       semulith replay <file.json>\n\
+                     \x20       semulith reduce --guest NAME --mutate NAME\n";
 
 /// The platform's declared MainMemory region: base and size from the matched
 /// profile (`reference/sail-rv64i-lab-v0.override.sexp` names the same region).
@@ -67,6 +88,9 @@ fn main() -> ExitCode {
         }
         Some("run") => run_guest(&args[1..]),
         Some("demo") => demo(&args[1..]),
+        Some("bundle") => bundle(&args[1..]),
+        Some("replay") => replay(&args[1..]),
+        Some("reduce") => reduce_cmd(&args[1..]),
         _ => {
             eprint!("{USAGE}");
             ExitCode::from(2)
@@ -312,6 +336,204 @@ fn demo(args: &[String]) -> ExitCode {
         ExitCode::from(0)
     } else {
         ExitCode::from(1)
+    }
+}
+
+/// The bundle's model name for a demo-style mutation name: `none` is the production
+/// model, everything else publishes as `mutant:<name>`.
+fn bundle_model(mutation: &str) -> String {
+    if mutation == "none" {
+        "production".to_string()
+    } else {
+        format!("mutant:{mutation}")
+    }
+}
+
+/// Resolve the tracked guest and mutation names the laboratory commands share.
+fn tracked(
+    guest_name: Option<&str>,
+    mutation: &str,
+) -> Result<&'static semulith_verify::guests::Guest, String> {
+    let guest_name = guest_name.ok_or_else(|| {
+        format!(
+            "a --guest is required (one of: {})",
+            semulith_verify::guests::GUESTS
+                .iter()
+                .map(|g| g.name)
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
+    })?;
+    let guest = semulith_verify::guests::GUESTS
+        .iter()
+        .find(|g| g.name == guest_name)
+        .ok_or_else(|| format!("unknown guest '{guest_name}'"))?;
+    if !MUTATIONS.iter().any(|(name, _)| *name == mutation) {
+        return Err(format!("unknown mutation '{mutation}'"));
+    }
+    Ok(guest)
+}
+
+fn parse_guest_mutation(
+    args: &[String],
+    command: &str,
+) -> Result<(&'static str, String), ExitCode> {
+    let mut guest: Option<&str> = None;
+    let mut mutation = "none";
+    for arg in args {
+        if let Some(name) = arg.strip_prefix("--guest=") {
+            guest = Some(name);
+        } else if let Some(name) = arg.strip_prefix("--mutate=") {
+            mutation = name;
+        } else if arg.starts_with("--") {
+            return Err(usage(&format!("{command}: unknown option {arg}")));
+        } else {
+            return Err(usage(&format!(
+                "{command}: unknown operand (options take --name=value form)"
+            )));
+        }
+    }
+    let guest = match tracked(guest, mutation) {
+        Ok(guest) => guest,
+        Err(why) => return Err(usage(&format!("{command}: {why}"))),
+    };
+    Ok((guest.name, mutation.to_string()))
+}
+
+/// `semulith bundle` — record the replay bundle for a tracked guest under a named model
+/// and write it to stdout.
+fn bundle(args: &[String]) -> ExitCode {
+    let (guest_name, mutation) = match parse_guest_mutation(args, "bundle") {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    let guest = semulith_verify::guests::GUESTS
+        .iter()
+        .find(|g| g.name == guest_name)
+        .expect("tracked() returned a tracked guest");
+    let spec = CaseSpec {
+        model: bundle_model(&mutation),
+        entry: guest.entry,
+        base: guest.entry,
+        size: 0x1_0000,
+        budget: guest.executed_steps,
+    };
+    match ReplayBundle::record(&spec, guest.words) {
+        Ok(bundle) => {
+            println!("{}", bundle.to_json());
+            ExitCode::from(0)
+        }
+        Err(why) => {
+            eprintln!("bundle: {why}");
+            ExitCode::from(2)
+        }
+    }
+}
+
+/// `semulith replay` — re-derive a recorded bundle's result from its recorded inputs.
+fn replay(args: &[String]) -> ExitCode {
+    let mut file: Option<&str> = None;
+    for arg in args {
+        if arg.starts_with("--") {
+            return usage(&format!("replay: unknown option {arg}"));
+        } else if file.is_none() {
+            file = Some(arg);
+        } else {
+            return usage("replay: more than one operand");
+        }
+    }
+    let Some(file) = file else {
+        return usage("replay: a bundle file is required");
+    };
+    let text = match std::fs::read_to_string(file) {
+        Ok(text) => text,
+        Err(e) => {
+            eprintln!("replay: cannot read {file}: {e}");
+            return ExitCode::from(2);
+        }
+    };
+    let bundle = match ReplayBundle::parse(&text) {
+        Ok(bundle) => bundle,
+        Err(why) => {
+            eprintln!("replay: {file}: refused — {why}");
+            return ExitCode::from(2);
+        }
+    };
+    match bundle.replay() {
+        Ok(Replay::Identical) => {
+            println!(
+                "replay: identical — {} step(s) and the stop '{}' re-derived from the recorded inputs",
+                bundle.recorded.steps.len(),
+                bundle.recorded.stop
+            );
+            ExitCode::from(0)
+        }
+        Ok(Replay::Mismatch(d)) => {
+            println!(
+                "replay: MISMATCH — recorded vs replay first diverge at aligned step {}: {}",
+                d.at, d.what
+            );
+            ExitCode::from(1)
+        }
+        Ok(Replay::LengthMismatch { agreed, longer }) => {
+            println!(
+                "replay: LENGTH MISMATCH after {agreed} agreeing step(s) — {longer} continues; the recorded result does not reproduce"
+            );
+            ExitCode::from(1)
+        }
+        Err(why) => {
+            println!("replay: refused — {why}");
+            ExitCode::from(1)
+        }
+    }
+}
+
+/// `semulith reduce` — minimize a tracked guest against the differential, retaining the
+/// original first divergence exactly.
+fn reduce_cmd(args: &[String]) -> ExitCode {
+    let (guest_name, mutation) = match parse_guest_mutation(args, "reduce") {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    let guest = semulith_verify::guests::GUESTS
+        .iter()
+        .find(|g| g.name == guest_name)
+        .expect("tracked() returned a tracked guest");
+    let model = table_for(&mutation).expect("tracked() validated the mutation name");
+    let case = reduce::Case {
+        model: &model,
+        reference: INSNS,
+        entry: guest.entry,
+        region_size: 0x1_0000,
+        budget: guest.executed_steps,
+    };
+    match reduce::reduce(&case, guest.words) {
+        Ok(reduction) => {
+            println!(
+                "reduce: {} under '{}' — {} → {} word(s) in {} evaluation(s)",
+                guest.name,
+                mutation,
+                guest.words.len(),
+                reduction.words.len(),
+                reduction.evaluations
+            );
+            println!(
+                "retained FIRST DIVERGENCE at aligned step {}: {}",
+                reduction.retained.at, reduction.retained.what
+            );
+            println!("minimized program (entry {:#018x}):", guest.entry);
+            for (n, word) in reduction.words.iter().enumerate() {
+                println!("  [{n}] 0x{word:08x}");
+            }
+            ExitCode::from(0)
+        }
+        Err(reduce::ReduceError::NoDivergence) => {
+            eprintln!(
+                "reduce: no first-divergence to retain — {} under '{}' agrees on the observations; a census-class wrong behaviour is not reducible on the trace",
+                guest.name, mutation
+            );
+            ExitCode::from(1)
+        }
     }
 }
 

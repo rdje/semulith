@@ -1,12 +1,70 @@
 # P1-LAB — archived completed-leaf evidence
 
 The full, unedited acceptance checklists for every `done` leaf of the
-[`P1-LAB`](../P1-LAB.md) tree, split out on `2026-09-28` (after leaf `.9`) when the live
-file crossed its per-part ceiling — the ceiling was obeyed, not raised, per the
-`docs/tasks/` precedent set by `SOT-FORMAT`. The live tree keeps the frontier, the
+[`P1-LAB`](../P1-LAB.md) tree, split out on `2026-09-28` (after leaf `.9`, then again after
+`.10`) when the live file crossed its per-part ceiling — the ceiling was obeyed, not raised,
+per the `docs/tasks/` precedent set by `SOT-FORMAT`. The live tree keeps the frontier, the
 decisions, the open questions, the blockers, the final leaf's checklist and both logs.
 
 Archived sections, verbatim:
+
+## Acceptance Checklist (leaf P1-LAB.9)
+
+- [x] **REPRODUCE / ISSUE** — the EVD-09 demand as it stood after `.8`: the differential could
+  only ever AGREE — the comparator had RED arms on hand-written streams, and the four guests
+  passed, but no known-wrong model had ever been run through the laboratory, so "detects"
+  was a claim without tested evidence:
+
+  ```
+  $ git grep -l "table_with_effect\|run_over\|step_over" HEAD -- crates/ | wc -l
+  0                                      # no mutation seam; nothing could be mutated
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.8` built the observation vocabulary and the comparator
+  but the definition sat behind `exec::step`'s static call: a wrong model could only be run by
+  forking the evaluator — an OWN-01 violation — so no mutation suite could exist. WHERE,
+  measured at the parent commit:
+
+  ```
+  $ git grep -n "decode(word)\|pub fn step" HEAD -- crates/semulith-core/src/exec.rs | wc -l
+  2                                            # one static step entry, one static decode call
+  $ git ls-files 'crates/*' | xargs grep -ln "step_over" | wc -l
+  0                                            # the table parameter existed nowhere
+  ```
+
+- [x] **FIX** — `exec::step_over` / `run::run_over` take the instruction table; production
+  delegates with `INSNS`. `semulith-verify::mutate`: a tree transformer + table builders +
+  eleven arms. Model-level mutations are data through the one evaluator; observation-level
+  arms (deferred trap, SEM-02 substitution, stale entry, suppression exhibit) are documented
+  as such — a wrong behaviour that can only exist as harness code is mutated at the harness
+  boundary, never smuggled into the semantics data.
+
+- [x] **ADDRESSED (verified)** — every designated class, detected at its designated step:
+
+  ```
+  $ cargo test -p semulith-verify mutate 2>&1 | grep "test result"
+  test result: ok. 11 passed; 0 failed; ...   # 8 EVD-09 classes + JALR arm + census + suppression
+  $ cargo test -p semulith-core exec 2>&1 | grep "test result"
+  test result: ok. 25 passed; 0 failed; ...   # + the generated-table/decode equivalence pin
+  ```
+
+  Divergences named, per arm: sign extension → x1 @ step 1 (guest-control); suppressed write
+  → x5 @ step 7; JALR odd bit → trap @ step 10, tval 0x80000029 (the fixture note's
+  prediction); wrong cause → cause @ step 0; SEM-02 substitution → trap @ step 0; extra
+  access → crossing census (trace agrees); overbroad mask → x1 @ step 2 + the hidden-bit
+  witness; shifted delivery → missing trap @ step 2; stale entry → pc @ step 0; suppression →
+  a writes-blind comparator shown agreeing with a caught mutant.
+
+- [x] **NO REGRESSION** — `cargo fmt --all -- --check`, `clippy -D warnings`, `cargo test --all`
+  (5 suites ok), wasm build rc=0, `make gate` green; the archive split obeys the per-part
+  ceiling (P1-LAB.md 61 KiB ≤ 65,536; archive holds the unedited `.1`–`.8` checklists), and the
+  family aggregate is re-derived with the documented grounds (lanes 25 → 32; per-part
+  untouched — `decision_task-tree-family-bound-rederivation.md`).
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md` (+shard), `LIVE_STATUS.md`, `docs/TASK_TREE.md`
+  (9/12), `docs/decisions/` (+INDEX) for the bound re-derivation, the book's P1 chapter
+  ("Validating the validator" now describes the landed suite), and this tree — one commit. No
+  doctrine-registry change: no new doctrine, no generated artifact.
 
 ## Acceptance Checklist (leaf P1-LAB.8)
 

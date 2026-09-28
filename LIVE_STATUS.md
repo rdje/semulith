@@ -37,7 +37,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented. Reopened for `.10`: the profile had been matched on its ISA and **not its platform** |
-| P1 — processor laboratory | G1 | In Progress | [`P1-LAB`](docs/tasks/P1-LAB.md) 9/12 — arith verified; state generated; boundary crossed; outcomes typed; definition generated; records gated; **the definition executes and the validator mutation suite detects all eight designated wrong-behaviour classes** (34/34 steps vs both references; the JALR odd-bit arm, the census, the suppression exhibit) |
+| P1 — processor laboratory | G1 | In Progress | [`P1-LAB`](docs/tasks/P1-LAB.md) 10/12 — arith verified; state generated; boundary crossed; outcomes typed; definition generated; records gated; the definition executes; the mutation suite detects all eight wrong-behaviour classes; **failures replay from recorded bundles; the minimizer retains the original divergence** (G-REPLAY/EVD-02) |
 | P2 — validated RV64I profile | CPU-LAB | Not Started | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) — 9 leaves; the full processor gate |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |

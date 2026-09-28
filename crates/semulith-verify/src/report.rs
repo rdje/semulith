@@ -207,7 +207,7 @@ fn push_stop(out: &mut String, stop: &Stop) {
     }
 }
 
-fn push_escaped(out: &mut String, text: &str) {
+pub(crate) fn push_escaped(out: &mut String, text: &str) {
     for ch in text.chars() {
         match ch {
             '"' => out.push_str("\\\""),

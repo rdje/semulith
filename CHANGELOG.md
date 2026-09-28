@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0010 (leaf P1-LAB.10) — replay and reduction; a result becomes an artifact
+
+- `semulith-verify::replay` is the recorded input bundle (G-REPLAY): `algorithm` pins flattened from `definition::MANIFEST` — profile, ilen, generator name+sha256, every input pin — plus the harness version and the model under test (`production` or `mutant:<name>`, resolved through the `.9` vocabulary); the platform region and entry; the image words with a sha256 guard; the recorded event choice (`DeclaredNone`, OB-ENV-EVENT-DELIVERY named — the platform's actual choice, recorded as data); the step budget; and the recorded steps plus the stop's canonical render. `replay()` checks identity by name — definition pins against the live manifest, then the image digest against the bundle's own words — and walks recorded-vs-replayed through `run::compare`, so drift is named at the first differing observation. JSON both ways through the crate's own reader and a hand-rolled writer; a document missing any accompaniment fails parse naming the field — the bare-seed refusal is structural (ARCHITECTURE §7: a seed without the generator version and event stream is insufficient).
+- `semulith-verify::reduce` is the minimizer (EVD-02): classic ddmin over the guest word sequence with retention = the original first divergence exactly (same step, same field description — identical prefix semantics make a same-step divergence byte-identical). Every accepted removal preserves the property structurally, so the result always retains; each minimized result carries an exhaustive 1-minimality witness (no single-word deletion retains). Measured on the suite: zext-addi → the 2-word prefix (x1 @ step 1), jal-no-link → 4 words (x5 @ step 7), jalr-odd-bit → 9 words (trap @ step 10, tval 0x80000029 re-derived from the minimized program — the fixture note's prediction, retained). Named boundary: phantom-load is refused `NoDivergence` — census-class wrong behaviour is not reducible on observations.
+- `semulith-cli` gains `semulith bundle --guest=X --mutate=Y` (write the bundle JSON), `semulith replay <file>` (re-derive and judge: identical rc 0, named mismatch/refusal rc 1), and `semulith reduce --guest=X --mutate=Y` (print the minimized program with its retained divergence). Exercised end to end: bundle → replay identical; a hand-corrupted bundle refused naming the digest.
+- Verification: 179 tests green across 5 suites (114 verify incl. 15 replay + 6 reduce); clippy `-D warnings` clean; wasm build rc=0; `make gate` 23 doctrines green. Book P1 gains "Replay and reduction"; the `.9` acceptance checklist archives to `docs/tasks/archive/P1-LAB.md` (per-part ceiling obeyed).
+- Pressure valve, same commit: both append heads crossed their registry ceilings on this entry — CHANGELOG.md sheds its oldest entry to `docs/changelog/shard-0033.md` (head 67,723 → 64,156), DEV_NOTES.md its two oldest to `shard-0034.md` (51,872 → 48,589); the manifest re-freezes at 36 rows and SHARD-FREEZE stays green.
+- Lockstep: MEMORY/LIVE_STATUS (P1 10/12)/TASK_TREE/CHANGELOG/DEV_NOTES + book P1 and this tree; frontier moves to `.11` (performance baseline).
+
 ## SEMILITH-LB-0001 (leaf LAB-BENCH.1) — the laboratory bench: feel the tool while it builds
 
 - `semulith demo [--guest NAME] [--mutate NAME] [--json]` runs a tracked guest under the real or a mutated model and prints the full observation trace with the judgement — the pinned expectation verdict and, for mutants, the first divergence named, or the crossing-census story when the trace never betrays the mutation (the phantom-load arm). Exit codes make the detector legible: 0 clean, 1 a caught mutant, 2 usage.
@@ -604,59 +613,4 @@ under `target/refs/` (kept: evidence trails, 1.3 MB, outside the enumerated carg
 `git status` shows only the intended tracked files. The record is overwrite-only — one date and
 one line per run, so the file can never become the changelog it exists to prevent — and it is a
 governed live surface from its first commit (registered in `doctrine/readme_routes.tsv`).
-
-## SEMULITH-UT-0048 (leaf UPSTREAM-TRACK.1) — the issue owns its state, the indices are mirrors
-
-**Two director instructions that turn out to be one design.** *"For each vendor keep an index of
-all the bugs you reported, their state"* and *"the subtree for each bug shall be self-contained"*
-cannot both be satisfied by a maintained index: if the subtree carries its own state, then every
-index is **derived**, and a derived thing that nobody checks drifts. That is exactly why
-`FRONTIER-SYNC` and `REGISTRY-MIRROR` exist facing inwards. This is the same doctrine facing out.
-
-Measured before building — the same facts in three places, and nothing checking them:
-
-```
-$ grep -c 'LS-00' docs/upstream/README.md                      -> 4  rows
-$ grep -c 'LS-00' docs/upstream/linkedspec/README.md           -> 5  rows
-$ grep -l 'State' docs/upstream/linkedspec/*/REPORT.md | wc -l -> 3  reports
-$ grep -c upstream scripts/check_doctrines.project.sh          -> 0  gates
-```
-
-**Each issue now carries `issue.sexp`** — the single owner of its id, severity, state, affected
-pins, fix status and dated history, living inside the subtree it describes. An S-expression,
-because an issue record is a source of truth like any other
-(`decision_one-format-every-source-of-truth`).
-
-**`UPSTREAM-INDEX`** (12 arms, 10 of them RED) checks both indices and each `REPORT.md` against
-the records, in both directions: stale state, stale severity, an issue with no row, a row with no
-issue, an invented state or severity, a directory with no record, a report disagreeing with the
-record beside it, a `verified` claim with no pin, and a directory whose name does not carry its id.
-
-⛔ **It caught three real violations in the tracker it was written for**, which is the only
-evidence worth having that a gate discriminates:
-
-```
-NOT CONTAINED LS-001: …/evidence/patched.txt:1 references '/Volumes/' — outside its own subtree
-NOT CONTAINED LS-001: …/evidence/shipped.txt:1 references '/Volumes/' — outside its own subtree
-NOT CONTAINED LS-001: …/issue.sexp:4      references 'scripts/'  — outside its own subtree
-```
-
-A maintainer copying that directory out would have got a machine path from my disk and a pointer
-to this repository's tooling. Fixed in the content, not in the gate.
-
-⛔ **Two failures worth keeping.** Three arms failed at first *for the wrong reason*: the fixture
-computed `${1%%-*}` on `LS-001-a` and got `LS`. The fixture was wrong, not the gate — fixing it
-took 8/12 to 12/12. And the gate exited 1 printing **nothing**, because `set -e` aborted the
-assignment before `rc` could be read: a breach with no reason is indistinguishable from a crash.
-
-**`docs/tasks/` crossed its aggregate ceiling** on the way through, by 3,057 bytes. Raised under
-[`decision_task-tree-family-bound`](docs/decisions/decision_task-tree-family-bound.md) — which
-records the two rejected alternatives first, because raising a bound because it fired is the
-reflex the registry warns against. Compaction was checked (the archive is not a duplicate of its
-tree) and a subdirectory was rejected for a mechanical reason: `check_frontier_sync.sh` matches
-index links with a **flat** pattern, and breaking a gate to satisfy a bound is a worse trade. The
-grounds are real — the family was bounded when the project tracked 17 lanes and now tracks 25,
-two of them created this session on instruction. ⛔ **The per-part bound is untouched**: the
-aggregate answers "how many lanes", the per-part answers "has one tree become a monolith", and
-only the first question changed.
 

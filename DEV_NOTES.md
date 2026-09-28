@@ -3,6 +3,14 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-28)_ — replay and reduction: a result becomes an artifact (P1-LAB.10)
+
+Root cause: `.8`/`.9` built the vocabulary, the comparator, and the mutation seam, but a result was never *recorded* — G-REPLAY's "reproduce from recorded definitions, tools, inputs, and event choices" had no definitions-and-inputs carrier, so gate `G1`'s "failures are replayable" and T007's "replay/reduction preserves mismatch" were claims without artifacts. Implementation: `semulith-verify::replay` — the `Bundle` flattens `definition::MANIFEST` into the algorithm block (the OWN-03 pins become the algorithm/version accompaniment; the harness version and `production`/`mutant:<name>` model complete the tool identity), carries the platform/entry/image-with-sha256/events/budget, and records the steps + the stop's canonical render; `replay()` checks identity by name — pins against the live manifest both directions, then the image digest against the bundle's own words — and walks recorded-vs-replayed through `run::compare`, so drift is named at the first differing observation rather than summarised. The stop is compared rendered, not re-typed: `Failed`/`Undefined` stops carry data no JSON round-trip could rebuild, and the render is deterministic — nothing is lost. `semulith-verify::reduce` — ddmin over the word sequence (ILEN 32 ⇒ one word = one observation step), retention = the original first divergence exactly (same `at`, same `what`); the strictness is free and load-bearing — a same-step retained divergence is byte-identical because the executed prefix is unchanged, and a removal that shifts the symptom is a different bug wearing the original's clothes. The accepted-removal invariant makes retention structural: the result cannot fail to retain. Validation: 15 replay suites (all four guests replay identically under production + the zext-addi mutant; tamper arms — image, entry, region, budget, generator pin, input pin, dropped pin, scripted event claim, missing accompaniment — each refused or named-mismatched; empty-run replay) and 6 reduce suites (three prefix minimizations with exhaustive 1-minimality witnesses — the witness loop re-runs the property on every single deletion; phantom-load refused `NoDivergence`; clean model refused). CLI exercised end to end.
+
+Design notes, kept: (1) the bare-seed refusal is structural — `Bundle::parse` names the missing field, so "a seed accompanied by algorithm/version and event choices" is a property of the format, not a policy a reader could waive. (2) One test-expectation bug was caught by the suite itself: I first asserted the jalr-odd-bit case minimizes to the 11-word prefix by counting the divergence at "step 10 = word 10"; step 10 executes word *8* (the loop revisits words 1–2), and the first-divergence walk never reaches the words behind the trapping jalr — the true minimum is 9 words. A retention predicate defined on the comparator's own verdict, not on my hand-traced indices, is what made the suite able to correct its author. (3) `InsnDef` is not `Clone` (the `.9` suite copies rows by struct-update syntax — every field is `Copy` but the struct declares no derives), so the table copy follows the same idiom rather than adding a derive to the generated module.
+
+Lessons: declined here (the retention-invariant and the structural bare-seed refusal are recorded in the module docs; the census-class-not-reducible boundary is the `.9` lesson reused at a new surface, which is itself the pattern — a detector's jurisdictions stay named as they grow).
+
 ## _(2026-09-28)_ — the validator mutation suite: a differential that is known to disagree (P1-LAB.9)
 
 EVD-09's demand after `.8`: the differential had only ever agreed. The fix is one parameter, not a feature: `exec::step_over` / `run::run_over` take the instruction table (production delegates with `INSNS`; the scan is pinned to the generated `decode`), and `semulith-verify::mutate` swaps one row — a mutated effect tree rebuilt from the real one, or a mask/value row — so a wrong model is *data the one evaluator consumes* (OWN-01). Where a wrong behaviour can only exist as harness code (deferred traps, fabricated substitutions, stale configs), the arm mutates the observation stream and says so. Eleven arms: the eight designated classes plus the JALR odd-bit arm the fixture note names (fault at 0x80000029, as predicted), the four-guest crossing census, and the writes-blind suppression exhibit. Every guest arm re-derives the pinned expectations against the real model before judging the mutant. `.1`–`.8` checklists archive to `docs/tasks/archive/P1-LAB.md` — per-part ceiling obeyed, not raised.
@@ -466,45 +474,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   arms; the full gate re-run after registration moved `LIVE_STATUS.md`'s derived counts
   (12 → 13 doctrines, 157 → 169 arms) — re-derived by `check_derived_counts.sh --list`, never
   incremented by hand.
-
-## _(2026-09-27)_ — the records move behind the schema layer, and the schema layer grows facets (SOT-FORMAT.3)
-
-- `profiles/rv64i-lab-v0/{requirements,contract-obligations}.jsonl` are retired;
-  `{requirements,contract-obligations}.sexp` (26 + 34 records) validate under
-  `schema/{requirements,contract-obligations}.sexp`, and the round-trip is proven byte-identical,
-  not reviewed. `RECORD-SCHEMA` re-fires its 15 scenarios on the converted form plus the schema
-  layer's own refusals (22 arms); `gate_report.py` reads through `records_sexp.py` and the G0
-  report diff is input names only.
-- ⭐ **A schema layer must not be weaker than the contract it replaces.** The JSON schemas
-  carried `pattern`/`minItems`/`uniqueItems`/`minLength`; a straight conversion would have
-  evaporated them, so the `(field …)` kind grew four optional facets instead — the `.2`
-  boundary one level down (a new KIND changes the kernel; facets on the existing kind are the
-  language). And `parameters` was worse than weak: the JSON schema's own
-  `additionalProperties` banned the arrays three obligations write, and the validator never
-  descended into it — a lie the green gate could not see. Typed wrappers now refuse a float, a
-  mixed list or a nested value by name.
-- Two implementation shapes worth keeping: form heads must be `Symbol`, never plain strings —
-  a plain-string head renders quoted and reads back as data (the schema layer caught it:
-  "expected a form headed by a symbol"); and catalogue discovery must exclude the schema
-  directory, because the schemas deliberately share their basenames with the catalogues.
-- Measured en route and fixed in passing: `LIVE_STATUS.md` carried the contract at 33
-  obligations / 66 checks; the files have said 34 / 68 since `P0-PROFILE.10` — a count in a
-  live surface that no gate enumerates. Re-derived, and the row now matches the files.
-
-## _(2026-09-27)_ — the corpus's grammar is not the designed grammar (SOT-FORMAT.2)
-
-- The schema language gained its fourth declaration kind — `(operator …)` for positional
-  mini-languages — and `encoding`/`fragment`/`semantics` got schema files. `check_semantics.py`'s
-  32-form table is now data in `schema/semantics.sexp`; the 52-of-52 verdict is byte-identical
-  and the four MODEL-METHOD.9 controls still fire RED. A 33rd form is a schema edit, demonstrated
-  and reverted. Recorded as `SOT-FORMAT.2`, commit `SEMULITH-SF-0057`.
-- ⭐ **Designing a grammar from the files already read is sampling, and sampling found the same
-  trap twice.** `.1` refuted its own tidy pair grammar by reading the corpus first; `.2` then
-  built a record-only language that fit every file consulted and still could not state
-  `(fixed (31 25 0x0) …)`, `(operands rd rs1 rs2)`, or the semantics expressions. Promoted as
-  [`docs/knowledge/the-corpus-writes-shapes-my-grammar-cannot-state.md`](docs/knowledge/the-corpus-writes-shapes-my-grammar-cannot-state.md).
-- The schema layer validates structure and arity; operand scoping stayed in `check_semantics.py`
-  because it is a cross-file fact (the encoding provides the operands). Layering rule: the schema
-  layer never reads a second file — the moment a check needs two sources of truth, it belongs to
-  a consumer, not the schema.
 
