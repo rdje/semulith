@@ -156,9 +156,36 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   fully-broken emission trick is a P1-LAB-generation specific; see the checklist's design notes).
 
 - ID: `P1-LAB.7` — **graph and report checker** *(task card `T004`)*
-  Status: `pending`
+  Status: `done`
   Goal: validate identifier references, profile-scope consistency, graph integrity, artifact existence and hashes, evidence freshness, and gate policy over the JSONL records (`docs/EVIDENCE_AND_GATES.md` §3).
   Acceptance: rejects orphan IDs, stale hashes, unsupported `passed` claims, missing evidence, and deleted dependency links. ⭐ This leaf also discharges the standing gap that `PACKAGE_CHECKS.md`'s schema results are **cited, not re-derivable here** — rule `RUST-01` makes the re-derivation a Rust deliverable, not a Python dependency.
+  Design (recorded before code, `2026-09-28`): the checker lands in `semulith-verify`
+  (`docs/ARCHITECTURE.md` §4 assigns "source/evidence graph, adapters, comparators, reducer"
+  there; the crate "does not supply production instruction semantics" — checking evidence is
+  not a semantic rule). Four support modules plus the checker: `json` (a JSON reader — the
+  verify crates carry no dependencies, so the reader is ours, with `scripts/validate_records.py`
+  as the reference contract), `pattern` (a regex subset — exactly the constructs the three
+  tracked schemas' patterns use, refusing anything else by name), `sha256` (FIPS 180-4,
+  std-only — re-deriving the synthetic source fingerprint), and `schema` (the same keyword
+  subset as the Python validator, unknown keywords REFUSED; `additionalProperties` as a schema,
+  which the Python tool silently skips, is enforced — a tightening, verdicts unchanged on the
+  frozen corpus, proven by running both). `graph` is the checker itself: pure functions over
+  parsed records (no `std::fs` in the library — the workspace builds for `wasm32-unknown-unknown`
+  and evidence bytes arrive as `&[u8]` through an injected resolver). `semulith-cli` owns the
+  command surface (`check-examples`, report presentation per §4) and `RECORD-SCHEMA`'s JSONL
+  arm runs both engines, Python and Rust, so the PACKAGE_CHECKS rows are re-derived by the
+  gate itself, not cited.
+  Result: met, `2026-09-28`. `semulith-verify` gains five modules (29 suites): the checker
+  refuses orphan IDs, stale hashes, unsupported `passed` claims, missing evidence, deleted
+  dependency links, out-of-scope profiles, duplicate ids, unpinned sources, undeclared checks,
+  and dependency cycles — one mutation suite per designated rejection, plus a fully-met
+  bundle gating `passed`. The intact frozen bundle is graph-clean and honestly `incomplete`
+  (its evidence is deliberately `planned`). The PACKAGE_CHECKS rows re-derive in Rust: 5/5
+  records validate, 6/6 negative controls rejected with reasons named, the synthetic source
+  fingerprint matches `sources.json`'s pin. `semulith check-examples` presents the report;
+  `RECORD-SCHEMA` (doctrine 15) runs the Rust engine after the Python phase on every commit
+  and fired RED against a mutated requirement (orphan evidence named, rc=1) before landing.
+  The library stays `std::fs`-free; the workspace still builds for `wasm32-unknown-unknown`.
 
 - ID: `P1-LAB.8` — **first execution slice** *(task card `T006`)*
   Status: `pending`
@@ -189,7 +216,83 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.7` | `pending` | graph and report checker — T004; malformed evidence links refused, and `PACKAGE_CHECKS.md`'s schema results re-derived in Rust (RUST-01) |
+| 1 | `P1-LAB.8` | `pending` | first execution slice — T006; an independently encoded program under the controlled environment, with first-divergence comparison against the reference |
+
+## Acceptance Checklist (leaf P1-LAB.7)
+
+- [x] **REPRODUCE / ISSUE** — the standing gap as it stood: the PACKAGE_CHECKS schema results
+  were a citation of Python `jsonschema 4.26.0` output from the planning package, and nothing
+  in the workspace could re-derive them:
+
+  ```
+  $ git grep -cE "check-examples|check_bundle" HEAD -- crates/ | wc -l
+  0
+  $ grep -n "jsonschema 4.26.0" docs/provenance/planning-package-v0.2/PACKAGE_CHECKS.md
+  | JSON Schema Draft 2020-12 schemas, checked with Python jsonschema 4.26.0 | All 3 schemas valid |
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — RUST-01 ("host production modeling is Rust by default")
+  had no production evidence machinery to run on: the records the Python validator checks
+  (`examples/*.jsonl`) had no Rust reader, no Rust schema engine, and no graph checker, so the
+  "checked" claim could only be inherited from the delivery document. WHERE, measured — the
+  whole Rust surface before this leaf:
+
+  ```
+  $ git ls-files 'crates/semulith-verify/src/*.rs' 'crates/semulith-verify/src/*/*.rs'
+  crates/semulith-verify/src/fixtures.rs
+  crates/semulith-verify/src/lib.rs          # four files, none of them evidence machinery
+  ```
+
+- [x] **FIX** — five modules in `semulith-verify` (`json`, `pattern`, `sha256`, `schema`,
+  `graph`) and the `semulith check-examples` command in `semulith-cli`; `RECORD-SCHEMA`'s
+  JSONL arm runs the Rust engine after the Python phase. The library is pure (no `std::fs` —
+  evidence bytes arrive through an injected resolver); the two tightenings over the Python
+  reference (array `type`; schema-valued `additionalProperties`) are documented in
+  `schema.rs` and proven verdict-neutral on the frozen corpus by the suites below.
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  ```
+  $ cargo test -p semulith-verify 2>&1 | grep "test result"
+  test result: ok. 59 passed; 0 failed; ...   # json 8, pattern 7, sha256 2, schema 12, graph 16, fixtures 12
+  $ cargo run --quiet -p semulith-cli -- check-examples
+  graph check: 2 requirement(s), 2 evidence record(s), 1 obligation(s)
+  gate: incomplete — no graph defects, but 2 declared obligation(s) lack successful current evidence: OB-SYN16-ADD, OB-SYN16-INPUT
+  $ cargo run --quiet -p semulith-cli -- check-examples >/dev/null; echo $?
+  0                                          # incomplete is the honest fixture state, not a failure
+  ```
+
+  PACKAGE_CHECKS rows re-derived in Rust (suites in `graph/tests.rs`):
+  5/5 frozen records validate on both engines; 6/6 negative controls rejected with the reason
+  named (missing source, invalid research status, passing-without-completion, malformed
+  fingerprint, passing-proof-without-metadata, invalid contract direction); the synthetic
+  source fingerprint matches the ledger pin
+  (`12787d59…43f`). Designated rejections, each with a mutation that must be caught: orphan
+  evidence id, deleted dependency link, out-of-scope profile, duplicate id, unpinned source,
+  missing artifact, stale hash (with the unsupported `passed` claim denied), missing
+  evidence, undeclared required check, dependency cycle; and the positive control — a fully
+  met bundle gates `passed`.
+
+  ⛔ RECORD-SCHEMA fired RED against a mutated requirement before landing:
+  `ORPHAN-EVIDENCE requirements:SYN16-ADD-001: cites evidence 'EV-GHOST' …`, rc=1, restored
+  to rc=0 after revert (probe recorded in the verification log).
+
+- [x] **NO REGRESSION** — the strict-lint suite, the Wasm target, and the doctrine gate,
+  re-run with the checker wired in:
+
+  ```
+  $ make check 2>&1 | grep -cE "test result: ok"
+  5                                          # all suites ok; clippy -D warnings clean
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.64s   # rc=0, PORT-WEB holds
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===                # RECORD-SCHEMA now two-engine, still green
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, the book's P1 chapter (new "The graph and report checker" section) and
+  doctrines chapter, `DOCTRINE_ENFORCEMENT.md` (RECORD-SCHEMA row), `TOOLBOX.md` (the new
+  row), `scripts/check_requirements.sh` (the engine-2 arm), and this tree — one commit.
 
 ## Decisions
 
@@ -650,6 +753,11 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-28` | `P1-LAB.7` | `cargo test -p semulith-verify` | 59 passed / 0 failed (json 8, pattern 7, sha256 2, schema 12, graph 16, fixtures 12, lib 2) |
+| `2026-09-28` | `P1-LAB.7` | `cargo run -p semulith-cli -- check-examples` | intact bundle: 0 findings, gate `incomplete`, rc=0 |
+| `2026-09-28` | `P1-LAB.7` | RECORD-SCHEMA RED probe (mutated requirement, `EV-GHOST`) | rc=1 naming ORPHAN-EVIDENCE; restored rc=0 |
+| `2026-09-28` | `P1-LAB.7` | `bash scripts/check_requirements.sh` | ok — Python + Rust engines green on 7 record files |
+| `2026-09-28` | `P1-LAB.7` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / 22 doctrines green |
 | `2026-09-28` | `P1-LAB.6` | `cargo test -p semulith-core definition` | 10 passed / 0 failed (manifest, completeness, disjointness, binding, FENCE ratchet, scatter) |
 | `2026-09-28` | `P1-LAB.6` | `bash scripts/check_definition_gen.sh --self-test` | 8 pass / 0 fail |
 | `2026-09-28` | `P1-LAB.6` | DEF-GEN fired RED pre-registration (hand-edited module) | rc=1, naming DRIFT + regeneration command |
@@ -671,6 +779,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.7` | `SEMILITH-PL-0007 (leaf P1-LAB.7): …` | the graph and report checker in `semulith-verify`; PACKAGE_CHECKS rows re-derived in Rust; RECORD-SCHEMA two-engine, fired RED on a mutated record first |
 | `P1-LAB.6` | `SEMILITH-PL-0006 (leaf P1-LAB.6): …` | the canonical definition, generated: decode tables, lowered semantics trees, OWN-03's manifest; DEF-GEN registered and fired RED first |
 | `P1-LAB.5` | `SEMILITH-PL-0005 (leaf P1-LAB.5): …` | the four SEM-01 outcome families as types; delivery-continues and unimplemented≠trap proven |
 | `P1-LAB.4` | `SEMILITH-PL-0004 (leaf P1-LAB.4): …` | the environment boundary and its fixtures, testable without the instruction handler |
@@ -680,6 +789,15 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 ## Changelog
 
+- `2026-09-28`: Leaf `.7` done — `semulith-verify` gains the graph and report checker
+  (T004): `json`/`pattern`/`sha256`/`schema`/`graph`, five dependency-free modules
+  re-deriving the PACKAGE_CHECKS schema results in Rust (RUST-01 — 5/5 records, 6/6 negative
+  controls, the synthetic source fingerprint) and enforcing the `EVIDENCE_AND_GATES.md` §3
+  invariants over the frozen `examples/` bundle (identifier references, profile scope, graph
+  integrity, artifact hashes, freshness, gate policy — one mutation suite per designated
+  rejection, positive control gating `passed`). `semulith check-examples` presents the
+  report; `RECORD-SCHEMA` runs the Rust engine on every commit and fired RED on a mutated
+  record before landing. The frontier moves to `.8` (first execution slice).
 - `2026-09-28`: Leaf `.6` done — `semulith-core::definition`: the canonical definition
   GENERATED (`scripts/gen_definition.py`): 12 fields, 52 decode rows, the semantics effect
   trees lowered from the execution authority, `decode`, and OWN-03's manifest as data

@@ -9,7 +9,11 @@
 # Two tracks, since `SOT-FORMAT.3` moved the profile catalogues behind the schema layer:
 #
 #   JSONL — every tracked `.jsonl` record file validates against its declared JSON schema
-#           (the frozen `examples/` delivery artifacts stay JSONL on purpose). Power: structural.
+#           (the frozen `examples/` delivery artifacts stay JSONL on purpose), on TWO engines:
+#           the tracked Python validator below, AND the workspace's own Rust checker
+#           (`semulith check-examples`, P1-LAB.7) once the Python phase is green — the
+#           PACKAGE_CHECKS schema results re-derived in Rust (RUST-01), never only cited.
+#           Power: structural.
 #   SEXP  — every `requirements.sexp` / `contract-obligations.sexp` catalogue validates against
 #           its schema-layer schema (`schema/requirements.sexp`, `schema/contract-obligations.sexp`)
 #           AND carries the cross-checks, now read through scripts/records_sexp.py:
@@ -578,6 +582,31 @@ if [ "$rc" -ne 0 ]; then
     printf '%s\n' "$body" | sed 's/^/  /'
     echo "  The SCHEMA and the PROFILE are authoritative. Fix the record, not the contract."; } >&2
   exit 1
+fi
+
+# ---- JSONL track, engine 2: the workspace's own Rust checker (P1-LAB.7) -----------------------
+# The Python phase above decides schema validity; the Rust engine re-derives the same rows and
+# then checks the §3 graph invariants over the examples bundle. It runs only where the bundle
+# it is built around lives; a tree without `examples/` stays a Python-only decision.
+if [ -f examples/fixture-context.json ]; then
+  command -v cargo >/dev/null 2>&1 || {
+    echo "RECORD-SCHEMA: REFUSED — cargo is not on PATH; the Rust engine cannot judge." >&2; exit 2; }
+  rust_out="$(cargo run --quiet --offline -p semulith-cli -- check-examples 2>&1)"
+  rust_rc=$?
+  if [ "$rust_rc" -eq 2 ]; then
+    { echo "RECORD-SCHEMA: REFUSED — the Rust checker could not judge (inputs or usage)."
+      printf '%s\n' "$rust_out" | sed 's/^/  /'; } >&2
+    exit 2
+  fi
+  if [ "$rust_rc" -ne 0 ]; then
+    { echo "RECORD-SCHEMA: the Rust graph checker rejects the JSONL records."
+      printf '%s\n' "$rust_out" | sed 's/^/  /'
+      echo "  The RECORDS are the only mutable side; the schemas, the ledger and the graph"
+      echo "  rules are the contract."; } >&2
+    exit 1
+  fi
+  printf 'RECORD-SCHEMA: ok (%s record file(s) validate and agree with their profile; the Rust graph checker accepts the examples bundle)\n' "${count:-0}"
+  exit 0
 fi
 printf 'RECORD-SCHEMA: ok (%s record file(s) validate and agree with their profile)\n' "${count:-0}"
 exit 0

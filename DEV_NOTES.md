@@ -8,6 +8,14 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-28)_ — the graph and report checker, and the citation that became a derivation (P1-LAB.7)
+
+Root cause: the planning package's schema check results lived only in its delivered document — "All 5 records validate", "All 6 rejected", "fingerprint matches" were citations of Python `jsonschema` 4.26.0, and nothing in the workspace could re-derive them (RUST-01's production-modeling rule had no production evidence machinery). Implementation: five dependency-free modules in `semulith-verify` — `json` (a reader holding `json.loads` parity: last-wins duplicate keys, the int/float distinction Python blurs with `bool`), `pattern` (a regex subset implementing exactly the two constructs census the tracked schemas use, refusing groups/alternation/`.` by name), `sha256` (FIPS 180-4, known-answer pinned), `schema` (the Python validator's keyword subset and refusal discipline; two tightenings — array `type` and schema-valued `additionalProperties`, the latter silently skipped by the Python tool — verdicts proven unchanged on the frozen corpus), and `graph` (the §3 invariants: orphan links, scope, unique ids, cycles, unpinned sources, artifact hashes, missing evidence, gate policy). The library takes evidence bytes through an injected resolver — no `std::fs` — so PORT-WEB holds by construction; filesystem access lives in the CLI command and the tests. `semulith check-examples` presents the report; RECORD-SCHEMA runs the Rust engine after the Python phase and fired RED on a mutated requirement (`EV-GHOST` → ORPHAN-EVIDENCE, rc=1) before landing. Validation: 59 verify suites green (16 graph suites: 3 PACKAGE_CHECKS re-derivations, the intact-bundle verdict, and one mutation per designated rejection plus a fully-met `passed` control); `make check` clean at `-D warnings`; wasm build green; gate green.
+
+Design notes, kept: (1) verdict honesty is a type, not a string — `GateStatus::{Passed, Incomplete, Failed}` with `Incomplete` the expected state of the `planned` fixture, so "the checker says pass" has exactly one typed expression and the fixture cannot reach it by accident. (2) The acceptance's "rejects X" clauses are proven by mutations that must be caught — a suite never run against a broken bundle is not known to detect anything, the same rule `.9` applies to the model. (3) `uniqueItems` distinguishes `Int(1)` from `Float(1.0)` while `enum`/`const` compare across the boundary — Python's two different equalities, kept as data rather than "fixed".
+
+Lessons: declined here (checker-specific design notes; the resolver-injection pattern for wasm-pure libraries is stated in the module docs where the next pure crate meets it).
+
 ## _(2026-09-28)_ — DEV_NOTES joins the shard family, and a lying header is a defect (DOC-SHARDING.2)
 
 Root cause this leaf closes: `DEV_NOTES.md` stood at 49,145 of its 49,152-byte ceiling with the remedy unbuilt — `.1`'s sharder, manifest and freeze check were all scoped to `CHANGELOG.md`, so the only responses were compression or this leaf. Implementation: generalization, not a fork — `scripts/shard_history.py` takes the registry ceiling per head and writes a shard header that names the head it was cut from and that head's own ceiling (`# DEV_NOTES shard … crossed its 48 KiB ceiling`; CHANGELOG keeps its byte-identical `.1` shape, asserted); `scripts/check_changelog_shards.sh` learns the two-head family — one partition scan over both live heads + shards, so an entry heading carried twice anywhere fails, with a fired RED probe (a scratch shard holding a live DEV_NOTES heading) recorded in the leaf. First event: 2 entries into `docs/changelog/shard-0027.md`, head 48,954 → 46,212, `31 == 29 kept + 2 moved` proved at the event, 29-row manifest frozen. Validation: sharder self-test 12/0 (two new arms), SHARD-FREEZE self-test 14/0 (two new arms), real-tree RED probes for both tools, gate green.
@@ -519,62 +527,5 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   meaning nobody can state — worse than none, because it looks like one.
 - ⚠️ `52 of 52` = well-formed, complete, cited. NOT correct. That distinction has to survive into
   the book, because the number invites the stronger reading.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — a refactor of the source of truth must not move the evidence
-
-- The unit carried 52 instructions inside itself; a base ISA is shared by every profile that
-  composes it. Split into `definitions/riscv/{rv64i,m}.sexp`, and the unit now NAMES what it
-  composes and owns nothing. Census: instructions in the unit 52 → 0; in `definitions/` 0 → 65.
-- ⭐ **The acceptance test was that nothing observable moved**: all four guest ELF digests are
-  byte-identical after the split, across two models. A source-of-truth refactor that perturbs the
-  evidence has changed the model, whatever the author intended.
-- A fragment DECLARES its dependencies; composing the M extension without its base is refused. A
-  fragment with a hidden dependency composes by luck, not by construction.
-- `definitions/` was registered in the routes registry in the same commit that created it. A new
-  tracked family nothing governs is how pressure escapes — measured once already in this project.
-- 🔎 Three references to the old generator name survive in CHANGELOG and a completed checklist.
-  Left alone: historical records are true as written, and `append_history` exists to stop exactly
-  that tidying.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — breadth by composing proven parts, not by gating them less
-
-- ⛔ **I proposed the wrong lever and it was rejected.** Facing "model as much as possible" against
-  "signoff-grade", I suggested tiering models into `exploratory` (ungated) and `accepted` (gated).
-  That buys breadth by creating a second class of model nobody can trust, and the classes would
-  blur the first time one cited the other. The right lever is **composition**: assemble proven
-  small models. Breadth by reuse of evidence, never by absence of it.
-- Grounded rather than invented: both pinned references already compose from fragments —
-  riscv-opcodes 111 extension files, sail-riscv 34 extension dirs / 59 encoding files — and this
-  project already had the other half (an empty `extensions = []` seam, 8 environment-assumptions).
-- ⭐ **Encoding union is DECIDABLE, so composition is a verdict.** Two instructions collide exactly
-  when `(a.value ^ b.value) & a.mask & b.mask == 0`, searched exhaustively. Proven: owned RV64I +
-  an unseen `M` fragment = 65 instructions, no collision. Fired RED on a realistic mistake —
-  composing a fragment already contained — giving 37 named collisions and a rejection.
-- ⚠️ Semantics are the hard axis and are NOT decidable: an extension can change a base
-  instruction's meaning. A fragment must *declare* that it refines base behaviour; a silent
-  override is a defect, not a composition.
-- 🔎 LIVE_STATUS.md went **over its ceiling** because I had been writing narrative into a status
-  table whose owner column literally says "rows are states, not prose". Trimmed to states; the
-  gate was right and the fix was the one the registry prescribes.
-- Promotion is explicitly declined in the owning leaf, with the reason.
-
-## _(2026-09-14)_ — owning a source means building without it
-
-- ⛔ The repository did not own its model's encodings: the assembler read `target/refs/riscv-opcodes`,
-  untracked and network-acquired, so a fresh clone could not build a model. The project's own rule
-  was being broken by its own tooling.
-- ⭐ **The test that settles ownership is not that a file exists — it is that the build works with
-  the source moved aside.** `mv target/refs/riscv-opcodes /tmp/ … && run_smoke.py` → ok: four
-  guests assembled, run on two references and reproduced, with the encodings' origin absent.
-- Ownership without re-derivation is a copy, so the agreement is gated and was fired RED on a
-  one-bit `funct3` edit.
-- ⛔ The new S-expression reader was caught by its own first real input: it stripped `;` comments
-  line by line before tokenizing, so a `;` INSIDE a string truncated it and a string could not span
-  lines. Generating our own encoding file hit that within minutes. Whether a `;` starts a comment
-  depends on whether a string is open — that question cannot be answered by a prior pass.
-- The S-expression trigger fired and was answered on merit: trees get S-expressions, records keep
-  JSON/TOML and their working gates. "Single source of truth" = one owner per fact, not one file.
 - Promotion is explicitly declined in the owning leaf, with the reason.
 

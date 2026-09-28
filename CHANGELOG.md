@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0007 (leaf P1-LAB.7) — the graph and report checker; the citation becomes a derivation
+
+- `semulith-verify` gains five dependency-free modules: `json` (a `json.loads`-parity reader), `pattern` (a regex subset refusing everything outside the census by name), `sha256` (FIPS 180-4, known-answer pinned), `schema` (the Python validator's keyword subset and refusal discipline, plus two verdict-neutral tightenings: array `type`, schema-valued `additionalProperties`), and `graph` (the `EVIDENCE_AND_GATES.md` §3 invariants over the frozen `examples/` bundle). The PACKAGE_CHECKS schema results are re-derived in Rust per RUST-01 — 5/5 records validate, 6/6 negative controls rejected with reasons named, the synthetic source fingerprint matches the ledger pin.
+- Every designated rejection has a mutation suite that must catch it: orphan IDs, stale hashes, unsupported `passed` claims, missing evidence, deleted dependency links, out-of-scope profiles, duplicate ids, unpinned sources, undeclared checks, dependency cycles — plus the positive control (a fully met bundle gates `passed`). The intact fixture is graph-clean and honestly `incomplete` (`GateStatus` is a type, so "pass" has exactly one expression). The library is `std::fs`-free (evidence bytes arrive through a resolver), keeping the workspace wasm-buildable.
+- `semulith check-examples` presents the report; `RECORD-SCHEMA` now runs the Rust engine after the Python phase on every commit and fired RED against a mutated requirement before landing. Verification: 59 verify suites green; `make check` clean; wasm green; gate green. Book P1 gains "The graph and report checker".
+- Lockstep: MEMORY/LIVE_STATUS (P1 7/12)/TASK_TREE/DEV_NOTES/TOOLBOX/DOCTRINE_ENFORCEMENT + book doctrines chapter/check_requirements.sh and this tree; frontier moves to `.8` (first execution slice).
+
 ## SEMILITH-DS-0003 (leaf DOC-SHARDING.2) — DEV_NOTES joins the shard family
 
 - `DEV_NOTES.md` gets `CHANGELOG.md`'s lifecycle, by generalization rather than a fork: `scripts/shard_history.py` writes a shard header naming the head it was cut from and that head's own registry ceiling (`# DEV_NOTES shard … 48 KiB`; CHANGELOG's `.1` header shape stays byte-identical, self-test arm), and `scripts/check_changelog_shards.sh` learns the two-head family — one COVERAGE/FROZEN/APPEND-ONLY scan over the shared `docs/changelog/` manifest, UNIQUE across both live heads + shards. First event: 2 entries to `shard-0027.md`, `31 == 29+2` proved at the event, head 48,954 → 46,212, 29-row manifest frozen.
@@ -705,57 +712,4 @@ says plainly that checkout does not generate PGEN's parser inputs, and I had not
 `--recursive` where two targeted inits were prescribed, costing 1.7 GB and 30 nested submodules. I
 used bare `cargo` instead of `tools/run_cargo_local.sh`. A guide is only followed if you read the
 part before the part you were sent to.
-
-## SEMULITH-PD-0046 (leaf PUSH-DISCIPLINE.1) — the push boundary gets a gate that refuses
-
-**Director instruction, `2026-09-14`:** *"Set the push cadence to every 300 commits. Exceptional
-push happen from time to time, but they shall require my approval."*
-
-**Measured before writing anything, and the finding is an absence:**
-
-```
-$ grep -ci push COMMIT.md          ->  0     the normative commit workflow never mentions pushing
-$ ls .githooks/                    ->  commit-msg  pre-commit     (no pre-push)
-$ git rev-list --count origin/main..HEAD  ->  45
-```
-
-45 commits had exactly one governance rule between them and a server: a human remembering. The
-policy was not being broken — it did not exist.
-
-**Why a push is governed differently from a commit.** A commit is local and reversible: reword it,
-drop it, rebase it, and nothing outside this disk ever knew. A push sends bytes to a server that
-may keep, cache, mirror or index them regardless of what happens here afterwards.
-
-⛔ **And the specific failure this guards against is an agent's.** An assistant asked to "finish
-up" will naturally read pushing as tidying, and will reach — reasonably, on its own — the judgement
-that this particular push is surely fine. So the hook **refuses rather than warns** (a warning at
-an outward-facing boundary is read after the bytes have left), and **the director grants the
-exception while the variable only carries it**:
-
-```
-$ bash scripts/check_push_cadence.sh --status ; echo $?
-PUSH-CADENCE: REFUSED — 45 commits since the last push; the cadence is 300 …
-  Two ways forward, and only two:
-    1. Wait. The cadence is 300 commits; this is 45.
-    2. Ask the director. … SEMULITH_PUSH_APPROVED='<the director's reason>' git push
-  ⛔ An agent may not supply this on its own judgement.
-1
-```
-
-**11 arms, each in a throwaway repository with a real upstream** — a gate about
-distance-from-upstream cannot be tested without one. Three were fired RED first and failed: two
-because the refusal message wrapped across a newline so a literal match missed it, and one because
-`COMMIT.md` did not yet state the cadence — the no-duplicated-fact arm doing its job before the
-fact existed.
-
-⛔ The instrument refuses on `DETACHED`, `NO-UPSTREAM` and `NOT-A-REPO` rather than printing a
-distance it cannot know. "0 commits ahead" for a detached HEAD is a lie that *permits* a push.
-
-**The accepted exposure is on the record, not discovered later.** 45 commits exist only on one
-disk and cadence 300 means they stay there a long while. `decision_push-cadence` states that
-plainly, so it remains a decision someone made rather than an oversight nobody revisited.
-
-New tree `PUSH-DISCIPLINE` (3 leaves). `.2` is next and is Policy 16's unenforced half: full CI
-runs before a push, and nothing enforces it — the pre-commit hook covers only the "selected checks
-for ordinary commits" side.
 
