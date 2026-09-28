@@ -8,6 +8,14 @@ Every dated entry here must reach the retrievable layer: a card under
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
 lesson nobody can retrieve by question is a lesson nobody has.
 
+## _(2026-09-28)_ — the first execution slice: the definition executes, and agrees with two references (P1-LAB.8)
+
+Root cause: `.6` had lowered the semantics into `Sem` trees and pinned "evaluation stays with `.8`" — the evaluator existed nowhere, and the one design point the tracked documents genuinely did not pin was the width algebra: `check_semantics.py` checks well-formedness, completeness and citations only, so what `sext N` MEANS operationally was undefined. Two candidate readings each fail half the corpus ("extend the low N bits" zero-extends LB; "extend from N bits" identity-extends LUI); the unique reading under which all 52 trees are simultaneously correct is extend-FROM-the-operand's-own-width-TO-N, with literal shifts widening the result (LUI's `shl` assembles a 32-bit constant) and computed shifts operating at the left operand's width — the rule that makes `sraiw` replicate bit 31 rather than bit 63. Implementation: `semulith-core::exec` evaluates the generated trees (no handwritten per-instruction behavior exists anywhere); `semulith-verify::run` records `(pc, word, register writes, trap)` steps — the same vocabulary `compare_traces.py` reduces the references to — plus the full boundary-crossing log, and `compare` reports the first divergence naming the differing field (a register, the trap cause, the tval, a missing write; a length mismatch is a non-agreement, never a prefix pass); `semulith-verify::elf` loads the writer's ELF64 with named-field refusals; `guests.rs` is generated from the tracked guests + EVD-05 expectations (`gen_guests.py`, GUEST-GEN — fired RED on a hand-edited fixture before registration). Validation: the offline differential runs all four guests against the generated fixture on every `make check` (77 verify suites green); the live experiment `scripts/run_semulith_smoke.py` agrees with sail-riscv AND spike on every enabled comparison — 34 aligned steps, byte-identical reproduction.
+
+Design notes, kept: (1) fetch faults record NO step — a failed fetch supplies no word, and inventing one would put a fiction in the comparison vocabulary (fetch-fault comparison against the references is future work, recorded in `Stop::FetchFault`). (2) The generated fixture needed `#[rustfmt::skip]` on every data array: rustfmt packs scalar/struct arrays horizontally, so byte-stable emission means freezing the layout, the same "fmt-stable emission" discipline `.3`/`.6` already carried. (3) The runner observes register writes by state diff, so a write to x0 can never appear — the architecture's own rule, obtained for free. (4) The misaligned access is raised before the boundary is crossed, and the crossing log proves it: the request log shows the environment never saw the access.
+
+Lessons: declined here — the width-algebra decision is recorded in the `.8` leaf's Decisions and the `exec` module docs (it is P1-LAB-evaluation specific); "cited ≠ verified" already has its card (`docs/knowledge/re-derivable-vs-cited-evidence.md`) and the shorter-trace rule has `docs/knowledge/a-shorter-trace-is-not-agreement.md` — this slice is their worked example at model scale, not a new lesson.
+
 ## _(2026-09-28)_ — the graph and report checker, and the citation that became a derivation (P1-LAB.7)
 
 Root cause: the planning package's schema check results lived only in its delivered document — "All 5 records validate", "All 6 rejected", "fingerprint matches" were citations of Python `jsonschema` 4.26.0, and nothing in the workspace could re-derive them (RUST-01's production-modeling rule had no production evidence machinery). Implementation: five dependency-free modules in `semulith-verify` — `json` (a reader holding `json.loads` parity: last-wins duplicate keys, the int/float distinction Python blurs with `bool`), `pattern` (a regex subset implementing exactly the two constructs census the tracked schemas use, refusing groups/alternation/`.` by name), `sha256` (FIPS 180-4, known-answer pinned), `schema` (the Python validator's keyword subset and refusal discipline; two tightenings — array `type` and schema-valued `additionalProperties`, the latter silently skipped by the Python tool — verdicts proven unchanged on the frozen corpus), and `graph` (the §3 invariants: orphan links, scope, unique ids, cycles, unpinned sources, artifact hashes, missing evidence, gate policy). The library takes evidence bytes through an injected resolver — no `std::fs` — so PORT-WEB holds by construction; filesystem access lives in the CLI command and the tests. `semulith check-examples` presents the report; RECORD-SCHEMA runs the Rust engine after the Python phase and fired RED on a mutated requirement (`EV-GHOST` → ORPHAN-EVIDENCE, rc=1) before landing. Validation: 59 verify suites green (16 graph suites: 3 PACKAGE_CHECKS re-derivations, the intact-bundle verdict, and one mutation per designated rejection plus a fully-met `passed` control); `make check` clean at `-D warnings`; wasm build green; gate green.
@@ -511,21 +519,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   (stale: 6 of 13) because the gated pattern only matches "of/leaves" phrasing — a count in a
   non-gated spelling is a memory of a measurement. (Fix proposal D3 announced to the director;
   the check extension is pending approval.)
-
-## _(2026-09-14)_ — explicit widths, and never regenerate over hand-derived work
-
-- 52 of 52 RV64I instructions now have machine-checkable semantics, each citing the locator it came
-  from. Before: 26 rules, all English prose, none executable.
-- ⭐ **Widths are always explicit.** `(sext 64 (trunc 32 …))` says what it means; an implicit width
-  is exactly where two models silently disagree, and `D-WSUFFIX` is one line once it is spelled.
-- ⛔ **Generated and authored content must not share a file.** `rv64i.sexp` is regenerated whenever
-  its upstream table moves; hand-derived semantics in the same file would be destroyed by a
-  routine regeneration. Different provenance, different file — a rule worth carrying to any
-  project that generates part of its source of truth.
-- The language is 32 forms, each added because an instruction needed it, and the checker refuses
-  the rest. A notation that quietly accepts an unknown operator produces a definition whose
-  meaning nobody can state — worse than none, because it looks like one.
-- ⚠️ `52 of 52` = well-formed, complete, cited. NOT correct. That distinction has to survive into
-  the book, because the number invites the stronger reading.
-- Promotion is explicitly declined in the owning leaf, with the reason.
 

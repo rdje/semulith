@@ -21,3 +21,5 @@ requirements	profiles/rv64i-lab-v0/profile.sexp	profiles/rv64i-lab-v0/requiremen
 obligations	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64i-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 pinned-sources	profiles/rv64i-lab-v0/sources.sexp	-	-
 materials-catalogue	materials/catalog.sexp	-	-
+guest-programs	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
+guest-expectations	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN

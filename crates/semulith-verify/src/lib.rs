@@ -16,9 +16,12 @@
 //! building for `wasm32-unknown-unknown` (PORT-WEB); filesystem access lives in the
 //! CLI command and the tests.
 
+pub mod elf;
 pub mod fixtures;
 pub mod graph;
+pub mod guests;
 pub mod json;
 pub mod pattern;
+pub mod run;
 pub mod schema;
 pub mod sha256;

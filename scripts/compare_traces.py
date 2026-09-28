@@ -88,6 +88,45 @@ def trap_cause(spelling: str, who: str) -> int:
     return TRAP_NAMES[key]
 
 
+# Semulith's own trace (`semulith run`, P1-LAB.8): the same observation vocabulary the
+# reference adapters reduce to, printed directly — no spelling adapter needed, because the
+# cause is emitted as the architectural code, not a model-specific name.
+#   "[3] [M]: 0x000000008000000c (0x03f19213) slli"
+#   "x4 <- 0x8000000000000000"
+#   "trap cause=0x04 tval=0x0000000080000401"
+_SEMULITH_STEP = re.compile(r"^\[\d+\] \[M\]:\s+0x([0-9a-fA-F]+)\s+\(0x([0-9a-fA-F]+)\)")
+_SEMULITH_WRITE = re.compile(r"^(x\d{1,2}) <- 0x([0-9A-Fa-f]+)\s*$")
+_SEMULITH_TRAP = re.compile(r"^trap cause=0x([0-9a-fA-F]+) tval=0x([0-9a-fA-F]+)\s*$")
+
+
+def parse_semulith(text: str) -> list[Step]:
+    """Parse `semulith run` output into the shared observation vocabulary.
+
+    Unlike the reference adapters this parser needs no cause-name table: the laboratory's
+    trap line carries the architectural cause code directly. A line that looks like a trap
+    before any step is a malformed trace, not an empty match — raised, never dropped.
+    """
+    steps: list[Step] = []
+    for line in text.splitlines():
+        m = _SEMULITH_STEP.match(line.strip())
+        if m:
+            steps.append(Step(int(m.group(1), 16), int(m.group(2), 16)))
+            continue
+        m = _SEMULITH_WRITE.match(line.strip())
+        if m and steps:
+            steps[-1].writes.append((m.group(1), int(m.group(2), 16)))
+            continue
+        m = _SEMULITH_TRAP.match(line.strip())
+        if m:
+            if not steps:
+                raise CompareError(
+                    "semulith: trap record before any step — a malformed trace is not an "
+                    "empty match")
+            if steps[-1].trap is None:
+                steps[-1].trap = (int(m.group(1), 16), int(m.group(2), 16))
+    return steps
+
+
 # Sail: "[0] [M]: 0x0000000080000000 (0x800000B7) lui x1, -0x80000"
 #       "x1 <- 0xFFFFFFFF80000000"
 _SAIL_STEP = re.compile(r"^\[\d+\]\s+\[\w+\]:\s+0x([0-9A-Fa-f]+)\s+\(0x([0-9A-Fa-f]+)\)")

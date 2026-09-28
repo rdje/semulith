@@ -188,9 +188,57 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   The library stays `std::fs`-free; the workspace still builds for `wasm32-unknown-unknown`.
 
 - ID: `P1-LAB.8` — **first execution slice** *(task card `T006`)*
-  Status: `pending`
+  Status: `done`
   Goal: a vertical slice executing an **independently encoded** program under the controlled environment, with first-divergence comparison against the reference.
   Acceptance: correct state, access and exception observations; the divergence report names the first differing observation, not a final checksum.
+  Design (recorded before code, `2026-09-28`): three pieces, each on its owning side of the
+  `docs/ARCHITECTURE.md` §4 map.
+  1. `semulith-core::exec` — the definitional interpreter: `step(&mut ArchitecturalState, &mut
+     impl Environment) -> StepOutcome`. Fetches through the environment contract, decodes with
+     `.6`'s `decode`, extracts operands (scatter-aware, with the binding rule `.6` documents:
+     `imm12hi`/`imm12lo` → `imm12`, `bimm12hi`/`bimm12lo` → `bimm12`, either shift field →
+     `shamt`), and evaluates the instruction's `Sem` tree — the semantics DATA stays the one
+     executable owner (OWN-01); the interpreter is its evaluator, not a second implementation.
+     Expression evaluation carries an explicit **width** (the semantics file's own rule:
+     "WIDTHS ARE ALWAYS EXPLICIT"): `sext`/`zext N` extend FROM the operand's own width TO `N`
+     (which is what makes `sext 64 (shl (imm imm20) (lit 12))` the LUI sign-extension from bit
+     31, and `sext 64 (load …)` the LB extension from 8 — the two readings that make every one
+     of the 52 trees correct at once); shifts of a literal widen by the literal amount. Outcome
+     mapping: misaligned branch/jump target → `InstructionAddressMisaligned` reported AT the
+     target value, raised on the branch (REQ-D-IALIGN, REQ-D-MISALIGN-REPORT); fetch
+     access-fault → `InstructionAccessFault` at the pc (REQ-D-FETCH-FAULT-REPORT); a misaligned
+     or faulting load/store raises its exception before/at the boundary without substituting
+     (D-MISALIGN-DATA, D-MAIN-VS-IO); reserved decode → `UndefinedCase::ReservedDecode`
+     (D-RESERVED-DECODE — reported as the unspecified case it is, never auto-converted);
+     ECALL/EBREAK → `RequestedTrap` with the cause vocabulary's codes 11/3 (REQ-D-ECALL-EBREAK).
+  2. `semulith-verify` — the observation runner and the first-divergence comparator, on the
+     four tracked guests (`smoke-arith`, `guest-control`, `smoke-trap`, `guest-no-device`).
+     A step is `(pc, word, register writes, trap)` — the same normalized observation vocabulary
+     `scripts/compare_traces.py` already reduces the references to — and `first_divergence`
+     walks two streams and names the first differing observation (pc / insn / a register write /
+     the trap cause or tval), or reports a length mismatch as a non-agreement, never a prefix
+     pass. The guests and their specification-derived expectations become a GENERATED Rust
+     fixture (`scripts/gen_guests.py` → `semulith-verify/src/guests.rs`, the 23rd doctrine
+     `GUEST-GEN` refuses drift), so the commit gate re-runs the whole slice offline: every
+     expectation value the guests carry was derived from the pinned specification prose
+     (EVD-05), not from any model's output.
+  3. `semulith-cli` — `semulith run <elf>`, a minimal ELF64 loader + the runner + a normalized
+     trace print, so the live three-way experiment (`scripts/run_semulith_smoke.py` — semulith
+     vs sail-riscv vs the pinned expectations, NOT a commit gate, same standing as
+     `run_smoke.py`) compares all models through the one vocabulary.
+  Result: met, `2026-09-28`. The definition executes. `semulith-core::exec` evaluates the
+  generated `Sem` trees — 24 test suites on the core side cover every outcome family and the
+  width algebra (including the two readings that pin it: LUI's sign extension from bit 31,
+  LB's from 8; and the `sraiw` case that forced shifts to operate at the operand's width — an
+  arithmetic shift of the low 32 bits replicates bit 31, not bit 63). `semulith-verify::run`
+  records `(pc, word, writes, trap)` steps plus the full boundary-crossing log, and
+  `compare` reports the first divergence with the differing field named (RED/GREEN arms
+  mirroring `compare_traces.py`'s self-test). `semulith-verify::elf` loads the writer's
+  ELF64 with named-field refusals. The offline differential runs all four guests against the
+  generated fixture on every `make check` (75 verify suites green); the live experiment
+  agrees with sail-riscv AND spike on every enabled comparison — 34 aligned steps, each run
+  reproducing byte-identically. The 23rd doctrine `GUEST-GEN` fired RED against a hand-edited
+  fixture before registration.
 
 - ID: `P1-LAB.9` — **validator mutation suite** *(task card `T007`)*
   Status: `pending`
@@ -216,7 +264,92 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.8` | `pending` | first execution slice — T006; an independently encoded program under the controlled environment, with first-divergence comparison against the reference |
+| 1 | `P1-LAB.9` | `pending` | validator mutation suite — T007; the suite the `.8` comparator's RED arms anticipate: known-wrong arithmetic, missed writes, wrong fault classification, masked comparisons |
+
+## Acceptance Checklist (leaf P1-LAB.8)
+
+- [x] **REPRODUCE / ISSUE** — the first-execution-slice goal as it stood after `.7`: the
+  canonical definition had an evaluator nowhere; the graph checker could judge records, but
+  no instruction of the profile could execute, and the roadmap's G1 proof ("a compiled
+  freestanding guest program retires under first-divergence comparison against a pinned
+  reference") had no first slice to stand on:
+
+  ```
+  $ git ls-files 'crates/semulith-core/src/exec.rs' 'crates/semulith-verify/src/run.rs'
+  | wc -l
+  0                                            # no interpreter, no observation runner
+  $ git grep -c "fn step" HEAD -- crates/semulith-core/src | wc -l
+  0                                            # nothing executed anything
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.6` had lowered the semantics into `Sem` trees and
+  pinned "evaluation stays with `.8`"; the missing piece was the evaluator plus the
+  observation/comparison machinery to make its result mean something. The one genuinely
+  undefined design point was the width algebra: `check_semantics.py` checks
+  well-formedness/completeness/citations only, so `sext N` operational semantics was
+  unpinned — WHERE, measured: two candidate readings each fail half the corpus ("extend the
+  low N bits" zero-extends LB; "extend from N" identity-extends LUI); the only uniform rule
+  is extend-FROM-the-operand-width-TO-N, with literal shifts widening — then verified
+  differentially, not assumed.
+
+- [x] **FIX** — `semulith-core::exec` (the evaluator; the width algebra and the outcome
+  mapping documented in the module, every rule named by its requirement), `semulith-verify`
+  (`run` — observation runner + first-divergence comparator; `elf` — the loader; `guests` —
+  the generated fixture), `semulith-cli` (`semulith run`), `scripts/gen_guests.py`,
+  `scripts/check_guest_gen.sh` (the 23rd doctrine `GUEST-GEN`), and
+  `scripts/run_semulith_smoke.py` + `parse_semulith` (the live experiment).
+
+- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
+
+  Offline (the commit gate; GUEST-GEN fixture, EVD-05 expectations):
+
+  ```
+  $ cargo test -p semulith-verify 2>&1 | grep "test result"
+  test result: ok. 77 passed; 0 failed; ...   # incl. all four guests' observations
+  $ cargo test -p semulith-core exec 2>&1 | grep "test result"
+  test result: ok. 24 passed; 0 failed; ...   # outcome families + width algebra
+  $ bash scripts/check_guest_gen.sh
+  GUEST-GEN: ok (crates/semulith-verify/src/guests.rs matches the tracked guests)
+  ```
+
+  Live (the experiment; `scripts/run_semulith_smoke.py`, `2026-09-28`):
+
+  ```
+  == smoke-arith ==   semulith vs sail-riscv  AGREE over 12 aligned step(s)
+  == guest-control == semulith vs sail-riscv  AGREE over 13 aligned step(s)
+  == smoke-trap ==    semulith vs sail-riscv  AGREE over 3 aligned step(s)
+  == guest-no-device == semulith vs sail-riscv AGREE over 6 aligned step(s)
+  run_semulith_smoke: ok — semulith matches the specification-derived expectations and
+  reproduces; every cross-model comparison that is enabled agrees
+  ```
+
+  Every comparison vs spike that is enabled also agrees (12/13/3 steps); semulith's trace
+  matches all 34 specification-derived expectation steps and both negative never-written
+  registers; every run reproduces byte-identically. The first-divergence report names the
+  differing observation — the comparator's RED arms: a register value, the trap cause, the
+  tval, a missing write, a length mismatch, each named at its aligned step.
+
+  ⛔ GUEST-GEN fired RED against a hand-edited fixture before registration (rc=1, naming
+  DRIFT; restored to rc=0 after regeneration — probe in the verification log).
+
+- [x] **NO REGRESSION** — the strict-lint suite, the Wasm target, and the doctrine gate,
+  re-run with the slice wired in:
+
+  ```
+  $ cargo fmt --all -- --check && cargo clippy --all-targets --all-features -- -D warnings \
+      && cargo test --all 2>&1 | grep -c 'test result: ok'
+  5                                    # all suites ok; 141 tests total, 0 warnings
+  $ cargo build --workspace --target wasm32-unknown-unknown 2>&1 | tail -1
+      Finished `dev` profile ...       # rc=0, PORT-WEB holds
+  $ make gate 2>&1 | tail -1
+  === all doctrines green ===          # 23 doctrines, including the new GUEST-GEN
+  ```
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `LIVE_STATUS.md`, `docs/TASK_TREE.md`,
+  the book's P1 chapter (the new "The first execution slice" section) and doctrines
+  chapter, `DOCTRINE_ENFORCEMENT.md` (the GUEST-GEN row), `TOOLBOX.md` (the new rows),
+  `doctrine/fact_ownership.tsv` (the guest-programs/guest-expectations owner→mirror
+  pairs), and this tree — one commit.
 
 ## Acceptance Checklist (leaf P1-LAB.7)
 
@@ -307,6 +440,15 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   generator refuses unknown descriptor shapes by name — a generator that guesses is a second
   definition. Reset stays a laboratory declaration supplied by the environment (entry address
   is a parameter, never a constant in the model).
+- `2026-09-28` (`.8`): the definitional interpreter evaluates the generated `Sem` trees
+  directly; the semantics DATA remains the one executable owner (OWN-01). The width algebra
+  is pinned as: `sext`/`zext N` extend FROM the operand's own semantic width TO `N`; a
+  literal shift amount widens the result by that amount; computed amounts shift within the
+  left operand's width. This is the unique reading under which all 52 trees are correct at
+  once (LUI extends from bit 31, LB from 8), and it is validated differentially against the
+  references, not assumed from the notation. Reserved decode stays `UndefinedCase` at the
+  interpreter boundary — conversion to any trap is the diagnostic policy's explicit act,
+  one layer up.
 - `2026-09-28` (`.6`): the canonical definition is **lowered, not hand-coded**: encodings,
   semantics trees and the OWN-03 manifest generate into `semulith-core::definition` by
   `scripts/gen_definition.py`; drift is the `DEF-GEN` doctrine's refusal. The generator is the
@@ -753,6 +895,12 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-28` | `P1-LAB.8` | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | semulith agrees with sail-riscv on 34/34 aligned steps across the 4 guests; spike agrees on all enabled comparisons; 34/34 spec-derived expectations; both never-written registers held; every run reproduces byte-identically |
+| `2026-09-28` | `P1-LAB.8` | GUEST-GEN fired RED pre-registration (hand-edited fixture) | rc=1 naming DRIFT + regeneration command; restored rc=0 |
+| `2026-09-28` | `P1-LAB.8` | `bash scripts/check_guest_gen.sh --self-test` | 7 pass / 0 fail |
+| `2026-09-28` | `P1-LAB.8` | `cargo test -p semulith-verify` | 77 passed / 0 failed (run 13, elf 2, guests 4, fixtures 12, graph 16+16, json 8, pattern 7, sha256 2, schema 12, lib 2) |
+| `2026-09-28` | `P1-LAB.8` | `cargo test -p semulith-core exec` | 24 passed / 0 failed (outcome families, width algebra, reporting points, code visibility) |
+| `2026-09-28` | `P1-LAB.8` | `make check`, wasm build, `make gate` | 5 suites ok / rc=0 / 23 doctrines green |
 | `2026-09-28` | `P1-LAB.7` | `cargo test -p semulith-verify` | 59 passed / 0 failed (json 8, pattern 7, sha256 2, schema 12, graph 16, fixtures 12, lib 2) |
 | `2026-09-28` | `P1-LAB.7` | `cargo run -p semulith-cli -- check-examples` | intact bundle: 0 findings, gate `incomplete`, rc=0 |
 | `2026-09-28` | `P1-LAB.7` | RECORD-SCHEMA RED probe (mutated requirement, `EV-GHOST`) | rc=1 naming ORPHAN-EVIDENCE; restored rc=0 |
@@ -779,6 +927,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.8` | `SEMILITH-PL-0008 (leaf P1-LAB.8): …` | the definitional interpreter in `semulith-core::exec`; the observation runner + first-divergence comparator + ELF loader + generated guest fixture in `semulith-verify`; `semulith run`; `gen_guests.py` + `check_guest_gen.sh` (GUEST-GEN, fired RED first); `run_semulith_smoke.py` — 34/34 steps agree with sail-riscv and spike |
 | `P1-LAB.7` | `SEMILITH-PL-0007 (leaf P1-LAB.7): …` | the graph and report checker in `semulith-verify`; PACKAGE_CHECKS rows re-derived in Rust; RECORD-SCHEMA two-engine, fired RED on a mutated record first |
 | `P1-LAB.6` | `SEMILITH-PL-0006 (leaf P1-LAB.6): …` | the canonical definition, generated: decode tables, lowered semantics trees, OWN-03's manifest; DEF-GEN registered and fired RED first |
 | `P1-LAB.5` | `SEMILITH-PL-0005 (leaf P1-LAB.5): …` | the four SEM-01 outcome families as types; delivery-continues and unimplemented≠trap proven |
@@ -789,6 +938,19 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 ## Changelog
 
+- `2026-09-28`: Leaf `.8` done — the first execution slice: `semulith-core::exec`, the
+  definitional interpreter, evaluates the generated `Sem` trees (the semantics data stays
+  the one executable owner, OWN-01); `semulith-verify` gains the observation runner and
+  first-divergence comparator (`run`), the ELF64 loader (`elf`), and the generated guest
+  fixture (`guests.rs`, GUEST-GEN — the 23rd doctrine, fired RED on a hand-edited fixture
+  before registration); `semulith-cli` gains `semulith run`. The offline differential runs
+  all four tracked guests against their specification-derived expectations on every commit;
+  the live experiment (`scripts/run_semulith_smoke.py`) agrees with sail-riscv and spike on
+  every enabled comparison — 34 aligned steps, byte-identical reproduction. The width
+  algebra (`sext`/`zext` extend from the operand's own width; literal shifts widen) is the
+  one reading under which all 52 effect trees are simultaneously correct, and it is now
+  differentially validated evidence, not an assumption. The frontier moves to `.9`
+  (validator mutation suite).
 - `2026-09-28`: Leaf `.7` done — `semulith-verify` gains the graph and report checker
   (T004): `json`/`pattern`/`sha256`/`schema`/`graph`, five dependency-free modules
   re-deriving the PACKAGE_CHECKS schema results in Rust (RUST-01 — 5/5 records, 6/6 negative

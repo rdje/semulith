@@ -38,6 +38,7 @@ PROJECT_DOCTRINES=(
   "PORT-WEB|the crate skeleton builds for the browser target — the workspace compiles for wasm32-unknown-unknown, so a host-only API cannot slip into the engine unnoticed; fired RED before registration|scripts/check_wasm_build.sh"
   "STATE-GEN|the generated state module is still the byte-exact function of the state descriptor that generated it — a hand-edited accessor is how a descriptor and its executable half quietly become two facts; fired RED before registration|scripts/check_state_gen.sh"
   "DEF-GEN|the generated definition module is still the byte-exact function of the canonical definition that generated it — encoding tables, lowered semantics trees, and OWN-03's manifest with definition, generator, configuration and source fingerprints; a hand-edited decode row or effect tree is OWN-01's duplicate owner arriving as drift; fired RED before registration|scripts/check_definition_gen.sh"
+  "GUEST-GEN|the generated guest fixture is still the byte-exact function of the tracked guests and their specification-derived expectations — a hand-edited expectation or word list is how the offline differential (the commit gate's re-run of the first execution slice) quietly stops testing what the tracked documents declare; the generator refuses by name what it cannot emit; fired RED before registration|scripts/check_guest_gen.sh"
 )
 
 fails=0
