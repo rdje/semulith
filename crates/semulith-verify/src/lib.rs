@@ -21,6 +21,7 @@ pub mod fixtures;
 pub mod graph;
 pub mod guests;
 pub mod json;
+pub mod mutate;
 pub mod pattern;
 pub mod run;
 pub mod schema;

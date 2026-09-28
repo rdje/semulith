@@ -3,6 +3,11 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-28)_ — the validator mutation suite: a differential that is known to disagree (P1-LAB.9)
+
+EVD-09's demand after `.8`: the differential had only ever agreed. The fix is one parameter, not a feature: `exec::step_over` / `run::run_over` take the instruction table (production delegates with `INSNS`; the scan is pinned to the generated `decode`), and `semulith-verify::mutate` swaps one row — a mutated effect tree rebuilt from the real one, or a mask/value row — so a wrong model is *data the one evaluator consumes* (OWN-01). Where a wrong behaviour can only exist as harness code (deferred traps, fabricated substitutions, stale configs), the arm mutates the observation stream and says so. Eleven arms: the eight designated classes plus the JALR odd-bit arm the fixture note names (fault at 0x80000029, as predicted), the four-guest crossing census, and the writes-blind suppression exhibit. Every guest arm re-derives the pinned expectations against the real model before judging the mutant. `.1`–`.8` checklists archive to `docs/tasks/archive/P1-LAB.md` — per-part ceiling obeyed, not raised.
+
+
 Every dated entry here must reach the retrievable layer: a card under
 [`docs/knowledge/`](docs/knowledge/INDEX.md), or a decision record, or an explicit decline in
 the owning task leaf. That is the `LESSON-PROMOTION` doctrine, and the reason for it is that a
@@ -502,21 +507,4 @@ mixed-namespace dependency fact is declined here: measured, owned and enforced b
   because it is a cross-file fact (the encoding provides the operands). Layering rule: the schema
   layer never reads a second file — the moment a check needs two sources of truth, it belongs to
   a consumer, not the schema.
-
-## _(2026-09-27)_ — the star gets a start condition (ROADMAP v0.3)
-
-- ⭐ **A plan that cannot say when its first milestone starts is not yet a plan.** The vacuum
-  was measured, not argued: `27` commits since any milestone tree was touched, that touch being
-  P0 closure. The fix is not "work faster" — it is to make the sequencing *derivable*: P1's
-  start condition (`SOT-FORMAT.2` + `MODEL-METHOD.10`) is now named in the plan itself, and
-  every cross-cutting lane must name its consuming milestone (`decision_lane-consumption`).
-- ⭐ **Contradictions between contract documents are defects with owners, not interpretations to
-  code around.** ARCHITECTURE.md §1.1 (semantics are data) and §2 (canonical Rust handlers)
-  disagreed; P1 would have met that ambiguity on day one and picked silently. Recorded and
-  resolved in `decision_interpreter-before-compiler`: the data executes; compiled handlers are
-  derived artifacts behind an equivalence regression.
-- Counts in live documents drift by spelling: `LIVE_STATUS.md` carried `MODEL-METHOD 3/10`
-  (stale: 6 of 13) because the gated pattern only matches "of/leaves" phrasing — a count in a
-  non-gated spelling is a memory of a measurement. (Fix proposal D3 announced to the director;
-  the check extension is pending approval.)
 

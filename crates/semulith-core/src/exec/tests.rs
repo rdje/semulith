@@ -548,3 +548,33 @@ fn stored_code_is_visible_to_a_later_fetch() {
     assert_eq!(state.read_x(3), 7);
     assert_eq!(state.pc(), ENTRY + 0x10);
 }
+
+#[test]
+fn step_over_the_generated_table_resolves_exactly_what_decode_resolves() {
+    // P1-LAB.9's seam: the table scan inside `step_over` must BE the production definition —
+    // over every row's canonical word, operand-varied encodings, and words no row claims, it
+    // resolves the identical instruction `definition::decode` (the same documented predicate,
+    // `word & mask == value`) resolves.
+    let mut probes: Vec<u32> = INSNS.iter().map(|insn| insn.value).collect();
+    probes.extend([
+        enc("addi", &[("rd", 1), ("rs1", 0), ("imm12", 1)]),
+        enc("addi", &[("rd", 31), ("rs1", 31), ("imm12", 0xFFF)]),
+        enc("srli", &[("rd", 1), ("rs1", 1), ("shamtd", 1)]),
+        enc("srai", &[("rd", 1), ("rs1", 1), ("shamtd", 1)]),
+        enc("jalr", &[("rd", 10), ("rs1", 9), ("imm12", 13)]),
+        enc("ebreak", &[]),
+        0x0000_0000, // reserved: no row claims it
+        0xFFFF_FFFF, // reserved: no row claims it
+    ]);
+    for word in probes {
+        let scan = INSNS
+            .iter()
+            .find(|insn| word & insn.mask == insn.value)
+            .map(|insn| insn.name);
+        assert_eq!(
+            scan,
+            crate::definition::decode(word).map(|insn| insn.name),
+            "word {word:#010x}: the step_over scan and the generated decode disagree"
+        );
+    }
+}

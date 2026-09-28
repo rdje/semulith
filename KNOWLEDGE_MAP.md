@@ -71,6 +71,7 @@
 - [`decision_push-cadence.md`](docs/decisions/decision_push-cadence.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
+- [`decision_task-tree-family-bound-rederivation.md`](docs/decisions/decision_task-tree-family-bound-rederivation.md)
 - [`decision_task-tree-family-bound.md`](docs/decisions/decision_task-tree-family-bound.md)
 - [`reference_softfloat-shared-ancestry.md`](docs/decisions/reference_softfloat-shared-ancestry.md)
 - [`reference_upstream-spine-defects.md`](docs/decisions/reference_upstream-spine-defects.md)

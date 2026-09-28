@@ -55,7 +55,7 @@
 //! would resume from.
 
 use crate::arith;
-use crate::definition::{decode, FieldDef, InsnDef, Sem, FIELDS};
+use crate::definition::{FieldDef, InsnDef, Sem, FIELDS};
 use crate::env::{AccessWidth, BoundaryError, Environment, Failure, Request, Response};
 use crate::outcome::{
     Advance, ExceptionCause, ModelError, RequestedTrapKind, StepOutcome, TargetEvent, UndefinedCase,
@@ -65,7 +65,29 @@ use crate::state::ArchitecturalState;
 /// Execute the instruction at the current pc: fetch through the environment, decode, evaluate
 /// the semantics-data effect tree. Everything observable about one instruction retires through
 /// the returned [`StepOutcome`]; the harness matches on it.
+///
+/// This is [`step_over`] over the generated definition — the one execution path; there is no
+/// separate optimized dispatch to disagree with it.
 pub fn step(state: &mut ArchitecturalState, env: &mut impl Environment) -> StepOutcome {
+    step_over(state, env, crate::definition::INSNS)
+}
+
+/// Execute one instruction decoded from a caller-supplied instruction table — the P1-LAB.9
+/// validator mutation suite's seam. Production [`step`] passes the generated `definition::INSNS`;
+/// the suite passes a table with one row mutated (a changed decode mask, or an effect pointer to
+/// a mutated copy of a real tree) so a known-wrong model can be run and the differential judged
+/// against it. OWN-01 holds structurally: this is the same evaluator consuming data — a mutation
+/// is data, never a second implementation of a rule.
+///
+/// The lookup applies exactly the predicate `definition::decode` documents — a word decodes to
+/// the first row with `word & mask == value` — so over the generated table this is the
+/// production definition, byte for byte. The generated `decode` remains the fast dispatch for
+/// other callers; a linear scan is right at laboratory scale.
+pub fn step_over(
+    state: &mut ArchitecturalState,
+    env: &mut impl Environment,
+    insns: &[InsnDef],
+) -> StepOutcome {
     let pc = state.pc();
     let word = match env.request(Request::Fetch { addr: pc }) {
         Ok(Response::Fetch(word)) => word,
@@ -93,7 +115,8 @@ pub fn step(state: &mut ArchitecturalState, env: &mut impl Environment) -> StepO
             return StepOutcome::Failed(ModelError::ContractViolation(violation));
         }
     };
-    let Some(insn) = decode(word) else {
+    let insn = insns.iter().find(|insn| word & insn.mask == insn.value);
+    let Some(insn) = insn else {
         return StepOutcome::Undefined(UndefinedCase::ReservedDecode { at: pc });
     };
     let operands = match extract_operands(insn, word) {

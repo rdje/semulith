@@ -21,6 +21,7 @@
 //! is the `EVD-02` minimized-discrepancy form; every later difference may be a consequence
 //! of the first, so only the first is reported.
 
+use semulith_core::definition::InsnDef;
 use semulith_core::env::{BoundaryError, Environment, Request, Response};
 use semulith_core::exec;
 use semulith_core::outcome::{
@@ -112,8 +113,24 @@ pub struct Crossing {
 /// budget is spent. Every boundary crossing is recorded in order (the second return value),
 /// so a test can assert the fetch count (OB-ENV-FETCH-SUPPLY's no-extraneous-fetch clause)
 /// or that a misaligned access never crossed the boundary.
+///
+/// This is [`run_over`] over the generated definition — the one observation path.
 #[must_use]
 pub fn run(env: &mut impl Environment, entry: u64, budget: usize) -> (Trace, Vec<Crossing>) {
+    run_over(env, entry, budget, semulith_core::definition::INSNS)
+}
+
+/// Drives `exec::step_over` over a caller-supplied instruction table — the P1-LAB.9 mutation
+/// suite's seam (`semulith-verify::mutate`). Production [`run`] passes the generated
+/// `definition::INSNS`; the suite passes a table with one row mutated, so a known-wrong model
+/// produces the observations the differential must catch.
+#[must_use]
+pub fn run_over(
+    env: &mut impl Environment,
+    entry: u64,
+    budget: usize,
+    insns: &[InsnDef],
+) -> (Trace, Vec<Crossing>) {
     let mut state = ArchitecturalState::zeroed_at(entry);
     let mut crossings = Vec::new();
     let mut steps = Vec::new();
@@ -134,7 +151,7 @@ pub fn run(env: &mut impl Environment, entry: u64, budget: usize) -> (Trace, Vec
         };
         let before = snapshot(&state);
         let pc = state.pc();
-        let outcome = exec::step(&mut state, &mut recorded);
+        let outcome = exec::step_over(&mut state, &mut recorded, insns);
         if let StepOutcome::Event(TargetEvent::Exception {
             cause: ExceptionCause::InstructionAccessFault,
             ..
