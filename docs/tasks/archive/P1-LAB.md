@@ -647,3 +647,68 @@ Archived sections, verbatim:
   `scripts/check_fact_ownership.sh`), and this tree — one commit. (TOOLBOX also gains the
   rows `.3` owed: `gen_state.py`/`check_state_gen.sh` were missing from the tool table.)
 
+## Acceptance Checklist (leaf P1-LAB.10)
+
+- [x] **REPRODUCE / ISSUE** — G-REPLAY's demand as it stood after `.9`: a divergence the
+  differential caught existed only as a test's in-memory value — nothing recorded the inputs
+  that produced it, so "failures are replayable from recorded inputs" (gate `G1`'s first
+  criterion) and T007's "replay/reduction preserves mismatch" had no artifact and no
+  minimizer at all:
+
+  ```
+  $ git ls-files 'crates/*' | xargs grep -ln "Bundle\|ddmin\|first-divergence retention" | wc -l
+  0                    # no recorded input bundle; no reducer; the vocabulary existed in run.rs only
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.8`/`.9` built the observation vocabulary, the
+  comparator, and the mutation seam, but a result was never *recorded*: there was no type
+  carrying what ARCHITECTURE §7 says identity is — code/generator versions, initial state,
+  guest image, environment policy, event choices — so no run could be re-derived from
+  recorded inputs, and EVD-02's minimized discrepancy had no minimizer to produce it. WHERE,
+  measured at the parent commit:
+
+  ```
+  $ git grep -n "pub fn replay\|pub fn reduce" HEAD -- crates/ | wc -l
+  0                                            # the recorder and the minimizer existed nowhere
+  $ git ls-files 'crates/*' | xargs grep -ln "struct Bundle" | wc -l
+  0                                            # nothing recorded a run's inputs
+  ```
+
+- [x] **FIX** — `semulith-verify::replay`: the `Bundle` (algorithm pins flattened from
+  `definition::MANIFEST` + harness version + `production`/`mutant:<name>` model, platform
+  region, entry, image words with a sha256 guard, the recorded event choice
+  `DeclaredNone { OB-ENV-EVENT-DELIVERY }`, the step budget, and the recorded steps + stop
+  render), JSON both ways through the crate's own reader/writer, and `replay()` that checks
+  identity by name and then walks recorded-vs-replayed through `run::compare`.
+  `semulith-verify::reduce`: the ddmin minimizer over the guest word sequence, retention =
+  the original first divergence exactly (same step, same field), with the structural
+  invariant that every accepted removal retains. `semulith-cli` gains `bundle`, `replay`,
+  and `reduce`. No core change — the `.9` table seam is reused as-is.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify 2>&1 | grep "test result"
+  test result: ok. 114 passed; 0 failed; ...   # +15 replay suites, +6 reduce suites
+  ```
+
+  All four tracked guests replay identically under the production model (round-trip through
+  JSON, mutant bundle included); every tamper arm — image word, entry, region, budget,
+  generator pin, input pin, dropped pin, scripted event claim, missing accompaniment — is
+  refused or named-mismatched; zext-addi minimizes to the 2-word prefix (x1 @ step 1),
+  jal-no-link to 4 words (x5 @ step 7), jalr-odd-bit to 9 words (trap @ step 10, tval
+  0x80000029 re-derived from the minimized program — the fixture note's prediction,
+  retained); every minimized result carries an exhaustive 1-minimality witness; phantom-load
+  is refused `NoDivergence` by name (the census class is not reducible on observations).
+  CLI exercised end to end: `bundle` → `replay` identical (rc 0), `reduce` prints the
+  minimized program, a hand-corrupted bundle is refused with the digest named (rc 1).
+
+- [x] **NO REGRESSION** — `cargo fmt --all -- --check`, `clippy -D warnings`, `cargo test --all`
+  (5 suites ok, 65 core + 114 verify), wasm build rc=0, `make gate` green; the live file
+  stays under the per-part ceiling by archiving `.9`'s checklist (P1-LAB.md ≤ 65,536;
+  archive holds the unedited `.1`–`.9`).
+
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md` (+shard), `LIVE_STATUS.md`, `DEV_NOTES.md`
+  (+shard), `docs/TASK_TREE.md` (10/12), the book's P1 chapter ("Replay and reduction" now
+  describes the landed machinery), and this tree — one commit. No doctrine-registry change:
+  no new doctrine, no generated artifact.

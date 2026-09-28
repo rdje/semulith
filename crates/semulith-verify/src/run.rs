@@ -177,16 +177,7 @@ pub fn run_over(
                 trap: None,
             }),
             StepOutcome::Event(event) => {
-                let trap = match event {
-                    TargetEvent::Exception { cause, at } => (cause_code(cause), at),
-                    TargetEvent::RequestedTrap { kind, at } => (
-                        match kind {
-                            RequestedTrapKind::EnvironmentCall => 0x0b,
-                            RequestedTrapKind::Breakpoint => 0x03,
-                        },
-                        at,
-                    ),
-                };
+                let trap = trap_pair(&event);
                 steps.push(Step {
                     pc,
                     word,
@@ -239,7 +230,10 @@ fn recorded_word<E: Environment>(env: &Recording<'_, E>, pc: u64) -> u32 {
     panic!("run: no recorded fetch at pc {pc:#x} for the step just executed");
 }
 
-fn snapshot(state: &ArchitecturalState) -> [u64; 32] {
+/// `pub(crate)` for `bench` (`P1-LAB.11`): the instrumented mode builds its Step stream
+/// with exactly the runner's snapshot/diff, so a measured mode can never drift from the
+/// observation construction it measures.
+pub(crate) fn snapshot(state: &ArchitecturalState) -> [u64; 32] {
     let mut regs = [0u64; 32];
     for (i, reg) in regs.iter_mut().enumerate() {
         *reg = state.read_x(i as u8);
@@ -247,7 +241,7 @@ fn snapshot(state: &ArchitecturalState) -> [u64; 32] {
     regs
 }
 
-fn diff(before: [u64; 32], after: &ArchitecturalState) -> Vec<(u8, u64)> {
+pub(crate) fn diff(before: [u64; 32], after: &ArchitecturalState) -> Vec<(u8, u64)> {
     let mut writes = Vec::new();
     for (i, was) in before.iter().enumerate() {
         let now = after.read_x(i as u8);
@@ -258,9 +252,11 @@ fn diff(before: [u64; 32], after: &ArchitecturalState) -> Vec<(u8, u64)> {
     writes
 }
 
-struct Recording<'a, E: Environment> {
-    inner: &'a mut E,
-    log: &'a mut Vec<Crossing>,
+/// `pub(crate)` for `bench` (`P1-LAB.11`): the diagnostic mode's crossing log is this same
+/// wrapper, so the measured diagnostic overhead is the production recording's overhead.
+pub(crate) struct Recording<'a, E: Environment> {
+    pub(crate) inner: &'a mut E,
+    pub(crate) log: &'a mut Vec<Crossing>,
 }
 
 impl<E: Environment> Environment for Recording<'_, E> {
@@ -268,6 +264,23 @@ impl<E: Environment> Environment for Recording<'_, E> {
         let response = self.inner.request(request);
         self.log.push(Crossing { request, response });
         response
+    }
+}
+
+/// The observation-vocabulary trap pair for a target event: `(cause code, tval)`.
+/// `pub(crate)` for `bench` (`P1-LAB.11`): the benchmark's instrumented and diagnostic modes
+/// build the same Step stream through this one mapping, so a measured mode cannot drift
+/// from the runner's trap spelling.
+pub(crate) fn trap_pair(event: &TargetEvent) -> (u8, u64) {
+    match event {
+        TargetEvent::Exception { cause, at } => (cause_code(*cause), *at),
+        TargetEvent::RequestedTrap { kind, at } => (
+            match kind {
+                RequestedTrapKind::EnvironmentCall => 0x0b,
+                RequestedTrapKind::Breakpoint => 0x03,
+            },
+            *at,
+        ),
     }
 }
 

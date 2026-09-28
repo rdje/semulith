@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0011 (leaf P1-LAB.11) — the performance baseline; the laboratory measures itself
+
+- `semulith-verify::bench` is the measurement harness (RUST-04): four programmatically generated workload mixes — arithmetic (no data memory), control (alternating branches + jal/jalr), memory (stores and loads at all four widths), fault (model-side misaligned load/store + environment-side out-of-region load every iteration, under the stated delivery-continues policy) — each a counted loop ending in EBREAK, with every generated word pinned to `definition::decode` by the decode round-trip suite so the encoder cannot drift from the definition it feeds. The three ARCHITECTURE §6 modes run under one counting environment: `run_untraced` (no observation constructed), `run_instrumented<O: Observer + ?Sized>` (the Step stream via `run`'s own snapshot/diff/trap-mapping), `run_diagnostic` (+ the crossing log via `run`'s own `Recording`). `agree` states RUST-02 as data — steps, stop, final state, census, and every recorded stream — and the CLI refuses (exit 1) on disagreement.
+- The `alloc` module is a std-only counting `GlobalAlloc` (RUST-01: no benchmarking crate), installed by the CLI binary and the verify test binary, never the wasm cdylib. RUST-03 becomes a number: **1.00 allocation/step untraced** (the `extract_operands` Vec, 126–141 bytes/step), 1.19–1.42 traced — a measured departure, on record for the milestone that needs it.
+- `semulith bench` names the host — Apple M4 Pro; Darwin 27.0.0; rustc 1.95.0 — and measures iterations=10000, warmup=2, reps=12: untraced 47.2–54.1 ns/step across the mixes, instrumented +24–40%, diagnostic +4–8% further; noise spread 1.7–7.4% per cell (one 113% scheduler outlier on a millisecond-scale cell). **No regression threshold is set** — the noise table is the deliverable a future threshold cites. The static-vs-dynamic observer question (parked since `.1`) resolves by measurement: ×0.974–1.002, within noise; static generics stay the default.
+- Verification: 189 tests green across 5 suites (124 verify incl. 10 bench suites); clippy `-D warnings` clean; wasm build rc=0; `make gate` 23 doctrines green; `semulith bench` rc=0 with RUST-02 agreement OK on every mix. Book P1's "The performance baseline" now carries the measured table; TOOLBOX gains the `semulith bench` row; the `.10` acceptance checklist archives to `docs/tasks/archive/P1-LAB.md` (per-part ceiling obeyed).
+- Lockstep: MEMORY/LIVE_STATUS (P1 11/12)/TASK_TREE/CHANGELOG/DEV_NOTES + book P1 and this tree; frontier moves to `.12` (the G1 gate report).
+
 ## SEMILITH-PL-0010 (leaf P1-LAB.10) — replay and reduction; a result becomes an artifact
 
 - `semulith-verify::replay` is the recorded input bundle (G-REPLAY): `algorithm` pins flattened from `definition::MANIFEST` — profile, ilen, generator name+sha256, every input pin — plus the harness version and the model under test (`production` or `mutant:<name>`, resolved through the `.9` vocabulary); the platform region and entry; the image words with a sha256 guard; the recorded event choice (`DeclaredNone`, OB-ENV-EVENT-DELIVERY named — the platform's actual choice, recorded as data); the step budget; and the recorded steps plus the stop's canonical render. `replay()` checks identity by name — definition pins against the live manifest, then the image digest against the bundle's own words — and walks recorded-vs-replayed through `run::compare`, so drift is named at the first differing observation. JSON both ways through the crate's own reader and a hand-rolled writer; a document missing any accompaniment fails parse naming the field — the bare-seed refusal is structural (ARCHITECTURE §7: a seed without the generator version and event stream is insufficient).
@@ -568,49 +576,4 @@ evidence landed and every state became earned, not asserted:
 - **LS-002 → `acknowledged`** — upstream took ownership by name: the LS-001 fix commit records
   "LS-002 and related kind/strict requirements remain .83.1 owned". No re-run owed; the design
   question is theirs until it ships.
-
-## SEMULITH-SF-0051 (leaf SOT-FORMAT.9) — the pin moves, the readers agree, the loop closes
-
-Director instruction `2026-09-26`: upstream fixed and pushed the reported bugs, so the LinkedSpec
-pin advances `ad290bdb4` → `a8d34c845` (`origin/main` tip, ~120 commits). The update followed the
-guide's own flow — fetch, check out the reviewed revision, re-verify, THEN commit the pointer.
-RGX stays at `8763a0e6` on both pins (bootstrap: "already generated", a no-op); the consumer
-rebuilt in 20.39 s.
-
-**LS-001 is `verified`, not just `fixed-upstream`.** Our self-contained reproduction re-ran
-against the new binary and grammar: `8 matched / 0 differed` (was 4/4), and both readers now
-agree on **all five** tracked `.sexp` files, including the 43-form catalogue that had read as 6.
-The issue record, both index mirrors and the REPORT carry the `verified-against` pin the
-UPSTREAM-INDEX gate requires.
-
-**The fix moved the disagreement one layer down, and that layer is enumerated, not hidden.**
-The corpus census found exactly four residue atoms in `materials/catalog.sexp`: two
-quoted-numeric strings (`"20260911"`, `"1992"` — Lispish discards quote-kind, LS-002) and two
-escape-retained strings (`\"` kept verbatim — the guide documents this). Both are CLASS families
-in `compare_readers.py` now: each is anchored to exact byte meaning (`sexp._atom(A) == B`
-exactly; decoding B with sexp.py's own escape table reproduces A exactly), with 9 new self-test
-arms (4 GREEN classification, 5 RED masking) and a fired RED proof — the pre-fix grammar still
-makes the comparator report the original 43-vs-6 defect, rc=1. "Agree" still means same structure.
-
-**Named departure, one.** The guide now prescribes copying the consumer source into the
-application's crate; semulith builds the vendored example workspace in place (virtual root
-manifest has no package to own it) — recorded in the tree, to revisit when the engine adopts the
-reader. Upstream's document grammar (SExprDocumentV1, tagged kinds) is the durable answer to both
-CLASS families when that day comes.
-
-## SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1) — the first §8 cleanup, measured and recorded
-
-Session-directive §8 requires an artifact cleanup roughly every 24 h, tracked in
-`docs/ARTIFACT_CLEANUP.md`. The file did not exist — the "no file → clean this session" trigger
-fired — so the cleanup owns a task-tree now, the same as any other change.
-
-**Census before deleting anything** — 22 `.bin` under `target/`, 18 under `.app-data/target/`,
-all of them cargo incremental caches in the directive's enumerated scope; 7 crate **source**
-fixtures under `.app-data/cargo-home/` (inputs, not artifacts — kept); 13 reference-run logs
-under `target/refs/` (kept: evidence trails, 1.3 MB, outside the enumerated cargo dirs).
-
-**Measured, not asserted:** 40 files / 341 MB deleted (`.app-data` 1.4 G → 1.1 G); zero after;
-`git status` shows only the intended tracked files. The record is overwrite-only — one date and
-one line per run, so the file can never become the changelog it exists to prevent — and it is a
-governed live surface from its first commit (registered in `doctrine/readme_routes.tsv`).
 

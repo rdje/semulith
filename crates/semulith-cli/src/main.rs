@@ -45,11 +45,25 @@
 //!   0 — minimized; 1 — the case has no first-divergence to retain (the census
 //!   class: a wrong behaviour observations cannot see); 2 — usage or an unknown
 //!   name.
+//! - `semulith bench [--iterations N] [--reps R] [--warmup W]` — the performance
+//!   baseline (`P1-LAB.11`, RUST-04): run the four workload mixes (arithmetic,
+//!   control, memory, fault) in ARCHITECTURE §6's three modes (untraced,
+//!   instrumented — static and dyn — and diagnostic) on this named host, with
+//!   allocation counts, and print the noise table (min/median/max/spread per cell).
+//!   RUST-02 is checked as it measures: the modes must agree on every observable or
+//!   the run is refused. No regression threshold is set. Exit codes: 0 — measured
+//!   and all modes agree; 1 — a mode disagreement (RUST-02 broken); 2 — usage, an
+//!   escaped workload, or a harness refusal. This binary installs the counting
+//!   allocator (`semulith_verify::bench::alloc`) as its process allocator — two
+//!   relaxed atomic adds per allocation for every command, the price of RUST-03
+//!   being a number.
 
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
+use std::time::Instant;
 
 use semulith_core::definition::{decode, INSNS};
+use semulith_verify::bench::{self, Mix, Mode, Stats};
 use semulith_verify::elf;
 use semulith_verify::fixtures::FlatMemory;
 use semulith_verify::graph::{check_bundle, Bundle};
@@ -67,7 +81,14 @@ const USAGE: &str = "semulith — the laboratory control surface\n\
                      \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n\
                      \x20       semulith bundle --guest NAME [--mutate NAME]\n\
                      \x20       semulith replay <file.json>\n\
-                     \x20       semulith reduce --guest NAME --mutate NAME\n";
+                     \x20       semulith reduce --guest NAME --mutate NAME\n\
+                     \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n";
+
+/// The process-wide counting allocator (`P1-LAB.11`): allocation counts are measured
+/// per benchmark cell by resetting around the timed run; for every other command the
+/// cost is two relaxed atomic adds per allocation.
+#[global_allocator]
+static COUNTING: bench::alloc::Counting = bench::alloc::Counting;
 
 /// The platform's declared MainMemory region: base and size from the matched
 /// profile (`reference/sail-rv64i-lab-v0.override.sexp` names the same region).
@@ -91,6 +112,7 @@ fn main() -> ExitCode {
         Some("bundle") => bundle(&args[1..]),
         Some("replay") => replay(&args[1..]),
         Some("reduce") => reduce_cmd(&args[1..]),
+        Some("bench") => bench_cmd(&args[1..]),
         _ => {
             eprint!("{USAGE}");
             ExitCode::from(2)
@@ -534,6 +556,210 @@ fn reduce_cmd(args: &[String]) -> ExitCode {
             );
             ExitCode::from(1)
         }
+    }
+}
+
+/// One measured cell: a mix in a mode — the noise summary, the per-step allocation
+/// counts, and the last run's facts (kept for the cross-mode agreement check).
+struct Cell {
+    mode: Mode,
+    stats: Stats,
+    allocations: usize,
+    bytes: usize,
+    run: bench::ModeRun,
+}
+
+/// The host this baseline was measured on, named as the leaf requires: CPU brand where
+/// the platform supplies one, kernel, and the rustc that built the binary. Best-effort
+/// probes; a missing probe degrades the string, never the run.
+fn host_identity() -> String {
+    let probe = |program: &str, args: &[&str]| -> Option<String> {
+        let out = std::process::Command::new(program)
+            .args(args)
+            .output()
+            .ok()?;
+        if !out.status.success() {
+            return None;
+        }
+        let text = String::from_utf8_lossy(&out.stdout).trim().to_string();
+        (!text.is_empty()).then_some(text)
+    };
+    let cpu = probe("sysctl", &["-n", "machdep.cpu.brand_string"])
+        .or_else(|| probe("sysctl", &["-n", "hw.model"]))
+        .unwrap_or_else(|| std::env::consts::ARCH.to_string());
+    let kernel = probe("uname", &["-sr"]).unwrap_or_else(|| std::env::consts::OS.to_string());
+    let rustc = probe("rustc", &["--version"]).unwrap_or_else(|| "rustc unknown".to_string());
+    format!("{cpu}; {kernel}; {rustc}")
+}
+
+/// `semulith bench` — the performance baseline. Measures every mix in every mode with
+/// warmup + repeated reps, checks RUST-02 (the modes must agree on every observable) as
+/// it measures, and prints the noise table. No threshold is set: RUST-04 requires the
+/// noise to be characterized first, and this report is that characterization.
+fn bench_cmd(args: &[String]) -> ExitCode {
+    let mut iterations = 10000u32;
+    let mut reps = 12usize;
+    let mut warmup = 2usize;
+    for arg in args {
+        if let Some(n) = arg.strip_prefix("--iterations=") {
+            match n.parse::<u32>() {
+                Ok(v) if (1..=bench::MAX_ITERATIONS).contains(&v) => iterations = v,
+                _ => {
+                    return usage(&format!(
+                        "bench: --iterations wants 1..={}",
+                        bench::MAX_ITERATIONS
+                    ))
+                }
+            }
+        } else if let Some(n) = arg.strip_prefix("--reps=") {
+            match n.parse() {
+                Ok(v) if v > 0 => reps = v,
+                _ => return usage("bench: --reps wants a positive integer"),
+            }
+        } else if let Some(n) = arg.strip_prefix("--warmup=") {
+            match n.parse() {
+                Ok(v) => warmup = v,
+                _ => return usage("bench: --warmup wants an integer"),
+            }
+        } else {
+            return usage(&format!("bench: unknown option {arg}"));
+        }
+    }
+
+    println!("semulith bench — the performance baseline (P1-LAB.11)");
+    println!("host: {}", host_identity());
+    println!(
+        "config: iterations={iterations}, warmup={warmup}, reps={reps}; wall-clock per run (std::time::Instant); allocations via the process-wide counting allocator"
+    );
+    println!(
+        "noise: spread = (max\u{2212}min)/median over the reps, characterized BEFORE any threshold (RUST-04) — no regression threshold is set or implied by this report"
+    );
+
+    let mut broken = false;
+    for mix in Mix::ALL {
+        let budget = bench::budget_for(mix, iterations);
+        let mut cells: Vec<Cell> = Vec::new();
+        for mode in Mode::ALL {
+            let mut samples: Vec<u64> = Vec::with_capacity(reps);
+            let mut allocations = 0;
+            let mut bytes = 0;
+            let mut last_run: Option<bench::ModeRun> = None;
+            for rep in 0..(warmup + reps) {
+                let (mut env, words) = bench::prepare(mix, iterations);
+                bench::alloc::reset();
+                let start = Instant::now();
+                let run = match bench::run_mode(mode, &mut env, &words, budget) {
+                    Ok(run) => run,
+                    Err(why) => {
+                        eprintln!("bench: {} / {}: {}", mix.name(), mode.name(), why.0);
+                        return ExitCode::from(2);
+                    }
+                };
+                let elapsed = start.elapsed();
+                let counted = bench::alloc::counts();
+                if run.facts.stop != Stop::Trap {
+                    eprintln!(
+                        "bench: {} / {} did not terminate on its trap (stop: {:?}) — the workload escaped its loop, a bench defect",
+                        mix.name(),
+                        mode.name(),
+                        run.facts.stop
+                    );
+                    return ExitCode::from(2);
+                }
+                if rep >= warmup {
+                    samples.push(u64::try_from(elapsed.as_nanos()).unwrap_or(u64::MAX));
+                    allocations = counted.0;
+                    bytes = counted.1;
+                }
+                last_run = Some(run);
+            }
+            cells.push(Cell {
+                mode,
+                stats: bench::stats(&samples),
+                allocations,
+                bytes,
+                run: last_run.expect("reps > 0, so a run exists"),
+            });
+        }
+
+        // RUST-02, checked as we measure: the untraced facts against every traced mode,
+        // and the recorded streams identical among the traced modes.
+        let pivot = &cells[0];
+        for cell in &cells[1..] {
+            if let Err(why) =
+                bench::agree(&pivot.run, &cell.run, (pivot.mode.name(), cell.mode.name()))
+            {
+                println!(
+                    "  RUST-02 DISAGREEMENT in {}: {} vs {} — {why}",
+                    mix.name(),
+                    pivot.mode.name(),
+                    cell.mode.name()
+                );
+                broken = true;
+            }
+        }
+        if let Err(why) = bench::agree(&cells[1].run, &cells[2].run, ("static", "dyn")) {
+            println!(
+                "  RUST-02 DISAGREEMENT in {}: static vs dyn — {why}",
+                mix.name()
+            );
+            broken = true;
+        }
+        if let Err(why) = bench::agree(&cells[2].run, &cells[3].run, ("dyn", "diagnostic")) {
+            println!(
+                "  RUST-02 DISAGREEMENT in {}: dyn vs diagnostic — {why}",
+                mix.name()
+            );
+            broken = true;
+        }
+
+        let facts = &cells[0].run.facts;
+        let census = facts.census;
+        println!(
+            "\nmix: {} — {} steps; census: {} fetches, {} loads, {} stores, {} faults",
+            mix.name(),
+            facts.steps,
+            census.fetches,
+            census.loads,
+            census.stores,
+            census.faults
+        );
+        println!(
+            "  {:<19} {:>10} {:>10} {:>10} {:>8} {:>13} {:>11}",
+            "mode", "ns/step", "min", "max", "spread", "allocs/step", "bytes/step"
+        );
+        for cell in &cells {
+            let steps = cell.run.facts.steps as f64;
+            println!(
+                "  {:<19} {:>10.1} {:>10.1} {:>10.1} {:>7.2}% {:>13.2} {:>11.1}",
+                cell.mode.name(),
+                cell.stats.median as f64 / steps,
+                cell.stats.min as f64 / steps,
+                cell.stats.max as f64 / steps,
+                cell.stats.spread_ppm as f64 / 10_000.0,
+                cell.allocations as f64 / steps,
+                cell.bytes as f64 / steps,
+            );
+        }
+        let ratio = cells[2].stats.median as f64 / cells[1].stats.median.max(1) as f64;
+        println!(
+            "  static vs dynamic observer dispatch: \u{d7}{ratio:.3} (instrumented vs instrumented (dyn), medians)"
+        );
+        if broken {
+            println!("  agreement: BROKEN — see above");
+        } else {
+            println!(
+                "  agreement: OK — all modes agree on steps, stop, final state and census; every recorded observation stream is identical (RUST-02)"
+            );
+        }
+    }
+
+    if broken {
+        println!("\nbench: RUST-02 BROKEN — a traced run changed the observations");
+        ExitCode::from(1)
+    } else {
+        println!("\nbench: measured; every mode agrees on every mix (RUST-02 holds)");
+        ExitCode::from(0)
     }
 }
 

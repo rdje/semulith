@@ -3,6 +3,14 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-28)_ — the performance baseline: noise first, thresholds never (P1-LAB.11)
+
+Root cause: gate `G1`'s fifth criterion and ARCHITECTURE §6's three benchmark modes had no instrument — every runner was correctness-oriented (`run_over` stops at the first trap, always records crossings: one fused mode), no allocation counting existed, and the zero-dependency rule (RUST-01) rules out the usual benchmarking crates, so the harness is ours. Implementation: `semulith-verify::bench` — programmatically generated mixes whose every word is decode-round-trip-pinned to the generated definition (the encoders are harness data, .9's standing); one counting environment wrapper makes the census comparable across modes without recording it; the instrumented runner is generic over `Observer`, so static-vs-dynamic is literally one function instantiated two ways, measured as two cells. The fault mix needed a stated harness policy: a delivered exception is observed and execution resumes at pc+4 (delivery-continues, ARCHITECTURE §5) — `run_over` could never drive it. Validation: 10 suites — decode round-trip for every word of every mix; per-mix census proving each mix exercises its own class (the misaligned pair never crosses the boundary; only the out-of-region ld faults at it); the pc+4 continuation pinned; four-mode agreement at test budgets; the allocator counting a known allocation (≥-assertions — sibling tests allocate concurrently); stats pinned on known inputs. Measured on the named host: untraced 47–54 ns/step; instrumented +24–40%; diagnostic +4–8% further; static/dyn ×0.974–1.002 — the parked dispatch question answered within noise. Noise spread 1.7–7.4% per cell, one 113% scheduler outlier; no threshold set (RUST-04).
+
+Design notes, kept: (1) the measured modes share `run`'s snapshot/diff/trap-mapping/`Recording` as `pub(crate)` — a measured mode can never drift from the production observation construction it measures. (2) The executed word comes from the harness's own image, never a second fetch — a re-fetch would (correctly) count as extraneous in the census. (3) The first calibration run at iterations=1000 showed spreads up to 116% — millisecond-scale runs are scheduler-dominated; lifting the counter past addi's 12-bit range (lui+addiw pair) made 10000-iteration runs the default and the noise honest (1.7–7.4%). A benchmark whose runs are too short measures the OS, not the interpreter. (4) RUST-03's departure is now a number: exactly 1.00 allocation/step untraced (`extract_operands`' Vec) — recorded in the tree's Decisions for the milestone that needs it; P1's Non-Goals still exclude optimization.
+
+Lessons: declined here (harness-policy shape and the image-word lookup are module-doc design notes; "a zero-cost assumption is a claim until measured" already lives in ARCHITECTURE §6; the short-run noise lesson is recorded above for this tree's readers and generalizes only when a second benchmark exists).
+
 ## _(2026-09-28)_ — replay and reduction: a result becomes an artifact (P1-LAB.10)
 
 Root cause: `.8`/`.9` built the vocabulary, the comparator, and the mutation seam, but a result was never *recorded* — G-REPLAY's "reproduce from recorded definitions, tools, inputs, and event choices" had no definitions-and-inputs carrier, so gate `G1`'s "failures are replayable" and T007's "replay/reduction preserves mismatch" were claims without artifacts. Implementation: `semulith-verify::replay` — the `Bundle` flattens `definition::MANIFEST` into the algorithm block (the OWN-03 pins become the algorithm/version accompaniment; the harness version and `production`/`mutant:<name>` model complete the tool identity), carries the platform/entry/image-with-sha256/events/budget, and records the steps + the stop's canonical render; `replay()` checks identity by name — pins against the live manifest both directions, then the image digest against the bundle's own words — and walks recorded-vs-replayed through `run::compare`, so drift is named at the first differing observation rather than summarised. The stop is compared rendered, not re-typed: `Failed`/`Undefined` stops carry data no JSON round-trip could rebuild, and the render is deterministic — nothing is lost. `semulith-verify::reduce` — ddmin over the word sequence (ILEN 32 ⇒ one word = one observation step), retention = the original first divergence exactly (same `at`, same `what`); the strictness is free and load-bearing — a same-step retained divergence is byte-identical because the executed prefix is unchanged, and a removal that shifts the symptom is a different bug wearing the original's clothes. The accepted-removal invariant makes retention structural: the result cannot fail to retain. Validation: 15 replay suites (all four guests replay identically under production + the zext-addi mutant; tamper arms — image, entry, region, budget, generator pin, input pin, dropped pin, scripted event claim, missing accompaniment — each refused or named-mismatched; empty-run replay) and 6 reduce suites (three prefix minimizations with exhaustive 1-minimality witnesses — the witness loop re-runs the property on every single deletion; phantom-load refused `NoDivergence`; clean model refused). CLI exercised end to end.
@@ -434,44 +442,4 @@ Lessons: promoted — `docs/knowledge/a-duplicate-id-is-a-contradiction-not-a-sh
 (the id-keyed dict that collapses duplicates is the same failure in any gate). The
 mixed-namespace dependency fact is declined here: measured, owned and enforced by
 `merge_records.py`'s closure, where anyone extending the record families meets it.
-
-## _(2026-09-27)_ — the dossier moves behind the schema layer (SOT-FORMAT.4)
-
-- All nine dossier documents converted — `profile.sexp` (26 decisions), `state.sexp`,
-  `sources.sexp`, `references.sexp`, the matched override and the four guest expectations —
-  each verified field-for-field against its retired TOML/JSON with the comment census exact
-  (158 comment lines survive as first-class `(comment …)` forms). Kernel: one reserved comment
-  head, 7 new arms (50/0). `PROFILE-CONSISTENCY`: 39 arms re-fired on the converted form.
-  Consumers changed at the seam via the new mapping owner `scripts/dossier_sexp.py`; the Sail
-  JSON derives from the tracked `.sexp` byte-identically; `run_smoke`/`compare_platforms`
-  unmoved.
-- ⭐ **A mutation arm and the defect it simulates must fail for the same reason.** Three
-  fixture-shape failures while re-firing the 39 arms — a field line carrying its form's close
-  paren (a `grep -v` arm unbalanced the fixture), BSD sed refusing multiline replacements
-  (CI runs GNU sed; `gsed` on the author's machine is not a dependency the gate may take), and
-  `${var/pat/repl}` terminating at an inner quote (the replacement silently never happened).
-  Every fix was the same shape: one field per line, closes on their own lines, whole-line
-  mutations only. Promoted to
-  [`docs/knowledge/portable-shell-fixtures-keep-mutations-whole-line.md`](docs/knowledge/portable-shell-fixtures-keep-mutations-whole-line.md).
-
-## _(2026-09-27)_ — the fired ceiling gets its sharder, and the freeze gets its proof (DOC-SHARDING.1)
-
-- `CHANGELOG.md` crossed its 64 KiB ceiling with 9 bytes of headroom; this slice built the
-  remedy the registry's owner column had always named: `scripts/shard_history.py` (moves the
-  oldest whole `## ` entries byte-verbatim into `docs/changelog/shard-NNNN.md`, rewrites the
-  head under target, regenerates `SHARDS.sha256`), the adoption manifest covering the two
-  existing date-named shards, and the `SHARD-FREEZE` doctrine check. One entry (`P0-0031`,
-  3.4 KiB) moved; the head went 65,527 → 62,086 bytes — leaving room for this entry itself.
-- ⭐ **The completeness proof belongs to the shard event; the freeze proof belongs to the
-  manifest.** The tool can assert "head-before == head-after + shard, order and bytes exact"
-  because it holds both sides at the event; no later check can, the past head is gone. What the
-  durable check can prove is everything after: every shard hashes to its row (an edit fails with
-  both digests named), the manifest only grows against `git show HEAD:…`, and no `## ` heading
-  appears twice across head and shards. Splitting the two halves is what makes each half
-  checkable.
-- Fired RED on the real tree before registration — the manifest did not exist yet, so the check
-  reported both existing shards `UNMANIFESTED` (rc 1), the exact adoption gap. 12 self-test
-  arms; the full gate re-run after registration moved `LIVE_STATUS.md`'s derived counts
-  (12 → 13 doctrines, 157 → 169 arms) — re-derived by `check_derived_counts.sh --list`, never
-  incremented by hand.
 

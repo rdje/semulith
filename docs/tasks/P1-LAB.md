@@ -405,9 +405,79 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   new one). The frontier moves to `.11` (performance baseline).
 
 - ID: `P1-LAB.11` — **performance baseline**
-  Status: `pending`
+  Status: `done`
   Goal: measure arithmetic, control-flow, memory and fault-heavy mixes separately on a **named** host, with allocation counts and trace settings, in untraced / instrumented / diagnostic modes.
   Acceptance: repeated measurement characterizes the noise **before** any regression threshold is set (`RUST-04`); no invented MIPS target; traced and untraced executions agree on observations (`RUST-02`).
+  Design (recorded before code, `2026-09-28`): two pieces, on their owning sides of the
+  `docs/ARCHITECTURE.md` §4 map — the harness in `semulith-verify` (measurement is evidence
+  machinery beside the comparators; no core change), the command surface in `semulith-cli`.
+  1. `semulith-verify::bench` — the measurement harness, four parts:
+     - **Workload mixes** (`Mix::{Arithmetic, Control, Memory, Fault}`): `program(mix,
+       iterations)` generates the guest words programmatically — encoders local to the
+       harness (the same standing as `.9`'s mutated trees; a test pins EVERY word to the
+       instruction `definition::decode` names for it). Each mix is a counted loop ending
+       in EBREAK: **arithmetic** churns the ALU vocabulary with no memory traffic;
+       **control** alternates taken/not-taken branches with jal/jalr; **memory** walks
+       sd/sw/sh/sb stores and ld/lw/lh/lb/lwu/lhu/lbu loads over a scratch area;
+       **fault** runs a model-side misaligned load and store (raised before the boundary)
+       plus an environment-side out-of-region load (the boundary's AccessFault) every
+       iteration, so the exception paths are the measured common case. The fault mix runs
+       under a stated harness policy: a delivered exception is observed and execution
+       resumes at pc+4 (delivery-continues, ARCHITECTURE §5); a requested trap (EBREAK)
+       stops the run; the step budget is only a safety bound.
+     - **The three modes** (ARCHITECTURE §6's untraced / instrumented / diagnostic):
+       `run_untraced` (the bare `exec::step` loop — no observation is constructed),
+       `run_instrumented<O: Observer + ?Sized>` (the Step stream built by `run`'s own
+       snapshot/diff/trap-mapping, reused `pub(crate)`; the word comes from the harness's
+       own image, never a second fetch), and `run_diagnostic` (+ the crossing log via
+       `run`'s `Recording`). All modes share one counting environment wrapper so the
+       census is comparable without being recorded. The instrumented runner is generic
+       over the observer, so the open question — static vs dynamic dispatch — is MEASURED,
+       not argued: one function instantiated with `VecObserver` and with `dyn Observer` is
+       two cells of the same report.
+     - **Allocation counts**: a `GlobalAlloc` wrapper over `System` (std-only, RUST-01),
+       installed by the CLI binary and by verify's test binary; the wasm cdylib is
+       untouched. Allocations and bytes per step per mix per mode — RUST-03's "no
+       mandatory per-instruction allocation" as a number, not a posture.
+     - **Noise first** (RUST-04): every cell repeated R times after W warmups; the report
+       carries min/median/mean/max and the (max−min)/median spread. No threshold is set
+       anywhere — the noise table is the deliverable a future threshold must cite.
+  2. `semulith bench [--iterations N] [--reps R]` in `semulith-cli` — names the host (OS/arch,
+     the CPU brand where the platform supplies one, the rustc version that built the binary),
+     runs the cells, and checks RUST-02 AS it measures: per mix, all modes must agree on step
+     count, stop classification, final architectural state and crossing census, and the
+     instrumented (static and dyn) and diagnostic Step streams must be identical — a
+     disagreement is a refusal (exit 1), not a footnote.
+  3. Suite (Rust tests, `make check`; no new doctrine — no generated artifact; the harness
+     guards measurement honesty, not drift): decode round-trip for every word; per-mix
+     census proving each mix exercises its own class; four-mode agreement at small budgets
+     (RUST-02 exercised, not just reported); the allocator counts a known allocation; the
+     statistics pinned on known inputs.
+  Result: met, `2026-09-28`. `semulith-verify::bench` is the measurement harness: the four
+  mixes generated programmatically (every word pinned to the generated definition by the
+  decode round-trip suite), the three modes sharing one counting environment so the census
+  is comparable without being recorded, `agree` stating RUST-02 as data (facts plus every
+  recorded stream), the std-only counting allocator, and the noise statistics.
+  `semulith bench` names the host — **Apple M4 Pro; Darwin 27.0.0; rustc 1.95.0
+  (59807616e 2026-04-14)** — and measured every cell at iterations=10000, warmup=2,
+  reps=12: untraced 47.2–54.1 ns/step across the four mixes (~19–21 M instructions/s),
+  instrumented +24–40% over untraced, diagnostic a further ~4–8%; allocations 1.00/step
+  untraced (the `extract_operands` Vec — RUST-03's departure, now a measured number:
+  126.3–140.8 bytes/step), 1.19–1.42/step traced; noise spread 1.7–7.4% per cell with one
+  scheduler outlier at 113% on a millisecond-scale cell — the honest spread a future
+  threshold must be set FROM, and none is set. Static vs dynamic observer dispatch:
+  ×0.974–1.002 across the mixes — within the measured noise, so the open question resolves
+  by measurement: static generics stay the default; a trait object costs nothing measurable
+  at laboratory scale. RUST-02 was checked as it measured: all four modes agree on steps,
+  stop, final state and census on every mix, every recorded observation stream identical,
+  and the check is a refusal path (exit 1). 10 new suites (124 verify total). No new
+  doctrine (no generated artifact — the harness guards measurement honesty, not drift).
+  Lessons: promotion — declined (the harness-policy shape and the image-word lookup are
+  this leaf's design notes, recorded in the module docs; the RUST-03 finding is this tree's
+  Decisions entry; "a zero-cost assumption is a claim until measured" already lives in
+  ARCHITECTURE §6). The frontier moves to `.12` (the G1 gate report). The `.10` acceptance
+  checklist archives to [`archive/P1-LAB.md`](archive/P1-LAB.md) — the live file crossed
+  its per-part ceiling; the ceiling was obeyed, not raised.
 
 - ID: `P1-LAB.12` — **the `G1` gate report**
   Status: `pending`
@@ -418,7 +488,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P1-LAB.11` | `pending` | performance baseline — T-pending; measure the noise before any threshold (`RUST-04`) |
+| 1 | `P1-LAB.12` | `pending` | the `G1` gate report — the baseline is measured, every other criterion landed |
 
 ## Decisions
 
@@ -450,6 +520,16 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   trusting them — a mirror that cannot re-derive its rule is a hope, not a derivation. The
   semantics DATA remains the one executable owner of every rule (OWN-01); `decode` is dispatch
   metadata, and evaluation stays with `.8`.
+- `2026-09-28` (`.11`): the diagnostic observer's dispatch is **static by measured default** —
+  the instrumented runner is generic over `Observer`, and the dyn instantiation measured
+  ×0.974–1.002 of the static one across the four mixes (within the cells' own noise), so
+  ARCHITECTURE §6's "choose by measured cost" is answered: no measurable cost either way at
+  laboratory scale; static generics remain the default and trait objects are permitted where
+  extensibility needs them. Second, a measured RUST-03 departure, stated not hidden: the
+  definitional interpreter allocates one Vec per step (`extract_operands`), 1.00
+  allocation/step untraced — P1's Non-Goals exclude optimization and the readable
+  interpreter keeps its shape; the number is now on record for the milestone that needs it
+  (the compiled-handlers decision names its consumer).
 - `2026-09-28` (`.9`): the mutation seam is **data, not a second implementation**: `exec` and
   `run` are parameterized over the instruction table, production passes `definition::INSNS`,
   and a mutated model is a copied table with one row swapped — evaluated by the one evaluator
@@ -462,9 +542,11 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 - Exact shapes of the four outcome enums — a P1 design result, not a P0 commitment
   (`docs/ARCHITECTURE.md` §5). Does not block `.1`.
-- Static versus dynamic dispatch for the diagnostic observer: chosen on **measured** cost, not
-  assumed to be free (`docs/ARCHITECTURE.md` §6). Resolved by `.11`.
-- Benchmark host, sample sizes and thresholds: no threshold before the noise is characterized.
+- ~~Static versus dynamic dispatch for the diagnostic observer~~ — resolved by `.11`
+  (measured ×0.974–1.002, within noise; static by default, see Decisions).
+- ~~Benchmark host, sample sizes and thresholds~~ — host named and noise characterized by
+  `.11`; thresholds remain deliberately UNSET (RUST-04: the noise table is the deliverable,
+  and the leaf that needs a threshold sets it from those numbers).
 - Scripted-environment replay: `ScriptedEnv`'s pinned conversation is an event stream a bundle
   does not yet record (`replay::Events` carries only the platform's declared-none choice,
   and refuses other claims by name). Joins when a tracked consumer needs it — a fault-injection
@@ -477,76 +559,81 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   unresolved choices into code.
 
 
-## Acceptance Checklist (leaf P1-LAB.10)
+## Acceptance Checklist (leaf P1-LAB.11)
 
-- [x] **REPRODUCE / ISSUE** — G-REPLAY's demand as it stood after `.9`: a divergence the
-  differential caught existed only as a test's in-memory value — nothing recorded the inputs
-  that produced it, so "failures are replayable from recorded inputs" (gate `G1`'s first
-  criterion) and T007's "replay/reduction preserves mismatch" had no artifact and no
-  minimizer at all:
-
-  ```
-  $ git ls-files 'crates/*' | xargs grep -ln "Bundle\|ddmin\|first-divergence retention" | wc -l
-  0                    # no recorded input bundle; no reducer; the vocabulary existed in run.rs only
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `.8`/`.9` built the observation vocabulary, the
-  comparator, and the mutation seam, but a result was never *recorded*: there was no type
-  carrying what ARCHITECTURE §7 says identity is — code/generator versions, initial state,
-  guest image, environment policy, event choices — so no run could be re-derived from
-  recorded inputs, and EVD-02's minimized discrepancy had no minimizer to produce it. WHERE,
-  measured at the parent commit:
+- [x] **REPRODUCE / ISSUE** — gate `G1`'s fifth criterion ("the performance baseline is
+  measured") and ARCHITECTURE §6's three benchmark modes had no instrument at all: nothing
+  could run an execution mix, count its allocations, or compare traced against untraced.
+  Measured at the parent commit (`0d12c75`):
 
   ```
-  $ git grep -n "pub fn replay\|pub fn reduce" HEAD -- crates/ | wc -l
-  0                                            # the recorder and the minimizer existed nowhere
-  $ git ls-files 'crates/*' | xargs grep -ln "struct Bundle" | wc -l
-  0                                            # nothing recorded a run's inputs
+  $ git grep -c "run_untraced\|Mix::Arithmetic\|run_diagnostic" HEAD -- crates/ | wc -l
+  0                                 # no harness, no mixes, no modes
+  $ git grep -n "semulith bench" HEAD -- crates/semulith-cli/src/main.rs | wc -l
+  0                                 # no command surface either
   ```
 
-- [x] **FIX** — `semulith-verify::replay`: the `Bundle` (algorithm pins flattened from
-  `definition::MANIFEST` + harness version + `production`/`mutant:<name>` model, platform
-  region, entry, image words with a sha256 guard, the recorded event choice
-  `DeclaredNone { OB-ENV-EVENT-DELIVERY }`, the step budget, and the recorded steps + stop
-  render), JSON both ways through the crate's own reader/writer, and `replay()` that checks
-  identity by name and then walks recorded-vs-replayed through `run::compare`.
-  `semulith-verify::reduce`: the ddmin minimizer over the guest word sequence, retention =
-  the original first divergence exactly (same step, same field), with the structural
-  invariant that every accepted removal retains. `semulith-cli` gains `bundle`, `replay`,
-  and `reduce`. No core change — the `.9` table seam is reused as-is.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.8`/`.9`/`.10` built execution, mutation and replay,
+  but every runner in the tree was correctness-oriented: `run::run_over` stops at the first
+  trap (so a fault-heavy mix could not even be driven), nothing constructed the three
+  ARCHITECTURE §6 modes as separately measurable cells, no allocation counting existed
+  anywhere (the crate's zero-dependency rule rules out the usual benchmarking crates —
+  RUST-01 makes the harness ours), and the static-vs-dynamic observer question was parked
+  precisely because nothing could measure it. WHERE: the runner family lived only in
+  `crates/semulith-verify/src/run.rs` (stops at first trap, always records crossings —
+  one fused mode), and no bench/alloc/statistics code existed (`git grep` above).
+
+- [x] **FIX** — `semulith-verify::bench`: the four programmatically generated mixes (every
+  word decode-round-trip-pinned to `definition::decode`), the counting environment wrapper
+  (`Census`), the stated harness policy for the fault mix (delivered exception → observe,
+  resume at pc+4; requested trap → stop; fetch fault → stop silent, run.rs's rule),
+  `run_untraced` / `run_instrumented<O: Observer + ?Sized>` / `run_diagnostic` (sharing
+  `run`'s snapshot/diff/trap-mapping/`Recording` as `pub(crate)` — the measured modes ARE
+  the production observation construction), `agree` (RUST-02 as data), the `alloc`
+  counting allocator (std-only, installed by the CLI binary and the verify test binary,
+  never the wasm cdylib), and `stats` (min/median/mean/max + spread). `semulith-cli` gains
+  `bench` — names the host, runs warmup+reps per cell, checks RUST-02 as it measures
+  (disagreement is exit 1), prints the noise table, sets no threshold. No core change.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
   $ cargo test -p semulith-verify 2>&1 | grep "test result"
-  test result: ok. 114 passed; 0 failed; ...   # +15 replay suites, +6 reduce suites
+  test result: ok. 124 passed; 0 failed; ...   # +10 bench suites
+  $ cargo build --release -p semulith-cli && ./target/release/semulith bench
+  host: Apple M4 Pro; Darwin 27.0.0; rustc 1.95.0 (59807616e 2026-04-14)
+  mix arithmetic: untraced 52.1 / instrumented 69.6 / dyn 69.6 / diagnostic 73.4 ns/step,
+    allocs/step 1.00 -> 1.19, spread 1.7-3.6%
+  mix control:    47.2 / 65.4 / 65.5 / 70.1, 1.00 -> 1.42, spread 4.6-6.0% (one 113%
+    scheduler outlier on a millisecond-scale cell)
+  mix memory:     54.1 / 71.0 / 70.9 / 76.9, 1.00 -> 1.23, spread 3.9-6.5%
+  mix fault:      50.9 / 69.4 / 67.5 / 71.0, 1.00 -> 1.20, spread 4.6-7.4%
+  static vs dynamic observer dispatch: x0.974-1.002 across the mixes
+  bench: measured; every mode agrees on every mix (RUST-02 holds)   # rc=0
   ```
 
-  All four tracked guests replay identically under the production model (round-trip through
-  JSON, mutant bundle included); every tamper arm — image word, entry, region, budget,
-  generator pin, input pin, dropped pin, scripted event claim, missing accompaniment — is
-  refused or named-mismatched; zext-addi minimizes to the 2-word prefix (x1 @ step 1),
-  jal-no-link to 4 words (x5 @ step 7), jalr-odd-bit to 9 words (trap @ step 10, tval
-  0x80000029 re-derived from the minimized program — the fixture note's prediction,
-  retained); every minimized result carries an exhaustive 1-minimality witness; phantom-load
-  is refused `NoDivergence` by name (the census class is not reducible on observations).
-  CLI exercised end to end: `bundle` → `replay` identical (rc 0), `reduce` prints the
-  minimized program, a hand-corrupted bundle is refused with the digest named (rc 1).
+  Every generated word decode-round-trips to its intended instruction; each mix's census
+  proves its class (arithmetic/control touch no data memory; memory: 7 loads + 4 stores
+  per iteration; fault: causes 04/06/05 per iteration in order — the misaligned pair never
+  crosses the boundary — plus the closing EBREAK); the delivered-exception policy is
+  pinned (the step after a misaligned load is observed at pc+4); mode agreement holds for
+  every mix at test budgets; the allocator counts a known allocation; the stats are pinned
+  on known inputs; a pc outside the image is refused by name.
 
-- [x] **NO REGRESSION** — `cargo fmt --all -- --check`, `clippy -D warnings`, `cargo test --all`
-  (5 suites ok, 65 core + 114 verify), wasm build rc=0, `make gate` green; the live file
-  stays under the per-part ceiling by archiving `.9`'s checklist (P1-LAB.md ≤ 65,536;
-  archive holds the unedited `.1`–`.9`).
+- [x] **NO REGRESSION** — `cargo fmt --all -- --check`, `clippy -D warnings`, `cargo test
+  --all` (5 suites ok, 65 core + 124 verify), wasm build rc=0, `make gate` green; the live
+  file stays under the per-part ceiling by archiving `.10`'s checklist (P1-LAB.md ≤ 65,536;
+  the archive holds the unedited `.1`–`.10`).
 
-- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md` (+shard), `LIVE_STATUS.md`, `DEV_NOTES.md`
-  (+shard), `docs/TASK_TREE.md` (10/12), the book's P1 chapter ("Replay and reduction" now
-  describes the landed machinery), and this tree — one commit. No doctrine-registry change:
-  no new doctrine, no generated artifact.
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `LIVE_STATUS.md`, `DEV_NOTES.md`,
+  `docs/TASK_TREE.md` (11/12), the book's P1 chapter ("The performance baseline" now
+  carries the measured table), `TOOLBOX.md` (the `semulith bench` row), and this tree —
+  one commit. No doctrine-registry change: no new doctrine, no generated artifact.
 
 ## Completed-leaf evidence
 
 Archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) — the full, unedited acceptance checklists
-for every `done` leaf (`.1`–`.9`), split out on `2026-09-28` when the live file crossed its
+for every `done` leaf (`.1`–`.10`), split out on `2026-09-28` when the live file crossed its
 per-part ceiling; the ceiling was obeyed, not raised, per the `SOT-FORMAT` precedent. The live
 tree keeps the frontier, the decisions, the open questions, the blockers, the final leaf's
 checklist and both logs.
@@ -555,6 +642,9 @@ checklist and both logs.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-28` | `P1-LAB.11` | `cargo test -p semulith-verify` | 124 passed / 0 failed (+10 bench — decode round-trip, per-mix census, delivery-continues, four-mode agreement, budget stop, image refusal, allocator counting, pinned stats) |
+| `2026-09-28` | `P1-LAB.11` | `./target/release/semulith bench` (Apple M4 Pro, Darwin 27.0.0, rustc 1.95.0) | rc=0; untraced 47.2–54.1 ns/step across the four mixes; instrumented +24–40%; diagnostic +4–8% further; 1.00 alloc/step untraced; noise spread 1.7–7.4% (one 113% scheduler outlier); static/dyn ×0.974–1.002; RUST-02 agreement OK on every mix |
+| `2026-09-28` | `P1-LAB.11` | `make check`, wasm build, `make gate` | 5 suites ok (65 core + 124 verify) / rc=0 / 23 doctrines green |
 | `2026-09-28` | `P1-LAB.10` | `cargo test -p semulith-verify` | 114 passed / 0 failed (+15 replay — round-trips, tamper/omission arms; +6 reduce — the three prefix minimizations with 1-minimality witnesses, the NoDivergence boundary) |
 | `2026-09-28` | `P1-LAB.10` | `make check`, wasm build | 5 suites ok (65 core + 114 verify) / rc=0 |
 | `2026-09-28` | `P1-LAB.10` | CLI end-to-end: `bundle` → `replay` → `reduce`, plus a hand-corrupted bundle | replay identical rc=0; jalr-odd-bit 12 → 9 words, retained step 10; phantom-load refused by name rc=1; tampered image refused naming the digest rc=1 |
@@ -595,6 +685,7 @@ checklist and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.11` | `SEMILITH-PL-0011 (leaf P1-LAB.11): …` | the performance baseline: `semulith-verify::bench` (four mixes, three modes, census, counting allocator, noise stats) and `semulith bench`; static/dyn dispatch resolved by measurement; the `.10` checklist archives per the per-part ceiling |
 | `P1-LAB.10` | `SEMILITH-PL-0010 (leaf P1-LAB.10): …` | replay and reduction in `semulith-verify::{replay, reduce}`; `semulith bundle`/`replay`/`reduce`; the `.9` checklist archives per the per-part ceiling |
 | `P1-LAB.9` | `SEMILITH-PL-0009 (leaf P1-LAB.9): …` | the validator mutation suite in `semulith-verify::mutate` (11 arms); the `step_over`/`run_over` table seam with the generated-decode equivalence pin; `.1`–`.8` checklists archived per the per-part ceiling |
 | `P1-LAB.7` | `SEMILITH-PL-0007 (leaf P1-LAB.7): …` | the graph and report checker in `semulith-verify`; PACKAGE_CHECKS rows re-derived in Rust; RECORD-SCHEMA two-engine, fired RED on a mutated record first |
@@ -608,6 +699,20 @@ checklist and both logs.
 
 ## Changelog
 
+- `2026-09-28`: Leaf `.11` done — the performance baseline (RUST-04, gate `G1`'s fifth
+  criterion): `semulith-verify::bench` generates the four workload mixes (arithmetic,
+  control, memory, fault — every word decode-round-trip-pinned to the generated
+  definition), drives them in ARCHITECTURE §6's three modes (untraced / instrumented,
+  static and dyn / diagnostic) under one counting environment, and checks RUST-02 as data
+  (all modes agree on steps, stop, final state, census, and every recorded stream, or the
+  run is refused). The std-only counting allocator makes RUST-03 a number: 1.00
+  allocation/step untraced, 1.19–1.42 traced. `semulith bench` names the host (Apple M4
+  Pro; Darwin 27.0.0; rustc 1.95.0) and prints the noise table — untraced 47–54 ns/step,
+  spread 1.7–7.4% per cell — with NO regression threshold set: the noise is characterized
+  first, and the table is what a future threshold cites. The static-vs-dynamic observer
+  question resolves by measurement (×0.974–1.002, within noise; static stays the default).
+  The `.10` checklist archives to `archive/P1-LAB.md` (per-part ceiling obeyed). The
+  frontier moves to `.12` (the G1 gate report).
 - `2026-09-28`: Leaf `.10` done — replay and reduction (T008's second half; G-REPLAY,
   EVD-02): `semulith-verify::replay` records the input bundle — algorithm pins flattened
   from `definition::MANIFEST` (plus the harness version and the `production`/`mutant:<name>`
