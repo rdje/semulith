@@ -995,8 +995,15 @@ pub fn stats(samples: &[u64]) -> Stats {
 /// binary and this crate's test binary install it as their process allocator, the wasm
 /// cdylib never links it as one. Overhead when unread is two relaxed atomic adds per
 /// allocation, identical for every CLI command.
+///
+/// Two counter scopes: process-global (`counts`/`reset` — what the CLI's benchmark cells
+/// measure) and thread-local (`thread_counts`/`thread_reset` — what the pinning suite
+/// measures, because a test binary runs suites in parallel and only a per-thread counter
+/// gives an EXACT count under concurrency). The bench CLI is single-threaded, so the two
+/// scopes agree there by construction.
 pub mod alloc {
     use std::alloc::{GlobalAlloc, Layout, System};
+    use std::cell::Cell;
     use std::sync::atomic::{AtomicUsize, Ordering};
 
     /// The counting allocator: delegates to `System`, counting allocations and bytes.
@@ -1005,10 +1012,17 @@ pub mod alloc {
     static ALLOCATIONS: AtomicUsize = AtomicUsize::new(0);
     static BYTES: AtomicUsize = AtomicUsize::new(0);
 
+    thread_local! {
+        static THREAD_ALLOCATIONS: Cell<usize> = const { Cell::new(0) };
+        static THREAD_BYTES: Cell<usize> = const { Cell::new(0) };
+    }
+
     unsafe impl GlobalAlloc for Counting {
         unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
             ALLOCATIONS.fetch_add(1, Ordering::Relaxed);
             BYTES.fetch_add(layout.size(), Ordering::Relaxed);
+            THREAD_ALLOCATIONS.with(|c| c.set(c.get() + 1));
+            THREAD_BYTES.with(|c| c.set(c.get() + layout.size()));
             // SAFETY: delegates to the system allocator with the caller's layout.
             unsafe { System.alloc(layout) }
         }
@@ -1019,18 +1033,34 @@ pub mod alloc {
         }
     }
 
-    /// Zero the counters (call between setup and the measured section).
+    /// Zero the process-global counters (call between setup and the measured section).
     pub fn reset() {
         ALLOCATIONS.store(0, Ordering::Relaxed);
         BYTES.store(0, Ordering::Relaxed);
     }
 
-    /// `(allocations, bytes)` since the last reset.
+    /// `(allocations, bytes)` process-wide since the last reset.
     #[must_use]
     pub fn counts() -> (usize, usize) {
         (
             ALLOCATIONS.load(Ordering::Relaxed),
             BYTES.load(Ordering::Relaxed),
+        )
+    }
+
+    /// Zero the calling thread's counters.
+    pub fn thread_reset() {
+        THREAD_ALLOCATIONS.with(|c| c.set(0));
+        THREAD_BYTES.with(|c| c.set(0));
+    }
+
+    /// `(allocations, bytes)` on the calling thread since the last `thread_reset` — exact
+    /// under test-binary parallelism, which is what the pinning suite needs.
+    #[must_use]
+    pub fn thread_counts() -> (usize, usize) {
+        (
+            THREAD_ALLOCATIONS.with(Cell::get),
+            THREAD_BYTES.with(Cell::get),
         )
     }
 }

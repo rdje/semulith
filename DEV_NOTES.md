@@ -3,6 +3,12 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-29)_ — the allocation-count pin: a measured number is a claim until its mechanism is gated (P1-LAB.13)
+
+Root cause: the `.11` baseline's allocation figures were measured but not falsifiable — nothing re-derived them, and the traced columns (1.19–1.42 allocs/step) did not match the naive mechanism (a writes Vec per step would give ~2). An unexplained gap in a committed claim is a defect of standing, whatever the number. Diagnosis (TOOLBOX: probes before theories): slope/intercept separation — the same mix at 8/16/32 budgeted steps and at 1/2/4 full iterations, counted with a NEW thread-local counter scope (`alloc::thread_counts`), because a process-global counter inside a parallel test binary counts every sibling suite and exact pins are impossible under it. The mechanism, nailed: untraced = exactly 1 alloc/step, zero intercept (the `extract_operands` operands Vec; 114 steps ⇔ 114 allocs, 14,368 B); instrumented = untraced + the `run::diff` writes Vec ONLY on a visible register change + the stream's amortized doubling — and `diff` compares VALUES, so a write that changes nothing allocates nothing, and the mixes settle into near-fixed points (that, not an error, is why `.11`'s traced columns sat near 1.2); diagnostic = instrumented + exactly the crossing log's capacity doublings (+4/+5/+6 at 30/58/114 steps); static and dyn dispatch pay identically, per mix, exactly. Every `.11`/`baseline.sexp` figure survived the proof — the record stands uncorrected; what changed is the STANDING: four pin suites now fail if the behaviour moves, each fired RED first (114↛115, 50↛51 — both named the true value). The G1 report (regenerated) and the book state the mechanism so the traced numbers can't be misread as general. The docs/tasks archive itself crossed its per-part ceiling mid-leaf (65,617 B) and split in two — the ceiling obeyed at both levels. Validation: 193 tests across 5 suites (128 verify, +4 pins); clippy `-D warnings` clean; wasm rc=0; `make gate` 23 doctrines green.
+
+Lesson — promoted to `docs/knowledge/pin-the-mechanism-slope-before-the-number.md`: a measured count is signoff-grade only when the mechanism producing it is pinned exactly; separate slope from intercept BEFORE attributing; count per-thread when the suite is parallel; fire the pin RED before trusting it.
+
 ## _(2026-09-29)_ — the G1 gate report: the sixth criterion the tree had forgotten (P1-LAB.12)
 
 Root cause, two of them. (1) The G0 generator was single-gate by construction — `build()` hardcoded the G0 criteria and `G0-REPORT.md`, and its inputs were the dossier alone, while the laboratory's evidence lives in Rust code and in a baseline that existed only as terminal output. (2) Scoping the report surfaced a drift with teeth: P1-LAB's acceptance listed five G1 criteria where `ROADMAP.md` §6 states six — ROADMAP-V3.3's sharpening (the compiled freestanding guest, C first) was never re-synced into the tree, and nothing gated a tree's criteria against the roadmap's gate text. The drift was found only because a leaf had to score the gate. Implementation: one generator, one drift check, both gates — `gate_report.py --gate G1` with `build_g1` measuring each criterion from tracked files by concrete name (never an id-shaped pattern — the G0 lesson); `baseline.sexp` freezes the `.11` measurement as validated data (`(thresholds none)` enforced by the parser); `check_gate_report.sh` discovers `G?-REPORT.md` per profile. Validation: G1-REPORT.md reads `incomplete` naming criterion 6 (4 `.s` guests, 0 `.c`; owner `P2-SCALAR.5`, routing evidence in the leaf); self-test 6/0; RED probes — a tampered report named rc=1, the baseline removed flips criterion 5, `--gate G9` refused rc=2; G0 output byte-identical.
@@ -382,33 +388,4 @@ SOURCE-FORMAT 7/0, sexp 18/0, kernel 50/0, RECORD-SCHEMA 23/0, semantics 52/52, 
 
 Lessons: declined here (the "new direction values accepted by construction" rule is stated in
 the tool's docstring and the owning leaf, where anyone extending the vocabulary meets it).
-
-## _(2026-09-27)_ — the split cannot return: SOURCE-FORMAT registers, SOT-FORMAT closes (SOT-FORMAT.6)
-
-Root cause this leaf closes: retirement recorded only in prose decays. Every source of truth was
-converted (`.1`–`.5`), but no check enumerated the source-of-truth families, so one
-`profile.toml` copied from an old branch would have re-entered silently and the merge rule `.5`
-defines would be meaningless again. The gate (`scripts/check_source_format.sh`) owns exactly one
-question — nothing outside the format, nothing unreadable inside it: the FORMAT arm refuses a
-tracked `.toml`/`.json`/`.jsonl`/`.yaml` under `definitions/`, `schema/`, `profiles/`,
-`materials/` by name; the PARSES arm requires every `.sexp` there to parse with `sexp.py`;
-schema coverage is deliberately other gates' lane (two gates reporting one breach is noise).
-Fired RED before registration against a scratch copy of the real corpus with one planted
-`profile.toml`. The corpus boundary arms matter as much as the refusal arms: `profiles/*.md`
-(dossier prose) and `*.s` (guest programs) must NOT be refused — the gate refuses the split's
-shapes, never prose or programs.
-
-⭐ Reading for this leaf surfaced two stale lines, both corrected in passing: the replacement
-decision's own *How to apply* said "write the EBNF in `pgen`", contradicting its body — the
-director corrected the identification on `2026-09-14` (*"Not it is not PGEN. It is LinkedSpec"*).
-The lesson: a decision record's summary lines drift before its body does; reading the whole
-record, not the header, is what catches it.
-
-Validation: `--self-test` 7/0; real run `ok (28 source-of-truth file(s))`; both mirrors updated
-in the registering commit; `REGISTRY-MIRROR` and `DERIVED-COUNTS` (14 doctrines, 184 arms) green;
-full enforcer green. `SOT-FORMAT` closes 10/10.
-
-Lessons: declined here (the corpus-boundary lesson is demonstrated by the gate's own census arms
-and stated in its header); the pgen-staleness observation is general but thin — one instance,
-recorded in the corrected record and this note; a second instance would earn a knowledge card.
 

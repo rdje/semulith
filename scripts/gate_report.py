@@ -407,7 +407,11 @@ def build_g1(profile: str) -> str:
         A(f"Static vs dynamic observer dispatch: ×{min(ratios):.3f}–×{max(ratios):.3f}"
           " across the mixes — within the")
         A("measured noise. The record states `(thresholds none)`; the spread above is what a")
-        A("future threshold must be set from (RUST-04).")
+        A("future threshold must be set from (RUST-04). The traced allocation figures are")
+        A("workload-dependent by construction: the instrumented mode's writes Vec allocates")
+        A("only on a VISIBLE register change (the mixes settle into near-fixed points), and")
+        A("the diagnostic mode adds exactly the crossing log's doubling growth — the")
+        A("mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).")
     else:
         A(f"**No recorded baseline.** {baseline_problem}. The measurement exists as a")
         A("command (`semulith bench`) but the baseline is not recorded as data — the")

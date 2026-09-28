@@ -77,7 +77,11 @@ min/max and bytes/step, is `baseline.sexp`):
 
 Static vs dynamic observer dispatch: ×0.974–×1.002 across the mixes — within the
 measured noise. The record states `(thresholds none)`; the spread above is what a
-future threshold must be set from (RUST-04).
+future threshold must be set from (RUST-04). The traced allocation figures are
+workload-dependent by construction: the instrumented mode's writes Vec allocates
+only on a VISIBLE register change (the mixes settle into near-fixed points), and
+the diagnostic mode adds exactly the crossing log's doubling growth — the
+mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).
 
 **Status: met.**
 

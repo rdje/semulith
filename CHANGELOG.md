@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMILITH-PL-0013 (leaf P1-LAB.13) — the allocation-count pin: proven, not reported
+
+- The `.11` baseline's allocation figures gain their falsification leg. `bench::alloc` grows a thread-local counter scope (`thread_reset`/`thread_counts`) — a process-global counter inside a parallel test binary counts every sibling suite, so exact pins need per-thread counting (the single-threaded CLI sees both scopes agree by construction).
+- Slope/intercept probes nailed the mechanism behind every figure: untraced = exactly 1 allocation/step, zero intercept (the `extract_operands` operands Vec; pinned: 114 steps ⇔ 114 allocations / 14,368 bytes); instrumented = untraced + the `run::diff` writes Vec ONLY on a visible register change + stream amortized growth — `diff` compares values, so the mixes' near-fixed points (not an error) are why the traced columns sat near 1.2; diagnostic = instrumented + exactly the crossing log's capacity doublings (+4/+5/+6 at 30/58/114 steps); static and dyn dispatch allocate identically, per mix, exactly.
+- Four pin suites in `bench/tests.rs` hold the exact truth and fail if it moves; each was fired RED against a perturbed constant before landing (114↛115, 50↛51 — both named the true value). `baseline.sexp` stands UNCORRECTED — every figure survived the proof; the G1 report (regenerated, mechanism sentence added) and the book now state the mechanism so the traced columns can't be misread as general.
+- Verification: 193 tests across 5 suites (128 verify, +4 pins); clippy `-D warnings` clean; wasm build rc=0; `make gate` 23 doctrines green. The docs/tasks archive split in two when it crossed the per-part ceiling (65,617 B → part 1 / part 2) — the ceiling obeyed at both levels. Knowledge card `pin-the-mechanism-slope-before-the-number.md` carries the lesson.
+- Lockstep: MEMORY/LIVE_STATUS (P1 13/13)/TASK_TREE/CHANGELOG/DEV_NOTES + book P1, G1-REPORT, knowledge INDEX, and this tree; P1-LAB closes again at 13/13.
+
 ## SEMILITH-PL-0012 (leaf P1-LAB.12) — the G1 gate report; P1-LAB completes with the gate honest
 
 - `scripts/gate_report.py --gate G1` generates `profiles/rv64i-lab-v0/G1-REPORT.md` from tracked inputs only — byte-stable in a fresh clone, the G0 path byte-unchanged (verified by diff). Each of the SIX `ROADMAP.md` §6 G1 criteria is measured from tracked files by concrete name (the G0 lesson: an id-shaped pattern in prose is not evidence): replay/reduce machinery + CLI wiring + suite counts; the four outcome families + the SEM-02 arm; the graph checker + `check-examples`; the mutation suite's 11 arms and 4 model-level mutants; the recorded baseline; the guest census. The generator has no code path to `passed` while a criterion stands unmet — EVD-08's forbidden outcome, generalized.
@@ -528,37 +536,4 @@ carries no `VERIFIED.md`, and refuses a note that does not name the pin the reco
 against — the note and the record must agree the way the indices and the record must agree.
 Fired RED on the real tracker against both LS-001 and LS-003 before the notes existed; 17 arms
 (16 → 17) with the wrong-pin refusal; green after, both notes self-contained and pin-consistent.
-
-## SEMULITH-SF-0054 (leaf SOT-FORMAT.1) — the schema language, written in itself
-
-The gap was "it parses": an S-expression reader accepts anything syntactically, so a mistyped
-head or field was invisible. `schema/schema.sexp` now declares the language in itself —
-`(construct (name …) (field …)…)`, atom fields, form fields in the corpus's two house shapes
-(`(source (file …) …)` whole-list and `(effect (set …))` value-held), `(empty yes)` markers
-for the corpus's `(requires)`/`(extensions)` idiom, `(values …)` spellings, sibling repetition —
-and `scripts/check_sexp_schema.py` (16 arms, 13 RED, each naming its construct, field and
-reason) validates any file against any schema. The fixpoint is the proof, not a slogan:
-`schema.sexp` conforms to `schema.sexp`.
-
-⭐ The first design assumed a tidy uniform `(name value)` pair grammar — and the real corpus
-refuted it before it shipped. Reading `rv64i.sexp`/`rv64i.sem.sexp` first is what made the
-language fit the files `.2` must declare; an invented grammar would have met the corpus as an
-argument. `schema/` is registered in `doctrine/readme_routes.tsv` in its creating commit, and
-`TOOLBOX.md` gains the row.
-
-## SEMULITH-SF-0053 (leaf SOT-FORMAT.8) — the contract names its format at last
-
-The mdBook chapter *"Architecture and canonical definitions"* includes `docs/ARCHITECTURE.md`
-verbatim, and that document named no format, no `definitions/` directory and no composition —
-four commits had introduced all three, and the director's only window showed none of it
-(`grep -c 'S-expression'` → 0). The drift is closed at the source document: §1.1 records the
-one-format decision and what exists in it today (fragments, cited semantics at 52 of 52, the
-two-reader agreement check), §1.2 defines the fragment and the composition operator that is
-*decided, not hoped* (`check_encoding_disjoint.py`), §1.3 states the schema layer's contract and
-labels it specified-not-built. Built claims name their instruments; pending layers say pending;
-the one count that moves (`5 of 5`) was rephrased to "agreement file by file" so the prose
-cannot drift. `make book` builds; the chapter preface needed no edit — that was the point.
-
-Also: a knowledge card for the session's other lesson — a director-named action runs first,
-right after context recovery; standing cadences queue behind it.
 

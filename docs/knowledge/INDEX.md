@@ -25,3 +25,4 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`a-version-string-is-not-an-identity.md`](a-version-string-is-not-an-identity.md) | someone says my pinned source does not exist — is my pin wrong, or are we reading different publications? |
 | [`a-survey-that-found-things-can-still-have-missed-things.md`](a-survey-that-found-things-can-still-have-missed-things.md) | my survey found plenty — how do I know it found everything? |
 | [`all-green-but-the-product-has-not-moved.md`](all-green-but-the-product-has-not-moved.md) | every check is green and the infrastructure is beautiful — why hasn't the product moved? |
+| [`pin-the-mechanism-slope-before-the-number.md`](pin-the-mechanism-slope-before-the-number.md) | my measurement says "1.4 allocations per step" — is that signoff-grade? |

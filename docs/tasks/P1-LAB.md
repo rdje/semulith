@@ -3,9 +3,9 @@
 ## Metadata
 
 - Tree ID: `P1-LAB`
-- Status: `done` (first leaf landed `2026-09-27`; completed `2026-09-29` — 12/12 leaves;
-  gate `G1` RUN, verdict `incomplete`: criterion 6, the C-toolchain guest, is owned by
-  `P2-SCALAR.5` — the G0 precedent)
+- Status: `done` (first leaf landed `2026-09-27`; completed `2026-09-29` — 13/13 leaves,
+  reopened once for `.13`; gate `G1` RUN, verdict `incomplete`: criterion 6, the
+  C-toolchain guest, is owned by `P2-SCALAR.5` — the G0 precedent)
 - Roadmap lane: `ROADMAP.md` §6 → **P1 — Build the processor laboratory**
 - Gate: `G1`
 - Depends on: `P0-PROFILE` (gate `G0`)
@@ -170,7 +170,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   Status: `done`
   Goal: validate identifier references, profile-scope consistency, graph integrity, artifact existence and hashes, evidence freshness, and gate policy over the JSONL records (`docs/EVIDENCE_AND_GATES.md` §3).
   Acceptance: rejects orphan IDs, stale hashes, unsupported `passed` claims, missing evidence, and deleted dependency links. ⭐ This leaf also discharges the standing gap that `PACKAGE_CHECKS.md`'s schema results are **cited, not re-derivable here** — rule `RUST-01` makes the re-derivation a Rust deliverable, not a Python dependency.
-  Design: recorded before code; archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P1-LAB-2.md`](archive/P1-LAB-2.md) (per-part ceiling).
   Result: met, `2026-09-28`. `semulith-verify` gains five modules (29 suites): the checker
   refuses orphan IDs, stale hashes, unsupported `passed` claims, missing evidence, deleted
   dependency links, out-of-scope profiles, duplicate ids, unpinned sources, undeclared checks,
@@ -187,7 +187,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   Status: `done`
   Goal: a vertical slice executing an **independently encoded** program under the controlled environment, with first-divergence comparison against the reference.
   Acceptance: correct state, access and exception observations; the divergence report names the first differing observation, not a final checksum.
-  Design: recorded before code; archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P1-LAB-2.md`](archive/P1-LAB-2.md) (per-part ceiling).
   Result: met, `2026-09-28`. The definition executes. `semulith-core::exec` evaluates the
   generated `Sem` trees — 24 test suites on the core side cover every outcome family and the
   width algebra (including the two readings that pin it: LUI's sign extension from bit 31,
@@ -206,7 +206,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   Status: `done`
   Goal: intentional mutations that must be detected — wrong sign extension, suppressed register write, wrong trap cause, illegal-opcode substitution for a model limitation, an extra memory access, shifted event delivery, an overbroad mask hiding a changed defined bit, a stale reference configuration (`EVD-09`).
   Acceptance: **every** designated wrong behaviour is detected. A suite never run against a broken implementation is not known to detect anything.
-  Design: recorded before code; archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P1-LAB-2.md`](archive/P1-LAB-2.md) (per-part ceiling).
   Result: met, `2026-09-28`. The suite lands as `semulith-verify::mutate` — 11 suites: the nine
   designated arms (eight EVD-09 classes plus the JALR odd-bit arm the fixture note names), the
   four-guest data-crossing census pin, and the suppression exhibit. `exec::step_over` /
@@ -231,7 +231,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   Status: `done`
   Goal: an input bundle that replays the same result, and a minimizer whose output retains the original divergence.
   Acceptance: a seed is accompanied by algorithm/version and the actual relevant event choices — a bare seed is insufficient.
-  Design: recorded before code; archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P1-LAB-2.md`](archive/P1-LAB-2.md) (per-part ceiling).
   Result: met, `2026-09-28`. `semulith-verify::replay` is the recorded input bundle:
   algorithm pins flattened from `definition::MANIFEST` (profile, ilen, generator name+sha256,
   every input pin) plus the harness version and the `production`/`mutant:<name>` model, the
@@ -261,7 +261,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
   Status: `done`
   Goal: measure arithmetic, control-flow, memory and fault-heavy mixes separately on a **named** host, with allocation counts and trace settings, in untraced / instrumented / diagnostic modes.
   Acceptance: repeated measurement characterizes the noise **before** any regression threshold is set (`RUST-04`); no invented MIPS target; traced and untraced executions agree on observations (`RUST-02`).
-  Design: recorded before code; archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P1-LAB-2.md`](archive/P1-LAB-2.md) (per-part ceiling).
   Result: met, `2026-09-28`. `semulith-verify::bench` is the measurement harness: the four
   mixes generated programmatically (every word pinned to the generated definition by the
   decode round-trip suite), the three modes sharing one counting environment so the census
@@ -361,11 +361,46 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
     revisited. The routing follows the G0 precedent (P0-PROFILE closed with G0
     `incomplete`); the report's verdict keeps the question visible every commit.
 
+- ID: `P1-LAB.13` — **the allocation-count pin** *(reopened leaf)*
+  Status: `done`
+  Goal: the baseline's allocation claims must be exact, attributed, and gated — a measured
+  number nothing re-checks is a running total's cousin (the DERIVED-COUNTS lesson).
+  Acceptance: the suite pins the per-mode allocation behaviour with the attribution PROVEN
+  (which allocation, from where), any figure in `baseline.sexp` that does not survive the
+  proof is corrected and the G1 report regenerated, and the pinning suite fails if the
+  behaviour changes.
+  Design (recorded before code, `2026-09-29`): the verify test binary already installs the
+  counting allocator (`.11`), so the pin is a suite, not a tool: step-count probes
+  (the same mix run for N and 2N steps, so per-step behaviour separates from per-run
+  setup by DIFFERENCE — a per-step allocation is the slope, setup is the intercept) name
+  the exact per-step allocation count per mode; the attribution is proven by code path
+  (the operands `Vec::with_capacity` in `extract_operands`, the writes Vec in `run::diff`,
+  the big-Vec amortized growth) against the measured counts. If the measured truth
+  contradicts the `.11` record, the record and its consumers (`baseline.sexp`, the G1
+  report, the book, the tree) are corrected in the same commit.
+  Result: met, `2026-09-29`. The diagnosis (slope/intercept probes over counted steps,
+  thread-local counters so the test binary's parallelism cannot contaminate an exact
+  count) PROVED the `.11` figures and nailed their mechanism: untraced is exactly 1
+  allocation per step with zero intercept (the `extract_operands` Vec — 114 steps ⇔ 114
+  allocations, 14,368 bytes, pinned); instrumented static and dyn allocate identically
+  (pinned per mix); diagnostic adds exactly the crossing log's doubling growth (+4/+5/+6
+  at 30/58/114 steps — the Vec's capacity doublings, pinned); and the traced figures are
+  low because `run::diff` diffs VALUES — a write that changes nothing allocates nothing,
+  and the mixes settle into near-fixed points (the instrumented pattern pinned at the
+  measured 50/85/153 allocations for 1/2/4 arithmetic iterations). `baseline.sexp` stands
+  uncorrected — every figure survived the proof; the G1 report (regenerated) and the book
+  now state the mechanism so the traced columns are not misread as general. Four pin
+  suites, each fired RED against a perturbed expectation before landing (the 114↛115 arm
+  named the true value on failure). The tree closes again at 13/13. Lessons: promotion —
+  PROMOTED to `docs/knowledge/pin-the-mechanism-slope-before-the-number.md` (a measured
+  count is only signoff-grade when the mechanism producing it is pinned; separate the
+  per-step slope from the per-run intercept before attributing anything).
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | the tree is complete (12/12 leaves done); gate `G1` was RUN — verdict `incomplete`, criterion 6 (the C-toolchain guest) owned by `P2-SCALAR.5` |
+| — | — | — | the tree is complete (13/13 leaves done; reopened once for `.13`); gate `G1` RUN — verdict `incomplete`, criterion 6 (the C-toolchain guest) owned by `P2-SCALAR.5` |
 
 ## Decisions
 
@@ -418,7 +453,8 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 ## Open Questions
 
 - Candidate doctrine (parked by `.12`, `2026-09-29`): nothing gated a tree's gate criteria
-  against the roadmap's gate text, so the sixth G1 clause drifted for two weeks. A
+  against the roadmap's gate text, so the sixth G1 clause drifted from `2026-09-27` (when
+  `ROADMAP-V3.3` landed it) until `.12` scored the gate on `2026-09-29`. A
   `ROADMAP-TREE-CRITERIA` check needs a designed criterion-id scheme first — candidate,
   not scheduled.
 - Exact shapes of the four outcome enums — a P1 design result, not a P0 commitment
@@ -441,85 +477,101 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 
 
-## Acceptance Checklist (leaf P1-LAB.12)
 
-- [x] **REPRODUCE / ISSUE** — the tree's final leaf had no artifact: no G1 report existed,
-  and the generator had no G1 path. Worse, a drift surfaced while scoping it: this tree's
-  G1 acceptance listed five criteria where `ROADMAP.md` §6 states six. Measured at the
-  parent commit (`13e42d1`):
+## Acceptance Checklist (leaf P1-LAB.13)
+
+- [x] **REPRODUCE / ISSUE** — the `.11` allocation figures were a measured report with no
+  falsification leg: nothing re-derived them, and the attribution ("the `extract_operands`
+  Vec") was argued from code reading, not proven. Worse, the `.11` traced figures
+  (1.19–1.42 allocs/step) did not match the naive mechanism (a diff Vec per step would
+  give ~2) — an unexplained gap in a committed claim. And a process-global counter cannot
+  give an exact count inside a parallel test binary. Measured at the parent commit
+  (`4d09375`):
 
   ```
-  $ git ls-files profiles/rv64i-lab-v0/ | grep -c "G1-REPORT"
-  0                                  # no G1 report anywhere
-  $ git grep -c "build_g1" HEAD -- scripts/ | wc -l
-  0                                  # no generator path either
-  $ ls profiles/rv64i-lab-v0/guests/*.c 2>/dev/null | wc -l
-  0                                  # criterion 6's C guest: absent
+  $ git grep -c "thread_counts" HEAD -- crates/ | wc -l
+  0                       # no exact-under-parallelism counter existed
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — the G0 generator was single-gate by construction:
-  `build()` hardcoded the G0 criteria and `G0-REPORT.md`, and its inputs were the dossier
-  alone — the laboratory's evidence lives in Rust code and in a baseline that existed only
-  as terminal output, never as tracked data (`gate_report.py`'s `main` wrote
-  `G0-REPORT.md` unconditionally; no `baseline.sexp` existed anywhere:
-  `git ls-files | grep -c baseline` → 0 at the parent). The criteria drift's root cause:
-  `ROADMAP-V3.3` sharpened G1 in the roadmap text (the v0.3 revision) and this tree's
-  acceptance list — written `2026-09-13` — was never re-synced; nothing gated the
-  criterion list against the roadmap (the leaf repaired the content; the absence of a
-  roadmap↔tree criteria gate is recorded as the lesson).
+- [x] **ROOT CAUSE (WHY + WHERE)** — slope/intercept probes (the same mix at 8/16/32
+  budgeted steps, then 1/2/4 full iterations, under a new thread-local counter) separated
+  per-step cost from per-run setup and named every component: untraced = 1 alloc/step,
+  zero intercept (the operands Vec — `crates/semulith-core/src/exec.rs`
+  `extract_operands`); instrumented = untraced + a writes Vec ONLY on a visible register
+  change (`crates/semulith-verify/src/run.rs` `diff` diffs values — a write that changes
+  nothing allocates nothing) + the stream's amortized doubling; diagnostic = instrumented
+  + exactly the crossing log's doubling growth. The "gap" was the fixed point: the mixes
+  settle into iterations that change almost nothing observable, so `.11`'s 1.19–1.42 was
+  RIGHT and the naive model was wrong. The probes, verbatim:
 
-- [x] **FIX** — one generator, one drift check, both gates: `gate_report.py --gate G1`
-  (default G0 byte-unchanged) with `build_g1` measuring each of the six roadmap criteria
-  from tracked files by concrete name; `profiles/rv64i-lab-v0/baseline.sexp` — the `.11`
-  measurement frozen as data (the references.sexp experiment-record precedent), validated
-  field-by-field by the generator, `(thresholds none)` enforced; `check_gate_report.sh`
-  discovers `G?-REPORT.md` per profile and covers both. The tree's G1 acceptance absorbed
-  criterion 6 with its standing named. No new doctrine (GATE-REPORT already owns the
-  drift check; the registry row's prose now says G0 AND G1).
+  ```
+  $ cargo test -p semulith-verify bench::tests::probe -- --nocapture | grep PROBE
+  PROBE arithmetic untraced     budget= 8 steps= 8 allocs= 8 bytes= 1024   # 1.00/step
+  PROBE arithmetic untraced     budget=16 steps=16 allocs=16 bytes= 2048   # zero intercept
+  PROBE arithmetic instrumented budget= 8 steps= 8 allocs=11 bytes= 1856   # diff allocs
+  PROBE arithmetic instrumented budget=16 steps=16 allocs=25 bytes= 4224   # only on change
+  P2 arith it=1 untraced     steps= 30 allocs= 30    it=4: 114 / 114
+  P2 arith it=1 instrumented steps= 30 allocs= 50    it=2: 85   it=4: 153  # fixed point
+  P2 arith it=1 diagnostic   steps= 30 allocs= 54    it=2: 90   it=4: 159  # +4/+5/+6 =
+  # the crossing log's capacity doublings at 30/58/114 crossings, exactly
+  ```
+
+- [x] **FIX** — `bench::alloc` gains thread-local counters (`thread_reset`/`thread_counts`;
+  the process-global pair is unchanged — the single-threaded CLI sees both agree by
+  construction); four pin suites in `bench/tests.rs` hold the exact truth; the G1 report
+  generator and the book state the traced-mode mechanism so the numbers can't be
+  misread as general. `baseline.sexp` stands uncorrected — every figure survived.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ python3 scripts/gate_report.py rv64i-lab-v0 --gate G1
-  wrote profiles/rv64i-lab-v0/G1-REPORT.md (5482 bytes)
-  $ bash scripts/check_gate_report.sh
-  GATE-REPORT: ok (2 generated report(s) in sync with their inputs)
-  $ bash scripts/check_gate_report.sh --self-test
-  GATE-REPORT --self-test: 6 pass / 0 fail
+  $ cargo test -p semulith-verify bench 2>&1 | grep "test result"
+  test result: ok. 14 passed; 0 failed; ...        # +4 pin suites
+  $ cargo test --all 2>&1 | grep "^test result"
+  ... 65 passed (core) ... 128 passed (verify) ... # 5 suites ok
   ```
 
-  The report reads **`incomplete`**, criterion 6 named with its owner. RED probes fired:
-  a tampered G1-REPORT.md is named rc=1 (restored rc=0); `baseline.sexp` removed →
-  criterion 5 flips to "NOT met — the baseline is not recorded as data"; `--gate G9`
-  refused rc=2; G0 output byte-identical before/after (`diff` empty). The baseline record
-  parses under all three tracked readers (`compare_readers.py`: 513 nodes identical).
+  Pins: untraced 114 steps ⇔ 114 allocations / 14,368 bytes (all four mixes at 8 budgeted
+  steps ⇔ 8 allocations); static == dyn exactly, per mix; diagnostic − instrumented =
+  +4/+5/+6 at 30/58/114 steps (the crossing log's capacity doublings, exactly);
+  instrumented arithmetic pinned at 50/85/153 allocations for 1/2/4 iterations. RED
+  probes: 114↛115 and 50↛51 both failed naming the true value; restored green.
+  `scripts/gate_report.py --gate G1` regenerated (the mechanism sentence) and GATE-REPORT
+  confirms both reports in sync.
 
-- [x] **NO REGRESSION** — `make gate` green (23 doctrines; GATE-REPORT covers 2 reports;
-  SOURCE-FORMAT accepts `baseline.sexp`; FRONTIER-SYNC/TREE-CLAIMS re-derive the completed
-  tree), `cargo test --all` unchanged (no Rust change: 5 suites, 189 tests), wasm build
-  rc=0, `make book` green; the live tree stays under the per-part ceiling by archiving
-  `.11`'s checklist and the completed leaves' design detail (boundary stated in
-  "Completed-leaf evidence").
+- [x] **NO REGRESSION** — `cargo fmt --all -- --check`, `clippy -D warnings`, `cargo test
+  --all` (5 suites, 193 tests), wasm build rc=0, `make book`, `make gate` green; the live
+  tree stays under the per-part ceiling by archiving `.12`'s checklist, and the ARCHIVE
+  itself split into two parts when it crossed the same ceiling (65,617 bytes → part 1:
+  checklists `.1`–`.9`; part 2: checklists `.10`–`.12` + design detail `.7`–`.11`) — the
+  ceiling obeyed, not raised, at both levels.
 
-- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `LIVE_STATUS.md` (P1 12/12, gate honest),
-  `DEV_NOTES.md`, `docs/TASK_TREE.md` (P1-LAB done), the book's P1 chapter ("Gate G1"
-  carries the verdict and its reason), `DOCTRINE_ENFORCEMENT.md` + `TOOLBOX.md` rows, and
-  this tree — one commit.
+- [x] **LOCKSTEP** — `MEMORY.md`, `CHANGELOG.md`, `LIVE_STATUS.md` (P1 13/13),
+  `DEV_NOTES.md`, `docs/TASK_TREE.md`, the book's P1 chapter (the mechanism stated), the
+  G1 report (regenerated, in sync), the knowledge card
+  `docs/knowledge/pin-the-mechanism-slope-before-the-number.md` (+ INDEX row), and this
+  tree — one commit. No doctrine-registry change: no new doctrine, no generated artifact
+  (the pins are tests; the counters are harness).
 
 ## Completed-leaf evidence
 
-Archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) — the full, unedited acceptance
-checklists for every `done` leaf but the last (`.1`–`.11`) and the design detail of the
-completed leaves that carried one (`.7`–`.11`; the live leaf entries keep a pointer line),
-split out on `2026-09-28` and extended on `2026-09-29` when the live file crossed its
-per-part ceiling; the ceiling was obeyed, not raised, per the `SOT-FORMAT` precedent. The
-live tree keeps the frontier, the decisions, the open questions, the blockers, every
-leaf's goal/acceptance/result, the final leaf's checklist, and both logs.
+Archived to [`archive/P1-LAB.md`](archive/P1-LAB.md) (part 1: checklists `.1`–`.9`) and
+[`archive/P1-LAB-2.md`](archive/P1-LAB-2.md) (part 2: checklists `.10`–`.12`, design detail
+`.7`–`.11`) — the full, unedited acceptance checklists for every `done` leaf but the last
+and the design detail of the completed leaves that carried one (the live leaf entries keep
+a pointer line), split out on `2026-09-28` and extended on `2026-09-29` when the live file
+crossed its per-part ceiling, then split in two the same day when the archive itself
+crossed it (65,617 bytes); the ceiling was obeyed, not raised, per the `SOT-FORMAT`
+precedent. The live tree keeps the frontier, the decisions, the open questions, the
+blockers, every leaf's goal/acceptance/result, the final leaf's checklist, and both logs.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `P1-LAB.13` | slope/intercept probes (thread-local counters), then 4 pin suites | untraced 114 steps ⇔ 114 allocs / 14,368 B exactly; static == dyn per mix; diagnostic − instrumented = crossing-log doublings (+4/+5/+6 at 30/58/114); instrumented pinned at 50/85/153 for 1/2/4 iterations — the fixed-point mechanism proven |
+| `2026-09-29` | `P1-LAB.13` | pins fired RED (114↛115; 50↛51) | both named the true value on failure; restored green |
+| `2026-09-29` | `P1-LAB.13` | `make check`, wasm build, `make gate` | 5 suites ok (65 core + 128 verify) / rc=0 / 23 doctrines green; G1 report regenerated and in sync |
 | `2026-09-29` | `P1-LAB.12` | `scripts/gate_report.py rv64i-lab-v0 --gate G1` | G1-REPORT.md written (5,482 B), verdict `incomplete` — criterion 6 named, owner `P2-SCALAR.5`; G0 output byte-identical before/after |
 | `2026-09-29` | `P1-LAB.12` | `check_gate_report.sh` + `--self-test` + RED probes | 2 reports in sync; 6 pass / 0 fail; tampered G1 report named rc=1; baseline removed → criterion 5 unmet; `--gate G9` refused rc=2 |
 | `2026-09-29` | `P1-LAB.12` | `compare_readers.py baseline.sexp` | all three readers agree (513 nodes identical) |
@@ -567,6 +619,7 @@ leaf's goal/acceptance/result, the final leaf's checklist, and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `P1-LAB.13` | `SEMILITH-PL-0013 (leaf P1-LAB.13): …` | the allocation-count pin: thread-local counters; four exact pins (untracked slope/intercept, static==dyn, diagnostic growth, the fixed-point mechanism); `baseline.sexp` stands uncorrected — every figure survived the proof |
 | `P1-LAB.12` | `SEMILITH-PL-0012 (leaf P1-LAB.12): …` | the G1 gate report, generated from pinned inputs: `gate_report.py --gate G1`, `baseline.sexp`, GATE-REPORT covering `G?-REPORT.md`; verdict `incomplete` — criterion 6 (the C guest) named and routed to `P2-SCALAR.5`; the tree's criteria re-aligned with the roadmap |
 | `P1-LAB.11` | `SEMILITH-PL-0011 (leaf P1-LAB.11): …` | the performance baseline: `semulith-verify::bench` (four mixes, three modes, census, counting allocator, noise stats) and `semulith bench`; static/dyn dispatch resolved by measurement; the `.10` checklist archives per the per-part ceiling |
 | `P1-LAB.10` | `SEMILITH-PL-0010 (leaf P1-LAB.10): …` | replay and reduction in `semulith-verify::{replay, reduce}`; `semulith bundle`/`replay`/`reduce`; the `.9` checklist archives per the per-part ceiling |
@@ -582,6 +635,16 @@ leaf's goal/acceptance/result, the final leaf's checklist, and both logs.
 
 ## Changelog
 
+- `2026-09-29`: Leaf `.13` done (the tree reopened once) — the allocation-count pin: the
+  `.11` figures are now PROVEN, not reported. Thread-local counters make exact counts
+  possible inside a parallel test binary; slope/intercept probes nailed the mechanism —
+  untraced is exactly 1 alloc/step with zero intercept (the operands Vec), instrumented
+  adds a writes Vec only on a VISIBLE register change (the mixes settle into near-fixed
+  points — that, not an error, is why `.11`'s traced columns sat near 1.2), diagnostic
+  adds exactly the crossing log's doubling growth, static and dyn pay identically. Four
+  exact pins, each fired RED before landing. `baseline.sexp` stands uncorrected; the G1
+  report and the book state the mechanism. The archive split in two when it crossed the
+  per-part ceiling (obeyed, not raised). The tree closes again, 13/13.
 - `2026-09-29`: Leaf `.12` done — the `G1` gate report, and the tree completes (12/12):
   `scripts/gate_report.py --gate G1` generates `profiles/rv64i-lab-v0/G1-REPORT.md` from
   tracked inputs only (byte-stable in a fresh clone; the G0 path byte-unchanged), measuring

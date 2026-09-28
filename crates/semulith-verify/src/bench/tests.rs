@@ -230,3 +230,105 @@ fn stats_are_pinned_on_known_inputs() {
     // a constant series has zero spread
     assert_eq!(stats(&[7, 7, 7]).spread_ppm, 0);
 }
+
+// ---------------------------------------------------------------------------
+// The allocation pins (P1-LAB.13): the baseline's allocation figures are exact,
+// attributed, and gated. The counters are THREAD-local (`alloc::thread_*`), so these
+// pins are exact even with the test binary running suites in parallel. The mechanism
+// the pins prove:
+//   untraced     = 1 allocation per step, zero intercept — `extract_operands`' Vec
+//                  (attribution: the only allocation on the untraced path; 128 B/step
+//                  for a three-operand instruction);
+//   instrumented = untraced + the writes Vec per step WITH A VISIBLE REGISTER CHANGE
+//                  (`run::diff` diffs VALUES, so a write that changes nothing — the
+//                  fixed-point iterations the mixes settle into — allocates nothing)
+//                  + the step stream's amortized doubling;
+//   diagnostic   = instrumented + exactly the crossing log's doubling growth.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn untraced_allocates_exactly_one_operands_vec_per_step() {
+    for mix in Mix::ALL {
+        let (mut env, words) = prepare(mix, 1);
+        alloc::thread_reset();
+        let run = run_mode(Mode::Untraced, &mut env, &words, 8).expect("untraced run");
+        assert_eq!(run.facts.steps, 8);
+        let (allocs, _) = alloc::thread_counts();
+        assert_eq!(
+            allocs,
+            8,
+            "{}: the untraced path must allocate exactly once per executed step",
+            mix.name()
+        );
+    }
+    // zero intercept: the count IS the step count, at full program length
+    let (mut env, words) = prepare(Mix::Arithmetic, 4);
+    alloc::thread_reset();
+    let run = run_mode(Mode::Untraced, &mut env, &words, 1000).expect("untraced run");
+    let (allocs, bytes) = alloc::thread_counts();
+    assert_eq!(run.facts.steps, 114);
+    assert_eq!(allocs, 114, "one operands Vec per step, nothing else");
+    assert_eq!(
+        bytes, 14368,
+        "the operand Vec sizes are pinned (128 B x 3-operand steps)"
+    );
+}
+
+#[test]
+fn instrumented_static_and_dyn_allocate_identically() {
+    // The dispatch-variants cell of the .11 report, pinned as exact equality.
+    for mix in Mix::ALL {
+        let mut counts = Vec::new();
+        for mode in [Mode::InstrumentedStatic, Mode::InstrumentedDyn] {
+            let (mut env, words) = prepare(mix, 1);
+            alloc::thread_reset();
+            let _run = run_mode(mode, &mut env, &words, 32).expect("instrumented run");
+            counts.push(alloc::thread_counts());
+        }
+        assert_eq!(
+            counts[0],
+            counts[1],
+            "{}: static and dyn dispatch must pay identical allocations",
+            mix.name()
+        );
+    }
+}
+
+#[test]
+fn diagnostic_over_instrumented_is_exactly_the_crossing_log_growth() {
+    // The crossings Vec doubles: capacities 4, 8, 16, 32, 64, 128 — one allocation each.
+    for (iterations, steps, growth) in [(1u32, 30usize, 4usize), (2, 58, 5), (4, 114, 6)] {
+        let mut pair = Vec::new();
+        for mode in [Mode::InstrumentedStatic, Mode::Diagnostic] {
+            let (mut env, words) = prepare(Mix::Arithmetic, iterations);
+            alloc::thread_reset();
+            let run = run_mode(mode, &mut env, &words, 1000).expect("run");
+            assert_eq!(run.facts.steps, steps);
+            pair.push(alloc::thread_counts().0);
+        }
+        assert_eq!(
+            pair[1] - pair[0],
+            growth,
+            "iterations={iterations}: diagnostic must add exactly the crossing log's \
+             doubling allocations, no more"
+        );
+    }
+}
+
+#[test]
+fn instrumented_allocates_the_writes_vec_only_on_a_visible_change() {
+    // The mechanism behind the recorded traced figures (baseline.sexp's 1.19-1.42
+    // allocs/step): the arithmetic mix settles into a fixed point where most iterations
+    // change nothing observable, so the diff Vec allocates rarely. Pinned exactly at the
+    // measured truth — if the diff policy or the mix changes, this pin says so.
+    for (iterations, want_allocs) in [(1u32, 50usize), (2, 85), (4, 153)] {
+        let (mut env, words) = prepare(Mix::Arithmetic, iterations);
+        alloc::thread_reset();
+        let _run = run_mode(Mode::InstrumentedStatic, &mut env, &words, 1000).expect("run");
+        let (allocs, _) = alloc::thread_counts();
+        assert_eq!(
+            allocs, want_allocs,
+            "iterations={iterations}: the operands+diff+stream allocation pattern changed"
+        );
+    }
+}
