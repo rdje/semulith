@@ -247,12 +247,46 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   enforce; that is its purpose)`.
 
 - ID: `MODEL-BOOKS.4` — **the references, their configuration, and what agreement is worth**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: how each reference model was obtained, how it was configured to match the profile, what
   the matched-profile control demonstrated, and the independence inventory — in prose, including
   why three models is not three opinions.
   Acceptance: the configuration story is told through the control that changed the observation,
   not through a configuration file listing.
+  Result: met, `2026-09-29`. **The references chapter landed
+  (`docs/models/rv64i-lab-v0/src/references.md`), and the configuration story is told
+  through the controls that CHANGED the observation, each with its recorded output.** The
+  three controls, all measured: the ISA-string control (P0-PROFILE.5 — the override drives
+  sail from its 96-extension default down to `rv64i_zvl32b`, read back with
+  `--print-isa-string`; flipping `M` back on produced `DIFFERS … rv64im_zvl32b` against
+  the pinned string — a one-letter drift caught), the platform correction
+  (DIFF-PLATFORM-DEFAULT — the ISA string matched while the platform did not: the CLINT
+  `mtime` probe at 0x0200_BFF8 advanced (2, then 3) under a plain `ld`; the override now
+  disables clint/interrupts and declares the single MainMemory region; `guest-no-device`
+  is the permanent negative fixture, its spike comparison disabled and printed), and ⭐
+  the decisive control (P0-PROFILE.6 — the misaligned policy flipped back to "handled
+  invisibly", same ELF, nothing else changed: `FIRST DIVERGENCE at aligned step 2 …
+  sail-riscv writes=[(x1, 0)] … spike writes=[]` — one model loaded, the other trapped;
+  "the two models agree BECAUSE the profile is matched" is a measurement, not a hope).
+  The harness differences are told as the four recorded DIFFs (including
+  DIFF-TRAP-RECORD-SHAPE — the comparator's false pass on a truncated trace, caught by
+  running it) with the adapter's refusal discipline (it fired mid-run on
+  `misaligned-store/amo`). The two reference-vs-reference differences the project measured
+  (DIFF-FENCEI-EXECUTED — pinned as the `it-fencei` expected divergence;
+  DIFF-TVAL-PHYS-MASK — sail's 56-bit tval mask, the wrap-sd guest kept below 2^56) teach
+  the chapter's point: the references are also just implementations. The independence
+  inventory is told per subsystem and pair — encoding not-shared (with the cut running
+  the OTHER way than first assumed: our assembler shares riscv-opcodes ancestry with
+  SPIKE, not sail), FP shared (184 of 199 files byte-identical), integer semantics
+  no-evidence-of-sharing (deliberately not "not-shared"), expected-result derivation
+  shared (ACT4 ↔ sail — one semantics answering twice), QEMU not-examined (recorded, not
+  omitted) — ending in the per-leg verdict: encodings rest on sail alone, semantics on
+  both references, nothing on ACT4 or QEMU. Every id, version and count named in the
+  chapter was verified against the dossier and the trees as written (the sweep is the
+  checklist's evidence). No gate extended — authored prose, no generated content (26
+  doctrines, unchanged).
+  Lessons: `promotion: declined (the chapter restates what the dossier records and the
+  controls measured; that is its purpose)`.
 
 - ID: `MODEL-BOOKS.5` — **the evidence, the gate, and the traceability walk**
   Status: `pending`
@@ -323,7 +357,7 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-BOOKS.4` | `pending` | the references, their configuration, and what agreement is worth — the materials, gaps and method chapters are landed (`.1`–`.3`), and `.4`'s story is told through the matched-profile control |
+| 1 | `MODEL-BOOKS.5` | `pending` | the evidence, the gate and the traceability walk — the last content chapter of the arc (`.1`–`.4` landed: bill, gaps, method, references); then `.6` wires every book into `make book` |
 
 (Leaves `.7` — the assembler annex — and `.8` — the step-by-step build walk — land out of
 order on director requests; the per-unit book sequence above is unchanged.)
@@ -554,6 +588,67 @@ order on director requests; the per-unit book sequence above is unchanged.)
   (MODEL-BOOKS 5/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.4`),
   this tree.
 
+## Acceptance Checklist (leaf `MODEL-BOOKS.4`)
+
+- [x] **REPRODUCE / ISSUE** — the leaf's own question: how were the references obtained,
+  how were they configured to match the profile, and what is an AGREE worth? The bill
+  (`.1`) lists the references as materials; nothing told the configuration story or the
+  independence argument as prose a reviewer can follow.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY the chapter must be control-led: a configuration
+  *listing* is a claim; a configuration whose knob was flipped back is a measurement. The
+  controls exist and are recorded — WHERE: `references.sexp` (the experiment records'
+  `control` fields, the eight DIFF records, the six independence records), the P0-PROFILE
+  archive (the controls' outputs), and the override itself:
+
+  ```
+  $ python3 - <<'…'   # the dossier's census of what the chapter names
+  candidates: sail-riscv 0.14 | spike 1.1.1-dev (commit 1e05ddac) | qemu 11.1.1 | act4 reachable, not acquired
+  experiments: ['smoke-arith', 'smoke-trap'] | differences: 8 | independence: 6
+  $ grep -c "handled invisibly" docs/tasks/archive/P0-PROFILE.md        -> 2
+  $ grep -c "FIRST DIVERGENCE at aligned step 2" profiles/rv64i-lab-v0/references.sexp  -> 1
+  $ grep -c "cross_model false" profiles/rv64i-lab-v0/guests/guest-no-device.expected.sexp  -> 1
+  $ grep -c 'expect_divergence (difference "DIFF-FENCEI-EXECUTED") (at_step 1)' \
+      profiles/rv64i-lab-v0/guests/it-fencei.expected.sexp              -> 1
+  $ grep -c 'm-call\|trap_machine_ecall\|software-breakpoint\|trap_breakpoint\|misaligned-store/amo' \
+      scripts/compare_traces.py                                       -> 5
+  $ grep -c "59 files\|184 of the 199" profiles/rv64i-lab-v0/references.sexp  -> 1
+  ```
+
+- [x] **FIX** — `docs/models/rv64i-lab-v0/src/references.md` (in the book's SUMMARY.md):
+  the cast honestly labelled (including QEMU never-exercised and ACT4 never-a-second-opinion);
+  the acquisition discipline (the fetcher fired RED on a corrupted digest); the three
+  controls with their recorded outputs; the four harness DIFFs; the two measured
+  reference-vs-reference differences; the independence inventory per subsystem and pair,
+  ending in the per-leg verdict; the build-it-yourself checklist.
+
+- [x] **ADDRESSED (verified)** — every id, version and count named was verified against
+  the dossier and the trees as written (the ROOT CAUSE box's sweep); both books render;
+  the gates stay green:
+
+  ```
+  $ mdbook build docs/models/rv64i-lab-v0
+  INFO HTML book written to `docs/models/rv64i-lab-v0/book`
+  $ make book          # the project book renders
+  $ bash scripts/check_materials_bill.sh [--self-test]   # ok; self-test 7/0
+  $ make gate
+  === all doctrines green ===          (26 — the gate surface unchanged)
+  ```
+
+- [x] **NO REGRESSION** — no generated content, no gate extension; measured on the
+  committed tree:
+
+  ```
+  $ git status --short -- scripts/ crates/ | wc -l     # no instrument or crate touched
+  0
+  $ bash scripts/check_materials_bill.sh
+  MATERIALS-BILL: ok (1 unit(s) — generated tables match the pinned data; …)
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten; 6/8), `LIVE_STATUS.md`
+  (MODEL-BOOKS 6/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.5`),
+  this tree.
+
 ## Acceptance Checklist (leaf `MODEL-BOOKS.8`)
 
 - [x] **REPRODUCE / ISSUE** — the project book narrates the plan and the working practices;
@@ -615,6 +710,8 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | `2026-09-29` | `MODEL-BOOKS.2` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26 — the gate surface unchanged); MATERIALS-BILL ok, self-test 7/0 |
 | `2026-09-29` | `MODEL-BOOKS.3` | the id-resolution sweep (every id the chapter names grep-verified against the tracked corpus; the quoted decision fragments programmatically verified as verbatim; the requirement census derived) | every hop resolves: `D-FENCE` / `REQ-D-FENCE` / `OB-FENCE` / CHK-FENCE-POS+NEG / `fault-fence` + expectations / the offline suite / the smoke tuple / the DEFECT-B `never_written` pins; 28 requirements over four semantic classes; citations 52/52 |
 | `2026-09-29` | `MODEL-BOOKS.3` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26); MATERIALS-BILL ok, self-test 7/0 |
+| `2026-09-29` | `MODEL-BOOKS.4` | the id/version/count sweep (every claim the chapter makes verified against the dossier, the override and the trees — the ROOT CAUSE box carries it) | all resolve: the four candidates and their identities, the override's platform shape, the eight DIFFs, the six independence records, the control quotes (archive + dossier), the adapter spellings, the expected-divergence guest, the negative fixture's disabled comparison |
+| `2026-09-29` | `MODEL-BOOKS.4` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26); MATERIALS-BILL ok, self-test 7/0 |
 
 ## Commit Log
 
@@ -623,6 +720,7 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | `MODEL-BOOKS.1` | `SEMILITH-MB-0003 (leaf MODEL-BOOKS.1): …` | the per-unit book structure (`docs/models/<unit-id>/`) and the materials bill: 15 materials, tables generated from the pinned dossier by `gen_model_book.py`, every material's does-not-supply stated; MATERIALS-BILL the 26th doctrine (fired RED before registration); registry repairs (units.sexp's stale book path, fact_ownership +4, readme_routes +1 family) |
 | `MODEL-BOOKS.2` | `SEMILITH-MB-0004 (leaf MODEL-BOOKS.2): …` | the gaps chapter, and the PDF investigation ANSWERED YES with a tool: the pinned publication's own PDF (same version segment, 20260120 Official Release) carries the format tables as selectable text (232 census lines vs 0 in the pinned HTML) — encodings can be re-sourced from the primary document; qualifications recorded (chapter numbering differs; extraction is layout-fragmented); re-sourcing is future reviewed work |
 | `MODEL-BOOKS.3` | `SEMILITH-MB-0005 (leaf MODEL-BOOKS.3): …` | the methodology chapter: the reserved-FENCE rule followed end to end by name (sentence → D-FENCE → REQ-D-FENCE → OB-FENCE → fault-fence → the differentials), the authority/semantic-class judgement calls explained, the mistakes in (DEFECT-A inverted, DEFECT-B fixed in data, the two authoring REDs); every id grep-verified as written |
+| `MODEL-BOOKS.4` | `SEMILITH-MB-0006 (leaf MODEL-BOOKS.4): …` | the references chapter: the configuration story told through the controls that changed the observation (the ISA-string read-back, the platform correction after the advancing-mtime probe, the decisive misaligned-policy flip), the harness DIFFs, the two measured reference-vs-reference differences, and the independence inventory ending in the per-leg verdict — why three models is not three opinions |
 | `MODEL-BOOKS.7` | `SEMILITH-MB-0001 (leaf MODEL-BOOKS.7): …` | the assembler annex in the project book — director request, out of order; the per-unit sequence is unchanged |
 | `MODEL-BOOKS.8` | `SEMILITH-MB-0002 (leaf MODEL-BOOKS.8): …` | the step-by-step build walk — director request, out of order like `.7`; chapters 29 → 30 |
 
@@ -649,6 +747,12 @@ order on director requests; the per-unit book sequence above is unchanged.)
   differentials (six hops, all grep-verified); the authority vs semantic-class judgement
   calls explained with their mechanical edges; DEFECT-A (inverted), DEFECT-B (fixed in
   semantics data) and the two authoring REDs kept in as the teaching material.
+- `2026-09-29`: Leaf `.4` done: the references chapter (`src/references.md`) — how each
+  reference was obtained and matched to the profile, told through the controls that changed
+  the observation (the ISA-string read-back, the platform correction after the
+  advancing-`mtime` probe, the decisive misaligned-policy flip); the harness differences;
+  the two measured reference-vs-reference differences; and the independence inventory —
+  encodings rest on sail alone, semantics on both references, nothing on ACT4 or QEMU.
 - `2026-09-29`: Leaf `.7` done out of order (director request): the project book gains
   `annex/assembler.md` — how `scripts/riscv_asm.py` turns the pinned encoding tables into guest
   bytes, written to the tree's teaching mandate. Chapters 28 → 29.

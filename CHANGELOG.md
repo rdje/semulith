@@ -1,5 +1,33 @@
 # CHANGELOG.md
 
+## SEMILITH-MB-0006 (leaf MODEL-BOOKS.4) — the references, their configuration, and what agreement is worth
+
+- The per-unit book gains its references chapter
+  (`docs/models/rv64i-lab-v0/src/references.md`): the cast honestly labelled (sail-riscv
+  0.14, spike 1.1.1-dev, QEMU never-exercised, ACT4 never-a-second-opinion), the
+  acquisition discipline (the fetcher fired RED on a corrupted digest), and the
+  configuration story told through the controls that CHANGED the observation — the
+  acceptance's own requirement.
+- The three controls, with their recorded outputs: the ISA-string read-back (flipping `M`
+  back on gave `DIFFERS … rv64im_zvl32b` against the pinned `rv64i_zvl32b`); the platform
+  correction (`DIFF-PLATFORM-DEFAULT` — the CLINT `mtime` probe advanced 2, then 3 under a
+  plain `ld`; the override now declares the device-less single-region platform, and
+  `guest-no-device` holds it); and the decisive misaligned-policy flip (same ELF, nothing
+  else changed: `FIRST DIVERGENCE at aligned step 2 … sail writes=[(x1, 0)] … spike
+  writes=[]` — "the two models agree BECAUSE the profile is matched" is a measurement).
+- The harness differences (including DIFF-TRAP-RECORD-SHAPE — the comparator's false pass
+  on a truncated trace) and the two measured reference-vs-reference differences
+  (DIFF-FENCEI-EXECUTED, pinned as the `it-fencei` expected divergence;
+  DIFF-TVAL-PHYS-MASK) are told as the lessons they are.
+- The independence inventory in prose: encoding not-shared (and the cut runs the other way
+  than first assumed — our assembler shares `riscv-opcodes` ancestry with SPIKE, not
+  Sail), floating point shared (184/199 files byte-identical), integer semantics
+  no-evidence-of-sharing, expected-result derivation shared (ACT4 ↔ Sail), QEMU
+  not-examined — ending in the per-leg verdict: encodings rest on Sail alone, semantics on
+  both references, nothing on ACT4 or QEMU.
+- Every id/version/count grep-verified as written; no gate extended (26 doctrines). Both
+  books render; `make gate` all green.
+
 ## SEMILITH-MB-0005 (leaf MODEL-BOOKS.3) — the methodology: from document to model
 
 - The per-unit book gains its methodology chapter
@@ -442,33 +470,4 @@ the new `deferred-to-board` disposition — P5-BOARD's to own, with the CPU reco
 environment assumption in their place. Final census: 10 covered, 4 partial, 6 missing with
 closers, 3 deferred-to-board, 1 out-of-scope. RECORD-SCHEMA rule 12 (UNRESOLVED MATERIAL) keeps
 every named material honest against the catalogue; 33 arms.
-
-## SEMILITH-MM-0046 (leaf MODEL-METHOD.2) — the materials requirement: what each unit owes its model
-
-The catalogue of documents gains the requirement layer: `schema/units.sexp` +
-`schema/category-needs.sexp` declare two record families (zero kernel lines), and
-`materials/units.sexp` + `materials/category-needs.sexp` carry the one-row registry and all 24
-INFORMATION_CATALOG categories for `rv64i-lab-v0` — each bound to the material kind that
-supplies it, at its layer, with an honest disposition. The vocabulary distinguishes ABSENT from
-NEVER-NEEDED: `missing` (a reason is owed — C07/C08/C12/C15/C16/C18, excluded subsystems) versus
-`out-of-scope` (C17/C19–C21, board-layer facts a processor never owed). RECORD-SCHEMA rules 10–11
-enforce it — the acceptance's shape, a board-layer `missing` for a processor, refuses as
-`LAYER LIE` — 6 new arms, 32 total, 7 record files green. The DSP-specific questions of the
-catalog's §5 ride as their own D-category ids, admitted by the schema and pre-built for nobody.
-
-## SEMILITH-MM-0045 (leaf MODEL-METHOD.7) — the no-duplicated-fact rule is a registry, and every mirror is governed
-
-"Single source of truth" now means one owner per fact, mechanized. `doctrine/fact_ownership.tsv`
-names the one owning file per fact kind (8 kinds — configuration, state, encodings, semantics,
-requirements, obligations, pinned sources, materials), each legal derived mirror, and the
-doctrine governing every owner→mirror pair; `FACT-OWNERSHIP` (18th doctrine, 8 arms) verifies one
-owner each, owners exist, every governor is a registered doctrine that runs, and the corpus's four
-restatement pairs are all named. The acceptance's shape — a fact stated in two, refused — fires as
-`UNGOVERNED MIRROR` and `UNREGISTERED MIRROR PAIR`.
-
-⭐ The inventory found what the rule exists to catch: the corpus's mirrors were mostly governed
-(decision↔requirement by RECORD-SCHEMA; state↔profile by PROFILE-CONSISTENCY; composition↔fragments
-by UNIT-COMPOSITION), but 28 obligations restate their requirement's statement — all matching
-today, nothing refusing the day one drifts. RECORD-SCHEMA gains rule 9 (MIRROR) with 3 arms; 26
-total. An ungoverned mirror is how one fact quietly becomes two; the registry makes that a verdict.
 
