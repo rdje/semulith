@@ -13,28 +13,30 @@ gate reading `passed`.
 What exists is a **laboratory with first evidence**. The three-crate workspace executes the
 `rv64i-lab-v0` definition: all 52 declared instructions evaluate directly from the semantics
 data, under the environment contract, with the outcome families the architecture requires.
-Thirty-two independently encoded guest programs run on it — the four P1 smoke guests, the five
-`P2-SCALAR.1` scope-completion guests, the five `P2-SCALAR.2` boundary guests, and the
-eighteen `P2-SCALAR.3` fault guests, so every
-one of the 52 declared forms is executed, the shift-amount domains are exhausted, and the
-fault, suppression and reserved cases behave as the source classifies them —
+Forty independently encoded guest programs run on it — the four P1 smoke guests, the five
+`P2-SCALAR.1` scope-completion guests, the five `P2-SCALAR.2` boundary guests, the
+eighteen `P2-SCALAR.3` fault guests, and the eight `P2-SCALAR.4` interaction guests, so every
+one of the 52 declared forms is executed, the shift-amount domains are exhausted, the
+fault, suppression and reserved cases behave as the source classifies them, and the declared
+fault × alias × boundary × event × progress × restart matrix's 21 cells all resolve —
 and their observations agree with two
-independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 454 aligned
-steps, and reproduce byte-identically on re-run. The evidence machinery that makes a number
+independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 492 aligned
+steps (plus one *declared* expected divergence, `it-fencei`, where the references execute
+a word this profile declares reserved), and reproduce byte-identically on re-run. The evidence machinery that makes a number
 checkable lives here too: the records re-validate on two engines on every commit, and the
 guest expectations are specification-derived values the commit gate re-checks offline.
 
 Every one of those claims is **finite tested evidence, explicitly not universal proof**
-(`EVD-01`): thirty-two programs, two references, one host. Nothing on this page upgrades them.
+(`EVD-01`): forty programs, two references, one host. Nothing on this page upgrades them.
 
 ## Not claimed
 
 | Not claimed | Why it matters |
 | --- | --- |
-| A validated CPU profile | P2's `CPU-LAB` gate has not been run. The evidence covers the guest corpus, not the profile's whole interaction matrix — no directed sequences, no coverage campaign, no ACT suite, no privilege modes. Executing correctly is a beginning, not a validation. |
+| A validated CPU profile | P2's `CPU-LAB` gate has not been run. The evidence covers the guest corpus and its declared, exercised interaction matrix — but no external or directed campaigns, no ACT suite, no privilege modes. Executing correctly is a beginning, not a validation. |
 | A conformance result | No gate reads `passed`. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented); `G1` ran with verdict `incomplete` (criterion 6, the C guest, is unmet). |
 | An accepted processor profile | `rv64i-lab-v0` is a development profile. Acceptance attaches evidence to an exact versioned profile; none has been accepted. |
-| Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus — but ACT4 is deliberately not acquired, QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 454 steps is two implementations agreeing, not three opinions. |
+| Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus — but ACT4 is deliberately not acquired, QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 492 steps is two implementations agreeing, not three opinions. |
 | Complete in-repository claim tooling | The frozen `examples/` records re-validate in Rust per `RUST-01`, and the guests' expectations re-check offline — but the profile dossier still rides the Python track, and `CLAIM_VERIFICATION.md`'s tag and constant sweep are not mechanized. |
 | The name | *Semulith* is proposed. No crate, repository, domain, or trademark has been reserved or cleared. |
 

@@ -700,3 +700,141 @@ fn fault_selfmod_makes_the_store_fetch_visible_immediately() {
         }
     )));
 }
+
+// ---- the P2-SCALAR.4 interaction-matrix guests -----------------------------------------------------
+
+#[test]
+fn it_prio_jump_reports_the_misaligned_cause_on_the_doubly_bad_target() {
+    // F×F priority, measured three-way: the jalr target 0x40000002 is BOTH misaligned AND
+    // unmapped; the misalignment is judged on the jump (cause 0x00, tval = the target)
+    // before any fetch is attempted there, and the link write is suppressed
+    // (never_written x5).
+    assert_guest_observations("it-prio-jump", Stop::Trap);
+    let (trace, _, _) = run_guest("it-prio-jump");
+    let last = &trace.steps[2];
+    assert_eq!(last.word, Some(0x0000_82E7));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x00, 0x4000_0002)));
+}
+
+#[test]
+fn it_prio_load_reports_the_misaligned_cause_on_the_doubly_bad_address() {
+    // F×F priority on the data path, measured three-way: the lw at 0x40000001 is BOTH
+    // misaligned AND unmapped; D-MISALIGN-DATA is judged before the boundary is crossed,
+    // so cause 0x04 wins and no data crossing exists (the census pins the empty arm).
+    assert_guest_observations("it-prio-load", Stop::Trap);
+    let (trace, _, _) = run_guest("it-prio-load");
+    assert_eq!(trace.steps[2].trap, Some((0x04, 0x4000_0001)));
+}
+
+#[test]
+fn it_fault_alias_preserves_the_base_of_its_own_faulting_load() {
+    // F×A, measured three-way: `lw x5, x5, 1` — rd == rs1 — raises cause 0x04, and the
+    // base register is PRESERVED through the fault: the trap step writes nothing, so x5
+    // keeps the value step 0 gave it (the empty writes table on a pre-written base is
+    // the observation).
+    assert_guest_observations("it-fault-alias", Stop::Trap);
+    let (trace, _, _) = run_guest("it-fault-alias");
+    assert_eq!(trace.steps[0].writes, vec![(5, 0xFFFF_FFFF_8000_0000)]);
+    assert_eq!(trace.steps[1].writes, vec![]);
+    assert_eq!(trace.steps[1].trap, Some((0x04, 0xFFFF_FFFF_8000_0001)));
+}
+
+#[test]
+fn it_fault_wrap_ld_faults_at_the_wrapped_address() {
+    // F×B, measured three-way: 0xFFFF_FFFF_FFFF_FFFC + 4 wraps mod 2^64 to address 0
+    // (D-ADDR-WRAP on the load path), which no region covers: cause 0x05, tval 0 — and
+    // 0 < 2^56, so DIFF-TVAL-PHYS-MASK cannot reach the comparison.
+    assert_guest_observations("it-fault-wrap-ld", Stop::Trap);
+    let (trace, _, _) = run_guest("it-fault-wrap-ld");
+    assert_eq!(trace.steps[1].trap, Some((0x05, 0x0)));
+}
+
+#[test]
+fn it_fault_wrap_sd_faults_at_the_wrapped_address_and_stores_nothing() {
+    // F×B on the store path — the DIFF-TVAL-PHYS-MASK redesign: the wrap target is
+    // address 0 (tval 0, exact on all three models), not the top of the space where
+    // sail masks the tval. The boundary refuses the request: cause 0x07, tval 0, and
+    // nothing is stored (SEM-06 — the refused crossing is census-pinned).
+    assert_guest_observations("it-fault-wrap-sd", Stop::Trap);
+    let (trace, crossings, _) = run_guest("it-fault-wrap-sd");
+    assert_eq!(trace.steps[2].trap, Some((0x07, 0x0)));
+    assert!(crossings.iter().any(|c| matches!(
+        c.request,
+        Request::Store {
+            width: AccessWidth::D,
+            addr: 0x0,
+            data: 7,
+        }
+    ) && c.response.is_err()));
+}
+
+#[test]
+fn it_alias_bound_runs_self_aliased_ops_at_boundary_values() {
+    // A×B: rd = rs1 = rs2 at domain edges — the addw 32-bit wrap, the 6-bit amount read
+    // of 65 (which is 1), the shamt-63 extreme, and slt/sub at -1. Every result is a
+    // visible change; the run retires into the budget.
+    assert_guest_observations("it-alias-bound", Stop::Budget);
+    let (trace, _, _) = run_guest("it-alias-bound");
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+    assert_eq!(trace.steps[1].writes, vec![(5, 0xFFFF_FFFF_FFFF_FFFE)]);
+    assert_eq!(trace.steps[5].writes, vec![(7, 0x8000_0000_0000_0000)]);
+}
+
+#[test]
+fn it_progress_loop_makes_every_iteration_visible_until_the_budget() {
+    // P×P (+ the x0-link alias): an unbounded counting loop under the budget contract —
+    // 13 executed steps from 3 instructions, every count a visible write, the jal's link
+    // to x0 architecturally discarded (empty writes on the jump steps), and the run ends
+    // exactly when the budget is spent.
+    assert_guest_observations("it-progress-loop", Stop::Budget);
+    let (trace, _, _) = run_guest("it-progress-loop");
+    assert_eq!(trace.steps.len(), 13);
+    assert_eq!(trace.steps[11].writes, vec![(1, 7)]);
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+}
+
+#[test]
+fn it_fencei_reports_the_reserved_word_and_stops_undefined() {
+    // F×E — the DIFF-FENCEI-EXECUTED pin. Zifencei is absent from this profile, so
+    // 0x0000100F matches no decode row: the interpreter reports the reserved case and the
+    // laboratory's declared D-RESERVED-DECODE policy converts it to the
+    // illegal-instruction observation (cause 0x02, tval = the word) — while both
+    // references nop it and continue (the expected divergence the smoke run checks).
+    // Stop::Undefined keeps the source classification (SEM-07); x2 (the continuation
+    // marker) is never written by semulith.
+    assert_guest_observations(
+        "it-fencei",
+        Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 }),
+    );
+    let (trace, _, _) = run_guest("it-fencei");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, Some(0x0000_100F));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x02, 0x0000_100F)));
+}
+
+// ---- the restart axis: the offline determinism suite (P2-SCALAR.4) ---------------------------------
+
+#[test]
+fn every_guest_re_executes_identically_from_cold_reset() {
+    // Restartability is determinism of re-execution from cold reset — a mechanism
+    // property, not a guest shape (the interaction matrix's restart cells name THIS
+    // suite plus the smoke runner's reproduce leg). Every tracked guest runs twice from
+    // `zeroed_at(entry)` and must produce the identical trace AND crossing log: a model
+    // whose re-execution drifts is a model whose restart claim is unfounded.
+    for guest in GUESTS {
+        let (first_trace, first_crossings, _) = run_guest(guest.name);
+        let (second_trace, second_crossings, _) = run_guest(guest.name);
+        assert_eq!(
+            first_trace, second_trace,
+            "{}: re-execution from cold reset produced a different trace",
+            guest.name
+        );
+        assert_eq!(
+            first_crossings, second_crossings,
+            "{}: re-execution from cold reset produced a different crossing log",
+            guest.name
+        );
+    }
+}

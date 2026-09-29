@@ -155,7 +155,14 @@ RULES.md	reader_navigation	normative	stable rule IDs; changes by reviewed decisi
 #               27 after this session's doctrine gates and checkers. The row count, not the
 #               prose, is the growth. Ceiling 12 KiB -> 16 KiB; health stays 0 (an instrument
 #               list does not warm the way a narrative does — a row arrives, not a paragraph).
-TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	16384	0
+# Re-derivation, SEMILITH-PS-0007 (2026-09-29), when the 25th doctrine row crossed both caps:
+#   TOOLBOX.md  16,380 B of 16,384 B at HEAD — the INTERACTION-MATRIX row (the instrument the
+#               matrix gate is) is the surface's own contract ("one row per tracked diagnostic")
+#               expanding, the same grounds as the MODEL-METHOD.2 raise below. Ceiling 16 KiB
+#               -> 20 KiB; health stays 0 (a row arrives, not a paragraph).
+#   DOCTRINE_ENFORCEMENT.md  24,573 B of 24,576 B at HEAD — the same 25th row on the registry's
+#               human-readable mirror. Ceiling 24 KiB -> 28 KiB; health stays 0.
+TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	20480	0
 COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288	0
 CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192	0
 AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0
@@ -166,7 +173,7 @@ MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally ow
 #               20th registered doctrine expanding it is the contract expanding, the same
 #               grounds as the TOOLBOX.md raise above. Ceiling 20 KiB -> 24 KiB; health stays
 #               0 (a doctrine row arrives, not a paragraph).
-DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	24576	0
+DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	28672	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
 schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	16	131072	24	524288	65536
@@ -214,7 +221,7 @@ docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf eviden
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
-profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	78	367466	82	471040	32768
+profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	95	402967	99	516096	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

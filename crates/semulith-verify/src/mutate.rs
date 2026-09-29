@@ -213,6 +213,17 @@ pub const MUTATIONS: &[(&str, &str)] = &[
 ///   every declared region, answered AccessFault (step 2).
 /// - `fault-selfmod.s` (`P2-SCALAR.3`): one `sw x1, 12(x3)` at 0x8000_0014 — inside the
 ///   declared region, aligned, not faulted; the D-CODE-VISIBILITY patch itself (step 3).
+/// - `it-prio-jump.s`, `it-prio-load.s`, `it-fault-alias.s` (`P2-SCALAR.4`): each fault is
+///   judged BEFORE the boundary is crossed (the misaligned-cause priority, D-MISALIGN-DATA /
+///   D-MISALIGN-REPORT) — zero data crossings, which is the observation these guests pin.
+/// - `it-fault-wrap-ld.s` (`P2-SCALAR.4`): one `ld x2, x1, 4` whose address wraps mod 2^64
+///   to 0 — outside every declared region, so the crossing is recorded and answered
+///   AccessFault (step 1); the wrap is what the guest pins.
+/// - `it-fault-wrap-sd.s` (`P2-SCALAR.4`): one `sd x2, 8(x1)` whose address wraps to 0 —
+///   recorded and answered AccessFault (step 2); nothing is stored (SEM-06), so no guest
+///   added by `.4` has a SUCCESSFUL store crossing.
+/// - `it-alias-bound.s`, `it-progress-loop.s`, `it-fencei.s` (`P2-SCALAR.4`): no load or
+///   store instruction exists in these programs.
 pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
     match guest {
         "smoke-arith" => &[(
@@ -417,6 +428,25 @@ pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
                 data: 0x0070_0113,
             },
             false,
+        )],
+        "it-prio-jump" | "it-prio-load" | "it-fault-alias" | "it-alias-bound"
+        | "it-progress-loop" | "it-fencei" => &[],
+        "it-fault-wrap-ld" => &[(
+            1,
+            Request::Load {
+                width: AccessWidth::D,
+                addr: 0x0,
+            },
+            true,
+        )],
+        "it-fault-wrap-sd" => &[(
+            2,
+            Request::Store {
+                width: AccessWidth::D,
+                addr: 0x0,
+                data: 7,
+            },
+            true,
         )],
         "bound-ext" => &[
             (

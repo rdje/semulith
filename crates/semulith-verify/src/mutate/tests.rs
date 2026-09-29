@@ -231,6 +231,12 @@ fn the_data_crossing_census_pins_every_tracked_guest() {
             Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 })
         }
         "fault-branch-nt" | "fault-fence" | "fault-hints" | "fault-selfmod" => Stop::Budget,
+        // The P2-SCALAR.4 interaction guests: the fence.i expected-divergence guest keeps
+        // its source classification, the loop and the self-aliased ops retire into the
+        // budget, and the rest trap.
+        "it-fencei" => Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 }),
+        "it-alias-bound" | "it-progress-loop" => Stop::Budget,
+        n if n.starts_with("it-") => Stop::Trap,
         n if n.starts_with("fault-") => Stop::Trap,
         _ => Stop::Budget,
     };

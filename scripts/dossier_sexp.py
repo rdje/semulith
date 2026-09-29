@@ -676,6 +676,11 @@ def expectations_to_form(doc: dict) -> list:
     root += _rep("never_written", doc.get("never_written") or [])
     if "cross_model" in doc:
         root.append(_bool_field("cross_model", doc["cross_model"]))
+    if "expect_divergence" in doc:
+        ed = doc["expect_divergence"]
+        root.append([S.Symbol("expect_divergence"),
+                     _pair("difference", ed["difference"]),
+                     _pair("at_step", ed["at_step"])])
     for s in doc.get("step", []):
         sf = [S.Symbol("step"),
               _pair("n", s["n"]),
@@ -698,6 +703,11 @@ def expectations_to_doc(form) -> dict:
            "instructions": _req(form, "instructions", "expectations"),
            "cross_model": _opt_bool_in(form, "cross_model", "expectations"),
            "step": []}
+    edf = _opt_child(form, "expect_divergence")
+    if edf is not None:
+        doc["expect_divergence"] = {
+            "difference": _s(_req(edf, "difference", "expect_divergence")),
+            "at_step": _req(edf, "at_step", "expect_divergence")}
     # never_written reconstructs only when the document declares it — an absent negative
     # observation is not the same as an empty one
     if any(str(c[0]) == "never_written" for c in _fields(form)):
@@ -917,6 +927,10 @@ def _selftest() -> int:
     arm("GREEN authority travels as a symbol and returns as the same string",
         lambda: eq(profile_to_doc(profile_to_form(PROF))["state"]["authority"],
                    "laboratory"))
+    arm("GREEN an expected-divergence declaration round-trips (P2-SCALAR.4)",
+        lambda: eq(expectations_to_doc(expectations_to_form(
+            {**EXP, "expect_divergence": {"difference": "DIFF-X", "at_step": 1}})),
+            {**EXP, "expect_divergence": {"difference": "DIFF-X", "at_step": 1}}))
     arm("RED   a float is refused, not truncated",
         lambda: refused(lambda: _pair("x", _atom_out(1.5)), "float"))
     arm("RED   a nested value where a scalar belongs is refused",

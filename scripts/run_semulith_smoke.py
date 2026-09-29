@@ -29,8 +29,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from compare_traces import (align, compare, parse_sail, parse_semulith, parse_spike,
-                            CompareError)
+from compare_traces import (align, compare, check_expected_divergence, parse_sail,
+                            parse_semulith, parse_spike, CompareError)
 from riscv_asm import Assembler, write_elf64
 import dossier_sexp as D
 
@@ -141,37 +141,92 @@ def experiment(name: str) -> None:
     run_semulith(elf, n, semulith_trace)
     ours = align(parse_semulith(semulith_trace.read_text()), ENTRY, "semulith")
 
+    spec = GUESTS / f"{name}.expected.sexp"
+    exp = D.load_expectations(spec) if spec.is_file() else None
+    div = (exp or {}).get("expect_divergence")
+
+    # The references' run length. An expected-divergence guest is straight-line by
+    # construction: the references retire the WHOLE program (semulith stops at the declared
+    # divergence), plus the one measured run-off-the-end step both references take
+    # identically (the zero word past the payload raises illegal-instruction on each) — so
+    # the reference-vs-reference control below compares full traces, never a prefix.
+    ref_n = n if div is None else assembled + 1
+
     sail_trace = OUT / f"{name}.sail.trace"
-    run_sail(elf, n, sail_trace)
+    run_sail(elf, ref_n, sail_trace)
     sail = align(parse_sail(sail_trace.read_text()), ENTRY, "sail")
 
     check_expected(name, ours, "semulith run")
 
-    spec = GUESTS / f"{name}.expected.sexp"
     cross = True
-    if spec.is_file():
-        cross = D.load_expectations(spec).get("cross_model", True)
-    pairs = [("sail-riscv", sail)]
-    if cross:
+    if exp is not None:
+        cross = exp.get("cross_model", True)
+    spike = None
+    if cross or div is not None:
         spike_log = OUT / f"{name}.spike.log"
-        run_spike(elf, n, spike_log)
-        pairs.append(("spike", align(parse_spike(spike_log.read_text()), ENTRY, "spike")))
-    else:
+        run_spike(elf, ref_n, spike_log)
+        spike = align(parse_spike(spike_log.read_text()), ENTRY, "spike")
+    if not cross and div is None:
         print(f"  SKIP  {name}: sail-riscv vs spike  "
               f"disabled — see difference DIFF-PLATFORM-SPIKE in references.sexp")
-    for model_name, theirs in pairs:
-        try:
-            ok, report = compare(ours, theirs, ("semulith", model_name))
-        except CompareError as exc:
-            ok, report = False, str(exc)
-        say(ok, f"{name}: semulith vs {model_name}", report.splitlines()[0])
-        if not ok:
-            print("\n".join("      " + l for l in report.splitlines()[1:]))
+
+    if div is not None:
+        expected_divergence(name, div, ours, sail, spike)
+    else:
+        pairs = [("sail-riscv", sail)] + ([("spike", spike)] if cross else [])
+        for model_name, theirs in pairs:
+            try:
+                ok, report = compare(ours, theirs, ("semulith", model_name))
+            except CompareError as exc:
+                ok, report = False, str(exc)
+            say(ok, f"{name}: semulith vs {model_name}", report.splitlines()[0])
+            if not ok:
+                print("\n".join("      " + l for l in report.splitlines()[1:]))
 
     repeat = OUT / f"{name}.semulith.rerun.trace"
     run_semulith(elf, n, repeat)
     same = sha256(semulith_trace) == sha256(repeat)
     say(same, f"{name}: semulith reproduces", f"sha256 {sha256(semulith_trace)[:16]}…")
+
+
+def expected_divergence(name: str, div: dict, ours, sail, spike) -> None:
+    """The four-step protocol for a guest whose expectations declare `expect_divergence`
+    (P2-SCALAR.4): the comparison is not DISABLED (`cross_model` stays what it is) — it is
+    a comparison that must FAIL in exactly one declared way.
+
+    (a) semulith matches its own specification-derived expectations — already checked by
+        `check_expected` in `experiment`, like every other guest;
+    (b) compare(semulith, each reference) reports FIRST DIVERGENCE at exactly `at_step`,
+        with semulith's step carrying the policy trap;
+    (c) sail vs spike AGREE over their full length — the references stay each other's
+        control, so the divergence is attributable to the declared difference alone;
+    (d) the difference id exists in references.sexp (also commit-gated: the
+        INTERACTION-MATRIX doctrine re-checks it against the declared matrix).
+    """
+    diff_id, at_step = div["difference"], div["at_step"]
+    for model_name, theirs in (("sail-riscv", sail), ("spike", spike)):
+        ok, report = check_expected_divergence(ours, theirs, at_step, diff_id,
+                                               ("semulith", model_name))
+        if ok and ours[at_step].trap is None:
+            ok, report = False, (f"{diff_id}: semulith's step {at_step} carries NO trap — "
+                                 f"the declared divergence is the policy trap; something "
+                                 f"else diverged")
+        say(ok, f"{name}: semulith vs {model_name} — expected divergence",
+            report.splitlines()[0])
+        if not ok:
+            print("\n".join("      " + l for l in report.splitlines()[1:]))
+    try:
+        ok, report = compare(sail, spike, ("sail-riscv", "spike"))
+    except CompareError as exc:
+        ok, report = False, str(exc)
+    say(ok, f"{name}: sail-riscv vs spike — the references stay each other's control",
+        report.splitlines()[0])
+    if not ok:
+        print("\n".join("      " + l for l in report.splitlines()[1:]))
+    known = {d["id"] for d in
+             D.load_references(ROOT / f"profiles/{PROFILE}/references.sexp")
+             .get("difference", [])}
+    say(diff_id in known, f"{name}: difference {diff_id} is recorded in references.sexp")
 
 
 def main() -> int:
@@ -193,7 +248,9 @@ def main() -> int:
                  "fault-ld-mis-h", "fault-ld-mis-d", "fault-st-mis-h", "fault-st-mis-w",
                  "fault-st-mis-d", "fault-ld-x0-mis", "fault-ld-x0-fault", "fault-access-ld",
                  "fault-access-sd", "fault-reserved", "fault-shiftw-res", "fault-fence",
-                 "fault-hints", "fault-selfmod"):
+                 "fault-hints", "fault-selfmod",
+                 "it-prio-jump", "it-prio-load", "it-fault-alias", "it-fault-wrap-ld",
+                 "it-fault-wrap-sd", "it-alias-bound", "it-progress-loop", "it-fencei"):
         experiment(name)
     print()
     if failures:

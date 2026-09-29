@@ -3,6 +3,12 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-29)_ — the interaction matrix: declared, exercised, gated (P2-SCALAR.4)
+
+No model defect this leaf; the work was evidence organization over behaviors the probe suite (8 untracked probe ELFs, `target/refs/guests/probes/run_probes_p24.py`) measured against sail-riscv 0.14 AND spike 1.1.1-dev before any guest existed. The probes also found a NEW reference-vs-reference difference: sail masks the access-fault tval to its 56-bit physical-address width (sd at 0xFFFF…FFF8 → tval 0x00FF…FFF8 on sail, the full address on spike AND semulith; at exactly 2^56 sail reports 0; at 2^55 both intact) — recorded as `DIFF-TVAL-PHYS-MASK` in `references.sexp`, and the wrap-sd guest was redesigned to wrap to address 0 (tval 0, exact three-way) before it was ever authored. Implementation: the matrix is tracked data — `profiles/rv64i-lab-v0/interactions.sexp` under the new `schema/interactions.sexp` (six grounded axes, the 21-cell upper triangle, dispositions guest/mechanism/degenerate-with-reason) — and the 25th doctrine `INTERACTION-MATRIX` (`scripts/check_interaction_matrix.{py,sh}`) re-derives the cells from the axes and refuses by name: omitted cell, unresolved disposition (a guest needs source AND expectations; the mechanism registry is closed — the smoke reproduce leg and the offline determinism suite, each pinned to an artifact needle), orphan guest, unrecorded difference id. Fired RED against the real corpus before registration (`NO MATRIX rv64i-lab-v0`), GREEN at 21/21; self-test 12/0. The design's census named the distinguishing guests per cell; the orphan rule forced the 14 pre-existing guests it left unnamed into cells, assigned by the axes each genuinely exercises (stated in the leaf's result so the assignments are reviewable). The comparator learned the expected divergence — the opposite act from `cross_model`'s DISABLE: `expect_divergence` on the expectation document (schema field + `dossier_sexp.py` round-trip), `check_expected_divergence` in `compare_traces.py` (prefix must agree; the first divergence must land at exactly `at_step`; an AGREE there is RED — a stale pin, not a good comparison; self-test 16/0, +4 arms), and the smoke run's four-step protocol for `it-fencei`: semulith meets its spec-derived expectations, the first divergence vs each reference is exactly step 1 with semulith carrying the policy trap, sail vs spike AGREE over their full 4 steps (the +1 is the measured run-off-the-end illegal word both references take identically — full traces, never a truncated prefix), and the difference id is recorded. The restart axis is mechanism, not guest: `run/tests.rs`'s new determinism suite runs every guest twice from `zeroed_at(entry)`, asserting identical traces AND crossing logs. Two instrument REDs in flight, both the author's: the matrix gate's derived cell set was built in declared-axis order while the document's cells normalize to sorted pairs (three phantom OMITTED CELLs on the first GREEN run — the derivation was wrong, not the document); and README-ROUTING-CLOSURE fired twice — `references.sexp` + the new record crossed the 32,768 per-part ceiling (the record was tightened to 32,406 B; the ceiling stayed), and the 25th doctrine row crossed the TOOLBOX.md (16,380/16,384) and DOCTRINE_ENFORCEMENT.md (24,573/24,576) caps, re-derived to 20/28 KiB per the SEMILITH-PL-0001 row-count precedent. One deviation from the recorded design: the census design said "all 8 join the empty arm" — but a REFUSED access still records a crossing (the `.3` fault-access guests pin exactly that), so the two wrap guests pin their faulted crossings (load at 0 / store at 0, both answered AccessFault); the design's operative constraint — no new guest has a SUCCESSFUL store crossing — holds. Validation: 166 verify suites (+8 guest suites, +1 determinism suite), 65 core, clippy `-D warnings`; `make gate` green with 25 doctrines (273 arms); smoke-bench 44 arms (40 clean guests — enumerated dynamically); `EXERCISE-COVERAGE` 52/52 (self-test 7/0); `make book` renders; live three-way: **40 guests, 492/492 aligned steps** vs sail-riscv AND spike plus the one declared expected divergence, byte-identical reproduction. Reviewed ceiling expansion: `profiles/` 78 → 95 files / 402,967 B (registry 82 → 99 files, 471,040 → 516,096 B; per-part 32,768 untouched — largest new file 3,750 B).
+
+Lesson: `promotion: declined` (recorded in the leaf) — the instruments fired RED on the author's own work (the gate's cell-derivation order, the per-part ceiling) and each enforcement IS the lesson.
+
 ## _(2026-09-29)_ — annex: building the first CPU model, step by step (MODEL-BOOKS.8)
 
 Director request: a teaching chapter walking the whole pipeline that produced `rv64i-lab-v0`, where `.7` covered one tool. Placement follows `.7`: the project book's annex (`annex/building-first-model.md`), referenced — never copied — by the per-unit book when `.1` lands. The chapter is fourteen steps in the order the work actually happened, each answering what you do / why that order / what went wrong for real / the command that shows it. The mandate's hard rules held: the mistakes stay in (the advancing-`mtime` matched profile, the truncated-trace agreement, the inverted FENCE dossier defect, the gate-caught authoring constants), and every printed command was executed against the real repository before the chapter shipped — the scope census counts 52, the `zext-addi` demo catches the mutant (rc=1), the coverage/gate/book commands run as written; two draft commands were caught wrong in review (a grep pattern matching nothing in `encoding.sexp`; a mutant name that does not exist) and corrected against the code. Validation: `make book` renders; chapters 29 → 30 (re-derived by DERIVED-COUNTS; LIVE_STATUS restates); `make gate` green.
@@ -144,62 +150,4 @@ proposes, the director disposes, the ruling is quoted). Verified both directions
 with PID 36462 alive; the row absent -> the same process flags.
 
 Lessons: declined here (the propose-vs-dispose discipline is stated in the registry header).
-
-## _(2026-09-27)_ — no coding without the source of truth, mechanized (MODEL-METHOD.6)
-
-Root cause this leaf closes: the rule was the director's prose and nothing enforced it. The
-design turn: the census already said which categories are missing, but 'missing' alone cannot
-block coding — the excluded subsystems (C07/C08/...) are missing and must stay legal. The gate
-needs the scope to DECLARE what it requires; the registry gained (requires …) and the refusal
-keys on required × missing. rv64i-lab-v0 declares its 14 in-scope categories; the six
-excluded ones stay legal because they are not required.
-
-Composed, not duplicated: SCOPE-COVERAGE says the facts are OWNED; EXTRACTION says they are
-EXTRACTABLE; both must pass before P1-LAB writes code. MODEL-METHOD closes 13/13 — the
-method, the census, the acquisitions, and the coding gate all landed in one session.
-
-Validation: gate 7/0; real run '1 unit(s) may code'; RED fired pre-registration; whole
-enforcer green (19 doctrines, 227 arms).
-
-Lessons: declined here (the OWN-vs-EXTRACT composition rule is stated in the gate's header).
-
-## _(2026-09-27)_ — the method, in prose, written to be learned from (MODEL-METHOD.5)
-
-Root cause this leaf closes: the method existed only as the history of its exercise — eleven
-leaves of it — and a method that lives only in its own history cannot be learned from. The
-document is written against what the session actually did, with the rejections kept, and it
-names the four judgement calls (publication, class, authority, disagreement classification)
-rather than letting them look like mechanics.
-
-The acceptance probe worth keeping: the body of docs/METHOD.md references no project-owned
-tool, path, or id outside the worked example — the carryability claim is checked, not
-asserted. The mdBook carries the document verbatim, the house pattern for every source doc.
-
-Lessons: declined here (the framing is the document's own closing section).
-
-## _(2026-09-27)_ — the run-real-code set is acquired, and the PDF question is answered (MODEL-METHOD.4)
-
-Root cause this leaf closes: the census (" + bt + ".3" + bt + ") named the run-real-code set as the
-reachable acquisition, and nothing pinned it. Four fetches, four digests, one cache, one
-answered question.
-
-Design choices, stated — the home problem consumed the design time, and the answer is worth
-keeping: every natural home refused these documents for a MEASURED reason. The profile's
-sources.sexp composes base_url/file (one origin; this set is four); the materials catalogue's
-fetch seam copies from an $ENV-rooted corpus (no URL kind); docs/provenance manifests list
-tracked bytes (third-party documents are not redistributed — the same doctrine that keeps
-.materials/ gitignored). So the tracked record is the leaf's digest table plus the cache
-README, and a materials.py URL kind is the named candidate only if a second web set arrives.
-Two pins are branch-pinned (master/main) — the digest is the protection; locator-stable pins
-are P1-LAB's refinement.
-
-The PDF question answered YES with extraction evidence (funct7/rs2/rs1/funct3 as clean text
-cells; 1.96 MB extract). SRC-02: the v20260120-tagged release asset was not found (three
-release pages searched); chipdoc unavailable here.
-
-Validation: every cached copy re-hashed to the recorded digest; content sanity per document;
-RECORD-SCHEMA green on the revised C20 census row; whole gate green.
-
-Lessons: declined here (the home-selection reasoning is stated in the leaf, where the next
-acquisition meets it).
 

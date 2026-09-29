@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (24 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 261 arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row once went missing) |
+| Project doctrines (25 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 273 arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row once went missing) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 30 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
@@ -38,7 +38,7 @@ summarize the snapshot in every commit-workflow completion message.
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented; reopened once (`.10` — matched on the ISA, **not the platform**) |
 | P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `incomplete`**: criteria 1–5 met (replay, typed outcomes, link rejection, mutation detection, the recorded baseline); criterion 6 — the C-toolchain guest — unmet, owned by `P2-SCALAR.5` |
-| P2 — validated RV64I profile | CPU-LAB | In Progress | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 3/9 — `.1` scope exercised (52/52, gated); `.2` boundaries pinned; `.3` fault/suppression/reserved pinned (FENCE dossier corrected, link-write fixed, word-less fetch-fault, OQ-2 answered) — 454/454 live, 32 guests |
+| P2 — validated RV64I profile | CPU-LAB | In Progress | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 4/9 — `.1` scope exercised (52/52, gated); `.2` boundaries pinned; `.3` fault layer pinned (FENCE corrected, link-write fixed); `.4` the interaction matrix gated (21/21 cells, doctrine #25) — 492/492 live, 40 guests |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |

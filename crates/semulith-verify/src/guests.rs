@@ -52,6 +52,22 @@
 //!   `profiles/rv64i-lab-v0/guests/guest-control.s`  `497f63c79cd8e25918d845d5cc7d3430566b2f504a31cd33b2deb572f94694e6`
 //!   `profiles/rv64i-lab-v0/guests/guest-no-device.expected.sexp`  `2be4382d503c302ed52b68335f6b52a4b8848aa80bfca4b96f503666305336b7`
 //!   `profiles/rv64i-lab-v0/guests/guest-no-device.s`  `4f6d655d95eaf9e132a3c66ff71d65def1642ade2997f96f663829ce65db50a3`
+//!   `profiles/rv64i-lab-v0/guests/it-alias-bound.expected.sexp`  `5d602f4e52567cca76696bbe1039da02a9f9b7539c4265c404f62f9e1445dcfe`
+//!   `profiles/rv64i-lab-v0/guests/it-alias-bound.s`  `2f09ca9262b6bc236660c461b68be3a6d3c2a13f020751c7bfc18f54e0e7b39c`
+//!   `profiles/rv64i-lab-v0/guests/it-fault-alias.expected.sexp`  `6ac459aa3f8c25b2be0287b3843ae465851364b994823c6fc9a0311aebef5b5d`
+//!   `profiles/rv64i-lab-v0/guests/it-fault-alias.s`  `5ca3546f8346feb1bd4e75589a0276c5f25e280f51355618e399a5dab8f5e9cb`
+//!   `profiles/rv64i-lab-v0/guests/it-fault-wrap-ld.expected.sexp`  `692412eae28fd42d2a5b2ed0da2019adc31e957bd6af201aa23ffd3ef8f82f48`
+//!   `profiles/rv64i-lab-v0/guests/it-fault-wrap-ld.s`  `8a33575014793c4f23d8ce6e6e48f3eb3f2e833a2f5026d4d426627d33ece0e5`
+//!   `profiles/rv64i-lab-v0/guests/it-fault-wrap-sd.expected.sexp`  `c129b45cc8aa897533dcd2921bf92617f8acccce92a55001181a53c2051da5d4`
+//!   `profiles/rv64i-lab-v0/guests/it-fault-wrap-sd.s`  `b84984b4f170336c92639fe40336141a6fff6951024dad8df94c460b670aff9f`
+//!   `profiles/rv64i-lab-v0/guests/it-fencei.expected.sexp`  `7bebe44f33685b9341e9a8e3496a8c33ce33f6c1114c4e09c2174bb3b6373ee0`
+//!   `profiles/rv64i-lab-v0/guests/it-fencei.s`  `44471db1f1454d90484e182fe083101c9e9357e829e1c39a37c8536d496cbda5`
+//!   `profiles/rv64i-lab-v0/guests/it-prio-jump.expected.sexp`  `4a1756d854e3fc2f6e7c7adcd675874327d5b837286f790d048e5dc301676ab9`
+//!   `profiles/rv64i-lab-v0/guests/it-prio-jump.s`  `5c4c0442f763a484321617598885dc49c534505b60eada2a0499c930414a2206`
+//!   `profiles/rv64i-lab-v0/guests/it-prio-load.expected.sexp`  `1bb9f68b7c3e8814afb3cbd5c49c936df2f324cb7a2601a58da2f74e5a7dc118`
+//!   `profiles/rv64i-lab-v0/guests/it-prio-load.s`  `ad39fe5f0a602818f486e66ea50ac30be9fc8975da300250b10d050eebd7a05a`
+//!   `profiles/rv64i-lab-v0/guests/it-progress-loop.expected.sexp`  `8318bacf7fb31c2c5f9df96b80c5d93cd19a7fd9af8244d3b9d50cf5f2c9b955`
+//!   `profiles/rv64i-lab-v0/guests/it-progress-loop.s`  `98f034a39a435a823b639d7655b7213f591e30e6c166310626988973883a0f3f`
 //!   `profiles/rv64i-lab-v0/guests/scope-alu.expected.sexp`  `51db1890cb3acf60b7215d48b816bc07159a4ebbea074c3614b927d885bec2da`
 //!   `profiles/rv64i-lab-v0/guests/scope-alu.s`  `927382ca130c89032d35619086339e7afa7316ec7202ce947cc575e9717c3517`
 //!   `profiles/rv64i-lab-v0/guests/scope-branch.expected.sexp`  `b43b2690339c94e03cd0114e6f7e09602d4da30c520a4350505fab1588697fb6`
@@ -66,7 +82,7 @@
 //!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `5bd4d210483ed8c7815e40acb1c113fadf815359a73dae5c3e944d34208760f9`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.expected.sexp`  `081ed9427c790df38822107188dd91b03847e92bcb0a722f420eb7e89a289e35`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
-//! Generator: `scripts/gen_guests.py` (sha256 `a388877afe4e615cece4010aa4f40122395ecb425c3cc46ab3c84a259e04cd46`)
+//! Generator: `scripts/gen_guests.py` (sha256 `f5fd17544bcc2ff94b247a44a486ec101509942c94d41b19dcc37ea88fb69e7e`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
 //! byte-stable by construction (one entry per line), so regeneration and the
@@ -1242,6 +1258,137 @@ static EXPECTED_FAULT_SELFMOD: &[Expectation] = &[
     Expectation { step: 6, writes: &[(5, 0x0000000000000005)] },
 ];
 
+#[rustfmt::skip]
+static WORDS_IT_PRIO_JUMP: &[u32] = &[
+    0x400000B7,
+    0x00308093,
+    0x000082E7,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_PRIO_JUMP: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000040000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000040000003)] },
+    Expectation { step: 2, writes: &[] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_IT_PRIO_JUMP: &[u8] = &[5];
+
+#[rustfmt::skip]
+static WORDS_IT_PRIO_LOAD: &[u32] = &[
+    0x400000B7,
+    0x00108093,
+    0x0000A103,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_PRIO_LOAD: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000040000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000040000001)] },
+    Expectation { step: 2, writes: &[] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_IT_PRIO_LOAD: &[u8] = &[2];
+
+#[rustfmt::skip]
+static WORDS_IT_FAULT_ALIAS: &[u32] = &[
+    0x800002B7,
+    0x0012A283,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_FAULT_ALIAS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0xFFFFFFFF80000000)] },
+    Expectation { step: 1, writes: &[] },
+];
+
+#[rustfmt::skip]
+static WORDS_IT_FAULT_WRAP_LD: &[u32] = &[
+    0xFFC00093,
+    0x0040B103,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_FAULT_WRAP_LD: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0xFFFFFFFFFFFFFFFC)] },
+    Expectation { step: 1, writes: &[] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_IT_FAULT_WRAP_LD: &[u8] = &[2];
+
+#[rustfmt::skip]
+static WORDS_IT_FAULT_WRAP_SD: &[u32] = &[
+    0xFF800093,
+    0x00700113,
+    0x0020B423,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_FAULT_WRAP_SD: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0xFFFFFFFFFFFFFFF8)] },
+    Expectation { step: 1, writes: &[(2, 0x0000000000000007)] },
+    Expectation { step: 2, writes: &[] },
+];
+
+#[rustfmt::skip]
+static WORDS_IT_ALIAS_BOUND: &[u32] = &[
+    0xFFF00293,
+    0x005282BB,
+    0x04100313,
+    0x00635333,
+    0x03F00393,
+    0x007393B3,
+    0xFFF00413,
+    0x00100493,
+    0x008424B3,
+    0x40840433,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_ALIAS_BOUND: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 1, writes: &[(5, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 2, writes: &[(6, 0x0000000000000041)] },
+    Expectation { step: 3, writes: &[(6, 0x0000000000000020)] },
+    Expectation { step: 4, writes: &[(7, 0x000000000000003F)] },
+    Expectation { step: 5, writes: &[(7, 0x8000000000000000)] },
+    Expectation { step: 6, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 7, writes: &[(9, 0x0000000000000001)] },
+    Expectation { step: 8, writes: &[(9, 0x0000000000000000)] },
+    Expectation { step: 9, writes: &[(8, 0x0000000000000000)] },
+];
+
+#[rustfmt::skip]
+static WORDS_IT_PROGRESS_LOOP: &[u32] = &[
+    0x00100093,
+    0x00108093,
+    0xFFDFF06F,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_PROGRESS_LOOP: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000000000002)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(1, 0x0000000000000003)] },
+    Expectation { step: 4, writes: &[] },
+    Expectation { step: 5, writes: &[(1, 0x0000000000000004)] },
+    Expectation { step: 6, writes: &[] },
+    Expectation { step: 7, writes: &[(1, 0x0000000000000005)] },
+    Expectation { step: 8, writes: &[] },
+    Expectation { step: 9, writes: &[(1, 0x0000000000000006)] },
+    Expectation { step: 10, writes: &[] },
+    Expectation { step: 11, writes: &[(1, 0x0000000000000007)] },
+    Expectation { step: 12, writes: &[] },
+];
+
+#[rustfmt::skip]
+static WORDS_IT_FENCEI: &[u32] = &[
+    0x00100093,
+    0x0000100F,
+    0x00700113,
+];
+#[rustfmt::skip]
+static EXPECTED_IT_FENCEI: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_IT_FENCEI: &[u8] = &[2];
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -1553,6 +1700,78 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 7,
         expected: EXPECTED_FAULT_SELFMOD,
         never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "it-prio-jump",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_PRIO_JUMP,
+        executed_steps: 3,
+        expected: EXPECTED_IT_PRIO_JUMP,
+        never_written: NEVER_WRITTEN_IT_PRIO_JUMP,
+        cross_model: true,
+    },
+    Guest {
+        name: "it-prio-load",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_PRIO_LOAD,
+        executed_steps: 3,
+        expected: EXPECTED_IT_PRIO_LOAD,
+        never_written: NEVER_WRITTEN_IT_PRIO_LOAD,
+        cross_model: true,
+    },
+    Guest {
+        name: "it-fault-alias",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_FAULT_ALIAS,
+        executed_steps: 2,
+        expected: EXPECTED_IT_FAULT_ALIAS,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "it-fault-wrap-ld",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_FAULT_WRAP_LD,
+        executed_steps: 2,
+        expected: EXPECTED_IT_FAULT_WRAP_LD,
+        never_written: NEVER_WRITTEN_IT_FAULT_WRAP_LD,
+        cross_model: true,
+    },
+    Guest {
+        name: "it-fault-wrap-sd",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_FAULT_WRAP_SD,
+        executed_steps: 3,
+        expected: EXPECTED_IT_FAULT_WRAP_SD,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "it-alias-bound",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_ALIAS_BOUND,
+        executed_steps: 10,
+        expected: EXPECTED_IT_ALIAS_BOUND,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "it-progress-loop",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_PROGRESS_LOOP,
+        executed_steps: 13,
+        expected: EXPECTED_IT_PROGRESS_LOOP,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "it-fencei",
+        entry: 0x0000000080000000,
+        words: WORDS_IT_FENCEI,
+        executed_steps: 2,
+        expected: EXPECTED_IT_FENCEI,
+        never_written: NEVER_WRITTEN_IT_FENCEI,
         cross_model: true,
     },
 ];

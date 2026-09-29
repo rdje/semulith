@@ -49,7 +49,9 @@ GUESTS = ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
           "fault-ld-mis-h", "fault-ld-mis-d", "fault-st-mis-h", "fault-st-mis-w",
           "fault-st-mis-d", "fault-ld-x0-mis", "fault-ld-x0-fault", "fault-access-ld",
           "fault-access-sd", "fault-reserved", "fault-shiftw-res", "fault-fence",
-          "fault-hints", "fault-selfmod")
+          "fault-hints", "fault-selfmod",
+          "it-prio-jump", "it-prio-load", "it-fault-alias", "it-fault-wrap-ld",
+          "it-fault-wrap-sd", "it-alias-bound", "it-progress-loop", "it-fencei")
 GENERATOR = Path(__file__)
 
 

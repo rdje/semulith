@@ -18,7 +18,18 @@
   (field (name instructions) (type integer))
   (field (name never_written) (type string) (repeat yes))
   (field (name cross_model) (type symbol) (values true) (values false) (optional yes))
+  (field (name expect_divergence) (type form) (head expect_divergence) (optional yes))
   (field (name step) (type form) (head step) (repeat yes) (min 1)))
+
+;; `expect_divergence` (P2-SCALAR.4) declares that the cross-model comparison MUST diverge in
+;; exactly one named way: `difference` is a `[[difference]]` id in references.sexp, `at_step`
+;; the aligned step where the first divergence must land. It is the opposite act from
+;; `cross_model false` — not a comparison DISABLED but a comparison that must fail in exactly
+;; the declared way; an AGREE verdict against it is the RED case (the recorded difference no
+;; longer exists, so the pin is stale, not the comparison good).
+(construct (name expect_divergence)
+  (field (name difference) (type string) (min-length 1))
+  (field (name at_step) (type integer)))
 
 (construct (name step)
   (field (name n) (type integer))

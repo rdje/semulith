@@ -21,7 +21,7 @@ Unmet: **criterion 6** — named in its section below.
 | --- | --- |
 | `crates/semulith-core`, `-verify`, `-cli` | the laboratory: interpreter, evidence machinery, command surface |
 | `contract-obligations.sexp` | 36 obligations (the environment contract the laboratory serves) |
-| `guests/` | 32 assembly guests, 0 C guests, 32 expectation documents |
+| `guests/` | 40 assembly guests, 0 C guests, 40 expectation documents |
 | `baseline.sexp` | the recorded performance baseline |
 
 ## Criterion 1 — failures are replayable from recorded inputs
@@ -87,11 +87,11 @@ mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).
 
 ## Criterion 6 — a compiled freestanding guest retires under first-divergence comparison
 
-`guests/` holds **32 assembly guests** and **0 C guests**.
-The 32 tracked guests ARE freestanding programs — assembled by the
+`guests/` holds **40 assembly guests** and **0 C guests**.
+The 40 tracked guests ARE freestanding programs — assembled by the
 tracked assembler from `.s` sources — and they retire under first-divergence
 comparison against TWO pinned references (sail-riscv and spike,
-454/454 aligned steps; re-run: `scripts/run_semulith_smoke.py`).
+492/492 aligned steps; re-run: `scripts/run_semulith_smoke.py`).
 But the roadmap's clause names a **compiled** guest with **C as the first guest path**,
 and no C-toolchain guest exists in this tree.
 

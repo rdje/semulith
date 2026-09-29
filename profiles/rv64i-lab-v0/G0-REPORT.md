@@ -24,8 +24,8 @@ generator has no code path that would produce it while that is true.
 | `profile.sexp` | 28 decisions, 52 mnemonics, XLEN 64, extensions `[]` |
 | `requirements.sexp` | 28 requirements |
 | `contract-obligations.sexp` | 36 obligations, 72 declared checks |
-| `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 7 recorded differences |
-| `guests/*.expected.sexp` | 32 programs, 454 expected steps, 16 negative observations |
+| `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 8 recorded differences |
+| `guests/*.expected.sexp` | 40 programs, 492 expected steps, 20 negative observations |
 
 ## Criterion 1 — foundational semantics are resolved
 
@@ -68,6 +68,7 @@ trap as well as arithmetic.
 | `DIFF-PLATFORM-DEFAULT` | configuration — CORRECTED, not merely recorded |
 | `DIFF-PLATFORM-SPIKE` | layer — the reference bundles a BOARD with its CPU |
 | `DIFF-FENCEI-EXECUTED` | extension presence — the ISA string is not the whole answer, again |
+| `DIFF-TVAL-PHYS-MASK` | observable — a physical-address width, measured |
 
 | Independence: subsystem | Pair | Verdict |
 | --- | --- | --- |

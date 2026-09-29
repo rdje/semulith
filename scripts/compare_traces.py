@@ -309,6 +309,45 @@ def compare(a: list[Step], b: list[Step], names: tuple[str, str]) -> tuple[bool,
                   f"({names[0]}: {len(a)} parsed, {names[1]}: {len(b)} parsed)")
 
 
+def check_expected_divergence(a: list[Step], b: list[Step], at_step: int,
+                              difference: str, names: tuple[str, str]) -> tuple[bool, str]:
+    """The EXPECTED-divergence verdict (P2-SCALAR.4): a comparison that MUST fail in exactly
+    one declared way — the opposite act from a `cross_model` DISABLE.
+
+    The prefix must agree step for step, and the first divergence must land at EXACTLY
+    `at_step`, where `difference` (a `[[difference]]` id in references.sexp) says the two
+    models legitimately differ. An AGREEING step at `at_step` is the RED case here: the
+    recorded difference no longer diverges, so the pin is stale — not the comparison good.
+    A divergence BEFORE `at_step` means the declared difference is not the first one, which
+    is a finding about the models, not a pass.
+    """
+    if at_step >= len(a) or at_step >= len(b):
+        return False, (
+            f"{difference}: the declared divergence step {at_step} lies outside the traces "
+            f"({names[0]}: {len(a)} step(s), {names[1]}: {len(b)}) — a divergence that cannot "
+            f"be reached cannot be checked")
+    for i in range(at_step):
+        if a[i].key() != b[i].key():
+            return False, (
+                f"{difference}: PREFIX DIVERGENCE at aligned step {i}, before the declared "
+                f"step {at_step}\n"
+                f"  {names[0]:12} pc={a[i].pc:#018x} insn={_word_text(a[i].word)} "
+                f"writes={a[i].writes} trap={a[i].trap}\n"
+                f"  {names[1]:12} pc={b[i].pc:#018x} insn={_word_text(b[i].word)} "
+                f"writes={b[i].writes} trap={b[i].trap}\n"
+                f"  The expected divergence is not the FIRST one — the undeclared earlier "
+                f"difference is the finding.")
+    if a[at_step].key() == b[at_step].key():
+        return False, (
+            f"{difference}: aligned step {at_step} AGREES — the declared difference no "
+            f"longer diverges there. The pin is stale, not the comparison good: re-measure "
+            f"the difference or retire the declaration.")
+    return True, (
+        f"EXPECTED DIVERGENCE at aligned step {at_step} ({difference}): the prefix agrees "
+        f"and {names[0]} vs {names[1]} differ exactly where the declaration says — "
+        f"{names[0]} trap={a[at_step].trap}, {names[1]} trap={b[at_step].trap}")
+
+
 SAIL_FIXTURE = """[0] [M]: 0x0000000080000000 (0x00100513) addi x10, x0, 0x1
 x10 <- 0x0000000000000001
 [1] [M]: 0x0000000080000004 (0x40152083) lw x1, 0x401(x10)
@@ -417,6 +456,41 @@ def self_test() -> int:
     arm("RED   a wrong reporting point: the fetch fault attached to the jump, not the target",
         SAIL_FETCH_FAULT.replace("tval=0x0000000040000000", "tval=0x0000000080000004"),
         SPIKE_FETCH_FAULT, False, "FIRST DIVERGENCE at aligned step 2")
+
+    # ---- P2-SCALAR.4: the expected-divergence verdict — a comparison that MUST fail in
+    # exactly one declared way. The fixture is the it-fencei shape: semulith stops on the
+    # policy-converted fence.i trap; the reference nops it and continues to the marker.
+    def darm(name: str, ours: list[Step], theirs: list[Step], at_step: int,
+             want_ok: bool, want_sub: str) -> None:
+        nonlocal npass, nfail
+        ok, report = check_expected_divergence(ours, theirs, at_step,
+                                               "DIFF-FENCEI-EXECUTED",
+                                               ("semulith", "reference"))
+        if ok != want_ok:
+            nfail += 1
+            print(f"compare_traces self-test MISS: {name} expected ok={want_ok} got {ok}\n{report}",
+                  file=sys.stderr)
+        elif want_sub not in report:
+            nfail += 1
+            print(f"compare_traces self-test MISS: {name} right verdict, wrong reason "
+                  f"(no {want_sub!r})\n{report}", file=sys.stderr)
+        else:
+            npass += 1
+
+    ours_fencei = [Step(0x80000000, 0x00100093, [("x1", 1)]),
+                   Step(0x80000004, 0x0000100F, [], (0x02, 0x0000100F))]
+    ref_fencei = [Step(0x80000000, 0x00100093, [("x1", 1)]),
+                  Step(0x80000004, 0x0000100F),
+                  Step(0x80000008, 0x00700113, [("x2", 7)])]
+    darm("GREEN the declared divergence lands at exactly the declared step",
+         ours_fencei, ref_fencei, 1, True, "EXPECTED DIVERGENCE at aligned step 1")
+    darm("RED   the traces AGREE — the recorded difference is stale, not good",
+         ours_fencei, ours_fencei, 1, False, "AGREES")
+    darm("RED   an undeclared divergence BEFORE the declared step is the finding",
+         [Step(0x80000000, 0x00100093, [("x1", 2)])] + ours_fencei[1:],
+         ref_fencei, 1, False, "PREFIX DIVERGENCE at aligned step 0")
+    darm("RED   the declared step lies outside the traces",
+         ours_fencei, ref_fencei, 5, False, "outside the traces")
 
     print(f"compare_traces --self-test: {npass} pass / {nfail} fail")
     return 0 if nfail == 0 else 1
