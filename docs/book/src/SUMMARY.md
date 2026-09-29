@@ -7,6 +7,10 @@
 - [What is claimed, and what is not](claim-scope.md)
 - [Current status](status.md)
 
+# The models
+
+- [One definition, one book](models.md)
+
 # The plan
 
 - [Milestones and their dependencies](plan/overview.md)

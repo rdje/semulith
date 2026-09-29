@@ -9,7 +9,7 @@ help:
 	@echo "make fmt             - cargo fmt --all"
 	@echo "make clippy          - cargo clippy --all-targets -- -D warnings"
 	@echo "make test            - cargo test --all"
-	@echo "make book            - build the mdBook (requires mdbook)"
+	@echo "make book            - build the mdBook (the project book and every model book)"
 	@echo "make bench           - build the browser bench's wasm module (scripts/build_bench.sh)"
 	@echo "make smoke-bench     - verify the bench engine headlessly (scripts/smoke_bench.js)"
 	@echo "make hooks           - install the git hooks (core.hooksPath=.githooks)"
@@ -35,6 +35,7 @@ test:
 
 book:
 	mdbook build docs/book
+	@for b in docs/models/*/book.toml; do mdbook build "$$(dirname "$$b")" || exit 1; done
 
 bench:
 	scripts/build_bench.sh

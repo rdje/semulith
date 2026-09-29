@@ -33,6 +33,7 @@ execute and validate them against.
 | `schemas/` · `examples/` | starter data contracts and their synthetic, explicitly planned fixtures |
 | `docs/tasks/` · [`docs/TASK_TREE.md`](docs/TASK_TREE.md) | task-trees — every change is owned by a leaf **before** it is made |
 | [`docs/decisions/`](docs/decisions/) | durable cross-cutting decisions and facts (memory layer C) |
+| [`docs/models/`](docs/models/) | one mdBook per modelled unit — its materials bill and the route from documents to model |
 | `docs/provenance/` | frozen delivery records for supplied design inputs |
 | `scripts/` · `.githooks/` · `.github/workflows/` | the mechanical doctrine enforcement |
 

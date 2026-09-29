@@ -1,5 +1,30 @@
 # CHANGELOG.md
 
+## SEMILITH-MB-0008 (leaf MODEL-BOOKS.6) — the wiring; MODEL-BOOKS closes (8/8)
+
+- `make book` now builds the project book AND every model book (the Makefile's `book`
+  target loops `docs/models/*/book.toml`; measured: two books, one command).
+- Routing: the project book gains "The models" (`docs/book/src/models.md` — one
+  definition, one book; 31 chapters) and README.md's Layout table gains the governed
+  `docs/models/` row (69/85 lines, 3,947/4,864 B — inside both caps).
+- The 27th doctrine `UNIT-BOOKS` (`scripts/check_unit_books.sh`): every registered unit
+  (`materials/units.sexp` — the one registration place) has its own mdBook and it builds;
+  a unit without a book (NO BOOK), a book missing its skeleton or failing to build
+  (INCOMPLETE BOOK / BOOK DOES NOT BUILD), or a book no unit registers (ORPHAN BOOK) fails
+  by name. Fired RED against the real corpus before registration (`NO BOOK rv64i-lab-v0`,
+  named, with the book moved aside); self-test 7/0; mirrored per the registry rules.
+  Measured in flight: mdbook tolerates a SUMMARY naming a missing chapter (draft +
+  warning), so the build arm's broken fixture is a malformed `book.toml` — recorded in
+  the gate's header.
+- **The tree closes**: all seven acceptance criteria met — (1) every registered unit has
+  a book and UNIT-BOOKS says so; (2) the materials list complete, generated, gated (`.1`);
+  (3) the methodology follows one rule end to end (`.3`); (4) `make book` builds every
+  book and the project book routes (`.6`); (5) prose dominates; (6) the teaching test —
+  mistakes in — (every chapter); (7) real-compiled-code ability stated with its limits
+  from the extension set (`.5`).
+- `make gate` all green (27 doctrines, 287 arms — DERIVED-COUNTS re-derives);
+  `check_materials_bill.sh [--self-test]` ok / 7-0; both books render.
+
 ## SEMILITH-MB-0007 (leaf MODEL-BOOKS.5) — the evidence, the gate, and the traceability walk
 
 - The per-unit book's five-part arc completes (`docs/models/rv64i-lab-v0/src/evidence.md`):
@@ -449,18 +474,4 @@ verdict reads `1 unit(s) may code — every required category covered` — P1-LA
 verdict, composed with EXTRACTION (coverage says the facts are OWNED; extraction says they are
 EXTRACTABLE). **`MODEL-METHOD` closes at 13/13**: the method in prose, the census, the
 acquisitions, and the coding gate all landed; every P1 precondition is mechanical.
-
-## SEMILITH-MM-0049 (leaf MODEL-METHOD.5) — the method, in prose, written to be learned from
-
-`docs/METHOD.md` is the method this project actually exercised this session, written to be
-carried: document → decision → requirement → obligation → check, with the ORDER justified at
-each step and the rejected alternatives kept — a version string is not an identity, a laboratory
-policy must never read as an architectural rule, one fact has one owner and every mirror is
-governed, positive-AND-negative checks carry derived-not-copied values, and a check that cannot
-judge never reports green over an absence. One rule — the shift-amount rule — is walked end to
-end by name, its two non-mechanical steps flagged inside the walk. A closing section names the
-four steps no gate can take (choosing the publication, classing the fact, judging the authority,
-classifying the disagreement) and declares everything else mechanical — which is the method's
-discipline, stated as a rule. The mdBook carries it verbatim under The contracts; the
-carryability probe confirms the body depends on no tool, path, or id this project owns.
 
