@@ -1,5 +1,30 @@
 # CHANGELOG.md
 
+## SEMULITH-PD-0050 (leaf PUSH-DISCIPLINE.2) — full CI runs BEFORE the push, at the boundary
+
+- The named full local suite: `make ci` = `check` (CI's rust.yml) + `gate` (CI's
+  doctrines.yml) + `bench` + `smoke-bench` + `book` — matching the server workflows and
+  consciously exceeding them with the bench and the books; the live three-way smoke is
+  excluded with the reason recorded (it needs the untracked, network-acquired reference
+  binaries — its standing as not-a-commit-gate). The membership is named in the Makefile
+  comment, the hook's output, COMMIT.md, and the green-run record.
+- `.githooks/pre-push` now execs `scripts/pre_push.sh`: cadence FIRST (a refused push
+  never burns the suite), then `make ci` on BOTH paths (a director-approved push is not an
+  unverified one), then the green-run record at `target/push/last-green.txt` (+ `.log`) —
+  untracked, on-volume, overwritten per green run; explicitly NOT `.3`'s tracked
+  append-only approval record. A red suite refuses, naming the failing leg from make's own
+  error line. The cadence number stays in `check_push_cadence.sh` alone.
+- Acceptance (d): fired RED by a deliberately broken check — the self-test's broken-suite
+  arm refuses and writes NO green record; a red run after a green one does not overwrite
+  the last green record; the cadence refusal leaves the suite's marker absent. Self-test
+  9/0 in scratch repos with a real bare upstream (the `.1` pattern). On this repository
+  the hook refuses cadence-first at 115/300, the suite unburned.
+- No new doctrine (the boundary is a hook, not a commit gate — PUSH-CADENCE stays the
+  registered one; decision recorded in the leaf). COMMIT.md's Pushing section documents
+  the two-question boundary; TOOLBOX.md gains the two rows.
+- `make ci` green end to end; `make gate` all green (27 doctrines / 291 arms).
+  `PUSH-DISCIPLINE.3` (the approval record) is next.
+
 ## SEMULITH-UT-0053 (leaf UPSTREAM-TRACK.3) — age and exposure, derived; the tree closes (4/4)
 
 - `scripts/upstream_exposure.py`: from each issue record's dated history, DERIVES — at run
@@ -467,12 +492,4 @@
 - Scope, stated: the requirements' `implementation_status` stays `planned` — these are the executable halves; instruction-level obligation checks need the interpreter slice (`.8`). The frontier moves to `.3` (architectural state).
 
 Validation: `cargo test -p semulith-core` 12/0; `cargo clippy --all-targets --all-features -- -D warnings` clean; `make gate` → `=== all doctrines green ===`.
-
-## SEMILITH-PL-0001 (leaf P1-LAB.1, PORT-WEB.1) — the laboratory gets its three crates, and the browser target gets its gate
-
-- `P1-LAB.1`: `crates/app` (the `semulith` placeholder) replaced by the three laboratory crates, wired per `docs/ARCHITECTURE.md` §4 — `semulith-core` depends on nothing (`Cargo.lock` carries no dependencies block for it), `semulith-verify` holds the fixtures home and depends on core only, `semulith-cli` (binary name `semulith`, ROADMAP.md §8) calls both. `make check` green at `-D warnings`; `cargo tree` shows the one-directional edges.
-- `PORT-WEB.1` (same commit, as its acceptance requires): the workspace builds for `wasm32-unknown-unknown` from the first slice, enforced by the 20th registered doctrine, `scripts/check_wasm_build.sh` — it refuses with install instructions when the rustup target is absent, re-runs its 4-arm self-test before every judgement, and was fired RED against the real workspace (a `std::os::unix` import in `semulith-core`, refused naming `lib.rs:13`) before registration. CI's doctrines workflow now installs the Wasm target. No host-only API exists yet; the build itself is the standing proof.
-- Docs in lockstep: mirrors in `DOCTRINE_ENFORCEMENT.md`, the book's doctrines chapter, `TOOLBOX.md`; `LIVE_STATUS.md` re-derived (20 registered, 231 self-test arms; P1 In Progress, 1/12) with a stale MODEL-METHOD row corrected; the book's P1 chapter now states the crates exist and build for host and Wasm. Fixed in passing: a layer-A typo (`sexr_file` → `sexpr_file`); the `DOCTRINE_ENFORCEMENT.md` ceiling re-derived 20 → 24 KiB in the routes registry (the 20th doctrine row is the surface's contract expanding, the same grounds as the TOOLBOX raise). Both append heads sharded again the day they were sharded — the pressure valve working as designed; the `docs/changelog/` file-count ceiling re-derived 20 → 40 in the same commit (the family now carries shards for two append heads — the derivation is recorded in the registry).
-
-Validation: `make gate` green (20 doctrines); `make check` green (fmt + clippy -D warnings + 5 test suites); `bash scripts/check_wasm_build.sh --self-test` → 4 pass / 0 fail.
 

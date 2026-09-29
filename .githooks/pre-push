@@ -3,7 +3,9 @@
 #
 # ⛔ This hook refuses rather than warns. A push is outward-facing: once the bytes reach a server
 # they may be kept, cached, mirrored or indexed whatever happens locally afterwards, so the moment
-# to decide is BEFORE, and a printed warning is read after.
+# to decide is BEFORE, and a printed warning is read after. Since PUSH-DISCIPLINE.2 the boundary
+# runs the cadence gate AND the named full local suite (make ci) before permitting; see
+# scripts/pre_push.sh.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-exec bash "$here/scripts/check_push_cadence.sh" --gate
+exec bash "$here/scripts/pre_push.sh"

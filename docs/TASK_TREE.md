@@ -65,7 +65,7 @@ on the same commit. One commit per completed leaf.
 | [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `done` | — (13/13 leaves complete; the method, the census, the acquisitions, the coding gate) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `done` | — (8/8 leaves complete; the per-unit book structure, the five-chapter arc, and the `UNIT-BOOKS` gate — every registered unit has a book that builds) | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
-| [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
+| [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.3` — the approval record (2 of 3 leaves done; the named full suite runs at the pre-push boundary) | repo-local |
 | [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `done` | — (2/2 leaves complete; both append heads shard into `docs/changelog/` under one frozen manifest) | repo-local |
 | [`PORT-WEB`](tasks/PORT-WEB.md) | `done` | — (1/1 leaves complete; the crate skeleton builds for `wasm32-unknown-unknown` from its first slice, gated by `PORT-WEB`) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `done` | — (4/4 leaves complete; age and exposure derived by command, `blocks` gated, the tree closed) | repo-local |

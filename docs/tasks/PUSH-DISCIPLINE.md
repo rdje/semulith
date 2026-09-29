@@ -58,7 +58,7 @@ policy did not exist to be broken; it did not exist at all.
   Commit: `SEMULITH-PD-0046`
 
 - ID: `PUSH-DISCIPLINE.2` — **full CI runs on the wrong side of the push boundary**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: Policy 16 says full CI runs **before** a push and selected checks for ordinary commits.
 
   GAP CENSUS, measured `2026-09-14` — the claim is not "nothing checks this", because something
@@ -81,6 +81,58 @@ policy did not exist to be broken; it did not exist at all.
   Acceptance: a push runs the full local suite or is refused; the suite that runs is **named**, not
   implied; a green run is recorded with what it covered and when, so the next push can say what was
   verified rather than assume; fired RED by a deliberately broken check.
+  Design (recorded before code, `2026-09-29`):
+  - **The named suite** is `make ci` = `check` + `gate` + `bench` + `smoke-bench` +
+    `book` — the server CI's content (`rust.yml` = check; `doctrines.yml` = gate) plus the
+    browser bench and both books, all local, deterministic, no network. EXCLUDED, with the
+    reason recorded: the live three-way smoke (`run_semulith_smoke.py`) needs the
+    untracked, network-acquired reference binaries under `target/refs/` — the same
+    not-a-commit-gate standing it already has. The membership is NAMED in the Makefile
+    comment, the hook's output, COMMIT.md, and the green-run record.
+  - **The hook**: `.githooks/pre-push` execs a new tracked instrument,
+    `scripts/pre_push.sh`, which (1) runs the cadence gate FIRST (a refused push never
+    burns the suite), (2) runs `make ci` on BOTH paths (cadence push and
+    director-approved push alike), naming the failing leg on refusal, and (3) writes the
+    green-run record. The cadence number stays in `check_push_cadence.sh` alone.
+  - **The green-run record** lives at `target/push/last-green.txt` (+ `last-green.log`):
+    untracked, on-volume, overwritten per green run — it answers "what did the last green
+    pre-push run cover, and when" without git archaeology, and it is NOT the tracked
+    append-only approval record (that is `.3`'s artifact, a different thing).
+  - **No new doctrine.** The boundary behavior is a hook, not a commit gate;
+    PUSH-CADENCE stays the registered doctrine. `pre_push.sh` carries its own
+    `--self-test` (scratch repos with a stub Makefile; the cadence leg exercised through
+    a real bare upstream, the `.1` pattern) — the deliberately-broken-check RED is one of
+    its arms, recorded in the verification log.
+  - **RED demonstration (acceptance d):** the self-test's broken-suite arm (a scratch
+    `ci` target that fails) → refusal naming the failing leg, and NO green record
+    written; plus the never-burns-the-suite arm (cadence refusal leaves the suite's
+    marker absent).
+  Result: met, `2026-09-29`. **The full local suite runs at the pre-push boundary, on both
+  paths, before any bytes leave.** The suite is NAMED: `make ci` = `check` (CI's rust.yml)
+  + `gate` (CI's doctrines.yml) + `bench` + `smoke-bench` + `book` — matching the server
+  workflows and consciously exceeding them with the bench and the books; the live
+  three-way smoke is excluded with the reason recorded (it needs the untracked,
+  network-acquired reference binaries — the not-a-commit-gate standing it already has).
+  `.githooks/pre-push` now execs `scripts/pre_push.sh`: (1) the cadence gate FIRST (a
+  refused push never burns the suite — measured: the cadence refusal leaves the stub
+  suite's marker and the record absent), (2) `make ci` on both paths (cadence push and
+  director-approved alike), a red suite refusing with the failing leg NAMED from make's
+  own error line and the log pointed at, (3) the green-run record at
+  `target/push/last-green.txt` (+ `.log`) — untracked, on-volume, overwritten per green
+  run, answering "what did the last green run cover and when" without git archaeology;
+  explicitly NOT `.3`'s tracked append-only approval record. The cadence number stays in
+  `check_push_cadence.sh` alone; COMMIT.md's Pushing section documents the two-question
+  boundary. Acceptance (d): fired RED by a deliberately broken check — the self-test's
+  broken-suite arm (a scratch `ci` target that fails) refuses, names the leg, and writes
+  NO green record; and a red run after a green one does NOT overwrite the last green
+  record. Self-test 9/0 in scratch repos with a real bare upstream (the `.1` pattern).
+  No new doctrine: the boundary is a hook, not a commit gate — PUSH-CADENCE stays the
+  registered doctrine; recorded here per the leaf's own design. One authoring defect,
+  mine: `local record_dir=… log="$record_dir/…"` in one declaration tripped `set -u`
+  (the second assignment reads the first before it exists) — 3/6 became 9/0 after the
+  split. Exercised on this repository: the hook refuses cadence-first at 115/300, both
+  routes named, the suite unburned.
+  Lessons: `promotion: declined (the set -u ordering slip is fixed in the script; the record's shape is documented in it)`.
 
 - ID: `PUSH-DISCIPLINE.3` — **the approval record**
   Status: `pending`
@@ -93,8 +145,7 @@ policy did not exist to be broken; it did not exist at all.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `PUSH-DISCIPLINE.2` | `pending` | Policy 16's unenforced half sits on the same boundary, so it belongs in the same hook |
-| 2 | `PUSH-DISCIPLINE.3` | `pending` | the audit trail is only worth building once exceptions can actually occur |
+| 1 | `PUSH-DISCIPLINE.3` | `pending` | the audit trail is only worth building once exceptions can actually occur — and the boundary now runs the suite on both paths (`.2`), so an exception is a real, recorded act |
 
 ## Decisions
 
@@ -117,7 +168,68 @@ policy did not exist to be broken; it did not exist at all.
 
 - None.
 
-## Acceptance Checklist (current leaf — `PUSH-DISCIPLINE.1`)
+## Acceptance Checklist (leaf `PUSH-DISCIPLINE.2`)
+
+- [x] **REPRODUCE / ISSUE** — the gap census the leaf already carried, re-measured at the
+  pre-leaf state: the workflows run `on: push` (server-side, after the bytes), the pre-push
+  hook ran cadence only, and no `ci` target existed:
+
+  ```
+  $ git show HEAD~0:Makefile | grep -c '^ci:'   # before this leaf's Makefile edit
+  0
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY: Policy 16's pre-push half was never wired;
+  WHERE, measured at the pre-leaf state:
+
+  ```
+  $ git show HEAD~0:.githooks/pre-push | grep -c 'check_push_cadence'   -> 1 (cadence only)
+  $ git show HEAD~0:Makefile | grep -c '^ci:'                           -> 0 (no ci target)
+  $ grep -c '^on:' .github/workflows/rust.yml .github/workflows/doctrines.yml  -> 1, 1 (on push)
+  ```
+
+  The suite membership decision: match the server workflows (`rust.yml` = check,
+  `doctrines.yml` = gate) and consciously exceed them (`bench`, `smoke-bench`, `book` —
+  all local, deterministic, no network); exclude the live three-way smoke (it needs the
+  untracked, network-acquired reference binaries — the standing it already has).
+
+- [x] **FIX** — the `ci` target (membership named in the Makefile comment);
+  `scripts/pre_push.sh` (cadence first → the named suite on both paths → the green
+  record at `target/push/last-green.txt`, refusal naming the failing leg from make's own
+  error line); `.githooks/pre-push` execs it; COMMIT.md's Pushing section documents the
+  two-question boundary; TOOLBOX.md gains the two rows. The cadence number never moved
+  from `check_push_cadence.sh`.
+
+- [x] **ADDRESSED (verified)** — the self-test, incl. acceptance (d)'s deliberately
+  broken check, and the suite itself:
+
+  ```
+  $ bash scripts/pre_push.sh --self-test
+  PRE-PUSH self-test: 9 pass / 0 fail
+    (RED the cadence refusal comes FIRST — never burns the suite;
+     RED approved + deliberately broken suite → refusal names the leg, no record;
+     RED a red run after a green one does NOT overwrite the last green record;
+     GREEN approved + green suite → permitted, the record names commit + membership)
+  $ make ci
+  ci: all legs green (check, gate, bench, smoke-bench, book)
+  $ printf '' | bash .githooks/pre-push          # the hook's real path, this repository
+  PUSH-CADENCE: REFUSED — 115 commits since the last push; … rc=1   (the suite unburned)
+  ```
+
+- [x] **NO REGRESSION** — no push was attempted at any point; committing is unaffected
+  (this commit passed the pre-commit enforcer); the cadence self-test unchanged:
+
+  ```
+  $ bash scripts/check_push_cadence.sh --self-test -> PUSH-CADENCE --self-test: 11 pass / 0 fail
+  $ make gate
+  === all doctrines green ===          (27 doctrines / 291 self-test arms, re-derived)
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (PUSH-DISCIPLINE 2/3), `LIVE_STATUS.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.3`), this tree,
+  COMMIT.md, TOOLBOX.md, the Makefile.
+
+## Acceptance Checklist (leaf `PUSH-DISCIPLINE.1`)
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHERE: nowhere, and that is the finding. Measured
   before writing anything:
@@ -185,6 +297,11 @@ policy did not exist to be broken; it did not exist at all.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `PUSH-DISCIPLINE.2` | the gap census re-measured at HEAD | `ci:` target absent from the Makefile; the workflows run `on: push`; the hook ran cadence only |
+| `2026-09-29` | `PUSH-DISCIPLINE.2` | `scripts/pre_push.sh --self-test` (scratch repos, a real bare upstream, a stub Makefile) | 9 pass / 0 fail — incl. acceptance (d)'s deliberately broken check (the refusal names the leg, no green record written) and the never-burns-the-suite arm |
+| `2026-09-29` | `PUSH-DISCIPLINE.2` | `make ci` | all legs green: check, gate (27 doctrines), bench, smoke-bench (44 arms), book (both books) |
+| `2026-09-29` | `PUSH-DISCIPLINE.2` | the hook's real path on this repository (direct invocation, no push) | cadence-first refusal at 115/300, both routes named, the suite never ran |
+| `2026-09-29` | `PUSH-DISCIPLINE.2` | `check_push_cadence.sh --self-test`; `make gate` | 11/0 (unchanged); all doctrines green |
 | `2026-09-14` | `PUSH-DISCIPLINE.1` | does any push policy exist today? | `grep -ci push COMMIT.md` → 0; no `pre-push` hook |
 | `2026-09-14` | `PUSH-DISCIPLINE.1` | `--self-test`, first run | `8 pass / 3 fail` — 2 wrapped messages, 1 undocumented cadence |
 | `2026-09-14` | `PUSH-DISCIPLINE.1` | `--self-test`, after the fixes | `11 pass / 0 fail` |
@@ -196,6 +313,7 @@ policy did not exist to be broken; it did not exist at all.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `PUSH-DISCIPLINE.2` | `SEMULITH-PD-0050 (leaf PUSH-DISCIPLINE.2): …` | the named full local suite (`make ci`) runs at the pre-push boundary on both paths, cadence-first; the green-run record at `target/push/last-green.txt`; fired RED by a deliberately broken check (self-test 9/0); no new doctrine (a hook, not a commit gate) |
 | `PUSH-DISCIPLINE.1` | `SEMULITH-PD-0046 (leaf PUSH-DISCIPLINE.1): the push boundary gets a gate that refuses` | 11 arms, 3 fired RED first; 45 of 300 |
 
 ## Changelog
@@ -203,3 +321,9 @@ policy did not exist to be broken; it did not exist at all.
 - `2026-09-14`: Created on a director instruction setting the push cadence. Measured first: the
   repository had no push policy and no `pre-push` hook, so this is a gap being closed rather than a
   rule being tightened.
+- `2026-09-29`: Leaf `.2` done: the named full local suite (`make ci` = check + gate + bench +
+  smoke-bench + book — the server workflows' content plus the bench and the books; the live
+  smoke excluded with its reason) runs at the pre-push boundary on BOTH paths, cadence-first;
+  a red suite refuses naming the failing leg; a green one leaves `target/push/last-green.txt`.
+  Fired RED by a deliberately broken check (self-test 9/0). COMMIT.md's Pushing section now
+  documents the two-question boundary.

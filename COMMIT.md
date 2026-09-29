@@ -71,6 +71,16 @@ apply to code changes.
 nothing outside this disk ever knew. A push sends bytes to a server that may keep, cache, mirror or
 index them regardless of what happens here afterwards. So the two acts are governed differently.
 
+- **The boundary is `.githooks/pre-push` → `scripts/pre_push.sh`, and it asks two questions in
+  order.** First the cadence (below) — a push the cadence refuses never burns the suite. Then the
+  **named full local suite**, `make ci` = `check` (fmt + clippy `-D warnings` + all tests) +
+  `gate` (every doctrine, incl. the wasm build and all self-tests) + `bench` + `smoke-bench` +
+  `book` (both books) — the server workflows' content plus the bench and the books, on BOTH
+  paths (cadence push and approved exceptional push alike). The live three-way smoke is
+  deliberately not in it (it needs the untracked, network-acquired reference binaries). A red
+  suite refuses the push, naming the failing leg; a green one leaves `target/push/last-green.txt`
+  (untracked, on-volume, overwritten per green run) — what was verified, and when, answerable
+  without git archaeology.
 - **Cadence: push every 300 commits.** Below that, a push is *exceptional*.
 - **An exceptional push requires the director's approval.** The director grants it; the environment
   variable only carries it, with the reason they gave:
