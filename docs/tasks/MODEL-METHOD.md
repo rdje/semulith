@@ -6,8 +6,8 @@
 - Status: `active` (reopened `2026-09-29` for `.14` — the `MODEL-BOOKS.2` finding: the
   pinned specification's own PDF carries the instruction-format tables as selectable text,
   so the encodings' second provenance may be replaceable by the primary document; the
-  evaluation is director-scheduled — and for `.15`, the same day: the director supplied the
-  chipdoc corpus root and ordered the flagged set cached locally)
+  evaluation is director-scheduled. `.15`+`.16` — the feed consumed, the v20260120 PDFs
+  adopted — landed `2026-09-29`/`30` behind it)
 - Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
@@ -137,354 +137,64 @@ recorded so it can be overturned on evidence rather than taste:
 
 ## Task Tree
 
-- ID: `MODEL-METHOD.1` — **answer the narrower-instrument sweep, and make the answer an instrument**
+_Leaves `.1`–`.13` (done `2026-09-27`) — the method, the census, the acquisitions, the coding
+gate — live in [`archive/MODEL-METHOD.md`](archive/MODEL-METHOD.md), bodies unedited; the
+Verification and Commit logs below index them. Moved `2026-09-29` when this file crossed its
+per-part ceiling under `.16`; the ceiling was obeyed, not raised._
+
+- ID: `MODEL-METHOD.16` — **the v20260120 PDFs: gap filed, answered the same day, adopted through the corpus seam**
   Status: `done`
-  Goal: the open question left by `P0-PROFILE.10` — *which other "matched" claims rest on an
-  instrument answering a narrower question?* Enumerate every pinned scalar that stands for a
-  configuration, check each, and replace the pattern with a principle: a match is claimed against
-  the **model's own self-description at the widest granularity it offers**, compared field by
-  field. Both references emit a device tree; that is the wide instrument.
-  Acceptance: every pinned scalar declares what it does **not** establish; the platform comparison
-  is a tracked command, not a paragraph; any further instance found is fixed or enumerated.
-  Verification: one further instance found and fixed (Spike's ISA was an input, not a read-back); 4 of 4 platform fields shown to disagree; rule 5b added and fired RED.
-  Commit: `SEMULITH-MM-0033`
+  Origin (director, `2026-09-29`, three touches): "SEMULITH.md might contain a link to your
+  missing files — check" → the corpus-wide sweep answered NO (exactly one
+  `*20260120*`/`*unprivileged*` file in the whole corpus — the 20260911 intermediate; the
+  pinned snapshot is 72 HTML pages). "Did you find the v20260120 unprivileged PDF?" → YES,
+  in the untracked scratch `target/materials/` from `MODEL-BOOKS.2`'s investigation, digest
+  EQUAL to the docs.riscv.org measurement. Then chipdoc's answer, relayed by the director:
+  the corpus now MIRRORS both v20260120 PDFs deliberately
+  (`risc-v/isa/reference/docs.riscv.org-v20260120/`, REQ-008 fulfilled), same bytes
+  `06bb3c23…d150bc` — with a correction: the PDF does not share the pin's numbering.
+  Goal: verify every leg of that answer, then the four durable acts: adopt both PDFs as
+  catalogued materials through the corpus seam (reference-only, the trap documented); file
+  AND resolve the catalogue gap the same day; retire the web-sourced stopgap before it ever
+  commits; measure the channel the request travelled by.
+  Verified (all four legs): (1) the mirror exists — both PDFs + README + SHA256SUMS; (2)
+  byte-equality — chipdoc's unprivileged PDF hashes to `06bb3c23…d150bc`, identical to the
+  independent docs.riscv.org fetch (two acquisitions, one set of bytes); (3) REQ-008 read in
+  the ledger, the correction recorded there verbatim; (4) the numbering claim re-measured
+  HERE from the extracted text layer — "Chapter 2. RV32I Base Integer Instruction Set,
+  Version 2.1" / "Chapter 4. RV64I …" — the pinned HTML's §1.1 / §3.1 it is NOT. chipdoc's
+  correction is correct, and it sharpens `.14`'s already-recorded qualification (a locator
+  mapping is required) into exact chapters: three renderings, three numberings, all measured
+  (HTML §1.1/§3.1 · this PDF ch.2/ch.4 · GitHub §2/§4).
+  Measured (the channel): `poll_semulith_gaps.py --semulith-root . --json` reports
+  `semulith_gaps_open: 0` against the real catalogue — its gap scan reads only TOP-LEVEL
+  `(gap …)` forms, and this catalogue nests its gaps inside the single `(materials …)` form
+  (scratch probe, since removed: a flat gap is seen, a nested one is not). The polled route
+  is deaf to this catalogue's gaps TODAY; this request travelled operator-relayed and was
+  fulfilled anyway, and the deafness is surfaced for a chipdoc-side fix (chipdoc stays
+  read-only from here).
+  ⭐ The `.4` URL-kind trigger fired and UNFIRED in one day: the "second web-sourced family"
+  (`.materials/web-sourced/`) existed for hours, then the corpus absorbed the artifact and
+  the stopgap was retired uncommitted — the corpus seam owns the bytes, and the URL-kind
+  mechanization returns to "named candidate, no second family".
+  Acceptance: both materials fetch through the seam with digests verified (the unprivileged
+  EQUAL to the web-fetched copy — measured at fetch); the gap record carries
+  `(status resolved)` with its evidence; the corpus re-pin (`73711d6` → `f33d330`) clears
+  the drift warning; the catalogue parses and loads; the gate stays green.
+  Not this leaf: starting `.14` (director-scheduled; its adopt/decline evaluation inherits
+  the three measured numberings); any write to chipdoc.
 
-- ID: `MODEL-METHOD.2` — **the materials requirement: schema and catalogue**
-  Status: `done`
-  Goal: a record type binding each `docs/INFORMATION_CATALOG.md` category to the material kind
-  that supplies it, with a **layer** (`processor` / `board` / `system`) and a disposition per
-  **modelled unit**, plus the small registry of units themselves (id, kind, layer, book). The
-  DSP-specific questions of §5 are carried as their own categories rather than folded into the CPU
-  ones. ⛔ Start small: one unit exists, the registry has one row, and nothing is pre-built for
-  kinds that have never been exercised.
-  Acceptance: schema added; every category represented with an explicit layer; a `board`-layer
-  category may not be dispositioned `missing` for a processor model; validates under
-  `RECORD-SCHEMA`.
-
-  Result: met, `2026-09-27`. `schema/units.sexp` + `schema/category-needs.sexp` declare the
-  two families (zero kernel lines); `records_sexp.py` owns both mappings; `materials/units.sexp`
-  carries the one-row registry (rv64i-lab-v0, processor); `materials/category-needs.sexp`
-  carries all 24 INFORMATION_CATALOG categories with explicit layers — C01–C06, C22, C23
-  covered; C07/C08/C12/C15/C16/C18 missing WITH reasons (excluded subsystems, owed and
-  absent); C09, C13, C14, C24 partial; C17, C19, C20, C21 out-of-scope (board-layer, never
-  owed by a processor). RECORD-SCHEMA rules 10–11 enforce the registry-nonempty and the layer
-  honesty — the acceptance's `board × missing × processor` shape refuses as LAYER LIE (6 new
-  arms, 32 total; 7 record files green). `.3`'s census now revises dispositions against
-  evidence instead of inventing the record type.
-  Design (recorded before code, `2026-09-27`), the catalog and the records machinery read first:
-  - **Two record families on the records track, named so the basenames cannot collide with the
-    profile's** — `materials/units.sexp` (the registry: `(unit (id …) (kind processor) (layer …)
-    (book …))`, one row today) and `materials/category-needs.sexp` (one `(category-need …)` per
-    INFORMATION_CATALOG category: category id, layer, the material kind that supplies it, the
-    unit, the disposition, an optional reason). `schema/units.sexp` + `schema/category-needs.sexp`
-    declare both; `records_sexp.py` owns both mappings; RECORD-SCHEMA gains both basenames and
-    the layer-rule arm. The house path from `.3` (SOT-FORMAT.3), walked again.
-  - **The disposition vocabulary is honest about the difference between absent and never-needed**:
-    `covered` / `partial` / `missing` / `out-of-scope`. `missing` means the unit requires the
-    category and the catalogue lacks the material — the acceptance's rule is the mechanical form:
-    a board-layer category dispositioned `missing` for a processor unit is a lie about what was
-    required (a processor never owed board-layer information), so the gate refuses it and names
-    the category; the honest word is `out-of-scope`. Processor-layer exclusions this profile
-    carries (privilege, translation, floating point, vectors, atomics) stay `missing` WITH a
-    reason — they were owed and are absent — which is `.3`'s census to deepen with evidence.
-  - **Layer assignment, stated**: processor — C01–C09, C10, C11, C13, C14, C15, C22, C23, C24;
-    board — C17 (reset/time spans into the environment, per the catalog's own note), C19, C20,
-    C21 ("not all properties of the CPU itself", per §3); system — C12 (translation spans into
-    the OS), C16 (multicore), C18 (implementation observation). The first honest pass at
-    `rv64i-lab-v0`'s 24 rows: covered where the profile genuinely owns the fact (C01–C06, C22,
-    C23), missing-with-reason for the excluded processor-layer subsystems (C07 FP, C08 V, C12,
-    C15, C16), out-of-scope for board-layer rows (C17, C19–C21), partial where the profile owns
-    the shape but not the depth (C13 code visibility, C14 ECALL/EBREAK only, C24 replay policy
-    declared not built, C09/C10/C11). `.3` revises every disposition it can evidence better.
-
-- ID: `MODEL-METHOD.3` — **the coverage census for `rv64i-lab-v0`**
-  Status: `done`
-  Goal: fill the catalogue for the first model honestly. Expected outcome is that a **minority**
-  of categories are covered — the profile excludes privilege, translation, floating point, vectors
-  and atomics — and the value is in the `missing` rows, not the `covered` ones. ⛔ Device and
-  interconnect categories are **`deferred-to-board`**, not missing: they are `P5-BOARD`'s to own,
-  and the CPU records an assumption in their place.
-  Acceptance: no category absent; each `missing` row names what would close it.
-
-
-  Result: met, `2026-09-27`. The census swept the cached snapshot rather than trusting the
-  first pass, and the evidence revised it: all 8 covered categories' subject matter verified
-  present in the pinned pages, and — the measured surprise — the excluded subsystems' chapters
-  (f/d/q/v/a-st-ext, rvwmo, counters, zicsr, zifencei) are IN the same snapshot. `missing`
-  therefore means the profile excludes the subsystem (the facts are not part of this unit's
-  model), not "material absent" — every one of the 6 missing rows now names its closer (a
-  profile revision against snapshot chapters for C07/C08/C16; the separate Privileged
-  Architecture manual for C12/C14/C15; the Debug specification for C18). Device and
-  interconnect categories (C19/C20/C21) moved from `out-of-scope` to the new
-  `deferred-to-board` disposition — P5-BOARD owns them and the CPU records an environment
-  assumption in their place — and the census now reads: 10 covered, 4 partial, 6 missing (all
-  closers named), 3 deferred-to-board, 1 out-of-scope (C17, contract-owned). RECORD-SCHEMA
-  rule 12 (UNRESOLVED MATERIAL) keeps every named material honest against catalog.sexp; 33
-  arms.
-
-- ID: `MODEL-METHOD.4` — **acquire what the census says is missing and reachable**
-  Status: `done`
-  Goal: obtain and pin the materials the census identifies as needed for the *declared* scope, and
-  record as `SRC-02` results those that cannot be obtained. ⭐ Includes the **run-real-code** set,
-  which the ISA chapters do not own: the RISC-V psABI, the ELF specification, a startup/runtime
-  contract, the compiler-runtime intrinsics a no-`M` soft-float target calls, and a program-exit
-  convention. ⚠️ This is what makes `state.json`'s `software-convention` register roles
-  load-bearing: once real code runs, the calling convention stops being background reading. ⭐ Includes the outstanding question
-  from `MODEL-BOOKS.2`: does the specification's **PDF** rendering carry the instruction-format
-  tables as selectable text? If so, encodings can be re-sourced from the primary document and the
-  shared-ancestry position improves.
-  Acceptance: every acquisition pinned with a digest and re-derivable; every failure recorded with
-  its attempt.
-  Result: met, `2026-09-27`. The run-real-code set is acquired, digest-pinned, cached on-volume at
-  `.materials/run-real-code/` (gitignored, per the no-redistribution doctrine), and re-derivable
-  from the curl commands below. The PDF question is answered YES with the extraction evidence.
-  Design (recorded before code, `2026-09-27`), the fetch and provenance machinery read first:
-  - ⭐ **Why the bytes are not gate-mechanized, stated rather than silently routed around.** The
-    natural homes each refuse these documents for a measured reason: the profile's `sources.sexp`
-    composes `base_url/file` — ONE origin per document, and this set is four origins; the
-    materials catalogue's fetch seam copies from a `$ENV`-rooted corpus checkout — no URL kind;
-    `docs/provenance/` manifests list TRACKED bytes — and third-party documents are not
-    redistributed (the materials doctrine, for the same reason `.materials/` is gitignored). So
-    the tracked record is THIS LEAF's digest table plus the cache README, and mechanizing a URL
-    kind in `materials.py` is the named candidate if a second web-sourced set ever arrives.
-  - **The acquisitions, each pinned (sha256 · bytes · cache path · re-derivation):**
-    - `riscv-psabi.html` — the RISC-V psABI canonical render, `https://riscv-non-isa.github.io/riscv-elf-psabi-doc/` — `599f10a4b86090c18ded77c813ac89bc5e363e69e545653d46f3090f3f8c9b75` · 547,617 B. The calling convention: registers, stack, TLS. Re-derive: `curl -sSL -o .materials/run-real-code/riscv-psabi.html https://riscv-non-isa.github.io/riscv-elf-psabi-doc/`
-    - `elf-gabi.pdf` — the System V / gABI ELF specification, `https://refspecs.linuxfoundation.org/elf/elf.pdf` — `422b6c64e91410fa83008aa2565532c9b523dfa33da8f56b4e2556a576b3ef18` · 345,215 B. Re-derive: `curl -sSL -o .materials/run-real-code/elf-gabi.pdf https://refspecs.linuxfoundation.org/elf/elf.pdf`
-    - `linux-asm-generic-unistd.h` — the generic syscall numbers (exit = `__NR_exit`), `https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/asm-generic/unistd.h` — `2e6a1b646c5111ad76db86c0508684223d9956384e1d23e86733eca09505d02d` · 32,020 B. The exit convention a hosted program expects; the laboratory's own harness contract (ECALL/EBREAK as typed environment traps) is the freestanding form, and this header is the hosted form's anchor. Re-derive: `curl -sSL -o .materials/run-real-code/linux-asm-generic-unistd.h https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/asm-generic/unistd.h` ⛔ `master`-pinned: digest protects against silent change; a locator-stable pin is P1-LAB's refinement.
-    - `compiler-rt-builtins-readme.txt` — LLVM compiler-rt's builtins inventory, `https://raw.githubusercontent.com/llvm/llvm-project/main/compiler-rt/lib/builtins/README.txt` — `3f89383ae3699e369853e9d6b1140f5372da356b76e86e1c13252810c2b83a97` · 15,334 B. Contains `__muldi3 (di_int a, di_int b); // a * b` — the soft-multiply intrinsic a no-`M` target calls. Re-derive: `curl -sSL -o .materials/run-real-code/compiler-rt-builtins-readme.txt https://raw.githubusercontent.com/llvm/llvm-project/main/compiler-rt/lib/builtins/README.txt`
-  - **The PDF question, answered:** YES — the specification's PDF rendering carries the
-    instruction-format tables as selectable text. Evidence: `riscv-spec.pdf` (release asset
-    `riscv-isa-release-f443409-2026-09-26`) extracts 1.96 MB of text via `pdftotext`, and the
-    RV32I format-table region yields clean cells — `funct7 / rs2 / rs1 / funct3 / rd / opcode`.
-    Encodings CAN be re-sourced from the primary document; the shared-ancestry position
-    improves the day a leaf chooses to. Cached at
-    `.materials/run-real-code/riscv-spec-release-f443409.pdf` (`3f470aa95299fcbb…` · 5,522,367 B).
-  - **SRC-02 records — the acquisitions that failed, each with its attempt:**
-    - the **pinned revision's** release PDF: searched three pages of
-      `riscv/riscv-isa-manual` releases for a `20260120`-tagged asset; none found (recent tags
-      are per-commit `riscv-isa-release-<sha>-<date>`). The PDF answer above stands on the
-      current release asset; matching it to the pinned `v20260120` revision is a follow-up
-      attempt when the tag is located. Bounded claim: the answer is about the rendering FORM,
-      which the asset demonstrates.
-    - the **chipdoc corpus route**: `$SEMULITH_CHIPDOC_ROOT` is unset in this environment, so
-      the feed the director flagged (psABI, SBI, BRS, U-Boot, DT, FU540, virtio, ACT) could not
-      be read; the psABI was acquired from its canonical public render instead. When the
-      variable is set, prefer the corpus copy and cross-check the digest.
-    - the **startup/runtime contract**: not a document to acquire — the laboratory's harness
-      contract already owns entry state and the ECALL/EBREAK exit convention (`D-ENTRY-STATE`,
-      `OB-ENV-EVENT-DELIVERY`); the hosted-form anchors are the two acquisitions above.
-
-
-  Result: met, `2026-09-27`. The unit registry gained `(requires …)` — the categories a
-  unit's scope declares — and `SCOPE-COVERAGE` (19th doctrine, `scripts/check_scope_coverage.sh`,
-  7 arms) refuses the day a required category is `missing` or has no census row, fired RED
-  before registration on a scratch unit whose required category was absent. `rv64i-lab-v0`
-  declares its 14 in-scope categories; the verdict reads `1 unit(s) may code — every required
-  category covered` — **P1-LAB's precondition is now a gate's verdict, not a judgement call**,
-  composed with EXTRACTION (coverage says the facts are OWNED; extraction says they are
-  EXTRACTABLE; both must pass). The tree closes at 13/13.
-
-- ID: `MODEL-METHOD.5` — **the method, in prose, written to be learned from**
-  Status: `done`
-  Goal: document → decision → requirement → obligation → check, with the judgement calls named:
-  authority versus semantic class, what makes an expected value *derived* rather than copied, and
-  when a disagreement is a profile difference rather than a defect. ⭐ Written so a student could
-  apply it to a processor this project has never modelled — which means the **order** of the steps
-  is justified, not merely listed, and the rejected alternatives are kept.
-  Acceptance: one rule followed end to end by name; the non-mechanical steps identified as such;
-  a reader could carry the method to a different ISA without this project's documents.
-
-  Result: met, `2026-09-27`. `docs/METHOD.md` — one self-contained document, 9.3 KB, written to
-  be carried off this repository — walks document → decision → requirement → obligation →
-  check with the order justified at each step and the rejected alternatives kept. One rule
-  (the shift-amount rule) is followed end to end by name, and its two non-mechanical steps are
-  flagged inside the walk. A closing section names the four steps no gate can take (choosing
-  the publication, classing the fact, judging the authority, classifying the disagreement) —
-  everything else is declared mechanical, which is the method's discipline stated as a rule.
-  The mdBook carries it verbatim under The contracts, the way the book handles every source
-  document. The carryability probe: outside the worked example, the body references no tool,
-  path, or id this project owns.
-  Design (recorded before code, `2026-09-27`): the deliverable is one self-contained document,
-  `docs/METHOD.md` — the method must be carryable OFF this repository, so it cannot live only in
-  the mdBook's narrative or scattered across leaf checklists. The document is written against the
-  method this session actually exercised (eleven leaves of it), with the rejected alternatives
-  kept, and it names the non-mechanical steps honestly: pinning a source, judging an authority,
-  choosing a profile over a reference's default — the steps no gate can take for you.
-
-- ID: `MODEL-METHOD.7` — **the canonical definition: what it is and what each file owns**
-  Status: `done`
-  Goal: document the definition as a set of format-fit files with a **no-duplicated-fact** rule —
-  which file owns configuration, state, encodings, semantics, requirements, obligations and
-  provenance — and gate that rule, since "single source of truth" means *one owner per fact*
-  rather than *one file*.
-  Acceptance: every fact kind has exactly one owning file; a gate refuses a fact stated in two.
-
-  Result: met, `2026-09-27`. `doctrine/fact_ownership.tsv` names the one owning file per fact
-  kind (8 kinds), the legal derived mirrors, and the governing doctrine; `FACT-OWNERSHIP`
-  (18th doctrine, `scripts/check_fact_ownership.sh`, 8 arms) verifies one owner each, owners
-  exist, every mirror names a REGISTERED governor, and the corpus's four restatement pairs are
-  all named. The inventory found one mirror with NO governor — 28 obligations restate their
-  requirement's statement, all matching today but free to drift — so RECORD-SCHEMA gained rule
-  9 (MIRROR: an obligation naming its `requirement_id` must state exactly what that requirement
-  states, 3 new arms, 26 total). The acceptance's shape — a fact stated in two, refused — is
-  the gate's UNGOVERNED MIRROR and UNREGISTERED MIRROR PAIR arms, both fired.
-  Design (recorded before code, `2026-09-27`), the corpus's mirrors inventoried first:
-  - ⭐ **The corpus already lives on derived mirrors — the rule must govern them, not pretend
-    they don't exist.** Measured inventory: decisions↔requirements state the same fact in two
-    files, governed by RECORD-SCHEMA rule 4 (statement identity); state↔profile, governed by
-    PROFILE-CONSISTENCY rule 4 (agreement); the encoding composition↔its fragments, governed
-    by UNIT-COMPOSITION (resolve + decide). ⛔ And one mirror with NO governor, measured:
-    28 obligations carry a `requirement_id` and restate that requirement's statement — all
-    matching today, but nothing REFUSES the day one drifts. That is the leaf's concrete fix:
-    the governor gets built, then the registry names it.
-  - **The ownership registry is data, beside the routes registry it mirrors in shape** —
-    `doctrine/fact_ownership.tsv`: fact kind · the ONE owning file · its legal mirrors · the
-    doctrine governing each mirror pair. The gate (`FACT-OWNERSHIP`, 18th doctrine) verifies:
-    every owner exists; every fact kind has exactly one owner; every mirror names a governor;
-    every governor is a REGISTERED doctrine that actually runs; and the corpus's enumerated
-    mirror pairs are all named in the registry — a duplication the registry does not know
-    about is the refusal. "One owner per fact; every mirror governed; nothing stated in two
-    ungoverned."
-  - **The new governor arm** (RECORD-SCHEMA): an obligation carrying
-    `parameters.requirement_id` must state EXACTLY what that requirement states — refused by
-    name with both statements' file and id. The 8 environment-assumptions keep their own
-    statements (they assume, they do not mirror); the arm keys on the parameter, not the
-    direction.
-
-- ID: `MODEL-METHOD.8` — **own the encodings: `encoding.sexp`**
-  Status: `done`
-  Goal: close the measured gap that the repository does **not own its encodings** — the assembler
-  reads them from `target/refs/riscv-opcodes`, which is untracked, so a fresh clone cannot build a
-  model. Derive `encoding.sexp` from the pinned table, track it, and gate that it still agrees.
-  Acceptance: `git ls-files` shows the encodings tracked; the assembler reads the tracked file; a
-  gate fires RED when the tracked file and the pinned upstream disagree.
-  Verification: the full evidence path builds with the upstream directory HIDDEN; re-derivation fired RED on a one-bit edit.
-  Commit: `SEMULITH-MM-0037`
-
-- ID: `MODEL-METHOD.9` — **the semantics: `semantics.sexp`**
-  Status: `done`
-  Goal: what each of the declared instructions *does*, as expressions, each carrying the source
-  locator it was derived from so a reviewer can check the expression against the sentence.
-  Acceptance: every instruction in the declared scope has semantics; every form cites a locator;
-  the file parses under a tracked reader that **refuses** a form it does not implement.
-  Verification: 52 of 52 instructions, every rule cited; 4 controls fired RED; the language is 32 forms, each added because an instruction needed it.
-  Commit: `SEMULITH-MM-0040`
-
-- ID: `MODEL-METHOD.10` — **the extraction contract: is the definition SUFFICIENT?**
-  Status: `done`
-  Goal: state what a generator engine must be able to extract, and check it — every declared
-  instruction has an encoding **and** semantics **and** a requirement; every state element has a
-  reset; every obligation has its checks. ⭐ This turns *"the engine can extract all it needs"*
-  from an intention into a verdict, and that verdict is the precondition for writing model code.
-  Acceptance: fired RED by removing one instruction's semantics; `P1-LAB` cites this check rather
-  than a judgement call.
-
-  Result: met, `2026-09-27`. The contract as stated fired RED on the real corpus — measured:
-  the ALU family (13 instructions) had no requirement at all. The leaf extended the catalogue
-  (D/REQ/OB-ALU-REG and -IMM, statements grounded in the corpus's own §1.1.4 semantics), added
-  the `(insns …)` coverage link to 11 requirements, and `scripts/check_extraction.py` now
-  decides the integrative claim — SCOPE == ENCODING == SEMANTICS == REQUIREMENTS, one set four
-  ways, plus every state element reset and every obligation checked both ways. The real corpus
-  is SUFFICIENT (52 instructions, each with all three; the G0 report re-derived to 28/28/36/72
-  in the same commit). The acceptance fired RED on a real-corpus copy with one instruction's
-  semantics removed (`scope declares 1 instruction(s) the semantics set does not cover: add`).
-  `EXTRACTION` registered as the 17th project doctrine — P1-LAB cites a verdict that runs.
-  Design (recorded before code, `2026-09-27`), the contract read against the corpus first:
-  - ⭐ **The contract as stated fires RED on the real corpus today — measured, and the point.**
-    The scope declares 52 instructions; the encoding union and the semantics cover 52; but the
-    requirement leg fails: only 7 instruction-kind requirements exist, and even generous
-    family-mapping leaves the whole ALU family (ADD/SUB/SLT/SLTU/XOR/OR/AND + the immediates
-    ADDI/SLTI/SLTIU/XORI/ORI/ANDI) with no requirement at all. A contract that passes over that
-    is the intention restated. So this leaf extends the catalogue where the contract demands
-    it: two new decision/requirement/obligation triples (D-ALU-REG, D-ALU-IMM), and an explicit
-    instruction-coverage link on every requirement that names specific instructions.
-  - **The link is data, added the way the layer allows**: `schema/requirements.sexp` gains
-    `(insns …)` — an optional repeated string field, kind-agnostic (FENCE is a memory-kind
-    requirement that names one instruction; ECALL-EBREAK an event-kind naming two). Every
-    requirement whose statement commits specific instructions names them; reserved/hint decode
-    requirements name none (they cover code points, not instructions).
-  - **The contract is one equality across four sets + two smaller legs.**
-    `scripts/check_extraction.py <unit-dir>` derives: SCOPE (the profile's declared names),
-    ENCODING (the composed union), SEMANTICS (checked semantics coverage), REQUIREMENTS
-    (∪ requirement.insns) — and requires all four EQUAL. Plus: every state element in
-    `state.sexp` carries a `reset` (the corpus already does — integer_registers and pc); every
-    obligation carries a positive AND a negative check. A gap names itself, the instruction,
-    and the set that's short.
-  - **Consequences, stated before code**: the catalogue grows (2 decisions, 2 requirements,
-    2 obligations) and the tracked G0 report regenerates (more requirements → more checks,
-    verdict unchanged) — `GATE-REPORT` re-derives the new bytes and is part of this commit.
-    The ALU statements are sourced from the pinned chapters (RV32I §1.1.4 computational
-    instructions; overflow-wrap and signed-comparison facts the corpus already states for
-    kin instructions), with locators a reader can check.
-
-- ID: `MODEL-METHOD.11` — **the primary-source corpus: a local cache that holds no absolute path**
-  Status: `done`
-  Goal: a curated corpus of vendor ISA/architecture manuals became available (`chipdoc`, 3,684
-  files / 1.5 GB, 196 PDFs, explicitly curated *"to build software emulators (ISS) that run real
-  C/C++/Rust software"*). It lives **outside this repository**, so naming it directly would put an
-  absolute path in a tracked file — the exact thing Policy 12 forbids, because the repository must
-  survive being moved to another filesystem. Give materials a home, an identity and a resolver that
-  is relative all the way down.
-  Acceptance: a tracked S-expression catalogue keyed by material id carrying title, revision,
-  `sha256`, licence and a **repo-root-relative** cache path; a gitignored `.materials/` cache; a
-  resolver that verifies the digest and, when a material is absent, refuses with the command that
-  populates it; the external corpus reached **only** through an environment variable the repository
-  never stores; `grep` for the corpus's absolute path across tracked files returns 0.
-  ⛔ Sequenced before `.2`–`.4` deliberately: the census cannot record *where a material is* until
-  "where" has a form that does not break when the repository moves.
-  Verification: 22 materials catalogued and fetched, every digest verified; `0` tracked files name
-  the corpus root; 15 self-test arms, 9 of them RED about paths.
-  Commit: `SEMULITH-MM-0042`
-
-- ID: `MODEL-METHOD.12` — **a citation that is present is not a citation that resolves**
-  Status: `done`
-  Goal: an external investigation challenged this profile's pinned source, reporting that no
-  public build of `riscv-isa-manual` produces the §1.1 / §3.1 numbering all 52 semantic citations
-  use. Re-derived: the challenge is **refuted** — 52 of 52 resolve in the pinned artifact, which is
-  live, HTTP 200 and byte-identical to the committed digests. But the challenge was only possible
-  because **nothing checked that a citation resolves**: `check_semantics.py` asks whether a
-  citation is *present*, and a citation that points nowhere is still present. Close that, and close
-  the ambiguity in `sources.toml` that made the wrong publication a reasonable guess.
-  Acceptance: a tracked instrument resolves every semantic citation against the pinned artifacts
-  and names the offending locator on failure, fired RED on a locator that does not exist; it
-  refuses with instructions when the artifacts are not fetched rather than reporting success;
-  `sources.toml` names its **publication**, not just a version string.
-  ⛔ Not a commit gate: the artifacts are fetched, untracked and need the network, and the
-  rendering declares no redistribution licence (`OQ-4`), so a fresh clone cannot run it. A gate
-  that silently passes when its evidence is absent is the defect, not the fix.
-  Verification: challenge refuted — 52 of 52 resolve, pinned URLs live and byte-identical; 10
-  self-test arms; absent-evidence control refuses.
-  Commit: `SEMULITH-MM-0043`
-
-- ID: `MODEL-METHOD.13` — **the corpus moved, and my survey had sampled rather than swept**
-  Status: `done`
-  Goal: the corpus advanced three commits (`4201f50` → `3c45e81`) and both gaps this project
-  measured are now closed at the source — 5 AMD64 APM volumes and Intel SDM Volume 1 imported.
-  It also **moved** the RISC-V PDF, which breaks `--fetch` for a catalogued material today. And a
-  re-survey found that my first pass **sampled by guessing vendor directory names** (`zilog`,
-  `wdc`, `openrisc`, …) instead of sweeping by path, so it missed eight processor-class documents
-  including an entire architecture, M68000, which sits under `nxp/m68k/` rather than a `motorola/`
-  directory that does not exist.
-  Acceptance: the catalogue is re-derived from a **path sweep**, not a sample, and says so; the
-  corpus revision is re-pinned and drift from it is detected rather than discovered; both gap
-  records are closed **with evidence and kept**, never deleted; the pinned `v20260120` HTML
-  snapshot (72 pages + a verifying manifest) becomes a first-class material, which makes
-  `check_citations.py` runnable from the cache **offline**; `--fetch` succeeds for every material.
-  ⭐ The corroboration is worth recording on its own: chipdoc independently acquired the
-  `v20260120` snapshot by its own route, and its digests for `intro`, `rv32` and `rv64` equal the
-  ones committed in `sources.toml`. Two acquisitions, one set of bytes.
-  Verification: 22 → 36 materials, 36 of 36 fetched; both gaps closed with evidence; citations
-  resolve 52 of 52 **offline**; 20 self-test arms.
-  Commit: `SEMULITH-MM-0044`
-
-- ID: `MODEL-METHOD.6` — **no coding without the source of truth, mechanized**
-  Status: `done`
-  Goal: a gate that refuses model implementation for a profile while a category its declared scope
-  requires is `missing`. The rule is the director's; this makes it enforceable rather than
-  remembered.
-  Acceptance: fired RED against a deliberately uncovered category; `P1-LAB`'s precondition is the
-  gate's verdict rather than a judgement call. Composes with `.10`: a category may be covered while
-  the definition is still insufficient, and both must pass.
+  Result: met, `2026-09-30` (measurements of `2026-09-29`). `RVI-UNPRIV-PDF-V20260120`
+  (696 pp) and `RVI-PRIV-PDF-V20260120` (214 pp) catalogued reference-only and cached
+  through the corpus seam, digests verified at fetch; the unprivileged copy is
+  byte-identical to the independent web fetch — the corroboration pair is recorded in the
+  material's note. `GAP-RISCV-V20260120-UNPRIV-PDF` filed and resolved the same day
+  (REQ-008). Corpus re-pinned `73711d6` → `f33d330` (5313 files / 257 PDFs re-derived);
+  45 materials. `.semulith-data/chipdoc/` snapshot refreshed. Mid-leaf the per-part
+  ceiling fired twice (67,737 B, then 65,032 B growing): answered by the second and third
+  archive movements, never raised. `promotion: declined (the poller finding lives in the
+  gap record itself, where the next surveyor meets it; the numbering trap lives in the
+  material notes).`
 
 - ID: `MODEL-METHOD.15` — **the chipdoc feed arrives: the flagged set, catalogued and cached**
   Status: `active`
@@ -555,9 +265,8 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.15` | `active` | the director supplied the corpus root and ordered the cache (`2026-09-29`): adopt the flagged set, fetch it digest-verified, snapshot the channel |
-| 2 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation is real work with its own verification and starts only when the director schedules it |
-| — | — | — | leaves `.1`–`.13` done `2026-09-27`: the method, the census, the acquisitions, and the coding gate all land |
+| 1 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation starts only when the director schedules it — and `.16` now hands it the probe input as a first-class material plus the three measured numberings |
+| — | — | — | `.15`+`.16` done `2026-09-29`/`30` (the feed consumed; the v20260120 PDFs adopted); `.1`–`.13` done `2026-09-27`, bodies archived |
 
 ## Decisions
 
@@ -585,112 +294,23 @@ recorded so it can be overturned on evidence rather than taste:
 ## Completed-leaf evidence
 
 Archived to [`archive/MODEL-METHOD.md`](archive/MODEL-METHOD.md) — the full, unedited
-acceptance checklists and routing evidence for every `done` leaf (`.2`–`.4`, `.7`, `.10`,
-`.13`). Split out when this file crossed its per-part ceiling; the ceiling was obeyed,
-not raised. The live tree keeps the frontier, the decisions, the open questions and both
-logs.
-
-## Acceptance Checklist (leaf MODEL-METHOD.5)
-
-- [x] **REPRODUCE / ISSUE** — the method as it stood: exercised eleven times this session but
-  written nowhere a reader could carry it:
-
-  ```
-  $ ls docs/METHOD.md 2>&1
-  ls: docs/METHOD.md: No such file or directory
-  $ grep -rl 'the method' docs/*.md 2>/dev/null | wc -l
-  0                                             # no method document anywhere in docs/
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: a method that exists only as the history of
-  its exercise cannot be learned from — the rejected alternatives die with the session that
-  rejected them, and the judgement calls look like mechanics. WHERE: measured, not read —
-
-  ```
-  $ git ls-files 'docs/*.md' | xargs grep -l 'no gate can take\|document → decision' 2>/dev/null | wc -l
-  0                                             # the spine lived only in leaf checklists
-  ```
-
-  Nothing in `docs/` carried the method a reader could take away.
-
-- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
-
-  ```
-  $ grep -c 'shift-amount rule' docs/METHOD.md
-  1                                             # one rule followed end to end, by name
-  $ grep -A8 'no gate can take' docs/METHOD.md | grep -c '^[0-9]\.\|^[0-9]\.'
-  4                                             # the non-mechanical steps, identified as such
-  $ make book 2>&1 | tail -1
-  INFO HTML book written ...                      # the book carries it verbatim
-  $ grep -nE 'scripts/|schema/|\.sexp|rv64i-lab-v0|RECORD-SCHEMA' docs/METHOD.md \
-      | grep -vE 'SHAMT' | wc -l
-  0                                             # no project-only dependency outside the example
-  ```
-
-- [x] **NO REGRESSION** — `make book` builds; sexp 18/0; kernel 50/0; RECORD-SCHEMA 33/0;
-  whole gate green after staging.
-
-- `promotion: declined (the framing is the document's own closing section).`
-
-- [x] **LOCKSTEP** — `docs/book/` chapter + SUMMARY row; `MEMORY.md`, `CHANGELOG.md`,
-  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
-
-## Acceptance Checklist (leaf MODEL-METHOD.6)
-
-- [x] **REPRODUCE / ISSUE** — the director's rule as it stood: prose in the roadmap, nothing
-  enforcing it. Census, pre-code:
-
-  ```
-  $ git ls-files scripts | grep -c 'scope_coverage'
-  0                                             # nothing refused uncovered-scope coding
-  $ grep -c 'requires' materials/units.sexp schema/units.sexp
-  0                                             # and no unit declared what its scope requires
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — leg 1. WHY: "no coding without the source of truth" is
-  only as real as the thing that refuses — an intention a gate doesn't carry decays the first
-  busy week. WHERE: measured, not read —
-
-  ```
-  $ grep -c 'requires' materials/units.sexp schema/units.sexp
-  0                                             # no unit could even DECLARE its scope
-  $ grep -rl 'scope' scripts/check_doctrines.project.sh | wc -l
-  0                                             # and no gate keyed the census to a coding decision
-  ```
-
-  The census dispositions existed; the vocabulary to act on them did not.
-
-- [x] **FIX** — the registry gains `(requires …)` (data, zero kernel lines); SCOPE-COVERAGE
-  checks required × census: missing or absent refuses by name; a unit with an undeclared
-  scope refuses too (code may not start against a scope never declared).
-
-- [x] **ADDRESSED (verified)** — the acceptance criteria, re-derived:
-
-  ```
-  $ bash scripts/check_scope_coverage.sh --self-test
-  SCOPE-COVERAGE --self-test: 7 pass / 0 fail
-  $ bash scripts/check_scope_coverage.sh
-  SCOPE-COVERAGE: ok (1 unit(s) may code — every required category covered)
-  $ # fired RED before registration, on a scratch unit whose required category is missing:
-  MISSING REQUIRED units.sexp [ghost requires C02]: the census disposition is 'missing' …
-  ```
-
-- [x] **NO REGRESSION** — `bash scripts/check_requirements.sh --self-test` 33 pass / 0
-  fail + real run green with the registry's new field; `bash scripts/check_extraction.sh
-  --self-test` 3 pass / 0 fail + real run green; whole gate green after staging (19
-  doctrines, 227 arms).
-
-- `promotion: declined (the "coverage says OWNED, extraction says EXTRACTABLE" composition
-  rule is stated in the gate's header and this leaf).`
-
-- [x] **LOCKSTEP** — `scripts/check_doctrines.project.sh` + both mirrors in the registering
-  commit; `LIVE_STATUS.md` re-derived; `TOOLBOX.md`; `MEMORY.md`, `CHANGELOG.md`,
-  `DEV_NOTES.md`, `docs/TASK_TREE.md` and this tree — one commit.
+acceptance checklists and routing evidence for every `done` leaf (`.2`–`.7`, `.10`, `.13`).
+Split out twice, each time this file crossed its per-part ceiling (`2026-09-27` at 73,867
+bytes; `2026-09-29` at 67,737 under `.15`/`.16`); the ceiling was obeyed, not raised. The
+live tree keeps the frontier, the decisions, the open questions and both logs.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `MODEL-METHOD.16` | corpus-wide sweep for the PDF (`find -iname '*20260120*' -o -iname '*unprivileged*'`) | exactly one hit — the 20260911 intermediate; the pinned snapshot holds 72 HTML pages and no PDF |
+| `2026-09-29` | `MODEL-METHOD.16` | scratch bytes vs the `MODEL-BOOKS.2` measurement | sha256 EQUAL (`06bb3c23…d150bc`, 4,580,174 B) — the .14 probe input survived in scratch, verified |
+| `2026-09-29` | `MODEL-METHOD.16` | the polled channel (`poll_semulith_gaps.py --json`, real catalogue + scratch probe) | `semulith_gaps_open: 0` — top-level scan only; a flat gap is seen, a nested one is not |
+| `2026-09-29` | `MODEL-METHOD.16` | chipdoc's answer, four legs | mirror present; byte-equality `06bb3c23…d150bc`; REQ-008 read with the correction verbatim; numbering re-measured from the text layer (ch.2/ch.4 vs §1.1/§3.1) — correction CORRECT |
+| `2026-09-29` | `MODEL-METHOD.16` | `--fetch` of both adopted PDFs | 2 of 2 ok, sha256 verified; the unprivileged EQUAL to the independent web fetch — two acquisitions, one set of bytes |
+| `2026-09-29` | `MODEL-METHOD.16` | the per-part ceiling fires twice mid-leaf | 67,737 B → second split; 65,032 B growing → third movement (done-leaf bodies `.1`–`.13` archived); the ceiling obeyed, never raised |
+| `2026-09-30` | `MODEL-METHOD.16` | catalogue parse + load + drift | parses; 45 materials; `--list` with the variable set reports no drift at `f33d330` |
+| `2026-09-30` | `MODEL-METHOD.16` | the whole gate | all doctrines green |
 | `2026-09-29` | `MODEL-METHOD.15` | feed census (grep, not recall) | 67 `(material …)` + 11 `(gap …)` proposals at `73711d6`; 7 adopted — the director's flagged set minus the already-catalogued psABI |
 | `2026-09-29` | `MODEL-METHOD.15` | corpus re-derivation at the re-pin | 5309 files / 255 PDFs (was 3684 / 196 at `3c45e81`), same path sweep |
 | `2026-09-29` | `MODEL-METHOD.15` | `--fetch` of the 7 adopted ids | 7 of 7 ok, every sha256 verified at copy; ACT4 manifest 136/136, U-Boot 1219/1219 |
@@ -767,6 +387,7 @@ logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.16` | `SEMULITH-MM-0058 (leaf MODEL-METHOD.16): the v20260120 PDFs — gap filed, answered same-day, adopted through the corpus seam` | REQ-008 verified four legs; 45 materials; corpus `f33d330`; the poller deafness surfaced |
 | `MODEL-METHOD.15` | `SEMULITH-MM-0057 (leaf MODEL-METHOD.15): the chipdoc feed arrives — the flagged set, catalogued and cached` | corpus re-pinned `73711d6`; 43 materials; `P2-SCALAR.5` blocker (a) answered |
 | `MODEL-METHOD.6` | `SEMILITH-MM-0050 (leaf MODEL-METHOD.6): …` | no coding without the source of truth, mechanized; the tree closes 13/13 |
 | `MODEL-METHOD.5` | `SEMILITH-MM-0049 (leaf MODEL-METHOD.5): …` | the method, in prose, written to be learned from |

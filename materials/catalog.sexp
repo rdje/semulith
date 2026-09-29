@@ -34,7 +34,7 @@
     (id "chipdoc")
     (title "chipdoc — curated documentation for digital components, chips, interfaces and protocols")
     (kind git-repository)
-    (revision "73711d6")
+    (revision "f33d330")
     (env-var "SEMULITH_CHIPDOC_ROOT")
     (derivation "Re-derived 2026-09-14 by a PATH SWEEP, not a sample:
                  find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
@@ -44,9 +44,9 @@
                  guessing where things are records the surveyor's expectations, not the corpus.")
     (note "Curated, in its own words, to expose enough behaviour to reconstruct implementable
            intent AND to build software emulators that run real C/C++/Rust software — which is
-           this project's north star stated by someone else, independently. 5309 files, 255 PDFs
-           (re-derived 2026-09-29 by the same path sweep at the 73711d6 re-pin; 3684 files, 196
-           PDFs at the 3c45e81 baseline).
+           this project's north star stated by someone else, independently. 5313 files, 257 PDFs
+           (re-derived 2026-09-29 by the same path sweep at the f33d330 re-pin; 5309/255 at
+           73711d6; 3684/196 at the 3c45e81 baseline).
            Terms are recorded per document family in that repository's own README files, so a
            material's licence below is read from the DOCUMENT, not assumed from the corpus."))
 
@@ -202,6 +202,39 @@
     (consequence "Volume 1 carries the basic execution environment, the data types and the
                   register overview — the architectural STATE a model declares first. An x86 unit
                   could not state its state from this corpus alone."))
+
+  (gap
+    (id "GAP-RISCV-V20260120-UNPRIV-PDF")
+    (looked-for "the pinned publication's OWN PDF for the pinned version segment:
+                 docs.riscv.org/reference/isa/v20260120/_attachments/riscv-unprivileged.pdf —
+                 4,580,174 B, sha256
+                 06bb3c23074f72060a0ec061a80933af948cae7ceafdcd9d1fe177b05fd150bc, 696 pages,
+                 self-identifying `Version 20260120: Official Release`")
+    (probe "corpus-wide at 73711d6 (2026-09-29): find -iname '*20260120*' -o -iname
+            '*unprivileged*' → exactly one hit, the 20260911 intermediate; the pinned snapshot
+            risc-v/isa/pinned/v20260120 holds unpriv/ priv/ biblio/ + SHA256SUMS — no PDF")
+    (result "ABSENT from the corpus at the f33d330-predecessor 73711d6 (2026-09-29): exactly
+             one `*20260120*`/`*unprivileged*` hit, the 20260911 intermediate; the pinned
+             snapshot held 72 HTML pages and no PDF. Acquired directly by semulith
+             (digest-pinned copy), then mirrored by chipdoc the same day.")
+    (consequence "the digest-pinned local copy was the MODEL-METHOD.14 probe's input for a few
+                  hours; the corpus seam now owns the bytes (RVI-UNPRIV-PDF-V20260120 and
+                  RVI-PRIV-PDF-V20260120, both reference-only with the numbering trap
+                  documented). ⛔ THE POLLED CHANNEL COULD NOT SEE THIS RECORD:
+                  chipdoc's poller reads only top-level (gap …) forms and this catalogue nests
+                  its gaps inside the (materials …) form — measured 2026-09-29
+                  (poll_semulith_gaps.py --semulith-root . --json → semulith_gaps_open: 0).
+                  The request travelled operator-relayed; the deafness is surfaced for a
+                  chipdoc-side fix.")
+    (status resolved)
+    (resolved-on "2026-09-29")
+    (resolved-by "chipdoc mirrored both v20260120 PDFs at
+                  risc-v/isa/reference/docs.riscv.org-v20260120/ (REQ-008, fulfilled same-day,
+                  with the numbering-trap correction); byte-equality with the independent
+                  docs.riscv.org fetch verified here — sha256
+                  06bb3c23074f72060a0ec061a80933af948cae7ceafdcd9d1fe177b05fd150bc, two
+                  acquisitions, one set of bytes; adopted through the corpus seam under
+                  MODEL-METHOD.16"))
 
   (material
     (id "ARM-A-DDI0487M.c")
@@ -967,4 +1000,56 @@
     (status wanted)
     (note "The cheapest route to a Linux userspace on QEMU virt: model virtio devices instead of real
            hardware."))
+
+  (material
+    (id "RVI-UNPRIV-PDF-V20260120")
+    (title "The RISC-V Instruction Set Manual, Volume I Unprivileged — docs.riscv.org PDF attachment, v20260120")
+    (revision "v20260120")
+    (release-kind ratified)
+    (pages 696)
+    (licence "unrecorded")
+    (licence-evidence "the docs.riscv.org rendering carries only \"Copyright © RISC-V
+                       International®\" and no CC-BY statement — the same OQ-4 position as the
+                       pinned HTML snapshot")
+    (corpus "chipdoc")
+    (corpus-path "risc-v/isa/reference/docs.riscv.org-v20260120/riscv-unprivileged.pdf")
+    (cache-path "riscv/riscv-unprivileged-v20260120.pdf")
+    (sha256 "06bb3c23074f72060a0ec061a80933af948cae7ceafdcd9d1fe177b05fd150bc")
+    (bytes 4580174)
+    (supplies "the pinned publication's OWN PDF for the pinned version segment — and its
+               instruction-format tables are SELECTABLE TEXT (pdftotext census by MODEL-BOOKS.2:
+               232 [01]{7} lines vs 0 on all six pinned HTML/TXT artifacts), which is what the
+               MODEL-METHOD.14 encoding-extraction probe needs")
+    (status reference-only)
+    (note "⛔ NOT A CITATION SOURCE, measured three ways and all three agree: this PDF numbers
+           RV32I Chapter 2 and RV64I Chapter 4 (Introduction = Chapter 1); the pinned HTML
+           numbers them §1.1 and §3.1, which is what all 52 semantic citations use. The trap is
+           documented in the corpus mirror's README and re-measured here from the extracted
+           text layer (\"Chapter 2. RV32I Base Integer Instruction Set, Version 2.1\").
+           ⭐ TWO INDEPENDENT ACQUISITIONS, ONE SET OF BYTES: fetched from docs.riscv.org by
+           MODEL-BOOKS.2 (HTTP 200, this digest) and mirrored by chipdoc (REQ-008, fulfilled
+           2026-09-29) — the digests are equal. The HTML snapshot stays the citation authority;
+           this answers only the \"are the tables text?\" question."))
+
+  (material
+    (id "RVI-PRIV-PDF-V20260120")
+    (title "The RISC-V Instruction Set Manual, Volume II Privileged Architecture — docs.riscv.org PDF attachment, v20260120")
+    (revision "v20260120")
+    (release-kind ratified)
+    (pages 214)
+    (licence "unrecorded")
+    (licence-evidence "as RVI-UNPRIV-PDF-V20260120 — the rendering carries no licence statement")
+    (corpus "chipdoc")
+    (corpus-path "risc-v/isa/reference/docs.riscv.org-v20260120/riscv-privileged.pdf")
+    (cache-path "riscv/riscv-privileged-v20260120.pdf")
+    (sha256 "2556d93a23cf8e1a476acc5208c505423866bb11753e850e0e1851935eeb3354")
+    (bytes 1578278)
+    (supplies "the privileged architecture for the pinned version segment — P4's M/S/U modes,
+               Sv39 translation, CSR and interrupt evidence base, in the same publication family
+               as the pin")
+    (status reference-only)
+    (note "Same numbering trap as the unprivileged volume (measured in its README): cite the
+           pinned HTML snapshot, never this PDF, by section number. Mirrored by chipdoc under
+           REQ-008 alongside the unprivileged volume the probe needed; catalogued here while
+           the mirror is fresh rather than re-discovered at P4."))
 )

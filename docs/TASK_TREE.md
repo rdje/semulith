@@ -62,7 +62,7 @@ on the same commit. One commit per completed leaf.
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `done` | — (6/6 leaves complete; a composition is a verdict, a discharge, and a materializable unit) | repo-local |
-| [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` (reopened once, for `.14` — the PDF finding: the encodings may be re-sourceable from the primary document) | `.15` — the chipdoc feed arrives: the director-flagged set, catalogued and cached (`active`; `.14` stays `proposed`, director-scheduled; 13/14 leaves done) | repo-local |
+| [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `active` (reopened once, for `.14` — the PDF finding: the encodings may be re-sourceable from the primary document) | `.14` — evaluate re-sourcing the encodings from the primary-document PDF (`proposed`, director-scheduled; 15/16 leaves done — the feed consumed and the v20260120 PDFs adopted behind it) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `done` | — (8/8 leaves complete; the per-unit book structure, the five-chapter arc, and the `UNIT-BOOKS` gate — every registered unit has a book that builds) | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `done` | — (3/3 leaves complete; the cadence, the named suite at the boundary, and the append-only approval record gated by `PUSH-RECORD`) | repo-local |
