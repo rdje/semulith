@@ -1,5 +1,31 @@
 # CHANGELOG.md
 
+## SEMILITH-MB-0007 (leaf MODEL-BOOKS.5) — the evidence, the gate, and the traceability walk
+
+- The per-unit book's five-part arc completes (`docs/models/rv64i-lab-v0/src/evidence.md`):
+  the evidence ledger per axis — never a banner — each number with its instrument and its
+  re-derivation command: semantics 52/52 gated, the boundary domains exhausted, the failure
+  layer three-way, the 21-cell interaction matrix resolved, the live differential (40
+  guests, 492/492 aligned steps vs both references + the one declared expected divergence),
+  restart as measured determinism, portability gated (wasm + the 44-arm browser bench),
+  performance as one named host's baseline with no thresholds, and the mutation suite as
+  the detector's proof. EVD-01's label stands over all of it: finite tested evidence.
+- The verdicts, honestly: G0 `incomplete` (72 declared checks, 0 implemented — the
+  generator has no code path to `passed`); G1 `incomplete` (criteria 1–5 met; criterion 6 —
+  the C-toolchain guest — unmet, owned by `P2-SCALAR.5`, and that leaf's blockers are named:
+  the ACT4 material absence and the C-guest routing awaiting the director). The teaching
+  point: an honest gate that cannot read `passed` over a missing criterion is the lesson.
+- Capability limits stated plainly: an M-mode-only laboratory with no C/M/A/F/D/Zicsr/
+  Zifencei (what no M/A/F/D means for real code), no devices, board, boot or OS workload;
+  a development profile — none accepted. "Supports RV64I" appears nowhere.
+- The traceability walk is the evidence side: `D-MISALIGN-DATA` → `REQ-D-MISALIGN-DATA` →
+  `OB-MISALIGN-DATA` (CHK-MISALIGN-DATA-POS/-NEG) → the recorded `smoke-trap` experiment
+  (agreement on the architectural detail, with its decisive control) → two re-runnable
+  commands with fresh output quoted verbatim (`cargo test -p semulith-verify --lib
+  run::tests::smoke_trap` → 1 passed; `run_semulith_smoke.py` → the smoke-trap PASS lines).
+- Both gate reports regenerate byte-identical (no drift). Every id/number verified by tool
+  as written; no gate extended (26 doctrines). Both books render; `make gate` all green.
+
 ## SEMILITH-MB-0006 (leaf MODEL-BOOKS.4) — the references, their configuration, and what agreement is worth
 
 - The per-unit book gains its references chapter
@@ -437,37 +463,4 @@ four steps no gate can take (choosing the publication, classing the fact, judgin
 classifying the disagreement) and declares everything else mechanical — which is the method's
 discipline, stated as a rule. The mdBook carries it verbatim under The contracts; the
 carryability probe confirms the body depends on no tool, path, or id this project owns.
-
-## SEMILITH-MM-0048 (leaf MODEL-METHOD.4) — the run-real-code set is acquired, and the PDF question is answered
-
-What the ISA chapters do not own is now pinned: the RISC-V psABI canonical render, the System V
-ELF specification, the generic syscall header (the hosted exit convention), and the LLVM
-compiler-rt builtins inventory — the last carrying `__muldi3 (di_int a, di_int b); // a * b`,
-the soft-multiply intrinsic a no-`M` target calls. Each is digest-pinned in the owning leaf,
-cached on-volume under `.materials/run-real-code/`, and re-derivable from the recorded curl
-commands; the bytes stay out of git, per the no-redistribution doctrine — the tracked record is
-the digest table, not the documents. The startup/runtime contract needed no acquisition: the
-harness contract already owns entry state and the ECALL/EBREAK exit convention.
-
-⭐ The PDF question (MODEL-BOOKS.2) is answered **YES**: the specification's PDF rendering carries
-the instruction-format tables as selectable text — `pdftotext` extracts 1.96 MB from the
-release asset, and the RV32I format-table region yields `funct7 / rs2 / rs1 / funct3` as clean
-cells. Encodings can be re-sourced from the primary document. SRC-02 records: the pinned
-revision's release PDF was not located in three pages of releases; the chipdoc corpus route was
-unavailable here (`$SEMULITH_CHIPDOC_ROOT` unset) — the psABI came from its canonical public
-render instead.
-
-## SEMILITH-MM-0047 (leaf MODEL-METHOD.3) — the census sweeps the snapshot, and missing changes its meaning
-
-The coverage census for `rv64i-lab-v0` did what a first pass cannot: it opened the pinned
-snapshot and checked. Every covered category's subject matter is present in the pinned pages —
-and, the measured surprise, so are the excluded subsystems' chapters (a/d/f/q/v-st-ext, rvwmo,
-counters, zicsr, zifencei). `missing` therefore never meant "material absent"; it means the
-profile EXCLUDES the subsystem, and all six missing rows now name what would close them: a
-profile revision against snapshot chapters (C07/C08/C16), the separate Privileged Architecture
-manual (C12/C14/C15), the Debug specification (C18). Device and interconnect categories became
-the new `deferred-to-board` disposition — P5-BOARD's to own, with the CPU recording an
-environment assumption in their place. Final census: 10 covered, 4 partial, 6 missing with
-closers, 3 deferred-to-board, 1 out-of-scope. RECORD-SCHEMA rule 12 (UNRESOLVED MATERIAL) keeps
-every named material honest against the catalogue; 33 arms.
 

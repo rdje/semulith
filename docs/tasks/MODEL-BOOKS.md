@@ -289,11 +289,40 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   controls measured; that is its purpose)`.
 
 - ID: `MODEL-BOOKS.5` — **the evidence, the gate, and the traceability walk**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: what has actually been demonstrated, the gate verdict and why it is `incomplete`, and a
   walk a reviewer can repeat: pick a rule, follow it to its requirement, its obligation, its
   declared checks and the experiment that touches it.
   Acceptance: the walk names real ids at every hop and ends at something re-runnable.
+  Result: met, `2026-09-29`. **The evidence chapter landed
+  (`docs/models/rv64i-lab-v0/src/evidence.md`), completing the five-part arc.** The
+  evidence is reported per axis, each line with its instrument and its re-derivation
+  command (SCP-05; "supports RV64I" appears nowhere): semantics 52/52 gated, boundaries
+  exhausted, the failure layer three-way, the 21-cell matrix resolved, the live
+  differential 40 guests / 492/492 aligned steps + the one declared expected divergence,
+  restart as measured determinism, portability gated (wasm + the 44-arm browser bench),
+  performance as one named host's recorded baseline with no thresholds, and the mutation
+  suite as the detector's proof — all under the EVD-01 label (finite tested evidence,
+  never proof). The gate verdicts are told honestly: G0 `incomplete` (72 declared checks,
+  0 implemented — the generator has no code path to `passed`); G1 `incomplete` (criteria
+  1–5 met; criterion 6, the C-toolchain guest, unmet — owner `P2-SCALAR.5`, and that leaf
+  is BLOCKED: the ACT4 material absence and the C-guest routing question awaiting the
+  director, both named). The capability limits are stated plainly (M-mode-only laboratory;
+  no extensions — what no M/A/F/D means for real code; no devices/board/boot; a
+  development profile, none accepted). The traceability walk is the EVIDENCE side, distinct
+  from `.3`'s specification-side walk: `D-MISALIGN-DATA` → `REQ-D-MISALIGN-DATA`
+  (implementation-defined, verbatim statement) → `OB-MISALIGN-DATA` (CHK-MISALIGN-DATA-POS
+  AND -NEG; the authority/class contrast with `OB-MISALIGN-REPORT` made explicit) → the
+  recorded experiment (`smoke-trap`: AGREE on the architectural DETAIL — cause 0x04, tval
+  0x80000401 on both models — with its decisive control) → and it ENDS AT RE-RUNNABLE
+  COMMANDS with their real current output: `cargo test -p semulith-verify --lib
+  run::tests::smoke_trap` (1 passed) and `python3 scripts/run_semulith_smoke.py` (the
+  smoke-trap PASS lines quoted verbatim from a fresh run, including the reproduce sha).
+  Both gate reports regenerate byte-identical before the chapter shipped (no drift).
+  Every id and number verified by tool as written. No gate extended — authored prose (26
+  doctrines, unchanged).
+  Lessons: `promotion: declined (the chapter restates what the reports and gates carry;
+  that is its purpose)`.
 
 - ID: `MODEL-BOOKS.6` — **wiring: every model has a book, and every book builds**
   Status: `pending`
@@ -357,7 +386,7 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-BOOKS.5` | `pending` | the evidence, the gate and the traceability walk — the last content chapter of the arc (`.1`–`.4` landed: bill, gaps, method, references); then `.6` wires every book into `make book` |
+| 1 | `MODEL-BOOKS.6` | `pending` | the wiring: `make book` builds every book, the project book and README route to each, a gate requires a book per profile directory — the arc's five chapters are landed (`.1`–`.5`), so the structure is ready to become the rule |
 
 (Leaves `.7` — the assembler annex — and `.8` — the step-by-step build walk — land out of
 order on director requests; the per-unit book sequence above is unchanged.)
@@ -649,6 +678,74 @@ order on director requests; the per-unit book sequence above is unchanged.)
   (MODEL-BOOKS 6/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.5`),
   this tree.
 
+## Acceptance Checklist (leaf `MODEL-BOOKS.5`)
+
+- [x] **REPRODUCE / ISSUE** — the arc's last content part: what has been demonstrated
+  existed only as numbers scattered across the trees and the two gate reports; the
+  verdicts (`incomplete`, twice) were nowhere explained to a reader of the model, and no
+  reviewer-repeatable walk connected a rule to a command.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY: the evidence is real but was readable only by
+  someone who already knew where it lived; WHERE: the numbers live in the regenerated
+  reports and the gates' own outputs. Confirmed current before writing — both reports
+  regenerate byte-identical (no drift), and the headline numbers are the live ones:
+
+  ```
+  $ python3 scripts/gate_report.py rv64i-lab-v0 --gate G0   # + --gate G1
+  wrote …/G0-REPORT.md …   wrote …/G1-REPORT.md …   (git status: clean — byte-identical)
+  $ bash scripts/check_exercise_coverage.sh
+  EXERCISE-COVERAGE: ok (1 profile(s) — every declared form exercised, 52/52)
+  $ bash scripts/check_interaction_matrix.sh | tail -1
+  INTERACTION-MATRIX: ok (1 unit(s) — every derived cell declared, …, no orphan guests)
+  $ grep 'aligned steps' profiles/rv64i-lab-v0/G1-REPORT.md   -> 492/492 aligned steps
+  ```
+
+- [x] **FIX** — `docs/models/rv64i-lab-v0/src/evidence.md` (in the book's SUMMARY.md):
+  the per-axis evidence ledger (every number with its instrument and re-derivation
+  command), the two `incomplete` verdicts with their reasons (G0: 72 declared / 0
+  implemented; G1: criterion 6 unmet, owner `P2-SCALAR.5`, and that leaf's two blockers
+  named), the capability limits stated plainly, and the evidence-side traceability walk
+  for `D-MISALIGN-DATA` ending at re-runnable commands. The walk's ids were verified
+  before writing:
+
+  ```
+  $ python3 - <<'…'   # records_sexp over the two catalogues
+  REQ-D-MISALIGN-DATA | resolved | implementation-defined | obs: ['OB-MISALIGN-DATA']
+  OB-MISALIGN-DATA | cpu-guarantee | implementation-profile | [CHK-MISALIGN-DATA-POS,
+  CHK-MISALIGN-DATA-NEG] | parameters: requirement_id REQ-D-MISALIGN-DATA …
+  ```
+
+- [x] **ADDRESSED (verified)** — the walk's terminal commands, run fresh, quoted verbatim
+  in the chapter:
+
+  ```
+  $ cargo test -p semulith-verify --lib run::tests::smoke_trap
+  test run::tests::smoke_trap_reports_the_misaligned_load_and_stops ... ok
+  test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 165 filtered out
+  $ python3 scripts/run_semulith_smoke.py
+    PASS  smoke-trap: semulith vs 3 specification-derived expectations
+    PASS  smoke-trap: semulith vs sail-riscv  AGREE over 3 aligned step(s) (…)
+    PASS  smoke-trap: semulith vs spike  AGREE over 3 aligned step(s) (…)
+    PASS  smoke-trap: semulith reproduces  sha256 c9d7a11ce4b7bffe…
+  run_semulith_smoke: ok — …
+  ```
+
+- [x] **NO REGRESSION** — no generated content, no gate extension; measured:
+
+  ```
+  $ git status --short -- scripts/ crates/ | wc -l     # no instrument or crate touched
+  0
+  $ bash scripts/check_materials_bill.sh [--self-test]
+  MATERIALS-BILL: ok (1 unit(s) — …) ; self-test 7 pass / 0 fail
+  $ mdbook build docs/models/rv64i-lab-v0 && make book    # both render
+  $ make gate
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten; 7/8), `LIVE_STATUS.md`
+  (MODEL-BOOKS 7/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.6`),
+  this tree.
+
 ## Acceptance Checklist (leaf `MODEL-BOOKS.8`)
 
 - [x] **REPRODUCE / ISSUE** — the project book narrates the plan and the working practices;
@@ -712,6 +809,9 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | `2026-09-29` | `MODEL-BOOKS.3` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26); MATERIALS-BILL ok, self-test 7/0 |
 | `2026-09-29` | `MODEL-BOOKS.4` | the id/version/count sweep (every claim the chapter makes verified against the dossier, the override and the trees — the ROOT CAUSE box carries it) | all resolve: the four candidates and their identities, the override's platform shape, the eight DIFFs, the six independence records, the control quotes (archive + dossier), the adapter spellings, the expected-divergence guest, the negative fixture's disabled comparison |
 | `2026-09-29` | `MODEL-BOOKS.4` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26); MATERIALS-BILL ok, self-test 7/0 |
+| `2026-09-29` | `MODEL-BOOKS.5` | both gate reports regenerated before writing | byte-identical — no drift (git status clean after regeneration) |
+| `2026-09-29` | `MODEL-BOOKS.5` | the walk's terminal commands run fresh | `cargo test -p semulith-verify --lib run::tests::smoke_trap` → 1 passed / 165 filtered out; `run_semulith_smoke.py` → the smoke-trap PASS lines quoted in the chapter verbatim (reproduce sha c9d7a11ce4b7bffe…) |
+| `2026-09-29` | `MODEL-BOOKS.5` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]`; the per-axis numbers re-derived from live gates | both books render; all doctrines green (26); MATERIALS-BILL ok, self-test 7/0; 52/52 (EXERCISE-COVERAGE), 21 cells (INTERACTION-MATRIX), 492/492 (G1-REPORT) all confirmed live |
 
 ## Commit Log
 
@@ -721,6 +821,7 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | `MODEL-BOOKS.2` | `SEMILITH-MB-0004 (leaf MODEL-BOOKS.2): …` | the gaps chapter, and the PDF investigation ANSWERED YES with a tool: the pinned publication's own PDF (same version segment, 20260120 Official Release) carries the format tables as selectable text (232 census lines vs 0 in the pinned HTML) — encodings can be re-sourced from the primary document; qualifications recorded (chapter numbering differs; extraction is layout-fragmented); re-sourcing is future reviewed work |
 | `MODEL-BOOKS.3` | `SEMILITH-MB-0005 (leaf MODEL-BOOKS.3): …` | the methodology chapter: the reserved-FENCE rule followed end to end by name (sentence → D-FENCE → REQ-D-FENCE → OB-FENCE → fault-fence → the differentials), the authority/semantic-class judgement calls explained, the mistakes in (DEFECT-A inverted, DEFECT-B fixed in data, the two authoring REDs); every id grep-verified as written |
 | `MODEL-BOOKS.4` | `SEMILITH-MB-0006 (leaf MODEL-BOOKS.4): …` | the references chapter: the configuration story told through the controls that changed the observation (the ISA-string read-back, the platform correction after the advancing-mtime probe, the decisive misaligned-policy flip), the harness DIFFs, the two measured reference-vs-reference differences, and the independence inventory ending in the per-leg verdict — why three models is not three opinions |
+| `MODEL-BOOKS.5` | `SEMILITH-MB-0007 (leaf MODEL-BOOKS.5): …` | the evidence chapter completes the five-part arc: the per-axis ledger with its instruments, both `incomplete` verdicts with their reasons (G0's 72/0; G1's criterion 6 and P2-SCALAR.5's blockers), the capability limits, and the evidence-side traceability walk (`D-MISALIGN-DATA`) ending at two re-runnable commands with fresh output quoted |
 | `MODEL-BOOKS.7` | `SEMILITH-MB-0001 (leaf MODEL-BOOKS.7): …` | the assembler annex in the project book — director request, out of order; the per-unit sequence is unchanged |
 | `MODEL-BOOKS.8` | `SEMILITH-MB-0002 (leaf MODEL-BOOKS.8): …` | the step-by-step build walk — director request, out of order like `.7`; chapters 29 → 30 |
 
@@ -753,6 +854,12 @@ order on director requests; the per-unit book sequence above is unchanged.)
   advancing-`mtime` probe, the decisive misaligned-policy flip); the harness differences;
   the two measured reference-vs-reference differences; and the independence inventory —
   encodings rest on sail alone, semantics on both references, nothing on ACT4 or QEMU.
+- `2026-09-29`: Leaf `.5` done: the evidence chapter (`src/evidence.md`) completes the
+  five-part arc — the per-axis evidence ledger (52/52 gated, 21 cells, 40 guests /
+  492/492 steps + the declared divergence, determinism, portability, the baseline, the
+  detector), both `incomplete` verdicts with their reasons (G0's 72/0; G1's criterion 6 and
+  `P2-SCALAR.5`'s named blockers), the capability limits, and the `D-MISALIGN-DATA`
+  traceability walk ending at two re-runnable commands with fresh output quoted.
 - `2026-09-29`: Leaf `.7` done out of order (director request): the project book gains
   `annex/assembler.md` — how `scripts/riscv_asm.py` turns the pinned encoding tables into guest
   bytes, written to the tree's teaching mandate. Chapters 28 → 29.
