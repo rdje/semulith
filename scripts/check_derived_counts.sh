@@ -39,6 +39,7 @@ routed destinations|([0-9]+) destinations governed|grep -cv '^#\|^$' doctrine/re
 project doctrines|([0-9]+) registered|grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh
 book chapters|([0-9]+) chapters|grep -cE '^\s*-? ?\[' docs/book/src/SUMMARY.md
 self-test arms|([0-9]+) self-test arms|arm_total
+open upstream issues|([0-9]+) open upstream issues|python3 scripts/upstream_exposure.py --open-count
 CLAIMS
 }
 

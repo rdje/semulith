@@ -1,5 +1,29 @@
 # CHANGELOG.md
 
+## SEMULITH-UT-0053 (leaf UPSTREAM-TRACK.3) — age and exposure, derived; the tree closes (4/4)
+
+- `scripts/upstream_exposure.py`: from each issue record's dated history, DERIVES — at run
+  time, never stored — every tracked issue's state, its age in days (earliest dated event
+  → today), and its exposure (the record's `blocks` field). Today: `0 open / 3 resolved /
+  3 tracked` (all three LS issues verified). Open = the unresolved half of the declared
+  state vocabulary (draft/reported/acknowledged/disputed/fixed-upstream); `verified` is
+  resolved because WE re-ran it (the `.2` discipline). `--open-count` feeds the gate.
+- The `UPSTREAM-INDEX` gate learns the field: `blocks` is now REQUIRED on every record,
+  and each entry must have the leaf-id shape (BAD BLOCKS) and name a leaf that EXISTS in
+  `docs/tasks/` (DANGLING BLOCKS — an exposure naming nothing is a lie about what is
+  blocked). Self-test 17 → 21 arms, all RED named.
+- `DERIVED-COUNTS` owns the figure: a new claim (`open upstream issues`, enumerator
+  `upstream_exposure.py --open-count`), carried by MEMORY.md's Blockers line and
+  re-derived every commit.
+- ⛔ Defect found in flight, owned: DERIVED-COUNTS' `self-test arms` claim matched NO live
+  document (its pattern never matched LIVE_STATUS's "N arms" wording) — the arms figure
+  had never been re-derived and was silently stale (280 carried vs 291 real). Fixed in the
+  document, not the gate; the gate went from re-deriving 3 claims to 5.
+- The tree closes (4/4): criteria 1–3 from `.1`, criterion 4 from `.2` (strengthened by
+  `.4`), criterion 5 — dated history answerable — is this leaf's derived figure.
+- `make gate` all green (27 doctrines / 291 self-test arms, now genuinely re-derived);
+  `check_upstream_index.sh --self-test` 21/0.
+
 ## SEMILITH-MB-0008 (leaf MODEL-BOOKS.6) — the wiring; MODEL-BOOKS closes (8/8)
 
 - `make book` now builds the project book AND every model book (the Makefile's `book`
@@ -451,27 +475,4 @@ Validation: `cargo test -p semulith-core` 12/0; `cargo clippy --all-targets --al
 - Docs in lockstep: mirrors in `DOCTRINE_ENFORCEMENT.md`, the book's doctrines chapter, `TOOLBOX.md`; `LIVE_STATUS.md` re-derived (20 registered, 231 self-test arms; P1 In Progress, 1/12) with a stale MODEL-METHOD row corrected; the book's P1 chapter now states the crates exist and build for host and Wasm. Fixed in passing: a layer-A typo (`sexr_file` → `sexpr_file`); the `DOCTRINE_ENFORCEMENT.md` ceiling re-derived 20 → 24 KiB in the routes registry (the 20th doctrine row is the surface's contract expanding, the same grounds as the TOOLBOX raise). Both append heads sharded again the day they were sharded — the pressure valve working as designed; the `docs/changelog/` file-count ceiling re-derived 20 → 40 in the same commit (the family now carries shards for two append heads — the derivation is recorded in the registry).
 
 Validation: `make gate` green (20 doctrines); `make check` green (fmt + clippy -D warnings + 5 test suites); `bash scripts/check_wasm_build.sh --self-test` → 4 pass / 0 fail.
-
-## SEMILITH-AC-0051 (leaf ARTIFACT-CLEANUP.2) — the sanctioned watcher is a ruling, not a false positive
-
-The director ruled CHIPDOC's ChipdocWatcher ("it will stay there — do not worry about it from
-now on"), and the ruling is now data: `doctrine/sanctioned_processes.tsv` carries the
-executable substring, the ruling, and its date, and `check_no_background_jobs.sh` exempts
-matching processes from both census arms — with the detection itself untouched, because the
-census's whole design is that a list of things you thought of cannot see the thing you did not.
-An agent proposes a row; only the director's ruling lands one. Verified both directions: the
-live check prints `handoff: OK` with the watcher running, and the control probe (row absent)
-flags the same process again. Tracked-content gates are unaffected.
-
-## SEMILITH-MM-0050 (leaf MODEL-METHOD.6) — no coding without the source of truth, and MODEL-METHOD closes
-
-The director's rule is a gate now. The unit registry gains `(requires …)` — the categories a
-unit's scope declares — and `SCOPE-COVERAGE` (19th doctrine, 7 arms) refuses the day a required
-category is `missing` or has no census row, fired RED before registration on a scratch unit whose
-required category was absent. A unit with an undeclared scope refuses too: code may not start
-against a scope never declared. `rv64i-lab-v0` declares its 14 in-scope categories, and the
-verdict reads `1 unit(s) may code — every required category covered` — P1-LAB's precondition is a
-verdict, composed with EXTRACTION (coverage says the facts are OWNED; extraction says they are
-EXTRACTABLE). **`MODEL-METHOD` closes at 13/13**: the method in prose, the census, the
-acquisitions, and the coding gate all landed; every P1 precondition is mechanical.
 

@@ -36,7 +36,15 @@ import sexp as S
 
 root = pathlib.Path(sys.argv[1]); up = root / sys.argv[2]
 STATES = set(sys.argv[3].split()); SEV = {"high", "medium", "low"}
-REQUIRED = ("id", "project", "title", "component", "severity", "state")
+REQUIRED = ("id", "project", "title", "component", "severity", "state", "blocks")
+# the leaf ids a `blocks` entry may name: every leaf any tracked tree owns. A blocks entry
+# naming a leaf that does not exist is a lie about what is blocked (UPSTREAM-TRACK.3).
+LEAF_ID = re.compile(r"^[A-Z][A-Z0-9-]*\.\d+$")
+known_leaves = set()
+td = root / "docs" / "tasks"
+if td.is_dir():
+    for t in td.glob("*.md"):
+        known_leaves.update(re.findall(r"ID: `([A-Z][A-Z0-9-]*\.\d+)`", t.read_text()))
 bad, checked = [], 0
 
 if not up.is_dir():
@@ -61,6 +69,14 @@ for d in sorted(p for p in up.glob("*/*") if p.is_dir()):
         bad.append(f"BAD STATE   {f['id']}: {f['state']!r} is not one of: {' '.join(sorted(STATES))}")
     if f["severity"] not in SEV:
         bad.append(f"BAD SEV     {f['id']}: {f['severity']!r} is not one of: {' '.join(sorted(SEV))}")
+    # exposure (UPSTREAM-TRACK.3): `blocks` is required (empty = blocks nothing), and every
+    # entry names a leaf that EXISTS — an exposure naming nothing is a lie about what is blocked.
+    for leaf in f["blocks"].split():
+        if not LEAF_ID.match(leaf):
+            bad.append(f"BAD BLOCKS  {f['id']}: {leaf!r} is not a leaf id (TREE-LEAF shape)")
+        elif leaf not in known_leaves:
+            bad.append(f"DANGLING BLOCKS {f['id']}: blocks {leaf!r}, which no tracked tree "
+                       f"declares — the exposure points at nothing")
     if f["id"] in issues:
         bad.append(f"DUP ID      {f['id']} declared by two directories")
     if not d.name.startswith(f["id"] + "-"):
@@ -178,7 +194,7 @@ selftest() {
     mkdir -p "$tmp/docs/upstream/linkedspec/$1"
     cat > "$tmp/docs/upstream/linkedspec/$1/issue.sexp" <<EOF
 (issue (id "$2") (project "linkedspec") (title "t") (component "c")
-       (severity $4) (state $3))
+       (severity $4) (state $3) (blocks ""))
 EOF
     cat > "$tmp/docs/upstream/linkedspec/$1/REPORT.md" <<EOF
 | | |
@@ -245,7 +261,7 @@ EOF
   reset; mk LS-001-a LS-001 verified high
   cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
 (issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
-       (severity high) (state verified)
+       (severity high) (state verified) (blocks "")
        (history (event (date "2026-09-26") (state verified)
                        (verified-against "a8d34c845"))))
 EOF
@@ -259,7 +275,7 @@ EOF
   reset; mk LS-001-a LS-001 verified high
   cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
 (issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
-       (severity high) (state verified)
+       (severity high) (state verified) (blocks "")
        (history (event (date "2026-09-26") (state verified)
                        (verified-against "a8d34c845")
                        (repro "evidence/missing.txt"))))
@@ -273,7 +289,7 @@ EOF
   reset; mk LS-001-a LS-001 verified high
   cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
 (issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
-       (severity high) (state verified)
+       (severity high) (state verified) (blocks "")
        (history (event (date "2026-09-26") (state verified)
                        (verified-against "a8d34c845")
                        (repro "../outside.txt"))))
@@ -287,7 +303,7 @@ EOF
   reset; mk LS-001-a LS-001 verified high
   cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
 (issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
-       (severity high) (state verified)
+       (severity high) (state verified) (blocks "")
        (history (event (date "2026-09-26") (state verified)
                        (verified-against "a8d34c845")
                        (repro "evidence/verified.txt"))))
@@ -307,7 +323,7 @@ EOF
   reset; mk LS-001-a LS-001 verified high
   cat > "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<EOF
 (issue (id "LS-001") (project "linkedspec") (title "t") (component "c")
-       (severity high) (state verified)
+       (severity high) (state verified) (blocks "")
        (history (event (date "2026-09-26") (state verified)
                        (verified-against "a8d34c84595d46c24cd1820d5fc0414261706412")
                        (repro "evidence/verified.txt"))))
@@ -326,6 +342,42 @@ EOF
 
   reset; mk wrongly-named-dir LS-001 draft high; idx "$ln_" "$ln_"
   arm "RED   a directory whose name does not carry its id" 1 "NAME DRIFT"
+
+  # UPSTREAM-TRACK.3: `blocks` is required, and every entry names a leaf that EXISTS.
+  reset; mk LS-001-a LS-001 draft high; idx "$ln_" "$ln_"
+  mkdir -p "$tmp/docs/tasks"
+  printf -- '- ID: `SOT-FORMAT.9`\n' > "$tmp/docs/tasks/SOT-FORMAT.md"
+  python3 - "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+open(p, "w").write(t.replace('(blocks "")', '(blocks "SOT-FORMAT.9")'))
+PY
+  arm "GREEN a blocks entry naming a real leaf" 0 "__CHECKED__ 1"
+
+  python3 - "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+open(p, "w").write(t.replace('(blocks "SOT-FORMAT.9")', '(blocks "SOT-FORMAT.99")'))
+PY
+  arm "RED   a blocks entry naming a leaf no tree declares" 1 "DANGLING BLOCKS"
+
+  python3 - "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+open(p, "w").write(t.replace('(blocks "SOT-FORMAT.99")', '(blocks "not-a-leaf")'))
+PY
+  arm "RED   a blocks entry that is not a leaf id" 1 "BAD BLOCKS"
+
+  python3 - "$tmp/docs/upstream/linkedspec/LS-001-a/issue.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+open(p, "w").write(t.replace(' (blocks "not-a-leaf")', ''))
+PY
+  arm "RED   a record with no blocks field at all" 1 "BAD RECORD"
 
   rm -rf "$tmp"
   echo "UPSTREAM-INDEX --self-test: $pass pass / $fail fail"

@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `UPSTREAM-TRACK`
-- Status: `active`
+- Status: `done` (4/4 leaves complete `2026-09-29`; `.3` derived the exposure figure and
+  closed the tree)
 - Roadmap lane: cross-cutting; the discipline spine pointed outward
 - Gate: contributes `UPSTREAM-INDEX` — the indices mirror the issues, checked not trusted
 - Depends on: `docs/upstream/` (created by `SOT-FORMAT.9`)
@@ -77,10 +78,57 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
   Commit: `SEMULITH-UT-0052`
 
 - ID: `UPSTREAM-TRACK.3` — **age and exposure, derived**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: from the dated history, derive how long each open issue has been reported and which of our
   leaves it blocks, so exposure is visible without reading every record.
   Acceptance: the figure is derived by a command, never typed; `DERIVED-COUNTS` owns it.
+  Design (recorded before code, `2026-09-29`):
+  - **The linkage data already exists, ungated.** Every record carries `(blocks …)`
+    (LS-001: "SOT-FORMAT.9"; LS-002/LS-003: empty) — written at `.1`, never checked. The
+    gate upgrades it, which is the leaf's honest core: `blocks` becomes REQUIRED, and every
+    non-empty entry must name a leaf id that EXISTS in `docs/tasks/` — a dangling
+    exposure is a lie about what is blocked. (An id is data, not a path: the
+    self-containment rule is untouched.) New self-test arms, RED-first per the `.2`
+    pattern.
+  - **The command** is `scripts/upstream_exposure.py`: for each issue record — id,
+    project, state, age in days (earliest dated history event → TODAY, derived at run
+    time; LIVE-DOC-CURRENCY forbids a tracked document carrying the figure), and its
+    blocks. Open = `draft | reported | acknowledged | disputed | fixed-upstream`;
+    `verified | closed | wontfix` are resolved (verified means WE re-ran it — the `.2`
+    discipline). `--open-count` prints just the count. Self-test with fixture records.
+  - **DERIVED-COUNTS owns the figure**: a new claim row (`open upstream issues`,
+    enumerator `python3 scripts/upstream_exposure.py --open-count`), and MEMORY.md's
+    Blockers line carries the claim so the gate re-derives it on every commit.
+  - **The indices do NOT gain an age/exposure column** — age changes daily, and a typed
+    figure in a tracked surface is exactly what LIVE-DOC-CURRENCY and the
+    generated-or-gated rule refuse. The command IS the deliverable.
+  - **Tree closure:** criterion 5 ("every state change is dated, so 'how long has
+    upstream had this' is answerable") is what this leaf turns from answerable-in-
+    principle into derived-by-a-command; criteria 1–4 landed at `.1`/`.2`/`.4`. With
+    `.3` the tree closes at 4/4.
+  Result: met, `2026-09-29`. **Age and exposure are derived by a command, and
+  DERIVED-COUNTS owns the open-issue count.** `scripts/upstream_exposure.py` reads every
+  issue record and derives, at run time: state, age in days from the earliest dated
+  history event (9d for all three today), and the `blocks` exposure — printing
+  `0 open / 3 resolved / 3 tracked` today, with an honest "no open issues" line when the
+  open set is empty (self-test 5/0, including the fully-resolved fixture). The
+  `UPSTREAM-INDEX` gate learned the field: `blocks` is now REQUIRED, and every entry must
+  name a leaf that exists in `docs/tasks/` (DANGLING BLOCKS) and have the leaf-id shape
+  (BAD BLOCKS) — self-test 17 → 21 arms, all RED named. DERIVED-COUNTS gained the
+  `open upstream issues` claim (enumerator `… --open-count`), and MEMORY.md's Blockers
+  line carries it, re-derived every commit. **Defect found in flight, owned:** the
+  pre-existing `self-test arms` claim matched NO live document — its pattern
+  (`([0-9]+) self-test arms`) never matched LIVE_STATUS.md's "N arms" wording, so the
+  arms figure had never actually been re-derived and was silently stale (280 carried vs
+  291 real after this leaf's +4 gate arms). Fixed in the document (the claim now reads
+  "291 self-test arms"), not in the gate: DERIVED-COUNTS went from re-deriving 3 claims
+  to 5 — the new one AND the arms claim, live for the first time. A second fixture
+  defect, mine: the self-test's record-editing helper truncated each file before reading
+  it (`open(p, "w").write(open(p).read()…)` — evaluation order), so four arms edited
+  empty files; fixed (read first, then write). Tree closure: criteria 1–3 landed at `.1`,
+  criterion 4 at `.2` (`.4` strengthened it), criterion 5 — dated history, answerable —
+  is this leaf's derived figure. **The tree closes at 4/4.**
+  Lessons: `promotion: declined (both defects are recorded where they bite: the arms claim's wording in LIVE_STATUS.md, the fixture fix in the gate's self-test)`.
 
 - ID: `UPSTREAM-TRACK.4` — **the consumer tells upstream: `VERIFIED.md` lives in the issue subtree**
   Status: `done`
@@ -105,7 +153,60 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `UPSTREAM-TRACK.3` | `pending` | derivation is only worth building once there is history to derive from — and three issues with dated events are history |
+| — | — | — | the tree is complete (4/4 leaves done): the issue owns its state (`.1`), `verified` earns its evidence (`.2`), age and exposure are derived (`.3`), and the consumer's reply travels in the subtree (`.4`, out of order on director instruction) |
+
+## Acceptance Checklist (leaf UPSTREAM-TRACK.3)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the figure existed only as dated records nobody
+  read end to end, and the exposure linkage existed but was never gated: `blocks` was
+  written at `.1` and checked by nothing. Measured at the pre-leaf state:
+
+  ```
+  $ git show HEAD:scripts/check_upstream_index.sh | grep -c blocks   -> 0
+  $ git show HEAD:scripts/check_derived_counts.sh | grep -c upstream -> 0
+  ```
+
+- [x] **ADDRESSED (verified)** — the command derives; the gate requires; DERIVED-COUNTS
+  owns:
+
+  ```
+  $ python3 scripts/upstream_exposure.py
+  upstream exposure — derived from the dated issue records, never typed
+    no open issues — nothing upstream blocks any leaf today
+    resolved LS-001   linkedspec   state verified       reported 2026-09-20 (9d ago)
+    resolved LS-002   linkedspec   state verified       reported 2026-09-20 (9d ago)
+    resolved LS-003   linkedspec   state verified       reported 2026-09-20 (9d ago)
+  upstream exposure: 0 open / 3 resolved / 3 tracked
+  $ python3 scripts/upstream_exposure.py --self-test -> 5 pass / 0 fail
+  $ bash scripts/check_upstream_index.sh --self-test -> 21 pass / 0 fail (17 → 21 arms:
+    GREEN a real leaf; RED dangling / bad shape / missing field)
+  $ bash scripts/check_derived_counts.sh
+  DERIVED-COUNTS: ok (5 derived count claim(s) re-derived)     ← was 3: see the defect
+  ```
+
+- [x] **NO REGRESSION** — the strengthened gate on the real tracker, and the whole
+  registry:
+
+  ```
+  $ bash scripts/check_upstream_index.sh
+  UPSTREAM-INDEX: ok (3 issue record(s) mirrored by both indices)
+  $ make gate
+  === all doctrines green ===
+  ```
+
+  ⛔ Defect found in flight, owned: the pre-existing `self-test arms` claim in
+  DERIVED-COUNTS matched NO live document (`([0-9]+) self-test arms` vs LIVE_STATUS's
+  "N arms"), so the arms figure was never re-derived and read 280 where the registry
+  measured 291. Fixed in the document (the claim now reads "291 self-test arms"), never
+  in the gate — the gate went from re-deriving 3 claims to 5. A second defect, mine:
+  the self-test's record-edit helper truncated before reading
+  (`open(p,"w").write(open(p).read()…)` — evaluation order), so four new arms first ran
+  against empty files; fixed (read, then write).
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (tree done, out of the active list; the
+  Blockers line carries the derived claim), `LIVE_STATUS.md` (27 doctrines / 291
+  self-test arms), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (the row → done),
+  this tree (status done, frontier —), `TOOLBOX.md` (the command's row).
 
 ## Acceptance Checklist (leaf UPSTREAM-TRACK.2)
 
@@ -239,6 +340,11 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `UPSTREAM-TRACK.3` | pre-change census at HEAD | `check_upstream_index.sh` carried 0 mentions of `blocks`; `check_derived_counts.sh` carried 0 upstream claims — the field and the figure were ungated |
+| `2026-09-29` | `UPSTREAM-TRACK.3` | `upstream_exposure.py [--self-test]` | `0 open / 3 resolved / 3 tracked`, ages 9d derived from the dated histories; self-test 5/0 (incl. the honest zero) |
+| `2026-09-29` | `UPSTREAM-TRACK.3` | `check_upstream_index.sh --self-test` | 21 pass / 0 fail (17 → 21 arms: blocks required, DANGLING BLOCKS, BAD BLOCKS, missing field) |
+| `2026-09-29` | `UPSTREAM-TRACK.3` | authoring RED moments | the fixture's edit helper truncated before reading (4 arms edited empty files — 13/8 became 21/0 after the fix); DERIVED-COUNTS' arms claim found dead (matched no live doc; arms figure stale 280 vs 291) — fixed in the document, not the gate |
+| `2026-09-29` | `UPSTREAM-TRACK.3` | `check_derived_counts.sh`; `make gate` | 5 derived count claims re-derived (was 3 — the arms claim is live for the first time, plus the new open-issues claim); all doctrines green |
 | `2026-09-26` | `UPSTREAM-TRACK.4` (regime) | LS-002 ancestry claim checked mechanically | `merge-base --is-ancestor`: `77d7b3db1` and `df845ce61` both in `a8d34c845` — upstream's claim verified, not trusted |
 | `2026-09-26` | `UPSTREAM-TRACK.4` (regime) | LS-002 cases re-run with the prescribed instrument (`sexpr_file` + `SExprDocumentV1.spec`) | all four quoted/bare pairs distinguishable by kind; transcript captured in the subtree |
 | `2026-09-26` | `UPSTREAM-TRACK.4` (regime) | LS-002 state `acknowledged` → `verified` | record, REPORT, VERIFIED.md and both index mirrors in one commit; gate green |
@@ -264,6 +370,7 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `UPSTREAM-TRACK.3` | `SEMULITH-UT-0053 (leaf UPSTREAM-TRACK.3): …` | age and exposure derived by `upstream_exposure.py`; the gate requires `blocks` and validates the named leaves exist; DERIVED-COUNTS owns the open-issue count (and its arms claim is live for the first time — a dead-claim defect found in flight); the tree CLOSES 4/4 |
 | `UPSTREAM-TRACK.4` | `SEMULITH-UT-0055 (leaf UPSTREAM-TRACK.4): …` | VERIFIED.md in the issue subtree for both verified issues; gate requires the note and the pin match |
 | `UPSTREAM-TRACK.2` | `SEMULITH-UT-0052 (leaf UPSTREAM-TRACK.2): …` | verified now requires the captured re-run; fired RED on the real LS-001; all three issues in earned states |
 | `UPSTREAM-TRACK.1` | `SEMULITH-UT-0048 (leaf UPSTREAM-TRACK.1): the issue owns its state, the indices are mirrors` | caught 3 real violations in its own tracker |
@@ -272,3 +379,9 @@ is `0`. Nothing checks they agree. That is exactly how `MIRROR-DRIFT` began.
 
 - `2026-09-20`: Created on two director instructions that turn out to be one design — a
   self-contained subtree cannot also be indexed by a second source of truth.
+- `2026-09-29`: Leaf `.3` done and **the tree closes** (4/4): age and exposure are derived
+  by `scripts/upstream_exposure.py` from the dated records (never typed); the
+  `UPSTREAM-INDEX` gate now requires the `blocks` field and refuses an exposure naming a
+  leaf no tree declares; `DERIVED-COUNTS` owns the open-issue count — and its `self-test
+  arms` claim, found dead in flight (it matched no live document), is live for the first
+  time.
