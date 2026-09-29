@@ -23,3 +23,7 @@ pinned-sources	profiles/rv64i-lab-v0/sources.sexp	-	-
 materials-catalogue	materials/catalog.sexp	-	-
 guest-programs	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
 guest-expectations	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
+pinned-sources	profiles/rv64i-lab-v0/sources.sexp	docs/models/rv64i-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL
+reference-dossier	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
+reference-dossier	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/reference-models.md	MATERIALS-BILL
+internal-contracts	profiles/rv64i-lab-v0/	docs/models/rv64i-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL

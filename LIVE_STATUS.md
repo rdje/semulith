@@ -11,9 +11,9 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (25 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 273 arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row once went missing) |
+| Project doctrines (26 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 280 arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row went missing) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
-| README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
+| README policy + routing closure | Done | caps 85 lines / 4,864 B; 32 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 30 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — index, doctrine documents, task-tree facts, derived counts |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
@@ -30,7 +30,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
 | Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 13 of 13 leaves — closed — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
 | Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`) |
-| Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 2/8 — one definition, one mdBook (`.7`: assembler annex; `.8`: the build walk) |
+| Per-unit books | In Progress | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 3/8 — one definition, one mdBook (`.1` structure + materials bill; `.7`/`.8` annexes) |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 

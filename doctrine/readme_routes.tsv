@@ -221,6 +221,19 @@ docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf eviden
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
+# Derivation, MODEL-BOOKS.1 (2026-09-29), when the per-unit model books got their home:
+#   docs/models/     8 files / 27,600 B at adoption (one mdBook per unit: book.toml,
+#                    SUMMARY.md, the introduction, the materials bill, 4 generated
+#                    fragments). Health 16 files / 64 KiB; ceiling 40 / 256 KiB; per-part
+#                    32 KiB. ⭐ The family's growth axis is CHAPTERS PER UNIT (`.2`–`.5`
+#                    land four more) plus ONE DIRECTORY PER UNIT — the
+#                    one-definition-one-book rule makes a second unit the designed
+#                    expansion, and the file-count ceiling is the calendar for it. The
+#                    generated fragments' sizes are bounded by the dossiers they render;
+#                    the authored chapters by the per-part bound. Registered in the same
+#                    commit that created the directory — a new family without a row is the
+#                    exact failure this registry exists to prevent.
+docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decision_one-definition-one-book); the materials tables are generated, gated by MATERIALS-BILL	16	65536	40	262144	32768
 profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	95	402967	99	516096	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
