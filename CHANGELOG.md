@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-PX-0001 (leaf PREFIX-DISCIPLINE.1) — the SEMULITH- prefix, pinned at the boundary and watched
+
+- The director ruled the work-unit prefix is SEMULITH, never SEMILITH. Measured drift at
+  ruling time: 123 commits carry both spellings across 10+ areas; exactly one subject
+  ("Initial commit") carries neither. History is immutable, so enforcement is
+  forward-looking: the `commit-msg` hook now refuses any leading work-unit id not beginning
+  with `SEMULITH-`, with `SEMULITH` named in the refusal.
+- `COMMIT-PREFIX` (#29, `scripts/check_commit_prefix.sh`) probes the hook BEHAVIOURALLY on
+  every commit — the pin lives in a neutral scaffold file a sync can revert, and carrying it
+  upstream is unavailable by policy, so a silent revert turns the next commit RED, named.
+  Fired RED against the real tree before the pin existed; self-test 4/0.
+- The ruling is recorded: `decision_work-unit-prefix-semulith.md` + INDEX; COMMIT.md states
+  the pinned prefix; both registry mirrors carry the row; LIVE_STATUS re-derived
+  (29 doctrines / 301 arms). The tree closes 1/1.
+- `make gate` all green. DEV_NOTES.md crossed its 48 KiB ceiling with this slice's note and
+  was sharded (the DOC-SHARDING machinery, completeness exact).
+
 ## SEMULITH-MM-0059 (leaf MODEL-METHOD.17) — the channel answers: the poller fix measured, the heard gaps reconciled
 
 - chipdoc fixed the poller deafness `.16` surfaced (corpus `6bfabf2`): the poller descends
@@ -546,12 +563,4 @@
 ## SEMILITH-AC-0052 (tree ARTIFACT-CLEANUP) — the 2026-09-28 cleanup run
 
 - §8 time-triggered run (last record `2026-09-26`): pre-delete census 132 cargo incremental-cache `.bin` files / 720 MB, every one under a cargo `*/incremental/*` directory (`target/` own + wasm32 profiles, `.app-data/target/` vendored-consumer builds); 0 stray `.bin`/`.log` in `target/release` / `target/debug/deps`; the 7 `.app-data/cargo-home/**/tests/data/*.bin` crate-source fixtures classified inputs and kept. Post-delete re-census: 0 incremental `.bin`; `.app-data` 2.0 G → 1.4 G. Record overwritten (latest entry only) and the run evidenced in the tree's Verification Log; enforcer green.
-
-## SEMILITH-PL-0006 (leaf P1-LAB.6) — the canonical definition, generated
-
-- `semulith-core::definition` exists, and it is generated: `scripts/gen_definition.py` lowers the unit's canonical definition — `profiles/rv64i-lab-v0/encoding.sexp` composing `definitions/riscv/rv64i.sexp` through the one shared resolver, plus `definitions/riscv/rv64i.sem.sexp`, the execution authority — into 12 operand fields (scatters attached), 52 decode rows (mask/value/operands/upstream-table/locator), and every semantics rule's effect tree as a typed `Sem` value. OWN-01 holds structurally: the semantics DATA owns each rule; there is no handwritten second copy, and the interpreter slice (`.8`) will evaluate exactly these trees. `decode(word)` is generated fixed-bit dispatch; a word no entry matches is reserved-decode, the caller's classification.
-- OWN-03's manifest rides as data (`MANIFEST`): the four canonical inputs by path and sha256, the generator named and content-hashed, the configuration (profile/ilen/fragments) as data, and the `rv_i`/`rv64_i` upstream pins from the fragment. The 22nd registered doctrine, `DEF-GEN` (`scripts/check_definition_gen.sh`), regenerates in memory and refuses drift with the regeneration command; its 8-arm self-test re-runs before every judgement; fired RED against a hand-edited module before registration — the rite caught a real defect (a relative `--encoding` path crashed `relative_to`, and the check collapsed an unjudgeable crash to rc=1; the generator now refuses out-of-repo inputs by name and the check propagates rc=2 as REFUSED). The owner→mirror pairs (encodings, semantics, state → `definition.rs`) are registered in `doctrine/fact_ownership.tsv` and its census.
-- The generator re-derives every check it emits through — schema validation per input, the SEMANTICS binding rule (split `imm12`/`bimm12`, `shamt`), the MODEL-COMPOSE.6 refinement rule, completeness, fixed-field sanity — and refuses by name: another unit, an unsupported ilen, an instruction without semantics, an operand the encoding does not provide, a missing semantics document, a non-literal width. FENCE's `fm`/`pred`/`succ` stay declared-but-unfielded with a test ratchet naming the three decorations.
-- Verification: 10 new definition suites green; `make check` 5 suites / 53 tests / 0 warnings; wasm build green; `make gate` green with 22 doctrines (245 arms). TOOLBOX gains the rows `.3` owed (`gen_state.py`/`check_state_gen.sh` were missing from the tool table).
-- Lockstep: MEMORY/LIVE_STATUS/TASK_TREE/book P1 + doctrines chapters and this tree; frontier moves to `.7` (graph and report checker).
 

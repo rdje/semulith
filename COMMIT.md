@@ -15,6 +15,11 @@ When the completed work belongs to a task-tree leaf (a node under `docs/tasks/`)
 - Update `docs/TASK_TREE.md` (the Active Task Trees index) only if the frontier changes.
 - The commit subject or first body line names the leaf ID alongside the work-unit id,
   e.g. `MYPROJ-AREA-0007 (leaf FEATURE-X.2): <summary>`.
+- ⭐ The work-unit id's project prefix is **pinned**: `SEMULITH-`, never `SEMILITH-` (director
+  ruling 2026-09-30, `docs/decisions/decision_work-unit-prefix-semulith.md`). The
+  `commit-msg` hook refuses any other spelling with the pinned prefix named; the
+  `COMMIT-PREFIX` doctrine probes the hook behaviourally on every commit, so a scaffold sync
+  that reverts the neutral hook turns the next commit RED.
 - **One commit per completed leaf** before selecting another leaf.
 
 **Code-change doctrine (binding, non-negotiable):** it is strictly forbidden to make ANY

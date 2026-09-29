@@ -11,6 +11,17 @@ if ! printf '%s' "$subject" | grep -Eq '^[A-Za-z][A-Za-z0-9._-]+'; then
   echo "  e.g. '<PROJECT>-<AREA>-<NNNN> (leaf <TREE>.<n>): <summary>'" >&2
   exit 1
 fi
+# PINNED PROJECT PREFIX (director ruling 2026-09-30; decision_work-unit-prefix-semulith,
+# PREFIX-DISCIPLINE.1): the work-unit id begins with SEMULITH- — never SEMILITH-, never any
+# other spelling. History already carries both spellings and is immutable, so enforcement is
+# here, where new subjects enter. This is a LOCAL pin on a neutral scaffold file: a scaffold
+# sync reverts it, and scripts/check_commit_prefix.sh (COMMIT-PREFIX) is the probe that makes
+# that revert loud at the very next commit.
+if ! printf '%s' "$subject" | grep -Eq '^SEMULITH-'; then
+  echo "commit-msg: the work-unit id must begin with the pinned project prefix 'SEMULITH-' (never SEMILITH-)" >&2
+  echo "  got: $subject" >&2
+  exit 1
+fi
 # NO AGENT TRAILERS (COMMIT.md, pre-commit safety rules): a commit message ends with its own last
 # line. The known agent/tool attribution shapes are refused here mechanically, because the harness
 # that adds them does so by default and a rule nobody enforces loses to a default every time.

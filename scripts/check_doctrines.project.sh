@@ -44,6 +44,7 @@ PROJECT_DOCTRINES=(
   "MATERIALS-BILL|every modelled unit's book carries a materials bill whose identity tables are GENERATED from the pinned dossier (drift refused — a digest cannot rot) and whose prose states, for every material, what it does NOT supply — a missing section or a missing negative statement fails by name; fired RED against the real corpus before registration (MODEL-BOOKS.1)|scripts/check_materials_bill.sh"
   "UNIT-BOOKS|every registered modelled unit has its own mdBook and it builds — a unit without a book, a book that does not build, or a book under docs/models/ that no unit registers fails by name; the one registration place is materials/units.sexp; fired RED against the real corpus before registration (MODEL-BOOKS.6)|scripts/check_unit_books.sh"
   "PUSH-RECORD|the push-approval ledger is append-only and every entry well-formed — a staged change must keep HEAD's content a PREFIX of the new content (history is never rewritten), and every entry carries who/when/why/range with sequential ids; fired RED against the real corpus before registration (PUSH-DISCIPLINE.3)|scripts/check_push_record.sh"
+  "COMMIT-PREFIX|the commit-msg hook pins the SEMULITH- work-unit prefix — a SEMILITH- subject is refused with SEMULITH named, a SEMULITH- subject passes; the probe is behavioural, so a scaffold sync that reverts the neutral hook turns the very next commit RED; fired RED against the real tree before the pin existed (PREFIX-DISCIPLINE.1)|scripts/check_commit_prefix.sh"
 )
 
 fails=0
