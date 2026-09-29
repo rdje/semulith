@@ -163,7 +163,7 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   each enforcement IS the lesson; a knowledge card would restate what the gates enforce)`.
 
 - ID: `MODEL-BOOKS.2` — **what the materials do not contain**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: the chapter a specification bill usually omits. This project measured that its pinned
   artifacts contain **no instruction encodings** (the format diagrams are images), which forced a
   second provenance whose ancestry is shared with one comparator and not the other.
@@ -173,6 +173,40 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   shrinks. If it does not, the finding is stronger and is recorded as such.
   Acceptance: the PDF is fetched and examined with a tool, not assumed; the outcome is recorded
   either way with the command that established it.
+  Result: met, `2026-09-29`. **The gaps chapter landed, and the PDF investigation answers
+  YES — measured with `pdftotext`, not assumed.** The pinned publication *does* publish a
+  PDF rendering at the same version segment (the pinned `rv64i` page links
+  `../_attachments/riscv-unprivileged.pdf`); fetched from
+  `docs.riscv.org/reference/isa/v20260120/_attachments/riscv-unprivileged.pdf` (HTTP 200,
+  4,580,174 B, sha256 `06bb3c23…`, 696 pages, self-identifying `Version 20260120: Official
+  Release`) into the untracked on-volume cache `target/materials/`. The same census pattern
+  that measures the pinned HTML's gap (`grep -cE '[01]{7}'` → **0** on all six pinned
+  artifacts) matches **232** lines in the PDF's text layer; the base-formats figure and
+  the RV32I opcode map (Table 13) extract with their bit strings and field names. So the
+  pinned specification's own PDF rendering DOES carry the instruction-format tables as
+  selectable text, and encodings CAN be re-sourced from the primary document — the
+  second provenance's shared-ancestry exposure is no longer forced. Two qualifications
+  recorded with the finding: (1) the PDF numbers chapters differently from the pinned
+  HTML (Introduction IS Chapter 1 there — RV32I is Chapter 2, RV64I Chapter 4, against
+  the HTML's §1.1/§3.1), so locators need a mapping; (2) the extraction is
+  layout-fragmented (one field per line), so re-sourcing is engineering with its own
+  verification, not a copy-paste. ⛔ The re-sourcing itself is NOT this leaf — the finding
+  and its evidence are recorded; changing where encodings come from is future reviewed
+  work. Corroboration: the cached GitHub-release PDF (`RVI-ISA-PDF-20260911`, a different
+  publication AND revision) extracts too (269 bit-pattern lines) — the finding depends on
+  no one PDF. The PDF is deliberately NOT catalogued in `materials/catalog.sexp` (the
+  corpus model is corpus-root-based, no network-origin corpus kind; that is a
+  `MODEL-METHOD` decision) — its identity is recorded in the chapter and the verification
+  log, its cache untracked. The chapter (`docs/models/rv64i-lab-v0/src/gaps.md`) covers,
+  prose-first per the teaching mandate: the no-encodings gap and what it forced (the
+  second provenance, the parse-and-refuse assembler discipline), the PDF investigation
+  with every command and output, the gaps the specification is SUPPOSED to leave (the
+  EEI policy choices; a platform), and the gap the references leave (agreement is not
+  proof). The gate was NOT extended — the chapter is authored prose with no generated
+  content, so MATERIALS-BILL's surface is unchanged (26 doctrines); `materials.md`'s
+  open-question sentence now points at the answered finding.
+  Lessons: `promotion: declined (the chapter restates what the investigation measured;
+  the measurements ARE the content)`.
 
 - ID: `MODEL-BOOKS.3` — **the methodology: from document to model**
   Status: `pending`
@@ -260,8 +294,7 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-BOOKS.2` | `pending` | the honest counterpart to the bill, and it carries a real investigation that may change where encodings come from (the structure and the bill landed at `.1` — 15 materials, generated and gated) |
-| 2 | `MODEL-BOOKS.3` | `pending` | the methodology, once the materials it operates on are documented |
+| 1 | `MODEL-BOOKS.3` | `pending` | the methodology, once the materials it operates on are documented (the bill landed at `.1`, the gaps chapter — with the PDF investigation answered YES — at `.2`) |
 
 (Leaves `.7` — the assembler annex — and `.8` — the step-by-step build walk — land out of
 order on director requests; the per-unit book sequence above is unchanged.)
@@ -280,9 +313,15 @@ order on director requests; the per-unit book sequence above is unchanged.)
 
 ## Open Questions
 
-- Does the specification's **PDF** rendering contain the instruction-format tables as text? Owner:
-  `MODEL-BOOKS.2`. It decides whether encodings can be re-sourced from the primary document, which
-  would materially improve the independence position recorded in `references.toml`.
+- ~~Does the specification's **PDF** rendering contain the instruction-format tables as
+  text?~~ **ANSWERED `2026-09-29` (leaf `.2`): YES** — the pinned publication's own PDF at
+  the same version segment carries the tables as selectable text (232 census-pattern lines
+  vs 0 in the pinned HTML; `pdftotext` 4.06; the fetch and examination commands are in the
+  leaf's checklist). Encodings CAN be re-sourced from the primary document; the two
+  qualifications (the PDF's different chapter numbering; the layout-fragmented extraction)
+  are recorded in the gaps chapter. The re-sourcing itself is future reviewed work, not
+  done. What remains open from the original question is the *decision* whether to re-source
+  (owner: `MODEL-METHOD.3`'s reconciliation lane, when scheduled).
 - Should a DSP model book differ in structure? Deferred until `P3-BREADTH` selects a real DSP
   target; the structure here is built to be repeated, and a second model is what will test that.
 
@@ -362,6 +401,69 @@ order on director requests; the per-unit book sequence above is unchanged.)
   mirrors, `doctrine/readme_routes.tsv`, `doctrine/fact_ownership.tsv`,
   `materials/units.sexp`.
 
+## Acceptance Checklist (leaf `MODEL-BOOKS.2`)
+
+- [x] **REPRODUCE / ISSUE** — the open question the tree carried: does the official
+  specification's PDF rendering carry the instruction-format tables as selectable text?
+  If yes, encodings can be re-sourced from the primary document and the encoding
+  provenance's shared-ancestry exposure shrinks. Until measured, the materials bill could
+  only name it as an open investigation.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY the question was open: the pinned artifacts are
+  the HTML renderings, whose format diagrams are images — the encoding content was never
+  in the pinned bytes, so nobody had read the PDF's text layer. WHERE the investigation
+  had to start: which PDF. The pinned publication (docs.riscv.org, `v20260120`) publishes
+  its PDF at the same version segment, linked from the pinned page itself:
+
+  ```
+  $ curl -s https://docs.riscv.org/reference/isa/v20260120/unpriv/rv64.html | grep -ioE 'href="[^"]*\.pdf[^"]*"'
+  href="../_attachments/riscv-unprivileged.pdf"
+  ```
+
+- [x] **FIX** — the chapter `docs/models/rv64i-lab-v0/src/gaps.md` (in the book's
+  SUMMARY.md; the bill's open-question sentence in `materials.md` now points at the
+  answered finding); the investigation run and recorded with its commands (below). The
+  PDF is cached untracked at `target/materials/` (on-volume, gitignored — the
+  `target/sources/`/`target/refs/` standing) and deliberately NOT catalogued
+  (`catalog.sexp`'s corpus model has no network-origin kind — a MODEL-METHOD decision,
+  recorded in the chapter).
+
+- [x] **ADDRESSED (verified)** — fetched and examined with a tool; the answer is YES:
+
+  ```
+  $ curl -sS -o target/materials/riscv-unprivileged-v20260120.pdf -w '%{http_code} %{size_download}\n' \
+      https://docs.riscv.org/reference/isa/v20260120/_attachments/riscv-unprivileged.pdf
+  200 4580174
+  $ shasum -a 256 target/materials/riscv-unprivileged-v20260120.pdf
+  06bb3c23074f72060a0ec061a80933af948cae7ceafdcd9d1fe177b05fd150bc
+  $ file target/materials/riscv-unprivileged-v20260120.pdf
+  PDF document, version 1.4, 696 pages
+  $ grep -m1 'Official Release' target/materials/riscv-unprivileged-v20260120.txt
+  Version 20260120: Official Release
+  $ grep -cE '[01]{7}' target/sources/riscv-v20260120/{intro,rv32,rv64}.{html,txt}   # the pinned renderings
+  …:0  (all six)
+  $ pdftotext target/materials/riscv-unprivileged-v20260120.pdf target/materials/riscv-unprivileged-v20260120.txt
+  $ grep -cE '[01]{7}' target/materials/riscv-unprivileged-v20260120.txt              # its PDF rendering
+  232
+  $ grep -cE '[01]{7}' <(pdftotext .materials/riscv/riscv-isa-manual-20260911.pdf -)  # corroboration
+  269
+  ```
+
+- [x] **NO REGRESSION** — no gate surface changed (the chapter is authored prose; no
+  generated content, so MATERIALS-BILL was not extended and the doctrine count stays 26):
+
+  ```
+  $ bash scripts/check_materials_bill.sh [--self-test]
+  MATERIALS-BILL: ok (1 unit(s) — …) ; self-test 7 pass / 0 fail
+  $ mdbook build docs/models/rv64i-lab-v0 && make book    # both render
+  $ make gate
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten; 4/8), `LIVE_STATUS.md`
+  (MODEL-BOOKS 4/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.3`),
+  this tree (the open question marked answered).
+
 ## Acceptance Checklist (leaf `MODEL-BOOKS.8`)
 
 - [x] **REPRODUCE / ISSUE** — the project book narrates the plan and the working practices;
@@ -419,12 +521,15 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | `2026-09-29` | `MODEL-BOOKS.1` | `scripts/check_materials_bill.sh` (pre-registration RED) | rc=1 — `NO BOOK rv64i-lab-v0` naming the stale `units.sexp` book path against the real corpus; then a DRIFT row when the generator's own edit invalidated its fingerprints; GREEN after the registry repair and regeneration |
 | `2026-09-29` | `MODEL-BOOKS.1` | authoring RED moments (self-test) | the gate's first unit enumeration read top-level `(unit …)` forms as children of a nonexistent container ("registry empty" on a non-empty registry); the fixture's `cp -R` nested on re-run, making one arm fail for the wrong reason — both fixed, self-test 7/0 |
 | `2026-09-29` | `MODEL-BOOKS.1` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate` | the model book renders (15 materials, every section with its does-not-supply); the project book renders; 26 doctrines green (DERIVED-COUNTS re-derives 26 / 280 arms; README-ROUTING-CLOSURE 32 destinations) |
+| `2026-09-29` | `MODEL-BOOKS.2` | the PDF investigation (fetch + `pdftotext`, exact commands in the leaf's checklist) | the pinned publication's PDF at the same version segment (`_attachments/riscv-unprivileged.pdf`, HTTP 200, 4,580,174 B, sha256 `06bb3c23…`, 696 pages, `Version 20260120: Official Release`) carries the format tables as selectable text — 232 `[01]{7}` census lines vs 0 on all six pinned HTML/TXT artifacts; the GitHub-release PDF corroborates (269). Answer recorded: YES, encodings can be re-sourced from the primary document (qualifications: different chapter numbering; layout-fragmented extraction); the re-sourcing itself is future reviewed work |
+| `2026-09-29` | `MODEL-BOOKS.2` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26 — the gate surface unchanged); MATERIALS-BILL ok, self-test 7/0 |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `MODEL-BOOKS.1` | `SEMILITH-MB-0003 (leaf MODEL-BOOKS.1): …` | the per-unit book structure (`docs/models/<unit-id>/`) and the materials bill: 15 materials, tables generated from the pinned dossier by `gen_model_book.py`, every material's does-not-supply stated; MATERIALS-BILL the 26th doctrine (fired RED before registration); registry repairs (units.sexp's stale book path, fact_ownership +4, readme_routes +1 family) |
+| `MODEL-BOOKS.2` | `SEMILITH-MB-0004 (leaf MODEL-BOOKS.2): …` | the gaps chapter, and the PDF investigation ANSWERED YES with a tool: the pinned publication's own PDF (same version segment, 20260120 Official Release) carries the format tables as selectable text (232 census lines vs 0 in the pinned HTML) — encodings can be re-sourced from the primary document; qualifications recorded (chapter numbering differs; extraction is layout-fragmented); re-sourcing is future reviewed work |
 | `MODEL-BOOKS.7` | `SEMILITH-MB-0001 (leaf MODEL-BOOKS.7): …` | the assembler annex in the project book — director request, out of order; the per-unit sequence is unchanged |
 | `MODEL-BOOKS.8` | `SEMILITH-MB-0002 (leaf MODEL-BOOKS.8): …` | the step-by-step build walk — director request, out of order like `.7`; chapters 29 → 30 |
 
@@ -439,6 +544,13 @@ order on director requests; the per-unit book sequence above is unchanged.)
   (`scripts/gen_model_book.py`), every material stating what it does NOT supply, gated by the
   26th doctrine `MATERIALS-BILL`. Registry repairs: `units.sexp`'s `book` field had named a
   project-book page that was never created — it now names `docs/models/rv64i-lab-v0/`.
+- `2026-09-29`: Leaf `.2` done: the gaps chapter (`src/gaps.md`) — what the materials do not
+  contain and what each gap forced — and the PDF investigation answered YES by measurement:
+  the pinned publication's PDF rendering (same `v20260120` segment) carries the
+  instruction-format tables as selectable text, so encodings can be re-sourced from the
+  primary document. The qualifications (the PDF's different chapter numbering; the
+  layout-fragmented extraction) and the reason the PDF is not catalogued yet are recorded
+  in the chapter; the re-sourcing itself is future reviewed work.
 - `2026-09-29`: Leaf `.7` done out of order (director request): the project book gains
   `annex/assembler.md` — how `scripts/riscv_asm.py` turns the pinned encoding tables into guest
   bytes, written to the tree's teaching mandate. Chapters 28 → 29.

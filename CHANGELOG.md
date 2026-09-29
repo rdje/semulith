@@ -1,5 +1,33 @@
 # CHANGELOG.md
 
+## SEMILITH-MB-0004 (leaf MODEL-BOOKS.2) — what the materials do not contain; the PDF investigation answers YES
+
+- The per-unit book gains its gaps chapter (`docs/models/rv64i-lab-v0/src/gaps.md`):
+  the measured no-encodings gap and what it forced (the RISCV-OPCODES second provenance,
+  the parse-and-refuse assembler discipline), the gaps the specification is *supposed* to
+  leave (the EEI policy choices; a platform), and the gap the references leave (agreement
+  is not proof) — prose-first, per the teaching mandate.
+- ⭐ The investigation, done with a tool: the pinned publication (docs.riscv.org,
+  `v20260120`) publishes a PDF rendering at the same version segment
+  (`_attachments/riscv-unprivileged.pdf` — HTTP 200, 4,580,174 B, sha256 `06bb3c23…`,
+  696 pages, `Version 20260120: Official Release`). `pdftotext` measures its text layer
+  carrying the instruction-format tables: **232** lines match the `[01]{7}` census pattern
+  that returns **0** on all six pinned HTML/TXT artifacts; the base-formats figure and the
+  RV32I opcode map extract with bit strings and field names. **Answer: yes — encodings
+  can be re-sourced from the primary document**, so the encoding provenance's
+  shared-ancestry exposure (shared with Spike, not Sail) is no longer forced.
+  Qualifications recorded: the PDF numbers chapters differently from the pinned HTML
+  (Introduction is Chapter 1 there; RV32I Chapter 2 / RV64I Chapter 4 vs §1.1 / §3.1), and
+  the extraction is layout-fragmented — re-sourcing is engineering with its own
+  verification, and is future reviewed work, NOT this leaf.
+- The PDF is cached untracked at `target/materials/` and deliberately not catalogued
+  (the corpus model has no network-origin kind — a MODEL-METHOD decision, recorded in the
+  chapter). The cached GitHub-release PDF corroborates (269 census lines) — the finding
+  depends on no one PDF.
+- No gate surface changed (the chapter is authored prose; MATERIALS-BILL untouched, 26
+  doctrines). `mdbook build docs/models/rv64i-lab-v0` and `make book` render; `make gate`
+  all green.
+
 ## SEMILITH-MB-0003 (leaf MODEL-BOOKS.1) — the per-unit book structure and the materials bill
 
 - `docs/models/<unit-id>/` established as the per-unit mdBook — repeatable for any unit
@@ -450,21 +478,4 @@ through the encoding read path — every check the unmodified one-level tools al
 Two ISA-carrying parts refuse with the multiprocessor boundary named (the address-space operator
 stays earned-from-a-real-case). **`MODEL-COMPOSE` closes at 6/6** — composition is now a verdict,
 a discharge, and a materializable unit.
-
-## SEMILITH-MC-0042 (leaf MODEL-COMPOSE.6) — a silent override is refused, and the execution authority gets its gate
-
-The hard axis has its first mechanical form. `schema/semantics.sexp` gains `(refines (insn "name"))` —
-zero kernel lines — and `check_semantics.py --compose` decides the rule over a unit's fragments in
-composition order: an instruction whose semantics appear in more than one file is an override,
-legal only when the extending file declares the refinement. The acceptance fired RED on a
-real-shaped composition (a fake extension redefining `add` → `SILENT REDEFINITION`,
-rc=1); a declared refinement is accepted and reported; both lies (a declaration naming nothing the
-file defines, refining nothing an earlier file defines) are refused by name.
-
-⭐ The third orphan of the family `MODEL-COMPOSE.4` closed for encodings: `check_semantics.py`
-and `check_citations.py` were invoked by NOTHING — the semantics corpus, which `ROADMAP.md`
-names the execution authority, was healthy only by hand. `SEMANTICS` (16th project doctrine) now
-runs the per-fragment checks and the 52/52 citation resolution in every gate, with a NAMED SKIP —
-never a green lie — when the offline cache cannot judge. The IALIGN-class (global-behaviour)
-refinement stays named-and-deferred: per-instruction is the granularity the corpus writes.
 

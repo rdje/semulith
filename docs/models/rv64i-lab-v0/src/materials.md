@@ -104,10 +104,12 @@ project's guest bytes as intended, that is a genuinely *independent* confirmatio
 encoding; when Spike does, it is not — it is the same table answering twice. The project
 initially recorded "our encodings are confirmed by the references" without this
 distinction; the independence inventory in `references.sexp` is the correction, and it is
-why the differential's encoding leg rests on Sail alone. Whether the official
-specification's **PDF** rendering carries the format tables as selectable text — which
-would let encodings be re-sourced from the primary document and shrink this problem — is
-a real open investigation, owned by `MODEL-BOOKS.2`.
+why the differential's encoding leg rests on Sail alone. The follow-up question — does the
+official specification's **PDF** rendering carry the format tables as selectable text,
+which would let encodings be re-sourced from the primary document — was investigated with
+a tool at `MODEL-BOOKS.2` and answered **yes** (same publication, same revision; the
+evidence and its two qualifications are in the gaps chapter). The re-sourcing itself is
+future, reviewed work, not done today.
 
 **Does not supply:** semantics. These tables say which bits mean *which instruction*,
 never what the instruction *does* — no expected value, no trap behavior, no boundary rule

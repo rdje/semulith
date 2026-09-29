@@ -63,7 +63,7 @@ on the same commit. One commit per completed leaf.
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `done` | — (6/6 leaves complete; a composition is a verdict, a discharge, and a materializable unit) | repo-local |
 | [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `done` | — (13/13 leaves complete; the method, the census, the acquisitions, the coding gate) | repo-local |
-| [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.2` — what the materials do not contain (3 of 8 leaves done; the per-unit book structure and the generated, gated materials bill landed) | repo-local |
+| [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `active` | `.3` — the methodology: from document to model (4 of 8 leaves done; the per-unit book's structure, materials bill and gaps chapter landed — the PDF carries the format tables as text, measured) | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `active` | `.2` — full CI at the push boundary (1 of 3 leaves done) | repo-local |
 | [`DOC-SHARDING`](tasks/DOC-SHARDING.md) | `done` | — (2/2 leaves complete; both append heads shard into `docs/changelog/` under one frozen manifest) | repo-local |
