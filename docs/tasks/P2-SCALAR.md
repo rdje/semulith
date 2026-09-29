@@ -309,7 +309,9 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   gates enforce)`.
 
 - ID: `P2-SCALAR.5` — **external and directed campaigns** — `G-REGRESSION`
-  Status: `pending`
+  Status: `blocked` (`2026-09-29` — two external inputs, both named in `Blockers`: the ACT4
+  material is not in the corpus, and the C-toolchain guest awaits the director's routing answer
+  recorded in `P1-LAB.12`; neither is decidable in-tree)
   Goal: matched reference comparisons, configured external tests, directed sequence tests, and compiled freestanding programs.
   Acceptance: ACT4 results are recorded as **external tests with Sail-derived expected values**, never as a second independent semantics (`EVD-04`).
 
@@ -337,7 +339,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.5` | `pending` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer — and own the C-toolchain guest that `G1` criterion 6 is routed to |
+| 1 | `P2-SCALAR.5` | `blocked` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer — but its two material inputs are external: the ACT4 suite (`riscv-arch-test`) is in no materials list, and the C-toolchain guest awaits the director's routing answer (`P1-LAB.12`). Both named in `Blockers`; the session pivoted to `MODEL-BOOKS.1` with the tree clean |
 
 ## Decisions
 
@@ -407,6 +409,19 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 - ~~`P1-LAB` gate `G1`.~~ G1 was RUN `2026-09-29` (verdict `incomplete`): criteria 1–5 met,
   criterion 6 (the C-toolchain guest) routed INTO this tree's `.5`. Scope work (`.1`–`.4`)
   does not depend on criterion 6.
+- **`2026-09-29` (blocks `.5`) — the ACT4 external-test material is not in the corpus.**
+  The leaf's acceptance requires ACT4 results (`EVIDENCE_AND_GATES.md` §72 names
+  `riscv-arch-test`, ACT4, Sail-derived expectations), but no `riscv-arch-test` entry exists
+  in `materials/catalog.sexp` (36 primary sources, corpus `3c45e81`) — verified by grep
+  `2026-09-29`. Acquiring a new primary-source family is a catalogue/provenance act
+  (license review, `docs/provenance/` disposition, the chipdoc proposal feed), not a
+  design detail the leaf can absorb. The measured-first doctrine also cannot run without
+  the suite on disk.
+- **`2026-09-29` (blocks `.5`'s C-guest strand) — the director's routing answer is still
+  open** (`P1-LAB.12` ROUTING EVIDENCE): is the C guest allowed to land in P2, or must G1
+  read `passed` first? Compounding it: no RISC-V C toolchain is installed on this machine
+  (`riscv64-unknown-elf-gcc` absent; only host `clang`). The strand cannot start without
+  the answer AND a toolchain decision.
 
 ## Defects found in flight (owned here per the defect-ownership rule)
 
