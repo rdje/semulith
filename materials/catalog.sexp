@@ -34,7 +34,7 @@
     (id "chipdoc")
     (title "chipdoc — curated documentation for digital components, chips, interfaces and protocols")
     (kind git-repository)
-    (revision "f33d330")
+    (revision "92a73b6")
     (env-var "SEMULITH_CHIPDOC_ROOT")
     (derivation "Re-derived 2026-09-14 by a PATH SWEEP, not a sample:
                  find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
@@ -45,8 +45,9 @@
     (note "Curated, in its own words, to expose enough behaviour to reconstruct implementable
            intent AND to build software emulators that run real C/C++/Rust software — which is
            this project's north star stated by someone else, independently. 5313 files, 257 PDFs
-           (re-derived 2026-09-29 by the same path sweep at the f33d330 re-pin; 5309/255 at
-           73711d6; 3684/196 at the 3c45e81 baseline).
+           (re-derived 2026-09-30 by the same path sweep at the 92a73b6 re-pin — unchanged from
+           f33d330, whose two-commit delta touched scripts and channel files, no documents;
+           5309/255 at 73711d6; 3684/196 at the 3c45e81 baseline).
            Terms are recorded per document family in that repository's own README files, so a
            material's licence below is read from the DOCUMENT, not assumed from the corpus."))
 
@@ -64,7 +65,14 @@
              worse position reached by acquiring more material.")
     (consequence "they may be catalogued LATER as additional reference materials, under their own
                   ids, never as `RVI-RV32I` or `RVI-RV64I`. Acquiring a document and repointing a
-                  pin are two different decisions and only the first is cheap."))
+                  pin are two different decisions and only the first is cheap.")
+    (status resolved)
+    (resolved-on "2026-09-14")
+    (resolved-by "DECISION, recorded at filing (MODEL-METHOD.12): DECLINED as a substitute — the
+                  result field above is the disposition, not an open question. Chipdoc's poller
+                  read this record as open on 2026-09-30 because it carried no status; chipdoc
+                  mirrored it resolved (declined as a pin substitute) under the same reasoning,
+                  and this status makes the catalogue say so itself."))
 
   (material
     (id "RVI-ISA-PDF-20260911")
@@ -201,7 +209,13 @@
     (result "no match; Volumes 2, 3 and 4 are present")
     (consequence "Volume 1 carries the basic execution environment, the data types and the
                   register overview — the architectural STATE a model declares first. An x86 unit
-                  could not state its state from this corpus alone."))
+                  could not state its state from this corpus alone.")
+    (status resolved)
+    (resolved-on "2026-09-14")
+    (resolved-by "X86-SDM-VOL1-253665 catalogued through the corpus seam (MODEL-METHOD.13) —
+                  the material's own note records the closure. Chipdoc's poller read this record
+                  as open on 2026-09-30 because it carried no status; chipdoc mirrored it resolved
+                  (the volume is held), and this status makes the catalogue say so itself."))
 
   (gap
     (id "GAP-RISCV-V20260120-UNPRIV-PDF")
@@ -220,12 +234,16 @@
     (consequence "the digest-pinned local copy was the MODEL-METHOD.14 probe's input for a few
                   hours; the corpus seam now owns the bytes (RVI-UNPRIV-PDF-V20260120 and
                   RVI-PRIV-PDF-V20260120, both reference-only with the numbering trap
-                  documented). ⛔ THE POLLED CHANNEL COULD NOT SEE THIS RECORD:
-                  chipdoc's poller reads only top-level (gap …) forms and this catalogue nests
-                  its gaps inside the (materials …) form — measured 2026-09-29
+                  documented). ⛔ THE POLLED CHANNEL COULD NOT SEE THIS RECORD when it was
+                  filed: chipdoc's poller then read only top-level (gap …) forms and this
+                  catalogue nests its gaps inside the (materials …) form — measured 2026-09-29
                   (poll_semulith_gaps.py --semulith-root . --json → semulith_gaps_open: 0).
-                  The request travelled operator-relayed; the deafness is surfaced for a
-                  chipdoc-side fix.")
+                  The request travelled operator-relayed; the deafness was surfaced for a
+                  chipdoc-side fix. FIXED chipdoc-side 2026-09-30 (corpus `6bfabf2`): the
+                  poller descends into the wrapper and reads the nested records — re-measured
+                  here at the 92a73b6 re-pin (same probe → semulith_gaps_open: 2, the two
+                  then-status-less records, unmirrored: []). The channel is now TWO-WAY: a
+                  gap filed in this catalogue surfaces there without an operator relay.")
     (status resolved)
     (resolved-on "2026-09-29")
     (resolved-by "chipdoc mirrored both v20260120 PDFs at

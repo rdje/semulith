@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-MM-0059 (leaf MODEL-METHOD.17) — the channel answers: the poller fix measured, the heard gaps reconciled
+
+- chipdoc fixed the poller deafness `.16` surfaced (corpus `6bfabf2`): the poller descends
+  into the `(materials …)` wrapper and READS this catalogue's nested gaps. Measured here,
+  not accepted: `semulith_gaps_open: 2` pre-reconcile — the signal `.16` could not get.
+- The two heard records were already dispositioned here: `GAP-INTEL-SDM-VOL1` (closed by
+  `.13`'s catalogued material) and `GAP-RISCV-JAN-2026-PDF` (closed by `.12`'s recorded
+  decline decision). Both now carry `(status resolved)` with evidence; post-reconcile the
+  poller reports 0 open, 0 unmirrored.
+- The v20260120 gap's deafness claim updated to the fixed channel; corpus re-pinned
+  `f33d330` → `92a73b6` (5313 files / 257 PDFs re-derived by the same path sweep, unchanged);
+  the channel snapshot refreshed (feed 68/14; REQ-008 at `2026-09-29`).
+- The channel is now TWO-WAY: a new gap filed in `materials/catalog.sexp` surfaces to
+  chipdoc without an operator relay.
+- `make gate` all green. CHANGELOG.md crossed its 64 KiB ceiling with this entry and was
+  sharded (the DOC-SHARDING machinery, completeness exact).
+
 ## SEMULITH-MM-0058 (leaf MODEL-METHOD.16) — the v20260120 PDFs: gap filed, answered same-day, adopted through the corpus seam
 
 - The director asked for the v20260120 unprivileged PDF twice. Corpus sweep: absent (only
@@ -537,11 +554,4 @@
 - The generator re-derives every check it emits through — schema validation per input, the SEMANTICS binding rule (split `imm12`/`bimm12`, `shamt`), the MODEL-COMPOSE.6 refinement rule, completeness, fixed-field sanity — and refuses by name: another unit, an unsupported ilen, an instruction without semantics, an operand the encoding does not provide, a missing semantics document, a non-literal width. FENCE's `fm`/`pred`/`succ` stay declared-but-unfielded with a test ratchet naming the three decorations.
 - Verification: 10 new definition suites green; `make check` 5 suites / 53 tests / 0 warnings; wasm build green; `make gate` green with 22 doctrines (245 arms). TOOLBOX gains the rows `.3` owed (`gen_state.py`/`check_state_gen.sh` were missing from the tool table).
 - Lockstep: MEMORY/LIVE_STATUS/TASK_TREE/book P1 + doctrines chapters and this tree; frontier moves to `.7` (graph and report checker).
-
-## SEMILITH-PL-0005 (leaf P1-LAB.5) — four typed outcome families, SEM-01 made structural
-
-- `semulith-core::outcome`: `TargetEvent` (`Exception` with the unprivileged cause vocabulary, each cause named by its rule; `RequestedTrap` for ECALL/EBREAK — delivery is a data event, not a stop command), `Advance` (`Completed`, `Stop{reason}` — no waiting/partial advance, platform facts recorded in the docs), `ModelError` (`Unimplemented`/`InvalidDescription`/`InconsistentState`/`ContractViolation` — `.4`'s boundary-local violation re-homed), `UndefinedCase` (`ReservedDecode` — REQ-D-RESERVED-DECODE's case carried as its own outcome, never auto-converted to an exception). `StepOutcome` is the step-level sum `.8` produces and the harness matches.
-- The acceptance proven by a stub stepper (test code, not production semantics): `a_delivered_exception_lets_execution_continue` (harness records the `Breakpoint` trap, the next instruction still runs, pc advances past all three); `an_unimplemented_instruction_is_not_an_illegal_instruction_trap` (the `Failed` arm has no typed expression that reaches an `IllegalInstruction` `Exception`). Plus family distinctness, the `ContractViolation` re-home round trip, and `UndefinedCase` ≠ `Exception`.
-- Verification: 5 new suites green; `make check` 5 suites / 43 tests / 0 warnings; wasm build green; `make gate` green.
-- Lockstep: MEMORY/LIVE_STATUS/TASK_TREE/book P1 chapter and this tree; frontier moves to `.6` (canonical definition skeleton).
 

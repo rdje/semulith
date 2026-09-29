@@ -7,7 +7,8 @@
   pinned specification's own PDF carries the instruction-format tables as selectable text,
   so the encodings' second provenance may be replaceable by the primary document; the
   evaluation is director-scheduled. `.15`+`.16` — the feed consumed, the v20260120 PDFs
-  adopted — landed `2026-09-29`/`30` behind it)
+  adopted — landed `2026-09-29`/`30` behind it; `.17` — the surfaced poller deafness came
+  back FIXED and the channel two-way — `2026-09-30`)
 - Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
@@ -261,12 +262,55 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
   materials bill; if decline, the reason is measured, not assumed.
   Not this leaf: changing any encoding data. This leaf is the evaluation only.
 
+- ID: `MODEL-METHOD.17` — **the channel answers: the poller fix heard the nested gaps, and the records reconcile**
+  Status: `active`
+  Origin (chipdoc, relayed by the director, `2026-09-30`): the poller deafness `.16` measured
+  and surfaced is FIXED chipdoc-side (corpus `6bfabf2` — "Fix poller deafness to semulith
+  catalogue; mirror satisfied gaps; correct REQ-008 date"): the poller descends into the
+  `(materials …)` wrapper and now READS this catalogue's nested gaps. It found the two
+  status-less records — `GAP-INTEL-SDM-VOL1` and `GAP-RISCV-JAN-2026-PDF` — both already
+  satisfied on chipdoc's side (SDM Vol 1 held; the January GitHub PDFs declined as pin
+  substitutes), so chipdoc mirrored them as resolved and reports none unmirrored. REQ-008's
+  ledger entry now carries the true fulfilment date `2026-09-29`. The consequence chipdoc
+  flags: **the channel is now two-way** — a genuinely new gap filed in this catalogue
+  surfaces there without an operator relay.
+  Goal: make both sides read true. Verify the fix by measurement here (the same probe `.16`
+  ran, now reading the nested records — the discrimination `.16`'s scratch probe had to
+  synthesize); reconcile the two gap records so the catalogue states what is already true
+  (one closed by a catalogued material in `.13`, one closed by a recorded decision at filing
+  in `.12`); update the gap record that carries the deafness claim so a live catalogue does
+  not assert a dead channel; re-pin the corpus (`f33d330` → `92a73b6`) with the counts
+  re-derived by the same path sweep; refresh the untracked channel snapshot.
+  Acceptance: the fixed poller, run here against the real catalogue, reports the nested gaps
+  are READ (a nonzero open count pre-reconcile — the signal `.16` could not get); after the
+  reconcile it reports 0 open and 0 unmirrored; both reconciled records carry
+  `(status resolved)` with their evidence; the re-pin's file/PDF counts are re-derived, not
+  carried; `materials.py --verify` and the RECORD-SCHEMA gate stay green; the snapshot holds
+  the post-fix ledger (REQ-008 at `2026-09-29`).
+  Not this leaf: starting `.14` (director-scheduled); filing any new gap (none is open to
+  file — the feed's own proposals census is unchanged); any write to chipdoc.
+  Result: met, `2026-09-30`. The fixed poller, run here against the real catalogue, reported
+  `semulith_gaps_open: 2` pre-reconcile — the nested records are READ (pre-fix the same probe
+  said 0, and `.16` needed a scratch probe to prove the deafness discriminated at all; the
+  channel now exhibits the discrimination itself). Both heard records reconciled:
+  `GAP-INTEL-SDM-VOL1` → resolved `2026-09-14` by `X86-SDM-VOL1-253665` (catalogued `.13`);
+  `GAP-RISCV-JAN-2026-PDF` → resolved `2026-09-14` by the decision recorded at filing
+  (`.12`). Post-reconcile: 0 open, 0 unmirrored, rc 0. The deafness claim in
+  `GAP-RISCV-V20260120-UNPRIV-PDF` now records the fix (corpus `6bfabf2`). Corpus re-pinned
+  `f33d330` → `92a73b6` — 5313 files / 257 PDFs re-derived by the same working-tree path
+  sweep, unchanged (the two-commit delta touches scripts and channel files, no documents);
+  the sweep reproduced the recorded `f33d330` figure exactly before it was trusted for the
+  new pin. Snapshot refreshed (feed 68 materials / 14 gaps at the new pin; the delta is
+  exactly chipdoc's two resolved-gap mirror records; REQ-008 carries `2026-09-29`).
+  RECORD-SCHEMA green; `materials.py` 45 verified / 0 unresolved, self-test 20/0.
+  `promotion: declined (the two-way channel is recorded where the next surveyor meets it — the catalogue's own gap records and MEMORY.md's resume pointer).`
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation starts only when the director schedules it — and `.16` now hands it the probe input as a first-class material plus the three measured numberings |
-| — | — | — | `.15`+`.16` done `2026-09-29`/`30` (the feed consumed; the v20260120 PDFs adopted); `.1`–`.13` done `2026-09-27`, bodies archived |
+| — | — | — | `.17` done `2026-09-30` (the poller fix measured, the gaps reconciled, corpus `92a73b6`); `.15`+`.16` done `2026-09-29`/`30` (the feed consumed; the v20260120 PDFs adopted); `.1`–`.13` done `2026-09-27`, bodies archived |
 
 ## Decisions
 
@@ -303,6 +347,12 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-30` | `MODEL-METHOD.17` | the fixed poller against the real catalogue, pre-reconcile | `semulith_gaps_open: 2`, `unmirrored: []` — the nested records are READ (pre-fix: 0, and a scratch probe was needed to discriminate at all) |
+| `2026-09-30` | `MODEL-METHOD.17` | the same probe, post-reconcile | `semulith_gaps_open: 0`, `unmirrored: []`, rc 0 — both sides read true |
+| `2026-09-30` | `MODEL-METHOD.17` | corpus re-derivation at the re-pin | 5313 files / 257 PDFs at `92a73b6` (working-tree path sweep) — identical to the recorded `f33d330` figure the sweep first reproduced; git delta `f33d330..92a73b6`: 6 files, no documents |
+| `2026-09-30` | `MODEL-METHOD.17` | feed census at the new pin (corpus diff, not recall) | 68 materials / 14 gaps; the `f33d330..92a73b6` delta is exactly chipdoc's two resolved-gap mirror records (`GAP-INTEL-SDM-VOL1`, `GAP-RISCV-JAN-2026-PDF`) |
+| `2026-09-30` | `MODEL-METHOD.17` | `materials.py --verify` + RECORD-SCHEMA + self-test | 45 verified / 0 unresolved / 0 drift; gate ok (7 record files); self-test 20 pass / 0 fail |
+| `2026-09-30` | `MODEL-METHOD.17` | the whole gate | all doctrines green |
 | `2026-09-29` | `MODEL-METHOD.16` | corpus-wide sweep for the PDF (`find -iname '*20260120*' -o -iname '*unprivileged*'`) | exactly one hit — the 20260911 intermediate; the pinned snapshot holds 72 HTML pages and no PDF |
 | `2026-09-29` | `MODEL-METHOD.16` | scratch bytes vs the `MODEL-BOOKS.2` measurement | sha256 EQUAL (`06bb3c23…d150bc`, 4,580,174 B) — the .14 probe input survived in scratch, verified |
 | `2026-09-29` | `MODEL-METHOD.16` | the polled channel (`poll_semulith_gaps.py --json`, real catalogue + scratch probe) | `semulith_gaps_open: 0` — top-level scan only; a flat gap is seen, a nested one is not |
@@ -387,6 +437,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.17` | `SEMULITH-MM-0059 (leaf MODEL-METHOD.17): the channel answers — the poller fix measured, the heard gaps reconciled` | corpus `92a73b6`; the channel is two-way; 45 materials unchanged |
 | `MODEL-METHOD.16` | `SEMULITH-MM-0058 (leaf MODEL-METHOD.16): the v20260120 PDFs — gap filed, answered same-day, adopted through the corpus seam` | REQ-008 verified four legs; 45 materials; corpus `f33d330`; the poller deafness surfaced |
 | `MODEL-METHOD.15` | `SEMULITH-MM-0057 (leaf MODEL-METHOD.15): the chipdoc feed arrives — the flagged set, catalogued and cached` | corpus re-pinned `73711d6`; 43 materials; `P2-SCALAR.5` blocker (a) answered |
 | `MODEL-METHOD.6` | `SEMILITH-MM-0050 (leaf MODEL-METHOD.6): …` | no coding without the source of truth, mechanized; the tree closes 13/13 |
@@ -404,6 +455,14 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 | `MODEL-METHOD.1` | `SEMULITH-MM-0033 (leaf MODEL-METHOD.1): answer the narrower-instrument sweep with a wider instrument` | 1 further instance found and fixed; the pattern gated |
 
 ## Changelog
+
+- `2026-09-30`: `MODEL-METHOD.17` — chipdoc fixed the poller deafness `.16` surfaced (corpus
+  `6bfabf2`); the fix measured here (the nested gap records are read: `semulith_gaps_open: 2`
+  pre-reconcile — the signal `.16` could not get), the two heard records reconciled to
+  `(status resolved)` with their evidence, the deafness claim in the v20260120 gap updated to
+  the fixed channel, corpus re-pinned `92a73b6` (5313/257 re-derived, unchanged), the channel
+  snapshot refreshed. **The channel is now two-way** — a gap filed in the catalogue surfaces
+  to chipdoc without an operator relay.
 
 - `2026-09-14`: Created. The project could state *what must be known* to model a processor (24
   catalogue categories) but not *which document supplies each*, nor which are supplied by nothing.
