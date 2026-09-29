@@ -46,5 +46,6 @@
 # Annexes
 
 - [How the tracked assembler works](annex/assembler.md)
+- [Building the first CPU model, step by step](annex/building-first-model.md)
 
 [Glossary](glossary.md)

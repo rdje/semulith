@@ -155,6 +155,35 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   `DERIVED-COUNTS`; `LIVE_STATUS.md` restates it).
   Lessons: `promotion: declined (no new lesson — the chapter restates mechanisms the code and the gates already carry; that is its purpose)`.
 
+- ID: `MODEL-BOOKS.8` — **annex: building the first CPU model, step by step**
+  Status: `done` (`2026-09-29`, director request, out of order like `.7`)
+  Goal: a teaching chapter in the PROJECT book (`docs/book/`) that walks the reader through
+  creating `rv64i-lab-v0` end to end — from choosing the target to the honest gate
+  verdict — every step cleanly explained: what you do, why that order, what actually went
+  wrong, and the command that shows it. The dual mandate
+  (`decision_dual-mandate-production-and-teaching`) applied to the WHOLE pipeline, where
+  `.7` applied it to one tool: written so a reader could build their own model from it,
+  not just agree with the result.
+  Acceptance: `make book` renders it; every step names the real artifacts and a re-runnable
+  command; the mistakes stay in (the matched profile that matched only an instruction set,
+  the truncated trace that read as agreement, the dossier defect the spec inverted);
+  prose dominates; numbers are re-derived or gated, never retyped where a gate can count.
+  Placement decision: the project book's annex, beside `.7`'s — the per-unit book
+  structure is `.1` (unbuilt); when it lands, the model book REFERENCES this chapter.
+  Result: met, `2026-09-29`. Fourteen steps in the order the work actually happened —
+  target, materials, dossier, requirements, state census, definition, generation,
+  interpreter, guests, laboratory, references, comparison, detector, campaigns, gate —
+  each with what you do, why that order, what went wrong for real, and a re-runnable
+  command. The mistakes stay in (the advancing-`mtime` matched profile, the
+  truncated-trace agreement, the inverted FENCE dossier defect, the gate-caught authoring
+  constants). Every printed command was executed against the real repository before the
+  chapter shipped: the scope census counts 52, the `zext-addi` demo catches the mutant
+  (rc=1); two draft commands were caught wrong in review (a grep pattern matching
+  nothing in `encoding.sexp`; a mutant name that does not exist) and corrected against
+  the code. Book chapters 29 → 30 (re-derived by `DERIVED-COUNTS`; `LIVE_STATUS.md`
+  restates it).
+  Lessons: `promotion: declined (the chapter restates what the gates and the trees already carry; that is its purpose)`.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -163,8 +192,8 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 | 2 | `MODEL-BOOKS.2` | `pending` | the honest counterpart to the bill, and it carries a real investigation that may change where encodings come from |
 | 3 | `MODEL-BOOKS.3` | `pending` | the methodology, once the materials it operates on are documented |
 
-(Leaf `.7` — the assembler annex — landed out of order on a director request; the per-unit
-book sequence above is unchanged.)
+(Leaves `.7` — the assembler annex — and `.8` — the step-by-step build walk — land out of
+order on director requests; the per-unit book sequence above is unchanged.)
 
 ## Decisions
 
@@ -201,12 +230,60 @@ book sequence above is unchanged.)
 - [ ] **FIX** — pending
 - [ ] **LOCKSTEP** — pending
 
+## Acceptance Checklist (leaf `MODEL-BOOKS.8`)
+
+- [x] **REPRODUCE / ISSUE** — the project book narrates the plan and the working practices;
+  no chapter walks the actual creation of the first model end to end. The gap was measured
+  when this tree was created ("a methodology that lives only in nine task-tree leaves is a
+  methodology nobody can follow end to end"), and the director named it again today.
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY: the build story exists, but scattered across
+  thirteen task-tree leaves, the dossier, and the gates — each true, none readable as a
+  route. WHERE, measured: the project book had no such chapter before this leaf, and has
+  it now:
+
+  ```
+  $ git show HEAD:docs/book/src/SUMMARY.md | grep -c building-first-model || true
+  0
+  $ grep -c building-first-model docs/book/src/SUMMARY.md
+  1
+  ```
+- [x] **FIX** — `docs/book/src/annex/building-first-model.md`: fourteen steps in the
+  order the work happened, each what/why/wrong/command; placement beside `.7`'s annex per
+  that leaf's placement precedent.
+- [x] **ADDRESSED (verified)** — every command the chapter prints was run against the real
+  repository:
+
+  ```
+  $ grep -oE '\((base|rv64)_[a-z_0-9]+ "[A-Z]+"\)' profiles/rv64i-lab-v0/profile.sexp | wc -l
+  52
+  $ cargo run -p semulith-cli -- demo --guest=smoke-arith --mutate=zext-addi
+  verdict: EXPECTATIONS BROKEN — the detector's answer:
+    FIRST DIVERGENCE at aligned step 2: … clean observes x3 = 0xffffffffffffffff, … (rc=1)
+  $ make book   # renders, 30 chapters
+  ```
+
+  Two draft commands were caught wrong by this same discipline (a grep pattern matching
+  nothing in `encoding.sexp`; a mutant name that does not exist) and corrected before
+  commit.
+- [x] **NO REGRESSION** — the guard set re-run, green:
+
+  ```
+  $ make gate
+  === all doctrines green ===          (DERIVED-COUNTS re-derives the chapter count)
+  $ make book
+  INFO HTML book written to docs/book/book
+  ```
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (2/8), `LIVE_STATUS.md` (30 chapters;
+  MODEL-BOOKS 2/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/book/src/SUMMARY.md`, this
+  tree.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 | `2026-09-14` | `MODEL-BOOKS.1` | `pending` | `pending` |
 | `2026-09-29` | `MODEL-BOOKS.7` | `make book`; `make gate` | renders; all doctrines green |
+| `2026-09-29` | `MODEL-BOOKS.8` | the chapter's printed commands executed; `make book`; `make gate` | every command behaves as written (52-form census; the zext-addi mutant caught, rc=1); renders; all doctrines green |
 
 ## Commit Log
 
@@ -214,6 +291,7 @@ book sequence above is unchanged.)
 | --- | --- | --- |
 | `MODEL-BOOKS.1` | `pending` | `pending` |
 | `MODEL-BOOKS.7` | `SEMILITH-MB-0001 (leaf MODEL-BOOKS.7): …` | the assembler annex in the project book — director request, out of order; the per-unit sequence is unchanged |
+| `MODEL-BOOKS.8` | `SEMILITH-MB-0002 (leaf MODEL-BOOKS.8): …` | the step-by-step build walk — director request, out of order like `.7`; chapters 29 → 30 |
 
 ## Changelog
 
@@ -223,3 +301,6 @@ book sequence above is unchanged.)
 - `2026-09-29`: Leaf `.7` done out of order (director request): the project book gains
   `annex/assembler.md` — how `scripts/riscv_asm.py` turns the pinned encoding tables into guest
   bytes, written to the tree's teaching mandate. Chapters 28 → 29.
+- `2026-09-29`: Leaf `.8` done out of order (director request): the project book gains
+  `annex/building-first-model.md` — the whole pipeline that built `rv64i-lab-v0`, fourteen
+  steps, the mistakes kept in, every command executed before shipping. Chapters 29 → 30.

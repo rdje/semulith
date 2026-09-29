@@ -1,5 +1,39 @@
 # CHANGELOG.md
 
+## SEMILITH-MB-0002 (leaf MODEL-BOOKS.8) — annex: building the first CPU model, step by step
+
+- Director request: the project book gains `annex/building-first-model.md`, a teaching
+  chapter that walks the creation of `rv64i-lab-v0` end to end — choose a finishable
+  target, pin the materials (and measure what they lack: no encodings), the dossier with
+  its decision authorities, predeclared requirements, the hidden-state census, the one
+  canonical definition, generation over hand-editing, the data-evaluating interpreter,
+  before-any-run expectations, the one observation vocabulary, whole-platform matching,
+  honest comparison, the detector's own proof, the three coverage campaigns, and the
+  honest gate — each step with what you do, why that order, what went wrong for real,
+  and a re-runnable command.
+- The mistakes stay in, per the tree's teaching mandate: the matched profile that matched
+  only an instruction set (the advancing `mtime`), the truncated trace that read as
+  agreement, the inverted FENCE dossier defect, the authoring constants the gate caught.
+- Every command the chapter prints was executed against the real repository (the
+  `zext-addi` mutant is caught, rc=1; the scope census counts 52); chapters 29 → 30
+  (re-derived by DERIVED-COUNTS; LIVE_STATUS restates).
+- Placement follows `.7`: the project book's annex — the per-unit book structure
+  (`.1`) is unbuilt; when it lands, the model book references this chapter rather than
+  copying it (never a second owner of a fact).
+
+## SEMILITH-PS-0006 (leaf P2-SCALAR.4) — the interaction-matrix design, recorded before code
+
+- Design-only commit: the 21-cell fault × alias × boundary × event × progress × restart
+  matrix, 8 new guests, the expected-divergence comparator shape, the restart axis as a
+  mechanism (a new offline determinism suite), and the `INTERACTION-MATRIX` doctrine
+  design — every reference behavior measured by probes first (fault priority, the
+  address wrap, the fence.i continuation).
+- Measured a NEW reference difference: sail masks access-fault tval to its 56-bit
+  physical-address width (spike reports the full address) — recorded as
+  `DIFF-TVAL-PHYS-MASK`; three-way tval guests keep fault addresses below 2^56.
+- The tree file crossed its 64 KiB per-part ceiling: completed-leaf evidence archived
+  verbatim to `docs/tasks/archive/P2-SCALAR.md` — the ceiling obeyed, not raised.
+
 ## SEMILITH-PS-0005 (leaf P2-SCALAR.3) — fault, suppression and reserved cases: the failure layer, pinned three-way
 
 - Every reference behavior was MEASURED before any guest existed (16 probe ELFs against
@@ -425,24 +459,4 @@ carried its replacement since `SEMILITH-SF-0041`. Two stale lines surfaced while
 this leaf — the replacement record's own *How to apply* still said "write the EBNF in `pgen`"
 against its director-corrected body (LinkedSpec), and both INDEX descriptions repeated it —
 corrected in passing, with the reason recorded in the record. **SOT-FORMAT closes at 10/10.**
-
-## SEMILITH-SF-0060 (leaf SOT-FORMAT.5) — the record merge is definable, and it decides
-
-The union this tree exists for is now checked: `scripts/merge_records.py` merges two units'
-requirements, obligations and pinned sources by id — the same id must carry the same content
-(`profile_ids` excepted: it is membership, and it unions), a source id must pin the same
-bytes, and every dependency, obligation link and citation must resolve across the union. Two
-units compose, or the refusal names the conflicting fact, both values, both units. The real
-profile composes with itself (26 + 34 + 3); one edited statement in a copied unit is refused
-naming the field; an extension unit whose requirement depends on the base's `REQ-D-XLEN`
-composes — and is refused by name when the base is withheld. `MODEL-COMPOSE.3` reads the merged
-view (`merge_units(…)` plus the direction census: 26 cpu-guarantee, 8 environment-assumption).
-
-⭐ **Two defects found by probe before any code, both closed.** RECORD-SCHEMA never refused
-duplicate record ids — its id → record map collapsed them last-wins, so a catalogue could
-contradict itself and stay green (`rc=0`, measured) — rule 8 (UNIQUE-ID) now refuses, 23 arms.
-And obligation `dependencies` were checked against nothing: the corpus's cpu-guarantees depend
-on requirements while its environment-assumptions depend on guarantees — a mixed namespace the
-new closure resolves against requirements ∪ obligations, measured on all 42 records, zero
-dangling.
 
