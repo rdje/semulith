@@ -91,9 +91,82 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   row carries the coverage rule.
 
 - ID: `P2-SCALAR.2` — **boundary arithmetic and state interactions**
-  Status: `pending`
+  Status: `in-progress` (design recorded `2026-09-29`, before code)
   Goal: boundary values, sign/zero extension, shift corner cases, alias and overlap effects.
   Acceptance: exhaustive checks where a reduced width makes them tractable; source-linked expected values.
+  Design (recorded before code, `2026-09-29`):
+  - **The four named concerns map onto five new guests**, every expectation derived from the
+    pinned specification prose BEFORE any model runs (`EVD-05`), each step carrying its
+    `derivation` and `source` exactly as the `.1` guests do. Values are computed by spec-rule
+    arithmetic at authoring time (never read back from any model's output); the live
+    three-way differential (`run_semulith_smoke.py` vs sail-riscv AND spike) is the
+    falsification leg, and the offline commit gate re-runs the pinned expectations.
+  - **`bound-shift` — the 64-bit shift corner cases (`D-SHAMT`).** Operand
+    `0x8000000000000001` (bit 63 AND bit 0 set) built from covered forms. The **6-bit shamt
+    domain is exhausted**: a full 64-point `srli` sweep, whose 64 results are pairwise
+    distinct so every step is a VISIBLE register change. `sll`/`sra` immediates take the
+    bit-pinning set {0,1,2,4,8,16,32,63} — every shamt bit pinned on every form, the full
+    sweep held once per domain rather than once per form (the amount decode is the shared
+    structure; the fill/direction logic is what differs per form, and the boundary values
+    discriminate it). Register-amount corners: `rs2 = 64` reads as 0 (identity — pre-written
+    to observe) and `rs2 = -1` reads as 63, through `srl`/`sll`/`sra`. 89 steps.
+  - **`bound-shiftw` — the *W shift corner cases (`D-SHAMT`'s 5-bit rule, `D-WSUFFIX`).**
+    Operand low32 `0x80000001` (bit 31 set). The **5-bit domain is exhausted**: a full
+    32-point `sraiw` sweep (sign fill within 32 bits, then the *W sign extension — 32
+    distinct results); `slliw`/`srliw` take the bit-pinning set {0,1,2,4,8,16,31}.
+    Register-amount corners: `rs2 = 96` — low6 = 32, low5 = 0 — as the discriminator PAIR
+    (`srl` shifts by 32, `srlw` is the identity, same operands) and `rs2 = -1` (low5 = 31)
+    through `sllw`/`sraw`. 52 steps.
+  - **`bound-arith` — wrap/overflow and immediate boundaries (`D-ALU-REG`, `D-ALU-IMM`,
+    `D-WSUFFIX`, `D-LUI-AUIPC`, `D-ADDR-WRAP`).** `INT64_MAX + 1` and `INT64_MIN - 1` wrap,
+    on both the register and the immediate path; `INT64_MAX + INT64_MAX` wraps to -2; the
+    immediate extremes -2048/2047; `addiw`/`addw`/`subw` 32-bit wraps sign-extend (operand
+    carries garbage upper bits to prove they are ignored); `slt`/`sltu` at the signed
+    extremes (the 0-result pre-written); `slti`/`sltiu` at the immediate extremes; `lui
+    0x7FFFF` (positive U edge) vs `.1`'s `lui 0x80000`; `auipc 0x80000` at entry +
+    4n — the sign-extended offset wraps modulo 2^64 and the result is exactly 4n. No memory
+    crossings. ~30 steps.
+  - **`bound-ext` — sign/zero extension at the sign edges (`D-LOAD-EXT`).** The byte edge
+    0x7F/0x80, the halfword edge 0x7FFF/0x8000, the word edge 0x7FFFFFFF/0x80000000, each
+    through the sign/zero PAIR at one address (the pair is the observation); the all-ones
+    value at each width; the 0x00 byte observed through a pre-write. Store truncation at
+    values where the truncated result differs from BOTH clamping outcomes (0x180 → 0x80,
+    0xFFFF8000 → 0x8000 / 0xFFFF8000). ~43 steps, ~32 census-pinned crossings.
+  - **`bound-alias` — alias, overlap and state interactions (`D-ENDIAN`, `D-LOAD-EXT`,
+    reset-state rules).** The little-endian lane proof: `sd 0x0807060504030201` then `lbu`
+    at each of the 8 byte lanes. Overlap composition: `sd` + `sb` over byte 3 + `sh` over
+    bytes 6–7 + one `ld` read-back of the composed word. Register aliasing: `add x,x,x`
+    doubling, `sub x,x,x` (nonzero → 0 transition), `slt x,x,x` (pre-written 1 → 0),
+    self-referential `slli x,x,x`, and `lb x24, x24, 0` — a load that overwrites its own
+    base register, proving the address is sampled before the write commits. x0: `addi x0,
+    x0, -1` writes nothing (empty-writes expectation), `sw x0` zeroes a word (read back
+    through `ld`). ~33 steps, ~16 census-pinned crossings.
+  - **The visibility rule governs every reused destination** (measured in `.1`: the
+    observation vocabulary is the VISIBLE register change, `run.rs`'s `diff(before, state)`):
+    sweep operands are chosen so consecutive results differ, and every identity or 0-result
+    is pre-written to a distinct value.
+  - **Exhaustion judgement, stated:** the tractable reduced-width domains are the shamt
+    FIELDS (6-bit = 64 values, 5-bit = 32) — each is exhausted once. The data-value domains
+    (2^64, 2^32, 2^8) are intractable or near it, and their discriminating structure is the
+    sign edge and the wrap point — enumerated as boundaries, not swept. A 256-point byte
+    sweep was considered and rejected: the extension logic is generic over the width, so the
+    edge pair discriminates everything the sweep would, at 1/40 the corpus cost.
+  - **Reviewed ceiling expansion** (the `.1` decision names this leaf's guest growth as its
+    own reviewed decision): the corpus grows 9 → 14 guests (+10 tracked files under
+    `profiles/rv64i-lab-v0/guests/`), so `profiles/` rises 32 → 42 files and ~220 KB →
+    ~315 KB aggregate. `doctrine/readme_routes.tsv`: `ceiling_lines` 34 → 46 (42 + 4
+    headroom, the registry's proportional rule), `ceiling_bytes` 262144 → 393216 (the same
+    ~1.2× band the existing ceiling holds), health targets re-based to the measured size.
+    ⛔ `ceiling_part_bytes` stays 32768 — the per-part bound answers "has one member become
+    the monolith", and no new file approaches it (largest: `bound-shift.expected.sexp`,
+    ~27 KB); sweep derivations are deliberately terse to keep it that way.
+  - **Cascades owned by this leaf:** `gen_guests.py`'s guest tuple and `guests.rs`
+    regenerated; `run/tests.rs` gains one suite per guest (all `Stop::Budget`);
+    `mutate.rs`'s `pinned_census` gains `bound-ext`'s and `bound-alias`'s crossings with
+    per-line justifications and the three ALU guests join the empty arm;
+    `run_semulith_smoke.py`'s guest tuple; both `G?-REPORT.md` regenerate (counts are
+    derived); the browser bench enumerates guests dynamically — its arm count grows 13 → 18
+    with no edit; `EXERCISE-COVERAGE` stays 52/52 (the scope did not change).
 
 - ID: `P2-SCALAR.3` — **fault, suppression and reserved cases**
   Status: `pending`
