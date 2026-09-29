@@ -191,9 +191,169 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   knowledge card would restate what the gate enforces)`.
 
 - ID: `P2-SCALAR.3` — **fault, suppression and reserved cases**
-  Status: `pending`
+  Status: `active`
   Goal: fetch and access faults, suppressed effects, reserved encodings, controlled event boundaries.
   Acceptance: a failing access that already modified memory or a device is modelled as the source defines it (`SEM-06`, catalog `C11`); reserved cases keep their source meaning (`SEM-07`).
+  Design (recorded before code, `2026-09-29` — every reference behavior below was MEASURED
+  against sail-riscv 0.14 AND spike 1.1.1-dev by an untracked probe suite
+  (`target/refs/guests/probes/`, 13 probe ELFs) before any guest was authored; the probes'
+  traces are the measurement record, the guests below re-pin every one of them as tracked,
+  spec-derived expectations):
+  - **Measured: the misaligned JUMP does not write `rd`; semulith does — a MODEL DEFECT
+    (new, found by the probe; logged below as DEFECT-B).** `jal x5, +2` and
+    `jalr x5, 0(x1)` with x1 = 3 (the bit-0 clear leaves 2): both references raise
+    instruction-address-misaligned ON THE JUMP, tval = the target (0x80000006 / 0x2), and
+    spike emits NO commit record for the jump while sail shows no `x5` write — the link
+    write is suppressed. Semulith writes `x5 <- pc+4` BEFORE trapping. ROOT CAUSE: the
+    `jal`/`jalr` effect trees in `definitions/riscv/rv64i.sem.sexp` evaluate
+    `(set (reg rd) (add (pc) (lit 4)))` BEFORE `set-pc`'s alignment check. FIX (semantics
+    data, never evaluator): reorder the trees — `set-pc` first, then the link write.
+    `(pc)` reads the frame's constant instruction address, so the reorder is exact on the
+    success path and suppresses the write on the fault path, which is the architecture's
+    rule for an instruction that raises a synchronous exception (RVI-RV32I §1.1.5.2
+    raises the exception ON the jump; both references suppress the write). Falsified by
+    `fault-jal-mis` / `fault-jalr-mis` below (`never_written x5`) and by the whole
+    14-guest corpus re-run (guest-control jumps constantly).
+  - **Measured: the reserved-`fm` FENCE defect is INVERTED — the dossier was wrong, the
+    model is right; DEFECT-A becomes a DOSSIER correction.** RVI-RV32I §1.1.7, verbatim
+    from the pinned artifact: *"Base implementations shall treat all such reserved
+    configurations as FENCE instructions (with fm = 0000)"* and *"For forward
+    compatibility, base implementations shall ignore these fields"* (rs1/rd). Reserved
+    fm/pred/succ configurations are NOT the UNSPECIFIED reserved-decode case — the
+    architecture specifies their behavior: execute as FENCE. Both references execute
+    `fence fm=1` (0x1ff0000f) as a nop (sail prints `.insn`, spike `fence iorw,iorw`),
+    `fence.tso rw,rw` as a nop, and `fence rd=x1` as a nop — exactly what semulith does.
+    FIX: D-FENCE's last sentence ("Other fm values are reserved and fall under
+    D-RESERVED-DECODE") is corrected in `profile.sexp` (and its `requirements.sexp`
+    restatement) to the spec's mandate; `fault-fence` pins the corrected behavior
+    three-way. NO legality constraint is needed anywhere in the encoding format — the
+    `.1` note's premise is removed by the spec text itself.
+  - **Measured: reserved encodings raise illegal-instruction with tval = the WORD, on
+    both references — the laboratory's D-RESERVED-DECODE policy conversion is three-way
+    provable.** 0xFFFFFFFF: sail `illegal-instruction` tval 0xFFFFFFFF, spike
+    `trap_illegal_instruction` tval 0xffffffff; semulith reports
+    `Undefined(ReservedDecode)`. `slliw` with imm[5] = 1 (0x0410911B): BOTH references
+    raise illegal-instruction, tval = the word — **OQ-2 is ANSWERED**: neither current
+    reference treats the reserved `*IW` shamt as executable; sail 0.14 and spike
+    1.1.1-dev both trap, matching the laboratory policy's observable. Semulith already
+    routes it to `ReservedDecode` (funct6 is mask-pinned). POLICY (the conversion is the
+    laboratory's explicit act, one layer up — `run.rs`, the harness, never the
+    interpreter): on `StepOutcome::Undefined(ReservedDecode{at})` the runner appends the
+    policy-converted observation `(pc, word, [], trap = (0x02, word))` and stops with
+    `Stop::Undefined` — the source classification (SEM-07's "must be able to report that
+    the case WAS unspecified") is preserved in the stop reason and the CLI's stderr
+    report, while the trace vocabulary carries what the laboratory's declared policy
+    makes of it. `fault-reserved` and `fault-shiftw-res` pin this three-way.
+  - **Measured: a fetch access fault on a jump TARGET is reported ON THE TARGET, with
+    NO instruction word — the observation vocabulary must learn a word-less step.**
+    `jalr` to 0x40000000 (outside sail's MainMemory region AND spike's DRAM, not a
+    device on either): spike reports `trap_instruction_access_fault`, **epc =
+    0x40000000**, tval = 0x40000000 — with no commit and no disasm line at the target
+    (the current adapter REFUSES this shape); sail records the `jalr` step then
+    `fetch-access-fault` tval = 0x40000000 (the current adapter would mis-attach the
+    trap to the jump step — the opposite reporting point from `misaligned-fetch`, which
+    DOES belong to the jump; the two rules point in opposite directions exactly as
+    D-MISALIGN-REPORT / D-FETCH-FAULT-REPORT say). Semulith stops with
+    `Stop::FetchFault` and records no observation — the gap `run.rs` names as future
+    work; this leaf closes it. VOCABULARY EXTENSION: `run::Step.word` becomes
+    `Option<u32>`; the runner emits the honest step `(pc = at, word = None, [],
+    trap = (0x01, at))` and keeps `Stop::FetchFault` as the stop reason. Adapters:
+    sail's `fetch-access-fault` synthesizes a word-less step at pc = tval (cascade
+    lines after the first trap are ignored); spike's `trap_instruction_access_fault`
+    with an unrecorded epc synthesizes the word-less step at epc (other causes keep the
+    strict refusal); the CLI prints `(fetch fault)` for the word-less step and
+    `parse_semulith` reads it back. `fault-fetch` pins it three-way.
+  - **Measured spellings the adapter learns (from the pinned causes table's codes, the
+    models' own words):** sail `misaligned-fetch` → 0x00 and `store/amo-access-fault`
+    → 0x07. Unknown spellings still raise; each addition gets RED/GREEN self-test arms.
+  - **Measured: a store over a later-fetched word is visible IMMEDIATELY on all three
+    models.** `sw` patching `addi x2, x0, 2` into `addi x2, x0, 7`: sail and spike both
+    write x2 = 7 (spike's commit line even shows the store: `mem 0x80000014
+    0x00700113`). D-CODE-VISIBILITY's laboratory choice is three-way pinnable; the
+    dossier's "a caching reference is not wrong" caveat stays true but does not fire on
+    these two references. `fault-selfmod` pins it.
+  - **Measured and RECORDED, not exercised: `fence.i` executes on both references
+    although the matched ISA strings exclude Zifencei** (sail `rv64i_zvl32b` with
+    `Zifencei supported false` still runs 0x0000100F; spike `--isa=rv64i` runs it). Our
+    model reports it as a reserved encoding (the profile declares Zifencei absent) and
+    the laboratory policy converts to illegal-instruction — a legitimate UNSPECIFIED
+    divergence the comparator cannot yet express (`cross_model` disables only spike,
+    and disabling sail too would leave the guest no live comparison). RECORDED as a new
+    measured difference `DIFF-FENCEI-EXECUTED` in `references.sexp`; the guest that
+    pins it is routed to `.4` (the interaction matrix's expected-divergence
+    comparison), not built here.
+  - **Also measured, all agreeing, becoming guests:** a not-taken branch to a
+    misaligned target raises nothing (all three); `lw x0` at a misaligned address still
+    raises cause 0x04 (D-LOAD-X0, both references); `ld` at 0x40000000 raises cause
+    0x05 tval = address on all three (guest-no-device's 0x0200_BFF8 is spike's CLINT —
+    0x40000000 is outside BOTH platforms, so the access-fault guests run cross-model,
+    no skip); `lh +1` / `ld +4` misalignments agree (0x04); store misalignments agree
+    (0x06).
+  - **Eighteen new guests**, every expectation derived from the pinned specification
+    prose BEFORE any model runs (EVD-05), each step carrying `derivation` + `source`;
+    the trap step is always last (a contained trap stops the laboratory run, the
+    smoke-trap pattern):
+    `fault-jal-mis` (3 steps — trap (0x00, target) on the jump, `never_written x5`,
+    DEFECT-B pin), `fault-jalr-mis` (3 — the bit-0-clear leaves a misaligned 2),
+    `fault-branch-nt` (14 — all six branch forms NOT taken with misaligned targets,
+    fall-through writes prove continuation, an aligned taken branch proves liveness;
+    the suppressed-effect guest, SEM-06), `fault-fetch` (3 — the word-less step at the
+    target, D-FETCH-FAULT-REPORT), `fault-ld-mis-h` (3 — `lh` at +1), `fault-ld-mis-d`
+    (3 — `ld` at +4, the 4-aligned-but-not-8 case), `fault-st-mis-h` (3 — `sh` at +1;
+    the crossing log proves the store never crossed the boundary),
+    `fault-st-mis-w` (3 — `sw` at +2), `fault-st-mis-d` (3 — `sd` at +4),
+    `fault-ld-x0-mis` (3 — `lw x0` at +2 still faults, D-LOAD-X0 misaligned path),
+    `fault-ld-x0-fault` (3 — `ld x0` at 0x40000000 still faults, D-LOAD-X0 access-fault
+    path), `fault-access-ld` (3 — cause 0x05, cross-model: 0x40000000 is no platform's
+    device), `fault-access-sd` (3 — cause 0x07), `fault-reserved` (2 — 0xFFFFFFFF →
+    (0x02, word), `Stop::Undefined`), `fault-shiftw-res` (2 — the OQ-2 closure),
+    `fault-fence` (8 — the corrected D-FENCE: reserved-fm nops, fence.tso nops, rd/rs1
+    nonzero ignored, pred/succ = 0 HINTs nop; ends on Budget), `fault-hints` (10 — the
+    RV64I HINT table's ALU forms with rd = x0 execute as nops writing nothing:
+    `lui x0`, `auipc x0`, `addi x0` (rs1 ≠ x0), `addiw x0`, `addw x0`, `sllw x0`,
+    `sub x0`, and the NTL.P1 code point `add x0, x0, x2`; the semihosting markers are
+    deliberately EXCLUDED — spike implements semihosting off a specific three-instruction
+    sequence and a lone marker near a trap is a fragile probe), `fault-selfmod` (7 —
+    D-CODE-VISIBILITY pinned three-way).
+    The raw reserved words (0xFFFFFFFF, the imm[5] `slliw`) cannot be emitted by the
+    assembler's operand path — `riscv_asm.py` learns a `.word 0x…` directive: a raw
+    data word, the honest spelling of "this guest deliberately places a reserved
+    encoding" (the assembler's range checks exist precisely to refuse these through the
+    mnemonic path).
+  - **Reviewed ceiling expansion** (the `.1`/`.2` decisions name each leaf's guest
+    growth as its own reviewed decision): the corpus grows 14 → 32 guests (+36 tracked
+    files under `profiles/rv64i-lab-v0/guests/`), so `profiles/` rises 42 → 78 files
+    and ~307 KB → ~390 KB aggregate (trap-guest expectations are 1–3 KB each).
+    `doctrine/readme_routes.tsv`: `ceiling_lines` 46 → 82 (78 + 4 headroom, the
+    registry's proportional rule), `ceiling_bytes` re-based to the measured aggregate
+    under the same ~1.2× band (≈ 470 KiB; the exact figure is re-derived from the
+    landed corpus at implementation), health targets re-based. ⛔ `ceiling_part_bytes`
+    stays 32768 — no new file approaches it (largest: ~4 KB). Consolidation was
+    considered and rejected: one trap ends a run (the laboratory's contained-trap
+    contract), so each fault case that needs its own cause/tval observation needs its
+    own guest; merging unrelated traps into one guest is impossible by construction.
+  - **Cascades owned by this leaf:** the sem-tree reorder regenerates `definition.rs`
+    through the sanctioned generator (no interpreter change — the evaluator is
+    untouched; DEFECT-B's fix is DATA); `run.rs`'s `Step.word` → `Option<u32>` with the
+    fetch-fault step and the reserved-decode policy conversion, its doc comments
+    re-synced (the "future work" sentence is deleted by this leaf); `bench.rs` and
+    `mutate.rs` follow the type change; the CLI prints the two new step shapes;
+    `compare_traces.py` (word-less steps, the two new sail spellings, the spike
+    synthesis, self-test arms); `riscv_asm.py`'s `.word` directive; `gen_guests.py`'s
+    guest tuple (18) and `guests.rs` regenerated; `run/tests.rs` gains one suite per
+    guest (the fault suites assert the trap pair and the stop reason — `Stop::Trap`,
+    `Stop::FetchFault`, or `Stop::Undefined` — exactly as the scope-ecall pattern
+    does); `mutate.rs`'s census: `fault-selfmod` contributes its one aligned in-region
+    store crossing, the other 17 join the empty arm with per-line justifications;
+    `run_semulith_smoke.py`'s tuple; the routes-registry ceilings (above); OQ-2's
+    answer lands in `DOSSIER.md` and `requirements.sexp`
+    (`REQ-D-SHIFTW-RESERVED`'s open note resolves — both references measured);
+    `references.sexp` gains `DIFF-FENCEI-EXECUTED`; both `G?-REPORT.md` regenerate
+    (counts are derived); the browser bench enumerates guests dynamically (its arm
+    count grows with no edit); `EXERCISE-COVERAGE` stays 52/52 (no new form — the fault
+    guests exercise declared forms and reserved words, neither of which is a scope
+    change). The book (`plan/p2.md`) carries the result; claim-scope and p1 pages
+    re-sync to 32 guests.
 
 - ID: `P2-SCALAR.4` — **the interaction matrix** — `G-INTERACTIONS`
   Status: `pending`
@@ -229,7 +389,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.3` | `pending` | scope exercised (`.1`), boundaries pinned (`.2`); faults, suppressed effects and reserved cases are the next evidence layer — and `.3` already owns the reserved-`fm` FENCE defect |
+| 1 | `P2-SCALAR.3` | `active` | design recorded (`2026-09-29`, all reference behaviors measured first): two defect fixes (the inverted FENCE dossier correction; the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, 18 fault guests |
 
 ## Decisions
 
@@ -271,17 +431,36 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 ## Defects found in flight (owned here per the defect-ownership rule)
 
-- **`2026-09-29` — reserved-`fm` FENCE executes as a nop; `D-FENCE` says it must raise
-  illegal-instruction.** Reproduce: assemble word `0x1ff0000f` (fence, `fm=0x1`) into a
-  two-word ELF and `cargo run -p semulith-cli -- run <elf> --steps=2` — the trace decodes
-  `fence` and nops it. The fragment fixes only bits 14..12/6..2/1..0 for `fence`, so every
-  `fm` value decodes, while the profile records *"Other fm values are reserved and fall
-  under D-RESERVED-DECODE"* (illegal-instruction, a laboratory policy over an UNSPECIFIED
-  case). Impact: the model accepts encodings its own dossier calls reserved — invisible to
-  the guests (none encodes a reserved `fm`). **Owner: `P2-SCALAR.3`** (reserved cases keep
-  their source meaning, `SEM-07`); the fix needs a legality constraint the encoding format
-  does not yet express (decode-validity beyond bit-matching), so it is scheduled, not
-  folded into `.1`. Logged by `P2-SCALAR.1` scoping.
+- ~~**`2026-09-29` — reserved-`fm` FENCE executes as a nop; `D-FENCE` says it must raise
+  illegal-instruction.**~~ **RESOLVED `2026-09-29` (leaf `.3`) as a DOSSIER defect, not a
+  model defect — the logged defect was inverted.** Measured against the pinned
+  specification before any fix: RVI-RV32I §1.1.7 mandates, verbatim, *"Base
+  implementations shall treat all such reserved configurations as FENCE instructions
+  (with fm = 0000)"* — the reserved `fm`/`pred`/`succ` configurations are an
+  architecture-SPECIFIED case (execute as FENCE), not the UNSPECIFIED reserved-decode
+  case, so they never belonged under `D-RESERVED-DECODE`. Both references execute the
+  probe word `0x1ff0000f` as a nop, exactly as the model does. The correction lands in
+  `D-FENCE` (`profile.sexp` and its restatements); `fault-fence` pins the corrected
+  behavior three-way. No legality constraint in the encoding format was ever needed —
+  the spec text removes the premise. Original reproduce, for the record: assemble word
+  `0x1ff0000f` (fence, `fm=0x1`) into a two-word ELF and
+  `cargo run -p semulith-cli -- run <elf> --steps=2` — the trace decodes `fence` and
+  nops it, which is the architecturally correct behavior. Logged by `P2-SCALAR.1`
+  scoping; closed by `P2-SCALAR.3`.
+
+- **`2026-09-29` — a misaligned JAL/JALR writes `rd` before the trap; both references
+  suppress the link write.** Reproduce: `addi x1, x0, 1; jal x5, 2` —
+  `cargo run -p semulith-cli -- run <elf> --steps=3` prints `x5 <- 0x…8` and THEN
+  `trap cause=0x00`; spike emits no commit record for the jump at all and sail shows no
+  `x5` write (measured, leaf `.3` probes). Impact: the model retires an architectural
+  write from an instruction that raised a synchronous exception — wrong on the exact
+  reporting-point rule `D-MISALIGN-REPORT` pins, and visible in any differential on a
+  misaligned jump. ROOT CAUSE (measured): the `jal`/`jalr` effect trees in
+  `definitions/riscv/rv64i.sem.sexp` evaluate the link write before `set-pc`'s
+  alignment check. **Owner: `P2-SCALAR.3`** (the fix is semantics DATA — reorder the
+  tree, `set-pc` first; the evaluator is untouched). Found by the `.3` probe suite
+  before any guest was authored; `fault-jal-mis`/`fault-jalr-mis` pin the fix
+  (`never_written x5`).
 
 ## Acceptance Checklist (leaf P2-SCALAR.1)
 
