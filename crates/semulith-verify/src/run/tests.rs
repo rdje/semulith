@@ -235,7 +235,7 @@ fn fetch_fault_stops_without_a_fiction_step() {
 use crate::guests::{Guest, GUESTS};
 
 /// Run one tracked guest under the laboratory fixture. The region is declared 64 KiB at the
-/// entry: every observation these four guests make (stores at +0x400, faults at 0x0200_BFF8,
+/// entry: every observation the tracked guests make (stores at +0x400, faults at 0x0200_BFF8,
 /// misaligned accesses judged before region membership) is identical under any region size
 /// from there up to the platform's declared 2 GiB — the size is not what any of them probes.
 fn run_guest(name: &str) -> (Trace, Vec<Crossing>, &'static Guest) {
@@ -349,4 +349,52 @@ fn guest_no_device_faults_instead_of_finding_a_device() {
     let last = &trace.steps[5];
     assert_eq!(last.trap, Some((0x05, 0x0200_BFF8)));
     assert!(!guest.never_written.is_empty());
+}
+
+// ---- the P2-SCALAR.1 scope-completion guests ---------------------------------------------------
+
+#[test]
+fn scope_alu_matches_its_specification_derived_expectations() {
+    // 31 steps covering the 21 remaining ALU forms plus FENCE: the logical/compare/shift
+    // pairs, the *W sign-extension pins, the rs2[4:0] vs rs2[5:0] shift-amount pin, and the
+    // two 1→0 transitions that make the 0-results of SLTU/SLTIU visible in the trace.
+    assert_guest_observations("scope-alu", Stop::Budget);
+}
+
+#[test]
+fn scope_mem_matches_its_specification_derived_expectations() {
+    // 29 steps covering the 8 remaining load/store forms: the sign/zero-extension pairs at
+    // one address, the D-LOAD-X0 discarded load, and the three store widths with read-back.
+    assert_guest_observations("scope-mem", Stop::Budget);
+}
+
+#[test]
+fn scope_branch_matches_its_specification_derived_expectations() {
+    // 19 executed steps from 24 instructions: each of the five branches taken once (the
+    // skipped addi's register is never written — the negative observations) and not taken
+    // once (the fall-through write happens).
+    assert_guest_observations("scope-branch", Stop::Budget);
+}
+
+#[test]
+fn scope_ecall_reports_the_requested_trap_and_stops() {
+    // D-ECALL-EBREAK: cause 0x0B (environment call from M-mode), tval 0, reported ON the
+    // ecall — then the run stops; there is no guest handler to continue into.
+    assert_guest_observations("scope-ecall", Stop::Trap);
+    let (trace, _, _) = run_guest("scope-ecall");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, 0x0000_0073);
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x0B, 0x0)));
+}
+
+#[test]
+fn scope_ebreak_reports_the_requested_trap_and_stops() {
+    // D-ECALL-EBREAK: cause 0x03 (breakpoint), tval = the ebreak's own address.
+    assert_guest_observations("scope-ebreak", Stop::Trap);
+    let (trace, _, _) = run_guest("scope-ebreak");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, 0x0010_0073);
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x03, 0x8000_0004)));
 }

@@ -1,0 +1,6 @@
+;; scope-ebreak.expected.sexp — the expected observations for `scope-ebreak.s` (P2-SCALAR.1).
+;; Validate with:
+;;   python3 scripts/check_sexp_schema.py scope-ebreak.expected.sexp schema/expectations.sexp
+
+(comment "scope-ebreak.expected.sexp — the expected observations for `scope-ebreak.s`." "" "⛔ EVERY VALUE HERE WAS DERIVED FROM THE PINNED SPECIFICATION PROSE BEFORE THE PROGRAM WAS RUN" "(EVD-05). EBREAK is ECALL's sibling requested trap: the breakpoint. The trap step writes no" "register, and the run STOPS on it — the harness is told, and there is no guest handler to" "continue into. One guest per requested trap, because a run can end only once.")
+(expectations (program "scope-ebreak.s") (entry "0x80000000") (instructions 2) (step (n 0) (insn "addi x1, x0, 9") (writes (write (reg "x1") (value "0x0000000000000009"))) (derivation "An ordinary write, so the run has a step before the trap and the trap's position is observable.") (source "RVI-RV32I §1.1.4")) (step (n 1) (insn "ebreak") (writes) (derivation "D-ECALL-EBREAK: EBREAK causes a precise REQUESTED trap to the execution environment — the breakpoint. It writes no register; the laboratory reports the typed environment-trap outcome and execution stops. The references observe cause 3 (breakpoint) at the ebreak's own address.") (source "RVI-RV32I §1.1.8 (D-ECALL-EBREAK: cause 3 is breakpoint)")))

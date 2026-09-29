@@ -42,7 +42,8 @@ REPO = Path(__file__).resolve().parent.parent
 ENCODING = REPO / "profiles/rv64i-lab-v0/encoding.sexp"
 GUESTS_DIR = REPO / "profiles/rv64i-lab-v0/guests"
 OUT = REPO / "crates/semulith-verify/src/guests.rs"
-GUESTS = ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device")
+GUESTS = ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
+          "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak")
 GENERATOR = Path(__file__)
 
 

@@ -21,7 +21,7 @@ Unmet: **criterion 6** — named in its section below.
 | --- | --- |
 | `crates/semulith-core`, `-verify`, `-cli` | the laboratory: interpreter, evidence machinery, command surface |
 | `contract-obligations.sexp` | 36 obligations (the environment contract the laboratory serves) |
-| `guests/` | 4 assembly guests, 0 C guests, 4 expectation documents |
+| `guests/` | 9 assembly guests, 0 C guests, 9 expectation documents |
 | `baseline.sexp` | the recorded performance baseline |
 
 ## Criterion 1 — failures are replayable from recorded inputs
@@ -87,12 +87,13 @@ mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).
 
 ## Criterion 6 — a compiled freestanding guest retires under first-divergence comparison
 
-`guests/` holds **4 assembly guests** and **0 C guests**.
-The four tracked guests ARE freestanding programs — assembled by the tracked assembler
-from `.s` sources — and they retire under first-divergence comparison against TWO
-pinned references (sail-riscv and spike, 34/34 aligned steps; re-run:
-`scripts/run_semulith_smoke.py`). But the roadmap's clause names a **compiled** guest
-with **C as the first guest path**, and no C-toolchain guest exists in this tree.
+`guests/` holds **9 assembly guests** and **0 C guests**.
+The 9 tracked guests ARE freestanding programs — assembled by the
+tracked assembler from `.s` sources — and they retire under first-divergence
+comparison against TWO pinned references (sail-riscv and spike,
+117/117 aligned steps; re-run: `scripts/run_semulith_smoke.py`).
+But the roadmap's clause names a **compiled** guest with **C as the first guest path**,
+and no C-toolchain guest exists in this tree.
 
 **Status: NOT met as written.** The assembled-guest differential is real and recorded;
 the C path is the gap. Owner: `P2-SCALAR.5` (external and directed campaigns).

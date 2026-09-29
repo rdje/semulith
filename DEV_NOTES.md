@@ -3,6 +3,14 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-29)_ — the declared scope completed: 15/52 to 52/52, and the coverage is the gate (P2-SCALAR.1)
+
+Root cause: the profile's `[scope]` declares 52 RV64I forms, but only the 15 mnemonics the four P1 smoke guests used had ever EXECUTED under the laboratory — EXTRACTION proves every form HAS encoding+semantics+requirement (static sufficiency) and nothing measured the dynamic half, so "the accepted P2 profile covers its entire declared scope" (ROADMAP §P1) had a 37-form hole nobody counted. Diagnosis was the new instrument itself: `check_exercise_coverage.sh` unions the mnemonics the tracked expectation documents declare executed (the commit gate proves those exact steps execute, so declared-executed and executed cannot drift apart) against a denominator re-derived from the dossier's scope lists, and resolves the SCP-02 closure through the one shared resolver. Fired RED against the real corpus pre-registration: 15/52, all 37 forms named. Implementation: five scope-completion guests with EVD-05 expectations derived before any run; `fence` forced the honest fix for its operands — the pinned `arg_lut.csv` always carried `fm`/`pred`/`succ`, so the fragment whitelist and the assembler's contiguous-operand set were extended and both generated artifacts regenerated (no hand-typed opcode; the field-count pin 12→15); the trace adapter learned the measured `m-call`/`software-breakpoint`/`trap_machine_ecall`/`trap_breakpoint` spellings. Two subtlety catches, both measured by the suites before they could ship: (1) the laboratory's observation vocabulary is the VISIBLE register change (`run::diff` compares values), so `sltu`/`sltiu` results of 0 into fresh registers leave no observation — each is pre-written with 1 so the answer appears as a 1→0 transition, which is also strictly stronger evidence than an empty write; (2) the census pin iterates every guest, so `scope-mem`'s 17 data crossings (including the `lw x0` discarded load, which crosses the boundary per D-LOAD-X0) are pinned in `mutate.rs` with per-line justifications. Validation: 133 verify suites green (+5 guest suites); `make check`/`make gate` (24 doctrines) green; smoke_bench 13 arms; the live three-way experiment — 9 guests, 117/117 aligned steps against sail-riscv 0.14 AND spike 1.1.1-dev, byte-identical reproduction. `G1-REPORT.md` regenerates honestly: 9 guests, 117 steps, verdict unchanged (`incomplete`, criterion 6).
+
+Defect found in flight (logged, owned, scheduled — not folded into this leaf): word `0x1ff0000f` (fence, `fm=0x1`) decodes and nops, while `D-FENCE` records reserved `fm` values as falling under `D-RESERVED-DECODE` (illegal-instruction). Reproduced via a hand-built ELF + `semulith run`. Owner `P2-SCALAR.3`: the fix needs a decode-validity constraint beyond bit-matching, which the encoding format does not yet express.
+
+Lessons: (1) promoted — "coverage with a denominator" is now mechanical, not prose: the EXERCISE-COVERAGE doctrine row in DOCTRINE_ENFORCEMENT.md carries the composition rule (complements EXTRACTION, never duplicates it). (2) Kept here: when the observation vocabulary is a diff, every expected write must be designed to be visible — pre-write the destination or the step proves nothing (a third instance of "a gate never observed RED is not known to work", at the fixture level).
+
 ## _(2026-09-29)_ — the allocation-count pin: a measured number is a claim until its mechanism is gated (P1-LAB.13)
 
 Root cause: the `.11` baseline's allocation figures were measured but not falsifiable — nothing re-derived them, and the traced columns (1.19–1.42 allocs/step) did not match the naive mechanism (a writes Vec per step would give ~2). An unexplained gap in a committed claim is a defect of standing, whatever the number. Diagnosis (TOOLBOX: probes before theories): slope/intercept separation — the same mix at 8/16/32 budgeted steps and at 1/2/4 full iterations, counted with a NEW thread-local counter scope (`alloc::thread_counts`), because a process-global counter inside a parallel test binary counts every sibling suite and exact pins are impossible under it. The mechanism, nailed: untraced = exactly 1 alloc/step, zero intercept (the `extract_operands` operands Vec; 114 steps ⇔ 114 allocs, 14,368 B); instrumented = untraced + the `run::diff` writes Vec ONLY on a visible register change + the stream's amortized doubling — and `diff` compares VALUES, so a write that changes nothing allocates nothing, and the mixes settle into near-fixed points (that, not an error, is why `.11`'s traced columns sat near 1.2); diagnostic = instrumented + exactly the crossing log's capacity doublings (+4/+5/+6 at 30/58/114 steps); static and dyn dispatch pay identically, per mix, exactly. Every `.11`/`baseline.sexp` figure survived the proof — the record stands uncorrected; what changed is the STANDING: four pin suites now fail if the behaviour moves, each fired RED first (114↛115, 50↛51 — both named the true value). The G1 report (regenerated) and the book state the mechanism so the traced numbers can't be misread as general. The docs/tasks archive itself crossed its per-part ceiling mid-leaf (65,617 B) and split in two — the ceiling obeyed at both levels. Validation: 193 tests across 5 suites (128 verify, +4 pins); clippy `-D warnings` clean; wasm rc=0; `make gate` 23 doctrines green.
@@ -332,60 +340,4 @@ composition. Per-fragment mode byte-stable.
 
 Lessons: declined here (the "orphaned tool" pattern is now demonstrated three times; a knowledge
 card is due on a FOURTH instance — that is the threshold, stated so the count is honest).
-
-## _(2026-09-27)_ — slots are data, and the unit's union is decided again (MODEL-COMPOSE.4)
-
-Root cause this leaf closes: two substrate defects found by probe before any code. (1) Since
-`MODEL-COMPOSE.2` moved instructions into fragments, NOTHING decided the unit's composed
-encoding space — the disjointness checker read compositions its own way, could no longer read a
-unit's `encoding.sexp` at all (probe: REFUSED, "yielded no instructions"), and no gate
-invoked the tool on the unit's fragments. (2) The checker never schema-validated its input — a
-planted `(widget "x")` in a real `compose` passed silently. A slot verdict on a
-document nobody validates, over a union nobody decided, would be a claim without legs.
-
-The fix, in order: data first (`(status …)` and `(slot …)` in `schema/encoding.sexp`,
-zero kernel lines); then ONE resolver — `riscv_asm.resolve_composition(…)` extracted and
-shared by the assembler and the checker (a second hand-written resolver is how the `.2`
-regression happened); then the checker validates the document and each resolved fragment against
-the schema layer before unioning; then `UNIT-COMPOSITION` (15th doctrine) wires the
-verdict into the gate set — a restored capability that no gate invokes is the defect restated.
-
-⭐ Two more latent bugs of the same family surfaced in the resolver while testing:
-`children(…, "extensions")[0]` and `children(…, "requires")[0]` index a
-first child the 0-or-more grammar does not guarantee — absence is schema-legal; the corpus
-always writes the markers, so both IndexErrors were live but unfired. The self-test's fixtures
-omit the markers and prove the paths. The `.2` precedent as no-regression proof: the
-resolver is refactored, not rewritten — `run_smoke` ok, nothing observable moved.
-
-Lessons: declined here (the "capability without a re-runner" lesson is stated in the gate's
-header, where anyone restoring a capability meets it).
-
-## _(2026-09-27)_ — assumption/guarantee discharge is a verdict (MODEL-COMPOSE.3)
-
-Root cause this leaf closes: a conditional composition claim ("the CPU is validated under
-explicit environment assumptions") is only as strong as the demonstration that the assumptions
-hold — and the demonstration lived only in `docs/CPU_ENVIRONMENT.md` §5 prose. The
-design insight, measured before any code: the discharge edge already exists in the corpus as
-obligation dependencies — `SOT-FORMAT.5`'s census showed all 8 environment-assumptions
-depending on `cpu-guarantee` obligations. The operator's job was to make that edge a
-verdict, not to invent it.
-
-The rule: an assumption is discharged when every dependency resolves in the `merge_units(…)`
-union to an obligation whose direction is a guarantee — keying on "not environment-assumption"
-so a future device-guarantee value is accepted by construction (the vocabulary extension is
-deliberately not this leaf; it is a `(values …)` data change the day a real device
-unit exists). Refusals: the missing guarantee fires in the union's closure (`DANGLING DEP`)
-— where the acceptance's RED lands is recorded honestly, not re-implemented — while a chain
-(demand → demand, `UNDISCHARGED CHAIN`) and a zero-dependency assumption (`UNDISCHARGEABLE`)
-are the discharge-specific refusals. Complement stated in the tool: an unclaimed guarantee is
-not an error.
-
-Validation: `discharge_assumptions.py --self-test` 6/0; real corpus 8/8 with every edge
-printed; cross-unit discharge (a unit carrying only `OB-ENTRY-STATE`); guarantee removed →
-rejected naming it, from both the assumption and the requirement side. Regression: merge 18/0,
-SOURCE-FORMAT 7/0, sexp 18/0, kernel 50/0, RECORD-SCHEMA 23/0, semantics 52/52, citations
-52/52, materials 20/0, smoke ok, readers 28/28; whole gate green.
-
-Lessons: declined here (the "new direction values accepted by construction" rule is stated in
-the tool's docstring and the owning leaf, where anyone extending the vocabulary meets it).
 

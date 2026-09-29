@@ -55,9 +55,11 @@ import struct
 from dataclasses import dataclass
 from pathlib import Path
 
-# Formats whose immediate occupies one contiguous field.
+# Formats whose immediate occupies one contiguous field. `fm`/`pred`/`succ` are FENCE's 4-bit
+# fields (`P2-SCALAR.1`); the generic width-checked path range-checks them 0..15 like `shamt`.
 CONTIGUOUS_OPERANDS = {
     "rd", "rs1", "rs2", "imm12", "imm20", "shamtd", "shamtw", "imm12hi", "imm12lo",
+    "fm", "pred", "succ",
 }
 # Fields whose immediate is spread across non-adjacent bits; the layout is read from the pinned
 # descriptor table rather than written down here.
@@ -341,11 +343,12 @@ class Assembler:
                     raise AsmError(f"{name}: U-immediate {imm:#x} is outside the 20-bit range. "
                                    f"It is the UPPER 20 bits, written unshifted.")
                 word |= _place(hi, lo, imm)
-            else:                                     # shamtd / shamtw
+            else:                                     # shamtd / shamtw / fm / pred / succ
                 sh = self._imm(arg)
                 width = hi - lo + 1
                 if not 0 <= sh < (1 << width):
-                    raise AsmError(f"{name}: shift amount {sh} does not fit in {width} bits")
+                    raise AsmError(f"{name}: operand field {op} value {sh} does not fit in "
+                                   f"{width} bits")
                 word |= _place(hi, lo, sh)
         return word
 

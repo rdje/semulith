@@ -186,7 +186,8 @@ def main() -> int:
               "scripts/fetch_references.sh (the semulith-vs-sail comparisons still run)",
               file=sys.stderr)
     print(f"the P1-LAB.8 first-execution-slice experiment for {PROFILE}")
-    for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device"):
+    for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
+                 "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak"):
         experiment(name)
     print()
     if failures:

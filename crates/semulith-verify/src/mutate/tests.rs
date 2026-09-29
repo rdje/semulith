@@ -217,12 +217,12 @@ fn data_crossings_by_step(crossings: &[Crossing]) -> Vec<(usize, Crossing)> {
 // ---- the instrument itself: the census pin -----------------------------------------------------
 
 #[test]
-fn the_data_crossing_census_pins_all_four_guests() {
+fn the_data_crossing_census_pins_every_tracked_guest() {
     // The extra-access arm detects through this census; the census itself is pinned here so
     // the instrument cannot drift silently either. The table itself lives with the suite's
     // public surface (`super::pinned_census`) — this test pins its CONTENT against the runs.
     let want_stop = |name: &str| match name {
-        "smoke-trap" | "guest-no-device" => Stop::Trap,
+        "smoke-trap" | "guest-no-device" | "scope-ecall" | "scope-ebreak" => Stop::Trap,
         _ => Stop::Budget,
     };
     for guest in GUESTS {

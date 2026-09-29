@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMILITH-PS-0001 (leaf P2-SCALAR.1) — the declared instruction scope, completed and gated
+
+- The profile declares 52 RV64I forms; the four P1 smoke guests exercised 15. Five scope-completion guests close the gap, every expectation value derived from the pinned specification before any model ran (`EVD-05`): `scope-alu` (31 steps — the 21 remaining logical/compare/shift forms plus `fence`, with the signed/unsigned pairs on shared operands, the `rs2[4:0]`-vs-`rs2[5:0]` shift pin, and two 1→0 pre-writes so 0-results are VISIBLE changes in the trace vocabulary), `scope-mem` (29 steps — the 8 remaining load/store forms: sign/zero-extension pairs at one address, a discarded `lw x0` per `D-LOAD-X0`, three store widths with read-back, 17 census-pinned data crossings), `scope-branch` (19 steps from 24 instructions — the 5 remaining branches taken AND not-taken, five `never_written` negative observations), `scope-ecall` and `scope-ebreak` (the requested traps, one guest each, trap step last — cause 11/tval 0 and cause 3/tval=pc, matching both references exactly).
+- Coverage is reported with its **denominator** and the report is a gate: the 24th project doctrine `EXERCISE-COVERAGE` (`scripts/check_exercise_coverage.sh`) re-derives the denominator from the dossier's scope lists (a `count_total` contradicting the enumeration is a DENOMINATOR LIE), unions the mnemonics the expectation documents declare executed (the commit gate proves those steps execute), refuses any unexercised form BY NAME, and resolves the `SCP-02` closure through the one shared resolver (`riscv_asm.resolve_composition`) — a declared form the composition does not provide is an UNRESOLVED FORM. It fired RED against the real corpus at 15/52 — all 37 missing forms named — before registration; self-test 7/0; GREEN at 52/52 since.
+- `fence` needed its `fm`/`pred`/`succ` operand fields: the pinned `arg_lut.csv` carries them, so `gen_fragments.py`'s field whitelist and `riscv_asm.py`'s contiguous operands were extended and `definitions/riscv/rv64i.sexp` + `definition.rs` regenerated — no opcode typed by hand anywhere; the generated-module field-count pin moved 12→15 with its reason recorded. The trace adapter learned sail-riscv 0.14's `m-call`/`software-breakpoint` and spike 1.1.1-dev's `trap_machine_ecall`/`trap_breakpoint` — measured spellings; unknown ones raise, because a dropped trap reads as agreement. `gate_report.py`'s hardcoded "The four tracked guests…34/34" became derived counts; both `G?-REPORT.md` regenerate (9 guests, 117 expected steps).
+- Verification: 133 verify suites (+5 guest suites, the census pin extended), 5 core suites, `make check` green, clippy `-D warnings` clean, wasm build rc=0, `make smoke-bench` 13 arms (9 clean guests), `make gate` 24 doctrines green. The live experiment: 9 guests, **117/117 aligned steps** against sail-riscv AND spike, every enabled comparison agreeing, each run reproducing byte-identically.
+- Defect found in flight, logged and owned (not fixed here): a FENCE with a reserved `fm` value executes as a nop where `D-FENCE` says illegal-instruction — reproduced with word `0x1ff0000f`; routed to `P2-SCALAR.3` because the fix needs a legality constraint the encoding format does not yet express.
+- Lockstep: MEMORY/LIVE_STATUS (P2 1/9)/TASK_TREE/CHANGELOG/DEV_NOTES + book P2 (the `.1` result), P1 and claim-scope (9 guests, 117 steps), the doctrine mirrors and TOOLBOX (the new gate's rows), and this tree — the frontier moves to `.2` (boundary arithmetic).
+
 ## SEMILITH-PL-0013 (leaf P1-LAB.13) — the allocation-count pin: proven, not reported
 
 - The `.11` baseline's allocation figures gain their falsification leg. `bench::alloc` grows a thread-local counter scope (`thread_reset`/`thread_counts`) — a process-global counter inside a parallel test binary counts every sibling suite, so exact pins need per-thread counting (the single-threaded CLI sees both scopes agree by construction).
@@ -494,46 +503,4 @@ Sail reference uses: the interpreter is the reference behaviour; compilation of 
 semantics is a derived artifact that must agree with it. Revisit conditions named: a measured
 P2/P4 performance need, or the explicit semantic-IR migration decision. Record:
 `docs/decisions/decision_interpreter-before-compiler.md`; tree `ROADMAP-V3` registered (1/3).
-
-## LS-002 → `verified` — the design question closes with a re-run, not a changelog
-
-Upstream confirmed the kind-strict grammar (`77d7b3db1`) and the native adapter (`df845ce61`)
-are ancestors of the published pin `a8d34c845` — checked mechanically here with
-`merge-base --is-ancestor`, not taken on their word — and prescribed the verification
-instrument: `sexpr_file` with `SExprDocumentV1.spec` (the old `lispish_file` adapter is
-insufficient). That instrument is exactly what `SOT-FORMAT.10` just added: LS-002's own four
-cases re-run through the document layer return distinct kinds for every quoted/bare pair, and
-the consumer's whole corpus agrees with its canonical reader there with zero classified
-residue. The record gains the `verified-against` pin and the captured transcript; `VERIFIED.md`
-carries the reply to upstream in the same envelope as the report. All three of this project's
-LinkedSpec issues are now `verified`.
-
-## SEMULITH-SF-0056 (leaf SOT-FORMAT.10) — the document grammar joins the agreement sweep
-
-Director decision on the recorded candidate: adopt SExprDocumentV1 **additively** — a third
-reader in `compare_readers.py`, never a replacement. The Lispish layer stays as what it is (the
-LS-001/LS-002 regression guard, CLASS notes and all); the new document layer answers both CLASS
-families by construction — tagged kinds keep `"20260911"` a `string` (quoted-numeric cannot
-arise), raw lexemes decoded on OUR side with sexp.py's own escape table (escape-retention
-cannot arise) — and it compares **every** form in every file, not the first. 28 self-test arms
-(7 new), and the falsifiable acceptance was exceeded: **6 of 6** tracked files agree in the
-document layer with ZERO class notes, because `schema/schema.sexp` itself joined the corpus and
-passes both layers — the schema language's fixpoint now also verifies through the document
-grammar. Upstream's instruction for LS-002 verification ("use `sexpr_file` with
-`SExprDocumentV1.spec`; the lispish_file adapter is insufficient") describes exactly this
-layer — which is what the next commit uses to close LS-002.
-
-## SEMULITH-UT-0055 (leaf UPSTREAM-TRACK.4) — the reply travels in the same envelope
-
-Director instruction `2026-09-26`: the verification acknowledgment to LinkedSpec is a
-git-tracked note inside the bug's own directory. The subtree was already the envelope a
-maintainer copies out — `VERIFIED.md` is now the reply inside that envelope, beside the report
-it answers: what shipped, what we re-ran against which pin, the result, what it unblocks, and
-where the residue lives (for LS-001: classified under LS-002, not this defect).
-
-The note is gated, not just written: `UPSTREAM-INDEX` refuses a `verified` state whose subtree
-carries no `VERIFIED.md`, and refuses a note that does not name the pin the record was verified
-against — the note and the record must agree the way the indices and the record must agree.
-Fired RED on the real tracker against both LS-001 and LS-003 before the notes existed; 17 arms
-(16 → 17) with the wrong-pin refusal; green after, both notes self-contained and pin-consistent.
 

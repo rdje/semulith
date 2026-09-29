@@ -67,6 +67,8 @@ TRAP_NAMES: dict[str, int] = {
     "misaligned-store": 0x06,
     "load-access-fault": 0x05,
     "store-access-fault": 0x07,
+    "m-call": 0x0B,                 # environment call from M-mode (measured, P2-SCALAR.1)
+    "software-breakpoint": 0x03,    # EBREAK; tval is the ebreak's own address (measured)
     # spike 1.1.1-dev spellings
     "trap_load_address_misaligned": 0x04,
     "trap_instruction_access_fault": 0x01,
@@ -74,6 +76,8 @@ TRAP_NAMES: dict[str, int] = {
     "trap_store_address_misaligned": 0x06,
     "trap_load_access_fault": 0x05,
     "trap_store_access_fault": 0x07,
+    "trap_machine_ecall": 0x0B,     # measured, P2-SCALAR.1
+    "trap_breakpoint": 0x03,        # measured; tval = the ebreak's address
 }
 
 

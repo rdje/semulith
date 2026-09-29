@@ -199,7 +199,9 @@ fn semantics_are_cited() {
 
 #[test]
 fn fields_are_well_formed() {
-    assert_eq!(FIELDS.len(), 12);
+    // 12 format fields + FENCE's fm/pred/succ (P2-SCALAR.1: the fragment carries them so
+    // the assembler can encode `fence` from the pinned table, never by hand).
+    assert_eq!(FIELDS.len(), 15);
     for f in FIELDS {
         assert!(
             f.hi <= 31 && f.lo <= f.hi,

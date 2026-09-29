@@ -12,7 +12,7 @@
 //!
 //! Canonical inputs (sha256):
 //!   `definitions/riscv/rv64i.sem.sexp`  `addbe19d047c9c01c30455a09ff402e7bb5a8ee8a723f229233270679ce39ee2`
-//!   `definitions/riscv/rv64i.sexp`  `ca749e4a3c30d13d2991cb8d5b8b08a38e0d3f330148154749a672a58b2a5772`
+//!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `profiles/rv64i-lab-v0/encoding.sexp`  `93a2d4718a50b60c23c3b5e64afa64499b09fcf41a906d46d83e63eebab2e5e9`
 //!   `profiles/rv64i-lab-v0/state.sexp`  `ff53fb04f3ed7ac25e4db78e6e92cc3e0caa086df438e221350627194cbea5a4`
 //! Generator: `scripts/gen_definition.py` (sha256 `9679df2458d66a6036293c04a1de1bc282709edae19b47875e837cef2008fb34`)
@@ -70,7 +70,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "definitions/riscv/rv64i.sexp",
-            sha256: "ca749e4a3c30d13d2991cb8d5b8b08a38e0d3f330148154749a672a58b2a5772",
+            sha256: "f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278",
         },
         InputPin {
             path: "profiles/rv64i-lab-v0/encoding.sexp",
@@ -104,7 +104,7 @@ pub struct FieldDef {
     pub scatter: &'static [(u8, u8)],
 }
 
-/// The 12 operand fields the composed fragments declare, sorted by
+/// The 15 operand fields the composed fragments declare, sorted by
 /// name: what the decoder extracts, and how the scrambled immediates unscramble.
 /// The `FENCE` decorations `fm`/`pred`/`succ` are declared as operands by the
 /// encoding without field ranges — D-FENCE decodes them and reads none (the rule's
@@ -121,6 +121,12 @@ pub static FIELDS: &[FieldDef] = &[
         hi: 11,
         lo: 7,
         scatter: &[(4, 1), (11, 11)],
+    },
+    FieldDef {
+        name: "fm",
+        hi: 31,
+        lo: 28,
+        scatter: &[],
     },
     FieldDef {
         name: "imm12",
@@ -153,6 +159,12 @@ pub static FIELDS: &[FieldDef] = &[
         scatter: &[(20, 20), (10, 1), (11, 11), (19, 12)],
     },
     FieldDef {
+        name: "pred",
+        hi: 27,
+        lo: 24,
+        scatter: &[],
+    },
+    FieldDef {
         name: "rd",
         hi: 11,
         lo: 7,
@@ -179,6 +191,12 @@ pub static FIELDS: &[FieldDef] = &[
     FieldDef {
         name: "shamtw",
         hi: 24,
+        lo: 20,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "succ",
+        hi: 23,
         lo: 20,
         scatter: &[],
     },

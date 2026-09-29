@@ -33,6 +33,9 @@
   (field (name jimm20) (hi 31) (lo 12))
   (field (name bimm12hi) (hi 31) (lo 25))
   (field (name bimm12lo) (hi 11) (lo 7))
+  (field (name fm) (hi 31) (lo 28))
+  (field (name pred) (hi 27) (lo 24))
+  (field (name succ) (hi 23) (lo 20))
 
   ;; ---- immediates SCATTERED across their field, MSB piece first -------
   (scatter (name bimm12hi) (hi 31) (lo 25) (pieces (12 12) (10 5)))

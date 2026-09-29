@@ -265,6 +265,10 @@ def build_g1(profile: str) -> str:
     guests_expected = sorted((d / "guests").glob("*.expected.sexp"))
     guests_s = sorted((d / "guests").glob("*.s"))
     guests_c = sorted((d / "guests").glob("*.c"))
+    # The executed-step total the live three-way differential aligns on: the expectation
+    # documents declare the executed steps per guest, and the commit gate proves those exact
+    # steps execute — so the sum is a function of tracked inputs, not a typed number.
+    aligned_steps = sum(len(D.load_expectations(g)["step"]) for g in guests_expected)
 
     def tracked(rel: str) -> str:
         return (ROOT / rel).read_text()
@@ -422,11 +426,12 @@ def build_g1(profile: str) -> str:
     A("## Criterion 6 — a compiled freestanding guest retires under first-divergence comparison")
     A("")
     A(f"`guests/` holds **{len(guests_s)} assembly guests** and **{len(guests_c)} C guests**.")
-    A("The four tracked guests ARE freestanding programs — assembled by the tracked assembler")
-    A("from `.s` sources — and they retire under first-divergence comparison against TWO")
-    A("pinned references (sail-riscv and spike, 34/34 aligned steps; re-run:")
-    A("`scripts/run_semulith_smoke.py`). But the roadmap's clause names a **compiled** guest")
-    A("with **C as the first guest path**, and no C-toolchain guest exists in this tree.")
+    A(f"The {len(guests_s)} tracked guests ARE freestanding programs — assembled by the")
+    A("tracked assembler from `.s` sources — and they retire under first-divergence")
+    A(f"comparison against TWO pinned references (sail-riscv and spike,")
+    A(f"{aligned_steps}/{aligned_steps} aligned steps; re-run: `scripts/run_semulith_smoke.py`).")
+    A("But the roadmap's clause names a **compiled** guest with **C as the first guest path**,")
+    A("and no C-toolchain guest exists in this tree.")
     A("")
     A("**Status: NOT met as written.** The assembled-guest differential is real and recorded;")
     A("the C path is the gap. Owner: `P2-SCALAR.5` (external and directed campaigns).")

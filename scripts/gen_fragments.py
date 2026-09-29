@@ -32,9 +32,12 @@ ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
 UPSTREAM = ROOT / "target/refs/riscv-opcodes"
 SOURCE_FILES = ("rv_i", "rv64_i", "arg_lut.csv", "constants.py")
 # Only the operand fields this profile's instructions actually use are emitted: an encoding file
-# listing fields nothing references would invite a reader to believe they are supported.
+# listing fields nothing references would invite a reader to believe they are supported. `fm`,
+# `pred` and `succ` are FENCE's (`P2-SCALAR.1`: a guest assembles `fence`, and the fields come
+# from the pinned `arg_lut.csv` like every other — derived, never typed).
 USED_FIELDS = ("rd", "rs1", "rs2", "imm12", "imm20", "shamtd", "shamtw",
-               "imm12hi", "imm12lo", "jimm20", "bimm12hi", "bimm12lo")
+               "imm12hi", "imm12lo", "jimm20", "bimm12hi", "bimm12lo",
+               "fm", "pred", "succ")
 
 HEADER = '''\
 ;; encoding.sexp — the instruction encodings this model OWNS.

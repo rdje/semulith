@@ -1,6 +1,6 @@
 //! Tests for the definitional interpreter. Every expectation here is derived from the pinned
 //! specification rules the outcomes name (see the module docs), not from any model's output;
-//! the four tracked guests carry the same expectations as data on the verify side, and the
+//! the tracked guests carry the same expectations as data on the verify side, and the
 //! live reference comparison is the experiment, not the commit gate.
 
 use super::*;
