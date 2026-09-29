@@ -209,13 +209,42 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   the measurements ARE the content)`.
 
 - ID: `MODEL-BOOKS.3` — **the methodology: from document to model**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: the prose chapter that explains the pipeline — how a sentence of specification becomes a
   decision with an *authority*, how a decision becomes a requirement record with a *semantic
   class*, how a requirement becomes an obligation with positive **and negative** checks, and how an
   expected value is *derived* rather than copied.
   Acceptance: one rule is followed end to end, by name, from its sentence to its check; the
   chapter explains the judgement calls (authority vs semantic class) that are not mechanical.
+  Result: met, `2026-09-29`. **The methodology chapter landed
+  (`docs/models/rv64i-lab-v0/src/methodology.md`), following the reserved-FENCE rule end to
+  end, by name, through six inspectable hops** — chosen because its chain is complete in
+  tracked files AND because it carries DEFECT-A: the pinned sentence (RVI-RV32I §1.1.7,
+  quoted verbatim from the pinned artifact) → `D-FENCE` (authority
+  `execution-environment`, the correction note intact) → `REQ-D-FENCE` (class
+  `implementation-defined`, statement verbatim under RECORD-SCHEMA's rule 4) → `OB-FENCE`
+  (`cpu-guarantee`, CHK-FENCE-POS AND CHK-FENCE-NEG, the MIRROR pair) → `fault-fence`
+  (EVD-05 expectations derived before any run, measured on both references first) → the
+  differentials that keep it true (the offline suite
+  `fault_fence_retires_every_reserved_configuration_as_a_fence`; the live three-way
+  smoke). The honest gap is in the chapter, not hidden: the obligation's check ids are
+  declared and G0 measures 72 declared / 0 implemented — the named-check layer is the
+  release gate's skeleton, and the guest corpus is what tests the rule today. The two
+  judgement calls get their own sections: semantic class (what kind of freedom the source
+  grants — 28 requirements over four classes) and authority (who may decide — with
+  RECORD-SCHEMA's AUTHORITY check as the mechanical edge: laboratory policy cannot
+  override an architectural rule). The mistakes stay in, per the teaching mandate:
+  DEFECT-A (the dossier condemned the mandated nop; the probe discipline inverted it —
+  what the wrong reading reported and why it was believed), DEFECT-B (the misaligned-jump
+  link write, fixed in semantics DATA, pinned by `never_written x5`), and the two
+  authoring REDs (the hand-assembled overlap constant, the systematic trailing paren) —
+  the gates catching the author, not only the model. Every id the chapter names was
+  grep-verified against the tracked corpus as it was written (the sweep is the
+  checklist's evidence); the quoted decision fragments are verbatim substrings of
+  `D-FENCE`'s statement (checked programmatically). No gate extended — the chapter is
+  authored prose, no generated content (26 doctrines, unchanged).
+  Lessons: `promotion: declined (the chapter restates the pipeline the gates already
+  enforce; that is its purpose)`.
 
 - ID: `MODEL-BOOKS.4` — **the references, their configuration, and what agreement is worth**
   Status: `pending`
@@ -294,7 +323,7 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-BOOKS.3` | `pending` | the methodology, once the materials it operates on are documented (the bill landed at `.1`, the gaps chapter — with the PDF investigation answered YES — at `.2`) |
+| 1 | `MODEL-BOOKS.4` | `pending` | the references, their configuration, and what agreement is worth — the materials, gaps and method chapters are landed (`.1`–`.3`), and `.4`'s story is told through the matched-profile control |
 
 (Leaves `.7` — the assembler annex — and `.8` — the step-by-step build walk — land out of
 order on director requests; the per-unit book sequence above is unchanged.)
@@ -464,6 +493,67 @@ order on director requests; the per-unit book sequence above is unchanged.)
   (MODEL-BOOKS 4/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.3`),
   this tree (the open question marked answered).
 
+## Acceptance Checklist (leaf `MODEL-BOOKS.3`)
+
+- [x] **REPRODUCE / ISSUE** — the tree's own gap statement: a methodology that lives only
+  in the task-tree leaves is a methodology nobody can follow end to end. The chapter had
+  to follow ONE rule from its sentence to its check with every hop inspectable.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the rule chosen is the reserved-FENCE rule: its
+  chain is complete in tracked files (the sentence is in the pinned artifact; the
+  decision, requirement, obligation, guest and suites are all tracked), and it carries
+  DEFECT-A — the instructive correction. Every hop was verified to resolve BEFORE the
+  chapter was written:
+
+  ```
+  $ grep -c '(id "D-FENCE")' profiles/rv64i-lab-v0/profile.sexp                      -> 1
+  $ grep -c '"REQ-D-FENCE"' profiles/rv64i-lab-v0/requirements.sexp                  -> 1
+  $ grep -c '"OB-FENCE"' profiles/rv64i-lab-v0/contract-obligations.sexp             -> 2
+  $ grep -o 'CHK-FENCE-POS\|CHK-FENCE-NEG' …/contract-obligations.sexp               -> both
+  $ ls …/guests/fault-fence.s …/guests/fault-fence.expected.sexp                     -> both exist
+  $ grep -c fault_fence_retires_every_reserved_configuration_as_a_fence \
+      crates/semulith-verify/src/run/tests.rs                                        -> 1
+  $ grep -c '"fault-fence"' scripts/run_semulith_smoke.py                            -> 1
+  $ grep -c 'never_written "x5"' …/fault-jal-mis.expected.sexp …/fault-jalr-mis…     -> 1, 1
+  $ python3 scripts/check_citations.py   ->  52 of 52 instruction citations resolve
+  ```
+
+- [x] **FIX** — `docs/models/rv64i-lab-v0/src/methodology.md` (in the book's SUMMARY.md):
+  the pipeline as six gated hops; the FENCE walk with real ids; the two judgement calls
+  (semantic class, authority — each with its mechanical edge named); the mistakes
+  (DEFECT-A, DEFECT-B, the two authoring REDs); the build-it-yourself checklist. The
+  quoted decision fragments were checked programmatically as verbatim substrings of
+  `D-FENCE`'s statement, and the chapter's census claim (28 requirements, four classes)
+  was derived, not remembered.
+
+- [x] **ADDRESSED (verified)** — both books render; the gates stay green:
+
+  ```
+  $ mdbook build docs/models/rv64i-lab-v0
+  INFO HTML book written to `docs/models/rv64i-lab-v0/book`
+  $ make book          # the project book renders
+  $ bash scripts/check_materials_bill.sh [--self-test]   # ok; self-test 7/0
+  $ make gate
+  === all doctrines green ===          (26 — the gate surface unchanged)
+  ```
+
+- [x] **NO REGRESSION** — no generated content landed, so MATERIALS-BILL's surface is
+  unchanged and no gate was extended; measured on the committed tree:
+
+  ```
+  $ git status --short -- scripts/ crates/ | wc -l     # no instrument or crate touched
+  0
+  $ bash scripts/check_materials_bill.sh
+  MATERIALS-BILL: ok (1 unit(s) — generated tables match the pinned data; …)
+  ```
+
+  The only surfaces touched are the new chapter, the book's SUMMARY, the bill's one
+  answered-question sentence, and the lockstep docs.
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten; 5/8), `LIVE_STATUS.md`
+  (MODEL-BOOKS 5/8), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.4`),
+  this tree.
+
 ## Acceptance Checklist (leaf `MODEL-BOOKS.8`)
 
 - [x] **REPRODUCE / ISSUE** — the project book narrates the plan and the working practices;
@@ -523,6 +613,8 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | `2026-09-29` | `MODEL-BOOKS.1` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate` | the model book renders (15 materials, every section with its does-not-supply); the project book renders; 26 doctrines green (DERIVED-COUNTS re-derives 26 / 280 arms; README-ROUTING-CLOSURE 32 destinations) |
 | `2026-09-29` | `MODEL-BOOKS.2` | the PDF investigation (fetch + `pdftotext`, exact commands in the leaf's checklist) | the pinned publication's PDF at the same version segment (`_attachments/riscv-unprivileged.pdf`, HTTP 200, 4,580,174 B, sha256 `06bb3c23…`, 696 pages, `Version 20260120: Official Release`) carries the format tables as selectable text — 232 `[01]{7}` census lines vs 0 on all six pinned HTML/TXT artifacts; the GitHub-release PDF corroborates (269). Answer recorded: YES, encodings can be re-sourced from the primary document (qualifications: different chapter numbering; layout-fragmented extraction); the re-sourcing itself is future reviewed work |
 | `2026-09-29` | `MODEL-BOOKS.2` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26 — the gate surface unchanged); MATERIALS-BILL ok, self-test 7/0 |
+| `2026-09-29` | `MODEL-BOOKS.3` | the id-resolution sweep (every id the chapter names grep-verified against the tracked corpus; the quoted decision fragments programmatically verified as verbatim; the requirement census derived) | every hop resolves: `D-FENCE` / `REQ-D-FENCE` / `OB-FENCE` / CHK-FENCE-POS+NEG / `fault-fence` + expectations / the offline suite / the smoke tuple / the DEFECT-B `never_written` pins; 28 requirements over four semantic classes; citations 52/52 |
+| `2026-09-29` | `MODEL-BOOKS.3` | `mdbook build docs/models/rv64i-lab-v0`; `make book`; `make gate`; `check_materials_bill.sh [--self-test]` | both books render; all doctrines green (26); MATERIALS-BILL ok, self-test 7/0 |
 
 ## Commit Log
 
@@ -530,6 +622,7 @@ order on director requests; the per-unit book sequence above is unchanged.)
 | --- | --- | --- |
 | `MODEL-BOOKS.1` | `SEMILITH-MB-0003 (leaf MODEL-BOOKS.1): …` | the per-unit book structure (`docs/models/<unit-id>/`) and the materials bill: 15 materials, tables generated from the pinned dossier by `gen_model_book.py`, every material's does-not-supply stated; MATERIALS-BILL the 26th doctrine (fired RED before registration); registry repairs (units.sexp's stale book path, fact_ownership +4, readme_routes +1 family) |
 | `MODEL-BOOKS.2` | `SEMILITH-MB-0004 (leaf MODEL-BOOKS.2): …` | the gaps chapter, and the PDF investigation ANSWERED YES with a tool: the pinned publication's own PDF (same version segment, 20260120 Official Release) carries the format tables as selectable text (232 census lines vs 0 in the pinned HTML) — encodings can be re-sourced from the primary document; qualifications recorded (chapter numbering differs; extraction is layout-fragmented); re-sourcing is future reviewed work |
+| `MODEL-BOOKS.3` | `SEMILITH-MB-0005 (leaf MODEL-BOOKS.3): …` | the methodology chapter: the reserved-FENCE rule followed end to end by name (sentence → D-FENCE → REQ-D-FENCE → OB-FENCE → fault-fence → the differentials), the authority/semantic-class judgement calls explained, the mistakes in (DEFECT-A inverted, DEFECT-B fixed in data, the two authoring REDs); every id grep-verified as written |
 | `MODEL-BOOKS.7` | `SEMILITH-MB-0001 (leaf MODEL-BOOKS.7): …` | the assembler annex in the project book — director request, out of order; the per-unit sequence is unchanged |
 | `MODEL-BOOKS.8` | `SEMILITH-MB-0002 (leaf MODEL-BOOKS.8): …` | the step-by-step build walk — director request, out of order like `.7`; chapters 29 → 30 |
 
@@ -551,6 +644,11 @@ order on director requests; the per-unit book sequence above is unchanged.)
   primary document. The qualifications (the PDF's different chapter numbering; the
   layout-fragmented extraction) and the reason the PDF is not catalogued yet are recorded
   in the chapter; the re-sourcing itself is future reviewed work.
+- `2026-09-29`: Leaf `.3` done: the methodology chapter (`src/methodology.md`) — the
+  reserved-FENCE rule followed end to end, by name, from the pinned sentence to the two
+  differentials (six hops, all grep-verified); the authority vs semantic-class judgement
+  calls explained with their mechanical edges; DEFECT-A (inverted), DEFECT-B (fixed in
+  semantics data) and the two authoring REDs kept in as the teaching material.
 - `2026-09-29`: Leaf `.7` done out of order (director request): the project book gains
   `annex/assembler.md` — how `scripts/riscv_asm.py` turns the pinned encoding tables into guest
   bytes, written to the tree's teaching mandate. Chapters 28 → 29.
