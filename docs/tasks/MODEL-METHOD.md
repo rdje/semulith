@@ -3,8 +3,10 @@
 ## Metadata
 
 - Tree ID: `MODEL-METHOD`
-- Status: `done` (13/13 leaves complete `2026-09-27`; the method, the census,
-  the acquisitions, and the coding gate all landed)
+- Status: `active` (reopened `2026-09-29` for `.14` — the `MODEL-BOOKS.2` finding: the
+  pinned specification's own PDF carries the instruction-format tables as selectable text,
+  so the encodings' second provenance may be replaceable by the primary document; the
+  evaluation is director-scheduled)
 - Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
@@ -483,11 +485,36 @@ recorded so it can be overturned on evidence rather than taste:
   gate's verdict rather than a judgement call. Composes with `.10`: a category may be covered while
   the definition is still insufficient, and both must pass.
 
+- ID: `MODEL-METHOD.14` — **evaluate re-sourcing the encodings from the primary-document PDF**
+  Status: `proposed` (director-scheduled — surfaced `2026-09-29`; no work until scheduled)
+  Origin (measured, `MODEL-BOOKS.2`, `2026-09-29`): the pinned unprivileged specification's
+  own PDF rendering (`docs.riscv.org` `v20260120`, `_attachments/riscv-unprivileged.pdf`,
+  4,580,174 B, sha256 `06bb3c23…d150bc`, 696 pages) carries the instruction-format tables as
+  SELECTABLE TEXT — `pdftotext` census `[01]{7}` → 232 lines, vs 0 across all six pinned HTML
+  artifacts (`grep -cE '[01]{7}' target/sources/riscv-v20260120/{intro,rv32,rv64}.{html,txt}`).
+  The base-formats figure (`imm[31:12]`/`rd`/`opcode`/`U-Type`) and the RV32I opcode map
+  (Table 13) extract with bit strings and field names. Today the encodings come from
+  RISCV-OPCODES — a second provenance whose ancestry is shared with spike, not sail
+  (`docs/models/rv64i-lab-v0/src/gaps.md`, `references.md`); re-sourcing from the primary
+  document shrinks that exposure.
+  Goal: decide, by measurement, whether `encoding.sexp` (owned by `.8`) can be re-derived from
+  the primary document's PDF text layer. Probe one form end to end (extract → parse → compare
+  against the current riscv-opcodes-derived entry), estimate the full sweep's cost and
+  verifiability, then record adopt/decline as a decision. Two measured qualifications the probe
+  must handle: the PDF numbers chapters differently from the pinned HTML (a recorded locator
+  mapping is required), and extraction is layout-fragmented (one field per line — parsing is
+  engineering with its own verification, not a copy-paste).
+  Acceptance: the probe's commands and outputs are recorded either way; if adopt, the re-source
+  is its own reviewed leaf with the encoding provenance restated in the dossier and the
+  materials bill; if decline, the reason is measured, not assumed.
+  Not this leaf: changing any encoding data. This leaf is the evaluation only.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | the tree is complete (13/13 leaves done); the method, the census, the acquisitions, and the coding gate all land |
+| 1 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation is real work with its own verification and starts only when the director schedules it |
+| — | — | — | leaves `.1`–`.13` done `2026-09-27`: the method, the census, the acquisitions, and the coding gate all land |
 
 ## Decisions
 
