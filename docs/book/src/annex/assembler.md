@@ -1,0 +1,173 @@
+# Annex: how the tracked assembler works
+
+`scripts/riscv_asm.py` is the project's own RV64I assembler and ELF64 writer — about 500
+lines of dependency-free Python. It exists so that every guest program's bytes can be
+*accounted for*: who encoded them, from which table, with which rule. This chapter walks
+through it the way the code is organized, so that a reader could write an equivalent tool —
+not just agree that this one works.
+
+## Why it exists at all
+
+The laboratory's evidence rules (EVD-05) require a guest's expected observations to be
+derived from the **specification**, never from a model's output. The same discipline applies
+to the program's bytes: they must be encoded independently of the models under test. A
+cross-compiler would encode them fine, but it would be one more artifact whose provenance
+has to be established, installed, and pinned. The assembler is the smaller, auditable thing:
+it reads its encodings from pinned tables, carries **no opcode constant of its own**, and
+refuses anything it cannot derive. A typo in it cannot invent an instruction — it can only
+fail to find one.
+
+## The pipeline it sits in
+
+```text
+riscv-opcodes (pinned upstream, target/refs/riscv-opcodes/)
+    rv_i, rv64_i          fixed bits + operand list per instruction
+    arg_lut.csv           where each operand field sits in the 32-bit word
+    constants.py          how the B/J immediates are scattered
+        │  scripts/gen_fragments.py
+        ▼
+definitions/riscv/rv64i.sexp        the reusable fragment (tracked, the one format)
+        │  composed by
+        ▼
+profiles/rv64i-lab-v0/encoding.sexp the unit's composition document (tracked)
+        │  Assembler(encoding.sexp) — resolve_composition() merges the fragments
+        ▼
+   instruction words ──► gen_guests.py ──► crates/semulith-verify/src/guests.rs
+                     └──► write_elf64() ──► the ELF the live experiment runs
+```
+
+Two read paths exist, and the asymmetry is deliberate: the **canonical** path reads the
+tracked `encoding.sexp` — the encodings the repository owns, so a fresh clone can build
+every guest with no network and no upstream checkout. The upstream-table path exists only
+so `gen_fragments.py` can *re-derive* the canonical fragment from the pinned upstream, and
+a gate (`scripts/check_definition_gen.sh`, and the fragment's own regeneration check) keeps
+the derived artifact honest.
+
+## The tables, and what a line means
+
+A line in `rv_i` is a name, then operands and fixed-bit assignments:
+
+```text
+addi    rd rs1 imm12           14..12=0 6..2=0x04 1..0=3
+add     rd rs1 rs2 31..25=0  14..12=0 6..2=0x0C 1..0=3
+beq     bimm12hi rs1 rs2 bimm12lo 14..12=0 6..2=0x18 1..0=3
+```
+
+Reading `addi` aloud: bits 14..12 (the funct3 field) are 0, bits 6..2 are 0x04, bits 1..0
+are 3 — and the remaining fields are the operands `rd`, `rs1`, `imm12`. Where those fields
+*sit* is a separate table, `arg_lut.csv`:
+
+```text
+"rd", 11, 7
+"imm12", 31, 20
+"shamtd", 25, 20
+```
+
+So encoding `addi x9, x8, -2048` is: start from zero, OR in the fixed bits, place `x9` into
+bits 11..7, `x8` into bits 19..15, and `-2048 & 0xFFF` into bits 31..20. Every placement goes
+through one width-checked helper (`_place`): a value that does not fit its field is refused,
+never masked.
+
+## Composition: a unit never copies an instruction
+
+`encoding.sexp` does not list instructions; it *composes* fragments
+(`(compose (base "riscv/rv64i") (extensions))`). One resolver — `resolve_composition()` —
+turns that into the merged instruction set, and it is shared by the assembler and the
+composition checker on purpose: a second, hand-written resolver was a measured regression
+source (`MODEL-COMPOSE.4`), so there is exactly one. A fragment that names a `requires` the
+composition has not provided is refused by name — a fragment with an unmet dependency would
+compose by luck, not by construction.
+
+## The three operand classes
+
+1. **Fixed bits** — placed verbatim from the table.
+2. **Contiguous fields** — `rd`, `rs1`, `rs2`, `imm12`, `imm20`, the shift amounts `shamtd`
+   (6 bits) and `shamtw` (5 bits), FENCE's `fm`/`pred`/`succ`, and the S-type pair
+   `imm12hi`/`imm12lo`. Each is range-checked against the architecture's rule: a 12-bit
+   immediate must lie in −2048..2047, a shift amount in its field's width, a register in
+   x0..x31. The S-type stores *one* immediate split across two fields; the assembler takes
+   the byte offset once and splits it itself.
+3. **Scrambled fields** — the B- and J-type immediates, spread across non-adjacent bits.
+   Their layout is *derived, not typed*: `constants.py` states it in machine-readable form,
+   and the assembler parses those descriptors:
+
+   ```text
+   "bimm12hi": "imm[12|10:5]"      "bimm12lo": "imm[4:1|11]"
+   "jimm20":   "imm[20|10:1|11|19:12]"
+   ```
+
+   The derivation is **self-validating**: the bits a descriptor accounts for must total
+   exactly the field's width from `arg_lut.csv` (7, 5, and 20 respectively), or the table is
+   refused. A silently wrong immediate is an instruction that assembles and jumps to the
+   wrong address — so a layout the assembler cannot reconcile is a layout it will not use.
+
+Two conventions fall out of the specification and are enforced here: branch and jump offsets
+are in **bytes**, and bit 0 is not encoded (offsets are "signed multiples of 2 bytes") — an
+odd offset is refused rather than silently truncated.
+
+## The front-end: two passes, deliberate smallness
+
+`assemble()` makes two passes because a branch may target a label defined *later*: pass one
+records statements and label addresses, pass two resolves a label operand to
+`target − pc` — exactly what the specification means by "added to the address of the branch
+instruction". Duplicate and undefined labels are refused.
+
+Registers are accepted only as `x0`..`x31`. ABI names (`ra`, `sp`, `a0`, …) are a software
+convention, not architecture, and the assembler deliberately does not know them — a guest
+that means `x1` says `x1`, and the trace, the expectations, and the source all speak the
+same names. Pseudo-instructions (`li`, `mv`, `nop`, …) are likewise absent: every line of a
+guest is a real instruction with a real encoding, so a reader never has to wonder what a
+shorthand expanded to.
+
+## The ELF writer — and a measured harness difference
+
+`write_elf64()` wraps the words in a minimal ELF64 little-endian RISC-V executable: one
+`PT_LOAD` segment at the entry address. Notably, it emits a **section header table even
+though execution does not need one** — because of a measured difference between the two
+reference models: Sail loaded and ran a sectionless ELF without complaint; Spike refused it
+outright (`elfloader.cc` asserts `e_shstrndx < e_shnum`, and `0 < 0` is false). That is a
+*harness* difference, not a semantic one, and the right response is to emit the conformant
+artifact rather than carry a per-model variant — an input only one comparator accepts is not
+a matched experiment.
+
+## The refusal discipline
+
+Every failure is an `AsmError` that names what could not be derived — an unknown mnemonic, a
+malformed register, an immediate out of range, an odd branch offset, a table whose shape
+changed, a fragment whose dependency is unmet. The principle is the project's general one:
+**a generator that guesses is a second definition.** The assembler's value as evidence
+machinery is precisely that its output is a pure function of tracked, pinned inputs — and
+that everything else is a loud refusal.
+
+## What it does not claim
+
+The pinned specification artifacts do not contain the encodings (the format diagrams are
+images — measured: zero bit-pattern strings in any of them), so the encodings come from
+`riscv-opcodes`, which is *also* upstream of Sail and Spike. That shared ancestry is stated,
+not hidden: byte-level agreement with the references is **not** an independent confirmation
+of the encodings. The recorded mitigation (P0-PROFILE.6) is a second decoder from a
+different codebase — `spike-dasm` was asked to disassemble the emitted bytes and required to
+return the mnemonics that were requested. What the live differential independently confirms
+is the *semantics*, which is what it is for.
+
+## Try it
+
+```sh
+# assemble two instructions by hand, from the canonical composition:
+python3 - <<'EOF'
+import sys; sys.path.insert(0, "scripts")
+from pathlib import Path
+from riscv_asm import Assembler
+asm = Assembler(Path("profiles/rv64i-lab-v0/encoding.sexp"))
+for word, text in asm.assemble(["loop: addi x1, x1, -1", "bne x1, x0, loop"]):
+    print(f"{word:#010x}  {text}")
+EOF
+
+# the guests the commit gate runs are generated through this same assembler:
+python3 scripts/gen_guests.py --check     # refuses drift between guests.rs and the sources
+```
+
+The chapter on the laboratory's guests (see *P2 — the first validated profile*) shows what
+those bytes are for: every value they produce was predicted from the specification before
+any model ran, and the assembler is how the *program* side of that experiment stays equally
+accountable.

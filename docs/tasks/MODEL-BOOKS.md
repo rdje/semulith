@@ -133,6 +133,28 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
   profile directory.
   Acceptance: adding a profile without a book fails the gate; `make book` builds all books.
 
+- ID: `MODEL-BOOKS.7` — **annex: how the tracked assembler works**
+  Status: `done` (`2026-09-29`, director request)
+  Goal: a teaching chapter in the PROJECT book (`docs/book/`) that explains
+  `scripts/riscv_asm.py` end to end — why it exists, where the encodings come from, how one
+  instruction is encoded, and why it refuses — written so a reader could build one, not just
+  agree with it (the tree's teaching mandate, applied to the one piece of machinery that turns
+  the pinned tables into guest bytes).
+  Acceptance: `make book` renders it; every mechanism it states is the mechanism the code
+  carries; prose dominates.
+  Placement decision: the annex lives in the project book (`annex/assembler.md`), not the
+  per-unit book, because the per-unit book structure is `.1` (unbuilt) and the assembler is
+  shared project machinery, not one unit's data. When `.1` lands, the model book REFERENCES
+  the annex; it does not copy it (this tree's first decision: never a second owner of a fact).
+  Result: met, `2026-09-29`. The chapter follows the module's own spine: why it exists
+  (EVD-05), the table pipeline (pinned `riscv-opcodes` → fragments → composition → bytes),
+  the three operand classes (fixed bits, contiguous fields, the derived B/J scramble with its
+  accounted-bits self-check), the two-pass label front-end, the ELF writer (including the
+  measured Spike refusal that put a section table in), and the refusal discipline
+  (`AsmError` — never a guess). Book chapters 28 → 29 (the count is re-derived by
+  `DERIVED-COUNTS`; `LIVE_STATUS.md` restates it).
+  Lessons: `promotion: declined (no new lesson — the chapter restates mechanisms the code and the gates already carry; that is its purpose)`.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -140,6 +162,9 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 | 1 | `MODEL-BOOKS.1` | `pending` | the structure has to exist before any chapter can live in it, and the materials bill is the deliverable the reviewer asked for first |
 | 2 | `MODEL-BOOKS.2` | `pending` | the honest counterpart to the bill, and it carries a real investigation that may change where encodings come from |
 | 3 | `MODEL-BOOKS.3` | `pending` | the methodology, once the materials it operates on are documented |
+
+(Leaf `.7` — the assembler annex — landed out of order on a director request; the per-unit
+book sequence above is unchanged.)
 
 ## Decisions
 
@@ -181,15 +206,20 @@ methodology that lives only in nine task-tree leaves is a methodology nobody can
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 | `2026-09-14` | `MODEL-BOOKS.1` | `pending` | `pending` |
+| `2026-09-29` | `MODEL-BOOKS.7` | `make book`; `make gate` | renders; all doctrines green |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `MODEL-BOOKS.1` | `pending` | `pending` |
+| `MODEL-BOOKS.7` | `SEMILITH-MB-0001 (leaf MODEL-BOOKS.7): …` | the assembler annex in the project book — director request, out of order; the per-unit sequence is unchanged |
 
 ## Changelog
 
 - `2026-09-14`: Created. A model's materials and the methodology that turned them into a model had
   no reviewable home: the facts existed as 13 files of TOML/JSONL under `profiles/rv64i-lab-v0/`,
   and the single project book narrates the plan rather than any one model.
+- `2026-09-29`: Leaf `.7` done out of order (director request): the project book gains
+  `annex/assembler.md` — how `scripts/riscv_asm.py` turns the pinned encoding tables into guest
+  bytes, written to the tree's teaching mandate. Chapters 28 → 29.

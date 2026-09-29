@@ -43,4 +43,8 @@
 - [The doctrine gates](working/doctrines.md)
 - [Provenance and frozen records](working/provenance.md)
 
+# Annexes
+
+- [How the tracked assembler works](annex/assembler.md)
+
 [Glossary](glossary.md)

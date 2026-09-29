@@ -14,7 +14,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Project doctrines (24 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 261 arms, all fired RED before registration; the list is not mirrored here (a hand-kept name list is how SCOPE-COVERAGE's row went missing for a milestone) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 31 destinations governed; containment deferred with a trigger |
-| mdBook is the review surface | Done | 28 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
+| mdBook is the review surface | Done | 29 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — index, doctrine documents, task-tree facts, derived counts |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
@@ -30,7 +30,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
 | Canonical definition (engine input) | In Progress | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 13 of 13 leaves — closed — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
 | Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`) |
-| Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 0/6 — one definition, one mdBook |
+| Per-unit books | Not Started | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 1/7 — one definition, one mdBook; `.7` annexed the assembler in the project book |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 

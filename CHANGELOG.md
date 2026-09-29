@@ -1,5 +1,27 @@
 # CHANGELOG.md
 
+## SEMILITH-MB-0001 (leaf MODEL-BOOKS.7) — annex: how the tracked assembler works
+
+- Director request: the project book gains `annex/assembler.md`, a teaching chapter on
+  `scripts/riscv_asm.py` — why it exists (EVD-05: guest bytes encoded independently of the
+  models under test), the table pipeline (pinned `riscv-opcodes` → fragments → the unit's
+  composition → words → `guests.rs` / ELF), the three operand classes (fixed bits;
+  width-checked contiguous fields; the B/J scramble derived from the pinned descriptors with
+  the accounted-bits == field-width self-check), the two-pass label front-end (x0..x31 only,
+  no ABI names, no pseudo-ops — deliberate), the ELF writer (the section table exists because
+  Spike's loader was measured refusing a sectionless ELF), and the refusal discipline
+  (`AsmError` — never a guess; a generator that guesses is a second definition). The shared
+  ancestry of the encodings (riscv-opcodes is upstream of Sail and Spike) is stated, with the
+  spike-dasm round-trip as the recorded mitigation.
+- Out of order: leaf `.7` lands while `.1`–`.6` are pending — the per-unit book sequence is
+  unchanged; the annex lives in the project book because the assembler is shared project
+  machinery and the per-unit book structure is unbuilt (`.1`). Placement recorded in the tree.
+- Verification: `make book` renders the chapter (28 → 29 chapters); the chapter's "Try it"
+  snippet was executed, not imagined (`addi x1, x1, -1` → `0xfff08093`, label-resolved `bne`
+  → `0xfe009ee3`); `make gate` green.
+- Lockstep: MEMORY (MODEL-BOOKS 1/7), LIVE_STATUS (29 chapters, MODEL-BOOKS 1/7),
+  CHANGELOG/DEV_NOTES, the tree (frontier `.1` unchanged), and the book itself.
+
 ## SEMILITH-PS-0003 (leaf P2-SCALAR.2) — boundary arithmetic and state interactions: the shamt domains exhausted
 
 - Five boundary guests, every expectation value derived from the pinned specification before any model ran (`EVD-05`): `bound-shift` (89 steps — the **6-bit shamt domain exhausted** by one `srli` sweep over all 64 amounts of `0x8000000000000001`; `slli`/`srai` pinned at {0,1,2,4,8,16,32,63}; register-amount corners rs2 = 64 → reads as 0, pre-written to stay visible, and rs2 = -1 → 63), `bound-shiftw` (55 steps — the **5-bit domain exhausted** by one `sraiw` sweep; the rs2 = 96 `srl`/`srlw` pair on identical operands answers 0x00000000FFFFFFFF vs the sign-extended identity, pinning the 6-bit vs 5-bit read), `bound-arith` (31 steps — INT64_MAX + 1 / INT64_MIN - 1 wraps on the register AND immediate paths, *W wraps with a garbage upper half provably ignored, `slt`/`sltu` at the extremes, `auipc 0x80000` wrapping the address sum modulo 2^64 to exactly 4·n), `bound-ext` (47 steps — the sign edges 0x7F/0x80, 0x7FFF/0x8000, 0x7FFFFFFF/0x80000000 as sign/zero PAIRS at one address, the 0x00 byte through a pre-write, store truncation at non-clamping values; 32 census-pinned crossings), `bound-alias` (37 steps — the little-endian lane proof, overlap composition `sd`+`sb`+`sh`+`ld`, register aliasing incl. a load over its own base register, x0 in both directions; 16 crossings).
