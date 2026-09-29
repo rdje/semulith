@@ -195,6 +195,24 @@ pub const MUTATIONS: &[(&str, &str)] = &[
 ///   `lbu` lane reads, the overlapping `sb`/`sh`, two `ld` read-backs, the base-overwriting
 ///   `lb`, and the `sw x0` zero store — every one inside the declared region, aligned,
 ///   none faulted.
+/// - `fault-jal-mis.s`, `fault-jalr-mis.s`, `fault-branch-nt.s`, `fault-reserved.s`,
+///   `fault-shiftw-res.s`, `fault-fence.s`, `fault-hints.s` (`P2-SCALAR.3`): no load or
+///   store instruction exists in these programs.
+/// - `fault-fetch.s` (`P2-SCALAR.3`): no load or store instruction — its fault is the
+///   FETCH at the jump's target, and a fetch is not a data crossing.
+/// - `fault-ld-mis-h.s`, `fault-ld-mis-d.s`, `fault-st-mis-h.s`, `fault-st-mis-w.s`,
+///   `fault-st-mis-d.s`, `fault-ld-x0-mis.s` (`P2-SCALAR.3`): each misaligned access is
+///   judged BEFORE the boundary is crossed (D-MISALIGN-DATA; the suppressed effect,
+///   SEM-06) — zero data crossings, which is the observation these guests exist to pin.
+/// - `fault-ld-x0-fault.s` (`P2-SCALAR.3`): one `ld x0, 0(x11)` at 0x4000_0000 — outside
+///   every declared region, so the crossing is recorded and answered AccessFault (step 1);
+///   the discarded destination suppresses nothing (D-LOAD-X0).
+/// - `fault-access-ld.s` (`P2-SCALAR.3`): one `ld x1, 0(x11)` at 0x4000_0000 — outside
+///   every declared region, answered AccessFault (step 1).
+/// - `fault-access-sd.s` (`P2-SCALAR.3`): one `sd x1, 0(x11)` at 0x4000_0000 — outside
+///   every declared region, answered AccessFault (step 2).
+/// - `fault-selfmod.s` (`P2-SCALAR.3`): one `sw x1, 12(x3)` at 0x8000_0014 — inside the
+///   declared region, aligned, not faulted; the D-CODE-VISIBILITY patch itself (step 3).
 pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
     match guest {
         "smoke-arith" => &[(
@@ -361,6 +379,45 @@ pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
         ],
         "scope-alu" | "scope-branch" | "scope-ecall" | "scope-ebreak" => &[],
         "bound-shift" | "bound-shiftw" | "bound-arith" => &[],
+        "fault-jal-mis" | "fault-jalr-mis" | "fault-branch-nt" | "fault-reserved"
+        | "fault-shiftw-res" | "fault-fence" | "fault-hints" => &[],
+        "fault-fetch" => &[],
+        "fault-ld-mis-h" | "fault-ld-mis-d" | "fault-st-mis-h" | "fault-st-mis-w"
+        | "fault-st-mis-d" | "fault-ld-x0-mis" => &[],
+        "fault-ld-x0-fault" => &[(
+            1,
+            Request::Load {
+                width: AccessWidth::D,
+                addr: 0x4000_0000,
+            },
+            true,
+        )],
+        "fault-access-ld" => &[(
+            1,
+            Request::Load {
+                width: AccessWidth::D,
+                addr: 0x4000_0000,
+            },
+            true,
+        )],
+        "fault-access-sd" => &[(
+            2,
+            Request::Store {
+                width: AccessWidth::D,
+                addr: 0x4000_0000,
+                data: 9,
+            },
+            true,
+        )],
+        "fault-selfmod" => &[(
+            3,
+            Request::Store {
+                width: AccessWidth::W,
+                addr: 0x8000_0014,
+                data: 0x0070_0113,
+            },
+            false,
+        )],
         "bound-ext" => &[
             (
                 14,
@@ -789,10 +846,10 @@ pub fn table_for(mutation: &str) -> Option<Vec<InsnDef>> {
         "jal-no-link" => Some(table_with_effect("jal", |sem| match sem {
             Sem::Seq(steps)
                 if steps.len() == 2
-                    && matches!(steps[0], Sem::Set(..))
-                    && matches!(steps[1], Sem::SetPc(..)) =>
+                    && matches!(steps[0], Sem::SetPc(..))
+                    && matches!(steps[1], Sem::Set(..)) =>
             {
-                Some(rebuild(steps[1], &|_| None))
+                Some(rebuild(steps[0], &|_| None))
             }
             _ => None,
         })),

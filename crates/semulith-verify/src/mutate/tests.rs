@@ -223,6 +223,15 @@ fn the_data_crossing_census_pins_every_tracked_guest() {
     // public surface (`super::pinned_census`) — this test pins its CONTENT against the runs.
     let want_stop = |name: &str| match name {
         "smoke-trap" | "guest-no-device" | "scope-ecall" | "scope-ebreak" => Stop::Trap,
+        // The P2-SCALAR.3 fault guests: a contained trap ends most; the fetch fault keeps
+        // its own stop reason, the two reserved guests keep their source classification,
+        // and the four suppressed-effect/nop guests retire into the budget.
+        "fault-fetch" => Stop::FetchFault { at: 0x4000_0000 },
+        "fault-reserved" | "fault-shiftw-res" => {
+            Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 })
+        }
+        "fault-branch-nt" | "fault-fence" | "fault-hints" | "fault-selfmod" => Stop::Budget,
+        n if n.starts_with("fault-") => Stop::Trap,
         _ => Stop::Budget,
     };
     for guest in GUESTS {
@@ -330,10 +339,10 @@ fn suppressed_register_write_is_detected() {
     let table = table_with_effect("jal", |sem| match sem {
         Sem::Seq(steps)
             if steps.len() == 2
-                && matches!(steps[0], Sem::Set(..))
-                && matches!(steps[1], Sem::SetPc(..)) =>
+                && matches!(steps[0], Sem::SetPc(..))
+                && matches!(steps[1], Sem::Set(..)) =>
         {
-            Some(rebuild(steps[1], &|_| None)) // the transfer, without the link write
+            Some(rebuild(steps[0], &|_| None)) // the transfer, without the link write
         }
         _ => None,
     });
@@ -383,7 +392,21 @@ fn jalr_keeping_its_odd_bit_is_detected() {
         ("reference", "odd-bit mutant"),
     );
     assert_eq!(d.at, 10);
-    assert!(d.what.contains("trap"), "names the trap: {}", d.what);
+    // The first differing field is the LINK WRITE: the honest model clears the bit,
+    // transfers to the aligned 0x80000028 and writes x10 = pc+4; the mutant keeps the
+    // odd bit and faults BEFORE the link write retires (the P2-SCALAR.3 ordering —
+    // a synchronous exception retires no write), so its trap shows in the step pair
+    // but the walk names the register first.
+    assert!(
+        d.what.contains("x10"),
+        "names the link register: {}",
+        d.what
+    );
+    assert_eq!(
+        mutant.steps[10].writes,
+        Vec::new(),
+        "the mutant's trap retires no link write"
+    );
 }
 
 // ---- designated class: wrong trap cause ----------------------------------------------------------
@@ -440,8 +463,14 @@ fn illegal_instruction_substituted_for_a_limitation_is_detected() {
         "GREEN: fence is D-FENCE's nop and the program retires"
     );
     assert_eq!(reference.steps[1].writes, vec![(1, 1)]);
-    // The limitation, honestly carried: the fence word is reserved for the limited model,
-    // and the undefined case is never converted to a trap (D-RESERVED-DECODE; SEM-01).
+    // The limitation, honestly carried: the fence word is reserved for the limited model.
+    // The interpreter reports the undefined case; the laboratory's declared D-RESERVED-DECODE
+    // policy — an act of the HARNESS (run.rs), never of the model — then converts it to the
+    // illegal-instruction observation, and the stop reason keeps the classification (SEM-01,
+    // SEM-07). So at the observation level the honest limited model and the SEM-02-violating
+    // substitute now produce the SAME step — the policy says so — and the distinction lives
+    // exactly where SEM-02 put it: the model's own report (the stop reason), which the
+    // substituting model has laundered into a target trap.
     let (honest, _) = run_under(&words, 2, &table_without("fence"));
     assert!(
         matches!(
@@ -451,18 +480,23 @@ fn illegal_instruction_substituted_for_a_limitation_is_detected() {
         "the limitation is carried as the undefined case, not a trap: {:?}",
         honest.stop
     );
-    assert!(honest.steps.is_empty());
-    assert!(
-        !honest
-            .steps
-            .iter()
-            .any(|s| s.trap.map(|(cause, _)| cause) == Some(0x02)),
-        "SEM-02: no IllegalInstruction observation may come out of a model limitation"
+    assert_eq!(
+        honest.steps,
+        vec![Step {
+            pc: ENTRY,
+            word: Some(words[0]),
+            writes: Vec::new(),
+            trap: Some((0x02, u64::from(words[0]))),
+        }],
+        "the laboratory's declared policy conversion, and nothing else"
     );
-    // The violation: the same limitation dressed as a target IllegalInstruction trap.
+    // The violation: the same limitation dressed as a target IllegalInstruction trap — the
+    // observation is identical BY POLICY, so the detector reads the stop reason: a model
+    // whose limitation surfaces as Stop::Trap fabricated the trap the honest model reported
+    // as Undefined.
     let fabricated = Step {
         pc: ENTRY,
-        word: words[0],
+        word: Some(words[0]),
         writes: Vec::new(),
         trap: Some((0x02, u64::from(words[0]))),
     };
@@ -554,7 +588,7 @@ fn shifted_event_delivery_is_detected_at_its_due_step() {
     deferred.steps[2].trap = None;
     deferred.steps.push(Step {
         pc: ENTRY + 12,
-        word: 0,
+        word: Some(0),
         writes: Vec::new(),
         trap: Some(trap),
     });

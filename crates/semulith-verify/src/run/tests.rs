@@ -9,7 +9,7 @@ use semulith_core::env::{AccessWidth, Request};
 fn step(pc: u64, word: u32, writes: &[(u8, u64)], trap: Option<(u8, u64)>) -> Step {
     Step {
         pc,
-        word,
+        word: Some(word),
         writes: writes.to_vec(),
         trap,
     }
@@ -158,7 +158,7 @@ fn runner_records_observations_and_crossings() {
     assert_eq!(trace.stop, Stop::Budget);
     assert_eq!(trace.steps.len(), 2);
     assert_eq!(trace.steps[0].pc, ENTRY);
-    assert_eq!(trace.steps[0].word, 0x0050_0093);
+    assert_eq!(trace.steps[0].word, Some(0x0050_0093));
     assert_eq!(trace.steps[0].writes, vec![(1, 5)]);
     assert_eq!(trace.steps[1].writes, vec![(2, 4)]);
     // one fetch per step, no more (OB-ENV-FETCH-SUPPLY's no-extraneous-fetch clause).
@@ -179,7 +179,7 @@ fn runner_stops_at_a_trap_with_the_trapping_step_last() {
     assert_eq!(trace.steps.len(), 2);
     let last = &trace.steps[1];
     assert_eq!(last.pc, ENTRY + 4);
-    assert_eq!(last.word, 0x0020_a183);
+    assert_eq!(last.word, Some(0x0020_a183));
     assert_eq!(last.writes, vec![]);
     assert_eq!(last.trap, Some((0x04, 7)));
     // The misaligned load never crossed the boundary: the only load-class crossing is
@@ -200,8 +200,11 @@ fn runner_never_records_an_x0_write() {
 #[test]
 fn runner_observes_stores_in_the_crossing_log() {
     // addi x1, x0, 5 ; addi x2, x0, 1 ; slli x2, x2, 31 (x2 = ENTRY) ; sb x1, 16(x2).
+    // Budget 4 stops the run exactly at the program's end: past it lies zeroed memory,
+    // whose words are reserved decodes — which the runner now converts and RECORDS
+    // (D-RESERVED-DECODE's policy step), so an over-generous budget would add a step.
     let mut env = flat(&[0x0050_0093, 0x0010_0113, 0x01F1_1113, 0x0011_0823]);
-    let (trace, crossings) = run(&mut env, ENTRY, 8);
+    let (trace, crossings) = run(&mut env, ENTRY, 4);
     assert_eq!(trace.steps.len(), 4);
     let stored = crossings.iter().any(|c| {
         matches!(
@@ -218,16 +221,49 @@ fn runner_observes_stores_in_the_crossing_log() {
 }
 
 #[test]
-fn fetch_fault_stops_without_a_fiction_step() {
-    // Empty memory region: the very first fetch is outside it... an empty region cannot be
-    // built, so place no image and fetch from the region's end via entry just past the top.
+fn fetch_fault_records_the_word_less_step() {
+    // Entry just past the region's top: the very first fetch faults. The observation is
+    // the honest step — the pc, the trap the rule reports, and NO word (a fetch that
+    // failed supplied none; inventing one would put a fiction in the vocabulary).
     let mut env = FlatMemory::new(ENTRY, 0x1000);
     let (trace, crossings) = run(&mut env, ENTRY + 0x1000, 4);
-    assert_eq!(trace.steps, vec![]);
+    assert_eq!(
+        trace.steps,
+        vec![Step {
+            pc: ENTRY + 0x1000,
+            word: None,
+            writes: Vec::new(),
+            trap: Some((0x01, ENTRY + 0x1000)),
+        }]
+    );
     assert_eq!(trace.stop, Stop::FetchFault { at: ENTRY + 0x1000 });
     assert!(crossings
         .iter()
         .any(|c| matches!(c.request, Request::Fetch { addr } if addr == ENTRY + 0x1000)));
+}
+
+#[test]
+fn reserved_decode_is_converted_by_policy_and_keeps_its_classification() {
+    // addi x1, x0, 5, then a word no row matches (zeroed memory): the interpreter reports
+    // the reserved case; the laboratory's D-RESERVED-DECODE policy — the harness's act,
+    // never the interpreter's — converts it to the illegal-instruction observation with
+    // the reserved word as tval, and the stop reason keeps the source classification.
+    let mut env = flat(&[0x0050_0093]);
+    let (trace, _) = run(&mut env, ENTRY, 4);
+    assert_eq!(trace.steps.len(), 2);
+    assert_eq!(
+        trace.steps[1],
+        Step {
+            pc: ENTRY + 4,
+            word: Some(0),
+            writes: Vec::new(),
+            trap: Some((0x02, 0)),
+        }
+    );
+    assert!(matches!(
+        trace.stop,
+        Stop::Undefined(UndefinedCase::ReservedDecode { at }) if at == ENTRY + 4
+    ));
 }
 
 // ---- the tracked guests: the offline differential, commitment-gated ----------------------------
@@ -333,7 +369,7 @@ fn smoke_trap_reports_the_misaligned_load_and_stops() {
     // The pinned derivation: cause 0x04 (misaligned load), tval 0x80000401; x1 never
     // written (checked by the shared assertion helper's caller via never_written data).
     let last = &trace.steps[2];
-    assert_eq!(last.word, 0x4015_2083);
+    assert_eq!(last.word, Some(0x4015_2083));
     assert_eq!(last.writes, vec![]);
     assert_eq!(last.trap, Some((0x04, 0x8000_0401)));
 }
@@ -383,7 +419,7 @@ fn scope_ecall_reports_the_requested_trap_and_stops() {
     assert_guest_observations("scope-ecall", Stop::Trap);
     let (trace, _, _) = run_guest("scope-ecall");
     let last = &trace.steps[1];
-    assert_eq!(last.word, 0x0000_0073);
+    assert_eq!(last.word, Some(0x0000_0073));
     assert_eq!(last.writes, vec![]);
     assert_eq!(last.trap, Some((0x0B, 0x0)));
 }
@@ -394,7 +430,7 @@ fn scope_ebreak_reports_the_requested_trap_and_stops() {
     assert_guest_observations("scope-ebreak", Stop::Trap);
     let (trace, _, _) = run_guest("scope-ebreak");
     let last = &trace.steps[1];
-    assert_eq!(last.word, 0x0010_0073);
+    assert_eq!(last.word, Some(0x0010_0073));
     assert_eq!(last.writes, vec![]);
     assert_eq!(last.trap, Some((0x03, 0x8000_0004)));
 }
@@ -442,4 +478,225 @@ fn bound_alias_matches_its_specification_derived_expectations() {
     // self-referential shift, a load overwriting its own base register), and x0 hardwired
     // in both directions (a discarded write, a zero store read back through ld).
     assert_guest_observations("bound-alias", Stop::Budget);
+}
+
+// ---- the P2-SCALAR.3 fault, suppression and reserved guests ---------------------------------------
+
+#[test]
+fn fault_jal_mis_traps_on_the_jump_and_never_writes_the_link() {
+    // D-IALIGN + D-MISALIGN-REPORT: jal to 0x80000006 raises ON THE JUMP, tval = the
+    // target — and the DEFECT-B pin: the link write is suppressed (never_written x5),
+    // exactly as both references were measured to behave.
+    assert_guest_observations("fault-jal-mis", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-jal-mis");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, Some(0x0020_02EF));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x00, 0x8000_0006)));
+}
+
+#[test]
+fn fault_jalr_mis_traps_on_the_jump_and_never_writes_the_link() {
+    // D-JALR-LSB clears only bit 0: x1 = 3 yields target 2 — misaligned under IALIGN=32,
+    // raised ON THE JUMP, tval = 2, link write suppressed (never_written x5).
+    assert_guest_observations("fault-jalr-mis", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-jalr-mis");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, Some(0x0000_82E7));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x00, 0x2)));
+}
+
+#[test]
+fn fault_branch_nt_raises_nothing_on_not_taken_misaligned_targets() {
+    // The suppressed-effect guest (SEM-06): six branches point at misaligned targets and
+    // none is taken, so nothing is raised; the fall-through writes all happen, and the
+    // taken aligned branch at the end proves the branches were live (never_written x8).
+    assert_guest_observations("fault-branch-nt", Stop::Budget);
+    let (trace, _, _) = run_guest("fault-branch-nt");
+    assert!(
+        trace.steps.iter().all(|s| s.trap.is_none()),
+        "no step raises anything: the whole point of the guest"
+    );
+}
+
+#[test]
+fn fault_fetch_reports_the_word_less_step_on_the_target() {
+    // D-FETCH-FAULT-REPORT: the fetch at the jump's target 0x40000000 faults, reported
+    // ON THE TARGET — the vocabulary's word-less step: no word was fetched, so none is
+    // recorded, and the run stops with Stop::FetchFault.
+    assert_guest_observations("fault-fetch", Stop::FetchFault { at: 0x4000_0000 });
+    let (trace, _, _) = run_guest("fault-fetch");
+    let last = &trace.steps[2];
+    assert_eq!(last.pc, 0x4000_0000);
+    assert_eq!(last.word, None);
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x01, 0x4000_0000)));
+}
+
+#[test]
+fn fault_ld_mis_h_reports_the_misaligned_halfword_load() {
+    // D-MISALIGN-DATA, the 2-byte case at an odd address: cause 0x04, x1 never written.
+    assert_guest_observations("fault-ld-mis-h", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-ld-mis-h");
+    assert_eq!(trace.steps[2].trap, Some((0x04, 0x8000_0401)));
+}
+
+#[test]
+fn fault_ld_mis_d_reports_the_half_aligned_doubleword_load() {
+    // The width rule: 0x80000404 passes a 4-byte test and fails the 8-byte one.
+    assert_guest_observations("fault-ld-mis-d", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-ld-mis-d");
+    assert_eq!(trace.steps[2].trap, Some((0x04, 0x8000_0404)));
+}
+
+#[test]
+fn fault_st_mis_h_suppresses_the_store_before_the_boundary() {
+    // D-MISALIGN-DATA on the store side (SEM-06): cause 0x06, and the store never
+    // crosses the boundary — the crossing log carries no store at all.
+    assert_guest_observations("fault-st-mis-h", Stop::Trap);
+    let (trace, crossings, _) = run_guest("fault-st-mis-h");
+    assert_eq!(trace.steps[3].trap, Some((0x06, 0x8000_0401)));
+    assert!(!crossings
+        .iter()
+        .any(|c| matches!(c.request, Request::Store { .. } | Request::Load { .. })));
+}
+
+#[test]
+fn fault_st_mis_w_suppresses_the_store_before_the_boundary() {
+    // The 4-byte store at 2 mod 4: cause 0x06, no store crossing.
+    assert_guest_observations("fault-st-mis-w", Stop::Trap);
+    let (trace, crossings, _) = run_guest("fault-st-mis-w");
+    assert_eq!(trace.steps[3].trap, Some((0x06, 0x8000_0402)));
+    assert!(!crossings
+        .iter()
+        .any(|c| matches!(c.request, Request::Store { .. } | Request::Load { .. })));
+}
+
+#[test]
+fn fault_st_mis_d_suppresses_the_store_before_the_boundary() {
+    // The 8-byte store at 4 mod 8: cause 0x06, no store crossing.
+    assert_guest_observations("fault-st-mis-d", Stop::Trap);
+    let (trace, crossings, _) = run_guest("fault-st-mis-d");
+    assert_eq!(trace.steps[3].trap, Some((0x06, 0x8000_0404)));
+    assert!(!crossings
+        .iter()
+        .any(|c| matches!(c.request, Request::Store { .. } | Request::Load { .. })));
+}
+
+#[test]
+fn fault_ld_x0_mis_still_raises_with_a_discarded_destination() {
+    // D-LOAD-X0 on the misaligned path: the discarded destination suppresses NOTHING —
+    // the misaligned load into x0 raises cause 0x04 exactly as an ordinary register's.
+    assert_guest_observations("fault-ld-x0-mis", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-ld-x0-mis");
+    assert_eq!(trace.steps[2].trap, Some((0x04, 0x8000_0402)));
+}
+
+#[test]
+fn fault_ld_x0_fault_still_raises_with_a_discarded_destination() {
+    // D-LOAD-X0 on the access-fault path: cause 0x05 at 0x40000000 — the crossing is
+    // recorded and answered AccessFault (the census pins it).
+    assert_guest_observations("fault-ld-x0-fault", Stop::Trap);
+    let (trace, crossings, _) = run_guest("fault-ld-x0-fault");
+    assert_eq!(trace.steps[1].trap, Some((0x05, 0x4000_0000)));
+    assert!(crossings.iter().any(|c| matches!(
+        c.request,
+        Request::Load {
+            width: AccessWidth::D,
+            addr: 0x4000_0000
+        }
+    )));
+}
+
+#[test]
+fn fault_access_ld_reports_the_load_access_fault() {
+    // D-ADDRESS-SPACE, cross-model: 0x40000000 is no platform's device, so this guest
+    // carries the access-fault rule into the three-way comparison; x1 never written.
+    assert_guest_observations("fault-access-ld", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-access-ld");
+    assert_eq!(trace.steps[1].trap, Some((0x05, 0x4000_0000)));
+}
+
+#[test]
+fn fault_access_sd_reports_the_store_access_fault() {
+    // D-ADDRESS-SPACE on the store side: cause 0x07; the boundary refuses the request
+    // and nothing is modified (SEM-06, catalog C11).
+    assert_guest_observations("fault-access-sd", Stop::Trap);
+    let (trace, _, _) = run_guest("fault-access-sd");
+    assert_eq!(trace.steps[2].trap, Some((0x07, 0x4000_0000)));
+}
+
+#[test]
+fn fault_reserved_is_converted_by_policy_and_keeps_its_classification() {
+    // D-RESERVED-DECODE (SEM-07): 0xFFFFFFFF decodes to nothing; the laboratory's
+    // declared policy — the harness's act, never the interpreter's — converts the
+    // reserved case to the illegal-instruction observation (tval = the word), and the
+    // stop reason keeps the source classification: Stop::Undefined.
+    assert_guest_observations(
+        "fault-reserved",
+        Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 }),
+    );
+    let (trace, _, _) = run_guest("fault-reserved");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, Some(0xFFFF_FFFF));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x02, 0xFFFF_FFFF)));
+}
+
+#[test]
+fn fault_shiftw_res_closes_oq2_with_the_reserved_iw_shift() {
+    // D-SHIFTW-RESERVED: the word is slliw x2, x1, 1 with imm[5] = 1 — RESERVED in this
+    // revision; OQ-2 measured both references raising illegal-instruction with tval =
+    // the word, so the policy-converted observation agrees three-way while the stop
+    // reason keeps the classification. x2 is never written.
+    assert_guest_observations(
+        "fault-shiftw-res",
+        Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 }),
+    );
+    let (trace, _, _) = run_guest("fault-shiftw-res");
+    let last = &trace.steps[1];
+    assert_eq!(last.word, Some(0x0210_911B));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x02, 0x210_911B)));
+}
+
+#[test]
+fn fault_fence_retires_every_reserved_configuration_as_a_fence() {
+    // The corrected D-FENCE: a reserved FENCE *configuration* is architecture-SPECIFIED
+    // behavior (execute as FENCE fm=0000), not the reserved-decode case — none traps,
+    // and the run retires into the budget.
+    assert_guest_observations("fault-fence", Stop::Budget);
+    let (trace, _, _) = run_guest("fault-fence");
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+    assert!(trace.steps.iter().all(|s| s.word.is_some()));
+}
+
+#[test]
+fn fault_hints_retires_the_rv64i_hint_table_as_nops() {
+    // D-HINTS: every code point executes as a no-op that must not trap; each HINT step
+    // shows the empty writes table (a write to x0 is architecturally discarded) and the
+    // run reaches the landing addi.
+    assert_guest_observations("fault-hints", Stop::Budget);
+    let (trace, _, _) = run_guest("fault-hints");
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+}
+
+#[test]
+fn fault_selfmod_makes_the_store_fetch_visible_immediately() {
+    // D-CODE-VISIBILITY, pinned three-way (both references re-read too): the sw patches
+    // step 5's word into `addi x2, x0, 7`, and the step executes the PATCHED encoding —
+    // x2 = 7, not 2. The one store crossing is census-pinned.
+    assert_guest_observations("fault-selfmod", Stop::Budget);
+    let (trace, crossings, _) = run_guest("fault-selfmod");
+    assert_eq!(trace.steps[5].word, Some(0x0070_0113));
+    assert_eq!(trace.steps[5].writes, vec![(2, 7)]);
+    assert!(crossings.iter().any(|c| matches!(
+        c.request,
+        Request::Store {
+            width: AccessWidth::W,
+            addr: 0x8000_0014,
+            data: 0x0070_0113
+        }
+    )));
 }

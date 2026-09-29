@@ -191,7 +191,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   knowledge card would restate what the gate enforces)`.
 
 - ID: `P2-SCALAR.3` — **fault, suppression and reserved cases**
-  Status: `active`
+  Status: `done` (`2026-09-29`)
   Goal: fetch and access faults, suppressed effects, reserved encodings, controlled event boundaries.
   Acceptance: a failing access that already modified memory or a device is modelled as the source defines it (`SEM-06`, catalog `C11`); reserved cases keep their source meaning (`SEM-07`).
   Design (recorded before code, `2026-09-29` — every reference behavior below was MEASURED
@@ -354,6 +354,46 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
     guests exercise declared forms and reserved words, neither of which is a scope
     change). The book (`plan/p2.md`) carries the result; claim-scope and p1 pages
     re-sync to 32 guests.
+  Result: met, `2026-09-29`. **Eighteen fault guests, 78 new steps, all agreeing with
+  sail-riscv AND spike — 454/454 aligned steps over the 32-guest corpus, byte-identical
+  reproduction.** Both defect threads closed, in opposite directions. DEFECT-A was
+  INVERTED by measurement: RVI-RV32I §1.1.7 mandates the reserved-FENCE-configuration
+  nop verbatim, both references execute exactly as the model does, and `D-FENCE` (with
+  its `REQ-D-FENCE`/`OB-FENCE` restatements) is corrected — the dossier was wrong, the
+  model right, no encoding change was ever needed (`fault-fence` pins the corrected
+  behavior three-way). DEFECT-B was real: the `jal`/`jalr` effect trees wrote the link
+  before the target check; the fix is semantics DATA (`set-pc` first — the evaluator is
+  untouched), and `fault-jal-mis`/`fault-jalr-mis` pin it with `never_written x5`,
+  matching both references. The observation vocabulary learned the **word-less
+  fetch-fault step** (`run::Step.word` → `Option<u32>`; the runner emits the trap with
+  no word and keeps `Stop::FetchFault`; the CLI prints `(fetch fault)`; the sail
+  adapter synthesizes the step at pc = tval, the spike adapter at an unrecorded epc for
+  cause 0x01 alone) — `fault-fetch` compares three-way, closing the gap `run.rs` had
+  named as future work. The **reserved-decode policy conversion** is the harness's
+  explicit act in `run.rs` (never the interpreter): the reserved word becomes the
+  illegal-instruction observation with tval = the word — measured identical on both
+  references — while `Stop::Undefined` keeps the source classification (SEM-07);
+  `fault-reserved` and `fault-shiftw-res` pin it, and the second **answers OQ-2**: both
+  current references raise illegal-instruction on the imm[5] `*IW` shift, the previous
+  spec text's behavior (`REQ-D-SHIFTW-RESERVED` is now `resolved`; `G0` shows one open
+  question where there were two). The trace adapter learned four measured spellings
+  (`misaligned-fetch`, `trap_instruction_address_misaligned`, `store/amo-access-fault`,
+  `misaligned-store/amo`) — its refusal discipline fired mid-run on the last one,
+  exactly as designed, before the guest pinned it. `riscv_asm.py` learned the `.word`
+  directive for raw reserved words. `fence.i` executes on both references despite ISA
+  strings excluding Zifencei — recorded as `DIFF-FENCEI-EXECUTED`, its guest routed to
+  `.4`. The mutation/reduce suites' stale-by-design expectations were re-derived for
+  the new tree shape and the policy-converted world (the SEM-02 arm's distinction now
+  lives in the stop reason, where SEM-02 put it). Ceiling expansion landed as designed:
+  `profiles/` 42 → 78 files / 367,466 B; registry ceilings 46 → 82 files and 393,216 →
+  471,040 bytes; per-part 32,768 untouched (largest new file 4,017 B). The gate caught
+  only AUTHORING slips, never another model defect: the systematic trailing-paren slip
+  in all 18 expectation documents (check_sexp_schema RED on all 18), the store operand
+  order in 4 guests (the pre-wiring dry-run), and the REQ-D-FENCE statement drift
+  (RECORD-SCHEMA RED at the commit gate).
+  Lessons: `promotion: declined (the instruments fired RED on the author's own slips —
+  schema, dry-run, statement-drift, spelling-refusal — and each enforcement IS the
+  lesson; a knowledge card would restate what the gates enforce)`.
 
 - ID: `P2-SCALAR.4` — **the interaction matrix** — `G-INTERACTIONS`
   Status: `pending`
@@ -389,7 +429,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.3` | `active` | design recorded (`2026-09-29`, all reference behaviors measured first): two defect fixes (the inverted FENCE dossier correction; the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, 18 fault guests |
+| 1 | `P2-SCALAR.4` | `pending` | scope exercised (`.1`), boundaries pinned (`.2`), faults/suppression/reserved pinned (`.3`); the declared fault × alias × boundary × event × progress × restart matrix is the next evidence layer — and it owns the expected-divergence comparison the `fence.i` guest (`DIFF-FENCEI-EXECUTED`) is routed to |
 
 ## Decisions
 
@@ -417,6 +457,20 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   deliberately terse to keep it that way). Splitting the sweeps across more, smaller
   guests was considered and rejected: a sweep is one argument (every amount of one domain
   on one operand), and splitting it would fragment exactly the claim it makes.
+- `2026-09-29` (leaf `.3`, reviewed ceiling expansion — the `.1` decision names each
+  leaf's guest growth as its own reviewed decision): the guest corpus grows 14 → 32
+  programs (+36 tracked files under `profiles/rv64i-lab-v0/guests/`), so `profiles/`
+  rises 42 → 78 files and 307,200 → 367,466 bytes aggregate.
+  `doctrine/readme_routes.tsv`: `ceiling_lines` 46 → 82 (78 + 4 headroom, the registry's
+  proportional rule), `ceiling_bytes` 393,216 → 471,040 (the same ~1.28× band over the
+  measured size the existing ceiling holds), health targets re-based to the measured 78
+  files / 367,466 B. ⛔ `ceiling_part_bytes` stays 32768: no new file approaches it
+  (largest: `fault-branch-nt.expected.sexp` at 4,017 B). Consolidating the trap guests
+  was considered and rejected: a contained trap stops the laboratory run, so each fault
+  case that needs its own cause/tval observation needs its own guest — merging unrelated
+  traps into one guest is impossible by construction, and merging them into one FILE as
+  alternate entry points would fragment the one-guest-one-expectation-document contract
+  every gate enumerates.
 
 ## Open Questions
 
@@ -449,18 +503,19 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   scoping; closed by `P2-SCALAR.3`.
 
 - **`2026-09-29` — a misaligned JAL/JALR writes `rd` before the trap; both references
-  suppress the link write.** Reproduce: `addi x1, x0, 1; jal x5, 2` —
-  `cargo run -p semulith-cli -- run <elf> --steps=3` prints `x5 <- 0x…8` and THEN
-  `trap cause=0x00`; spike emits no commit record for the jump at all and sail shows no
-  `x5` write (measured, leaf `.3` probes). Impact: the model retires an architectural
-  write from an instruction that raised a synchronous exception — wrong on the exact
-  reporting-point rule `D-MISALIGN-REPORT` pins, and visible in any differential on a
-  misaligned jump. ROOT CAUSE (measured): the `jal`/`jalr` effect trees in
-  `definitions/riscv/rv64i.sem.sexp` evaluate the link write before `set-pc`'s
-  alignment check. **Owner: `P2-SCALAR.3`** (the fix is semantics DATA — reorder the
-  tree, `set-pc` first; the evaluator is untouched). Found by the `.3` probe suite
-  before any guest was authored; `fault-jal-mis`/`fault-jalr-mis` pin the fix
-  (`never_written x5`).
+  suppress the link write.** ~~Reproduce~~ **RESOLVED `2026-09-29` (leaf `.3`).**
+  Reproduce (pre-fix): `addi x1, x0, 1; jal x5, 2` —
+  `cargo run -p semulith-cli -- run <elf> --steps=3` printed `x5 <- 0x…8` and THEN
+  `trap cause=0x00`; spike emitted no commit record for the jump at all and sail showed
+  no `x5` write (measured, leaf `.3` probes). Impact: the model retired an architectural
+  write from an instruction that raised a synchronous exception. ROOT CAUSE (measured):
+  the `jal`/`jalr` effect trees in `definitions/riscv/rv64i.sem.sexp` evaluated the link
+  write before `set-pc`'s alignment check. FIXED as semantics DATA (the trees now
+  evaluate `set-pc` first; `(pc)` reads the frame's constant instruction address, so
+  the success path is exact and the evaluator is untouched); `definition.rs`
+  regenerated through the sanctioned generator. `fault-jal-mis`/`fault-jalr-mis` pin
+  the fix three-way (`never_written x5`), the mutation matchers were re-derived for the
+  new tree shape, and the whole 32-guest corpus re-proves the success path.
 
 ## Acceptance Checklist (leaf P2-SCALAR.1)
 
@@ -604,6 +659,85 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   guests / 376 steps), the routes registry (the reviewed ceilings), and both regenerated
   `G?-REPORT.md`.
 
+## Acceptance Checklist (leaf P2-SCALAR.3)
+
+- [x] **REPRODUCE / ISSUE** — three holes, each measured before any fix. (a) The `.1`
+  defect log said reserved-`fm` FENCE must trap; the pinned spec says the opposite —
+  the probe showed all THREE models nop it. (b) The misaligned-jump link write,
+  reproduced against both references: semulith wrote `x5`, neither reference did. (c)
+  The fetch-fault observation gap `run.rs` named as future work, and the reserved-decode
+  case stopping with no observation to compare:
+
+  ```
+  $ cargo run -p semulith-cli -- run probe-jal-mis.elf --steps=4   # BEFORE the fix
+  [1] [M]: 0x0000000080000004 (0x002002ef) jal
+  x5 <- 0x0000000080000008                     # ← the write both references suppress
+  trap cause=0x00 tval=0x0000000080000006
+  $ cargo run -p semulith-cli -- run probe-fetch-fault.elf --steps=6
+  run: fetch access fault at 0x0000000040000000; no observation recorded   # ← the gap
+  $ cargo run -p semulith-cli -- run probe-reserved-ones.elf --steps=4
+  run: undefined case: ReservedDecode { at: 2147483652 }   # rc=1, no trace observation
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — (a) WHY: the dossier author read "reserved" and
+  reached for `D-RESERVED-DECODE`, but RVI-RV32I §1.1.7 SPECIFIES the behavior of
+  reserved FENCE configurations ("shall treat all such reserved configurations as FENCE
+  instructions (with fm = 0000)") — a specified reserved case, not the UNSPECIFIED one.
+  WHERE: `D-FENCE`'s last sentence and its `REQ-D-FENCE`/`OB-FENCE` restatements.
+  (b) WHY: the `jal`/`jalr` effect trees evaluated the link write before `set-pc`'s
+  alignment check, so a trapping jump retired a write. WHERE:
+  `definitions/riscv/rv64i.sem.sexp` — semantics data, never the evaluator. (c) WHY:
+  the observation vocabulary had no honest shape for "the fetch supplied no word" and
+  no policy act for the reserved case. WHERE: `run.rs`'s `Step`/`Stop` and the two
+  trace adapters in `scripts/compare_traces.py`.
+
+- [x] **FIX** — the dossier correction (`D-FENCE` + both restatements, the verbatim
+  mandate cited, the correction noted like `D-MAIN-VS-IO`'s); the sem-tree reorder
+  (`set-pc` first — data, regenerated through the sanctioned generator); the word-less
+  fetch-fault step (`Step.word` → `Option<u32>`, emitted by the runner, printed by the
+  CLI, synthesized by both adapters, round-tripped by replay); the reserved-decode
+  policy conversion in the harness (`Stop::Undefined` keeps the classification);
+  `riscv_asm.py`'s `.word` directive; eighteen EVD-05 guests; the adapter's four
+  measured spellings + self-test arms (12/0); `DIFF-FENCEI-EXECUTED` recorded;
+  OQ-2 answered (`REQ-D-SHIFTW-RESERVED` → `resolved`); the census and suites
+  re-derived; ceilings expanded by reviewed decision.
+
+- [x] **ADDRESSED (verified)** — before→after on the same probes: the misaligned jump
+  now traps with NO link write (matching both references); the fetch fault records the
+  word-less step; the reserved word records the policy-converted trap. And the full
+  corpus:
+
+  ```
+  $ cargo test -p semulith-verify          # the offline differential, commitment-gated
+  test result: ok. 157 passed; 0 failed (+18 guest suites, +2 runner unit suites;
+    the census pins fault-selfmod's crossing and the three access-fault crossings)
+  $ python3 scripts/run_semulith_smoke.py  # the live three-way differential
+  …every fault-* guest: AGREE vs sail-riscv AND spike…
+  run_semulith_smoke: ok — 32 guests, 454/454 aligned steps, byte-identical reproduction
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; and the instruments caught three
+  AUTHORING slips in flight (the trailing paren in all 18 expectation documents — schema
+  RED on all 18; the store operand order in 4 guests — the pre-wiring dry-run; the
+  REQ-D-FENCE statement drift — RECORD-SCHEMA RED at the gate), never another model
+  defect:
+
+  ```
+  $ make check            # 157 verify suites, 65 core suites, clippy -D warnings, fmt
+  $ make gate             # all doctrines green (RECORD-SCHEMA, the new ceilings…)
+  $ make smoke-bench      # 36 arms — 32 clean guests, 3 trace-level mutants, the census arm
+  $ bash scripts/check_exercise_coverage.sh [--self-test]   # 52/52; self-test 7/0
+  $ python3 scripts/compare_traces.py --self-test           # 12/0 (+4 new arms)
+  $ make book             # renders
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 3/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.4`), this tree, the
+  book (`plan/p2.md` carries the result; `plan/p1.md` and `claim-scope.md` re-synced to
+  32 guests / 454 steps; `annex/assembler.md` documents `.word`), the routes registry
+  (the reviewed ceilings), `references.sexp` (the new difference), the dossier
+  (D-FENCE, OQ-2), and both regenerated `G?-REPORT.md`.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
@@ -618,6 +752,11 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 | `2026-09-29` | `P2-SCALAR.2` | `cargo test -p semulith-verify` | 138 passed / 0 failed (+5 guest suites; census pins bound-ext 32 / bound-alias 16 crossings) |
 | `2026-09-29` | `P2-SCALAR.2` | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 14 guests agree on 376/376 aligned steps; every run reproduces byte-identically |
 | `2026-09-29` | `P2-SCALAR.2` | `make check`, `make gate`, `make smoke-bench`, `check_exercise_coverage.sh [--self-test]` | rc=0; 24 doctrines green; 18 bench arms (14 clean guests); 52/52, self-test 7/0 |
+| `2026-09-29` | `P2-SCALAR.3` | the probe suite (16 probe ELFs, untracked, vs sail-riscv 0.14 + spike 1.1.1-dev + semulith) | every design fact measured: the misaligned jump's suppressed link write (DEFECT-B found), the FENCE reserved-config mandate (DEFECT-A inverted), reserved-decode tval = word on both references, the fetch-fault record shapes, OQ-2's answer, immediate self-mod visibility, fence.i executed on both references |
+| `2026-09-29` | `P2-SCALAR.3` | authoring RED moments | all 18 expectation documents failed `check_sexp_schema` (one systematic trailing paren); 4 guests failed assembly (store operand order — caught by the pre-wiring dry-run); REQ-D-FENCE failed RECORD-SCHEMA at the gate (statement drift); the adapter refused `misaligned-store/amo` mid-run (measured spelling, added) — no model defect among them |
+| `2026-09-29` | `P2-SCALAR.3` | `cargo test -p semulith-verify` | 157 passed / 0 failed (+18 guest suites, +2 runner unit suites; census pins the fault-selfmod store and three access-fault crossings; the SEM-02 and jalr-odd-bit arms re-derived for the policy-converted world) |
+| `2026-09-29` | `P2-SCALAR.3` | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 32 guests agree on 454/454 aligned steps — every fault guest three-way, including the word-less fetch-fault step and the two policy-converted reserved cases; every run reproduces byte-identically |
+| `2026-09-29` | `P2-SCALAR.3` | `make check`, `make gate`, `make smoke-bench`, `check_exercise_coverage.sh [--self-test]`, `compare_traces.py --self-test`, `make book` | rc=0; all doctrines green; 36 bench arms (32 clean guests); 52/52, self-test 7/0; adapter self-test 12/0; the book renders |
 
 ## Commit Log
 
@@ -625,6 +764,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 | --- | --- | --- |
 | `P2-SCALAR.1` | `SEMILITH-PS-0001 (leaf P2-SCALAR.1): …` | the declared scope completed and gated: five guests, EXERCISE-COVERAGE (24th doctrine), fence fields from the pinned table, ecall/ebreak adapter spellings, 117/117 live; the reserved-`fm` defect logged for `.3` |
 | `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
+| `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 
 ## Changelog
 

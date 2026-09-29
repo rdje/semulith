@@ -274,11 +274,17 @@ fn run_guest(args: &[String]) -> ExitCode {
     let (trace, _crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
     let mut out = String::new();
     for (n, s) in trace.steps.iter().enumerate() {
-        let name = decode(s.word).map_or("<undecodable>", |insn| insn.name);
-        out.push_str(&format!(
-            "[{n}] [M]: 0x{:016x} (0x{:08x}) {name}\n",
-            s.pc, s.word
-        ));
+        match s.word {
+            Some(word) => {
+                let name = decode(word).map_or("<undecodable>", |insn| insn.name);
+                out.push_str(&format!(
+                    "[{n}] [M]: 0x{:016x} (0x{word:08x}) {name}\n",
+                    s.pc
+                ));
+            }
+            // The fetch-fault step: no word was fetched, so none is printed.
+            None => out.push_str(&format!("[{n}] [M]: 0x{:016x} (fetch fault)\n", s.pc)),
+        }
         for (reg, value) in &s.writes {
             out.push_str(&format!("x{reg} <- 0x{value:016x}\n"));
         }
@@ -290,7 +296,9 @@ fn run_guest(args: &[String]) -> ExitCode {
     match trace.stop {
         Stop::Budget | Stop::Trap => ExitCode::from(0),
         Stop::FetchFault { at } => {
-            eprintln!("run: fetch access fault at {at:#018x}; no observation recorded");
+            eprintln!(
+                "run: fetch access fault at {at:#018x} (the final step carries the trap and no word)"
+            );
             ExitCode::from(0)
         }
         Stop::Failed(error) => {
@@ -298,8 +306,13 @@ fn run_guest(args: &[String]) -> ExitCode {
             ExitCode::from(1)
         }
         Stop::Undefined(case) => {
-            eprintln!("run: undefined case: {case:?}");
-            ExitCode::from(1)
+            // The laboratory's D-RESERVED-DECODE policy converted the case into the
+            // trace's final trap observation; the run did everything the profile
+            // declares. The report keeps the case's source classification (SEM-07).
+            eprintln!(
+                "run: undefined case reported under the laboratory's reserved-decode policy: {case:?}"
+            );
+            ExitCode::from(0)
         }
     }
 }
@@ -770,11 +783,17 @@ fn demo_text(run: &report::GuestRun) -> String {
         run.guest, run.mutation, run.entry
     );
     for (n, step) in run.trace.steps.iter().enumerate() {
-        let name = decode(step.word).map_or("<undecodable>", |insn| insn.name);
-        out.push_str(&format!(
-            "  [{n}] 0x{:016x} (0x{:08x}) {:<10}",
-            step.pc, step.word, name
-        ));
+        match step.word {
+            Some(word) => {
+                let name = decode(word).map_or("<undecodable>", |insn| insn.name);
+                out.push_str(&format!(
+                    "  [{n}] 0x{:016x} (0x{word:08x}) {:<10}",
+                    step.pc, name
+                ));
+            }
+            // The fetch-fault step carries no word.
+            None => out.push_str(&format!("  [{n}] 0x{:016x} (fetch fault)  ", step.pc)),
+        }
         let mut notes = Vec::new();
         for (reg, value) in &step.writes {
             notes.push(format!("x{reg} <- 0x{value:016x}"));

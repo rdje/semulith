@@ -37,7 +37,7 @@ class CompareError(Exception):
 @dataclass
 class Step:
     pc: int
-    word: int
+    word: int | None                       # None: the fetch-fault step — no word was fetched
     writes: list[tuple[str, int]] = field(default_factory=list)
     trap: tuple[int, int] | None = None        # (cause code, tval)
 
@@ -62,15 +62,19 @@ class Step:
 TRAP_NAMES: dict[str, int] = {
     # sail-riscv 0.14 spellings
     "misaligned-load": 0x04,
+    "misaligned-fetch": 0x00,           # measured, P2-SCALAR.3 (the jal/jalr target check)
     "fetch-access-fault": 0x01,
     "illegal-instruction": 0x02,
     "misaligned-store": 0x06,
+    "misaligned-store/amo": 0x06,       # measured, P2-SCALAR.3 (the misaligned store probes)
     "load-access-fault": 0x05,
     "store-access-fault": 0x07,
+    "store/amo-access-fault": 0x07,     # measured, P2-SCALAR.3 (the store probe's spelling)
     "m-call": 0x0B,                 # environment call from M-mode (measured, P2-SCALAR.1)
     "software-breakpoint": 0x03,    # EBREAK; tval is the ebreak's own address (measured)
     # spike 1.1.1-dev spellings
     "trap_load_address_misaligned": 0x04,
+    "trap_instruction_address_misaligned": 0x00,    # measured, P2-SCALAR.3
     "trap_instruction_access_fault": 0x01,
     "trap_illegal_instruction": 0x02,
     "trap_store_address_misaligned": 0x06,
@@ -98,7 +102,9 @@ def trap_cause(spelling: str, who: str) -> int:
 #   "[3] [M]: 0x000000008000000c (0x03f19213) slli"
 #   "x4 <- 0x8000000000000000"
 #   "trap cause=0x04 tval=0x0000000080000401"
+# The fetch-fault step prints no word (P2-SCALAR.3): "[2] [M]: 0x0000000040000000 (fetch fault)"
 _SEMULITH_STEP = re.compile(r"^\[\d+\] \[M\]:\s+0x([0-9a-fA-F]+)\s+\(0x([0-9a-fA-F]+)\)")
+_SEMULITH_FETCH_FAULT = re.compile(r"^\[\d+\] \[M\]:\s+0x([0-9a-fA-F]+)\s+\(fetch fault\)")
 _SEMULITH_WRITE = re.compile(r"^(x\d{1,2}) <- 0x([0-9A-Fa-f]+)\s*$")
 _SEMULITH_TRAP = re.compile(r"^trap cause=0x([0-9a-fA-F]+) tval=0x([0-9a-fA-F]+)\s*$")
 
@@ -112,6 +118,10 @@ def parse_semulith(text: str) -> list[Step]:
     """
     steps: list[Step] = []
     for line in text.splitlines():
+        m = _SEMULITH_FETCH_FAULT.match(line.strip())
+        if m:
+            steps.append(Step(int(m.group(1), 16), None))
+            continue
         m = _SEMULITH_STEP.match(line.strip())
         if m:
             steps.append(Step(int(m.group(1), 16), int(m.group(2), 16)))
@@ -173,8 +183,18 @@ def parse_sail(text: str) -> list[Step]:
             steps[-1].writes.append((m.group(1), int(m.group(2), 16)))
             continue
         m = _SAIL_TRAP.match(line.strip())
-        if m and steps and steps[-1].trap is None:
-            steps[-1].trap = (trap_cause(m.group(1), "sail"), int(m.group(2), 16))
+        if m:
+            cause, tval = trap_cause(m.group(1), "sail"), int(m.group(2), 16)
+            if cause == 0x01:
+                # D-FETCH-FAULT-REPORT: an instruction access fault belongs to the
+                # TARGET (pc = tval), not to the jump — the opposite reporting point
+                # from misalignment — and no word exists there. A NEW word-less step,
+                # never an attachment to the jump step. Sail's post-trap cascade
+                # repeats trap lines; only the first is an observation.
+                if not steps or steps[-1].trap is None:
+                    steps.append(Step(tval, None, trap=(cause, tval)))
+            elif steps and steps[-1].trap is None:
+                steps[-1].trap = (cause, tval)
     return steps
 
 
@@ -218,6 +238,13 @@ def parse_spike(text: str) -> list[Step]:
                 steps[-1].trap = (cause, 0)
             elif attempted is not None and attempted[0] == epc:
                 steps.append(Step(epc, attempted[1], trap=(cause, 0)))
+            elif cause == 0x01:
+                # An instruction access fault's epc is the TARGET whose fetch failed
+                # (D-FETCH-FAULT-REPORT): spike has no record of that instruction
+                # BECAUSE its fetch supplied no word — the absence is the observation,
+                # so the word-less step is synthesized, not refused (measured,
+                # P2-SCALAR.3). Every other cause keeps the strict refusal.
+                steps.append(Step(epc, None, trap=(cause, 0)))
             else:
                 raise CompareError(
                     f"spike: exception at epc {epc:#x} with no preceding record of that "
@@ -238,6 +265,10 @@ def align(steps: list[Step], entry: int, who: str) -> list[Step]:
     raise CompareError(
         f"{who}: no step reaches the declared entry {entry:#x} in {len(steps)} step(s). "
         f"An unparseable or truncated trace must not be read as agreement.")
+
+
+def _word_text(word: int | None) -> str:
+    return f"{word:#010x}" if word is not None else "(no word — a fetch fault)"
 
 
 def compare(a: list[Step], b: list[Step], names: tuple[str, str]) -> tuple[bool, str]:
@@ -261,15 +292,15 @@ def compare(a: list[Step], b: list[Step], names: tuple[str, str]) -> tuple[bool,
         if a[i].key() != b[i].key():
             return False, (
                 f"FIRST DIVERGENCE at aligned step {i}\n"
-                f"  {names[0]:12} pc={a[i].pc:#018x} insn={a[i].word:#010x} writes={a[i].writes}\n"
-                f"  {names[1]:12} pc={b[i].pc:#018x} insn={b[i].word:#010x} writes={b[i].writes}")
+                f"  {names[0]:12} pc={a[i].pc:#018x} insn={_word_text(a[i].word)} writes={a[i].writes}\n"
+                f"  {names[1]:12} pc={b[i].pc:#018x} insn={_word_text(b[i].word)} writes={b[i].writes}")
     if len(a) != len(b):
         longer, shorter = (names[0], names[1]) if len(a) > len(b) else (names[1], names[0])
         nxt = (a if len(a) > len(b) else b)[n]
         return False, (
             f"LENGTH MISMATCH after {n} agreeing step(s): "
             f"{names[0]} produced {len(a)}, {names[1]} produced {len(b)}\n"
-            f"  {longer} continues at pc={nxt.pc:#018x} insn={nxt.word:#010x}; "
+            f"  {longer} continues at pc={nxt.pc:#018x} insn={_word_text(nxt.word)}; "
             f"{shorter} stopped.\n"
             f"  The agreeing prefix is NOT a pass. Explain why one model stopped — a trap the "
             f"other reported differently, a harness instruction bound, or a genuine divergence "
@@ -290,6 +321,36 @@ core   0: 3 0x0000000080000000 (0x00100513) x10 0x0000000000000001
 core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)
 core   0: exception trap_load_address_misaligned, epc 0x0000000080000004
 core   0:           tval 0x0000000080000401
+"""
+
+# P2-SCALAR.3: a jal to a +2 misaligned target — the trap belongs to the JUMP.
+SAIL_JAL_MIS = """[0] [M]: 0x0000000080000000 (0x00100093) addi x1, x0, 0x1
+x1 <- 0x0000000000000001
+[1] [M]: 0x0000000080000004 (0x002002EF) jal x5, 0x2
+trapping from M to M to handle misaligned-fetch
+handling exc#misaligned-fetch at priv M | tval=0x0000000080000006 | tval2=0x0 | tinst=0x0
+"""
+
+SPIKE_JAL_MIS = """core   0: 3 0x0000000080000000 (0x00100093) x1 0x0000000000000001
+core   0: 0x0000000080000004 (0x002002ef) jal     t0, pc + 0x2
+core   0: exception trap_instruction_address_misaligned, epc 0x0000000080000004
+core   0:           tval 0x0000000080000006
+"""
+
+# P2-SCALAR.3: a jalr to an unmapped target — the fault belongs to the TARGET, and no
+# word exists there. Both adapters must synthesize the same word-less step.
+SAIL_FETCH_FAULT = """[0] [M]: 0x0000000080000000 (0x400000B7) lui x1, 0x40000
+x1 <- 0x0000000040000000
+[1] [M]: 0x0000000080000004 (0x00008067) jalr x0, 0x0(x1)
+trapping from M to M to handle fetch-access-fault
+handling exc#fetch-access-fault at priv M | tval=0x0000000040000000 | tval2=0x0 | tinst=0x0
+"""
+
+SPIKE_FETCH_FAULT = """core   0: 3 0x0000000080000000 (0x400000b7) x1 0x0000000040000000
+core   0: 0x0000000080000004 (0x00008067) jalr    zero, ra, 0
+core   0: 3 0x0000000080000004 (0x00008067)
+core   0: exception trap_instruction_access_fault, epc 0x0000000040000000
+core   0:           tval 0x0000000040000000
 """
 
 
@@ -342,6 +403,20 @@ def self_test() -> int:
         "core   0: 3 0x0000000080000000 (0x00100513) x10 0x0000000000000001\n"
         "core   0: exception trap_load_address_misaligned, epc 0x00000000800000FF\n",
         False, "no preceding record of that instruction")
+    arm("GREEN a misaligned jump: the trap belongs to the jump, on both models",
+        SAIL_JAL_MIS, SPIKE_JAL_MIS, True, "AGREE over 2")
+    arm("GREEN a fetch fault on the jump target: both adapters synthesize the word-less step",
+        SAIL_FETCH_FAULT, SPIKE_FETCH_FAULT, True, "AGREE over 3")
+    arm("RED   a fabricated word at the faulting target diverges from the word-less step",
+        SAIL_FETCH_FAULT,
+        SPIKE_FETCH_FAULT.replace(
+            "core   0: exception trap_instruction_access_fault, epc 0x0000000040000000",
+            "core   0: 3 0x0000000040000000 (0x00000013)\n"
+            "core   0: exception trap_instruction_access_fault, epc 0x0000000040000000"),
+        False, "FIRST DIVERGENCE at aligned step 2")
+    arm("RED   a wrong reporting point: the fetch fault attached to the jump, not the target",
+        SAIL_FETCH_FAULT.replace("tval=0x0000000040000000", "tval=0x0000000080000004"),
+        SPIKE_FETCH_FAULT, False, "FIRST DIVERGENCE at aligned step 2")
 
     print(f"compare_traces --self-test: {npass} pass / {nfail} fail")
     return 0 if nfail == 0 else 1

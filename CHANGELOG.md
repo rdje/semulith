@@ -1,5 +1,67 @@
 # CHANGELOG.md
 
+## SEMILITH-PS-0005 (leaf P2-SCALAR.3) — fault, suppression and reserved cases: the failure layer, pinned three-way
+
+- Every reference behavior was MEASURED before any guest existed (16 probe ELFs against
+  sail-riscv 0.14 AND spike 1.1.1-dev). Then eighteen guests pinned the measurements as
+  specification-derived expectations (`EVD-05`), all agreeing three-way: **32 guests,
+  454/454 aligned steps**, byte-identical reproduction.
+- **DEFECT-A inverted.** The `.1` log said a reserved-`fm` FENCE must trap; the pinned
+  spec mandates the nop, verbatim ("Base implementations shall treat all such reserved
+  configurations as FENCE instructions (with fm = 0000)", RVI-RV32I §1.1.7), and both
+  references execute exactly as the model does. The dossier was wrong, the model right:
+  `D-FENCE` and its `REQ-D-FENCE`/`OB-FENCE` restatements are corrected; `fault-fence`
+  pins reserved-fm, FENCE.TSO, ignored rs1/rd and pred/succ-zero configurations as nops.
+- **DEFECT-B fixed in semantics data.** A misaligned `jal`/`jalr` wrote its link register
+  before trapping; both references suppress the write (a synchronous exception retires
+  nothing). The `jal`/`jalr` effect trees now check the target (`set-pc`) before the link
+  write — the evaluator is untouched; `fault-jal-mis`/`fault-jalr-mis` pin it with
+  `never_written x5`; the mutation matchers were re-derived for the new tree shape.
+- **The word-less fetch-fault step.** A fetch fault on a jump TARGET is reported on the
+  target with no instruction word (D-FETCH-FAULT-REPORT): `run::Step.word` is now
+  `Option<u32>`, the runner emits the trap with no word and keeps `Stop::FetchFault`,
+  the CLI prints `(fetch fault)`, replay round-trips the null, and both trace adapters
+  synthesize the same shape — `fault-fetch` compares three-way.
+- **Reserved cases keep their source meaning (SEM-07).** The interpreter reports the
+  UNSPECIFIED case (`Stop::Undefined`); the laboratory's declared `D-RESERVED-DECODE`
+  policy — the harness's explicit act in `run.rs`, never the interpreter — converts it
+  to the illegal-instruction observation with tval = the offending word, measured
+  identical on both references. `fault-reserved` (0xFFFFFFFF) and `fault-shiftw-res`
+  (`slliw` imm[5]=1) pin it — the second **answers OQ-2**: both current references treat
+  the reserved `*IW` shift as illegal (`REQ-D-SHIFTW-RESERVED` → `resolved`; G0 shows one
+  open question where there were two).
+- Suppressed effects (SEM-06): six not-taken branches to misaligned targets raise nothing
+  (`fault-branch-nt`); misaligned stores never cross the boundary — proven by the
+  crossing log (`fault-st-mis-h/w/d`); misaligned loads across widths (`fault-ld-mis-h`,
+  the 4-aligned-but-not-8 `fault-ld-mis-d`); `D-LOAD-X0` still faults with a discarded
+  destination on both failure paths (`fault-ld-x0-mis`, `fault-ld-x0-fault`); access
+  faults run cross-model at 0x40000000, no platform's device (`fault-access-ld`,
+  `fault-access-sd`); the RV64I HINT table's ALU forms are nops that must not trap
+  (`fault-hints`); a store over a later-fetched word is fetch-visible immediately —
+  measured on BOTH references first (`fault-selfmod`, D-CODE-VISIBILITY).
+- Recorded, not exercised: `fence.i` executes on both references although the matched ISA
+  strings exclude Zifencei — a legitimate UNSPECIFIED divergence the comparator cannot
+  yet express; `DIFF-FENCEI-EXECUTED` in `references.sexp`, the guest routed to `.4`.
+- Tooling: `riscv_asm.py` learned the `.word` directive for raw reserved words (its
+  mnemonic path's range checks exist to refuse them); the trace adapter learned four
+  measured spellings (`misaligned-fetch`, `trap_instruction_address_misaligned`,
+  `store/amo-access-fault`, `misaligned-store/amo`) — its refusal fired mid-run on the
+  last one, exactly as designed; adapter self-test 12/0 (+4 arms).
+- Reviewed ceiling expansion: `profiles/` 42 → 78 files / 367,466 B; registry ceilings
+  46 → 82 files and 393,216 → 471,040 bytes; per-part 32 KiB unchanged (largest new file
+  4,017 B). Instruments caught three AUTHORING slips in flight (a systematic trailing
+  paren in all 18 expectation documents, the store operand order in 4 guests, the
+  REQ-D-FENCE statement drift at the gate) — never another model defect.
+- Verification: 157 verify suites (+18 guest suites, +2 runner suites), 65 core suites,
+  clippy `-D warnings`, `make gate` all doctrines green, `make smoke-bench` 36 arms
+  (32 clean guests), `EXERCISE-COVERAGE` 52/52 (self-test 7/0), `make book` renders.
+  Live: **32 guests, 454/454 aligned steps** against sail-riscv AND spike.
+- Lockstep: MEMORY/LIVE_STATUS (P2 3/9)/TASK_TREE (frontier `.4`)/CHANGELOG/DEV_NOTES +
+  book P2 (the `.3` result), P1 and claim-scope (32 guests, 454 steps), annex/assembler
+  (`.word`), the routes registry, the dossier (D-FENCE, OQ-2), references.sexp, and both
+  regenerated `G?-REPORT.md`.
+
+
 ## SEMILITH-MB-0001 (leaf MODEL-BOOKS.7) — annex: how the tracked assembler works
 
 - Director request: the project book gains `annex/assembler.md`, a teaching chapter on

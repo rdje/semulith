@@ -451,9 +451,13 @@ fn push_recorded(out: &mut String, recorded: &Recorded) {
         }
         out.push_str("{\"pc\":\"");
         push_hex64(out, step.pc);
-        out.push_str("\",\"word\":\"");
-        out.push_str(&format!("0x{:08x}", step.word));
-        out.push_str("\",\"writes\":[");
+        out.push_str("\",\"word\":");
+        match step.word {
+            Some(word) => out.push_str(&format!("\"0x{word:08x}\"")),
+            // The fetch-fault step carries no word (run::Step); null is its honest form.
+            None => out.push_str("null"),
+        }
+        out.push_str(",\"writes\":[");
         for (i, (reg, value)) in step.writes.iter().enumerate() {
             if i > 0 {
                 out.push(',');
@@ -674,10 +678,11 @@ fn parse_recorded(node: &Json) -> Result<Recorded, String> {
         };
         steps.push(Step {
             pc: hex_u64(need(step_obj, "pc", "recorded.steps")?, "recorded.steps.pc")?,
-            word: hex_u32(
-                need(step_obj, "word", "recorded.steps")?,
-                "recorded.steps.word",
-            )?,
+            word: match need(step_obj, "word", "recorded.steps")? {
+                // The fetch-fault step is recorded with a null word.
+                Json::Null => None,
+                word_node => Some(hex_u32(word_node, "recorded.steps.word")?),
+            },
             writes,
             trap,
         });

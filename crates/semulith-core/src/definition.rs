@@ -11,7 +11,7 @@
 //! any rule, and the interpreter slice (`P1-LAB.8`) evaluates exactly these trees.
 //!
 //! Canonical inputs (sha256):
-//!   `definitions/riscv/rv64i.sem.sexp`  `addbe19d047c9c01c30455a09ff402e7bb5a8ee8a723f229233270679ce39ee2`
+//!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `profiles/rv64i-lab-v0/encoding.sexp`  `93a2d4718a50b60c23c3b5e64afa64499b09fcf41a906d46d83e63eebab2e5e9`
 //!   `profiles/rv64i-lab-v0/state.sexp`  `ff53fb04f3ed7ac25e4db78e6e92cc3e0caa086df438e221350627194cbea5a4`
@@ -66,7 +66,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     inputs: &[
         InputPin {
             path: "definitions/riscv/rv64i.sem.sexp",
-            sha256: "addbe19d047c9c01c30455a09ff402e7bb5a8ee8a723f229233270679ce39ee2",
+            sha256: "c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e",
         },
         InputPin {
             path: "definitions/riscv/rv64i.sexp",
@@ -553,15 +553,8 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x0000006f,
         operands: &["rd", "jimm20"],
         from: "rv_i",
-        source: "RVI-RV32I §1.1.5.1 — JAL stores pc+4 in rd, then adds the offset to THIS instruction's address",
+        source: "RVI-RV32I §1.1.5.1 — JAL adds the offset to THIS instruction's address and stores pc+4 in rd; the misaligned-target check precedes the link write (§1.1.5.2)",
         effect: &Sem::Seq(&[
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Lit(0x0000000000000004),
-                ),
-            ),
             &Sem::SetPc(
                 &Sem::Add(
                     &Sem::Pc,
@@ -569,6 +562,13 @@ pub static INSNS: &[InsnDef] = &[
                         64,
                         &Sem::Imm("jimm20"),
                     ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Lit(0x0000000000000004),
                 ),
             ),
         ])
@@ -579,15 +579,8 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x00000067,
         operands: &["rd", "rs1", "imm12"],
         from: "rv_i",
-        source: "RVI-RV32I §1.1.5.1 — D-JALR-LSB: add, THEN set the least-significant bit to zero",
+        source: "RVI-RV32I §1.1.5.1 — D-JALR-LSB: add, THEN set the least-significant bit to zero; the misaligned-target check precedes the link write (§1.1.5.2)",
         effect: &Sem::Seq(&[
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Lit(0x0000000000000004),
-                ),
-            ),
             &Sem::SetPc(
                 &Sem::And(
                     &Sem::Add(
@@ -598,6 +591,13 @@ pub static INSNS: &[InsnDef] = &[
                         ),
                     ),
                     &Sem::Lit(0xfffffffffffffffe),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Lit(0x0000000000000004),
                 ),
             ),
         ])

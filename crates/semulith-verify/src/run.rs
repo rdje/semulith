@@ -34,8 +34,11 @@ use semulith_core::state::ArchitecturalState;
 pub struct Step {
     /// Address of the executed (or trapping) instruction.
     pub pc: u64,
-    /// The encoded 32-bit word at that address.
-    pub word: u32,
+    /// The encoded 32-bit word at that address. `None` marks the fetch-fault step
+    /// (D-FETCH-FAULT-REPORT): the fetch at `pc` failed, so no word exists — and
+    /// inventing one would put a fiction in the comparison vocabulary. Every other
+    /// step carries the word its fetch returned.
+    pub word: Option<u32>,
     /// Architectural register writes `(index, value)`, ascending by index. A write the
     /// architecture discards (x0) never appears.
     pub writes: Vec<(u8, u64)>,
@@ -77,10 +80,11 @@ pub enum Stop {
     /// A trap was reported (a synchronous exception or a requested trap); the trapping
     /// step is the last observation.
     Trap,
-    /// The instruction fetch itself faulted (`InstructionAccessFault`). There is no step
-    /// observation — a fetch that failed supplied no word, and inventing one would put a
-    /// fiction in the comparison vocabulary. Fetch-fault comparison against the references
-    /// is future work (the tracked guests do not exercise it).
+    /// The instruction fetch itself faulted (`InstructionAccessFault`). The final step
+    /// observation carries `word: None` — a fetch that failed supplied no word, and
+    /// inventing one would put a fiction in the comparison vocabulary. Both reference
+    /// models report the fault the same way (spike: epc at the target, no commit; sail:
+    /// the trap with the target as tval), so the step is comparable.
     FetchFault {
         /// The pc whose fetch faulted.
         at: u64,
@@ -152,13 +156,22 @@ pub fn run_over(
         let before = snapshot(&state);
         let pc = state.pc();
         let outcome = exec::step_over(&mut state, &mut recorded, insns);
-        if let StepOutcome::Event(TargetEvent::Exception {
-            cause: ExceptionCause::InstructionAccessFault,
-            ..
-        }) = outcome
+        if let StepOutcome::Event(
+            event @ TargetEvent::Exception {
+                cause: ExceptionCause::InstructionAccessFault,
+                ..
+            },
+        ) = outcome
         {
-            // The fetch failed: there is no word to observe. Stop without a step
-            // observation rather than recording a fiction.
+            // The fetch failed: the observation is the word-less step — the pc whose
+            // fetch faulted, the trap the rule reports, and no invented word
+            // (D-FETCH-FAULT-REPORT: on the jump's TARGET, not on the jump).
+            steps.push(Step {
+                pc,
+                word: None,
+                writes: Vec::new(),
+                trap: Some(trap_pair(&event)),
+            });
             return (
                 Trace {
                     steps,
@@ -172,7 +185,7 @@ pub fn run_over(
         match outcome {
             StepOutcome::Advanced(_) => steps.push(Step {
                 pc,
-                word,
+                word: Some(word),
                 writes,
                 trap: None,
             }),
@@ -180,7 +193,7 @@ pub fn run_over(
                 let trap = trap_pair(&event);
                 steps.push(Step {
                     pc,
-                    word,
+                    word: Some(word),
                     writes,
                     trap: Some(trap),
                 });
@@ -193,6 +206,23 @@ pub fn run_over(
                 );
             }
             StepOutcome::Undefined(case) => {
+                // D-RESERVED-DECODE: the laboratory's diagnostic policy, made explicit
+                // HERE in the harness — never in the interpreter. The interpreter
+                // reported the source-classified unspecified case; the laboratory's
+                // declared policy converts it to an illegal-instruction trap whose
+                // tval is the reserved word itself (measured: both reference models
+                // report exactly this). The stop reason stays `Undefined` — the
+                // conversion does not launder the case's classification (SEM-07).
+                let UndefinedCase::ReservedDecode { .. } = case;
+                steps.push(Step {
+                    pc,
+                    word: Some(word),
+                    writes: Vec::new(),
+                    trap: Some((
+                        cause_code(ExceptionCause::IllegalInstruction),
+                        u64::from(word),
+                    )),
+                });
                 return (
                     Trace {
                         steps,
@@ -334,9 +364,17 @@ pub fn compare(a: &[Step], b: &[Step], names: (&str, &str)) -> Result<Verdict, C
                 names.0, a[i].pc, names.1, b[i].pc
             )
         } else if a[i].word != b[i].word {
+            let word = |s: &Step| match s.word {
+                Some(word) => format!("{word:#010x}"),
+                None => "no word (a fetch fault)".to_string(),
+            };
             format!(
-                "the instruction word at {:#018x}: {} observes {:#010x}, {} observes {:#010x}",
-                a[i].pc, names.0, a[i].word, names.1, b[i].word
+                "the instruction word at {:#018x}: {} observes {}, {} observes {}",
+                a[i].pc,
+                names.0,
+                word(&a[i]),
+                names.1,
+                word(&b[i])
             )
         } else if a[i].writes != b[i].writes {
             let detail = write_diff(&a[i].writes, &b[i].writes, names);

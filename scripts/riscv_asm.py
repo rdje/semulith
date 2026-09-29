@@ -434,6 +434,22 @@ class Assembler:
                     resolved.append(str(labels[a] - at))
                 else:
                     resolved.append(a)
+            if mnemonic == ".word":
+                # A raw data word (P2-SCALAR.3): the honest spelling of "this guest
+                # deliberately places these exact bytes" — the reserved encodings the
+                # mnemonic path's range checks exist to refuse. Numeric literals only.
+                if len(resolved) != 1:
+                    raise AsmError(f"{text!r}: .word takes exactly one operand")
+                try:
+                    value = int(resolved[0], 0)
+                except ValueError:
+                    raise AsmError(
+                        f"{text!r}: .word takes a numeric literal, got {resolved[0]!r}"
+                    ) from None
+                if not 0 <= value <= 0xFFFF_FFFF:
+                    raise AsmError(f"{text!r}: .word value {value:#x} is outside 32 bits")
+                out.append((value, text))
+                continue
             out.append((self.encode(mnemonic, resolved), text))
         return out
 

@@ -27,12 +27,17 @@
        (effect (set (reg rd) (add (pc) (sext 64 (shl (imm imm20) (lit 12)))))))
 
   ;; ---- control transfer -------------------------------------------------------------------
-  (sem (insn jal)  (source "RVI-RV32I §1.1.5.1 — JAL stores pc+4 in rd, then adds the offset to THIS instruction's address")
-       (effect (seq (set (reg rd) (add (pc) (lit 4)))
-                    (set-pc (add (pc) (sext 64 (imm jimm20)))))))
-  (sem (insn jalr) (source "RVI-RV32I §1.1.5.1 — D-JALR-LSB: add, THEN set the least-significant bit to zero")
-       (effect (seq (set (reg rd) (add (pc) (lit 4)))
-                    (set-pc (and (add (reg rs1) (sext 64 (imm imm12))) (lit -2))))))
+  ;; ⛔ set-pc FIRST, the link write SECOND (P2-SCALAR.3, DEFECT-B): the target's alignment
+  ;; check raises ON the jump (D-IALIGN/D-MISALIGN-REPORT), and an instruction that raises a
+  ;; synchronous exception retires no architectural write — both references suppress the link
+  ;; write on a misaligned target (measured). `(pc)` reads the frame's constant instruction
+  ;; address, so the reorder is exact on the success path.
+  (sem (insn jal)  (source "RVI-RV32I §1.1.5.1 — JAL adds the offset to THIS instruction's address and stores pc+4 in rd; the misaligned-target check precedes the link write (§1.1.5.2)")
+       (effect (seq (set-pc (add (pc) (sext 64 (imm jimm20))))
+                    (set (reg rd) (add (pc) (lit 4))))))
+  (sem (insn jalr) (source "RVI-RV32I §1.1.5.1 — D-JALR-LSB: add, THEN set the least-significant bit to zero; the misaligned-target check precedes the link write (§1.1.5.2)")
+       (effect (seq (set-pc (and (add (reg rs1) (sext 64 (imm imm12))) (lit -2)))
+                    (set (reg rd) (add (pc) (lit 4))))))
 
   ;; ---- conditional branches; the offset is added to the BRANCH's address ------------------
   (sem (insn beq)  (source "RVI-RV32I §1.1.5.2")

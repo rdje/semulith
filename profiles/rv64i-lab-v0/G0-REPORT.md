@@ -24,8 +24,8 @@ generator has no code path that would produce it while that is true.
 | `profile.sexp` | 28 decisions, 52 mnemonics, XLEN 64, extensions `[]` |
 | `requirements.sexp` | 28 requirements |
 | `contract-obligations.sexp` | 36 obligations, 72 declared checks |
-| `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 6 recorded differences |
-| `guests/*.expected.sexp` | 14 programs, 376 expected steps, 9 negative observations |
+| `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 7 recorded differences |
+| `guests/*.expected.sexp` | 32 programs, 454 expected steps, 16 negative observations |
 
 ## Criterion 1 — foundational semantics are resolved
 
@@ -38,7 +38,7 @@ Every requirement carries a source locator, and its research status is recorded.
 | `reserved` | 1 |
 | `unspecified` | 1 |
 
-**Not fully resolved: 2** — `REQ-D-SHIFTW-RESERVED`, `REQ-D-ECALL-EBREAK`. Each names its open question inside the record. `RECORD-SCHEMA` refuses a record that
+**Not fully resolved: 1** — `REQ-D-ECALL-EBREAK`. Each names its open question inside the record. `RECORD-SCHEMA` refuses a record that
 claims `resolved` while carrying an open note, so this count cannot be flattered.
 
 **Status: met, with the open questions named above.**
@@ -67,6 +67,7 @@ trap as well as arithmetic.
 | `DIFF-FETCH-GRANULARITY` | observable |
 | `DIFF-PLATFORM-DEFAULT` | configuration — CORRECTED, not merely recorded |
 | `DIFF-PLATFORM-SPIKE` | layer — the reference bundles a BOARD with its CPU |
+| `DIFF-FENCEI-EXECUTED` | extension presence — the ISA string is not the whole answer, again |
 
 | Independence: subsystem | Pair | Verdict |
 | --- | --- | --- |

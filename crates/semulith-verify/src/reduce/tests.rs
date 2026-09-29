@@ -108,8 +108,9 @@ fn jalr_odd_bit_minimizes_and_retains_the_fixture_notes_fault() {
     );
     assert_eq!(reduction.retained.at, 10);
     assert!(
-        reduction.retained.what.contains("trap"),
-        "names the divergence kind: {}",
+        reduction.retained.what.contains("x10"),
+        "names the divergence's first field — the link write the faulting mutant \
+         suppresses and the honest model retires: {}",
         reduction.retained.what
     );
     // The retained trap is the fixture note's prediction, byte for byte.

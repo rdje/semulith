@@ -679,7 +679,7 @@ pub fn run_instrumented<O: Observer + ?Sized>(
             Disposition::Observed => {
                 observer.observe(Step {
                     pc,
-                    word: image_word(image, pc)?,
+                    word: Some(image_word(image, pc)?),
                     writes: run::diff(before, &state),
                     trap: match &outcome {
                         StepOutcome::Event(event) => Some(run::trap_pair(event)),
@@ -691,7 +691,7 @@ pub fn run_instrumented<O: Observer + ?Sized>(
             Disposition::StopAfterObservation(stop) => {
                 observer.observe(Step {
                     pc,
-                    word: image_word(image, pc)?,
+                    word: Some(image_word(image, pc)?),
                     writes: run::diff(before, &state),
                     trap: match &outcome {
                         StepOutcome::Event(event) => Some(run::trap_pair(event)),
@@ -747,7 +747,7 @@ pub fn run_diagnostic(
             Disposition::Observed => {
                 stream.push(Step {
                     pc,
-                    word: image_word(image, pc)?,
+                    word: Some(image_word(image, pc)?),
                     writes: run::diff(before, &state),
                     trap: match &outcome {
                         StepOutcome::Event(event) => Some(run::trap_pair(event)),
@@ -759,7 +759,7 @@ pub fn run_diagnostic(
             Disposition::StopAfterObservation(stop) => {
                 stream.push(Step {
                     pc,
-                    word: image_word(image, pc)?,
+                    word: Some(image_word(image, pc)?),
                     writes: run::diff(before, &state),
                     trap: match &outcome {
                         StepOutcome::Event(event) => Some(run::trap_pair(event)),

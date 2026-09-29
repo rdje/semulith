@@ -119,6 +119,13 @@ same names. Pseudo-instructions (`li`, `mv`, `nop`, …) are likewise absent: ev
 guest is a real instruction with a real encoding, so a reader never has to wonder what a
 shorthand expanded to.
 
+There is exactly one escape hatch, added by `P2-SCALAR.3` for the fault guests: the
+`.word 0x…` directive places one raw 32-bit word verbatim. It exists because the honest
+spelling of "this guest deliberately executes a *reserved* encoding" cannot go through the
+mnemonic path — the operand range checks are precisely what refuses such words there
+(`fault-reserved`'s 0xFFFFFFFF, `fault-shiftw-res`'s `slliw` with `imm[5]` set). `.word`
+takes one numeric literal, range-checked to 32 bits; anything else is refused.
+
 ## The ELF writer — and a measured harness difference
 
 `write_elf64()` wraps the words in a minimal ELF64 little-endian RISC-V executable: one

@@ -188,7 +188,12 @@ def main() -> int:
     print(f"the P1-LAB.8 first-execution-slice experiment for {PROFILE}")
     for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
                  "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak",
-                 "bound-shift", "bound-shiftw", "bound-arith", "bound-ext", "bound-alias"):
+                 "bound-shift", "bound-shiftw", "bound-arith", "bound-ext", "bound-alias",
+                 "fault-jal-mis", "fault-jalr-mis", "fault-branch-nt", "fault-fetch",
+                 "fault-ld-mis-h", "fault-ld-mis-d", "fault-st-mis-h", "fault-st-mis-w",
+                 "fault-st-mis-d", "fault-ld-x0-mis", "fault-ld-x0-fault", "fault-access-ld",
+                 "fault-access-sd", "fault-reserved", "fault-shiftw-res", "fault-fence",
+                 "fault-hints", "fault-selfmod"):
         experiment(name)
     print()
     if failures:

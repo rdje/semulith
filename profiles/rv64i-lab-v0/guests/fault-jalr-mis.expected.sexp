@@ -1,0 +1,6 @@
+;; fault-jalr-mis.expected.sexp — the expected observations for `fault-jalr-mis.s` (P2-SCALAR.3).
+;; Validate with:
+;;   python3 scripts/check_sexp_schema.py fault-jalr-mis.expected.sexp schema/expectations.sexp
+
+(comment "fault-jalr-mis.expected.sexp — the expected observations for `fault-jalr-mis.s`." "" "⛔ EVERY VALUE HERE WAS DERIVED FROM THE PINNED SPECIFICATION PROSE BEFORE THE PROGRAM WAS RUN" "(EVD-05). D-JALR-LSB clears only bit 0, so a target of 3 becomes 2 — still misaligned under" "IALIGN=32. The link write to x5 is suppressed exactly as for JAL (the DEFECT-B pin).")
+(expectations (program "fault-jalr-mis.s") (entry "0x80000000") (instructions 2) (never_written "x5") (step (n 0) (insn "addi x1, x0, 3") (writes (write (reg "x1") (value "0x0000000000000003"))) (derivation "The target material: 3 has bit 0 AND bit 1 set, so clearing only bit 0 leaves a misaligned 2.") (source "RVI-RV32I §1.1.4")) (step (n 1) (insn "jalr x5, x1, 0") (writes) (derivation "The target is (3 + 0) with bit 0 cleared = 2, not 4-byte aligned under IALIGN=32: instruction-address-misaligned ON THE JUMP, tval = 2, and x5 is never written. Measured on both references: cause 0x00, tval 0x0000000000000002, no link write.") (source "RVI-RV32I §1.1.5.1 (D-JALR-LSB); §1.1.5, §1.1.5.2 (D-IALIGN, D-MISALIGN-REPORT)")))

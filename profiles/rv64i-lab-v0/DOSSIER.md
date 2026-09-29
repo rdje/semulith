@@ -102,8 +102,12 @@ defect. This is catalog `C13`, and it is the kind of case a final-state checksum
 **No ordering claim.** `FENCE` is decoded and must not trap; with one hart, no external devices
 and an in-order model it has no observable effect. `FENCE.TSO` (fm=1000, pred=RW, succ=RW) is
 accepted and implemented as `FENCE RW,RW`, which the specification states is correct
-(`RVI-RV32I` §1.1.7, Table 3). RVWMO is **out of scope** until `MC-MULTICORE`, and this profile
-claims nothing about memory ordering.
+(`RVI-RV32I` §1.1.7, Table 3). The remaining fm/pred/succ configurations are reserved, and the
+same section *specifies* their behavior: base implementations shall treat them as `FENCE` with
+fm=0000 — they decode and execute as an ordinary fence, and the rs1/rd fields are ignored for
+forward compatibility (`D-FENCE`, corrected by `P2-SCALAR.3`; a reserved FENCE *configuration*
+is not the UNSPECIFIED reserved-instruction case). RVWMO is **out of scope** until
+`MC-MULTICORE`, and this profile claims nothing about memory ordering.
 
 ## Open questions
 
@@ -112,7 +116,7 @@ Each has an owner and a due point. None blocks writing `profile.sexp`; all block
 | ID | Question | Owner | Due |
 | --- | --- | --- | --- |
 | **OQ-1** | Does archogen's `rt-static-up-v1` need machine-mode features this profile excludes? `docs/ARCHOGEN_INTEGRATION.md` §6 warns against promising that unprivileged RV64I alone suffices. | `AG-OS` / this leaf on re-open | before `P1-LAB.1` fixes the crate boundary |
-| **OQ-2** | Which reference models treat `SLLIW` `imm[5]!=0` as reserved versus illegal, and how is the difference reported rather than counted as a mismatch? | `P0-PROFILE.5`/`.6` | `G0` |
+| **OQ-2** | Which reference models treat `SLLIW` `imm[5]!=0` as reserved versus illegal, and how is the difference reported rather than counted as a mismatch? | `P0-PROFILE.5`/`.6` | `G0` — **ANSWERED `2026-09-29` (`P2-SCALAR.3`, measured): sail-riscv 0.14 AND spike 1.1.1-dev both raise illegal-instruction, tval = the word — the previous text's behavior. The laboratory's `D-RESERVED-DECODE` policy conversion produces exactly that observation, so the comparison agrees while the model keeps the UNSPECIFIED classification (`SEM-07`). Pinned by `fault-shiftw-res`.** |
 | **OQ-3** | Is `D-MISALIGN-DATA`'s contained-trap choice expressible in the selected reference's configuration, or must it be normalized at the comparator? A normalization needs a source-grounded justification (`EVD-05`). | `P0-PROFILE.6` | `G0` |
 | **OQ-4** | What are the actual applicable terms for the specification artifacts, and does anything here get redistributed? Nothing is committed today; `SRC-01` requires the terms before it is. **Partly answered by `.5`:** the *reference models'* terms are now recorded (BSD-2-Clause, BSD-3-Clause, GPL-2.0-only, Apache-2.0) and none is redistributed. The *specification* artifacts' terms remain open. | `P0-PROFILE.5` (models, done) / `.9` (specification) | before any artifact is shipped |
 | **OQ-5** | Is `pc` after an `ECALL`/`EBREAK` requested trap defined by this harness, or left to the harness contract? The base ISA gives no answer without a privileged mode. | `P0-PROFILE.4` | `G0` |

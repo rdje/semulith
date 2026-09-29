@@ -154,14 +154,20 @@ pub fn to_json(run: &GuestRun) -> String {
         if n > 0 {
             out.push(',');
         }
-        let insn = decode(step.word).map_or("<undecodable>", |i| i.name);
+        let insn = match step.word {
+            Some(word) => decode(word).map_or("<undecodable>", |i| i.name),
+            None => "<fetch fault>",
+        };
         out.push_str("{\"n\":");
         out.push_str(&n.to_string());
         out.push_str(",\"pc\":\"0x");
         out.push_str(&format!("{:016x}", step.pc));
-        out.push_str("\",\"word\":\"0x");
-        out.push_str(&format!("{:08x}", step.word));
-        out.push_str("\",\"insn\":\"");
+        out.push_str("\",\"word\":");
+        match step.word {
+            Some(word) => out.push_str(&format!("\"0x{word:08x}\"")),
+            None => out.push_str("null"),
+        }
+        out.push_str(",\"insn\":\"");
         out.push_str(insn);
         out.push_str("\",\"writes\":[");
         for (i, (reg, value)) in step.writes.iter().enumerate() {
