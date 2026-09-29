@@ -34,7 +34,7 @@
     (id "chipdoc")
     (title "chipdoc — curated documentation for digital components, chips, interfaces and protocols")
     (kind git-repository)
-    (revision "3c45e81")
+    (revision "73711d6")
     (env-var "SEMULITH_CHIPDOC_ROOT")
     (derivation "Re-derived 2026-09-14 by a PATH SWEEP, not a sample:
                  find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
@@ -44,7 +44,9 @@
                  guessing where things are records the surveyor's expectations, not the corpus.")
     (note "Curated, in its own words, to expose enough behaviour to reconstruct implementable
            intent AND to build software emulators that run real C/C++/Rust software — which is
-           this project's north star stated by someone else, independently. 3684 files, 196 PDFs.
+           this project's north star stated by someone else, independently. 5309 files, 255 PDFs
+           (re-derived 2026-09-29 by the same path sweep at the 73711d6 re-pin; 3684 files, 196
+           PDFs at the 3c45e81 baseline).
            Terms are recorded per document family in that repository's own README files, so a
            material's licence below is read from the DOCUMENT, not assumed from the corpus."))
 
@@ -807,4 +809,162 @@
     (note "⭐ A part that ships BOTH an Arm and a RISC-V core on one die, software-selectable. If a
            composition model is real, the same board description should compose with either
            processor — which makes this the sharpest available test of `MODEL-COMPOSE`'s slots."))
+
+  ;; ------------------------------------------------------------------------------------
+  ;; Adopted from the chipdoc feed (catalog/semulith-proposals.sexp) under MODEL-METHOD.15,
+  ;; 2026-09-29 — the director's 2026-09-27 flagged set (psABI, SBI, BRS, U-Boot, DT, FU540,
+  ;; virtio, ACT); psABI was already catalogued above. The records are the feed's own, in this
+  ;; file's syntax, and every digest was re-verified at fetch, not trusted from the feed.
+  ;; ------------------------------------------------------------------------------------
+
+  (material
+    (id "RISCV-ARCH-TEST-ACT4")
+    (title "RISC-V Architectural Test Suite (riscv-arch-test / ACT) — documentation and test plans")
+    (revision "branch act4 e2216915 2026-09")
+    (release-kind intermediate)
+    (kind snapshot)
+    (manifest "SHA256SUMS")
+    (licence "Apache-2.0 AND CC-BY-4.0")
+    (licence-evidence "upstream COPYING.APACHE and COPYING.CC in the repository root")
+    (corpus "chipdoc")
+    (corpus-path "risc-v/compliance/riscv-arch-test/current")
+    (cache-path "riscv/riscv-arch-test-act4")
+    (sha256 "ec4b9eb6f86a9caa4780d3dea0d78fddd247ba8c3d5138e18f57447b8c8bb5c8")
+    (bytes 12229)
+    (supplies "the operational definition of architectural compliance: docs/ (developer guide,
+               coverage, memory map, SBI changes) and testplans/ (per-extension coverage CSVs and the
+               privileged test plans)")
+    (status wanted)
+    (note "⛔ PARTIAL BY DESIGN: the full tree is ~672 MB uncompressed, almost entirely generated
+           .S tests (635 MB) and .svh coverpoints (31 MB); only the documentation and test-plan
+           metadata (136 files, ~1 MB) are committed. The full suite is identified by commit
+           e2216915d9a17acc142610831d88de8b65683866 and must be fetched from upstream.
+           This is the `P2-SCALAR.5` blocker-(a) material: the campaign's planning half is now
+           catalogued and cached; the generated tests arrive when `.5` resumes."))
+
+  (material
+    (id "RISCV-SBI-2.0")
+    (title "RISC-V Supervisor Binary Interface Specification, version 2.0")
+    (revision "2.0")
+    (release-kind ratified)
+    (pages 74)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "risc-v/system-ip/sbi/current/riscv-sbi-2.0.pdf")
+    (cache-path "riscv/riscv-sbi-2.0.pdf")
+    (sha256 "63084f54f382715efb340f46695d0e5cebd98965292d034d1b184b1abd3a682b")
+    (bytes 485497)
+    (supplies "the SBI call ABI between supervisor software and M-mode firmware: timer, IPI, console,
+               system reset, hart state, and the HSM extension a Linux boot depends on")
+    (status wanted)
+    (note "The boot-chain contract on the software side; OPENSBI-v1.9 is its reference
+           implementation (feed record, not yet adopted)."))
+
+  (material
+    (id "RISCV-BRS-1.0")
+    (title "RISC-V Boot and Runtime Services Specification (BRS), version 1.0")
+    (revision "1.0 2025-08-29")
+    (release-kind ratified)
+    (pages 31)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "risc-v/firmware/brs/current/riscv-brs-spec_v1.0_2025-08-29.pdf")
+    (cache-path "riscv/riscv-brs-1.0.pdf")
+    (sha256 "a04583ee136f51ace99ab78aab75834dfe4874009ff52ff97d02e37610f3c4fe")
+    (bytes 210075)
+    (supplies "the server-class RISC-V boot contract: hart and SBI requirements, UEFI/ACPI/SMBIOS
+               expectations, device-property conventions for UARTs, and firmware-update/security
+               guidance")
+    (status wanted)
+    (note "Sits above the SBI implementation: OpenSBI implements the SBI, BRS states what a
+           platform must present to the OS."))
+
+  (material
+    (id "DT-SPEC-0.4")
+    (title "Devicetree Specification, version 0.4")
+    (revision "v0.4 2023-06-28")
+    (release-kind final)
+    (pages 64)
+    (licence "Apache-2.0")
+    (licence-evidence "the document's own License Information section: \"Licensed under the Apache
+                       License, Version 2.0 … You may obtain a copy of the License at
+                       http://www.apache.org/licenses/LICENSE-2.0\" — read from the PDF, not assumed")
+    (corpus "chipdoc")
+    (corpus-path "devicetree/spec/current/devicetree-specification-v0.4.pdf")
+    (cache-path "devicetree/devicetree-specification-v0.4.pdf")
+    (sha256 "c141dd78af0971fffed19433f84af5beab6aa058cfff2e33076805cef9f92e02")
+    (bytes 422295)
+    (supplies "the node/property model, standard nodes (/memory, /cpus, /chosen, interrupt mapping),
+               compatible matching, and the DTS/DTB format contract — the machine-readable board
+               description a Linux boot consumes. The strongest datasheet class in the corpus because
+               its correctness is checked by a real OS, not by a reader.")
+    (status wanted)
+    (note "Bindings for individual devices are NOT in this document — they live in the Linux kernel
+           tree (Documentation/devicetree/bindings/) and must be cited at a pinned commit. The v1.0
+           rework is in development and not yet a stable tag."))
+
+  (material
+    (id "UBOOT-2026.07")
+    (title "U-Boot v2026.07 documentation subtree (doc/, Licenses/, README)")
+    (revision "v2026.07 2026-07")
+    (release-kind final)
+    (kind snapshot)
+    (manifest "SHA256SUMS")
+    (licence "GPL-2.0-or-later")
+    (licence-evidence "upstream Licenses/ and per-file SPDX headers; the project licence is GPL-2.0+")
+    (corpus "chipdoc")
+    (corpus-path "uboot/current")
+    (cache-path "uboot/v2026.07")
+    (sha256 "2b6e485d220cf8fa5cf976134ca3ea37fa1d49af35ed0f4e2e5963b1406858ad")
+    (bytes 124423)
+    (supplies "the bootloader contract between OpenSBI and Linux: boot flow, environment, FIT images,
+               driver model, EFI loader, device-tree bindings, and per-board bring-up notes")
+    (status wanted)
+    (note "Snapshot identity is the digest of the SHA256SUMS manifest (1219 files), as for
+           RVI-PINNED-V20260120. U-Boot publishes documentation as reStructuredText, not PDF, so the
+           tracked artifact is the doc/ subtree; the 46 MB source tarball is referenced by tag, not
+           committed."))
+
+  (material
+    (id "SIFIVE-FU540-C000")
+    (title "SiFive FU540-C000 Manual v1p5")
+    (revision "v1p5")
+    (release-kind final)
+    (pages 159)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document")
+    (corpus "chipdoc")
+    (corpus-path "sifive/fu540/current/FU540-C000_v1p5_manual.pdf")
+    (cache-path "sifive/fu540-c000-v1p5.pdf")
+    (sha256 "5fa68a677ca4bc9fc81456840834eb4fa72874a2bd72a76c33f6709f3ecab79c")
+    (bytes 2361460)
+    (supplies "a complete Linux-capable RISC-V board: memory map plus register descriptions for
+               CLINT, PLIC, 16550-compatible UART, SPI, I2C, PWM, GPIO, DMA, Ethernet (GEM), QSPI and
+               DDR, and the boot flow")
+    (status candidate)
+    (note "v1p5 is now the current issue; v1p0 is retained at sifive/fu540/legacy/ in the corpus for
+           citation compatibility. Composes with RVI-PINNED-V20260120 (the processor)."))
+
+  (material
+    (id "VIRTIO-1.2")
+    (title "Virtual I/O Device (VIRTIO) Version 1.2 (OASIS CS01)")
+    (revision "1.2 cs01 2022-07-01")
+    (release-kind final)
+    (pages 282)
+    (licence "OASIS IPR Non-Assertion Mode")
+    (licence-evidence "the document's own Status section: \"provided under the Non-Assertion Mode of
+                       the OASIS IPR Policy\"")
+    (corpus "chipdoc")
+    (corpus-path "virtio/spec/current/virtio-v1.2-cs01_2022-07-01.pdf")
+    (cache-path "virtio/virtio-1.2.pdf")
+    (sha256 "42c7d2b9da95b4763e5416e18eab08d9a5d715dd98390cb5fb727205c15f5e45")
+    (bytes 1213207)
+    (supplies "split and packed virtqueue formats, feature negotiation, device configuration space,
+               and per-device contracts (net, block, console, entropy) — the devices QEMU virt
+               exposes to a guest")
+    (status wanted)
+    (note "The cheapest route to a Linux userspace on QEMU virt: model virtio devices instead of real
+           hardware."))
 )

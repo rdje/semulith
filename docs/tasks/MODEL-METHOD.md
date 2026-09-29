@@ -6,7 +6,8 @@
 - Status: `active` (reopened `2026-09-29` for `.14` — the `MODEL-BOOKS.2` finding: the
   pinned specification's own PDF carries the instruction-format tables as selectable text,
   so the encodings' second provenance may be replaceable by the primary document; the
-  evaluation is director-scheduled)
+  evaluation is director-scheduled — and for `.15`, the same day: the director supplied the
+  chipdoc corpus root and ordered the flagged set cached locally)
 - Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
@@ -485,6 +486,47 @@ recorded so it can be overturned on evidence rather than taste:
   gate's verdict rather than a judgement call. Composes with `.10`: a category may be covered while
   the definition is still insufficient, and both must pass.
 
+- ID: `MODEL-METHOD.15` — **the chipdoc feed arrives: the flagged set, catalogued and cached**
+  Status: `active`
+  Origin (director, `2026-09-29`): the corpus root was supplied verbally and the instruction
+  given: save what semulith needs from chipdoc into a git-ignored local cache, so the corpus
+  path never has to be requested again. The feed the director flagged on `2026-09-27`
+  (`SEMULITH.md` → `catalog/semulith-proposals.sexp`, `(material …)` records in this
+  catalogue's own syntax) is the consumption channel; this leaf is the catalogue slice that
+  consumes it.
+  Goal: adopt the materials the current and next milestones need into `materials/catalog.sexp`,
+  fetch them into the git-ignored `.materials/` cache digest-verified, snapshot the channel
+  itself (the feed, the map, the requests ledger) into a git-ignored `.semulith-data/chipdoc/`,
+  and re-pin the corpus revision (`3c45e81` → `73711d6`).
+  The adopted set — the director's `2026-09-27` flag (psABI, SBI, BRS, U-Boot, DT, FU540,
+  virtio, ACT), psABI already catalogued and cached: `RISCV-ARCH-TEST-ACT4` (the
+  `P2-SCALAR.5` blocker-(a) material), `RISCV-SBI-2.0`, `RISCV-BRS-1.0`, `DT-SPEC-0.4`,
+  `SIFIVE-FU540-C000`, `VIRTIO-1.2`, `UBOOT-2026.07` — the P4/P5/P6 inputs.
+  Acceptance: every adopted row verifies its digest at fetch (the fetcher's refusal-on-mismatch
+  is the control); `materials.py --verify` resolves every catalogued material; the re-pin
+  clears the drift warning with the variable set; the channel snapshot holds the feed, the map
+  and the ledger, with the corpus location recorded in an UNTRACKED readme (Policy 12 — no
+  tracked file names it); the gate stays green.
+  Not this leaf: resuming `P2-SCALAR.5` (blocker (b) — the C-guest routing decision and the
+  absent RISC-V C toolchain — stands); the generated ACT suite (635 MB of `.S`, pinned by
+  upstream commit `e2216915…`, fetched when `.5` resumes — the snapshot is docs + test plans
+  by design); the `.14` probe PDF (probed: chipdoc's pinned snapshot carries 72 HTML pages and
+  no PDF — the v20260120 unprivileged PDF is not in the corpus).
+
+  Result: met, `2026-09-29`. 43 materials (was 36); the corpus re-pinned `3c45e81` →
+  `73711d6` (5309 files / 255 PDFs at the new pin, re-derived by the same path sweep). Every
+  adopted digest verified AT FETCH — 7 of 7 ok, both snapshots manifest-verified (ACT4
+  136/136, U-Boot 1219/1219) — and `materials.py --verify` resolves 43/43 with zero drift
+  warnings. The channel snapshot stands at `.semulith-data/chipdoc/` (git-ignored; the
+  corpus location lives only in its untracked README, Policy 12 honoured). psABI's SRC-02
+  follow-up is discharged: the corpus copy (`RVI-PSABI-1.0` PDF) was already catalogued and
+  cached since `.11`, beside the `.4` canonical HTML render — both forms on disk, the corpus
+  copy preferred as instructed. `P2-SCALAR.5` blocker (a) is answered at the materials layer
+  (the generated suite stays pinned by upstream commit for resume day); blocker (b) stands.
+  `promotion: declined (the one in-flight correction — a feed census typed from recall as
+  60/10, measured 67/11 — is the CLAIM_VERIFICATION discipline biting on a one-line claim;
+  the rule already lives in docs/CLAIM_VERIFICATION.md).`
+
 - ID: `MODEL-METHOD.14` — **evaluate re-sourcing the encodings from the primary-document PDF**
   Status: `proposed` (director-scheduled — surfaced `2026-09-29`; no work until scheduled)
   Origin (measured, `MODEL-BOOKS.2`, `2026-09-29`): the pinned unprivileged specification's
@@ -513,7 +555,8 @@ recorded so it can be overturned on evidence rather than taste:
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation is real work with its own verification and starts only when the director schedules it |
+| 1 | `MODEL-METHOD.15` | `active` | the director supplied the corpus root and ordered the cache (`2026-09-29`): adopt the flagged set, fetch it digest-verified, snapshot the channel |
+| 2 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation is real work with its own verification and starts only when the director schedules it |
 | — | — | — | leaves `.1`–`.13` done `2026-09-27`: the method, the census, the acquisitions, and the coding gate all land |
 
 ## Decisions
@@ -648,6 +691,12 @@ logs.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `MODEL-METHOD.15` | feed census (grep, not recall) | 67 `(material …)` + 11 `(gap …)` proposals at `73711d6`; 7 adopted — the director's flagged set minus the already-catalogued psABI |
+| `2026-09-29` | `MODEL-METHOD.15` | corpus re-derivation at the re-pin | 5309 files / 255 PDFs (was 3684 / 196 at `3c45e81`), same path sweep |
+| `2026-09-29` | `MODEL-METHOD.15` | `--fetch` of the 7 adopted ids | 7 of 7 ok, every sha256 verified at copy; ACT4 manifest 136/136, U-Boot 1219/1219 |
+| `2026-09-29` | `MODEL-METHOD.15` | `materials.py --verify` + `--self-test` | 43 verified / 0 unresolved / 0 drift; self-test 20 pass / 0 fail |
+| `2026-09-29` | `MODEL-METHOD.15` | the `.14` probe input in the corpus | ABSENT — the pinned snapshot holds 72 HTML pages and no PDF (`find -iname '*.pdf'` empty); the `.4` release-asset PDF stays the probe's input |
+| `2026-09-29` | `MODEL-METHOD.15` | the whole gate after staging | all doctrines green |
 | `2026-09-27` | `MODEL-METHOD.6` | `--self-test` | `7 pass / 0 fail` — MISSING REQUIRED, UNCOVERED REQUIRED, UNDECLARED SCOPE, NO CENSUS, both GREEN arms, empty-corpus refusal |
 | `2026-09-27` | `MODEL-METHOD.6` | RED before registration (scratch unit, required category missing) | `MISSING REQUIRED [ghost requires C02]` |
 | `2026-09-27` | `MODEL-METHOD.6` | real run | `ok (1 unit(s) may code)` — rv64i-lab-v0 declares 14 required categories, all covered |
@@ -718,6 +767,7 @@ logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.15` | `SEMULITH-MM-0057 (leaf MODEL-METHOD.15): the chipdoc feed arrives — the flagged set, catalogued and cached` | corpus re-pinned `73711d6`; 43 materials; `P2-SCALAR.5` blocker (a) answered |
 | `MODEL-METHOD.6` | `SEMILITH-MM-0050 (leaf MODEL-METHOD.6): …` | no coding without the source of truth, mechanized; the tree closes 13/13 |
 | `MODEL-METHOD.5` | `SEMILITH-MM-0049 (leaf MODEL-METHOD.5): …` | the method, in prose, written to be learned from |
 | `MODEL-METHOD.4` | `SEMILITH-MM-0048 (leaf MODEL-METHOD.4): …` | the run-real-code set acquired and digest-pinned; the PDF question answered YES |

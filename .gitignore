@@ -29,6 +29,12 @@ __pycache__/
 # the normal state of a fresh clone, not a fault.
 /.materials
 
+# External-channel snapshots (MODEL-METHOD.15): local copies of another repository's feed and
+# ledger files, taken so the external root path is not needed again. Not a source of truth —
+# the tracked catalogue rows adopted from the feed are. The corpus location may be recorded in
+# untracked files here (Policy 12 binds tracked files only).
+/.semulith-data
+
 # LinkedSpec application-owned data: cargo home, target dir, cache and scratch for the vendored
 # submodule, as its integration guide prescribes (docs/linkedspec-book/src/public-api/
 # integration-rust.md, "Keep preparation and build products local"). Repo-local by design, so

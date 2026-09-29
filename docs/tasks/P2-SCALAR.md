@@ -339,7 +339,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.5` | `blocked` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer — but its two material inputs are external: the ACT4 suite (`riscv-arch-test`) is in no materials list, and the C-toolchain guest awaits the director's routing answer (`P1-LAB.12`). Both named in `Blockers`; the session pivoted to `MODEL-BOOKS.1` with the tree clean |
+| 1 | `P2-SCALAR.5` | `blocked` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer. Blocker (a) ANSWERED `2026-09-29` (`MODEL-METHOD.15`): the ACT4 docs + test plans are catalogued and cached, the generated suite pinned by upstream commit for resume day. Blocker (b) stands: the C-toolchain guest awaits the director's routing answer (`P1-LAB.12`) and no RISC-V C toolchain is installed |
 
 ## Decisions
 
@@ -409,14 +409,19 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 - ~~`P1-LAB` gate `G1`.~~ G1 was RUN `2026-09-29` (verdict `incomplete`): criteria 1–5 met,
   criterion 6 (the C-toolchain guest) routed INTO this tree's `.5`. Scope work (`.1`–`.4`)
   does not depend on criterion 6.
-- **`2026-09-29` (blocks `.5`) — the ACT4 external-test material is not in the corpus.**
-  The leaf's acceptance requires ACT4 results (`EVIDENCE_AND_GATES.md` §72 names
-  `riscv-arch-test`, ACT4, Sail-derived expectations), but no `riscv-arch-test` entry exists
-  in `materials/catalog.sexp` (36 primary sources, corpus `3c45e81`) — verified by grep
-  `2026-09-29`. Acquiring a new primary-source family is a catalogue/provenance act
-  (license review, `docs/provenance/` disposition, the chipdoc proposal feed), not a
-  design detail the leaf can absorb. The measured-first doctrine also cannot run without
-  the suite on disk.
+- ~~**`2026-09-29` (blocks `.5`) — the ACT4 external-test material is not in the corpus.**~~
+  **ANSWERED `2026-09-29` (leaf `MODEL-METHOD.15`) at the materials layer.** The director
+  supplied the corpus root and ordered the cache; `RISCV-ARCH-TEST-ACT4` is now catalogued
+  in `materials/catalog.sexp` (43 primary sources, corpus re-pinned `3c45e81` → `73711d6`)
+  and cached, manifest-verified (136 entries): the suite's `docs/` and `testplans/` — the
+  campaign's planning half. ⛔ What remains for resume day, by design: the generated tests
+  (635 MB of `.S`, 31 MB of `.svh`) are pinned by upstream commit
+  `e2216915d9a17acc142610831d88de8b65683866`, not committed to the corpus — the snapshot is
+  partial by design, and the fetch of the generated half is part of `.5`'s resume, not of
+  the catalogue act. Original record, for the trail: the leaf's acceptance requires ACT4
+  results (`EVIDENCE_AND_GATES.md` §72 names `riscv-arch-test`, ACT4, Sail-derived
+  expectations), but no `riscv-arch-test` entry existed in `materials/catalog.sexp`
+  (36 primary sources, corpus `3c45e81`) — verified by grep `2026-09-29`.
 - **`2026-09-29` (blocks `.5`'s C-guest strand) — the director's routing answer is still
   open** (`P1-LAB.12` ROUTING EVIDENCE): is the C guest allowed to land in P2, or must G1
   read `passed` first? Compounding it: no RISC-V C toolchain is installed on this machine

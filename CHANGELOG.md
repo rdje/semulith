@@ -1,5 +1,29 @@
 # CHANGELOG.md
 
+## SEMULITH-MM-0057 (leaf MODEL-METHOD.15) — the chipdoc feed arrives: the flagged set, catalogued and cached
+
+- The director supplied the chipdoc corpus root and ordered a local cache so the path never
+  has to be requested again. The feed's records arrive in this catalogue's own syntax, so
+  adoption is copy-and-verify, not transcription: 7 proposals adopted (the `2026-09-27`
+  flagged set minus the already-catalogued psABI) — `RISCV-ARCH-TEST-ACT4`, `RISCV-SBI-2.0`,
+  `RISCV-BRS-1.0`, `DT-SPEC-0.4`, `UBOOT-2026.07`, `SIFIVE-FU540-C000`, `VIRTIO-1.2`. The
+  catalogue reads 43 materials (was 36).
+- Every digest verified AT FETCH, not trusted from the feed: 7/7 ok; both snapshots
+  manifest-verified (ACT4 136/136 files, U-Boot 1219/1219). `materials.py --verify`:
+  43/43 resolved, zero drift after the corpus re-pin `3c45e81` → `73711d6` (5309 files /
+  255 PDFs re-derived by the same path sweep at the new pin).
+- The channel itself is snapshotted git-ignored at `.semulith-data/chipdoc/` (the map, the
+  feed, the requests ledger); the corpus path lives only in that untracked README —
+  Policy 12: no tracked file names it.
+- `P2-SCALAR.5` blocker (a) ANSWERED at the materials layer: the ACT4 docs + test plans are
+  catalogued and cached; the generated 635 MB suite stays pinned by upstream commit
+  `e2216915…` for resume day (the snapshot is partial by design). Blocker (b) — the C-guest
+  routing decision plus the absent RISC-V C toolchain — stands.
+- Measured absence: chipdoc's pinned v20260120 snapshot carries 72 HTML pages and no PDF —
+  the `MODEL-METHOD.14` probe's PDF stays the `MODEL-METHOD.4` release-asset acquisition.
+- `make gate` all green. CHANGELOG.md crossed its 64 KiB ceiling with this entry and was
+  sharded by the DOC-SHARDING machinery, per its declared pressure control.
+
 ## SEMULITH-PD-0051 (leaf PUSH-DISCIPLINE.3) — the approval record; PUSH-DISCIPLINE closes (3/3)
 
 - An exceptional push is now an auditable ACT: `scripts/approved_push.sh '<the director's
@@ -502,11 +526,4 @@
 - `semulith-verify::fixtures` implements it: `FlatMemory` — one little-endian main-memory region, no side effects (OB-MAIN-VS-IO), re-read per fetch so stores are immediately visible (OB-CODE-VISIBILITY), fetch counter as the no-extraneous witness, alignment judged before region membership (stated, tested); `ScriptedEnv` — the conversation pinned in advance, faults scriptable, and a request the script does not cover reports `ResponseMismatch`/`ScriptExhausted` instead of inventing data (§4.1.4's negative-fixture rule, exercised for real).
 - Verification: 16 new suites green (12 fixture + 4 contract-property), all without an instruction handler; `make check` 5 suites / 42 tests / 0 warnings; wasm build green; `make gate` green.
 - Lockstep: MEMORY/LIVE_STATUS/TASK_TREE/book P1 chapter and this tree; frontier moves to `.5` (typed outcome families).
-
-## SEMILITH-PL-0003 (leaf P1-LAB.3) — architectural state, generated from the descriptor
-
-- `semulith-core::state` exists, and it is generated: `scripts/gen_state.py` derives `state.rs` from `profiles/rv64i-lab-v0/state.sexp` through `dossier_sexp` (the single mapping owner), byte-deterministically, with the input's sha256 in the module header (OWN-03). The generator is deliberately narrow — it refuses, naming the construct, any descriptor shape it cannot emit (another profile, a non-64 width, an unmapped special register, a missing SEM-08 census). The 21st registered doctrine, `STATE-GEN` (`scripts/check_state_gen.sh`), re-runs its 6-arm self-test before judging and refuses drift with the regeneration command; fired RED against a hand-edited module before registration. The owner→mirror pair is registered in `doctrine/fact_ownership.tsv`.
-- The state: 32 × 64-bit integer registers + pc, 264 bytes inline, no heap (RUST-03); x0 hardwired zero (write discarded, read yields 0); the three ISA-chapter-named roles (x1 return address, x2 stack pointer, x5 alternate link) emitted as alias views over the one storage — C02's "does writing one alias affect every other view" answered by 10 test suites; laboratory reset per REQ-D-ENTRY-STATE/OB-ENV-RESET (x1..x31 = 0, pc = environment-supplied entry); SEM-08's hidden-state census carried as data (7 candidates checked, none present).
-- Verification: 22 test suites green (12 arithmetic + 10 state); `cargo clippy --all-targets --all-features -- -D warnings` clean; workspace still builds for `wasm32-unknown-unknown`; `make gate` green with the doctrine registered and both mirrors (DOCTRINE_ENFORCEMENT.md, the book's doctrines chapter) in sync.
-- Lockstep: `LIVE_STATUS.md` re-derived (21 registered, 237 self-test arms; P1 3/12); the name list in the doctrines row completed (STATE-GEN added; SCOPE-COVERAGE, omitted when it landed, restored); `MEMORY.md`, `docs/TASK_TREE.md`, the book's P1 chapter, and this tree updated. The frontier moves to `.4` (environment boundary and fixtures).
 
