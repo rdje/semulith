@@ -82,11 +82,16 @@ index them regardless of what happens here afterwards. So the two acts are gover
   (untracked, on-volume, overwritten per green run) — what was verified, and when, answerable
   without git archaeology.
 - **Cadence: push every 300 commits.** Below that, a push is *exceptional*.
-- **An exceptional push requires the director's approval.** The director grants it; the environment
-  variable only carries it, with the reason they gave:
+- **An exceptional push requires the director's approval — and the approval is an ACT, not a
+  variable.** The act is `scripts/approved_push.sh '<the director's reason>'`: it runs the suite
+  green FIRST, then appends the entry to the tracked, append-only ledger
+  `docs/push-approvals.md` and commits it as its own commit — the only way the record travels in
+  the pushed history — then pushes with the approval variable set, so the boundary re-verifies
+  cadence, suite and record. The variable alone no longer suffices: a push with it set but no
+  ledger entry covering the pushed work is refused (PUSH-DISCIPLINE.3).
 
   ```
-  SEMULITH_PUSH_APPROVED='<the director's reason>' git push
+  scripts/approved_push.sh '<the director's reason>'   # the act: suite → record → push
   ```
 
 - ⛔ **An agent may not supply that approval on its own judgement.** The single failure this rule

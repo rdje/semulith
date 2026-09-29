@@ -1,5 +1,31 @@
 # CHANGELOG.md
 
+## SEMULITH-PD-0051 (leaf PUSH-DISCIPLINE.3) — the approval record; PUSH-DISCIPLINE closes (3/3)
+
+- An exceptional push is now an auditable ACT: `scripts/approved_push.sh '<the director's
+  reason>'` runs `make ci` green FIRST (a red suite refuses and writes nothing), appends
+  the entry to the tracked append-only ledger `docs/push-approvals.md` and commits it as
+  its OWN commit (`SEMULITH-PUSH-NNNN: push approved — <reason>` — the only way the record
+  travels in the pushed history), then pushes with the approval variable set — and the
+  pre-push boundary re-verifies all three: cadence, suite, record.
+- The ledger entry carries: the sequential id, the act's timestamp, the director as
+  approver, the reason verbatim, the derived range (`<upstream>..<work-head>`, N commits —
+  never typed), and the suite line. Cadence pushes leave no entry.
+- `PUSH-RECORD` (#28, `scripts/check_push_record.sh`) enforces it: a staged change must
+  keep HEAD's content a PREFIX of the new content (history is never rewritten), and every
+  entry carries who/when/why/range with sequential ids — self-test 6/0; fired RED against
+  the real corpus before registration (a malformed entry → `MISSING FIELD`, named).
+- ⭐ The design's fixpoint defect — "the entry covers HEAD" is impossible, since the
+  record commit advances HEAD — was caught by MEASUREMENT, not review: the end-to-end
+  self-test's scratch push first ran with NO hooks installed (the defective check never
+  ran); with the shim, the real boundary fired. The honest semantics: the entry names the
+  WORK head; the record commit rides on top; the hook verifies the chain (self-test
+  9/0 → 14/0 with the five approval-path arms).
+- COMMIT.md names the act (the variable alone no longer suffices); the ledger has its
+  routes-registry row. The tree closes 3/3 — all four Acceptance Criteria met.
+- `make ci` green; `make gate` all green (28 doctrines / 297 arms). No push was attempted
+  at any point; CHANGELOG.md / DEV_NOTES.md shard at their thresholds.
+
 ## SEMULITH-PD-0050 (leaf PUSH-DISCIPLINE.2) — full CI runs BEFORE the push, at the boundary
 
 - The named full local suite: `make ci` = `check` (CI's rust.yml) + `gate` (CI's
@@ -483,13 +509,4 @@
 - The state: 32 × 64-bit integer registers + pc, 264 bytes inline, no heap (RUST-03); x0 hardwired zero (write discarded, read yields 0); the three ISA-chapter-named roles (x1 return address, x2 stack pointer, x5 alternate link) emitted as alias views over the one storage — C02's "does writing one alias affect every other view" answered by 10 test suites; laboratory reset per REQ-D-ENTRY-STATE/OB-ENV-RESET (x1..x31 = 0, pc = environment-supplied entry); SEM-08's hidden-state census carried as data (7 candidates checked, none present).
 - Verification: 22 test suites green (12 arithmetic + 10 state); `cargo clippy --all-targets --all-features -- -D warnings` clean; workspace still builds for `wasm32-unknown-unknown`; `make gate` green with the doctrine registered and both mirrors (DOCTRINE_ENFORCEMENT.md, the book's doctrines chapter) in sync.
 - Lockstep: `LIVE_STATUS.md` re-derived (21 registered, 237 self-test arms; P1 3/12); the name list in the doctrines row completed (STATE-GEN added; SCOPE-COVERAGE, omitted when it landed, restored); `MEMORY.md`, `docs/TASK_TREE.md`, the book's P1 chapter, and this tree updated. The frontier moves to `.4` (environment boundary and fixtures).
-
-## SEMILITH-PL-0002 (leaf P1-LAB.2) — target arithmetic primitives, verified exhaustively at reduced width
-
-- `semulith-core::arith`: 18 SEM-03 primitives — ALU register/immediate ops, shifts with the REQ-D-SHAMT masks as named functions, the `*W` word ops (REQ-D-WSUFFIX), `sext`/`bits` extraction and extension, LUI/AUIPC offset formation. Each contract states width, signedness, intermediate precision, truncation, exceptional behavior; each doc comment source-links the requirement record and pinned locator (REQ-D-ALU-REG/IMM, REQ-D-SHAMT, REQ-D-WSUFFIX, REQ-D-LUI-AUIPC, REQ-D-LOAD-EXT, REQ-D-XLEN). Unmasked shift amounts panic in debug instead of silently wrapping.
-- Verification, the acceptance's shape: boundary suites at full XLEN; an **8-bit exhaustive layer** (every `(x, y)` for the binary ops, every `(x, shamt)`, every `(x, from_bits)`, every `(lo, hi)` window) against references formulated on a different host width; a 100k-draw boundary-heavy sweep of the word ops against a u64-width reference. 12 suites green; clippy `-D warnings` clean.
-- The exhaustive layer failed on its first run for exactly the reason the acceptance exists: `slt`/`sar` are width-sensitive, and the naive low-byte comparison of signed ops is wrong — fixed by embedding the narrow signed view at XLEN. The lesson is promoted to `docs/knowledge/reduced-width-verification-of-signed-ops.md` (LESSON-PROMOTION satisfied in-commit).
-- Scope, stated: the requirements' `implementation_status` stays `planned` — these are the executable halves; instruction-level obligation checks need the interpreter slice (`.8`). The frontier moves to `.3` (architectural state).
-
-Validation: `cargo test -p semulith-core` 12/0; `cargo clippy --all-targets --all-features -- -D warnings` clean; `make gate` → `=== all doctrines green ===`.
 

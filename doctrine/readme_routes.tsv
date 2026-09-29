@@ -202,6 +202,16 @@ schema/	reader_navigation	partitioned	the schema language and per-family constru
 #               Ceiling files 40 -> 80; the next reader should watch the AGGREGATE.
 docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	80	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
+# Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:
+#   docs/push-approvals.md  1,045 B at adoption (the header alone; zero entries today).
+#                    Append-only by doctrine (PUSH-RECORD), written only by
+#                    scripts/approved_push.sh as part of the act. Health 16 KiB sits NEAR
+#                    the 32 KiB ceiling per the append-history calibration (growth is
+#                    expected, one ~300 B entry per exceptional push; the useful warning is
+#                    "the threshold approaches", not day-one noise). Registered in the same
+#                    commit that created the file — a new tracked surface without a row is
+#                    the exact failure this registry exists to prevent.
+docs/push-approvals.md	author_overflow	append_history	the push-approval ledger; written only by scripts/approved_push.sh; PUSH-RECORD enforces append-only	0	16384	0	32768	0
 docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 overwrite-only record, one entry per cleanup	6	768	12	1536	0
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
 docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0

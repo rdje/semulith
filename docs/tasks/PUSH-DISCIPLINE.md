@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `PUSH-DISCIPLINE`
-- Status: `active`
+- Status: `done` (3/3 leaves complete `2026-09-29`; `.3` landed the approval record and
+  closed the tree)
 - Roadmap lane: cross-cutting; the discipline spine's outward boundary
 - Gate: contributes `PUSH-CADENCE` — a push happens on cadence, or with the director's approval
 - Depends on: nothing; the hooks are already installed (`core.hooksPath=.githooks`)
@@ -135,17 +136,88 @@ policy did not exist to be broken; it did not exist at all.
   Lessons: `promotion: declined (the set -u ordering slip is fixed in the script; the record's shape is documented in it)`.
 
 - ID: `PUSH-DISCIPLINE.3` — **the approval record**
-  Status: `pending`
+  Status: `done` (`2026-09-29`)
   Goal: an exceptional push leaves a durable trace — who approved, when, why, and what range of
   commits it covered — so "exceptional" can be audited rather than asserted.
   Acceptance: the record is tracked, append-only, and written by the same act that permits the push,
   never afterwards from memory.
+  Design (recorded before code, `2026-09-29`):
+  - **The act is a script, not a variable.** Today the approval path is
+    `SEMULITH_PUSH_APPROVED='<reason>' git push` — and a record written "afterwards from
+    memory" is exactly the failure the leaf exists to prevent. The approval flow becomes
+    `scripts/approved_push.sh '<reason>' [push args]`: (1) a non-empty reason (an empty
+    approval is not an approval — the `.1` rule); (2) `make ci` green FIRST — a red suite
+    refuses and NOTHING is written (a record of a push that never happened would be a
+    lie in the ledger); (3) the entry appended and COMMITTED as its own commit
+    (`SEMULITH-PUSH-NNNN: push approved — <reason>` — the only way the record travels in
+    the pushed history); (4) `git push` with the approval variable set, so the hook
+    re-verifies everything (cadence + suite + record). The suite runs twice per
+    exceptional push — the hook's re-run is the tamper guard; exceptional is rare by
+    definition.
+  - **The record** is `docs/push-approvals.md` — ONE tracked append-only ledger (markdown,
+    the audit-record shape the changelog family established; not an engine source of
+    truth, so the one-format rule does not bind it), each entry carrying: the sequential
+    id, the act's timestamp (a dated ledger entry is a record of an act, not a currency
+    claim — LIVE-DOC-CURRENCY does not bind it), who (the director — the approval is
+    theirs, the variable only carries it), the reason verbatim, the commit range covered
+    (`<upstream>..HEAD`, N commits — derived from git, never typed), and the suite line.
+    Cadence pushes leave NO entry (nothing exceptional happened).
+  - **Append-only is enforced**, not hoped: the 28th doctrine `PUSH-RECORD`
+    (`scripts/check_push_record.sh`) — a staged change to the ledger must leave HEAD's
+    content a PREFIX of the new content (stronger than "no deletions": history is never
+    rewritten), and every entry must carry the required fields. Self-test RED arms;
+    registered and mirrored per the registry rules.
+  - **The hook closes the loop**: on the approval path, `pre_push.sh` additionally
+    requires the ledger's latest entry to cover HEAD and name the same reason — a record
+    write that failed or was skipped REFUSES the push (the boundary refuses rather than
+    warns). On the cadence path, no record is required.
+  - **RED evidence**: `approved_push.sh --self-test` drives the WHOLE act in a scratch
+    repo against a local bare upstream (the `.1`/`.2` throwaway pattern — a real push to
+    a local path, never the real remote): empty reason refused; red suite refused with
+    nothing written; the full green act pushed and the upstream carries the record
+    commit. `pre_push.sh`'s self-test gains the approval-path arms: no entry → refused;
+    entry covering a different commit → refused; reason mismatch → refused.
+  Result: met, `2026-09-29`. **An exceptional push is now an auditable act.** The flow is
+  `scripts/approved_push.sh '<the director's reason>'`: (1) a non-empty reason (the `.1`
+  rule — an empty approval is not an approval); (2) `make ci` green FIRST — a red suite
+  refuses and NOTHING is written; (3) the entry appended to `docs/push-approvals.md` and
+  COMMITTED as its own commit (`SEMULITH-PUSH-NNNN: push approved — <reason>`), the only
+  way the record travels in the pushed history; (4) `git push` with the approval variable
+  set, and the hook re-verifies cadence + suite + record. The ledger entry carries: the
+  sequential id, the act's timestamp, the director as approver, the reason verbatim, the
+  derived range (`<upstream>..<work-head>`, N commits — never typed), and the suite line.
+  Append-only is enforced by the 28th doctrine `PUSH-RECORD`
+  (`scripts/check_push_record.sh`): a staged change must keep HEAD's content a PREFIX of
+  the new content, and every entry carries the required fields with sequential ids —
+  self-test 6/0, fired RED against the real corpus before registration (a malformed entry
+  → `MISSING FIELD … no 'Reason:'`, named). The hook closes the loop: on the approval
+  path, `pre_push.sh` requires the chain — HEAD is the record commit, HEAD~1 is the work
+  head the entry names, the reasons match — and a missing or disagreeing record REFUSES
+  the push (self-test 9/0 → 14/0 with the five approval-path arms). ⭐ One REAL design
+  defect found by the measurement, in the recorded design: "the entry covers HEAD" is a
+  fixpoint impossibility — the record commit advances HEAD, so the entry can never name it.
+  The end-to-end self-test caught it only once the scratch push ran the REAL boundary
+  (the first scratch repo had no hooks installed, so the defective check never ran — the
+  shim fix: a scratch `pre-push` exec'ing the real `pre_push.sh`). The honest semantics:
+  the entry names the WORK head; the record commit rides on top; the hook verifies the
+  chain. Also found in flight, mine: this host's `sed` is GNU-flavored and `sed -i ''`
+  misparses (the codebase's `sed -i.bak` form is portable) — and a heredoc collision
+  (a python edit script containing bare `EOF` lines) executed fragments as shell and
+  created a stray `base` commit, dropped by `git reset --mixed HEAD~1` with nothing lost
+  and nothing pushed. COMMIT.md's Pushing section now names the act; the ledger has its
+  routes-registry row (append_history; health near the ceiling per the calibration rule).
+  **The tree closes at 3/3**: the Goal's three properties all hold — the cadence is one
+  number in one place, checked (`.1`); the hook refuses below it, naming the approval
+  route (`.1`); the approved push records who/why/what-range, written by the act itself
+  (`.3`); and the instrument refuses rather than guesses on no-upstream/detached HEAD
+  (`.1`). The four Acceptance Criteria are the leaves' acceptances and all are met.
+  Lessons: `promotion: declined (the fixpoint semantics and the shim pattern are recorded in the scripts and this leaf)`.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `PUSH-DISCIPLINE.3` | `pending` | the audit trail is only worth building once exceptions can actually occur — and the boundary now runs the suite on both paths (`.2`), so an exception is a real, recorded act |
+| — | — | — | the tree is complete (3/3 leaves done): the cadence mechanized and refusing (`.1`), the named full suite at the boundary on both paths (`.2`), and the approval record written by the act itself, append-only and gated (`.3`) |
 
 ## Decisions
 
@@ -167,6 +239,91 @@ policy did not exist to be broken; it did not exist at all.
 ## Blockers
 
 - None.
+
+## Acceptance Checklist (leaf `PUSH-DISCIPLINE.3`)
+
+- [x] **REPRODUCE / ISSUE** — an exceptional push left NO trace beyond the push itself:
+  the approval existed only as an environment variable in one command's lifetime.
+  Measured at the pre-leaf state:
+
+  ```
+  $ git show HEAD:COMMIT.md | grep -c 'approved_push'              -> 0
+  $ git cat-file -e HEAD:docs/push-approvals.md                    -> fatal: "exists on
+    disk, but not in 'HEAD'" (rc=128) — no ledger at the pre-leaf state
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY: the approval path was a variable, not an act;
+  WHERE: `check_push_cadence.sh`'s approval check (the only place the variable was read)
+  and the absence of any record surface. The design's own defect — "the entry covers HEAD"
+  is a fixpoint impossibility (the record commit advances HEAD) — was caught by the
+  end-to-end self-test once the scratch push ran the REAL boundary:
+
+  ```
+  (first cut, scratch repo with NO hooks installed: the push proceeded UNCHECKED — the
+   defective record check never ran; with the shim, the real boundary fired:)
+  pre-push: REFUSED — the ledger's latest entry does not cover the work being pushed.
+  ```
+
+  The honest semantics: the entry names the WORK head; the record commit rides on top;
+  the hook verifies HEAD is the record commit and HEAD~1 is the named work head. And the
+  pre-registration RED on the real corpus (a malformed entry appended to the real ledger,
+  then restored) fired with the reason named:
+
+  ```
+  PUSH-RECORD: the approval ledger was rewritten or misshapen.
+    MISSING FIELD SEMULITH-PUSH-0001: no 'Reason:' — an entry without it is an assertion without its evidence
+  ```
+
+- [x] **FIX** — `docs/push-approvals.md` (the ledger, append-only, gated);
+  `scripts/approved_push.sh` (the act: suite green first, then the entry committed as its
+  own commit, then the push with the variable set); `scripts/pre_push.sh` learns the
+  record check on the approval path; `scripts/check_push_record.sh` (PUSH-RECORD, #28 —
+  prefix-property append-only + entry shape); COMMIT.md names the act; the routes
+  registry gains the ledger's row; the mirrors carry the doctrine.
+
+- [x] **ADDRESSED (verified)** — the whole act driven against a local bare upstream
+  (a real push to a path, never the real remote), and the RED paths:
+
+  ```
+  $ bash scripts/approved_push.sh --self-test
+  APPROVED-PUSH self-test: 7 pass / 0 fail
+    (RED empty reason refused; RED red suite refused, nothing written, no commit;
+     GREEN the full act: suite green, record committed, push proceeds, the upstream
+     carries the record commit)
+  $ bash scripts/pre_push.sh --self-test
+  PRE-PUSH self-test: 14 pass / 0 fail     (9 → 14: the five approval-path arms)
+  $ bash scripts/check_push_record.sh --self-test
+  PUSH-RECORD --self-test: 6 pass / 0 fail
+  ```
+
+  And the gate's pre-registration RED on the real corpus — a malformed entry appended to
+  the real ledger, then restored:
+
+  ```
+  $ bash scripts/check_push_record.sh        (with a Reason-less entry appended)
+  PUSH-RECORD: the approval ledger was rewritten or misshapen.
+    MISSING FIELD SEMULITH-PUSH-0001: no 'Reason:' — …       rc=1
+  ```
+
+- [x] **NO REGRESSION** — the cadence self-test unchanged; no push attempted at any point;
+  committing unaffected (this commit passed the enforcer, with the ledger's own append
+  under PUSH-RECORD):
+
+  ```
+  $ bash scripts/check_push_cadence.sh --self-test -> 11 pass / 0 fail
+  $ make ci   ->  ci: all legs green (check, gate, bench, smoke-bench, book)
+  $ make gate ->  === all doctrines green ===   (28 doctrines / 297 self-test arms)
+  ```
+
+  ⛔ Two authoring defects in flight, mine, owned: a GNU-flavored `sed -i ''` misparsed
+  (the codebase's `sed -i.bak` form is portable); and a heredoc collision (a python edit
+  script containing bare `EOF` lines) executed fragments as shell and created a stray
+  `base` commit — dropped by `git reset --mixed HEAD~1`, nothing lost, nothing pushed.
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (tree done, out of the active list),
+  `LIVE_STATUS.md` (28 doctrines / 297 self-test arms), `CHANGELOG.md`, `DEV_NOTES.md`,
+  `docs/TASK_TREE.md` (the row → done), this tree (status done, frontier —), COMMIT.md,
+  TOOLBOX.md, DOCTRINE_ENFORCEMENT.md, the book's doctrine mirror, the routes registry.
 
 ## Acceptance Checklist (leaf `PUSH-DISCIPLINE.2`)
 
@@ -297,6 +454,14 @@ policy did not exist to be broken; it did not exist at all.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | pre-change census at HEAD | COMMIT.md carried 0 mentions of an approval act; no ledger existed (`git cat-file -e` → rc=128) |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | design defect caught by measurement | "the entry covers HEAD" is a fixpoint impossibility (the record commit advances HEAD); caught only once the scratch push ran the REAL boundary (the first scratch repo had no hooks installed — the defective check never ran); fixed: the entry names the WORK head, the record commit rides on top, the hook verifies the chain |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | `approved_push.sh --self-test` (the whole act against a local bare upstream) | 7/0 — empty reason refused; red suite refused with nothing written and no commit; the full green act pushed and the upstream carries the record commit |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | `pre_push.sh --self-test` | 14/0 (9 → 14: the five approval-path arms — no record / not the record commit / different work head / different reason / the green chain) |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | `check_push_record.sh --self-test`; the pre-registration RED on the real corpus | 6/0; a malformed entry appended to the real ledger → `MISSING FIELD SEMULITH-PUSH-0001: no 'Reason:'`, rc=1, then restored |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | authoring defects (owned) | GNU-sed `sed -i ''` misparses (the codebase's `sed -i.bak` is portable); a heredoc collision (bare `EOF` lines inside a python edit script) executed fragments as shell and created a stray `base` commit — dropped by `git reset --mixed HEAD~1`, nothing lost, nothing pushed |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | `make ci`; `make gate`; `check_push_cadence.sh --self-test` | all legs green; 28 doctrines / 297 arms green; cadence 11/0 unchanged |
+| `2026-09-29` | `PUSH-DISCIPLINE.3` | authoring defect at the commit (owned) | the first commit omitted `scripts/check_doctrines.project.sh` from its staged set — the gates read the working tree, so the hook was green while HEAD was inconsistent (the mirrors named PUSH-RECORD, the registry at HEAD lacked it); the amend was itself refused by TASK-ACCEPTANCE (a code-only staged set has no owning leaf) — fixed by amending with the registry AND this log entry; the commit at HEAD is now self-consistent |
 | `2026-09-29` | `PUSH-DISCIPLINE.2` | the gap census re-measured at HEAD | `ci:` target absent from the Makefile; the workflows run `on: push`; the hook ran cadence only |
 | `2026-09-29` | `PUSH-DISCIPLINE.2` | `scripts/pre_push.sh --self-test` (scratch repos, a real bare upstream, a stub Makefile) | 9 pass / 0 fail — incl. acceptance (d)'s deliberately broken check (the refusal names the leg, no green record written) and the never-burns-the-suite arm |
 | `2026-09-29` | `PUSH-DISCIPLINE.2` | `make ci` | all legs green: check, gate (27 doctrines), bench, smoke-bench (44 arms), book (both books) |
@@ -313,6 +478,7 @@ policy did not exist to be broken; it did not exist at all.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `PUSH-DISCIPLINE.3` | `SEMULITH-PD-0051 (leaf PUSH-DISCIPLINE.3): …` | the approval record: `approved_push.sh` is the act (suite green → the ledger entry committed as its own commit → push with the variable set, the hook re-verifying all three); `docs/push-approvals.md` append-only under PUSH-RECORD (#28); the fixpoint semantics measured and recorded; the tree CLOSES 3/3 |
 | `PUSH-DISCIPLINE.2` | `SEMULITH-PD-0050 (leaf PUSH-DISCIPLINE.2): …` | the named full local suite (`make ci`) runs at the pre-push boundary on both paths, cadence-first; the green-run record at `target/push/last-green.txt`; fired RED by a deliberately broken check (self-test 9/0); no new doctrine (a hook, not a commit gate) |
 | `PUSH-DISCIPLINE.1` | `SEMULITH-PD-0046 (leaf PUSH-DISCIPLINE.1): the push boundary gets a gate that refuses` | 11 arms, 3 fired RED first; 45 of 300 |
 
@@ -327,3 +493,11 @@ policy did not exist to be broken; it did not exist at all.
   a red suite refuses naming the failing leg; a green one leaves `target/push/last-green.txt`.
   Fired RED by a deliberately broken check (self-test 9/0). COMMIT.md's Pushing section now
   documents the two-question boundary.
+- `2026-09-29`: Leaf `.3` done and **the tree closes** (3/3): an exceptional push is an auditable
+  act — `scripts/approved_push.sh '<reason>'` runs the suite green, appends the entry to the
+  tracked append-only ledger `docs/push-approvals.md` as its OWN commit (the only way the record
+  travels in the pushed history), and pushes with the approval variable set; the hook verifies
+  the chain (HEAD is the record commit, HEAD~1 the named work head, the reason matches) and
+  refuses a missing or disagreeing record. `PUSH-RECORD` (#28) enforces append-only (the prefix
+  property) and entry shape. The design's fixpoint defect ("the entry covers HEAD") was caught by
+  measurement, not review.

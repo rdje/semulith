@@ -11,6 +11,10 @@
 #      output, and in the green record): check + gate + bench + smoke-bench + book. It runs
 #      on BOTH paths — a cadence push and a director-approved exceptional push alike; an
 #      approved push is not an unverified one.
+#   2b. ON THE APPROVAL PATH, the record check (PUSH-DISCIPLINE.3): the ledger
+#      (`docs/push-approvals.md`) must carry an entry covering HEAD, naming the same
+#      reason. A record write that failed or was skipped REFUSES the push — the boundary
+#      refuses rather than warns.
 #   3. THE GREEN-RUN RECORD — `target/push/last-green.txt` (+ `last-green.log`): untracked,
 #      on-volume, overwritten per green run. It answers "what did the last green pre-push
 #      run cover, and when" without git archaeology. ⛔ It is NOT the tracked append-only
@@ -50,6 +54,44 @@ run_boundary() { # $1 = repo root
     echo "  the run's log: ${log#$root/} — fix the failure and re-run \`make ci\` before pushing." >&2
     echo "  ⛔ A push of a red tree is exactly what this boundary exists to refuse." >&2
     return 1
+  fi
+  # 2b. the approval path carries the record (PUSH-DISCIPLINE.3): the ledger's latest
+  # entry must cover the work being pushed, HEAD must be the entry's own record commit
+  # (the only way the record travels in the pushed history), and the reason must match
+  # the approval's. A record write that failed or was skipped refuses the push.
+  if [ -n "${SEMULITH_PUSH_APPROVED:-}" ]; then
+    local ledger="$root/docs/push-approvals.md" entry subject work_sha
+    if [ ! -f "$ledger" ] || ! grep -q '^## SEMULITH-PUSH-' "$ledger"; then
+      echo "pre-push: REFUSED — this is an approved push, but no approval record covers it." >&2
+      echo "  The act that writes the record is scripts/approved_push.sh '<reason>' — the" >&2
+      echo "  variable alone no longer suffices (PUSH-DISCIPLINE.3)." >&2
+      return 1
+    fi
+    entry="$(sed -n '/^## SEMULITH-PUSH-/,$p' "$ledger" | awk '/^## SEMULITH-PUSH-/{n=NR} {lines[NR]=$0} END{for(i=n;i<=NR;i++) print lines[i]}')"
+    subject="$(git -C "$root" log -1 --format=%s)"
+    if ! printf '%s' "$subject" | grep -qE '^SEMULITH-PUSH-[0-9]+: push approved — '; then
+      echo "pre-push: REFUSED — the ledger carries an entry, but HEAD is not its record" >&2
+      echo "  commit. The record must ride IN the pushed history; the act is" >&2
+      echo "  scripts/approved_push.sh." >&2
+      return 1
+    fi
+    if ! work_sha="$(git -C "$root" rev-parse HEAD~1 2>/dev/null)"; then
+      echo "pre-push: REFUSED — the record commit has no parent to verify against." >&2
+      return 1
+    fi
+    if ! printf '%s' "$entry" | grep -qF "$work_sha"; then
+      echo "pre-push: REFUSED — the ledger's latest entry does not cover the work being" >&2
+      echo "  pushed (it names no $work_sha). The record and the push disagree." >&2
+      return 1
+    fi
+    if ! printf '%s' "$entry" | grep -qF "Reason:** ${SEMULITH_PUSH_APPROVED}" \
+       || ! printf '%s' "$subject" | grep -qF "${SEMULITH_PUSH_APPROVED}"; then
+      echo "pre-push: REFUSED — the ledger's latest entry names a different reason than the" >&2
+      echo "  approval carries. The record and the push disagree; the act is" >&2
+      echo "  scripts/approved_push.sh." >&2
+      return 1
+    fi
+    echo "pre-push: the approval record covers this push ($(printf '%s' "$entry" | grep -oE 'SEMULITH-PUSH-[0-9]+' | head -1))."
   fi
   # 3. the green-run record: what was verified, and when — without git archaeology.
   local sha when
@@ -101,6 +143,24 @@ self_test() {
   # the stub suite: a scratch Makefile whose ci target passes or fails per arm
   suite_ok()   { printf 'ci:\n\t@date +%%s >> ci-marker\n\t@echo stub-ci green\n' > "$tmp/work/Makefile"; }
   suite_fail() { printf 'ci:\n\t@false # the deliberately broken check\n' > "$tmp/work/Makefile"; }
+  # the approval path also needs the record (PUSH-DISCIPLINE.3): a ledger entry covering the
+  # WORK head, with the entry's own record commit riding on top — the fixpoint: the entry
+  # names the work head; HEAD at push time is the record commit, and HEAD~1 must match.
+  ledger() { # ledger <work-sha> <reason> [<subject-override>]
+    mkdir -p "$tmp/work/docs"
+    cat > "$tmp/work/docs/push-approvals.md" <<EOF
+# Push approvals
+
+## SEMULITH-PUSH-0001 — 2026-09-29T00:00:00+0000
+
+- **Approved by:** the director
+- **Reason:** $2
+- **Range:** origin/main..$1 — 1 commit(s) since the last push
+- **Suite:** \`make ci\` green at $1 before this record was written
+EOF
+    git -C "$tmp/work" add docs/push-approvals.md
+    git -C "$tmp/work" commit -q -m "${3:-SEMULITH-PUSH-0001: push approved — $2}"
+  }
 
   BODY="bash '$PP'"
   suite_fail
@@ -112,6 +172,22 @@ self_test() {
   fi
 
   BODY="SEMULITH_PUSH_APPROVED='self-test' bash '$PP'"
+  suite_ok
+  rm -f "$tmp/work/docs/push-approvals.md"
+  arm "RED   the approval path without a record is refused (the variable alone no longer suffices)" 1 "no approval record covers it"
+  arm "RED   … and names the act" 1 "scripts/approved_push.sh"
+
+  git -C "$tmp/work" commit -q --allow-empty -m "an ordinary commit"
+  ledger "$(git -C "$tmp/work" rev-parse HEAD~1)" "self-test" "an ordinary commit subject"
+  arm "RED   the ledger carries an entry but HEAD is not its record commit" 1 "not its record"
+
+  ledger "0000000000000000000000000000000000000000" "self-test"
+  arm "RED   a record covering a DIFFERENT commit refuses" 1 "does not cover the work"
+  ledger "$(git -C "$tmp/work" rev-parse HEAD)" "a different reason"
+  arm "RED   a record naming a DIFFERENT reason refuses" 1 "a different reason"
+
+  suite_fail
+  ledger "$(git -C "$tmp/work" rev-parse HEAD)" "self-test"
   arm "RED   approved, but the suite is deliberately broken — the refusal names the leg" 1 "the full local suite is red"
   arm "RED   … and points at the log" 1 "target/push/last-green.log"
   if [ -f "$tmp/work/target/push/last-green.txt" ]; then
@@ -121,7 +197,8 @@ self_test() {
   fi
 
   suite_ok
-  arm "GREEN approved and the suite green — the boundary permits" 0 "the full local suite is green"
+  ledger "$(git -C "$tmp/work" rev-parse HEAD)" "self-test"
+  arm "GREEN approved and the suite green and the record present — the boundary permits" 0 "the full local suite is green"
   if [ -f "$tmp/work/target/push/last-green.txt" ] \
      && grep -qF "commit:  $(git -C "$tmp/work" rev-parse HEAD)" "$tmp/work/target/push/last-green.txt" \
      && grep -qF "make ci = make check" "$tmp/work/target/push/last-green.txt"; then
