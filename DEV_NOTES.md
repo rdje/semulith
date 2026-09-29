@@ -3,6 +3,12 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-29)_ — the boundary domains pinned: exhaustion where tractable, edges where not (P2-SCALAR.2)
+
+Root cause: `.1` proved every declared FORM executes; the boundary DOMAINS had only incidental samples — across the whole pre-leaf corpus exactly four distinct immediate shift amounts had ever executed ({25,31,32,63} of 64, measured by `git grep` over HEAD), no guest had wrapped a signed extreme, probed a sign edge at exactly 0x80/0x8000/0x80000000, overlapped two stores, or aliased a destination onto both its sources at once. Not a defect — an evidence layer the leaf's acceptance names, unwritten. Design (recorded before code in the tree): the tractable reduced-width domains are the shamt FIELDS (6-bit = 64 values, 5-bit = 32) — each exhausted ONCE (`bound-shift`'s 64-point `srli` sweep over `0x8000000000000001`, whose results are pairwise distinct so every step is a visible change; `bound-shiftw`'s 32-point `sraiw` sweep), with every amount bit pinned on the remaining forms at {0,1,2,4,8,16,32,63} / {0,1,2,4,8,16,31}; the data-value domains (2^64/2^32/2^8) are intractable or near it, and their discriminating structure is the sign edge and the wrap point, enumerated as boundaries — a 256-point byte sweep was considered and rejected (the extension logic is generic over the width; the edge pair discriminates everything the sweep would, at 1/40 the corpus cost). Implementation: five guests, 259 steps, values computed by spec-rule arithmetic at authoring time (a scratch emitter in `target/`, never reading any model), each step carrying derivation + source. Three measured subtleties: (1) `srl`/`srlw` on rs2 = 96 is the 6-bit-vs-5-bit discriminator — low6 = 32 shifts, low5 = 0 is the identity — and the identity is pre-written with 1 so it lands as a VISIBLE change (the `.1` rule, now load-bearing in every reused destination: sweep operands are chosen so consecutive results differ); (2) `auipc 0x80000` at entry + 4n wraps modulo 2^64 to exactly 4n — `D-ADDR-WRAP` observable inside `D-LUI-AUIPC`, and a zero-extending AUIPC would answer differently; (3) the census pin caught the author, twice: the overlap-composition constant was hand-assembled wrong (0x4CD's high byte is 0x04, not 0x4C; then the AA lane one hex pair over) — both times the pinned expectation failed RED against the real model, the derivation was re-done from the spec rule (`SH` stores the low 16 bits, little-endian; lanes compose low-to-high), and the model was right every time. No model defect found this leaf. Validation: 138 verify suites (+5), 65 core, clippy `-D warnings`; `make gate` 24 doctrines; smoke-bench 18 arms (14 clean guests — enumerated dynamically, no edit); `EXERCISE-COVERAGE` 52/52; live three-way: 14 guests, 376/376 aligned steps vs sail-riscv AND spike, byte-identical reproduction. Reviewed ceiling expansion: `profiles/` 32 → 42 files / ~307 KB (registry ceilings 34 → 46 files, 256 → 384 KiB; per-part 32 KiB untouched — largest new file 27,848 B, sweep derivations deliberately terse).
+
+Lesson: `promotion: declined` (recorded in the leaf) — the commit gate fails any expected value the spec rule does not compute; it fired RED twice this leaf on the author's own arithmetic, so the enforcement IS the lesson and a knowledge card would restate it.
+
 ## _(2026-09-29)_ — the declared scope completed: 15/52 to 52/52, and the coverage is the gate (P2-SCALAR.1)
 
 Root cause: the profile's `[scope]` declares 52 RV64I forms, but only the 15 mnemonics the four P1 smoke guests used had ever EXECUTED under the laboratory — EXTRACTION proves every form HAS encoding+semantics+requirement (static sufficiency) and nothing measured the dynamic half, so "the accepted P2 profile covers its entire declared scope" (ROADMAP §P1) had a 37-form hole nobody counted. Diagnosis was the new instrument itself: `check_exercise_coverage.sh` unions the mnemonics the tracked expectation documents declare executed (the commit gate proves those exact steps execute, so declared-executed and executed cannot drift apart) against a denominator re-derived from the dossier's scope lists, and resolves the SCP-02 closure through the one shared resolver. Fired RED against the real corpus pre-registration: 15/52, all 37 forms named. Implementation: five scope-completion guests with EVD-05 expectations derived before any run; `fence` forced the honest fix for its operands — the pinned `arg_lut.csv` always carried `fm`/`pred`/`succ`, so the fragment whitelist and the assembler's contiguous-operand set were extended and both generated artifacts regenerated (no hand-typed opcode; the field-count pin 12→15); the trace adapter learned the measured `m-call`/`software-breakpoint`/`trap_machine_ecall`/`trap_breakpoint` spellings. Two subtlety catches, both measured by the suites before they could ship: (1) the laboratory's observation vocabulary is the VISIBLE register change (`run::diff` compares values), so `sltu`/`sltiu` results of 0 into fresh registers leave no observation — each is pre-written with 1 so the answer appears as a 1→0 transition, which is also strictly stronger evidence than an empty write; (2) the census pin iterates every guest, so `scope-mem`'s 17 data crossings (including the `lw x0` discarded load, which crosses the boundary per D-LOAD-X0) are pinned in `mutate.rs` with per-line justifications. Validation: 133 verify suites green (+5 guest suites); `make check`/`make gate` (24 doctrines) green; smoke_bench 13 arms; the live three-way experiment — 9 guests, 117/117 aligned steps against sail-riscv 0.14 AND spike 1.1.1-dev, byte-identical reproduction. `G1-REPORT.md` regenerates honestly: 9 guests, 117 steps, verdict unchanged (`incomplete`, criterion 6).
@@ -178,166 +184,4 @@ RECORD-SCHEMA green on the revised C20 census row; whole gate green.
 
 Lessons: declined here (the home-selection reasoning is stated in the leaf, where the next
 acquisition meets it).
-
-## _(2026-09-27)_ — the census sweeps the snapshot, and missing changes its meaning (MODEL-METHOD.3)
-
-Root cause this leaf closes: the .2 first pass wrote dispositions from the profile's
-exclusions, and four of its reasons asserted material absence nobody had checked. The census
-evidenced every covered row against the cached snapshot and corrected the mistake the
-evidence revealed: the excluded subsystems' chapters are IN the snapshot — a-st-ext, rvwmo,
-v-st-ext, f/d/q-st-ext, counters, zicsr, zifencei. So `missing` means the profile excludes
-the subsystem (the facts are not part of this unit's model), not that the material is absent.
-That flip matters downstream: .4's acquisition list is now honestly short — the run-real-code
-set and the privileged/debug VOLUMES, not chapters the snapshot already carries.
-
-Design choices, stated: `deferred-to-board` is a new disposition value (zero kernel lines)
-because device and interconnect categories are P5-BOARD's to own, and the CPU records an
-environment assumption in their place — the leaf's own rule. RECORD-SCHEMA rule 12 keeps every
-named material resolvable against catalog.sexp, so a covered-by that names a document nobody
-acquired is refused like an unpinned citation. The census counts: 10 covered, 4 partial, 6
-missing (closers named), 3 deferred-to-board, 1 out-of-scope (C17 — contract-owned).
-
-Validation: the page-level sweep (each covered category's subject found in its pinned page);
-RECORD-SCHEMA 33/0 (was 32) + real run green; whole gate green.
-
-Lessons: declined here (the excluded-vs-absent distinction is stated in the catalogue header
-and the owning leaf).
-
-## _(2026-09-27)_ — the materials requirement: what each unit owes its model (MODEL-METHOD.2)
-
-Root cause this leaf closes: the materials side recorded documents (who/what/where) but
-nothing recorded what information a unit OWES its model — no category-to-material binding, no
-unit registry, no layer. The fix walks the .3 path a third time: schema declares, the mapping
-owner carries, RECORD-SCHEMA gates.
-
-Design choices, stated: the disposition vocabulary is the point — `missing` means the unit
-REQUIRES the category (a reason is owed), `out-of-scope` means it never owed it, and the
-acceptance's rule is the mechanical form of that honesty (a board-layer `missing` for a
-processor is a lie about what was required). The unit registry keys the layer rule: layer
-claims without a registry prove nothing, so the gate refuses those too. The duplicate-id arm
-grew a per-family key — category-need records have no `id`; they key on (category, unit),
-and the first cut that assumed `id` reported every need as a duplicate of None. The
-`dict_to_form` dispatch also had to move its specific keys first: units and
-category-needs both carry a `kind` field, which collided with the requirement
-branch until `book`/`disposition` dispatched first — a measured,
-not hypothetical, ordering constraint.
-
-Validation: RECORD-SCHEMA 32/0 (was 26); 7 record files green; the 24-row first honest pass
-(8 covered, 6 missing-with-reason, 4 partial, 6 out-of-scope). The .3 census revises
-dispositions against evidence from here.
-
-Lessons: declined here (the ABSENT-vs-NEVER-NEEDED vocabulary is stated in the schema header
-and the owning leaf).
-
-## _(2026-09-27)_ — the no-duplicated-fact rule is a registry, and every mirror is governed (MODEL-METHOD.7)
-
-Root cause this leaf closes: the no-duplicated-fact rule lived only in
-`decision_canonical-definition-input` prose, while the corpus it governs had grown
-derived mirrors — and one of them (28 obligations restating their requirement's statement,
-measured) had NO governor at all. The fix is shaped like the routes registry beside which it
-lives: `doctrine/fact_ownership.tsv` names one owner per fact kind, each legal mirror, and
-the governing doctrine; the FACT-OWNERSHIP gate verifies the registry holds AND is complete
-against the corpus's actual restatement pairs — a completeness claim needs a census, so the
-four real pairs are enumerated in the gate.
-
-Design choices, stated: the registry's mirror column means "a file that restates the owner's
-fact" — direction matters, and getting it uniform (owner owns; mirror derives) took one
-measured failure (the encoding pair's family prefix did not match one way; symmetric
-directory-prefix matching fixed it). The governor belongs in the family gate, not the
-registry: RECORD-SCHEMA rule 9 keys on the obligation's own `requirement_id` (the 8
-environment-assumptions keep their own statements — the arm keys on the parameter, not the
-direction).
-
-Validation: RECORD-SCHEMA 26/0 (was 23) + real run green on the 28 real mirrors; gate 8/0;
-both acceptance shapes fired. Whole enforcer green.
-
-Lessons: declined here (the govern-every-mirror rule is stated in the gate's header and the
-owning leaf).
-
-## _(2026-09-27)_ — the extraction contract: one set, four ways (MODEL-METHOD.10)
-
-Root cause this leaf closes: every per-family check proved its own leg, and nothing proved
-the legs described the SAME instruction set. Measured pre-code: no requirement↔instruction
-link existed, and the ALU family (13 instructions) had no requirement at all — the contract
-as stated failed the real corpus on the requirement leg.
-
-The fix is two-handed, and both halves matter. Corpus: `(insns …)` on the schema
-(kind-agnostic — a memory-kind requirement names FENCE, an event-kind names ECALL and
-EBREAK), two new D/REQ/OB triples whose statements are grounded in the corpus's own
-semantics (the §1.1.4 effects, including SLTIU's sign-then-unsigned quirk — the statements
-must match the decisions exactly, `RECORD-SCHEMA` rule 4, and the semantic file is the
-corpus's own authority for what the spec says). Tool: `check_extraction.py` requires
-SCOPE == ENCODING == SEMANTICS == REQUIREMENTS — one set, four ways — plus resets and
-checks. Gating: `EXTRACTION` (17th doctrine), because P1-LAB must cite a verdict that
-runs.
-
-Measured en route: `RECORD-SCHEMA` caught a wrong obligation id (`OB-D-ALU-REG`
-vs `OB-ALU-REG`) mid-curation — a gate earning its keep on the authoring side, not just
-the review side. And `R.dump` drops file headers: a load→modify→dump rewrite must
-re-prepend the `;;` header or the diff shows comment loss. The curation script now
-does, and the diff is minimal (11 insns additions + 2+2+2 new records).
-
-Validation: tool 6/0, gate 3/0; real corpus SUFFICIENT; the acceptance's RED on a copy with
-one sem rule removed (`does not cover: add`). REGRESSION: RECORD-SCHEMA 23/0,
-PROFILE-CONSISTENCY 39/0, GATE-REPORT re-derived 28/28/36/72, whole gate green.
-
-Lessons: declined here (the integrative-pattern rule is stated in the tool's docstring and
-the owning leaf).
-
-## _(2026-09-27)_ — a composition is an ordinary unit, and the tree closes (MODEL-COMPOSE.5)
-
-Root cause this leaf closes: composition produced verdicts (encoding union, record merge,
-assumption/guarantee discharge, slots, refinement) but nothing produced a UNIT from them —
-`computer -> board -> soc -> {cpu, device}` had one record shape at level one and no shape at
-all above it. The fix is deliberately boring: `compose_units.py` merges the parts with
-`merge_units(…)` — the same code, no fork — and writes an ordinary unit directory through the
-single mapping owners. Boring is the point: the acceptance is that a two-level composition is
-checked by the same code as a one-level one, and the way to get that is to not write new check
-code at all.
-
-Design choices, stated: part paths resolve against the manifest's own directory (the way
-fragment-root resolves against its document); provenance is kept, not rewritten — merged
-records keep their origin units' `profile_ids`, the board overwrites only the encoding
-document's own identity field; exactly one ISA-carrying part (two is a multiprocessor — the
-address-space operator stays refused-until-earned); no new doctrine gate, because the derived
-files are ordinary corpus covered by the existing gates wherever they land. The tracked-board
-freshness proof (manifest -> derived bytes, the gen_fragments precedent) is the first tracked
-board's job, named in the leaf.
-
-Measured en route: the first implementation read only the first `(part …)` child of the
-manifest — every multi-part composition silently halved. The self-test's census arm caught it
-(2 obligations where 3 were owed). A census that counts is the cheapest oracle there is.
-
-Validation: `--self-test` 9/0; real corpus board through unmodified `merge_records`,
-`discharge_assumptions`, and the encoding read path (26/34/3 + 52 instructions). Regression:
-whole guard set green.
-
-Lessons: declined here (the materialize-then-stay-ordinary rule is stated in the tool's
-docstring and the owning leaf).
-
-## _(2026-09-27)_ — a silent override is refused, and the execution authority gets its gate (MODEL-COMPOSE.6)
-
-Root cause this leaf closes: two measurements, one design. (1) The refinement edge had no
-vocabulary — nothing in `schema/semantics.sexp` could declare "this extension changes that
-base behaviour", so a silent override was indistinguishable from a composed corpus. (2) The two
-tools that judge the semantics corpus — `check_semantics.py` (well-formed, complete, cited)
-and `check_citations.py` (52/52 locators resolve) — were invoked by NOTHING in the gate set;
-the corpus the engine will execute was healthy only when someone ran them by hand. The third
-orphan of the family `MODEL-COMPOSE.4` closed for encodings — the same probe, the same
-shape, the same fix: wire the capability into the gate set or watch it rot.
-
-Design choices, stated: the declaration lives on the AUTHORED side (the `.sem.sexp` files),
-never in the generated fragments — generated and hand-derived content have different provenance
-and must not share a file, the `rv64i.sem.sexp` header's own rule. The compose mode
-schema-validates each file first and refuses a violating FILE as a rejection (rc=1), reserving
-rc=2 for a broken language. The citation arm NAMED-SKIPs when neither the fetched area nor the
-manifest-verified cache exists — a check that cannot judge never reports green.
-
-Validation: tool `--self-test` 8/0 (declared refinement accepted; silent/double/lie/arity/schema
-arms each naming their reason); gate `--self-test` 7/0; real run `ok (3 check(s))` with
-52/52 citations inside the gate for the first time; the acceptance's RED on a real-shaped
-composition. Per-fragment mode byte-stable.
-
-Lessons: declined here (the "orphaned tool" pattern is now demonstrated three times; a knowledge
-card is due on a FOURTH instance — that is the threshold, stated so the count is honest).
 

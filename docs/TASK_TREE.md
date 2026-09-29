@@ -52,7 +52,7 @@ on the same commit. One commit per completed leaf.
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `done` (reopened once, for `.10` — a measured defect the first nine leaves carried) | — (10/10 leaves complete) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `done` (reopened once, for `.13` — the `.11` allocation figures had to be proven, not reported) | — (13/13 leaves complete; gate G1 RUN, verdict `incomplete` — criterion 6 routed to the P2-SCALAR tree) | repo-local |
-| [`P2-SCALAR`](tasks/P2-SCALAR.md) | `active` | `.2` — boundary arithmetic and state interactions (1 of 9 leaves done; the declared scope is fully exercised, 52/52 gated) | repo-local |
+| [`P2-SCALAR`](tasks/P2-SCALAR.md) | `active` | `.3` — fault, suppression and reserved cases (2 of 9 leaves done; scope exercised 52/52 gated, the boundary domains pinned — 14 guests, 376/376 live steps) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `proposed` | `.1` — width and accumulator semantics | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `proposed` | `.1` — apply the interface findings (gate `BREADTH`) | repo-local |
 | [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `proposed` | `.1` — resolve the profile (gate `CPU-SYSTEM`) | repo-local |

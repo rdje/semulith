@@ -13,10 +13,11 @@ gate reading `passed`.
 What exists is a **laboratory with first evidence**. The three-crate workspace executes the
 `rv64i-lab-v0` definition: all 52 declared instructions evaluate directly from the semantics
 data, under the environment contract, with the outcome families the architecture requires.
-Nine independently encoded guest programs run on it — the four P1 smoke guests plus the five
-`P2-SCALAR.1` scope-completion guests, so every one of the 52 declared forms is executed —
+Fourteen independently encoded guest programs run on it — the four P1 smoke guests, the five
+`P2-SCALAR.1` scope-completion guests, and the five `P2-SCALAR.2` boundary guests, so every
+one of the 52 declared forms is executed and the shift-amount domains are exhausted —
 and their observations agree with two
-independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 117 aligned
+independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 376 aligned
 steps, and reproduce byte-identically on re-run. The evidence machinery that makes a number
 checkable lives here too: the records re-validate on two engines on every commit, and the
 guest expectations are specification-derived values the commit gate re-checks offline.

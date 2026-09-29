@@ -185,6 +185,16 @@ pub const MUTATIONS: &[(&str, &str)] = &[
 ///   probes (the `lw x0` load crosses the boundary even though its value is discarded,
 ///   D-LOAD-X0), the three stores under test, and their four read-back `ld`s — every one
 ///   inside the declared region, naturally aligned, none faulted.
+/// - `bound-shift.s`, `bound-shiftw.s`, `bound-arith.s` (`P2-SCALAR.2`): pure arithmetic —
+///   no load or store instruction exists in these programs.
+/// - `bound-ext.s` (`P2-SCALAR.2`): thirty-two crossings — thirteen stores (the nine edge
+///   values, the x0 zero byte, and the three truncation probes) and nineteen loads (the
+///   sign/zero pairs, the all-ones values, the pre-written 0x00 byte, and the three
+///   truncation read-backs) — every one inside the declared region, aligned, none faulted.
+/// - `bound-alias.s` (`P2-SCALAR.2`): sixteen crossings — the three `sd`s of X, the eight
+///   `lbu` lane reads, the overlapping `sb`/`sh`, two `ld` read-backs, the base-overwriting
+///   `lb`, and the `sw x0` zero store — every one inside the declared region, aligned,
+///   none faulted.
 pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
     match guest {
         "smoke-arith" => &[(
@@ -350,6 +360,422 @@ pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
             ),
         ],
         "scope-alu" | "scope-branch" | "scope-ecall" | "scope-ebreak" => &[],
+        "bound-shift" | "bound-shiftw" | "bound-arith" => &[],
+        "bound-ext" => &[
+            (
+                14,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0400,
+                    data: 0x7F,
+                },
+                false,
+            ),
+            (
+                15,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0401,
+                    data: 0x80,
+                },
+                false,
+            ),
+            (
+                16,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0402,
+                    data: 0xFF,
+                },
+                false,
+            ),
+            (
+                17,
+                Request::Store {
+                    width: AccessWidth::H,
+                    addr: 0x8000_0408,
+                    data: 0x7FFF,
+                },
+                false,
+            ),
+            (
+                18,
+                Request::Store {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040A,
+                    data: 0x8000,
+                },
+                false,
+            ),
+            (
+                19,
+                Request::Store {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040C,
+                    data: 0xFFFF,
+                },
+                false,
+            ),
+            (
+                20,
+                Request::Store {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0410,
+                    data: 0x7FFF_FFFF,
+                },
+                false,
+            ),
+            (
+                21,
+                Request::Store {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0414,
+                    data: 0x8000_0000,
+                },
+                false,
+            ),
+            (
+                22,
+                Request::Store {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0418,
+                    data: 0xFFFF_FFFF,
+                },
+                false,
+            ),
+            (
+                23,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0400,
+                },
+                false,
+            ),
+            (
+                24,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0401,
+                },
+                false,
+            ),
+            (
+                25,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0401,
+                },
+                false,
+            ),
+            (
+                26,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0402,
+                },
+                false,
+            ),
+            (
+                27,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0402,
+                },
+                false,
+            ),
+            (
+                28,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x8000_0408,
+                },
+                false,
+            ),
+            (
+                29,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040A,
+                },
+                false,
+            ),
+            (
+                30,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040A,
+                },
+                false,
+            ),
+            (
+                31,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040C,
+                },
+                false,
+            ),
+            (
+                32,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040C,
+                },
+                false,
+            ),
+            (
+                33,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0410,
+                },
+                false,
+            ),
+            (
+                34,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0414,
+                },
+                false,
+            ),
+            (
+                35,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0414,
+                },
+                false,
+            ),
+            (
+                36,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0418,
+                },
+                false,
+            ),
+            (
+                37,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0418,
+                },
+                false,
+            ),
+            (
+                38,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0403,
+                    data: 0x00,
+                },
+                false,
+            ),
+            (
+                40,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0403,
+                },
+                false,
+            ),
+            (
+                41,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0420,
+                    data: 0x80,
+                },
+                false,
+            ),
+            (
+                42,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0420,
+                },
+                false,
+            ),
+            (
+                43,
+                Request::Store {
+                    width: AccessWidth::H,
+                    addr: 0x8000_0428,
+                    data: 0x8000,
+                },
+                false,
+            ),
+            (
+                44,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x8000_0428,
+                },
+                false,
+            ),
+            (
+                45,
+                Request::Store {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0430,
+                    data: 0xFFFF_8000,
+                },
+                false,
+            ),
+            (
+                46,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0430,
+                },
+                false,
+            ),
+        ],
+        "bound-alias" => &[
+            (
+                8,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x8000_0400,
+                    data: 0x0807_0605_0403_0201,
+                },
+                false,
+            ),
+            (
+                9,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0400,
+                },
+                false,
+            ),
+            (
+                10,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0401,
+                },
+                false,
+            ),
+            (
+                11,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0402,
+                },
+                false,
+            ),
+            (
+                12,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0403,
+                },
+                false,
+            ),
+            (
+                13,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0404,
+                },
+                false,
+            ),
+            (
+                14,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0405,
+                },
+                false,
+            ),
+            (
+                15,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0406,
+                },
+                false,
+            ),
+            (
+                16,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0407,
+                },
+                false,
+            ),
+            (
+                17,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x8000_0408,
+                    data: 0x0807_0605_0403_0201,
+                },
+                false,
+            ),
+            (
+                19,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x8000_040B,
+                    data: 0xAA,
+                },
+                false,
+            ),
+            (
+                21,
+                Request::Store {
+                    width: AccessWidth::H,
+                    addr: 0x8000_040E,
+                    data: 0x4CD,
+                },
+                false,
+            ),
+            (
+                22,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x8000_0408,
+                },
+                false,
+            ),
+            (
+                32,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x8000_0400,
+                },
+                false,
+            ),
+            (
+                34,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x8000_0410,
+                    data: 0x0807_0605_0403_0201,
+                },
+                false,
+            ),
+            (
+                35,
+                Request::Store {
+                    width: AccessWidth::W,
+                    addr: 0x8000_0410,
+                    data: 0x00,
+                },
+                false,
+            ),
+            (
+                36,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x8000_0410,
+                },
+                false,
+            ),
+        ],
         _ => &[],
     }
 }

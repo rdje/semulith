@@ -21,7 +21,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Reference models acquired | Done | Sail 0.14, Spike `1e05ddac`, QEMU 11.1.1 pinned; ACT located. `scripts/fetch_references.sh` |
 | Matched-profile evidence path | Done | 4 guests, 2 models, 34 spec-derived values, 4 negative observations, 6 differences; `scripts/run_smoke.py` |
 | Requirements catalogue seeded | Done | `P0-PROFILE.3` (+ `MODEL-METHOD.10`) — 28 machine-readable records; the ALU family added so every declared instruction has a requirement; in the one format since `SOT-FORMAT.3`, validated by the schema layer |
-| Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; `PROFILE-CONSISTENCY`'s 39 arms re-fired; the dossier's commentary survives as first-class `(comment …)` forms; the Sail JSON is derived from the tracked `.sexp`, byte-identical |
+| Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; `PROFILE-CONSISTENCY`'s 39 arms re-fired; the dossier's commentary survives as first-class `(comment …)` forms |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 36 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 72 checks **declared not implemented** |
 | Reference independence inventoried | Done | 6 pairs, 4 verdicts; FP **shared** (184/199 files identical), routed to `P4-SYSTEM.7` |
 
@@ -37,8 +37,8 @@ summarize the snapshot in every commit-workflow completion message.
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented. Reopened for `.10`: the profile had been matched on its ISA and **not its platform** |
-| P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `incomplete`**: criteria 1–5 met (replay, typed outcomes, link rejection, mutation detection, the recorded baseline — allocation figures pinned exactly by `.13`); criterion 6 — the C-toolchain guest — unmet, owned by `P2-SCALAR.5` |
-| P2 — validated RV64I profile | CPU-LAB | In Progress | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 1/9 — `.1`: scope fully exercised (52/52, gated `EXERCISE-COVERAGE`), 117/117 live steps |
+| P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `incomplete`**: criteria 1–5 met (replay, typed outcomes, link rejection, mutation detection, the recorded baseline); criterion 6 — the C-toolchain guest — unmet, owned by `P2-SCALAR.5` |
+| P2 — validated RV64I profile | CPU-LAB | In Progress | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 2/9 — `.1` scope exercised (52/52, gated); `.2` boundary domains pinned (shamt exhausted, wraps, sign edges, aliasing) — 376/376 live steps |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |

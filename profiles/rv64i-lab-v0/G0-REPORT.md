@@ -25,7 +25,7 @@ generator has no code path that would produce it while that is true.
 | `requirements.sexp` | 28 requirements |
 | `contract-obligations.sexp` | 36 obligations, 72 declared checks |
 | `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 6 recorded differences |
-| `guests/*.expected.sexp` | 9 programs, 117 expected steps, 9 negative observations |
+| `guests/*.expected.sexp` | 14 programs, 376 expected steps, 9 negative observations |
 
 ## Criterion 1 — foundational semantics are resolved
 

@@ -43,7 +43,8 @@ ENCODING = REPO / "profiles/rv64i-lab-v0/encoding.sexp"
 GUESTS_DIR = REPO / "profiles/rv64i-lab-v0/guests"
 OUT = REPO / "crates/semulith-verify/src/guests.rs"
 GUESTS = ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
-          "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak")
+          "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak",
+          "bound-shift", "bound-shiftw", "bound-arith", "bound-ext", "bound-alias")
 GENERATOR = Path(__file__)
 
 

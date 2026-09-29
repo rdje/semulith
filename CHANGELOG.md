@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMILITH-PS-0003 (leaf P2-SCALAR.2) — boundary arithmetic and state interactions: the shamt domains exhausted
+
+- Five boundary guests, every expectation value derived from the pinned specification before any model ran (`EVD-05`): `bound-shift` (89 steps — the **6-bit shamt domain exhausted** by one `srli` sweep over all 64 amounts of `0x8000000000000001`; `slli`/`srai` pinned at {0,1,2,4,8,16,32,63}; register-amount corners rs2 = 64 → reads as 0, pre-written to stay visible, and rs2 = -1 → 63), `bound-shiftw` (55 steps — the **5-bit domain exhausted** by one `sraiw` sweep; the rs2 = 96 `srl`/`srlw` pair on identical operands answers 0x00000000FFFFFFFF vs the sign-extended identity, pinning the 6-bit vs 5-bit read), `bound-arith` (31 steps — INT64_MAX + 1 / INT64_MIN - 1 wraps on the register AND immediate paths, *W wraps with a garbage upper half provably ignored, `slt`/`sltu` at the extremes, `auipc 0x80000` wrapping the address sum modulo 2^64 to exactly 4·n), `bound-ext` (47 steps — the sign edges 0x7F/0x80, 0x7FFF/0x8000, 0x7FFFFFFF/0x80000000 as sign/zero PAIRS at one address, the 0x00 byte through a pre-write, store truncation at non-clamping values; 32 census-pinned crossings), `bound-alias` (37 steps — the little-endian lane proof, overlap composition `sd`+`sb`+`sh`+`ld`, register aliasing incl. a load over its own base register, x0 in both directions; 16 crossings).
+- The commit gate caught two **authoring** defects, never a model one: the overlap-composition constant was hand-assembled wrong twice (`0x4CD`'s high byte is 0x04; then the AA lane one hex pair over) — each RED was answered by re-deriving from the spec rule, and the corrected value is what the rule computes. Lesson declined for promotion: the gate already fails any expected value the spec rule does not compute — measured twice this leaf.
+- Reviewed ceiling expansion (the `.1` decision names this leaf's guest growth as its own decision): `profiles/` 32 → 42 files / ~307 KB; registry ceilings 34 → 46 files and 256 → 384 KiB; per-part 32 KiB unchanged (largest new file 27,848 B).
+- Verification: 138 verify suites (+5 guest suites), 65 core suites, clippy `-D warnings`, `make gate` 24 doctrines green, `make smoke-bench` 18 arms (14 clean guests), `EXERCISE-COVERAGE` 52/52 (self-test 7/0). Live: **14 guests, 376/376 aligned steps** against sail-riscv AND spike, byte-identical reproduction.
+- Lockstep: MEMORY/LIVE_STATUS (P2 2/9)/TASK_TREE (frontier `.3`)/CHANGELOG/DEV_NOTES + book P2 (the `.2` result), P1 and claim-scope (14 guests, 376 steps), the routes registry, and both regenerated `G?-REPORT.md`.
+
 ## SEMILITH-PS-0001 (leaf P2-SCALAR.1) — the declared instruction scope, completed and gated
 
 - The profile declares 52 RV64I forms; the four P1 smoke guests exercised 15. Five scope-completion guests close the gap, every expectation value derived from the pinned specification before any model ran (`EVD-05`): `scope-alu` (31 steps — the 21 remaining logical/compare/shift forms plus `fence`, with the signed/unsigned pairs on shared operands, the `rs2[4:0]`-vs-`rs2[5:0]` shift pin, and two 1→0 pre-writes so 0-results are VISIBLE changes in the trace vocabulary), `scope-mem` (29 steps — the 8 remaining load/store forms: sign/zero-extension pairs at one address, a discarded `lw x0` per `D-LOAD-X0`, three store widths with read-back, 17 census-pinned data crossings), `scope-branch` (19 steps from 24 instructions — the 5 remaining branches taken AND not-taken, five `never_written` negative observations), `scope-ecall` and `scope-ebreak` (the requested traps, one guest each, trap step last — cause 11/tval 0 and cause 3/tval=pc, matching both references exactly).
@@ -353,154 +361,4 @@ And obligation `dependencies` were checked against nothing: the corpus's cpu-gua
 on requirements while its environment-assumptions depend on guarantees — a mixed namespace the
 new closure resolves against requirements ∪ obligations, measured on all 42 records, zero
 dangling.
-
-## SEMILITH-SF-0059 (leaf SOT-FORMAT.4) — the dossier moves behind the schema layer, commentary and all
-
-The profile dossier retires its last TOML/JSON: `profile.toml` (26 decisions), `state.json`,
-`sources.toml`, `references.toml`, the matched Sail override and the four guest expectation
-files are now one S-expression document form each — `profile.sexp`, `state.sexp`,
-`sources.sexp`, `references.sexp`, `reference/sail-rv64i-lab-v0.override.sexp`,
-`guests/*.expected.sexp` — validated by six new schemas (`schema/{profile,state,sources,
-references,override,expectations}.sexp`). `convert_dossier.py --verify` proves the migration
-the way `.3` did: every document re-derives field-for-field from its source, and the comment
-census is exact line by line.
-
-⭐ **Comments became first-class forms.** The schema kernel reserves one head — `(comment "…")`,
-inert at any position, never declared, never forbidden — and the dossier's 158 comment lines
-(the warnings, the provenance, the "why" of 26 decisions) survive as data a merge can carry
-instead of syntax a parser drops. A typo'd `commment` is still refused by name; a construct,
-operator or field named `comment` is refused as dead vocabulary. The open question the tree
-carried — do comments belong to the form or the file — is answered: to the file, as an ordered
-annotation stream.
-
-**Consumers changed at the seam, not in their logic.** Every gate and tool keeps receiving the
-exact dicts `tomllib`/`json` produced, now through the single mapping owner
-`scripts/dossier_sexp.py` — which is what makes the verdicts mechanical rather than hopeful:
-`PROFILE-CONSISTENCY`'s 39 arms re-fire on converted fixtures (rule 5b included), `run_smoke`
-and `compare_platforms` are unmoved, the regenerated G0 report's diff is input names only, and
-the Sail override's JSON is *derived* from the tracked `.sexp` on every run — byte-identical to
-the original it replaces, the `.sexp` the single source of truth. `compare_readers` sweeps 28
-of 28 files across all three readers. Measured en route: the DOSSIER's "no gate has been run"
-was stale (`G0` has run; verdict `incomplete`) — corrected; `schema/` reached its file-count
-ceiling at exactly 12 and was re-derived to 24, grounds recorded in the registry; the
-`profiles/` per-part re-derivation `.3` carried open was not needed (`references.sexp` is
-30,012 B against 32,768).
-
-====
-
-## SEMILITH-SF-0058 (leaf SOT-FORMAT.3) — the records move behind the schema layer
-
-`profiles/rv64i-lab-v0/{requirements,contract-obligations}.jsonl` (26 + 34 records) retire into
-`{requirements,contract-obligations}.sexp`, one form per record, JSON keys verbatim as field
-names. The losslessness the acceptance demands is a comparison, not a review:
-`convert_records.py --verify` re-derives the JSONL from the converted files **byte-identical**,
-field by field, both catalogues.
-
-⭐ **The schema layer grew four field facets rather than go weaker than the contract it
-replaces** — `(pattern …)`, `(min-length N)`, `(min N)`, `(unique yes)` on `(field …)`, the
-`.2` boundary one level down (a new declaration KIND would change the kernel; facets on the
-existing kind are the language; the fixpoint declares them). And `parameters` stopped being a
-lie: the old JSON schema's `additionalProperties` banned the very arrays three obligations
-write and the validator never descended into it — the new format types every value
-(`(int …)/(str …)/(true)/(false)/(null)/(ints …)/(strs …)`) and refuses a float, a mixed list
-or a nested value by name.
-
-**`RECORD-SCHEMA` reads both tracks now**: the frozen `examples/` JSONL on the tracked JSON
-validator; the converted catalogues through the single mapping owner `scripts/records_sexp.py`,
-validated by the schema layer plus every cross-check (CITED / RESOLVED / COVERAGE / LINKED /
-OBLIGED / AUTHORITY) re-fired against the converted form — 22 arms where 15 stood, each RED arm
-naming its reason. `gate_report.py` reads the same mapping; the G0 report diff is input names
-only (26 requirements, 34 obligations, 68 checks, verdict untouched). `compare_readers` sweeps
-13 of 13 with the catalogues and the two new schemas in corpus; `run_smoke` and the 52-of-52
-verdict are unmoved. Measured en route: `LIVE_STATUS.md` had carried the contract as 33
-obligations / 66 checks since before `P0-PROFILE.10`; re-derived to 34 / 68.
-
-
-## SEMULITH-DS-0002 (leaf DOC-SHARDING.1) — the fired ceiling gets its sharder, and the freeze gets its proof
-
-**Measured trigger.** `CHANGELOG.md` sat at 65,527 of 65,536 bytes — 9 bytes of headroom, recorded
-at adoption as transition debt with this leaf as its named owner. The registry's owner column
-promised *shard when the ceiling fires*; this slice is the sharder, not another compressed entry.
-
-**What landed.** `scripts/shard_history.py` moves the oldest whole `## ` entries — byte-verbatim,
-a file is preamble plus concatenated blocks, so head-after + shard == head-before exactly,
-asserted and printed at the event (29 entries: 28 kept + 1 moved, order and bytes exact). One
-entry moved (`SEMILITH-P0-0031`, 3.4 KiB); the head rewrote 65,527 → 62,086 bytes, under target
-with room for this entry. Re-running is a no-op. The two existing date-named shards stay
-untouched — a shard's entries are never edited — and join the new freeze manifest
-`docs/changelog/SHARDS.sha256` (3 rows, sha256sum format, paths repo-root-relative).
-
-**`SHARD-FREEZE`** — the 13th project doctrine, 12 self-test arms, each RED arm naming its reason —
-proves the durable half: every shard hashes to its manifest row (one edited byte after the event
-fails with both digests named); the manifest only grows against `git show HEAD:…`; no `## `
-heading appears twice across head and shards. ⛔ Fired RED on the real tree before registration:
-with no manifest yet, both existing shards reported `UNMANIFESTED` — the adoption gap itself, not
-a synthetic stand-in. ⭐ The completeness proof belongs to the shard event (the tool holds both
-sides exactly once); the freeze proof belongs to the manifest (it holds every side forever) —
-splitting the two halves is what makes each half checkable.
-
-**Lockstep, because mirrors rot.** Both doctrine mirrors gain the row (`DOCTRINE_ENFORCEMENT.md`
-and the book chapter, per `REGISTRY-MIRROR`); `LIVE_STATUS.md`'s derived counts move 12 → 13
-doctrines and 157 → 169 self-test arms — re-derived by `check_derived_counts.sh --list`, never
-incremented by hand; `README_POLICY.md`'s transition-debt note records the discharged half and
-leaves `DEV_NOTES.md` its still-live trigger for the day its ceiling fires.
-
-## SEMULITH-RM-0060 — browser/Wasm target
-
-`decision_browser-wasm-target`; lane `PORT-WEB` (consumed by `P1-LAB`).
-
-## SEMILITH-SF-0057 (leaf SOT-FORMAT.2) — the constructs already in use, declared as data
-
-The schema layer leaves paper: `schema/encoding.sexp`, `schema/fragment.sexp` and
-`schema/semantics.sexp` declare every construct the three corpus families write — records and
-positional mini-languages alike. The schema language gains exactly one new declaration kind,
-`(operator (name SYM) (fixed N) | (variadic) [(min N)] [(arg SPEC)])`, for the shapes no record
-grammar can state: `(fixed (31 25 0x0) …)` triples, `(operands rd rs1 rs2)` lists, the
-`(pieces (12 12) …)` pairs, and the semantics effect expressions. `scripts/check_semantics.py`
-now loads its 32-form table from `schema/semantics.sexp` — a new semantic form is a schema
-edit, zero lines of Python (demonstrated with a 33rd form, then reverted). The `52 of 52`
-verdict is byte-identical; the four MODEL-METHOD.9 controls still fire RED. Kernel self-test
-`16 → 31 arms`; the whole corpus validates against its schema; `compare_readers` sweeps the
-three new files the moment they are tracked (`9 of 9 agree`, document layer zero class notes).
-The layer that never reads a second file: operand scoping stays in the checker. Gate
-registration stays deferred to `SOT-FORMAT.6` per the tree's frontier. Tree `SOT-FORMAT` at
-5/10.
-
-## SEMULITH-RM-0059 (leaf ROADMAP-V3.3) — ROADMAP v0.3: the star gets a start condition
-
-`ROADMAP.md` supersedes v0.2 (the house pattern: the delivery manifest and git carry the old
-bytes; v0.2 was `live`, so no disposition change was needed). v0.3 lands the adopted package:
-P1's start condition (`SOT-FORMAT.2` constructs + `MODEL-METHOD.10` extraction contract — the
-remaining format-migration leaves are consumed by later milestones, not by P1's start); the
-execution-authority row in the §1 decision table (semantics are data and the data executes);
-the lane-consumption rule in §1; P1's G1 sharpened to the star-facing proof — a compiled
-freestanding guest program retires under first-divergence comparison, C named as the first
-guest path, and the first mdBook increment ships in the same milestone; the v0.4 trigger moves
-to P1 first-slice completion. Under review, `LIVE_STATUS.md`'s `MODEL-METHOD` count was
-re-derived: `3/10` (a spelling no gate can see) → `6 of 13` (the gated spelling). File: 24,065
-bytes against the 24,576 ceiling. Tree `ROADMAP-V3` complete, 3/3.
-
-## SEMILITH-RM-0058 (leaf ROADMAP-V3.2) — every lane names the milestone that consumes it
-
-The sequencing vacuum, measured rather than asserted: `27` commits since any milestone tree
-was last touched, and that touch was P0 closure. The roadmap's warning ("evidence tooling does
-not become an unrelated research product") becomes an operational rule: every cross-cutting
-tree's Metadata declares `Consumed by:` — milestone plus latest consumption point; lanes
-without a named consumer are descoped at the next roadmap revision; new lanes must name a
-consumer at proposal. First application covers all seven current lanes. The mechanical census
-gate is **proposed to the director, not registered** — new governance is announced before it is
-tasked. Record: `docs/decisions/decision_lane-consumption.md`; tree `ROADMAP-V3` at 2/3.
-
-## SEMULITH-RM-0057 (leaf ROADMAP-V3.1) — the semantics data is the execution authority
-
-Director-delegated decision (`2026-09-27`: "the decision is yours to make but it got to be sota,
-signoff and production-grade") resolving the open contradiction between `docs/ARCHITECTURE.md`
-§1.1 (semantics are data) and §2 (canonical Rust semantic functions): P1 executes the 32-form
-semantics data directly — a definitional interpreter, keeping exactly one owned implementation
-per rule (OWN-01); compiled or IR handlers enter only as generated, fingerprinted artifacts
-behind an observational-equivalence regression. The pattern is the one this project's own pinned
-Sail reference uses: the interpreter is the reference behaviour; compilation of the same
-semantics is a derived artifact that must agree with it. Revisit conditions named: a measured
-P2/P4 performance need, or the explicit semantic-IR migration decision. Record:
-`docs/decisions/decision_interpreter-before-compiler.md`; tree `ROADMAP-V3` registered (1/3).
 

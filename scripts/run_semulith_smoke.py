@@ -187,7 +187,8 @@ def main() -> int:
               file=sys.stderr)
     print(f"the P1-LAB.8 first-execution-slice experiment for {PROFILE}")
     for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
-                 "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak"):
+                 "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak",
+                 "bound-shift", "bound-shiftw", "bound-arith", "bound-ext", "bound-alias"):
         experiment(name)
     print()
     if failures:

@@ -91,7 +91,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   row carries the coverage rule.
 
 - ID: `P2-SCALAR.2` — **boundary arithmetic and state interactions**
-  Status: `in-progress` (design recorded `2026-09-29`, before code)
+  Status: `done` (`2026-09-29`)
   Goal: boundary values, sign/zero extension, shift corner cases, alias and overlap effects.
   Acceptance: exhaustive checks where a reduced width makes them tractable; source-linked expected values.
   Design (recorded before code, `2026-09-29`):
@@ -167,6 +167,28 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
     `run_semulith_smoke.py`'s guest tuple; both `G?-REPORT.md` regenerate (counts are
     derived); the browser bench enumerates guests dynamically — its arm count grows 13 → 18
     with no edit; `EXERCISE-COVERAGE` stays 52/52 (the scope did not change).
+  Result: met, `2026-09-29`. **Five boundary guests, 259 new steps, all agreeing with
+  sail-riscv AND spike — 376/376 aligned steps over the 14-guest corpus.** The 6-bit shamt
+  domain is exhausted by `bound-shift`'s 64-point `srli` sweep and the 5-bit domain by
+  `bound-shiftw`'s 32-point `sraiw` sweep, with every amount bit pinned on the remaining
+  forms and the rs2 = 64 / 96 / -1 register-amount corners (the `srl`/`srlw` pair on rs2 =
+  96 answers differently under the 6-bit and 5-bit reads, as designed). `bound-arith` pins
+  the signed-extreme wraps on both the register and the immediate path, the *W wraps with a
+  garbage upper half provably ignored, and `auipc 0x80000` wrapping the address sum to
+  exactly 4·n (`D-ADDR-WRAP` inside `D-LUI-AUIPC`). `bound-ext` probes the sign edge at
+  each width through sign/zero pairs (32 census-pinned crossings); `bound-alias` proves the
+  little-endian lanes, overlap composition, register aliasing including a load over its own
+  base register, and x0 in both directions (16 crossings). The commit gate caught two
+  AUTHORING defects, never a model one: the overlap-composition constant was hand-assembled
+  wrong twice (0x4CD's high byte is 0x04, not 0x4C; then the AA lane mis-placed one hex
+  pair over) — each time the pinned expectation failed RED against the real model, the
+  derivation was re-done from the spec rule (`SH` stores the low 16 bits, little-endian),
+  and the corrected value is what the rule computes. The ceiling expansion landed as
+  designed: `profiles/` 32 → 42 files / ~307 KB, registry ceilings 34 → 46 files and
+  256 KiB → 384 KiB, per-part 32 KiB untouched (largest new file 27,848 B).
+  Lessons: `promotion: declined (the commit gate fails any expected value the spec rule
+  does not compute — it fired RED twice this leaf, on the author's own arithmetic; a
+  knowledge card would restate what the gate enforces)`.
 
 - ID: `P2-SCALAR.3` — **fault, suppression and reserved cases**
   Status: `pending`
@@ -207,7 +229,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.2` | `pending` | scope is fully exercised (`.1`); boundary values and shift corner cases are the next evidence layer the gate enumerates |
+| 1 | `P2-SCALAR.3` | `pending` | scope exercised (`.1`), boundaries pinned (`.2`); faults, suppressed effects and reserved cases are the next evidence layer — and `.3` already owns the reserved-`fm` FENCE defect |
 
 ## Decisions
 
@@ -223,6 +245,18 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   generator, the smoke experiment and the coverage gate all read exactly there, and a
   second guest root would fragment the corpus the gates enumerate. Any FURTHER guest growth
   (`.2`'s boundary cases are a candidate) is its own reviewed decision at its own leaf.
+- `2026-09-29` (leaf `.2`, reviewed ceiling expansion — the `.1` decision names this leaf's
+  guest growth as its own reviewed decision): the guest corpus grows 9 → 14 programs (+10
+  tracked files under `profiles/rv64i-lab-v0/guests/`), so `profiles/` rises 32 → 42 files
+  and ~220 KB → ~307 KB aggregate. `doctrine/readme_routes.tsv`: `ceiling_lines` 34 → 46
+  (42 + 4 headroom, the registry's proportional rule), `ceiling_bytes` 262144 → 393216
+  (the same ~1.2× band over the measured size the existing ceiling holds), health targets
+  re-based to the measured 42 files / 307,200 B. ⛔ `ceiling_part_bytes` stays 32768: the
+  per-part bound answers "has one member become the monolith", and no new file approaches
+  it (largest: `bound-shift.expected.sexp` at 27,848 B — the sweep derivations are
+  deliberately terse to keep it that way). Splitting the sweeps across more, smaller
+  guests was considered and rejected: a sweep is one argument (every amount of one domain
+  on one operand), and splitting it would fragment exactly the claim it makes.
 
 ## Open Questions
 
@@ -314,6 +348,83 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   (`DOCTRINE_ENFORCEMENT.md`, `docs/book/src/working/doctrines.md`), `TOOLBOX.md` (the new
   row), and both regenerated `G?-REPORT.md`.
 
+## Acceptance Checklist (leaf P2-SCALAR.2)
+
+- [x] **REPRODUCE / ISSUE** — the corpus exercised every declared FORM (`.1`), but the
+  boundary DOMAINS had only incidental samples: across the whole pre-leaf corpus, exactly
+  four distinct immediate shift amounts had ever executed, and no guest had wrapped a
+  signed extreme, probed a sign edge at exactly 0x80/0x8000/0x80000000, composed
+  overlapping stores, or self-aliased a destination (rd = rs1 = rs2):
+
+  ```
+  $ git grep -h -E '^[[:space:]]*(slli|srli|srai|slliw|srliw|sraiw)[[:space:]]' HEAD \
+        -- 'profiles/rv64i-lab-v0/guests/' | sed -E 's/#.*$//' \
+      | grep -oE '[0-9]+[[:space:]]*$' | tr -d ' ' | sort -n | uniq
+  25
+  31
+  32
+  63
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — WHY: the P1 guests were written for smoke coverage and
+  the `.1` guests for form coverage — one instance per form — and neither brief includes
+  the boundary structure of an operator (the shamt FIELD's 64/32 values, the wrap points,
+  the sign edges, self-aliasing). Nothing was wrong; an evidence layer the leaf's
+  acceptance names was simply unwritten. WHERE, measured: the exercised-amount census is
+  the REPRODUCE box's command (4 of 64 values); the self-alias census is directly
+  enumerable — a destination aliased onto BOTH its sources did not exist in the corpus
+  (BSD grep: backreferences need the basic-syntax form, not `-E`):
+
+  ```
+  $ git grep -h '\(add\|sub\|slt\|sll\|sra\) \(x[0-9][0-9]*\), \2, \2\(,\|$\)' HEAD \
+        -- 'profiles/rv64i-lab-v0/guests/' | wc -l        # before
+  0
+  $ grep -h '\(add\|sub\|slt\|sll\|sra\) \(x[0-9][0-9]*\), \2, \2\(,\|$\)' \
+        profiles/rv64i-lab-v0/guests/*.s | wc -l          # after
+  4
+  ```
+
+- [x] **FIX** — five boundary guests with EVD-05 expectations (every value computed by
+  spec-rule arithmetic at authoring time, before any model ran, each step carrying
+  derivation + source): `bound-shift` (89 steps — the 6-bit shamt domain exhausted by one
+  `srli` sweep), `bound-shiftw` (55 — the 5-bit domain exhausted by one `sraiw` sweep, the
+  rs2 = 96 `srl`/`srlw` discriminator pair), `bound-arith` (31 — wraps, immediate extremes,
+  the `auipc` sign-edge wrap), `bound-ext` (47 — the sign-edge pairs, 32 crossings),
+  `bound-alias` (37 — endian lanes, overlap composition, register aliasing, x0; 16
+  crossings). Cascades as designed: `gen_guests.py`'s tuple, `guests.rs` regenerated, five
+  `run/tests.rs` suites, `mutate.rs`'s census (48 new pins, per-line justifications), the
+  smoke tuple, the routes-registry ceilings, both gate reports regenerated. No interpreter
+  change — data and pins only.
+
+- [x] **ADDRESSED (verified)** — before→after, same census command: 4 → 64 distinct
+  immediate shift amounts (the 6-bit domain complete, the 5-bit domain within it), and:
+
+  ```
+  $ cargo test -p semulith-verify          # the offline differential, commitment-gated
+  test result: ok. 138 passed; 0 failed (+5 guest suites; the census pin re-derives
+  bound-ext's 32 and bound-alias's 16 crossings from the real runs)
+  $ python3 scripts/run_semulith_smoke.py  # the live three-way differential
+  …bound-shift/-shiftw/-arith/-ext/-alias: AGREE vs sail-riscv AND spike…
+  run_semulith_smoke: ok — 14 guests, 376/376 aligned steps, byte-identical reproduction
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; and the gate caught two AUTHORING
+  slips during the leaf (the overlap-composition constant, twice), both corrected by
+  re-deriving from the spec rule — the instrument discriminates in the right direction:
+
+  ```
+  $ make check            # 138 verify suites (+5), 65 core suites, clippy -D warnings, fmt
+  $ make gate             # 24 doctrines green (GUEST-GEN, GATE-REPORT, the new ceilings…)
+  $ make smoke-bench      # 18 arms — 14 clean guests, 3 trace-level mutants, the census arm
+  $ bash scripts/check_exercise_coverage.sh [--self-test]   # 52/52; self-test 7/0
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 2/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.3`), this tree, the book
+  (`plan/p2.md` carries the result; `plan/p1.md` and `claim-scope.md` re-synced to 14
+  guests / 376 steps), the routes registry (the reviewed ceilings), and both regenerated
+  `G?-REPORT.md`.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
@@ -323,12 +434,18 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 | `2026-09-29` | `P2-SCALAR.1` | `cargo test -p semulith-verify` | 133 passed / 0 failed (+5 guest suites; census pin over 9 guests incl. scope-mem's 17 crossings) |
 | `2026-09-29` | `P2-SCALAR.1` | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 9 guests agree on 117/117 aligned steps; ecall = cause 0x0B/tval 0, ebreak = cause 0x03/tval=pc on all three models; every run reproduces byte-identically |
 | `2026-09-29` | `P2-SCALAR.1` | `make check`, `make gate`, `make smoke-bench`, wasm build | rc=0; 24 doctrines green; 13 bench arms (9 clean guests); PORT-WEB rc=0 |
+| `2026-09-29` | `P2-SCALAR.2` | shamt census (`git grep` over the pre-leaf corpus) | 4 distinct immediate shift amounts {25,31,32,63} of 64 — the boundary hole measured |
+| `2026-09-29` | `P2-SCALAR.2` | `cargo test -p semulith-verify` — authoring RED→GREEN ×2 | the overlap-composition constant wrong twice (0x4CD's high byte; the AA lane one hex pair over) — the pinned expectations failed against the real model; the derivation was re-done from the spec rule both times; no model defect |
+| `2026-09-29` | `P2-SCALAR.2` | `cargo test -p semulith-verify` | 138 passed / 0 failed (+5 guest suites; census pins bound-ext 32 / bound-alias 16 crossings) |
+| `2026-09-29` | `P2-SCALAR.2` | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 14 guests agree on 376/376 aligned steps; every run reproduces byte-identically |
+| `2026-09-29` | `P2-SCALAR.2` | `make check`, `make gate`, `make smoke-bench`, `check_exercise_coverage.sh [--self-test]` | rc=0; 24 doctrines green; 18 bench arms (14 clean guests); 52/52, self-test 7/0 |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `P2-SCALAR.1` | `SEMILITH-PS-0001 (leaf P2-SCALAR.1): …` | the declared scope completed and gated: five guests, EXERCISE-COVERAGE (24th doctrine), fence fields from the pinned table, ecall/ebreak adapter spellings, 117/117 live; the reserved-`fm` defect logged for `.3` |
+| `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
 
 ## Changelog
 

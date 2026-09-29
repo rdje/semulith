@@ -398,3 +398,48 @@ fn scope_ebreak_reports_the_requested_trap_and_stops() {
     assert_eq!(last.writes, vec![]);
     assert_eq!(last.trap, Some((0x03, 0x8000_0004)));
 }
+
+// ---- the P2-SCALAR.2 boundary guests ------------------------------------------------------------
+
+#[test]
+fn bound_shift_matches_its_specification_derived_expectations() {
+    // 89 steps: the 6-bit shamt domain exhausted by one srli sweep over all 64 amounts of
+    // 0x8000000000000001, srai/slli pinned at {0,1,2,4,8,16,32,63} (every amount bit on
+    // every form), and the register-amount corners rs2 = 64 (reads as 0 — a pre-written
+    // identity) and rs2 = -1 (reads as 63).
+    assert_guest_observations("bound-shift", Stop::Budget);
+}
+
+#[test]
+fn bound_shiftw_matches_its_specification_derived_expectations() {
+    // 55 steps: the 5-bit shamt domain exhausted by one sraiw sweep over all 32 amounts,
+    // slliw/srliw pinned at {0,1,2,4,8,16,31}, and the 5-vs-6-bit discriminator rs2 = 96 as
+    // the srl/srlw pair on identical operands (srl shifts by 32, srlw is the identity).
+    assert_guest_observations("bound-shiftw", Stop::Budget);
+}
+
+#[test]
+fn bound_arith_matches_its_specification_derived_expectations() {
+    // 31 steps: the signed-extreme wraps modulo 2^64 on the register AND immediate paths,
+    // the *W wraps sign-extending from bit 31 with a garbage upper half ignored, slt/sltu
+    // at the extremes, the 12-bit immediate extremes, and the U-immediate sign edges —
+    // auipc 0x80000 wraps the address sum to exactly 4*n (D-ADDR-WRAP).
+    assert_guest_observations("bound-arith", Stop::Budget);
+}
+
+#[test]
+fn bound_ext_matches_its_specification_derived_expectations() {
+    // 47 steps: the sign edge at each width (0x7F/0x80, 0x7FFF/0x8000, 0x7FFFFFFF/
+    // 0x80000000) through the sign/zero load pair at one address, the all-ones values, the
+    // 0x00 byte observed through a pre-write, and store truncation at non-clamping values.
+    assert_guest_observations("bound-ext", Stop::Budget);
+}
+
+#[test]
+fn bound_alias_matches_its_specification_derived_expectations() {
+    // 37 steps: the little-endian lane proof (one sd, eight lbu lane reads — D-ENDIAN),
+    // overlap composition (sd + sb + sh + one ld), register aliasing (rd = rs1 = rs2, a
+    // self-referential shift, a load overwriting its own base register), and x0 hardwired
+    // in both directions (a discarded write, a zero store read back through ld).
+    assert_guest_observations("bound-alias", Stop::Budget);
+}
