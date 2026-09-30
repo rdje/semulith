@@ -309,11 +309,40 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   gates enforce)`.
 
 - ID: `P2-SCALAR.5` — **external and directed campaigns** — `G-REGRESSION`
-  Status: `blocked` (`2026-09-29` — two external inputs, both named in `Blockers`: the ACT4
-  material is not in the corpus, and the C-toolchain guest awaits the director's routing answer
-  recorded in `P1-LAB.12`; neither is decidable in-tree)
+  Status: `active` (`2026-09-30` — both blockers answered: (a) at the materials layer
+  `2026-09-29`, (b) by the director's delegation `2026-09-30`, recorded in
+  [`decision_c-guest-routing-and-toolchain`](../decisions/decision_c-guest-routing-and-toolchain.md)
+  — the C guest lands here, built by the two toolchains already on the host)
   Goal: matched reference comparisons, configured external tests, directed sequence tests, and compiled freestanding programs.
   Acceptance: ACT4 results are recorded as **external tests with Sail-derived expected values**, never as a second independent semantics (`EVD-04`).
+  Design (recorded before code, `2026-09-30` — three strands, each its own commit):
+  1. **The C-toolchain guest** (flips G1 criterion 6). Tracked: `guests/c-scope.c` — a
+     freestanding C tour of the declared scope (64/32-bit ALU, every load/store width,
+     branches, function calls through JAL/JALR with a real stack, shifts), compiled
+     `-march=rv64i -mabi=lp64 -nostdlib -ffreestanding` so the compiler may emit only
+     RV64I, results retired into REGISTERS before the closing `ebreak` (the observation
+     vocabulary is register writes; a result left only in memory would prove nothing —
+     the `.1` lesson). Tracked build script compiles+links via the pinned toolchain
+     (clang 21.1.8 + `ld.lld` 21.1.8, refusing by name if absent) into
+     `target/refs/guests/c-scope.elf` — untracked, same standing as the reference
+     binaries. `scripts/run_semulith_smoke.py` learns the `.c` path: build, then the same
+     three-way first-divergence comparison and reproduce leg as the assembled guests.
+     There is deliberately **no per-step expectation document** for the compiled guest —
+     the compiler, not the author, chooses the instruction sequence; the evidence is the
+     differential itself (`EVD-04` recorded: agreement is tested evidence for these
+     inputs, never universal proof). `gate_report.py`'s criterion-6 probe already counts
+     `guests/*.c`; its hardcoded NOT-met prose and the Limitations section gain the
+     met/unmet branch, the met prose naming the guest, the toolchain pin and the re-run
+     command, with GATE-REPORT self-test arms for both branches. Guest-corpus ceiling
+     expansion is its own reviewed decision at commit time, per the `.1` rule.
+  2. **The ACT4 external suite**: fetch the generated half (635 MB `.S` + 31 MB `.svh`,
+     pinned upstream commit `e2216915d9a17acc142610831d88de8b65683866`), build the
+     harness (gas-syntax sources assemble with the same pinned clang; the suite's
+     signature mechanism adapts to the laboratory's observation vocabulary), run, record
+     as external tests with Sail-derived expectations. Sized at strand time — if it
+     outgrows a safe slice it becomes its own leaf.
+  3. **Directed sequence tests**: the directed campaigns the matrix does not already
+     cover, designed from the `.1`–`.4` evidence gaps.
 
 - ID: `P2-SCALAR.6` — **discrepancy reduction**
   Status: `pending`
@@ -339,10 +368,17 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.5` | `blocked` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer. Blocker (a) ANSWERED `2026-09-29` (`MODEL-METHOD.15`): the ACT4 docs + test plans are catalogued and cached, the generated suite pinned by upstream commit for resume day. Blocker (b) stands: the C-toolchain guest awaits the director's routing answer (`P1-LAB.12`) and no RISC-V C toolchain is installed |
+| 1 | `P2-SCALAR.5` | `active` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer. Blocker (a) ANSWERED `2026-09-29` (`MODEL-METHOD.15`): the ACT4 docs + test plans are catalogued and cached, the generated suite pinned by upstream commit for resume day. Blocker (b) ANSWERED `2026-09-30` (director delegation, `decision_c-guest-routing-and-toolchain`): the C guest lands here, built by clang 21.1.8 + `ld.lld` 21.1.8 already on the host. Strand 1 (the C guest) is the current slice |
 
 ## Decisions
 
+- `2026-09-30` (leaf `.5`, director delegation — the routing and toolchain call): the C
+  guest lands in **this** leaf; `P1-LAB` stays `done` and G1's `incomplete` flips only
+  when criterion 6's evidence lands. The toolchain is the two compilers already
+  installed (Homebrew clang 21.1.8 with the RISC-V backend measured present; zig
+  0.16.0's bundled `ld.lld` 21.1.8) — nothing new installed, both pinned in the leaf's
+  evidence. Full record:
+  [`decision_c-guest-routing-and-toolchain`](../decisions/decision_c-guest-routing-and-toolchain.md).
 - `2026-09-13`: "Locked" means a **versioned accepted profile whose evidence is attached to its
   exact inputs**. A semantic fix invalidates affected evidence and produces a new accepted
   version. It never means errors become unfixable (`ROADMAP.md` §5).
@@ -422,11 +458,19 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   results (`EVIDENCE_AND_GATES.md` §72 names `riscv-arch-test`, ACT4, Sail-derived
   expectations), but no `riscv-arch-test` entry existed in `materials/catalog.sexp`
   (36 primary sources, corpus `3c45e81`) — verified by grep `2026-09-29`.
-- **`2026-09-29` (blocks `.5`'s C-guest strand) — the director's routing answer is still
+- ~~**`2026-09-29` (blocks `.5`'s C-guest strand) — the director's routing answer is still
   open** (`P1-LAB.12` ROUTING EVIDENCE): is the C guest allowed to land in P2, or must G1
   read `passed` first? Compounding it: no RISC-V C toolchain is installed on this machine
   (`riscv64-unknown-elf-gcc` absent; only host `clang`). The strand cannot start without
-  the answer AND a toolchain decision.
+  the answer AND a toolchain decision.~~
+  **ANSWERED `2026-09-30` by the director's delegation** ("make the call yourself"),
+  recorded in
+  [`decision_c-guest-routing-and-toolchain`](../decisions/decision_c-guest-routing-and-toolchain.md):
+  the C guest lands in `P2-SCALAR.5` (the G0 precedent — the tree completes, the gate
+  keeps the criterion visible, `EVD-08` forbids `passed` over a missing check), and the
+  toolchain was measured present, not installed: Homebrew `llvm@21` clang 21.1.8 (RISC-V
+  backend verified by compile + objdump; Apple clang has none — the exact error is in the
+  record) linked by zig 0.16.0's bundled `ld.lld` 21.1.8. Nothing new was installed.
 
 ## Defects found in flight (owned here per the defect-ownership rule)
 
