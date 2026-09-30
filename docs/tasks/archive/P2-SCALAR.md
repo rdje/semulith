@@ -434,3 +434,67 @@ the active leaf's design and checklist, and both logs.
   `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.7`), this tree, the
   book (`plan/p2.md` carries the result), `references.sexp` (the difference record names
   `min-fencei`), the regenerated fragments and both `G?-REPORT.md`.
+
+## Acceptance Checklist (leaf P2-SCALAR.7)
+
+- [x] **REPRODUCE / ISSUE** — the acceptance's completeness question was answered from the
+  pinned dossier, not assumed: `state.sexp`'s hidden-state census measured all seven
+  candidates absent, so "all future-relevant pending state" for this profile is exactly
+  registers + pc + memory:
+
+  ```
+  $ grep -c 'present false' profiles/rv64i-lab-v0/state.sexp
+  7        # the seven hidden-state candidates, each measured absent
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf is a capability proof. WHY the
+  proof's load-bearing cases are the memory-state guests: a register+pc-only snapshot of
+  `dir-memwalk` or `dir-chase` mid-run would resume into a wrong continuation — their
+  future behavior lives in MEMORY — so those guests are where a silent state drop would
+  surface. Measured, not argued:
+
+  ```
+  $ semulith run dir-memwalk.elf --steps=13 --trace-stores | grep -c '^mem\['
+  4        # stores before the split — the walk's continuation depends on memory content
+  $ semulith snapshot dir-memwalk.elf --at=13 --steps=37 | grep -o '"offset"' | wc -l
+  19       # the snapshot record carries 19 memory runs — the pending state, measured
+  ```
+
+  WHERE the completeness claim lives: the census, gated, not this leaf's prose.
+
+- [x] **FIX** — `semulith-verify::snapshot` (capture/resume, JSON both ways, the sparse
+  digested memory encoding, the shared definition-pin check), `run_state[_over]` (the
+  state-returning runner form), `FlatMemory::bytes_mut`, the CLI's `snapshot`/`resume`
+  commands, and the five-suite proof.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify
+  test result: ok. 180 passed; 0 failed   (+5 snapshot suites)
+    every_guest_resumes_identically_from_a_mid_execution_snapshot … ok
+      (49 guests x 3 split points, steps AND crossing logs identical through the
+       JSON round-trip)
+    a_corrupted_memory_run_is_refused_by_its_digest … ok
+    a_foreign_definition_is_refused_by_name … ok
+    incoherent_and_overrunning_records_are_refused … ok
+  $ cargo run -q -p semulith-cli -- snapshot target/refs/guests/dir-memwalk.elf \
+      --at=13 --steps=37 > snap.json && cargo run -q -p semulith-cli -- resume snap.json
+  resume: 24 continuation step(s) from step 13, stop Trap
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; the one RED in flight was the
+  author's own test arithmetic (the sparse encoding splits at zero bytes, so the first
+  run is one byte — the overrun tamper target was re-aimed one-past-the-end), no
+  production change:
+
+  ```
+  $ make check            # 180 verify suites, 65 core suites, clippy -D warnings, fmt
+  $ make gate             # all doctrines green
+  $ make book             # both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 7/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.8`), this tree, the
+  book (`plan/p2.md` carries the result; the model book's restart axis gained the
+  snapshot half), the archive movements.

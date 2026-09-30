@@ -3,6 +3,24 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-30)_ — the portability matrix and the honest incomplete (P2-SCALAR.8)
+
+The leaf's substance was measurement: Rosetta absent (arch -x86_64 → Bad CPU type in
+executable), no qemu user-mode x86-64 runner, Miri present on nightly (809936eac6), the
+powerpc64 BE target provisioned. The instrument's first live run reported ALL legs red
+against a green reality — the pipefail + grep -q defect (grep -q exits on first match,
+cargo dies by SIGPIPE, pipefail reports the pipe's death as the leg's verdict); fixed by
+capture-then-read, the pattern now named in the script's comment. A second authoring slip:
+editing the script while a run was in flight — bash reads scripts incrementally and hit
+the shifted bytes; the honest rerun was clean. The verdict ladder (passed / incomplete /
+failed) carries 6 self-test arms. The record is plain-atom portability.sexp, and .9's
+release report is the gate that must carry the x86-64 leg's absence. Drift owned: the
+model book's bench-arm count went stale across two leaves (44 → 53); fixed, and the fix
+is noted here because the book is the review surface.
+
+Lesson: `promotion: declined` (the SIGPIPE rule lives in the instrument's comment; the
+self-test enforces the verdict ladder).
+
 ## _(2026-09-30)_ — mid-execution snapshots (P2-SCALAR.7)
 
 The design question was completeness, and the answer was already pinned: state.sexp's

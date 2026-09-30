@@ -666,3 +666,36 @@ this file. Archived design sections, verbatim:
     USAGE; the book (the model book's evidence chapter — replay now covers mid-execution,
     not only cold reset); `G?-REPORT.md` regenerate. No guest corpus change;
     `EXERCISE-COVERAGE` untouched.
+
+  Design (recorded before code, `2026-09-30` — the availability facts are this session's
+  probes, quoted):
+  - **The four legs.** (1) NATIVE AARCH64: `cargo test --all` on this host (the commit
+    gate's own run) PLUS the offline fixture digest manifest — every tracked guest's
+    (trace, crossing log) hashed by the instrument; the manifest is what the second host
+    must reproduce BYTE-IDENTICALLY. (2) NATIVE X86-64: **measured UNAVAILABLE on this
+    host** — `arch -x86_64 /usr/bin/true` → `Bad CPU type in executable` (Rosetta
+    absent); no `qemu-x86_64` user-mode runner exists (`qemu-system-x86_64` is a
+    full-system emulator; a guest-OS VM is infrastructure, not a probe). Per the
+    acceptance, this leg reads UNMET and the profile stays experimental — the verdict is
+    recorded, not waived. (3) MIRI: measured present — `miri 0.1.0 (809936eac6
+    2026-09-12)` on `nightly-aarch64-apple-darwin`; `cargo +nightly miri test -p
+    semulith-core` GREEN 65/65 (interpreted). (4) CROSS-ENDIAN: the same 65 suites under
+    Miri on `powerpc64-unknown-linux-gnu` (big-endian) — GREEN 65/65, measured. The
+    selected scope is `semulith-core` exactly: the semantics data, the evaluator, the
+    state, the decode — the pure-Rust model surface. The one `unsafe` island
+    (`bench.rs`'s counting allocator, RUST-03's instrument) is EXCLUDED by name: it is
+    harness instrumentation the model never executes semantically through, and Miri's
+    value is on the model's own unsafe-free claim.
+  - **The instrument:** `scripts/check_portability.sh` — runs each leg, prints per-leg
+    verdicts, and ends with one honest line: `passed` only when all four legs ran green;
+    `incomplete` naming each mandatory-but-unavailable leg (infrastructure absence is
+    not a failure and not a pass); `failed` when a runnable leg fails. ⛔ NOT a commit
+    gate (it needs the nightly toolchain and measures the host — the
+    `fetch_references.sh` standing). Self-test arms over synthetic leg outcomes.
+  - **The record:** `profiles/rv64i-lab-v0/portability.sexp` — a plain-atom record in
+    `baseline.sexp`'s shape (no new schema family): the host facts, the tool pins, the
+    per-leg verdicts, the digest manifest, and the re-derive command. `.9`'s release
+    report reads it.
+  - **Cascades:** the instrument + its self-test; the record; the leaf; the book
+    (claim-scope's portability row, the model book's evidence chapter); LIVE_STATUS. No
+    guest/ceiling movement (one new file under `profiles/`, inside the reviewed 120).

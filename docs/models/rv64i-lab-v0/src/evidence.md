@@ -62,8 +62,14 @@ re-derivable by the command named beside it.
   registers + pc + memory is ALL the pending state this profile has; nothing else is
   offered. Try it: `semulith snapshot <elf> --at N > snap.json && semulith resume snap.json`.
 - **Portability.** The workspace compiles for `wasm32-unknown-unknown` on every commit
-  (`PORT-WEB`), and the browser bench runs the same engine headlessly (44 arms: 40 clean
-  guests, 3 trace-level mutants, the census arm).
+  (`PORT-WEB`), and the browser bench runs the same engine headlessly (53 arms: 49 clean
+  guests, 3 trace-level mutants, the census arm). The native matrix (`P2-SCALAR.8`,
+  recorded in `profiles/rv64i-lab-v0/portability.sexp`): aarch64 green (the commit
+  gate's own run + the digest manifest any second host must reproduce byte-identically),
+  Miri green 65/65 interpreted, big-endian powerpc64 green 65/65 under Miri — and the
+  mandatory x86-64 leg measured **unavailable** on the recording host (no Rosetta), so
+  the profile honestly stays experimental: the verdict is `incomplete`, not waived
+  (`bash scripts/check_portability.sh` re-derives it).
 - **Performance.** A baseline is recorded as data on one named host
   (`profiles/rv64i-lab-v0/baseline.sexp`), with its noise — and **no thresholds** (RUST-04:
   the noise table exists so a future threshold can be set from it; none is set). One host's

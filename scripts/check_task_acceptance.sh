@@ -119,8 +119,14 @@ grep -E "$code_re" "$tmp/staged.txt" > "$tmp/code.txt" 2>/dev/null || true
 # treating it as a leaf makes the doctrine block every commit that edits the template. Found by
 # this check refusing its own commit: a FALSE POSITIVE, unlike the two refusals before it, which
 # were correct. The same exclusion exists in the layer-C check in this repo (INDEX/TEMPLATE).
+# ⛔ docs/tasks/archive/ holds completed leaves' ARCHIVED evidence (checklists moved out of the
+# live tree under the per-part ceiling) — storage, not leaves. The checklists archive carries
+# the boxes (and passes); the designs archive legitimately carries none. Measured as a false
+# positive at SEMULITH-PS-0077: a code commit that co-staged the designs archive was refused
+# for boxes the archive never owned. The owning leaf file is staged in the same commit and IS
+# checked.
 grep -E '^docs/tasks/.*\.md$' "$tmp/staged.txt" | grep -vE '(^|/)TEMPLATE\.md$' \
-  > "$tmp/leaves.txt" 2>/dev/null || true
+  | grep -vE '^docs/tasks/archive/' > "$tmp/leaves.txt" 2>/dev/null || true
 if [ ! -s "$tmp/leaves.txt" ]; then
   {
     echo "TASK-ACCEPTANCE: a CODE change is staged but NO owning task-tree leaf (docs/tasks/*.md) is."
