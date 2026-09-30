@@ -320,8 +320,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   design record; no instrument fired because none needed to)`.
 
 - ID: `P2-SCALAR.7` — **snapshot and replay for implemented boundaries** — `G-REPLAY`
-  Status: `active` (`2026-09-30` — design recorded before code; the pending-state census
-  is already measured by `state.sexp`)
+  Status: `done` (`2026-09-30` — the snapshot mechanism and its proof suite landed)
   Goal: demonstrate replay only for the state boundaries actually implemented.
   Acceptance: a mid-execution snapshot captures all future-relevant pending state or is not offered at all.
   Design (recorded before code, `2026-09-30`):
@@ -361,6 +360,27 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
     USAGE; the book (the model book's evidence chapter — replay now covers mid-execution,
     not only cold reset); `G?-REPORT.md` regenerate. No guest corpus change;
     `EXERCISE-COVERAGE` untouched.
+  Result: met, `2026-09-30`. **Mid-execution replay is proven for the boundaries this
+  profile implements — and only those.** `semulith-verify::snapshot` records the
+  definition-identity pins (the bundle's own check, extracted and shared), the region,
+  the entry, the step index, the register file + pc, and the memory sparse-encoded and
+  digested; `resume` refuses by name a foreign definition, a corrupted/dropped/dropped
+  run, an incoherent step index, an overrunning run, a partial register file, and a
+  mutant model (not offered). The proof suite splits EVERY tracked guest's run at three
+  points (early/middle/penultimate) through the JSON round-trip: resumed continuations
+  are identical — steps AND crossing logs — 49 guests × 3 points. The load-bearing cases
+  are the memory-state guests (`dir-memwalk`, `dir-chase`): their future behavior lives
+  in memory, so a snapshot that silently dropped memory content fails there. The CLI
+  mirrors bundle/replay: `semulith snapshot <elf> --at N` / `semulith resume <file>`
+  (measured end-to-end on `dir-memwalk.elf`: resumed from step 13, the continuation walks
+  the copy loop exactly). The runner gained `run_state[_over]` (the state-returning
+  form); `FlatMemory` gained `bytes_mut` for the resume's rebuild. One in-flight RED, the
+  author's own test arithmetic: the overrun arm assumed a 48-byte run where the sparse
+  encoding splits at zero bytes (the image's first run is ONE byte — the tampered offset
+  fit); fixed by targeting one-past-the-end, an honest test defect, no production change.
+  175 → 180 verify suites (+5 snapshot suites).
+  Lessons: `promotion: declined (the sparse-encoding's zero-split behavior is recorded in
+  the suite's own comment where it bites; no card)`.
 
 - ID: `P2-SCALAR.8` — **portability matrix** — `G-PORTABILITY`
   Status: `pending`
@@ -376,7 +396,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.7` | `pending` | `.6` DONE `2026-09-30` (the census: exactly one divergence — `DIFF-FENCEI-EXECUTED`; `min-fencei` retains it, reproducing the divergence at step 0). Snapshot and replay for implemented boundaries (`G-REPLAY`) is next — the replay machinery exists from `P1-LAB.10`; the leaf proves it for the state boundaries actually implemented |
+| 1 | `P2-SCALAR.8` | `pending` | `.6` DONE `2026-09-30` (the census: exactly one divergence — `DIFF-FENCEI-EXECUTED`; `min-fencei` retains it, reproducing the divergence at step 0). Snapshots landed (`SEMULITH-PS-0075`: every guest resumes identically mid-execution; only the implemented boundaries are offered). The portability matrix (`.8`, `G-PORTABILITY`) is next — its two native hosts are MANDATORY: x86-64 availability on this arm64 host is the open measurement |
 
 ## Decisions
 
@@ -529,71 +549,75 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   the fix three-way (`never_written x5`), the mutation matchers were re-derived for the
   new tree shape, and the whole 32-guest corpus re-proves the success path.
 
-## Acceptance Checklist (leaf P2-SCALAR.6)
+## Acceptance Checklist (leaf P2-SCALAR.7)
 
-- [x] **REPRODUCE / ISSUE** — the leaf's premise was measured, not assumed: the census
-  over every `references.sexp` difference record and all four corpora (48 guests /
-  642 steps, ACT4 51/51 / 17,017 slots, the offline differential, the mutation suite)
-  found exactly ONE model-vs-references behavioral divergence — `DIFF-FENCEI-EXECUTED`,
-  pinned since `.4`. Every other difference dispositioned with its citation (the design
-  block above carries the per-record dispositions).
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect: the divergence is the legitimate
-  UNSPECIFIED case (the profile declares Zifencei absent; both references execute
-  fence.i anyway — a platform-legitimate difference the reserved-instruction note
-  permits). WHY no minimization machinery: `it-fencei`'s three words reduce to one
-  because the prefix/marker exist to show agreement AROUND the divergence, not to
-  reproduce it; the divergence itself is the first step. The census, re-derivable:
+- [x] **REPRODUCE / ISSUE** — the acceptance's completeness question was answered from the
+  pinned dossier, not assumed: `state.sexp`'s hidden-state census measured all seven
+  candidates absent, so "all future-relevant pending state" for this profile is exactly
+  registers + pc + memory:
 
   ```
-  $ grep -o 'DIFF-[A-Z-]*' profiles/rv64i-lab-v0/references.sexp | sort -u | wc -l
-  8        # the census's denominator: eight recorded differences
-  $ grep -c 'expect_divergence' profiles/rv64i-lab-v0/guests/*.expected.sexp | grep -v ':0'
-  profiles/rv64i-lab-v0/guests/it-fencei.expected.sexp:2
-  profiles/rv64i-lab-v0/guests/min-fencei.expected.sexp:1   # the one divergence's pins
+  $ grep -c 'present false' profiles/rv64i-lab-v0/state.sexp
+  7        # the seven hidden-state candidates, each measured absent
   ```
 
-- [x] **FIX** — the minimized case retained as tracked evidence: `guests/min-fencei.s`
-  (one word) + its expectation document (`expect_divergence` at step 0), the full wiring
-  (generator tuple, one suite, the census arm, the smoke tuple, the matrix cell), and the
-  difference record naming the retained case. No mask widened; no expectation edited
-  (`EVD-05`/`AI-05` — the census found no discrepancy tempting either).
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf is a capability proof. WHY the
+  proof's load-bearing cases are the memory-state guests: a register+pc-only snapshot of
+  `dir-memwalk` or `dir-chase` mid-run would resume into a wrong continuation — their
+  future behavior lives in MEMORY — so those guests are where a silent state drop would
+  surface. Measured, not argued:
+
+  ```
+  $ semulith run dir-memwalk.elf --steps=13 --trace-stores | grep -c '^mem\['
+  4        # stores before the split — the walk's continuation depends on memory content
+  $ semulith snapshot dir-memwalk.elf --at=13 --steps=37 | grep -o '"offset"' | wc -l
+  19       # the snapshot record carries 19 memory runs — the pending state, measured
+  ```
+
+  WHERE the completeness claim lives: the census, gated, not this leaf's prose.
+
+- [x] **FIX** — `semulith-verify::snapshot` (capture/resume, JSON both ways, the sparse
+  digested memory encoding, the shared definition-pin check), `run_state[_over]` (the
+  state-returning runner form), `FlatMemory::bytes_mut`, the CLI's `snapshot`/`resume`
+  commands, and the five-suite proof.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
   $ cargo test -p semulith-verify
-  test result: ok. 175 passed; 0 failed   (+1 guest suite)
-  $ python3 scripts/run_semulith_smoke.py
-  …min-fencei: EXPECTED DIVERGENCE at aligned step 0 (DIFF-FENCEI-EXECUTED) vs EACH
-    reference — semulith trap=(2, 0x100F), reference trap=None; sail vs spike AGREE
-    over their full 2 steps (the nop, then the measured run-off-the-end illegal word)…
-  run_semulith_smoke: ok
+  test result: ok. 180 passed; 0 failed   (+5 snapshot suites)
+    every_guest_resumes_identically_from_a_mid_execution_snapshot … ok
+      (49 guests x 3 split points, steps AND crossing logs identical through the
+       JSON round-trip)
+    a_corrupted_memory_run_is_refused_by_its_digest … ok
+    a_foreign_definition_is_refused_by_name … ok
+    incoherent_and_overrunning_records_are_refused … ok
+  $ cargo run -q -p semulith-cli -- snapshot target/refs/guests/dir-memwalk.elf \
+      --at=13 --steps=37 > snap.json && cargo run -q -p semulith-cli -- resume snap.json
+  resume: 24 continuation step(s) from step 13, stop Trap
   ```
 
-- [x] **NO REGRESSION** — the guard set re-run, green; no instrument needed to change
-  (the protocol, the adapters and the run-off-the-end shape all predated the leaf):
+- [x] **NO REGRESSION** — the guard set re-run, green; the one RED in flight was the
+  author's own test arithmetic (the sparse encoding splits at zero bytes, so the first
+  run is one byte — the overrun tamper target was re-aimed one-past-the-end), no
+  production change:
 
   ```
-  $ make check            # 175 verify suites, 65 core suites, clippy -D warnings, fmt
+  $ make check            # 180 verify suites, 65 core suites, clippy -D warnings, fmt
   $ make gate             # all doctrines green
-  $ make bench && node scripts/smoke_bench.js   # 53 arms — 49 clean guests
-  $ bash scripts/check_exercise_coverage.sh     # 52/52 (no new form)
-  $ bash scripts/check_interaction_matrix.sh [--self-test]   # no orphans; 12/0
-  $ python3 scripts/compare_traces.py --self-test            # 19/0
   $ make book             # both books render
   ```
 
-- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 6/9),
-  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.7`), this tree, the
-  book (`plan/p2.md` carries the result), `references.sexp` (the difference record names
-  `min-fencei`), the regenerated fragments and both `G?-REPORT.md`.
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 7/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.8`), this tree, the
+  book (`plan/p2.md` carries the result; the model book's restart axis gained the
+  snapshot half), the archive movements.
 
-## Acceptance Checklists (leaves P2-SCALAR.1–.4, and `.5` — all done)
+## Acceptance Checklists (leaves P2-SCALAR.1–.6 — all done)
 
-Archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling) — `.4`'s
-joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design, and `.5`'s
-(strand 1's) followed when the leaf closed the same day.
+Archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling). `.6`'s joined
+when `.7`'s landed the same day; the archive split into checklists + designs files when
+the combined archive crossed the same ceiling.
 
 ## Verification Log
 
@@ -644,6 +668,10 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design, and 
 | `2026-09-30` | `P2-SCALAR.6` | `cargo test -p semulith-verify` + the live smoke's four-step protocol | 175 passed / 0 failed (+1 guest suite); `min-fencei`: EXPECTED DIVERGENCE at aligned step 0 vs EACH reference, sail vs spike AGREE over 2, byte-identical reproduction |
 | `2026-09-30` | `P2-SCALAR.6` | `make check`, `make gate`, bench + smoke-bench, coverage/matrix/comparator self-tests, `make book` | rc=0; all doctrines green; 53 bench arms (49 clean guests); 52/52; both books render |
 | `2026-09-30` | `P2-SCALAR.7` | the pending-state census source | `state.sexp`'s hidden-state census: all seven candidates measured absent — a complete snapshot for this profile is exactly registers + pc + memory (the census's own consequence sentence says so) |
+| `2026-09-30` | `P2-SCALAR.7` | `cargo test -p semulith-verify` (the proof suite) | 180 passed / 0 failed (+5 snapshot suites): every guest × 3 split points identical through the JSON round-trip, steps AND crossing logs; the three RED arms refuse by name (digest, definition pin, structural) |
+| `2026-09-30` | `P2-SCALAR.7` | the CLI end-to-end (`dir-memwalk.elf`) | `snapshot --at 13 --steps 37` then `resume`: 24 continuation steps from step 13, stop Trap — the walk continues exactly |
+| `2026-09-30` | `P2-SCALAR.7` | authoring RED | the overrun test arm assumed a 48-byte first run; the sparse encoding splits at zero bytes (the image's first run is one byte) — test arithmetic, fixed by targeting one-past-the-end |
+| `2026-09-30` | `P2-SCALAR.7` | `make check`, `make gate`, `make book` | rc=0; all doctrines green; both books render |
 
 ## Commit Log
 
@@ -655,7 +683,7 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design, and 
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
 | `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first), `SEMULITH-PS-0070` (strand 3: the eight directed guests — **`.5` DONE**) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 | `P2-SCALAR.6` | `SEMULITH-PS-0071` (design, before code — the census measured first), `SEMULITH-PS-0072` (the minimized case retained — the leaf DONE) | one model-vs-references divergence exists (`DIFF-FENCEI-EXECUTED`); `min-fencei` (one word) reproduces it under the expected-divergence protocol at step 0; no mask widened, no expectation edited |
-| `P2-SCALAR.7` | `SEMULITH-PS-0074` (design, before code) | mid-execution snapshots: the pending-state census is the pinned dossier's own (registers + pc + memory, all seven hidden-state candidates measured absent); the proof suite's load-bearing cases are the memory-state guests |
+| `P2-SCALAR.7` | `SEMULITH-PS-0074` (design, before code), `SEMULITH-PS-0075` (the mechanism + the proof suite — the leaf DONE) | mid-execution snapshots: the pending-state census is the pinned dossier's own (registers + pc + memory, all seven hidden-state candidates measured absent); the proof suite's load-bearing cases are the memory-state guests; landed: 49 guests × 3 split points identical through the JSON round-trip, RED arms refuse by name, CLI `snapshot`/`resume` |
 
 ## Changelog
 

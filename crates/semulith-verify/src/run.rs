@@ -135,7 +135,47 @@ pub fn run_over(
     budget: usize,
     insns: &[InsnDef],
 ) -> (Trace, Vec<Crossing>) {
-    let mut state = ArchitecturalState::zeroed_at(entry);
+    let (trace, crossings, _) =
+        run_state_over(env, ArchitecturalState::zeroed_at(entry), budget, insns);
+    (trace, crossings)
+}
+
+/// [`run_state_over`] over the generated definition — the snapshot resume's path
+/// (`P2-SCALAR.7`): the run continues from a caller-supplied state instead of cold reset.
+#[must_use]
+pub fn run_from(
+    env: &mut impl Environment,
+    state: ArchitecturalState,
+    budget: usize,
+) -> (Trace, Vec<Crossing>) {
+    let (trace, crossings, _) =
+        run_state_over(env, state, budget, semulith_core::definition::INSNS);
+    (trace, crossings)
+}
+
+/// The state-returning form (`P2-SCALAR.7`): the trace, the crossings, and the
+/// architectural state the run ended in — what a snapshot captures mid-run.
+#[must_use]
+pub fn run_state(
+    env: &mut impl Environment,
+    state: ArchitecturalState,
+    budget: usize,
+) -> (Trace, Vec<Crossing>, ArchitecturalState) {
+    run_state_over(env, state, budget, semulith_core::definition::INSNS)
+}
+
+/// Drives `exec::step_over` from a caller-supplied initial state. The loop is
+/// [`run_over`]'s, unchanged — only the starting state differs: cold reset zeroes the
+/// register file at the entry; a resume trusts the recorded state (the snapshot's own
+/// identity and digest checks are what make that trust earned).
+#[must_use]
+pub fn run_state_over(
+    env: &mut impl Environment,
+    state: ArchitecturalState,
+    budget: usize,
+    insns: &[InsnDef],
+) -> (Trace, Vec<Crossing>, ArchitecturalState) {
+    let mut state = state;
     let mut crossings = Vec::new();
     let mut steps = Vec::new();
     loop {
@@ -146,6 +186,7 @@ pub fn run_over(
                     stop: Stop::Budget,
                 },
                 crossings,
+                state,
             );
         }
         let crossing_env = &mut *env;
@@ -178,6 +219,7 @@ pub fn run_over(
                     stop: Stop::FetchFault { at: pc },
                 },
                 crossings,
+                state,
             );
         }
         let word = recorded_word(&recorded, pc);
@@ -203,6 +245,7 @@ pub fn run_over(
                         stop: Stop::Trap,
                     },
                     crossings,
+                    state,
                 );
             }
             StepOutcome::Undefined(case) => {
@@ -229,6 +272,7 @@ pub fn run_over(
                         stop: Stop::Undefined(case),
                     },
                     crossings,
+                    state,
                 );
             }
             StepOutcome::Failed(error) => {
@@ -238,6 +282,7 @@ pub fn run_over(
                         stop: Stop::Failed(error),
                     },
                     crossings,
+                    state,
                 );
             }
         }

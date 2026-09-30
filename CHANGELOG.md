@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0075 (leaf P2-SCALAR.7) — mid-execution snapshots: replay proven for the implemented boundaries
+
+- `semulith-verify::snapshot` + the CLI pair `snapshot`/`resume`: the record carries the
+  definition-identity pins (the bundle's own pin check, extracted and shared), the region,
+  entry, step index, the register file + pc, and the memory sparse-encoded and digested.
+  The completeness claim is the pinned hidden-state census: registers + pc + memory is ALL
+  the pending state this profile has — anything more is not offered (the acceptance's
+  second arm).
+- The proof: every tracked guest split at three points (early/middle/penultimate), resumed
+  through the JSON round-trip, continuations identical — steps AND crossing logs. RED
+  arms: corrupted run (digest), foreign definition (pin), incoherent/overrunning/partial
+  records — each refused by name. 175 → 180 verify suites.
+- One in-flight RED, the author's test arithmetic: the sparse encoding splits at zero
+  bytes (the first run is one byte), so the overrun tamper needed one-past-the-end.
+- CLI measured end-to-end: `dir-memwalk.elf` snapshotted at step 13 resumes the copy loop
+  exactly (24 continuation steps, stop Trap).
+
 ## SEMULITH-PS-0074 (leaf P2-SCALAR.7, design) — mid-execution snapshots, designed on the pinned census
 
 - The design's pending-state census is not new work but the pinned dossier's own:

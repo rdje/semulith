@@ -73,6 +73,13 @@ impl FlatMemory {
         &self.bytes
     }
 
+    /// Mutable byte view — the snapshot resume path (`P2-SCALAR.7`) rebuilds a region
+    /// from a recorded sparse encoding. The writer must keep the region's length
+    /// invariant; the digest check catches a content mismatch by name.
+    pub fn bytes_mut(&mut self) -> &mut [u8] {
+        &mut self.bytes
+    }
+
     fn contains(&self, addr: u64, width: AccessWidth) -> bool {
         // u128 arithmetic: exact end computation, no wrap fuzz (a declared region is a
         // plain range; an access spanning the address-space wrap is outside every region

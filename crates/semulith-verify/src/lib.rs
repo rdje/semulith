@@ -39,5 +39,6 @@ pub mod report;
 pub mod run;
 pub mod schema;
 pub mod sha256;
+pub mod snapshot;
 #[cfg(target_arch = "wasm32")]
 pub mod wasm;

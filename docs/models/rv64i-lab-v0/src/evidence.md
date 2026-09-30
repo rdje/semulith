@@ -51,10 +51,16 @@ re-derivable by the command named beside it.
   expectations*: ACT computes its expected results with a configured Sail model, so
   agreement here is one semantics answering twice (EVD-04) — valuable because somebody
   else chose the tests, never as a second opinion.
-- **Restart.** Restartability is determinism of re-execution from cold reset, measured two
-  ways: the smoke's reproduce leg (every guest re-run byte-identically) and the offline
-  determinism suite (every guest run twice from `zeroed_at(entry)`, identical traces and
-  crossing logs).
+- **Restart.** Restartability is determinism of re-execution, measured three ways: the
+  smoke's reproduce leg (every guest re-run byte-identically), the offline determinism
+  suite (every guest twice from `zeroed_at(entry)`, identical traces and crossing logs),
+  and **mid-execution snapshots** (`P2-SCALAR.7`): every guest's run is split at three
+  points — the state recorded as a digested, definition-pinned snapshot record, resumed
+  through the JSON round-trip, and the continuation proven identical *including the
+  crossing logs* — with RED arms proving corrupted, foreign-definition and incoherent
+  records are refused by name. The completeness claim is the pinned hidden-state census:
+  registers + pc + memory is ALL the pending state this profile has; nothing else is
+  offered. Try it: `semulith snapshot <elf> --at N > snap.json && semulith resume snap.json`.
 - **Portability.** The workspace compiles for `wasm32-unknown-unknown` on every commit
   (`PORT-WEB`), and the browser bench runs the same engine headlessly (44 arms: 40 clean
   guests, 3 trace-level mutants, the census arm).

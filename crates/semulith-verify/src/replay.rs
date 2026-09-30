@@ -198,51 +198,7 @@ impl Bundle {
     /// Identity before execution: definition pins against the live manifest, then the
     /// image digest against the bundle's own words.
     fn check_identity(&self) -> Result<(), String> {
-        let alg = &self.algorithm;
-        if alg.profile != MANIFEST.profile {
-            return Err(format!(
-                "definition pin mismatch: the bundle records profile '{}', this build's definition is '{}'",
-                alg.profile, MANIFEST.profile
-            ));
-        }
-        if alg.ilen != MANIFEST.ilen {
-            return Err(format!(
-                "definition pin mismatch: the bundle records ilen {}, this build's definition carries {}",
-                alg.ilen, MANIFEST.ilen
-            ));
-        }
-        if alg.generator.0 != MANIFEST.generator.name
-            || alg.generator.1 != MANIFEST.generator.sha256
-        {
-            return Err(format!(
-                "definition pin mismatch: the bundle records generator '{}' (sha256 {}), this build's definition carries '{}' (sha256 {})",
-                alg.generator.0, alg.generator.1, MANIFEST.generator.name, MANIFEST.generator.sha256
-            ));
-        }
-        for (path, sha) in &alg.inputs {
-            match MANIFEST.inputs.iter().find(|pin| pin.path == path) {
-                Some(pin) if pin.sha256 == *sha => {}
-                Some(pin) => {
-                    return Err(format!(
-                        "definition pin mismatch: input '{path}' is pinned to sha256 {sha} in the bundle but {sha_pin} in this build's definition",
-                        sha_pin = pin.sha256
-                    ));
-                }
-                None => {
-                    return Err(format!(
-                        "definition pin mismatch: the bundle pins input '{path}', which this build's definition does not carry"
-                    ));
-                }
-            }
-        }
-        for pin in MANIFEST.inputs {
-            if !alg.inputs.iter().any(|(path, _)| path == pin.path) {
-                return Err(format!(
-                    "definition pin mismatch: this build's definition pins input '{}', which the bundle does not carry",
-                    pin.path
-                ));
-            }
-        }
+        check_definition_pins(&self.algorithm)?;
         let digest = sha256_hex(&image_bytes(&self.image.words));
         if digest != self.image.sha256 {
             return Err(format!(
@@ -310,6 +266,56 @@ impl Bundle {
     }
 }
 
+/// The definition-pin half of the identity check, shared with `snapshot` (`P2-SCALAR.7`):
+/// a recorded run or state is replayable only against the definition it was recorded
+/// against — every pin mismatch refuses by name. (The bundle's image-digest leg is the
+/// bundle's own; a snapshot guards its memory by its own digest.)
+pub(crate) fn check_definition_pins(alg: &Algorithm) -> Result<(), String> {
+    if alg.profile != MANIFEST.profile {
+        return Err(format!(
+            "definition pin mismatch: the record holds profile '{}', this build's definition is '{}'",
+            alg.profile, MANIFEST.profile
+        ));
+    }
+    if alg.ilen != MANIFEST.ilen {
+        return Err(format!(
+            "definition pin mismatch: the record holds ilen {}, this build's definition carries {}",
+            alg.ilen, MANIFEST.ilen
+        ));
+    }
+    if alg.generator.0 != MANIFEST.generator.name || alg.generator.1 != MANIFEST.generator.sha256 {
+        return Err(format!(
+            "definition pin mismatch: the record holds generator '{}' (sha256 {}), this build's definition carries '{}' (sha256 {})",
+            alg.generator.0, alg.generator.1, MANIFEST.generator.name, MANIFEST.generator.sha256
+        ));
+    }
+    for (path, sha) in &alg.inputs {
+        match MANIFEST.inputs.iter().find(|pin| pin.path == path) {
+            Some(pin) if pin.sha256 == *sha => {}
+            Some(pin) => {
+                return Err(format!(
+                    "definition pin mismatch: input '{path}' is pinned to sha256 {sha} in the record but {sha_pin} in this build's definition",
+                    sha_pin = pin.sha256
+                ));
+            }
+            None => {
+                return Err(format!(
+                    "definition pin mismatch: the record pins input '{path}', which this build's definition does not carry"
+                ));
+            }
+        }
+    }
+    for pin in MANIFEST.inputs {
+        if !alg.inputs.iter().any(|(path, _)| path == pin.path) {
+            return Err(format!(
+                "definition pin mismatch: this build's definition pins input '{}', which the record does not carry",
+                pin.path
+            ));
+        }
+    }
+    Ok(())
+}
+
 /// The outcome of re-deriving a recorded result.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Replay {
@@ -349,7 +355,7 @@ pub(crate) fn image_bytes(words: &[u32]) -> Vec<u8> {
     bytes
 }
 
-fn algorithm_for(model: &str) -> Algorithm {
+pub(crate) fn algorithm_for(model: &str) -> Algorithm {
     Algorithm {
         harness: concat!("semulith-verify ", env!("CARGO_PKG_VERSION")).to_string(),
         model: model.to_string(),
@@ -369,7 +375,12 @@ fn algorithm_for(model: &str) -> Algorithm {
 
 /// The image must lie inside the declared region: a replay that fetches outside the
 /// recorded platform is a different experiment.
-fn check_layout(base: u64, size: u64, entry: u64, image_len: usize) -> Result<(), String> {
+pub(crate) fn check_layout(
+    base: u64,
+    size: u64,
+    entry: u64,
+    image_len: usize,
+) -> Result<(), String> {
     let top = base
         .checked_add(size)
         .ok_or("the declared region wraps the address space")?;
@@ -389,11 +400,11 @@ fn check_layout(base: u64, size: u64, entry: u64, image_len: usize) -> Result<()
     Ok(())
 }
 
-fn push_hex64(out: &mut String, value: u64) {
+pub(crate) fn push_hex64(out: &mut String, value: u64) {
     out.push_str(&format!("0x{value:016x}"));
 }
 
-fn push_algorithm(out: &mut String, alg: &Algorithm) {
+pub(crate) fn push_algorithm(out: &mut String, alg: &Algorithm) {
     out.push_str("{\"harness\":\"");
     push_escaped(out, &alg.harness);
     out.push_str("\",\"model\":\"");
@@ -478,7 +489,11 @@ fn push_recorded(out: &mut String, recorded: &Recorded) {
     out.push_str("]}");
 }
 
-fn need<'a>(obj: &'a [(String, Json)], key: &str, what: &str) -> Result<&'a Json, String> {
+pub(crate) fn need<'a>(
+    obj: &'a [(String, Json)],
+    key: &str,
+    what: &str,
+) -> Result<&'a Json, String> {
     obj.iter()
         .rev()
         .find(|(k, _)| k == key)
@@ -486,7 +501,7 @@ fn need<'a>(obj: &'a [(String, Json)], key: &str, what: &str) -> Result<&'a Json
         .ok_or_else(|| format!("{what}: missing '{key}' — a bare seed is not a bundle"))
 }
 
-fn hex_u64(node: &Json, what: &str) -> Result<u64, String> {
+pub(crate) fn hex_u64(node: &Json, what: &str) -> Result<u64, String> {
     let text = node
         .as_str()
         .ok_or_else(|| format!("{what}: wants a 0x-prefixed hex string"))?;
@@ -506,7 +521,7 @@ fn hex_u8(node: &Json, what: &str) -> Result<u8, String> {
     u8::try_from(value).map_err(|_| format!("{what}: '{value:#x} does not fit 8 bits"))
 }
 
-fn int_usize(node: &Json, what: &str) -> Result<usize, String> {
+pub(crate) fn int_usize(node: &Json, what: &str) -> Result<usize, String> {
     match node {
         Json::Int(value) if *value >= 0 => usize::try_from(*value)
             .map_err(|_| format!("{what}: {value} does not fit this host's usize")),
@@ -514,7 +529,7 @@ fn int_usize(node: &Json, what: &str) -> Result<usize, String> {
     }
 }
 
-fn parse_algorithm(node: &Json) -> Result<Algorithm, String> {
+pub(crate) fn parse_algorithm(node: &Json) -> Result<Algorithm, String> {
     let obj = node.as_obj().ok_or("algorithm: wants an object")?;
     let harness = need(obj, "harness", "algorithm")?
         .as_str()

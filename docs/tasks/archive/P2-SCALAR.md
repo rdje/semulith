@@ -374,3 +374,63 @@ the active leaf's design and checklist, and both logs.
   the verdict it routed), the book (`claim-scope.md`,
   `annex/building-first-model.md`), the model book (`evidence.md`, `introduction.md`),
   and the regenerated `G1-REPORT.md`.
+
+## Acceptance Checklist (leaf P2-SCALAR.6)
+
+- [x] **REPRODUCE / ISSUE** — the leaf's premise was measured, not assumed: the census
+  over every `references.sexp` difference record and all four corpora (48 guests /
+  642 steps, ACT4 51/51 / 17,017 slots, the offline differential, the mutation suite)
+  found exactly ONE model-vs-references behavioral divergence — `DIFF-FENCEI-EXECUTED`,
+  pinned since `.4`. Every other difference dispositioned with its citation (the design
+  block above carries the per-record dispositions).
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect: the divergence is the legitimate
+  UNSPECIFIED case (the profile declares Zifencei absent; both references execute
+  fence.i anyway — a platform-legitimate difference the reserved-instruction note
+  permits). WHY no minimization machinery: `it-fencei`'s three words reduce to one
+  because the prefix/marker exist to show agreement AROUND the divergence, not to
+  reproduce it; the divergence itself is the first step. The census, re-derivable:
+
+  ```
+  $ grep -o 'DIFF-[A-Z-]*' profiles/rv64i-lab-v0/references.sexp | sort -u | wc -l
+  8        # the census's denominator: eight recorded differences
+  $ grep -c 'expect_divergence' profiles/rv64i-lab-v0/guests/*.expected.sexp | grep -v ':0'
+  profiles/rv64i-lab-v0/guests/it-fencei.expected.sexp:2
+  profiles/rv64i-lab-v0/guests/min-fencei.expected.sexp:1   # the one divergence's pins
+  ```
+
+- [x] **FIX** — the minimized case retained as tracked evidence: `guests/min-fencei.s`
+  (one word) + its expectation document (`expect_divergence` at step 0), the full wiring
+  (generator tuple, one suite, the census arm, the smoke tuple, the matrix cell), and the
+  difference record naming the retained case. No mask widened; no expectation edited
+  (`EVD-05`/`AI-05` — the census found no discrepancy tempting either).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify
+  test result: ok. 175 passed; 0 failed   (+1 guest suite)
+  $ python3 scripts/run_semulith_smoke.py
+  …min-fencei: EXPECTED DIVERGENCE at aligned step 0 (DIFF-FENCEI-EXECUTED) vs EACH
+    reference — semulith trap=(2, 0x100F), reference trap=None; sail vs spike AGREE
+    over their full 2 steps (the nop, then the measured run-off-the-end illegal word)…
+  run_semulith_smoke: ok
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; no instrument needed to change
+  (the protocol, the adapters and the run-off-the-end shape all predated the leaf):
+
+  ```
+  $ make check            # 175 verify suites, 65 core suites, clippy -D warnings, fmt
+  $ make gate             # all doctrines green
+  $ make bench && node scripts/smoke_bench.js   # 53 arms — 49 clean guests
+  $ bash scripts/check_exercise_coverage.sh     # 52/52 (no new form)
+  $ bash scripts/check_interaction_matrix.sh [--self-test]   # no orphans; 12/0
+  $ python3 scripts/compare_traces.py --self-test            # 19/0
+  $ make book             # both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 6/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.7`), this tree, the
+  book (`plan/p2.md` carries the result), `references.sexp` (the difference record names
+  `min-fencei`), the regenerated fragments and both `G?-REPORT.md`.

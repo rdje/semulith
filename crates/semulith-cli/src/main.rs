@@ -51,6 +51,18 @@
 //!   0 — minimized; 1 — the case has no first-divergence to retain (the census
 //!   class: a wrong behaviour observations cannot see); 2 — usage or an unknown
 //!   name.
+//! - `semulith snapshot <elf> --at N [--steps N] [--base ADDR] [--size BYTES]` —
+//!   record the mid-execution state after N steps as a JSON snapshot record
+//!   (`P2-SCALAR.7`, G-REPLAY's second half): the definition-identity pins, the
+//!   region, the register file and pc, and the memory content sparse-encoded and
+//!   digested. The pending-state census (`state.sexp`) measured every hidden-state
+//!   candidate absent, so those three ARE the whole pending state for this profile;
+//!   anything more is not offered. Exit codes: 0 — recorded; 2 — usage, unreadable
+//!   inputs, or the run ended before N.
+//! - `semulith resume <file.json>` — resume from a recorded snapshot: identity and
+//!   memory digest checked first (a mismatch refuses by name), then the continuation
+//!   runs and prints in the `run` trace format. Exit codes: 0 — resumed; 2 — usage,
+//!   unreadable input, or a record refused.
 //! - `semulith bench [--iterations N] [--reps R] [--warmup W]` — the performance
 //!   baseline (`P1-LAB.11`, RUST-04): run the four workload mixes (arithmetic,
 //!   control, memory, fault) in ARCHITECTURE §6's three modes (untraced,
@@ -80,6 +92,7 @@ use semulith_verify::replay::{Bundle as ReplayBundle, CaseSpec, Replay};
 use semulith_verify::report;
 use semulith_verify::run::Stop;
 use semulith_verify::schema;
+use semulith_verify::snapshot::Snapshot;
 
 const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
@@ -87,6 +100,8 @@ const USAGE: &str = "semulith — the laboratory control surface\n\
                      \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n\
                      \x20       semulith bundle --guest NAME [--mutate NAME]\n\
                      \x20       semulith replay <file.json>\n\
+                     \x20       semulith snapshot <elf> --at N [--steps N] [--base ADDR] [--size BYTES]\n\
+                     \x20       semulith resume <file.json>\n\
                      \x20       semulith reduce --guest NAME --mutate NAME\n\
                      \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n";
 
@@ -117,6 +132,8 @@ fn main() -> ExitCode {
         Some("demo") => demo(&args[1..]),
         Some("bundle") => bundle(&args[1..]),
         Some("replay") => replay(&args[1..]),
+        Some("snapshot") => snapshot_cmd(&args[1..]),
+        Some("resume") => resume_cmd(&args[1..]),
         Some("reduce") => reduce_cmd(&args[1..]),
         Some("bench") => bench_cmd(&args[1..]),
         _ => {
@@ -281,26 +298,7 @@ fn run_guest(args: &[String]) -> ExitCode {
         );
     }
     let (trace, crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
-    let mut out = String::new();
-    for (n, s) in trace.steps.iter().enumerate() {
-        match s.word {
-            Some(word) => {
-                let name = decode(word).map_or("<undecodable>", |insn| insn.name);
-                out.push_str(&format!(
-                    "[{n}] [M]: 0x{:016x} (0x{word:08x}) {name}\n",
-                    s.pc
-                ));
-            }
-            // The fetch-fault step: no word was fetched, so none is printed.
-            None => out.push_str(&format!("[{n}] [M]: 0x{:016x} (fetch fault)\n", s.pc)),
-        }
-        for (reg, value) in &s.writes {
-            out.push_str(&format!("x{reg} <- 0x{value:016x}\n"));
-        }
-        if let Some((cause, tval)) = s.trap {
-            out.push_str(&format!("trap cause=0x{cause:02x} tval=0x{tval:016x}\n"));
-        }
-    }
+    let mut out = format_steps(&trace.steps, 0);
     if trace_stores {
         // The store trace (P2-SCALAR.5 strand 2 — the ACT4 campaign's observation):
         // every successful data-store crossing, in execution order, spelled the way
@@ -491,6 +489,181 @@ fn bundle(args: &[String]) -> ExitCode {
         }
         Err(why) => {
             eprintln!("bundle: {why}");
+            ExitCode::from(2)
+        }
+    }
+}
+
+/// The one step-printing shape — the normalized observation vocabulary both `run` and
+/// `resume` print (`resume` continues the step numbering at the snapshot's index).
+fn format_steps(steps: &[semulith_verify::run::Step], first: usize) -> String {
+    let mut out = String::new();
+    for (i, s) in steps.iter().enumerate() {
+        let n = first + i;
+        match s.word {
+            Some(word) => {
+                let name = decode(word).map_or("<undecodable>", |insn| insn.name);
+                out.push_str(&format!(
+                    "[{n}] [M]: 0x{:016x} (0x{word:08x}) {name}\n",
+                    s.pc
+                ));
+            }
+            // The fetch-fault step: no word was fetched, so none is printed.
+            None => out.push_str(&format!("[{n}] [M]: 0x{:016x} (fetch fault)\n", s.pc)),
+        }
+        for (reg, value) in &s.writes {
+            out.push_str(&format!("x{reg} <- 0x{value:016x}\n"));
+        }
+        if let Some((cause, tval)) = s.trap {
+            out.push_str(&format!("trap cause=0x{cause:02x} tval=0x{tval:016x}\n"));
+        }
+    }
+    out
+}
+
+/// `semulith snapshot` — record the mid-execution state after `--at N` steps of a guest
+/// ELF as a JSON snapshot record on stdout (`P2-SCALAR.7`). The record carries the whole
+/// pending state this profile has — registers, pc, memory (the pinned hidden-state
+/// census admits nothing else) — plus the definition identity pins.
+fn snapshot_cmd(args: &[String]) -> ExitCode {
+    let mut elf_path: Option<&str> = None;
+    let mut steps = DEFAULT_STEPS;
+    let mut at: Option<usize> = None;
+    let mut base = DEFAULT_BASE;
+    let mut size = DEFAULT_SIZE;
+    for arg in args {
+        if let Some(n) = arg.strip_prefix("--steps=") {
+            steps = match n.parse() {
+                Ok(v) => v,
+                Err(_) => return usage("snapshot: --steps wants an integer"),
+            };
+        } else if let Some(n) = arg.strip_prefix("--at=") {
+            at = match n.parse() {
+                Ok(v) => Some(v),
+                Err(_) => return usage("snapshot: --at wants an integer"),
+            };
+        } else if let Some(v) = arg.strip_prefix("--base=") {
+            base = match parse_u64(v) {
+                Ok(v) => v,
+                Err(_) => return usage("snapshot: --base wants an address"),
+            };
+        } else if let Some(v) = arg.strip_prefix("--size=") {
+            size = match parse_u64(v) {
+                Ok(v) => v,
+                Err(_) => return usage("snapshot: --size wants a byte count"),
+            };
+        } else if arg.starts_with("--") {
+            return usage(&format!("snapshot: unknown option {arg}"));
+        } else if elf_path.is_none() {
+            elf_path = Some(arg);
+        } else {
+            return usage("snapshot: more than one ELF operand");
+        }
+    }
+    let Some(elf_path) = elf_path else {
+        return usage("snapshot: an ELF operand is required");
+    };
+    let Some(at) = at else {
+        return usage("snapshot: --at N is required — the snapshot point");
+    };
+    if at > steps {
+        return usage("snapshot: --at exceeds --steps — the run never reaches the point");
+    }
+    let bytes = match std::fs::read(elf_path) {
+        Ok(b) => b,
+        Err(e) => {
+            eprintln!("snapshot: cannot read {elf_path}: {e}");
+            return ExitCode::from(2);
+        }
+    };
+    let image = match elf::parse(&bytes) {
+        Ok(image) => image,
+        Err(why) => {
+            eprintln!("snapshot: {elf_path}: refused — {why}");
+            return ExitCode::from(2);
+        }
+    };
+    let Some(top) = base.checked_add(size) else {
+        eprintln!("snapshot: the region [{base:#018x}, +{size:#x}) wraps the address space");
+        return ExitCode::from(2);
+    };
+    let mut env = FlatMemory::new(base, size as usize);
+    for seg in &image.segments {
+        let seg_end = seg.paddr.saturating_add(seg.memsz);
+        if seg.paddr < base || seg_end > top {
+            eprintln!(
+                "snapshot: segment at {:#018x} ({} byte(s)) lies outside the declared region [{:#018x}, {:#018x})",
+                seg.paddr, seg.memsz, base, top
+            );
+            return ExitCode::from(2);
+        }
+        env.load_image(
+            (seg.paddr - base) as usize,
+            &bytes[seg.offset..seg.offset + seg.filesz],
+        );
+    }
+    let (trace, _crossings, state) = semulith_verify::run::run_state(
+        &mut env,
+        semulith_core::state::ArchitecturalState::zeroed_at(image.entry),
+        at,
+    );
+    if trace.steps.len() < at {
+        eprintln!(
+            "snapshot: the run ended at step {} ({:?}) before the snapshot point {at} —              there is no mid-execution state there",
+            trace.steps.len(),
+            trace.stop
+        );
+        return ExitCode::from(2);
+    }
+    let snap = Snapshot::capture(&env, &state, base, size, image.entry, at, steps);
+    println!("{}", snap.to_json());
+    ExitCode::from(0)
+}
+
+/// `semulith resume` — resume from a recorded snapshot: identity and memory digest
+/// checked first (a mismatch refuses by name, never a mis-replay), then the continuation
+/// runs and prints in the `run` trace format, numbered from the snapshot's step.
+fn resume_cmd(args: &[String]) -> ExitCode {
+    let mut file: Option<&str> = None;
+    for arg in args {
+        if arg.starts_with("--") {
+            return usage(&format!("resume: unknown option {arg}"));
+        } else if file.is_none() {
+            file = Some(arg);
+        } else {
+            return usage("resume: more than one operand");
+        }
+    }
+    let Some(file) = file else {
+        return usage("resume: a snapshot file is required");
+    };
+    let text = match std::fs::read_to_string(file) {
+        Ok(text) => text,
+        Err(e) => {
+            eprintln!("resume: cannot read {file}: {e}");
+            return ExitCode::from(2);
+        }
+    };
+    let snap = match Snapshot::parse(&text) {
+        Ok(snap) => snap,
+        Err(why) => {
+            eprintln!("resume: {file}: refused — {why}");
+            return ExitCode::from(2);
+        }
+    };
+    match snap.resume() {
+        Ok(resumed) => {
+            print!("{}", format_steps(&resumed.trace.steps, snap.at_step));
+            eprintln!(
+                "resume: {} continuation step(s) from step {}, stop {:?}",
+                resumed.trace.steps.len(),
+                snap.at_step,
+                resumed.trace.stop
+            );
+            ExitCode::from(0)
+        }
+        Err(why) => {
+            eprintln!("resume: {file}: refused — {why}");
             ExitCode::from(2)
         }
     }
