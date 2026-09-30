@@ -175,6 +175,28 @@ or claiming DSP compatibility.
   layer today, so the report can say where the work lives rather than merely that it
   exists.
 
+- ID: `DSP-REVIEW.8` — **the cross-vendor contrast** *(added `2026-09-30` — the channel's
+  same-day answer made it possible)*
+  Status: `done` (`2026-09-30`)
+  Goal: the same catalog questions over NXP DSP56300 and ADI SHARC — converting the TI
+    family's measured absences from possible DSP facts into measured TI facts.
+  Acceptance: every contrast carries both vendors' locators; a TI absence is never
+    restated as a DSP absence.
+  Result: met, `2026-09-30`. **The headline inversion, measured twice:** accumulators
+  with guard bits EXIST — DSP56300's two 56-bit A/B accumulators (`A2:A1:A0`, the 8-bit
+  extension in A2/B2, §3.1 p. 3-1/3-3) and SHARC's 80-bit MRF/MRB with the manual's own
+  word "guard bits" (§3, p. 3-13–3-15) — and bit-reversed addressing exists twice
+  (DSP56300's reverse-carry modifier, §4.5.2 p. 4-10; SHARC's BR0/BR8, §6 p. 6-25).
+  Plus three address-unit shapes (TI bytes / DSP56300's 24-bit words in P/X/Y spaces /
+  SHARC's width-varies-by-space words), two scalar execution models against TI's
+  packets (DSP56300's stalls-despite-"invisible" pipeline with non-interruptible REP;
+  SHARC's FIVE-STAGE INTERLOCKED pipeline — the printed negation of TI's "eliminating
+  pipeline interlocks"), three alignment rules for circular buffers, and three sticky-
+  flag/latch models. **So the `.4` break is TI-family-shaped, not DSP-shaped** — the
+  report classifies accordingly. Evidence:
+  [`artifacts/dsp-review/2026-09-30-cross-vendor.md`](artifacts/dsp-review/2026-09-30-cross-vendor.md).
+  Lessons: `promotion: declined (the inversion table lives in the evidence document where `.7` meets it)`.
+
 - ID: `DSP-REVIEW.7` — **interface findings report**
   Status: `pending`
   Goal: the classified list of required abstraction changes, with cost, feeding `P3-BREADTH`.
@@ -208,7 +230,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.7` | `pending` | `.6` done `2026-09-30` — the synthetic fixture measures the boundary (all four shapes refuse by name, pinned). `.7` is the interface findings report (the classified list for P3-BREADTH) |
+| 1 | `DSP-REVIEW.7` | `pending` | `.8` done `2026-09-30` — the cross-vendor contrast landed (accumulators+guard bits and bit-reversed addressing EXIST elsewhere; the `.4` break is TI-family-shaped). `.7`'s report classifies over the full base |
 
 ## Decisions
 
@@ -524,6 +546,56 @@ declared here before the first finding exists rather than improvised when one do
 - [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.7`), this tree, the fixture.
 
+## Acceptance Checklist (leaf DSP-REVIEW.8)
+
+- [x] **REPRODUCE / ISSUE** — the contrast's premise (TI's absences might be DSP-general)
+  was measured against the two new manuals' text, never assumed:
+
+  ```
+  $ grep -c 'guard' target/dsp-review/sharc.txt
+  1        # "guard bits" — SHARC names them outright (once is enough); TI's absence is TI's
+  $ grep -c 'reverse-carry\|bit-reverse\|bit reverse' target/dsp-review/dsp56300.txt
+  14       # DSP56300's reverse-carry modifier, measured
+           # (the first draft composed 9 and 11 — the fourth unmeasured-number slip of
+           # the day, caught pre-commit; the day's practiced rule holds: paste, never compose)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf corrects a scope risk the tree
+  carried. WHY it matters that the contrast landed before `.7`: the findings report's
+  classification of "no accumulator, no guard bits" would have read as a DSP property
+  where it is a TI property — measured now twice over (56-bit A/B; 80-bit MRF). WHERE
+  the re-scope lands: `.4`'s break is TI-family-shaped, not DSP-shaped — measured in
+  the committed artifact, not asserted here:
+
+  ```
+  $ grep -c 'TI-family-shaped' docs/tasks/artifacts/dsp-review/2026-09-30-cross-vendor.md
+  1        # the re-scope sentence exists exactly once, in the evidence document
+  $ grep -c 'guard bits' target/dsp-review/sharc.txt
+  1        # SHARC's 80-bit MRF names the guard bits outright; TI's absence stays TI's
+  ```
+
+- [x] **FIX** — the evidence document
+  `docs/tasks/artifacts/dsp-review/2026-09-30-cross-vendor.md` (the inversion, the three
+  unit shapes, the alignment rules, the loop models, nine recorded defects); the new
+  leaf between `.6` and `.7`; the frontier.
+
+- [x] **ADDRESSED (verified)** — every contrast carries both vendors' locators (the
+  acceptance's exact rule; a TI absence is never restated as a DSP absence):
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **NO REGRESSION** — docs-only leaf; the full doctrine gate is the check:
+
+  ```
+  $ bash scripts/check_doctrines.sh | tail -1
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier stays `.7`), this tree, the artifact.
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -539,6 +611,7 @@ declared here before the first finding exists rather than improvised when one do
 | `2026-09-30` | `DSP-REVIEW.1` | the extraction (`pdftotext` of the three catalogued manuals) + the absence searches | every Q1/Q2 fact quoted with page+section; `guard`/`accumul`/`Q15` measured absent; the `s`-bit trap measured (side-select, not scaling) |
 | `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
 | `2026-09-30` | `DSP-REVIEW.3` | the same extraction + the units/spaces/modes searches | byte units on both sides measured (no word-addressed space exists); the two-L1-spaces shape, the .D-unit generators, the AMR scheme quoted with locators; bit-reversed/strided addressing measured absent; the circular nonalignment split pinned |
+| `2026-09-30` | `DSP-REVIEW.8` | the same extraction over the two channel-answered manuals (DSP56300 + SHARC PRM) | the inversion measured twice (56-bit A/B + 80-bit MRF guard bits; reverse-carry + BR0/BR8); three unit shapes, three alignment rules, three loop models; nine further defects recorded |
 | `2026-09-30` | `DSP-REVIEW.6` | the four probes through the real pipeline (pre-fixture measurement) | every shape refused by name, rc 2/1/1/1; the packet descriptor reduced until its ONLY refusal is `packet` itself; `run_synth_probes.sh` green 4/4 with the refusals pinned |
 | `2026-09-30` | `DSP-REVIEW.5` | the same extraction + the SPLOOP/LDDW/MFENCE searches | SPLOOP C64x+-only measured by the compatibility fields; the loop-state census quoted; drain-vs-no-drain asymmetry measured; MFENCE 0 hits in two manuals, 34 in C66x's |
 | `2026-09-30` | `DSP-REVIEW.4` | the same extraction + the packet/latency/conflict sections | the execute-packet rules, the delay-slot tables, the no-interlocks sentence, the annulment semantics and the manual's own incorrect-result example — quoted with locators; the §3.7.2/§3.8.2 contradiction recorded in both forms |
@@ -547,6 +620,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.8` | `SEMULITH-DR-0093 (leaf DSP-REVIEW.8): the cross-vendor contrast — TI's absences are TI's, measured` | 56-bit A/B + 80-bit MRF guard bits; bit-reverse ×2; 3 unit shapes; the `.4` break re-scoped to TI-family-shaped |
 | `DSP-REVIEW.6` | `SEMULITH-DR-0091 (leaf DSP-REVIEW.6): the synthetic stress fixture — the boundary pinned, not assumed` | `synth24` through the real pipeline; four named refusals pinned; SYNTHETIC banner + the citation ban |
 | `DSP-REVIEW.5` | `SEMULITH-DR-0090 (leaf DSP-REVIEW.5): loops, repeats, interrupts — the SPLOOP census and the drain asymmetry` | the loop-state census; not-interruptible rule; restart semantics; MFENCE C66x-only; the SEM-04 framing measured |
 | `DSP-REVIEW.4` | `SEMULITH-DR-0089 (leaf DSP-REVIEW.4): the predicted break, measured — twice` | the packet as the unit of progress; the delayed-visible writeback with interrupts inside the window; the census-reopening consequence named |

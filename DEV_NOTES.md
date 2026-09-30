@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-09-30)_ — TI's absences are TI's (DSP-REVIEW.8)
+
+The review extracted three TI manuals first, and the absence facts it pinned (no
+accumulator, no guard bits, no bit-reversed addressing) were one lazy reading away from
+becoming "DSPs don't have accumulators". The two manuals the chipdoc channel answered
+the same day measured the opposite: DSP56300 has two 56-bit accumulators with 8-bit
+extension registers, SHARC has 80-bit accumulators and prints the words "guard bits",
+and both have bit-reversed addressing. The `.4` break — the execute packet and the
+delayed visible writeback — is now scoped where it belongs: TI-family-shaped, not
+DSP-shaped, with SHARC's interlocked five-stage pipeline as the printed counterexample.
+A finding's scope is only ever as wide as the corpus measured so far; the tree's own
+rule (a TI absence is never restated as a DSP absence) is now armed for `.7`'s report.
+Also recorded, fourth time this day: an unmeasured number composed into a checklist
+(9 and 11 written where the tool said 14) — caught pre-commit, again. The practiced
+rule holds: paste real output, never compose it.
+
 ## _(2026-09-30)_ — the packet and the delayed writeback (DSP-REVIEW.4)
 
 The tree named this leaf "the single most likely place the scalar abstraction breaks"

@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMULITH-DR-0093 (leaf DSP-REVIEW.8) — the cross-vendor contrast: TI's absences are TI's, measured
+
+- The review's first three leaves measured three TI manuals only, and its interim facts
+  ("no accumulator", "no guard bits", "no bit-reversed addressing") risked reading as DSP
+  properties. The two channel-answered manuals (`SEMULITH-DR-0092`) measured the contrast:
+  **the inversion is real, twice over** — DSP56300 carries two 56-bit A/B accumulators
+  with 8-bit extension registers (A2/B2, §3.1) and SHARC carries 80-bit MRF/MRB
+  accumulators that name the guard bits outright (§3); bit-reversed addressing exists in
+  both (DSP56300 reverse-carry modifier §4.5.2; SHARC BR0/BR8 §6).
+- Three address-unit shapes (TI byte / DSP56300 24-bit word in P/X/Y / SHARC
+  width-varies-by-space word), three circular-buffer alignment rules (align-to-size /
+  2^k-aligned / arbitrary), three loop models (SPLOOP / DO+REP / DO UNTIL loop stack).
+- SHARC's five-stage **interlocked** pipeline is the printed negation of TI's
+  "eliminating pipeline interlocks" — the `.4` break (execute-packet progress, delayed
+  visible writeback) re-scopes: it is **TI-family-shaped, not DSP-shaped**.
+- Every contrast carries both vendors' locators; nine further manual defects recorded
+  unresolved. Evidence: `docs/tasks/artifacts/dsp-review/2026-09-30-cross-vendor.md`.
+
 ## SEMULITH-DR-0091 (leaf DSP-REVIEW.6) — the synthetic stress fixture: the boundary pinned, not assumed
 
 - `synth24` (24-bit registers, a second address space, a packet construct, a delayed
