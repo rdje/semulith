@@ -1,5 +1,20 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the oracle question, answered by census (P3-BREADTH.3, slice 1)
+
+The tree carried an open question — "whether any real DSP oracle becomes available at all" —
+and the honest way to answer it was enumeration, not memory: one survey per measured family
+over the same enumerator (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tools/dedicated
+projects), one URL per claim, then the two load-bearing positives re-fetched from primary
+sources. The answer inverted the tree's prior assumption for two of three families: DSP56300
+has a STRONG path (an MIT toolkit whose authors already built the exact differential harness
+this project would need, silicon-sealed), SHARC-2106x a PARTIAL one (MAME's BSD-3 core, but
+the assembler leg is unbuildable-as-licensed), and only TI C6000 is truly oracle-less (the
+vendor discontinued its simulator in 2014). The slice decision — DSP56300 — follows from
+RK08's rule (evidence path, not manual convenience) and fits the findings' conditioning: it
+activates F1/F3/F6 and leaves F4/F5/F2 unbuilt, recorded rather than lost. Promotion:
+declined in the leaf (the survey is dated evidence; its durable output is the decision).
+
 ## _(2026-10-01)_ — a dead justification camouflaged a live silent path (P3-BREADTH.2)
 
 The hook audit's only silent escape hatch survived review precisely because it carried a

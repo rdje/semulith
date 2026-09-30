@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0007 (leaf P3-BREADTH.3) — the oracle survey: DSP56300 chosen, evidence path first
+
+- Per-family oracle census (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tooling/dedicated
+  projects, one URL per claim): **TI C6000 ABSENT** for execution (no open-source executor;
+  the vendor simulator was discontinued in 2014 and survives only as legacy proprietary);
+  **DSP56300 STRONG** (mborgerson/dsp56300: MIT assembler roundtripped against the vendor
+  assembler + MIT Cranelift emulator silicon-validated with a canonical-state differential
+  harness); **SHARC ADSP-2106x PARTIAL** (MAME's BSD-3 core is real and scriptable, but no
+  vendorable assembler exists and there is no second oracle).
+- Both load-bearing positives re-derived against primary sources (the MIT LICENSE, the
+  README's silicon-difftest claim, MAME's sharc.cpp header and register export).
+- **Slice decision: DSP56300** — the only complete, license-clean evidence path (RK08: the
+  slice is chosen by demonstrable evidence, not manual convenience). A scalar-DSP slice
+  activates F1/F3 (`.5`) and F6 (census), leaves F4/F5 unbuilt and F2 idle — recorded, not
+  lost. Slice 2 demonstrates the path end-to-end before `.4` implements anything.
+
 ## SEMULITH-BR-0006 (leaf P3-BREADTH.2) — the hook census: no opaque hooks; the one silent extraction arm is now a generation-time refusal
 
 - Full-pipeline audit against `docs/ARCHITECTURE.md` §2 ("an unsupported construct is a
@@ -869,17 +885,4 @@
 - Placement follows `.7`: the project book's annex — the per-unit book structure
   (`.1`) is unbuilt; when it lands, the model book references this chapter rather than
   copying it (never a second owner of a fact).
-
-## SEMILITH-PS-0006 (leaf P2-SCALAR.4) — the interaction-matrix design, recorded before code
-
-- Design-only commit: the 21-cell fault × alias × boundary × event × progress × restart
-  matrix, 8 new guests, the expected-divergence comparator shape, the restart axis as a
-  mechanism (a new offline determinism suite), and the `INTERACTION-MATRIX` doctrine
-  design — every reference behavior measured by probes first (fault priority, the
-  address wrap, the fence.i continuation).
-- Measured a NEW reference difference: sail masks access-fault tval to its 56-bit
-  physical-address width (spike reports the full address) — recorded as
-  `DIFF-TVAL-PHYS-MASK`; three-way tval guests keep fault addresses below 2^56.
-- The tree file crossed its 64 KiB per-part ceiling: completed-leaf evidence archived
-  verbatim to `docs/tasks/archive/P2-SCALAR.md` — the ceiling obeyed, not raised.
 
