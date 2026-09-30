@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-09-30)_ — the DSP widths survey (DSP-REVIEW.1)
+
+Method matters more than findings here: pdftotext extraction of the three catalogued TI
+C6000 manuals, every fact quoted with page+section, every ABSENCE measured by named
+searches (`guard` = 1 boilerplate hit; `Q15` = 0; `Q31` = exactly 1). Findings: no
+accumulator/guard machinery anywhere in the family (accumulation is explicit ADDs — a
+measured non-finding that stops anyone adding accumulator state speculatively); the
+40-bit long/64-bit pair/128-bit quad width ladder (quads C66x-only) with the odd:even
+zero-fill rule; scaling carried by instruction MNEMONICS (the S-family <<1+saturate,
+MPYIHR's round), not mode bits — the opcode-map `s` bit is the A/B side-select, a trap
+measured and recorded in the artifact. The classification seed for .7: register grouping
+with a width+fill rule. Also fixed in passing: the tree's G1 blocker (long resolved) and
+LIVE_STATUS's P2 row (stale at 8/9 from an aborted multi-file edit — its MEMORY half had
+died on an assertion before writing, and only some of the files went in; measured now).
+
+Lesson: `promotion: declined` (the method is the leaf's acceptance; the trap lives in the
+artifact where the next reader meets it).
+
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 

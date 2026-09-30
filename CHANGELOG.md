@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-DR-0085 (leaf DSP-REVIEW.1) — widths and accumulator semantics, measured across the three TI manuals
+
+- The first DSP review leaf: Q1/Q2 of the catalog's DSP questions answered from the
+  catalogued C64x/C66x/C674x manuals by text extraction — every fact quoted with its
+  printed page and section. Headlines: NO accumulator and NO guard bits anywhere
+  (measured absent, the searches named); 40-bit "long" values in odd:even register pairs
+  with a zero-fill rule (all three), 64-bit pairs (all three), 128-bit quadruplets (C66x
+  only); Q-notation nearly absent (Q31 exactly once); scaling instruction-encoded (the
+  S-family's <<1+saturate) — and the `s`-bit trap measured (it's the A/B side-select).
+- The first classification for `.7`: register GROUPING with a width+fill rule is the one
+  candidate abstraction change; no accumulator/guard state is needed for these targets.
+  Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-widths-q1-q2.md.
+- The tree's stale G1 blocker repaired; the tree is active; LIVE_STATUS's P2 row (stale
+  at 8/9 from a mid-flight script abort) corrected to Done 9/9.
+
 ## SEMULITH-PS-0084 (leaf P2-SCALAR.9, slice c) — the CPU-LAB report stands; the tree CLOSES 9/9
 
 - `gate_report.py` gained `build_cpulab`: the full processor-gate series per axis
