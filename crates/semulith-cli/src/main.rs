@@ -12,13 +12,19 @@
 //!   or `incomplete`; `incomplete` is the honest state of the deliberately
 //!   `planned` fixture evidence); 1 — the bundle is rejected, every finding
 //!   named; 2 — the command could not run (usage, unreadable inputs).
-//! - `semulith run <elf> [--steps N] [--base ADDR] [--size BYTES]` — execute a
+//! - `semulith run <elf> [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]` —
+//!   execute a
 //!   freestanding guest under the laboratory environment (`P1-LAB.8`, T006):
 //!   load the ELF's PT_LOAD segments into the declared region, run the
 //!   definitional interpreter for at most `steps` steps, and print one
 //!   normalized observation per step — the same `(pc, word, writes, trap)`
 //!   vocabulary `scripts/compare_traces.py` reduces the reference models to,
-//!   so every model is compared through the one parser. Exit codes: 0 — the
+//!   so every model is compared through the one parser. With `--trace-stores`
+//!   the step trace is followed by the run's data-store crossings, one
+//!   `mem[W,0xADDR] <- 0xVALUE` line per successful store in execution order
+//!   (the runner records every boundary crossing; the flag surfaces them — an
+//!   observability option, not a semantics one; a faulted store wrote nothing
+//!   and prints nothing, its trap already carried by the step). Exit codes: 0 — the
 //!   run stopped on a trap or the step budget (a target observation, not an
 //!   error); 1 — the model reported a model error or an undefined case; 2 —
 //!   usage, unreadable inputs, or an ELF the loader refuses.
@@ -77,7 +83,7 @@ use semulith_verify::schema;
 
 const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
-                     \x20       semulith run <elf> [--steps N] [--base ADDR] [--size BYTES]\n\
+                     \x20       semulith run <elf> [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]\n\
                      \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n\
                      \x20       semulith bundle --guest NAME [--mutate NAME]\n\
                      \x20       semulith replay <file.json>\n\
@@ -211,6 +217,7 @@ fn run_guest(args: &[String]) -> ExitCode {
     let mut steps = DEFAULT_STEPS;
     let mut base = DEFAULT_BASE;
     let mut size = DEFAULT_SIZE;
+    let mut trace_stores = false;
     for arg in args {
         if let Some(n) = arg.strip_prefix("--steps=") {
             steps = match n.parse() {
@@ -227,6 +234,8 @@ fn run_guest(args: &[String]) -> ExitCode {
                 Ok(v) => v,
                 Err(_) => return usage("run: --size wants a byte count"),
             };
+        } else if arg == "--trace-stores" {
+            trace_stores = true;
         } else if arg.starts_with("--") {
             return usage(&format!("run: unknown option {arg}"));
         } else if elf_path.is_none() {
@@ -271,7 +280,7 @@ fn run_guest(args: &[String]) -> ExitCode {
             &bytes[seg.offset..seg.offset + seg.filesz],
         );
     }
-    let (trace, _crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
+    let (trace, crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
     let mut out = String::new();
     for (n, s) in trace.steps.iter().enumerate() {
         match s.word {
@@ -290,6 +299,28 @@ fn run_guest(args: &[String]) -> ExitCode {
         }
         if let Some((cause, tval)) = s.trap {
             out.push_str(&format!("trap cause=0x{cause:02x} tval=0x{tval:016x}\n"));
+        }
+    }
+    if trace_stores {
+        // The store trace (P2-SCALAR.5 strand 2 — the ACT4 campaign's observation):
+        // every successful data-store crossing, in execution order, spelled the way
+        // sail's `--trace-mem` spells it so one extractor reads both models. A store
+        // whose crossing failed (access fault / misaligned) wrote nothing and is absent
+        // by construction — its observation is the step's trap line.
+        for crossing in &crossings {
+            if let semulith_verify::run::Crossing {
+                request: semulith_core::env::Request::Store { width, addr, data },
+                response: Ok(semulith_core::env::Response::StoreDone),
+            } = crossing
+            {
+                let bytes = width.bytes();
+                let masked = if bytes == 8 {
+                    *data
+                } else {
+                    data & ((1 << (bytes * 8)) - 1)
+                };
+                out.push_str(&format!("mem[{bytes},0x{addr:016x}] <- 0x{masked:016x}\n"));
+            }
         }
     }
     print!("{out}");

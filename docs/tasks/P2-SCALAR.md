@@ -337,6 +337,18 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Strand 1 landed `2026-09-30` (`SEMULITH-PS-0063`): `c-scope.c` retires three-way
   129/129; G1 reads `passed`. The model book's compiled-guest chapter landed with it
   (`SEMULITH-PS-0065`).
+  Strand 2 slice (b) landed `2026-09-30` (`SEMULITH-PS-0067`): the observation vocabulary
+  gained the store trace (`semulith run --trace-stores` surfaces the runner's crossing
+  log — observability, not semantics), the DUT-side pieces stand
+  (`profiles/rv64i-lab-v0/act4/`: `rvtest_config.h`, `rvmodel_macros.h`, `link.ld`),
+  `scripts/fetch_act4.sh` is the reproducible acquisition route (pin-verified, census
+  51/18,092), and `scripts/run_act4_campaign.py` builds and runs `I-add-00` end-to-end
+  three-way: both toolchain risks retired by measurement (clang 21.1.8 assembles the
+  suite's macro machinery clean; sail 0.14's HTIF terminates under the laboratory
+  override with `RVCP-SUMMARY: TEST SIGRUN`), all three models' verdicts pass, and the
+  513-slot signature agrees semulith↔sail-derived AND spike↔sail. The harness carries
+  RED/GREEN controls (self-test 7/0 — a corrupted slot is caught at its ordinal, a
+  shorter signature is not agreement, a verdict-less trace refuses).
   Lessons: `promotion: declined (the C-shift-UB lesson lives in the guest's own comments
   where it bites — section 6 names the rule, the failed draft and the bound-shiftw owner;
   the visible-change vocabulary is enforced by the comparator's two new self-test arms,
@@ -505,89 +517,11 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   the fix three-way (`never_written x5`), the mutation matchers were re-derived for the
   new tree shape, and the whole 32-guest corpus re-proves the success path.
 
-## Acceptance Checklists (leaves P2-SCALAR.1–.2)
+## Acceptance Checklists (leaves P2-SCALAR.1–.3)
 
 Archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling) — the `.4`
-checklist landed live at the leaf's completion, beside `.3`'s below.
-
-## Acceptance Checklist (leaf P2-SCALAR.3)
-
-- [x] **REPRODUCE / ISSUE** — three holes, each measured before any fix. (a) The `.1`
-  defect log said reserved-`fm` FENCE must trap; the pinned spec says the opposite —
-  the probe showed all THREE models nop it. (b) The misaligned-jump link write,
-  reproduced against both references: semulith wrote `x5`, neither reference did. (c)
-  The fetch-fault observation gap `run.rs` named as future work, and the reserved-decode
-  case stopping with no observation to compare:
-
-  ```
-  $ cargo run -p semulith-cli -- run probe-jal-mis.elf --steps=4   # BEFORE the fix
-  [1] [M]: 0x0000000080000004 (0x002002ef) jal
-  x5 <- 0x0000000080000008                     # ← the write both references suppress
-  trap cause=0x00 tval=0x0000000080000006
-  $ cargo run -p semulith-cli -- run probe-fetch-fault.elf --steps=6
-  run: fetch access fault at 0x0000000040000000; no observation recorded   # ← the gap
-  $ cargo run -p semulith-cli -- run probe-reserved-ones.elf --steps=4
-  run: undefined case: ReservedDecode { at: 2147483652 }   # rc=1, no trace observation
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — (a) WHY: the dossier author read "reserved" and
-  reached for `D-RESERVED-DECODE`, but RVI-RV32I §1.1.7 SPECIFIES the behavior of
-  reserved FENCE configurations ("shall treat all such reserved configurations as FENCE
-  instructions (with fm = 0000)") — a specified reserved case, not the UNSPECIFIED one.
-  WHERE: `D-FENCE`'s last sentence and its `REQ-D-FENCE`/`OB-FENCE` restatements.
-  (b) WHY: the `jal`/`jalr` effect trees evaluated the link write before `set-pc`'s
-  alignment check, so a trapping jump retired a write. WHERE:
-  `definitions/riscv/rv64i.sem.sexp` — semantics data, never the evaluator. (c) WHY:
-  the observation vocabulary had no honest shape for "the fetch supplied no word" and
-  no policy act for the reserved case. WHERE: `run.rs`'s `Step`/`Stop` and the two
-  trace adapters in `scripts/compare_traces.py`.
-
-- [x] **FIX** — the dossier correction (`D-FENCE` + both restatements, the verbatim
-  mandate cited, the correction noted like `D-MAIN-VS-IO`'s); the sem-tree reorder
-  (`set-pc` first — data, regenerated through the sanctioned generator); the word-less
-  fetch-fault step (`Step.word` → `Option<u32>`, emitted by the runner, printed by the
-  CLI, synthesized by both adapters, round-tripped by replay); the reserved-decode
-  policy conversion in the harness (`Stop::Undefined` keeps the classification);
-  `riscv_asm.py`'s `.word` directive; eighteen EVD-05 guests; the adapter's four
-  measured spellings + self-test arms (12/0); `DIFF-FENCEI-EXECUTED` recorded;
-  OQ-2 answered (`REQ-D-SHIFTW-RESERVED` → `resolved`); the census and suites
-  re-derived; ceilings expanded by reviewed decision.
-
-- [x] **ADDRESSED (verified)** — before→after on the same probes: the misaligned jump
-  now traps with NO link write (matching both references); the fetch fault records the
-  word-less step; the reserved word records the policy-converted trap. And the full
-  corpus:
-
-  ```
-  $ cargo test -p semulith-verify          # the offline differential, commitment-gated
-  test result: ok. 157 passed; 0 failed (+18 guest suites, +2 runner unit suites;
-    the census pins fault-selfmod's crossing and the three access-fault crossings)
-  $ python3 scripts/run_semulith_smoke.py  # the live three-way differential
-  …every fault-* guest: AGREE vs sail-riscv AND spike…
-  run_semulith_smoke: ok — 32 guests, 454/454 aligned steps, byte-identical reproduction
-  ```
-
-- [x] **NO REGRESSION** — the guard set re-run, green; and the instruments caught three
-  AUTHORING slips in flight (the trailing paren in all 18 expectation documents — schema
-  RED on all 18; the store operand order in 4 guests — the pre-wiring dry-run; the
-  REQ-D-FENCE statement drift — RECORD-SCHEMA RED at the gate), never another model
-  defect:
-
-  ```
-  $ make check            # 157 verify suites, 65 core suites, clippy -D warnings, fmt
-  $ make gate             # all doctrines green (RECORD-SCHEMA, the new ceilings…)
-  $ make smoke-bench      # 36 arms — 32 clean guests, 3 trace-level mutants, the census arm
-  $ bash scripts/check_exercise_coverage.sh [--self-test]   # 52/52; self-test 7/0
-  $ python3 scripts/compare_traces.py --self-test           # 12/0 (+4 new arms)
-  $ make book             # renders
-  ```
-
-- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 3/9),
-  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.4`), this tree, the
-  book (`plan/p2.md` carries the result; `plan/p1.md` and `claim-scope.md` re-synced to
-  32 guests / 454 steps; `annex/assembler.md` documents `.word`), the routes registry
-  (the reviewed ceilings), `references.sexp` (the new difference), the dossier
-  (D-FENCE, OQ-2), and both regenerated `G?-REPORT.md`.
+checklist landed live at the leaf's completion, and `.3`'s joined the archive on
+`2026-09-30` to make room for `.5`'s strand-2 evidence.
 
 ## Acceptance Checklist (leaf P2-SCALAR.4)
 
@@ -764,6 +698,9 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
 | `2026-09-30` | `P2-SCALAR.5` (strand 1) | `scripts/gate_report.py rv64i-lab-v0 --gate G1`, `make gate`, `make book` | **G1 verdict `passed`** (criterion 6 met); all doctrines green; both books render |
 | `2026-09-30` | `P2-SCALAR.5` (strand 2a) | the pinned sparse fetch (blobless clone at `e2216915…`, `target/refs/riscv-arch-test/`) + census of the fetched tree | 45 MB on disk (the RV64I campaign's share of the ~672 MB tree): 51 test files / 199,768 lines / 18,092 `RVTEST_SIGUPD`s / 14,820 testcases — every design number measured, not read from the docs; two doc facts found stale (the README's sail 0.13.1 pin; the signature flow) |
 | `2026-09-30` | `P2-SCALAR.5` (strand 2a) | `bash scripts/check_profile_consistency.sh --self-test`, `make gate`, `make book` | self-test green with the new status vocabulary value; all doctrines green; both books render — a docs-only commit |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2b) | toolchain risk retirement (measured, not assumed) | clang 21.1.8 assembled `I-add-00.S` (the suite's full macro machinery) clean; `ld.lld` linked against the laboratory `link.ld`; sail 0.14 self-terminated on the HTIF verdict under the lab override — both documented-toolchain mismatches (LLVM 22 / sail 0.13.1 in the cached README) measured harmless |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2b) | `python3 scripts/run_act4_campaign.py` (live, three-way) | `I-add-00`: HTIF verdict pass on all three models; the 513-slot signature agrees semulith↔sail-derived AND spike↔sail |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2b) | `python3 scripts/run_act4_campaign.py --self-test` | 7 pass / 0 fail — the corrupted-slot RED, the shorter-signature RED, the verdict-less refusal, the console/verdict channel separation |
 
 ## Commit Log
 
@@ -773,7 +710,7 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
 | `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
 | `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
-| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
+| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 
 ## Changelog
 

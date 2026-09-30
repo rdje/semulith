@@ -200,7 +200,13 @@ schema/	reader_navigation	partitioned	the schema language and per-family constru
 #               KiB aggregate are unchanged; SHARD-FREEZE pins the exact partition (every
 #               shard hashed, the manifest append-only), which is the real count invariant.
 #               Ceiling files 40 -> 80; the next reader should watch the AGGREGATE.
-docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	80	393216	65536
+# Re-derivation, SEMULITH-PS-0067 (2026-09-30), when the file-count ceiling fired a third
+#   time: 81 files at the breach (80 shards + the two heads + the manifest … the same
+#   calendar fired as designed). The SEMILITH-PL-0012 grounds hold verbatim — the family
+#   grows one file per shard EVENT by design, so the count doubles again and the content
+#   axes stay exactly where they were: per-part 64 KiB and the 384 KiB aggregate are
+#   unchanged; SHARD-FREEZE pins the partition. Ceiling files 80 -> 160.
+docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	160	393216	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 # Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:
 #   docs/push-approvals.md  1,045 B at adoption (the header alone; zero entries today).

@@ -541,3 +541,82 @@ Archived sections, verbatim:
   (`plan/p2.md` carries the result; `plan/p1.md` and `claim-scope.md` re-synced to 14
   guests / 376 steps), the routes registry (the reviewed ceilings), and both regenerated
   `G?-REPORT.md`.
+
+## Acceptance Checklist (leaf P2-SCALAR.3)
+
+- [x] **REPRODUCE / ISSUE** — three holes, each measured before any fix. (a) The `.1`
+  defect log said reserved-`fm` FENCE must trap; the pinned spec says the opposite —
+  the probe showed all THREE models nop it. (b) The misaligned-jump link write,
+  reproduced against both references: semulith wrote `x5`, neither reference did. (c)
+  The fetch-fault observation gap `run.rs` named as future work, and the reserved-decode
+  case stopping with no observation to compare:
+
+  ```
+  $ cargo run -p semulith-cli -- run probe-jal-mis.elf --steps=4   # BEFORE the fix
+  [1] [M]: 0x0000000080000004 (0x002002ef) jal
+  x5 <- 0x0000000080000008                     # ← the write both references suppress
+  trap cause=0x00 tval=0x0000000080000006
+  $ cargo run -p semulith-cli -- run probe-fetch-fault.elf --steps=6
+  run: fetch access fault at 0x0000000040000000; no observation recorded   # ← the gap
+  $ cargo run -p semulith-cli -- run probe-reserved-ones.elf --steps=4
+  run: undefined case: ReservedDecode { at: 2147483652 }   # rc=1, no trace observation
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — (a) WHY: the dossier author read "reserved" and
+  reached for `D-RESERVED-DECODE`, but RVI-RV32I §1.1.7 SPECIFIES the behavior of
+  reserved FENCE configurations ("shall treat all such reserved configurations as FENCE
+  instructions (with fm = 0000)") — a specified reserved case, not the UNSPECIFIED one.
+  WHERE: `D-FENCE`'s last sentence and its `REQ-D-FENCE`/`OB-FENCE` restatements.
+  (b) WHY: the `jal`/`jalr` effect trees evaluated the link write before `set-pc`'s
+  alignment check, so a trapping jump retired a write. WHERE:
+  `definitions/riscv/rv64i.sem.sexp` — semantics data, never the evaluator. (c) WHY:
+  the observation vocabulary had no honest shape for "the fetch supplied no word" and
+  no policy act for the reserved case. WHERE: `run.rs`'s `Step`/`Stop` and the two
+  trace adapters in `scripts/compare_traces.py`.
+
+- [x] **FIX** — the dossier correction (`D-FENCE` + both restatements, the verbatim
+  mandate cited, the correction noted like `D-MAIN-VS-IO`'s); the sem-tree reorder
+  (`set-pc` first — data, regenerated through the sanctioned generator); the word-less
+  fetch-fault step (`Step.word` → `Option<u32>`, emitted by the runner, printed by the
+  CLI, synthesized by both adapters, round-tripped by replay); the reserved-decode
+  policy conversion in the harness (`Stop::Undefined` keeps the classification);
+  `riscv_asm.py`'s `.word` directive; eighteen EVD-05 guests; the adapter's four
+  measured spellings + self-test arms (12/0); `DIFF-FENCEI-EXECUTED` recorded;
+  OQ-2 answered (`REQ-D-SHIFTW-RESERVED` → `resolved`); the census and suites
+  re-derived; ceilings expanded by reviewed decision.
+
+- [x] **ADDRESSED (verified)** — before→after on the same probes: the misaligned jump
+  now traps with NO link write (matching both references); the fetch fault records the
+  word-less step; the reserved word records the policy-converted trap. And the full
+  corpus:
+
+  ```
+  $ cargo test -p semulith-verify          # the offline differential, commitment-gated
+  test result: ok. 157 passed; 0 failed (+18 guest suites, +2 runner unit suites;
+    the census pins fault-selfmod's crossing and the three access-fault crossings)
+  $ python3 scripts/run_semulith_smoke.py  # the live three-way differential
+  …every fault-* guest: AGREE vs sail-riscv AND spike…
+  run_semulith_smoke: ok — 32 guests, 454/454 aligned steps, byte-identical reproduction
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; and the instruments caught three
+  AUTHORING slips in flight (the trailing paren in all 18 expectation documents — schema
+  RED on all 18; the store operand order in 4 guests — the pre-wiring dry-run; the
+  REQ-D-FENCE statement drift — RECORD-SCHEMA RED at the gate), never another model
+  defect:
+
+  ```
+  $ make check            # 157 verify suites, 65 core suites, clippy -D warnings, fmt
+  $ make gate             # all doctrines green (RECORD-SCHEMA, the new ceilings…)
+  $ make smoke-bench      # 36 arms — 32 clean guests, 3 trace-level mutants, the census arm
+  $ bash scripts/check_exercise_coverage.sh [--self-test]   # 52/52; self-test 7/0
+  $ python3 scripts/compare_traces.py --self-test           # 12/0 (+4 new arms)
+  $ make book             # renders
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 3/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.4`), this tree, the
+  book (`plan/p2.md` carries the result; `plan/p1.md` and `claim-scope.md` re-synced to
+  32 guests / 454 steps; `annex/assembler.md` documents `.word`), the routes registry
+  (the reviewed ceilings), `references.sexp` (the new difference), the dossier
+  (D-FENCE, OQ-2), and both regenerated `G?-REPORT.md`.
