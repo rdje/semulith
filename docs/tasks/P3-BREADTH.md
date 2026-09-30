@@ -65,7 +65,7 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.1` | `pending` | the findings are the input; implementing before they exist would guess |
+| 1 | `P3-BREADTH.1` | `pending` | the findings landed `2026-10-01` (DSP-REVIEW closed 8/8); the composable-DSP design discussion is recorded above |
 
 ## Decisions
 
@@ -77,9 +77,37 @@ unsupported families remain unclaimed.
 - Whether any real DSP oracle becomes available at all. If none does, `.4` ships an explicitly
   experimental claim and the `BREADTH` gate states that limit rather than hiding it.
 
+## Design Discussions
+
+- `2026-10-01` (director, `[DBINP]` — recorded to resume the exchange later; no pivot, no
+  leaf scope changed): **a DSP as composition, not monolith.** The exchange that closed
+  `DSP-REVIEW` produced a working model of what a DSP *is*: a fixed skeleton of problems —
+  the MAC as the atom; accumulation headroom; the dual operand feed; specialized addressing
+  (circular, bit-reversed); zero-overhead looping; saturating arithmetic with sticky flags;
+  determinism as the organizing contract — plus a **measured per-axis menu of choices**
+  (accumulator: none / 56-bit+8-ext / 80-bit guard; address unit: byte / 24-bit word /
+  per-space width; spaces: 1 / 2 / 3; issue: VLIW packet / scalar interlocked / scalar+REP;
+  saturation locus: per-instruction / mode bits / explicit transfer; circular alignment:
+  to-size / 2^k / arbitrary; sticky flags: CSR.SAT+SSR / STKY; loop machinery; interrupt
+  interaction), each axis choice citable to the vendor that actually made it
+  (`docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`).
+  The director's framing: building a DSP is **composing lego into a coherent, functional
+  whole** — choose one option per axis, then find the **composition rules** that make the
+  choices fit together (accumulator width ⇒ readout semantics; addressing mode ⇒ alignment
+  rule; loop model ⇒ interrupt rules; issue model ⇒ the state census), then design the ISA
+  as the fabric that moves data between the chosen parts. **Resume here:** the hypothetical
+  high-end DSP — a coherent menu selection + its composition rules + its ISA + its manual —
+  as this tree's ultimate stress fixture, the positive counterpart to `synth24`'s refusals
+  (where `synth24` measured what the pipeline *refuses*, the composed DSP would exercise
+  what it must come to *express*). Bounds carried from the review, permanent: every choice
+  stays citable per-axis; the synthetic design is NEVER evidence about any real DSP; it
+  claims no compatibility.
+
 ## Blockers
 
-- `P2-SCALAR` gate `CPU-LAB`; `DSP-REVIEW` findings.
+- ~~`P2-SCALAR` gate `CPU-LAB`; `DSP-REVIEW` findings.~~ Resolved `2026-10-01`: `DSP-REVIEW`
+  closed 8/8 and routed six findings here (`SEMULITH-DR-0094`); `P2-SCALAR` closed with its
+  release decision recorded. The tree is unblocked.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
@@ -99,8 +127,10 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
-| — | `pending` | `pending` |
+| — (design discussion) | `SEMULITH-BR-0001 (leaf P3-BREADTH.1): the composable-DSP design discussion recorded — resume here` | the skeleton + the measured axis menu + composition rules + ISA-as-fabric; the lego framing; the permanent bounds |
 
 ## Changelog
 
 - `2026-09-13`: Created from `ROADMAP.md` §P3 by `SEMULITH-TREES.2`.
+- `2026-10-01`: Design discussion recorded (the composable-DSP model; `SEMULITH-BR-0001`);
+  blockers cleared — `DSP-REVIEW` closed 8/8 (`SEMULITH-DR-0094`).

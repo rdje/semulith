@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0001 (leaf P3-BREADTH.1) — the composable-DSP design discussion, recorded for resumption
+
+- The director's `[DBINP]` exchange recorded in the `P3-BREADTH` tree's new Design
+  Discussions section: a DSP as composition — the fixed skeleton of problems, the measured
+  per-axis menu of vendor-citable choices, the composition rules that make a selection
+  coherent, and the ISA as the fabric moving data between the chosen parts ("lego into a
+  coherent, functional whole"). Resume point for the hypothetical high-end DSP as this
+  tree's ultimate stress fixture; the permanent bounds carried (citable per-axis; never
+  evidence about a real DSP).
+- The tree's blockers cleared on record: `DSP-REVIEW` closed 8/8 (`SEMULITH-DR-0094`).
+
 ## SEMULITH-DR-0094 (leaf DSP-REVIEW.7) — the interface findings report: six findings routed, the tree closed 8/8
 
 - The tree's capstone: every candidate interface change classified and costed, routed to
