@@ -53,7 +53,8 @@ GUESTS = ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
           "it-prio-jump", "it-prio-load", "it-fault-alias", "it-fault-wrap-ld",
           "it-fault-wrap-sd", "it-alias-bound", "it-progress-loop", "it-fencei",
           "dir-runoff", "dir-chase", "dir-ext-matrix", "dir-selfmod-fence",
-          "dir-cmp-branch", "dir-memwalk", "dir-chain", "dir-x0-writes")
+          "dir-cmp-branch", "dir-memwalk", "dir-chain", "dir-x0-writes",
+          "min-fencei")
 GENERATOR = Path(__file__)
 
 

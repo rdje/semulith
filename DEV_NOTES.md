@@ -3,6 +3,21 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-30)_ — min-fencei: the one-word retained divergence (P2-SCALAR.6)
+
+Implementation matched the design exactly — the expected-divergence protocol
+(at_step 0, vacuous prefix), the adapters' run-off-the-end handling, and the stop-reason
+tables all predated this leaf, so no instrument needed to change: the guest, its
+expectation document, one test suite, the census arm, the matrix cell. The live run shows
+the protocol working at the boundary: EXPECTED DIVERGENCE at aligned step 0 vs each
+reference; sail vs spike AGREE over their full 2 steps (fence.i nop + the illegal zero
+word). The one tight spot: references.sexp sat 49 B under its per-part ceiling, so the
+retention note is written to fit (32,765/32,768) rather than moving the ceiling for a
+sentence. Validation: 175/175 verify suites; smoke green incl. the four-step protocol;
+bench 53 arms; gate green.
+
+Lesson: `promotion: declined` (recorded in the leaf).
+
 ## _(2026-09-30)_ — the discrepancy census: one divergence exists (P2-SCALAR.6 design)
 
 Discrepancy reduction opened with the measurement its acceptance implies: enumerate every

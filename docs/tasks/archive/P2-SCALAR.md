@@ -6,7 +6,8 @@ The full, unedited acceptance checklists for the `done` leaves `.1`–`.5` of th
 recorded-before-code design detail of the completed leaves
 `.1`–`.4` (`.4`'s moved here on `2026-09-30` to make room for the active `.5`'s
 strand-2 design) and of `.5`'s landed strand 2 (moved the same day once the strand
-completed), split out on `2026-09-29` when the live file crossed its per-part
+completed) and `.6`'s discrepancy-census design (moved at the leaf's completion), split
+out on `2026-09-29` when the live file crossed its per-part
 ceiling — the ceiling was obeyed, not raised, per the `docs/tasks/` precedent set by
 `SOT-FORMAT` and continued by `P1-LAB`. The live tree keeps the frontier, the decisions,
 the open questions, the blockers, the defect log, every leaf's goal/acceptance/result, the
@@ -501,6 +502,43 @@ Archived sections, verbatim:
     behavior under our override; (c) the 51-test campaign, the record, the gates, the
     book. A framework-absence blocker discovered in (b) (e.g. `derived_config.h` needing
     more than the minimal set) promotes the strand to its own leaf instead.
+
+  Design (recorded before code, `2026-09-30` — the census over every recorded difference
+  and every campaign result, each dispositioned with its citation):
+  - **The census.** Eight `difference` records in `references.sexp` + the live corpora
+    (48 guests, 642/642 steps; the ACT4 campaign 51/51, 17,017 slots; the offline
+    differential; the mutation suite). Dispositioned: `DIFF-ELF-STRICTNESS` (harness —
+    the writer fixed at P0), `DIFF-RESET-VECTOR` (harness — alignment, not semantics),
+    `DIFF-TRAP-RECORD-SHAPE` (trace vocabulary — the adapter reassembles spike's split
+    record), `DIFF-FETCH-GRANULARITY` (below the profile's observation granularity),
+    `DIFF-PLATFORM-DEFAULT` (a configuration DEFECT, corrected at `P0-PROFILE.10`, pinned
+    by `guest-no-device`), `DIFF-PLATFORM-SPIKE` (a layer difference — the reference
+    bundles a board; a stated precondition, not minimizable into a model defect),
+    `DIFF-TVAL-PHYS-MASK` (reference-vs-REFERENCE — sail masks, spike AND semulith agree
+    on the full address; nothing of ours to minimize). **One genuine
+    model-vs-references behavioral divergence exists: `DIFF-FENCEI-EXECUTED`** — the
+    legitimate UNSPECIFIED case (the profile declares Zifencei absent; both references
+    execute fence.i anyway), already pinned by `it-fencei`'s expected-divergence
+    protocol.
+  - **The minimization.** `it-fencei` is 3 instructions (agreeing prefix, fence.i, the
+    continuation marker). The minimal reproducer of the divergence is ONE word:
+    `0x0000100F` alone — semulith's policy trap lands at step 0, the references nop and
+    run off the end into the zero word (measured: both raise illegal-instruction there —
+    they stay each other's control over their full 2-step length). The minimized case is
+    retained as the tracked guest `min-fencei` (expect_divergence at_step 0 — the prefix
+    agreement is vacuous, the protocol's four legs unchanged). ⛔ The hand route, not
+    `semulith reduce`: the reducer minimizes a guest against a MUTATION's divergence
+    (P1-LAB.9); a reference difference has no mutant table row, and widening the
+    reducer's scope for one word would be machinery beyond the case.
+  - **What is deliberately NOT done:** no mask widened, no expected value edited
+    (EVD-05/AI-05 — the census found no discrepancy tempting either); no "reduction" of
+    reference-vs-reference differences (they are the references' owners', and
+    `DIFF-TVAL-PHYS-MASK`'s reopening owner is named in its record).
+  - **Cascades:** `min-fencei` × 2 files; `gen_guests.py` + `guests.rs`; one
+    `run/tests.rs` suite (Stop::Undefined at entry, trap (0x02, 0x100F)); the census
+    (empty arm + justification); the smoke tuple; the matrix (F×E, beside `it-fencei` —
+    same difference id); the G-reports regenerate; the book. `profiles/` 116 → 118 —
+    inside the reviewed 120 ceiling. `EXERCISE-COVERAGE` stays 52/52.
 
 ---
 

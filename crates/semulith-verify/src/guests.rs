@@ -84,6 +84,8 @@
 //!   `profiles/rv64i-lab-v0/guests/it-prio-load.s`  `ad39fe5f0a602818f486e66ea50ac30be9fc8975da300250b10d050eebd7a05a`
 //!   `profiles/rv64i-lab-v0/guests/it-progress-loop.expected.sexp`  `8318bacf7fb31c2c5f9df96b80c5d93cd19a7fd9af8244d3b9d50cf5f2c9b955`
 //!   `profiles/rv64i-lab-v0/guests/it-progress-loop.s`  `98f034a39a435a823b639d7655b7213f591e30e6c166310626988973883a0f3f`
+//!   `profiles/rv64i-lab-v0/guests/min-fencei.expected.sexp`  `6c1ffcc2a5f45184f9368693f89096b55ec80fdaef725beec995326eaf370e77`
+//!   `profiles/rv64i-lab-v0/guests/min-fencei.s`  `0ee8c70ba9954b831817b732dd8e73e6219b019a74c88aff50327d14917b310f`
 //!   `profiles/rv64i-lab-v0/guests/scope-alu.expected.sexp`  `51db1890cb3acf60b7215d48b816bc07159a4ebbea074c3614b927d885bec2da`
 //!   `profiles/rv64i-lab-v0/guests/scope-alu.s`  `927382ca130c89032d35619086339e7afa7316ec7202ce947cc575e9717c3517`
 //!   `profiles/rv64i-lab-v0/guests/scope-branch.expected.sexp`  `b43b2690339c94e03cd0114e6f7e09602d4da30c520a4350505fab1588697fb6`
@@ -98,7 +100,7 @@
 //!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `5bd4d210483ed8c7815e40acb1c113fadf815359a73dae5c3e944d34208760f9`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.expected.sexp`  `081ed9427c790df38822107188dd91b03847e92bcb0a722f420eb7e89a289e35`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
-//! Generator: `scripts/gen_guests.py` (sha256 `890e429c7df36ab7ad781fce5579d1db6f877e4ab7a258417ec621802dddefa3`)
+//! Generator: `scripts/gen_guests.py` (sha256 `96212a1d2d86cb16a20aaa7c3fe9caa21ca286ebf7f82dd498dae444c93bfd5c`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
 //! byte-stable by construction (one entry per line), so regeneration and the
@@ -1748,6 +1750,15 @@ static EXPECTED_DIR_X0_WRITES: &[Expectation] = &[
 #[rustfmt::skip]
 static NEVER_WRITTEN_DIR_X0_WRITES: &[u8] = &[0];
 
+#[rustfmt::skip]
+static WORDS_MIN_FENCEI: &[u32] = &[
+    0x0000100F,
+];
+#[rustfmt::skip]
+static EXPECTED_MIN_FENCEI: &[Expectation] = &[
+    Expectation { step: 0, writes: &[] },
+];
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -2203,6 +2214,15 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 18,
         expected: EXPECTED_DIR_X0_WRITES,
         never_written: NEVER_WRITTEN_DIR_X0_WRITES,
+        cross_model: true,
+    },
+    Guest {
+        name: "min-fencei",
+        entry: 0x0000000080000000,
+        words: WORDS_MIN_FENCEI,
+        executed_steps: 1,
+        expected: EXPECTED_MIN_FENCEI,
+        never_written: &[],
         cross_model: true,
     },
 ];

@@ -224,6 +224,7 @@ pub const MUTATIONS: &[(&str, &str)] = &[
 ///   added by `.4` has a SUCCESSFUL store crossing.
 /// - `it-alias-bound.s`, `it-progress-loop.s`, `it-fencei.s` (`P2-SCALAR.4`): no load or
 ///   store instruction exists in these programs.
+/// - `min-fencei.s` (`P2-SCALAR.6`): one `.word`, no load or store instruction.
 /// - `dir-runoff.s`, `dir-cmp-branch.s` (`P2-SCALAR.5` strand 3): no load or store
 ///   instruction exists in these programs.
 /// - `dir-chase.s` (`P2-SCALAR.5` strand 3): six crossings — the three initializing
@@ -447,7 +448,7 @@ pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
             false,
         )],
         "it-prio-jump" | "it-prio-load" | "it-fault-alias" | "it-alias-bound"
-        | "it-progress-loop" | "it-fencei" => &[],
+        | "it-progress-loop" | "it-fencei" | "min-fencei" => &[],
         "it-fault-wrap-ld" => &[(
             1,
             Request::Load {

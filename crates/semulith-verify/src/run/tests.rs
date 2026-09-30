@@ -942,6 +942,22 @@ fn dir_x0_writes_discard_every_producer_kind_but_still_cross() {
     );
 }
 
+#[test]
+fn min_fencei_is_the_retained_minimized_divergence() {
+    // F×E — P2-SCALAR.6's minimized case for DIFF-FENCEI-EXECUTED: ONE word reproduces
+    // the whole divergence. Semulith's policy trap lands at step 0 (cause 0x02, tval =
+    // the word); the references nop and run off the end. The smoke's four-step
+    // expected-divergence protocol checks it with at_step 0 (vacuous prefix).
+    assert_guest_observations(
+        "min-fencei",
+        Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0000 }),
+    );
+    let (trace, _, _) = run_guest("min-fencei");
+    assert_eq!(trace.steps.len(), 1);
+    assert_eq!(trace.steps[0].word, Some(0x0000_100F));
+    assert_eq!(trace.steps[0].trap, Some((0x02, 0x0000_100F)));
+}
+
 // ---- the restart axis: the offline determinism suite (P2-SCALAR.4) ---------------------------------
 
 #[test]

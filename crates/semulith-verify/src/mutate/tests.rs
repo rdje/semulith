@@ -240,6 +240,8 @@ fn the_data_crossing_census_pins_every_tracked_guest() {
         // source classification at the zero word's address; the chase and the walk end on
         // their closing ebreak; the rest retire into the budget (the `_` arm).
         "dir-runoff" => Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0008 }),
+        // P2-SCALAR.6: the minimized fence.i divergence — the policy trap at step 0.
+        "min-fencei" => Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0000 }),
         "dir-chase" | "dir-memwalk" => Stop::Trap,
         n if n.starts_with("it-") => Stop::Trap,
         n if n.starts_with("fault-") => Stop::Trap,

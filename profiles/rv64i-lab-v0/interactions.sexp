@@ -30,7 +30,7 @@
 (cell (axis "fault") (axis "fault") (guest "it-prio-jump") (guest "it-prio-load"))
 (cell (axis "fault") (axis "alias") (guest "it-fault-alias") (guest "fault-ld-x0-mis") (guest "fault-ld-x0-fault"))
 (cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (difference "DIFF-TVAL-PHYS-MASK"))
-(cell (axis "fault") (axis "event") (guest "it-fencei") (guest "fault-reserved") (guest "dir-runoff") (guest "fault-shiftw-res") (guest "scope-ecall") (guest "scope-ebreak") (difference "DIFF-FENCEI-EXECUTED"))
+(cell (axis "fault") (axis "event") (guest "it-fencei") (guest "min-fencei") (guest "fault-reserved") (guest "dir-runoff") (guest "fault-shiftw-res") (guest "scope-ecall") (guest "scope-ebreak") (difference "DIFF-FENCEI-EXECUTED"))
 (cell (axis "fault") (axis "progress") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence"))
 (cell (axis "fault") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism"))
 

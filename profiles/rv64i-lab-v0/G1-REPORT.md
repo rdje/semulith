@@ -19,7 +19,7 @@ generator has no code path to `passed` while one is.
 | --- | --- |
 | `crates/semulith-core`, `-verify`, `-cli` | the laboratory: interpreter, evidence machinery, command surface |
 | `contract-obligations.sexp` | 36 obligations (the environment contract the laboratory serves) |
-| `guests/` | 48 assembly guests, 1 C guests, 48 expectation documents |
+| `guests/` | 49 assembly guests, 1 C guests, 49 expectation documents |
 | `baseline.sexp` | the recorded performance baseline |
 
 ## Criterion 1 — failures are replayable from recorded inputs
@@ -85,10 +85,10 @@ mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).
 
 ## Criterion 6 — a compiled freestanding guest retires under first-divergence comparison
 
-`guests/` holds **48 assembly guests** and **1 C guests**.
-The 48 assembled guests retire under first-divergence comparison
+`guests/` holds **49 assembly guests** and **1 C guests**.
+The 49 assembled guests retire under first-divergence comparison
 against TWO pinned references (sail-riscv and spike,
-642/642 aligned steps), and the C guest (`c-scope.c`) —
+643/643 aligned steps), and the C guest (`c-scope.c`) —
 compiled from C by the pinned toolchain (`scripts/build_c_guest.sh`; the pin is
 `decision_c-guest-routing-and-toolchain`), not hand-encoded — retires under the
 same three-way comparison. The toolchain probes and
