@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-09-30)_ — the rounding/saturation survey (DSP-REVIEW.2)
+
+The manuals write the ordering as inline arithmetic, so the leaf records it that way:
+multiply → accumulate → round-add → shift/saturate → narrow, per instruction, quoted.
+Two measurements deserve their names: the flag side effect is per-instruction DATA
+(SADD2's own entry says it does NOT set the SAT bit — a model that derives "saturated ⇒
+flag set" is wrong by construction), and SAT's update lands one cycle after the result
+(the delayed-effect shape the tree predicted). The seven manual defects are recorded with
+quotes and NOT resolved (upstream facts; our intuition is not their authority) — the
+DOTPNRSU2 32-vs-33-bit intermediate split is a core-version profile-pinning obligation.
+In-flight authoring slip owned: a fabricated filename went into a checklist's recorded
+output block in the first draft; measured, corrected to the real pasted output, and noted
+in the block itself.
+
+Lesson: `promotion: declined` (recorded in the leaf).
+
 ## _(2026-09-30)_ — the DSP widths survey (DSP-REVIEW.1)
 
 Method matters more than findings here: pdftotext extraction of the three catalogued TI

@@ -53,9 +53,22 @@ or claiming DSP compatibility.
   Lessons: `promotion: declined (the locator discipline is the leaf's own acceptance; the side-select trap is recorded in the evidence document where the next reader meets it)`.
 
 - ID: `DSP-REVIEW.2` — **rounding, saturation and sticky flags**
-  Status: `pending`
+  Status: `done` (`2026-09-30`)
   Goal: whether rounding precedes or follows accumulation, saturation and narrowing; saturation per operation / lane / transfer; which sticky flags survive interrupts and context switches (questions 3–5).
   Acceptance: the ordering is expressed as a sequence of defined steps, not as a single "saturating add".
+  Result: met, `2026-09-30`. The ordering is recorded as the manuals' own step sequences
+  (multiply → accumulate → round-add → shift/saturate → narrow — CMPYR1, DDOTPH2R,
+  QSMPY32R1, DOTPNRSU2 quoted with locators). Measured findings: saturation is
+  in-instruction AND per-lane AND an explicit transfer (SAT) — all three models named by
+  the manuals; the sticky-flag side effect is per-instruction DATA (SADD2 saturates but
+  does not set SAT — printed in its entry); CSR.SAT/SSR survive interrupts (the TSR
+  tables prove it) with a documented context-switch restore ORDER; and SAT sets one cycle
+  AFTER the result write — the delayed-effect shape this tree predicted. **Seven manual
+  defects/ambiguities recorded, none resolved by intuition** (the CMPYR1 tmp_e/tmp_o typo
+  in TWO manuals, the CMPY32R1 prose-vs-C contradiction, the MPYHIR missing-saturation
+  clause, the DOTPNRSU2 core-version width split — a profile-pinning obligation, and the
+  rest). Evidence: [`artifacts/dsp-review/2026-09-30-rounding-saturation-q3-q5.md`](artifacts/dsp-review/2026-09-30-rounding-saturation-q3-q5.md).
+  Lessons: `promotion: declined (the defect list lives in the evidence document where the next evaluator meets it)`.
 
 - ID: `DSP-REVIEW.3` — **addressing and address spaces**
   Status: `pending`
@@ -110,7 +123,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.2` | `pending` | `.1` done `2026-09-30` (widths measured across the three catalogued TI manuals, locators on every fact) — rounding/saturation/sticky flags (questions 3–5) build on the measured widths |
+| 1 | `DSP-REVIEW.3` | `pending` | `.2` done `2026-09-30` (the rounding/saturation order measured as defined step sequences; seven manual defects recorded unresolved) — addressing and address spaces (questions 6–8) next |
 
 ## Decisions
 
@@ -180,6 +193,54 @@ declared here before the first finding exists rather than improvised when one do
   row moves to In Progress), `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md`
   (frontier `.2`), this tree, the artifact document.
 
+## Acceptance Checklist (leaf DSP-REVIEW.2)
+
+- [x] **REPRODUCE / ISSUE** — same extraction, new questions; the manuals' own arithmetic
+  blocks carry the ordering:
+
+  ```
+  $ grep -c 'sticky' target/dsp-review/c64x-spru732j.txt target/dsp-review/c66x-sprugh7.txt target/dsp-review/c674x-sprufe8b.txt
+  target/dsp-review/c64x-spru732j.txt:0
+  target/dsp-review/c66x-sprugh7.txt:0
+  target/dsp-review/c674x-sprufe8b.txt:0   # "sticky" appears in NONE — the property is
+    # expressed as "cleared only by…", measured (an authoring slip wrote a wrong filename
+    # into this block's first draft; the pasted output above is the real one)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in our tree; the leaf's substance is the
+  manuals' own measured defects. WHY record-not-resolve: seven ambiguities (the tmp_e
+  typo in two manuals, the prose-vs-C ordering contradiction, the missing saturation
+  clause) are UPSTREAM facts — resolving them by intuition would be our invention
+  carrying their authority. WHERE they live: the evidence document's defect list,
+  counted:
+
+  ```
+  $ grep -c '^[0-9]\. \*\*' docs/tasks/artifacts/dsp-review/2026-09-30-rounding-saturation-q3-q5.md
+  7        # the recorded manual defects/ambiguities, none resolved by intuition
+  ```
+
+- [x] **FIX** — the evidence document
+  `docs/tasks/artifacts/dsp-review/2026-09-30-rounding-saturation-q3-q5.md` (the step
+  sequences, the granularity models, the flag lifetimes, the seven recorded defects),
+  the leaf's Result, the frontier.
+
+- [x] **ADDRESSED (verified)** — the acceptance's exact ask is met: every rounding order
+  is a quoted sequence of defined steps (multiply → accumulate → round-add →
+  shift/saturate → narrow), never "a saturating add". No code changed:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **NO REGRESSION** — docs-only leaf; the gate is the check, green:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.3`), this tree, the artifact.
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -193,11 +254,13 @@ declared here before the first finding exists rather than improvised when one do
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 | `2026-09-30` | `DSP-REVIEW.1` | the extraction (`pdftotext` of the three catalogued manuals) + the absence searches | every Q1/Q2 fact quoted with page+section; `guard`/`accumul`/`Q15` measured absent; the `s`-bit trap measured (side-select, not scaling) |
+| `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.2` | `SEMULITH-DR-0086 (leaf DSP-REVIEW.2): rounding, saturation, sticky flags — the defined step sequences, measured` | the ordering as step sequences; per-lane saturation; SAT/SSR lifetimes; seven manual defects recorded unresolved; the one-cycle SAT delay is `.4`'s input |
 | `DSP-REVIEW.1` | `SEMULITH-DR-0085 (leaf DSP-REVIEW.1): widths and accumulator semantics measured across the three TI manuals` | the evidence document with per-fact locators; the first classification for `.7`; the measured absences (no accumulator, no guard bits) |
 
 ## Changelog

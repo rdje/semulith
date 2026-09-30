@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-DR-0086 (leaf DSP-REVIEW.2) — rounding, saturation, sticky flags: the defined step sequences
+
+- The ordering measured as the manuals' own step sequences (multiply → accumulate →
+  round-add → shift/saturate → narrow; CMPYR1/DDOTPH2R/QSMPY32R1/DOTPNRSU2 quoted with
+  locators) — the leaf's acceptance, never "a saturating add".
+- Saturation is in-instruction AND per-lane AND an explicit transfer (SAT); the
+  sticky-flag side effect is per-instruction DATA (SADD2 saturates but does not set SAT —
+  printed in its own entry). CSR.SAT/SSR survive interrupts (the TSR tables prove it);
+  the context-switch restore ORDER is documented; SAT sets one cycle after the result —
+  the delayed-effect shape, routed as `.4`'s input.
+- **Seven manual defects/ambiguities recorded, none resolved by intuition** (the CMPYR1
+  typo in two manuals, the prose-vs-C ordering contradiction, the missing saturation
+  clause, the core-version intermediate-width split…). Evidence:
+  docs/tasks/artifacts/dsp-review/2026-09-30-rounding-saturation-q3-q5.md.
+
 ## SEMULITH-DR-0085 (leaf DSP-REVIEW.1) — widths and accumulator semantics, measured across the three TI manuals
 
 - The first DSP review leaf: Q1/Q2 of the catalog's DSP questions answered from the
