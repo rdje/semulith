@@ -16,6 +16,24 @@ and it is written into the leaf's own checklist block where the next author sees
 
 Lesson: `promotion: declined` (the breaks are the artifact's own section).
 
+## _(2026-09-30)_ — the synthetic boundary fixture (DSP-REVIEW.6)
+
+The design question was what "through the real API" means, and the answer was measured:
+gen_state.py's refusal list is the boundary's own documentation (the unknown dossier
+name, the XLEN owner split, the second profile id, the nonstandard width — each refused
+by name), and the schema layer refuses the packet/space/delayed-effect shapes the same
+way. The fixture pins the REFUSALS — green while the boundary stands, RED the day a
+shape becomes supported (the fixture measures the boundary moving, which is its whole
+purpose). The packet descriptor was reduced until its ONLY refusal is `packet` itself
+(the kind/requires/source fields satisfied first, so the pin measures the construct,
+not descriptor hygiene). The vendor gaps filed with .3 were answered same-day (the
+2026-09-30 DSP batch) and their channel contract now lives in
+`docs/knowledge/the-chipdoc-channel.md` (adopted per Policy 12: the content copied in,
+never depended on externally).
+
+Lesson: `promotion: declined` (recorded in the leaf; the channel contract is the
+knowledge card's).
+
 ## _(2026-09-30)_ — the loop/restart survey (DSP-REVIEW.5)
 
 The measured content: SPLOOP's full state census (buffer + hidden LBC ×2 + ILC + RILC +

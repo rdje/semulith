@@ -131,9 +131,49 @@ or claiming DSP compatibility.
   Lessons: `promotion: declined (the drain/exception asymmetry and the restart register set live in the evidence document where `.6`/`.7` meet them)`.
 
 - ID: `DSP-REVIEW.6` — **executable synthetic stress fixture** *(task card `T010`)*
-  Status: `pending`
+  Status: `done` (`2026-09-30` — the pipeline's refusal boundary was measured by probe
+  before the fixture was designed)
   Goal: a synthetic target exercising nonstandard widths, distinct address spaces, packets and delayed effects through the real API.
   Acceptance: labelled **synthetic** everywhere it appears; its passing evidence may never be cited for a real DSP claim.
+  Design (recorded before code, `2026-09-30` — every boundary below measured by probe,
+  `target/dsp-review/probes/`):
+  - **The state generator's refusal boundary, measured:** an unknown dossier filename →
+    "not a dossier document I know"; an XLEN split between descriptor and `arith.rs` →
+    "one fact, one owner … do not pick a side in the generator"; a second profile id →
+    "a second profile is generator work, not a config knob"; and the width itself →
+    "masked fixed-width storage for nonstandard widths is generator work
+    (docs/ARCHITECTURE.md §4), not silently assumed" — each a named refusal, rc=2.
+  - **The evaluator's step shape** (measured by `.4` from the manuals): one instruction
+    completes or faults as a unit per step — a packet or a delayed writeback has no
+    representation TODAY. The schema layer refuses undeclared constructs by name
+    (RECORD-SCHEMA) — a `packet` construct in a fragment is refused the same way.
+  - **So the fixture's honest shape**: the synthetic target (`synth24`: 24-bit registers,
+    a second address space, a packet construct, a delayed effect) pushed through the REAL
+    pipeline — the state generator, the schema layer, the definition generator — and
+    every refusal/acceptance MEASURED and pinned as the expected output. The fixture is
+    the tracked probe suite `docs/tasks/artifacts/dsp-review/synth/` (the tree's own
+    evidence family): the descriptors, the driver, the pinned outcomes — every file
+    carrying the SYNTHETIC banner (the acceptance's labelling rule), and the README
+    stating the citation ban (its passing evidence may never be cited for a real DSP
+    claim).
+  - **What green means**: the fixture passes when every measured outcome equals its pin —
+    today's honest expectation is that all four shapes REFUSE by name (the boundary is
+    exactly where the generator says it is), so the fixture pins the REFUSALS. The day
+    the pipeline genuinely supports a shape, the pin's refusal goes stale and the suite
+    turns RED — the fixture measures the boundary moving, which is its whole purpose.
+  Result: met, `2026-09-30`. The synthetic target `synth24` (24-bit registers, a second
+  address space, a packet construct, a delayed effect) pushed through the REAL pipeline —
+  every shape measured refused BY NAME, and the refusals are the pins: the width
+  (`gen_state.py`: "masked fixed-width storage for nonstandard widths is generator work",
+  rc 2), the second space (schema: `undeclared field "memory_spaces"`), the packet
+  (schema: `undeclared field "packet"`), the delayed effect (schema: `undeclared operator
+  "delay"`). The tracked fixture `docs/tasks/artifacts/dsp-review/synth/` (the four
+  descriptors + the driver + the README) is labelled SYNTHETIC everywhere, and the README
+  carries the citation ban verbatim. The suite is green (4/4) exactly while the boundary
+  stands where pinned — a shape becoming supported turns it RED, by design. ⭐ This IS the
+  `.4` break made executable: the packet and the delayed effect refuse at the schema
+  layer today, so the report can say where the work lives rather than merely that it
+  exists.
 
 - ID: `DSP-REVIEW.7` — **interface findings report**
   Status: `pending`
@@ -168,7 +208,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.6` | `pending` | `.5` done `2026-09-30` (the SPLOOP state census, the drain/exception asymmetry, the restart register set — all measured; MFENCE is C66x-only). The executable synthetic stress fixture (`.6`, task card T010) is the first CODE leaf of the tree |
+| 1 | `DSP-REVIEW.7` | `pending` | `.6` done `2026-09-30` — the synthetic fixture measures the boundary (all four shapes refuse by name, pinned). `.7` is the interface findings report (the classified list for P3-BREADTH) |
 
 ## Decisions
 
@@ -435,6 +475,55 @@ declared here before the first finding exists rather than improvised when one do
 - [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.6`), this tree, the artifact.
 
+## Acceptance Checklist (leaf DSP-REVIEW.6)
+
+- [x] **REPRODUCE / ISSUE** — the fixture's content is measured, not designed from
+  intent: each probe descriptor was pushed through the real generator/schema and reduced
+  until its ONLY refusal is the shape under test:
+
+  ```
+  $ python3 scripts/gen_state.py --state docs/tasks/artifacts/dsp-review/synth/state.sexp \
+      --arith crates/semulith-core/src/arith.rs --out /dev/null
+  gen_state: REFUSED — integer_registers width_bits 24 — masked fixed-width storage for
+  nonstandard widths is generator work (docs/ARCHITECTURE.md §4), not silently assumed
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf measures a boundary. WHY pinning
+  refusals (not capabilities) is the honest fixture: the boundary today IS the refusals,
+  so green = the boundary stands where measured; a shape becoming supported turns the
+  pin stale and the suite RED — the fixture measures the boundary MOVING. WHERE the
+  refusal lines come from: the pre-fixture probe runs (the leaf's verification log).
+
+  ```
+  $ ls docs/tasks/artifacts/dsp-review/synth/ | wc -l
+       6   # the fixture: 4 descriptors + the driver + the README (the SYNTHETIC banner)
+  ```
+
+- [x] **FIX** — `docs/tasks/artifacts/dsp-review/synth/`: the four descriptors, the
+  driver `run_synth_probes.sh`, the README (the SYNTHETIC banner + the citation ban,
+  verbatim the acceptance's rule).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash docs/tasks/artifacts/dsp-review/synth/run_synth_probes.sh
+    PASS  nonstandard width (24-bit) refuses by name
+    PASS  a second address space refuses by name
+    PASS  a packet construct refuses by name
+    PASS  a delayed effect refuses by name
+  synth probes: 4 pass / 0 fail
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green (the fixture is evidence, not a
+  commit gate — it measures untracked-adjacent machinery state and is re-run by hand):
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.7`), this tree, the fixture.
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -450,6 +539,7 @@ declared here before the first finding exists rather than improvised when one do
 | `2026-09-30` | `DSP-REVIEW.1` | the extraction (`pdftotext` of the three catalogued manuals) + the absence searches | every Q1/Q2 fact quoted with page+section; `guard`/`accumul`/`Q15` measured absent; the `s`-bit trap measured (side-select, not scaling) |
 | `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
 | `2026-09-30` | `DSP-REVIEW.3` | the same extraction + the units/spaces/modes searches | byte units on both sides measured (no word-addressed space exists); the two-L1-spaces shape, the .D-unit generators, the AMR scheme quoted with locators; bit-reversed/strided addressing measured absent; the circular nonalignment split pinned |
+| `2026-09-30` | `DSP-REVIEW.6` | the four probes through the real pipeline (pre-fixture measurement) | every shape refused by name, rc 2/1/1/1; the packet descriptor reduced until its ONLY refusal is `packet` itself; `run_synth_probes.sh` green 4/4 with the refusals pinned |
 | `2026-09-30` | `DSP-REVIEW.5` | the same extraction + the SPLOOP/LDDW/MFENCE searches | SPLOOP C64x+-only measured by the compatibility fields; the loop-state census quoted; drain-vs-no-drain asymmetry measured; MFENCE 0 hits in two manuals, 34 in C66x's |
 | `2026-09-30` | `DSP-REVIEW.4` | the same extraction + the packet/latency/conflict sections | the execute-packet rules, the delay-slot tables, the no-interlocks sentence, the annulment semantics and the manual's own incorrect-result example — quoted with locators; the §3.7.2/§3.8.2 contradiction recorded in both forms |
 
@@ -457,6 +547,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.6` | `SEMULITH-DR-0091 (leaf DSP-REVIEW.6): the synthetic stress fixture — the boundary pinned, not assumed` | `synth24` through the real pipeline; four named refusals pinned; SYNTHETIC banner + the citation ban |
 | `DSP-REVIEW.5` | `SEMULITH-DR-0090 (leaf DSP-REVIEW.5): loops, repeats, interrupts — the SPLOOP census and the drain asymmetry` | the loop-state census; not-interruptible rule; restart semantics; MFENCE C66x-only; the SEM-04 framing measured |
 | `DSP-REVIEW.4` | `SEMULITH-DR-0089 (leaf DSP-REVIEW.4): the predicted break, measured — twice` | the packet as the unit of progress; the delayed-visible writeback with interrupts inside the window; the census-reopening consequence named |
 | `DSP-REVIEW.3` | `SEMULITH-DR-0088 (leaf DSP-REVIEW.3): addressing and address spaces — units byte-compatible, the seams named` | the unit check first per the acceptance; the five non-fitting seams measured; the vendor-diversity gaps filed (DR-0087) |
