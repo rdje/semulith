@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0076 (leaf P2-SCALAR.8, design) — the portability matrix: availability measured first
+
+- Measured, not assumed: x86-64 is UNAVAILABLE on this host (`arch -x86_64` → `Bad CPU
+  type in executable`, Rosetta absent; no qemu user-mode runner) — the mandatory leg
+  reads UNMET, recorded not waived; the profile stays experimental per the acceptance.
+- Miri measured present and green: 65/65 core suites interpreted natively AND 65/65 on
+  `powerpc64-unknown-linux-gnu` (big-endian) — the cross-endian leg holds. The one
+  `unsafe` island (bench's counting allocator) excluded by name.
+- The design: `scripts/check_portability.sh` (four legs, honest `incomplete` verdict,
+  not a commit gate) + `portability.sexp` in `baseline.sexp`'s plain-atom shape.
+
 ## SEMULITH-PS-0075 (leaf P2-SCALAR.7) — mid-execution snapshots: replay proven for the implemented boundaries
 
 - `semulith-verify::snapshot` + the CLI pair `snapshot`/`resume`: the record carries the

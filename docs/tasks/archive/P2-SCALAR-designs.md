@@ -599,3 +599,70 @@ this file. Archived design sections, verbatim:
   new self-test arms, which fail RED the day the normalization masks a real difference;
   knowledge cards would restate what the code and the gates already say)`.
 
+
+  Design (recorded before code, `2026-09-30` — three strands, each its own commit):
+  1. **The C-toolchain guest** (flips G1 criterion 6). Tracked: `guests/c-scope.c` — a
+     freestanding C tour of the declared scope (64/32-bit ALU, every load/store width,
+     branches, function calls through JAL/JALR with a real stack, shifts), compiled
+     `-march=rv64i -mabi=lp64 -nostdlib -ffreestanding` so the compiler may emit only
+     RV64I, results retired into REGISTERS before the closing `ebreak` (the observation
+     vocabulary is register writes; a result left only in memory would prove nothing —
+     the `.1` lesson). Tracked build script compiles+links via the pinned toolchain
+     (clang 21.1.8 + `ld.lld` 21.1.8, refusing by name if absent) into
+     `target/refs/guests/c-scope.elf` — untracked, same standing as the reference
+     binaries. `scripts/run_semulith_smoke.py` learns the `.c` path: build, then the same
+     three-way first-divergence comparison and reproduce leg as the assembled guests.
+     There is deliberately **no per-step expectation document** for the compiled guest —
+     the compiler, not the author, chooses the instruction sequence; the evidence is the
+     differential itself (`EVD-04` recorded: agreement is tested evidence for these
+     inputs, never universal proof). `gate_report.py`'s criterion-6 probe already counts
+     `guests/*.c`; its hardcoded NOT-met prose and the Limitations section gain the
+     met/unmet branch, the met prose naming the guest, the toolchain pin and the re-run
+     command, with GATE-REPORT self-test arms for both branches. Guest-corpus ceiling
+     expansion is its own reviewed decision at commit time, per the `.1` rule.
+  2. **The ACT4 external suite**: fetch the generated half (635 MB `.S` + 31 MB `.svh`,
+     pinned upstream commit `e2216915d9a17acc142610831d88de8b65683866`), build the
+     harness (gas-syntax sources assemble with the same pinned clang; the suite's
+     signature mechanism adapts to the laboratory's observation vocabulary), run, record
+     as external tests with Sail-derived expectations. Sized at strand time — if it
+     outgrows a safe slice it becomes its own leaf.
+  3. **Directed sequence tests**: the directed campaigns the matrix does not already
+     cover, designed from the `.1`–`.4` evidence gaps.
+
+  Design (recorded before code, `2026-09-30`):
+  - **The pending-state census is the pinned dossier's own** (`state.sexp`
+    `hidden_state_census`, SEM-08): all seven hidden-state candidates are measured ABSENT
+    (CSRs, reservation set, FP state, vector state, privilege/trap state, fetch-cache
+    state, partially committed effects) — its consequence sentence already says
+    "snapshot and replay reduce to the register file, pc and memory". So a complete
+    mid-execution snapshot for THIS profile is exactly: the 31 writable registers + pc
+    (the `ArchitecturalState`) + the memory content (the FlatMemory bytes). Anything
+    beyond that is **not offered at all** — the acceptance's second arm — and the suite
+    states so by name.
+  - **The mechanism** (`semulith-verify::snapshot`): a `Snapshot` record — the
+    definition-identity pins flattened from `MANIFEST` (the `P1-LAB.10` bundle
+    discipline: replaying against a different definition is refused BY NAME, not
+    mis-replayed), the region declaration, entry, the step index `k`, the register file
+    and pc, and the memory content SPARSE-encoded (offset + non-zero runs — a 2 GiB
+    region of zeros is not data; the encoding is deterministic and its round-trip is
+    the first thing tested). JSON both ways, the crate's own reader/writer (the
+    wasm-safe, dependency-free rule).
+  - **The proof suite** (the G-REPLAY evidence): every tracked guest, at several step
+    indices (early / mid / final-quiescent): run to `k`, snapshot, continue to the stop
+    → the reference continuation; fresh environment, restore the snapshot, continue →
+    the replayed continuation; the two must be IDENTICAL (trace tails and crossing
+    logs). RED arms: a snapshot with one memory byte corrupted must be caught (the
+    continuation diverges or the digest refuses); a snapshot whose definition pins do
+    not match the live manifest is refused by name; a snapshot restored onto a
+    different base/entry refuses. The honest-negative discipline: a snapshot that
+    silently dropped future-relevant state would pass exactly NONE of these arms
+    against a guest whose later behavior depends on it — the memory-walk and chase
+    guests (state in MEMORY, not registers) are the load-bearing cases, and the suite
+    names them.
+  - **The CLI surface** mirrors bundle/replay: `semulith snapshot <elf> --at N` writes
+    the record; `semulith resume <file.json>` re-runs from it and prints the
+    continuation. Exit codes and refusal shapes follow the existing commands.
+  - **Cascades:** `snapshot.rs` + its tests; the CLI's two subcommands + doc comment +
+    USAGE; the book (the model book's evidence chapter — replay now covers mid-execution,
+    not only cold reset); `G?-REPORT.md` regenerate. No guest corpus change;
+    `EXERCISE-COVERAGE` untouched.
