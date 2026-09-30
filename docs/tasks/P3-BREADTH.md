@@ -113,6 +113,19 @@ unsupported families remain unclaimed.
   and whether each refusal is named work or an accident), and the composition rules —
   the coupling graph between axes — are the actual research content, because an
   abstraction that treats coupled axes as independent generates incoherent processors.
+  **The director's grounding (same exchange): abstraction means to SIMPLIFY the view of a
+  problem** — as R, C and L are simplifications of real physical phenomena that, composed
+  by rules, yield working circuits; as RTL is a simplification of the real design problem.
+  Same idea, another level, another domain: the axis menu simplifies five vendors' manuals
+  into composable components; the composition rules are the Kirchhoff laws of the domain.
+  The analogy carries its own engineering requirements: the lumped R/C/L model works
+  because it ships with (a) stated VALIDITY BOUNDS (dimensions ≪ wavelength), (b)
+  COMPOSITION LAWS (KVL/KCL), and (c) a KNOWN FAILURE ENVELOPE (parasitics, distributed
+  effects — the model tells you where it breaks). This tree's equivalents: (a) the claim
+  discipline (unsupported families stay unclaimed), (b) the composition rules — the work,
+  (c) the named-refusal map (`synth24`'s pins) and the honest limits. An abstraction is
+  judged by what it can afford to forget; R/C/L forget Maxwell's equations, the axis menu
+  forgets implementation detail, and both keep exactly what composition needs.
 
 ## Blockers
 
