@@ -5,10 +5,12 @@
 # measure where this project's pipeline refuses shapes a DSP would need. Its passing
 # evidence may NEVER be cited for a real DSP claim (the leaf's acceptance).
 #
-# Four shapes pushed through the REAL pipeline (the state generator and the schema layer),
+# Five shapes pushed through the REAL pipeline (the state generator and the schema layer),
 # each pinned to its measured refusal. The suite is GREEN exactly while the boundary is
 # where the pins say; the day the pipeline genuinely supports a shape, the pin goes stale
 # and the suite turns RED — the fixture's purpose is measuring the boundary moving.
+# Probe 5 (register grouping) was added by P3-BREADTH.1 (2026-10-01) to give finding F2
+# the executable demonstration the findings report said it lacked.
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 DIR="docs/tasks/artifacts/dsp-review/synth"
@@ -36,6 +38,8 @@ probe "a packet construct refuses by name" 1 'undeclared field "packet"' \
   python3 scripts/check_sexp_schema.py "$DIR/packet.sexp" schema/fragment.sexp
 probe "a delayed effect refuses by name" 1 'undeclared operator "delay"' \
   python3 scripts/check_sexp_schema.py "$DIR/delayed.sem.sexp" schema/semantics.sexp
+probe "register grouping with fill semantics refuses by name" 1 'undeclared field "register_groups"' \
+  python3 scripts/check_sexp_schema.py "$DIR/state-groups.sexp" schema/state.sexp
 
 echo "synth probes: $pass pass / $fail fail"
 [ "$fail" -eq 0 ]

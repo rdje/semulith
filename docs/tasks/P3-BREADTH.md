@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `P3-BREADTH`
-- Status: `proposed`
+- Status: `active`
 - Roadmap lane: `ROADMAP.md` §6 → **P3 — Exercise breadth and stabilize only what is demonstrated**
 - Gate: `BREADTH`
 - Depends on: `P2-SCALAR` (gate `CPU-LAB`), `DSP-REVIEW`
@@ -32,9 +32,11 @@ unsupported families remain unclaimed.
 ## Task Tree
 
 - ID: `P3-BREADTH.1` — **apply the interface findings**
-  Status: `pending`
+  Status: `slice-gated` (executable-now scope done `2026-10-01`; the implementation legs await `.3`'s slice decision)
   Goal: implement the abstraction changes `DSP-REVIEW.7` classified as required.
   Acceptance: every change traces to a numbered finding; scalar regression evidence for `rv64i-lab-v0` is preserved and re-run (`EVD-07`).
+  Applied `2026-10-01`: the required-**unconditional** set measured **empty** — F2/F4/F5 are TI/VLIW-conditional, F6 fires per new profile (Decisions, `2026-10-01`). F2 gained its executable demonstration (synth probe 5: `undeclared field "register_groups"`, rc 1 — the report's named honest route); scalar regression re-run green (`make check` 180/180, gen_state rc 0, DEF-GEN ok, G1 `passed` re-derived).
+  Lessons: `promotion: declined (per-slice application of the report's own named remedy; the durable method — a finding without an executable demonstration gets a synth probe — lives in the findings report and the synth README where the next reader meets it)`.
 
 - ID: `P3-BREADTH.2` — **opaque semantic hooks made explicit**
   Status: `pending`
@@ -65,12 +67,26 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.1` | `pending` | the findings landed `2026-10-01` (DSP-REVIEW closed 8/8); the composable-DSP design discussion is recorded above |
+| 1 | `P3-BREADTH.2` | `pending` | the hook audit is executable now: no target is needed to verify that an unsupported construct is a named generation failure, never a guessed translation; the synth suite already pins five such refusals |
+| — | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; F2's implementation and F4/F5 resume when `.3` names the slice (VLIW ⇒ F4+F5; TI ⇒ F2); F6 resumes per new profile |
 
 ## Decisions
 
 - `2026-09-13`: a stable general API **requires** this gate; architecture-specific CPU progress
   does not (`ROADMAP.md` §6).
+- `2026-10-01` (`.1` applied): the findings' **unconditional** implementation set is empty,
+  measured. F4/F5 carry the review's own condition — a VLIW slice in `.3` requires them, a
+  scalar-DSP slice does not. F2's implementation idles unless the slice is TI (the review's
+  routing note), and implementing grouping without an exercised target would be exactly the
+  speculative generality this tree exists to refuse — `.5`'s acceptance requires each schema
+  extension to name the target and case that required it. F6's method exists and is gated;
+  its work is per-profile, so it fires when `.3`/`.4` bring one. What `.1` owed NOW was the
+  evidence upgrade the report named: F2 was the one finding classified from a document's
+  shape, not a measured refusal — synth probe 5 (`state-groups.sexp`, `undeclared field
+  "register_groups"`, rc 1) makes it executable, and the scalar regression was re-run green
+  (`EVD-07`: no code changed; `make check` 180/180 + the generation controls + the G1
+  verdict re-derived). The implementation legs stay owned HERE — `.1` is `slice-gated`, not
+  closed: choosing a VLIW or TI slice in `.3` reopens it by name.
 
 ## Open Questions
 
@@ -143,26 +159,48 @@ unsupported families remain unclaimed.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
-- [ ] **ADDRESSED (verified)** — <measured before → after>
-- [ ] **NO REGRESSION** — <the suite or gate re-run, and its result>
-- [ ] **FIX** — <the change made>
-- [ ] **LOCKSTEP** — <docs, contracts and indexes updated>
+`P3-BREADTH.1`, slice 1 (`2026-10-01`, `SEMULITH-BR-0005`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the findings report itself named the gap: F2 was
+  "the only finding without an executable demonstration… If `P3-BREADTH.1` wants one, a
+  grouping probe in the `synth/` suite is the honest way to get it"
+  (`docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`, "What the report
+  does NOT say"). Measured: `python3 scripts/check_sexp_schema.py
+  docs/tasks/artifacts/dsp-review/synth/state-groups.sexp schema/state.sexp` →
+  `REFUSED state-groups.sexp: construct "integer_registers": undeclared field
+  "register_groups"`, rc 1 — exactly one refusal, the grouping shape.
+- [x] **ADDRESSED (verified)** — probe 5 pinned in `run_synth_probes.sh`; the suite
+  re-run: `synth probes: 5 pass / 0 fail` (was 4/0; the pin is the measured message).
+- [x] **NO REGRESSION** — no code changed (probe fixture + docs only); the scalar
+  regression re-run anyway per the leaf acceptance (`EVD-07`): `make check` → fmt clean,
+  clippy `-D warnings` clean, 180/180 tests; `gen_state.py` on the real profile rc 0
+  (14496 bytes); `check_definition_gen.sh` → `DEF-GEN: ok`;
+  `gate_report.py rv64i-lab-v0 --gate G1` → verdict `passed`, re-derived.
+- [x] **FIX** — `state-groups.sexp` (the real scalar state document plus one synthetic
+  `register_groups` form, reduced to a single refusal), probe 5 in the runner, the synth
+  README's table and count.
+- [x] **LOCKSTEP** — tree (this file: leaf status, frontier, decision, logs),
+  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  and the mdBook's P3 page (the synthetic-shapes list now names register grouping).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| — | — | not started | — |
+| `2026-10-01` | `.1` slice 1 | synth suite 5/5; `make check` 180/180 + fmt + clippy; gen_state rc 0; DEF-GEN ok; G1 `passed` re-derived | `.1` executable-now scope done; leaf `slice-gated` on `.3`'s slice decision |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | — (design discussion) | `SEMULITH-BR-0001 (leaf P3-BREADTH.1): the composable-DSP design discussion recorded — resume here` | the skeleton + the measured axis menu + composition rules + ISA-as-fabric; the lego framing; the permanent bounds |
+| `.1` slice 1 | `SEMULITH-BR-0005 (leaf P3-BREADTH.1): F2 measured executably — synth probe 5; the unconditional set is empty, the leaf slice-gates on .3` | grouping probe pinned (rc 1, `register_groups`); scalar regression re-run green; F2/F4/F5/F6 implementation legs await the slice decision |
 
 ## Changelog
 
 - `2026-09-13`: Created from `ROADMAP.md` §P3 by `SEMULITH-TREES.2`.
 - `2026-10-01`: Design discussion recorded (the composable-DSP model; `SEMULITH-BR-0001`);
   blockers cleared — `DSP-REVIEW` closed 8/8 (`SEMULITH-DR-0094`).
+- `2026-10-01`: `.1` slice 1 (`SEMULITH-BR-0005`) — F2 gained its executable demonstration
+  (synth probe 5); the unconditional-change set measured empty; `.1` is `slice-gated` on
+  `.3`'s slice decision; frontier moves to `.2`.

@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0005 (leaf P3-BREADTH.1) — F2 measured executably; the unconditional-change set is empty; `.1` slice-gates on `.3`
+
+- Finding F2 (register grouping with fill semantics, TI C64x §2.2) was the one
+  `DSP-REVIEW.7` finding classified from a document's shape, not a measured refusal.
+  The report named the honest route and `.1` took it: synth probe 5
+  (`state-groups.sexp` — the real scalar state document plus one synthetic
+  `register_groups` form) refuses by name, `undeclared field "register_groups"`, rc 1;
+  the synth suite is now 5/5.
+- The findings' required-**unconditional** implementation set measured **empty**: F4/F5
+  are conditional on a VLIW slice, F2's implementation idles unless the slice is TI
+  (implementing grouping with no exercised target would be the speculative generality
+  this tree exists to refuse), F6 fires per new profile. `.1` is `slice-gated` — not
+  closed: `.3` naming a VLIW or TI slice reopens it by name. Frontier moves to `.2`.
+- Scalar regression evidence preserved and re-run (`EVD-07`; no code changed):
+  `make check` 180/180 + fmt + clippy clean; gen_state rc 0; DEF-GEN ok; the G1 gate
+  verdict `passed` re-derived.
+
 ## SEMULITH-BR-0001 (leaf P3-BREADTH.1) — the composable-DSP design discussion, recorded for resumption
 
 - The director's `[DBINP]` exchange recorded in the `P3-BREADTH` tree's new Design
