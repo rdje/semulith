@@ -74,6 +74,25 @@ run_leg() { [ -z "$ONLY_LEG" ] || [ "$ONLY_LEG" = "$1" ]; }
 
 NATIVE=red; X86=absent; MIRI=absent; CROSS=absent
 
+# The digest manifest over every tracked guest's `demo --json` output — the byte-exact
+# cross-host contract (P2-SCALAR.8). $1 = a cargo target triple (empty = the host).
+manifest_digest() {
+python3 - "$1" <<'PY'
+import hashlib, subprocess, sys, pathlib, re
+target = sys.argv[1]
+src = pathlib.Path("crates/semulith-verify/src/guests.rs").read_text()
+names = sorted(set(re.findall(r'name: "([a-z0-9-]+)"', src)))
+h = hashlib.sha256()
+cmd = ["cargo", "run", "-q"] + (["--target", target] if target else []) + \
+      ["-p", "semulith-cli", "--", "demo"]
+for n in names:
+    out = subprocess.run(cmd + [f"--guest={n}", "--json"], capture_output=True,
+                         check=True).stdout
+    h.update(hashlib.sha256(out).hexdigest().encode())
+print(h.hexdigest())
+PY
+}
+
 if run_leg native; then
 echo "== leg 1: native ($(uname -m)) =="
 # capture-then-read, never pipe into grep -q: grep -q's early exit SIGPIPEs cargo, and
@@ -130,7 +149,26 @@ echo "== leg 2: x86-64 (mandatory) =="
 if [ "$(uname -m)" = "x86_64" ]; then
   X86=red; cargo test --all >/dev/null 2>&1 && X86=green
 elif [ "$(uname -m)" = "arm64" ] && [ "$(uname -s)" = "Darwin" ]; then
-  if arch -x86_64 /usr/bin/true 2>/dev/null; then X86="absent (Rosetta present but the leg needs a full run — provision it)"; else X86="absent (Rosetta absent — measured 2026-09-30: Bad CPU type in executable)"; fi
+  if arch -x86_64 /usr/bin/true 2>/dev/null; then
+    # The Rosetta bridge (decision_release-route-x86-64-leg): cross-compile the fixtures
+    # for x86_64-apple-darwin and run them under translation; the agreement half is the
+    # digest manifest, which must equal the recorded aarch64 one byte-for-byte.
+    if rustup target list --installed 2>/dev/null | grep -q '^x86_64-apple-darwin$'; then
+      X86=red
+      XLOG="$ROOT/target/portability/x86-64.log"
+      cargo test --all --target x86_64-apple-darwin >"$XLOG" 2>&1; XRC=$?
+      if [ "$XRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$XLOG"; then
+        XDG="$(manifest_digest x86_64-apple-darwin)"
+        RECORDED="$(grep -oE 'sha256 [0-9a-f]{64}' profiles/rv64i-lab-v0/portability.sexp | head -1 | cut -d' ' -f2)"
+        if [ "$XDG" = "$RECORDED" ]; then X86="green (Rosetta translation; the manifest agrees byte-identically)"
+        else X86="red (x86-64 manifest $XDG != the recorded aarch64 $RECORDED)"; fi
+      fi
+    else
+      X86="absent (Rosetta live; provision the target: rustup target add x86_64-apple-darwin)"
+    fi
+  else
+    X86="absent (Rosetta inert — measured 2026-09-30; activation: sudo softwareupdate --install-rosetta)"
+  fi
 fi
 echo "x86-64: $X86"
 fi
@@ -172,7 +210,7 @@ fi
 
 N=$NATIVE; X=$X86; M=$MIRI; C=$CROSS
 [ "$N" = green ] || N=red
-case "$X" in green|red) :;; *) X=absent;; esac
+case "$X" in green*|red*) :;; *) X=absent;; esac
 [ "$M" = green ] || [ "$M" = red ] || M=absent
 [ "$C" = green ] || [ "$C" = red ] || C=absent
 V="$(verdict "$N" "$X" "$M" "$C")"

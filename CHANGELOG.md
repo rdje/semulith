@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0082 (leaf P2-SCALAR.9, slice b) — the Rosetta proof: the x86-64 leg green, `portability: passed`
+
+- The director's Rosetta install landed (VLC's Intel build triggered it); re-measured
+  live: `arch -x86_64` prints `x86_64`. The instrument's x86-64 leg learned the bridge
+  path: cross-compile `x86_64-apple-darwin`, run under translation, and compare the
+  digest manifest against the aarch64 recording — **byte-identical** (`0670a01b…`).
+- The full four-leg run reads **passed** (native green, x86-64 green under translation,
+  Miri green, cross-endian green); `portability.sexp` re-measured to `passed`, with the
+  translation-vs-bare-metal nuance and the fall-2027 horizon on the record.
+- Slice (a)'s checklist claimed a `plan/p2.md` line that commit did not carry — the
+  drift is recorded and the `.9` book section lands with this commit instead.
+
 ## SEMULITH-PS-0081 (leaf P2-SCALAR.9, slice a) — the CI two-host matrix wired; Rosetta measured LIVE
 
 - `.github/workflows/portability.yml`: the host matrix (`ubuntu-latest` x86-64 +
