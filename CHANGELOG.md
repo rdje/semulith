@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0055 (tree ARTIFACT-CLEANUP) — the 2026-10-01 §8 cleanup: 96 incremental caches, 248 MB
+
+- Time-triggered run (the `2026-09-30` run was a full day old). Pre-delete census: 96
+  cargo incremental `.bin` files / 248 MB, all under `*/incremental/*` (48
+  `target/debug`, 18 x86_64, 12 wasm32, 9+9 the two miri profiles); 0 stray
+  `.bin`/`.log` in the enumerated locations; no `target/refs/*.log` present; the 7
+  cargo-home crate-source fixtures kept by policy (inputs, not artifacts).
+- Post-delete re-census: 0 incremental `.bin`; `target` 3.7 G → 3.5 G, `.app-data`
+  unchanged at 1.4 G. `docs/ARTIFACT_CLEANUP.md` overwritten with the one-line record.
+
 ## SEMULITH-BR-0005 (leaf P3-BREADTH.1) — F2 measured executably; the unconditional-change set is empty; `.1` slice-gates on `.3`
 
 - Finding F2 (register grouping with fill semantics, TI C64x §2.2) was the one
