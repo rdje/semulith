@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `DSP-REVIEW`
-- Status: `active` (`.1` landed `2026-09-30`)
+- Status: `done` (8/8 — `.7`'s findings report landed `2026-10-01`)
 - Roadmap lane: `ROADMAP.md` §6 → the **D** node, feeding `P3-BREADTH`
 - Gate: none of its own; it is a precondition of `BREADTH`
 - Depends on: `P1-LAB` (gate `G1`)
@@ -198,19 +198,37 @@ or claiming DSP compatibility.
   Lessons: `promotion: declined (the inversion table lives in the evidence document where `.7` meets it)`.
 
 - ID: `DSP-REVIEW.7` — **interface findings report**
-  Status: `pending`
+  Status: `done` (`2026-10-01`)
   Goal: the classified list of required abstraction changes, with cost, feeding `P3-BREADTH`.
   Acceptance: a finding routed to another tree carries its `ROUTING EVIDENCE`.
+  Result: met, `2026-10-01`. Six numbered findings, each carrying its `ROUTING EVIDENCE`
+  (locator + executable demonstration + the scalar-profile reproduction check): **F1**
+  nonstandard widths (CANNOT-EXPRESS, rc 2 by name → `P3-BREADTH.5`), **F2** register
+  grouping with fill semantics (NEEDS-A-CHANGE → `.1`; the one finding without a measured
+  refusal — recorded as its honest limit), **F3** multiple address spaces (CANNOT-EXPRESS,
+  rc 1 → `.5`), **F4** the execute packet and **F5** the delayed visible writeback (both
+  CANNOT-EXPRESS, rc 1, both **TI-family-shaped** per `.8` — routed to `.1` with the
+  condition that a scalar-DSP slice does not need them), **F6** the state census reopens
+  per profile (NEEDS-A-CHANGE → `.1`/`.2`). Five measured non-findings classified OUT of
+  interface work (the per-instruction SAT side effect, the saturate/round ordering,
+  circular/bit-reversed addressing, the SPLOOP drain asymmetry, MFENCE — semantics DATA +
+  census state). The scalar controls measured: the real 64-bit state doc generates rc 0,
+  `DEF-GEN: ok`, the synth suite 4/0 — no finding reproduces on `rv64i-lab-v0`. Evidence:
+  [`artifacts/dsp-review/2026-10-01-interface-findings.md`](artifacts/dsp-review/2026-10-01-interface-findings.md).
+  Lessons: `promotion: declined (the routing method is the tree's own ROUTING EVIDENCE section, now updated from pre-commitment to measured; P3-BREADTH.1 receives the findings, not a lesson)`.
 
 ## ROUTING EVIDENCE
 
 This tree exists to route findings **out** to `P3-BREADTH` (leaf `.7`), so the routing method is
 declared here before the first finding exists rather than improvised when one does.
 
-- **Does a finding reproduce outside the family it is routed to?** Not yet measurable — no
-  finding has been produced. `git ls-files 'docs/tasks/P3-BREADTH.md'` exists and its `.1` leaf
-  is the receiver, but the DSP review has not run. **Measured: nothing. Routed: nothing.** This
-  section is a pre-commitment, not a result.
+- **Does a finding reproduce outside the family it is routed to?** Measured `2026-10-01`
+  in `.7`: six findings routed to `P3-BREADTH`, each with the scalar-profile reproduction
+  check attached. The controls: the scalar profile's real 64-bit state document generates
+  cleanly (rc 0) where the 24-bit probe refuses (rc 2); its definitions validate against
+  today's schema (`DEF-GEN: ok`) where the spaces/packet/delay probes refuse (rc 1); the
+  synth suite reads 4 pass / 0 fail. **No finding reproduces on `rv64i-lab-v0`** — nothing
+  was routed that belongs to `P2-SCALAR` or the core abstraction.
 - **What will be measured before a finding leaves this tree.** For each candidate interface
   change: (1) the manual locator that states the target behaviour; (2) whether the current
   abstraction can express it — demonstrated by an executable synthetic fixture in `.6`, not by
@@ -228,9 +246,13 @@ declared here before the first finding exists rather than improvised when one do
 
 ## Current Frontier
 
+**Tree complete `2026-10-01` (8/8).** `.7` routed six findings to `P3-BREADTH` (F1–F6, each
+with its `ROUTING EVIDENCE`); the receiver is `P3-BREADTH.1` ("apply the interface findings").
+No further leaves here.
+
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.7` | `pending` | `.8` done `2026-09-30` — the cross-vendor contrast landed (accumulators+guard bits and bit-reversed addressing EXIST elsewhere; the `.4` break is TI-family-shaped). `.7`'s report classifies over the full base |
+| — | — | — | tree done 2026-10-01; the findings' receiver is the first leaf of P3-BREADTH |
 
 ## Decisions
 
@@ -596,6 +618,59 @@ declared here before the first finding exists rather than improvised when one do
 - [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier stays `.7`), this tree, the artifact.
 
+## Acceptance Checklist (leaf DSP-REVIEW.7)
+
+- [x] **REPRODUCE / ISSUE** — the report's premise (the routed findings must not reproduce
+  on the scalar profile) was measured with fresh controls, not inherited from earlier leaves:
+
+  ```
+  $ python3 scripts/gen_state.py --state profiles/rv64i-lab-v0/state.sexp \
+      --arith crates/semulith-core/src/arith.rs --out /dev/null
+  gen_state: wrote /dev/null (14496 bytes)          # rc=0 — the width refusal is
+                                                    # nonstandard-width-specific
+  $ bash docs/tasks/artifacts/dsp-review/synth/run_synth_probes.sh | tail -1
+  synth probes: 4 pass / 0 fail
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf is the tree's purpose. WHY the
+  scalar check matters: a finding that fires for `rv64i-lab-v0` is a scalar defect wearing
+  a DSP label, and routing it to `P3-BREADTH` would hide it. WHERE the check landed:
+  every finding carries its own ROUTING EVIDENCE block — measured:
+
+  ```
+  $ grep -c '^### F' docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md
+  6        # six numbered findings
+  $ grep -c 'ROUTING EVIDENCE:' docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md
+  6        # each carrying its routing evidence — the acceptance's exact rule
+  ```
+
+- [x] **FIX** — the report
+  `docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md` (six findings
+  classified CANNOT-EXPRESS ×3 / NEEDS-A-CHANGE ×3, five measured non-findings); the
+  tree's ROUTING EVIDENCE section updated from pre-commitment to measured; the frontier
+  closed (8/8).
+
+- [x] **ADDRESSED (verified)** — the acceptance ("a finding routed to another tree
+  carries its ROUTING EVIDENCE") is measured in the ROOT CAUSE box above; the routing
+  method was honored (locator + executable demonstration + scalar check per finding),
+  with F2's missing executable demonstration recorded as its honest limit. The scalar
+  profile's own definitions still validate against today's schema:
+
+  ```
+  $ bash scripts/check_definition_gen.sh | tail -1
+  DEF-GEN: ok (crates/semulith-core/src/definition.rs matches the canonical definition, encoding sha256 93a2d4718a50b60c)
+  ```
+
+- [x] **NO REGRESSION** — docs-only leaf; the full doctrine gate is the check:
+
+  ```
+  $ bash scripts/check_doctrines.sh | tail -1
+  === all doctrines green ===
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` (the tree closes), this tree, the artifact.
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -612,6 +687,7 @@ declared here before the first finding exists rather than improvised when one do
 | `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
 | `2026-09-30` | `DSP-REVIEW.3` | the same extraction + the units/spaces/modes searches | byte units on both sides measured (no word-addressed space exists); the two-L1-spaces shape, the .D-unit generators, the AMR scheme quoted with locators; bit-reversed/strided addressing measured absent; the circular nonalignment split pinned |
 | `2026-09-30` | `DSP-REVIEW.8` | the same extraction over the two channel-answered manuals (DSP56300 + SHARC PRM) | the inversion measured twice (56-bit A/B + 80-bit MRF guard bits; reverse-carry + BR0/BR8); three unit shapes, three alignment rules, three loop models; nine further defects recorded |
+| `2026-10-01` | `DSP-REVIEW.7` | the scalar controls (real 64-bit state rc 0; `DEF-GEN: ok`; synth suite 4/0) + the report census | six findings, each with its ROUTING EVIDENCE (6/6 measured); none reproduces on `rv64i-lab-v0`; F2's missing executable demonstration recorded as its honest limit; the tree closes 8/8 |
 | `2026-09-30` | `DSP-REVIEW.6` | the four probes through the real pipeline (pre-fixture measurement) | every shape refused by name, rc 2/1/1/1; the packet descriptor reduced until its ONLY refusal is `packet` itself; `run_synth_probes.sh` green 4/4 with the refusals pinned |
 | `2026-09-30` | `DSP-REVIEW.5` | the same extraction + the SPLOOP/LDDW/MFENCE searches | SPLOOP C64x+-only measured by the compatibility fields; the loop-state census quoted; drain-vs-no-drain asymmetry measured; MFENCE 0 hits in two manuals, 34 in C66x's |
 | `2026-09-30` | `DSP-REVIEW.4` | the same extraction + the packet/latency/conflict sections | the execute-packet rules, the delay-slot tables, the no-interlocks sentence, the annulment semantics and the manual's own incorrect-result example — quoted with locators; the §3.7.2/§3.8.2 contradiction recorded in both forms |
@@ -620,6 +696,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.7` | `SEMULITH-DR-0094 (leaf DSP-REVIEW.7): the interface findings report — six findings routed, tree closed 8/8` | F1–F6 classified and costed with per-finding ROUTING EVIDENCE; the scalar controls measured; five non-findings classified out; P3-BREADTH.1 receives |
 | `DSP-REVIEW.8` | `SEMULITH-DR-0093 (leaf DSP-REVIEW.8): the cross-vendor contrast — TI's absences are TI's, measured` | 56-bit A/B + 80-bit MRF guard bits; bit-reverse ×2; 3 unit shapes; the `.4` break re-scoped to TI-family-shaped |
 | `DSP-REVIEW.6` | `SEMULITH-DR-0091 (leaf DSP-REVIEW.6): the synthetic stress fixture — the boundary pinned, not assumed` | `synth24` through the real pipeline; four named refusals pinned; SYNTHETIC banner + the citation ban |
 | `DSP-REVIEW.5` | `SEMULITH-DR-0090 (leaf DSP-REVIEW.5): loops, repeats, interrupts — the SPLOOP census and the drain asymmetry` | the loop-state census; not-interruptible rule; restart semantics; MFENCE C66x-only; the SEM-04 framing measured |

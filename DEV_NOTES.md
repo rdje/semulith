@@ -1,5 +1,19 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the routing method held (DSP-REVIEW.7, tree closed)
+
+The tree pre-committed to its routing method before the first finding existed —
+locator, executable demonstration, scalar reproduction check — and the capstone leaf
+graded itself against exactly that. The payoff: the one finding that could not meet the
+method (F2, register grouping, never pushed through the pipeline as a probe) is visible
+as a labeled honest limit instead of passing as measured. The scalar controls did real
+work too: the same generator that refuses a 24-bit state document with rc 2 emits the
+scalar profile's 64-bit one with rc 0 — "the limitation does not fire for
+`rv64i-lab-v0`" is a pasted command, not an argument. Six findings routed to
+`P3-BREADTH`, five non-findings classified out as semantics data, and the review's
+lasting discipline — a TI absence is never a DSP absence — is now the receiver's
+inheritance, not just this tree's rule.
+
 ## _(2026-09-30)_ — TI's absences are TI's (DSP-REVIEW.8)
 
 The review extracted three TI manuals first, and the absence facts it pinned (no

@@ -39,7 +39,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented; reopened once (`.10` — matched on the ISA, **not the platform**) |
 | P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `passed` (`2026-09-30`)**: criteria 1–5 met; criterion 6 — the C-toolchain guest — met by `P2-SCALAR.5` (`c-scope.c`, three-way 129/129) |
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.1`–`.8` landed (corpus, matrix, campaigns, snapshots, portability); `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
-| DSP specification and stress review | — | In Progress | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 7/8 — `.1`–`.6`+`.8` measured (TI ×3, DSP56300, SHARC, synth); no oracle claim |
+| DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
 | P5 — board model | BOARD | Not Started | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 7 leaves; composition against the CPU contract |
