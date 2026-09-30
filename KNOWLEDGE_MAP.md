@@ -75,6 +75,7 @@
 - [`decision_push-cadence.md`](docs/decisions/decision_push-cadence.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
+- [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_task-tree-family-bound-rederivation.md`](docs/decisions/decision_task-tree-family-bound-rederivation.md)
 - [`decision_task-tree-family-bound.md`](docs/decisions/decision_task-tree-family-bound.md)
 - [`decision_work-unit-prefix-semulith.md`](docs/decisions/decision_work-unit-prefix-semulith.md)

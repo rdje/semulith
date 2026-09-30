@@ -3,6 +3,21 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-30)_ — the release route decision and the Rosetta measurement (P2-SCALAR.9 opens)
+
+The director picked the two-route answer to the .9 fork: CI matrix permanent + Rosetta
+bridge. The measurement that shaped it: Rosetta on macOS 27.0 is present-but-inert —
+/usr/libexec/rosetta/ holds oahd/translate_tool/runtime, the x86-64 dyld cache sits in
+the Rosetta cryptex (/System/Volumes/Preboot/Cryptexes/Rosetta/…), but the daemon is off
+and exec fails (Bad CPU type; translate_tool wants the legacy cache path). External
+corroboration for the symptom: the missing dyld_shared_cache_x86_64 is the documented
+signature of an unprovisioned Rosetta, and on Tahoe the classic install flag misbehaves
+(Jamf field report) — the activation path is recorded in the decision record. The
+director's horizon fact (Rosetta phase-out fall 2027) is what makes "bridge, never
+foundation" explicit on the record.
+
+Lesson: `promotion: declined` (the decision record IS the durable form).
+
 ## _(2026-09-30)_ — the portability matrix and the honest incomplete (P2-SCALAR.8)
 
 The leaf's substance was measurement: Rosetta absent (arch -x86_64 → Bad CPU type in

@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0079 (leaf P2-SCALAR.9) — the release route decided; Rosetta measured inert pending reinstall
+
+- The director answered the release fork: CI two-host matrix (permanent home of the
+  mandatory x86-64 leg: `ubuntu-latest` + `macos-latest`, the digest manifest the
+  byte-exact contract) + Rosetta-local proof (the bridge) — recorded in
+  `decision_release-route-x86-64-leg`. No narrower host policy.
+- Measured refinement of the `.8` record: Rosetta on this host is PRESENT BUT INERT —
+  binaries at `/usr/libexec/rosetta/`, the x86-64 dyld cache in the Rosetta cryptex, the
+  oahd daemon not running, `arch -x86_64` failing (`Bad CPU type in executable`);
+  activation is the director's admin act (a reinstall is coming). The horizon is on the
+  record: Apple phases Rosetta out fall 2027 — nothing may be built on the bridge.
+
 ## SEMULITH-PS-0077 (leaf P2-SCALAR.8) — the portability matrix: three legs green, the honest `incomplete`
 
 - `scripts/check_portability.sh` runs the four legs and ends with the honest verdict:
