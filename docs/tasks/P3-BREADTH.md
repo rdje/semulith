@@ -102,6 +102,17 @@ unsupported families remain unclaimed.
   what it must come to *express*). Bounds carried from the review, permanent: every choice
   stays citable per-axis; the synthetic design is NEVER evidence about any real DSP; it
   claims no compatibility.
+  **The director's refinement (same exchange): the key idea is abstraction.** The menu of
+  axes is an abstraction OF the measured manuals; the composed DSP is the dual operation —
+  instantiating a coherent point from the abstraction. If the abstraction can generate a
+  coherent point in the design space, it can probably host a real one; that is the
+  strongest test an abstraction gets — not "does it cover case X" but "does it compose".
+  The carried warning (same exchange): an abstraction's value is what it makes ILLEGAL —
+  a universal step relation "expresses" everything and constrains nothing. So the
+  exercise's real output is the boundary map (which axis choices the abstraction refuses,
+  and whether each refusal is named work or an accident), and the composition rules —
+  the coupling graph between axes — are the actual research content, because an
+  abstraction that treats coupled axes as independent generates incoherent processors.
 
 ## Blockers
 
