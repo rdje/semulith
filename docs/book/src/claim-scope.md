@@ -33,7 +33,7 @@ Every one of those claims is **finite tested evidence, explicitly not universal 
 
 | Not claimed | Why it matters |
 | --- | --- |
-| A validated CPU profile | P2's `CPU-LAB` gate has not been run. The evidence covers the guest corpus and its declared, exercised interaction matrix — but no external or directed campaigns, no ACT suite, no privilege modes. Executing correctly is a beginning, not a validation. |
+| A validated CPU profile | P2's `CPU-LAB` gate has not been run. The evidence covers the guest corpus, its declared, exercised interaction matrix, and the ACT4 RV64I external campaign (51 test files, Sail-derived expectations — one semantics by construction) — but no directed campaigns, no privileged-mode tests, no portability matrix. Executing correctly is a beginning, not a validation. |
 | A conformance result | `G1` reads `passed` since `2026-09-30` (criterion 6 met by the `c-scope` compiled C guest, `P2-SCALAR.5`) — a laboratory gate, not a conformance claim. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented), and the `CPU-LAB` processor gate has not run. |
 | An accepted processor profile | `rv64i-lab-v0` is a development profile. Acceptance attaches evidence to an exact versioned profile; none has been accepted. |
 | Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus; ACT4 is acquired (a sparse partial pinned at `e2216915…`, `P2-SCALAR.5` strand 2) but not yet run, QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 492 steps is two implementations agreeing, not three opinions. |

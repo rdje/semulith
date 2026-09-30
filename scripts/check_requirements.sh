@@ -60,6 +60,10 @@
 #    12. MATERIAL    a category-need naming a `material` names one catalog.sexp actually holds —
 #                   a covered-by that names no document is the same lie as a citation into a
 #                   document nobody acquired (MODEL-METHOD.3).
+#    13. CAMPAIGN    the ACT4 external-campaign record (profiles/*/act4.sexp) carries only
+#                   counts its own rows re-derive, and its verdict vocabulary is closed —
+#                   a recorded experiment whose summary disagrees with its rows is a catalogue
+#                   lying about its own census (P2-SCALAR.5).
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -102,6 +106,7 @@ SEXP_SCHEMA_FOR = {
     "contract-obligations.sexp": "schema/contract-obligations.sexp",
     "units.sexp": "schema/units.sexp",
     "category-needs.sexp": "schema/category-needs.sexp",
+    "act4.sexp": "schema/act4.sexp",
 }
 ARCH_AUTHORITY = "architecture"
 
@@ -161,6 +166,66 @@ for cat in catalogues:
         findings.append(f"INVALID    {e}")
     if errors:
         continue                    # a catalogue the layer refuses cannot be cross-checked
+
+    if cat.name == "act4.sexp":
+        # 13. CAMPAIGN — the ACT4 external-campaign record (P2-SCALAR.5 strand 2) is a
+        # RECORDED experiment: its inputs are untracked, so the gate re-derives every
+        # carried count from the rows (a count that disagrees with its own rows is the
+        # record lying about its own census) and confines the verdict vocabulary. The
+        # schema has already pinned the structure, so navigation is field-by-name.
+        def _field(f, name):
+            for c in f[1:]:
+                if isinstance(c, list) and c and str(c[0]) == name:
+                    return c
+            return None
+        def _val(f, name):                      # the single value of an atom field
+            c = _field(f, name)
+            return c[1] if c is not None and len(c) == 2 else None
+        forms = [f for f in S.read_file(cat)
+                 if not (isinstance(f, list) and f and str(f[0]) == "comment")]
+        root_form = forms[0] if len(forms) == 1 else None
+        rows = [c for c in (root_form or [None])[1:]
+                if isinstance(c, list) and c and str(c[0]) == "test"]
+        run_f = _field(root_form, "run") if root_form else None
+        if root_form is None or str(root_form[0]) != "act4-campaign" or run_f is None:
+            findings.append(f"CAMPAIGN ROOT {cat.name}: no single act4-campaign form "
+                            f"with a run block")
+            continue
+        seen_files = set()
+        for r in rows:
+            fn = _val(r, "file")
+            if fn in seen_files:
+                findings.append(f"CAMPAIGN DUPLICATE {cat.name}: test file '{fn}' "
+                                f"appears twice")
+            seen_files.add(fn)
+            for k in ("verdict_semulith", "verdict_sail", "verdict_spike"):
+                if str(_val(r, k)) not in ("pass", "fail"):
+                    findings.append(f"CAMPAIGN VOCABULARY {cat.name} [{fn}]: {k} is "
+                                    f"'{_val(r, k)}', not pass|fail")
+            for k in ("signature", "control"):
+                if str(_val(r, k)) not in ("agree", "mismatch"):
+                    findings.append(f"CAMPAIGN VOCABULARY {cat.name} [{fn}]: {k} is "
+                                    f"'{_val(r, k)}', not agree|mismatch")
+        if int(_val(run_f, "tests")) != len(rows):
+            findings.append(f"CAMPAIGN COUNT {cat.name}: run.tests = "
+                            f"{_val(run_f, 'tests')} but the record carries {len(rows)} "
+                            f"test row(s)")
+        slots = sum(int(_val(r, "signature_slots")) for r in rows)
+        if int(_val(run_f, "signature_slots")) != slots:
+            findings.append(f"CAMPAIGN SLOTS {cat.name}: run.signature_slots = "
+                            f"{_val(run_f, 'signature_slots')} but the rows carry {slots}")
+        passed = sum(1 for r in rows
+                     if str(_val(r, "verdict_semulith")) == "pass"
+                     and str(_val(r, "verdict_sail")) == "pass"
+                     and str(_val(r, "verdict_spike")) == "pass"
+                     and str(_val(r, "signature")) == "agree"
+                     and str(_val(r, "control")) == "agree")
+        derived = f"{passed} pass / {len(rows) - passed} fail"
+        if str(_val(run_f, "verdicts")) != derived:
+            findings.append(f"CAMPAIGN VERDICTS {cat.name}: run.verdicts = "
+                            f"'{_val(run_f, 'verdicts')}' but the rows derive "
+                            f"'{derived}'")
+        continue
     try:
         recs = R.load(cat)
     except (R.RecordRefused, S.SexpError) as exc:
@@ -508,6 +573,20 @@ PYEOF
                                                                arm "GREEN a registry and an honest census" 0 "__CHECKED__ 3"
   : > "$t/p/units.sexp"; needs "$BOARD_MISSING";                          arm "RED   an empty unit registry" 1 "contains no records"
   rm -f "$t/p/units.sexp" "$t/p/category-needs.sexp"
+  # ---- rule 13 CAMPAIGN: the ACT4 record carries only counts its rows re-derive -----------
+  campaign_fixed() { argc 1 "$#" campaign_fixed || return; python3 -c "
+import pathlib, sys
+text = '''$BASE_CAMPAIGN'''
+text = text.replace(*'''$1'''.split('@@@', 1)) if '''$1''' else text
+pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
+  BASE_CAMPAIGN='(act4-campaign (profile "p") (suite (origin "o") (branch "act4") (pin "0123456789012345678901234567890123456789") (sparse_paths "tests/env")) (toolchain (compiler "c") (linker "l")) (run (date "2026-09-30") (tests 2) (signature_slots 5) (verdicts "1 pass / 1 fail")) (evidence_note "n") (test (file "I-add-00.S") (signature_slots 2) (verdict_semulith "pass") (verdict_sail "pass") (verdict_spike "pass") (signature "agree") (control "agree")) (test (file "I-sub-00.S") (signature_slots 3) (verdict_semulith "fail") (verdict_sail "pass") (verdict_spike "pass") (signature "mismatch") (control "agree")))'
+  campaign_fixed "";                                        arm "GREEN a consistent campaign record — one failing test, honestly recorded" 0 "__CHECKED__ 2"
+  campaign_fixed '(tests 2)@@@(tests 3)';                   arm "RED   a carried test count the rows contradict" 1 "CAMPAIGN COUNT"
+  campaign_fixed '(signature_slots 5)@@@(signature_slots 6)'; arm "RED   a carried slot total the rows contradict" 1 "CAMPAIGN SLOTS"
+  campaign_fixed '"1 pass / 1 fail"@@@"2 pass / 0 fail"';   arm "RED   a verdict summary the rows contradict" 1 "CAMPAIGN VERDICTS"
+  campaign_fixed 'verdict_semulith "pass"@@@verdict_semulith "green"'; arm "RED   a verdict outside the closed vocabulary" 1 "CAMPAIGN VOCABULARY"
+  campaign_fixed '(signature "agree")@@@(signature "fine")'; arm "RED   a comparison verdict outside the closed vocabulary" 1 "CAMPAIGN VOCABULARY"
+  rm -f "$t/p/act4.sexp"
   # ---- the JSONL track (examples stay JSONL) -------------------------------------------------
   printf '%s\n' "$REQ" > "$t/p/requirements.jsonl";           arm "GREEN a JSONL record validates on the old track" 0 "__CHECKED__ 2"
   printf 'not json at all\n' > "$t/p/mystery.jsonl";          arm "RED   a record file no schema governs" 1 "UNGOVERNED"

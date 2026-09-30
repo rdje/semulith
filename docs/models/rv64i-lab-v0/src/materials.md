@@ -182,8 +182,11 @@ remains the catalogued material `RISCV-ARCH-TEST-ACT4`.
 
 **Does not supply:** a second opinion, ever. ACT computes its expected results using a
 *configured Sail model*, so ACT agreeing with sail-riscv is one semantics answering twice
-— the single most important lineage fact in the dossier. ACT's value, as `P2-SCALAR.5`
-takes it up, is *external tests*, which is a different kind of value from independence.
+— the single most important lineage fact in the dossier. ACT's value is *external tests*,
+which is a different kind of value from independence — and that value is now realized:
+`P2-SCALAR.5` strand 2 ran the RV64I campaign three-way (51 test files, 17,017 signature
+slots, every verdict pass, every signature agreeing with the Sail-derived one; the record
+is `profiles/rv64i-lab-v0/act4.sexp`, the story the evidence chapter's).
 
 ## The internal contracts
 

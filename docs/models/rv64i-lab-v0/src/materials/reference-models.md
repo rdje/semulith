@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/rv64i-lab-v0/references.sexp`  `b2dfa211d23046b8ecf10ecf769b23fc365ff04d3a5cdbb54a9bb35381a1874a`
+     `profiles/rv64i-lab-v0/references.sexp`  `143be2b7113695f28333ea8eedbae11e6a8f131abaa66b0519c6f2963c187147`
      Generator: `scripts/gen_model_book.py` (sha256 `9d24f751b8b7cdc1b608927430b60d6312bcdcd66984a4f4d8bf7d9be4f8eea7`) -->
 
 | ID | Role | Status | Kind | Version | sha256 | Terms |
@@ -18,4 +18,4 @@ How each is invoked when exercised, as recorded:
 - **`sail-riscv`** — `sail_riscv_sim --config-override <override.json> [--trace...] <elf>`
 - **`spike`** — `spike --isa=rv64i --priv=m --log-commits --instructions=<n> <elf>`
 - **`qemu`** — `qemu-system-riscv64 -machine virt -cpu rv64i -bios none -nographic -d in_asm,cpu,int -D <log> -kernel <elf>`
-- **`act4`** — not exercised; no invocation exists (acquired (sparse partial))
+- **`act4`** — `scripts/run_act4_campaign.py — build, three models, the signature comparison`

@@ -176,7 +176,10 @@ MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally ow
 DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	28672	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
-schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	16	131072	24	524288	65536
+# Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign record gained its
+#   family: schema/ 16 -> 17 files / 47,347 B (act4.sexp — one schema per construct family,
+#   the SOT-FORMAT.4 shape). Health 16 -> 18 files; bytes and ceilings unchanged.
+schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	18	131072	24	524288	65536
 # Re-derivation, SEMILITH-PL-0001 (2026-09-27), when the family hit its file-count ceiling:
 #   docs/changelog/  22 files at the breach — the family carries shards for TWO append heads
 #               (CHANGELOG.md sharded from 2026-09-27, DOC-SHARDING.1), and a working
@@ -250,7 +253,14 @@ docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is th
 #                    commit that created the directory — a new family without a row is the
 #                    exact failure this registry exists to prevent.
 docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decision_one-definition-one-book); the materials tables are generated, gated by MATERIALS-BILL	16	65536	40	262144	32768
-profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	95	402967	99	516096	32768
+# Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign dossier landed:
+#   profiles/  99 -> 100 files / 427,926 B (P2-SCALAR.5 strand 2c: the three act4/ DUT
+#              files from strand 2b plus act4.sexp, the recorded campaign) — the P2-SCALAR.5
+#              design named this expansion before code. ceiling_lines 99 -> 104 (100 + 4
+#              headroom, the .4 pattern); ceiling_bytes STAYS 516,096 (the measured aggregate
+#              sits at 0.83x of it — the ~1.2x band already holds); health 102 / 440,000.
+#              ⛔ PER-PART STAYS 32,768 — the largest new member is act4.sexp at 10,512 B.
+profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	102	440000	104	516096	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

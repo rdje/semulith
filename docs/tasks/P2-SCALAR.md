@@ -349,6 +349,24 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   513-slot signature agrees semulith↔sail-derived AND spike↔sail. The harness carries
   RED/GREEN controls (self-test 7/0 — a corrupted slot is caught at its ordinal, a
   shorter signature is not agreement, a verdict-less trace refuses).
+  Strand 2 slice (c) landed `2026-09-30` (`SEMULITH-PS-0068`): **the full campaign —
+  51/51 test files, every HTIF verdict pass on all three models, every signature
+  agreeing slot-for-slot (semulith vs the Sail-derived expectations AND spike vs sail,
+  17,017 slots in sum), first run.** The slot census reconciles exactly against the
+  measured static counts (18,092 `RVTEST_SIGUPD` instances): −1,530 dead-path instances
+  in the six branch tests (each testcase executes one path), +414 store-test read-back
+  slots (2n+1 per store form), +51 `final_sig_offset` words. `I-fence-00` — the
+  reserved-`fm`/`fence.tso`/HINT encodings — passes: DEFECT-A's inversion now has
+  external-suite confirmation. The record is `profiles/rv64i-lab-v0/act4.sexp` (emitted
+  by the runner's `--record` from measured rows; schema `schema/act4.sexp`; RECORD-SCHEMA
+  rule 13 CAMPAIGN re-derives every carried count from the rows and confines the verdict
+  vocabulary — RED arms: a contradicted count, total, summary, and two out-of-vocabulary
+  verdicts; self-test 39/0). Two in-flight REDs, both the author's own: the schema
+  rejected `(min N)` on a non-repeat integer field (a facet-arity rule, fixed in the
+  schema), and the emitter's multi-value `sparse_paths`/`evidence_note` fields failed the
+  record contract's uniform arity (fixed in the emitter, the record regenerated — never
+  hand-edited). The `profiles/` and `schema/` ceilings re-derived per the design's
+  reviewed expansion (100 files / 427,926 B; 17 files / 47,347 B).
   Lessons: `promotion: declined (the C-shift-UB lesson lives in the guest's own comments
   where it bites — section 6 names the rule, the failed draft and the bound-shiftw owner;
   the visible-change vocabulary is enforced by the comparator's two new self-test arms,
@@ -701,6 +719,10 @@ checklist landed live at the leaf's completion, and `.3`'s joined the archive on
 | `2026-09-30` | `P2-SCALAR.5` (strand 2b) | toolchain risk retirement (measured, not assumed) | clang 21.1.8 assembled `I-add-00.S` (the suite's full macro machinery) clean; `ld.lld` linked against the laboratory `link.ld`; sail 0.14 self-terminated on the HTIF verdict under the lab override — both documented-toolchain mismatches (LLVM 22 / sail 0.13.1 in the cached README) measured harmless |
 | `2026-09-30` | `P2-SCALAR.5` (strand 2b) | `python3 scripts/run_act4_campaign.py` (live, three-way) | `I-add-00`: HTIF verdict pass on all three models; the 513-slot signature agrees semulith↔sail-derived AND spike↔sail |
 | `2026-09-30` | `P2-SCALAR.5` (strand 2b) | `python3 scripts/run_act4_campaign.py --self-test` | 7 pass / 0 fail — the corrupted-slot RED, the shorter-signature RED, the verdict-less refusal, the console/verdict channel separation |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2c) | `python3 scripts/run_act4_campaign.py --all` (live, three-way) | **51/51 test files green, first run**: every HTIF verdict pass on all three models; every signature agrees slot-for-slot — semulith vs the Sail-derived expectations AND spike vs sail; 17,017 slots in sum |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2c) | the slot census vs the measured static counts | 17,017 = 18,092 sigupd instances − 1,530 dead-path branch instances (255 × 6) + 414 store read-back slots (2n+1 per store form) + 51 `final_sig_offset` words — exact |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2c) | authoring REDs ×2 | the schema kernel refused `(min N)` on a non-repeat integer field; the emitter's multi-value atom fields failed uniform arity — both fixed at the source, the record regenerated |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2c) | `python3 scripts/run_act4_campaign.py --record` + `bash scripts/check_requirements.sh [--self-test]` | the dossier `act4.sexp` emitted from measured rows (51 rows, `51 pass / 0 fail`); rule 13 CAMPAIGN green on the real record; self-test 39/0 (+5 arms) |
 
 ## Commit Log
 
@@ -710,7 +732,7 @@ checklist landed live at the leaf's completion, and `.3`'s joined the archive on
 | `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
 | `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
-| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
+| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 
 ## Changelog
 

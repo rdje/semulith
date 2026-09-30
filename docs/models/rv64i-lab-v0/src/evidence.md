@@ -41,6 +41,16 @@ re-derivable by the command named beside it.
   scripts/run_semulith_smoke.py`. The 41st guest is different in kind: `c-scope.c` is
   **compiled from C** by the pinned toolchain — the previous chapter tells that story and
   why it changes the shape of the evidence.
+- **External tests (the ACT4 suite).** The pinned riscv-arch-test RV64I campaign — **51
+  generated test files, 17,017 signature slots** — runs three-way: every test's HTIF
+  verdict is pass on all three models, semulith's signature agrees with the Sail-derived
+  one slot-for-slot, and spike-vs-sail agrees as the control pair. The dossier is
+  `profiles/rv64i-lab-v0/act4.sexp` (gated by RECORD-SCHEMA's census rule — every carried
+  count re-derives from its rows); re-run: `scripts/fetch_act4.sh && python3
+  scripts/run_act4_campaign.py --record`. ⛔ This is *external tests with Sail-derived
+  expectations*: ACT computes its expected results with a configured Sail model, so
+  agreement here is one semantics answering twice (EVD-04) — valuable because somebody
+  else chose the tests, never as a second opinion.
 - **Restart.** Restartability is determinism of re-execution from cold reset, measured two
   ways: the smoke's reproduce leg (every guest re-run byte-identically) and the offline
   determinism suite (every guest run twice from `zeroed_at(entry)`, identical traces and
@@ -59,7 +69,8 @@ re-derivable by the command named beside it.
   designated field (EVD-09; `cargo test -p semulith-verify`).
 
 The honest label for all of it, stated once and meant: **finite, tested evidence — never
-universal proof** (EVD-01). Forty-one programs, two references, one host.
+universal proof** (EVD-01). Forty-one laboratory programs, two references, one host — plus
+the 51-file external campaign, whose expectations share Sail's semantics by construction.
 
 ## The gate verdicts: G1 `passed`, G0 honestly `incomplete`
 

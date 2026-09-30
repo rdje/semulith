@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0068 (leaf P2-SCALAR.5, strand 2c) — the ACT4 RV64I campaign: 51/51, three-way, recorded and gated
+
+- The full pinned suite ran green on the first fleet run: **51/51 test files, every HTIF
+  verdict pass on all three models, every signature agreeing slot-for-slot — semulith vs
+  the Sail-derived expectations AND spike vs sail (the control pair), 17,017 slots in
+  sum.** The slot census reconciles exactly against the static sigupd counts (dead-path
+  branch instances, store read-back slots, the final-offset word — all measured).
+  `I-fence-00` (reserved-`fm`, `fence.tso`, HINTs) passes: DEFECT-A's inversion has
+  external-suite confirmation.
+- The record: `profiles/rv64i-lab-v0/act4.sexp`, emitted by the runner's `--record` from
+  measured rows (never hand-typed), behind the new `schema/act4.sexp` family.
+  RECORD-SCHEMA gained rule 13 (CAMPAIGN): every carried count re-derives from the rows
+  and the verdict vocabulary is closed — five new self-test RED arms, 39/0.
+- The EVD-04 framing is on the record: external tests with Sail-derived expectations —
+  one semantics answering twice by construction; the value is that somebody else chose
+  the tests. The model book's evidence chapter and materials section carry the campaign;
+  the claim-scope page's "no ACT suite" row is corrected.
+- Ceilings re-derived per the design's reviewed expansion: `profiles/` 100 files /
+  427,926 B (ceiling 104, bytes unchanged at 0.83×), `schema/` 17 files.
+
 ## SEMULITH-PS-0067 (leaf P2-SCALAR.5, strand 2b) — the ACT4 harness: one test end-to-end three-way
 
 - `semulith run` learned `--trace-stores`: the runner's crossing log (already recorded

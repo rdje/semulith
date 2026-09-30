@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/rv64i-lab-v0/references.sexp`  `b2dfa211d23046b8ecf10ecf769b23fc365ff04d3a5cdbb54a9bb35381a1874a`
+     `profiles/rv64i-lab-v0/references.sexp`  `143be2b7113695f28333ea8eedbae11e6a8f131abaa66b0519c6f2963c187147`
      Generator: `scripts/gen_model_book.py` (sha256 `9d24f751b8b7cdc1b608927430b60d6312bcdcd66984a4f4d8bf7d9be4f8eea7`) -->
 
 Encoding source **`RISCV-OPCODES`** — https://github.com/riscv/riscv-opcodes (BSD-3-Clause (RISC-V International, 2022)), retrieved 2026-09-14 into `target/refs/riscv-opcodes/`.
