@@ -15,7 +15,7 @@
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `profiles/rv64i-lab-v0/encoding.sexp`  `93a2d4718a50b60c23c3b5e64afa64499b09fcf41a906d46d83e63eebab2e5e9`
 //!   `profiles/rv64i-lab-v0/state.sexp`  `ff53fb04f3ed7ac25e4db78e6e92cc3e0caa086df438e221350627194cbea5a4`
-//! Generator: `scripts/gen_definition.py` (sha256 `9679df2458d66a6036293c04a1de1bc282709edae19b47875e837cef2008fb34`)
+//! Generator: `scripts/gen_definition.py` (sha256 `1caec1b3a494b7a331d29bf0af83f3ae40a7a24ae47fc9d5bac507b37d69bb4a`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -61,7 +61,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     fragments: &["riscv/rv64i"],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "9679df2458d66a6036293c04a1de1bc282709edae19b47875e837cef2008fb34",
+        sha256: "1caec1b3a494b7a331d29bf0af83f3ae40a7a24ae47fc9d5bac507b37d69bb4a",
     },
     inputs: &[
         InputPin {
@@ -106,9 +106,9 @@ pub struct FieldDef {
 
 /// The 15 operand fields the composed fragments declare, sorted by
 /// name: what the decoder extracts, and how the scrambled immediates unscramble.
-/// The `FENCE` decorations `fm`/`pred`/`succ` are declared as operands by the
-/// encoding without field ranges — D-FENCE decodes them and reads none (the rule's
-/// effect is `nop`), so no extraction is emitted for them.
+/// Every declared operand names a field — this generator refuses one that does not,
+/// because extraction for it would be silent (ARCHITECTURE §2: an unsupported
+/// construct is a model-generation failure, never a guessed translation).
 pub static FIELDS: &[FieldDef] = &[
     FieldDef {
         name: "bimm12hi",

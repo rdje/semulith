@@ -127,6 +127,22 @@ PY
   arm "RED an undeclared operand reference is refused, naming it" "$rc" 2 "$out" "'rs3'"
   cp definitions/riscv/rv64i.sem.sexp "$t/definitions/riscv/rv64i.sem.sexp"
 
+  # RED: an instruction declaring an operand that names no field is refused, naming it —
+  # extraction for it would be silent, and silence is the guessed translation
+  # ARCHITECTURE §2 forbids (P3-BREADTH.2).
+  python3 - "$t/definitions/riscv/rv64i.sexp" <<'PY'
+import sys
+path = sys.argv[1]
+text = open(path, encoding="utf-8").read()
+add = '(insn (name add) (fixed (31 25 0x0) (14 12 0x0) (6 2 0xc) (1 0 0x3)) (operands rd rs1 rs2) (from "rv_i"))'
+assert add in text
+open(path, "w", encoding="utf-8").write(
+    text.replace(add, add.replace("(operands rd rs1 rs2)", "(operands rd rs1 rs2 rs9)")))
+PY
+  out="$(GEN --check 2>&1)"; rc=$?
+  arm "RED an operand naming no field is refused, naming it" "$rc" 2 "$out" "rs9"
+  cp definitions/riscv/rv64i.sexp "$t/definitions/riscv/rv64i.sexp"
+
   # RED: a fragment whose semantics document is missing is refused, naming the pairing.
   rm "$t/definitions/riscv/rv64i.sem.sexp"
   out="$(GEN --check 2>&1)"; rc=$?

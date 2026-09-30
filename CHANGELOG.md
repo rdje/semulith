@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0006 (leaf P3-BREADTH.2) — the hook census: no opaque hooks; the one silent extraction arm is now a generation-time refusal
+
+- Full-pipeline audit against `docs/ARCHITECTURE.md` §2 ("an unsupported construct is a
+  model-generation failure, not a guessed translation"): every generator and shared
+  definition reader refuses by name with rc ≠ 0; the runtime dispatch is a closed `Sem`
+  enum with no catch-all; no feature flags or callback tables exist. Three designed seams
+  are typed contracts, not escape hatches: the `Environment` boundary trait, the mutation
+  seam `step_over`, the bench `Observer`.
+- Defect found, owned, fixed (§15): `exec.rs`'s operand extraction silently skipped an
+  operand naming no field, under a comment whose premise `P2-SCALAR.1` had falsified
+  (FENCE's `fm`/`pred`/`succ` have field ranges since). `gen_definition.py` now refuses
+  it (rc 2, naming instruction and operand — with a new DEF-GEN self-test RED arm);
+  the runtime arm is a loud `ModelError`; the test ratchet lost its dead whitelist;
+  four stale justification sites swept; `gen_fragments.py`'s dead `_unused_build` removed.
+- Verified: DEF-GEN ok (9 self-test arms + byte-compare); `make check` 180/180 + fmt +
+  clippy; synth suite 5/5; fragment regeneration byte-identical. Lesson promoted to
+  `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`.
+
 ## SEMULITH-AC-0055 (tree ARTIFACT-CLEANUP) — the 2026-10-01 §8 cleanup: 96 incremental caches, 248 MB
 
 - Time-triggered run (the `2026-09-30` run was a full day old). Pre-delete census: 96

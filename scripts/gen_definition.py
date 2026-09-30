@@ -343,6 +343,15 @@ def load_inputs(encoding_path: Path, state_path: Path):
     root = encoding_path.parent.parent.parent / str(X.field(enc, "fragment-root",
                                                             str(encoding_path)))
 
+    # Every declared operand names a field. One that does not would extract SILENTLY at
+    # runtime — the guessed translation ARCHITECTURE §2 forbids: an unsupported construct
+    # is a model-generation failure, named.
+    for insn in insns.values():
+        for op in insn.operands:
+            if op not in arg_lut:
+                raise Refusal(f"{insn.name}: operand {op!r} names no field — extraction "
+                              "for it would be silent; declare the field or drop the operand")
+
     # Every composed fragment is schema-valid; its pinned-source fingerprints ride in
     # the manifest (OWN-03's source fingerprints).
     source_pins: dict[str, str] = {}
@@ -476,9 +485,9 @@ def emit(data: dict, generator_sha: str) -> str:
     a("")
     a(f"/// The {len(data['fields'])} operand fields the composed fragments declare, sorted by")
     a("/// name: what the decoder extracts, and how the scrambled immediates unscramble.")
-    a("/// The `FENCE` decorations `fm`/`pred`/`succ` are declared as operands by the")
-    a("/// encoding without field ranges — D-FENCE decodes them and reads none (the rule's")
-    a("/// effect is `nop`), so no extraction is emitted for them.")
+    a("/// Every declared operand names a field — this generator refuses one that does not,")
+    a("/// because extraction for it would be silent (ARCHITECTURE §2: an unsupported")
+    a("/// construct is a model-generation failure, never a guessed translation).")
     a("pub static FIELDS: &[FieldDef] = &[")
     for fname, hi, lo, pieces in data["fields"]:
         a("    FieldDef {")

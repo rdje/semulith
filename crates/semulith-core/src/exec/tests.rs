@@ -167,9 +167,11 @@ fn enc(name: &str, args: &[(&str, u64)]) -> u32 {
             _ => {
                 if FIELDS.iter().any(|f| f.name == arg) {
                     word = place(word, field(arg), value);
+                } else {
+                    // The generator refuses an operand that names no field; a test that
+                    // builds a word for one must fail loudly, not emit a wrong word.
+                    panic!("{arg} names no field — the generator refuses such a table");
                 }
-                // FENCE's fm/pred/succ carry no field ranges; the encoding takes them
-                // from the fixed bits alone, so there is nothing to place.
             }
         }
     }

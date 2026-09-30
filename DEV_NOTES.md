@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — a dead justification camouflaged a live silent path (P3-BREADTH.2)
+
+The hook audit's only silent escape hatch survived review precisely because it carried a
+plausible justification: `extract_operands`' `_` arm skipped operands naming no field,
+"because FENCE's `fm`/`pred`/`succ` have no field ranges" — true when written, false since
+`P2-SCALAR.1` gave all three fields, leaving the arm unreachable for real data but live for
+any future unfielded operand, with enforcement only in a test ratchet whose own whitelist
+comment had gone stale in the same way. The fix put the invariant where ARCHITECTURE §2 says
+it lives: generation time. `gen_definition.py` now refuses an unfielded operand by name
+(rc 2; the DEF-GEN self-test's new RED arm feeds `add` an `rs9` operand and demands the
+refusal), the runtime arm returns `ModelError::InvalidDescription` instead of skipping, and
+the ratchet is strict. Wider census result: no opaque hooks anywhere — the three seams that
+exist (`Environment`, `step_over`, bench `Observer`) are typed contracts that cannot reach
+instruction behaviour. Lesson promoted to
+`docs/knowledge/a-dead-justification-camouflages-a-silent-path.md` — census the SHAPES
+silence takes, then re-measure each justification's premise; never read the comment as the
+check.
+
 ## _(2026-10-01)_ — F2's honest limit, retired (P3-BREADTH.1, slice 1)
 
 The findings report graded itself and flagged F2 — register grouping with fill

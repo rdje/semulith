@@ -9,6 +9,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 
 | Card | Answers |
 | --- | --- |
+| [`a-dead-justification-camouflages-a-silent-path.md`](a-dead-justification-camouflages-a-silent-path.md) | a comment explains why a silent skip is safe — can I trust it? |
 | [`the-corpus-writes-shapes-my-grammar-cannot-state.md`](the-corpus-writes-shapes-my-grammar-cannot-state.md) | my schema validates the files it was designed from — why does it refuse the real corpus? |
 | [`portable-shell-fixtures-keep-mutations-whole-line.md`](portable-shell-fixtures-keep-mutations-whole-line.md) | my self-test arm fails "for the wrong reason" — is the gate broken, or is my fixture's shape feeding the mutation through a different path? |
 | [`director-named-actions-run-first.md`](director-named-actions-run-first.md) | the director named an action mid-startup — where does it go in the queue? |

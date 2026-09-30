@@ -39,9 +39,33 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (per-slice application of the report's own named remedy; the durable method — a finding without an executable demonstration gets a synth probe — lives in the findings report and the synth README where the next reader meets it)`.
 
 - ID: `P3-BREADTH.2` — **opaque semantic hooks made explicit**
-  Status: `pending`
+  Status: `done` (`2026-10-01`, `SEMULITH-BR-0006`)
   Goal: where a target needs behaviour the generic layer cannot express, the hook states its contract, its state, and which backends support it.
   Acceptance: no hook is a silent escape hatch; an unsupported construct is a **model-generation failure**, not a guessed translation (`docs/ARCHITECTURE.md` §2).
+  Census (`2026-10-01`, full-pipeline audit): **no opaque hook exists.** Census basis
+  (GAP-CLAIM-CENSUS): every Rust-emitting generator (`gen_definition.py`, `gen_state.py`,
+  `gen_guests.py`) and every shared definition reader (`riscv_asm.py`, `dossier_sexp.py`,
+  `check_semantics.py`, `check_sexp_schema.py`) was read along its error paths — all refuse
+  by name with rc ≠ 0 (the `Refusal` pattern); the runtime dispatch is a closed `Sem` enum
+  with no catch-all (a new variant fails COMPILATION in every consumer); the workspace
+  carries no feature flags, no callback tables, no per-target hand-written semantics. Three
+  DESIGNED seams exist, already typed contracts rather than escape hatches: the
+  `Environment` boundary trait (`env.rs` — ARCHITECTURE §3's sanctioned plug point; it can
+  only answer typed failures, never alter instruction behaviour), the mutation seam
+  `step_over` (`P1-LAB.9`'s detector fixture: same evaluator, mutated data), and the bench
+  `Observer` (a measurement sink that cannot affect execution).
+  Defect found, owned, FIXED (§15): `exec.rs`'s operand extraction had a live SILENT arm —
+  an operand naming no field was skipped, justified by a comment whose premise `P2-SCALAR.1`
+  had falsified (FENCE's `fm`/`pred`/`succ` carry field ranges since). Fix: the generator
+  now REFUSES an unfielded operand by name (rc 2 — ARCHITECTURE §2's rule made mechanical,
+  with a RED self-test arm proving the refusal fires); the runtime arm is a loud
+  `ModelError`; the test ratchet lost its dead whitelist; four stale justification sites
+  swept; `gen_fragments.py`'s dead `_unused_build`+`HEADER` (naming a nonexistent
+  `gen_encoding.py`) removed. Repro (pre-fix): an insn declaring operand `rs9` generated
+  without protest and extracted nothing for it; post-fix the generation refuses, naming
+  `rs9`. Future target-driven hooks (F6's readout semantics, e.g. a sign-extended
+  accumulator-extension read) land with the profile that demands them — `.1`'s gating.
+  Lessons: promoted → `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`.
 
 - ID: `P3-BREADTH.3` — **real DSP slice: evidence path first**
   Status: `pending`
@@ -67,7 +91,7 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.2` | `pending` | the hook audit is executable now: no target is needed to verify that an unsupported construct is a named generation failure, never a guessed translation; the synth suite already pins five such refusals |
+| 1 | `P3-BREADTH.3` | `pending` | the slice decision is now the pivotal leaf: it unblocks `.1`'s gated legs (VLIW ⇒ F4+F5; TI ⇒ F2), `.4`, and F6's per-profile census work — and it starts from the evidence path, per its acceptance |
 | — | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; F2's implementation and F4/F5 resume when `.3` names the slice (VLIW ⇒ F4+F5; TI ⇒ F2); F6 resumes per new profile |
 
 ## Decisions
@@ -183,10 +207,47 @@ unsupported families remain unclaimed.
   `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
   and the mdBook's P3 page (the synthetic-shapes list now names register grouping).
 
+`P3-BREADTH.2` (`2026-10-01`, `SEMULITH-BR-0006`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the audit censused every generator and reader error
+  path plus the runtime dispatch (method recorded in the leaf's Census paragraph). The one
+  silent escape hatch: `crates/semulith-core/src/exec.rs`'s `extract_operands` `_` arm —
+  `let Some(f) = field(name) else { continue; }` skipped an operand naming no field, under
+  a comment whose premise `P2-SCALAR.1` had falsified. Pre-fix, no generation-time check
+  existed: `grep -n "names no field" scripts/gen_definition.py` had 0 hits (post-fix:
+  `scripts/gen_definition.py:352` is the refusal). WHERE the contract lives:
+  `docs/ARCHITECTURE.md` §2 — "an unsupported construct is a model-generation failure,
+  not a guessed translation" — enforced for operands only by a test ratchet whose own
+  whitelist comment was equally stale (`schema/fragment.sexp` accepts any symbol).
+- [x] **ADDRESSED (verified)** — before → after, measured through the new DEF-GEN
+  self-test RED arm (an `add` clone declaring operand `rs9`, which names no field):
+  before, generation emitted a module without protest and extraction skipped `rs9`;
+  after, `gen_definition.py` exits rc 2 with
+  `add: operand 'rs9' names no field — extraction for it would be silent; declare the
+  field or drop the operand`, and the full self-test prints `9 pass / 0 fail`
+  (the arm included). The runtime arm now returns
+  `ModelError::InvalidDescription` instead of skipping.
+- [x] **NO REGRESSION** — `bash scripts/check_definition_gen.sh` → `DEF-GEN: ok` (self-test
+  9 arms incl. the new RED arm, then byte-compare); `make check` → fmt clean, clippy
+  `-D warnings` clean, 180/180 tests; synth suite 5/5; `gen_fragments.py` re-run against
+  the pinned upstream regenerates both fragments BYTE-IDENTICAL (the dead-code removal
+  changed no output — `git status` clean under `definitions/`).
+- [x] **FIX** — `gen_definition.py` (the operand-names-a-field refusal + the stale emitted
+  docstring corrected), `exec.rs` (the silent `continue` → loud `ModelError`),
+  `definition/tests.rs` (the ratchet strict: whitelist deleted), `exec/tests.rs` (the
+  word-builder panics on an unfielded operand instead of emitting a wrong word),
+  `gen_fragments.py` (dead `HEADER`+`_unused_build` removed), `check_definition_gen.sh`
+  (the RED arm), `definition.rs` regenerated (docstring only — tables byte-identical).
+- [x] **LOCKSTEP** — tree (leaf status/census/defect, frontier, checklist, logs),
+  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`;
+  the lesson PROMOTED to `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`
+  (+ INDEX row). mdBook: no page documents the extraction internals — no drift.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.2` | DEF-GEN self-test (9 arms, incl. the new unfielded-operand RED arm) + byte-compare; `make check` 180/180 + fmt + clippy; synth suite 5/5; `gen_fragments.py` regeneration byte-identical | `.2` done — no opaque hooks (census); the one silent arm eliminated at generation + runtime |
 | `2026-10-01` | `.1` slice 1 | synth suite 5/5; `make check` 180/180 + fmt + clippy; gen_state rc 0; DEF-GEN ok; G1 `passed` re-derived | `.1` executable-now scope done; leaf `slice-gated` on `.3`'s slice decision |
 
 ## Commit Log
@@ -195,6 +256,7 @@ unsupported families remain unclaimed.
 | --- | --- | --- |
 | — (design discussion) | `SEMULITH-BR-0001 (leaf P3-BREADTH.1): the composable-DSP design discussion recorded — resume here` | the skeleton + the measured axis menu + composition rules + ISA-as-fabric; the lego framing; the permanent bounds |
 | `.1` slice 1 | `SEMULITH-BR-0005 (leaf P3-BREADTH.1): F2 measured executably — synth probe 5; the unconditional set is empty, the leaf slice-gates on .3` | grouping probe pinned (rc 1, `register_groups`); scalar regression re-run green; F2/F4/F5/F6 implementation legs await the slice decision |
+| `.2` | `SEMULITH-BR-0006 (leaf P3-BREADTH.2): the hook census — no opaque hooks; the one silent extraction arm is now a generation-time refusal` | full-pipeline audit; `exec.rs` silent skip → generator refusal rc 2 + loud `ModelError`; 4 stale justification sites swept; dead `_unused_build` removed; DEF-GEN RED arm added |
 
 ## Changelog
 
@@ -204,3 +266,8 @@ unsupported families remain unclaimed.
 - `2026-10-01`: `.1` slice 1 (`SEMULITH-BR-0005`) — F2 gained its executable demonstration
   (synth probe 5); the unconditional-change set measured empty; `.1` is `slice-gated` on
   `.3`'s slice decision; frontier moves to `.2`.
+- `2026-10-01`: `.2` done (`SEMULITH-BR-0006`) — the full-pipeline hook census found no
+  opaque hooks and one live silent extraction arm (a stale-justification defect, owned and
+  fixed per §15): the generator now refuses an operand naming no field (rc 2, with a RED
+  self-test arm), the runtime arm is a loud `ModelError`, the dead whitelist and four
+  stale comment sites are swept; the lesson promoted to `docs/knowledge/`. Frontier: `.3`.

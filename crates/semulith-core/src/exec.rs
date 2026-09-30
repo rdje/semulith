@@ -192,9 +192,13 @@ fn extract_operands(insn: &InsnDef, word: u32) -> Result<Vec<Operand>, ModelErro
             "imm12lo" | "bimm12lo" => {} // consumed by the hi half
             _ => {
                 let Some(f) = field(name) else {
-                    // FENCE's fm/pred/succ are declared operands without field ranges — its
-                    // rule reads none, so nothing is extracted for them.
-                    continue;
+                    // Unreachable for a generated table: the generator refuses an operand
+                    // that names no field (the DEF-GEN self-test proves the refusal fires).
+                    // A hand-built table that reaches here is corrupt, and a silent skip
+                    // would extract nothing for an operand the encoding declares.
+                    return Err(ModelError::InvalidDescription {
+                        what: "an operand names no field — the generator refuses this table",
+                    });
                 };
                 let width = u32::from(f.hi - f.lo + 1);
                 let value = if f.scatter.is_empty() {

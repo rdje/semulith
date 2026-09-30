@@ -234,16 +234,15 @@ fn fields_are_well_formed() {
 }
 
 #[test]
-fn every_operand_is_a_field_or_a_fence_decoration() {
-    // The encoding declares exactly three operands with no field ranges: FENCE's
-    // fm/pred/succ decorations (D-FENCE decodes them, reads none — the effect is nop).
-    // A NEW unfielded operand fails this ratchet until it is consciously dispositioned.
-    const FENCE_DECORATIONS: [&str; 3] = ["fm", "pred", "succ"];
+fn every_declared_operand_names_a_field() {
+    // The generator refuses an operand that names no field (the DEF-GEN self-test proves
+    // the refusal fires); this ratchet re-derives the invariant on the emitted table, so
+    // a hand-edited table fails here even if the generator never ran.
     for insn in INSNS {
         for op in insn.operands {
             assert!(
-                field(op).is_some() || FENCE_DECORATIONS.contains(op),
-                "{}: operand {} has no field range and is not a FENCE decoration",
+                field(op).is_some(),
+                "{}: operand {} has no field range",
                 insn.name,
                 op
             );
