@@ -611,3 +611,43 @@ and both logs.
   caps (TOOLBOX.md 16,380/16,384 and DOCTRINE_ENFORCEMENT.md 24,573/24,576 at the
   boundary), re-derived to 20 KiB / 28 KiB on the row-count contract, the SEMILITH-PL-0001
   precedent.
+
+## Acceptance Checklist (leaf P2-SCALAR.9 — slice a: the CI two-host matrix)
+
+- [x] **REPRODUCE / ISSUE** — the gap was measured: every existing CI job ran x86-64
+  only, so the aarch64 leg had no CI home and no cross-host agreement check existed:
+
+  ```
+  $ grep -h 'runs-on' .github/workflows/*.yml | sort -u
+  ubuntu-latest        # every CI job, pre-slice — x86-64 only
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the slice implements the director's route
+  decision (`decision_release-route-x86-64-leg`). WHY a new workflow: the existing two own
+  `check` and `enforce`; the matrix is a third concern with its own provisioning. WHERE
+  agreement is proven: the `agree` job byte-compares the two hosts' digest manifests.
+
+  ```
+  $ grep -h '^name:' .github/workflows/{rust,doctrines}.yml
+  name: rust
+  name: doctrines     # the two existing contracts — neither is a host matrix
+  ```
+
+- [x] **FIX** — `.github/workflows/portability.yml` (host matrix + the Miri/cross-endian
+  job + the agreement job); the instrument's `--leg` / `--emit-manifest` selectors.
+
+- [x] **ADDRESSED (verified)** — locally, pending the push the cadence governs:
+
+  ```
+  $ bash scripts/check_portability.sh --self-test
+  PORTABILITY --self-test: 6 pass / 0 fail
+  $ bash scripts/check_portability.sh --leg native --emit-manifest <file>
+  …manifest sha256: 0670a01b96de28f9e65837295064b825300b22d54ba6d033696f42e254c5bb52 —
+    reproduces the `.8` recording BYTE-IDENTICALLY; `bash -n` clean
+  ```
+
+- [x] **NO REGRESSION** — `make check` (180+65 suites, clippy `-D warnings`, fmt),
+  `make gate`, `make book` — all green.
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, this
+  tree, `docs/book/src/plan/p2.md`.

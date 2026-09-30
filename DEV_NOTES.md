@@ -3,6 +3,25 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-30)_ — the CPU-LAB report and the experimental release (P2-SCALAR.9, slice c; the tree closes)
+
+The report's probes are all static over tracked artifacts (the generator's byte-stability
+rule): the obligations census reuses G0's exact probe (concrete check ids vs tracked
+executables — measured 0/72 today), the requirements census is read from the catalogue
+(28 planned + 1 partial — so G-OBLIGATIONS reads open on the record's own terms), the
+matrix/campaign/portability/replay axes read their tracked records (interactions.sexp,
+act4.sexp, portability.sexp, the suite census). The verdict rule has no path to `passed`
+over an open axis (EVD-08). The named decision: experimental release of the versioned
+artifact (dossier digest in the report), the closing conditions enumerated. Defect owned:
+the G0 limitation "No CPU model exists" was P0 prose, stale since the interpreter landed
+— fixed in the generator, and the repair is regenerable (GATE-REPORT). MEMORY's
+active-trees count sat at 6/9 across the .7/.8 commits (edited around, not in) — cosmetic
+resume-pointer drift, caught and corrected at closure; TREE-CLAIMS would have caught a
+contradiction at the tree's close, which is exactly what the line now does cleanly.
+
+Lesson: `promotion: declined` (the axes' state lives in the generated report; the
+decision record carries the reasoning).
+
 ## _(2026-09-30)_ — the Rosetta proof: the x86-64 leg green under translation (P2-SCALAR.9, slice b)
 
 The leg's two halves were measured separately: the fixtures cross-compiled for

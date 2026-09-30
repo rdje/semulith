@@ -87,8 +87,11 @@ pair reads exactly like an independent one.
 
 1. **72 checks are declared and 0 implemented.** They name
    fixtures a later milestone builds. This is the reason for the verdict.
-2. **No CPU model exists.** `crates/` holds the scaffold's placeholder; every requirement is
-   `implementation_status: planned`. Nothing here is evidence about an implementation.
+2. **The model exists; the contract's fixtures do not.** `crates/` holds the
+   definitional interpreter, exercised three-way (the guest corpus, the ACT4
+   campaign) — but the 72 declared obligation checks name no tracked executable,
+   so the contract axis stays open. Evidence about the implementation lives in
+   G1 and the CPU-LAB report, not here.
 3. **Finite differential testing is not proof.** The experiments are evidence for those
    inputs on those models. Two models sharing semantic code can agree while both are wrong.
 4. **The effective reference configuration is our merge, not the model's report.** The Sail
