@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0066 (leaf P2-SCALAR.5, strand 2a) — ACT4 acquired sparse; strand-2 design recorded before code
+
+- The pinned suite's generated half landed as a blobless sparse clone at `e2216915…`
+  under `target/refs/riscv-arch-test/` (untracked: `tests/env` + `tests/rv64i/I` +
+  `config`, 45 MB of the ~672 MB tree) — measured: 51 RV64I test files, 18,092
+  `RVTEST_SIGUPD`s, 14,820 testcases.
+- Strand-2 design recorded before code: signature-mode build; the CLI learns a store
+  trace from the runner's crossing log; Sail-derived expectations per `EVD-04`, spike
+  the control pair; DUT-side `rvtest_config.h` / `rvmodel_macros.h` / `link.ld` under
+  `profiles/rv64i-lab-v0/act4/`; three slices.
+- Acquisition facts synced: `references.sexp` (act4 → `acquired (sparse partial)` + pin;
+  PROFILE-CONSISTENCY's vocabulary extended), the catalogue note, both books. Per-part
+  ceiling obeyed: `.4`'s design moved to the tree archive (live file was 64,310/65,536).
+
 ## SEMULITH-PS-0065 (leaf P2-SCALAR.5) — the compiled guest, written into the model book
 
 - New model-book chapter `compiled-guest.md` (between references and evidence): what a

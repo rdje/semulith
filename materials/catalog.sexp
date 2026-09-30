@@ -891,7 +891,10 @@
            metadata (136 files, ~1 MB) are committed. The full suite is identified by commit
            e2216915d9a17acc142610831d88de8b65683866 and must be fetched from upstream.
            This is the `P2-SCALAR.5` blocker-(a) material: the campaign's planning half is now
-           catalogued and cached; the generated tests arrive when `.5` resumes."))
+           catalogued and cached; the generated tests arrived `2026-09-30` with `.5` strand 2 —
+           a blobless sparse clone at the same pin, `target/refs/riscv-arch-test/` (untracked;
+           `tests/env` + `tests/rv64i/I` + `config`, 45 MB — the RV64I campaign needs nothing
+           else of the ~672 MB tree)."))
 
   (material
     (id "RISCV-SBI-2.0")

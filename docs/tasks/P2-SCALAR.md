@@ -139,119 +139,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Status: `done` (`2026-09-29`)
   Goal: the declared fault × alias × boundary × event × progress × restart matrix, exercised.
   Acceptance: the matrix is declared first and then exercised; unexercised cells are reported, not omitted.
-  Design (recorded before code, `2026-09-29` — every reference behavior below was MEASURED
-  against sail-riscv 0.14 AND spike 1.1.1-dev by an untracked probe suite
-  (`target/refs/guests/probes/run_probes_p24.py`, 8 probe ELFs) before any guest was
-  authored, the `.3` doctrine):
-  - **The six axes, grounded.** `fault` = the `.3` layer; `alias`/`boundary` = the `.2`
-    layers; `event` = `OB-ENV-EVENT-DELIVERY` (synchronous exceptions and requested traps
-    only); `progress` = `OB-ENV-PARTIAL-PROGRESS` + the budget contract; `restart` = the
-    `state.sexp` census (no restartable suboperation) — restartability is **determinism
-    of re-execution from cold reset**, a mechanism property, not a guest shape.
-  - **The matrix is the 6×6 upper triangle = 21 cells, declared as tracked data** in
-    `profiles/rv64i-lab-v0/interactions.sexp` (new `schema/interactions.sexp`), each cell
-    carrying a disposition: guest(s) / mechanism / degenerate-with-reason. "Unexercised
-    cells are reported, not omitted" is mechanized: the gate RE-DERIVES the 21 cells from
-    the 6 declared axes and refuses by name a document that leaves one out or a cell
-    whose disposition does not resolve.
-  - **Measured: fault priority is three-way pinnable.** A jump target both misaligned AND
-    unmapped (`jalr` → 0x40000002) raises misaligned-fetch (0x00) ON THE JUMP, tval = the
-    target, link suppressed — all three models; a data access both misaligned AND
-    unmapped (`lw` at 0x40000001) raises misaligned-load (0x04) — all three.
-  - **Measured: the address wrap into a fault agrees three-way when tval < 2^56** (`ld`
-    at base −4 + 4 → address 0: cause 0x05, tval 0, all three).
-  - **⚠️ Measured: a NEW reference difference — sail-riscv 0.14 masks the access-fault
-    tval to its 56-bit physical-address width.** `sd` at 0xFFFF…FFF8: sail reports
-    tval 0x00FF_FFFF_FFFF_FFF8, spike AND semulith the full address; at exactly 2^56
-    sail reports tval 0, spike the full 0x0100_0000_0000_0000; at 2^55 both intact. A
-    reference-vs-reference difference, not a model defect — recorded as
-    `DIFF-TVAL-PHYS-MASK` in `references.sexp`; consequence: three-way tval comparisons
-    keep fault addresses below 2^56, so the wrap-sd guest wraps to address 0 (tval 0,
-    three-way exact) instead of the top of the space. Owner of reopening: whichever
-    profile declares ≥2^56 addresses meaningful.
-  - **Measured: the fence.i expected-divergence shape is exact.** Both references nop
-    fence.i and CONTINUE (the marker write commits); semulith reports the
-    policy-converted illegal-instruction (0x02, tval = the word) and stops. Prefix
-    agrees; divergence at exactly the fence.i step; the two references agree with each
-    other over their whole length.
-  - **Measured: a misaligned load over its own base** (`lw x5, x5, 1`) raises 0x04 with
-    the base preserved — all three.
-  - **Eight new guests** (EVD-05 expectations before any run; trap step last):
-    `it-prio-jump` (3 steps, F×F), `it-prio-load` (3, F×F), `it-fault-alias` (2, F×A),
-    `it-fault-wrap-ld` (2, F×B), `it-fault-wrap-sd` (3, F×B — the tval-0 redesign),
-    `it-alias-bound` (~9, A×B — self-aliased ops at boundary values: `addw` wrap, `srl`
-    shamt 65 → 1, `sll` shamt 63, `sub`/`slt` at −1), `it-progress-loop` (~13, P×P + A×E
-    — a counting loop under `jal x0, -4` to budget, every iteration visible, the x0 link
-    unwritten, `Stop::Budget`), `it-fencei` (2 steps semulith / 3 references, F×E — the
-    `DIFF-FENCEI-EXECUTED` expected-divergence guest).
-  - **The comparator learns the EXPECTED divergence.** `schema/expectations.sexp` gains
-    an optional `(expect_divergence (difference "DIFF-…") (at_step N))`;
-    `dossier_sexp.py` round-trips it; `compare_traces.py` gains
-    `check_expected_divergence` with RED/GREEN self-test arms. The smoke path for a
-    declaring guest: (a) semulith matches its own spec-derived expectations as always;
-    (b) `compare(semulith, each reference)` reports FIRST DIVERGENCE at exactly
-    `at_step`, semulith's step carrying the policy trap; (c) sail vs spike AGREE over
-    their full length — the references stay each other's control; (d) the difference id
-    exists in `references.sexp`, commit-gated by the matrix gate. `cross_model` stays a
-    comparison DISABLE; an expected divergence is the opposite act — a comparison that
-    must fail in exactly one declared way.
-  - **The restart axis is a mechanism, not a guest.** The smoke runner's reproduce leg
-    already re-runs every guest byte-identically; this leaf adds the offline half —
-    `run/tests.rs` gains a determinism suite (every guest run twice from
-    `zeroed_at(entry)`, identical traces) — so the restart cells are commit-gated, not
-    only live. The fault-side half (a trap leaves the pre-instruction state) is already
-    pinned by `.3`'s never_written + no-crossing evidence.
-  - **The 21-cell census** (dispositions; NEW = this leaf's guests; MECH = the
-    reproduce/determinism mechanism): F×F → `it-prio-jump`, `it-prio-load` (NEW);
-    F×A → `it-fault-alias` (NEW) + `fault-ld-x0-mis`/`-x0-fault`; F×B →
-    `it-fault-wrap-ld`, `it-fault-wrap-sd` (NEW); F×E → `it-fencei` (NEW) +
-    `fault-reserved`, `fault-shiftw-res`, `scope-ecall`/`-ebreak`; F×P →
-    `fault-st-mis-h`/`-w`/`-d`, `fault-jal-mis`/`-jalr-mis`, `fault-branch-nt`;
-    F×R → MECH; A×A → `bound-alias`; A×B → `it-alias-bound` (NEW); A×E →
-    `it-progress-loop` (NEW — the x0 link); A×P → `bound-alias` (load over own base);
-    A×R → MECH; B×B → `bound-arith`, `bound-shift`/`-shiftw`; B×E → `scope-branch`,
-    `fault-branch-nt`; B×P → `bound-shift`/`-shiftw` (every sweep step visible);
-    B×R → MECH; E×E → degenerate-in-run (the contained-trap contract makes a second
-    in-run event unreachable; the KINDS are exercised across guests — declared with that
-    reason); E×P → `scope-ecall`/`-ebreak` (`Stop::Trap`), `fault-fetch`
-    (`Stop::FetchFault`), `fault-reserved` (`Stop::Undefined`); E×R → MECH;
-    P×P → `it-progress-loop` (NEW); P×R → MECH; R×R → MECH (the smoke reproduce leg +
-    the NEW offline determinism suite).
-  - **B×E exhaustion judgement, stated:** branch/jump offset extremes (±4092/±4096) were
-    considered and rejected — the B/J immediate layouts are encoding-pinned (the
-    accounted-bits self-check and the disjointness gates own them), `pc + sext(imm)` is
-    exercised at both signs by `scope-branch`/`fault-branch-nt`, and ~1 KB of
-    never-executed padding per direction buys no discrimination the sign edges do not
-    already provide (the `.2` byte-sweep rejection is the precedent).
-  - **The new doctrine `INTERACTION-MATRIX`** (`scripts/check_interaction_matrix.{py,sh}`,
-    #25): re-derives the 21 cells from the axes (an omitted cell fails, named); every
-    disposition resolves (guest cells name tracked guests with source AND expectations;
-    mechanism cells name a closed registry — the smoke reproduce leg, the offline
-    determinism suite; degenerate cells carry a non-empty reason); every tracked guest
-    maps to ≥1 cell (an orphan fails, named); every difference id named in the matrix
-    exists in `references.sexp`; the report prints every cell with its verdict. Self-test
-    RED arms, fired RED against the real corpus before registration, mirrored per the
-    registry rules; `TOOLBOX.md` gains the row.
-  - **Reviewed ceiling expansion** (the `.1` decision names each leaf's guest growth as
-    its own reviewed decision): the corpus grows 32 → 40 guests (+16 tracked files) and
-    `interactions.sexp` lands, so `profiles/` rises 78 → 95 files and ~367 KB → ~395 KB.
-    `doctrine/readme_routes.tsv`: `ceiling_lines` 82 → 99 (95 + 4 headroom),
-    `ceiling_bytes` re-based to the measured aggregate under the same ~1.2× band, health
-    targets re-based. ⛔ `ceiling_part_bytes` stays 32768 — no new file approaches it
-    (largest: ~4 KB). `schema/` gains `interactions.sexp` (+1 file, its row's headroom).
-  - **Cascades owned by this leaf:** `schema/expectations.sexp` + the new
-    `schema/interactions.sexp`; `dossier_sexp.py` (the field round-trips); 8 guests × 2
-    files; `gen_guests.py`'s tuple and `guests.rs` regenerated; `run/tests.rs` gains one
-    suite per guest (fault suites assert trap pair + stop reason; `it-fencei` asserts
-    `Stop::Undefined`; `it-progress-loop` asserts `Stop::Budget`) plus the determinism
-    suite; `mutate.rs`'s census — all 8 join the empty arm with per-line justifications
-    (no new guest has a successful store crossing); `compare_traces.py` (the divergence
-    check + arms); `run_semulith_smoke.py` (the tuple + the divergence path);
-    `references.sexp` gains `DIFF-TVAL-PHYS-MASK`; the new gate + registration + the
-    three mirrors (`DOCTRINE_ENFORCEMENT.md`, `docs/book/src/working/doctrines.md`,
-    `TOOLBOX.md`); the routes-registry ceilings; both `G?-REPORT.md` regenerate (counts
-    are derived); the book (`plan/p2.md` carries the result; `claim-scope.md`/`plan/p1.md`
-    re-sync to 40 guests); `EXERCISE-COVERAGE` stays 52/52 (no new form).
+  Design: recorded before code; archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling — moved there on `2026-09-30` to make room for the `.5` strand-2 design).
   Result: met, `2026-09-29`. **The 21-cell matrix is declared as tracked data and every
   cell resolves; eight new guests, 38 new steps — 492/492 aligned steps over the 40-guest
   corpus, byte-identical reproduction, plus the one declared expected divergence.** The
@@ -343,6 +231,109 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
      outgrows a safe slice it becomes its own leaf.
   3. **Directed sequence tests**: the directed campaigns the matrix does not already
      cover, designed from the `.1`–`.4` evidence gaps.
+  Strand 2 design (recorded before code, `2026-09-30` — measured against the PINNED FETCH
+  itself, not the planning docs alone; the probe material is the sparse clone named below):
+  - **The fetch, measured.** A blobless sparse clone of `github.com/riscv/riscv-arch-test`
+    at the pinned commit `e2216915d9a17acc142610831d88de8b65683866` stands at
+    `target/refs/riscv-arch-test/` — untracked, the reference binaries' standing, on the
+    repository volume (data-locality policy). Sparse paths: `tests/env/` (784 KB — the
+    macro headers), `tests/rv64i/I/` (13 MB — the campaign), `config/` (2.3 MB — the
+    example DUT configs); 45 MB on disk. The "~672 MB" figure in the materials catalogue
+    is the WHOLE generated tree; the RV64I campaign needs 13 MB of it. Re-fetch:
+    `git clone --filter=blob:none --no-checkout <url>`, `git sparse-checkout set
+    tests/env tests/rv64i/I config`, `git checkout e2216915…`. Census (measured): **51
+    test files** — exactly one per RV64I instruction row of the cached
+    `testplans/I.csv` (51 rows, all `RV64=x`) — 199,768 lines, **18,092 `RVTEST_SIGUPD`
+    invocations, 14,820 testcases**. Every file's YAML header reads
+    `REQUIRED_EXTENSIONS: ['I']`, `MARCH: rv64i_zicsr_zifencei`, `MXLEN: 64`.
+  - **The suite's mechanism, measured from the pinned headers** (`tests/env/*.h` — the
+    cached README's "0.13.1" is stale; the checked-in `sail.json` targets the 0.14.1
+    schema). A test is one self-contained gas-syntax `.S` including only
+    `riscv_arch_test.h`. `RVTEST_SIGUPD(sigptr, link, temp, result, …)` in SIGNATURE mode
+    (no `RVTEST_SELFCHECK`) stores the result word to the signature region
+    (`SIG_STRIDE` = 8 for rv64i); `sail_macros.h` is forcibly included in this mode and
+    redefines halt/console to HTIF `tohost` stores. The region, between the `.global`
+    symbols `begin_signature`/`end_signature`: a canary, `SIGUPD_COUNT`×8 bytes of
+    `0xdeadbeef` fill (a per-file define, 10 over the file's sigupd count), the
+    `final_sig_offset` slot, a trap-signature reservation (`TRAP_SIGUPD_COUNT` default
+    15000 → 120 KB), the end canary. The host reads the bounds from the ELF symbol
+    table. Termination: `RVMODEL_HALT_PASS/FAIL` = `tohost ← 1 / 3` in a store loop; the
+    console is `tohost` byte pairs carrying the suite's own verdict strings
+    (`RVCP-SUMMARY: TEST SIGRUN/PASSED/FAILED`).
+  - **The observation-vocabulary adaptation — the strand's core decision.** Run the
+    SIGNATURE-mode build, never the self-check build (its `SIGNATURE_FILE` format lives
+    in the un-fetched framework; trace-based extraction is the laboratory's native
+    vocabulary and gives first-mismatch minimization, `EVD-02`). The laboratory's
+    observation vocabulary gains the one thing the campaign needs: **data-store
+    crossings**. The runner already records every boundary crossing (`run.rs`'s
+    `Vec<Crossing>`, request and answer); the CLI discards it. `semulith run` learns a
+    store trace (each data store — address, width, value — interleaved with the steps):
+    sail's `--trace-mem` equivalent, an observability addition; the interpreter and the
+    semantics data are untouched. From each model's store trace the harness extracts the
+    writes into `[begin_signature, end_signature)` (the per-testcase signature words)
+    and the `tohost` stores (the completion verdict — 1 pass-shape / 3 failure — and the
+    console text).
+  - **Sail-derived expectations, EVD-04-recorded.** sail-riscv 0.14 (our pin) runs each
+    ELF under the SAME matched lab override (`rv64i-lab-v0`: one MainMemory region
+    `0x8000_0000` + 2 GB — identical to the suite's default RAM map — no devices,
+    misaligned raises); its stores to the signature region ARE the expected values,
+    recorded as **external tests with Sail-derived expectations** — the
+    `references.sexp` independence row (act4 shares Sail's semantics by construction)
+    already forbids reading agreement as a second opinion. spike runs the same ELFs as
+    the CONTROL PAIR: spike-vs-sail over the signature is the genuine differential;
+    semulith-vs-signature is the external-test evidence. ⚠️ spike's bundled board
+    (`DIFF-PLATFORM-SPIKE`) is a stated precondition, held by the link map: HTIF is
+    spike's native mechanism and every test byte lives at ≥ `0x8000_0000`, never in
+    `0x1000` or `0x0200_0000..0x11ff_ffff`.
+  - **The DUT-side pieces this project authors** (tracked, `profiles/rv64i-lab-v0/act4/`
+    — the framework normally generates them from UDB; the minimal honest set is
+    hand-written): `rvtest_config.h` (`UDB_MXLEN 64` + `UDB_MXLEN_64` and NOTHING else —
+    no `STANDARD_SM_SUPPORTED`/`S`/`U`/`F`: the trap handlers, T-SBI and every CSR path
+    compile out; measured by grep over all 51 files — no body carries a CSR or `fence.i`
+    instruction outside compiled-out guards), `rvmodel_macros.h` (every macro
+    `check_defines.h` refuses the build without: `RVMODEL_HALT_PASS/FAIL`,
+    `RVMODEL_IO_WRITE_STR`, `RVMODEL_DATA_SECTION` (tohost/fromhost), the
+    interrupt-latency/timer/MSW set — defined even though `sail_macros.h` overrides the
+    halt/console trio in sig mode), `link.ld` (the `sail-RVI20U64` shape:
+    `TEST_BASE = 0x8000_0000` = the lab's declared region base,
+    `.text.init`/`.text.rvtest`/`.rodata`/`.data`/`.bss`/stack(0x20000)/`.text.rvmodel`
+    last, `ENTRY(rvtest_entry_point)`).
+  - **The harness** (tracked, `scripts/run_act4_campaign.py`): per test — assemble+link
+    with the pinned clang 21.1.8 + `ld.lld` 21.1.8 (`-march` from the file's own `MARCH`
+    key, `-mabi=lp64 -mno-relax`, `-I tests/env -I <act4 config>`, `-DTEST_FILE`,
+    `-DTEST_FLEN=32`, `-DSAIL_CLINT_BASE_ADDRESS=0x2000000` and
+    `-DSAIL_SIMPLE_INTERRUPT_GENERATOR_BASE_ADDRESS=0xC000000` — `sail_macros.h`'s
+    compile-time demands; those addresses are never touched by an I-suite test, and a
+    store there access-faults on all three models — a detectable failure, not a silent
+    assumption) into `target/refs/guests/act4/` (untracked); run all three models under
+    a budget; extract signatures and verdicts; compare semulith against the Sail-derived
+    signature word-by-word (first mismatch = the minimized discrepancy, naming the
+    testcase by sigupd ordinal) and spike against sail likewise; record per-test
+    verdicts.
+  - **The record**: `profiles/rv64i-lab-v0/act4.sexp` behind a new `schema/act4.sexp`
+    family (the RECORD-SCHEMA layer admits no un-gated dossier): the campaign metadata
+    (pin, toolchain, model versions, counts) and per-test rows (file, sigupd count,
+    signature sha256, the two comparison verdicts). The smoke corpus and the
+    INTERACTION-MATRIX/EXERCISE-COVERAGE gates are untouched — ACT4 tests are an
+    EXTERNAL corpus, not tracked guests; the matrix's orphan rule is not engaged.
+  - **The fence watch-item.** `I-fence-00.S` exercises `fence.tso`, reserved-`fm`,
+    nonzero-rs1/rd fences and a HINT — exactly the corrected `D-FENCE` and `D-HINTS`
+    territory (DEFECT-A's inversion). Both references execute them as nops (measured at
+    `.3`/`.4`); this test is the external check of that correction.
+  - **Reviewed ceiling expansion** (the `.1` rule): `profiles/` gains the three `act4/`
+    harness files + `act4.sexp` (+4) against a 99-file ceiling standing at 95 —
+    re-derived at commit time with measured sizes; `schema/` +1 (inside its row's
+    headroom); `scripts/` +1 (no registry row); the crates change is the CLI flag alone.
+    Per-part 32 KiB stays untouched (largest new file ≈ the dossier, ~10 KB).
+  - **Sizing verdict** (the strand note: outgrowing a safe slice makes it its own leaf):
+    three slices, each its own commit — (a) THIS design + the fetch record + the
+    acquisition facts (`references.sexp` candidate 4, the catalogue note); (b) the CLI
+    store trace + the harness building ONE test (`I-add-00.S`) end-to-end three-way —
+    retiring the two measured toolchain risks before the fleet: clang 21.1.8 assembling
+    the suite's macro machinery (the docs name LLVM 22 / GCC 15) and sail-0.14's HTIF
+    behavior under our override; (c) the 51-test campaign, the record, the gates, the
+    book. A framework-absence blocker discovered in (b) (e.g. `derived_config.h` needing
+    more than the minimal set) promotes the strand to its own leaf instead.
   Strand 1 landed `2026-09-30` (`SEMULITH-PS-0063`): `c-scope.c` retires three-way
   129/129; G1 reads `passed`. The model book's compiled-guest chapter landed with it
   (`SEMULITH-PS-0065`).
@@ -376,7 +367,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.5` | `active` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer. Blocker (a) ANSWERED `2026-09-29` (`MODEL-METHOD.15`): the ACT4 docs + test plans are catalogued and cached, the generated suite pinned by upstream commit for resume day. Blocker (b) ANSWERED `2026-09-30` (director delegation, `decision_c-guest-routing-and-toolchain`): the C guest lands here, built by clang 21.1.8 + `ld.lld` 21.1.8 already on the host. Strand 1 (the C guest) is the current slice |
+| 1 | `P2-SCALAR.5` | `active` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer. Blocker (a) ANSWERED `2026-09-29` (`MODEL-METHOD.15`): the ACT4 docs + test plans are catalogued and cached, the generated suite pinned by upstream commit for resume day. Blocker (b) ANSWERED `2026-09-30` (director delegation, `decision_c-guest-routing-and-toolchain`): the C guest lands here, built by clang 21.1.8 + `ld.lld` 21.1.8 already on the host. Strand 1 (the C guest) landed `2026-09-30` (G1 `passed`); strand 2 (ACT4) is DESIGNED against the pinned sparse fetch (51 RV64I tests, 18,092 signature updates, measured) — slice (b), the CLI store trace + the one-test harness, is the current slice |
 
 ## Decisions
 
@@ -771,6 +762,8 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
 | `2026-09-30` | `P2-SCALAR.5` (strand 1) | comparator RED — first divergence at aligned step 7 vs BOTH references | `li a0, 0` with a0 already 0: the references log the write, semulith's declared visible-change vocabulary does not; normalized in `align` (`_visible_changes`), self-test 19/0 (+2 arms) |
 | `2026-09-30` | `P2-SCALAR.5` (strand 1) | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | `c-scope`: AGREE over 129/129 aligned steps vs sail-riscv AND spike, byte-identical reproduction; the 40 assembled guests unchanged — 221 PASS / 0 FAIL |
 | `2026-09-30` | `P2-SCALAR.5` (strand 1) | `scripts/gate_report.py rv64i-lab-v0 --gate G1`, `make gate`, `make book` | **G1 verdict `passed`** (criterion 6 met); all doctrines green; both books render |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2a) | the pinned sparse fetch (blobless clone at `e2216915…`, `target/refs/riscv-arch-test/`) + census of the fetched tree | 45 MB on disk (the RV64I campaign's share of the ~672 MB tree): 51 test files / 199,768 lines / 18,092 `RVTEST_SIGUPD`s / 14,820 testcases — every design number measured, not read from the docs; two doc facts found stale (the README's sail 0.13.1 pin; the signature flow) |
+| `2026-09-30` | `P2-SCALAR.5` (strand 2a) | `bash scripts/check_profile_consistency.sh --self-test`, `make gate`, `make book` | self-test green with the new status vocabulary value; all doctrines green; both books render — a docs-only commit |
 
 ## Commit Log
 
@@ -780,7 +773,7 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
 | `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
 | `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
-| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …` | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect |
+| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 
 ## Changelog
 

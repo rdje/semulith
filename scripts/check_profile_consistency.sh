@@ -148,7 +148,8 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
     # ---- references.sexp, when present: the reference candidate dossier ----------------
     refs_path = profile_path.parent / "references.sexp"
     if refs_path.is_file():
-        STATUSES = {"obtained", "not obtained", "reachable, not acquired"}
+        STATUSES = {"obtained", "not obtained", "reachable, not acquired",
+                    "acquired (sparse partial)"}
         # An `obtained` candidate claims we HAVE it. These are the fields that make the claim
         # checkable rather than remembered.
         OBTAINED_REQUIRED = ("binary", "binary_sha256", "invocation", "trace_granularity",

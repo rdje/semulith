@@ -173,14 +173,16 @@ independence examination *before* its agreement counts.
 
 ### `act4`
 
-The RISC-V architectural test corpus — a set of tests somebody else chose, located and
-**deliberately not acquired**: a test corpus acquired before a model can run a single
-instruction is inventory, not progress (the record is in `references.sexp` with the exact
-tag shape and branch).
+The RISC-V architectural test corpus — a set of tests somebody else chose, located, and
+**acquired as a sparse partial** (`2026-09-30`, `P2-SCALAR.5` strand 2): a blobless clone
+pinned at commit `e2216915…` holding only `tests/env/`, `tests/rv64i/I/` and `config/`
+(45 MB of the ~672 MB tree — the RV64I campaign needs nothing else), standing untracked at
+`target/refs/riscv-arch-test/` beside the reference binaries. The docs and test-plan half
+remains the catalogued material `RISCV-ARCH-TEST-ACT4`.
 
 **Does not supply:** a second opinion, ever. ACT computes its expected results using a
 *configured Sail model*, so ACT agreeing with sail-riscv is one semantics answering twice
-— the single most important lineage fact in the dossier. ACT's value, when `P2-SCALAR.5`
+— the single most important lineage fact in the dossier. ACT's value, as `P2-SCALAR.5`
 takes it up, is *external tests*, which is a different kind of value from independence.
 
 ## The internal contracts

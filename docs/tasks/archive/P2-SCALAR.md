@@ -1,13 +1,14 @@
 # P2-SCALAR — archived completed-leaf evidence
 
 The full, unedited acceptance checklists for the `done` leaves `.1` and `.2` of the
-[`P2-SCALAR`](../P2-SCALAR.md) tree (the most recent done leaf's, `.3`, stays live per the
-`P1-LAB` precedent), plus the recorded-before-code design detail of the completed leaves
-`.1`–`.3`, split out on `2026-09-29` when the live file crossed its per-part ceiling — the
-ceiling was obeyed, not raised, per the `docs/tasks/` precedent set by `SOT-FORMAT` and
-continued by `P1-LAB`. The live tree keeps the frontier, the decisions, the open questions,
-the blockers, the defect log, every leaf's goal/acceptance/result, the active leaf's design
-and checklist, and both logs.
+[`P2-SCALAR`](../P2-SCALAR.md) tree (the more recent done leaves', `.3` and `.4`, stay live
+per the `P1-LAB` precedent), plus the recorded-before-code design detail of the completed
+leaves `.1`–`.4` (`.4`'s moved here on `2026-09-30` to make room for the active `.5`'s
+strand-2 design), split out on `2026-09-29` when the live file crossed its per-part
+ceiling — the ceiling was obeyed, not raised, per the `docs/tasks/` precedent set by
+`SOT-FORMAT` and continued by `P1-LAB`. The live tree keeps the frontier, the decisions,
+the open questions, the blockers, the defect log, every leaf's goal/acceptance/result, the
+active leaf's design and checklist, and both logs.
 
 Archived sections, verbatim:
 
@@ -280,6 +281,120 @@ Archived sections, verbatim:
     guests exercise declared forms and reserved words, neither of which is a scope
     change). The book (`plan/p2.md`) carries the result; claim-scope and p1 pages
     re-sync to 32 guests.
+
+  Design (recorded before code, `2026-09-29` — every reference behavior below was MEASURED
+  against sail-riscv 0.14 AND spike 1.1.1-dev by an untracked probe suite
+  (`target/refs/guests/probes/run_probes_p24.py`, 8 probe ELFs) before any guest was
+  authored, the `.3` doctrine):
+  - **The six axes, grounded.** `fault` = the `.3` layer; `alias`/`boundary` = the `.2`
+    layers; `event` = `OB-ENV-EVENT-DELIVERY` (synchronous exceptions and requested traps
+    only); `progress` = `OB-ENV-PARTIAL-PROGRESS` + the budget contract; `restart` = the
+    `state.sexp` census (no restartable suboperation) — restartability is **determinism
+    of re-execution from cold reset**, a mechanism property, not a guest shape.
+  - **The matrix is the 6×6 upper triangle = 21 cells, declared as tracked data** in
+    `profiles/rv64i-lab-v0/interactions.sexp` (new `schema/interactions.sexp`), each cell
+    carrying a disposition: guest(s) / mechanism / degenerate-with-reason. "Unexercised
+    cells are reported, not omitted" is mechanized: the gate RE-DERIVES the 21 cells from
+    the 6 declared axes and refuses by name a document that leaves one out or a cell
+    whose disposition does not resolve.
+  - **Measured: fault priority is three-way pinnable.** A jump target both misaligned AND
+    unmapped (`jalr` → 0x40000002) raises misaligned-fetch (0x00) ON THE JUMP, tval = the
+    target, link suppressed — all three models; a data access both misaligned AND
+    unmapped (`lw` at 0x40000001) raises misaligned-load (0x04) — all three.
+  - **Measured: the address wrap into a fault agrees three-way when tval < 2^56** (`ld`
+    at base −4 + 4 → address 0: cause 0x05, tval 0, all three).
+  - **⚠️ Measured: a NEW reference difference — sail-riscv 0.14 masks the access-fault
+    tval to its 56-bit physical-address width.** `sd` at 0xFFFF…FFF8: sail reports
+    tval 0x00FF_FFFF_FFFF_FFF8, spike AND semulith the full address; at exactly 2^56
+    sail reports tval 0, spike the full 0x0100_0000_0000_0000; at 2^55 both intact. A
+    reference-vs-reference difference, not a model defect — recorded as
+    `DIFF-TVAL-PHYS-MASK` in `references.sexp`; consequence: three-way tval comparisons
+    keep fault addresses below 2^56, so the wrap-sd guest wraps to address 0 (tval 0,
+    three-way exact) instead of the top of the space. Owner of reopening: whichever
+    profile declares ≥2^56 addresses meaningful.
+  - **Measured: the fence.i expected-divergence shape is exact.** Both references nop
+    fence.i and CONTINUE (the marker write commits); semulith reports the
+    policy-converted illegal-instruction (0x02, tval = the word) and stops. Prefix
+    agrees; divergence at exactly the fence.i step; the two references agree with each
+    other over their whole length.
+  - **Measured: a misaligned load over its own base** (`lw x5, x5, 1`) raises 0x04 with
+    the base preserved — all three.
+  - **Eight new guests** (EVD-05 expectations before any run; trap step last):
+    `it-prio-jump` (3 steps, F×F), `it-prio-load` (3, F×F), `it-fault-alias` (2, F×A),
+    `it-fault-wrap-ld` (2, F×B), `it-fault-wrap-sd` (3, F×B — the tval-0 redesign),
+    `it-alias-bound` (~9, A×B — self-aliased ops at boundary values: `addw` wrap, `srl`
+    shamt 65 → 1, `sll` shamt 63, `sub`/`slt` at −1), `it-progress-loop` (~13, P×P + A×E
+    — a counting loop under `jal x0, -4` to budget, every iteration visible, the x0 link
+    unwritten, `Stop::Budget`), `it-fencei` (2 steps semulith / 3 references, F×E — the
+    `DIFF-FENCEI-EXECUTED` expected-divergence guest).
+  - **The comparator learns the EXPECTED divergence.** `schema/expectations.sexp` gains
+    an optional `(expect_divergence (difference "DIFF-…") (at_step N))`;
+    `dossier_sexp.py` round-trips it; `compare_traces.py` gains
+    `check_expected_divergence` with RED/GREEN self-test arms. The smoke path for a
+    declaring guest: (a) semulith matches its own spec-derived expectations as always;
+    (b) `compare(semulith, each reference)` reports FIRST DIVERGENCE at exactly
+    `at_step`, semulith's step carrying the policy trap; (c) sail vs spike AGREE over
+    their full length — the references stay each other's control; (d) the difference id
+    exists in `references.sexp`, commit-gated by the matrix gate. `cross_model` stays a
+    comparison DISABLE; an expected divergence is the opposite act — a comparison that
+    must fail in exactly one declared way.
+  - **The restart axis is a mechanism, not a guest.** The smoke runner's reproduce leg
+    already re-runs every guest byte-identically; this leaf adds the offline half —
+    `run/tests.rs` gains a determinism suite (every guest run twice from
+    `zeroed_at(entry)`, identical traces) — so the restart cells are commit-gated, not
+    only live. The fault-side half (a trap leaves the pre-instruction state) is already
+    pinned by `.3`'s never_written + no-crossing evidence.
+  - **The 21-cell census** (dispositions; NEW = this leaf's guests; MECH = the
+    reproduce/determinism mechanism): F×F → `it-prio-jump`, `it-prio-load` (NEW);
+    F×A → `it-fault-alias` (NEW) + `fault-ld-x0-mis`/`-x0-fault`; F×B →
+    `it-fault-wrap-ld`, `it-fault-wrap-sd` (NEW); F×E → `it-fencei` (NEW) +
+    `fault-reserved`, `fault-shiftw-res`, `scope-ecall`/`-ebreak`; F×P →
+    `fault-st-mis-h`/`-w`/`-d`, `fault-jal-mis`/`-jalr-mis`, `fault-branch-nt`;
+    F×R → MECH; A×A → `bound-alias`; A×B → `it-alias-bound` (NEW); A×E →
+    `it-progress-loop` (NEW — the x0 link); A×P → `bound-alias` (load over own base);
+    A×R → MECH; B×B → `bound-arith`, `bound-shift`/`-shiftw`; B×E → `scope-branch`,
+    `fault-branch-nt`; B×P → `bound-shift`/`-shiftw` (every sweep step visible);
+    B×R → MECH; E×E → degenerate-in-run (the contained-trap contract makes a second
+    in-run event unreachable; the KINDS are exercised across guests — declared with that
+    reason); E×P → `scope-ecall`/`-ebreak` (`Stop::Trap`), `fault-fetch`
+    (`Stop::FetchFault`), `fault-reserved` (`Stop::Undefined`); E×R → MECH;
+    P×P → `it-progress-loop` (NEW); P×R → MECH; R×R → MECH (the smoke reproduce leg +
+    the NEW offline determinism suite).
+  - **B×E exhaustion judgement, stated:** branch/jump offset extremes (±4092/±4096) were
+    considered and rejected — the B/J immediate layouts are encoding-pinned (the
+    accounted-bits self-check and the disjointness gates own them), `pc + sext(imm)` is
+    exercised at both signs by `scope-branch`/`fault-branch-nt`, and ~1 KB of
+    never-executed padding per direction buys no discrimination the sign edges do not
+    already provide (the `.2` byte-sweep rejection is the precedent).
+  - **The new doctrine `INTERACTION-MATRIX`** (`scripts/check_interaction_matrix.{py,sh}`,
+    #25): re-derives the 21 cells from the axes (an omitted cell fails, named); every
+    disposition resolves (guest cells name tracked guests with source AND expectations;
+    mechanism cells name a closed registry — the smoke reproduce leg, the offline
+    determinism suite; degenerate cells carry a non-empty reason); every tracked guest
+    maps to ≥1 cell (an orphan fails, named); every difference id named in the matrix
+    exists in `references.sexp`; the report prints every cell with its verdict. Self-test
+    RED arms, fired RED against the real corpus before registration, mirrored per the
+    registry rules; `TOOLBOX.md` gains the row.
+  - **Reviewed ceiling expansion** (the `.1` decision names each leaf's guest growth as
+    its own reviewed decision): the corpus grows 32 → 40 guests (+16 tracked files) and
+    `interactions.sexp` lands, so `profiles/` rises 78 → 95 files and ~367 KB → ~395 KB.
+    `doctrine/readme_routes.tsv`: `ceiling_lines` 82 → 99 (95 + 4 headroom),
+    `ceiling_bytes` re-based to the measured aggregate under the same ~1.2× band, health
+    targets re-based. ⛔ `ceiling_part_bytes` stays 32768 — no new file approaches it
+    (largest: ~4 KB). `schema/` gains `interactions.sexp` (+1 file, its row's headroom).
+  - **Cascades owned by this leaf:** `schema/expectations.sexp` + the new
+    `schema/interactions.sexp`; `dossier_sexp.py` (the field round-trips); 8 guests × 2
+    files; `gen_guests.py`'s tuple and `guests.rs` regenerated; `run/tests.rs` gains one
+    suite per guest (fault suites assert trap pair + stop reason; `it-fencei` asserts
+    `Stop::Undefined`; `it-progress-loop` asserts `Stop::Budget`) plus the determinism
+    suite; `mutate.rs`'s census — all 8 join the empty arm with per-line justifications
+    (no new guest has a successful store crossing); `compare_traces.py` (the divergence
+    check + arms); `run_semulith_smoke.py` (the tuple + the divergence path);
+    `references.sexp` gains `DIFF-TVAL-PHYS-MASK`; the new gate + registration + the
+    three mirrors (`DOCTRINE_ENFORCEMENT.md`, `docs/book/src/working/doctrines.md`,
+    `TOOLBOX.md`); the routes-registry ceilings; both `G?-REPORT.md` regenerate (counts
+    are derived); the book (`plan/p2.md` carries the result; `claim-scope.md`/`plan/p1.md`
+    re-sync to 40 guests); `EXERCISE-COVERAGE` stays 52/52 (no new form).
 
 ---
 
