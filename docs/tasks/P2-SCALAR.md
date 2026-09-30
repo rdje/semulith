@@ -359,9 +359,46 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   caught the draft's self-patch at first run; a knowledge card would restate the gate)`.
 
 - ID: `P2-SCALAR.6` — **discrepancy reduction**
-  Status: `pending`
+  Status: `active` (`2026-09-30` — the discrepancy census measured: exactly ONE
+  model-vs-references behavioral divergence exists to minimize)
   Goal: minimize every discrepancy and retain the minimized case.
   Acceptance: the minimized case reproduces the original divergence; no discrepancy is closed by widening a mask or editing an expected value without a **source-grounded** justification (`EVD-05`, `AI-05`).
+  Design (recorded before code, `2026-09-30` — the census over every recorded difference
+  and every campaign result, each dispositioned with its citation):
+  - **The census.** Eight `difference` records in `references.sexp` + the live corpora
+    (48 guests, 642/642 steps; the ACT4 campaign 51/51, 17,017 slots; the offline
+    differential; the mutation suite). Dispositioned: `DIFF-ELF-STRICTNESS` (harness —
+    the writer fixed at P0), `DIFF-RESET-VECTOR` (harness — alignment, not semantics),
+    `DIFF-TRAP-RECORD-SHAPE` (trace vocabulary — the adapter reassembles spike's split
+    record), `DIFF-FETCH-GRANULARITY` (below the profile's observation granularity),
+    `DIFF-PLATFORM-DEFAULT` (a configuration DEFECT, corrected at `P0-PROFILE.10`, pinned
+    by `guest-no-device`), `DIFF-PLATFORM-SPIKE` (a layer difference — the reference
+    bundles a board; a stated precondition, not minimizable into a model defect),
+    `DIFF-TVAL-PHYS-MASK` (reference-vs-REFERENCE — sail masks, spike AND semulith agree
+    on the full address; nothing of ours to minimize). **One genuine
+    model-vs-references behavioral divergence exists: `DIFF-FENCEI-EXECUTED`** — the
+    legitimate UNSPECIFIED case (the profile declares Zifencei absent; both references
+    execute fence.i anyway), already pinned by `it-fencei`'s expected-divergence
+    protocol.
+  - **The minimization.** `it-fencei` is 3 instructions (agreeing prefix, fence.i, the
+    continuation marker). The minimal reproducer of the divergence is ONE word:
+    `0x0000100F` alone — semulith's policy trap lands at step 0, the references nop and
+    run off the end into the zero word (measured: both raise illegal-instruction there —
+    they stay each other's control over their full 2-step length). The minimized case is
+    retained as the tracked guest `min-fencei` (expect_divergence at_step 0 — the prefix
+    agreement is vacuous, the protocol's four legs unchanged). ⛔ The hand route, not
+    `semulith reduce`: the reducer minimizes a guest against a MUTATION's divergence
+    (P1-LAB.9); a reference difference has no mutant table row, and widening the
+    reducer's scope for one word would be machinery beyond the case.
+  - **What is deliberately NOT done:** no mask widened, no expected value edited
+    (EVD-05/AI-05 — the census found no discrepancy tempting either); no "reduction" of
+    reference-vs-reference differences (they are the references' owners', and
+    `DIFF-TVAL-PHYS-MASK`'s reopening owner is named in its record).
+  - **Cascades:** `min-fencei` × 2 files; `gen_guests.py` + `guests.rs`; one
+    `run/tests.rs` suite (Stop::Undefined at entry, trap (0x02, 0x100F)); the census
+    (empty arm + justification); the smoke tuple; the matrix (F×E, beside `it-fencei` —
+    same difference id); the G-reports regenerate; the book. `profiles/` 116 → 118 —
+    inside the reviewed 120 ceiling. `EXERCISE-COVERAGE` stays 52/52.
 
 - ID: `P2-SCALAR.7` — **snapshot and replay for implemented boundaries** — `G-REPLAY`
   Status: `pending`
@@ -535,88 +572,11 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   the fix three-way (`never_written x5`), the mutation matchers were re-derived for the
   new tree shape, and the whole 32-guest corpus re-proves the success path.
 
-## Acceptance Checklists (leaves P2-SCALAR.1–.4)
+## Acceptance Checklists (leaves P2-SCALAR.1–.4, and `.5` — all done)
 
 Archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling) — `.4`'s
-joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design.
-
-## Acceptance Checklist (leaf P2-SCALAR.5 — strand 1: the C-toolchain guest)
-
-- [x] **REPRODUCE / ISSUE** — G1's sixth criterion stood unmet, measured two ways at the
-  parent commit (`02791f2`), and the toolchain half of the blocker was measured, not
-  assumed:
-
-  ```
-  $ ls profiles/rv64i-lab-v0/guests/*.c | wc -l
-  0
-  $ scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout | grep -m1 "C guests"
-  `guests/` holds **40 assembly guests** and **0 C guests**.   (verdict: incomplete)
-  $ clang --target=riscv64-unknown-elf -march=rv64i -x c -c -o /dev/null - <<<'int f(void){return 0;}'
-  error: unable to create target: 'No available targets are compatible with triple
-  "riscv64-unknown-unknown-elf"'                 # Apple clang 21.0.0: NO RISC-V backend
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — three layers, each tool-backed. (i) Ownership and
-  toolchain were undecided, not unbuildable: the routing answer is
-  `decision_c-guest-routing-and-toolchain` (director delegation), and the toolchain was
-  measured PRESENT — Homebrew `llvm@21` clang 21.1.8 compiled `-march=rv64i -mabi=lp64`
-  to correct RV64I (objdump-verified), `zig ld.lld` reported Homebrew LLD 21.1.8.
-  (ii) The first compiled binary failed its OWN self-check — `fail(0x0501)` measured in
-  the run trace (`x10 <- 0xfa11000000000501`): WHERE the guest's section 6, `w32 << 33` —
-  a 32-bit shift by ≥ 32 is UB in C (C11 6.5.7p3), which clang exploited to delete the
-  entire rest of the program and route the fall-through to `fail`. Proven, not reviewed:
-  the same compile with the amount narrowed to 31 restores `call fib` + 4× `call emit`;
-  the `-fno-strict-aliasing` control did NOT (aliasing was the first suspect, measured
-  innocent). (iii) With the guest clean, the three-way comparison diverged at aligned
-  step 7 — `li a0, 0` with a0 already 0: semulith records no write (its DECLARED
-  visible-change vocabulary), BOTH references log `x10 <- 0`. WHERE the comparator: it
-  never had to normalize no-change writes, because the hand-written corpus pre-writes
-  destinations (the `.1` lesson) — 492/492 never exercised the case a compiler emits
-  routinely.
-
-- [x] **FIX** — at the lowest-risk level that works for each layer: the guest's section 6
-  uses only C-legal shifts (the *W shamt boundary stays with `bound-shiftw`'s assembly —
-  C cannot express it; the source comments carry exactly this); the COMPARATOR learned
-  the declared vocabulary (`_visible_changes` in `compare_traces.py`'s `align` — the one
-  funnel every trace passes through; a shadow register file from the declared reset; an
-  `x0` record of nonzero stays visible; +2 self-test arms, 19/0); the pinned-toolchain
-  build script (`scripts/build_c_guest.sh` — every candidate PROBED for the riscv64
-  backend, a clang without one refused by name, nothing installed); the smoke's `.c`
-  path (build → budget run stopped by the closing ebreak → `e_entry` read from the ELF
-  header); `gate_report.py`'s criterion-6 and Limitations branches (the met prose names
-  the guest, the build script and the decision record — the versions' ONE owner).
-
-- [x] **ADDRESSED (verified)** — the criterion flips on the live three-way differential,
-  and the report regenerates to `passed`:
-
-  ```
-  $ python3 scripts/run_semulith_smoke.py | sed -n '/== c-scope ==/,/== bound-shift/p'
-  PASS  c-scope: compiled, retired inside the budget  129 executed step(s), entry 0x80001370
-  PASS  c-scope: semulith vs sail-riscv  AGREE over 129 aligned step(s)
-  PASS  c-scope: semulith vs spike       AGREE over 129 aligned step(s)
-  PASS  c-scope: semulith reproduces
-  $ scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout | grep -m1 Verdict
-  **Verdict: `passed`.**
-  ```
-
-- [x] **NO REGRESSION** — the guard set re-run, green; the two in-flight REDs were the
-  author's own C UB and the comparator's missing normalization (above), never a model
-  defect. No Rust changed, so `make check`'s re-run is not owed (COMMIT.md §2):
-
-  ```
-  $ python3 scripts/run_semulith_smoke.py          # 221 PASS / 0 FAIL — the 40 assembled
-                                                   # guests' verdicts unchanged
-  $ python3 scripts/compare_traces.py --self-test  # 19/0 (+2 vocabulary arms)
-  $ make gate                                      # all doctrines green
-  $ make book                                      # both books render
-  ```
-
-- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten — G1 `passed`, strand 1 next
-  action), `LIVE_STATUS.md` (P1 row verdict, P2 `.5` active), `CHANGELOG.md`,
-  `DEV_NOTES.md`, this tree, `docs/tasks/P1-LAB.md` (metadata + frontier re-synced to
-  the verdict it routed), the book (`claim-scope.md`,
-  `annex/building-first-model.md`), the model book (`evidence.md`, `introduction.md`),
-  and the regenerated `G1-REPORT.md`.
+joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design, and `.5`'s
+(strand 1's) followed when the leaf closed the same day.
 
 ## Verification Log
 
@@ -663,6 +623,7 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design.
 | `2026-09-30` | `P2-SCALAR.5` (strand 3) | `cargo test -p semulith-verify` | 174 passed / 0 failed (+8 guest suites; the census pins the 55 new data crossings; the stop-reason table learned the dir-* shapes) |
 | `2026-09-30` | `P2-SCALAR.5` (strand 3) | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 48 guests, **642/642 aligned steps** (+150) — every dir-* guest three-way at full length; `it-fencei`'s protocol unchanged; every run reproduces byte-identically |
 | `2026-09-30` | `P2-SCALAR.5` (strand 3) | `make check`, `make gate`, `make bench` + `make smoke-bench`, `check_exercise_coverage.sh`, matrix and comparator self-tests, `make book` | rc=0; all doctrines green; 52 bench arms (48 clean guests); 52/52; matrix 12/0, comparator 19/0; both books render |
+| `2026-09-30` | `P2-SCALAR.6` | the discrepancy census (every `references.sexp` difference + all four corpora) | exactly ONE model-vs-references behavioral divergence exists (`DIFF-FENCEI-EXECUTED`, already pinned); the other seven differences dispositioned with citations (harness ×2, trace vocabulary, sub-granularity observable, a corrected configuration defect, a board-layer difference, one reference-vs-reference) |
 
 ## Commit Log
 
@@ -673,6 +634,7 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design.
 | `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
 | `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first), `SEMULITH-PS-0070` (strand 3: the eight directed guests — **`.5` DONE**) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
+| `P2-SCALAR.6` | `SEMULITH-PS-0071` (design, before code — the census measured first) | one model-vs-references divergence exists (`DIFF-FENCEI-EXECUTED`); the minimized case is one word, retained as `min-fencei` |
 
 ## Changelog
 

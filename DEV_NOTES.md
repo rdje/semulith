@@ -3,6 +3,20 @@
 Detailed technical notes — root cause, implementation, validation — per slice. The
 engineering-continuity surface (not the public docs; that's `docs/book/`). Newest first.
 
+## _(2026-09-30)_ — the discrepancy census: one divergence exists (P2-SCALAR.6 design)
+
+Discrepancy reduction opened with the measurement its acceptance implies: enumerate every
+recorded difference and every campaign result before minimizing anything. Eight
+`references.sexp` difference records dispositioned with citations — two harness, one
+trace-vocabulary, one sub-granularity observable, one corrected configuration defect
+(pinned by guest-no-device), one board-layer (stated precondition, not a model defect),
+one reference-vs-reference (sail's 56-bit tval mask; spike AND semulith agree) — leaving
+exactly one model-vs-references behavioral divergence: DIFF-FENCEI-EXECUTED, the
+legitimate UNSPECIFIED case. The minimization is one word (0x0000100F alone reproduces
+it: policy trap at step 0; both references nop and run off the end into the measured
+illegal zero word, staying each other's control). The reducer stays out of scope by
+design: it minimizes against MUTANT divergences, not reference differences.
+
 ## _(2026-09-30)_ — the directed guests land; P2-SCALAR.5 done (PS-0070)
 
 The eight guests from the measured census landed with the full wiring (gen_guests tuple +

@@ -1,7 +1,8 @@
 # P2-SCALAR — archived completed-leaf evidence
 
-The full, unedited acceptance checklists for the `done` leaves `.1`–`.4` of the
-[`P2-SCALAR`](../P2-SCALAR.md) tree (`.4`'s joined on `2026-09-30` for room), plus the
+The full, unedited acceptance checklists for the `done` leaves `.1`–`.5` of the
+[`P2-SCALAR`](../P2-SCALAR.md) tree (`.4`'s joined `.1`–`.3` on `2026-09-30` for room, and
+`.5`'s followed when the leaf closed the same day), plus the
 recorded-before-code design detail of the completed leaves
 `.1`–`.4` (`.4`'s moved here on `2026-09-30` to make room for the active `.5`'s
 strand-2 design) and of `.5`'s landed strand 2 (moved the same day once the strand
@@ -790,3 +791,81 @@ Archived sections, verbatim:
   routes registry (the reviewed ceilings, incl. the two mirror caps), `references.sexp`
   (the new difference; `DIFF-FENCEI-EXECUTED` marked landed), and both regenerated
   `G?-REPORT.md`.
+
+## Acceptance Checklist (leaf P2-SCALAR.5 — strand 1: the C-toolchain guest)
+
+- [x] **REPRODUCE / ISSUE** — G1's sixth criterion stood unmet, measured two ways at the
+  parent commit (`02791f2`), and the toolchain half of the blocker was measured, not
+  assumed:
+
+  ```
+  $ ls profiles/rv64i-lab-v0/guests/*.c | wc -l
+  0
+  $ scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout | grep -m1 "C guests"
+  `guests/` holds **40 assembly guests** and **0 C guests**.   (verdict: incomplete)
+  $ clang --target=riscv64-unknown-elf -march=rv64i -x c -c -o /dev/null - <<<'int f(void){return 0;}'
+  error: unable to create target: 'No available targets are compatible with triple
+  "riscv64-unknown-unknown-elf"'                 # Apple clang 21.0.0: NO RISC-V backend
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — three layers, each tool-backed. (i) Ownership and
+  toolchain were undecided, not unbuildable: the routing answer is
+  `decision_c-guest-routing-and-toolchain` (director delegation), and the toolchain was
+  measured PRESENT — Homebrew `llvm@21` clang 21.1.8 compiled `-march=rv64i -mabi=lp64`
+  to correct RV64I (objdump-verified), `zig ld.lld` reported Homebrew LLD 21.1.8.
+  (ii) The first compiled binary failed its OWN self-check — `fail(0x0501)` measured in
+  the run trace (`x10 <- 0xfa11000000000501`): WHERE the guest's section 6, `w32 << 33` —
+  a 32-bit shift by ≥ 32 is UB in C (C11 6.5.7p3), which clang exploited to delete the
+  entire rest of the program and route the fall-through to `fail`. Proven, not reviewed:
+  the same compile with the amount narrowed to 31 restores `call fib` + 4× `call emit`;
+  the `-fno-strict-aliasing` control did NOT (aliasing was the first suspect, measured
+  innocent). (iii) With the guest clean, the three-way comparison diverged at aligned
+  step 7 — `li a0, 0` with a0 already 0: semulith records no write (its DECLARED
+  visible-change vocabulary), BOTH references log `x10 <- 0`. WHERE the comparator: it
+  never had to normalize no-change writes, because the hand-written corpus pre-writes
+  destinations (the `.1` lesson) — 492/492 never exercised the case a compiler emits
+  routinely.
+
+- [x] **FIX** — at the lowest-risk level that works for each layer: the guest's section 6
+  uses only C-legal shifts (the *W shamt boundary stays with `bound-shiftw`'s assembly —
+  C cannot express it; the source comments carry exactly this); the COMPARATOR learned
+  the declared vocabulary (`_visible_changes` in `compare_traces.py`'s `align` — the one
+  funnel every trace passes through; a shadow register file from the declared reset; an
+  `x0` record of nonzero stays visible; +2 self-test arms, 19/0); the pinned-toolchain
+  build script (`scripts/build_c_guest.sh` — every candidate PROBED for the riscv64
+  backend, a clang without one refused by name, nothing installed); the smoke's `.c`
+  path (build → budget run stopped by the closing ebreak → `e_entry` read from the ELF
+  header); `gate_report.py`'s criterion-6 and Limitations branches (the met prose names
+  the guest, the build script and the decision record — the versions' ONE owner).
+
+- [x] **ADDRESSED (verified)** — the criterion flips on the live three-way differential,
+  and the report regenerates to `passed`:
+
+  ```
+  $ python3 scripts/run_semulith_smoke.py | sed -n '/== c-scope ==/,/== bound-shift/p'
+  PASS  c-scope: compiled, retired inside the budget  129 executed step(s), entry 0x80001370
+  PASS  c-scope: semulith vs sail-riscv  AGREE over 129 aligned step(s)
+  PASS  c-scope: semulith vs spike       AGREE over 129 aligned step(s)
+  PASS  c-scope: semulith reproduces
+  $ scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout | grep -m1 Verdict
+  **Verdict: `passed`.**
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; the two in-flight REDs were the
+  author's own C UB and the comparator's missing normalization (above), never a model
+  defect. No Rust changed, so `make check`'s re-run is not owed (COMMIT.md §2):
+
+  ```
+  $ python3 scripts/run_semulith_smoke.py          # 221 PASS / 0 FAIL — the 40 assembled
+                                                   # guests' verdicts unchanged
+  $ python3 scripts/compare_traces.py --self-test  # 19/0 (+2 vocabulary arms)
+  $ make gate                                      # all doctrines green
+  $ make book                                      # both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten — G1 `passed`, strand 1 next
+  action), `LIVE_STATUS.md` (P1 row verdict, P2 `.5` active), `CHANGELOG.md`,
+  `DEV_NOTES.md`, this tree, `docs/tasks/P1-LAB.md` (metadata + frontier re-synced to
+  the verdict it routed), the book (`claim-scope.md`,
+  `annex/building-first-model.md`), the model book (`evidence.md`, `introduction.md`),
+  and the regenerated `G1-REPORT.md`.
