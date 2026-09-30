@@ -283,7 +283,9 @@ def main() -> int:
                  "fault-access-sd", "fault-reserved", "fault-shiftw-res", "fault-fence",
                  "fault-hints", "fault-selfmod",
                  "it-prio-jump", "it-prio-load", "it-fault-alias", "it-fault-wrap-ld",
-                 "it-fault-wrap-sd", "it-alias-bound", "it-progress-loop", "it-fencei"):
+                 "it-fault-wrap-sd", "it-alias-bound", "it-progress-loop", "it-fencei",
+                 "dir-runoff", "dir-chase", "dir-ext-matrix", "dir-selfmod-fence",
+                 "dir-cmp-branch", "dir-memwalk", "dir-chain", "dir-x0-writes"):
         experiment(name)
     print()
     if failures:

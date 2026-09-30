@@ -30,29 +30,29 @@
 (cell (axis "fault") (axis "fault") (guest "it-prio-jump") (guest "it-prio-load"))
 (cell (axis "fault") (axis "alias") (guest "it-fault-alias") (guest "fault-ld-x0-mis") (guest "fault-ld-x0-fault"))
 (cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (difference "DIFF-TVAL-PHYS-MASK"))
-(cell (axis "fault") (axis "event") (guest "it-fencei") (guest "fault-reserved") (guest "fault-shiftw-res") (guest "scope-ecall") (guest "scope-ebreak") (difference "DIFF-FENCEI-EXECUTED"))
-(cell (axis "fault") (axis "progress") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod"))
+(cell (axis "fault") (axis "event") (guest "it-fencei") (guest "fault-reserved") (guest "dir-runoff") (guest "fault-shiftw-res") (guest "scope-ecall") (guest "scope-ebreak") (difference "DIFF-FENCEI-EXECUTED"))
+(cell (axis "fault") (axis "progress") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence"))
 (cell (axis "fault") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism"))
 
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────
-(cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem"))
+(cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes"))
 (cell (axis "alias") (axis "boundary") (guest "it-alias-bound") (guest "smoke-arith"))
 (cell (axis "alias") (axis "event") (guest "it-progress-loop"))
 (cell (axis "alias") (axis "progress") (guest "bound-alias"))
 (cell (axis "alias") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism"))
 
 ;; ── boundary × * ──────────────────────────────────────────────────────────────────
-(cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "scope-alu"))
-(cell (axis "boundary") (axis "event") (guest "scope-branch") (guest "fault-branch-nt"))
+(cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "dir-ext-matrix") (guest "scope-alu"))
+(cell (axis "boundary") (axis "event") (guest "scope-branch") (guest "fault-branch-nt") (guest "dir-cmp-branch"))
 (cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw"))
 (cell (axis "boundary") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism"))
 
 ;; ── event × * ─────────────────────────────────────────────────────────────────────
 (cell (axis "event") (axis "event") (degenerate "the contained-trap contract (the harness stops the run at the first reported event) makes a SECOND in-run event unreachable — no single run can exhibit event × event; the event KINDS are exercised across guests (misalignment, access faults, the fetch fault, the reserved-decode conversions, ecall, ebreak), which is what the F×E and E×P cells enumerate"))
-(cell (axis "event") (axis "progress") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "fault-reserved"))
+(cell (axis "event") (axis "progress") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "fault-reserved") (guest "dir-runoff"))
 (cell (axis "event") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism"))
 
 ;; ── progress × *, restart × restart ───────────────────────────────────────────────
-(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "guest-control") (guest "scope-alu") (guest "scope-mem"))
+(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem"))
 (cell (axis "progress") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism"))
 (cell (axis "restart") (axis "restart") (mechanism "smoke-reproduce") (mechanism "offline-determinism")))

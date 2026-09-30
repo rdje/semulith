@@ -236,6 +236,11 @@ fn the_data_crossing_census_pins_every_tracked_guest() {
         // budget, and the rest trap.
         "it-fencei" => Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0004 }),
         "it-alias-bound" | "it-progress-loop" => Stop::Budget,
+        // The P2-SCALAR.5 strand-3 directed guests: the run-off-the-end guest keeps its
+        // source classification at the zero word's address; the chase and the walk end on
+        // their closing ebreak; the rest retire into the budget (the `_` arm).
+        "dir-runoff" => Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0008 }),
+        "dir-chase" | "dir-memwalk" => Stop::Trap,
         n if n.starts_with("it-") => Stop::Trap,
         n if n.starts_with("fault-") => Stop::Trap,
         _ => Stop::Budget,

@@ -197,10 +197,8 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   gates enforce)`.
 
 - ID: `P2-SCALAR.5` — **external and directed campaigns** — `G-REGRESSION`
-  Status: `active` (`2026-09-30` — both blockers answered: (a) at the materials layer
-  `2026-09-29`, (b) by the director's delegation `2026-09-30`, recorded in
-  [`decision_c-guest-routing-and-toolchain`](../decisions/decision_c-guest-routing-and-toolchain.md)
-  — the C guest lands here, built by the two toolchains already on the host)
+  Status: `done` (`2026-09-30` — all three strands landed: the C guest, the ACT4
+  campaign, the eight directed guests)
   Goal: matched reference comparisons, configured external tests, directed sequence tests, and compiled freestanding programs.
   Acceptance: ACT4 results are recorded as **external tests with Sail-derived expected values**, never as a second independent semantics (`EVD-04`).
   Design (recorded before code, `2026-09-30` — three strands, each its own commit):
@@ -332,7 +330,33 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   bound-shiftw owner; the visible-change vocabulary is enforced by the comparator's two
   new self-test arms, which fail RED the day the normalization masks a real difference;
   knowledge cards would restate what the code and the gates already say)`.
-  Lessons (strand 3): (recorded at completion)
+  Strand 3 landed `2026-09-30` (`SEMULITH-PS-0070`): the eight directed guests — `dir-runoff`
+  (semulith's first run off a program's end: the zero word, the policy trap, measured
+  identical three-way), `dir-chase` (the load→use-as-address chase and the jump through
+  memory — the idiom that existed nowhere, including the constant-folded compiled guest),
+  `dir-ext-matrix` (the cross-width sign-extend matrix at the sign edges, 35 steps),
+  `dir-selfmod-fence` (the patch visible through `fence rw,rw` — probed before authored),
+  `dir-cmp-branch` (compare→branch, all four senses), `dir-memwalk` (the load+store loop),
+  `dir-chain` (14 varied serial links), `dir-x0-writes` (every unpinned producer to x0) —
+  **150 new aligned steps, all agreeing three-way; 642/642 over the 48-guest assembled
+  corpus**, every run byte-identical. The offline differential fired RED on two AUTHORING
+  slips, never a model defect: `dir-ext-matrix`'s first draft put its data cell INSIDE the
+  code (entry+0x60 < the 0x8C code end — the stores patched the remaining instructions;
+  moved to 0xA0, the census addresses with it) and `dir-x0-writes`'s step-0 constant was
+  hand-typed wrong (caught at the first run, re-derived). One documented defect found by
+  the census and fixed: `c-scope.c`'s comment overclaimed its constant-folded ELF (the
+  switch's indirect jump does not exist in the artifact); the comment and the model book's
+  compiled-guest chapter are corrected, and the promised idiom became `dir-chase`'s
+  measured guest. Matrix cells assigned per the census (`dir-runoff` F×E + E×P beside
+  `fault-reserved`; `dir-chase`/`dir-ext-matrix`/`dir-x0-writes` A×A; `dir-ext-matrix`
+  also B×B; `dir-selfmod-fence` F×P beside `fault-selfmod`; `dir-cmp-branch` B×E;
+  `dir-memwalk`/`dir-chain` P×P) — the orphan rule green. The mutation census pins the
+  55 new data crossings; `run/tests.rs` 166 → 174 suites. **The leaf's three strands are
+  landed — `.5` is DONE** (the acceptance: ACT4 recorded as external tests with
+  Sail-derived expectations, `EVD-04` on the record).
+  Lessons (strand 3): `promotion: declined (the code/data collision rule — a guest's data
+  must live past its code's end — is enforced where it bites: the offline differential
+  caught the draft's self-patch at first run; a knowledge card would restate the gate)`.
 
 - ID: `P2-SCALAR.6` — **discrepancy reduction**
   Status: `pending`
@@ -358,7 +382,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P2-SCALAR.5` | `active` | the interaction matrix is declared, exercised and gated (`.4` — 21/21 cells, 40 guests, 492/492 live steps, the `fence.i` expected divergence pinned); external and directed campaigns (`G-REGRESSION`) are the next evidence layer. Blocker (a) ANSWERED `2026-09-29` (`MODEL-METHOD.15`): the ACT4 docs + test plans are catalogued and cached, the generated suite pinned by upstream commit for resume day. Blocker (b) ANSWERED `2026-09-30` (director delegation, `decision_c-guest-routing-and-toolchain`): the C guest lands here, built by clang 21.1.8 + `ld.lld` 21.1.8 already on the host. Strand 1 (the C guest) landed `2026-09-30` (G1 `passed`); strand 2 (ACT4) is DESIGNED against the pinned sparse fetch (51 RV64I tests, 18,092 signature updates, measured) — slice (b), the CLI store trace + the one-test harness, is the current slice |
+| 1 | `P2-SCALAR.6` | `pending` | `.5` DONE `2026-09-30` (all three strands: the C guest 129/129 and G1 `passed`; the ACT4 campaign 51/51 with the gated `act4.sexp` record; the eight directed guests — 642/642 live over 48 guests). Discrepancy reduction (`.6`) is next: its first act is the measured census of whether any discrepancy exists to reduce |
 
 ## Decisions
 
@@ -464,7 +488,11 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
 
 ## Defects found in flight (owned here per the defect-ownership rule)
 
-- **`2026-09-30` — `c-scope.c`'s scope comment overclaims the compiled artifact.** The
+- **`2026-09-30` — `c-scope.c`'s scope comment overclaims the compiled artifact.**
+  **RESOLVED `2026-09-30` (this leaf's strand 3, `SEMULITH-PS-0070`):** the comment and
+  the model book's compiled-guest chapter now state the constant folding and cover only
+  what the ELF contains; the jump-table idiom the comment promised is pinned for real by
+  `dir-chase` (a measured load→jalr sequence, three-way). — Original entry: the
   strand-3 coverage census (measured by disassembling `target/refs/guests/c-scope.elf`)
   found clang `-O1` constant-folded `fib`/`sum6`/`pick`: the "indirect jump through a
   switch" the header comment advertises does not exist in the ELF — all `jalr`s are
@@ -631,6 +659,10 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design.
 | `2026-09-30` | `P2-SCALAR.5` (strand 2c) | `python3 scripts/run_act4_campaign.py --record` + `bash scripts/check_requirements.sh [--self-test]` | the dossier `act4.sexp` emitted from measured rows (51 rows, `51 pass / 0 fail`); rule 13 CAMPAIGN green on the real record; self-test 39/0 (+5 arms) |
 | `2026-09-30` | `P2-SCALAR.5` (strand 3) | the coverage census (tracked corpus + `c-scope.elf` disassembly + ACT4 testplan/bodies) | eight gaps measured, with citations: run-off-the-end (semulith), load→use-as-address, the cross-width sign-extend matrix, store→fence→execute, compare→branch, the memory-walk loop, 12-deep varied chains, the unpinned x0 producers; and one defect found — `c-scope.c`'s comment overclaims the constant-folded ELF |
 | `2026-09-30` | `P2-SCALAR.5` (strand 3) | the probe suite (`run_probes_p25s3.py`, 2 probe ELFs, vs sail 0.14 + spike + semulith) | run-off-the-end: illegal-instruction 0x02/tval 0/word 0 on ALL THREE (sail `c.illegal`, spike `c.unimp`, semulith the policy conversion); self-mod through `fence rw,rw`: the patch visible on ALL THREE (x2 ← 7) |
+| `2026-09-30` | `P2-SCALAR.5` (strand 3) | authoring REDs ×2 (the offline differential) | `dir-ext-matrix`'s data cell sat INSIDE the code (entry+0x60 < the 0x8C end — the stores patched the remaining instructions; 25 of 35 steps); `dir-x0-writes`' step-0 constant hand-typed wrong (0x8000000080000000) — both fixed by re-derivation, never a model defect |
+| `2026-09-30` | `P2-SCALAR.5` (strand 3) | `cargo test -p semulith-verify` | 174 passed / 0 failed (+8 guest suites; the census pins the 55 new data crossings; the stop-reason table learned the dir-* shapes) |
+| `2026-09-30` | `P2-SCALAR.5` (strand 3) | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 48 guests, **642/642 aligned steps** (+150) — every dir-* guest three-way at full length; `it-fencei`'s protocol unchanged; every run reproduces byte-identically |
+| `2026-09-30` | `P2-SCALAR.5` (strand 3) | `make check`, `make gate`, `make bench` + `make smoke-bench`, `check_exercise_coverage.sh`, matrix and comparator self-tests, `make book` | rc=0; all doctrines green; 52 bench arms (48 clean guests); 52/52; matrix 12/0, comparator 19/0; both books render |
 
 ## Commit Log
 
@@ -640,7 +672,7 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design.
 | `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
 | `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
-| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
+| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first), `SEMULITH-PS-0070` (strand 3: the eight directed guests — **`.5` DONE**) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 
 ## Changelog
 

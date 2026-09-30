@@ -14,10 +14,15 @@
 //
 // Scope deliberately toured: 64-bit ALU with wrap, 32-bit (*W) arithmetic, every
 // load/store width with little-endian composition, branches and a counted loop,
-// real function calls (argument registers, stack spills, an indirect jump through
-// a switch), and variable shifts through the full 6-bit register-shamt range
-// (a 32-bit shift by >= 32 is UB in C, so the *W shamt boundary stays with
-// bound-shiftw's assembly — see the comment at section 6). There is NO
+// real function calls (argument registers, stack spills), and variable shifts
+// through the full 6-bit register-shamt range (a 32-bit shift by >= 32 is UB in C,
+// so the *W shamt boundary stays with bound-shiftw's assembly — see the comment
+// at section 6). ⚠️ What the COMPILER does with this tour is the measured fact,
+// not the source's intention: at -O1 clang constant-folds fib/sum6/pick, so the
+// ELF contains no switch jump table and fewer calls than the source tours
+// (measured by disassembly, P2-SCALAR.5 strand 3 — the evidence covers what the
+// ELF contains). The jump-table idiom this guest was meant to exercise is pinned
+// for real by dir-chase's measured load→jalr sequence. There is NO
 // multiplication or division anywhere — M is not in this profile, and -nostdlib
 // means a libgcc helper call would link-fail rather than slip one in.
 

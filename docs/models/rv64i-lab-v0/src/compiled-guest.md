@@ -26,9 +26,14 @@ target exists — a measured fact, recorded in
 `c-scope.c` is a freestanding C tour of the profile's whole declared scope: 64-bit and
 32-bit arithmetic (including the wrap directions), every load/store width with
 little-endian lane composition, branches and a counted loop, real function calls through
-the argument registers with an actual stack, a `switch` that compiles to an indirect
-jump, and variable shifts. No multiplication or division anywhere — M is not in this
-profile, and `-nostdlib` means a helper call would fail the link rather than slip one in.
+the argument registers with an actual stack, and variable shifts. No multiplication or
+division anywhere — M is not in this profile, and `-nostdlib` means a helper call would
+fail the link rather than slip one in. ⛔ A measured correction (P2-SCALAR.5 strand 3):
+an earlier draft of this paragraph promised "a `switch` that compiles to an indirect
+jump" — but clang at -O1 constant-folds `pick()`, so the ELF contains NO jump table; the
+evidence covers what the ELF contains, and the jump-table idiom is pinned instead by
+`dir-chase`'s measured load→jalr sequence. The chapter's lesson stands, sharpened: the
+compiler, not the author, chooses the instruction sequence.
 
 The design decision that makes it work as evidence: the guest is **self-checking**.
 Every expected value is a constant derived from the C abstract machine and written into

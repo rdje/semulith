@@ -33,12 +33,12 @@ re-derivable by the command named beside it.
   mechanism, or a degenerate-with-reason — the `INTERACTION-MATRIX` gate re-derives the
   cells and refuses an omitted one by name (`bash scripts/check_interaction_matrix.sh`
   prints all 21 with their dispositions).
-- **The live differential.** **40 guests** agree with sail-riscv 0.14 AND spike 1.1.1-dev
-  on **492/492 aligned steps**, byte-identically reproducible — plus the one *declared*
+- **The live differential.** **48 guests** agree with sail-riscv 0.14 AND spike 1.1.1-dev
+  on **642/642 aligned steps**, byte-identically reproducible — plus the one *declared*
   expected divergence (`it-fencei`: the references execute `fence.i`, this profile
   declares it reserved; the divergence lands at exactly the declared step, measured, and
   the references stay each other's control). Re-run: `python3
-  scripts/run_semulith_smoke.py`. The 41st guest is different in kind: `c-scope.c` is
+  scripts/run_semulith_smoke.py`. The 49th guest is different in kind: `c-scope.c` is
   **compiled from C** by the pinned toolchain — the previous chapter tells that story and
   why it changes the shape of the evidence.
 - **External tests (the ACT4 suite).** The pinned riscv-arch-test RV64I campaign — **51
@@ -69,7 +69,7 @@ re-derivable by the command named beside it.
   designated field (EVD-09; `cargo test -p semulith-verify`).
 
 The honest label for all of it, stated once and meant: **finite, tested evidence — never
-universal proof** (EVD-01). Forty-one laboratory programs, two references, one host — plus
+universal proof** (EVD-01). Forty-nine laboratory programs, two references, one host — plus
 the 51-file external campaign, whose expectations share Sail's semantics by construction.
 
 ## The gate verdicts: G1 `passed`, G0 honestly `incomplete`

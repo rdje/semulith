@@ -20,7 +20,7 @@ one of the 52 declared forms is executed, the shift-amount domains are exhausted
 fault, suppression and reserved cases behave as the source classifies them, and the declared
 fault × alias × boundary × event × progress × restart matrix's 21 cells all resolve —
 and their observations agree with two
-independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 492 aligned
+independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 642 aligned
 steps (plus one *declared* expected divergence, `it-fencei`, where the references execute
 a word this profile declares reserved), and reproduce byte-identically on re-run. The evidence machinery that makes a number
 checkable lives here too: the records re-validate on two engines on every commit, and the
@@ -36,7 +36,7 @@ Every one of those claims is **finite tested evidence, explicitly not universal 
 | A validated CPU profile | P2's `CPU-LAB` gate has not been run. The evidence covers the guest corpus, its declared, exercised interaction matrix, and the ACT4 RV64I external campaign (51 test files, Sail-derived expectations — one semantics by construction) — but no directed campaigns, no privileged-mode tests, no portability matrix. Executing correctly is a beginning, not a validation. |
 | A conformance result | `G1` reads `passed` since `2026-09-30` (criterion 6 met by the `c-scope` compiled C guest, `P2-SCALAR.5`) — a laboratory gate, not a conformance claim. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented), and the `CPU-LAB` processor gate has not run. |
 | An accepted processor profile | `rv64i-lab-v0` is a development profile. Acceptance attaches evidence to an exact versioned profile; none has been accepted. |
-| Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus; ACT4 is acquired (a sparse partial pinned at `e2216915…`, `P2-SCALAR.5` strand 2) but not yet run, QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 492 steps is two implementations agreeing, not three opinions. |
+| Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus; ACT4 ran (51/51 RV64I test files, Sail-derived expectations — one semantics by construction), QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 642 steps is two implementations agreeing, not three opinions. |
 | Complete in-repository claim tooling | The frozen `examples/` records re-validate in Rust per `RUST-01`, and the guests' expectations re-check offline — but the profile dossier still rides the Python track, and `CLAIM_VERIFICATION.md`'s tag and constant sweep are not mechanized. |
 | The name | *Semulith* is proposed. No crate, repository, domain, or trademark has been reserved or cleared. |
 

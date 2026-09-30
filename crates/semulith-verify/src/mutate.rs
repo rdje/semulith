@@ -224,6 +224,23 @@ pub const MUTATIONS: &[(&str, &str)] = &[
 ///   added by `.4` has a SUCCESSFUL store crossing.
 /// - `it-alias-bound.s`, `it-progress-loop.s`, `it-fencei.s` (`P2-SCALAR.4`): no load or
 ///   store instruction exists in these programs.
+/// - `dir-runoff.s`, `dir-cmp-branch.s` (`P2-SCALAR.5` strand 3): no load or store
+///   instruction exists in these programs.
+/// - `dir-chase.s` (`P2-SCALAR.5` strand 3): six crossings — the three initializing
+///   stores and the chase/table loads, every one inside the declared region, aligned,
+///   none faulted; the loads' addresses are the stored values, which is the guest's
+///   point.
+/// - `dir-ext-matrix.s` (`P2-SCALAR.5` strand 3): 27 crossings — the zeroing stores, the
+///   four width stores at the sign edges, and every lane read-back, all in-region.
+/// - `dir-selfmod-fence.s` (`P2-SCALAR.5` strand 3): one `sw x1, 16(x3)` at
+///   0x8000_0018 — the patch itself (step 3), the D-CODE-VISIBILITY shape fault-selfmod
+///   owns, with the fence between.
+/// - `dir-memwalk.s` (`P2-SCALAR.5` strand 3): 12 crossings — the four initializing
+///   stores, then a load AND a store per iteration of the copy loop.
+/// - `dir-chain.s` (`P2-SCALAR.5` strand 3): the mid-chain store→load link (steps 8, 9).
+/// - `dir-x0-writes.s` (`P2-SCALAR.5` strand 3): one initializing store plus the six
+///   loads to x0 — the accesses happen though the values are discarded (D-LOAD-X0);
+///   a dropped access is exactly what this guest exists to catch.
 pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
     match guest {
         "smoke-arith" => &[(
@@ -448,6 +465,478 @@ pub fn pinned_census(guest: &str) -> &'static [(usize, Request, bool)] {
             },
             true,
         )],
+        "dir-runoff" | "dir-cmp-branch" => &[],
+        "dir-chase" => &[
+            (
+                3,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000070,
+                    data: 0x2A,
+                },
+                false,
+            ),
+            (
+                6,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                    data: 0x80000070,
+                },
+                false,
+            ),
+            (
+                9,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000068,
+                    data: 0x80000038,
+                },
+                false,
+            ),
+            (
+                10,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                11,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000070,
+                },
+                false,
+            ),
+            (
+                12,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000068,
+                },
+                false,
+            ),
+        ],
+        "dir-ext-matrix" => &[
+            (
+                2,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                    data: 0x0,
+                },
+                false,
+            ),
+            (
+                4,
+                Request::Store {
+                    width: AccessWidth::B,
+                    addr: 0x800000A0,
+                    data: 0x80,
+                },
+                false,
+            ),
+            (
+                5,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                6,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                7,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                8,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                9,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                10,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                    data: 0x0,
+                },
+                false,
+            ),
+            (
+                12,
+                Request::Store {
+                    width: AccessWidth::H,
+                    addr: 0x800000A0,
+                    data: 0x8000,
+                },
+                false,
+            ),
+            (
+                13,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                14,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x800000A1,
+                },
+                false,
+            ),
+            (
+                15,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                16,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                17,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                18,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                19,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                    data: 0x0,
+                },
+                false,
+            ),
+            (
+                21,
+                Request::Store {
+                    width: AccessWidth::W,
+                    addr: 0x800000A0,
+                    data: 0x80000000,
+                },
+                false,
+            ),
+            (
+                22,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x800000A3,
+                },
+                false,
+            ),
+            (
+                23,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x800000A2,
+                },
+                false,
+            ),
+            (
+                24,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                25,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                26,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+            (
+                29,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                    data: 0x8000000000000000,
+                },
+                false,
+            ),
+            (
+                30,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x800000A7,
+                },
+                false,
+            ),
+            (
+                31,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x800000A6,
+                },
+                false,
+            ),
+            (
+                32,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x800000A4,
+                },
+                false,
+            ),
+            (
+                33,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                },
+                false,
+            ),
+        ],
+        "dir-selfmod-fence" => &[(
+            3,
+            Request::Store {
+                width: AccessWidth::W,
+                addr: 0x80000018,
+                data: 0x700113,
+            },
+            false,
+        )],
+        "dir-memwalk" => &[
+            (
+                3,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                    data: 0xA,
+                },
+                false,
+            ),
+            (
+                5,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000068,
+                    data: 0x14,
+                },
+                false,
+            ),
+            (
+                7,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000070,
+                    data: 0x1E,
+                },
+                false,
+            ),
+            (
+                9,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000078,
+                    data: 0x28,
+                },
+                false,
+            ),
+            (
+                12,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                13,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000A0,
+                    data: 0xA,
+                },
+                false,
+            ),
+            (
+                18,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000068,
+                },
+                false,
+            ),
+            (
+                19,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000A8,
+                    data: 0x14,
+                },
+                false,
+            ),
+            (
+                24,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000070,
+                },
+                false,
+            ),
+            (
+                25,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000B0,
+                    data: 0x1E,
+                },
+                false,
+            ),
+            (
+                30,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000078,
+                },
+                false,
+            ),
+            (
+                31,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x800000B8,
+                    data: 0x28,
+                },
+                false,
+            ),
+        ],
+        "dir-chain" => &[
+            (
+                8,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                    data: 0x4C,
+                },
+                false,
+            ),
+            (
+                9,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+        ],
+        "dir-x0-writes" => &[
+            (
+                3,
+                Request::Store {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                    data: 0xFFFFFFFFFFFFFFFF,
+                },
+                false,
+            ),
+            (
+                4,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                5,
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                6,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                7,
+                Request::Load {
+                    width: AccessWidth::H,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                8,
+                Request::Load {
+                    width: AccessWidth::W,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+            (
+                9,
+                Request::Load {
+                    width: AccessWidth::D,
+                    addr: 0x80000060,
+                },
+                false,
+            ),
+        ],
         "bound-ext" => &[
             (
                 14,

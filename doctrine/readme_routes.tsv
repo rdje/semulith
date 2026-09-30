@@ -260,7 +260,14 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #              headroom, the .4 pattern); ceiling_bytes STAYS 516,096 (the measured aggregate
 #              sits at 0.83x of it — the ~1.2x band already holds); health 102 / 440,000.
 #              ⛔ PER-PART STAYS 32,768 — the largest new member is act4.sexp at 10,512 B.
-profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	102	440000	104	516096	32768
+# Re-derivation, SEMULITH-PS-0070 (2026-09-30), when the eight directed guests landed:
+#   profiles/  100 -> 116 files / 477,786 B (P2-SCALAR.5 strand 3: 8 guests x 2 files —
+#              the strand's design named this expansion before code, per the .1 rule).
+#              ceiling_lines 104 -> 120 (116 + 4 headroom, the standing pattern);
+#              ceiling_bytes 516,096 -> 573,440 (the measured aggregate under the ~1.2x
+#              band); health 118 / 490,000. ⛔ PER-PART STAYS 32,768 — the largest new
+#              member is dir-ext-matrix.expected.sexp at 8,010 B.
+profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	118	490000	120	573440	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

@@ -12,6 +12,22 @@
 //!   `profiles/rv64i-lab-v0/guests/bound-shift.s`  `d0502bfd2fb3fc2cffc62a357514de1bf2e1db1bd0bd83808348bcc7b73c13f6`
 //!   `profiles/rv64i-lab-v0/guests/bound-shiftw.expected.sexp`  `46b6c8513ae5f01f3adebe29dc0f18d41aa7111557cb897117d3c1cba52e6aa5`
 //!   `profiles/rv64i-lab-v0/guests/bound-shiftw.s`  `0d06652ccfd1b5c78a7fc845b9c9d25acdea96ce379e1744bcf0de92cf7f36f2`
+//!   `profiles/rv64i-lab-v0/guests/dir-chain.expected.sexp`  `8a788e5f401295627a922acd987912e305bf71fc61dca39af251a274c2c59e8e`
+//!   `profiles/rv64i-lab-v0/guests/dir-chain.s`  `39eca25dc00031aaa41295ef74fb17878ad40f45c33de29b5d141b5867396164`
+//!   `profiles/rv64i-lab-v0/guests/dir-chase.expected.sexp`  `300545aff8d0c6fe0e4f7adfae677207ed3fe4dcec65cb49a39255551968fa00`
+//!   `profiles/rv64i-lab-v0/guests/dir-chase.s`  `048298bc99c08d7564001f9d9513c78c72c33752a419ed609a38583519473997`
+//!   `profiles/rv64i-lab-v0/guests/dir-cmp-branch.expected.sexp`  `edecc2ad9fb4821fe7fedaf59a5339e4fdedf6c2245c3b13173a318cc25e754b`
+//!   `profiles/rv64i-lab-v0/guests/dir-cmp-branch.s`  `0f3b157395468c4edbb6ddb6dcad4cf4fff89380636f0f521302ea69dc437d3b`
+//!   `profiles/rv64i-lab-v0/guests/dir-ext-matrix.expected.sexp`  `1b8148edc09a26017cfc358d522f8cbb57813914e695e7449a07dd6c4ce19388`
+//!   `profiles/rv64i-lab-v0/guests/dir-ext-matrix.s`  `020cd75e06a44d3c2e533bc5d6b086432b13f29b5b03345c7e44d0e9f4beed5c`
+//!   `profiles/rv64i-lab-v0/guests/dir-memwalk.expected.sexp`  `457fd7089d62bc51aa5eae83b759fd69c86f724d98b03ebbc94eb97ce8c527f8`
+//!   `profiles/rv64i-lab-v0/guests/dir-memwalk.s`  `2d939ac2d8a2a4780032d631b3e0c68739ae7b2328a4988c03067329aedb3036`
+//!   `profiles/rv64i-lab-v0/guests/dir-runoff.expected.sexp`  `16cba7629001418e756c0963022fb0430f97e45f3881b39eac2d8d8fb62f2e7a`
+//!   `profiles/rv64i-lab-v0/guests/dir-runoff.s`  `384fe5d7f276e5b2ded2173cec8e880577128d161cdbda046f0c304a104dc8e4`
+//!   `profiles/rv64i-lab-v0/guests/dir-selfmod-fence.expected.sexp`  `1f495af021278ce85cd3c8c1f195fe67d11907dd2515e7238b5015e13513cd77`
+//!   `profiles/rv64i-lab-v0/guests/dir-selfmod-fence.s`  `15f6684165d656d8af857cfcdece9a873c919f165ef979ee2c1909863df49a3e`
+//!   `profiles/rv64i-lab-v0/guests/dir-x0-writes.expected.sexp`  `99ef2f9d93df14929678aa8b82f9c728158c82a59f14bee3bc7a3ad281624c5f`
+//!   `profiles/rv64i-lab-v0/guests/dir-x0-writes.s`  `2daf04a0f2f0f3b7141b42e228d673c6594fe32817a94069b846054ae78c308c`
 //!   `profiles/rv64i-lab-v0/guests/fault-access-ld.expected.sexp`  `ddaf0b9f1f05dcd7a62fd1977a8a42edfc484e26f4dc7aeaa688c6fe55cba2f4`
 //!   `profiles/rv64i-lab-v0/guests/fault-access-ld.s`  `f0bafd194b4b0db3474d854c2d8dcc5591db3a4b0601566fd5dcefcd4d1a426b`
 //!   `profiles/rv64i-lab-v0/guests/fault-access-sd.expected.sexp`  `c286c38bd6a5763cd66a078c267d73acf2550eae05922a620b6528780d5042d2`
@@ -82,7 +98,7 @@
 //!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `5bd4d210483ed8c7815e40acb1c113fadf815359a73dae5c3e944d34208760f9`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.expected.sexp`  `081ed9427c790df38822107188dd91b03847e92bcb0a722f420eb7e89a289e35`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
-//! Generator: `scripts/gen_guests.py` (sha256 `f5fd17544bcc2ff94b247a44a486ec101509942c94d41b19dcc37ea88fb69e7e`)
+//! Generator: `scripts/gen_guests.py` (sha256 `890e429c7df36ab7ad781fce5579d1db6f877e4ab7a258417ec621802dddefa3`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
 //! byte-stable by construction (one entry per line), so regeneration and the
@@ -1389,6 +1405,349 @@ static EXPECTED_IT_FENCEI: &[Expectation] = &[
 #[rustfmt::skip]
 static NEVER_WRITTEN_IT_FENCEI: &[u8] = &[2];
 
+#[rustfmt::skip]
+static WORDS_DIR_RUNOFF: &[u32] = &[
+    0x00100093,
+    0x00200113,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_RUNOFF: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(2, 0x0000000000000002)] },
+    Expectation { step: 2, writes: &[] },
+];
+
+#[rustfmt::skip]
+static WORDS_DIR_CHASE: &[u32] = &[
+    0x00000097,
+    0x06008093,
+    0x02A00393,
+    0x0070B823,
+    0x00000117,
+    0x06010113,
+    0x0020B023,
+    0x00000197,
+    0x01C18193,
+    0x0030B423,
+    0x0000B203,
+    0x00023283,
+    0x0080B303,
+    0x00030067,
+    0x00700413,
+    0x00900493,
+    0x00100073,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_CHASE: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000060)] },
+    Expectation { step: 2, writes: &[(7, 0x000000000000002A)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(2, 0x0000000080000010)] },
+    Expectation { step: 5, writes: &[(2, 0x0000000080000070)] },
+    Expectation { step: 6, writes: &[] },
+    Expectation { step: 7, writes: &[(3, 0x000000008000001C)] },
+    Expectation { step: 8, writes: &[(3, 0x0000000080000038)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(4, 0x0000000080000070)] },
+    Expectation { step: 11, writes: &[(5, 0x000000000000002A)] },
+    Expectation { step: 12, writes: &[(6, 0x0000000080000038)] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[(8, 0x0000000000000007)] },
+    Expectation { step: 15, writes: &[(9, 0x0000000000000009)] },
+    Expectation { step: 16, writes: &[] },
+];
+
+#[rustfmt::skip]
+static WORDS_DIR_EXT_MATRIX: &[u32] = &[
+    0x00000097,
+    0x0A008093,
+    0x0000B023,
+    0x08000113,
+    0x00208023,
+    0x00008283,
+    0x0000C303,
+    0x00009383,
+    0x0000A403,
+    0x0000B483,
+    0x0000B023,
+    0x00008137,
+    0x00209023,
+    0x00008283,
+    0x00108303,
+    0x0000D383,
+    0x00009403,
+    0x0000A483,
+    0x0000B503,
+    0x0000B023,
+    0x80000137,
+    0x0020A023,
+    0x00308283,
+    0x00209303,
+    0x0000E383,
+    0x0000A403,
+    0x0000B483,
+    0x80000137,
+    0x02011113,
+    0x0020B023,
+    0x00708283,
+    0x00609303,
+    0x0040A383,
+    0x0000B403,
+    0x00100593,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_EXT_MATRIX: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x00000000800000A0)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(2, 0x0000000000000080)] },
+    Expectation { step: 4, writes: &[] },
+    Expectation { step: 5, writes: &[(5, 0xFFFFFFFFFFFFFF80)] },
+    Expectation { step: 6, writes: &[(6, 0x0000000000000080)] },
+    Expectation { step: 7, writes: &[(7, 0x0000000000000080)] },
+    Expectation { step: 8, writes: &[(8, 0x0000000000000080)] },
+    Expectation { step: 9, writes: &[(9, 0x0000000000000080)] },
+    Expectation { step: 10, writes: &[] },
+    Expectation { step: 11, writes: &[(2, 0x0000000000008000)] },
+    Expectation { step: 12, writes: &[] },
+    Expectation { step: 13, writes: &[(5, 0x0000000000000000)] },
+    Expectation { step: 14, writes: &[(6, 0xFFFFFFFFFFFFFF80)] },
+    Expectation { step: 15, writes: &[(7, 0x0000000000008000)] },
+    Expectation { step: 16, writes: &[(8, 0xFFFFFFFFFFFF8000)] },
+    Expectation { step: 17, writes: &[(9, 0x0000000000008000)] },
+    Expectation { step: 18, writes: &[(10, 0x0000000000008000)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[(2, 0xFFFFFFFF80000000)] },
+    Expectation { step: 21, writes: &[] },
+    Expectation { step: 22, writes: &[(5, 0xFFFFFFFFFFFFFF80)] },
+    Expectation { step: 23, writes: &[(6, 0xFFFFFFFFFFFF8000)] },
+    Expectation { step: 24, writes: &[(7, 0x0000000080000000)] },
+    Expectation { step: 25, writes: &[(8, 0xFFFFFFFF80000000)] },
+    Expectation { step: 26, writes: &[(9, 0x0000000080000000)] },
+    Expectation { step: 27, writes: &[] },
+    Expectation { step: 28, writes: &[(2, 0x8000000000000000)] },
+    Expectation { step: 29, writes: &[] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[] },
+    Expectation { step: 32, writes: &[(7, 0xFFFFFFFF80000000)] },
+    Expectation { step: 33, writes: &[(8, 0x8000000000000000)] },
+    Expectation { step: 34, writes: &[(11, 0x0000000000000001)] },
+];
+
+#[rustfmt::skip]
+static WORDS_DIR_SELFMOD_FENCE: &[u32] = &[
+    0x007000B7,
+    0x11308093,
+    0x00000197,
+    0x0011A823,
+    0x0330000F,
+    0x00400213,
+    0x00200113,
+    0x00500293,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_SELFMOD_FENCE: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000000700000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000000700113)] },
+    Expectation { step: 2, writes: &[(3, 0x0000000080000008)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[] },
+    Expectation { step: 5, writes: &[(4, 0x0000000000000004)] },
+    Expectation { step: 6, writes: &[(2, 0x0000000000000007)] },
+    Expectation { step: 7, writes: &[(5, 0x0000000000000005)] },
+];
+
+#[rustfmt::skip]
+static WORDS_DIR_CMP_BRANCH: &[u32] = &[
+    0x00500293,
+    0x00700313,
+    0x0062A3B3,
+    0x00039463,
+    0x01100413,
+    0x00032393,
+    0x00038463,
+    0x02200413,
+    0x406303B3,
+    0x00039463,
+    0x00300493,
+    0x0062A3B3,
+    0x00038463,
+    0x00400513,
+    0x00B00593,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_CMP_BRANCH: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000005)] },
+    Expectation { step: 1, writes: &[(6, 0x0000000000000007)] },
+    Expectation { step: 2, writes: &[(7, 0x0000000000000001)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(7, 0x0000000000000000)] },
+    Expectation { step: 5, writes: &[] },
+    Expectation { step: 6, writes: &[] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[(9, 0x0000000000000003)] },
+    Expectation { step: 9, writes: &[(7, 0x0000000000000001)] },
+    Expectation { step: 10, writes: &[] },
+    Expectation { step: 11, writes: &[(10, 0x0000000000000004)] },
+    Expectation { step: 12, writes: &[(11, 0x000000000000000B)] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_DIR_CMP_BRANCH: &[u8] = &[8];
+
+#[rustfmt::skip]
+static WORDS_DIR_MEMWALK: &[u32] = &[
+    0x00000097,
+    0x06008093,
+    0x00A00113,
+    0x0020B023,
+    0x01400113,
+    0x0020B423,
+    0x01E00113,
+    0x0020B823,
+    0x02800113,
+    0x0020BC23,
+    0x00400193,
+    0x04008213,
+    0x0000B283,
+    0x00523023,
+    0x00808093,
+    0x00820213,
+    0xFFF18193,
+    0xFE0196E3,
+    0x00100073,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_MEMWALK: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000060)] },
+    Expectation { step: 2, writes: &[(2, 0x000000000000000A)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(2, 0x0000000000000014)] },
+    Expectation { step: 5, writes: &[] },
+    Expectation { step: 6, writes: &[(2, 0x000000000000001E)] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[(2, 0x0000000000000028)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(3, 0x0000000000000004)] },
+    Expectation { step: 11, writes: &[(4, 0x00000000800000A0)] },
+    Expectation { step: 12, writes: &[(5, 0x000000000000000A)] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[(1, 0x0000000080000068)] },
+    Expectation { step: 15, writes: &[(4, 0x00000000800000A8)] },
+    Expectation { step: 16, writes: &[(3, 0x0000000000000003)] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(5, 0x0000000000000014)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[(1, 0x0000000080000070)] },
+    Expectation { step: 21, writes: &[(4, 0x00000000800000B0)] },
+    Expectation { step: 22, writes: &[(3, 0x0000000000000002)] },
+    Expectation { step: 23, writes: &[] },
+    Expectation { step: 24, writes: &[(5, 0x000000000000001E)] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[(1, 0x0000000080000078)] },
+    Expectation { step: 27, writes: &[(4, 0x00000000800000B8)] },
+    Expectation { step: 28, writes: &[(3, 0x0000000000000001)] },
+    Expectation { step: 29, writes: &[] },
+    Expectation { step: 30, writes: &[(5, 0x0000000000000028)] },
+    Expectation { step: 31, writes: &[] },
+    Expectation { step: 32, writes: &[(1, 0x0000000080000080)] },
+    Expectation { step: 33, writes: &[(4, 0x00000000800000C0)] },
+    Expectation { step: 34, writes: &[(3, 0x0000000000000000)] },
+    Expectation { step: 35, writes: &[] },
+    Expectation { step: 36, writes: &[] },
+];
+
+#[rustfmt::skip]
+static WORDS_DIR_CHAIN: &[u32] = &[
+    0x00000097,
+    0x06008093,
+    0x00200313,
+    0x06400393,
+    0x00100293,
+    0x00429293,
+    0x00328293,
+    0x006292B3,
+    0x0050B023,
+    0x0000B283,
+    0x4012D293,
+    0x006282BB,
+    0x0FF2C293,
+    0x0022D293,
+    0x0072829B,
+    0x03E2F293,
+    0x406282BB,
+    0x0072B2B3,
+    0x00800413,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_CHAIN: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000060)] },
+    Expectation { step: 2, writes: &[(6, 0x0000000000000002)] },
+    Expectation { step: 3, writes: &[(7, 0x0000000000000064)] },
+    Expectation { step: 4, writes: &[(5, 0x0000000000000001)] },
+    Expectation { step: 5, writes: &[(5, 0x0000000000000010)] },
+    Expectation { step: 6, writes: &[(5, 0x0000000000000013)] },
+    Expectation { step: 7, writes: &[(5, 0x000000000000004C)] },
+    Expectation { step: 8, writes: &[] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(5, 0x0000000000000026)] },
+    Expectation { step: 11, writes: &[(5, 0x0000000000000028)] },
+    Expectation { step: 12, writes: &[(5, 0x00000000000000D7)] },
+    Expectation { step: 13, writes: &[(5, 0x0000000000000035)] },
+    Expectation { step: 14, writes: &[(5, 0x000000000000003C)] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[(5, 0x000000000000003A)] },
+    Expectation { step: 17, writes: &[(5, 0x0000000000000001)] },
+    Expectation { step: 18, writes: &[(8, 0x0000000000000008)] },
+];
+
+#[rustfmt::skip]
+static WORDS_DIR_X0_WRITES: &[u32] = &[
+    0x00000097,
+    0x06008093,
+    0xFFF00113,
+    0x0020B023,
+    0x00008003,
+    0x0000C003,
+    0x00009003,
+    0x0000D003,
+    0x0000E003,
+    0x0000B003,
+    0x00500193,
+    0x4031803B,
+    0x0031D03B,
+    0x4031D03B,
+    0x0011901B,
+    0x0011D01B,
+    0x4011D01B,
+    0x00400213,
+];
+#[rustfmt::skip]
+static EXPECTED_DIR_X0_WRITES: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000060)] },
+    Expectation { step: 2, writes: &[(2, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[] },
+    Expectation { step: 5, writes: &[] },
+    Expectation { step: 6, writes: &[] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(3, 0x0000000000000005)] },
+    Expectation { step: 11, writes: &[] },
+    Expectation { step: 12, writes: &[] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[] },
+    Expectation { step: 17, writes: &[(4, 0x0000000000000004)] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_DIR_X0_WRITES: &[u8] = &[0];
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -1772,6 +2131,78 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 2,
         expected: EXPECTED_IT_FENCEI,
         never_written: NEVER_WRITTEN_IT_FENCEI,
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-runoff",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_RUNOFF,
+        executed_steps: 3,
+        expected: EXPECTED_DIR_RUNOFF,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-chase",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_CHASE,
+        executed_steps: 17,
+        expected: EXPECTED_DIR_CHASE,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-ext-matrix",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_EXT_MATRIX,
+        executed_steps: 35,
+        expected: EXPECTED_DIR_EXT_MATRIX,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-selfmod-fence",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_SELFMOD_FENCE,
+        executed_steps: 8,
+        expected: EXPECTED_DIR_SELFMOD_FENCE,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-cmp-branch",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_CMP_BRANCH,
+        executed_steps: 13,
+        expected: EXPECTED_DIR_CMP_BRANCH,
+        never_written: NEVER_WRITTEN_DIR_CMP_BRANCH,
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-memwalk",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_MEMWALK,
+        executed_steps: 37,
+        expected: EXPECTED_DIR_MEMWALK,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-chain",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_CHAIN,
+        executed_steps: 19,
+        expected: EXPECTED_DIR_CHAIN,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "dir-x0-writes",
+        entry: 0x0000000080000000,
+        words: WORDS_DIR_X0_WRITES,
+        executed_steps: 18,
+        expected: EXPECTED_DIR_X0_WRITES,
+        never_written: NEVER_WRITTEN_DIR_X0_WRITES,
         cross_model: true,
     },
 ];

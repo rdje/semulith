@@ -814,6 +814,134 @@ fn it_fencei_reports_the_reserved_word_and_stops_undefined() {
     assert_eq!(last.trap, Some((0x02, 0x0000_100F)));
 }
 
+// ---- the directed sequences (P2-SCALAR.5 strand 3) ------------------------------------------------
+
+#[test]
+fn dir_runoff_fetches_the_zero_word_and_stops_undefined() {
+    // F×E (+E×P): execution falls through the last assembled word; the fetch at entry+8
+    // reads the never-written zeroed cell, 0x00000000 matches no decode row, and the
+    // laboratory's declared D-RESERVED-DECODE policy converts the reserved case to the
+    // illegal-instruction observation (cause 0x02, tval = the word = 0). Measured
+    // identical on both references by probe before authoring. The FIRST guest whose
+    // budget exceeds its assembled length — the run-off-the-end fetch happens at all
+    // only because the expectation document declares the third step.
+    assert_guest_observations(
+        "dir-runoff",
+        Stop::Undefined(UndefinedCase::ReservedDecode { at: 0x8000_0008 }),
+    );
+    let (trace, _, _) = run_guest("dir-runoff");
+    let last = &trace.steps[2];
+    assert_eq!(last.word, Some(0x0000_0000));
+    assert_eq!(last.writes, vec![]);
+    assert_eq!(last.trap, Some((0x02, 0x0000_0000)));
+}
+
+#[test]
+fn dir_chase_uses_loaded_values_as_address_and_jump_target() {
+    // A×A: the pointer chase (a load's result is the next load's address) and the jump
+    // table (a load's result is the jalr target). The census's gap: every jalr base in
+    // the corpus was materialized, never loaded. Ends on the closing ebreak.
+    assert_guest_observations("dir-chase", Stop::Trap);
+    let (trace, _, guest) = run_guest("dir-chase");
+    assert_eq!(trace.steps[11].writes, vec![(5, 42)]); // the chase lands
+    assert_eq!(trace.steps[13].writes, vec![]); // jalr's link discarded into x0
+    assert_eq!(trace.steps[13].pc, 0x8000_0034);
+    assert_eq!(trace.steps[14].pc, 0x8000_0038); // the stub — reached through memory
+    let last = trace.steps.last().unwrap();
+    assert_eq!(last.trap, Some((0x03, 0x8000_0040))); // ebreak: cause 3, tval = its pc
+    let _ = guest;
+}
+
+#[test]
+fn dir_ext_matrix_round_trips_the_cross_width_sign_edges() {
+    // A×A + B×B: narrow stores read wider (no sign propagation across widths), wide
+    // stores read at narrow high lanes whose top bit stands (the lane signs). The empty
+    // write sets at steps 27/30/31 are the visible-change vocabulary working as declared.
+    assert_guest_observations("dir-ext-matrix", Stop::Budget);
+    let (trace, _, _) = run_guest("dir-ext-matrix");
+    assert_eq!(trace.steps[14].writes, vec![(6, 0xFFFF_FFFF_FFFF_FF80)]); // b1 signs
+    assert_eq!(trace.steps[25].writes, vec![(8, 0xFFFF_FFFF_8000_0000)]); // lw signs
+    assert_eq!(trace.steps[33].writes, vec![(8, 0x8000_0000_0000_0000)]); // the double
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+}
+
+#[test]
+fn dir_selfmod_fence_keeps_the_patch_visible_through_the_fence() {
+    // fault+progress (fault-selfmod's cell): store over a later word, FENCE RW,RW, then
+    // the patched fetch — visible on all three models (measured by probe before
+    // authoring). D-CODE-VISIBILITY is the laboratory's declared choice; D-FENCE gives
+    // the fence no observable effect in this profile.
+    assert_guest_observations("dir-selfmod-fence", Stop::Budget);
+    let (trace, _, _) = run_guest("dir-selfmod-fence");
+    assert_eq!(trace.steps[6].word, Some(0x0070_0113)); // the PATCHED word, fetched
+    assert_eq!(trace.steps[6].writes, vec![(2, 7)]);
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+}
+
+#[test]
+fn dir_cmp_branch_branches_on_fresh_predicates_all_four_senses() {
+    // B×E: the compare→branch idiom — slt/slti/sub writing the immediately following
+    // branch's condition, taken AND not-taken on both senses. The skipped markers must
+    // never be written (the expectation document declares never_written x8).
+    assert_guest_observations("dir-cmp-branch", Stop::Budget);
+    let (trace, _, _) = run_guest("dir-cmp-branch");
+    assert_eq!(trace.steps[4].pc, 0x8000_0014); // the taken bne lands at l1
+    assert_eq!(trace.steps[5].pc, 0x8000_0018);
+    assert!(trace
+        .steps
+        .iter()
+        .all(|s| s.writes.iter().all(|(r, _)| *r != 8)));
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+}
+
+#[test]
+fn dir_memwalk_loads_and_stores_in_every_iteration() {
+    // P×P: the memory walk — a counted loop copying four cells forward, a load AND a
+    // store per iteration, both pointers carried, ending on the closing ebreak.
+    assert_guest_observations("dir-memwalk", Stop::Trap);
+    let (trace, _, _) = run_guest("dir-memwalk");
+    assert_eq!(trace.steps.len(), 37);
+    let walked: Vec<u64> = [12, 18, 24, 30]
+        .iter()
+        .map(|&i| trace.steps[i].writes[0].1)
+        .collect();
+    assert_eq!(walked, vec![10, 20, 30, 40]); // the four loads, in order
+    let last = trace.steps.last().unwrap();
+    assert_eq!(last.trap, Some((0x03, 0x8000_0048)));
+}
+
+#[test]
+fn dir_chain_carries_one_value_through_fourteen_varied_links() {
+    // P×P: the serial dependency chain — each link consumes the previous link's result
+    // (immediate, register, both shift-amount forms, a store→load mid-chain, two *W
+    // forms, a closing unsigned compare). A single wrong link changes every later value.
+    assert_guest_observations("dir-chain", Stop::Budget);
+    let (trace, _, _) = run_guest("dir-chain");
+    assert_eq!(trace.steps[11].writes, vec![(5, 40)]); // after addw
+    assert_eq!(trace.steps[16].writes, vec![(5, 58)]); // after subw
+    assert_eq!(trace.steps[17].writes, vec![(5, 1)]); // the closing sltu
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+}
+
+#[test]
+fn dir_x0_writes_discard_every_producer_kind_but_still_cross() {
+    // A×A: x0 as the destination from every previously unpinned producer — all six load
+    // forms' success paths and six *W forms. The register observation is empty by
+    // construction; the proof of execution is the crossing census (the six loads DO
+    // cross the boundary, D-LOAD-X0) and the landing addi.
+    assert_guest_observations("dir-x0-writes", Stop::Budget);
+    let (trace, crossings, _) = run_guest("dir-x0-writes");
+    assert!(trace.steps.iter().all(|s| s.trap.is_none()));
+    let loads = crossings
+        .iter()
+        .filter(|c| matches!(c.request, Request::Load { .. }))
+        .count();
+    assert_eq!(
+        loads, 6,
+        "every load form's access happens though x0 discards it"
+    );
+}
+
 // ---- the restart axis: the offline determinism suite (P2-SCALAR.4) ---------------------------------
 
 #[test]
