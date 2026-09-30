@@ -4,8 +4,8 @@
 
 - Tree ID: `P1-LAB`
 - Status: `done` (first leaf landed `2026-09-27`; completed `2026-09-29` — 13/13 leaves,
-  reopened once for `.13`; gate `G1` RUN, verdict `incomplete`: criterion 6, the
-  C-toolchain guest, is owned by `P2-SCALAR.5` — the G0 precedent)
+  reopened once for `.13`; gate `G1` RUN — verdict `passed` since `2026-09-30`: criterion 6,
+  the C-toolchain guest, was owned by `P2-SCALAR.5` — the G0 precedent — and landed there)
 - Roadmap lane: `ROADMAP.md` §6 → **P1 — Build the processor laboratory**
 - Gate: `G1`
 - Depends on: `P0-PROFILE` (gate `G0`)
@@ -400,7 +400,7 @@ comparator, reducer, mutation suite — that makes a result from them mean somet
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | the tree is complete (13/13 leaves done; reopened once for `.13`); gate `G1` RUN — verdict `incomplete`, criterion 6 (the C-toolchain guest) owned by `P2-SCALAR.5` |
+| — | — | — | the tree is complete (13/13 leaves done; reopened once for `.13`); gate `G1` RUN — verdict `passed` since `2026-09-30`, criterion 6 (the C-toolchain guest) met where this tree routed it: `P2-SCALAR.5` |
 
 ## Decisions
 

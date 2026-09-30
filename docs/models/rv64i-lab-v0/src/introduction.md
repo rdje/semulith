@@ -29,9 +29,9 @@ part here names the leaf that owns it:
 5. **The evidence and the gate** — what has been demonstrated, and the honest verdict.
    (`MODEL-BOOKS.5`.)
 
-⚠️ This book is written for a model that is **not yet finished** — the `G1` gate reads
-`incomplete` — and it says so. A book that waited for completion would be a retrospective;
-the method is the transferable part.
+⚠️ This book is written for a model that is **not yet finished** — the laboratory gate `G1`
+reads `passed`, but the full processor gate `CPU-LAB` has not run — and it says so. A book
+that waited for completion would be a retrospective; the method is the transferable part.
 
 ## The teaching mandate
 

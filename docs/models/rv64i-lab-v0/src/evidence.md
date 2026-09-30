@@ -57,28 +57,30 @@ re-derivable by the command named beside it.
   designated field (EVD-09; `cargo test -p semulith-verify`).
 
 The honest label for all of it, stated once and meant: **finite, tested evidence — never
-universal proof** (EVD-01). Forty programs, two references, one host.
+universal proof** (EVD-01). Forty-one programs, two references, one host.
 
-## The gate verdicts, and why `incomplete` is the good outcome
+## The gate verdicts: G1 `passed`, G0 honestly `incomplete`
 
-Both gates that have run read **`incomplete`**, and both reports regenerate from tracked
-inputs (`scripts/gate_report.py`), so the verdicts cannot be flattered by an editor.
+Both reports regenerate from tracked inputs (`scripts/gate_report.py`), so a verdict cannot
+be flattered by an editor.
 
 - **`G0`** (profile and evidence access): all three criteria met — but the profile's
   contract declares **72 required checks and 0 are implemented**, and EVD-08 forbids a
   report that reads `passed` while a required check is missing. The generator has no code
   path to `passed` here, which is the point: a gate that *cannot* say passed over a
   missing criterion is the only kind worth having.
-- **`G1`** (the processor laboratory): criteria 1–5 met (replay, typed outcomes, link
-  rejection, mutation detection, the recorded baseline). **Criterion 6 — the compiled
-  freestanding guest, "C as the first guest path" — is unmet as written.** The 40 tracked
-  guests are freestanding programs that retire under first-divergence comparison, but they
-  are assembled by the project's own assembler, and no C-toolchain guest exists. The owner
-  is `P2-SCALAR.5` — and that leaf is **blocked**, for two recorded reasons: the ACT4
-  suite is in no materials list (acquiring a new primary-source family is a
-  catalogue/provenance act, not a fetch), and the C-guest routing question awaits the
-  director (no RISC-V C toolchain is installed on the host). The book says this plainly
-  because a gate report exists to say exactly this, exactly here.
+- **`G1`** (the processor laboratory): **all six criteria met — verdict `passed` since
+  `2026-09-30`.** Criterion 6 — the compiled freestanding guest, "C as the first guest
+  path" — stood unmet until `P2-SCALAR.5` (unblocked by the director's delegation,
+  `decision_c-guest-routing-and-toolchain`): `guests/c-scope.c` is compiled by the pinned
+  toolchain (`scripts/build_c_guest.sh` — clang 21.1.8 with the RISC-V backend plus
+  `ld.lld` 21.1.8, both measured present on the host, nothing installed) and retires
+  under first-divergence comparison against BOTH references, 129/129 aligned steps
+  (`scripts/run_semulith_smoke.py`). The guest is self-checking: its expected values are
+  C-semantics constants written into the source, so any runner's mis-execution routes to
+  a fail code and the three-way comparison diverges at exactly that check. The same
+  instrument that said `incomplete` while the C path was missing now says `passed` — and
+  `G0` still says `incomplete`, because that is what the inputs say.
 
 ⭐ The teaching point: `incomplete` is not a failure of the work — it is the *instrument*
 working. The alternative on offer at every step was a narrower claim quietly widened.

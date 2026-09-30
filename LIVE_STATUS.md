@@ -37,8 +37,8 @@ summarize the snapshot in every commit-workflow completion message.
 | Milestone | Gate | Status | Notes |
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented; reopened once (`.10` — matched on the ISA, **not the platform**) |
-| P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `incomplete`**: criteria 1–5 met (replay, typed outcomes, link rejection, mutation detection, the recorded baseline); criterion 6 — the C-toolchain guest — unmet, owned by `P2-SCALAR.5` |
-| P2 — validated RV64I profile | CPU-LAB | In Progress | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 4/9 — `.1` scope exercised (52/52, gated); `.2` boundaries pinned; `.3` fault layer pinned (FENCE corrected, link-write fixed); `.4` the interaction matrix gated (21/21 cells, doctrine #25) — 492/492 live, 40 guests |
+| P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `passed` (`2026-09-30`)**: criteria 1–5 met; criterion 6 — the C-toolchain guest — met by `P2-SCALAR.5` (`c-scope.c`, three-way 129/129) |
+| P2 — validated RV64I profile | CPU-LAB | In Progress | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 4/9 — `.1` scope exercised (52/52, gated); `.2` boundaries pinned; `.3` fault layer pinned (FENCE corrected, link-write fixed); `.4` the interaction matrix gated (21/21 cells, doctrine #25) — 492/492 live, 40 guests; `.5` active (strand 1 landed: the C guest) |
 | DSP specification and stress review | — | Not Started | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) — 7 leaves; real-spec pressure, no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Not Started | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — 6 leaves |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
@@ -48,4 +48,4 @@ summarize the snapshot in every commit-workflow completion message.
 | P7 — useful headless computer | SYSTEM | Not Started | [`P7-COMPUTER`](docs/tasks/P7-COMPUTER.md) — 7 leaves; the declared suite is the claim |
 | Separate multicore CPU work | multicore gate | Not Started | [`MC-MULTICORE`](docs/tasks/MC-MULTICORE.md) — 7 leaves; host threads are not multicore |
 
-Every row above is project state, not a conformance claim — G0 and G1 ran with honest `incomplete` verdicts.
+Every row above is project state, not a conformance claim — G1 `passed` (a laboratory gate); G0 ran `incomplete`.

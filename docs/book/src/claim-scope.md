@@ -27,14 +27,14 @@ checkable lives here too: the records re-validate on two engines on every commit
 guest expectations are specification-derived values the commit gate re-checks offline.
 
 Every one of those claims is **finite tested evidence, explicitly not universal proof**
-(`EVD-01`): forty programs, two references, one host. Nothing on this page upgrades them.
+(`EVD-01`): forty-one programs, two references, one host. Nothing on this page upgrades them.
 
 ## Not claimed
 
 | Not claimed | Why it matters |
 | --- | --- |
 | A validated CPU profile | P2's `CPU-LAB` gate has not been run. The evidence covers the guest corpus and its declared, exercised interaction matrix — but no external or directed campaigns, no ACT suite, no privilege modes. Executing correctly is a beginning, not a validation. |
-| A conformance result | No gate reads `passed`. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented); `G1` ran with verdict `incomplete` (criterion 6, the C guest, is unmet). |
+| A conformance result | `G1` reads `passed` since `2026-09-30` (criterion 6 met by the `c-scope` compiled C guest, `P2-SCALAR.5`) — a laboratory gate, not a conformance claim. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented), and the `CPU-LAB` processor gate has not run. |
 | An accepted processor profile | `rv64i-lab-v0` is a development profile. Acceptance attaches evidence to an exact versioned profile; none has been accepted. |
 | Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus — but ACT4 is deliberately not acquired, QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 492 steps is two implementations agreeing, not three opinions. |
 | Complete in-repository claim tooling | The frozen `examples/` records re-validate in Rust per `RUST-01`, and the guests' expectations re-check offline — but the profile dossier still rides the Python track, and `CLAIM_VERIFICATION.md`'s tag and constant sweep are not mechanized. |

@@ -6,6 +6,11 @@ This module reduces both to a sequence of steps:
 
     (pc, encoded_instruction_word, [(register, value), ...])
 
+where the writes are the VISIBLE register changes — the laboratory's declared vocabulary
+(`state.sexp`'s reset declaration; semulith's runner diffs values, the references log every
+destination, so `align` drops records that change nothing — measured `2026-09-30`: `li a0, 0`
+with a0 already 0 is logged by BOTH references and not recorded by semulith) —
+
 and then walks the two sequences together, stopping at the first step that differs. `EVD-02`
 asks for minimized discrepancies rather than a diff of everything; a first-divergence report is
 the minimal form, because every later difference may be a consequence of the first.
@@ -261,10 +266,53 @@ def parse_spike(text: str) -> list[Step]:
 def align(steps: list[Step], entry: int, who: str) -> list[Step]:
     for i, s in enumerate(steps):
         if s.pc == entry:
-            return steps[i:]
+            return _visible_changes(steps[i:])
     raise CompareError(
         f"{who}: no step reaches the declared entry {entry:#x} in {len(steps)} step(s). "
         f"An unparseable or truncated trace must not be read as agreement.")
+
+
+_WRITE_REG = re.compile(r"^x(\d{1,2})$")
+
+
+def _visible_changes(steps: list[Step]) -> list[Step]:
+    """Reduce a trace to the laboratory's DECLARED observation vocabulary: the VISIBLE
+    register change (`state.sexp`'s reset declaration — x1..x31 start 0, x0 is hardwired —
+    and the P2-SCALAR.1 lesson: an invisible expected write proves nothing).
+
+    Semulith's runner diffs VALUES, so it never records a write that changes nothing; the
+    references log the destination register on every retired instruction, including
+    no-change writes (measured `2026-09-30` on the first compiled guest: `li a0, 0` with
+    a0 already 0 logged `x10 <- 0` on BOTH sail 0.14 and spike 1.1.1-dev, while semulith
+    recorded no write). Tracking a shadow register file from the declared reset state and
+    dropping records that match it puts all three models in the same vocabulary. A record
+    naming anything but `x0..x31` is kept untouched — never silently dropped.
+
+    ⚠️ What this may NOT hide, and does not: a model that writes the WRONG value still
+    records a change the other lacks (or vice versa), and a model that skips a write whose
+    value genuinely changes diverges on the step. The only thing dropped is a write whose
+    before- and after-state are observationally identical — which is the vocabulary's
+    definition of nothing-to-see.
+    """
+    shadow = [0] * 32
+    out: list[Step] = []
+    for s in steps:
+        kept: list[tuple[str, int]] = []
+        for reg, val in s.writes:
+            m = _WRITE_REG.match(reg)
+            if m is None:
+                kept.append((reg, val))
+                continue
+            n = int(m.group(1))
+            if n == 0:
+                if val != 0:      # x0 never changes; a NONZERO x0 record is a vocabulary
+                    kept.append((reg, val))   # mismatch between models, so it stays visible
+                continue
+            if shadow[n] != val:
+                kept.append((reg, val))
+                shadow[n] = val
+        out.append(Step(s.pc, s.word, kept, s.trap))
+    return out
 
 
 def _word_text(word: int | None) -> str:
@@ -456,6 +504,28 @@ def self_test() -> int:
     arm("RED   a wrong reporting point: the fetch fault attached to the jump, not the target",
         SAIL_FETCH_FAULT.replace("tval=0x0000000040000000", "tval=0x0000000080000004"),
         SPIKE_FETCH_FAULT, False, "FIRST DIVERGENCE at aligned step 2")
+
+    arm("GREEN a no-change write the reference logs and the vocabulary drops",
+        SAIL_FIXTURE,
+        SPIKE_FIXTURE.replace(
+            "core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)",
+            "core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)\n"
+            "core   0: 3 0x0000000080000004 (0x40152083) x11 0x0000000000000000"),
+        True, "AGREE over 2")
+    arm("RED   a REAL change is never dropped with the no-change ones",
+        SAIL_FIXTURE,
+        SPIKE_FIXTURE.replace(
+            "core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)",
+            "core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)\n"
+            "core   0: 3 0x0000000080000004 (0x40152083) x11 0x0000000000000005"),
+        False, "FIRST DIVERGENCE at aligned step 1")
+    arm("GREEN a no-change write on a LATER step: the shadow file tracks state",
+        SAIL_FIXTURE,
+        SPIKE_FIXTURE.replace(
+            "core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)",
+            "core   0: 0x0000000080000004 (0x40152083) lw      ra, 1025(a0)\n"
+            "core   0: 3 0x0000000080000004 (0x40152083) x10 0x0000000000000001"),
+        True, "AGREE over 2")
 
     # ---- P2-SCALAR.4: the expected-divergence verdict — a comparison that MUST fail in
     # exactly one declared way. The fixture is the it-fencei shape: semulith stops on the

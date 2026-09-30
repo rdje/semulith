@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Run the P1-LAB.8 first-execution-slice experiment: semulith vs the references.
 
-One command that: assembles the tracked guest sources, runs them on SEMULITH's definitional
+One command that: assembles the tracked guest sources (and compiles the tracked `.c`
+guest with the pinned toolchain — `scripts/build_c_guest.sh`, its ELF a build artifact
+with the same standing as the reference binaries), runs them on SEMULITH's definitional
 interpreter (`semulith run`, the P1-LAB.8 deliverable) and on the pinned reference models
 configured to `rv64i-lab-v0`, compares the observation traces for FIRST divergence through
 the one normalized vocabulary, checks semulith's trace against expectations DERIVED FROM
@@ -45,6 +47,7 @@ GUESTS = ROOT / f"profiles/{PROFILE}/guests"
 OUT = ROOT / "target/refs/guests"
 
 SPIKE_RESET_STEPS = 5
+C_GUEST_BUDGET = 1_000_000
 failures: list[str] = []
 
 
@@ -58,7 +61,20 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build(name: str) -> tuple[Path, int]:
+def build(name: str) -> tuple[Path, int | None]:
+    c_src = GUESTS / f"{name}.c"
+    if c_src.is_file():
+        # The compiled guest: the pinned toolchain builds the ELF (a build
+        # artifact with the same standing as the reference binaries); the
+        # instruction count is a fact of the compiled artifact, not of a source
+        # listing, so None — the caller learns the executed count by running.
+        proc = subprocess.run([str(ROOT / "scripts/build_c_guest.sh"), name],
+                              capture_output=True, text=True, check=False)
+        if proc.returncode != 0:
+            print(f"  build_c_guest failed (rc={proc.returncode}):\n{proc.stderr}",
+                  file=sys.stderr)
+            raise SystemExit(2)
+        return OUT / f"{name}.elf", None
     asm = Assembler(ROOT / f"profiles/{PROFILE}/encoding.sexp")
     words = asm.assemble((GUESTS / f"{name}.s").read_text().splitlines())
     payload = b"".join(w.to_bytes(4, "little") for w, _ in words)
@@ -130,16 +146,32 @@ def executed_steps(name: str, assembled: int) -> int:
     return assembled
 
 
+def elf_entry(elf: Path) -> int:
+    """The ELF64 header's e_entry — where a compiled image actually starts (the
+    declared ENTRY constant is the assembled guests' image base, and a linked
+    ELF's headers and literal pools legitimately precede its first instruction)."""
+    return int.from_bytes(elf.read_bytes()[24:32], "little")
+
+
 def experiment(name: str) -> None:
     print(f"\n== {name} ==")
     elf, assembled = build(name)
-    n = executed_steps(name, assembled)
-    say(True, f"{name}: assembled",
-        f"{assembled} instruction(s), {n} executed step(s), elf sha256 {sha256(elf)[:16]}…")
-
+    entry = ENTRY if assembled is not None else elf_entry(elf)
     semulith_trace = OUT / f"{name}.semulith.trace"
-    run_semulith(elf, n, semulith_trace)
-    ours = align(parse_semulith(semulith_trace.read_text()), ENTRY, "semulith")
+    if assembled is None:
+        # Compiled guest: run with a generous budget — the closing ebreak stops
+        # the run long before it — and take the executed count from the trace.
+        run_semulith(elf, C_GUEST_BUDGET, semulith_trace)
+        ours = align(parse_semulith(semulith_trace.read_text()), entry, "semulith")
+        n = len(ours)
+        say(n < C_GUEST_BUDGET, f"{name}: compiled, retired inside the budget",
+            f"{n} executed step(s), entry {entry:#x}, elf sha256 {sha256(elf)[:16]}…")
+    else:
+        n = executed_steps(name, assembled)
+        say(True, f"{name}: assembled",
+            f"{assembled} instruction(s), {n} executed step(s), elf sha256 {sha256(elf)[:16]}…")
+        run_semulith(elf, n, semulith_trace)
+        ours = align(parse_semulith(semulith_trace.read_text()), entry, "semulith")
 
     spec = GUESTS / f"{name}.expected.sexp"
     exp = D.load_expectations(spec) if spec.is_file() else None
@@ -154,7 +186,7 @@ def experiment(name: str) -> None:
 
     sail_trace = OUT / f"{name}.sail.trace"
     run_sail(elf, ref_n, sail_trace)
-    sail = align(parse_sail(sail_trace.read_text()), ENTRY, "sail")
+    sail = align(parse_sail(sail_trace.read_text()), entry, "sail")
 
     check_expected(name, ours, "semulith run")
 
@@ -165,7 +197,7 @@ def experiment(name: str) -> None:
     if cross or div is not None:
         spike_log = OUT / f"{name}.spike.log"
         run_spike(elf, ref_n, spike_log)
-        spike = align(parse_spike(spike_log.read_text()), ENTRY, "spike")
+        spike = align(parse_spike(spike_log.read_text()), entry, "spike")
     if not cross and div is None:
         print(f"  SKIP  {name}: sail-riscv vs spike  "
               f"disabled — see difference DIFF-PLATFORM-SPIKE in references.sexp")
@@ -243,6 +275,7 @@ def main() -> int:
     print(f"the P1-LAB.8 first-execution-slice experiment for {PROFILE}")
     for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
                  "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak",
+                 "c-scope",
                  "bound-shift", "bound-shiftw", "bound-arith", "bound-ext", "bound-alias",
                  "fault-jal-mis", "fault-jalr-mis", "fault-branch-nt", "fault-fetch",
                  "fault-ld-mis-h", "fault-ld-mis-d", "fault-st-mis-h", "fault-st-mis-w",

@@ -351,10 +351,12 @@ cargo run -p semulith-cli -- run <elf> --steps=N # watch any guest under the lab
 ## Step 14 — the gate reads what it reads: honest verdicts
 
 **What you do.** Generate the gate report (`scripts/gate_report.py`) from tracked inputs and
-gate the report itself for staleness — so the verdict cannot be reached with an editor. The
-verdicts so far are `incomplete`, and that is the system *working*: criterion 6 of the
-processor gate (a compiled-C guest) is genuinely unmet, so the report says so and names the
-owning leaf.
+gate the report itself for staleness — so the verdict cannot be reached with an editor. For
+most of this project's life the verdicts were `incomplete`, and that was the system
+*working*: criterion 6 of the laboratory gate (a compiled-C guest) was genuinely unmet, so
+the report said so and named the owning leaf. When the guest landed (`P2-SCALAR.5`,
+`2026-09-30`), the SAME instrument read `passed` — the verdict moved because the inputs did,
+never because anyone reached for an editor.
 
 **Why.** The release rules make a missing required check yield `incomplete`, never `passed`,
 and the generator has no code path to `passed` while any criterion stands unmet. A verdict

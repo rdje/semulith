@@ -4,7 +4,7 @@
      `GATE-REPORT` doctrine fails the commit if this file and its inputs disagree.
      Edit the INPUTS: the laboratory crates, the CLI, baseline.sexp, guests/. -->
 
-**Verdict: `incomplete`.**
+**Verdict: `passed`.**
 
 ## Why this verdict
 
@@ -13,15 +13,13 @@ is missing. Each of the six `ROADMAP.md` §6 `G1` criteria below is measured fro
 tracked files by concrete name — a criterion without its artifact is unmet, and this
 generator has no code path to `passed` while one is.
 
-Unmet: **criterion 6** — named in its section below.
-
 ## Inputs (all tracked; this report reads nothing untracked)
 
 | Input | Contents |
 | --- | --- |
 | `crates/semulith-core`, `-verify`, `-cli` | the laboratory: interpreter, evidence machinery, command surface |
 | `contract-obligations.sexp` | 36 obligations (the environment contract the laboratory serves) |
-| `guests/` | 40 assembly guests, 0 C guests, 40 expectation documents |
+| `guests/` | 40 assembly guests, 1 C guests, 40 expectation documents |
 | `baseline.sexp` | the recorded performance baseline |
 
 ## Criterion 1 — failures are replayable from recorded inputs
@@ -87,21 +85,31 @@ mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).
 
 ## Criterion 6 — a compiled freestanding guest retires under first-divergence comparison
 
-`guests/` holds **40 assembly guests** and **0 C guests**.
-The 40 tracked guests ARE freestanding programs — assembled by the
-tracked assembler from `.s` sources — and they retire under first-divergence
-comparison against TWO pinned references (sail-riscv and spike,
-492/492 aligned steps; re-run: `scripts/run_semulith_smoke.py`).
-But the roadmap's clause names a **compiled** guest with **C as the first guest path**,
-and no C-toolchain guest exists in this tree.
+`guests/` holds **40 assembly guests** and **1 C guests**.
+The 40 assembled guests retire under first-divergence comparison
+against TWO pinned references (sail-riscv and spike,
+492/492 aligned steps), and the C guest (`c-scope.c`) —
+compiled from C by the pinned toolchain (`scripts/build_c_guest.sh`; the pin is
+`decision_c-guest-routing-and-toolchain`), not hand-encoded — retires under the
+same three-way comparison. The toolchain probes and
+the measured versions live in that decision record and in the build script's
+refusals; the guest's ELF is a build artifact with the same standing as the
+reference binaries; and the guest is SELF-CHECKING — its expected values are
+constants derived from the C abstract machine written into the source, so a
+mis-execution by ANY runner routes to a fail code and the three-way comparison
+diverges at exactly that check. Re-run: `scripts/run_semulith_smoke.py`.
 
-**Status: NOT met as written.** The assembled-guest differential is real and recorded;
-the C path is the gap. Owner: `P2-SCALAR.5` (external and directed campaigns).
+**Status: met.** A compiled freestanding C guest retires under first-divergence
+comparison against both pinned references. The differential stays tested evidence
+for these inputs (`EVD-01`/`EVD-04`); the specification-DERIVED per-step
+expectations remain the assembled guests' layer, by design — the compiler, not
+the author, chooses the compiled guest's instruction sequence.
 
 ## Limitations (`EVD-08`)
 
-1. **The verdict is `incomplete`, and criterion 6 is why.** A gate report exists to say
-   exactly this, exactly here.
+1. **The verdict is `passed`** — all six criteria measured met from tracked inputs,
+   re-derived on every commit. That is a statement about the presence and shape of
+   the named evidence, not a proof of correctness (`EVD-01`, `EVD-04`).
 2. **Criteria 1–5 are evidenced by the presence and shape of tracked machinery**, whose
    every claim is exercised by the commit gate (`make check`) — this report re-derives
    counts and names from the sources, it does not re-run the suites. The un-fakeable

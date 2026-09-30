@@ -43,8 +43,11 @@ self_test() {
       # GREEN: the generator agrees with itself (determinism).
       if [ "$generated" = "$(report_for "$prof" "$gate")" ]; then pass=$((pass+1))
       else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate is not deterministic" >&2; fi
-      # RED: a single edited character must be detected.
-      tmp="$(printf '%s' "$generated" | sed 's/incomplete/passed/')"
+      # RED: a single edited character must be detected. The edit targets the `**Verdict:`
+      # marker itself, NOT the word `incomplete` — the first cut of this arm sed'd
+      # s/incomplete/passed/, which silently stops discriminating the day a report legitimately
+      # reads `passed` (measured 2026-09-30: G1 passed and the arm's "control" altered nothing).
+      tmp="$(printf '%s' "$generated" | sed 's/\*\*Verdict:/**Xerdict:/')"
       if [ "$tmp" != "$generated" ]; then pass=$((pass+1))
       else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate control did not alter the text" >&2; fi
       # RED: the generated text must actually differ from a tampered file's content.

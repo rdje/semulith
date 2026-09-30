@@ -343,6 +343,13 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
      outgrows a safe slice it becomes its own leaf.
   3. **Directed sequence tests**: the directed campaigns the matrix does not already
      cover, designed from the `.1`–`.4` evidence gaps.
+  Strand 1 landed `2026-09-30` (`SEMULITH-PS-0063`): `c-scope.c` retires three-way
+  129/129; G1 reads `passed`.
+  Lessons: `promotion: declined (the C-shift-UB lesson lives in the guest's own comments
+  where it bites — section 6 names the rule, the failed draft and the bound-shiftw owner;
+  the visible-change vocabulary is enforced by the comparator's two new self-test arms,
+  which fail RED the day the normalization masks a real difference; knowledge cards would
+  restate what the code and the gates already say)`.
 
 - ID: `P2-SCALAR.6` — **discrepancy reduction**
   Status: `pending`
@@ -655,6 +662,84 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
   (the new difference; `DIFF-FENCEI-EXECUTED` marked landed), and both regenerated
   `G?-REPORT.md`.
 
+## Acceptance Checklist (leaf P2-SCALAR.5 — strand 1: the C-toolchain guest)
+
+- [x] **REPRODUCE / ISSUE** — G1's sixth criterion stood unmet, measured two ways at the
+  parent commit (`02791f2`), and the toolchain half of the blocker was measured, not
+  assumed:
+
+  ```
+  $ ls profiles/rv64i-lab-v0/guests/*.c | wc -l
+  0
+  $ scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout | grep -m1 "C guests"
+  `guests/` holds **40 assembly guests** and **0 C guests**.   (verdict: incomplete)
+  $ clang --target=riscv64-unknown-elf -march=rv64i -x c -c -o /dev/null - <<<'int f(void){return 0;}'
+  error: unable to create target: 'No available targets are compatible with triple
+  "riscv64-unknown-unknown-elf"'                 # Apple clang 21.0.0: NO RISC-V backend
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — three layers, each tool-backed. (i) Ownership and
+  toolchain were undecided, not unbuildable: the routing answer is
+  `decision_c-guest-routing-and-toolchain` (director delegation), and the toolchain was
+  measured PRESENT — Homebrew `llvm@21` clang 21.1.8 compiled `-march=rv64i -mabi=lp64`
+  to correct RV64I (objdump-verified), `zig ld.lld` reported Homebrew LLD 21.1.8.
+  (ii) The first compiled binary failed its OWN self-check — `fail(0x0501)` measured in
+  the run trace (`x10 <- 0xfa11000000000501`): WHERE the guest's section 6, `w32 << 33` —
+  a 32-bit shift by ≥ 32 is UB in C (C11 6.5.7p3), which clang exploited to delete the
+  entire rest of the program and route the fall-through to `fail`. Proven, not reviewed:
+  the same compile with the amount narrowed to 31 restores `call fib` + 4× `call emit`;
+  the `-fno-strict-aliasing` control did NOT (aliasing was the first suspect, measured
+  innocent). (iii) With the guest clean, the three-way comparison diverged at aligned
+  step 7 — `li a0, 0` with a0 already 0: semulith records no write (its DECLARED
+  visible-change vocabulary), BOTH references log `x10 <- 0`. WHERE the comparator: it
+  never had to normalize no-change writes, because the hand-written corpus pre-writes
+  destinations (the `.1` lesson) — 492/492 never exercised the case a compiler emits
+  routinely.
+
+- [x] **FIX** — at the lowest-risk level that works for each layer: the guest's section 6
+  uses only C-legal shifts (the *W shamt boundary stays with `bound-shiftw`'s assembly —
+  C cannot express it; the source comments carry exactly this); the COMPARATOR learned
+  the declared vocabulary (`_visible_changes` in `compare_traces.py`'s `align` — the one
+  funnel every trace passes through; a shadow register file from the declared reset; an
+  `x0` record of nonzero stays visible; +2 self-test arms, 19/0); the pinned-toolchain
+  build script (`scripts/build_c_guest.sh` — every candidate PROBED for the riscv64
+  backend, a clang without one refused by name, nothing installed); the smoke's `.c`
+  path (build → budget run stopped by the closing ebreak → `e_entry` read from the ELF
+  header); `gate_report.py`'s criterion-6 and Limitations branches (the met prose names
+  the guest, the build script and the decision record — the versions' ONE owner).
+
+- [x] **ADDRESSED (verified)** — the criterion flips on the live three-way differential,
+  and the report regenerates to `passed`:
+
+  ```
+  $ python3 scripts/run_semulith_smoke.py | sed -n '/== c-scope ==/,/== bound-shift/p'
+  PASS  c-scope: compiled, retired inside the budget  129 executed step(s), entry 0x80001370
+  PASS  c-scope: semulith vs sail-riscv  AGREE over 129 aligned step(s)
+  PASS  c-scope: semulith vs spike       AGREE over 129 aligned step(s)
+  PASS  c-scope: semulith reproduces
+  $ scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout | grep -m1 Verdict
+  **Verdict: `passed`.**
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; the two in-flight REDs were the
+  author's own C UB and the comparator's missing normalization (above), never a model
+  defect. No Rust changed, so `make check`'s re-run is not owed (COMMIT.md §2):
+
+  ```
+  $ python3 scripts/run_semulith_smoke.py          # 221 PASS / 0 FAIL — the 40 assembled
+                                                   # guests' verdicts unchanged
+  $ python3 scripts/compare_traces.py --self-test  # 19/0 (+2 vocabulary arms)
+  $ make gate                                      # all doctrines green
+  $ make book                                      # both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten — G1 `passed`, strand 1 next
+  action), `LIVE_STATUS.md` (P1 row verdict, P2 `.5` active), `CHANGELOG.md`,
+  `DEV_NOTES.md`, this tree, `docs/tasks/P1-LAB.md` (metadata + frontier re-synced to
+  the verdict it routed), the book (`claim-scope.md`,
+  `annex/building-first-model.md`), the model book (`evidence.md`, `introduction.md`),
+  and the regenerated `G1-REPORT.md`.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
@@ -680,6 +765,11 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
 | `2026-09-29` | `P2-SCALAR.4` | `cargo test -p semulith-verify` | 166 passed / 0 failed (+8 guest suites, +1 determinism suite; the census pins all 8 new guests — six empty arms, the two faulted wrap crossings) |
 | `2026-09-29` | `P2-SCALAR.4` | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | 40 guests, 492/492 aligned steps — 39 agreeing three-way; `it-fencei` via the four-step expected-divergence protocol (divergence at exactly step 1 vs each reference; sail vs spike AGREE over 4; the difference id recorded); every run reproduces byte-identically |
 | `2026-09-29` | `P2-SCALAR.4` | `make check`, `make gate`, `make smoke-bench`, `check_exercise_coverage.sh [--self-test]`, `compare_traces.py --self-test`, `check_interaction_matrix.sh --self-test`, `make book` | rc=0; 25 doctrines green; 44 bench arms (40 clean guests); 52/52, self-test 7/0; comparator self-test 16/0 (+4 divergence arms); matrix self-test 12/0; the book renders |
+| `2026-09-30` | `P2-SCALAR.5` (strand 1) | toolchain probes (compile + objdump + `ld.lld --version`) | Apple clang: NO RISC-V backend (exact error in the checklist); Homebrew `llvm@21` clang 21.1.8: correct RV64I; `zig ld.lld`: Homebrew LLD 21.1.8 — pinned in `decision_c-guest-routing-and-toolchain` |
+| `2026-09-30` | `P2-SCALAR.5` (strand 1) | authoring RED moment — the guest's own self-check | `fail(0x0501)`: `w32 << 33` is UB in C; clang deleted the rest of the program. Proven by bisect (shift narrowed to 31 → `call fib` + 4× `call emit` restored; `-fno-strict-aliasing` control innocent). An AUTHORING defect, caught before any comparison ran |
+| `2026-09-30` | `P2-SCALAR.5` (strand 1) | comparator RED — first divergence at aligned step 7 vs BOTH references | `li a0, 0` with a0 already 0: the references log the write, semulith's declared visible-change vocabulary does not; normalized in `align` (`_visible_changes`), self-test 19/0 (+2 arms) |
+| `2026-09-30` | `P2-SCALAR.5` (strand 1) | `scripts/run_semulith_smoke.py` (live, sail-riscv 0.14 + spike 1.1.1-dev) | `c-scope`: AGREE over 129/129 aligned steps vs sail-riscv AND spike, byte-identical reproduction; the 40 assembled guests unchanged — 221 PASS / 0 FAIL |
+| `2026-09-30` | `P2-SCALAR.5` (strand 1) | `scripts/gate_report.py rv64i-lab-v0 --gate G1`, `make gate`, `make book` | **G1 verdict `passed`** (criterion 6 met); all doctrines green; both books render |
 
 ## Commit Log
 
@@ -689,6 +779,7 @@ checklist landed live at the leaf's completion, beside `.3`'s below.
 | `P2-SCALAR.2` | `SEMILITH-PS-0002` (design, before code), `SEMILITH-PS-0003 (leaf P2-SCALAR.2): …` | boundary arithmetic landed: five guests (6-bit and 5-bit shamt domains exhausted, wraps on both paths, sign-edge pairs, endian lanes, overlap composition, register aliasing, x0), 376/376 live; ceilings expanded by reviewed decision; two authoring slips caught by the gate, never a model defect |
 | `P2-SCALAR.3` | `SEMILITH-PS-0004` (design, before code — measured first), `SEMILITH-PS-0005 (leaf P2-SCALAR.3): …` | faults/suppression/reserved landed: DEFECT-A inverted (the FENCE dossier correction), DEFECT-B fixed in semantics data (the misaligned-jump link write), the word-less fetch-fault step, the reserved-decode policy conversion, OQ-2 answered, `.word` learned, DIFF-FENCEI-EXECUTED recorded — 454/454 live over 32 guests; ceilings expanded by reviewed decision; three authoring slips caught by the instruments, never another model defect |
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
+| `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …` | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect |
 
 ## Changelog
 

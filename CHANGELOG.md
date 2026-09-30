@@ -1,5 +1,43 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0063 (leaf P2-SCALAR.5, strand 1) — the compiled C guest retires three-way; G1 reads `passed`
+
+- `guests/c-scope.c` is the first COMPILED guest: a self-checking freestanding C tour of
+  the declared scope (64/32-bit ALU, every load/store width, branches and a counted loop,
+  real calls through the argument registers and an indirect jump, variable shifts),
+  compiled by the pinned toolchain (`scripts/build_c_guest.sh` — clang 21.1.8 with the
+  RISC-V backend plus `ld.lld` 21.1.8, both probed, refused by name if absent, nothing
+  installed) and retiring under first-divergence comparison against sail-riscv AND spike:
+  **129/129 aligned steps, byte-identical reproduction**.
+- Two in-flight REDs, both authoring-side, never a model defect: the guest's own
+  self-check caught `w32 << 33` (UB in C — clang deleted the rest of the program; proven
+  by bisect, the `-fno-strict-aliasing` control innocent), and the three-way comparison
+  surfaced a comparator gap the hand-written corpus never exercised — the references log
+  no-change writes (`li a0, 0`), semulith's declared visible-change vocabulary does not.
+  The comparator now reduces every trace to the declared vocabulary (`_visible_changes`
+  in `align`, +2 self-test arms, 19/0).
+- `gate_report.py`'s criterion 6 gained its met branch — **G1's verdict is `passed`**, the
+  same instrument that said `incomplete` while the C path was missing. The report names
+  the guest, the build script and the decision record; the toolchain versions keep their
+  ONE owner (the decision record + the script's refusals).
+- Lockstep: the smoke's `.c` path (build → budget run → `e_entry` from the ELF header),
+  LIVE_STATUS (P1 `passed`), MEMORY, both books, P1-LAB's metadata, the model book.
+  `make gate` all green; the full smoke 221 PASS / 0 FAIL.
+
+## SEMULITH-PS-0062 (leaf P2-SCALAR.5) — the routing answered, the toolchain measured: .5 unblocked, design before code
+
+- Director delegation `2026-09-30`: the C-guest routing and toolchain call is the
+  engineer's. Recorded in `decision_c-guest-routing-and-toolchain`: the C guest lands in
+  `P2-SCALAR.5` (the G0 precedent — the tree completes, the gate keeps criterion 6
+  visible every commit, `EVD-08` forbids `passed` over a missing check); `P1-LAB` stays
+  `done`.
+- The toolchain was measured, not installed: Apple clang has no RISC-V backend (exact
+  error recorded); Homebrew `llvm@21` clang 21.1.8 compiles RV64I correctly
+  (objdump-verified); zig 0.16.0's bundled `ld.lld` 21.1.8 links.
+- `.5` blocked → active; the three-strand design recorded before code (strand 1: the C
+  guest; strand 2: the ACT4 generated suite; strand 3: directed sequences). Docs-only
+  commit; `make gate` green.
+
 ## SEMULITH-PX-0001 (leaf PREFIX-DISCIPLINE.1) — the SEMULITH- prefix, pinned at the boundary and watched
 
 - The director ruled the work-unit prefix is SEMULITH, never SEMILITH. Measured drift at
@@ -559,8 +597,4 @@
 - `DEV_NOTES.md` gets `CHANGELOG.md`'s lifecycle, by generalization rather than a fork: `scripts/shard_history.py` writes a shard header naming the head it was cut from and that head's own registry ceiling (`# DEV_NOTES shard … 48 KiB`; CHANGELOG's `.1` header shape stays byte-identical, self-test arm), and `scripts/check_changelog_shards.sh` learns the two-head family — one COVERAGE/FROZEN/APPEND-ONLY scan over the shared `docs/changelog/` manifest, UNIQUE across both live heads + shards. First event: 2 entries to `shard-0027.md`, `31 == 29+2` proved at the event, head 48,954 → 46,212, 29-row manifest frozen.
 - Both tools fired RED on the real tree pre-commit (a scratch shard carrying a live DEV_NOTES heading; the old sharder writing CHANGELOG-provenanced DEV_NOTES shards). The new UNIQUE leg then exposed two stray duplicate headings inside DEV_NOTES.md itself — removed; each entry exists exactly once. The registry comment that claimed DEV_NOTES was already sharded (designed end-state stated as present fact) is corrected.
 - Verification: sharder self-test 12/0, SHARD-FREEZE self-test 14/0, gate green; doctrine mirrors and the routed-destination count (31, unchanged — one family, not a new directory) in sync.
-
-## SEMILITH-AC-0052 (tree ARTIFACT-CLEANUP) — the 2026-09-28 cleanup run
-
-- §8 time-triggered run (last record `2026-09-26`): pre-delete census 132 cargo incremental-cache `.bin` files / 720 MB, every one under a cargo `*/incremental/*` directory (`target/` own + wasm32 profiles, `.app-data/target/` vendored-consumer builds); 0 stray `.bin`/`.log` in `target/release` / `target/debug/deps`; the 7 `.app-data/cargo-home/**/tests/data/*.bin` crate-source fixtures classified inputs and kept. Post-delete re-census: 0 incremental `.bin`; `.app-data` 2.0 G → 1.4 G. Record overwritten (latest entry only) and the run evidenced in the tree's Verification Log; enforcer green.
 
