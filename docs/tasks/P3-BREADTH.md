@@ -126,6 +126,14 @@ unsupported families remain unclaimed.
   (c) the named-refusal map (`synth24`'s pins) and the honest limits. An abstraction is
   judged by what it can afford to forget; R/C/L forget Maxwell's equations, the axis menu
   forgets implementation detail, and both keep exactly what composition needs.
+  **The director's closing remark (same exchange): the abstraction is RECURSIVE** — each
+  axis can itself be abstracted further, simplified further, if need be. The menu is not
+  a fixed depth: "accumulator" can refine into width × readout × extension semantics,
+  "issue model" into packet formation × writeback visibility × interrupt interaction,
+  each sub-axis still citable to the manuals that carry it. The R/C/L grounding holds at
+  every level — each refinement keeps its own validity bounds, composition laws, and
+  failure envelope. Depth is chosen by need (an exercised target demands it), never by
+  completeness for its own sake.
 
 ## Blockers
 
