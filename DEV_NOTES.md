@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-09-30)_ — the packet and the delayed writeback (DSP-REVIEW.4)
+
+The tree named this leaf "the single most likely place the scalar abstraction breaks"
+and the measurement agreed — twice. The packet: ≤8 instructions, all operands read at E1
+simultaneously (Table 3-3's read cycles are all "i"), one functional unit each — so two
+stores to one address have a joint outcome that instruction-stepping miscomputes. The
+delayed writeback: load results land at i+4, interlocks are eliminated BY DESIGN ("no
+stall is introduced if the register being read has data placed by a load"), and the
+manual's own §5.7.1 worked example shows an interrupt inside the window producing
+incorrect results — the exact delayed-effect shape .2's SAT measurement fed in. The
+third unmeasured-number slip of the day happened in this leaf's checklist (101 measured
+after 21 was composed) — the practiced rule is now "paste real output, never compose",
+and it is written into the leaf's own checklist block where the next author sees it.
+
+Lesson: `promotion: declined` (the breaks are the artifact's own section).
+
 ## _(2026-09-30)_ — addressing and address spaces; the vendor-diversity filing (DSP-REVIEW.3 + DR-0087)
 
 Q6 measured first per the acceptance: bytes on both sides, one numbering — the lab's

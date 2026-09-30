@@ -89,9 +89,25 @@ or claiming DSP compatibility.
   Lessons: `promotion: declined (the seams list lives in the evidence document where `.7` meets it)`.
 
 - ID: `DSP-REVIEW.4` — **issue groups and exposed sequencing**
-  Status: `pending`
+  Status: `done` (`2026-09-30`)
   Goal: packet membership, old/new operand visibility, delayed results, interlocks, early reads, resource-conflict status (questions 9–11, catalog `C09`).
   Acceptance: determines whether `Advance` and the execution unit can represent a packet and a delayed effect — the single most likely place the scalar abstraction breaks.
+  Result: met, `2026-09-30` — **measured verdict: the scalar step model breaks, twice.**
+  (1) The unit of progress is the PACKET (≤8 instructions, ALL operands read
+  simultaneously at E1, one different functional unit each — C64x §3.4 p. 65, Table 3-3
+  p. 64), and the lab's evaluator steps one instruction at a time. (2) Results land LATE
+  and VISIBLE (load writeback at cycle i+4, no interlocks — "eliminating pipeline
+  interlocks" is printed as the design — and early reads return stale values BY DESIGN),
+  and interrupts land INSIDE the window (in-flight-to-E1 instructions complete through
+  E5; later packets annul with no state change; post-return code sees compressed delay
+  slots — the manual's own LDW/ADD example computes incorrectly, C64x §5.7.1 p. 557).
+  Conflicts: same-unit packet "invalid"; same-cycle dual-write "undefined"; and the
+  C64x/C674x §3.7.2/§3.8.2 contradiction (exception vs erroneous values) recorded
+  UNRESOLVED, with C66x's "exception AND erroneous values" as the measured third form.
+  The census consequence is named: a DSP profile reopens `state.sexp`'s hidden-state
+  census (pending-writes window + packet state) by the census's own rule. Evidence:
+  [`artifacts/dsp-review/2026-09-30-packets-q9-q11.md`](artifacts/dsp-review/2026-09-30-packets-q9-q11.md).
+  Lessons: `promotion: declined (the two breaks are the evidence document's own section; the next reader meets them there)`.
 
 - ID: `DSP-REVIEW.5` — **loops, repeats and interrupt interaction**
   Status: `pending`
@@ -136,7 +152,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.4` | `pending` | `.3` done `2026-09-30` (units measured byte-compatible; the non-fitting seams named: the 32-bit space, two L1 spaces, AMR side-state, the per-register circular capability) — issue groups and exposed sequencing (`.4`) is where the scalar shape most likely breaks |
+| 1 | `DSP-REVIEW.5` | `pending` | `.4` done `2026-09-30` — MEASURED: the scalar step model breaks twice (the packet as the unit of progress; the delayed-visible writeback with interrupts inside the window). Loops/repeats and interrupt interaction (`.5`) next |
 
 ## Decisions
 
@@ -301,6 +317,58 @@ declared here before the first finding exists rather than improvised when one do
   `SEMULITH-DR-0087`, carried no changelog entry — its record is folded into this
   leaf's CHANGELOG entry; noted honestly here.)
 
+## Acceptance Checklist (leaf DSP-REVIEW.4)
+
+- [x] **REPRODUCE / ISSUE** — the leaf's question (does the packet/delayed-effect shape
+  break the scalar model) was answered from the manuals' own pipeline chapters, measured:
+
+  ```
+  $ grep -c 'delay slot' target/dsp-review/c64x-spru732j.txt
+  101      # the delay-slot contract is pervasive, not incidental
+           # (the first draft wrote 21 unmeasured — the third such slip today, all
+           # caught pre-commit; the rule now practiced: paste real output, never compose)
+  $ grep -c 'eliminating pipeline interlocks' target/dsp-review/*.txt | grep -cv ':0'
+  3        # the no-interlocks sentence exists in all three manuals
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in our tree; the measured break is the
+  leaf's ANSWER, not a malfunction. WHY the break is real and not a modeling choice:
+  the packet's operands are read simultaneously (Table 3-3's read cycles are all E1), so
+  stepping instructions one at a time computes different values for same-address stores;
+  and the load window is architecturally visible with no interlock. WHERE the break
+  lands: `OB-ENV-PARTIAL-PROGRESS` (every instruction completes or faults as a unit) —
+  true for RV64I, false for C6000; the measurement is recorded so P3-BREADTH never
+  inherits it silently. The contradiction's two forms, counted from the texts:
+
+  ```
+  $ grep -c 'erroneous values' target/dsp-review/c64x-spru732j.txt target/dsp-review/c66x-sprugh7.txt target/dsp-review/c674x-sprufe8b.txt
+  target/dsp-review/c64x-spru732j.txt:1
+  target/dsp-review/c66x-sprugh7.txt:2    # C66x prints the resolved "exception AND" form
+  target/dsp-review/c674x-sprufe8b.txt:1  # the C64x/C674x contradiction, measured
+  ```
+
+- [x] **FIX** — the evidence document
+  `docs/tasks/artifacts/dsp-review/2026-09-30-packets-q9-q11.md` (the packet rules, the
+  delay-slot tables, the annulment semantics, the contradiction in both forms, the
+  census-reopening consequence); the leaf's Result; the frontier.
+
+- [x] **ADDRESSED (verified)** — the acceptance's question is ANSWERED, not deferred:
+  `Advance`/the execution unit as built cannot represent a packet or a delayed effect —
+  measured, with the manual's own incorrect-result example as the load-bearing quote:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **NO REGRESSION** — docs-only leaf; the gate is the check, green:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.5`), this tree, the artifact.
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -316,11 +384,13 @@ declared here before the first finding exists rather than improvised when one do
 | `2026-09-30` | `DSP-REVIEW.1` | the extraction (`pdftotext` of the three catalogued manuals) + the absence searches | every Q1/Q2 fact quoted with page+section; `guard`/`accumul`/`Q15` measured absent; the `s`-bit trap measured (side-select, not scaling) |
 | `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
 | `2026-09-30` | `DSP-REVIEW.3` | the same extraction + the units/spaces/modes searches | byte units on both sides measured (no word-addressed space exists); the two-L1-spaces shape, the .D-unit generators, the AMR scheme quoted with locators; bit-reversed/strided addressing measured absent; the circular nonalignment split pinned |
+| `2026-09-30` | `DSP-REVIEW.4` | the same extraction + the packet/latency/conflict sections | the execute-packet rules, the delay-slot tables, the no-interlocks sentence, the annulment semantics and the manual's own incorrect-result example — quoted with locators; the §3.7.2/§3.8.2 contradiction recorded in both forms |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.4` | `SEMULITH-DR-0089 (leaf DSP-REVIEW.4): the predicted break, measured — twice` | the packet as the unit of progress; the delayed-visible writeback with interrupts inside the window; the census-reopening consequence named |
 | `DSP-REVIEW.3` | `SEMULITH-DR-0088 (leaf DSP-REVIEW.3): addressing and address spaces — units byte-compatible, the seams named` | the unit check first per the acceptance; the five non-fitting seams measured; the vendor-diversity gaps filed (DR-0087) |
 | `DSP-REVIEW.2` | `SEMULITH-DR-0086 (leaf DSP-REVIEW.2): rounding, saturation, sticky flags — the defined step sequences, measured` | the ordering as step sequences; per-lane saturation; SAT/SSR lifetimes; seven manual defects recorded unresolved; the one-cycle SAT delay is `.4`'s input |
 | `DSP-REVIEW.1` | `SEMULITH-DR-0085 (leaf DSP-REVIEW.1): widths and accumulator semantics measured across the three TI manuals` | the evidence document with per-fact locators; the first classification for `.7`; the measured absences (no accumulator, no guard bits) |

@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-DR-0089 (leaf DSP-REVIEW.4) — the predicted break, measured — twice
+
+- The scalar step model breaks, measured: (1) the execute PACKET is the unit of progress
+  (≤8 instructions, all operands read simultaneously at E1); (2) writeback is delayed and
+  visible (load at i+4, no interlocks, early reads stale by design) with interrupts
+  landing INSIDE the window (the manual's own LDW/ADD example computes incorrectly).
+  `OB-ENV-PARTIAL-PROGRESS` is true for RV64I and false for C6000 — recorded so
+  P3-BREADTH never inherits it silently.
+- The census consequence: a DSP profile reopens the hidden-state census by its own rule
+  (the pending-writes window + packet state). The §3.7.2/§3.8.2 contradiction recorded in
+  both forms, C66x's resolved form beside them.
+- Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-packets-q9-q11.md.
+
 ## SEMULITH-DR-0088 (leaf DSP-REVIEW.3) — addressing and address spaces: units byte-compatible, the seams named
 
 - The acceptance's exact check — units, not just widths: byte-addressed on BOTH sides,
