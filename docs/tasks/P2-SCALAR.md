@@ -367,29 +367,21 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Goal: a reproducible gate report from pinned inputs, explicit capability limits, a named release decision, and a versioned accepted artifact.
   Design (recorded before code, `2026-09-30` — three slices, each its own commit):
   (a) **The CI two-host matrix** (the permanent home, per the route decision): a new
-      workflow `.github/workflows/portability.yml` — one job per host (`ubuntu-latest`
-      = x86-64, `macos-latest` = aarch64) running the instrument's native leg and
-      uploading the digest manifest; a Miri job on x86-64 (nightly + miri component +
-      the powerpc64 target, provisioned by the workflow); an `agree` job that fails iff
-      the two hosts' manifests differ. The instrument gains `--emit-manifest FILE` and
-      `--leg NAME` selectors so CI drives single legs; per-host `incomplete` verdicts
-      stay informational in CI — the MATRIX verdict is the agreement job plus per-leg
-      coverage across hosts (the x86-64 native leg IS ubuntu's run). ⛔ CI evidence
-      lands at the next approved push (the cadence governs; the workflow is validated
-      locally by structure and the instrument's self-test until then).
+      workflow `.github/workflows/portability.yml` — host matrix (`ubuntu-latest` =
+      x86-64, `macos-latest` = aarch64) running the native leg + uploading the digest
+      manifest; a Miri job on x86-64 (nightly + miri + the BE target provisioned by the
+      workflow); an `agree` job failing iff the manifests differ. The instrument gains
+      `--leg`/`--emit-manifest` selectors. ⛔ CI evidence lands at the next approved
+      push (the cadence governs).
   (b) **The Rosetta-local proof** (the bridge): when the director's reinstall lands
-      (measured inert `2026-09-30`: payload in the cryptex, daemon off), the instrument's
-      x86-64 leg learns the Rosetta path — `rustup target add x86_64-apple-darwin`,
-      `cargo test --target x86_64-apple-darwin`, the manifest digest compared against
-      the recorded aarch64 one — and `portability.sexp` re-measures.
-  (c) **The release report** (`G-RELEASE` over the dossier): the report evaluates the
-      full processor-gate series per axis (SCP-05: fidelity per axis, never rolled up;
-      "supports RV64I" appears nowhere), the capability limits are explicit (the
-      profile's own not-claimed list), the release decision is named per the route, and
-      the accepted artifact is versioned. ⛔ Measured first: which axes read complete
-      TODAY (G-CONTRACT's 72 declared obligation checks were measured 0-implemented at
-      G0 — if still so, the obligations axis reads incomplete and the honest release
-      decision is shaped by BOTH open axes).
+      (measured inert `2026-09-30`), the instrument's x86-64 leg learns the Rosetta path
+      (cross-compile `x86_64-apple-darwin`, run, compare the manifest digest against the
+      recorded aarch64 one) and `portability.sexp` re-measures.
+  (c) **The release report** (`G-RELEASE` over the dossier): the full gate series per
+      axis (SCP-05: per axis, never rolled up; "supports RV64I" appears nowhere),
+      explicit capability limits, the named release decision, the versioned artifact.
+      ⛔ Measured first: which axes read complete TODAY (G-CONTRACT's obligation checks
+      measured 0-implemented at G0 — a second possibly-open axis shaping the decision).
   Acceptance: fidelity reported **separately** per axis (`SCP-05`); "supports RV64I" appears nowhere.
 
 ## Current Frontier
@@ -549,6 +541,46 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   the fix three-way (`never_written x5`), the mutation matchers were re-derived for the
   new tree shape, and the whole 32-guest corpus re-proves the success path.
 
+## Acceptance Checklist (leaf P2-SCALAR.9 — slice a: the CI two-host matrix)
+
+- [x] **REPRODUCE / ISSUE** — the gap was measured: every existing CI job ran x86-64
+  only, so the aarch64 leg had no CI home and no cross-host agreement check existed:
+
+  ```
+  $ grep -h 'runs-on' .github/workflows/*.yml | sort -u
+  ubuntu-latest        # every CI job, pre-slice — x86-64 only
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the slice implements the director's route
+  decision (`decision_release-route-x86-64-leg`). WHY a new workflow: the existing two own
+  `check` and `enforce`; the matrix is a third concern with its own provisioning. WHERE
+  agreement is proven: the `agree` job byte-compares the two hosts' digest manifests.
+
+  ```
+  $ grep -h '^name:' .github/workflows/{rust,doctrines}.yml
+  name: rust
+  name: doctrines     # the two existing contracts — neither is a host matrix
+  ```
+
+- [x] **FIX** — `.github/workflows/portability.yml` (host matrix + the Miri/cross-endian
+  job + the agreement job); the instrument's `--leg` / `--emit-manifest` selectors.
+
+- [x] **ADDRESSED (verified)** — locally, pending the push the cadence governs:
+
+  ```
+  $ bash scripts/check_portability.sh --self-test
+  PORTABILITY --self-test: 6 pass / 0 fail
+  $ bash scripts/check_portability.sh --leg native --emit-manifest <file>
+  …manifest sha256: 0670a01b96de28f9e65837295064b825300b22d54ba6d033696f42e254c5bb52 —
+    reproduces the `.8` recording BYTE-IDENTICALLY; `bash -n` clean
+  ```
+
+- [x] **NO REGRESSION** — `make check` (180+65 suites, clippy `-D warnings`, fmt),
+  `make gate`, `make book` — all green.
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, this
+  tree, `docs/book/src/plan/p2.md`.
+
 ## Acceptance Checklists (leaves P2-SCALAR.1–.8 — all done)
 
 Archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling). `.6`'s joined
@@ -614,7 +646,9 @@ the combined archive crossed the same ceiling.
 | `2026-09-30` | `P2-SCALAR.8` | `bash scripts/check_portability.sh` (live, all four legs) | `portability: incomplete (native=green, x86-64=absent, miri=green, cross-endian=green)` — the honest verdict; manifest sha256 `0670a01b…5bb52` (49 guests) |
 | `2026-09-30` | `P2-SCALAR.8` | authoring REDs ×2 | `grep -q` under `pipefail` SIGPIPEd cargo — every leg read red against a green reality (fixed: capture-then-read); a mid-run edit of the RUNNING script broke its parse (bash reads incrementally — restart, never edit in flight) |
 | `2026-09-30` | `P2-SCALAR.8` | `bash scripts/check_portability.sh --self-test` | 6 pass / 0 fail (all-green, one/two absent, red anywhere, red+absent) |
-| `2026-09-30` | `P2-SCALAR.9` | Rosetta re-measurement on macOS 27.0 (after the director's "installed and may be used") | PRESENT BUT INERT: binaries at `/usr/libexec/rosetta/`, the x86-64 dyld cache in the Rosetta cryptex, `arch -x86_64` fails (`Bad CPU type`), oahd not running — activation is the director's admin act, underway |
+| `2026-09-30` | `P2-SCALAR.9` | Rosetta re-measured on macOS 27.0 | PRESENT BUT INERT: payload in the cryptex, daemon off, `arch -x86_64` fails — activation is the director's admin act |
+| `2026-09-30` | `P2-SCALAR.9` (a) | the director's install, re-measured | **Rosetta LIVE**: `arch -x86_64 uname -m` → `x86_64`; the probe binary runs |
+| `2026-09-30` | `P2-SCALAR.9` (a) | `bash -n` + self-test + `--leg native --emit-manifest` | SYNTAX-OK; 6/0; the manifest reproduces the `.8` recording byte-identically (`0670a01b…`) |
 
 ## Commit Log
 
@@ -626,7 +660,7 @@ the combined archive crossed the same ceiling.
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
 | `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first), `SEMULITH-PS-0070` (strand 3: the eight directed guests — **`.5` DONE**) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 | `P2-SCALAR.6` | `SEMULITH-PS-0071` (design, before code — the census measured first), `SEMULITH-PS-0072` (the minimized case retained — the leaf DONE) | one model-vs-references divergence exists (`DIFF-FENCEI-EXECUTED`); `min-fencei` (one word) reproduces it under the expected-divergence protocol at step 0; no mask widened, no expectation edited |
-| `P2-SCALAR.9` | `SEMULITH-PS-0080` (design, before code — the three slices) | the route decision implemented as slice plan: (a) CI two-host matrix + the instrument's leg selectors; (b) the Rosetta proof when activation lands; (c) the release report — its axes measured first |
+| `P2-SCALAR.9` | `SEMULITH-PS-0080` (design, before code — the three slices), `SEMULITH-PS-0081` (slice a: the CI matrix wired) | the route decision implemented as slice plan: (a) CI two-host matrix + the instrument's leg selectors; (b) the Rosetta proof when activation lands; (c) the release report — its axes measured first |
 | `P2-SCALAR.8` | `SEMULITH-PS-0076` (design, before code — availability measured first), `SEMULITH-PS-0077` (the instrument + the record — the leaf DONE with the honest `incomplete`) | four legs; x86-64 measured UNAVAILABLE (Rosetta absent — recorded, not waived); Miri 65/65 native + 65/65 big-endian |
 | `P2-SCALAR.7` | `SEMULITH-PS-0074` (design, before code), `SEMULITH-PS-0075` (the mechanism + the proof suite — the leaf DONE) | mid-execution snapshots: the pending-state census is the pinned dossier's own (registers + pc + memory, all seven hidden-state candidates measured absent); the proof suite's load-bearing cases are the memory-state guests; landed: 49 guests × 3 split points identical through the JSON round-trip, RED arms refuse by name, CLI `snapshot`/`resume` |
 

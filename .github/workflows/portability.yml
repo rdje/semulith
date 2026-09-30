@@ -1,0 +1,52 @@
+name: portability
+# G-PORTABILITY's CI home (P2-SCALAR.9, decision_release-route-x86-64-leg): the mandatory
+# two-native-host leg runs as a matrix — ubuntu-latest is x86-64, macos-latest is aarch64 —
+# and the agree job byte-compares the two hosts' digest manifests. The Miri and
+# cross-endian legs run on x86-64 with the pinned nightly provisioning.
+on:
+  push:
+  pull_request:
+
+jobs:
+  host:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: The native leg + the digest manifest
+        run: bash scripts/check_portability.sh --leg native --emit-manifest manifest.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: manifest-${{ matrix.os }}
+          path: manifest.txt
+
+  miri:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: The pinned nightly + Miri + the big-endian target
+        run: |
+          rustup toolchain install nightly --component miri
+          rustup target add --toolchain nightly powerpc64-unknown-linux-gnu
+      - name: The Miri leg
+        run: bash scripts/check_portability.sh --leg miri
+      - name: The cross-endian leg
+        run: bash scripts/check_portability.sh --leg cross-endian
+
+  agree:
+    needs: [host]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch both manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: manifest-*
+      - name: Byte-compare the two hosts' manifests
+        run: |
+          set -e
+          ls
+          diff manifest-ubuntu-latest/manifest.txt manifest-macos-latest/manifest.txt && \
+            echo "portability matrix: the two hosts agree byte-identically"

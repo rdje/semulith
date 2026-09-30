@@ -25,7 +25,11 @@
 # `incomplete` names each mandatory leg whose infrastructure is absent (absence is not a
 # failure and not a pass); `failed` when a runnable leg fails.
 #
-#   --self-test   the verdict logic's RED/GREEN controls over synthetic leg outcomes
+#   --self-test       the verdict logic's RED/GREEN controls over synthetic leg outcomes
+#   --leg NAME        run one leg only (native | x86-64 | miri | cross-endian) — the CI
+#                     matrix drives single legs per host job
+#   --emit-manifest F  with the native leg, write the digest manifest to F (the CI
+#                     artifact; the agreement job byte-compares both hosts' files)
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
@@ -58,8 +62,19 @@ self_test() {
 
 if [ "${1:-}" = "--self-test" ]; then self_test; exit $?; fi
 
+ONLY_LEG=""; EMIT=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --leg) ONLY_LEG="$2"; shift 2;;
+    --emit-manifest) EMIT="$2"; shift 2;;
+    *) echo "check_portability: unknown option $1" >&2; exit 2;;
+  esac
+done
+run_leg() { [ -z "$ONLY_LEG" ] || [ "$ONLY_LEG" = "$1" ]; }
+
 NATIVE=red; X86=absent; MIRI=absent; CROSS=absent
 
+if run_leg native; then
 echo "== leg 1: native ($(uname -m)) =="
 # capture-then-read, never pipe into grep -q: grep -q's early exit SIGPIPEs cargo, and
 # pipefail would report the PIPE's death as the leg's verdict (measured 2026-09-30).
@@ -88,7 +103,29 @@ for n in names:
     print(f"  {d[:16]}  {n}")
 print(f"  manifest sha256: {h.hexdigest()}  ({len(names)} guests)")
 PY
+if [ -n "$EMIT" ]; then
+  NLOG="$ROOT/target/portability/native.log"
+  python3 - "$EMIT" <<'PY'
+import hashlib, subprocess, sys, pathlib, re
+src = pathlib.Path("crates/semulith-verify/src/guests.rs").read_text()
+names = sorted(set(re.findall(r'name: "([a-z0-9-]+)"', src)))
+h = hashlib.sha256()
+lines = []
+for n in names:
+    out = subprocess.run(["cargo", "run", "-q", "-p", "semulith-cli", "--", "demo",
+                          f"--guest={n}", "--json"], capture_output=True,
+                         check=True).stdout
+    d = hashlib.sha256(out).hexdigest()
+    h.update(d.encode())
+    lines.append(f"{d}  {n}")
+lines.append(f"manifest sha256: {h.hexdigest()}  ({len(names)} guests)")
+pathlib.Path(sys.argv[1]).write_text("\n".join(lines) + "\n")
+print(f"  manifest written to {sys.argv[1]}")
+PY
+fi
+fi
 
+if run_leg x86-64; then
 echo "== leg 2: x86-64 (mandatory) =="
 if [ "$(uname -m)" = "x86_64" ]; then
   X86=red; cargo test --all >/dev/null 2>&1 && X86=green
@@ -96,7 +133,9 @@ elif [ "$(uname -m)" = "arm64" ] && [ "$(uname -s)" = "Darwin" ]; then
   if arch -x86_64 /usr/bin/true 2>/dev/null; then X86="absent (Rosetta present but the leg needs a full run — provision it)"; else X86="absent (Rosetta absent — measured 2026-09-30: Bad CPU type in executable)"; fi
 fi
 echo "x86-64: $X86"
+fi
 
+if run_leg miri; then
 echo "== leg 3: Miri (the pinned safe-Rust core plan) =="
 if cargo +nightly miri --version >/dev/null 2>&1; then
   MIRI=red
@@ -104,7 +143,9 @@ if cargo +nightly miri --version >/dev/null 2>&1; then
   if [ "$MRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$MLOG"; then MIRI=green; fi
 fi
 echo "miri: $MIRI"
+fi
 
+if run_leg cross-endian; then
 echo "== leg 4: cross-endian (Miri on big-endian powerpc64) =="
 if rustup target list --toolchain nightly-aarch64-apple-darwin --installed 2>/dev/null | grep -q "^powerpc64-unknown-linux-gnu$"; then
   CROSS=red
@@ -114,6 +155,20 @@ else
   CROSS="absent (rustup target add --toolchain nightly powerpc64-unknown-linux-gnu)"
 fi
 echo "cross-endian: $CROSS"
+fi
+
+# A single-leg run reports that leg and exits with its own status; the four-leg verdict
+# is the full-run form.
+if [ -n "$ONLY_LEG" ]; then
+  case "$ONLY_LEG" in
+    native) [ "$NATIVE" = green ];;
+    x86-64) [ "$X86" = green ];;
+    miri) [ "$MIRI" = green ];;
+    cross-endian) [ "$CROSS" = green ];;
+    *) echo "check_portability: unknown leg $ONLY_LEG" >&2; exit 2;;
+  esac
+  exit $?
+fi
 
 N=$NATIVE; X=$X86; M=$MIRI; C=$CROSS
 [ "$N" = green ] || N=red
