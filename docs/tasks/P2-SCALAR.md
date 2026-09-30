@@ -358,7 +358,13 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   are enforced where they bite — the instrument's own comment and its self-test)`.
 
 - ID: `P2-SCALAR.9` — **the `CPU-LAB` release** *(task card `T009`)* — `G-RELEASE`
-  Status: `pending`
+  Status: `pending` — ⛔ one director decision gates the release decision itself
+  (surfaced `2026-09-30`): the portability axis reads `incomplete` (the mandatory
+  x86-64 leg's infrastructure is measured absent on this host). Per
+  `docs/EVIDENCE_AND_GATES.md` §7 the profile then stays experimental UNLESS an explicit
+  narrower host-support policy is adopted and labeled — adopting one is a policy act,
+  the director's, not the tree's. Default if unanswered: the release report reads
+  experimental with the open leg named.
   Goal: a reproducible gate report from pinned inputs, explicit capability limits, a named release decision, and a versioned accepted artifact.
   Acceptance: fidelity reported **separately** per axis (`SCP-05`); "supports RV64I" appears nowhere.
 
