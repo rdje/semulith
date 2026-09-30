@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-MM-0073 (leaf MODEL-METHOD.14) — the encoding re-sourcing probe: adopt-in-principle, measured
+
+- The probe (untracked `target/materials/mm14_probe.py` over the pinned PDF's text
+  layer): Chapter 36's listings carry every field as selectable text; ADD reconstructs
+  end-to-end identical to the incumbent fragment; the full sweep measures **52/52
+  opcodes extracted, zero value conflicts, 37/52 fully reconstructed by the naive
+  parser** — the 15 remainders are parser-ordering gaps (page-local alignment), each
+  caught by the incumbent comparison, which is the verification control.
+- Decision recorded (`decision_encoding-resourcing-probe`): adopt-in-principle; the
+  re-source is a later reviewed leaf (`.8` owns the encoding), triggered when the
+  encoding is next touched or a second unit reuses the fragment. The re-sourced
+  provenance would shrink the shared-with-spike ancestry leg.
+- **The tree CLOSES 17/17.** Closure sweep found `.15`/`.17`'s Status fields stale
+  (`active` with Results landed) — drift corrected.
+- `MODEL-METHOD` leaves the active index; `P2-SCALAR.7` (snapshot/replay) is next.
+
 ## SEMULITH-PS-0072 (leaf P2-SCALAR.6) — the minimized divergence is retained; the leaf is DONE
 
 - `min-fencei` — one word (`0x0000100F`) — reproduces the corpus's one model-vs-references

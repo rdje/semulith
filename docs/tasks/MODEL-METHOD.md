@@ -3,12 +3,13 @@
 ## Metadata
 
 - Tree ID: `MODEL-METHOD`
-- Status: `active` (reopened `2026-09-29` for `.14` — the `MODEL-BOOKS.2` finding: the
-  pinned specification's own PDF carries the instruction-format tables as selectable text,
-  so the encodings' second provenance may be replaceable by the primary document; the
-  evaluation is director-scheduled. `.15`+`.16` — the feed consumed, the v20260120 PDFs
-  adopted — landed `2026-09-29`/`30` behind it; `.17` — the surfaced poller deafness came
-  back FIXED and the channel two-way — `2026-09-30`)
+- Status: `done` (`2026-09-30` — `.14` closed it: the PDF probe measured the encodings
+  re-sourceable from the primary document, adopt-in-principle, the re-source a later
+  reviewed leaf. `.15`+`.16` landed `2026-09-29`/`30` (the feed consumed, the v20260120
+  PDFs adopted); `.17` — the poller deafness came back FIXED, the channel two-way —
+  `2026-09-30`. Housekeeping at closure: `.15`'s and `.17`'s Status fields had stayed
+  `active` after their Results landed — drift found by this leaf's closure sweep and
+  corrected here)
 - Roadmap lane: cross-cutting; precedes implementation for **every** modelled unit — CPU, MCU, DSP, device, board, SoC
 - Gate: contributes the precondition `P1-LAB` must satisfy before any model code is written
 - Depends on: `P0-PROFILE` (the first model), `docs/INFORMATION_CATALOG.md` (the 24 categories)
@@ -198,7 +199,7 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
   material notes).`
 
 - ID: `MODEL-METHOD.15` — **the chipdoc feed arrives: the flagged set, catalogued and cached**
-  Status: `active`
+  Status: `done` (`2026-09-29`)
   Origin (director, `2026-09-29`): the corpus root was supplied verbally and the instruction
   given: save what semulith needs from chipdoc into a git-ignored local cache, so the corpus
   path never has to be requested again. The feed the director flagged on `2026-09-27`
@@ -239,9 +240,8 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
   the rule already lives in docs/CLAIM_VERIFICATION.md).`
 
 - ID: `MODEL-METHOD.14` — **evaluate re-sourcing the encodings from the primary-document PDF**
-  Status: `pending` (surfaced `2026-09-29`; SCHEDULED `2026-09-30` — the director delegated
-  the scheduling call alongside the `P2-SCALAR.5` rulings; it starts after `P2-SCALAR.5`'s
-  strands, the milestone tree holding PNT precedence, or any session the director names it)
+  Status: `done` (`2026-09-30` — the probe measured: feasible, verifiable, adopt-in-principle;
+  the re-source itself is a later reviewed leaf, `.8` owning the encoding)
   Origin (measured, `MODEL-BOOKS.2`, `2026-09-29`): the pinned unprivileged specification's
   own PDF rendering (`docs.riscv.org` `v20260120`, `_attachments/riscv-unprivileged.pdf`,
   4,580,174 B, sha256 `06bb3c23…d150bc`, 696 pages) carries the instruction-format tables as
@@ -263,9 +263,33 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
   is its own reviewed leaf with the encoding provenance restated in the dossier and the
   materials bill; if decline, the reason is measured, not assumed.
   Not this leaf: changing any encoding data. This leaf is the evaluation only.
+  Result: met, `2026-09-30`. **ADOPT-in-principle, measured — the re-source is its own
+  reviewed leaf when the encoding is next touched.** The probe (untracked
+  `target/materials/mm14_probe.py`, over the pdftotext layer of
+  `RVI-UNPRIV-PDF-V20260120` at `.materials/riscv/riscv-unprivileged-v20260120.pdf`):
+  Chapter 36's listings (the `RV32I/RV64I Base Instruction Set` pages, ~585+) carry every
+  field as selectable text — the per-page mnemonic row zips with the page's 7-bit opcode
+  row, and the funct7/funct3 fragment streams precede it in the same order. ONE form
+  end-to-end: ADD reconstructs as opcode `0110011`, funct3 `000`, funct7 `0000000` —
+  identical to the incumbent fragment's `(fixed (31 25 0x0) (14 12 0x0) (6 2 0xc) (1 0
+  0x3))`. The full sweep, measured rather than estimated: the naive in-order parser
+  extracts all 52 opcodes with ZERO missing and ZERO value conflicts, 37/52 fully
+  reconstructed (funct rows included); the 15 remainders are PARSER-ORDERING gaps (the
+  fragment streams need page-local alignment), each caught by the incumbent comparison —
+  the control demonstrated to detect incompleteness, which is what makes a completed
+  extraction falsifiable. The recorded qualifications held: the PDF's numbering differs
+  from the pinned HTML (the `.16` measurement — this PDF's ch.2/ch.4, pinned HTML
+  §1.1/§3.1, GitHub §2/§4; the probe keys on content, not numbers) and the extraction is
+  layout-fragmented (one field per line — the 15-gap tail is that fragmentation's price,
+  measured at 29% with the naive parser). Cost estimate, grounded: a page-local
+  field-layout parser closes the tail — hours, not days; the verification instrument
+  (incumbent comparison + `check_encoding_disjoint.py`) already exists. Decision record:
+  [`decision_encoding-resourcing-probe`](../decisions/decision_encoding-resourcing-probe.md).
+  `promotion: declined (the probe's numbers live in this leaf and the decision record;
+  the verification control is the existing comparison, not a new card)`.
 
 - ID: `MODEL-METHOD.17` — **the channel answers: the poller fix heard the nested gaps, and the records reconcile**
-  Status: `active`
+  Status: `done` (`2026-09-30`)
   Origin (chipdoc, relayed by the director, `2026-09-30`): the poller deafness `.16` measured
   and surfaced is FIXED chipdoc-side (corpus `6bfabf2` — "Fix poller deafness to semulith
   catalogue; mirror satisfied gaps; correct REQ-008 date"): the poller descends into the
@@ -311,7 +335,7 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.14` | `pending` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; SCHEDULED `2026-09-30` by the same delegation that unblocked `P2-SCALAR.5` — starts after `.5`'s strands (milestone precedence), with `.16`'s probe input as a first-class material plus the three measured numberings |
+| 1 | — | the tree is DONE | `.14` done `2026-09-30` (the probe measured: 52/52 opcodes extracted, zero conflicts, adopt-in-principle; the re-source is a later reviewed leaf — `decision_encoding-resourcing-probe`) |
 | — | — | — | `.17` done `2026-09-30` (the poller fix measured, the gaps reconciled, corpus `92a73b6`); `.15`+`.16` done `2026-09-29`/`30` (the feed consumed; the v20260120 PDFs adopted); `.1`–`.13` done `2026-09-27`, bodies archived |
 
 ## Decisions
@@ -352,6 +376,8 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 | `2026-09-30` | `MODEL-METHOD.17` | the fixed poller against the real catalogue, pre-reconcile | `semulith_gaps_open: 2`, `unmirrored: []` — the nested records are READ (pre-fix: 0, and a scratch probe was needed to discriminate at all) |
 | `2026-09-30` | `MODEL-METHOD.17` | the same probe, post-reconcile | `semulith_gaps_open: 0`, `unmirrored: []`, rc 0 — both sides read true |
 | `2026-09-30` | `MODEL-METHOD.17` | corpus re-derivation at the re-pin | 5313 files / 257 PDFs at `92a73b6` (working-tree path sweep) — identical to the recorded `f33d330` figure the sweep first reproduced; git delta `f33d330..92a73b6`: 6 files, no documents |
+| `2026-09-30` | `MODEL-METHOD.14` | `pdftotext` of the pinned PDF + the probe (`target/materials/mm14_probe.py`, untracked) over the incumbent fragment | 39,808 text lines; Chapter 36's listings carry every field as selectable text; ADD end-to-end identical to the incumbent; the sweep: 52/52 opcodes extracted, 37/52 fully reconstructed, 15 parser-ordering gaps, ZERO value conflicts, zero missing |
+| `2026-09-30` | `MODEL-METHOD.14` | closure sweep of the tree's status fields | `.15` and `.17` stood `active` with their Results landed — drift, corrected at closure |
 | `2026-09-30` | `MODEL-METHOD.17` | feed census at the new pin (corpus diff, not recall) | 68 materials / 14 gaps; the `f33d330..92a73b6` delta is exactly chipdoc's two resolved-gap mirror records (`GAP-INTEL-SDM-VOL1`, `GAP-RISCV-JAN-2026-PDF`) |
 | `2026-09-30` | `MODEL-METHOD.17` | `materials.py --verify` + RECORD-SCHEMA + self-test | 45 verified / 0 unresolved / 0 drift; gate ok (7 record files); self-test 20 pass / 0 fail |
 | `2026-09-30` | `MODEL-METHOD.17` | the whole gate | all doctrines green |
@@ -439,6 +465,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `MODEL-METHOD.14` | `SEMULITH-MM-0073 (leaf MODEL-METHOD.14): the encoding re-sourcing probe — adopt-in-principle, measured` | 52/52 opcodes, zero conflicts, 37/52 by the naive parser; the re-source is a later reviewed leaf (`.8` owns the encoding); the tree CLOSES 17/17 |
 | `MODEL-METHOD.17` | `SEMULITH-MM-0059 (leaf MODEL-METHOD.17): the channel answers — the poller fix measured, the heard gaps reconciled` | corpus `92a73b6`; the channel is two-way; 45 materials unchanged |
 | `MODEL-METHOD.16` | `SEMULITH-MM-0058 (leaf MODEL-METHOD.16): the v20260120 PDFs — gap filed, answered same-day, adopted through the corpus seam` | REQ-008 verified four legs; 45 materials; corpus `f33d330`; the poller deafness surfaced |
 | `MODEL-METHOD.15` | `SEMULITH-MM-0057 (leaf MODEL-METHOD.15): the chipdoc feed arrives — the flagged set, catalogued and cached` | corpus re-pinned `73711d6`; 43 materials; `P2-SCALAR.5` blocker (a) answered |
