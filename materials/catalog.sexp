@@ -34,7 +34,7 @@
     (id "chipdoc")
     (title "chipdoc — curated documentation for digital components, chips, interfaces and protocols")
     (kind git-repository)
-    (revision "92a73b6")
+    (revision "d2437ff")
     (env-var "SEMULITH_CHIPDOC_ROOT")
     (derivation "Re-derived 2026-09-14 by a PATH SWEEP, not a sample:
                  find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
@@ -44,10 +44,9 @@
                  guessing where things are records the surveyor's expectations, not the corpus.")
     (note "Curated, in its own words, to expose enough behaviour to reconstruct implementable
            intent AND to build software emulators that run real C/C++/Rust software — which is
-           this project's north star stated by someone else, independently. 5313 files, 257 PDFs
-           (re-derived 2026-09-30 by the same path sweep at the 92a73b6 re-pin — unchanged from
-           f33d330, whose two-commit delta touched scripts and channel files, no documents;
-           5309/255 at 73711d6; 3684/196 at the 3c45e81 baseline).
+           this project's north star stated by someone else, independently. 5383 files, 285
+           PDFs at the d2437ff re-pin `2026-09-30` (re-derived by the same working-tree path
+           sweep; 5313/257 at 92a73b6, 5309/255 at 73711d6, 3684/196 at the 3c45e81 baseline).
            Terms are recorded per document family in that repository's own README files, so a
            material's licence below is read from the DOCUMENT, not assumed from the corpus."))
 
@@ -254,6 +253,46 @@
                   acquisitions, one set of bytes; adopted through the corpus seam under
                   MODEL-METHOD.16"))
 
+  (material
+    (id "NXP-DSP56300-FAMILY-MANUAL")
+    (title "DSP56300 16-Bit Digital Signal Processor Family Manual")
+    (revision "2000")
+    (release-kind final)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "nxp/dsp/dsp56300/current/DSP56300_Family_Manual.pdf")
+    (cache-path "nxp/dsp56300-family-manual.pdf")
+    (sha256 "b2e8e346fe55b05d20ad0e6bc03d45fd1e080d46d9a9cd9540271c0c37f5a31e")
+    (bytes 24396254)
+    (supplies "the DSP56300 family architecture: 24-bit data words, 56-bit accumulators WITH 8
+               guard bits — the measured counterpoint to the TI C6000 family's absence of both
+               (DSP-REVIEW.1/.2)")
+    (status wanted)
+    (note "Answers GAP-DSP56K-FAMILY-MANUAL the same day it was filed (`2026-09-30`, the channel's
+           2026-09-30 DSP batch; corpus SHA256SUMS verified). Recovered from a Wayback snapshot by
+           chipdoc (the vendor's downloads are blocked) — the provenance rides in the corpus's
+           family README."))
+  (material
+    (id "ADI-SHARC-PRM-2.4")
+    (title "SHARC Processor Programming Reference, Rev 2.4")
+    (revision "2.4")
+    (release-kind final)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (corpus "chipdoc")
+    (corpus-path "adi/dsp/sharc/current/SHARC_Processor_Programming_Reference_Rev2.4.pdf")
+    (cache-path "adi/sharc-programming-reference-2.4.pdf")
+    (sha256 "0b40637d05c7f33bc8e39235ee8a9d2c734b12c0372aff1eeac56a7554895869")
+    (bytes 5516505)
+    (supplies "the SHARC programming model: SIMD compute blocks, the DAGs' circular AND
+               bit-reversed addressing — bit-reversed addressing is measured ABSENT from all
+               three TI C6000 manuals (DSP-REVIEW.3)")
+    (status wanted)
+    (note "Answers GAP-ADI-SHARC-PRM the same day it was filed (`2026-09-30`; corpus SHA256SUMS
+           verified). The full SHARC family dir also landed (2106x/21160/2126x/2136x/2137x/214xx
+           hardware references + TigerSHARC + Blackfin + ADSP-219x in the same batch) — catalogued
+           on demand, not preemptively."))
 (gap
     (id "GAP-DSP56K-FAMILY-MANUAL")
     (looked-for "the Motorola DSP56300 Family Manual (the DSP56362/56366 pin-compatible
@@ -267,7 +306,13 @@
              block on it (the TI evidence stands on its own locators), but the .7 findings
              report wants the cross-vendor contrast before classifying 'no accumulator' as
              anything but a TI fact")
-    (status open))
+    (status resolved)
+    (resolved-on "2026-09-30")
+    (resolved-by "the channel, same day: chipdoc's 2026-09-30 DSP batch landed
+                  nxp/dsp/dsp56300/current/ with its SHA256SUMS verified here; adopted as
+                  NXP-DSP56300-FAMILY-MANUAL. Measured end-to-end: gap filed 2026-09-30,
+                  the watcher's 19:42:33 fire (the CHANNEL.md §7 incident's fix held), the
+                  batch committed chipdoc-side the same day."))
   (gap
     (id "GAP-ADI-SHARC-PRM")
     (looked-for "an Analog Devices SHARC programming reference (ADSP-2106x or ADSP-214xx):
@@ -278,7 +323,11 @@
             placeholder); no other ADI content")
     (result "ABSENT from the corpus at 92a73b6 — filed for the channel; the empty directory
              says the want was contemplated there already")
-    (status open))
+    (status resolved)
+    (resolved-on "2026-09-30")
+    (resolved-by "the channel, same day: adi/dsp/sharc/current/ landed with 7 verified
+                  documents incl. the Programming Reference (SHA256SUMS checked here);
+                  adopted as ADI-SHARC-PRM-2.4."))
 
   (material
     (id "ARM-A-DDI0487M.c")
