@@ -125,8 +125,12 @@ grep -E "$code_re" "$tmp/staged.txt" > "$tmp/code.txt" 2>/dev/null || true
 # positive at SEMULITH-PS-0077: a code commit that co-staged the designs archive was refused
 # for boxes the archive never owned. The owning leaf file is staged in the same commit and IS
 # checked.
+# ⛔ docs/tasks/artifacts/ is the same class one level over: measured evidence documents a leaf
+# CITES (probe drivers, survey records) — they carry the measurement, not the checklist. Measured
+# at SEMULITH-DR-0090: a code commit co-staging a DSP-REVIEW evidence document was refused for
+# boxes a citation target never owns.
 grep -E '^docs/tasks/.*\.md$' "$tmp/staged.txt" | grep -vE '(^|/)TEMPLATE\.md$' \
-  | grep -vE '^docs/tasks/archive/' > "$tmp/leaves.txt" 2>/dev/null || true
+  | grep -vE '^docs/tasks/(archive|artifacts)/' > "$tmp/leaves.txt" 2>/dev/null || true
 if [ ! -s "$tmp/leaves.txt" ]; then
   {
     echo "TASK-ACCEPTANCE: a CODE change is staged but NO owning task-tree leaf (docs/tasks/*.md) is."

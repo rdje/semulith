@@ -236,7 +236,14 @@ docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave t
 #   the family rejected (unbounds the collection, the checker's own stated dodge). Per-part
 #   STAYS 64 KiB. Grounds and rejected alternatives in
 #               docs/decisions/decision_task-tree-family-bound-rederivation.md.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	40	524288	60	1048576	65536
+# Re-derivation, SEMULITH-DR-0090 (2026-09-30), when the aggregate fired at 1,053,097 B:
+#   docs/tasks/ 43 files / 1,053,097 B — the P2-SCALAR archive split (checklists +
+#   designs + the full-Result texts) plus the DSP-REVIEW tree and its artifacts/ evidence
+#   documents are the day's growth. The per-part ceiling did NOT move (the largest member
+#   measured 70,517 B before the archive split, 62,541 after — the split mechanism works);
+#   the aggregate answers "how much tracked evidence the project carries", and that
+#   answer grew by design. Ceiling 1 MiB -> 1.5 MiB; health 48 files / 1.1 MiB.
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	48	1153433	60	1572864	65536
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768

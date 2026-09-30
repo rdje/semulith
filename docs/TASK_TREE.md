@@ -53,7 +53,7 @@ on the same commit. One commit per completed leaf.
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `done` (reopened once, for `.10` — a measured defect the first nine leaves carried) | — (10/10 leaves complete) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `done` (reopened once, for `.13` — the `.11` allocation figures had to be proven, not reported) | — (13/13 leaves complete; gate G1 RUN, verdict `incomplete` — criterion 6 routed to the P2-SCALAR tree) | repo-local |
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `done` | — (9/9 leaves complete; the CPU-LAB report reads `incomplete` with G-CONTRACT/G-OBLIGATIONS named — the release decision is the EXPERIMENTAL release of the versioned artifact, `decision_release-rv64i-lab-v0`) | repo-local |
-| [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `active` | `.5` — loops, repeats and interrupt interaction (the predicted break measured `2026-09-30`: the packet is the unit of progress; writeback delayed and visible; interrupts land inside the window) | repo-local |
+| [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `active` | `.6` — the executable synthetic stress fixture (the loop/restart survey landed `2026-09-30`: the SPLOOP census, the drain/exception asymmetry, MFENCE C66x-only) | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `proposed` | `.1` — apply the interface findings (gate `BREADTH`) | repo-local |
 | [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `proposed` | `.1` — resolve the profile (gate `CPU-SYSTEM`) | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `proposed` | `.1` — platform specification (gate `BOARD`) | repo-local |

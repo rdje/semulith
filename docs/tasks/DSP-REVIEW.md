@@ -110,9 +110,25 @@ or claiming DSP compatibility.
   Lessons: `promotion: declined (the two breaks are the evidence document's own section; the next reader meets them there)`.
 
 - ID: `DSP-REVIEW.5` — **loops, repeats and interrupt interaction**
-  Status: `pending`
+  Status: `done` (`2026-09-30`)
   Goal: hardware loops and repeats interacting with interrupts and exceptions; multi-access instructions; stream/DMA ordering (questions 12–14, catalog `C05`).
   Acceptance: restart state requirements stated in terms of `SEM-04` partial progress.
+  Result: met, `2026-09-30`. The SPLOOP loop buffer (C64x+-and-later only — measured by
+  the compatibility fields): its state is fully enumerated (loop buffer + hidden LBC ×2 +
+  ILC + RILC + TSR/ITSR/NTSR.SPLX); interrupts DRAIN to a stage boundary (short loops are
+  not interruptible at all — measured rule with its formula); exceptions do NOT drain
+  (immediate, loop buffer idle, NTSR.SPLX=1); restart refills the buffer by re-executing
+  SPLOOP under modified rules, and the ISR's register saves are named. The SEM-04 framing
+  (the acceptance): per-instruction completion holds across interrupts (E1-entered
+  completes through E5; annulled packets leave no state) — and `.4`'s packet/window break
+  stands beside it. Multi-access: LDDW/STDW/LDNDW measured, ≤2 accesses per cycle,
+  load-multiple and non-temporal measured ABSENT; MFENCE exists on C66x ONLY (its
+  violated restrictions are undefined-by-omission). Five further defects recorded.
+  Evidence: [`artifacts/dsp-review/2026-09-30-loops-q12-q14.md`](artifacts/dsp-review/2026-09-30-loops-q12-q14.md).
+  One gate correction in flight, measured as a false positive first: TASK-ACCEPTANCE's
+  leaf scan swept `docs/tasks/artifacts/` evidence documents as leaves (the `.8` archive
+  fix's sibling class) — the exclusion now covers both storage families.
+  Lessons: `promotion: declined (the drain/exception asymmetry and the restart register set live in the evidence document where `.6`/`.7` meet them)`.
 
 - ID: `DSP-REVIEW.6` — **executable synthetic stress fixture** *(task card `T010`)*
   Status: `pending`
@@ -152,7 +168,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.5` | `pending` | `.4` done `2026-09-30` — MEASURED: the scalar step model breaks twice (the packet as the unit of progress; the delayed-visible writeback with interrupts inside the window). Loops/repeats and interrupt interaction (`.5`) next |
+| 1 | `DSP-REVIEW.6` | `pending` | `.5` done `2026-09-30` (the SPLOOP state census, the drain/exception asymmetry, the restart register set — all measured; MFENCE is C66x-only). The executable synthetic stress fixture (`.6`, task card T010) is the first CODE leaf of the tree |
 
 ## Decisions
 
@@ -369,6 +385,56 @@ declared here before the first finding exists rather than improvised when one do
 - [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.5`), this tree, the artifact.
 
+## Acceptance Checklist (leaf DSP-REVIEW.5)
+
+- [x] **REPRODUCE / ISSUE** — the loop machinery's presence split measured by the
+  compatibility fields and the searches, not by memory:
+
+  ```
+  $ grep -c 'MFENCE' target/dsp-review/c64x-spru732j.txt target/dsp-review/c66x-sprugh7.txt target/dsp-review/c674x-sprufe8b.txt
+  target/dsp-review/c64x-spru732j.txt:0
+  target/dsp-review/c66x-sprugh7.txt:34     # MFENCE is C66x-only, measured
+  target/dsp-review/c674x-sprufe8b.txt:0
+  $ grep -c 'SPLOOP' target/dsp-review/c64x-spru732j.txt
+  451      # documented in the C64x manual — C64x+-only per the compatibility fields
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf is the loop/restart survey. WHY
+  the drain/exception asymmetry is the load-bearing fact: an interrupt drains the loop
+  (latency grows by the epilog; short loops are not interruptible) while an exception
+  does NOT drain (the buffer goes idle immediately) — a restart model that treats them
+  alike is wrong by construction. WHERE: §7.13.1 vs §7.13.3, quoted in the evidence
+  document. The asymmetry's textual presence, measured:
+
+  ```
+  $ grep -c 'not interruptible' target/dsp-review/c64x-spru732j.txt target/dsp-review/c66x-sprugh7.txt target/dsp-review/c674x-sprufe8b.txt
+  target/dsp-review/c64x-spru732j.txt:2
+  target/dsp-review/c66x-sprugh7.txt:1
+  target/dsp-review/c674x-sprufe8b.txt:2   # the rule exists in all three (C64x+ chapters)
+  ```
+
+- [x] **FIX** — the evidence document
+  `docs/tasks/artifacts/dsp-review/2026-09-30-loops-q12-q14.md` (the SPLOOP state census,
+  the asymmetry, the restart register set, the SEM-04 framing, the MFENCE split); the
+  leaf's Result; the frontier.
+
+- [x] **ADDRESSED (verified)** — the acceptance's exact ask: restart state IS stated in
+  SEM-04 terms (per-instruction completion holds; the persistent loop progress is exactly
+  ILC + the refill; the packet/window caveat cross-referenced to `.4`):
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **NO REGRESSION** — docs-only leaf; the gate is the check, green:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.6`), this tree, the artifact.
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -384,12 +450,14 @@ declared here before the first finding exists rather than improvised when one do
 | `2026-09-30` | `DSP-REVIEW.1` | the extraction (`pdftotext` of the three catalogued manuals) + the absence searches | every Q1/Q2 fact quoted with page+section; `guard`/`accumul`/`Q15` measured absent; the `s`-bit trap measured (side-select, not scaling) |
 | `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
 | `2026-09-30` | `DSP-REVIEW.3` | the same extraction + the units/spaces/modes searches | byte units on both sides measured (no word-addressed space exists); the two-L1-spaces shape, the .D-unit generators, the AMR scheme quoted with locators; bit-reversed/strided addressing measured absent; the circular nonalignment split pinned |
+| `2026-09-30` | `DSP-REVIEW.5` | the same extraction + the SPLOOP/LDDW/MFENCE searches | SPLOOP C64x+-only measured by the compatibility fields; the loop-state census quoted; drain-vs-no-drain asymmetry measured; MFENCE 0 hits in two manuals, 34 in C66x's |
 | `2026-09-30` | `DSP-REVIEW.4` | the same extraction + the packet/latency/conflict sections | the execute-packet rules, the delay-slot tables, the no-interlocks sentence, the annulment semantics and the manual's own incorrect-result example — quoted with locators; the §3.7.2/§3.8.2 contradiction recorded in both forms |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.5` | `SEMULITH-DR-0090 (leaf DSP-REVIEW.5): loops, repeats, interrupts — the SPLOOP census and the drain asymmetry` | the loop-state census; not-interruptible rule; restart semantics; MFENCE C66x-only; the SEM-04 framing measured |
 | `DSP-REVIEW.4` | `SEMULITH-DR-0089 (leaf DSP-REVIEW.4): the predicted break, measured — twice` | the packet as the unit of progress; the delayed-visible writeback with interrupts inside the window; the census-reopening consequence named |
 | `DSP-REVIEW.3` | `SEMULITH-DR-0088 (leaf DSP-REVIEW.3): addressing and address spaces — units byte-compatible, the seams named` | the unit check first per the acceptance; the five non-fitting seams measured; the vendor-diversity gaps filed (DR-0087) |
 | `DSP-REVIEW.2` | `SEMULITH-DR-0086 (leaf DSP-REVIEW.2): rounding, saturation, sticky flags — the defined step sequences, measured` | the ordering as step sequences; per-lane saturation; SAT/SSR lifetimes; seven manual defects recorded unresolved; the one-cycle SAT delay is `.4`'s input |

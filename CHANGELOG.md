@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-DR-0090 (leaf DSP-REVIEW.5) — loops, repeats, interrupts: the SPLOOP census
+
+- SPLOOP is C64x+-and-later only (measured by the compatibility fields); the loop state
+  is fully enumerated (the loop buffer, the hidden LBC ×2, ILC with its 4-cycle load
+  latency, RILC, the SPLX bit). Interrupts DRAIN to a stage boundary (short loops are
+  not interruptible — the rule has its formula); exceptions do NOT drain (the buffer
+  goes idle immediately); restart refills the buffer by re-executing SPLOOP under
+  modified rules, the ISR's saves named (ITSR/NTSR, ILC, RILC).
+- The acceptance's SEM-04 framing measured: per-instruction completion holds across
+  interrupts (E1-entered completes through E5; annulled packets leave no state); the
+  persistent loop progress is exactly ILC + the refill — and `.4`'s packet/window break
+  stands beside it. Multi-access: LDDW/STDW/LDNDW, ≤2 accesses/cycle; load-multiple and
+  non-temporal measured absent; MFENCE is C66x-only, its violated restrictions
+  undefined-by-omission.
+- Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-loops-q12-q14.md.
+
 ## SEMULITH-DR-0089 (leaf DSP-REVIEW.4) — the predicted break, measured — twice
 
 - The scalar step model breaks, measured: (1) the execute PACKET is the unit of progress

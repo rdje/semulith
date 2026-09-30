@@ -16,6 +16,20 @@ and it is written into the leaf's own checklist block where the next author sees
 
 Lesson: `promotion: declined` (the breaks are the artifact's own section).
 
+## _(2026-09-30)_ — the loop/restart survey (DSP-REVIEW.5)
+
+The measured content: SPLOOP's full state census (buffer + hidden LBC ×2 + ILC + RILC +
+SPLX), the drain-vs-no-drain asymmetry between interrupts and exceptions (§7.13.1 vs
+§7.13.3 — the leaf's load-bearing fact: a restart model treating them alike is wrong by
+construction), the not-interruptible formula for short loops, and restart as
+re-execution under modified rules. The SEM-04 framing (the acceptance): per-instruction
+completion holds across interrupts; the persistent loop state is exactly ILC + refill;
+the .4 break stands beside it. MFENCE measured C66x-only (0/34/0 hits); its violated
+restrictions are undefined-by-omission. DMA ordering is out of ALL three CPU manuals by
+their own deferral — the catalog's answer must cite the programmer's guide; recorded so.
+
+Lesson: `promotion: declined` (recorded in the leaf).
+
 ## _(2026-09-30)_ — addressing and address spaces; the vendor-diversity filing (DSP-REVIEW.3 + DR-0087)
 
 Q6 measured first per the acceptance: bytes on both sides, one numbering — the lab's
