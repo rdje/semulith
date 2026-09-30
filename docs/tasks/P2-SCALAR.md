@@ -358,13 +358,38 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   are enforced where they bite — the instrument's own comment and its self-test)`.
 
 - ID: `P2-SCALAR.9` — **the `CPU-LAB` release** *(task card `T009`)* — `G-RELEASE`
-  Status: `pending` — the release-route fork is ANSWERED (director, `2026-09-30`,
+  Status: `active` — the release-route fork is ANSWERED (director, `2026-09-30`,
   [`decision_release-route-x86-64-leg`](../decisions/decision_release-route-x86-64-leg.md)):
   the CI two-host matrix is the permanent home of the x86-64 leg, Rosetta the
   time-bounded local bridge (phase-out fall 2027), no narrower host policy. The
   portability axis completes when the leg runs green on both routes; until then the
   report reads experimental with the open leg named (the default stands meanwhile).
   Goal: a reproducible gate report from pinned inputs, explicit capability limits, a named release decision, and a versioned accepted artifact.
+  Design (recorded before code, `2026-09-30` — three slices, each its own commit):
+  (a) **The CI two-host matrix** (the permanent home, per the route decision): a new
+      workflow `.github/workflows/portability.yml` — one job per host (`ubuntu-latest`
+      = x86-64, `macos-latest` = aarch64) running the instrument's native leg and
+      uploading the digest manifest; a Miri job on x86-64 (nightly + miri component +
+      the powerpc64 target, provisioned by the workflow); an `agree` job that fails iff
+      the two hosts' manifests differ. The instrument gains `--emit-manifest FILE` and
+      `--leg NAME` selectors so CI drives single legs; per-host `incomplete` verdicts
+      stay informational in CI — the MATRIX verdict is the agreement job plus per-leg
+      coverage across hosts (the x86-64 native leg IS ubuntu's run). ⛔ CI evidence
+      lands at the next approved push (the cadence governs; the workflow is validated
+      locally by structure and the instrument's self-test until then).
+  (b) **The Rosetta-local proof** (the bridge): when the director's reinstall lands
+      (measured inert `2026-09-30`: payload in the cryptex, daemon off), the instrument's
+      x86-64 leg learns the Rosetta path — `rustup target add x86_64-apple-darwin`,
+      `cargo test --target x86_64-apple-darwin`, the manifest digest compared against
+      the recorded aarch64 one — and `portability.sexp` re-measures.
+  (c) **The release report** (`G-RELEASE` over the dossier): the report evaluates the
+      full processor-gate series per axis (SCP-05: fidelity per axis, never rolled up;
+      "supports RV64I" appears nowhere), the capability limits are explicit (the
+      profile's own not-claimed list), the release decision is named per the route, and
+      the accepted artifact is versioned. ⛔ Measured first: which axes read complete
+      TODAY (G-CONTRACT's 72 declared obligation checks were measured 0-implemented at
+      G0 — if still so, the obligations axis reads incomplete and the honest release
+      decision is shaped by BOTH open axes).
   Acceptance: fidelity reported **separately** per axis (`SCP-05`); "supports RV64I" appears nowhere.
 
 ## Current Frontier
@@ -524,63 +549,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   the fix three-way (`never_written x5`), the mutation matchers were re-derived for the
   new tree shape, and the whole 32-guest corpus re-proves the success path.
 
-## Acceptance Checklist (leaf P2-SCALAR.8)
-
-- [x] **REPRODUCE / ISSUE** — the availability question was measured, not assumed:
-
-  ```
-  $ arch -x86_64 /usr/bin/true
-  arch: posix_spawnp: /usr/bin/true: Bad CPU type in executable   # Rosetta ABSENT
-  $ cargo +nightly miri --version
-  miri 0.1.0 (809936eac6 2026-09-12)                              # Miri PRESENT
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf is the portability measurement.
-  WHY the verdict is `incomplete` rather than passed or waived: the release policy
-  (EVIDENCE_AND_GATES.md §7) makes both native hosts mandatory and names this exact
-  outcome — the development profile remains experimental. WHERE the waiver would have
-  been illegal: the leaf's own acceptance ("no 'when available' clause"). The record's
-  own census, re-derivable:
-
-  ```
-  $ grep -c 'verdict "green"' profiles/rv64i-lab-v0/portability.sexp
-    4        # native aarch64, the digest manifest, Miri, cross-endian
-  $ grep -c 'verdict "unavailable"' profiles/rv64i-lab-v0/portability.sexp
-    1        # the mandatory x86-64 leg — measured absent, recorded, not waived
-  ```
-
-- [x] **FIX** — the instrument (`scripts/check_portability.sh`: four legs, the honest
-  verdict ladder, capture-then-read after the measured SIGPIPE failure, 6 self-test
-  arms) and the record (`profiles/rv64i-lab-v0/portability.sexp`, `baseline.sexp`'s
-  plain-atom shape).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ bash scripts/check_portability.sh --self-test
-  PORTABILITY --self-test: 6 pass / 0 fail
-  $ bash scripts/check_portability.sh
-  …
-  portability: incomplete (native=green, x86-64=absent, miri=green, cross-endian=green)
-    manifest sha256: 0670a01b96de28f9e65837295064b825300b22d54ba6d033696f42e254c5bb52  (49 guests)
-  ```
-
-- [x] **NO REGRESSION** — the guard set re-run, green; the two REDs in flight were the
-  author's own (the pipefail SIGPIPE; the mid-flight script edit), each fixed at its
-  cause:
-
-  ```
-  $ make check            # 180 verify suites, 65 core suites, clippy -D warnings, fmt
-  $ make gate             # all doctrines green
-  $ make book             # both books render
-  ```
-
-- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 8/9),
-  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.9`), this tree, the
-  book (`plan/p2.md`, the model book's evidence chapter, claim-scope), the archive
-  movements (the `.7` checklist; the `.8` design at completion).
-
-## Acceptance Checklists (leaves P2-SCALAR.1–.7 — all done)
+## Acceptance Checklists (leaves P2-SCALAR.1–.8 — all done)
 
 Archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling). `.6`'s joined
 when `.7`'s landed the same day; the archive split into checklists + designs files when
@@ -645,6 +614,7 @@ the combined archive crossed the same ceiling.
 | `2026-09-30` | `P2-SCALAR.8` | `bash scripts/check_portability.sh` (live, all four legs) | `portability: incomplete (native=green, x86-64=absent, miri=green, cross-endian=green)` — the honest verdict; manifest sha256 `0670a01b…5bb52` (49 guests) |
 | `2026-09-30` | `P2-SCALAR.8` | authoring REDs ×2 | `grep -q` under `pipefail` SIGPIPEd cargo — every leg read red against a green reality (fixed: capture-then-read); a mid-run edit of the RUNNING script broke its parse (bash reads incrementally — restart, never edit in flight) |
 | `2026-09-30` | `P2-SCALAR.8` | `bash scripts/check_portability.sh --self-test` | 6 pass / 0 fail (all-green, one/two absent, red anywhere, red+absent) |
+| `2026-09-30` | `P2-SCALAR.9` | Rosetta re-measurement on macOS 27.0 (after the director's "installed and may be used") | PRESENT BUT INERT: binaries at `/usr/libexec/rosetta/`, the x86-64 dyld cache in the Rosetta cryptex, `arch -x86_64` fails (`Bad CPU type`), oahd not running — activation is the director's admin act, underway |
 
 ## Commit Log
 
@@ -656,6 +626,7 @@ the combined archive crossed the same ceiling.
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
 | `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first), `SEMULITH-PS-0070` (strand 3: the eight directed guests — **`.5` DONE**) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 | `P2-SCALAR.6` | `SEMULITH-PS-0071` (design, before code — the census measured first), `SEMULITH-PS-0072` (the minimized case retained — the leaf DONE) | one model-vs-references divergence exists (`DIFF-FENCEI-EXECUTED`); `min-fencei` (one word) reproduces it under the expected-divergence protocol at step 0; no mask widened, no expectation edited |
+| `P2-SCALAR.9` | `SEMULITH-PS-0080` (design, before code — the three slices) | the route decision implemented as slice plan: (a) CI two-host matrix + the instrument's leg selectors; (b) the Rosetta proof when activation lands; (c) the release report — its axes measured first |
 | `P2-SCALAR.8` | `SEMULITH-PS-0076` (design, before code — availability measured first), `SEMULITH-PS-0077` (the instrument + the record — the leaf DONE with the honest `incomplete`) | four legs; x86-64 measured UNAVAILABLE (Rosetta absent — recorded, not waived); Miri 65/65 native + 65/65 big-endian |
 | `P2-SCALAR.7` | `SEMULITH-PS-0074` (design, before code), `SEMULITH-PS-0075` (the mechanism + the proof suite — the leaf DONE) | mid-execution snapshots: the pending-state census is the pinned dossier's own (registers + pc + memory, all seven hidden-state candidates measured absent); the proof suite's load-bearing cases are the memory-state guests; landed: 49 guests × 3 split points identical through the JSON round-trip, RED arms refuse by name, CLI `snapshot`/`resume` |
 

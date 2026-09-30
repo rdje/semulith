@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0080 (leaf P2-SCALAR.9, design) — the CPU-LAB release: three slices designed
+
+- (a) The CI two-host matrix: a new `portability.yml` workflow (`ubuntu-latest` x86-64 +
+  `macos-latest` aarch64 + a Miri job + the manifest-agreement job); the instrument gains
+  `--leg`/`--emit-manifest` selectors. CI evidence lands at the next approved push.
+- (b) The Rosetta-local proof when the director's reinstall lands (measured inert today:
+  payload in the cryptex, daemon off).
+- (c) The release report — measured first: G-CONTRACT's obligation-check implementation
+  state decides whether the honest decision can read "accepted" even with portability
+  green.
+- Ceiling obeyed again: the `.8` checklist archived at the `.9` design commit.
+
 ## SEMULITH-PS-0079 (leaf P2-SCALAR.9) — the release route decided; Rosetta measured inert pending reinstall
 
 - The director answered the release fork: CI two-host matrix (permanent home of the

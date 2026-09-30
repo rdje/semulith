@@ -1,8 +1,9 @@
 # P2-SCALAR — archived completed-leaf checklists
 
-The full, unedited acceptance checklists for the `done` leaves `.1`–`.5` of the
+The full, unedited acceptance checklists for the `done` leaves `.1`–`.8` of the
 [`P2-SCALAR`](../P2-SCALAR.md) tree, split out from the live file as each crossed the
-per-part ceiling (2026-09-29 for `.1`–`.2`, `2026-09-30` for `.3`, `.4`, `.5`) — the ceiling
+per-part ceiling (2026-09-29 for `.1`–`.2`, `2026-09-30` for the rest — `.6`'s moved at `.7`'s
+landing, `.7`'s at `.8`'s, `.8`'s at `.9`'s design) — the ceiling
 was obeyed, never raised. The recorded-before-code DESIGN detail lives in
 `P2-SCALAR-designs.md` beside this file (the split happened when the combined archive
 crossed the same ceiling, 2026-09-30). The live tree keeps the frontier, the decisions,
@@ -498,3 +499,59 @@ the active leaf's design and checklist, and both logs.
   `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.8`), this tree, the
   book (`plan/p2.md` carries the result; the model book's restart axis gained the
   snapshot half), the archive movements.
+
+## Acceptance Checklist (leaf P2-SCALAR.8)
+
+- [x] **REPRODUCE / ISSUE** — the availability question was measured, not assumed:
+
+  ```
+  $ arch -x86_64 /usr/bin/true
+  arch: posix_spawnp: /usr/bin/true: Bad CPU type in executable   # Rosetta ABSENT
+  $ cargo +nightly miri --version
+  miri 0.1.0 (809936eac6 2026-09-12)                              # Miri PRESENT
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf is the portability measurement.
+  WHY the verdict is `incomplete` rather than passed or waived: the release policy
+  (EVIDENCE_AND_GATES.md §7) makes both native hosts mandatory and names this exact
+  outcome — the development profile remains experimental. WHERE the waiver would have
+  been illegal: the leaf's own acceptance ("no 'when available' clause"). The record's
+  own census, re-derivable:
+
+  ```
+  $ grep -c 'verdict "green"' profiles/rv64i-lab-v0/portability.sexp
+    4        # native aarch64, the digest manifest, Miri, cross-endian
+  $ grep -c 'verdict "unavailable"' profiles/rv64i-lab-v0/portability.sexp
+    1        # the mandatory x86-64 leg — measured absent, recorded, not waived
+  ```
+
+- [x] **FIX** — the instrument (`scripts/check_portability.sh`: four legs, the honest
+  verdict ladder, capture-then-read after the measured SIGPIPE failure, 6 self-test
+  arms) and the record (`profiles/rv64i-lab-v0/portability.sexp`, `baseline.sexp`'s
+  plain-atom shape).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/check_portability.sh --self-test
+  PORTABILITY --self-test: 6 pass / 0 fail
+  $ bash scripts/check_portability.sh
+  …
+  portability: incomplete (native=green, x86-64=absent, miri=green, cross-endian=green)
+    manifest sha256: 0670a01b96de28f9e65837295064b825300b22d54ba6d033696f42e254c5bb52  (49 guests)
+  ```
+
+- [x] **NO REGRESSION** — the guard set re-run, green; the two REDs in flight were the
+  author's own (the pipefail SIGPIPE; the mid-flight script edit), each fixed at its
+  cause:
+
+  ```
+  $ make check            # 180 verify suites, 65 core suites, clippy -D warnings, fmt
+  $ make gate             # all doctrines green
+  $ make book             # both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md` (overwritten), `LIVE_STATUS.md` (P2 8/9),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.9`), this tree, the
+  book (`plan/p2.md`, the model book's evidence chapter, claim-scope), the archive
+  movements (the `.7` checklist; the `.8` design at completion).
