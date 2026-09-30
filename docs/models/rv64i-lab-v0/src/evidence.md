@@ -38,7 +38,9 @@ re-derivable by the command named beside it.
   expected divergence (`it-fencei`: the references execute `fence.i`, this profile
   declares it reserved; the divergence lands at exactly the declared step, measured, and
   the references stay each other's control). Re-run: `python3
-  scripts/run_semulith_smoke.py`.
+  scripts/run_semulith_smoke.py`. The 41st guest is different in kind: `c-scope.c` is
+  **compiled from C** by the pinned toolchain — the previous chapter tells that story and
+  why it changes the shape of the evidence.
 - **Restart.** Restartability is determinism of re-execution from cold reset, measured two
   ways: the smoke's reproduce leg (every guest re-run byte-identically) and the offline
   determinism suite (every guest run twice from `zeroed_at(entry)`, identical traces and

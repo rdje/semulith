@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0065 (leaf P2-SCALAR.5) — the compiled guest, written into the model book
+
+- New model-book chapter `compiled-guest.md` (between references and evidence): what a
+  guest is and the shared-mind weakness of hand-written assembly; the self-checking
+  design and why per-step expectations stay with the assembly corpus; the measured
+  toolchain; all three in-flight defects as the teaching record (the C-UB shift, the
+  visible-change vocabulary, GATE-REPORT's verdict-assuming arm); what it proved and
+  what it did not. Linked from the evidence chapter. Book builds; gate green.
+
 ## SEMULITH-PS-0063 (leaf P2-SCALAR.5, strand 1) — the compiled C guest retires three-way; G1 reads `passed`
 
 - `guests/c-scope.c` is the first COMPILED guest: a self-checking freestanding C tour of
@@ -591,10 +600,4 @@
 - Every designated rejection has a mutation suite that must catch it: orphan IDs, stale hashes, unsupported `passed` claims, missing evidence, deleted dependency links, out-of-scope profiles, duplicate ids, unpinned sources, undeclared checks, dependency cycles — plus the positive control (a fully met bundle gates `passed`). The intact fixture is graph-clean and honestly `incomplete` (`GateStatus` is a type, so "pass" has exactly one expression). The library is `std::fs`-free (evidence bytes arrive through a resolver), keeping the workspace wasm-buildable.
 - `semulith check-examples` presents the report; `RECORD-SCHEMA` now runs the Rust engine after the Python phase on every commit and fired RED against a mutated requirement before landing. Verification: 59 verify suites green; `make check` clean; wasm green; gate green. Book P1 gains "The graph and report checker".
 - Lockstep: MEMORY/LIVE_STATUS (P1 7/12)/TASK_TREE/DEV_NOTES/TOOLBOX/DOCTRINE_ENFORCEMENT + book doctrines chapter/check_requirements.sh and this tree; frontier moves to `.8` (first execution slice).
-
-## SEMILITH-DS-0003 (leaf DOC-SHARDING.2) — DEV_NOTES joins the shard family
-
-- `DEV_NOTES.md` gets `CHANGELOG.md`'s lifecycle, by generalization rather than a fork: `scripts/shard_history.py` writes a shard header naming the head it was cut from and that head's own registry ceiling (`# DEV_NOTES shard … 48 KiB`; CHANGELOG's `.1` header shape stays byte-identical, self-test arm), and `scripts/check_changelog_shards.sh` learns the two-head family — one COVERAGE/FROZEN/APPEND-ONLY scan over the shared `docs/changelog/` manifest, UNIQUE across both live heads + shards. First event: 2 entries to `shard-0027.md`, `31 == 29+2` proved at the event, head 48,954 → 46,212, 29-row manifest frozen.
-- Both tools fired RED on the real tree pre-commit (a scratch shard carrying a live DEV_NOTES heading; the old sharder writing CHANGELOG-provenanced DEV_NOTES shards). The new UNIQUE leg then exposed two stray duplicate headings inside DEV_NOTES.md itself — removed; each entry exists exactly once. The registry comment that claimed DEV_NOTES was already sharded (designed end-state stated as present fact) is corrected.
-- Verification: sharder self-test 12/0, SHARD-FREEZE self-test 14/0, gate green; doctrine mirrors and the routed-destination count (31, unchanged — one family, not a new directory) in sync.
 

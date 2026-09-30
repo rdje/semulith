@@ -344,7 +344,8 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   3. **Directed sequence tests**: the directed campaigns the matrix does not already
      cover, designed from the `.1`–`.4` evidence gaps.
   Strand 1 landed `2026-09-30` (`SEMULITH-PS-0063`): `c-scope.c` retires three-way
-  129/129; G1 reads `passed`.
+  129/129; G1 reads `passed`. The model book's compiled-guest chapter landed with it
+  (`SEMULITH-PS-0065`).
   Lessons: `promotion: declined (the C-shift-UB lesson lives in the guest's own comments
   where it bites — section 6 names the rule, the failed draft and the bound-shiftw owner;
   the visible-change vocabulary is enforced by the comparator's two new self-test arms,
