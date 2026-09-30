@@ -7,8 +7,10 @@ landing, `.7`'s at `.8`'s, `.8`'s at `.9`'s design) — the ceiling
 was obeyed, never raised. The recorded-before-code DESIGN detail lives in
 `P2-SCALAR-designs.md` beside this file (the split happened when the combined archive
 crossed the same ceiling, 2026-09-30). The live tree keeps the frontier, the decisions,
-the open questions, the blockers, the defect log, every leaf's goal/acceptance/result,
-the active leaf's design and checklist, and both logs.
+the open questions, the blockers, the defect log, every leaf's goal/acceptance, and
+every leaf's result as its terse summary — the FULL Result text of `.4` lives here
+(archived `2026-09-30`, the same ceiling) — the active leaf's design and checklist,
+and both logs.
 
 ## Acceptance Checklist (leaf P2-SCALAR.1)
 
@@ -555,3 +557,57 @@ the active leaf's design and checklist, and both logs.
   `CHANGELOG.md`, `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.9`), this tree, the
   book (`plan/p2.md`, the model book's evidence chapter, claim-scope), the archive
   movements (the `.7` checklist; the `.8` design at completion).
+
+## Full Result (leaf P2-SCALAR.4)
+
+  Result: met, `2026-09-29`. **The 21-cell matrix is declared as tracked data and every
+  cell resolves; eight new guests, 38 new steps — 492/492 aligned steps over the 40-guest
+  corpus, byte-identical reproduction, plus the one declared expected divergence.** The
+  matrix (`profiles/rv64i-lab-v0/interactions.sexp`, schema `schema/interactions.sexp`)
+  declares the six grounded axes and the full upper triangle; the 25th project doctrine
+  `INTERACTION-MATRIX` re-derives the 21 cells from the axes and refuses by name an
+  omitted cell, an unresolved disposition, an orphan guest, or an unrecorded difference id
+  — fired RED against the real corpus before registration (`NO MATRIX rv64i-lab-v0`),
+  GREEN at 21/21 with zero orphans, self-test 12/0, mirrored per the registry rules. The
+  eight guests pin the measured interactions: fault priority three-way (`it-prio-jump` —
+  a misaligned AND unmapped jump target raises 0x00 on the jump, link suppressed;
+  `it-prio-load` — the same double fault on a load raises 0x04 before the boundary is
+  crossed), the fault×alias base preservation (`it-fault-alias` — `lw x5, x5, 1` traps and
+  x5 survives), the address wrap INTO the fault on both paths (`it-fault-wrap-ld`,
+  `it-fault-wrap-sd` — tval 0 three-way, the store kept below 2^56 by design after the
+  probes found sail's 56-bit tval masking, recorded as `DIFF-TVAL-PHYS-MASK`),
+  self-aliased operators at boundary values (`it-alias-bound`), the unbounded loop under
+  the budget contract with the x0-discarded link (`it-progress-loop`, `Stop::Budget`, every
+  iteration visible), and the `fence.i` expected divergence (`it-fencei`). The comparator
+  learned the expected divergence: `expect_divergence` on the expectation document (schema
+  + dossier round-trip), `compare_traces.py`'s `check_expected_divergence` (self-test
+  16/0, +4 arms — an AGREE at the declared step is RED: a stale pin, not a good
+  comparison), and the smoke run's four-step protocol — `it-fencei`: semulith meets its
+  spec-derived expectations, the FIRST divergence against each reference lands at exactly
+  step 1 with semulith carrying the policy trap, sail vs spike AGREE over their full 4
+  steps (including the measured run-off-the-end illegal word), and
+  `DIFF-FENCEI-EXECUTED` is recorded. `cross_model` stayed a comparison DISABLE. The
+  restart axis is commit-gated as mechanism: the new offline determinism suite runs every
+  guest twice from `zeroed_at(entry)` and asserts identical traces AND crossing logs, next
+  to the smoke's reproduce leg. `run/tests.rs`: 157 → 166 suites (+8 guest suites, +1
+  determinism suite); the mutation census pins all 8 new guests — six in the empty arm,
+  the two wrap guests with their faulted crossings (the design said "all 8 join the empty
+  arm"; the recorded crossings of a REFUSED access are pinned exactly like
+  `fault-access-ld`/`-sd` — the design's operative constraint, "no new guest has a
+  successful store crossing", holds). The design's 21-cell census named the distinguishing
+  guests per cell; the orphan rule forced the 14 pre-existing guests it did not name into
+  cells, assigned by the axes each genuinely exercises (fault guests whose trap IS the
+  progress boundary → F×P; the boundary-valued arithmetic of `smoke-arith`/`bound-ext`/
+  `scope-alu` → B×B; `scope-mem`'s one-address-many-widths reads → A×A; the loop guests →
+  P×P) — stated here so the assignments are reviewable, not silent. One instrument RED in
+  flight, on the author's own derivation: the gate's first GREEN run reported three
+  phantom OMITTED CELLs because the derived cell set was built in declared-axis order
+  while the document's cells normalize to sorted pairs — the derivation, not the document,
+  was wrong; fixed in the gate, self-test still 12/0. Ceiling expansion landed as designed
+  (see Decisions): `profiles/` 78 → 95 files / 402,967 B; registry ceilings 82 → 99 files
+  and 471,040 → 516,096 bytes; per-part 32,768 untouched — which bit on
+  `references.sexp` itself (31,434 + the new difference record), so the record was written
+  tighter rather than the ceiling moved; the 25th doctrine row also crossed BOTH mirror
+  caps (TOOLBOX.md 16,380/16,384 and DOCTRINE_ENFORCEMENT.md 24,573/24,576 at the
+  boundary), re-derived to 20 KiB / 28 KiB on the row-count contract, the SEMILITH-PL-0001
+  precedent.
