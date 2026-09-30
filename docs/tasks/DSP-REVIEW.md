@@ -71,9 +71,22 @@ or claiming DSP compatibility.
   Lessons: `promotion: declined (the defect list lives in the evidence document where the next evaluator meets it)`.
 
 - ID: `DSP-REVIEW.3` — **addressing and address spaces**
-  Status: `pending`
+  Status: `done` (`2026-09-30`)
   Goal: whether instruction and data addresses share units; multiple memory spaces and address generators; modulo, circular, strided and bit-reversed modes (questions 6–8, catalog `C10`).
   Acceptance: the abstraction is checked against *units*, not just widths — `SEM-05` says an address identifies its space, unit, width and packing.
+  Result: met, `2026-09-30`. Units measured first, per the acceptance: **bytes on both
+  sides, one 32-bit numbering** — compatible with the lab's units (not its width). The
+  seams that do NOT fit the flat lab shape, each measured: the 32-bit space; two L1
+  spaces with a program-only fetch port (D-FETCH-MAP's identical-maps declaration is
+  scalar-lab-shaped); fetch-packet (256-bit) alignment structure; address state in a
+  CONTROL REGISTER (the AMR — the lab has no CSR surface); circular addressing restricted
+  to A4–A7/B4–B7 (a per-register capability a uniform register file lacks); the .D units
+  as the only address generators with cross-file routing. Measured absences: bit-reversed
+  ADDRESSING (BITR is a data op) and strided modes (0 hits, all three). A second
+  core-version split pinned (the circular nonalignment floor: data-size on C64x, 32-byte
+  on C64x+/C66x/C674x). Four more manual defects recorded unresolved. Evidence:
+  [`artifacts/dsp-review/2026-09-30-addressing-q6-q8.md`](artifacts/dsp-review/2026-09-30-addressing-q6-q8.md).
+  Lessons: `promotion: declined (the seams list lives in the evidence document where `.7` meets it)`.
 
 - ID: `DSP-REVIEW.4` — **issue groups and exposed sequencing**
   Status: `pending`
@@ -123,7 +136,7 @@ declared here before the first finding exists rather than improvised when one do
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `DSP-REVIEW.3` | `pending` | `.2` done `2026-09-30` (the rounding/saturation order measured as defined step sequences; seven manual defects recorded unresolved) — addressing and address spaces (questions 6–8) next |
+| 1 | `DSP-REVIEW.4` | `pending` | `.3` done `2026-09-30` (units measured byte-compatible; the non-fitting seams named: the 32-bit space, two L1 spaces, AMR side-state, the per-register circular capability) — issue groups and exposed sequencing (`.4`) is where the scalar shape most likely breaks |
 
 ## Decisions
 
@@ -241,6 +254,53 @@ declared here before the first finding exists rather than improvised when one do
 - [x] **LOCKSTEP** — same commit: `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`, `docs/TASK_TREE.md` (frontier `.3`), this tree, the artifact.
 
+## Acceptance Checklist (leaf DSP-REVIEW.3)
+
+- [x] **REPRODUCE / ISSUE** — the units question measured by extraction and named
+  absence-searches, per the acceptance's exact demand (units, not just widths):
+
+  ```
+  $ grep -c 'bit-rev' target/dsp-review/c64x-spru732j.txt   # + the c66x/c674x pair
+  1        # BITR, a data operation — bit-reversed ADDRESSING is absent, measured
+  $ grep -c 'strided' target/dsp-review/*.txt | grep -c ':0'
+  3        # strided: zero hits in all three manuals
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the leaf measures fit. WHY the control
+  register matters most: the AMR puts addressing mode in side state, and the lab's model
+  has no CSR surface at all — the seam is the state census, not the width. WHERE each
+  seam is pinned: the evidence document's fit list, counted:
+
+  ```
+  $ grep -c '^- ' docs/tasks/artifacts/dsp-review/2026-09-30-addressing-q6-q8.md
+  9        # the evidence document's bullet points (spaces, ports, modes, seams)
+           # (the first draft wrote 17 unmeasured — caught and corrected before commit)
+  ```
+
+- [x] **FIX** — the evidence document
+  `docs/tasks/artifacts/dsp-review/2026-09-30-addressing-q6-q8.md`; the vendor-diversity
+  gaps filed through the channel (`GAP-DSP56K-FAMILY-MANUAL`, `GAP-ADI-SHARC-PRM`,
+  `SEMULITH-DR-0087`).
+
+- [x] **ADDRESSED (verified)** — every answer carries manual + page + section; the
+  absences are measured; the fit check names the lab's own decisions (D-FETCH-MAP, the
+  uniform register file) it contradicts:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **NO REGRESSION** — docs-only leaf; the gate is the check, green:
+
+  ```
+  $ make gate   # === all doctrines green ===; $ make book — both books render
+  ```
+
+- [x] **LOCKSTEP** — same commit: `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  `docs/TASK_TREE.md` (frontier `.4`), this tree, the artifact. (The gaps commit,
+  `SEMULITH-DR-0087`, carried no changelog entry — its record is folded into this
+  leaf's CHANGELOG entry; noted honestly here.)
+
 ## Acceptance Checklist (template for later leaves)
 
 - [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
@@ -255,11 +315,13 @@ declared here before the first finding exists rather than improvised when one do
 | --- | --- | --- | --- |
 | `2026-09-30` | `DSP-REVIEW.1` | the extraction (`pdftotext` of the three catalogued manuals) + the absence searches | every Q1/Q2 fact quoted with page+section; `guard`/`accumul`/`Q15` measured absent; the `s`-bit trap measured (side-select, not scaling) |
 | `2026-09-30` | `DSP-REVIEW.2` | the same extraction + the ordering/granularity/lifetime searches | the step sequences quoted per instruction; per-lane saturation and the per-instruction SAT side effect measured; SAT/SSR interrupt survival measured from the TSR tables; seven manual defects recorded with quotes, none resolved |
+| `2026-09-30` | `DSP-REVIEW.3` | the same extraction + the units/spaces/modes searches | byte units on both sides measured (no word-addressed space exists); the two-L1-spaces shape, the .D-unit generators, the AMR scheme quoted with locators; bit-reversed/strided addressing measured absent; the circular nonalignment split pinned |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `DSP-REVIEW.3` | `SEMULITH-DR-0088 (leaf DSP-REVIEW.3): addressing and address spaces — units byte-compatible, the seams named` | the unit check first per the acceptance; the five non-fitting seams measured; the vendor-diversity gaps filed (DR-0087) |
 | `DSP-REVIEW.2` | `SEMULITH-DR-0086 (leaf DSP-REVIEW.2): rounding, saturation, sticky flags — the defined step sequences, measured` | the ordering as step sequences; per-lane saturation; SAT/SSR lifetimes; seven manual defects recorded unresolved; the one-cycle SAT delay is `.4`'s input |
 | `DSP-REVIEW.1` | `SEMULITH-DR-0085 (leaf DSP-REVIEW.1): widths and accumulator semantics measured across the three TI manuals` | the evidence document with per-fact locators; the first classification for `.7`; the measured absences (no accumulator, no guard bits) |
 

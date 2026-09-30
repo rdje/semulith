@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-DR-0088 (leaf DSP-REVIEW.3) — addressing and address spaces: units byte-compatible, the seams named
+
+- The acceptance's exact check — units, not just widths: byte-addressed on BOTH sides,
+  one 32-bit numbering (no word-addressed space exists — measured). The five seams that
+  do NOT fit the flat lab shape, each measured with locators: the 32-bit space; two L1
+  spaces with a program-only fetch port (D-FETCH-MAP is scalar-lab-shaped); fetch-packet
+  alignment; the AMR control register (the lab has no CSR surface); circular addressing
+  restricted to A4–A7/B4–B7. Measured absent: bit-reversed addressing (BITR is a data
+  op), strided modes (0 hits ×3). A second core-version split pinned (the circular
+  nonalignment floor). Four more manual defects recorded unresolved.
+- Includes the gap filing's changelog (SEMULITH-DR-0087 carried none — folded here):
+  GAP-DSP56K-FAMILY-MANUAL and GAP-ADI-SHARC-PRM filed through the two-way channel; the
+  C55x want dissolved on measurement (already catalogued).
+- Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-addressing-q6-q8.md.
+
 ## SEMULITH-DR-0086 (leaf DSP-REVIEW.2) — rounding, saturation, sticky flags: the defined step sequences
 
 - The ordering measured as the manuals' own step sequences (multiply → accumulate →
