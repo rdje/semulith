@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-PS-0069 (leaf P2-SCALAR.5, strand 3 design) — directed sequences: the gaps measured, the design recorded
+
+- The strand-3 design stands on a measured census (tracked corpus + the `c-scope.elf`
+  disassembly + the ACT4 testplan): eight genuine gaps, each with its citation — semulith
+  never running off a program's end, load→use-as-address (the jump-table idiom exists
+  NOWHERE, not even in the compiled guest), the cross-width sign-extend matrix,
+  store→fence→execute, compare→branch, the load+store loop, 12-deep varied chains, and
+  the unpinned x0 producers.
+- Two probes measured the uncertain behaviors before any guest exists (`run_probes_p25s3.py`):
+  run-off-the-end traps illegal-instruction (0x02/tval 0) identically on all three models,
+  and a self-modifying store stays visible through `fence rw,rw` on all three.
+- One defect found by the census and logged: `c-scope.c`'s comment overclaims its ELF
+  (constant folding removed the switch's indirect jump) — correction scheduled in-strand,
+  the promised jump table becoming a real guest (`dir-chase`).
+- Ceiling bookkeeping: `.4`'s checklist joined the archive (per-part ceiling obeyed).
+
 ## SEMULITH-PS-0068 (leaf P2-SCALAR.5, strand 2c) — the ACT4 RV64I campaign: 51/51, three-way, recorded and gated
 
 - The full pinned suite ran green on the first fleet run: **51/51 test files, every HTIF
