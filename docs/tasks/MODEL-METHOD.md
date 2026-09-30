@@ -239,7 +239,9 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
   the rule already lives in docs/CLAIM_VERIFICATION.md).`
 
 - ID: `MODEL-METHOD.14` — **evaluate re-sourcing the encodings from the primary-document PDF**
-  Status: `proposed` (director-scheduled — surfaced `2026-09-29`; no work until scheduled)
+  Status: `pending` (surfaced `2026-09-29`; SCHEDULED `2026-09-30` — the director delegated
+  the scheduling call alongside the `P2-SCALAR.5` rulings; it starts after `P2-SCALAR.5`'s
+  strands, the milestone tree holding PNT precedence, or any session the director names it)
   Origin (measured, `MODEL-BOOKS.2`, `2026-09-29`): the pinned unprivileged specification's
   own PDF rendering (`docs.riscv.org` `v20260120`, `_attachments/riscv-unprivileged.pdf`,
   4,580,174 B, sha256 `06bb3c23…d150bc`, 696 pages) carries the instruction-format tables as
@@ -309,7 +311,7 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `MODEL-METHOD.14` | `proposed` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; the evaluation starts only when the director schedules it — and `.16` now hands it the probe input as a first-class material plus the three measured numberings |
+| 1 | `MODEL-METHOD.14` | `pending` | the `.2` PDF finding made the encodings' second provenance potentially replaceable by the primary document; SCHEDULED `2026-09-30` by the same delegation that unblocked `P2-SCALAR.5` — starts after `.5`'s strands (milestone precedence), with `.16`'s probe input as a first-class material plus the three measured numberings |
 | — | — | — | `.17` done `2026-09-30` (the poller fix measured, the gaps reconciled, corpus `92a73b6`); `.15`+`.16` done `2026-09-29`/`30` (the feed consumed; the v20260120 PDFs adopted); `.1`–`.13` done `2026-09-27`, bodies archived |
 
 ## Decisions
