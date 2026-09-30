@@ -35,7 +35,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Status: `done` (`2026-09-29`)
   Goal: every remaining selected RV64I form, not just the mnemonics already exercised.
   Acceptance: coverage reported with its **denominator**; `SCP-02`'s dependency closure holds.
-  Design: recorded before code; archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md) (per-part ceiling).
   Result: met, `2026-09-29`. **52/52 declared forms exercised, with the denominator, gated.**
   The coverage instrument fired RED against the real corpus before anything was built —
   15/52, all 37 missing forms named — and has read GREEN since: the 24th project doctrine
@@ -65,7 +65,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Status: `done` (`2026-09-29`)
   Goal: boundary values, sign/zero extension, shift corner cases, alias and overlap effects.
   Acceptance: exhaustive checks where a reduced width makes them tractable; source-linked expected values.
-  Design: recorded before code; archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md) (per-part ceiling).
   Result: met, `2026-09-29`. **Five boundary guests, 259 new steps, all agreeing with
   sail-riscv AND spike — 376/376 aligned steps over the 14-guest corpus.** The 6-bit shamt
   domain is exhausted by `bound-shift`'s 64-point `srli` sweep and the 5-bit domain by
@@ -93,7 +93,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Status: `done` (`2026-09-29`)
   Goal: fetch and access faults, suppressed effects, reserved encodings, controlled event boundaries.
   Acceptance: a failing access that already modified memory or a device is modelled as the source defines it (`SEM-06`, catalog `C11`); reserved cases keep their source meaning (`SEM-07`).
-  Design: recorded before code; archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling).
+  Design: recorded before code; archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md) (per-part ceiling).
   Result: met, `2026-09-29`. **Eighteen fault guests, 78 new steps, all agreeing with
   sail-riscv AND spike — 454/454 aligned steps over the 32-guest corpus, byte-identical
   reproduction.** Both defect threads closed, in opposite directions. DEFECT-A was
@@ -139,7 +139,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Status: `done` (`2026-09-29`)
   Goal: the declared fault × alias × boundary × event × progress × restart matrix, exercised.
   Acceptance: the matrix is declared first and then exercised; unexercised cells are reported, not omitted.
-  Design: recorded before code; archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling — moved there on `2026-09-30` to make room for the `.5` strand-2 design).
+  Design: recorded before code; archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md) (per-part ceiling — moved there on `2026-09-30` to make room for the `.5` strand-2 design).
   Result: met, `2026-09-29`. **The 21-cell matrix is declared as tracked data and every
   cell resolves; eight new guests, 38 new steps — 492/492 aligned steps over the 40-guest
   corpus, byte-identical reproduction, plus the one declared expected divergence.** The
@@ -230,7 +230,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   3. **Directed sequence tests**: the directed campaigns the matrix does not already
      cover, designed from the `.1`–`.4` evidence gaps.
   Strand 2 design: recorded before code `2026-09-30` (measured against the pinned fetch);
-  archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part ceiling) once the
+  archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md) (per-part ceiling) once the
   strand landed.
   Strand 1 landed `2026-09-30` (`SEMULITH-PS-0063`): `c-scope.c` retires three-way
   129/129; G1 reads `passed`. The model book's compiled-guest chapter landed with it
@@ -265,71 +265,9 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   record contract's uniform arity (fixed in the emitter, the record regenerated — never
   hand-edited). The `profiles/` and `schema/` ceilings re-derived per the design's
   reviewed expansion (100 files / 427,926 B; 17 files / 47,347 B).
-  Strand 3 design (recorded before code, `2026-09-30` — the gap analysis is MEASURED by a
-  census over the tracked corpus, the compiled `c-scope.elf` disassembly, and the ACT4
-  testplan/bodies; the two uncertain behaviors were then MEASURED BY PROBE
-  (`target/refs/guests/probes/run_probes_p25s3.py`, 2 probe ELFs) against sail-riscv 0.14
-  AND spike 1.1.1-dev AND semulith before any guest was authored — the `.3`/`.4`
-  doctrine):
-  - **The census verdicts** (each a measured coverage claim, not a remembered one):
-    run-off-the-end — NO COVERAGE on semulith (every straight-line guest's budget equals
-    its expectation count, so the fetch past the last word never happens; the references
-    do it in `it-fencei`'s fourth step, semulith never has). PROBE: the zero word traps
-    illegal-instruction (0x02, tval 0, word 0) on ALL THREE — sail spells it `c.illegal`,
-    spike `c.unimp`, semulith the policy-converted reserved decode; the trace adapters
-    read all three spellings with the machinery already landed.
-    Load→use as ADDRESS/JUMP TARGET (pointer chase, jump table) — NO COVERAGE anywhere:
-    every jalr base in the corpus is LUI/ADDI/AUIPC-materialized, ACT4's jalr targets are
-    `LA`-built, and `c-scope.c`'s "indirect jump through a switch" was constant-folded
-    out of its ELF (the comment overclaimed the artifact — the defect is logged below and
-    corrected in this strand). Load→use as DATA is saturated (ACT4's
-    testdata-load→op structure).
-    Cross-width SIGN-extending round-trips at sign edges — PARTIAL: `bound-ext` pins the
-    same-width sign/zero pairs, `scope-mem`/`bound-alias` pin zero-extending wider reads;
-    the sign-EXTENDING cross-width matrix (sb 0x80 → lh/lw/ld, sh 0x8000 → lw/ld, sw
-    0x80000000 → ld, the high-lane narrow reads) is unpinned.
-    Self-mod with a FENCE between store and execution — UNCOVERED (`fault-selfmod` pins
-    the distance-2 no-fence shape). PROBE: the patch is visible through `fence rw,rw` on
-    ALL THREE (x2 ← 7 at the patched word).
-    Compare→branch (slt/slti/sub feeding the immediately following branch) — NO COVERAGE
-    (corpus slt results are observed as writes; ACT4's slt is compare-and-store;
-    branch-on-loaded-value is ACT4-covered).
-    Loop with load+store per iteration (a memory walk) — PARTIAL (`c-scope`'s loop only
-    stores).
-    10+-deep serial dependency chains through VARIED producers — UNCOVERED (deepest
-    pinned: 7–8, single-producer addi chains).
-    x0 from every producer kind — PARTIAL: unpinned are the lb/lbu/lh/lhu/lwu/ld → x0
-    success paths (only lw) and subw/srlw/sraw/slliw/srliw/sraiw → x0 (only
-    addiw/addw/sllw, via `fault-hints`).
-  - **Eight directed guests** (EVD-05 expectations before any run; the trap step last;
-    each guest's point is the DEPENDENCE, not the ops): `dir-runoff` (3 steps — two
-    writes, then the fall-through fetch of the zero word and its policy trap; cell F×E),
-    `dir-chase` (a pointer chase — lw then the loaded value as the next address — and a
-    two-entry jump table: lw the entry, jalr to the stub; cell A×A), `dir-ext-matrix`
-    (the sign-extending cross-width round-trips at the sign edges; B×B), `dir-selfmod-fence`
-    (the probed store→fence→execute; the cell `fault-selfmod` carries), `dir-cmp-branch`
-    (slt/slti/sub → beq/bne, taken AND not-taken; B×E), `dir-memwalk` (a counted loop
-    copying a buffer backwards — load AND store per iteration, then the closing trap;
-    P×P), `dir-chain` (a 12-deep serial chain through varied producers — immediate,
-    register, load, shift, *W; B×B), `dir-x0-writes` (x0 destinations from the unpinned
-    producers — every load width's success path and the six unpinned *W forms; A×A).
-    Final cell assignments are checked against `interactions.sexp` at authoring time —
-    the INTERACTION-MATRIX orphan rule refuses a guest with no cell.
-  - **Reviewed ceiling expansion** (the `.1` rule): 8 guests × 2 files → `profiles/`
-    100 → 116 tracked files, aggregate re-measured at commit; `ceiling_lines` re-derived
-    with the +4 headroom pattern; per-part 32,768 untouched (guest files are ~2–4 KB).
-  - **Cascades owned by this strand:** the smoke tuple, `gen_guests.py` + regenerated
-    `guests.rs`, one `run/tests.rs` suite per guest (`dir-runoff` asserts
-    `Stop::Undefined`; the memwalk/cmp-branch traps assert `Stop::Trap`), the mutation
-    census (per-line justifications), the bench's dynamic enumeration (no edit), the
-    matrix's cells (orphan rule), `G?-REPORT.md` regeneration, the book (`plan/p2.md`,
-    the model book's evidence chapter), and the `c-scope.c` comment correction (the
-    logged defect). `EXERCISE-COVERAGE` stays 52/52 — no new form.
-  Lessons (strands 1–2): `promotion: declined (the C-shift-UB lesson lives in the guest's
-  own comments where it bites — section 6 names the rule, the failed draft and the
-  bound-shiftw owner; the visible-change vocabulary is enforced by the comparator's two
-  new self-test arms, which fail RED the day the normalization masks a real difference;
-  knowledge cards would restate what the code and the gates already say)`.
+  Strand 3 design: recorded before code `2026-09-30` (the measured coverage census
+  + the two probes); archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md)
+  (per-part ceiling) once the strand landed.
   Strand 3 landed `2026-09-30` (`SEMULITH-PS-0070`): the eight directed guests — `dir-runoff`
   (semulith's first run off a program's end: the zero word, the policy trap, measured
   identical three-way), `dir-chase` (the load→use-as-address chase and the jump through
@@ -364,7 +302,7 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   Goal: minimize every discrepancy and retain the minimized case.
   Acceptance: the minimized case reproduces the original divergence; no discrepancy is closed by widening a mask or editing an expected value without a **source-grounded** justification (`EVD-05`, `AI-05`).
   Design: recorded before code `2026-09-30` (the discrepancy census, measured
-  first); archived to [`archive/P2-SCALAR.md`](archive/P2-SCALAR.md) (per-part
+  first); archived to [`archive/P2-SCALAR-designs.md`](archive/P2-SCALAR-designs.md) (per-part
   ceiling) at the leaf's completion.
   Result: met, `2026-09-30`. **One word retains the one divergence.** `min-fencei`
   (`.word 0x0000100F` alone): semulith's policy trap at step 0, the expected-divergence
@@ -382,9 +320,47 @@ The full processor gate of `docs/EVIDENCE_AND_GATES.md` §7: `G-SCOPE`, `G-STATE
   design record; no instrument fired because none needed to)`.
 
 - ID: `P2-SCALAR.7` — **snapshot and replay for implemented boundaries** — `G-REPLAY`
-  Status: `pending`
+  Status: `active` (`2026-09-30` — design recorded before code; the pending-state census
+  is already measured by `state.sexp`)
   Goal: demonstrate replay only for the state boundaries actually implemented.
   Acceptance: a mid-execution snapshot captures all future-relevant pending state or is not offered at all.
+  Design (recorded before code, `2026-09-30`):
+  - **The pending-state census is the pinned dossier's own** (`state.sexp`
+    `hidden_state_census`, SEM-08): all seven hidden-state candidates are measured ABSENT
+    (CSRs, reservation set, FP state, vector state, privilege/trap state, fetch-cache
+    state, partially committed effects) — its consequence sentence already says
+    "snapshot and replay reduce to the register file, pc and memory". So a complete
+    mid-execution snapshot for THIS profile is exactly: the 31 writable registers + pc
+    (the `ArchitecturalState`) + the memory content (the FlatMemory bytes). Anything
+    beyond that is **not offered at all** — the acceptance's second arm — and the suite
+    states so by name.
+  - **The mechanism** (`semulith-verify::snapshot`): a `Snapshot` record — the
+    definition-identity pins flattened from `MANIFEST` (the `P1-LAB.10` bundle
+    discipline: replaying against a different definition is refused BY NAME, not
+    mis-replayed), the region declaration, entry, the step index `k`, the register file
+    and pc, and the memory content SPARSE-encoded (offset + non-zero runs — a 2 GiB
+    region of zeros is not data; the encoding is deterministic and its round-trip is
+    the first thing tested). JSON both ways, the crate's own reader/writer (the
+    wasm-safe, dependency-free rule).
+  - **The proof suite** (the G-REPLAY evidence): every tracked guest, at several step
+    indices (early / mid / final-quiescent): run to `k`, snapshot, continue to the stop
+    → the reference continuation; fresh environment, restore the snapshot, continue →
+    the replayed continuation; the two must be IDENTICAL (trace tails and crossing
+    logs). RED arms: a snapshot with one memory byte corrupted must be caught (the
+    continuation diverges or the digest refuses); a snapshot whose definition pins do
+    not match the live manifest is refused by name; a snapshot restored onto a
+    different base/entry refuses. The honest-negative discipline: a snapshot that
+    silently dropped future-relevant state would pass exactly NONE of these arms
+    against a guest whose later behavior depends on it — the memory-walk and chase
+    guests (state in MEMORY, not registers) are the load-bearing cases, and the suite
+    names them.
+  - **The CLI surface** mirrors bundle/replay: `semulith snapshot <elf> --at N` writes
+    the record; `semulith resume <file.json>` re-runs from it and prints the
+    continuation. Exit codes and refusal shapes follow the existing commands.
+  - **Cascades:** `snapshot.rs` + its tests; the CLI's two subcommands + doc comment +
+    USAGE; the book (the model book's evidence chapter — replay now covers mid-execution,
+    not only cold reset); `G?-REPORT.md` regenerate. No guest corpus change;
+    `EXERCISE-COVERAGE` untouched.
 
 - ID: `P2-SCALAR.8` — **portability matrix** — `G-PORTABILITY`
   Status: `pending`
@@ -667,6 +643,7 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design, and 
 | `2026-09-30` | `P2-SCALAR.6` | the discrepancy census (every `references.sexp` difference + all four corpora) | exactly ONE model-vs-references behavioral divergence exists (`DIFF-FENCEI-EXECUTED`, already pinned); the other seven differences dispositioned with citations (harness ×2, trace vocabulary, sub-granularity observable, a corrected configuration defect, a board-layer difference, one reference-vs-reference) |
 | `2026-09-30` | `P2-SCALAR.6` | `cargo test -p semulith-verify` + the live smoke's four-step protocol | 175 passed / 0 failed (+1 guest suite); `min-fencei`: EXPECTED DIVERGENCE at aligned step 0 vs EACH reference, sail vs spike AGREE over 2, byte-identical reproduction |
 | `2026-09-30` | `P2-SCALAR.6` | `make check`, `make gate`, bench + smoke-bench, coverage/matrix/comparator self-tests, `make book` | rc=0; all doctrines green; 53 bench arms (49 clean guests); 52/52; both books render |
+| `2026-09-30` | `P2-SCALAR.7` | the pending-state census source | `state.sexp`'s hidden-state census: all seven candidates measured absent — a complete snapshot for this profile is exactly registers + pc + memory (the census's own consequence sentence says so) |
 
 ## Commit Log
 
@@ -678,6 +655,7 @@ joined `.1`–`.3` on `2026-09-30` to make room for `.5`'s strand-3 design, and 
 | `P2-SCALAR.4` | `SEMILITH-PS-0006` (design, before code — measured first), `SEMILITH-PS-0007 (leaf P2-SCALAR.4): …` | the interaction matrix landed: 21 cells declared as tracked data and exercised, eight guests (fault priority, base preservation, the wrap-into-fault on both paths, self-aliased boundary ops, the budget loop, the fence.i expected divergence), the comparator's expected-divergence verdict, INTERACTION-MATRIX (25th doctrine, fired RED before registration), the offline determinism suite, DIFF-TVAL-PHYS-MASK recorded — 492/492 live over 40 guests; ceilings expanded by reviewed decision (incl. the two mirror caps the 25th row crossed); the gate's own derivation bug caught RED by the corpus, never a model defect |
 | `P2-SCALAR.5` | `SEMULITH-PS-0062` (the routing answered + the three-strand design, before code), `SEMULITH-PS-0063 (leaf P2-SCALAR.5): …`, `SEMULITH-PS-0066` (strand 2a: ACT4 acquired sparse + the strand-2 design, before code — measured against the pinned fetch), `SEMULITH-PS-0067` (strand 2b: the store trace, the DUT-side pieces, the one-test harness three-way green), `SEMULITH-PS-0068` (strand 2c: the full campaign — 51/51, 17,017 slots, three-way; the gated `act4.sexp` record), `SEMULITH-PS-0069` (strand 3 design, before code — census + probes measured first), `SEMULITH-PS-0070` (strand 3: the eight directed guests — **`.5` DONE**) | strand 1 landed: `c-scope.c` — the first COMPILED guest (clang 21.1.8 + `ld.lld` 21.1.8, measured present, pinned by decision record) — retires three-way 129/129; the comparator learned the declared visible-change vocabulary (`_visible_changes`, +2 self-test arms); `gate_report.py`'s criterion-6 branch; **G1 reads `passed`**; two in-flight REDs, both authoring-side (the C UB shift; the comparator's normalization), never a model defect. Strand 2a: the suite's generated half on disk (45 MB sparse partial, pinned), the strand-2 design recorded (signature-mode + store-trace extraction + Sail-derived expectations), the acquisition facts synced (`references.sexp`, the catalogue, both books); `.4`'s design obeyed the per-part ceiling by moving to the archive |
 | `P2-SCALAR.6` | `SEMULITH-PS-0071` (design, before code — the census measured first), `SEMULITH-PS-0072` (the minimized case retained — the leaf DONE) | one model-vs-references divergence exists (`DIFF-FENCEI-EXECUTED`); `min-fencei` (one word) reproduces it under the expected-divergence protocol at step 0; no mask widened, no expectation edited |
+| `P2-SCALAR.7` | `SEMULITH-PS-0074` (design, before code) | mid-execution snapshots: the pending-state census is the pinned dossier's own (registers + pc + memory, all seven hidden-state candidates measured absent); the proof suite's load-bearing cases are the memory-state guests |
 
 ## Changelog
 
