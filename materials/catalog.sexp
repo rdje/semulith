@@ -254,6 +254,32 @@
                   acquisitions, one set of bytes; adopted through the corpus seam under
                   MODEL-METHOD.16"))
 
+(gap
+    (id "GAP-DSP56K-FAMILY-MANUAL")
+    (looked-for "the Motorola DSP56300 Family Manual (the DSP56362/56366 pin-compatible
+                 family's architecture document): the 24-bit-word, 56-bit-accumulator
+                 WITH-guard-bits counterpoint to the TI C6000 family's measured absence of
+                 both (DSP-REVIEW.1/.2)")
+    (probe "corpus-wide at 92a73b6 (2026-09-30): no motorola/ or freescale/ DSP directory
+            exists (the m68k line lives at nxp/m68k and is NOT a DSP); the TI set is
+            complete for C6000; adi/dsp/sharc/ exists and is EMPTY")
+    (result "ABSENT from the corpus at 92a73b6 — filed for the channel; the review does not
+             block on it (the TI evidence stands on its own locators), but the .7 findings
+             report wants the cross-vendor contrast before classifying 'no accumulator' as
+             anything but a TI fact")
+    (status open))
+  (gap
+    (id "GAP-ADI-SHARC-PRM")
+    (looked-for "an Analog Devices SHARC programming reference (ADSP-2106x or ADSP-214xx):
+                 the DAG-based addressing with circular AND bit-reversed modes —
+                 bit-reversed addressing is measured ABSENT from all three TI C6000 manuals
+                 (BITR is a data operation, not an addressing mode; DSP-REVIEW.3)")
+    (probe "corpus-wide at 92a73b6 (2026-09-30): adi/dsp/sharc/ exists and is EMPTY (a
+            placeholder); no other ADI content")
+    (result "ABSENT from the corpus at 92a73b6 — filed for the channel; the empty directory
+             says the want was contemplated there already")
+    (status open))
+
   (material
     (id "ARM-A-DDI0487M.c")
     (title "Arm Architecture Reference Manual for A-profile architecture (DDI0487M.c)")
