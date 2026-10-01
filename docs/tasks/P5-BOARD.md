@@ -93,6 +93,37 @@ incompatible CPU/environment assumption remains**.
   semulith-side: `docs/knowledge/the-chipdoc-request-channel.md` — they had lived only in
   the corpus-side manual, and a session re-derived them the hard way once.
 
+- ID: `P5-BOARD.9` — **reconcile the chipdoc answers: adopt, mark, record**
+  Status: `done` (`2026-10-01`, `SEMULITH-P5-0003`)
+  Goal: consume the answers the channel delivered for `.8`'s ten requests — adopt the
+  five fulfilled materials into `materials/catalog.sexp` (digests verified into the
+  cache), mark every request `resolved`/`blocked` with its evidence, and bring the
+  semulith-side channel record up to the updated protocol (CHANNEL.md §0.3/§0.5 —
+  answers arrive per-request in `catalog/responses.sexp`; our statuses stay `open`
+  until WE flip them, which is expected, not silence).
+  Acceptance: every fulfilled artifact's sha256 verifies from the cache
+  (`scripts/materials.py --verify`); every request carries its answer and its
+  evidence; the knowledge card carries the answer path end-to-end; the measured
+  negatives are recorded as RESULTS (a blocked answer is an answer — `.1` plans
+  around them), never re-filed without a new route.
+  Not milestone execution: this is channel hygiene on `.8`'s inputs, ahead of `.1`.
+  Result (`2026-10-01`): the channel verified live first —
+  `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0 (every open request
+  answered). The five fulfilled adopted as catalog materials (`MICROCHIP-LAN9118`,
+  `UBLOX-SARA-R4-AT`, `ESPRESSIF-ESP-AT`, `NORDIC-NRF52840-PS`,
+  `MICROCHIP-AT86RF233`), fetched into `.materials/network/` with every sha256
+  re-verified (`materials --verify: 52 verified / 0 unresolved`); the corpus pin
+  re-derived to `c4ad8a2` (5696 files / 293 PDFs, the same census). All ten requests
+  carry their answer: five `resolved`, five `blocked` — each blocked answer a MEASURED
+  NEGATIVE with its consequence named (the LAN9118 dossier is the wired-NIC primary;
+  SARA-R4 the cellular AT primary; the AR9271 probe's negative IS its answer — no
+  public register-level WiFi baseband documentation exists). The knowledge cards
+  carry the full ask→answer loop (`the-chipdoc-request-channel.md` refreshed with the
+  §0.3/§0.5 answer path; `the-chipdoc-channel.md` updated and cross-linked, its
+  measured history kept). Consequence for `.1`: the board's network device now has
+  FIVE sourced candidates (wired NIC, LTE modem, WiFi module, two true RFICs) plus
+  five measured negatives that close the alternatives.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -152,6 +183,29 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P5-BOARD.9` (`2026-10-01`, `SEMULITH-P5-0003`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — CHANNEL.md §0.3/§0.5 (re-read `2026-10-01`) closed
+  the answer path per-request after the second incident: chipdoc answered all ten
+  `.8` requests (`542a14b`), and semulith still saw ten `open` — because only WE flip
+  our own file. Verified live before any edit: `SEMULITH_ROOT=<repo> python3
+  <corpus>/scripts/build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0.
+  WHERE: `materials/catalog.sexp` (five adopted records + the corpus re-pin),
+  `materials/requests.sexp` (ten answers), the two knowledge cards.
+- [x] **ADDRESSED (verified)** — `SEMULITH_CHIPDOC_ROOT=<corpus> python3
+  scripts/materials.py --fetch <the five ids>` → all five `sha256 verified` into
+  `.materials/network/`; `scripts/materials.py --verify` → `materials --verify: 52
+  verified / 0 unresolved`, rc=0; the corpus census re-derived at `c4ad8a2` (5696
+  files / 293 PDFs); every request now carries `(status resolved|blocked)` + its
+  `(answer …)` with the evidence verbatim from `catalog/responses.sexp`.
+- [x] **NO REGRESSION** — `bash scripts/check_doctrines.sh` → `=== all doctrines
+  green ===`; `mdbook build docs/book` rc 0 (no book surface touches the channel).
+- [x] **FIX** — the five catalog records + the re-pin, the ten answers, the two
+  knowledge cards (+ INDEX hooks), this tree's `.9`.
+- [x] **LOCKSTEP** — tree (leaf + checklist + logs), `MEMORY.md` (next action was
+  this reconciliation — now `.1`), `CHANGELOG.md`, `DEV_NOTES.md`,
+  `docs/knowledge/INDEX.md`.
+
 `P5-BOARD.8` (`2026-10-01`, `SEMULITH-P5-0002`):
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the `2026-10-01` design discussion needs measured
@@ -179,12 +233,14 @@ incompatible CPU/environment assumption remains**.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.9` | `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0; `materials.py --fetch` → all five sha256-verified into `.materials/network/`; `materials.py --verify` → 52/0; corpus census at `c4ad8a2` (5696/293); `make gate` green | the ten answers reconciled: five materials adopted, ten requests marked (5 resolved / 5 measured-negative blocked); the knowledge cards carry the ask→answer loop |
 | `2026-10-01` | `.8` | `sexp.read_file` → 10 forms (the one reader); `poll_semulith_gaps.py` read-only → NEW REQUESTS (10), rc 1; `make gate` green | ten acquisition requests filed and seen by the channel; the filing mechanics recorded semulith-side (knowledge card) |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.9` | `SEMULITH-P5-0003 (leaf P5-BOARD.9): the chipdoc answers reconciled — five materials adopted and digest-verified, ten requests marked, the answer path recorded` | 5 fulfilled adopted (LAN9118, SARA-R4, ESP-AT, nRF52840, AT86RF233); 5 measured negatives recorded with consequences; corpus re-pinned c4ad8a2; the knowledge cards carry §0.3/§0.5 |
 | `.8` | `SEMULITH-P5-0002 (leaf P5-BOARD.8): the network-connected board's documentation researched — corpus surveyed, ten requests filed, the channel measured` | DP83816/ESP32-SVD/FU540/FU740/AM335x already held; LAN9118/e1000/RTL8139, three LTE AT manuals, ESP-AT, nRF52840, AT86RF233, and the AR9271 probe requested; the poller sees exactly the ten |
 | — | `pending` | `pending` |
 
@@ -197,3 +253,11 @@ incompatible CPU/environment assumption remains**.
   through `materials/requests.sexp` (the preferred channel), pickup measured with
   chipdoc's poller (read-only, exactly the ten new ids), and the channel's filing
   mechanics recorded as a knowledge card so no session re-derives them.
+- `2026-10-01`: `.9` done (`SEMULITH-P5-0003`): the channel's answers consumed —
+  verified live first (`build_responses.py --report`, 5/5, exit 0), the five fulfilled
+  adopted as catalog materials with every digest re-verified at fetch (52/0), all ten
+  requests marked (five `resolved`, five `blocked` — each blocked a measured negative
+  with its consequence named, never to be re-filed without a new route), the corpus
+  re-pinned `c4ad8a2`, and the knowledge cards brought up to the §0.3/§0.5 answer
+  path. `.1` inherits five sourced network-device candidates plus five measured
+  negatives closing the alternatives.

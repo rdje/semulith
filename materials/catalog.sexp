@@ -34,7 +34,7 @@
     (id "chipdoc")
     (title "chipdoc — curated documentation for digital components, chips, interfaces and protocols")
     (kind git-repository)
-    (revision "d2437ff")
+    (revision "c4ad8a2")
     (env-var "SEMULITH_CHIPDOC_ROOT")
     (derivation "Re-derived 2026-09-14 by a PATH SWEEP, not a sample:
                  find . -name '*.pdf' | grep -iE '/(isa|cpu|architecture|processors|m68k|z80|65c02|dsp|mcu)/'
@@ -44,11 +44,12 @@
                  guessing where things are records the surveyor's expectations, not the corpus.")
     (note "Curated, in its own words, to expose enough behaviour to reconstruct implementable
            intent AND to build software emulators that run real C/C++/Rust software — which is
-           this project's north star stated by someone else, independently. 5383 files, 285
-           PDFs at the d2437ff re-pin `2026-09-30` (re-derived by the same working-tree path
-           sweep; 5313/257 at 92a73b6, 5309/255 at 73711d6, 3684/196 at the 3c45e81 baseline).
-           Terms are recorded per document family in that repository's own README files, so a
-           material's licence below is read from the DOCUMENT, not assumed from the corpus."))
+           this project's north star stated by someone else, independently. 5696 files, 293
+           PDFs at the c4ad8a2 re-pin `2026-10-01` (re-derived by the same working-tree census;
+           5383/285 at d2437ff, 5313/257 at 92a73b6, 5309/255 at 73711d6, 3684/196 at the
+           3c45e81 baseline). Terms are recorded per document family in that repository's own
+           README files, so a material's licence below is read from the DOCUMENT, not assumed
+           from the corpus."))
 
   ;; ------------------------------------------------------------------------------------
   ;; Materials.
@@ -1148,4 +1149,106 @@
            pinned HTML snapshot, never this PDF, by section number. Mirrored by chipdoc under
            REQ-008 alongside the unprivileged volume the probe needed; catalogued here while
            the mirror is fresh rather than re-discovered at P4."))
+
+  ;; ------------------------------------------------------------------------------------
+  ;; Adopted from the chipdoc ANSWERS feed (catalog/responses.sexp, records in
+  ;; catalog/semulith-proposals.sexp) under P5-BOARD.9, 2026-10-01 — the five FULFILLED
+  ;; answers to the ten network-connected-board requests (P5-BOARD.8); the five BLOCKED
+  ;; answers are measured negatives, recorded in materials/requests.sexp. Every digest
+  ;; re-verified at fetch, never trusted from the feed.
+  ;; ------------------------------------------------------------------------------------
+  (material
+    (id "MICROCHIP-LAN9118")
+    (title "LAN9118 High Performance Single-Chip 10/100 Non-PCI Ethernet Controller datasheet")
+    (revision "DS00002266B 2018-11-30")
+    (release-kind final)
+    (pages 109)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document")
+    (corpus "chipdoc")
+    (corpus-path "network/ethernet-lan9118/current/LAN9118_datasheet.pdf")
+    (cache-path "network/lan9118.pdf")
+    (sha256 "72fe68f241b5bc91a861cff98a877ae907339d396e64394b0f5daa2c391bf6ee")
+    (bytes 836922)
+    (supplies "a complete register-level 10/100 Ethernet MAC+PHY contract on a 16-bit non-PCI
+               host bus: CSR set, FIFO packet memory, MII/PHY management, address filtering,
+               interrupts and power management")
+    (status wanted)
+    (note "The wired-NIC candidate with a simple public register contract; QEMU's lan9118 model
+           is a potential second implementation for differential checking. LAN9220 is the same
+           family. Fulfilled from the official Microchip source."))
+  (material
+    (id "UBLOX-SARA-R4-AT")
+    (title "u-blox SARA-R4 series AT commands manual")
+    (revision "UBX-17003787 2021-07-08")
+    (release-kind final)
+    (pages 510)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document")
+    (corpus "chipdoc")
+    (corpus-path "network/modem-sara-r4/current/SARA-R4_ATCommands_UBX-17003787.pdf")
+    (cache-path "network/sara-r4-at.pdf")
+    (sha256 "ce73aa65261c052d48700846a58eb5144822f067703ffbd9ed1313fd13a634b6")
+    (bytes 4955316)
+    (supplies "the AT-command surface of an LTE Cat M1/NB-IoT module: general, SIM, network,
+               packet-switched/socket data, SMS, GNSS and power-saving commands")
+    (status wanted)
+    (note "Recovered from a Wayback capture (20220121075106) of the official u-blox URL; the live
+           u-blox site has rehomed content and the direct path now 404s."))
+  (material
+    (id "ESPRESSIF-ESP-AT")
+    (title "ESP-AT User Guide (Espressif AT firmware for ESP32)")
+    (revision "latest, docs.espressif.com build 2026-09-29")
+    (release-kind final)
+    (pages 533)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document")
+    (corpus "chipdoc")
+    (corpus-path "network/wifi-esp-at/current/esp-at-en-latest-esp32.pdf")
+    (cache-path "network/esp-at.pdf")
+    (sha256 "eb1f0c574fc3e532c92376f18417c24dc46a2a5cd82ec7d3429874f35e7b52e3")
+    (bytes 9468246)
+    (supplies "the documented AT command set for ESP32 WiFi modules (STA/AP, TCP/UDP sockets,
+               MQTT, HTTP, mDNS) — the command layer above the ESP32/C3/S3 register maps held
+               in the corpus (SVD-ESPRESSIF there; the ESP32 TRMs catalogued above)")
+    (status wanted)
+    (note "The WiFi-via-module route: a documented command surface over UART/USB; the corpus
+           already holds the underlying ESP32 register maps, so this is the missing
+           command-layer document."))
+  (material
+    (id "NORDIC-NRF52840-PS")
+    (title "nRF52840 Product Specification")
+    (revision "v1.7 2021-11-22")
+    (release-kind final)
+    (pages 631)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document")
+    (corpus "chipdoc")
+    (corpus-path "network/rfic-nrf52840/current/nRF52840_PS_v1.7.pdf")
+    (cache-path "network/nrf52840-ps.pdf")
+    (sha256 "f43354b2be1d5558e9e409787a940b16322d2d560da87b33f6206361bbc1469a")
+    (bytes 12677464)
+    (supplies "register-level documentation of a BLE/802.15.4/Thread radio SoC: RADIO,
+               FICR/UICR, timers, PPI, GPIO, serial, ADC, AES/CCM and the memory map")
+    (status wanted)
+    (note "Recovered from a Wayback capture (20240829095752) of the official infocenter URL,
+           which now returns HTTP 403; v1.9/v1.10 exist but have no archived snapshot."))
+  (material
+    (id "MICROCHIP-AT86RF233")
+    (title "AT86RF233 Datasheet (2.4 GHz 802.15.4 radio transceiver)")
+    (revision "Atmel-8351 2014-07")
+    (release-kind final)
+    (pages 225)
+    (licence "unrecorded")
+    (licence-evidence "not yet read from the document")
+    (corpus "chipdoc")
+    (corpus-path "network/rfic-at86rf233/current/AT86RF233_datasheet.pdf")
+    (cache-path "network/at86rf233.pdf")
+    (sha256 "838d074fc1265d3dd50da0b407d1f987f09ebdb5a00a906c3b8c786fee52c543")
+    (bytes 4588559)
+    (supplies "the register-level 802.15.4 PHY/MAC contract: SPI register map, frame buffer,
+               AES/CRC/address-match accelerators, RX/TX state machine and energy detect/RSSI")
+    (status wanted)
+    (note "A second register-documented radio so the RFIC leg's evidence does not rest on one
+           vendor. Fulfilled from the official Microchip source (Atmel-8351)."))
 )

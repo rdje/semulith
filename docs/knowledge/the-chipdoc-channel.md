@@ -29,6 +29,12 @@ prose file — the poller reads only those two files.
 the batch. Semulith then adopts through the seam (catalogue + cache, digest verified).
 It is event-driven, not polling; a durable `.runtime/PENDING` sentinel means a missed
 notification cannot become silence.
+**The answer path, updated `2026-10-01`:** answers also arrive PER-REQUEST, re-keyed by
+our ids, in chipdoc's `catalog/responses.sexp` (and `build_responses.py --report`) —
+and our own `requests.sexp` keeps saying `open` until WE flip it, because chipdoc never
+writes here. That gap caused the second incident (answered 5/5, seen as 10× `open`).
+The full ask→answer loop lives in [`the-chipdoc-request-channel.md`](the-chipdoc-request-channel.md);
+this card keeps the channel's measured history.
 
 ## Measured here
 
@@ -55,7 +61,9 @@ used to hang a full hour and look like no trigger (the 2026-09-30 incident).
   (preferred) with `(status open)`; fallback: an open gap in `materials/catalog.sexp`.
 - When does a request fire? On create/add/reopen, only if the id is new and the status
   is open. `resolved`/`fulfilled`/`blocked` never fire.
-- How do I know it was heard? The proposals feed mirrors the id as resolved; the
-  document verifies against `SHA256SUMS`; `.runtime/PENDING` clears.
+- How do I know it was heard? `catalog/responses.sexp` re-keys the answer by our id
+  (`build_responses.py --report`); `.runtime/LAST_RESULT` records the last summon's
+  outcome; the proposals feed mirrors the id as resolved; our own file flips when WE
+  flip it.
 - If it did not fire, where do I look? Status/id-newness → watcher running →
   SEMULITH_ROOT → the sentinel and watcher log → the agent's provider/auth preflight.

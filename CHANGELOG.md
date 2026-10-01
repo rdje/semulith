@@ -1,5 +1,24 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0003 (leaf P5-BOARD.9) — the chipdoc answers reconciled: five adopted, five measured negatives
+
+- Verified live first: `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0
+  (every open request answered — the second incident's gap, closed by CHANNEL.md
+  §0.3/§0.5, re-read `2026-10-01`).
+- The five fulfilled adopted as catalog materials — `MICROCHIP-LAN9118` (the wired-NIC
+  primary), `UBLOX-SARA-R4-AT` (the cellular AT primary), `ESPRESSIF-ESP-AT`,
+  `NORDIC-NRF52840-PS`, `MICROCHIP-AT86RF233` (the two true RFICs) — fetched into
+  `.materials/network/`, every sha256 re-verified (`materials --verify: 52/0`); the
+  corpus re-pinned `c4ad8a2` (5696 files / 293 PDFs, the same census).
+- All ten requests marked: five `resolved`, five `blocked` — each blocked a MEASURED
+  NEGATIVE with its consequence named (e1000/RTL8139 → LAN9118 is primary; EC25/
+  SIM7600 → SARA-R4 is primary; the AR9271 probe's negative IS its answer: no public
+  register-level WiFi baseband documentation exists). Never re-filed without a new
+  route. `P5-BOARD.1` inherits five sourced candidates plus five closed alternatives.
+- The knowledge cards carry the ask→answer loop end-to-end
+  (`the-chipdoc-request-channel.md` refreshed with the §0.3/§0.5 answer path;
+  `the-chipdoc-channel.md` updated and cross-linked).
+
 ## SEMULITH-BR-0021 (leaf P3-BREADTH.6) — gate BREADTH runs: verdict passed; the capability report published
 
 - `scripts/gate_report.py` gained the cross-unit builder (`--gate BREADTH`): the three
@@ -870,29 +889,4 @@
   chipdoc without an operator relay.
 - `make gate` all green. CHANGELOG.md crossed its 64 KiB ceiling with this entry and was
   sharded (the DOC-SHARDING machinery, completeness exact).
-
-## SEMULITH-MM-0058 (leaf MODEL-METHOD.16) — the v20260120 PDFs: gap filed, answered same-day, adopted through the corpus seam
-
-- The director asked for the v20260120 unprivileged PDF twice. Corpus sweep: absent (only
-  the 20260911 intermediate). The verified bytes survived in scratch from `MODEL-BOOKS.2` —
-  then chipdoc relayed that it now mirrors BOTH v20260120 PDFs
-  (`risc-v/isa/reference/docs.riscv.org-v20260120/`, REQ-008), same bytes
-  `06bb3c23…d150bc`, with a correction: the PDF does not share the pin's numbering.
-- All four legs verified before any record changed: mirror present; byte-equality with the
-  independent docs.riscv.org fetch (two acquisitions, one set of bytes); REQ-008 read in the
-  ledger; the numbering re-measured from the extracted text layer — RV32I Chapter 2 / RV64I
-  Chapter 4, NOT the pinned HTML's §1.1/§3.1. chipdoc's correction is correct.
-- Both PDFs catalogued reference-only (`RVI-UNPRIV-PDF-V20260120` 696 pp,
-  `RVI-PRIV-PDF-V20260120` 214 pp) with the trap documented, and fetched through the corpus
-  seam, digests verified. The gap record was filed and resolved the same day; the corpus
-  re-pinned `73711d6` → `f33d330` (5313 files / 257 PDFs); 45 materials. The `.14` probe
-  input is now a first-class material, with three renderings and three numberings measured.
-- Measured and surfaced for a chipdoc-side fix: its poller reads only TOP-LEVEL `(gap …)`
-  forms, so it sees 0 of this catalogue's nested gaps (`semulith_gaps_open: 0` against the
-  real catalogue; a scratch probe shows a flat gap is seen, a nested one is not). This
-  request travelled operator-relayed.
-- The tasks per-part ceiling fired twice mid-leaf (67,737 B, then 65,032 B growing) and was
-  answered by the second and third archive movements — the ceiling obeyed, never raised.
-- `make gate` all green. CHANGELOG.md crossed its ceiling with this entry and was sharded
-  again by the DOC-SHARDING machinery.
 

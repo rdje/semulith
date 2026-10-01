@@ -1,5 +1,28 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — an answered channel still reads `open` until you flip it (P5-BOARD.9)
+
+The second chipdoc incident, from our side: the acquisition agent answered all ten
+P5-BOARD.8 requests (5 fulfilled, 5 measured negatives, chipdoc `542a14b`), and
+semulith's `requests.sexp` kept saying `open` — because the seam is hard (chipdoc never
+writes here) and only WE flip our own statuses. CHANNEL.md §0.3/§0.5 (re-read on the
+director's pointer) closes exactly that gap: `catalog/responses.sexp` re-keys every
+answer by OUR ids, and `build_responses.py --report` prints the join (run live before
+any edit: 5/5, exit 0). The adoption kept the house rules: digests re-verified at
+fetch, never trusted from the feed (`materials.py --verify` 52/0); the corpus re-pinned
+with the same census (`c4ad8a2`, 5696/293); the proposals feed's records adopted
+verbatim in our syntax. The five blocked answers are recorded as RESULTS — each names
+what was tried, what returned, and the consequence (LAN9118 is the wired-NIC primary;
+SARA-R4 the cellular primary; the AR9271 probe's negative IS its answer) — and the
+channel's exactly-once rule means they are never re-filed without a new route. Two
+knowledge cards covered the channel with overlapping, drifting scope; the refreshed
+split is: `the-chipdoc-request-channel.md` owns the full ask→answer loop,
+`the-chipdoc-channel.md` keeps the measured history and cross-links. `P5-BOARD.1`
+inherits five sourced network-device candidates plus five closed alternatives.
+
+Validation: `build_responses.py --report` exit 0; `materials.py --fetch` 5× sha256
+verified; `materials.py --verify` 52/0; `make gate` all-doctrines-green.
+
 ## _(2026-10-01)_ — the capability report is the capstone, and the registry is its claim list (P3-BREADTH.6 slice 3)
 
 The slice order was measured, not planned: a BREADTH report generated before the unit
@@ -649,24 +672,4 @@ is noted here because the book is the review surface.
 
 Lesson: `promotion: declined` (the SIGPIPE rule lives in the instrument's comment; the
 self-test enforces the verdict ladder).
-
-## _(2026-09-30)_ — mid-execution snapshots (P2-SCALAR.7)
-
-The design question was completeness, and the answer was already pinned: state.sexp's
-hidden-state census (SEM-08) measured all seven candidates absent, so the snapshot is
-registers + pc + memory — the sparse encoding (non-zero runs, digested over the whole
-region) plus the bundle's definition-pin check (extracted as `check_definition_pins`,
-shared, not duplicated) plus `run_state[_over]` (the state-returning runner form) plus
-`FlatMemory::bytes_mut` for the resume rebuild. The proof suite splits all 49 guests at
-three points each through the JSON round-trip — continuations identical, crossing logs
-included; the memory-state guests are the load-bearing arms. RED arms refuse by name:
-corrupted run (digest), foreign definition (pin), at_step>budget, a run past the region,
-a partial register file, a mutant model (not offered). In-flight RED: my own test
-arithmetic — the encoding splits runs at zero bytes, so "the image's first run" is ONE
-byte and the overrun tamper fit; re-aimed one-past-the-end. A genuine surprise measured:
-the CLI's 2 GiB region makes snapshot capture hash 2 GiB per call — seconds, acceptable
-for a CLI tool, noted for the record (the suite's region is 64 KiB). Validation: 180/180
-verify suites; make check/gate/book green.
-
-Lesson: `promotion: declined` (recorded in the leaf).
 
