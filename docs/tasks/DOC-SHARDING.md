@@ -148,6 +148,15 @@ remedy.
   exactly once. Disposition: the UNIQUE leg stays strict (intra-head duplication is a real
   defect class), the corpus is clean.
 
+## Changelog
+
+- `2026-10-02`: Time-triggered shard event (`SEMULITH-DS-0004`): both heads fired within
+  hours of each other — `CHANGELOG.md` at 65,035 of 65,536 bytes and `DEV_NOTES.md` at
+  49,000 of 49,152 with the next slice's entries measured larger than the remaining room.
+  CHANGELOG: 2 entries → `shard-0113.md` (`54 == 52 + 2` exact; head → 62,570). DEV_NOTES:
+  3 entries → `shard-0114.md` (`35 == 32 + 3` exact; head → 45,633). Manifest 114 → 116
+  rows. The tool did what it was built for; no tree change needed.
+
 ## Acceptance Checklist (leaf DOC-SHARDING.2)
 
 - [x] **REPRODUCE / ISSUE** — the fired trigger, measured:

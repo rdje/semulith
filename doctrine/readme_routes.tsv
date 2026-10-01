@@ -177,7 +177,14 @@ MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally ow
 #               20th registered doctrine expanding it is the contract expanding, the same
 #               grounds as the TOOLBOX.md raise above. Ceiling 20 KiB -> 24 KiB; health stays
 #               0 (a doctrine row arrives, not a paragraph).
-DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	28672	0
+# Re-derivation, SEMULITH-BA-0001 (2026-10-02), when the 31st doctrine row crossed the cap:
+#   DOCTRINE_ENFORCEMENT.md  28,672 B of 28,672 B at HEAD — the BOOK-INDEX row (the registry's
+#               own contract: one row per registered doctrine, count grows by design) expanding
+#               the surface, the same grounds as the 20th- and 25th-row raises above. Director
+#               approval 2026-10-02 ("if you need more headroom, just ask and I will approve"),
+#               standing since 2026-10-01. Ceiling 28 KiB -> 32 KiB (~34 rows at the measured
+#               ~930 B/row); health stays 0 (a doctrine row arrives, not a paragraph).
+DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	32768	0
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
 # Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign record gained its

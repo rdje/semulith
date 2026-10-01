@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-DS-0004 (tree DOC-SHARDING) — the append heads shard ahead of the next slice
+
+- Trigger: `CHANGELOG.md` at 65,035 of 65,536 bytes (501 headroom) and `DEV_NOTES.md` at
+  49,000 of 49,152 (152) with the next slice's entries already measured larger than the
+  remaining room — the designed fire point, answered by sharding, never by raising the cap.
+- `shard_history.py --max-bytes 63488`: 2 entries → `docs/changelog/shard-0113.md`,
+  completeness `54 == 52 kept + 2 moved` order-and-bytes exact, head 65,035 → 62,570.
+- `shard_history.py --head DEV_NOTES.md --max-bytes 46080`: 3 entries →
+  `docs/changelog/shard-0114.md`, completeness `35 == 32 kept + 3 moved` exact, head
+  49,000 → 45,633. Manifest 114 → 116 rows.
+
 ## SEMULITH-AC-0056 (tree ARTIFACT-CLEANUP) — the 2026-10-02 §8 cleanup: 105 incremental caches, 139 MB
 
 - Time-triggered §8 run (the `2026-10-01` run was a full day old): 105 cargo
@@ -867,38 +878,4 @@
 - `.5` blocked → active; the three-strand design recorded before code (strand 1: the C
   guest; strand 2: the ACT4 generated suite; strand 3: directed sequences). Docs-only
   commit; `make gate` green.
-
-## SEMULITH-PX-0001 (leaf PREFIX-DISCIPLINE.1) — the SEMULITH- prefix, pinned at the boundary and watched
-
-- The director ruled the work-unit prefix is SEMULITH, never SEMILITH. Measured drift at
-  ruling time: 123 commits carry both spellings across 10+ areas; exactly one subject
-  ("Initial commit") carries neither. History is immutable, so enforcement is
-  forward-looking: the `commit-msg` hook now refuses any leading work-unit id not beginning
-  with `SEMULITH-`, with `SEMULITH` named in the refusal.
-- `COMMIT-PREFIX` (#29, `scripts/check_commit_prefix.sh`) probes the hook BEHAVIOURALLY on
-  every commit — the pin lives in a neutral scaffold file a sync can revert, and carrying it
-  upstream is unavailable by policy, so a silent revert turns the next commit RED, named.
-  Fired RED against the real tree before the pin existed; self-test 4/0.
-- The ruling is recorded: `decision_work-unit-prefix-semulith.md` + INDEX; COMMIT.md states
-  the pinned prefix; both registry mirrors carry the row; LIVE_STATUS re-derived
-  (29 doctrines / 301 arms). The tree closes 1/1.
-- `make gate` all green. DEV_NOTES.md crossed its 48 KiB ceiling with this slice's note and
-  was sharded (the DOC-SHARDING machinery, completeness exact).
-
-## SEMULITH-MM-0059 (leaf MODEL-METHOD.17) — the channel answers: the poller fix measured, the heard gaps reconciled
-
-- chipdoc fixed the poller deafness `.16` surfaced (corpus `6bfabf2`): the poller descends
-  into the `(materials …)` wrapper and READS this catalogue's nested gaps. Measured here,
-  not accepted: `semulith_gaps_open: 2` pre-reconcile — the signal `.16` could not get.
-- The two heard records were already dispositioned here: `GAP-INTEL-SDM-VOL1` (closed by
-  `.13`'s catalogued material) and `GAP-RISCV-JAN-2026-PDF` (closed by `.12`'s recorded
-  decline decision). Both now carry `(status resolved)` with evidence; post-reconcile the
-  poller reports 0 open, 0 unmirrored.
-- The v20260120 gap's deafness claim updated to the fixed channel; corpus re-pinned
-  `f33d330` → `92a73b6` (5313 files / 257 PDFs re-derived by the same path sweep, unchanged);
-  the channel snapshot refreshed (feed 68/14; REQ-008 at `2026-09-29`).
-- The channel is now TWO-WAY: a new gap filed in `materials/catalog.sexp` surfaces to
-  chipdoc without an operator relay.
-- `make gate` all green. CHANGELOG.md crossed its 64 KiB ceiling with this entry and was
-  sharded (the DOC-SHARDING machinery, completeness exact).
 
