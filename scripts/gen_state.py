@@ -10,9 +10,11 @@ descriptor bytes always yield the same module bytes, and the input's sha256 ride
 module header so a reviewer can name the exact bytes the code derives from.
 
 The generator REFUSES (exit 2, naming the construct) on any descriptor shape it does not
-know how to emit: another profile id, a non-64 width, a special register it has no mapping
-for, a missing reset, an alias outside x1..x31. A descriptor that grew is generator work,
-never silently guessed — that is how "generated" stays a claim instead of a hope.
+know how to emit: another profile id, a register family / memory space / hardware stack
+(the `P3-BREADTH.5` constructs), a missing xlen, a non-64 width, a special register it has
+no mapping for, a missing reset, an alias outside x1..x31. A descriptor that grew is
+generator work, never silently guessed — that is how "generated" stays a claim instead of
+a hope.
 
 Usage:
   python3 scripts/gen_state.py                 # regenerate the committed module
@@ -66,8 +68,13 @@ def load_checked(state_path: Path, arith_path: Path) -> tuple[dict, int]:
         raise Refusal(f"{arith_path.name}: no `pub const XLEN: u32 = N;` — the generator "
                       "cannot bind the descriptor to the one XLEN owner")
     arith_xlen = int(m.group(1))
-    if doc["xlen"] != arith_xlen:
-        raise Refusal(f"xlen mismatch: state.sexp declares {doc['xlen']}, arith::XLEN is "
+    xlen = doc.get("xlen")
+    if xlen is None:
+        raise Refusal("no xlen — this generator binds the descriptor to arith::XLEN, the "
+                      "one executable owner (REQ-D-XLEN); a descriptor without xlen is "
+                      "generator work (P3-BREADTH.5), never a guessed default")
+    if xlen != arith_xlen:
+        raise Refusal(f"xlen mismatch: state.sexp declares {xlen}, arith::XLEN is "
                       f"{arith_xlen} — one fact, one owner; resolve the descriptor, do not "
                       "pick a side in the generator")
     return doc, arith_xlen
@@ -77,7 +84,26 @@ def validate(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dict]:
     if doc["profile_id"] != PROFILE:
         raise Refusal(f"profile_id {doc['profile_id']!r} — this generator is scoped to "
                       f"{PROFILE!r}; a second profile is generator work, not a config knob")
-    ir = doc["integer_registers"]
+    # P3-BREADTH.5 slice 1: the schema declares these constructs (the exercised target is
+    # dsp56300-lab-v0; the census record names the cases) — emitting them is generator
+    # work, so a descriptor carrying one is refused BY NAME, never silently dropped.
+    if doc.get("register_family"):
+        raise Refusal("register_family declared — emitting register families with masked "
+                      "widths and part readouts is generator work (P3-BREADTH.5; case "
+                      "dsp56300-lab-v0, F1), not silently assumed")
+    if doc.get("memory_spaces"):
+        raise Refusal("memory_spaces declared — emitting distinct memory spaces is "
+                      "generator work (P3-BREADTH.5; case dsp56300-lab-v0, F3), not "
+                      "silently assumed")
+    if "hardware_stack" in doc:
+        raise Refusal("hardware_stack declared — emitting the hardware stack is generator "
+                      "work (P3-BREADTH.5; case dsp56300-lab-v0, the census's candidates "
+                      "4/6), not silently assumed")
+    ir = doc.get("integer_registers")
+    if ir is None:
+        raise Refusal("no integer_registers — this generator emits the x0-anchored "
+                      "integer file; a descriptor with only register families is generator "
+                      "work (P3-BREADTH.5), not silently assumed")
     count = ir["count"]
     if ir["width_bits"] != SUPPORTED_WIDTH:
         raise Refusal(f"integer_registers width_bits {ir['width_bits']} — masked fixed-width "

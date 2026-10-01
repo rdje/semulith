@@ -1,5 +1,22 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — moving a refusal one layer down, on purpose (P3-BREADTH.5 slice 1)
+
+The interesting engineering was not the schema constructs but the boundary mechanics. The
+synth fixture exists to measure the pipeline's refusal boundary; when the schema learned
+`memory_spaces`, probe 2's pin went stale and the suite turned RED on the first run —
+that RED is the fixture working, and the re-pin (schema accepts rc 0, generator refuses
+`memory_spaces declared` rc 2) is the boundary's new position measured rather than
+asserted. Two silent-path hazards had to be closed for the move to be honest: the mapping
+owner built the state document from named fields only, so a schema-legal `memory_spaces`
+would have vanished before the generator could refuse it (the same class `.2` fixed for
+operands — the promoted lesson's second instance); and `gen_state.py` subscripted
+`doc["xlen"]`, so the schema's newly-optional xlen would have crashed with a KeyError
+traceback instead of a named Refusal. Both are now refusals by name with RED self-test
+arms. A design rule the slice surfaced and recorded: a profile document that no gate reads
+is an ungoverned claim — PROFILE-CONSISTENCY attaches at `profile.sexp`, so the DSP's
+`state.sexp` waits for the scope-taxonomy slice rather than landing unread.
+
 ## _(2026-10-01)_ — the census as a harvest, not a rewrite (P3-BREADTH.1, the F6 leg)
 
 F6 is the finding that the hidden-state census reopens per profile; the live question was
@@ -598,10 +615,4 @@ Lesson: none new — the chapter itself is the retrievable form (the dual mandat
 The strand opened with the blocker answered (PS-0062: routing + the measured toolchain) and hit two REDs before any green — both authoring-side, both diagnosed by tool, neither a model defect. RED ONE was the subtlest defect this laboratory has produced, and the guest caught it in its own author: the first compiled binary stopped at `fail(0x0501)` with the trace showing the whole post-memory section deleted. The disassembly showed clang had concluded the path was unreachable — whole-program UB exploitation. The first suspect (strict aliasing on the width-punned buffer accesses) was measured INNOCENT by the `-fno-strict-aliasing` control; bisecting sections found `w32 << 33` — a 32-bit shift by ≥ 32 is UB in C (C11 6.5.7p3), NOT "the ISA reads 5 shamt bits" — and with the amount narrowed to 31 the same compile restored `call fib` + 4× `call emit`. The lesson is recorded in the guest's own comments: the *W shamt boundary is not expressible through the C abstract machine, so it stays with `bound-shiftw`'s assembly. RED TWO was a genuine comparator gap the 492/492 corpus never exercised: with the guest clean, the three-way comparison diverged at aligned step 7 — `li a0, 0` with a0 already 0 logs `x10 <- 0` on BOTH references while semulith, whose runner diffs VALUES (the declared visible-change vocabulary, the `.1` lesson), records nothing. The fix went where the vocabulary is owned: `align` in `compare_traces.py` (the one funnel all three parsers flow through) now reduces every trace to visible changes via a shadow register file from the declared reset state (x1..x31 = 0, x0 hardwired — a nonzero x0 record stays visible as a real vocabulary mismatch), with +2 self-test arms (a dropped no-change record GREEN; a real change RED — the reduction may never mask a difference), 19/0. Soundness argument recorded in the function: a wrong value still records a change, a skipped change still diverges — only an observationally identical write is dropped, which is the vocabulary's definition of nothing-to-see. Then the green: `c-scope` (self-checking — expected values are C-semantics constants in the source, a mis-execution routes to a fail code) AGREEs with sail-riscv 0.14 AND spike 1.1.1-dev over 129/129 aligned steps and reproduces byte-identically; the smoke's new `.c` path builds via `scripts/build_c_guest.sh` (toolchain probed per candidate, refused by name if absent — Apple clang's exact error is in the leaf), runs with a budget the closing ebreak beats, and reads `e_entry` from the ELF header (a linked image's headers precede its first instruction). `gate_report.py` grew the criterion-6 met branch and the Limitations branch — **G1: `passed`**, verdict moving because the inputs did. Validation: full smoke 221 PASS / 0 FAIL (the 40 assembled guests unchanged); comparator self-test 19/0; `make gate` all green; `make book` renders both books. No Rust changed.
 
 Lesson: `promotion: declined` (recorded in the leaf) — the C-UB lesson lives in the guest's comments where it bites; the vocabulary rule is enforced by the comparator's self-test arms.
-
-## _(2026-09-30)_ — the routing answered, the toolchain measured: P2-SCALAR.5 unblocked (PS-0062)
-
-The director delegated the two decisions `.5` was blocked on. Routing: the C guest lands in `P2-SCALAR.5` — the measured G0 precedent (the tree completes, the gate keeps the criterion visible every commit through GATE-REPORT, EVD-08 makes `passed` over a missing check mechanically unreachable); reopening P1-LAB would relocate bookkeeping, not evidence. Toolchain: measured, not installed — Apple clang 21.0.0 has NO RISC-V backend (the exact triple error is in the decision record); Homebrew `llvm@21` clang 21.1.8 compiled `-march=rv64i -mabi=lp64` to correct RV64I (objdump-verified); the keg ships no linker, and zig 0.16.0's bundled `ld.lld` (Homebrew LLD 21.1.8) does. Rejected: a system-wide GNU toolchain (multi-GB off-volume mutation for zero evidence gain) and routing clang's `-S` through the project's assembler (the criterion wants a genuinely compiled artifact). Recorded as `decision_c-guest-routing-and-toolchain`; `.5` blocked → active with the three-strand design before code. House-keeping under pressure: MEMORY.md's byte ceiling fired mid-commit (7217 > 7168) and was answered by demotion-grade trimming, never by raising the cap; KNOWLEDGE_MAP.md regenerated for the new record. Validation: `make gate` all green (docs-only commit).
-
-Lesson: `promotion: declined` (recorded in the leaf) — the decision record IS the durable form.
 

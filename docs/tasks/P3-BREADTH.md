@@ -205,9 +205,55 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the four measured rules live in exec.rs's module header where the next reader meets them; three were my over-applications of correct FM prose, one a genuine prose falsification — the arbiter discipline is already EVD-04/RK08)`.
 
 - ID: `P3-BREADTH.5` — **schema and generator functionality where justified**
-  Status: `pending`
+  Status: `in_progress` (slice 1 started `2026-10-01`)
   Goal: extend the definition schema/generator only where an exercised target demonstrates the need.
   Acceptance: each extension names the target and case that required it.
+  Slice 1 design (recorded before code, `2026-10-01`): **the state schema learns the
+  census's shapes; the refusal boundary moves one layer down, measured.** The F6 census
+  record (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`) is the content source;
+  the exercising target is dsp56300-lab-v0 (6/6 AGREE).
+  - `schema/state.sexp` gains optional constructs, each naming its case in the header:
+    `register_family` (+ `parts` with per-part `readout` — census candidate 1, the A2/B2
+    sign-extended readout; F1 masked widths), `memory_spaces` (F3 — the X/Y/P spaces),
+    `hardware_stack` (census candidates 4/6 — 16×48-bit, pre-incremented SP, stale slots
+    observable); `xlen` and `integer_registers` become OPTIONAL (case: dsp56300-lab-v0 has
+    no XLEN concept and no x0-anchored integer file — forcing either would be a lie the
+    schema exists to prevent). The "at least one register declaration" completeness check is
+    stated as belonging to the consistency/generator layer, not the type schema.
+  - `scripts/dossier_sexp.py` (the single mapping owner) learns to CARRY the new forms
+    (parse + emit): measured pre-change, `state_to_doc` builds the doc from named fields
+    only — a `memory_spaces` form would be silently DROPPED between the schema layer and
+    the generator, the exact silent-path class `.2` eliminated for operands. After the
+    change every declared form reaches the generator as data.
+  - `scripts/gen_state.py` refuses each new construct by name (rc 2, naming the case and
+    the work) — the refusal moves from the schema layer to the generator layer, never away;
+    a missing `xlen` becomes a Refusal, not a KeyError traceback.
+  - `scripts/check_state_gen.sh` gains the RED arms for the new refusals.
+  - Synth probe 2 RE-PINS: `state-spaces.sexp` was pinned at the schema refusal
+    `undeclared field "memory_spaces"` (rc 1); the schema now declares the shape, so the
+    pin moves to `gen_state.py`'s refusal (rc 2). The suite's own contract covers this:
+    "the day the pipeline genuinely supports a shape, its pin goes stale and the suite
+    turns RED — measuring the boundary moving." The README records the move, dated, with
+    the case.
+  - **The DSP's `state.sexp` does NOT land in this slice.** Measured: PROFILE-CONSISTENCY
+    iterates `profiles/*/profile.sexp` and reads `state.sexp` only when the profile exists
+    (`check_profile_consistency.sh:71,98-99`), and STATE-GEN is rv64-hardcoded
+    (`check_state_gen.sh:26`) — a `state.sexp` landed without `profile.sexp` would be a
+    document no gate reads, an ungoverned claim. It lands with the scope-taxonomy slice,
+    where PROFILE-CONSISTENCY's attachment (and its scalar-shaped arms) is measured.
+  Slice 1 (`2026-10-01`, `SEMULITH-BR-0014`): the boundary MOVED, measured. The schema
+  declares `register_family` (+ `parts`/`readout`), `memory_spaces`, `hardware_stack`,
+  with `xlen`/`integer_registers` optional — each construct's comment names
+  dsp56300-lab-v0 and its case. `dossier_sexp.state_to_doc`/`state_to_form` carry the new
+  forms (the silent-drop path between schema and generator is closed — measured
+  pre-change: the mapping built the doc from named fields only). `gen_state.py` refuses
+  each by name (rc 2), and a missing `xlen` is a Refusal instead of a KeyError. Synth
+  probe 2 did what the fixture exists to do — its pin went stale and the suite turned RED
+  on the first run, then re-pinned one layer down (schema accepts rc 0; generator refuses
+  `memory_spaces declared`, rc 2; 6/6). STATE-GEN's self-test grew four RED arms (10/10).
+  rv64 regression: `state.sexp` re-validates against the extended schema, regeneration is
+  byte-identical, the doc round-trip is data-equal.
+  Lessons: `promotion: declined (the move-one-layer-down pattern is the synth fixture's own designed behaviour, already written in its README; the silent-drop close is the .2 lesson's second instance — the promoted record a-dead-justification-camouflages-a-silent-path already carries the generalizable shape)`.
 
 - ID: `P3-BREADTH.6` — **the `BREADTH` gate report**
   Status: `pending`
@@ -395,6 +441,42 @@ unsupported families remain unclaimed.
   `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
   the profile DOSSIER; mdBook `plan/p3.md` (the census consequence stated).
 
+`P3-BREADTH.5`, slice 1 (`2026-10-01`, `SEMULITH-BR-0014`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the schema refused the DSP's measured state shapes
+  (synth probe 2's pin: `python3 scripts/check_sexp_schema.py state-spaces.sexp
+  schema/state.sexp` → `REFUSED … undeclared field "memory_spaces"`, rc 1), and two
+  silent-path hazards sat between the schema and the generator:
+  `dossier_sexp.state_to_doc` built the doc from named fields only (a declared
+  `memory_spaces` would be DROPPED before the generator could refuse it — measured
+  pre-change), and a missing `xlen` crashed with a KeyError traceback instead of a named
+  Refusal. WHERE the constructs come from: the F6 census record
+  (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`), candidates 1/2/4/6 + F1/F3.
+- [x] **ADDRESSED (verified)** — the schema declares the constructs (each naming its case);
+  the mapping owner carries them (round-trip data-equal on the rv64 document, re-derived:
+  `state_to_doc(state_to_form(load_state(...))) == load_state(...)`); the generator refuses
+  each by name — measured: `gen_state.py` on the spaces descriptor → rc 2, `memory_spaces
+  declared`; the four new STATE-GEN self-test arms RED-prove the refusals
+  (`check_state_gen.sh --self-test` → `10 pass / 0 fail`); synth probe 2 re-pinned
+  (`run_synth_probes.sh` → `synth probes: 6 pass / 0 fail`: schema accepts rc 0
+  `conforms`, generator refuses rc 2).
+- [x] **NO REGRESSION** — `check_sexp_schema.py profiles/rv64i-lab-v0/state.sexp
+  schema/state.sexp` → `ok`; `gen_state.py --check` → byte-identical (rc 0); the
+  descriptor round-trip data-equal; `dossier_sexp.py --self-test` → `12 pass / 0 fail`;
+  `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS fired on the four new arms
+  — re-derived 308 → 312 by the doctrine's own command, LIVE_STATUS.md updated; nothing
+  else moved). No Rust changed (`make check` not owed; the dsp crate's 17/17 and the 6/6
+  smoke were re-run this session for the census leg and stand unchanged).
+- [x] **FIX** — `schema/state.sexp` (the constructs + the optional xlen/integer_registers),
+  `scripts/dossier_sexp.py` (carry the new forms, xlen/integer_registers optional),
+  `scripts/gen_state.py` (the named refusals + the xlen Refusal), `scripts/
+  check_state_gen.sh` (four RED arms), the synth suite (probe 2 re-pinned two legs;
+  `state-spaces.sexp` carries full `space` forms; README records the move).
+- [x] **LOCKSTEP** — tree (this file: slice design + record, checklist, logs),
+  `LIVE_STATUS.md` (arm count re-derived), `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  `DOCTRINE_ENFORCEMENT.md` (the STATE-GEN row names the new refusals), mdBook
+  `plan/p1.md` (the refusal list grew) and `plan/p3.md`.
+
 `P3-BREADTH.2` (`2026-10-01`, `SEMULITH-BR-0006`):
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the audit censused every generator and reader error
@@ -529,6 +611,7 @@ unsupported families remain unclaimed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.5` slice 1 | synth suite re-pinned → 6 pass / 0 fail (probe 2 two legs: schema accepts, generator refuses `memory_spaces declared` rc 2); `check_state_gen.sh --self-test` → 10 pass / 0 fail (four new RED arms); rv64 `state.sexp` re-validates ok; `gen_state.py --check` byte-identical; round-trip data-equal; `dossier_sexp --self-test` 12/12; `make gate` green (DERIVED-COUNTS re-derived 308→312) | the state schema learned the census's shapes (register_family+parts, memory_spaces, hardware_stack; xlen/integer_registers optional); the refusal boundary moved one layer down, measured; the silent-drop mapping path closed |
 | `2026-10-01` | `.1` F6 census leg | census record: 14 candidates answered with locators; `run_dsp56300_smoke.py` re-run → 6 agree / 0 fail (51–64 fields/case); `compare_dumps.py --self-test` → 4 pass / 0 fail; `cargo test -p semulith-dsp56300` 17/17; `make gate` green | the SEM-08 census re-run for dsp56300-lab-v0: the canonical end-state dump measured as the COMPLETE architectural state for subset v0; the harvested input for `.5`'s `state.sexp` cases |
 | `2026-10-01` | `.4` slice 4 | `run_dsp56300_smoke.py` 6 agree / 0 fail (51–64 fields/case); `cargo test -p semulith-dsp56300` 17/17; `make check` + `make gate` green | subset v0 form-complete and differentially agreed; five measured model corrections (RTS PC-only, short-imm A2 sign extension, A1/B1 raw reads, S on bus reads only, the 24-bit keep-mask); two boundary defects fixed (accumulator-part destinations stop by name; NOP citation 13-149 → 13-145) |
 | `2026-10-01` | `.4` slice 3 | `cargo test -p semulith-dsp56300` 10/10; `compare_dumps.py --self-test` 4/0; `run_dsp56300_smoke.py` 1 agree / 0 fail (53 fields, byte-identical dump, cyc excluded); `make check` + `make gate` green | the model crate STANDS; the first differential case AGREES |
@@ -543,6 +626,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.5` slice 1 | `SEMULITH-BR-0014 (leaf P3-BREADTH.5): the state schema learns the census's shapes — families+parts, spaces, the stack; the refusal moved one layer down` | schema declares register_family/memory_spaces/hardware_stack (xlen optional); the mapping owner carries them (silent drop closed); gen_state refuses by name; probe 2 re-pinned (suite turned RED first, by design); STATE-GEN 10 arms |
 | `.1` F6 census leg | `SEMULITH-BR-0013 (leaf P3-BREADTH.1): the dsp56300-lab-v0 state census — 14 candidates answered, the dump measured complete; the input .5 harvests` | SEM-08 re-run for the exercised profile; A2/B2 readout + M/sticky/loop/stale-slot candidates declared and measured; F5 window + architectural absences answered; the leaf stays slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional) |
 | `.4` slice 4 | `SEMULITH-BR-0012 (leaf P3-BREADTH.4): subset v0 form-complete — ALU core, jsr/rts, rep/enddo, (Rn) modes; the 6-guest corpus AGREEs` | five measured corrections via the differential campaign (RTS, A2 sign extension, A1/B1 raw reads, S locus, keep-mask); accumulator-part destinations refused at decode; NOP citation corrected (13-145) |
 | `.4` slice 3 | `SEMULITH-BR-0011 (leaf P3-BREADTH.4): the model crate stands — the first differential case AGREEs over 53 fields` | machine/decode/exec/dump/lod + runner; compare_dumps.py (cyc skipped by rule) + the smoke driver; the U-bit extraction inversion owned; machine.rs naming per the FACT-OWNERSHIP convention |
@@ -635,3 +719,19 @@ unsupported families remain unclaimed.
   Ceiling bookkeeping: this leg's CHANGELOG append fired the head's 64 KiB per-part bound —
   sharded by `scripts/shard_history.py` (completeness printed exact: 52 = 51 + 1, order and
   bytes; shard 0095 manifested), the designed pressure control, no bound moved.
+- `2026-10-01`: `.5` slice 1 (`SEMULITH-BR-0014`) — the state schema learned the census's
+  shapes: `register_family` (+ `parts` with per-part `readout`), `memory_spaces`,
+  `hardware_stack`, with `xlen`/`integer_registers` optional — each construct names
+  dsp56300-lab-v0 and its case (F1, F3, census candidates 1/4/6). The mapping owner
+  (`dossier_sexp`) carries the new forms — the silent-drop path between schema and
+  generator is closed — and `gen_state.py` refuses each by name (rc 2); a missing `xlen`
+  is now a Refusal, not a KeyError. Synth probe 2 turned RED on the stale pin (the
+  fixture's designed behaviour) and re-pinned one layer down: schema accepts, generator
+  refuses. STATE-GEN self-test 10 arms; DERIVED-COUNTS re-derived 308→312. The DSP's
+  `state.sexp` stays unlanded — without `profile.sexp` no gate would read it (measured);
+  it lands with the scope-taxonomy slice. `.5` is `in_progress`.
+  Ceiling bookkeeping: this slice's DEV_NOTES append fired that head's 48 KiB per-part
+  bound — sharded by `scripts/shard_history.py` (completeness printed exact: 37 = 36 + 1,
+  order and bytes; shard 0096 manifested); MEMORY.md trimmed to its cap (7,156/7,168);
+  SEAM-INTEGRITY's acceptance-box regression caught one under-evidenced checklist box on
+  the first pass — fixed with the probe's concrete command line, the gate doing its job.

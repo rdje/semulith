@@ -11,6 +11,9 @@
 # and the suite turns RED — the fixture's purpose is measuring the boundary moving.
 # Probe 5 (register grouping) was added by P3-BREADTH.1 (2026-10-01) to give finding F2
 # the executable demonstration the findings report said it lacked.
+# Probe 2 (a second address space) was RE-PINNED by P3-BREADTH.5 slice 1 (2026-10-01, case
+# dsp56300-lab-v0 / F3): the schema learned memory_spaces, so the pin moved one layer down
+# — schema accepts, the generator refuses by name.
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 DIR="docs/tasks/artifacts/dsp-review/synth"
@@ -32,8 +35,20 @@ probe "nonstandard width (24-bit) refuses by name" 2 \
   "masked fixed-width storage for nonstandard widths is generator work" \
   python3 scripts/gen_state.py --state "$DIR/state.sexp" \
     --arith crates/semulith-core/src/arith.rs --out /dev/null
-probe "a second address space refuses by name" 1 'undeclared field "memory_spaces"' \
+# Probe 2 re-pinned 2026-10-01 (P3-BREADTH.5 slice 1, case dsp56300-lab-v0 / F3): the
+# schema LEARNED memory_spaces — the boundary moved one layer down, measured here as
+# schema-accepts + generator-refuses-by-name. The generator leg needs the family-from-name
+# rule (dossier_sexp.family_for), so the descriptor runs under a scratch state.sexp name.
+probe "a second address space now VALIDATES at the schema layer" 0 \
+  "conforms to state.sexp" \
   python3 scripts/check_sexp_schema.py "$DIR/state-spaces.sexp" schema/state.sexp
+SCRATCH="$(mktemp -d "$ROOT/target/doctrine-selftest/synth-XXXXXX")"
+cp "$DIR/state-spaces.sexp" "$SCRATCH/state.sexp"
+probe "a second address space still refuses at the generator, by name" 2 \
+  "memory_spaces declared" \
+  python3 scripts/gen_state.py --state "$SCRATCH/state.sexp" \
+    --arith crates/semulith-core/src/arith.rs --out /dev/null
+rm -rf "$SCRATCH"
 probe "a packet construct refuses by name" 1 'undeclared field "packet"' \
   python3 scripts/check_sexp_schema.py "$DIR/packet.sexp" schema/fragment.sexp
 probe "a delayed effect refuses by name" 1 'undeclared operator "delay"' \

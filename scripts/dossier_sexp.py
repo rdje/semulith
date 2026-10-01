@@ -278,37 +278,64 @@ def profile_to_doc(form) -> dict:
 # --------------------------------------------------------------------------- state.json
 
 def state_to_form(doc: dict) -> list:
-    ir = doc["integer_registers"]
-    reg = [S.Symbol("integer_registers"),
-           _pair("count", ir["count"]),
-           _pair("width_bits", ir["width_bits"]),
-           _pair("ids", ir["ids"]),
-           _pair("authority", _sym(ir["authority"])),
-           _pair("source", ir["source"]),
-           [S.Symbol("x0"),
-            _bool_field("hardwired_zero", ir["x0"]["hardwired_zero"]),
-            _pair("authority", _sym(ir["x0"]["authority"])),
-            _pair("source", ir["x0"]["source"]),
-            _pair("statement", ir["x0"]["statement"])]]
-    for n in ir.get("named_by_the_isa_chapter", []):
-        reg.append([S.Symbol("named_by_the_isa_chapter"),
-                    [S.Symbol("named-register"),
-                     _pair("reg", n["reg"]),
-                     _pair("role", n["role"]),
-                     _pair("authority", _sym(n["authority"])),
-                     _pair("source", n["source"])]])
-    if "reset" in ir:
-        r = ir["reset"]
-        reg.append([S.Symbol("reset"),
-                    _pair("value", r["value"]),
-                    _pair("authority", _sym(r["authority"])),
-                    _pair("source", r["source"]),
-                    _pair("statement", r["statement"])])
     root = [S.Symbol("state"),
-            _pair("profile_id", doc["profile_id"]),
-            _pair("xlen", doc["xlen"]),
-            _pair("note", doc["note"]),
-            reg]
+            _pair("profile_id", doc["profile_id"])]
+    if "xlen" in doc:
+        root.append(_pair("xlen", doc["xlen"]))
+    root.append(_pair("note", doc["note"]))
+    if "integer_registers" in doc:
+        ir = doc["integer_registers"]
+        reg = [S.Symbol("integer_registers"),
+               _pair("count", ir["count"]),
+               _pair("width_bits", ir["width_bits"]),
+               _pair("ids", ir["ids"]),
+               _pair("authority", _sym(ir["authority"])),
+               _pair("source", ir["source"]),
+               [S.Symbol("x0"),
+                _bool_field("hardwired_zero", ir["x0"]["hardwired_zero"]),
+                _pair("authority", _sym(ir["x0"]["authority"])),
+                _pair("source", ir["x0"]["source"]),
+                _pair("statement", ir["x0"]["statement"])]]
+        for n in ir.get("named_by_the_isa_chapter", []):
+            reg.append([S.Symbol("named_by_the_isa_chapter"),
+                        [S.Symbol("named-register"),
+                         _pair("reg", n["reg"]),
+                         _pair("role", n["role"]),
+                         _pair("authority", _sym(n["authority"])),
+                         _pair("source", n["source"])]])
+        if "reset" in ir:
+            r = ir["reset"]
+            reg.append([S.Symbol("reset"),
+                        _pair("value", r["value"]),
+                        _pair("authority", _sym(r["authority"])),
+                        _pair("source", r["source"]),
+                        _pair("statement", r["statement"])])
+        root.append(reg)
+    for fam in doc.get("register_family", []):
+        ff = [S.Symbol("register_family"),
+              _pair("id", fam["id"]),
+              _pair("count", fam["count"]),
+              _pair("width_bits", fam["width_bits"]),
+              _pair("ids", fam["ids"]),
+              _pair("authority", _sym(fam["authority"])),
+              _pair("source", fam["source"])]
+        for p in fam.get("parts", []):
+            ff.append([S.Symbol("parts"),
+                       [S.Symbol("part"),
+                        _pair("id", p["id"]),
+                        _pair("bit_hi", p["bit_hi"]),
+                        _pair("bit_lo", p["bit_lo"]),
+                        _pair("readout", p["readout"]),
+                        _pair("authority", _sym(p["authority"])),
+                        _pair("source", p["source"])]])
+        if "reset" in fam:
+            r = fam["reset"]
+            ff.append([S.Symbol("reset"),
+                       _pair("value", r["value"]),
+                       _pair("authority", _sym(r["authority"])),
+                       _pair("source", r["source"]),
+                       _pair("statement", r["statement"])])
+        root.append(ff)
     for s in doc.get("special_registers", []):
         root.append([S.Symbol("special_registers"),
                      [S.Symbol("register"),
@@ -319,6 +346,22 @@ def state_to_form(doc: dict) -> list:
                       _pair("source", s["source"]),
                       _pair("reset", s["reset"]),
                       _pair("reset_authority", _sym(s["reset_authority"]))]])
+    for sp in doc.get("memory_spaces", []):
+        root.append([S.Symbol("memory_spaces"),
+                     [S.Symbol("space"),
+                      _pair("id", sp["id"]),
+                      _pair("word_bits", sp["word_bits"]),
+                      _pair("authority", _sym(sp["authority"])),
+                      _pair("source", sp["source"])]])
+    if "hardware_stack" in doc:
+        h = doc["hardware_stack"]
+        root.append([S.Symbol("hardware_stack"),
+                     _pair("levels", h["levels"]),
+                     _pair("width_bits", h["width_bits"]),
+                     _pair("indexing", h["indexing"]),
+                     _bool_field("stale_slots_observable", h["stale_slots_observable"]),
+                     _pair("authority", _sym(h["authority"])),
+                     _pair("source", h["source"])])
     if "hidden_state_census" in doc:
         c = doc["hidden_state_census"]
         census = [S.Symbol("hidden_state_census"),
@@ -337,33 +380,8 @@ def state_to_form(doc: dict) -> list:
 
 def state_to_doc(form) -> dict:
     S.head(form, "state")
-    irf = _child_in(form, "integer_registers")
-    ir = {"count": _req(irf, "count", "integer_registers"),
-          "width_bits": _req(irf, "width_bits", "integer_registers"),
-          "ids": _req(irf, "ids", "integer_registers"),
-          "authority": _s(_req(irf, "authority", "integer_registers")),
-          "source": _s(_req(irf, "source", "integer_registers"))}
-    x0f = _child_in(irf, "x0")
-    ir["x0"] = {"hardwired_zero": _bool_in(x0f, "hardwired_zero", "x0"),
-                "authority": _s(_req(x0f, "authority", "x0")),
-                "source": _s(_req(x0f, "source", "x0")),
-                "statement": _s(_req(x0f, "statement", "x0"))}
-    ir["named_by_the_isa_chapter"] = [
-        {"reg": _s(_req(n, "reg", "named-register")),
-         "role": _s(_req(n, "role", "named-register")),
-         "authority": _s(_req(n, "authority", "named-register")),
-         "source": _s(_req(n, "source", "named-register"))}
-        for n in (_child_in(c, "named-register") for c in _children_in(irf, "named_by_the_isa_chapter"))]
-    rf = _opt_child(irf, "reset")
-    if rf is not None:
-        ir["reset"] = {"value": _s(_req(rf, "value", "reset")),
-                       "authority": _s(_req(rf, "authority", "reset")),
-                       "source": _s(_req(rf, "source", "reset")),
-                       "statement": _s(_req(rf, "statement", "reset"))}
     doc = {"profile_id": _s(_req(form, "profile_id", "state")),
-           "xlen": _req(form, "xlen", "state"),
            "note": _s(_req(form, "note", "state")),
-           "integer_registers": ir,
            "special_registers": [
                {"id": _s(_req(r, "id", "register")),
                 "width_bits": _req(r, "width_bits", "register"),
@@ -374,6 +392,78 @@ def state_to_doc(form) -> dict:
                 "reset_authority": _s(_req(r, "reset_authority", "register"))}
                for r in (_child_in(c, "register") for c in _children_in(form, "special_registers"))],
            "hidden_state": []}
+    xv = _opt(form, "xlen", "state")
+    if xv is not None:
+        doc["xlen"] = xv
+    irf = _opt_child(form, "integer_registers")
+    if irf is not None:
+        ir = {"count": _req(irf, "count", "integer_registers"),
+              "width_bits": _req(irf, "width_bits", "integer_registers"),
+              "ids": _s(_req(irf, "ids", "integer_registers")),
+              "authority": _s(_req(irf, "authority", "integer_registers")),
+              "source": _s(_req(irf, "source", "integer_registers"))}
+        x0f = _child_in(irf, "x0")
+        ir["x0"] = {"hardwired_zero": _bool_in(x0f, "hardwired_zero", "x0"),
+                    "authority": _s(_req(x0f, "authority", "x0")),
+                    "source": _s(_req(x0f, "source", "x0")),
+                    "statement": _s(_req(x0f, "statement", "x0"))}
+        ir["named_by_the_isa_chapter"] = [
+            {"reg": _s(_req(n, "reg", "named-register")),
+             "role": _s(_req(n, "role", "named-register")),
+             "authority": _s(_req(n, "authority", "named-register")),
+             "source": _s(_req(n, "source", "named-register"))}
+            for n in (_child_in(c, "named-register") for c in _children_in(irf, "named_by_the_isa_chapter"))]
+        rf = _opt_child(irf, "reset")
+        if rf is not None:
+            ir["reset"] = {"value": _s(_req(rf, "value", "reset")),
+                           "authority": _s(_req(rf, "authority", "reset")),
+                           "source": _s(_req(rf, "source", "reset")),
+                           "statement": _s(_req(rf, "statement", "reset"))}
+        doc["integer_registers"] = ir
+    # P3-BREADTH.5 slice 1: the mapping owner CARRIES the dsp56300-lab-v0 constructs —
+    # a declared form must reach the generator as data, never be silently dropped here.
+    fams = []
+    for ff in _children_in(form, "register_family"):
+        fam = {"id": _s(_req(ff, "id", "register_family")),
+               "count": _req(ff, "count", "register_family"),
+               "width_bits": _req(ff, "width_bits", "register_family"),
+               "ids": _s(_req(ff, "ids", "register_family")),
+               "authority": _s(_req(ff, "authority", "register_family")),
+               "source": _s(_req(ff, "source", "register_family"))}
+        parts = [{"id": _s(_req(p, "id", "part")),
+                  "bit_hi": _req(p, "bit_hi", "part"),
+                  "bit_lo": _req(p, "bit_lo", "part"),
+                  "readout": _s(_req(p, "readout", "part")),
+                  "authority": _s(_req(p, "authority", "part")),
+                  "source": _s(_req(p, "source", "part"))}
+                 for p in (_child_in(c, "part") for c in _children_in(ff, "parts"))]
+        if parts:
+            fam["parts"] = parts
+        rf = _opt_child(ff, "reset")
+        if rf is not None:
+            fam["reset"] = {"value": _s(_req(rf, "value", "reset")),
+                            "authority": _s(_req(rf, "authority", "reset")),
+                            "source": _s(_req(rf, "source", "reset")),
+                            "statement": _s(_req(rf, "statement", "reset"))}
+        fams.append(fam)
+    if fams:
+        doc["register_family"] = fams
+    spaces = [{"id": _s(_req(sp, "id", "space")),
+               "word_bits": _req(sp, "word_bits", "space"),
+               "authority": _s(_req(sp, "authority", "space")),
+               "source": _s(_req(sp, "source", "space"))}
+              for sp in (_child_in(c, "space") for c in _children_in(form, "memory_spaces"))]
+    if spaces:
+        doc["memory_spaces"] = spaces
+    hf = _opt_child(form, "hardware_stack")
+    if hf is not None:
+        doc["hardware_stack"] = {
+            "levels": _req(hf, "levels", "hardware_stack"),
+            "width_bits": _req(hf, "width_bits", "hardware_stack"),
+            "indexing": _s(_req(hf, "indexing", "hardware_stack")),
+            "stale_slots_observable": _bool_in(hf, "stale_slots_observable", "hardware_stack"),
+            "authority": _s(_req(hf, "authority", "hardware_stack")),
+            "source": _s(_req(hf, "source", "hardware_stack"))}
     cf = _opt_child(form, "hidden_state_census")
     if cf is not None:
         doc["hidden_state_census"] = {

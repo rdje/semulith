@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0014 (leaf P3-BREADTH.5) — the state schema learns the census's shapes
+
+- `schema/state.sexp` declares `register_family` (with `parts` and per-part `readout`),
+  `memory_spaces`, and `hardware_stack`; `xlen`/`integer_registers` become optional. Every
+  construct names its exercising target and case: dsp56300-lab-v0, F1 masked widths, F3
+  memory spaces, the census's special-register/stack candidates — the content source is
+  the F6 census record.
+- The mapping owner (`dossier_sexp`) now CARRIES the new forms end to end: pre-change it
+  built the state doc from named fields only, so a declared `memory_spaces` would have
+  been silently dropped between the schema and the generator (the `.2` silent-path class).
+  `gen_state.py` refuses each declared construct by name (rc 2), and a missing `xlen` is
+  a named Refusal instead of a KeyError traceback.
+- Synth probe 2 did what the fixture exists to do: its pin went stale, the suite turned
+  RED, and the pin moved one layer down — the schema now accepts `memory_spaces` (rc 0)
+  while the generator refuses it by name (rc 2). Suite 6/6; STATE-GEN self-test grew four
+  RED arms (10/10); the rv64 descriptor re-validates and regenerates byte-identical.
+- The DSP's own `state.sexp` deliberately does NOT land yet: without `profile.sexp` no
+  gate would read it (measured — PROFILE-CONSISTENCY iterates `profiles/*/profile.sexp`),
+  so it lands with the scope-taxonomy slice where its gate attachment is measured.
+
 ## SEMULITH-BR-0013 (leaf P3-BREADTH.1) — the dsp56300-lab-v0 state census; the dump is complete
 
 - The SEM-08 hidden-state census re-ran for the exercised DSP profile (F6's per-profile

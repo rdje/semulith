@@ -117,6 +117,46 @@ PY
         --out "$t/state.rs" 2>&1)"; rc=$?
   arm "RED a descriptor without its SEM-08 census is refused, naming it" "$rc" 2 "$out" "hidden_state_census"
 
+  # RED: the P3-BREADTH.5 constructs (case dsp56300-lab-v0) are refused BY NAME at the
+  # generator — the schema declares them, emitting them is generator work, and a declared
+  # form must never be silently dropped. Each case lives in its own directory (family_for
+  # names the family from the file NAME). The surgery appends one form before the state
+  # form's closing paren.
+  mkdir -p "$t/family" "$t/spaces" "$t/stack" "$t/noxlen"
+  for case in family spaces stack; do
+    python3 - "$t/state.sexp" "$t/$case/state.sexp" "$case" <<'PY'
+import sys
+text = open(sys.argv[1], encoding="utf-8").read()
+forms = {
+    "family": ' (register_family (id "acc") (count 2) (width_bits 56) (ids "a, b")'
+              ' (authority architecture) (source "DSP56300FM §3.4.1"))',
+    "spaces": ' (memory_spaces (space (id "x") (word_bits 24)'
+              ' (authority architecture) (source "DSP56300FM §3.1")))',
+    "stack":  ' (hardware_stack (levels 16) (width_bits 48)'
+              ' (indexing "SP pre-increments; slot 0 unwritable")'
+              ' (stale_slots_observable true) (authority architecture)'
+              ' (source "DSP56300FM §5.4.3"))',
+}
+open(sys.argv[2], "w", encoding="utf-8").write(text.rstrip()[:-1] + forms[sys.argv[3]] + ")\n")
+PY
+  done
+  out="$(python3 scripts/gen_state.py --check --state "$t/family/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/state.rs" 2>&1)"; rc=$?
+  arm "RED a declared register_family is refused by name (F1)" "$rc" 2 "$out" "register_family declared"
+  out="$(python3 scripts/gen_state.py --check --state "$t/spaces/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/state.rs" 2>&1)"; rc=$?
+  arm "RED a declared memory_spaces is refused by name (F3)" "$rc" 2 "$out" "memory_spaces declared"
+  out="$(python3 scripts/gen_state.py --check --state "$t/stack/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/state.rs" 2>&1)"; rc=$?
+  arm "RED a declared hardware_stack is refused by name" "$rc" 2 "$out" "hardware_stack declared"
+
+  # RED: a descriptor without xlen is refused — the generator binds to arith::XLEN, and a
+  # missing binding is a Refusal, never a KeyError traceback.
+  sed 's/ (xlen 64)//' "$t/state.sexp" > "$t/noxlen/state.sexp"
+  out="$(python3 scripts/gen_state.py --check --state "$t/noxlen/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/state.rs" 2>&1)"; rc=$?
+  arm "RED a descriptor without xlen is refused, naming the binding" "$rc" 2 "$out" "no xlen"
+
   rm -rf "$t"
   printf 'STATE-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
