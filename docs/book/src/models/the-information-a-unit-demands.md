@@ -9,6 +9,14 @@
 > two units this project has actually built — `rv64i-lab-v0` (CPU) and `dsp56300-lab-v0`
 > (DSP) — and, for the board, derived honestly from the composition work that is not yet
 > measured.
+>
+> **This is a live chapter.** It is re-derived, not just re-read: each unit the project
+> models measures its own demand list, and the chapter changes with what is measured — a
+> "prospective" section becomes measured (the board's, when P4–P7 land), a class that
+> was one row splits (as "the widths" had to split into widths *and their readout
+> semantics* when the DSP bit), a row that never bites merges away. The rule for
+> changing it is the rule it already lives by: every claim cites a measured instance,
+> and anything not yet measured says so.
 
 "Prevents" has two distinct meanings, and keeping them apart is the spine of the whole
 chapter:

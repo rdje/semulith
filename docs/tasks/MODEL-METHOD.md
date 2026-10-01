@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `MODEL-METHOD`
-- Status: `done` (`2026-10-01` — `.18` landed the per-kind information-demand chapter; reopened once from the `2026-09-30` closure, which `.14` had made: the PDF probe measured the encodings
+- Status: `done` (`2026-10-01` — `.18`+`.19` landed: the per-kind demand chapter and its live-chapter marker; the `2026-09-30` closure was `.14`'s: the PDF probe measured the encodings
   re-sourceable from the primary document, adopt-in-principle, the re-source a later
   reviewed leaf. `.15`+`.16` landed `2026-09-29`/`30` (the feed consumed, the v20260120
   PDFs adopted); `.17` — the poller deafness came back FIXED, the channel two-way —
@@ -335,9 +335,28 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | — | the tree is DONE (18/18) | `.18` done `2026-10-01` (the per-kind information-demand chapter in the book); `.14` done `2026-09-30` (the probe measured: 52/52 opcodes extracted, zero conflicts, adopt-in-principle; the re-source is a later reviewed leaf — `decision_encoding-resourcing-probe`) |
+| 1 | — | the tree is DONE (19/19) | `.19` done `2026-10-01` (the live-chapter marker); `.14` done `2026-09-30` (the probe measured: 52/52 opcodes extracted, zero conflicts, adopt-in-principle; the re-source is a later reviewed leaf — `decision_encoding-resourcing-probe`) |
 
-## The `.18` leaf (in-progress)
+## The `.19` leaf (in-progress)
+
+- ID: `MODEL-METHOD.19` — **the demand chapter is a live chapter**
+  Status: `done` (`2026-10-01`, `SEMULITH-MM-0075`)
+  Goal: mark `.18`'s chapter as a living document whose content is re-derived — not just
+  re-read — as each new CPU/DSP/board is modelled: prospective sections become measured,
+  classes sharpen, split, or merge. The marker carries NO hand-kept date
+  (LIVE-DOC-CURRENCY) and states the editing rule the chapter already lives by (every
+  claim cites a measured instance; the unmeasured says so).
+  Acceptance: the chapter states its live status and its evolution rule; the tree
+  records the ruling.
+  Result (`2026-10-01`): the chapter's header now carries "This is a live chapter" —
+  re-derived, not just re-read: prospective sections become measured as units land (the
+  board's at P4–P7), classes split or merge with what is measured, and the editing rule
+  is the one the chapter already lives by (every claim cites a measured instance; the
+  unmeasured says so). No hand-kept date (LIVE-DOC-CURRENCY).
+  Lessons: `promotion: declined (a one-paragraph status marker; the durable fact is the
+  director's ruling, recorded here)`.
+
+## The `.18` leaf
 
 - ID: `MODEL-METHOD.18` — **the information a unit demands, per kind: CPU, DSP, board**
   Status: `done` (`2026-10-01`, `SEMULITH-MM-0074`)
@@ -399,6 +418,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.19` | `mdbook build docs/book` green; `make gate` green | the live-chapter marker stands |
 | `2026-10-01` | `.18` | `mdbook build docs/book` green; `make gate` green after the lockstep sweep (FRONTIER-SYNC, TREE-CLAIMS, DERIVED-COUNTS 31→32 all re-derived) | the per-kind chapter stands in the book; the tree DONE 18/18 |
 | `2026-09-30` | `MODEL-METHOD.17` | the fixed poller against the real catalogue, pre-reconcile | `semulith_gaps_open: 2`, `unmirrored: []` — the nested records are READ (pre-fix: 0, and a scratch probe was needed to discriminate at all) |
 | `2026-09-30` | `MODEL-METHOD.17` | the same probe, post-reconcile | `semulith_gaps_open: 0`, `unmirrored: []`, rc 0 — both sides read true |
@@ -492,6 +512,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.19` | `SEMULITH-MM-0075 (leaf MODEL-METHOD.19): the demand chapter is a live chapter` | the director's ruling recorded; the marker states the evolution rule, no hand-kept date |
 | `.18` | `SEMULITH-MM-0074 (leaf MODEL-METHOD.18): the information a unit demands — CPU, DSP, board — and what each absence prevents` | the mdBook chapter: demand + price per kind on the prevents-model/claim/bound spine; measured on the two standing units, prospective for the board |
 | `MODEL-METHOD.14` | `SEMULITH-MM-0073 (leaf MODEL-METHOD.14): the encoding re-sourcing probe — adopt-in-principle, measured` | 52/52 opcodes, zero conflicts, 37/52 by the naive parser; the re-source is a later reviewed leaf (`.8` owns the encoding); the tree CLOSES 17/17 |
 | `MODEL-METHOD.17` | `SEMULITH-MM-0059 (leaf MODEL-METHOD.17): the channel answers — the poller fix measured, the heard gaps reconciled` | corpus `92a73b6`; the channel is two-way; 45 materials unchanged |
@@ -550,3 +571,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
   information per kind and what each absence prevents (model / claim / bound), measured
   on `rv64i-lab-v0` and `dsp56300-lab-v0`, prospective and marked so for the board. The
   tree is DONE 18/18.
+- `2026-10-01`: `.19` done (`SEMULITH-MM-0075`) — the director ruled the demand chapter a
+  LIVE chapter: the header states its evolution rule (re-derived per modelled unit;
+  prospective sections become measured; classes split/merge; no hand-kept date). The
+  tree is DONE 19/19.

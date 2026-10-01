@@ -62,7 +62,7 @@ on the same commit. One commit per completed leaf.
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
 | [`MODEL-COMPOSE`](tasks/MODEL-COMPOSE.md) | `done` | — (6/6 leaves complete; a composition is a verdict, a discharge, and a materializable unit) | repo-local |
-| [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `done` (reopened once, for the per-kind chapter) | — (18/18 leaves complete; the per-kind information-demand chapter landed `2026-10-01`) | repo-local |
+| [`MODEL-METHOD`](tasks/MODEL-METHOD.md) | `done` (reopened once, for the per-kind chapter) | — (19/19 leaves complete; the demand chapter landed and is a LIVE chapter `2026-10-01`) | repo-local |
 | [`MODEL-BOOKS`](tasks/MODEL-BOOKS.md) | `done` | — (8/8 leaves complete; the per-unit book structure, the five-chapter arc, and the `UNIT-BOOKS` gate — every registered unit has a book that builds) | repo-local |
 | [`SOT-FORMAT`](tasks/SOT-FORMAT.md) | `done` | — (10/10 leaves complete; the `SOURCE-FORMAT` gate registered, the format split cannot return) | repo-local |
 | [`PUSH-DISCIPLINE`](tasks/PUSH-DISCIPLINE.md) | `done` | — (3/3 leaves complete; the cadence, the named suite at the boundary, and the append-only approval record gated by `PUSH-RECORD`) | repo-local |

@@ -1,5 +1,15 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — a chapter with a lifecycle (MODEL-METHOD.19)
+
+The director ruled the demand chapter a live one: its content will sharpen as more CPUs,
+DSPs and boards are modelled. The marker that went in states the evolution rule —
+re-derived per unit, prospective-becomes-measured, classes split or merge — and
+deliberately carries no date, because a hand-kept "status as of" is false the day after
+(LIVE-DOC-CURRENCY); git carries the currency, the chapter carries the rule. A document's
+lifecycle is part of its contract, and naming it keeps the next editor from treating a
+measured-on-two-units list as a settled one.
+
 ## _(2026-10-01)_ — what it takes, per kind (MODEL-METHOD.18)
 
 The director asked for the precise set of information needed to model a CPU, a DSP, or a

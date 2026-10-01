@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-MM-0075 (leaf MODEL-METHOD.19) — the demand chapter is a live chapter
+
+- Director ruling (`2026-10-01`): *The information a unit demands* is a WIP by design —
+  a live chapter that is re-derived, not just re-read, as each new CPU/DSP/board is
+  modelled: prospective sections become measured, classes split or merge with what is
+  measured, and every claim keeps citing a measured instance. The chapter header now
+  states that rule (no hand-kept date — LIVE-DOC-CURRENCY). `MODEL-METHOD` DONE 19/19.
+
 ## SEMULITH-MM-0074 (leaf MODEL-METHOD.18) — the information a unit demands, per kind
 
 - New mdBook chapter, *The information a unit demands — CPU, DSP, board* (The models
