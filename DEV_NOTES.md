@@ -1,5 +1,44 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the second unit's book, and the ceiling the director raised (P3-BREADTH.6 slice 2)
+
+Registering the unit meant the book generator had to stop refusing the DSP shape. The
+three measured walls — exactly one `encoding_source` required (`gen_model_book: REFUSED
+— … found 0`, rc=2), `encoding.sexp` required, `state["integer_registers"]` assumed —
+each became an extension naming its case: `emit_encoding` emits the declared-vehicle
+fragment when the profile declares `(route sibling-crate)` (the refusal stands without
+the declaration — applicability derives from the vehicle block, the `.7` decision);
+`emit_contracts` treats `encoding.sexp` as the ONE document a sibling-crate unit may
+lack (its table row names the deferred lane and the reopening conditions), reads
+register families / memory spaces / the hardware stack when there is no integer file,
+and counts the `.a56` checkpoint corpus when no `*.expected.sexp` guests exist. The
+rv64i regression control is byte-exact: `git diff` over the four regenerated fragments
+shows ONLY the generator-digest header line.
+
+The census took judgement, not mechanics: the requires set is C17-in / C14-out against
+rv64i's — reset is this unit's own decision (D-RESET-STATE) while interrupts are a named
+exclusion — and the 24 rows distinguish `missing` (excluded subsystems with named
+closing routes: interrupts, modes, OnCE) from `out-of-scope` (the architecture never
+owed them: FP, SIMD, MMU, multicore). SEAM-INTEGRITY caught one under-evidenced ROOT
+CAUSE box on the first pass — fixed with the probe's concrete command line, the gate
+doing its job (679 boxes re-accepted).
+
+The same slice carries a director ruling, documented on the record: **task-tree growth
+is allowed** — the docs/tasks/ per-part rose to 128 KiB
+(`decision_task-tree-per-part-growth`) after six forced archive operations in one day,
+two of them archiving ACTIVE narratives hours old. The director's invariant stands and
+is recorded with it: a bound remains — a file must stay readable in one sitting, growth
+is never unbounded; and his standing instruction: **ask for ceiling raises — they are
+approved; document everything — requests, rulings, nothing under the radar.** My open
+request under it: MEMORY.md (7,168 B) and LIVE_STATUS.md (6,144 B) both needed
+fit-trims in three of today's commits — a modest raise (≈ 8 KiB each) would end the
+recurring compression of resume-pointer content. Awaiting the director's word; the
+fit-trims continue meanwhile.
+
+Validation: UNIT-BOOKS ok (2 units, both build); MATERIALS-BILL ok (12 DSP materials,
+every section negative); SCOPE-COVERAGE ok (2 units may code); `mdbook build` rc 0;
+`make gate` all-doctrines-green (SEAM-INTEGRITY 679 boxes).
+
 ## _(2026-10-01)_ — the second unit's contract records, and the fixture that noticed (P3-BREADTH.6 slice 1)
 
 The DSP profile's `requirements.sexp`/`contract-obligations.sexp` landed as governed
@@ -628,42 +667,4 @@ sentence. Validation: 175/175 verify suites; smoke green incl. the four-step pro
 bench 53 arms; gate green.
 
 Lesson: `promotion: declined` (recorded in the leaf).
-
-## _(2026-09-30)_ — the discrepancy census: one divergence exists (P2-SCALAR.6 design)
-
-Discrepancy reduction opened with the measurement its acceptance implies: enumerate every
-recorded difference and every campaign result before minimizing anything. Eight
-`references.sexp` difference records dispositioned with citations — two harness, one
-trace-vocabulary, one sub-granularity observable, one corrected configuration defect
-(pinned by guest-no-device), one board-layer (stated precondition, not a model defect),
-one reference-vs-reference (sail's 56-bit tval mask; spike AND semulith agree) — leaving
-exactly one model-vs-references behavioral divergence: DIFF-FENCEI-EXECUTED, the
-legitimate UNSPECIFIED case. The minimization is one word (0x0000100F alone reproduces
-it: policy trap at step 0; both references nop and run off the end into the measured
-illegal zero word, staying each other's control). The reducer stays out of scope by
-design: it minimizes against MUTANT divergences, not reference differences.
-
-## _(2026-09-30)_ — the directed guests land; P2-SCALAR.5 done (PS-0070)
-
-The eight guests from the measured census landed with the full wiring (gen_guests tuple +
-regenerated guests.rs, one run/tests.rs suite each, the mutation census's 55 pinned
-crossings, the smoke tuple, matrix cells chosen by the axis each guest genuinely
-exercises). The offline differential earned its keep twice, both authoring-side:
-dir-ext-matrix's first draft put its data cell at entry+0x60 — INSIDE the 0x8C code
-region — so the zeroing stores patched the remaining instructions and the run stopped at
-25 of 35 steps (D-CODE-VISIBILITY working as declared, against the author); moved to
-0xA0, census addresses with it. dir-x0-writes' step-0 auipc constant was hand-typed
-0x8000000080000000; re-derived. And the generated-fixture discipline bit once: guests.rs
-must be REGENERATED after an expectation edit — a stale fixture replays the old words
-(the two "persistent" failures were exactly that, not model behavior). The live smoke ran
-all 48 guests three-way green: 642/642 aligned steps (+150), every run reproducing. One
-documentary defect closed (c-scope.c's overclaim; the jump-table idiom is now a measured
-guest). Validation: 174/174 verify suites; smoke 262 PASS / 0 FAIL; coverage 52/52;
-matrix self-test 12/0; comparator 19/0; bench 52 arms after the wasm rebuild
-(smoke-bench reads the built artifact — `make ci` builds before running; a bare
-smoke-bench on a stale module reads the old guest set, measured); `make gate` green;
-both books render.
-
-Lesson: `promotion: declined` (the regenerate-after-edit rule is enforced by the
-differential itself — stale fixtures fail loudly, measured this strand).
 

@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/rv64i-lab-v0/references.sexp`  `dc971396a462888776dbbe8ebc1935c0e2fa1d8692a3aeb614e34178bb3b781b`
-     Generator: `scripts/gen_model_book.py` (sha256 `9d24f751b8b7cdc1b608927430b60d6312bcdcd66984a4f4d8bf7d9be4f8eea7`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `4a782e2fd828d743f1edf8e9ff7162f6228e4054a5717eb5e0a8b14ead8d21bb`) -->
 
 Encoding source **`RISCV-OPCODES`** — https://github.com/riscv/riscv-opcodes (BSD-3-Clause (RISC-V International, 2022)), retrieved 2026-09-14 into `target/refs/riscv-opcodes/`.
 

@@ -73,6 +73,17 @@ def _load(loader, path: Path) -> dict:
         raise GenError(f"{rel(path)}: does not map — {exc}") from exc
 
 
+def _vehicle_route(profile_dir: Path) -> str | None:
+    """The unit's declared vehicle route (P3-BREADTH.7): applicability derives from the
+    declaration (`decision_gate-applicability-by-declared-vehicle`), never from a guess."""
+    path = profile_dir / "profile.sexp"
+    if not path.is_file():
+        return None
+    vehicle = _load(D.load_profile, path).get("vehicle") or {}
+    route = vehicle.get("route")
+    return str(route) if route is not None else None
+
+
 def _bytes(n: int) -> str:
     return f"{n:,}"
 
@@ -114,10 +125,29 @@ def emit_specifications(sources_path: Path) -> str:
     return "\n".join(a)
 
 
-def emit_encoding(references_path: Path) -> str:
+def emit_encoding(profile_dir: Path) -> str:
+    references_path = profile_dir / "references.sexp"
     doc = _load(D.load_references, references_path)
     encs = doc.get("encoding_source", [])
     if len(encs) != 1:
+        # case dsp56300-lab-v0 (P3-BREADTH.6 slice 2): no encoding_source record exists
+        # because the encoding's home is the sibling crate — the DECLARED vehicle. The
+        # fragment says so honestly; without the declaration the refusal stands.
+        if not encs and _vehicle_route(profile_dir) == "sibling-crate":
+            a = _header([references_path, profile_dir / "profile.sexp"])
+            a.append("This unit declares its vehicle as `(route sibling-crate)`: the "
+                     "encoding space has no `encoding_source` record because it lives in "
+                     "the sibling crate's hand-written decoder — every mask is cited per "
+                     "form to the pinned family manual and cross-checked against the "
+                     "pinned assembler (`crates/semulith-dsp56300`).")
+            a.append("")
+            a.append("There is no `encoding.sexp`: the encoding/definition generalization "
+                     "was measured a lane, not an extension (24-bit decode emission, a DSP "
+                     "fragment family, semantics as data — `P3-BREADTH.5` slice 3), and is "
+                     "deferred with named reopening conditions; no current milestone "
+                     "consumes it (`decision_lane-consumption`).")
+            a.append("")
+            return "\n".join(a)
         raise GenError(f"{rel(references_path)}: expected exactly one encoding_source "
                        f"record, found {len(encs)}")
     enc = encs[0]
@@ -172,21 +202,30 @@ def emit_contracts(profile_dir: Path) -> str:
     profile_path = profile_dir / "profile.sexp"
     reqs_path = profile_dir / "requirements.sexp"
     obs_path = profile_dir / "contract-obligations.sexp"
+    enc_path = profile_dir / "encoding.sexp"
     inputs = [profile_dir / n for n in INTERNAL_CONTRACTS if not n.endswith("/")]
+    # case dsp56300-lab-v0 (P3-BREADTH.6 slice 2): encoding.sexp is the ONE document a
+    # unit may lack — the encoding generalization is a deferred lane and the sibling
+    # crate is the declared vehicle. The table ROW below names the absence; any other
+    # missing document stays a refusal.
     for p in inputs:
-        if not p.is_file():
+        if not p.is_file() and not (p.name == "encoding.sexp"
+                                    and _vehicle_route(profile_dir) == "sibling-crate"):
             raise GenError(f"{rel(p)}: the dossier document is missing")
+    inputs = [p for p in inputs if p.is_file()]
     prof = _load(D.load_profile, profile_path)
     state = _load(D.load_state, profile_dir / "state.sexp")
-    iregs = state["integer_registers"]
+    iregs = state.get("integer_registers")
     hidden = state.get("hidden_state_census", {}).get("answer", "—")
-    enc = S.read_file(profile_dir / "encoding.sexp")[0]
-    comp = S.children(enc, "compose")
-    if len(comp) != 1:
-        raise GenError(f"{rel(profile_dir / 'encoding.sexp')}: expected one compose form")
-    base = str(S.field(comp[0], "base", "encoding.sexp"))
-    ext = S.children(comp[0], "extensions")
-    composed = [base] + [str(x) for x in (ext[0][1:] if ext else [])]
+    composed: list[str] = []
+    if enc_path.is_file():
+        enc = S.read_file(enc_path)[0]
+        comp = S.children(enc, "compose")
+        if len(comp) != 1:
+            raise GenError(f"{rel(enc_path)}: expected one compose form")
+        base = str(S.field(comp[0], "base", "encoding.sexp"))
+        ext = S.children(comp[0], "extensions")
+        composed = [base] + [str(x) for x in (ext[0][1:] if ext else [])]
     n_reqs = _count_records(reqs_path)
     obs = R.load(obs_path)
     n_checks = sum(len(o["required_checks"]) for o in obs)
@@ -195,6 +234,7 @@ def emit_contracts(profile_dir: Path) -> str:
     n_axes = len(S.children(interactions, "axis"))
     guests = sorted((profile_dir / "guests").glob("*.expected.sexp"))
     steps = sum(len(D.load_expectations(g)["step"]) for g in guests)
+    guests_a56 = sorted((profile_dir / "guests").glob("*.a56"))
     forms = prof["scope"]["count_total"]
 
     a = _header(inputs)
@@ -202,21 +242,45 @@ def emit_contracts(profile_dir: Path) -> str:
     a.append("| --- | --- | --- |")
     a.append(f"| `profile.sexp` | the unit's declaration: scope, decisions, authorities | "
              f"{len(prof['decision'])} decisions, {forms} declared instruction forms |")
-    a.append(f"| `state.sexp` | the architectural-state census, including the hidden-state "
-             f"census | {iregs['count']} integer registers, XLEN {iregs['width_bits']}, "
-             f"hidden state: {hidden} |")
-    a.append(f"| `encoding.sexp` | the composed encoding space (fragments resolved, "
-             f"collision-free, gated by UNIT-COMPOSITION) | composes "
-             f"{', '.join(f'`{c}`' for c in composed)} |")
+    if iregs is not None:
+        a.append(f"| `state.sexp` | the architectural-state census, including the hidden-state "
+                 f"census | {iregs['count']} integer registers, XLEN {iregs['width_bits']}, "
+                 f"hidden state: {hidden} |")
+    else:
+        # case dsp56300-lab-v0: the register census is families with masked widths and
+        # per-part readouts, not an x0-anchored integer file (P3-BREADTH.5 slice 1).
+        families = len(state.get("register_family", []))
+        spaces = len(state.get("memory_spaces", []))
+        stack = ("the hardware stack declared" if state.get("hardware_stack")
+                 else "no hardware stack")
+        a.append(f"| `state.sexp` | the architectural-state census, including the hidden-state "
+                 f"census | {families} register families (masked widths, per-part readouts), "
+                 f"{spaces} memory spaces, {stack}, hidden state: {hidden} |")
+    if enc_path.is_file():
+        a.append(f"| `encoding.sexp` | the composed encoding space (fragments resolved, "
+                 f"collision-free, gated by UNIT-COMPOSITION) | composes "
+                 f"{', '.join(f'`{c}`' for c in composed)} |")
+    else:
+        a.append("| `encoding.sexp` | DEFERRED — the encoding/definition generalization was "
+                 "measured a lane, not an extension (`P3-BREADTH.5` slice 3); the sibling "
+                 "crate is the declared, exercised vehicle | no document — the reopening "
+                 "conditions are named in the tree |")
     a.append(f"| `requirements.sexp` | the predeclared requirements, one per decision "
              f"(RECORD-SCHEMA cross-checks the statements verbatim) | {n_reqs} requirements |")
     a.append(f"| `contract-obligations.sexp` | the environment contract "
              f"(`{obs[0]['contract_id']}`): every obligation with positive AND negative "
              f"checks | "
              f"{len(obs)} obligations, {n_checks} declared checks |")
-    a.append(f"| `guests/` | the EVD-05 guest corpus: independently encoded programs and "
-             f"specification-derived expectations | {len(guests)} guests, "
-             f"{steps} expected steps |")
+    if guests:
+        a.append(f"| `guests/` | the EVD-05 guest corpus: independently encoded programs and "
+                 f"specification-derived expectations | {len(guests)} guests, "
+                 f"{steps} expected steps |")
+    else:
+        # case dsp56300-lab-v0: the corpus is checkpoint-compared .a56 guests (canonical
+        # end-state dumps), not per-step expectation documents.
+        a.append(f"| `guests/` | the synthetic guest corpus: checkpoint-compared `.a56` "
+                 f"programs, canonical end-state dumps against the pinned reference "
+                 f"(`cyc` never compared) | {len(guests_a56)} guests |")
     a.append(f"| `interactions.sexp` | the declared interaction matrix (P2-SCALAR.4), "
              f"gated by INTERACTION-MATRIX | {n_cells} cells over {n_axes} axes |")
     a.append("")
@@ -225,7 +289,7 @@ def emit_contracts(profile_dir: Path) -> str:
 
 EMITTERS = {
     "pinned-specifications.md": lambda pd: emit_specifications(pd / "sources.sexp"),
-    "encoding-tables.md": lambda pd: emit_encoding(pd / "references.sexp"),
+    "encoding-tables.md": emit_encoding,
     "reference-models.md": lambda pd: emit_references(pd / "references.sexp"),
     "internal-contracts.md": emit_contracts,
 }

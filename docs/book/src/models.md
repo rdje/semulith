@@ -8,10 +8,14 @@ dossier, gated so a digest cannot rot), what the materials do not contain, the m
 references and what their agreement is worth, and the evidence with the honest gate
 verdict.
 
-Today exactly one unit exists:
+Today two units exist:
 
 - **`rv64i-lab-v0`** (kind: processor) — `docs/models/rv64i-lab-v0/`. Build it with
   `mdbook build docs/models/rv64i-lab-v0`, or build every book with `make book`.
+- **`dsp56300-lab-v0`** (kind: processor) — `docs/models/dsp56300-lab-v0/`. The bounded,
+  EXPERIMENTAL DSP56300 subset: a sibling-crate model, checkpoint-compared against the
+  pinned reference — and the unit that pushed the public abstraction past its
+  scalar-CPU assumptions (`P3-BREADTH`).
 
 The wiring is a gate, not a habit: the `UNIT-BOOKS` doctrine
 (`scripts/check_unit_books.sh`) enumerates the registered units from

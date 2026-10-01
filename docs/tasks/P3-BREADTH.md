@@ -217,16 +217,22 @@ unsupported families remain unclaimed.
   Status: `in_progress` (`2026-10-01` — slice 1: the DSP records)
   Goal: generate from pinned inputs; publish the capability report.
   Acceptance: families with no evidence are listed as **unclaimed**, explicitly.
-  Slice plan (recorded before code, `2026-10-01`): three slices, each a governed landing —
+  Slice plan (recorded before code, `2026-10-01`; reordered mid-flight, measured): three
+  slices, each a governed landing —
   1 = the DSP's `requirements.sexp`/`contract-obligations.sexp` records (RECORD-SCHEMA
   attaches on landing with zero gate edits — the catalogues auto-discover);
-  2 = the BREADTH report itself (`gate_report.py` gains the cross-unit builder;
-  `check_gate_report.sh` gains a repo-level leg; the report lives at
-  `docs/BREADTH-REPORT.md` because this gate is cross-architecture, not a profile's);
-  3 = the unit registration + per-unit book (`units.sexp` + the category-needs census +
+  2 = the unit registration + per-unit book (`units.sexp` + the category-needs census +
   a book that builds; `gen_model_book.py` learns the sibling-crate shape — the measured
   blocker: it requires exactly one `encoding_source`, requires `encoding.sexp`, and reads
-  `state["integer_registers"]`; each extension names the DSP case).
+  `state["integer_registers"]`; each extension names the DSP case);
+  3 = the BREADTH report itself (`gate_report.py` gains the cross-unit builder;
+  `check_gate_report.sh` gains a repo-level leg; the report lives at
+  `docs/BREADTH-REPORT.md` because this gate is cross-architecture, not a profile's).
+  **The reorder, measured:** the report's claim list IS the unit registry (a family is
+  claimed exactly by a registered unit), so a report generated before the registration
+  reads "1 registered unit" and lists the DSP56300 family — whose evidence axis 1 just
+  measured green — as UNCLAIMED. The capability report must be the leaf's capstone, not
+  its middle slice.
   Slice 1 design (recorded before code, `2026-10-01`): **mirror the rv64i pattern exactly,
   at the DSP's size.** Seven decisions in `profile.sexp` ⇒ seven `REQ-D-*` requirements
   (COVERAGE: statements byte-identical), kinds/categories/risks assigned per record;
@@ -258,6 +264,29 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the fixture-repin-on-landing behaviour is the gate's own
   designed staleness, now recorded in the check's comment where the next landing meets it;
   the records' shape is RECORD-SCHEMA's rules applied, not a new method)`.
+  Slice 2 (`2026-10-01`, `SEMULITH-BR-0020`): the unit REGISTERED, its book STANDING.
+  `gen_model_book.py` learned the sibling-crate shape, each extension naming the DSP case:
+  `emit_encoding` emits the declared-vehicle fragment when no `encoding_source` exists
+  (the refusal stands without the declaration — applicability derives from the vehicle
+  block, `decision_gate-applicability-by-declared-vehicle`); `emit_contracts` treats
+  `encoding.sexp` as the ONE document a sibling-crate unit may lack (the row names the
+  deferred lane), reads register families/spaces/stack when `integer_registers` is
+  absent, and counts the `.a56` checkpoint corpus when no `*.expected.sexp` guests
+  exist. rv64i regression measured byte-exact: every fragment differs ONLY in the
+  generator-digest header line. `units.sexp` gained the DSP row (requires: the 14
+  categories its scope needs — C17 in, C14 out against rv64i's set: reset is this unit's
+  own decision, interrupts a named exclusion); the 24-row category-needs census landed
+  with honest dispositions (8 covered, 6 partial, 3 missing-with-closing-routes, 4
+  out-of-scope — the architecture never owed them, 3 deferred-to-board). The book
+  `docs/models/dsp56300-lab-v0/` stands: the five-part arc in six chapters, the bill's
+  12 sections each carrying its does-not-supply. Every attaching gate green on first
+  full run: UNIT-BOOKS (2 units, both build), MATERIALS-BILL (12 materials, fragments
+  match, every section negative), SCOPE-COVERAGE (2 units may code), FACT-OWNERSHIP (29
+  kinds — the four fragment mirrors registered).
+  Lessons: `promotion: declined (the applicability-from-declared-vehicle pattern is the
+  .7 decision applied to a new consumer — the durable rule lives in
+  decision_gate-applicability-by-declared-vehicle; the per-unit INTERNAL_CONTRACTS
+  question was answered by keeping the constant and making the ROW honest, recorded here)`.
 
 - ID: `P3-BREADTH.7` — **land the dsp56300-lab-v0 dossier as governed documents**
   Status: `done` (`2026-10-01` — slices 1–3: the vehicle declaration + the gate legs, the
@@ -290,65 +319,22 @@ unsupported families remain unclaimed.
   schema-validation gate is a new doctrine (the surfaced gap). Slices: 1 = the vehicle
   declaration + the EXTRACTION/EXERCISE-COVERAGE legs, measured against the drafts;
   2 = the DSP matrix + the schema-validation gate; 3 = the landing.
-  Slice 1 (`2026-10-01`, `SEMULITH-BR-0017`): the vehicle declaration + the two gate
-  legs, measured. `schema/profile.sexp` gains the optional `vehicle` block (route ×
-  comparison, both closed enums, authority+source — the header names the case);
-  `dossier_sexp` carries it (parse + emit — no silent drop). `check_extraction.py`: the
-  sibling-crate leg — reported by name, and a declaration contradicted by an
-  `encoding.sexp` is a finding (RED arm). `check_exercise_coverage.sh`: the checkpoint
-  leg — the composition leg is n/a exactly while no `encoding.sexp` exists, and the
-  exercised set is the `.a56` guest census BOTH directions (UNEXERCISED a declared form
-  no guest runs; UNDECLARED EXERCISE a guest instruction the scope does not name; five
-  new self-test arms, 13/13). Measured against the real drafts (untracked +
-  intent-to-add, then removed): **EXERCISE-COVERAGE ok, 19/19 — the DSP's whole declared
-  scope is exercised by the corpus**; EXTRACTION ok (sibling-crate route reported);
-  PROFILE-CONSISTENCY ok (2 dossiers). rv64 regression: 52/52 unchanged, both gates'
-  self-tests green.
-  Slice 2 (`2026-10-01`, same commit — the two slices interlock through the working-tree
-  derived counts, so they land together): the DSP matrix + the schema-validation gate +
-  the FACT-OWNERSHIP second-unit fix. `interactions.sexp` drafted (6 axes — progress,
-  stop, loop, stack, alias, state; 21 cells; mechanism/degenerate dispositions only —
-  the corpus is checkpoint-compared, so no guest cells): measured
-  `python3 scripts/check_interaction_matrix.py profiles/dsp56300-lab-v0` (drafts placed)
-  → `21 cells declared, every disposition resolves`. The closed mechanism registry gained
-  two entries, each naming its case: `dsp56300-smoke-agreement` (needle: the driver's
-  verdict line) and `dsp56300-typed-stop` (needle: `pub enum ModelStop`). **DOSSIER-SCHEMA
-  registered (the 30th doctrine)**: `scripts/check_dossier_schema.sh` — every tracked
-  `profiles/*/*.sexp` with a same-named (or family: `.expected.sexp`, `.override.sexp`)
-  schema validates through the one checker; skipped basenames counted BY NAME (64
-  validated / 2 skipped: baseline.sexp, portability.sexp); fired RED before registration
-  against the pre-fix D-FENCE document recovered from git history (`duplicated
-  single-valued field "note"` — the exact drift class); self-test 3/3; mirrors updated
-  (DOCTRINE_ENFORCEMENT.md, the book's doctrine chapter). **FACT-OWNERSHIP's second-unit
-  fix**: the corpus pair enumeration was a cross product — exact with one unit, inventing
-  cross-unit nonsense pairs with two (measured at the landing probe: rv64's requirements
-  "restating" the DSP's profile). Now same-unit pairing for `profiles/*/` patterns and
-  registry-nominated cross-family pairs with a restater-participation census (owner-side
-  participation NOT required — the DSP's state.sexp has no generated mirror BY DESIGN,
-  the `state.rs` naming convention). Registry kinds qualified per unit. Self-test 8/8
-  unchanged — the single-unit regression control. The DSP's registry rows land in slice 3
-  with the documents (a MISSING OWNER row is the honest failure pre-landing).
+  The full slice narratives (the vehicle declaration + the two gate legs; the DSP matrix,
+  DOSSIER-SCHEMA — the 30th doctrine — and the FACT-OWNERSHIP same-unit pairing fix; the
+  landing) live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md). Result: the
+  three schema-validated documents landed in `profiles/dsp56300-lab-v0/` with every
+  attaching gate green (EXERCISE-COVERAGE 19/19, EXTRACTION sibling-crate reported,
+  INTERACTION-MATRIX 21 cells resolving, PROFILE-CONSISTENCY 2 dossiers, DOSSIER-SCHEMA
+  62 validated / 2 skipped-by-name, FACT-OWNERSHIP 23 kinds); the DOSSIER's rows read
+  present/deferred with owners. `.7` DONE.
   Lessons: `promotion: declined (the interlock lesson — derived counts measure the working tree, so co-developed slices land in one commit — is recorded here where the next batch meets it)`.
-  Slice 3 (`2026-10-01`, `SEMULITH-BR-0018`): THE LANDING. The three validated documents
-  moved from `artifacts/p3-breadth/dsp56300-dossier/` to `profiles/dsp56300-lab-v0/`
-  (headers rewritten from "NOT LANDED" to the landed gate map; git rename detection kept
-  the lineage). The DSP's fact-ownership rows landed with them — `state
-  (dsp56300-lab-v0)` + the profile mirror governed by PROFILE-CONSISTENCY, plus
-  configuration/pinned-sources/reference-dossier/guest-programs — and the two
-  post-landing census arms (GREEN: two units, no cross-unit pair invented; RED: the
-  second unit's same-unit pair unregistered, named). Every attaching gate green with the
-  documents in place: EXERCISE-COVERAGE (19/19), EXTRACTION (sibling-crate reported),
-  INTERACTION-MATRIX (2 units; 21 DSP cells resolve), PROFILE-CONSISTENCY (2 dossiers),
-  DOSSIER-SCHEMA (62 validated / 2 skipped-by-name), FACT-OWNERSHIP (23 kinds). The
-  DOSSIER's rows now read present/deferred with owners; the stale "lands with the model
-  slice" wording for requirements + unit registration re-routed to `.6`. `.7` DONE.
   Lessons: `promotion: declined (the landing mechanics are recorded in the leaf; the durable rule — never land a document no gate reads — was already the leaf's goal)`.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.6` | `in_progress` | the BREADTH gate report — slice 1 (the DSP records) in flight; then the report (slice 2) and the unit registration + per-unit book (slice 3) |
+| 1 | `P3-BREADTH.6` | `in_progress` | slices 1–2 landed (the records; the registration + book); slice 3 is the BREADTH report itself |
 | — | `P3-BREADTH.1` | `slice-gated` | executable-now scope done `2026-10-01`; the F6 census leg landed for dsp56300-lab-v0 (`SEMULITH-BR-0013`) — F6 refires per new profile; F2/F4/F5 (TI/VLIW) stay unbuilt, recorded |
 
 ## Decisions
@@ -422,38 +408,46 @@ unsupported families remain unclaimed.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-`P3-BREADTH.1` slices (the F2 probe, the F6 census leg), `.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4, `.5` slices 1–3, `.7` slices 1–3 (completed `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
+`P3-BREADTH.1` slices (the F2 probe, the F6 census leg), `.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4, `.5` slices 1–3, `.7` slices 1–3, `.6` slice 1 (completed `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
 
-`P3-BREADTH.6`, slice 1 (`2026-10-01`, `SEMULITH-BR-0019`):
+`P3-BREADTH.6`, slice 2 (`2026-10-01`, `SEMULITH-BR-0020`):
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — the DOSSIER deferred the requirements /
-  contract-obligations records to `.6` ("the crate's per-form FM citations are the
-  interim record"); the records' shape is fixed by RECORD-SCHEMA's rules (COVERAGE —
-  byte-identical decision statements; MIRROR — verbatim restatement; AUTHORITY; CITED;
-  OBLIGED — ±POS/NEG). WHERE: `profiles/dsp56300-lab-v0/{requirements,
-  contract-obligations}.sexp` (new), `doctrine/fact_ownership.tsv` (two rows),
-  `scripts/check_fact_ownership.sh` (the GREEN fixture's two-unit re-pin).
-- [x] **ADDRESSED (verified)** — `python3 scripts/check_sexp_schema.py
-  profiles/dsp56300-lab-v0/requirements.sexp schema/requirements.sexp` → `ok`; the same
-  for `contract-obligations.sexp` → `ok`; `bash scripts/check_requirements.sh` →
-  `RECORD-SCHEMA: ok (10 record file(s) validate and agree with their profile; …)` —
-  zero gate edits on landing; `bash scripts/check_fact_ownership.sh` → `ok (25 fact
-  kind(s) …)`; self-test `10 pass / 0 fail` after the fixture re-pin (RED before it:
-  `UNREGISTERED MIRROR PAIR`, the designed staleness).
+- [x] **ROOT CAUSE (WHY + WHERE)** — the unit registration was deferred to `.6` because
+  UNIT-BOOKS requires a book that builds, and the book's generator refused the DSP
+  shape at three measured walls — measured pre-change: `python3
+  scripts/gen_model_book.py --check --profile-dir profiles/dsp56300-lab-v0 --book-dir
+  docs/models/dsp56300-lab-v0` → `gen_model_book: REFUSED — … expected exactly one
+  encoding_source record, found 0`, rc=2 (with `encoding.sexp` required and
+  `state["integer_registers"]` assumed beside it). WHERE:
+  `scripts/gen_model_book.py` (the sibling-crate shape), `materials/units.sexp` (the
+  row), `materials/category-needs.sexp` (24 census rows),
+  `docs/models/dsp56300-lab-v0/` (the book), `doctrine/fact_ownership.tsv` (the mirror
+  rows).
+- [x] **ADDRESSED (verified)** — rv64i regression byte-exact: `git diff` over the four
+  regenerated fragments shows ONLY the generator-digest header line; the DSP gates on
+  first full run: `bash scripts/check_unit_books.sh` → `ok (2 unit(s) — every
+  registered unit has its book, and every book builds)`; `bash
+  scripts/check_materials_bill.sh` → `ok (2 unit(s) …)` (12 DSP materials, every
+  section carries its does-not-supply); `bash scripts/check_scope_coverage.sh` → `ok
+  (2 unit(s) may code)`; `mdbook build docs/models/dsp56300-lab-v0` → rc 0.
 - [x] **NO REGRESSION** — `bash scripts/check_doctrines.sh` → `=== all doctrines green
-  ===` end-to-end; the rv64i catalogues byte-untouched this slice.
-- [x] **FIX** — the two catalogues (7 requirements + 13 obligations, 26 declared checks,
-  contract `dsp56300-lab-env-v0`), the two registry rows, the fixture re-pin with its
-  reason comment.
+  ===` end-to-end with the registration landed; both catalogues validate
+  (`check_sexp_schema.py` on `units.sexp` + `category-needs.sexp` → ok).
+- [x] **FIX** — the generator's three sibling-crate extensions (each naming the DSP
+  case; the refusals stand without the declared vehicle), the registry row (C17 in /
+  C14 out against rv64i's requires set, the reason in the file's comment), the 24
+  census rows (8 covered / 6 partial / 3 missing-with-closings / 4 out-of-scope / 3
+  deferred-to-board), the six-chapter book, the four mirror rows.
 - [x] **LOCKSTEP** — tree (slice record, checklist, logs, frontier), the DOSSIER (the
-  records row flips to present), `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
-  `DEV_NOTES.md`; mdBook `plan/p3.md` (the records land); the `.7` slice-3 checklist
-  archived verbatim (the per-part ceiling held).
+  registration row flips to present), `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`; mdBook `models.md` (two units) + `plan/p3.md` (the registration);
+  the `.6` slice-1 checklist archived verbatim (the per-part ceiling held).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.6` slice 2 | rv64i fragments regenerated — `git diff` shows ONLY the generator-digest line; UNIT-BOOKS ok (2 units, both build); MATERIALS-BILL ok (12 DSP materials, every section negative); SCOPE-COVERAGE ok (2 units may code); units/category-needs schema-validate ok; `mdbook build` rc 0; `make gate` → all doctrines green | the dsp56300-lab-v0 unit is REGISTERED and its book STANDS — generator learned the sibling-crate shape, 24 census rows landed, four mirror rows registered |
 | `2026-10-01` | `.6` slice 1 | both catalogues schema-validate ok; RECORD-SCHEMA ok (10 record files, zero gate edits on landing); FACT-OWNERSHIP ok (25 kinds), self-test 10/10 after the GREEN fixture's two-unit re-pin (RED before: `UNREGISTERED MIRROR PAIR`); `make gate` → all doctrines green | the DSP's requirements + contract-obligations records LAND governed: 7 requirements, 13 obligations, 26 declared checks, contract `dsp56300-lab-env-v0` |
 | `2026-10-01` | `.7` slice 3 | the landing: every attaching gate green with the documents in place — EXERCISE-COVERAGE 19/19 (DSP) + 52/52 (rv64), EXTRACTION ok (2 units), INTERACTION-MATRIX ok (2 units, 21 DSP cells), PROFILE-CONSISTENCY ok (2 dossiers), DOSSIER-SCHEMA 62 validated / 2 skipped-by-name, FACT-OWNERSHIP ok (23 kinds), self-test 10/10 (two new census arms); `make gate` green | **the dsp56300-lab-v0 dossier is LANDED and governed**; `.7` DONE 3/3 |
 | `2026-10-01` | `.7` slices 1–2 (one commit — the slices interlock through the working-tree derived counts) | drafts placed: EXERCISE-COVERAGE ok 19/19, EXTRACTION ok, PROFILE-CONSISTENCY ok (2), INTERACTION-MATRIX ok (2 units; the DSP's 21 cells resolve); DOSSIER-SCHEMA 64 validated / 2 skipped-by-name, self-test 3/3, historical RED firing on the pre-fix D-FENCE document; FACT-OWNERSHIP self-test 8/8; coverage/extraction self-tests 13/13, 5/5; `make gate` green (30 doctrines, 323 arms re-derived) | the vehicle declaration + the checkpoint/sibling-crate legs; the DSP matrix drafted; DOSSIER-SCHEMA registered; the FACT-OWNERSHIP cross-product fix (same-unit pairing) |
@@ -474,6 +468,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.6` slice 2 | `SEMULITH-BR-0020 (leaf P3-BREADTH.6): the second unit registered — the sibling-crate book generator, the census rows, the book; every attaching gate green` | gen_model_book learned the sibling-crate shape (rv64i fragments byte-stable modulo the generator digest); units.sexp + 24 category-needs rows; the six-chapter book builds; four mirror rows |
 | `.6` slice 1 | `SEMULITH-BR-0019 (leaf P3-BREADTH.6): the DSP records land governed — 7 requirements, 13 obligations, 26 declared checks; RECORD-SCHEMA attaches with zero gate edits` | the catalogues mirror the rv64i pattern at the DSP's size; FACT-OWNERSHIP gains two rows and its GREEN fixture re-pins to the two-unit corpus (the designed staleness fired RED first) |
 | `.7` slice 3 | `SEMULITH-BR-0018 (leaf P3-BREADTH.7): the dossier lands governed — profile/state/interactions in profiles/, the ownership rows, the census arms; every attaching gate green` | the three documents moved (rename lineage kept); five fact-ownership rows; DOSSIER rows read present/deferred with owners; `.7` DONE 3/3 |
 | `.7` slices 1–2 | `SEMULITH-BR-0017 (leaf P3-BREADTH.7): the vehicle declaration, the DSP matrix, and the DOSSIER-SCHEMA gate — gates derive applicability; the cross-product pairing fixed` | decision_gate-applicability-by-declared-vehicle (deferral machinery rejected); the checkpoint + sibling-crate legs measured green against the drafts (19/19); interactions.sexp drafted (21 cells resolve); the 30th doctrine registered; fact kinds qualified per unit |
@@ -672,3 +667,19 @@ unsupported families remain unclaimed.
   `.7` slice-3 checklist and the Design Discussions archived verbatim (the per-part
   ceiling held; the exchange's resume pointer stays in the tree). Frontier: slice 2 —
   the BREADTH report itself.
+- `2026-10-01`: `.6` slice 2 (`SEMULITH-BR-0020`) — the unit REGISTERED, its book
+  STANDING. `gen_model_book.py` learned the sibling-crate shape (three extensions, each
+  naming the DSP case; the refusals stand without the declared vehicle; rv64i fragments
+  byte-stable modulo the generator digest). `units.sexp` gained the DSP row (C17 in /
+  C14 out against rv64i's requires set — reset is this unit's own decision, interrupts
+  a named exclusion) and the 24-row category-needs census landed (8 covered / 6 partial
+  / 3 missing-with-closings / 4 out-of-scope / 3 deferred-to-board). The six-chapter
+  book builds; UNIT-BOOKS, MATERIALS-BILL, SCOPE-COVERAGE all green with 2 units; four
+  fragment mirror rows registered. Frontier: slice 3 — the BREADTH report (the
+  capability report is the capstone: the registry is now complete enough to read).
+  Ceiling bookkeeping (same slice): the director ruled `2026-10-01` "allow increasing the
+  size of task-trees" — the docs/tasks/ per-part bound rose to 128 KiB by reviewed
+  decision `decision_task-tree-per-part-growth` (six forced archives in one day, two of
+  them taxing ACTIVE narratives; the aggregate bound and the archive lifecycle are
+  unchanged, and the director's stated invariant stands: a bound remains — a file must
+  stay readable in one sitting, growth is never unbounded).

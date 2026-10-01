@@ -11,6 +11,32 @@ and both logs.
 
 Archived sections, verbatim:
 
+`P3-BREADTH.6`, slice 1 (`2026-10-01`, `SEMULITH-BR-0019`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the DOSSIER deferred the requirements /
+  contract-obligations records to `.6` ("the crate's per-form FM citations are the
+  interim record"); the records' shape is fixed by RECORD-SCHEMA's rules (COVERAGE —
+  byte-identical decision statements; MIRROR — verbatim restatement; AUTHORITY; CITED;
+  OBLIGED — ±POS/NEG). WHERE: `profiles/dsp56300-lab-v0/{requirements,
+  contract-obligations}.sexp` (new), `doctrine/fact_ownership.tsv` (two rows),
+  `scripts/check_fact_ownership.sh` (the GREEN fixture's two-unit re-pin).
+- [x] **ADDRESSED (verified)** — `python3 scripts/check_sexp_schema.py
+  profiles/dsp56300-lab-v0/requirements.sexp schema/requirements.sexp` → `ok`; the same
+  for `contract-obligations.sexp` → `ok`; `bash scripts/check_requirements.sh` →
+  `RECORD-SCHEMA: ok (10 record file(s) validate and agree with their profile; …)` —
+  zero gate edits on landing; `bash scripts/check_fact_ownership.sh` → `ok (25 fact
+  kind(s) …)`; self-test `10 pass / 0 fail` after the fixture re-pin (RED before it:
+  `UNREGISTERED MIRROR PAIR`, the designed staleness).
+- [x] **NO REGRESSION** — `bash scripts/check_doctrines.sh` → `=== all doctrines green
+  ===` end-to-end; the rv64i catalogues byte-untouched this slice.
+- [x] **FIX** — the two catalogues (7 requirements + 13 obligations, 26 declared checks,
+  contract `dsp56300-lab-env-v0`), the two registry rows, the fixture re-pin with its
+  reason comment.
+- [x] **LOCKSTEP** — tree (slice record, checklist, logs, frontier), the DOSSIER (the
+  records row flips to present), `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`; mdBook `plan/p3.md` (the records land); the `.7` slice-3 checklist
+  archived verbatim (the per-part ceiling held).
+
 `P3-BREADTH.7`, slice 3 (`2026-10-01`, `SEMULITH-BR-0018`):
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the dossier's drafts were measured content waiting
@@ -584,3 +610,59 @@ through the working-tree derived counts):
   every level — each refinement keeps its own validity bounds, composition laws, and
   failure envelope. Depth is chosen by need (an exercised target demands it), never by
   completeness for its own sake.
+
+## `.7` — the slice narratives (verbatim), archived `2026-10-01`
+
+Slice 1 (`2026-10-01`, `SEMULITH-BR-0017`): the vehicle declaration + the two gate
+legs, measured. `schema/profile.sexp` gains the optional `vehicle` block (route ×
+comparison, both closed enums, authority+source — the header names the case);
+`dossier_sexp` carries it (parse + emit — no silent drop). `check_extraction.py`: the
+sibling-crate leg — reported by name, and a declaration contradicted by an
+`encoding.sexp` is a finding (RED arm). `check_exercise_coverage.sh`: the checkpoint
+leg — the composition leg is n/a exactly while no `encoding.sexp` exists, and the
+exercised set is the `.a56` guest census BOTH directions (UNEXERCISED a declared form
+no guest runs; UNDECLARED EXERCISE a guest instruction the scope does not name; five
+new self-test arms, 13/13). Measured against the real drafts (untracked +
+intent-to-add, then removed): **EXERCISE-COVERAGE ok, 19/19 — the DSP's whole declared
+scope is exercised by the corpus**; EXTRACTION ok (sibling-crate route reported);
+PROFILE-CONSISTENCY ok (2 dossiers). rv64 regression: 52/52 unchanged, both gates'
+self-tests green.
+
+Slice 2 (`2026-10-01`, same commit — the two slices interlock through the working-tree
+derived counts, so they land together): the DSP matrix + the schema-validation gate +
+the FACT-OWNERSHIP second-unit fix. `interactions.sexp` drafted (6 axes — progress,
+stop, loop, stack, alias, state; 21 cells; mechanism/degenerate dispositions only —
+the corpus is checkpoint-compared, so no guest cells): measured
+`python3 scripts/check_interaction_matrix.py profiles/dsp56300-lab-v0` (drafts placed)
+→ `21 cells declared, every disposition resolves`. The closed mechanism registry gained
+two entries, each naming its case: `dsp56300-smoke-agreement` (needle: the driver's
+verdict line) and `dsp56300-typed-stop` (needle: `pub enum ModelStop`). **DOSSIER-SCHEMA
+registered (the 30th doctrine)**: `scripts/check_dossier_schema.sh` — every tracked
+`profiles/*/*.sexp` with a same-named (or family: `.expected.sexp`, `.override.sexp`)
+schema validates through the one checker; skipped basenames counted BY NAME (64
+validated / 2 skipped: baseline.sexp, portability.sexp); fired RED before registration
+against the pre-fix D-FENCE document recovered from git history (`duplicated
+single-valued field "note"` — the exact drift class); self-test 3/3; mirrors updated
+(DOCTRINE_ENFORCEMENT.md, the book's doctrine chapter). **FACT-OWNERSHIP's second-unit
+fix**: the corpus pair enumeration was a cross product — exact with one unit, inventing
+cross-unit nonsense pairs with two (measured at the landing probe: rv64's requirements
+"restating" the DSP's profile). Now same-unit pairing for `profiles/*/` patterns and
+registry-nominated cross-family pairs with a restater-participation census (owner-side
+participation NOT required — the DSP's state.sexp has no generated mirror BY DESIGN,
+the `state.rs` naming convention). Registry kinds qualified per unit. Self-test 8/8
+unchanged — the single-unit regression control. The DSP's registry rows land in slice 3
+with the documents (a MISSING OWNER row is the honest failure pre-landing).
+
+Slice 3 (`2026-10-01`, `SEMULITH-BR-0018`): THE LANDING. The three validated documents
+moved from `artifacts/p3-breadth/dsp56300-dossier/` to `profiles/dsp56300-lab-v0/`
+(headers rewritten from "NOT LANDED" to the landed gate map; git rename detection kept
+the lineage). The DSP's fact-ownership rows landed with them — `state
+(dsp56300-lab-v0)` + the profile mirror governed by PROFILE-CONSISTENCY, plus
+configuration/pinned-sources/reference-dossier/guest-programs — and the two
+post-landing census arms (GREEN: two units, no cross-unit pair invented; RED: the
+second unit's same-unit pair unregistered, named). Every attaching gate green with the
+documents in place: EXERCISE-COVERAGE (19/19), EXTRACTION (sibling-crate reported),
+INTERACTION-MATRIX (2 units; 21 DSP cells resolve), PROFILE-CONSISTENCY (2 dossiers),
+DOSSIER-SCHEMA (62 validated / 2 skipped-by-name), FACT-OWNERSHIP (23 kinds). The
+DOSSIER's rows now read present/deferred with owners; the stale "lands with the model
+slice" wording for requirements + unit registration re-routed to `.6`. `.7` DONE.

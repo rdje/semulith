@@ -1,5 +1,24 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0020 (leaf P3-BREADTH.6) — the second unit registered; its book stands; the per-part ceiling rises by ruling
+
+- `materials/units.sexp` gained `dsp56300-lab-v0` (the second unit; C17 in / C14 out
+  against rv64i's requires set — reset is this unit's own decision, interrupts a named
+  exclusion) and the 24-row category-needs census landed (8 covered / 6 partial /
+  3 missing-with-closings / 4 out-of-scope / 3 deferred-to-board).
+- `scripts/gen_model_book.py` learned the sibling-crate shape — three extensions, each
+  naming the DSP case (the declared-vehicle encoding fragment; `encoding.sexp` as the
+  one document a sibling-crate unit may lack, its row naming the deferred lane; register
+  families / spaces / the `.a56` census where the rv64 shapes are absent). rv64i
+  regression byte-exact: only the generator-digest header line moved.
+- The book `docs/models/dsp56300-lab-v0/` stands (six chapters, the bill's 12 sections
+  each with its does-not-supply); UNIT-BOOKS, MATERIALS-BILL and SCOPE-COVERAGE all
+  green with 2 units; four fragment mirror rows registered (FACT-OWNERSHIP 29 kinds).
+- **Director ruling (`2026-10-01`): task-tree growth is ALLOWED** — the docs/tasks/
+  per-part bound rose to 128 KiB (`decision_task-tree-per-part-growth`) after six forced
+  archive operations in one day taxed active slices; the aggregate bound and the archive
+  lifecycle are unchanged, and a bound remains — a file stays readable in one sitting.
+
 ## SEMULITH-BR-0019 (leaf P3-BREADTH.6) — the DSP's contract records land governed; the fixture noticed
 
 - `profiles/dsp56300-lab-v0/` gained `requirements.sexp` (seven records, statements

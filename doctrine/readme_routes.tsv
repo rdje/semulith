@@ -48,6 +48,10 @@
 #                and the rejected alternatives (compaction, a subdirectory that would have broken
 #                FRONTIER-SYNC's flat link pattern) are in
 #                docs/decisions/decision_task-tree-family-bound.md.
+#                ⭐ SUPERSEDED in one axis (2026-10-01): the per-part rose to 128 KiB by director
+#                ruling — "allow increasing the size of task-trees" — after six forced archive
+#                operations in one day taxed ACTIVE slices (decision_task-tree-per-part-growth.md).
+#                The aggregate axis and the archive lifecycle are unchanged.
 #
 # Derivation, SOT-FORMAT.9, when this project became LinkedSpec's first downstream consumer:
 #   docs/upstream/  23 files / 24 KiB at adoption, across 3 issues. Health 60 files / 256 KiB;
@@ -259,7 +263,7 @@ docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave t
 #   lifecycle itself. Per-part STAYS 64 KiB (it bit correctly, sixth proof). Grounds and
 #   rejected alternatives in
 #               docs/decisions/decision_task-tree-family-count-rederivation.md.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	1572864	65536
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	1572864	131072
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768

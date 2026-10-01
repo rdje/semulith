@@ -1,0 +1,11 @@
+[book]
+title = "dsp56300-lab-v0 — the model book"
+description = "How the dsp56300-lab-v0 bounded DSP subset went from the pinned family manual to a differentially agreed sibling-crate model: the complete materials bill, and the method."
+authors = ["Semulith maintainers"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "rust"
+git-repository-url = ""
+no-section-label = false
