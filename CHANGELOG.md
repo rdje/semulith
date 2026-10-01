@@ -1,5 +1,28 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0016 (leaf P3-BREADTH.5) — the encoding case measured; .5 closes, the landing is leaf .7
+
+- The encoding/definition generalization was MEASURED, not asserted: `gen_definition.py`
+  refuses a second unit at three named walls (the profile scope, the 32-bit-only decode
+  table — the DSP fetches 24-bit words, and the semantics corpus — the DSP's semantics
+  are hand-written Rust, not data), and the semantics language is scalar-shaped (31
+  operators censused in `schema/semantics.sexp`: load/store carry no space parameter,
+  state access is `reg`/`pc` only, no masked-width wrap, no loop construct — the DSP's
+  X/Y/P moves and do/rep machinery would refuse by name).
+- Decision: the generalization is a LANE, not an extension, and no current milestone
+  consumes it (`decision_lane-consumption`; the sibling crate is the exercised,
+  differentially agreed vehicle) — DEFERRED with named reopening conditions: a corpus
+  extension beyond subset v0, a third unit, or the landing leaf choosing the machinery
+  route. **`P3-BREADTH.5` DONE 3/3** — every landed extension names dsp56300-lab-v0 and
+  its case; the one case measured and not built names its conditions.
+- The dossier landing is new leaf `P3-BREADTH.7`: it owns the measured attachment table
+  (PROFILE-CONSISTENCY green; the three evidence-shape gates RED on rv64-shaped
+  presumptions), the disposition choice (named deferrals vs machinery), and the surfaced
+  dossier schema-validation leg. The DOSSIER's deferral rows name it.
+- Bookkeeping: `.5` slices 1–2's checklists archived verbatim to
+  `docs/tasks/archive/P3-BREADTH.md` as the leaf closed — the 64 KiB per-part ceiling
+  held.
+
 ## SEMULITH-BR-0015 (leaf P3-BREADTH.5) — the scope taxonomy generalizes; the DSP dossier drafted, attachment measured
 
 - `schema/profile.sexp`: the DSP's five scope groups (moves/alu_core/multiplies/flow/loops)
@@ -871,30 +894,4 @@
   from the extension set (`.5`).
 - `make gate` all green (27 doctrines, 287 arms — DERIVED-COUNTS re-derives);
   `check_materials_bill.sh [--self-test]` ok / 7-0; both books render.
-
-## SEMILITH-MB-0007 (leaf MODEL-BOOKS.5) — the evidence, the gate, and the traceability walk
-
-- The per-unit book's five-part arc completes (`docs/models/rv64i-lab-v0/src/evidence.md`):
-  the evidence ledger per axis — never a banner — each number with its instrument and its
-  re-derivation command: semantics 52/52 gated, the boundary domains exhausted, the failure
-  layer three-way, the 21-cell interaction matrix resolved, the live differential (40
-  guests, 492/492 aligned steps vs both references + the one declared expected divergence),
-  restart as measured determinism, portability gated (wasm + the 44-arm browser bench),
-  performance as one named host's baseline with no thresholds, and the mutation suite as
-  the detector's proof. EVD-01's label stands over all of it: finite tested evidence.
-- The verdicts, honestly: G0 `incomplete` (72 declared checks, 0 implemented — the
-  generator has no code path to `passed`); G1 `incomplete` (criteria 1–5 met; criterion 6 —
-  the C-toolchain guest — unmet, owned by `P2-SCALAR.5`, and that leaf's blockers are named:
-  the ACT4 material absence and the C-guest routing awaiting the director). The teaching
-  point: an honest gate that cannot read `passed` over a missing criterion is the lesson.
-- Capability limits stated plainly: an M-mode-only laboratory with no C/M/A/F/D/Zicsr/
-  Zifencei (what no M/A/F/D means for real code), no devices, board, boot or OS workload;
-  a development profile — none accepted. "Supports RV64I" appears nowhere.
-- The traceability walk is the evidence side: `D-MISALIGN-DATA` → `REQ-D-MISALIGN-DATA` →
-  `OB-MISALIGN-DATA` (CHK-MISALIGN-DATA-POS/-NEG) → the recorded `smoke-trap` experiment
-  (agreement on the architectural detail, with its decisive control) → two re-runnable
-  commands with fresh output quoted verbatim (`cargo test -p semulith-verify --lib
-  run::tests::smoke_trap` → 1 passed; `run_semulith_smoke.py` → the smoke-trap PASS lines).
-- Both gate reports regenerate byte-identical (no drift). Every id/number verified by tool
-  as written; no gate extended (26 doctrines). Both books render; `make gate` all green.
 

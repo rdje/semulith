@@ -1,14 +1,141 @@
 # P3-BREADTH — archived completed-leaf evidence (part 1)
 
 The full, unedited acceptance checklists for the `done` leaves of the
-[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2` and `.4` slices 1–4), split out on
-`2026-10-01` when the live file crossed its per-part ceiling — the ceiling was obeyed,
+[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–2, and the
+slice-gated `.1`'s two completed slices — the F2 probe and the F6 census leg), split out
+on `2026-10-01` when the live file crossed its per-part ceiling — the ceiling was obeyed,
 not raised, per the `docs/tasks/` precedent set by `SOT-FORMAT` and `P1-LAB`. The live
 tree keeps the frontier, the decisions, the open questions, the blockers, every leaf's
-goal/acceptance/result narrative, the active leaves' checklists (`.1`, `.5`), and both
-logs.
+goal/acceptance/result narrative, the newest completed slice's checklist (`.5` slice 3),
+and both logs.
 
 Archived sections, verbatim:
+
+`P3-BREADTH.1`, slice 1 (`2026-10-01`, `SEMULITH-BR-0005`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the findings report itself named the gap: F2 was
+  "the only finding without an executable demonstration… If `P3-BREADTH.1` wants one, a
+  grouping probe in the `synth/` suite is the honest way to get it"
+  (`docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`, "What the report
+  does NOT say"). Measured: `python3 scripts/check_sexp_schema.py
+  docs/tasks/artifacts/dsp-review/synth/state-groups.sexp schema/state.sexp` →
+  `REFUSED state-groups.sexp: construct "integer_registers": undeclared field
+  "register_groups"`, rc 1 — exactly one refusal, the grouping shape.
+- [x] **ADDRESSED (verified)** — probe 5 pinned in `run_synth_probes.sh`; the suite
+  re-run: `synth probes: 5 pass / 0 fail` (was 4/0; the pin is the measured message).
+- [x] **NO REGRESSION** — no code changed (probe fixture + docs only); the scalar
+  regression re-run anyway per the leaf acceptance (`EVD-07`): `make check` → fmt clean,
+  clippy `-D warnings` clean, 180/180 tests; `gen_state.py` on the real profile rc 0
+  (14496 bytes); `check_definition_gen.sh` → `DEF-GEN: ok`;
+  `gate_report.py rv64i-lab-v0 --gate G1` → verdict `passed`, re-derived.
+- [x] **FIX** — `state-groups.sexp` (the real scalar state document plus one synthetic
+  `register_groups` form, reduced to a single refusal), probe 5 in the runner, the synth
+  README's table and count.
+- [x] **LOCKSTEP** — tree (this file: leaf status, frontier, decision, logs),
+  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  and the mdBook's P3 page (the synthetic-shapes list now names register grouping).
+
+`P3-BREADTH.1`, F6 census leg (`2026-10-01`, `SEMULITH-BR-0013`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — F6 says the census reopens per new profile; `.4`
+  delivered the exercised dsp56300-lab-v0 profile and pinned the load-bearing readouts
+  (A1/B1 raw, A2/B2 sign-extended, accumulator-part destinations excluded) inside the
+  crate's module docs and the measured 6/6 agreement — but no census record held them as
+  one SEM-08 answer. WHERE the census lives, located mechanically (`grep -n
+  hidden_state_census profiles/rv64i-lab-v0/state.sexp` → line 6): the scalar profile
+  carries it as data in `state.sexp`'s `hidden_state_census`; this profile's `state.sexp`
+  is deferred to `.5` (DOSSIER.md's deferral table), so the census lands as the measured
+  record `.5` harvests.
+- [x] **ADDRESSED (verified)** — the census record stands
+  (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`): 14 candidates, each answered
+  with locator and verdict, never by silence; the supported-observation surface defined from
+  `references.sexp`'s comparison contract; surface completeness argued (no mutable cell
+  outside the dump — slot 0 unwritable by the pre-incremented SP, P-low constant because
+  subset v0 decodes no P-space write, the harness window excluded by the harness's own
+  contract) and measured — the instruments re-run this leg:
+  `python3 scripts/run_dsp56300_smoke.py` → `dsp56300 smoke: 6 agree / 0 fail` (51–64
+  fields per case), `python3 scripts/compare_dumps.py --self-test` → `4 pass / 0 fail`,
+  `cargo test -p semulith-dsp56300` → `test result: ok. 17 passed`.
+- [x] **NO REGRESSION** — docs-only leg; `cargo test -p semulith-dsp56300` → 17/17 (the
+  commit-level proof unchanged); `make gate` → `=== all doctrines green ===` with the census
+  artifact present (the doc ceilings held: CHANGELOG.md/DEV_NOTES.md append heads within
+  bounds after the event).
+- [x] **FIX** — the census artifact; the DOSSIER's `state.sexp` deferral row now names the
+  census as `.5`'s measured input.
+- [x] **LOCKSTEP** — tree (this file: leaf record/status, frontier, checklist, logs),
+  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  the profile DOSSIER; mdBook `plan/p3.md` (the census consequence stated).
+
+`P3-BREADTH.5`, slice 1 (`2026-10-01`, `SEMULITH-BR-0014`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the schema refused the DSP's measured state shapes
+  (synth probe 2's pin: `python3 scripts/check_sexp_schema.py state-spaces.sexp
+  schema/state.sexp` → `REFUSED … undeclared field "memory_spaces"`, rc 1), and two
+  silent-path hazards sat between the schema and the generator:
+  `dossier_sexp.state_to_doc` built the doc from named fields only (a declared
+  `memory_spaces` would be DROPPED before the generator could refuse it — measured
+  pre-change), and a missing `xlen` crashed with a KeyError traceback instead of a named
+  Refusal. WHERE the constructs come from: the F6 census record
+  (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`), candidates 1/2/4/6 + F1/F3.
+- [x] **ADDRESSED (verified)** — the schema declares the constructs (each naming its case);
+  the mapping owner carries them (round-trip data-equal on the rv64 document, re-derived:
+  `state_to_doc(state_to_form(load_state(...))) == load_state(...)`); the generator refuses
+  each by name — measured: `gen_state.py` on the spaces descriptor → rc 2, `memory_spaces
+  declared`; the four new STATE-GEN self-test arms RED-prove the refusals
+  (`check_state_gen.sh --self-test` → `10 pass / 0 fail`); synth probe 2 re-pinned
+  (`run_synth_probes.sh` → `synth probes: 6 pass / 0 fail`: schema accepts rc 0
+  `conforms`, generator refuses rc 2).
+- [x] **NO REGRESSION** — `check_sexp_schema.py profiles/rv64i-lab-v0/state.sexp
+  schema/state.sexp` → `ok`; `gen_state.py --check` → byte-identical (rc 0); the
+  descriptor round-trip data-equal; `dossier_sexp.py --self-test` → `12 pass / 0 fail`;
+  `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS fired on the four new arms
+  — re-derived 308 → 312 by the doctrine's own command, LIVE_STATUS.md updated; nothing
+  else moved). No Rust changed (`make check` not owed; the dsp crate's 17/17 and the 6/6
+  smoke were re-run this session for the census leg and stand unchanged).
+- [x] **FIX** — `schema/state.sexp` (the constructs + the optional xlen/integer_registers),
+  `scripts/dossier_sexp.py` (carry the new forms, xlen/integer_registers optional),
+  `scripts/gen_state.py` (the named refusals + the xlen Refusal), `scripts/
+  check_state_gen.sh` (four RED arms), the synth suite (probe 2 re-pinned two legs;
+  `state-spaces.sexp` carries full `space` forms; README records the move).
+- [x] **LOCKSTEP** — tree (this file: slice design + record, checklist, logs),
+  `LIVE_STATUS.md` (arm count re-derived), `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  `DOCTRINE_ENFORCEMENT.md` (the STATE-GEN row names the new refusals), mdBook
+  `plan/p1.md` (the refusal list grew) and `plan/p3.md`.
+
+`P3-BREADTH.5`, slice 2 (`2026-10-01`, `SEMULITH-BR-0015`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the scope taxonomy's scalar shape lived in exactly two
+  closed places (`schema/profile.sexp`'s scope construct; `dossier_sexp._SCOPE_LISTS`,
+  which refuses an undeclared field by name), and the DSP documents had nowhere honest to
+  wait: landing them blind would attach four gates unmeasured. Measuring the attachment
+  (untracked + intent-to-add placement) surfaced what no gate had ever checked —
+  `scripts/check_profile_consistency.sh` on the DSP dossier → 7 findings: 3 UNEARNED
+  OBTAINED (the candidate claimed `obtained` without binary/binary_sha256/injection) + 4
+  UNKNOWN MODEL (independence pairs naming non-candidates).
+- [x] **ADDRESSED (verified)** — schema generalized (each optional/added field names
+  dsp56300-lab-v0 as its case); drafts validate:
+  `python3 scripts/check_sexp_schema.py …/dsp56300-dossier/profile.sexp
+  schema/profile.sexp` → `ok`, same for state.sexp → `ok`; both load through the mapping
+  owner and round-trip data-equal (`profile round-trip: True`, `state round-trip: True`);
+  the references.sexp defects fixed — re-run: `PROFILE-CONSISTENCY: ok (2 profile
+  dossier(s) internally consistent)`; the schema fix re-verified:
+  `check_sexp_schema.py profiles/rv64i-lab-v0/profile.sexp schema/profile.sexp` → `ok`
+  (28 decisions, round-trip clean).
+- [x] **NO REGRESSION** — `bash scripts/fetch_references.sh --verify-only
+  dsp56300-lab-v0` → `ok`; `check_exercise_coverage.sh --self-test` → `8 pass / 0 fail`
+  (the new comment arm); `check_sexp_schema.py --self-test` → `51 pass / 0 fail`;
+  `dossier_sexp.py --self-test` → `12 pass / 0 fail`; rv64 documents re-validate and
+  round-trip unchanged; `make gate` → `=== all doctrines green ===`.
+- [x] **FIX** — `schema/profile.sexp`, `scripts/dossier_sexp.py` (`_SCOPE_LISTS`),
+  `scripts/check_exercise_coverage.sh` (the comment skip + arm),
+  `scripts/check_sexp_schema.py` (missing-input refusal + arm),
+  `profiles/dsp56300-lab-v0/references.sexp` (the 7 findings), `profiles/rv64i-lab-v0/
+  profile.sexp` (D-FENCE's notes merged), the two drafts under
+  `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/`.
+- [x] **LOCKSTEP** — tree (this file: slice design + record, checklist, logs),
+  `LIVE_STATUS.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the profile DOSSIER
+  (deferral rows now name the drafts + the measured attachment; the stale
+  requirements-row wording fixed); mdBook `plan/p3.md`.
 
 `P3-BREADTH.2` (`2026-10-01`, `SEMULITH-BR-0006`):
 

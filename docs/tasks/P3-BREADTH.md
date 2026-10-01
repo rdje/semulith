@@ -205,7 +205,9 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the four measured rules live in exec.rs's module header where the next reader meets them; three were my over-applications of correct FM prose, one a genuine prose falsification — the arbiter discipline is already EVD-04/RK08)`.
 
 - ID: `P3-BREADTH.5` — **schema and generator functionality where justified**
-  Status: `in_progress` (slice 1 started `2026-10-01`)
+  Status: `done` (`2026-10-01` — slices 1–3: the state schema learned the census's
+  shapes, the profile schema's scope taxonomy generalized, the encoding case measured and
+  deferred with named reopening conditions)
   Goal: extend the definition schema/generator only where an exercised target demonstrates the need.
   Acceptance: each extension names the target and case that required it.
   Slice 1 design (recorded before code, `2026-10-01`): **the state schema learns the
@@ -314,17 +316,60 @@ unsupported families remain unclaimed.
   lands the DSP documents adds the schema-validation leg for the dossier documents (the
   census for the gate: this slice's per-document re-validation).
   Lessons: `promotion: declined (the attach-then-measure method is this tree's own — .4 slice 2's gate census was the same move; the durable output is the measured attachment table, recorded here where the landing slice meets it)`.
+  Slice 3 (`2026-10-01`, `SEMULITH-BR-0016`): the ENCODING case measured and
+  dispositioned — `.5` closes; the dossier landing becomes leaf `.7`. The measurement,
+  from the pinned sources: `gen_definition.py` refuses a second unit at three named walls
+  — the profile scope (`a second unit is generator work, not a config knob`), the decode
+  width (`emits a 32-bit decode table only`; the DSP fetches 24-bit words), and the
+  semantics corpus (every declared instruction needs a `.sem.sexp`; the DSP's semantics
+  are hand-written Rust in the sibling crate, not data). The semantics LANGUAGE is
+  scalar-shaped, measured against `schema/semantics.sexp` (31 operators):
+  `(load width signed? addr)` / `(store width addr value)` carry NO space parameter
+  (F3's semantics face), state access is `reg`/`pc` only (no accumulator parts, no
+  LA/LC/LF, no hardware stack, no SR flags as settable state), and there is no
+  masked-width wrap or loop construct — the DSP's X/Y/P moves and do/rep machinery would
+  be refused by name, the same class synth probe 4 pinned for `delay`. So the encoding
+  generalization is a LANE (a DSP fragment family + 24-bit decode emission + the
+  semantics-data re-expression + `Sem` enum variants), not an extension — and no current
+  milestone consumes it: the sibling crate is the exercised, differentially agreed
+  vehicle (`decision_dsp56300-lab-v0-subset`), and `decision_lane-consumption` descopes
+  lanes no milestone consumes. **Decision: the encoding case is measured and DEFERRED**,
+  reopening conditions named — a corpus extension beyond subset v0 (the parallel-move
+  dual feed), a third unit arriving, or the landing leaf choosing the machinery route.
+  `.5`'s acceptance is met: every landed extension (slices 1–2) names dsp56300-lab-v0 and
+  its case; the one case measured and not built names its conditions. **The dossier
+  landing is leaf `.7`**, owning the measured attachment table, the disposition choice
+  (named deferrals vs evidence-shape machinery — the slice-2 record), and the surfaced
+  schema-validation leg for the dossier documents.
+  Lessons: `promotion: declined (the measurement is recorded where the next evaluator meets it — this leaf and .7's measured input)`.
 
 - ID: `P3-BREADTH.6` — **the `BREADTH` gate report**
   Status: `pending`
   Goal: generate from pinned inputs; publish the capability report.
   Acceptance: families with no evidence are listed as **unclaimed**, explicitly.
 
+- ID: `P3-BREADTH.7` — **land the dsp56300-lab-v0 dossier as governed documents**
+  Status: `pending`
+  Goal: move the schema-validated drafts (`docs/tasks/artifacts/p3-breadth/dsp56300-dossier/`)
+  to `profiles/dsp56300-lab-v0/{profile,state}.sexp` with every attaching gate green
+  honestly — never by landing a document no gate reads.
+  Acceptance: `make gate` green with the documents landed; EXERCISE-COVERAGE, EXTRACTION
+  and INTERACTION-MATRIX dispositioned BY NAME (the evidence-shape machinery or declared
+  deferrals — the disposition choice is this leaf's design decision, made from the
+  measured attachment table); the dossier schema-validation leg added (the surfaced gap:
+  no gate schema-validates the dossier documents as a class — the D-FENCE drift lived
+  unseen for it); the artifact copies removed when the governed documents land.
+  Measured input: `.5` slice 2's attachment table (`2026-10-01`): PROFILE-CONSISTENCY
+  green on the DSP dossier; EXERCISE-COVERAGE RED (NO COMPOSITION, 19 UNRESOLVED FORM, no
+  exercised set — the DSP's guests are checkpoint-compared `.a56`, not
+  `*.expected.sexp`); EXTRACTION RED (no encoding.sexp); INTERACTION-MATRIX RED (no
+  interactions.sexp).
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.5` | `pending` | schema/generator generalization — with its exercising target measured and its census input landed: F1 masked widths, F3 memory spaces, the special-register census, the scope taxonomy (each names dsp56300-lab-v0 as its case) |
+| 1 | `P3-BREADTH.7` | `pending` | land the DSP dossier as governed documents — the measured attachment table is its input; owns the gate-disposition choice and the schema-validation leg |
 | 2 | `P3-BREADTH.6` | `pending` | the BREADTH gate report |
 | — | `P3-BREADTH.1` | `slice-gated` | executable-now scope done `2026-10-01`; the F6 census leg landed for dsp56300-lab-v0 (`SEMULITH-BR-0013`) — F6 refires per new profile; F2/F4/F5 (TI/VLIW) stay unbuilt, recorded |
 
@@ -446,138 +491,39 @@ unsupported families remain unclaimed.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-`P3-BREADTH.1`, slice 1 (`2026-10-01`, `SEMULITH-BR-0005`):
+`P3-BREADTH.1` slices (the F2 probe, the F6 census leg), `.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4, `.5` slices 1–2 (completed `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — the findings report itself named the gap: F2 was
-  "the only finding without an executable demonstration… If `P3-BREADTH.1` wants one, a
-  grouping probe in the `synth/` suite is the honest way to get it"
-  (`docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`, "What the report
-  does NOT say"). Measured: `python3 scripts/check_sexp_schema.py
-  docs/tasks/artifacts/dsp-review/synth/state-groups.sexp schema/state.sexp` →
-  `REFUSED state-groups.sexp: construct "integer_registers": undeclared field
-  "register_groups"`, rc 1 — exactly one refusal, the grouping shape.
-- [x] **ADDRESSED (verified)** — probe 5 pinned in `run_synth_probes.sh`; the suite
-  re-run: `synth probes: 5 pass / 0 fail` (was 4/0; the pin is the measured message).
-- [x] **NO REGRESSION** — no code changed (probe fixture + docs only); the scalar
-  regression re-run anyway per the leaf acceptance (`EVD-07`): `make check` → fmt clean,
-  clippy `-D warnings` clean, 180/180 tests; `gen_state.py` on the real profile rc 0
-  (14496 bytes); `check_definition_gen.sh` → `DEF-GEN: ok`;
-  `gate_report.py rv64i-lab-v0 --gate G1` → verdict `passed`, re-derived.
-- [x] **FIX** — `state-groups.sexp` (the real scalar state document plus one synthetic
-  `register_groups` form, reduced to a single refusal), probe 5 in the runner, the synth
-  README's table and count.
-- [x] **LOCKSTEP** — tree (this file: leaf status, frontier, decision, logs),
-  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
-  and the mdBook's P3 page (the synthetic-shapes list now names register grouping).
+`P3-BREADTH.5`, slice 3 (`2026-10-01`, `SEMULITH-BR-0016`):
 
-`P3-BREADTH.1`, F6 census leg (`2026-10-01`, `SEMULITH-BR-0013`):
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — F6 says the census reopens per new profile; `.4`
-  delivered the exercised dsp56300-lab-v0 profile and pinned the load-bearing readouts
-  (A1/B1 raw, A2/B2 sign-extended, accumulator-part destinations excluded) inside the
-  crate's module docs and the measured 6/6 agreement — but no census record held them as
-  one SEM-08 answer. WHERE the census lives, located mechanically (`grep -n
-  hidden_state_census profiles/rv64i-lab-v0/state.sexp` → line 6): the scalar profile
-  carries it as data in `state.sexp`'s `hidden_state_census`; this profile's `state.sexp`
-  is deferred to `.5` (DOSSIER.md's deferral table), so the census lands as the measured
-  record `.5` harvests.
-- [x] **ADDRESSED (verified)** — the census record stands
-  (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`): 14 candidates, each answered
-  with locator and verdict, never by silence; the supported-observation surface defined from
-  `references.sexp`'s comparison contract; surface completeness argued (no mutable cell
-  outside the dump — slot 0 unwritable by the pre-incremented SP, P-low constant because
-  subset v0 decodes no P-space write, the harness window excluded by the harness's own
-  contract) and measured — the instruments re-run this leg:
-  `python3 scripts/run_dsp56300_smoke.py` → `dsp56300 smoke: 6 agree / 0 fail` (51–64
-  fields per case), `python3 scripts/compare_dumps.py --self-test` → `4 pass / 0 fail`,
-  `cargo test -p semulith-dsp56300` → `test result: ok. 17 passed`.
-- [x] **NO REGRESSION** — docs-only leg; `cargo test -p semulith-dsp56300` → 17/17 (the
-  commit-level proof unchanged); `make gate` → `=== all doctrines green ===` with the census
-  artifact present (the doc ceilings held: CHANGELOG.md/DEV_NOTES.md append heads within
-  bounds after the event).
-- [x] **FIX** — the census artifact; the DOSSIER's `state.sexp` deferral row now names the
-  census as `.5`'s measured input.
-- [x] **LOCKSTEP** — tree (this file: leaf record/status, frontier, checklist, logs),
-  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
-  the profile DOSSIER; mdBook `plan/p3.md` (the census consequence stated).
-
-`P3-BREADTH.5`, slice 1 (`2026-10-01`, `SEMULITH-BR-0014`):
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — the schema refused the DSP's measured state shapes
-  (synth probe 2's pin: `python3 scripts/check_sexp_schema.py state-spaces.sexp
-  schema/state.sexp` → `REFUSED … undeclared field "memory_spaces"`, rc 1), and two
-  silent-path hazards sat between the schema and the generator:
-  `dossier_sexp.state_to_doc` built the doc from named fields only (a declared
-  `memory_spaces` would be DROPPED before the generator could refuse it — measured
-  pre-change), and a missing `xlen` crashed with a KeyError traceback instead of a named
-  Refusal. WHERE the constructs come from: the F6 census record
-  (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`), candidates 1/2/4/6 + F1/F3.
-- [x] **ADDRESSED (verified)** — the schema declares the constructs (each naming its case);
-  the mapping owner carries them (round-trip data-equal on the rv64 document, re-derived:
-  `state_to_doc(state_to_form(load_state(...))) == load_state(...)`); the generator refuses
-  each by name — measured: `gen_state.py` on the spaces descriptor → rc 2, `memory_spaces
-  declared`; the four new STATE-GEN self-test arms RED-prove the refusals
-  (`check_state_gen.sh --self-test` → `10 pass / 0 fail`); synth probe 2 re-pinned
-  (`run_synth_probes.sh` → `synth probes: 6 pass / 0 fail`: schema accepts rc 0
-  `conforms`, generator refuses rc 2).
-- [x] **NO REGRESSION** — `check_sexp_schema.py profiles/rv64i-lab-v0/state.sexp
-  schema/state.sexp` → `ok`; `gen_state.py --check` → byte-identical (rc 0); the
-  descriptor round-trip data-equal; `dossier_sexp.py --self-test` → `12 pass / 0 fail`;
-  `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS fired on the four new arms
-  — re-derived 308 → 312 by the doctrine's own command, LIVE_STATUS.md updated; nothing
-  else moved). No Rust changed (`make check` not owed; the dsp crate's 17/17 and the 6/6
-  smoke were re-run this session for the census leg and stand unchanged).
-- [x] **FIX** — `schema/state.sexp` (the constructs + the optional xlen/integer_registers),
-  `scripts/dossier_sexp.py` (carry the new forms, xlen/integer_registers optional),
-  `scripts/gen_state.py` (the named refusals + the xlen Refusal), `scripts/
-  check_state_gen.sh` (four RED arms), the synth suite (probe 2 re-pinned two legs;
-  `state-spaces.sexp` carries full `space` forms; README records the move).
-- [x] **LOCKSTEP** — tree (this file: slice design + record, checklist, logs),
-  `LIVE_STATUS.md` (arm count re-derived), `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
-  `DOCTRINE_ENFORCEMENT.md` (the STATE-GEN row names the new refusals), mdBook
-  `plan/p1.md` (the refusal list grew) and `plan/p3.md`.
-
-`P3-BREADTH.5`, slice 2 (`2026-10-01`, `SEMULITH-BR-0015`):
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — the scope taxonomy's scalar shape lived in exactly two
-  closed places (`schema/profile.sexp`'s scope construct; `dossier_sexp._SCOPE_LISTS`,
-  which refuses an undeclared field by name), and the DSP documents had nowhere honest to
-  wait: landing them blind would attach four gates unmeasured. Measuring the attachment
-  (untracked + intent-to-add placement) surfaced what no gate had ever checked —
-  `scripts/check_profile_consistency.sh` on the DSP dossier → 7 findings: 3 UNEARNED
-  OBTAINED (the candidate claimed `obtained` without binary/binary_sha256/injection) + 4
-  UNKNOWN MODEL (independence pairs naming non-candidates).
-- [x] **ADDRESSED (verified)** — schema generalized (each optional/added field names
-  dsp56300-lab-v0 as its case); drafts validate:
-  `python3 scripts/check_sexp_schema.py …/dsp56300-dossier/profile.sexp
-  schema/profile.sexp` → `ok`, same for state.sexp → `ok`; both load through the mapping
-  owner and round-trip data-equal (`profile round-trip: True`, `state round-trip: True`);
-  the references.sexp defects fixed — re-run: `PROFILE-CONSISTENCY: ok (2 profile
-  dossier(s) internally consistent)`; the schema fix re-verified:
-  `check_sexp_schema.py profiles/rv64i-lab-v0/profile.sexp schema/profile.sexp` → `ok`
-  (28 decisions, round-trip clean).
-- [x] **NO REGRESSION** — `bash scripts/fetch_references.sh --verify-only
-  dsp56300-lab-v0` → `ok`; `check_exercise_coverage.sh --self-test` → `8 pass / 0 fail`
-  (the new comment arm); `check_sexp_schema.py --self-test` → `51 pass / 0 fail`;
-  `dossier_sexp.py --self-test` → `12 pass / 0 fail`; rv64 documents re-validate and
-  round-trip unchanged; `make gate` → `=== all doctrines green ===`.
-- [x] **FIX** — `schema/profile.sexp`, `scripts/dossier_sexp.py` (`_SCOPE_LISTS`),
-  `scripts/check_exercise_coverage.sh` (the comment skip + arm),
-  `scripts/check_sexp_schema.py` (missing-input refusal + arm),
-  `profiles/dsp56300-lab-v0/references.sexp` (the 7 findings), `profiles/rv64i-lab-v0/
-  profile.sexp` (D-FENCE's notes merged), the two drafts under
-  `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/`.
-- [x] **LOCKSTEP** — tree (this file: slice design + record, checklist, logs),
-  `LIVE_STATUS.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the profile DOSSIER
-  (deferral rows now name the drafts + the measured attachment; the stale
-  requirements-row wording fixed); mdBook `plan/p3.md`.
-
-`P3-BREADTH.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4 (all `done` `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.5`'s last named case was the encoding/definition
+  route, deferred by `.4`'s vehicle decision; what it would cost was asserted, never
+  measured. WHERE measured: `grep -n 'Refusal' scripts/gen_definition.py` (the profile
+  scope at line 322, the 32-bit decode table at line 326, the semantics corpus at lines
+  148/210) and the operator census of `schema/semantics.sexp` (31 operators;
+  `(load width signed? addr)`/`(store width addr value)` carry no space parameter, state
+  access is `reg`/`pc` only — the DSP's X/Y/P moves and do/rep machinery would refuse by
+  name, the class synth probe 4 pinned for `delay`).
+- [x] **ADDRESSED (verified)** — the measurement is recorded in the leaf (slice 3 above):
+  the encoding generalization is a lane, not an extension, and no current milestone
+  consumes it (`decision_lane-consumption`); the sibling crate is the exercised,
+  differentially agreed vehicle (`run_dsp56300_smoke.py` 6/6, `cargo test -p
+  semulith-dsp56300` 17/17 — both re-verified green this leg, unchanged since `.4`).
+  The deferral's reopening conditions are named in the leaf; the landing is leaf `.7`
+  with its measured input table.
+- [x] **NO REGRESSION** — docs-only slice (the tree, the DOSSIER rows, the live docs):
+  `make gate` → `=== all doctrines green ===`; the drafts still validate
+  (`check_sexp_schema.py` on both → `ok`, re-run).
+- [x] **FIX** — the tree (`.5` closed 3/3; `.7` added with its acceptance and measured
+  input), the DOSSIER deferral rows re-routed to `.7`.
+- [x] **LOCKSTEP** — tree, `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md`, the DOSSIER; mdBook `plan/p3.md` (the encoding case's
+  disposition stated).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.5` slice 3 | refusal census `grep -n Refusal scripts/gen_definition.py` (3 named walls); operator census of `schema/semantics.sexp` (31 operators; load/store carry no space parameter; state access `reg`/`pc` only); dsp crate re-verified (`run_dsp56300_smoke.py` 6/6, 17/17 tests); drafts re-validate ok; `make gate` green | the encoding case measured: a lane, not an extension — DEFERRED with named reopening conditions; `.5` DONE 3/3; the dossier landing is leaf `.7` |
 | `2026-10-01` | `.5` slice 2 | drafts schema-validate + round-trip data-equal; PROFILE-CONSISTENCY ok (2 dossiers) after the references.sexp repairs; attachment measured: EXERCISE-COVERAGE RED (NO COMPOSITION + 19 UNRESOLVED + no exercised set), EXTRACTION RED (no encoding.sexp), INTERACTION-MATRIX RED (NO MATRIX); exercise-coverage self-test 8/8; check_sexp_schema self-test 51/51; rv64 profile.sexp re-validates ok; `fetch_references.sh --verify-only dsp56300-lab-v0` ok; `make gate` green | the scope taxonomy generalized (5 DSP group fields, xlen/part-counts optional; no reader changed); the documents DRAFTED as schema-valid artifacts, landing deferred to the slice that keeps the attaching gates green; 9 latent defects surfaced by the measurement, all fixed |
 | `2026-10-01` | `.5` slice 1 | synth suite re-pinned → 6 pass / 0 fail (probe 2 two legs: schema accepts, generator refuses `memory_spaces declared` rc 2); `check_state_gen.sh --self-test` → 10 pass / 0 fail (four new RED arms); rv64 `state.sexp` re-validates ok; `gen_state.py --check` byte-identical; round-trip data-equal; `dossier_sexp --self-test` 12/12; `make gate` green (DERIVED-COUNTS re-derived 308→312) | the state schema learned the census's shapes (register_family+parts, memory_spaces, hardware_stack; xlen/integer_registers optional); the refusal boundary moved one layer down, measured; the silent-drop mapping path closed |
 | `2026-10-01` | `.1` F6 census leg | census record: 14 candidates answered with locators; `run_dsp56300_smoke.py` re-run → 6 agree / 0 fail (51–64 fields/case); `compare_dumps.py --self-test` → 4 pass / 0 fail; `cargo test -p semulith-dsp56300` 17/17; `make gate` green | the SEM-08 census re-run for dsp56300-lab-v0: the canonical end-state dump measured as the COMPLETE architectural state for subset v0; the harvested input for `.5`'s `state.sexp` cases |
@@ -594,6 +540,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.5` slice 3 | `SEMULITH-BR-0016 (leaf P3-BREADTH.5): the encoding case measured — a lane, not an extension; .5 closes, the dossier landing is leaf .7` | gen_definition.py's three refusal walls + the semantics language's scalar operator set censused; deferral with named reopening conditions; `.7` owns the landing, the gate dispositions, and the schema-validation leg |
 | `.5` slice 2 | `SEMULITH-BR-0015 (leaf P3-BREADTH.5): the scope taxonomy generalizes — the DSP dossier drafted, its gate attachment measured, nine latent defects fixed` | schema/profile.sexp optional fields + 5 DSP scope groups; _SCOPE_LISTS extended; drafts under artifacts/dsp56300-dossier; PROFILE-CONSISTENCY green on the DSP dossier after the references.sexp repairs; landing waits for the attaching gates |
 | `.5` slice 1 | `SEMULITH-BR-0014 (leaf P3-BREADTH.5): the state schema learns the census's shapes — families+parts, spaces, the stack; the refusal moved one layer down` | schema declares register_family/memory_spaces/hardware_stack (xlen optional); the mapping owner carries them (silent drop closed); gen_state refuses by name; probe 2 re-pinned (suite turned RED first, by design); STATE-GEN 10 arms |
 | `.1` F6 census leg | `SEMULITH-BR-0013 (leaf P3-BREADTH.1): the dsp56300-lab-v0 state census — 14 candidates answered, the dump measured complete; the input .5 harvests` | SEM-08 re-run for the exercised profile; A2/B2 readout + M/sticky/loop/stale-slot candidates declared and measured; F5 window + architectural absences answered; the leaf stays slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional) |
@@ -728,4 +675,21 @@ unsupported families remain unclaimed.
   DERIVED-COUNTS re-derived 312 → 313 (one new shell arm; the python-side arm is outside
   the shell idiom's census); the D-FENCE change re-derived the GC report and the model
   book's internal-contracts fragment (both regenerated, never edited — the
-  in-sync-at-HEAD check ran in a clean worktree first).
+  in-sync-at-HEAD check ran in a clean worktree first). The count ceiling then fired on
+  the split itself (61 > 60): re-derived to 96 by reviewed decision
+  `decision_task-tree-family-count-rederivation` (the partition lifecycle and the evidence
+  archives are the designed file growth; per-part 64 KiB unmoved).
+- `2026-10-01`: `.5` slice 3 (`SEMULITH-BR-0016`) — the encoding case MEASURED, not
+  asserted: `gen_definition.py` refuses a second unit at three named walls (profile scope,
+  the 32-bit decode table, the semantics corpus), and the semantics language is
+  scalar-shaped (31 operators; load/store carry no space parameter; state access is
+  `reg`/`pc` only) — the DSP's X/Y/P moves and do/rep machinery would refuse by name. The
+  generalization is a lane no current milestone consumes; the sibling crate is the
+  exercised, agreed vehicle. Decision: DEFERRED with named reopening conditions (a corpus
+  extension, a third unit, or the landing leaf choosing the machinery route). **`.5` DONE
+  3/3**; the dossier landing is new leaf `.7` (the measured attachment table is its
+  input; it owns the gate-disposition choice and the dossier schema-validation leg).
+  Bookkeeping: `.5` slices 1–2's checklists archived verbatim to `archive/P3-BREADTH.md`
+  as the leaf closed, joined by the slice-gated `.1`'s two completed-slice checklists
+  (the per-part ceiling held); the CHANGELOG append fired the head's bound again —
+  shard 0099 (53 = 52 + 1, order and bytes exact).

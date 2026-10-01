@@ -1,5 +1,22 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — measure the lane before funding it (P3-BREADTH.5 slice 3)
+
+`.4` had deferred "the generator generalization" to `.5` as a phrase; slice 3 turned the
+phrase into a measurement. The reading: `gen_definition.py` refuses a second unit at
+three named walls, and they are load-bearing, not cosmetic — the 32-bit decode table is
+the emission's shape, the semantics corpus is the input the whole interpreter-before-
+compiler direction runs on, and the semantics language itself is scalar-shaped (31
+operators; load/store have no space parameter; `reg`/`pc` are the only state reads). So
+"generalize for the DSP" means a 24-bit emission, a new fragment family, the DSP's
+semantics re-expressed as data, and `Sem` enum variants — a lane. The discipline question
+was whether the exercised target DEMONSTRATES the need (`.5`'s own acceptance), and it
+does not: the sibling crate covers subset v0, differentially agreed 6/6, and no current
+milestone consumes the generated form. The deferral names its reopening conditions, which
+is what keeps it a decision rather than a drift. The dossier landing became its own leaf
+(`.7`) because its real content is a doctrine design choice — how a gate says "this unit
+is out of my scope" without going silent — and that deserves a leaf, not a paragraph.
+
 ## _(2026-10-01)_ — measure the attachment before landing the document (P3-BREADTH.5 slice 2)
 
 The slice's real content was a measurement discipline: the DSP's `profile.sexp` and
