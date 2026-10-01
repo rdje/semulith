@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0021 (leaf P3-BREADTH.6) — gate BREADTH runs: verdict passed; the capability report published
+
+- `scripts/gate_report.py` gained the cross-unit builder (`--gate BREADTH`): the three
+  roadmap axes measured from tracked files by concrete artifact name — axis 1 the
+  subset's six evidence anchors (declared scope + vehicle, the `.a56` corpus, 17
+  crate tests, the driver, the comparison contract, the registered mechanism), axis 2
+  nine abstraction constructs DECLARED in their schema AND CARRIED by the mapping
+  owner with the refusal boundary pinned (5 synth probes), axis 3 the registry as the
+  complete claim list — **TI C6000 and ADI SHARC unclaimed explicitly**, everything
+  else by omission. No code path to `passed` over an absent anchor (EVD-08).
+- The report publishes at `docs/BREADTH-REPORT.md` — a cross-architecture gate cannot
+  be owned by a profile directory — and `check_gate_report.sh` gained the repo-level
+  leg: same regenerate-never-edit enforcement, same controls (self-test 12/12; 4
+  reports in sync, G0/G1/GC byte-identical).
+- `P3-BREADTH` **CLOSED 8/8** — the stable-API claim is permitted exactly where the
+  report permits it (the exercised cases of the two registered units); `.1` stays
+  `slice-gated` on the record, its TI/VLIW legs reopening by name.
+
 ## SEMULITH-BR-0020 (leaf P3-BREADTH.6) — the second unit registered; its book stands; the per-part ceiling rises by ruling
 
 - `materials/units.sexp` gained `dsp56300-lab-v0` (the second unit; C17 in / C14 out
@@ -877,28 +895,4 @@
   answered by the second and third archive movements — the ceiling obeyed, never raised.
 - `make gate` all green. CHANGELOG.md crossed its ceiling with this entry and was sharded
   again by the DOC-SHARDING machinery.
-
-## SEMULITH-MM-0057 (leaf MODEL-METHOD.15) — the chipdoc feed arrives: the flagged set, catalogued and cached
-
-- The director supplied the chipdoc corpus root and ordered a local cache so the path never
-  has to be requested again. The feed's records arrive in this catalogue's own syntax, so
-  adoption is copy-and-verify, not transcription: 7 proposals adopted (the `2026-09-27`
-  flagged set minus the already-catalogued psABI) — `RISCV-ARCH-TEST-ACT4`, `RISCV-SBI-2.0`,
-  `RISCV-BRS-1.0`, `DT-SPEC-0.4`, `UBOOT-2026.07`, `SIFIVE-FU540-C000`, `VIRTIO-1.2`. The
-  catalogue reads 43 materials (was 36).
-- Every digest verified AT FETCH, not trusted from the feed: 7/7 ok; both snapshots
-  manifest-verified (ACT4 136/136 files, U-Boot 1219/1219). `materials.py --verify`:
-  43/43 resolved, zero drift after the corpus re-pin `3c45e81` → `73711d6` (5309 files /
-  255 PDFs re-derived by the same path sweep at the new pin).
-- The channel itself is snapshotted git-ignored at `.semulith-data/chipdoc/` (the map, the
-  feed, the requests ledger); the corpus path lives only in that untracked README —
-  Policy 12: no tracked file names it.
-- `P2-SCALAR.5` blocker (a) ANSWERED at the materials layer: the ACT4 docs + test plans are
-  catalogued and cached; the generated 635 MB suite stays pinned by upstream commit
-  `e2216915…` for resume day (the snapshot is partial by design). Blocker (b) — the C-guest
-  routing decision plus the absent RISC-V C toolchain — stands.
-- Measured absence: chipdoc's pinned v20260120 snapshot carries 72 HTML pages and no PDF —
-  the `MODEL-METHOD.14` probe's PDF stays the `MODEL-METHOD.4` release-asset acquisition.
-- `make gate` all green. CHANGELOG.md crossed its 64 KiB ceiling with this entry and was
-  sharded by the DOC-SHARDING machinery, per its declared pressure control.
 

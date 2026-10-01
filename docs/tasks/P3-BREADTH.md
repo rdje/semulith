@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `P3-BREADTH`
-- Status: `active`
+- Status: `done` (`2026-10-01` — gate `BREADTH` RUN, verdict **`passed`**; `.1` stays
+  `slice-gated` on the record, its conditional legs reopening by name)
 - Roadmap lane: `ROADMAP.md` §6 → **P3 — Exercise breadth and stabilize only what is demonstrated**
 - Gate: `BREADTH`
 - Depends on: `P2-SCALAR` (gate `CPU-LAB`), `DSP-REVIEW`
@@ -214,7 +215,8 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the measurement is recorded where the next evaluator meets it — this leaf and .7's measured input)`.
 
 - ID: `P3-BREADTH.6` — **the `BREADTH` gate report**
-  Status: `in_progress` (`2026-10-01` — slice 1: the DSP records)
+  Status: `done` (`2026-10-01` — slices 1–3: the DSP records, the unit registration +
+  per-unit book, the report itself; gate `BREADTH` RUN, verdict **`passed`**)
   Goal: generate from pinned inputs; publish the capability report.
   Acceptance: families with no evidence are listed as **unclaimed**, explicitly.
   Slice plan (recorded before code, `2026-10-01`; reordered mid-flight, measured): three
@@ -287,6 +289,34 @@ unsupported families remain unclaimed.
   .7 decision applied to a new consumer — the durable rule lives in
   decision_gate-applicability-by-declared-vehicle; the per-unit INTERNAL_CONTRACTS
   question was answered by keeping the constant and making the ROW honest, recorded here)`.
+  Slice 3 (`2026-10-01`, `SEMULITH-BR-0021`): the BREADTH gate RUNS — verdict
+  **`passed`**, published. `gate_report.py` gained the cross-unit builder
+  (`--gate BREADTH`, no profile — the gate spans every registered unit), deriving the
+  three roadmap axes from tracked files by concrete artifact name: axis 1 (the stated
+  real subset has evidence) measures six anchors for dsp56300-lab-v0 — the declared
+  scope + vehicle, the `.a56`+`.meta` corpus, the crate's 17 commit-level tests, the
+  differential driver, the recorded comparison contract, the registered
+  smoke-agreement mechanism — plus the scalar unit's GC record standing; axis 2 (the
+  public abstraction supports the exercised cases) measures all nine constructs
+  DECLARED in their schema AND CARRIED by the mapping owner, with the refusal boundary
+  pinned by the five synthetic probes; axis 3 (unsupported families remain unclaimed)
+  reads the claim list from the unit registry (2 units) and lists the surveyed
+  families explicitly — TI C6000 (ABSENT for execution) and ADI SHARC (PARTIAL)
+  unclaimed, everything else unclaimed by omission. EVD-08's shape holds: the
+  generator has no code path to `passed` while an axis's anchors are absent. The
+  report lives at `docs/BREADTH-REPORT.md` (a cross-architecture gate cannot be owned
+  by a profile directory), and `check_gate_report.sh` gained the repo-level leg — the
+  same regenerate-never-edit enforcement and the same three self-test controls (12/12;
+  4 reports in sync). The report's own "what passed does NOT mean" bounds the claim:
+  exercised cases only; no DSP56300 family compatibility; no RISC-V conformance
+  upgrade; the slice-gated `.1` legs (F2/F4/F5) named. **The tree closes:** every
+  leaf dispositioned — `.1` stays `slice-gated` on the record (its conditional legs
+  reopen by name with a VLIW/TI slice decision), the gate's verdict is published, and
+  the stable-API claim the tree guarded is permitted exactly where the report permits
+  it.
+  Lessons: `promotion: declined (the report's axes are the roadmap's gate text measured,
+  not a new method; the repo-level-report placement rule is written in
+  check_gate_report.sh's header where the next cross-architecture gate meets it)`.
 
 - ID: `P3-BREADTH.7` — **land the dsp56300-lab-v0 dossier as governed documents**
   Status: `done` (`2026-10-01` — slices 1–3: the vehicle declaration + the gate legs, the
@@ -334,8 +364,8 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.6` | `in_progress` | slices 1–2 landed (the records; the registration + book); slice 3 is the BREADTH report itself |
-| — | `P3-BREADTH.1` | `slice-gated` | executable-now scope done `2026-10-01`; the F6 census leg landed for dsp56300-lab-v0 (`SEMULITH-BR-0013`) — F6 refires per new profile; F2/F4/F5 (TI/VLIW) stay unbuilt, recorded |
+| — | — | — | the tree is DONE: gate `BREADTH` RUN `2026-10-01`, verdict **`passed`** (`docs/BREADTH-REPORT.md`, GATE-REPORT-gated) |
+| — | `P3-BREADTH.1` | `slice-gated` | executable-now scope done `2026-10-01`; the F6 census leg landed for dsp56300-lab-v0 (`SEMULITH-BR-0013`) — F6 refires per new profile; F2/F4/F5 (TI/VLIW) stay unbuilt, recorded — reopens by name with a VLIW/TI slice decision |
 
 ## Decisions
 
@@ -443,10 +473,36 @@ unsupported families remain unclaimed.
   `DEV_NOTES.md`; mdBook `models.md` (two units) + `plan/p3.md` (the registration);
   the `.6` slice-1 checklist archived verbatim (the per-part ceiling held).
 
+`P3-BREADTH.6`, slice 3 (`2026-10-01`, `SEMULITH-BR-0021`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the gate's report must be a function of pinned
+  inputs (ROADMAP §P1; EVD-08), and it cannot be a profile's: the gate spans every
+  registered unit, measured when the pre-registration generation read "1 registered
+  unit" and listed the evidenced DSP family as unclaimed — the report had to be the
+  capstone. WHERE: `scripts/gate_report.py` (the cross-unit builder),
+  `scripts/check_gate_report.sh` (the repo-level leg), `docs/BREADTH-REPORT.md` (the
+  published report).
+- [x] **ADDRESSED (verified)** — `python3 scripts/gate_report.py --gate BREADTH` →
+  wrote `docs/BREADTH-REPORT.md` (**Verdict: `passed`**, 5,789 B): axis 1 six anchors
+  present, axis 2 nine constructs declared+carried, axis 3 two surveyed families
+  unclaimed explicitly; `bash scripts/check_gate_report.sh --self-test` → `12 pass /
+  0 fail`; `bash scripts/check_gate_report.sh` → `ok (4 generated report(s) in sync
+  with their inputs)`.
+- [x] **NO REGRESSION** — G0/G1/GC reports regenerate byte-identical (the same check's
+  4-report census); `bash scripts/check_doctrines.sh` → `=== all doctrines green ===`.
+- [x] **FIX** — the cross-unit builder (three axes measured from tracked files by
+  concrete artifact name; no code path to `passed` over an absent anchor), the
+  repo-level leg (same enforcement, same controls), the published report.
+- [x] **LOCKSTEP** — tree (status done, slice record, checklist, logs, frontier),
+  `docs/TASK_TREE.md` (the tree leaves the active index), `MEMORY.md`,
+  `LIVE_STATUS.md` (P3 row → Done), `CHANGELOG.md`, `DEV_NOTES.md`; mdBook
+  `plan/p3.md` (the gate verdict + the report).
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.6` slice 3 | `gate_report.py --gate BREADTH` → verdict `passed` (axis 1: six anchors; axis 2: nine constructs declared+carried; axis 3: TI C6000 + ADI SHARC unclaimed explicitly); GATE-REPORT self-test 12/12, 4 reports in sync; `make gate` → all doctrines green | **gate `BREADTH` RUN, verdict `passed`** — the capability report published at `docs/BREADTH-REPORT.md`; `.6` DONE 3/3; the tree closes |
 | `2026-10-01` | `.6` slice 2 | rv64i fragments regenerated — `git diff` shows ONLY the generator-digest line; UNIT-BOOKS ok (2 units, both build); MATERIALS-BILL ok (12 DSP materials, every section negative); SCOPE-COVERAGE ok (2 units may code); units/category-needs schema-validate ok; `mdbook build` rc 0; `make gate` → all doctrines green | the dsp56300-lab-v0 unit is REGISTERED and its book STANDS — generator learned the sibling-crate shape, 24 census rows landed, four mirror rows registered |
 | `2026-10-01` | `.6` slice 1 | both catalogues schema-validate ok; RECORD-SCHEMA ok (10 record files, zero gate edits on landing); FACT-OWNERSHIP ok (25 kinds), self-test 10/10 after the GREEN fixture's two-unit re-pin (RED before: `UNREGISTERED MIRROR PAIR`); `make gate` → all doctrines green | the DSP's requirements + contract-obligations records LAND governed: 7 requirements, 13 obligations, 26 declared checks, contract `dsp56300-lab-env-v0` |
 | `2026-10-01` | `.7` slice 3 | the landing: every attaching gate green with the documents in place — EXERCISE-COVERAGE 19/19 (DSP) + 52/52 (rv64), EXTRACTION ok (2 units), INTERACTION-MATRIX ok (2 units, 21 DSP cells), PROFILE-CONSISTENCY ok (2 dossiers), DOSSIER-SCHEMA 62 validated / 2 skipped-by-name, FACT-OWNERSHIP ok (23 kinds), self-test 10/10 (two new census arms); `make gate` green | **the dsp56300-lab-v0 dossier is LANDED and governed**; `.7` DONE 3/3 |
@@ -468,6 +524,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.6` slice 3 | `SEMULITH-BR-0021 (leaf P3-BREADTH.6): gate BREADTH runs — verdict passed; the capability report published, generated and gated` | the cross-unit builder measures the three roadmap axes from tracked files; the repo-level leg enforces sync; TI C6000 + ADI SHARC unclaimed explicitly; the tree closes |
 | `.6` slice 2 | `SEMULITH-BR-0020 (leaf P3-BREADTH.6): the second unit registered — the sibling-crate book generator, the census rows, the book; every attaching gate green` | gen_model_book learned the sibling-crate shape (rv64i fragments byte-stable modulo the generator digest); units.sexp + 24 category-needs rows; the six-chapter book builds; four mirror rows |
 | `.6` slice 1 | `SEMULITH-BR-0019 (leaf P3-BREADTH.6): the DSP records land governed — 7 requirements, 13 obligations, 26 declared checks; RECORD-SCHEMA attaches with zero gate edits` | the catalogues mirror the rv64i pattern at the DSP's size; FACT-OWNERSHIP gains two rows and its GREEN fixture re-pins to the two-unit corpus (the designed staleness fired RED first) |
 | `.7` slice 3 | `SEMULITH-BR-0018 (leaf P3-BREADTH.7): the dossier lands governed — profile/state/interactions in profiles/, the ownership rows, the census arms; every attaching gate green` | the three documents moved (rename lineage kept); five fact-ownership rows; DOSSIER rows read present/deferred with owners; `.7` DONE 3/3 |
@@ -683,3 +740,15 @@ unsupported families remain unclaimed.
   them taxing ACTIVE narratives; the aggregate bound and the archive lifecycle are
   unchanged, and the director's stated invariant stands: a bound remains — a file must
   stay readable in one sitting, growth is never unbounded).
+- `2026-10-01`: `.6` slice 3 (`SEMULITH-BR-0021`) — **gate `BREADTH` RUN, verdict
+  `passed`.** The cross-unit builder measures the three roadmap axes from tracked
+  files by concrete artifact name (axis 1: the subset's six evidence anchors; axis 2:
+  nine abstraction constructs declared AND carried, the refusal boundary pinned; axis
+  3: the registry as the complete claim list — TI C6000 and ADI SHARC unclaimed
+  explicitly, everything else by omission), with no code path to `passed` over an
+  absent anchor. The report publishes at `docs/BREADTH-REPORT.md`;
+  `check_gate_report.sh` gained the repo-level leg (12/12 self-test; 4 reports in
+  sync). `.6` DONE 3/3. **The tree closes** — `.1` stays `slice-gated` on the record,
+  its conditional legs (F2/F4/F5) reopening by name with a VLIW/TI slice decision;
+  the stable-API claim is permitted exactly where the report permits it: the
+  exercised cases of the two registered units.

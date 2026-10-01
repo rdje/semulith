@@ -1,5 +1,38 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the capability report is the capstone, and the registry is its claim list (P3-BREADTH.6 slice 3)
+
+The slice order was measured, not planned: a BREADTH report generated before the unit
+registration read "1 registered unit" and listed the DSP56300 family — whose evidence
+anchors axis 1 had just measured green — as UNCLAIMED. The claim list IS the unit
+registry, so the report had to be the leaf's last slice. With slice 2's registration
+landed, the builder's three axes are the roadmap's gate text measured from tracked
+files by concrete artifact name: axis 1 counts six anchors for the DSP subset (the
+declared scope + vehicle, the `.a56`+`.meta` corpus, the crate's 17 tests, the
+differential driver, the recorded comparison contract, the registered smoke-agreement
+mechanism) plus the scalar unit's GC record; axis 2 requires each of the nine
+exercised-case constructs to be DECLARED in its schema AND CARRIED by `dossier_sexp`
+(the silent-drop class `.2` eliminated); axis 3 parses the pinned oracle survey for
+its per-family verdicts and lists every family no registered unit backs as
+**unclaimed**, explicitly — TI C6000 (ABSENT for execution), ADI SHARC (PARTIAL) —
+plus the blanket rule: the registry is complete, everything else is unclaimed by
+omission. EVD-08's shape holds by construction: no code path to `passed` while an
+axis's anchors are absent.
+
+Placement needed a rule, now written in `check_gate_report.sh`'s header: per-profile
+reports live under `profiles/<id>/`; a CROSS-ARCHITECTURE gate's report lives at the
+repo level (`docs/BREADTH-REPORT.md`) because no profile directory may own it. The
+repo-level leg enforces the same regenerate-never-edit rule with the same three
+controls; the self-test covers it (12/12; 4 reports in sync — G0/G1/GC regenerate
+byte-identical). One cosmetic bug caught by reading the rendered report: doubled
+backticks around the probe list (nested f-string quoting). Verdict: `passed` — and
+the report's own "what passed does NOT mean" bounds it: exercised cases only, no
+DSP56300 family compatibility, no RISC-V conformance upgrade, the slice-gated `.1`
+legs named. The tree closes 8/8.
+
+Validation: `gate_report.py --gate BREADTH` → `passed` (5,789 B); GATE-REPORT
+self-test 12/12, 4 reports in sync; `make gate` all-doctrines-green.
+
 ## _(2026-10-01)_ — the second unit's book, and the ceiling the director raised (P3-BREADTH.6 slice 2)
 
 Registering the unit meant the book generator had to stop refusing the DSP shape. The
@@ -634,37 +667,6 @@ byte and the overrun tamper fit; re-aimed one-past-the-end. A genuine surprise m
 the CLI's 2 GiB region makes snapshot capture hash 2 GiB per call — seconds, acceptable
 for a CLI tool, noted for the record (the suite's region is 64 KiB). Validation: 180/180
 verify suites; make check/gate/book green.
-
-Lesson: `promotion: declined` (recorded in the leaf).
-
-## _(2026-09-30)_ — the PDF re-sourcing probe: measured adopt-in-principle (MODEL-METHOD.14)
-
-The probe answered the cost question by attempting the whole sweep rather than sampling:
-the naive in-order parser over pdftotext's layout-fragmented output (one field per line)
-recovered every opcode (the per-page mnemonic row zips with the page's 7-bit opcode row)
-and both funct streams for 37/52 forms; the 15 misses are all parser-side ordering gaps
-(f7/f3 streams need page-local alignment), none a value conflict and none a document
-absence — and every gap was caught by the incumbent comparison, demonstrating the control
-a completed re-source would rely on. The numbering trap (PDF ch.2/ch.4 vs pinned HTML
-§1.1/§3.1) was handled by keying on content. Decision: adopt-in-principle; the re-source
-is a later reviewed leaf under .8's ownership. Housekeeping: the closure sweep found .15
-and .17 still marked `active` with Results landed — tree-internal drift, corrected.
-
-Lesson: `promotion: declined` (recorded in the leaf; the probe numbers live there and in
-the decision record).
-
-## _(2026-09-30)_ — min-fencei: the one-word retained divergence (P2-SCALAR.6)
-
-Implementation matched the design exactly — the expected-divergence protocol
-(at_step 0, vacuous prefix), the adapters' run-off-the-end handling, and the stop-reason
-tables all predated this leaf, so no instrument needed to change: the guest, its
-expectation document, one test suite, the census arm, the matrix cell. The live run shows
-the protocol working at the boundary: EXPECTED DIVERGENCE at aligned step 0 vs each
-reference; sail vs spike AGREE over their full 2 steps (fence.i nop + the illegal zero
-word). The one tight spot: references.sexp sat 49 B under its per-part ceiling, so the
-retention note is written to fit (32,765/32,768) rather than moving the ceiling for a
-sentence. Validation: 175/175 verify suites; smoke green incl. the four-step protocol;
-bench 53 arms; gate green.
 
 Lesson: `promotion: declined` (recorded in the leaf).
 

@@ -19,6 +19,8 @@ counts declared checks against implemented ones, and 66 against 0 cannot round u
 Usage:  scripts/gate_report.py <profile>                   write the G0 report
         scripts/gate_report.py <profile> --gate G1         write the G1 report
         scripts/gate_report.py <profile> [--gate G] --stdout   print instead
+        scripts/gate_report.py --gate BREADTH [--stdout]   the cross-architecture report
+                                                           (docs/BREADTH-REPORT.md — no profile)
 
 G1 (`P1-LAB.12`): the laboratory gate's report over the same dossier, evaluated against the
 SIX criteria `ROADMAP.md` §6 states for `G1` — each measured from tracked files by concrete
@@ -650,24 +652,272 @@ def build_cpulab(profile: str) -> str:
     return "\n".join(L) + "\n"
 
 
+# ---------------------------------------------------------------------------
+# Gate BREADTH — the cross-architecture capability report (`P3-BREADTH.6`). Same doctrine
+# as the per-profile gates, one level sideways: derived entirely from TRACKED files (the
+# unit registry, the units' dossiers, the schemas, the refusal-boundary pins, the family
+# census), per axis, never rolled up (SCP-05). The gate is not a profile's — it spans
+# every registered unit — so the report lives at `docs/BREADTH-REPORT.md`, and the
+# verdict cannot read `passed` while an axis's measured anchors are absent (EVD-08).
+# ---------------------------------------------------------------------------
+
+BREADTH_SURVEY = "docs/tasks/artifacts/p3-breadth/2026-10-01-oracle-survey.md"
+BREADTH_SYNTH = "docs/tasks/artifacts/dsp-review/synth"
+
+# The abstraction constructs the DSP's exercised cases required (P3-BREADTH.5/`.7`): each
+# is probed BY NAME in the schema that declares it AND in the single mapping owner —
+# a construct the mapping drops silently is the class P3-BREADTH.2 eliminated.
+BREADTH_CONSTRUCTS = (
+    ("schema/state.sexp", "register_family"),
+    ("schema/state.sexp", "memory_spaces"),
+    ("schema/state.sexp", "hardware_stack"),
+    ("schema/profile.sexp", "vehicle"),
+    ("schema/profile.sexp", "moves"),
+    ("schema/profile.sexp", "alu_core"),
+    ("schema/profile.sexp", "multiplies"),
+    ("schema/profile.sexp", "flow"),
+    ("schema/profile.sexp", "loops"),
+)
+
+
+def _units() -> list[dict]:
+    """The registered units — the COMPLETE claim list. Parsed from materials/units.sexp;
+    a unit is claimed exactly by being registered here."""
+    units = []
+    for line in (ROOT / "materials/units.sexp").read_text().splitlines():
+        if not line.startswith("(unit "):
+            continue
+        units.append({
+            "id": re.search(r'\(id "([^"]+)"\)', line).group(1),
+            "kind": re.search(r'\(kind ([^)]+)\)', line).group(1),
+            "book": re.search(r'\(book "([^"]+)"\)', line).group(1),
+        })
+    return units
+
+
+def build_breadth() -> str:
+    units = _units()
+    dsp = ROOT / "profiles/dsp56300-lab-v0"
+    dsp_prof = D.load_profile(dsp / "profile.sexp")
+    dsp_refs_text = (dsp / "references.sexp").read_text()
+    guests_a56 = sorted((dsp / "guests").glob("*.a56"))
+    crate = ROOT / "crates/semulith-dsp56300"
+    crate_tests = sum(p.read_text().count("#[test]")
+                      for p in sorted(crate.glob("src/**/*.rs")))
+    matrix_src = (ROOT / "scripts/check_interaction_matrix.py").read_text()
+    driver = ROOT / "scripts/run_dsp56300_smoke.py"
+
+    # Axis 1 anchors — each a concrete tracked artifact, absent ⇒ unmet.
+    dsp_vehicle = dsp_prof.get("vehicle") or {}
+    a1 = {
+        "the subset is declared (scope count_total > 0, vehicle sibling-crate)":
+            dsp_prof["scope"]["count_total"] > 0
+            and str(dsp_vehicle.get("route")) == "sibling-crate",
+        "the guest corpus exists (.a56 + .meta per case)":
+            len(guests_a56) > 0
+            and all(g.with_suffix(".meta").exists() for g in guests_a56),
+        "the model crate exists and carries commit-level tests":
+            crate.is_dir() and crate_tests > 0,
+        "the differential driver exists (the agreement is re-derived by running it)":
+            driver.is_file(),
+        "the comparison contract is recorded (trace_granularity)":
+            "trace_granularity" in dsp_refs_text,
+        "the agreement mechanism is registered (the matrix gate re-derives it)":
+            "dsp56300-smoke-agreement" in matrix_src,
+    }
+    gc_report = ROOT / "profiles/rv64i-lab-v0/GC-REPORT.md"
+    a1_rv64 = gc_report.is_file()
+
+    # Axis 2 anchors — the schema declares each construct and the mapping owner carries it.
+    mapping_src = (ROOT / "scripts/dossier_sexp.py").read_text()
+    a2 = []
+    for schema_file, construct in BREADTH_CONSTRUCTS:
+        declared = construct in (ROOT / schema_file).read_text()
+        carried = construct in mapping_src
+        a2.append((schema_file, construct, declared, carried))
+    synth = ROOT / BREADTH_SYNTH
+    synth_runner = synth / "run_synth_probes.sh"
+    synth_probes = sorted(p.name for p in synth.glob("*.sexp")) if synth.is_dir() else []
+
+    # Axis 3 — the family census: every surveyed family is either backed by a registered
+    # unit or listed UNCLAIMED below. Parsed from the pinned survey record.
+    survey_text = (ROOT / BREADTH_SURVEY).read_text()
+    families = re.findall(r"^### (.+?) — (\S[^\n]*)$", survey_text, re.M)
+    archs = {}
+    for u in units:
+        p = ROOT / "profiles" / u["id"] / "profile.sexp"
+        if p.is_file():
+            archs[u["id"]] = D.load_profile(p)["profile"].get("architecture", "")
+    def claimed_by(family: str) -> str | None:
+        for uid, arch in archs.items():
+            if arch and arch in family:
+                return uid
+        return None
+    unclaimed = [(fam, verdict) for fam, verdict in families if not claimed_by(fam)]
+
+    met = {
+        1: all(a1.values()) and a1_rv64,
+        2: all(d and c for _, _, d, c in a2) and synth_runner.is_file() and synth_probes,
+        3: bool(units) and bool(families) and bool(unclaimed),
+    }
+    verdict = "passed" if all(met.values()) else "incomplete"
+    unmet = [n for n, ok in met.items() if not ok]
+
+    L: list[str] = []
+    A = L.append
+    A("# Gate `BREADTH` report — the cross-architecture capability report (P3)")
+    A("")
+    A("<!-- DERIVED — DO NOT EDIT. Regenerated by `scripts/gate_report.py --gate BREADTH`;")
+    A("     the `GATE-REPORT` doctrine fails the commit if this file and its inputs disagree.")
+    A("     Edit the INPUTS: the unit registry, the units' dossiers, the schemas, the synth")
+    A("     pins, the family census. -->")
+    A("")
+    A(f"**Verdict: `{verdict}`.**" + ("" if verdict == "passed" else
+      f" Unmet: {', '.join(f'axis {n}' for n in unmet)}."))
+    A("")
+    A("## Why this verdict")
+    A("")
+    A("`EVD-08` forbids a report that reads `passed` while a required axis's evidence is")
+    A("missing. The three axes below are the `ROADMAP.md` §6 `BREADTH` gate text, each")
+    A("measured from tracked files by concrete artifact name — never asserted. This")
+    A("generator has no code path to `passed` while an axis's anchors are absent.")
+    A("")
+    A("## Inputs (all tracked; this report reads nothing untracked)")
+    A("")
+    A("| Input | Contents |")
+    A("| --- | --- |")
+    A(f"| `materials/units.sexp` | {len(units)} registered units — the COMPLETE claim list |")
+    A(f"| `profiles/dsp56300-lab-v0/` | scope {dsp_prof['scope']['count_total']} forms, vehicle `{dsp_vehicle.get('route', '?')}`, {len(guests_a56)} `.a56` guests, the recorded comparison contract |")
+    A(f"| `crates/semulith-dsp56300` | the sibling-crate model, {crate_tests} commit-level tests |")
+    A(f"| `schema/state.sexp`, `schema/profile.sexp` + `scripts/dossier_sexp.py` | the abstraction's exercised-case constructs, declared and carried |")
+    A(f"| `{BREADTH_SYNTH}/` | {len(synth_probes)} refusal-boundary pins (the synthetic fixtures) |")
+    A(f"| `{BREADTH_SURVEY}` | the family census — {len(families)} families with verdicts |")
+    A("| `profiles/rv64i-lab-v0/G?-REPORT.md` | the scalar unit's own per-axis gate records (GATE-REPORT-gated) |")
+    A("")
+    A("## Axis 1 — the stated real subset has evidence")
+    A("")
+    A("The stated real subset is `dsp56300-lab-v0` v0 (`decision_dsp56300-lab-v0-subset`).")
+    A("Its evidence anchors, each measured by name:")
+    A("")
+    A("| Anchor | Present |")
+    A("| --- | --- |")
+    for name, ok in a1.items():
+        A(f"| {name} | {'yes' if ok else '**NO**'} |")
+    A("")
+    A(f"The corpus is {len(guests_a56)} synthetic guests; the agreement itself is re-derived")
+    A("by running `scripts/run_dsp56300_smoke.py` (deliberately NOT a commit gate — it needs")
+    A("the untracked, network-acquired reference binaries), and the EXERCISE-COVERAGE gate")
+    A(f"re-derives the scope-versus-corpus census ({dsp_prof['scope']['count_total']}/"
+      f"{dsp_prof['scope']['count_total']}) at every commit. The crate's {crate_tests} tests")
+    A("are the commit-level proof. The scalar unit's evidence stands as its own per-axis")
+    A(f"record: `profiles/rv64i-lab-v0/GC-REPORT.md` ({'present' if a1_rv64 else '**ABSENT**'},")
+    A("GATE-REPORT-gated).")
+    A("")
+    A(f"**Status: {'met' if met[1] else 'NOT met — a named anchor above is absent'}.**")
+    A("")
+    A("## Axis 2 — the public abstraction supports the exercised cases")
+    A("")
+    A("Every construct the exercised DSP cases required is declared in its schema AND")
+    A("carried by the single mapping owner (`dossier_sexp`) — a construct the mapping")
+    A("dropped would be the silent-path class `P3-BREADTH.2` eliminated:")
+    A("")
+    A("| Construct | Declared | Carried |")
+    A("| --- | --- | --- |")
+    for schema_file, construct, declared, carried in a2:
+        A(f"| `{construct}` ({schema_file}) | {'yes' if declared else '**NO**'} | {'yes' if carried else '**NO**'} |")
+    A("")
+    A(f"The refusal boundary is pinned, not assumed: {len(synth_probes)} synthetic probes")
+    A(f"({', '.join(f'`{p}`' for p in synth_probes)}) measure what the pipeline refuses")
+    A("by name — the boundary's position is evidence, and the suite turns RED by design")
+    A("the day a pin goes stale.")
+    A("")
+    A(f"**Status: {'met' if met[2] else 'NOT met — a construct is undeclared or uncarried'}.**")
+    A("")
+    A("## Axis 3 — unsupported families remain unclaimed")
+    A("")
+    A("The claim list is the unit registry, and it is complete — a family is claimed")
+    A("exactly by a registered unit:")
+    A("")
+    A("| Unit | Architecture | Evidence record |")
+    A("| --- | --- | --- |")
+    for u in units:
+        A(f"| `{u['id']}` | {archs.get(u['id'], '?')} | {'the GC per-axis report' if u['id'] == 'rv64i-lab-v0' else 'axis 1 above (EXPERIMENTAL)'} |")
+    A("")
+    A("Every other family the work has surveyed is **unclaimed**, explicitly:")
+    A("")
+    A("| Family | Survey verdict | Claim |")
+    A("| --- | --- | --- |")
+    for fam, verdict_f in unclaimed:
+        A(f"| {fam} | {verdict_f} | **unclaimed** |")
+    A("")
+    A("And every family the survey did not measure is unclaimed by omission: the registry")
+    A("above is the whole of what this project claims. The synthetic fixtures (axis 2) are")
+    A("never evidence about any real processor — they claim no compatibility, by rule.")
+    A("")
+    A(f"**Status: {'met' if met[3] else 'NOT met — the registry or the census is unreadable'}.**")
+    A("")
+    A("## What this verdict does NOT mean")
+    A("")
+    A("- **No stable-general-API claim beyond the exercised cases.** The abstraction supports")
+    A("  the two registered units' shapes, measured; a third family may demand constructs")
+    A("  nobody has needed yet (the slice-gated `P3-BREADTH.1` legs — F2 grouping, F4/F5")
+    A("  VLIW visibility — are recorded, unbuilt, and named).")
+    A("- **No DSP56300 family compatibility.** The subset is EXPERIMENTAL; the differential")
+    A("  is finite, tested evidence over a synthetic corpus (EVD-01), against ONE oracle")
+    A("  whose assembler and emulator legs share a lineage (EVD-04, recorded in")
+    A("  `references.sexp`); `cyc` is never compared.")
+    A("- **No RISC-V conformance.** The scalar unit's own report reads `incomplete` on two")
+    A("  axes and its release decision is EXPERIMENTAL — this gate does not upgrade it.")
+    A("")
+    A("## Commands that re-derive this report's inputs")
+    A("")
+    A("```")
+    A("make gate                            # every doctrine, incl. the gates this report cites")
+    A("scripts/run_dsp56300_smoke.py        # the DSP differential (needs the reference binaries)")
+    A("scripts/gate_report.py --gate BREADTH   # regenerate this report — never edit it")
+    A("```")
+    A("")
+    return "\n".join(L) + "\n"
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2:
-        print("usage: gate_report.py <profile> [--gate G0|G1|GC] [--stdout]", file=sys.stderr)
-        return 2
     gate = "G0"
-    for i, arg in enumerate(argv[2:], start=2):
+    rest: list[str] = []
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
         if arg == "--gate" and i + 1 < len(argv):
             gate = argv[i + 1]
-        elif arg.startswith("--gate="):
+            i += 2
+            continue
+        if arg.startswith("--gate="):
             gate = arg.split("=", 1)[1]
-    if gate not in ("G0", "G1", "GC"):
-        print(f"gate_report: unknown gate '{gate}' (G0, G1 or GC)", file=sys.stderr)
+            i += 1
+            continue
+        rest.append(arg)
+        i += 1
+    if gate == "BREADTH":
+        text = build_breadth()
+        if "--stdout" in rest:
+            sys.stdout.write(text)
+            return 0
+        out = ROOT / "docs" / "BREADTH-REPORT.md"
+        out.write_text(text)
+        print(f"wrote {out.relative_to(ROOT)} ({len(text)} bytes)")
+        return 0
+    if not rest or rest[0].startswith("--"):
+        print("usage: gate_report.py <profile> [--gate G0|G1|GC] [--stdout]", file=sys.stderr)
+        print("       gate_report.py --gate BREADTH [--stdout]", file=sys.stderr)
         return 2
-    text = build(argv[1]) if gate == "G0" else build_g1(argv[1]) if gate == "G1" else build_cpulab(argv[1])
-    if "--stdout" in argv:
+    if gate not in ("G0", "G1", "GC"):
+        print(f"gate_report: unknown gate '{gate}' (G0, G1, GC or BREADTH)", file=sys.stderr)
+        return 2
+    profile = rest[0]
+    text = build(profile) if gate == "G0" else build_g1(profile) if gate == "G1" else build_cpulab(profile)
+    if "--stdout" in rest:
         sys.stdout.write(text)
         return 0
-    out = ROOT / "profiles" / argv[1] / f"{gate}-REPORT.md"
+    out = ROOT / "profiles" / profile / f"{gate}-REPORT.md"
     out.write_text(text)
     print(f"wrote {out.relative_to(ROOT)} ({len(text)} bytes)")
     return 0

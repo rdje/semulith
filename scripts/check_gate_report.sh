@@ -16,6 +16,11 @@
 # those inputs are true — the requirements, obligations and experiment records have their own
 # gate (`RECORD-SCHEMA`) and their own honest limits.
 #
+# Two placements, one rule: PER-PROFILE reports live at `profiles/<id>/G?-REPORT.md`; a
+# CROSS-ARCHITECTURE gate's report lives at the repo level (today: `BREADTH` →
+# `docs/BREADTH-REPORT.md`, P3-BREADTH.6 slice 3 — the gate spans every registered unit, so no
+# profile directory may own it). Both get the same sync enforcement and the same controls.
+#
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls and exit.
 set -uo pipefail
@@ -25,6 +30,14 @@ command -v python3 >/dev/null 2>&1 || {
   echo "GATE-REPORT: REFUSED — python3 is not on PATH; this check cannot judge." >&2; exit 2; }
 
 report_for() { python3 scripts/gate_report.py "$1" --gate "$2" --stdout 2>/dev/null; }
+report_repo() { python3 scripts/gate_report.py --gate "$1" --stdout 2>/dev/null; }
+
+# The repo-level gate reports: gate<TAB>path, one per line. A cross-architecture gate whose
+# report exists is checked here; one that does not exist yet is not (a profile with no report
+# is skipped for the same reason).
+repo_reports() {
+  printf 'BREADTH\tdocs/BREADTH-REPORT.md\n'
+}
 
 self_test() {
   local pass=0 fail=0 prof p tmp generated report gate
@@ -55,6 +68,22 @@ self_test() {
       else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $prof/$gate tamper is undetectable" >&2; fi
     done
   done
+  # The repo-level reports (cross-architecture gates): the same three controls.
+  local rgate rpath
+  while IFS=$'\t' read -r rgate rpath; do
+    [ -f "$rpath" ] || continue
+    generated="$(report_repo "$rgate")"
+    if [ -z "$generated" ]; then
+      fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $rpath generated nothing" >&2; continue
+    fi
+    if [ "$generated" = "$(report_repo "$rgate")" ]; then pass=$((pass+1))
+    else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $rpath is not deterministic" >&2; fi
+    tmp="$(printf '%s' "$generated" | sed 's/\*\*Verdict:/**Xerdict:/')"
+    if [ "$tmp" != "$generated" ]; then pass=$((pass+1))
+    else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $rpath control did not alter the text" >&2; fi
+    if ! printf '%s' "$tmp" | diff -q - <(printf '%s' "$generated") >/dev/null 2>&1; then pass=$((pass+1))
+    else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: $rpath tamper is undetectable" >&2; fi
+  done < <(repo_reports)
   [ "$pass" -gt 0 ] || { echo "GATE-REPORT self-test: no profile carried a report to test" >&2; fail=$((fail+1)); }
   printf 'GATE-REPORT --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -84,6 +113,21 @@ for p in profiles/*/; do
     fi
   done
 done
+
+# The repo-level reports (cross-architecture gates), same rule.
+while IFS=$'\t' read -r rgate rpath; do
+  [ -f "$rpath" ] || continue
+  checked=$((checked+1))
+  if ! diff -q <(report_repo "$rgate") "$rpath" >/dev/null 2>&1; then
+    { echo "GATE-REPORT: $rpath is out of sync with the inputs it is generated from."
+      diff <(report_repo "$rgate") "$rpath" | head -20 | sed 's/^/    /'
+      echo "  Regenerate it — never edit it:"
+      echo "    scripts/gate_report.py --gate $rgate"
+      echo "  ⛔ A hand-edited gate report is how a project comes to hold a verdict nothing produced."
+    } >&2
+    stale=$((stale+1))
+  fi
+done < <(repo_reports)
 
 [ "$stale" -eq 0 ] || exit 1
 printf 'GATE-REPORT: ok (%s generated report(s) in sync with their inputs)\n' "$checked"
