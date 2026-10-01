@@ -64,6 +64,13 @@ for prof_path in profiles:
                         f"against a scope that was never declared proves nothing")
         continue
     scope = scopes[0]
+    # P3-BREADTH.7 (decision_gate-applicability-by-declared-vehicle): a unit declaring
+    # (vehicle (comparison checkpoint-end-state)) is measured against its guest corpus
+    # directly — the composition leg then applies iff an encoding.sexp exists.
+    vehicle = S.children(form, "vehicle")
+    checkpoint = any(
+        str(c[1]) == "checkpoint-end-state"
+        for v in vehicle for c in S.children(v, "comparison"))
     denominator: set[str] = set()
     for f in scope[1:]:
         # (comment …) is the format's reserved annotation head, never a mnemonic group —
@@ -90,8 +97,11 @@ for prof_path in profiles:
     resolved: set[str] = set()
     closure = "unresolved"
     if not enc_path.is_file():
-        findings.append(f"NO COMPOSITION {tag}: no encoding.sexp beside the dossier — the "
-                        f"declared scope's dependency closure cannot be decided")
+        if checkpoint:
+            closure = "n/a (checkpoint-end-state declared; no encoding.sexp — measured against the guest corpus)"
+        else:
+            findings.append(f"NO COMPOSITION {tag}: no encoding.sexp beside the dossier — the "
+                            f"declared scope's dependency closure cannot be decided")
     else:
         try:
             enc = S.read_file(enc_path)[0]
@@ -104,33 +114,70 @@ for prof_path in profiles:
             closure = "{" + ", ".join(names) + "}"
         except (AsmError, S.SexpError, IndexError) as exc:
             findings.append(f"UNMET DEPENDENCY {tag}: {exc}")
-    for m in sorted(denominator - resolved):
-        findings.append(f"UNRESOLVED FORM {tag}: [scope] declares '{m}' but the resolved "
-                        f"composition does not provide it — an included feature whose "
-                        f"dependency is not closed (SCP-02)")
+    if not closure.startswith("n/a"):
+        for m in sorted(denominator - resolved):
+            findings.append(f"UNRESOLVED FORM {tag}: [scope] declares '{m}' but the resolved "
+                            f"composition does not provide it — an included feature whose "
+                            f"dependency is not closed (SCP-02)")
     # exercised: the union of mnemonics the tracked expectation documents declare executed.
     exercised: set[str] = set()
-    expected_files = sorted(pdir.glob("guests/*.expected.sexp"))
-    if not expected_files:
-        findings.append(f"NO GUESTS {tag}: no guests/*.expected.sexp — nothing is exercised")
-    for ef in expected_files:
-        etag = ef.relative_to(root).as_posix()
-        try:
-            eforms = S.read_file(ef)
-            eform = next(f for f in eforms
-                         if isinstance(f, list) and f and str(f[0]) == "expectations")
-        except (S.SexpError, StopIteration) as exc:
-            findings.append(f"UNREADABLE {etag}: {exc}")
-            continue
-        for step in S.children(eform, "step"):
-            insn = S.children(step, "insn")
-            if not insn:
-                findings.append(f"UNNAMED STEP {etag}: a step declares no insn — an exercised "
-                                f"form nobody names cannot be counted")
+    if checkpoint:
+        # The checkpoint leg (P3-BREADTH.7, case dsp56300-lab-v0): the corpus is .a56
+        # assembler sources compared at end state; the census runs BOTH directions —
+        # a declared form no guest executes is UNEXERCISED, a guest instruction the scope
+        # does not name is UNDECLARED EXERCISE. Labels are column-0 tokens; assembler
+        # directives are never instructions.
+        A56_DIRECTIVES = {"org", "end", "dc", "ds", "dsm", "equ", "set", "page", "sect",
+                          "endsec", "include", "define", "undefine", "macro", "endm",
+                          "if", "else", "endif", "dup", "enddup", "msg", "warn", "fail"}
+        a56_files = sorted(pdir.glob("guests/*.a56"))
+        if not a56_files:
+            findings.append(f"NO GUESTS {tag}: checkpoint-end-state declared but no "
+                            f"guests/*.a56 — nothing is exercised")
+        for gf in a56_files:
+            gtag = gf.relative_to(root).as_posix()
+            for raw in gf.read_text(encoding="utf-8").splitlines():
+                line = raw.split(";", 1)[0].strip()
+                if not line:
+                    continue
+                toks = line.split()
+                if raw[0] in " \t":
+                    mn = toks[0]
+                else:
+                    if len(toks) < 2:
+                        continue          # a bare label line
+                    mn = toks[1]          # label + instruction on one line
+                mn = mn.lower()
+                if mn in A56_DIRECTIVES:
+                    continue
+                if mn in denominator:
+                    exercised.add(mn)
+                else:
+                    findings.append(f"UNDECLARED EXERCISE {gtag}: the guest executes "
+                                    f"'{mn}', which the declared scope does not name — the "
+                                    f"corpus and the declaration disagree")
+    else:
+        expected_files = sorted(pdir.glob("guests/*.expected.sexp"))
+        if not expected_files:
+            findings.append(f"NO GUESTS {tag}: no guests/*.expected.sexp — nothing is exercised")
+        for ef in expected_files:
+            etag = ef.relative_to(root).as_posix()
+            try:
+                eforms = S.read_file(ef)
+                eform = next(f for f in eforms
+                             if isinstance(f, list) and f and str(f[0]) == "expectations")
+            except (S.SexpError, StopIteration) as exc:
+                findings.append(f"UNREADABLE {etag}: {exc}")
                 continue
-            text = str(insn[0][1]).strip()
-            if text:
-                exercised.add(text.split()[0].lower())
+            for step in S.children(eform, "step"):
+                insn = S.children(step, "insn")
+                if not insn:
+                    findings.append(f"UNNAMED STEP {etag}: a step declares no insn — an exercised "
+                                    f"form nobody names cannot be counted")
+                    continue
+                text = str(insn[0][1]).strip()
+                if text:
+                    exercised.add(text.split()[0].lower())
     unexercised = sorted(denominator - exercised)
     for m in unexercised:
         findings.append(f"UNEXERCISED {tag}: '{m}' is in the declared scope but no tracked "
@@ -221,6 +268,36 @@ self_test() {
   rm -rf "$t/profiles/p/guests"; mkdir -p "$t/profiles/p/guests"
   profile "$scope2"
   arm "RED   a unit with no guests at all" 1 "NO GUESTS"
+
+  # ── the checkpoint leg (P3-BREADTH.7, case dsp56300-lab-v0): a unit declaring
+  # (vehicle (comparison checkpoint-end-state)) is measured against its .a56 corpus,
+  # both directions; the composition leg is n/a only while no encoding.sexp exists.
+  profile_cp() { # $1 = scope body
+    printf '(profile (id "p") (version "0") (status "experimental") (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source "s")) (scope %s))\n' "$1" \
+      > "$t/profiles/p/profile.sexp"
+  }
+  guest_a56() { # $1 = name; $2 = instruction lines (\n-separated)
+    printf -- '\torg\tp:$100\nstart\t%b\n' "$2" > "$t/profiles/p/guests/$1.a56"
+  }
+  rm -f "$t/profiles/p/encoding.sexp"
+  profile_cp '(count_total 2) (authority architecture) (source "s") (moves "move") (flow "nop")'
+  guest_a56 g1 'move #$1,x0\n\tnop'
+  arm "GREEN checkpoint unit: the .a56 corpus covers the declared scope" 0 "__EXERCISED__ 2/2"
+
+  profile_cp '(count_total 3) (authority architecture) (source "s") (moves "move") (flow "nop") (flow "jmp")'
+  arm "RED   a declared form no .a56 guest executes, named" 1 "UNEXERCISED"
+
+  profile_cp '(count_total 2) (authority architecture) (source "s") (moves "move") (flow "nop")'
+  guest_a56 g1 'move #$1,x0\n\tjmp done'
+  arm "RED   a guest instruction the scope does not name" 1 "UNDECLARED EXERCISE"
+
+  guest_a56 g1 'move #$1,x0\n\tnop'
+  rm -f "$t/profiles/p/guests/g1.a56"
+  arm "RED   checkpoint declared but no .a56 guests" 1 "NO GUESTS"
+
+  guest_a56 g1 'move #$1,x0\n\tnop'
+  profile_cp '(count_total 2) (authority architecture) (source "s") (moves "move") (flow "nop")'
+  arm "GREEN checkpoint with no encoding.sexp — the composition leg is n/a, not RED" 0 "checkpoint-end-state declared"
 
   rm -rf "$t"
   printf 'EXERCISE-COVERAGE --self-test: %d pass / %d fail\n' "$pass" "$fail"

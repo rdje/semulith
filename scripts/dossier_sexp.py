@@ -240,6 +240,12 @@ _STATE_SPEC = [("integer_registers", "int"), ("x0_hardwired_zero", "bool"),
 _DECISION_SPEC = [("id", "str"), ("authority", "sym"), ("statement", "str"),
                   ("source", "str"), ("note", "str")]
 
+# P3-BREADTH.7 slice 1 (case dsp56300-lab-v0): the declared vehicle — the unit's model
+# route and comparison shape; gates derive applicability from it
+# (decision_gate-applicability-by-declared-vehicle).
+_VEHICLE_SPEC = [("route", "sym"), ("comparison", "sym"), ("authority", "sym"),
+                 ("source", "str")]
+
 
 def profile_to_form(doc: dict) -> list:
     prof = doc["profile"]
@@ -250,6 +256,8 @@ def profile_to_form(doc: dict) -> list:
         root.append([S.Symbol("state"), *_emit_flat(_STATE_SPEC, doc["state"])])
     if doc.get("scope"):
         root.append([S.Symbol("scope"), *_emit_flat(_SCOPE_SPEC(), doc["scope"])])
+    if doc.get("vehicle"):
+        root.append([S.Symbol("vehicle"), *_emit_flat(_VEHICLE_SPEC, doc["vehicle"])])
     for dec in doc.get("decision", []):
         root.append([S.Symbol("decision"), *_emit_flat(_DECISION_SPEC, dec)])
     return root
@@ -262,12 +270,13 @@ def _SCOPE_SPEC() -> list[tuple[str, str]]:
 
 def profile_to_doc(form) -> dict:
     S.head(form, "profile")
-    prof = _read_flat(_PROFILE_SPEC, form, "profile", skip=("state", "scope", "decision"))
+    prof = _read_flat(_PROFILE_SPEC, form, "profile", skip=("state", "scope", "decision",
+                                                           "vehicle"))
     # the [profile] table always declares these lists, empty or not; absence is the empty
     # array (`.3` rule), so the fixed document shape reconstructs them
     for k in ("extensions", "privilege_modes"):
         prof.setdefault(k, [])
-    state = scope = None
+    state = scope = vehicle = None
     decisions = []
     for c in _fields(form):
         h = str(c[0])
@@ -276,9 +285,12 @@ def profile_to_doc(form) -> dict:
             state.setdefault("csrs", [])
         elif h == "scope":
             scope = _read_flat(_SCOPE_SPEC(), c, "scope")
+        elif h == "vehicle":
+            vehicle = _read_flat(_VEHICLE_SPEC, c, "vehicle")
         elif h == "decision":
             decisions.append(_read_flat(_DECISION_SPEC, c, "decision"))
-    return {"profile": prof, "state": state, "scope": scope, "decision": decisions}
+    return {"profile": prof, "state": state, "scope": scope, "vehicle": vehicle,
+            "decision": decisions}
 
 
 # --------------------------------------------------------------------------- state.json

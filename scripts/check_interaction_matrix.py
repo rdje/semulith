@@ -42,6 +42,11 @@ MECHANISMS = {
     "smoke-reproduce": ("scripts/run_semulith_smoke.py", "semulith reproduces"),
     "offline-determinism": ("crates/semulith-verify/src/run/tests.rs",
                             "every_guest_re_executes_identically_from_cold_reset"),
+    # P3-BREADTH.7 slice 2 (case dsp56300-lab-v0): the DSP subset's two measured legs —
+    # the differential end-state agreement driver, and the typed-stop boundary type.
+    "dsp56300-smoke-agreement": ("scripts/run_dsp56300_smoke.py", "dsp56300 smoke: "),
+    "dsp56300-typed-stop": ("crates/semulith-dsp56300/src/machine.rs",
+                            "pub enum ModelStop"),
 }
 
 

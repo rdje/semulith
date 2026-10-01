@@ -126,6 +126,23 @@ $RULE2"; unit_docs "$t/profiles/bad"
   sem "$RULE"; unit_docs "$t/profiles/bad"   # bad loses sub's semantics
   arm "RED   a unit missing one instruction's semantics" 1 "does not cover: sub"
 
+  # ── the sibling-crate leg (P3-BREADTH.7, case dsp56300-lab-v0) ──
+  sem "$RULE
+$RULE2"   # restore the shared fragment's full semantics — good/bad are green again
+  mkdir -p "$t/profiles/sibling"
+  printf '%s\n' '(profile (id "s") (version "0") (status "experimental") (architecture "D")' \
+      '  (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source "s"))' \
+      '  (scope (count_base 2) (count_total 2) (demo "MOV" "NOP"))' \
+      '  (decision (id "D-X") (authority laboratory) (statement "s") (source "S §1")))' \
+      > "$t/profiles/sibling/profile.sexp"
+  arm "GREEN a declared sibling-crate unit is reported by name" 0 "sibling-crate route declared"
+
+  printf '%s\n' '(encoding (profile "s") (ilen 24)' \
+      '  (compose (base "riscv/t") (extensions))' '  (fragment-root "definitions"))' \
+      > "$t/profiles/sibling/encoding.sexp"
+  arm "RED   a sibling-crate declaration contradicted by an encoding.sexp" 1 "contradicts the documents"
+  rm -rf "$t/profiles/sibling"
+
   rm -rf "$t/profiles/good" "$t/profiles/bad"
   arm "REFUSE an empty corpus, never pass it" 2 "cannot judge"
 

@@ -1,5 +1,41 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0017 (leaf P3-BREADTH.7) — the vehicle declaration, the DSP matrix, and the DOSSIER-SCHEMA gate
+
+- The `.7` disposition, decided (director-delegated) and recorded in
+  `decision_gate-applicability-by-declared-vehicle`: gates derive per-unit applicability
+  from a declared `(vehicle (route …) (comparison …))` plus the unit's documents.
+  Deferral machinery rejected (a weakening surface built for one unit); the full
+  evidence-shape fiction rejected (artifacts the claim never cites). A declaration
+  contradicting the documents is a finding — a stale declaration fails, never drifts.
+- `schema/profile.sexp` gains the optional `vehicle` block (closed enums:
+  `generated-definition|sibling-crate`, `per-step-trace|checkpoint-end-state`);
+  `dossier_sexp` carries it both directions. EXTRACTION's sibling-crate leg reports the
+  route by name and refuses a contradicted declaration; EXERCISE-COVERAGE's checkpoint
+  leg runs the `.a56` guest census BOTH directions (UNEXERCISED / UNDECLARED EXERCISE)
+  and makes the composition leg n/a exactly while no `encoding.sexp` exists.
+- The DSP's `interactions.sexp` stands drafted (6 axes — progress, stop, loop, stack,
+  alias, state; 21 cells, mechanism/degenerate dispositions): measured with the drafts
+  placed — `21 cells declared, every disposition resolves`, the gate ok on 2 units. The
+  closed mechanism registry gained `dsp56300-smoke-agreement` and `dsp56300-typed-stop`,
+  each naming its case.
+- **DOSSIER-SCHEMA registered (the 30th doctrine)**: every tracked dossier document with
+  a same-named (or family) schema validates through the one checker — 64 validated, 2
+  skipped by name; fired RED before registration against the pre-fix D-FENCE document
+  recovered from git history (the exact drift class it exists to catch).
+- FACT-OWNERSHIP's second-unit fix: the corpus census enumerated restatement pairs as a
+  cross product — exact with one unit, inventing cross-unit pairs with two. Now same-unit
+  pairing for `profiles/*/` patterns and registry-nominated cross-family pairs with a
+  restater-participation census; fact kinds qualified per unit. Self-test 8/8 unchanged
+  (the single-unit regression control).
+- Measured against the real DSP drafts: **EXERCISE-COVERAGE ok — 19/19 declared forms
+  exercised**; EXTRACTION ok (sibling-crate route named); PROFILE-CONSISTENCY ok (2
+  dossiers). rv64 behavior byte-untouched (52/52; self-tests 13/13, 5/5). Slices 1–2
+  share this commit: the derived counts measure the working tree, so the co-developed
+  halves could not pass the hook separately. Bookkeeping: `.5` slice-3's checklist and
+  `.4`'s slice narratives archived verbatim; shards 0100/0101 (completeness exact);
+  DERIVED-COUNTS re-derived to 30 doctrines / 323 arms.
+
 ## SEMULITH-BR-0016 (leaf P3-BREADTH.5) — the encoding case measured; .5 closes, the landing is leaf .7
 
 - The encoding/definition generalization was MEASURED, not asserted: `gen_definition.py`
@@ -845,53 +881,4 @@
   the two-question boundary; TOOLBOX.md gains the two rows.
 - `make ci` green end to end; `make gate` all green (27 doctrines / 291 arms).
   `PUSH-DISCIPLINE.3` (the approval record) is next.
-
-## SEMULITH-UT-0053 (leaf UPSTREAM-TRACK.3) — age and exposure, derived; the tree closes (4/4)
-
-- `scripts/upstream_exposure.py`: from each issue record's dated history, DERIVES — at run
-  time, never stored — every tracked issue's state, its age in days (earliest dated event
-  → today), and its exposure (the record's `blocks` field). Today: `0 open / 3 resolved /
-  3 tracked` (all three LS issues verified). Open = the unresolved half of the declared
-  state vocabulary (draft/reported/acknowledged/disputed/fixed-upstream); `verified` is
-  resolved because WE re-ran it (the `.2` discipline). `--open-count` feeds the gate.
-- The `UPSTREAM-INDEX` gate learns the field: `blocks` is now REQUIRED on every record,
-  and each entry must have the leaf-id shape (BAD BLOCKS) and name a leaf that EXISTS in
-  `docs/tasks/` (DANGLING BLOCKS — an exposure naming nothing is a lie about what is
-  blocked). Self-test 17 → 21 arms, all RED named.
-- `DERIVED-COUNTS` owns the figure: a new claim (`open upstream issues`, enumerator
-  `upstream_exposure.py --open-count`), carried by MEMORY.md's Blockers line and
-  re-derived every commit.
-- ⛔ Defect found in flight, owned: DERIVED-COUNTS' `self-test arms` claim matched NO live
-  document (its pattern never matched LIVE_STATUS's "N arms" wording) — the arms figure
-  had never been re-derived and was silently stale (280 carried vs 291 real). Fixed in the
-  document, not the gate; the gate went from re-deriving 3 claims to 5.
-- The tree closes (4/4): criteria 1–3 from `.1`, criterion 4 from `.2` (strengthened by
-  `.4`), criterion 5 — dated history answerable — is this leaf's derived figure.
-- `make gate` all green (27 doctrines / 291 self-test arms, now genuinely re-derived);
-  `check_upstream_index.sh --self-test` 21/0.
-
-## SEMILITH-MB-0008 (leaf MODEL-BOOKS.6) — the wiring; MODEL-BOOKS closes (8/8)
-
-- `make book` now builds the project book AND every model book (the Makefile's `book`
-  target loops `docs/models/*/book.toml`; measured: two books, one command).
-- Routing: the project book gains "The models" (`docs/book/src/models.md` — one
-  definition, one book; 31 chapters) and README.md's Layout table gains the governed
-  `docs/models/` row (69/85 lines, 3,947/4,864 B — inside both caps).
-- The 27th doctrine `UNIT-BOOKS` (`scripts/check_unit_books.sh`): every registered unit
-  (`materials/units.sexp` — the one registration place) has its own mdBook and it builds;
-  a unit without a book (NO BOOK), a book missing its skeleton or failing to build
-  (INCOMPLETE BOOK / BOOK DOES NOT BUILD), or a book no unit registers (ORPHAN BOOK) fails
-  by name. Fired RED against the real corpus before registration (`NO BOOK rv64i-lab-v0`,
-  named, with the book moved aside); self-test 7/0; mirrored per the registry rules.
-  Measured in flight: mdbook tolerates a SUMMARY naming a missing chapter (draft +
-  warning), so the build arm's broken fixture is a malformed `book.toml` — recorded in
-  the gate's header.
-- **The tree closes**: all seven acceptance criteria met — (1) every registered unit has
-  a book and UNIT-BOOKS says so; (2) the materials list complete, generated, gated (`.1`);
-  (3) the methodology follows one rule end to end (`.3`); (4) `make book` builds every
-  book and the project book routes (`.6`); (5) prose dominates; (6) the teaching test —
-  mistakes in — (every chapter); (7) real-compiled-code ability stated with its limits
-  from the extension set (`.5`).
-- `make gate` all green (27 doctrines, 287 arms — DERIVED-COUNTS re-derives);
-  `check_materials_bill.sh [--self-test]` ok / 7-0; both books render.
 

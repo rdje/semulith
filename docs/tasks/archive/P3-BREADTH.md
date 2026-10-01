@@ -1,15 +1,41 @@
 # P3-BREADTH — archived completed-leaf evidence (part 1)
 
 The full, unedited acceptance checklists for the `done` leaves of the
-[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–2, and the
+[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–3, and the
 slice-gated `.1`'s two completed slices — the F2 probe and the F6 census leg), split out
 on `2026-10-01` when the live file crossed its per-part ceiling — the ceiling was obeyed,
 not raised, per the `docs/tasks/` precedent set by `SOT-FORMAT` and `P1-LAB`. The live
 tree keeps the frontier, the decisions, the open questions, the blockers, every leaf's
-goal/acceptance/result narrative, the newest completed slice's checklist (`.5` slice 3),
+goal/acceptance/result narrative, the active leaf's checklist (`P3-BREADTH.7`),
 and both logs.
 
 Archived sections, verbatim:
+
+`P3-BREADTH.5`, slice 3 (`2026-10-01`, `SEMULITH-BR-0016`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.5`'s last named case was the encoding/definition
+  route, deferred by `.4`'s vehicle decision; what it would cost was asserted, never
+  measured. WHERE measured: `grep -n 'Refusal' scripts/gen_definition.py` (the profile
+  scope at line 322, the 32-bit decode table at line 326, the semantics corpus at lines
+  148/210) and the operator census of `schema/semantics.sexp` (31 operators;
+  `(load width signed? addr)`/`(store width addr value)` carry no space parameter, state
+  access is `reg`/`pc` only — the DSP's X/Y/P moves and do/rep machinery would refuse by
+  name, the class synth probe 4 pinned for `delay`).
+- [x] **ADDRESSED (verified)** — the measurement is recorded in the leaf (slice 3 above):
+  the encoding generalization is a lane, not an extension, and no current milestone
+  consumes it (`decision_lane-consumption`); the sibling crate is the exercised,
+  differentially agreed vehicle (`run_dsp56300_smoke.py` 6/6, `cargo test -p
+  semulith-dsp56300` 17/17 — both re-verified green this leg, unchanged since `.4`).
+  The deferral's reopening conditions are named in the leaf; the landing is leaf `.7`
+  with its measured input table.
+- [x] **NO REGRESSION** — docs-only slice (the tree, the DOSSIER rows, the live docs):
+  `make gate` → `=== all doctrines green ===`; the drafts still validate
+  (`check_sexp_schema.py` on both → `ok`, re-run).
+- [x] **FIX** — the tree (`.5` closed 3/3; `.7` added with its acceptance and measured
+  input), the DOSSIER deferral rows re-routed to `.7`.
+- [x] **LOCKSTEP** — tree, `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md`,
+  `CHANGELOG.md`, `DEV_NOTES.md`, the DOSSIER; mdBook `plan/p3.md` (the encoding case's
+  disposition stated).
 
 `P3-BREADTH.1`, slice 1 (`2026-10-01`, `SEMULITH-BR-0005`):
 
@@ -266,3 +292,145 @@ Archived sections, verbatim:
 - [x] **LOCKSTEP** — tree (this file: leaf status/slice record, frontier, checklist,
   logs), `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`,
   `DEV_NOTES.md`; mdBook `plan/p3.md` (the subset is form-complete, 6/6 AGREE).
+
+## `.4` — the slice narratives (verbatim), archived the same day
+
+  Slice 1 (`2026-10-01`, `SEMULITH-BR-0009`): the subset SELECTED against the reference's
+  measured coverage and gaps — unit `dsp56300-lab-v0` subset v0: non-parallel moves incl.
+  the A2/B2 extension readout (F6's named case), the immediate/register data-ALU core,
+  signed `mpy`/`mac`, `nop/jmp/jsr/rts`, `do`/`enddo`/`rep`, linear addressing only; every
+  exclusion named with its reason (parallel moves — the dual-feed axis — deferred as the
+  first named extension candidate; interrupts/modes/stack-extension/timing excluded on the
+  reference's own LIMITATIONS). The comparison surface measured: checkpoint-level canonical
+  end-state (registers + deviation-encoded X/Y windows + 15 stack slots; `steps` compared,
+  `cyc` never) — a new, simpler comparator shape than the RISC-V per-step walk. Vehicle
+  DECIDED: sibling crate `crates/semulith-dsp56300`, manual-derived decode/semantics with
+  per-form citations, EXPERIMENTAL label; generator/schema generalization stays `.5`'s.
+  Record: [`artifacts/p3-breadth/2026-10-01-subset-selection.md`](artifacts/p3-breadth/2026-10-01-subset-selection.md);
+  decision: `decision_dsp56300-lab-v0-subset`. Gaps surfaced, owned, routed: the profile
+  schema's scope taxonomy is scalar-named (→ `.5` named case); the auto-discovering gates'
+  treatment of a second partial profile must be measured by the dossier slice.
+  Slice 2 (`2026-10-01`, `SEMULITH-BR-0010`): the dossier + the reference ledger —
+  `profiles/dsp56300-lab-v0/` stands with `sources.sexp` (DSP56300FM Rev. 5 pinned at NXP's
+  own locator; the fresh fetch returned byte-identical bytes to the chipdoc-cached copy —
+  two acquisition routes, one artifact, verified), `references.sexp` (the `dsp56300`
+  candidate: tarball pin + build note + the path-demonstration experiment + the EVD-04
+  independence rows — asm/emu share one project, gearmulator not-examined), and `DOSSIER.md`
+  carrying the deferrals by name (`profile.sexp`/`state.sexp`/`encoding.sexp` → `.5` named
+  schema cases; requirements, unit registration and the per-unit book → the model slice).
+  `scripts/fetch_references.sh` gained a GENERIC source-tarball leg (discriminator: asset +
+  source_commit + asset_sha256 — unreachable by the rv64 ledger, whose flow re-verified
+  byte-behaviour-identical). **The gate census, measured:** every auto-discovering gate keys
+  on `profiles/*/profile.sexp` or `profiles/*/encoding.sexp` (EXTRACTION, EXERCISE-COVERAGE,
+  INTERACTION-MATRIX, PROFILE-CONSISTENCY, UNIT-COMPOSITION, SEMANTICS corpus) — the new
+  directory is invisible to them until the schema-deferred documents land, then they attach
+  with NO gate edit; GATE-REPORT iterates directories but only checks existing reports;
+  FACT-OWNERSHIP's enumerated mirrors are untouched. Full `make gate` green with the
+  dossier present. Lessons: `promotion: declined (the census is recorded where the next
+  profile meets it — this leaf and DOSSIER.md's deferral table; the durable output is the
+  measured answer "no gate edit needed", not a reusable method)`.
+  Slice 3 is the model crate: `crates/semulith-dsp56300` — manual-derived decode + semantics
+  for subset v0, the canonical-dump runner, and the checkpoint comparator.
+  Slice 3 (`2026-10-01`, `SEMULITH-BR-0011`): the crate STANDS and the first differential
+  case AGREES. `crates/semulith-dsp56300` (lib + runner bin): `machine.rs` (the full
+  canonical register set, the 16-level hardware stack, the three bounded memory windows),
+  `decode.rs` (the nine demo-path forms, every mask FM-cited), `exec.rs` (semantics + the
+  FM Table 5-1 CCR rules + the DO loop machinery), `dump.rs` (the canonical dump,
+  byte-compatible vocabulary, NO `cyc` line — timing is never emitted), `lod.rs` (the
+  `.lod`/`.meta` dialects; fill headers refused by name), all outside-subset words typed
+  `ModelStop`s. `scripts/compare_dumps.py` — the checkpoint comparator (field-exact, a
+  missing key is a mismatch, `cyc` skipped by recorded rule; 4-arm self-test).
+  `scripts/run_dsp56300_smoke.py` — the campaign driver (NOT a commit gate, same
+  discipline as the RISC-V smoke; refuses unbuilt references). The micro guest adopted
+  into `profiles/dsp56300-lab-v0/guests/`. **Verdict: AGREE over 53 fields** (registers +
+  X/Y deviations + stack slots), `cyc` skipped — byte-identical to the reference's dump.
+  Two findings owned on the spot (§15): (a) the FM's U-bit equation is an extraction
+  INVERSION of its own prose ("identical" → XNOR; the reference's `sr c00310` is the
+  arbiter and agrees with the prose) — recorded in `exec.rs`'s module docs; (b) the
+  repo's FACT-OWNERSHIP convention reserves `crates/*/src/state.rs` for GENERATED state
+  mirrors — the crate's hand-written state module is `machine.rs` until `.5` generates
+  it. Lessons: `promotion: declined (the slice's durable outputs — the crate, the
+  comparator, the measured inversion — live where the next evaluator meets them)`.
+  Slice 4 is form-coverage completion: the ALU core (add/sub/cmp/and/or/eor, asr/lsr),
+  jsr/rts, rep, the (Rn) addressing modes, and the guest corpus that exercises them.
+  Slice 4 (`2026-10-01`, `SEMULITH-BR-0012`): the subset is FORM-COMPLETE and the corpus
+  AGREEs 6/6. Decode gained the register/immediate data-ALU core (`0JJJd_kkk` /
+  `01JJd_kkk` + the `$01408_`/`$0140C_` immediate classes), ASR/LSR, JSR/RTS, ENDDO,
+  REP #xxx/REP S, and the seven linear (Rn) modes — every mask FM-cited and cross-checked
+  against the pinned assembler's probe words (pinned in `decode.rs`'s tests). Guests
+  `alu`, `shift`, `rn`, `rep`, `jsr` join `micro`: **`6 agree / 0 fail`** over the
+  canonical end-state dumps (51–64 fields per case, `cyc` excluded by rule). The
+  differential campaign caught and fixed five model defects, each traced tools-first
+  (§15): (a) RTS pulled SR — the FM (13-168) pulls PC only, measured; (b) MOVE #xx to an
+  accumulator zeroed A2 — the reference sign-extends through it (the FM's "remaining bits
+  zeroed" prose falsified for A2); (c) A1/B1 memory reads ran my limiter — measured: the
+  shifter/limiter sits on the whole-accumulator read path only, A1/B1 read raw (the FM's
+  limiting prose over-applied by me, corrected by measurement); (d) S was set per ALU
+  result — measured: S sets only on whole-accumulator bus reads, a path subset v0 does
+  not decode; (e) a nibble-slip mask zeroed A2 on the 24-bit ops. Two latent boundary
+  defects owned and fixed on the spot: accumulator-PART move destinations now stop by
+  name at decode instead of panicking in `bus_write`, and the NOP citation (13-149 →
+  13-145; the FM's own §13 TOC numbers pages differently from the printed footers, a
+  measured FM-internal discrepancy). Guest-side defect owned: `move #$000002,x1`
+  assembles to the SHORT form (x1 = $020000, not 2) — `#>` forces the long form; the
+  typed `OutOfWindow` stop caught the runaway. The reference's emit source was consulted
+  to LOCATE the limiter mechanism (TOOLBOX); the evidence is the dump agreement (EVD-04
+  unchanged: asm/emu share one project, the claim stays EXPERIMENTAL). Named subset
+  boundaries, all typed stops: register–register moves, accumulator-part move
+  destinations, AGU registers as move-bus ends, modulo/reverse-carry (Mn ≠ $FFFFFF
+  refuses by name), REP of two-word/control instructions (the FM's own A.3.8), REP at
+  LA/LA-1, DO #0, REP S from non-word registers, multi-bit shifts.
+  Lessons: `promotion: declined (the four measured rules live in exec.rs's module header where the next reader meets them; three were my over-applications of correct FM prose, one a genuine prose falsification — the arbiter discipline is already EVD-04/RK08)`.
+
+## `.3` — the slice narratives (verbatim), archived the same day
+
+  Slice 1 (`2026-10-01`, `SEMULITH-BR-0007`): the oracle-availability survey
+  ([`artifacts/p3-breadth/2026-10-01-oracle-survey.md`](artifacts/p3-breadth/2026-10-01-oracle-survey.md))
+  — TI C6000 ABSENT for execution (no OSS executor anywhere; the vendor simulator was
+  discontinued in 2014), DSP56300 STRONG (MIT assembler + MIT silicon-validated emulator
+  with a ready differential harness), SHARC ADSP-2106x PARTIAL (BSD-3 MAME core, but the
+  assembler leg is unbuilt and no second oracle exists). Both load-bearing positives
+  re-derived against primary sources. **Slice decision: DSP56300** (Decisions, `2026-10-01`).
+  Slice 2 (`2026-10-01`): the path EXERCISED end-to-end, no Semulith DSP model involved —
+  the reference pinned (commit `c60aeedb`, tarball sha256 `46b0e3e5…`, `target/refs/`
+  discipline), built on-volume, a synthetic micro guest assembled (rc 0) and executed
+  headless with a full canonical-state dump; verified three independent ways (hand
+  arithmetic reproduces the 56-bit accumulator exactly; `--dump-mem` shows the X/Y-space
+  stores landing right; the one surprising value — `#$5` → `x1=050000` — traced to
+  DSP56300FM §3.4.1.3, matching the manual). Record:
+  [`artifacts/p3-breadth/2026-10-01-evidence-path-demo.md`](artifacts/p3-breadth/2026-10-01-evidence-path-demo.md).
+  The acceptance's working path is DEMONSTRATED; no experimental-claim fallback needed.
+  Defect owned (§15, surfaced by this slice's build): the reference build grew the
+  on-volume cargo store, and FIXTURE-FINGERPRINT — which scans the raw tree for JSON
+  records — choked on a dependency's deliberately malformed parser fixture
+  (`chumsky-0.13.0/examples/sample.json`, UNPARSEABLE). The gate's own rule covers OUR
+  records; `.app-data` is a cache of other projects' sources, the `vendor/` exclusion's
+  exact class — added to the exclusion list with the reason recorded in the file.
+  Lessons: `promotion: declined (the survey and the demonstration are dated evidence living where the next evaluator meets them; their durable outputs — the slice decision and the demonstrated path — are recorded in this tree's Decisions and Verification Log)`.
+
+## `.2` — the hook-census narrative (verbatim), archived the same day
+
+  Census (`2026-10-01`, full-pipeline audit): **no opaque hook exists.** Census basis
+  (GAP-CLAIM-CENSUS): every Rust-emitting generator (`gen_definition.py`, `gen_state.py`,
+  `gen_guests.py`) and every shared definition reader (`riscv_asm.py`, `dossier_sexp.py`,
+  `check_semantics.py`, `check_sexp_schema.py`) was read along its error paths — all refuse
+  by name with rc ≠ 0 (the `Refusal` pattern); the runtime dispatch is a closed `Sem` enum
+  with no catch-all (a new variant fails COMPILATION in every consumer); the workspace
+  carries no feature flags, no callback tables, no per-target hand-written semantics. Three
+  DESIGNED seams exist, already typed contracts rather than escape hatches: the
+  `Environment` boundary trait (`env.rs` — ARCHITECTURE §3's sanctioned plug point; it can
+  only answer typed failures, never alter instruction behaviour), the mutation seam
+  `step_over` (`P1-LAB.9`'s detector fixture: same evaluator, mutated data), and the bench
+  `Observer` (a measurement sink that cannot affect execution).
+  Defect found, owned, FIXED (§15): `exec.rs`'s operand extraction had a live SILENT arm —
+  an operand naming no field was skipped, justified by a comment whose premise `P2-SCALAR.1`
+  had falsified (FENCE's `fm`/`pred`/`succ` carry field ranges since). Fix: the generator
+  now REFUSES an unfielded operand by name (rc 2 — ARCHITECTURE §2's rule made mechanical,
+  with a RED self-test arm proving the refusal fires); the runtime arm is a loud
+  `ModelError`; the test ratchet lost its dead whitelist; four stale justification sites
+  swept; `gen_fragments.py`'s dead `_unused_build`+`HEADER` (naming a nonexistent
+  `gen_encoding.py`) removed. Repro (pre-fix): an insn declaring operand `rs9` generated
+  without protest and extracted nothing for it; post-fix the generation refuses, naming
+  `rs9`. Future target-driven hooks (F6's readout semantics, e.g. a sign-extended
+  accumulator-extension read) land with the profile that demands them — `.1`'s gating.
+  Lessons: promoted → `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`.

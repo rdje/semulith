@@ -15,6 +15,7 @@
          (comment "No integer_registers / register_width_bits here: the register census is families"
                   "(data-ALU, accumulators with parts, AGU address/offset/modifier), carried in"
                   "state.sexp's register_family forms — P3-BREADTH.5 slice 1's constructs."))
+  (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source "decision_dsp56300-lab-v0-subset; decision_gate-applicability-by-declared-vehicle — the model is the hand-written, per-form FM-cited crates/semulith-dsp56300; the evidence is canonical end-state agreement vs the pinned difftest, not per-step traces"))
   (scope (count_base 19) (count_total 19) (authority laboratory) (source "decision_dsp56300-lab-v0-subset; DSP56300FM §13")
     (comment "Subset v0 is a LABORATORY-bounded subset of the architecture's instruction set —"
              "the exclusions (parallel moves, condition-code branches, rounding multiplies,"

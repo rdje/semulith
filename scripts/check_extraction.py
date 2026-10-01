@@ -190,6 +190,25 @@ def check_extraction(unit) -> dict:
                                 f"is absent")
     scope = _scope_names(profile_form, prof_path.name)
 
+    if not scope:
+        gaps.append(f"{prof_path.name}: the scope declares no instruction names")
+
+    # P3-BREADTH.7 (decision_gate-applicability-by-declared-vehicle): a unit declaring
+    # (vehicle (route sibling-crate)) has no definition pipeline for this contract to
+    # judge — reported by name, and a declaration contradicting the documents is a gap.
+    vehicle = S.children(profile_form, "vehicle")
+    routes = [str(c[1]) for v in vehicle for c in S.children(v, "route")]
+    if routes and routes[0] == "sibling-crate":
+        if (unit / "encoding.sexp").is_file():
+            raise ExtractionRefused(
+                f"{unit}: declares vehicle route sibling-crate but carries an "
+                f"encoding.sexp — the declaration contradicts the documents")
+        if gaps:
+            raise ExtractionRefused("\n".join(gaps))
+        return {"instructions": len(scope), "route": "sibling-crate",
+                "state_elements": "n/a (sibling-crate route)",
+                "obligations": "n/a (sibling-crate route)"}
+
     encoding = _encoding_names(unit)
     semantics, sem_problems = _semantics_names(unit)
     requirements = _requirement_names(unit)
@@ -197,8 +216,6 @@ def check_extraction(unit) -> dict:
     gaps += _state_resets(unit)
     gaps += _obligation_checks(unit)
 
-    if not scope:
-        gaps.append(f"{prof_path.name}: the scope declares no instruction names")
     for name, have in (("encoding", encoding), ("semantics", semantics),
                        ("requirements", requirements)):
         if not have:
@@ -237,6 +254,11 @@ def main(argv: list[str]) -> int:
         print("REFUSED — the definition is not sufficient for an engine:", file=sys.stderr)
         print(str(exc), file=sys.stderr)
         return 1
+    if census.get("route") == "sibling-crate":
+        print(f"sibling-crate route declared ({census['instructions']} scope forms) — the "
+              f"extraction contract applies to generated-definition units; this unit's "
+              f"model is the hand-written crate, gated by its own tests")
+        return 0
     print(f"the definition is SUFFICIENT for an engine: {census['instructions']} instructions, "
           f"each with encoding + semantics + requirement; {census['state_elements']}; "
           f"obligations {census['obligations']}")

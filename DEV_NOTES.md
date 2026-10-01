@@ -1,5 +1,46 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the matrix fit, the census didn't (P3-BREADTH.7 slice 2)
+
+Two opposite findings in one slice. INTERACTION-MATRIX needed no gate change at all: the
+schema is shape-generic (axes + cells + dispositions), the mechanism registry extends by
+design (two DSP entries, each with a proof-of-life needle), and the orphan sweep only
+globs `*.expected.sexp` — the `.a56` corpus is invisible to it, so a mechanism/degenerate
+matrix resolves cleanly. The DSP's six-axis matrix (progress, stop, loop, stack, alias,
+state) is real content: every cell lands on the smoke agreement, the typed-stop type, or
+a cannot-arise reason. FACT-OWNERSHIP, in contrast, had a genuine second-unit defect: its
+completeness census enumerated restatement pairs as a cross product of glob expansions —
+exact while one unit existed, and the DSP's landing probe showed it inventing cross-unit
+pairs (rv64's requirements "restating" the DSP's profile). The fix keeps the census's
+teeth where they're checkable: same-unit pairing inside `profiles/*/`, and cross-family
+pairs are registry-nominated with a restater-participation census — owner-side
+participation is deliberately not required, because the DSP's state.sexp has no generated
+mirror by design (the `state.rs` naming convention exists precisely to reserve that
+claim). Fact kinds are now qualified per unit. Also landed: DOSSIER-SCHEMA, the 30th
+doctrine — the dossier documents now schema-validate as a class, fired RED on the pre-fix
+D-FENCE document recovered from git history before registration. Process lesson the hard
+way: DERIVED-COUNTS measures the working tree, not the staged set — two co-developed
+slices that interlock through a count must land in one commit, or the hook refuses both.
+
+## _(2026-10-01)_ — applicability is data, not a waiver (P3-BREADTH.7 slice 1)
+
+The fork was: named deferrals (gates learn to skip a declared unit) versus the full
+evidence-shape machinery (per-step expectations and a 21-cell exercised matrix for a
+checkpoint-compared subset). Both were wrong, and the measurement showed why: a deferral
+is a weakening surface whose expiry answers "when does the leaf close" — but the gates'
+contracts become applicable when the unit's DOCUMENTS exist, which the gates already
+re-derive per commit; and the fiction machinery builds evidence the subset's claim never
+cites. The adopted shape: the unit DECLARES its vehicle (route × comparison, closed
+enums, laboratory authority), gates apply the contracts matching the declaration, and a
+declaration that contradicts the documents is a finding. No expiry machinery is needed
+because the contradiction check fires the day declaration and documents disagree — the
+trigger is the document landing, which is exactly when the full contract becomes
+applicable. The one piece of real machinery earned its place: the guest census measures
+"every declared form is exercised" for the DSP's actual corpus (both directions), and it
+measured 19/19. Fixture-writing lesson, again: `printf '%s'` does not interpret `\n` in
+its argument — `%b` does; two self-test arms caught the glued lines before anything else
+could.
+
 ## _(2026-10-01)_ — measure the lane before funding it (P3-BREADTH.5 slice 3)
 
 `.4` had deferred "the generator generalization" to `.5` as a phrase; slice 3 turned the
@@ -612,39 +653,4 @@ shared-ancestry row already forbids reading them as a second opinion.
 
 Lesson: `promotion: declined` — the reconciliation arithmetic and the two REDs are in the
 leaf's verification log where they bite.
-
-## _(2026-09-30)_ — the ACT4 harness stands: I-add-00 three-way (P2-SCALAR.5, strand 2b)
-
-The slice retired both toolchain risks by measurement before any fleet run: clang 21.1.8
-(the docs name LLVM 22) assembled the suite's macro machinery with zero diagnostics, and
-sail 0.14 (the cached README pins 0.13.1; the checked-in configs target 0.14.1) terminated
-on the HTIF verdict under the laboratory override, printing `RVCP-SUMMARY: TEST SIGRUN`
-itself. The design's observation adaptation works as recorded: semulith's new
-`--trace-stores` (the crossing log surfaced, `mem[W,0xADDR] <- 0xVALUE`, width masked),
-sail's `--trace-mem` (`mem[W,…]`), spike's commit log (`mem 0xADDR 0xVALUE` on the commit
-line — a load's line carries no value, so the anchored two-group match can only take a
-store). Signature extraction filters stores to `[begin_signature, end_signature)` from the
-ELF's exported symbols; the verdict is the first HTIF pair (low 1|3, high 0), separated
-from console bytes (high 0x01010000) by the high word — the self-test proves the channel
-separation and the three RED arms (corrupted slot caught at its ordinal; shorter signature
-≠ agreement; verdict-less trace refuses), 7/0. Result: I-add-00 — 513 signature slots
-(512 sigupds + the final-offset word) agree semulith↔sail-derived AND spike↔sail; all
-three verdicts pass. Semulith's budget is derived from sail's executed step count (4× +
-10,000) because its halt is a store loop, unlike the references' native HTIF exit. No
-model semantics changed; the smoke corpus is untouched.
-
-Lesson: `promotion: declined` (the vocabulary spellings live in the harness's own comments
-with the measurement citation; the RED controls enforce the rest).
-
-## _(2026-09-30)_ — ACT4 acquired sparse; the strand-2 design measured against the fetch (P2-SCALAR.5, strand 2a)
-
-The design doctrine is "measured first", so the design commit already carries the fetch: a blobless sparse clone (sparse to `tests/env` + `tests/rv64i/I` + `config`, pinned `e2216915…`) — 45 MB instead of the ~672 MB full tree, on the repository volume, untracked. Measured against the pinned headers, two planning-doc facts were stale: the README's sail pin (0.13.1) is superseded by the checked-in `sail.json` targeting the 0.14.1 schema, and the signature mechanism is HTIF-`tohost` in signature mode (`sail_macros.h` forcibly overrides the DUT's halt/console macros), not the old riscof signature-dump flow. The design's core decision follows from the measured mechanism: run the SIGNATURE-mode build on all three models, extract `[begin_signature, end_signature)` stores and the `tohost` verdict from each store trace — which is why the CLI learns to print the crossing log it already records (observability, not semantics). Byte-budget discipline: the live tree stood 1,226 B under its per-part ceiling, so `.4`'s design moved to the archive rather than the ceiling moving. Validation: `make gate` green (docs-only; the checker's new status value covered by its self-test).
-
-Lesson: `promotion: declined` — the fetch recipe and census live in the leaf's strand-2 design where they bite.
-
-## _(2026-09-30)_ — the compiled guest, written into the model book (P2-SCALAR.5, director request)
-
-The director asked for the C-guest story in the mdBook before ending the session. It landed as a dedicated model-book chapter (`compiled-guest.md`, between references and evidence — the book's own reading order: cast, then the newest evidence kind, then the ledger), written in the book's voice: the shared-mind weakness of hand-written assembly; the self-checking design and why per-step expectation documents deliberately stay with the assembly corpus (the compiler, not the author, chooses the sequence — a step-pinned document would fingerprint one compiler's output, not derive from the specification); the measured toolchain; all three in-flight defects as the teaching record per the dual mandate; and the honest limits (129/129 three-way is finite tested evidence, not conformance). The evidence chapter's live-differential bullet points at it. Validation: `mdbook build` renders; `make gate` all green; CHANGELOG crossed its ceiling with the entry and was sharded (completeness exact).
-
-Lesson: none new — the chapter itself is the retrievable form (the dual mandate's rule: the teaching text is where the instructive mistakes live).
 

@@ -69,6 +69,7 @@
 - [`decision_dsp56300-lab-v0-subset.md`](docs/decisions/decision_dsp56300-lab-v0-subset.md)
 - [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)
 - [`decision_encoding-resourcing-probe.md`](docs/decisions/decision_encoding-resourcing-probe.md)
+- [`decision_gate-applicability-by-declared-vehicle.md`](docs/decisions/decision_gate-applicability-by-declared-vehicle.md)
 - [`decision_interpreter-before-compiler.md`](docs/decisions/decision_interpreter-before-compiler.md)
 - [`decision_lane-consumption.md`](docs/decisions/decision_lane-consumption.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)

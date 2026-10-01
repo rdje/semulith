@@ -18,6 +18,13 @@
 ;; group names (EXERCISE-COVERAGE unions every non-count field; PROFILE-CONSISTENCY sums
 ;; list values), so no reader changed. `dossier_sexp._SCOPE_LISTS` is the other closed
 ;; place the taxonomy lives — the two are extended together.
+;;
+;; `P3-BREADTH.7` slice 1 (`2026-10-01`): the optional `vehicle` block declares the unit's
+;; model route and comparison shape (case dsp56300-lab-v0:
+;; `decision_gate-applicability-by-declared-vehicle`). Gates derive per-unit applicability
+;; from this declaration plus the unit's documents; a declaration that contradicts the
+;; documents is a finding, never a drift. Absence means the generated-definition /
+;; per-step-trace contract, exactly as before.
 
 (schema (id "profile"))
 
@@ -38,7 +45,19 @@
   (field (name sources) (type string) (repeat yes) (min 1))
   (field (name state) (type form) (head state))
   (field (name scope) (type form) (head scope))
+  (field (name vehicle) (type form) (head vehicle) (optional yes))
   (field (name decision) (type form) (head decision) (repeat yes) (min 1)))
+
+;; P3-BREADTH.7 slice 1 — case dsp56300-lab-v0: the unit's model route and comparison
+;; shape, declared as data so gates derive applicability rather than presume it.
+(construct (name vehicle)
+  (field (name route) (type symbol)
+         (values generated-definition) (values sibling-crate))
+  (field (name comparison) (type symbol)
+         (values per-step-trace) (values checkpoint-end-state))
+  (field (name authority) (type symbol)
+         (values architecture) (values execution-environment) (values laboratory))
+  (field (name source) (type string) (min-length 1)))
 
 (construct (name state)
   (field (name integer_registers) (type integer) (optional yes))

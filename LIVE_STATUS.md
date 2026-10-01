@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (29 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 313 self-test arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row went missing) |
+| Project doctrines (30 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 323 self-test arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row went missing) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 33 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 32 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
@@ -40,7 +40,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `passed` (`2026-09-30`)**: criteria 1–5 met; criterion 6 — the C-toolchain guest — met by `P2-SCALAR.5` (`c-scope.c`, three-way 129/129) |
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
-| P3 — shared interfaces + real DSP slice | BREADTH | In Progress | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — `.4` DONE 4/4; F6 census landed; `.5` DONE 3/3; `.7` (land the dossier) next |
+| P3 — shared interfaces + real DSP slice | BREADTH | In Progress | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — `.4` DONE 4/4; F6 census landed; `.5` DONE 3/3; `.7` in progress (vehicle leg landed) |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
 | P5 — board model | BOARD | Not Started | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 7 leaves; composition against the CPU contract |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |

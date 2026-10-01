@@ -1,6 +1,9 @@
 # fact_ownership.tsv — the no-duplicated-fact registry (MODEL-METHOD.7).
 #
-# "Single source of truth" means ONE OWNER PER FACT, not one file: the canonical definition is
+# "Single source of truth" means ONE OWNER PER FACT, not one file. Fact kinds are
+# qualified per unit — `state (rv64i-lab-v0)` and `state (dsp56300-lab-v0)` are DIFFERENT
+# facts (P3-BREADTH.7, the second-unit landing); the cross-product pairing that sufficed
+# for one unit is replaced by same-unit pairing in the doctrine check: the canonical definition is
 # a set of format-fit files, and each fact kind below names its OWNING file (the one place the
 # fact is stated), the legal DERIVED MIRRORS of that fact elsewhere in the corpus (files that
 # restate it), and the doctrine that governs each owner→mirror pair (refuses the day the two
@@ -9,21 +12,21 @@
 # against the corpus's actual restatement pairs.
 #
 # fact kind	owner (exactly one; the fact is stated here)	mirror (a file that restates it)	governed_by
-configuration	profiles/rv64i-lab-v0/profile.sexp	-	-
-state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY
-state	profiles/rv64i-lab-v0/state.sexp	crates/semulith-core/src/state.rs	STATE-GEN
-state	profiles/rv64i-lab-v0/state.sexp	crates/semulith-core/src/definition.rs	DEF-GEN
-encodings	definitions/riscv/	profiles/rv64i-lab-v0/encoding.sexp	UNIT-COMPOSITION
-encodings	definitions/riscv/	crates/semulith-core/src/definition.rs	DEF-GEN
-semantics	definitions/riscv/	-	-
-semantics	definitions/riscv/	crates/semulith-core/src/definition.rs	DEF-GEN
-requirements	profiles/rv64i-lab-v0/profile.sexp	profiles/rv64i-lab-v0/requirements.sexp	RECORD-SCHEMA
-obligations	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64i-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
-pinned-sources	profiles/rv64i-lab-v0/sources.sexp	-	-
+configuration (rv64i-lab-v0)	profiles/rv64i-lab-v0/profile.sexp	-	-
+state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	crates/semulith-core/src/state.rs	STATE-GEN
+state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	crates/semulith-core/src/definition.rs	DEF-GEN
+encodings (rv64i-lab-v0)	definitions/riscv/	profiles/rv64i-lab-v0/encoding.sexp	UNIT-COMPOSITION
+encodings (rv64i-lab-v0)	definitions/riscv/	crates/semulith-core/src/definition.rs	DEF-GEN
+semantics (rv64i-lab-v0)	definitions/riscv/	-	-
+semantics (rv64i-lab-v0)	definitions/riscv/	crates/semulith-core/src/definition.rs	DEF-GEN
+requirements (rv64i-lab-v0)	profiles/rv64i-lab-v0/profile.sexp	profiles/rv64i-lab-v0/requirements.sexp	RECORD-SCHEMA
+obligations (rv64i-lab-v0)	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64i-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+pinned-sources (rv64i-lab-v0)	profiles/rv64i-lab-v0/sources.sexp	-	-
 materials-catalogue	materials/catalog.sexp	-	-
-guest-programs	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
-guest-expectations	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
-pinned-sources	profiles/rv64i-lab-v0/sources.sexp	docs/models/rv64i-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL
-reference-dossier	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
-reference-dossier	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/reference-models.md	MATERIALS-BILL
-internal-contracts	profiles/rv64i-lab-v0/	docs/models/rv64i-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL
+guest-programs (rv64i-lab-v0)	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
+guest-expectations (rv64i-lab-v0)	profiles/rv64i-lab-v0/guests/	crates/semulith-verify/src/guests.rs	GUEST-GEN
+pinned-sources (rv64i-lab-v0)	profiles/rv64i-lab-v0/sources.sexp	docs/models/rv64i-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL
+reference-dossier (rv64i-lab-v0)	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
+reference-dossier (rv64i-lab-v0)	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/reference-models.md	MATERIALS-BILL
+internal-contracts (rv64i-lab-v0)	profiles/rv64i-lab-v0/	docs/models/rv64i-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL

@@ -96,13 +96,23 @@ def expand(pat: str) -> list[str]:
 
 # the corpus's actual restatement pairs must all be NAMED in the registry
 pairs = []
+cross_lines = []
 for line in corpus_spec.splitlines():
     if not line.strip():
         continue
     restater, source = line.split("\t")
-    for r in expand(restater):
-        for s in expand(source):
-            pairs.append((r, s))
+    rs, ss = expand(restater), expand(source)
+    if restater.startswith("profiles/*/") and source.startswith("profiles/*/"):
+        # Same-family patterns pair WITHIN one unit (P3-BREADTH.7): a unit's documents
+        # restate that unit's facts. The cross product was exact while one unit existed
+        # and invented cross-unit pairs the day a second landed — measured with
+        # profiles/dsp56300-lab-v0/ (rv64's requirements "restating" the DSP's profile).
+        for r in rs:
+            for s in ss:
+                if r.split("/")[1] == s.split("/")[1]:
+                    pairs.append((r, s))
+    else:
+        cross_lines.append((restater, source, rs, ss))
 for r, s in pairs:
     named = any(matches(s, owner) and matches(r, mirror)
                 for _, _, owner, mirror, _ in rows)
@@ -110,6 +120,31 @@ for r, s in pairs:
         findings.append(f"UNREGISTERED MIRROR PAIR: '{r}' restates '{s}' in the corpus but no "
                         f"registry row names this pair — the no-duplicated-fact rule is only "
                         f"as good as the registry's completeness")
+
+# Cross-family patterns (crates/ ↔ profiles/, profiles/ ↔ definitions/): the true pairs
+# are not mechanically derivable — a crate's generated mirror belongs to exactly one unit
+# and the crate↔unit binding is the registry's own content. So the census runs in the two
+# directions that are checkable: every registered row naming a cross-family pair must be
+# LIVE (both sides exist in the corpus), and every corpus file matching a RESTATER
+# pattern must be registered as a mirror against a source of that family (a generated
+# mirror nobody registered is the duplication this gate exists to catch). An owner-side
+# document legitimately has no mirror of a given kind (the DSP's state.sexp has no
+# generated state.rs — the naming convention reserves that path for generated mirrors),
+# so owner-side participation is NOT required.
+for restater, source, rs, ss in cross_lines:
+    for _, kind, owner, mirror, _ in rows:
+        if mirror == "-":
+            continue
+        if any(matches(mirror, r) for r in rs) and any(matches(owner, s) for s in ss):
+            if not Path(mirror).exists() or (not ss[0].endswith("/") and not Path(owner).exists()):
+                findings.append(f"PHANTOM PAIR {kind}: the registry names '{mirror}' ← "
+                                f"'{owner}' but the corpus does not carry the pair")
+    for r in rs:
+        if not any(matches(r, mirror) and any(matches(owner, s) for s in ss)
+                   for _, _, owner, mirror, _ in rows if mirror != "-"):
+            findings.append(f"UNPAIRED RESTATER: '{r}' matches a restatement pattern but no "
+                            f"registry row registers it as a mirror — a restatement nobody "
+                            f"governs is how one fact becomes two")
 
 for f in findings:
     print(f)
