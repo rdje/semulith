@@ -82,6 +82,42 @@ incompatible CPU/environment assumption remains**.
 - Which board? Driven by the first real workload — an archogen OS or the Linux route — and
   decided before `.1`, not during it (`RK12`).
 
+## Design Discussions
+
+- `2026-10-01` (director, ideas exchange — recorded to resume later; no pivot, no leaf scope
+  changed): **boards that touch the world.** The director's brief: every board SEMULITH
+  models shall have a network connection — maybe an RFIC chip model, i.e. any component
+  letting the model's CPUs interact with reality outside the model and use the host's
+  network (wifi); ideally the model's memory is accessible from the host. The director
+  explicitly invited pushback and grading ("some might be feasible, others out of reach or
+  totally nuts").
+  **The engineer's assessment, recorded:**
+  - *NIC + host networking: feasible, precedented, right-sized.* The device model is an
+    ordinary bus device (registers + DMA + interrupt) — `.2`'s device-dossier machinery
+    covers it unchanged. The design-critical split is the BACKEND: a recorded-trace replay
+    backend (deterministic, evidence-grade, re-runnable in a fresh clone) versus a live
+    host-socket backend (laboratory play). QEMU's SLiRP-style user-mode NAT shows the live
+    shape is unprivileged and portable; TAP/L2 is real frames but needs host privileges and
+    is macOS-hostile (vmnet), so it is the later, named extension. The live backend must
+    sit at the `Environment` boundary (`crates/semulith-core/src/env.rs` — the sanctioned
+    plug point) and may never enter a deterministic evidence claim; the recorded backend is
+    the evidence leg. Guest→host networking is a CAPABILITY the harness declares — typed
+    and auditable, the contract/obligations machinery's native shape.
+  - *RFIC model: feasible as a device; the blocker is documentation, not modeling.* WiFi
+    baseband register maps are mostly NDA; radios with public register documentation exist
+    (e.g. the nRF52 BLE radio's public Product Spec; IEEE 802.15.4 parts like the
+    AT86RF233). A synthetic RFIC with a declared contract is always possible and never a
+    compatibility claim — the same discipline as `synth24`. Renode (802.15.4/BLE medium
+    models with Wireshark bridges) is the existence proof that simulators do radios.
+  - *Host access to the model's memory: feasible, cheap, and already half-built.* The
+    canonical-dump/snapshot machinery plus the bench `Observer` are the spine; a live
+    inspector (GDB-stub-style or a memory socket) is LAB-BENCH-shaped. Note:
+    `LAB-BENCH.2` is feedback-gated — this message is relevant feedback for it.
+  - *Consequence for `.1`'s open question:* "which board" gains a candidate criterion —
+    prefer a board whose network device has PUBLIC register documentation, so the device
+    dossier has sources (the tree's own non-goal: no device without a source).
+  **Resume here when P5 opens; nothing in P3-BREADTH's frontier changes.**
+
 ## Blockers
 
 - The CPU release gate.
