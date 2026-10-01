@@ -214,9 +214,50 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the measurement is recorded where the next evaluator meets it — this leaf and .7's measured input)`.
 
 - ID: `P3-BREADTH.6` — **the `BREADTH` gate report**
-  Status: `pending`
+  Status: `in_progress` (`2026-10-01` — slice 1: the DSP records)
   Goal: generate from pinned inputs; publish the capability report.
   Acceptance: families with no evidence are listed as **unclaimed**, explicitly.
+  Slice plan (recorded before code, `2026-10-01`): three slices, each a governed landing —
+  1 = the DSP's `requirements.sexp`/`contract-obligations.sexp` records (RECORD-SCHEMA
+  attaches on landing with zero gate edits — the catalogues auto-discover);
+  2 = the BREADTH report itself (`gate_report.py` gains the cross-unit builder;
+  `check_gate_report.sh` gains a repo-level leg; the report lives at
+  `docs/BREADTH-REPORT.md` because this gate is cross-architecture, not a profile's);
+  3 = the unit registration + per-unit book (`units.sexp` + the category-needs census +
+  a book that builds; `gen_model_book.py` learns the sibling-crate shape — the measured
+  blocker: it requires exactly one `encoding_source`, requires `encoding.sexp`, and reads
+  `state["integer_registers"]`; each extension names the DSP case).
+  Slice 1 design (recorded before code, `2026-10-01`): **mirror the rv64i pattern exactly,
+  at the DSP's size.** Seven decisions in `profile.sexp` ⇒ seven `REQ-D-*` requirements
+  (COVERAGE: statements byte-identical), kinds/categories/risks assigned per record;
+  seven `OB-*` cpu-guarantee mirrors (MIRROR: the statement restated verbatim; AUTHORITY:
+  `defined` ⇒ `architecture`, the laboratory decisions ⇒ `laboratory`) plus six
+  `OB-ENV-*` environment-assumptions carrying the laboratory's half of the contract
+  (VIRTUAL-TIME — `cyc` never compared; ORDERING — scalar issue, the F5 window measured
+  ABSENT; RESET — D-RESET-STATE's cold reset; FETCH-SUPPLY — one 24-bit P-space word per
+  fetch; EVENT-DELIVERY — no asynchronous events in subset v0; PARTIAL-PROGRESS — each
+  instruction completes or stops as a unit). Every `source_refs` cites `DSP56300FM` (the
+  one pinned source; CITED). Contract id `dsp56300-lab-env-v0`. `implementation_status`
+  stays `planned` — the sibling's convention: the record tracks the check fixtures, which
+  no milestone has routed (the model's implementation is the crate's, measured elsewhere).
+  Slice 1 (`2026-10-01`, `SEMULITH-BR-0019`): the DSP's records LAND, governed. Seven
+  `REQ-D-*` requirements (statements byte-identical to the decisions; every `source_refs`
+  cites `DSP56300FM` — CITED) and thirteen obligations: the seven `OB-*` mirrors
+  (`defined` ⇒ `architecture`; the laboratory decisions ⇒ `laboratory`) plus six
+  `OB-ENV-*` environment-assumptions (VIRTUAL-TIME — `cyc` never compared; ORDERING —
+  scalar issue, the F5 window measured ABSENT; RESET; FETCH-SUPPLY — one 24-bit P-space
+  word per fetch; EVENT-DELIVERY — no asynchronous events in subset v0;
+  PARTIAL-PROGRESS — completes or stops as a unit), contract `dsp56300-lab-env-v0`, 26
+  declared checks. RECORD-SCHEMA attached on landing with ZERO gate edits (auto-discovery
+  measured: 10 record files green on the first run). FACT-OWNERSHIP gained the DSP's
+  requirements/obligations rows — and its self-test fixture did what it exists to do: the
+  GREEN fixture's pair glob follows the REAL corpus, so the landing turned it RED
+  (`UNREGISTERED MIRROR PAIR` — the DSP's obligations pair unnamed in the fixture
+  registry); re-pinned to the two-unit corpus (`__CHECKED__ 5 → 6`) with the reason in
+  the check's comment — the same designed staleness the synth probes carry.
+  Lessons: `promotion: declined (the fixture-repin-on-landing behaviour is the gate's own
+  designed staleness, now recorded in the check's comment where the next landing meets it;
+  the records' shape is RECORD-SCHEMA's rules applied, not a new method)`.
 
 - ID: `P3-BREADTH.7` — **land the dsp56300-lab-v0 dossier as governed documents**
   Status: `done` (`2026-10-01` — slices 1–3: the vehicle declaration + the gate legs, the
@@ -307,7 +348,7 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.6` | `pending` | the BREADTH gate report — generate from pinned inputs, publish the capability report; owns the DSP requirements/contract-obligations records and the unit registration + per-unit book (re-routed from the closed model slice) |
+| 1 | `P3-BREADTH.6` | `in_progress` | the BREADTH gate report — slice 1 (the DSP records) in flight; then the report (slice 2) and the unit registration + per-unit book (slice 3) |
 | — | `P3-BREADTH.1` | `slice-gated` | executable-now scope done `2026-10-01`; the F6 census leg landed for dsp56300-lab-v0 (`SEMULITH-BR-0013`) — F6 refires per new profile; F2/F4/F5 (TI/VLIW) stay unbuilt, recorded |
 
 ## Decisions
@@ -364,61 +405,14 @@ unsupported families remain unclaimed.
 
 ## Design Discussions
 
-- `2026-10-01` (director, `[DBINP]` — recorded to resume the exchange later; no pivot, no
-  leaf scope changed): **a DSP as composition, not monolith.** The exchange that closed
-  `DSP-REVIEW` produced a working model of what a DSP *is*: a fixed skeleton of problems —
-  the MAC as the atom; accumulation headroom; the dual operand feed; specialized addressing
-  (circular, bit-reversed); zero-overhead looping; saturating arithmetic with sticky flags;
-  determinism as the organizing contract — plus a **measured per-axis menu of choices**
-  (accumulator: none / 56-bit+8-ext / 80-bit guard; address unit: byte / 24-bit word /
-  per-space width; spaces: 1 / 2 / 3; issue: VLIW packet / scalar interlocked / scalar+REP;
-  saturation locus: per-instruction / mode bits / explicit transfer; circular alignment:
-  to-size / 2^k / arbitrary; sticky flags: CSR.SAT+SSR / STKY; loop machinery; interrupt
-  interaction), each axis choice citable to the vendor that actually made it
-  (`docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`).
-  The director's framing: building a DSP is **composing lego into a coherent, functional
-  whole** — choose one option per axis, then find the **composition rules** that make the
-  choices fit together (accumulator width ⇒ readout semantics; addressing mode ⇒ alignment
-  rule; loop model ⇒ interrupt rules; issue model ⇒ the state census), then design the ISA
-  as the fabric that moves data between the chosen parts. **Resume here:** the hypothetical
-  high-end DSP — a coherent menu selection + its composition rules + its ISA + its manual —
-  as this tree's ultimate stress fixture, the positive counterpart to `synth24`'s refusals
-  (where `synth24` measured what the pipeline *refuses*, the composed DSP would exercise
-  what it must come to *express*). Bounds carried from the review, permanent: every choice
-  stays citable per-axis; the synthetic design is NEVER evidence about any real DSP; it
-  claims no compatibility.
-  **The director's refinement (same exchange): the key idea is abstraction.** The menu of
-  axes is an abstraction OF the measured manuals; the composed DSP is the dual operation —
-  instantiating a coherent point from the abstraction. If the abstraction can generate a
-  coherent point in the design space, it can probably host a real one; that is the
-  strongest test an abstraction gets — not "does it cover case X" but "does it compose".
-  The carried warning (same exchange): an abstraction's value is what it makes ILLEGAL —
-  a universal step relation "expresses" everything and constrains nothing. So the
-  exercise's real output is the boundary map (which axis choices the abstraction refuses,
-  and whether each refusal is named work or an accident), and the composition rules —
-  the coupling graph between axes — are the actual research content, because an
-  abstraction that treats coupled axes as independent generates incoherent processors.
-  **The director's grounding (same exchange): abstraction means to SIMPLIFY the view of a
-  problem** — as R, C and L are simplifications of real physical phenomena that, composed
-  by rules, yield working circuits; as RTL is a simplification of the real design problem.
-  Same idea, another level, another domain: the axis menu simplifies five vendors' manuals
-  into composable components; the composition rules are the Kirchhoff laws of the domain.
-  The analogy carries its own engineering requirements: the lumped R/C/L model works
-  because it ships with (a) stated VALIDITY BOUNDS (dimensions ≪ wavelength), (b)
-  COMPOSITION LAWS (KVL/KCL), and (c) a KNOWN FAILURE ENVELOPE (parasitics, distributed
-  effects — the model tells you where it breaks). This tree's equivalents: (a) the claim
-  discipline (unsupported families stay unclaimed), (b) the composition rules — the work,
-  (c) the named-refusal map (`synth24`'s pins) and the honest limits. An abstraction is
-  judged by what it can afford to forget; R/C/L forget Maxwell's equations, the axis menu
-  forgets implementation detail, and both keep exactly what composition needs.
-  **The director's closing remark (same exchange): the abstraction is RECURSIVE** — each
-  axis can itself be abstracted further, simplified further, if need be. The menu is not
-  a fixed depth: "accumulator" can refine into width × readout × extension semantics,
-  "issue model" into packet formation × writeback visibility × interrupt interaction,
-  each sub-axis still citable to the manuals that carry it. The R/C/L grounding holds at
-  every level — each refinement keeps its own validity bounds, composition laws, and
-  failure envelope. Depth is chosen by need (an exercised target demands it), never by
-  completeness for its own sake.
+- `2026-10-01` (director, `[DBINP]`): **a DSP as composition, not monolith** — the measured
+  per-axis menu, the composition rules as the research content, abstraction as
+  simplification with validity bounds + composition laws + a named failure envelope, and
+  the recursion of the abstraction. Recorded verbatim in
+  [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) (split out `2026-10-01` for the per-part
+  ceiling — **resume the exchange there**). The permanent bounds: every axis choice stays
+  citable; the synthetic design is NEVER evidence about any real DSP; it claims no
+  compatibility.
 
 ## Blockers
 
@@ -428,36 +422,39 @@ unsupported families remain unclaimed.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-`P3-BREADTH.1` slices (the F2 probe, the F6 census leg), `.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4, `.5` slices 1–3 (completed `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
+`P3-BREADTH.1` slices (the F2 probe, the F6 census leg), `.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4, `.5` slices 1–3, `.7` slices 1–3 (completed `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
 
-`P3-BREADTH.7`, slice 3 (`2026-10-01`, `SEMULITH-BR-0018`):
+`P3-BREADTH.6`, slice 1 (`2026-10-01`, `SEMULITH-BR-0019`):
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — the dossier's drafts were measured content waiting
-  for governed landing; the landing's remaining unknowns were the rename mechanics and
-  the post-landing census arms. WHERE: the three documents move to
-  `profiles/dsp56300-lab-v0/`; the ownership rows to `doctrine/fact_ownership.tsv`; the
-  arms to `scripts/check_fact_ownership.sh`'s self-test.
-- [x] **ADDRESSED (verified)** — every attaching gate green WITH the documents landed:
-  `bash scripts/check_exercise_coverage.sh` → ok (19/19 for the DSP, 52/52 rv64);
-  `check_extraction.sh` → `ok (2 unit(s)`; `check_interaction_matrix.sh` → `ok (2
-  unit(s)`; `check_profile_consistency.sh` → `ok (2 profile dossier(s)`;
-  `check_dossier_schema.sh` → `ok (62 … __SKIPPED__ 2 (baseline.sexp,
-  portability.sexp))`; `check_fact_ownership.sh` → `ok (23 fact kind(s)`; self-test
-  `10 pass / 0 fail` (the two new census arms).
-- [x] **NO REGRESSION** — `make gate` → `=== all doctrines green ===` end-to-end with the
-  documents landed; the rv64 documents byte-untouched this slice; DOSSIER-SCHEMA covers
-  the landed DSP documents (62 validated, up from 64-minus-drafts).
-- [x] **FIX** — the three moves (headers rewritten to the landed gate map), the five
-  registry rows, the two census arms, the DOSSIER rows (present/deferred with owners;
-  the stale "model slice" wording re-routed to `.6`).
-- [x] **LOCKSTEP** — tree (status done, slice record, checklist, logs, frontier),
-  `MEMORY.md`, `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
-  the DOSSIER; mdBook `plan/p3.md` (the dossier landed, named gates green).
+- [x] **ROOT CAUSE (WHY + WHERE)** — the DOSSIER deferred the requirements /
+  contract-obligations records to `.6` ("the crate's per-form FM citations are the
+  interim record"); the records' shape is fixed by RECORD-SCHEMA's rules (COVERAGE —
+  byte-identical decision statements; MIRROR — verbatim restatement; AUTHORITY; CITED;
+  OBLIGED — ±POS/NEG). WHERE: `profiles/dsp56300-lab-v0/{requirements,
+  contract-obligations}.sexp` (new), `doctrine/fact_ownership.tsv` (two rows),
+  `scripts/check_fact_ownership.sh` (the GREEN fixture's two-unit re-pin).
+- [x] **ADDRESSED (verified)** — `python3 scripts/check_sexp_schema.py
+  profiles/dsp56300-lab-v0/requirements.sexp schema/requirements.sexp` → `ok`; the same
+  for `contract-obligations.sexp` → `ok`; `bash scripts/check_requirements.sh` →
+  `RECORD-SCHEMA: ok (10 record file(s) validate and agree with their profile; …)` —
+  zero gate edits on landing; `bash scripts/check_fact_ownership.sh` → `ok (25 fact
+  kind(s) …)`; self-test `10 pass / 0 fail` after the fixture re-pin (RED before it:
+  `UNREGISTERED MIRROR PAIR`, the designed staleness).
+- [x] **NO REGRESSION** — `bash scripts/check_doctrines.sh` → `=== all doctrines green
+  ===` end-to-end; the rv64i catalogues byte-untouched this slice.
+- [x] **FIX** — the two catalogues (7 requirements + 13 obligations, 26 declared checks,
+  contract `dsp56300-lab-env-v0`), the two registry rows, the fixture re-pin with its
+  reason comment.
+- [x] **LOCKSTEP** — tree (slice record, checklist, logs, frontier), the DOSSIER (the
+  records row flips to present), `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`; mdBook `plan/p3.md` (the records land); the `.7` slice-3 checklist
+  archived verbatim (the per-part ceiling held).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.6` slice 1 | both catalogues schema-validate ok; RECORD-SCHEMA ok (10 record files, zero gate edits on landing); FACT-OWNERSHIP ok (25 kinds), self-test 10/10 after the GREEN fixture's two-unit re-pin (RED before: `UNREGISTERED MIRROR PAIR`); `make gate` → all doctrines green | the DSP's requirements + contract-obligations records LAND governed: 7 requirements, 13 obligations, 26 declared checks, contract `dsp56300-lab-env-v0` |
 | `2026-10-01` | `.7` slice 3 | the landing: every attaching gate green with the documents in place — EXERCISE-COVERAGE 19/19 (DSP) + 52/52 (rv64), EXTRACTION ok (2 units), INTERACTION-MATRIX ok (2 units, 21 DSP cells), PROFILE-CONSISTENCY ok (2 dossiers), DOSSIER-SCHEMA 62 validated / 2 skipped-by-name, FACT-OWNERSHIP ok (23 kinds), self-test 10/10 (two new census arms); `make gate` green | **the dsp56300-lab-v0 dossier is LANDED and governed**; `.7` DONE 3/3 |
 | `2026-10-01` | `.7` slices 1–2 (one commit — the slices interlock through the working-tree derived counts) | drafts placed: EXERCISE-COVERAGE ok 19/19, EXTRACTION ok, PROFILE-CONSISTENCY ok (2), INTERACTION-MATRIX ok (2 units; the DSP's 21 cells resolve); DOSSIER-SCHEMA 64 validated / 2 skipped-by-name, self-test 3/3, historical RED firing on the pre-fix D-FENCE document; FACT-OWNERSHIP self-test 8/8; coverage/extraction self-tests 13/13, 5/5; `make gate` green (30 doctrines, 323 arms re-derived) | the vehicle declaration + the checkpoint/sibling-crate legs; the DSP matrix drafted; DOSSIER-SCHEMA registered; the FACT-OWNERSHIP cross-product fix (same-unit pairing) |
 | `2026-10-01` | `.5` slice 3 | refusal census `grep -n Refusal scripts/gen_definition.py` (3 named walls); operator census of `schema/semantics.sexp` (31 operators; load/store carry no space parameter; state access `reg`/`pc` only); dsp crate re-verified (`run_dsp56300_smoke.py` 6/6, 17/17 tests); drafts re-validate ok; `make gate` green | the encoding case measured: a lane, not an extension — DEFERRED with named reopening conditions; `.5` DONE 3/3; the dossier landing is leaf `.7` |
@@ -477,6 +474,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.6` slice 1 | `SEMULITH-BR-0019 (leaf P3-BREADTH.6): the DSP records land governed — 7 requirements, 13 obligations, 26 declared checks; RECORD-SCHEMA attaches with zero gate edits` | the catalogues mirror the rv64i pattern at the DSP's size; FACT-OWNERSHIP gains two rows and its GREEN fixture re-pins to the two-unit corpus (the designed staleness fired RED first) |
 | `.7` slice 3 | `SEMULITH-BR-0018 (leaf P3-BREADTH.7): the dossier lands governed — profile/state/interactions in profiles/, the ownership rows, the census arms; every attaching gate green` | the three documents moved (rename lineage kept); five fact-ownership rows; DOSSIER rows read present/deferred with owners; `.7` DONE 3/3 |
 | `.7` slices 1–2 | `SEMULITH-BR-0017 (leaf P3-BREADTH.7): the vehicle declaration, the DSP matrix, and the DOSSIER-SCHEMA gate — gates derive applicability; the cross-product pairing fixed` | decision_gate-applicability-by-declared-vehicle (deferral machinery rejected); the checkpoint + sibling-crate legs measured green against the drafts (19/19); interactions.sexp drafted (21 cells resolve); the 30th doctrine registered; fact kinds qualified per unit |
 | `.5` slice 3 | `SEMULITH-BR-0016 (leaf P3-BREADTH.5): the encoding case measured — a lane, not an extension; .5 closes, the dossier landing is leaf .7` | gen_definition.py's three refusal walls + the semantics language's scalar operator set censused; deferral with named reopening conditions; `.7` owns the landing, the gate dispositions, and the schema-validation leg |
@@ -662,3 +660,15 @@ unsupported families remain unclaimed.
   read present/deferred with owners (requirements + unit registration → `.6`). Frontier:
   `.6`, the BREADTH gate report. Bookkeeping: `.7` slice 1's checklist archived verbatim
   (the per-part held).
+- `2026-10-01`: `.6` slice 1 (`SEMULITH-BR-0019`) — the DSP's records LAND governed:
+  seven `REQ-D-*` requirements (statements byte-identical to the profile's decisions,
+  every source citing `DSP56300FM`) and thirteen obligations (seven mirrors + six
+  `OB-ENV-*` environment-assumptions: virtual-time, ordering, reset, fetch-supply,
+  event-delivery, partial-progress), contract `dsp56300-lab-env-v0`, 26 declared checks.
+  RECORD-SCHEMA attached on landing with zero gate edits (10 record files green first
+  pass); FACT-OWNERSHIP gained the DSP's requirements/obligations rows, and its GREEN
+  self-test fixture turned RED on the landing by design (the pair glob follows the real
+  corpus) — re-pinned to the two-unit corpus (`__CHECKED__ 5 → 6`). Bookkeeping: the
+  `.7` slice-3 checklist and the Design Discussions archived verbatim (the per-part
+  ceiling held; the exchange's resume pointer stays in the tree). Frontier: slice 2 —
+  the BREADTH report itself.

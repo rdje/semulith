@@ -1,15 +1,39 @@
 # P3-BREADTH — archived completed-leaf evidence (part 1)
 
 The full, unedited acceptance checklists for the `done` leaves of the
-[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–3, `.7` slices 1–2, and the
+[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–3, `.7` slices 1–3, and the
 slice-gated `.1`'s two completed slices — the F2 probe and the F6 census leg), split out
 on `2026-10-01` when the live file crossed its per-part ceiling — the ceiling was obeyed,
 not raised, per the `docs/tasks/` precedent set by `SOT-FORMAT` and `P1-LAB`. The live
 tree keeps the frontier, the decisions, the open questions, the blockers, every leaf's
-goal/acceptance/result narrative, the active leaf's checklist (`P3-BREADTH.7`),
+goal/acceptance/result narrative, the active leaf's checklist (`P3-BREADTH.6`),
 and both logs.
 
 Archived sections, verbatim:
+
+`P3-BREADTH.7`, slice 3 (`2026-10-01`, `SEMULITH-BR-0018`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the dossier's drafts were measured content waiting
+  for governed landing; the landing's remaining unknowns were the rename mechanics and
+  the post-landing census arms. WHERE: the three documents move to
+  `profiles/dsp56300-lab-v0/`; the ownership rows to `doctrine/fact_ownership.tsv`; the
+  arms to `scripts/check_fact_ownership.sh`'s self-test.
+- [x] **ADDRESSED (verified)** — every attaching gate green WITH the documents landed:
+  `bash scripts/check_exercise_coverage.sh` → ok (19/19 for the DSP, 52/52 rv64);
+  `check_extraction.sh` → `ok (2 unit(s)`; `check_interaction_matrix.sh` → `ok (2
+  unit(s)`; `check_profile_consistency.sh` → `ok (2 profile dossier(s)`;
+  `check_dossier_schema.sh` → `ok (62 … __SKIPPED__ 2 (baseline.sexp,
+  portability.sexp))`; `check_fact_ownership.sh` → `ok (23 fact kind(s)`; self-test
+  `10 pass / 0 fail` (the two new census arms).
+- [x] **NO REGRESSION** — `make gate` → `=== all doctrines green ===` end-to-end with the
+  documents landed; the rv64 documents byte-untouched this slice; DOSSIER-SCHEMA covers
+  the landed DSP documents (62 validated, up from 64-minus-drafts).
+- [x] **FIX** — the three moves (headers rewritten to the landed gate map), the five
+  registry rows, the two census arms, the DOSSIER rows (present/deferred with owners;
+  the stale "model slice" wording re-routed to `.6`).
+- [x] **LOCKSTEP** — tree (status done, slice record, checklist, logs, frontier),
+  `MEMORY.md`, `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  the DOSSIER; mdBook `plan/p3.md` (the dossier landed, named gates green).
 
 `P3-BREADTH.7`, slice 2 (`2026-10-01`, same commit as slice 1 — the slices interlock
 through the working-tree derived counts):
@@ -502,3 +526,61 @@ through the working-tree derived counts):
   `rs9`. Future target-driven hooks (F6's readout semantics, e.g. a sign-extended
   accumulator-extension read) land with the profile that demands them — `.1`'s gating.
   Lessons: promoted → `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`.
+
+## Design Discussions (verbatim), archived `2026-10-01` — the live resume pointer stays in the tree
+
+- `2026-10-01` (director, `[DBINP]` — recorded to resume the exchange later; no pivot, no
+  leaf scope changed): **a DSP as composition, not monolith.** The exchange that closed
+  `DSP-REVIEW` produced a working model of what a DSP *is*: a fixed skeleton of problems —
+  the MAC as the atom; accumulation headroom; the dual operand feed; specialized addressing
+  (circular, bit-reversed); zero-overhead looping; saturating arithmetic with sticky flags;
+  determinism as the organizing contract — plus a **measured per-axis menu of choices**
+  (accumulator: none / 56-bit+8-ext / 80-bit guard; address unit: byte / 24-bit word /
+  per-space width; spaces: 1 / 2 / 3; issue: VLIW packet / scalar interlocked / scalar+REP;
+  saturation locus: per-instruction / mode bits / explicit transfer; circular alignment:
+  to-size / 2^k / arbitrary; sticky flags: CSR.SAT+SSR / STKY; loop machinery; interrupt
+  interaction), each axis choice citable to the vendor that actually made it
+  (`docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`).
+  The director's framing: building a DSP is **composing lego into a coherent, functional
+  whole** — choose one option per axis, then find the **composition rules** that make the
+  choices fit together (accumulator width ⇒ readout semantics; addressing mode ⇒ alignment
+  rule; loop model ⇒ interrupt rules; issue model ⇒ the state census), then design the ISA
+  as the fabric that moves data between the chosen parts. **Resume here:** the hypothetical
+  high-end DSP — a coherent menu selection + its composition rules + its ISA + its manual —
+  as this tree's ultimate stress fixture, the positive counterpart to `synth24`'s refusals
+  (where `synth24` measured what the pipeline *refuses*, the composed DSP would exercise
+  what it must come to *express*). Bounds carried from the review, permanent: every choice
+  stays citable per-axis; the synthetic design is NEVER evidence about any real DSP; it
+  claims no compatibility.
+  **The director's refinement (same exchange): the key idea is abstraction.** The menu of
+  axes is an abstraction OF the measured manuals; the composed DSP is the dual operation —
+  instantiating a coherent point from the abstraction. If the abstraction can generate a
+  coherent point in the design space, it can probably host a real one; that is the
+  strongest test an abstraction gets — not "does it cover case X" but "does it compose".
+  The carried warning (same exchange): an abstraction's value is what it makes ILLEGAL —
+  a universal step relation "expresses" everything and constrains nothing. So the
+  exercise's real output is the boundary map (which axis choices the abstraction refuses,
+  and whether each refusal is named work or an accident), and the composition rules —
+  the coupling graph between axes — are the actual research content, because an
+  abstraction that treats coupled axes as independent generates incoherent processors.
+  **The director's grounding (same exchange): abstraction means to SIMPLIFY the view of a
+  problem** — as R, C and L are simplifications of real physical phenomena that, composed
+  by rules, yield working circuits; as RTL is a simplification of the real design problem.
+  Same idea, another level, another domain: the axis menu simplifies five vendors' manuals
+  into composable components; the composition rules are the Kirchhoff laws of the domain.
+  The analogy carries its own engineering requirements: the lumped R/C/L model works
+  because it ships with (a) stated VALIDITY BOUNDS (dimensions ≪ wavelength), (b)
+  COMPOSITION LAWS (KVL/KCL), and (c) a KNOWN FAILURE ENVELOPE (parasitics, distributed
+  effects — the model tells you where it breaks). This tree's equivalents: (a) the claim
+  discipline (unsupported families stay unclaimed), (b) the composition rules — the work,
+  (c) the named-refusal map (`synth24`'s pins) and the honest limits. An abstraction is
+  judged by what it can afford to forget; R/C/L forget Maxwell's equations, the axis menu
+  forgets implementation detail, and both keep exactly what composition needs.
+  **The director's closing remark (same exchange): the abstraction is RECURSIVE** — each
+  axis can itself be abstracted further, simplified further, if need be. The menu is not
+  a fixed depth: "accumulator" can refine into width × readout × extension semantics,
+  "issue model" into packet formation × writeback visibility × interrupt interaction,
+  each sub-axis still citable to the manuals that carry it. The R/C/L grounding holds at
+  every level — each refinement keeps its own validity bounds, composition laws, and
+  failure envelope. Depth is chosen by need (an exercised target demands it), never by
+  completeness for its own sake.

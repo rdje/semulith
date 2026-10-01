@@ -175,7 +175,9 @@ self_test() {
   }
 
   # fixture corpus pair: obligations restate requirements — named in the GREEN fixture
-  # registry, omitted from the RED one, so the completeness arm has something to catch
+  # registry, omitted from the RED one, so the completeness arm has something to catch.
+  # The pair spec globs the REAL corpus, so the GREEN fixture names every unit that carries
+  # the catalogues: the DSP's landing (P3-BREADTH.6 slice 1) re-pinned it to two units.
   FIXTURE_PAIRS=$'profiles/*/contract-obligations.sexp\tprofiles/*/requirements.sexp'
 
   cat > "$t/reg.tsv" <<'EOF'
@@ -185,8 +187,9 @@ state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFIL
 requirements	profiles/rv64i-lab-v0/profile.sexp	profiles/rv64i-lab-v0/requirements.sexp	RECORD-SCHEMA
 encodings	definitions/riscv/	profiles/rv64i-lab-v0/encoding.sexp	UNIT-COMPOSITION
 obligations	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64i-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+obligations (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/requirements.sexp	profiles/dsp56300-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 EOF
-  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 5"
+  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 6"
 
   cat > "$t/reg.tsv" <<'EOF'
 state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	NOT-A-DOCTRINE

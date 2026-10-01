@@ -35,3 +35,5 @@ state (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/state.sexp	profiles/dsp56300-la
 pinned-sources (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/sources.sexp	-	-
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	-	-
 guest-programs (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/guests/	-	-
+requirements (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/profile.sexp	profiles/dsp56300-lab-v0/requirements.sexp	RECORD-SCHEMA
+obligations (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/requirements.sexp	profiles/dsp56300-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
