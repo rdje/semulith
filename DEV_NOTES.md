@@ -1,5 +1,24 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the census as a harvest, not a rewrite (P3-BREADTH.1, the F6 leg)
+
+F6 is the finding that the hidden-state census reopens per profile; the live question was
+what "re-run" means when this profile's `state.sexp` is deferred to `.5`. Answer: the
+census lands as a measured record, not a schema document — `.5`'s named cases (special
+registers, F1 widths, F3 spaces) harvest it. The substantive content was already earned by
+the differential campaign: the A2/B2 sign-extended readout, the A1/B1 raw reads, S's
+absent writer, the stale popped stack slots that are hidden from the programmer but inside
+the dump. The census's own contribution is the surface-completeness argument — before
+asking "is anything hidden?", prove the observation surface covers every mutable cell:
+stack slot 0 is unwritable by the pre-incremented SP, P below the deviation window is
+constant because subset v0 decodes no P-space write, and the harness's private X window is
+excluded by the harness's own contract on both engines. With that argument in place the
+6/6 agreement becomes a completeness measurement, not just an equality measurement. The
+scalar census's seven candidates were re-asked verbatim; three flipped to "absent
+architecturally" (no reservation mechanism, no FP, no vector unit exist in the family to
+hide), and the fetch-cache answer came out one step stronger than rv64's — the DSP56300
+has no instruction cache at all.
+
 ## _(2026-10-01)_ — where the manual and the silicon part ways (P3-BREADTH.4 slice 4)
 
 Form-coverage completion for `semulith-dsp56300` was a decode exercise plus a semantics

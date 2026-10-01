@@ -32,11 +32,28 @@ unsupported families remain unclaimed.
 ## Task Tree
 
 - ID: `P3-BREADTH.1` — **apply the interface findings**
-  Status: `slice-gated` (executable-now scope done `2026-10-01`; the implementation legs await `.3`'s slice decision)
+  Status: `slice-gated` (executable-now scope done `2026-10-01`; the F6 census leg landed for
+  dsp56300-lab-v0 `2026-10-01`; the remaining implementation legs — F2/F4/F5 — await a
+  VLIW/TI slice decision)
   Goal: implement the abstraction changes `DSP-REVIEW.7` classified as required.
   Acceptance: every change traces to a numbered finding; scalar regression evidence for `rv64i-lab-v0` is preserved and re-run (`EVD-07`).
   Applied `2026-10-01`: the required-**unconditional** set measured **empty** — F2/F4/F5 are TI/VLIW-conditional, F6 fires per new profile (Decisions, `2026-10-01`). F2 gained its executable demonstration (synth probe 5: `undeclared field "register_groups"`, rc 1 — the report's named honest route); scalar regression re-run green (`make check` 180/180, gen_state rc 0, DEF-GEN ok, G1 `passed` re-derived).
-  Lessons: `promotion: declined (per-slice application of the report's own named remedy; the durable method — a finding without an executable demonstration gets a synth probe — lives in the findings report and the synth README where the next reader meets it)`.
+  Lessons (slice 1): `promotion: declined (per-slice application of the report's own named remedy; the durable method — a finding without an executable demonstration gets a synth probe — lives in the findings report and the synth README where the next reader meets it)`.
+  F6 census leg (`2026-10-01`, `SEMULITH-BR-0013`): the SEM-08 method re-run for the
+  exercised dsp56300-lab-v0 profile — 14 candidates answered, never by silence: the
+  accumulator-extension readout PRESENT and measured (A2/B2 sign-extended, A1/B1 raw —
+  `.4`'s pinned readouts harvested), M0–M7/L/S/DO-stack/stale-slots PRESENT and declared,
+  REP working state ABSENT beyond the declared LC, the pending-writes window (F5) ABSENT
+  (scalar issue), CSRs/reservation/FP/vector/privilege ABSENT architecturally or by named
+  exclusion. Consequence: **the canonical end-state dump IS the complete architectural
+  state** for subset v0 — the surface-completeness argument (slot 0 unwritable, P-low
+  constant, the harness window excluded by the harness's own contract) plus the measured
+  6/6 agreement. Record:
+  [`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`](artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md)
+  — the measured input `.5`'s `state.sexp` cases (special-register census, F1 widths, F3
+  spaces) harvest. The leaf stays `slice-gated`: F6 fires per new profile and F2/F4/F5 stay
+  conditional on a VLIW/TI slice.
+  Lessons (F6 leg): `promotion: declined (the census method was already durable — state.sexp's hidden_state_census and this record's re-run of it; the durable output is the measured answer "the dump is complete", recorded where .5 meets it)`.
 
 - ID: `P3-BREADTH.2` — **opaque semantic hooks made explicit**
   Status: `done` (`2026-10-01`, `SEMULITH-BR-0006`)
@@ -201,9 +218,9 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; `.4` closed with the dsp56300-lab-v0 profile EXERCISED — F6's census leg reopens per the new profile; F4/F5 (VLIW) and F2 (TI grouping) stay unbuilt, recorded |
-| 2 | `P3-BREADTH.5` | `pending` | schema/generator generalization — now with its exercising target measured: F1 masked widths, F3 memory spaces, the special-register census, the scope taxonomy (each names dsp56300-lab-v0 as its case) |
-| 3 | `P3-BREADTH.6` | `pending` | the BREADTH gate report |
+| 1 | `P3-BREADTH.5` | `pending` | schema/generator generalization — with its exercising target measured and its census input landed: F1 masked widths, F3 memory spaces, the special-register census, the scope taxonomy (each names dsp56300-lab-v0 as its case) |
+| 2 | `P3-BREADTH.6` | `pending` | the BREADTH gate report |
+| — | `P3-BREADTH.1` | `slice-gated` | executable-now scope done `2026-10-01`; the F6 census leg landed for dsp56300-lab-v0 (`SEMULITH-BR-0013`) — F6 refires per new profile; F2/F4/F5 (TI/VLIW) stay unbuilt, recorded |
 
 ## Decisions
 
@@ -347,6 +364,37 @@ unsupported families remain unclaimed.
   `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
   and the mdBook's P3 page (the synthetic-shapes list now names register grouping).
 
+`P3-BREADTH.1`, F6 census leg (`2026-10-01`, `SEMULITH-BR-0013`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — F6 says the census reopens per new profile; `.4`
+  delivered the exercised dsp56300-lab-v0 profile and pinned the load-bearing readouts
+  (A1/B1 raw, A2/B2 sign-extended, accumulator-part destinations excluded) inside the
+  crate's module docs and the measured 6/6 agreement — but no census record held them as
+  one SEM-08 answer. WHERE the census lives, located mechanically (`grep -n
+  hidden_state_census profiles/rv64i-lab-v0/state.sexp` → line 6): the scalar profile
+  carries it as data in `state.sexp`'s `hidden_state_census`; this profile's `state.sexp`
+  is deferred to `.5` (DOSSIER.md's deferral table), so the census lands as the measured
+  record `.5` harvests.
+- [x] **ADDRESSED (verified)** — the census record stands
+  (`artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`): 14 candidates, each answered
+  with locator and verdict, never by silence; the supported-observation surface defined from
+  `references.sexp`'s comparison contract; surface completeness argued (no mutable cell
+  outside the dump — slot 0 unwritable by the pre-incremented SP, P-low constant because
+  subset v0 decodes no P-space write, the harness window excluded by the harness's own
+  contract) and measured — the instruments re-run this leg:
+  `python3 scripts/run_dsp56300_smoke.py` → `dsp56300 smoke: 6 agree / 0 fail` (51–64
+  fields per case), `python3 scripts/compare_dumps.py --self-test` → `4 pass / 0 fail`,
+  `cargo test -p semulith-dsp56300` → `test result: ok. 17 passed`.
+- [x] **NO REGRESSION** — docs-only leg; `cargo test -p semulith-dsp56300` → 17/17 (the
+  commit-level proof unchanged); `make gate` → `=== all doctrines green ===` with the census
+  artifact present (the doc ceilings held: CHANGELOG.md/DEV_NOTES.md append heads within
+  bounds after the event).
+- [x] **FIX** — the census artifact; the DOSSIER's `state.sexp` deferral row now names the
+  census as `.5`'s measured input.
+- [x] **LOCKSTEP** — tree (this file: leaf record/status, frontier, checklist, logs),
+  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  the profile DOSSIER; mdBook `plan/p3.md` (the census consequence stated).
+
 `P3-BREADTH.2` (`2026-10-01`, `SEMULITH-BR-0006`):
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the audit censused every generator and reader error
@@ -481,6 +529,7 @@ unsupported families remain unclaimed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.1` F6 census leg | census record: 14 candidates answered with locators; `run_dsp56300_smoke.py` re-run → 6 agree / 0 fail (51–64 fields/case); `compare_dumps.py --self-test` → 4 pass / 0 fail; `cargo test -p semulith-dsp56300` 17/17; `make gate` green | the SEM-08 census re-run for dsp56300-lab-v0: the canonical end-state dump measured as the COMPLETE architectural state for subset v0; the harvested input for `.5`'s `state.sexp` cases |
 | `2026-10-01` | `.4` slice 4 | `run_dsp56300_smoke.py` 6 agree / 0 fail (51–64 fields/case); `cargo test -p semulith-dsp56300` 17/17; `make check` + `make gate` green | subset v0 form-complete and differentially agreed; five measured model corrections (RTS PC-only, short-imm A2 sign extension, A1/B1 raw reads, S on bus reads only, the 24-bit keep-mask); two boundary defects fixed (accumulator-part destinations stop by name; NOP citation 13-149 → 13-145) |
 | `2026-10-01` | `.4` slice 3 | `cargo test -p semulith-dsp56300` 10/10; `compare_dumps.py --self-test` 4/0; `run_dsp56300_smoke.py` 1 agree / 0 fail (53 fields, byte-identical dump, cyc excluded); `make check` + `make gate` green | the model crate STANDS; the first differential case AGREES |
 | `2026-10-01` | `.4` slice 2 | both ledgers schema-validated; `fetch_references.sh --verify-only dsp56300-lab-v0` → tarball MATCH; `fetch_sources.sh --verify-only dsp56300-lab-v0` → FM manual MATCH (byte-identical to the chipdoc cache, HTTP 200); rv64 flow re-verified identical; `make gate` green with the second profile present | dossier + ledger landed; the auto-discovering gates' treatment of a second profile measured (keyed on profile.sexp/encoding.sexp — attach later with no gate edit) |
@@ -494,6 +543,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.1` F6 census leg | `SEMULITH-BR-0013 (leaf P3-BREADTH.1): the dsp56300-lab-v0 state census — 14 candidates answered, the dump measured complete; the input .5 harvests` | SEM-08 re-run for the exercised profile; A2/B2 readout + M/sticky/loop/stale-slot candidates declared and measured; F5 window + architectural absences answered; the leaf stays slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional) |
 | `.4` slice 4 | `SEMULITH-BR-0012 (leaf P3-BREADTH.4): subset v0 form-complete — ALU core, jsr/rts, rep/enddo, (Rn) modes; the 6-guest corpus AGREEs` | five measured corrections via the differential campaign (RTS, A2 sign extension, A1/B1 raw reads, S locus, keep-mask); accumulator-part destinations refused at decode; NOP citation corrected (13-145) |
 | `.4` slice 3 | `SEMULITH-BR-0011 (leaf P3-BREADTH.4): the model crate stands — the first differential case AGREEs over 53 fields` | machine/decode/exec/dump/lod + runner; compare_dumps.py (cyc skipped by rule) + the smoke driver; the U-bit extraction inversion owned; machine.rs naming per the FACT-OWNERSHIP convention |
 | `.4` slice 1 | `SEMULITH-BR-0009 (leaf P3-BREADTH.4): the bounded subset selected — dsp56300-lab-v0 v0, sibling-crate vehicle, exclusions named` | coverage + LIMITATIONS censused; subset named exactly; checkpoint-level comparator shape measured; decision_dsp56300-lab-v0-subset |
@@ -572,3 +622,16 @@ unsupported families remain unclaimed.
   row's three count re-derivations told the next reader to watch): re-derived to 2× by
   reviewed decision `decision_changelog-family-aggregate-rederivation`, compaction
   alternatives rejected on the record; per-part and the hash-pinned partition unmoved.
+- `2026-10-01`: `.1` F6 census leg (`SEMULITH-BR-0013`) — the SEM-08 census re-run for the
+  exercised dsp56300-lab-v0 profile: 14 candidates answered with locators (the A2/B2
+  sign-extended readout and A1/B1 raw reads harvested from `.4`'s pins; M0–M7 bounded at
+  reset by typed stops; sticky L/S declared — S has no writer in subset v0; the DO stack and
+  the stale popped slots inside the observation surface; REP's LC borrow transient; the F5
+  pending-writes window ABSENT for scalar issue). Consequence measured: **the canonical
+  end-state dump is the complete architectural state** for subset v0 — snapshot/replay
+  reduces to the dump fields, the same honesty the scalar census bought on rv64i-lab-v0.
+  The record is `.5`'s measured input for the `state.sexp` cases. `.1` stays `slice-gated`
+  (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional). Frontier: `.5`.
+  Ceiling bookkeeping: this leg's CHANGELOG append fired the head's 64 KiB per-part bound —
+  sharded by `scripts/shard_history.py` (completeness printed exact: 52 = 51 + 1, order and
+  bytes; shard 0095 manifested), the designed pressure control, no bound moved.

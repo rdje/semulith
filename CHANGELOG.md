@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0013 (leaf P3-BREADTH.1) — the dsp56300-lab-v0 state census; the dump is complete
+
+- The SEM-08 hidden-state census re-ran for the exercised DSP profile (F6's per-profile
+  leg): 14 candidates answered with locators, never by silence — the record is
+  `docs/tasks/artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`.
+- PRESENT and declared: the A2/B2 sign-extended extension readout and A1/B1 raw reads
+  (`.4`'s pins harvested), M0–M7 bounded at reset by typed stops, sticky L/S (S has no
+  writer in subset v0), the DO loop's stacked levels, the observable stale popped stack
+  slots. ABSENT: REP working state beyond the declared LC (restored before the
+  instruction retires), the F5 pending-writes window (scalar issue), reservation/FP/vector
+  state (none exist in the family), and the interrupt/mode/stack-extension state (named
+  exclusions, each reopening its census row).
+- Consequence: for subset v0 under its named exclusions, the canonical end-state dump is
+  the COMPLETE architectural state — surface completeness argued (stack slot 0 unwritable,
+  P-low constant, the harness window excluded by the harness's own contract) and measured
+  (the 6/6 agreement re-run this leg). The record is `.5`'s measured input for the
+  `state.sexp` cases; the DOSSIER's deferral row names it. `P3-BREADTH.1` stays
+  slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional); the frontier
+  moves to `.5`.
+
 ## SEMULITH-BR-0012 (leaf P3-BREADTH.4) — subset v0 form-complete; the 6-guest corpus AGREEs
 
 - `crates/semulith-dsp56300` decode+exec gained the whole subset: the register/immediate
@@ -858,30 +878,4 @@
   both references, nothing on ACT4 or QEMU.
 - Every id/version/count grep-verified as written; no gate extended (26 doctrines). Both
   books render; `make gate` all green.
-
-## SEMILITH-MB-0005 (leaf MODEL-BOOKS.3) — the methodology: from document to model
-
-- The per-unit book gains its methodology chapter
-  (`docs/models/rv64i-lab-v0/src/methodology.md`): the pipeline as six gated hops —
-  pinned document → decision (authority) → requirement (semantic class) → obligation
-  (positive AND negative checks) → derived expectation → the differentials (offline on
-  every commit, live three-way).
-- The reserved-FENCE rule is followed end to end, by name: the pinned sentence (RVI-RV32I
-  §1.1.7, quoted verbatim) → `D-FENCE` (authority execution-environment, the correction
-  note intact) → `REQ-D-FENCE` (class implementation-defined, statement verbatim under
-  RECORD-SCHEMA) → `OB-FENCE` (CHK-FENCE-POS AND -NEG) → `fault-fence` (EVD-05,
-  measured on both references first) → the offline suite and the live smoke. The honest
-  gap is in the chapter: the obligation's check ids are declared and G0 measures
-  72 declared / 0 implemented — the guest corpus is what tests the rule today.
-- The judgement calls are explained with their mechanical edges: semantic class (what
-  freedom the source grants) vs authority (who may decide; laboratory policy cannot
-  override an architectural rule — the AUTHORITY check). The mistakes stay in:
-  DEFECT-A (the dossier condemned the mandated nop; measurement inverted it), DEFECT-B
-  (the misaligned-jump link write, fixed in semantics DATA, pinned by `never_written x5`),
-  and the two authoring REDs (the overlap constant; the trailing paren) — gates catching
-  the author.
-- Every id the chapter names was grep-verified against the tracked corpus as written;
-  the quoted decision fragments are programmatically verified verbatim. No gate extended
-  (authored prose, no generated content — 26 doctrines unchanged). Both books render;
-  `make gate` all green.
 
