@@ -23,7 +23,6 @@
   network-device candidates and five measured negatives are reconciled (`P5-BOARD.8`/`.9`);
   contract design starts now, board execution follows CPU validation (`ROADMAP.md` §P5). Then:
   `BOOK-APPARATUS.2`.
-- in_flight_uncommitted: `BOOK-APPARATUS.1`'s files — the leaf is complete on disk; its commit
-  was blocked by the append-head ceilings (sharded, `SEMULITH-DS-0004`) and lands next.
+- in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

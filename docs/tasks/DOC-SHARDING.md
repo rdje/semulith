@@ -156,6 +156,9 @@ remedy.
   CHANGELOG: 2 entries → `shard-0113.md` (`54 == 52 + 2` exact; head → 62,570). DEV_NOTES:
   3 entries → `shard-0114.md` (`35 == 32 + 3` exact; head → 45,633). Manifest 114 → 116
   rows. The tool did what it was built for; no tree change needed.
+- `2026-10-02`: Second event the same day, riding the triggering slice (`SEMULITH-BA-0001`,
+  the DS-0002 precedent — the slice's own entry was what crossed the ceiling): 2 entries →
+  `shard-0115.md` (`55 == 53 + 2` exact; head 65,870 → 63,128). Manifest 116 → 117 rows.
 
 ## Acceptance Checklist (leaf DOC-SHARDING.2)
 

@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-02)_ — the book's index is a function of the book, not a page someone keeps (BOOK-APPARATUS.1)
+
+The director's apparatus directive audited against the real book: the glossary cannot fork
+(`docs/book/src/glossary.md` splices the canonical `docs/GLOSSARY.md` at build time), the two
+annexes already match the directive's definition — and the **index was absent**. It now exists
+the only way this repository tolerates a fact about a changing population: derived.
+`scripts/gen_book_index.py` reads `SUMMARY.md` (the chapter set, in reading order), the
+canonical glossary plus the book's acronym table (the term set), and every chapter's text (the
+occurrence set, case-insensitive and word-bounded); `scripts/check_book_index.sh` — the 31st
+project doctrine, `BOOK-INDEX` — regenerates in memory and refuses drift, with six self-test
+arms fired RED before registration (hand-edit DRIFT, stale-behind-edited-chapters DRIFT,
+missing chapter and missing SUMMARY refused **by name**). The generator refuses what it cannot
+emit rather than guessing, per house style. One build-exposed defect fixed at root: the
+generator's printed term count was a fudge factor (`47` against the real `40`) — now derived
+from the emitted rows. The annex policy is stated where a reader meets it
+(`docs/book/src/introduction.md`): chapters stay readable top to bottom; what is too technical
+for the main line lives in an annex. The directive's second half (incremental buildup, both
+audiences engaged) became `decision_mdbook-incremental-engaging` + `BOOK-APPARATUS.2`; the TOC
+request was withdrawn by the director — the mdBook sidebar is the TOC, and the contents page
+built to satisfy it was reverted as redundant.
+
+Validation: `gen_book_index.py` → 15,019 B / 40 terms; `mdbook build docs/book` rc 0;
+`check_book_index.sh --self-test` 6/6; `check_doctrines.sh` all green.
+
 ## _(2026-10-01)_ — an answered channel still reads `open` until you flip it (P5-BOARD.9)
 
 The second chipdoc incident, from our side: the acquisition agent answered all ten

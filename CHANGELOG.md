@@ -1,5 +1,27 @@
 # CHANGELOG.md
 
+## SEMULITH-BA-0001 (leaf BOOK-APPARATUS.1) — the book's index: generated from the book's own text, gated against drift
+
+- The director's `2026-10-02` apparatus directive audited against the real book: glossary
+  present and unforkable (build-time `{{#include}}` of the canonical `docs/GLOSSARY.md`),
+  two annexes present and on-policy — the **index was absent**. It lands derived, the only
+  honest shape for a fact about a changing population: `scripts/gen_book_index.py` reads
+  `SUMMARY.md` + the canonical glossary + the acronym table + every chapter's text;
+  `docs/book/src/index.md` is what that derives (15,019 B, 40 terms).
+- New project doctrine #31 **`BOOK-INDEX`** (`scripts/check_book_index.sh`): the index
+  regenerates byte-exact or the commit fails — a hand-maintained index is a running total,
+  and a running total is a memory of a measurement, not a measurement. Six self-test arms,
+  fired RED before registration (DRIFT ×2, refusal-by-name ×2). Registered and mirrored
+  (`DOCTRINE_ENFORCEMENT.md`, the book's doctrine chapter, `TOOLBOX.md`,
+  `doctrine/fact_ownership.tsv`).
+- The annex policy is stated in the book's introduction: chapters stay readable; what is too
+  technical for the main line lives in an annex.
+- The directive's second half became durable: `decision_mdbook-incremental-engaging` +
+  `BOOK-APPARATUS.2` (the reading-experience audit). The TOC request was withdrawn by the
+  director — the mdBook sidebar is the TOC; the contents page built for it was reverted.
+- Defect fixed at root, not reported: the generator's printed term count was a fudge factor
+  (read `47` against the real `40`); it now derives from the emitted rows.
+
 ## SEMULITH-MP-0001 (leaf MEMORY-POINTER.1) — MEMORY.md slimmed to the §6 next-action pointer
 
 - The director's `2026-10-02` ruling executed: `MEMORY.md` exists solely to point at the next
@@ -852,42 +874,4 @@
   toolchain; all three in-flight defects as the teaching record (the C-UB shift, the
   visible-change vocabulary, GATE-REPORT's verdict-assuming arm); what it proved and
   what it did not. Linked from the evidence chapter. Book builds; gate green.
-
-## SEMULITH-PS-0063 (leaf P2-SCALAR.5, strand 1) — the compiled C guest retires three-way; G1 reads `passed`
-
-- `guests/c-scope.c` is the first COMPILED guest: a self-checking freestanding C tour of
-  the declared scope (64/32-bit ALU, every load/store width, branches and a counted loop,
-  real calls through the argument registers and an indirect jump, variable shifts),
-  compiled by the pinned toolchain (`scripts/build_c_guest.sh` — clang 21.1.8 with the
-  RISC-V backend plus `ld.lld` 21.1.8, both probed, refused by name if absent, nothing
-  installed) and retiring under first-divergence comparison against sail-riscv AND spike:
-  **129/129 aligned steps, byte-identical reproduction**.
-- Two in-flight REDs, both authoring-side, never a model defect: the guest's own
-  self-check caught `w32 << 33` (UB in C — clang deleted the rest of the program; proven
-  by bisect, the `-fno-strict-aliasing` control innocent), and the three-way comparison
-  surfaced a comparator gap the hand-written corpus never exercised — the references log
-  no-change writes (`li a0, 0`), semulith's declared visible-change vocabulary does not.
-  The comparator now reduces every trace to the declared vocabulary (`_visible_changes`
-  in `align`, +2 self-test arms, 19/0).
-- `gate_report.py`'s criterion 6 gained its met branch — **G1's verdict is `passed`**, the
-  same instrument that said `incomplete` while the C path was missing. The report names
-  the guest, the build script and the decision record; the toolchain versions keep their
-  ONE owner (the decision record + the script's refusals).
-- Lockstep: the smoke's `.c` path (build → budget run → `e_entry` from the ELF header),
-  LIVE_STATUS (P1 `passed`), MEMORY, both books, P1-LAB's metadata, the model book.
-  `make gate` all green; the full smoke 221 PASS / 0 FAIL.
-
-## SEMULITH-PS-0062 (leaf P2-SCALAR.5) — the routing answered, the toolchain measured: .5 unblocked, design before code
-
-- Director delegation `2026-09-30`: the C-guest routing and toolchain call is the
-  engineer's. Recorded in `decision_c-guest-routing-and-toolchain`: the C guest lands in
-  `P2-SCALAR.5` (the G0 precedent — the tree completes, the gate keeps criterion 6
-  visible every commit, `EVD-08` forbids `passed` over a missing check); `P1-LAB` stays
-  `done`.
-- The toolchain was measured, not installed: Apple clang has no RISC-V backend (exact
-  error recorded); Homebrew `llvm@21` clang 21.1.8 compiles RV64I correctly
-  (objdump-verified); zig 0.16.0's bundled `ld.lld` 21.1.8 links.
-- `.5` blocked → active; the three-strand design recorded before code (strand 1: the C
-  guest; strand 2: the ACT4 generated suite; strand 3: directed sequences). Docs-only
-  commit; `make gate` green.
 

@@ -48,3 +48,9 @@ archogen OS can be a smaller, earlier system workload than Linux — with its ow
 - The contract chapters each open with orientation and then include the canonical document
   verbatim. The book never paraphrases a contract — a paraphrase is a second owner, and this
   project's first rule is that a rule has exactly one.
+- The **annexes** hold what is too technical to reasonably put in a normal chapter — how the
+  tracked assembler works, the step-by-step build of the first CPU model. A chapter stays
+  readable top to bottom; the machinery it depends on lives in an annex.
+- The [Glossary](glossary.md) defines the governed terms once (the canonical glossary is
+  included verbatim, so it cannot fork); the [Index](index.md) is generated from the book's
+  own text and gated against drift, so it cannot silently fall behind the chapters.
