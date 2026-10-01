@@ -219,6 +219,30 @@ state	profiles/rv64i-lab-v0/state.sexp	-	-
 EOF
   arm "RED   a fixture pair the registry does not name" 1 "UNREGISTERED MIRROR PAIR"
 
+  # ── the second-unit census (P3-BREADTH.7): same-unit pairing, measured against the
+  # real two-unit corpus. A cross-product enumeration would invent cross-unit pairs
+  # (rv64's documents "restating" the DSP's); the pairing must follow the unit capture.
+  armp() { # armp <name> <pair-spec> <expected-rc> <expected-substring>
+    argc 4 "$#" armp || return
+    out="$(check_ownership "$t/reg.tsv" scripts/check_doctrines.project.sh "$2" 2>&1)"; rc=$?
+    if [ "$rc" != "$3" ]; then
+      fail=$((fail+1)); printf 'FACT-OWNERSHIP self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$1" "$3" "$rc" "$out" >&2
+    elif ! printf '%s' "$out" | grep -qF "$4"; then
+      fail=$((fail+1)); printf 'FACT-OWNERSHIP self-test MISS: %s right verdict, wrong reason (no %s)\n%s\n' "$1" "$4" "$out" >&2
+    else pass=$((pass+1)); fi
+  }
+  SAME_UNIT=$'profiles/*/profile.sexp\tprofiles/*/state.sexp'
+  cat > "$t/reg.tsv" <<'EOF'
+state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+state (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/state.sexp	profiles/dsp56300-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+EOF
+  armp "GREEN two units, each pair registered — no cross-unit pair invented" "$SAME_UNIT" 0 "__CHECKED__ 2"
+
+  cat > "$t/reg.tsv" <<'EOF'
+state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+EOF
+  armp "RED   the second unit's same-unit pair must be registered, named" "$SAME_UNIT" 1 "UNREGISTERED MIRROR PAIR"
+
   printf 'bad row without enough cells\n' > "$t/reg.tsv"
   arm "REFUSE a malformed registry, never judge it" 2 "BAD ROW"
 

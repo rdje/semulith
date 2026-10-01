@@ -1,7 +1,7 @@
 # P3-BREADTH — archived completed-leaf evidence (part 1)
 
 The full, unedited acceptance checklists for the `done` leaves of the
-[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–3, and the
+[`P3-BREADTH`](../P3-BREADTH.md) tree (`.2`, `.4` slices 1–4, `.5` slices 1–3, `.7` slices 1–2, and the
 slice-gated `.1`'s two completed slices — the F2 probe and the F6 census leg), split out
 on `2026-10-01` when the live file crossed its per-part ceiling — the ceiling was obeyed,
 not raised, per the `docs/tasks/` precedent set by `SOT-FORMAT` and `P1-LAB`. The live
@@ -10,6 +10,74 @@ goal/acceptance/result narrative, the active leaf's checklist (`P3-BREADTH.7`),
 and both logs.
 
 Archived sections, verbatim:
+
+`P3-BREADTH.7`, slice 2 (`2026-10-01`, same commit as slice 1 — the slices interlock
+through the working-tree derived counts):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — two structural facts measured at the landing probe:
+  INTERACTION-MATRIX's contract fits the DSP unmodified (the schema is shape-generic;
+  the orphan sweep globs `*.expected.sexp` only, so the `.a56` corpus is invisible to it —
+  `scripts/check_interaction_matrix.py:152`), while FACT-OWNERSHIP's corpus census
+  (`scripts/check_fact_ownership.sh`) enumerated restatement pairs as a CROSS PRODUCT —
+  exact with one unit, inventing cross-unit pairs with two (rv64's requirements
+  "restating" the DSP's profile, measured). And the surfaced gap: no gate schema-validated
+  the dossier documents as a class (the D-FENCE drift's home).
+- [x] **ADDRESSED (verified)** — the DSP matrix measured: `python3
+  scripts/check_interaction_matrix.py profiles/dsp56300-lab-v0` (drafts placed) →
+  `21 cells declared, every disposition resolves`; the gate with the drafts placed →
+  `INTERACTION-MATRIX: ok (2 unit(s)`. The new gate: `bash
+  scripts/check_dossier_schema.sh` → `ok (64 __SKIPPED__ 2 (baseline.sexp,
+  portability.sexp))`; self-test `3 pass / 0 fail`; the historical RED firing:
+  `git show 6a36d8e:profiles/rv64i-lab-v0/profile.sexp` against `schema/profile.sexp` →
+  REFUSED `duplicated single-valued field "note"`, rc 1.
+- [x] **NO REGRESSION** — FACT-OWNERSHIP self-test `8 pass / 0 fail` (single-unit behavior
+  identical); INTERACTION-MATRIX self-test and the rv64 matrix unchanged (21 cells);
+  `make gate` → `=== all doctrines green ===` with the registration in place
+  (REGISTRY-MIRROR and DERIVED-COUNTS re-derived: 30 doctrines, 323 arms).
+- [x] **FIX** — `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/interactions.sexp` (the
+  draft), `scripts/check_interaction_matrix.py` (two registry entries, each naming its
+  case), `scripts/check_dossier_schema.sh` (new), `scripts/check_doctrines.project.sh`
+  (registration), `DOCTRINE_ENFORCEMENT.md` + `docs/book/src/working/doctrines.md`
+  (mirrors), `scripts/check_fact_ownership.sh` (same-unit pairing + the cross-family
+  census), `doctrine/fact_ownership.tsv` (kinds qualified per unit).
+- [x] **LOCKSTEP** — tree, `MEMORY.md`, `LIVE_STATUS.md` (30/323 re-derived),
+  `CHANGELOG.md`, `DEV_NOTES.md`, KNOWLEDGE_MAP (regenerated), the doctrine mirrors.
+
+`P3-BREADTH.7`, slice 1 (`2026-10-01`, `SEMULITH-BR-0017`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the fork (deferrals vs machinery) was the leaf's open
+  design decision; measured against it: the gates' rv64-shape presumptions live in
+  `scripts/check_extraction.py`'s per-unit contract and
+  `scripts/check_exercise_coverage.sh`'s composition/expectations legs, and the census
+  question "is the DSP's declared scope exercised" is ANSWERABLE from the tracked corpus
+  — `grep -cE 'enddo' profiles/dsp56300-lab-v0/guests/rep.a56` → 1 (the corpus covers all
+  19 declared mnemonics, verified by the leg itself below). Deferral machinery rejected:
+  a weakening surface with no second user, and expiry answers the wrong question —
+  applicability re-derives from the documents per commit
+  (`decision_gate-applicability-by-declared-vehicle`).
+- [x] **ADDRESSED (verified)** — measured against the real drafts (untracked +
+  intent-to-add placement, the committed-mode behavior): `bash
+  scripts/check_exercise_coverage.sh` → `ok (2 profile(s) … 19/19`; `bash
+  scripts/check_extraction.sh` → `ok (2 unit(s) sufficient` with the DSP unit's
+  sibling-crate route reported by name; `bash scripts/check_profile_consistency.sh` →
+  `ok (2 profile dossier(s) internally consistent)`.
+- [x] **NO REGRESSION** — rv64 unchanged: EXERCISE-COVERAGE `52/52`, EXTRACTION
+  sufficient; self-tests: `check_exercise_coverage.sh --self-test` → `13 pass / 0 fail`
+  (five new arms: checkpoint GREEN ×2, UNEXERCISED, UNDECLARED EXERCISE, NO GUESTS),
+  `check_extraction.sh --self-test` → `5 pass / 0 fail` (the contradiction RED arm),
+  `check_extraction.py --self-test` → `6 pass / 0 fail`; `dossier_sexp.py --self-test` →
+  `12 pass / 0 fail`; the rv64 profile doc round-trips data-equal with the vehicle key
+  absent; `make gate` green.
+- [x] **FIX** — `schema/profile.sexp` (the `vehicle` construct), `scripts/
+  dossier_sexp.py` (`_VEHICLE_SPEC` + both directions), `scripts/check_extraction.py` +
+  `.sh` (the sibling-crate leg + arm), `scripts/check_exercise_coverage.sh` (the
+  checkpoint leg + five arms), the draft `dsp56300-dossier/profile.sexp` (the
+  declaration), the decision record + INDEX.
+- [x] **LOCKSTEP** — tree (this file: leaf design + slice record, checklist, logs),
+  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
+  `docs/decisions/INDEX.md`, the KNOWLEDGE_MAP (regenerated); mdBook: the vehicle
+  declaration is gate-internal — `plan/p3.md` gains the sentence at slice 3's landing,
+  when the user-visible dossier changes.
 
 `P3-BREADTH.5`, slice 3 (`2026-10-01`, `SEMULITH-BR-0016`):
 

@@ -1,12 +1,12 @@
-;; state.sexp — DRAFT for dsp56300-lab-v0 (P3-BREADTH.5 slice 2, 2026-10-01).
+;; state.sexp — the architectural-state document for dsp56300-lab-v0 (drafted in
+;; P3-BREADTH.5 slice 2, landed by P3-BREADTH.7 slice 3, 2026-10-01).
 ;;
-;; NOT LANDED in profiles/ — see profile.sexp's header in this directory. The content is
-;; the F6 census record (docs/tasks/artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md)
-;; carried as data: register families with masked widths and per-part readouts (slice 1's
-;; constructs), the three memory spaces, the hardware stack, the twelve special registers,
-;; and the 14-candidate hidden-state census. Validate:
-;;   python3 scripts/check_sexp_schema.py \
-;;     docs/tasks/artifacts/p3-breadth/dsp56300-dossier/state.sexp schema/state.sexp
+;; The content is the F6 census record (docs/tasks/artifacts/p3-breadth/
+;; 2026-10-01-dsp56300-state-census.md) carried as data: register families with masked
+;; widths and per-part readouts (P3-BREADTH.5 slice 1's constructs), the three memory
+;; spaces, the hardware stack, the twelve special registers, and the 14-candidate
+;; hidden-state census. Validate:
+;;   python3 scripts/check_sexp_schema.py profiles/dsp56300-lab-v0/state.sexp schema/state.sexp
 
 (state (profile_id "dsp56300-lab-v0") (note "No xlen: the DSP56300 has no XLEN concept — the data word is 24-bit (FM §3.1). Architectural state only; the reset values are the FM's cross-checked against the pinned reference's observed reset dump (machine.rs carries the same pairing).")
   (register_family (id "data-alu") (count 4) (width_bits 24) (ids "x0, x1, y0, y1") (authority architecture) (source "DSP56300FM §3.2"))

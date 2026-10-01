@@ -30,3 +30,8 @@ pinned-sources (rv64i-lab-v0)	profiles/rv64i-lab-v0/sources.sexp	docs/models/rv6
 reference-dossier (rv64i-lab-v0)	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
 reference-dossier (rv64i-lab-v0)	profiles/rv64i-lab-v0/references.sexp	docs/models/rv64i-lab-v0/src/materials/reference-models.md	MATERIALS-BILL
 internal-contracts (rv64i-lab-v0)	profiles/rv64i-lab-v0/	docs/models/rv64i-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL
+configuration (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/profile.sexp	-	-
+state (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/state.sexp	profiles/dsp56300-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+pinned-sources (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/sources.sexp	-	-
+reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	-	-
+guest-programs (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/guests/	-	-

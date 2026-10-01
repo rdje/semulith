@@ -1,11 +1,12 @@
-;; profile.sexp — DRAFT for dsp56300-lab-v0 (P3-BREADTH.5 slice 2, 2026-10-01).
+;; profile.sexp — the decision dossier for dsp56300-lab-v0 (drafted in P3-BREADTH.5 slice 2,
+;; landed by P3-BREADTH.7 slice 3, 2026-10-01).
 ;;
-;; NOT LANDED in profiles/. Landing attaches EXTRACTION, EXERCISE-COVERAGE and
-;; INTERACTION-MATRIX to this unit; their measured verdicts are recorded in
-;; docs/tasks/P3-BREADTH.md (.5 slice 2) — the document lands with the slice that can
-;; keep those gates green honestly. Validate:
-;;   python3 scripts/check_sexp_schema.py \
-;;     docs/tasks/artifacts/p3-breadth/dsp56300-dossier/profile.sexp schema/profile.sexp
+;; The gates attach on landing, measured: PROFILE-CONSISTENCY checks this dossier's internal
+;; consistency; EXERCISE-COVERAGE measures the declared scope against the .a56 guest corpus
+;; (the checkpoint leg — see the vehicle block); EXTRACTION reports the sibling-crate route;
+;; INTERACTION-MATRIX re-derives the 21 cells of interactions.sexp; DOSSIER-SCHEMA validates
+;; this document against schema/profile.sexp. Validate by hand:
+;;   python3 scripts/check_sexp_schema.py profiles/dsp56300-lab-v0/profile.sexp schema/profile.sexp
 
 (profile (id "dsp56300-lab-v0") (version "0") (status "experimental") (architecture "DSP56300") (base "DSP56300") (chapter_version "DSP56300FM Rev. 5") (spec_revision "Rev. 5") (harts 1) (ilen 24) (ialign 24)
   (comment "No xlen: the DSP56300 has no XLEN concept — the data word is 24-bit (FM §3.1)."

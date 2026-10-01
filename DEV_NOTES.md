@@ -1,5 +1,20 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the landing is the boring part when the measurement came first (P3-BREADTH.7 slice 3)
+
+After slices 1–2 measured every attaching gate against the drafts, the landing itself was
+a rename plus the ownership rows: `git mv` semantics for the three documents, five rows
+in `fact_ownership.tsv`, and two census arms that only exist post-landing (they measure
+the real two-unit corpus: a GREEN pair-registered arm and a RED unregistered-pair arm —
+a gate whose arms depend on the corpus they judge is only writable after the corpus
+lands, which is why they were scheduled, not forgotten, in slice 2). The one judgment
+worth recording: the DSP's `guests/` registered as a fact owner with NO mirror — the
+rv64 guest kind has a generated mirror (`guests.rs`, GUEST-GEN), and the DSP's honestly
+has none yet; the registry's "mirror `-`" spelling is the honest zero, not a gap. The
+DOSSIER's deferral rows now name `.6` for requirements and unit registration — the
+earlier "lands with the model slice" wording was stale the day the model slice closed
+without them, and two slices carried the correction.
+
 ## _(2026-10-01)_ — the matrix fit, the census didn't (P3-BREADTH.7 slice 2)
 
 Two opposite findings in one slice. INTERACTION-MATRIX needed no gate change at all: the
