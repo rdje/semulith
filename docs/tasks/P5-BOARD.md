@@ -135,11 +135,56 @@ incompatible CPU/environment assumption remains**.
 - `2026-09-13`: a **smaller separately accepted CPU profile** may support an earlier board
   branch for archogen, before the richer Linux profile exists. The CPU-first rule still applies:
   the profile must already have passed a CPU gate (`ROADMAP.md` §P5).
+- `2026-10-02` (design brief for `.1`, recorded before its execution; sources: the `.8`/`.9`
+  reconciled corpus, the CPU contract, the machinery census below):
+  **the board question is answered.** Open Question "which board" closes: the first board
+  composes `rv64i-lab-v0` v0 (the EXPERIMENTAL release — the board inherits that status and
+  must say so) with exactly two devices, both digest-pinned in `materials/catalog.sexp`:
+  a **16550-compatible UART** (serial console; source `SIFIVE-FU540-C000` v1p5) and a
+  **LAN9118 wired NIC** (source `MICROCHIP-LAN9118` DS00002266B; PIO host bus — no bus-master
+  DMA, so every device effect reaches the guest through its own MMIO accesses, exactly the
+  shape the CPU contract's eight assumptions tolerate). The director's `2026-10-01` brief —
+  every board touches the world — is satisfied by the NIC from board v0.
+  **Timers and interrupt controllers are ABSENT by contract, and that is the design's sharpest
+  edge:** `OB-ENV-VIRTUAL-TIME` and `OB-ENV-EVENT-DELIVERY` are *environment assumptions* the
+  board must satisfy (ENV-02), so a CLINT/PLIC would not be a feature but a composition
+  REJECTION (`.4`'s verdict, `scripts/discharge_assumptions.py` — already built and
+  self-tested). Both devices' interrupt lines are **unconnected and declared so**; drivers
+  poll. The board spec dispositions every `ROADMAP.md` §P5 element — memory ✓, reset ✓ (cold
+  only, `OB-ENV-RESET`), serial console ✓, timers/IRQ controllers ✗-by-contract, deferred to
+  the P4-profile board branch where the CPU contract has counter/interrupt assumptions to
+  satisfy instead.
+  **The network backend is the recorded-trace replay leg** (deterministic, evidence-grade;
+  the `.8` design discussion's split): without a time source, RX delivery is pinned to the
+  guest's own polling — the device holds the next recorded packet and offers it when polled,
+  so the harness's retired-instruction count never becomes target-visible
+  (`OB-ENV-VIRTUAL-TIME`'s second half). TX goes to a recording sink. A live host-socket
+  backend stays laboratory play at the `Environment` boundary, never inside an evidence claim.
+  **Machinery `.1` must touch** (censused `2026-10-02`): `schema/units.sexp` `kind` admits only
+  `processor` — a `board` value is a declared-by-edit extension ("the day a real unit needs
+  one"); the `profiles/` family's 240-file ceiling is at its 2-unit budget — a third unit
+  directory fires README-ROUTING-CLOSURE and needs a reviewed re-derivation (director-approved
+  in principle `2026-10-02`); `scripts/compose_units.py` materializes boards from a
+  `(composition …)` manifest but its tracked-board freshness gate is explicitly deferred to
+  the first tracked board (`.3` owns it); no memory-map/reset/device fields exist in any
+  schema — the board-definition document and its schema are `.1`'s to design (house shape:
+  one S-expression source of truth, schema in `schema/`, generated mirrors gated, dossier
+  under `profiles/<board-id>/`); `gate_report.py --gate BOARD` is `.7`'s, with the
+  `BREADTH`/`--gate` precedent mapped.
+  **Version pins, not names** (the leaf's acceptance): processor = unit id + version `0` +
+  the dossier content digest in `profiles/rv64i-lab-v0/GC-REPORT.md` (GATE-REPORT-gated);
+  devices = their datasheets' material id + revision + sha256; device UNIT dossiers land in
+  `.2` — where a device unit does not yet exist, the board definition declares the id and
+  names `.2` as its owner (the WAIVER-ROUTING shape, honesty with an owner).
 
 ## Open Questions
 
-- Which board? Driven by the first real workload — an archogen OS or the Linux route — and
-  decided before `.1`, not during it (`RK12`).
+- ~~Which board?~~ **Answered `2026-10-02`** (Decisions, design brief): rv64i-lab-v0 v0 +
+  16550 UART + LAN9118, no timer/IRQ controller by contract. The board's id is finalized at
+  `.1` execution (proposal: a `lab`-suffixed name in the units registry's idiom, e.g.
+  `netboard-lab-v0`).
+- Which device gets a dossier first in `.2` — the UART (simpler contract) or the NIC (the
+  director's headline)? Decided at `.2`, not blocking `.1`.
 
 ## Design Discussions
 
@@ -179,7 +224,13 @@ incompatible CPU/environment assumption remains**.
 
 ## Blockers
 
-- The CPU release gate.
+- ~~The CPU release gate.~~ Resolved for `.1`–`.4` (`2026-10-02`): `ROADMAP.md` §P5 — *"contract
+  design starts now; board execution still follows CPU validation."* The platform specification
+  (`.1`), device dossiers (`.2`), generated maps (`.3`) and the composition verdict (`.4`) are
+  contract design over an already-gated CPU contract (`rv64i-lab-v0` passed G1 `2026-09-30`);
+  the board inherits the CPU's EXPERIMENTAL status and every board claim must read as
+  conditional on it. Firmware probes (`.5`) and the `BOARD` gate verdict (`.7`) stay gated on
+  the CPU's own acceptance trajectory — the composition can never outrank its processor.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
@@ -261,3 +312,11 @@ incompatible CPU/environment assumption remains**.
   re-pinned `c4ad8a2`, and the knowledge cards brought up to the §0.3/§0.5 answer
   path. `.1` inherits five sourced network-device candidates plus five measured
   negatives closing the alternatives.
+- `2026-10-02`: the `.1` design brief recorded (`SEMULITH-P5-0004`): the board question
+  answered — rv64i-lab-v0 v0 + 16550 UART (`SIFIVE-FU540-C000`) + LAN9118
+  (`MICROCHIP-LAN9118`), timers/IRQ controllers absent BY CONTRACT (ENV-02; a CLINT/PLIC
+  would be a composition rejection, not a feature), recorded-trace replay RX backend,
+  polled drivers, IRQ lines unconnected-and-declared. The machinery census for `.1`
+  (units kind edit, profiles/ ceiling, composition freshness gate, board schema to
+  design) and the version-pin shape are in Decisions; the CPU-release-gate blocker is
+  resolved for `.1`–`.4` as contract design per `ROADMAP.md` §P5.
