@@ -1,0 +1,55 @@
+;; state.sexp — DRAFT for dsp56300-lab-v0 (P3-BREADTH.5 slice 2, 2026-10-01).
+;;
+;; NOT LANDED in profiles/ — see profile.sexp's header in this directory. The content is
+;; the F6 census record (docs/tasks/artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md)
+;; carried as data: register families with masked widths and per-part readouts (slice 1's
+;; constructs), the three memory spaces, the hardware stack, the twelve special registers,
+;; and the 14-candidate hidden-state census. Validate:
+;;   python3 scripts/check_sexp_schema.py \
+;;     docs/tasks/artifacts/p3-breadth/dsp56300-dossier/state.sexp schema/state.sexp
+
+(state (profile_id "dsp56300-lab-v0") (note "No xlen: the DSP56300 has no XLEN concept — the data word is 24-bit (FM §3.1). Architectural state only; the reset values are the FM's cross-checked against the pinned reference's observed reset dump (machine.rs carries the same pairing).")
+  (register_family (id "data-alu") (count 4) (width_bits 24) (ids "x0, x1, y0, y1") (authority architecture) (source "DSP56300FM §3.2"))
+  (register_family (id "accumulators") (count 2) (width_bits 56) (ids "a, b") (authority architecture) (source "DSP56300FM §3.4.1")
+    (parts (part (id "extension (a2/b2)") (bit_hi 55) (bit_lo 48) (readout "reads as the 8-bit extension byte, sign-extended through bit 7 on the bus") (authority architecture) (source "DSP56300FM §3.4.1.2; measured against the pinned reference")))
+    (parts (part (id "msp (a1/b1)") (bit_hi 47) (bit_lo 24) (readout "reads RAW — the shifter/limiter sits on the whole-accumulator read path only (measured; the FM's limiting prose over-applies here)") (authority architecture) (source "DSP56300FM §3.4.1; measured, P3-BREADTH.4 slice 4")))
+    (parts (part (id "lsp (a0/b0)") (bit_hi 23) (bit_lo 0) (readout "reads raw") (authority architecture) (source "DSP56300FM §3.4.1"))))
+  (register_family (id "address") (count 8) (width_bits 24) (ids "r0..r7") (authority architecture) (source "DSP56300FM §5.2"))
+  (register_family (id "offset") (count 8) (width_bits 24) (ids "n0..n7") (authority architecture) (source "DSP56300FM §5.2"))
+  (register_family (id "modifier") (count 8) (width_bits 24) (ids "m0..m7") (authority architecture) (source "DSP56300FM §5.2")
+    (reset (value "$FFFFFF (linear) for m0..m7") (authority architecture) (source "DSP56300FM §5; reference reset dump agrees") (statement "Subset v0 decodes no write to a modifier register and refuses any Mn != $FFFFFF by name — modulo/reverse-carry addressing is a named exclusion, so in subset v0 these registers are constant at reset.")))
+  (special_registers (register (id "pc") (width_bits 24) (holds "the address of the current instruction in P space") (authority architecture) (source "DSP56300FM §5.3") (reset "the case's load base, supplied by the runner") (reset_authority laboratory)))
+  (special_registers (register (id "sr") (width_bits 24) (holds "status: CCR (S L E U N Z V C) in bits 7-0, LF in bit 15, interrupt mask and scaling mode bits above") (authority architecture) (source "DSP56300FM Table 5-1") (reset "$C00300 (CP=11, I1=I0=1, CCR clear)") (reset_authority architecture)))
+  (special_registers (register (id "omr") (width_bits 24) (holds "operating mode register — subset v0 never writes it (modes are a named exclusion)") (authority architecture) (source "DSP56300FM §7") (reset "$000300") (reset_authority architecture)))
+  (special_registers (register (id "la") (width_bits 24) (holds "loop address — the last instruction of the current DO loop") (authority architecture) (source "DSP56300FM §5.4.2") (reset "$FFFFFF") (reset_authority architecture)))
+  (special_registers (register (id "lc") (width_bits 24) (holds "loop counter — also REP's count register") (authority architecture) (source "DSP56300FM §5.4.2") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "sp") (width_bits 24) (holds "hardware stack pointer — pre-incremented on push, so slot 0 is never written") (authority architecture) (source "DSP56300FM §5.4.3") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "ssh") (width_bits 24) (holds "the top stack level's high half — a VIEW of stack[SP], not separate storage") (authority architecture) (source "DSP56300FM §5.4.3") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "ssl") (width_bits 24) (holds "the top stack level's low half — a VIEW of stack[SP]") (authority architecture) (source "DSP56300FM §5.4.3") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "ep") (width_bits 24) (holds "emulator pin offset register — no writer in subset v0; rides at reset") (authority architecture) (source "DSP56300FM §5") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "sz") (width_bits 24) (holds "stack size register (stack extension — a named exclusion); no writer in subset v0") (authority architecture) (source "DSP56300FM §5.4.4") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "sc") (width_bits 24) (holds "stack counter — no writer in subset v0; rides at reset") (authority architecture) (source "DSP56300FM §5.4") (reset "0") (reset_authority architecture)))
+  (special_registers (register (id "vba") (width_bits 24) (holds "vector base address — interrupts are a named exclusion; no writer in subset v0") (authority architecture) (source "DSP56300FM §8") (reset "0") (reset_authority architecture)))
+  (memory_spaces (space (id "x") (word_bits 24) (authority architecture) (source "DSP56300FM §3.1")))
+  (memory_spaces (space (id "y") (word_bits 24) (authority architecture) (source "DSP56300FM §3.1")))
+  (memory_spaces (space (id "p") (word_bits 24) (authority architecture) (source "DSP56300FM §3.1")))
+  (hardware_stack (levels 16) (width_bits 48) (indexing "SP pre-increments on push and the write lands at the new SP, so slot 0 is never written; slots 1-15 are the observable ones") (stale_slots_observable true) (authority architecture) (source "DSP56300FM §5.4.3; the jsr guest's dump agrees byte-for-byte with the reference's stale popped slots"))
+  (hidden_state_census
+    (question "Is there any state, not listed above, that can influence a future supported observation? (SEM-08, catalog C02)")
+    (answer "No — for subset v0, and only because of what it excludes. The canonical end-state dump is the complete architectural state; every exclusion reopens its candidate row.")
+    (candidates (checked (candidate "accumulator extensions with readout semantics (A2/B2)") (present true) (why "F6's named case: A2/B2 read sign-extended (FM §3.4.1.2), A1/B1 read raw (measured) — declared above as accumulator parts, in the observation surface as a2/b2")))
+    (candidates (checked (candidate "addressing-mode control registers (M0-M7)") (present true) (why "declared (modifier family); subset v0 never writes them and refuses Mn != $FFFFFF by name, so they are constant at reset $FFFFFF (linear)")))
+    (candidates (checked (candidate "sticky flag state (SR L, S)") (present true) (why "declared in sr: L is sticky set-on-V (FM Table 5-1); S is sticky with no writer in subset v0 — it sets on whole-accumulator bus reads, which subset v0 does not decode (measured)")))
+    (candidates (checked (candidate "loop state (DO: LA/LC/LF + stacked levels)") (present true) (why "declared: la/lc/LF (sr bit 15) plus the stacked LA/LC and PC/SR levels on the hardware stack; the end-of-pass rule is FM §13 DO, measured by the micro guest's do #4")))
+    (candidates (checked (candidate "REP working state") (present false) (why "REP's borrow of LC is restored before the instruction retires (LC → TEMP, count → LC, TEMP → LC within one step); nothing pending crosses an instruction boundary — rep guest, 64 fields AGREE")))
+    (candidates (checked (candidate "stale popped stack slots") (present true) (why "pop does not clear the slot and the dump compares slots 1-15 — observable, declared, and agreed with the reference (jsr guest)")))
+    (candidates (checked (candidate "control/status registers beyond the declared set (interrupt, peripheral)") (present false) (why "interrupts/traps/peripherals/modes are named subset exclusions (the reference's LIMITATIONS §3.6 unverifies peripheral interrupts upstream); EP/SZ/SC/VBA ride at reset and are dumped")))
+    (candidates (checked (candidate "reservation set / atomicity state") (present false) (why "the DSP56300 instruction set has no load-reserved/store-conditional mechanism (FM §13); subset v0's moves complete as a unit")))
+    (candidates (checked (candidate "floating-point registers and status") (present false) (why "the data ALU is integer/fractional only (FM §3); no FP state exists to hide")))
+    (candidates (checked (candidate "vector state") (present false) (why "no vector unit exists in the family")))
+    (candidates (checked (candidate "privilege mode and trap state") (present false) (why "no privilege modes; no exception model in subset v0 — a fault is a typed ModelStop to the harness, never an in-model trap")))
+    (candidates (checked (candidate "instruction-fetch cache state") (present false) (why "the DSP56300 fetches program RAM directly — no instruction cache exists in the family (the reference's cache ops are NOPs, LIMITATIONS §1.4/§3.2); the model re-reads P on every fetch")))
+    (candidates (checked (candidate "pending or partially committed effects (the F5 delayed-writeback window)") (present false) (why "scalar issue; every subset-v0 instruction completes or stops as a unit — measured by the 6/6 end-state agreement")))
+    (candidates (checked (candidate "stack-extension state (the X-space extended stack)") (present false) (why "stack extension is excluded upstream (LIMITATIONS §2.1) and in subset v0 — a 16th-level push is a typed StackOverflow stop, never a spill")))
+    (consequence "For subset v0 under its named exclusions, the canonical end-state dump IS the complete architectural state: every cell that can influence a future supported observation is in the comparison surface, and the census measured nothing hidden. Snapshot/replay of this profile reduces to the dump fields. Surface completeness is argued in the census record (slot 0 unwritable, P-low constant, the harness window excluded by the harness's own contract) and measured by the 6/6 agreement. Every exclusion reopens its row."))
+)

@@ -218,9 +218,15 @@ def _read_flat(spec: list[tuple[str, str]], form, where: str,
 
 # --------------------------------------------------------------------------- profile.toml
 
+# The scope taxonomy's closed group-name set — the other place it lives is
+# schema/profile.sexp's scope construct; the two are extended together. The dsp56300
+# groups (P3-BREADTH.5 slice 2, case dsp56300-lab-v0: moves, alu_core, multiplies, flow,
+# loops) join the scalar set; the gate readers are generic over group names, so adding a
+# name here and in the schema is the whole extension.
 _SCOPE_LISTS = ("base_u_type", "base_jumps", "base_branches", "base_loads", "base_stores",
                 "base_op_imm", "base_op", "base_misc_mem", "base_system", "rv64_loads",
-                "rv64_stores", "rv64_op_imm_32", "rv64_op_32")
+                "rv64_stores", "rv64_op_imm_32", "rv64_op_32",
+                "moves", "alu_core", "multiplies", "flow", "loops")
 
 _PROFILE_SPEC = [("id", "str"), ("version", "str"), ("status", "str"), ("architecture", "str"),
                  ("base", "str"), ("chapter_version", "str"), ("spec_revision", "str"),

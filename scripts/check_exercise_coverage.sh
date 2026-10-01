@@ -66,8 +66,12 @@ for prof_path in profiles:
     scope = scopes[0]
     denominator: set[str] = set()
     for f in scope[1:]:
+        # (comment …) is the format's reserved annotation head, never a mnemonic group —
+        # measured 2026-10-01 (P3-BREADTH.5 slice 2): a comment inside scope poisoned the
+        # denominator with its own prose.
         if isinstance(f, list) and f and str(f[0]) not in ("count_base", "count_rv64i_additions",
-                                                           "count_total", "authority", "source"):
+                                                           "count_total", "authority", "source",
+                                                           "comment"):
             denominator |= {str(v).lower() for v in f[1:]}
     declared_total = None
     totals = S.children(scope, "count_total")
@@ -193,6 +197,11 @@ self_test() {
 
   profile "$scope2"; encoding; guest g1 "add sub"
   arm "GREEN every declared form exercised" 0 "__EXERCISED__ 2/2"
+
+  # GREEN: a (comment …) inside scope is an annotation, not a mnemonic group — the
+  # denominator ignores it (measured with the dsp56300-lab-v0 draft, P3-BREADTH.5 slice 2).
+  profile '(comment "a note, not a mnemonic") (count_total 2) (authority architecture) (source "s") (base_op "ADD") (base_op "SUB")'
+  arm "GREEN a comment inside scope does not poison the denominator" 0 "__EXERCISED__ 2/2"
 
   guest g1 "add"
   arm "RED   a declared form no guest exercises, named" 1 "UNEXERCISED"

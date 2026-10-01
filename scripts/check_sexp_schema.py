@@ -585,6 +585,11 @@ def validate_file(path: Path, constructs: dict[str, Construct],
 
 
 def check(file: Path, schema: Path) -> int:
+    for p, what in ((schema, "the schema"), (file, "the document")):
+        if not p.is_file():
+            print(f"  REFUSED — {what} does not exist: {p}; a check that cannot read its "
+                  "input refuses rather than reports", file=sys.stderr)
+            return 2
     try:
         constructs, operators = load_schema(schema)
     except (SchemaError, S.SexpError) as exc:
@@ -863,6 +868,18 @@ def _selftest() -> int:
     arm("GREEN the fixpoint: schema.sexp validates under itself",
         lambda: accepts((REPO / "schema/schema.sexp").read_text(),
                         (REPO / "schema/schema.sexp").read_text()))
+
+    # RED: a missing input file is a refusal (rc 2), never a traceback — measured
+    # 2026-10-01 (P3-BREADTH.5 slice 2): a fabricated schema path crashed with
+    # FileNotFoundError instead of refusing.
+    def missing_input_refuses():
+        with tempfile.TemporaryDirectory(dir=REPO / "target") as td:
+            doc = Path(td) / "d.sexp"
+            doc.write_text("(state)")
+            assert check(doc, Path(td) / "no-such-schema.sexp") == 2, "missing schema"
+            assert check(Path(td) / "no-such-doc.sexp", doc) == 2, "missing document"
+
+    arm("RED   a missing schema or document refuses rc 2, no traceback", missing_input_refuses)
 
     print(f"check_sexp_schema --self-test: {passed} pass / {failed} fail")
     return 1 if failed else 0

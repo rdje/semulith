@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — measure the attachment before landing the document (P3-BREADTH.5 slice 2)
+
+The slice's real content was a measurement discipline: the DSP's `profile.sexp` and
+`state.sexp` were drafted, then placed untracked — and intent-to-added, because three of
+the four attaching gates enumerate units through `git ls-files` while PROFILE-CONSISTENCY
+globs the filesystem; the difference mattered, and the first measurement saw only one
+gate's verdict — and every attaching gate was run before anything landed. The haul:
+PROFILE-CONSISTENCY's EVD-04 and SRC-03 arms had seven latent defects to catch in a
+dossier that had sat tracked-but-unchecked since `.4` — an "obtained" candidate with no
+binary/digest/injection, and independence pairs naming labels instead of candidates. The
+fix made the dossier better, not just greener: the asm/emu legs and gearmulator are now
+first-class candidates, so the independence rows name things the dossier describes. Two
+more defects fell out of the re-validation sweep: rv64's own `profile.sexp` had drifted
+from its schema (two notes on D-FENCE — ungated, because no gate schema-validates the
+dossier documents as a class; the landing slice now owns that leg), and the coverage
+denominator counted a comment's prose as mnemonics. Design note: the taxonomy's scalar
+shape lived in exactly two closed places (the schema's scope construct and
+`_SCOPE_LISTS`), and the gate readers were already generic over group names — the whole
+extension was schema fields plus one tuple, no reader edits. That is what generic readers
+buy: the schema is where per-target shape lives, and adding a target is naming it there.
+
 ## _(2026-10-01)_ — moving a refusal one layer down, on purpose (P3-BREADTH.5 slice 1)
 
 The interesting engineering was not the schema constructs but the boundary mechanics. The
@@ -609,10 +630,4 @@ Lesson: `promotion: declined` — the fetch recipe and census live in the leaf's
 The director asked for the C-guest story in the mdBook before ending the session. It landed as a dedicated model-book chapter (`compiled-guest.md`, between references and evidence — the book's own reading order: cast, then the newest evidence kind, then the ledger), written in the book's voice: the shared-mind weakness of hand-written assembly; the self-checking design and why per-step expectation documents deliberately stay with the assembly corpus (the compiler, not the author, chooses the sequence — a step-pinned document would fingerprint one compiler's output, not derive from the specification); the measured toolchain; all three in-flight defects as the teaching record per the dual mandate; and the honest limits (129/129 three-way is finite tested evidence, not conformance). The evidence chapter's live-differential bullet points at it. Validation: `mdbook build` renders; `make gate` all green; CHANGELOG crossed its ceiling with the entry and was sharded (completeness exact).
 
 Lesson: none new — the chapter itself is the retrievable form (the dual mandate's rule: the teaching text is where the instructive mistakes live).
-
-## _(2026-09-30)_ — the compiled C guest retires three-way; G1 reads passed (P2-SCALAR.5, strand 1)
-
-The strand opened with the blocker answered (PS-0062: routing + the measured toolchain) and hit two REDs before any green — both authoring-side, both diagnosed by tool, neither a model defect. RED ONE was the subtlest defect this laboratory has produced, and the guest caught it in its own author: the first compiled binary stopped at `fail(0x0501)` with the trace showing the whole post-memory section deleted. The disassembly showed clang had concluded the path was unreachable — whole-program UB exploitation. The first suspect (strict aliasing on the width-punned buffer accesses) was measured INNOCENT by the `-fno-strict-aliasing` control; bisecting sections found `w32 << 33` — a 32-bit shift by ≥ 32 is UB in C (C11 6.5.7p3), NOT "the ISA reads 5 shamt bits" — and with the amount narrowed to 31 the same compile restored `call fib` + 4× `call emit`. The lesson is recorded in the guest's own comments: the *W shamt boundary is not expressible through the C abstract machine, so it stays with `bound-shiftw`'s assembly. RED TWO was a genuine comparator gap the 492/492 corpus never exercised: with the guest clean, the three-way comparison diverged at aligned step 7 — `li a0, 0` with a0 already 0 logs `x10 <- 0` on BOTH references while semulith, whose runner diffs VALUES (the declared visible-change vocabulary, the `.1` lesson), records nothing. The fix went where the vocabulary is owned: `align` in `compare_traces.py` (the one funnel all three parsers flow through) now reduces every trace to visible changes via a shadow register file from the declared reset state (x1..x31 = 0, x0 hardwired — a nonzero x0 record stays visible as a real vocabulary mismatch), with +2 self-test arms (a dropped no-change record GREEN; a real change RED — the reduction may never mask a difference), 19/0. Soundness argument recorded in the function: a wrong value still records a change, a skipped change still diverges — only an observationally identical write is dropped, which is the vocabulary's definition of nothing-to-see. Then the green: `c-scope` (self-checking — expected values are C-semantics constants in the source, a mis-execution routes to a fail code) AGREEs with sail-riscv 0.14 AND spike 1.1.1-dev over 129/129 aligned steps and reproduces byte-identically; the smoke's new `.c` path builds via `scripts/build_c_guest.sh` (toolchain probed per candidate, refused by name if absent — Apple clang's exact error is in the leaf), runs with a budget the closing ebreak beats, and reads `e_entry` from the ELF header (a linked image's headers precede its first instruction). `gate_report.py` grew the criterion-6 met branch and the Limitations branch — **G1: `passed`**, verdict moving because the inputs did. Validation: full smoke 221 PASS / 0 FAIL (the 40 assembled guests unchanged); comparator self-test 19/0; `make gate` all green; `make book` renders both books. No Rust changed.
-
-Lesson: `promotion: declined` (recorded in the leaf) — the C-UB lesson lives in the guest's comments where it bites; the vocabulary rule is enforced by the comparator's self-test arms.
 

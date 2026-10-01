@@ -82,6 +82,7 @@
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_task-tree-family-bound-rederivation.md`](docs/decisions/decision_task-tree-family-bound-rederivation.md)
 - [`decision_task-tree-family-bound.md`](docs/decisions/decision_task-tree-family-bound.md)
+- [`decision_task-tree-family-count-rederivation.md`](docs/decisions/decision_task-tree-family-count-rederivation.md)
 - [`decision_work-unit-prefix-semulith.md`](docs/decisions/decision_work-unit-prefix-semulith.md)
 - [`reference_softfloat-shared-ancestry.md`](docs/decisions/reference_softfloat-shared-ancestry.md)
 - [`reference_upstream-spine-defects.md`](docs/decisions/reference_upstream-spine-defects.md)

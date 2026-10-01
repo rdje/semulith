@@ -254,6 +254,66 @@ unsupported families remain unclaimed.
   rv64 regression: `state.sexp` re-validates against the extended schema, regeneration is
   byte-identical, the doc round-trip is data-equal.
   Lessons: `promotion: declined (the move-one-layer-down pattern is the synth fixture's own designed behaviour, already written in its README; the silent-drop close is the .2 lesson's second instance — the promoted record a-dead-justification-camouflages-a-silent-path already carries the generalizable shape)`.
+  Slice 2 design (recorded before code, `2026-10-01`): **the profile schema's scope
+  taxonomy generalizes; the DSP documents are DRAFTED as artifacts and their gate
+  attachment is MEASURED — they land only when they can be governed.** Findings the design
+  rests on, all measured this slice:
+  - The gates' scope readers are already generic over group NAMES
+    (`check_exercise_coverage.sh` skips count_*/authority/source and unions the rest;
+    PROFILE-CONSISTENCY's `listed` counter sums list values) — the taxonomy's scalar shape
+    lives in exactly two closed places: `schema/profile.sexp`'s scope construct and
+    `dossier_sexp._SCOPE_LISTS` (which REFUSES an undeclared field by name). The honest
+    minimal extension is per-case named optional fields, zero reader change — the readers'
+    genericity is the original design intent confirmed.
+  - PROFILE-CONSISTENCY's arms are presence-conditional (XLEN MISMATCH only when both
+    sides carry xlen; REG COUNT only when the profile's state block declares
+    integer_registers; PARTS DRIFT only when both part-counts exist), so the DSP documents
+    pass it with no gate edit IF the schema lets them omit xlen / count_rv64i_additions /
+    the integer-file scalars — each omission named by case (no XLEN concept; no RV64I
+    base/additions split; registers are families).
+  - The DSP documents land as `profiles/dsp56300-lab-v0/{profile,state}.sexp` in a LATER
+    slice: landing attaches EXTRACTION, EXERCISE-COVERAGE and INTERACTION-MATRIX, whose
+    contracts presume the rv64 evidence shape (encoding composition, per-step
+    `*.expected.sexp` guests, the matrix) — their measured verdicts on the DSP unit are
+    recorded in the slice record, and the landing slice is the one that can keep them
+    green honestly (the encoding/evidence-shape machinery, or a named deferral with its
+    owning leaf — WAIVER-ROUTING's shape). Until then the drafts live under
+    `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/`, schema-validated — measured
+    content, not landed claims.
+  Slice 2 (`2026-10-01`, `SEMULITH-BR-0015`): the taxonomy generalized and the attachment
+  MEASURED. `schema/profile.sexp`: `xlen`, the state block's integer-file scalars and
+  `count_rv64i_additions` are now optional; the scope gained the DSP's five group fields
+  (moves/alu_core/multiplies/flow/loops) — no reader changed (the gates were already
+  generic over group names). `dossier_sexp._SCOPE_LISTS` extended in the same commit (the
+  two closed places the taxonomy lives). The drafts stand and validate
+  (`artifacts/p3-breadth/dsp56300-dossier/{profile,state}.sexp` — 19-mnemonic scope,
+  5 families + parts, 3 spaces, the stack, 12 special registers, the 14-candidate census
+  as data; both load through the mapping owner and round-trip data-equal).
+  **The attachment measurement** (drafts placed untracked + intent-to-add, gates run in
+  their committed modes, then removed): PROFILE-CONSISTENCY GREEN on the DSP dossier
+  (2 dossiers) — after it surfaced three REAL latent defects in the already-tracked
+  `references.sexp`, fixed in this slice (§15): an `obtained` candidate missing
+  `binary`/`binary_sha256`/`injection` (SRC-03's checkable-availability fields — supplied,
+  digests measured) and four UNKNOWN MODEL pairs (the asm/emu legs and gearmulator
+  registered as first-class candidates, the pairs re-labelled to candidate ids).
+  EXERCISE-COVERAGE RED: NO COMPOSITION (no encoding.sexp), 19 UNRESOLVED FORM, no
+  exercised set (the DSP's guests are checkpoint-compared `.a56`, not `*.expected.sexp`).
+  EXTRACTION RED: INSUFFICIENT — no encoding.sexp. INTERACTION-MATRIX RED: NO MATRIX.
+  Gate defect owned and fixed (§15): EXERCISE-COVERAGE's denominator counted a `(comment
+  …)` inside scope as mnemonic prose (measured with the draft) — it now skips the reserved
+  annotation head, with a GREEN self-test arm (8/8). Another latent defect owned and fixed:
+  `profiles/rv64i-lab-v0/profile.sexp`'s D-FENCE carried two `note` fields against the
+  schema's single-valued declaration — ungated drift, found by re-validating the corpus
+  this slice; the notes merged. And `check_sexp_schema.py` tracebacks on a missing
+  input file — now a clean rc-2 refusal with a RED arm (51/51).
+  **Surfaced finding, owned and routed (§9/§15):** the dossier documents (profile, state,
+  sources, references, encoding, interactions, …) are NOT schema-validated by any gate as
+  a class — only RECORD-SCHEMA's record files are; the gates consume them through the
+  strict mapping owner, which refuses undeclared fields but not facet violations, so the
+  D-FENCE drift lived unseen. The owning slice is `.5`'s landing slice: the commit that
+  lands the DSP documents adds the schema-validation leg for the dossier documents (the
+  census for the gate: this slice's per-document re-validation).
+  Lessons: `promotion: declined (the attach-then-measure method is this tree's own — .4 slice 2's gate census was the same move; the durable output is the measured attachment table, recorded here where the landing slice meets it)`.
 
 - ID: `P3-BREADTH.6` — **the `BREADTH` gate report**
   Status: `pending`
@@ -477,140 +537,48 @@ unsupported families remain unclaimed.
   `DOCTRINE_ENFORCEMENT.md` (the STATE-GEN row names the new refusals), mdBook
   `plan/p1.md` (the refusal list grew) and `plan/p3.md`.
 
-`P3-BREADTH.2` (`2026-10-01`, `SEMULITH-BR-0006`):
+`P3-BREADTH.5`, slice 2 (`2026-10-01`, `SEMULITH-BR-0015`):
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — the audit censused every generator and reader error
-  path plus the runtime dispatch (method recorded in the leaf's Census paragraph). The one
-  silent escape hatch: `crates/semulith-core/src/exec.rs`'s `extract_operands` `_` arm —
-  `let Some(f) = field(name) else { continue; }` skipped an operand naming no field, under
-  a comment whose premise `P2-SCALAR.1` had falsified. Pre-fix, no generation-time check
-  existed: `grep -n "names no field" scripts/gen_definition.py` had 0 hits (post-fix:
-  `scripts/gen_definition.py:352` is the refusal). WHERE the contract lives:
-  `docs/ARCHITECTURE.md` §2 — "an unsupported construct is a model-generation failure,
-  not a guessed translation" — enforced for operands only by a test ratchet whose own
-  whitelist comment was equally stale (`schema/fragment.sexp` accepts any symbol).
-- [x] **ADDRESSED (verified)** — before → after, measured through the new DEF-GEN
-  self-test RED arm (an `add` clone declaring operand `rs9`, which names no field):
-  before, generation emitted a module without protest and extraction skipped `rs9`;
-  after, `gen_definition.py` exits rc 2 with
-  `add: operand 'rs9' names no field — extraction for it would be silent; declare the
-  field or drop the operand`, and the full self-test prints `9 pass / 0 fail`
-  (the arm included). The runtime arm now returns
-  `ModelError::InvalidDescription` instead of skipping.
-- [x] **NO REGRESSION** — `bash scripts/check_definition_gen.sh` → `DEF-GEN: ok` (self-test
-  9 arms incl. the new RED arm, then byte-compare); `make check` → fmt clean, clippy
-  `-D warnings` clean, 180/180 tests; synth suite 5/5; `gen_fragments.py` re-run against
-  the pinned upstream regenerates both fragments BYTE-IDENTICAL (the dead-code removal
-  changed no output — `git status` clean under `definitions/`).
-- [x] **FIX** — `gen_definition.py` (the operand-names-a-field refusal + the stale emitted
-  docstring corrected), `exec.rs` (the silent `continue` → loud `ModelError`),
-  `definition/tests.rs` (the ratchet strict: whitelist deleted), `exec/tests.rs` (the
-  word-builder panics on an unfielded operand instead of emitting a wrong word),
-  `gen_fragments.py` (dead `HEADER`+`_unused_build` removed), `check_definition_gen.sh`
-  (the RED arm), `definition.rs` regenerated (docstring only — tables byte-identical).
-- [x] **LOCKSTEP** — tree (leaf status/census/defect, frontier, checklist, logs),
-  `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`;
-  the lesson PROMOTED to `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`
-  (+ INDEX row). mdBook: no page documents the extraction internals — no drift.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the scope taxonomy's scalar shape lived in exactly two
+  closed places (`schema/profile.sexp`'s scope construct; `dossier_sexp._SCOPE_LISTS`,
+  which refuses an undeclared field by name), and the DSP documents had nowhere honest to
+  wait: landing them blind would attach four gates unmeasured. Measuring the attachment
+  (untracked + intent-to-add placement) surfaced what no gate had ever checked —
+  `scripts/check_profile_consistency.sh` on the DSP dossier → 7 findings: 3 UNEARNED
+  OBTAINED (the candidate claimed `obtained` without binary/binary_sha256/injection) + 4
+  UNKNOWN MODEL (independence pairs naming non-candidates).
+- [x] **ADDRESSED (verified)** — schema generalized (each optional/added field names
+  dsp56300-lab-v0 as its case); drafts validate:
+  `python3 scripts/check_sexp_schema.py …/dsp56300-dossier/profile.sexp
+  schema/profile.sexp` → `ok`, same for state.sexp → `ok`; both load through the mapping
+  owner and round-trip data-equal (`profile round-trip: True`, `state round-trip: True`);
+  the references.sexp defects fixed — re-run: `PROFILE-CONSISTENCY: ok (2 profile
+  dossier(s) internally consistent)`; the schema fix re-verified:
+  `check_sexp_schema.py profiles/rv64i-lab-v0/profile.sexp schema/profile.sexp` → `ok`
+  (28 decisions, round-trip clean).
+- [x] **NO REGRESSION** — `bash scripts/fetch_references.sh --verify-only
+  dsp56300-lab-v0` → `ok`; `check_exercise_coverage.sh --self-test` → `8 pass / 0 fail`
+  (the new comment arm); `check_sexp_schema.py --self-test` → `51 pass / 0 fail`;
+  `dossier_sexp.py --self-test` → `12 pass / 0 fail`; rv64 documents re-validate and
+  round-trip unchanged; `make gate` → `=== all doctrines green ===`.
+- [x] **FIX** — `schema/profile.sexp`, `scripts/dossier_sexp.py` (`_SCOPE_LISTS`),
+  `scripts/check_exercise_coverage.sh` (the comment skip + arm),
+  `scripts/check_sexp_schema.py` (missing-input refusal + arm),
+  `profiles/dsp56300-lab-v0/references.sexp` (the 7 findings), `profiles/rv64i-lab-v0/
+  profile.sexp` (D-FENCE's notes merged), the two drafts under
+  `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/`.
+- [x] **LOCKSTEP** — tree (this file: slice design + record, checklist, logs),
+  `LIVE_STATUS.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the profile DOSSIER
+  (deferral rows now name the drafts + the measured attachment; the stale
+  requirements-row wording fixed); mdBook `plan/p3.md`.
 
-`P3-BREADTH.4`, slices 1–2 (`2026-10-01`, `SEMULITH-BR-0009` / `SEMULITH-BR-0010`):
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `.3` demonstrated the path but selected nothing: the
-  leaf acceptance requires the claim to name the exact subset, and `.3` left the ledger
-  integration ("`profiles/<dsp>/references.sexp` driving `fetch_references.sh`") explicitly
-  to `.4`. WHERE the bounds come from, measured: the pinned reference's `Instruction` enum
-  (commit `c60aeedb`, tarball sha256
-  `46b0e3e532e774859ee59b861901ac53b94a31ca5c924c61f8f32b26d6b308c9` — coverage complete, so
-  the bound is honest implementability), its `docs/LIMITATIONS.md`
-  (each gap → a named exclusion), and its `tools/difftest/README.md` (the checkpoint-level
-  comparison contract). WHERE the dossier integrates: `scripts/fetch_references.sh`
-  processed candidates only by hardcoded id (sail-riscv/spike/qemu) — a dsp56300 ledger
-  would have verified nothing while printing `ok`.
-- [x] **ADDRESSED (verified)** — the selection artifact names subset v0 and every
-  exclusion's reason; `profiles/dsp56300-lab-v0/` stands and VALIDATES:
-  `python3 scripts/check_sexp_schema.py profiles/dsp56300-lab-v0/references.sexp
-  schema/references.sexp` → `ok`; same for `sources.sexp` → `ok`;
-  `bash scripts/fetch_references.sh --verify-only dsp56300-lab-v0` →
-  `MATCH dsp56300 source tarball … ok (dsp56300-lab-v0)`;
-  `bash scripts/fetch_sources.sh --verify-only dsp56300-lab-v0` →
-  `MATCH DSP56300FM.pdf b2e8e346…`, rc 0.
-- [x] **NO REGRESSION** — the rv64 reference flow re-verified byte-behaviour-identical after
-  the script change: `bash scripts/fetch_references.sh --verify-only rv64i-lab-v0` →
-  `MATCH owned fragments agree…`, `MATCH matched-profile ISA string rv64i_zvl32b`,
-  `ok (rv64i-lab-v0)`; the generic leg's discriminator (asset + source_commit +
-  asset_sha256) matches no rv64 candidate. `make gate` → `=== all doctrines green ===`
-  with the new dossier present (the second-profile census: no gate edit needed — measured,
-  recorded in the leaf). No Rust changed (`make check` not owed; the script is bash+python,
-  exercised directly above).
-- [x] **FIX** — the selection artifact, `decision_dsp56300-lab-v0-subset` (+ INDEX),
-  `profiles/dsp56300-lab-v0/{DOSSIER.md,sources.sexp,references.sexp}`,
-  `scripts/fetch_references.sh`'s generic source-tarball leg.
-- [x] **LOCKSTEP** — tree (leaf slices, frontier, checklist, logs), `LIVE_STATUS.md`,
-  `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the decisions INDEX;
-  mdBook: `plan/p3.md` updated at slice 1 (slice 2 is dossier plumbing the book's P3 page
-  already covers as "in progress" — no new drift).
-
-`P3-BREADTH.4`, slice 3 (`2026-10-01`, `SEMULITH-BR-0011`):
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — slices 1–2 selected and dossiered the subset, but no
-  model existed to evidence. WHERE the risk concentrated: the CCR rules (FM Table 5-1's
-  extraction carries an inverted U-bit equation — its own prose says "set if the two MSBs
-  are identical"; the reference's `sr c00310` is the arbiter), the DO loop's stack
-  discipline (FM §13, push LA/LC then PC/SR, exit restoring LA/LC and LF alone), and the
-  A2 readout (FM §3.4.1.2: the extension byte sign-extended through bit 7). Every decode
-  mask was derived from the FM's opcode figures and cross-checked against the pinned
-  assembler's words (`target/dsp56300-demo/micro.lod`, e.g. `$44F400` = move #imm24,x0).
-- [x] **ADDRESSED (verified)** — the crate's 10 unit tests carry manual-derived
-  expectations (EVD-05, derived before the model ran — the `.3` record's three-way
-  verification): `cargo test -p semulith-dsp56300` → `test result: ok. 10 passed`;
-  `python3 scripts/compare_dumps.py --self-test` → `4 pass / 0 fail`;
-  `python3 scripts/run_dsp56300_smoke.py` →
-  `AGREE micro: AGREE over 53 fields for case 'micro' (skipped by rule: cyc)`,
-  `dsp56300 smoke: 1 agree / 0 fail` — the Semulith dump is byte-identical to the
-  reference's (`diff` of the two dumps empty apart from the excluded `cyc` line).
-- [x] **NO REGRESSION** — `make check` → fmt clean, clippy `-D warnings` clean, all tests
-  green (180 rv64 + 65 + 10 new dsp + the rest — the scalar model byte-untouched);
-  `make gate` → `=== all doctrines green ===` (after the FACT-OWNERSHIP convention
-  collision was resolved by the `state.rs` → `machine.rs` rename — the generated-mirror
-  naming convention is the gate's premise, not a dodge);
-  `python3 scripts/run_dsp56300_smoke.py` re-run after the rename → still `1 agree / 0 fail`.
-- [x] **FIX** — `crates/semulith-dsp56300/` (new crate: machine, decode, exec, dump, lod,
-  runner), `scripts/compare_dumps.py` + `scripts/run_dsp56300_smoke.py`,
-  `profiles/dsp56300-lab-v0/guests/{micro.a56,micro.meta}`.
-- [x] **LOCKSTEP** — tree (leaf slice, frontier, checklist, logs), `LIVE_STATUS.md`,
-  `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the profile DOSSIER;
-  mdBook `plan/p3.md` (the first differential agreement).
-
-`P3-BREADTH.4`, slice 4 (`2026-10-01`, `SEMULITH-BR-0012`):
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — slices 1–3 left the subset at nine demo-path forms;
-  the leaf's acceptance requires the NAMED subset (ALU core, jsr/rts, rep, the (Rn)
-  modes) exercised and agreed. WHERE the risk concentrated, measured by the first smoke
-  run — `python3 scripts/run_dsp56300_smoke.py` printed `dsp56300 smoke: 2 agree /
-  4 fail`, rc=1: the accumulator readout/writeback paths (the A1 limiter locus,
-  the short-immediate A2 sign extension, the 24-bit ops' keep-mask), the RTS stack
-  contract, and the S-bit's trigger — exactly the seams where FM prose and silicon can
-  part. Each failure's root cause is named in the slice record above, (a)–(e), with the
-  arbiter (the pinned reference's observed end-state) and the FM page for each.
-- [x] **ADDRESSED (verified)** — `python3 scripts/run_dsp56300_smoke.py` → `6 agree /
-  0 fail` (micro 53, alu 51, shift 51, rn 53, rep 64, jsr 54 fields; `cyc` skipped by
-  rule); `cargo test -p semulith-dsp56300` → 17/17 (the five new exec tests carry
-  hand-derived end-states — values derived from the FM figures BEFORE the model run,
-  matching the agreed dumps; the decode test pins 40+ assembler-emitted probe words).
-- [x] **NO REGRESSION** — `make check` → fmt clean, clippy `-D warnings` clean, all
-  workspace tests green (the scalar model byte-untouched); `make gate` →
-  `=== all doctrines green ===`; the micro guest (slice 3's case) still AGREEs.
-- [x] **FIX** — `crates/semulith-dsp56300/src/{decode,exec}.rs` (the new forms + the five
-  measured corrections + the two boundary fixes), `profiles/dsp56300-lab-v0/guests/`
-  (five new guests + metas, the rep guest's `#>` fix).
-- [x] **LOCKSTEP** — tree (this file: leaf status/slice record, frontier, checklist,
-  logs), `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`,
-  `DEV_NOTES.md`; mdBook `plan/p3.md` (the subset is form-complete, 6/6 AGREE).
+`P3-BREADTH.2`, `.4` slices 1–2, `.4` slice 3, `.4` slice 4 (all `done` `2026-10-01`): their full acceptance checklists live verbatim in [`archive/P3-BREADTH.md`](archive/P3-BREADTH.md) — split out when this file crossed its 64 KiB per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.5` slice 2 | drafts schema-validate + round-trip data-equal; PROFILE-CONSISTENCY ok (2 dossiers) after the references.sexp repairs; attachment measured: EXERCISE-COVERAGE RED (NO COMPOSITION + 19 UNRESOLVED + no exercised set), EXTRACTION RED (no encoding.sexp), INTERACTION-MATRIX RED (NO MATRIX); exercise-coverage self-test 8/8; check_sexp_schema self-test 51/51; rv64 profile.sexp re-validates ok; `fetch_references.sh --verify-only dsp56300-lab-v0` ok; `make gate` green | the scope taxonomy generalized (5 DSP group fields, xlen/part-counts optional; no reader changed); the documents DRAFTED as schema-valid artifacts, landing deferred to the slice that keeps the attaching gates green; 9 latent defects surfaced by the measurement, all fixed |
 | `2026-10-01` | `.5` slice 1 | synth suite re-pinned → 6 pass / 0 fail (probe 2 two legs: schema accepts, generator refuses `memory_spaces declared` rc 2); `check_state_gen.sh --self-test` → 10 pass / 0 fail (four new RED arms); rv64 `state.sexp` re-validates ok; `gen_state.py --check` byte-identical; round-trip data-equal; `dossier_sexp --self-test` 12/12; `make gate` green (DERIVED-COUNTS re-derived 308→312) | the state schema learned the census's shapes (register_family+parts, memory_spaces, hardware_stack; xlen/integer_registers optional); the refusal boundary moved one layer down, measured; the silent-drop mapping path closed |
 | `2026-10-01` | `.1` F6 census leg | census record: 14 candidates answered with locators; `run_dsp56300_smoke.py` re-run → 6 agree / 0 fail (51–64 fields/case); `compare_dumps.py --self-test` → 4 pass / 0 fail; `cargo test -p semulith-dsp56300` 17/17; `make gate` green | the SEM-08 census re-run for dsp56300-lab-v0: the canonical end-state dump measured as the COMPLETE architectural state for subset v0; the harvested input for `.5`'s `state.sexp` cases |
 | `2026-10-01` | `.4` slice 4 | `run_dsp56300_smoke.py` 6 agree / 0 fail (51–64 fields/case); `cargo test -p semulith-dsp56300` 17/17; `make check` + `make gate` green | subset v0 form-complete and differentially agreed; five measured model corrections (RTS PC-only, short-imm A2 sign extension, A1/B1 raw reads, S on bus reads only, the 24-bit keep-mask); two boundary defects fixed (accumulator-part destinations stop by name; NOP citation 13-149 → 13-145) |
@@ -626,6 +594,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.5` slice 2 | `SEMULITH-BR-0015 (leaf P3-BREADTH.5): the scope taxonomy generalizes — the DSP dossier drafted, its gate attachment measured, nine latent defects fixed` | schema/profile.sexp optional fields + 5 DSP scope groups; _SCOPE_LISTS extended; drafts under artifacts/dsp56300-dossier; PROFILE-CONSISTENCY green on the DSP dossier after the references.sexp repairs; landing waits for the attaching gates |
 | `.5` slice 1 | `SEMULITH-BR-0014 (leaf P3-BREADTH.5): the state schema learns the census's shapes — families+parts, spaces, the stack; the refusal moved one layer down` | schema declares register_family/memory_spaces/hardware_stack (xlen optional); the mapping owner carries them (silent drop closed); gen_state refuses by name; probe 2 re-pinned (suite turned RED first, by design); STATE-GEN 10 arms |
 | `.1` F6 census leg | `SEMULITH-BR-0013 (leaf P3-BREADTH.1): the dsp56300-lab-v0 state census — 14 candidates answered, the dump measured complete; the input .5 harvests` | SEM-08 re-run for the exercised profile; A2/B2 readout + M/sticky/loop/stale-slot candidates declared and measured; F5 window + architectural absences answered; the leaf stays slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional) |
 | `.4` slice 4 | `SEMULITH-BR-0012 (leaf P3-BREADTH.4): subset v0 form-complete — ALU core, jsr/rts, rep/enddo, (Rn) modes; the 6-guest corpus AGREEs` | five measured corrections via the differential campaign (RTS, A2 sign extension, A1/B1 raw reads, S locus, keep-mask); accumulator-part destinations refused at decode; NOP citation corrected (13-145) |
@@ -735,3 +704,28 @@ unsupported families remain unclaimed.
   order and bytes; shard 0096 manifested); MEMORY.md trimmed to its cap (7,156/7,168);
   SEAM-INTEGRITY's acceptance-box regression caught one under-evidenced checklist box on
   the first pass — fixed with the probe's concrete command line, the gate doing its job.
+- `2026-10-01`: `.5` slice 2 (`SEMULITH-BR-0015`) — the scope taxonomy generalized for the
+  exercised DSP profile: `schema/profile.sexp` gained the five DSP group fields and made
+  `xlen` / the integer-file scalars / `count_rv64i_additions` optional (each naming its
+  case; no gate reader changed — they were already generic over group names);
+  `_SCOPE_LISTS` extended in the same commit. The DSP's `profile.sexp`/`state.sexp` stand
+  DRAFTED and schema-validated under `artifacts/p3-breadth/dsp56300-dossier/` (the census
+  carried as data). The landing was measured, not guessed: PROFILE-CONSISTENCY passes the
+  DSP dossier (after the measurement surfaced and this slice fixed seven latent
+  references.sexp defects — an `obtained` candidate without binary/digest/injection, and
+  four independence pairs naming non-candidates, repaired by registering the asm/emu legs
+  and gearmulator as first-class candidates); EXERCISE-COVERAGE / EXTRACTION /
+  INTERACTION-MATRIX go RED on a unit without encoding.sexp / interactions.sexp /
+  per-step expectation guests — the landing slice owns them, plus the surfaced gap: no
+  gate schema-validates the dossier documents as a class (the D-FENCE double-note drift,
+  found and fixed here, lived unseen for that reason). Also fixed: EXERCISE-COVERAGE's
+  denominator counted a `(comment …)` inside scope as mnemonics (now skipped, GREEN arm);
+  `check_sexp_schema.py` tracebacks on a missing input (now rc 2, RED arm). Ceiling
+  bookkeeping: the appends fired both heads' per-part bounds — shards 0097/0098 cut by the
+  sharder (completeness exact: 53 = 52 + 1 and 37 = 36 + 1, order and bytes); this tree
+  file crossed its 64 KiB per-part bound and was SPLIT per the `docs/tasks/` precedent
+  (`.2`/`.4` checklists verbatim to `archive/P3-BREADTH.md`); MEMORY.md trimmed to cap;
+  DERIVED-COUNTS re-derived 312 → 313 (one new shell arm; the python-side arm is outside
+  the shell idiom's census); the D-FENCE change re-derived the GC report and the model
+  book's internal-contracts fragment (both regenerated, never edited — the
+  in-sync-at-HEAD check ran in a clean worktree first).

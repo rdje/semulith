@@ -1,5 +1,32 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0015 (leaf P3-BREADTH.5) — the scope taxonomy generalizes; the DSP dossier drafted, attachment measured
+
+- `schema/profile.sexp`: the DSP's five scope groups (moves/alu_core/multiplies/flow/loops)
+  as named optional fields; `xlen`, the integer-file scalars and `count_rv64i_additions`
+  optional — each naming dsp56300-lab-v0 as its case. No gate reader changed: they were
+  already generic over group names. `dossier_sexp._SCOPE_LISTS` extended alongside (the
+  two closed places the taxonomy lives).
+- The DSP's `profile.sexp`/`state.sexp` stand DRAFTED and schema-validated under
+  `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/` — the 19-mnemonic subset scope, five
+  register families with parts and readouts, three memory spaces, the hardware stack,
+  twelve special registers, and the 14-candidate census carried as data; both load through
+  the mapping owner and round-trip data-equal.
+- The landing was MEASURED (untracked + intent-to-add placement, gates run in their
+  committed modes): PROFILE-CONSISTENCY passes the DSP dossier — after the measurement
+  surfaced seven latent `references.sexp` defects no gate had been checking, all fixed
+  (an `obtained` candidate without binary/digest/injection; four independence pairs naming
+  non-candidates — the asm/emu legs and gearmulator are now first-class candidates).
+  EXERCISE-COVERAGE, EXTRACTION and INTERACTION-MATRIX go RED on a unit without
+  `encoding.sexp`/`interactions.sexp`/per-step expectation guests — the landing slice owns
+  them, so the documents wait under artifacts/.
+- More latent defects owned and fixed (§15): EXERCISE-COVERAGE counted a `(comment …)`
+  inside scope as mnemonics (skipped now, GREEN arm, 8/8); rv64's own `profile.sexp`
+  carried two notes on D-FENCE against the schema's single-valued declaration (merged);
+  `check_sexp_schema.py` tracebacks on a missing input (clean rc-2 refusal, RED arm,
+  51/51). Surfaced and routed: no gate schema-validates the dossier documents as a class —
+  the landing slice adds that leg.
+
 ## SEMULITH-BR-0014 (leaf P3-BREADTH.5) — the state schema learns the census's shapes
 
 - `schema/state.sexp` declares `register_family` (with `parts` and per-part `readout`),
@@ -870,32 +897,4 @@
   run::tests::smoke_trap` → 1 passed; `run_semulith_smoke.py` → the smoke-trap PASS lines).
 - Both gate reports regenerate byte-identical (no drift). Every id/number verified by tool
   as written; no gate extended (26 doctrines). Both books render; `make gate` all green.
-
-## SEMILITH-MB-0006 (leaf MODEL-BOOKS.4) — the references, their configuration, and what agreement is worth
-
-- The per-unit book gains its references chapter
-  (`docs/models/rv64i-lab-v0/src/references.md`): the cast honestly labelled (sail-riscv
-  0.14, spike 1.1.1-dev, QEMU never-exercised, ACT4 never-a-second-opinion), the
-  acquisition discipline (the fetcher fired RED on a corrupted digest), and the
-  configuration story told through the controls that CHANGED the observation — the
-  acceptance's own requirement.
-- The three controls, with their recorded outputs: the ISA-string read-back (flipping `M`
-  back on gave `DIFFERS … rv64im_zvl32b` against the pinned `rv64i_zvl32b`); the platform
-  correction (`DIFF-PLATFORM-DEFAULT` — the CLINT `mtime` probe advanced 2, then 3 under a
-  plain `ld`; the override now declares the device-less single-region platform, and
-  `guest-no-device` holds it); and the decisive misaligned-policy flip (same ELF, nothing
-  else changed: `FIRST DIVERGENCE at aligned step 2 … sail writes=[(x1, 0)] … spike
-  writes=[]` — "the two models agree BECAUSE the profile is matched" is a measurement).
-- The harness differences (including DIFF-TRAP-RECORD-SHAPE — the comparator's false pass
-  on a truncated trace) and the two measured reference-vs-reference differences
-  (DIFF-FENCEI-EXECUTED, pinned as the `it-fencei` expected divergence;
-  DIFF-TVAL-PHYS-MASK) are told as the lessons they are.
-- The independence inventory in prose: encoding not-shared (and the cut runs the other way
-  than first assumed — our assembler shares `riscv-opcodes` ancestry with SPIKE, not
-  Sail), floating point shared (184/199 files byte-identical), integer semantics
-  no-evidence-of-sharing, expected-result derivation shared (ACT4 ↔ Sail), QEMU
-  not-examined — ending in the per-leg verdict: encodings rest on Sail alone, semantics on
-  both references, nothing on ACT4 or QEMU.
-- Every id/version/count grep-verified as written; no gate extended (26 doctrines). Both
-  books render; `make gate` all green.
 
