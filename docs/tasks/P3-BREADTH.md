@@ -96,7 +96,7 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the survey and the demonstration are dated evidence living where the next evaluator meets them; their durable outputs — the slice decision and the demonstrated path — are recorded in this tree's Decisions and Verification Log)`.
 
 - ID: `P3-BREADTH.4` — **the bounded real subset**
-  Status: `in-progress` (slice 1 — the selection — done `2026-10-01`)
+  Status: `in-progress` (slices 1–2 done `2026-10-01`; slice 3 is the model crate)
   Goal: implement and evidence the narrow slice selected in `.3`.
   Acceptance: its claim names the exact subset; a source-reviewed experimental subset cannot inherit a differentially validated claim from another target (`docs/EVIDENCE_AND_GATES.md` §1).
   Slice 1 (`2026-10-01`, `SEMULITH-BR-0009`): the subset SELECTED against the reference's
@@ -114,6 +114,27 @@ unsupported families remain unclaimed.
   decision: `decision_dsp56300-lab-v0-subset`. Gaps surfaced, owned, routed: the profile
   schema's scope taxonomy is scalar-named (→ `.5` named case); the auto-discovering gates'
   treatment of a second partial profile must be measured by the dossier slice.
+  Slice 2 (`2026-10-01`, `SEMULITH-BR-0010`): the dossier + the reference ledger —
+  `profiles/dsp56300-lab-v0/` stands with `sources.sexp` (DSP56300FM Rev. 5 pinned at NXP's
+  own locator; the fresh fetch returned byte-identical bytes to the chipdoc-cached copy —
+  two acquisition routes, one artifact, verified), `references.sexp` (the `dsp56300`
+  candidate: tarball pin + build note + the path-demonstration experiment + the EVD-04
+  independence rows — asm/emu share one project, gearmulator not-examined), and `DOSSIER.md`
+  carrying the deferrals by name (`profile.sexp`/`state.sexp`/`encoding.sexp` → `.5` named
+  schema cases; requirements, unit registration and the per-unit book → the model slice).
+  `scripts/fetch_references.sh` gained a GENERIC source-tarball leg (discriminator: asset +
+  source_commit + asset_sha256 — unreachable by the rv64 ledger, whose flow re-verified
+  byte-behaviour-identical). **The gate census, measured:** every auto-discovering gate keys
+  on `profiles/*/profile.sexp` or `profiles/*/encoding.sexp` (EXTRACTION, EXERCISE-COVERAGE,
+  INTERACTION-MATRIX, PROFILE-CONSISTENCY, UNIT-COMPOSITION, SEMANTICS corpus) — the new
+  directory is invisible to them until the schema-deferred documents land, then they attach
+  with NO gate edit; GATE-REPORT iterates directories but only checks existing reports;
+  FACT-OWNERSHIP's enumerated mirrors are untouched. Full `make gate` green with the
+  dossier present. Lessons: `promotion: declined (the census is recorded where the next
+  profile meets it — this leaf and DOSSIER.md's deferral table; the durable output is the
+  measured answer "no gate edit needed", not a reusable method)`.
+  Slice 3 is the model crate: `crates/semulith-dsp56300` — manual-derived decode + semantics
+  for subset v0, the canonical-dump runner, and the checkpoint comparator.
 
 - ID: `P3-BREADTH.5` — **schema and generator functionality where justified**
   Status: `pending`
@@ -129,7 +150,7 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.4` | `in-progress` | slice 1 selected the subset (`dsp56300-lab-v0` v0) and the vehicle (sibling crate, EXPERIMENTAL); slice 2 is the profile dossier + the reference-ledger integration (`fetch_references.sh`), measuring the auto-discovering gates' treatment of a second profile |
+| 1 | `P3-BREADTH.4` | `in-progress` | slices 1–2 done (subset selected; dossier + reference ledger landed, gate census measured — no gate edit needed for a second profile); slice 3 is the model crate `semulith-dsp56300` (manual-derived decode + semantics, the canonical-dump runner, the checkpoint comparator) |
 | — | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; the DSP56300 slice (`.3`) resolves part of the gating — F6's census reopens per the new profile in `.4`; F4/F5 (VLIW) and F2 (TI grouping) stay unbuilt, recorded |
 
 ## Decisions
@@ -310,10 +331,48 @@ unsupported families remain unclaimed.
   the lesson PROMOTED to `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`
   (+ INDEX row). mdBook: no page documents the extraction internals — no drift.
 
+`P3-BREADTH.4`, slices 1–2 (`2026-10-01`, `SEMULITH-BR-0009` / `SEMULITH-BR-0010`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `.3` demonstrated the path but selected nothing: the
+  leaf acceptance requires the claim to name the exact subset, and `.3` left the ledger
+  integration ("`profiles/<dsp>/references.sexp` driving `fetch_references.sh`") explicitly
+  to `.4`. WHERE the bounds come from, measured: the pinned reference's `Instruction` enum
+  (commit `c60aeedb`, tarball sha256
+  `46b0e3e532e774859ee59b861901ac53b94a31ca5c924c61f8f32b26d6b308c9` — coverage complete, so
+  the bound is honest implementability), its `docs/LIMITATIONS.md`
+  (each gap → a named exclusion), and its `tools/difftest/README.md` (the checkpoint-level
+  comparison contract). WHERE the dossier integrates: `scripts/fetch_references.sh`
+  processed candidates only by hardcoded id (sail-riscv/spike/qemu) — a dsp56300 ledger
+  would have verified nothing while printing `ok`.
+- [x] **ADDRESSED (verified)** — the selection artifact names subset v0 and every
+  exclusion's reason; `profiles/dsp56300-lab-v0/` stands and VALIDATES:
+  `python3 scripts/check_sexp_schema.py profiles/dsp56300-lab-v0/references.sexp
+  schema/references.sexp` → `ok`; same for `sources.sexp` → `ok`;
+  `bash scripts/fetch_references.sh --verify-only dsp56300-lab-v0` →
+  `MATCH dsp56300 source tarball … ok (dsp56300-lab-v0)`;
+  `bash scripts/fetch_sources.sh --verify-only dsp56300-lab-v0` →
+  `MATCH DSP56300FM.pdf b2e8e346…`, rc 0.
+- [x] **NO REGRESSION** — the rv64 reference flow re-verified byte-behaviour-identical after
+  the script change: `bash scripts/fetch_references.sh --verify-only rv64i-lab-v0` →
+  `MATCH owned fragments agree…`, `MATCH matched-profile ISA string rv64i_zvl32b`,
+  `ok (rv64i-lab-v0)`; the generic leg's discriminator (asset + source_commit +
+  asset_sha256) matches no rv64 candidate. `make gate` → `=== all doctrines green ===`
+  with the new dossier present (the second-profile census: no gate edit needed — measured,
+  recorded in the leaf). No Rust changed (`make check` not owed; the script is bash+python,
+  exercised directly above).
+- [x] **FIX** — the selection artifact, `decision_dsp56300-lab-v0-subset` (+ INDEX),
+  `profiles/dsp56300-lab-v0/{DOSSIER.md,sources.sexp,references.sexp}`,
+  `scripts/fetch_references.sh`'s generic source-tarball leg.
+- [x] **LOCKSTEP** — tree (leaf slices, frontier, checklist, logs), `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the decisions INDEX;
+  mdBook: `plan/p3.md` updated at slice 1 (slice 2 is dossier plumbing the book's P3 page
+  already covers as "in progress" — no new drift).
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.4` slice 2 | both ledgers schema-validated; `fetch_references.sh --verify-only dsp56300-lab-v0` → tarball MATCH; `fetch_sources.sh --verify-only dsp56300-lab-v0` → FM manual MATCH (byte-identical to the chipdoc cache, HTTP 200); rv64 flow re-verified identical; `make gate` green with the second profile present | dossier + ledger landed; the auto-discovering gates' treatment of a second profile measured (keyed on profile.sexp/encoding.sexp — attach later with no gate edit) |
 | `2026-10-01` | `.4` slice 1 | reference coverage censused on the pinned source (the `Instruction` enum spans the full DSP56300 set); LIMITATIONS.md read in full and mapped to exclusions; the difftest README's comparison surface re-read (dump vocabulary, deviation windows, stack slots, `cyc` informational) | subset `dsp56300-lab-v0` v0 selected with every exclusion reasoned; vehicle decided (sibling crate, EXPERIMENTAL); decision record + selection artifact landed |
 | `2026-10-01` | `.3` slice 1 | three parallel per-family web surveys over one enumerator (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tooling/dedicated projects); the two load-bearing positives re-derived by direct fetch (mborgerson LICENSE = MIT, README = the difftest claim; MAME sharc.cpp = BSD-3, ADSP21060/62, full `state_add` export) | oracle availability measured: TI ABSENT, DSP56300 STRONG, SHARC PARTIAL; slice decision DSP56300 recorded |
 | `2026-10-01` | `.3` slice 2 | pinned fetch (commit `c60aeedb`, tarball sha256 recorded), on-volume release build of `dsp56300-asm` + `difftest`; micro guest: asm rc 0 (22 words), difftest rc 0 (16 steps, canonical dump + `--dump-mem`); independent Python arithmetic reproduces `A=001f253d515280` exactly; `#$5`→`x1=050000` traced to DSP56300FM §3.4.1.3 | the evidence path DEMONSTRATED end-to-end; `.3` done |
@@ -325,6 +384,7 @@ unsupported families remain unclaimed.
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
 | `.4` slice 1 | `SEMULITH-BR-0009 (leaf P3-BREADTH.4): the bounded subset selected — dsp56300-lab-v0 v0, sibling-crate vehicle, exclusions named` | coverage + LIMITATIONS censused; subset named exactly; checkpoint-level comparator shape measured; decision_dsp56300-lab-v0-subset |
+| `.4` slice 2 | `SEMULITH-BR-0010 (leaf P3-BREADTH.4): the dossier stands — sources + references ledgers, generic source-tarball leg, the second-profile gate census` | FM manual pinned at NXP's locator (byte-identical to the chipdoc cache); dsp56300 candidate dossier with EVD-04 rows; fetch_references.sh generic leg (rv64 flow identical); no gate edit needed for a second profile |
 | — (design discussion) | `SEMULITH-BR-0001 (leaf P3-BREADTH.1): the composable-DSP design discussion recorded — resume here` | the skeleton + the measured axis menu + composition rules + ISA-as-fabric; the lego framing; the permanent bounds |
 | `.1` slice 1 | `SEMULITH-BR-0005 (leaf P3-BREADTH.1): F2 measured executably — synth probe 5; the unconditional set is empty, the leaf slice-gates on .3` | grouping probe pinned (rc 1, `register_groups`); scalar regression re-run green; F2/F4/F5/F6 implementation legs await the slice decision |
 | `.2` | `SEMULITH-BR-0006 (leaf P3-BREADTH.2): the hook census — no opaque hooks; the one silent extraction arm is now a generation-time refusal` | full-pipeline audit; `exec.rs` silent skip → generator refusal rc 2 + loud `ModelError`; 4 stale justification sites swept; dead `_unused_build` removed; DEF-GEN RED arm added |
@@ -362,3 +422,16 @@ unsupported families remain unclaimed.
   vehicle decided (sibling crate `semulith-dsp56300`, EXPERIMENTAL); the comparator is
   checkpoint-level canonical end-state equality. `.4` is `in-progress`; slice 2 is the
   profile dossier + the reference-ledger integration.
+- `2026-10-01`: `.4` slice 2 (`SEMULITH-BR-0010`) — the dossier stands:
+  `profiles/dsp56300-lab-v0/` with the FM manual pinned at NXP's own locator (byte-identical
+  to the chipdoc cache), the dsp56300 reference candidate with its EVD-04 independence rows,
+  and DOSSIER.md carrying the deferrals by name; `fetch_references.sh` gained a generic
+  source-tarball leg (the rv64 flow re-verified identical). The second-profile gate census:
+  the auto-discovering gates key on `profile.sexp`/`encoding.sexp` and attach later with no
+  gate edit. Frontier: slice 3, the model crate.
+  Addendum (same slice): the commit's pre-commit gate fired `OVER CEILING profiles/: 123
+  files > 120` — the family bound was calibrated to exactly one profile. Resolved per the
+  registry's own rule (a reviewed decision, not compaction): the bound re-derived to 2×
+  (240 files / 1,146,880 B; per-part 32 KiB unchanged) in
+  `decision_profiles-family-two-units`, with the compaction alternatives rejected on the
+  record.

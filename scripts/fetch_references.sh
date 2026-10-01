@@ -127,6 +127,30 @@ if [ -n "$QEMU_BIN" ]; then
   fi
 fi
 
+# ---- 3b. source tarballs: any candidate pinning asset + source_commit + asset_sha256 -------
+# Generic leg — the rv64 ledger never reaches it (sail-riscv has no source_commit, spike no
+# asset); the dsp56300 ledger's candidate is fetched as <origin>/archive/<source_commit>.tar.gz
+# (the GitHub archive route — recorded in that ledger's commentary) and hash-verified.
+while IFS=$'\t' read -r cid casset csha ccommit corigin; do
+  [ -n "$cid" ] || continue
+  TGZ="$WORK/$casset"
+  if [ "$VERIFY_ONLY" -eq 0 ] && [ ! -f "$TGZ" ]; then
+    say "FETCH    $cid source tarball -> $TGZ"
+    curl -sSL --max-time 300 -o "$TGZ" "$corigin/archive/$ccommit.tar.gz" \
+      || bad "FETCH FAILED $cid source tarball"
+  fi
+  verify_hash "$TGZ" "$csha" "$cid source tarball"
+done < <(python3 - "$LEDGER" <<'PY'
+import pathlib, sys
+sys.path.insert(0, "scripts")
+import dossier_sexp as D
+d = D.load_references(pathlib.Path(sys.argv[1]))
+for c in d.get("candidate", []):
+    if c.get("asset") and c.get("source_commit") and c.get("asset_sha256"):
+        print(f"{c['id']}\t{c['asset']}\t{c['asset_sha256']}\t{c['source_commit']}\t{c['origin']}")
+PY
+)
+
 # ---- 4. the ENCODING source: the bit layouts the pinned specification renders only as images --
 ENC_DIR="$(python3 - "$LEDGER" <<'PY'
 import pathlib, sys

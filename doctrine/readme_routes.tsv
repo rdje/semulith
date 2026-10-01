@@ -274,7 +274,7 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #              ceiling_bytes 516,096 -> 573,440 (the measured aggregate under the ~1.2x
 #              band); health 118 / 490,000. ⛔ PER-PART STAYS 32,768 — the largest new
 #              member is dir-ext-matrix.expected.sexp at 8,010 B.
-profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier	118	490000	120	573440	32768
+profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier; the 2× bound is decision_profiles-family-two-units (2026-10-01)	236	980000	240	1146880	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

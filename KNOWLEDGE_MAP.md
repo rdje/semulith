@@ -72,6 +72,7 @@
 - [`decision_lane-consumption.md`](docs/decisions/decision_lane-consumption.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
+- [`decision_profiles-family-two-units.md`](docs/decisions/decision_profiles-family-two-units.md)
 - [`decision_public-repository-no-confidential-content.md`](docs/decisions/decision_public-repository-no-confidential-content.md)
 - [`decision_push-cadence.md`](docs/decisions/decision_push-cadence.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
