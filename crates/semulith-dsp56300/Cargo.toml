@@ -1,0 +1,17 @@
+# semulith-dsp56300 — the bounded, EXPERIMENTAL DSP56300 model (unit `dsp56300-lab-v0`,
+# subset v0). Sibling of semulith-core by decision (decision_dsp56300-lab-v0-subset): the
+# S-expression generator pipeline refuses a second unit by name, and that generalization is
+# P3-BREADTH.5's work with THIS crate as its measured input. Decode and semantics are
+# derived from the pinned family manual (DSP56300FM Rev. 5 — profiles/dsp56300-lab-v0/
+# sources.sexp), never from the reference emulator's decoder tables, so that the
+# differential comparison stays a second opinion (EVD-04).
+# Dependency rule: no dependency on semulith-core, semulith-verify, or semulith-cli.
+[package]
+name = "semulith-dsp56300"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Experimental bounded DSP56300 model (dsp56300-lab-v0 subset v0): state, decode, semantics, canonical difftest-dump runner"
+
+[lints]
+workspace = true

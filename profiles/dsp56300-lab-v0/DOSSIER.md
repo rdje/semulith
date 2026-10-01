@@ -33,6 +33,8 @@ stack extension, peripherals, and all timing (`cyc` is never compared).
 | `encoding.sexp` | **deferred** — the model slice decides the definition route (the generator refuses a second unit by name; `.5` generalizes with this unit as its exercising target) |
 | `requirements.sexp` / `contract-obligations.sexp` | land with the model slice, whose per-form manual citations are what requirements would restate |
 | unit registration (`materials/units.sexp`) + per-unit book | land with the model slice — `UNIT-BOOKS` requires a book that builds, and the book's evidence chapter needs the model's measured evidence |
+| `guests/` | present — `micro.a56` + `micro.meta` (the `.3` demo guest adopted); the corpus grows with slice 4's form coverage |
+| the model | **present, EXPERIMENTAL** — `crates/semulith-dsp56300` (slice 3): nine FM-cited forms, the canonical-dump runner, and the first differential agreement (53 fields, `scripts/run_dsp56300_smoke.py` — not a commit gate; the crate's unit tests are the commit-level proof) |
 
 The deferrals are recorded, not gaps to be read as oversight: each names its owning leaf.
 

@@ -96,7 +96,7 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the survey and the demonstration are dated evidence living where the next evaluator meets them; their durable outputs — the slice decision and the demonstrated path — are recorded in this tree's Decisions and Verification Log)`.
 
 - ID: `P3-BREADTH.4` — **the bounded real subset**
-  Status: `in-progress` (slices 1–2 done `2026-10-01`; slice 3 is the model crate)
+  Status: `in-progress` (slices 1–3 done `2026-10-01`; slice 4 is form-coverage completion)
   Goal: implement and evidence the narrow slice selected in `.3`.
   Acceptance: its claim names the exact subset; a source-reviewed experimental subset cannot inherit a differentially validated claim from another target (`docs/EVIDENCE_AND_GATES.md` §1).
   Slice 1 (`2026-10-01`, `SEMULITH-BR-0009`): the subset SELECTED against the reference's
@@ -135,6 +135,28 @@ unsupported families remain unclaimed.
   measured answer "no gate edit needed", not a reusable method)`.
   Slice 3 is the model crate: `crates/semulith-dsp56300` — manual-derived decode + semantics
   for subset v0, the canonical-dump runner, and the checkpoint comparator.
+  Slice 3 (`2026-10-01`, `SEMULITH-BR-0011`): the crate STANDS and the first differential
+  case AGREES. `crates/semulith-dsp56300` (lib + runner bin): `machine.rs` (the full
+  canonical register set, the 16-level hardware stack, the three bounded memory windows),
+  `decode.rs` (the nine demo-path forms, every mask FM-cited), `exec.rs` (semantics + the
+  FM Table 5-1 CCR rules + the DO loop machinery), `dump.rs` (the canonical dump,
+  byte-compatible vocabulary, NO `cyc` line — timing is never emitted), `lod.rs` (the
+  `.lod`/`.meta` dialects; fill headers refused by name), all outside-subset words typed
+  `ModelStop`s. `scripts/compare_dumps.py` — the checkpoint comparator (field-exact, a
+  missing key is a mismatch, `cyc` skipped by recorded rule; 4-arm self-test).
+  `scripts/run_dsp56300_smoke.py` — the campaign driver (NOT a commit gate, same
+  discipline as the RISC-V smoke; refuses unbuilt references). The micro guest adopted
+  into `profiles/dsp56300-lab-v0/guests/`. **Verdict: AGREE over 53 fields** (registers +
+  X/Y deviations + stack slots), `cyc` skipped — byte-identical to the reference's dump.
+  Two findings owned on the spot (§15): (a) the FM's U-bit equation is an extraction
+  INVERSION of its own prose ("identical" → XNOR; the reference's `sr c00310` is the
+  arbiter and agrees with the prose) — recorded in `exec.rs`'s module docs; (b) the
+  repo's FACT-OWNERSHIP convention reserves `crates/*/src/state.rs` for GENERATED state
+  mirrors — the crate's hand-written state module is `machine.rs` until `.5` generates
+  it. Lessons: `promotion: declined (the slice's durable outputs — the crate, the
+  comparator, the measured inversion — live where the next evaluator meets them)`.
+  Slice 4 is form-coverage completion: the ALU core (add/sub/cmp/and/or/eor, asr/lsr),
+  jsr/rts, rep, the (Rn) addressing modes, and the guest corpus that exercises them.
 
 - ID: `P3-BREADTH.5` — **schema and generator functionality where justified**
   Status: `pending`
@@ -150,7 +172,7 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.4` | `in-progress` | slices 1–2 done (subset selected; dossier + reference ledger landed, gate census measured — no gate edit needed for a second profile); slice 3 is the model crate `semulith-dsp56300` (manual-derived decode + semantics, the canonical-dump runner, the checkpoint comparator) |
+| 1 | `P3-BREADTH.4` | `in-progress` | slices 1–3 done (subset selected; dossier; the model crate STANDS — first differential case AGREEs over 53 fields); slice 4 is form-coverage completion (ALU core, jsr/rts, rep, (Rn) modes) + the guest corpus |
 | — | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; the DSP56300 slice (`.3`) resolves part of the gating — F6's census reopens per the new profile in `.4`; F4/F5 (VLIW) and F2 (TI grouping) stay unbuilt, recorded |
 
 ## Decisions
@@ -368,10 +390,42 @@ unsupported families remain unclaimed.
   mdBook: `plan/p3.md` updated at slice 1 (slice 2 is dossier plumbing the book's P3 page
   already covers as "in progress" — no new drift).
 
+`P3-BREADTH.4`, slice 3 (`2026-10-01`, `SEMULITH-BR-0011`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — slices 1–2 selected and dossiered the subset, but no
+  model existed to evidence. WHERE the risk concentrated: the CCR rules (FM Table 5-1's
+  extraction carries an inverted U-bit equation — its own prose says "set if the two MSBs
+  are identical"; the reference's `sr c00310` is the arbiter), the DO loop's stack
+  discipline (FM §13, push LA/LC then PC/SR, exit restoring LA/LC and LF alone), and the
+  A2 readout (FM §3.4.1.2: the extension byte sign-extended through bit 7). Every decode
+  mask was derived from the FM's opcode figures and cross-checked against the pinned
+  assembler's words (`target/dsp56300-demo/micro.lod`, e.g. `$44F400` = move #imm24,x0).
+- [x] **ADDRESSED (verified)** — the crate's 10 unit tests carry manual-derived
+  expectations (EVD-05, derived before the model ran — the `.3` record's three-way
+  verification): `cargo test -p semulith-dsp56300` → `test result: ok. 10 passed`;
+  `python3 scripts/compare_dumps.py --self-test` → `4 pass / 0 fail`;
+  `python3 scripts/run_dsp56300_smoke.py` →
+  `AGREE micro: AGREE over 53 fields for case 'micro' (skipped by rule: cyc)`,
+  `dsp56300 smoke: 1 agree / 0 fail` — the Semulith dump is byte-identical to the
+  reference's (`diff` of the two dumps empty apart from the excluded `cyc` line).
+- [x] **NO REGRESSION** — `make check` → fmt clean, clippy `-D warnings` clean, all tests
+  green (180 rv64 + 65 + 10 new dsp + the rest — the scalar model byte-untouched);
+  `make gate` → `=== all doctrines green ===` (after the FACT-OWNERSHIP convention
+  collision was resolved by the `state.rs` → `machine.rs` rename — the generated-mirror
+  naming convention is the gate's premise, not a dodge);
+  `python3 scripts/run_dsp56300_smoke.py` re-run after the rename → still `1 agree / 0 fail`.
+- [x] **FIX** — `crates/semulith-dsp56300/` (new crate: machine, decode, exec, dump, lod,
+  runner), `scripts/compare_dumps.py` + `scripts/run_dsp56300_smoke.py`,
+  `profiles/dsp56300-lab-v0/guests/{micro.a56,micro.meta}`.
+- [x] **LOCKSTEP** — tree (leaf slice, frontier, checklist, logs), `LIVE_STATUS.md`,
+  `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the profile DOSSIER;
+  mdBook `plan/p3.md` (the first differential agreement).
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.4` slice 3 | `cargo test -p semulith-dsp56300` 10/10; `compare_dumps.py --self-test` 4/0; `run_dsp56300_smoke.py` 1 agree / 0 fail (53 fields, byte-identical dump, cyc excluded); `make check` + `make gate` green | the model crate STANDS; the first differential case AGREES |
 | `2026-10-01` | `.4` slice 2 | both ledgers schema-validated; `fetch_references.sh --verify-only dsp56300-lab-v0` → tarball MATCH; `fetch_sources.sh --verify-only dsp56300-lab-v0` → FM manual MATCH (byte-identical to the chipdoc cache, HTTP 200); rv64 flow re-verified identical; `make gate` green with the second profile present | dossier + ledger landed; the auto-discovering gates' treatment of a second profile measured (keyed on profile.sexp/encoding.sexp — attach later with no gate edit) |
 | `2026-10-01` | `.4` slice 1 | reference coverage censused on the pinned source (the `Instruction` enum spans the full DSP56300 set); LIMITATIONS.md read in full and mapped to exclusions; the difftest README's comparison surface re-read (dump vocabulary, deviation windows, stack slots, `cyc` informational) | subset `dsp56300-lab-v0` v0 selected with every exclusion reasoned; vehicle decided (sibling crate, EXPERIMENTAL); decision record + selection artifact landed |
 | `2026-10-01` | `.3` slice 1 | three parallel per-family web surveys over one enumerator (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tooling/dedicated projects); the two load-bearing positives re-derived by direct fetch (mborgerson LICENSE = MIT, README = the difftest claim; MAME sharc.cpp = BSD-3, ADSP21060/62, full `state_add` export) | oracle availability measured: TI ABSENT, DSP56300 STRONG, SHARC PARTIAL; slice decision DSP56300 recorded |
@@ -383,6 +437,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.4` slice 3 | `SEMULITH-BR-0011 (leaf P3-BREADTH.4): the model crate stands — the first differential case AGREEs over 53 fields` | machine/decode/exec/dump/lod + runner; compare_dumps.py (cyc skipped by rule) + the smoke driver; the U-bit extraction inversion owned; machine.rs naming per the FACT-OWNERSHIP convention |
 | `.4` slice 1 | `SEMULITH-BR-0009 (leaf P3-BREADTH.4): the bounded subset selected — dsp56300-lab-v0 v0, sibling-crate vehicle, exclusions named` | coverage + LIMITATIONS censused; subset named exactly; checkpoint-level comparator shape measured; decision_dsp56300-lab-v0-subset |
 | `.4` slice 2 | `SEMULITH-BR-0010 (leaf P3-BREADTH.4): the dossier stands — sources + references ledgers, generic source-tarball leg, the second-profile gate census` | FM manual pinned at NXP's locator (byte-identical to the chipdoc cache); dsp56300 candidate dossier with EVD-04 rows; fetch_references.sh generic leg (rv64 flow identical); no gate edit needed for a second profile |
 | — (design discussion) | `SEMULITH-BR-0001 (leaf P3-BREADTH.1): the composable-DSP design discussion recorded — resume here` | the skeleton + the measured axis menu + composition rules + ISA-as-fabric; the lego framing; the permanent bounds |
@@ -435,3 +490,10 @@ unsupported families remain unclaimed.
   (240 files / 1,146,880 B; per-part 32 KiB unchanged) in
   `decision_profiles-family-two-units`, with the compaction alternatives rejected on the
   record.
+- `2026-10-01`: `.4` slice 3 (`SEMULITH-BR-0011`) — the model crate stands: manual-derived
+  decode/semantics for the nine demo-path forms, the canonical-dump runner, the
+  checkpoint comparator (`cyc` skipped by recorded rule), the smoke driver; the micro
+  guest adopted; **AGREE over 53 fields** — the dump is byte-identical to the reference's.
+  Owned findings: the FM's U-bit equation is an extraction inversion (the reference's SR
+  is the arbiter); `machine.rs` naming per the FACT-OWNERSHIP generated-mirror
+  convention. Frontier: slice 4 — form-coverage completion + the guest corpus.

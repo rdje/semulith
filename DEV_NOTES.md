@@ -1,5 +1,27 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the first DSP instruction executes (P3-BREADTH.4, slice 3)
+
+A bounded model earns its keep in the details nobody warns you about. Three earned their
+record this slice. (1) The manual's own extraction lies: FM Table 5-1's U-bit row says
+"set if the two MSBs are identical" in prose and prints "U = (Bit 47 xor Bit 46)" as the
+equation — an inversion (the equation should read xnor), proven by the reference's
+`sr c00310`, which agrees with the prose. The differential harness exists for exactly
+this class of question: when the document disagrees with itself, the measured machine is
+the arbiter, and the arbitration is recorded where the next reader meets it (`exec.rs`'s
+module docs). (2) A naming convention is a fact with an owner: the crate's state module
+was born `state.rs`, and FACT-OWNERSHIP refused the commit because this repo has already
+decided that `crates/*/src/state.rs` means "a GENERATED mirror of a profile's
+`state.sexp`". Renaming to `machine.rs` was not routing around the gate — it was
+learning that the name was already taken by a stronger claim. (3) The honest dump has a
+hole in it: the runner emits no `cyc` line, because the reference's cycle counts are
+base-table informational and a fabricated number would be a timing claim by stealth. The
+comparator skips `cyc` by a recorded rule with the reason in its header — an absence
+with a name, like every other exclusion in this subset. The reward: the demo guest's
+dump is byte-identical between the two engines, 53 fields, on the crate's first run.
+Promotion: declined in the leaf (the crate, the comparator, and the recorded inversion
+are the durable outputs, living where the next evaluator meets them).
+
 ## _(2026-10-01)_ — a second profile walks into the gates (P3-BREADTH.4, slice 2)
 
 The dossier slice's first job was a measurement, not a file: how do the auto-discovering
@@ -523,10 +545,4 @@ Lesson: `promotion: declined` (recorded in the leaf) — the ruling is the decis
 Chipdoc's relayed note (via the director) answered the deafness `.16` surfaced: corpus `6bfabf2` makes `poll_semulith_gaps.py` descend into the `(materials …)` wrapper. Verified by measurement, not accepted: the same probe `.16` ran now reports `semulith_gaps_open: 2` against the real catalogue — pre-fix it said 0, and `.16` needed a scratch probe (flat seen, nested not) to prove the instrument discriminated at all; the channel now exhibits the discrimination itself. The two it heard were this catalogue's status-less records, and both were already dispositioned here: `GAP-INTEL-SDM-VOL1` (closed by `X86-SDM-VOL1-253665`, catalogued `.13`) and `GAP-RISCV-JAN-2026-PDF` (closed by the decline decision recorded at filing, `.12`) — chipdoc had mirrored both resolved on its side. The reconcile adds `(status resolved)` + evidence to both records so the two-way channel reads true; post-reconcile the poller reports 0 open / 0 unmirrored. The v20260120 gap's ⛔ deafness paragraph now records the fix — a live catalogue may not assert a dead channel. Corpus re-pinned `f33d330` → `92a73b6`: the working-tree path sweep first REPRODUCED the recorded f33d330 figure (5313 files / 257 PDFs) and only then was trusted for the new pin — identical, and the git delta shows why (6 files, scripts and channel, no documents). Feed census at the new pin (corpus diff, not recall): 68/14, the delta exactly chipdoc's two resolved-gap mirror records. Snapshot refreshed; REQ-008 carries the true date 2026-09-29. The consequence chipdoc flags: the channel is TWO-WAY — a new gap filed in `materials/catalog.sexp` now surfaces there without an operator relay. Validation: `materials.py --verify` 45/45 / 0 drift; RECORD-SCHEMA ok; self-test 20/0; `make gate` all green.
 
 Lesson: `promotion: declined` (recorded in the leaf) — the two-way channel lives in the gap records and MEMORY.md.
-
-## _(2026-09-30)_ — the v20260120 PDFs: verify the answer, then adopt through the seam (MODEL-METHOD.16)
-
-The director's relay of chipdoc's answer (REQ-008 fulfilled, both PDFs mirrored, "same bytes", plus a numbering correction) was treated as four claims to verify, not one message to trust: (1) the mirror exists — `risc-v/isa/reference/docs.riscv.org-v20260120/` holds both PDFs + README + SHA256SUMS; (2) byte-equality — chipdoc's unprivileged PDF hashes to `06bb3c23…d150bc`, identical to the independent docs.riscv.org fetch `MODEL-BOOKS.2` measured, so the corroboration is two acquisitions, one set of bytes; (3) REQ-008 read in the ledger, the correction verbatim; (4) the numbering claim re-measured HERE from the extracted text layer — `Chapter 2. RV32I Base Integer Instruction Set, Version 2.1` / `Chapter 4. RV64I` — where the pinned HTML has §1.1/§3.1. The correction is correct, and it converts `.14`'s "a locator mapping is required" into three exactly measured numberings (HTML §1.1/§3.1 · this PDF ch.2/ch.4 · GitHub §2/§4). Both PDFs went through the corpus seam as reference-only materials (digests verified at fetch; the unprivileged one EQUAL to the web-fetched copy at fetch time), the catalogue gap was filed and resolved the same day, and the `.materials/web-sourced/` stopgap — hours old, uncommitted — was retired: the `.4` "URL kind when a second web-sourced family arrives" trigger fired and unfired in one day. The channel measurement, made before the relay arrived: chipdoc's `poll_semulith_gaps.py` reports `semulith_gaps_open: 0` against the real catalogue because its gap scan reads only top-level `(gap …)` forms and this catalogue nests gaps inside the single `(materials …)` form (scratch probe: flat seen, nested not) — the polled route is deaf to our gaps today; surfaced for a chipdoc-side fix, chipdoc untouched. House-keeping under pressure: `docs/tasks/MODEL-METHOD.md` crossed its 64 KiB per-part ceiling twice mid-leaf (67,737 B → checklists archived; 65,032 B growing → all 2026-09-27 done-leaf bodies archived); the ceiling was obeyed, never raised — the live tree now keeps only active/proposed leaves, frontier, decisions, open questions and both logs. Validation: catalogue parses/loads (45 materials); `--fetch` 2/2 digests verified; `--verify` 45/45; `--list` zero drift at `f33d330`; `make gate` all green (FRONTIER-SYNC caught the index cell naming `.16` post-completion — fixed in the index, never the tree).
-
-Lesson: `promotion: declined` (recorded in the leaf) — the poller finding lives in the gap record; the numbering trap lives in the material notes.
 
