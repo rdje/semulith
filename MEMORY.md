@@ -1,33 +1,29 @@
 # MEMORY — resume pointer (layer A; overwrite-only, keep ≤ ~50 lines)
 
-> The bounded layer-A resume pointer (see `MEMORY_ARCHITECTURE.md`). OVERWRITE the
-> "Current state" block each update — never append history here.
+> The bounded layer-A resume pointer (`MEMORY_ARCHITECTURE.md` §6). OVERWRITE "Current state"
+> each update — never append. This file exists **solely to point at the next action** (director
+> ruling `2026-10-02`, `decision_memory-next-action-pointer`); everything durable lives in the
+> layers it points to.
 
 ## How to resume
 
 1. Read `README.md`, `MEMORY_ARCHITECTURE.md`, `TOOLBOX.md`, `DOCTRINE_ENFORCEMENT.md`.
-2. Open the active task-tree below → its Current Frontier → continue from the next action.
+2. Open the active tree below → its Current Frontier → the next action.
 3. Durable facts: `docs/decisions/INDEX.md`. Retrievable lessons: `docs/knowledge/INDEX.md`.
 
 ## Current state
 
-- **Project:** semulith — trustworthy CPU/DSP software models in Rust; `ROADMAP.md` v0.3 is the plan. **The interaction matrix is declared, exercised and gated**: 40 tracked guests cover all 52 forms of `rv64i-lab-v0`, the failure layer, and the 21-cell matrix (gate `INTERACTION-MATRIX` #25), agreeing with sail-riscv and spike on 492/492 aligned steps plus the one declared expected divergence (`it-fencei`); coverage stays gated at 52/52.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated), `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`).
-- **`P3-BREADTH` CLOSED `2026-10-01` (8/8)** — gate `BREADTH` RUN, verdict **`passed`**: the capability report published (`docs/BREADTH-REPORT.md`, generated + GATE-REPORT-gated) — the subset's evidence anchors, nine abstraction constructs declared+carried, TI C6000 / ADI SHARC unclaimed explicitly; the stable-API claim is permitted exactly at the exercised cases of the two registered units. `.1` stays `slice-gated` on the record (F2/F4/F5 reopen with a VLIW/TI slice). Also closed this milestone: `.4` (subset form-complete, five FM-vs-silicon divergences fixed at root), `.7` (the dossier landed governed), `.6` (records; the second unit registered + its book; the report).
-- **Closed `2026-09-29`→`30`:** `P2-SCALAR.4` (the interaction matrix measured: fault priority, the budget loop, the `fence.i` divergence; `DIFF-TVAL-PHYS-MASK`). `MODEL-BOOKS` 8/8. `UPSTREAM-TRACK` 4/4. `MODEL-METHOD.15`–`.17` (the chipdoc channel two-way; v20260120 PDFs adopted). `PREFIX-DISCIPLINE`.
-- **Closed (older):** `P2-SCALAR.1`–`.3` (52/52 gated; boundary domains; faults/reserved — DEFECT-A/B fixed at root). `P1-LAB` 13/13 — gate `G1` **`passed` since `2026-09-30`** (criterion 6: the C guest, 129/129 three-way).
-- **Direction (director, 2026-09-14):** every source of truth is **one format**, S-expression (`decision_one-format-every-source-of-truth`).
-- **Direction (delegated, 2026-09-27):** the semantics **data** is the execution authority (`decision_interpreter-before-compiler`); every lane names its consuming milestone.
-- **Direction (director, 2026-09-27):** everything must also run in the **browser** — JS + Wasm first-class from the first crate; now a gate (`PORT-WEB`).
-- **Direction (director, 2026-10-01):** task-tree growth ALLOWED — per-part 128 KiB (`decision_task-tree-per-part-growth`); ceiling raises: **ask, they're approved** — bounds stay (a file stays readable in one sitting); **document EVERYTHING — requests, rulings, nothing under the radar.**
-- ⚠️ The `.9` mutation suite is the detector's proof, not the model's; the `.11` baseline is one named host's measurement, not a portable constant.
-- **Materials:** 47 primary sources in `materials/catalog.sexp` (corpus `d2437ff`), cached in `.materials/`; the chipdoc channel is snapshotted in `.semulith-data/chipdoc/` (the untracked README holds the corpus path; no tracked file names it). Requests to chipdoc: `materials/requests.sexp` (10 open, `P5-BOARD.8`; the how: `docs/knowledge/the-chipdoc-request-channel.md`). Run-real-code set pinned at `.materials/run-real-code/`.
-- **Citations:** `check_citations.py` resolves 52 of 52, offline from the cache. The pin is docs.riscv.org, NOT github.com/riscv/riscv-isa-manual — read `docs/knowledge/a-version-string-is-not-an-identity.md` first.
-- **Frontier:** `P2-SCALAR` **CLOSED 9/9** `2026-09-30`: the CPU-LAB report stands (per-axis, `GATE-REPORT`-gated) — `incomplete` with G-CONTRACT/G-OBLIGATIONS measured open; the named decision: `rv64i-lab-v0` v0 is an EXPERIMENTAL release of the versioned evidence artifact (`a984f32d…`), NOT an accepted profile. Portability reads `passed` (the Rosetta bridge; the bare-metal CI leg at the next push). `P3-BREADTH.4` **CLOSED 4/4** `2026-10-01`: subset v0 form-complete, six synthetic guests AGREE 6/6 over canonical end-state dumps vs the pinned reference (`scripts/run_dsp56300_smoke.py`, not a commit gate; the crate's 17 tests are the commit-level proof).
-- **Next action:** `P5-BOARD.1` — the platform specification (gate `BOARD`): the network-connected board's device choice is now measured — FIVE sourced candidates (LAN9118 wired NIC, SARA-R4 LTE modem, ESP-AT WiFi module, nRF52840 + AT86RF233 true RFICs) plus five measured negatives closing the alternatives (`P5-BOARD.9`, all ten channel answers reconciled: 5 adopted and digest-verified into the catalog, 5 blocked with consequences named). `LAB-BENCH.2` stays **feedback-gated**; `P4-SYSTEM.1` is the other proposed milestone lane.
-- **Also open:** `LAB-BENCH.2` (feedback-gated); `MODEL-METHOD.14` (encoding re-sourcing probe — SCHEDULED `2026-09-30`; `.16` hands it the probe input `RVI-UNPRIV-PDF-V20260120` plus three measured numberings). The chipdoc channel is answer-per-request (`catalog/responses.sexp` + `build_responses.py --report`; the cards carry the loop).
-- **Feel it now:** `mdbook build docs/models/rv64i-lab-v0` — the model book renders; `bash scripts/check_materials_bill.sh` — the bill, gated; `scripts/gate_report.py rv64i-lab-v0 --gate G1 --stdout` — the honest gate.
-- **Read first:** `docs/decisions/INDEX.md` — the last five records define the current direction. **Latest commit:** `git log -1`. **In-flight uncommitted work:** none.
-- ⛔ **Do not push.** Cadence is 300 commits — `scripts/check_push_cadence.sh --status` says where we stand; below it a push is exceptional and **only the director may approve it** (`decision_push-cadence`). `SEMULITH_PUSH_APPROVED` carries the director's reason, never an agent's judgement.
-- **Blockers:** none. LinkedSpec pinned `a8d34c845` (RGX `8763a0e6` unchanged); **0 open upstream issues** (`scripts/upstream_exposure.py`). ⛔ Never patch the submodule; adopt by moving the pin. The CHIPDOC watcher is sanctioned (`doctrine/sanctioned_processes.tsv`; `ARTIFACT-CLEANUP.2`).
-- **LinkedSpec readers:** `compare_readers.py` sweeps every tracked `.sexp` — Lispish (LS-guard: the two CLASS families) and SExprDocumentV1 via `sexpr_file`.
+- latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
+  director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
+  `scripts/check_push_cadence.sh --status` says where we stand.
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit).
+  Milestone frontier: `P5-BOARD` (proposed).
+- next_action: `P5-BOARD.1` — the platform specification (gate `BOARD`): compose `rv64i-lab-v0`
+  v0 (the EXPERIMENTAL release, `decision_release-rv64i-lab-v0`) with sourced devices; the five
+  network-device candidates and five measured negatives are reconciled (`P5-BOARD.8`/`.9`);
+  contract design starts now, board execution follows CPU validation (`ROADMAP.md` §P5). Then:
+  `BOOK-APPARATUS.2`.
+- in_flight_uncommitted: `BOOK-APPARATUS.1`'s files — the leaf is complete on disk; its commit
+  was blocked by the append-head ceilings (sharded, `SEMULITH-DS-0004`) and lands next.
+- blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
+  submodule, adopt by moving the pin).

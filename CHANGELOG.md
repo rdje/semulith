@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-MP-0001 (leaf MEMORY-POINTER.1) — MEMORY.md slimmed to the §6 next-action pointer
+
+- The director's `2026-10-02` ruling executed: `MEMORY.md` exists solely to point at the next
+  action, overwrite-only per `MEMORY_ARCHITECTURE.md` §6. Measured before: 34 lines / 7,031 B
+  (97% of the hard cap; health 30 / 1,792). After: **29 lines / 1,865 B**.
+- The audit verified every dropped line's durable home (trees, `docs/decisions/`,
+  `docs/knowledge/`, TOOLBOX, git's submodule pin); exactly one ruling was dangling —
+  `document EVERYTHING` (2026-10-01) — backfilled as `decision_document-everything`. The
+  ruling itself is `decision_memory-next-action-pointer`.
+- Gate lesson recorded: `TREE-CLAIMS` scans the `Active trees:` claim PER PHYSICAL LINE — the
+  first slim draft wrapped the list and fired `MISSING ACTIVE`; the list stays on one line.
+
 ## SEMULITH-DS-0004 (tree DOC-SHARDING) — the append heads shard ahead of the next slice
 
 - Trigger: `CHANGELOG.md` at 65,035 of 65,536 bytes (501 headroom) and `DEV_NOTES.md` at
