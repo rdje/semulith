@@ -1,0 +1,11 @@
+# DEV_NOTES shard — _(2026-09-30)_ … _(2026-09-30)_
+
+> Sharded from `DEV_NOTES.md` when it crossed its 48 KiB ceiling (`doctrine/readme_routes.tsv`).
+> Entries in a shard are **never edited after the shard** — git history is canonical.
+
+## _(2026-09-30)_ — the SEMULITH- prefix, pinned at the boundary and watched (PREFIX-DISCIPLINE.1 — tree closes)
+
+The director's ruling ("it is SEMULITH and not SEMILITH … only SEMULITH") answered the drift finding surfaced the same day. The measurement behind it: `git log --format='%s'` census over all 123 commits — both spellings across 10+ areas (`SEMILITH-PL` ×13 the worst), exactly one non-prefixed subject ("Initial commit"). Subjects are immutable, so the design question was WHERE the rule lives: not a history scan (fails forever on the recorded drift), but the boundary where new subjects enter — `.githooks/commit-msg` refuses any leading work-unit id not beginning `SEMULITH-`, with `SEMULITH` named in the refusal (red for the right reason, per the registry's verdict-and-reason rule). The hook is a NEUTRAL scaffold file (`update_scaffold.sh` syncs it; §21 forbids carrying the pin upstream), so the pin alone would be a silent-revert waiting to happen — the same exposure as the repaired spine defects, answered the same way: `COMMIT-PREFIX` (#29) probes the hook BEHAVIOURALLY (synthetic SEMILITH- must be refused naming SEMULITH; SEMULITH- must pass), so a reverted pin turns the very next commit RED, named. Discrimination observed before registration: the check fired RED on the real tree pre-pin (`NOT REFUSED`), and its self-test covers the four fixtures (unpinned / refuse-all-wrong-reason / over-tight / correctly-pinned) 4/0. One nuance discovered by the LESSON-PROMOTION gate, not by reading: the decline token must sit on ONE line in a staged task file — a wrapped `promotion: declined (…)` is invisible to its grep. Ruling recorded as `decision_work-unit-prefix-semulith.md`; COMMIT.md states the prefix; both mirrors carry the row; LIVE_STATUS re-derived (29 / 301, the gate's own numbers). Validation: live hook probes both directions; `COMMIT-PREFIX: ok`; `make gate` all green.
+
+Lesson: `promotion: declined` (recorded in the leaf) — the ruling is the decision record; the mechanism is the hook, the probe, and their mirror rows.
+

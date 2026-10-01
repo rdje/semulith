@@ -209,7 +209,16 @@ schema/	reader_navigation	partitioned	the schema language and per-family constru
 #   grows one file per shard EVENT by design, so the count doubles again and the content
 #   axes stay exactly where they were: per-part 64 KiB and the 384 KiB aggregate are
 #   unchanged; SHARD-FREEZE pins the partition. Ceiling files 80 -> 160.
-docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	160	393216	65536
+# Re-derivation, SEMULITH-BR-0012 (2026-10-01), when the AGGREGATE axis fired — as the three
+#   count-axis re-derivations above told the next reader to expect: 97 files / 396,259 B at
+#   the breach (two shard events in one commit: the P3-BREADTH.4 slice-4 docs overflowed BOTH
+#   heads at once). The byte axis is the same calendar the count axis was — the family grows
+#   at commit velocity by design and SHARD-FREEZE pins the partition; batching more entries
+#   per shard event was examined and rejected (it moves bytes between axes, the aggregate is
+#   invariant to the cut). Ceiling bytes 393216 -> 786432 (2x, the family's own precedent);
+#   files unchanged at 160 (97 — not the firing axis); per-part unchanged at 64 KiB.
+#   Reviewed decision: docs/decisions/decision_changelog-family-aggregate-rederivation.md.
+docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	160	786432	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 # Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:
 #   docs/push-approvals.md  1,045 B at adoption (the header alone; zero entries today).

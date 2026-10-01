@@ -62,6 +62,7 @@
 - [`decision_browser-wasm-target.md`](docs/decisions/decision_browser-wasm-target.md)
 - [`decision_c-guest-routing-and-toolchain.md`](docs/decisions/decision_c-guest-routing-and-toolchain.md)
 - [`decision_canonical-definition-input.md`](docs/decisions/decision_canonical-definition-input.md)
+- [`decision_changelog-family-aggregate-rederivation.md`](docs/decisions/decision_changelog-family-aggregate-rederivation.md)
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)

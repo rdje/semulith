@@ -1,0 +1,24 @@
+; rep.a56 — REP and ENDDO (P3-BREADTH.4 slice 4)
+; REP #xxx and REP S repeat a single-word instruction; ENDDO terminates a DO
+; loop early (LF restored, LA/LC popped). REP also nests inside DO (never at
+; LA or LA-1 — the FM's own restriction). SYNTHETIC guest.
+		org	p:$100
+start	move	#$200,r0
+	move	#$550000,x0
+	rep	#4
+	move	x0,x:(r0)+		; x:$200-$203 = 550000, r0 = 204
+	move	#>$2,x1			; REP S counts the register's 24 bits: force the long
+					; form (#>) — the short form would give x1 = 020000
+	rep	x1
+	move	x0,x:(r0)+		; x:$204-$205 = 550000, r0 = 206
+	do	#2,outerl		; REP inside a DO loop
+	rep	#3
+	move	x0,x:(r0)+		; 3 stores per pass: x:$206-$208, $209-$20B
+	nop
+outerl	nop				; loop end: r0 = 20C
+	do	#10,early		; ENDDO ends this loop on its first pass
+	move	x0,x:(r0)+		; one store: x:$20C, r0 = 20D
+	enddo
+early	move	x0,x:(r0)+		; runs once, LF clear: x:$20D, r0 = 20E
+	jmp	done
+done	nop

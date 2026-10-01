@@ -1,0 +1,26 @@
+; rn.a56 — the linear register-indirect addressing modes (P3-BREADTH.4 slice 4)
+; (Rn), (Rn)+, (Rn)-, (Rn)+Nn, (Rn)-Nn, (Rn+Nn), -(Rn) over X and Y, both
+; directions; the address-register updates are visible in the r/n dump fields.
+; SYNTHETIC guest.
+		org	p:$100
+start	move	#$200,r0
+	move	#$410000,x0
+	move	x0,x:(r0)+		; x:$200 = 410000, r0 = 201
+	move	#$420000,x0
+	move	x0,x:(r0)+		; x:$201 = 420000, r0 = 202
+	move	#$430000,x0
+	move	x0,x:(r0)+		; x:$202 = 430000, r0 = 203
+	move	#$440000,x0
+	move	x0,x:(r0)		; x:$203 = 440000, r0 = 203
+	move	#$2,n0
+	move	x:(r0)-n0,y0		; y0 = x:$203 = 440000, r0 = 201
+	move	x:(r0+n0),y1		; y1 = x:$203 = 440000, r0 unchanged (displacement)
+	move	x:-(r0),x0		; r0 = 200, x0 = x:$200 = 410000
+	move	x:(r0)+,x1		; x1 = x:$200 = 410000, r0 = 201
+	move	#$300,r1
+	move	#$8,n1
+	move	y0,y:(r1)+n1		; y:$300 = 440000, r1 = 308
+	move	y0,y:(r1)-n1		; y:$308 = 440000, r1 = 300
+	move	y:(r1),x0		; x0 = y:$300 = 440000
+	jmp	done
+done	nop

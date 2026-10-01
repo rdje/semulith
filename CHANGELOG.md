@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0012 (leaf P3-BREADTH.4) — subset v0 form-complete; the 6-guest corpus AGREEs
+
+- `crates/semulith-dsp56300` decode+exec gained the whole subset: the register/immediate
+  data-ALU core (add/sub/cmp/and/or/eor, all three source shapes), ASR/LSR, JSR/RTS,
+  ENDDO, REP #xxx/REP S, and the seven linear (Rn) addressing modes — every mask
+  FM-cited (page-footer cites) and cross-checked against the pinned assembler's probe
+  words, which the decode tests pin.
+- Guests `alu`, `shift`, `rn`, `rep`, `jsr` join `micro`: **6 agree / 0 fail** over the
+  canonical end-state dumps (51–64 fields per case, `cyc` excluded by rule); the crate's
+  17 unit tests carry hand-derived end-states (EVD-05).
+- The differential campaign caught five model defects, each root-caused tools-first:
+  RTS pulls PC only (FM 13-168 — SR stays, pinned by the jsr guest); MOVE #xx to an
+  accumulator sign-extends into A2 (the FM's "remaining bits zeroed" prose falsified);
+  A1/B1 memory reads are RAW (the shifter/limiter sits on the whole-accumulator path
+  only); S sets on accumulator bus reads, never on ALU results; and a keep-mask
+  nibble-slip zeroed A2 on the 24-bit ops. Two boundary defects fixed on the spot:
+  accumulator-part move destinations now refuse at decode (a latent panic), and the NOP
+  citation corrected to 13-145 (the FM's §13 TOC numbers pages differently from the
+  printed footers). `P3-BREADTH.4` DONE 4/4.
+
 ## SEMULITH-MM-0075 (leaf MODEL-METHOD.19) — the demand chapter is a live chapter
 
 - Director ruling (`2026-10-01`): *The information a unit demands* is a WIP by design —
@@ -864,32 +884,4 @@
   the quoted decision fragments are programmatically verified verbatim. No gate extended
   (authored prose, no generated content — 26 doctrines unchanged). Both books render;
   `make gate` all green.
-
-## SEMILITH-MB-0004 (leaf MODEL-BOOKS.2) — what the materials do not contain; the PDF investigation answers YES
-
-- The per-unit book gains its gaps chapter (`docs/models/rv64i-lab-v0/src/gaps.md`):
-  the measured no-encodings gap and what it forced (the RISCV-OPCODES second provenance,
-  the parse-and-refuse assembler discipline), the gaps the specification is *supposed* to
-  leave (the EEI policy choices; a platform), and the gap the references leave (agreement
-  is not proof) — prose-first, per the teaching mandate.
-- ⭐ The investigation, done with a tool: the pinned publication (docs.riscv.org,
-  `v20260120`) publishes a PDF rendering at the same version segment
-  (`_attachments/riscv-unprivileged.pdf` — HTTP 200, 4,580,174 B, sha256 `06bb3c23…`,
-  696 pages, `Version 20260120: Official Release`). `pdftotext` measures its text layer
-  carrying the instruction-format tables: **232** lines match the `[01]{7}` census pattern
-  that returns **0** on all six pinned HTML/TXT artifacts; the base-formats figure and the
-  RV32I opcode map extract with bit strings and field names. **Answer: yes — encodings
-  can be re-sourced from the primary document**, so the encoding provenance's
-  shared-ancestry exposure (shared with Spike, not Sail) is no longer forced.
-  Qualifications recorded: the PDF numbers chapters differently from the pinned HTML
-  (Introduction is Chapter 1 there; RV32I Chapter 2 / RV64I Chapter 4 vs §1.1 / §3.1), and
-  the extraction is layout-fragmented — re-sourcing is engineering with its own
-  verification, and is future reviewed work, NOT this leaf.
-- The PDF is cached untracked at `target/materials/` and deliberately not catalogued
-  (the corpus model has no network-origin kind — a MODEL-METHOD decision, recorded in the
-  chapter). The cached GitHub-release PDF corroborates (269 census lines) — the finding
-  depends on no one PDF.
-- No gate surface changed (the chapter is authored prose; MATERIALS-BILL untouched, 26
-  doctrines). `mdbook build docs/models/rv64i-lab-v0` and `make book` render; `make gate`
-  all green.
 

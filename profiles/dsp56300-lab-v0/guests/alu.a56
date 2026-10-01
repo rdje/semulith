@@ -1,0 +1,28 @@
+; alu.a56 — the data-ALU core (P3-BREADTH.4 slice 4)
+; ADD/SUB/CMP/AND/OR/EOR in their register, #xx, and #xxxx forms, on both
+; accumulators, incl. the other-accumulator and the 48-bit long-word sources.
+; SYNTHETIC guest — evidence about the named subset forms, never about any real
+; DSP program.
+		org	p:$100
+start	move	#$010000,a		; a1 = 010000
+	move	#$7fffff,x0
+	add	x0,a			; a msp 010000+7FFFFF; E=1 (integer portion in use)
+	sub	x0,a			; a back to 010000 msp; U=1, borrow=0
+	cmp	x0,a			; a < x0 operand: N=1, C=1 (borrow), a unchanged
+	and	#$ff00ff,a		; 24-bit logical on the MSP only
+	or	#$00ff00,a
+	eor	#$ffffff,a		; a1 = FE00FF, N=1
+	move	a1,x:$210
+	move	a2,x:$211		; extension byte readout
+	move	#$123456,b
+	sub	#$3f,b			; b1 = 123417
+	cmp	#$123417,b		; equal: Z=1, C=0, N=0
+	add	b,a			; the other-accumulator source
+	move	#$000100,x1
+	move	#$000200,x0		; X = x1:x0 = 000100:000200 (48-bit long)
+	add	x,a			; the long-word source
+	move	a1,x:$212
+	move	a2,x:$213
+	move	b1,x:$214
+	jmp	done
+done	nop

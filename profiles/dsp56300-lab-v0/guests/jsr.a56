@@ -1,0 +1,17 @@
+; jsr.a56 — JSR/RTS and the hardware stack (P3-BREADTH.4 slice 4)
+; A subroutine call with a nested call inside: SP/SSH/SSL and the stack slots
+; 1-2 carry the evidence; RTS restores PC and SR. SYNTHETIC guest.
+		org	p:$100
+start	move	#$10,x0			; x0 = 100000 (short-imm fraction)
+	jsr	sub
+	move	#$20,x1			; runs after the return: x1 = 200000
+	move	x0,x:$230
+	move	x1,x:$231
+	jmp	done
+sub	move	#$000777,a
+	jsr	inner			; nested call — the stack goes two deep
+	move	a1,x:$232		; a1 = 000778
+	rts
+inner	add	#$1,a
+	rts
+done	nop

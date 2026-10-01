@@ -1,0 +1,20 @@
+; shift.a56 — the single-bit shifts (P3-BREADTH.4 slice 4)
+; ASR is a 56-bit arithmetic shift (MSB held, bit 0 to C); LSR is a 24-bit
+; logical shift of bits 47-24 only (bit 24 to C, the extension byte untouched).
+; SYNTHETIC guest.
+		org	p:$100
+start	move	#$000003,a
+	asr	a			; a1 = 018000, C=0
+	asr	a			; a1 = 00C000, C=0
+	move	#$800000,a		; negative: a2 = FF
+	asr	a			; sign held: a1 = C00000, a2 = FF, N=1
+	move	#$800003,b
+	lsr	b			; b1 = 400001, C=1, b2 = FF UNCHANGED (24-bit op)
+	lsr	b			; b1 = 200000, C=1
+	asl	b			; the existing shift on the B side (d bit)
+	move	a1,x:$210
+	move	a2,x:$211
+	move	b1,x:$212
+	move	b2,x:$213		; the B2 readout (F6's named case, B side)
+	jmp	done
+done	nop

@@ -96,7 +96,8 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the survey and the demonstration are dated evidence living where the next evaluator meets them; their durable outputs — the slice decision and the demonstrated path — are recorded in this tree's Decisions and Verification Log)`.
 
 - ID: `P3-BREADTH.4` — **the bounded real subset**
-  Status: `in-progress` (slices 1–3 done `2026-10-01`; slice 4 is form-coverage completion)
+  Status: `done` (`2026-10-01` — slices 1–4: subset selected, dossier, the model crate,
+  form-coverage completion + the guest corpus, all differentially AGREE)
   Goal: implement and evidence the narrow slice selected in `.3`.
   Acceptance: its claim names the exact subset; a source-reviewed experimental subset cannot inherit a differentially validated claim from another target (`docs/EVIDENCE_AND_GATES.md` §1).
   Slice 1 (`2026-10-01`, `SEMULITH-BR-0009`): the subset SELECTED against the reference's
@@ -157,6 +158,34 @@ unsupported families remain unclaimed.
   comparator, the measured inversion — live where the next evaluator meets them)`.
   Slice 4 is form-coverage completion: the ALU core (add/sub/cmp/and/or/eor, asr/lsr),
   jsr/rts, rep, the (Rn) addressing modes, and the guest corpus that exercises them.
+  Slice 4 (`2026-10-01`, `SEMULITH-BR-0012`): the subset is FORM-COMPLETE and the corpus
+  AGREEs 6/6. Decode gained the register/immediate data-ALU core (`0JJJd_kkk` /
+  `01JJd_kkk` + the `$01408_`/`$0140C_` immediate classes), ASR/LSR, JSR/RTS, ENDDO,
+  REP #xxx/REP S, and the seven linear (Rn) modes — every mask FM-cited and cross-checked
+  against the pinned assembler's probe words (pinned in `decode.rs`'s tests). Guests
+  `alu`, `shift`, `rn`, `rep`, `jsr` join `micro`: **`6 agree / 0 fail`** over the
+  canonical end-state dumps (51–64 fields per case, `cyc` excluded by rule). The
+  differential campaign caught and fixed five model defects, each traced tools-first
+  (§15): (a) RTS pulled SR — the FM (13-168) pulls PC only, measured; (b) MOVE #xx to an
+  accumulator zeroed A2 — the reference sign-extends through it (the FM's "remaining bits
+  zeroed" prose falsified for A2); (c) A1/B1 memory reads ran my limiter — measured: the
+  shifter/limiter sits on the whole-accumulator read path only, A1/B1 read raw (the FM's
+  limiting prose over-applied by me, corrected by measurement); (d) S was set per ALU
+  result — measured: S sets only on whole-accumulator bus reads, a path subset v0 does
+  not decode; (e) a nibble-slip mask zeroed A2 on the 24-bit ops. Two latent boundary
+  defects owned and fixed on the spot: accumulator-PART move destinations now stop by
+  name at decode instead of panicking in `bus_write`, and the NOP citation (13-149 →
+  13-145; the FM's own §13 TOC numbers pages differently from the printed footers, a
+  measured FM-internal discrepancy). Guest-side defect owned: `move #$000002,x1`
+  assembles to the SHORT form (x1 = $020000, not 2) — `#>` forces the long form; the
+  typed `OutOfWindow` stop caught the runaway. The reference's emit source was consulted
+  to LOCATE the limiter mechanism (TOOLBOX); the evidence is the dump agreement (EVD-04
+  unchanged: asm/emu share one project, the claim stays EXPERIMENTAL). Named subset
+  boundaries, all typed stops: register–register moves, accumulator-part move
+  destinations, AGU registers as move-bus ends, modulo/reverse-carry (Mn ≠ $FFFFFF
+  refuses by name), REP of two-word/control instructions (the FM's own A.3.8), REP at
+  LA/LA-1, DO #0, REP S from non-word registers, multi-bit shifts.
+  Lessons: `promotion: declined (the four measured rules live in exec.rs's module header where the next reader meets them; three were my over-applications of correct FM prose, one a genuine prose falsification — the arbiter discipline is already EVD-04/RK08)`.
 
 - ID: `P3-BREADTH.5` — **schema and generator functionality where justified**
   Status: `pending`
@@ -172,8 +201,9 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.4` | `in-progress` | slices 1–3 done (subset selected; dossier; the model crate STANDS — first differential case AGREEs over 53 fields); slice 4 is form-coverage completion (ALU core, jsr/rts, rep, (Rn) modes) + the guest corpus |
-| — | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; the DSP56300 slice (`.3`) resolves part of the gating — F6's census reopens per the new profile in `.4`; F4/F5 (VLIW) and F2 (TI grouping) stay unbuilt, recorded |
+| 1 | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; `.4` closed with the dsp56300-lab-v0 profile EXERCISED — F6's census leg reopens per the new profile; F4/F5 (VLIW) and F2 (TI grouping) stay unbuilt, recorded |
+| 2 | `P3-BREADTH.5` | `pending` | schema/generator generalization — now with its exercising target measured: F1 masked widths, F3 memory spaces, the special-register census, the scope taxonomy (each names dsp56300-lab-v0 as its case) |
+| 3 | `P3-BREADTH.6` | `pending` | the BREADTH gate report |
 
 ## Decisions
 
@@ -421,10 +451,37 @@ unsupported families remain unclaimed.
   `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`, the profile DOSSIER;
   mdBook `plan/p3.md` (the first differential agreement).
 
+`P3-BREADTH.4`, slice 4 (`2026-10-01`, `SEMULITH-BR-0012`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — slices 1–3 left the subset at nine demo-path forms;
+  the leaf's acceptance requires the NAMED subset (ALU core, jsr/rts, rep, the (Rn)
+  modes) exercised and agreed. WHERE the risk concentrated, measured by the first smoke
+  run — `python3 scripts/run_dsp56300_smoke.py` printed `dsp56300 smoke: 2 agree /
+  4 fail`, rc=1: the accumulator readout/writeback paths (the A1 limiter locus,
+  the short-immediate A2 sign extension, the 24-bit ops' keep-mask), the RTS stack
+  contract, and the S-bit's trigger — exactly the seams where FM prose and silicon can
+  part. Each failure's root cause is named in the slice record above, (a)–(e), with the
+  arbiter (the pinned reference's observed end-state) and the FM page for each.
+- [x] **ADDRESSED (verified)** — `python3 scripts/run_dsp56300_smoke.py` → `6 agree /
+  0 fail` (micro 53, alu 51, shift 51, rn 53, rep 64, jsr 54 fields; `cyc` skipped by
+  rule); `cargo test -p semulith-dsp56300` → 17/17 (the five new exec tests carry
+  hand-derived end-states — values derived from the FM figures BEFORE the model run,
+  matching the agreed dumps; the decode test pins 40+ assembler-emitted probe words).
+- [x] **NO REGRESSION** — `make check` → fmt clean, clippy `-D warnings` clean, all
+  workspace tests green (the scalar model byte-untouched); `make gate` →
+  `=== all doctrines green ===`; the micro guest (slice 3's case) still AGREEs.
+- [x] **FIX** — `crates/semulith-dsp56300/src/{decode,exec}.rs` (the new forms + the five
+  measured corrections + the two boundary fixes), `profiles/dsp56300-lab-v0/guests/`
+  (five new guests + metas, the rep guest's `#>` fix).
+- [x] **LOCKSTEP** — tree (this file: leaf status/slice record, frontier, checklist,
+  logs), `LIVE_STATUS.md`, `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`,
+  `DEV_NOTES.md`; mdBook `plan/p3.md` (the subset is form-complete, 6/6 AGREE).
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.4` slice 4 | `run_dsp56300_smoke.py` 6 agree / 0 fail (51–64 fields/case); `cargo test -p semulith-dsp56300` 17/17; `make check` + `make gate` green | subset v0 form-complete and differentially agreed; five measured model corrections (RTS PC-only, short-imm A2 sign extension, A1/B1 raw reads, S on bus reads only, the 24-bit keep-mask); two boundary defects fixed (accumulator-part destinations stop by name; NOP citation 13-149 → 13-145) |
 | `2026-10-01` | `.4` slice 3 | `cargo test -p semulith-dsp56300` 10/10; `compare_dumps.py --self-test` 4/0; `run_dsp56300_smoke.py` 1 agree / 0 fail (53 fields, byte-identical dump, cyc excluded); `make check` + `make gate` green | the model crate STANDS; the first differential case AGREES |
 | `2026-10-01` | `.4` slice 2 | both ledgers schema-validated; `fetch_references.sh --verify-only dsp56300-lab-v0` → tarball MATCH; `fetch_sources.sh --verify-only dsp56300-lab-v0` → FM manual MATCH (byte-identical to the chipdoc cache, HTTP 200); rv64 flow re-verified identical; `make gate` green with the second profile present | dossier + ledger landed; the auto-discovering gates' treatment of a second profile measured (keyed on profile.sexp/encoding.sexp — attach later with no gate edit) |
 | `2026-10-01` | `.4` slice 1 | reference coverage censused on the pinned source (the `Instruction` enum spans the full DSP56300 set); LIMITATIONS.md read in full and mapped to exclusions; the difftest README's comparison surface re-read (dump vocabulary, deviation windows, stack slots, `cyc` informational) | subset `dsp56300-lab-v0` v0 selected with every exclusion reasoned; vehicle decided (sibling crate, EXPERIMENTAL); decision record + selection artifact landed |
@@ -437,6 +494,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.4` slice 4 | `SEMULITH-BR-0012 (leaf P3-BREADTH.4): subset v0 form-complete — ALU core, jsr/rts, rep/enddo, (Rn) modes; the 6-guest corpus AGREEs` | five measured corrections via the differential campaign (RTS, A2 sign extension, A1/B1 raw reads, S locus, keep-mask); accumulator-part destinations refused at decode; NOP citation corrected (13-145) |
 | `.4` slice 3 | `SEMULITH-BR-0011 (leaf P3-BREADTH.4): the model crate stands — the first differential case AGREEs over 53 fields` | machine/decode/exec/dump/lod + runner; compare_dumps.py (cyc skipped by rule) + the smoke driver; the U-bit extraction inversion owned; machine.rs naming per the FACT-OWNERSHIP convention |
 | `.4` slice 1 | `SEMULITH-BR-0009 (leaf P3-BREADTH.4): the bounded subset selected — dsp56300-lab-v0 v0, sibling-crate vehicle, exclusions named` | coverage + LIMITATIONS censused; subset named exactly; checkpoint-level comparator shape measured; decision_dsp56300-lab-v0-subset |
 | `.4` slice 2 | `SEMULITH-BR-0010 (leaf P3-BREADTH.4): the dossier stands — sources + references ledgers, generic source-tarball leg, the second-profile gate census` | FM manual pinned at NXP's locator (byte-identical to the chipdoc cache); dsp56300 candidate dossier with EVD-04 rows; fetch_references.sh generic leg (rv64 flow identical); no gate edit needed for a second profile |
@@ -497,3 +555,20 @@ unsupported families remain unclaimed.
   Owned findings: the FM's U-bit equation is an extraction inversion (the reference's SR
   is the arbiter); `machine.rs` naming per the FACT-OWNERSHIP generated-mirror
   convention. Frontier: slice 4 — form-coverage completion + the guest corpus.
+- `2026-10-01`: `.4` slice 4 (`SEMULITH-BR-0012`) — subset v0 is FORM-COMPLETE: the
+  register/immediate data-ALU core, ASR/LSR, JSR/RTS, ENDDO, REP #xxx/REP S, and the
+  seven linear (Rn) modes, every mask FM-cited and assembler-cross-checked; five guests
+  join `micro` — **6 agree / 0 fail**. The campaign caught five model defects (each
+  root-caused tools-first: RTS pulls PC only; short immediates sign-extend into A2; A1/B1
+  read raw — the limiter is whole-accumulator-only; S sets on accumulator bus reads only;
+  the 24-bit keep-mask nibble-slip) and two boundary defects (accumulator-part move
+  destinations now refuse at decode; the NOP citation corrected to 13-145). `.4` DONE;
+  `.1`'s F6 census leg reopens per the exercised profile; `.5` gains its measured
+  extension list. Ceiling bookkeeping: the commit's doc updates pushed CHANGELOG.md and
+  DEV_NOTES.md over their append-history ceilings — sharded by `scripts/shard_history.py`
+  (completeness printed exact: 52 = 51 + 1 and 36 = 35 + 1, order and bytes; shards
+  0093/0094 manifested) and LIVE_STATUS.md trimmed to fit (6,123/6,144). The two shard
+  events then fired the shard FAMILY's aggregate axis (396,259 > 393,216 — the axis the
+  row's three count re-derivations told the next reader to watch): re-derived to 2× by
+  reviewed decision `decision_changelog-family-aggregate-rederivation`, compaction
+  alternatives rejected on the record; per-part and the hash-pinned partition unmoved.

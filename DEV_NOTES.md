@@ -1,5 +1,28 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — where the manual and the silicon part ways (P3-BREADTH.4 slice 4)
+
+Form-coverage completion for `semulith-dsp56300` was a decode exercise plus a semantics
+arbitration exercise. The decode side was routine in the good way: FM figures give the
+shapes, the pinned assembler's probe words confirm every mask (one probe misalignment on
+my side — reading the lod two lines off — caught instantly by the pinned decode test).
+The semantics side is where the differential campaign earned its keep: first smoke run
+was 2 agree / 4 fail, and every failure was a real model defect with a distinct root
+cause. RTS restores PC only, not SR (FM 13-168 was right; my 56000-style assumption was
+wrong — the jsr guest pins it: the U bit survives both returns). A short immediate to an
+accumulator sign-extends through A2, falsifying the FM's "remaining bits are zeroed"
+prose. A1/B1 memory reads are raw — the shifter/limiter lives on the whole-accumulator
+read path (my FM-derived limiter on A1 was an over-application, refuted by a stored
+$FE00FF). The S bit sets only on accumulator bus reads, so no subset-v0 path sets it at
+all (an ASR of a negative accumulator proved it). And a keep-mask nibble-slip
+(`0xFF00…` for `0x00FF…`) zeroed A2 on the 24-bit logical ops — the kind of bug the
+reference's b2=$FE dump line makes instantly visible. Guest-side lesson: the assembler
+will shorten `move #$000002,x1` to the fractional short form; `#>` forces the long form,
+and the model's typed OutOfWindow stop is what caught the runaway. The reference's emit
+source was used to LOCATE mechanisms (TOOLBOX); every rule's evidence is the dump
+agreement, so EVD-04's independence ledger is unchanged and the claim stays
+EXPERIMENTAL.
+
 ## _(2026-10-01)_ — a chapter with a lifecycle (MODEL-METHOD.19)
 
 The director ruled the demand chapter a live one: its content will sharpen as more CPUs,
@@ -562,10 +585,4 @@ Lesson: `promotion: declined` (recorded in the leaf) — the C-UB lesson lives i
 The director delegated the two decisions `.5` was blocked on. Routing: the C guest lands in `P2-SCALAR.5` — the measured G0 precedent (the tree completes, the gate keeps the criterion visible every commit through GATE-REPORT, EVD-08 makes `passed` over a missing check mechanically unreachable); reopening P1-LAB would relocate bookkeeping, not evidence. Toolchain: measured, not installed — Apple clang 21.0.0 has NO RISC-V backend (the exact triple error is in the decision record); Homebrew `llvm@21` clang 21.1.8 compiled `-march=rv64i -mabi=lp64` to correct RV64I (objdump-verified); the keg ships no linker, and zig 0.16.0's bundled `ld.lld` (Homebrew LLD 21.1.8) does. Rejected: a system-wide GNU toolchain (multi-GB off-volume mutation for zero evidence gain) and routing clang's `-S` through the project's assembler (the criterion wants a genuinely compiled artifact). Recorded as `decision_c-guest-routing-and-toolchain`; `.5` blocked → active with the three-strand design before code. House-keeping under pressure: MEMORY.md's byte ceiling fired mid-commit (7217 > 7168) and was answered by demotion-grade trimming, never by raising the cap; KNOWLEDGE_MAP.md regenerated for the new record. Validation: `make gate` all green (docs-only commit).
 
 Lesson: `promotion: declined` (recorded in the leaf) — the decision record IS the durable form.
-
-## _(2026-09-30)_ — the SEMULITH- prefix, pinned at the boundary and watched (PREFIX-DISCIPLINE.1 — tree closes)
-
-The director's ruling ("it is SEMULITH and not SEMILITH … only SEMULITH") answered the drift finding surfaced the same day. The measurement behind it: `git log --format='%s'` census over all 123 commits — both spellings across 10+ areas (`SEMILITH-PL` ×13 the worst), exactly one non-prefixed subject ("Initial commit"). Subjects are immutable, so the design question was WHERE the rule lives: not a history scan (fails forever on the recorded drift), but the boundary where new subjects enter — `.githooks/commit-msg` refuses any leading work-unit id not beginning `SEMULITH-`, with `SEMULITH` named in the refusal (red for the right reason, per the registry's verdict-and-reason rule). The hook is a NEUTRAL scaffold file (`update_scaffold.sh` syncs it; §21 forbids carrying the pin upstream), so the pin alone would be a silent-revert waiting to happen — the same exposure as the repaired spine defects, answered the same way: `COMMIT-PREFIX` (#29) probes the hook BEHAVIOURALLY (synthetic SEMILITH- must be refused naming SEMULITH; SEMULITH- must pass), so a reverted pin turns the very next commit RED, named. Discrimination observed before registration: the check fired RED on the real tree pre-pin (`NOT REFUSED`), and its self-test covers the four fixtures (unpinned / refuse-all-wrong-reason / over-tight / correctly-pinned) 4/0. One nuance discovered by the LESSON-PROMOTION gate, not by reading: the decline token must sit on ONE line in a staged task file — a wrapped `promotion: declined (…)` is invisible to its grep. Ruling recorded as `decision_work-unit-prefix-semulith.md`; COMMIT.md states the prefix; both mirrors carry the row; LIVE_STATUS re-derived (29 / 301, the gate's own numbers). Validation: live hook probes both directions; `COMMIT-PREFIX: ok`; `make gate` all green.
-
-Lesson: `promotion: declined` (recorded in the leaf) — the ruling is the decision record; the mechanism is the hook, the probe, and their mirror rows.
 
