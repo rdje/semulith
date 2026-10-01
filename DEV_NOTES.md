@@ -1,5 +1,28 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the bounded subset, chosen against the gaps (P3-BREADTH.4, slice 1)
+
+Selecting a "narrow real slice" is itself measurement work, not preference. Three censuses
+did the deciding: the pinned reference's `Instruction` enum (its decode is DSP56300-complete,
+so coverage bounds nothing), its `LIMITATIONS.md` read in full (SA/SC/DM mode bits inert,
+stack extension absent, peripheral interrupts unverified, cycle counts base-table only —
+each gap became a named exclusion, because evidence cannot outrun the oracle's own honesty),
+and the difftest harness's comparison contract (checkpoint-level canonical end-state:
+registers, deviation-encoded X/Y windows, 15 stack slots; `steps` is the compared counter,
+`cyc` informational forever — a simpler shape than the RISC-V per-instruction commit walk,
+and a different one: a per-case comparator, not a first-divergence walk). The subset that
+survives is `dsp56300-lab-v0` v0: non-parallel moves with the A2/B2 extension readout (F6's
+named case), the immediate/register ALU core, signed `mpy`/`mac`, `nop/jmp/jsr/rts`,
+`do`/`enddo`/`rep`, linear addressing. The hardest call was excluding parallel moves — the
+defining DSP shape — and the honest way to exclude something load-bearing is to name it as
+the first extension candidate rather than let it slip out silently. The vehicle (a sibling
+crate, manual-derived, EXPERIMENTAL) followed from the tree's own routing: the pipeline
+refuses a second unit by name and that generator work is `.5`'s; building the generalization
+before its exercising target exists is the speculative generality P3 was created to refuse.
+Two gaps surfaced and were routed, not smoothed over: the profile schema's scope taxonomy is
+scalar-named (a `.5` named case), and the auto-discovering gates have never met a second,
+deliberately partial profile (the dossier slice's first measurement).
+
 ## _(2026-10-01)_ — the evidence path, run for real (P3-BREADTH.3, slice 2)
 
 A survey says a path exists; only running it proves it reproduces here. The DSP56300 route
@@ -486,10 +509,4 @@ Lesson: `promotion: declined` (recorded in the leaf) — the two-way channel liv
 The director's relay of chipdoc's answer (REQ-008 fulfilled, both PDFs mirrored, "same bytes", plus a numbering correction) was treated as four claims to verify, not one message to trust: (1) the mirror exists — `risc-v/isa/reference/docs.riscv.org-v20260120/` holds both PDFs + README + SHA256SUMS; (2) byte-equality — chipdoc's unprivileged PDF hashes to `06bb3c23…d150bc`, identical to the independent docs.riscv.org fetch `MODEL-BOOKS.2` measured, so the corroboration is two acquisitions, one set of bytes; (3) REQ-008 read in the ledger, the correction verbatim; (4) the numbering claim re-measured HERE from the extracted text layer — `Chapter 2. RV32I Base Integer Instruction Set, Version 2.1` / `Chapter 4. RV64I` — where the pinned HTML has §1.1/§3.1. The correction is correct, and it converts `.14`'s "a locator mapping is required" into three exactly measured numberings (HTML §1.1/§3.1 · this PDF ch.2/ch.4 · GitHub §2/§4). Both PDFs went through the corpus seam as reference-only materials (digests verified at fetch; the unprivileged one EQUAL to the web-fetched copy at fetch time), the catalogue gap was filed and resolved the same day, and the `.materials/web-sourced/` stopgap — hours old, uncommitted — was retired: the `.4` "URL kind when a second web-sourced family arrives" trigger fired and unfired in one day. The channel measurement, made before the relay arrived: chipdoc's `poll_semulith_gaps.py` reports `semulith_gaps_open: 0` against the real catalogue because its gap scan reads only top-level `(gap …)` forms and this catalogue nests gaps inside the single `(materials …)` form (scratch probe: flat seen, nested not) — the polled route is deaf to our gaps today; surfaced for a chipdoc-side fix, chipdoc untouched. House-keeping under pressure: `docs/tasks/MODEL-METHOD.md` crossed its 64 KiB per-part ceiling twice mid-leaf (67,737 B → checklists archived; 65,032 B growing → all 2026-09-27 done-leaf bodies archived); the ceiling was obeyed, never raised — the live tree now keeps only active/proposed leaves, frontier, decisions, open questions and both logs. Validation: catalogue parses/loads (45 materials); `--fetch` 2/2 digests verified; `--verify` 45/45; `--list` zero drift at `f33d330`; `make gate` all green (FRONTIER-SYNC caught the index cell naming `.16` post-completion — fixed in the index, never the tree).
 
 Lesson: `promotion: declined` (recorded in the leaf) — the poller finding lives in the gap record; the numbering trap lives in the material notes.
-
-## _(2026-09-29)_ — the chipdoc feed consumed: adoption is copy-and-verify (MODEL-METHOD.15)
-
-The director supplied the corpus root and ordered a git-ignored local cache. The mechanics were cheap precisely because of an earlier design decision: chipdoc's feed (`catalog/semulith-proposals.sexp`) writes its `(material …)` proposals in THIS catalogue's own syntax, so adopting a proposal is copying a record into `materials/catalog.sexp` and letting `materials.py --fetch` re-verify its digest at copy time — no transcription, and nothing trusted from the feed. Seven adopted: the director's 2026-09-27 flagged set (psABI, SBI, BRS, U-Boot, DT, FU540, virtio, ACT) minus psABI, which was already catalogued and cached since `.11` (its SRC-02 "prefer the corpus copy" follow-up discharges here: the corpus PDF form was already the preferred one; the `.4` canonical HTML render stays beside it in `run-real-code/`). The corpus re-pin (`3c45e81` → `73711d6`) is what `corpus_drift()` compares against `rev-parse --short HEAD`, so the drift warning cleared with the variable set; the corpus block's census was re-derived at the new pin by the same path sweep (5309 files / 255 PDFs; was 3684 / 196). Two snapshot-kind materials exercised the manifest path: ACT4 (136/136 entries) and U-Boot (1219/1219) — a snapshot's identity is its SHA256SUMS digest, never a page's. The channel snapshot (`.semulith-data/chipdoc/`, git-ignored, new `.gitignore` entry) holds the map, the feed and the requests ledger; the corpus path lives in its untracked README only — Policy 12 binds tracked files, and every tracked reference stays `$SEMULITH_CHIPDOC_ROOT`. Measured absences, both recorded in the leaf: the pinned v20260120 snapshot carries no PDF (72 HTML pages + SHA256SUMS; `find -iname '*.pdf'` empty), so `.14`'s probe input stays the `.4` release-asset acquisition; and the feed proposes no psABI record because psABI was already ours. One in-flight correction, mine: the snapshot README's feed census was first typed from recall (60 materials / 10 gaps) and corrected by grep (67 / 11) — CLAIM_VERIFICATION biting on a one-line claim; caught before commit. CHANGELOG.md crossed its 64 KiB ceiling with this leaf's entry and DEV_NOTES.md crossed its own 48 KiB ceiling with this note; the DOC-SHARDING machinery answered both as designed: `shard_history.py` moved the oldest entries to `docs/changelog/shard-0067.md` (66,625 → 64,566 B) and `shard-0068.md` (50,024 → 47,681 B); completeness exact both times, manifest 70 rows. Validation: `materials.py --verify` 43/43 / 0 drift; `--self-test` 20/0; `make gate` all green.
-
-Lesson: `promotion: declined` (recorded in the leaf) — the recall-vs-grep correction is the CLAIM_VERIFICATION discipline already documented in `docs/CLAIM_VERIFICATION.md`.
 

@@ -96,9 +96,24 @@ unsupported families remain unclaimed.
   Lessons: `promotion: declined (the survey and the demonstration are dated evidence living where the next evaluator meets them; their durable outputs — the slice decision and the demonstrated path — are recorded in this tree's Decisions and Verification Log)`.
 
 - ID: `P3-BREADTH.4` — **the bounded real subset**
-  Status: `pending`
+  Status: `in-progress` (slice 1 — the selection — done `2026-10-01`)
   Goal: implement and evidence the narrow slice selected in `.3`.
   Acceptance: its claim names the exact subset; a source-reviewed experimental subset cannot inherit a differentially validated claim from another target (`docs/EVIDENCE_AND_GATES.md` §1).
+  Slice 1 (`2026-10-01`, `SEMULITH-BR-0009`): the subset SELECTED against the reference's
+  measured coverage and gaps — unit `dsp56300-lab-v0` subset v0: non-parallel moves incl.
+  the A2/B2 extension readout (F6's named case), the immediate/register data-ALU core,
+  signed `mpy`/`mac`, `nop/jmp/jsr/rts`, `do`/`enddo`/`rep`, linear addressing only; every
+  exclusion named with its reason (parallel moves — the dual-feed axis — deferred as the
+  first named extension candidate; interrupts/modes/stack-extension/timing excluded on the
+  reference's own LIMITATIONS). The comparison surface measured: checkpoint-level canonical
+  end-state (registers + deviation-encoded X/Y windows + 15 stack slots; `steps` compared,
+  `cyc` never) — a new, simpler comparator shape than the RISC-V per-step walk. Vehicle
+  DECIDED: sibling crate `crates/semulith-dsp56300`, manual-derived decode/semantics with
+  per-form citations, EXPERIMENTAL label; generator/schema generalization stays `.5`'s.
+  Record: [`artifacts/p3-breadth/2026-10-01-subset-selection.md`](artifacts/p3-breadth/2026-10-01-subset-selection.md);
+  decision: `decision_dsp56300-lab-v0-subset`. Gaps surfaced, owned, routed: the profile
+  schema's scope taxonomy is scalar-named (→ `.5` named case); the auto-discovering gates'
+  treatment of a second partial profile must be measured by the dossier slice.
 
 - ID: `P3-BREADTH.5` — **schema and generator functionality where justified**
   Status: `pending`
@@ -114,7 +129,7 @@ unsupported families remain unclaimed.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P3-BREADTH.4` | `pending` | the evidence path is demonstrated (`.3`); the bounded DSP56300 subset can now be selected against the reference's measured coverage and gaps (its LIMITATIONS bound the claim) |
+| 1 | `P3-BREADTH.4` | `in-progress` | slice 1 selected the subset (`dsp56300-lab-v0` v0) and the vehicle (sibling crate, EXPERIMENTAL); slice 2 is the profile dossier + the reference-ledger integration (`fetch_references.sh`), measuring the auto-discovering gates' treatment of a second profile |
 | — | `P3-BREADTH.1` | `slice-gated` | the executable-now scope landed `2026-10-01`; the DSP56300 slice (`.3`) resolves part of the gating — F6's census reopens per the new profile in `.4`; F4/F5 (VLIW) and F2 (TI grouping) stay unbuilt, recorded |
 
 ## Decisions
@@ -145,6 +160,21 @@ unsupported families remain unclaimed.
   fixture's job, never a compatibility claim. Consequences named now: a scalar-DSP slice
   means F4/F5 stay unbuilt (recorded, not lost — a future VLIW target reopens `.1` by name),
   F2 idles, and `.5`'s F1/F3 generator work gains its exercising target.
+
+- `2026-10-01` (`.4` slice 1): **the bounded subset is `dsp56300-lab-v0` subset v0**, selected
+  against the reference's measured coverage (instruction-complete) and its documented gaps
+  (LIMITATIONS bounds the claim axes: no modes, no stack extension, no verified peripheral
+  interrupts, no timing). The subset is non-parallel moves (A2/B2 readout included), the
+  immediate/register ALU core, signed `mpy`/`mac`, `nop/jmp/jsr/rts`, `do`/`enddo`/`rep`,
+  linear addressing; the exclusions are each named with a reason, and the parallel-move
+  dual-feed axis is deferred as the first named extension candidate. The vehicle is a new
+  sibling crate (`crates/semulith-dsp56300`, EXPERIMENTAL, manual-derived and per-form
+  cited): the pipeline refuses a second unit by name, that generator work is `.5`'s by this
+  tree's own routing, and building it first would be the speculative generality P3 exists
+  to refuse; a sibling crate also keeps the gated scalar model byte-untouched. The
+  comparator is checkpoint-level canonical end-state equality (the difftest harness's own
+  engine-agnostic contract), not the RISC-V per-step walk. Full record:
+  `decision_dsp56300-lab-v0-subset`.
 
 ## Open Questions
 
@@ -284,6 +314,7 @@ unsupported families remain unclaimed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.4` slice 1 | reference coverage censused on the pinned source (the `Instruction` enum spans the full DSP56300 set); LIMITATIONS.md read in full and mapped to exclusions; the difftest README's comparison surface re-read (dump vocabulary, deviation windows, stack slots, `cyc` informational) | subset `dsp56300-lab-v0` v0 selected with every exclusion reasoned; vehicle decided (sibling crate, EXPERIMENTAL); decision record + selection artifact landed |
 | `2026-10-01` | `.3` slice 1 | three parallel per-family web surveys over one enumerator (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tooling/dedicated projects); the two load-bearing positives re-derived by direct fetch (mborgerson LICENSE = MIT, README = the difftest claim; MAME sharc.cpp = BSD-3, ADSP21060/62, full `state_add` export) | oracle availability measured: TI ABSENT, DSP56300 STRONG, SHARC PARTIAL; slice decision DSP56300 recorded |
 | `2026-10-01` | `.3` slice 2 | pinned fetch (commit `c60aeedb`, tarball sha256 recorded), on-volume release build of `dsp56300-asm` + `difftest`; micro guest: asm rc 0 (22 words), difftest rc 0 (16 steps, canonical dump + `--dump-mem`); independent Python arithmetic reproduces `A=001f253d515280` exactly; `#$5`→`x1=050000` traced to DSP56300FM §3.4.1.3 | the evidence path DEMONSTRATED end-to-end; `.3` done |
 | `2026-10-01` | `.2` | DEF-GEN self-test (9 arms, incl. the new unfielded-operand RED arm) + byte-compare; `make check` 180/180 + fmt + clippy; synth suite 5/5; `gen_fragments.py` regeneration byte-identical | `.2` done — no opaque hooks (census); the one silent arm eliminated at generation + runtime |
@@ -293,6 +324,7 @@ unsupported families remain unclaimed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.4` slice 1 | `SEMULITH-BR-0009 (leaf P3-BREADTH.4): the bounded subset selected — dsp56300-lab-v0 v0, sibling-crate vehicle, exclusions named` | coverage + LIMITATIONS censused; subset named exactly; checkpoint-level comparator shape measured; decision_dsp56300-lab-v0-subset |
 | — (design discussion) | `SEMULITH-BR-0001 (leaf P3-BREADTH.1): the composable-DSP design discussion recorded — resume here` | the skeleton + the measured axis menu + composition rules + ISA-as-fabric; the lego framing; the permanent bounds |
 | `.1` slice 1 | `SEMULITH-BR-0005 (leaf P3-BREADTH.1): F2 measured executably — synth probe 5; the unconditional set is empty, the leaf slice-gates on .3` | grouping probe pinned (rc 1, `register_groups`); scalar regression re-run green; F2/F4/F5/F6 implementation legs await the slice decision |
 | `.2` | `SEMULITH-BR-0006 (leaf P3-BREADTH.2): the hook census — no opaque hooks; the one silent extraction arm is now a generation-time refusal` | full-pipeline audit; `exec.rs` silent skip → generator refusal rc 2 + loud `ModelError`; 4 stale justification sites swept; dead `_unused_build` removed; DEF-GEN RED arm added |
@@ -323,3 +355,10 @@ unsupported families remain unclaimed.
   X/Y-space memory deviations, the §3.4.1.3 immediate rule). **`.3` done** — the working
   path is demonstrated, no experimental fallback needed. Frontier: `.4` (the bounded
   subset, selected against the reference's measured coverage and gaps).
+- `2026-10-01`: `.4` slice 1 (`SEMULITH-BR-0009`) — the bounded subset selected:
+  `dsp56300-lab-v0` v0 (non-parallel moves incl. A2/B2 readout, the ALU core, signed
+  `mpy`/`mac`, `nop/jmp/jsr/rts`, `do`/`enddo`/`rep`, linear addressing), every exclusion
+  named with its reason against the reference's measured coverage and LIMITATIONS; the
+  vehicle decided (sibling crate `semulith-dsp56300`, EXPERIMENTAL); the comparator is
+  checkpoint-level canonical end-state equality. `.4` is `in-progress`; slice 2 is the
+  profile dossier + the reference-ledger integration.

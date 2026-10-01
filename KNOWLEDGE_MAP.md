@@ -65,6 +65,7 @@
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
+- [`decision_dsp56300-lab-v0-subset.md`](docs/decisions/decision_dsp56300-lab-v0-subset.md)
 - [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)
 - [`decision_encoding-resourcing-probe.md`](docs/decisions/decision_encoding-resourcing-probe.md)
 - [`decision_interpreter-before-compiler.md`](docs/decisions/decision_interpreter-before-compiler.md)

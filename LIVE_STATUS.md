@@ -21,7 +21,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Reference models acquired | Done | Sail 0.14, Spike `1e05ddac`, QEMU 11.1.1 pinned; ACT located. `scripts/fetch_references.sh` |
 | Matched-profile evidence path | Done | 4 guests, 2 models, 34 spec-derived values, 4 negative observations, 7 differences; `scripts/run_smoke.py` |
 | Requirements catalogue seeded | Done | `P0-PROFILE.3` (+ `MODEL-METHOD.10`) — 28 machine-readable records, every declared instruction covered; in the one format since `SOT-FORMAT.3`, schema-validated |
-| Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; `PROFILE-CONSISTENCY`'s 39 arms re-fired; the dossier's commentary survives as first-class `(comment …)` forms |
+| Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; commentary survives as first-class `(comment …)` forms |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 36 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 72 checks **declared not implemented** |
 | Reference independence inventoried | Done | 6 pairs, 4 verdicts; FP **shared** (184/199 files identical), routed to `P4-SYSTEM.7` |
 
@@ -38,9 +38,9 @@ summarize the snapshot in every commit-workflow completion message.
 | --- | --- | --- | --- |
 | P0 — profile and evidence access | G0 | Done | [`P0-PROFILE`](docs/tasks/P0-PROFILE.md) 10/10 — **gate `G0` RUN, verdict `incomplete`**: all three criteria met, 68 declared checks unimplemented; reopened once (`.10` — matched on the ISA, **not the platform**) |
 | P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `passed` (`2026-09-30`)**: criteria 1–5 met; criterion 6 — the C-toolchain guest — met by `P2-SCALAR.5` (`c-scope.c`, three-way 129/129) |
-| P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.1`–`.8` landed (corpus, matrix, campaigns, snapshots, portability); `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
+| P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
-| P3 — shared interfaces + real DSP slice | BREADTH | In Progress | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — `.3` done, `.4` next |
+| P3 — shared interfaces + real DSP slice | BREADTH | In Progress | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — `.4` in progress: the bounded subset selected (`dsp56300-lab-v0` v0; exclusions named against the reference's LIMITATIONS), sibling-crate vehicle |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
 | P5 — board model | BOARD | Not Started | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 7 leaves; composition against the CPU contract |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |
