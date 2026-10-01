@@ -1,0 +1,11 @@
+# DEV_NOTES shard — _(2026-09-30)_ … _(2026-09-30)_
+
+> Sharded from `DEV_NOTES.md` when it crossed its 48 KiB ceiling (`doctrine/readme_routes.tsv`).
+> Entries in a shard are **never edited after the shard** — git history is canonical.
+
+## _(2026-09-30)_ — the channel answers: the poller fix, measured; the heard gaps reconciled (MODEL-METHOD.17)
+
+Chipdoc's relayed note (via the director) answered the deafness `.16` surfaced: corpus `6bfabf2` makes `poll_semulith_gaps.py` descend into the `(materials …)` wrapper. Verified by measurement, not accepted: the same probe `.16` ran now reports `semulith_gaps_open: 2` against the real catalogue — pre-fix it said 0, and `.16` needed a scratch probe (flat seen, nested not) to prove the instrument discriminated at all; the channel now exhibits the discrimination itself. The two it heard were this catalogue's status-less records, and both were already dispositioned here: `GAP-INTEL-SDM-VOL1` (closed by `X86-SDM-VOL1-253665`, catalogued `.13`) and `GAP-RISCV-JAN-2026-PDF` (closed by the decline decision recorded at filing, `.12`) — chipdoc had mirrored both resolved on its side. The reconcile adds `(status resolved)` + evidence to both records so the two-way channel reads true; post-reconcile the poller reports 0 open / 0 unmirrored. The v20260120 gap's ⛔ deafness paragraph now records the fix — a live catalogue may not assert a dead channel. Corpus re-pinned `f33d330` → `92a73b6`: the working-tree path sweep first REPRODUCED the recorded f33d330 figure (5313 files / 257 PDFs) and only then was trusted for the new pin — identical, and the git delta shows why (6 files, scripts and channel, no documents). Feed census at the new pin (corpus diff, not recall): 68/14, the delta exactly chipdoc's two resolved-gap mirror records. Snapshot refreshed; REQ-008 carries the true date 2026-09-29. The consequence chipdoc flags: the channel is TWO-WAY — a new gap filed in `materials/catalog.sexp` now surfaces there without an operator relay. Validation: `materials.py --verify` 45/45 / 0 drift; RECORD-SCHEMA ok; self-test 20/0; `make gate` all green.
+
+Lesson: `promotion: declined` (recorded in the leaf) — the two-way channel lives in the gap records and MEMORY.md.
+

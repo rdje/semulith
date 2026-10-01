@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `MODEL-METHOD`
-- Status: `done` (`2026-09-30` — `.14` closed it: the PDF probe measured the encodings
+- Status: `done` (`2026-10-01` — `.18` landed the per-kind information-demand chapter; reopened once from the `2026-09-30` closure, which `.14` had made: the PDF probe measured the encodings
   re-sourceable from the primary document, adopt-in-principle, the re-source a later
   reviewed leaf. `.15`+`.16` landed `2026-09-29`/`30` (the feed consumed, the v20260120
   PDFs adopted); `.17` — the poller deafness came back FIXED, the channel two-way —
@@ -335,8 +335,34 @@ per-part ceiling under `.16`; the ceiling was obeyed, not raised._
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | — | the tree is DONE | `.14` done `2026-09-30` (the probe measured: 52/52 opcodes extracted, zero conflicts, adopt-in-principle; the re-source is a later reviewed leaf — `decision_encoding-resourcing-probe`) |
-| — | — | — | `.17` done `2026-09-30` (the poller fix measured, the gaps reconciled, corpus `92a73b6`); `.15`+`.16` done `2026-09-29`/`30` (the feed consumed; the v20260120 PDFs adopted); `.1`–`.13` done `2026-09-27`, bodies archived |
+| 1 | — | the tree is DONE (18/18) | `.18` done `2026-10-01` (the per-kind information-demand chapter in the book); `.14` done `2026-09-30` (the probe measured: 52/52 opcodes extracted, zero conflicts, adopt-in-principle; the re-source is a later reviewed leaf — `decision_encoding-resourcing-probe`) |
+
+## The `.18` leaf (in-progress)
+
+- ID: `MODEL-METHOD.18` — **the information a unit demands, per kind: CPU, DSP, board**
+  Status: `done` (`2026-10-01`, `SEMULITH-MM-0074`)
+  Goal: an mdBook chapter that states, per unit kind, the precise set of information a
+  faithful model needs, and for each class what NOT having it prevents — distinguished as
+  prevents-the-model (no input to derive from) vs prevents-the-claim (something can be
+  built but it is not evidence). Grounded in the two measured units (`rv64i-lab-v0`,
+  `dsp56300-lab-v0`) and honest about the third (board: derived from the composition
+  work, not yet measured).
+  Acceptance: the chapter maps each class to the catalogue's categories (the catalogue
+  owns the definitions — nothing restated); every "prevents" cites a measured instance
+  where the project has one, and says "prospective" where it does not.
+  Result (`2026-10-01`): `docs/book/src/models/the-information-a-unit-demands.md` — the
+  demand and the price per kind, on the spine "prevents-the-model vs prevents-the-claim"
+  (plus the quieter third, prevents-the-bound). CPU: 9 measured classes; DSP: the CPU set
+  plus 6 (widths/readouts, spaces-with-units, the arithmetic model, the mode map, the
+  loop/stack machinery, the CCR rules + document scepticism — and what a DSP does NOT
+  need when the oracle lacks it: timing); board: 5 prospective classes (composition, the
+  map/devices, interrupt delivery, the boot contract, fabric semantics), each marked
+  derived-not-measured. Every class maps to catalogue categories; the closing section
+  names the recursion the design discussions predicted (CPU = base set, DSP = base +
+  scalar-breaking axes, board = base + composition). Book builds; the chapter count
+  re-derived 31 → 32 (DERIVED-COUNTS).
+  Lessons: `promotion: declined (the chapter IS the durable artifact — it lives in the
+  book where the director reads it)`.
 
 ## Decisions
 
@@ -373,6 +399,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-01` | `.18` | `mdbook build docs/book` green; `make gate` green after the lockstep sweep (FRONTIER-SYNC, TREE-CLAIMS, DERIVED-COUNTS 31→32 all re-derived) | the per-kind chapter stands in the book; the tree DONE 18/18 |
 | `2026-09-30` | `MODEL-METHOD.17` | the fixed poller against the real catalogue, pre-reconcile | `semulith_gaps_open: 2`, `unmirrored: []` — the nested records are READ (pre-fix: 0, and a scratch probe was needed to discriminate at all) |
 | `2026-09-30` | `MODEL-METHOD.17` | the same probe, post-reconcile | `semulith_gaps_open: 0`, `unmirrored: []`, rc 0 — both sides read true |
 | `2026-09-30` | `MODEL-METHOD.17` | corpus re-derivation at the re-pin | 5313 files / 257 PDFs at `92a73b6` (working-tree path sweep) — identical to the recorded `f33d330` figure the sweep first reproduced; git delta `f33d330..92a73b6`: 6 files, no documents |
@@ -465,6 +492,7 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.18` | `SEMULITH-MM-0074 (leaf MODEL-METHOD.18): the information a unit demands — CPU, DSP, board — and what each absence prevents` | the mdBook chapter: demand + price per kind on the prevents-model/claim/bound spine; measured on the two standing units, prospective for the board |
 | `MODEL-METHOD.14` | `SEMULITH-MM-0073 (leaf MODEL-METHOD.14): the encoding re-sourcing probe — adopt-in-principle, measured` | 52/52 opcodes, zero conflicts, 37/52 by the naive parser; the re-source is a later reviewed leaf (`.8` owns the encoding); the tree CLOSES 17/17 |
 | `MODEL-METHOD.17` | `SEMULITH-MM-0059 (leaf MODEL-METHOD.17): the channel answers — the poller fix measured, the heard gaps reconciled` | corpus `92a73b6`; the channel is two-way; 45 materials unchanged |
 | `MODEL-METHOD.16` | `SEMULITH-MM-0058 (leaf MODEL-METHOD.16): the v20260120 PDFs — gap filed, answered same-day, adopted through the corpus seam` | REQ-008 verified four legs; 45 materials; corpus `f33d330`; the poller deafness surfaced |
@@ -517,3 +545,8 @@ live tree keeps the frontier, the decisions, the open questions and both logs.
   mentions some ids again in prose). They are corrected here from the commands' real output — in
   the same leaf that exists to stop a scalar being trusted without checking what it ranges over,
   which is the joke writing itself.
+- `2026-10-01`: `.18` done (`SEMULITH-MM-0074`) — the director's ask landed: the mdBook
+  chapter "The information a unit demands — CPU, DSP, board" states the load-bearing
+  information per kind and what each absence prevents (model / claim / bound), measured
+  on `rv64i-lab-v0` and `dsp56300-lab-v0`, prospective and marked so for the board. The
+  tree is DONE 18/18.

@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-MM-0074 (leaf MODEL-METHOD.18) — the information a unit demands, per kind
+
+- New mdBook chapter, *The information a unit demands — CPU, DSP, board* (The models
+  section): per unit kind, the precise set of load-bearing information a faithful model
+  needs and what each absence prevents — on the spine "prevents-the-model vs
+  prevents-the-claim" (plus the quieter third: prevents-the-bound, the census never
+  taken). CPU: 9 measured classes; DSP: the CPU set plus 6, each earned by a measured
+  bite (the `x1=050000` readout surprise, the `memory_spaces` refusal, the U-bit
+  extraction inversion); board: 5 prospective classes, marked derived-not-measured.
+  Every class maps to the information catalogue's categories without restating them.
+- The chapter closes on the recursion the P3 design discussions predicted: CPU = base
+  set, DSP = base + scalar-breaking axes, board = base + composition. Book builds;
+  chapter count re-derived 31 → 32; `MODEL-METHOD` is DONE 18/18.
+
 ## SEMULITH-BR-0011 (leaf P3-BREADTH.4) — the model crate stands; the first differential case AGREEs
 
 - `crates/semulith-dsp56300` (lib + runner): the full canonical register set + 16-level

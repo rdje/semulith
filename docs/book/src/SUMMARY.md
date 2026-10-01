@@ -10,6 +10,7 @@
 # The models
 
 - [One definition, one book](models.md)
+- [The information a unit demands — CPU, DSP, board](models/the-information-a-unit-demands.md)
 
 # The plan
 

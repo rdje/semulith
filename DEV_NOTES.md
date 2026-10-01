@@ -1,5 +1,24 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — what it takes, per kind (MODEL-METHOD.18)
+
+The director asked for the precise set of information needed to model a CPU, a DSP, or a
+board, and what not having it prevents. The interesting part of the answer is that
+"prevents" is not one word but three. Prevents-the-model is the one everyone expects: no
+encodings, no decode; no semantics, no model. Prevents-the-claim is the one this project
+was built around: you can always BUILD something — the question is whether it may call
+itself evidence, and that fails for want of a reference (SRC-02), an independence
+inventory (184/199 shared SoftFloat files), or a matched configuration (the ISA string
+that matched for four leaves while the platform underneath did not). And
+prevents-the-bound is the quiet one: without the census you can build it and run it and
+still be unable to say what you do not model. The per-kind lists then write themselves
+from the record — a CPU is the base set, a DSP is the base set plus the axes that broke
+scalar assumptions (each one measured: the x1=050000 readout, the memory_spaces refusal,
+the U-bit inversion), a board is the base set plus composition, prospective and marked
+so. A catalogue says what could be known; a demand list says what it costs not to.
+Promotion: declined in the leaf (the chapter is the durable artifact — it lives in the
+book where the director reads it).
+
 ## _(2026-10-01)_ — the first DSP instruction executes (P3-BREADTH.4, slice 3)
 
 A bounded model earns its keep in the details nobody warns you about. Three earned their
@@ -539,10 +558,4 @@ Lesson: `promotion: declined` (recorded in the leaf) — the decision record IS 
 The director's ruling ("it is SEMULITH and not SEMILITH … only SEMULITH") answered the drift finding surfaced the same day. The measurement behind it: `git log --format='%s'` census over all 123 commits — both spellings across 10+ areas (`SEMILITH-PL` ×13 the worst), exactly one non-prefixed subject ("Initial commit"). Subjects are immutable, so the design question was WHERE the rule lives: not a history scan (fails forever on the recorded drift), but the boundary where new subjects enter — `.githooks/commit-msg` refuses any leading work-unit id not beginning `SEMULITH-`, with `SEMULITH` named in the refusal (red for the right reason, per the registry's verdict-and-reason rule). The hook is a NEUTRAL scaffold file (`update_scaffold.sh` syncs it; §21 forbids carrying the pin upstream), so the pin alone would be a silent-revert waiting to happen — the same exposure as the repaired spine defects, answered the same way: `COMMIT-PREFIX` (#29) probes the hook BEHAVIOURALLY (synthetic SEMILITH- must be refused naming SEMULITH; SEMULITH- must pass), so a reverted pin turns the very next commit RED, named. Discrimination observed before registration: the check fired RED on the real tree pre-pin (`NOT REFUSED`), and its self-test covers the four fixtures (unpinned / refuse-all-wrong-reason / over-tight / correctly-pinned) 4/0. One nuance discovered by the LESSON-PROMOTION gate, not by reading: the decline token must sit on ONE line in a staged task file — a wrapped `promotion: declined (…)` is invisible to its grep. Ruling recorded as `decision_work-unit-prefix-semulith.md`; COMMIT.md states the prefix; both mirrors carry the row; LIVE_STATUS re-derived (29 / 301, the gate's own numbers). Validation: live hook probes both directions; `COMMIT-PREFIX: ok`; `make gate` all green.
 
 Lesson: `promotion: declined` (recorded in the leaf) — the ruling is the decision record; the mechanism is the hook, the probe, and their mirror rows.
-
-## _(2026-09-30)_ — the channel answers: the poller fix, measured; the heard gaps reconciled (MODEL-METHOD.17)
-
-Chipdoc's relayed note (via the director) answered the deafness `.16` surfaced: corpus `6bfabf2` makes `poll_semulith_gaps.py` descend into the `(materials …)` wrapper. Verified by measurement, not accepted: the same probe `.16` ran now reports `semulith_gaps_open: 2` against the real catalogue — pre-fix it said 0, and `.16` needed a scratch probe (flat seen, nested not) to prove the instrument discriminated at all; the channel now exhibits the discrimination itself. The two it heard were this catalogue's status-less records, and both were already dispositioned here: `GAP-INTEL-SDM-VOL1` (closed by `X86-SDM-VOL1-253665`, catalogued `.13`) and `GAP-RISCV-JAN-2026-PDF` (closed by the decline decision recorded at filing, `.12`) — chipdoc had mirrored both resolved on its side. The reconcile adds `(status resolved)` + evidence to both records so the two-way channel reads true; post-reconcile the poller reports 0 open / 0 unmirrored. The v20260120 gap's ⛔ deafness paragraph now records the fix — a live catalogue may not assert a dead channel. Corpus re-pinned `f33d330` → `92a73b6`: the working-tree path sweep first REPRODUCED the recorded f33d330 figure (5313 files / 257 PDFs) and only then was trusted for the new pin — identical, and the git delta shows why (6 files, scripts and channel, no documents). Feed census at the new pin (corpus diff, not recall): 68/14, the delta exactly chipdoc's two resolved-gap mirror records. Snapshot refreshed; REQ-008 carries the true date 2026-09-29. The consequence chipdoc flags: the channel is TWO-WAY — a new gap filed in `materials/catalog.sexp` now surfaces there without an operator relay. Validation: `materials.py --verify` 45/45 / 0 drift; RECORD-SCHEMA ok; self-test 20/0; `make gate` all green.
-
-Lesson: `promotion: declined` (recorded in the leaf) — the two-way channel lives in the gap records and MEMORY.md.
 

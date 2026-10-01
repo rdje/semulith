@@ -14,7 +14,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Project doctrines (29 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 308 self-test arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row went missing) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 33 destinations governed; containment deferred with a trigger |
-| mdBook is the review surface | Done | 31 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
+| mdBook is the review surface | Done | 32 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — index, doctrine documents, task-tree facts, derived counts |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 
@@ -28,8 +28,8 @@ summarize the snapshot in every commit-workflow completion message.
 | North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 1 unit today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
-| Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 17/17 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
-| Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`) |
+| Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 18/18 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
+| Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`); `.18` added the per-kind demand chapter |
 | Per-unit books | Done | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 8/8 — one definition, one mdBook; the arc landed, `UNIT-BOOKS` gates it |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
@@ -40,7 +40,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `passed` (`2026-09-30`)**: criteria 1–5 met; criterion 6 — the C-toolchain guest — met by `P2-SCALAR.5` (`c-scope.c`, three-way 129/129) |
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
-| P3 — shared interfaces + real DSP slice | BREADTH | In Progress | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — `.4` in progress: the model crate STANDS, the first differential case AGREEs (53 fields); slice 4 is form coverage + the guest corpus |
+| P3 — shared interfaces + real DSP slice | BREADTH | In Progress | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) — `.4` in progress: the model crate STANDS, the first case AGREEs (53 fields); slice 4 is form coverage |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
 | P5 — board model | BOARD | Not Started | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 7 leaves; composition against the CPU contract |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |
