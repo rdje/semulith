@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-BR-0008 (leaf P3-BREADTH.3) — the evidence path exercised; `.3` done
+
+- Reference pinned (commit `c60aeedb`, tarball sha256 recorded, `target/refs/` discipline)
+  and release-built on-volume; a synthetic micro guest (24-bit immediates, mpy+mac into the
+  56-bit accumulator, X/Y-space stores, a zero-overhead do loop) assembled (rc 0) and run
+  headless — canonical-state dump, rc 0.
+- Verified three independent ways: hand arithmetic reproduces A=001f253d515280 exactly;
+  `--dump-mem` shows the X/Y stores landing right; the one surprise (`#$5` → `x1=050000`)
+  traced to DSP56300FM §3.4.1.3. No Semulith DSP model exists — the claim is about the
+  PATH. Artifact: `docs/tasks/artifacts/p3-breadth/2026-10-01-evidence-path-demo.md`.
+
 ## SEMULITH-BR-0007 (leaf P3-BREADTH.3) — the oracle survey: DSP56300 chosen, evidence path first
 
 - Per-family oracle census (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tooling/dedicated
@@ -864,25 +875,4 @@
   so the difference record was tightened rather than the ceiling moved); the 25th
   doctrine row also re-based the TOOLBOX.md / DOCTRINE_ENFORCEMENT.md caps to
   20 KiB / 28 KiB (the SEMILITH-PL-0001 precedent).
-
-## SEMILITH-MB-0002 (leaf MODEL-BOOKS.8) — annex: building the first CPU model, step by step
-
-- Director request: the project book gains `annex/building-first-model.md`, a teaching
-  chapter that walks the creation of `rv64i-lab-v0` end to end — choose a finishable
-  target, pin the materials (and measure what they lack: no encodings), the dossier with
-  its decision authorities, predeclared requirements, the hidden-state census, the one
-  canonical definition, generation over hand-editing, the data-evaluating interpreter,
-  before-any-run expectations, the one observation vocabulary, whole-platform matching,
-  honest comparison, the detector's own proof, the three coverage campaigns, and the
-  honest gate — each step with what you do, why that order, what went wrong for real,
-  and a re-runnable command.
-- The mistakes stay in, per the tree's teaching mandate: the matched profile that matched
-  only an instruction set (the advancing `mtime`), the truncated trace that read as
-  agreement, the inverted FENCE dossier defect, the authoring constants the gate caught.
-- Every command the chapter prints was executed against the real repository (the
-  `zext-addi` mutant is caught, rc=1; the scope census counts 52); chapters 29 → 30
-  (re-derived by DERIVED-COUNTS; LIVE_STATUS restates).
-- Placement follows `.7`: the project book's annex — the per-unit book structure
-  (`.1`) is unbuilt; when it lands, the model book references this chapter rather than
-  copying it (never a second owner of a fact).
 

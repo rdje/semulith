@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — the evidence path, run for real (P3-BREADTH.3, slice 2)
+
+A survey says a path exists; only running it proves it reproduces here. The DSP56300 route
+pinned (commit `c60aeedb`, sha256-recorded tarball under `target/refs/`, the RISC-V
+references' own discipline), built on-volume (31.7 s; the upstream's 1.98.1 toolchain pin
+sidestepped with `RUSTUP_TOOLCHAIN=1.98.0` because installing it would write the OFF-VOLUME
+rustup store — §13 applies to reference builds too), and exercised with a synthetic micro
+guest: assembler rc 0, emulator rc 0, 16 steps, canonical dump. The value of the demo was in
+the verification, not the run: hand arithmetic reproduced the 56-bit accumulator to the bit
+(`001f253d515280`), the memory deviation dump proved the X/Y-space stores landed where
+aimed, and the one value that looked wrong (`move #$5,x1` → `x1=050000`) traced to the
+family manual's §3.4.1.3 (an 8-bit short immediate to X0/X1/Y0/Y1 is a fraction stored in
+bits 23–16) — a reminder that on an unfamiliar ISA the FIRST reflex is "the toolchain is
+wrong" and the correct one is "read the manual's move semantics". Promotion: declined in the
+leaf (dated evidence; its durable output is the demonstrated path, recorded in the tree).
+
 ## _(2026-10-01)_ — the oracle question, answered by census (P3-BREADTH.3, slice 1)
 
 The tree carried an open question — "whether any real DSP oracle becomes available at all" —

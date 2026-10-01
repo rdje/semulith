@@ -45,7 +45,12 @@ root = sys.argv[1]
 # walked 1.7 GB of another project's tree and died with RecursionError on a deeply nested JSON
 # document of theirs. It did not mis-report — it crashed, which is the better of the two failures
 # but still a gate that stopped judging. Our fixtures are ours; a submodule's are not.
-EXCLUDE = ("docs/provenance", ".git", "target", "vendor")
+# ⛔ `.app-data` is the same class: the on-volume DEPENDENCY STORE (§13), whose cargo-home
+# registry holds other projects' sources — including deliberately malformed parser-test fixtures
+# (chumsky-0.13.0's examples/sample.json, surfaced 2026-10-01 by P3-BREADTH.3's reference build).
+# This gate's subject is OUR records; a cache's JSON is not a record this repository makes
+# claims with, and an untracked store can grow a bad JSON at any dependency bump.
+EXCLUDE = ("docs/provenance", ".git", "target", "vendor", ".app-data")
 findings, checked = [], 0
 
 def pins(obj, out):

@@ -1,0 +1,21 @@
+; micro.a56 — the evidence-path demonstration guest (P3-BREADTH.3, slice 2)
+; Exercises the DSP56300 shapes the DSP-REVIEW findings need a target for:
+; 24-bit words, the 56-bit accumulator (A2:A1:A0), X and Y data spaces,
+; a zero-overhead DO loop. SYNTHETIC guest — evidence about the PATH, never
+; about any real DSP program.
+	org	p:$100
+start	move	#$123456,x0
+	move	#$0abcde,y0
+	mpy	x0,y0,a			; A = x0 * y0 (signed 24x24 -> 56-bit)
+	move	#$5,x1
+	mac	x1,y0,a			; A += x1 * y0
+	move	a1,x:$200		; accumulator middle word -> X space
+	move	a2,x:$201		; the 8-bit extension byte (F6's readout shape)
+	move	a1,y:$300		; and across into Y space
+	do	#4,endl			; zero-overhead loop, 4 iterations
+	asl	a			; A <<= 1 each pass
+endl
+	nop
+	move	a1,x:$202		; the post-loop value
+	jmp	done
+done	nop
