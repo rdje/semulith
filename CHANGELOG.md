@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0056 (tree ARTIFACT-CLEANUP) — the 2026-10-02 §8 cleanup: 105 incremental caches, 139 MB
+
+- Time-triggered §8 run (the `2026-10-01` run was a full day old): 105 cargo
+  incremental-cache `.bin` files deleted (139 MB), every one under a cargo
+  `*/incremental/*` directory of `target/` (84 the project's own debug profile, 21
+  wasm32) — exactly the enumerated safe scope; post-delete re-census 0; `target`
+  4.0 G → 3.9 G; `.app-data` unchanged at 1.4 G.
+- 0 stray `.bin`/`.log` in `target/release` / `target/debug/deps`; no
+  `target/refs/*.log` present this run; the 7 cargo-home crate test fixtures kept
+  by policy (inputs, not artifacts). `docs/ARTIFACT_CLEANUP.md` overwritten with
+  the one-line record.
+
 ## SEMULITH-P5-0003 (leaf P5-BOARD.9) — the chipdoc answers reconciled: five adopted, five measured negatives
 
 - Verified live first: `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0
