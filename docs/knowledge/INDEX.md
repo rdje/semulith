@@ -28,4 +28,5 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`a-survey-that-found-things-can-still-have-missed-things.md`](a-survey-that-found-things-can-still-have-missed-things.md) | my survey found plenty — how do I know it found everything? |
 | [`all-green-but-the-product-has-not-moved.md`](all-green-but-the-product-has-not-moved.md) | every check is green and the infrastructure is beautiful — why hasn't the product moved? |
 | [`pin-the-mechanism-slope-before-the-number.md`](pin-the-mechanism-slope-before-the-number.md) | my measurement says "1.4 allocations per step" — is that signoff-grade? |
+| [`an-inherited-label-is-a-claim-to-re-derive.md`](an-inherited-label-is-a-claim-to-re-derive.md) | a design brief names a device — can I trust the label, or must I measure it? |
 | [`the-chipdoc-channel.md`](the-chipdoc-channel.md) | how does semulith ask chipdoc for a document, and know it was heard? (`materials/requests.sexp` with `(status open)` — preferred; catalog gaps the fallback; exactly-once ids; the 2026-09-30 incident's lesson) |

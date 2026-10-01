@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `P5-BOARD`
-- Status: `proposed`
+- Status: `active`
 - Roadmap lane: `ROADMAP.md` §6 → **P5 — Model one board in Rust**
 - Gate: `BOARD`
 - Depends on: the CPU release gate (`P4-SYSTEM` → `CPU-SYSTEM`), or a separately accepted smaller profile
@@ -31,9 +31,34 @@ incompatible CPU/environment assumption remains**.
 ## Task Tree
 
 - ID: `P5-BOARD.1` — **platform specification**
-  Status: `pending`
+  Status: `done` (`2026-10-02`, `SEMULITH-P5-0005`)
   Goal: documented memory map, reset behaviour, timers, interrupt controller, serial console; the canonical board definition composing **exact** processor and device versions (`OWN-05`).
   Acceptance: the board profile pins versions, not names.
+  Result (`2026-10-02`): the board is **`netboard-lab-v0`** — the id finalized in the
+  units-registry idiom. The canonical definition is
+  [`profiles/netboard-lab-v0/board.sexp`](../../profiles/netboard-lab-v0/board.sexp),
+  gated by the new [`schema/board.sexp`](../../schema/board.sexp) (the first non-processor
+  source-of-truth schema; DOSSIER-SCHEMA pairs them by basename), narrated by
+  [`profiles/netboard-lab-v0/DOSSIER.md`](../../profiles/netboard-lab-v0/DOSSIER.md).
+  Every pin is a version, not a name: the processor by unit id + version `0` + the
+  GATE-REPORT-gated dossier content digest; each device by its datasheet's material id +
+  revision + sha256. The memory map (2 GiB RAM at the harness's existing base, the UART at
+  the sourced FU540 instance address, the NIC in a 256-byte window spanning the datasheet's
+  direct register map), cold-only reset, the serial console, and the two declared absences
+  (timers, interrupt controller — each carrying its reason and the obligation it satisfies)
+  are DATA, with `satisfies` fields pre-wiring `.4`'s composition verdict. **One measured
+  defect found and fixed in execution:** the design brief's "16550-compatible UART" label
+  is false against the pinned source — a `pdftotext` census of `SIFIVE-FU540-C000` v1p5
+  finds zero occurrences of "16550"; the manual's §13 UART is the SiFive UART
+  (txdata/rxdata/txctrl/rxctrl/ie/ip/div, 32-bit-aligned). The source pin was the intent,
+  so the board adopts the SiFive UART and the label is corrected in
+  `materials/catalog.sexp` and recorded in `D-BOARD-UART-KIND`. **Scope routing recorded:**
+  unit registration (`materials/units.sexp`), the `kind` edit in `schema/units.sexp`, and
+  the per-unit book land with the leaf that materializes the composed board unit (`.3`) —
+  the registry admits a new kind "the day a real unit needs one", and registration day
+  carries UNIT-BOOKS/MATERIALS-BILL/generator consequences that are `.3`'s, not a
+  specification's. The `profiles/` family's third unit directory triggered the standing
+  re-derivation: 3× bound, `decision_profiles-family-three-units`.
 
 - ID: `P5-BOARD.2` — **device dossiers**
   Status: `pending`
@@ -128,7 +153,7 @@ incompatible CPU/environment assumption remains**.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.1` | `pending` | the composition check needs a specified platform to check |
+| 1 | `P5-BOARD.2` | `pending` | the platform is specified; the devices need dossiers before anything composes — and `.2` decides which device goes first (Open Questions) |
 
 ## Decisions
 
@@ -176,13 +201,32 @@ incompatible CPU/environment assumption remains**.
   devices = their datasheets' material id + revision + sha256; device UNIT dossiers land in
   `.2` — where a device unit does not yet exist, the board definition declares the id and
   names `.2` as its owner (the WAIVER-ROUTING shape, honesty with an owner).
+- `2026-10-02` (`.1` execution amendments, recorded with the leaf):
+  **CORRECTION — the "16550-compatible UART" label was measured false.** A `pdftotext`
+  census of the pinned `SIFIVE-FU540-C000` v1p5 artifact finds zero occurrences of
+  "16550"; the manual's §13 UART is the **SiFive UART** (txdata/rxdata/txctrl/rxctrl/ie/
+  ip/div, 8-entry FIFOs, naturally aligned 32-bit accesses). The source pin — not the
+  label — was the brief's intent, so `netboard-lab-v0` adopts the SiFive UART; the label
+  is corrected in `materials/catalog.sexp` (the `SIFIVE-FU540-C000` supplies text) and
+  the board definition carries the correction as `D-BOARD-UART-KIND`. Spike's
+  `ns16550@10000000` (in `profiles/rv64i-lab-v0/references.sexp`) is the reference's own
+  device tree, factual, and untouched. The brief's lines above stay as recorded — this
+  note is the correction, per the house pattern (a defect is corrected with evidence,
+  not edited out of history).
+  **Registration routing:** unit registration in `materials/units.sexp`, the
+  `(values board)` edit in `schema/units.sexp`, and the per-unit book land with `.3` —
+  the leaf that materializes the composed board unit. Registration day carries the
+  UNIT-BOOKS / MATERIALS-BILL / book-generator / BREADTH-report-prose consequences
+  (censused in `.1` execution); a specification leaf does not register.
+  **The `profiles/` bound re-derived to 3×** (`decision_profiles-family-three-units`):
+  142 files / ~565 KiB measured at staging — nothing fired; the family's contract
+  expanded to three units and the standing arithmetic followed.
 
 ## Open Questions
 
-- ~~Which board?~~ **Answered `2026-10-02`** (Decisions, design brief): rv64i-lab-v0 v0 +
-  16550 UART + LAN9118, no timer/IRQ controller by contract. The board's id is finalized at
-  `.1` execution (proposal: a `lab`-suffixed name in the units registry's idiom, e.g.
-  `netboard-lab-v0`).
+- ~~Which board?~~ **Answered `2026-10-02`** (Decisions, design brief; id finalized at `.1`
+  execution): **`netboard-lab-v0`** — rv64i-lab-v0 v0 + the SiFive UART + LAN9118, no
+  timer/IRQ controller by contract.
 - Which device gets a dossier first in `.2` — the UART (simpler contract) or the NIC (the
   director's headline)? Decided at `.2`, not blocking `.1`.
 
@@ -234,6 +278,39 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P5-BOARD.1` (`2026-10-02`, `SEMULITH-P5-0005`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the composition check (`.4`) needs a specified
+  platform to check, and no memory-map/reset/device fields existed in any schema: the
+  board-definition document and its schema were `.1`'s to design (the recorded machinery
+  census). Measured before designing: a search of `schema/` finds no memory-map, reset
+  or device construct (census: 17 schema files, none board-shaped), and the brief's
+  UART label failed its source check — `grep -c -i 16550 target/fu540.txt` (the
+  `pdftotext` rendering of the pinned artifact) → 0.
+  WHERE: `schema/board.sexp` (new), `profiles/netboard-lab-v0/board.sexp` +
+  `DOSSIER.md` (new), `materials/catalog.sexp` (the 16550 correction),
+  `doctrine/readme_routes.tsv` + `docs/decisions/decision_profiles-family-three-units.md`
+  (the third unit directory), `doctrine/fact_ownership.tsv` (the new fact kind).
+- [x] **ADDRESSED (verified)** — `python3 scripts/check_sexp_schema.py
+  profiles/netboard-lab-v0/board.sexp schema/board.sexp` → ok; the schema validates under
+  the schema language (`schema/board.sexp` against `schema/schema.sexp`) → ok. Every pin
+  verified against its source before being written: the dossier digest read from
+  `profiles/rv64i-lab-v0/GC-REPORT.md`; both device sha256s read from
+  `materials/catalog.sexp`; the UART's kind/register model/widths measured from the
+  pinned FU540 PDF (§13, Table 58/59 — and the 16550 defect measured: zero occurrences);
+  the NIC's widths and map span measured from the pinned LAN9118 PDF (§1.10, Table 5-1);
+  the RAM base/size read from `crates/semulith-cli/src/main.rs` (DEFAULT_BASE/SIZE).
+- [x] **NO REGRESSION** — the focused gates: DOSSIER-SCHEMA (the new basename pair),
+  RECORD-SCHEMA, FACT-OWNERSHIP (the new fact kind), README-ROUTING-CLOSURE (the 3×
+  re-derivation), DERIVED-COUNTS, UNIT-BOOKS, MATERIALS-BILL, then `make gate` → all
+  green; `mdbook build docs/book` rc 0. No Rust surface touched.
+- [x] **FIX** — the schema, the definition, the dossier, the catalog correction, the
+  ceiling re-derivation + decision record (+ INDEX), the fact-ownership row, this tree's
+  `.1`, the book's P5 chapter.
+- [x] **LOCKSTEP** — tree (leaf + frontier + decisions + checklist + logs), `MEMORY.md`
+  (next action `.2`), `CHANGELOG.md`, `DEV_NOTES.md`, `LIVE_STATUS.md` (P5 row),
+  `docs/decisions/INDEX.md`, mdBook `plan/p5-p7.md`.
+
 `P5-BOARD.9` (`2026-10-01`, `SEMULITH-P5-0003`):
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — CHANNEL.md §0.3/§0.5 (re-read `2026-10-01`) closed
@@ -284,6 +361,7 @@ incompatible CPU/environment assumption remains**.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.1` | `check_sexp_schema.py` (definition vs `schema/board.sexp`; the schema vs `schema/schema.sexp`) → ok; every pin re-derived from its source (GC-REPORT digest, the two catalog sha256s, the FU540/LAN9118 PDFs, the harness DEFAULT_BASE/SIZE); the 16550 census: 0 occurrences in the pinned FU540 v1p5; `make gate` green; `mdbook build docs/book` rc 0 | `netboard-lab-v0` specified: the canonical board definition pins versions, not names; the two absences declared as data with their obligations; the 16550 defect corrected at its records; registration routed to `.3` |
 | `2026-10-01` | `.9` | `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0; `materials.py --fetch` → all five sha256-verified into `.materials/network/`; `materials.py --verify` → 52/0; corpus census at `c4ad8a2` (5696/293); `make gate` green | the ten answers reconciled: five materials adopted, ten requests marked (5 resolved / 5 measured-negative blocked); the knowledge cards carry the ask→answer loop |
 | `2026-10-01` | `.8` | `sexp.read_file` → 10 forms (the one reader); `poll_semulith_gaps.py` read-only → NEW REQUESTS (10), rc 1; `make gate` green | ten acquisition requests filed and seen by the channel; the filing mechanics recorded semulith-side (knowledge card) |
 
@@ -291,6 +369,7 @@ incompatible CPU/environment assumption remains**.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.1` | `SEMULITH-P5-0005 (leaf P5-BOARD.1): the platform specified — netboard-lab-v0's canonical board definition pins versions, not names; the 16550 label measured false and corrected` | `schema/board.sexp` designed (the first non-processor SoT schema); the definition + DOSSIER land under `profiles/netboard-lab-v0/`; timers/IRQ absent-by-contract as data with `satisfies` pre-wiring `.4`; profiles/ bound re-derived 3×; registration routed to `.3` |
 | `.9` | `SEMULITH-P5-0003 (leaf P5-BOARD.9): the chipdoc answers reconciled — five materials adopted and digest-verified, ten requests marked, the answer path recorded` | 5 fulfilled adopted (LAN9118, SARA-R4, ESP-AT, nRF52840, AT86RF233); 5 measured negatives recorded with consequences; corpus re-pinned c4ad8a2; the knowledge cards carry §0.3/§0.5 |
 | `.8` | `SEMULITH-P5-0002 (leaf P5-BOARD.8): the network-connected board's documentation researched — corpus surveyed, ten requests filed, the channel measured` | DP83816/ESP32-SVD/FU540/FU740/AM335x already held; LAN9118/e1000/RTL8139, three LTE AT manuals, ESP-AT, nRF52840, AT86RF233, and the AR9271 probe requested; the poller sees exactly the ten |
 | — | `pending` | `pending` |
@@ -320,3 +399,15 @@ incompatible CPU/environment assumption remains**.
   (units kind edit, profiles/ ceiling, composition freshness gate, board schema to
   design) and the version-pin shape are in Decisions; the CPU-release-gate blocker is
   resolved for `.1`–`.4` as contract design per `ROADMAP.md` §P5.
+- `2026-10-02`: `.1` done (`SEMULITH-P5-0005`) — the platform specified. The board is
+  `netboard-lab-v0`: `profiles/netboard-lab-v0/board.sexp` under the new
+  `schema/board.sexp`, every pin a version (unit id + version + GATE-REPORT-gated
+  dossier digest; material id + revision + sha256), the memory map / cold reset /
+  serial console / declared timer-and-IRQ absences all data with `satisfies`
+  pre-wiring `.4`. One measured defect fixed in execution: the brief's
+  "16550-compatible UART" label was false against the pinned source (zero "16550"
+  occurrences in FU540-C000 v1p5); the SiFive UART (§13) is the adopted device, the
+  catalog's supplies text corrected, the correction recorded as `D-BOARD-UART-KIND`.
+  Registration (`materials/units.sexp`, the `kind` edit, the book) routed to `.3`;
+  the `profiles/` bound re-derived to 3× (`decision_profiles-family-three-units`).
+  Frontier: `.2` — device dossiers.

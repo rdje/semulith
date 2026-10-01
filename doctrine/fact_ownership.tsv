@@ -41,4 +41,5 @@ pinned-sources (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/sources.sexp	docs/mode
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/reference-models.md	MATERIALS-BILL
 internal-contracts (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/	docs/models/dsp56300-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL
+board-definition (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	-	-
 book index (semulith-book)	docs/book/src/	docs/book/src/index.md	BOOK-INDEX

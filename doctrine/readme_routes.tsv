@@ -271,7 +271,16 @@ docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave t
 #   rejected alternatives in
 #               docs/decisions/decision_task-tree-family-count-rederivation.md.
 docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	1572864	131072
-docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	15	24576	40	131072	16384
+# Re-derivation, P5-BOARD.1 (2026-10-02), when the AGGREGATE axis fired at 131,911 > 131,072:
+#   docs/decisions/ 36 files / 131,911 B — the three-units record (+2,447 B) landed the family
+#               over at ordinary decision velocity, one file per durable record by design.
+#               The count axis (36/40) is the same calendar and is re-derived in the same
+#               record: ceiling 40 -> 80 files, 131,072 -> 262,144 B (the family's 2x
+#               precedent); health 48 / 163,840 (just above the measurement). ⛔ PER-PART
+#               STAYS 16,384 — a record becoming a monolith is still the bite signal.
+#               Reviewed decision:
+#               docs/decisions/decision_decisions-family-aggregate-rederivation.md.
+docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	48	163840	80	262144	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
 # Derivation, MODEL-BOOKS.1 (2026-09-29), when the per-unit model books got their home:
@@ -301,7 +310,15 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #              ceiling_bytes 516,096 -> 573,440 (the measured aggregate under the ~1.2x
 #              band); health 118 / 490,000. ⛔ PER-PART STAYS 32,768 — the largest new
 #              member is dir-ext-matrix.expected.sexp at 8,010 B.
-profiles/	reader_navigation	partitioned	one directory per profile; PROFILE-CONSISTENCY gates each dossier; the 2× bound is decision_profiles-family-two-units (2026-10-01)	236	980000	240	1146880	32768
+# Re-derivation, P5-BOARD.1 (2026-10-02), when the third unit directory landed:
+#   profiles/  142 files / ~565 KiB measured (120 rv64i-lab-v0 + 20 dsp56300-lab-v0 + 2
+#              netboard-lab-v0, the first BOARD dossier) — nothing fired; the family's
+#              contract (one directory per modelled unit) expanded to three units, so the
+#              bound re-derives by the standing arithmetic (decision_profiles-family-
+#              three-units, director-approved in principle 2026-10-02): 3 x 120 files,
+#              3 x 573,440 B; health at the standing ratios. ⛔ PER-PART STAYS 32,768 —
+#              the largest new member is board.sexp at ~8 KiB.
+profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 3× bound is decision_profiles-family-three-units (2026-10-02)	354	1470000	360	1720320	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

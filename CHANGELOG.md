@@ -1,5 +1,35 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0005 (leaf P5-BOARD.1) — the platform specified: `netboard-lab-v0` pins versions, not names; the 16550 label measured false and corrected
+
+- The first board's canonical definition lands: [`profiles/netboard-lab-v0/board.sexp`](profiles/netboard-lab-v0/board.sexp)
+  under the new [`schema/board.sexp`](schema/board.sexp) — the first non-processor
+  source-of-truth schema (DOSSIER-SCHEMA pairs them by basename) — narrated by
+  [`profiles/netboard-lab-v0/DOSSIER.md`](profiles/netboard-lab-v0/DOSSIER.md).
+- Every pin is a version, never a name (OWN-05, the leaf's acceptance): the processor by
+  unit id + version `0` + the GATE-REPORT-gated dossier content digest; each device by its
+  datasheet's material id + revision + sha256. The memory map (2 GiB RAM at the harness's
+  existing base, the UART at the sourced FU540 instance address, the NIC in the datasheet's
+  256-byte direct-register span), cold-only reset, and the serial console are data.
+- Timers and interrupt controllers are **absent by contract** — declared as data with their
+  reasons and the obligations they satisfy (`OB-ENV-VIRTUAL-TIME`, `OB-ENV-EVENT-DELIVERY`);
+  a CLINT/PLIC would be a composition rejection, not a feature. `satisfies` fields pre-wire
+  `.4`'s composition verdict. Both devices' interrupt lines unconnected-and-declared;
+  drivers poll. The NIC backend is recorded-trace replay RX / recording-sink TX.
+- **Measured defect, found and fixed in execution:** the design brief's "16550-compatible
+  UART" label is false against the pinned source — zero occurrences of "16550" in
+  FU540-C000 v1p5 (`pdftotext` census); §13 documents the SiFive UART. The source pin was
+  the intent: the board adopts the SiFive UART, `materials/catalog.sexp`'s supplies text is
+  corrected, and the correction is recorded as `D-BOARD-UART-KIND`.
+- Scope routing: board-unit registration (`materials/units.sexp`, the `kind` edit, the
+  per-unit book) lands with `.3` — registration day carries the UNIT-BOOKS /
+  MATERIALS-BILL / generator consequences, which are not a specification's to bear.
+- The `profiles/` family's third unit directory: the bound re-derived to 3× by the standing
+  arithmetic ([`docs/decisions/decision_profiles-family-three-units.md`](docs/decisions/decision_profiles-family-three-units.md));
+  the board-definition fact kind registered in `doctrine/fact_ownership.tsv`.
+- Validation: both schema validations ok; every pin re-derived from its source artifact;
+  `make gate` green; `mdbook build docs/book` rc 0.
+
 ## SEMULITH-BA-0001 (leaf BOOK-APPARATUS.1) — the book's index: generated from the book's own text, gated against drift
 
 - The director's `2026-10-02` apparatus directive audited against the real book: glossary
@@ -865,13 +895,4 @@
 - Acquisition facts synced: `references.sexp` (act4 → `acquired (sparse partial)` + pin;
   PROFILE-CONSISTENCY's vocabulary extended), the catalogue note, both books. Per-part
   ceiling obeyed: `.4`'s design moved to the tree archive (live file was 64,310/65,536).
-
-## SEMULITH-PS-0065 (leaf P2-SCALAR.5) — the compiled guest, written into the model book
-
-- New model-book chapter `compiled-guest.md` (between references and evidence): what a
-  guest is and the shared-mind weakness of hand-written assembly; the self-checking
-  design and why per-step expectations stay with the assembly corpus; the measured
-  toolchain; all three in-flight defects as the teaching record (the C-UB shift, the
-  visible-change vocabulary, GATE-REPORT's verdict-assuming arm); what it proved and
-  what it did not. Linked from the evidence chapter. Book builds; gate green.
 

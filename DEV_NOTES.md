@@ -1,5 +1,40 @@
 # DEV_NOTES.md
 
+## _(2026-10-02)_ — a board specification is data with its absences declared, and a label is not a source (P5-BOARD.1)
+
+`netboard-lab-v0` is the first board and `schema/board.sexp` the first non-processor
+source-of-truth schema. Two design decisions are worth the ink:
+
+**An absence the contract depends on is data, not prose.** `rv64i-lab-env-v0` v0 admits no
+guest-reachable time source and no asynchronous event — and both absences must be *platform*
+properties to be real (the CPU contract's own lesson: excluding CSR instructions does not
+exclude reading `mtime` over MMIO). So the schema gives `timers` and `interrupt-controller`
+explicit `(present false)` forms carrying the reason and the obligation ids they satisfy;
+an undocumented absence would read as an oversight, and an oversight is how a CLINT slips
+in as a "feature" and becomes a `.4` composition rejection. The `satisfies` fields
+pre-wire `scripts/discharge_assumptions.py`'s verdict without computing it — declaration
+here, computation there.
+
+**Verify the label against the artifact before you inherit it.** The design brief named the
+serial device "16550-compatible (source SIFIVE-FU540-C000 v1p5)". A `pdftotext` census of
+the pinned PDF: zero occurrences of "16550"; §13 is the SiFive UART (txdata/rxdata/txctrl/
+rxctrl/ie/ip/div, 8-entry FIFOs, 32-bit-aligned only). The pin was the intent, the label
+was wrong — so the board adopts the SiFive UART and the label is corrected at every record
+(`materials/catalog.sexp`, `D-BOARD-UART-KIND`; the tree keeps the brief's original lines
+with a dated correction, per the house pattern). Consequence that mattered: the UART's
+sourced instance address (`0x1001_0000`, Table 58) collided with the pre-verification
+sketch's NIC address — measuring first caught that too. Memory map: RAM 2 GiB at
+`0x8000_0000` (the harness's existing DEFAULT_BASE/SIZE, so laboratory guests run
+unchanged), UART at the FU540 instance address, the LAN9118 in a 256-byte window at
+`0x1002_0000` (Table 5-1's direct-register span, offsets 0x00–0xFC).
+
+Scope routing: registration of the board unit (`materials/units.sexp`, the `kind` edit,
+the per-unit book) is deferred to `.3` — the registry admits a new kind "the day a real
+unit needs one", and registration day carries UNIT-BOOKS / MATERIALS-BILL /
+book-generator / BREADTH-prose consequences (all censused before deciding) that belong to
+the materialization leaf, not to a specification. The third `profiles/` directory
+re-derived the family bound to 3× by the standing arithmetic; nothing fired (142 < 240).
+
 ## _(2026-10-02)_ — the book's index is a function of the book, not a page someone keeps (BOOK-APPARATUS.1)
 
 The director's apparatus directive audited against the real book: the glossary cannot fork
@@ -630,20 +665,4 @@ contradiction at the tree's close, which is exactly what the line now does clean
 
 Lesson: `promotion: declined` (the axes' state lives in the generated report; the
 decision record carries the reasoning).
-
-## _(2026-09-30)_ — the Rosetta proof: the x86-64 leg green under translation (P2-SCALAR.9, slice b)
-
-The leg's two halves were measured separately: the fixtures cross-compiled for
-x86_64-apple-darwin and ran green under Rosetta (cargo test --target, rc=0), and the
-agreement contract — the digest manifest — matched the aarch64 recording byte-for-byte
-(0670a01b…5bb52; the demo --json fingerprints are architecture-independent by
-construction: addresses and values, no host bytes). The instrument's verdict strings
-gained annotations ("green (Rosetta translation; …)"), so the ladder's normalization
-learned prefix matching — a one-line fix with the self-test re-run. The record's verdict
-moved incomplete → passed with the nuance preserved: the bare-metal leg is the CI
-matrix's ubuntu job, landing at the next approved push; Rosetta expires fall 2027 and is
-the bridge only. Also owned: slice (a)'s LOCKSTEP claimed a plan/p2.md line that commit
-never carried — the .9 book section lands with (b) and the miss is on the record.
-
-Lesson: `promotion: declined` (the normalization fix is measured by the self-test).
 

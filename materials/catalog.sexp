@@ -1071,8 +1071,9 @@
     (sha256 "5fa68a677ca4bc9fc81456840834eb4fa72874a2bd72a76c33f6709f3ecab79c")
     (bytes 2361460)
     (supplies "a complete Linux-capable RISC-V board: memory map plus register descriptions for
-               CLINT, PLIC, 16550-compatible UART, SPI, I2C, PWM, GPIO, DMA, Ethernet (GEM), QSPI and
-               DDR, and the boot flow")
+               CLINT, PLIC, the SiFive UART (§13 — txdata/rxdata/txctrl/rxctrl/ie/ip/div; NOT a
+               16550, corrected 2026-10-02 after a zero-hit pdftotext census of this artifact),
+               SPI, I2C, PWM, GPIO, DMA, Ethernet (GEM), QSPI and DDR, and the boot flow")
     (status candidate)
     (note "v1p5 is now the current issue; v1p0 is retained at sifive/fu540/legacy/ in the corpus for
            citation compatibility. Composes with RVI-PINNED-V20260120 (the processor)."))
