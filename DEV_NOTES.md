@@ -1,5 +1,22 @@
 # DEV_NOTES.md
 
+## _(2026-10-01)_ — ask through the channel, and write down how asking works (P5-BOARD.8)
+
+The director offered CHIPDOC's web-scorching for the network-connected board's component
+documentation. The useful engineering content was the survey BEFORE the ask: the
+snapshotted feed already holds a complete register-level Ethernet contract (TI-DP83816),
+the ESP32 register maps, both SiFive SoC manuals, and the AM335x TRM — so the ten
+requests only cover what is genuinely missing, each with a QEMU-oracle note or an
+explicit probe flag (the AR9271 request expects a measured negative, which is itself the
+answer to "is any WiFi baseband documented"). The process defect found and fixed: the
+filing mechanics (requests.sexp preferred, gaps the false-positive-prone fallback,
+exactly-once ids, the watcher firing on file change) lived only in the corpus-side
+CHANNEL.md — a session had to re-derive them, and the director noticed. The fix is a
+knowledge card, not a complaint: the next session reads
+`docs/knowledge/the-chipdoc-request-channel.md` and files in one step. Verification
+worth naming: chipdoc's poller was RUN (read-only, its own documented interface) and saw
+exactly the ten new ids — the channel measured live, not assumed.
+
 ## _(2026-10-01)_ — the landing is the boring part when the measurement came first (P3-BREADTH.7 slice 3)
 
 After slices 1–2 measured every attaching gate against the drafts, the landing itself was
@@ -645,27 +662,4 @@ each with its matrix cell named; ceiling expansion pre-stated per the `.1` rule.
 
 Lesson: `promotion: declined` — the census verdicts carry their citations in the leaf;
 the probes' traces are the measurement record the guests will re-pin as tracked evidence.
-
-## _(2026-09-30)_ — the ACT4 RV64I campaign: 51/51 three-way, recorded and gated (P2-SCALAR.5, strand 2c)
-
-The fleet run was green on the first attempt — and the first obligation was to prove the
-green was real, not an extraction artifact. The cross-check: the extracted slot census
-(17,017) reconciles EXACTLY against the measured static counts — 18,092 RVTEST_SIGUPD
-instances, minus 1,530 dead-path instances in the six branch tests (255 each: sigupds sit
-on both paths, one executes), plus 414 store-test read-back slots (sb/sd/sh/sw record
-2n+1), plus 51 final_sig_offset words. Per-file deltas are uniform (+1 everywhere except
-the ten explained files), and all three models agree on every count. The record is
-`act4.sexp`, emitted by the runner from measured rows; RECORD-SCHEMA rule 13 re-derives
-its three carried counts and closes the verdict vocabulary (self-test +5 arms, 39/0).
-Two in-flight REDs, both authoring-side, both caught by the schema layer before any
-commit: `(min N)` is a repeat-occurrence facet, not an integer bound (the kernel refused
-it by name), and atom fields are exactly `(name value)` — the emitter's multi-value
-`sparse_paths`/`evidence_note` failed uniform arity; fixed at the emitter, the record
-regenerated. Ceiling re-derivations (profiles/ 99→104 files, bytes untouched at 0.83×;
-schema/ health 16→18) are recorded in the registry with grounds. The campaign's standing
-is stated everywhere it appears: external tests with Sail-derived expectations — EVD-04's
-shared-ancestry row already forbids reading them as a second opinion.
-
-Lesson: `promotion: declined` — the reconciliation arithmetic and the two REDs are in the
-leaf's verification log where they bite.
 

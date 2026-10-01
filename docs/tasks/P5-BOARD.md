@@ -65,6 +65,34 @@ incompatible CPU/environment assumption remains**.
   Goal: generate from pinned inputs.
   Acceptance: a compatible manifest is recorded as **not** proving the OS correct, nor that the manifest matches the implementation.
 
+- ID: `P5-BOARD.8` — **the network-connected board's documentation, researched**
+  Status: `done` (`2026-10-01`, `SEMULITH-P5-0002` — the requests are filed and the
+  channel's pickup measured)
+  Goal: turn the `2026-10-01` design discussion (boards that touch the world) into a
+  measured documentation position BEFORE `.1` picks a board: what the corpus already
+  holds, and acquisition requests for the rest through the chipdoc channel.
+  Acceptance: `materials/requests.sexp` parses with the one reader; chipdoc's poller
+  (read-only) sees exactly the new request ids; nothing the corpus already holds is
+  re-requested; every request names its consumer (`.1`'s board choice).
+  Not blocked by the CPU release gate: documentation research is an input to `.1`, not
+  the milestone's execution.
+  Result (`2026-10-01`): the corpus survey (the snapshotted feed, corpus `92a73b6`)
+  measured the holdings — a complete register-level Ethernet MAC+PHY contract
+  (TI-DP83816), ESP32/C3/S3 register maps (SVD-ESPRESSIF), the SiFive FU540/FU740 manuals
+  and HiFive board docs, the TI AM335x TRM (on-SoC CPSW Ethernet) — and chipdoc's own
+  note that no standalone Cadence GEM / Synopsys DesignWare GMAC spec is public. Ten
+  requests filed (`materials/requests.sexp`): three wired NIC/MAC datasheets with QEMU
+  model precedents (LAN9118, Intel 82540EM/e1000, RTL8139), three LTE modem AT manuals
+  (Quectel EC25, SIMCom SIM7600, u-blox SARA-R4), the WiFi-module command surface
+  (Espressif ESP-AT), two register-documented embedded radios for the true-RFIC leg
+  (Nordic nRF52840, Microchip AT86RF233), and one honest probe — Atheros AR9271
+  (ath9k_htc) register-level docs, expected absent, the negative to be recorded.
+  Pickup measured: `poll_semulith_gaps.py` (chipdoc, run read-only) reports exactly the
+  ten new ids, exit 1. Fulfilment is chipdoc-side and asynchronous; each request's
+  status flips when the feed mirrors it. The channel's filing mechanics are now recorded
+  semulith-side: `docs/knowledge/the-chipdoc-request-channel.md` — they had lived only in
+  the corpus-side manual, and a session re-derived them the hard way once.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -124,24 +152,48 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
-- [ ] **ADDRESSED (verified)** — <measured before → after>
-- [ ] **NO REGRESSION** — <the suite or gate re-run, and its result>
-- [ ] **FIX** — <the change made>
-- [ ] **LOCKSTEP** — <docs, contracts and indexes updated>
+`P5-BOARD.8` (`2026-10-01`, `SEMULITH-P5-0002`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the `2026-10-01` design discussion needs measured
+  documentation positions before `.1` can pick a network-connected board; and the
+  channel's filing mechanics lived only corpus-side (`CHANNEL.md`), so a session had to
+  re-derive them — a durable-memory gap on semulith's side. WHERE the corpus stands:
+  `grep -io … .semulith-data/chipdoc/catalog/semulith-proposals.sexp` measured the
+  holdings (DP83816, ESP32 SVDs, FU540/FU740, AM335x; the GEM/GMAC negative already on
+  record).
+- [x] **ADDRESSED (verified)** — `materials/requests.sexp` filed (10 requests, each
+  naming `.1` as consumer); parses with the one reader (`sexp.read_file` → 10 forms);
+  chipdoc's poller run READ-ONLY — `SEMULITH_ROOT=<repo> python3
+  <corpus>/scripts/poll_semulith_gaps.py` → `NEW REQUESTS (10) [source=requests]`,
+  rc=1 — exactly the ten new ids. The knowledge card
+  `docs/knowledge/the-chipdoc-request-channel.md` (+ INDEX row) closes the memory gap.
+- [x] **NO REGRESSION** — `make gate` → `=== all doctrines green ===` (the new
+  `materials/requests.sexp` is in-family for SOURCE-FORMAT and parses with the one
+  reader); no existing request/gap touched.
+- [x] **FIX** — `materials/requests.sexp` (new), the knowledge card, this tree's `.8`.
+- [x] **LOCKSTEP** — tree (leaf + checklist + logs), `MEMORY.md` (the channel card named),
+  `CHANGELOG.md`, `DEV_NOTES.md`, `docs/knowledge/INDEX.md`; mdBook: the channel is
+  internal plumbing — the book's materials chapter does not list it, no drift.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| — | — | not started | — |
+| `2026-10-01` | `.8` | `sexp.read_file` → 10 forms (the one reader); `poll_semulith_gaps.py` read-only → NEW REQUESTS (10), rc 1; `make gate` green | ten acquisition requests filed and seen by the channel; the filing mechanics recorded semulith-side (knowledge card) |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.8` | `SEMULITH-P5-0002 (leaf P5-BOARD.8): the network-connected board's documentation researched — corpus surveyed, ten requests filed, the channel measured` | DP83816/ESP32-SVD/FU540/FU740/AM335x already held; LAN9118/e1000/RTL8139, three LTE AT manuals, ESP-AT, nRF52840, AT86RF233, and the AR9271 probe requested; the poller sees exactly the ten |
 | — | `pending` | `pending` |
 
 ## Changelog
 
 - `2026-09-13`: Created from `ROADMAP.md` §P5 by `SEMULITH-TREES.3`.
+- `2026-10-01`: Design discussion recorded (boards that touch the world;
+  `SEMULITH-P5-0001`). `.8` done (`SEMULITH-P5-0002`): the documentation research — the
+  corpus's holdings surveyed from the snapshotted feed, ten acquisition requests filed
+  through `materials/requests.sexp` (the preferred channel), pickup measured with
+  chipdoc's poller (read-only, exactly the ten new ids), and the channel's filing
+  mechanics recorded as a knowledge card so no session re-derives them.
