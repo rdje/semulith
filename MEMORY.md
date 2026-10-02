@@ -16,14 +16,14 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (4/11 — the three units registered; both device dossiers gated).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (5/11 — the maps generated and drift-gated, the composed catalogues on disk).
   Milestone frontier: `P5-BOARD`. (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P5-BOARD.3` — generated maps and the hardware description from the
-  canonical board definition (`profiles/netboard-lab-v0/board.sexp`): address maps and
-  wiring generated, no handwritten duplicate map anywhere, drift gated (OWN-05). The
-  composition verdict (`.4`) follows — the devices' composition records
-  (`REQ-D-NIC-TIME-SOURCES`, `REQ-D-NIC-PHY-LINK`, the strap values) are pre-wired to it.
-  All five units are registered (`materials/units.sexp`) with books that build.
+- next_action: `P5-BOARD.4` — the composition verdict against the CPU contract: for
+  every CPU assumption, the board or device guarantee that satisfies it, or a rejection
+  (`scripts/discharge_assumptions.py` over the composed catalogues `.3` materialized;
+  the devices' composition records — `REQ-D-NIC-TIME-SOURCES`, `REQ-D-NIC-PHY-LINK`,
+  the strap values — are pre-wired to it, as are board.sexp's `satisfies` fields). An
+  unmatched assumption is a rejection, not a note.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

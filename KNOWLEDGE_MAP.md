@@ -84,6 +84,7 @@
 - [`decision_models-family-five-books.md`](docs/decisions/decision_models-family-five-books.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
+- [`decision_profiles-family-composed-units.md`](docs/decisions/decision_profiles-family-composed-units.md)
 - [`decision_profiles-family-five-units.md`](docs/decisions/decision_profiles-family-five-units.md)
 - [`decision_profiles-family-four-units.md`](docs/decisions/decision_profiles-family-four-units.md)
 - [`decision_profiles-family-three-units.md`](docs/decisions/decision_profiles-family-three-units.md)

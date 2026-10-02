@@ -23,8 +23,6 @@ the composition (`REQ-D-NIC-TIME-SOURCES`), never wired to wall-clock.
   the board is a *specified* platform, not a *checked* one.
 - **The strap values** — the NIC's D32/nD16 and SPEED_SEL straps are the composition's
   choice (`REQ-D-NIC-STRAP-RESETS`), recorded as deferrals, decided at `.4`.
-- **The generated maps** — `P5-BOARD.3`: address maps and hardware-description data
-  generated from the canonical definition; no handwritten duplicate map may exist.
 - **The firmware probes** — `P5-BOARD.5`, gated on the CPU's acceptance trajectory: small
   firmware that finds and interacts with the devices it expects, with failures
   classified to an explicit owner — never an unattributed "emulator bug".

@@ -178,8 +178,9 @@ self_test() {
   # registry, omitted from the RED one, so the completeness arm has something to catch.
   # The pair spec globs the REAL corpus, so the GREEN fixture names every unit that carries
   # the catalogues: the DSP's landing (P3-BREADTH.6 slice 1) re-pinned it to two units,
-  # the first device dossier (P5-BOARD.2) re-pinned it to three, and the second device
-  # dossier (P5-BOARD.10, lan9118-lab-v0) re-pins it to four.
+  # the first device dossier (P5-BOARD.2) re-pinned it to three, the second device
+  # dossier (P5-BOARD.10, lan9118-lab-v0) re-pinned it to four, and the board's composed
+  # catalogues (P5-BOARD.3, netboard-lab-v0) re-pin it to five.
   FIXTURE_PAIRS=$'profiles/*/contract-obligations.sexp\tprofiles/*/requirements.sexp'
 
   cat > "$t/reg.tsv" <<'EOF'
@@ -192,8 +193,9 @@ obligations	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64i-lab-v0/contra
 obligations (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/requirements.sexp	profiles/dsp56300-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 obligations (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/requirements.sexp	profiles/sifive-uart-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 obligations (lan9118-lab-v0)	profiles/lan9118-lab-v0/requirements.sexp	profiles/lan9118-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+obligations (netboard-lab-v0)	profiles/netboard-lab-v0/requirements.sexp	profiles/netboard-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 EOF
-  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 8"
+  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 9"
 
   cat > "$t/reg.tsv" <<'EOF'
 state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	NOT-A-DOCTRINE

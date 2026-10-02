@@ -1,5 +1,39 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0013 (leaf P5-BOARD.3) — the generated maps: one generator, seven artifacts, the BOARD-GEN freshness gate
+
+- `scripts/gen_board.py` discovers boards by declaration (`profiles/*/board.sexp`) and
+  generates everything downstream of the canonical definition (OWN-05): the composition
+  manifest (the part list derived from the pins, never restated), the four composed
+  catalogues (99 requirements, 107 obligations, 5 sources, the rv64i encoding —
+  materialized by the factorized `compose_units.compose_resolved`, the ONE code path
+  the verdicts consume), `hardware.sexp` under the new `schema/hardware.sexp`, and
+  `map.md`. Every artifact carries the OWN-03 fingerprint header.
+- The **BOARD-GEN** doctrine (`scripts/check_board_gen.sh`) is the freshness proof
+  `compose_units.py` deferred to the first tracked board: `--check` re-derives all
+  seven artifacts and refuses DRIFT by name (self-test 9/9, every RED arm asserting
+  the reason); the generator refuses an inconsistent definition by name (region
+  overlap, MMIO window without device, executable MMIO, ghost console).
+- The census found exactly ONE handwritten duplicate map (the DOSSIER's table) —
+  replaced by the generated map: the DOSSIER links it, the board book includes it
+  (one owner, two readers, the include verified in the built HTML). The DOSSIER's
+  stale post-`.11` status rows (the brief's logged defect) fixed in the same pass.
+- FACT-OWNERSHIP gained 8 rows (54 kinds; the two measured corpus pairs registered,
+  never weakened) and the fixture re-pinned to five units; DERIVED-COUNTS fired as
+  designed (31→32 doctrines, 345→354 arms, re-derived in `LIVE_STATUS.md`).
+- Measured and recorded at root: the brief's register-surface containment check is
+  not implementable — the device dossiers carry register offsets in prose, never as
+  machine-readable data; the generator's refusals are scoped to what board.sexp
+  proves, and machine-readable offsets arrive with the device models. And the
+  `profiles/` per-part bound bit a second time (the first DERIVED member class:
+  the composed `contract-obligations.sexp`, 104,372 B) — the standing reviewed-raise
+  rule applied (`decision_profiles-family-composed-units`: 64 → 128 KiB at 0.80×,
+  aggregates unmoved).
+- Validation: BOARD-GEN ok; RECORD-SCHEMA 16 record files; FACT-OWNERSHIP 54 kinds;
+  UNIT-BOOKS 5/5; `make gate` → all doctrines green; `mdbook build` rc 0;
+  `gen_book_index.py --check` rc 0. No Rust surface touched. The composed catalogues
+  on disk are `P5-BOARD.4`'s pre-staged input.
+
 ## SEMULITH-MCU-0002 (leaf MCU-DOCS.2) — the channel's twelve answers reconciled: the MCU documentation set acquired and digest-verified
 
 - Verified live first: `build_responses.py --report` → **12 fulfilled / 0 blocked**, exit 0.
@@ -847,41 +881,4 @@
   translation-vs-bare-metal nuance and the fall-2027 horizon on the record.
 - Slice (a)'s checklist claimed a `plan/p2.md` line that commit did not carry — the
   drift is recorded and the `.9` book section lands with this commit instead.
-
-## SEMULITH-PS-0081 (leaf P2-SCALAR.9, slice a) — the CI two-host matrix wired; Rosetta measured LIVE
-
-- `.github/workflows/portability.yml`: the host matrix (`ubuntu-latest` x86-64 +
-  `macos-latest` aarch64) each running the native leg and uploading the digest manifest;
-  the Miri + cross-endian job on x86-64 (nightly provisioned by the workflow); the
-  `agree` job byte-comparing both manifests. The instrument gained `--leg` /
-  `--emit-manifest` selectors (native-leg manifest measured reproducing the `.8`
-  recording byte-identically, `0670a01b…`).
-- **Rosetta measured LIVE** mid-slice: the director's install (VLC's Intel build
-  triggered it) — `arch -x86_64` now prints `x86_64`, the probe binary runs. The bridge
-  is up; slice (b) runs the leg through it next.
-- CI evidence lands at the next approved push — the cadence governs.
-
-## SEMULITH-PS-0080 (leaf P2-SCALAR.9, design) — the CPU-LAB release: three slices designed
-
-- (a) The CI two-host matrix: a new `portability.yml` workflow (`ubuntu-latest` x86-64 +
-  `macos-latest` aarch64 + a Miri job + the manifest-agreement job); the instrument gains
-  `--leg`/`--emit-manifest` selectors. CI evidence lands at the next approved push.
-- (b) The Rosetta-local proof when the director's reinstall lands (measured inert today:
-  payload in the cryptex, daemon off).
-- (c) The release report — measured first: G-CONTRACT's obligation-check implementation
-  state decides whether the honest decision can read "accepted" even with portability
-  green.
-- Ceiling obeyed again: the `.8` checklist archived at the `.9` design commit.
-
-## SEMULITH-PS-0079 (leaf P2-SCALAR.9) — the release route decided; Rosetta measured inert pending reinstall
-
-- The director answered the release fork: CI two-host matrix (permanent home of the
-  mandatory x86-64 leg: `ubuntu-latest` + `macos-latest`, the digest manifest the
-  byte-exact contract) + Rosetta-local proof (the bridge) — recorded in
-  `decision_release-route-x86-64-leg`. No narrower host policy.
-- Measured refinement of the `.8` record: Rosetta on this host is PRESENT BUT INERT —
-  binaries at `/usr/libexec/rosetta/`, the x86-64 dyld cache in the Rosetta cryptex, the
-  oahd daemon not running, `arch -x86_64` failing (`Bad CPU type in executable`);
-  activation is the director's admin act (a reinstall is coming). The horizon is on the
-  record: Apple phases Rosetta out fall 2027 — nothing may be built on the bridge.
 

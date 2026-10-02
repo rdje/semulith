@@ -43,6 +43,14 @@ reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	doc
 internal-contracts (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/	docs/models/dsp56300-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL
 board-definition (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	docs/models/netboard-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL
 internal-contracts (netboard-lab-v0)	profiles/netboard-lab-v0/	docs/models/netboard-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL
+obligations (netboard-lab-v0)	profiles/netboard-lab-v0/requirements.sexp	profiles/netboard-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+encodings (netboard-lab-v0)	definitions/riscv/	profiles/netboard-lab-v0/encoding.sexp	BOARD-GEN
+composed-catalogues (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/requirements.sexp	BOARD-GEN
+composed-catalogues (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/contract-obligations.sexp	BOARD-GEN
+composed-catalogues (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/sources.sexp	BOARD-GEN
+composition-manifest (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/composition.sexp	BOARD-GEN
+board-map (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/hardware.sexp	BOARD-GEN
+board-map (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/map.md	BOARD-GEN
 configuration (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/profile.sexp	-	-
 state (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/state.sexp	profiles/sifive-uart-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 pinned-sources (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/sources.sexp	docs/models/sifive-uart-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL

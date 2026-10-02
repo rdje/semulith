@@ -110,12 +110,54 @@ incompatible CPU/environment assumption remains**.
   unregistered; what registration adds waits with its owner named.
 
 - ID: `P5-BOARD.3` — **generated maps and hardware description**
-  Status: `pending`
+  Status: `done` (`2026-10-02`, `SEMULITH-P5-0013`)
   Goal: address maps, wiring and hardware-description data generated from the canonical board definition (`OWN-05`).
   Acceptance: no handwritten duplicate map anywhere; generated artifacts carry their fingerprints and CI detects drift.
   Note (`2026-10-02`): the board-unit registration `.1` routed here moved to `.11` —
   one registration day for all three units, not two partial ones (Decisions, `.2`
   design brief).
+  Result (`2026-10-02`): the maps are generated and drift-gated. `scripts/gen_board.py`
+  discovers boards by declaration (`profiles/*/board.sexp`) and emits seven artifacts
+  per board from board.sexp alone: `composition.sexp` (the manifest — the part list
+  derived from the pins), the four composed catalogues (99 requirements, 107
+  obligations, 5 sources, the rv64i encoding — materialized by
+  `compose_units.compose_resolved`, a factorization of `compose` so the manifest-file
+  path and the generator path share the ONE materialization code path; the refactor
+  measured byte-identical on the real parts and self-test 9/9), `hardware.sexp` (the
+  hardware description under the new `schema/hardware.sexp`: regions resolved with
+  computed ends, the device↔region↔widths↔interrupt↔backend wiring, the console, the
+  reset, the absences with their `satisfies` edges), and `map.md` (the human-readable
+  map — the DOSSIER links it, the board book includes it: one owner, two readers,
+  the include verified in the built HTML). Every artifact carries the OWN-03
+  fingerprint header (canonical-input + generator sha256, repo-relative paths). The
+  freshness proof `compose_units.py` deferred to the first tracked board landed as
+  the **BOARD-GEN doctrine** (`scripts/check_board_gen.sh`, registered, mirrored):
+  `--check` re-derives all seven and refuses DRIFT by name; the generator refuses an
+  inconsistent definition by name (overlap, mmio window without device or device
+  without window, executable mmio, ghost console) — self-test 9/9 with every RED arm
+  asserting the reason. **The one handwritten duplicate map died**: the census found
+  exactly one (the DOSSIER.md table, 3 rows); it is replaced by the generated map,
+  the prose kept as decision narrative citing `D-BOARD-MEMORY-MAP`. FACT-OWNERSHIP
+  gained 8 rows (the two measured corpus pairs — `obligations (netboard-lab-v0)` with
+  RECORD-SCHEMA, `encodings (netboard-lab-v0)` with BOARD-GEN — plus the derivation
+  rows with owner board.sexp, governor BOARD-GEN; 54 kinds total) and the fixture
+  re-pinned to five units (`__CHECKED__ 8→9`, self-test 10/10). **Two measured
+  findings, recorded at root:** (1) the brief's register-surface containment check is
+  NOT implementable — the device dossiers carry register offsets in prose with
+  datasheet citations, never as machine-readable data (measured in both `state.sexp`
+  documents and the expectations); the generator's refusals are scoped to what
+  board.sexp itself proves, and machine-readable offsets arrive with the device
+  models, where the check belongs. (2) The DOSSIER's status table was stale post-
+  `.11` (device dossiers and registration still marked absent/deferred) — the
+  defect the brief logged; fixed with this leaf. (3) The `profiles/` per-part bound
+  bit a second time — the first DERIVED member class: the composed
+  `contract-obligations.sexp` (104,372 B) exceeds 64 KiB; handled by the standing
+  reviewed-raise rule (`decision_profiles-family-composed-units`: 65,536 → 131,072
+  at 0.80×, aggregates unmoved at 167 files / 1,051,283 B = 0.28×/0.37× of 5×).
+  DERIVED-COUNTS fired as designed (31→32 doctrines, 345→354 arms, re-derived in
+  `LIVE_STATUS.md`). The composed catalogues on disk are `.4`'s pre-staged input:
+  the board directory is now an ordinary composed unit, checked by the unchanged
+  tools.
 
 - ID: `P5-BOARD.4` — **composition against the CPU contract** — the gate's core obligation
   Status: `pending`
@@ -303,8 +345,7 @@ incompatible CPU/environment assumption remains**.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.3` | `pending` | the three units are registered — generated maps and the hardware description from the canonical definition |
-| 2 | `P5-BOARD.4` | `pending` | the gate's core obligation: the composition verdict — every CPU assumption matched against a board/device guarantee or rejected; the devices' composition records (TIME-SOURCES/PHY-LINK/GPIO-PINS, the strap values) are pre-wired to it |
+| 1 | `P5-BOARD.4` | `pending` | the gate's core obligation: the composition verdict — every CPU assumption matched against a board/device guarantee or rejected; the composed catalogues are on disk (`.3`), the devices' composition records (TIME-SOURCES/PHY-LINK/GPIO-PINS, the strap values) are pre-wired to it |
 
 ## Decisions
 
@@ -729,6 +770,81 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P5-BOARD.3` (`2026-10-02`, `SEMULITH-P5-0013`):
+
+- [x] **REPRODUCE / ISSUE** — the board definition existed, but every map downstream of
+  it was prose, and the freshness proof was unowned: `profiles/netboard-lab-v0/`
+  held only `board.sexp` + `DOSSIER.md`, the DOSSIER carried a handwritten map table
+  (the leaf acceptance's one duplicate), and `compose_units.py`'s docstring deferred
+  the tracked-board freshness gate to this leaf. Measured pre-conditions:
+
+  ```
+  $ ls profiles/netboard-lab-v0/
+  DOSSIER.md	board.sexp
+  $ python3 scripts/compose_units.py target/board-probe/manifest.sexp target/board-probe/out
+  composed unit 'netboard-lab-v0': 99 requirement(s), 107 obligation(s), 5 source(s); encoding derived from …/profiles/rv64i-lab-v0
+  $ bash scripts/check_fact_ownership.sh   # with the probe catalogues in place
+  FACT-OWNERSHIP: REFUSED — the check does not discriminate (self-test failed).
+  # → the two new corpus restatement pairs, exactly as the gate is designed to catch
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — OWN-05 requires the maps generated from the one
+  definition; no generator consumed board.sexp, so the map existed only as prose
+  (which drifts) and the composition manifest/catalogues existed only in scratch.
+  WHY the fixture re-pin and not a gate edit: the merged corpus's two new
+  restatement pairs are genuine restatements — registration, never weakening. WHERE:
+  `scripts/gen_board.py` + `schema/hardware.sexp` + `scripts/check_board_gen.sh`
+  (new); `scripts/compose_units.py` (`compose_resolved` factorization);
+  `doctrine/fact_ownership.tsv` (+8 rows); `scripts/check_fact_ownership.sh`
+  (fixture re-pin); `profiles/netboard-lab-v0/DOSSIER.md` (the duplicate table);
+  `docs/models/netboard-lab-v0/` (the map chapter); the doctrine mirrors.
+- [x] **FIX** — the generator (boards discovered by declaration; seven artifacts;
+  consistency refusals named), the schema, the BOARD-GEN doctrine (self-test 9/9,
+  every RED arm asserting the reason), the factorized one-code-path compose (probe
+  byte-identical to the pre-refactor output), the generated corpus in place, the
+  DOSSIER's table replaced by the generated map, the FACT-OWNERSHIP rows, the
+  mirrors. The stale DOSSIER status rows (the brief's logged defect) fixed in the
+  same pass.
+- [x] **ADDRESSED (verified)** — the acceptance: no handwritten duplicate map, and
+  every generated artifact fingerprinted with drift gated:
+
+  ```
+  $ python3 scripts/gen_board.py
+  …/profiles/netboard-lab-v0: 7 artifact(s) generated from …/board.sexp
+  $ bash scripts/check_board_gen.sh
+  BOARD-GEN: ok (1 board(s) — manifest, composed catalogues, hardware description and map all byte-exact functions of the canonical definition)
+  $ bash scripts/check_board_gen.sh --self-test
+  BOARD-GEN --self-test: 9 pass / 0 fail
+  $ python3 scripts/check_sexp_schema.py profiles/netboard-lab-v0/hardware.sexp schema/hardware.sexp
+  check_sexp_schema: ok — profiles/netboard-lab-v0/hardware.sexp conforms to hardware.sexp
+  $ grep -c "0x1001_0000" docs/models/netboard-lab-v0/book/the-map.html
+  1          # the book chapter includes the ONE generated map — verified in the built HTML
+  $ grep -c "^| \`ram0\`" profiles/netboard-lab-v0/DOSSIER.md
+  0          # the handwritten duplicate table is gone
+  $ bash scripts/check_fact_ownership.sh
+  FACT-OWNERSHIP: ok (54 fact kind(s): one owner each, every mirror governed)
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (16 record file(s) validate and agree with their profile; …)
+  ```
+
+- [x] **NO REGRESSION** — the composed corpus is ordinary corpus under the unchanged
+  gates (DOSSIER-SCHEMA 83 files, UNIT-COMPOSITION, PROFILE-CONSISTENCY, EXTRACTION,
+  EXERCISE-COVERAGE, INTERACTION-MATRIX, SEMANTICS, GATE-REPORT, MATERIALS-BILL,
+  SCOPE-COVERAGE all green with it in place — measured before landing);
+  `compose_units --self-test` 9/9 after the factorization; `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS after the enumerator re-derived
+  31→32 doctrines and 345→354 arms in `LIVE_STATUS.md`); `mdbook build docs/book`
+  rc 0; all 5 unit books build (UNIT-BOOKS); `gen_book_index.py --check` rc 0.
+  No Rust surface touched.
+- [x] **LOCKSTEP** — tree (leaf + frontier + checklist + logs), `MEMORY.md` (next
+  action `.4`), `CHANGELOG.md`, `DEV_NOTES.md` (the offset-format finding; promotion
+  declined — the by-declaration measurement discipline has its decision records),
+  `LIVE_STATUS.md` (P5 row + re-derived counts), `docs/TASK_TREE.md`,
+  `doctrine/fact_ownership.tsv`, the doctrine mirrors (`DOCTRINE_ENFORCEMENT.md` +
+  `docs/book/src/working/doctrines.md`), `profiles/netboard-lab-v0/DOSSIER.md`,
+  the board book (the map chapter, gaps), mdBook `plan/p5-p7.md` (the `.3` section),
+  KNOWLEDGE_MAP regenerated.
+
 `P5-BOARD.11` (`2026-10-02`, `SEMULITH-P5-0011`):
 
 - [x] **REPRODUCE / ISSUE** — three gated dossiers existed unregistered:
@@ -1014,6 +1130,7 @@ incompatible CPU/environment assumption remains**.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.3` | `gen_board.py` → 7 artifacts; BOARD-GEN `1 board(s) … byte-exact` (self-test 9/9, REDs: hand-edited hardware/catalogue/manifest, moved definition, overlap, ghost device); `check_sexp_schema.py` ok on hardware.sexp and composition.sexp; RECORD-SCHEMA `16 record file(s)`; FACT-OWNERSHIP `54 fact kind(s)` (self-test 10/10, fixture re-pinned 9); DOSSIER-SCHEMA 83 files; UNIT-BOOKS 5/5 (the map include verified in the built HTML); DERIVED-COUNTS re-derived 31→32 doctrines, 345→354 arms; `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the maps are generated and drift-gated: one generator, seven artifacts, the BOARD-GEN freshness proof the compose docstring deferred; the one handwritten duplicate map replaced; the composed catalogues pre-staged as `.4`'s input |
 | `2026-10-02` | `.11` | pre-fix generator re-run from `de46377` → `REFUSED — references.sexp: the pinned document is missing` (the measured pre-condition); UNIT-BOOKS `5 unit(s)`; MATERIALS-BILL `5 unit(s)` (self-test 11/0 with the new device/board arms); SCOPE-COVERAGE `5 unit(s) may code`; RECORD-SCHEMA 14 files; GATE-REPORT `4 generated report(s) in sync`; DERIVED-COUNTS arm total re-derived 341→345; `make gate` green; all 5 unit books + the project book build; `gen_book_index.py --check` rc 0 | registration day landed as one coherent day: three units registered (kind board/device, layer +device), the generator + gate route-keyed by declaration, three books authored, 72 census rows, the BREADTH prose fixed at its generator |
 | `2026-10-02` | `.10` | `check_sexp_schema.py` ok on all 6 dossier .sexp files + 3 expectation documents; EXTRACTION `device-model route declared (28 scope registers; resets everywhere; obligations checked both ways)`; RECORD-SCHEMA `14 record file(s)`; PROFILE-CONSISTENCY `4 profile dossier(s)`; FACT-OWNERSHIP `43 fact kind(s)` (self-test re-pinned 8/4); `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the second device dossier landed fully gated with NO machinery edit; the `profiles/` per-part bound bit for the first time (32→64 KiB, recorded); the §3.11 text-layer defect and the Table 5-1 extraction hazard measured and handled; the time-source/link-scene/pin-tie-off composition tensions pre-wired to `.4` |
 | `2026-10-02` | `.2` | `check_sexp_schema.py` ok on all 7 dossier .sexp files; EXTRACTION `3 unit(s) sufficient`; EXERCISE-COVERAGE `3 profile(s)`; INTERACTION-MATRIX `device-model route declared … 0 cells`; PROFILE-CONSISTENCY `3 profile dossier(s)`; self-tests: 17/0, 9/0, 14/0, 41/0, 7/0, 14/0, 10/0; `check_fact_ownership.sh` ok (37 fact kinds); `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the first device dossier landed fully gated; the machinery generalized by declaration (`device-model`/`register-expectations`); the watermark mode gap measured and recorded (`REQ-D-UART-WM-MODE`); registration routed to `.11` |
@@ -1025,6 +1142,7 @@ incompatible CPU/environment assumption remains**.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.3` | `SEMULITH-P5-0013 (leaf P5-BOARD.3): the generated maps — one generator, seven artifacts, the BOARD-GEN freshness gate; the duplicate map measured and replaced` | gen_board.py (boards discovered by declaration) emits the manifest, 4 composed catalogues (compose_units.compose_resolved — one code path), hardware.sexp (new schema) and map.md; BOARD-GEN registered (self-test 9/9); FACT-OWNERSHIP +8 rows (54 kinds), fixture re-pinned to five units; the DOSSIER's duplicate table and stale status rows fixed; DERIVED-COUNTS re-derived (32 doctrines, 354 arms) |
 | `.11` | `SEMULITH-P5-0011 (leaf P5-BOARD.11): registration day — the three units register; the materials-bill machinery goes route-keyed by declaration` | schema/units.sexp kind +board/+device, layer +device (shared taxonomy); gen_model_book.py unit_shape/shape_contracts + route-keyed emitters; check_materials_bill.sh COMPLETENESS keyed on the same shape (+4 self-test arms); 3 registrations, 72 census rows, 3 books (authored chapters + generated fragments), FACT-OWNERSHIP book-side mirrors (46 kinds); BREADTH prose fixed at the generator and regenerated (5 units, verdict passed) |
 | — | `SEMULITH-P5-0010 (tree P5-BOARD)` | the `.11` design brief: registration day's design decided; the generator generalization measured in full (references.sexp absent from all three new dossiers; MATERIALS-BILL's COMPLETENESS would CANNOT JUDGE) |
 | `.10` | `SEMULITH-P5-0009 (leaf P5-BOARD.10): the second device dossier — lan9118-lab-v0 fully gated with no machinery edit; the per-part bound bites; the time sources found` | 9 dossier files (52/52/52 mirrored records, 3 expectation documents); FACT-OWNERSHIP re-pinned to four units; profiles/ bound re-derived 5× with the first per-part raise (32→64 KiB); the §3.11 text-layer defect measured (hexdump) and only cleanly stated figures pinned |
@@ -1174,3 +1292,20 @@ incompatible CPU/environment assumption remains**.
   chapter), the FACT-OWNERSHIP rows + fixture re-pin to five units, the DOSSIER's
   stale status rows logged as a defect and fixed with the leaf. Frontier: `.3`
   execution — the generator, the gate, the generated corpus.
+- `2026-10-02`: `.3` done (`SEMULITH-P5-0013`) — the maps are generated and drift-gated.
+  `scripts/gen_board.py` (boards discovered by declaration) emits the seven artifacts
+  from `board.sexp` alone: the composition manifest, the four composed catalogues (99
+  requirements / 107 obligations / 5 sources / the rv64i encoding, materialized by the
+  factorized `compose_units.compose_resolved` — one code path, the refactor measured
+  byte-identical), `hardware.sexp` under its new schema, and `map.md`. The freshness
+  proof `compose_units.py` deferred to the first tracked board landed as the BOARD-GEN
+  doctrine (self-test 9/9, every RED arm asserting the reason; the generator refuses an
+  inconsistent definition by name). The census found exactly one handwritten duplicate
+  map (the DOSSIER's table) — replaced by the generated map (one owner, two readers:
+  the DOSSIER links it, the book includes it). FACT-OWNERSHIP +8 rows (54 kinds), the
+  fixture re-pinned to five units; DERIVED-COUNTS re-derived (32 doctrines, 354 arms).
+  Measured and recorded at root: the brief's register-surface containment check is not
+  implementable (device dossiers carry offsets in prose, never as data — the generator's
+  refusals are scoped to what board.sexp proves; machine-readable offsets arrive with
+  the device models); the DOSSIER's post-`.11` stale status rows (the brief's logged
+  defect) fixed. Frontier: `.4` — the composition verdict, its input now on disk.

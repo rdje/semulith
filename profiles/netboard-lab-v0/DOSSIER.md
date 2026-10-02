@@ -27,11 +27,12 @@ A digest match against a *newer* processor dossier is a finding, not a silent up
 
 ## Memory map
 
-| Region | Base | Size | Kind | Executable |
-| --- | --- | --- | --- | --- |
-| `ram0` | `0x8000_0000` | 2 GiB | RAM | yes |
-| `uart0` | `0x1001_0000` | 4 KiB | MMIO | no |
-| `eth0` | `0x1002_0000` | 256 B | MMIO | no |
+The map is **generated, never handwritten**: [`map.md`](map.md) is derived from
+`board.sexp` by `scripts/gen_board.py` and drift-gated by the BOARD-GEN doctrine
+(`scripts/check_board_gen.sh`) — the address map, the wiring, and the declared absences,
+with region ends computed. The machine-readable half is [`hardware.sexp`](hardware.sexp)
+(schema [`schema/hardware.sexp`](../schema/hardware.sexp)). This dossier narrates the
+choices; it does not restate the table.
 
 RAM is the laboratory harness's existing load base and size, so a guest built for the
 laboratory runs unchanged on the board. `uart0`'s base is the FU540-C000 UART0 instance
@@ -91,9 +92,9 @@ device: the CPU raises `AlignmentException` first (`OB-MISALIGN-DATA`).
 | Document | Status |
 | --- | --- |
 | `board.sexp` | **present** — the canonical definition, schema-validated (`P5-BOARD.1`) |
-| device unit dossiers (`sifive-uart-lab-v0`, `lan9118-lab-v0`) | **absent, owned** — the unit ids are declared in `board.sexp`; `P5-BOARD.2` owns the dossiers (sources, requirements, state, reset, access semantics, side effects, expected results) |
-| unit registration (`materials/units.sexp`), the `kind` edit, the per-unit book | **deferred, owned** — the registry admits a new `kind` "the day a real unit needs one"; registration day is `P5-BOARD.11` — all three units (board + both devices) together, re-routed from `.3` by the `.2` design brief so the `kind` edit and the materials-bill generator's generalization land once (UNIT-BOOKS, MATERIALS-BILL among the consequences) |
-| composition manifest, generated maps | **absent, owned** — `P5-BOARD.3` (`compose_units.py`'s tracked-board freshness gate lands with the first tracked board) |
-| composition verdict against the CPU contract | **absent, owned** — `P5-BOARD.4`; this definition pre-wires it through the `satisfies` fields |
+| device unit dossiers (`sifive-uart-lab-v0`, `lan9118-lab-v0`) | **present** — both landed fully gated (`P5-BOARD.2`, `P5-BOARD.10`) |
+| unit registration (`materials/units.sexp`), the `kind` edit, the per-unit book | **present** — registration day landed all three units together (`P5-BOARD.11`) |
+| composition manifest, generated maps | **present** — `composition.sexp`, the composed catalogues, `hardware.sexp` and `map.md`, all generated from `board.sexp` and drift-gated by BOARD-GEN (`P5-BOARD.3`) |
+| composition verdict against the CPU contract | **absent, owned** — `P5-BOARD.4`; this definition pre-wires it through the `satisfies` fields, and the composed catalogues on disk are its input |
 
-The deferrals are recorded, not gaps to be read as oversight: each names its owning leaf.
+The deferral is recorded, not a gap to be read as oversight: it names its owning leaf.

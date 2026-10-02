@@ -55,6 +55,47 @@ def _schema_validate(path: Path) -> None:
         raise ComposeError(f"refused by schema/composition.sexp — " + "; ".join(errors))
 
 
+def compose_resolved(comp_id: str, part_dirs: list[Path], out_dir: Path) -> dict:
+    """Materialize a composition from an id and RESOLVED part directories. Returns a census.
+
+    This is the one materialization path: `compose` (the manifest-file entry point)
+    resolves the manifest's parts and lands here, and so does `gen_board.py` — which
+    derives the manifest itself and must compose it in a scratch directory, where the
+    manifest's repo-relative part paths do not resolve (P5-BOARD.3)."""
+    merged = M.merge_units(part_dirs)             # THE SAME CODE the verdicts consume
+
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    reqs = list(merged.requirements.values())
+    obs = list(merged.obligations.values())
+    (out / "requirements.sexp").write_text(R.dump(reqs))
+    (out / "contract-obligations.sexp").write_text(R.dump(obs))
+    sources_doc = {"publication": "derived: composed unit",
+                   "revision": "derived",
+                   "base_url": "derived",
+                   "retrieved": "derived",
+                   "work_dir": "derived",
+                   "source": list(merged.sources.values())}
+    (out / "sources.sexp").write_text(R.render_forms([D.sources_to_form(sources_doc)]))
+
+    enc_parts = [d for d in part_dirs if (d / "encoding.sexp").is_file()]
+    census = {"id": comp_id, "requirements": len(reqs), "obligations": len(obs),
+              "sources": len(merged.sources), "encoding_from": None}
+    if len(enc_parts) > 1:
+        raise ComposeError(
+            f"parts {', '.join(str(p) for p in enc_parts)} all "
+            f"carry encoding.sexp — a multiprocessor needs the address-space assignment "
+            f"operator (MODEL-COMPOSE's open question), refused until a real case earns it")
+    if enc_parts:
+        forms = S.read_file(enc_parts[0] / "encoding.sexp")
+        enc = forms[0]
+        for prof in S.children(enc, "profile"):
+            prof[1] = comp_id                      # identity, not content
+        (out / "encoding.sexp").write_text(R.render_forms([enc]))
+        census["encoding_from"] = str(enc_parts[0])
+    return census
+
+
 def compose(manifest: Path, out_dir: Path) -> dict:
     """Derive the ordinary unit directory for a composition manifest. Returns a census.
 
@@ -78,38 +119,10 @@ def compose(manifest: Path, out_dir: Path) -> dict:
                                f"names what must be present")
         part_dirs.append(d)
 
-    merged = M.merge_units(part_dirs)             # THE SAME CODE the verdicts consume
-
-    out = Path(out_dir)
-    out.mkdir(parents=True, exist_ok=True)
-    reqs = list(merged.requirements.values())
-    obs = list(merged.obligations.values())
-    (out / "requirements.sexp").write_text(R.dump(reqs))
-    (out / "contract-obligations.sexp").write_text(R.dump(obs))
-    sources_doc = {"publication": "derived: composed unit",
-                   "revision": "derived",
-                   "base_url": "derived",
-                   "retrieved": "derived",
-                   "work_dir": "derived",
-                   "source": list(merged.sources.values())}
-    (out / "sources.sexp").write_text(R.render_forms([D.sources_to_form(sources_doc)]))
-
-    enc_parts = [d for d in part_dirs if (d / "encoding.sexp").is_file()]
-    census = {"id": comp_id, "requirements": len(reqs), "obligations": len(obs),
-              "sources": len(merged.sources), "encoding_from": None}
-    if len(enc_parts) > 1:
-        raise ComposeError(
-            f"{manifest}: parts {', '.join(str(p) for p in enc_parts)} all "
-            f"carry encoding.sexp — a multiprocessor needs the address-space assignment "
-            f"operator (MODEL-COMPOSE's open question), refused until a real case earns it")
-    if enc_parts:
-        forms = S.read_file(enc_parts[0] / "encoding.sexp")
-        enc = forms[0]
-        for prof in S.children(enc, "profile"):
-            prof[1] = comp_id                      # identity, not content
-        (out / "encoding.sexp").write_text(R.render_forms([enc]))
-        census["encoding_from"] = str(enc_parts[0])
-    return census
+    try:
+        return compose_resolved(comp_id, part_dirs, out_dir)
+    except ComposeError as exc:
+        raise ComposeError(f"{manifest}: {exc}")
 
 
 def main(argv: list[str]) -> int:
