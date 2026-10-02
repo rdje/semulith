@@ -29,7 +29,8 @@
   (field (name wiring) (type form) (head wiring) (repeat yes) (min 1))
   (field (name serial-console) (type form) (head serial-console))
   (field (name reset) (type form) (head reset))
-  (field (name absence) (type form) (head absence) (repeat yes) (min 1)))
+  (field (name absence) (type form) (head absence) (repeat yes) (min 1))
+  (field (name disposition) (type form) (head disposition) (repeat yes) (optional yes)))
 
 ;; The processor the board composes: the unit id + version + the environment contract the
 ;; composition verdict (`.4`) discharges against. The dossier digest stays in board.sexp —
@@ -76,3 +77,14 @@
 (construct (name absence)
   (field (name element) (type symbol) (values timers) (values interrupt-controller))
   (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1)))
+
+;; A composition disposition (`P5-BOARD.4`): a board decision that answers a device
+;; obligation the dossier deferred to the composing board (marked
+;; composition_disposition "required" — the LAN9118's strap values, frozen time sources,
+;; replay link scene and pin tie-offs), mirrored from board.sexp so the model route
+;; consumes the verdict's content as data. The BOARD-VERDICT doctrine checks the binding
+;; both ways; the BOARD-GEN doctrine keeps the mirror byte-exact.
+(construct (name disposition)
+  (field (name decision) (type string) (pattern "^D-[A-Z0-9-]+$"))
+  (field (name answers) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1) (unique yes))
+  (field (name statement) (type string) (min-length 1)))

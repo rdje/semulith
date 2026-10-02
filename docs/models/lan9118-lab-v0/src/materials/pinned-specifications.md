@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/lan9118-lab-v0/sources.sexp`  `eee2e26aac26903c0beec6ae72232bca49b7d79998fa2e01de12a6f244b4479b`
-     Generator: `scripts/gen_model_book.py` (sha256 `b1524b0982e891ec679cb622686eb0a23aa2e6a7259735a3ad976e482d26fda0`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `42b24f528fa0752c31faa6ad1e21d0bbcf36beed710c827c54421006fadcec07`) -->
 
 Pinned publication: **Microchip LAN9118 High Performance Single-Chip 10/100 Non-PCI Ethernet Controller datasheet (chipdoc materials corpus)**, revision `DS00002266B 2018-11-30`, retrieved 2026-10-02 — explicitly NOT the DS00002266A (SMSC, 2005) issue and third-party mirrors — the pin is DS00002266B via the corpus.
 

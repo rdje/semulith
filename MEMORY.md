@@ -16,14 +16,15 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (8/12 — the maps generated and drift-gated; the two-tier bound ruling executed).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (9/12 — the maps generated and drift-gated; the two-tier bound ruling executed; the composition verdict ACCEPTED and re-decided by BOARD-VERDICT).
   Milestone frontier: `P5-BOARD`. (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P5-BOARD.4` — the composition verdict against the CPU contract: for
-  every CPU assumption, the board or device guarantee that satisfies it, or a rejection
-  (`scripts/discharge_assumptions.py` over the composed catalogues `.3` materialized;
-  the devices' composition records — `REQ-D-NIC-TIME-SOURCES`, `REQ-D-NIC-PHY-LINK`,
-  the strap values — are pre-wired to it, as are board.sexp's `satisfies` fields). An
-  unmatched assumption is a rejection, not a note.
+- next_action: `P5-BOARD.6` — the platform capability manifest: the read-only derived
+  export of the accepted processor/device/board profile and its boot contract, for
+  archogen's compatibility checker (`docs/ARCHOGEN_INTEGRATION.md` §3; OWN-06 — derived,
+  never handwritten). The composition verdict (`.4`) is landed: ACCEPTED, with the four
+  dispositions (straps, frozen time sources, link scene, pin tie-offs) as data in
+  board.sexp → hardware.sexp; `.5` (probes) and `.7` (gate report) stay gated on the
+  CPU's acceptance trajectory.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

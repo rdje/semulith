@@ -8,8 +8,9 @@ and the **LAN9118 wired NIC**. Specified by `P5-BOARD.1` from the design brief r
 
 > **Claim scope.** The board inherits the processor's EXPERIMENTAL status: every board claim
 > reads as conditional on the CPU's own acceptance trajectory, and the composition can never
-> outrank its processor. This dossier is the platform **specification** — no device is
-> modelled yet, no composition verdict has run, and nothing here is a firmware-probe result.
+> outrank its processor. The composition verdict has run — **ACCEPTED**, re-decided on every
+> commit by the BOARD-VERDICT doctrine ([`COMPOSITION-VERDICT.md`](COMPOSITION-VERDICT.md))
+> — but no device is modelled yet, and nothing here is a firmware-probe result.
 
 ## The canonical definition
 
@@ -83,9 +84,11 @@ contract has counter/interrupt assumptions to satisfy instead.
 ## Access policy
 
 An MMIO access honours exactly the widths the device's datasheet defines — 32-bit for
-`uart0` (§13.3), 16/32-bit for `eth0` (§1.10); any other width is a board-reported
-**contract violation**, never silently serviced. A misaligned MMIO access never reaches a
-device: the CPU raises `AlignmentException` first (`OB-MISALIGN-DATA`).
+`uart0` (§13.3), 32-bit for `eth0` (D32 strapped; §3.6 makes the bus widths
+mode-exclusive, so `.1`'s 16/32 declaration narrowed to 32 at the `.4` verdict —
+`D-BOARD-NIC-STRAPS`); any other width is a board-reported **contract violation**, never
+silently serviced. A misaligned MMIO access never reaches a device: the CPU raises
+`AlignmentException` first (`OB-MISALIGN-DATA`).
 
 ## Dossier status
 
@@ -95,6 +98,4 @@ device: the CPU raises `AlignmentException` first (`OB-MISALIGN-DATA`).
 | device unit dossiers (`sifive-uart-lab-v0`, `lan9118-lab-v0`) | **present** — both landed fully gated (`P5-BOARD.2`, `P5-BOARD.10`) |
 | unit registration (`materials/units.sexp`), the `kind` edit, the per-unit book | **present** — registration day landed all three units together (`P5-BOARD.11`) |
 | composition manifest, generated maps | **present** — `composition.sexp`, the composed catalogues, `hardware.sexp` and `map.md`, all generated from `board.sexp` and drift-gated by BOARD-GEN (`P5-BOARD.3`) |
-| composition verdict against the CPU contract | **absent, owned** — `P5-BOARD.4`; this definition pre-wires it through the `satisfies` fields, and the composed catalogues on disk are its input |
-
-The deferral is recorded, not a gap to be read as oversight: it names its owning leaf.
+| composition verdict against the CPU contract | **present** — [`COMPOSITION-VERDICT.md`](COMPOSITION-VERDICT.md): ACCEPTED, every assumption matched to a named board/device guarantee; re-decided on every commit by the BOARD-VERDICT doctrine (`P5-BOARD.4`) |

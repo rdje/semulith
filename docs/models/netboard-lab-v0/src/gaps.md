@@ -16,13 +16,12 @@ the composition (`REQ-D-NIC-TIME-SOURCES`), never wired to wall-clock.
 
 ## The pending verdicts, with their owners
 
-- **The composition verdict** — `P5-BOARD.4`: for every CPU assumption, the board or
-  device guarantee that satisfies it, or a rejection. The board definition's `satisfies`
-  fields pre-wire the match; the device contracts' `device-guarantee` obligations
-  (`sifive-uart-v0`, `lan9118-v0`) are the discharge surface. Until that verdict exists,
-  the board is a *specified* platform, not a *checked* one.
-- **The strap values** — the NIC's D32/nD16 and SPEED_SEL straps are the composition's
-  choice (`REQ-D-NIC-STRAP-RESETS`), recorded as deferrals, decided at `.4`.
+- ~~**The composition verdict** — `P5-BOARD.4`~~ **landed** (`2026-10-02`): **ACCEPTED** —
+  every CPU assumption matched to a named board/device guarantee, re-decided on every
+  commit by the BOARD-VERDICT doctrine ([The composition verdict](the-verdict.md)). The
+  board is now a *checked* platform, conditional on the CPU's acceptance trajectory.
+- ~~**The strap values**~~ **landed** with the verdict: D32 tied high (32-bit native
+  mode), SPEED_SEL at its internal pull-up (`D-BOARD-NIC-STRAPS`).
 - **The firmware probes** — `P5-BOARD.5`, gated on the CPU's acceptance trajectory: small
   firmware that finds and interacts with the devices it expects, with failures
   classified to an explicit owner — never an unattributed "emulator bug".

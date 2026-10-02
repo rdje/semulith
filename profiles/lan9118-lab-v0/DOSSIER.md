@@ -75,14 +75,16 @@ than papered over:
 | --- | --- | --- |
 | Reserved bit read values "not supported"; RESERVED locations return "a random value", must not be written | §5.1 | `REQ-D-NIC-RESERVED` — a model never pins a reserved read value |
 | Access widths other than 32/16-bit have no stated effect | §1.10, §3.6 | `REQ-D-NIC-WIDTH` — the board makes them a board-reported contract violation (`D-BOARD-ACCESS-POLICY`) |
-| Strap-determined resets: HW_CFG bit 2 (D32/nD16), PHY 0.13/0.12, PHY 4.8/7/6/5, PHY 31.4:2 | Notes 5-1/5-3/5-4, Table 2-2 | `REQ-D-NIC-STRAP-RESETS` — the strap values are the board's composition choice, owned by `P5-BOARD.4` |
+| Strap-determined resets: HW_CFG bit 2 (D32/nD16), PHY 0.13/0.12, PHY 4.8/7/6/5, PHY 31.4:2 | Notes 5-1/5-3/5-4, Table 2-2 | `REQ-D-NIC-STRAP-RESETS` — the strap values are the board's composition choice; **answered** by `D-BOARD-NIC-STRAPS` (the `.4` verdict): D32 tied high, SPEED_SEL at its internal pull-up |
 | PHY ID2 model/revision nibbles | §5.5.4 (blank default column) | `REQ-D-NIC-PHY-ID` — only bits [15:10] = `C0D1h` pin |
 | ADDRH/ADDRL "undefined until loaded from the EEPROM" vs Table 5-6's listed defaults | §5.4.2/§5.4.3, Table 5-6 | `REQ-D-NIC-MAC-ADDR` — both statements recorded, nothing pinned at reset; no EEPROM on this board, the host programs the address |
 | §3.11's SRST/PHY-reset completion times ("2 s"/"100 s" in the PDF's own text layer) | §3.11.4/§3.11.5.1 vs §5.3.13 | `REQ-D-NIC-RESETS` — the cleanly stated 22 ms POR and 100 µs PHY-hold pin; the SRST completion time does not |
 
-## The measured composition tensions (pre-wiring `.4`)
+## The measured composition tensions (answered by the `.4` verdict)
 
-Two findings the dossier records so the composition verdict cannot overlook them:
+Two findings the dossier records so the composition verdict cannot overlook them — and
+the verdict's answers, landed `2026-10-02` (`P5-BOARD.4`,
+[`../netboard-lab-v0/COMPOSITION-VERDICT.md`](../netboard-lab-v0/COMPOSITION-VERDICT.md)):
 
 - **The NIC carries guest-readable time sources** — `FREE_RUN` (a 25 MHz free-running
   counter, running in every power state, §5.3.18), `GPT_CNT` (a 100 µs timer readout,
@@ -91,24 +93,30 @@ Two findings the dossier records so the composition verdict cannot overlook them
   composition from *inside* a device, exactly as a CLINT would from beside one.
   `REQ-D-NIC-TIME-SOURCES` records the disposition direction: frozen or
   guest-deterministic, never wall-clock, never the harness's retired-instruction count.
+  **The verdict:** frozen — `D-BOARD-NIC-TIME-FROZEN` (FREE_RUN reads its reset value
+  forever; GPT_CNT never advances; INT_DEAS never runs).
 - **The PHY's link state is wire-domain, and the wire is a recording.** Note 3-11 makes
   Link Status load-bearing (drivers wait for it after any PHY reset); on this board the
   replay backend declares the link scene — never a live host link (`REQ-D-NIC-PHY-LINK`).
   GPIO pin reads are the same class on a board that wires no pins (`REQ-D-NIC-GPIO-PINS`).
+  **The verdict:** the scene is static and complete — 100BASE-TX full-duplex,
+  auto-negotiation complete, from before the guest's first access
+  (`D-BOARD-NIC-LINK-SCENE`); the pin reads are tied off at 0 (`D-BOARD-NIC-PIN-TIEOFFS`).
 
 ## The state inventory, and why the census matters here
 
 [`state.sexp`](state.sexp) carries the 24 direct CSRs, the 12 MAC CSRs, the 13 PHY
 registers and the four FIFOs, and its hidden-state census asks SEM-08's question of this
-device. The measured answer: **the registers, the four FIFOs with occupancies, the TX
-command-parser state (the TXE length check and the §3.12.5 accounting observe it), and the
-16-bit-mode pairing latch (the board declares 16-bit accesses, and §3.6's pairing rule makes
-the pending half observable) — and nothing else.** The MIL FIFOs are "not visible to the
-host processor" by the datasheet's own words; the wire-domain machines (link training,
-auto-negotiation) surface only as PHY register bits whose scene the replay backend
-declares; the WUFF load pointer is write-only with no MMIO-readable effect. Unlike the
-UART, FIFO occupancy at reset **is** pinned here — empty, by the INF registers' stated
-resets (`REQ-D-NIC-FIFO-INF`, the measured contrast).
+device. The measured answer: **the registers, the four FIFOs with occupancies, and the TX
+command-parser state (the TXE length check and the §3.12.5 accounting observes it) — and
+nothing else.** The MIL FIFOs are "not visible to the host processor" by the datasheet's
+own words; the wire-domain machines (link training, auto-negotiation) surface only as PHY
+register bits whose scene the replay backend declares; the WUFF load pointer is write-only
+with no MMIO-readable effect. The 16-bit-mode pairing latch was censused **absent** at the
+`.4` verdict: the board straps D32 (32-bit native mode, `D-BOARD-NIC-STRAPS`), §3.6's
+pairing is 16-bit-mode operation, and a 16-bit access never reaches the device — so no
+pending half is observable. Unlike the UART, FIFO occupancy at reset **is** pinned here —
+empty, by the INF registers' stated resets (`REQ-D-NIC-FIFO-INF`, the measured contrast).
 
 ## Scope
 

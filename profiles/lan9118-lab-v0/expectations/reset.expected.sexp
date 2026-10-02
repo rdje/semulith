@@ -5,9 +5,12 @@
 ;; schema/expectations.sexp): step.insn carries the stimulus, writes the register reads
 ;; that must yield the value. The board's reset is cold-only (D-BOARD-RESET) mapping to
 ;; POR semantics — the full reset, straps latched, EEPROM auto-load attempted. The
-;; strap-determined bits, the datasheet-blank nibbles, the undefined-until-loaded MAC
-;; address and the time-source counters get the empty (writes) marker or a partial pin —
-;; nothing beyond what the datasheet determines (REQ-D-NIC-STRAP-RESETS,
+;; straps are DECIDED (the P5-BOARD.4 verdict: D32 tied high, SPEED_SEL at its pull-up —
+;; D-BOARD-NIC-STRAPS), the time sources are frozen (D-BOARD-NIC-TIME-FROZEN) and the
+;; replay's link scene is static-complete from before the guest's first access
+;; (D-BOARD-NIC-LINK-SCENE), so hw_cfg, free_run and phy_basic_status pin concrete
+;; values; only the datasheet-blank nibbles and the undefined-until-loaded MAC address
+;; stay unpinned — nothing beyond what the datasheet determines (REQ-D-NIC-STRAP-RESETS,
 ;; REQ-D-NIC-PHY-ID, REQ-D-NIC-MAC-ADDR, REQ-D-NIC-TIME-SOURCES).
 
 (expectations
@@ -28,10 +31,10 @@
     (writes (write (reg "rx_cfg") (value "0x00000000")) (write (reg "tx_cfg") (value "0x00000000")) (write (reg "rx_dp_ctl") (value "0x00000000")) (write (reg "afc_cfg") (value "0x00000000")))
     (derivation "Each register's field table states an all-zero reset (§5.3.7, §5.3.8, §5.3.10, §5.3.22).")
     (source "DS00002266B §5.3.7, §5.3.8, §5.3.10, §5.3.22"))
-  (step (n 5) (insn "read hw_cfg — the strap bit not pinned")
-    (writes (write (reg "hw_cfg") (value "bits [31:3] = 0000000_0…0 with TX_FIF_SZ [19:16] = 5h (whole-register 0x00050000 apart from bit 2); bit 2 = the D32/nD16 strap value, NOT pinned")))
-    (derivation "TX_FIF_SZ's field default is 5h (§5.3.9) and every other defined field defaults 0, so the register reads 0x00050000 except bit 2, which the datasheet defines as the strap's value (RO) — the strap is the board's composition choice, owned by .4 (REQ-D-NIC-STRAP-RESETS).")
-    (source "DS00002266B §5.3.9, §3.6"))
+  (step (n 5) (insn "read hw_cfg — the strap is decided (D32 tied high)")
+    (writes (write (reg "hw_cfg") (value "0x00050004")))
+    (derivation "TX_FIF_SZ's field default is 5h (§5.3.9) and every other defined field defaults 0, so the register reads 0x00050000 plus bit 2 — the D32/nD16 strap readback, RO. The strap is the board's composition choice, decided by the .4 verdict: D32 tied high (32-bit native mode, D-BOARD-NIC-STRAPS), so bit 2 reads 1 (REQ-D-NIC-STRAP-RESETS).")
+    (source "DS00002266B §5.3.9, §3.6; D-BOARD-NIC-STRAPS"))
   (step (n 6) (insn "read the FIFO information registers (rx_fifo_inf, tx_fifo_inf)")
     (writes (write (reg "rx_fifo_inf") (value "0x00000000")) (write (reg "tx_fifo_inf") (value "0x00001200")))
     (derivation "§5.3.11/§5.3.12 state the resets; TDFREE = 1200h = 4608 bytes is exactly Table 5-3's TX data FIFO size at the TX_FIF_SZ = 5 default — two independent statements agreeing, and the occupancy-at-reset pin (both FIFOs empty).")
@@ -44,10 +47,10 @@
     (writes (write (reg "gpt_cfg") (value "0x0000FFFF")) (write (reg "gpt_cnt") (value "0x0000FFFF")) (write (reg "word_swap") (value "0x00000000")) (write (reg "rx_drop") (value "0x00000000")))
     (derivation "GPT_LOAD/GPT_CNT preset to FFFFh on reset (§3.8, §5.3.15/§5.3.16); WORD_SWAP resets to 0 (§5.3.17); RX_DFC resets to 0 (§5.3.19) — note the read itself clears RX_DFC (RC), so this read is also the drain.")
     (source "DS00002266B §3.8, §5.3.15–§5.3.17, §5.3.19"))
-  (step (n 9) (insn "read free_run — nothing pinned")
-    (writes)
-    (derivation "FREE_RUN starts at zero at reset and increments every 25 MHz cycle (§5.3.18), so the value read depends on elapsed time — a guest-readable time source the composition freezes (REQ-D-NIC-TIME-SOURCES). The datasheet pins the behaviour, never a readable value; nothing pins here.")
-    (source "DS00002266B §5.3.18"))
+  (step (n 9) (insn "read free_run — frozen at its reset value")
+    (writes (write (reg "free_run") (value "0x00000000")))
+    (derivation "FREE_RUN starts at zero at reset and increments every 25 MHz cycle (§5.3.18) — a guest-readable time source, and OB-ENV-VIRTUAL-TIME excludes every guest-reachable time source, so the composition freezes it (REQ-D-NIC-TIME-SOURCES). The .4 verdict decides the freeze: the counter reads its reset value forever (D-BOARD-NIC-TIME-FROZEN), so every read pins 0.")
+    (source "DS00002266B §5.3.18; D-BOARD-NIC-TIME-FROZEN"))
   (step (n 10) (insn "read e2p_cmd — after the auto-load attempt completes (no EEPROM on this board)")
     (writes (write (reg "e2p_cmd") (value "0x00000000")))
     (derivation "EPC Busy reads 1 immediately following reset until the EEPROM controller finishes reading or attempting to read the MAC address (§5.3.23 note); with no EEPROM wired, the read of address 00h finds no A5h marker and the controller ends initialization (§3.9.1) — so once the attempt completes the register reads 0: Busy clear, MAC Address Loaded clear. The transient itself pins no value (the attempt's duration is not MMIO-observable on this board).")
@@ -64,7 +67,7 @@
     (writes (write (reg "phy_id1") (value "0x0007")) (write (reg "phy_id2") (value "bits [15:10] = 0xC0D1; bits [9:0] NOT pinned")))
     (derivation "§5.5.3 states 0007h outright; §5.5.4 states C0D1h for the OUI bits and leaves the model/revision nibbles blank — a measured partial silence (REQ-D-NIC-PHY-ID), so only the stated bits pin. The MII access protocol is §5.4.6/§5.4.7's.")
     (source "DS00002266B §5.5.3, §5.5.4, §5.4.6"))
-  (step (n 14) (insn "read phy_basic_status via MII")
-    (writes (write (reg "phy_basic_status") (value "0x7809")))
-    (derivation "The per-bit defaults compose the value: the four technology ability bits, Auto-Negotiate Ability and Extended Capabilities fixed 1, 100Base-T4 fixed 0, and the transient bits (Auto-Negotiate Complete, Remote Fault, Link Status, Jabber Detect) defaulting 0 (§5.5.2) — 0x7809. The wire-domain bits' evolution after reset is the replay scene's (REQ-D-NIC-PHY-LINK), .4's to declare.")
-    (source "DS00002266B §5.5.2")))
+  (step (n 14) (insn "read phy_basic_status via MII — the completed link scene")
+    (writes (write (reg "phy_basic_status") (value "0x782D")))
+    (derivation "The per-bit defaults compose 0x7809 (the four technology ability bits, Auto-Negotiate Ability and Extended Capabilities fixed 1, 100Base-T4 fixed 0, the transient bits defaulting 0, §5.5.2). The wire-domain bits' post-reset evolution is the replay scene's (REQ-D-NIC-PHY-LINK), and the .4 verdict declares it static and complete from before the guest's first access — the board's cold reset completes before any guest access exists (D-BOARD-RESET), so the first read already sees Link Status and Auto-Negotiate Complete set (D-BOARD-NIC-LINK-SCENE): 0x7809 | 0x24 = 0x782D. The latch-low Link bit never trips — the scene never fails.")
+    (source "DS00002266B §5.5.2; D-BOARD-NIC-LINK-SCENE")))

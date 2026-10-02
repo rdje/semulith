@@ -16,7 +16,9 @@ generator emits seven artifacts into the board's own directory:
   hardware.sexp               the hardware description (schema hardware.sexp): every region
                               resolved with its computed end; the wiring — device ↔ region ↔
                               access-widths ↔ interrupt-state ↔ backend; the console; the
-                              reset; the declared absences with their satisfies edges
+                              reset; the declared absences with their satisfies edges; the
+                              composition dispositions (board decisions carrying `answers`,
+                              P5-BOARD.4) mirrored for the model route
   map.md                      the human-readable generated map (the DOSSIER links to it, the
                               unit book includes it — one owner, two readers)
 
@@ -160,6 +162,15 @@ def read_board(board_dir: Path) -> dict:
              "satisfies": _strings(S.children(doc, name)[0], "satisfies")}
             for name in ("timers", "interrupt-controller")
             if str(S.field(S.children(doc, name)[0], "present")) == "false"],
+        # P5-BOARD.4: the composition dispositions — board decisions answering device
+        # obligations the dossier deferred to the board (composition_disposition
+        # "required"), mirrored into hardware.sexp so the model route reads them as data.
+        "dispositions": [
+            {"decision": str(S.field(d, "id")),
+             "answers": _strings(d, "answers"),
+             "statement": str(S.field(d, "statement"))}
+            for d in S.children(doc, "decision")
+            if S.children(d, "answers")],
     }
 
 
@@ -272,6 +283,10 @@ def render_hardware(board: dict) -> str:
     for a in board["absences"]:
         sat = " ".join(f'(satisfies "{s}")' for s in a["satisfies"])
         out.append(f'  (absence (element {a["element"]}) {sat})')
+    for d in board["dispositions"]:
+        ans = " ".join(f'(answers "{a}")' for a in d["answers"])
+        out.append(f'  (disposition (decision "{d["decision"]}") {ans} '
+                   f'(statement "{d["statement"]}"))')
     out.append(")")
     return "\n".join(out) + "\n"
 

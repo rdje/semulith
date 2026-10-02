@@ -387,9 +387,9 @@ def _emit_contracts_board(profile_dir: Path) -> str:
     a.append("")
     a.append("A board dossier carries no profile/requirements/obligations of its own: "
              "the CPU contract it must satisfy is its processor's, the device guarantees "
-             "it relies on are its devices' — the composition verdict that matches them "
-             "(P5-BOARD.4) is evidence, and lands in the book's evidence chapter when it "
-             "exists.")
+             "it relies on are its devices'. The composition verdict that matches them "
+             "(`COMPOSITION-VERDICT.md`, P5-BOARD.4) is the unit's evidence — decided by "
+             "the BOARD-VERDICT doctrine and included in the book's verdict chapter.")
     a.append("")
     return "\n".join(a)
 

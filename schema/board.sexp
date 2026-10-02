@@ -109,11 +109,18 @@
   (field (name device) (type string) (min-length 1)))
 
 ;; The decision idiom of schema/profile.sexp, unchanged: every element of the spec that
-;; was a choice carries its authority and its source.
+;; was a choice carries its authority and its source. `answers` (`P5-BOARD.4`) binds a
+;; decision to the device obligation it dispositions: a device dossier may defer a value
+;; to the composing board (an obligation marked composition_disposition "required" — the
+;; LAN9118's strap values, frozen time sources, replay link scene and pin tie-offs), and
+;; the BOARD-VERDICT doctrine checks the binding both ways — every marked obligation is
+;; answered by exactly one decision, and every `answers` names a marked obligation.
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
   (field (name statement) (type string) (min-length 1))
   (field (name source) (type string) (min-length 1))
-  (field (name note) (type string) (optional yes)))
+  (field (name note) (type string) (optional yes))
+  (field (name answers) (type string) (pattern "^OB-[A-Z0-9-]+$")
+         (repeat yes) (unique yes) (optional yes)))

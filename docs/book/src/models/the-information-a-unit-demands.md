@@ -11,7 +11,7 @@
 > work that is not yet measured. (Two *device* units — `sifive-uart-lab-v0` and
 > `lan9118-lab-v0` — are registered and fully dossiered since `2026-10-02`; their
 > per-category demand is the device dossiers' own, and the board `netboard-lab-v0` is
-> registered and specified, its composition verdict pending.)
+> registered, specified, and composition-verdicted — ACCEPTED, `2026-10-02`.)
 >
 > **This is a live chapter.** It is re-derived, not just re-read: each unit the project
 > models measures its own demand list, and the chapter changes with what is measured — a

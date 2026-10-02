@@ -3,13 +3,13 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/netboard-lab-v0/board.sexp`  `93b087cb65842cd43ce63e24853f4a7c9778a9278d3a8d6458a606f1a6122333`
-     `profiles/netboard-lab-v0/DOSSIER.md`  `efe1368ae78ed771f170bb4570f99811d7a570e7bd3340fdc217dc8aed694010`
-     Generator: `scripts/gen_model_book.py` (sha256 `b1524b0982e891ec679cb622686eb0a23aa2e6a7259735a3ad976e482d26fda0`) -->
+     `profiles/netboard-lab-v0/board.sexp`  `ab64ccfb004e074d3c4939e6490c10357b8f1998f73a322347fd5db47c875e4e`
+     `profiles/netboard-lab-v0/DOSSIER.md`  `27f67618b9d8ddbde9fcda4fe70637d01f49735440504a0e78e263e3ec9df498`
+     Generator: `scripts/gen_model_book.py` (sha256 `42b24f528fa0752c31faa6ad1e21d0bbcf36beed710c827c54421006fadcec07`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |
-| `board.sexp` | the canonical board definition (schema `board.sexp`): composition pins, memory map, reset, declared absences | processor `rv64i-lab-v0` v0, 2 devices, 3 memory regions, 8 recorded board decisions |
-| `DOSSIER.md` | the board's narrative — what the definition means and what it does not claim | 6,332 bytes |
+| `board.sexp` | the canonical board definition (schema `board.sexp`): composition pins, memory map, reset, declared absences | processor `rv64i-lab-v0` v0, 2 devices, 3 memory regions, 12 recorded board decisions |
+| `DOSSIER.md` | the board's narrative — what the definition means and what it does not claim | 6,529 bytes |
 
-A board dossier carries no profile/requirements/obligations of its own: the CPU contract it must satisfy is its processor's, the device guarantees it relies on are its devices' — the composition verdict that matches them (P5-BOARD.4) is evidence, and lands in the book's evidence chapter when it exists.
+A board dossier carries no profile/requirements/obligations of its own: the CPU contract it must satisfy is its processor's, the device guarantees it relies on are its devices'. The composition verdict that matches them (`COMPOSITION-VERDICT.md`, P5-BOARD.4) is the unit's evidence — decided by the BOARD-VERDICT doctrine and included in the book's verdict chapter.

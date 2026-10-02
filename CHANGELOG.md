@@ -1,5 +1,56 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0017 (leaf P5-BOARD.4) — the composition verdict: ACCEPTED, decided on every commit by BOARD-VERDICT; four dispositions as data; the 16-bit declaration measured false and narrowed
+
+- The gate's core obligation landed: for every CPU environment assumption, the named
+  board or device guarantee that satisfies it — or a rejection. The verdict is
+  **ACCEPTED** and re-decided on every commit by the 33rd project doctrine,
+  **BOARD-VERDICT** (`scripts/board_verdict.py` + `scripts/check_board_verdict.sh`):
+  the discharge over the composed catalogues (8/8), every `satisfies` edge resolved to
+  a discharged assumption (3/3), and every board-deferred device obligation bound to
+  exactly one decision `answers` edge (4/4) — an unmatched assumption or a dangling
+  edge is a REJECTION by name, never a note.
+- The machinery: four deferred obligations (`OB-NIC-STRAP-RESETS` joined the three
+  `.10` pre-wired records) carry the marker param `composition_disposition "required"`;
+  `schema/board.sexp`'s `decision` gained the optional `answers` edge; the
+  dispositions mirror into `hardware.sexp` (schema + `gen_board.py`) for the model
+  route. The dispositions, decided: D32 tied high + SPEED_SEL at its pull-up
+  (`D-BOARD-NIC-STRAPS`); the NIC's guest-readable time sources frozen
+  (`D-BOARD-NIC-TIME-FROZEN`); the replay link scene static-complete at 100BASE-TX FD
+  from before the guest's first access (`D-BOARD-NIC-LINK-SCENE`, BSR `0x782D`); pin
+  reads tied off at 0 (`D-BOARD-NIC-PIN-TIEOFFS`).
+- Measured in execution, fixed at root: the board's eth0 declared 16-bit accesses from
+  the datasheet's summary sentence (§1.10), but §3.6 makes the bus widths
+  mode-exclusive — with D32 strapped the declaration narrowed to 32; the NIC dossier's
+  pairing-latch census entry flipped to absent with the new reason. The expectations
+  re-pinned what the verdict determines (`hw_cfg` `0x00050004`, `free_run` `0` frozen,
+  `phy_basic_status` `0x782D`).
+- The authored verdict: `profiles/netboard-lab-v0/COMPOSITION-VERDICT.md` — the
+  per-assumption table (every §5 aspect enumerated; the not-arising ones recorded with
+  reasons), the `OB-PLATFORM` note (the discharge edges alone would be materially
+  misleading), the interface-test leg (`make check` + smoke green — the RAM half; the
+  MMIO halves attach with the device models, named), and MODEL-COMPOSE's open question
+  answered for this board shape: no operator beyond union + discharge is needed.
+  Included as the board book's verdict chapter.
+- Validation: BOARD-VERDICT self-test 6/6 (every RED asserting its reason on copies of
+  the real board) + real run green; `make gate` → all doctrines green (DERIVED-COUNTS
+  re-derived 32 → 33 doctrines, 359 → 365 arms); `make check` + `run_smoke` green;
+  `mdbook build` rc 0; `gen_book_index.py --check` rc 0. No Rust surface touched.
+
+## SEMULITH-P5-0016 (tree P5-BOARD) — the `.4` design brief: the verdict's shape and the four dispositions decided
+
+- The verdict's shape recorded before execution: the mechanical discharge (green at
+  8/8 — but its platform-dependent edges land on `OB-PLATFORM`, the laboratory
+  guarantee) re-established at content level by the declared `satisfies` edges plus
+  four composition dispositions; a re-runner required (the MODEL-COMPOSE.4 lesson).
+- Four composition records, not three: `OB-NIC-STRAP-RESETS` (the strap values) joins
+  TIME-SOURCES / PHY-LINK / GPIO-PINS. Dispositions decided from the pinned datasheet:
+  D32 tied high (§3.6's native 32-bit mode; EEDIO has no internal pull — an explicit
+  board tie), SPEED_SEL unwired to its pull-up, the time sources frozen, the link
+  scene static-complete at 100BASE-TX FD, the pin reads tied off at 0.
+- The measured defect the brief caught: eth0's declared 16-bit width is mode-exclusive
+  per §3.6 and narrows to 32 with the leaf.
+
 ## SEMULITH-P5-0015 (leaf P5-BOARD.12) — the two-tier per-part ceiling: authored content bounded, regeneration-gated derived members exempt as a checked property
 
 - The director-delegated ruling (`SEMULITH-P5-0014`,
@@ -823,62 +874,4 @@
   non-temporal measured absent; MFENCE is C66x-only, its violated restrictions
   undefined-by-omission.
 - Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-loops-q12-q14.md.
-
-## SEMULITH-DR-0089 (leaf DSP-REVIEW.4) — the predicted break, measured — twice
-
-- The scalar step model breaks, measured: (1) the execute PACKET is the unit of progress
-  (≤8 instructions, all operands read simultaneously at E1); (2) writeback is delayed and
-  visible (load at i+4, no interlocks, early reads stale by design) with interrupts
-  landing INSIDE the window (the manual's own LDW/ADD example computes incorrectly).
-  `OB-ENV-PARTIAL-PROGRESS` is true for RV64I and false for C6000 — recorded so
-  P3-BREADTH never inherits it silently.
-- The census consequence: a DSP profile reopens the hidden-state census by its own rule
-  (the pending-writes window + packet state). The §3.7.2/§3.8.2 contradiction recorded in
-  both forms, C66x's resolved form beside them.
-- Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-packets-q9-q11.md.
-
-## SEMULITH-DR-0088 (leaf DSP-REVIEW.3) — addressing and address spaces: units byte-compatible, the seams named
-
-- The acceptance's exact check — units, not just widths: byte-addressed on BOTH sides,
-  one 32-bit numbering (no word-addressed space exists — measured). The five seams that
-  do NOT fit the flat lab shape, each measured with locators: the 32-bit space; two L1
-  spaces with a program-only fetch port (D-FETCH-MAP is scalar-lab-shaped); fetch-packet
-  alignment; the AMR control register (the lab has no CSR surface); circular addressing
-  restricted to A4–A7/B4–B7. Measured absent: bit-reversed addressing (BITR is a data
-  op), strided modes (0 hits ×3). A second core-version split pinned (the circular
-  nonalignment floor). Four more manual defects recorded unresolved.
-- Includes the gap filing's changelog (SEMULITH-DR-0087 carried none — folded here):
-  GAP-DSP56K-FAMILY-MANUAL and GAP-ADI-SHARC-PRM filed through the two-way channel; the
-  C55x want dissolved on measurement (already catalogued).
-- Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-addressing-q6-q8.md.
-
-## SEMULITH-DR-0086 (leaf DSP-REVIEW.2) — rounding, saturation, sticky flags: the defined step sequences
-
-- The ordering measured as the manuals' own step sequences (multiply → accumulate →
-  round-add → shift/saturate → narrow; CMPYR1/DDOTPH2R/QSMPY32R1/DOTPNRSU2 quoted with
-  locators) — the leaf's acceptance, never "a saturating add".
-- Saturation is in-instruction AND per-lane AND an explicit transfer (SAT); the
-  sticky-flag side effect is per-instruction DATA (SADD2 saturates but does not set SAT —
-  printed in its own entry). CSR.SAT/SSR survive interrupts (the TSR tables prove it);
-  the context-switch restore ORDER is documented; SAT sets one cycle after the result —
-  the delayed-effect shape, routed as `.4`'s input.
-- **Seven manual defects/ambiguities recorded, none resolved by intuition** (the CMPYR1
-  typo in two manuals, the prose-vs-C ordering contradiction, the missing saturation
-  clause, the core-version intermediate-width split…). Evidence:
-  docs/tasks/artifacts/dsp-review/2026-09-30-rounding-saturation-q3-q5.md.
-
-## SEMULITH-DR-0085 (leaf DSP-REVIEW.1) — widths and accumulator semantics, measured across the three TI manuals
-
-- The first DSP review leaf: Q1/Q2 of the catalog's DSP questions answered from the
-  catalogued C64x/C66x/C674x manuals by text extraction — every fact quoted with its
-  printed page and section. Headlines: NO accumulator and NO guard bits anywhere
-  (measured absent, the searches named); 40-bit "long" values in odd:even register pairs
-  with a zero-fill rule (all three), 64-bit pairs (all three), 128-bit quadruplets (C66x
-  only); Q-notation nearly absent (Q31 exactly once); scaling instruction-encoded (the
-  S-family's <<1+saturate) — and the `s`-bit trap measured (it's the A/B side-select).
-- The first classification for `.7`: register GROUPING with a width+fill rule is the one
-  candidate abstraction change; no accumulator/guard state is needed for these targets.
-  Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-widths-q1-q2.md.
-- The tree's stale G1 blocker repaired; the tree is active; LIVE_STATUS's P2 row (stale
-  at 8/9 from a mid-flight script abort) corrected to Done 9/9.
 

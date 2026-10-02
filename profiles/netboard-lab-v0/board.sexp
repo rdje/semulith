@@ -49,10 +49,12 @@
     (material "MICROCHIP-LAN9118")
     (revision "DS00002266B 2018-11-30")
     (sha256 "72fe68f241b5bc91a861cff98a877ae907339d396e64394b0f5daa2c391bf6ee")
-    (access-widths 16)
     (access-widths 32)
-    (comment "DS00002266B §1.10: the host bus interface supports 32-bit and 16-bit bus"
-             "transfers; programmed I/O only — no bus-master DMA")
+    (comment "DS00002266B §1.10/§3.6: the host bus width is strap-selected and the modes"
+             "are exclusive — the board straps D32 (32-bit, the native mode; no special"
+             "requirements), so a 16-bit access has no datasheet-defined behaviour here"
+             "(REQ-D-NIC-WIDTH) and the .1 declaration of 16 narrows to 32 at the .4"
+             "verdict (D-BOARD-NIC-STRAPS). Programmed I/O only — no bus-master DMA")
     (interrupt unconnected)
     (backend
       (rx recorded-trace-replay)
@@ -150,4 +152,36 @@
     (id "D-BOARD-MEMORY-MAP")
     (authority laboratory)
     (statement "RAM is 2 GiB at 0x8000_0000 — the laboratory harness's existing load base and size (crates/semulith-cli DEFAULT_BASE/DEFAULT_SIZE), so a guest built for the laboratory runs unchanged on the board. uart0 sits at 0x1001_0000, the FU540-C000 UART0 instance address (Table 58). eth0 sits at 0x1002_0000 with a 256-byte window, the LAN9118 direct register map span (DS00002266B Table 5-1: offsets 0x00–0xFC).")
-    (source "crates/semulith-cli/src/main.rs; FU540-C000 v1p5 Table 58; DS00002266B Table 5-1")))
+    (source "crates/semulith-cli/src/main.rs; FU540-C000 v1p5 Table 58; DS00002266B Table 5-1"))
+
+  ;; ── the composition dispositions (P5-BOARD.4): the device dossier defers these values
+  ;; to the composing board (the obligations are marked composition_disposition "required"),
+  ;; and the BOARD-VERDICT doctrine checks the binding both ways. Mirrored into
+  ;; hardware.sexp by gen_board.py — the model route consumes them as data.
+  (decision
+    (id "D-BOARD-NIC-STRAPS")
+    (authority laboratory)
+    (statement "The LAN9118's configuration straps: D32/nD16 is tied HIGH — 32-bit host bus mode, the datasheet's native mode with no special requirements (DS00002266B §3.6) and the 64-bit host's natural width; EEDIO has no internal pull (Table 2-4), so the tie is an explicit board choice — and SPEED_SEL is left unwired, so its internal pull-up (Table 2-3: I (PU)) latches 1 (Table 2-2: 100 Mbps with auto-negotiation enabled). Consequences: HW_CFG reads 0x00050004 at reset; PHY register 0 bits 13/12 (Speed Select, Auto-Negotiation Enable) read 1/1; PHY register 4 (the technology advertisement) reads 0x01E1; PHY register 31's HCDSPEED default is 100BASE-TX half-duplex (010b) before negotiation completes.")
+    (source "DS00002266B §3.6, Table 2-2, Table 2-3, Table 2-4, Notes 5-1/5-3/5-4; the P5-BOARD.4 composition verdict")
+    (answers "OB-NIC-STRAP-RESETS"))
+
+  (decision
+    (id "D-BOARD-NIC-TIME-FROZEN")
+    (authority laboratory)
+    (statement "The LAN9118's guest-readable time sources are frozen: FREE_RUN reads its reset value 0 forever, GPT_CNT never advances (a TIMER_EN write still loads GPT_LOAD into GPT_CNT — a guest-visible, datasheet-defined, deterministic state change — but the count never decrements, so GPT_INT never sets and the wrap never occurs), and IRQ_CFG's INT_DEAS never runs (the interrupt line is unconnected and INT_EN resets 0, so no deassertion interval ever starts; its status bits stay at reset). Constant or guest-written-static values carry no time information, so OB-ENV-VIRTUAL-TIME holds with the NIC present, and the harness's retired-instruction count never becomes target-visible through them. The deviation from wall-clock-faithful behaviour is deliberate: a polled driver never needs these counters, and a guest busy-waiting on one would hang — which is why the disposition is data, not prose.")
+    (source "DS00002266B §5.3.18, §5.3.15/§5.3.16, §5.3.2; rv64i-lab-env-v0 v0 OB-ENV-VIRTUAL-TIME; the P5-BOARD.4 composition verdict")
+    (answers "OB-NIC-TIME-SOURCES"))
+
+  (decision
+    (id "D-BOARD-NIC-LINK-SCENE")
+    (authority laboratory)
+    (statement "The recorded-trace replay's declared link scene is static and complete: the wire is up at 100BASE-TX full-duplex with auto-negotiation complete, from before the guest's first access — the board's cold reset completes before any guest access exists (D-BOARD-RESET), the same discipline that already pins READY and EPC_BSY post-transient, so every guest-observable read sees the completed scene. Concretely: PHY register 1 (Basic Status) reads 0x782D — the 0x7809 reset composition with Link Status and Auto-Negotiate Complete set; the latch-low Link bit never trips because the scene never fails; PHY register 17's ENERGYON reads 1 (already its reset); PHY register 31 reads Autodone 1 with HCDSPEED 110b (100BASE-TX full-duplex, §5.5.13); PHY register 5 (link-partner ability) reads 0x01E1, the declared partner scene. Note 3-11's wait-for-link succeeds at the first read — never a live host link.")
+    (source "DS00002266B §5.5.2, §5.5.8, §5.5.13, Note 3-11; D-BOARD-NET-BACKEND; the P5-BOARD.4 composition verdict")
+    (answers "OB-NIC-PHY-LINK"))
+
+  (decision
+    (id "D-BOARD-NIC-PIN-TIEOFFS")
+    (authority laboratory)
+    (statement "No GPIO, LED or EEPROM pins are wired on this board, so every pin-readable value is the declared tie-off 0: GPIO_CFG's GPIODn reads 0 regardless of direction (an input sees a tied-low pin; an output drives an unwired pin and reads back the tie-off), and the EEPR_EN-muxed internal MII monitor signals (TX_EN, RX_DV, TX_CLK, RX_CLK) read 0 — never a live host signal.")
+    (source "DS00002266B §5.3.14, Table 5-4; the P5-BOARD.4 composition verdict")
+    (answers "OB-NIC-GPIO-PINS")))

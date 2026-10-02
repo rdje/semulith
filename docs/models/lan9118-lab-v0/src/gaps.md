@@ -8,7 +8,8 @@ each with its owner.
 
 Six records carry what DS00002266B does not determine: reserved read values (§5.1's
 "random value"), non-32/16-bit access effects, the strap-determined resets (D32/nD16,
-SPEED_SEL — the board's composition choice, owned by `P5-BOARD.4`), the blank PHY ID2
+SPEED_SEL — the board's composition choice, decided by the `.4` verdict:
+`D-BOARD-NIC-STRAPS`), the blank PHY ID2
 model/revision nibbles, the ADDRH/ADDRL defaults-versus-undefined tension, and §3.11's
 reset completion times — mis-rendered in the PDF's own text layer (the µ→s mis-mapping,
 hexdump-verified), internally contradicted by §5.3.13's clean "100us", so only the

@@ -34,8 +34,9 @@ dossiering (the LAN9118's MMIO-readable counters are guest-readable time sources
 is recorded as contract data (`REQ-D-NIC-TIME-SOURCES`) rather than discovered at the
 verdict.
 
-**5. The verdict is separate from the definition.** This book deliberately carries no
-evidence chapter yet: the composition verdict (`.4`) and the firmware probes (`.5`) are
-the board's evidence, and the board can never outrank its processor — an EXPERIMENTAL
-CPU composes into an EXPERIMENTAL board, and every claim reads as conditional on the
-CPU's own acceptance trajectory.
+**5. The verdict is separate from the definition.** The composition verdict (`.4`) is
+the board's evidence chapter ([The composition verdict](the-verdict.md)) — ACCEPTED,
+re-decided on every commit by the BOARD-VERDICT doctrine — and the firmware probes
+(`.5`) remain ahead, gated on the CPU's acceptance trajectory: the board can never
+outrank its processor — an EXPERIMENTAL CPU composes into an EXPERIMENTAL board, and
+every claim reads as conditional on the CPU's own acceptance trajectory.

@@ -21,7 +21,8 @@ are the bill's specification surface.
 The processor: pinned by unit id + version `0` + the dossier content digest recorded in
 its GATE-REPORT-gated `GC-REPORT.md`. Its CPU/environment contract (`rv64i-lab-env-v0`
 v0) is the contract this board must satisfy — the eight environment assumptions the
-composition verdict (`P5-BOARD.4`) will match against board and device guarantees.
+composition verdict (`P5-BOARD.4`, **ACCEPTED**) matched against board and device
+guarantees.
 
 **Does not supply:** the devices, the map, or the board's absences — the processor's own
 C19/C20/C21 categories are deferred to this board by its census; and the digest pins the
@@ -47,9 +48,9 @@ sha256. Chapter 5 supplies the NIC's register contract (dossiered in the
 `00h`–`FCh` span supplies the board map's 256-byte `eth0` window.
 
 **Does not supply:** the strap values (D32/nD16, SPEED_SEL — the composition's choice,
-owned by `P5-BOARD.4`), a bus-master DMA contract (the device is programmed-I/O only —
-which is why the CPU contract tolerates it), or the wire: the recorded-trace backend is
-the board's declaration, not the datasheet's.
+decided by the `.4` verdict: `D-BOARD-NIC-STRAPS`), a bus-master DMA contract (the
+device is programmed-I/O only — which is why the CPU contract tolerates it), or the
+wire: the recorded-trace backend is the board's declaration, not the datasheet's.
 
 ## The encoding and reference surfaces, honestly absent
 
