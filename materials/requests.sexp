@@ -125,96 +125,108 @@
 
 (request
   (id "REQ-MCU-ARMV7M-ARM")
-  (status open)
+  (status resolved)
   (wanted "Armv7-M Architecture Reference Manual (the M-profile MCU architecture: Thumb-2, the exception model, NVIC, SysTick, the optional MPU)")
   (why "MCU-DOCS.1 (the 2026-10-02 MCU steer): the M-profile architecture is the core contract every Cortex-M3/M4-class MCU model is written against — the NVIC/SysTick/exception semantics are architecture, not vendor data")
   (doc "Armv7-M Architecture Reference Manual (Arm)")
+  (answer "FULFILLED 2026-10-02 — DDI0403E.e (858 pp), already held corpus-side before the request; adopted as ARM-ARMV7M-DDI0403E, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-ARMV6M-ARM")
-  (status open)
+  (status resolved)
   (wanted "Armv6-M Architecture Reference Manual (the minimal M profile: Cortex-M0/M0+/M1)")
   (why "MCU-DOCS.1: the smallest MCU cores (incl. the RP2040's Cortex-M0+) run v6-M — the smallest honest MCU processor profile this project could model")
   (doc "Armv6-M Architecture Reference Manual (Arm)")
+  (answer "FULFILLED 2026-10-02 — DDI0419E (374 pp), already held corpus-side before the request; adopted as ARM-ARMV6M-DDI0419E, sha256 verified into the cache (scripts/materials.py --fetch)")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-ARMV8M-ARM")
-  (status open)
+  (status resolved)
   (wanted "Armv8-M Architecture Reference Manual (mainline and baseline; TrustZone-M)")
   (why "MCU-DOCS.1: the current M-profile generation (Cortex-M23/M33/M55 class) — the forward-looking MCU architecture; v8-M mainline supersedes v7-M for new cores")
   (doc "Armv8-M Architecture Reference Manual (Arm)")
+  (answer "FULFILLED 2026-10-02 — DDI0553B.z (2149 pp), already held corpus-side before the request; adopted as ARM-ARMV8M-DDI0553B, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-CORTEX-M3-TRM")
-  (status open)
+  (status resolved)
   (wanted "Arm Cortex-M3 Technical Reference Manual (the canonical v7-M MCU core)")
   (why "MCU-DOCS.1: the most-documented MCU core in history — a Cortex-M3 model has the QEMU lm3s/mps2 precedents as potential second implementations for differential checking")
   (doc "Cortex-M3 Technical Reference Manual (Arm)")
+  (answer "FULFILLED 2026-10-02 from the Arm documentation-service API — DDI0337H r2p0 (133 pp); adopted as ARM-CORTEX-M3-DDI0337H, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-CORTEX-M0P-TRM")
-  (status open)
+  (status resolved)
   (wanted "Arm Cortex-M0+ Technical Reference Manual (the canonical v6-M core — the RP2040's)")
   (why "MCU-DOCS.1: pairs with the RP2040 datasheet request — the core TRM plus the SoC datasheet is the complete MCU documentation pair")
   (doc "Cortex-M0+ Technical Reference Manual (Arm)")
+  (answer "FULFILLED 2026-10-02 from the Arm documentation-service API — DDI0484C r0p1 (51 pp); adopted as ARM-CORTEX-M0P-DDI0484C, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-CORTEX-M4-TRM")
-  (status open)
+  (status resolved)
   (wanted "Arm Cortex-M4 Technical Reference Manual (v7E-M: the DSP-extension and FP-extension MCU core class)")
   (why "MCU-DOCS.1: the most-deployed MCU core class (STM32F4, nRF52840 — whose PS the project already holds — i.MX RT); v7E-M adds the DSP/FP extensions to v7-M")
   (doc "Cortex-M4 Technical Reference Manual (Arm)")
+  (answer "FULFILLED 2026-10-02 from the Arm documentation-service API — DDI0439B r0p0 (117 pp); adopted as ARM-CORTEX-M4-DDI0439B, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-RP2040-DS")
-  (status open)
+  (status resolved)
   (wanted "Raspberry Pi RP2040 datasheet (the prose companion to the corpus's held SVD register maps: dual Cortex-M0+, the PIO state machines, clocks, resets, DMA)")
   (why "MCU-DOCS.1: the best fully-public modern MCU documentation set — the SVD maps are already held (SVD-RASPBERRY-PI), the datasheet is the semantic half (what the registers DO, not just where they are)")
   (doc "RP2040 datasheet (Raspberry Pi)")
+  (answer "FULFILLED 2026-10-02 — and measured REDUNDANT: the RP2040 datasheet (642 pp) was already held corpus-side AND adopted in this catalog as RP2040-DS since 2026-09-14 (same sha256, cached). The .1 survey measured the corpus's semulith-facing feed but not this catalog — the defect is recorded in docs/tasks/MCU-DOCS.md and the survey knowledge card; no duplicate record adopted")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-STM32-RM")
-  (status open)
+  (status resolved)
   (wanted "ST STM32 reference manual + the Cortex-M4 programming manual (RM0394-class RM for the peripheral register contracts; PM0214 for the core's vendor view)")
   (why "MCU-DOCS.1: the dominant MCU vendor line — ST publishes full reference manuals publicly; one representative RM measures the vendor-document class for this project")
   (doc "STM32 reference manual + PM0214 programming manual (ST)")
+  (answer "FULFILLED 2026-10-02 from Wayback captures of the official st.com URLs — RM0394 (1600 pp) + PM0214 Rev 10 (262 pp), the RM + programming-manual pair as requested; adopted as ST-STM32L4-RM0394 and ST-STM32-CM4-PM0214, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-FE310")
-  (status open)
+  (status resolved)
   (wanted "SiFive FE310-G002 manual (the RISC-V MCU: E31 core, CLINT/PLIC, the peripheral set)")
   (why "MCU-DOCS.1: the RISC-V MCU — this project's own spine (the FU540/FU740 manuals are already held; the FE310 is the same vendor's microcontroller, and its CLINT/PLIC are the timer/IRQ contracts netboard-lab-v0 deliberately excludes)")
   (doc "SiFive FE310-G002 manual")
+  (answer "FULFILLED 2026-10-02 from the SiFive CDN — FE310-G002 Manual v1p7 (122 pp; the corpus also holds the G003 manual and both datasheets); adopted as SIFIVE-FE310-G002, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-IMXRT-RM")
-  (status open)
+  (status resolved)
   (wanted "NXP i.MX RT1050 reference manual (the crossover MCU class: Cortex-M7 at 600 MHz)")
   (why "MCU-DOCS.1: NXP publishes full crossover-MCU reference manuals publicly (the DSP56300 Family Manual channel precedent); the crossover class is where MCU and application-processor documentation styles meet")
   (doc "i.MX RT1050 reference manual (NXP)")
+  (answer "FULFILLED 2026-10-02 from a Wayback capture of the official NXP URL (the live URL 404s) — i.MX RT1050 RM Rev 0 (3355 pp); adopted as NXP-IMXRT1050RM, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-SAMD21-DS")
-  (status open)
+  (status resolved)
   (wanted "Microchip SAM D21 datasheet (the classic Cortex-M0+ vendor MCU)")
   (why "MCU-DOCS.1: Microchip/SMSC documentation is a measured-good channel (the LAN9118 acquisition, P5-BOARD.9); the SAM D21 is the classic public Cortex-M0+ vendor datasheet")
   (doc "SAM D21 datasheet (Microchip)")
+  (answer "FULFILLED 2026-10-02 from a Wayback capture of ww1.microchip.com (the live URL 403s) — DS40001882 (1160 pp); adopted as MICROCHIP-SAMD21-DS40001882, sha256 verified into the cache")
   (updated "2026-10-02"))
 
 (request
   (id "REQ-MCU-MSP430")
-  (status open)
+  (status resolved)
   (wanted "TI MSP430FR59xx family user's guide (the ultra-low-power MCU classic — a non-Arm ISA contrast)")
   (why "MCU-DOCS.1: the non-Arm MCU contrast — MSP430 is a distinct 16-bit architecture with full public documentation (the TI DP83816/AM335x channel precedent); a second ISA keeps the MCU direction honest about what is Arm-shaped and what is not")
   (doc "MSP430FR59xx family user's guide (TI)")
+  (answer "FULFILLED 2026-10-02 directly from ti.com/lit — SLAU367P Rev P (1024 pp); adopted as TI-MSP430FR59XX-UG, sha256 verified into the cache")
   (updated "2026-10-02"))

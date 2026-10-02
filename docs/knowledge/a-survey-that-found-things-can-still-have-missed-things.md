@@ -70,5 +70,25 @@ And when a survey is wrong, **say which method was wrong, in the record**. The c
 a `derivation` field naming the sweep command, so the next reader can judge the method rather than
 trusting the result. A census with no stated method cannot be checked; it can only be believed.
 
+## The 2026-10-02 recurrence — a *second* excluded layer
+
+The failure returned in a new shape at `MCU-DOCS.1`/`.2`: the MCU survey measured the
+corpus's **semulith-facing proposals feed** — correctly, by property — but the proposals feed
+is not the whole measurement surface. Three M-profile Arm manuals were already held
+*corpus-side* (the feed is a view, not the catalog), and the RP2040 datasheet was held
+**twice over** — corpus-side *and* adopted in this repository's own tracked
+`materials/catalog.sexp` (as `RP2040-DS`, cached since 2026-09-14, same sha256) — so one
+request was redundant from the moment it was filed. The method lesson generalizes one step:
+
+> "Already held" has **three** layers — the project's tracked catalog, the project's fetch
+> cache, and the corpus's full tree (not just its proposals feed). A survey that measures
+> one layer and files against the conclusion re-requests held documents. The cheap
+> complement-check before filing: `grep -i <part> materials/catalog.sexp` and
+> `find .materials -iname '*<part>*'` beside the feed sweep.
+
+The channel absorbed the redundancy gracefully (the answer read "already held before this
+request"), which is exactly why the defect needed recording here rather than being
+invisible.
+
 Related: [[zero-hits-absence-or-blindness]], [[a-version-string-is-not-an-identity]],
 [[census-instrument-signature-gap]].

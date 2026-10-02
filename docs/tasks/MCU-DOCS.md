@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `MCU-DOCS`
-- Status: `active`
+- Status: `done` (`2026-10-02` — both leaves complete; the tree reopens the day a future MCU milestone needs documents this set does not cover)
 - Roadmap lane: director steer `2026-10-02` — MCU modeling ("ARMs as full documentations
   of MCUs, maybe others vendors too"). No milestone owns MCU modeling yet; this tree is
   the documentation-research input, exactly the role `P5-BOARD.8`/`.9` played for the
@@ -63,12 +63,56 @@ never a device without a source.
   modeling yet. Pickup measured: `poll_semulith_gaps.py` (read-only) reports exactly
   the twelve new ids, exit 1. Fulfilment is chipdoc-side and asynchronous; each
   request's status flips when the feed mirrors it.
+  **Correction (`.2` execution, `2026-10-02`):** the survey measured the corpus's
+  *semulith-facing proposals feed* — but that feed is not the whole measurement
+  surface. The channel's answers measured what the feed-only survey missed: the three
+  M-profile ARMs were already held corpus-side (adoption was still the right act — the
+  corpus is not the tracked catalog), and the RP2040 datasheet was held twice over
+  (corpus-side AND adopted in `materials/catalog.sexp` as `RP2040-DS` since
+  `2026-09-14`, same sha256, cached) — one request was redundant from the moment it was
+  filed. This is the `a-survey-that-found-things-can-still-have-missed-things` failure
+  class recurring at a second layer; the card gained the recurrence and the
+  complement-check rule. The request set's content stands (eleven of twelve were
+  needed); the survey METHOD is what was wrong, and it is recorded here, per the card's
+  own rule.
+
+- ID: `MCU-DOCS.2` — **reconcile the channel's answers: adopt, verify, mark**
+  Status: `done` (`2026-10-02`, `SEMULITH-MCU-0002`)
+  Goal: consume the answers the channel delivered for `.1`'s twelve requests — verify
+  the channel live first, adopt the fulfilled artifacts into `materials/catalog.sexp`
+  with digests re-verified at fetch, mark every request with its answer and evidence,
+  and re-pin the corpus.
+  Acceptance: every adopted artifact's sha256 verifies from the cache
+  (`scripts/materials.py --verify`); every request carries its answer; the survey
+  defect found in execution is recorded with its fix (the `.9` discipline: a measured
+  negative is an answer, and a measured defect is corrected at its records).
+  Result (`2026-10-02`): the channel verified live first — `build_responses.py
+  --report` → **12 fulfilled / 0 blocked, exit 0** (every open request answered). The
+  routes, measured by the channel: the three Cortex-M TRMs from Arm's
+  documentation-service API; FE310 from the SiFive CDN; MSP430 directly from ti.com;
+  i.MX RT / SAM D21 / STM32 from Wayback captures of the official URLs (the live URLs
+  404/403/reset to automated clients — measured routes, recorded in the answers'
+  evidence); the three M-profile ARMs and the RP2040 datasheet already held
+  corpus-side. **Twelve materials adopted** into `materials/catalog.sexp` (PM0214
+  included as the STM32 answer's named second document) and fetched into
+  `.materials/mcu/` with every sha256 re-verified (`materials --fetch`: 12 ok;
+  `materials --verify: 64 verified / 0 unresolved` — the catalog moves 52 → 64
+  materials, `.9`'s measured 52 + the twelve). The corpus re-pinned
+  `c4ad8a2` → `3dc4e62` (5434 working-tree files / 302 PDFs, .git excluded; 5415
+  tracked at HEAD — the PDF axis comparable to `.9`: 293 → 302). All twelve requests
+  marked `resolved` with their evidence verbatim; REQ-MCU-RP2040-DS's answer records
+  the measured redundancy (no duplicate record adopted). **Measured in execution, fixed
+  at root:** (1) the `.1` survey defect (above) — the knowledge card gained the
+  three-layer "already held" rule; (2) a heredoc paren over-close caught by the one
+  reader before landing (`.1`); (3) the requests-file answer surgery initially nested
+  `(answer …)` inside `(updated …)` — parsed but wrong-shaped against the house
+  records; rewritten and verified per-field before commit.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | `.1` done; the tree idles until the channel answers (a `.2` reconciles the answers when they arrive — the `.9` pattern) |
+| — | — | — | `.1`/`.2` done — the canonical MCU documentation set is acquired and digest-verified; the tree closes unless a future MCU milestone needs documents this set does not cover |
 
 ## Decisions
 
@@ -97,7 +141,53 @@ never a device without a source.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`MCU-DOCS.2` (`2026-10-02`, `SEMULITH-MCU-0002`):
+
+- [x] **REPRODUCE / ISSUE** — the channel answered all twelve requests while ours still
+  read `open` (the §0.3/§0.5 protocol: only WE flip our own file). Measured live before
+  any edit:
+
+  ```
+  $ SEMULITH_ROOT=<repo> python3 <corpus>/scripts/build_responses.py --report
+  REQ-MCU-* × 12   semulith=open  chipdoc=fulfilled   (rc 0 — every open request answered)
+  ```
+- [x] **ROOT CAUSE (WHY + WHERE)** — the answers exist per-request in the channel's
+  `catalog/responses.sexp`; adoption is our act (`P5-BOARD.9`'s pattern). WHERE:
+  `materials/catalog.sexp` (12 new records + the corpus re-pin), `materials/requests.sexp`
+  (12 answers), `docs/tasks/MCU-DOCS.md`, the survey knowledge card. The measured
+  discovery in execution: the RP2040 datasheet was already adopted as `RP2040-DS`
+  (`git log -S RP2040-DS` → `3afd275`, 2026-09-14, MODEL-METHOD.13 — the *same* survey
+  class's prior occurrence) — verified by digest equality
+  (`be56fbb7…` both records), and the duplicate record was removed, not landed.
+- [x] **FIX** — the 12 catalog records (digests measured from the corpus files and
+  cross-checked against the answers' sha256 fields — all match), the fetch into
+  `.materials/mcu/`, the 12 answer markings, the corpus re-pin with its census, the
+  tree (`.1` correction + `.2`), the knowledge card.
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ SEMULITH_CHIPDOC_ROOT=<corpus> python3 scripts/materials.py --fetch <the 12 ids>
+  ok × 12  (… sha256 verified)   — into .materials/mcu/
+  $ python3 scripts/materials.py --verify
+  materials --verify: 64 verified / 0 unresolved   (52 at .9 + the twelve)
+  $ python3 -c '… S.read_file(Path("materials/requests.sexp")) …'
+  22 requests; 0 still open
+  $ bash scripts/check_doctrines.sh → === all doctrines green ===
+  ```
+- [x] **NO REGRESSION** — `bash scripts/check_doctrines.sh` → `=== all doctrines green
+  ===`; the ten `.8` requests' records untouched (their resolved/blocked states and
+  answers byte-preserved — the batch edits only appended, then flipped the twelve);
+  the RP2040-DS record untouched (the duplicate was removed BEFORE the first
+  candidate commit, verified by `git diff` showing no net change to that record).
+- [x] **LOCKSTEP** — tree (`.1` correction + `.2` + checklist + logs + frontier closed),
+  `docs/TASK_TREE.md`, `MEMORY.md`, `CHANGELOG.md`, the knowledge card (+ its INDEX
+  already carries it), KNOWLEDGE_MAP regenerated. The DEV_NOTES lesson:
+  promotion: promoted (the recurrence is recorded in the existing card
+  `a-survey-that-found-things-can-still-have-missed-things.md` — the retrievable layer
+  gained the three-layer "already held" rule).
+
 `MCU-DOCS.1` (`2026-10-02`, `SEMULITH-MCU-0001`):
+
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the MCU direction has no documentation position:
   the measured corpus survey (the LIVE feed, corpus `c4ad8a2` working tree, read-only):
@@ -141,12 +231,14 @@ never a device without a source.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.2` | `build_responses.py --report` → 12 fulfilled / 0 blocked, exit 0; digests measured from the corpus files cross-checked against the answers' sha256 fields (12/12 match + PM0214); `materials.py --fetch` → 12 ok, sha256 verified into `.materials/mcu/`; `materials.py --verify` → 64 verified / 0 unresolved; requests.sexp parses, 0 open; `make gate` green | the twelve answers reconciled: twelve materials adopted and digest-verified, twelve requests marked resolved with evidence; the corpus re-pinned `3dc4e62`; the `.1` survey defect (the redundant RP2040 request) measured, recorded, and the card updated |
 | `2026-10-02` | `.1` | `sexp.read_file` → the requests file parses (the one reader); `poll_semulith_gaps.py` read-only → exactly the twelve new ids, rc 1; `make gate` green | the survey measured, twelve requests filed and seen by the channel |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` | `SEMULITH-MCU-0002 (leaf MCU-DOCS.2): the channel's twelve answers reconciled — adopted and digest-verified, requests marked, the survey defect recorded` | 12/12 fulfilled (Arm doc-service API, SiFive CDN, ti.com direct, Wayback routes measured); 12 materials adopted into `.materials/mcu/` (64 verified / 0 unresolved); corpus re-pinned 3dc4e62; the RP2040 redundancy measured and the survey card gained the three-layer rule |
 | `.1` | `SEMULITH-MCU-0001 (leaf MCU-DOCS.1): the MCU documentation surveyed and requested — the Arm M-profile set + six vendor documents filed through the channel` | corpus survey over the live feed (held: ESP32/RP2040 SVDs, nRF52840, AM335x; absent: every M-profile ARM, every Cortex-M TRM, the vendor MCU RMs); twelve requests, each naming the steered consumer |
 
 ## Changelog
@@ -155,3 +247,12 @@ never a device without a source.
   documentations; ask chipdoc for the MCU documentation set). `.1` done the same day:
   the live-feed survey measured the holdings and the gap, twelve requests filed
   (`REQ-MCU-*`), pickup measured with the poller (read-only, exactly the twelve).
+- `2026-10-02`: `.2` done (`SEMULITH-MCU-0002`) — the channel's answers reconciled the same
+  day: 12/12 fulfilled, verified live first (`build_responses.py --report`, exit 0), twelve
+  materials adopted into `materials/catalog.sexp` and fetched into `.materials/mcu/` with
+  every sha256 re-verified (64 verified / 0 unresolved), all twelve requests marked
+  `resolved` with their evidence, the corpus re-pinned `3dc4e62`. Measured in execution and
+  fixed at root: the `.1` survey had measured the proposals feed only — the RP2040 datasheet
+  was already adopted in our own catalog since 2026-09-14 (same sha256); the redundant
+  request's answer records it, the duplicate record was removed before landing, and the
+  survey knowledge card gained the three-layer "already held" rule. The tree closes.

@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-02)_ — the channel answered in hours; the survey's excluded layer was our own catalog (MCU-DOCS.2)
+
+The twelve MCU requests came back 12/12 fulfilled the same day — the channel's report
+(`build_responses.py --report`, rc 0) is the verification entry point, and the adoption
+pattern from P5-BOARD.9 (adopt → fetch with digest re-verification → mark our own file)
+carried unchanged. The routes the channel measured are worth reading in the answers:
+Arm's documentation-service API works; NXP/Microchip/ST's live URLs 404/403/reset to
+automated clients and the Wayback captures of the same official URLs carried the bytes.
+
+The execution's real event: the RP2040 datasheet answer read "already held before this
+request" — and it was held **twice**: corpus-side, and in our own tracked catalog as
+`RP2040-DS` since 2026-09-14 (digest-identical, cached). The `.1` survey had measured
+the corpus's proposals feed, not the corpus tree, and not our catalog — the
+survey-sampling failure class from MODEL-METHOD.13 recurring at a second layer. Fixed
+at root: no duplicate record adopted, the request's answer records the redundancy, and
+the knowledge card gained the three-layer "already held" rule with the cheap
+complement-check commands.
+
+Lesson: **promoted** — `docs/knowledge/a-survey-that-found-things-can-still-have-missed-things.md`
+(the recurrence + the three-layer rule).
+
 ## _(2026-10-02)_ — the reading-experience audit's yield was drift, not style (BOOK-APPARATUS.2)
 
 The first audit pass against `decision_mdbook-incremental-engaging` ran as six parallel
@@ -613,38 +634,4 @@ instruction behaviour. Lesson promoted to
 `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md` — census the SHAPES
 silence takes, then re-measure each justification's premise; never read the comment as the
 check.
-
-## _(2026-10-01)_ — F2's honest limit, retired (P3-BREADTH.1, slice 1)
-
-The findings report graded itself and flagged F2 — register grouping with fill
-semantics — as the one finding whose NEEDS-A-CHANGE classification rested on the state
-document's shape rather than a measured refusal, and named the remedy: a grouping probe
-in the synth suite. The probe is the real scalar profile's state document plus one
-synthetic `register_groups` form under `integer_registers` (an odd:even pair with the
-TI C64x zero-fill readout rule, locator in the descriptor's header comment), reduced
-until the schema layer's ONLY refusal is the grouping shape:
-`undeclared field "register_groups"`, rc 1 — the checker recurses into nested
-constructs, so the pin measures the file's nesting, not just its top level. The wider
-result is the routing determination: applying the findings meant measuring that the
-required-unconditional set is empty. F4/F5 carry the review's own VLIW condition, F2's
-implementation idles unless `.3` picks TI, F6 is per-profile work whose method already
-exists and is gated. Implementing any of them today would add unexercised abstraction
-surface — precisely what the tree's gate refuses ("stabilize only what has been
-demonstrated"). `.1` is slice-gated, not closed: the implementation legs stay owned by
-name and reopen with `.3`'s slice decision. Scalar regression re-run green across the
-board (`make check` 180/180, gen_state rc 0, DEF-GEN ok, G1 `passed` re-derived).
-
-## _(2026-10-01)_ — the routing method held (DSP-REVIEW.7, tree closed)
-
-The tree pre-committed to its routing method before the first finding existed —
-locator, executable demonstration, scalar reproduction check — and the capstone leaf
-graded itself against exactly that. The payoff: the one finding that could not meet the
-method (F2, register grouping, never pushed through the pipeline as a probe) is visible
-as a labeled honest limit instead of passing as measured. The scalar controls did real
-work too: the same generator that refuses a 24-bit state document with rc 2 emits the
-scalar profile's 64-bit one with rc 0 — "the limitation does not fire for
-`rv64i-lab-v0`" is a pasted command, not an argument. Six findings routed to
-`P3-BREADTH`, five non-findings classified out as semantics data, and the review's
-lasting discipline — a TI absence is never a DSP absence — is now the receiver's
-inheritance, not just this tree's rule.
 

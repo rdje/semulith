@@ -1,5 +1,26 @@
 # CHANGELOG.md
 
+## SEMULITH-MCU-0002 (leaf MCU-DOCS.2) — the channel's twelve answers reconciled: the MCU documentation set acquired and digest-verified
+
+- Verified live first: `build_responses.py --report` → **12 fulfilled / 0 blocked**, exit 0.
+  The routes, measured by the channel: the Cortex-M TRMs from Arm's documentation-service
+  API; FE310 from the SiFive CDN; MSP430 direct from ti.com; i.MX RT / SAM D21 / STM32 from
+  Wayback captures of the official URLs (the live URLs 404/403/reset automated clients —
+  measured routes, recorded in the answers' evidence); the three M-profile ARMs and the
+  RP2040 datasheet already held corpus-side.
+- Twelve materials adopted into `materials/catalog.sexp` (the three M-profile ARMs, three
+  Cortex-M TRMs, FE310, i.MX RT1050 RM, MSP430FR59xx UG, SAM D21, STM32 RM0394 + PM0214)
+  and fetched into `.materials/mcu/` with every sha256 re-verified — `materials --verify:
+  64 verified / 0 unresolved` (52 at P5-BOARD.9 + the twelve). The corpus re-pinned
+  `c4ad8a2` → `3dc4e62` (302 PDFs; 293 at the prior pin). All twelve requests marked
+  `resolved` with their evidence.
+- **Measured defect, fixed at root:** the `.1` survey measured the corpus's
+  semulith-facing proposals feed only — the RP2040 datasheet was already adopted in our
+  own catalog since 2026-09-14 (same sha256, cached), so one request was redundant from
+  filing. No duplicate record adopted; the survey knowledge card gained the three-layer
+  "already held" rule (tracked catalog + fetch cache + corpus tree, not just the feed).
+  The tree closes (2/2).
+
 ## SEMULITH-MCU-0001 (leaf MCU-DOCS.1) — the MCU documentation set surveyed and requested through the chipdoc channel
 
 - The director's `2026-10-02` steer (ARMs carry full MCU documentations; other vendors
@@ -863,22 +884,4 @@
   oahd daemon not running, `arch -x86_64` failing (`Bad CPU type in executable`);
   activation is the director's admin act (a reinstall is coming). The horizon is on the
   record: Apple phases Rosetta out fall 2027 — nothing may be built on the bridge.
-
-## SEMULITH-PS-0077 (leaf P2-SCALAR.8) — the portability matrix: three legs green, the honest `incomplete`
-
-- `scripts/check_portability.sh` runs the four legs and ends with the honest verdict:
-  native aarch64 green (the commit gate's run + the digest manifest over the 49 guests'
-  `demo --json` fingerprints — the contract the second host must reproduce
-  byte-identically), Miri green 65/65 interpreted, cross-endian green 65/65 on
-  big-endian powerpc64 under Miri — and the mandatory x86-64 leg measured UNAVAILABLE
-  (Rosetta absent), so the verdict is `incomplete` and the profile stays experimental.
-  Recorded, never waived (EVIDENCE_AND_GATES.md §7's own clause).
-- The record: `profiles/rv64i-lab-v0/portability.sexp` (baseline.sexp's plain-atom
-  shape). The verdict logic carries 6 self-test arms (6/0); the instrument is NOT a
-  commit gate (nightly + host-measuring).
-- Two authoring REDs, both measured: `grep -q` under `pipefail` SIGPIPEd cargo and read
-  every leg red against a green reality (capture-then-read now); a script edited
-  mid-run broke its own parse (bash reads incrementally — restart, never edit in
-  flight). One drift caught and owned: the model book's bench-arm count had gone stale
-  (44 → 53) across two leaves.
 
