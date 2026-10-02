@@ -9,7 +9,11 @@
   an upstream**: there is no automatic synchronization, and a later revision is adopted only by
   deliberate local review recorded in a task leaf. The neutral body below was imported
   unedited, SHA-256 `77a1e9348ec24d9ec5f0c97ae1ac2d634f7e7e3e150504759af3c0182d6eefec`
-  (159 lines / 8,279 bytes).
+  (159 lines / 8,279 bytes). Digest span (stated so the triple re-derives from this note,
+  `SEMULITH-PKG.9`): the body below the adoption-end marker, leading blank lines and the
+  `---` separator trimmed; the re-deriving command is recorded in task leaf
+  `SEMULITH-PKG.9` (it is not inline here — an inline command would quote the marker and
+  break the span it documents).
 - **Reviewed caps, derived from the trimmed landing page — not copied from the policy's own
   illustrative values:** `README.md` measured 67 lines / 3,719 bytes after its review-and-trim;
   the enforced ceilings are **85 lines and 4,864 bytes**, a deliberate ~1.3× band. They are

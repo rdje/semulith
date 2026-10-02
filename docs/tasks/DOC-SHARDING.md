@@ -159,6 +159,10 @@ remedy.
 - `2026-10-02`: Second event the same day, riding the triggering slice (`SEMULITH-BA-0001`,
   the DS-0002 precedent — the slice's own entry was what crossed the ceiling): 2 entries →
   `shard-0115.md` (`55 == 53 + 2` exact; head 65,870 → 63,128). Manifest 116 → 117 rows.
+- `2026-10-02`: Third event the same day, again riding the triggering slice
+  (`SEMULITH-PKG-0017` — its entry crossed the ceiling): 4 entries → `shard-0118.md`
+  (`54 == 50 + 4` exact; head 66,011 → 61,104, `--max-bytes 62000` for headroom). Manifest
+  117 → 120 rows.
 
 ## Acceptance Checklist (leaf DOC-SHARDING.2)
 

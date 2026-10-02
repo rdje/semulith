@@ -76,7 +76,7 @@ on the same commit. One commit per completed leaf.
 | [`PREFIX-DISCIPLINE`](tasks/PREFIX-DISCIPLINE.md) | `done` | — (1/1 leaves complete; the SEMULITH- prefix pinned in `commit-msg`, watched behaviourally by `COMMIT-PREFIX` #29 — history keeps both spellings, immutably) | repo-local |
 | [`ROADMAP-V3`](tasks/ROADMAP-V3.md) | `done` | — (3/3 leaves complete; consumed by the v0.4 revision at P1 first slice) | repo-local |
 | [`MIRROR-DRIFT`](tasks/MIRROR-DRIFT.md) | `done` (reopened once, for `.4` — a mirror class the first three leaves did not cover) | — (4/4 leaves complete) | repo-local |
-| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (8/8 leaves complete) | repo-local |
+| [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (9/9 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
 
 Milestone trees are `proposed` until their first leaf starts. Each names its gate, its

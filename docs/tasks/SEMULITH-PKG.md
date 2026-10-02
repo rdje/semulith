@@ -3,7 +3,8 @@
 ## Metadata
 
 - Tree ID: `SEMULITH-PKG`
-- Status: `done` (reopened for `.7` and `.8`, each a defect in the leaf before it)
+- Status: `done` (reopened for `.7` and `.8`, each a defect in the leaf before it, and for
+  `.9` — a provenance note that did not state its own measurement span)
 - Roadmap lane: project foundation (precedes P0)
 - Created: `2026-09-13`
 - Owner: repo-local workflow
@@ -83,7 +84,7 @@ provenance frozen where it must not drift, and live claims gated where they can 
 - ID: `SEMULITH-PKG`
   Status: `done`
   Goal: ingest the delivered planning package v0.2 under the spine
-  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.8`
+  Children: `SEMULITH-PKG.1` … `SEMULITH-PKG.9`
 
 - ID: `SEMULITH-PKG.1`
   Status: `done`
@@ -141,11 +142,33 @@ provenance frozen where it must not drift, and live claims gated where they can 
   Verification: see the Verification Log.
   Commit: `SEMULITH-PKG-0006`
 
+- ID: `SEMULITH-PKG.9`
+  Status: `done` (`2026-10-02`)
+  Goal: make the policy adoption note's provenance triple re-derivable from the note alone.
+  Defect (found `2026-10-02` at a session-start §14 policy check): the note records the
+  neutral body's SHA-256 / line / byte triple as "the body below this note", but the
+  measured span trims the leading blank lines and the `---` separator — which the note
+  never said, so a verifier computing over the literal span gets a different hash (three
+  span guesses to re-derive). The §14 question itself — is there an unadopted upstream
+  revision? — was answered by measurement instead: the body is byte-identical to the
+  originating project's current revision (both hash `7209222f…81b80f` over the raw span
+  below the adoption marker), so no revision is pending. `CLAIM_VERIFICATION.md`'s
+  recorded provenance was also re-verified live: source SHA-256 `9f99df25…6046bd`, an
+  exact match. Acceptance: the note states the digest span and where the re-deriving
+  command lives; the recorded triple reproduces by it. Not a code change — a
+  provenance-precision fix in `README_POLICY.md`. The command (kept here, not in the
+  note — inline it would quote the adoption-end marker and break the span it documents):
+  `awk '/LOCAL-ADOPTION:END -->/{f=1;next} f' README_POLICY.md | sed '/./,$!d' | sed
+  '1{/^---$/d}' | sed '/./,$!d' | shasum -a 256` (and the same span `| wc -lc` for the
+  line/byte legs).
+  Verification: see the Verification Log.
+  Commit: `SEMULITH-PKG-0017`
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | **tree complete (8/8).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
+| — | — | — | **tree complete (9/9).** The next tree is `SEMULITH-TREES`: convert `ROADMAP.md` P0–P7 and the cross-cutting lanes into task-trees. Open it only with the repository clean (the pivot rule). |
 
 Census behind row 2, over the population that would refute it — any tracked script, hook, or
 enforcer entry that re-derives a recorded fingerprint:
@@ -493,6 +516,10 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `2026-09-13` | `SEMULITH-PKG.6` | code-path census over 125 tracked files | default `54` matched (28 prose over-matched, 8 real files missed) → declared `35`, prose `0` |
 | `2026-09-13` | `SEMULITH-PKG.6` | three fired controls A/B/C | `rc=1`, `rc=1`, `rc=0` — refuses code, refuses gate data, passes prose |
 | `2026-09-13` | `SEMULITH-PKG.7` | set difference, both directions, over 126 tracked files | declared = default **+12** behaviour-governing, **−28** prose; nothing else dropped |
+| `2026-10-02` | `SEMULITH-PKG.9` | the note's re-derivation command (Verification Log, `.9` leaf) → SHA-256 `77a1e934…c0182d6eefec`, `159 / 8279` | exact match with the recorded triple |
+| `2026-10-02` | `SEMULITH-PKG.9` | body span vs the originating project's current `README_POLICY.md` (raw span below the adoption marker) | byte-identical both directions — `7209222f…81b80f`; no unadopted upstream revision |
+| `2026-10-02` | `SEMULITH-PKG.9` | `shasum -a 256` of the pgen source vs `docs/CLAIM_VERIFICATION.md`'s recorded provenance | `9f99df25…6046bd`, exact match |
+| `2026-10-02` | `SEMULITH-PKG.9` | `scripts/check_doctrines.sh` | `=== all doctrines green ===`, `rc=0` |
 
 ## Commit Log
 
@@ -506,6 +533,7 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 | `SEMULITH-PKG.6` | `SEMULITH-PKG-0007 (leaf SEMULITH-PKG.6): declare what counts as a code change here` | default over-matched 28 prose files and missed 8 real ones; all three outcomes fired |
 | `SEMULITH-PKG.7` | `SEMULITH-PKG-0008 (leaf SEMULITH-PKG.7): restore shell-script coverage the narrowing dropped` | `.6`'s census asked the wrong question; two executable probe drivers had left the gate |
 | `SEMULITH-PKG.8` | `SEMULITH-PKG-0016 (leaf SEMULITH-PKG.8): fix the spine defects at source, and watch the fix` | seams failed open; three defects repaired in the checks; `SEAM-INTEGRITY` added |
+| `SEMULITH-PKG.9` | `SEMULITH-PKG-0017 (leaf SEMULITH-PKG.9): state the policy note's digest span — a provenance hash must re-derive from its own note` | §14 check measured no unadopted revision (body byte-identical upstream); the note's span was undocumented, now stated, command recorded here |
 
 ## Changelog
 
@@ -531,3 +559,10 @@ in this file is read by the `TASK-ACCEPTANCE` gate, which is why the archive sit
 - `2026-09-13`: `SEMULITH-PKG.7` completed. The tree was reopened
   because `.6`'s own census had excluded prose from its difference set and so could not see the
   two executable probe drivers it was dropping — a census answers the question it is given.
+- `2026-10-02`: `SEMULITH-PKG.9` completed (`SEMULITH-PKG-0017`). A session-start §14 policy
+  check measured the adopted policies live: `README_POLICY.md`'s body is byte-identical to the
+  originating project's current revision and `docs/CLAIM_VERIFICATION.md`'s recorded source
+  hash matches — nothing to re-adopt. One defect found and fixed: the policy note's provenance
+  triple did not state its digest span, so it did not re-derive as written; the note now states
+  the span, the command lives in leaf `.9`, and the recorded `77a1e934…` / `159 / 8,279`
+  reproduces exactly. **Tree complete (9/9).**
