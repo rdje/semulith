@@ -342,7 +342,7 @@ incompatible CPU/environment assumption remains**.
   RECORD-SCHEMA 14 record files. The DEV_NOTES lesson: promotion: declined (derive-from-declaration already has its decision records — decision_device-applicability-by-declared-vehicle, decision_gate-applicability-by-declared-vehicle — and regenerate-vs-edit is a standing house rule).
 
 - ID: `P5-BOARD.12` — **derived members of bounded families: the right instrument**
-  Status: `pending`
+  Status: `done` (`2026-10-02`, `SEMULITH-P5-0015`)
   Goal: the routes-registry per-part byte ceiling applies to AUTHORED content;
   regeneration-gated derived members are exempt as a CHECKED property — registered in
   `doctrine/fact_ownership.tsv` as a mirror whose governor is a regeneration doctrine
@@ -359,13 +359,36 @@ incompatible CPU/environment assumption remains**.
   catalogues multiply record bytes with composition depth, and the interim reviewed
   raise (64 → 128 KiB, one day old) taxed a property derived files cannot have. The
   board's composition work owns the fix; P7's soc/computer compositions inherit it.
+  Result (`2026-10-02`): the two-tier per-part rule landed in
+  `scripts/check_readme_routes.sh`. The closed regeneration-doctrine set (STATE-GEN,
+  DEF-GEN, GUEST-GEN, BOARD-GEN, GATE-REPORT, MATERIALS-BILL, BOOK-INDEX) lives in the
+  check, each member asserted registered in the project driver (a set/driver
+  disagreement REFUSES — the exemption can never silently widen); `derived_exempt`
+  resolves the exemption from `doctrine/fact_ownership.tsv` (mirror + regen governor),
+  the one already completeness-checked registry — no second declaration surface. The
+  per-part loop now judges EVERY over-ceiling member (it previously inspected only the
+  single biggest): exempt members are reported as proof (`derived: <path> …`), the
+  rest fail by name. Self-test 12 → **17 arms** (GREEN the real-corpus-shaped
+  exemption with the proof line; RED a validation governor keeps the authored ceiling;
+  RED no exemption by adjacency; GREEN/RED the set/driver agreement), 17/17. On the
+  real corpus the rule discriminates exactly as ruled: the two composed catalogues
+  (104,372 B / 94,027 B) exempt with proof printed, the NIC's authored 60,112 B
+  catalogue silently under the restored **65,536** authored per-part (0.92×) — the
+  day-old 128 KiB interim raise reverted, `decision_profiles-family-composed-units`
+  superseded in part. **Measured in execution, fixed at root:** the two regen-set arms
+  were first written under a new `armregen` helper — an idiom DERIVED-COUNTS'
+  enumerator does not count (it knows `arm "` and `score`), so 2 of the 17 arms were
+  invisible to the arm total; caught by the enumerator's own drift verdict (357 ≠ 359)
+  and fixed by folding the probe command into `arm`'s optional `[cmd...]` form — one
+  counted idiom, the enumerator untouched. The lesson PROMOTED to
+  `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md` (+ INDEX): the
+  instrument must match the failure mode.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.12` | `pending` | the director-delegated ruling on the `.3` finding: the per-part byte ceiling applies to authored content; derived members are governed by their regeneration doctrine — one gate, two-tier, with self-tests |
-| 2 | `P5-BOARD.4` | `pending` | the gate's core obligation: the composition verdict — every CPU assumption matched against a board/device guarantee or rejected; the composed catalogues are on disk (`.3`), the devices' composition records (TIME-SOURCES/PHY-LINK/GPIO-PINS, the strap values) are pre-wired to it |
+| 1 | `P5-BOARD.4` | `pending` | the gate's core obligation: the composition verdict — every CPU assumption matched against a board/device guarantee or rejected; the composed catalogues are on disk (`.3`), the devices' composition records (TIME-SOURCES/PHY-LINK/GPIO-PINS, the strap values) are pre-wired to it |
 
 ## Decisions
 
@@ -823,6 +846,64 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P5-BOARD.12` (`2026-10-02`, `SEMULITH-P5-0015`):
+
+- [x] **REPRODUCE / ISSUE** — the `.3` composed catalogues forced a per-part raise one
+  day after the previous one, and the `.3` finding (surfaced, director-delegated)
+  named the cause: the ceiling taxed a property derived files cannot have. Measured
+  pre-condition, the interim state this leaf replaced:
+
+  ```
+  $ grep -n "131072" doctrine/readme_routes.tsv | tail -1
+  …the per-part 128 KiB decision_profiles-family-composed-units (2026-10-02)	590	2450000	600	2867200	131072
+  $ bash scripts/check_readme_routes.sh --self-test
+  README-ROUTING-CLOSURE --self-test: 12 pass / 0 fail   # no two-tier arms existed
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the per-part ceiling's founding failure mode is
+  silent accretion in hand-maintained files (the gate's own comment: "an aggregate
+  bound alone permits one member to become the monolith"); a regeneration-gated file
+  cannot accrete silently, so the instrument did not match the failure mode. WHERE:
+  the per-part block in `verify_routes` (`scripts/check_readme_routes.sh` — which
+  also inspected only the single biggest member, so a second over-ceiling file was
+  never even reported), the closed regen set and the set/driver assertion (same
+  file), the routes-registry row (`doctrine/readme_routes.tsv`), the doctrine prose
+  mirrors (`DOCTRINE_ENFORCEMENT.md`, `docs/book/src/working/doctrines.md`).
+- [x] **FIX** — the two-tier rule: `derived_exempt` resolves the exemption from
+  `doctrine/fact_ownership.tsv` (mirror + regeneration governor); the closed
+  `REGEN_GOVERNORS` set with `regen_set_registered` refusing set/driver drift; the
+  per-part loop judging EVERY over-ceiling member (exempt → reported as proof, else
+  failed by name); the registry row back to 65,536 with the ruling comment; the
+  composed-units record superseded in part; the lesson promoted to
+  `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md` (+ INDEX).
+- [x] **ADDRESSED (verified)** — the acceptance, run:
+
+  ```
+  $ bash scripts/check_readme_routes.sh --self-test
+  README-ROUTING-CLOSURE --self-test: 17 pass / 0 fail
+  $ bash scripts/check_readme_routes.sh
+  README-ROUTING-CLOSURE: ok (33 governed destination(s))
+    derived: profiles/netboard-lab-v0/contract-obligations.sexp (104372 bytes > 65536 authored per-part) is regeneration-gated — exempt (decision_derived-members-of-bounded-families)
+    derived: profiles/netboard-lab-v0/requirements.sexp (94027 bytes > 65536 authored per-part) is regeneration-gated — exempt (decision_derived-members-of-bounded-families)
+  $ wc -c profiles/lan9118-lab-v0/contract-obligations.sexp
+  60112   # the authored catalogue: under the restored 65,536 authored ceiling (0.92x), not exempt
+  $ grep -c "131072" doctrine/readme_routes.tsv
+  0       # the day-old interim raise is gone
+  ```
+
+- [x] **NO REGRESSION** — the pre-edit self-test arms all still pass (12 carried + 5
+  new = 17/17, every RED asserting the reason); the authored-fail path is armed RED
+  on fixtures (validation governor, adjacency) since the real corpus's authored
+  members are all under the ceiling; `make gate` → `=== all doctrines green ===`
+  (DERIVED-COUNTS after the enumerator re-derived 354 → 359 arms in
+  `LIVE_STATUS.md`); `mdbook build docs/book` rc 0; `gen_book_index.py --check` rc 0.
+  No Rust surface touched.
+- [x] **LOCKSTEP** — tree (leaf + frontier + checklist + logs), `MEMORY.md` (active
+  trees line), `CHANGELOG.md`, `DEV_NOTES.md` (lesson PROMOTED to the knowledge card
+  + INDEX), `LIVE_STATUS.md` (P5 row + arm total), `docs/TASK_TREE.md`,
+  `docs/decisions/INDEX.md` (the ruling row; the composed-units row marked
+  superseded in part), the doctrine prose mirrors, KNOWLEDGE_MAP regenerated.
+
 `P5-BOARD.3` (`2026-10-02`, `SEMULITH-P5-0013`):
 
 - [x] **REPRODUCE / ISSUE** — the board definition existed, but every map downstream of
@@ -1183,6 +1264,7 @@ incompatible CPU/environment assumption remains**.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.12` | README-ROUTING-CLOSURE self-test 12 → 17 arms, 17/0 (GREEN the real-corpus-shaped exemption + proof line; RED validation governor keeps the ceiling; RED no exemption by adjacency; GREEN/RED set/driver agreement); the real run: 33 destinations ok, both composed catalogues exempt with proof printed, the NIC's authored 60,112 B under the restored 65,536; `make gate` green (DERIVED-COUNTS 354 → 359 re-derived); `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the two-tier per-part rule landed: authored content keeps the ceiling, regeneration-gated derived members are exempt as a checked property via FACT-OWNERSHIP; the day-old interim raise reverted, the lesson promoted to a knowledge card |
 | `2026-10-02` | `.3` | `gen_board.py` → 7 artifacts; BOARD-GEN `1 board(s) … byte-exact` (self-test 9/9, REDs: hand-edited hardware/catalogue/manifest, moved definition, overlap, ghost device); `check_sexp_schema.py` ok on hardware.sexp and composition.sexp; RECORD-SCHEMA `16 record file(s)`; FACT-OWNERSHIP `54 fact kind(s)` (self-test 10/10, fixture re-pinned 9); DOSSIER-SCHEMA 83 files; UNIT-BOOKS 5/5 (the map include verified in the built HTML); DERIVED-COUNTS re-derived 31→32 doctrines, 345→354 arms; `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the maps are generated and drift-gated: one generator, seven artifacts, the BOARD-GEN freshness proof the compose docstring deferred; the one handwritten duplicate map replaced; the composed catalogues pre-staged as `.4`'s input |
 | `2026-10-02` | `.11` | pre-fix generator re-run from `de46377` → `REFUSED — references.sexp: the pinned document is missing` (the measured pre-condition); UNIT-BOOKS `5 unit(s)`; MATERIALS-BILL `5 unit(s)` (self-test 11/0 with the new device/board arms); SCOPE-COVERAGE `5 unit(s) may code`; RECORD-SCHEMA 14 files; GATE-REPORT `4 generated report(s) in sync`; DERIVED-COUNTS arm total re-derived 341→345; `make gate` green; all 5 unit books + the project book build; `gen_book_index.py --check` rc 0 | registration day landed as one coherent day: three units registered (kind board/device, layer +device), the generator + gate route-keyed by declaration, three books authored, 72 census rows, the BREADTH prose fixed at its generator |
 | `2026-10-02` | `.10` | `check_sexp_schema.py` ok on all 6 dossier .sexp files + 3 expectation documents; EXTRACTION `device-model route declared (28 scope registers; resets everywhere; obligations checked both ways)`; RECORD-SCHEMA `14 record file(s)`; PROFILE-CONSISTENCY `4 profile dossier(s)`; FACT-OWNERSHIP `43 fact kind(s)` (self-test re-pinned 8/4); `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the second device dossier landed fully gated with NO machinery edit; the `profiles/` per-part bound bit for the first time (32→64 KiB, recorded); the §3.11 text-layer defect and the Table 5-1 extraction hazard measured and handled; the time-source/link-scene/pin-tie-off composition tensions pre-wired to `.4` |
@@ -1195,6 +1277,8 @@ incompatible CPU/environment assumption remains**.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` | `SEMULITH-P5-0015 (leaf P5-BOARD.12): the two-tier per-part ceiling — authored content bounded, regeneration-gated derived members exempt as a checked property` | check_readme_routes.sh: closed REGEN_GOVERNORS set + set/driver assertion (refuses on drift), derived_exempt via fact_ownership.tsv, per-part loop judges every over-ceiling member; self-test 12 → 17 arms; profiles/ authored per-part back to 65,536; the lesson promoted to a knowledge card |
+| — | `SEMULITH-P5-0014 (tree P5-BOARD)` | the `.12` ruling, director-delegated: the instrument must match the failure mode; decision_derived-members-of-bounded-families recorded; the day-old 128 KiB interim raise named for reversion; three alternatives rejected |
 | `.3` | `SEMULITH-P5-0013 (leaf P5-BOARD.3): the generated maps — one generator, seven artifacts, the BOARD-GEN freshness gate; the duplicate map measured and replaced` | gen_board.py (boards discovered by declaration) emits the manifest, 4 composed catalogues (compose_units.compose_resolved — one code path), hardware.sexp (new schema) and map.md; BOARD-GEN registered (self-test 9/9); FACT-OWNERSHIP +8 rows (54 kinds), fixture re-pinned to five units; the DOSSIER's duplicate table and stale status rows fixed; DERIVED-COUNTS re-derived (32 doctrines, 354 arms) |
 | `.11` | `SEMULITH-P5-0011 (leaf P5-BOARD.11): registration day — the three units register; the materials-bill machinery goes route-keyed by declaration` | schema/units.sexp kind +board/+device, layer +device (shared taxonomy); gen_model_book.py unit_shape/shape_contracts + route-keyed emitters; check_materials_bill.sh COMPLETENESS keyed on the same shape (+4 self-test arms); 3 registrations, 72 census rows, 3 books (authored chapters + generated fragments), FACT-OWNERSHIP book-side mirrors (46 kinds); BREADTH prose fixed at the generator and regenerated (5 units, verdict passed) |
 | — | `SEMULITH-P5-0010 (tree P5-BOARD)` | the `.11` design brief: registration day's design decided; the generator generalization measured in full (references.sexp absent from all three new dossiers; MATERIALS-BILL's COMPLETENESS would CANNOT JUDGE) |
@@ -1374,3 +1458,17 @@ incompatible CPU/environment assumption remains**.
   right interim). Three alternatives weighed and rejected (per-level raises, a
   lifecycle class, fingerprint-header detection). Frontier: `.12` execution — the
   two-tier gate, the registry row, the self-tests.
+- `2026-10-02`: `.12` done (`SEMULITH-P5-0015`) — the two-tier per-part ceiling landed.
+  `check_readme_routes.sh` carries the closed regeneration-doctrine set with a
+  set/driver agreement assertion (drift refuses — the exemption can never silently
+  widen), and `derived_exempt` resolves the exemption from the FACT-OWNERSHIP registry
+  (mirror + regeneration governor — the one completeness-checked declaration; no second
+  surface). The per-part loop now judges EVERY over-ceiling member (it previously
+  inspected only the biggest): exempt members are reported as proof, the rest fail by
+  name. Self-test 12 → 17 arms (17/0). On the real corpus the rule discriminates as
+  ruled: both composed catalogues exempt with proof printed, the NIC's authored
+  catalogue under the restored 65,536 authored ceiling; the day-old 128 KiB interim
+  raise reverted (`decision_profiles-family-composed-units` superseded in part). The
+  lesson PROMOTED: `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md` —
+  the instrument must match the failure mode. Frontier: `.4` — the composition
+  verdict.

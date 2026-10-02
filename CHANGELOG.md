@@ -1,5 +1,36 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0015 (leaf P5-BOARD.12) — the two-tier per-part ceiling: authored content bounded, regeneration-gated derived members exempt as a checked property
+
+- The director-delegated ruling (`SEMULITH-P5-0014`,
+  `decision_derived-members-of-bounded-families`) executed: the per-part byte
+  ceiling's founding failure mode — silent accretion in hand-maintained files —
+  cannot occur in a regeneration-gated file, so the instrument now matches the
+  failure mode. Authored members keep the **65,536** ceiling (the day-old 128 KiB
+  interim raise reverted; `decision_profiles-family-composed-units` superseded in
+  part); derived members are exempt **as a checked property** — a
+  `doctrine/fact_ownership.tsv` mirror row with a regeneration-doctrine governor
+  (the closed set: STATE-GEN, DEF-GEN, GUEST-GEN, BOARD-GEN, GATE-REPORT,
+  MATERIALS-BILL, BOOK-INDEX) — never as a declaration.
+- `scripts/check_readme_routes.sh`: `derived_exempt` consumes the FACT-OWNERSHIP
+  registry (already completeness-checked — no second declaration surface);
+  `regen_set_registered` refuses set/driver drift so the exemption can never silently
+  widen; the per-part loop now judges EVERY over-ceiling member (it previously
+  inspected only the biggest) — exempt members are reported as proof, the rest fail
+  by name. Aggregates untouched.
+- Real-corpus verdict: both composed catalogues (104,372 / 94,027 B) exempt with
+  proof printed; the NIC's authored 60,112 B catalogue under the restored authored
+  ceiling (0.92×) — the rule discriminates exactly as ruled. Self-test 12 → 17 arms
+  (17/0; the RED authored-fail paths fire on fixtures, the real corpus's authored
+  members being correctly under the ceiling). Measured in execution: a new
+  `armregen` helper idiom made 2 arms invisible to DERIVED-COUNTS' enumerator
+  (357 ≠ 359) — folded into `arm`'s optional `[cmd...]` probe form instead.
+- The lesson PROMOTED: `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md`
+  (+ INDEX) — the instrument must match the failure mode.
+- Validation: `make gate` → all doctrines green (DERIVED-COUNTS re-derived 354 →
+  359 arms); `mdbook build` rc 0; `gen_book_index.py --check` rc 0. No Rust surface
+  touched. P7's soc/computer compositions inherit the rule.
+
 ## SEMULITH-P5-0013 (leaf P5-BOARD.3) — the generated maps: one generator, seven artifacts, the BOARD-GEN freshness gate
 
 - `scripts/gen_board.py` discovers boards by declaration (`profiles/*/board.sexp`) and
@@ -850,35 +881,4 @@
   Evidence: docs/tasks/artifacts/dsp-review/2026-09-30-widths-q1-q2.md.
 - The tree's stale G1 blocker repaired; the tree is active; LIVE_STATUS's P2 row (stale
   at 8/9 from a mid-flight script abort) corrected to Done 9/9.
-
-## SEMULITH-PS-0084 (leaf P2-SCALAR.9, slice c) — the CPU-LAB report stands; the tree CLOSES 9/9
-
-- `gate_report.py` gained `build_cpulab`: the full processor-gate series per axis
-  (SCP-05 — never rolled up; "supports RV64I" appears nowhere), every probe static over
-  tracked artifacts (byte-stable in a fresh clone), the dossier content digest as the
-  versioned artifact's identity. The generated `GC-REPORT.md` reads **`incomplete`**,
-  naming the measured open axes: G-CONTRACT (0/72 obligation checks implemented) and
-  G-OBLIGATIONS (28 requirements `planned`, 1 `partial`). Green with their measurements:
-  G-TRACE, G-INTERACTIONS (21/21), G-REGRESSION (ACT4 51/51 + the corpus + the mutation
-  suite), G-PORTABILITY (`passed` under the bridge), G-REPLAY (bundles + snapshots).
-- The named release decision (`decision_release-rv64i-lab-v0`): **rv64i-lab-v0 v0 is an
-  EXPERIMENTAL release of the versioned evidence artifact — NOT an accepted profile**;
-  the closing conditions are named (the 72 fixtures, the status re-derivation, the
-  bare-metal CI leg).
-- One defect fixed in flight: the G0 generator's hardcoded "No CPU model exists" — prose
-  written at P0, stale since the interpreter landed; the limitation now reads true, and
-  GATE-REPORT holds all three generated reports in sync. MEMORY.md's active-trees count
-  had drifted at 6/9 across two commits — corrected at closure.
-
-## SEMULITH-PS-0082 (leaf P2-SCALAR.9, slice b) — the Rosetta proof: the x86-64 leg green, `portability: passed`
-
-- The director's Rosetta install landed (VLC's Intel build triggered it); re-measured
-  live: `arch -x86_64` prints `x86_64`. The instrument's x86-64 leg learned the bridge
-  path: cross-compile `x86_64-apple-darwin`, run under translation, and compare the
-  digest manifest against the aarch64 recording — **byte-identical** (`0670a01b…`).
-- The full four-leg run reads **passed** (native green, x86-64 green under translation,
-  Miri green, cross-endian green); `portability.sexp` re-measured to `passed`, with the
-  translation-vs-bare-metal nuance and the fall-2027 horizon on the record.
-- Slice (a)'s checklist claimed a `plan/p2.md` line that commit did not carry — the
-  drift is recorded and the `.9` book section lands with this commit instead.
 

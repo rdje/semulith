@@ -9,6 +9,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 
 | Card | Answers |
 | --- | --- |
+| [`a-byte-ceiling-applies-to-authored-content.md`](a-byte-ceiling-applies-to-authored-content.md) | when does a byte ceiling apply to a generated file — and how is the exemption checked rather than declared? |
 | [`a-dead-justification-camouflages-a-silent-path.md`](a-dead-justification-camouflages-a-silent-path.md) | a comment explains why a silent skip is safe — can I trust it? |
 | [`the-chipdoc-request-channel.md`](the-chipdoc-request-channel.md) | how do I ask chipdoc to acquire a document — and how do I read the answer? |
 | [`the-corpus-writes-shapes-my-grammar-cannot-state.md`](the-corpus-writes-shapes-my-grammar-cannot-state.md) | my schema validates the files it was designed from — why does it refuse the real corpus? |

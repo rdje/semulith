@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-02)_ — the ceiling taxed a property the file could not have: the instrument must match the failure mode (P5-BOARD.12)
+
+The day after the composed-unit bound raise, the director delegated the policy question
+it stood on ("yours to decision and act upon … SOTA, SIGNOFF and PRODUCTION-GRADE").
+The ruling: a per-part byte ceiling exists to catch silent accretion in
+hand-maintained files, and a regeneration-gated derived file cannot accrete silently —
+every byte is re-derived on every commit, and its size is a pure function of
+already-bounded inputs. So the interim 128 KiB raise (one day old) was the right
+stopgap and the wrong instrument, and the gate went two-tier: authored members keep
+the 64 KiB ceiling, derived members are exempt **as a checked property** — a
+fact_ownership.tsv mirror row with a regeneration-doctrine governor (closed set), never
+a declaration. The exemption consuming the FACT-OWNERSHIP registry is the part that
+makes it signoff-grade: the registry is already completeness-checked (every governor
+registered, every corpus pair named), so no second declaration surface exists to drift,
+and an authored file cannot smuggle under the exemption because nothing regenerates it.
+
+Two implementation details worth remembering. The per-part loop previously inspected
+only the single biggest member (`sort -rn | head -1`) — a second over-ceiling file was
+never even reported; the two-tier rule forced judging EVERY member, which is strictly
+stronger for authored content too. And the self-test harness gained the arms in the
+real corpus's shape: the RED for an authored file over the ceiling fires on fixtures
+because the real corpus's authored members are all (correctly) under the ceiling — a
+control that only ever sees GREEN in production is exactly the kind that must be seen
+RED in the harness. And a third, caught by DERIVED-COUNTS itself: the regen-set arms
+were first written under a new `armregen` helper the enumerator does not count, so 2
+of 17 arms were invisible to the arm total (357 ≠ 359) — fixed by folding the probe
+into `arm`'s optional `[cmd...]` form rather than teaching the enumerator a third
+idiom. New self-test idioms are not free: the arm total is a census, and a census
+only counts the shapes it knows.
+
+Lesson: **promoted** — `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md`
+(the question form + the checked-exemption pattern; the ruling itself is
+`decision_derived-members-of-bounded-families`).
+
 ## _(2026-10-02)_ — a freshness gate deferred to "the first tracked board" lands exactly once (P5-BOARD.3)
 
 `compose_units.py` shipped with its freshness proof explicitly deferred — "lands with
@@ -632,37 +666,4 @@ family manual's §3.4.1.3 (an 8-bit short immediate to X0/X1/Y0/Y1 is a fraction
 bits 23–16) — a reminder that on an unfamiliar ISA the FIRST reflex is "the toolchain is
 wrong" and the correct one is "read the manual's move semantics". Promotion: declined in the
 leaf (dated evidence; its durable output is the demonstrated path, recorded in the tree).
-
-## _(2026-10-01)_ — the oracle question, answered by census (P3-BREADTH.3, slice 1)
-
-The tree carried an open question — "whether any real DSP oracle becomes available at all" —
-and the honest way to answer it was enumeration, not memory: one survey per measured family
-over the same enumerator (QEMU/MAME/gem5/GDB-sim/binutils/LLVM/vendor tools/dedicated
-projects), one URL per claim, then the two load-bearing positives re-fetched from primary
-sources. The answer inverted the tree's prior assumption for two of three families: DSP56300
-has a STRONG path (an MIT toolkit whose authors already built the exact differential harness
-this project would need, silicon-sealed), SHARC-2106x a PARTIAL one (MAME's BSD-3 core, but
-the assembler leg is unbuildable-as-licensed), and only TI C6000 is truly oracle-less (the
-vendor discontinued its simulator in 2014). The slice decision — DSP56300 — follows from
-RK08's rule (evidence path, not manual convenience) and fits the findings' conditioning: it
-activates F1/F3/F6 and leaves F4/F5/F2 unbuilt, recorded rather than lost. Promotion:
-declined in the leaf (the survey is dated evidence; its durable output is the decision).
-
-## _(2026-10-01)_ — a dead justification camouflaged a live silent path (P3-BREADTH.2)
-
-The hook audit's only silent escape hatch survived review precisely because it carried a
-plausible justification: `extract_operands`' `_` arm skipped operands naming no field,
-"because FENCE's `fm`/`pred`/`succ` have no field ranges" — true when written, false since
-`P2-SCALAR.1` gave all three fields, leaving the arm unreachable for real data but live for
-any future unfielded operand, with enforcement only in a test ratchet whose own whitelist
-comment had gone stale in the same way. The fix put the invariant where ARCHITECTURE §2 says
-it lives: generation time. `gen_definition.py` now refuses an unfielded operand by name
-(rc 2; the DEF-GEN self-test's new RED arm feeds `add` an `rs9` operand and demands the
-refusal), the runtime arm returns `ModelError::InvalidDescription` instead of skipping, and
-the ratchet is strict. Wider census result: no opaque hooks anywhere — the three seams that
-exist (`Environment`, `step_over`, bench `Observer`) are typed contracts that cannot reach
-instruction behaviour. Lesson promoted to
-`docs/knowledge/a-dead-justification-camouflages-a-silent-path.md` — census the SHAPES
-silence takes, then re-measure each justification's premise; never read the comment as the
-check.
 

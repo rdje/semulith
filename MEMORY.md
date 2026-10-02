@@ -16,7 +16,7 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (5/11 — the maps generated and drift-gated, the composed catalogues on disk).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (8/12 — the maps generated and drift-gated; the two-tier bound ruling executed).
   Milestone frontier: `P5-BOARD`. (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
 - next_action: `P5-BOARD.4` — the composition verdict against the CPU contract: for
   every CPU assumption, the board or device guarantee that satisfies it, or a rejection

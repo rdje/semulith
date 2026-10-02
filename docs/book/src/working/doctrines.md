@@ -39,7 +39,7 @@ These ship with the discipline spine and are project-neutral:
 | --- | --- |
 | `DELIVERY-PROVENANCE` | every delivered manifest row carries exactly one declared disposition, and the frozen ones still hash to the delivered bytes |
 | `FIXTURE-FINGERPRINT` | every record pinning a file's `sha256` still describes the tree |
-| `README-ROUTING-CLOSURE` | every destination the landing page routes to is governed, exists, and stays under its ceiling |
+| `README-ROUTING-CLOSURE` | every destination the landing page routes to is governed, exists, and stays under its ceiling — the per-part ceiling two-tiered: authored members are bounded, regeneration-gated derived members are exempt as a checked property (a fact-ownership mirror row with a regeneration governor), reported as proof |
 | `PROFILE-CONSISTENCY` | a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source |
 | `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
 | `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next |

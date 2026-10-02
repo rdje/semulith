@@ -56,7 +56,7 @@ on the same commit. One commit per completed leaf.
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `done` | — (8/8 leaves complete; six findings routed to P3-BREADTH's first leaf, each with its ROUTING EVIDENCE — none reproduces on the scalar profile) | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `done` | — (8/8 leaves complete; gate `BREADTH` RUN `2026-10-01`, verdict **`passed`** — the capability report published at `docs/BREADTH-REPORT.md`) | repo-local |
 | [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `proposed` | `.1` — resolve the profile (gate `CPU-SYSTEM`) | repo-local |
-| [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.12` — derived members of bounded families: the right instrument (5/12 leaves done; the maps generated and drift-gated, the bound ruling director-delegated) | repo-local |
+| [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.4` — the composition verdict against the CPU contract (8/12 leaves done; the maps generated and drift-gated, the two-tier bound ruling executed) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |

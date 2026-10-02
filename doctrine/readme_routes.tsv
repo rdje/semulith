@@ -349,11 +349,17 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #   profiles/  167 files / 1,051,283 B measured at staging (+7 netboard-lab-v0 generated
 #              artifacts: the composition manifest, the four composed catalogues,
 #              hardware.sexp, map.md) — the aggregates held (0.28x / 0.37x).
-#              ⛔ PER-PART BITES A SECOND TIME — the first DERIVED member class:
-#              65,536 -> 131,072 (decision_profiles-family-composed-units): the composed
-#              contract-obligations.sexp is 104,372 B (0.80x), the merge of three
-#              already-bounded parts, re-derived on every commit by BOARD-GEN.
-profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× aggregate bound is decision_profiles-family-five-units, the per-part 128 KiB decision_profiles-family-composed-units (2026-10-02)	590	2450000	600	2867200	131072
+#              ⛔ PER-PART BITES A SECOND TIME — the first DERIVED member class: the
+#              composed contract-obligations.sexp is 104,372 B. Interim: the standing
+#              reviewed raise to 131,072 (decision_profiles-family-composed-units).
+# Ruling, P5-BOARD.12 (2026-10-02), director-delegated — the instrument was wrong, the
+#   interim superseded in part (decision_derived-members-of-bounded-families): the
+#   per-part ceiling's failure mode (silent accretion in hand-maintained files) cannot
+#   occur in a regeneration-gated file, so the ceiling goes TWO-TIER — authored members
+#   keep it (65,536; the NIC's 60,112 B at 0.92x), derived members are exempt as a
+#   CHECKED property (a fact_ownership.tsv mirror row with a regeneration-doctrine
+#   governor — the composed catalogues, BOARD-GEN), reported as proof, never failed.
+profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× aggregate bound is decision_profiles-family-five-units, the two-tier per-part (64 KiB authored, derived exempt via FACT-OWNERSHIP) decision_derived-members-of-bounded-families (2026-10-02)	590	2450000	600	2867200	65536
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

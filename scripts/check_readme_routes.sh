@@ -33,6 +33,45 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
 REGISTRY="doctrine/readme_routes.tsv"
 KNOWN_LIFECYCLES="hot_live partitioned generated_index append_history frozen normative"
+
+# The two-tier per-part rule (decision_derived-members-of-bounded-families, P5-BOARD.12):
+# the per-part byte ceiling's founding failure mode is silent accretion in hand-maintained
+# files — a property a regeneration-gated derived file CANNOT have (every byte is
+# re-derived on every commit; its size is a pure function of already-bounded inputs). A
+# family part over the authored ceiling is EXEMPT as a checked property, never a
+# declaration: it must be registered in doctrine/fact_ownership.tsv as a MIRROR whose
+# governor is a member of the closed regeneration-doctrine set below (each re-derives
+# bytes byte-exact on every commit). An authored file cannot smuggle under the exemption
+# — nothing regenerates it; a mirror governed by a validation gate (RECORD-SCHEMA & kin)
+# keeps the authored ceiling. The set is closed: the day a new regeneration doctrine is
+# registered, its leaf adds it here.
+REGEN_GOVERNORS="STATE-GEN DEF-GEN GUEST-GEN BOARD-GEN GATE-REPORT MATERIALS-BILL BOOK-INDEX"
+
+# Every regen-set member must be a REGISTERED project doctrine — a set/driver disagreement
+# would silently widen the exemption, so it refuses by name instead.
+regen_set_registered() { # $1 = project driver path
+  local g
+  for g in $REGEN_GOVERNORS; do
+    grep -q "^  \"$g|" "$1" || { echo "  REGEN SET DRIFT: $g is in the regeneration set but not registered in $1"; return 1; }
+  done
+  return 0
+}
+
+# The exemption, resolved: $1 = member path relative to the base, $2 = fact-ownership
+# registry (empty/missing = no exemptions). A member qualifies only as a MIRROR with a
+# regeneration-doctrine governor — ownership of the fact is not the property; being
+# byte-re-derived is.
+derived_exempt() { # $1 member  $2 fact-ownership registry
+  local member="$1" reg="$2" line kind owner mirror gov
+  [ -n "$reg" ] && [ -f "$reg" ] || return 1
+  while IFS= read -r line; do
+    case "$line" in ''|'#'*) continue ;; esac
+    IFS=$'\x1f' read -r kind owner mirror gov <<<"${line//$'\t'/$'\x1f'}"
+    [ "$mirror" = "$member" ] || continue
+    case " $REGEN_GOVERNORS " in *" $gov "*) return 0 ;; esac
+  done < "$reg"
+  return 1
+}
 KNOWN_ROUTE_CLASSES="reader_navigation author_overflow both"
 
 # ── destinations the landing page links to (relative targets only) ───────────────────────────
@@ -79,14 +118,15 @@ family_files() { # $1 base  $2 dest  $3 mode(git|find)
 }
 
 # $1 = registry path, $2 = README path, $3 = 1 to enforce ceilings, $4 = root the destinations
-# resolve against, $5 = family listing mode (git|find).
+# resolve against, $5 = family listing mode (git|find), $6 = fact-ownership registry for
+# the two-tier per-part exemption (optional; empty or missing = no exemptions).
 # ⛔ The base is a PARAMETER, not an environment variable. It was an env var for one revision,
 # and `VAR=x verify_routes …` in the self-test leaked VAR into the caller — bash keeps an
 # assignment that prefixes a *function* invocation — so the real run then resolved every
 # destination against the self-test's already-deleted temp directory and reported all 24 as
 # MISSING. A control must not be able to contaminate the thing it checks.
 verify_routes() {
-  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" bad=0 tmp
+  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" fo="${6:-}" bad=0 tmp
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
   tmp="$(mktemp -d)"
@@ -101,7 +141,7 @@ verify_routes() {
   done < <(readme_link_targets "$readme")
 
   # (3)+(4) rows: existence, classes, ceilings, health
-  local dest rclass life owner hl hb cl cb cp n b line big
+  local dest rclass life owner hl hb cl cb cp n b line big rel
   # ⛔ NOT `IFS=$'\t' read`: tab is IFS *whitespace*, so consecutive tabs COLLAPSE and every
   # column after an empty field shifts left — silently, and the row still parses. Measured by
   # this script's own "no owner declared" arm, which passed while reading the owner as `0`.
@@ -135,17 +175,29 @@ verify_routes() {
             echo "  health: $dest holds $b aggregate bytes (target $hb)"; fi
           # Per-PART ceiling. A partitioned family's required control is a bounded index PLUS
           # per-part, file-count and aggregate ceilings: an aggregate bound alone permits one
-          # member to become the monolith the split was meant to avoid.
+          # member to become the monolith the split was meant to avoid. TWO-TIER
+          # (P5-BOARD.12): the ceiling applies to AUTHORED members; a member registered in
+          # the fact-ownership registry as a mirror with a regeneration-doctrine governor
+          # is exempt as a checked property, reported as proof, never failed.
           if [ "${cp:-0}" -gt 0 ]; then
-            big="$(family_files "$base" "$dest" "$mode" | while IFS= read -r one; do
-                     printf '%s\t%s\n' "$(wc -c < "$one" | tr -d ' ')" "$one"; done | sort -rn | head -1)"
-            # Report the member RELATIVE to the base. An absolute path here is unusable as
-            # evidence: the DOCPATH doctrine refuses a checkout-specific path in a tracked
-            # document, so an author pasting this line into a task leaf would be blocked by a
-            # different gate for a defect in this one.
-            if [ -n "$big" ] && [ "${big%%	*}" -gt "$cp" ]; then
-              echo "  OVER CEILING $dest: part ${big#*	}" | sed "s|$base/||"
-              echo "    ${big%%	*} bytes > $cp"; bad=1; fi
+            family_files "$base" "$dest" "$mode" | while IFS= read -r one; do
+              printf '%s\t%s\n' "$(wc -c < "$one" | tr -d ' ')" "$one"
+            done | sort -rn > "$tmp/parts"
+            while IFS= read -r big; do
+              [ -n "$big" ] || continue
+              [ "${big%%	*}" -gt "$cp" ] || continue
+              # Report the member RELATIVE to the base. An absolute path here is unusable as
+              # evidence: the DOCPATH doctrine refuses a checkout-specific path in a tracked
+              # document, so an author pasting this line into a task leaf would be blocked by
+              # a different gate for a defect in this one.
+              rel="${big#*	}"; rel="${rel#$base/}"
+              if derived_exempt "$rel" "$fo"; then
+                echo "  derived: $rel (${big%%	*} bytes > $cp authored per-part) is regeneration-gated — exempt (decision_derived-members-of-bounded-families)"
+              else
+                echo "  OVER CEILING $dest: part $rel"
+                echo "    ${big%%	*} bytes > $cp"; bad=1
+              fi
+            done < "$tmp/parts"
           fi
           ;;
       *)  [ -f "$base/$dest" ] || { echo "  MISSING destination file $dest"; bad=1; continue; }
@@ -181,12 +233,17 @@ self_test() {
   reg() { printf '%s\n' "$@" > "$t/routes.tsv"; }
   R_DOCS=$'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t0'
   R_KEEP=$'KEEP.md\tboth\thot_live\towner\t0\t0\t5\t64\t0'
-  arm() { # name expected_rc expected_substring
-    out="$(verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" find 2>&1)"; rc=$?
-    if [ "$rc" != "$2" ]; then
-      fail=$((fail+1)); printf 'README-ROUTING-CLOSURE self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$1" "$2" "$rc" "$out" >&2
-    elif [ -n "$3" ] && ! printf '%s' "$out" | grep -qF "$3"; then
-      fail=$((fail+1)); printf 'README-ROUTING-CLOSURE self-test MISS: %s right verdict, wrong reason (no %s)\n%s\n' "$1" "$3" "$out" >&2
+  arm() { # name expected_rc expected_substring [cmd...] — default probe: verify_routes
+    local name="$1" erc="$2" sub="$3"; shift 3
+    if [ "$#" -gt 0 ]; then
+      out="$("$@" 2>&1)"; rc=$?
+    else
+      out="$(verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" find "$t/fact.tsv" 2>&1)"; rc=$?
+    fi
+    if [ "$rc" != "$erc" ]; then
+      fail=$((fail+1)); printf 'README-ROUTING-CLOSURE self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$name" "$erc" "$rc" "$out" >&2
+    elif [ -n "$sub" ] && ! printf '%s' "$out" | grep -qF "$sub"; then
+      fail=$((fail+1)); printf 'README-ROUTING-CLOSURE self-test MISS: %s right verdict, wrong reason (no %s)\n%s\n' "$name" "$sub" "$out" >&2
     else pass=$((pass+1)); fi
   }
   reg "$R_DOCS" "$R_KEEP";                       arm "GREEN every route governed"   0 ""
@@ -199,6 +256,24 @@ self_test() {
                                                  arm "RED   family over aggregate bytes" 1 "OVER CEILING docs/: 2 aggregate bytes > 1"
   reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t1' "$R_KEEP"
                                                  arm "RED   family part over per-part ceiling" 1 "OVER CEILING docs/: part"
+  # The two-tier per-part exemption (P5-BOARD.12): authored members keep the ceiling; a
+  # member registered in the fact-ownership registry as a MIRROR with a regeneration
+  # governor is exempt as a checked property — everything else over the ceiling fails.
+  printf '%0100d' 0 | tr '0' 'x' > "$t/docs/big.gen"
+  R_CP50=$'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t50'
+  printf '# fixture registry\nkind\tdocs/source.sexp\tdocs/big.gen\tBOARD-GEN\n' > "$t/fact.tsv"
+  reg "$R_CP50" "$R_KEEP"
+                                                 arm "GREEN an over-ceiling part registered as regeneration-gated is exempt, reported as proof" 0 "derived: docs/big.gen"
+  printf '# fixture registry\nkind\tdocs/source.sexp\tdocs/big.gen\tRECORD-SCHEMA\n' > "$t/fact.tsv"
+  reg "$R_CP50" "$R_KEEP"
+                                                 arm "RED   an over-ceiling part with a validation governor keeps the authored ceiling" 1 "OVER CEILING docs/: part"
+  printf '# fixture registry\nkind\tdocs/source.sexp\tdocs/other.gen\tBOARD-GEN\n' > "$t/fact.tsv"
+  reg "$R_CP50" "$R_KEEP"
+                                                 arm "RED   no exemption by adjacency — the registry row must name the member" 1 "OVER CEILING docs/: part"
+  rm -f "$t/fact.tsv" "$t/docs/big.gen"
+  arm "GREEN the regen set agrees with the doctrine driver" 0 "" regen_set_registered scripts/check_doctrines.project.sh
+  printf 'x\n' > "$t/driver.sh"
+  arm "RED   a set/driver disagreement refuses, naming the drift" 1 "REGEN SET DRIFT" regen_set_registered "$t/driver.sh"
   reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t0\t0\t0' "$R_KEEP"
                                                  arm "GREEN family within its bounds"   0 ""
   reg "$R_DOCS" $'KEEP.md\tinvented\thot_live\towner\t0\t0\t0\t0\t0'
@@ -225,7 +300,12 @@ self_test >/dev/null 2>&1 || {
 }
 
 fail=0
-out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git)" || fail=1
+# The two-tier per-part exemption consumes the fact-ownership registry, and the regen set
+# must agree with the doctrine driver — a disagreement refuses, never silently widens.
+regen_set_registered scripts/check_doctrines.project.sh || {
+  echo "README-ROUTING-CLOSURE: REFUSED — the regeneration-doctrine set and the driver disagree." >&2
+  exit 2; }
+out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)" || fail=1
 
 # (2) every path-shaped destination the guard actually emits must be governed
 dests="$(mktemp)"; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"
@@ -258,5 +338,5 @@ if [ "$fail" -ne 0 ]; then
 fi
 printf 'README-ROUTING-CLOSURE: ok (%s governed destination(s))\n' \
   "$(awk -F'\t' '!/^#/ && NF>=9' "$REGISTRY" | wc -l | tr -d ' ')"
-printf '%s\n' "$out" | grep -E '^  (health:|registry caps applied:)' || true
+printf '%s\n' "$out" | grep -E '^  (health:|derived:|registry caps applied:)' || true
 exit 0
