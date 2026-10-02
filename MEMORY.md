@@ -19,12 +19,13 @@
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit) · `P5-BOARD` (3/11 — both device dossiers landed, fully gated).
   Milestone frontier: `P5-BOARD`.
 - next_action: `P5-BOARD.11` — registration day: register `netboard-lab-v0`,
-  `sifive-uart-lab-v0` and `lan9118-lab-v0` in `materials/units.sexp` together — the
-  `schema/units.sexp` `kind` edit, the materials-bill generator's generalization beyond
-  processor-shaped units (its INTERNAL_CONTRACTS census and its two `sibling-crate`
-  conditionals — the routing note is recorded in the tree's `.11`), the three per-unit
-  books, the category-needs rows. Both device dossiers are done and fully gated
-  (`profiles/sifive-uart-lab-v0/`, `profiles/lan9118-lab-v0/`). Then: `BOOK-APPARATUS.2`.
+  `sifive-uart-lab-v0` and `lan9118-lab-v0` in `materials/units.sexp` together. The
+  design brief is recorded (`SEMULITH-P5-0010`, tree Decisions): kind +board/+device and
+  layer +device schema edits; the route-keyed generator + MATERIALS-BILL
+  generalization (measured: references.sexp is absent from all three new dossiers);
+  three per-unit books; category-needs rows. Both device dossiers are done and fully
+  gated (`profiles/sifive-uart-lab-v0/`, `profiles/lan9118-lab-v0/`). Then:
+  `BOOK-APPARATUS.2`.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

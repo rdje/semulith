@@ -244,7 +244,7 @@ incompatible CPU/environment assumption remains**.
   `.4`. Registration stays `.11`'s (all three units together).
 
 - ID: `P5-BOARD.11` — **registration day: the three units register**
-  Status: `pending`
+  Status: `in_progress` (design brief recorded `2026-10-02`, `SEMULITH-P5-0010`)
   Goal: register `netboard-lab-v0`, `sifive-uart-lab-v0` and `lan9118-lab-v0` in
   `materials/units.sexp` — one registration day: the `schema/units.sexp` `kind` edit
   (the schema sanctions a `(values …)` edit "the day a real unit needs one"), the
@@ -484,6 +484,66 @@ incompatible CPU/environment assumption remains**.
   port pop/PEEK semantics, §5.2). A value pins only where the datasheet determines it.
   **Not `.10`'s scope:** the device model (Rust) — the dossier is the documents the model
   route consumes; registration stays `.11`'s (one registration day, all three units).
+- `2026-10-02` (design brief for `.11`, recorded before its execution; sources: the `.2`
+  routing note, the machinery census below measured this day against the live scripts and
+  schemas):
+  **Registration day's design, decided.** The three units register together in
+  `materials/units.sexp`: `netboard-lab-v0` (kind `board`, layer `board`),
+  `sifive-uart-lab-v0` and `lan9118-lab-v0` (kind `device`, layer `device`).
+  **Schema edits** (each the sanctioned "(values …) edit the day a real unit needs one",
+  each fired before landing): `schema/units.sexp` `kind` admits only `processor` — gains
+  `board` and `device`; its `layer` (and `schema/category-needs.sexp`'s, the shared
+  taxonomy) gains `device` — a device is not the board layer; it is the board's
+  constituent, and the dossier family's measured unit kinds are now three.
+  **The generator generalization, measured in detail** (`scripts/gen_model_book.py`):
+  the `.2` routing note named the two `sibling-crate` conditionals (~:136, ~:212-213) and
+  the processor-shaped INTERNAL_CONTRACTS census; the full read measures MORE: the
+  emitters load `references.sexp` (absent from both device dossiers AND the board — the
+  board dossier is `board.sexp` + `DOSSIER.md`, with no `profile.sexp` at all, so
+  `_vehicle_route` reads None there), and `emit_contracts` reads `interactions.sexp`,
+  globs `guests/`, and reports "declared instruction forms" — all processor-shaped.
+  The gate side needs the same: MATERIALS-BILL's COMPLETENESS half loads
+  `references.sexp` per unit and would report CANNOT JUDGE for all three new units.
+  **The adaptation is route-keyed, one generator + one gate:** the unit's shape derives
+  from its DECLARATION (vehicle route `device-model` for the devices; `board.sexp`
+  present for the board — never from a guess), the INTERNAL_CONTRACTS census becomes
+  per-route (device: profile/state/requirements/contract-obligations/`expectations/`;
+  board: `board.sexp` + `DOSSIER.md`), the four fragment names stay uniform with
+  route-honest content (a device's encoding-tables.md: "no encoding space — a device has
+  no instruction encodings; its register map is the contract"; reference-models.md: "no
+  reference candidates pinned — the evidence shape is datasheet-derived register-read
+  expectations"), and the gate's required-material enumeration follows the same route
+  key. New self-test arms pin the device and board shapes GREEN (a route the generator
+  cannot emit stays a refusal).
+  **The books** (`docs/models/<unit-id>/`, UNIT-BOOKS — presence + build + reverse
+  registration are the gate; the chapter arc is MODEL-BOOKS' authorship convention,
+  adapted honestly per kind): the device books carry introduction / the materials bill /
+  the gaps chapter / the methodology (the device route: datasheet → dossier → the model
+  route) / the evidence chapter (the expectations route — no compiled-guest chapter: a
+  device has no guest corpus, and probes are `.5`'s); the board book carries
+  introduction / the materials bill / gaps / the composition narrative (the board's
+  method IS composition) — evidence lands with `.4`'s verdict. Prose dominates; the
+  teaching test applies (MODEL-BOOKS' standing criteria 4–6).
+  **category-needs rows** (SCOPE-COVERAGE refuses a required category with no row;
+  LAYERS refuses a reasonless `missing`; the dsp56300 precedent carries a full census
+  per unit): each device unit declares `requires` for the categories its dossier
+  demonstrably carries — C02 (state census), C19 (device register semantics), C22 (the
+  measured silences ARE C22 records), C23 (the pinned-source provenance) — each
+  dispositioned `covered` against the datasheet material at layer `device`, with C21
+  (the wire/backends) dispositioned against the board's declared backend data and the
+  rest `out-of-scope`; the board unit's rows disposition the board-layer categories the
+  board definition actually carries (C19 covered by board.sexp's pins, C17/C14 the
+  declared absences with their reasons — the absences are the design's sharpest edge,
+  recorded as data, never silent). Exact row sets measured at execution against the
+  live census file.
+  **FACT-OWNERSHIP**: registration adds the book-side mirrors to the units' rows (the
+  dsp56300 pattern: `pinned-sources` mirrors the generated `pinned-specifications.md`,
+  `internal-contracts` row per unit) — the fixture re-pins follow the measured corpus.
+  **The BREADTH-report prose** (docs/BREADTH-REPORT.md) and any "every registered unit"
+  phrasing elsewhere get re-read against the five-unit registry and corrected where
+  measured stale — drift correction is part of registration day, per `.1`'s census.
+  **Not `.11`'s scope:** the composition verdict (`.4`), generated maps (`.3`), probes
+  (`.5`) — registration makes the units reviewable; it does not advance their evidence.
 
 ## Open Questions
 
@@ -885,3 +945,19 @@ incompatible CPU/environment assumption remains**.
   resets (the UART contrast). The `profiles/` per-part bound bit for the first time —
   32→64 KiB, reviewed and recorded (`decision_profiles-family-five-units`);
   FACT-OWNERSHIP re-pinned to four units. Frontier: `.11` — registration day.
+- `2026-10-02`: the `.11` design brief recorded (`SEMULITH-P5-0010`). Registration day's
+  design decided: the three units register together (`netboard-lab-v0` board/board, the
+  two devices device/device); the schema edits measured (`schema/units.sexp` kind
+  +board/+device, the shared layer taxonomy +device); the generator generalization
+  measured in FULL against the live code — beyond the `.2` routing note's two
+  conditionals, the emitters load `references.sexp` (absent from all three new dossiers)
+  and `emit_contracts` reads `interactions.sexp`/`guests/`/instruction-form prose, and
+  MATERIALS-BILL's COMPLETENESS half would report CANNOT JUDGE — so the adaptation is
+  route-keyed in ONE generator and ONE gate, with honest per-route fragment content and
+  new GREEN self-test arms; the books' arc adapts per kind (no compiled-guest chapter
+  for devices; the board's method chapter is composition); category-needs rows follow
+  the dsp56300 full-census precedent with the devices' covered set measured (C02/C19/
+  C22/C23 covered by the datasheets at layer device, C21 against the board's backend
+  declaration); FACT-OWNERSHIP gains the book-side mirrors; stale "every registered
+  unit" prose is re-read and corrected. Frontier: `.11` execution — the registrations,
+  the books, the gates.
