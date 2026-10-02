@@ -341,11 +341,31 @@ incompatible CPU/environment assumption remains**.
   every section carries its does-not-supply), SCOPE-COVERAGE `5 unit(s) may code`,
   RECORD-SCHEMA 14 record files. The DEV_NOTES lesson: promotion: declined (derive-from-declaration already has its decision records — decision_device-applicability-by-declared-vehicle, decision_gate-applicability-by-declared-vehicle — and regenerate-vs-edit is a standing house rule).
 
+- ID: `P5-BOARD.12` — **derived members of bounded families: the right instrument**
+  Status: `pending`
+  Goal: the routes-registry per-part byte ceiling applies to AUTHORED content;
+  regeneration-gated derived members are exempt as a CHECKED property — registered in
+  `doctrine/fact_ownership.tsv` as a mirror whose governor is a regeneration doctrine
+  (the closed set) — never as a declaration. The ruling:
+  [`decision_derived-members-of-bounded-families`](../../docs/decisions/decision_derived-members-of-bounded-families.md),
+  director-delegated `2026-10-02` (the `.3` finding was surfaced; the director assigned
+  the decision to the signing engineer, SOTA/signoff-grade).
+  Acceptance: an authored over-ceiling part still fails by name; a derived over-ceiling
+  part registered with a regeneration governor passes; a non-regeneration governor
+  (e.g. RECORD-SCHEMA) never exempts; the `profiles/` authored per-part returns to
+  65,536 with the composed catalogues exempt; `decision_profiles-family-composed-units`
+  marked superseded in part. Aggregates untouched.
+  Routing note (`2026-10-02`): created from the `.3` surfaced finding — composed
+  catalogues multiply record bytes with composition depth, and the interim reviewed
+  raise (64 → 128 KiB, one day old) taxed a property derived files cannot have. The
+  board's composition work owns the fix; P7's soc/computer compositions inherit it.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.4` | `pending` | the gate's core obligation: the composition verdict — every CPU assumption matched against a board/device guarantee or rejected; the composed catalogues are on disk (`.3`), the devices' composition records (TIME-SOURCES/PHY-LINK/GPIO-PINS, the strap values) are pre-wired to it |
+| 1 | `P5-BOARD.12` | `pending` | the director-delegated ruling on the `.3` finding: the per-part byte ceiling applies to authored content; derived members are governed by their regeneration doctrine — one gate, two-tier, with self-tests |
+| 2 | `P5-BOARD.4` | `pending` | the gate's core obligation: the composition verdict — every CPU assumption matched against a board/device guarantee or rejected; the composed catalogues are on disk (`.3`), the devices' composition records (TIME-SOURCES/PHY-LINK/GPIO-PINS, the strap values) are pre-wired to it |
 
 ## Decisions
 
@@ -709,6 +729,39 @@ incompatible CPU/environment assumption remains**.
   `board.sexp + DOSSIER.md`: the census enumerates the dossier's AUTHORED contracts;
   the generated set is governed by BOARD-GEN and reviewed in the book's map chapter,
   not billed as materials.
+- `2026-10-02` (the `.12` ruling, director-delegated; recorded before its execution;
+  sources: the `.3` measured finding, the routes-registry gate's own code, the
+  FACT-OWNERSHIP registry's completeness contract):
+  **The instrument must match the failure mode.** The `.3` composed catalogues fired
+  the authored per-part byte ceiling and forced a reviewed raise one day after the
+  previous one; the director delegated the policy question to the signing engineer
+  ("yours to decision and act upon … SOTA, SIGNOFF and PRODUCTION-GRADE"). The ruling,
+  recorded in full in `decision_derived-members-of-bounded-families.md`: the per-part
+  byte ceiling's founding failure mode is silent accretion in hand-maintained files —
+  a property a regeneration-gated derived file CANNOT have (every byte is re-derived
+  on every commit; its size is a pure function of already-bounded inputs; its real
+  risks are governed by other gates). So the ceiling goes two-tier: it applies to
+  every family member NOT registered in `doctrine/fact_ownership.tsv` as a mirror
+  with a regeneration-doctrine governor (the closed set: STATE-GEN, DEF-GEN,
+  GUEST-GEN, BOARD-GEN, GATE-REPORT, MATERIALS-BILL, BOOK-INDEX); the exemption is a
+  CHECKED property (the registry is the one already completeness-checked declaration —
+  no second surface, and an authored file cannot smuggle under it because nothing
+  regenerates it), never a declaration. The discriminating line measured against the
+  live corpus: the NIC's authored 60,112 B catalogue (governor RECORD-SCHEMA) keeps
+  the authored ceiling at 0.92×; the board's composed 104,372 B catalogue (governor
+  BOARD-GEN) is exempt. Aggregates still apply to derived members (population
+  surprises are census-level). Consequences: the `profiles/` authored per-part returns
+  to 65,536; `decision_profiles-family-composed-units` is superseded in part (its
+  measurement stands; its raise was the right interim); the per-depth raise ceremony
+  never recurs; a governor removed from the doctrine registry makes its exempt files
+  ceiling-liable the same commit. **Design alternatives weighed and rejected:** (a)
+  keep raising per-part per composition level — reviews a number, proves nothing
+  about the derivation; (b) a `derived` lifecycle class on the routes registry — the
+  registry is per-row and `profiles/` mixes authored + derived members in one
+  directory, so the granularity is wrong and a second declaration surface would drift
+  against fact_ownership.tsv; (c) fingerprint-header detection — the composed
+  catalogues are record-format files that cannot carry headers. The closed regen set
+  grows the day a new regeneration doctrine is registered, with that doctrine's leaf.
 
 ## Open Questions
 
@@ -1309,3 +1362,15 @@ incompatible CPU/environment assumption remains**.
   refusals are scoped to what board.sexp proves; machine-readable offsets arrive with
   the device models); the DOSSIER's post-`.11` stale status rows (the brief's logged
   defect) fixed. Frontier: `.4` — the composition verdict, its input now on disk.
+- `2026-10-02`: the `.12` ruling recorded (`SEMULITH-P5-0014`) — director-delegated
+  ("yours to decision and act upon … SOTA, SIGNOFF and PRODUCTION-GRADE"): the
+  per-part byte ceiling's founding failure mode (silent accretion in hand-maintained
+  files) cannot occur in regeneration-gated derived files, so the instrument goes
+  two-tier — authored members keep the ceiling, derived members are governed by their
+  regeneration doctrine, exempt as a CHECKED property via the FACT-OWNERSHIP registry
+  (closed regen set), never as a declaration. `decision_derived-members-of-bounded-
+  families.md` carries the full ruling; `decision_profiles-family-composed-units.md`
+  is superseded in part (its measurement stands; the day-old 128 KiB raise was the
+  right interim). Three alternatives weighed and rejected (per-level raises, a
+  lifecycle class, fingerprint-header detection). Frontier: `.12` execution — the
+  two-tier gate, the registry row, the self-tests.

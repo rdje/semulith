@@ -2,7 +2,10 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-02`
-- **Status:** `active`
+- **Status:** `superseded in part` (`2026-10-02`) — the per-part raise to 131,072 was the
+  interim instrument; [`decision_derived-members-of-bounded-families.md`](decision_derived-members-of-bounded-families.md)
+  replaces it with the two-tier rule (authored per-part returns to 65,536; derived
+  members are governed by their regeneration doctrine). The measurement below stands.
 - **Owner / source:** `P5-BOARD.3` stages the first composed unit directory
   (`profiles/netboard-lab-v0/` — the board's generated composition manifest, composed
   catalogues, hardware description and map). The family's recorded policy: *"the bound
