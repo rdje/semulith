@@ -72,13 +72,24 @@ def published(sources_sexp: Path, work_dir: Path) -> dict[str, set[str]]:
             f"untracked and need the network, so an absent working area is the normal state of a "
             f"fresh clone — not a pass. Fetch them:\n    scripts/fetch_sources.sh")
     out: dict[str, set[str]] = {}
+    skipped: list[str] = []
     for s in cfg.get("source", []):
+        # P4-SYSTEM.1: a row with http_status 0 is a DECLARED cache/corpus artifact (the
+        # ledger's header comment) — a PDF pin for record-level citation, not an HTML
+        # page of the snapshot; heading resolution does not apply. Skipped BY NAME,
+        # never silently.
+        if s.get("http_status") == 0:
+            skipped.append(s["id"])
+            continue
         p = work_dir / s["file"]
         if not p.exists():
             raise CitationError(f"{s['id']}: {_rel(p)} is missing; run scripts/fetch_sources.sh")
         out[s["id"]] = headings(p.read_text())
     if not out:
         raise CitationError(f"{_rel(sources_sexp)} declares no (source …) form")
+    if skipped:
+        print(f"           declared non-snapshot pins skipped (http_status 0): "
+              f"{', '.join(skipped)}")
     return out
 
 
@@ -145,6 +156,12 @@ def _work_dir(cfg: dict) -> tuple[Path, str]:
         import materials as _m
         cat = _m.load()
         rel = _m.resolve(cat, "RVI-PINNED-V20260120")
+        # P4-SYSTEM.1 (rv64gc-lab-v0): a profile may pin pages from BOTH the unpriv/ and
+        # priv/ subtrees — its `file` fields then carry the subdirectory, and the cache
+        # root is the snapshot itself. Bare file fields (rv64i-lab-v0) keep the legacy
+        # unpriv/ root. Derived from the declaration, and the route is PRINTED either way.
+        if any("/" in s.get("file", "") for s in cfg.get("source", [])):
+            return REPO / rel, f"materials cache {rel} (manifest-verified, offline)"
         return REPO / rel / "unpriv", f"materials cache {rel}/unpriv (manifest-verified, offline)"
     except Exception:                                   # noqa: BLE001 — fall back to the refusal
         return wd, f"fetched working area {cfg['work_dir']}"

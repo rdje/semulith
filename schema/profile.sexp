@@ -69,10 +69,20 @@
 
 ;; P3-BREADTH.7 slice 1 — case dsp56300-lab-v0: the unit's model route and comparison
 ;; shape, declared as data so gates derive applicability rather than presume it.
+;; `P4-SYSTEM.1` (`2026-10-02`): the vehicle `route` gains `profile-resolution` — a
+;; unit whose SELECTION is resolved and citable but whose definition pipeline has not
+;; started (case rv64gc-lab-v0). The definition-pipeline gates (EXTRACTION,
+;; EXERCISE-COVERAGE, INTERACTION-MATRIX) report the stage by declaration and refuse a
+;; contradiction (an encoding, state census, guest corpus or interaction matrix beside
+;; the declaration is a finding, never a drift) — the same by-declaration discipline as
+;; the device-model route. `comparison` goes optional: a resolution has no comparison
+;; shape yet; the processor and device routes keep declaring it by convention.
+
 (construct (name vehicle)
   (field (name route) (type symbol)
-         (values generated-definition) (values sibling-crate) (values device-model))
-  (field (name comparison) (type symbol)
+         (values generated-definition) (values sibling-crate) (values device-model)
+         (values profile-resolution))
+  (field (name comparison) (type symbol) (optional yes)
          (values per-step-trace) (values checkpoint-end-state) (values register-expectations))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))

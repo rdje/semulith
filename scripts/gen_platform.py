@@ -262,8 +262,14 @@ def frozen_counter_disposition(board: dict) -> str | None:
 def render_platform(board: dict, prof: dict, params: dict[str, dict],
                     prof_path: Path) -> str:
     p = board["processor"]
-    isa = prof["base"].lower() + "".join(sorted(e.lower() for e in
-                                                prof.get("extensions", [])))
+    # The ISA string in canonical order (RVI naming chapter): the base lowered, the
+    # single-letter extensions concatenated in the profile's declared order, then the
+    # multi-letter extensions underscore-joined in declared order. Sorting would
+    # destroy the canonical order (measured against the GC profile's declaration).
+    exts = prof.get("extensions", [])
+    single = "".join(e.lower() for e in exts if len(e) == 1)
+    multi = "_".join(e.lower() for e in exts if len(e) > 1)
+    isa = prof["base"].lower() + single + ("_" + multi if multi else "")
     out = [_fingerprint([board["dir"] / "board.sexp", prof_path,
                          board["dir"] / "contract-obligations.sexp"])]
     out.append(

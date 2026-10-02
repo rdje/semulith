@@ -79,6 +79,11 @@ for prof_path in profiles:
     # contradict its own register enumeration either.
     routes = [str(c[1]) for v in vehicle for c in S.children(v, "route")]
     device = routes[:1] == ["device-model"]
+    # P4-SYSTEM.1 (case rv64gc-lab-v0): a unit declaring (vehicle (route
+    # profile-resolution)) has no definition pipeline and no guest corpus yet — both
+    # legs are n/a BY DECLARATION, the device-model discipline exactly; the denominator
+    # census above still runs (the resolution's scope enumeration must be honest).
+    resolution = routes[:1] == ["profile-resolution"]
     denominator: set[str] = set()
     for f in scope[1:]:
         # (comment …) is the format's reserved annotation head, never a mnemonic group —
@@ -109,12 +114,17 @@ for prof_path in profiles:
             closure = "n/a (checkpoint-end-state declared; no encoding.sexp — measured against the guest corpus)"
         elif device:
             closure = "n/a (device-model declared; no encoding.sexp — a device composes no instruction encoding)"
+        elif resolution:
+            closure = "n/a (profile-resolution declared; no encoding.sexp — the definition pipeline has not started)"
         else:
             findings.append(f"NO COMPOSITION {tag}: no encoding.sexp beside the dossier — the "
                             f"declared scope's dependency closure cannot be decided")
     elif device:
         findings.append(f"DECLARATION CONTRADICTION {tag}: device-model route declared but an "
                         f"encoding.sexp exists — the declaration contradicts the documents")
+    elif resolution:
+        findings.append(f"DECLARATION CONTRADICTION {tag}: profile-resolution route declared but "
+                        f"an encoding.sexp exists — the declaration contradicts the documents")
     else:
         try:
             enc = S.read_file(enc_path)[0]
@@ -127,7 +137,7 @@ for prof_path in profiles:
             closure = "{" + ", ".join(names) + "}"
         except (AsmError, S.SexpError, IndexError) as exc:
             findings.append(f"UNMET DEPENDENCY {tag}: {exc}")
-    if not closure.startswith("n/a") and not device:
+    if not closure.startswith("n/a") and not device and not resolution:
         for m in sorted(denominator - resolved):
             findings.append(f"UNRESOLVED FORM {tag}: [scope] declares '{m}' but the resolved "
                             f"composition does not provide it — an included feature whose "
@@ -147,6 +157,19 @@ for prof_path in profiles:
         else:
             print(f"{pdir.relative_to(root).as_posix()}: device-model route declared — "
                   f"{len(denominator)} declared registers, exercise n/a by declaration")
+        continue
+    if resolution:
+        # P4-SYSTEM.1: no guest corpus exists at the resolution stage — exercise is n/a
+        # by declaration, and a guests/ corpus beside the declaration is the same
+        # anti-drift contradiction the device leg refuses.
+        gdir = pdir / "guests"
+        if gdir.is_dir() and any(gdir.iterdir()):
+            findings.append(f"DECLARATION CONTRADICTION {tag}: profile-resolution route declared "
+                            f"but a guests/ corpus exists — the declaration and the documents "
+                            f"disagree")
+        else:
+            print(f"{pdir.relative_to(root).as_posix()}: profile-resolution route declared — "
+                  f"{len(denominator)} declared forms, exercise n/a by declaration")
         continue
     if checkpoint:
         # The checkpoint leg (P3-BREADTH.7, case dsp56300-lab-v0): the corpus is .a56
@@ -348,6 +371,27 @@ self_test() {
   rm -f "$t/profiles/p/guests/g1.expected.sexp"
   profile_dev '(count_total 3) (authority platform) (source "s") (mmio_registers "UART_RXDATA") (mmio_registers "UART_TXDATA")'
   arm "RED   a device scope whose count contradicts its own enumeration" 1 "DENOMINATOR LIE"
+
+  # ── the profile-resolution leg (P4-SYSTEM.1, case rv64gc-lab-v0): the selection is
+  # resolved and citable; no encoding, no guests — both legs n/a by declaration, the
+  # denominator census still applies, and a contradicting document is RED.
+  profile_res() { # $1 = scope body
+    printf '(profile (id "p") (version "0") (status "development") (vehicle (route profile-resolution) (authority laboratory) (source "s")) (scope %s))\n' "$1" \
+      > "$t/profiles/p/profile.sexp"
+  }
+  profile_res '(count_total 1) (authority architecture) (source "s") (base_op "add")'
+  arm "GREEN profile-resolution route: composition and exercise n/a by declaration" 0 "profiles/p: profile-resolution route declared"
+
+  encoding
+  arm "RED   profile-resolution contradicted by an encoding.sexp" 1 "contradicts the documents"
+  rm -f "$t/profiles/p/encoding.sexp"
+
+  guest g1 "add sub"
+  arm "RED   profile-resolution contradicted by a guests/ corpus (anti-drift)" 1 "the declaration and the documents disagree"
+  rm -f "$t/profiles/p/guests/g1.expected.sexp"
+
+  profile_res '(count_total 2) (authority architecture) (source "s") (base_op "add")'
+  arm "RED   a resolution scope whose count contradicts its own enumeration" 1 "DENOMINATOR LIE"
 
   rm -rf "$t"
   printf 'EXERCISE-COVERAGE --self-test: %d pass / %d fail\n' "$pass" "$fail"

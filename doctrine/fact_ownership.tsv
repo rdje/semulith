@@ -37,6 +37,10 @@ reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	-	-
 guest-programs (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/guests/	-	-
 requirements (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/profile.sexp	profiles/dsp56300-lab-v0/requirements.sexp	RECORD-SCHEMA
 obligations (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/requirements.sexp	profiles/dsp56300-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+configuration (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/profile.sexp	-	-
+pinned-sources (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/sources.sexp	-	-
+requirements (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/profile.sexp	profiles/rv64gc-lab-v0/requirements.sexp	RECORD-SCHEMA
+obligations (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/requirements.sexp	profiles/rv64gc-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 pinned-sources (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/sources.sexp	docs/models/dsp56300-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/reference-models.md	MATERIALS-BILL

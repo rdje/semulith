@@ -155,6 +155,14 @@ self_test() {
   matrix '(cell (axis "alpha") (axis "alpha") (guest "g1")) (cell (axis "alpha") (axis "beta") (guest "g2"))'
   arm "RED   a device unit whose matrix omits a cell answers the full contract" 1 "OMITTED CELL p: beta×beta"
 
+  # ── the profile-resolution leg (P4-SYSTEM.1, case rv64gc-lab-v0): no executed corpus
+  # exists to matrix — n/a by declaration; a matrix that EXISTS answers the full
+  # contract unchanged (the same rule as the device leg).
+  rm -f "$t/profiles/p/interactions.sexp"
+  printf '(profile (id "p") (version "0") (status "development") (vehicle (route profile-resolution) (authority laboratory) (source "s")))\n' \
+    > "$t/profiles/p/profile.sexp"
+  arm "GREEN profile-resolution route with no matrix is n/a by declaration" 0 "profile-resolution route declared"
+
   rm -rf "$t"
   printf 'INTERACTION-MATRIX --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

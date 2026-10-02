@@ -58,21 +58,27 @@ def _strings(form, name: str) -> list[str]:
     return [str(v) for c in S.children(form, name) for v in c[1:]]
 
 
-def _device_route_declared(unit: Path) -> bool:
-    """The unit's profile declares (vehicle (route device-model)) — P5-BOARD.2, case
-    sifive-uart-lab-v0. An absent or unreadable profile is not a declaration."""
+def _declared_route(unit: Path) -> str | None:
+    """The unit's declared vehicle route, or None. An absent or unreadable profile is
+    not a declaration."""
     prof = unit / "profile.sexp"
     if not prof.is_file():
-        return False
+        return None
     try:
         forms = S.read_file(prof)
         form = next(f for f in forms
                     if isinstance(f, list) and f and str(f[0]) == "profile")
     except (S.SexpError, StopIteration):
-        return False
+        return None
     routes = [str(c[1]) for v in S.children(form, "vehicle")
               for c in S.children(v, "route")]
-    return routes[:1] == ["device-model"]
+    return routes[0] if routes else None
+
+
+def _device_route_declared(unit: Path) -> bool:
+    """The unit's profile declares (vehicle (route device-model)) — P5-BOARD.2, case
+    sifive-uart-lab-v0."""
+    return _declared_route(unit) == "device-model"
 
 
 def check_unit(unit: Path) -> tuple[list[str], list[str]]:
@@ -83,6 +89,13 @@ def check_unit(unit: Path) -> tuple[list[str], list[str]]:
         if _device_route_declared(unit):
             return ([], [f"device-model route declared — the matrix attaches with the "
                          f"probe corpus (P5-BOARD.5)"])
+        # P4-SYSTEM.1 (case rv64gc-lab-v0): a profile-resolution unit has no executed
+        # corpus to matrix — n/a by declaration; an interactions.sexp beside the
+        # declaration is judged below like any other matrix (its dispositions must
+        # still resolve).
+        if _declared_route(unit) == "profile-resolution":
+            return ([], [f"profile-resolution route declared — the matrix attaches "
+                         f"with the definition pipeline (P4-SYSTEM.2+)"])
         return ([f"NO MATRIX {tag}: no interactions.sexp beside the dossier — the "
                  f"interaction matrix is declared first and then exercised; an undeclared "
                  f"matrix is not an exercised one"], [])

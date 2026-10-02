@@ -1,5 +1,27 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0002 (leaf P4-SYSTEM.1) — the profile resolved: rv64gc-lab-v0, every element source-located; the profile-resolution vehicle route
+
+- The Linux-capable profile is selected and recorded as data: `profiles/rv64gc-lab-v0/`
+  carries the resolution — RV64I + M/A/F/D/C + Zicntr + Zicsr + Zifencei (+ Sstc
+  privileged), M/S/U modes, Sv39, IALIGN 16 with C, one hart, the 33-CSR committed
+  minimum, LP64D ABI, SBI 2.0 as the P6 firmware contract. 18 decisions, each mirrored
+  verbatim into a requirement and a contract obligation (`rv64gc-lab-env-v0` v0), every
+  element with its source locator. The pinned v20260120 snapshot was measured to CARRY
+  the privileged chapters (24 priv/ + 46 unpriv/ pages, 21/21 pins re-hashed against
+  the tracked SHA256SUMS); the 2026-09-27 census's "privileged volume absent" phrasing
+  is superseded. The closure is measured (G = IMAFDZicsr_Zifencei; D⇒F; F⇒Zicsr;
+  C⇒Zca+Zcd at RV64). FP is in the profile; its model evidence is gated on `.7`'s
+  backend qualification. The unit is deliberately unregistered.
+- The machinery gained the `profile-resolution` vehicle route by declaration (the .2
+  discipline): EXTRACTION / EXERCISE-COVERAGE / INTERACTION-MATRIX honor it, a
+  definition-pipeline document beside the declaration is RED (self-tests 11/11, 21/21,
+  15/15). check_citations.py learned subdirectory `file` fields and named non-snapshot
+  skips; gen_platform.py's ISA derivation fixed to the canonical order. FACT-OWNERSHIP
+  +4 rows (61 kinds), the obligations fixture re-pinned to six units.
+- Validation: `make gate` green (DERIVED-COUNTS 376→383 arms re-derived);
+  check_citations 52/52 for both RISC-V units offline; RECORD-SCHEMA 18 record files.
+
 ## SEMULITH-P5-0019 (leaf P5-BOARD.6) — the platform capability manifest: derived, schema-gated, drift-gated by PLATFORM-GEN; the dossier pin load-bearing; endianness a data owner
 
 - The board's read-only export for a compatibility checker landed:
@@ -838,27 +860,4 @@
   tree's ultimate stress fixture; the permanent bounds carried (citable per-axis; never
   evidence about a real DSP).
 - The tree's blockers cleared on record: `DSP-REVIEW` closed 8/8 (`SEMULITH-DR-0094`).
-
-## SEMULITH-DR-0094 (leaf DSP-REVIEW.7) — the interface findings report: six findings routed, the tree closed 8/8
-
-- The tree's capstone: every candidate interface change classified and costed, routed to
-  `P3-BREADTH` with per-finding `ROUTING EVIDENCE` (manual locator + executable
-  demonstration + the scalar-profile reproduction check — the method the tree
-  pre-committed to before the first finding existed).
-- Three CANNOT-EXPRESS findings, each refused by name and pinned by the `.6` synth
-  suite: **F1** nonstandard widths (24/56/80-bit; rc 2) and **F3** multiple address
-  spaces (rc 1) route to `P3-BREADTH.5`; **F4** the execute packet and **F5** the
-  delayed visible writeback (both rc 1) route to `.1` **with the `.8` scope condition**
-  — TI-family-shaped, so a scalar-DSP slice does not need them.
-- Three NEEDS-A-CHANGE findings: **F2** register grouping with fill semantics (TI's
-  40-bit odd:even zero-fill; the one finding without a measured refusal — recorded as
-  its honest limit) and **F6** the per-profile state census reopenings (accumulator
-  extensions, AMR/MODE1, sticky flags, loop state, the pending-writes window).
-- Five measured non-findings classified OUT of interface work (the per-instruction SAT
-  side effect, the saturate/round ordering, circular/bit-reversed addressing, the
-  SPLOOP drain asymmetry, MFENCE — semantics data + census state, not interface shape).
-- The scalar controls measured: the real 64-bit state document generates rc 0,
-  `DEF-GEN: ok`, the synth suite 4/0 — **no finding reproduces on `rv64i-lab-v0`**;
-  nothing routed belongs to `P2-SCALAR`. Evidence:
-  `docs/tasks/artifacts/dsp-review/2026-10-01-interface-findings.md`.
 

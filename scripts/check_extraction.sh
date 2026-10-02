@@ -184,6 +184,35 @@ PY2
   arm "RED   a device obligation with no negative fixture" 1 "positive AND a negative"
   rm -rf "$t/profiles/device"
 
+  # ── the profile-resolution leg (P4-SYSTEM.1, case rv64gc-lab-v0): the selection is
+  # resolved and citable; the definition pipeline has not started. The obligation leg
+  # still applies (the v0 contract's obligations, checked both ways); a
+  # definition-pipeline document beside the declaration is a contradiction, refused.
+  mkdir -p "$t/profiles/resolution"
+  printf '%s\n' '(profile (id "r") (version "0") (status "development")' \
+      '  (vehicle (route profile-resolution) (authority laboratory) (source "s"))' \
+      '  (scope (count_total 1) (authority architecture) (source "S §1") (base_op "ADD"))' \
+      '  (decision (id "D-X") (authority laboratory) (statement "s") (source "S §1")))' \
+      > "$t/profiles/resolution/profile.sexp"
+  python3 - "$t/profiles/resolution" <<'PY2'
+import sys, pathlib
+sys.path.insert(0, "scripts")
+import records_sexp as R
+u = pathlib.Path(sys.argv[1])
+ob = {"id": "OB-R", "contract_id": "c", "contract_version": "0", "profile_ids": ["r"],
+      "direction": "cpu-guarantee", "statement": "s", "authority": "laboratory",
+      "source_refs": [{"source_id": "S", "locator": "§1"}], "parameters": {},
+      "dependencies": [], "required_checks": ["CHK-R-POS", "CHK-R-NEG"]}
+(u / "contract-obligations.sexp").write_text(R.dump([ob]))
+PY2
+  arm "GREEN a declared profile-resolution unit: obligations both ways, no pipeline yet" 0 "profile-resolution route declared"
+
+  printf '%s\n' '(encoding (profile "r") (ilen 32)' \
+      '  (compose (base "riscv/t") (extensions))' '  (fragment-root "definitions"))' \
+      > "$t/profiles/resolution/encoding.sexp"
+  arm "RED   a profile-resolution declaration contradicted by an encoding.sexp" 1 "contradicts the documents"
+  rm -rf "$t/profiles/resolution"
+
   rm -rf "$t/profiles/good" "$t/profiles/bad"
   arm "REFUSE an empty corpus, never pass it" 2 "cannot judge"
 

@@ -4,7 +4,7 @@
 ;;   profiles/netboard-lab-v0/board.sexp (sha256 584bcc4201aafcd3c1c582718e96c2341beb3eb70aec84f8bb1951c923921854)
 ;;   profiles/rv64i-lab-v0/profile.sexp (sha256 63f0aa1e36fe731ef6dcabc7b63a3fe7250c84063944e47e9f4066d5d2648e3d)
 ;;   profiles/netboard-lab-v0/contract-obligations.sexp (sha256 a4fbbc23a7b53cbc8ed0f802e136bebc1c569e45dd73aabd1e202612d35ca514)
-;; Generator: scripts/gen_platform.py (sha256 5b16a0cf81f95074893f707ce3832ee7a18e3b200def4d0293f826d2a199a161)
+;; Generator: scripts/gen_platform.py (sha256 1d801a12b6715e5481235225bbeea0dc15a0f9db5928b8696654f7b1ef6ee867)
 
 (platform
   (id "netboard-lab-v0") (version "0") (export-version "0") (status experimental)

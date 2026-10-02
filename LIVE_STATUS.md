@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (34 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 376 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
+| Project doctrines (34 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 383 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 33 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 33 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
@@ -41,7 +41,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 8/8 — **gate `BREADTH` RUN, verdict `passed`**: TI C6000 / SHARC unclaimed explicitly |
-| P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
+| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 1/10; resolved (`rv64gc-lab-v0`); FP gate `.7` |
 | P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 10/12; the platform manifest landed (PLATFORM-GEN); probes/gate report gated on the CPU trajectory |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |
 | P6 — Linux userspace | LINUX | Not Started | [`P6-LINUX`](docs/tasks/P6-LINUX.md) — 8 leaves; a banner is not a pass |

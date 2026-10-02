@@ -16,14 +16,13 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (active as of `2026-10-02`; the `.1` design brief recorded — the pinned snapshot's privileged chapters measured present, 24 pages).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, every element source-located, the unit unregistered by design; the `profile-resolution` vehicle route landed by declaration).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.1` — resolve the profile (gate `CPU-SYSTEM`): turn
-  "provisionally RV64GC" into an exact selection with a resolved dependency closure —
-  privilege revision, modes, translation scheme, CSR list, interrupt and counter
-  behaviour, firmware and toolchain requirements; nothing inferred from the letters
-  `GC`, each element with a source locator (SCP-01/SCP-02). P5-BOARD's remaining leaves
-  (`.5` probes, `.7` gate report) are gated on this trajectory.
+- next_action: `P4-SYSTEM.2` — privilege and mode transitions: the first
+  definition-pipeline leaf on the resolved profile (M/S/U transitions, CSR permissions,
+  trap interception, mode-dependent decoding — catalog C15); the vehicle route flips
+  from `profile-resolution` to `generated-definition` with it, and the full extraction
+  contract attaches.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

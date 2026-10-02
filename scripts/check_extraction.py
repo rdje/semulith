@@ -215,6 +215,29 @@ def check_extraction(unit) -> dict:
                 "state_elements": "n/a (sibling-crate route)",
                 "obligations": "n/a (sibling-crate route)"}
 
+    # P4-SYSTEM.1 (case rv64gc-lab-v0): a unit declaring (vehicle (route
+    # profile-resolution)) has its SELECTION resolved and citable, but the definition
+    # pipeline has not started — the encoding/semantics/state legs have nothing to
+    # judge yet. The obligation leg DOES apply: the resolution's decisions are the v0
+    # contract's obligations, each checked both ways by declaration. A
+    # definition-pipeline document beside the declaration is a contradiction, refused.
+    if routes and routes[0] == "profile-resolution":
+        contradictions = [name for name in ("encoding.sexp", "state.sexp")
+                          if (unit / name).is_file()]
+        if (unit / "guests").is_dir():
+            contradictions.append("guests")
+        if contradictions:
+            raise ExtractionRefused(
+                f"{unit}: declares vehicle route profile-resolution but carries "
+                f"{', '.join(contradictions)} — the declaration contradicts the "
+                f"documents")
+        gaps += _obligation_checks(unit)
+        if gaps:
+            raise ExtractionRefused("\n".join(gaps))
+        return {"instructions": len(scope), "route": "profile-resolution",
+                "state_elements": "n/a (profile-resolution route)",
+                "obligations": "checked both ways"}
+
     # P5-BOARD.2 (case sifive-uart-lab-v0): a unit declaring (vehicle (route
     # device-model)) has no instruction pipeline — the encoding/semantics/integrative
     # claim does not apply — but the two legs a device honestly answers DO: every state
@@ -286,6 +309,11 @@ def main(argv: list[str]) -> int:
     if census.get("route") == "device-model":
         print(f"device-model route declared ({census['instructions']} scope registers; "
               f"{census['state_elements']}; obligations {census['obligations']})")
+        return 0
+    if census.get("route") == "profile-resolution":
+        print(f"profile-resolution route declared ({census['instructions']} scope forms; "
+              f"{census['state_elements']}; obligations {census['obligations']}) — the "
+              f"selection is resolved and citable; the definition pipeline has not started")
         return 0
     print(f"the definition is SUFFICIENT for an engine: {census['instructions']} instructions, "
           f"each with encoding + semantics + requirement; {census['state_elements']}; "

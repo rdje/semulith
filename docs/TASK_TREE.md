@@ -55,7 +55,7 @@ on the same commit. One commit per completed leaf.
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `done` | — (9/9 leaves complete; the CPU-LAB report reads `incomplete` with G-CONTRACT/G-OBLIGATIONS named — the release decision is the EXPERIMENTAL release of the versioned artifact, `decision_release-rv64i-lab-v0`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `done` | — (8/8 leaves complete; six findings routed to P3-BREADTH's first leaf, each with its ROUTING EVIDENCE — none reproduces on the scalar profile) | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `done` | — (8/8 leaves complete; gate `BREADTH` RUN `2026-10-01`, verdict **`passed`** — the capability report published at `docs/BREADTH-REPORT.md`) | repo-local |
-| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.1` — resolve the profile (gate `CPU-SYSTEM`; the design brief recorded `2026-10-02` — the pinned snapshot's privileged chapters measured present) | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.2` — privilege and mode transitions (1/10 leaves done; the profile resolved as `rv64gc-lab-v0`, every element source-located) | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.5` — firmware probes, gated on the CPU's acceptance trajectory (10/12 leaves done; the platform capability manifest landed, drift-gated by PLATFORM-GEN) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |

@@ -1,5 +1,27 @@
 # DEV_NOTES.md
 
+## _(2026-10-03)_ — the dossier machinery had no lifecycle stage for "resolved but no definition yet" (P4-SYSTEM.1)
+
+The `.1` brief assumed the schema already supported the resolution's fields; measured in
+execution, the real gap was lifecycle, not fields: EXTRACTION discovers every tracked
+`profiles/*/profile.sexp` and refuses a bare processor unit (no encoding.sexp → CANNOT
+JUDGE), so a new CPU unit could not be tracked below engine-readiness without a dodge.
+The fix followed the by-declaration discipline (the device-model precedent): a fourth
+vehicle route, `profile-resolution`, which the three definition-pipeline gates honor as
+"nothing to judge yet" — and refuse when contradicted by an encoding, state census, or
+guest corpus (the anti-drift property is the point: the route flips to
+`generated-definition` the day the pipeline starts, and the full contract attaches).
+Two adjacent fixes measured the same day: `check_citations.py` assumed bare page
+filenames under the snapshot's `unpriv/` (the privileged pages need subdirectory `file`
+fields; the cache root now derives from the declaration, and the declared cache-only
+pins are skipped by name), and `gen_platform.py`'s ISA derivation sorted the extension
+letters — canonical order is the declaration's, preserved.
+
+Promotion: declined — the by-declaration discipline has its decision records
+(`decision_device-applicability-by-declared-vehicle` and kin), and the route's behavior
+is armed by self-test REDs in three gates. Recorded in the owning leaf's checklist
+(LOCKSTEP).
+
 ## _(2026-10-02)_ — the frozen contract is not a live doc, and a pin nothing re-derives is display only (P5-BOARD.6)
 
 Two findings from the platform-manifest leaf, both caught by the gates rather than by
@@ -636,26 +658,4 @@ the U-bit inversion), a board is the base set plus composition, prospective and 
 so. A catalogue says what could be known; a demand list says what it costs not to.
 Promotion: declined in the leaf (the chapter is the durable artifact — it lives in the
 book where the director reads it).
-
-## _(2026-10-01)_ — the first DSP instruction executes (P3-BREADTH.4, slice 3)
-
-A bounded model earns its keep in the details nobody warns you about. Three earned their
-record this slice. (1) The manual's own extraction lies: FM Table 5-1's U-bit row says
-"set if the two MSBs are identical" in prose and prints "U = (Bit 47 xor Bit 46)" as the
-equation — an inversion (the equation should read xnor), proven by the reference's
-`sr c00310`, which agrees with the prose. The differential harness exists for exactly
-this class of question: when the document disagrees with itself, the measured machine is
-the arbiter, and the arbitration is recorded where the next reader meets it (`exec.rs`'s
-module docs). (2) A naming convention is a fact with an owner: the crate's state module
-was born `state.rs`, and FACT-OWNERSHIP refused the commit because this repo has already
-decided that `crates/*/src/state.rs` means "a GENERATED mirror of a profile's
-`state.sexp`". Renaming to `machine.rs` was not routing around the gate — it was
-learning that the name was already taken by a stronger claim. (3) The honest dump has a
-hole in it: the runner emits no `cyc` line, because the reference's cycle counts are
-base-table informational and a fabricated number would be a timing claim by stealth. The
-comparator skips `cyc` by a recorded rule with the reason in its header — an absence
-with a name, like every other exclusion in this subset. The reward: the demo guest's
-dump is byte-identical between the two engines, 53 fields, on the crate's first run.
-Promotion: declined in the leaf (the crate, the comparator, and the recorded inversion
-are the durable outputs, living where the next evaluator meets them).
 

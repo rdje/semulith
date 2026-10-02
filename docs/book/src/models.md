@@ -30,6 +30,11 @@ The device and board books adapt the arc honestly: no encoding or reference chap
 worth of fiction — a device has no instruction encodings and pins no reference models,
 and the fragments say so by declaration.
 
+A sixth directory, `profiles/rv64gc-lab-v0/`, exists at the **resolution stage**
+(`P4-SYSTEM.1`): the Linux-capable profile's selection is exact and citable, but its
+definition pipeline has not started — it is deliberately unregistered, and a book
+arrives with its registration day.
+
 The wiring is a gate, not a habit: the `UNIT-BOOKS` doctrine
 (`scripts/check_unit_books.sh`) enumerates the registered units from
 `materials/units.sexp` — the one registration place — and fails the commit if a unit lacks

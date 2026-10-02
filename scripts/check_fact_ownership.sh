@@ -184,7 +184,8 @@ self_test() {
   # the catalogues: the DSP's landing (P3-BREADTH.6 slice 1) re-pinned it to two units,
   # the first device dossier (P5-BOARD.2) re-pinned it to three, the second device
   # dossier (P5-BOARD.10, lan9118-lab-v0) re-pinned it to four, and the board's composed
-  # catalogues (P5-BOARD.3, netboard-lab-v0) re-pin it to five.
+  # catalogues (P5-BOARD.3, netboard-lab-v0) re-pin it to five. The rv64gc-lab-v0
+  # resolution dossier (P4-SYSTEM.1) re-pins it to six.
   FIXTURE_PAIRS=$'profiles/*/contract-obligations.sexp\tprofiles/*/requirements.sexp'
 
   cat > "$t/reg.tsv" <<'EOF'
@@ -198,8 +199,9 @@ obligations (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/requirements.sexp	profile
 obligations (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/requirements.sexp	profiles/sifive-uart-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 obligations (lan9118-lab-v0)	profiles/lan9118-lab-v0/requirements.sexp	profiles/lan9118-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 obligations (netboard-lab-v0)	profiles/netboard-lab-v0/requirements.sexp	profiles/netboard-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+obligations (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/requirements.sexp	profiles/rv64gc-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 EOF
-  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 9"
+  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 10"
 
   cat > "$t/reg.tsv" <<'EOF'
 state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	NOT-A-DOCTRINE
