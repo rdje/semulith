@@ -671,6 +671,124 @@ incompatible CPU/environment assumption remains**.
   **Not `.4`'s scope:** the device models (Rust — the model route), probes (`.5`), the
   capability manifest (`.6`), the BOARD gate report (`.7`).
 
+- `2026-10-02` (design brief for `.6`, recorded before its execution; sources:
+  `docs/ARCHOGEN_INTEGRATION.md` §2/§3, `RULES.md` OWN-06, the `gen_board.py` idiom, the
+  dossier mapping owner (`scripts/dossier_sexp.py`), the obligation-parameter census, the
+  GC-REPORT digest rule (`scripts/gate_report.py`), and the director's same-day reminder:
+  archogen is actively being developed and is far from functional):
+  **The consumer-absence boundary, stated first.** archogen has no functional eADL
+  interface today (§1: "no eADL grammar, typed API, or archogen implementation was
+  supplied"; the director re-confirmed `2026-10-02`). So `.6` builds the Semulith-owned
+  side of the export boundary ONLY: a versioned, schema-gated, regeneration-gated
+  manifest whose correctness legs on our side are derivation freshness, schema
+  conformance, and §3 content coverage. The compatibility checker is archogen's and does
+  not exist; nothing here may claim "archogen accepts this", and the manifest's
+  non-claims say so. The real-interface inspection stays with `AG-OS.1` (proposed). No
+  eADL parser, matcher or scheduler in Semulith (§2) and no archogen dependency — the
+  manifest is consumable by ANY checker that reads the schema.
+  **The §3 content census (measured this day).** §3's six bullets against tracked data:
+  (1) CPU identity/profile — DATA in `profiles/rv64i-lab-v0/profile.sexp` via the mapping
+  owner: id, version, architecture, base RV64I, chapter_version 2.1, spec_revision
+  v20260120, harts 1, xlen 64, ilen 32, ialign 32, privilege_modes `["M"]`, extensions
+  `[]` (measured: `dossier_sexp.load_profile` returns all); **endianness is prose-only**
+  (REQ-D-ENDIAN / OB-ENDIAN carry the decision, never the value). (2) Memory map /
+  devices / widths / interrupts / timers — DATA in board.sexp (regions, device pins with
+  material/revision/sha256, access-widths, interrupt unconnected, absences with
+  `satisfies`). (3) Boot contract — PARTIAL: the reset block is data; the image format
+  (ELF PT_LOAD), argument convention (none), firmware services (none), ABI constraint and
+  hardware-description format are NOT DECLARED as data anywhere (measured: the
+  schema/board.sexp construct census — board, processor, device, backend, memory-map,
+  region, reset, timers, interrupt-controller, serial-console, decision — has no boot
+  construct; the ELF loading lives in `crates/semulith-cli` source). (4) Counter/time,
+  events, ordering — DATA: the obligation parameters (`OB-ENV-VIRTUAL-TIME` pins
+  `time_source "none"`, `csr_readable_time false`, `mmio_readable_time false`;
+  `OB-ENV-EVENT-DELIVERY` pins synchronous yes / asynchronous no / controller none;
+  `OB-ENV-ORDERING` pins harts 1, sequential in-order, `memory_model_claim "none"`);
+  timing fidelity (functional-only, no WCET) is NOT declared. (5) Test-control —
+  PARTIAL: the backends and cold reset are board data; the execution budget, trace
+  selection and snapshot/resume are CLI capabilities (`semulith run --steps`,
+  `--trace-stores`, `snapshot`/`resume`), not tracked data. (6) Versions / dependencies /
+  fingerprints / limitations — DATA (the board's pins and `(status experimental)`).
+  **The gap census (GAP-CLAIM-CENSUS):** no platform export exists — `ls
+  scripts/gen_platform.py scripts/check_platform_gen.sh schema/platform.sexp` all absent;
+  `grep manifest doctrine/fact_ownership.tsv` finds only the composition-manifest rows.
+  **Measured integrity finding, logged and owned (§15), fixed with this leaf:** the
+  board's `dossier-sha256` pin is DISPLAY-ONLY today — `gen_model_book.py` renders it and
+  nothing re-derives it (census: two consumers, both display); the digest covers every
+  tracked dossier file except `*-REPORT.md` (measured in `gate_report.py`), so a
+  profile.sexp edit would silently stale the pin. `.6`'s generator makes the pin
+  load-bearing: it re-derives the digest by gate_report's rule (imported — one code path)
+  and REFUSES a stale pin.
+  **The design, decided.**
+  1. **board.sexp gains `(boot …)` and `(test-control …)` blocks** (schema/board.sexp —
+     the sanctioned schema-edit shape; §2's table makes the platform package the boot
+     contract's owner). `boot`: image format (ELF, PT_LOAD segments), load region (names
+     a declared executable RAM region — the generator refuses a dangler), entry (the
+     image's entry address, citing `OB-ENV-RESET`), register state (x1..x31 zeroed,
+     citing `D-ENTRY-STATE`), argument convention (none), firmware services (none —
+     ECALL/EBREAK are typed harness traps, `REQ-D-ECALL-EBREAK`), ABI (freestanding — no
+     environment ABI), hardware-description (hardware.sexp, the board's internal
+     generated data — NOT a device tree; P6 pins its own format). `test-control`:
+     console capture (the console device's host-console backend), completion/failure
+     signalling (the typed outcome vocabulary — RequestedTrap / Exception / ModelError /
+     UndefinedCase), reset (cold only), input injection (the recorded backends),
+     execution budget (the runner's step budget), trace selection (step trace + store
+     trace), snapshots (snapshot/resume records). The runner capabilities are the
+     platform package's DECLARATION, evidenced by the CLI's own suites — the manifest
+     says so; it does not evidence them itself.
+  2. **`schema/platform.sexp`** — the export's contract; DOSSIER-SCHEMA pairs
+     `profiles/*/platform.sexp` by basename, automatically. Every facility carries an
+     explicit presence marker (`offered` / `absent-by-contract` / `limited`) with its
+     evidence edge — §3's "required versus optional facilities are explicit", answered
+     from the offering side.
+  3. **`scripts/gen_platform.py`** — the one generator; boards discovered BY DECLARATION
+     (the gen_board idiom). Inputs: board.sexp (read through gen_board's
+     `read_board`/`check_consistency` — imported, never re-implemented), the pinned
+     processor unit's profile.sexp (through `dossier_sexp`, the mapping owner), and the
+     composed contract-obligations.sexp (BOARD-GEN-gated; the platform-level obligation
+     parameters). The OWN-03 fingerprint header names ALL canonical inputs (the
+     gate_report multi-input idiom). Refusals BY NAME: a stale dossier pin (the finding
+     above), a missing unit directory or profile.sexp, a schema failure, a boot/test-
+     control claim contradicting the wiring (console capture without a host-console
+     backend; injection without a recorded backend; a load region that is not declared,
+     executable RAM). `--check` re-derives byte-exact and refuses drift.
+  4. **`scripts/check_platform_gen.sh` — the PLATFORM-GEN doctrine** (the 34th project
+     doctrine): freshness with self-test RED arms asserting the reason (a hand-edited
+     platform.sexp → DRIFT; a board.sexp edit leaving a stale export; a stale dossier
+     pin; a contradicting claim), registered in `scripts/check_doctrines.project.sh`,
+     mirrored in `DOCTRINE_ENFORCEMENT.md` + `docs/book/src/working/doctrines.md`;
+     `REGEN_GOVERNORS` in `check_readme_routes.sh` gains PLATFORM-GEN per the `.12`
+     ruling ("the closed regen set grows the day a new regeneration doctrine is
+     registered, with that doctrine's leaf"); DERIVED-COUNTS re-derived, never
+     incremented.
+  5. **Endianness gets its machine-readable owner**: profile.sexp gains
+     `(endianness little)` (schema/profile.sexp edit — the `.11` sanctioned-edit
+     precedent). The cascade is measured and lands in the same commit: the GC-REPORT
+     digest changes (GATE-REPORT regenerates GC-REPORT.md), board.sexp's pin updates,
+     and the new pin verification is what turns any future drift into a refusal.
+  6. **The export's shape** mirrors §3's six bullets: processor identity + ISA facts;
+     memory map; devices with pins; absences; dispositions; boot contract; time/events/
+     ordering; test-control; versions/fingerprints (the header + pins); limitations
+     (EXPERIMENTAL, conditional on the CPU's acceptance trajectory; no timers, no
+     interrupts, 32-bit MMIO only, PIO no DMA, polled drivers); non-claims (a compatible
+     manifest proves neither OS correctness nor manifest-implementation match — §3's own
+     sentence; no archogen consumer exists today).
+  7. **FACT-OWNERSHIP rows** (exact set settled at execution against the gate's verdict):
+     `platform-export (netboard-lab-v0)` owner board.sexp → mirror platform.sexp,
+     governor PLATFORM-GEN; the profile-facts and obligation-parameter restatements
+     registered with their true owners (profile.sexp; the CPU's contract-obligations via
+     the composed catalogue), never left ungoverned.
+  8. **Docs:** the board book gains the platform-export chapter (one owner, two readers —
+     the generated file included); `docs/book/src/plan/p5-p7.md` gains the `.6` section;
+     ARCHOGEN_INTEGRATION §3 updated (the "future versioned manifest" now exists for
+     netboard-lab-v0, with the consumer-absence stated); TOOLBOX.md gains the tool row;
+     the doctrine mirrors; KNOWLEDGE-MAP and the book index regenerated; the live docs in
+     the same commit.
+  **Not `.6`'s scope:** the probes (`.5`), the `BOARD` gate report (`.7` — its "a
+  compatible manifest is recorded as not proving…" acceptance is the report's, the
+  manifest carries the non-claims as data), the device models in Rust, any eADL-side
+  artifact, P6's pinned boot hardware-description format.
+
 ## Open Questions
 
 - ~~Which board?~~ **Answered `2026-10-02`** (Decisions, design brief; id finalized at `.1`
