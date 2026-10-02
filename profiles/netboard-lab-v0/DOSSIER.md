@@ -92,7 +92,7 @@ device: the CPU raises `AlignmentException` first (`OB-MISALIGN-DATA`).
 | --- | --- |
 | `board.sexp` | **present** — the canonical definition, schema-validated (`P5-BOARD.1`) |
 | device unit dossiers (`sifive-uart-lab-v0`, `lan9118-lab-v0`) | **absent, owned** — the unit ids are declared in `board.sexp`; `P5-BOARD.2` owns the dossiers (sources, requirements, state, reset, access semantics, side effects, expected results) |
-| unit registration (`materials/units.sexp`), the `kind` edit, the per-unit book | **deferred, owned** — the registry admits a new `kind` "the day a real unit needs one"; registration day is the leaf that materializes the composed board unit (`P5-BOARD.3`), which also owns the generator/gate consequences (UNIT-BOOKS, MATERIALS-BILL, the kind edit itself) |
+| unit registration (`materials/units.sexp`), the `kind` edit, the per-unit book | **deferred, owned** — the registry admits a new `kind` "the day a real unit needs one"; registration day is `P5-BOARD.11` — all three units (board + both devices) together, re-routed from `.3` by the `.2` design brief so the `kind` edit and the materials-bill generator's generalization land once (UNIT-BOOKS, MATERIALS-BILL among the consequences) |
 | composition manifest, generated maps | **absent, owned** — `P5-BOARD.3` (`compose_units.py`'s tracked-board freshness gate lands with the first tracked board) |
 | composition verdict against the CPU contract | **absent, owned** — `P5-BOARD.4`; this definition pre-wires it through the `satisfies` fields |
 

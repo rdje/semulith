@@ -22,6 +22,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`availability-is-not-identity.md`](availability-is-not-identity.md) | the package manager has a formula with the right name — is it the right software? |
 | [`a-shorter-trace-is-not-agreement.md`](a-shorter-trace-is-not-agreement.md) | my differential comparison says the two models agree — over how many steps? |
 | [`zero-hits-absence-or-blindness.md`](zero-hits-absence-or-blindness.md) | my search returned zero hits — is that absence, or is my instrument blind? |
+| [`device-unit-applicability-by-declaration.md`](device-unit-applicability-by-declaration.md) | my new unit isn't a processor — how do the gates know what applies to it? |
 | [`a-duplicate-id-is-a-contradiction-not-a-shadowing.md`](a-duplicate-id-is-a-contradiction-not-a-shadowing.md) | my id-keyed map handles duplicate records fine — why did the gate stay green on a catalogue arguing with itself? |
 | [`a-parse-without-error-is-not-a-faithful-read.md`](a-parse-without-error-is-not-a-faithful-read.md) | my reader parsed the file without error — can I trust the strings it handed back? |
 | [`a-version-string-is-not-an-identity.md`](a-version-string-is-not-an-identity.md) | someone says my pinned source does not exist — is my pin wrong, or are we reading different publications? |

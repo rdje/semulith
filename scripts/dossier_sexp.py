@@ -222,11 +222,13 @@ def _read_flat(spec: list[tuple[str, str]], form, where: str,
 # schema/profile.sexp's scope construct; the two are extended together. The dsp56300
 # groups (P3-BREADTH.5 slice 2, case dsp56300-lab-v0: moves, alu_core, multiplies, flow,
 # loops) join the scalar set; the gate readers are generic over group names, so adding a
-# name here and in the schema is the whole extension.
+# name here and in the schema is the whole extension. P5-BOARD.2 (2026-10-02, case
+# sifive-uart-lab-v0): mmio_registers, the device register census, joins the same way.
 _SCOPE_LISTS = ("base_u_type", "base_jumps", "base_branches", "base_loads", "base_stores",
                 "base_op_imm", "base_op", "base_misc_mem", "base_system", "rv64_loads",
                 "rv64_stores", "rv64_op_imm_32", "rv64_op_32",
-                "moves", "alu_core", "multiplies", "flow", "loops")
+                "moves", "alu_core", "multiplies", "flow", "loops",
+                "mmio_registers")
 
 _PROFILE_SPEC = [("id", "str"), ("version", "str"), ("status", "str"), ("architecture", "str"),
                  ("base", "str"), ("chapter_version", "str"), ("spec_revision", "str"),
@@ -778,9 +780,13 @@ def override_to_doc(form) -> dict:
 
 def expectations_to_form(doc: dict) -> list:
     root = [S.Symbol("expectations"),
-            _pair("program", doc["program"]),
-            _pair("entry", doc["entry"]),
-            _pair("instructions", doc["instructions"])]
+            _pair("program", doc["program"])]
+    # P5-BOARD.2 (case sifive-uart-lab-v0): entry/instructions are optional — a device
+    # register-read-expectation has no program entry or instruction count; both emit
+    # only when the document carries them
+    for k in ("entry", "instructions"):
+        if k in doc:
+            root.append(_pair(k, doc[k]))
     root += _rep("never_written", doc.get("never_written") or [])
     if "cross_model" in doc:
         root.append(_bool_field("cross_model", doc["cross_model"]))
@@ -807,10 +813,16 @@ def expectations_to_form(doc: dict) -> list:
 def expectations_to_doc(form) -> dict:
     S.head(form, "expectations")
     doc = {"program": _s(_req(form, "program", "expectations")),
-           "entry": _s(_req(form, "entry", "expectations")),
-           "instructions": _req(form, "instructions", "expectations"),
            "cross_model": _opt_bool_in(form, "cross_model", "expectations"),
            "step": []}
+    # P5-BOARD.2 (case sifive-uart-lab-v0): entry/instructions reconstruct only when the
+    # document declares them — an absent program shape is not a zero one
+    entry = _opt(form, "entry", "expectations")
+    if entry is not None:
+        doc["entry"] = _s(entry)
+    instructions = _opt(form, "instructions", "expectations")
+    if instructions is not None:
+        doc["instructions"] = instructions
     edf = _opt_child(form, "expect_divergence")
     if edf is not None:
         doc["expect_divergence"] = {
@@ -967,12 +979,16 @@ def _selftest() -> int:
         else:
             raise AssertionError(f"accepted; it must be refused ({needle})")
 
+    # `vehicle` reconstructs as None when the document does not declare it (the mapping's
+    # shape since P3-BREADTH.7 slice 1) — the fixture carries the key so the round-trip
+    # compares equal.
     PROF = {"profile": {"id": "p1", "xlen": 64, "extensions": [], "privilege_modes": [],
                      "sources": ["S-A"]},
             "state": {"integer_registers": 32, "x0_hardwired_zero": True, "csrs": [],
                       "authority": "laboratory", "source": "§1"},
             "scope": {"count_base": 2, "count_rv64i_additions": 1, "count_total": 3,
                       "authority": "architecture", "source": "§1", "base_op": ["ADD"]},
+            "vehicle": None,
             "decision": [{"id": "D-1", "authority": "architecture", "statement": "s",
                           "source": "§1"}]}
     EXP = {"program": "g.s", "entry": "0x80000000", "instructions": 1,
@@ -1017,6 +1033,16 @@ def _selftest() -> int:
              "note": "n"}]}))["decision"][0]["note"], "n"))
     arm("GREEN guest expectations round-trip, dynamic write keys as entry forms",
         lambda: eq(expectations_to_doc(expectations_to_form(EXP)), EXP))
+    arm("GREEN a device register-read-expectation (no entry/instructions) round-trips "
+        "(P5-BOARD.2, case sifive-uart-lab-v0)",
+        lambda: eq(expectations_to_doc(expectations_to_form(
+            {k: v for k, v in EXP.items() if k not in ("entry", "instructions")})),
+            {k: v for k, v in EXP.items() if k not in ("entry", "instructions")}))
+    arm("GREEN a device scope's mmio_registers census round-trips (P5-BOARD.2)",
+        lambda: eq(profile_to_doc(profile_to_form(
+            {**PROF, "scope": {**PROF["scope"],
+                               "mmio_registers": ["UART_RXDATA", "UART_TXDATA"]}}))["scope"]
+            ["mmio_registers"], ["UART_RXDATA", "UART_TXDATA"]))
     arm("GREEN the override round-trips — options, regions, dynamic extensions",
         lambda: eq(override_to_doc(override_to_form(OVR)), OVR))
     arm("GREEN an empty writes table becomes a marker form and returns as {}",

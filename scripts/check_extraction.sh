@@ -143,6 +143,47 @@ $RULE2"   # restore the shared fragment's full semantics — good/bad are green 
   arm "RED   a sibling-crate declaration contradicted by an encoding.sexp" 1 "contradicts the documents"
   rm -rf "$t/profiles/sibling"
 
+  # ── the device-model leg (P5-BOARD.2, case sifive-uart-lab-v0): no instruction
+  # pipeline, so the encoding/semantics/integrative claim is n/a — but every state
+  # element carries a reset and every obligation its checks, both ways.
+  mkdir -p "$t/profiles/device"
+  RESET='(reset "0x00")'
+  device_docs() { # $1 = unit dir; $2 = register reset form ("" for none); $3 = checks python list
+    printf '%s\n' '(profile (id "d") (version "0") (status "experimental")' \
+        '  (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source "s"))' \
+        '  (scope (count_total 2) (authority platform) (source "S §1") (mmio_registers "UART_RXDATA" "UART_TXDATA"))' \
+        '  (decision (id "D-X") (authority laboratory) (statement "s") (source "S §1")))' \
+        > "$1/profile.sexp"
+    printf '(state (profile_id "d") (note "n")\n  (special_registers (register (id "uart_rxdata") (width_bits 8) (holds "h") (authority architecture) (source "s") %s)))\n' "$2" \
+        > "$1/state.sexp"
+    python3 - "$1" "$3" <<'PY2'
+import sys, pathlib
+sys.path.insert(0, "scripts")
+import records_sexp as R
+u = pathlib.Path(sys.argv[1])
+ob = {"id": "OB-D", "contract_id": "c", "contract_version": "0", "profile_ids": ["d"],
+      "direction": "device-guarantee", "statement": "s", "authority": "platform",
+      "source_refs": [{"source_id": "S", "locator": "§1"}], "parameters": {},
+      "dependencies": [], "required_checks": __import__("json").loads(sys.argv[2])}
+(u / "contract-obligations.sexp").write_text(R.dump([ob]))
+PY2
+  }
+  device_docs "$t/profiles/device" "$RESET" '["CHK-D-POS", "CHK-D-NEG"]'
+  arm "GREEN a declared device-model unit: resets everywhere, obligations both ways" 0 "device-model route declared"
+
+  printf '%s\n' '(encoding (profile "d") (ilen 8)' \
+      '  (compose (base "riscv/t") (extensions))' '  (fragment-root "definitions"))' \
+      > "$t/profiles/device/encoding.sexp"
+  arm "RED   a device-model declaration contradicted by an encoding.sexp" 1 "contradicts the documents"
+  rm -f "$t/profiles/device/encoding.sexp"
+
+  device_docs "$t/profiles/device" "" '["CHK-D-POS", "CHK-D-NEG"]'
+  arm "RED   a device register without a reset" 1 "carries no (reset …)"
+
+  device_docs "$t/profiles/device" "$RESET" '["CHK-D-POS"]'
+  arm "RED   a device obligation with no negative fixture" 1 "positive AND a negative"
+  rm -rf "$t/profiles/device"
+
   rm -rf "$t/profiles/good" "$t/profiles/bad"
   arm "REFUSE an empty corpus, never pass it" 2 "cannot judge"
 

@@ -13,6 +13,11 @@
 ;; (true), (false), (null), (ints …), (strs …) — declared as operators below. A value the
 ;; corpus does not write (a float, a mixed list) is REFUSED, not guessed; the day one is
 ;; needed is a schema decision, not a silent widening.
+;;
+;; `P5-BOARD.2` (`2026-10-02`): `direction` gains `device-guarantee` — case
+;; sifive-uart-lab-v0: a device offers guarantees the CPU side assumes. The discharge
+;; rule keys on "not an environment-assumption", so a device-guarantee discharges by
+;; construction; this widening is the whole change on the schema side.
 
 (schema (id "contract-obligations"))
 
@@ -23,7 +28,7 @@
   (field (name profile_ids) (type string) (repeat yes) (min 1) (unique yes)
          (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
   (field (name direction) (type symbol) (values environment-assumption)
-         (values cpu-guarantee))
+         (values cpu-guarantee) (values device-guarantee))
   (field (name statement) (type string) (min-length 1))
   (field (name authority) (type symbol) (values architecture)
          (values implementation-profile) (values platform) (values laboratory))

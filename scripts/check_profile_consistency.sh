@@ -492,6 +492,40 @@ EOF
                                                               arm "RED   two models compared, pair never examined" 1 "UNEXAMINED PAIR"
   rm -f "$t/p/references.sexp"
 
+  # ---- the device-shaped dossier (P5-BOARD.2, case sifive-uart-lab-v0) ---------------------
+  # No xlen, no integer_registers — a device has neither — an mmio_registers scope census,
+  # and a state.sexp whose "none" is earned. The check's logic is unchanged: the count
+  # rule and the census rule already generalize.
+  device() { cat > "$t/p/profile.sexp" <<'EOF'
+(profile (id "p1")
+  (state (authority architecture) (source "s"))
+  (vehicle (route device-model) (comparison register-expectations)
+           (authority laboratory) (source "s"))
+  (scope (count_base 2) (count_total 2)
+         (mmio_registers "UART_RXDATA") (mmio_registers "UART_TXDATA"))
+  (decision (id "D-1")
+            (authority laboratory)
+            (statement "s")
+            (source "§1")
+  )
+)
+EOF
+  }
+  device_state() { cat > "$t/p/state.sexp" <<'EOF'
+(state (profile_id "p1") (note "n")
+  (special_registers (register (id "uart_rxdata") (width_bits 8) (holds "h")
+                      (authority architecture) (source "s") (reset "r")
+                      (reset_authority laboratory)))
+  (hidden_state_census (question "q") (answer "No") (candidates (checked (candidate "c") (present false) (why "w"))) (consequence "c"))
+)
+EOF
+  }
+  device; device_state
+                                                              arm "GREEN a device-shaped dossier: no xlen, mmio census, earned none" 0 "__CHECKED__ 1"
+  device; device_state; sed -i.bak 's/(count_total 2)/(count_total 3)/' "$t/p/profile.sexp"
+                                                              arm "RED   a device scope whose count drifts from its enumeration" 1 "COUNT DRIFT"
+  rm -f "$t/p/state.sexp" "$t/p/profile.sexp.bak" "$t/p/state.sexp.bak"
+
   rm -rf "$t"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

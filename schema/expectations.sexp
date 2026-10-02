@@ -9,13 +9,19 @@
 ;; step must never write (never_written) is the negative observation that catches a control
 ;; transfer that silently did not happen. Register names are dynamic, so they travel as
 ;; data in (write (reg "…") (value "…")) entry forms.
+;;
+;; `P5-BOARD.2` (`2026-10-02`): `entry` and `instructions` are OPTIONAL (the `xlen`
+;; precedent) — case sifive-uart-lab-v0: a device register-read-expectation (a reset or
+;; stimulus expectation) has no program entry and no instruction count. `step.insn`
+;; carries the stimulus name, and the observed registers travel as data in
+;; `writes`/`never_written`, exactly as before.
 
 (schema (id "expectations"))
 
 (construct (name expectations)
   (field (name program) (type string) (min-length 1))
-  (field (name entry) (type string) (min-length 1))
-  (field (name instructions) (type integer))
+  (field (name entry) (type string) (min-length 1) (optional yes))
+  (field (name instructions) (type integer) (optional yes))
   (field (name never_written) (type string) (repeat yes))
   (field (name cross_model) (type symbol) (values true) (values false) (optional yes))
   (field (name expect_divergence) (type form) (head expect_divergence) (optional yes))

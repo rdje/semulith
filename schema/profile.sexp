@@ -25,6 +25,17 @@
 ;; from this declaration plus the unit's documents; a declaration that contradicts the
 ;; documents is a finding, never a drift. Absence means the generated-definition /
 ;; per-step-trace contract, exactly as before.
+;;
+;; `P5-BOARD.2` (`2026-10-02`): the taxonomy generalizes for the drafted sifive-uart-lab-v0
+;; device dossier (the device-register case). A DEVICE unit (vehicle route `device-model`)
+;; is not an ISA: `architecture`, `base`, `harts`, `ilen`, `ialign`, and the state block's
+;; `program_counter` are OPTIONAL — the UART has no ISA chapter, no harts, and no
+;; instruction-length/alignment concept; forcing any of them would record a lie.
+;; `chapter_version`/`spec_revision` stay MANDATORY — the SiFive manual carries honest
+;; values for both. The scope gains `mmio_registers`, the device's register census (the
+;; exercise/consistency gates sum it like every other group field — the readers were
+;; already generic). The vehicle `route` gains `device-model` and `comparison` gains
+;; `register-expectations`. `dossier_sexp._SCOPE_LISTS` is extended in the same breath.
 
 (schema (id "profile"))
 
@@ -32,14 +43,14 @@
   (field (name id) (type string) (min-length 1))
   (field (name version) (type string) (min-length 1))
   (field (name status) (type string) (min-length 1))
-  (field (name architecture) (type string) (min-length 1))
-  (field (name base) (type string) (min-length 1))
+  (field (name architecture) (type string) (min-length 1) (optional yes))
+  (field (name base) (type string) (min-length 1) (optional yes))
   (field (name chapter_version) (type string) (min-length 1))
   (field (name spec_revision) (type string) (min-length 1))
-  (field (name harts) (type integer))
+  (field (name harts) (type integer) (optional yes))
   (field (name xlen) (type integer) (optional yes))
-  (field (name ilen) (type integer))
-  (field (name ialign) (type integer))
+  (field (name ilen) (type integer) (optional yes))
+  (field (name ialign) (type integer) (optional yes))
   (field (name extensions) (type string) (repeat yes))
   (field (name privilege_modes) (type string) (repeat yes))
   (field (name sources) (type string) (repeat yes) (min 1))
@@ -52,9 +63,9 @@
 ;; shape, declared as data so gates derive applicability rather than presume it.
 (construct (name vehicle)
   (field (name route) (type symbol)
-         (values generated-definition) (values sibling-crate))
+         (values generated-definition) (values sibling-crate) (values device-model))
   (field (name comparison) (type symbol)
-         (values per-step-trace) (values checkpoint-end-state))
+         (values per-step-trace) (values checkpoint-end-state) (values register-expectations))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
   (field (name source) (type string) (min-length 1)))
@@ -63,7 +74,7 @@
   (field (name integer_registers) (type integer) (optional yes))
   (field (name x0_hardwired_zero) (type symbol) (values true) (values false) (optional yes))
   (field (name register_width_bits) (type integer) (optional yes))
-  (field (name program_counter) (type string) (min-length 1))
+  (field (name program_counter) (type string) (min-length 1) (optional yes))
   (field (name csrs) (type string) (repeat yes))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
@@ -93,7 +104,8 @@
   (field (name alu_core) (type string) (repeat yes) (optional yes))
   (field (name multiplies) (type string) (repeat yes) (optional yes))
   (field (name flow) (type string) (repeat yes) (optional yes))
-  (field (name loops) (type string) (repeat yes) (optional yes)))
+  (field (name loops) (type string) (repeat yes) (optional yes))
+  (field (name mmio_registers) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

@@ -171,6 +171,14 @@ def _selftest() -> int:
     arm("GREEN a guarantee carried by the other unit discharges across the boundary",
         lambda: _eq(len(holds(cpu, dev)), 1))
 
+    # P5-BOARD.2 (case sifive-uart-lab-v0): the rule keys on "not an
+    # environment-assumption", so a device-guarantee discharges by construction — pinned
+    # here so a future narrowing of the rule fires RED instead of drifting.
+    dcpu = unit("dcpu", [ob("OB-ENV", "environment-assumption", deps=("OB-UART",))])
+    ddev = unit("ddev", [ob("OB-UART", "device-guarantee")])
+    arm("GREEN a device-guarantee discharges across the boundary (P5-BOARD.2)",
+        lambda: _eq(len(holds(dcpu, ddev)), 1))
+
     arm("RED   the acceptance control: one guarantee removed — rejected naming it",
         lambda: refuses([unit("cpu2", [ob("OB-ENV", "environment-assumption",
                                          deps=("OB-GONE",))])], "DANGLING DEP"))

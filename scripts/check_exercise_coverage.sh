@@ -71,6 +71,14 @@ for prof_path in profiles:
     checkpoint = any(
         str(c[1]) == "checkpoint-end-state"
         for v in vehicle for c in S.children(v, "comparison"))
+    # P5-BOARD.2 (case sifive-uart-lab-v0): a unit declaring (vehicle (route
+    # device-model)) has no guest corpus and no composition at this stage — both legs
+    # are n/a BY DECLARATION, and a document that contradicts the declaration (an
+    # encoding.sexp, a guests/ corpus) is a finding, the same rule the checkpoint leg
+    # applies. The denominator census above runs unchanged: a device scope must not
+    # contradict its own register enumeration either.
+    routes = [str(c[1]) for v in vehicle for c in S.children(v, "route")]
+    device = routes[:1] == ["device-model"]
     denominator: set[str] = set()
     for f in scope[1:]:
         # (comment …) is the format's reserved annotation head, never a mnemonic group —
@@ -99,9 +107,14 @@ for prof_path in profiles:
     if not enc_path.is_file():
         if checkpoint:
             closure = "n/a (checkpoint-end-state declared; no encoding.sexp — measured against the guest corpus)"
+        elif device:
+            closure = "n/a (device-model declared; no encoding.sexp — a device composes no instruction encoding)"
         else:
             findings.append(f"NO COMPOSITION {tag}: no encoding.sexp beside the dossier — the "
                             f"declared scope's dependency closure cannot be decided")
+    elif device:
+        findings.append(f"DECLARATION CONTRADICTION {tag}: device-model route declared but an "
+                        f"encoding.sexp exists — the declaration contradicts the documents")
     else:
         try:
             enc = S.read_file(enc_path)[0]
@@ -114,13 +127,27 @@ for prof_path in profiles:
             closure = "{" + ", ".join(names) + "}"
         except (AsmError, S.SexpError, IndexError) as exc:
             findings.append(f"UNMET DEPENDENCY {tag}: {exc}")
-    if not closure.startswith("n/a"):
+    if not closure.startswith("n/a") and not device:
         for m in sorted(denominator - resolved):
             findings.append(f"UNRESOLVED FORM {tag}: [scope] declares '{m}' but the resolved "
                             f"composition does not provide it — an included feature whose "
                             f"dependency is not closed (SCP-02)")
     # exercised: the union of mnemonics the tracked expectation documents declare executed.
     exercised: set[str] = set()
+    if device:
+        # P5-BOARD.2 (case sifive-uart-lab-v0): there is nothing to execute — the device
+        # is observed through reset/stimulus expectations, not a guest corpus. Anti-drift:
+        # the day probes land, a guests/ corpus appears and the gate REFUSES until it is
+        # taught the device exercise leg — a silent pass is the drift.
+        gdir = pdir / "guests"
+        if gdir.is_dir() and any(gdir.iterdir()):
+            findings.append(f"DECLARATION CONTRADICTION {tag}: device-model route declared but "
+                            f"a guests/ corpus exists — the declaration and the documents "
+                            f"disagree")
+        else:
+            print(f"{pdir.relative_to(root).as_posix()}: device-model route declared — "
+                  f"{len(denominator)} declared registers, exercise n/a by declaration")
+        continue
     if checkpoint:
         # The checkpoint leg (P3-BREADTH.7, case dsp56300-lab-v0): the corpus is .a56
         # assembler sources compared at end state; the census runs BOTH directions —
@@ -298,6 +325,29 @@ self_test() {
   guest_a56 g1 'move #$1,x0\n\tnop'
   profile_cp '(count_total 2) (authority architecture) (source "s") (moves "move") (flow "nop")'
   arm "GREEN checkpoint with no encoding.sexp — the composition leg is n/a, not RED" 0 "checkpoint-end-state declared"
+
+  # ── the device leg (P5-BOARD.2, case sifive-uart-lab-v0): a unit declaring
+  # (vehicle (route device-model)) has no guest corpus and no composition; both legs are
+  # n/a by declaration, the denominator census still applies, and a document that
+  # contradicts the declaration is RED.
+  profile_dev() { # $1 = scope body
+    printf '(profile (id "p") (version "0") (status "experimental") (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source "s")) (scope %s))\n' "$1" \
+      > "$t/profiles/p/profile.sexp"
+  }
+  rm -f "$t/profiles/p/guests/g1.a56"
+  profile_dev '(count_total 2) (authority platform) (source "s") (mmio_registers "UART_RXDATA") (mmio_registers "UART_TXDATA")'
+  arm "GREEN device-model route: exercise n/a by declaration, the unit named" 0 "profiles/p: device-model route declared"
+
+  encoding
+  arm "RED   device-model contradicted by an encoding.sexp" 1 "contradicts the documents"
+
+  rm -f "$t/profiles/p/encoding.sexp"
+  guest g1 "add sub"
+  arm "RED   device-model contradicted by a guests/ corpus (anti-drift)" 1 "the declaration and the documents disagree"
+
+  rm -f "$t/profiles/p/guests/g1.expected.sexp"
+  profile_dev '(count_total 3) (authority platform) (source "s") (mmio_registers "UART_RXDATA") (mmio_registers "UART_TXDATA")'
+  arm "RED   a device scope whose count contradicts its own enumeration" 1 "DENOMINATOR LIE"
 
   rm -rf "$t"
   printf 'EXERCISE-COVERAGE --self-test: %d pass / %d fail\n' "$pass" "$fail"

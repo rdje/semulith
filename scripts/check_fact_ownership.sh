@@ -177,7 +177,8 @@ self_test() {
   # fixture corpus pair: obligations restate requirements — named in the GREEN fixture
   # registry, omitted from the RED one, so the completeness arm has something to catch.
   # The pair spec globs the REAL corpus, so the GREEN fixture names every unit that carries
-  # the catalogues: the DSP's landing (P3-BREADTH.6 slice 1) re-pinned it to two units.
+  # the catalogues: the DSP's landing (P3-BREADTH.6 slice 1) re-pinned it to two units, and
+  # the first device dossier (P5-BOARD.2) re-pins it to three.
   FIXTURE_PAIRS=$'profiles/*/contract-obligations.sexp\tprofiles/*/requirements.sexp'
 
   cat > "$t/reg.tsv" <<'EOF'
@@ -188,8 +189,9 @@ requirements	profiles/rv64i-lab-v0/profile.sexp	profiles/rv64i-lab-v0/requiremen
 encodings	definitions/riscv/	profiles/rv64i-lab-v0/encoding.sexp	UNIT-COMPOSITION
 obligations	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64i-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 obligations (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/requirements.sexp	profiles/dsp56300-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+obligations (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/requirements.sexp	profiles/sifive-uart-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 EOF
-  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 6"
+  arm "GREEN a well-formed registry naming every fixture pair" 0 "__CHECKED__ 7"
 
   cat > "$t/reg.tsv" <<'EOF'
 state	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	NOT-A-DOCTRINE
@@ -223,8 +225,10 @@ EOF
   arm "RED   a fixture pair the registry does not name" 1 "UNREGISTERED MIRROR PAIR"
 
   # ── the second-unit census (P3-BREADTH.7): same-unit pairing, measured against the
-  # real two-unit corpus. A cross-product enumeration would invent cross-unit pairs
-  # (rv64's documents "restating" the DSP's); the pairing must follow the unit capture.
+  # real corpus (two processor units, plus the first device dossier from P5-BOARD.2 —
+  # a device unit's profile/state pair is the same shape, so the census re-pins to three).
+  # A cross-product enumeration would invent cross-unit pairs (one unit's documents
+  # "restating" another's); the pairing must follow the unit capture.
   armp() { # armp <name> <pair-spec> <expected-rc> <expected-substring>
     argc 4 "$#" armp || return
     out="$(check_ownership "$t/reg.tsv" scripts/check_doctrines.project.sh "$2" 2>&1)"; rc=$?
@@ -238,8 +242,9 @@ EOF
   cat > "$t/reg.tsv" <<'EOF'
 state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 state (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/state.sexp	profiles/dsp56300-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+state (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/state.sexp	profiles/sifive-uart-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 EOF
-  armp "GREEN two units, each pair registered — no cross-unit pair invented" "$SAME_UNIT" 0 "__CHECKED__ 2"
+  armp "GREEN three units, each pair registered — no cross-unit pair invented" "$SAME_UNIT" 0 "__CHECKED__ 3"
 
   cat > "$t/reg.tsv" <<'EOF'
 state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY

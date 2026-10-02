@@ -145,6 +145,16 @@ self_test() {
   rm "$t/profiles/p/interactions.sexp"
   arm "RED   a unit with no declared matrix" 1 "NO MATRIX"
 
+  # ── the device-model leg (P5-BOARD.2, case sifive-uart-lab-v0): no matrix is n/a by
+  # declaration (the matrix attaches with the probe corpus, P5-BOARD.5); a matrix that
+  # EXISTS answers the full contract unchanged.
+  printf '(profile (id "p") (version "0") (status "experimental") (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source "s")))\n' \
+    > "$t/profiles/p/profile.sexp"
+  arm "GREEN device-model route with no matrix is n/a by declaration" 0 "device-model route declared"
+
+  matrix '(cell (axis "alpha") (axis "alpha") (guest "g1")) (cell (axis "alpha") (axis "beta") (guest "g2"))'
+  arm "RED   a device unit whose matrix omits a cell answers the full contract" 1 "OMITTED CELL p: beta×beta"
+
   rm -rf "$t"
   printf 'INTERACTION-MATRIX --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

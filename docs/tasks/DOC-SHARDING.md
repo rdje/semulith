@@ -163,6 +163,10 @@ remedy.
   (`SEMULITH-PKG-0017` — its entry crossed the ceiling): 4 entries → `shard-0118.md`
   (`54 == 50 + 4` exact; head 66,011 → 61,104, `--max-bytes 62000` for headroom). Manifest
   117 → 120 rows.
+- `2026-10-02`: Fourth event the same day, riding the triggering slice (`SEMULITH-P5-0007`
+  — its DEV_NOTES entry crossed that head's ceiling): 4 entries → `shard-0119.md`
+  (`34 == 30 + 4` exact; head 51,536 → 46,495, `--max-bytes 47104`). Manifest 120 → 121
+  rows.
 
 ## Acceptance Checklist (leaf DOC-SHARDING.2)
 

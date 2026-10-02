@@ -17,6 +17,10 @@ decides ONE unit directory. The rules, each refusing by name:
                 interaction evidence nobody declared.
   4. DIFFS      every difference id named in the matrix — by a cell, or by a named guest's
                 `expect_divergence` declaration — exists in the unit's references.sexp.
+  5. DEVICE N/A a unit declaring (vehicle (route device-model)) with NO matrix is
+                not-a-finding (P5-BOARD.2, case sifive-uart-lab-v0): the matrix attaches
+                with the probe corpus (P5-BOARD.5). A device unit that HAS a matrix
+                answers rules 1-4 unchanged.
 
 usage: check_interaction_matrix.py <unit-dir>
 """
@@ -54,11 +58,31 @@ def _strings(form, name: str) -> list[str]:
     return [str(v) for c in S.children(form, name) for v in c[1:]]
 
 
+def _device_route_declared(unit: Path) -> bool:
+    """The unit's profile declares (vehicle (route device-model)) — P5-BOARD.2, case
+    sifive-uart-lab-v0. An absent or unreadable profile is not a declaration."""
+    prof = unit / "profile.sexp"
+    if not prof.is_file():
+        return False
+    try:
+        forms = S.read_file(prof)
+        form = next(f for f in forms
+                    if isinstance(f, list) and f and str(f[0]) == "profile")
+    except (S.SexpError, StopIteration):
+        return False
+    routes = [str(c[1]) for v in S.children(form, "vehicle")
+              for c in S.children(v, "route")]
+    return routes[:1] == ["device-model"]
+
+
 def check_unit(unit: Path) -> tuple[list[str], list[str]]:
     """Return (findings, cell report lines) for one unit directory."""
     tag = unit.name
     matrix_path = unit / "interactions.sexp"
     if not matrix_path.is_file():
+        if _device_route_declared(unit):
+            return ([], [f"device-model route declared — the matrix attaches with the "
+                         f"probe corpus (P5-BOARD.5)"])
         return ([f"NO MATRIX {tag}: no interactions.sexp beside the dossier — the "
                  f"interaction matrix is declared first and then exercised; an undeclared "
                  f"matrix is not an exercised one"], [])
@@ -206,7 +230,10 @@ def main(argv: list[str]) -> int:
         print(f, file=sys.stderr)
     if findings:
         return 1
-    print(f"{len(report)} cells declared, every disposition resolves")
+    # Cell report lines are indented ("  label: …"); an unindented line is a unit note
+    # (the device-model n/a declaration), never a cell — count cells, not lines.
+    cells = sum(1 for line in report if line.startswith("  "))
+    print(f"{cells} cells declared, every disposition resolves")
     return 0
 
 

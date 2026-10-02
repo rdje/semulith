@@ -42,4 +42,10 @@ reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	doc
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/reference-models.md	MATERIALS-BILL
 internal-contracts (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/	docs/models/dsp56300-lab-v0/src/materials/internal-contracts.md	MATERIALS-BILL
 board-definition (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	-	-
+configuration (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/profile.sexp	-	-
+state (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/state.sexp	profiles/sifive-uart-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+pinned-sources (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/sources.sexp	-	-
+requirements (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/profile.sexp	profiles/sifive-uart-lab-v0/requirements.sexp	RECORD-SCHEMA
+obligations (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/requirements.sexp	profiles/sifive-uart-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+expected-results (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/expectations/	-	-
 book index (semulith-book)	docs/book/src/	docs/book/src/index.md	BOOK-INDEX

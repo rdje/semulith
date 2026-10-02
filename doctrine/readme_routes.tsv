@@ -318,7 +318,14 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #              three-units, director-approved in principle 2026-10-02): 3 x 120 files,
 #              3 x 573,440 B; health at the standing ratios. ⛔ PER-PART STAYS 32,768 —
 #              the largest new member is board.sexp at ~8 KiB.
-profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 3× bound is decision_profiles-family-three-units (2026-10-02)	354	1470000	360	1720320	32768
+# Re-derivation, P5-BOARD.2 (2026-10-02), when the fourth unit directory landed:
+#   profiles/  147 files / ~609 KiB measured at staging (+5 sifive-uart-lab-v0, the
+#              first DEVICE dossier) — nothing fired; the contract expanded to four
+#              units, the same arithmetic (decision_profiles-family-four-units):
+#              4 x 120 files, 4 x 573,440 B; health at the standing ratios.
+#              ⛔ PER-PART STAYS 32,768 — the largest new member is the device's
+#              contract-obligations.sexp at 14,323 B.
+profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 4× bound is decision_profiles-family-four-units (2026-10-02)	472	1960000	480	2293760	32768
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

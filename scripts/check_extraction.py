@@ -124,10 +124,13 @@ def _requirement_names(unit: Path) -> set[str]:
         raise ExtractionRefused(f"{path}: does not map to records — {exc}")
 
 
-def _state_resets(unit: Path) -> list[str]:
+def _state_resets(unit: Path, include_families: bool = False) -> list[str]:
     """Every state element carries a (reset …). Corpus-shaped: integer_registers and each
     (register …) under special_registers are the elements today; the rule generalizes by
-    refusing an element without a reset rather than enumerating heads forever."""
+    refusing an element without a reset rather than enumerating heads forever. The
+    device-model route (P5-BOARD.2, case sifive-uart-lab-v0) also counts register_family
+    blocks as elements — route-scoped, so a route whose families honestly carry no reset
+    (dsp56300-lab-v0) never fires here."""
     path = unit / "state.sexp"
     if not path.is_file():
         raise ExtractionRefused(f"{unit}: no state.sexp — the reset leg is absent")
@@ -142,6 +145,9 @@ def _state_resets(unit: Path) -> list[str]:
     for sr in S.children(root, "special_registers"):
         for reg in S.children(sr, "register"):
             elements.append((str(S.field(reg, "id", str(path))), reg))
+    if include_families:
+        for fam in S.children(root, "register_family"):
+            elements.append((str(S.field(fam, "id", str(path))), fam))
     if not elements:
         problems.append(f"{path.name}: declares no state element at all — an engine has no "
                         f"architectural state to extract")
@@ -209,6 +215,24 @@ def check_extraction(unit) -> dict:
                 "state_elements": "n/a (sibling-crate route)",
                 "obligations": "n/a (sibling-crate route)"}
 
+    # P5-BOARD.2 (case sifive-uart-lab-v0): a unit declaring (vehicle (route
+    # device-model)) has no instruction pipeline — the encoding/semantics/integrative
+    # claim does not apply — but the two legs a device honestly answers DO: every state
+    # element carries a reset, every obligation its checks. An encoding.sexp beside the
+    # declaration is the same contradiction the sibling-crate route refuses.
+    if routes and routes[0] == "device-model":
+        if (unit / "encoding.sexp").is_file():
+            raise ExtractionRefused(
+                f"{unit}: declares vehicle route device-model but carries an "
+                f"encoding.sexp — the declaration contradicts the documents")
+        gaps += _state_resets(unit, include_families=True)
+        gaps += _obligation_checks(unit)
+        if gaps:
+            raise ExtractionRefused("\n".join(gaps))
+        return {"instructions": len(scope), "route": "device-model",
+                "state_elements": "resets everywhere",
+                "obligations": "checked both ways"}
+
     encoding = _encoding_names(unit)
     semantics, sem_problems = _semantics_names(unit)
     requirements = _requirement_names(unit)
@@ -258,6 +282,10 @@ def main(argv: list[str]) -> int:
         print(f"sibling-crate route declared ({census['instructions']} scope forms) — the "
               f"extraction contract applies to generated-definition units; this unit's "
               f"model is the hand-written crate, gated by its own tests")
+        return 0
+    if census.get("route") == "device-model":
+        print(f"device-model route declared ({census['instructions']} scope registers; "
+              f"{census['state_elements']}; obligations {census['obligations']})")
         return 0
     print(f"the definition is SUFFICIENT for an engine: {census['instructions']} instructions, "
           f"each with encoding + semantics + requirement; {census['state_elements']}; "

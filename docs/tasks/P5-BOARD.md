@@ -61,7 +61,7 @@ incompatible CPU/environment assumption remains**.
   re-derivation: 3× bound, `decision_profiles-family-three-units`.
 
 - ID: `P5-BOARD.2` — **device dossiers, first device: the SiFive UART (`sifive-uart-lab-v0`)**
-  Status: `pending`
+  Status: `done` (`2026-10-02`, `SEMULITH-P5-0007`)
   Goal: the UART's dossier — sources, requirements, state, reset, access semantics, side
   effects, and independently sourced expected results (catalog `C19`) — under
   `profiles/sifive-uart-lab-v0/`, reusing the CPU's dossier machinery. (Split
@@ -69,6 +69,45 @@ incompatible CPU/environment assumption remains**.
   `.2` covered both. Device order decided at the `.2` design brief: the UART first.)
   Acceptance: devices reuse the CPU's dossier and gate machinery; they are not a lower
   tier (`docs/EVIDENCE_AND_GATES.md` §8).
+  Result (`2026-10-02`): the dossier landed — 8 files: `DOSSIER.md`, `sources.sexp`
+  (the §13 pin, digest re-verified from the cache), `requirements.sexp` (19 records:
+  13 `defined` + 6 `unspecified` — the datasheet's measured silences are requirements of
+  non-commitment), `contract-obligations.sexp` (19 obligations, contract
+  `sifive-uart-v0` v0, the schema's new third direction `device-guarantee`),
+  `state.sexp` (7 registers + 2 FIFOs + the earned hidden-state census: the model
+  carries the registers and the FIFOs' contents/occupancies, and nothing else MMIO can
+  reach), `profile.sexp` (19 decisions mirroring the requirements verbatim), and
+  `expectations/` (3 documents: reset, tx-fifo, rx-watermark — datasheet-derived
+  register-read expectations recorded before any model exists, EVD-05's shape at the
+  device layer). The machinery was generalized **by declaration, not exemption**
+  (`decision_device-applicability-by-declared-vehicle`): `schema/profile.sexp`'s
+  processor-only fields went optional (the xlen precedent), the scope gained
+  `mmio_registers`, `vehicle` gained `device-model`/`register-expectations`,
+  `schema/expectations.sexp`'s `entry`/`instructions` went optional, and
+  `scripts/dossier_sexp.py` moved in the same breath; EXTRACTION / EXERCISE-COVERAGE /
+  INTERACTION-MATRIX derive device applicability from the declaration with
+  contradiction = RED in both directions; PROFILE-CONSISTENCY needed no conditional
+  (measured by a new GREEN device-shaped self-test arm); a device-guarantee discharges a
+  CPU assumption by construction in `discharge_assumptions.py`, pinned by a new GREEN
+  arm. **Measured in execution, fixed at root:** (1) §13.8's watermark bits carry a
+  strict-inequality RAISED and a strict-inequality CLEARED condition and the manual never
+  says level vs hold — the `==` boundary and pre-first-condition values are undetermined
+  (`REQ-D-UART-WM-MODE`); the expectations pin a watermark bit only when its raised
+  condition holds under every reading, and the dossier's first-draft "level conditions"
+  claim was corrected before it ossified. (2) The dossier's `REQ-U-*` id prefix collided
+  with RECORD-SCHEMA's mechanical decision→requirement mapping (`D-X` → `REQ-D-X`) — the
+  prefix was private convention, the mapping is the contract; renamed, and the prose now
+  names the records by their `unspecified` category instead. (3) Two gate-level defects
+  fixed in review: INTERACTION-MATRIX counted the device n/a note as a "cell" (cell
+  counts now count indented cell lines), and EXTRACTION's device leg demanded a reset per
+  state element — the FIFOs' resets are now recorded AS DATA ("unspecified", sourced to
+  the measured silence) rather than weakening the every-element-a-reset contract.
+  FACT-OWNERSHIP re-pinned: 6 registry rows for the unit, the self-test fixtures re-pinned
+  to three units (`__CHECKED__ 6→7`, `2→3`). The gate machinery edits were drafted by a
+  subagent that died mid-task (usage limit); every diff was re-read and every gate re-run
+  by the signing engineer before acceptance. Registration (`materials/units.sexp`, the
+  `kind` edit, the book, the materials bill) is `.11`'s — the dossier is fully gated
+  unregistered; what registration adds waits with its owner named.
 
 - ID: `P5-BOARD.3` — **generated maps and hardware description**
   Status: `pending`
@@ -175,6 +214,12 @@ incompatible CPU/environment assumption remains**.
   per-unit books under `docs/models/<unit-id>/` (UNIT-BOOKS), the category-needs rows
   (SCOPE-COVERAGE), and the rest of the registration-day consequences `.1` censused
   (BREADTH-report prose among them).
+  Routing note (`2026-10-02`, from the `.2` machinery design): the materials-bill
+  generator's two `sibling-crate` conditionals in `scripts/gen_model_book.py` (~:136 and
+  ~:212-213) must extend to the `device-model` route — declared by the device units'
+  `vehicle` blocks — or the device book refuses; and its INTERNAL_CONTRACTS census is
+  processor-shaped (`encoding.sexp`, `guests/`, `interactions.sexp`), needing the same
+  kind-conditional generalization. Both are `.11`'s, one generator adaptation.
   Acceptance: every registered unit passes UNIT-BOOKS, MATERIALS-BILL, SCOPE-COVERAGE
   and RECORD-SCHEMA rules 10–11 — registration is one coherent day, not three partial
   ones.
@@ -183,9 +228,8 @@ incompatible CPU/environment assumption remains**.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.2` | `pending` | the platform is specified; the UART goes first (Open Question answered `2026-10-02`): the simplest contract exercises the device-dossier machinery before the NIC |
-| 2 | `P5-BOARD.10` | `pending` | the LAN9118 dossier inherits the device shape `.2` hardens |
-| 3 | `P5-BOARD.11` | `pending` | registration day: the three units register together — one generator generalization, one `kind` edit |
+| 1 | `P5-BOARD.10` | `pending` | the LAN9118 dossier inherits the device shape `.2` hardened — the director's headline device |
+| 2 | `P5-BOARD.11` | `pending` | registration day: the three units register together — one generator generalization, one `kind` edit |
 
 ## Decisions
 
@@ -375,6 +419,83 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P5-BOARD.2` (`2026-10-02`, `SEMULITH-P5-0007`):
+
+- [x] **REPRODUCE / ISSUE** — the board's two devices had no dossiers: `board.sexp`
+  declared the unit ids with `.2` as their owner, and no `profiles/sifive-uart-lab-v0/`
+  existed. Measured pre-conditions the leaf changed: `grep -c -i 16550` had already
+  corrected the UART kind (`.1`); the schema census measured `direction` admitting only
+  `environment-assumption | cpu-guarantee` and `profile.sexp` demanding processor-shaped
+  fields a UART cannot honestly fill; `scripts/check_interaction_matrix.py` demanded a
+  matrix per profile-bearing unit with no honest cell resolution available at dossier
+  time.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the gates attach by glob the day documents land, so a
+  device dossier without the applicability machinery would either fail instruction-shaped
+  gates or bypass them — the lower tier the leaf's acceptance forbids. WHY the machinery
+  route: the P3-BREADTH.7 vehicle declaration is the existing applicability key; the
+  device extends it. WHERE, censused before editing:
+
+  ```
+  $ grep -ln 'profiles/\*' scripts/check_*.sh scripts/*.py | sort
+  scripts/check_dossier_schema.sh
+  scripts/check_exercise_coverage.sh
+  scripts/check_extraction.sh
+  scripts/check_fact_ownership.sh
+  scripts/check_gate_report.sh
+  scripts/check_interaction_matrix.sh
+  scripts/check_requirements.sh
+  scripts/check_semantics_corpus.sh
+  scripts/check_unit_composition.sh
+  $ grep -A2 'name direction' schema/contract-obligations.sexp
+  (field (name direction) (type symbol) (values environment-assumption)
+         (values cpu-guarantee))            # no device direction existed
+  ```
+
+  The edit surface: the three profile-glob gates (`check_exercise_coverage.sh`,
+  `check_extraction.{py,sh}`, `check_interaction_matrix.{py,sh}`), the three schemas
+  (`profile`, `expectations`, `contract-obligations`), the mapping owner
+  (`dossier_sexp.py` `_SCOPE_LISTS` + expectations round-trip),
+  `discharge_assumptions.py` (discharge by construction), `check_profile_consistency.sh`
+  (no conditional needed — measured), FACT-OWNERSHIP (registry + self-test fixtures glob
+  the real corpus).
+- [x] **FIX** — the 8-file dossier under `profiles/sifive-uart-lab-v0/` (every fact read
+  against the digest-verified pinned PDF, `sha256 5fa68a67…cab79c` re-derived from the
+  cache); the three schema widenings with named cases; the gate branches with new
+  self-test arms (EXERCISE-COVERAGE +4, EXTRACTION +4, INTERACTION-MATRIX +2,
+  PROFILE-CONSISTENCY +2, discharge +1, dossier_sexp +2, FACT-OWNERSHIP re-pinned);
+  6 FACT-OWNERSHIP registry rows; the `profiles/` 4× re-derivation record.
+- [x] **ADDRESSED (verified)** — every dossier document validates, and the device unit is
+  decided by declaration:
+
+  ```
+  $ python3 scripts/check_sexp_schema.py profiles/sifive-uart-lab-v0/profile.sexp schema/profile.sexp
+  check_sexp_schema: ok — profiles/sifive-uart-lab-v0/profile.sexp conforms to profile.sexp
+  $ bash scripts/check_extraction.sh
+  EXTRACTION: ok (3 unit(s) sufficient — P1-LAB may cite this)
+  $ bash scripts/check_interaction_matrix.sh
+    profiles/sifive-uart-lab-v0: device-model route declared — the matrix attaches with the probe corpus (P5-BOARD.5)
+    profiles/sifive-uart-lab-v0: 0 cells declared, every disposition resolves
+  $ shasum -a 256 .materials/sifive/fu540-c000-v1p5.pdf
+  5fa68a677ca4bc9fc81456840834eb4fa72874a2bd72a76c33f6709f3ecab79c  .materials/sifive/fu540-c000-v1p5.pdf
+  ```
+
+  The cross-checks hold (CITED/MIRROR/COVERAGE/AUTHORITY green over the 19/19/19
+  requirement/obligation/decision mirrors — one fact, three surfaces, one wording);
+  EXERCISE-COVERAGE `3 profile(s)`, PROFILE-CONSISTENCY `3 profile dossier(s) internally
+  consistent`. The measured findings fixed in execution (watermark mode gap, the
+  id-prefix collision, the cell-count and FIFO-reset defects) are recorded with the leaf.
+- [x] **NO REGRESSION** — every edited check's self-test: EXERCISE-COVERAGE 17/0,
+  EXTRACTION 9/0, INTERACTION-MATRIX 14/0, PROFILE-CONSISTENCY 41/0,
+  discharge_assumptions 7/0, dossier_sexp 14/0, FACT-OWNERSHIP 10/0; the corpus
+  re-validates under the widened schemas (all pre-existing `profiles/*/*.sexp` pairs
+  re-checked ok); `bash scripts/check_doctrines.sh` → `=== all doctrines green ===`;
+  `mdbook build docs/book` rc 0; `gen_book_index.py --check` rc 0. No Rust surface
+  touched.
+- [x] **LOCKSTEP** — tree (leaf + frontier + checklist + logs), `MEMORY.md` (next action
+  `.10`), `CHANGELOG.md`, `LIVE_STATUS.md` (P5 row + the 341-arm count),
+  `docs/TASK_TREE.md`, `docs/decisions/INDEX.md` (+2 records), KNOWLEDGE_MAP regenerated,
+  mdBook `plan/p5-p7.md` (the device-dossier section).
+
 `P5-BOARD.1` (`2026-10-02`, `SEMULITH-P5-0005`):
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — the composition check (`.4`) needs a specified
@@ -458,6 +579,7 @@ incompatible CPU/environment assumption remains**.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.2` | `check_sexp_schema.py` ok on all 7 dossier .sexp files; EXTRACTION `3 unit(s) sufficient`; EXERCISE-COVERAGE `3 profile(s)`; INTERACTION-MATRIX `device-model route declared … 0 cells`; PROFILE-CONSISTENCY `3 profile dossier(s)`; self-tests: 17/0, 9/0, 14/0, 41/0, 7/0, 14/0, 10/0; `check_fact_ownership.sh` ok (37 fact kinds); `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the first device dossier landed fully gated; the machinery generalized by declaration (`device-model`/`register-expectations`); the watermark mode gap measured and recorded (`REQ-D-UART-WM-MODE`); registration routed to `.11` |
 | `2026-10-02` | `.1` | `check_sexp_schema.py` (definition vs `schema/board.sexp`; the schema vs `schema/schema.sexp`) → ok; every pin re-derived from its source (GC-REPORT digest, the two catalog sha256s, the FU540/LAN9118 PDFs, the harness DEFAULT_BASE/SIZE); the 16550 census: 0 occurrences in the pinned FU540 v1p5; `make gate` green; `mdbook build docs/book` rc 0 | `netboard-lab-v0` specified: the canonical board definition pins versions, not names; the two absences declared as data with their obligations; the 16550 defect corrected at its records; registration routed to `.3` |
 | `2026-10-01` | `.9` | `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0; `materials.py --fetch` → all five sha256-verified into `.materials/network/`; `materials.py --verify` → 52/0; corpus census at `c4ad8a2` (5696/293); `make gate` green | the ten answers reconciled: five materials adopted, ten requests marked (5 resolved / 5 measured-negative blocked); the knowledge cards carry the ask→answer loop |
 | `2026-10-01` | `.8` | `sexp.read_file` → 10 forms (the one reader); `poll_semulith_gaps.py` read-only → NEW REQUESTS (10), rc 1; `make gate` green | ten acquisition requests filed and seen by the channel; the filing mechanics recorded semulith-side (knowledge card) |
@@ -466,6 +588,7 @@ incompatible CPU/environment assumption remains**.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` | `SEMULITH-P5-0007 (leaf P5-BOARD.2): the first device dossier — sifive-uart-lab-v0 fully gated; the machinery generalized by declaration, and the watermark mode gap measured` | 8 dossier files (19/19/19 mirrored records, 3 expectation documents); three schema widenings with named cases; five gates extended with self-test arms; FACT-OWNERSHIP re-pinned to three units; profiles/ bound re-derived 4× |
 | `.1` | `SEMULITH-P5-0005 (leaf P5-BOARD.1): the platform specified — netboard-lab-v0's canonical board definition pins versions, not names; the 16550 label measured false and corrected` | `schema/board.sexp` designed (the first non-processor SoT schema); the definition + DOSSIER land under `profiles/netboard-lab-v0/`; timers/IRQ absent-by-contract as data with `satisfies` pre-wiring `.4`; profiles/ bound re-derived 3×; registration routed to `.3` |
 | `.9` | `SEMULITH-P5-0003 (leaf P5-BOARD.9): the chipdoc answers reconciled — five materials adopted and digest-verified, ten requests marked, the answer path recorded` | 5 fulfilled adopted (LAN9118, SARA-R4, ESP-AT, nRF52840, AT86RF233); 5 measured negatives recorded with consequences; corpus re-pinned c4ad8a2; the knowledge cards carry §0.3/§0.5 |
 | `.8` | `SEMULITH-P5-0002 (leaf P5-BOARD.8): the network-connected board's documentation researched — corpus surveyed, ten requests filed, the channel measured` | DP83816/ESP32-SVD/FU540/FU740/AM335x already held; LAN9118/e1000/RTL8139, three LTE AT manuals, ESP-AT, nRF52840, AT86RF233, and the AR9271 probe requested; the poller sees exactly the ten |
@@ -518,3 +641,21 @@ incompatible CPU/environment assumption remains**.
   `profile.sexp` and `contract-obligations.sexp`, the auto-attaching gates, STATE-GEN's
   non-attachment, the expectations route, the 4× `profiles/` re-derivation) is in
   Decisions. Frontier: `.2` — the UART dossier.
+- `2026-10-02`: `.2` done (`SEMULITH-P5-0007`) — the first device dossier landed, fully
+  gated. `profiles/sifive-uart-lab-v0/` carries 8 documents: the §13-pinned source, 19
+  requirements (13 defined + 6 measured silences), 19 mirrored obligations under the new
+  `device-guarantee` direction (contract `sifive-uart-v0` v0), the state document with
+  its earned census, 19 verbatim decision mirrors, and 3 datasheet-derived expectation
+  documents recorded before any model exists. The machinery generalized by declaration
+  (`vehicle (route device-model) (comparison register-expectations)`;
+  `decision_device-applicability-by-declared-vehicle`): EXTRACTION / EXERCISE-COVERAGE /
+  INTERACTION-MATRIX derive device applicability with contradiction = RED; PROFILE-
+  CONSISTENCY needed no conditional (measured); a device-guarantee discharges by
+  construction, pinned. Measured in execution and fixed at root: the §13.8 watermark
+  level-vs-hold gap (`REQ-D-UART-WM-MODE` — expectations pin a bit only when its raised
+  condition holds under every reading), the `REQ-U-` id prefix colliding with
+  RECORD-SCHEMA's mechanical decision→requirement mapping (renamed), the
+  interaction-matrix note counted as a cell, and the FIFO resets recorded as
+  "unspecified" data rather than weakening the every-element-a-reset contract.
+  FACT-OWNERSHIP re-pinned to three units; the `profiles/` bound re-derived 4×
+  (`decision_profiles-family-four-units`). Frontier: `.10` — the LAN9118 dossier.
