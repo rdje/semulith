@@ -197,12 +197,51 @@ incompatible CPU/environment assumption remains**.
   five measured negatives that close the alternatives.
 
 - ID: `P5-BOARD.10` — **device dossiers, second device: the LAN9118 (`lan9118-lab-v0`)**
-  Status: `pending` (design brief recorded `2026-10-02`, `SEMULITH-P5-0008`)
+  Status: `done` (`2026-10-02`, `SEMULITH-P5-0009`)
   Goal: the NIC's dossier — sources, requirements, state, reset, access semantics, side
   effects, and independently sourced expected results (catalog `C19`) — under
   `profiles/lan9118-lab-v0/`, inheriting the device-dossier shape `.2` hardens.
   Acceptance: identical to `.2` — the full dossier and gate machinery, no lower tier
   (`docs/EVIDENCE_AND_GATES.md` §8).
+  Result (`2026-10-02`): the dossier landed — 9 files: `DOSSIER.md`, `sources.sexp`
+  (the DS00002266B pin, digest re-verified from the cache), `requirements.sexp` (52
+  records: 46 `defined` + 1 `reserved` + 1 `unspecified` + 4 `implementation-defined` —
+  the datasheet's measured silences and strap/board deferrals are requirements of
+  non-commitment), `contract-obligations.sexp` (52 obligations, contract `lan9118-v0`
+  v0, direction `device-guarantee`; `laboratory` authority for exactly the three
+  composition dispositions), `state.sexp` (24 direct CSRs + 12 indexed MAC CSRs + 13
+  doubly-indexed PHY registers + 4 FIFO families + the earned hidden-state census: the
+  model carries the registers, the FIFOs' contents/occupancies, the TX command-parser
+  state and the 16-bit pairing latch — and nothing else MMIO can reach; the MIL FIFOs
+  are not host-visible by the datasheet's own words), `profile.sexp` (52 verbatim
+  decision mirrors — generated from requirements.sexp mechanically, so drift is
+  impossible by construction AND refused by gate), and `expectations/` (3 documents:
+  cold-reset reads, the exact TDFREE free-space accounting with TX_ON = 0, the
+  recorded-trace RX path with pop/PEEK and the underrun → RXE discipline). **No
+  machinery edit was needed** — `.2`'s by-declaration generalization covered the NIC;
+  the mechanical re-pins were FACT-OWNERSHIP (+6 registry rows; self-test fixtures
+  `__CHECKED__ 7→8` and `3→4`, comments updated) and the `profiles/` 4× → 5×
+  re-derivation (`decision_profiles-family-five-units`) — where **the per-part bound
+  bit for the first time**: the NIC's mirrored catalogues exceed 32 KiB
+  (contract-obligations 60,112 B), so the per-part doubled to 64 KiB, reviewed and
+  recorded. **Measured in execution, recorded at root:** (1) the two `pdftotext` modes
+  DISAGREE on Table 5-1's Default column (two-column layout scrambles row pairing) —
+  every reset value taken from each register's own section and cross-checked
+  arithmetically (TDFREE `1200h` = Table 5-3's 4608 B at the TX_FIF_SZ = 5 default);
+  (2) §3.11's SRST/PHY-reset completion times render as "2 s"/"100 s" in the PDF's OWN
+  text layer (hexdump-verified: a symbol-font µ mis-mapped to ASCII s by the producer,
+  not an extraction drop), contradicted by §5.3.13's clean "100us" and §3.11.4's own
+  100 ms bound — the dossier pins only the cleanly stated figures (first drafted as
+  "µs, confirmed by extraction", measured false, corrected before landing);
+  (3) PHY ID2's model/revision nibbles are blank in the datasheet — only bits [15:10]
+  pin (`REQ-D-NIC-PHY-ID`); (4) ADDRH/ADDRL carry Table 5-6 defaults AND §5.4.2/§5.4.3's
+  "undefined until loaded" — both recorded, nothing pinned at reset
+  (`REQ-D-NIC-MAC-ADDR`); (5) unlike the UART, FIFO occupancy at reset IS pinned empty
+  here — by the INF registers' stated resets (`REQ-D-NIC-FIFO-INF`). The design brief's
+  sharpest finding stands as the dossier's composition records: the guest-readable time
+  sources (`REQ-D-NIC-TIME-SOURCES`), the wire-domain PHY link scene under replay
+  (`REQ-D-NIC-PHY-LINK`), the pin tie-offs (`REQ-D-NIC-GPIO-PINS`) — all pre-wired to
+  `.4`. Registration stays `.11`'s (all three units together).
 
 - ID: `P5-BOARD.11` — **registration day: the three units register**
   Status: `pending`
@@ -228,8 +267,7 @@ incompatible CPU/environment assumption remains**.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.10` | `pending` | the LAN9118 dossier inherits the device shape `.2` hardened — the director's headline device |
-| 2 | `P5-BOARD.11` | `pending` | registration day: the three units register together — one generator generalization, one `kind` edit |
+| 1 | `P5-BOARD.11` | `pending` | registration day: the three units register together — one generator generalization, one `kind` edit; then the generated maps (`.3`) and the composition verdict (`.4`) |
 
 ## Decisions
 
@@ -507,6 +545,77 @@ incompatible CPU/environment assumption remains**.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P5-BOARD.10` (`2026-10-02`, `SEMULITH-P5-0009`):
+
+- [x] **REPRODUCE / ISSUE** — the board's second device had no dossier: `board.sexp`
+  declared the unit id `lan9118-lab-v0` with `.10` as its owner (named `.2` at `.1`,
+  renumbered at the `.2` split), and no `profiles/lan9118-lab-v0/` existed. Measured
+  pre-conditions the leaf changed: `git ls-files profiles/` counted four unit
+  directories; the FACT-OWNERSHIP fixtures globbed three; `readme_routes.tsv`'s
+  per-part bound stood at 32,768 — below the NIC dossier's measured file sizes.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the dossier is the contract the model route
+  consumes; without it the NIC is a name in a board definition. WHY no machinery edit:
+  measured at the design brief — the gates attach by glob and derive device
+  applicability from the `vehicle` declaration (`.2`'s generalization), so content plus
+  mechanical re-pins is the whole leaf. WHERE the content came from: the pinned
+  artifact read in full for the register contract, with the two measured extraction
+  hazards handled at root (the Table 5-1 default-column disagreement → per-register
+  sections are the authority; the §3.11 µ-glyph defect → verified against the PDF's own
+  text-layer bytes, only cleanly stated figures pinned):
+
+  ```
+  $ pdftotext -raw .materials/network/lan9118.pdf target/lan9118-raw.txt && wc -l target/lan9118-raw.txt
+  4906 target/lan9118-raw.txt
+  $ grep -c "87654321" target/lan9118.txt && grep -c "87654321" target/lan9118-raw.txt
+  2   # -layout: one in the text AND one MISPAIRED in Table 5-1's default column
+  2   # -raw: the same two — but the two modes pair the defaults to different registers
+  $ pdftotext -f 32 -l 32 -raw .materials/network/lan9118.pdf - | grep -a "approximately 2" | hexdump -C | head -1
+  00000000  61 70 70 72 6f 78 69 6d  61 74 65 6c 79 20 32 20  |approximately 2 |
+  # … 20 73 — a plain ASCII 's': the µ mis-mapping is the producer's text layer,
+  # not the extractor (§5.3.13's clean "100us" for the same PHY reset confirms it)
+  ```
+
+- [x] **FIX** — the 9-file dossier under `profiles/lan9118-lab-v0/` (every fact read
+  against the digest-verified pinned PDF, `sha256 72fe68f2…91bf6ee` re-derived from the
+  cache); the obligation/decision mirrors GENERATED from requirements.sexp
+  (`target/gen_nic_mirrors.py` — drift impossible by construction, refused by gate
+  regardless); 6 FACT-OWNERSHIP registry rows; the self-test fixture re-pins; the
+  `profiles/` 5× re-derivation with the first per-part raise, recorded in
+  `decision_profiles-family-five-units.md` (+ INDEX).
+- [x] **ADDRESSED (verified)** — every dossier document validates, and the device unit
+  is decided by declaration:
+
+  ```
+  $ for each dossier .sexp: python3 scripts/check_sexp_schema.py <file> schema/<basename>.sexp
+  check_sexp_schema: ok — all 6 dossier documents + 3 expectation documents conform
+  $ python3 scripts/check_extraction.py profiles/lan9118-lab-v0
+  device-model route declared (28 scope registers; resets everywhere; obligations checked both ways)
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (14 record file(s) validate and agree with their profile; …)
+  $ bash scripts/check_fact_ownership.sh
+  FACT-OWNERSHIP: ok (43 fact kind(s): one owner each, every mirror governed)
+  $ shasum -a 256 .materials/network/lan9118.pdf
+  72fe68f241b5bc91a861cff98a877ae907339d396e64394b0f5daa2c391bf6ee  .materials/network/lan9118.pdf
+  ```
+
+  The cross-checks hold (CITED/MIRROR/COVERAGE/AUTHORITY green over the 52/52/52
+  requirement/obligation/decision mirrors); PROFILE-CONSISTENCY `4 profile dossier(s)
+  internally consistent`; EXERCISE-COVERAGE and INTERACTION-MATRIX derive the
+  device-model route for the fifth unit after staging (git-mode discovery). The
+  measured findings fixed in execution (the Table 5-1 extraction hazard, the §3.11
+  text-layer defect, the blank PHY ID2 nibbles, the ADDRH/ADDRL tension, the pinned
+  FIFO occupancy) are recorded with the leaf.
+- [x] **NO REGRESSION** — every edited check's self-test passes inside its gate run
+  (FACT-OWNERSHIP refuses to judge when its self-test fails — it judged); the corpus
+  re-validates (DOSSIER-SCHEMA 75 files ok, 2 declared skips); `make gate` →
+  `=== all doctrines green ===`; `mdbook build docs/book` rc 0;
+  `gen_book_index.py --check` rc 0. No Rust surface touched.
+- [x] **LOCKSTEP** — tree (leaf + frontier + checklist + logs), `MEMORY.md` (next action
+  `.11`), `CHANGELOG.md`, `DEV_NOTES.md` (the extraction-hazard lesson PROMOTED to
+  `docs/knowledge/a-pdf-text-layer-is-not-the-page.md` + INDEX), `LIVE_STATUS.md` (P5
+  row), `docs/TASK_TREE.md`, `docs/decisions/INDEX.md` (+1 record), KNOWLEDGE_MAP
+  regenerated, mdBook `plan/p5-p7.md` (the second device-dossier section).
+
 `P5-BOARD.2` (`2026-10-02`, `SEMULITH-P5-0007`):
 
 - [x] **REPRODUCE / ISSUE** — the board's two devices had no dossiers: `board.sexp`
@@ -667,6 +776,7 @@ incompatible CPU/environment assumption remains**.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.10` | `check_sexp_schema.py` ok on all 6 dossier .sexp files + 3 expectation documents; EXTRACTION `device-model route declared (28 scope registers; resets everywhere; obligations checked both ways)`; RECORD-SCHEMA `14 record file(s)`; PROFILE-CONSISTENCY `4 profile dossier(s)`; FACT-OWNERSHIP `43 fact kind(s)` (self-test re-pinned 8/4); `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the second device dossier landed fully gated with NO machinery edit; the `profiles/` per-part bound bit for the first time (32→64 KiB, recorded); the §3.11 text-layer defect and the Table 5-1 extraction hazard measured and handled; the time-source/link-scene/pin-tie-off composition tensions pre-wired to `.4` |
 | `2026-10-02` | `.2` | `check_sexp_schema.py` ok on all 7 dossier .sexp files; EXTRACTION `3 unit(s) sufficient`; EXERCISE-COVERAGE `3 profile(s)`; INTERACTION-MATRIX `device-model route declared … 0 cells`; PROFILE-CONSISTENCY `3 profile dossier(s)`; self-tests: 17/0, 9/0, 14/0, 41/0, 7/0, 14/0, 10/0; `check_fact_ownership.sh` ok (37 fact kinds); `make gate` green; `mdbook build` rc 0; `gen_book_index.py --check` rc 0 | the first device dossier landed fully gated; the machinery generalized by declaration (`device-model`/`register-expectations`); the watermark mode gap measured and recorded (`REQ-D-UART-WM-MODE`); registration routed to `.11` |
 | `2026-10-02` | `.1` | `check_sexp_schema.py` (definition vs `schema/board.sexp`; the schema vs `schema/schema.sexp`) → ok; every pin re-derived from its source (GC-REPORT digest, the two catalog sha256s, the FU540/LAN9118 PDFs, the harness DEFAULT_BASE/SIZE); the 16550 census: 0 occurrences in the pinned FU540 v1p5; `make gate` green; `mdbook build docs/book` rc 0 | `netboard-lab-v0` specified: the canonical board definition pins versions, not names; the two absences declared as data with their obligations; the 16550 defect corrected at its records; registration routed to `.3` |
 | `2026-10-01` | `.9` | `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0; `materials.py --fetch` → all five sha256-verified into `.materials/network/`; `materials.py --verify` → 52/0; corpus census at `c4ad8a2` (5696/293); `make gate` green | the ten answers reconciled: five materials adopted, ten requests marked (5 resolved / 5 measured-negative blocked); the knowledge cards carry the ask→answer loop |
@@ -676,6 +786,8 @@ incompatible CPU/environment assumption remains**.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.10` | `SEMULITH-P5-0009 (leaf P5-BOARD.10): the second device dossier — lan9118-lab-v0 fully gated with no machinery edit; the per-part bound bites; the time sources found` | 9 dossier files (52/52/52 mirrored records, 3 expectation documents); FACT-OWNERSHIP re-pinned to four units; profiles/ bound re-derived 5× with the first per-part raise (32→64 KiB); the §3.11 text-layer defect measured (hexdump) and only cleanly stated figures pinned |
+| — | `SEMULITH-P5-0008 (tree P5-BOARD)` | the `.10` design brief: the datasheet census, the scope decision (28 direct registers), no machinery edit, the guest-readable time sources finding |
 | `.2` | `SEMULITH-P5-0007 (leaf P5-BOARD.2): the first device dossier — sifive-uart-lab-v0 fully gated; the machinery generalized by declaration, and the watermark mode gap measured` | 8 dossier files (19/19/19 mirrored records, 3 expectation documents); three schema widenings with named cases; five gates extended with self-test arms; FACT-OWNERSHIP re-pinned to three units; profiles/ bound re-derived 4× |
 | `.1` | `SEMULITH-P5-0005 (leaf P5-BOARD.1): the platform specified — netboard-lab-v0's canonical board definition pins versions, not names; the 16550 label measured false and corrected` | `schema/board.sexp` designed (the first non-processor SoT schema); the definition + DOSSIER land under `profiles/netboard-lab-v0/`; timers/IRQ absent-by-contract as data with `satisfies` pre-wiring `.4`; profiles/ bound re-derived 3×; registration routed to `.3` |
 | `.9` | `SEMULITH-P5-0003 (leaf P5-BOARD.9): the chipdoc answers reconciled — five materials adopted and digest-verified, ten requests marked, the answer path recorded` | 5 fulfilled adopted (LAN9118, SARA-R4, ESP-AT, nRF52840, AT86RF233); 5 measured negatives recorded with consequences; corpus re-pinned c4ad8a2; the knowledge cards carry §0.3/§0.5 |
@@ -757,3 +869,19 @@ incompatible CPU/environment assumption remains**.
   sources (FREE_RUN, GPT_CNT, INT_DEAS) that `OB-ENV-VIRTUAL-TIME` excludes — recorded
   as a high-risk requirement pre-wiring `.4`'s composition verdict. Scope decision: 28
   direct host-bus registers. Frontier: `.10` execution — the LAN9118 dossier lands.
+- `2026-10-02`: `.10` done (`SEMULITH-P5-0009`) — the second device dossier landed, fully
+  gated, with NO machinery edit (`.2`'s by-declaration generalization covered the NIC).
+  `profiles/lan9118-lab-v0/` carries 9 documents: the DS00002266B-pinned source
+  (digest re-verified), 52 requirements (46 defined + the reserved/unspecified/
+  implementation-defined silences and deferrals), 52 mirrored obligations (contract
+  `lan9118-v0` v0), the state document (49 registers across three indexing levels + 4
+  FIFO families + the earned census — the TX command-parser state and the 16-bit
+  pairing latch join the registers and FIFOs), 52 mechanically generated decision
+  mirrors, and 3 datasheet-derived expectation documents. Measured in execution and
+  recorded at root: the `pdftotext` Table 5-1 default-column disagreement (per-register
+  sections are the authority), the PDF's own text layer mis-mapping §3.11's µ (hexdump-
+  verified; only cleanly stated figures pinned), the blank PHY ID2 nibbles, the
+  ADDRH/ADDRL defaults-vs-undefined tension, FIFO occupancy pinned empty by the INF
+  resets (the UART contrast). The `profiles/` per-part bound bit for the first time —
+  32→64 KiB, reviewed and recorded (`decision_profiles-family-five-units`);
+  FACT-OWNERSHIP re-pinned to four units. Frontier: `.11` — registration day.

@@ -1,0 +1,70 @@
+;; reset.expected.sexp — cold-reset register-read expectations for `lan9118-lab-v0`
+;; (P5-BOARD.10, 2026-10-02). Every value derived from the pinned datasheet BEFORE any
+;; model exists (EVD-05's shape at the device layer); `derivation` carries the reasoning
+;; and `source` the locator. Device reading of the schema (recorded in
+;; schema/expectations.sexp): step.insn carries the stimulus, writes the register reads
+;; that must yield the value. The board's reset is cold-only (D-BOARD-RESET) mapping to
+;; POR semantics — the full reset, straps latched, EEPROM auto-load attempted. The
+;; strap-determined bits, the datasheet-blank nibbles, the undefined-until-loaded MAC
+;; address and the time-source counters get the empty (writes) marker or a partial pin —
+;; nothing beyond what the datasheet determines (REQ-D-NIC-STRAP-RESETS,
+;; REQ-D-NIC-PHY-ID, REQ-D-NIC-MAC-ADDR, REQ-D-NIC-TIME-SOURCES).
+
+(expectations
+  (program "cold-reset register reads — lan9118-lab-v0 (eth0 on netboard-lab-v0)")
+  (step (n 1) (insn "cold reset; read id_rev")
+    (writes (write (reg "id_rev") (value "0x01180001")))
+    (derivation "§5.3.1 states Chip ID 0118h in bits [31:16] and Chip Revision 0001h in bits [15:0] — the identity read a driver performs first.")
+    (source "DS00002266B §5.3.1"))
+  (step (n 2) (insn "read byte_test")
+    (writes (write (reg "byte_test") (value "0x87654321")))
+    (derivation "§5.3.5 states the read-only byte-order constant outright.")
+    (source "DS00002266B §5.3.5"))
+  (step (n 3) (insn "read the interrupt block (int_sts, int_en, irq_cfg, fifo_int)")
+    (writes (write (reg "int_sts") (value "0x00000000")) (write (reg "int_en") (value "0x00000000")) (write (reg "irq_cfg") (value "0x00000000")) (write (reg "fifo_int") (value "0x48000000")))
+    (derivation "§5.3.3/§5.3.4/§5.3.2 state all-zero resets; FIFO_INT's per-field defaults (48h/00h/00h, §5.3.6) compose 48000000h.")
+    (source "DS00002266B §5.3.2–§5.3.4, §5.3.6"))
+  (step (n 4) (insn "read the datapath configuration (rx_cfg, tx_cfg, rx_dp_ctl, afc_cfg)")
+    (writes (write (reg "rx_cfg") (value "0x00000000")) (write (reg "tx_cfg") (value "0x00000000")) (write (reg "rx_dp_ctl") (value "0x00000000")) (write (reg "afc_cfg") (value "0x00000000")))
+    (derivation "Each register's field table states an all-zero reset (§5.3.7, §5.3.8, §5.3.10, §5.3.22).")
+    (source "DS00002266B §5.3.7, §5.3.8, §5.3.10, §5.3.22"))
+  (step (n 5) (insn "read hw_cfg — the strap bit not pinned")
+    (writes (write (reg "hw_cfg") (value "bits [31:3] = 0000000_0…0 with TX_FIF_SZ [19:16] = 5h (whole-register 0x00050000 apart from bit 2); bit 2 = the D32/nD16 strap value, NOT pinned")))
+    (derivation "TX_FIF_SZ's field default is 5h (§5.3.9) and every other defined field defaults 0, so the register reads 0x00050000 except bit 2, which the datasheet defines as the strap's value (RO) — the strap is the board's composition choice, owned by .4 (REQ-D-NIC-STRAP-RESETS).")
+    (source "DS00002266B §5.3.9, §3.6"))
+  (step (n 6) (insn "read the FIFO information registers (rx_fifo_inf, tx_fifo_inf)")
+    (writes (write (reg "rx_fifo_inf") (value "0x00000000")) (write (reg "tx_fifo_inf") (value "0x00001200")))
+    (derivation "§5.3.11/§5.3.12 state the resets; TDFREE = 1200h = 4608 bytes is exactly Table 5-3's TX data FIFO size at the TX_FIF_SZ = 5 default — two independent statements agreeing, and the occupancy-at-reset pin (both FIFOs empty).")
+    (source "DS00002266B §5.3.11, §5.3.12, Table 5-3"))
+  (step (n 7) (insn "read pmt_ctrl (after the cold reset completes)")
+    (writes (write (reg "pmt_ctrl") (value "bit0=1; bits [31:1] = 0")))
+    (derivation "Every defined field resets to 0 (§5.3.13); READY (bit 0) reads 0 until the reset completes and 1 once the device is stabilized (§5.3.13, §3.11.1) — and the board's cold reset completes before any guest access exists (D-BOARD-RESET: the loaded image starts after reset).")
+    (source "DS00002266B §5.3.13, §3.11.1"))
+  (step (n 8) (insn "read the timer and counter block (gpt_cfg, gpt_cnt, word_swap, rx_drop)")
+    (writes (write (reg "gpt_cfg") (value "0x0000FFFF")) (write (reg "gpt_cnt") (value "0x0000FFFF")) (write (reg "word_swap") (value "0x00000000")) (write (reg "rx_drop") (value "0x00000000")))
+    (derivation "GPT_LOAD/GPT_CNT preset to FFFFh on reset (§3.8, §5.3.15/§5.3.16); WORD_SWAP resets to 0 (§5.3.17); RX_DFC resets to 0 (§5.3.19) — note the read itself clears RX_DFC (RC), so this read is also the drain.")
+    (source "DS00002266B §3.8, §5.3.15–§5.3.17, §5.3.19"))
+  (step (n 9) (insn "read free_run — nothing pinned")
+    (writes)
+    (derivation "FREE_RUN starts at zero at reset and increments every 25 MHz cycle (§5.3.18), so the value read depends on elapsed time — a guest-readable time source the composition freezes (REQ-D-NIC-TIME-SOURCES). The datasheet pins the behaviour, never a readable value; nothing pins here.")
+    (source "DS00002266B §5.3.18"))
+  (step (n 10) (insn "read e2p_cmd — after the auto-load attempt completes (no EEPROM on this board)")
+    (writes (write (reg "e2p_cmd") (value "0x00000000")))
+    (derivation "EPC Busy reads 1 immediately following reset until the EEPROM controller finishes reading or attempting to read the MAC address (§5.3.23 note); with no EEPROM wired, the read of address 00h finds no A5h marker and the controller ends initialization (§3.9.1) — so once the attempt completes the register reads 0: Busy clear, MAC Address Loaded clear. The transient itself pins no value (the attempt's duration is not MMIO-observable on this board).")
+    (source "DS00002266B §5.3.23, §3.9.1"))
+  (step (n 11) (insn "read the MAC CSRs via the synchronizer (mac_csr_cmd = 0x80000001 | index << 0 … poll Busy, read mac_csr_data): mac_cr, hashh, hashl, mii_acc, flow")
+    (writes (write (reg "mac_cr") (value "0x00040000")) (write (reg "hashh") (value "0x00000000")) (write (reg "hashl") (value "0x00000000")) (write (reg "mii_acc") (value "0x00000000")) (write (reg "flow") (value "0x00000000")))
+    (derivation "Table 5-6 lists the MAC CSR defaults — MAC_CR 00040000h (PRMS set out of reset), the rest zero — and §5.3.20/§5.3.21 define the synchronizer read protocol that observes them (write Busy + R/nW + CSR address, poll Busy clear, read data).")
+    (source "DS00002266B Table 5-6, §5.3.20, §5.3.21"))
+  (step (n 12) (insn "read addrh/addrl via the synchronizer — nothing pinned")
+    (writes)
+    (derivation "Table 5-6 lists defaults 0000FFFFh/FFFFFFFFh, but §5.4.2/§5.4.3 state the content is 'undefined until loaded from the EEPROM at power-on' — and with no EEPROM on this board nothing loads it. The two statements do not compose into a pinned value (REQ-D-NIC-MAC-ADDR records both); the host programs the address (§3.9.1). Nothing pins.")
+    (source "DS00002266B Table 5-6, §5.4.2, §5.4.3, §3.9.1"))
+  (step (n 13) (insn "read the PHY identifiers via MII (mii_acc = PHY address 00001b | index << 6 | MIIBZY, poll, mii_data): phy_id1, phy_id2")
+    (writes (write (reg "phy_id1") (value "0x0007")) (write (reg "phy_id2") (value "bits [15:10] = 0xC0D1; bits [9:0] NOT pinned")))
+    (derivation "§5.5.3 states 0007h outright; §5.5.4 states C0D1h for the OUI bits and leaves the model/revision nibbles blank — a measured partial silence (REQ-D-NIC-PHY-ID), so only the stated bits pin. The MII access protocol is §5.4.6/§5.4.7's.")
+    (source "DS00002266B §5.5.3, §5.5.4, §5.4.6"))
+  (step (n 14) (insn "read phy_basic_status via MII")
+    (writes (write (reg "phy_basic_status") (value "0x7809")))
+    (derivation "The per-bit defaults compose the value: the four technology ability bits, Auto-Negotiate Ability and Extended Capabilities fixed 1, 100Base-T4 fixed 0, and the transient bits (Auto-Negotiate Complete, Remote Fault, Link Status, Jabber Detect) defaulting 0 (§5.5.2) — 0x7809. The wire-domain bits' evolution after reset is the replay scene's (REQ-D-NIC-PHY-LINK), .4's to declare.")
+    (source "DS00002266B §5.5.2")))

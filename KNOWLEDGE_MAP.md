@@ -82,6 +82,7 @@
 - [`decision_memory-next-action-pointer.md`](docs/decisions/decision_memory-next-action-pointer.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
+- [`decision_profiles-family-five-units.md`](docs/decisions/decision_profiles-family-five-units.md)
 - [`decision_profiles-family-four-units.md`](docs/decisions/decision_profiles-family-four-units.md)
 - [`decision_profiles-family-three-units.md`](docs/decisions/decision_profiles-family-three-units.md)
 - [`decision_profiles-family-two-units.md`](docs/decisions/decision_profiles-family-two-units.md)

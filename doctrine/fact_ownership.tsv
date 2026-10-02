@@ -48,4 +48,10 @@ pinned-sources (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/sources.sexp	-	-
 requirements (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/profile.sexp	profiles/sifive-uart-lab-v0/requirements.sexp	RECORD-SCHEMA
 obligations (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/requirements.sexp	profiles/sifive-uart-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 expected-results (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/expectations/	-	-
+configuration (lan9118-lab-v0)	profiles/lan9118-lab-v0/profile.sexp	-	-
+state (lan9118-lab-v0)	profiles/lan9118-lab-v0/state.sexp	profiles/lan9118-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+pinned-sources (lan9118-lab-v0)	profiles/lan9118-lab-v0/sources.sexp	-	-
+requirements (lan9118-lab-v0)	profiles/lan9118-lab-v0/profile.sexp	profiles/lan9118-lab-v0/requirements.sexp	RECORD-SCHEMA
+obligations (lan9118-lab-v0)	profiles/lan9118-lab-v0/requirements.sexp	profiles/lan9118-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+expected-results (lan9118-lab-v0)	profiles/lan9118-lab-v0/expectations/	-	-
 book index (semulith-book)	docs/book/src/	docs/book/src/index.md	BOOK-INDEX

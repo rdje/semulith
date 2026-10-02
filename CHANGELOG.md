@@ -1,5 +1,38 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0009 (leaf P5-BOARD.10) — the second device dossier: `lan9118-lab-v0`, fully gated with no machinery edit; the per-part bound bites
+
+- The LAN9118 NIC dossier lands under
+  [`profiles/lan9118-lab-v0/`](profiles/lan9118-lab-v0/DOSSIER.md): the DS00002266B-pinned
+  source (digest re-verified from the materials cache), 52 requirements (46 defined + the
+  reserved/unspecified/implementation-defined silences and deferrals), 52 mirrored
+  obligations (contract `lan9118-v0` v0, `device-guarantee`), the state document (49
+  registers across three indexing levels + 4 FIFO families + the earned hidden-state
+  census — the model additionally carries the TX command-parser state and the 16-bit
+  pairing latch), 52 verbatim decision mirrors (generated from requirements.sexp
+  mechanically — drift impossible by construction, refused by gate regardless), and 3
+  datasheet-derived expectation documents (cold-reset reads; exact TX free-space
+  accounting; the recorded-trace RX path) recorded **before any model exists**.
+- **No machinery edit**: `.2`'s generalization by declaration covered the NIC — the
+  gates attach by glob and derive device applicability from the `vehicle` declaration.
+  The mechanical re-pins: FACT-OWNERSHIP +6 registry rows and fixture re-pins
+  (`7→8`, `3→4`); the `profiles/` bound re-derived 4× → 5×
+  ([`decision_profiles-family-five-units`](docs/decisions/decision_profiles-family-five-units.md))
+  — where the **per-part bound bit for the first time** (32→64 KiB; the mirror
+  discipline on a 52-record contract puts the largest catalogue at 60,112 B).
+- Measured in execution, recorded at root: the two `pdftotext` modes disagree on
+  Table 5-1's Default column (per-register sections are the authority, arithmetic
+  cross-checks agree); §3.11's reset completion times render as `2 s`/`100 s` in the
+  PDF's **own text layer** (hexdump-verified µ mis-mapping — only cleanly stated figures
+  pinned); PHY ID2's model/revision nibbles are blank in the datasheet; ADDRH/ADDRL's
+  Table 5-6 defaults sit beside §5.4.2's "undefined until loaded" — both recorded,
+  nothing guessed. The lesson is promoted:
+  [`a-pdf-text-layer-is-not-the-page`](docs/knowledge/a-pdf-text-layer-is-not-the-page.md).
+- The design brief's sharpest finding is now contract data: the NIC's guest-readable
+  time sources (`REQ-D-NIC-TIME-SOURCES`), the wire-domain PHY link scene under replay
+  (`REQ-D-NIC-PHY-LINK`) and the pin tie-offs (`REQ-D-NIC-GPIO-PINS`) pre-wire
+  `P5-BOARD.4`'s composition verdict. Registration day (`.11`) is next.
+
 ## SEMULITH-P5-0007 (leaf P5-BOARD.2) — the first device dossier: `sifive-uart-lab-v0`, fully gated; the machinery generalized by declaration
 
 - The SiFive UART dossier lands under
@@ -849,27 +882,4 @@
   illegal zero word. Retained as `min-fencei` (expect_divergence at_step 0). The reducer
   is deliberately not the tool (it minimizes against mutations, not reference
   differences).
-
-## SEMULITH-PS-0070 (leaf P2-SCALAR.5, strand 3) — the directed sequences; the leaf is DONE
-
-- Eight directed guests from the measured census, every expectation derived before any
-  run: `dir-runoff` (semulith's first run off a program's end — the zero word's policy
-  trap, three-way identical), `dir-chase` (load→use as ADDRESS: the pointer chase and the
-  jump through memory — the idiom that existed nowhere), `dir-ext-matrix` (the
-  cross-width sign-extend matrix at the sign edges), `dir-selfmod-fence` (the patch
-  visible through `fence rw,rw` — probed on all three models before authoring),
-  `dir-cmp-branch` (all four senses on fresh predicates), `dir-memwalk` (the load+store
-  loop), `dir-chain` (14 varied serial links), `dir-x0-writes` (every unpinned producer
-  to x0). **150 new aligned steps, all three-way — 642/642 over 48 assembled guests**,
-  byte-identical reproduction; the matrix's cells assigned (orphan rule green); the
-  census pins the 55 new data crossings; 174 verify suites.
-- Two authoring REDs caught by the offline differential, never a model defect:
-  `dir-ext-matrix`'s data cell sat inside the code its stores patched (moved past the
-  code end); one hand-typed constant re-derived.
-- The census's defect is fixed and closed: `c-scope.c`'s comment overclaimed its
-  constant-folded ELF (no jump table exists in the artifact) — the comment and the model
-  book's chapter corrected, and the promised idiom became `dir-chase`'s measured guest.
-- **`.5` is done** — all three strands landed: the compiled C guest (G1 `passed`), the
-  ACT4 campaign (51/51, recorded and gated), the directed sequences. The frontier moves
-  to `.6` (discrepancy reduction).
 

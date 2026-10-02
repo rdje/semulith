@@ -325,7 +325,17 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #              4 x 120 files, 4 x 573,440 B; health at the standing ratios.
 #              ⛔ PER-PART STAYS 32,768 — the largest new member is the device's
 #              contract-obligations.sexp at 14,323 B.
-profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 4× bound is decision_profiles-family-four-units (2026-10-02)	472	1960000	480	2293760	32768
+# Re-derivation, P5-BOARD.10 (2026-10-02), when the fifth unit directory landed:
+#   profiles/  160 files / 845,819 B measured at staging (+13 lan9118-lab-v0, the
+#              second DEVICE dossier) — the aggregates held (0.33x / 0.37x), the same
+#              arithmetic (decision_profiles-family-five-units): 5 x 120 files,
+#              5 x 573,440 B; health at the standing ratios.
+#              ⛔ PER-PART BITES FOR THE FIRST TIME: 32,768 -> 65,536 — the NIC's
+#              mirrored catalogues exceed the old ceiling (contract-obligations.sexp
+#              60,112 B, requirements.sexp 59,022 B, profile.sexp 40,113 B); the mirror
+#              discipline on a 52-record contract is the cause, the doubling the
+#              reviewed response (largest member at 0.92x).
+profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× bound is decision_profiles-family-five-units (2026-10-02)	590	2450000	600	2867200	65536
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0
