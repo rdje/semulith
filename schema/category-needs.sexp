@@ -14,6 +14,8 @@
 ;; Category ids: C01..C24 are the catalogue's own; D01..D15 are the DSP-specific questions
 ;; of its §5, carried as their own categories rather than folded into the CPU ones
 ;; (MODEL-METHOD.2). Nothing is pre-built for units that have never been exercised.
+;; `P5-BOARD.11` (`2026-10-02`): `layer` gains `device` — the shared taxonomy edit that
+;; registration day needs (case sifive-uart-lab-v0 / lan9118-lab-v0).
 ;;
 ;; Records move only behind the schema layer: an undeclared construct, an unknown field,
 ;; a wrong arity or a wrong value type is refused by name, never ignored.
@@ -22,7 +24,8 @@
 
 (construct (name category-need)
   (field (name category) (type string) (pattern "^(C|D)[0-9]{2}$"))
-  (field (name layer) (type symbol) (values processor) (values board) (values system))
+  (field (name layer) (type symbol) (values processor) (values board) (values system)
+         (values device))
   (field (name kind) (type string) (min-length 1))
   (field (name unit) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
   (field (name disposition) (type symbol) (values covered) (values partial)

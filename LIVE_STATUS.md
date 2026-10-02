@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (31 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 341 self-test arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row went missing) |
+| Project doctrines (31 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 345 self-test arms, all fired RED before registration; the list is not mirrored here (a hand-kept list is how a row went missing) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 33 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 33 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
@@ -42,7 +42,7 @@ summarize the snapshot in every commit-workflow completion message.
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 8/8 — **gate `BREADTH` RUN, verdict `passed`**: TI C6000 / SHARC unclaimed explicitly |
 | P4 — Linux CPU profile | CPU-SYSTEM | Not Started | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) — 10 leaves; FP gated on qualification |
-| P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 11 leaves (`.1`/`.2`/`.8`/`.9`/`.10` done); both device dossiers gated |
+| P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 11 leaves (`.1`/`.2`/`.8`/`.9`/`.10`/`.11` done); the units registered |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |
 | P6 — Linux userspace | LINUX | Not Started | [`P6-LINUX`](docs/tasks/P6-LINUX.md) — 8 leaves; a banner is not a pass |
 | P7 — useful headless computer | SYSTEM | Not Started | [`P7-COMPUTER`](docs/tasks/P7-COMPUTER.md) — 7 leaves; the declared suite is the claim |

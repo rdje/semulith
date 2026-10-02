@@ -11,3 +11,14 @@
 ;; this unit's own decision (D-RESET-STATE), while interrupts are a named subset exclusion
 ;; (C14 stays a census row with disposition missing, never a required category).
 (unit (id "dsp56300-lab-v0") (kind processor) (layer processor) (book "docs/models/dsp56300-lab-v0/") (requires "C01") (requires "C02") (requires "C03") (requires "C04") (requires "C05") (requires "C06") (requires "C09") (requires "C10") (requires "C11") (requires "C13") (requires "C17") (requires "C22") (requires "C23") (requires "C24"))
+;; Registration day (P5-BOARD.11, 2026-10-02): the board and its two devices register
+;; together — the schema's kind gained board/device and layer gained device for exactly
+;; these three units. A device unit's requires set is the categories its dossier
+;; demonstrably carries (the register contract, the state census, the measured silences,
+;; the provenance) — C21 stays out of the set: the wire is the board's declared backend,
+;; not a unit material. The board requires exactly the categories its definition
+;; dispositions: the device/map composition (C19), the declared absences (C14, C17) and
+;; the backends (C21).
+(unit (id "netboard-lab-v0") (kind board) (layer board) (book "docs/models/netboard-lab-v0/") (requires "C14") (requires "C17") (requires "C19") (requires "C21"))
+(unit (id "sifive-uart-lab-v0") (kind device) (layer device) (book "docs/models/sifive-uart-lab-v0/") (requires "C01") (requires "C02") (requires "C10") (requires "C11") (requires "C14") (requires "C17") (requires "C19") (requires "C22") (requires "C23"))
+(unit (id "lan9118-lab-v0") (kind device) (layer device) (book "docs/models/lan9118-lab-v0/") (requires "C01") (requires "C02") (requires "C10") (requires "C11") (requires "C14") (requires "C17") (requires "C19") (requires "C22") (requires "C23"))

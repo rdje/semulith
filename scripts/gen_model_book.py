@@ -23,6 +23,13 @@ supply — which is authored in `src/materials.md` around the includes.
 The generator REFUSES, by name, what it cannot emit: a missing dossier document, a
 record that does not map. A generator that guesses is a second definition.
 
+`P5-BOARD.11` (2026-10-02): the emission is keyed on the unit's DECLARED shape
+(`unit_shape` — the vehicle route for profile-bearing units, `board.sexp` for a board):
+the internal-contracts census is per-shape (`shape_contracts`), and the encoding /
+reference / specification fragments carry route-honest content for shapes that have no
+encoding space or reference candidates by declaration. An undeclared absence stays a
+refusal.
+
 usage: gen_model_book.py [--check] [--unit ID] [--profile-dir PATH] [--book-dir PATH]
 """
 
@@ -47,6 +54,29 @@ FRAGMENTS = ("pinned-specifications.md", "encoding-tables.md", "reference-models
 # does-not-supply statement).
 INTERNAL_CONTRACTS = ("profile.sexp", "state.sexp", "encoding.sexp", "requirements.sexp",
                       "contract-obligations.sexp", "guests/", "interactions.sexp")
+# `P5-BOARD.11` (2026-10-02): the census is per-SHAPE, derived from the unit's own
+# declaration (unit_shape), never from a guess. A device dossier carries expectations/
+# instead of the processor's guests/ + interactions.sexp and has no encoding space at
+# all; a board dossier is the canonical definition plus its narrative.
+DEVICE_CONTRACTS = ("profile.sexp", "state.sexp", "requirements.sexp",
+                    "contract-obligations.sexp", "expectations/")
+BOARD_CONTRACTS = ("board.sexp", "DOSSIER.md")
+
+
+def unit_shape(profile_dir: Path) -> str:
+    """The unit's dossier shape, derived from its DECLARATION (P5-BOARD.11): a board
+    dossier carries board.sexp (and no profile.sexp); any other unit's shape is its
+    profile's declared vehicle route (decision_gate-applicability-by-declared-vehicle),
+    defaulting to the processor shape. Public: the MATERIALS-BILL gate keys on it too."""
+    if (Path(profile_dir) / "board.sexp").is_file():
+        return "board"
+    route = _vehicle_route(profile_dir)
+    return route if route in ("sibling-crate", "device-model") else "processor"
+
+
+def shape_contracts(shape: str) -> tuple[str, ...]:
+    return {"device-model": DEVICE_CONTRACTS,
+            "board": BOARD_CONTRACTS}.get(shape, INTERNAL_CONTRACTS)
 
 
 class GenError(Exception):
@@ -103,9 +133,37 @@ def _header(inputs: list[Path]) -> list[str]:
 
 # --------------------------------------------------------------------------- the fragments
 
-def emit_specifications(sources_path: Path) -> str:
-    doc = _load(D.load_sources, sources_path)
-    a = _header([sources_path])
+def emit_specifications(profile_dir: Path) -> str:
+    # P5-BOARD.11: the board unit pins its inputs in board.sexp, not a sources.sexp —
+    # the processor by unit id + version + dossier digest, each device by its
+    # datasheet's material id + revision + sha256 (versions, not names — P5-BOARD.1).
+    board_path = profile_dir / "board.sexp"
+    if board_path.is_file():
+        doc = S.read_file(board_path)[0]
+        proc = S.children(doc, "processor")[0]
+        a = _header([board_path])
+        a.append("A board has no specification of its own: it **composes** pinned units. "
+                 "The canonical definition pins versions, not names — the processor by unit "
+                 "id + version + the GATE-REPORT-gated dossier content digest, each device "
+                 "by its datasheet's material id + revision + sha256.")
+        a.append("")
+        a.append("| Pin | Identity | Revision / version | sha256 |")
+        a.append("| --- | --- | --- | --- |")
+        a.append(f"| processor | `{S.field(proc, 'unit', board_path)}` v"
+                 f"{S.field(proc, 'version', board_path)} (contract "
+                 f"`{S.field(proc, 'contract', board_path)}` v"
+                 f"{S.field(proc, 'contract-version', board_path)}) | the unit's dossier | "
+                 f"`{S.field(proc, 'dossier-sha256', board_path)}` |")
+        for d in S.children(doc, "device"):
+            a.append(f"| device `{S.field(d, 'id', board_path)}` "
+                     f"(unit `{S.field(d, 'unit', board_path)}`) | "
+                     f"**{S.field(d, 'material', board_path)}** | "
+                     f"{S.field(d, 'revision', board_path)} | "
+                     f"`{S.field(d, 'sha256', board_path)}` |")
+        a.append("")
+        return "\n".join(a)
+    doc = _load(D.load_sources, profile_dir / "sources.sexp")
+    a = _header([profile_dir / "sources.sexp"])
     a.append(f"Pinned publication: **{doc['publication']}**, revision "
              f"`{doc['revision']}`, retrieved {doc['retrieved']} — explicitly NOT "
              f"{doc['not_this_publication']}.")
@@ -126,6 +184,28 @@ def emit_specifications(sources_path: Path) -> str:
 
 
 def emit_encoding(profile_dir: Path) -> str:
+    # P5-BOARD.11: shapes with no encoding space, by declaration, before any load —
+    # a device has no instruction encodings (its register map is the contract), and a
+    # board composes its processor's encoding rather than adding one.
+    shape = unit_shape(profile_dir)
+    if shape == "device-model":
+        a = _header([profile_dir / "profile.sexp"])
+        a.append("This unit declares its vehicle as `(route device-model)`: there is no "
+                 "encoding space because a device has no instructions — its **register map** "
+                 "is the contract, dossiered as requirement records with the datasheet's "
+                 "locators (`profiles/` … `requirements.sexp`), and its evidence shape is "
+                 "datasheet-derived register-read expectations, not encoded guest programs.")
+        a.append("")
+        return "\n".join(a)
+    if shape == "board":
+        a = _header([profile_dir / "board.sexp"])
+        a.append("A board adds no encoding space: the instruction encodings a guest can "
+                 "execute are exactly its processor's — pinned by unit id + version + "
+                 "dossier digest in `board.sexp` and billed in the processor unit's own "
+                 "book. The board's contract surface is the memory map, the device windows "
+                 "and the declared absences.")
+        a.append("")
+        return "\n".join(a)
     references_path = profile_dir / "references.sexp"
     doc = _load(D.load_references, references_path)
     encs = doc.get("encoding_source", [])
@@ -165,7 +245,31 @@ def emit_encoding(profile_dir: Path) -> str:
     return "\n".join(a)
 
 
-def emit_references(references_path: Path) -> str:
+def emit_references(profile_dir: Path) -> str:
+    # P5-BOARD.11: devices and boards pin no reference candidates — recorded by
+    # declaration, not by an absent file discovered mid-load.
+    shape = unit_shape(profile_dir)
+    if shape == "device-model":
+        a = _header([profile_dir / "profile.sexp"])
+        a.append("This unit pins **no reference models**: it declares `(comparison "
+                 "register-expectations)` — the comparison surface is the dossier's own "
+                 "datasheet-derived register-read expectations (`expectations/`), recorded "
+                 "before any model exists (EVD-05 at the device layer). A reference that "
+                 "shares an ancestor with the datasheet would not be a second opinion; an "
+                 "independent implementation may be pinned here the day one is acquired "
+                 "through the materials channel.")
+        a.append("")
+        return "\n".join(a)
+    if shape == "board":
+        a = _header([profile_dir / "board.sexp"])
+        a.append("A board pins no reference models of its own: the references that matter "
+                 "are its processor's, standing behind the pinned dossier digest "
+                 "(`board.sexp`), and its devices' datasheets, pinned as materials. The "
+                 "composition's own evidence is `.4`'s verdict and `.5`'s probes — never a "
+                 "reference implementation's say-so.")
+        a.append("")
+        return "\n".join(a)
+    references_path = profile_dir / "references.sexp"
     doc = _load(D.load_references, references_path)
     a = _header([references_path])
     a.append("| ID | Role | Status | Kind | Version | sha256 | Terms |")
@@ -199,6 +303,98 @@ def _count_records(path: Path) -> int:
 
 
 def emit_contracts(profile_dir: Path) -> str:
+    # P5-BOARD.11: the census follows the unit's DECLARED shape — a device dossier and a
+    # board dossier carry different documents than a processor dossier, and the table
+    # says so honestly rather than refusing or pretending.
+    shape = unit_shape(profile_dir)
+    if shape == "device-model":
+        return _emit_contracts_device(profile_dir)
+    if shape == "board":
+        return _emit_contracts_board(profile_dir)
+    return _emit_contracts_processor(profile_dir)
+
+
+def _emit_contracts_device(profile_dir: Path) -> str:
+    profile_path = profile_dir / "profile.sexp"
+    inputs = [profile_dir / n for n in DEVICE_CONTRACTS if not n.endswith("/")]
+    for p in inputs:
+        if not p.is_file():
+            raise GenError(f"{rel(p)}: the dossier document is missing")
+    inputs.append(profile_dir / "sources.sexp")
+    prof = _load(D.load_profile, profile_path)
+    state_root = S.read_file(profile_dir / "state.sexp")[0]
+    n_regs = sum(len(S.children(sr, "register"))
+                 for sr in S.children(state_root, "special_registers"))
+    n_fams = len(S.children(state_root, "register_family"))
+    census = S.children(state_root, "hidden_state_census")
+    hidden = str(S.field(census[0], "answer", "state.sexp")) if census else "—"
+    n_reqs = _count_records(profile_dir / "requirements.sexp")
+    obs = R.load(profile_dir / "contract-obligations.sexp")
+    n_checks = sum(len(o["required_checks"]) for o in obs)
+    exp = sorted((profile_dir / "expectations").glob("*.expected.sexp"))
+    steps = sum(len(D.load_expectations(g)["step"]) for g in exp)
+    forms = prof["scope"]["count_total"]
+
+    a = _header(inputs)
+    a.append("| Document | Role | Derived contents |")
+    a.append("| --- | --- | --- |")
+    a.append(f"| `profile.sexp` | the unit's declaration: scope, decisions, authorities | "
+             f"{len(prof['decision'])} decisions, {forms} declared scope registers |")
+    a.append(f"| `state.sexp` | the device-state census, including the hidden-state "
+             f"census | {n_regs} registers, {n_fams} FIFO families, hidden state: {hidden} |")
+    a.append(f"| `requirements.sexp` | the predeclared requirements, one per decision "
+             f"(RECORD-SCHEMA cross-checks the statements verbatim) | {n_reqs} requirements |")
+    a.append(f"| `contract-obligations.sexp` | the device contract "
+             f"(`{obs[0]['contract_id']}`): every obligation with positive AND negative "
+             f"checks | {len(obs)} obligations, {n_checks} declared checks |")
+    a.append(f"| `expectations/` | the EVD-05 register-read corpus: datasheet-derived "
+             f"expectations recorded before any model exists | {len(exp)} documents, "
+             f"{steps} expected steps |")
+    a.append("")
+    a.append("This unit declares `(route device-model)`: it carries no `encoding.sexp` "
+             "(a device has no instruction encodings), no `guests/` corpus "
+             "(the expectations are the corpus) and no `interactions.sexp` "
+             "(INTERACTION-MATRIX derives the route from the declaration — the matrix "
+             "attaches with the probe corpus, P5-BOARD.5). The absences are the shape, "
+             "not gaps.")
+    a.append("")
+    return "\n".join(a)
+
+
+def _emit_contracts_board(profile_dir: Path) -> str:
+    board_path = profile_dir / "board.sexp"
+    dossier_path = profile_dir / "DOSSIER.md"
+    for p in (board_path, dossier_path):
+        if not p.is_file():
+            raise GenError(f"{rel(p)}: the dossier document is missing")
+    doc = S.read_file(board_path)[0]
+    proc = S.children(doc, "processor")[0]
+    devices = S.children(doc, "device")
+    mmap = S.children(doc, "memory-map")
+    regions = S.children(mmap[0], "region") if mmap else []
+    n_decisions = len(S.children(doc, "decision"))
+
+    a = _header([board_path, dossier_path])
+    a.append("| Document | Role | Derived contents |")
+    a.append("| --- | --- | --- |")
+    a.append(f"| `board.sexp` | the canonical board definition (schema `board.sexp`): "
+             f"composition pins, memory map, reset, declared absences | processor "
+             f"`{S.field(proc, 'unit', board_path)}` v{S.field(proc, 'version', board_path)}, "
+             f"{len(devices)} devices, {len(regions)} memory regions, "
+             f"{n_decisions} recorded board decisions |")
+    a.append(f"| `DOSSIER.md` | the board's narrative — what the definition means and "
+             f"what it does not claim | {_bytes(dossier_path.stat().st_size)} bytes |")
+    a.append("")
+    a.append("A board dossier carries no profile/requirements/obligations of its own: "
+             "the CPU contract it must satisfy is its processor's, the device guarantees "
+             "it relies on are its devices' — the composition verdict that matches them "
+             "(P5-BOARD.4) is evidence, and lands in the book's evidence chapter when it "
+             "exists.")
+    a.append("")
+    return "\n".join(a)
+
+
+def _emit_contracts_processor(profile_dir: Path) -> str:
     profile_path = profile_dir / "profile.sexp"
     reqs_path = profile_dir / "requirements.sexp"
     obs_path = profile_dir / "contract-obligations.sexp"
@@ -288,9 +484,9 @@ def emit_contracts(profile_dir: Path) -> str:
 
 
 EMITTERS = {
-    "pinned-specifications.md": lambda pd: emit_specifications(pd / "sources.sexp"),
+    "pinned-specifications.md": emit_specifications,
     "encoding-tables.md": emit_encoding,
-    "reference-models.md": lambda pd: emit_references(pd / "references.sexp"),
+    "reference-models.md": emit_references,
     "internal-contracts.md": emit_contracts,
 }
 

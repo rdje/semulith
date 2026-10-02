@@ -18,7 +18,12 @@
 #                contract has its own `###` section in `src/materials.md`, and each section
 #                carries its "does not supply" statement. A material without a section is
 #                an omission; a section without the negative statement is the lie of
-#                omission this leaf exists to prevent.
+#                omission this leaf exists to prevent. `P5-BOARD.11` (2026-10-02): the
+#                enumeration is keyed on the unit's DECLARED shape
+#                (`gen_model_book.unit_shape`) — a device pins no references.sexp (no
+#                encoding source, no candidates, by declaration) and a board's materials
+#                are its composition pins in board.sexp; an undeclared absence stays
+#                CANNOT JUDGE.
 #
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
@@ -85,16 +90,35 @@ for u in unit_forms:
                         f"`python3 scripts/gen_model_book.py`; never edit the fragments")
 
     # ---- COMPLETENESS: every material has its section AND its negative statement -------
-    try:
-        src = D.load_sources(profile_dir / "sources.sexp")
-        refs = D.load_references(profile_dir / "references.sexp")
-    except D.DossierError as exc:
-        findings.append(f"CANNOT JUDGE {uid}: the pinned dossier does not map — {exc}")
-        continue
-    required = ([s["id"] for s in src.get("source", [])]
-                + [e["id"] for e in refs.get("encoding_source", [])]
-                + [c["id"] for c in refs.get("candidate", [])]
-                + list(G.INTERNAL_CONTRACTS))
+    # P5-BOARD.11: the enumeration is keyed on the unit's DECLARED shape
+    # (gen_model_book.unit_shape) — a device dossier has no references.sexp (no encoding
+    # source, no reference candidates, by declaration) and a board dossier pins its
+    # materials in board.sexp (the processor unit + the device material ids). An
+    # undeclared absence stays CANNOT JUDGE.
+    shape = G.unit_shape(profile_dir)
+    required: list[str] = []
+    if shape == "board":
+        try:
+            bdoc = S.read_file(profile_dir / "board.sexp")[0]
+        except (S.SexpError, IndexError) as exc:
+            findings.append(f"CANNOT JUDGE {uid}: the pinned dossier does not map — {exc}")
+            continue
+        bproc = S.children(bdoc, "processor")[0]
+        required = [str(S.field(bproc, "unit", "board.sexp"))]
+        required += [str(S.field(d, "material", "board.sexp"))
+                     for d in S.children(bdoc, "device")]
+    else:
+        try:
+            src = D.load_sources(profile_dir / "sources.sexp")
+            required = [s["id"] for s in src.get("source", [])]
+            if shape != "device-model":
+                refs = D.load_references(profile_dir / "references.sexp")
+                required += ([e["id"] for e in refs.get("encoding_source", [])]
+                             + [c["id"] for c in refs.get("candidate", [])])
+        except D.DossierError as exc:
+            findings.append(f"CANNOT JUDGE {uid}: the pinned dossier does not map — {exc}")
+            continue
+    required += list(G.shape_contracts(shape))
     text = bill.read_text()
     # one section per `###` heading; a section runs to the next heading of any level
     heads = [(m.start(), m.group(1)) for m in re.finditer(r"(?m)^###\s+(.*)$", text)]
@@ -200,6 +224,84 @@ PYEOF
 
   rm "$t/books/p/book.toml"
   arm "RED   a book with no skeleton" 1 "NO BOOK"
+
+  # ── P5-BOARD.11: the device and board shapes — the census follows the declaration.
+  # The fixtures re-root the REAL dossiers (the UART's, the board's) exactly as the
+  # processor fixture does, and the bills name every material the shape enumerates.
+  devfixture() {
+    rm -rf "$t/profiles/d" "$t/books/d"
+    mkdir -p "$t/books/d/src/materials"
+    cp -R "$ROOT/profiles/sifive-uart-lab-v0" "$t/profiles/d"
+    cat > "$t/materials/units.sexp" <<'EOF'
+(unit (id "d") (kind device) (layer device) (book "books/d"))
+EOF
+    cat > "$t/books/d/book.toml" <<'EOF'
+[book]
+title = "d"
+EOF
+    printf '# Summary\n\n[materials](materials.md)\n' > "$t/books/d/src/SUMMARY.md"
+    python3 scripts/gen_model_book.py --profile-dir "$t/profiles/d" \
+      --book-dir "$t/books/d" >/dev/null
+    {
+      printf '# Materials bill\n\n'
+      for m in SIFIVE-FU540-C000 profile.sexp state.sexp requirements.sexp \
+               contract-obligations.sexp expectations/; do
+        printf '### `%s`\n\nWhat it is for.\n\n**Does not supply:** something.\n\n' "$m"
+      done
+    } > "$t/books/d/src/materials.md"
+  }
+
+  devfixture
+  arm "GREEN a device-shaped bill — no references.sexp, expectations/ is the corpus" 0 \
+      "every section carries its does-not-supply"
+
+  devfixture
+  python3 - "$t/books/d/src/materials.md" <<'PYEOF'
+import sys
+p = sys.argv[1]
+text = open(p).read()
+i = text.index("### `expectations/`")
+j = text.index("###", i + 5) if "###" in text[i + 5:] else len(text)
+open(p, "w").write(text[:i] + text[j:])
+PYEOF
+  arm "RED   a device bill omitting the expectations/ section" 1 "MISSING SECTION d"
+
+  boardfixture() {
+    rm -rf "$t/profiles/b" "$t/books/b"
+    mkdir -p "$t/books/b/src/materials"
+    cp -R "$ROOT/profiles/netboard-lab-v0" "$t/profiles/b"
+    cat > "$t/materials/units.sexp" <<'EOF'
+(unit (id "b") (kind board) (layer board) (book "books/b"))
+EOF
+    cat > "$t/books/b/book.toml" <<'EOF'
+[book]
+title = "b"
+EOF
+    printf '# Summary\n\n[materials](materials.md)\n' > "$t/books/b/src/SUMMARY.md"
+    python3 scripts/gen_model_book.py --profile-dir "$t/profiles/b" \
+      --book-dir "$t/books/b" >/dev/null
+    {
+      printf '# Materials bill\n\n'
+      for m in rv64i-lab-v0 SIFIVE-FU540-C000 MICROCHIP-LAN9118 board.sexp DOSSIER.md; do
+        printf '### `%s`\n\nWhat it is for.\n\n**Does not supply:** something.\n\n' "$m"
+      done
+    } > "$t/books/b/src/materials.md"
+  }
+
+  boardfixture
+  arm "GREEN a board-shaped bill — the composition pins are the materials" 0 \
+      "every section carries its does-not-supply"
+
+  boardfixture
+  python3 - "$t/books/b/src/materials.md" <<'PYEOF'
+import sys
+p = sys.argv[1]
+text = open(p).read()
+i = text.index("### `MICROCHIP-LAN9118`")
+j = text.index("###", i + 5)
+open(p, "w").write(text[:i] + text[j:])
+PYEOF
+  arm "RED   a board bill omitting a device material pin" 1 "MISSING SECTION b"
 
   rm -rf "$t"
   printf 'MATERIALS-BILL --self-test: %d pass / %d fail\n' "$pass" "$fail"

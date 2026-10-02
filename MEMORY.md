@@ -16,16 +16,14 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit) · `P5-BOARD` (3/11 — both device dossiers landed, fully gated).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit) · `P5-BOARD` (4/11 — the three units registered; both device dossiers gated).
   Milestone frontier: `P5-BOARD`.
-- next_action: `P5-BOARD.11` — registration day: register `netboard-lab-v0`,
-  `sifive-uart-lab-v0` and `lan9118-lab-v0` in `materials/units.sexp` together. The
-  design brief is recorded (`SEMULITH-P5-0010`, tree Decisions): kind +board/+device and
-  layer +device schema edits; the route-keyed generator + MATERIALS-BILL
-  generalization (measured: references.sexp is absent from all three new dossiers);
-  three per-unit books; category-needs rows. Both device dossiers are done and fully
-  gated (`profiles/sifive-uart-lab-v0/`, `profiles/lan9118-lab-v0/`). Then:
-  `BOOK-APPARATUS.2`.
+- next_action: `BOOK-APPARATUS.2` — the reading-experience audit pass (the pointer chain
+  after registration day). The P5-BOARD frontier is `.3` — generated maps and the
+  hardware description from the canonical board definition; `.4` (the composition
+  verdict) has the devices' composition records pre-wired (`REQ-D-NIC-TIME-SOURCES`,
+  `REQ-D-NIC-PHY-LINK`, the strap values). All five units are registered
+  (`materials/units.sexp`) with books that build (`docs/models/<unit-id>/`).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

@@ -859,7 +859,7 @@ def build_breadth() -> str:
     A("## What this verdict does NOT mean")
     A("")
     A("- **No stable-general-API claim beyond the exercised cases.** The abstraction supports")
-    A("  the two registered units' shapes, measured; a third family may demand constructs")
+    A(f"  the {sum(1 for u in units if u['kind'] == 'processor')} registered processor units' shapes, measured; a further family may demand constructs")
     A("  nobody has needed yet (the slice-gated `P3-BREADTH.1` legs — F2 grouping, F4/F5")
     A("  VLIW visibility — are recorded, unbuilt, and named).")
     A("- **No DSP56300 family compatibility.** The subset is EXPERIMENTAL; the differential")

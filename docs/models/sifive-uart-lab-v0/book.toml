@@ -1,0 +1,11 @@
+[book]
+title = "sifive-uart-lab-v0 — the model book"
+description = "The SiFive UART device unit of netboard-lab-v0: the complete materials bill for its dossier, and the method from datasheet to device contract."
+authors = ["Semulith maintainers"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "rust"
+git-repository-url = ""
+no-section-label = false

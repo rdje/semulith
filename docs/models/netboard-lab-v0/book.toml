@@ -1,0 +1,11 @@
+[book]
+title = "netboard-lab-v0 — the model book"
+description = "The first board: rv64i-lab-v0 composed with the SiFive UART and the LAN9118 — the canonical definition's materials bill and the composition method."
+authors = ["Semulith maintainers"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "rust"
+git-repository-url = ""
+no-section-label = false

@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/dsp56300-lab-v0/sources.sexp`  `f0b01f2b02e618435ea3a6130c0dbcb992a1b7d028dd4799562394d1cadf8424`
-     Generator: `scripts/gen_model_book.py` (sha256 `4a782e2fd828d743f1edf8e9ff7162f6228e4054a5717eb5e0a8b14ead8d21bb`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `b1524b0982e891ec679cb622686eb0a23aa2e6a7259735a3ad976e482d26fda0`) -->
 
 Pinned publication: **DSP56300 Family Manual (DSP56300FM) — NXP reference manuals, nxp.com**, revision `Rev. 5, April 2005`, retrieved 2026-10-01 — explicitly NOT third-party PDF mirrors of the same manual — the pin is NXP's own locator.
 

@@ -295,7 +295,17 @@ docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is th
 #                    the authored chapters by the per-part bound. Registered in the same
 #                    commit that created the directory — a new family without a row is the
 #                    exact failure this registry exists to prevent.
-docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decision_one-definition-one-book); the materials tables are generated, gated by MATERIALS-BILL	16	65536	40	262144	32768
+# Re-derivation, P5-BOARD.11 (2026-10-02), registration day, when the third through
+#   fifth unit books landed: docs/models/  57 files / 181,382 B measured (13 rv64i, 12
+#              dsp56300, 11+11 devices, 10 board) — the one-definition-one-book rule
+#              makes one directory per registered unit the DESIGNED expansion, and the
+#              file-count ceiling was adopted as the calendar for exactly this. The
+#              bound re-derives by the standing per-unit budget (decision_models-family-
+#              five-books): 5 x 20 files, 5 x 131,072 B; health at the profiles/
+#              standing ratios (the adoption-era 0.4 was already below the measured
+#              corpus). ⛔ PER-PART STAYS 32,768 — the largest member is rv64i's
+#              materials.md at 17,540 B.
+docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decision_one-definition-one-book); the materials tables are generated, gated by MATERIALS-BILL; the 5× bound is decision_models-family-five-books (2026-10-02)	98	560000	100	655360	32768
 # Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign dossier landed:
 #   profiles/  99 -> 100 files / 427,926 B (P2-SCALAR.5 strand 2c: the three act4/ DUT
 #              files from strand 2b plus act4.sexp, the recorded campaign) — the P2-SCALAR.5

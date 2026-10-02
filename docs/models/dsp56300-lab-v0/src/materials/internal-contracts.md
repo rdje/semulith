@@ -8,7 +8,7 @@
      `profiles/dsp56300-lab-v0/requirements.sexp`  `b4650fe0e1cf39417182f0c82893d1abfd3686eccf0893b8902403be240ce386`
      `profiles/dsp56300-lab-v0/contract-obligations.sexp`  `6b6bcbaec05d0056f7e1dfee4e46d3f4e0c2d0b66e17244b623d6314b0e52773`
      `profiles/dsp56300-lab-v0/interactions.sexp`  `c44ad7ee3953a43bf5b5a09ff85bedd8d3224bc4aaf4c65245d54d48c5947b33`
-     Generator: `scripts/gen_model_book.py` (sha256 `4a782e2fd828d743f1edf8e9ff7162f6228e4054a5717eb5e0a8b14ead8d21bb`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `b1524b0982e891ec679cb622686eb0a23aa2e6a7259735a3ad976e482d26fda0`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |

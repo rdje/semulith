@@ -1,0 +1,11 @@
+[book]
+title = "lan9118-lab-v0 — the model book"
+description = "The Microchip LAN9118 wired-NIC device unit of netboard-lab-v0: the complete materials bill for its dossier, and the method from datasheet to device contract."
+authors = ["Semulith maintainers"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "rust"
+git-repository-url = ""
+no-section-label = false

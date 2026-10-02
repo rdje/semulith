@@ -80,6 +80,7 @@
 - [`decision_lane-consumption.md`](docs/decisions/decision_lane-consumption.md)
 - [`decision_mdbook-incremental-engaging.md`](docs/decisions/decision_mdbook-incremental-engaging.md)
 - [`decision_memory-next-action-pointer.md`](docs/decisions/decision_memory-next-action-pointer.md)
+- [`decision_models-family-five-books.md`](docs/decisions/decision_models-family-five-books.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
 - [`decision_profiles-family-five-units.md`](docs/decisions/decision_profiles-family-five-units.md)
