@@ -16,7 +16,7 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (4/11 — the three units registered; both device dossiers gated).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `MCU-DOCS` (idle — 12 requests filed, awaiting the channel) · `P5-BOARD` (4/11 — the three units registered; both device dossiers gated).
   Milestone frontier: `P5-BOARD`. (`BOOK-APPARATUS` closed `2026-10-02`, 2/2.)
 - next_action: `P5-BOARD.3` — generated maps and the hardware description from the
   canonical board definition (`profiles/netboard-lab-v0/board.sexp`): address maps and

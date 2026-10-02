@@ -37,6 +37,7 @@
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
 - [`LAB-BENCH.md`](docs/tasks/LAB-BENCH.md)
 - [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
+- [`MCU-DOCS.md`](docs/tasks/MCU-DOCS.md)
 - [`MEMORY-POINTER.md`](docs/tasks/MEMORY-POINTER.md)
 - [`MIRROR-DRIFT.md`](docs/tasks/MIRROR-DRIFT.md)
 - [`MODEL-BOOKS.md`](docs/tasks/MODEL-BOOKS.md)

@@ -110,3 +110,111 @@
   (doc "any AR9271/AR7010 register-level programming document, or a measured negative")
   (answer "BLOCKED 2026-10-01 (measured negative — the probe's expected outcome, which IS the answer): no public register-level WiFi baseband programming documentation exists for AR9271/AR7010; Qualcomm/Atheros never published one and no Wayback snapshot exists. The open firmware (OpenFWWF) and the community ath9k_htc driver are the only public contract evidence")
   (updated "2026-10-01"))
+
+;; ── Second batch (2026-10-02, MCU-DOCS.1): the MCU documentation set — the director's
+;; 2026-10-02 steer ("ARMs as full documentations of MCUs, maybe others vendors too").
+;; Consumer for all twelve: the steered MCU-modeling direction — documentation ahead of
+;; an MCU milestone; no milestone owns MCU modeling yet, and that is stated, not hidden.
+;; Corpus survey before filing (the LIVE feed, corpus c4ad8a2 working tree, read-only —
+;; the snapshot was stale against it): HELD — ESP32/C3/S3 SVDs (SVD-ESPRESSIF),
+;; RP2040/RP2350 SVDs (SVD-RASPBERRY-PI), nRF52840 PS (adopted at P5-BOARD.9), AM335x
+;; TRM (a Cortex-A8 SoC, not an MCU), Arm PrimeCell TRMs + AMBA/GIC (Cortex-A/board
+;; class); ABSENT — every Arm M-profile architecture manual, every Cortex-M TRM, and
+;; every vendor MCU datasheet/RM beyond the held trio. The CMSIS-SVD format record is
+;; the corpus's own tracked `wanted`, not ours to re-file.
+
+(request
+  (id "REQ-MCU-ARMV7M-ARM")
+  (status open)
+  (wanted "Armv7-M Architecture Reference Manual (the M-profile MCU architecture: Thumb-2, the exception model, NVIC, SysTick, the optional MPU)")
+  (why "MCU-DOCS.1 (the 2026-10-02 MCU steer): the M-profile architecture is the core contract every Cortex-M3/M4-class MCU model is written against — the NVIC/SysTick/exception semantics are architecture, not vendor data")
+  (doc "Armv7-M Architecture Reference Manual (Arm)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-ARMV6M-ARM")
+  (status open)
+  (wanted "Armv6-M Architecture Reference Manual (the minimal M profile: Cortex-M0/M0+/M1)")
+  (why "MCU-DOCS.1: the smallest MCU cores (incl. the RP2040's Cortex-M0+) run v6-M — the smallest honest MCU processor profile this project could model")
+  (doc "Armv6-M Architecture Reference Manual (Arm)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-ARMV8M-ARM")
+  (status open)
+  (wanted "Armv8-M Architecture Reference Manual (mainline and baseline; TrustZone-M)")
+  (why "MCU-DOCS.1: the current M-profile generation (Cortex-M23/M33/M55 class) — the forward-looking MCU architecture; v8-M mainline supersedes v7-M for new cores")
+  (doc "Armv8-M Architecture Reference Manual (Arm)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-CORTEX-M3-TRM")
+  (status open)
+  (wanted "Arm Cortex-M3 Technical Reference Manual (the canonical v7-M MCU core)")
+  (why "MCU-DOCS.1: the most-documented MCU core in history — a Cortex-M3 model has the QEMU lm3s/mps2 precedents as potential second implementations for differential checking")
+  (doc "Cortex-M3 Technical Reference Manual (Arm)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-CORTEX-M0P-TRM")
+  (status open)
+  (wanted "Arm Cortex-M0+ Technical Reference Manual (the canonical v6-M core — the RP2040's)")
+  (why "MCU-DOCS.1: pairs with the RP2040 datasheet request — the core TRM plus the SoC datasheet is the complete MCU documentation pair")
+  (doc "Cortex-M0+ Technical Reference Manual (Arm)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-CORTEX-M4-TRM")
+  (status open)
+  (wanted "Arm Cortex-M4 Technical Reference Manual (v7E-M: the DSP-extension and FP-extension MCU core class)")
+  (why "MCU-DOCS.1: the most-deployed MCU core class (STM32F4, nRF52840 — whose PS the project already holds — i.MX RT); v7E-M adds the DSP/FP extensions to v7-M")
+  (doc "Cortex-M4 Technical Reference Manual (Arm)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-RP2040-DS")
+  (status open)
+  (wanted "Raspberry Pi RP2040 datasheet (the prose companion to the corpus's held SVD register maps: dual Cortex-M0+, the PIO state machines, clocks, resets, DMA)")
+  (why "MCU-DOCS.1: the best fully-public modern MCU documentation set — the SVD maps are already held (SVD-RASPBERRY-PI), the datasheet is the semantic half (what the registers DO, not just where they are)")
+  (doc "RP2040 datasheet (Raspberry Pi)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-STM32-RM")
+  (status open)
+  (wanted "ST STM32 reference manual + the Cortex-M4 programming manual (RM0394-class RM for the peripheral register contracts; PM0214 for the core's vendor view)")
+  (why "MCU-DOCS.1: the dominant MCU vendor line — ST publishes full reference manuals publicly; one representative RM measures the vendor-document class for this project")
+  (doc "STM32 reference manual + PM0214 programming manual (ST)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-FE310")
+  (status open)
+  (wanted "SiFive FE310-G002 manual (the RISC-V MCU: E31 core, CLINT/PLIC, the peripheral set)")
+  (why "MCU-DOCS.1: the RISC-V MCU — this project's own spine (the FU540/FU740 manuals are already held; the FE310 is the same vendor's microcontroller, and its CLINT/PLIC are the timer/IRQ contracts netboard-lab-v0 deliberately excludes)")
+  (doc "SiFive FE310-G002 manual")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-IMXRT-RM")
+  (status open)
+  (wanted "NXP i.MX RT1050 reference manual (the crossover MCU class: Cortex-M7 at 600 MHz)")
+  (why "MCU-DOCS.1: NXP publishes full crossover-MCU reference manuals publicly (the DSP56300 Family Manual channel precedent); the crossover class is where MCU and application-processor documentation styles meet")
+  (doc "i.MX RT1050 reference manual (NXP)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-SAMD21-DS")
+  (status open)
+  (wanted "Microchip SAM D21 datasheet (the classic Cortex-M0+ vendor MCU)")
+  (why "MCU-DOCS.1: Microchip/SMSC documentation is a measured-good channel (the LAN9118 acquisition, P5-BOARD.9); the SAM D21 is the classic public Cortex-M0+ vendor datasheet")
+  (doc "SAM D21 datasheet (Microchip)")
+  (updated "2026-10-02"))
+
+(request
+  (id "REQ-MCU-MSP430")
+  (status open)
+  (wanted "TI MSP430FR59xx family user's guide (the ultra-low-power MCU classic — a non-Arm ISA contrast)")
+  (why "MCU-DOCS.1: the non-Arm MCU contrast — MSP430 is a distinct 16-bit architecture with full public documentation (the TI DP83816/AM335x channel precedent); a second ISA keeps the MCU direction honest about what is Arm-shaped and what is not")
+  (doc "MSP430FR59xx family user's guide (TI)")
+  (updated "2026-10-02"))

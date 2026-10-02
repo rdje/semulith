@@ -72,6 +72,7 @@ on the same commit. One commit per completed leaf.
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
 | [`BOOK-APPARATUS`](tasks/BOOK-APPARATUS.md) | `done` | — (2/2 leaves complete; the index landed generated + gated by `BOOK-INDEX`, and the first reading-experience audit pass revised 13 of the 29 main-line chapters — the yield was factual drift) | repo-local |
 | [`MEMORY-POINTER`](tasks/MEMORY-POINTER.md) | `done` | — (1/1 leaves complete; MEMORY.md is the §6 next-action pointer per the director's `2026-10-02` ruling — 34/7,031 → 29/1,865) | repo-local |
+| [`MCU-DOCS`](tasks/MCU-DOCS.md) | `active` | — (1/1 leaves done; twelve MCU documentation requests filed through the chipdoc channel, pickup measured — the tree idles until the answers arrive) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |
 | [`PREFIX-DISCIPLINE`](tasks/PREFIX-DISCIPLINE.md) | `done` | — (1/1 leaves complete; the SEMULITH- prefix pinned in `commit-msg`, watched behaviourally by `COMMIT-PREFIX` #29 — history keeps both spellings, immutably) | repo-local |
 | [`ROADMAP-V3`](tasks/ROADMAP-V3.md) | `done` | — (3/3 leaves complete; consumed by the v0.4 revision at P1 first slice) | repo-local |

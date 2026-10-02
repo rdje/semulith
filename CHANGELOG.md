@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## SEMULITH-MCU-0001 (leaf MCU-DOCS.1) — the MCU documentation set surveyed and requested through the chipdoc channel
+
+- The director's `2026-10-02` steer (ARMs carry full MCU documentations; other vendors
+  too — ask chipdoc) executed as documentation research, ahead of any MCU milestone
+  (none owns MCU modeling yet — stated, not hidden). New tree:
+  [`MCU-DOCS`](docs/tasks/MCU-DOCS.md).
+- The survey measured the LIVE corpus feed (corpus `c4ad8a2` working tree, read-only):
+  held — ESP32/C3/S3 and RP2040/RP2350 SVD register maps, the nRF52840 PS, the AM335x
+  TRM (a Cortex-A8 SoC, not an MCU), the Arm PrimeCell/AMBA/GIC set (Cortex-A class);
+  absent — every Arm M-profile architecture manual, every Cortex-M TRM, every vendor
+  MCU datasheet/RM beyond the held trio.
+- Twelve requests filed in `materials/requests.sexp` (the preferred channel): the three
+  M-profile ARMs (v6-M/v7-M/v8-M), three Cortex-M TRMs (M0+/M3/M4), and six vendor
+  documents (RP2040 datasheet, STM32 RM + PM0214, SiFive FE310, i.MX RT1050 RM, SAM
+  D21, MSP430FR59xx). Pickup measured: the poller (read-only) reports exactly the
+  twelve new ids, rc 1. One authoring defect (a heredoc paren over-close) caught by the
+  one reader before landing — parse gates work.
+- Fulfilment is chipdoc-side and asynchronous; a `MCU-DOCS.2` reconciles the answers
+  when they arrive (the `P5-BOARD.9` pattern).
+
 ## SEMULITH-BA-0002 (leaf BOOK-APPARATUS.2) — the reading-experience audit pass: 29 main-line chapters, 16 kept / 13 revised; the yield was factual drift
 
 - The first audit pass over the project book against
@@ -861,32 +881,4 @@
   mid-run broke its own parse (bash reads incrementally — restart, never edit in
   flight). One drift caught and owned: the model book's bench-arm count had gone stale
   (44 → 53) across two leaves.
-
-## SEMULITH-PS-0076 (leaf P2-SCALAR.8, design) — the portability matrix: availability measured first
-
-- Measured, not assumed: x86-64 is UNAVAILABLE on this host (`arch -x86_64` → `Bad CPU
-  type in executable`, Rosetta absent; no qemu user-mode runner) — the mandatory leg
-  reads UNMET, recorded not waived; the profile stays experimental per the acceptance.
-- Miri measured present and green: 65/65 core suites interpreted natively AND 65/65 on
-  `powerpc64-unknown-linux-gnu` (big-endian) — the cross-endian leg holds. The one
-  `unsafe` island (bench's counting allocator) excluded by name.
-- The design: `scripts/check_portability.sh` (four legs, honest `incomplete` verdict,
-  not a commit gate) + `portability.sexp` in `baseline.sexp`'s plain-atom shape.
-
-## SEMULITH-PS-0075 (leaf P2-SCALAR.7) — mid-execution snapshots: replay proven for the implemented boundaries
-
-- `semulith-verify::snapshot` + the CLI pair `snapshot`/`resume`: the record carries the
-  definition-identity pins (the bundle's own pin check, extracted and shared), the region,
-  entry, step index, the register file + pc, and the memory sparse-encoded and digested.
-  The completeness claim is the pinned hidden-state census: registers + pc + memory is ALL
-  the pending state this profile has — anything more is not offered (the acceptance's
-  second arm).
-- The proof: every tracked guest split at three points (early/middle/penultimate), resumed
-  through the JSON round-trip, continuations identical — steps AND crossing logs. RED
-  arms: corrupted run (digest), foreign definition (pin), incoherent/overrunning/partial
-  records — each refused by name. 175 → 180 verify suites.
-- One in-flight RED, the author's test arithmetic: the sparse encoding splits at zero
-  bytes (the first run is one byte), so the overrun tamper needed one-past-the-end.
-- CLI measured end-to-end: `dir-memwalk.elf` snapshotted at step 13 resumes the copy loop
-  exactly (24 continuation steps, stop Trap).
 
