@@ -60,15 +60,23 @@ incompatible CPU/environment assumption remains**.
   specification's. The `profiles/` family's third unit directory triggered the standing
   re-derivation: 3× bound, `decision_profiles-family-three-units`.
 
-- ID: `P5-BOARD.2` — **device dossiers**
+- ID: `P5-BOARD.2` — **device dossiers, first device: the SiFive UART (`sifive-uart-lab-v0`)**
   Status: `pending`
-  Goal: per device — sources, requirements, state, reset, access semantics, side effects, and independently sourced expected results (catalog `C19`).
-  Acceptance: devices reuse the CPU's dossier and gate machinery; they are not a lower tier (`docs/EVIDENCE_AND_GATES.md` §8).
+  Goal: the UART's dossier — sources, requirements, state, reset, access semantics, side
+  effects, and independently sourced expected results (catalog `C19`) — under
+  `profiles/sifive-uart-lab-v0/`, reusing the CPU's dossier machinery. (Split
+  `2026-10-02`: one device per leaf — `.2` the UART, `.10` the LAN9118; the original
+  `.2` covered both. Device order decided at the `.2` design brief: the UART first.)
+  Acceptance: devices reuse the CPU's dossier and gate machinery; they are not a lower
+  tier (`docs/EVIDENCE_AND_GATES.md` §8).
 
 - ID: `P5-BOARD.3` — **generated maps and hardware description**
   Status: `pending`
   Goal: address maps, wiring and hardware-description data generated from the canonical board definition (`OWN-05`).
   Acceptance: no handwritten duplicate map anywhere; generated artifacts carry their fingerprints and CI detects drift.
+  Note (`2026-10-02`): the board-unit registration `.1` routed here moved to `.11` —
+  one registration day for all three units, not two partial ones (Decisions, `.2`
+  design brief).
 
 - ID: `P5-BOARD.4` — **composition against the CPU contract** — the gate's core obligation
   Status: `pending`
@@ -149,11 +157,35 @@ incompatible CPU/environment assumption remains**.
   FIVE sourced candidates (wired NIC, LTE modem, WiFi module, two true RFICs) plus
   five measured negatives that close the alternatives.
 
+- ID: `P5-BOARD.10` — **device dossiers, second device: the LAN9118 (`lan9118-lab-v0`)**
+  Status: `pending`
+  Goal: the NIC's dossier — sources, requirements, state, reset, access semantics, side
+  effects, and independently sourced expected results (catalog `C19`) — under
+  `profiles/lan9118-lab-v0/`, inheriting the device-dossier shape `.2` hardens.
+  Acceptance: identical to `.2` — the full dossier and gate machinery, no lower tier
+  (`docs/EVIDENCE_AND_GATES.md` §8).
+
+- ID: `P5-BOARD.11` — **registration day: the three units register**
+  Status: `pending`
+  Goal: register `netboard-lab-v0`, `sifive-uart-lab-v0` and `lan9118-lab-v0` in
+  `materials/units.sexp` — one registration day: the `schema/units.sexp` `kind` edit
+  (the schema sanctions a `(values …)` edit "the day a real unit needs one"), the
+  materials-bill generator's generalization beyond processor-shaped units (its
+  INTERNAL_CONTRACTS census is processor-shaped, measured `2026-10-02`), the three
+  per-unit books under `docs/models/<unit-id>/` (UNIT-BOOKS), the category-needs rows
+  (SCOPE-COVERAGE), and the rest of the registration-day consequences `.1` censused
+  (BREADTH-report prose among them).
+  Acceptance: every registered unit passes UNIT-BOOKS, MATERIALS-BILL, SCOPE-COVERAGE
+  and RECORD-SCHEMA rules 10–11 — registration is one coherent day, not three partial
+  ones.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.2` | `pending` | the platform is specified; the devices need dossiers before anything composes — and `.2` decides which device goes first (Open Questions) |
+| 1 | `P5-BOARD.2` | `pending` | the platform is specified; the UART goes first (Open Question answered `2026-10-02`): the simplest contract exercises the device-dossier machinery before the NIC |
+| 2 | `P5-BOARD.10` | `pending` | the LAN9118 dossier inherits the device shape `.2` hardens |
+| 3 | `P5-BOARD.11` | `pending` | registration day: the three units register together — one generator generalization, one `kind` edit |
 
 ## Decisions
 
@@ -201,6 +233,67 @@ incompatible CPU/environment assumption remains**.
   devices = their datasheets' material id + revision + sha256; device UNIT dossiers land in
   `.2` — where a device unit does not yet exist, the board definition declares the id and
   names `.2` as its owner (the WAIVER-ROUTING shape, honesty with an owner).
+- `2026-10-02` (design brief for `.2`, recorded before its execution; sources: the `.1`
+  machinery census, the dossier-machinery map re-derived this day, the schema corpus):
+  **the device-order Open Question is answered — the UART goes first.** The SiFive UART
+  is the simplest contract on the board (7 datasheet registers, two 8-entry FIFOs, no
+  DMA, one access width), so the device-dossier machinery is exercised end-to-end on the
+  smallest device; the LAN9118 (`.10`) inherits the hardened shape. **Tree restructure,
+  recorded:** the original `.2` (both devices' dossiers) splits — one device per leaf,
+  `.2` the UART and `.10` the NIC, so each dossier lands as one safe-slice commit; `.11`
+  is registration day (below). **Registration routing amended:** `.1` routed board-unit
+  registration to `.3`; it consolidates into `.11` — ONE registration day for all three
+  units (board + both devices). Reason: registration day carries the `schema/units.sexp`
+  `kind` edit and the materials-bill generator's generalization (its INTERNAL_CONTRACTS
+  census — `encoding.sexp`, `guests/`, `interactions.sexp` — is processor-shaped, so both
+  board-shaped and device-shaped units need the same kind-conditional machinery); two
+  registration days would split one generator adaptation across two leaves. `.1`'s
+  routing note stays as recorded; this entry is the amendment.
+  **The `.2` machinery census (measured `2026-10-02`):**
+  - *Schema edits the UART dossier needs* (each the sanctioned "(values …) edit the day a
+    real unit needs one" shape, each fired before landing): `schema/profile.sexp` is
+    processor-shaped — `architecture`, `base`, `chapter_version`, `spec_revision`,
+    `harts`, `ilen`, `ialign`, `extensions`, `privilege_modes` are mandatory, and a UART
+    cannot honestly fill them (the P3-BREADTH.5 xlen precedent: forcing a field that does
+    not apply records a lie, so the field goes optional); its `scope` table needs a
+    device shape (PROFILE-CONSISTENCY refuses a profile.sexp with no scope census).
+    `schema/contract-obligations.sexp` `direction` admits only
+    `environment-assumption | cpu-guarantee` — a device guarantee needs the third value.
+    `schema/requirements.sexp` needs NO edit (`kind` already admits `device` and
+    `composition`); `authority` already admits `platform`.
+  - *Registration is NOT `.2`'s* (the `.1` precedent: a content leaf does not register;
+    registration-day consequences are `.11`'s). The gates that attach automatically the
+    day the documents land — DOSSIER-SCHEMA (basename pairs), RECORD-SCHEMA (the
+    requirements/obligations cross-checks, including CITED against the unit's own
+    `sources.sexp`, MIRROR, AUTHORITY), PROFILE-CONSISTENCY (`profiles/*/profile.sexp`)
+    — are glob-driven, so an unregistered dossier is still fully checked; what
+    registration adds (UNIT-BOOKS, MATERIALS-BILL, SCOPE-COVERAGE, rules 10–11) waits
+    for `.11` with its owner named, the WAIVER-ROUTING shape.
+  - *`state.sexp`:* the schema was generalized by P3-BREADTH.5 (`register_family`,
+    `memory_spaces`, the census; `xlen`/`integer_registers` optional) and can express
+    device state; `scripts/gen_state.py` is rv64i-only BY CONSTRUCTION (STATE-GEN
+    hardcodes the one profile), so a device `state.sexp` is decided by DOSSIER-SCHEMA +
+    PROFILE-CONSISTENCY and is never fed to the generator.
+  - *Expected results, independently sourced (C19):* the UART's expected results are
+    datasheet-sourced register-read expectations (reset values, status/FIFO-watermark
+    behaviour after defined stimuli), not an implementation's output. The dossier-machinery
+    route is the `.expected.sexp` family (DOSSIER-SCHEMA maps it to
+    `schema/expectations.sexp`); whether that schema is probe-shaped (pc/register steps)
+    is measured at execution, and a generalization — if needed — is the same sanctioned
+    schema-edit shape, recorded with the leaf.
+  - *Contract and authority mapping:* the device gets its own contract id
+    (`sifive-uart-v0` v0) so `.4`'s `discharge_assumptions.py` consumes device
+    guarantees by id — the board definition's `satisfies` fields name them. The
+    datasheet is the device's architecture authority: a datasheet-`defined` requirement
+    maps to `authority architecture` (RECORD-SCHEMA rule 7); the instance address, the
+    backend and the unconnected-interrupt declaration are `laboratory`/`platform`.
+  - *The `profiles/` family:* the fourth unit directory re-derives the bound 3× → 4× by
+    the standing arithmetic (per-unit 120 files / 573,440 B; per-part 32,768 B unchanged
+    — the bound that bites), with a decision record like
+    `decision_profiles-family-three-units.md`; `.10` re-derives 4× → 5× the same way.
+  - *Not `.2`'s scope:* the device MODEL (Rust) — the dossier is the documents the model
+    route consumes; implementation follows the model route, and firmware probes (`.5`)
+    stay gated on the CPU's acceptance trajectory regardless.
 - `2026-10-02` (`.1` execution amendments, recorded with the leaf):
   **CORRECTION — the "16550-compatible UART" label was measured false.** A `pdftotext`
   census of the pinned `SIFIVE-FU540-C000` v1p5 artifact finds zero occurrences of
@@ -227,8 +320,12 @@ incompatible CPU/environment assumption remains**.
 - ~~Which board?~~ **Answered `2026-10-02`** (Decisions, design brief; id finalized at `.1`
   execution): **`netboard-lab-v0`** — rv64i-lab-v0 v0 + the SiFive UART + LAN9118, no
   timer/IRQ controller by contract.
-- Which device gets a dossier first in `.2` — the UART (simpler contract) or the NIC (the
-  director's headline)? Decided at `.2`, not blocking `.1`.
+- ~~Which device gets a dossier first in `.2` — the UART (simpler contract) or the NIC (the
+  director's headline)?~~ **Answered `2026-10-02`** (Decisions, `.2` design brief): the
+  **UART first** — the simplest contract on the board (7 registers, two 8-entry FIFOs, no
+  DMA, one access width) exercises the device-dossier machinery end-to-end on the smallest
+  device; the NIC (`.10`) inherits the hardened shape. The original `.2` split: `.2` the
+  UART, `.10` the LAN9118, `.11` registration day.
 
 ## Design Discussions
 
@@ -411,3 +508,13 @@ incompatible CPU/environment assumption remains**.
   Registration (`materials/units.sexp`, the `kind` edit, the book) routed to `.3`;
   the `profiles/` bound re-derived to 3× (`decision_profiles-family-three-units`).
   Frontier: `.2` — device dossiers.
+- `2026-10-02`: the `.2` design brief recorded (`SEMULITH-P5-0006`). Device order
+  answered: the UART first (the simplest contract exercises the machinery; the NIC
+  inherits it). Tree restructured — the original two-device `.2` splits into `.2` (the
+  UART dossier) and `.10` (the LAN9118 dossier), one device per leaf; `.11` is
+  registration day: all three units (board + both devices) register together, amending
+  `.1`'s `.3` routing so the `kind` edit and the materials-bill generator's
+  generalization land once, coherently. The `.2` machinery census (schema edits for
+  `profile.sexp` and `contract-obligations.sexp`, the auto-attaching gates, STATE-GEN's
+  non-attachment, the expectations route, the 4× `profiles/` re-derivation) is in
+  Decisions. Frontier: `.2` — the UART dossier.

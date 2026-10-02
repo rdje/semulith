@@ -16,14 +16,14 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit) · `P5-BOARD` (1/9 — the platform specified).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit) · `P5-BOARD` (1/11 — the platform specified).
   Milestone frontier: `P5-BOARD`.
-- next_action: `P5-BOARD.2` — device dossiers: the SiFive UART and the LAN9118 get sources,
-  requirements, state, reset, access semantics, side effects, and independently sourced
-  expected results, reusing the CPU's dossier machinery (`docs/EVIDENCE_AND_GATES.md` §8).
-  `.2` first decides which device goes first (the tree's Open Question). The platform is
-  specified: `profiles/netboard-lab-v0/board.sexp` pins versions, not names; registration
-  of the board unit is routed to `.3`. Then: `BOOK-APPARATUS.2`.
+- next_action: `P5-BOARD.2` — the SiFive UART device dossier (`profiles/sifive-uart-lab-v0/`):
+  sources, requirements, state, reset, access semantics, side effects, and independently
+  sourced expected results, reusing the CPU's dossier machinery (`docs/EVIDENCE_AND_GATES.md`
+  §8). Device order decided (`.2` brief, `SEMULITH-P5-0006`): UART first, LAN9118 in `.10`,
+  registration day in `.11` (all three units). The platform is specified:
+  `profiles/netboard-lab-v0/board.sexp` pins versions, not names. Then: `BOOK-APPARATUS.2`.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).
