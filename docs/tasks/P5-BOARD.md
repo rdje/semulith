@@ -197,7 +197,7 @@ incompatible CPU/environment assumption remains**.
   five measured negatives that close the alternatives.
 
 - ID: `P5-BOARD.10` — **device dossiers, second device: the LAN9118 (`lan9118-lab-v0`)**
-  Status: `pending`
+  Status: `pending` (design brief recorded `2026-10-02`, `SEMULITH-P5-0008`)
   Goal: the NIC's dossier — sources, requirements, state, reset, access semantics, side
   effects, and independently sourced expected results (catalog `C19`) — under
   `profiles/lan9118-lab-v0/`, inheriting the device-dossier shape `.2` hardens.
@@ -358,6 +358,94 @@ incompatible CPU/environment assumption remains**.
   **The `profiles/` bound re-derived to 3×** (`decision_profiles-family-three-units`):
   142 files / ~565 KiB measured at staging — nothing fired; the family's contract
   expanded to three units and the standing arithmetic followed.
+- `2026-10-02` (design brief for `.10`, recorded before its execution; sources: the pinned
+  `MICROCHIP-LAN9118` artifact — sha256 `72fe68f2…91bf6ee` re-verified from the cache —
+  read in full for the register contract: §1.10, §3.6–§3.13, chapter 5 whole, via
+  `pdftotext -raw`; the `.2` hardened machinery; the board definition):
+  **the NIC dossier needs NO machinery edit.** `.2`'s generalization by declaration
+  (`decision_device-applicability-by-declared-vehicle` — `vehicle (route device-model)
+  (comparison register-expectations)`) already covers the NIC: schemas, gates and
+  `dossier_sexp.py` are device-shaped, and the auto-attaching gates (DOSSIER-SCHEMA,
+  RECORD-SCHEMA, PROFILE-CONSISTENCY, EXTRACTION's device leg, EXERCISE-COVERAGE,
+  INTERACTION-MATRIX) decide an unregistered device dossier fully. What `.10` adds is
+  content plus the mechanical re-pins: FACT-OWNERSHIP registry +6 rows and self-test
+  fixture re-pins (`__CHECKED__ 7→8`, `3→4` — the fixtures glob the real corpus), and the
+  `profiles/` bound re-derives 4× → 5× by the standing arithmetic with a
+  `decision_profiles-family-five-units` record. One measured extraction hazard, recorded:
+  `pdftotext`'s `-layout` and `-raw` renderings DISAGREE on Table 5-1's Default column
+  (the two-column page layout scrambles row pairing); every reset value in the dossier is
+  therefore taken from each register's own §5.3.x/§5.4.x/§5.5.x section, with the
+  whole-register arithmetic cross-checked (e.g. TX_FIFO_INF.TDFREE = 1200h = 4608 B =
+  Table 5-3's TX data FIFO size at the TX_FIF_SZ = 5 default — the two independent
+  statements agree).
+  **The datasheet census (measured `2026-10-02`):**
+  - *The register surface:* four host-accessible FIFOs (RX data, RX status, TX data, TX
+    status — §5.2) behind aliased ports: RX data at 04h–1Ch (8 DWORD aliases,
+    destructive reads only), TX data at 20h–3Ch (write-only), the status FIFOs at 40h/48h
+    (destructive pops) with non-destructive PEEKs at 44h/4Ch; 24 named direct CSRs at
+    50h–B4h; RESERVED slots at 60h, 94h and B8h–FCh (§5.1: reads "a random value can
+    be returned", writes "may cause system failure"); 12 MAC CSRs indexed through
+    MAC_CSR_CMD/DATA (A4h/A8h, Table 5-6); 13 PHY registers indexed one level deeper
+    through MII_ACC/MII_DATA (PHY address 00001b, Table 5-8). The board's 256-byte
+    window spans exactly the direct map (`D-BOARD-MEMORY-MAP`).
+  - *Scope decision:* `profile.sexp`'s scope census counts the direct host-bus surface —
+    4 FIFO port groups + 24 named CSRs = **28** — with the indexed MAC CSR and PHY
+    spaces carried in `state.sexp` (MMIO-reachable state through one and two levels of
+    indirection) and their own requirements. RESERVED slots are absences, covered by the
+    off-map requirement, not scope members (the `.2` precedent: a Reserved field is a
+    measured silence, not a register).
+  - *The reset architecture:* five reset sources (Table 3-10: POR, nRESET, SRST,
+    PHY_RST, PHY reg 0.15); the board's cold-only reset (`D-BOARD-RESET`) maps to
+    POR/nRESET semantics — the full reset, NASR bits included. Stated resets are
+    concrete: ID_REV = `0118_0001h`, BYTE_TEST = `87654321h`, INT_STS/INT_EN = 0,
+    FIFO_INT = `48000000h`, RX_CFG/TX_CFG/RX_DP_CTL/PMT_CTRL/GPIO_CFG = 0,
+    HW_CFG = `0005_0000` with bit 2 = the D32/nD16 **strap value** (RO — a board
+    composition choice the datasheet deliberately does not pin), TX_FIFO_INF.TDFREE =
+    `1200h`, GPT_CFG/GPT_CNT = `0000FFFFh`, WORD_SWAP = 0 (NASR), MAC_CR =
+    `00040000h`, ADDRH = `0000FFFFh` / ADDRL = `FFFFFFFFh` "undefined until loaded
+    from the EEPROM" (§5.4.2/§5.4.3), the remaining MAC CSRs = 0. Two measured
+    post-reset transients: E2P_CMD.EPC_BSY reads 1 until the EEPROM auto-load attempt
+    completes (§5.3.23's note), and "the LAN9118 must always be read at least once after
+    power-up, reset, or upon return from a power-saving state or write operations will
+    not function" (§5.3.9 and §5.3.13 notes).
+  - *No EEPROM on this board* (`board.sexp` declares none): the auto-load finds no `A5h`
+    marker at address 00h, so it ends initialization, "MAC Address Loaded" stays clear,
+    and ADDRL/ADDRH are the host's to program (§3.9.1) — the datasheet's own defined
+    path for an absent EEPROM, not a gap.
+  - *The no-DMA shape confirmed:* §1.10 — programmed I/O only over an SRAM-like slave
+    interface, 32-bit and 16-bit bus transfers, internally all 32-bit; every device effect
+    reaches the guest through its own MMIO accesses, exactly the shape the CPU
+    contract's eight assumptions tolerate (the `.1` brief). The interrupt pin is
+    unconnected and declared so (`D-BOARD-NO-TIMER-IRQ`); INT_STS/INT_EN/IRQ_CFG stay
+    MMIO-visible state — status bits set regardless of the unconnected pin (§5.3.4).
+  **The sharpest measured finding — the NIC carries guest-readable TIME SOURCES, and
+  the CPU contract excludes all of them.** FREE_RUN (9Ch) is a free-running 25 MHz
+  32-bit counter, RO, that "will run regardless of the power management states D0, D1 or
+  D2" (§5.3.18); GPT_CNT (90h) reads a 16-bit timer counting down at 100 µs resolution
+  (§3.8); IRQ_CFG's INT_DEAS runs a 10 µs-granularity deassertion interval with an
+  MMIO-visible status bit (§5.3.2). `OB-ENV-VIRTUAL-TIME` excludes every guest-reachable
+  time source — no CSR counter AND no memory-mapped one — so a faithful wall-clock
+  implementation of FREE_RUN/GPT_CNT would falsify the composition from INSIDE a
+  device, exactly as a CLINT would from beside one (the `.1` brief's sharpest edge). The
+  dossier records the datasheet facts as defined requirements AND records the tension as
+  a high-risk requirement: the deterministic discipline that already pins RX delivery to
+  the guest's own polling (the `.1` brief) extends to the counters — the model may not
+  wire them to wall-clock, and the harness's retired-instruction count must never become
+  target-visible through them; the exact frozen/deterministic disposition is `.4`'s
+  composition verdict, pre-wired here so it cannot be missed. The board choice stands:
+  the counters are disposable (a polled driver never needs them), their formats are
+  datasheet-defined, and every alternative NIC carries the same class of state.
+  **Contract id and prefixes:** contract `lan9118-v0` v0; record ids `REQ-D-NIC-*` /
+  `D-NIC-*` / `OB-NIC-*` / `CHK-NIC-*-POS/-NEG` (the `.2` RECORD-SCHEMA prefix
+  discipline: `D-X` ↔ `REQ-D-X` mechanically).
+  **Expected results (C19), three documents mirroring `.2`'s shape:** cold-reset register
+  reads (the stated resets above, with the HW_CFG strap bit and the EPC_BSY transient
+  recorded under the datasheet's own conditions); the TX-FIFO free-space accounting
+  (§3.12.5's usage rules give exact TDFREE arithmetic with TX_ON = 0 — no wire needed);
+  the RX replay path (a recorded frame's RX status word format, §3.13.3, and the FIFO
+  port pop/PEEK semantics, §5.2). A value pins only where the datasheet determines it.
+  **Not `.10`'s scope:** the device model (Rust) — the dossier is the documents the model
+  route consumes; registration stays `.11`'s (one registration day, all three units).
 
 ## Open Questions
 
@@ -659,3 +747,13 @@ incompatible CPU/environment assumption remains**.
   "unspecified" data rather than weakening the every-element-a-reset contract.
   FACT-OWNERSHIP re-pinned to three units; the `profiles/` bound re-derived 4×
   (`decision_profiles-family-four-units`). Frontier: `.10` — the LAN9118 dossier.
+- `2026-10-02`: the `.10` design brief recorded (`SEMULITH-P5-0008`). The pinned LAN9118
+  artifact read in full for the register contract: no machinery edit needed (`.2`'s
+  generalization by declaration covers the NIC); the census measured — 4 FIFO port
+  groups + 24 direct CSRs + 12 indexed MAC CSRs + 13 PHY registers, five reset sources,
+  the stated resets cross-checked per-register after the two `pdftotext` modes were
+  caught disagreeing on Table 5-1's default column, the no-EEPROM auto-load path, the
+  PIO-only shape confirmed. The sharpest finding: the NIC carries guest-readable time
+  sources (FREE_RUN, GPT_CNT, INT_DEAS) that `OB-ENV-VIRTUAL-TIME` excludes — recorded
+  as a high-risk requirement pre-wiring `.4`'s composition verdict. Scope decision: 28
+  direct host-bus registers. Frontier: `.10` execution — the LAN9118 dossier lands.
