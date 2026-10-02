@@ -785,6 +785,119 @@ incompatible CPU/environment assumption remains**.
   against fact_ownership.tsv; (c) fingerprint-header detection — the composed
   catalogues are record-format files that cannot carry headers. The closed regen set
   grows the day a new regeneration doctrine is registered, with that doctrine's leaf.
+- `2026-10-02` (design brief for `.4`, recorded before its execution; sources: the composed
+  catalogues on disk (`.3`), the four pre-wired composition records in
+  `profiles/lan9118-lab-v0/`, `docs/CPU_ENVIRONMENT.md` §5, ENV-02, the discharge machinery
+  (`MODEL-COMPOSE.3`), and the pinned LAN9118 artifact re-read for the strap semantics —
+  §1.10, §3.6, Table 2-2, Table 2-4, Notes 5-1/5-3/5-4, §5.5.13):
+  **The verdict's shape: a mechanical core, re-decided on every commit, plus an authored
+  analysis.** Measured pre-conditions: `discharge_assumptions.py` over both the three parts
+  and the composed unit discharges 8/8 today — but that is the obligation-graph half. The
+  discharge edges of the two platform-dependent assumptions land on `OB-PLATFORM`, the
+  LABORATORY platform guarantee ("declares exactly one region … and NO devices"), scoped to
+  `rv64i-lab-v0` by `profile_ids`. On the board their content is re-established by the
+  board's declared absences (the `satisfies` edges `.1` pre-wired) plus the device
+  dispositions below — that re-establishment IS the composition verdict, and it needs a
+  re-runner (the MODEL-COMPOSE.4 lesson: a capability without a re-runner regresses
+  silently). **There are FOUR composition records, not three** — beyond TIME-SOURCES /
+  PHY-LINK / GPIO-PINS, `OB-NIC-STRAP-RESETS` (authority `architecture`): the strap VALUES
+  are the board's composition choice, `.4`-owned.
+  **The four dispositions, decided** (each lands as a board.sexp `decision` carrying a new
+  optional `answers` edge — the sanctioned schema-edit shape — and is mirrored into
+  `hardware.sexp` as a `(disposition …)`, symmetric with the absence/`satisfies` mirroring,
+  so the model route consumes them as data):
+  1. `D-BOARD-NIC-STRAPS` answers `OB-NIC-STRAP-RESETS`: **D32/nD16 tied HIGH** (32-bit
+     native mode — §3.6: "the native environment for the LAN9118 … no special requirements";
+     the 64-bit host's natural width; EEDIO has no internal pull per Table 2-4, so this is
+     an explicit board tie, declared) and **SPEED_SEL left unwired** → its internal pull-up
+     (Table 2-3: `I (PU)`) latches 1 (Table 2-2: 100 Mbps + auto-negotiation ENABLED).
+     Consequences: `HW_CFG` = `0x00050004`; PHY 0 bits 13/12 = 1/1; PHY 4 = `0x01E1`;
+     PHY 31's HCDSPEED default = 100HD pre-negotiation.
+  2. `D-BOARD-NIC-TIME-FROZEN` answers `OB-NIC-TIME-SOURCES`: **frozen.** `FREE_RUN` reads
+     its reset value 0 forever; `GPT_CNT` never advances (a `TIMER_EN` write still loads
+     `GPT_LOAD` — a guest-visible, datasheet-defined, deterministic state change — but the
+     count never decrements, so `GPT_INT` never sets); `INT_DEAS` never runs (the interrupt
+     line is unconnected, `INT_EN` resets 0 — no deassertion interval ever starts). Constant
+     or guest-written-static values carry no time information; the harness's
+     retired-instruction count never becomes target-visible. The deviation from wall-clock
+     faithfulness is deliberate and recorded as data: a polled driver never needs the
+     counters, and a guest busy-waiting on one hanging is exactly why the disposition must
+     not be prose.
+  3. `D-BOARD-NIC-LINK-SCENE` answers `OB-NIC-PHY-LINK`: the replay's declared link scene
+     is **static and complete** — the recorded trace's wire is up at 100BASE-TX full-duplex,
+     auto-negotiation complete, from before the guest's first access. The reasoning is the
+     reset expectations' own precedent (`D-BOARD-RESET`: the board's cold reset completes
+     before any guest access exists — the same discipline that already pins READY and
+     EPC_BSY post-transient): the wire-domain transients complete before any guest read, so
+     every guest-observable read sees the completed scene — BSR = `0x782D` (the `0x7809`
+     reset composition with Link Status + Auto-Negotiate Complete; the latch-low Link bit
+     never trips, the scene never fails), PHY 17 ENERGYON = 1 (already its reset), PHY 31
+     Autodone = 1 and HCDSPEED = `110b` (§5.5.13: 100BASE-TX FD), PHY 5 = `0x01E1` (the
+     declared partner scene). Note 3-11's wait-for-link succeeds at the first read.
+  4. `D-BOARD-NIC-PIN-TIEOFFS` answers `OB-NIC-GPIO-PINS`: no GPIO/LED/EEPROM pins are
+     wired; every pin-readable value is tied off at **0** — `GPIODn` reads 0, and the
+     `EEPR_EN`-muxed MII monitor signals read 0.
+  **Measured composition defect found in the brief, fixed with the leaf (§15):**
+  board.sexp's eth0 declares `access-widths 16 32` citing §1.10's summary sentence — but
+  §3.6 makes the widths MODE-EXCLUSIVE (the strap selects the bus width; 16-bit pairing is
+  16-bit-mode operation), so with D32 strapped a 16-bit access has no datasheet-defined
+  behaviour (`REQ-D-NIC-WIDTH`). The declaration narrows to **32 only**; the NIC dossier's
+  pairing-latch census entry (justified by the old declaration) flips to `present false`
+  with the new reason, and `state.sexp`'s census answer/consequence + the NIC DOSSIER are
+  corrected in the same pass. The datasheet-facing records (`REQ-D-NIC-HBI`,
+  `REQ-D-NIC-WIDTH`, `WORD_SWAP`) stay — they describe the device across both modes; the
+  strap narrowing is the board's composition choice, exactly the layering the dossier
+  designed for.
+  **The per-assumption verdict (the leaf goal's enumeration):** RESET ← the board's cold-only
+  reset block (`satisfies`) + both dossiers' POR/nRESET semantics; ADDRESS-UNITS ← 64-bit
+  byte space, regions resolved in hardware.sexp, off-map = AccessFault (harness rule,
+  unchanged); ACCESS-WIDTHS ← the per-device declared widths (32 UART, 32 NIC), anything
+  else a board-reported contract violation (`D-BOARD-ACCESS-POLICY`), misalignment stopped
+  by the CPU first (`OB-MISALIGN-DATA`); VIRTUAL-TIME (counter units, time progress) ← no
+  timer device (`satisfies`) + the frozen NIC counters (disposition 2) + the UART carries
+  no counter (`div` is a programmed divisor latch, not a counting register) + the CPU
+  profile's CSR exclusion (the same digest-pinned unit); EVENT-DELIVERY (source priorities)
+  ← no interrupt controller (`satisfies`) + both IRQ lines unconnected-and-declared — no
+  sources exist, so no priority question arises; device status bits still set per datasheet
+  (MMIO-visible, polled); ORDERING ← one hart, sequential, PIO devices with no DMA add no
+  concurrency; FETCH-SUPPLY (instruction visibility) ← fetch from RAM only (every MMIO
+  region non-executable, generator-refused otherwise), no extraneous fetch, no caches
+  anywhere — stores and fetches hit the same RAM, coherent by construction;
+  PARTIAL-PROGRESS (reservation invalidations) ← the profile's encoding is rv64i only: no
+  A extension, no LR/SC, so no reservations exist to invalidate, and device side effects
+  complete at the access. **MODEL-COMPOSE's open question answered for this board shape:**
+  no operator beyond union + discharge is needed — the declared `satisfies`/`answers` edges
+  close the gap the open question anticipated; recorded in the verdict document.
+  **The machinery:** (a) the four obligations gain `(param (name composition_disposition)
+  (value (str "required")))` — the machine-readable "the board must answer this"; (b)
+  `schema/board.sexp`'s `decision` gains optional `answers` (`^OB-[A-Z0-9-]+$`, repeated,
+  unique); `schema/hardware.sexp` gains `(disposition …)` (repeated-optional) and
+  `gen_board.py` mirrors it; (c) the **BOARD-VERDICT doctrine**
+  (`scripts/board_verdict.py` + `scripts/check_board_verdict.sh`): per tracked board —
+  schema-validate board.sexp, discharge the composed unit, every `satisfies` edge resolves
+  to a discharged environment-assumption, every marked obligation is answered by exactly
+  one decision `answers`, every `answers` names a marked obligation — ACCEPTED prints every
+  edge; any leg failing is a REJECTION by name, never a note (the leaf's acceptance).
+  Self-test arms RED each leg on copies of the real board; registered + mirrored +
+  DERIVED-COUNTS re-derived. (d) `profiles/netboard-lab-v0/COMPOSITION-VERDICT.md` — the
+  authored verdict: the per-assumption table, §5's aspects checklist (reset wiring, memory
+  attributes, source priorities, counter units, time progress, access side effects,
+  reservation invalidations, instruction visibility), the four dispositions, the
+  OB-PLATFORM note, the interface-test leg, the non-claims; the board book's evidence
+  chapter includes it (one owner, two readers); the DOSSIER's status row flips;
+  `gen_model_book.py`'s board census prose updated. (e) The NIC expectations re-pin what
+  the verdict determines: `hw_cfg` → `0x00050004`, `free_run` → `0x00000000` (frozen),
+  `phy_basic_status` → `0x782D` (the completed scene), the header comment corrected.
+  **The interface-test leg (the leaf's second acceptance):** the laboratory's boundary and
+  fixture suites re-run (`make check` + smoke) — their board-meaningful half is the RAM
+  region the board preserves at the same base/size; the MMIO halves attach with the device
+  models (the model route; probes are `.5`'s), named, never silently skipped.
+  **FACT-OWNERSHIP:** no new rows — the verdict document is authored narrative (the
+  DOSSIER.md precedent, covered by the internal-contracts census), its mechanical core
+  re-decided by BOARD-VERDICT on every commit; the disposition mirrors into hardware.sexp
+  ride the existing `board-map` rows.
+  **Not `.4`'s scope:** the device models (Rust — the model route), probes (`.5`), the
+  capability manifest (`.6`), the BOARD gate report (`.7`).
 
 ## Open Questions
 
@@ -1472,3 +1585,16 @@ incompatible CPU/environment assumption remains**.
   lesson PROMOTED: `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md` —
   the instrument must match the failure mode. Frontier: `.4` — the composition
   verdict.
+- `2026-10-02`: the `.4` design brief recorded (`SEMULITH-P5-0016`). The verdict's shape:
+  the mechanical discharge (green today, 8/8 — but its platform-dependent edges land on
+  `OB-PLATFORM`, the laboratory guarantee) re-established on the board by the declared
+  `satisfies` edges plus FOUR composition dispositions, decided: D32 strapped (32-bit
+  native mode — and a measured defect fixed with the leaf: eth0's declared 16-bit width is
+  mode-exclusive per §3.6 and drops), SPEED_SEL unwired to its pull-up, the NIC time
+  sources frozen, the replay link scene static-complete at 100BASE-TX FD, the pin reads
+  tied off at 0. The machinery: a `composition_disposition` marker param, an `answers`
+  edge on board decisions, the dispositions mirrored into hardware.sexp, and the
+  BOARD-VERDICT doctrine re-deciding the verdict on every commit — an unmatched assumption
+  is a rejection by name, never a note. MODEL-COMPOSE's open question (an operator beyond
+  union + discharge?) answered for this board shape: none needed. Frontier: `.4`
+  execution.
