@@ -146,6 +146,8 @@ cleanup happened and what it removed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` | 0 files / 0 M — none accumulated since the `2026-10-02` run; 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; 62 `target/refs/*.log` (2.2 M) kept by standing policy; 7 crate-source fixtures kept |
+| `2026-10-03` | `ARTIFACT-CLEANUP` (time-triggered run) | post-delete re-census + `du -sh` | 0 incremental `.bin` (nothing to delete); `target` 3.9 G, `.app-data` unchanged at 1.4 G; `git status` clean apart from intended files |
 | `2026-10-02` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` + per-dir `uniq -c` | 105 files / 139 M, all in cargo `*/incremental/*` dirs (84 `target/debug`, 21 wasm32); 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; 0 `target/refs/*.log` present this run; 7 crate-source fixtures kept |
 | `2026-10-02` | `ARTIFACT-CLEANUP` (time-triggered run) | post-delete re-census + `du -sh` | 0 incremental `.bin`; `target` 4.0 G → 3.9 G, `.app-data` unchanged at 1.4 G; `git status` clean apart from intended files |
 | `2026-10-01` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` + per-dir `uniq -c` | 96 files / 248 M, all in cargo `*/incremental/*` dirs (48 `target/debug`, 18 `target/x86_64-apple-darwin`, 12 wasm32, 9+9 the two miri profiles); 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; 0 `target/refs/*.log` present this run; 7 crate-source fixtures kept |
@@ -167,6 +169,7 @@ cleanup happened and what it removed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `ARTIFACT-CLEANUP` (run) | `SEMULITH-AC-0057 (tree ARTIFACT-CLEANUP): …` | the 2026-10-03 cleanup — 0 incremental caches present to delete; 62 `target/refs/*.log` (2.2 M) kept |
 | `ARTIFACT-CLEANUP` (run) | `SEMULITH-AC-0056 (tree ARTIFACT-CLEANUP): …` | the 2026-10-02 cleanup — 105 incremental caches, 139 MB |
 | `ARTIFACT-CLEANUP` (run) | `SEMULITH-AC-0055 (tree ARTIFACT-CLEANUP): …` | the 2026-10-01 cleanup — 96 incremental caches, 248 MB |
 | `ARTIFACT-CLEANUP` (run) | `SEMULITH-AC-0054 (tree ARTIFACT-CLEANUP): …` | the 2026-09-30 cleanup — 90 incremental caches, 185 MB |
@@ -176,6 +179,12 @@ cleanup happened and what it removed.
 | `ARTIFACT-CLEANUP.1` | `SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1): …` | first §8 cleanup; record + registry row in the creating commit |
 
 ## Changelog
+
+- `2026-10-03`: Time-triggered §8 run (the `2026-10-02` record was >24 h old): 0 incremental
+  `.bin` caches present to delete — none accumulated since the previous run; 0 stray
+  `.bin`/`.log` in the enumerated locations; 62 `target/refs/*.log` (2.2 M) and the
+  cargo-home fixtures kept by policy. `docs/ARTIFACT_CLEANUP.md` overwritten with the
+  one-line record.
 
 - `2026-10-02`: Time-triggered §8 run (the `2026-10-01` run was a full day old): 105
   incremental `.bin` caches deleted (139 MB; 84 `target/debug`, 21 wasm32); 0 stray

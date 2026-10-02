@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0057 (tree ARTIFACT-CLEANUP) — the 2026-10-03 §8 run: 0 incremental caches present to delete; the reference evidence logs kept
+
+- The ~24 h trigger fired (the `2026-10-02` record was a day old). The census found
+  **zero** cargo incremental `.bin` caches — none accumulated since the previous run —
+  and zero stray `.bin`/`.log` in `target/release`/`target/debug/deps`. 62
+  `target/refs/*.log` (2.2 M, evidence trails of the last reference run) and the 7
+  cargo-home crate fixtures (inputs) kept by standing policy. `docs/ARTIFACT_CLEANUP.md`
+  overwritten with the dated one-line record; `target` 3.9 G, `.app-data` 1.4 G,
+  unchanged.
+
 ## SEMULITH-P4-0002 (leaf P4-SYSTEM.1) — the profile resolved: rv64gc-lab-v0, every element source-located; the profile-resolution vehicle route
 
 - The Linux-capable profile is selected and recorded as data: `profiles/rv64gc-lab-v0/`
