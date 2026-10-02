@@ -18,11 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, every element source-located, the unit unregistered by design; the `profile-resolution` vehicle route landed by declaration).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.2` — privilege and mode transitions: the first
-  definition-pipeline leaf on the resolved profile (M/S/U transitions, CSR permissions,
-  trap interception, mode-dependent decoding — catalog C15); the vehicle route flips
-  from `profile-resolution` to `generated-definition` with it, and the full extraction
-  contract attaches.
+- next_action: `P4-SYSTEM.2` — privilege and mode transitions, **execution** (the
+  design brief landed `2026-10-03`, `SEMULITH-P4-0003`): checkpoint (a) — the Zicsr /
+  privileged-system / Zicntr encoding fragments from the pinned riscv-opcodes, the csr
+  operand field in the assembler whitelists, IALIGN as profile data. The route flips
+  from `profile-resolution` to `generated-definition` in the leaf's last, atomic commit.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).
