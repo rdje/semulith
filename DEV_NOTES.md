@@ -1,5 +1,28 @@
 # DEV_NOTES.md
 
+## _(2026-10-02)_ — the reading-experience audit's yield was drift, not style (BOOK-APPARATUS.2)
+
+The first audit pass against `decision_mdbook-incremental-engaging` ran as six parallel
+read-only chapter-group reviews with the decision's four criteria operationalized
+(incremental build-up; motivation before mechanism; layered density; both-audiences
+engagement), each returning per-chapter verdicts with line-level evidence. The signing
+discipline: **every flagged item was re-verified against the repository before any edit**
+— and that verification caught one audit false-positive class (a `grep -c` miscount of
+the rv64i profile's inline decision forms; the real count is 28, verified by enumerating
+the ids) and one of my own typos (a search string that silently didn't match —
+`grep`-verified after the edit, not assumed).
+
+The measured surprise: the audit's yield was **factual drift**, twelve places where
+hand-carried repository facts in the book had gone stale — the class DERIVED-COUNTS was
+founded on, living in chapters no enumerator covers. Three genuine style violations
+(a duplicated sentence, a cold open, a 68-line accreted list item) were the minority.
+Two mermaid blocks rendered as raw source in the book; replaced by text flows rather
+than adding `mdbook-mermaid` (a dependency the project hasn't sanctioned).
+
+Lesson: `promotion: declined` — the audit method is the decision record's own
+consequence clause (`.2` owns the pass; the pass is recorded); the drift fixes are
+per-slice history.
+
 ## _(2026-10-02)_ — registration day: the enumeration follows the declaration (P5-BOARD.11)
 
 Registering the first board and the first devices measured exactly where the machinery

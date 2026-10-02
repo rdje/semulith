@@ -44,11 +44,11 @@ What exists in that format today:
   specification is a differential experiment against an independent reference (P1/P2). This does
   not change §2's generation boundary — the execution backend is still generated dispatch over
   canonical handlers; the data is the definition those handlers derive from.
-- The profile **records** are in the format now: `requirements.sexp` (26) and
-  `contract-obligations.sexp` (34), converted by `SOT-FORMAT.3` behind the schema layer (§1.3),
+- The profile **records** are in the format now: `requirements.sexp` (28) and
+  `contract-obligations.sexp` (36), converted by `SOT-FORMAT.3` behind the schema layer (§1.3),
   with the round-trip against the retired JSONL proven byte-identical, not asserted. The
   remaining **configuration** inputs moved with `SOT-FORMAT.4`: `profile.sexp` (the
-  `[profile]`/`[state]`/`[scope]` tables and all 26 `[[decision]]` records), `state.sexp`,
+  `[profile]`/`[state]`/`[scope]` tables and all 28 `[[decision]]` records), `state.sexp`,
   `sources.sexp`, `references.sexp`, the matched-profile override `reference/sail-rv64i-lab-v0.
   override.sexp`, and the guest expectations `guests/*.expected.sexp` are all one document form
   each, validated against six schemas, with the round-trip against the retired TOML/JSON proven
@@ -143,17 +143,16 @@ Generated outputs embed a manifest of definition, generator, configuration, and 
 
 ## 3. Runtime boundary
 
-```mermaid
-flowchart TD
-  SPEC["Pinned external specifications"] --> DEF["Reviewed canonical processor definition"]
-  DEF --> GEN["Generated types and dispatch"]
-  GEN --> CPU["CPU state and semantics"]
-  CPU <--> PORT["Versioned environment contract"]
-  PORT <--> LAB["Processor test environment"]
-  PORT <--> BOARD["Later board and devices"]
-  CPU --> OBS["Observed architectural behavior"]
-  REF["Independent reference and fixtures"] --> CMP["Comparison and evidence"]
-  OBS --> CMP
+```text
+Pinned external specifications ──► Reviewed canonical processor definition
+                                     ──► Generated types and dispatch
+                                     ──► CPU state and semantics ──► Observed architectural behavior ──┐
+                                          │                                                          │
+                                          ▼                                                          ▼
+                            Versioned environment contract                          Comparison and evidence
+                                 ◄──► Processor test environment (laboratory)              ▲
+                                 ◄──► Later board and devices                                 │
+                                                              Independent reference and fixtures ──┘
 ```
 
 LAB and BOARD are alternative providers. The laboratory supplies controlled memory, faults, counter samples, and input events; a board supplies corresponding real modeled device behavior after the CPU gate. The observation layer can be a no-op diagnostic observer without removing semantic effects.

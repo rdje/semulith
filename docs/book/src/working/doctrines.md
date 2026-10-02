@@ -125,10 +125,11 @@ That is the failure mode in one sentence. **A running total is a memory of a mea
 measurement** — and nothing recomputes it, so it drifts quietly and confidently.
 
 `DERIVED-COUNTS` re-derives each one from the population it summarises, and prints the command it
-used, so the claim and its producer travel together:
+used, so the claim and its producer travel together (the capture is the one made at registration
+`2026-09-14` — the numbers are derived values, so today's run shows today's counts):
 
 ```
-$ scripts/check_derived_counts.sh --list
+$ scripts/check_derived_counts.sh --list    # output at registration, 2026-09-14
 CLAIM                  ENUMERATOR                                          VALUE
 routed destinations    grep -cv '^#\|^$' doctrine/readme_routes.tsv        25
 project doctrines      grep -cE '^  "[A-Z]' …/check_doctrines.project.sh    9

@@ -16,14 +16,14 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `BOOK-APPARATUS` (1/2 — `.2` the reading-experience audit) · `P5-BOARD` (4/11 — the three units registered; both device dossiers gated).
-  Milestone frontier: `P5-BOARD`.
-- next_action: `BOOK-APPARATUS.2` — the reading-experience audit pass (the pointer chain
-  after registration day). The P5-BOARD frontier is `.3` — generated maps and the
-  hardware description from the canonical board definition; `.4` (the composition
-  verdict) has the devices' composition records pre-wired (`REQ-D-NIC-TIME-SOURCES`,
-  `REQ-D-NIC-PHY-LINK`, the strap values). All five units are registered
-  (`materials/units.sexp`) with books that build (`docs/models/<unit-id>/`).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (4/11 — the three units registered; both device dossiers gated).
+  Milestone frontier: `P5-BOARD`. (`BOOK-APPARATUS` closed `2026-10-02`, 2/2.)
+- next_action: `P5-BOARD.3` — generated maps and the hardware description from the
+  canonical board definition (`profiles/netboard-lab-v0/board.sexp`): address maps and
+  wiring generated, no handwritten duplicate map anywhere, drift gated (OWN-05). The
+  composition verdict (`.4`) follows — the devices' composition records
+  (`REQ-D-NIC-TIME-SOURCES`, `REQ-D-NIC-PHY-LINK`, the strap values) are pre-wired to it.
+  All five units are registered (`materials/units.sexp`) with books that build.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

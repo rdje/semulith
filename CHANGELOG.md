@@ -1,5 +1,33 @@
 # CHANGELOG.md
 
+## SEMULITH-BA-0002 (leaf BOOK-APPARATUS.2) — the reading-experience audit pass: 29 main-line chapters, 16 kept / 13 revised; the yield was factual drift
+
+- The first audit pass over the project book against
+  [`decision_mdbook-incremental-engaging`](docs/decisions/decision_mdbook-incremental-engaging.md):
+  six parallel chapter-group audits (the decision's four criteria operationalized), every
+  flagged item re-verified against the repository before any edit. The per-chapter
+  dispositions are recorded in [`docs/tasks/BOOK-APPARATUS.md`](docs/tasks/BOOK-APPARATUS.md).
+- **Twelve stale facts fixed at their lines** (each measured): `claim-scope.md` (four crates,
+  not three; the CPU-LAB self-contradiction; the 48+1-program corpus, not forty-one),
+  `plan/p0.md` (the contract is 36 obligations / 72 checks — the quote now matches the
+  regenerated G0-REPORT it claims to quote), `plan/p1.md` (G1 reads `passed` since
+  2026-09-30; 48 guests / 642 steps), `plan/p5-p7.md` (registration day is done),
+  `docs/ARCHITECTURE.md` (28/36/28 records), `docs/RISKS_AND_DECISIONS.md` §2 (four
+  current-state rows updated with measured states and dates — the column whose point is
+  tracking change), `docs/SOURCES_AND_NAMING.md` (the crates exist; the reservation claim
+  narrowed), `LIVE_STATUS.md` ("1 unit today" → 5).
+- **Three record violations revised**: the gates overview's duplicated sentence dropped;
+  `plan/p3.md`'s 68-line leaf-by-leaf update chain collapsed to a final-state paragraph
+  (both measured incidents kept; the tree carries the blow-by-blow); P7's cold mechanism
+  open gained its why-sentence. Terminology pointers added where a concept was leaned on
+  without introduction (F3/F6 → `docs/tasks/DSP-REVIEW.md`; CLINT glossed; the P3 forward
+  reference named).
+- **Two ` ```mermaid ` blocks rendered as raw source in the book** (no preprocessor) —
+  replaced by text-rendered flows; `mdbook-mermaid` deliberately NOT added (an
+  unsanctioned dependency is worse than a plainer diagram).
+- The book builds; the index regenerates clean (`gen_book_index.py --check` rc 0);
+  `make gate` green. The BOOK-APPARATUS tree closes (2/2).
+
 ## SEMULITH-P5-0011 (leaf P5-BOARD.11) — registration day: the three units register; the materials-bill machinery goes route-keyed by declaration
 
 - `materials/units.sexp` now registers five units: `netboard-lab-v0` (kind `board`),
@@ -861,32 +889,4 @@
   bytes (the first run is one byte), so the overrun tamper needed one-past-the-end.
 - CLI measured end-to-end: `dir-memwalk.elf` snapshotted at step 13 resumes the copy loop
   exactly (24 continuation steps, stop Trap).
-
-## SEMULITH-PS-0074 (leaf P2-SCALAR.7, design) — mid-execution snapshots, designed on the pinned census
-
-- The design's pending-state census is not new work but the pinned dossier's own:
-  `state.sexp`'s hidden-state census measured all seven candidates absent, so a complete
-  snapshot for this profile is exactly registers + pc + memory — anything more is "not
-  offered at all", the acceptance's second arm.
-- The mechanism: a `Snapshot` record (definition-identity pins, region, entry, step k,
-  the register file + pc, sparse-encoded memory), JSON via the crate's own reader; the
-  proof suite runs every guest's continuation twice (snapshot+continue vs
-  restore+continue) with RED arms on corrupted/foreign snapshots; the CLI mirrors
-  bundle/replay (`snapshot`/`resume`).
-
-## SEMULITH-MM-0073 (leaf MODEL-METHOD.14) — the encoding re-sourcing probe: adopt-in-principle, measured
-
-- The probe (untracked `target/materials/mm14_probe.py` over the pinned PDF's text
-  layer): Chapter 36's listings carry every field as selectable text; ADD reconstructs
-  end-to-end identical to the incumbent fragment; the full sweep measures **52/52
-  opcodes extracted, zero value conflicts, 37/52 fully reconstructed by the naive
-  parser** — the 15 remainders are parser-ordering gaps (page-local alignment), each
-  caught by the incumbent comparison, which is the verification control.
-- Decision recorded (`decision_encoding-resourcing-probe`): adopt-in-principle; the
-  re-source is a later reviewed leaf (`.8` owns the encoding), triggered when the
-  encoding is next touched or a second unit reuses the fragment. The re-sourced
-  provenance would shrink the shared-with-spike ancestry leg.
-- **The tree CLOSES 17/17.** Closure sweep found `.15`/`.17`'s Status fields stale
-  (`active` with Results landed) — drift corrected.
-- `MODEL-METHOD` leaves the active index; `P2-SCALAR.7` (snapshot/replay) is next.
 

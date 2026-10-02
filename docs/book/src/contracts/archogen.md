@@ -24,4 +24,10 @@
 > an independent hardware comparison — Semulith does not become an independent oracle merely by
 > being a separate project.
 
+(§4's diagram is a mermaid block inside the frozen v0.2 document and renders here
+as its source text; the flow reads: eADL contracts → the archogen checked plan → the OS image
+*and* the generated platform composition (fed by the qualified model catalog) → the
+compatibility check → reproducible OS execution (fed by the test requirements) → observed
+results and evidence.)
+
 {{#include ../../../ARCHOGEN_INTEGRATION.md}}

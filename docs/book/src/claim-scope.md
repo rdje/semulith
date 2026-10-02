@@ -10,12 +10,13 @@ gained by overstating it.
 Still nothing about a *processor product*: no conformance result, no accepted profile, no
 gate reading `passed`.
 
-What exists is a **laboratory with first evidence**. The three-crate workspace executes the
+What exists is a **laboratory with first evidence**. The four-crate workspace executes the
 `rv64i-lab-v0` definition: all 52 declared instructions evaluate directly from the semantics
 data, under the environment contract, with the outcome families the architecture requires.
-Forty independently encoded guest programs run on it — the four P1 smoke guests, the five
+Forty-eight assembled guest programs run on it — the four P1 smoke guests, the five
 `P2-SCALAR.1` scope-completion guests, the five `P2-SCALAR.2` boundary guests, the
-eighteen `P2-SCALAR.3` fault guests, and the eight `P2-SCALAR.4` interaction guests, so every
+eighteen `P2-SCALAR.3` fault guests, the eight `P2-SCALAR.4` interaction guests, and the
+eight `P2-SCALAR.5` directed-sequence guests, plus one guest compiled from C — so every
 one of the 52 declared forms is executed, the shift-amount domains are exhausted, the
 fault, suppression and reserved cases behave as the source classifies them, and the declared
 fault × alias × boundary × event × progress × restart matrix's 21 cells all resolve —
@@ -27,14 +28,14 @@ checkable lives here too: the records re-validate on two engines on every commit
 guest expectations are specification-derived values the commit gate re-checks offline.
 
 Every one of those claims is **finite tested evidence, explicitly not universal proof**
-(`EVD-01`): forty-one programs, two references, one host. Nothing on this page upgrades them.
+(`EVD-01`): forty-nine programs, two references, one host. Nothing on this page upgrades them.
 
 ## Not claimed
 
 | Not claimed | Why it matters |
 | --- | --- |
 | A validated CPU profile | P2's `CPU-LAB` gate HAS run and reads `incomplete` (G-CONTRACT/G-OBLIGATIONS open; the decision is the experimental release, `decision_release-rv64i-lab-v0`). The evidence covers the guest corpus, its declared, exercised interaction matrix, the ACT4 RV64I external campaign (51 test files, Sail-derived expectations — one semantics by construction), directed sequences, and mid-execution snapshots — but no privileged-mode tests, and the portability matrix reads `passed` via the Rosetta bridge (the bare-metal CI leg lands at the next push). Executing correctly is a beginning, not a validation. |
-| A conformance result | `G1` reads `passed` since `2026-09-30` (criterion 6 met by the `c-scope` compiled C guest, `P2-SCALAR.5`) — a laboratory gate, not a conformance claim. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented), and the `CPU-LAB` processor gate has not run. |
+| A conformance result | `G1` reads `passed` since `2026-09-30` (criterion 6 met by the `c-scope` compiled C guest, `P2-SCALAR.5`) — a laboratory gate, not a conformance claim. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented), and the `CPU-LAB` report stands at `incomplete` (G-CONTRACT/G-OBLIGATIONS open) — the release decision is the EXPERIMENTAL release of the versioned artifact, not a validation. |
 | An accepted processor profile | `rv64i-lab-v0` is a development profile. Acceptance attaches evidence to an exact versioned profile; none has been accepted. |
 | Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus; ACT4 ran (51/51 RV64I test files, Sail-derived expectations — one semantics by construction), QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 642 steps is two implementations agreeing, not three opinions. |
 | Complete in-repository claim tooling | The frozen `examples/` records re-validate in Rust per `RUST-01`, and the guests' expectations re-check offline — but the profile dossier still rides the Python track, and `CLAIM_VERIFICATION.md`'s tag and constant sweep are not mechanized. |

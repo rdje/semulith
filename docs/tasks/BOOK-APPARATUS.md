@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `BOOK-APPARATUS`
-- Status: `active`
+- Status: `done` (`2026-10-02` — both leaves complete)
 - Roadmap lane: cross-cutting — the mdBook is the project's review surface (session-directive §7;
   `README.md` routes `docs/book/` as "the reviewable narrative surface")
 - Gate: none of its own beyond the doctrine it registers (`BOOK-INDEX`)
@@ -61,7 +61,7 @@ the policy survives the session.
   and decision_mdbook-incremental-engaging, both retrievable already).`
 
 - ID: `BOOK-APPARATUS.2` — **the reading-experience audit pass**
-  Status: `pending`
+  Status: `done` (`2026-10-02`, `SEMULITH-BA-0002`)
   Goal: apply `decision_mdbook-incremental-engaging` (director, `2026-10-02`) to the existing
   chapters: every chapter builds only on what earlier chapters established, motivation comes
   before mechanism, a term is introduced before it is leaned on, and what is too technical for
@@ -69,14 +69,66 @@ the policy survives the session.
   revise what the audit flags — one measured pass, not a taste-driven rewrite.
   Acceptance: every chapter has a recorded disposition (`kept` / `revised`, each revised one
   naming what violated the record and the fix); the book builds; the index regenerates clean.
-  Verification: `pending`
-  Commit: `pending`
+  Verification: `2026-10-02` — all in the Verification Log below.
+  Result (`2026-10-02`): the audit ran as six parallel read-only chapter reviews against the
+  decision's four operationalized criteria (incremental build-up; motivation before mechanism;
+  layered density; both-audiences engagement), every flagged item re-verified against the
+  repository by the signing engineer before any edit. 29 main-line chapters audited (the annexes, glossary and index are the apparatus itself):
+  **16 kept, 13 revised** — and the audit's sharpest yield was **factual drift**, not style:
+  the book had gone stale against the repository in a dozen places (the audit class the
+  decision's "every new or revised chapter is reviewed" rule exists to catch). Three of the
+  flagged documents proved **frozen-in-place** (the doctrine refused their staged edits by
+  name — measured, then reverted): their corrections landed in the live orientation
+  chapters, and the leaf records the tension honestly — a frozen v0.2 record rendered into
+  a live book will drift again; the orientation note is the containment, unfreezing is a
+  provenance decision above this leaf's authority.
+
+  **Per-chapter dispositions** (each revised chapter: what violated, and the fix):
+
+  | Chapter | Disposition | What violated → the fix |
+  | --- | --- | --- |
+  | `introduction.md` | kept | — |
+  | `claim-scope.md` | revised | drift: "three-crate" → four (measured `crates/`); the same page said CPU-LAB "HAS run … incomplete" and "has not run" → the gate ran, verdict `incomplete`, stated once; the corpus was 40 programs/"forty-one" → 48 assembled + 1 compiled = 49 (measured: 49 `.expected.sexp`) |
+  | `status.md` | kept | the include is live by construction; the staleness it rendered was LIVE_STATUS.md's, fixed there ("1 unit today" → 5) |
+  | `models.md` | kept | — (the five-unit update landed with P5-BOARD.11) |
+  | `models/the-information-a-unit-demands.md` | revised | criterion 1: findings F3/F6 leaned on with no source named → each names `docs/tasks/DSP-REVIEW.md`; CLINT unexpanded → glossed; drift: "the two units this project has actually built" → the device units and the board are named as registered (their per-category demand is their dossiers' own) |
+  | `plan/overview.md` | revised | criterion 4: the "closes exactly what it says" sentence was stated twice in three lines → the first instance dropped, the punchline kept |
+  | `plan/p0.md` | revised | drift: the contract quoted 33 obligations/66 checks where the regenerated G0-REPORT reads 36/72 — the quote contradicted the tracked report it claims to quote → updated, with the growth since P0 noted in the narrative |
+  | `plan/p1.md` | revised | drift: G1 "verdict today is incomplete … owned by P2-SCALAR.5" → P2-SCALAR.5 landed; now the at-first-run verdict plus the closure (G1 `passed` 2026-09-30); "forty guests, 492 steps" → 48/642; criterion 1: the P3-BREADTH.5 forward reference now names its chapter |
+  | `plan/p2.md` | kept | — (verified: every count matches the P2 records) |
+  | `plan/p3.md` | revised | criterion 3: one list item had accreted ~68 lines of dated leaf-by-leaf update chain — a campaign log in the main line → collapsed to a final-state paragraph keeping the two measured incidents (the five naive-FM divergences; the seven latent references.sexp defects) and pointing at the tree for the blow-by-blow |
+  | `plan/p4.md` | kept | — |
+  | `plan/p5-p7.md` | revised | drift: registration day `.11` framed as future → done `2026-10-02`, `.3`/`.4` named as the remaining pre-gate work; criterion 2: P7's cold mechanism open → one why-sentence ("validated parts, not a computer") |
+  | `plan/multicore.md` | kept | — |
+  | `contracts/method.md` | kept | — |
+  | `contracts/rules.md` | kept | — |
+  | `contracts/architecture.md` | revised | drift in the included doc: 26/34/26 → 28/36/28 records (measured against `profiles/rv64i-lab-v0/`); the ` ```mermaid ` block rendered as raw source in the book (no preprocessor) → a text-rendered flow, no new dependency |
+  | `contracts/cpu-environment.md` | kept | — |
+  | `contracts/evidence-and-gates.md` | kept | — |
+  | `contracts/archogen.md` | revised | the same raw-mermaid defect — but the included doc is FROZEN (the doctrine named it `DRIFTED (frozen-in-place)` when an edit was staged) → the source stands; the orientation carries the flow in one sentence |
+  | `contracts/information-catalog.md` | kept | — |
+  | `contracts/risks.md` | revised | drift in the included register's current-state column — and the register is FROZEN (the doctrine refused the staged edit by name) → the source stands as the v0.2 record; the orientation now date-scopes it and routes the reader to the live status chapter (the four stale rows named there) |
+  | `contracts/sources.md` | revised | drift in the included v0.2 record ("proposals, not created packages"; "no … repository … reserved") — the record is FROZEN → the source stands; the orientation carries the dated correction (the crates exist; only crates.io/domain/trademark remain unreserved) |
+  | `contracts/review-disposition.md` | kept | — (a frozen, dated record; staleness is its nature) |
+  | `data/overview.md` | revised | criterion 2: cold mechanism open → one why-sentence first ("a claim must be data a checker can refuse") |
+  | `data/worked-example.md` | kept | — |
+  | `working/task-trees.md` | kept | — |
+  | `working/claim-verification.md` | kept | — |
+  | `working/doctrines.md` | revised | the embedded `--list` capture (25/9/27/122) silently contradicted the live re-derived values (33/31/33/345) in the chapter teaching that carried constants drift → date-stamped as the registration-day capture (`2026-09-14`, measured from git history) — regenerating it would have falsified the incident narrative |
+  | `working/provenance.md` | kept | — |
+
+  Borderline-but-defensible items the audit reported and the pass deliberately did NOT
+  touch (measured, not taste-driven): task-leaf IDs before the task-trees chapter
+  (self-describing), MMU/CSR/Sv39 unexpanded (named as selection items, not leaned on),
+  the archogen F/M external IDs (references into an external document), and the
+  registry-mirror tables in `working/doctrines.md` (REGISTRY-MIRROR mandates them — they
+  cannot move to an annex).
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `BOOK-APPARATUS.2` | `pending` | `.1` closed the measured gap (the index); `.2` applies the director's reading-experience record to the chapters that predate it |
+| — | — | — | 2/2 leaves complete — the tree closes (the apparatus exists and the first audit pass landed); further passes are new leaves the day the director's record grows |
 
 ## Decisions
 
@@ -104,6 +156,50 @@ the policy survives the session.
 - None.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`BOOK-APPARATUS.2` (`2026-10-02`, `SEMULITH-BA-0002`):
+
+- [x] **REPRODUCE / ISSUE** — the chapters predate the director's `2026-10-02`
+  reading-experience record; the audit measured them against it. The measured
+  pre-condition sample (each later verified at its line): `ls crates/` → four crates
+  against `claim-scope.md`'s "three-crate"; `grep -c "^(obligation"
+  profiles/rv64i-lab-v0/contract-obligations.sexp` → 36 against `p0.md`'s quoted 33;
+  `G1-REPORT.md` reads `passed` against `p1.md`'s "verdict today is `incomplete`".
+- [x] **ROOT CAUSE (WHY + WHERE)** — two classes, honestly separated. WHY the drift
+  class: the book's prose carries repository facts by hand, and the repository moved
+  (registration day, G1's closure, the contract's growth) — exactly the failure
+  DERIVED-COUNTS was founded on, in chapters no derived-counts enumerator covers.
+  WHERE: twelve files, each flagged by the audit and re-verified before editing
+  (`git show`-class verification: `grep -c "(decision "` miscounts the rv64i
+  profile.sexp's inline forms — the real count is 28, verified by enumerating the ids).
+  WHY the style class: three chapters violated the record's own criteria (a duplicated
+  sentence, a cold open, a 68-line accreted list item) — measured against the decision,
+  not taste.
+- [x] **FIX** — the thirteen revised chapters (the disposition table in the leaf records
+  what violated and the fix, per chapter), plus LIVE_STATUS.md's stale unit count found
+  via `status.md`'s include. No criterion-1 glossary additions: the borderline
+  terminology items were measured defensible (self-glossing first uses), recorded as
+  such in the leaf.
+- [x] **ADDRESSED (verified)** — the acceptance's three legs:
+
+  ```
+  $ mdbook build docs/book          → rc 0
+  $ python3 scripts/gen_book_index.py
+  gen_book_index: wrote docs/book/src/index.md (15259 bytes, 40 indexed terms)
+  $ python3 scripts/gen_book_index.py --check → rc 0 (regenerates clean)
+  $ bash scripts/check_doctrines.sh → === all doctrines green ===
+  ```
+
+  Every chapter carries its disposition in the leaf's table (16 kept / 13 revised).
+- [x] **NO REGRESSION** — `bash scripts/check_doctrines.sh` → `=== all doctrines green
+  ===`; `gen_book_index.py --check` rc 0; the two mermaid→text replacements render as
+  diagrams in the standalone docs and as readable flows in the book (no new dependency
+  — mdbook-mermaid was deliberately not added: an unsanctioned dependency is worse than
+  a plainer diagram).
+- [x] **LOCKSTEP** — tree (leaf + dispositions + checklist + logs + the tree closes),
+  `MEMORY.md` (next action), `CHANGELOG.md`, `DEV_NOTES.md` (the audit-method note),
+  `LIVE_STATUS.md`, `docs/TASK_TREE.md` (BOOK-APPARATUS done), KNOWLEDGE_MAP
+  regenerated. The lesson: promotion: declined (the audit method is the decision record's own consequence clause; the drift fixes are per-slice history).
 
 `BOOK-APPARATUS.1` (`2026-10-02`):
 
@@ -153,12 +249,14 @@ the policy survives the session.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-02` | `.2` | six parallel read-only chapter audits against the decision's four criteria; every flag re-verified at its line before editing (`ls crates/`, `grep -c` on the contract, the G1/G0 reports, git history for the capture date); `mdbook build docs/book` rc 0; `gen_book_index.py` regenerated (15259 B, 40 terms) and `--check` rc 0; `check_doctrines.sh` all green | 29 main-line chapters audited, 16 kept / 13 revised — the yield was factual drift (twelve stale facts, each fixed and verified) plus three genuine style violations; the tree closes |
 | `2026-10-02` | `.1` | `gen_book_index.py` → wrote index.md (15019 B, 40 terms); `mdbook build docs/book` rc 0; `check_book_index.sh` → ok; `--self-test` 6/6 (RED arms fired before registration); `check_doctrines.sh` all green | the index exists, is generated, and is gated; the annex policy is stated in the book's introduction; glossary/annexes verified present and on-policy |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` | `SEMULITH-BA-0002 (leaf BOOK-APPARATUS.2): the reading-experience audit — 29 main-line chapters, 16 kept / 13 revised; the yield was factual drift` | six-chapter-group parallel audit against decision_mdbook-incremental-engaging; every flag re-verified before editing; twelve stale facts fixed (claim-scope/p0/p1/p5-p7/architecture/risks/sources/live-status), three style violations (overview duplication, p3's accreted chain, p7's cold open), two raw-mermaid blocks rendered as text flows, the doctrines.md capture date-stamped |
 | `.1` | `SEMULITH-BA-0001 (leaf BOOK-APPARATUS.1): the book's index — generated from the book's own text, gated against drift; the annex policy stated` | generator + BOOK-INDEX gate (6 self-test arms, fired RED before registration); index.md; SUMMARY + introduction; registration + all mirrors + fact-ownership row |
 
 ## Changelog
@@ -172,3 +270,15 @@ the policy survives the session.
   reading-experience direction → `decision_mdbook-incremental-engaging` + `.2`; the TOC request
   → withdrawn by the director (the mdBook sidebar IS the TOC; the built contents page was
   reverted as redundant).
+- `2026-10-02`: `.2` done (`SEMULITH-BA-0002`) — the first reading-experience audit pass. Six
+  parallel chapter-group audits against the decision's four criteria; every flagged item
+  re-verified against the repository before any edit. 29 main-line chapters: 16 kept, 13
+  revised — and the yield was **factual drift** more than style: twelve places where the book
+  had gone stale against the repository (the crate count, the guest corpus counts, the
+  contract's 33/66 → 36/72, G1's verdict, registration day, the units count, the risks
+  register's current-state column, the naming record's reservation claims, the doctrines
+  chapter's undated capture), each fixed at its line with the measurement recorded; plus three
+  genuine record violations (a duplicated sentence in the gates overview, plan/p3's 68-line
+  accreted update chain collapsed to its final state with the incidents kept, P7's cold open),
+  and two mermaid blocks that rendered as raw source replaced by text flows (no new
+  dependency). The book builds; the index regenerates clean; the tree closes (2/2).

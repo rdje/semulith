@@ -25,7 +25,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 36 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 72 checks **declared not implemented** |
 | Reference independence inventoried | Done | 6 pairs, 4 verdicts; FP **shared** (184/199 files identical), routed to `P4-SYSTEM.7` |
 
-| North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 1 unit today |
+| North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 5 units today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
 | Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 18/18 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |

@@ -70,7 +70,7 @@ on the same commit. One commit per completed leaf.
 | [`PORT-WEB`](tasks/PORT-WEB.md) | `done` | — (1/1 leaves complete; the crate skeleton builds for `wasm32-unknown-unknown` from its first slice, gated by `PORT-WEB`) | repo-local |
 | [`UPSTREAM-TRACK`](tasks/UPSTREAM-TRACK.md) | `done` | — (4/4 leaves complete; age and exposure derived by command, `blocks` gated, the tree closed) | repo-local |
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
-| [`BOOK-APPARATUS`](tasks/BOOK-APPARATUS.md) | `active` | `.2` — the reading-experience audit pass (1 of 2 leaves done; the index landed generated + gated by `BOOK-INDEX`) | repo-local |
+| [`BOOK-APPARATUS`](tasks/BOOK-APPARATUS.md) | `done` | — (2/2 leaves complete; the index landed generated + gated by `BOOK-INDEX`, and the first reading-experience audit pass revised 13 of the 29 main-line chapters — the yield was factual drift) | repo-local |
 | [`MEMORY-POINTER`](tasks/MEMORY-POINTER.md) | `done` | — (1/1 leaves complete; MEMORY.md is the §6 next-action pointer per the director's `2026-10-02` ruling — 34/7,031 → 29/1,865) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |
 | [`PREFIX-DISCIPLINE`](tasks/PREFIX-DISCIPLINE.md) | `done` | — (1/1 leaves complete; the SEMULITH- prefix pinned in `commit-msg`, watched behaviourally by `COMMIT-PREFIX` #29 — history keeps both spellings, immutably) | repo-local |

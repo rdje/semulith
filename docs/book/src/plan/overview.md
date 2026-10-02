@@ -48,7 +48,5 @@ Two edges are worth reading carefully:
 
 ## Reading the gates
 
-Each gate closes exactly what its row above says and nothing adjacent.
-
 A kernel banner is not `LINUX`. A boot is not `CPU-SYSTEM`. Each gate closes exactly what it
 says and nothing adjacent.

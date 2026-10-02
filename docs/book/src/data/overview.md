@@ -1,5 +1,8 @@
 # Schemas and fixtures
 
+Before any enforcement machinery exists, a claim must be *data a checker can refuse* —
+this chapter's shapes are where that starts.
+
 `schemas/` holds three JSON Schema (draft 2020-12) starters, and `examples/` holds fixtures
 that exercise them. Both are **starting data contracts**, not an implemented evidence system.
 

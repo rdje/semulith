@@ -6,9 +6,12 @@
 > load-bearing, in what form must you have it, and what exactly does its absence prevent?**
 > The catalogue owns the category definitions (cited below as C01–C24); nothing here
 > restates them. What this chapter adds is the *demand* and the *price*, measured on the
-> two units this project has actually built — `rv64i-lab-v0` (CPU) and `dsp56300-lab-v0`
-> (DSP) — and, for the board, derived honestly from the composition work that is not yet
-> measured.
+> two processor units this project has actually built — `rv64i-lab-v0` (CPU) and
+> `dsp56300-lab-v0` (DSP) — and, for the board, derived honestly from the composition
+> work that is not yet measured. (Two *device* units — `sifive-uart-lab-v0` and
+> `lan9118-lab-v0` — are registered and fully dossiered since `2026-10-02`; their
+> per-category demand is the device dossiers' own, and the board `netboard-lab-v0` is
+> registered and specified, its composition verdict pending.)
 >
 > **This is a live chapter.** It is re-derived, not just re-read: each unit the project
 > models measures its own demand list, and the chapter changes with what is measured — a
@@ -86,7 +89,7 @@ reports a divergence that is pure harness.
   implementation twice.
 - *No matched configuration* → green verdicts on a fiction. The ISA string matched for
   four leaves while the reference kept its default platform underneath — a probe read a
-  CLINT timer nobody had configured. The reference must be *configured to the profile*,
+  CLINT (core-local interruptor) timer nobody had configured. The reference must be *configured to the profile*,
   and the configuration read back, not assumed.
 
 **8. The environment contract — lab vs board** (C19, C20). Which memory and devices the
@@ -118,7 +121,8 @@ correct one is "read the move semantics".
 **11. The address spaces, with a unit per space** (C10). P/X/Y, each word-addressed, a
 word meaning 24 bits — "address + 1" is not "the next octet". *Absence prevents*: naming
 an address at all. This project's scalar-shaped schema refuses `memory_spaces` by name;
-that refusal is the finding (F3), and it is why the DSP model stands as a sibling crate
+that refusal is the finding (F3 — the DSP stress review's numbered findings live in
+`docs/tasks/DSP-REVIEW.md`), and it is why the DSP model stands as a sibling crate
 today.
 
 **12. The arithmetic model** (C06). The fractional ×2 in every multiply, where rounding
@@ -139,7 +143,7 @@ onto them one-to-one.
 the loop flag, the 16-level hardware stack, the push/pop discipline on entry and exit.
 *Absence prevents*: loops that are observably right — a wrong stack slot is invisible to
 register dumps and memory dumps alike, which is why the comparison dumps the stack too.
-This is the state census reopening per profile (F6), not a defect in the census method.
+This is the state census reopening per profile (F6, same record), not a defect in the census method.
 
 **15. The per-instruction condition-code rules, and scepticism about the document itself**
 (C04, C22). "Standard definition" vs "special definition" per instruction — and the
@@ -158,8 +162,8 @@ worth more than a number.
 ---
 
 ## Board — prospective (P4–P7; derived from the composition work, not yet measured)
-
 Everything above is measured. This section is not, and says so: it is what the project's
+
 composition machinery already *demands*, which is the best available map of what a board
 will demand.
 
