@@ -51,6 +51,9 @@ composed-catalogues (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profil
 composition-manifest (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/composition.sexp	BOARD-GEN
 board-map (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/hardware.sexp	BOARD-GEN
 board-map (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/map.md	BOARD-GEN
+platform-export (netboard-lab-v0)	profiles/netboard-lab-v0/board.sexp	profiles/netboard-lab-v0/platform.sexp	PLATFORM-GEN
+platform-processor-facts (netboard-lab-v0)	profiles/rv64i-lab-v0/profile.sexp	profiles/netboard-lab-v0/platform.sexp	PLATFORM-GEN
+platform-environment-parameters (netboard-lab-v0)	profiles/rv64i-lab-v0/contract-obligations.sexp	profiles/netboard-lab-v0/platform.sexp	PLATFORM-GEN
 configuration (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/profile.sexp	-	-
 state (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/state.sexp	profiles/sifive-uart-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 pinned-sources (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/sources.sexp	docs/models/sifive-uart-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL

@@ -6,3 +6,4 @@
 [The method: composition as the contract](methodology.md)
 [The generated map](the-map.md)
 [The composition verdict](the-verdict.md)
+[The platform capability manifest](the-export.md)

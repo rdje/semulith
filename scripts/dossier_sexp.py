@@ -233,6 +233,7 @@ _SCOPE_LISTS = ("base_u_type", "base_jumps", "base_branches", "base_loads", "bas
 _PROFILE_SPEC = [("id", "str"), ("version", "str"), ("status", "str"), ("architecture", "str"),
                  ("base", "str"), ("chapter_version", "str"), ("spec_revision", "str"),
                  ("harts", "int"), ("xlen", "int"), ("ilen", "int"), ("ialign", "int"),
+                 ("endianness", "sym"),
                  ("extensions", "strs"), ("privilege_modes", "strs"), ("sources", "strs")]
 
 _STATE_SPEC = [("integer_registers", "int"), ("x0_hardwired_zero", "bool"),

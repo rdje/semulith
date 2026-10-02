@@ -128,6 +128,12 @@ def read_board(board_dir: Path) -> dict:
             "id": str(S.field(d, "id")),
             "unit": str(S.field(d, "unit")),
             "kind": str(S.field(d, "kind")),
+            # P5-BOARD.6: the datasheet pin — the platform manifest exports device
+            # identity/revision (ARCHOGEN_INTEGRATION §3); gen_board's own renderers
+            # do not consume them.
+            "material": str(S.field(d, "material")),
+            "revision": str(S.field(d, "revision")),
+            "sha256": str(S.field(d, "sha256")),
             "access_widths": [int(w) for f in S.children(d, "access-widths")
                               for w in f[1:]],
             "interrupt": str(S.field(d, "interrupt")),
@@ -149,8 +155,10 @@ def read_board(board_dir: Path) -> dict:
         "dir": board_dir,
         "id": str(S.field(doc, "id")),
         "version": str(S.field(doc, "version")),
+        "status": str(S.field(doc, "status")),
         "processor": {"unit": str(S.field(proc, "unit")),
                       "version": str(S.field(proc, "version")),
+                      "dossier_sha256": str(S.field(proc, "dossier-sha256")),
                       "contract": str(S.field(proc, "contract")),
                       "contract_version": str(S.field(proc, "contract-version"))},
         "devices": devices,
@@ -171,6 +179,18 @@ def read_board(board_dir: Path) -> dict:
              "statement": str(S.field(d, "statement"))}
             for d in S.children(doc, "decision")
             if S.children(d, "answers")],
+        # P5-BOARD.6: the boot contract and the test-control surface — the platform
+        # capability manifest (gen_platform.py) derives from them. gen_board's own
+        # renderers do not consume them; they are read here so every consumer shares
+        # the ONE board reader.
+        "boot": {name: str(S.field(S.children(doc, "boot")[0], name))
+                 for name in ("image-format", "load-region", "entry", "register-state",
+                              "argument-convention", "firmware-services", "abi",
+                              "hardware-description")},
+        "test_control": {name: str(S.field(S.children(doc, "test-control")[0], name))
+                         for name in ("console-capture", "completion", "reset",
+                                      "input-injection", "execution-budget",
+                                      "trace-selection", "snapshots")},
     }
 
 

@@ -16,15 +16,14 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (9/12 — the maps generated and drift-gated; the two-tier bound ruling executed; the composition verdict ACCEPTED and re-decided by BOARD-VERDICT).
-  Milestone frontier: `P5-BOARD`. (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P5-BOARD.6` — the platform capability manifest: the read-only derived
-  export of the accepted processor/device/board profile and its boot contract, for
-  archogen's compatibility checker (`docs/ARCHOGEN_INTEGRATION.md` §3; OWN-06 — derived,
-  never handwritten). The composition verdict (`.4`) is landed: ACCEPTED, with the four
-  dispositions (straps, frozen time sources, link scene, pin tie-offs) as data in
-  board.sexp → hardware.sexp; `.5` (probes) and `.7` (gate report) stay gated on the
-  CPU's acceptance trajectory.
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory).
+  Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
+- next_action: `P4-SYSTEM.1` — resolve the profile (gate `CPU-SYSTEM`): turn
+  "provisionally RV64GC" into an exact selection with a resolved dependency closure —
+  privilege revision, modes, translation scheme, CSR list, interrupt and counter
+  behaviour, firmware and toolchain requirements; nothing inferred from the letters
+  `GC`, each element with a source locator (SCP-01/SCP-02). P5-BOARD's remaining leaves
+  (`.5` probes, `.7` gate report) are gated on this trajectory.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

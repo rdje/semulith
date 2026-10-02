@@ -1,5 +1,32 @@
 # DEV_NOTES.md
 
+## _(2026-10-02)_ — the frozen contract is not a live doc, and a pin nothing re-derives is display only (P5-BOARD.6)
+
+Two findings from the platform-manifest leaf, both caught by the gates rather than by
+review:
+
+- **The delivered contract is frozen — route announcements to the live surfaces.** The
+  `.6` design brief planned a paragraph in `docs/ARCHOGEN_INTEGRATION.md` §3 noting the
+  manifest now exists. The file is a `frozen-in-place` row of the delivered planning
+  package; DELIVERY-PROVENANCE fired RED on the edit and the edit was reverted. The
+  announcement lives where project facts live: the task tree, the board DOSSIER, the
+  board book's new manifest chapter, and the project book's plan chapter. The design
+  input stays the supplied contract — read-only, cited, never amended
+  (`docs/provenance/planning-package-v0.2/dispositions.tsv`).
+- **A pin nothing re-derives is a display string.** The board's `dossier-sha256` was
+  recorded with the right intent ("a digest match against a newer dossier is a
+  finding"), but the census showed one consumer and it was the book generator's
+  *renderer*. The export generator now re-derives the digest from the live dossier at
+  every run (`gate_report.dossier_digest` — the one computation, factored out of the GC
+  report builder and measured byte-identical) and refuses a stale pin by name; the
+  PLATFORM-GEN self-test arms it RED. The leaf's own `endianness` edit was the first
+  real exercise of the cascade: dossier → GC-REPORT → pin → export.
+
+Promotion: declined — both findings' durability is the machinery itself (the doctrine
+fired; the refusal is armed by a self-test RED), and the write-down-what-the-gate-
+catches discipline already has its cards. Recorded in the owning leaf's checklist
+(LOCKSTEP).
+
 ## _(2026-10-02)_ — the summary sentence is not the operation chapter: a declaration read from §1.10 failed §3.6's mode exclusivity (P5-BOARD.4)
 
 The board's NIC declaration carried `access-widths 16 32` from the datasheet's §1.10
@@ -631,24 +658,4 @@ with a name, like every other exclusion in this subset. The reward: the demo gue
 dump is byte-identical between the two engines, 53 fields, on the crate's first run.
 Promotion: declined in the leaf (the crate, the comparator, and the recorded inversion
 are the durable outputs, living where the next evaluator meets them).
-
-## _(2026-10-01)_ — a second profile walks into the gates (P3-BREADTH.4, slice 2)
-
-The dossier slice's first job was a measurement, not a file: how do the auto-discovering
-gates treat a second, deliberately partial profile? The answer, read from the gate sources
-and then confirmed by a green `make gate` with the dossier present, is better than hoped:
-every one of them keys on `profiles/*/profile.sexp` or `profiles/*/encoding.sexp`, so a
-dossier whose schema-deferred documents do not exist yet is simply invisible — and the day
-those documents land (the model slice, then `.5`), the gates attach with no gate edit at
-all. The discipline that made this boring is the same one that made the deferrals explicit:
-DOSSIER.md carries a deferral table in which every absent document names its owning leaf,
-so "invisible to the gates" never reads as "forgotten". Two smaller facts earned their
-keep: `fetch_references.sh` processed candidates only by hardcoded id, so the dsp56300
-ledger needed a generic source-tarball leg (the discriminator — asset + source_commit +
-asset_sha256 — was chosen so the rv64 ledger provably never reaches it, then re-verified
-identical); and the FM manual's pin gained a second acquisition route when NXP's own
-locator served byte-identical bytes to the chipdoc-cached copy — a version string is not an
-identity, but a digest match from two independent routes is close to one. Promotion:
-declined in the leaf (the census lives where the next profile meets it; the durable output
-is the measured answer, not a method).
 

@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/netboard-lab-v0/board.sexp`  `ab64ccfb004e074d3c4939e6490c10357b8f1998f73a322347fd5db47c875e4e`
+     `profiles/netboard-lab-v0/board.sexp`  `584bcc4201aafcd3c1c582718e96c2341beb3eb70aec84f8bb1951c923921854`
      Generator: `scripts/gen_model_book.py` (sha256 `42b24f528fa0752c31faa6ad1e21d0bbcf36beed710c827c54421006fadcec07`) -->
 
 A board pins no reference models of its own: the references that matter are its processor's, standing behind the pinned dossier digest (`board.sexp`), and its devices' datasheets, pinned as materials. The composition's own evidence is `.4`'s verdict and `.5`'s probes — never a reference implementation's say-so.

@@ -20,7 +20,7 @@
     (version "0")
     ;; the dossier content digest recorded in profiles/rv64i-lab-v0/GC-REPORT.md
     ;; (GATE-REPORT-gated): unit id + version + digest is the pin, not the name.
-    (dossier-sha256 "1879ba1881038ec460ed059343743c1187e2c8960ee347e496596a2aee5394ad")
+    (dossier-sha256 "95ebca2f0ee0518e43a24088f070642120c45ef72d8b35a7379c4d0101cf8001")
     (contract "rv64i-lab-env-v0")
     (contract-version "0"))
 
@@ -105,6 +105,61 @@
 
   (serial-console
     (device "uart0"))
+
+  ;; ── the boot contract (P5-BOARD.6): owned by the platform package
+  ;; (docs/ARCHOGEN_INTEGRATION.md §2), consumed as data by the generated platform
+  ;; capability manifest (platform.sexp — PLATFORM-GEN). The entry state itself stays
+  ;; with the CPU contract (OB-ENV-RESET, D-ENTRY-STATE) — cited, never restated.
+  (boot
+    (image-format elf64)
+    (comment "the runner loads the ELF's PT_LOAD segments into the load region"
+             "(crates/semulith-cli); an ELF the loader refuses is a usage rejection")
+    (load-region "ram0")
+    (entry image-entry)
+    (comment "pc = the loaded image's entry address — rv64i-lab-env-v0 v0, OB-ENV-RESET")
+    (register-state zeroed-x1-x31)
+    (comment "D-ENTRY-STATE: x1..x31 = 0 at reset, x0 hardwired — a harness declaration;"
+             "a guest may not assume any other environment provides it")
+    (argument-convention none)
+    (firmware-services none)
+    (comment "no SBI, no firmware ABI: ECALL/EBREAK are precise requested traps reported"
+             "to the harness as typed outcomes (REQ-D-ECALL-EBREAK)")
+    (abi freestanding)
+    (comment "no environment ABI; the toolchain ABI is an explicit integration"
+             "constraint (ARCHOGEN_INTEGRATION §3), and this platform offers none")
+    (hardware-description hardware-sexp-internal)
+    (comment "hardware.sexp — the board's own generated data, NOT a device tree;"
+             "P6-LINUX pins its own boot hardware-description format"))
+
+  ;; ── the test-control surface (P5-BOARD.6): what the platform package's runner offers
+  ;; a test harness (ARCHOGEN_INTEGRATION §3, fifth bullet). Declared capabilities,
+  ;; evidenced by the runner's own suites (the semulith CLI commands and their tests),
+  ;; never by the manifest itself.
+  (test-control
+    (console-capture host-console)
+    (comment "uart0's TX backend: the guest's serial output reaches the host console")
+    (completion typed-outcome-stop)
+    (comment "a run stops on a requested trap (the guest's completion/failure signal),"
+             "an exception, or the step budget — each reported in the typed outcome"
+             "vocabulary (RequestedTrap / Exception / ModelError / UndefinedCase), so an"
+             "OS assertion failure, a guest exception and a Semulith internal failure"
+             "are distinguishable (ARCHOGEN_INTEGRATION §4)")
+    (reset cold-reload)
+    (comment "the reset block owns the kinds (cold only); test control resets by a"
+             "fresh cold boot and image reload")
+    (input-injection recorded-backends)
+    (comment "uart0 RX recorded-input, eth0 RX recorded-trace-replay — deterministic,"
+             "evidence-grade; a live host socket stays laboratory play"
+             "(D-BOARD-NET-BACKEND)")
+    (execution-budget step-budget)
+    (comment "semulith run --steps N: the run stops at the budget as a target"
+             "observation, not an error")
+    (trace-selection step-and-store)
+    (comment "the per-step (pc, word, writes, trap) observation by default;"
+             "--trace-stores surfaces the data-store crossings")
+    (snapshots snapshot-resume)
+    (comment "semulith snapshot --at N / resume: mid-execution state records with"
+             "identity pins and a memory digest (G-REPLAY)"))
 
   (decision
     (id "D-BOARD-SCOPE")

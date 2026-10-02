@@ -516,6 +516,23 @@ def _cells(interactions: str) -> tuple[int, int]:
     return cells, dispositions
 
 
+def dossier_digest(d: Path) -> str:
+    """The versioned artifact's identity: the dossier's content digest over its SOURCE
+    files — the generated reports are excluded: they are derived from this digest's
+    inputs, and including them would make the digest a fixed point of itself.
+
+    The ONE computation (`P5-BOARD.6`): the GC report records it, a board definition
+    pins it (`dossier-sha256`), and `scripts/gen_platform.py` refuses a stale pin by
+    re-deriving it here — imported, never re-implemented."""
+    files = [f for f in subprocess.run(["git", "ls-files", str(d.relative_to(ROOT))],
+                           capture_output=True, text=True, cwd=ROOT, check=True)
+             .stdout.split() if not f.endswith("-REPORT.md")]
+    h = hashlib.sha256()
+    for f in files:
+        h.update(hashlib.sha256((ROOT / f).read_bytes()).hexdigest().encode())
+    return h.hexdigest()
+
+
 def build_cpulab(profile: str) -> str:
     d = ROOT / "profiles" / profile
     prof = D.load_profile(d / "profile.sexp")
@@ -560,16 +577,8 @@ def build_cpulab(profile: str) -> str:
     determinism = "every_guest_re_executes_identically_from_cold_reset" in _dossier_text(
         ROOT / "crates/semulith-verify/src/run/tests.rs")
 
-    # The versioned artifact's identity: the dossier's content digest over its SOURCE
-    # files — the generated reports are excluded: they are derived from this digest's
-    # inputs, and including them would make the digest a fixed point of itself.
-    files = [f for f in subprocess.run(["git", "ls-files", str(d.relative_to(ROOT))],
-                           capture_output=True, text=True, cwd=ROOT, check=True)
-             .stdout.split() if not f.endswith("-REPORT.md")]
-    h = hashlib.sha256()
-    for f in files:
-        h.update(hashlib.sha256((ROOT / f).read_bytes()).hexdigest().encode())
-    artifact_digest = h.hexdigest()
+    # The versioned artifact's identity (the ONE computation — see dossier_digest).
+    artifact_digest = dossier_digest(d)
 
     axes = [
         ("G-CONTRACT",

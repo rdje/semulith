@@ -37,6 +37,13 @@
 ;; already generic). The vehicle `route` gains `device-model` and `comparison` gains
 ;; `register-expectations`. `dossier_sexp._SCOPE_LISTS` is extended in the same breath.
 
+;; `P5-BOARD.6` (`2026-10-02`): `endianness` joins the optional processor-only fields —
+;; the platform capability manifest (schema `platform.sexp`) must EXPOSE the value
+;; (docs/ARCHOGEN_INTEGRATION.md §3), and the value's one owner is the CPU dossier
+;; (`D-ENDIAN` carried it as prose only). Optional for the same reason as `xlen`: a
+;; device unit has no endianness concept. `(values little)` today; `big` joins the day a
+;; big-endian profile needs one (the sanctioned `(values …)` edit).
+
 (schema (id "profile"))
 
 (construct (name profile)
@@ -51,6 +58,7 @@
   (field (name xlen) (type integer) (optional yes))
   (field (name ilen) (type integer) (optional yes))
   (field (name ialign) (type integer) (optional yes))
+  (field (name endianness) (type symbol) (values little) (optional yes))
   (field (name extensions) (type string) (repeat yes))
   (field (name privilege_modes) (type string) (repeat yes))
   (field (name sources) (type string) (repeat yes) (min 1))

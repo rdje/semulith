@@ -45,7 +45,7 @@ KNOWN_LIFECYCLES="hot_live partitioned generated_index append_history frozen nor
 # — nothing regenerates it; a mirror governed by a validation gate (RECORD-SCHEMA & kin)
 # keeps the authored ceiling. The set is closed: the day a new regeneration doctrine is
 # registered, its leaf adds it here.
-REGEN_GOVERNORS="STATE-GEN DEF-GEN GUEST-GEN BOARD-GEN GATE-REPORT MATERIALS-BILL BOOK-INDEX"
+REGEN_GOVERNORS="STATE-GEN DEF-GEN GUEST-GEN BOARD-GEN GATE-REPORT MATERIALS-BILL BOOK-INDEX PLATFORM-GEN"
 
 # Every regen-set member must be a REGISTERED project doctrine — a set/driver disagreement
 # would silently widen the exemption, so it refuses by name instead.

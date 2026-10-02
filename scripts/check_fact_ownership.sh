@@ -22,7 +22,11 @@ TSV="doctrine/fact_ownership.tsv"
 # The corpus's ACTUAL restatement pairs, as "restater<TAB>source" (the restater restates the
 # source's fact). Each must appear in the registry as a row whose owner matches the source and
 # mirror matches the restater — enumerated here because a completeness claim needs a census.
-CORPUS_MIRRORS=$'profiles/*/requirements.sexp\tprofiles/*/profile.sexp\nprofiles/*/profile.sexp\tprofiles/*/state.sexp\nprofiles/*/contract-obligations.sexp\tprofiles/*/requirements.sexp\nprofiles/*/encoding.sexp\tdefinitions/\ncrates/*/src/state.rs\tprofiles/*/state.sexp\ncrates/*/src/definition.rs\tdefinitions/\ncrates/*/src/definition.rs\tprofiles/*/state.sexp'
+CORPUS_MIRRORS=$'profiles/*/requirements.sexp\tprofiles/*/profile.sexp\nprofiles/*/profile.sexp\tprofiles/*/state.sexp\nprofiles/*/contract-obligations.sexp\tprofiles/*/requirements.sexp\nprofiles/*/encoding.sexp\tdefinitions/\ncrates/*/src/state.rs\tprofiles/*/state.sexp\ncrates/*/src/definition.rs\tdefinitions/\ncrates/*/src/definition.rs\tprofiles/*/state.sexp\nprofiles/*/platform.sexp\tprofiles/*/board.sexp\nprofiles/*/platform.sexp\tprofiles/rv64i-lab-v0/profile.sexp\nprofiles/*/platform.sexp\tprofiles/rv64i-lab-v0/contract-obligations.sexp'
+# The platform.sexp pairs (P5-BOARD.6): the export restates the board definition
+# (same-unit), the pinned processor's profile facts, and the environment-obligation
+# parameters — the two cross lines name today's pinned processor concretely; a second
+# board's leaf extends the census with its own processor.
 
 check_ownership() { # $1 = registry path; $2 = project driver; $3 = corpus pairs (restater<TAB>source per line)
 python3 - "$1" "$2" "$3" <<'PY'
