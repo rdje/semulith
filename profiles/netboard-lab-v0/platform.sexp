@@ -1,7 +1,7 @@
 ;; GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_platform.py`; drift between this document and its
 ;; canonical inputs is refused by the PLATFORM-GEN doctrine (scripts/check_platform_gen.sh).
 ;; Canonical inputs:
-;;   profiles/netboard-lab-v0/board.sexp (sha256 584bcc4201aafcd3c1c582718e96c2341beb3eb70aec84f8bb1951c923921854)
+;;   profiles/netboard-lab-v0/board.sexp (sha256 d595f2b44056913c189bb1cffd477ba3e5ccfce97e70d8f4216085130d61382a)
 ;;   profiles/rv64i-lab-v0/profile.sexp (sha256 63f0aa1e36fe731ef6dcabc7b63a3fe7250c84063944e47e9f4066d5d2648e3d)
 ;;   profiles/netboard-lab-v0/contract-obligations.sexp (sha256 a4fbbc23a7b53cbc8ed0f802e136bebc1c569e45dd73aabd1e202612d35ca514)
 ;; Generator: scripts/gen_platform.py (sha256 1d801a12b6715e5481235225bbeea0dc15a0f9db5928b8696654f7b1ef6ee867)
@@ -9,7 +9,7 @@
 (platform
   (id "netboard-lab-v0") (version "0") (export-version "0") (status experimental)
   (processor (unit "rv64i-lab-v0") (version "0")
-    (dossier-sha256 "95ebca2f0ee0518e43a24088f070642120c45ef72d8b35a7379c4d0101cf8001") (contract "rv64i-lab-env-v0") (contract-version "0")
+    (dossier-sha256 "f24ca76d93ad9dd958c7350462aeb13289e5c51d8ef72e71972ffe67b938a74e") (contract "rv64i-lab-env-v0") (contract-version "0")
     (architecture "RISC-V") (isa "rv64i") (xlen 64) (ilen 32) (ialign 32) (harts 1)
     (privilege-modes "M") (extensions) (endianness little)
     (spec (chapter-version "2.1") (revision "v20260120")))

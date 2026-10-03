@@ -61,9 +61,12 @@ fn read_u64(b: &[u8], at: usize) -> u64 {
     u64::from_le_bytes(v)
 }
 
-/// Parse the image. Refuses, naming the field, anything that is not a 64-bit little-endian
-/// RISC-V executable with program headers this loader can walk.
-pub fn parse(image: &[u8]) -> Result<Image, ElfError> {
+/// Parse the image, judging the entry against the profile's instruction-address
+/// alignment in BITS (`ialign` — rv64i: 32; rv64gc with C: 16, D-IALIGN-16; profile data,
+/// never assumed — P4-SYSTEM.2 slice (d) retired the hard-coded 32, the twin of the
+/// assembler's old line-486 assumption). Refuses, naming the field, anything that is not
+/// a 64-bit little-endian RISC-V executable with program headers this loader can walk.
+pub fn parse(image: &[u8], ialign: u64) -> Result<Image, ElfError> {
     if image.len() < EHDR {
         return Err(ElfError("smaller than the 64-byte ELF header"));
     }
@@ -83,10 +86,17 @@ pub fn parse(image: &[u8]) -> Result<Image, ElfError> {
         return Err(ElfError("not a RISC-V (EM_RISCV) file"));
     }
     let entry = read_u64(image, 24);
-    if !entry.is_multiple_of(4) {
-        return Err(ElfError(
-            "the entry address is not 4-byte aligned (IALIGN=32)",
-        ));
+    let quantum = match ialign {
+        32 => 4,
+        16 => 2,
+        _ => return Err(ElfError("an IALIGN this loader does not know how to state")),
+    };
+    if !entry.is_multiple_of(quantum) {
+        return Err(ElfError(if ialign == 32 {
+            "the entry address is not 4-byte aligned (IALIGN=32)"
+        } else {
+            "the entry address is not 2-byte aligned (IALIGN=16)"
+        }));
     }
     let phoff = read_u64(image, 32) as usize;
     let phentsize = read_u16(image, 54) as usize;

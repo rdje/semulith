@@ -53,7 +53,7 @@ fn the_writer_round_trips_through_parse() {
     let entry = 0x8000_0000u64;
     let payload: [u8; 8] = [0x93, 0x00, 0x50, 0x00, 0x13, 0x81, 0xf0, 0xff];
     let image = write_elf64(entry, &payload);
-    let parsed = parse(&image).unwrap();
+    let parsed = parse(&image, 32).unwrap();
     assert_eq!(parsed.entry, entry);
     assert_eq!(parsed.segments.len(), 1);
     let seg = parsed.segments[0];
@@ -71,47 +71,47 @@ fn refusals_name_the_field() {
     let mut bad = good.clone();
     bad[0] = 0x7e;
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("bad magic — not an ELF file")
     );
 
     let mut bad = good.clone();
     bad[4] = 1;
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("not a 64-bit (ELFCLASS64) file")
     );
 
     let mut bad = good.clone();
     bad[5] = 2;
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("not a little-endian (ELFDATA2LSB) file")
     );
 
     let mut bad = good.clone();
     bad[16] = 3; // ET_DYN
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("not an executable (ET_EXEC) file")
     );
 
     let mut bad = good.clone();
     bad[18] = 0x28; // EM_AARCH64
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("not a RISC-V (EM_RISCV) file")
     );
 
     let mut bad = good.clone();
     bad[24] = 0x02; // entry 0x...02, misaligned
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("the entry address is not 4-byte aligned (IALIGN=32)")
     );
 
     assert_eq!(
-        parse(&good[..32]).unwrap_err(),
+        parse(&good[..32], 32).unwrap_err(),
         ElfError("smaller than the 64-byte ELF header")
     );
 
@@ -119,7 +119,7 @@ fn refusals_name_the_field() {
     let phnum_at = 56;
     bad[phnum_at] = 0xff; // 255 program headers: table runs past the image
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("program-header table extends past the image")
     );
 
@@ -128,7 +128,7 @@ fn refusals_name_the_field() {
     let filesz_at = EHDR + 32;
     bad[filesz_at] = 0xff;
     assert_eq!(
-        parse(&bad).unwrap_err(),
+        parse(&bad, 32).unwrap_err(),
         ElfError("a PT_LOAD segment extends past the image")
     );
 }

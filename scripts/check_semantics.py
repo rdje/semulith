@@ -6,7 +6,7 @@ notation that quietly accepts an unknown operator produces a definition whose me
 state — which is worse than no definition, because it looks like one. Every form was added
 because an RV64I instruction needed it; none was added in anticipation.
 
-⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — the 32 operators and their arity — lives
+⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — the 40 operators and their arity — lives
 as `(operator …)` declarations in `schema/semantics.sexp` (SOT-FORMAT.2) and is loaded below
 through the schema kernel; adding a semantic form is a schema edit, zero lines of Python. This
 file owns what the schema cannot state: whether a bare symbol is an operand the instruction

@@ -42,19 +42,6 @@ REPO = Path(__file__).resolve().parent.parent
 ENCODING = REPO / "profiles/rv64i-lab-v0/encoding.sexp"
 GUESTS_DIR = REPO / "profiles/rv64i-lab-v0/guests"
 OUT = REPO / "crates/semulith-verify/src/guests.rs"
-GUESTS = ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device",
-          "scope-alu", "scope-mem", "scope-branch", "scope-ecall", "scope-ebreak",
-          "bound-shift", "bound-shiftw", "bound-arith", "bound-ext", "bound-alias",
-          "fault-jal-mis", "fault-jalr-mis", "fault-branch-nt", "fault-fetch",
-          "fault-ld-mis-h", "fault-ld-mis-d", "fault-st-mis-h", "fault-st-mis-w",
-          "fault-st-mis-d", "fault-ld-x0-mis", "fault-ld-x0-fault", "fault-access-ld",
-          "fault-access-sd", "fault-reserved", "fault-shiftw-res", "fault-fence",
-          "fault-hints", "fault-selfmod",
-          "it-prio-jump", "it-prio-load", "it-fault-alias", "it-fault-wrap-ld",
-          "it-fault-wrap-sd", "it-alias-bound", "it-progress-loop", "it-fencei",
-          "dir-runoff", "dir-chase", "dir-ext-matrix", "dir-selfmod-fence",
-          "dir-cmp-branch", "dir-memwalk", "dir-chain", "dir-x0-writes",
-          "min-fencei")
 GENERATOR = Path(__file__)
 
 
@@ -142,7 +129,7 @@ def hex32(value: int) -> str:
     return f"0x{value:08X}"
 
 
-def emit(guests: list[dict]) -> str:
+def emit(guests: list[dict], encoding: Path) -> str:
     a: list[str] = []
     a.append("//! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_guests.py`;"
              " drift between this fixture and the tracked guest sources is refused by the"
@@ -156,7 +143,7 @@ def emit(guests: list[dict]) -> str:
     for g in guests:
         for src in g["sources"]:
             inputs.append((rel(src), sha256(src)))
-    inputs.append(("profiles/rv64i-lab-v0/encoding.sexp", sha256(ENCODING)))
+    inputs.append((rel(encoding), sha256(encoding)))
     a.append("//! Canonical inputs (sha256):")
     for relpath, digest in sorted(set(inputs)):
         a.append(f"//!   `{relpath}`  `{digest}`")
@@ -242,12 +229,38 @@ def emit(guests: list[dict]) -> str:
     return "\n".join(a)
 
 
+def guest_names(guests_dir: Path) -> list[str]:
+    """The corpus, DIRECTORY-DERIVED (P4-SYSTEM.2 slice d): the set is the directory's
+    `*.s` files — a guest on disk the generator never saw is how a coverage hole used to
+    hide — and the experiment's run order is the tracked `run-order.txt` beside them. The
+    two are cross-checked both directions: a guest on disk but not listed, or listed but
+    not on disk, is a refusal, named."""
+    on_disk = {p.stem for p in guests_dir.glob("*.s")}
+    order_path = guests_dir / "run-order.txt"
+    if not order_path.is_file():
+        raise GenError(f"{rel(order_path)}: missing — the run order is recorded data, "
+                       f"never the directory's accident")
+    order = [line for line in order_path.read_text().splitlines()
+             if line and not line.startswith("#")]
+    if len(order) != len(set(order)):
+        raise GenError(f"{rel(order_path)}: a name repeats — the order lists each guest once")
+    missing = [n for n in order if n not in on_disk]
+    unlisted = sorted(on_disk - set(order))
+    if missing:
+        raise GenError(f"{rel(order_path)}: lists {', '.join(missing)} — not on disk")
+    if unlisted:
+        raise GenError(f"{rel(order_path)}: {', '.join(unlisted)} on disk but never "
+                       f"listed — a guest the run order does not name never executes")
+    return order
+
+
 def generate(encoding: Path, guests_dir: Path) -> str:
     if not encoding.is_file():
         raise GenError(f"{encoding}: encoding composition is missing")
     asm = Assembler(encoding)
-    guests = [load_guest(name, guests_dir, asm) for name in GUESTS]
-    return emit(guests)
+    names = guest_names(guests_dir)
+    guests = [load_guest(name, guests_dir, asm) for name in names]
+    return emit(guests, encoding)
 
 
 def main(argv: list[str]) -> int:
@@ -275,7 +288,7 @@ def main(argv: list[str]) -> int:
         return 0
     args.out.write_text(text)
     print(f"gen_guests: wrote {args.out} "
-          f"({len(text)} bytes, {len(GUESTS)} guests)")
+          f"({len(text)} bytes, {len(guest_names(args.guests_dir))} guests)")
     return 0
 
 

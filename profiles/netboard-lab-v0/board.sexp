@@ -20,7 +20,7 @@
     (version "0")
     ;; the dossier content digest recorded in profiles/rv64i-lab-v0/GC-REPORT.md
     ;; (GATE-REPORT-gated): unit id + version + digest is the pin, not the name.
-    (dossier-sha256 "95ebca2f0ee0518e43a24088f070642120c45ef72d8b35a7379c4d0101cf8001")
+    (dossier-sha256 "f24ca76d93ad9dd958c7350462aeb13289e5c51d8ef72e71972ffe67b938a74e")
     (contract "rv64i-lab-env-v0")
     (contract-version "0"))
 

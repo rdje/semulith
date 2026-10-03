@@ -403,8 +403,17 @@ def state_to_form(doc: dict) -> list:
                   _pair("bit_hi", f["bit_hi"]),
                   _pair("bit_lo", f["bit_lo"]),
                   _pair("discipline", _sym(f["discipline"]))]
-            if "legalization" in f:
-                ff.append(_pair("legalization", f["legalization"]))
+            if "legalize" in f:
+                lg = f["legalize"]
+                if lg["kind"] == "any":
+                    form = [S.Symbol("any")]
+                elif lg["kind"] == "read-only":
+                    form = [S.Symbol("read-only"), lg["value"]]
+                elif lg["kind"] == "one-of":
+                    form = [S.Symbol("one-of"), *lg["values"]]
+                else:
+                    form = [S.Symbol("computed")]
+                ff.append([S.Symbol("legalize"), form])
             ff += [_pair("reset", f["reset"]),
                    _pair("reset_authority", _sym(f["reset_authority"])),
                    _pair("authority", _sym(f["authority"])),
@@ -563,9 +572,20 @@ def state_to_doc(form) -> dict:
                  "reset_authority": _s(_req(ff, "reset_authority", "field")),
                  "authority": _s(_req(ff, "authority", "field")),
                  "source": _s(_req(ff, "source", "field"))}
-            lg = _opt(ff, "legalization", "field")
+            lg = _opt_child(ff, "legalize")
             if lg is not None:
-                f["legalization"] = _s(lg)
+                body = _value(lg, "legalize")
+                head = str(body[0])
+                if head == "any":
+                    f["legalize"] = {"kind": "any"}
+                elif head == "read-only":
+                    f["legalize"] = {"kind": "read-only", "value": int(body[1])}
+                elif head == "one-of":
+                    f["legalize"] = {"kind": "one-of", "values": [int(v) for v in body[1:]]}
+                elif head == "computed":
+                    f["legalize"] = {"kind": "computed"}
+                else:
+                    raise DossierError(f"field: unknown legalize form ({head} …)")
             fields.append(f)
         if fields:
             c["fields"] = fields

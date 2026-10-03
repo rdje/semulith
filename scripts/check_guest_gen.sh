@@ -40,9 +40,11 @@ self_test() {
   local t pass=0 fail=0 out rc
   t="$(SELFTEST_TMP)"
 
-  # The surgical guests directory mirrors the real layout: <name>.s + <name>.expected.sexp.
+  # The surgical guests directory mirrors the real layout: <name>.s + <name>.expected.sexp
+  # + the run-order record (P4-SYSTEM.2 slice d: the guest SET is directory-derived; the
+  # order is recorded data).
   mkdir -p "$t/guests"
-  cp "$GUESTS_DIR"/*.s "$GUESTS_DIR"/*.expected.sexp "$t/guests/"
+  cp "$GUESTS_DIR"/*.s "$GUESTS_DIR"/*.expected.sexp "$GUESTS_DIR/run-order.txt" "$t/guests/"
   GEN() { python3 scripts/gen_guests.py --encoding "$ENCODING" --guests-dir "$t/guests" \
           --out "$t/guests.rs" "$@"; }
 
@@ -125,6 +127,33 @@ PY
   out="$(GEN --check 2>&1)"; rc=$?
   arm "RED a register outside x0..x31 is refused" "$rc" 2 "$out" "x99"
   cp "$GUESTS_DIR/guest-control.expected.sexp" "$t/guests/guest-control.expected.sexp"
+
+  # ---- directory derivation (P4-SYSTEM.2 slice d) ---------------------------------------------
+  # RED: the run-order record missing is refused — the order is data, never the
+  # directory's accident.
+  mv "$t/guests/run-order.txt" "$t/guests/run-order.txt.bak"
+  out="$(GEN --check 2>&1)"; rc=$?
+  arm "RED a missing run-order record is refused" "$rc" 2 "$out" "run-order.txt"
+  mv "$t/guests/run-order.txt.bak" "$t/guests/run-order.txt"
+
+  # RED: a guest the run order names that is not on disk is refused, named.
+  printf 'ghost-guest\n' >> "$t/guests/run-order.txt"
+  out="$(GEN --check 2>&1)"; rc=$?
+  arm "RED a listed guest not on disk is refused, named" "$rc" 2 "$out" "ghost-guest"
+  python3 - "$t/guests/run-order.txt" <<'PY'
+import sys
+path = sys.argv[1]
+lines = open(path).read().splitlines()
+assert lines[-1] == "ghost-guest"
+open(path, "w").write("\n".join(lines[:-1]) + "\n")
+PY
+
+  # RED: a guest on disk but missing from the run order never executes — refused, named.
+  cp "$GUESTS_DIR/smoke-trap.s" "$t/guests/zz-probe.s"
+  cp "$GUESTS_DIR/smoke-trap.expected.sexp" "$t/guests/zz-probe.expected.sexp"
+  out="$(GEN --check 2>&1)"; rc=$?
+  arm "RED an unlisted guest on disk is refused, named" "$rc" 2 "$out" "zz-probe"
+  rm "$t/guests/zz-probe.s" "$t/guests/zz-probe.expected.sexp"
 
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"

@@ -111,8 +111,12 @@ self_test() {
   arm "RED a moved definition against a stale export is refused, naming DRIFT" "$rc" 1 "$out" "DRIFT"
 
   # RED: a stale dossier pin is refused by name — the pin is load-bearing, not display.
+  # The mutation rewrites the digest to a fixed wrong value of the same shape (an earlier
+  # form flipped the first character and silently stopped mutating the day the live digest
+  # rotated to a different leading hex digit — measured, P4-SYSTEM.2 slice d).
   mkdir -p "$t/d3"; cp "$t/board/contract-obligations.sexp" "$t/d3/"
-  sed 's/(dossier-sha256 "9/(dossier-sha256 "0/' "$t/board/board.sexp" > "$t/d3/board.sexp"
+  sed -E 's/\(dossier-sha256 "[0-9a-f]{64}"\)/(dossier-sha256 "0000000000000000000000000000000000000000000000000000000000000000")/' \
+    "$t/board/board.sexp" > "$t/d3/board.sexp"
   out="$(python3 scripts/gen_platform.py --board-dir "$t/d3" --out-dir "$t/d3o" 2>&1)"; rc=$?
   arm "RED a stale dossier-sha256 pin is refused, named" "$rc" 2 "$out" "STALE"
 

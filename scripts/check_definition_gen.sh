@@ -148,6 +148,42 @@ PY
   out="$(GEN --check 2>&1)"; rc=$?
   arm "RED a fragment without its semantics document is refused" "$rc" 2 "$out" "no semantics document"
 
+  # ---- the rv64gc branch (P4-SYSTEM.2 slice d) -------------------------------------------------
+  # (the previous arm removed the rv64i sem file; restore it before the rv64gc setup)
+  cp definitions/riscv/rv64i.sem.sexp "$t/definitions/riscv/rv64i.sem.sexp"
+  # GREEN: the staged rv64gc composition emits the extended module — three separate
+  # (extensions …) forms (the shape the dropped-form regression hid), the pseudo rows
+  # landing as PSEUDOS metadata, and the privileged operator variants in the Sem enum.
+  mkdir -p "$t/gc/profiles/rv64gc-lab-v0" "$t/gc/definitions"
+  cp -r "$t/definitions/riscv" "$t/gc/definitions/riscv"
+  for f in zicsr zicntr system; do
+    cp "definitions/riscv/$f.sexp" "$t/gc/definitions/riscv/$f.sexp"
+    cp "definitions/riscv/$f.sem.sexp" "$t/gc/definitions/riscv/$f.sem.sexp"
+  done
+  cat > "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" <<EOF
+(encoding (profile "rv64gc-lab-v0") (ilen 32)
+  (compose (base "riscv/rv64i")
+    (extensions "riscv/zicsr") (extensions "riscv/zicntr") (extensions "riscv/system")
+    (status partial) (slot (id m) (requires "riscv/m")))
+  (fragment-root "definitions"))
+EOF
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-definition.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc composition emits the extended module" "$rc" 0 "$out" "wrote"
+  for needle in "TrapDeliver" "CsrRead" "Xret" "static PSEUDOS"; do
+    grep -qF "$needle" "$t/gc-definition.rs"; rc=$?
+    arm "GREEN the emitted module carries $needle" "$rc" 0 "" ""
+  done
+  # RED: a privileged operator in an RV64I rule is refused, named — the rv64i module's
+  # byte surface is frozen, so the refusal is the honest verdict there. Rewrite the fence
+  # rule to query (mode) in the rv64i surgical copy (a fresh encoding copy: the earlier
+  # arms mutated the first).
+  cp "$ENCODING" "$t/profiles/rv64i-lab-v0/encoding.sexp"
+  sed 's/(effect (nop))/(effect (if (eq (mode) (lit 3)) (nop) (nop)))/' \
+    "$t/definitions/riscv/rv64i.sem.sexp" > "$t/x" && mv "$t/x" "$t/definitions/riscv/rv64i.sem.sexp"
+  out="$(GEN 2>&1)"; rc=$?
+  arm "RED a privileged operator in a base rule is refused where not lowered" "$rc" 2 "$out" "does not lower"
+
   rm -rf "$t"
   printf 'DEF-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

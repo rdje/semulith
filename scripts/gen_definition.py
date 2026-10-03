@@ -24,8 +24,11 @@ The generator REFUSES (exit 2, naming the construct) on any shape it does not kn
 emit, because a generator that guesses is a second definition wearing the first one's
 clothes:
 
-- a unit other than `rv64i-lab-v0`, or an instruction length other than 32 — this
-  generator is scoped to the laboratory unit, not a config knob;
+- a unit other than `rv64i-lab-v0` or — since `P4-SYSTEM.2` slice (d) — `rv64gc-lab-v0`,
+  whose descriptor is STAGED untracked until the route flip: rv64gc emission is
+  generator-capable and proven to a scratch `--out`
+  (`decision_generated-mirror-needs-tracked-input`); the tracked module lands at the flip;
+- an instruction length other than 32 — this generator emits the 32-bit decode table;
 - a composition whose encoding/fragment/semantics documents the schema layer refuses;
 - a composed fragment with no semantics document beside it (`<fragment>.sem.sexp`, the
   corpus convention `scripts/check_semantics_corpus.sh` pairs by);
@@ -65,6 +68,7 @@ import check_semantics as SEM                   # noqa: E402
 import check_sexp_schema as SCHEMA              # noqa: E402
 
 PROFILE = "rv64i-lab-v0"
+PROFILES = ("rv64i-lab-v0", "rv64gc-lab-v0")
 ENCODING = ROOT / "profiles" / PROFILE / "encoding.sexp"
 STATE = ROOT / "profiles" / PROFILE / "state.sexp"
 OUT = ROOT / "crates" / "semulith-core" / "src" / "definition.rs"
@@ -79,6 +83,11 @@ BINARY_OPS = {"add": "Add", "sub": "Sub", "and": "And", "or": "Or", "xor": "Xor"
               "shl": "Shl", "shr": "Shr", "sar": "Sar", "slt": "Slt", "sltu": "Sltu",
               "eq": "Eq", "ne": "Ne", "lt": "Lt", "ltu": "Ltu", "ge": "Ge", "geu": "Geu"}
 WIDTH_OPS = {"trunc": "Trunc", "sext": "Sext", "zext": "Zext"}
+# P4-SYSTEM.2 slice (b): the privileged operators, lowered for the rv64gc module only —
+# the rv64i module's byte surface is frozen by DEF-GEN, and its corpus never names them.
+EXTENDED_UNARY = {"csr-state": "CsrState", "csr-read": "CsrRead", "xret": "Xret"}
+EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver"}
+BASE_UNARY = {"set-pc": "SetPc"}
 
 
 class Refusal(Exception):
@@ -132,15 +141,21 @@ def bound_operands(operands: tuple[str, ...]) -> set[str]:
     return names
 
 
-def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn]) -> dict[str, tuple[str, X.Sexp]]:
+def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
+                   pseudos: dict[str, R.Insn] | None = None) -> tuple[dict, dict]:
     """Every composed fragment's semantics rules, keyed by instruction, in composition
-    order, under the MODEL-COMPOSE.6 refinement rule — re-derived here (see module doc)."""
+    order, under the MODEL-COMPOSE.6 refinement rule — re-derived here (see module doc).
+
+    Returns (rules, pseudo_rules): a rule naming a PSEUDO (Zicntr's counter reads) is
+    checked against the pseudo's operand row and returned separately — it never decodes
+    (the word matches the realizing instruction), so it rides as metadata, not a table row."""
     try:
         SEM.load_language()
     except SEM.SemError as exc:
         raise Refusal(f"the semantic language itself does not read: {exc}")
 
     rules: dict[str, tuple[str, X.Sexp]] = {}
+    pseudo_rules: dict[str, str] = {}
     seen: dict[str, Path] = {}
     for name in names:
         sem_path = root / (name + ".sem.sexp")
@@ -166,7 +181,7 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn]) -> di
             if insn in defined:
                 raise Refusal(f"{where}: defined twice")
             defined.append(insn)
-            if insn not in insns:
+            if insn not in insns and insn not in (pseudos or {}):
                 raise Refusal(f"{where}: no instruction of that name in the composed "
                               f"encoding — a semantics rule for a word the encoding does "
                               f"not declare is a rule nothing can decode to")
@@ -180,11 +195,19 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn]) -> di
                 raise Refusal(f"{where}: must carry exactly one effect expression, has "
                               f"{len(effects[0][1:]) if effects else 0}")
             effect = effects[0][1]
+            operand_names = (insns[insn].operands if insn in insns
+                             else (pseudos or {})[insn].operands)
             try:
-                SEM.check_expr(effect, where, bound_operands(insns[insn].operands))
+                SEM.check_expr(effect, where, bound_operands(operand_names))
             except SEM.SemError as exc:
                 raise Refusal(str(exc))
-            rules[insn] = (str(sources[0][1]), effect)
+            if insn in (pseudos or {}):
+                # A pseudo never decodes — its rule's meaning is the realizing
+                # instruction's (the counter reads ARE csrrs with fixed fields); the
+                # locator rides as the pseudo's citation.
+                pseudo_rules[insn] = str(sources[0][1])
+            else:
+                rules[insn] = (str(sources[0][1]), effect)
 
         for r in sorted(refined - set(defined)):
             raise Refusal(f"{sem_path.name}: declares (refines (insn {rust_str(r)})) but "
@@ -210,7 +233,7 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn]) -> di
         raise Refusal(f"{len(missing)} declared instruction(s) have NO semantics: "
                       f"{', '.join(missing[:12])}{' …' if len(missing) > 12 else ''} — "
                       "the execution authority must cover every declared instruction")
-    return rules
+    return rules, pseudo_rules
 
 
 def fixed_mask(name: str, fixed: tuple[tuple[int, int, int], ...]) -> tuple[int, int]:
@@ -255,9 +278,12 @@ def indent_tree(text: str) -> str:
     return "\n".join(out)
 
 
-def emit_sem(form: X.Sexp, where: str) -> str:
+def emit_sem(form: X.Sexp, where: str, extended: bool = False) -> str:
     """Lower one effect expression to the `Sem` tree literal, fully broken one level per
-    line; `indent_tree` gives it the shape rustfmt would."""
+    line; `indent_tree` gives it the shape rustfmt would. `extended` is the rv64gc
+    module's operator surface (P4-SYSTEM.2 slice d): the privileged operators lower only
+    there — the rv64i module's byte surface is frozen by DEF-GEN, and a privileged
+    operator in its corpus is a refusal, named, never silently emitted uncallable."""
     if isinstance(form, int):
         return f"Sem::Lit({lit64(form)})"
     if isinstance(form, str):
@@ -268,13 +294,25 @@ def emit_sem(form: X.Sexp, where: str) -> str:
         raise Refusal(f"{where}: empty form")
     op = str(form[0])
     args = form[1:]
-    unary = {"set-pc": "SetPc"}
-    binary = dict(BINARY_OPS, trap="Trap")
+    unary = dict(BASE_UNARY, **EXTENDED_UNARY)
+    binary = dict(BINARY_OPS, trap="Trap", **EXTENDED_BINARY)
     ternary = {"load": "Load", "store": "Store", "if": "If"}
+    if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY)
+                               | {"field", "inst", "mode"}):
+        raise Refusal(f"{where}: ({op} …) is the rv64gc module's operator surface "
+                      f"(P4-SYSTEM.2 slice b) — the rv64i corpus does not lower it")
     if op == "reg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Reg({rust_str(str(args[0]))})"
     if op == "imm" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Imm({rust_str(str(args[0]))})"
+    if op == "field" and len(args) == 1 and isinstance(args[0], str):
+        # (field X) — the RAW numeric value of an operand field (P4-SYSTEM.2 slice b):
+        # a register index, a csr address, a zimm5 — not the register the field names.
+        return f"Sem::Field({rust_str(str(args[0]))})"
+    if op == "inst" and not args:
+        return "Sem::Inst"
+    if op == "mode" and not args:
+        return "Sem::Mode"
     if op == "pc" and not args:
         return "Sem::Pc"
     if op == "xlen" and not args:
@@ -284,23 +322,23 @@ def emit_sem(form: X.Sexp, where: str) -> str:
     if op == "nop" and not args:
         return "Sem::Nop"
     if op == "seq":
-        inner = ",\n".join(f"&{emit_sem(a, where)}" for a in args)
+        inner = ",\n".join(f"&{emit_sem(a, where, extended)}" for a in args)
         return f"Sem::Seq(&[\n{inner},\n])"
     if op in binary and len(args) == 2:
-        return (f"Sem::{binary[op]}(\n&{emit_sem(args[0], where)},\n"
-                f"&{emit_sem(args[1], where)},\n)")
+        return (f"Sem::{binary[op]}(\n&{emit_sem(args[0], where, extended)},\n"
+                f"&{emit_sem(args[1], where, extended)},\n)")
     if op in WIDTH_OPS and len(args) == 2 and isinstance(args[0], int):
-        return f"Sem::{WIDTH_OPS[op]}(\n{args[0]},\n&{emit_sem(args[1], where)},\n)"
+        return f"Sem::{WIDTH_OPS[op]}(\n{args[0]},\n&{emit_sem(args[1], where, extended)},\n)"
     if op == "bits" and len(args) == 3 and isinstance(args[0], int) and isinstance(args[1], int):
-        return f"Sem::Bits(\n{args[0]},\n{args[1]},\n&{emit_sem(args[2], where)},\n)"
+        return f"Sem::Bits(\n{args[0]},\n{args[1]},\n&{emit_sem(args[2], where, extended)},\n)"
     if op == "set" and len(args) == 2:
-        return (f"Sem::Set(\n&{emit_sem(args[0], where)},\n"
-                f"&{emit_sem(args[1], where)},\n)")
+        return (f"Sem::Set(\n&{emit_sem(args[0], where, extended)},\n"
+                f"&{emit_sem(args[1], where, extended)},\n)")
     if op in unary and len(args) == 1:
-        return f"Sem::{unary[op]}(\n&{emit_sem(args[0], where)},\n)"
+        return f"Sem::{unary[op]}(\n&{emit_sem(args[0], where, extended)},\n)"
     if op in ternary and len(args) == 3:
-        return (f"Sem::{ternary[op]}(\n&{emit_sem(args[0], where)},\n"
-                f"&{emit_sem(args[1], where)},\n&{emit_sem(args[2], where)},\n)")
+        return (f"Sem::{ternary[op]}(\n&{emit_sem(args[0], where, extended)},\n"
+                f"&{emit_sem(args[1], where, extended)},\n&{emit_sem(args[2], where, extended)},\n)")
     if op in (set(binary) | set(WIDTH_OPS) | {"bits"}) and args:
         raise Refusal(f"{where}: ({op} …) has an argument this lowering cannot state "
                       "as data — width arguments of trunc/sext/zext/bits must be literal "
@@ -318,9 +356,10 @@ def load_inputs(encoding_path: Path, state_path: Path):
         raise Refusal(f"{encoding_path}: expected exactly one (encoding …) form")
     enc = forms[0]
     profile = str(X.field(enc, "profile", str(encoding_path)))
-    if profile != PROFILE:
-        raise Refusal(f"profile {profile!r} — this generator is scoped to {PROFILE!r}; "
-                      "a second unit is generator work, not a config knob")
+    if profile not in PROFILES:
+        raise Refusal(f"profile {profile!r} — this generator is scoped to {PROFILES!r}; "
+                      "another unit is generator work, not a config knob")
+    extended = profile == "rv64gc-lab-v0"
     ilen = int(X.field(enc, "ilen", str(encoding_path)))
     if ilen != SUPPORTED_ILEN:
         raise Refusal(f"ilen {ilen} — this generator emits a 32-bit decode table only; "
@@ -336,10 +375,16 @@ def load_inputs(encoding_path: Path, state_path: Path):
                       "owns no encodings")
     names = [str(X.field(comp[0], "base", str(encoding_path)))]
     ext = X.children(comp[0], "extensions")
-    names += [str(x) for x in (ext[0][1:] if ext else [])]
+    for e in ext:
+        names += [str(x) for x in e[1:]]
 
     # The one shared resolver: fields, instructions, and scatter layouts, validated.
-    arg_lut, insns, layout = R.load_canonical_encoding(encoding_path)
+    # Pseudos ride too (P4-SYSTEM.2): they add nothing to the decode table — a word of
+    # theirs matches the realizing instruction's row — but their names/operands/sources
+    # emit as metadata so the coverage census (slice f) can map the architectural
+    # spellings, and a semantics rule may name a pseudo.
+    loaded = R.load_canonical_encoding(encoding_path, with_pseudos=True)
+    arg_lut, insns, layout, pseudos = loaded
     root = encoding_path.parent.parent.parent / str(X.field(enc, "fragment-root",
                                                             str(encoding_path)))
 
@@ -370,7 +415,7 @@ def load_inputs(encoding_path: Path, state_path: Path):
                               "one name, one pinned byte set")
             source_pins[pin_name] = pin_sha
 
-    rules = load_semantics(root, names, insns)
+    rules, pseudo_rules = load_semantics(root, names, insns, pseudos)
 
     # The manifest names every canonical input (the state descriptor is fingerprinted
     # here; its executable half is `state.rs`'s own derivation, governed by STATE-GEN).
@@ -385,20 +430,30 @@ def load_inputs(encoding_path: Path, state_path: Path):
         pieces = tuple(layout.get(fname, ()))
         fields.append((fname, hi, lo, pieces))
     return dict(profile=profile, ilen=ilen, names=names, insns=insns,
+                pseudos=pseudos, pseudo_rules=pseudo_rules, extended=extended,
                 fields=fields, rules=rules, inputs=inputs, source_pins=source_pins)
 
 
 def emit(data: dict, generator_sha: str) -> str:
     insns = data["insns"]
+    extended = data["extended"]
     w = []
     a = w.append
     a("//! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_definition.py`;")
     a("//! drift between this module and the canonical definition it derives from is refused")
     a("//! by the DEF-GEN doctrine (`scripts/check_definition_gen.sh`). These tables are the")
     a("//! executable skeleton of the unit's canonical definition (`docs/ARCHITECTURE.md` §2):")
-    a("//! the decode metadata, the operand-field table, and the semantics effect trees,")
-    a("//! lowered from `profiles/rv64i-lab-v0/encoding.sexp` composing `riscv/rv64i`, with")
-    a("//! `definitions/riscv/rv64i.sem.sexp` the execution authority's semantics data.")
+    if extended:
+        a("//! the decode metadata, the operand-field table, and the semantics effect trees,")
+        a("//! lowered from rv64gc-lab-v0's composition (base riscv/rv64i + the Zicsr, Zicntr")
+        a("//! and privileged-system fragments, P4-SYSTEM.2) — including the privileged operator")
+        a("//! surface of `schema/semantics.sexp`. STAGED: this module's canonical inputs are")
+        a("//! scratch-staged until the route flip (decision_generated-mirror-needs-tracked-")
+        a("//! input); it is proven from `target/p4-system-2/` and lands tracked at the flip.")
+    else:
+        a("//! the decode metadata, the operand-field table, and the semantics effect trees,")
+        a("//! lowered from `profiles/rv64i-lab-v0/encoding.sexp` composing `riscv/rv64i`, with")
+        a("//! `definitions/riscv/rv64i.sem.sexp` the execution authority's semantics data.")
     a("//!")
     a("//! OWN-01: every semantic rule has exactly one executable owner — the semantics")
     a("//! DATA. This module is its lowered mirror; there is no handwritten second copy of")
@@ -543,7 +598,7 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        operands: &[{ops}],")
         a(f"        from: {rust_str(insn.source)},")
         a(f"        source: {rust_str(source)},")
-        tree = indent_tree(emit_sem(effect, where))
+        tree = indent_tree(emit_sem(effect, where, extended))
         tree_lines = tree.splitlines()
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
@@ -552,7 +607,10 @@ def emit(data: dict, generator_sha: str) -> str:
     a("];")
     a("")
     a("/// One node of a canonical semantics effect, lowered from the S-expression operator")
-    a("/// language (`schema/semantics.sexp`, the 32 forms `scripts/check_semantics.py`")
+    if extended:
+        a("/// language (`schema/semantics.sexp`, the 40 forms `scripts/check_semantics.py`")
+    else:
+        a("/// language (`schema/semantics.sexp`, the 32 forms `scripts/check_semantics.py`")
     a("/// checks) by `scripts/gen_definition.py`. Literals are XLEN-wide two's-complement")
     a("/// constants, masked to 64 bits; widths are explicit data everywhere the language")
     a("/// states them (`Trunc`/`Sext`/`Zext`/`Bits`). Evaluation — what the forms DO — is")
@@ -597,6 +655,29 @@ def emit(data: dict, generator_sha: str) -> str:
     a("    If(&'static Sem, &'static Sem, &'static Sem),")
     a("    /// `(trap cause tval)` — a requested trap (D-ECALL-EBREAK).")
     a("    Trap(&'static Sem, &'static Sem),")
+    if extended:
+        # P4-SYSTEM.2 slice b's operator surface — the rv64gc module only. Evaluation is
+        # the interpreter's (the slice-d scratch proof; the tracked exec.rs arms land at
+        # the flip), per the operators' contracts in `schema/semantics.sexp`.
+        a("    /// `(field NAME)` — the RAW numeric value of an operand field (a register")
+        a("    /// index, a csr address, a zimm5), not the register the field names.")
+        a("    Field(&'static str),")
+        a("    /// `(inst)` — the instruction word (illegal-instruction xtval carries it).")
+        a("    Inst,")
+        a("    /// `(mode)` — the current privilege mode (0=U, 1=S, 3=M).")
+        a("    Mode,")
+        a("    /// `(csr-state a)` — the machine's own read of CSR state (no permission model).")
+        a("    CsrState(&'static Sem),")
+        a("    /// `(csr-read a)` — an architectural CSR read under the uniform permission model.")
+        a("    CsrRead(&'static Sem),")
+        a("    /// `(csr-write a v)` — an architectural CSR write, legalized per the state")
+        a("    /// document's declared per-field tables.")
+        a("    CsrWrite(&'static Sem, &'static Sem),")
+        a("    /// `(trap-deliver cause tval)` — synchronous trap delivery: delegation,")
+        a("    /// the xPIE/xIE/xPP stack, xepc/xcause/xtval, pc <- xtvec.")
+        a("    TrapDeliver(&'static Sem, &'static Sem),")
+        a("    /// `(xret x)` — the privilege-stack pop and pc <- xepc.")
+        a("    Xret(&'static Sem),")
     a("}")
     a("")
     a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")
@@ -611,9 +692,44 @@ def emit(data: dict, generator_sha: str) -> str:
     a("    INSNS.iter().find(|insn| word & insn.mask == insn.value)")
     a("}")
     a("")
-    a("#[cfg(test)]")
-    a("mod tests;")
-    a("")
+    if data["pseudos"]:
+        a("/// One pseudo-instruction of the composition (Zicntr's counter reads): an")
+        a("/// assembler spelling whose encoding SPECIALIZES a real instruction's — it adds")
+        a("/// nothing to the decode space (check_encoding_disjoint's specialization rule),")
+        a("/// so it never appears in INSNS; the row exists so the coverage census maps the")
+        a("/// architectural spelling to the realizing instruction (P4-SYSTEM.2 slice f).")
+        a("pub struct PseudoDef {")
+        a("    pub name: &'static str,")
+        a("    /// The realizing instruction (the pinned table's `of` base).")
+        a("    pub of: &'static str,")
+        a("    pub mask: u32,")
+        a("    pub value: u32,")
+        a("    pub operands: &'static [&'static str],")
+        a("    /// The specification locator the pseudo's semantics rule cites.")
+        a("    pub source: &'static str,")
+        a("}")
+        a("")
+        a(f"/// The {len(data['pseudos'])} pseudo-instructions, sorted by name.")
+        a("pub static PSEUDOS: &[PseudoDef] = &[")
+        for name in sorted(data["pseudos"]):
+            p = data["pseudos"][name]
+            mask, value = fixed_mask(name, p.fixed)
+            ops = ", ".join(rust_str(o) for o in p.operands)
+            source = data["pseudo_rules"].get(name, "")
+            a("    PseudoDef {")
+            a(f"        name: {rust_str(name)},")
+            a(f"        of: {rust_str(p.of)},")
+            a(f"        mask: 0x{mask:08x},")
+            a(f"        value: 0x{value:08x},")
+            a(f"        operands: &[{ops}],")
+            a(f"        source: {rust_str(source)},")
+            a("    },")
+        a("];")
+        a("")
+    if not extended:
+        a("#[cfg(test)]")
+        a("mod tests;")
+        a("")
     return "\n".join(w)
 
 

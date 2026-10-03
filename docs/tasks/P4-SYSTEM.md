@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007` done, all `2026-10-03` — the (c1)/(c2) split and the (c2) refinement are recorded below)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008` done, all `2026-10-03`)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a), (b), (c) landed ((c2)'s tracked landing is flip-bound by `decision_generated-mirror-needs-tracked-input`, its scratch proof recorded); next is slice (d): gen_definition/gen_guests parameterization + engine exec of the CSR/trap instructions; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(d) landed; next is slice (e): the unit artifacts (encoding.sexp with partial slots, requirements growth, the census dual-edit) authored and validated at scratch; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -856,12 +856,127 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
   note extended) — the append-history heads sharded per `scripts/shard_history.py` where
   the ceilings required.
 
-`P4-SYSTEM.2` slices (c2), (d)–(h) : pending — filled at execution.
+`P4-SYSTEM.2` slice (d) — generator parameterization + the privileged machinery + the scratch execution proof (`2026-10-03`, `SEMULITH-P4-0008`):
+
+- [x] **REPRODUCE / ISSUE** — the generators and the engine could not see the privileged
+  slice-(a)/(b) artifacts, measured on the pre-slice tree:
+
+  ```
+  $ git show HEAD:scripts/gen_definition.py | grep -n 'profile != PROFILE'
+  321: … "a second unit is generator work, not a config knob"      # refuses rv64gc by name
+  $ git show HEAD:scripts/gen_guests.py | grep -c '"[a-z-]*",'   # the hard-coded list
+  49 names (the brief said 51 — measured 49; the brief's number was stale)
+  $ grep -c "Sem::" crates/semulith-core/src/exec.rs; grep -rn "trap_deliver\|csr_read" crates/ | wc -l
+  the evaluator has no privileged arms; no CSR/trap-delivery machinery exists in the crate
+  $ grep -n "IALIGN=32" crates/semulith-verify/src/elf.rs
+  88:            "the entry address is not 4-byte aligned (IALIGN=32)",   # the routed twin
+  $ grep -n "use semulith_core::definition" crates/semulith-cli/src/main.rs
+  83: use semulith_core::definition::{decode, INSNS};   # the CLI's profile is STATIC — rv64i's
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the two-profile shape was decided by measuring what
+  blocks each alternative; the wall is exact: the tracked evaluator matches on rv64i's
+  generated `Sem` enum, which is byte-frozen (DEF-GEN) and lacks the slice-(b) variants,
+  so the new operators' EVALUATION arms cannot compile tracked until the rv64gc definition
+  module is tracked (the flip) — `decision_generated-mirror-needs-tracked-input` applied
+  one level up. Measured: `grep -c '^(operator' schema/semantics.sexp` → 40 while
+  `grep -c 'CsrRead\|TrapDeliver' crates/semulith-core/src/definition.rs` → 0 (the frozen
+  module), and the three rejected shapes are recorded in DEV_NOTES.md. The shape chosen: `crates/semulith-core/src/privilege.rs` (tracked,
+  hand-authored) owns the MACHINERY — the permission model, legalization, trap delivery,
+  xret — over a `PrivilegedHart` trait whose metadata types it also owns; the GENERATED
+  rv64gc state module (scratch until the flip) implements the trait with the descriptor's
+  tables; the scratch proof compiles the tracked privilege.rs byte-identically
+  (cmp-verified copies) against the scratch-generated modules. The WARL seam closed as
+  designed in slice (b): the document's prose legalization became the structured
+  `(legalize …)` mini-language (`(any)`/`(read-only V)`/`(one-of V…)`/`(computed)` —
+  schema + document + mapping + generator), so the engine applies legalization as a
+  lookup. Measured in execution, fixed at root:
+  1. `scripts/gen_definition.py`'s composition name list was the THIRD copy of slice (a)'s
+     dropped-`(extensions …)`-form bug — the rv64gc composition's semantics walk saw only
+     zicsr, and "4 declared instruction(s) have NO semantics: mret, sfence.vma, sret, wfi"
+     named it.
+  2. The dossier digest rotated when `run-order.txt` became a tracked dossier source —
+     the designed cascade re-derived (G0/G1/GC reports, the board's pin, the board
+     artifacts, the platform manifest, both model books), and the PLATFORM-GEN stale-pin
+     self-test arm assumed the digest's LEADING DIGIT (`s/"9/"0/`) — the rotation made the
+     mutation a no-op; the arm now rewrites to a fixed wrong value of the same shape.
+  3. The proof harness caught two authoring defects of mine: privilege.rs's write path
+     preserved every bit of a CSR with NO field table (atomic registers write wholesale —
+     fixed at the source), and the g3 guest delegated medeleg[8] where an S-mode ecall is
+     cause 9 (the proof's RED trace named it: pc=0, the unprogrammed mtvec).
+
+- [x] **FIX** — tracked: `crates/semulith-core/src/privilege.rs` + `privilege/tests.rs`
+  (the machinery + 11 tests over a fixture hart), `crates/semulith-core/src/lib.rs`
+  (the module + doc line); `crates/semulith-verify/src/elf.rs` (IALIGN is a parameter —
+  the routed elf.rs:88 twin) + its tests + `crates/semulith-cli/src/main.rs`
+  (`IALIGN_BITS = 32`, the rv64i profile datum, passed explicitly); `scripts/gen_state.py`
+  (the `(legalize …)` consumption + the read-only/reset cross-checks + the PrivilegedHart
+  impl emission); `scripts/gen_definition.py` (the rv64gc branch: both profiles, the 8
+  operators lowered, pseudos emitted as PSEUDOS metadata, multi-form extensions);
+  `scripts/gen_guests.py` (the guest SET is directory-derived; the run order is the
+  tracked `profiles/rv64i-lab-v0/guests/run-order.txt`, cross-checked both directions —
+  a guest it cannot reconcile is refused by name); `schema/state.sexp` (+the legalize
+  mini-language, prose retired); `scripts/dossier_sexp.py` (the mapping, both directions);
+  the three gates' self-test arms; the digest cascade's regenerated surfaces (the rv64i
+  reports, netboard's board.sexp pin + artifacts + platform.sexp, both books' materials
+  fragments); `scripts/check_platform_gen.sh` (the fragile arm fixed).
+  Scratch (untracked, proven, flip-gated): `target/p4-system-2/gen/state_rv64gc.rs` +
+  `definition_rv64gc.rs` + the proof crate `target/p4-system-2/proof/`.
+  rv64i's generated modules regenerate hash-only (the embedded generator fingerprints —
+  the diff shown below). The exec.rs evaluator arms for the new variants land at the flip
+  (they cannot compile tracked today — measured in ROOT CAUSE); the scratch harness's
+  tree-walker carries them for the proof and ports verbatim then.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core --lib privilege
+  test result: ok. 11 passed; 0 failed   # the machinery: permission model, legalization,
+  #   views, trap delivery (M and delegated S), xret both levels, the computed SD
+  $ target/p4-system-2/proof/proof        # the scratch execution proof
+  [g1 csr-rw] 6 steps …     PASS ×5  (the read/write disciplines incl. rs1=x0 never writes)
+  [g2 trap-return] 11 steps PASS ×4  (mcause=11, mepc=own address, resume, still M)
+  [g3 delegation] 20 steps  PASS ×4  (scause=9, the S handler, sret, back in S)
+  [g4 legality] 24 steps    PASS ×4  (wfi/sret in U → cause 2, xtval=the word; wfi in M: nop)
+  [g5 counter gating] 19    PASS ×3  (rdcycle gated → illegal; CY=1 → reads; back in S)
+  [g6 sfence/TVM] 40 steps  PASS ×2  (TVM=0 legal nop, TVM=1 illegal)
+  the scratch execution proof PASSES — the engine executes the new semantics
+  $ python3 scripts/gen_definition.py --encoding target/p4-system-2/rv64gc/encoding.sexp …
+  gen_definition: wrote …/definition_rv64gc.rs (60984 bytes)   # rustc --crate-type lib rc=0
+  $ git diff crates/semulith-core/src/definition.rs | grep -cE '^[+-][^+-]'
+  4                                  # rv64i's module: the generator-hash lines ONLY
+  $ python3 scripts/gen_guests.py --encoding <trial> --guests-dir <mini-corpus> --out …
+  gen_guests: wrote … (1 guests)     # the rv64gc-shaped mini-corpus parameterization
+  # and its RED probes: a missing run-order.txt and a ghost entry both refused, named
+  ```
+
+- [x] **NO REGRESSION** — RED-first, then the guard set: the new gate arms (STATE-GEN
+  17→20, DEF-GEN 9→15, GUEST-GEN 7→10 — every RED asserting its reason; the DEF-GEN RED
+  fires the operator guard on the rv64i path); the natural REDs recorded in ROOT CAUSE;
+  `make check` green (fmt + clippy -D warnings + the workspace tests: 76 core / 180 verify
+  / the rest — the 11 privilege tests included); PORT-WEB green inside `make gate` (the
+  wasm build compiles the new module for the browser target); `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 395→404 arms re-derived; the bench's
+  RUST-02 mode agreement is untouched — no exec-path change; PORT-WEB and the elf loader
+  tests re-run green).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice e),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the cascade + the arm-fragility lesson; promotion:
+  declined (the digest cascade is machinery with its own gates; the fragile-arm lesson
+  has its repaired arm)) , `LIVE_STATUS.md` (the re-derived arms count only),
+  `docs/book/src/plan/p4.md` (the `.2` note extended) — sharded where the ceilings
+  required. outcome.rs's profile-scoped comments measured still TRUE (they name rv64i's
+  model, which is unchanged); state.rs's census lines are rv64i's generated file —
+  frozen and true of that profile; both revisit at the flip.
+
+`P4-SYSTEM.2` slices (e)–(h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (d) | the pre-slice census (gen_definition refuses rv64gc by name; gen_guests' list measured 49 names — the brief's "51" was stale; no privileged arms in exec.rs; elf.rs:88's hard-coded IALIGN=32; the CLI's profile statically rv64i's at main.rs:83); the third copy of the dropped-extensions-form bug (gen_definition's name list — "4 declared instruction(s) have NO semantics: mret, …" named it); `cargo test -p semulith-core --lib privilege` 11/11 (permission model, legalization, views, delivery both ways, xret, computed SD); the scratch execution proof (26/26 checks over six guests — the CSR disciplines, trap delivery with and without delegation, xret mode pops, wfi/sret legality per mode, counter gating, the TVM gate); the digest cascade re-derived (reports + board pin + board artifacts + platform manifest + both books); the PLATFORM-GEN stale-pin arm fixed (it assumed the digest's leading digit); STATE-GEN 20/20 (+3), DEF-GEN 15/15 (+6), GUEST-GEN 10/10 (+3); `make check` green (76 core / 180 verify tests), `make gate` green (DERIVED-COUNTS 395→404) | slice (d) landed: both generators parameterize (rv64i surfaces regenerate hash-only — the embedded generator fingerprints); the tracked privilege.rs machinery over the generated tables; elf.rs's IALIGN is profile data; the scratch execution proof green; the evaluator's new-variant arms port at the flip |
 | `2026-10-03` | `.2` slice (c2) | the landing question measured against the gates: STATE-GEN proves the tracked state.rs byte-exact from the TRACKED descriptor in a fresh clone; a tracked rv64gc module from the staged (untracked) descriptor would be unjudgeable there — the three alternatives (skip-if-absent leg, a hand-written interim module, a non-unit descriptor home) each measured dishonest. The scratch proof: gen_state emits `target/p4-system-2/gen/state_rv64gc.rs` (40,198 bytes); a `rustc --test` harness over it — reset-is-the-document (mode M, mstatus 0xA0000000, misa 0x800000000014112D), the 33-CSR address lookup, the view discipline (views carry no storage, every view_of resolves), the field tables (WARL-without-legalization absent, the medeleg 11/16 read-only-0 rows, TSR at bit 22 per the pinned encoding.h), x0/mode transitions — 4 passed / 0 failed | slice (c2) refined: the tracked landing rides the flip (one green commit with the descriptor's move); the interim evidence is recorded; `decision_generated-mirror-needs-tracked-input` |
 | `2026-10-03` | `.2` slice (c1) | the pre-slice census (no privileged construct in schema/state.sexp; the route contradiction measured at scripts/check_extraction.py:224-233; gen_state single-profile by refusal; PROFILE-CONSISTENCY csrs cross-check absent, EXTRACTION's reset leg csr-blind); the house-shape refusals (fields wrapper, candidates wrapper — refused by name, reshaped); the staged document validated from target/p4-system-2/: schema conform, --csr-cross 33/33 both directions, _state_resets over the scratch dir green, addresses == pinned csrs.csv 33/33 EXACT, field tables no-overlap/full-coverage; gen_state rv64i byte-identical + rv64gc emits 40198 bytes and rustc-compiles standalone; the composed-reset cross-check fired RED naturally on the real document (mstatus 0xA0000000 ≠ hand-computed 0x300000000 — the descriptor was wrong, the check named it); STATE-GEN self-test 17/17 (+7), PROFILE-CONSISTENCY 44/44 (+3), EXTRACTION 9/9 (+3); `make gate` green (DERIVED-COUNTS 385→395) | slice (c1) landed: the privileged state constructs (csr + per-field discipline tables + privilege_mode), the staged 33-CSR document with the re-earned SEM-08 census, gen_state's two-profile branch with rv64i byte-exact, the two gate gaps closed; the (c1)/(c2) split recorded |
 | `2026-10-03` | `.2` slice (b) | the pre-slice census (32 operators, no csr/mode/xret form; ecall's cause a constant 11; a pseudo could not carry semantics; check_citations hard-coded to rv64i.sem.sexp); the spec-text census (xRET/WFI/TSR/TW/TVM/mcounteren/scounteren/STCE/sfence locators read from the pinned chapters; mstatus positions figure-only → encoding.h pinned); check_semantics pair checks 6/6 + 0/0(+3 pseudo) + 4/4 and `--compose` over the trial composition (refinement points ebreak/ecall declared); check_citations `--corpus` 6 resolution(s) — rv64i 52/52 ×3 profiles, zicsr 8/8, zicntr 3/3, system 4/4 under rv64gc; self-tests semantics 15/15 (+7), citations 13/13 (+3), corpus 8/8 (+1, the dropped-form arm proven RED pre-fix); fetch_references `--verify-only` green both profiles (+encoding.h, +causes.csv); DEF-GEN/STATE-GEN/GUEST-GEN byte-exact; `make gate` green (DERIVED-COUNTS 384→385) | slice (b) landed: 8 new operators (field, inst, mode, csr-state, csr-read, csr-write, trap-deliver, xret), the three sem files with every per-instruction decision cited, the WARL seam recorded for slice (c), rv64i.sem.sexp untouched |
@@ -872,6 +987,7 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice d) | `SEMULITH-P4-0008 (leaf P4-SYSTEM.2): slice d — the generators parameterize to rv64gc, the privilege machinery lands (tracked, over the generated tables), the scratch execution proof` | privilege.rs + 11 tests; the (legalize …) mini-language replaces prose (the WARL seam closed: engine applies descriptor data at lowering); gen_definition's rv64gc branch (8 operators lowered, PSEUDOS metadata; the THIRD dropped-extensions-form copy fixed); gen_guests directory-derived + run-order.txt (rv64i regenerates hash-only); elf.rs IALIGN parameter; the dossier-digest cascade re-derived; the fragile stale-pin arm fixed; the scratch proof 26/26 |
 | `.2` (slice c2) | `SEMULITH-P4-0007 (leaf P4-SYSTEM.2): slice c2 refined — the rv64gc module's tracked landing is flip-bound; the scratch engine proof recorded` | a tracked generated module needs a tracked canonical input — measured against STATE-GEN's fresh-clone property; the three alternatives each dishonest; the scratch `rustc --test` proof (4/4) over the generated module recorded; `decision_generated-mirror-needs-tracked-input` + INDEX |
 | `.2` (slice c1) | `SEMULITH-P4-0006 (leaf P4-SYSTEM.2): slice c1 — the privileged state constructs, the staged 33-CSR document, gen_state's rv64gc branch, the csr-set and reset-census gate arms` | slice (c) split recorded ((c1) zero Rust / (c2) the engine consumption); the state document staged at target/p4-system-2/ until the flip (the route contradiction is mechanical); gen_state composes per-field resets and cross-checks the csr-level value — fired RED naturally on the document being authored; csr name↔address ownership migration deferred to the flip, the 33/33 csrs.csv agreement probe recorded; STATE-GEN 17, PROFILE-CONSISTENCY 44, EXTRACTION 9 arms |
 | `.2` (slice b) | `SEMULITH-P4-0005 (leaf P4-SYSTEM.2): slice b — the semantics language learns privilege: 8 operators, the zicsr/zicntr/system sem files, ECALL/EBREAK refined by declaration` | schema/semantics.sexp 32→39 forms + the READS-AND-WRITES contract; csr-write's WARL seam deferred to slice (c)'s tables at slice-(d) lowering; the corpus gate's dropped-extensions-form compose bug fixed (RED-first); check_citations --corpus binds sem files to pinning profiles; +encoding.h/+causes.csv pins (mstatus masks are figure-only in the spec); rv64i.sem.sexp untouched, rv64i's generated surfaces byte-exact |
@@ -880,6 +996,34 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (d) done (`SEMULITH-P4-0008`) — the generators parameterize and
+  the privileged machinery lands. The two-profile shape was measured into existence: the
+  tracked evaluator matches rv64i's byte-frozen generated `Sem` enum, so the new
+  operators' evaluation arms cannot compile tracked until the rv64gc definition module is
+  tracked (the flip) — and the MACHINERY doesn't wait: `crates/semulith-core/src/
+  privilege.rs` owns trap delivery (delegation selection, the xPIE/xIE/xPP stack,
+  xepc/xcause/xtval, pc←xtvec), xret, the uniform CSR permission model and WPRI/WARL/WLRL
+  legalization over a `PrivilegedHart` trait whose metadata types it owns; the generated
+  rv64gc state module (scratch until the flip) implements the trait with the descriptor's
+  tables. The WARL seam closed: prose legalization became the structured `(legalize …)`
+  mini-language (schema + document + mapping + generator + the read-only/reset
+  cross-checks). gen_definition's rv64gc branch lowers the 8 slice-(b) operators and emits
+  pseudos as PSEUDOS metadata (60,984 bytes, rustc-clean at scratch); its composition name
+  list carried the THIRD copy of the dropped-`(extensions …)`-form bug — fixed. gen_guests
+  is directory-derived (the set is the directory; the run order is the tracked
+  run-order.txt, cross-checked both directions; rv64i regenerates hash-only — measured:
+  the brief's "51-name list" was 49). elf.rs's IALIGN is a parameter (rv64i 32, rv64gc 16
+  — the routed twin of the slice-(a) fix). The scratch execution proof: six assembled
+  guests through the generated modules + the tracked machinery — the CSR read/write
+  disciplines, trap delivery with and without delegation, the mret/sret mode pops, wfi/sret
+  legality per mode, counter gating, the TVM gate — 26/26, catching two authoring defects
+  on the way (an atomic CSR's write preserving everything; medeleg[8] delegated where an
+  S-ecall is cause 9). The dossier digest rotated on run-order.txt and the cascade
+  re-derived (reports, the board pin, the platform manifest, both model books); the
+  PLATFORM-GEN stale-pin arm that assumed the digest's leading digit was fixed to a
+  fixed-shape mutation. `make check` + `make gate` green (DERIVED-COUNTS 395→404 arms).
+  Next: slice (e) — the unit artifacts.
 
 - `2026-10-03`: `.2` slice (c2) done as a refinement (`SEMULITH-P4-0007`) — the tracked
   landing of the rv64gc state module is flip-bound, measured, not assumed: STATE-GEN

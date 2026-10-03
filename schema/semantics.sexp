@@ -3,7 +3,7 @@
 ;; A semantics file is one (semantics …) holding the fragment id, the XLEN, and one
 ;; (sem …) per instruction: the instruction name, the specification locator the rule
 ;; was derived from, and the effect. The effect is an expression of the operator
-;; language declared below — the 39 forms `scripts/check_semantics.py` checks against,
+;; language declared below — the 40 forms `scripts/check_semantics.py` checks against,
 ;; AS DATA (SOT-FORMAT.2): a new semantic form is a line here, zero lines of Python.
 ;;
 ;; Operators are positional: `(add (reg rs1) (reg rs2))` is not made of (name value)

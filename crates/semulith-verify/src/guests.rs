@@ -100,7 +100,7 @@
 //!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `5bd4d210483ed8c7815e40acb1c113fadf815359a73dae5c3e944d34208760f9`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.expected.sexp`  `081ed9427c790df38822107188dd91b03847e92bcb0a722f420eb7e89a289e35`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
-//! Generator: `scripts/gen_guests.py` (sha256 `96212a1d2d86cb16a20aaa7c3fe9caa21ca286ebf7f82dd498dae444c93bfd5c`)
+//! Generator: `scripts/gen_guests.py` (sha256 `31c8b565c79566b6a2b9f6cd52fa1e6f2f8424e498cc95068192b27f670f8eaa`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
 //! byte-stable by construction (one entry per line), so regeneration and the

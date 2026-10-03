@@ -1,0 +1,54 @@
+# run-order.txt — the experiment's run order over the guests in this directory (the
+# GUEST-GEN order authority, P4-SYSTEM.2 slice d: the guest SET is directory-derived;
+# the ORDER is recorded data, cross-checked against the directory both directions by
+# gen_guests.py — a guest on disk but not listed, or listed but not on disk, is a
+# refusal, named).
+smoke-arith
+guest-control
+smoke-trap
+guest-no-device
+scope-alu
+scope-mem
+scope-branch
+scope-ecall
+scope-ebreak
+bound-shift
+bound-shiftw
+bound-arith
+bound-ext
+bound-alias
+fault-jal-mis
+fault-jalr-mis
+fault-branch-nt
+fault-fetch
+fault-ld-mis-h
+fault-ld-mis-d
+fault-st-mis-h
+fault-st-mis-w
+fault-st-mis-d
+fault-ld-x0-mis
+fault-ld-x0-fault
+fault-access-ld
+fault-access-sd
+fault-reserved
+fault-shiftw-res
+fault-fence
+fault-hints
+fault-selfmod
+it-prio-jump
+it-prio-load
+it-fault-alias
+it-fault-wrap-ld
+it-fault-wrap-sd
+it-alias-bound
+it-progress-loop
+it-fencei
+dir-runoff
+dir-chase
+dir-ext-matrix
+dir-selfmod-fence
+dir-cmp-branch
+dir-memwalk
+dir-chain
+dir-x0-writes
+min-fencei

@@ -1,5 +1,46 @@
 # DEV_NOTES.md
 
+## _(2026-10-03)_ — the byte-frozen enum wall; a rotated digest exposes an arm's assumed first digit (P4-SYSTEM.2 slice d)
+
+Execution of the `.2` brief's checkpoint (d) measured:
+
+- **The two-profile shape has a hard wall, measured by construction.** The tracked
+  evaluator matches on rv64i's generated `Sem` enum, which DEF-GEN freezes byte-exact and
+  which lacks the slice-(b) variants — so the new operators' evaluation arms cannot exist
+  in tracked code until the rv64gc definition module is tracked (the flip). Three shapes
+  were measured and rejected before the chosen one: parameterizing the evaluator over the
+  tree (Rust enums don't extend); a shared evaluator over both Sem types (a second
+  evaluator is the OWN-01 failure); moving the Sem vocabulary to a hand-authored module
+  (changes rv64i's frozen bytes). What lands tracked instead: `privilege.rs`, the
+  MACHINERY over a `PrivilegedHart` trait — the generated rv64gc state module implements
+  the trait with the descriptor's tables, and the scratch proof compiles the tracked file
+  byte-identically (cmp-verified) against the scratch-generated modules. The evaluator's
+  new-variant arms are proven at scratch (the harness's tree-walker) and port at the flip.
+- **The WARL seam needed structured data.** Slice (c1)'s prose legalization could not be
+  applied mechanically; it became the `(legalize …)` mini-language (`(any)`,
+  `(read-only V)`, `(one-of V…)`, `(computed)`) across schema, document, mapping and
+  generator — with the cross-checks (a WARL field without one is refused; a read-only
+  constant must equal the field's reset). The proof caught my own defect: a CSR with no
+  field table (an atomic register) had every write preserve every bit — `covered=0` masked
+  the whole word; atomic registers write wholesale.
+- **The digest cascade works, and it exposed a fragile arm.** Adding the tracked
+  `run-order.txt` rotated the dossier digest; the designed cascade re-derived (reports →
+  board pin → board artifacts → platform manifest → both model books). PLATFORM-GEN's
+  stale-pin self-test arm mutated the pin by flipping its FIRST CHARACTER — which stopped
+  mutating the day the digest rotated to a different leading hex digit; the arm passed a
+  mutation that wasn't one. It now rewrites to a fixed wrong value of the same shape.
+- **The brief's "51-name list" was 49** (measured); the guest set is now
+  directory-derived with the run order as recorded data, cross-checked both directions.
+  And gen_definition's composition name list carried the third copy of slice (a)'s
+  dropped-`(extensions …)`-form bug — "4 declared instruction(s) have NO semantics: mret,
+  sfence.vma, sret, wfi" named it instantly. Three copies of one latent defect across
+  three readers of one schema shape — the fix pattern is now uniform (every form
+  contributes), and the corpus gates' arms prove it.
+
+Promotion: declined — the digest cascade is machinery with its own gates, the arm fix is
+its own evidence, and the wall's reasoning has its decision record. Recorded in the owning
+leaf's checklist (LOCKSTEP).
+
 ## _(2026-10-03)_ — one reset, one value: the composed-field cross-check fired on the document being written (P4-SYSTEM.2 slice c1)
 
 Execution of the `.2` brief's checkpoint (c) — split into (c1)/(c2), the seam recorded in
@@ -621,40 +662,4 @@ doctrine — the dossier documents now schema-validate as a class, fired RED on 
 D-FENCE document recovered from git history before registration. Process lesson the hard
 way: DERIVED-COUNTS measures the working tree, not the staged set — two co-developed
 slices that interlock through a count must land in one commit, or the hook refuses both.
-
-## _(2026-10-01)_ — applicability is data, not a waiver (P3-BREADTH.7 slice 1)
-
-The fork was: named deferrals (gates learn to skip a declared unit) versus the full
-evidence-shape machinery (per-step expectations and a 21-cell exercised matrix for a
-checkpoint-compared subset). Both were wrong, and the measurement showed why: a deferral
-is a weakening surface whose expiry answers "when does the leaf close" — but the gates'
-contracts become applicable when the unit's DOCUMENTS exist, which the gates already
-re-derive per commit; and the fiction machinery builds evidence the subset's claim never
-cites. The adopted shape: the unit DECLARES its vehicle (route × comparison, closed
-enums, laboratory authority), gates apply the contracts matching the declaration, and a
-declaration that contradicts the documents is a finding. No expiry machinery is needed
-because the contradiction check fires the day declaration and documents disagree — the
-trigger is the document landing, which is exactly when the full contract becomes
-applicable. The one piece of real machinery earned its place: the guest census measures
-"every declared form is exercised" for the DSP's actual corpus (both directions), and it
-measured 19/19. Fixture-writing lesson, again: `printf '%s'` does not interpret `\n` in
-its argument — `%b` does; two self-test arms caught the glued lines before anything else
-could.
-
-## _(2026-10-01)_ — measure the lane before funding it (P3-BREADTH.5 slice 3)
-
-`.4` had deferred "the generator generalization" to `.5` as a phrase; slice 3 turned the
-phrase into a measurement. The reading: `gen_definition.py` refuses a second unit at
-three named walls, and they are load-bearing, not cosmetic — the 32-bit decode table is
-the emission's shape, the semantics corpus is the input the whole interpreter-before-
-compiler direction runs on, and the semantics language itself is scalar-shaped (31
-operators; load/store have no space parameter; `reg`/`pc` are the only state reads). So
-"generalize for the DSP" means a 24-bit emission, a new fragment family, the DSP's
-semantics re-expressed as data, and `Sem` enum variants — a lane. The discipline question
-was whether the exercised target DEMONSTRATES the need (`.5`'s own acceptance), and it
-does not: the sibling crate covers subset v0, differentially agreed 6/6, and no current
-milestone consumes the generated form. The deferral names its reopening conditions, which
-is what keeps it a decision rather than a drift. The dossier landing became its own leaf
-(`.7`) because its real content is a doctrine design choice — how a gate says "this unit
-is out of my scope" without going silent — and that deserves a leaf, not a paragraph.
 

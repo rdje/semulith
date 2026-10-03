@@ -72,22 +72,34 @@
   (field (name reset) (type form) (head reset)))
 
 ;; P4-SYSTEM.2 slice (c1): one CSR field. `discipline` is RVP-CSR §1.1.3.1–3's vocabulary
-;; (wpri/warl/wlrl); `legalization` is the WARL field's legal set or rule (a WPRI field's
-;; rule is the discipline itself; a WLRL field's range is its source's); `reset` is the
+;; (wpri/warl/wlrl); `legalize` is the field's legal-value rule AS DATA (the operators
+;; below — slice (d): the engine applies it at lowering, so prose would not do); `reset` is the
 ;; field's reset value with its authority — UNSPECIFIED resets carry the laboratory's
-;; picked value, stated, never silence.
+;; picked value, stated, never silence. A WPRI field carries no legalize: the discipline
+;; itself is the whole rule (writes preserve, reads ignore). A WARL/WLRL field without one
+;; is a generator-level refusal (legalization is what those disciplines do not define).
 (construct (name field)
   (field (name id) (type string) (min-length 1))
   (field (name bit_hi) (type integer))
   (field (name bit_lo) (type integer))
   (field (name discipline) (type symbol) (values wpri) (values warl) (values wlrl))
-  (field (name legalization) (type string) (optional yes) (min-length 1))
+  (field (name legalize) (type form) (head legalize) (optional yes))
   (field (name reset) (type string) (min-length 1))
   (field (name reset_authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
   (field (name source) (type string) (min-length 1)))
+
+;; The legalization mini-language (positional, SOT-FORMAT.2): (any) — every value is legal;
+;; (read-only V) — the field holds exactly V, writes do not change it; (one-of V …) — the
+;; enumerated set, an illegal write retains the old value (the WARL laboratory choice);
+;; (computed) — the engine computes the field (mstatus.SD, mip.STIP), writes do not apply.
+(operator (name legalize) (fixed 1))
+(operator (name any) (fixed 0))
+(operator (name read-only) (fixed 1) (arg integer))
+(operator (name one-of) (variadic) (arg integer))
+(operator (name computed) (fixed 0))
 
 (construct (name integer_registers)
   (field (name count) (type integer))

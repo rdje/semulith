@@ -439,6 +439,18 @@ def validate_gc(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dic
         if c.get("fields") and sum(hi - lo + 1 for lo, hi in spans) != c["width_bits"]:
             raise Refusal(f"csr {c['id']!r}: the field table leaves bits unaccounted — a "
                           f"legalization table with a hole guesses at the hole")
+        for f in c.get("fields", []):
+            lg = f.get("legalize")
+            if f["discipline"] in ("warl", "wlrl") and lg is None:
+                raise Refusal(f"csr {c['id']!r}.{f['id']!r}: {f['discipline']} without a "
+                              f"(legalize …) — WARL/WLRL name what they do NOT define; the "
+                              f"legal rule is the field's to state")
+            if f["discipline"] == "wpri" and lg is not None:
+                raise Refusal(f"csr {c['id']!r}.{f['id']!r}: a WPRI field carries no "
+                              f"legalize — the discipline itself is the whole rule")
+            if lg and lg["kind"] == "read-only" and _int(f["reset"], c["id"]) != lg["value"]:
+                raise Refusal(f"csr {c['id']!r}.{f['id']!r}: read-only {lg['value']} but "
+                              f"reset {f['reset']} — one constant, stated once")
         c["_reset"] = _composed_reset(c)
     census = doc.get("hidden_state_census")
     if census is None:
@@ -479,13 +491,9 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
         a(f"/// x{n['index']} — alias view, {rust_str(n['role'])} (software convention).")
         a(f"pub const {n['ident']}: u8 = {n['index']};")
         a("")
-    a("/// The current privilege mode (hart state, not a CSR): the codes are the")
-    a("/// architecture's own (0=U, 1=S, 3=M — RVP-INTRO).")
-    a("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
-    a("pub enum PrivilegeMode {")
-    for m in pm["modes"]:
-        a(f"    {m.upper()} = {MODE_CODES[m]},")
-    a("}")
+    a("/// The current privilege mode (hart state, not a CSR): the engine's vocabulary type")
+    a("/// — the codes are the architecture's own (the pinned encoding.h's PRV_U/PRV_S/PRV_M).")
+    a("pub use crate::privilege::{CsrMeta, FieldDiscipline, FieldMeta, Legalize, PrivilegeMode};")
     a("")
     a(f"/// Number of CSRs with storage ({len(storage)} of {len(csrs)}; the rest are views —")
     a("/// a view declares no storage: sstatus/sie/sip restrict mstatus/mie/mip, the")
@@ -575,55 +583,56 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    }")
     a("}")
     a("")
-    a("/// Static metadata for one CSR: name, address, width, and the register it is a view")
-    a("/// of (None for storage CSRs). Values, not storage.")
-    a("pub struct CsrElement {")
-    a("    pub name: &'static str,")
-    a("    pub address: u16,")
-    a("    pub width_bits: u32,")
-    a("    pub view_of: Option<&'static str>,")
-    a("}")
-    a("")
-    a("/// Every CSR the profile implements, in descriptor order (views included).")
-    a(f"pub const CSR_ELEMENTS: [CsrElement; {len(csrs)}] = [")
+    a("/// Every CSR the profile implements, in descriptor order (views included) — the")
+    a("/// engine's `CsrMeta` vocabulary (`crate::privilege`), the descriptor's data.")
+    a(f"pub const CSR_ELEMENTS: [CsrMeta; {len(csrs)}] = [")
     for c in csrs:
         view = f"Some({rust_str(c['view_of'])})" if "view_of" in c else "None"
-        a(f"    CsrElement {{ name: {rust_str(c['id'])}, address: {c['address']:#05x}, "
-          f"width_bits: {c['width_bits']}, view_of: {view} }},")
+        a(f"    CsrMeta {{ name: {rust_str(c['id'])}, address: {c['address']:#05x}, "
+          f"view_of: {view} }},")
     a("];")
     a("")
-    a("/// A field's write discipline — RVP-CSR §1.1.3.1–3's vocabulary.")
-    a("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
-    a("pub enum FieldDiscipline {")
-    a("    Wpri,")
-    a("    Warl,")
-    a("    Wlrl,")
-    a("}")
-    a("")
-    a("/// One CSR field's legalization row: the discipline, the legal set in prose, and")
-    a("/// the reset the descriptor declares. The engine applies these at lowering; this")
-    a("/// table exists so that application is a lookup, never a guess.")
-    a("pub struct CsrField {")
-    a("    pub csr: &'static str,")
-    a("    pub name: &'static str,")
-    a("    pub bit_hi: u32,")
-    a("    pub bit_lo: u32,")
-    a("    pub discipline: FieldDiscipline,")
-    a("    pub legalization: Option<&'static str>,")
-    a("    pub reset: u64,")
-    a("}")
-    a("")
+
+    def legalize(lg) -> str:
+        if lg["kind"] == "any":
+            return "Legalize::Any"
+        if lg["kind"] == "read-only":
+            return f"Legalize::ReadOnly({lg['value']})"
+        if lg["kind"] == "one-of":
+            vals = ", ".join(str(v) for v in lg["values"])
+            return f"Legalize::OneOf(&[{vals}])"
+        return "Legalize::Computed"
+
     nfields = sum(len(c.get("fields", [])) for c in csrs)
-    a(f"/// The per-field tables of the {len(csrs)} CSRs, in descriptor order.")
-    a(f"pub const CSR_FIELDS: [CsrField; {nfields}] = [")
+    a(f"/// The per-field tables of the {len(csrs)} CSRs, in descriptor order — the")
+    a("/// legalization rules as DATA (`crate::privilege::FieldMeta`); the engine applies")
+    a("/// them at lowering, this table never adjudicates.")
+    a(f"pub const CSR_FIELDS: [FieldMeta; {nfields}] = [")
     for c in csrs:
         for f in c.get("fields", []):
-            legal = f"Some({rust_str(f['legalization'])})" if "legalization" in f else "None"
-            a(f"    CsrField {{ csr: {rust_str(c['id'])}, name: {rust_str(f['id'])}, "
+            legal = f"Some({legalize(f['legalize'])})" if "legalize" in f else "None"
+            a(f"    FieldMeta {{ csr: {rust_str(c['id'])}, name: {rust_str(f['id'])}, "
               f"bit_hi: {f['bit_hi']}, bit_lo: {f['bit_lo']}, "
               f"discipline: FieldDiscipline::{f['discipline'].capitalize()}, "
-              f"legalization: {legal}, reset: {_int(f['reset'], c['id'] + '.' + f['id'])} }},")
+              f"legalize: {legal}, reset: {_int(f['reset'], c['id'] + '.' + f['id'])} }},")
     a("];")
+    a("")
+    a("/// The engine's privileged-state surface (`crate::privilege::PrivilegedHart`),")
+    a("/// implemented over this module's storage and tables — the trait's rules are the")
+    a("/// engine's; the data they read is the descriptor's.")
+    a("impl crate::privilege::PrivilegedHart for ArchitecturalState {")
+    a("    fn mode(&self) -> PrivilegeMode { self.mode }")
+    a("    fn set_mode(&mut self, mode: PrivilegeMode) { self.mode = mode; }")
+    a("    fn csr_raw(&self, index: usize) -> u64 { self.csrs[index] }")
+    a("    fn csr_write_raw(&mut self, index: usize, value: u64) {")
+    a("        self.csrs[index] = value;")
+    a("    }")
+    a("    fn csr_index(&self, address: u16) -> Option<usize> {")
+    a("        Self::csr_index(address)")
+    a("    }")
+    a("    fn csr_meta(&self) -> &'static [CsrMeta] { &CSR_ELEMENTS }")
+    a("    fn csr_fields(&self) -> &'static [FieldMeta] { &CSR_FIELDS }")
+    a("}")
     a("")
     a("/// SEM-08: the hidden-state census, re-earned for the privileged state — carried as")
     a("/// data so the interpreter, the gate report and the reviewer read the same sentence.")

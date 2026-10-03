@@ -214,10 +214,27 @@ PY
   # two statements of one fact must agree (this RED fired NATURALLY on the real rv64gc
   # document while it was being authored: mstatus's composed UXL/SXL value caught a
   # hand-computed csr-level value; the arm makes it repeatable).
-  gc_state '(field (id "all") (bit_hi 63) (bit_lo 0) (discipline warl) (legalization "any") (reset "1") (reset_authority laboratory) (authority architecture) (source "s"))'
+  gc_state '(field (id "all") (bit_hi 63) (bit_lo 0) (discipline warl) (legalize (any)) (reset "1") (reset_authority laboratory) (authority architecture) (source "s"))'
   out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
         --out "$t/gc/state.rs" 2>&1)"; rc=$?
   arm "RED field resets disagreeing with the csr-level reset are refused" "$rc" 2 "$out" "one reset, one value"
+
+  # RED: the slice-(d) legalization mini-language's rules — a WARL field without a
+  # (legalize …) is unemittable (the discipline names what it does NOT define), a WPRI
+  # field carrying one contradicts itself, and a read-only constant disagreeing with the
+  # field's reset is one constant stated twice.
+  gc_state '(field (id "all") (bit_hi 63) (bit_lo 0) (discipline warl) (reset "0") (reset_authority laboratory) (authority architecture) (source "s"))'
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a WARL field without a (legalize …) is refused" "$rc" 2 "$out" "without a"
+  gc_state '(field (id "all") (bit_hi 63) (bit_lo 0) (discipline wpri) (legalize (any)) (reset "0") (reset_authority laboratory) (authority architecture) (source "s"))'
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a WPRI field carrying a legalize is refused" "$rc" 2 "$out" "WPRI field carries no"
+  gc_state '(field (id "all") (bit_hi 63) (bit_lo 0) (discipline warl) (legalize (read-only 2)) (reset "0") (reset_authority laboratory) (authority architecture) (source "s"))'
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a read-only constant disagreeing with the field's reset is refused" "$rc" 2 "$out" "one constant, stated once"
 
   # RED: two csrs at one address.
   gc_state "" ; sed -i.bak 's/(address 256)/(address 768)/' "$t/gc/state.sexp"

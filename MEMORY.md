@@ -18,12 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, the unit unregistered by design; `.2` slices (a) fragments+assembler+IALIGN, (b) semantics operators+sem files, (c1) the staged 33-CSR state document + gen_state's two-profile branch landed).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.2` slice (d) — gen_definition/gen_guests parameterization behind
-  the schema layer (rv64i's surfaces re-derived byte-identical; gen_guests' 51-name list
-  becomes directory-derived) + engine exec of the CSR/trap instructions against the
-  staged artifacts; the tracked landings ride the flip (slice h) per
-  `decision_generated-mirror-needs-tracked-input`. Slice (c) is committed
-  (`SEMULITH-P4-0006`/`-0007` — the split and the c2 refinement recorded).
+- next_action: `P4-SYSTEM.2` slice (e) — the unit artifacts at scratch→flip staging:
+  `encoding.sexp` with the partial slots (m/a/f/d/c/zifencei), the requirements growth
+  (the new instructions' requirement mirrors), the scope-census dual edit
+  (schema/profile.sexp + dossier_sexp._SCOPE_LISTS, 52→65), all authored and validated
+  from target/p4-system-2/ and moved unchanged at the flip (slice h). Slice (d) is
+  committed (`SEMULITH-P4-0008`); the machinery (privilege.rs) and the generator
+  parameterizations are tracked; the generated rv64gc modules stay scratch per
+  `decision_generated-mirror-needs-tracked-input`.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

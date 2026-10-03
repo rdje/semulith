@@ -1,5 +1,39 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0008 (leaf P4-SYSTEM.2, slice d) — the generators parameterize to rv64gc, the privilege machinery lands, the scratch execution proof passes
+
+- The two-profile shape, measured into existence: the tracked evaluator matches rv64i's
+  byte-frozen generated `Sem` enum, so the slice-(b) operators' evaluation arms cannot
+  compile tracked until the rv64gc definition module is tracked (the flip). The machinery
+  doesn't wait: `crates/semulith-core/src/privilege.rs` (tracked, hand-authored) owns trap
+  delivery (delegation selection, the xPIE/xIE/xPP stack, xepc/xcause/xtval, pc←xtvec),
+  xret, the uniform CSR permission model (mode bits, read-only bits, counter-enables,
+  TM/STCE, TVM) and WPRI/WARL/WLRL legalization — over a `PrivilegedHart` trait whose
+  metadata vocabulary it owns; the generated rv64gc state module implements the trait with
+  the descriptor's tables. The WARL seam closed: prose legalization became the structured
+  `(legalize …)` mini-language, applied by the engine as a lookup. 11 machinery tests over
+  a fixture hart.
+- gen_definition's rv64gc branch lowers all 8 slice-(b) operators, emits pseudos as
+  PSEUDOS metadata (the coverage mapping is slice (f)'s), and composes three separate
+  `(extensions …)` forms correctly — its name list carried the THIRD copy of the
+  dropped-form bug. gen_guests is directory-derived (the set is the directory; the run
+  order is the tracked run-order.txt, cross-checked both directions; rv64i regenerates
+  hash-only — the brief's "51-name list" measured 49). elf.rs's IALIGN is a parameter
+  (the routed twin of slice a's assembler fix); the CLI passes the profile datum (32)
+  explicitly. The dossier digest rotated on run-order.txt; the cascade re-derived
+  (reports, the board's pin, the platform manifest, both books), and the PLATFORM-GEN
+  stale-pin arm that assumed the digest's leading digit was fixed.
+- Validation: the scratch execution proof — six guests assembled with the tracked
+  assembler against the staged composition, run through the generated modules + the
+  tracked machinery: the CSR disciplines (rs1=x0 never writes, the swap exact for
+  rd==rs1), ecall delivered in M (cause 11, xepc=own address) and delegated to S (cause 9,
+  the S handler, sret back), wfi legal-nop in M / illegal in U, sret illegal in U,
+  sfence.vma under TVM, rdcycle gated then enabled — 26/26, catching two authoring defects
+  on the way (an atomic CSR's write preserving everything; a wrong delegation bit). Both
+  rv64i generated modules regenerate with only the embedded generator-hash lines changed.
+  STATE-GEN 20/20, DEF-GEN 15/15, GUEST-GEN 10/10 (new arms RED-first); `make check` and
+  `make gate` green (DERIVED-COUNTS 395→404). Next: slice (e) — the unit artifacts.
+
 ## SEMULITH-P4-0007 (leaf P4-SYSTEM.2, slice c2) — the rv64gc module's tracked landing is flip-bound; the scratch engine proof recorded
 
 - The (c2) judgment, measured rather than assumed: STATE-GEN proves rv64i's state.rs
@@ -805,46 +839,4 @@
   `state.sexp` cases; the DOSSIER's deferral row names it. `P3-BREADTH.1` stays
   slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional); the frontier
   moves to `.5`.
-
-## SEMULITH-BR-0012 (leaf P3-BREADTH.4) — subset v0 form-complete; the 6-guest corpus AGREEs
-
-- `crates/semulith-dsp56300` decode+exec gained the whole subset: the register/immediate
-  data-ALU core (add/sub/cmp/and/or/eor, all three source shapes), ASR/LSR, JSR/RTS,
-  ENDDO, REP #xxx/REP S, and the seven linear (Rn) addressing modes — every mask
-  FM-cited (page-footer cites) and cross-checked against the pinned assembler's probe
-  words, which the decode tests pin.
-- Guests `alu`, `shift`, `rn`, `rep`, `jsr` join `micro`: **6 agree / 0 fail** over the
-  canonical end-state dumps (51–64 fields per case, `cyc` excluded by rule); the crate's
-  17 unit tests carry hand-derived end-states (EVD-05).
-- The differential campaign caught five model defects, each root-caused tools-first:
-  RTS pulls PC only (FM 13-168 — SR stays, pinned by the jsr guest); MOVE #xx to an
-  accumulator sign-extends into A2 (the FM's "remaining bits zeroed" prose falsified);
-  A1/B1 memory reads are RAW (the shifter/limiter sits on the whole-accumulator path
-  only); S sets on accumulator bus reads, never on ALU results; and a keep-mask
-  nibble-slip zeroed A2 on the 24-bit ops. Two boundary defects fixed on the spot:
-  accumulator-part move destinations now refuse at decode (a latent panic), and the NOP
-  citation corrected to 13-145 (the FM's §13 TOC numbers pages differently from the
-  printed footers). `P3-BREADTH.4` DONE 4/4.
-
-## SEMULITH-MM-0075 (leaf MODEL-METHOD.19) — the demand chapter is a live chapter
-
-- Director ruling (`2026-10-01`): *The information a unit demands* is a WIP by design —
-  a live chapter that is re-derived, not just re-read, as each new CPU/DSP/board is
-  modelled: prospective sections become measured, classes split or merge with what is
-  measured, and every claim keeps citing a measured instance. The chapter header now
-  states that rule (no hand-kept date — LIVE-DOC-CURRENCY). `MODEL-METHOD` DONE 19/19.
-
-## SEMULITH-MM-0074 (leaf MODEL-METHOD.18) — the information a unit demands, per kind
-
-- New mdBook chapter, *The information a unit demands — CPU, DSP, board* (The models
-  section): per unit kind, the precise set of load-bearing information a faithful model
-  needs and what each absence prevents — on the spine "prevents-the-model vs
-  prevents-the-claim" (plus the quieter third: prevents-the-bound, the census never
-  taken). CPU: 9 measured classes; DSP: the CPU set plus 6, each earned by a measured
-  bite (the `x1=050000` readout surprise, the `memory_spaces` refusal, the U-bit
-  extraction inversion); board: 5 prospective classes, marked derived-not-measured.
-  Every class maps to the information catalogue's categories without restating them.
-- The chapter closes on the recursion the P3 design discussions predicted: CPU = base
-  set, DSP = base + scalar-breaking axes, board = base + composition. Book builds;
-  chapter count re-derived 31 → 32; `MODEL-METHOD` is DONE 18/18.
 

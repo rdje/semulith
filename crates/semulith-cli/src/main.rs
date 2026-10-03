@@ -83,6 +83,12 @@ use std::time::Instant;
 use semulith_core::definition::{decode, INSNS};
 use semulith_verify::bench::{self, Mix, Mode, Stats};
 use semulith_verify::elf;
+
+/// The running profile's instruction-address alignment in bits — rv64i-lab-v0 declares
+/// (ialign 32). The CLI's definition is rv64i's until the rv64gc route flip
+/// (P4-SYSTEM.2 slice h) makes the profile a runtime selection; the constant is the
+/// profile's data, passed to the loader rather than assumed by it.
+const IALIGN_BITS: u64 = 32;
 use semulith_verify::fixtures::FlatMemory;
 use semulith_verify::graph::{check_bundle, Bundle};
 use semulith_verify::json::{self, Json};
@@ -271,7 +277,7 @@ fn run_guest(args: &[String]) -> ExitCode {
             return ExitCode::from(2);
         }
     };
-    let image = match elf::parse(&bytes) {
+    let image = match elf::parse(&bytes, IALIGN_BITS) {
         Ok(image) => image,
         Err(why) => {
             eprintln!("run: {elf_path}: refused — {why}");
@@ -576,7 +582,7 @@ fn snapshot_cmd(args: &[String]) -> ExitCode {
             return ExitCode::from(2);
         }
     };
-    let image = match elf::parse(&bytes) {
+    let image = match elf::parse(&bytes, IALIGN_BITS) {
         Ok(image) => image,
         Err(why) => {
             eprintln!("snapshot: {elf_path}: refused — {why}");
