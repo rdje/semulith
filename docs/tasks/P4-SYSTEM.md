@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c1) `SEMULITH-P4-0006` done, all `2026-10-03`; slice (c) split recorded below)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007` done, all `2026-10-03` — the (c1)/(c2) split and the (c2) refinement are recorded below)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a), (b), (c1) landed; slice (c) split: (c1) the state schema + the staged 33-CSR document + gen_state + the gate arms (zero Rust), (c2) the engine-side consumption; next is (c2); the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a), (b), (c) landed ((c2)'s tracked landing is flip-bound by `decision_generated-mirror-needs-tracked-input`, its scratch proof recorded); next is slice (d): gen_definition/gen_guests parameterization + engine exec of the CSR/trap instructions; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -727,13 +727,21 @@ This gate authorises the planned next engineering stage: board implementation.
 
 `P4-SYSTEM.2` slice (c) — split decision (recorded `2026-10-03`): **(c1)** the state schema
 constructs + the staged 33-CSR document + gen_state's rv64gc branch + the gate arms —
-zero Rust, everything validated from the scratch path; **(c2)** the engine-side consumption
-(the generated module lands in `crates/` and is wired, `make check` green). The seam is
-clean: (c1) changes no executable surface at all (the emission is generator-capable but
-not yet placed — the brief's own staging option), and (c2) changes no schema or document.
-The split exists because the state document CANNOT be placed yet (the route contradiction
-is mechanical), and mixing "the document is authored and proven" with "the engine consumes
-it" in one commit would force one of the two to be weaker than it is.
+zero Rust, everything validated from the scratch path; **(c2)** the engine-side consumption.
+The seam is clean: (c1) changes no executable surface at all, and (c2) changes no schema
+or document. **(c2) refined the same day, measured** (`SEMULITH-P4-0007`,
+[`decision_generated-mirror-needs-tracked-input`](../decisions/decision_generated-mirror-needs-tracked-input.md)):
+the generated rv64gc module CANNOT land in `crates/` before the flip — a tracked generated
+artifact whose canonical input is untracked is a copy, not a derivation (a fresh clone
+could not re-derive it, and STATE-GEN could not judge it there); the measured alternatives
+(skip-if-absent gate leg; a hand-written interim module; a non-unit tracked descriptor
+home) are each dishonest in a different way. So (c2)'s tracked landing rides the flip —
+the descriptor moves, the module lands, the STATE-GEN census and FACT-OWNERSHIP rows
+extend, in one green commit — and its interim evidence is the scratch proof: the emitted
+module (40,198 bytes) compiles standalone and a `rustc --test` harness exercises it
+behaviorally (reset per the document, the 33-CSR address lookup, the view discipline, the
+field tables, x0 and the mode transitions — 4/4, the harness and module at
+`target/p4-system-2/gen/`).
 
 `P4-SYSTEM.2` slice (c1) — the state schema, the staged 33-CSR document, gen_state's second profile (`2026-10-03`, `SEMULITH-P4-0006`):
 
@@ -854,6 +862,7 @@ it" in one commit would force one of the two to be weaker than it is.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (c2) | the landing question measured against the gates: STATE-GEN proves the tracked state.rs byte-exact from the TRACKED descriptor in a fresh clone; a tracked rv64gc module from the staged (untracked) descriptor would be unjudgeable there — the three alternatives (skip-if-absent leg, a hand-written interim module, a non-unit descriptor home) each measured dishonest. The scratch proof: gen_state emits `target/p4-system-2/gen/state_rv64gc.rs` (40,198 bytes); a `rustc --test` harness over it — reset-is-the-document (mode M, mstatus 0xA0000000, misa 0x800000000014112D), the 33-CSR address lookup, the view discipline (views carry no storage, every view_of resolves), the field tables (WARL-without-legalization absent, the medeleg 11/16 read-only-0 rows, TSR at bit 22 per the pinned encoding.h), x0/mode transitions — 4 passed / 0 failed | slice (c2) refined: the tracked landing rides the flip (one green commit with the descriptor's move); the interim evidence is recorded; `decision_generated-mirror-needs-tracked-input` |
 | `2026-10-03` | `.2` slice (c1) | the pre-slice census (no privileged construct in schema/state.sexp; the route contradiction measured at scripts/check_extraction.py:224-233; gen_state single-profile by refusal; PROFILE-CONSISTENCY csrs cross-check absent, EXTRACTION's reset leg csr-blind); the house-shape refusals (fields wrapper, candidates wrapper — refused by name, reshaped); the staged document validated from target/p4-system-2/: schema conform, --csr-cross 33/33 both directions, _state_resets over the scratch dir green, addresses == pinned csrs.csv 33/33 EXACT, field tables no-overlap/full-coverage; gen_state rv64i byte-identical + rv64gc emits 40198 bytes and rustc-compiles standalone; the composed-reset cross-check fired RED naturally on the real document (mstatus 0xA0000000 ≠ hand-computed 0x300000000 — the descriptor was wrong, the check named it); STATE-GEN self-test 17/17 (+7), PROFILE-CONSISTENCY 44/44 (+3), EXTRACTION 9/9 (+3); `make gate` green (DERIVED-COUNTS 385→395) | slice (c1) landed: the privileged state constructs (csr + per-field discipline tables + privilege_mode), the staged 33-CSR document with the re-earned SEM-08 census, gen_state's two-profile branch with rv64i byte-exact, the two gate gaps closed; the (c1)/(c2) split recorded |
 | `2026-10-03` | `.2` slice (b) | the pre-slice census (32 operators, no csr/mode/xret form; ecall's cause a constant 11; a pseudo could not carry semantics; check_citations hard-coded to rv64i.sem.sexp); the spec-text census (xRET/WFI/TSR/TW/TVM/mcounteren/scounteren/STCE/sfence locators read from the pinned chapters; mstatus positions figure-only → encoding.h pinned); check_semantics pair checks 6/6 + 0/0(+3 pseudo) + 4/4 and `--compose` over the trial composition (refinement points ebreak/ecall declared); check_citations `--corpus` 6 resolution(s) — rv64i 52/52 ×3 profiles, zicsr 8/8, zicntr 3/3, system 4/4 under rv64gc; self-tests semantics 15/15 (+7), citations 13/13 (+3), corpus 8/8 (+1, the dropped-form arm proven RED pre-fix); fetch_references `--verify-only` green both profiles (+encoding.h, +causes.csv); DEF-GEN/STATE-GEN/GUEST-GEN byte-exact; `make gate` green (DERIVED-COUNTS 384→385) | slice (b) landed: 8 new operators (field, inst, mode, csr-state, csr-read, csr-write, trap-deliver, xret), the three sem files with every per-instruction decision cited, the WARL seam recorded for slice (c), rv64i.sem.sexp untouched |
 | `2026-10-03` | `.2` slice (a) | the upstream census (13 mnemonics over master's `extensions/`: rv_zicsr 6 real rows, rv_zicntr 3 pseudo-only rows of csrrs, rv_system mret/wfi + rv_s sret/sfence.vma; the moved rv_* tables byte-identical to the rv64i pins; the pinned arg_lut.csv already carries csr/zimm5); fetch_references `--verify-only` green for BOTH profiles + a scripted fresh re-fetch of rv_s byte-identical; check_sexp_schema on the new references.sexp and all 5 fragments; check_encoding_disjoint self-test 12/12 (+3 pseudo arms, +1 dupes arm) and the trial compositions (base+each new fragment; the 62-instruction 4-fragment union collision-free through a synthetic unit doc); the assembler probe (all 13 forms assembled, the spike-dasm round-trip exact, 4 RED operand refusals named, IALIGN 32 refuses / 16 accepts an entry 2 mod 4, rv64i derives 32 and rv64gc 16); UNIT-COMPOSITION self-test 9/9; EXERCISE-COVERAGE 21/21; EXTRACTION / INTERACTION-MATRIX / SOURCE-FORMAT / SEMANTICS / DOSSIER-SCHEMA / PROFILE-CONSISTENCY green; GUEST-GEN / DEF-GEN / STATE-GEN byte-exact; `make gate` green (DERIVED-COUNTS 383→384 arms re-derived) | slice (a) landed: the Zicsr / Zicntr / privileged-system fragments from the re-pinned tables, the csr operand field and IALIGN as profile data; rv64i's generated surfaces byte-identical; the unit stays on the `profile-resolution` route |
@@ -863,6 +872,7 @@ it" in one commit would force one of the two to be weaker than it is.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice c2) | `SEMULITH-P4-0007 (leaf P4-SYSTEM.2): slice c2 refined — the rv64gc module's tracked landing is flip-bound; the scratch engine proof recorded` | a tracked generated module needs a tracked canonical input — measured against STATE-GEN's fresh-clone property; the three alternatives each dishonest; the scratch `rustc --test` proof (4/4) over the generated module recorded; `decision_generated-mirror-needs-tracked-input` + INDEX |
 | `.2` (slice c1) | `SEMULITH-P4-0006 (leaf P4-SYSTEM.2): slice c1 — the privileged state constructs, the staged 33-CSR document, gen_state's rv64gc branch, the csr-set and reset-census gate arms` | slice (c) split recorded ((c1) zero Rust / (c2) the engine consumption); the state document staged at target/p4-system-2/ until the flip (the route contradiction is mechanical); gen_state composes per-field resets and cross-checks the csr-level value — fired RED naturally on the document being authored; csr name↔address ownership migration deferred to the flip, the 33/33 csrs.csv agreement probe recorded; STATE-GEN 17, PROFILE-CONSISTENCY 44, EXTRACTION 9 arms |
 | `.2` (slice b) | `SEMULITH-P4-0005 (leaf P4-SYSTEM.2): slice b — the semantics language learns privilege: 8 operators, the zicsr/zicntr/system sem files, ECALL/EBREAK refined by declaration` | schema/semantics.sexp 32→39 forms + the READS-AND-WRITES contract; csr-write's WARL seam deferred to slice (c)'s tables at slice-(d) lowering; the corpus gate's dropped-extensions-form compose bug fixed (RED-first); check_citations --corpus binds sem files to pinning profiles; +encoding.h/+causes.csv pins (mstatus masks are figure-only in the spec); rv64i.sem.sexp untouched, rv64i's generated surfaces byte-exact |
 | `.2` (slice a) | `SEMULITH-P4-0004 (leaf P4-SYSTEM.2): slice a — the Zicsr/Zicntr/privileged-system fragments from the re-pinned tables; the csr operand field; IALIGN as profile data` | the rv64gc references.sexp re-pin (5 new tables + shared arg_lut, sha256+bytes); the fetch route's extensions/ mapping (the moved tables hash byte-identical to the pins); the (pseudo …) fragment construct + the disjointness specialization rule (self-test 8→12); the resolver's dropped-extensions-form and advisory-dupes fixes measured at the first 3-extension composition; rv64i.sexp/m.sexp re-derived byte-identical; both profiles' verify routes green |
@@ -870,6 +880,20 @@ it" in one commit would force one of the two to be weaker than it is.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (c2) done as a refinement (`SEMULITH-P4-0007`) — the tracked
+  landing of the rv64gc state module is flip-bound, measured, not assumed: STATE-GEN
+  proves rv64i's module byte-exact from its TRACKED descriptor in a fresh clone, and a
+  tracked module generated from the staged (untracked) document would be unjudgeable
+  there — a copy, not a derivation. The three alternatives were each measured dishonest
+  (a skip-if-absent gate leg is a standing hole in the byte-exact property; a hand-written
+  interim module is a second owner, OWN-01; a non-unit descriptor home is a category lie).
+  The interim evidence: the generated module (40,198 bytes) compiles standalone and a
+  scratch `rustc --test` harness proves it behaviorally (reset per the document, the
+  33-CSR address lookup, the view discipline, the field tables, x0/mode — 4/4).
+  `decision_generated-mirror-needs-tracked-input` records the rule; it constrains slice
+  (d)'s engine execution the same way. Next: slice (d) — gen_definition/gen_guests
+  parameterization + engine exec of the CSR/trap instructions.
 
 - `2026-10-03`: `.2` slice (c1) done (`SEMULITH-P4-0006`) — the state leg, split recorded:
   (c1) zero Rust — the schema's privileged constructs, the staged document, the generator,
