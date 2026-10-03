@@ -20,11 +20,11 @@ locator, and the dependency closure is measured against the pinned publication.
 | Element | Selection | Locator |
 | --- | --- | --- |
 | Base ISA | RV64I (version 2.1), XLEN 64, little-endian | `RVI-RV64I` §3.1 |
-| Extensions | M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicntr 2.0, Zicsr 2.0, Zifencei 2.0; privileged: Sstc 1.0 | the chapters' own stated versions ([`sources.sexp`](sources.sexp)) |
-| ISA string | `rv64imafdc_zicntr_zicsr_zifencei_sstc` (canonical order) | `RVI-NAMING` 36.1 |
+| Extensions | M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicntr 2.0, Zicsr 2.0, Zifencei 2.0; privileged: Sstc 1.0, Svade (defined inline in `RVP-SUPERVISOR` 1.13, no separate chapter) | the chapters' own stated versions ([`sources.sexp`](sources.sexp)) |
+| ISA string | `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` (canonical order; `svade` appended at P4-SYSTEM.3 slice a) | `RVI-NAMING` 36.1; `D-SVADE` |
 | Privileged architecture | Machine-Level ISA 1.13 + Supervisor-Level ISA 1.13, under spec revision `v20260120` | `RVP-MACHINE` 2.1, `RVP-SUPERVISOR` 11.1 |
 | Privilege modes | M, S, U (M-mode firmware, S-mode kernel, U-mode userspace); H excluded | `RVP-INTRO`; `D-PRIV-MODES`, `D-NO-H` |
-| Translation | Sv39 (of Sv39/Sv48/Sv57 at SXLEN=64) | `RVP-SUPERVISOR` §11.1.3–§11.1.4; `D-SV39` |
+| Translation | Sv39 (of Sv39/Sv48/Sv57 at SXLEN=64); Svade for A/D (page fault, never a hardware PTE update; Svadu not selected) | `RVP-SUPERVISOR` §11.1.3–§11.1.4, §11.1.10; `D-SV39`, `D-SVADE` |
 | Alignment | IALIGN 16 with C; ILEN 32 | `RVI-C` 27.1; `D-IALIGN-16` |
 | Counters | Zicntr `cycle`/`time`/`instret`; Zihpm not selected | `RVI-ZICNTR` 6.1; `D-ZICNTR` |
 | S-mode timer | Sstc (`stimecmp`, `menvcfg.STCE`) | `RVP-SSTC` 12.1; `D-SSTC` |
@@ -94,7 +94,16 @@ in place).
   recorded before relying on or shipping an artifact; the pinned artifacts are READ,
   not redistributed, and "shipping" is not reached. Owned here, due at the first
   release candidate of this profile (the rv64i-lab-v0 OQ-4 precedent).
-- **OQ-2 — the A/D-update policy is open by design.** The pinned SoC precedent (U54)
-  raises page faults instead of setting PTE A/D bits; the privileged architecture
-  permits both. `P4-SYSTEM.3` decides this profile's policy against the selected
-  extensions and revision — with evidence, not by citation of one implementation.
+- **OQ-2 — CLOSED (`2026-10-03`, P4-SYSTEM.3 slice a, D-SVADE): the profile implements
+  Svade.** A translation needing an A or D PTE update raises a page fault instead of
+  performing the hardware update. The three evidence legs: (i) the pinned revision
+  defines exactly two A/D schemes and names the page-fault one Svade
+  (RVP-SUPERVISOR §11.1.3.1, §11.1.10); (ii) the pinned SoC precedent the Sv39 choice
+  already cites implements exactly that scheme — "does not automatically set the A and
+  D bits … Instead, the U54 MMU will raise a page fault" (FU540 §4.7); (iii) the
+  laboratory's observe-through-the-ISA discipline (P4-SYSTEM.2 decision 6) can evidence
+  a page fault (scause/stval via csrr) but cannot evidence an implicit PTE write, so the
+  hardware-update default would price a new observation vocabulary to test a side
+  effect the laboratory need not produce. Svadu is NOT selected: menvcfg's ADUE stays
+  WPRI. The Sail matched override's `Svade` flag is `true` (the reference flip
+  measured: no guest's verdict changes — no guest activates translation).

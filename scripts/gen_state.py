@@ -383,6 +383,21 @@ def _composed_reset(csr: dict) -> int:
 
 
 def validate_gc(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dict]:
+    # The same construct refusals the rv64i path carries (P4-SYSTEM.3 slice a: the hole
+    # the .3 brief's pre-condition 6 names — these constructs were silently IGNORED here,
+    # so a descriptor carrying one would have lost data without a word):
+    if doc.get("register_family"):
+        raise Refusal("register_family declared — emitting register families with masked "
+                      "widths and part readouts is generator work (P3-BREADTH.5; case "
+                      "dsp56300-lab-v0, F1), not silently assumed")
+    if doc.get("memory_spaces"):
+        raise Refusal("memory_spaces declared — emitting distinct memory spaces is "
+                      "generator work (P3-BREADTH.5; case dsp56300-lab-v0, F3), not "
+                      "silently assumed")
+    if "hardware_stack" in doc:
+        raise Refusal("hardware_stack declared — emitting the hardware stack is generator "
+                      "work (P3-BREADTH.5; case dsp56300-lab-v0, the census's candidates "
+                      "4/6), not silently assumed")
     ir = doc.get("integer_registers")
     if ir is None or ir["width_bits"] != SUPPORTED_WIDTH or ir["ids"] != "x0..x31":
         raise Refusal("rv64gc-lab-v0: the integer file must be the RV64I x0..x31 file at "

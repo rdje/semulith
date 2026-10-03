@@ -1,5 +1,45 @@
 # DEV_NOTES.md
 
+## _(2026-10-03)_ — the override must name what it depends on (P4-SYSTEM.3 slice a)
+
+Execution of the `.3` brief's checkpoint (a) measured:
+
+- **Sail's default had Svade on all along.** The .2 override's template-driven
+  generation set every extension it named — including `Svade supported: false` —
+  so the .2 experiment ran with the hardware-update policy (irrelevant then: no
+  guest activates translation). But the default config's `Svade.supported` is
+  `true`: had the template not named it, the .2 config would have silently
+  inherited the Svade policy. The flip to `true` is the D-SVADE match — and the
+  discipline it crystallizes: a matched override NAMES every flag its experiment
+  depends on, because inheriting a default is a silent config, not a chosen one.
+  The re-run is the proof the flip is behavior-free for this corpus: 11/12 AGREE,
+  byte-identical verdicts to the pre-flip baseline (measured, never assumed).
+- **The refusal arm's fixture must pass the mapping first.** The first
+  validate_gc refusal arms failed for the wrong reason — my synthetic
+  `(hardware_stack (placeholder true))` was refused by the dossier MAPPING
+  (`missing (levels …)`) before validate_gc ever ran. A RED arm proves the right
+  refusal only when its fixture is valid up to the layer under test: the arms now
+  inject mapping-valid construct shapes, so the refusal that fires is
+  validate_gc's own, named. (The same discipline the acceptance boxes' census
+  arms already carry — a RED against the wrong layer is a GREEN lie wearing red.)
+- **The ISA string is the declared order, and the brief's string was checkable.**
+  gen_platform's rule (the .1 fix): single-letters concatenated, multi-letter
+  underscore-joined, Z* before S*, alphabetical within. Appending Svade after
+  Sstc yields exactly the brief's `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` —
+  the brief's own string was right, and the rule re-derived it rather than
+  trusting it. The census (`git grep -l 'rv64imafdc'` over seven trees) found two
+  authored occurrences to amend (with owners named), two Sail-DEFAULT mentions to
+  leave (not our string), one archive to leave, and no derived surface to
+  regenerate (no board pins rv64gc today).
+- **Validation:** the dossier flips schema-valid and RECORD-SCHEMA green (rule 4
+  statement-identity, rule 9 restatement, the D-SV39 note correctly NOT
+  mirrored); the override flip config-valid; the full 12-guest re-run
+  baseline-identical; STATE-GEN 22→25 arms, both real pairs byte-identical;
+  `make check` 8/8, `make gate` all green (DERIVED-COUNTS 419→422 re-derived).
+  Promotion: declined (the matched-override name-your-flag discipline is the
+  reference dossier's own record, and this slice's checklist carries the
+  measurement).
+
 ## _(2026-10-03)_ — the Sail attempt measured its own boundary; the validator argued for the corpus (P4-SYSTEM.2 slice h, part 2 + leaf)
 
 Execution of the `.2` brief's decision 8 measured:
@@ -603,40 +643,4 @@ wire (`REQ-D-NIC-PHY-LINK`). The `profiles/` per-part bound bit for the first ti
 
 Lesson: **promoted** — `docs/knowledge/a-pdf-text-layer-is-not-the-page.md` (the two
 text-layer failure modes and the verify-with-hexdump rule).
-
-## _(2026-10-02)_ — a device dossier reuses the machinery by declaration, and a datasheet's silences are requirements (P5-BOARD.2)
-
-The first device unit (`sifive-uart-lab-v0`) taught the dossier machinery its third shape
-(after generated-definition and sibling-crate): `vehicle (route device-model) (comparison
-register-expectations)`. The load-bearing design choices:
-
-**Applicability is derived, never exempted.** The instruction-shaped gates
-(EXTRACTION, EXERCISE-COVERAGE, INTERACTION-MATRIX) read the `vehicle` declaration and
-derive what applies: the device answers the legs it honestly can (every state element a
-reset — the FIFOs' resets are recorded as *"unspecified", sourced to the measured silence*,
-which satisfies the contract without inventing behaviour; every obligation a POS+NEG pair)
-and the rest is n/a *by declaration* — with contradiction = RED in both directions (an
-`encoding.sexp` or a `guests/` corpus beside the declaration refuses). Anti-drift by
-construction: the day P5-BOARD.5's probes land, the gate refuses until taught the device
-exercise leg.
-
-**A datasheet's silence is a record, not an oversight.** Six of the nineteen requirements
-are `unspecified`-category non-commitments — the sharpest found in execution: §13.8's
-watermark bits carry a strict-inequality RAISED and a strict-inequality CLEARED condition
-each, and the manual never says whether the bit is a pure level of FIFO occupancy or holds
-between the two. The `==` boundary and every pre-first-condition value (including the
-X-marked resets) are undetermined (`REQ-D-UART-WM-MODE`), so the expectation documents pin
-a watermark bit only when its raised condition holds under *every* reading. The first
-draft asserted "level conditions" — the dossier's own expected-results discipline caught
-it before it ossified, exactly the failure EVD-05 exists to prevent.
-
-**Naming is contract-shaped.** A private `REQ-U-` id prefix (for the unspecified records)
-collided with RECORD-SCHEMA's mechanical `D-X` → `REQ-D-X` decision→requirement mapping —
-the mapping is the contract, the prefix was convention. The records are now named by their
-`source_semantics` category in prose and carry the house id shape; one fact, three
-surfaces (requirement, obligation, decision), one wording, mechanically mirrored.
-
-Validation: all dossier documents schema-validate; the three profile-glob gates decide the
-device by declaration; every edited check's self-test green (17/9/14/41/7/14/10 arms, 0
-fail); `make gate` all doctrines green; the mdBook builds and its index stays byte-exact.
 

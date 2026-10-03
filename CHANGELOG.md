@@ -1,5 +1,46 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0015 (leaf P4-SYSTEM.3, slice a) — the Svade identity edit, the Sail override flip (measured verdict-identical), the validate_gc refusal
+
+- OQ-2 closes with evidence: the profile implements **Svade** — a translation needing
+  an A or D PTE update raises a page fault, never a hardware update. The three legs:
+  the pinned revision defines exactly two A/D schemes and names the page-fault one
+  Svade (RVP-SUPERVISOR §11.1.3.1, §11.1.10 — inline in the already-pinned chapter,
+  so sources.sexp gains no pins, measured); the U54 MMU the Sv39 choice already
+  cites implements exactly that scheme ("does not automatically set the A and D
+  bits … Instead, the U54 MMU will raise a page fault", FU540 §4.7); and the
+  laboratory's observe-through-the-ISA discipline can evidence a page fault but not
+  an implicit PTE write, so the hardware-update default would price a new
+  observation vocabulary to test a side effect the laboratory need not produce.
+  Svadu is NOT selected — menvcfg's ADUE stays WPRI (measured inside the state
+  document's `wpri_62_0` field).
+- The identity edit: `(extensions "Svade")` in declared order — the canonical ISA
+  string is now `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` (gen_platform's
+  declared-order rule; the string matches the brief exactly) — the D-SVADE decision
+  with authority laboratory and its verbatim REQ/OB mirrors (the D-ROUTE-FLIP
+  shape: contract `rv64gc-lab-env-v0` version `"0"` unchanged, CHK-SVADE-POS/NEG),
+  D-SV39's "not as this profile's rule" clause superseded by note (RECORD-SCHEMA's
+  mirror rule kept), DOSSIER.md's OQ-2 closed with the legs quoted and its locator
+  tables updated, and the ISA-string census discharged: two authored edits with
+  owners named (the book, the `.1` Result narrative), the Sail-default mentions
+  and the archive untouched, no derived regeneration needed (no board pins rv64gc
+  today).
+- The reference flips to match: `Svade supported: true` in the tracked override —
+  one field, as the brief priced it (the .2 override had set it explicitly
+  `false`; Sail's own default is `true`, so the flip also makes the override name
+  what it depends on). The full 12-guest re-run against the tracked-derived JSON
+  measures the effect: **11/12 AGREE — IDENTICAL to the pre-flip baseline** (no
+  guest activates translation; the mm-wfi DIVERGE is the known TW cell, not a new
+  effect). The config validates clean.
+- The generator hole the brief's pre-condition 6 named closes: `validate_gc`
+  refuses `register_family`/`memory_spaces`/`hardware_stack` by name with the
+  rv64i path's own wording — three RED self-test arms on mapping-valid injected
+  shapes (so the refusal that fires is the validator's own), STATE-GEN 22→25 arms,
+  both real owner→mirror pairs byte-identical. `make check` 8/8 groups, `make
+  gate` all green (DERIVED-COUNTS 419→422 re-derived, never hand-incremented).
+  Next: slice (b) — the translation module + the three hooks + effective mode +
+  the Bare-identity proof.
+
 ## SEMULITH-P4-0013 (leaf P4-SYSTEM.2, slice h part 2) — the Sail privileged matched experiment (11/12 AGREE, the TW cell named, mm-counters not matchable); the leaf closes
 
 - The Sail privileged matched experiment (decision 8), attempted and honestly
@@ -792,60 +833,4 @@
   `target/refs/*.log` present this run; the 7 cargo-home crate test fixtures kept
   by policy (inputs, not artifacts). `docs/ARTIFACT_CLEANUP.md` overwritten with
   the one-line record.
-
-## SEMULITH-P5-0003 (leaf P5-BOARD.9) — the chipdoc answers reconciled: five adopted, five measured negatives
-
-- Verified live first: `build_responses.py --report` → 5 fulfilled / 5 blocked, exit 0
-  (every open request answered — the second incident's gap, closed by CHANNEL.md
-  §0.3/§0.5, re-read `2026-10-01`).
-- The five fulfilled adopted as catalog materials — `MICROCHIP-LAN9118` (the wired-NIC
-  primary), `UBLOX-SARA-R4-AT` (the cellular AT primary), `ESPRESSIF-ESP-AT`,
-  `NORDIC-NRF52840-PS`, `MICROCHIP-AT86RF233` (the two true RFICs) — fetched into
-  `.materials/network/`, every sha256 re-verified (`materials --verify: 52/0`); the
-  corpus re-pinned `c4ad8a2` (5696 files / 293 PDFs, the same census).
-- All ten requests marked: five `resolved`, five `blocked` — each blocked a MEASURED
-  NEGATIVE with its consequence named (e1000/RTL8139 → LAN9118 is primary; EC25/
-  SIM7600 → SARA-R4 is primary; the AR9271 probe's negative IS its answer: no public
-  register-level WiFi baseband documentation exists). Never re-filed without a new
-  route. `P5-BOARD.1` inherits five sourced candidates plus five closed alternatives.
-- The knowledge cards carry the ask→answer loop end-to-end
-  (`the-chipdoc-request-channel.md` refreshed with the §0.3/§0.5 answer path;
-  `the-chipdoc-channel.md` updated and cross-linked).
-
-## SEMULITH-BR-0021 (leaf P3-BREADTH.6) — gate BREADTH runs: verdict passed; the capability report published
-
-- `scripts/gate_report.py` gained the cross-unit builder (`--gate BREADTH`): the three
-  roadmap axes measured from tracked files by concrete artifact name — axis 1 the
-  subset's six evidence anchors (declared scope + vehicle, the `.a56` corpus, 17
-  crate tests, the driver, the comparison contract, the registered mechanism), axis 2
-  nine abstraction constructs DECLARED in their schema AND CARRIED by the mapping
-  owner with the refusal boundary pinned (5 synth probes), axis 3 the registry as the
-  complete claim list — **TI C6000 and ADI SHARC unclaimed explicitly**, everything
-  else by omission. No code path to `passed` over an absent anchor (EVD-08).
-- The report publishes at `docs/BREADTH-REPORT.md` — a cross-architecture gate cannot
-  be owned by a profile directory — and `check_gate_report.sh` gained the repo-level
-  leg: same regenerate-never-edit enforcement, same controls (self-test 12/12; 4
-  reports in sync, G0/G1/GC byte-identical).
-- `P3-BREADTH` **CLOSED 8/8** — the stable-API claim is permitted exactly where the
-  report permits it (the exercised cases of the two registered units); `.1` stays
-  `slice-gated` on the record, its TI/VLIW legs reopening by name.
-
-## SEMULITH-BR-0020 (leaf P3-BREADTH.6) — the second unit registered; its book stands; the per-part ceiling rises by ruling
-
-- `materials/units.sexp` gained `dsp56300-lab-v0` (the second unit; C17 in / C14 out
-  against rv64i's requires set — reset is this unit's own decision, interrupts a named
-  exclusion) and the 24-row category-needs census landed (8 covered / 6 partial /
-  3 missing-with-closings / 4 out-of-scope / 3 deferred-to-board).
-- `scripts/gen_model_book.py` learned the sibling-crate shape — three extensions, each
-  naming the DSP case (the declared-vehicle encoding fragment; `encoding.sexp` as the
-  one document a sibling-crate unit may lack, its row naming the deferred lane; register
-  families / spaces / the `.a56` census where the rv64 shapes are absent). rv64i
-  regression byte-exact: only the generator-digest header line moved.
-- The book `docs/models/dsp56300-lab-v0/` stands (six chapters, the bill's 12 sections
-  each with its does-not-supply); UNIT-BOOKS, MATERIALS-BILL and SCOPE-COVERAGE all
-  green with 2 units; four fragment mirror rows registered (FACT-OWNERSHIP 29 kinds).
-- **Director ruling (`2026-10-01`): task-tree growth is ALLOWED** — the docs/tasks/
-  per-part bound rose to 128 KiB (`decision_task-tree-per-part-growth`) after six forced
-  archive operations in one day taxed active slices; the aggregate bound and the archive
-  lifecycle are unchanged, and a bound remains — a file stays readable in one sitting.
 

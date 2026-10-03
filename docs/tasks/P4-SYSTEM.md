@@ -38,7 +38,9 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: nothing is inferred from the letters `GC`; each element has a source locator (`SCP-01`, `SCP-02`).
   Result (`2026-10-03`): the resolution is **`rv64gc-lab-v0`** — RV64I + M/A/F/D/C +
   Zicntr + Zicsr + Zifencei, privileged Sstc; ISA string `rv64imafdc_zicntr_zicsr_
-  zifencei_sstc`; M/S/U modes; Sv39; IALIGN 16 (with C) / ILEN 32; harts 1; the 33-CSR
+  zifencei_sstc` (amended at `.3` slice (a) to `rv64imafdc_zicntr_zicsr_zifencei_
+  sstc_svade` — Svade selected, D-SVADE); M/S/U modes; Sv39; IALIGN 16 (with C) /
+  ILEN 32; harts 1; the 33-CSR
   committed minimum; LP64D ABI; SBI 2.0 the P6 firmware contract. The unit directory
   `profiles/rv64gc-lab-v0/` carries 5 files: `profile.sexp` (the selection as data —
   the schema's fields covered everything; 18 decisions), `sources.sexp` (24 pins: 21
@@ -101,7 +103,7 @@ This gate authorises the planned next engineering stage: board implementation.
   stayed platform-conflicted by record, no attempt.
 
 - ID: `P4-SYSTEM.3` — **Sv39 translation and protection**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0014`)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0014`; slice (a) `SEMULITH-P4-0015` done, `2026-10-03`)
   Goal: page-table format, walk ordering, permission checks, A/D update policy, ASIDs, translation invalidation, permitted walk side effects (catalog `C12`).
   Acceptance: permission failure produces the correct fault **and** the permitted page-table side effects; A/D policy is validated against the selected extensions and revision, not chosen as a knob.
 
@@ -145,7 +147,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.3` | `pending` | Sv39 translation and protection — the next leaf after `.2` (the privileged machinery landed and flipped; the wfi TW finding from the Sail attempt is routed to `.5`, with its measurement recorded in `.2`'s slice-(h) checklist) |
+| 1 | `P4-SYSTEM.3` | `pending` | Sv39 translation and protection — slice (a) landed (the Svade identity edit + the Sail override flip + the validate_gc refusal); next is slice (b): the translation module + the three hooks + effective mode + the Bare-identity proof (62/62 unchanged) |
 
 ## Decisions
 
@@ -759,10 +761,119 @@ counter enables gating S then U (mm-counters); stimecmp under TM then STCE
 differentially AGREED against the matched Sail 0.14 (the twelfth partial, one
 cell named). The leaf is **done**.
 
+`P4-SYSTEM.3` slice (a) — the Svade identity edit + the Sail override flip + the validate_gc refusal (`2026-10-03`, `SEMULITH-P4-0015`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (a): the profile's identity gains
+  Svade (the .3 brief's OQ-2 answer — page-fault-instead-of-A/D-update), the Sail
+  matched override flips to match, and gen_state's rv64gc path stops silently
+  ignoring three constructs. Measured pre-slice:
+
+  ```
+  $ grep -n 'ADUE\|wpri_62_0' profiles/rv64gc-lab-v0/state.sexp | head -2
+  (field (id "wpri_62_0") (bit_hi 62) (bit_lo 0) (discipline wpri) …)   # ADUE is WPRI
+                                                                          # by construction
+  $ grep -c 'Svade' profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+  1                        # (extension (name "Svade") (supported false)) — the .2 config
+                           # disabled it; the flip is one field, as the brief priced it
+  $ sed -n 385,386p scripts/gen_state.py    # validate_gc: NO register_family /
+  # memory_spaces / hardware_stack refusals (the brief's pre-condition 6 — the rv64i
+  # path refuses all three at :100-112)
+  $ git grep -l 'rv64imafdc' -- profiles/ docs/ scripts/ bench/ crates/ definitions/ schema/ materials/
+  docs/book/src/plan/p4.md · docs/models/rv64i-lab-v0/src/references.md · docs/tasks/P4-SYSTEM.md
+  docs/tasks/archive/P0-PROFILE.md · profiles/rv64gc-lab-v0/DOSSIER.md ·
+  profiles/rv64gc-lab-v0/profile.sexp · profiles/rv64i-lab-v0/DOSSIER.md
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior (the .2 experiment
+  never activated translation); the slice executes the brief's identity decision and
+  closes its own named hole. Three measurements shaped it:
+  1. **The override must NAME the flag it depends on.** Sail's default config has
+     `Svade.supported = true`, but the .2 override's template-driven generation set
+     it explicitly `false` — the .2 experiment ran with hardware-update policy
+     (irrelevant then: no guest activates translation). The flip to `true` is the
+     D-SVADE match, and the re-run measures it, never assumes:
+
+     ```
+     $ grep -o '(extension (name "Svade") (supported [a-z]*))' \
+         profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+     (extension (name "Svade") (supported true))     # false before this slice's flip
+     $ python3 -c "import json; print(json.load(open('target/refs/sail_default_config.clean.json'))['extensions']['Svade'])"
+     {'supported': True}
+     ```
+  2. **The canonical ISA order is the DECLARED order** (gen_platform's own rule —
+     the .1 fix): single-letters concatenated, then multi-letter underscore-joined,
+     Z* before S* and alphabetical within — `sstc` then `svade`. The string is
+     `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade`, matching the brief exactly.
+  3. **D-SV39's own text anticipated the follow-up** — its "not as this profile's
+     rule" clause is now historical; per the dossier's convention (the D-FENCE /
+     D-RESOLUTION-ROUTE precedent) it keeps its verbatim statement (RECORD-SCHEMA
+     rule 4 mirrors it) and gains a `(note …)` naming D-SVADE.
+
+- [x] **FIX** — `profiles/rv64gc-lab-v0/profile.sexp` (`(extensions "Svade")` in
+  declared order, the ISA-string comment, the D-SV39 note, the D-SVADE decision with
+  the brief's three evidence legs and authority laboratory);
+  `requirements.sexp` + `contract-obligations.sexp` (the verbatim REQ/OB mirrors,
+  the D-ROUTE-FLIP shape — contract `rv64gc-lab-env-v0` version `"0"` unchanged,
+  CHK-SVADE-POS/NEG); `DOSSIER.md` (OQ-2 CLOSED with the three legs quoted, the
+  ISA-string and Extensions and Translation table rows);
+  `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp` (the one-field
+  flip); `scripts/gen_state.py` (validate_gc's three refusals, the rv64i path's own
+  wording); `scripts/check_state_gen.sh` (three RED arms with mapping-valid injected
+  shapes, so the refusal that fires is validate_gc's own); the two ISA-string
+  surfaces (`docs/book/src/plan/p4.md`, the `.1` Result narrative — each amended
+  with the owner named). sources.sexp: NO new pins — measured: Svade is defined
+  inline in the already-pinned RVP-SUPERVISOR chapter (§11.1.3.1, §11.1.10; the pin
+  at sources.sexp:55 covers both), and the U54 FU540 pin D-SV39 already cites.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/profile.sexp schema/profile.sexp
+  check_sexp_schema: ok — … conforms to profile.sexp
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (20 record file(s) validate and agree with their profile; …)
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim \
+      --config-override target/refs/sail-rv64gc-lab-v0.override.json --validate-config
+  The default configuration merged with target/refs/sail-rv64gc-lab-v0.override.json is valid.
+  $ python3 <the slice-(h) compare driver>     # against the tracked-derived JSON:
+  re-run after the Svade flip: 11/12 guests AGREE against the tracked override's
+  derived JSON            # IDENTICAL to the pre-flip baseline — the flip changes NO
+                          # guest's verdict (the mm-wfi DIVERGE is the known TW cell)
+  $ bash scripts/check_state_gen.sh --self-test
+  STATE-GEN --self-test: 25 pass / 0 fail     # 22→25: the three construct refusals,
+                                              # each RED-named (register_family /
+                                              # memory_spaces / hardware_stack)
+  $ python3 scripts/gen_state.py --state profiles/rv64gc-lab-v0/state.sexp --arith … --out /tmp/sg.rs
+  real descriptor still regenerates byte-identical
+  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
+  ```
+
+- [x] **NO REGRESSION** — the refusals fire RED on synthetic descriptors and never on
+  the real one (both STATE-GEN pairs still `ok`, the modules byte-identical); the
+  experiment re-run is a full verdict census, not a spot check (all 12 guests,
+  baseline-versus-flip identical); the ISA-string census is quoted above with every
+  governed occurrence's disposition (two authored edits with owners named, the two
+  Sail-default mentions untouched, the archive untouched, gen_platform's derivation
+  needs no regeneration — no board pins rv64gc today); RECORD-SCHEMA's mirror rules
+  verified by its own run (rule 4 statement-identity, rule 9 restatement, the D-SV39
+  note not mirrored); `make gate` green with DERIVED-COUNTS 419→422 re-derived
+  (+3 STATE-GEN arms, never hand-incremented).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf `.3` status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → `.3` slice b),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the override-must-name-its-flag measurement;
+  promotion: declined (the matched-override discipline is already the reference
+  dossier's own record, and this slice's checklist carries the measurement)),
+  `LIVE_STATUS.md` (the re-derived 422 arms only), `docs/TASK_TREE.md`,
+  `docs/book/src/plan/p4.md` — shards at their ceilings.
+
+`P4-SYSTEM.3` slices (b)–(e) : pending — filled at execution.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.3` slice (a) | the pre-slice census (ADUE inside menvcfg's wpri_62_0 by construction; the .2 override's Svade explicitly `false` against Sail's default `true`; validate_gc carrying NONE of the rv64i path's three construct refusals; the ISA-string census over seven trees); the canonical-order re-derivation (gen_platform's declared-order rule — the string is `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` exactly as the brief names it); the dossier flip (D-SVADE with the three evidence legs + the D-SV39 note, the verbatim REQ/OB mirrors — RECORD-SCHEMA 20 files ok, rule 4/rule 9 by its own run); DOSSIER OQ-2 CLOSED with the legs quoted; sources measured (RVP-SUPERVISOR's pin covers §11.1.3.1/§11.1.10 inline — NO new pins); the override one-field flip + `--validate-config` valid + the full 12-guest re-run (`re-run after the Svade flip: 11/12 guests AGREE against the tracked override's derived JSON` — baseline-identical, the mm-wfi TW cell unchanged); the validate_gc refusals with three RED arms on mapping-valid injected shapes (STATE-GEN 22→25 arms, both real pairs byte-identical); `make check` 8/8 groups; `make gate` all green (DERIVED-COUNTS 419→422 re-derived) | slice (a) landed: the profile's identity is Svade (OQ-2 closed with evidence), the reference flips to match with every verdict measured unchanged, and the generator hole the brief named is refused by name |
 | `2026-10-03` | `.2` slice (h) part 2 + LEAF | the config-namespace census (Sail 0.14 git 29e6158, the schema + default pinned; the rv64i override precedent); the validator's three named constraints measured (Zicntr needs a CLINT time source — D-PLATFORM forbids it; medeleg's reserved bit 10 with H off and undelegatable bit 11 — the rule the corpus proves; mideleg's string-typed default len) and the matched mask 0x3FF derived by bisection; the matched override authored and validated; the dossier-format owners extended (schema/override.sexp optional fields — rv64i re-validated; dossier_sexp both directions, self-test 13→14; convert round-trip field-for-field exact); the evidence chain closed (the TRACKED .sexp → materialize_sail_override → Sail → `experiment: 11/12 guests AGREE against the tracked override's derived JSON` — step-for-step on the spec-derived expectations, mm-readonly's all-ones WARL read-back bit-exact); the mm-wfi TW cell named with both wfi-mode traces + the writable-bit proof; mm-counters NOT MATCHABLE with the validator line + the first-step trap; `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 419 unchanged) | slice (h) part 2 landed and the LEAF is done: the Sail privileged matched experiment ATTEMPTED and honestly recorded — 11/12 AGREE, mm-wfi's TW cell a named divergence routed to `.5`, mm-counters NOT MATCHABLE with evidence; the leaf's acceptance criterion evidenced by the mode matrix |
 | `2026-10-03` | `.2` slice (h) part 1 | the pre-flip rehearsal (a flipped-route copy: EXTRACTION's refines gap and INTERACTION-MATRIX green measured before any tracked edit); the payload byte-probe (state + encoding + interactions + 125 guest files byte-exact from the proven staging); the dossier flip (route `generated-definition`, D-RESOLUTION-ROUTE superseded by note per the D-FENCE precedent, D-ROUTE-FLIP + REQ/OB pair — RECORD-SCHEMA 20 files ok); the generated mirrors content-hash-identical to the scratch-proven modules; `cargo test -p semulith-verify run_rv64gc` 4/4 groups (62/62 on the TRACKED engine path, per-step writes exact + never_written + determinism); the engine port (exec_rv64gc with the trap-END discipline; FlatMemory's fetch alignment as profile data); the CLI smoke (rv64gc run/demo green, bench refusal rc=2, rv64i default trace byte-identical); the gate census (STATE-GEN 22/22 +2 arms, DEF-GEN 17/17 +2, GUEST-GEN 15/15 +5, EXTRACTION 13/13 +2, EXERCISE-COVERAGE 23/23 +2, FACT-OWNERSHIP 10/10, re-pinned 5 units / 74 kinds); the generator's rustfmt-stability fixed at the source (STATE-GEN `--check` compares against regeneration, `cargo fmt` runs over crates/); the CSR migration (the state document owns; csrs.csv 33/33 the derivation source; the pmpaddr0 RED probe); fetch_references both profiles MATCH; `make check` (76 core / 184 verify), `make gate` all green (DERIVED-COUNTS 408→419 re-derived), bench wasm + smoke-bench 53 arms + both books green | the flip landed: the staged unit, corpus, encoding, state and matrix tracked in one atomic commit; the route is `generated-definition`; every gate judges rv64gc fully with rv64i's verdicts unchanged; the split (flip first, Sail second) recorded |
 | `2026-10-03` | `.2` slice (g) | the pre-slice census (rv64i's matrix the model — 6 axes/21 cells; the check's four rules read from source; 2 staged expectations carrying rv64i's DIFF-FENCEI-EXECUTED against a references.sexp with 0 difference records; 62 guests to absorb); the axis design derived from the leaf's vocabulary (the 4 corpus layers + legality + delegation + restart REFRAMED guest-shaped — the mechanism registry is closed and no rv64gc mechanism exists); the DIFFS-forced re-derivation of it-fencei/min-fencei (steps unchanged, the divergence form dropped with the reason recorded — the mirror now 44 byte-identical + 5 re-derived); the matrix schema-valid and rehearsed via the check's own invocation (`check_interaction_matrix.py <unit-dir>`): 28 cells declared, every disposition resolves, rc=0; the three RED legs fired by name against a scratch copy (DIFFS on the pre-re-derivation state, ORPHAN GUEST on a dropped name, OMITTED CELL on a deleted cell); the corpus re-proven 62/62; the driver self-test 15/15 and the tracked run `INTERACTION-MATRIX: ok (5 unit(s))`; `make gate` green (DERIVED-COUNTS unchanged at 408) | slice (g) landed: the 7-axis × 28-cell interaction matrix authored at staging (route-contradicted until the flip), all 62 staged guests mapped, 3 cells honestly reported degenerate, no difference ids — the flip's matrix proven |
@@ -779,6 +890,7 @@ cell named). The leaf is **done**.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.3` (slice a) | `SEMULITH-P4-0015 (leaf P4-SYSTEM.3): slice a — the Svade identity edit, the Sail override flip (measured verdict-identical), the validate_gc refusal` | OQ-2 answered by the brief and recorded: the profile implements Svade (the pinned revision's two A/D schemes with the page-fault one named; the U54 precedent already load-bearing in D-SV39; the observation-discipline pricing of the hardware-update default) — Svadu NOT selected (ADUE stays WPRI); the canonical ISA string `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` by the declared-order rule; D-SV39's "not as this profile's rule" clause superseded by note (the verbatim-mirror rule kept); the override flip changes NO guest verdict (11/12 AGREE, baseline-identical — measured, never assumed); validate_gc refuses register_family/memory_spaces/hardware_stack by name like the rv64i path (three RED arms); the ISA-string census: 2 authored edits with owners named, the derived surfaces need none; sources measured — no new pins (the supervisor chapter covers Svade inline) |
 | `.2` (slice h, part 2 + LEAF) | `SEMULITH-P4-0013 (leaf P4-SYSTEM.2): slice h part 2 — the Sail privileged matched experiment (11/12 AGREE, the TW cell named, mm-counters not matchable); the leaf closes` | the matched override tracked (reference/sail-rv64gc-lab-v0.override.sexp; privileged 1.13, the declared selection minus Zicntr, no devices, WFI a nop except in U, medeleg 0x3FF); the dossier-format owners learned the new keys (schema + mapping, self-test 13→14); the evidence chain closed (tracked .sexp → derived JSON → Sail → 11/12 AGREE on the spec's values); mm-wfi's TW=1-in-S cell a named Sail-side gap (both wfi modes measured, the bit provably writable) routed to `.5`; mm-counters NOT MATCHABLE (the CLINT time-source wall vs D-PLATFORM; the counter rate is the environment's); the validator's own rules confirmed the corpus's claims (bit 10 reserved with H off, bit 11 undelegatable); the leaf's acceptance — the same instruction's behaviour tested in each supported mode — is the mode matrix itself |
 | `.2` (slice h, part 1) | `SEMULITH-P4-0012 (leaf P4-SYSTEM.2): slice h part 1 — THE ATOMIC FLIP: the payload tracked, the route generated-definition, the corpus on the tracked engine` | the payload byte-exact (state.sexp, encoding.sexp, guests/ 62+run-order, interactions.sexp); D-RESOLUTION-ROUTE superseded by note (the D-FENCE convention; the mirror records' verbatim rule kept), D-ROUTE-FLIP recorded; the three generated mirrors tracked (their inputs tracked in the same commit — decision_generated-mirror-needs-tracked-input); exec_rv64gc ports the evaluator with the trap-END discipline; FlatMemory carries IALIGN as data; the CLI's `--profile` (run/demo wired, the rv64i-scoped commands refuse by name, rv64i byte-exact default); four gate gaps fixed at their owners (extraction refines, coverage pseudo leg, GEN censuses, fact-ownership re-pin); the CSR name↔address ownership migrated to the state document; the guests mirror governor registered (93+5); DERIVED-COUNTS 408→419 |
 | `.2` (slice g) | `SEMULITH-P4-0011 (leaf P4-SYSTEM.2): slice g — the interactions.sexp: 7 axes × 28 cells, rehearsed green against the staged unit` | the axis set derived from the leaf's vocabulary (fault/alias/boundary/progress carried from the mirrored layers; legality + delegation added by the privileged machinery; restart reframed GUEST-shaped — the xret/xepc discipline, no mechanism cells; rv64i's event axis absorbed into the mode-cause story); the DIFFS rule forced the mirror's 4th/5th re-derivations (it-fencei/min-fencei's rv64i DIFF-FENCEI-EXECUTED pin is false for this unit — Zifencei declared, slot unbound; the divergence forms dropped with reasons recorded); 3 cells reported degenerate-with-reason; all 62 guests mapped, no new guests needed; the rehearsal ran the check's own invocation (28 cells, every disposition resolves, rc=0) with the three RED legs proven (DIFFS/orphan/omitted); DERIVED-COUNTS 408 unchanged |
@@ -793,6 +905,37 @@ cell named). The leaf is **done**.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.3` slice (a) done (`SEMULITH-P4-0015`) — the Svade identity edit, the
+  Sail override flip, and the generator refusal. OQ-2 closes with evidence: the
+  profile implements **Svade** — a translation needing an A/D PTE update raises a
+  page fault, never a hardware update — on three legs: the pinned revision defines
+  exactly two A/D schemes and names the page-fault one Svade (RVP-SUPERVISOR
+  §11.1.3.1, §11.1.10, inline in the already-pinned chapter — no new sources); the
+  U54 MMU the Sv39 choice already cites implements exactly that scheme (FU540
+  §4.7); and the laboratory's observe-through-the-ISA discipline can evidence a
+  page fault but not an implicit PTE write, so the hardware-update default would
+  price a new observation vocabulary to test a side effect the laboratory need not
+  produce. Svadu is NOT selected — menvcfg's ADUE stays WPRI (measured inside the
+  state document's wpri_62_0 field). The identity edit: `(extensions "Svade")` in
+  declared order (the canonical ISA string is now
+  `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade`, the gen_platform declared-order
+  rule), D-SVADE with authority laboratory and its verbatim REQ/OB mirrors (the
+  D-ROUTE-FLIP shape), D-SV39's "not as this profile's rule" clause superseded by
+  note (the mirror rule kept), DOSSIER's OQ-2 closed with the legs quoted, and the
+  two ISA-string surfaces amended with owners named (the gen_platform derivation
+  needs no regeneration — no board pins rv64gc today). The reference flips to
+  match: `Svade supported: true` in the tracked override — one field, as the brief
+  priced it — and the full 12-guest re-run measures the effect: 11/12 AGREE,
+  IDENTICAL to the pre-flip baseline (no guest activates translation; the mm-wfi
+  DIVERGE is the known TW cell, not a new effect). The generator hole the brief's
+  pre-condition 6 named closes: `validate_gc` refuses
+  register_family/memory_spaces/hardware_stack by name with the rv64i path's own
+  wording (three RED self-test arms on mapping-valid injected shapes; both real
+  pairs byte-identical). `make check` 8/8, `make gate` all green (DERIVED-COUNTS
+  419→422 re-derived).
+  Next: slice (b) — the translation module + the three hooks + effective mode +
+  the Bare-identity proof.
 
 - `2026-10-03`: the `.3` design brief recorded (`SEMULITH-P4-0014`). The measured
   pre-conditions: translation hooks are exactly three sites in `exec_rv64gc.rs`; the

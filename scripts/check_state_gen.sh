@@ -194,6 +194,52 @@ EOF
         --out "$t/gc/state.rs" 2>&1)"; rc=$?
   arm "GREEN the rv64gc regeneration is judged in sync" "$rc" 0 "$out" ""
 
+  # P4-SYSTEM.3 slice (a): the rv64gc path refuses the same three constructs the rv64i
+  # path names — silently ignored before this slice (the .3 brief's pre-condition 6).
+  # The injected shapes are mapping-VALID (the dossier mapping passes them through), so
+  # the refusal that fires is validate_gc's own, by name.
+  gc_state ''
+  python3 - "$t/gc/state.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+t = t.replace('(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")',
+              '(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")'
+              ' (register_family (id "f") (count 8) (width_bits 32) (ids "f0..f7")'
+              ' (authority architecture) (source "s"))', 1)
+open(p, "w").write(t)
+PY
+  out="$(python3 scripts/gen_state.py --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED the rv64gc path refuses register_family, named" "$rc" 2 "$out" "register_family declared"
+  gc_state ''
+  python3 - "$t/gc/state.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+t = t.replace('(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")',
+              '(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")'
+              ' (memory_spaces (space (id "io") (word_bits 64) (authority architecture) (source "s")))', 1)
+open(p, "w").write(t)
+PY
+  out="$(python3 scripts/gen_state.py --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED the rv64gc path refuses memory_spaces, named" "$rc" 2 "$out" "memory_spaces declared"
+  gc_state ''
+  python3 - "$t/gc/state.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+t = t.replace('(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")',
+              '(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")'
+              ' (hardware_stack (levels 2) (width_bits 64) (indexing "x")'
+              ' (stale_slots_observable false) (authority laboratory) (source "s"))', 1)
+open(p, "w").write(t)
+PY
+  out="$(python3 scripts/gen_state.py --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED the rv64gc path refuses hardware_stack, named" "$rc" 2 "$out" "hardware_stack declared"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_state.py --check --state "$STATE_GC" --arith "$ARITH" --out "$OUT_GC" 2>&1)"; rc=$?
