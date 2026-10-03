@@ -1,5 +1,47 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0013 (leaf P4-SYSTEM.2, slice h part 2) — the Sail privileged matched experiment (11/12 AGREE, the TW cell named, mm-counters not matchable); the leaf closes
+
+- The Sail privileged matched experiment (decision 8), attempted and honestly
+  recorded. The matched override lands tracked at
+  `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp` (the .sexp is
+  the truth, the JSON derived by `materialize_sail_override`): privileged ISA 1.13,
+  misa held (WARL), FS four-state / VS off, the declared selection (M/A/F/D/C,
+  Zicsr, Zifencei, Sstc, Sv39, S, U) minus Zicntr, no devices, no PMP, WFI a nop
+  except in U, medeleg 0x3FF — Sail's own validator confirming the corpus's claims
+  (cause 10 is reserved with H off; bit 11, ecall from M, is undelegatable by law;
+  the matched mask derived by bisection).
+- The evidence chain closes end to end: the tracked .sexp derives the JSON, Sail
+  0.14 (git 29e6158) runs the mode-matrix guests under it, and **11 of 12 AGREE
+  step-for-step against the specification-derived expectations** — the zicsr rw
+  semantics, per-mode CSR legality with mtval = the word, delivered breakpoints and
+  resumes, ecall causes 11/9/8 and medeleg delegation (the M-ecall never
+  delegating), mret's MPRV clear-below-M / preserve-at-M, the mstatus all-ones
+  WARL read-back bit-exact (`0x8000000A007E79AA`), stimecmp's TM then STCE gating,
+  the TVM gates, sret and TSR. The comparison normalizes Sail's trace to the
+  corpus's own change-observation rule — the reference's execution, the
+  specification's values.
+- The two honest boundaries, each with its evidence: mm-wfi's TW=1-in-S legality
+  cell is a NAMED DIVERGENCE — Sail 0.14 does not implement mstatus.TW's effect on
+  WFI legality (the wfi retires as a nop with `wfi_is_nop=true`, waits forever
+  with it false; the bit is provably writable — mm-readonly's all-ones read-back
+  AGREEs bit-exact, bit 21 included; no config knob exists). Our expectation
+  stands on RVP-INSNS; the finding is routed to P4-SYSTEM.5 (the wfi/wake leaf)
+  with the measurement recorded. mm-counters is NOT MATCHABLE — Sail requires a
+  CLINT time source when Zicntr is enabled and D-PLATFORM declares no devices;
+  the counter rate is the environment's own declaration (our laboratory holds
+  zero). Spike stayed platform-conflicted, no attempt.
+- The dossier-format owners learned the override's new keys:
+  `schema/override.sexp` (optional fields — rv64i's override re-validated) and
+  `dossier_sexp`'s mapping both directions (self-test 13→14; the round-trip
+  field-for-field exact). `make check` and `make gate` fully green
+  (DERIVED-COUNTS 419 unchanged).
+- **Leaf P4-SYSTEM.2 is done** — the acceptance criterion "the same instruction's
+  behaviour is tested in each supported mode" is the mode matrix itself: 13
+  guests, every cell a mode crossing, falsified by the tracked engine (62/62) and
+  differentially confirmed (11 full AGREE + 1 partial). Frontier: `.3` — Sv39
+  translation and protection.
+
 ## SEMULITH-P4-0012 (leaf P4-SYSTEM.2, slice h part 1) — THE ATOMIC FLIP: the payload tracked, the route generated-definition, the corpus on the tracked engine
 
 - The proven staging moves into `profiles/rv64gc-lab-v0/` byte-exact: the 33-CSR state
@@ -806,39 +848,4 @@
   per-part bound rose to 128 KiB (`decision_task-tree-per-part-growth`) after six forced
   archive operations in one day taxed active slices; the aggregate bound and the archive
   lifecycle are unchanged, and a bound remains — a file stays readable in one sitting.
-
-## SEMULITH-BR-0019 (leaf P3-BREADTH.6) — the DSP's contract records land governed; the fixture noticed
-
-- `profiles/dsp56300-lab-v0/` gained `requirements.sexp` (seven records, statements
-  byte-identical to the profile's decisions) and `contract-obligations.sexp` (thirteen
-  obligations — seven mirrors plus six environment-assumptions; contract
-  `dsp56300-lab-env-v0`; 26 declared checks). RECORD-SCHEMA attached on landing with zero
-  gate edits (auto-discovery; 10 record files green on the first pass); FACT-OWNERSHIP
-  gained the DSP's two registry rows.
-- FACT-OWNERSHIP's GREEN self-test fixture went RED on the landing BY DESIGN — its pair
-  glob follows the real corpus, and the fixture registry still named a one-unit world
-  (`UNREGISTERED MIRROR PAIR`). Re-pinned to the two-unit corpus (`__CHECKED__ 5 → 6`),
-  the reason recorded in the check's comment.
-- Validation: both catalogues schema-validate; RECORD-SCHEMA, FACT-OWNERSHIP (25 kinds,
-  self-test 10/10) and `make gate` all green; the rv64i catalogues byte-untouched. The
-  DOSSIER's records row reads present; `.6` continues with slice 2 (the BREADTH report).
-
-## SEMULITH-P5-0002 (leaf P5-BOARD.8) — the network-connected board's documentation researched; ten requests filed, the channel measured
-
-- The `2026-10-01` design discussion (boards that touch the world) turned into a measured
-  documentation position ahead of `P5-BOARD.1`'s board choice. The corpus survey (the
-  snapshotted chipdoc feed, corpus `92a73b6`) measured the holdings: a complete
-  register-level Ethernet MAC+PHY contract (TI-DP83816), ESP32/C3/S3 register maps, the
-  SiFive FU540/FU740 manuals and HiFive board docs, the TI AM335x TRM — and the recorded
-  negative: no standalone Cadence GEM / DesignWare GMAC spec is public.
-- Ten acquisition requests filed in `materials/requests.sexp` (the preferred channel),
-  each naming its consumer: wired NICs with QEMU precedents (LAN9118, Intel 82540EM,
-  RTL8139), three LTE modem AT manuals (Quectel EC25, SIMCom SIM7600, u-blox SARA-R4),
-  the WiFi-module command surface (ESP-AT), two register-documented radios for the
-  true-RFIC leg (nRF52840, AT86RF233), and one honest probe (AR9271 register docs,
-  expected absent). Pickup measured: chipdoc's poller (run read-only) reports exactly
-  the ten new ids, rc 1.
-- The channel's filing mechanics are now recorded semulith-side as a knowledge card
-  (`docs/knowledge/the-chipdoc-request-channel.md` + INDEX) — they had lived only in the
-  corpus-side manual, and a session re-derived them the hard way once.
 

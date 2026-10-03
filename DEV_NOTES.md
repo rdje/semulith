@@ -1,5 +1,51 @@
 # DEV_NOTES.md
 
+## _(2026-10-03)_ — the Sail attempt measured its own boundary; the validator argued for the corpus (P4-SYSTEM.2 slice h, part 2 + leaf)
+
+Execution of the `.2` brief's decision 8 measured:
+
+- **The config namespace can express almost all of the match — and says so
+  precisely.** Sail 0.14's override validator refused three things, and each
+  refusal was information: "Zicntr is enabled but there is no source of time" (a
+  CLINT is mandatory for Zicntr — our platform declares no devices, so the
+  counter guests are non-matchable BY CONSTRUCTION, not by failure); "bit 11
+  (ecall from M) cannot be delegated" (the validator knows the very rule
+  mm-ecall-deleg exists to prove); "bits for reserved exceptions" (cause 10 is
+  reserved with H off). The matched medeleg mask (0x3FF) was derived by bisecting
+  the validator, not by reading docs. And `mideleg.delegatable_bits.len` is the
+  string "xlen" in the default config — a string-typed value no uint64 override
+  can merge over; the key was dropped (the corpus never touches mideleg), the
+  override staying honest about what it configures.
+- **The comparison rule matters more than the runner.** Sail's `--trace-gpr`
+  prints every architectural write; the corpus's rule is CHANGE-observations (a
+  register written its own value is no observation). Normalizing Sail's trace to
+  the corpus's rule is what makes 11/12 guests read AGREE step-for-step — and
+  the two parser bugs along the way (Sail prints `0x0000` for a compressed
+  c.illegal — 4 hex digits, not 8; the run's end convention is a budget, not a
+  stop) were the day's reminder that every comparison is itself a measurement.
+- **A divergence with the bit provably set is a model gap, not a config miss.**
+  mm-wfi's TW=1-in-S cell: Sail retires the wfi as a nop (`wfi_is_nop=true`) or
+  waits forever (`false`), but never traps — while mm-readonly's all-ones
+  mstatus read-back AGREEs bit-exact (`0x8000000A007E79AA`, bit 21 included),
+  proving mstatus.TW is writable and read back in the same configuration. There
+  is no TW knob in the config schema. The expectation stands on RVP-INSNS (TW=1
+  makes WFI illegal below M); the gap is Sail 0.14's, named and routed to
+  P4-SYSTEM.5, whose brief already owns WFI's wake semantics.
+- **The tracked-artifact evidence chain.** The override's truth is the tracked
+  `.sexp` (the rv64i pattern); the JSON is derived. The experiment re-ran
+  against the derived JSON — "11/12 AGREE against the tracked override's
+  derived JSON" — so the commit's artifact and the experiment's config are the
+  same bytes by construction, not by claim. The dossier format learned the
+  override's new keys at the owner (schema optional fields + the mapping both
+  directions; self-test 13→14; the round-trip field-for-field exact).
+- **Validation:** the matched override schema-valid and round-trip exact;
+  `make check` 8/8 groups; `make gate` all doctrines green (DERIVED-COUNTS 419
+  unchanged). The leaf's acceptance — the same instruction's behaviour tested
+  in each supported mode — is the mode matrix itself (13 guests, every cell a
+  mode crossing; 62/62 tracked-engine falsification; 11 full AGREE + 1 partial
+  against Sail). Promotion: declined (the TW finding's routing is recorded in the
+  leaf's checklist and the counter-rate policy is the profile's declared datum).
+
 ## _(2026-10-03)_ — the flip measured four gate gaps; a generated module must be the formatter's fixed point (P4-SYSTEM.2 slice h, part 1)
 
 Execution of the `.2` brief's checkpoint (h), part 1, measured:
@@ -593,63 +639,4 @@ surfaces (requirement, obligation, decision), one wording, mechanically mirrored
 Validation: all dossier documents schema-validate; the three profile-glob gates decide the
 device by declaration; every edited check's self-test green (17/9/14/41/7/14/10 arms, 0
 fail); `make gate` all doctrines green; the mdBook builds and its index stays byte-exact.
-
-## _(2026-10-02)_ — a board specification is data with its absences declared, and a label is not a source (P5-BOARD.1)
-
-`netboard-lab-v0` is the first board and `schema/board.sexp` the first non-processor
-source-of-truth schema. Two design decisions are worth the ink:
-
-**An absence the contract depends on is data, not prose.** `rv64i-lab-env-v0` v0 admits no
-guest-reachable time source and no asynchronous event — and both absences must be *platform*
-properties to be real (the CPU contract's own lesson: excluding CSR instructions does not
-exclude reading `mtime` over MMIO). So the schema gives `timers` and `interrupt-controller`
-explicit `(present false)` forms carrying the reason and the obligation ids they satisfy;
-an undocumented absence would read as an oversight, and an oversight is how a CLINT slips
-in as a "feature" and becomes a `.4` composition rejection. The `satisfies` fields
-pre-wire `scripts/discharge_assumptions.py`'s verdict without computing it — declaration
-here, computation there.
-
-**Verify the label against the artifact before you inherit it.** The design brief named the
-serial device "16550-compatible (source SIFIVE-FU540-C000 v1p5)". A `pdftotext` census of
-the pinned PDF: zero occurrences of "16550"; §13 is the SiFive UART (txdata/rxdata/txctrl/
-rxctrl/ie/ip/div, 8-entry FIFOs, 32-bit-aligned only). The pin was the intent, the label
-was wrong — so the board adopts the SiFive UART and the label is corrected at every record
-(`materials/catalog.sexp`, `D-BOARD-UART-KIND`; the tree keeps the brief's original lines
-with a dated correction, per the house pattern). Consequence that mattered: the UART's
-sourced instance address (`0x1001_0000`, Table 58) collided with the pre-verification
-sketch's NIC address — measuring first caught that too. Memory map: RAM 2 GiB at
-`0x8000_0000` (the harness's existing DEFAULT_BASE/SIZE, so laboratory guests run
-unchanged), UART at the FU540 instance address, the LAN9118 in a 256-byte window at
-`0x1002_0000` (Table 5-1's direct-register span, offsets 0x00–0xFC).
-
-Scope routing: registration of the board unit (`materials/units.sexp`, the `kind` edit,
-the per-unit book) is deferred to `.3` — the registry admits a new kind "the day a real
-unit needs one", and registration day carries UNIT-BOOKS / MATERIALS-BILL /
-book-generator / BREADTH-prose consequences (all censused before deciding) that belong to
-the materialization leaf, not to a specification. The third `profiles/` directory
-re-derived the family bound to 3× by the standing arithmetic; nothing fired (142 < 240).
-
-## _(2026-10-02)_ — the book's index is a function of the book, not a page someone keeps (BOOK-APPARATUS.1)
-
-The director's apparatus directive audited against the real book: the glossary cannot fork
-(`docs/book/src/glossary.md` splices the canonical `docs/GLOSSARY.md` at build time), the two
-annexes already match the directive's definition — and the **index was absent**. It now exists
-the only way this repository tolerates a fact about a changing population: derived.
-`scripts/gen_book_index.py` reads `SUMMARY.md` (the chapter set, in reading order), the
-canonical glossary plus the book's acronym table (the term set), and every chapter's text (the
-occurrence set, case-insensitive and word-bounded); `scripts/check_book_index.sh` — the 31st
-project doctrine, `BOOK-INDEX` — regenerates in memory and refuses drift, with six self-test
-arms fired RED before registration (hand-edit DRIFT, stale-behind-edited-chapters DRIFT,
-missing chapter and missing SUMMARY refused **by name**). The generator refuses what it cannot
-emit rather than guessing, per house style. One build-exposed defect fixed at root: the
-generator's printed term count was a fudge factor (`47` against the real `40`) — now derived
-from the emitted rows. The annex policy is stated where a reader meets it
-(`docs/book/src/introduction.md`): chapters stay readable top to bottom; what is too technical
-for the main line lives in an annex. The directive's second half (incremental buildup, both
-audiences engaged) became `decision_mdbook-incremental-engaging` + `BOOK-APPARATUS.2`; the TOC
-request was withdrawn by the director — the mdBook sidebar is the TOC, and the contents page
-built to satisfy it was reverted as redundant.
-
-Validation: `gen_book_index.py` → 15,019 B / 40 terms; `mdbook build docs/book` rc 0;
-`check_book_index.sh --self-test` 6/6; `check_doctrines.sh` all green.
 

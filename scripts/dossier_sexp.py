@@ -751,6 +751,20 @@ def override_to_form(doc: dict) -> list:
             [S.Symbol("mstatus"),
              _pair("fs_legal_states", mstatus["fs_legal_states"]),
              _pair("vs_legal_states", mstatus["vs_legal_states"])]]
+    # P4-SYSTEM.2 slice h: the rv64gc override's extra base keys — emitted only when the
+    # document carries them (the rv64i override predates them; absence round-trips).
+    for k in ("privileged_isa_version", "writable_misa", "medeleg", "mideleg"):
+        if k in doc["base"]:
+            if k in ("medeleg", "mideleg"):
+                bits = doc["base"][k]["delegatable_bits"]
+                base.append([S.Symbol(k),
+                             [S.Symbol("delegatable_bits"),
+                              [S.Symbol("int64"), _pair("len", bits["len"]),
+                               _pair("value", bits["value"])]]])
+            elif k == "writable_misa":
+                base.append(_bool_field(k, doc["base"][k]))
+            else:
+                base.append(_pair(k, _atom_out(doc["base"][k])))
     plat = doc["platform"]
     machine = plat["interrupts"]["machine"]
     platform = [S.Symbol("platform"),
@@ -762,6 +776,9 @@ def override_to_form(doc: dict) -> list:
                   [S.Symbol("software"), _supported_flag(machine["software"]["supported"])],
                   [S.Symbol("external"), _supported_flag(machine["external"]["supported"])],
                   [S.Symbol("timer"), _supported_flag(machine["timer"]["supported"])]]]]
+    for k in ("wfi_is_nop", "wfi_available_to_user_mode"):
+        if k in plat:
+            platform.append(_bool_field(k, plat[k]))
     mem = doc["memory"]
     region_forms = []
     for r in mem["regions"]:
@@ -802,6 +819,14 @@ def override_to_form(doc: dict) -> list:
                 [S.Symbol("load_store"),
                  _some_none_to_form(mem["misaligned"]["exceptions"]["load_store"])]]],
               [S.Symbol("regions"), *region_forms]]
+    if "pmp" in mem:
+        p = mem["pmp"]
+        memory.append([S.Symbol("pmp"),
+                       _pair("grain", p["grain"]), _pair("count", p["count"]),
+                       _pair("usable_count", p["usable_count"]),
+                       _bool_field("tor_supported", p["tor_supported"]),
+                       _bool_field("na4_supported", p["na4_supported"]),
+                       _bool_field("napot_supported", p["napot_supported"])])
     extensions = [S.Symbol("extensions")]
     for name in doc["extensions"]:
         extensions.append(_extension_to_form(name, doc["extensions"][name]))
@@ -869,6 +894,14 @@ def override_to_doc(form) -> dict:
     memory = {"misaligned": {"exceptions": {"load_store": _some_none_to_doc(
                   _nested_in(exceptions, "load_store", "exceptions"))}},
               "regions": regions}
+    pmp_f = _opt_child(mf, "pmp")
+    if pmp_f is not None:
+        memory["pmp"] = {"grain": _req(pmp_f, "grain", "pmp"),
+                         "count": _req(pmp_f, "count", "pmp"),
+                         "usable_count": _req(pmp_f, "usable_count", "pmp"),
+                         "tor_supported": _bool_in(pmp_f, "tor_supported", "pmp"),
+                         "na4_supported": _bool_in(pmp_f, "na4_supported", "pmp"),
+                         "napot_supported": _bool_in(pmp_f, "napot_supported", "pmp")}
     platform = {"clint": {"supported": _flag_in(pf, "clint", "platform")},
                 "simple_interrupt_generator":
                     {"supported": _flag_in(pf, "simple_interrupt_generator",
@@ -879,11 +912,26 @@ def override_to_doc(form) -> dict:
                     "external": {"supported": _flag_in(machine, "external",
                                                       "interrupts")},
                     "timer": {"supported": _flag_in(machine, "timer", "interrupts")}}}}
-    return {"base": {"mstatus": {"fs_legal_states": _s(_req(mstatus, "fs_legal_states",
-                                                            "mstatus")),
-                                 "vs_legal_states": _s(_req(mstatus, "vs_legal_states",
-                                                            "mstatus"))}},
-            "platform": platform, "memory": memory, "extensions": extensions}
+    for k in ("wfi_is_nop", "wfi_available_to_user_mode"):
+        if _opt(pf, k, "platform") is not None:
+            platform[k] = _opt(pf, k, "platform") == "true"
+    base = {"mstatus": {"fs_legal_states": _s(_req(mstatus, "fs_legal_states",
+                                                   "mstatus")),
+                        "vs_legal_states": _s(_req(mstatus, "vs_legal_states",
+                                                   "mstatus"))}}
+    for k in ("privileged_isa_version", "writable_misa", "medeleg", "mideleg"):
+        if k in ("medeleg", "mideleg"):
+            kf = _opt_child(bf, k)
+            if kf is not None:
+                bits = _int64_in(kf, "delegatable_bits")
+                base[k] = {"delegatable_bits": {"len": _req(bits, "len", "delegatable_bits"),
+                                                "value": _s(_req(bits, "value",
+                                                                 "delegatable_bits"))}}
+        elif _opt(bf, k, "base") is not None:
+            v = _opt(bf, k, "base")
+            base[k] = (v == "true") if k == "writable_misa" else v
+    return {"base": base, "platform": platform, "memory": memory,
+            "extensions": extensions}
 
 
 # --------------------------------------------------------------------------- guest expectations

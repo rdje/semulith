@@ -19,7 +19,19 @@
   (field (name extensions) (type form) (head extensions)))
 
 (construct (name base)
-  (field (name mstatus) (type form) (head mstatus)))
+  (field (name mstatus) (type form) (head mstatus))
+  ;; P4-SYSTEM.2 slice h (the rv64gc matched override): the privileged pin, the misa
+  ;; writability, the delegation masks, all optional — the rv64i override predates them.
+  (field (name privileged_isa_version) (type string) (min-length 1) (optional yes))
+  (field (name writable_misa) (type symbol) (values true) (values false) (optional yes))
+  (field (name medeleg) (type form) (head medeleg) (optional yes))
+  (field (name mideleg) (type form) (head mideleg) (optional yes)))
+
+(construct (name medeleg)
+  (field (name delegatable_bits) (type form) (head int64)))
+
+(construct (name mideleg)
+  (field (name delegatable_bits) (type form) (head int64)))
 
 (construct (name mstatus)
   (field (name fs_legal_states) (type string) (min-length 1))
@@ -28,7 +40,12 @@
 (construct (name platform)
   (field (name clint) (type form) (head clint))
   (field (name simple_interrupt_generator) (type form) (head simple_interrupt_generator))
-  (field (name interrupts) (type form) (head interrupts)))
+  (field (name interrupts) (type form) (head interrupts))
+  ;; P4-SYSTEM.2 slice h (the rv64gc matched override): the WFI policy pair — a nop
+  ;; everywhere but U-mode (the laboratory's WFI-in-U refusal, the config's own keys).
+  (field (name wfi_is_nop) (type symbol) (values true) (values false) (optional yes))
+  (field (name wfi_available_to_user_mode) (type symbol) (values true) (values false)
+         (optional yes)))
 
 (construct (name clint)
   (field (name supported) (type symbol) (values true) (values false)))
@@ -55,7 +72,17 @@
 
 (construct (name memory)
   (field (name misaligned) (type form) (head misaligned))
-  (field (name regions) (type form) (head regions)))
+  (field (name regions) (type form) (head regions))
+  ;; P4-SYSTEM.2 slice h (the rv64gc matched override): no PMP (D-NO-PMP).
+  (field (name pmp) (type form) (head pmp) (optional yes)))
+
+(construct (name pmp)
+  (field (name grain) (type integer))
+  (field (name count) (type integer))
+  (field (name usable_count) (type integer))
+  (field (name tor_supported) (type symbol) (values true) (values false))
+  (field (name na4_supported) (type symbol) (values true) (values false))
+  (field (name napot_supported) (type symbol) (values true) (values false)))
 
 (construct (name regions)
   (field (name region) (type form) (head region) (repeat yes) (min 1)))

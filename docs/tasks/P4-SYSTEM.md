@@ -73,9 +73,32 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009`, (f) `SEMULITH-P4-0010`, (g) `SEMULITH-P4-0011` done, slice (h) underway: part 1 the atomic flip `SEMULITH-P4-0012`, all `2026-10-03`)
+  Status: `done` (`2026-10-03`; design brief `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009`, (f) `SEMULITH-P4-0010`, (g) `SEMULITH-P4-0011`, (h) `SEMULITH-P4-0012`+`SEMULITH-P4-0013`)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
+  Result (`2026-10-03`): `rv64gc-lab-v0` is a full `generated-definition` unit. The
+  pipeline grew the privileged surface layer by layer — the Zicsr/Zicntr/privileged-
+  system fragments from the re-pinned tables (a), the semantics language's eight
+  privileged operators with ECALL/EBREAK refined by declaration (b), the 33-CSR
+  state document with per-field WPRI/WARL/WLRL tables (c1/c2), the generators'
+  second profile and the tracked privilege machinery (d), the 65-form census and
+  the derived requirements mirror (e), the guests corpus (f) and the interaction
+  matrix (g) — and the flip landed it all tracked in one atomic commit (h part 1):
+  encoding (partial, six declared slots), state document, the 62-guest corpus and
+  the matrix, with `exec_rv64gc` running the corpus 62/62 through the tracked
+  engine and the CLI's profile an explicit runtime selection (rv64i byte-exact).
+  The acceptance criterion is the mode matrix itself: every cell a mode crossing
+  (CSR legality in M/S/U, ecall causes 11/9/8 and medeleg delegation, xret pops
+  with the MPRV/SPP rules, the TW/TVM/TSR/TM/STCE/scounteren gates), falsified by
+  the tracked engine against EVD-05 expectations and — decision 8 — differentially
+  confirmed against a matched Sail 0.14: **11 of 12 mm guests AGREE step-for-step
+  on the specification's values** (including the mstatus all-ones WARL read-back
+  bit-exact); mm-wfi's TW=1-in-S cell is a NAMED DIVERGENCE (Sail 0.14 does not
+  implement mstatus.TW's effect on WFI legality — measured both wfi modes, the
+  bit provably writable; routed to P4-SYSTEM.5); mm-counters is NOT MATCHABLE
+  (Sail requires a CLINT time source for Zicntr; the platform declares no
+  devices, and the counter rate is the environment's own declaration). Spike
+  stayed platform-conflicted by record, no attempt.
 
 - ID: `P4-SYSTEM.3` — **Sv39 translation and protection**
   Status: `pending`
@@ -122,7 +145,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(g) landed; slice (h) runs in two commits: the atomic flip (part 1, landed) then the Sail privileged matched-experiment attempt + the leaf acceptance (part 2, next) |
+| 1 | `P4-SYSTEM.3` | `pending` | Sv39 translation and protection — the next leaf after `.2` (the privileged machinery landed and flipped; the wfi TW finding from the Sail attempt is routed to `.5`, with its measurement recorded in `.2`'s slice-(h) checklist) |
 
 ## Decisions
 
@@ -489,12 +512,121 @@ raised).
   (the re-derived 419 arms only), `docs/book/src/plan/p4.md` — `DEV_NOTES.md`
   sharded at its ceiling.
 
-`P4-SYSTEM.2` slice (h) part 2 — the Sail privileged matched-experiment attempt + the leaf acceptance : pending — filled at execution.
+`P4-SYSTEM.2` slice (h) part 2 — the Sail privileged matched-experiment attempt + the leaf acceptance (`2026-10-03`, `SEMULITH-P4-0013`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's decision 8: a Sail privileged matched
+  experiment ATTEMPTED (Sail 0.14, the full config namespace; the rv64i matched-
+  override precedent), platform matched as far as the config allows, a set of mm-*
+  guests, the outcome recorded honestly. Measured at the attempt's start:
+
+  ```
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --version
+  0.14        # git 29e6158; the config schema + default config pinned under target/refs/
+  $ ls profiles/rv64i-lab-v0/reference/
+  sail-rv64i-lab-v0.override.sexp        # the precedent: the TRACKED truth is the .sexp,
+                                         # the JSON is derived (materialize_sail_override)
+  $ python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/guests/mm-wfi.expected.sexp \
+      schema/expectations.sexp | wc -l      # 13 mm guests with EVD-05 expectations to compare
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the attempt measured the match's boundary, cell
+  by cell; three findings are the record:
+  1. **Sail 0.14 cannot express "Zicntr without a CLINT"** — the validator refuses:
+     "Zicntr is enabled but there is no source of time (currently only
+     `platform.clint.supported`) must be enabled" — and D-PLATFORM declares NO
+     devices. Even with the CLINT enabled the counter RATE is environment-defined
+     (our laboratory holds the counters at zero; Sail advances them). So
+     **mm-counters is NOT MATCHABLE**, named, with the validator line and the
+     first-step divergence (Sail's rdcycle traps illegal, tval = the word — the
+     same vocabulary, the opposite legality) as the evidence.
+  2. **Sail 0.14's WFI ignores mstatus.TW in S-mode** — the TW=1-in-S legality
+     cell of mm-wfi: with `wfi_is_nop=true` the wfi RETIRES as a nop (the trace
+     continues at +0x48); with `wfi_is_nop=false` it waits forever ("remaining in
+     WAIT-WFI state"). mstatus.TW is provably writable and read back — mm-
+     readonly's all-ones WARL read-back AGREES bit-exact
+     (`0x8000000A007E79AA`, bit 21 included) — and the config namespace carries
+     no TW knob (`grep -c '"wfi' sail_config_schema.json` → the two wfi keys
+     only). The M-nop, S-TW=0-nop and U-illegal cells AGREE (the U cell via
+     `wfi_available_to_user_mode=false`, tval = the word). **mm-wfi is a PARTIAL
+     match with the TW cell a NAMED DIVERGENCE** — our expectation stands on
+     RVP-INSNS (TW=1 makes WFI illegal below M); the gap is Sail-side, routed to
+     P4-SYSTEM.5 (the wfi/wake leaf, whose brief already owns WFI's wake
+     semantics) with this measurement as the routing evidence.
+  3. **The delegation-mask defaults outrun the configuration** — the validator
+     rejects the stock `medeleg.delegatable_bits` twice: cause 10 is reserved
+     with H off, and bit 11 (ecall from M) is undelegatable BY LAW — the very
+     rule mm-ecall-deleg proves. The matched mask is 0x3FF. `mideleg`'s default
+     `len` is the string `"xlen"`, which a uint64 override cannot merge over —
+     dropped (the corpus never touches mideleg), the override staying honest
+     about what it configures.
+
+- [x] **FIX** — the matched override `profiles/rv64gc-lab-v0/reference/
+  sail-rv64gc-lab-v0.override.sexp` (the tracked truth; the JSON derived):
+  privileged ISA 1.13, misa held (our WARL), FS four-state / VS off (the field
+  table), the declared selection (M/A/F/D/C, Zicsr, Zifencei, Sstc, Sv39, S, U —
+  the unbound slots present-but-unused by the corpus), Zicntr OFF (finding 1),
+  no devices, no PMP, WFI a nop except in U, medeleg 0x3FF, the one 2 GiB
+  MainMemory region. The dossier-format owners learned the new keys:
+  `schema/override.sexp` (optional fields — rv64i's override still validates)
+  and `dossier_sexp`'s override mapping both directions (self-test 13→14).
+  The experiment driver is scratch evidence under `target/p4-system-2/sail/`
+  (the rv64gc smoke route is the verify leaf's, P4-SYSTEM.6).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/convert_dossier.py verify <json> profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+  round-trip ok: override — document field-for-field equal … conforms to override.sexp
+  $ python3 -c 'import dossier_sexp as D; D.materialize_sail_override(repo, "rv64gc-lab-v0")'
+  materialized: 7610 bytes            # the tracked artifact derives the experiment's JSON
+  $ python3 target/p4-system-2/sail/compare_sail.py   # against the tracked-derived config:
+  AGREE mm-csr-rw 9/9 · AGREE mm-csr-legality-s 17/17 · AGREE mm-csr-legality-u 16/16
+  AGREE mm-ebreak 24/24 · AGREE mm-ecall-modes 61/61 · AGREE mm-ecall-deleg 56/56
+  AGREE mm-mret 43/43 · AGREE mm-readonly 14/14 · AGREE mm-stimecmp 35/35
+  DIVERGE mm-wfi step 28 (the TW cell, finding 2) · AGREE mm-sfence 43/43 · AGREE mm-sret 50/50
+  experiment: 11/12 guests AGREE against the tracked override's derived JSON
+  # the comparison is against the SPEC-DERIVED expectations (EVD-05), normalized to the
+  # corpus's own change-observation rule — Sail's trace, the specification's values
+  $ make check → 8× 'test result: ok'        $ make gate → === all doctrines green ===
+  ```
+
+- [x] **NO REGRESSION** — the attempt changed three tracked files beyond the unit:
+  `schema/override.sexp` (optional fields only — rv64i's override re-validated:
+  `check_sexp_schema: ok … conforms to override.sexp`), `scripts/dossier_sexp.py`
+  (mapping extension; its self-test 13→14 arms, the new-keys round-trip arm
+  included), and the unit's own `reference/` (new directory, the rv64i pattern).
+  No gate arm weakened; the comparison never edited an expectation (the mm-wfi
+  divergence is recorded, not fitted). `make gate` green; DERIVED-COUNTS 419
+  unchanged (no gate census grew — the dossier self-test is not a gate arm
+  census member; verified by the re-derivation).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status → **done** with the Result
+  narrative + frontier → `.3` + checklist + logs + changelog), `MEMORY.md`
+  (next_action → P4-SYSTEM.3), `LIVE_STATUS.md` (the P4 row 2/10),
+  `docs/TASK_TREE.md` (the frontier names `.3`), `CHANGELOG.md`, `DEV_NOTES.md`
+  (the Sail outcome; promotion: declined (the TW gap's routing is recorded in this leaf)),
+  `docs/book/src/plan/p4.md` — shards at their ceilings.
+
+**LEAF ACCEPTANCE — `P4-SYSTEM.2` (privilege and mode transitions).** The criterion:
+"the same instruction's behaviour is tested **in each supported mode**, not once."
+Evidence: the mode-matrix corpus — 13 guests whose every cell is a mode crossing
+(CSR access in M vs S vs U (mm-csr-legality-s/-u, mm-readonly, mm-csr-rw); ecall's
+cause by mode (11/9/8) and its delegation to S with the M-ecall never delegating
+(mm-ecall-modes, mm-ecall-deleg); breakpoints delivered and resumed from M and U
+(mm-ebreak); mret's mode pops with MPRV cleared below M and preserved at M
+(mm-mret); sret legal in M and S, illegal in U, gated by TSR (mm-sret); wfi in
+M/S/U with the TW gate (mm-wfi); sfence.vma and satp under TVM (mm-sfence); the
+counter enables gating S then U (mm-counters); stimecmp under TM then STCE
+(mm-stimecmp)) — all falsified against EVD-05 expectations by the tracked engine
+(62/62, `cargo test -p semulith-verify run_rv64gc`, 4/4 groups) and 11 of the 13
+differentially AGREED against the matched Sail 0.14 (the twelfth partial, one
+cell named). The leaf is **done**.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (h) part 2 + LEAF | the config-namespace census (Sail 0.14 git 29e6158, the schema + default pinned; the rv64i override precedent); the validator's three named constraints measured (Zicntr needs a CLINT time source — D-PLATFORM forbids it; medeleg's reserved bit 10 with H off and undelegatable bit 11 — the rule the corpus proves; mideleg's string-typed default len) and the matched mask 0x3FF derived by bisection; the matched override authored and validated; the dossier-format owners extended (schema/override.sexp optional fields — rv64i re-validated; dossier_sexp both directions, self-test 13→14; convert round-trip field-for-field exact); the evidence chain closed (the TRACKED .sexp → materialize_sail_override → Sail → `experiment: 11/12 guests AGREE against the tracked override's derived JSON` — step-for-step on the spec-derived expectations, mm-readonly's all-ones WARL read-back bit-exact); the mm-wfi TW cell named with both wfi-mode traces + the writable-bit proof; mm-counters NOT MATCHABLE with the validator line + the first-step trap; `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 419 unchanged) | slice (h) part 2 landed and the LEAF is done: the Sail privileged matched experiment ATTEMPTED and honestly recorded — 11/12 AGREE, mm-wfi's TW cell a named divergence routed to `.5`, mm-counters NOT MATCHABLE with evidence; the leaf's acceptance criterion evidenced by the mode matrix |
 | `2026-10-03` | `.2` slice (h) part 1 | the pre-flip rehearsal (a flipped-route copy: EXTRACTION's refines gap and INTERACTION-MATRIX green measured before any tracked edit); the payload byte-probe (state + encoding + interactions + 125 guest files byte-exact from the proven staging); the dossier flip (route `generated-definition`, D-RESOLUTION-ROUTE superseded by note per the D-FENCE precedent, D-ROUTE-FLIP + REQ/OB pair — RECORD-SCHEMA 20 files ok); the generated mirrors content-hash-identical to the scratch-proven modules; `cargo test -p semulith-verify run_rv64gc` 4/4 groups (62/62 on the TRACKED engine path, per-step writes exact + never_written + determinism); the engine port (exec_rv64gc with the trap-END discipline; FlatMemory's fetch alignment as profile data); the CLI smoke (rv64gc run/demo green, bench refusal rc=2, rv64i default trace byte-identical); the gate census (STATE-GEN 22/22 +2 arms, DEF-GEN 17/17 +2, GUEST-GEN 15/15 +5, EXTRACTION 13/13 +2, EXERCISE-COVERAGE 23/23 +2, FACT-OWNERSHIP 10/10, re-pinned 5 units / 74 kinds); the generator's rustfmt-stability fixed at the source (STATE-GEN `--check` compares against regeneration, `cargo fmt` runs over crates/); the CSR migration (the state document owns; csrs.csv 33/33 the derivation source; the pmpaddr0 RED probe); fetch_references both profiles MATCH; `make check` (76 core / 184 verify), `make gate` all green (DERIVED-COUNTS 408→419 re-derived), bench wasm + smoke-bench 53 arms + both books green | the flip landed: the staged unit, corpus, encoding, state and matrix tracked in one atomic commit; the route is `generated-definition`; every gate judges rv64gc fully with rv64i's verdicts unchanged; the split (flip first, Sail second) recorded |
 | `2026-10-03` | `.2` slice (g) | the pre-slice census (rv64i's matrix the model — 6 axes/21 cells; the check's four rules read from source; 2 staged expectations carrying rv64i's DIFF-FENCEI-EXECUTED against a references.sexp with 0 difference records; 62 guests to absorb); the axis design derived from the leaf's vocabulary (the 4 corpus layers + legality + delegation + restart REFRAMED guest-shaped — the mechanism registry is closed and no rv64gc mechanism exists); the DIFFS-forced re-derivation of it-fencei/min-fencei (steps unchanged, the divergence form dropped with the reason recorded — the mirror now 44 byte-identical + 5 re-derived); the matrix schema-valid and rehearsed via the check's own invocation (`check_interaction_matrix.py <unit-dir>`): 28 cells declared, every disposition resolves, rc=0; the three RED legs fired by name against a scratch copy (DIFFS on the pre-re-derivation state, ORPHAN GUEST on a dropped name, OMITTED CELL on a deleted cell); the corpus re-proven 62/62; the driver self-test 15/15 and the tracked run `INTERACTION-MATRIX: ok (5 unit(s))`; `make gate` green (DERIVED-COUNTS unchanged at 408) | slice (g) landed: the 7-axis × 28-cell interaction matrix authored at staging (route-contradicted until the flip), all 62 staged guests mapped, 3 cells honestly reported degenerate, no difference ids — the flip's matrix proven |
 | `2026-10-03` | `.2` slice (f) | the pre-slice census (49 base guests on disk — c-scope.c toolchain-scoped to rv64i by `scripts/build_c_guest.sh`'s hard-coded `-march=rv64i`; the laboratory memory map and cause vocabulary in the runner); the mirror byte-probe (49 `.s` byte-identical, 46/49 expectations byte-identical, 3 re-derived BY DESIGN under D-IALIGN-16 — targets 2 mod 4 legal with C, RVI-C 27.1 — never fitted); the trap-END bug found by it-fault-alias and fixed in the runner (`trapped` flag); the auipc+addi target audit through the real assembler (14 stale deltas, labels assemble to no word); two execution-caught guest-design bugs (M-level CSR writes inline in S — mm-mret re-laid-out, mm-ecall-modes' handler stage-aware); all 13 mm expectations schema-valid and EVD-05-derived before the run; `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mm, per-step writes exact, deterministic re-run); the coverage rehearsal over the staged 65-form scope (denominator 65 consistent, exercised 65/65, the 13 extension forms via mm-*); `make gate` green (13 checks, DERIVED-COUNTS unchanged at 408 — no arm added) | slice (f) landed: the base mirror executed 49/49 on the rv64gc engine (3 declared IALIGN-16 divergences), the mode-matrix corpus 13/13 with EVD-05 expectations, the 65/65 coverage rehearsal — all untracked scratch, the flip's corpus proven |
@@ -510,6 +642,7 @@ raised).
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice h, part 2 + LEAF) | `SEMULITH-P4-0013 (leaf P4-SYSTEM.2): slice h part 2 — the Sail privileged matched experiment (11/12 AGREE, the TW cell named, mm-counters not matchable); the leaf closes` | the matched override tracked (reference/sail-rv64gc-lab-v0.override.sexp; privileged 1.13, the declared selection minus Zicntr, no devices, WFI a nop except in U, medeleg 0x3FF); the dossier-format owners learned the new keys (schema + mapping, self-test 13→14); the evidence chain closed (tracked .sexp → derived JSON → Sail → 11/12 AGREE on the spec's values); mm-wfi's TW=1-in-S cell a named Sail-side gap (both wfi modes measured, the bit provably writable) routed to `.5`; mm-counters NOT MATCHABLE (the CLINT time-source wall vs D-PLATFORM; the counter rate is the environment's); the validator's own rules confirmed the corpus's claims (bit 10 reserved with H off, bit 11 undelegatable); the leaf's acceptance — the same instruction's behaviour tested in each supported mode — is the mode matrix itself |
 | `.2` (slice h, part 1) | `SEMULITH-P4-0012 (leaf P4-SYSTEM.2): slice h part 1 — THE ATOMIC FLIP: the payload tracked, the route generated-definition, the corpus on the tracked engine` | the payload byte-exact (state.sexp, encoding.sexp, guests/ 62+run-order, interactions.sexp); D-RESOLUTION-ROUTE superseded by note (the D-FENCE convention; the mirror records' verbatim rule kept), D-ROUTE-FLIP recorded; the three generated mirrors tracked (their inputs tracked in the same commit — decision_generated-mirror-needs-tracked-input); exec_rv64gc ports the evaluator with the trap-END discipline; FlatMemory carries IALIGN as data; the CLI's `--profile` (run/demo wired, the rv64i-scoped commands refuse by name, rv64i byte-exact default); four gate gaps fixed at their owners (extraction refines, coverage pseudo leg, GEN censuses, fact-ownership re-pin); the CSR name↔address ownership migrated to the state document; the guests mirror governor registered (93+5); DERIVED-COUNTS 408→419 |
 | `.2` (slice g) | `SEMULITH-P4-0011 (leaf P4-SYSTEM.2): slice g — the interactions.sexp: 7 axes × 28 cells, rehearsed green against the staged unit` | the axis set derived from the leaf's vocabulary (fault/alias/boundary/progress carried from the mirrored layers; legality + delegation added by the privileged machinery; restart reframed GUEST-shaped — the xret/xepc discipline, no mechanism cells; rv64i's event axis absorbed into the mode-cause story); the DIFFS rule forced the mirror's 4th/5th re-derivations (it-fencei/min-fencei's rv64i DIFF-FENCEI-EXECUTED pin is false for this unit — Zifencei declared, slot unbound; the divergence forms dropped with reasons recorded); 3 cells reported degenerate-with-reason; all 62 guests mapped, no new guests needed; the rehearsal ran the check's own invocation (28 cells, every disposition resolves, rc=0) with the three RED legs proven (DIFFS/orphan/omitted); DERIVED-COUNTS 408 unchanged |
 | `.2` (slice f) | `SEMULITH-P4-0010 (leaf P4-SYSTEM.2): slice f — the base mirror executed (49/49), the mode-matrix corpus, the coverage rehearsal` | the scratch corpus runner (declared memory map, fault delivery, trap-END discipline, the per-step x-change comparison rule); 3 base guests re-derived BY DESIGN under D-IALIGN-16 (RVI-C 27.1), 46 byte-identical; 13 mm guests cover the 13 new forms across M/S/U (csr rw + per-mode legality, ebreak resume, ecall causes + medeleg delegation, mret/sret/wfi/sfence legality gates, counters + stimecmp gating, read-only/WARL); execution caught 14 stale auipc deltas, 2 M-level-CSR-in-S design bugs, 2 expectation mis-derivations — all re-derived, never fitted; coverage 65/65; no gate arms (untracked corpus; the governor lands at the flip), DERIVED-COUNTS 408 unchanged |
@@ -523,6 +656,35 @@ raised).
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (h) part 2 done (`SEMULITH-P4-0013`) — THE LEAF CLOSES. The
+  Sail privileged matched experiment (decision 8), attempted and honestly recorded.
+  The matched override lands tracked at `profiles/rv64gc-lab-v0/reference/
+  sail-rv64gc-lab-v0.override.sexp` (the .sexp is the truth, the JSON derived):
+  privileged ISA 1.13, misa held, FS four-state / VS off, the declared selection
+  (M/A/F/D/C, Zicsr, Zifencei, Sstc, Sv39, S, U) minus Zicntr, no devices, no PMP,
+  WFI a nop except in U, medeleg 0x3FF — the validator itself confirming the
+  corpus's own claims (cause 10 is reserved with H off; bit 11, ecall from M, is
+  undelegatable by law). The dossier-format owners learned the override's new
+  keys (schema optional fields — rv64i's override re-validated; the mapping both
+  directions, self-test 13→14; the round-trip field-for-field exact). The evidence
+  chain closes end to end: the tracked .sexp derives the JSON, Sail 0.14 runs the
+  mm guests under it, and **11 of 12 AGREE step-for-step against the
+  specification-derived expectations** — csr semantics, per-mode legality,
+  delivered breakpoints, ecall causes and delegation, the xret rules, the mstatus
+  all-ones WARL read-back bit-exact (`0x8000000A007E79AA`), the stimecmp and TVM
+  gates. The two honest boundaries: mm-wfi's TW=1-in-S legality cell is a NAMED
+  DIVERGENCE — Sail 0.14 does not implement mstatus.TW's effect on WFI legality
+  (measured under both `wfi_is_nop` settings; the bit provably writable; no config
+  knob exists), our expectation stands on the pinned spec, the finding routed to
+  P4-SYSTEM.5 with its measurement; and mm-counters is NOT MATCHABLE — Sail
+  requires a CLINT time source for Zicntr while the platform declares no devices,
+  and the counter rate is the environment's own declaration (ours holds zero).
+  Spike stayed platform-conflicted, no attempt. The leaf's acceptance criterion —
+  the same instruction's behaviour tested in each supported mode — is evidenced
+  by the mode matrix itself: 13 guests, every cell a mode crossing, falsified by
+  the tracked engine (62/62) and differentially confirmed (11/13 full + 1
+  partial). Frontier: `.3` — Sv39 translation and protection.
 
 - `2026-10-03`: `.2` slice (h) part 1 done (`SEMULITH-P4-0012`) — THE ATOMIC FLIP. The
   staged payload lands tracked byte-exact from the proven staging: the 33-CSR state
