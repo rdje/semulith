@@ -101,7 +101,7 @@ This gate authorises the planned next engineering stage: board implementation.
   stayed platform-conflicted by record, no attempt.
 
 - ID: `P4-SYSTEM.3` — **Sv39 translation and protection**
-  Status: `pending`
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0014`)
   Goal: page-table format, walk ordering, permission checks, A/D update policy, ASIDs, translation invalidation, permitted walk side effects (catalog `C12`).
   Acceptance: permission failure produces the correct fault **and** the permitted page-table side effects; A/D policy is validated against the selected extensions and revision, not chosen as a knob.
 
@@ -148,6 +148,143 @@ This gate authorises the planned next engineering stage: board implementation.
 | 1 | `P4-SYSTEM.3` | `pending` | Sv39 translation and protection — the next leaf after `.2` (the privileged machinery landed and flipped; the wfi TW finding from the Sail attempt is routed to `.5`, with its measurement recorded in `.2`'s slice-(h) checklist) |
 
 ## Decisions
+
+- `2026-10-03` (design brief for `.3`, recorded before its execution; sources: the pinned
+  privileged chapters re-read (`.materials/riscv/pinned-v20260120/priv/supervisor.html`
+  §11.1.1.11–§11.1.10, `machine.html` §2.1.1.6.4, §2.1.7.2, Table 7); the `.2` landing
+  measured in tree (`exec_rv64gc.rs` hooks, `state.sexp:569-581` satp,
+  `system.sem.sexp:53` the stated sfence nop); the U54 data point re-verified from the
+  pinned PDF `.materials/sifive/fu540-c000-v1p5.pdf` §4.7; Sail 0.14's TLB and A/D code
+  paths measured in `target/refs/sail-riscv-src/model/sys/vmem*.sail`; two explore-agent
+  censuses (C12 scope; translation machinery deltas) — the reports are conversation-only,
+  every load-bearing fact below re-measured by the signing engineer):
+  **The measured pre-conditions.** (1) **The hooks are three sites**: fetch
+  (`exec_rv64gc.rs:87`), load (`:291`), store (`:328`) go straight to the boundary with
+  physical addresses; page-fault causes 12/13/15 exist nowhere in core (census: `git
+  grep -c PageFault -- crates/ | wc -l` → 0); satp's storage/discipline landed at `.2`
+  (`state.sexp:569-581` — MODE `(one-of 0 8)`, reset Bare; the census names `.3`'s
+  reopen); sfence.vma is a stated nop in four places (`system.sem.sexp:14-19,53-59`,
+  the generated mirror, the state census). (2) **The walk falsifies a load-bearing
+  requirement**: REQ-D-FETCH-IMPLICIT's "Explicit reads and writes are made only by
+  load and store instructions" (`profiles/rv64i-lab-v0/requirements.sexp:27`) is false
+  the moment satp.MODE=Sv39 — every S/U access entails up to 3 implicit 8-byte reads.
+  (3) **The observation vocabulary cannot see memory**: expectations are x0..x31 writes
+  + `never_written` + one-fetch-per-step (`schema/expectations.sexp:48-53`;
+  `run_rv64gc/tests.rs:22-47`); a hardware A/D update is an implicit store no
+  instruction owns — no expectation form can pin it (measured, both files). (4) **The
+  A/D crux**: the pinned 1.13 text makes hardware update the DEFAULT when neither
+  Svade nor Svadu is implemented (§11.1.3.1), and the profile selects neither
+  (`profile.sexp:25`); the one measured implementation precedent — the U54 the
+  profile's Sv39 choice already cites (D-SV39) — "does not automatically set the A and
+  D bits … Instead, the U54 MMU will raise a page fault" (FU540 §4.7, re-verified from
+  the pinned PDF). (5) **Sail models a 64-entry unified TLB** "so that we can
+  meaningfully test SFENCE.VMA which would be a no-op without a TLB"
+  (`vmem_tlb.sail:9-12`); `--trace-ptw`/`--trace-tlb` exist but are excluded from
+  `--trace`; its A/D code (`vmem.sail:92-128`) does hardware update exactly when
+  `¬Svadu ∧ ¬Svade` — the tracked override's current setting — and flipping to the
+  Svade policy is a one-field override change its validator accepts
+  (`validate_config.sail:176-181`). (6) **A generator hole**: `gen_state.py`'s rv64gc
+  path (`validate_gc`) silently IGNORES `memory_spaces` instead of refusing it (the
+  rv64i path refuses at :103-106) — to be closed the next time the state document is
+  edited.
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **OQ-2 answered: the profile ADDS Svade** (page-fault-instead-of-A/D-update).
+     The evidence chain the acceptance demands ("validated against the selected
+     extensions and revision, not chosen as a knob"): (i) the pinned revision defines
+     exactly two schemes and names the page-fault one Svade (§11.1.3.1, §11.1.10); (ii)
+     the profile's own translation precedent — the U54, already load-bearing in D-SV39
+     — implements exactly that scheme (FU540 §4.7, quoted above); (iii) the
+     laboratory's observe-through-the-ISA discipline (`.2` decision 6) can evidence a
+     page fault (scause/stval via csrr) but CANNOT evidence an implicit PTE write
+     (pre-condition 3), so the hardware-update default would price a new observation
+     vocabulary (sized like `.2`'s slice-b) to test a side effect the laboratory need
+     not produce. The identity cost is recorded: the extension list and ISA string
+     gain `svade` (`rv64imafdc_zicntr_zicsr_zifencei_sstc_svade`, canonical order —
+     the `.1` gen_platform fix); Svadu is NOT selected (menvcfg's ADUE stays WPRI);
+     the Sail override's `Svade` flag flips `true`. Weighed and rejected: hardware
+     update + a memory-write expectations vocabulary (the pricing above; it can arrive
+     with Svadu the day a consumer needs it, never silently). The DOSSIER's OQ-2
+     closes with this brief; the profile-identity edit (D-SVADE decision + REQ/OB
+     mirrors) is execution's first slice.
+  2. **A minimal, fully-specified TLB is modelled.** The leaf's own goal names
+     "translation invalidation", and invalidation is testable only with something to
+     invalidate (the Sail comment, pre-condition 5, is the same reasoning). Shape: a
+     small fully-associative cache (size and FIFO replacement stated in the state
+     census), ASID-tagged (ASIDLEN = 16, the Sv39 maximum and Sail's default —
+     laboratory choice, recorded; ASID=0-only rejected: it would make the tagging
+     rules untestable), G-bit retention per §11.1.2.1. The TLB is hidden state: the
+     SEM-08 census re-answers `present true` with the cache described; the
+     determinism rule is stated — the cache is a pure function of the hart's own
+     history, so cold-reset re-execution and snapshot/replay stay exact (corpus must
+     never depend on stale-hit behaviour outside the spec's latitude). sfence.vma
+     gains its real effect with the FOUR rs1/rs2 cases implemented as specified
+     (§11.1.2.1); the over-fence latitude ("always legal") is recorded-not-taken, so
+     the G-bit retention and per-ASID cases are genuinely tested. Weighed and
+     rejected: no cache (walk every access) — conformant, but it leaves the leaf's
+     goal item untestable and forfeits the Sail PTW/TLB differential.
+  3. **Translation is evaluator machinery, not a tree operator** — a
+     `translation.rs` core module beside `privilege.rs` (the `.2` pattern), hooked at
+     the three sites (pre-condition 1). Fetch is not a tree node, so a `(translate …)`
+     operator could never cover it; hook-level uniformity beats tree-level
+     partiality. The 10-step walk (§11.1.3.2 with LEVELS=3/PTESIZE=8 per §11.1.4.1)
+     is cited step-by-step in the module: the canonical-VA check, reserved-bit/
+     PBMT/N checks (bits 63/62–61/60–54 zero — neither Svnapot nor Svpbmt selected),
+     superpage misalignment, U/SUM/MXR (step 6), R/W/X (step 8), and Svade's step-9
+     page fault. Page-fault causes 12/13/15 enter the core vocabulary (the raw-u64
+     rv64gc cause path absorbs them; the typed-enum asymmetry is a stated choice).
+  4. **Effective mode is a single computation**: fetch uses the current mode;
+     loads/stores use MPP when MPRV=1 (§2.1.1.6.4 — the `.2` deferral lands, with
+     SUM/MXR per the effective mode); M-mode fetch is never translated.
+  5. **Fetch translates in 16-bit parcels.** With C in the profile (IALIGN=16), a
+     4-byte instruction may straddle a 4 KiB boundary; each 16-bit parcel translates
+     independently (the architecturally natural reading; Sail's two-16-bit-fetch
+     granularity is the measured reference precedent, DIFF-FETCH-GRANULARITY).
+  6. **Walk accesses get their own boundary variant.** The D-FETCH-IMPLICIT precedent
+     (implicit accesses observable as their own `Request` variant) applies: PTE
+     reads/writes cross the environment boundary as a distinct walk-access kind
+     (8-byte, physical), never silently as data `Load`s. REQ-D-FETCH-IMPLICIT is
+     AMENDED by a new versioned requirement record naming the walk's implicit
+     accesses (the old record superseded, never edited); the one-fetch-per-step test
+     keeps its meaning (walk reads are not fetches); a walk-count witness may join
+     the sv39 guests. **Contract negotiation, recorded:** the FORMAL contract
+     versioning of this boundary vocabulary is `.9`'s charter ("translation inputs",
+     versioned not edited) — `.3` lands the engine variant and the requirement
+     amendment, and routes the contract-document wording to `.9`; it does not
+     pre-empt it.
+  7. **Misaligned-vs-page-fault priority is pinned now**: the current engine judges
+     misaligned before the boundary (= higher priority than page/access faults);
+     Table 7 makes this implementation-defined, so the choice is legal and stays;
+     the full priority TOPIC is `.8`'s, with this hand-off line recorded (the `.2`
+     decision-1 pattern).
+  8. **No new instructions, no new matrix axis.** The scope census, EXTRACTION and
+     EXERCISE-COVERAGE denominators are unchanged (Sv39 adds machinery, not forms);
+     the 62-guest corpus stays green because satp resets to Bare, an EXACT identity
+     path (measured: every existing guest runs in M/Bare). New sv39 guests join the
+     EXISTING matrix cells (fault×fault, fault×delegation, legality×…): translation
+     is machinery under the declared interaction kinds, not a new kind (an 8th axis
+     would cost 8 new cells to buy nothing).
+  9. **Corpus shape**: guests build page tables in M-mode (stores), csrw satp,
+     sfence.vma, sret into S/U; observation stays through the ISA (csrr scause/stval;
+     `ld`-back of PTEs — under Svade the permitted page-table side effects are NONE,
+     so the acceptance's second half is evidenced by proving the tables byte-identical
+     after accesses, plus the staleness/fence behaviour through the TLB). Expectations
+     stay x0..x31 (no vocabulary change — the discipline that priced decision 1).
+  10. **Execution slicing** (checkpoints inside the leaf, each committed with the leaf
+      id): (a) the Svade identity edit (profile.sexp + D-SVADE + REQ/OB mirrors +
+      sources + Sail override flip) and the `validate_gc` memory_spaces refusal; (b)
+      the translation module + the three hooks + effective mode + the Bare-identity
+      proof (62/62 unchanged); (c) the walk with its fault matrix + reserved-bit and
+      superpage checks + the requirement amendment + walk-access boundary variant;
+      (d) the TLB + sfence.vma's real four-case effect + the census/snapshot/
+      determinism consequences; (e) MPRV=1/SUM/MXR + the sv39 guests + matrix cells +
+      the Sail matched experiment (PTW/TLB traces explicit) + the reports and the
+      book.
+  **Not `.3`'s scope:** fault priority as a topic (`.8` — the pinned option and the
+  hand-off line above); interrupt injection during walks (`.5`); LR/SC page
+  constraints (`.4`); contract v1's formal wording (`.9`); Svnapot/Svpbmt/Svadu/
+  Sv48/Sv57 (unselected, named); PMP (D-NO-PMP); the hypervisor extension (D-NO-H);
+  registration.
 
 - `2026-10-03` (design brief for `.2`, recorded before its execution; sources: the
   resolved unit dossier `profiles/rv64gc-lab-v0/` re-read in full this day; the pinned
@@ -656,6 +793,23 @@ cell named). The leaf is **done**.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: the `.3` design brief recorded (`SEMULITH-P4-0014`). The measured
+  pre-conditions: translation hooks are exactly three sites in `exec_rv64gc.rs`; the
+  walk falsifies REQ-D-FETCH-IMPLICIT's "explicit accesses only by load/store";
+  expectations cannot observe memory (a hardware A/D update is an implicit store no
+  instruction owns); Sail models a 64-entry TLB precisely so sfence.vma is testable;
+  a `validate_gc` hole silently ignores `memory_spaces`. The design: **OQ-2 answered —
+  the profile ADDS Svade** (page-fault-instead-of-A/D-update; the pinned revision's
+  two schemes, the U54 precedent, and the observation discipline as the three legs;
+  hardware update + a memory-write vocabulary weighed and rejected); a minimal
+  fully-specified TLB (ASIDLEN 16, G-bit retention, determinism as a pure function of
+  hart history) with sfence.vma's four cases implemented as specified; translation as
+  evaluator machinery (`translation.rs`, three hooks, MPRV effective mode) not a tree
+  operator; fetch in 16-bit parcels; walk accesses a distinct boundary variant with
+  the requirement amended and the formal contract wording routed to `.9`;
+  misaligned-first priority pinned with the topic handed to `.8`; no new instructions,
+  no new matrix axis. Five execution checkpoints named.
 
 - `2026-10-03`: `.2` slice (h) part 2 done (`SEMULITH-P4-0013`) — THE LEAF CLOSES. The
   Sail privileged matched experiment (decision 8), attempted and honestly recorded.

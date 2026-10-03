@@ -18,13 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (2/10 — the profile resolved as `rv64gc-lab-v0` (`.1`) and the privileged machinery landed and flipped (`.2`): the unit is a full `generated-definition` profile — encoding, 33-CSR state, 62-guest corpus, interaction matrix all tracked, the tracked engine runs the corpus 62/62, and the Sail privileged matched experiment recorded 11/12 AGREE with the TW cell named and mm-counters not matchable).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.3` — **Sv39 translation and protection** (satp modes, the
-  page-walk semantics, the page-fault surfaces, the PMP exclusion already recorded
-  as D-NO-PMP; the `.1` dossier's Sv39 decision and the U54 A/D policy note are the
-  brief's inputs). Routed INTO `.5` from `.2`'s Sail attempt: Sail 0.14 does not
-  implement mstatus.TW's effect on WFI legality (the measurement is in the `.2`
-  slice-(h) part-2 checklist). The flip landed as `SEMULITH-P4-0012`, the leaf
-  closed as `SEMULITH-P4-0013` (DERIVED-COUNTS 419).
+- next_action: `P4-SYSTEM.3` — Sv39 translation and protection, **execution** (the
+  design brief landed `2026-10-03`, `SEMULITH-P4-0014`): checkpoint (a) — the Svade
+  identity edit (profile.sexp + D-SVADE + REQ/OB mirrors + the Sail override flip;
+  OQ-2 answered: page-fault-instead-of-A/D-update) and the `validate_gc`
+  `memory_spaces` refusal. Then (b) the translation module + hooks, (c) the walk,
+  (d) the TLB + real sfence.vma, (e) MPRV/SUM/MXR + guests + Sail. Routed INTO `.5`
+  from `.2`'s Sail attempt: Sail 0.14 does not implement mstatus.TW's effect on WFI
+  legality (the measurement is in the `.2` slice-(h) part-2 checklist).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).
