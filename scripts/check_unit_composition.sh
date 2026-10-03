@@ -49,21 +49,25 @@ findings, checked = [], 0
 for doc in docs:
     checked += 1
     try:
-        insns = C.load_fragment(doc)              # schema + resolve + read
+        insns, pseudos = C.load_fragment(doc)     # schema + resolve + read
         slots = C.composition_slots(__import__("sexp").read_file(doc)[0])[1]
         C.check_slot_rules(doc, __import__("sexp").read_file(doc)[0])
     except (C.CompositionError, Exception) as exc:  # noqa: BLE001 — name the document, not a traceback
         findings.append(f"REFUSED {doc}: {exc}")
         continue
     bad = C.collisions(insns)
-    dupes = [n for n in {i.name for i in insns} if sum(1 for i in insns if i.name == n) > 1]
-    if bad or dupes:
-        findings.append(f"REJECTED {doc}: {len(bad)} collision(s), {len(dupes)} duplicate name(s) "
+    names = [i.name for i in insns] + [p.name for p in pseudos]
+    dupes = [n for n in set(names) if names.count(n) > 1]
+    problems = C.pseudo_problems(insns, pseudos)
+    if bad or dupes or problems:
+        findings.append(f"REJECTED {doc}: {len(bad)} collision(s), {len(dupes)} duplicate name(s), "
+                        f"{len(problems)} pseudo problem(s) "
                         f"— a decoder cannot be generated from a set in which one word matches "
                         f"two instructions")
         continue
     suffix = f"; partial: {len(slots)} slot(s) unbound" if slots else ""
-    print(f"  {doc}: {len(insns)} instruction(s) compose{suffix}")
+    pseudo = f" (+ {len(pseudos)} pseudo-instruction(s))" if pseudos else ""
+    print(f"  {doc}: {len(insns)} instruction(s){pseudo} compose{suffix}")
 
 for f in findings:
     print(f)
@@ -116,6 +120,11 @@ self_test() {
       > "$t/definitions/riscv/t-clash.sexp"
   base_frag; enc ' (extensions "riscv/t-clash")'
                                           arm "RED   a collision in the composed union" 1 "collision(s)"
+  printf '%s\n' '(fragment (id "riscv/t-ghost-pseudo") (kind extension)' \
+      '(pseudo (name "ghost") (of "t::add") (fixed (30 28 0x5) (14 12 0x4)) (operands) (from "t")))' \
+      > "$t/definitions/riscv/t-ghost-pseudo.sexp"
+  base_frag; enc ' (extensions "riscv/t-ghost-pseudo")'
+                                          arm "RED   a pseudo no composed instruction realizes" 1 "pseudo problem(s)"
   rm -f "$t/profiles/p/encoding.sexp";    arm "RED   no composition document at all" 2 "cannot judge"
 
   rm -rf "$t"

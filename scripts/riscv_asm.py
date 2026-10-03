@@ -18,7 +18,10 @@ that matters for expected values — but the encodings had to come from somewher
 They come from `riscv-opcodes` (RISC-V International, BSD-3-Clause), pinned under
 `target/refs/riscv-opcodes/` and re-derived by `scripts/fetch_references.sh`:
     extensions/rv_i, extensions/rv64_i   the fixed bits and operand list per instruction
+    extensions/rv_zicsr, rv_zicntr, rv_system, rv_s   Zicsr, Zicntr and the privileged
+                                         system instructions (the rv64gc pin, P4-SYSTEM.2)
     arg_lut.csv                          the operand field positions
+    csrs.csv                             the CSR name-to-address map (csr operand spellings)
 This module PARSES those files. It does not carry an opcode constant of its own, so a typo here
 cannot invent an instruction — it can only fail to find one.
 
@@ -57,9 +60,14 @@ from pathlib import Path
 
 # Formats whose immediate occupies one contiguous field. `fm`/`pred`/`succ` are FENCE's 4-bit
 # fields (`P2-SCALAR.1`); the generic width-checked path range-checks them 0..15 like `shamt`.
+# `csr` and `zimm5` are Zicsr's (`P4-SYSTEM.2` slice a): `csr` shares bits 31..20 with `imm12`
+# and is distinguished from it BY FIELD NAME, exactly as the pinned arg_lut.csv rows do — imm12
+# is signed (-2048..2047), csr is the unsigned 12-bit CSR address (0..0xFFF, or a name resolved
+# through the pinned csrs.csv); `zimm5` is the unsigned 5-bit immediate of the csrr*i forms.
+# The POSITIONS always come from the pinned arg_lut.csv at load time — derived, never typed.
 CONTIGUOUS_OPERANDS = {
     "rd", "rs1", "rs2", "imm12", "imm20", "shamtd", "shamtw", "imm12hi", "imm12lo",
-    "fm", "pred", "succ",
+    "fm", "pred", "succ", "csr", "zimm5",
 }
 # Fields whose immediate is spread across non-adjacent bits; the layout is read from the pinned
 # descriptor table rather than written down here.
@@ -78,6 +86,7 @@ class Insn:
     fixed: tuple[tuple[int, int, int], ...]   # (hi, lo, value)
     operands: tuple[str, ...]
     source: str                                # which pinned file it came from
+    of: str = ""                               # a pseudo-op's base (`rv_zicsr::csrrs`), else ""
 
 
 def _place(hi: int, lo: int, value: int) -> int:
@@ -142,11 +151,15 @@ def load_arg_lut(path: Path) -> dict[str, tuple[int, int]]:
     return lut
 
 
-def load_encodings(paths: list[Path]) -> dict[str, Insn]:
+def load_encodings(paths: list[Path], allow_empty: bool = False) -> dict[str, Insn]:
     """Instruction encodings, from riscv-opcodes' extension files.
 
-    A line is `<name> <operand|hi..lo=value>...`. Pseudo-ops and imports are skipped: this
-    assembler encodes real instructions only, so a pseudo-instruction must be written out.
+    A line is `<name> <operand|hi..lo=value>...`. Pseudo-ops and imports are skipped: a
+    pseudo-instruction of a REAL instruction is written out (the rv64i policy — `nop` is
+    `addi x0, x0, 0`). The one exception is load_pseudo_ops below, for forms a profile
+    selects that exist upstream ONLY as pseudo-ops. `allow_empty` is for a table that
+    legitimately carries no real rows (rv_zicntr is pseudo-only); the caller must then
+    prove the fragment is not empty by its pseudo rows.
     """
     fixed_re = re.compile(r"^(\d+)\.\.(\d+)=(\S+)$")
     single_re = re.compile(r"^(\d+)=(\S+)$")
@@ -171,9 +184,65 @@ def load_encodings(paths: list[Path]) -> dict[str, Insn]:
                     continue
                 operands.append(tok)
             out[name] = Insn(name, tuple(fixed), tuple(operands), path.name)
-    if not out:
+    if not out and not allow_empty:
         raise AsmError("no instruction encodings were parsed — the table format changed")
     return out
+
+
+def load_pseudo_ops(paths: list[Path]) -> dict[str, Insn]:
+    """Pseudo-op rows, from riscv-opcodes' extension files — DERIVED, never typed.
+
+    A row is `$pseudo_op <base::insn> <name> <operand|hi..lo=value>...` and is
+    self-contained: every fixed bit of the spelling is on the row. Zicntr's counter reads
+    (rdcycle/rdtime/rdinstret) exist upstream ONLY in this form — measured at the
+    P4-SYSTEM.2 re-pin — so a profile selecting them takes them from here. A pseudo-op is
+    NOT a new encoding: its fixed bits specialize its base instruction's, which is why it
+    travels as a `(pseudo …)` in a fragment and never as an `(insn …)`.
+    """
+    fixed_re = re.compile(r"^(\d+)\.\.(\d+)=(\S+)$")
+    single_re = re.compile(r"^(\d+)=(\S+)$")
+    out: dict[str, Insn] = {}
+    for path in paths:
+        for raw in path.read_text().splitlines():
+            line = raw.split("#", 1)[0].strip()
+            if not line.startswith("$pseudo_op"):
+                continue
+            _, base, name, *rest = line.split()
+            fixed: list[tuple[int, int, int]] = []
+            operands: list[str] = []
+            for tok in rest:
+                m = fixed_re.match(tok)
+                if m:
+                    fixed.append((int(m.group(1)), int(m.group(2)), int(m.group(3), 0)))
+                    continue
+                m = single_re.match(tok)
+                if m:
+                    bit = int(m.group(1))
+                    fixed.append((bit, bit, int(m.group(2), 0)))
+                    continue
+                operands.append(tok)
+            out[name] = Insn(name, tuple(fixed), tuple(operands), path.name, of=base)
+    return out
+
+
+def load_csr_names(path: Path) -> dict[str, int]:
+    """The CSR name-to-address map, from riscv-opcodes' csrs.csv (`0xC00, "cycle"` rows).
+
+    Used to resolve a csr OPERAND spelled as a name (`csrrw x1, cycle, x2`); a numeric
+    address never consults it. An unknown name or an absent table is a refusal, never a
+    guess at an address.
+    """
+    lut: dict[str, int] = {}
+    for row in csv.reader(path.read_text().splitlines()):
+        if len(row) != 2:
+            continue
+        addr, name = row[0].strip(), row[1].strip().strip('"')
+        if not addr.startswith("0x"):
+            continue
+        lut[name] = int(addr, 16)
+    if not lut:
+        raise AsmError(f"{path} yielded no CSR names — the table format changed")
+    return lut
 
 
 def resolve_composition(enc, path: Path):
@@ -193,9 +262,14 @@ def resolve_composition(enc, path: Path):
     root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
     names = [str(_sexp.field(comp[0], "base", str(path)))]
     # repeat fields are 0-or-more: a compose with no (extensions) marker composes the base
-    # alone — the corpus writes the bare marker, but the grammar does not require it
+    # alone — the corpus writes the bare marker, but the grammar does not require it. Every
+    # (extensions) FORM contributes: the schema's (repeat yes) is one string per form, so a
+    # multi-extension composition carries several — reading only ext[0] silently dropped
+    # every extension after the first form (measured, P4-SYSTEM.2 slice a: the first
+    # three-extension composition exposed it).
     ext = _sexp.children(comp[0], "extensions")
-    names += [str(x) for x in (ext[0][1:] if ext else [])]
+    for e in ext:
+        names += [str(x) for x in e[1:]]
     merged = ["fragment"]
     declared: set[str] = set()
     for name in names:
@@ -204,26 +278,32 @@ def resolve_composition(enc, path: Path):
             raise AsmError(f"{path}: composes {name!r}, but {frag_path} does not exist")
         frag = _sexp.read_file(frag_path)[0]
         declared.add(str(_sexp.field(frag, "id", str(frag_path))))
-        # 0-or-more like extensions: a fragment with no (requires) marker depends on nothing
+        # 0-or-more like extensions: a fragment with no (requires) marker depends on nothing;
+        # with several markers (the schema's repeat) every one must be provided
         reqs = _sexp.children(frag, "requires")
-        for req in (reqs[0][1:] if reqs else []):
-            if str(req) not in declared:
-                raise AsmError(
-                    f"{path}: fragment {name!r} requires {str(req)!r}, which this composition "
-                    f"does not provide before it. A fragment with an unmet dependency composes "
-                    f"by luck, not by construction.")
+        for r in reqs:
+            for req in r[1:]:
+                if str(req) not in declared:
+                    raise AsmError(
+                        f"{path}: fragment {name!r} requires {str(req)!r}, which this "
+                        f"composition does not provide before it. A fragment with an unmet "
+                        f"dependency composes by luck, not by construction.")
         merged += [c for c in frag if isinstance(c, list)
-                   and c and c[0] in ("field", "scatter", "insn")]
+                   and c and c[0] in ("field", "scatter", "insn", "pseudo")]
     return merged
 
 
-def load_canonical_encoding(path: Path) -> tuple[dict, dict, dict]:
+def load_canonical_encoding(path: Path, with_pseudos: bool = False):
     """Read `encoding.sexp` — the encodings the REPOSITORY owns.
 
     ⛔ THIS IS THE PATH THAT MATTERS. The assembler used to read an untracked, network-acquired
     directory, so a fresh clone could not build a model at all. The canonical definition is
     tracked, so the model's encodings travel with the repository and a gate re-derives them
     against the pinned upstream when that upstream is present.
+
+    With `with_pseudos` the tuple gains the fragment's `(pseudo …)` forms — assembler
+    spellings that add nothing to the encoding space (see schema/fragment.sexp). Callers
+    that lower the encoding SPACE (gen_definition) leave it off and see no change.
     """
     import sexp as _sexp
     forms = _sexp.read_file(path)
@@ -261,7 +341,16 @@ def load_canonical_encoding(path: Path) -> tuple[dict, dict, dict]:
         insns[name] = Insn(name, fixed, ops, str(_sexp.field(i, "from")))
     if not insns:
         raise AsmError(f"{path}: no instructions — an empty encoding is not a valid one")
-    return arg_lut, insns, layout
+    if not with_pseudos:
+        return arg_lut, insns, layout
+    pseudos: dict[str, Insn] = {}
+    for p in _sexp.children(enc, "pseudo"):
+        name = str(_sexp.field(p, "name"))
+        fixed = tuple((int(a), int(b), int(c)) for a, b, c in _sexp.children(p, "fixed")[0][1:])
+        ops = tuple(str(o) for o in _sexp.children(p, "operands")[0][1:])
+        pseudos[name] = Insn(name, fixed, ops, str(_sexp.field(p, "from")),
+                             of=str(_sexp.field(p, "of")))
+    return arg_lut, insns, layout, pseudos
 
 
 class Assembler:
@@ -269,13 +358,54 @@ class Assembler:
 
     def __init__(self, source: Path) -> None:
         """`source` is either a profile's `encoding.sexp` (the canonical definition, preferred)
-        or the pinned upstream table directory (used only by `gen_encoding.py` to build it)."""
+        or the pinned upstream table directory (used only by table-derivation tooling).
+
+        IALIGN is profile DATA, never assumed: constructed from a unit's encoding.sexp the
+        value comes from the sibling profile.sexp's `(ialign …)` field through the dossier
+        mapping owner; a unit that declares nothing gets 32, the only architectural value an
+        ILEN=32 base without C can have. The table-directory route is the rv64i-era tables,
+        IALIGN=32 by construction."""
+        self.ialign = 32
         if source.is_file():
-            self.arg_lut, self.insns, self.imm_layout = load_canonical_encoding(source)
+            self.arg_lut, self.insns, self.imm_layout, self.pseudos = \
+                load_canonical_encoding(source, with_pseudos=True)
+            prof = source.parent / "profile.sexp"
+            if prof.is_file():
+                import dossier_sexp as D
+                declared = D.load_profile(prof).get("profile", {}).get("ialign")
+                if declared is not None:
+                    self.ialign = int(declared)
+            self._csrs: dict[str, int] | None = None
             return
         self.arg_lut = load_arg_lut(source / "arg_lut.csv")
         self.insns = load_encodings([source / "rv_i", source / "rv64_i"])
         self.imm_layout = load_immediate_layout(source / "constants.py", self.arg_lut)
+        self.pseudos = {}
+        self._csrs = None
+        self._csr_table = source / "csrs.csv"
+
+    def _csr(self, tok: str) -> int:
+        """A csr operand: a numeric address, or a name resolved through the pinned csrs.csv."""
+        try:
+            addr = int(tok, 0)
+        except ValueError:
+            table = getattr(self, "_csr_table", None) or \
+                Path(__file__).resolve().parent.parent / "target/refs/riscv-opcodes/csrs.csv"
+            if self._csrs is None:
+                if not table.is_file():
+                    raise AsmError(
+                        f"csr operand {tok!r} is a name, but the pinned csrs.csv it resolves "
+                        f"through is not present at {table} — run scripts/fetch_references.sh")
+                self._csrs = load_csr_names(table)
+            if tok not in self._csrs:
+                raise AsmError(f"csr operand {tok!r} is not in the pinned csrs.csv — this "
+                               f"assembler carries no CSR addresses of its own")
+            addr = self._csrs[tok]
+        if not 0 <= addr <= 0xFFF:
+            raise AsmError(f"CSR address {addr:#x} is outside the unsigned 12-bit range. The "
+                           f"csr field shares bits 31..20 with imm12 but is UNSIGNED — the "
+                           f"pinned arg_lut.csv rows distinguish them by field name.")
+        return addr
 
     # -- operand parsing ---------------------------------------------------------------
     @staticmethod
@@ -293,10 +423,13 @@ class Assembler:
 
     def encode(self, mnemonic: str, args: list[str]) -> int:
         name = mnemonic.lower()
-        if name not in self.insns:
-            raise AsmError(f"{name!r} is not in the pinned encoding tables "
-                           f"(rv_i, rv64_i) — this assembler carries no opcodes of its own")
-        insn = self.insns[name]
+        if name in self.insns:
+            insn = self.insns[name]
+        elif name in self.pseudos:
+            insn = self.pseudos[name]
+        else:
+            raise AsmError(f"{name!r} is not in the canonical definition's encoding space — "
+                           f"this assembler carries no opcodes of its own")
         for op in insn.operands:
             if op not in CONTIGUOUS_OPERANDS and op not in SCRAMBLED_OPERANDS:
                 raise AsmError(f"{name!r} uses operand field {op!r}, which this assembler "
@@ -325,6 +458,20 @@ class Assembler:
             word |= _place(*self.arg_lut["imm12lo"], u & 0x1F)
             return word
 
+        # Zicsr's three-register forms spell `name rd, csr, rs1` while the pinned table lists
+        # the fields `rd rs1 csr` — the csr occupies bits 31..20, the position every other
+        # format's immediate holds, and the assembly convention writes it in the immediate
+        # slot. The spelling is proven, not assumed: spike-dasm (the module's documented
+        # second decoder) disassembles the emitted word back to the requested spelling
+        # (`DASM(c00110f3)` -> `csrrw ra, cycle, sp`, measured at P4-SYSTEM.2 slice a).
+        if set(insn.operands) == {"rd", "rs1", "csr"}:
+            if len(args) != 3:
+                raise AsmError(f"{name} expects 3 operands (rd, csr, rs1), got {len(args)}")
+            word |= _place(*self.arg_lut["rd"], self._reg(args[0]))
+            word |= _place(*self.arg_lut["csr"], self._csr(args[1]))
+            word |= _place(*self.arg_lut["rs1"], self._reg(args[2]))
+            return word
+
         supplied = [op for op in insn.operands if op in CONTIGUOUS_OPERANDS]
         if len(args) != len(supplied):
             raise AsmError(f"{name} expects {len(supplied)} operand(s) {supplied}, got {len(args)}")
@@ -343,7 +490,9 @@ class Assembler:
                     raise AsmError(f"{name}: U-immediate {imm:#x} is outside the 20-bit range. "
                                    f"It is the UPPER 20 bits, written unshifted.")
                 word |= _place(hi, lo, imm)
-            else:                                     # shamtd / shamtw / fm / pred / succ
+            elif op == "csr":
+                word |= _place(hi, lo, self._csr(arg))
+            else:                                     # shamtd / shamtw / fm / pred / succ / zimm5
                 sh = self._imm(arg)
                 width = hi - lo + 1
                 if not 0 <= sh < (1 << width):
@@ -426,9 +575,19 @@ class Assembler:
 
         out = []
         for at, text, mnemonic, args in stmts:
+            # A bare name is a LABEL only where a label is legal — an instruction with a
+            # scrambled B/J offset. Everywhere else it belongs to the operand parser (a
+            # csr name resolves through the pinned csrs.csv; anything else is refused
+            # there). Measured at P4-SYSTEM.2 slice a: resolving names for every operand
+            # ate `csrrw x1, cycle, x2`'s csr name as an undefined label.
+            insn = self.insns.get(mnemonic.lower()) or self.pseudos.get(mnemonic.lower())
+            takes_label = insn is not None and any(op in SCRAMBLED_OPERANDS
+                                                   for op in insn.operands)
             resolved = []
             for a in args:
-                if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a) and not re.fullmatch(r"x\d+", a):
+                if (takes_label
+                        and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", a)
+                        and not re.fullmatch(r"x\d+", a)):
                     if a not in labels:
                         raise AsmError(f"{text!r}: label {a!r} is never defined")
                     resolved.append(str(labels[a] - at))
@@ -467,8 +626,12 @@ SHF_ALLOC, SHF_EXECINSTR, SHF_WRITE = 0x2, 0x4, 0x1
 EHDR_SIZE, PHDR_SIZE, SHDR_SIZE = 64, 56, 64
 
 
-def write_elf64(path: Path, entry: int, payload: bytes) -> None:
+def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
     """Write a single-segment RV64 executable loading `payload` at `entry`.
+
+    `ialign` is the profile's instruction-address alignment in BITS (rv64i: 32; rv64gc with
+    C: 16, D-IALIGN-16) — profile data, derived by the caller from the unit's profile.sexp,
+    never assumed here (the rv64i-era assumption this signature retired hard-coded 32).
 
     ⛔ A SECTION HEADER TABLE IS EMITTED EVEN THOUGH EXECUTION DOES NOT NEED ONE. A first cut
     wrote program headers only — which the Sail model loaded and ran without complaint, and which
@@ -482,8 +645,9 @@ def write_elf64(path: Path, entry: int, payload: bytes) -> None:
     rather than to carry a per-model variant — an input that only one comparator accepts is not a
     matched experiment.
     """
-    if entry % 4:
-        raise AsmError(f"entry {entry:#x} is not 4-byte aligned; IALIGN=32 for this profile")
+    if entry % (ialign // 8):
+        raise AsmError(f"entry {entry:#x} is not {ialign // 8}-byte aligned; IALIGN={ialign} "
+                       f"for this profile")
 
     shstrtab = b"\0.text\0.shstrtab\0"
     name_text, name_shstr = 1, 7

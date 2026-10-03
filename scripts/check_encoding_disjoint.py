@@ -112,8 +112,15 @@ def check_slot_rules(path: Path, enc) -> list[tuple[str, list[str]]]:
     return slots
 
 
-def load_fragment(path: Path) -> list[Insn]:
-    """Read a fragment: a unit `encoding.sexp`, a bare `fragment.sexp`, or an opcodes table."""
+def load_fragment(path: Path) -> tuple[list[Insn], list[Insn]]:
+    """Read a fragment: a unit `encoding.sexp`, a bare `fragment.sexp`, or an opcodes table.
+
+    Returns (instructions, pseudo-instructions). A `(pseudo …)` is an assembler spelling,
+    NOT an encoding (schema/fragment.sexp): it never joins the instruction set the
+    collision rule judges — it is decided under the specialization rule in main(). An
+    opcodes table yields instructions only (its `$pseudo_op` rows are skipped, exactly as
+    the assembler's table route skips them).
+    """
     if path.suffix == ".sexp":
         forms = _sexp.read_file(path)
         if len(forms) != 1:
@@ -131,11 +138,14 @@ def load_fragment(path: Path) -> list[Insn]:
         if head == "fragment":
             if path.name != "encoding.sexp":            # unit docs were validated above
                 _schema_validate(path, "fragment")
-            out = []
+            insns, pseudos = [], []
             for i in _sexp.children(root, "insn"):
                 fixed = [(int(a), int(b), int(c)) for a, b, c in _sexp.children(i, "fixed")[0][1:]]
-                out.append(Insn(str(_sexp.field(i, "name")), fixed, path.name))
-            return out
+                insns.append(Insn(str(_sexp.field(i, "name")), fixed, path.name))
+            for p in _sexp.children(root, "pseudo"):
+                fixed = [(int(a), int(b), int(c)) for a, b, c in _sexp.children(p, "fixed")[0][1:]]
+                pseudos.append(Insn(str(_sexp.field(p, "name")), fixed, path.name))
+            return insns, pseudos
         raise CompositionError(
             f"{path}: expected an (encoding …) unit document or a (fragment …) — got "
             f"({head} …)")
@@ -160,7 +170,7 @@ def load_fragment(path: Path) -> list[Insn]:
                 fixed.append((b, b, int(m.group(2), 0)))
         if fixed:
             out.append(Insn(name, fixed, path.name))
-    return out
+    return out, []
 
 
 def collisions(insns: list[Insn]) -> list[tuple[Insn, Insn]]:
@@ -177,6 +187,34 @@ def collisions(insns: list[Insn]) -> list[tuple[Insn, Insn]]:
     return out
 
 
+def pseudo_problems(insns: list[Insn], pseudos: list[Insn]) -> list[str]:
+    """Decide the pseudo-instructions against the composed instruction set.
+
+    A pseudo is legal exactly when every word it assembles is already a word of a composed
+    instruction — it adds nothing to the encoding space. Two failures are named: a pseudo
+    NO instruction realizes (it would silently EXTEND the space, which is an encoding
+    sneaking in through the assembler door), and a pseudo overlapping an instruction it
+    does not fully specialize (one word, two decode classes — the ambiguity the collision
+    rule exists to refuse, one level down).
+    """
+    out = []
+    for p in pseudos:
+        realized = False
+        for i in insns:
+            common = p.mask & i.mask
+            if (p.value ^ i.value) & common:
+                continue                            # disjoint word sets: no relation
+            if i.mask & ~p.mask:
+                out.append(f"pseudo {p.name} ({p.origin}) overlaps {i.name} ({i.origin}) "
+                           f"without specializing it — one word, two decode classes")
+            else:
+                realized = True                     # p's word set ⊆ i's word set
+        if not realized:
+            out.append(f"pseudo {p.name} ({p.origin}) is realized by NO composed instruction "
+                       f"— it would extend the encoding space it is declared not to touch")
+    return out
+
+
 def main(argv: list[str]) -> int:
     if len(argv) == 2 and argv[1] == "--self-test":
         return _selftest()
@@ -184,6 +222,7 @@ def main(argv: list[str]) -> int:
         print("usage: check_encoding_disjoint.py <fragment…>", file=sys.stderr)
         return 2
     insns: list[Insn] = []
+    pseudos: list[Insn] = []
     all_slots: list[tuple[str, list[str]]] = []
     try:
         for arg in argv[1:]:
@@ -195,20 +234,26 @@ def main(argv: list[str]) -> int:
                 forms = _sexp.read_file(p)
                 if len(forms) == 1 and _sexp.head(forms[0], str(p)) == "encoding":
                     all_slots += check_slot_rules(p, forms[0])
-            part = load_fragment(p)
-            if not part:
+            part, part_pseudos = load_fragment(p)
+            if not part and not part_pseudos:
                 print(f"REFUSED: {p} yielded no instructions — an empty fragment is not a valid one",
                       file=sys.stderr)
                 return 2
-            print(f"  fragment {p.name:16} {len(part):3} instruction(s)")
+            print(f"  fragment {p.name:16} {len(part):3} instruction(s)"
+                  + (f", {len(part_pseudos)} pseudo-instruction(s)" if part_pseudos else ""))
             insns += part
+            pseudos += part_pseudos
     except (CompositionError, _sexp.SexpError, ValueError) as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 2
 
-    dupes = [n for n in {i.name for i in insns} if sum(1 for i in insns if i.name == n) > 1]
+    names = [i.name for i in insns] + [p.name for p in pseudos]
+    dupes = [n for n in set(names) if names.count(n) > 1]
     bad = collisions(insns)
-    print(f"\n  composed set: {len(insns)} instruction(s) from {len(argv) - 1} fragment(s)")
+    problems = pseudo_problems(insns, pseudos)
+    print(f"\n  composed set: {len(insns)} instruction(s)"
+          + (f" (+ {len(pseudos)} pseudo-instruction(s))" if pseudos else "")
+          + f" from {len(argv) - 1} fragment(s)")
     if dupes:
         print(f"  DUPLICATE NAME(S): {sorted(dupes)}")
     if bad:
@@ -216,8 +261,16 @@ def main(argv: list[str]) -> int:
         for a, b in bad[:10]:
             print(f"    {a.name} ({a.origin}) overlaps {b.name} ({b.origin})  "
                   f"mask={a.mask & b.mask:#010x}")
+    if problems:
+        print(f"  PSEUDO PROBLEMS: {len(problems)}")
+        for line in problems[:10]:
+            print(f"    {line}")
+    if bad or problems:
         print("\n  REJECTED — these fragments do not compose. A decoder cannot be generated from a")
         print("  set in which one word matches two instructions.")
+        return 1
+    if dupes:
+        print("\n  REJECTED — duplicate instruction names in one composition.")
         return 1
     print("  no collisions, no duplicate names — the fragments COMPOSE.")
     print("  ⚠️ This decides the DECODER composes. It says nothing about whether the semantics do.")
@@ -265,6 +318,12 @@ def _selftest() -> int:
         p.write_text(f'(fragment (id "{frag_id}") (kind extension){req}\n{body})')
         return frag_id
 
+    def raw_frag(frag_id, body):
+        p = defs / f"{frag_id}.sexp"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(f'(fragment (id "{frag_id}") (kind extension)\n{body})')
+        return frag_id
+
     def enc_doc(base, exts, extra_compose=""):
         ext = "".join(f' (extensions "{e}")' for e in exts)
         doc = (f'(encoding (profile "p") (ilen 32)\n'
@@ -278,6 +337,23 @@ def _selftest() -> int:
     frag("ext", "riscv/t-ext", [("mul", 2)])
     frag("clash", "riscv/t-clash", [("add", 0)])
     frag("needy", "riscv/t-needy", [("div", 3)], requires="riscv/t-missing")
+
+    # pseudo-instruction arms: a csr-like base instruction (funct3 2) and pseudo spellings
+    # of it — the Zicntr/csrrs shape (P4-SYSTEM.2 slice a).
+    raw_frag("riscv/t-csr",
+             '(insn (name "csrish") (fixed (14 12 0x2) (6 2 0x13) (1 0 0x3)))\n')
+    raw_frag("riscv/t-pseudo",
+             '(pseudo (name "rdish") (of "t::csrish") '
+             '(fixed (31 20 0x5) (19 15 0x0) (14 12 0x2) (6 2 0x13) (1 0 0x3)) '
+             '(operands) (from "t"))\n')
+    raw_frag("riscv/t-ghost-pseudo",
+             '(pseudo (name "ghost") (of "t::csrish") '
+             '(fixed (31 20 0x5) (19 15 0x0) (14 12 0x4) (6 2 0x13) (1 0 0x3)) '
+             '(operands) (from "t"))\n')
+    raw_frag("riscv/t-ambi-pseudo",
+             '(pseudo (name "ambi") (of "t::csrish") '
+             '(fixed (31 28 0x1) (14 12 0x2)) (operands) (from "t"))\n')
+    frag("dupe", "riscv/t-dupe", [("add", 7)])
 
     import subprocess
     ok = frag("okslot", "riscv/t-slot", [("rem", 4)])
@@ -320,6 +396,18 @@ def _selftest() -> int:
     arm("RED   a collision through the resolved unit path is still a rejection",
         lambda: refuses([str(enc_doc("riscv/t-base", ["riscv/t-clash"]))],
                         "COLLISIONS: 1", 1))
+    arm("GREEN a pseudo-instruction specializing a composed instruction adds nothing",
+        lambda: composes([str(enc_doc("riscv/t-base", ["riscv/t-csr", "riscv/t-pseudo"]))],
+                         "pseudo-instruction(s)"))
+    arm("RED   a pseudo no composed instruction realizes extends the encoding space",
+        lambda: refuses([str(enc_doc("riscv/t-base", ["riscv/t-csr", "riscv/t-ghost-pseudo"]))],
+                        "extend the encoding space", 1))
+    arm("RED   a pseudo overlapping without specializing is the collision rule one level down",
+        lambda: refuses([str(enc_doc("riscv/t-base", ["riscv/t-csr", "riscv/t-ambi-pseudo"]))],
+                        "without specializing", 1))
+    arm("RED   duplicate instruction names are a rejection, not an advisory",
+        lambda: refuses([str(enc_doc("riscv/t-base", ["riscv/t-dupe"]))],
+                        "DUPLICATE NAME(S)", 1))
 
     import shutil
     shutil.rmtree(tmp)

@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slice (a) done `2026-10-03`, `SEMULITH-P4-0004`)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — the first definition-pipeline leaf on the resolved profile; the route flips from `profile-resolution` to `generated-definition` with it |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slice (a) landed (fragments + assembler whitelist + IALIGN data); next is slice (b): semantics-language operators + the new sem files; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -456,22 +456,189 @@ This gate authorises the planned next engineering stage: board implementation.
   no new diagnostic tool (the records probe is recorded below, one-off by design; the
   citation checker's edit is a fix to an existing row's tool).
 
-`P4-SYSTEM.2`+ : pending — filled at execution.
+`P4-SYSTEM.2` slice (a) — fragments + assembler whitelist + IALIGN data (`2026-10-03`, `SEMULITH-P4-0004`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's pre-conditions re-measured, then the upstream
+  census the slice stands on (the brief delegated the table carving to execution):
+
+  ```
+  $ ls profiles/rv64gc-lab-v0/
+  contract-obligations.sexp  DOSSIER.md  profile.sexp  requirements.sexp  sources.sexp
+  #  no references.sexp — the new fragments' tables were pinned nowhere (a fragment
+  #  generated from an unpinned source is a model built on something nobody can re-derive)
+  $ grep -n '"csr"' target/refs/riscv-opcodes/arg_lut.csv; grep -c csr scripts/riscv_asm.py
+  "csr", 31, 20          # the pinned arg_lut carries the field…
+  0                      # …but the assembler's whitelists had no csr operand (pre-edit count)
+  $ grep -n 'IALIGN=32 for this profile' scripts/riscv_asm.py
+  486:        raise AsmError(f"entry {entry:#x} is not 4-byte aligned; IALIGN=32 for this profile")
+  #  a hard-coded 32 while rv64gc-lab-v0 declares (ialign 16) — D-IALIGN-16
+  # THE CENSUS (master fetched via the same raw.githubusercontent route fetch_references.sh uses):
+  $ for m in csrrw csrrs csrrc csrrwi csrrsi csrrci mret sret wfi sfence.vma \
+             rdcycle rdtime rdinstret; do echo "== $m"; grep -rlE "^$m[[:space:]]" extensions/; done
+  == csrrw … == csrrci   → extensions/rv_zicsr    (the 6 real rows; csrrwi/csrrsi/csrrci take zimm5)
+  == mret, == wfi        → extensions/rv_system
+  == sret, == sfence.vma → extensions/rv_s
+  == rdcycle/rdtime/rdinstret → NO real row in any table
+  $ cat extensions/rv_zicntr
+  $pseudo_op rv_zicsr::csrrs  rdcycle    rd 19..15=0 31..20=0xC00 14..12=2 6..2=0x1C 1..0=3
+  $pseudo_op rv_zicsr::csrrs  rdtime     rd … 31..20=0xC01 …
+  $pseudo_op rv_zicsr::csrrs  rdinstret  rd … 31..20=0xC02 …   # exist ONLY as pseudo-ops of csrrs
+  $ for f in rv_i rv64_i rv_m rv64_m; do shasum -a 256 target/refs/riscv-opcodes/$f master/extensions/$f; done
+  IDENTICAL ×4           # upstream moved the tables root → extensions/ WITHOUT changing the bytes
+  $ grep -E '"(csr|zimm5)"' target/refs/riscv-opcodes/arg_lut.csv
+  "csr", 31, 20   /   "zimm5", 19, 15      # both fields already pinned — no arg_lut re-pin needed
+  # the four privileged instructions' census reference (RVP-INSNS 18.1): the chapter's own
+  # listing is an unpinned figure IMAGE (the encodings-as-images doctrine again); the four
+  # are named in the pinned chapters — mret ×7 / wfi ×27 in priv/machine.html,
+  # sret ×7 / sfence.vma ×4 in priv/supervisor.html (D-PRIV-INSNS cites exactly these)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in existing behavior; the slice runs the
+  decided design, and execution measured four things the brief did not know (each fixed at
+  root, none weakened a check):
+  1. **Upstream restructured.** The tables moved from the repository root to `extensions/`,
+     so the fetch route's `master/<file>` would 404 any FRESH fetch of the pinned tables
+     (verify-only stayed green — the bytes are on disk). WHERE: the subpath case in
+     `scripts/fetch_references.sh`; fixed by mapping `rv_*` under `extensions/` — honest
+     for both profiles because the moved tables hash byte-identical to the pins (measured ×4).
+  2. **Zicntr adds no encodings.** Its three counter reads exist upstream only as
+     `$pseudo_op` rows of `csrrs`, and emitting them as `(insn …)` collides with csrrs in
+     the disjointness gate by mask math (csrrs constrains only bits 14..12 and 6..0;
+     rdcycle agrees on all of them). WHERE: `schema/fragment.sexp` gained the `(pseudo …)`
+     construct (assembler spellings, never encodings), and `zicntr.sexp` declares
+     `(requires "riscv/rv64i") (requires "riscv/zicsr")` — the pinned rows themselves name
+     `rv_zicsr::csrrs` as the base, so the dependency is declared, not composed by luck.
+  3. **Two latent resolver/gate defects, exposed by the first multi-extension composition.**
+     `riscv_asm.resolve_composition` read only `ext[0][1:]` — every `(extensions …)` FORM
+     after the first was silently dropped (the schema's `(repeat yes)` is one string per
+     form; no tracked composition ever had two). And `check_encoding_disjoint.py` printed
+     `DUPLICATE NAME(S)` and STILL returned 0 — an advisory where the verdict text claimed
+     "no duplicate names". WHERE: `scripts/riscv_asm.py` (the resolver loop) and
+     `scripts/check_encoding_disjoint.py` `main()`; both fixed, both armed by new self-test
+     RED arms.
+  4. **The assembler's label pass ate csr names** (`label 'cycle' is never defined` on
+     `csrrw x1, cycle, x2` — names were label-resolved for EVERY operand position), and
+     IALIGN was the hard-coded 32 at the line-486 check. WHERE: `riscv_asm.py` `assemble()`
+     (labels now resolve only for B/J scrambled-offset operands; a csr name falls through
+     to the operand parser, which resolves it through the pinned `csrs.csv`) and
+     `write_elf64()` (ialign is now a required parameter; `Assembler` derives it from the
+     sibling `profile.sexp`'s `(ialign …)` through the dossier mapping owner).
+
+- [x] **FIX** — at the lowest-risk level that works, no Rust touched:
+  `scripts/fetch_references.sh` (the `extensions/` subpath mapping);
+  `profiles/rv64gc-lab-v0/references.sexp` (NEW — the encoding-source re-pin: rv_zicsr,
+  rv_zicntr, rv_system, rv_s, csrs.csv + the shared arg_lut.csv, sha256+bytes each, plus
+  the two candidates with re-derived binary digests; rv64i's ledger untouched);
+  `schema/fragment.sexp` (+`(pseudo …)`, `requires` now `(repeat yes)`);
+  `scripts/gen_fragments.py` (+3 fragments, per-table sha256 provenance, pseudo emission,
+  multi-requires emission); `definitions/riscv/{zicsr,zicntr,system}.sexp` (NEW, generated);
+  `scripts/riscv_asm.py` (csr/zimm5 whitelists — positions always from the pinned
+  arg_lut.csv; the csr operand parser; pseudo flow through the canonical path; the
+  resolver fixes; derived IALIGN); `scripts/check_encoding_disjoint.py` (pseudo support
+  under the specialization rule, dupes a rejection; self-test 8→12 arms);
+  `scripts/check_unit_composition.sh` (the new return shape + pseudo verdict; self-test
+  8→9); `scripts/run_smoke.py`, `scripts/run_semulith_smoke.py` (pass `asm.ialign`).
+  Routed INSIDE the tree (intra-tree, later slices): `crates/semulith-verify/src/elf.rs`'s
+  IALIGN=32 entry check is the Rust twin of the retired Python assumption — slice (d) brings
+  it in line when the engine learns IALIGN (slice (a) touches no Rust by boundary); csr
+  NAME resolution reads the pinned-but-untracked csrs.csv — when slice (c)'s state.sexp
+  owns the CSR addresses, resolution migrates to the tracked document; rdcycle's
+  decode/coverage naming (a pseudo of csrrs) is slice (e)/(f)'s scope-census design input.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0
+  MATCH ×6 (the new tables + arg_lut) … MATCH encoding tables vs profile scope 52 == 52 … ok
+  $ bash scripts/fetch_references.sh --verify-only rv64i-lab-v0
+  … MATCH matched-profile ISA string rv64i_zvl32b … ok      # rv64i's verification stays green
+  $ mv target/refs/riscv-opcodes/rv_s /tmp && bash scripts/fetch_references.sh rv64gc-lab-v0
+  FETCH    riscv-opcodes/extensions/rv_s  →  MATCH … refetched bytes identical   # the new route, live
+  $ python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/references.sexp schema/references.sexp
+  check_sexp_schema: ok           # (the schema exists — no DOSSIER-SCHEMA skip-by-name)
+  $ python3 scripts/check_sexp_schema.py definitions/riscv/{zicsr,zicntr,system}.sexp schema/fragment.sexp
+  ok ×3 (and rv64i.sexp / m.sexp still conform)
+  $ git diff --stat -- definitions/            # after regeneration
+  (empty — rv64i.sexp and m.sexp re-derive BYTE-IDENTICAL)
+  $ python3 scripts/check_encoding_disjoint.py definitions/riscv/rv64i.sexp definitions/riscv/<ext>.sexp
+  base+m 65 / base+zicsr 58 / base+system 56 instructions — COMPOSE; base+zicsr+zicntr
+  58 (+ 3 pseudo-instruction(s)) — COMPOSE; the 4-fragment trial union through a synthetic
+  unit doc: 62 instruction(s) (+ 3 pseudo) — no collisions, no duplicate names — COMPOSE
+  # the assembler probe (synthetic rv64gc-trial unit, untracked):
+  rv64gc-trial ialign: 16     rv64i-lab-v0 ialign: 32
+  0xc00110f3 csrrw x1, cycle, x2 … 0x30200073 mret … 0x12e68073 sfence.vma x13, x14
+  $ target/refs/spike-build/spike-dasm < emitted-words      # the second-decoder round-trip
+  csrrw ra, cycle, sp / csrrs gp, mstatus, tp / csrrc t0, mepc, t1 / csrrwi t2, mcause, 3
+  csrrsi s0, sie, 17 / csrrci s1, mip, 31 / csrr a0, cycle / csrr a1, time / csrr a2, instret
+  mret / sret / wfi / sfence.vma a3, a4         # all 13 forms exact (rdcycle prints as csrr —
+                                                # the same encoding, spike's own pseudo preference)
+  ```
+
+- [x] **NO REGRESSION** — the changed logic fired RED first, then the guard set:
+  `check_encoding_disjoint.py --self-test` 12/12 (the 3 new pseudo arms: unrealized →
+  "extend the encoding space", partial overlap → "without specializing", and
+  GREEN-specialization; the dupes arm → "DUPLICATE NAME(S)" rc=1);
+  `check_unit_composition.sh --self-test` 9/9 (the new pseudo RED arm); the assembler's
+  manual RED probes (recorded with commands above): `csrrw x1, 0x1000, x2` → "outside the
+  unsigned 12-bit range"; `csrrw x1, notacsr, x2` → "not in the pinned csrs.csv";
+  `csrrwi x1, cycle, 32` → "zimm5 value 32 does not fit in 5 bits"; entry 2 mod 4 →
+  refused at IALIGN=32, accepted at IALIGN=16. Gates: UNIT-COMPOSITION / SEMANTICS /
+  EXTRACTION / EXERCISE-COVERAGE (21/21) / INTERACTION-MATRIX / SOURCE-FORMAT /
+  DOSSIER-SCHEMA (the new references.sexp validated, not skipped) / PROFILE-CONSISTENCY
+  (the new dossier passes the candidate-shape arms) all green; GUEST-GEN / DEF-GEN /
+  STATE-GEN byte-exact (no Rust surface touched); `make gate` → `=== all doctrines green ===`
+  (DERIVED-COUNTS 383→384 arms re-derived in LIVE_STATUS.md). Census behind the
+  "no other consumer" claim: `grep -n 'children(.*"insn"' scripts/*.py` →
+  check_extraction.py:72 and check_semantics.py:223 only, both rv64i-scoped today, so the
+  pseudo-bearing fragments have no unintended reader.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice b),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the execution findings; promotion: declined (the
+  durability is the machinery — the resolver/gate fixes are armed by new self-test REDs,
+  and the pseudo/ialign designs are data in the schema and the pins)),
+  `LIVE_STATUS.md` (the re-derived arms count only — no row's state changed),
+  `docs/book/src/plan/p4.md` (the `.2` slice note) + the regenerated book index.
+
+`P4-SYSTEM.2` slices (b)–(h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (a) | the upstream census (13 mnemonics over master's `extensions/`: rv_zicsr 6 real rows, rv_zicntr 3 pseudo-only rows of csrrs, rv_system mret/wfi + rv_s sret/sfence.vma; the moved rv_* tables byte-identical to the rv64i pins; the pinned arg_lut.csv already carries csr/zimm5); fetch_references `--verify-only` green for BOTH profiles + a scripted fresh re-fetch of rv_s byte-identical; check_sexp_schema on the new references.sexp and all 5 fragments; check_encoding_disjoint self-test 12/12 (+3 pseudo arms, +1 dupes arm) and the trial compositions (base+each new fragment; the 62-instruction 4-fragment union collision-free through a synthetic unit doc); the assembler probe (all 13 forms assembled, the spike-dasm round-trip exact, 4 RED operand refusals named, IALIGN 32 refuses / 16 accepts an entry 2 mod 4, rv64i derives 32 and rv64gc 16); UNIT-COMPOSITION self-test 9/9; EXERCISE-COVERAGE 21/21; EXTRACTION / INTERACTION-MATRIX / SOURCE-FORMAT / SEMANTICS / DOSSIER-SCHEMA / PROFILE-CONSISTENCY green; GUEST-GEN / DEF-GEN / STATE-GEN byte-exact; `make gate` green (DERIVED-COUNTS 383→384 arms re-derived) | slice (a) landed: the Zicsr / Zicntr / privileged-system fragments from the re-pinned tables, the csr operand field and IALIGN as profile data; rv64i's generated surfaces byte-identical; the unit stays on the `profile-resolution` route |
 | `2026-10-03` | `.1` | the snapshot census measured on disk (24 priv + 46 unpriv pages, 21/21 pins re-hashed against the tracked SHA256SUMS); the chapter versions measured from the page titles (M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicsr/Zifencei/Zicntr 2.0, RVWMO 2.0, Machine/Supervisor 1.13, Sstc 1.0); the closure statements measured (G = IMAFDZicsr_Zifencei — naming 36.1; D⇒F — 21.1; F⇒Zicsr — 20.1; C⇒Zca+Zcd at RV64 — zc 28.1.2; IALIGN=16 — 27.1); the PDF pins re-verified against the catalog (3/3); RECORD-SCHEMA 18 record files; EXTRACTION 5 units (the resolution leg: obligations checked both ways); EXERCISE-COVERAGE / INTERACTION-MATRIX 5 units (n/a by declaration); PROFILE-CONSISTENCY 5 dossiers; FACT-OWNERSHIP 61 kinds (fixture re-pinned 9→10); check_citations 52/52 for both units + the 3 named skips; route self-tests 11/11 + 21/21 + 15/15; `make gate` green (DERIVED-COUNTS 376→383 arms re-derived) | the profile resolved: rv64gc-lab-v0 — every element source-located, the closure measured, the dossier landed unregistered with the new profile-resolution route honored by declaration in three gates |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice a) | `SEMULITH-P4-0004 (leaf P4-SYSTEM.2): slice a — the Zicsr/Zicntr/privileged-system fragments from the re-pinned tables; the csr operand field; IALIGN as profile data` | the rv64gc references.sexp re-pin (5 new tables + shared arg_lut, sha256+bytes); the fetch route's extensions/ mapping (the moved tables hash byte-identical to the pins); the (pseudo …) fragment construct + the disjointness specialization rule (self-test 8→12); the resolver's dropped-extensions-form and advisory-dupes fixes measured at the first 3-extension composition; rv64i.sexp/m.sexp re-derived byte-identical; both profiles' verify routes green |
 | `.1` | `SEMULITH-P4-0002 (leaf P4-SYSTEM.1): the profile resolved — rv64gc-lab-v0, every element source-located, the closure measured; the profile-resolution route` | the unit dossier (5 files: profile/sources/requirements/obligations/DOSSIER); 18 decisions mirrored twice (probe-derived, verbatim); schema/profile.sexp +profile-resolution with comparison optional; EXTRACTION/EXERCISE-COVERAGE/INTERACTION-MATRIX honor the route (self-tests 11/21/15); check_citations subdirectory + named-skip fix; gen_platform canonical ISA order; FACT-OWNERSHIP +4 rows (61), fixture re-pinned to six units |
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (a) done (`SEMULITH-P4-0004`) — fragments + assembler whitelist +
+  IALIGN data. The upstream census measured what the brief delegated: Zicsr's six
+  instructions are real rows in `rv_zicsr`; mret/wfi live in `rv_system`, sret/sfence.vma in
+  `rv_s`; and Zicntr's rdcycle/rdtime/rdinstret exist ONLY as `$pseudo_op` rows of csrrs —
+  Zicntr adds no encodings. Upstream also moved every table from the repository root to
+  `extensions/` (the moved rv_i/rv64_i/rv_m/rv64_m hash byte-identical to the rv64i pins);
+  the fetch route now maps table names under `extensions/` and both profiles'
+  `--verify-only` stay green. The re-pin landed as `profiles/rv64gc-lab-v0/references.sexp`
+  (rv64i's ledger untouched; the pinned arg_lut.csv already carried csr/zimm5, so it needed
+  no re-pin). The fragment layer gained the `(pseudo …)` construct — assembler spellings
+  decided under a specialization rule, never encodings — and `zicntr.sexp` declares its real
+  dependency (`requires` rv64i AND zicsr, the rows' own `rv_zicsr::csrrs`). Measured in
+  execution and fixed at root: `resolve_composition` silently dropped every `(extensions …)`
+  form after the first (latent since MODEL-COMPOSE.2), the disjointness checker's
+  `DUPLICATE NAME(S)` was advisory-only, and the assembler's label pass ate csr names.
+  IALIGN is profile data now (rv64i 32, rv64gc 16 — the line-486 assumption retired).
+  rv64i.sexp/m.sexp re-derive byte-identical; all 13 new forms assemble and round-trip
+  through spike-dasm exactly; `make gate` green. The unit stays on the
+  `profile-resolution` route — the flip remains slice (h)'s atomic commit. Next: slice (b) —
+  the semantics-language operators + the new sem files.
 
 - `2026-10-03`: the `.2` design brief recorded (`SEMULITH-P4-0003`). The measured
   pre-conditions: the route flip is atomic by construction (a partial flip is RED by

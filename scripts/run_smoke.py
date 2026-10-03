@@ -65,7 +65,7 @@ def build(name: str) -> tuple[Path, int]:
     payload = b"".join(w.to_bytes(4, "little") for w, _ in words)
     OUT.mkdir(parents=True, exist_ok=True)
     elf = OUT / f"{name}.elf"
-    write_elf64(elf, ENTRY, payload)
+    write_elf64(elf, ENTRY, payload, asm.ialign)
     return elf, len(words)
 
 

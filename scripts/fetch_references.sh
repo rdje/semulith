@@ -167,10 +167,15 @@ if [ -n "$ENC_DIR" ]; then
     [ -n "$fname" ] || continue
     dest="$ENC_DIR/$fname"
     if [ "$VERIFY_ONLY" -eq 0 ] && [ ! -f "$dest" ]; then
-      # constants.py lives under src/riscv_opcodes/; the tables live at the repository root.
+      # constants.py lives under src/riscv_opcodes/; the instruction tables moved from the
+      # repository root to extensions/ upstream (measured 2026-10-03, P4-SYSTEM.2 slice a:
+      # master/extensions/rv_i hashes byte-identical to this ledger's pinned rv_i — the move
+      # relocated the files without changing their bytes). Metadata (arg_lut.csv, csrs.csv,
+      # causes.csv) stays at the root.
       case "$fname" in
-        *.py) sub="src/riscv_opcodes/$fname" ;;
-        *)    sub="$fname" ;;
+        *.py)           sub="src/riscv_opcodes/$fname" ;;
+        rv_*|rv32_*|rv64_*) sub="extensions/$fname" ;;
+        *)              sub="$fname" ;;
       esac
       say "FETCH    riscv-opcodes/$sub"
       curl -sSL --max-time 120 -o "$dest" \

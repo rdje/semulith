@@ -1,5 +1,37 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0004 (leaf P4-SYSTEM.2, slice a) — the Zicsr/Zicntr/privileged-system fragments from the re-pinned riscv-opcodes; the csr operand field; IALIGN as profile data
+
+- The upstream census (riscv-opcodes master, the fetch script's own route) measured what
+  the design brief delegated: the six Zicsr instructions are real rows in
+  `extensions/rv_zicsr`; mret/wfi live in `rv_system`, sret/sfence.vma in `rv_s`; and
+  Zicntr's rdcycle/rdtime/rdinstret exist ONLY as `$pseudo_op` rows of csrrs — Zicntr adds
+  no encodings. Upstream moved every table from the repository root to `extensions/`; the
+  moved rv_i/rv64_i/rv_m/rv64_m hash byte-identical to the rv64i pins, so the fetch route's
+  new `extensions/` mapping keeps both profiles' `--verify-only` green (a scripted fresh
+  re-fetch of rv_s came back byte-identical).
+- The re-pin landed as `profiles/rv64gc-lab-v0/references.sexp` (rv_zicsr, rv_zicntr,
+  rv_system, rv_s, csrs.csv + the shared arg_lut.csv — sha256+bytes each; rv64i's ledger
+  untouched; the pinned arg_lut already carried csr (31..20) and zimm5 (19..15), so no
+  arg_lut re-pin). Three new generated fragments: `definitions/riscv/zicsr.sexp` (owns the
+  csr/zimm5 fields), `zicntr.sexp` (the counter reads as `(pseudo …)` — a new fragment
+  construct for assembler spellings that add nothing to the encoding space, decided by the
+  disjointness gate under a specialization rule; requires rv64i AND zicsr, the pinned rows'
+  own `rv_zicsr::csrrs`), `system.sexp` (the D-PRIV-INSNS four). rv64i.sexp/m.sexp
+  re-derive byte-identical; the 62-instruction 4-fragment trial union is collision-free.
+- The assembler gained the csr/zimm5 operand fields (positions always derived from the
+  pinned arg_lut.csv), csr names resolved through the pinned csrs.csv, pseudo-op support
+  through the canonical path, and profile-derived IALIGN (rv64i 32 / rv64gc 16 — the
+  line-486 hard-code retired). All 13 new forms assemble and round-trip through spike-dasm
+  exactly. Measured in execution, fixed at root: `resolve_composition` silently dropped
+  every `(extensions …)` form after the first (latent since MODEL-COMPOSE.2), the
+  disjointness checker's `DUPLICATE NAME(S)` was advisory-only, and the assembler's label
+  pass ate csr names. No Rust surface touched.
+- Validation: check_encoding_disjoint self-test 12/12 (the pseudo and dupes arms RED
+  first), UNIT-COMPOSITION 9/9, EXERCISE-COVERAGE 21/21, the focused gates green,
+  fetch_references `--verify-only` green for BOTH profiles, `make gate` green
+  (DERIVED-COUNTS 383→384 self-test arms re-derived).
+
 ## SEMULITH-AC-0057 (tree ARTIFACT-CLEANUP) — the 2026-10-03 §8 run: 0 incremental caches present to delete; the reference evidence logs kept
 
 - The ~24 h trigger fired (the `2026-10-02` record was a day old). The census found
@@ -832,42 +864,4 @@
 - Verified: DEF-GEN ok (9 self-test arms + byte-compare); `make check` 180/180 + fmt +
   clippy; synth suite 5/5; fragment regeneration byte-identical. Lesson promoted to
   `docs/knowledge/a-dead-justification-camouflages-a-silent-path.md`.
-
-## SEMULITH-AC-0055 (tree ARTIFACT-CLEANUP) — the 2026-10-01 §8 cleanup: 96 incremental caches, 248 MB
-
-- Time-triggered run (the `2026-09-30` run was a full day old). Pre-delete census: 96
-  cargo incremental `.bin` files / 248 MB, all under `*/incremental/*` (48
-  `target/debug`, 18 x86_64, 12 wasm32, 9+9 the two miri profiles); 0 stray
-  `.bin`/`.log` in the enumerated locations; no `target/refs/*.log` present; the 7
-  cargo-home crate-source fixtures kept by policy (inputs, not artifacts).
-- Post-delete re-census: 0 incremental `.bin`; `target` 3.7 G → 3.5 G, `.app-data`
-  unchanged at 1.4 G. `docs/ARTIFACT_CLEANUP.md` overwritten with the one-line record.
-
-## SEMULITH-BR-0005 (leaf P3-BREADTH.1) — F2 measured executably; the unconditional-change set is empty; `.1` slice-gates on `.3`
-
-- Finding F2 (register grouping with fill semantics, TI C64x §2.2) was the one
-  `DSP-REVIEW.7` finding classified from a document's shape, not a measured refusal.
-  The report named the honest route and `.1` took it: synth probe 5
-  (`state-groups.sexp` — the real scalar state document plus one synthetic
-  `register_groups` form) refuses by name, `undeclared field "register_groups"`, rc 1;
-  the synth suite is now 5/5.
-- The findings' required-**unconditional** implementation set measured **empty**: F4/F5
-  are conditional on a VLIW slice, F2's implementation idles unless the slice is TI
-  (implementing grouping with no exercised target would be the speculative generality
-  this tree exists to refuse), F6 fires per new profile. `.1` is `slice-gated` — not
-  closed: `.3` naming a VLIW or TI slice reopens it by name. Frontier moves to `.2`.
-- Scalar regression evidence preserved and re-run (`EVD-07`; no code changed):
-  `make check` 180/180 + fmt + clippy clean; gen_state rc 0; DEF-GEN ok; the G1 gate
-  verdict `passed` re-derived.
-
-## SEMULITH-BR-0001 (leaf P3-BREADTH.1) — the composable-DSP design discussion, recorded for resumption
-
-- The director's `[DBINP]` exchange recorded in the `P3-BREADTH` tree's new Design
-  Discussions section: a DSP as composition — the fixed skeleton of problems, the measured
-  per-axis menu of vendor-citable choices, the composition rules that make a selection
-  coherent, and the ISA as the fabric moving data between the chosen parts ("lego into a
-  coherent, functional whole"). Resume point for the hypothetical high-end DSP as this
-  tree's ultimate stress fixture; the permanent bounds carried (citable per-axis; never
-  evidence about a real DSP).
-- The tree's blockers cleared on record: `DSP-REVIEW` closed 8/8 (`SEMULITH-DR-0094`).
 

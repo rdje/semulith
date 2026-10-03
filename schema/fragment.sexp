@@ -6,6 +6,12 @@
 ;; here as operators (SOT-FORMAT.2): `(fixed (31 25 0x0) …)` bit-field triples,
 ;; `(operands rd rs1 rs2)` bare-symbol lists, `(pieces (12 12) …)` integer pairs.
 ;;
+;; A `(pseudo …)` is NOT an instruction: it is an assembler spelling whose encoding is a
+;; specialization of a real instruction's (Zicntr's rdcycle/rdtime/rdinstret exist
+;; upstream only as $pseudo_op rows of csrrs — measured at the P4-SYSTEM.2 re-pin).
+;; Pseudos add nothing to the encoding space; check_encoding_disjoint.py decides them
+;; under the specialization rule, never as instructions.
+;;
 ;; Records move only behind the schema layer: an undeclared construct, an unknown
 ;; field, a wrong arity or a wrong value type is refused by name, never ignored.
 
@@ -14,11 +20,12 @@
 (construct (name fragment)
   (field (name id) (type string))
   (field (name kind) (type symbol) (values isa-base) (values isa-extension))
-  (field (name requires) (type string) (empty yes))
+  (field (name requires) (type string) (empty yes) (repeat yes))
   (field (name source) (type form) (head source))
   (field (name field) (type form) (head field) (repeat yes) (optional yes))
   (field (name scatter) (type form) (head scatter) (repeat yes) (optional yes))
-  (field (name insn) (type form) (head insn) (repeat yes)))
+  (field (name insn) (type form) (head insn) (repeat yes))
+  (field (name pseudo) (type form) (head pseudo) (repeat yes) (optional yes)))
 
 (construct (name source)
   (field (name file) (type form) (head file) (repeat yes))
@@ -42,6 +49,13 @@
 
 (construct (name insn)
   (field (name name) (type symbol))
+  (field (name fixed) (type form) (head fixed))
+  (field (name operands) (type form) (head operands))
+  (field (name from) (type string)))
+
+(construct (name pseudo)
+  (field (name name) (type symbol))
+  (field (name of) (type string))
   (field (name fixed) (type form) (head fixed))
   (field (name operands) (type form) (head operands))
   (field (name from) (type string)))
