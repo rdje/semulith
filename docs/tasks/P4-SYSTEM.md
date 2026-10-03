@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009`, (f) `SEMULITH-P4-0010` done, all `2026-10-03`)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009`, (f) `SEMULITH-P4-0010`, (g) `SEMULITH-P4-0011` done, all `2026-10-03`)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(f) landed; next is slice (g): the interactions.sexp (the cross-form matrix for the privileged semantics); the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(g) landed; next is slice (h): the atomic flip (the route flips from `profile-resolution` to `generated-definition` — the staged unit, corpus, encoding, state and matrix land tracked in one commit) |
 
 ## Decisions
 
@@ -1173,12 +1173,114 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
   pending), `docs/book/src/plan/p4.md` — `CHANGELOG.md`/`DEV_NOTES.md` sharded at
   their ceilings.
 
-`P4-SYSTEM.2` slices (g)–(h) : pending — filled at execution.
+`P4-SYSTEM.2` slice (g) — the interactions.sexp: the 7-axis × 28-cell matrix authored and rehearsed green against the staged unit (`2026-10-03`, `SEMULITH-P4-0011`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (g): the unit's interaction matrix,
+  modelled on rv64i's (`profiles/rv64i-lab-v0/interactions.sexp`, 6 axes → 21 cells) and
+  judged by `scripts/check_interaction_matrix.py` (COMPLETE — the N(N+1)/2 cells
+  re-derived; RESOLVED — guest cells need both `guests/g.s` and `g.expected.sexp`,
+  mechanisms come from the check's closed registry, degenerate needs a reason and
+  nothing else; NO ORPHANS — every guest named by ≥1 cell; DIFFS — every difference id,
+  including any named guest's `expect_divergence`, must exist in the unit's
+  references.sexp). Measured pre-slice:
+
+  ```
+  $ grep -l expect_divergence target/p4-system-2/profiles/rv64gc-lab-v0/guests/*.expected.sexp | wc -l
+  2                        # it-fencei + min-fencei carry rv64i's DIFF-FENCEI-EXECUTED —
+                           # an id rv64gc's references.sexp does NOT record (measured:
+  $ grep -c difference profiles/rv64gc-lab-v0/references.sexp
+  0                        # …and its semantics are false here: rv64gc DECLARES Zifencei;
+                           # the staged encoding leaves the slot unbound)
+  $ ls target/p4-system-2/profiles/rv64gc-lab-v0/guests/*.expected.sexp | wc -l
+  62                       # the matrix must absorb all 62 (49 base mirror + 13 mm)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behaviour; the slice designs and
+  declares, and the design measured three things:
+  1. **The axis set is the leaf's own vocabulary.** rv64i's four corpus-layer axes
+     (fault, alias, boundary, progress) carry over — the mirrored base guests are
+     evidence of exactly those layers. The privileged machinery adds three: **legality**
+     (mode-dependent permission and refusal — M/S/U, TW/TVM/TSR, read-only/WARL, plus
+     encoding validity), **delegation** (interception routing — medeleg, the counter
+     enables, STCE), and **restart REFRAMED**: rv64i's restart is mechanism-shaped
+     (cold-reset determinism — no rv64gc mechanism exists today and the registry is
+     closed), but the privileged leaf makes restart GUEST-shaped — the xret/xepc
+     return discipline is observable by guests (mm-mret's MPRV rule, mm-sret's SPP,
+     mm-ebreak's resume). rv64i's **event** axis is absorbed: ecall/ebreak are now the
+     mode-cause and delegation story, not a separate layer. 7 axes → 28 cells.
+  2. **The DIFFS rule forced the mirror's fourth and fifth re-derivations.** The two
+     fencei files' `expect_divergence` pins DIFF-FENCEI-EXECUTED, whose record
+     ("the matched configuration excludes Zifencei") is FALSE for this unit — rv64gc
+     declares Zifencei and the staged encoding honestly declares the slot unbound.
+     Per the brief's preference (no difference ids), the two staged files were
+     re-derived: steps/writes/`never_written` unchanged (the observed behaviour is
+     identical — reserved decode, delivered, run ended at the trap), the divergence
+     form dropped with the reason recorded in each file's comment. The mirror now
+     reads 49 `.s` byte-identical, 44 expectations byte-identical, 5 re-derived (3
+     IALIGN-16 + 2 fencei-slot), each with provenance:
+
+     ```
+     $ for f in profiles/rv64i-lab-v0/guests/*.expected.sexp; do cmp -s "$f" \
+         target/p4-system-2/profiles/rv64gc-lab-v0/guests/$(basename $f) || echo REDERIVED; done | grep -c REDERIVED
+     5
+     ```
+  3. **Three cells are honestly REPORTED, not filled.** alias×restart, boundary×
+     delegation, boundary×restart compose nothing in the staged corpus (delegation
+     keys on cause/mode, never data edges; the restart cells observe control state;
+     an xret to a domain-edge target is semantics this leaf has not derived). The
+     doctrine's sanction — an unexercised cell is a degenerate-with-reason
+     disposition, never an omission — is exactly their shape.
+
+- [x] **FIX** — `target/p4-system-2/profiles/rv64gc-lab-v0/interactions.sexp` (the 7
+  axes with grounded `covers` text, all 28 cells dispositioned, the design rationale in
+  the header — route-contradicted until the flip, staged like the corpus);
+  `target/p4-system-2/profiles/rv64gc-lab-v0/guests/it-fencei.expected.sexp` and
+  `min-fencei.expected.sexp` (the two re-derivations, schema-valid); the corpus data
+  regenerated and the runner re-proven. No new guests were needed — the staged 62 map
+  onto the cells as designed (every mm guest lands on its machinery's cells; the base
+  guests keep rv64i's layer mapping).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_sexp_schema.py <staged interactions.sexp> schema/interactions.sexp
+  check_sexp_schema: ok — … conforms to interactions.sexp
+  $ python3 scripts/check_interaction_matrix.py target/p4-system-2/profiles/rv64gc-lab-v0
+  …28 cell report lines…
+  28 cells declared, every disposition resolves       # rc=0 — COMPLETE (28/28 derived
+  # cells present), RESOLVED (every guest has both artifacts, 3 degenerate cells carry
+  # reasons and nothing else), NO ORPHANS (62/62 named), DIFFS (no ids named)
+  $ ./corpus        # target/p4-system-2/proof, after the fencei re-derivation
+  corpus: 62 guest(s) PASS, 0 FAIL
+  ```
+
+- [x] **NO REGRESSION** — the gate's own arms fired RED against the real states this
+  slice passed through, each by name: DIFFS with the pre-re-derivation fencei files
+  (`NO REFERENCES …` + `UNKNOWN DIFFERENCE … 'DIFF-FENCEI-EXECUTED'`, rc=1); NO
+  ORPHANS with smoke-arith dropped from its only cell (`ORPHAN GUEST … 'smoke-arith'`,
+  rc=1); COMPLETE with the delegation×restart cell deleted (`OMITTED CELL …
+  delegation×restart`, rc=1) — all three probed against a scratch copy of the staged
+  unit, the real unit green (rc=0). `scripts/check_interaction_matrix.sh --self-test`
+  15/15 and the tracked driver `INTERACTION-MATRIX: ok (5 unit(s))` — the tracked
+  units untouched; nothing tracked changed this slice (`git status --porcelain`
+  empty before the docs lockstep); `make gate` → `=== all doctrines green ===`
+  (DERIVED-COUNTS unchanged at 408 — no arm added or removed).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice h, the
+  atomic flip), `CHANGELOG.md`, `DEV_NOTES.md` (the DIFFS-forced re-derivation +
+  the guest-shaped restart reframing; promotion: declined — the axis rationale is
+  data in the staged matrix header and this checklist), `LIVE_STATUS.md`
+  (unchanged — no gate arms, the leaf still pending), `docs/book/src/plan/p4.md` —
+  `CHANGELOG.md`/`DEV_NOTES.md` sharded at their ceilings.
+
+`P4-SYSTEM.2` slice (h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (g) | the pre-slice census (rv64i's matrix the model — 6 axes/21 cells; the check's four rules read from source; 2 staged expectations carrying rv64i's DIFF-FENCEI-EXECUTED against a references.sexp with 0 difference records; 62 guests to absorb); the axis design derived from the leaf's vocabulary (the 4 corpus layers + legality + delegation + restart REFRAMED guest-shaped — the mechanism registry is closed and no rv64gc mechanism exists); the DIFFS-forced re-derivation of it-fencei/min-fencei (steps unchanged, the divergence form dropped with the reason recorded — the mirror now 44 byte-identical + 5 re-derived); the matrix schema-valid and rehearsed via the check's own invocation (`check_interaction_matrix.py <unit-dir>`): 28 cells declared, every disposition resolves, rc=0; the three RED legs fired by name against a scratch copy (DIFFS on the pre-re-derivation state, ORPHAN GUEST on a dropped name, OMITTED CELL on a deleted cell); the corpus re-proven 62/62; the driver self-test 15/15 and the tracked run `INTERACTION-MATRIX: ok (5 unit(s))`; `make gate` green (DERIVED-COUNTS unchanged at 408) | slice (g) landed: the 7-axis × 28-cell interaction matrix authored at staging (route-contradicted until the flip), all 62 staged guests mapped, 3 cells honestly reported degenerate, no difference ids — the flip's matrix proven |
 | `2026-10-03` | `.2` slice (f) | the pre-slice census (49 base guests on disk — c-scope.c toolchain-scoped to rv64i by `scripts/build_c_guest.sh`'s hard-coded `-march=rv64i`; the laboratory memory map and cause vocabulary in the runner); the mirror byte-probe (49 `.s` byte-identical, 46/49 expectations byte-identical, 3 re-derived BY DESIGN under D-IALIGN-16 — targets 2 mod 4 legal with C, RVI-C 27.1 — never fitted); the trap-END bug found by it-fault-alias and fixed in the runner (`trapped` flag); the auipc+addi target audit through the real assembler (14 stale deltas, labels assemble to no word); two execution-caught guest-design bugs (M-level CSR writes inline in S — mm-mret re-laid-out, mm-ecall-modes' handler stage-aware); all 13 mm expectations schema-valid and EVD-05-derived before the run; `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mm, per-step writes exact, deterministic re-run); the coverage rehearsal over the staged 65-form scope (denominator 65 consistent, exercised 65/65, the 13 extension forms via mm-*); `make gate` green (13 checks, DERIVED-COUNTS unchanged at 408 — no arm added) | slice (f) landed: the base mirror executed 49/49 on the rv64gc engine (3 declared IALIGN-16 divergences), the mode-matrix corpus 13/13 with EVD-05 expectations, the 65/65 coverage rehearsal — all untracked scratch, the flip's corpus proven |
 | `2026-10-03` | `.2` slice (e) | the pre-slice census (rv64gc scope 52 vs the fragments' 62+3; the catalogues at 18/18 decision mirrors; the rv64i requirement corpus covers 49 of 52 base forms in 9 instruction records — ecall/ebreak/fence ride event/memory records, the closure measured by probe); the pseudo-census decision measured against EXERCISE-COVERAGE's numerator (the first token of the expectations' insn text observes the spelling); the FOURTH dropped-`(extensions …)`-form copy found and fixed (`_semantics_names`) and the pattern then censused to two MORE readers (check_exercise_coverage.sh, gen_model_book.py — all six sites now uniform, `git grep` clean); the mirror extent derived as a closure (13 requirements + 13 obligations), RECORD-SCHEMA rule 14 MIRROR-DERIVE registered as the governor (self-test 39→43, arms RED-first: drift / missing / ungoverned-authored / owner's contract kept); the fetch leg extended (rv64gc 65==65, rv64i 52==52 unchanged); PARTS DRIFT learned the extension families; EXTRACTION counts pseudos (self-test 9→11); the staged encoding validated (62 + 3 pseudo, PARTIAL with 6 slots, schema conform) and the slice-(d) proof regenerated from it and re-run (26/26); `make gate` green (DERIVED-COUNTS 404→408 arms; the docs/tasks/ aggregate ceiling re-derived 1.5→3 MiB by `decision_task-tree-family-aggregate-rederivation`) | slice (e) landed: the 65-form census by the mandated dual edit, the base-corpus mirror + 3 authored records (34/34), the flip's encoding staged byte-ready, the registry rows (63 fact kinds) |
 | `2026-10-03` | `.2` slice (d) | the pre-slice census (gen_definition refuses rv64gc by name; gen_guests' list measured 49 names — the brief's "51" was stale; no privileged arms in exec.rs; elf.rs:88's hard-coded IALIGN=32; the CLI's profile statically rv64i's at main.rs:83); the third copy of the dropped-extensions-form bug (gen_definition's name list — "4 declared instruction(s) have NO semantics: mret, …" named it); `cargo test -p semulith-core --lib privilege` 11/11 (permission model, legalization, views, delivery both ways, xret, computed SD); the scratch execution proof (26/26 checks over six guests — the CSR disciplines, trap delivery with and without delegation, xret mode pops, wfi/sret legality per mode, counter gating, the TVM gate); the digest cascade re-derived (reports + board pin + board artifacts + platform manifest + both books); the PLATFORM-GEN stale-pin arm fixed (it assumed the digest's leading digit); STATE-GEN 20/20 (+3), DEF-GEN 15/15 (+6), GUEST-GEN 10/10 (+3); `make check` green (76 core / 180 verify tests), `make gate` green (DERIVED-COUNTS 395→404) | slice (d) landed: both generators parameterize (rv64i surfaces regenerate hash-only — the embedded generator fingerprints); the tracked privilege.rs machinery over the generated tables; elf.rs's IALIGN is profile data; the scratch execution proof green; the evaluator's new-variant arms port at the flip |
@@ -1192,6 +1294,7 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice g) | `SEMULITH-P4-0011 (leaf P4-SYSTEM.2): slice g — the interactions.sexp: 7 axes × 28 cells, rehearsed green against the staged unit` | the axis set derived from the leaf's vocabulary (fault/alias/boundary/progress carried from the mirrored layers; legality + delegation added by the privileged machinery; restart reframed GUEST-shaped — the xret/xepc discipline, no mechanism cells; rv64i's event axis absorbed into the mode-cause story); the DIFFS rule forced the mirror's 4th/5th re-derivations (it-fencei/min-fencei's rv64i DIFF-FENCEI-EXECUTED pin is false for this unit — Zifencei declared, slot unbound; the divergence forms dropped with reasons recorded); 3 cells reported degenerate-with-reason; all 62 guests mapped, no new guests needed; the rehearsal ran the check's own invocation (28 cells, every disposition resolves, rc=0) with the three RED legs proven (DIFFS/orphan/omitted); DERIVED-COUNTS 408 unchanged |
 | `.2` (slice f) | `SEMULITH-P4-0010 (leaf P4-SYSTEM.2): slice f — the base mirror executed (49/49), the mode-matrix corpus, the coverage rehearsal` | the scratch corpus runner (declared memory map, fault delivery, trap-END discipline, the per-step x-change comparison rule); 3 base guests re-derived BY DESIGN under D-IALIGN-16 (RVI-C 27.1), 46 byte-identical; 13 mm guests cover the 13 new forms across M/S/U (csr rw + per-mode legality, ebreak resume, ecall causes + medeleg delegation, mret/sret/wfi/sfence legality gates, counters + stimecmp gating, read-only/WARL); execution caught 14 stale auipc deltas, 2 M-level-CSR-in-S design bugs, 2 expectation mis-derivations — all re-derived, never fitted; coverage 65/65; no gate arms (untracked corpus; the governor lands at the flip), DERIVED-COUNTS 408 unchanged |
 | `.2` (slice e) | `SEMULITH-P4-0009 (leaf P4-SYSTEM.2): slice e — the 65-form census (dual edit), the base-corpus mirror + authored records, the flip's staged encoding` | the pseudo-census decision (the spec's listings name the Zicntr reads; the encoding realizes them as csrrs specializations; coverage observes the spelling) recorded in the profile's scope comment; MIRROR-DERIVE (rule 14) governors the mirror via the registry; the dropped-`(extensions …)`-form pattern censused to SIX readers, all uniform now; the docs/tasks/ aggregate re-derived 1.5→3 MiB (the slice checklists are the designed growth); the staged payload's README records the flip mapping |
 | `.2` (slice d) | `SEMULITH-P4-0008 (leaf P4-SYSTEM.2): slice d — the generators parameterize to rv64gc, the privilege machinery lands (tracked, over the generated tables), the scratch execution proof` | privilege.rs + 11 tests; the (legalize …) mini-language replaces prose (the WARL seam closed: engine applies descriptor data at lowering); gen_definition's rv64gc branch (8 operators lowered, PSEUDOS metadata; the THIRD dropped-extensions-form copy fixed); gen_guests directory-derived + run-order.txt (rv64i regenerates hash-only); elf.rs IALIGN parameter; the dossier-digest cascade re-derived; the fragile stale-pin arm fixed; the scratch proof 26/26 |
@@ -1203,6 +1306,32 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (g) done (`SEMULITH-P4-0011`) — the unit's interaction matrix,
+  declared and rehearsed. Seven axes — the leaf's own vocabulary: fault, alias, boundary
+  and progress carried from the mirrored base layers; **legality** (mode-dependent
+  permission and refusal — M/S/U, the TW/TVM/TSR gates, read-only/WARL, encoding
+  validity) and **delegation** (interception routing — medeleg, the counter enables,
+  STCE) added by the privileged machinery; and **restart reframed guest-shaped** —
+  rv64i's mechanism-shaped restart (cold-reset determinism, a closed registry with no
+  rv64gc mechanism) becomes the xret/xepc return discipline, observable by guests
+  (mm-mret's MPRV rule, mm-sret's SPP, mm-ebreak's resume); rv64i's event axis is
+  absorbed into the mode-cause and delegation story. 7 axes → 28 cells, all
+  dispositioned: every one of the 62 staged guests maps onto ≥1 cell (no new guests
+  needed), and three cells (alias×restart, boundary×delegation, boundary×restart) are
+  REPORTED degenerate-with-reason — the doctrine's sanction for a cell the corpus
+  honestly does not compose. The DIFFS rule forced the mirror's fourth and fifth
+  re-derivations: it-fencei/min-fencei carried rv64i's `DIFF-FENCEI-EXECUTED` pin, whose
+  record is false for this unit (rv64gc DECLARES Zifencei; the staged encoding leaves
+  the slot unbound) — the divergence forms dropped with the reason recorded in each
+  file, steps unchanged, the corpus re-proven 62/62; the mirror now reads 49 `.s`
+  byte-identical, 44 expectations byte-identical, 5 re-derived. The rehearsal ran the
+  check's own invocation against the staged unit (`check_interaction_matrix.py
+  <unit-dir>` — the driver discovers tracked `profiles/*/` at the flip): 28 cells
+  declared, every disposition resolves, rc=0; the RED legs fired by name against a
+  scratch copy (DIFFS on the pre-re-derivation state, ORPHAN GUEST, OMITTED CELL).
+  `make gate` green (DERIVED-COUNTS unchanged at 408 — no arms this slice).
+  Next: slice (h) — the atomic flip.
 
 - `2026-10-03`: `.2` slice (f) done (`SEMULITH-P4-0010`) — the guests corpus, executed.
   The base mirror runs on the rv64gc engine: all 49 rv64i guests staged byte-identically
