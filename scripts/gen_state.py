@@ -10,11 +10,19 @@ descriptor bytes always yield the same module bytes, and the input's sha256 ride
 module header so a reviewer can name the exact bytes the code derives from.
 
 The generator REFUSES (exit 2, naming the construct) on any descriptor shape it does not
-know how to emit: another profile id, a register family / memory space / hardware stack
-(the `P3-BREADTH.5` constructs), a missing xlen, a non-64 width, a special register it has
-no mapping for, a missing reset, an alias outside x1..x31. A descriptor that grew is
-generator work, never silently guessed — that is how "generated" stays a claim instead of
-a hope.
+know how to emit: a profile id outside its two scoped units, a register family / memory
+space / hardware stack (the `P3-BREADTH.5` constructs), a missing xlen, a non-64 width, a
+special register it has no mapping for, a missing reset, an alias outside x1..x31, a CSR
+shape it cannot legalize (P4-SYSTEM.2 slice c1). A descriptor that grew is generator work,
+never silently guessed — that is how "generated" stays a claim instead of a hope.
+
+TWO PROFILES, ONE GENERATOR (P4-SYSTEM.2 slice c1): rv64i-lab-v0's module is the committed
+`crates/semulith-core/src/state.rs` (byte-identical re-derivation, gated by STATE-GEN).
+rv64gc-lab-v0's descriptor is STAGED at `target/p4-system-2/state.sexp` until the route
+flip (a state.sexp inside the unit contradicts the profile-resolution route today), so its
+emission is generator-capable-but-not-yet-placed: emit it to an explicit `--out`, and the
+module lands in `crates/` with the engine consumer (slice c2/d), when STATE-GEN's census
+extends to it. The staging is recorded in the owning leaf.
 
 Usage:
   python3 scripts/gen_state.py                 # regenerate the committed module
@@ -35,6 +43,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import dossier_sexp as D                                # noqa: E402
 
 PROFILE = "rv64i-lab-v0"
+PROFILES = ("rv64i-lab-v0", "rv64gc-lab-v0")
 STATE = ROOT / "profiles" / PROFILE / "state.sexp"
 ARITH = ROOT / "crates" / "semulith-core" / "src" / "arith.rs"
 OUT = ROOT / "crates" / "semulith-core" / "src" / "state.rs"
@@ -81,9 +90,11 @@ def load_checked(state_path: Path, arith_path: Path) -> tuple[dict, int]:
 
 
 def validate(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dict]:
-    if doc["profile_id"] != PROFILE:
+    if doc["profile_id"] not in PROFILES:
         raise Refusal(f"profile_id {doc['profile_id']!r} — this generator is scoped to "
-                      f"{PROFILE!r}; a second profile is generator work, not a config knob")
+                      f"{PROFILES!r}; another profile is generator work, not a config knob")
+    if doc["profile_id"] == "rv64gc-lab-v0":
+        return validate_gc(doc, arith_xlen)
     # P3-BREADTH.5 slice 1: the schema declares these constructs (the exercised target is
     # dsp56300-lab-v0; the census record names the cases) — emitting them is generator
     # work, so a descriptor carrying one is refused BY NAME, never silently dropped.
@@ -99,6 +110,10 @@ def validate(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dict]:
         raise Refusal("hardware_stack declared — emitting the hardware stack is generator "
                       "work (P3-BREADTH.5; case dsp56300-lab-v0, the census's candidates "
                       "4/6), not silently assumed")
+    if doc.get("csr") or "privilege_mode" in doc:
+        raise Refusal("csr / privilege_mode declared under rv64i-lab-v0 — the privileged "
+                      "constructs belong to rv64gc-lab-v0's descriptor (P4-SYSTEM.2 slice "
+                      "c1); emitting them for this profile is generator work, never guessed")
     ir = doc.get("integer_registers")
     if ir is None:
         raise Refusal("no integer_registers — this generator emits the x0-anchored "
@@ -331,6 +346,317 @@ def emit(doc: dict, named: list[dict], regs: list[dict], census: dict,
     return "\n".join(w)
 
 
+# ---------------------------------------------------------------------------------------
+# rv64gc-lab-v0 (P4-SYSTEM.2 slice c1): the privileged-state branch — same integer file,
+# plus the current privilege mode and the 33 CSRs with their field tables.
+# ---------------------------------------------------------------------------------------
+MODE_CODES = {"u": 0, "s": 1, "m": 3}
+
+
+def _int(value: str, where: str) -> int:
+    try:
+        return int(str(value), 0)
+    except ValueError:
+        raise Refusal(f"{where}: reset value {value!r} is not an integer the generator can "
+                      f"emit — record the number and carry the prose in the statement")
+
+
+def _composed_reset(csr: dict) -> int:
+    """A CSR's reset, composed from its per-field resets — and checked against the
+    csr-level declared value when that value is numeric. The two statements of one fact
+    must agree; a disagreement is a descriptor defect, named, never adjudicated here."""
+    value = 0
+    for f in csr.get("fields", []):
+        fv = _int(f["reset"], f"{csr['id']}.{f['id']}")
+        width = f["bit_hi"] - f["bit_lo"] + 1
+        if fv >= (1 << width):
+            raise Refusal(f"{csr['id']}.{f['id']}: reset {fv:#x} does not fit "
+                          f"[{f['bit_hi']}:{f['bit_lo']}]")
+        value |= fv << f["bit_lo"]
+    raw = csr["reset"]["value"]
+    try:
+        declared = int(str(raw), 0)
+    except ValueError:
+        return value                       # prose reset (a view's) — nothing to cross-check
+    if csr.get("fields") and declared != value:
+        raise Refusal(f"{csr['id']}: the per-field resets compose to {value:#x} but the "
+                      f"csr-level reset declares {declared:#x} — one reset, one value")
+    return declared
+
+
+def validate_gc(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dict]:
+    ir = doc.get("integer_registers")
+    if ir is None or ir["width_bits"] != SUPPORTED_WIDTH or ir["ids"] != "x0..x31":
+        raise Refusal("rv64gc-lab-v0: the integer file must be the RV64I x0..x31 file at "
+                      "64 bits — anything else is generator work")
+    if not ir["x0"]["hardwired_zero"]:
+        raise Refusal("rv64gc-lab-v0: x0 is not declared hardwired_zero")
+    regs = doc["special_registers"]
+    if [r["id"] for r in regs] != ["pc"] or regs[0]["width_bits"] != SUPPORTED_WIDTH:
+        raise Refusal("rv64gc-lab-v0: special registers must be exactly pc at 64 bits")
+    pm = doc.get("privilege_mode")
+    if pm is None:
+        raise Refusal("rv64gc-lab-v0: no privilege_mode element — the current mode is hart "
+                      "state the mode-matrix corpus observes through; it is not optional")
+    if not pm["modes"] or set(pm["modes"]) - set(MODE_CODES):
+        raise Refusal(f"rv64gc-lab-v0: privilege modes {pm['modes']!r} — the generator "
+                      f"emits codes for {sorted(MODE_CODES)} only")
+    if pm["reset"]["value"] not in pm["modes"]:
+        raise Refusal(f"rv64gc-lab-v0: mode reset {pm['reset']['value']!r} is not one of "
+                      f"the declared modes {pm['modes']!r}")
+    csrs = doc.get("csr") or []
+    if not csrs:
+        raise Refusal("rv64gc-lab-v0: no csr elements — a privileged profile without its "
+                      "CSR state is not extractable")
+    ids = [c["id"] for c in csrs]
+    if len(ids) != len(set(ids)):
+        raise Refusal("rv64gc-lab-v0: duplicate csr id in the descriptor")
+    addrs = [c["address"] for c in csrs]
+    if len(addrs) != len(set(addrs)):
+        raise Refusal("rv64gc-lab-v0: duplicate csr address in the descriptor")
+    if any(not 0 <= a <= 0xFFF for a in addrs):
+        raise Refusal("rv64gc-lab-v0: a csr address lies outside the 12-bit space")
+    for c in csrs:
+        if c["width_bits"] != SUPPORTED_WIDTH:
+            raise Refusal(f"csr {c['id']!r} width_bits {c['width_bits']} — non-64 storage "
+                          f"is generator work, as for the integer file")
+        for v in c.get("view_of", "").split(","):
+            v = v.strip()
+            if v and v not in ids:
+                raise Refusal(f"csr {c['id']!r} is a view of {v!r}, which the descriptor "
+                              f"does not declare — a view of nothing has no storage to read")
+        if "reset" not in c:
+            raise Refusal(f"csr {c['id']!r}: carries no (reset …) — an engine cannot "
+                          f"extract where this element starts")
+        spans = sorted((f["bit_lo"], f["bit_hi"]) for f in c.get("fields", []))
+        prev = -1
+        for lo, hi in spans:
+            if not 0 <= lo <= hi < c["width_bits"]:
+                raise Refusal(f"csr {c['id']!r}: field range [{hi}:{lo}] outside the register")
+            if lo <= prev:
+                raise Refusal(f"csr {c['id']!r}: fields overlap at bit {lo}")
+            prev = hi
+        if c.get("fields") and sum(hi - lo + 1 for lo, hi in spans) != c["width_bits"]:
+            raise Refusal(f"csr {c['id']!r}: the field table leaves bits unaccounted — a "
+                          f"legalization table with a hole guesses at the hole")
+        c["_reset"] = _composed_reset(c)
+    census = doc.get("hidden_state_census")
+    if census is None:
+        raise Refusal("rv64gc-lab-v0: no hidden_state_census (SEM-08) — the re-earned "
+                      "census for the privileged state is the point of the document")
+    named = []
+    for n in ir["named_by_the_isa_chapter"]:
+        m = re.fullmatch(r"x(\d+)", n["reg"])
+        named.append({"index": int(m.group(1)), "ident": snake(n["role"]), **n})
+    return named, regs, census
+
+
+def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
+            state_sha: str, state_rel: str) -> str:
+    ir = doc["integer_registers"]
+    count = ir["count"]
+    pm = doc["privilege_mode"]
+    csrs = doc["csr"]
+    storage = [c for c in csrs if "view_of" not in c]
+    index_of = {c["id"]: i for i, c in enumerate(storage)}
+
+    w = []
+    a = w.append
+    a("//! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;")
+    a("//! drift between this module and the descriptor it derives from is refused by the")
+    a("//! STATE-GEN doctrine (`scripts/check_state_gen.sh`).")
+    a(f"//! Source: `{state_rel}` (sha256 `{state_sha}`).")
+    a("//!")
+    a("//! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0")
+    a("//! hardwired), the program counter, the current privilege mode, and the 33 CSRs of")
+    a("//! D-CSR-SET with their per-field WPRI/WARL/WLRL tables as DATA — legalization is")
+    a("//! applied by the engine at lowering (P4-SYSTEM.2 slices c2/d), never by hand here.")
+    a("")
+    a("/// Number of integer registers in the architectural register file. — REQ-D-XLEN")
+    a(f"pub const INTEGER_COUNT: usize = {count};")
+    a("")
+    for n in sorted(named, key=lambda d: d["index"]):
+        a(f"/// x{n['index']} — alias view, {rust_str(n['role'])} (software convention).")
+        a(f"pub const {n['ident']}: u8 = {n['index']};")
+        a("")
+    a("/// The current privilege mode (hart state, not a CSR): the codes are the")
+    a("/// architecture's own (0=U, 1=S, 3=M — RVP-INTRO).")
+    a("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
+    a("pub enum PrivilegeMode {")
+    for m in pm["modes"]:
+        a(f"    {m.upper()} = {MODE_CODES[m]},")
+    a("}")
+    a("")
+    a(f"/// Number of CSRs with storage ({len(storage)} of {len(csrs)}; the rest are views —")
+    a("/// a view declares no storage: sstatus/sie/sip restrict mstatus/mie/mip, the")
+    a("/// counters shadow their machine registers).")
+    a(f"pub const CSR_COUNT: usize = {len(storage)};")
+    a("")
+    for i, c in enumerate(storage):
+        a(f"/// Storage index of `{c['id']}` (address {c['address']:#05x}).")
+        a(f"pub const CSR_{c['id'].upper()}: usize = {i};")
+        a("")
+    a("/// The architectural register file, program counter, current mode and CSR storage:")
+    a("/// fixed-width inline, no heap (RUST-03).")
+    a("pub struct ArchitecturalState {")
+    a("    regs: [u64; INTEGER_COUNT],")
+    a("    pc: u64,")
+    a("    mode: PrivilegeMode,")
+    a("    csrs: [u64; CSR_COUNT],")
+    a("}")
+    a("")
+    a("impl ArchitecturalState {")
+    a("    /// Fresh state at the reset for `entry`: the architectural resets of RVP-MACHINE")
+    a("    /// §2.1.4, the laboratory's stated values everywhere §2.1.4 says UNSPECIFIED (the")
+    a("    /// descriptor's reset rows are the authority).")
+    a("    #[must_use]")
+    a("    pub fn zeroed_at(entry: u64) -> Self {")
+    a("        Self {")
+    a("            regs: [0; INTEGER_COUNT],")
+    a("            pc: entry,")
+    a(f"            mode: PrivilegeMode::{pm['reset']['value'].upper()},")
+    resets = ", ".join(f"{c['_reset']:#x}" for c in storage)
+    a(f"            csrs: [{resets}],")
+    a("        }")
+    a("    }")
+    a("")
+    a("    /// The laboratory reset (REQ-D-ENTRY-STATE, OB-ENV-RESET).")
+    a("    pub fn reset(&mut self, entry: u64) {")
+    a("        *self = Self::zeroed_at(entry);")
+    a("    }")
+    a("")
+    a("    /// Architectural read of `x(index)`. x0 reads as 0, always (RVI-RV32I §1.1.1).")
+    a("    #[must_use]")
+    a("    pub fn read_x(&self, index: u8) -> u64 {")
+    a("        if index == 0 { 0 } else { self.regs[index as usize] }")
+    a("    }")
+    a("")
+    a("    /// Architectural write of `x(index)`; a write to x0 is discarded.")
+    a("    pub fn write_x(&mut self, index: u8, value: u64) {")
+    a("        if index != 0 { self.regs[index as usize] = value; }")
+    a("    }")
+    a("")
+    a("    /// The program counter (RVI-RV32I §1.1.1).")
+    a("    #[must_use]")
+    a("    pub fn pc(&self) -> u64 { self.pc }")
+    a("")
+    a("    /// Set the program counter (a control transfer's target).")
+    a("    pub fn set_pc(&mut self, value: u64) { self.pc = value; }")
+    a("")
+    a("    /// The current privilege mode (hart state — RVP-INTRO; reset M, §2.1.4).")
+    a("    #[must_use]")
+    a("    pub fn mode(&self) -> PrivilegeMode { self.mode }")
+    a("")
+    a("    /// Set the current privilege mode (trap delivery and xret's concern — the")
+    a("    /// engine's, slice (d); accessors stay raw here).")
+    a("    pub fn set_mode(&mut self, mode: PrivilegeMode) { self.mode = mode; }")
+    a("")
+    a("    /// Raw read of CSR storage by index. The permission model, view masking and")
+    a("    /// WARL/WLRL legalization are the ENGINE's, applied at lowering (slices c2/d) —")
+    a("    /// this layer stores and reports, it never adjudicates.")
+    a("    #[must_use]")
+    a("    pub fn read_csr(&self, index: usize) -> u64 { self.csrs[index] }")
+    a("")
+    a("    /// Raw write of CSR storage by index; same layering as [`Self::read_csr`].")
+    a("    pub fn write_csr(&mut self, index: usize, value: u64) {")
+    a("        self.csrs[index] = value;")
+    a("    }")
+    a("")
+    a("    /// The storage index of a csr ADDRESS, or None for an address the profile does")
+    a("    /// not implement (an access there is the permission model's illegal instruction,")
+    a("    /// decided by the engine).")
+    a("    #[must_use]")
+    a("    pub fn csr_index(address: u16) -> Option<usize> {")
+    a("        match address {")
+    for i, c in enumerate(storage):
+        a(f"            {c['address']:#05x} => Some(CSR_{c['id'].upper()}),")
+    a("            _ => None,")
+    a("        }")
+    a("    }")
+    a("}")
+    a("")
+    a("/// Static metadata for one CSR: name, address, width, and the register it is a view")
+    a("/// of (None for storage CSRs). Values, not storage.")
+    a("pub struct CsrElement {")
+    a("    pub name: &'static str,")
+    a("    pub address: u16,")
+    a("    pub width_bits: u32,")
+    a("    pub view_of: Option<&'static str>,")
+    a("}")
+    a("")
+    a("/// Every CSR the profile implements, in descriptor order (views included).")
+    a(f"pub const CSR_ELEMENTS: [CsrElement; {len(csrs)}] = [")
+    for c in csrs:
+        view = f"Some({rust_str(c['view_of'])})" if "view_of" in c else "None"
+        a(f"    CsrElement {{ name: {rust_str(c['id'])}, address: {c['address']:#05x}, "
+          f"width_bits: {c['width_bits']}, view_of: {view} }},")
+    a("];")
+    a("")
+    a("/// A field's write discipline — RVP-CSR §1.1.3.1–3's vocabulary.")
+    a("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
+    a("pub enum FieldDiscipline {")
+    a("    Wpri,")
+    a("    Warl,")
+    a("    Wlrl,")
+    a("}")
+    a("")
+    a("/// One CSR field's legalization row: the discipline, the legal set in prose, and")
+    a("/// the reset the descriptor declares. The engine applies these at lowering; this")
+    a("/// table exists so that application is a lookup, never a guess.")
+    a("pub struct CsrField {")
+    a("    pub csr: &'static str,")
+    a("    pub name: &'static str,")
+    a("    pub bit_hi: u32,")
+    a("    pub bit_lo: u32,")
+    a("    pub discipline: FieldDiscipline,")
+    a("    pub legalization: Option<&'static str>,")
+    a("    pub reset: u64,")
+    a("}")
+    a("")
+    nfields = sum(len(c.get("fields", [])) for c in csrs)
+    a(f"/// The per-field tables of the {len(csrs)} CSRs, in descriptor order.")
+    a(f"pub const CSR_FIELDS: [CsrField; {nfields}] = [")
+    for c in csrs:
+        for f in c.get("fields", []):
+            legal = f"Some({rust_str(f['legalization'])})" if "legalization" in f else "None"
+            a(f"    CsrField {{ csr: {rust_str(c['id'])}, name: {rust_str(f['id'])}, "
+              f"bit_hi: {f['bit_hi']}, bit_lo: {f['bit_lo']}, "
+              f"discipline: FieldDiscipline::{f['discipline'].capitalize()}, "
+              f"legalization: {legal}, reset: {_int(f['reset'], c['id'] + '.' + f['id'])} }},")
+    a("];")
+    a("")
+    a("/// SEM-08: the hidden-state census, re-earned for the privileged state — carried as")
+    a("/// data so the interpreter, the gate report and the reviewer read the same sentence.")
+    a("pub struct HiddenStateCandidate {")
+    a("    pub candidate: &'static str,")
+    a("    pub present: bool,")
+    a("    pub why: &'static str,")
+    a("}")
+    a("")
+    a("pub struct HiddenStateCensus {")
+    a("    pub question: &'static str,")
+    a("    pub answer: &'static str,")
+    a("    pub candidates: &'static [HiddenStateCandidate],")
+    a("    pub consequence: &'static str,")
+    a("}")
+    a("")
+    a("pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {")
+    a(f"    question: {rust_str(census['question'])},")
+    a(f"    answer: {rust_str(census['answer'])},")
+    a("    candidates: &[")
+    for c in census["candidates_checked"]:
+        a("        HiddenStateCandidate {")
+        a(f"            candidate: {rust_str(c['candidate'])},")
+        a(f"            present: {'true' if c['present'] else 'false'},")
+        a(f"            why: {rust_str(c['why'])},")
+        a("        },")
+    a("    ],")
+    a(f"    consequence: {rust_str(census['consequence'])},")
+    a("};")
+    a("")
+    return "\n".join(w)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--state", type=Path, default=STATE)
@@ -343,8 +669,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         doc, arith_xlen = load_checked(args.state, args.arith)
         named, regs, census = validate(doc, arith_xlen)
-        text = emit(doc, named, regs, census,
-                    hashlib.sha256(args.state.read_bytes()).hexdigest())
+        state_sha = hashlib.sha256(args.state.read_bytes()).hexdigest()
+        if doc["profile_id"] == "rv64gc-lab-v0":
+            text = emit_gc(doc, named, regs, census, state_sha,
+                           str(args.state))
+        else:
+            text = emit(doc, named, regs, census, state_sha)
     except (Refusal, D.DossierError) as exc:
         print(f"gen_state: REFUSED — {exc}", file=sys.stderr)
         return 2

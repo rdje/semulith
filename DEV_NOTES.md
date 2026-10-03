@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-03)_ — one reset, one value: the composed-field cross-check fired on the document being written (P4-SYSTEM.2 slice c1)
+
+Execution of the `.2` brief's checkpoint (c) — split into (c1)/(c2), the seam recorded in
+the tree — measured:
+
+- **The staging problem is the design.** A state.sexp under `profiles/rv64gc-lab-v0/` is a
+  refused route contradiction until the flip, so the 33-CSR document is authored at
+  `target/p4-system-2/state.sexp` and validated from there — the gates that discover by
+  path were measured first (DOSSIER-SCHEMA scans `profiles/*/*.sexp`, PROFILE-CONSISTENCY
+  reads a sibling state.sexp, EXTRACTION the unit dir; none sees target/), and the
+  validations were given scratch-path forms (`check_sexp_schema.py` takes the path, the
+  new `--csr-cross` probe, `_state_resets` on the scratch dir).
+- **The house shape decides the nesting.** The schema kernel's form-field rule refused my
+  first draft's `(fields (field …) (field …))` and the 11-child `(candidates …)` wrapper
+  by name; the construct repeats bare `(field …)` under `(csr …)`, exactly the
+  `register_family` shape. The first draft also overlapped full-width `wpri_rest` rows
+  with named bits — an ambiguous legalization table; a coverage probe computed the true
+  gap sets.
+- **One reset, stated twice, must agree — mechanically.** gen_state composes a CSR's reset
+  from its per-field resets and cross-checks the csr-level declared value. It fired RED
+  *naturally*, on this very document: mstatus's composite is 0xA0000000 (UXL=2 | SXL=2),
+  not the hand-computed 0x300000000. The descriptor was wrong; the check named it; the
+  fix was re-derivation, and the self-test arm now keeps it repeatable.
+- **gen_state parameterizes, never forks** — the rv64i emission path is untouched (the
+  module re-derives byte-identical under the extended generator), and the rv64gc branch
+  validates by refusal (undeclared view, duplicate address, uncovered field bits, a
+  privileged construct under rv64i — each named) and emits to a scratch out until (c2)
+  wires the consumer. The csr name↔address ownership migration is deferred to the flip
+  with its probe recorded (33/33 exact against the pinned csrs.csv).
+
+Promotion: declined — the consistency rules are armed by self-test REDs (STATE-GEN 17,
+PROFILE-CONSISTENCY 44, EXTRACTION 9), and the natural RED is recorded in the leaf.
+Recorded in the owning leaf's checklist (LOCKSTEP).
+
 ## _(2026-10-03)_ — a swap forces the language's reads contract; a checker hard-coded to one file checks the other three never (P4-SYSTEM.2 slice b)
 
 Execution of the `.2` brief's checkpoint (b) measured five things:
@@ -623,42 +657,4 @@ milestone consumes the generated form. The deferral names its reopening conditio
 is what keeps it a decision rather than a drift. The dossier landing became its own leaf
 (`.7`) because its real content is a doctrine design choice — how a gate says "this unit
 is out of my scope" without going silent — and that deserves a leaf, not a paragraph.
-
-## _(2026-10-01)_ — measure the attachment before landing the document (P3-BREADTH.5 slice 2)
-
-The slice's real content was a measurement discipline: the DSP's `profile.sexp` and
-`state.sexp` were drafted, then placed untracked — and intent-to-added, because three of
-the four attaching gates enumerate units through `git ls-files` while PROFILE-CONSISTENCY
-globs the filesystem; the difference mattered, and the first measurement saw only one
-gate's verdict — and every attaching gate was run before anything landed. The haul:
-PROFILE-CONSISTENCY's EVD-04 and SRC-03 arms had seven latent defects to catch in a
-dossier that had sat tracked-but-unchecked since `.4` — an "obtained" candidate with no
-binary/digest/injection, and independence pairs naming labels instead of candidates. The
-fix made the dossier better, not just greener: the asm/emu legs and gearmulator are now
-first-class candidates, so the independence rows name things the dossier describes. Two
-more defects fell out of the re-validation sweep: rv64's own `profile.sexp` had drifted
-from its schema (two notes on D-FENCE — ungated, because no gate schema-validates the
-dossier documents as a class; the landing slice now owns that leg), and the coverage
-denominator counted a comment's prose as mnemonics. Design note: the taxonomy's scalar
-shape lived in exactly two closed places (the schema's scope construct and
-`_SCOPE_LISTS`), and the gate readers were already generic over group names — the whole
-extension was schema fields plus one tuple, no reader edits. That is what generic readers
-buy: the schema is where per-target shape lives, and adding a target is naming it there.
-
-## _(2026-10-01)_ — moving a refusal one layer down, on purpose (P3-BREADTH.5 slice 1)
-
-The interesting engineering was not the schema constructs but the boundary mechanics. The
-synth fixture exists to measure the pipeline's refusal boundary; when the schema learned
-`memory_spaces`, probe 2's pin went stale and the suite turned RED on the first run —
-that RED is the fixture working, and the re-pin (schema accepts rc 0, generator refuses
-`memory_spaces declared` rc 2) is the boundary's new position measured rather than
-asserted. Two silent-path hazards had to be closed for the move to be honest: the mapping
-owner built the state document from named fields only, so a schema-legal `memory_spaces`
-would have vanished before the generator could refuse it (the same class `.2` fixed for
-operands — the promoted lesson's second instance); and `gen_state.py` subscripted
-`doc["xlen"]`, so the schema's newly-optional xlen would have crashed with a KeyError
-traceback instead of a named Refusal. Both are now refusals by name with RED self-test
-arms. A design rule the slice surfaced and recorded: a profile document that no gate reads
-is an ungoverned claim — PROFILE-CONSISTENCY attaches at `profile.sexp`, so the DSP's
-`state.sexp` waits for the scope-taxonomy slice rather than landing unread.
 

@@ -157,6 +157,89 @@ PY
         --out "$t/state.rs" 2>&1)"; rc=$?
   arm "RED a descriptor without xlen is refused, naming the binding" "$rc" 2 "$out" "no xlen"
 
+  # ---- the rv64gc branch (P4-SYSTEM.2 slice c1) -------------------------------------------------
+  # A synthetic rv64gc descriptor — the real one is staged untracked until the route flip,
+  # and a self-test must never depend on untracked content (fresh clones judge too).
+  gc_state() { cat > "$t/gc/state.sexp" <<EOF
+(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")
+  (integer_registers (count 32) (width_bits 64) (ids "x0..x31")
+    (authority architecture) (source "s")
+    (x0 (hardwired_zero true) (authority architecture) (source "s") (statement "x"))
+    (named_by_the_isa_chapter (named-register (reg "x1") (role "r")
+                               (authority software-convention) (source "s"))))
+  (special_registers (register (id "pc") (width_bits 64) (holds "h")
+                      (authority architecture) (source "s") (reset "r")
+                      (reset_authority laboratory)))
+  (privilege_mode (modes m) (modes s) (authority architecture) (source "s")
+    (reset (value "m") (authority architecture) (source "s") (statement "x")))
+  (csr (id "mstatus") (address 768) (width_bits 64) (authority architecture) (source "s")
+    $1
+    (reset (value "0") (authority laboratory) (source "s") (statement "x")))
+  (csr (id "sstatus") (address 256) (width_bits 64) (view_of "mstatus")
+    (authority architecture) (source "s")
+    (reset (value "as mstatus") (authority laboratory) (source "s") (statement "x")))
+  (hidden_state_census (question "q") (answer "No") (candidates (checked (candidate "c") (present false) (why "w"))) (consequence "c"))
+)
+EOF
+  }
+  mkdir -p "$t/gc"
+  gc_state ''
+  out="$(python3 scripts/gen_state.py --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc descriptor emits a module (mode + CSR storage + field tables)" "$rc" 0 "$out" "wrote"
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc regeneration is judged in sync" "$rc" 0 "$out" ""
+
+  # RED: a csr without a reset is refused, named.
+  python3 - "$t/gc/state.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+t = t.replace('(reset (value "0") (authority laboratory) (source "s") (statement "x")))\n  (csr (id "sstatus")',
+              ')\n  (csr (id "sstatus")', 1)
+open(p, "w").write(t)
+PY
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a csr without a reset is refused, named" "$rc" 2 "$out" "expected exactly one (reset"
+
+  # RED: a view of an undeclared register is refused — a view of nothing reads nothing.
+  gc_state "" ; sed -i.bak 's/(view_of "mstatus")/(view_of "nostatus")/' "$t/gc/state.sexp"
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a view of an undeclared csr is refused by name" "$rc" 2 "$out" "a view of nothing"
+
+  # RED: per-field resets composing to a DIFFERENT value than the csr-level reset — the
+  # two statements of one fact must agree (this RED fired NATURALLY on the real rv64gc
+  # document while it was being authored: mstatus's composed UXL/SXL value caught a
+  # hand-computed csr-level value; the arm makes it repeatable).
+  gc_state '(field (id "all") (bit_hi 63) (bit_lo 0) (discipline warl) (legalization "any") (reset "1") (reset_authority laboratory) (authority architecture) (source "s"))'
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED field resets disagreeing with the csr-level reset are refused" "$rc" 2 "$out" "one reset, one value"
+
+  # RED: two csrs at one address.
+  gc_state "" ; sed -i.bak 's/(address 256)/(address 768)/' "$t/gc/state.sexp"
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a duplicate csr address is refused" "$rc" 2 "$out" "duplicate csr address"
+
+  # RED: the privileged constructs under the WRONG profile id — rv64i keeps exactly its
+  # old emission surface, and a csr there is generator work, named.
+  mkdir -p "$t/gcwrong"
+  python3 - "$t/state.sexp" "$t/gcwrong/state.sexp" <<'PY'
+import sys
+text = open(sys.argv[1]).read()
+add = (' (csr (id "mstatus") (address 768) (width_bits 64) (authority architecture)'
+       ' (source "s") (reset (value "0") (authority laboratory) (source "s")'
+       ' (statement "x")))')
+open(sys.argv[2], "w").write(text.rstrip()[:-1] + add + ")\n")
+PY
+  out="$(python3 scripts/gen_state.py --check --state "$t/gcwrong/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/state.rs" 2>&1)"; rc=$?
+  arm "RED a csr declared under rv64i-lab-v0 is refused, named" "$rc" 2 "$out" "csr / privilege_mode declared under rv64i-lab-v0"
+
   rm -rf "$t"
   printf 'STATE-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

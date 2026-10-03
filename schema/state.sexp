@@ -19,6 +19,16 @@
 ;;   data word is 24-bit, FM §3.1) and no x0-anchored integer file. A document still
 ;;   declares at least one register block; that completeness check belongs to the
 ;;   consistency/generator layer, stated here rather than implied.
+;;
+;; `P4-SYSTEM.2` slice (c1) (`2026-10-03`): the privileged-state constructs, case
+;; rv64gc-lab-v0 — a current-privilege-mode element (hart state, not a CSR; the privilege
+;; stack itself lives INSIDE mstatus, which is architected state and carries its own field
+;; table) and the CSR construct. A CSR carries its per-FIELD discipline table: WPRI /
+;; WARL / WLRL are RVP-CSR §1.1.3.1–3's terms, and every field names its discipline, its
+;; legalization (where WARL — the value set or rule), its reset and the locator it was
+;; read from; `view_of` records that one CSR is a restricted VIEW of another's storage
+;; (sstatus of mstatus, cycle of mcycle) — a view has no storage of its own, exactly the
+;; alias discipline the integer file already states.
 
 (schema (id "state"))
 
@@ -29,9 +39,55 @@
   (field (name integer_registers) (type form) (head integer_registers) (optional yes))
   (field (name register_family) (type form) (head register_family) (repeat yes) (optional yes))
   (field (name special_registers) (type form) (head register) (repeat yes))
+  (field (name privilege_mode) (type form) (head privilege_mode) (optional yes))
+  (field (name csr) (type form) (head csr) (repeat yes) (optional yes))
   (field (name memory_spaces) (type form) (head space) (repeat yes) (optional yes))
   (field (name hardware_stack) (type form) (head hardware_stack) (optional yes))
   (field (name hidden_state_census) (type form) (head hidden_state_census)))
+
+;; P4-SYSTEM.2 slice (c1) — case rv64gc-lab-v0: the hart's current privilege mode. Hart
+;; state, NOT a CSR: it changes on trap delivery and xret, it is readable nowhere as a
+;; register, and the two-level stack that restores it (xPP/xPIE/xIE) lives in mstatus.
+(construct (name privilege_mode)
+  (field (name modes) (type symbol) (repeat yes) (min 1))
+  (field (name authority) (type symbol)
+         (values architecture) (values execution-environment) (values laboratory))
+  (field (name source) (type string) (min-length 1))
+  (field (name reset) (type form) (head reset)))
+
+;; P4-SYSTEM.2 slice (c1) — case rv64gc-lab-v0: one control and status register. `view_of`
+;; names the CSR whose storage this one restricts (sstatus→mstatus, sie→mie, sip→mip,
+;; cycle/time/instret→mcycle/mtime/minstret): a view declares no storage. The `(field …)`
+;; children are the per-field discipline table; an atomic register (a scratch, a tval)
+;; declares none.
+(construct (name csr)
+  (field (name id) (type string) (min-length 1))
+  (field (name address) (type integer))
+  (field (name width_bits) (type integer))
+  (field (name view_of) (type string) (optional yes) (min-length 1))
+  (field (name authority) (type symbol)
+         (values architecture) (values execution-environment) (values laboratory))
+  (field (name source) (type string) (min-length 1))
+  (field (name field) (type form) (head field) (repeat yes) (optional yes))
+  (field (name reset) (type form) (head reset)))
+
+;; P4-SYSTEM.2 slice (c1): one CSR field. `discipline` is RVP-CSR §1.1.3.1–3's vocabulary
+;; (wpri/warl/wlrl); `legalization` is the WARL field's legal set or rule (a WPRI field's
+;; rule is the discipline itself; a WLRL field's range is its source's); `reset` is the
+;; field's reset value with its authority — UNSPECIFIED resets carry the laboratory's
+;; picked value, stated, never silence.
+(construct (name field)
+  (field (name id) (type string) (min-length 1))
+  (field (name bit_hi) (type integer))
+  (field (name bit_lo) (type integer))
+  (field (name discipline) (type symbol) (values wpri) (values warl) (values wlrl))
+  (field (name legalization) (type string) (optional yes) (min-length 1))
+  (field (name reset) (type string) (min-length 1))
+  (field (name reset_authority) (type symbol)
+         (values architecture) (values execution-environment) (values laboratory))
+  (field (name authority) (type symbol)
+         (values architecture) (values execution-environment) (values laboratory))
+  (field (name source) (type string) (min-length 1)))
 
 (construct (name integer_registers)
   (field (name count) (type integer))

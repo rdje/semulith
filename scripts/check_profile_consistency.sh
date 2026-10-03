@@ -55,10 +55,25 @@ command -v python3 >/dev/null 2>&1 || {
   echo "PROFILE-CONSISTENCY: REFUSED — python3 is not on PATH; this check cannot judge." >&2; exit 2; }
 
 check_profiles() {
-python3 - "$1" <<'PY'
+python3 - "$@" <<'PY'
 import sys, pathlib
 sys.path.insert(0, "scripts")
 import dossier_sexp as D
+
+# P4-SYSTEM.2 slice (c1): the csr-set rule applied OUTSIDE a unit directory — the staged
+# rv64gc state document lives at a scratch path until the route flip, and must validate
+# from there (the same comparison, the same verdict shape).
+if sys.argv[1] == "--csr-cross":
+    prof_dir, state_path = pathlib.Path(sys.argv[2]), pathlib.Path(sys.argv[3])
+    d = D.load(prof_dir / "profile.sexp")
+    st = D.load(state_path)
+    want = set(d.get("state", {}).get("csrs", []) or [])
+    got = {c["id"] for c in st.get("csr", [])}
+    if want == got:
+        print(f"csr-cross: ok ({len(got)} csr(s) agree, both directions)")
+        sys.exit(0)
+    print(f"CSR SET MISMATCH: profile-only {sorted(want - got)}; doc-only {sorted(got - want)}")
+    sys.exit(1)
 
 root = pathlib.Path(sys.argv[1])
 AUTHORITIES = {"architecture", "execution-environment", "laboratory"}
@@ -117,6 +132,17 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
             if want_regs is not None and got_regs != want_regs:
                 findings.append(
                     f"REG COUNT MISMATCH {name}: state.sexp {got_regs} != profile.sexp {want_regs}")
+            # P4-SYSTEM.2 slice (c1): the (csrs …) enumeration and the state document's CSR
+            # set are one fact stated twice — they must agree exactly, both directions.
+            want_csrs = set(d.get("state", {}).get("csrs", []) or [])
+            got_csrs = {c["id"] for c in st.get("csr", [])}
+            if want_csrs != got_csrs:
+                findings.append(
+                    f"CSR SET MISMATCH {name}: profile.sexp declares "
+                    f"{sorted(want_csrs - got_csrs) or 'nothing extra'} the state document "
+                    f"does not carry, and the state document carries "
+                    f"{sorted(got_csrs - want_csrs) or 'nothing extra'} profile.sexp does "
+                    f"not declare — one CSR set, stated once each way")
             def authorities(o):
                 if isinstance(o, dict):
                     if "authority" in o and isinstance(o["authority"], str):
@@ -362,7 +388,33 @@ EOF
                                                               arm "RED   xlen disagrees"        1 "XLEN MISMATCH"
   good; good_state; sed -i.bak 's/(count 4)/(count 9)/' "$t/p/state.sexp"
                                                               arm "RED   register count disagrees" 1 "REG COUNT MISMATCH"
-  good; good_state; sed -i.bak 's/(authority architecture)/(authority vibes)/' "$t/p/state.sexp"
+  # P4-SYSTEM.2 slice (c1): the profile's (csrs …) enumeration and the state document's csr
+  # set are one fact stated twice — agreement is gated, both directions.
+  good_csr() { sed -i.bak 's/(state (integer_registers 4))/(state (integer_registers 4) (csrs "mstatus") (csrs "mcycle"))/' "$t/p/profile.sexp"
+    cat > "$t/p/state.sexp" <<'EOF'
+(state (profile_id "p1") (xlen 64) (note "n")
+  (integer_registers (count 4) (width_bits 64) (ids "x0..x3")
+    (authority architecture) (source "s")
+    (x0 (hardwired_zero true) (authority architecture) (source "s") (statement "x"))
+    (named_by_the_isa_chapter (named-register (reg "x1") (role "r")
+                               (authority software-convention) (source "s"))))
+  (special_registers (register (id "pc") (width_bits 64) (holds "h")
+                      (authority architecture) (source "s") (reset "r")
+                      (reset_authority laboratory)))
+  (csr (id "mstatus") (address 768) (width_bits 64) (authority architecture) (source "s")
+    (reset (value "0") (authority laboratory) (source "s") (statement "x")))
+  (csr (id "mcycle") (address 2816) (width_bits 64) (authority architecture) (source "s")
+    (reset (value "0") (authority laboratory) (source "s") (statement "x")))
+  (hidden_state_census (question "q") (answer "No") (candidates (checked (candidate "c") (present false) (why "w"))) (consequence "c"))
+)
+EOF
+  }
+  good; good_csr;                                            arm "GREEN the csr set agrees, both directions" 0 "__CHECKED__ 1"
+  good; good_csr; sed -i.bak 's/(id "mcycle")/(id "mtime")/' "$t/p/state.sexp"
+                                                              arm "RED   a csr the state document carries but the profile does not declare" 1 "CSR SET MISMATCH"
+  good; good_csr; sed -i.bak 's/ (csrs "mcycle")//' "$t/p/profile.sexp"
+                                                              arm "RED   a csr the profile declares but the state document does not carry" 1 "CSR SET MISMATCH"
+  rm -f "$t/p/state.sexp" "$t/p/profile.sexp.bak" "$t/p/state.sexp.bak"  good; good_state; sed -i.bak 's/(authority architecture)/(authority vibes)/' "$t/p/state.sexp"
                                                               arm "RED   state authority unknown" 1 "BAD AUTHORITY"
   good; rm -f "$t/p/state.sexp"
   # ---- profile.sexp arms --------------------------------------------------------------------------
@@ -532,6 +584,10 @@ EOF
 }
 
 [ "${1:-}" = "--self-test" ] && { self_test; exit $?; }
+
+# P4-SYSTEM.2 slice (c1): probe the csr-set rule against a staged state document at a
+# scratch path (the rv64gc unit's own state.sexp is a route contradiction until the flip).
+[ "${1:-}" = "--csr-cross" ] && { check_profiles "$@"; exit $?; }
 
 [ -d profiles ] || { echo "PROFILE-CONSISTENCY: ok (no profiles/ yet)"; exit 0; }
 self_test >/dev/null 2>&1 || {

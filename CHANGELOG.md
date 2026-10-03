@@ -1,5 +1,36 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0006 (leaf P4-SYSTEM.2, slice c1) — the privileged state constructs, the staged 33-CSR document, gen_state's rv64gc branch, the csr-set and reset-census gate arms
+
+- Slice (c) split, recorded in the tree: **(c1)** schema + document + generator + gates,
+  zero Rust; **(c2)** the engine-side consumption follows. `schema/state.sexp` gained
+  `privilege_mode` (the current mode is hart state, not a CSR — the xPP/xPIE/xIE stack
+  lives in mstatus) and the `csr` construct with per-field WPRI/WARL/WLRL tables
+  (RVP-CSR §1.1.3.1–3), legalization rules, resets and locators per field, and `view_of`
+  for the view CSRs (sstatus/sie/sip, the counter shadows — a view declares no storage).
+- The rv64gc state document is authored and fully validated from `target/p4-system-2/`
+  (placing it in profiles/ is a refused route contradiction until the flip): all 33 CSRs
+  of D-CSR-SET with their tables — mstatus/sstatus with the stack and TSR/TW/TVM gates,
+  mtvec/stvec BASE/MODE, medeleg with the brief's pinned delegatable subset (11 and 16
+  read-only 0), mepc/sepc bit-1 writable at IALIGN=16, misa read-only at the declared
+  value (a stated laboratory WARL choice), satp MODE restricted to Bare|Sv39, STCE, the
+  counter-enables, the FP CSRs present-with-reset (behaviour is `.7`'s); §2.1.4's
+  architectural resets cited, every UNSPECIFIED reset a stated laboratory value; the
+  SEM-08 hidden-state census re-earned, naming what each later slice reopens.
+- gen_state.py emits both profiles: rv64i's `state.rs` re-derives byte-identical; rv64gc
+  emits (storage/mode/resets/field tables as data) to a scratch `--out`, rustc-clean —
+  emission into crates/ switches on in (c2). The generator composes per-field resets and
+  cross-checks the csr-level value; it fired RED *naturally* on the document being
+  authored (mstatus's composite 0xA0000000 vs the hand-computed 0x300000000 — the
+  descriptor was wrong, the check named it). Gate gaps closed: PROFILE-CONSISTENCY's
+  csr-set cross-check, both directions (+3 self-test arms, 44 total; plus a `--csr-cross`
+  staging probe), EXTRACTION's reset leg counts csrs and the mode (+3 arms), STATE-GEN
+  +7 arms (17 total).
+- Validation: all focused gates green, `make gate` green (DERIVED-COUNTS 385→395 arms).
+  CSR name↔address ownership: migration deferred to the flip (a fact-ownership row cannot
+  name an untracked owner); the state document's map is proven against the pinned
+  csrs.csv (33/33 exact) and the probe is recorded in the leaf.
+
 ## SEMULITH-P4-0005 (leaf P4-SYSTEM.2, slice b) — the semantics language learns privilege: 8 operators, the zicsr/zicntr/system sem files, ECALL/EBREAK refined by declaration
 
 - `schema/semantics.sexp` grew from 32 to 39 forms, each operator's meaning tied to the
@@ -817,55 +848,4 @@
   manual-derived expectations (EVD-05); `make check` + `make gate` green.
 - Owned findings (§15): the FM's U-bit equation is an extraction INVERSION of its own
   prose (the reference's `sr c00310` is the arbiter — XNOR, recorded in `exec.rs`).
-
-## SEMULITH-BR-0010 (leaf P3-BREADTH.4) — the dsp56300-lab-v0 dossier stands
-
-- `profiles/dsp56300-lab-v0/`: `sources.sexp` pins DSP56300FM Rev. 5 at NXP's own locator —
-  the fresh fetch returned byte-identical bytes to the chipdoc-cached copy (two acquisition
-  routes, one artifact, verified); `references.sexp` records the `dsp56300` candidate
-  (tarball pin, on-volume build note, the path-demonstration experiment, and the EVD-04
-  independence rows: assembler and emulator share one project — the independent legs are
-  upstream's asm56300 roundtrip and its silicon corpus; gearmulator not-examined);
-  `DOSSIER.md` carries the deferrals by name (`profile.sexp`/`state.sexp`/`encoding.sexp` →
-  `.5` named schema cases; requirements, unit registration, the per-unit book → the model
-  slice).
-- `scripts/fetch_references.sh` gained a GENERIC source-tarball leg (discriminator asset +
-  source_commit + asset_sha256 — unreachable by the rv64 ledger, whose verify-only flow
-  re-ran byte-behaviour-identical); `fetch_references.sh --verify-only dsp56300-lab-v0` →
-  tarball MATCH.
-- **The second-profile gate census (measured):** every auto-discovering gate keys on
-  `profiles/*/profile.sexp` or `profiles/*/encoding.sexp`, so the deliberately partial
-  dossier is invisible until those land — then the gates attach with NO gate edit.
-  `make gate` green with the dossier present.
-
-## SEMULITH-BR-0009 (leaf P3-BREADTH.4) — the bounded subset selected: `dsp56300-lab-v0` v0
-
-- The reference's coverage censused on the pinned source (its decoder spans the full
-  DSP56300 set) and its LIMITATIONS read in full — so the subset is bounded by honest
-  implementability and the reference's own gaps, not by coverage. The comparison surface
-  measured: checkpoint-level canonical end-state (registers, deviation-encoded X/Y windows,
-  15 hardware stack slots; `steps` compared, `cyc` never) — a new comparator shape.
-- **Subset v0:** non-parallel moves including the A2/B2 extension readout, the
-  immediate/register data-ALU core, signed `mpy`/`mac`, `nop/jmp/jsr/rts`, `do`/`enddo`/`rep`,
-  linear addressing only. Every exclusion named with its reason — parallel moves (the
-  dual-feed axis) deferred as the first named extension candidate; interrupts, modes, stack
-  extension and timing excluded on the reference's documented gaps.
-- **Vehicle decided:** a new sibling crate `crates/semulith-dsp56300` (manual-derived,
-  per-form-cited, EXPERIMENTAL); the generator/schema generalization stays `.5`'s work with
-  this exercised target as its justification. Record:
-  `docs/tasks/artifacts/p3-breadth/2026-10-01-subset-selection.md`; decision:
-  `decision_dsp56300-lab-v0-subset`. Gaps surfaced and routed: the profile schema's scope
-  taxonomy is scalar-named (→ `.5`); the auto-discovering gates' treatment of a second
-  partial profile is the dossier slice's first measurement.
-
-## SEMULITH-BR-0008 (leaf P3-BREADTH.3) — the evidence path exercised; `.3` done
-
-- Reference pinned (commit `c60aeedb`, tarball sha256 recorded, `target/refs/` discipline)
-  and release-built on-volume; a synthetic micro guest (24-bit immediates, mpy+mac into the
-  56-bit accumulator, X/Y-space stores, a zero-overhead do loop) assembled (rc 0) and run
-  headless — canonical-state dump, rc 0.
-- Verified three independent ways: hand arithmetic reproduces A=001f253d515280 exactly;
-  `--dump-mem` shows the X/Y stores landing right; the one surprise (`#$5` → `x1=050000`)
-  traced to DSP56300FM §3.4.1.3. No Semulith DSP model exists — the claim is about the
-  PATH. Artifact: `docs/tasks/artifacts/p3-breadth/2026-10-01-evidence-path-demo.md`.
 

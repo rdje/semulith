@@ -130,7 +130,9 @@ def _state_resets(unit: Path, include_families: bool = False) -> list[str]:
     refusing an element without a reset rather than enumerating heads forever. The
     device-model route (P5-BOARD.2, case sifive-uart-lab-v0) also counts register_family
     blocks as elements — route-scoped, so a route whose families honestly carry no reset
-    (dsp56300-lab-v0) never fires here."""
+    (dsp56300-lab-v0) never fires here. P4-SYSTEM.2 slice (c1): the privilege_mode element
+    and each (csr …) count too — a CSR or the current mode without a reset is state an
+    engine cannot extract (the rv64gc state document's own shape)."""
     path = unit / "state.sexp"
     if not path.is_file():
         raise ExtractionRefused(f"{unit}: no state.sexp — the reset leg is absent")
@@ -145,6 +147,10 @@ def _state_resets(unit: Path, include_families: bool = False) -> list[str]:
     for sr in S.children(root, "special_registers"):
         for reg in S.children(sr, "register"):
             elements.append((str(S.field(reg, "id", str(path))), reg))
+    for pm in S.children(root, "privilege_mode"):
+        elements.append(("privilege_mode", pm))
+    for csr in S.children(root, "csr"):
+        elements.append((f"csr {S.field(csr, 'id', str(path))}", csr))
     if include_families:
         for fam in S.children(root, "register_family"):
             elements.append((str(S.field(fam, "id", str(path))), fam))
@@ -348,7 +354,7 @@ def _selftest() -> int:
     u.mkdir(parents=True, exist_ok=True)
 
     def build(sem_rules=("add", "sub"), req_insns=("add", "sub"), with_reset=True,
-              neg_checks=True, scope=("add", "sub")):
+              neg_checks=True, scope=("add", "sub"), extra_state=""):
         (tmp / "definitions/riscv/t.sexp").write_text(
             '(fragment (id "riscv/t") (kind extension)\n'
             '(insn (name add) (fixed (6 2 0x13) (1 0 0x3)) (operands rd rs1 rs2))\n'
@@ -386,7 +392,7 @@ def _selftest() -> int:
             if with_reset else ""
         (u / "state.sexp").write_text(
             f'(state (profile_id "u") (xlen 64)\n'
-            f'  (integer_registers (count 32) (width_bits 64) {reset}))\n')
+            f'  (integer_registers (count 32) (width_bits 64) {reset}){extra_state})\n')
 
     def sufficient():
         c = check_extraction(u)
@@ -417,6 +423,24 @@ def _selftest() -> int:
     build(neg_checks=False)
     arm("RED   an obligation with no negative fixture",
         lambda: refused("positive AND a negative"))
+
+    # P4-SYSTEM.2 slice (c1): CSRs and the privilege mode are state elements — the reset
+    # leg counts them, in both directions.
+    CSR_OK = (' (privilege_mode (modes m) (modes s) (authority architecture) (source "S")'
+              ' (reset (value "m") (authority architecture) (source "S") (statement "r")))'
+              ' (csr (id "mstatus") (address 768) (width_bits 64) (authority architecture)'
+              ' (source "S") (reset (value "0") (authority laboratory) (source "S")'
+              ' (statement "r")))')
+    build(extra_state=CSR_OK)
+    arm("GREEN a unit whose csr and privilege_mode carry resets",
+        sufficient)
+    build(extra_state=' (csr (id "mstatus") (address 768) (width_bits 64)'
+                      ' (authority architecture) (source "S"))')
+    arm("RED   a csr without a reset is a state element an engine cannot extract",
+        lambda: refused("csr mstatus"))
+    build(extra_state=' (privilege_mode (modes m) (authority architecture) (source "S"))')
+    arm("RED   a privilege_mode without a reset",
+        lambda: refused("privilege_mode"))
 
     import shutil
     shutil.rmtree(tmp)

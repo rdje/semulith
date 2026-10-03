@@ -157,6 +157,14 @@ def _bool_in(form, name: str, where: str) -> bool:
     return _truthy(_value(_child_in(form, name), where), where)
 
 
+def _reset_doc(rf) -> dict:
+    """One (reset …) form as a dict — the state document's shared reset construct."""
+    return {"value": _s(_req(rf, "value", "reset")),
+            "authority": _s(_req(rf, "authority", "reset")),
+            "source": _s(_req(rf, "source", "reset")),
+            "statement": _s(_req(rf, "statement", "reset"))}
+
+
 def _nested_in(form, name: str, where: str):
     """The single nested form held as a field value — `(name (head …))` -> `(head …)`."""
     return _value(_child_in(form, name), where)
@@ -367,6 +375,48 @@ def state_to_form(doc: dict) -> list:
                       _pair("source", s["source"]),
                       _pair("reset", s["reset"]),
                       _pair("reset_authority", _sym(s["reset_authority"]))]])
+    if "privilege_mode" in doc:
+        p = doc["privilege_mode"]
+        pf = [S.Symbol("privilege_mode")]
+        for m in p["modes"]:
+            pf.append(_pair("modes", _sym(m)))
+        pf += [_pair("authority", _sym(p["authority"])),
+               _pair("source", p["source"]),
+               [S.Symbol("reset"),
+                _pair("value", p["reset"]["value"]),
+                _pair("authority", _sym(p["reset"]["authority"])),
+                _pair("source", p["reset"]["source"]),
+                _pair("statement", p["reset"]["statement"])]]
+        root.append(pf)
+    for c in doc.get("csr", []):
+        cf = [S.Symbol("csr"),
+              _pair("id", c["id"]),
+              _pair("address", c["address"]),
+              _pair("width_bits", c["width_bits"])]
+        if "view_of" in c:
+            cf.append(_pair("view_of", c["view_of"]))
+        cf += [_pair("authority", _sym(c["authority"])),
+               _pair("source", c["source"])]
+        for f in c.get("fields", []):
+            ff = [S.Symbol("field"),
+                  _pair("id", f["id"]),
+                  _pair("bit_hi", f["bit_hi"]),
+                  _pair("bit_lo", f["bit_lo"]),
+                  _pair("discipline", _sym(f["discipline"]))]
+            if "legalization" in f:
+                ff.append(_pair("legalization", f["legalization"]))
+            ff += [_pair("reset", f["reset"]),
+                   _pair("reset_authority", _sym(f["reset_authority"])),
+                   _pair("authority", _sym(f["authority"])),
+                   _pair("source", f["source"])]
+            cf.append(ff)
+        r = c["reset"]
+        cf.append([S.Symbol("reset"),
+                   _pair("value", r["value"]),
+                   _pair("authority", _sym(r["authority"])),
+                   _pair("source", r["source"]),
+                   _pair("statement", r["statement"])])
+        root.append(cf)
     for sp in doc.get("memory_spaces", []):
         root.append([S.Symbol("memory_spaces"),
                      [S.Symbol("space"),
@@ -485,6 +535,44 @@ def state_to_doc(form) -> dict:
             "stale_slots_observable": _bool_in(hf, "stale_slots_observable", "hardware_stack"),
             "authority": _s(_req(hf, "authority", "hardware_stack")),
             "source": _s(_req(hf, "source", "hardware_stack"))}
+    pf = _opt_child(form, "privilege_mode")
+    if pf is not None:
+        prf = _child_in(pf, "reset")
+        doc["privilege_mode"] = {
+            "modes": [_s(m) for m in _rep_in(pf, "modes")],
+            "authority": _s(_req(pf, "authority", "privilege_mode")),
+            "source": _s(_req(pf, "source", "privilege_mode")),
+            "reset": _reset_doc(prf)}
+    csrs = []
+    for cf in _children_in(form, "csr"):
+        c = {"id": _s(_req(cf, "id", "csr")),
+             "address": _req(cf, "address", "csr"),
+             "width_bits": _req(cf, "width_bits", "csr"),
+             "authority": _s(_req(cf, "authority", "csr")),
+             "source": _s(_req(cf, "source", "csr"))}
+        vo = _opt(cf, "view_of", "csr")
+        if vo is not None:
+            c["view_of"] = _s(vo)
+        fields = []
+        for ff in _children_in(cf, "field"):
+            f = {"id": _s(_req(ff, "id", "field")),
+                 "bit_hi": _req(ff, "bit_hi", "field"),
+                 "bit_lo": _req(ff, "bit_lo", "field"),
+                 "discipline": _s(_req(ff, "discipline", "field")),
+                 "reset": _s(_req(ff, "reset", "field")),
+                 "reset_authority": _s(_req(ff, "reset_authority", "field")),
+                 "authority": _s(_req(ff, "authority", "field")),
+                 "source": _s(_req(ff, "source", "field"))}
+            lg = _opt(ff, "legalization", "field")
+            if lg is not None:
+                f["legalization"] = _s(lg)
+            fields.append(f)
+        if fields:
+            c["fields"] = fields
+        c["reset"] = _reset_doc(_child_in(cf, "reset"))
+        csrs.append(c)
+    if csrs:
+        doc["csr"] = csrs
     cf = _opt_child(form, "hidden_state_census")
     if cf is not None:
         doc["hidden_state_census"] = {

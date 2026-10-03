@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `2026-10-03`, `SEMULITH-P4-0004` and (b) `2026-10-03`, `SEMULITH-P4-0005` done)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c1) `SEMULITH-P4-0006` done, all `2026-10-03`; slice (c) split recorded below)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a) fragments+assembler+IALIGN and (b) semantics operators+sem files landed; next is slice (c): the state schema, gen_state and the 33-CSR document; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a), (b), (c1) landed; slice (c) split: (c1) the state schema + the staged 33-CSR document + gen_state + the gate arms (zero Rust), (c2) the engine-side consumption; next is (c2); the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -725,12 +725,136 @@ This gate authorises the planned next engineering stage: board implementation.
   re-derived arms count only), `docs/book/src/plan/p4.md` (the `.2` note extended) — the
   append-history heads sharded per `scripts/shard_history.py` where the ceilings required.
 
-`P4-SYSTEM.2` slices (c)–(h) : pending — filled at execution.
+`P4-SYSTEM.2` slice (c) — split decision (recorded `2026-10-03`): **(c1)** the state schema
+constructs + the staged 33-CSR document + gen_state's rv64gc branch + the gate arms —
+zero Rust, everything validated from the scratch path; **(c2)** the engine-side consumption
+(the generated module lands in `crates/` and is wired, `make check` green). The seam is
+clean: (c1) changes no executable surface at all (the emission is generator-capable but
+not yet placed — the brief's own staging option), and (c2) changes no schema or document.
+The split exists because the state document CANNOT be placed yet (the route contradiction
+is mechanical), and mixing "the document is authored and proven" with "the engine consumes
+it" in one commit would force one of the two to be weaker than it is.
+
+`P4-SYSTEM.2` slice (c1) — the state schema, the staged 33-CSR document, gen_state's second profile (`2026-10-03`, `SEMULITH-P4-0006`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's state leg had no home and the gates had no arms
+  for it, measured:
+
+  ```
+  $ grep -n "csr\|privilege" schema/state.sexp | head -3
+  (no matches)                          # the state schema had no privileged construct at all
+  $ ls profiles/rv64gc-lab-v0/
+  contract-obligations.sexp  DOSSIER.md  profile.sexp  references.sexp  requirements.sexp
+                                        # NO state.sexp — and placing one is RED by name:
+  $ sed -n '224,233p' scripts/check_extraction.py   # the profile-resolution contradiction leg
+  … contradictions = [encoding.sexp, state.sexp, guests] …  # the flip is the leaf's last commit
+  $ git show HEAD:scripts/gen_state.py | grep -n "profile_id !=\|scoped to"
+  84:    if doc["profile_id"] != PROFILE: … "a second profile is generator work"
+  # the two gate gaps the brief's exploration measured:
+  $ git show HEAD:scripts/check_profile_consistency.sh | grep -c "csrs"
+  0            # nothing cross-checked profile.sexp's (csrs …) list against the state document
+  $ git show HEAD:scripts/check_extraction.py | sed -n '127,158p' | grep -c 'csr\|privilege_mode'
+  0            # _state_resets counted integer_registers + special_registers only
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the slice runs the brief's decision 3, and
+  execution measured four things:
+  1. **The staging problem is the design.** state.sexp under `profiles/rv64gc-lab-v0/` is a
+     refused contradiction until the atomic flip — so the document is authored at
+     `target/p4-system-2/state.sexp` and validated from there: `scripts/check_sexp_schema.py`
+     takes the path explicitly, the new `scripts/check_profile_consistency.sh --csr-cross`
+     runs the same csr-set rule against explicit paths, and
+     `scripts/check_extraction.py`'s `_state_resets` runs on the scratch dir as a unit.
+     WHERE the path-discovery was measured: `scripts/check_dossier_schema.sh` scans
+     `profiles/*/*.sexp`, `scripts/check_profile_consistency.sh` reads profile.sexp +
+     a sibling state.sexp, `scripts/check_extraction.py` reads the unit dir — none sees
+     target/, so nothing can contradict, and the flip moves the file unchanged.
+  2. **The house shape decides the nesting.** The schema kernel's form-field rule (a field
+     named like its head IS the list; otherwise one nested form per value) made my first
+     draft's `(fields (field …) (field …))` and the 11-child `(candidates …)` wrapper
+     REFUSED by name — the construct now repeats bare `(field …)` under `(csr …)` and
+     `(candidates (checked …))` per candidate, exactly the `register_family`/rv64i shapes.
+  3. **One fact, stated twice, must agree — mechanically.** gen_state composes a CSR's
+     reset from its per-field resets and cross-checks it against the csr-level declared
+     value; the check fired NATURALLY on the document while it was being authored
+     (mstatus's UXL=2|SXL=2 composite is 0xA0000000, not the hand-computed 0x300000000 —
+     the descriptor was wrong, the check named it).
+  4. **The mip/mie/mideleg/view "rest" rows must not overlap the named bits.** A
+     full-width WPRI row beside named fields is an ambiguous legalization table — the
+     coverage probe (every bit accounted, no overlap) computed the true gap sets and the
+     document carries them as explicit rows.
+
+- [x] **FIX** — schema + document + generator + gates, zero Rust:
+  `schema/state.sexp` (+`privilege_mode`, +`csr` with `view_of`, +`field` with
+  discipline/legalization/reset per RVP-CSR §1.1.3.1–3);
+  `target/p4-system-2/state.sexp` (NEW, staged, untracked — the 33 CSRs of D-CSR-SET with
+  per-field tables, the mode element, the re-earned SEM-08 census naming what each later
+  slice reopens);
+  `scripts/dossier_sexp.py` (the mapping owner learns both constructs, both directions,
+  round-trip proven);
+  `scripts/gen_state.py` (both profiles; rv64i emission byte-identical — the rv64i code
+  path untouched; the rv64gc branch validates by refusal and emits storage/mode/reset/
+  field-table data, to a scratch `--out` — emission into crates/ switches on in (c2));
+  `scripts/check_state_gen.sh` (self-test 10→17: the rv64gc GREEN emit+sync arms and the
+  RED arms — no reset, undeclared view, composed-reset disagreement, duplicate address,
+  privileged constructs under rv64i);
+  `scripts/check_profile_consistency.sh` (the CSR SET cross-check arm, both directions, +
+  the `--csr-cross` staging probe; self-test +3 arms);
+  `scripts/check_extraction.py` (`_state_resets` counts privilege_mode and every csr;
+  self-test +3 arms).
+  FACT-OWNERSHIP / csr-name ownership (slice (a)'s routed follow-up): the migration's
+  precise remainder — the OWNER lands with the document at the flip (a fact-ownership row
+  naming an untracked owner cannot register); TODAY the state document's name↔address map
+  is proven against the pinned csrs.csv (33/33 exact, the probe below), csrs.csv stays the
+  derivation source, and the assembler keeps reading it until the flip moves the document
+  and the row registers. Deferred, recorded, nothing weakened.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_sexp_schema.py target/p4-system-2/state.sexp schema/state.sexp
+  check_sexp_schema: ok                                        # the fixpoint stays green too (51/51)
+  $ bash scripts/check_profile_consistency.sh --csr-cross profiles/rv64gc-lab-v0 target/p4-system-2/state.sexp
+  csr-cross: ok (33 csr(s) agree, both directions)             # the (csrs …) list == the document
+  $ python3 -c '… check_extraction._state_resets(Path("target/p4-system-2"))'
+  EVERY ELEMENT HAS A RESET                                    # the reset leg over the scratch doc
+  $ python3 - <<'PY'  (the address/field probes)
+  csrs: 33 … csrs.csv agreement: ALL 33 EXACT … profile-only: NONE | doc-only: NONE
+  field probes: ok   # no overlap, every register's bits accounted, ids unique
+  $ python3 scripts/gen_state.py --check
+  (rc=0 — rv64i's state.rs re-derives BYTE-IDENTICAL)
+  $ python3 scripts/gen_state.py --state target/p4-system-2/state.sexp … --out target/p4-system-2/gen/state_rv64gc.rs
+  gen_state: wrote … (40198 bytes)
+  $ rustc --edition 2021 --crate-type lib target/p4-system-2/gen/state_rv64gc.rs   → rc=0
+  # the composed-reset check earning its place (the natural RED, pre-fix of the descriptor):
+  gen_state: REFUSED — mstatus: the per-field resets compose to 0xa00000000 but the
+  csr-level reset declares 0x300000000 — one reset, one value
+  ```
+
+- [x] **NO REGRESSION** — RED-first, then the guard set: STATE-GEN self-test 17/17 (the 7
+  new arms, every RED asserting its reason; the composed-reset RED fired naturally on the
+  real document before the arm existed); PROFILE-CONSISTENCY 44/44 (+3 csr arms);
+  EXTRACTION python arms 6→9 (+csr/privilege_mode reset legs) and the wrapper 11/11;
+  rv64i's state.rs byte-identical under the extended generator (STATE-GEN ok);
+  DOSSIER-SCHEMA / SOURCE-FORMAT / SEMANTICS (7 checks) / UNIT-COMPOSITION / DEF-GEN /
+  GUEST-GEN / FACT-OWNERSHIP (61 kinds) all green; `make gate` → `=== all doctrines green
+  ===` (DERIVED-COUNTS 385→395 arms re-derived).
+
+- [x] **LOCKSTEP** — same commit: this tree (split decision + leaf status + frontier +
+  checklist + verification/commit logs + changelog), `MEMORY.md` (next_action → slice c2),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the authoring findings; promotion: declined (the
+  consistency rules are armed by self-test REDs and the natural RED is recorded)),
+  `LIVE_STATUS.md` (the re-derived arms count only), `docs/book/src/plan/p4.md` (the `.2`
+  note extended) — the append-history heads sharded per `scripts/shard_history.py` where
+  the ceilings required.
+
+`P4-SYSTEM.2` slices (c2), (d)–(h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (c1) | the pre-slice census (no privileged construct in schema/state.sexp; the route contradiction measured at scripts/check_extraction.py:224-233; gen_state single-profile by refusal; PROFILE-CONSISTENCY csrs cross-check absent, EXTRACTION's reset leg csr-blind); the house-shape refusals (fields wrapper, candidates wrapper — refused by name, reshaped); the staged document validated from target/p4-system-2/: schema conform, --csr-cross 33/33 both directions, _state_resets over the scratch dir green, addresses == pinned csrs.csv 33/33 EXACT, field tables no-overlap/full-coverage; gen_state rv64i byte-identical + rv64gc emits 40198 bytes and rustc-compiles standalone; the composed-reset cross-check fired RED naturally on the real document (mstatus 0xA0000000 ≠ hand-computed 0x300000000 — the descriptor was wrong, the check named it); STATE-GEN self-test 17/17 (+7), PROFILE-CONSISTENCY 44/44 (+3), EXTRACTION 9/9 (+3); `make gate` green (DERIVED-COUNTS 385→395) | slice (c1) landed: the privileged state constructs (csr + per-field discipline tables + privilege_mode), the staged 33-CSR document with the re-earned SEM-08 census, gen_state's two-profile branch with rv64i byte-exact, the two gate gaps closed; the (c1)/(c2) split recorded |
 | `2026-10-03` | `.2` slice (b) | the pre-slice census (32 operators, no csr/mode/xret form; ecall's cause a constant 11; a pseudo could not carry semantics; check_citations hard-coded to rv64i.sem.sexp); the spec-text census (xRET/WFI/TSR/TW/TVM/mcounteren/scounteren/STCE/sfence locators read from the pinned chapters; mstatus positions figure-only → encoding.h pinned); check_semantics pair checks 6/6 + 0/0(+3 pseudo) + 4/4 and `--compose` over the trial composition (refinement points ebreak/ecall declared); check_citations `--corpus` 6 resolution(s) — rv64i 52/52 ×3 profiles, zicsr 8/8, zicntr 3/3, system 4/4 under rv64gc; self-tests semantics 15/15 (+7), citations 13/13 (+3), corpus 8/8 (+1, the dropped-form arm proven RED pre-fix); fetch_references `--verify-only` green both profiles (+encoding.h, +causes.csv); DEF-GEN/STATE-GEN/GUEST-GEN byte-exact; `make gate` green (DERIVED-COUNTS 384→385) | slice (b) landed: 8 new operators (field, inst, mode, csr-state, csr-read, csr-write, trap-deliver, xret), the three sem files with every per-instruction decision cited, the WARL seam recorded for slice (c), rv64i.sem.sexp untouched |
 | `2026-10-03` | `.2` slice (a) | the upstream census (13 mnemonics over master's `extensions/`: rv_zicsr 6 real rows, rv_zicntr 3 pseudo-only rows of csrrs, rv_system mret/wfi + rv_s sret/sfence.vma; the moved rv_* tables byte-identical to the rv64i pins; the pinned arg_lut.csv already carries csr/zimm5); fetch_references `--verify-only` green for BOTH profiles + a scripted fresh re-fetch of rv_s byte-identical; check_sexp_schema on the new references.sexp and all 5 fragments; check_encoding_disjoint self-test 12/12 (+3 pseudo arms, +1 dupes arm) and the trial compositions (base+each new fragment; the 62-instruction 4-fragment union collision-free through a synthetic unit doc); the assembler probe (all 13 forms assembled, the spike-dasm round-trip exact, 4 RED operand refusals named, IALIGN 32 refuses / 16 accepts an entry 2 mod 4, rv64i derives 32 and rv64gc 16); UNIT-COMPOSITION self-test 9/9; EXERCISE-COVERAGE 21/21; EXTRACTION / INTERACTION-MATRIX / SOURCE-FORMAT / SEMANTICS / DOSSIER-SCHEMA / PROFILE-CONSISTENCY green; GUEST-GEN / DEF-GEN / STATE-GEN byte-exact; `make gate` green (DERIVED-COUNTS 383→384 arms re-derived) | slice (a) landed: the Zicsr / Zicntr / privileged-system fragments from the re-pinned tables, the csr operand field and IALIGN as profile data; rv64i's generated surfaces byte-identical; the unit stays on the `profile-resolution` route |
 | `2026-10-03` | `.1` | the snapshot census measured on disk (24 priv + 46 unpriv pages, 21/21 pins re-hashed against the tracked SHA256SUMS); the chapter versions measured from the page titles (M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicsr/Zifencei/Zicntr 2.0, RVWMO 2.0, Machine/Supervisor 1.13, Sstc 1.0); the closure statements measured (G = IMAFDZicsr_Zifencei — naming 36.1; D⇒F — 21.1; F⇒Zicsr — 20.1; C⇒Zca+Zcd at RV64 — zc 28.1.2; IALIGN=16 — 27.1); the PDF pins re-verified against the catalog (3/3); RECORD-SCHEMA 18 record files; EXTRACTION 5 units (the resolution leg: obligations checked both ways); EXERCISE-COVERAGE / INTERACTION-MATRIX 5 units (n/a by declaration); PROFILE-CONSISTENCY 5 dossiers; FACT-OWNERSHIP 61 kinds (fixture re-pinned 9→10); check_citations 52/52 for both units + the 3 named skips; route self-tests 11/11 + 21/21 + 15/15; `make gate` green (DERIVED-COUNTS 376→383 arms re-derived) | the profile resolved: rv64gc-lab-v0 — every element source-located, the closure measured, the dossier landed unregistered with the new profile-resolution route honored by declaration in three gates |
@@ -739,12 +863,39 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice c1) | `SEMULITH-P4-0006 (leaf P4-SYSTEM.2): slice c1 — the privileged state constructs, the staged 33-CSR document, gen_state's rv64gc branch, the csr-set and reset-census gate arms` | slice (c) split recorded ((c1) zero Rust / (c2) the engine consumption); the state document staged at target/p4-system-2/ until the flip (the route contradiction is mechanical); gen_state composes per-field resets and cross-checks the csr-level value — fired RED naturally on the document being authored; csr name↔address ownership migration deferred to the flip, the 33/33 csrs.csv agreement probe recorded; STATE-GEN 17, PROFILE-CONSISTENCY 44, EXTRACTION 9 arms |
 | `.2` (slice b) | `SEMULITH-P4-0005 (leaf P4-SYSTEM.2): slice b — the semantics language learns privilege: 8 operators, the zicsr/zicntr/system sem files, ECALL/EBREAK refined by declaration` | schema/semantics.sexp 32→39 forms + the READS-AND-WRITES contract; csr-write's WARL seam deferred to slice (c)'s tables at slice-(d) lowering; the corpus gate's dropped-extensions-form compose bug fixed (RED-first); check_citations --corpus binds sem files to pinning profiles; +encoding.h/+causes.csv pins (mstatus masks are figure-only in the spec); rv64i.sem.sexp untouched, rv64i's generated surfaces byte-exact |
 | `.2` (slice a) | `SEMULITH-P4-0004 (leaf P4-SYSTEM.2): slice a — the Zicsr/Zicntr/privileged-system fragments from the re-pinned tables; the csr operand field; IALIGN as profile data` | the rv64gc references.sexp re-pin (5 new tables + shared arg_lut, sha256+bytes); the fetch route's extensions/ mapping (the moved tables hash byte-identical to the pins); the (pseudo …) fragment construct + the disjointness specialization rule (self-test 8→12); the resolver's dropped-extensions-form and advisory-dupes fixes measured at the first 3-extension composition; rv64i.sexp/m.sexp re-derived byte-identical; both profiles' verify routes green |
 | `.1` | `SEMULITH-P4-0002 (leaf P4-SYSTEM.1): the profile resolved — rv64gc-lab-v0, every element source-located, the closure measured; the profile-resolution route` | the unit dossier (5 files: profile/sources/requirements/obligations/DOSSIER); 18 decisions mirrored twice (probe-derived, verbatim); schema/profile.sexp +profile-resolution with comparison optional; EXTRACTION/EXERCISE-COVERAGE/INTERACTION-MATRIX honor the route (self-tests 11/21/15); check_citations subdirectory + named-skip fix; gen_platform canonical ISA order; FACT-OWNERSHIP +4 rows (61), fixture re-pinned to six units |
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (c1) done (`SEMULITH-P4-0006`) — the state leg, split recorded:
+  (c1) zero Rust — the schema's privileged constructs, the staged document, the generator,
+  the gates; (c2) the engine-side consumption follows. `schema/state.sexp` gained
+  `privilege_mode` (hart state, not a CSR — the stack lives in mstatus) and the `csr`
+  construct with per-FIELD tables (WPRI/WARL/WLRL per RVP-CSR §1.1.3.1–3, legalization,
+  reset, locator per field; `view_of` records the sstatus/sie/sip and counter views — a
+  view declares no storage). The rv64gc state document is authored and fully validated
+  from `target/p4-system-2/state.sexp` — the route contradiction makes profiles/ placement
+  RED until the flip, so validation runs against the scratch path: schema conform, the new
+  `--csr-cross` probe (profile's (csrs …) == the document, 33/33 both directions),
+  `_state_resets` over the scratch dir, addresses == pinned csrs.csv 33/33, field coverage
+  complete. The 33 CSRs carry their tables: mstatus/sstatus with the xIE/xPIE/xPP stack
+  and the TSR/TW/TVM gates, mtvec/stvec BASE/MODE, medeleg with the brief's pinned
+  delegatable subset (11 and 16 read-only 0), mideleg all-delegatable, mepc/sepc bit-1
+  writable at IALIGN=16, misa read-only at the declared value (0x800000000014112D — a
+  stated laboratory WARL choice), satp MODE restricted to Bare|Sv39, menvcfg.STCE,
+  mcounteren/scounteren CY/TM/IR with Zihpm read-only 0, the counters with rate/progress
+  deferred to .5/.9, the FP CSRs present-with-reset with behaviour at .7. Resets: §2.1.4's
+  architectural ones cited; every UNSPECIFIED reset is a stated laboratory value. gen_state
+  emits both profiles — rv64i byte-identical, rv64gc to a scratch out (40198 bytes,
+  rustc-clean) with per-field resets composed and cross-checked against the csr-level value
+  (fired RED naturally: mstatus's UXL/SXL composite caught a hand-computed wrong value).
+  Gate gaps closed: PROFILE-CONSISTENCY's csr-set cross-check (+3 arms, 44 total) and
+  EXTRACTION's reset leg now counts csrs and the mode (+3 arms, 9 total); STATE-GEN 17
+  arms. `make gate` green (DERIVED-COUNTS 385→395). Next: slice (c2).
 
 - `2026-10-03`: `.2` slice (b) done (`SEMULITH-P4-0005`) — the semantics language learns
   privilege. Eight operators joined the schema (32→39 forms), each with its meaning tied to
