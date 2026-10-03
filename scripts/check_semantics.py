@@ -196,6 +196,110 @@ def compose(paths: list[Path]) -> int:
     return 0
 
 
+def check_pair(enc_path: Path, sem_path: Path) -> int:
+    """The per-fragment verdict: well-formed, complete, cited — for instructions AND pseudos.
+
+    A `(pseudo …)` is not an encoding, so it is neither demanded nor counted in the
+    coverage denominator — but a sem entry NAMING one is checked against the pseudo's own
+    operand row (Zicntr's counter reads, P4-SYSTEM.2 slice b). A sem entry naming no
+    instruction of this fragment is legal exactly when the file declares it in
+    `(refines …)`: a refinement overrides ANOTHER fragment's rule, so its operand binding
+    is not this fragment's to state — it is checked against the language alone, and the
+    compose mode decides whether the override itself is honest. Both refines lies are
+    refused here too: one naming nothing this file defines, and one naming an instruction
+    of THIS fragment (refining yourself is not a refinement).
+    """
+    load_language()
+    enc = _sexp.read_file(enc_path)[0]
+    errors: list[str] = []
+    try:
+        _schema_validate_sem_file(sem_path)
+    except SemError as exc:
+        # a file the schema layer refuses is a REJECTION (rc=1), as in the compose mode
+        print(f"  {sem_path.name}: {exc}")
+        print("  REJECTED — the definition is not yet something an engine could consume.")
+        return 1
+    sem = _sexp.read_file(sem_path)[0]
+
+    operands: dict[str, set[str]] = {}
+    for i in _sexp.children(enc, "insn"):
+        name = str(_sexp.field(i, "name"))
+        ops = {str(o) for o in _sexp.children(i, "operands")[0][1:]}
+        # a split store immediate is written as one operand in the semantics
+        if "imm12hi" in ops:
+            ops = (ops - {"imm12hi", "imm12lo"}) | {"imm12"}
+        if "bimm12hi" in ops:
+            ops = (ops - {"bimm12hi", "bimm12lo"}) | {"bimm12"}
+        operands[name] = ops | {"shamt"} if ("shamtd" in ops or "shamtw" in ops) else ops
+    pseudo_operands: dict[str, set[str]] = {}
+    for i in _sexp.children(enc, "pseudo"):
+        name = str(_sexp.field(i, "name"))
+        pseudo_operands[name] = {str(o) for o in _sexp.children(i, "operands")[0][1:]}
+
+    refines = {str(_sexp.field(r, "insn", str(sem_path)))
+               for r in _sexp.children(sem, "refines")}
+    defined_here = {str(_sexp.field(s, "insn", str(sem_path)))
+                    for s in _sexp.children(sem, "sem")}
+
+    covered: set[str] = set()
+    pseudo_checked: set[str] = set()
+    for s in _sexp.children(sem, "sem"):
+        name = str(_sexp.field(s, "insn", str(sem_path)))
+        where = f"{sem_path.name} [{name}]"
+        if name in operands:
+            allowed: set[str] | None = operands[name]
+            if name in covered:
+                errors.append(f"{where}: defined twice")
+            covered.add(name)
+        elif name in pseudo_operands:
+            allowed = pseudo_operands[name]
+            if name in pseudo_checked:
+                errors.append(f"{where}: defined twice")
+            pseudo_checked.add(name)
+        elif name in refines:
+            allowed = None                      # the override's binding is not this fragment's
+        else:
+            errors.append(f"{where}: no instruction of that name in {enc_path.name}")
+            continue
+        if not _sexp.children(s, "source"):
+            errors.append(f"{where}: cites no specification locator. A semantic rule with no "
+                          f"source is a rule nobody can check against the document it came from")
+        effects = _sexp.children(s, "effect")
+        if not effects:
+            errors.append(f"{where}: has no (effect …)")
+        for e in effects:
+            try:
+                for sub in e[1:]:
+                    check_expr(sub, where, allowed)
+            except SemError as exc:
+                errors.append(str(exc))
+
+    for r in sorted(refines - defined_here):
+        errors.append(f"{sem_path.name}: declares (refines \"{r}\") but defines no semantics "
+                      f"for it — a declaration with no override is a lie about what this file does")
+    for r in sorted(refines & set(operands)):
+        errors.append(f"{sem_path.name}: declares (refines \"{r}\") but '{r}' is THIS "
+                      f"fragment's instruction — refining yourself is not a refinement")
+
+    missing = sorted(set(operands) - covered)
+    if missing:
+        errors.append(f"{len(missing)} declared instruction(s) have NO semantics: "
+                      f"{', '.join(missing[:12])}{' …' if len(missing) > 12 else ''}")
+
+    for e in errors:
+        print(f"  {e}")
+    suffix = (f" (+ {len(pseudo_checked)} pseudo-instruction(s))"
+              if pseudo_checked else "")
+    print(f"\n  {len(covered)} of {len(operands)} declared instruction(s) have checked "
+          f"semantics{suffix}")
+    if errors:
+        print("  REJECTED — the definition is not yet something an engine could consume.")
+        return 1
+    print("  ⚠️ Well-formed, complete and cited. NOT verified correct — that is what a differential")
+    print("  experiment against a reference model is for.")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if len(argv) == 2 and argv[1] == "--self-test":
         return _selftest()
@@ -213,61 +317,10 @@ def main(argv: list[str]) -> int:
         return 2
     enc_path, sem_path = Path(argv[1]), Path(argv[2])
     try:
-        enc = _sexp.read_file(enc_path)[0]
-        sem = _sexp.read_file(sem_path)[0]
+        return check_pair(enc_path, sem_path)
     except _sexp.SexpError as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 2
-
-    operands: dict[str, set[str]] = {}
-    for i in _sexp.children(enc, "insn"):
-        name = str(_sexp.field(i, "name"))
-        ops = {str(o) for o in _sexp.children(i, "operands")[0][1:]}
-        # a split store immediate is written as one operand in the semantics
-        if "imm12hi" in ops:
-            ops = (ops - {"imm12hi", "imm12lo"}) | {"imm12"}
-        if "bimm12hi" in ops:
-            ops = (ops - {"bimm12hi", "bimm12lo"}) | {"bimm12"}
-        operands[name] = ops | {"shamt"} if ("shamtd" in ops or "shamtw" in ops) else ops
-
-    errors: list[str] = []
-    covered: set[str] = set()
-    for s in _sexp.children(sem, "sem"):
-        name = str(_sexp.field(s, "insn", str(sem_path)))
-        where = f"{sem_path.name} [{name}]"
-        if name not in operands:
-            errors.append(f"{where}: no instruction of that name in {enc_path.name}")
-            continue
-        if name in covered:
-            errors.append(f"{where}: defined twice")
-        covered.add(name)
-        if not _sexp.children(s, "source"):
-            errors.append(f"{where}: cites no specification locator. A semantic rule with no "
-                          f"source is a rule nobody can check against the document it came from")
-        effects = _sexp.children(s, "effect")
-        if not effects:
-            errors.append(f"{where}: has no (effect …)")
-        for e in effects:
-            try:
-                for sub in e[1:]:
-                    check_expr(sub, where, operands[name])
-            except SemError as exc:
-                errors.append(str(exc))
-
-    missing = sorted(set(operands) - covered)
-    if missing:
-        errors.append(f"{len(missing)} declared instruction(s) have NO semantics: "
-                      f"{', '.join(missing[:12])}{' …' if len(missing) > 12 else ''}")
-
-    for e in errors:
-        print(f"  {e}")
-    print(f"\n  {len(covered)} of {len(operands)} declared instruction(s) have checked semantics")
-    if errors:
-        print("  REJECTED — the definition is not yet something an engine could consume.")
-        return 1
-    print("  ⚠️ Well-formed, complete and cited. NOT verified correct — that is what a differential")
-    print("  experiment against a reference model is for.")
-    return 0
 
 
 # --------------------------------------------------------------------------- self-test
@@ -360,6 +413,75 @@ def _selftest() -> int:
     schema_bad.write_text('(semantics (fragment "riscv/t") (xlen 64) (gizmo "x"))')
     arm("RED   a construct the schema layer refuses, by name",
         lambda: refuses([schema_bad], 'undeclared field "gizmo"'))
+
+    # ---- pair mode: pseudos, refinements, and the new operators (P4-SYSTEM.2 slice b) ----
+    frag_p = tmp / "t-pair.sexp"
+    frag_p.write_text(
+        '(fragment (id "riscv/t-pair") (kind isa-extension)\n'
+        '  (insn (name csrrs) (fixed (14 12 0x2)) (operands rd rs1 csr))\n'
+        '  (pseudo (name rdcycle) (of "t::csrrs") (fixed (14 12 0x2)) (operands rd)))\n')
+
+    def pair(sem_text, frag=frag_p):
+        p = tmp / "pair.sem.sexp"
+        p.write_text(f'(semantics (fragment "riscv/t-pair") (xlen 64)\n{sem_text})')
+        import io, contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = check_pair(frag, p)
+        return rc, buf.getvalue()
+
+    def pair_ok(sem_text, needle, frag=frag_p):
+        rc, out = pair(sem_text, frag)
+        assert rc == 0, f"rc={rc}: {out}"
+        assert needle in out, f"no {needle!r} in:\n{out}"
+
+    def pair_bad(sem_text, needle, frag=frag_p):
+        rc, out = pair(sem_text, frag)
+        assert rc == 1, f"expected rc=1 got {rc}: {out}"
+        assert needle in out, f"no {needle!r} in:\n{out}"
+
+    arm("GREEN the slice-b operators check with their declared arities",
+        lambda: pair_ok(
+            '(sem (insn csrrs) (source "S §1 — why")\n'
+            '  (effect (if (eq (field rs1) (lit 0))\n'
+            '              (set (reg rd) (csr-read (field csr)))\n'
+            '              (seq (set (reg rd) (csr-read (field csr)))\n'
+            '                   (csr-write (field csr) (or (csr-read (field csr)) (reg rs1)))))))\n'
+            '(sem (insn rdcycle) (source "S §2 — why")\n'
+            '  (effect (set (reg rd) (csr-read (lit 3072)))))\n'
+            '(refines (insn "ecall"))\n'
+            '(sem (insn ecall) (source "S §3 — why")\n'
+            '  (effect (if (eq (mode) (lit 3)) (trap-deliver (lit 11) (lit 0))\n'
+            '                              (trap-deliver (lit 8) (inst)))))',
+            "1 of 1 declared instruction(s) have checked semantics (+ 1 pseudo-instruction(s))"))
+    arm("RED   a pseudo's sem naming an operand the pseudo does not have",
+        lambda: pair_bad(
+            '(sem (insn csrrs) (source "S §1") (effect (nop)))\n'
+            '(sem (insn rdcycle) (source "S §2") (effect (set (reg rs1) (lit 0))))',
+            "is not an operand this instruction has"))
+    arm("RED   a foreign name without a refines declaration",
+        lambda: pair_bad(
+            '(sem (insn csrrs) (source "S §1") (effect (nop)))\n'
+            '(sem (insn ecall) (source "S §3") (effect (nop)))',
+            "no instruction of that name"))
+    arm("RED   a refines declaration naming nothing the file defines",
+        lambda: pair_bad(
+            '(refines (insn "ebreak"))\n'
+            '(sem (insn csrrs) (source "S §1") (effect (nop)))',
+            "defines no semantics"))
+    arm("RED   a refines declaration naming THIS fragment's own instruction",
+        lambda: pair_bad(
+            '(refines (insn "csrrs"))\n'
+            '(sem (insn csrrs) (source "S §1") (effect (nop)))',
+            "refining yourself is not a refinement"))
+    arm("RED   a new-operator arity violation is the walk's refusal, by name",
+        lambda: pair_bad(
+            '(sem (insn csrrs) (source "S §1") (effect (csr-write (field csr))))',
+            "(csr-write …) takes 2 argument(s)"))
+    arm("RED   an unknown operator is still refused, new vocabulary notwithstanding",
+        lambda: pair_bad(
+            '(sem (insn csrrs) (source "S §1") (effect (seq (csr-dance (field csr) (lit 1)))))',
+            'undeclared operator "csr-dance"'))
 
     import shutil
     shutil.rmtree(tmp)

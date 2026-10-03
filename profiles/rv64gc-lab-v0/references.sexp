@@ -68,18 +68,25 @@
            "csr (31..20) and zimm5 (19..15) operand fields, so arg_lut.csv needs no re-pin; it"
            "is listed here because this profile's fragments derive those field positions from"
            "it (same bytes, same digest as the rv64i pin). csrs.csv supplies the CSR"
-           "name-to-address map the assembler resolves csr operands through.")
+           "name-to-address map the assembler resolves csr operands through. encoding.h"
+           "(added at P4-SYSTEM.2 slice b) supplies the CSR FIELD masks — mstatus.TSR/TW/TVM/"
+           "MPRV and the xIE/xPIE/xPP stack positions — which the pinned specification, again,"
+           "renders only as figure images; causes.csv (in the cache since the rv64i era but"
+           "never pinned — measured byte-identical to upstream at this re-pin) supplies the"
+           "trap cause codes the trap-delivery semantics name.")
   (encoding_source
     (id "RISCV-OPCODES")
     (origin "https://github.com/riscv/riscv-opcodes")
     (license "BSD-3-Clause (RISC-V International, 2022)")
     (retrieved "2026-10-03")
     (work_dir "target/refs/riscv-opcodes")
-    (supplies "instruction fixed bits and operand lists for Zicsr (rv_zicsr: csrrw/csrrs/csrrc and their immediate forms), the Zicntr counter reads (rv_zicntr: rdcycle/rdtime/rdinstret as pinned pseudo-op rows of csrrs) and the privileged system instructions (rv_system: mret, wfi; rv_s: sret, sfence.vma — RVP-INSNS 18.1); the csr and zimm5 operand field positions (arg_lut.csv); and the CSR name-to-address map (csrs.csv).")
+    (supplies "instruction fixed bits and operand lists for Zicsr (rv_zicsr: csrrw/csrrs/csrrc and their immediate forms), the Zicntr counter reads (rv_zicntr: rdcycle/rdtime/rdinstret as pinned pseudo-op rows of csrrs) and the privileged system instructions (rv_system: mret, wfi; rv_s: sret, sfence.vma — RVP-INSNS 18.1); the csr and zimm5 operand field positions (arg_lut.csv); the CSR name-to-address map (csrs.csv); the CSR field masks (encoding.h — mstatus.TSR/TW/TVM/MPRV, the xIE/xPIE/xPP positions); and the trap cause codes (causes.csv).")
     (note "The hypervisor, Sm* and other pinned-but-unselected tables (D-NO-H, D-NO-PMP) are deliberately NOT in this pin: the fragment must carry only the profile's selection, and pinning a table nothing derives from would invite a reader to believe it is used. The selected tables carry no unselected instruction — measured row by row at the re-pin.")
     (file (name "rv_zicsr") (sha256 "dd8cc0e2c32fb5658d4aa719cef6ab1b714e2145ba071c9aeb382d9963e4901f") (bytes 940))
     (file (name "rv_zicntr") (sha256 "34ed6bb1cf98448c7c40abbd6f67cbccee0788bd42429a2b1a9538952f6cca8c") (bytes 298))
     (file (name "rv_system") (sha256 "4a58b5f0c908d7b748abbeb9df8335dbc53650ea284b738e4351afd49755e646") (bytes 141))
     (file (name "rv_s") (sha256 "e9d509a3a46de9024547fa75f76bf3c2839910ebc9af81d106cc46bc0ac6eb78") (bytes 132))
     (file (name "csrs.csv") (sha256 "caf7f732356167cbc5a93eeb6b37ddbaf5c8483229b50ee7cb7a56bb6d29d493") (bytes 6101))
+    (file (name "encoding.h") (sha256 "6ce1b7caafd51379ad1f775cbb59f978eda8cdae35bc19ffd0ee00482543d944") (bytes 22687))
+    (file (name "causes.csv") (sha256 "237491f164e0818afcacb8853f665a97dedb585e21c64d784433b80ae870ee69") (bytes 554))
     (file (name "arg_lut.csv") (sha256 "cdc61339ffe379c0cd24ad2dc20e57deda95e1da663f94fccb5969d191a8e136") (bytes 1971))))

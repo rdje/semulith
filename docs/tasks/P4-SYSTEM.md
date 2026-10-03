@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slice (a) done `2026-10-03`, `SEMULITH-P4-0004`)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `2026-10-03`, `SEMULITH-P4-0004` and (b) `2026-10-03`, `SEMULITH-P4-0005` done)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slice (a) landed (fragments + assembler whitelist + IALIGN data); next is slice (b): semantics-language operators + the new sem files; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a) fragments+assembler+IALIGN and (b) semantics operators+sem files landed; next is slice (c): the state schema, gen_state and the 33-CSR document; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -600,12 +600,138 @@ This gate authorises the planned next engineering stage: board implementation.
   `LIVE_STATUS.md` (the re-derived arms count only — no row's state changed),
   `docs/book/src/plan/p4.md` (the `.2` slice note) + the regenerated book index.
 
-`P4-SYSTEM.2` slices (b)–(h) : pending — filled at execution.
+`P4-SYSTEM.2` slice (b) — semantics-language operators + the new sem files (`2026-10-03`, `SEMULITH-P4-0005`):
+
+- [x] **REPRODUCE / ISSUE** — the language could not say what the leaf must say, measured
+  on the pre-slice tree:
+
+  ```
+  $ git show HEAD:schema/semantics.sexp | grep -c '^(operator'
+  32                                   # no csr/mode/xret/trap-delivery form…
+  $ git show HEAD:definitions/riscv/rv64i.sem.sexp | grep -A1 'insn ecall'
+  (sem (insn ecall) … (effect (trap (lit 11) (lit 0))))
+                                       # …only the harness-reporting (trap cause tval);
+                                       # ECALL's cause was a CONSTANT 11 — a model with no
+                                       # privilege modes cannot write 8/9/11 per mode
+  $ python3 scripts/check_semantics.py definitions/riscv/zicntr.sexp <a sem naming rdcycle>
+  zicntr.sem.sexp [rdcycle]: no instruction of that name in zicntr.sexp
+                                       # a pseudo could not carry semantics at all
+  $ git show HEAD:scripts/check_citations.py | grep -n 'rv64i.sem.sexp'
+  178:        sem = REPO / "definitions" / "riscv" / "rv64i.sem.sexp"
+                                       # the citation checker was single-file: locators in
+                                       # any NEW sem file resolved against nothing
+  # and the spec-side pre-condition: the mstatus field positions (TSR/TW/TVM/MPRV) exist in
+  # the pinned chapters only as FIGURE images — `grep -c 'TSR' priv/machine.html` finds the
+  # behaviour text, never a bit position (the encodings-as-images doctrine, one level down)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in existing behaviour; the slice runs the
+  brief's decision 4, and execution measured five things:
+  1. **The register-swap hazard.** csrrw/csrrs exchange a register with a CSR; a
+     state-threaded `(reg rs1)` read after `(set (reg rd) …)` is wrong for rd==rs1, and no
+     RV64I rule reads a register after writing it — so the language could adopt, without
+     changing any existing meaning, the contract stated in `schema/semantics.sexp` (READS
+     AND WRITES): register reads see the PRE-INSTRUCTION register file; memory and CSR
+     reads see the state at their evaluation point; `(pc)`/`(inst)` are frame constants.
+  2. **A pseudo's semantics specialize by NAME, not by refines.** Measured: the compose
+     rule keys on names; rdcycle ≠ csrrs, so no `(refines …)` is possible or needed — the
+     pseudo gets its own `(sem …)` whose effect IS the specialization (rs1=x0 → no write;
+     the row's fixed address), exact because the counter gating lives in csr-read's uniform
+     permission model. WHERE: `scripts/check_semantics.py`'s `check_pair` now indexes
+     `(pseudo …)` operand rows (checked, never demanded nor coverage-counted).
+  3. **Refinements name foreign instructions by construction.** zicsr.sem.sexp's
+     ecall/ebreak rules name BASE instructions, which pair mode rejected. WHERE:
+     `scripts/check_semantics.py`'s `check_pair` accepts a foreign name exactly when the
+     file declares it in `(refines …)` (language-only checks; the compose rule owns the
+     override's honesty) — and refuses both refines lies locally too (no override behind
+     it; refining yourself).
+  4. **Two checker/gate gaps the new corpus exposed.** `scripts/check_semantics_corpus.sh`'s
+     COMPOSE leg carried the SAME dropped-`(extensions …)`-form bug slice (a) fixed in the
+     resolver (a silent override in the second form was invisible — the new self-test arm
+     MISSED pre-fix, passes post-fix); and `scripts/check_citations.py` was hard-coded to
+     rv64i.sem.sexp (line 178), so the new files' locators resolved against nothing — the
+     `--corpus` mode binds each sem file to every profile pinning all its cited sources
+     (derived, never hard-coded) and names a file no profile fully pins.
+  5. **Field positions are figure-only in the spec.** mstatus.TSR/TW/TVM/MPRV and the cause
+     codes had no pinned machine-readable source; upstream riscv-opcodes' checked-in
+     `encoding.h` (masks) and `causes.csv` (in the cache since the rv64i era, measured
+     byte-identical to upstream) joined the rv64gc ledger. WHERE: the sem rules cite them
+     in comments; the permission/gating internals cite the pinned chapters.
+
+- [x] **FIX** — data + schema + checks, no Rust:
+  `schema/semantics.sexp` (+8 operators: `(field X)` raw operand-field value;
+  `(inst)` instruction word; `(mode)` current privilege 0/1/3; `(csr-state a)` the
+  machine's own state read, no permission model; `(csr-read a)` architectural read under
+  the uniform permission model — mode bits + read-only bits (RVP-CSR §1.1.1),
+  counter-enables, TM/STCE, TVM; `(csr-write a v)` architectural write, WARL legalization
+  deferred to slice (c)'s tables applied at slice-(d) lowering — the seam is recorded in
+  the operator's comment and the sem headers; `(trap-deliver c t)` delegation + x-stack +
+  xepc/xcause/xtval + pc←xtvec; `(xret x)` the §2.1.3.2 stack pop incl. MPRV clear, x as
+  the architectural mode code — `(xret m)`'s bare symbol read as an operand reference,
+  measured, so x is the xPP encoding itself);
+  `definitions/riscv/{zicsr,zicntr,system}.sem.sexp` (NEW — the per-instruction decisions:
+  csrrw rd=x0 ⇒ no read; csrrs/csrrc rs1=x0 ⇒ no write; uimm=0 likewise for the imm forms
+  (RVI-ZICSR §5.1.1); ecall cause 8/9/11 by mode, ebreak tval=pc (§2.1.3.1, both measured
+  on the references); mret legal in M only, sret legal in M/S + TSR gate in S (§2.1.3.2,
+  §2.1.1.6.6); wfi a NOP when legal, illegal in U, illegal in S with TW=1 — the spec's
+  latitudes resolved FOR trapping, laboratory authority (§2.1.3.3, §2.1.1.6.6); sfence.vma
+  illegal in U, in S with TVM=1 (§11.1.2.1, §11.1.9, §2.1.1.6.6), its invalidation effect a
+  stated NOP — no translation caches modelled, Sv39 is `.3`'s);
+  `scripts/check_semantics.py` (`check_pair` extracted; pseudo + refines handling; schema
+  validation reaches pair mode — self-test 8→15); `scripts/check_semantics_corpus.sh`
+  (COMPOSE-leg multi-form fix + the RED arm — self-test 7→8);
+  `scripts/check_citations.py` (`--corpus` mode — self-test 10→13);
+  `profiles/rv64gc-lab-v0/references.sexp` (+encoding.h, +causes.csv pins).
+  Routed INSIDE the tree: the slice-(d) lowering of the 8 operators (gen_definition refuses
+  them today by name — checked); slice (c) owns the WARL tables csr-write legalizes under.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_semantics.py definitions/riscv/{zicsr,zicntr,system}.sexp …sem.sexp
+  6 of 6 declared instruction(s) have checked semantics          (zicsr)
+  0 of 0 declared instruction(s) … (+ 3 pseudo-instruction(s))   (zicntr)
+  4 of 4 declared instruction(s) have checked semantics          (system)
+  $ python3 scripts/check_semantics.py --compose rv64i.sem zicsr.sem zicntr.sem system.sem
+  zicsr.sem.sexp declares refinement point(s): ebreak, ecall
+  the semantics compose — every override is declared.
+  $ python3 scripts/check_citations.py --corpus
+  rv64i.sem.sexp:   52 of 52 resolve (rv64i-lab-v0, netboard-lab-v0, rv64gc-lab-v0)
+  zicsr.sem.sexp:    8 of 8 resolve (rv64gc-lab-v0, 21 pinned sources)
+  zicntr.sem.sexp:   3 of 3 resolve; system.sem.sexp: 4 of 4 resolve — corpus: 6 resolution(s)
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0   # +encoding.h +causes.csv
+  MATCH ×8 … fetch_references: ok (rv64gc-lab-v0)     # rv64i-lab-v0 also ok
+  ```
+
+- [x] **NO REGRESSION** — RED-first, then the guard set:
+  `check_semantics.py --self-test` 15/15 (7 new arms: the slice-b operators GREEN, pseudo
+  operand refusal, foreign-name-without-refines, refines-without-override,
+  refines-own-instruction, new-operator arity, unknown operator at the schema layer);
+  `check_citations.py --self-test` 13/13 (+3 `--corpus` arms); the corpus gate's new
+  dropped-form arm proven RED pre-fix (reverting the one hunk → "right verdict, wrong
+  reason — no SILENT REDEFINITION"), 8/8 post-fix; rv64i.sem.sexp UNTOUCHED (its ecall/
+  ebreak rules intact — the refinement lives in zicsr.sem.sexp); rv64i's generated
+  surfaces byte-exact (DEF-GEN / STATE-GEN / GUEST-GEN ok); the schema fixpoint green
+  (check_sexp_schema 51/51); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS
+  384→385 arms re-derived). Census behind the "no book language chapter" claim:
+  `grep -rln 'sem.sexp\|(effect\|set-pc' docs/book/src/` → plan/p2.md and
+  annex/building-first-model.md only — a guide for new projects, not an operator-vocabulary
+  reference, so no book language chapter needed updating.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice c),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the execution findings; promotion: declined (the
+  contracts are data in the schema and armed by self-test REDs)), `LIVE_STATUS.md` (the
+  re-derived arms count only), `docs/book/src/plan/p4.md` (the `.2` note extended) — the
+  append-history heads sharded per `scripts/shard_history.py` where the ceilings required.
+
+`P4-SYSTEM.2` slices (c)–(h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (b) | the pre-slice census (32 operators, no csr/mode/xret form; ecall's cause a constant 11; a pseudo could not carry semantics; check_citations hard-coded to rv64i.sem.sexp); the spec-text census (xRET/WFI/TSR/TW/TVM/mcounteren/scounteren/STCE/sfence locators read from the pinned chapters; mstatus positions figure-only → encoding.h pinned); check_semantics pair checks 6/6 + 0/0(+3 pseudo) + 4/4 and `--compose` over the trial composition (refinement points ebreak/ecall declared); check_citations `--corpus` 6 resolution(s) — rv64i 52/52 ×3 profiles, zicsr 8/8, zicntr 3/3, system 4/4 under rv64gc; self-tests semantics 15/15 (+7), citations 13/13 (+3), corpus 8/8 (+1, the dropped-form arm proven RED pre-fix); fetch_references `--verify-only` green both profiles (+encoding.h, +causes.csv); DEF-GEN/STATE-GEN/GUEST-GEN byte-exact; `make gate` green (DERIVED-COUNTS 384→385) | slice (b) landed: 8 new operators (field, inst, mode, csr-state, csr-read, csr-write, trap-deliver, xret), the three sem files with every per-instruction decision cited, the WARL seam recorded for slice (c), rv64i.sem.sexp untouched |
 | `2026-10-03` | `.2` slice (a) | the upstream census (13 mnemonics over master's `extensions/`: rv_zicsr 6 real rows, rv_zicntr 3 pseudo-only rows of csrrs, rv_system mret/wfi + rv_s sret/sfence.vma; the moved rv_* tables byte-identical to the rv64i pins; the pinned arg_lut.csv already carries csr/zimm5); fetch_references `--verify-only` green for BOTH profiles + a scripted fresh re-fetch of rv_s byte-identical; check_sexp_schema on the new references.sexp and all 5 fragments; check_encoding_disjoint self-test 12/12 (+3 pseudo arms, +1 dupes arm) and the trial compositions (base+each new fragment; the 62-instruction 4-fragment union collision-free through a synthetic unit doc); the assembler probe (all 13 forms assembled, the spike-dasm round-trip exact, 4 RED operand refusals named, IALIGN 32 refuses / 16 accepts an entry 2 mod 4, rv64i derives 32 and rv64gc 16); UNIT-COMPOSITION self-test 9/9; EXERCISE-COVERAGE 21/21; EXTRACTION / INTERACTION-MATRIX / SOURCE-FORMAT / SEMANTICS / DOSSIER-SCHEMA / PROFILE-CONSISTENCY green; GUEST-GEN / DEF-GEN / STATE-GEN byte-exact; `make gate` green (DERIVED-COUNTS 383→384 arms re-derived) | slice (a) landed: the Zicsr / Zicntr / privileged-system fragments from the re-pinned tables, the csr operand field and IALIGN as profile data; rv64i's generated surfaces byte-identical; the unit stays on the `profile-resolution` route |
 | `2026-10-03` | `.1` | the snapshot census measured on disk (24 priv + 46 unpriv pages, 21/21 pins re-hashed against the tracked SHA256SUMS); the chapter versions measured from the page titles (M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicsr/Zifencei/Zicntr 2.0, RVWMO 2.0, Machine/Supervisor 1.13, Sstc 1.0); the closure statements measured (G = IMAFDZicsr_Zifencei — naming 36.1; D⇒F — 21.1; F⇒Zicsr — 20.1; C⇒Zca+Zcd at RV64 — zc 28.1.2; IALIGN=16 — 27.1); the PDF pins re-verified against the catalog (3/3); RECORD-SCHEMA 18 record files; EXTRACTION 5 units (the resolution leg: obligations checked both ways); EXERCISE-COVERAGE / INTERACTION-MATRIX 5 units (n/a by declaration); PROFILE-CONSISTENCY 5 dossiers; FACT-OWNERSHIP 61 kinds (fixture re-pinned 9→10); check_citations 52/52 for both units + the 3 named skips; route self-tests 11/11 + 21/21 + 15/15; `make gate` green (DERIVED-COUNTS 376→383 arms re-derived) | the profile resolved: rv64gc-lab-v0 — every element source-located, the closure measured, the dossier landed unregistered with the new profile-resolution route honored by declaration in three gates |
 
@@ -613,11 +739,37 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice b) | `SEMULITH-P4-0005 (leaf P4-SYSTEM.2): slice b — the semantics language learns privilege: 8 operators, the zicsr/zicntr/system sem files, ECALL/EBREAK refined by declaration` | schema/semantics.sexp 32→39 forms + the READS-AND-WRITES contract; csr-write's WARL seam deferred to slice (c)'s tables at slice-(d) lowering; the corpus gate's dropped-extensions-form compose bug fixed (RED-first); check_citations --corpus binds sem files to pinning profiles; +encoding.h/+causes.csv pins (mstatus masks are figure-only in the spec); rv64i.sem.sexp untouched, rv64i's generated surfaces byte-exact |
 | `.2` (slice a) | `SEMULITH-P4-0004 (leaf P4-SYSTEM.2): slice a — the Zicsr/Zicntr/privileged-system fragments from the re-pinned tables; the csr operand field; IALIGN as profile data` | the rv64gc references.sexp re-pin (5 new tables + shared arg_lut, sha256+bytes); the fetch route's extensions/ mapping (the moved tables hash byte-identical to the pins); the (pseudo …) fragment construct + the disjointness specialization rule (self-test 8→12); the resolver's dropped-extensions-form and advisory-dupes fixes measured at the first 3-extension composition; rv64i.sexp/m.sexp re-derived byte-identical; both profiles' verify routes green |
 | `.1` | `SEMULITH-P4-0002 (leaf P4-SYSTEM.1): the profile resolved — rv64gc-lab-v0, every element source-located, the closure measured; the profile-resolution route` | the unit dossier (5 files: profile/sources/requirements/obligations/DOSSIER); 18 decisions mirrored twice (probe-derived, verbatim); schema/profile.sexp +profile-resolution with comparison optional; EXTRACTION/EXERCISE-COVERAGE/INTERACTION-MATRIX honor the route (self-tests 11/21/15); check_citations subdirectory + named-skip fix; gen_platform canonical ISA order; FACT-OWNERSHIP +4 rows (61), fixture re-pinned to six units |
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (b) done (`SEMULITH-P4-0005`) — the semantics language learns
+  privilege. Eight operators joined the schema (32→39 forms), each with its meaning tied to
+  the pinned chapters: `(field X)` raw operand-field value; `(inst)` the instruction word;
+  `(mode)` current privilege; `(csr-state a)` the machine's own state read; `(csr-read a)`
+  / `(csr-write a v)` the architectural CSR access under a UNIFORM permission model
+  (address mode bits + read-only bits, counter-enables, TM/STCE, TVM — every CSR
+  instruction gets it once); `(trap-deliver c t)` delegation + the xPIE/xIE/xPP stack +
+  xepc/xcause/xtval + pc←xtvec; `(xret x)` the §2.1.3.2 stack pop incl. MPRV clear. The
+  language gained its READS-AND-WRITES contract (register reads see the pre-instruction
+  register file — the csrrw swap is exact for rd==rs1; no RV64I rule changes meaning). The
+  three sem files landed: zicsr (the read/write side-effect disciplines; ECALL/EBREAK
+  REFINED by declaration — MODEL-COMPOSE.6's anticipated case — cause 8/9/11 by mode),
+  zicntr (the pseudo-semantics mechanism, measured: specialization by NAME, no refines
+  possible or needed), system (mret/sret legality per mode + the TSR gate; wfi a stated
+  NOP-when-legal with the spec's latitudes resolved for trapping, laboratory authority;
+  sfence.vma's invalidation a stated NOP — Sv39 is `.3`'s). The WARL seam is recorded:
+  csr-write legalizes under slice (c)'s declared tables, applied at slice-(d) lowering.
+  Measured in execution, fixed at root: the corpus gate's COMPOSE leg carried slice (a)'s
+  dropped-`(extensions …)`-form bug (a silent override in the second form was invisible —
+  the new arm proven RED pre-fix); check_citations was hard-coded to rv64i.sem.sexp (the
+  new `--corpus` mode binds by declared pins: 52/52 ×3, 8/8, 3/3, 4/4 resolved); the
+  mstatus field positions are figure-only in the spec, so `encoding.h` + `causes.csv`
+  joined the rv64gc ledger. rv64i.sem.sexp untouched; `make gate` green. Next: slice (c) —
+  the state schema, gen_state and the 33-CSR document.
 
 - `2026-10-03`: `.2` slice (a) done (`SEMULITH-P4-0004`) — fragments + assembler whitelist +
   IALIGN data. The upstream census measured what the brief delegated: Zicsr's six

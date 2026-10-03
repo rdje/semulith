@@ -16,14 +16,15 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, every element source-located, the unit unregistered by design; `.2` slice (a) landed: the Zicsr/Zicntr/privileged-system fragments from the re-pinned tables, the csr operand field, IALIGN as profile data).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, the unit unregistered by design; `.2` slices (a) fragments+assembler+IALIGN and (b) semantics operators+sem files landed).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.2` slice (b) — the semantics-language operators + the new sem
-  files (Zicsr refines the base's ECALL/EBREAK via a declared `(refines …)`; the
-  csr-read/csr-write/mode-query/trap-delivery/xret operators enter `schema/semantics.sexp`
-  as a sanctioned schema edit). Slice (a)'s fragments and the rv64gc references.sexp re-pin
-  are committed (`SEMULITH-P4-0004`); the route flips from `profile-resolution` to
-  `generated-definition` in the leaf's last, atomic commit (slice h).
+- next_action: `P4-SYSTEM.2` slice (c) — the state schema + gen_state + the 33-CSR
+  document: `schema/state.sexp` gains a CSR construct and a current-privilege-mode element,
+  gen_state.py extends to both profiles behind the schema layer with rv64i's `state.rs`
+  re-derived byte-identical, and the 33 CSRs' resets and per-field WPRI/WARL/WLRL tables
+  land with their chapter locators (csr-write's legalization seam from slice (b) binds
+  here). The route flips from `profile-resolution` to `generated-definition` in the leaf's
+  last, atomic commit (slice h).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

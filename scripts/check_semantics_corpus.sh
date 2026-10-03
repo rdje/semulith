@@ -85,7 +85,8 @@ for doc in unit_docs:
             continue
         names = [str(_sexp.field(comp[0], "base", str(doc)))]
         ext = _sexp.children(comp[0], "extensions")
-        names += [str(x) for x in (ext[0][1:] if ext else [])]
+        for e in ext:
+            names += [str(x) for x in e[1:]]
     except _sexp.SexpError as exc:
         findings.append(f"UNREADABLE {doc.relative_to(root)}: {exc}")
         continue
@@ -117,7 +118,7 @@ if mode == "git":
         have_cache = False
     if have_cache:
         checked += 1
-        r = subprocess.run([sys.executable, "scripts/check_citations.py"],
+        r = subprocess.run([sys.executable, "scripts/check_citations.py", "--corpus"],
                            capture_output=True, text=True)
         if r.returncode != 0:
             findings.append("CITATIONS: " + (r.stdout.strip().splitlines() or [r.stderr.strip()])[-1])
@@ -175,9 +176,9 @@ self_test() {
 $RULE2"; unit "";          arm "GREEN a complete, cited corpus composes" 0 "have checked semantics"
   frag; sem "$RULE"; unit ""; arm "RED   an uncovered declared instruction" 1 "have NO semantics"
   frag; sem '(sem (insn add) (effect (nop)))'; unit ""
-                            arm "RED   a rule citing nothing" 1 "cites no specification locator"
+                            arm "RED   a rule citing nothing" 1 'missing required field "source"'
   frag; sem "(sem (insn add) (source \"S §1\") (effect (widget rd)))
-$RULE2"; unit "";          arm "RED   a form the language refuses, by name" 1 "unknown form 'widget'" 
+$RULE2"; unit "";          arm "RED   a form the language refuses, by name" 1 'form head "widget" is not one of'
   frag; sem "$RULE
 $RULE2"; printf '%s\n' '(fragment (id "riscv/u") (kind isa-extension) (requires "riscv/t"))' \
       > "$t/definitions/riscv/u.sexp"
@@ -185,6 +186,16 @@ $RULE2"; printf '%s\n' '(fragment (id "riscv/u") (kind isa-extension) (requires 
       > "$t/definitions/riscv/u.sem.sexp"
     unit ' (extensions "riscv/u")'
                             arm "RED   a silent override across a unit's fragments" 1 "SILENT REDEFINITION"
+  rm -f "$t/definitions/riscv/u.sexp" "$t/definitions/riscv/u.sem.sexp"
+  frag; sem "$RULE
+$RULE2"; printf '%s\n' '(fragment (id "riscv/v") (kind isa-extension) (requires "riscv/t"))' \
+      > "$t/definitions/riscv/v.sexp"
+    printf '%s\n' '(fragment (id "riscv/w") (kind isa-extension) (requires "riscv/t"))' \
+      > "$t/definitions/riscv/w.sexp"
+    printf '%s\n' '(semantics (fragment "riscv/w") (xlen 64)' "$RULE2" ')' \
+      > "$t/definitions/riscv/w.sem.sexp"
+    unit ' (extensions "riscv/v") (extensions "riscv/w")'
+                            arm "RED   a silent override in the SECOND extensions form (the dropped-form regression)" 1 "SILENT REDEFINITION"
   rm -f "$t/definitions/riscv/"*.sem.sexp
     unit "";               arm "REFUSE an empty corpus, never pass it" 2 "cannot judge"
   frag; sem "$RULE

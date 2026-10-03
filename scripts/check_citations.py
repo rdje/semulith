@@ -167,9 +167,62 @@ def _work_dir(cfg: dict) -> tuple[Path, str]:
         return wd, f"fetched working area {cfg['work_dir']}"
 
 
+def corpus(repo: Path) -> int:
+    """Every tracked sem file's citations, against the profile(s) that pin what it cites.
+
+    ⭐ THE BINDING IS DERIVED, NEVER HAR-CODED: a sem file checks against every profile whose
+    sources.sexp pins ALL the source-ids its rules cite (rv64i.sem.sexp resolves under both
+    RISC-V units; the Zicsr/Zicntr/privileged-system files cite RVP-* pages only rv64gc
+    pins). A sem file NO profile fully pins is a finding BY NAME — its locators are
+    unverifiable in this repository, which is exactly the hole the single-file mode was
+    built to close for one file (P4-SYSTEM.2 slice b: the new corpus needed it for four).
+    """
+    sems = sorted((repo / "definitions").glob("**/*.sem.sexp"))
+    if not sems:
+        raise CitationError(f"{_rel(repo / 'definitions')}: no sem files — an empty corpus "
+                            f"is not a checkable one")
+    wants = {sem: citations(sem) for sem in sems}
+    cited_ids = {sid for want in wants.values() for sid, _ in want}
+    # A profile enters the binding only if it DECLARES a cited source-id — loading every
+    # profile's pins would read artifacts (binary manuals, other architectures) the
+    # sem corpus never cites.
+    pins: dict[str, tuple[Path, dict[str, set[str]]]] = {}
+    for sp in sorted((repo / "profiles").glob("*/sources.sexp")):
+        cfg = _D.load_sources(sp)
+        if not cited_ids & {s["id"] for s in cfg.get("source", [])}:
+            continue
+        wd, _route = _work_dir(cfg)
+        pins[sp.parent.name] = (sp, published(sp, wd))
+    rc, checked = 0, 0
+    for sem in sems:
+        want = wants[sem]
+        cited = {sid for sid, _ in want}
+        full = sorted(name for name, (_, have) in pins.items() if cited <= set(have))
+        if not full:
+            print(f"  UNCHECKABLE {sem.name}: cites {sorted(cited)} — no profile pins them all",
+                  file=sys.stderr)
+            rc = 1
+            continue
+        for name in full:
+            sp, _have = pins[name]
+            cfg = _D.load_sources(sp)
+            wd, route = _work_dir(cfg)
+            print(f"{sem.name} against {name} (via {route}):")
+            rc |= check(sp, wd, sem)
+            checked += 1
+    print(f"corpus: {len(sems)} sem file(s), {checked} resolution(s)")
+    return rc
+
+
 def main(argv: list[str]) -> int:
     if len(argv) >= 2 and argv[1] == "--self-test":
         return _selftest()
+    if len(argv) >= 2 and argv[1] == "--corpus":
+        try:
+            return corpus(REPO)
+        except (CitationError, _sexp.SexpError, KeyError, OSError) as exc:
+            print(f"REFUSED: {exc}", file=sys.stderr)
+            return 1
     prof = REPO / "profiles" / (argv[1] if len(argv) > 1 else "rv64i-lab-v0")
     st = prof / "sources.sexp"
     try:
@@ -234,6 +287,31 @@ def _selftest() -> int:
         headings("<h1>Introduction</h1><h2>1.1. Real</h2>"), {"1.1"}))
     arm("GREEN heading text is read through its inline markup", lambda: _eq(
         headings('<h3><a class="x" href="#y">3.1.2.</a> <span>Sub</span></h3>'), {"3.1.2"}))
+
+    def corpus_fixture():
+        d = Path(tempfile.mkdtemp())
+        (d / "definitions" / "riscv").mkdir(parents=True)
+        for prof, sid, html_text in (("p1", "S", H), ("p2", "T", "<h2>7.1. Other</h2>")):
+            w = d / "profiles" / prof / "w"
+            w.mkdir(parents=True)
+            (w / "a.html").write_text(html_text)
+            (d / "profiles" / prof / "sources.sexp").write_text(
+                f'(sources (work_dir "{w}") (source (id "{sid}") (file "a.html")))\n')
+        return d
+
+    def corpus_sem(d, name, loc):
+        (d / "definitions" / "riscv" / name).write_text(
+            f'(semantics (sem (insn add) (source "{loc} — why")))')
+
+    arm("GREEN --corpus binds each sem file to the profile that pins its sources",
+        lambda: _eq((lambda d: (corpus_sem(d, "x.sem.sexp", "S §3.1.2.1"), corpus(d))[1])(
+            corpus_fixture()), 0))
+    arm("RED   --corpus: a sem file whose sources no profile pins is named",
+        lambda: _eq((lambda d: (corpus_sem(d, "y.sem.sexp", "NOPE §1.1"), corpus(d))[1])(
+            corpus_fixture()), 1))
+    arm("RED   --corpus: a locator the pinning profile does not publish fails resolution",
+        lambda: _eq((lambda d: (corpus_sem(d, "z.sem.sexp", "T §7.1.9"), corpus(d))[1])(
+            corpus_fixture()), 1))
 
     print(f"check_citations --self-test: {passed} pass / {failed} fail")
     return 1 if failed else 0
