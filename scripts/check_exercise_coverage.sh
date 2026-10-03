@@ -131,7 +131,9 @@ for prof_path in profiles:
             comp = S.children(enc, "compose")
             base = str(S.field(comp[0], "base", str(enc_path)))
             ext = S.children(comp[0], "extensions")
-            names = [base] + [str(x) for x in (ext[0][1:] if ext else [])]
+            names = [base]
+            for e in ext:
+                names += [str(x) for x in e[1:]]
             merged = resolve_composition(enc, enc_path)
             resolved = {str(S.field(i, "name")) for i in S.children(merged, "insn")}
             closure = "{" + ", ".join(names) + "}"

@@ -1,5 +1,38 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0009 (leaf P4-SYSTEM.2, slice e) — the 65-form census (dual edit), the base-corpus mirror + authored records, the flip's staged encoding
+
+- The scope census grows 52→65 by the mandated dual edit (`schema/profile.sexp` +
+  `dossier_sexp._SCOPE_LISTS`: +zicsr_csrs, +system_privileged, +zicntr_counters). The
+  pseudo-census decision, recorded in the profile's scope comment: the Zicntr counter
+  reads ARE census forms (the spec's Zicntr listings name them), the encoding realizes
+  them as csrrs specializations (the fragment's pseudos), and EXERCISE-COVERAGE observes
+  the spelling in the expectations' insn text — measured. EXTRACTION's integrative claim
+  now counts the composition's pseudo names (+2 self-test arms, 11 total).
+- The requirements growth: the base-corpus mirror is derived by closure, not typed — the
+  9 instruction family records + fence/ecall-ebreak + the XLEN/ENDIAN dependencies (13)
+  and their 13 obligations, byte-verbatim but for the profile-scoped fields, with
+  `mirrored_from` provenance, plus 3 authored requirement records (Zicsr access model +
+  permission refusals; the privileged four's per-mode legality; the Zicntr reads + gating)
+  and their obligations with POS+NEG check pairs — 34/34 in rv64gc's catalogues. The
+  governor: RECORD-SCHEMA rule 14 (MIRROR-DERIVE), registry-driven by two new
+  FACT-OWNERSHIP rows (63 kinds), its four RED arms fired (drift, missing,
+  ungoverned-authored, owner's-contract-kept).
+- The flip's encoding.sexp is staged at `target/p4-system-2/profiles/rv64gc-lab-v0/` with
+  the flip's own bytes (relative fragment-root, the definitions symlink, `(status
+  partial)` + six slots for m/a/f/d/c/zifencei), validated: schema conform, the union
+  collision-free (62 instructions + 3 pseudos), the holes honestly declared; the slice-(d)
+  execution proof regenerated from the staged bytes and re-run (26/26). The staged
+  payload's README records the flip mapping.
+- Measured in execution, fixed at root: the dropped-`(extensions …)`-form bug's census
+  found two MORE readers (check_exercise_coverage.sh, gen_model_book.py — six sites, the
+  pattern now extinct, `git grep` clean); PROFILE-CONSISTENCY's PARTS DRIFT learned the
+  extension families (it fired honestly on 40+12≠65 mid-edit); fetch_references' scope leg
+  covers the pinned tables, pseudo-aware (rv64gc 65==65, rv64i 52==52 unchanged). The
+  docs/tasks/ aggregate ceiling fired (63 files / 1,575,182 B > 1.5 MiB — the slice
+  checklists are the designed growth) and was re-derived to 3 MiB by decision record.
+  `make gate` green (DERIVED-COUNTS 404→408 arms). Next: slice (f) — the guests corpus.
+
 ## SEMULITH-P4-0008 (leaf P4-SYSTEM.2, slice d) — the generators parameterize to rv64gc, the privilege machinery lands, the scratch execution proof passes
 
 - The two-profile shape, measured into existence: the tracked evaluator matches rv64i's
@@ -819,24 +852,4 @@
 - The DSP's own `state.sexp` deliberately does NOT land yet: without `profile.sexp` no
   gate would read it (measured — PROFILE-CONSISTENCY iterates `profiles/*/profile.sexp`),
   so it lands with the scope-taxonomy slice where its gate attachment is measured.
-
-## SEMULITH-BR-0013 (leaf P3-BREADTH.1) — the dsp56300-lab-v0 state census; the dump is complete
-
-- The SEM-08 hidden-state census re-ran for the exercised DSP profile (F6's per-profile
-  leg): 14 candidates answered with locators, never by silence — the record is
-  `docs/tasks/artifacts/p3-breadth/2026-10-01-dsp56300-state-census.md`.
-- PRESENT and declared: the A2/B2 sign-extended extension readout and A1/B1 raw reads
-  (`.4`'s pins harvested), M0–M7 bounded at reset by typed stops, sticky L/S (S has no
-  writer in subset v0), the DO loop's stacked levels, the observable stale popped stack
-  slots. ABSENT: REP working state beyond the declared LC (restored before the
-  instruction retires), the F5 pending-writes window (scalar issue), reservation/FP/vector
-  state (none exist in the family), and the interrupt/mode/stack-extension state (named
-  exclusions, each reopening its census row).
-- Consequence: for subset v0 under its named exclusions, the canonical end-state dump is
-  the COMPLETE architectural state — surface completeness argued (stack slot 0 unwritable,
-  P-low constant, the harness window excluded by the harness's own contract) and measured
-  (the 6/6 agreement re-run this leg). The record is `.5`'s measured input for the
-  `state.sexp` cases; the DOSSIER's deferral row names it. `P3-BREADTH.1` stays
-  slice-gated (F6 refires per profile; F2/F4/F5 stay TI/VLIW-conditional); the frontier
-  moves to `.5`.
 

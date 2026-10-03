@@ -18,14 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, the unit unregistered by design; `.2` slices (a) fragments+assembler+IALIGN, (b) semantics operators+sem files, (c1) the staged 33-CSR state document + gen_state's two-profile branch landed).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.2` slice (e) — the unit artifacts at scratch→flip staging:
-  `encoding.sexp` with the partial slots (m/a/f/d/c/zifencei), the requirements growth
-  (the new instructions' requirement mirrors), the scope-census dual edit
-  (schema/profile.sexp + dossier_sexp._SCOPE_LISTS, 52→65), all authored and validated
-  from target/p4-system-2/ and moved unchanged at the flip (slice h). Slice (d) is
-  committed (`SEMULITH-P4-0008`); the machinery (privilege.rs) and the generator
-  parameterizations are tracked; the generated rv64gc modules stay scratch per
-  `decision_generated-mirror-needs-tracked-input`.
+- next_action: `P4-SYSTEM.2` slice (f) — the guests corpus: the base mirror (rv64i's
+  guests DERIVED byte-identically and EXECUTED on the rv64gc engine — the scratch harness
+  proves execution today) + the mode-matrix guests (enter S/U via delegation + xRET,
+  observe through the ISA) + the EVD-05 expectations. The staged payload
+  (target/p4-system-2/) holds the state document, the flip's encoding.sexp, and the
+  slice-(d) proof; slice (e) landed the 65-form census, the mirror+authored requirements
+  (34/34 records), and the flip's staged encoding (`SEMULITH-P4-0009`).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

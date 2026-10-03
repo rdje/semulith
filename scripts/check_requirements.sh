@@ -64,6 +64,13 @@
 #                   counts its own rows re-derive, and its verdict vocabulary is closed —
 #                   a recorded experiment whose summary disagrees with its rows is a catalogue
 #                   lying about its own census (P2-SCALAR.5).
+#    14. MIRROR-DERIVE a `base-requirements (UNIT)` / `base-obligations (UNIT)` row in
+#                   doctrine/fact_ownership.tsv registers that UNIT's base-corpus records are
+#                   byte-verbatim DERIVED mirrors of the owner unit's catalogue (P4-SYSTEM.2
+#                   slice e — the rv64gc base corpus derives from rv64i's); the mirrored set is
+#                   re-derived (the owner's base-covering records + their dependency closure),
+#                   every shared field must be equal, the profile-scoped fields must name the
+#                   mirror's unit, and an authored base record outside the closure is refused.
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -441,6 +448,116 @@ for cat in catalogues:
                     f"NO NEGATIVE CHECK {cat.name} [{o.get('id')}]: required_checks {checks} "
                     f"lack a positive AND a negative fixture")
 
+# ---- 14. MIRROR-DERIVE — the base-corpus mirrors, registry-driven (P4-SYSTEM.2 slice e) ------
+# doctrine/fact_ownership.tsv's `base-requirements (UNIT)` / `base-obligations (UNIT)` rows
+# register that UNIT's base-corpus records are DERIVED mirrors of the owner's catalogue. A
+# mirror record must equal the owner's record on every field but the profile-scoped ones —
+# byte-verbatim, the probe's rule — and the mirror may not drift: a record that was copied
+# and then edited is a fact stated in two ungoverned ways (MODEL-METHOD.7).
+reg_path = root / "doctrine" / "fact_ownership.tsv"
+if reg_path.is_file():
+    for line in reg_path.read_text().splitlines():
+        if not line.strip() or line.startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) < 4:
+            continue
+        kind, owner_rel, mirror_rel = parts[0], parts[1], parts[2]
+        mm = __import__("re").match(r"base-(requirements|obligations) \((.+)\)", kind)
+        if not mm or mirror_rel == "-":
+            continue
+        which, unit = mm.group(1), mm.group(2)
+        owner_p, mirror_p = root / owner_rel, root / mirror_rel
+        if not owner_p.is_file() or not mirror_p.is_file():
+            continue                        # existence is the FACT-OWNERSHIP gate's leg
+        checked.append(kind)
+        owner_recs = R.load(owner_p)
+        mirror_by_id = {r["id"]: r for r in R.load(mirror_p)}
+        owner_by_id = {r["id"]: r for r in owner_recs}
+        if which == "requirements":
+            # the mirrored set, re-derived: the owner's records covering a base-form
+            # instruction, plus their dependency closure
+            owner_scope = D.load_profile(owner_p.parent / "profile.sexp")["scope"]
+            base = {m.lower() for v in owner_scope.values()
+                    if isinstance(v, list) for m in v}
+            covering = [r["id"] for r in owner_recs if set(r.get("insns", [])) & base]
+            closure = set(covering)
+            frontier = list(closure)
+            while frontier:
+                rid = frontier.pop()
+                for dep in owner_by_id.get(rid, {}).get("dependencies", []):
+                    if dep not in closure:
+                        closure.add(dep)
+                        if dep in owner_by_id:
+                            frontier.append(dep)
+            for rid in sorted(closure):
+                want, got = owner_by_id[rid], mirror_by_id.get(rid)
+                if got is None:
+                    findings.append(f"MISSING MIRROR {mirror_p.name} [{rid}]: the base-corpus "
+                                    f"mirror does not carry the record — the derivation is "
+                                    f"incomplete")
+                    continue
+                for f_ in set(want) - {"profile_ids"}:
+                    if got.get(f_) != want.get(f_):
+                        findings.append(f"MIRROR DRIFT {mirror_p.name} [{rid}]: field {f_!r} "
+                                        f"differs from the owner's record — a derived mirror "
+                                        f"may not drift")
+                if got.get("profile_ids") != [unit]:
+                    findings.append(f"MIRROR DRIFT {mirror_p.name} [{rid}]: profile_ids "
+                                    f"{got.get('profile_ids')} != [{unit!r}] — the mirror's "
+                                    f"scope field is the one legal difference")
+            base_in_mirror = {r["id"] for r in mirror_by_id.values()
+                              if set(r.get("insns", [])) & base}
+            for rid in sorted(base_in_mirror - closure):
+                findings.append(f"UNGOVERNED BASE RECORD {mirror_p.name} [{rid}]: covers a "
+                                f"base form but is not in the owner's mirror closure — an "
+                                f"authored base record outside the derivation")
+        else:
+            # obligations mirror the mirrored requirements' obligations: the requirement
+            # closure (the owner's base-covering records + their dependencies) computed
+            # from the owner's requirements catalogue, then the obligations they name.
+            req_cat = owner_p.parent / "requirements.sexp"
+            owner_reqs = R.load(req_cat)
+            owner_req_by_id = {r["id"]: r for r in owner_reqs}
+            owner_scope = D.load_profile(owner_p.parent / "profile.sexp")["scope"]
+            base = {m.lower() for v in owner_scope.values()
+                    if isinstance(v, list) for m in v}
+            closure = {r["id"] for r in owner_reqs if set(r.get("insns", [])) & base}
+            frontier = list(closure)
+            while frontier:
+                rid = frontier.pop()
+                for dep in owner_req_by_id.get(rid, {}).get("dependencies", []):
+                    if dep not in closure:
+                        closure.add(dep)
+                        if dep in owner_req_by_id:
+                            frontier.append(dep)
+            ob_ids = sorted({o for rid in closure
+                             for o in owner_req_by_id[rid].get("obligation_ids", [])})
+            for oid in ob_ids:
+                want, got = owner_by_id.get(oid), mirror_by_id.get(oid)
+                if want is None:
+                    continue                # a dangling obligation id is rule 6/7's leg
+                if got is None:
+                    findings.append(f"MISSING MIRROR {mirror_p.name} [{oid}]: the base-corpus "
+                                    f"obligation mirror does not carry the record")
+                    continue
+                for f_ in set(want) - {"contract_id", "profile_ids"}:
+                    w, g = want.get(f_), got.get(f_)
+                    if f_ == "parameters":
+                        w = dict(w or {}); g = dict(g or {})
+                        g.pop("mirrored_from", None)
+                    if g != w:
+                        findings.append(f"MIRROR DRIFT {mirror_p.name} [{oid}]: field {f_!r} "
+                                        f"differs from the owner's record — a derived mirror "
+                                        f"may not drift")
+                if got.get("profile_ids") != [unit]:
+                    findings.append(f"MIRROR DRIFT {mirror_p.name} [{oid}]: profile_ids "
+                                    f"{got.get('profile_ids')} != [{unit!r}]")
+                if got.get("contract_id") == want.get("contract_id"):
+                    findings.append(f"MIRROR DRIFT {mirror_p.name} [{oid}]: the mirror keeps "
+                                    f"the owner's contract_id — the obligation would bill the "
+                                    f"wrong contract")
+
 for f in findings:
     print(f)
 print(f"__CHECKED__ {len(checked)}")
@@ -538,6 +655,75 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
   obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['parameters']={'requirement_id':'REQ-D-GHOST'}; r['statement']='S'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   a mirror of a requirement that does not exist" 1 "MIRROR WITHOUT SOURCE"
   rm -f "$t/p/contract-obligations.sexp"
+  # ---- rule 14 MIRROR-DERIVE: the base-corpus mirror, registry-driven ---------------------------
+  # Fixture: an owner unit o/ and a mirror unit m/ beside a registry row. The owner's
+  # profile declares a one-form base census; the owner's record covers it.
+  mkdir -p "$t/o" "$t/m" "$t/doctrine"
+  cat > "$t/o/profile.sexp" <<'EOF'
+(profile (scope (count_base 1) (count_total 1) (authority architecture) (source "s") (base_op "ADD")))
+EOF
+  python3 - "$t" "$ROOT" <<'PY'
+import json, pathlib, sys
+sys.path.insert(0, sys.argv[2] + "/scripts")
+import records_sexp as R
+t = pathlib.Path(sys.argv[1])
+own = {"id": "REQ-D-A", "profile_ids": ["o"], "kind": "instruction", "statement": "S",
+       "insns": ["add"], "source_refs": [{"source_id": "SRC-A", "locator": "§1"}],
+       "applicability": "included", "research_status": "resolved",
+       "implementation_status": "planned",
+       "source_semantics": {"category": "defined", "detail": "d"}, "risk": "low",
+       "obligation_ids": ["OB-A"], "dependencies": [], "implementation_refs": [],
+       "evidence_ids": []}
+own_ob = {"id": "OB-A", "contract_id": "o-env-v0", "contract_version": "0",
+          "profile_ids": ["o"], "direction": "cpu-guarantee", "statement": "S",
+          "authority": "architecture",
+          "source_refs": [{"source_id": "SRC-A", "locator": "§1"}],
+          "parameters": {"requirement_id": "REQ-D-A"}, "dependencies": ["REQ-D-A"],
+          "required_checks": ["CHK-A-POS", "CHK-A-NEG"]}
+(t / "o/requirements.sexp").write_text(R.dump([own]))
+(t / "o/contract-obligations.sexp").write_text(R.dump([own_ob]))
+mir = dict(own); mir["profile_ids"] = ["m"]
+mir_ob = dict(own_ob); mir_ob["contract_id"] = "m-env-v0"; mir_ob["profile_ids"] = ["m"]
+mir_ob["parameters"] = {"requirement_id": "REQ-D-A", "mirrored_from": "o"}
+(t / "m/requirements.sexp").write_text(R.dump([mir]))
+(t / "m/contract-obligations.sexp").write_text(R.dump([mir_ob]))
+PY
+  # the registry names repo-relative paths (the fixture root stands in for the repo root)
+  printf 'base-requirements (m)\to/requirements.sexp\tm/requirements.sexp\tRECORD-SCHEMA\nbase-obligations (m)\to/contract-obligations.sexp\tm/contract-obligations.sexp\tRECORD-SCHEMA\n' > "$t/doctrine/fact_ownership.tsv"
+                                                              arm "GREEN the faithful mirror checks" 0 "__CHECKED__ 7"
+  python3 - "$t" "$ROOT" <<'PY'
+import pathlib, sys
+sys.path.insert(0, sys.argv[2] + "/scripts")
+import records_sexp as R
+p = pathlib.Path(sys.argv[1]) / "m/requirements.sexp"
+recs = R.load(p)
+recs[0]["statement"] = "S — edited after the copy"
+p.write_text(R.dump(recs))
+PY
+                                                              arm "RED   a mirror record edited after the copy" 1 "MIRROR DRIFT"
+  python3 - "$t" "$ROOT" <<'PY'
+import pathlib, sys
+sys.path.insert(0, sys.argv[2] + "/scripts")
+import records_sexp as R
+t = pathlib.Path(sys.argv[1])
+# restore, then drop the mirrored obligation record
+own = R.load(t / "o/requirements.sexp")
+mir = dict(own[0]); mir["profile_ids"] = ["m"]
+(t / "m/requirements.sexp").write_text(R.dump([mir]))
+(t / "m/contract-obligations.sexp").write_text(R.dump([]))
+PY
+                                                              arm "RED   the mirror missing the obligation record" 1 "MISSING MIRROR"
+  python3 - "$t" "$ROOT" <<'PY'
+import pathlib, sys
+sys.path.insert(0, sys.argv[2] + "/scripts")
+import records_sexp as R
+t = pathlib.Path(sys.argv[1])
+own_ob = R.load(t / "o/contract-obligations.sexp")
+mir_ob = dict(own_ob[0]); mir_ob["profile_ids"] = ["m"]  # contract_id NOT remapped
+(t / "m/contract-obligations.sexp").write_text(R.dump([mir_ob]))
+PY
+                                                              arm "RED   the mirror keeping the owner's contract" 1 "the mirror keeps"
+  rm -rf "$t/o" "$t/m" "$t/doctrine"
   # ---- rules 10+11: the unit registry and the layer rule (MODEL-METHOD.2) ---------------------
   units() { argc 1 "$#" units || return; python3 -c "
 import json, pathlib, sys

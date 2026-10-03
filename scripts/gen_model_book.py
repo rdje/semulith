@@ -421,7 +421,9 @@ def _emit_contracts_processor(profile_dir: Path) -> str:
             raise GenError(f"{rel(enc_path)}: expected one compose form")
         base = str(S.field(comp[0], "base", "encoding.sexp"))
         ext = S.children(comp[0], "extensions")
-        composed = [base] + [str(x) for x in (ext[0][1:] if ext else [])]
+        composed = [base]
+        for e in ext:
+            composed += [str(x) for x in e[1:]]
     n_reqs = _count_records(reqs_path)
     obs = R.load(obs_path)
     n_checks = sum(len(o["required_checks"]) for o in obs)

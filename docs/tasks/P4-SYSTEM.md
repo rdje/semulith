@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008` done, all `2026-10-03`)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009` done, all `2026-10-03`)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(d) landed; next is slice (e): the unit artifacts (encoding.sexp with partial slots, requirements growth, the census dual-edit) authored and validated at scratch; the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(e) landed; next is slice (f): the guests corpus (the base mirror EXECUTED on the rv64gc engine + the mode-matrix guests + expectations); the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -970,12 +970,105 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
   model, which is unchanged); state.rs's census lines are rv64i's generated file —
   frozen and true of that profile; both revisit at the flip.
 
-`P4-SYSTEM.2` slices (e)–(h) : pending — filled at execution.
+`P4-SYSTEM.2` slice (e) — the scope census dual-edit, the requirements growth, the staged encoding (`2026-10-03`, `SEMULITH-P4-0009`):
+
+- [x] **REPRODUCE / ISSUE** — the profile's census was the base-only 52 while the fragments
+  and sem files exist; the catalogues covered only the 18 decision mirrors; the flip's
+  encoding document existed only as slice (d)'s trial (absolute fragment-root — not the
+  flip's bytes). Measured:
+
+  ```
+  $ python3 -c 'import dossier_sexp as D; …scope…' profiles/rv64gc-lab-v0/profile.sexp
+  count_total = 52                       # the fragments carry 62 insns + 3 pseudos
+  $ python3 -c '…records…'  →  rv64gc requirements 18 / obligations 18 (decision mirrors only)
+  $ python3 -c '… rv64i instruction requirements …'
+  the 9 instruction records cover 49 of 52 base forms — ecall/ebreak/fence ride the
+  event/memory records (REQ-D-ECALL-EBREAK, REQ-D-FENCE) — the closure is derived, not assumed
+  $ grep -n "insn\b" scripts/check_exercise_coverage.sh | … the numerator
+  exercised.add(text.split()[0].lower())   # the FIRST TOKEN of (step (insn "…")) — a guest
+  #  writing `rdcycle x5` counts rdcycle EXERCISED even though the decode is csrrs
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behaviour; the slice stages the
+  flip's documents, and execution measured:
+  1. **The pseudo-census decision.** The Zicntr reads ARE in the census (65 forms): the
+     specification's Zicntr listings name them as instructions (RVI-ZICNTR §6.1.1), the
+     profile's scope is the SPEC-FACING form set, and the encoding's pseudo relation is
+     the realization's own record (`definitions/riscv/zicntr.sexp`). The integrative claim
+     at the flip needs the composition's pseudo names in its encoding set — WHERE:
+     `scripts/check_extraction.py`'s `_encoding_names` (insn children only, extended to
+     include `(pseudo …)`), and the FOURTH copy of the dropped-`(extensions …)`-form bug
+     in `_semantics_names` (line 84 — the last one: `git grep -n 'ext\[0\]\[1:\]'` over
+     scripts/ now finds none).
+  2. **The mirror extent is a closure, not a list.** The base corpus's requirement
+     records = the base-covering records (11) + their dependency closure (+REQ-D-XLEN,
+     REQ-D-ENDIAN) = 13, and their 13 obligations — measured by the probe, not typed.
+  3. **The parts-sum and the fetch leg had to learn the census.** PROFILE-CONSISTENCY's
+     PARTS DRIFT rule knew only base+rv64i (40+12 != 65 fired honestly);
+     `scripts/fetch_references.sh`'s scope leg read only the base tables (52 vs 65) —
+     extended to the ledger's pinned tables, with the rv64i M-tables exclusion kept by
+     name (they are pinned for the fragment test case, not the scope) and pseudo-only
+     tables contributing their pseudo names (the Zicntr listings ARE those rows).
+
+- [x] **FIX** — `schema/profile.sexp` + `scripts/dossier_sexp.py` `_SCOPE_LISTS` (the
+  mandated dual edit: +`zicsr_csrs`, +`system_privileged`, +`zicntr_counters`);
+  `profiles/rv64gc-lab-v0/profile.sexp` (count_total 65, the three family lists, the scope
+  comment carrying the pseudo-census decision);
+  `profiles/rv64gc-lab-v0/requirements.sexp` + `contract-obligations.sexp` (the 13+13
+  mirrored records with `mirrored_from` provenance + the 3+3 authored records for the new
+  forms, statements verbatim per the MIRROR rule);
+  `scripts/check_requirements.sh` (rule 14 MIRROR-DERIVE, registry-driven, +4 self-test
+  arms); `doctrine/fact_ownership.tsv` (+2 rows, 63 kinds);
+  `scripts/check_extraction.py` (pseudo names in the encoding set + the fourth
+  dropped-form fix; +2 self-test arms); `scripts/check_profile_consistency.sh` (PARTS
+  DRIFT learns the extension families); `scripts/fetch_references.sh` (the scope leg over
+  the pinned tables, pseudo-aware).
+  Scratch: `target/p4-system-2/profiles/rv64gc-lab-v0/encoding.sexp` (the flip's bytes —
+  relative fragment-root, depth-3 staging + the `definitions` symlink; `(status partial)`
+  + six slots), `target/p4-system-2/README.md` (the staged-payload inventory), the staged
+  `profile.sexp` symlink (the assembler's IALIGN derivation reads it).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0
+  MATCH    encoding tables vs profile scope  65 == 65, symmetric difference NONE
+  # (rv64i-lab-v0 unchanged: 52 == 52)
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (20 record file(s) validate …)   # 34 records each in rv64gc's catalogues
+  $ bash scripts/check_fact_ownership.sh
+  FACT-OWNERSHIP: ok (63 fact kind(s): one owner each, every mirror governed)
+  $ python3 scripts/check_encoding_disjoint.py target/p4-system-2/profiles/rv64gc-lab-v0/encoding.sexp
+  62 instruction(s) (+ 3 pseudo-instruction(s)) — COMPOSE; PARTIAL — 6 slot(s) unbound
+  $ python3 scripts/check_sexp_schema.py <staged encoding> schema/encoding.sexp   → ok
+  $ python3 scripts/check_semantics.py --compose rv64i.sem zicsr.sem zicntr.sem system.sem
+  the semantics compose — every override is declared.
+  # the slice-(d) proof, regenerated FROM the staged encoding and re-run: 26/26 PASS
+  ```
+
+- [x] **NO REGRESSION** — RED-first: the MIRROR-DERIVE arms (drift / missing record /
+  ungoverned authored record / the owner's contract kept) and the EXTRACTION pseudo arms
+  (counted / omitted-mismatch) fire with their reasons; PROFILE-CONSISTENCY's PARTS DRIFT
+  fired on the real 40+12≠65 mid-edit (then learned the families); the fetch leg's
+  pre-fix rv64gc run printed 52 vs 65 DIFFERS (post-fix NONE; rv64i 52==52 unchanged);
+  EXERCISE-COVERAGE 21/21 (the DENOMINATOR LIE arm included); EXTRACTION 11/11 (+2);
+  RECORD-SCHEMA self-test 43/43 (+4); UNIT-COMPOSITION 9/9; `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 404→408 arms re-derived).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice f),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the closure-derived mirror + the fourth dropped-form
+  copy; promotion: declined (the mirror rule is a running governor and the census decision
+  is data in the profile)) , `LIVE_STATUS.md` (the re-derived arms count only),
+  `docs/book/src/plan/p4.md` — sharded where the ceilings required.
+
+`P4-SYSTEM.2` slices (f)–(h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (e) | the pre-slice census (rv64gc scope 52 vs the fragments' 62+3; the catalogues at 18/18 decision mirrors; the rv64i requirement corpus covers 49 of 52 base forms in 9 instruction records — ecall/ebreak/fence ride event/memory records, the closure measured by probe); the pseudo-census decision measured against EXERCISE-COVERAGE's numerator (the first token of the expectations' insn text observes the spelling); the FOURTH dropped-`(extensions …)`-form copy found and fixed (`_semantics_names`) and the pattern then censused to two MORE readers (check_exercise_coverage.sh, gen_model_book.py — all six sites now uniform, `git grep` clean); the mirror extent derived as a closure (13 requirements + 13 obligations), RECORD-SCHEMA rule 14 MIRROR-DERIVE registered as the governor (self-test 39→43, arms RED-first: drift / missing / ungoverned-authored / owner's contract kept); the fetch leg extended (rv64gc 65==65, rv64i 52==52 unchanged); PARTS DRIFT learned the extension families; EXTRACTION counts pseudos (self-test 9→11); the staged encoding validated (62 + 3 pseudo, PARTIAL with 6 slots, schema conform) and the slice-(d) proof regenerated from it and re-run (26/26); `make gate` green (DERIVED-COUNTS 404→408 arms; the docs/tasks/ aggregate ceiling re-derived 1.5→3 MiB by `decision_task-tree-family-aggregate-rederivation`) | slice (e) landed: the 65-form census by the mandated dual edit, the base-corpus mirror + 3 authored records (34/34), the flip's encoding staged byte-ready, the registry rows (63 fact kinds) |
 | `2026-10-03` | `.2` slice (d) | the pre-slice census (gen_definition refuses rv64gc by name; gen_guests' list measured 49 names — the brief's "51" was stale; no privileged arms in exec.rs; elf.rs:88's hard-coded IALIGN=32; the CLI's profile statically rv64i's at main.rs:83); the third copy of the dropped-extensions-form bug (gen_definition's name list — "4 declared instruction(s) have NO semantics: mret, …" named it); `cargo test -p semulith-core --lib privilege` 11/11 (permission model, legalization, views, delivery both ways, xret, computed SD); the scratch execution proof (26/26 checks over six guests — the CSR disciplines, trap delivery with and without delegation, xret mode pops, wfi/sret legality per mode, counter gating, the TVM gate); the digest cascade re-derived (reports + board pin + board artifacts + platform manifest + both books); the PLATFORM-GEN stale-pin arm fixed (it assumed the digest's leading digit); STATE-GEN 20/20 (+3), DEF-GEN 15/15 (+6), GUEST-GEN 10/10 (+3); `make check` green (76 core / 180 verify tests), `make gate` green (DERIVED-COUNTS 395→404) | slice (d) landed: both generators parameterize (rv64i surfaces regenerate hash-only — the embedded generator fingerprints); the tracked privilege.rs machinery over the generated tables; elf.rs's IALIGN is profile data; the scratch execution proof green; the evaluator's new-variant arms port at the flip |
 | `2026-10-03` | `.2` slice (c2) | the landing question measured against the gates: STATE-GEN proves the tracked state.rs byte-exact from the TRACKED descriptor in a fresh clone; a tracked rv64gc module from the staged (untracked) descriptor would be unjudgeable there — the three alternatives (skip-if-absent leg, a hand-written interim module, a non-unit descriptor home) each measured dishonest. The scratch proof: gen_state emits `target/p4-system-2/gen/state_rv64gc.rs` (40,198 bytes); a `rustc --test` harness over it — reset-is-the-document (mode M, mstatus 0xA0000000, misa 0x800000000014112D), the 33-CSR address lookup, the view discipline (views carry no storage, every view_of resolves), the field tables (WARL-without-legalization absent, the medeleg 11/16 read-only-0 rows, TSR at bit 22 per the pinned encoding.h), x0/mode transitions — 4 passed / 0 failed | slice (c2) refined: the tracked landing rides the flip (one green commit with the descriptor's move); the interim evidence is recorded; `decision_generated-mirror-needs-tracked-input` |
 | `2026-10-03` | `.2` slice (c1) | the pre-slice census (no privileged construct in schema/state.sexp; the route contradiction measured at scripts/check_extraction.py:224-233; gen_state single-profile by refusal; PROFILE-CONSISTENCY csrs cross-check absent, EXTRACTION's reset leg csr-blind); the house-shape refusals (fields wrapper, candidates wrapper — refused by name, reshaped); the staged document validated from target/p4-system-2/: schema conform, --csr-cross 33/33 both directions, _state_resets over the scratch dir green, addresses == pinned csrs.csv 33/33 EXACT, field tables no-overlap/full-coverage; gen_state rv64i byte-identical + rv64gc emits 40198 bytes and rustc-compiles standalone; the composed-reset cross-check fired RED naturally on the real document (mstatus 0xA0000000 ≠ hand-computed 0x300000000 — the descriptor was wrong, the check named it); STATE-GEN self-test 17/17 (+7), PROFILE-CONSISTENCY 44/44 (+3), EXTRACTION 9/9 (+3); `make gate` green (DERIVED-COUNTS 385→395) | slice (c1) landed: the privileged state constructs (csr + per-field discipline tables + privilege_mode), the staged 33-CSR document with the re-earned SEM-08 census, gen_state's two-profile branch with rv64i byte-exact, the two gate gaps closed; the (c1)/(c2) split recorded |
@@ -987,6 +1080,7 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice e) | `SEMULITH-P4-0009 (leaf P4-SYSTEM.2): slice e — the 65-form census (dual edit), the base-corpus mirror + authored records, the flip's staged encoding` | the pseudo-census decision (the spec's listings name the Zicntr reads; the encoding realizes them as csrrs specializations; coverage observes the spelling) recorded in the profile's scope comment; MIRROR-DERIVE (rule 14) governors the mirror via the registry; the dropped-`(extensions …)`-form pattern censused to SIX readers, all uniform now; the docs/tasks/ aggregate re-derived 1.5→3 MiB (the slice checklists are the designed growth); the staged payload's README records the flip mapping |
 | `.2` (slice d) | `SEMULITH-P4-0008 (leaf P4-SYSTEM.2): slice d — the generators parameterize to rv64gc, the privilege machinery lands (tracked, over the generated tables), the scratch execution proof` | privilege.rs + 11 tests; the (legalize …) mini-language replaces prose (the WARL seam closed: engine applies descriptor data at lowering); gen_definition's rv64gc branch (8 operators lowered, PSEUDOS metadata; the THIRD dropped-extensions-form copy fixed); gen_guests directory-derived + run-order.txt (rv64i regenerates hash-only); elf.rs IALIGN parameter; the dossier-digest cascade re-derived; the fragile stale-pin arm fixed; the scratch proof 26/26 |
 | `.2` (slice c2) | `SEMULITH-P4-0007 (leaf P4-SYSTEM.2): slice c2 refined — the rv64gc module's tracked landing is flip-bound; the scratch engine proof recorded` | a tracked generated module needs a tracked canonical input — measured against STATE-GEN's fresh-clone property; the three alternatives each dishonest; the scratch `rustc --test` proof (4/4) over the generated module recorded; `decision_generated-mirror-needs-tracked-input` + INDEX |
 | `.2` (slice c1) | `SEMULITH-P4-0006 (leaf P4-SYSTEM.2): slice c1 — the privileged state constructs, the staged 33-CSR document, gen_state's rv64gc branch, the csr-set and reset-census gate arms` | slice (c) split recorded ((c1) zero Rust / (c2) the engine consumption); the state document staged at target/p4-system-2/ until the flip (the route contradiction is mechanical); gen_state composes per-field resets and cross-checks the csr-level value — fired RED naturally on the document being authored; csr name↔address ownership migration deferred to the flip, the 33/33 csrs.csv agreement probe recorded; STATE-GEN 17, PROFILE-CONSISTENCY 44, EXTRACTION 9 arms |
@@ -996,6 +1090,29 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (e) done (`SEMULITH-P4-0009`) — the unit's census, catalogues,
+  and the flip's staged encoding. The scope census grows 52→65 by the mandated dual edit
+  (`schema/profile.sexp` + `dossier_sexp._SCOPE_LISTS`: +zicsr_csrs, +system_privileged,
+  +zicntr_counters). The pseudo-census decision, measured and recorded in the profile's
+  scope comment: the Zicntr reads ARE census forms (the spec's listings name them), the
+  encoding realizes them as csrrs specializations, and EXERCISE-COVERAGE observes the
+  spelling in the expectations' insn text (measured: the numerator is its first token);
+  EXTRACTION's integrative claim now counts the composition's pseudo names. The base
+  corpus's requirement mirror is derived, not typed: the closure probe measured 13
+  requirement records (the 9 instruction families + fence/ecall-ebreak + XLEN/ENDIAN
+  dependencies) and their 13 obligations; rv64gc's catalogues carry them byte-verbatim but
+  for the profile-scoped fields, with `mirrored_from` provenance, plus 3+3 authored records
+  for the new forms (34/34 each). RECORD-SCHEMA's new rule 14 (MIRROR-DERIVE) is the
+  governor, registry-driven by two new FACT-OWNERSHIP rows (63 kinds); its self-test arms
+  fired RED on a drifted, a missing, an ungoverned-authored, and a wrong-contract mirror.
+  The flip's encoding.sexp is staged at `target/p4-system-2/profiles/rv64gc-lab-v0/` with
+  the flip's own bytes (relative fragment-root, `(status partial)`, six slots), validated
+  collision-free; the slice-(d) proof regenerated from it and re-run (26/26). The
+  dropped-`(extensions …)`-form latent bug was censused to its SIXTH reader and the
+  pattern is gone (`git grep` clean). `make gate` green; the docs/tasks/ aggregate ceiling
+  re-derived 1.5→3 MiB by decision record (the slice checklists are the designed growth).
+  Next: slice (f) — the guests corpus.
 
 - `2026-10-03`: `.2` slice (d) done (`SEMULITH-P4-0008`) — the generators parameterize and
   the privileged machinery lands. The two-profile shape was measured into existence: the

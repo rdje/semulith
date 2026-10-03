@@ -193,21 +193,44 @@ for es in d.get("encoding_source", []):
         print(f"{f['name']}\t{f['sha256']}")
 PY
 )
-  # ⭐ The strongest cheap check on the encoding tables: the profile declares 52 mnemonics and the
-  # tables must enumerate exactly those 52. Two independent routes to one closed set.
-  if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.sexp" <<'PY'
+  # ⭐ The strongest cheap check on the encoding tables: the profile declares its mnemonic
+  # census and the pinned tables must enumerate exactly it. Two independent routes to one
+  # closed set. The table set is the base (rv_i/rv64_i) plus the ledger's extension tables
+  # — MINUS the M tables when the profile does not select M (rv64i pins rv_m/rv64_m for the
+  # fragment's sake, not the scope's — the exclusion is BY NAME, and P4-SYSTEM.2 slice (e)
+  # extended this leg for rv64gc's 65-form census: Zicntr's counter reads are $pseudo_op
+  # rows of csrrs, so a pseudo-only table contributes its pseudo names — the spec's Zicntr
+  # listings ARE those rows).
+  if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.sexp" "$LEDGER" <<'PY'
 import sys, pathlib, re
 sys.path.insert(0, "scripts")
 import dossier_sexp as D
-enc, prof = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-names = set()
-for f in ("rv_i", "rv64_i"):
-    for raw in (enc / f).read_text().splitlines():
-        line = raw.split("#", 1)[0].strip()
-        if line and not line.startswith("$"):
-            names.add(line.split()[0])
+enc, prof, ledger = (pathlib.Path(a) for a in sys.argv[1:])
 scope = D.load_profile(prof)["scope"]
 declared = {m.lower() for v in scope.values() if isinstance(v, list) for m in v}
+# the ledger's pinned instruction tables beyond the base
+extra = []
+for es in D.load_references(ledger).get("encoding_source", []):
+    for f in es.get("file", []):
+        n = f["name"]
+        if n.startswith("rv_") and n not in ("rv_i", "rv64_i"):
+            extra.append(n)
+# the M tables are pinned for the fragment test case, not the scope — excluded unless the
+# profile declares an M form
+if not any(m.startswith(("mul", "div", "rem")) for m in declared):
+    extra = [n for n in extra if n not in ("rv_m", "rv64_m")]
+names = set()
+for f in ["rv_i", "rv64_i", *extra]:
+    lines = (enc / f).read_text().splitlines()
+    real = [l.split("#", 1)[0].strip() for l in lines]
+    real = [l for l in real if l and not l.startswith("$")]
+    for line in real:
+        names.add(line.split()[0])
+    if not real:  # a pseudo-only table (rv_zicntr): its pseudo rows ARE the census
+        for raw in lines:
+            line = raw.split("#", 1)[0].strip()
+            if line.startswith("$pseudo_op"):
+                names.add(line.split()[2])
 diff = sorted(names ^ declared)
 print(f"{len(names)}\t{len(declared)}\t{','.join(diff) if diff else 'NONE'}")
 PY

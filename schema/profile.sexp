@@ -123,7 +123,16 @@
   (field (name multiplies) (type string) (repeat yes) (optional yes))
   (field (name flow) (type string) (repeat yes) (optional yes))
   (field (name loops) (type string) (repeat yes) (optional yes))
-  (field (name mmio_registers) (type string) (repeat yes) (optional yes)))
+  (field (name mmio_registers) (type string) (repeat yes) (optional yes))
+  ;; `P4-SYSTEM.2` slice (e) (`2026-10-03`): the rv64gc scope-census growth (52 → 65), case
+  ;; rv64gc-lab-v0 — three families: the Zicsr CSR access forms, the privileged system
+  ;; forms (mret/sret/wfi/sfence.vma — RVP-INSNS 18.1), and the Zicntr counter reads. The
+  ;; Zicntr names are the SPEC's instruction listings (RVI-ZICNTR §6.1.1); the encoding
+  ;; realizes them as csrrs specializations (definitions/riscv/zicntr.sexp's pseudos) — the
+  ;; census is the profile's spec-facing form set, the pseudo relation is the realization's.
+  (field (name zicsr_csrs) (type string) (repeat yes) (optional yes))
+  (field (name system_privileged) (type string) (repeat yes) (optional yes))
+  (field (name zicntr_counters) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

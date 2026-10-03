@@ -270,7 +270,12 @@ docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave t
 #   lifecycle itself. Per-part STAYS 64 KiB (it bit correctly, sixth proof). Grounds and
 #   rejected alternatives in
 #               docs/decisions/decision_task-tree-family-count-rederivation.md.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	1572864	131072
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	3145728	131072
+# Re-derivation, P4-SYSTEM.2 slice (e) (2026-10-03), when the BYTE axis fired at
+#   1,575,182 > 1,572,864 (63 files): the active P4-SYSTEM tree's mandated per-slice
+#   checklists are the designed growth; per-part (128 KiB) and count (96) did not fire.
+#   Aggregate 1.5 MiB -> 3 MiB (the house shape). Grounds and rejected alternatives in
+#   docs/decisions/decision_task-tree-family-aggregate-rederivation.md.
 # Re-derivation, P5-BOARD.1 (2026-10-02), when the AGGREGATE axis fired at 131,911 > 131,072:
 #   docs/decisions/ 36 files / 131,911 B — the three-units record (+2,447 B) landed the family
 #               over at ordinary decision velocity, one file per durable record by design.

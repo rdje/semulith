@@ -69,7 +69,12 @@ def _encoding_names(unit: Path) -> set[str]:
         resolved = riscv_asm.resolve_composition(enc, enc_path)
     except (S.SexpError, riscv_asm.AsmError) as exc:
         raise ExtractionRefused(f"{enc_path}: does not resolve — {exc}")
-    return {str(S.field(i, "name")) for i in S.children(resolved, "insn")}
+    # Pseudo-instructions ARE declared forms of the composition (the census is the
+    # profile's spec-facing form set — rv64gc's scope names rdcycle/rdtime/rdinstret,
+    # realized as csrrs specializations; P4-SYSTEM.2 slice e): the integrative claim
+    # counts them, and the disjointness gate keeps them honest specializations.
+    return {str(S.field(i, "name"))
+            for i in S.children(resolved, "insn") + S.children(resolved, "pseudo")}
 
 
 def _semantics_names(unit: Path) -> tuple[set[str], list[str]]:
@@ -81,7 +86,8 @@ def _semantics_names(unit: Path) -> tuple[set[str], list[str]]:
     frag_root = enc_path.parent.parent.parent / str(S.field(enc, "fragment-root", str(enc_path)))
     names = [str(S.field(comp[0], "base", str(enc_path)))]
     ext = S.children(comp[0], "extensions")
-    names += [str(x) for x in (ext[0][1:] if ext else [])]
+    for e in ext:
+        names += [str(x) for x in e[1:]]
     files = [frag_root / (n + ".sem.sexp") for n in names]
     present = [p for p in files if p.is_file()]
     if not present:
@@ -441,6 +447,44 @@ def _selftest() -> int:
     build(extra_state=' (privilege_mode (modes m) (authority architecture) (source "S"))')
     arm("RED   a privilege_mode without a reset",
         lambda: refused("privilege_mode"))
+
+    # P4-SYSTEM.2 slice (e): a PSEUDO is a declared form of the composition — the
+    # integrative claim counts it (rv64gc's census names the Zicntr reads).
+    def build_pseudo(scope_extra=True):
+        build()
+        (tmp / "definitions/riscv/t.sexp").write_text(
+            '(fragment (id "riscv/t") (kind extension)\n'
+            '(insn (name add) (fixed (6 2 0x13) (1 0 0x3)) (operands rd rs1 rs2))\n'
+            '(insn (name sub) (fixed (6 2 0x13) (1 0 0x3)) (operands rd rs1 rs2))\n'
+            '(pseudo (name rdpseudo) (of "t::add") (fixed (6 2 0x13) (1 0 0x3)) '
+            '(operands rd) (from "t")))\n')
+        (tmp / "definitions/riscv/t.sem.sexp").write_text(
+            '(semantics (fragment "riscv/t") (xlen 64)\n'
+            '(sem (insn add) (source "S §1 — why") (effect (set (reg rd) (add (reg rs1) (reg rs2)))))\n'
+            '(sem (insn sub) (source "S §1 — why") (effect (set (reg rd) (add (reg rs1) (reg rs2)))))\n'
+            '(sem (insn rdpseudo) (source "S §2 — why") (effect (set (reg rd) (lit 0)))))\n')
+        scope = ("add", "sub", "rdpseudo") if scope_extra else ("add", "sub")
+        fam = " ".join(f'"{n.upper()}"' for n in scope)
+        (u / "profile.sexp").write_text(
+            f'(profile (id "u") (version "0") (status "development") (architecture "RISC-V")\n'
+            f'  (scope (count_base {len(scope)}) (count_total {len(scope)}) (demo {fam}))\n'
+            f'  (decision (id "D-X") (authority architecture) (statement "s") (source "S §1")))\n')
+        reqs = [{"id": "REQ-D-X", "profile_ids": ["u"], "kind": "instruction",
+                 "statement": "s", "insns": list(scope),
+                 "source_refs": [{"source_id": "S", "locator": "§1"}],
+                 "applicability": "included", "research_status": "resolved",
+                 "implementation_status": "planned",
+                 "source_semantics": {"category": "defined", "detail": "d"},
+                 "risk": "low", "obligation_ids": ["OB-X"], "dependencies": [],
+                 "implementation_refs": [], "evidence_ids": []}]
+        (u / "requirements.sexp").write_text(R.dump(reqs))
+    build_pseudo()
+    arm("GREEN a pseudo is a declared form: scope == encoding == semantics == requirements",
+        lambda: (lambda c: (_ for _ in ()).throw(AssertionError(c))
+                 if c["instructions"] != 3 else None)(check_extraction(u)))
+    build_pseudo(scope_extra=False)
+    arm("RED   a scope census that omits the pseudo is a mismatch, named",
+        lambda: refused("the scope does not declare: rdpseudo"))
 
     import shutil
     shutil.rmtree(tmp)

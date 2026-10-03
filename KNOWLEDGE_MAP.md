@@ -97,6 +97,7 @@
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
+- [`decision_task-tree-family-aggregate-rederivation.md`](docs/decisions/decision_task-tree-family-aggregate-rederivation.md)
 - [`decision_task-tree-family-bound-rederivation.md`](docs/decisions/decision_task-tree-family-bound-rederivation.md)
 - [`decision_task-tree-family-bound.md`](docs/decisions/decision_task-tree-family-bound.md)
 - [`decision_task-tree-family-count-rederivation.md`](docs/decisions/decision_task-tree-family-count-rederivation.md)
