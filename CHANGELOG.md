@@ -1,5 +1,40 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0010 (leaf P4-SYSTEM.2, slice f) — the base mirror executed (49/49), the mode-matrix corpus, the coverage rehearsal
+
+- The rv64i guest corpus runs on the rv64gc engine: all 49 guests staged byte-identically
+  (c-scope.c excluded — `scripts/build_c_guest.sh` hard-codes `-march=rv64i`; the rv64gc
+  C-guest question is recorded for the flip) and executed by the scratch corpus runner
+  (`target/p4-system-2/proof/corpus.rs`) — the declared MainMemory map, fault delivery on
+  the pinned cause vocabulary, the per-step x-register-change comparison rule from the
+  rv64i verify runner. The runner's trap-END discipline was a real bug it-fault-alias
+  exposed: a delivered trap now aborts the step's remaining effects.
+- 46 expectation files carry over byte-identically; fault-jal-mis, fault-jalr-mis and
+  it-prio-jump were RE-DERIVED BY DESIGN — under D-IALIGN-16 their 2-mod-4 jump targets
+  are legal (RVI-C 27.1), so the link write lands and no misaligned-fetch fault fires. A
+  declared profile difference, measured and re-derived from the pinned chapters — never
+  fitted to engine output (EVD-05).
+- The mode matrix: 13 new guests with expectations derived BEFORE the run — the six
+  zicsr forms' read/write/set/clear semantics; M-CSR legality in S and U (mtval = the
+  faulting word); delivered breakpoints that resume; ecall causes 11/9/8 by mode and
+  medeleg delegation to S with sret return (an M-mode ecall never delegates); mret mode
+  pops with MPRV cleared when the target is below M and preserved at M; sret legal in
+  M/S, illegal in U, and the TSR gate; wfi and the TW gate; sfence.vma and satp reads
+  under TVM; counter reads under mcounteren then scounteren; stimecmp under TM then
+  STCE; read-only CSR writes trapping while misa (WARL) ignores them; the mstatus
+  all-ones WARL read-back (0x8000000A007E79AA, the state document's field table).
+- Execution was the falsifier: it caught 14 stale auipc+addi vector deltas (labels
+  assemble to no word — every vector target re-audited through the real assembler), two
+  guest-design bugs (M-level CSR writes inline in S-mode in mm-mret and mm-ecall-modes —
+  the drops moved before/inside the M handler), one hex-digit slip in the mstatus WARL
+  constant and one no-change mis-derivation. Every mismatch was re-derived, never
+  fitted. `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mode matrix, deterministic
+  re-run); the coverage rehearsal over the staged 65-form scope reads 65/65 (the base 52
+  via the mirror, the 13 extension forms via mm-*, per-guest counts recorded). All
+  untracked scratch — no gate arms this slice (the corpus's registry governor lands at
+  the flip); `make gate` green (DERIVED-COUNTS unchanged at 408).
+  Next: slice (g) — the interactions.sexp.
+
 ## SEMULITH-P4-0009 (leaf P4-SYSTEM.2, slice e) — the 65-form census (dual edit), the base-corpus mirror + authored records, the flip's staged encoding
 
 - The scope census grows 52→65 by the mandated dual edit (`schema/profile.sexp` +
@@ -805,51 +840,4 @@
 - Bookkeeping: `.5` slices 1–2's checklists archived verbatim to
   `docs/tasks/archive/P3-BREADTH.md` as the leaf closed — the 64 KiB per-part ceiling
   held.
-
-## SEMULITH-BR-0015 (leaf P3-BREADTH.5) — the scope taxonomy generalizes; the DSP dossier drafted, attachment measured
-
-- `schema/profile.sexp`: the DSP's five scope groups (moves/alu_core/multiplies/flow/loops)
-  as named optional fields; `xlen`, the integer-file scalars and `count_rv64i_additions`
-  optional — each naming dsp56300-lab-v0 as its case. No gate reader changed: they were
-  already generic over group names. `dossier_sexp._SCOPE_LISTS` extended alongside (the
-  two closed places the taxonomy lives).
-- The DSP's `profile.sexp`/`state.sexp` stand DRAFTED and schema-validated under
-  `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/` — the 19-mnemonic subset scope, five
-  register families with parts and readouts, three memory spaces, the hardware stack,
-  twelve special registers, and the 14-candidate census carried as data; both load through
-  the mapping owner and round-trip data-equal.
-- The landing was MEASURED (untracked + intent-to-add placement, gates run in their
-  committed modes): PROFILE-CONSISTENCY passes the DSP dossier — after the measurement
-  surfaced seven latent `references.sexp` defects no gate had been checking, all fixed
-  (an `obtained` candidate without binary/digest/injection; four independence pairs naming
-  non-candidates — the asm/emu legs and gearmulator are now first-class candidates).
-  EXERCISE-COVERAGE, EXTRACTION and INTERACTION-MATRIX go RED on a unit without
-  `encoding.sexp`/`interactions.sexp`/per-step expectation guests — the landing slice owns
-  them, so the documents wait under artifacts/.
-- More latent defects owned and fixed (§15): EXERCISE-COVERAGE counted a `(comment …)`
-  inside scope as mnemonics (skipped now, GREEN arm, 8/8); rv64's own `profile.sexp`
-  carried two notes on D-FENCE against the schema's single-valued declaration (merged);
-  `check_sexp_schema.py` tracebacks on a missing input (clean rc-2 refusal, RED arm,
-  51/51). Surfaced and routed: no gate schema-validates the dossier documents as a class —
-  the landing slice adds that leg.
-
-## SEMULITH-BR-0014 (leaf P3-BREADTH.5) — the state schema learns the census's shapes
-
-- `schema/state.sexp` declares `register_family` (with `parts` and per-part `readout`),
-  `memory_spaces`, and `hardware_stack`; `xlen`/`integer_registers` become optional. Every
-  construct names its exercising target and case: dsp56300-lab-v0, F1 masked widths, F3
-  memory spaces, the census's special-register/stack candidates — the content source is
-  the F6 census record.
-- The mapping owner (`dossier_sexp`) now CARRIES the new forms end to end: pre-change it
-  built the state doc from named fields only, so a declared `memory_spaces` would have
-  been silently dropped between the schema and the generator (the `.2` silent-path class).
-  `gen_state.py` refuses each declared construct by name (rc 2), and a missing `xlen` is
-  a named Refusal instead of a KeyError traceback.
-- Synth probe 2 did what the fixture exists to do: its pin went stale, the suite turned
-  RED, and the pin moved one layer down — the schema now accepts `memory_spaces` (rc 0)
-  while the generator refuses it by name (rc 2). Suite 6/6; STATE-GEN self-test grew four
-  RED arms (10/10); the rv64 descriptor re-validates and regenerates byte-identical.
-- The DSP's own `state.sexp` deliberately does NOT land yet: without `profile.sexp` no
-  gate would read it (measured — PROFILE-CONSISTENCY iterates `profiles/*/profile.sexp`),
-  so it lands with the scope-taxonomy slice where its gate attachment is measured.
 

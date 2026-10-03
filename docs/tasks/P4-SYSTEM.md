@@ -73,7 +73,7 @@ This gate authorises the planned next engineering stage: board implementation.
   deliberately unregistered, the `.2`/`.11` precedent).
 
 - ID: `P4-SYSTEM.2` — **privilege and mode transitions**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009` done, all `2026-10-03`)
+  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0003`; slices (a) `SEMULITH-P4-0004`, (b) `SEMULITH-P4-0005`, (c) `SEMULITH-P4-0006`+`SEMULITH-P4-0007`, (d) `SEMULITH-P4-0008`, (e) `SEMULITH-P4-0009`, (f) `SEMULITH-P4-0010` done, all `2026-10-03`)
   Goal: M/S/U transitions, control-register permissions, trap interception, context state, mode-dependent decoding (catalog `C15`).
   Acceptance: the same instruction's behaviour is tested **in each supported mode**, not once.
 
@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(e) landed; next is slice (f): the guests corpus (the base mirror EXECUTED on the rv64gc engine + the mode-matrix guests + expectations); the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
+| 1 | `P4-SYSTEM.2` | `pending` | privilege and mode transitions — slices (a)–(f) landed; next is slice (g): the interactions.sexp (the cross-form matrix for the privileged semantics); the route flips from `profile-resolution` to `generated-definition` in the leaf's last commit |
 
 ## Decisions
 
@@ -1062,12 +1062,124 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
   is data in the profile)) , `LIVE_STATUS.md` (the re-derived arms count only),
   `docs/book/src/plan/p4.md` — sharded where the ceilings required.
 
-`P4-SYSTEM.2` slices (f)–(h) : pending — filled at execution.
+`P4-SYSTEM.2` slice (f) — the guests corpus: the base mirror EXECUTED (49/49), the mode-matrix corpus (13 guests), the coverage rehearsal (65/65) (`2026-10-03`, `SEMULITH-P4-0010`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (f): the rv64i guest corpus must run
+  on the rv64gc engine (the base mirror) and the 13 new forms must be exercised per mode
+  (the mode matrix), with EVD-05 expectations derived BEFORE any engine run. Measured
+  pre-slice:
+
+  ```
+  $ ls profiles/rv64i-lab-v0/guests/*.s | wc -l
+  49                        # the mirror's extent (c-scope.c is toolchain-scoped:
+                            # scripts/build_c_guest.sh hard-codes -march=rv64i — the
+                            # rv64gc C-guest question is the flip's, recorded)
+  $ grep -c 'region\|REGION' target/p4-system-2/proof/corpus.rs   # the laboratory map:
+  const REGION_BASE: u64 = 0x8000_0000;  REGION_SIZE = 0x8000_0000   # the one declared
+  # MainMemory region; outside = the boundary's access fault; reserved decode = the
+  # laboratory's D-RESERVED-DECODE policy conversion, DELIVERED (zicsr's refinement)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior tracked behaviour; the slice
+  authors and executes, and execution measured four things:
+  1. **Three base guests diverge BY DESIGN under D-IALIGN-16, not by soundness
+     contradiction.** fault-jal-mis, fault-jalr-mis, it-prio-jump target addresses
+     2 mod 4 — illegal at IALIGN=32, LEGAL with C (RVI-C 27.1): the link write lands
+     and no misaligned-fetch fault fires. Their rv64gc expectations were RE-DERIVED
+     from the pinned chapters (`never_written x5` dropped; it-prio-jump gained the
+     delivered-fetch-fault row), never edited to match output:
+
+     ```
+     $ for f in profiles/rv64i-lab-v0/guests/*.expected.sexp; do cmp -s "$f" \
+         target/p4-system-2/profiles/rv64gc-lab-v0/guests/$(basename $f) || echo "REDERIVED: $(basename $f)"; done
+     REDERIVED: fault-jal-mis.expected.sexp
+     REDERIVED: fault-jalr-mis.expected.sexp
+     REDERIVED: it-prio-jump.expected.sexp      # the other 46 byte-identical, as are all 49 .s
+     $ for f in profiles/rv64i-lab-v0/guests/*.expected.sexp; do cmp -s "$f" \
+         target/p4-system-2/profiles/rv64gc-lab-v0/guests/$(basename $f) || echo REDERIVED; done | grep -c REDERIVED
+     3
+     ```
+  2. **The scratch harness's trap-END discipline was wrong** (found by it-fault-alias):
+     a delivered trap must abort the step's remaining effects — the runner's `Frame`
+     gained a `trapped` flag checked at the top of `run()` and in `Set`, re-derived
+     from exec.rs's Err-propagation.
+  3. **Fourteen vector-address defects in the mode-matrix guests, all one root:**
+     labels assemble to NO word, so auipc+addi deltas computed against a line count
+     that charged labels 4 bytes were stale (mtvec/mepc/sepc targets landing in pad).
+     Measured by printing every auipc+addi pair's target through the real assembler
+     (`auipc@0x… -> 0x…` audit, every target now the intended instruction).
+  4. **Two guest-DESIGN bugs only execution could catch:** mm-mret and mm-ecall-modes
+     wrote M-level CSRs (mtvec/mstatus) inline AFTER dropping to S — illegal in S
+     (RVP-CSR §2.1), so the guests trapped into an unprogrammed vector. Fix: program
+     every M-level CSR BEFORE the drop, and route the second mode drop through the
+     M handler (mm-ecall-modes' handler became stage-aware). Also caught: one
+     hex-digit slip in the mstatus WARL constant (0x8000000A007E79AA, confirmed
+     against the state document's field table) and one no-change mis-derivation
+     (mm-stimecmp step 30 — x10 already held the mepc value).
+
+- [x] **FIX** — the scratch corpus harness
+  (`target/p4-system-2/proof/corpus.rs` + generated `corpus_data.rs`): the declared
+  memory map, fetch/load/store fault delivery against the pinned cause vocabulary,
+  the trap-END discipline, and the rv64i verify runner's comparison rule (per-step
+  x-register CHANGES exact; a register written its own value is no observation — the
+  discipline that re-derived several rows). The mirror staged byte-identically
+  (49 `.s`, 46+3 `.expected.sexp`, `run-order.txt` + the 13 mm names). The 13
+  mode-matrix guests authored at `target/p4-system-2/mm/` and mirrored:
+  mm-csr-rw (the six zicsr forms' read/write/read-modify-write semantics),
+  mm-csr-legality-s/-u (M-CSR access traps per mode, mtval = the word),
+  mm-ebreak (delivered breakpoints resume), mm-ecall-modes (causes 11/9/8 by mode),
+  mm-ecall-deleg (medeleg delegation to S, sret return, M-ecall never delegates),
+  mm-mret (mode pops; MPRV cleared when xRET targets below M, preserved at M),
+  mm-readonly (read-only CSR writes trap; misa WARL; mstatus all-ones WARL),
+  mm-counters (mcounteren then scounteren gating), mm-stimecmp (TM then STCE),
+  mm-wfi (TW gate; the laboratory's WFI-in-U policy), mm-sfence (TVM gates
+  sfence.vma AND satp reads), mm-sret (legal in M/S, illegal in U, TSR gate).
+  Every expectation value derived from the pinned chapters BEFORE the run; the
+  runner then FALSIFIED, and every mismatch above was re-derived, never fitted.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 /tmp/authorexp.py && python3 scripts/check_sexp_schema.py \
+      <each mm expectation> schema/expectations.sexp     → ok ×13
+  $ cd target/p4-system-2/proof && rustc --edition 2021 -O -o corpus corpus.rs && ./corpus
+  PASS mm-csr-rw 9/9 … PASS mm-sret 50/50      # per-guest steps' writes exact
+  corpus: 62 guest(s) PASS, 0 FAIL             # 49 base mirror + 13 mode matrix
+  # the coverage rehearsal (the gate's own numerator rule — first token of (step (insn …))
+  # — over the staged profile's 65-form scope):
+  denominator: 65 forms enumerated, count_total 65 CONSISTENT
+  exercised & denominator: 65/65
+  UNEXERCISED: none — all 65 declared forms exercised   # base 52 via the mirror,
+  # the 13 extension forms via mm-* (per-guest declared-form counts recorded)
+  ```
+
+- [x] **NO REGRESSION** — nothing tracked changed this slice (`git status --porcelain`
+  empty before the docs lockstep): the corpus is untracked scratch under
+  `target/p4-system-2/`, so no new gate arms — the guests mirror's
+  FACT-OWNERSHIP/RECORD-SCHEMA governor lands at the flip (an untracked file cannot
+  be registry-owned), recorded here. The corpus is deterministic (re-run: 62 PASS, 0
+  FAIL); every new check the slice DID add fired RED first in execution (the 3
+  designed divergences, the trap-END bug, the 14 stale deltas, the 2 design bugs,
+  the 2 mis-derivations — each named above with its falsifier). `make gate` →
+  `=== all doctrines green ===` (13 checks; DERIVED-COUNTS unchanged at 408 arms —
+  verified, no arm added or removed).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice g),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the two execution-caught guest-design lessons;
+  promotion: declined — the auipc-delta audit is now a recorded step in this leaf's
+  own guest-authoring discipline and the M-level-before-drop rule is encoded in the
+  guests themselves), `LIVE_STATUS.md` (unchanged — no gate arms, the leaf still
+  pending), `docs/book/src/plan/p4.md` — `CHANGELOG.md`/`DEV_NOTES.md` sharded at
+  their ceilings.
+
+`P4-SYSTEM.2` slices (g)–(h) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (f) | the pre-slice census (49 base guests on disk — c-scope.c toolchain-scoped to rv64i by `scripts/build_c_guest.sh`'s hard-coded `-march=rv64i`; the laboratory memory map and cause vocabulary in the runner); the mirror byte-probe (49 `.s` byte-identical, 46/49 expectations byte-identical, 3 re-derived BY DESIGN under D-IALIGN-16 — targets 2 mod 4 legal with C, RVI-C 27.1 — never fitted); the trap-END bug found by it-fault-alias and fixed in the runner (`trapped` flag); the auipc+addi target audit through the real assembler (14 stale deltas, labels assemble to no word); two execution-caught guest-design bugs (M-level CSR writes inline in S — mm-mret re-laid-out, mm-ecall-modes' handler stage-aware); all 13 mm expectations schema-valid and EVD-05-derived before the run; `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mm, per-step writes exact, deterministic re-run); the coverage rehearsal over the staged 65-form scope (denominator 65 consistent, exercised 65/65, the 13 extension forms via mm-*); `make gate` green (13 checks, DERIVED-COUNTS unchanged at 408 — no arm added) | slice (f) landed: the base mirror executed 49/49 on the rv64gc engine (3 declared IALIGN-16 divergences), the mode-matrix corpus 13/13 with EVD-05 expectations, the 65/65 coverage rehearsal — all untracked scratch, the flip's corpus proven |
 | `2026-10-03` | `.2` slice (e) | the pre-slice census (rv64gc scope 52 vs the fragments' 62+3; the catalogues at 18/18 decision mirrors; the rv64i requirement corpus covers 49 of 52 base forms in 9 instruction records — ecall/ebreak/fence ride event/memory records, the closure measured by probe); the pseudo-census decision measured against EXERCISE-COVERAGE's numerator (the first token of the expectations' insn text observes the spelling); the FOURTH dropped-`(extensions …)`-form copy found and fixed (`_semantics_names`) and the pattern then censused to two MORE readers (check_exercise_coverage.sh, gen_model_book.py — all six sites now uniform, `git grep` clean); the mirror extent derived as a closure (13 requirements + 13 obligations), RECORD-SCHEMA rule 14 MIRROR-DERIVE registered as the governor (self-test 39→43, arms RED-first: drift / missing / ungoverned-authored / owner's contract kept); the fetch leg extended (rv64gc 65==65, rv64i 52==52 unchanged); PARTS DRIFT learned the extension families; EXTRACTION counts pseudos (self-test 9→11); the staged encoding validated (62 + 3 pseudo, PARTIAL with 6 slots, schema conform) and the slice-(d) proof regenerated from it and re-run (26/26); `make gate` green (DERIVED-COUNTS 404→408 arms; the docs/tasks/ aggregate ceiling re-derived 1.5→3 MiB by `decision_task-tree-family-aggregate-rederivation`) | slice (e) landed: the 65-form census by the mandated dual edit, the base-corpus mirror + 3 authored records (34/34), the flip's encoding staged byte-ready, the registry rows (63 fact kinds) |
 | `2026-10-03` | `.2` slice (d) | the pre-slice census (gen_definition refuses rv64gc by name; gen_guests' list measured 49 names — the brief's "51" was stale; no privileged arms in exec.rs; elf.rs:88's hard-coded IALIGN=32; the CLI's profile statically rv64i's at main.rs:83); the third copy of the dropped-extensions-form bug (gen_definition's name list — "4 declared instruction(s) have NO semantics: mret, …" named it); `cargo test -p semulith-core --lib privilege` 11/11 (permission model, legalization, views, delivery both ways, xret, computed SD); the scratch execution proof (26/26 checks over six guests — the CSR disciplines, trap delivery with and without delegation, xret mode pops, wfi/sret legality per mode, counter gating, the TVM gate); the digest cascade re-derived (reports + board pin + board artifacts + platform manifest + both books); the PLATFORM-GEN stale-pin arm fixed (it assumed the digest's leading digit); STATE-GEN 20/20 (+3), DEF-GEN 15/15 (+6), GUEST-GEN 10/10 (+3); `make check` green (76 core / 180 verify tests), `make gate` green (DERIVED-COUNTS 395→404) | slice (d) landed: both generators parameterize (rv64i surfaces regenerate hash-only — the embedded generator fingerprints); the tracked privilege.rs machinery over the generated tables; elf.rs's IALIGN is profile data; the scratch execution proof green; the evaluator's new-variant arms port at the flip |
 | `2026-10-03` | `.2` slice (c2) | the landing question measured against the gates: STATE-GEN proves the tracked state.rs byte-exact from the TRACKED descriptor in a fresh clone; a tracked rv64gc module from the staged (untracked) descriptor would be unjudgeable there — the three alternatives (skip-if-absent leg, a hand-written interim module, a non-unit descriptor home) each measured dishonest. The scratch proof: gen_state emits `target/p4-system-2/gen/state_rv64gc.rs` (40,198 bytes); a `rustc --test` harness over it — reset-is-the-document (mode M, mstatus 0xA0000000, misa 0x800000000014112D), the 33-CSR address lookup, the view discipline (views carry no storage, every view_of resolves), the field tables (WARL-without-legalization absent, the medeleg 11/16 read-only-0 rows, TSR at bit 22 per the pinned encoding.h), x0/mode transitions — 4 passed / 0 failed | slice (c2) refined: the tracked landing rides the flip (one green commit with the descriptor's move); the interim evidence is recorded; `decision_generated-mirror-needs-tracked-input` |
@@ -1080,6 +1192,7 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` (slice f) | `SEMULITH-P4-0010 (leaf P4-SYSTEM.2): slice f — the base mirror executed (49/49), the mode-matrix corpus, the coverage rehearsal` | the scratch corpus runner (declared memory map, fault delivery, trap-END discipline, the per-step x-change comparison rule); 3 base guests re-derived BY DESIGN under D-IALIGN-16 (RVI-C 27.1), 46 byte-identical; 13 mm guests cover the 13 new forms across M/S/U (csr rw + per-mode legality, ebreak resume, ecall causes + medeleg delegation, mret/sret/wfi/sfence legality gates, counters + stimecmp gating, read-only/WARL); execution caught 14 stale auipc deltas, 2 M-level-CSR-in-S design bugs, 2 expectation mis-derivations — all re-derived, never fitted; coverage 65/65; no gate arms (untracked corpus; the governor lands at the flip), DERIVED-COUNTS 408 unchanged |
 | `.2` (slice e) | `SEMULITH-P4-0009 (leaf P4-SYSTEM.2): slice e — the 65-form census (dual edit), the base-corpus mirror + authored records, the flip's staged encoding` | the pseudo-census decision (the spec's listings name the Zicntr reads; the encoding realizes them as csrrs specializations; coverage observes the spelling) recorded in the profile's scope comment; MIRROR-DERIVE (rule 14) governors the mirror via the registry; the dropped-`(extensions …)`-form pattern censused to SIX readers, all uniform now; the docs/tasks/ aggregate re-derived 1.5→3 MiB (the slice checklists are the designed growth); the staged payload's README records the flip mapping |
 | `.2` (slice d) | `SEMULITH-P4-0008 (leaf P4-SYSTEM.2): slice d — the generators parameterize to rv64gc, the privilege machinery lands (tracked, over the generated tables), the scratch execution proof` | privilege.rs + 11 tests; the (legalize …) mini-language replaces prose (the WARL seam closed: engine applies descriptor data at lowering); gen_definition's rv64gc branch (8 operators lowered, PSEUDOS metadata; the THIRD dropped-extensions-form copy fixed); gen_guests directory-derived + run-order.txt (rv64i regenerates hash-only); elf.rs IALIGN parameter; the dossier-digest cascade re-derived; the fragile stale-pin arm fixed; the scratch proof 26/26 |
 | `.2` (slice c2) | `SEMULITH-P4-0007 (leaf P4-SYSTEM.2): slice c2 refined — the rv64gc module's tracked landing is flip-bound; the scratch engine proof recorded` | a tracked generated module needs a tracked canonical input — measured against STATE-GEN's fresh-clone property; the three alternatives each dishonest; the scratch `rustc --test` proof (4/4) over the generated module recorded; `decision_generated-mirror-needs-tracked-input` + INDEX |
@@ -1090,6 +1203,34 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-03`: `.2` slice (f) done (`SEMULITH-P4-0010`) — the guests corpus, executed.
+  The base mirror runs on the rv64gc engine: all 49 rv64i guests staged byte-identically
+  (c-scope.c excluded — the pinned toolchain script hard-codes `-march=rv64i`, the rv64gc
+  C-guest question recorded for the flip) and executed against their expectations by the
+  scratch corpus runner (the declared MainMemory map, fetch/load/store fault delivery on
+  the pinned cause vocabulary, the trap-END discipline fixed after it-fault-alias exposed
+  it, the rv64i verify runner's per-step x-register-change comparison rule). 46
+  expectation files carry over byte-identically; 3 were RE-DERIVED BY DESIGN — under
+  D-IALIGN-16 the misaligned-jump targets (2 mod 4) are legal (RVI-C 27.1), so the link
+  write lands and no fetch fault fires; a declared profile difference, measured, never a
+  soundness contradiction and never fitted to output. The mode matrix adds 13 guests with
+  EVD-05 expectations derived from the pinned chapters BEFORE the run: the six zicsr
+  forms' rw semantics, M-CSR legality per mode, delivered breakpoints that resume, ecall
+  causes 11/9/8 by mode and medeleg delegation to S (M-ecall never delegates), mret mode
+  pops with the MPRV clear-below-M / preserve-at-M rule, sret legality and the TSR gate,
+  wfi and the TW gate, sfence.vma/satp and the TVM gate, the counter enables
+  (mcounteren then scounteren), stimecmp's TM then STCE gating, read-only CSR writes and
+  the mstatus all-ones WARL read-back. Execution itself caught and fixed 14 stale
+  auipc+addi vector deltas (labels assemble to no word), two guest-design bugs (M-level
+  CSR writes inline in S-mode — the drops now happen before or inside the M handler),
+  one hex-digit slip in the mstatus WARL constant and one no-change mis-derivation —
+  every mismatch re-derived, never fitted. `corpus: 62 guest(s) PASS, 0 FAIL`, and the
+  coverage rehearsal over the staged 65-form scope reads 65/65 (the base 52 via the
+  mirror, the 13 extension forms via mm-*). Everything stays untracked scratch — no gate
+  arms this slice (the guests' registry governor lands at the flip); `make gate` green
+  (DERIVED-COUNTS unchanged at 408).
+  Next: slice (g) — the interactions.sexp.
 
 - `2026-10-03`: `.2` slice (e) done (`SEMULITH-P4-0009`) — the unit's census, catalogues,
   and the flip's staged encoding. The scope census grows 52→65 by the mandated dual edit
