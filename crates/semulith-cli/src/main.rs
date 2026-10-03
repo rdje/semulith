@@ -12,9 +12,14 @@
 //!   or `incomplete`; `incomplete` is the honest state of the deliberately
 //!   `planned` fixture evidence); 1 — the bundle is rejected, every finding
 //!   named; 2 — the command could not run (usage, unreadable inputs).
-//! - `semulith run <elf> [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]` —
+//! - `semulith run <elf> [--profile NAME] [--steps N] [--base ADDR] [--size BYTES]
+//!   [--trace-stores]` —
 //!   execute a
-//!   freestanding guest under the laboratory environment (`P1-LAB.8`, T006):
+//!   freestanding guest under the laboratory environment (`P1-LAB.8`, T006). The profile
+//!   is a runtime selection (`P4-SYSTEM.2` slice h, the route flip): `rv64i-lab-v0` by
+//!   default — byte-exact with the pre-flip CLI — or `rv64gc-lab-v0` through the
+//!   privileged engine (delivery composition; the rv64i-scoped commands refuse the
+//!   rv64gc profile by name). The rv64i run itself:
 //!   load the ELF's PT_LOAD segments into the declared region, run the
 //!   definitional interpreter for at most `steps` steps, and print one
 //!   normalized observation per step — the same `(pc, word, writes, trap)`
@@ -84,11 +89,84 @@ use semulith_core::definition::{decode, INSNS};
 use semulith_verify::bench::{self, Mix, Mode, Stats};
 use semulith_verify::elf;
 
-/// The running profile's instruction-address alignment in bits — rv64i-lab-v0 declares
-/// (ialign 32). The CLI's definition is rv64i's until the rv64gc route flip
-/// (P4-SYSTEM.2 slice h) makes the profile a runtime selection; the constant is the
-/// profile's data, passed to the loader rather than assumed by it.
-const IALIGN_BITS: u64 = 32;
+/// The runtime profile selection (`P4-SYSTEM.2` slice h — the route flip): the CLI's
+/// definition was statically rv64i's until the flip; now `run` and `demo` take
+/// `--profile=NAME`, defaulting to rv64i-lab-v0 (whose behavior is byte-exact what it
+/// was). The commands whose machinery is rv64i-scoped today — bench (the workload
+/// mixes), bundle/reduce/replay (the replay identity pins the rv64i definition),
+/// snapshot/resume (the pending-state shape is registers+pc+memory, not the privileged
+/// file), and every mutation (the tables decode rv64i words) — REFUSE rv64gc-lab-v0 by
+/// name rather than silently answering with the wrong engine.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Profile {
+    Rv64iLabV0,
+    Rv64gcLabV0,
+}
+
+impl Profile {
+    fn by_name(name: &str) -> Option<Self> {
+        match name {
+            "rv64i-lab-v0" => Some(Self::Rv64iLabV0),
+            "rv64gc-lab-v0" => Some(Self::Rv64gcLabV0),
+            _ => None,
+        }
+    }
+
+    fn name(self) -> &'static str {
+        match self {
+            Self::Rv64iLabV0 => "rv64i-lab-v0",
+            Self::Rv64gcLabV0 => "rv64gc-lab-v0",
+        }
+    }
+
+    /// The profile's instruction-address alignment in bits (rv64i 32; rv64gc 16 with C)
+    /// — the profile's data, passed to the loader rather than assumed by it.
+    fn ialign_bits(self) -> u64 {
+        match self {
+            Self::Rv64iLabV0 => 32,
+            Self::Rv64gcLabV0 => 16,
+        }
+    }
+
+    /// The fetch alignment in bytes the memory fixture declares (the same datum).
+    fn fetch_align(self) -> u64 {
+        match self {
+            Self::Rv64iLabV0 => 4,
+            Self::Rv64gcLabV0 => 2,
+        }
+    }
+}
+
+/// Parse the shared `--profile=NAME` option out of a command's arguments: the default is
+/// rv64i-lab-v0 (byte-exact with the pre-flip CLI), an unknown name is a usage error.
+fn profile_arg(command: &str, args: &[String]) -> Result<(Profile, Vec<String>), ExitCode> {
+    let mut profile = Profile::Rv64iLabV0;
+    let mut rest = Vec::with_capacity(args.len());
+    for arg in args {
+        if let Some(name) = arg.strip_prefix("--profile=") {
+            profile = match Profile::by_name(name) {
+                Some(p) => p,
+                None => {
+                    return Err(usage(&format!(
+                        "{command}: unknown profile '{name}' (one of: rv64i-lab-v0, rv64gc-lab-v0)"
+                    )));
+                }
+            };
+        } else {
+            rest.push(arg.clone());
+        }
+    }
+    Ok((profile, rest))
+}
+
+/// The named refusal every rv64i-scoped command answers `--profile=rv64gc-lab-v0` with
+/// (the selection is honest: a command that cannot serve the profile says so, by name,
+/// rather than running the wrong engine).
+fn rv64gc_not_wired(command: &str, why: &str) -> ExitCode {
+    eprintln!("{command}: --profile=rv64gc-lab-v0 is not wired for this command — {why}");
+    ExitCode::from(2)
+}
+
 use semulith_verify::fixtures::FlatMemory;
 use semulith_verify::graph::{check_bundle, Bundle};
 use semulith_verify::json::{self, Json};
@@ -102,14 +180,16 @@ use semulith_verify::snapshot::Snapshot;
 
 const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
-                     \x20       semulith run <elf> [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]\n\
-                     \x20       semulith demo [--guest NAME] [--mutate NAME] [--json]\n\
+                     \x20       semulith run <elf> [--profile NAME] [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]\n\
+                     \x20       semulith demo [--profile NAME] [--guest NAME] [--mutate NAME] [--json]\n\
                      \x20       semulith bundle --guest NAME [--mutate NAME]\n\
                      \x20       semulith replay <file.json>\n\
                      \x20       semulith snapshot <elf> --at N [--steps N] [--base ADDR] [--size BYTES]\n\
                      \x20       semulith resume <file.json>\n\
                      \x20       semulith reduce --guest NAME --mutate NAME\n\
-                     \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n";
+                     \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n\
+                     \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run and demo; the other\n\
+                     \x20       commands' machinery is rv64i-scoped and refuses the rv64gc profile by name)\n";
 
 /// The process-wide counting allocator (`P1-LAB.11`): allocation counts are measured
 /// per benchmark cell by resetting around the timed run; for every other command the
@@ -236,12 +316,16 @@ fn check_examples(root: &Path) -> ExitCode {
 }
 
 fn run_guest(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("run", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
     let mut elf_path: Option<&str> = None;
     let mut steps = DEFAULT_STEPS;
     let mut base = DEFAULT_BASE;
     let mut size = DEFAULT_SIZE;
     let mut trace_stores = false;
-    for arg in args {
+    for arg in &args {
         if let Some(n) = arg.strip_prefix("--steps=") {
             steps = match n.parse() {
                 Ok(v) => v,
@@ -277,7 +361,7 @@ fn run_guest(args: &[String]) -> ExitCode {
             return ExitCode::from(2);
         }
     };
-    let image = match elf::parse(&bytes, IALIGN_BITS) {
+    let image = match elf::parse(&bytes, profile.ialign_bits()) {
         Ok(image) => image,
         Err(why) => {
             eprintln!("run: {elf_path}: refused — {why}");
@@ -288,7 +372,7 @@ fn run_guest(args: &[String]) -> ExitCode {
         eprintln!("run: the region [{base:#018x}, +{size:#x}) wraps the address space");
         return ExitCode::from(2);
     };
-    let mut env = FlatMemory::new(base, size as usize);
+    let mut env = FlatMemory::with_fetch_align(base, size as usize, profile.fetch_align());
     for seg in &image.segments {
         let seg_end = seg.paddr.saturating_add(seg.memsz);
         if seg.paddr < base || seg_end > top {
@@ -302,6 +386,9 @@ fn run_guest(args: &[String]) -> ExitCode {
             (seg.paddr - base) as usize,
             &bytes[seg.offset..seg.offset + seg.filesz],
         );
+    }
+    if profile == Profile::Rv64gcLabV0 {
+        return run_guest_rv64gc(&mut env, image.entry, steps);
     }
     let (trace, crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
     let mut out = format_steps(&trace.steps, 0);
@@ -352,14 +439,54 @@ fn run_guest(args: &[String]) -> ExitCode {
     }
 }
 
+/// The rv64gc `run` path (`P4-SYSTEM.2` slice h): the delivery composition has no trap
+/// stop, so the run executes up to the step budget through `exec_rv64gc`, with the
+/// diagnostic policy's reserved-decode conversion one layer up (the same act the
+/// verify-side runner performs). The step vocabulary is the rv64gc runner's own —
+/// `[n] [mode] pc` plus the register changes; a delivered trap is control flow here, not
+/// a terminal observation.
+fn run_guest_rv64gc(env: &mut FlatMemory, entry: u64, steps: usize) -> ExitCode {
+    let mut state = semulith_core::state_rv64gc::ArchitecturalState::zeroed_at(entry);
+    let mut out = String::new();
+    for n in 0..steps {
+        let pc = state.pc();
+        let before: Vec<u64> = (0..32).map(|i| state.read_x(i)).collect();
+        match semulith_core::exec_rv64gc::step(&mut state, env) {
+            semulith_core::exec_rv64gc::StepRv64gc::Executed => {}
+            semulith_core::exec_rv64gc::StepRv64gc::ReservedDecode { at, word } => {
+                let handler =
+                    semulith_core::privilege::trap_deliver(&mut state, 2, u64::from(word), at);
+                state.set_pc(handler);
+            }
+            semulith_core::exec_rv64gc::StepRv64gc::Failed(error) => {
+                eprintln!("run: model error: {error:?}");
+                return ExitCode::from(1);
+            }
+        }
+        out.push_str(&format!("[{n}] [{:?}]: 0x{pc:016x}\n", state.mode()));
+        for i in 0..32u8 {
+            let now = state.read_x(i);
+            if now != before[i as usize] {
+                out.push_str(&format!("x{i} <- 0x{now:016x}\n"));
+            }
+        }
+    }
+    print!("{out}");
+    ExitCode::from(0)
+}
+
 /// `semulith demo` — run a tracked guest under the real or a mutated model and print the
 /// trace with its judgement. The detector's verdicts are the exit code: a mutant that is
 /// caught exits 1 on purpose — that is the tool working, not an error.
 fn demo(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("demo", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
     let mut guest: Option<&str> = None;
     let mut mutation = "none";
     let mut json_out = false;
-    for arg in args {
+    for arg in &args {
         if let Some(name) = arg.strip_prefix("--guest=") {
             guest = Some(name);
         } else if let Some(name) = arg.strip_prefix("--mutate=") {
@@ -371,6 +498,9 @@ fn demo(args: &[String]) -> ExitCode {
         } else {
             return usage("demo: unknown operand (options take --name=value form)");
         }
+    }
+    if profile == Profile::Rv64gcLabV0 {
+        return demo_rv64gc(guest, mutation);
     }
     let guest = match guest {
         Some(name) => name,
@@ -403,6 +533,76 @@ fn demo(args: &[String]) -> ExitCode {
         print!("{}", demo_text(&run));
     }
     if run.expectations_met && run.census_met {
+        ExitCode::from(0)
+    } else {
+        ExitCode::from(1)
+    }
+}
+
+/// The rv64gc `demo` path (`P4-SYSTEM.2` slice h): run a tracked rv64gc guest through
+/// the tracked engine and judge it against its specification-derived expectations — the
+/// same assertions the verify-side corpus tests carry, printed for a human. Mutations
+/// refuse by name (the tables decode rv64i words).
+fn demo_rv64gc(guest: Option<&str>, mutation: &str) -> ExitCode {
+    if mutation != "none" {
+        return rv64gc_not_wired(
+            "demo",
+            "the mutation tables are the rv64i engine's (they decode rv64i words); an \
+             rv64gc mutation suite is a later leaf",
+        );
+    }
+    let Some(name) = guest else {
+        return usage(&format!(
+            "demo: --guest is required (one of: {})",
+            semulith_verify::guests_rv64gc::GUESTS
+                .iter()
+                .map(|g| g.name)
+                .collect::<Vec<_>>()
+                .join(", ")
+        ));
+    };
+    let Some(g) = semulith_verify::guests_rv64gc::GUESTS
+        .iter()
+        .find(|g| g.name == name)
+    else {
+        eprintln!("demo: unknown rv64gc guest '{name}'");
+        return ExitCode::from(2);
+    };
+    let (trace, _env) = semulith_verify::run_rv64gc::run_guest(g);
+    let mut out = String::new();
+    for (n, step) in trace.steps.iter().enumerate() {
+        out.push_str(&format!("[{n}] [{:?}]: 0x{:016x}\n", step.mode, step.pc));
+        for (reg, value) in &step.writes {
+            out.push_str(&format!("x{reg} <- 0x{value:016x}\n"));
+        }
+    }
+    let mut met = trace.failed.is_none() && trace.steps.len() == g.executed_steps;
+    for (i, expected) in g.expected.iter().enumerate() {
+        if i >= trace.steps.len() || trace.steps[i].writes != expected.writes {
+            met = false;
+        }
+    }
+    let mut written: Vec<u8> = trace
+        .steps
+        .iter()
+        .flat_map(|s| s.writes.iter().map(|(r, _)| *r))
+        .collect();
+    written.sort_unstable();
+    for reg in g.never_written {
+        if written.contains(reg) {
+            met = false;
+        }
+    }
+    out.push_str(&format!(
+        "guest {name} ({}): expectations {}\n",
+        Profile::Rv64gcLabV0.name(),
+        if met { "met" } else { "NOT met" }
+    ));
+    if let Some(error) = &trace.failed {
+        out.push_str(&format!("model error: {error}\n"));
+    }
+    print!("{out}");
+    if met {
         ExitCode::from(0)
     } else {
         ExitCode::from(1)
@@ -473,6 +673,18 @@ fn parse_guest_mutation(
 /// `semulith bundle` — record the replay bundle for a tracked guest under a named model
 /// and write it to stdout.
 fn bundle(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("bundle", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    if profile == Profile::Rv64gcLabV0 {
+        return rv64gc_not_wired(
+            "bundle",
+            "the replay bundle's identity pins the rv64i definition and image digest; an \
+             rv64gc replay is a later leaf",
+        );
+    }
+    let args = &args;
     let (guest_name, mutation) = match parse_guest_mutation(args, "bundle") {
         Ok(parsed) => parsed,
         Err(code) => return code,
@@ -532,6 +744,18 @@ fn format_steps(steps: &[semulith_verify::run::Step], first: usize) -> String {
 /// pending state this profile has — registers, pc, memory (the pinned hidden-state
 /// census admits nothing else) — plus the definition identity pins.
 fn snapshot_cmd(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("snapshot", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    if profile == Profile::Rv64gcLabV0 {
+        return rv64gc_not_wired(
+            "snapshot",
+            "the snapshot's pending state is registers+pc+memory (the base profile's own \
+             census); the privileged file's snapshot shape is a later leaf",
+        );
+    }
+    let args = &args;
     let mut elf_path: Option<&str> = None;
     let mut steps = DEFAULT_STEPS;
     let mut at: Option<usize> = None;
@@ -582,7 +806,8 @@ fn snapshot_cmd(args: &[String]) -> ExitCode {
             return ExitCode::from(2);
         }
     };
-    let image = match elf::parse(&bytes, IALIGN_BITS) {
+    // snapshot is rv64i-only (the rv64gc refusal above): the rv64i profile's IALIGN.
+    let image = match elf::parse(&bytes, Profile::Rv64iLabV0.ialign_bits()) {
         Ok(image) => image,
         Err(why) => {
             eprintln!("snapshot: {elf_path}: refused — {why}");
@@ -630,6 +855,18 @@ fn snapshot_cmd(args: &[String]) -> ExitCode {
 /// checked first (a mismatch refuses by name, never a mis-replay), then the continuation
 /// runs and prints in the `run` trace format, numbered from the snapshot's step.
 fn resume_cmd(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("resume", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    if profile == Profile::Rv64gcLabV0 {
+        return rv64gc_not_wired(
+            "resume",
+            "a resume replays an rv64i snapshot against the rv64i engine; the privileged \
+             resume is a later leaf",
+        );
+    }
+    let args = &args;
     let mut file: Option<&str> = None;
     for arg in args {
         if arg.starts_with("--") {
@@ -677,6 +914,18 @@ fn resume_cmd(args: &[String]) -> ExitCode {
 
 /// `semulith replay` — re-derive a recorded bundle's result from its recorded inputs.
 fn replay(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("replay", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    if profile == Profile::Rv64gcLabV0 {
+        return rv64gc_not_wired(
+            "replay",
+            "the replay identity pins the rv64i definition and image digest; an rv64gc \
+             replay is a later leaf",
+        );
+    }
+    let args = &args;
     let mut file: Option<&str> = None;
     for arg in args {
         if arg.starts_with("--") {
@@ -736,6 +985,18 @@ fn replay(args: &[String]) -> ExitCode {
 /// `semulith reduce` — minimize a tracked guest against the differential, retaining the
 /// original first divergence exactly.
 fn reduce_cmd(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("reduce", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    if profile == Profile::Rv64gcLabV0 {
+        return rv64gc_not_wired(
+            "reduce",
+            "the reducer's differential runs the rv64i mutation tables; an rv64gc reducer \
+             is a later leaf",
+        );
+    }
+    let args = &args;
     let (guest_name, mutation) = match parse_guest_mutation(args, "reduce") {
         Ok(parsed) => parsed,
         Err(code) => return code,
@@ -820,6 +1081,18 @@ fn host_identity() -> String {
 /// it measures, and prints the noise table. No threshold is set: RUST-04 requires the
 /// noise to be characterized first, and this report is that characterization.
 fn bench_cmd(args: &[String]) -> ExitCode {
+    let (profile, args) = match profile_arg("bench", args) {
+        Ok(parsed) => parsed,
+        Err(code) => return code,
+    };
+    if profile == Profile::Rv64gcLabV0 {
+        return rv64gc_not_wired(
+            "bench",
+            "the four workload mixes are rv64i instruction sequences on the rv64i engine; \
+             an rv64gc bench is a later leaf",
+        );
+    }
+    let args = &args;
     let mut iterations = 10000u32;
     let mut reps = 12usize;
     let mut warmup = 2usize;

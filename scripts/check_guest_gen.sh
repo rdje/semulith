@@ -32,6 +32,61 @@ command -v python3 >/dev/null 2>&1 || {
 ENCODING="profiles/rv64i-lab-v0/encoding.sexp"
 GUESTS_DIR="profiles/rv64i-lab-v0/guests"
 OUT="crates/semulith-verify/src/guests.rs"
+# P4-SYSTEM.2 slice h (the route flip): the census's rv64gc owner→mirror pair, and the
+# base mirror's recorded re-derivations (slice f: the three D-IALIGN-16 guests —
+# 2-mod-4 targets are legal with C, RVI-C 27.1; slice g: the two fencei guests —
+# rv64gc DECLARES Zifencei and the staged encoding's slot is unbound, so rv64i's
+# DIFF-FENCEI-EXECUTED pin does not transfer). Every other mirrored file is
+# byte-identical to its rv64i owner, and the governor below names any drift.
+ENCODING_GC="profiles/rv64gc-lab-v0/encoding.sexp"
+GUESTS_DIR_GC="profiles/rv64gc-lab-v0/guests"
+OUT_GC="crates/semulith-verify/src/guests_rv64gc.rs"
+MIRROR_REDERIVED="fault-jal-mis fault-jalr-mis it-prio-jump it-fencei min-fencei"
+
+# ── the base-mirror governor (P4-SYSTEM.2 slice f disposition, registered at the flip) ─
+# The rv64gc guests/ directory is a DERIVED mirror of rv64i's: every mirrored file is
+# byte-identical to its owner, and exactly the named re-derived files differ — each with
+# its reason recorded. A silent edit on either side breaks a pair and is named. Defined
+# before the self-test so the arms below exercise the same function the gate runs.
+judge_mirror() { # $1 owner dir  $2 mirror dir — prints a verdict line, rc is the verdict
+  local owner="$1" mirror="$2" name fail=0 count=0
+  for f in "$owner"/*.s; do
+    name="$(basename "$f")"
+    [ -f "$mirror/$name" ] || continue   # a guest the mirror does not carry is the
+                                         # corpus's own record (c-scope.c disposition)
+    count=$((count+1))
+    cmp -s "$f" "$mirror/$name" || {
+      printf 'GUEST-GEN: MIRROR DRIFT — guests/%s is no longer byte-identical to %s; a re-derivation is a recorded act, not a silent edit\n' \
+        "$name" "$f" >&2
+      fail=1
+    }
+  done
+  local rederived=0
+  for f in "$mirror"/*.expected.sexp; do
+    name="$(basename "$f")"
+    [ -f "$owner/$name" ] || continue
+    if cmp -s "$owner/$name" "$f"; then
+      count=$((count+1))
+    else
+      case " $MIRROR_REDERIVED " in
+        *" ${name%.expected.sexp} "*) rederived=$((rederived+1)) ;;
+        *) printf 'GUEST-GEN: MIRROR DRIFT — guests/%s differs from %s but is not one of the recorded re-derivations (%s)\n' \
+             "$name" "$owner/$name" "$MIRROR_REDERIVED" >&2
+           fail=1 ;;
+      esac
+    fi
+  done
+  for name in $MIRROR_REDERIVED; do
+    if cmp -s "$owner/$name.expected.sexp" "$mirror/$name.expected.sexp" 2>/dev/null; then
+      printf 'GUEST-GEN: MIRROR DRIFT — %s is recorded as re-derived but matches its owner byte-identically; the record is stale\n' \
+        "$name" >&2
+      fail=1
+    fi
+  done
+  [ "$fail" -eq 0 ] || return 1
+  printf 'the base mirror holds: %d file(s) byte-identical, %d recorded re-derivation(s)\n' \
+    "$count" "$rederived"
+}
 
 # ── self-test ────────────────────────────────────────────────────────────────────────────────
 SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
@@ -155,6 +210,31 @@ PY
   arm "RED an unlisted guest on disk is refused, named" "$rc" 2 "$out" "zz-probe"
   rm "$t/guests/zz-probe.s" "$t/guests/zz-probe.expected.sexp"
 
+  # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
+  # pair — pinned against the REAL pair, not a synthetic one.
+  out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING_GC" \
+        --guests-dir "$GUESTS_DIR_GC" --out "$OUT_GC" 2>&1)"; rc=$?
+  arm "GREEN the census's rv64gc pair is in sync" "$rc" 0 "$out" "matches"
+  cp "$OUT_GC" "$t/gc-fixture.rs"; printf '\n// hand edit\n' >> "$t/gc-fixture.rs"
+  out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING_GC" \
+        --guests-dir "$GUESTS_DIR_GC" --out "$t/gc-fixture.rs" 2>&1)"; rc=$?
+  arm "RED the census's rv64gc pair catches a hand edit" "$rc" 1 "$out" "DRIFT"
+
+  # The base-mirror governor arms: the mirror holds on the real tree, and the governor
+  # discriminates — a drifted pair is named, a stale re-derivation record is named.
+  out="$(judge_mirror "$GUESTS_DIR" "$GUESTS_DIR_GC" 2>&1)"; rc=$?
+  arm "GREEN the base mirror holds on the real tree" "$rc" 0 "$out" "byte-identical"
+  mkdir -p "$t/mirror"
+  cp "$GUESTS_DIR_GC"/* "$t/mirror/" 2>/dev/null || cp -R "$GUESTS_DIR_GC/." "$t/mirror/"
+  printf '\n;; silent edit\n' >> "$t/mirror/bound-arith.expected.sexp"
+  out="$(judge_mirror "$GUESTS_DIR" "$t/mirror" 2>&1)"; rc=$?
+  arm "RED a drifted mirror file is named" "$rc" 1 "$out" "bound-arith"
+  rm "$t/mirror/bound-arith.expected.sexp"
+  cp "$GUESTS_DIR/bound-arith.expected.sexp" "$t/mirror/bound-arith.expected.sexp"
+  cp "$GUESTS_DIR/fault-jal-mis.expected.sexp" "$t/mirror/fault-jal-mis.expected.sexp"
+  out="$(judge_mirror "$GUESTS_DIR" "$t/mirror" 2>&1)"; rc=$?
+  arm "RED a stale re-derivation record is named" "$rc" 1 "$out" "fault-jal-mis"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -185,4 +265,27 @@ if [ "$rc" -ne 0 ]; then
   exit 1
 fi
 printf 'GUEST-GEN: ok (%s matches the tracked guests)\n' "$OUT"
+
+# ── the census's rv64gc pair (P4-SYSTEM.2 slice h, the route flip) ─────────────────────
+out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING_GC" \
+      --guests-dir "$GUESTS_DIR_GC" --out "$OUT_GC" 2>&1)"; rc=$?
+if [ "$rc" -eq 2 ]; then
+  printf '%s\n' "$out" >&2
+  echo "GUEST-GEN: REFUSED — the rv64gc tracked guests could not be judged." >&2
+  exit 2
+fi
+if [ "$rc" -ne 0 ]; then
+  printf '%s\n' "$out" >&2
+  printf 'GUEST-GEN: FAIL — %s is out of sync with the tracked guests and their expectations. Regenerate — never edit:\n  python3 scripts/gen_guests.py\n' \
+    "$OUT_GC" >&2
+  exit 1
+fi
+printf 'GUEST-GEN: ok (%s matches the tracked guests)\n' "$OUT_GC"
+
+# ── the base-mirror governor (defined above, beside the census variables) ──────────────
+out="$(judge_mirror "$GUESTS_DIR" "$GUESTS_DIR_GC")" || {
+  printf '%s\n' "$out" >&2
+  exit 1
+}
+printf 'GUEST-GEN: ok (%s)\n' "$out"
 exit 0

@@ -26,6 +26,9 @@ command -v python3 >/dev/null 2>&1 || {
 STATE="profiles/rv64i-lab-v0/state.sexp"
 ARITH="crates/semulith-core/src/arith.rs"
 OUT="crates/semulith-core/src/state.rs"
+# P4-SYSTEM.2 slice h (the route flip): the census's rv64gc owner→mirror pair.
+STATE_GC="profiles/rv64gc-lab-v0/state.sexp"
+OUT_GC="crates/semulith-core/src/state_rv64gc.rs"
 
 # ── self-test ────────────────────────────────────────────────────────────────────────────────
 SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
@@ -191,6 +194,14 @@ EOF
         --out "$t/gc/state.rs" 2>&1)"; rc=$?
   arm "GREEN the rv64gc regeneration is judged in sync" "$rc" 0 "$out" ""
 
+  # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
+  # pair — pinned against the REAL pair, not a synthetic one.
+  out="$(python3 scripts/gen_state.py --check --state "$STATE_GC" --arith "$ARITH" --out "$OUT_GC" 2>&1)"; rc=$?
+  arm "GREEN the census's rv64gc pair is in sync" "$rc" 0 "$out" ""
+  cp "$OUT_GC" "$t/gc-module.rs"; printf '\n// hand edit\n' >> "$t/gc-module.rs"
+  out="$(python3 scripts/gen_state.py --check --state "$STATE_GC" --arith "$ARITH" --out "$t/gc-module.rs" 2>&1)"; rc=$?
+  arm "RED the census's rv64gc pair catches a hand edit" "$rc" 1 "$out" "DRIFT"
+
   # RED: a csr without a reset is refused, named.
   python3 - "$t/gc/state.sexp" <<'PY'
 import sys
@@ -275,12 +286,19 @@ self_test >/dev/null 2>&1 || {
 
 [ -f "$STATE" ] || { echo "STATE-GEN: ok (no state descriptor yet)"; exit 0; }
 
-out="$(python3 scripts/gen_state.py --check --state "$STATE" --arith "$ARITH" --out "$OUT" 2>&1)" || {
-  printf '%s\n' "$out" >&2
-  printf 'STATE-GEN: FAIL — %s is out of sync with %s. Regenerate — never edit:\n  python3 scripts/gen_state.py\n' \
-    "$OUT" "$STATE" >&2
-  exit 1
+# The owner→mirror census: every tracked state descriptor and its generated module
+# (P4-SYSTEM.2 slice h — the census extends to the rv64gc pair at the route flip).
+judge_pair() { # $1 descriptor $2 module
+  out="$(python3 scripts/gen_state.py --check --state "$1" --arith "$ARITH" --out "$2" 2>&1)" || {
+    printf '%s\n' "$out" >&2
+    printf 'STATE-GEN: FAIL — %s is out of sync with %s. Regenerate — never edit:\n  python3 scripts/gen_state.py\n' \
+      "$2" "$1" >&2
+    exit 1
+  }
+  sha="$(sha256sum "$1" | cut -d' ' -f1)"
+  printf 'STATE-GEN: ok (%s matches %s, sha256 %s)\n' "$2" "$1" "${sha:0:16}"
 }
-sha="$(sha256sum "$STATE" | cut -d' ' -f1)"
-printf 'STATE-GEN: ok (%s matches %s, sha256 %s)\n' "$OUT" "$STATE" "${sha:0:16}"
+
+judge_pair "$STATE" "$OUT"
+judge_pair "$STATE_GC" "$OUT_GC"
 exit 0

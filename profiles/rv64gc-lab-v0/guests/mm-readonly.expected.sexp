@@ -1,0 +1,35 @@
+;; mm-readonly.expected.sexp — the expected observations for `mm-readonly.s` (P4-SYSTEM.2
+;; slice f, the mode-matrix corpus). EVD-05: every value below was derived from the
+;; pinned chapters BEFORE any engine run; the corpus runner falsifies against it.
+;; Validate with
+;;   python3 scripts/check_sexp_schema.py mm-readonly.expected.sexp schema/expectations.sexp
+
+(expectations (program "mm-readonly.s") (entry "0x0000000080000000") (instructions 14)
+  (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
+    (derivation "auipc writes the instruction's own address (entry + 0x0).") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
+  (step (n 1) (insn "addi x1, x1, 116") (writes (write (reg "x1") (value "0x0000000080000074")))
+    (derivation "the delta 116 from the auipc's pc lands on the trap handler's first instruction at entry+0x74.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
+  (step (n 2) (insn "csrrw x0, mtvec, x1") (writes)
+    (derivation "mtvec is programmed to the handler.") (source "RVI-ZICSR §5.1.1"))
+  (step (n 3) (insn "csrrwi x0, cycle, 1") (writes)
+    (derivation "cycle is a READ-ONLY counter CSR: any write traps illegal-instruction (cause 2); mepc is the csrrwi's own address (entry+0x0C).") (source "RVP-CSR §2.1 (writes to read-only CSRs raise illegal instruction)"))
+  (step (n 4) (insn "csrrs x8, mcause, x0") (writes (write (reg "x8") (value "0x0000000000000002")))
+    (derivation "the handler observes cause 2.") (source "RVP-MACHINE §2.1.3.1"))
+  (step (n 5) (insn "csrrs x9, mepc, x0") (writes (write (reg "x9") (value "0x000000008000000c")))
+    (derivation "mepc is the trapped csrrwi's address.") (source "RVP-MACHINE §2.1.3.1"))
+  (step (n 6) (insn "addi x9, x9, 4") (writes (write (reg "x9") (value "0x0000000080000010")))
+    (derivation "the handler steps mepc past the faulting instruction.") (source "RVI-RV32I §1.1.4"))
+  (step (n 7) (insn "csrrw x0, mepc, x9") (writes)
+    (derivation "mepc <- entry+0x10.") (source "RVI-ZICSR §5.1.1"))
+  (step (n 8) (insn "mret") (writes)
+    (derivation "return in M to the next cell.") (source "RVP-INSNS §3.3.2 (mret)"))
+  (step (n 9) (insn "csrrwi x0, misa, 1") (writes)
+    (derivation "misa is WARL, not read-only: an M-mode write is legal and the held value simply ignores it — no trap.") (source "RVP-MACHINE §3.1.1 (misa is WARL)"))
+  (step (n 10) (insn "csrrs x5, misa, x0") (writes (write (reg "x5") (value "0x800000000014112d")))
+    (derivation "misa reads the laboratory's held value: MXL=2 in bits 63:62 and the rv64gc extension bits.") (source "RVP-MACHINE §3.1.1 (misa); the state document's held misa"))
+  (step (n 11) (insn "addi x6, x0, -1") (writes (write (reg "x6") (value "0xffffffffffffffff")))
+    (derivation "all-ones in x6.") (source "RVI-RV32I §1.1.4"))
+  (step (n 12) (insn "csrrw x0, mstatus, x6") (writes)
+    (derivation "writing all-ones to mstatus exercises the WARL rule: every writable field takes its legal value, WPRI/read-only fields are preserved.") (source "RVP-CSR (mstatus field table, WARL)"))
+  (step (n 13) (insn "csrrs x7, mstatus, x0") (writes (write (reg "x7") (value "0x8000000a007e79aa")))
+    (derivation "the read-back: UXL/SXL held at 2 (0xA << 32), the writable fields set, SD=1 because FS=11 (dirty), WPRI positions 0.") (source "RVP-CSR (mstatus field table); the state document's field table")))

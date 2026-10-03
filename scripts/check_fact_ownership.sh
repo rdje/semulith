@@ -237,7 +237,8 @@ EOF
   # ── the second-unit census (P3-BREADTH.7): same-unit pairing, measured against the
   # real corpus (two processor units, plus the device dossiers from P5-BOARD.2 and
   # P5-BOARD.10 — a device unit's profile/state pair is the same shape, so the census
-  # re-pins to four).
+  # re-pinned to four; rv64gc-lab-v0's state document landing at the route flip
+  # (P4-SYSTEM.2 slice h) re-pins it to five).
   # A cross-product enumeration would invent cross-unit pairs (one unit's documents
   # "restating" another's); the pairing must follow the unit capture.
   armp() { # armp <name> <pair-spec> <expected-rc> <expected-substring>
@@ -255,8 +256,9 @@ state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/prof
 state (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/state.sexp	profiles/dsp56300-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 state (sifive-uart-lab-v0)	profiles/sifive-uart-lab-v0/state.sexp	profiles/sifive-uart-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 state (lan9118-lab-v0)	profiles/lan9118-lab-v0/state.sexp	profiles/lan9118-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+state (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/state.sexp	profiles/rv64gc-lab-v0/profile.sexp	PROFILE-CONSISTENCY
 EOF
-  armp "GREEN four units, each pair registered — no cross-unit pair invented" "$SAME_UNIT" 0 "__CHECKED__ 4"
+  armp "GREEN five units, each pair registered — no cross-unit pair invented" "$SAME_UNIT" 0 "__CHECKED__ 5"
 
   cat > "$t/reg.tsv" <<'EOF'
 state (rv64i-lab-v0)	profiles/rv64i-lab-v0/state.sexp	profiles/rv64i-lab-v0/profile.sexp	PROFILE-CONSISTENCY

@@ -106,10 +106,18 @@ def _semantics_names(unit: Path) -> tuple[set[str], list[str]]:
         except (SEM.SemError, S.SexpError) as exc:
             problems.append(f"{p.name}: {exc}")
             continue
+        # MODEL-COMPOSE.6, the same rule the compose gate owns (check_semantics.compose):
+        # a file-level (refines (insn "…")) declares an override, so a re-definition the
+        # file declares is a refinement point, not a duplicate. The two refines LIES (a
+        # refinement of nothing, a refinement with no override) stay the compose gate's
+        # own jurisdiction — this leg only stops false-positiving an honest one.
+        refined = {str(S.field(r, "insn", str(p))) for r in S.children(root, "refines")}
         for s in S.children(root, "sem"):
             name = str(S.field(s, "insn", str(p)))
-            if name in defined:
-                problems.append(f"{p.name} [{name}]: defined twice across the unit's semantics")
+            if name in defined and name not in refined:
+                problems.append(f"{p.name} [{name}]: defined twice across the unit's semantics "
+                                f"with no (refines …) declared — an extension that changes a "
+                                f"base behaviour must declare the refinement point")
             defined.add(name)
             for e in S.children(s, "effect"):
                 try:
@@ -485,6 +493,30 @@ def _selftest() -> int:
     build_pseudo(scope_extra=False)
     arm("RED   a scope census that omits the pseudo is a mismatch, named",
         lambda: refused("the scope does not declare: rdpseudo"))
+
+    # P4-SYSTEM.2 slice (h): the semantics leg honors MODEL-COMPOSE.6's refinement
+    # relation — a re-definition the file DECLARES via (refines (insn "…")) is an
+    # override, not a duplicate (rv64gc's zicsr.sem.sexp refines ecall/ebreak).
+    def build_refines(declared):
+        build()
+        (tmp / "definitions/riscv/t2.sexp").write_text(
+            '(fragment (id "riscv/t2") (kind extension)\n'
+            '(insn (name add) (fixed (6 2 0x13) (1 0 0x3)) (operands rd rs1 rs2))\n'
+            '(insn (name sub) (fixed (6 2 0x13) (1 0 0x3)) (operands rd rs1 rs2)))\n')
+        ref = '(refines (insn "sub"))\n' if declared else ""
+        (tmp / "definitions/riscv/t2.sem.sexp").write_text(
+            '(semantics (fragment "riscv/t2") (xlen 64)\n' + ref +
+            '(sem (insn sub) (source "S §2 — why") (effect (set (reg rd) (lit 0)))))\n')
+        (u / "encoding.sexp").write_text(
+            '(encoding (profile "u") (ilen 32)\n'
+            '  (compose (base "riscv/t") (extensions "riscv/t2"))\n'
+            '  (fragment-root "definitions"))\n')
+    build_refines(declared=True)
+    arm("GREEN a declared refinement is an override, not a duplicate",
+        lambda: sufficient())
+    build_refines(declared=False)
+    arm("RED   an undeclared re-definition is a duplicate, named",
+        lambda: refused("defined twice"))
 
     import shutil
     shutil.rmtree(tmp)

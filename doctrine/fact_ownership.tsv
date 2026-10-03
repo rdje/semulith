@@ -43,6 +43,17 @@ requirements (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/profile.sexp	profiles/rv64gc
 obligations (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/requirements.sexp	profiles/rv64gc-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
 base-requirements (rv64gc-lab-v0)	profiles/rv64i-lab-v0/requirements.sexp	profiles/rv64gc-lab-v0/requirements.sexp	RECORD-SCHEMA
 base-obligations (rv64gc-lab-v0)	profiles/rv64i-lab-v0/contract-obligations.sexp	profiles/rv64gc-lab-v0/contract-obligations.sexp	RECORD-SCHEMA
+state (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/state.sexp	profiles/rv64gc-lab-v0/profile.sexp	PROFILE-CONSISTENCY
+state (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/state.sexp	crates/semulith-core/src/state_rv64gc.rs	STATE-GEN
+state (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/state.sexp	crates/semulith-core/src/definition_rv64gc.rs	DEF-GEN
+encodings (rv64gc-lab-v0)	definitions/riscv/	profiles/rv64gc-lab-v0/encoding.sexp	UNIT-COMPOSITION
+encodings (rv64gc-lab-v0)	definitions/riscv/	crates/semulith-core/src/definition_rv64gc.rs	DEF-GEN
+semantics (rv64gc-lab-v0)	definitions/riscv/	crates/semulith-core/src/definition_rv64gc.rs	DEF-GEN
+csr-name-address (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/state.sexp	-	-
+guest-programs (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/guests/	crates/semulith-verify/src/guests_rv64gc.rs	GUEST-GEN
+guest-expectations (rv64gc-lab-v0)	profiles/rv64gc-lab-v0/guests/	crates/semulith-verify/src/guests_rv64gc.rs	GUEST-GEN
+base-guest-programs (rv64gc-lab-v0)	profiles/rv64i-lab-v0/guests/	profiles/rv64gc-lab-v0/guests/	GUEST-GEN
+base-guest-expectations (rv64gc-lab-v0)	profiles/rv64i-lab-v0/guests/	profiles/rv64gc-lab-v0/guests/	GUEST-GEN
 pinned-sources (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/sources.sexp	docs/models/dsp56300-lab-v0/src/materials/pinned-specifications.md	MATERIALS-BILL
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/encoding-tables.md	MATERIALS-BILL
 reference-dossier (dsp56300-lab-v0)	profiles/dsp56300-lab-v0/references.sexp	docs/models/dsp56300-lab-v0/src/materials/reference-models.md	MATERIALS-BILL

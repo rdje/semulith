@@ -364,7 +364,14 @@ class Assembler:
         value comes from the sibling profile.sexp's `(ialign …)` field through the dossier
         mapping owner; a unit that declares nothing gets 32, the only architectural value an
         ILEN=32 base without C can have. The table-directory route is the rv64i-era tables,
-        IALIGN=32 by construction."""
+        IALIGN=32 by construction.
+
+        CSR name resolution is likewise the unit's own data where the unit OWNS it
+        (P4-SYSTEM.2 slice h, the csr-name↔address ownership migration): a sibling
+        state.sexp carrying csr elements is the owner, and the assembler resolves names
+        through it; a unit without CSR state (rv64i-lab-v0) and the table-directory route
+        keep resolving through the pinned csrs.csv — the upstream derivation source the
+        state document's own addresses were checked against (the 33/33 probe)."""
         self.ialign = 32
         if source.is_file():
             self.arg_lut, self.insns, self.imm_layout, self.pseudos = \
@@ -376,29 +383,40 @@ class Assembler:
                 if declared is not None:
                     self.ialign = int(declared)
             self._csrs: dict[str, int] | None = None
+            self._csr_source = "the pinned csrs.csv"
+            state = source.parent / "state.sexp"
+            if state.is_file():
+                import dossier_sexp as D
+                csrs = {str(c["id"]): int(str(c["address"]), 0)
+                        for c in D.load_state(state).get("csr", [])}
+                if csrs:
+                    self._csrs = csrs
+                    self._csr_source = f"{state.parent.name}'s state.sexp"
             return
         self.arg_lut = load_arg_lut(source / "arg_lut.csv")
         self.insns = load_encodings([source / "rv_i", source / "rv64_i"])
         self.imm_layout = load_immediate_layout(source / "constants.py", self.arg_lut)
         self.pseudos = {}
         self._csrs = None
+        self._csr_source = "the pinned csrs.csv"
         self._csr_table = source / "csrs.csv"
 
     def _csr(self, tok: str) -> int:
-        """A csr operand: a numeric address, or a name resolved through the pinned csrs.csv."""
+        """A csr operand: a numeric address, or a name resolved through the unit's owner
+        (a CSR-carrying state.sexp) or the pinned csrs.csv — never invented."""
         try:
             addr = int(tok, 0)
         except ValueError:
-            table = getattr(self, "_csr_table", None) or \
-                Path(__file__).resolve().parent.parent / "target/refs/riscv-opcodes/csrs.csv"
             if self._csrs is None:
+                table = getattr(self, "_csr_table", None) or \
+                    Path(__file__).resolve().parent.parent / "target/refs/riscv-opcodes/csrs.csv"
                 if not table.is_file():
                     raise AsmError(
                         f"csr operand {tok!r} is a name, but the pinned csrs.csv it resolves "
                         f"through is not present at {table} — run scripts/fetch_references.sh")
                 self._csrs = load_csr_names(table)
             if tok not in self._csrs:
-                raise AsmError(f"csr operand {tok!r} is not in the pinned csrs.csv — this "
+                raise AsmError(f"csr operand {tok!r} is not in {self._csr_source} — this "
                                f"assembler carries no CSR addresses of its own")
             addr = self._csrs[tok]
         if not 0 <= addr <= 0xFFF:

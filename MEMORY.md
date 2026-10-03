@@ -16,17 +16,16 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`, the unit unregistered by design; `.2` slices (a) fragments+assembler+IALIGN, (b) semantics operators+sem files, (c1) the staged 33-CSR state document + gen_state's two-profile branch, (d) generators+privilege machinery+scratch proof, (e) the 65-form census+mirror requirements+staged encoding, (f) the guests corpus executed 62/62 + coverage 65/65 landed).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-02`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (1/10 — the profile resolved as `rv64gc-lab-v0`; `.2` slices (a)–(g) + slice (h) part 1 landed: THE FLIP — the unit carries its encoding, 33-CSR state document, 62-guest corpus and interaction matrix TRACKED, the route is `generated-definition`, the tracked engine runs the corpus 62/62).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.2` slice (h) — THE ATOMIC FLIP: the staged unit, corpus,
-  encoding, state document and interaction matrix land tracked in one commit, and the
-  route flips from `profile-resolution` to `generated-definition`. Slice (g) landed: the
-  7-axis × 28-cell interactions.sexp rehearsed green against the staged unit (28 cells,
-  every disposition resolves, rc=0; 3 cells reported degenerate; the DIFFS rule forced
-  the mirror's 4th/5th re-derivations — the fencei files' rv64i divergence pin dropped,
-  mirror now 44 byte-identical + 5 re-derived) (`SEMULITH-P4-0011`). The staged payload
-  (target/p4-system-2/) holds the state document, the flip's encoding.sexp, the guests
-  corpus (62 + run-order), the corpus runner, and the interaction matrix.
+- next_action: `P4-SYSTEM.2` slice (h) part 2 — the Sail privileged matched-experiment
+  ATTEMPT (decision 8: Sail 0.14's full config namespace, the rv64i matched-override
+  precedent at profiles/rv64i-lab-v0/reference/; a small set of mm-* guests; AGREE /
+  named divergence / NOT MATCHABLE recorded honestly) + the LEAF acceptance (the
+  same instruction's behaviour tested in each supported mode — the mm corpus mapping)
+  + the reports and the book, then leaf status done (`SEMULITH-P4-0013`). The flip
+  landed as `SEMULITH-P4-0012`: rv64gc-lab-v0 is a full generated-definition unit
+  (all gates judge it; rv64i's verdicts unchanged; DERIVED-COUNTS 419).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

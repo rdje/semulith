@@ -24,10 +24,9 @@ The generator REFUSES (exit 2, naming the construct) on any shape it does not kn
 emit, because a generator that guesses is a second definition wearing the first one's
 clothes:
 
-- a unit other than `rv64i-lab-v0` or — since `P4-SYSTEM.2` slice (d) — `rv64gc-lab-v0`,
-  whose descriptor is STAGED untracked until the route flip: rv64gc emission is
-  generator-capable and proven to a scratch `--out`
-  (`decision_generated-mirror-needs-tracked-input`); the tracked module lands at the flip;
+- a unit other than `rv64i-lab-v0` or — since `P4-SYSTEM.2` slice (d), tracked since the
+  slice (h) route flip — `rv64gc-lab-v0`, whose module is the committed
+  `crates/semulith-core/src/definition_rv64gc.rs` (the same generator, the same census);
 - an instruction length other than 32 — this generator emits the 32-bit decode table;
 - a composition whose encoding/fragment/semantics documents the schema layer refuses;
 - a composed fragment with no semantics document beside it (`<fragment>.sem.sexp`, the
@@ -447,9 +446,9 @@ def emit(data: dict, generator_sha: str) -> str:
         a("//! the decode metadata, the operand-field table, and the semantics effect trees,")
         a("//! lowered from rv64gc-lab-v0's composition (base riscv/rv64i + the Zicsr, Zicntr")
         a("//! and privileged-system fragments, P4-SYSTEM.2) — including the privileged operator")
-        a("//! surface of `schema/semantics.sexp`. STAGED: this module's canonical inputs are")
-        a("//! scratch-staged until the route flip (decision_generated-mirror-needs-tracked-")
-        a("//! input); it is proven from `target/p4-system-2/` and lands tracked at the flip.")
+        a("//! surface of `schema/semantics.sexp`. This module landed tracked at the route")
+        a("//! flip (P4-SYSTEM.2 slice h, decision_generated-mirror-needs-tracked-input: a")
+        a("//! tracked generated module needs its canonical inputs tracked in the same commit).")
     else:
         a("//! the decode metadata, the operand-field table, and the semantics effect trees,")
         a("//! lowered from `profiles/rv64i-lab-v0/encoding.sexp` composing `riscv/rv64i`, with")

@@ -18,11 +18,9 @@ never silently guessed — that is how "generated" stays a claim instead of a ho
 
 TWO PROFILES, ONE GENERATOR (P4-SYSTEM.2 slice c1): rv64i-lab-v0's module is the committed
 `crates/semulith-core/src/state.rs` (byte-identical re-derivation, gated by STATE-GEN).
-rv64gc-lab-v0's descriptor is STAGED at `target/p4-system-2/state.sexp` until the route
-flip (a state.sexp inside the unit contradicts the profile-resolution route today), so its
-emission is generator-capable-but-not-yet-placed: emit it to an explicit `--out`, and the
-module lands in `crates/` with the engine consumer (slice c2/d), when STATE-GEN's census
-extends to it. The staging is recorded in the owning leaf.
+rv64gc-lab-v0's descriptor landed tracked at the route flip (P4-SYSTEM.2 slice h) and its
+module is the committed `crates/semulith-core/src/state_rv64gc.rs`, gated by the same
+STATE-GEN census — both modules regenerate from their tracked descriptors.
 
 Usage:
   python3 scripts/gen_state.py                 # regenerate the committed module
@@ -523,8 +521,13 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("            regs: [0; INTEGER_COUNT],")
     a("            pc: entry,")
     a(f"            mode: PrivilegeMode::{pm['reset']['value'].upper()},")
-    resets = ", ".join(f"{c['_reset']:#x}" for c in storage)
-    a(f"            csrs: [{resets}],")
+    # one reset per line: the rustfmt-stable shape (cargo fmt must leave the generated
+    # module byte-identical — STATE-GEN's --check compares against regeneration, not
+    # against a formatter's second opinion)
+    a("            csrs: [")
+    for c in storage:
+        a(f"                {c['_reset']:#x},")
+    a("            ],")
     a("        }")
     a("    }")
     a("")
@@ -536,34 +539,50 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    /// Architectural read of `x(index)`. x0 reads as 0, always (RVI-RV32I §1.1.1).")
     a("    #[must_use]")
     a("    pub fn read_x(&self, index: u8) -> u64 {")
-    a("        if index == 0 { 0 } else { self.regs[index as usize] }")
+    a("        if index == 0 {")
+    a("            0")
+    a("        } else {")
+    a("            self.regs[index as usize]")
+    a("        }")
     a("    }")
     a("")
     a("    /// Architectural write of `x(index)`; a write to x0 is discarded.")
     a("    pub fn write_x(&mut self, index: u8, value: u64) {")
-    a("        if index != 0 { self.regs[index as usize] = value; }")
+    a("        if index != 0 {")
+    a("            self.regs[index as usize] = value;")
+    a("        }")
     a("    }")
     a("")
     a("    /// The program counter (RVI-RV32I §1.1.1).")
     a("    #[must_use]")
-    a("    pub fn pc(&self) -> u64 { self.pc }")
+    a("    pub fn pc(&self) -> u64 {")
+    a("        self.pc")
+    a("    }")
     a("")
     a("    /// Set the program counter (a control transfer's target).")
-    a("    pub fn set_pc(&mut self, value: u64) { self.pc = value; }")
+    a("    pub fn set_pc(&mut self, value: u64) {")
+    a("        self.pc = value;")
+    a("    }")
     a("")
     a("    /// The current privilege mode (hart state — RVP-INTRO; reset M, §2.1.4).")
     a("    #[must_use]")
-    a("    pub fn mode(&self) -> PrivilegeMode { self.mode }")
+    a("    pub fn mode(&self) -> PrivilegeMode {")
+    a("        self.mode")
+    a("    }")
     a("")
     a("    /// Set the current privilege mode (trap delivery and xret's concern — the")
     a("    /// engine's, slice (d); accessors stay raw here).")
-    a("    pub fn set_mode(&mut self, mode: PrivilegeMode) { self.mode = mode; }")
+    a("    pub fn set_mode(&mut self, mode: PrivilegeMode) {")
+    a("        self.mode = mode;")
+    a("    }")
     a("")
     a("    /// Raw read of CSR storage by index. The permission model, view masking and")
     a("    /// WARL/WLRL legalization are the ENGINE's, applied at lowering (slices c2/d) —")
     a("    /// this layer stores and reports, it never adjudicates.")
     a("    #[must_use]")
-    a("    pub fn read_csr(&self, index: usize) -> u64 { self.csrs[index] }")
+    a("    pub fn read_csr(&self, index: usize) -> u64 {")
+    a("        self.csrs[index]")
+    a("    }")
     a("")
     a("    /// Raw write of CSR storage by index; same layering as [`Self::read_csr`].")
     a("    pub fn write_csr(&mut self, index: usize, value: u64) {")
@@ -588,8 +607,11 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a(f"pub const CSR_ELEMENTS: [CsrMeta; {len(csrs)}] = [")
     for c in csrs:
         view = f"Some({rust_str(c['view_of'])})" if "view_of" in c else "None"
-        a(f"    CsrMeta {{ name: {rust_str(c['id'])}, address: {c['address']:#05x}, "
-          f"view_of: {view} }},")
+        a("    CsrMeta {")
+        a(f"        name: {rust_str(c['id'])},")
+        a(f"        address: {c['address']:#05x},")
+        a(f"        view_of: {view},")
+        a("    },")
     a("];")
     a("")
 
@@ -611,27 +633,42 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     for c in csrs:
         for f in c.get("fields", []):
             legal = f"Some({legalize(f['legalize'])})" if "legalize" in f else "None"
-            a(f"    FieldMeta {{ csr: {rust_str(c['id'])}, name: {rust_str(f['id'])}, "
-              f"bit_hi: {f['bit_hi']}, bit_lo: {f['bit_lo']}, "
-              f"discipline: FieldDiscipline::{f['discipline'].capitalize()}, "
-              f"legalize: {legal}, reset: {_int(f['reset'], c['id'] + '.' + f['id'])} }},")
+            a("    FieldMeta {")
+            a(f"        csr: {rust_str(c['id'])},")
+            a(f"        name: {rust_str(f['id'])},")
+            a(f"        bit_hi: {f['bit_hi']},")
+            a(f"        bit_lo: {f['bit_lo']},")
+            a(f"        discipline: FieldDiscipline::{f['discipline'].capitalize()},")
+            a(f"        legalize: {legal},")
+            a(f"        reset: {_int(f['reset'], c['id'] + '.' + f['id'])},")
+            a("    },")
     a("];")
     a("")
     a("/// The engine's privileged-state surface (`crate::privilege::PrivilegedHart`),")
     a("/// implemented over this module's storage and tables — the trait's rules are the")
     a("/// engine's; the data they read is the descriptor's.")
     a("impl crate::privilege::PrivilegedHart for ArchitecturalState {")
-    a("    fn mode(&self) -> PrivilegeMode { self.mode }")
-    a("    fn set_mode(&mut self, mode: PrivilegeMode) { self.mode = mode; }")
-    a("    fn csr_raw(&self, index: usize) -> u64 { self.csrs[index] }")
+    a("    fn mode(&self) -> PrivilegeMode {")
+    a("        self.mode")
+    a("    }")
+    a("    fn set_mode(&mut self, mode: PrivilegeMode) {")
+    a("        self.mode = mode;")
+    a("    }")
+    a("    fn csr_raw(&self, index: usize) -> u64 {")
+    a("        self.csrs[index]")
+    a("    }")
     a("    fn csr_write_raw(&mut self, index: usize, value: u64) {")
     a("        self.csrs[index] = value;")
     a("    }")
     a("    fn csr_index(&self, address: u16) -> Option<usize> {")
     a("        Self::csr_index(address)")
     a("    }")
-    a("    fn csr_meta(&self) -> &'static [CsrMeta] { &CSR_ELEMENTS }")
-    a("    fn csr_fields(&self) -> &'static [FieldMeta] { &CSR_FIELDS }")
+    a("    fn csr_meta(&self) -> &'static [CsrMeta] {")
+    a("        &CSR_ELEMENTS")
+    a("    }")
+    a("    fn csr_fields(&self) -> &'static [FieldMeta] {")
+    a("        &CSR_FIELDS")
+    a("    }")
     a("}")
     a("")
     a("/// SEM-08: the hidden-state census, re-earned for the privileged state — carried as")

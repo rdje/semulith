@@ -32,6 +32,10 @@ command -v python3 >/dev/null 2>&1 || {
 ENCODING="profiles/rv64i-lab-v0/encoding.sexp"
 STATE="profiles/rv64i-lab-v0/state.sexp"
 OUT="crates/semulith-core/src/definition.rs"
+# P4-SYSTEM.2 slice h (the route flip): the census's rv64gc owner→mirror pair.
+ENCODING_GC="profiles/rv64gc-lab-v0/encoding.sexp"
+STATE_GC="profiles/rv64gc-lab-v0/state.sexp"
+OUT_GC="crates/semulith-core/src/definition_rv64gc.rs"
 
 # ── self-test ────────────────────────────────────────────────────────────────────────────────
 SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
@@ -184,6 +188,16 @@ EOF
   out="$(GEN 2>&1)"; rc=$?
   arm "RED a privileged operator in a base rule is refused where not lowered" "$rc" 2 "$out" "does not lower"
 
+  # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
+  # pair — pinned against the REAL pair, not a synthetic one.
+  out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \
+        --out "$OUT_GC" 2>&1)"; rc=$?
+  arm "GREEN the census's rv64gc pair is in sync" "$rc" 0 "$out" ""
+  cp "$OUT_GC" "$t/gc-module.rs"; printf '\n// hand edit\n' >> "$t/gc-module.rs"
+  out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \
+        --out "$t/gc-module.rs" 2>&1)"; rc=$?
+  arm "RED the census's rv64gc pair catches a hand edit" "$rc" 1 "$out" "DRIFT"
+
   rm -rf "$t"
   printf 'DEF-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -202,19 +216,27 @@ self_test >/dev/null 2>&1 || {
 
 [ -f "$ENCODING" ] || { echo "DEF-GEN: ok (no encoding composition yet)"; exit 0; }
 
-out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING" --state "$STATE" \
-      --out "$OUT" 2>&1)"; rc=$?
-if [ "$rc" -eq 2 ]; then
-  printf '%s\n' "$out" >&2
-  echo "DEF-GEN: REFUSED — the canonical definition could not be judged." >&2
-  exit 2
-fi
-if [ "$rc" -ne 0 ]; then
-  printf '%s\n' "$out" >&2
-  printf 'DEF-GEN: FAIL — %s is out of sync with the canonical definition. Regenerate — never edit:\n  python3 scripts/gen_definition.py\n' \
-    "$OUT" >&2
-  exit 1
-fi
-sha="$(sha256sum "$ENCODING" | cut -d' ' -f1)"
-printf 'DEF-GEN: ok (%s matches the canonical definition, encoding sha256 %s)\n' "$OUT" "${sha:0:16}"
+# The owner→mirror census: every tracked encoding composition (+ its state descriptor)
+# and its generated module (P4-SYSTEM.2 slice h — the census extends to the rv64gc pair
+# at the route flip).
+judge_pair() { # $1 encoding $2 state $3 module
+  out="$(python3 scripts/gen_definition.py --check --encoding "$1" --state "$2" \
+        --out "$3" 2>&1)"; rc=$?
+  if [ "$rc" -eq 2 ]; then
+    printf '%s\n' "$out" >&2
+    echo "DEF-GEN: REFUSED — the canonical definition could not be judged." >&2
+    exit 2
+  fi
+  if [ "$rc" -ne 0 ]; then
+    printf '%s\n' "$out" >&2
+    printf 'DEF-GEN: FAIL — %s is out of sync with the canonical definition. Regenerate — never edit:\n  python3 scripts/gen_definition.py\n' \
+      "$3" >&2
+    exit 1
+  fi
+  sha="$(sha256sum "$1" | cut -d' ' -f1)"
+  printf 'DEF-GEN: ok (%s matches the canonical definition, encoding sha256 %s)\n' "$3" "${sha:0:16}"
+}
+
+judge_pair "$ENCODING" "$STATE" "$OUT"
+judge_pair "$ENCODING_GC" "$STATE_GC" "$OUT_GC"
 exit 0

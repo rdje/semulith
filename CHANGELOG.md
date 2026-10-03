@@ -1,5 +1,50 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0012 (leaf P4-SYSTEM.2, slice h part 1) — THE ATOMIC FLIP: the payload tracked, the route generated-definition, the corpus on the tracked engine
+
+- The proven staging moves into `profiles/rv64gc-lab-v0/` byte-exact: the 33-CSR state
+  document, the encoding composition (base + Zicsr + Zicntr + the privileged-system
+  fragment, `(status partial)` with six declared slots for M/A/F/D/C/Zifencei), the
+  62-guest corpus with run-order, and the 7-axis × 28-cell interaction matrix. The
+  vehicle route flips to `generated-definition`; D-RESOLUTION-ROUTE is superseded by
+  note (the D-FENCE convention — its statement stays verbatim because RECORD-SCHEMA
+  mirrors it) and D-ROUTE-FLIP records the flip, its REQ/OB pair in the
+  authored-records shape.
+- The generated mirrors land tracked because their canonical inputs land tracked in the
+  same commit (decision_generated-mirror-needs-tracked-input):
+  `crates/semulith-core/src/state_rv64gc.rs` + `definition_rv64gc.rs`,
+  `crates/semulith-verify/src/guests_rv64gc.rs` — content-hash-identical to the
+  scratch-proven modules, provenance lines tracked-honest.
+- The tracked engine runs the corpus 62/62: `exec_rv64gc` ports the evaluator with the
+  trap-END discipline ridden in from the scratch runner (a delivered trap ends the
+  step's remaining effects), delivery through the tracked `privilege` machinery,
+  reserved decode reported for the diagnostic policy one layer up;
+  `semulith-verify`'s `run_rv64gc` drives all 62 guests with the base differential's
+  assertion family (per-step writes exact, never_written, one fetch per step,
+  cold-reset determinism) — 4/4 test groups green. FlatMemory carries IALIGN as
+  profile data (`with_fetch_align`; the rv64i default byte-exact).
+- The CLI's profile becomes a runtime selection: `--profile=` on run and demo
+  (rv64gc through the privileged engine), named refusals from the rv64i-scoped
+  commands (bench, bundle, reduce, replay, snapshot, resume, mutations), rv64i the
+  byte-exact default.
+- Four gate gaps the flip measured, each fixed at its owner with RED-first arms:
+  check_extraction honors MODEL-COMPOSE.6's refinement relation (self-test 11→13);
+  EXERCISE-COVERAGE's SCP-02 closure leg counts the composition's pseudo children
+  (21→23); the three GEN gates judge owner→mirror PAIRS (STATE-GEN 20→22, DEF-GEN
+  15→17, GUEST-GEN 10→15 — the rv64gc pair each, plus the base-mirror governor: 93
+  files byte-identical + 5 recorded re-derivations); FACT-OWNERSHIP re-pins to 5
+  units / 74 fact kinds. The CSR name↔address ownership migrated to the state
+  document (the assembler reads it; csrs.csv stays the derivation source, 33/33;
+  `pmpaddr0` refused by name). gen_state's rv64gc emission is rustfmt-stable
+  (cargo fmt runs over crates/; STATE-GEN compares against regeneration).
+- Full local proof: `make check` (76 core / 184 verify), `make gate` all doctrines
+  green (DERIVED-COUNTS 408→419 re-derived, never hand-incremented), bench wasm
+  133,662 bytes, smoke-bench 53 arms, both books build, fetch_references MATCH for
+  both profiles, and every rv64i verdict unchanged (52/52 exercised; its generated
+  surfaces byte-identical but definition.rs's embedded generator fingerprint).
+  The split is recorded: the flip is its own commit; the Sail privileged
+  matched-experiment attempt lands as part 2.
+
 ## SEMULITH-P4-0011 (leaf P4-SYSTEM.2, slice g) — the interactions.sexp: 7 axes × 28 cells, rehearsed green against the staged unit
 
 - The unit's interaction matrix, authored at scratch staging (route-contradicted until
@@ -796,21 +841,4 @@
 - The channel's filing mechanics are now recorded semulith-side as a knowledge card
   (`docs/knowledge/the-chipdoc-request-channel.md` + INDEX) — they had lived only in the
   corpus-side manual, and a session re-derived them the hard way once.
-
-## SEMULITH-BR-0018 (leaf P3-BREADTH.7) — the dsp56300-lab-v0 dossier lands, governed
-
-- The three schema-validated documents moved from
-  `docs/tasks/artifacts/p3-breadth/dsp56300-dossier/` to `profiles/dsp56300-lab-v0/`
-  (rename lineage kept; headers rewritten from "NOT LANDED" to the landed gate map):
-  `profile.sexp` (the subset decisions + the vehicle declaration), `state.sexp` (the F6
-  census as data), `interactions.sexp` (6 axes, 21 cells).
-- Every attaching gate green WITH the documents landed: EXERCISE-COVERAGE (19/19 DSP,
-  52/52 rv64), EXTRACTION (sibling-crate route reported), INTERACTION-MATRIX (2 units —
-  the DSP's 21 cells re-derived and resolved), PROFILE-CONSISTENCY (2 dossiers),
-  DOSSIER-SCHEMA (62 validated, 2 skipped by name), FACT-OWNERSHIP (23 kinds — the DSP's
-  five rows landed; the two post-landing census arms prove same-unit pairing, 10/10).
-- The DOSSIER's rows now read present/deferred with owners; the stale "lands with the
-  model slice" wording for requirements and unit registration re-routed to
-  `P3-BREADTH.6`. `.7` DONE 3/3; the frontier is `.6`, the BREADTH gate report.
-- Bookkeeping: `.7` slice 1's checklist archived verbatim (the 64 KiB per-part held).
 

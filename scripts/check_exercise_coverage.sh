@@ -135,7 +135,12 @@ for prof_path in profiles:
             for e in ext:
                 names += [str(x) for x in e[1:]]
             merged = resolve_composition(enc, enc_path)
+            # the composition provides instructions AND pseudos (P4-SYSTEM.2 slice e's
+            # pseudo census, learned by this leg at slice h: the Zicntr reads exist in
+            # the encoding AS csrrs specializations — the fragment's (pseudo …) rows
+            # are how the composition provides them)
             resolved = {str(S.field(i, "name")) for i in S.children(merged, "insn")}
+            resolved |= {str(S.field(i, "name")) for i in S.children(merged, "pseudo")}
             closure = "{" + ", ".join(names) + "}"
         except (AsmError, S.SexpError, IndexError) as exc:
             findings.append(f"UNMET DEPENDENCY {tag}: {exc}")
@@ -316,6 +321,21 @@ self_test() {
   profile '((count_total 1) (authority architecture) (source "s") (base_op "MUL"))'
   guest g1 "mul"
   arm "RED   a declared form the composition does not provide (SCP-02)" 1 "UNRESOLVED FORM"
+
+  # ── the pseudo closure leg (P4-SYSTEM.2 slice h, the route flip): a form the
+  # composition provides AS A PSEUDO (the Zicntr reads are csrrs specializations) is
+  # resolved — the leg counts (pseudo …) children, and their removal is UNRESOLVED.
+  cp "$ROOT/definitions/riscv/zicsr.sexp" "$t/definitions/riscv/zicsr.sexp"
+  cp "$ROOT/definitions/riscv/zicntr.sexp" "$t/definitions/riscv/zicntr.sexp"
+  printf '(encoding (profile "p") (ilen 32) (compose (base "riscv/rv64i") (extensions "riscv/zicsr" "riscv/zicntr")) (fragment-root "definitions"))\n' \
+    > "$t/profiles/p/encoding.sexp"
+  profile '(count_total 3) (authority architecture) (source "s") (base_op "ADD") (base_op "SUB") (zicntr_counters "RDCYCLE")'
+  guest g1 "add sub rdcycle"
+  arm "GREEN a scope form the composition provides as a pseudo resolves" 0 "__EXERCISED__ 3/3"
+  printf '(fragment (id "riscv/zicntr") (kind extension))\n' > "$t/definitions/riscv/zicntr.sexp"
+  arm "RED   a pseudo-only form the composition no longer provides, named" 1 "UNRESOLVED FORM"
+  rm -f "$t/definitions/riscv/zicsr.sexp" "$t/definitions/riscv/zicntr.sexp"
+  encoding
 
   rm -rf "$t/profiles/p/guests"; mkdir -p "$t/profiles/p/guests"
   profile "$scope2"

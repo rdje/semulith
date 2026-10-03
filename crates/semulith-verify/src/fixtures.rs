@@ -32,17 +32,34 @@ pub struct FlatMemory {
     /// structural (the fixture only fetches when asked), and the counter is the re-derivable
     /// witness a test can assert on.
     fetch_count: u64,
+    /// The fetch alignment in bytes — the running profile's IALIGN as data (P4-SYSTEM.2:
+    /// rv64i-lab-v0 declares 32 bits → 4 bytes; rv64gc-lab-v0 declares 16 with C → 2).
+    /// Data-access alignment stays the access width's own rule in every profile.
+    fetch_align: u64,
 }
 
 impl FlatMemory {
     /// Declare a region of `size` zeroed bytes at `base` — the laboratory platform's one
-    /// memory region, cold-reset state.
+    /// memory region, cold-reset state, at the rv64i fetch alignment (4 bytes).
     #[must_use]
     pub fn new(base: u64, size: usize) -> Self {
+        Self::with_fetch_align(base, size, 4)
+    }
+
+    /// [`new`] with the profile's fetch alignment explicit (`P4-SYSTEM.2` slice h — the
+    /// rv64gc corpus fetches at any even address under IALIGN=16, so its fixture declares
+    /// 2; rv64i's paths keep the 4-byte default byte-exact).
+    #[must_use]
+    pub fn with_fetch_align(base: u64, size: usize, fetch_align: u64) -> Self {
+        assert!(
+            fetch_align >= 2 && fetch_align.is_power_of_two() && fetch_align <= 4,
+            "fetch alignment {fetch_align} is outside the declared IALIGN vocabulary"
+        );
         Self {
             base,
             bytes: vec![0; size],
             fetch_count: 0,
+            fetch_align,
         }
     }
 
@@ -123,7 +140,15 @@ impl Environment for FlatMemory {
             Request::Fetch { addr } => (addr, AccessWidth::W),
             Request::Load { width, addr } | Request::Store { width, addr, .. } => (addr, width),
         };
-        if !addr.is_multiple_of(width.bytes()) {
+        // Alignment is judged before region membership (misalignment is a property of the
+        // address alone). A FETCH aligns to the profile's IALIGN (the fixture's declared
+        // fetch alignment); a data access aligns to its own width.
+        let align = if matches!(request, Request::Fetch { .. }) {
+            self.fetch_align
+        } else {
+            width.bytes()
+        };
+        if !addr.is_multiple_of(align) {
             return Err(Failure::Misaligned.into());
         }
         if !self.contains(addr, width) {

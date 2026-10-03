@@ -15,8 +15,11 @@
 
 pub mod arith;
 pub mod definition;
+pub mod definition_rv64gc;
 pub mod env;
 pub mod exec;
+pub mod exec_rv64gc;
 pub mod outcome;
 pub mod privilege;
 pub mod state;
+pub mod state_rv64gc;
