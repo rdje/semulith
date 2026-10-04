@@ -188,6 +188,48 @@ EOF
   out="$(GEN 2>&1)"; rc=$?
   arm "RED a privileged operator in a base rule is refused where not lowered" "$rc" 2 "$out" "does not lower"
 
+  # ---- the A-extension operator surface (P4-SYSTEM.4 slice b) ------------------------------
+  # The A variants emit exactly when the composition composes riscv/a: the tracked rv64gc
+  # module (the slot still declared) keeps its byte surface, and the composition WITH the
+  # fragment proves the lowering — the same discipline as the privileged operators off the
+  # rv64i module.
+  cp definitions/riscv/a.sexp "$t/gc/definitions/riscv/a.sexp"
+  cp definitions/riscv/a.sem.sexp "$t/gc/definitions/riscv/a.sem.sexp"
+  cat > "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" <<EOF
+(encoding (profile "rv64gc-lab-v0") (ilen 32)
+  (compose (base "riscv/rv64i")
+    (extensions "riscv/zicsr") (extensions "riscv/zicntr") (extensions "riscv/system")
+    (extensions "riscv/a")
+    (status partial) (slot (id m) (requires "riscv/m")))
+  (fragment-root "definitions"))
+EOF
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-a-definition.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc+A composition emits the A-operator module" "$rc" 0 "$out" "wrote"
+  for needle in "LoadReserved" "StoreConditional" "Amo(u64"; do
+    grep -qF "$needle" "$t/gc-a-definition.rs"; rc=$?
+    arm "GREEN the emitted module carries $needle" "$rc" 0 "" ""
+  done
+  # RED: an amo operation literal the composition does not encode is refused, named — the
+  # closed set is derived from the composed encodings' own funct5 fixed bits, never typed.
+  sed 's/(amo (lit 0) (lit 32)/(amo (lit 3) (lit 32)/' definitions/riscv/a.sem.sexp \
+    > "$t/gc/definitions/riscv/a.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-a-definition.rs" 2>&1)"; rc=$?
+  arm "RED an amo op outside the closed Zaamo nine is refused, naming it" "$rc" 2 "$out" "not one of the closed Zaamo nine"
+  cp definitions/riscv/a.sem.sexp "$t/gc/definitions/riscv/a.sem.sexp"
+  # RED: an A operator where the composition does not compose riscv/a is refused, named —
+  # the variants emit WITH the fragment; a module carrying them without it would not
+  # compile against its evaluator.
+  grep -v 'extensions "riscv/a"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+    > "$t/gc/enc-noa.sexp" && mv "$t/gc/enc-noa.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
+  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (store-conditional (lit 32) (reg rs1) (reg rs2)))/' \
+    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-a-definition.rs" 2>&1)"; rc=$?
+  arm "RED an A operator without riscv/a composed is refused, named" "$rc" 2 "$out" "does not compose riscv/a"
+  cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \

@@ -1784,3 +1784,130 @@ cell named). The leaf is **done**.
   override-mirror discipline is the rv64i dossier's recorded
   DIFF-PLATFORM-DEFAULT lesson applied)), `docs/book/src/plan/p4.md`,
   `profiles/rv64gc-lab-v0/references.sexp` (matched_scope + trace_granularity).
+
+
+`P4-SYSTEM.4` slice (a)'s checklist (completed `2026-10-04`,
+`SEMULITH-P4-0023`), split out on `2026-10-04` at the live file's eighth
+ceiling firing (slice (b) landing):
+
+`P4-SYSTEM.4` slice (a) — the rv_a/rv64_a re-pin + the a.sexp fragment + the
+assembler's A machinery (`2026-10-04`, `SEMULITH-P4-0023`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's pre-conditions re-measured, then the pinned
+  tables fetched through the tracked route and censused:
+
+  ```
+  $ grep -n 'rv_a\|rv64_a' profiles/rv64gc-lab-v0/references.sexp; echo rc=$?
+  rc=1                     # the A tables pinned nowhere (the :84 policy: pin only what is derived from)
+  $ ls definitions/riscv/ | wc -l; grep -c '^    ("definitions' scripts/gen_fragments.py
+  9 files, no a.sexp — FRAGMENTS has 5 entries, no A
+  $ grep -c '"aq"' scripts/riscv_asm.py; grep -n 'aq' target/refs/riscv-opcodes/arg_lut.csv
+  0 (pre-edit)             # the whitelists had no aq/rl …
+  "aqrl", 26, 25 / "aq", 26, 26 / "rl", 25, 25 / "amoop", 31, 27   # … but the pinned csv carries them
+  $ python3 -c "assemble('lr.w x1, (x2)')"        # the .2/-era assembler
+  AsmError: 'lr.w' is not in the canonical definition's encoding space
+  # the pinned A chapter (a-st-ext.html, Version 2.1) carries NO encodings (the format
+  # diagrams are images — the rv64i dossier's measured finding); rvwmo.html §17.1.3
+  # Tables 6/7 enumerate exactly the 22 forms (11 .W + 11 .D)
+  $ curl -sSL …/riscv-opcodes/master/extensions/{rv_a,rv64_a} | shasum -a 256; wc -c
+  d9eaa988c4779ca3…  858 bytes (rv_a) / 819e0487131bc97c…  885 bytes (rv64_a)
+  # census of the rows: 11 + 11 real forms, operand tokens `aq rl` (NO aqrl/amoop token —
+  # the funct5 is literal fixed bits in every row), lr's rs2-must-be-zero the row's own
+  # 24..20=0 fixed field; every mnemonic matches a Tables 6/7 row
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in existing behavior: the slice executes
+  the brief's decision 11 as recorded, and the WHY+WHERE of the two root fixes is
+  tool-backed, not read:
+
+  ```
+  $ python3 -  # the ledger's file names through BOTH collector shapes (scripts/dossier_sexp.py)
+  pre-fix collector  startswith('rv_')          -> ['rv_zicsr', 'rv_zicntr', 'rv_system', 'rv_s', 'rv_a']
+  fixed collector    startswith(('rv_','rv64_')) -> ['rv_zicsr', 'rv_zicntr', 'rv_system', 'rv_s', 'rv_a', 'rv64_a']
+  invisible to the pre-fix census: ['rv64_a']        # WHERE: the extra collector in scripts/fetch_references.sh
+  $ python3 -  # the pre-exclusion leg over the A-pinned ledger (the fix removed)
+  without the A exclusion: tables 87 vs declared 65, diff: ['amoadd.d', 'amoadd.w', 'amoand.d', ...]
+  ```
+
+  1. **The scope-vs-tables leg never collected rv64_* tables** — the `extra` collector
+     tested `n.startswith("rv_")`, so rv64_a (and rv64_m before it) was invisible to the
+     census; latent because no profile had ever declared an A or M form while pinning the
+     64-bit table (the first measurement above). Fixed to `startswith(("rv_", "rv64_"))`,
+     behavior-preserving for both existing profiles (65==65 and 52==52 unchanged, below).
+  2. **The A pin then breaks that leg without the declared distinction** (the second
+     measurement: 87 enumerated vs 65 declared). The rv64i dossier declares the
+     distinction for M ("pinned for the fragment test case, not the scope — excluded
+     unless the profile declares an M form"); the A tables get the SAME named exclusion
+     with the same flip condition (a declared lr./sc./amo form includes them — slice
+     (e)'s bind grows the census to 87 and flips it).
+  3. **The brief's "aqrl field ownership" phrasing measured imprecise**: the tables carry
+     no `aqrl` operand TOKEN — every row lists `aq rl` separately (the pinned csv's
+     `"aqrl",26,25` is the combined field). The fragment owns `aq` and `rl`, the fields its
+     instructions actually use (the generator's own rule: a field nothing references
+     invites a reader to believe it is supported).
+
+- [x] **FIX** — at the lowest-risk level that works, no Rust touched:
+  `profiles/rv64gc-lab-v0/references.sexp` (the rv_a/rv64_a re-pin: sha256+bytes, the
+  supplies sentence and the re-pin comment extended; rv64i's ledger untouched);
+  `scripts/fetch_references.sh` (the rv64_* collector fix + the named A exclusion);
+  `scripts/gen_fragments.py` (+1 FRAGMENTS entry: tables rv_a/rv64_a, requires rv64i,
+  owns aq/rl, the note recording the suffix-as-field-value design);
+  `definitions/riscv/a.sexp` (NEW, generated — never hand-authored);
+  `scripts/riscv_asm.py` (aq/rl whitelisted — positions always from the pinned
+  arg_lut.csv at load time; the `.aq`/`.rl`/`.aqrl` mnemonic-suffix rule re-applied as
+  the aq/rl FIELD VALUES, with garbage-suffix and suffix-on-non-atomic refusals by
+  name; the `(rs1)` parenthesized-address spelling for the lr/sc/amo shapes, every
+  other shape refused by name).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0
+  MATCH ×10 (the tables incl. rv_a/rv64_a + arg_lut) … MATCH encoding tables vs profile
+  scope 65 == 65, symmetric difference NONE … MATCH owned fragments agree … ok
+  $ bash scripts/fetch_references.sh --verify-only rv64i-lab-v0
+  … MATCH 52 == 52 … MATCH matched-profile ISA string rv64i_zvl32b … ok
+  $ mv target/refs/riscv-opcodes/rv_a /tmp && bash scripts/fetch_references.sh rv64gc-lab-v0
+  FETCH riscv-opcodes/extensions/rv_a → MATCH — refetched bytes identical (d9eaa988…)
+  $ python3 scripts/gen_fragments.py && git diff --stat -- definitions/
+  regenerated 6 fragment(s) — (empty diff: the existing five re-derive BYTE-IDENTICAL)
+  $ python3 scripts/check_sexp_schema.py definitions/riscv/a.sexp schema/fragment.sexp
+  check_sexp_schema: ok
+  $ python3 scripts/check_encoding_disjoint.py <synthetic unit doc>   # untracked, the .2 slice-a pattern
+  base+A: 74 instruction(s) — COMPOSE; base+zicsr+zicntr+system+A (m slotted):
+  84 instruction(s) (+ 3 pseudo-instruction(s)) — COMPOSE, PARTIAL declared
+  # the assembler probe (synthetic rv64a-trial unit, untracked):
+  assembled 88 words (22 forms × 4 suffix combinations)
+  0x100120af lr.w x1, (x2) … 0x0874232f amoswap.w x6, x7, (x8) … 0x1e42a1af sc.d.aqrl x3, x4, (x5)
+  $ target/refs/spike-build/spike-dasm < DASM-wrapped words    # the second-decoder round-trip
+  lr.w ra, (sp) / sc.w.aq gp, tp, (t0) / amoadd.w.rl t1, t2, (s0) / amomaxu.d.aqrl t1, t2, (s0)
+  … all 88 exact — lr's four suffix words decode to plain `lr.w` (spike's own printing
+  preference, the rdcycle-prints-as-csrr precedent; the aq/rl BITS measured set in the words)
+  ```
+
+- [x] **NO REGRESSION** — the changed leg fired RED first (the 87-vs-65 measurement above),
+  then the guard set: `check_encoding_disjoint.py --self-test` 12/12;
+  `check_unit_composition.sh --self-test` 9/9 and the tracked run `ok (3 unit
+  composition(s) decided)` — the rv64gc slot stays DECLARED, unbound, the census 65;
+  `check_source_format.sh` ok (210 files, a.sexp parses); `compare_readers.py` 1/1 agree
+  on a.sexp; gen_guests / gen_definition / gen_state / gen_board / gen_platform /
+  gen_model_book / gen_book_index `--check` all byte-exact (no Rust surface touched);
+  the assembler's manual RED probes (recorded with commands above): `lr.w.zz` →
+  "ordering suffix 'zz' is not one of .aq/.rl/.aqrl"; `add.aq` / `csrrw.aq` → "an
+  .aq/.rl ordering suffix belongs to an A form"; `lr.w x1, x2` / `lr.w x1, 0(x2)` /
+  `sc.w x3, x4, x5` / `amoadd.w x6, x7, 8(x8)` → "the address operand is spelled
+  (rs1)"; wrong arities named; `lr.w.aq.aq` / `amomaxu.q` → "not in the canonical
+  definition's encoding space". No self-test arms added: the slice changes no check's
+  semantics (the A fragment composes under the existing rules; the assembler's RED
+  arms are the recorded probes, the .2 slice-a pattern), so DERIVED-COUNTS stays 424.
+  `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog; the `.3` design brief archived verbatim to
+  `archive/P4-SYSTEM-designs.md` at this file's seventh per-part ceiling crossing — the
+  ceiling obeyed, not raised), `MEMORY.md` (next_action → slice b), `CHANGELOG.md`,
+  `DEV_NOTES.md` (the execution findings; the dated lesson's promotion decision:
+promotion: declined (the durability is the machinery — the collector fix and the named exclusion are armed by the fetch leg's own RED verdict, and the suffix/field design is data in the generated fragment)),
+  `LIVE_STATUS.md` (unchanged — no row's state moved and the arms count stays 424),
+  `docs/book/src/plan/p4.md` (the `.4` section opened) + the regenerated book index.
+

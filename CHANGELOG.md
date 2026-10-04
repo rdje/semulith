@@ -1,5 +1,42 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0024 (leaf P4-SYSTEM.4, slice b) — the reservation contract, the three atomic operators, a.sem.sexp, the conditional lowering
+
+- `schema/semantics.sexp` grows 40→43 forms. A RESERVATION contract block states the
+  one-hart rules once, citing §12.1.2/§12.1.3 and the brief's decisions 2–4 and 6:
+  the minimal exact reservation (physical address, width, valid of the most recent
+  LR); any LR replaces, any SC clears, traps do NOT invalidate; the external
+  invalidation event is P4-SYSTEM.9's contract vocabulary; misaligned atomics take
+  the access-fault cause 7, reference-matched to the pinned override's declared
+  PMAs. The operators: `load-reserved` (load-rules translation, sets/replaces the
+  reservation), `store-conditional` (yields the rd code — 0 on success, 1 on
+  failure, NEVER spurious under the declared deterministic policy, decision 3;
+  clears the reservation either way), `amo` (the closed nine by funct5 encoding;
+  ONE store/AMO-rules translation — never a load page fault; reads the old value,
+  computes at width, writes, yields the old value; the boundary shape a load
+  followed by a store, a `Request::Atomic` variant recorded as rejected, decision 5).
+- `definitions/riscv/a.sem.sexp` is hand-written from the pinned A chapter: all 22
+  forms, every rule locator-cited — `check_semantics.py` 22/22, the trial
+  compositions (`--compose` base+A and the five-fragment set) with every override
+  declared, and the citations resolving offline against rv64gc's pins (RVI-A
+  §12.1.2 ×4, §12.1.4 ×18).
+- `scripts/gen_definition.py` lowers the new operators, with two measured design
+  points: the AMO's operation is the funct5 LITERAL (a bare symbol is refused as a
+  phantom operand — measured rc=1), and the closed Zaamo set is RE-DERIVED from the
+  composed encodings' own funct5 fixed bits, an out-of-set op refused by name; and
+  the `Sem` variants emit exactly when the composition composes `riscv/a` (the
+  evaluator's exhaustive match is the `.2` slice-d wall), so the tracked modules
+  regenerate HASH-ONLY (the OWN-03 generator pin, 0 non-hash diff lines) while the
+  scratch composition — base+Zicsr+Zicntr+system+A, untracked — lowers and compiles
+  standalone (rustc rc=0), the lowered lr.w/amoadd.w trees inspected. Three RED
+  probes name the guards; the permanent arms record them (check_semantics 15→17,
+  DEF-GEN 17→23).
+- No Rust edited — the evaluator arms are slice (c)'s. The slot stays declared, the
+  census 65. `make check` rc=0 (8 test groups), `make gate` green (DERIVED-COUNTS
+  424→428 textual shell arms). Next: slice (c) — the reservation state (the
+  census-candidate gate generalised, the emit, the module) + the deterministic
+  policy as data + the engine's AMO/LR/SC arms proven in scratch.
+
 ## SEMULITH-P4-0023 (leaf P4-SYSTEM.4, slice a) — the rv_a/rv64_a re-pin, the a.sexp fragment, and the assembler's A machinery
 
 - The A extension's encoding tables are pinned in the rv64gc ledger through the
@@ -813,38 +850,4 @@
 - Validation: `make gate` → all doctrines green (DERIVED-COUNTS re-derived 354 →
   359 arms); `mdbook build` rc 0; `gen_book_index.py --check` rc 0. No Rust surface
   touched. P7's soc/computer compositions inherit the rule.
-
-## SEMULITH-P5-0013 (leaf P5-BOARD.3) — the generated maps: one generator, seven artifacts, the BOARD-GEN freshness gate
-
-- `scripts/gen_board.py` discovers boards by declaration (`profiles/*/board.sexp`) and
-  generates everything downstream of the canonical definition (OWN-05): the composition
-  manifest (the part list derived from the pins, never restated), the four composed
-  catalogues (99 requirements, 107 obligations, 5 sources, the rv64i encoding —
-  materialized by the factorized `compose_units.compose_resolved`, the ONE code path
-  the verdicts consume), `hardware.sexp` under the new `schema/hardware.sexp`, and
-  `map.md`. Every artifact carries the OWN-03 fingerprint header.
-- The **BOARD-GEN** doctrine (`scripts/check_board_gen.sh`) is the freshness proof
-  `compose_units.py` deferred to the first tracked board: `--check` re-derives all
-  seven artifacts and refuses DRIFT by name (self-test 9/9, every RED arm asserting
-  the reason); the generator refuses an inconsistent definition by name (region
-  overlap, MMIO window without device, executable MMIO, ghost console).
-- The census found exactly ONE handwritten duplicate map (the DOSSIER's table) —
-  replaced by the generated map: the DOSSIER links it, the board book includes it
-  (one owner, two readers, the include verified in the built HTML). The DOSSIER's
-  stale post-`.11` status rows (the brief's logged defect) fixed in the same pass.
-- FACT-OWNERSHIP gained 8 rows (54 kinds; the two measured corpus pairs registered,
-  never weakened) and the fixture re-pinned to five units; DERIVED-COUNTS fired as
-  designed (31→32 doctrines, 345→354 arms, re-derived in `LIVE_STATUS.md`).
-- Measured and recorded at root: the brief's register-surface containment check is
-  not implementable — the device dossiers carry register offsets in prose, never as
-  machine-readable data; the generator's refusals are scoped to what board.sexp
-  proves, and machine-readable offsets arrive with the device models. And the
-  `profiles/` per-part bound bit a second time (the first DERIVED member class:
-  the composed `contract-obligations.sexp`, 104,372 B) — the standing reviewed-raise
-  rule applied (`decision_profiles-family-composed-units`: 64 → 128 KiB at 0.80×,
-  aggregates unmoved).
-- Validation: BOARD-GEN ok; RECORD-SCHEMA 16 record files; FACT-OWNERSHIP 54 kinds;
-  UNIT-BOOKS 5/5; `make gate` → all doctrines green; `mdbook build` rc 0;
-  `gen_book_index.py --check` rc 0. No Rust surface touched. The composed catalogues
-  on disk are `P5-BOARD.4`'s pre-staged input.
 

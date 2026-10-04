@@ -1,5 +1,33 @@
 # DEV_NOTES.md
 
+## _(2026-10-04)_ — the operation is the encoding, and the variant waits for the composition (P4-SYSTEM.4 slice b)
+
+Execution of the `.4` brief's checkpoint (b) measured:
+
+- **The AMO's operation cannot be spelled.** A first draft wrote `(amo add …)` —
+  and the checker's walk refused it: `'add' is not an operand this instruction
+  has` (rc=1). Every bare-symbol argument in this language is an operand
+  reference, so an operation name in argument position reads as a phantom
+  operand. The op is the funct5 ENCODING as `(lit N)` — the value the
+  instruction's own fixed bits carry — and that choice composes with the
+  repository's own rule (a constant that is a function of the pinned tables is
+  derived, never typed): `gen_definition`'s `amo_operations` RE-DERIVES the
+  closed Zaamo nine from the composed encodings' bits 31..27 and refuses an op
+  outside it by name. The sem file cannot invent an operation the pinned tables
+  do not carry, and the refusal text lists the derived set (promotion: declined
+  — the durability is the machinery: the DEF-GEN RED arms fire the refusal).
+- **The variant waits for the composition.** The evaluator's `Sem` match is
+  exhaustive with no wildcard (measured: TlbInvalidate is the last arm) — the
+  `.2` slice-d wall exactly. Emitting the A variants unconditionally would break
+  compilation until slice (c)'s arms exist, so the variants emit exactly when
+  the unit's own fragment list composes `riscv/a`: the tracked modules
+  regenerate hash-only (the OWN-03 generator pin), the scratch composition
+  (base+Zicsr+Zicntr+system+A, untracked) lowers and compiles standalone, and an
+  A operator where the composition lacks A is a refusal, named. The mirror stays
+  a pure function of the canonical definition — the definition today has no A
+  forms, so the mirror has no A surface, and the bind (slice e) lands variants,
+  instructions and evaluator arms in one commit.
+
 ## _(2026-10-04)_ — the pin that exposed its own census's blind spot (P4-SYSTEM.4 slice a)
 
 Execution of the `.4` brief's checkpoint (a) measured:
@@ -628,53 +656,4 @@ REDs; the pseudo and IALIGN designs are data in the schema and the pins). Record
 owning leaf's checklist (LOCKSTEP). Intra-tree follow-ups named there: the Rust-side
 IALIGN=32 entry check (slice d), csr-name resolution's migration to the tracked state
 document (slice c/f), rdcycle's coverage naming (slice e/f).
-
-## _(2026-10-03)_ — the dossier machinery had no lifecycle stage for "resolved but no definition yet" (P4-SYSTEM.1)
-
-The `.1` brief assumed the schema already supported the resolution's fields; measured in
-execution, the real gap was lifecycle, not fields: EXTRACTION discovers every tracked
-`profiles/*/profile.sexp` and refuses a bare processor unit (no encoding.sexp → CANNOT
-JUDGE), so a new CPU unit could not be tracked below engine-readiness without a dodge.
-The fix followed the by-declaration discipline (the device-model precedent): a fourth
-vehicle route, `profile-resolution`, which the three definition-pipeline gates honor as
-"nothing to judge yet" — and refuse when contradicted by an encoding, state census, or
-guest corpus (the anti-drift property is the point: the route flips to
-`generated-definition` the day the pipeline starts, and the full contract attaches).
-Two adjacent fixes measured the same day: `check_citations.py` assumed bare page
-filenames under the snapshot's `unpriv/` (the privileged pages need subdirectory `file`
-fields; the cache root now derives from the declaration, and the declared cache-only
-pins are skipped by name), and `gen_platform.py`'s ISA derivation sorted the extension
-letters — canonical order is the declaration's, preserved.
-
-Promotion: declined — the by-declaration discipline has its decision records
-(`decision_device-applicability-by-declared-vehicle` and kin), and the route's behavior
-is armed by self-test REDs in three gates. Recorded in the owning leaf's checklist
-(LOCKSTEP).
-
-## _(2026-10-02)_ — the frozen contract is not a live doc, and a pin nothing re-derives is display only (P5-BOARD.6)
-
-Two findings from the platform-manifest leaf, both caught by the gates rather than by
-review:
-
-- **The delivered contract is frozen — route announcements to the live surfaces.** The
-  `.6` design brief planned a paragraph in `docs/ARCHOGEN_INTEGRATION.md` §3 noting the
-  manifest now exists. The file is a `frozen-in-place` row of the delivered planning
-  package; DELIVERY-PROVENANCE fired RED on the edit and the edit was reverted. The
-  announcement lives where project facts live: the task tree, the board DOSSIER, the
-  board book's new manifest chapter, and the project book's plan chapter. The design
-  input stays the supplied contract — read-only, cited, never amended
-  (`docs/provenance/planning-package-v0.2/dispositions.tsv`).
-- **A pin nothing re-derives is a display string.** The board's `dossier-sha256` was
-  recorded with the right intent ("a digest match against a newer dossier is a
-  finding"), but the census showed one consumer and it was the book generator's
-  *renderer*. The export generator now re-derives the digest from the live dossier at
-  every run (`gate_report.dossier_digest` — the one computation, factored out of the GC
-  report builder and measured byte-identical) and refuses a stale pin by name; the
-  PLATFORM-GEN self-test arms it RED. The leaf's own `endianness` edit was the first
-  real exercise of the cascade: dossier → GC-REPORT → pin → export.
-
-Promotion: declined — both findings' durability is the machinery itself (the doctrine
-fired; the refusal is armed by a self-test RED), and the write-down-what-the-gate-
-catches discipline already has its cards. Recorded in the owning leaf's checklist
-(LOCKSTEP).
 

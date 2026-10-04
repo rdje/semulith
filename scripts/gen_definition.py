@@ -44,6 +44,16 @@ clothes:
   which the reference is, and a bare symbol does not say;
 - a non-literal width in `(trunc …)`/`(sext …)`/`(zext …)`/`(bits …)` — the language's
   contract is "widths are always explicit", and this lowering states them as data;
+- an A-extension operator (`load-reserved`/`store-conditional`/`amo`) where the
+  composition does not compose `riscv/a` — their `Sem` variants emit WITH the fragment
+  (P4-SYSTEM.4 slice b: the tracked rv64gc module keeps its byte surface until the
+  atomic bind, and a module carrying variants its evaluator match cannot see would not
+  compile — the same discipline that keeps the privileged operators off the rv64i
+  module), and off the rv64gc module entirely;
+- an `(amo …)` whose operation literal is not one of the closed Zaamo nine the
+  composition itself encodes — the set is DERIVED from the composed encodings' own
+  funct5 fixed bits (a constant that is a function of the pinned tables is derived,
+  never typed);
 - fixed-bit fields that overlap or do not fit their range.
 
 Usage:
@@ -87,7 +97,31 @@ WIDTH_OPS = {"trunc": "Trunc", "sext": "Sext", "zext": "Zext"}
 EXTENDED_UNARY = {"csr-state": "CsrState", "csr-read": "CsrRead", "xret": "Xret"}
 EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver",
                    "tlb-invalidate": "TlbInvalidate"}
+# P4-SYSTEM.4 slice (b): the A extension's operators. They lower only where the
+# composition composes `riscv/a` — their Sem variants emit WITH the fragment, so the
+# tracked rv64gc module (the slot still declared) keeps its byte surface until the
+# atomic bind (slice e), and an A operator in a composition without A is a refusal,
+# named (a module carrying variants its evaluator match cannot see would not compile).
+A_TERNARY = {"load-reserved": "LoadReserved", "store-conditional": "StoreConditional"}
+A_OPERATORS = set(A_TERNARY) | {"amo"}
 BASE_UNARY = {"set-pc": "SetPc"}
+
+
+def amo_operations(insns: dict) -> dict[int, str]:
+    """The closed Zaamo operation set, DERIVED from the composed encodings: every
+    amo*.w/.d row's funct5 is its own fixed bits 31..27, keyed to the operation the row
+    names — a constant that is a function of the pinned tables is derived, never typed.
+    Empty when the composition carries no AMO (the tracked rv64gc slot, P4-SYSTEM.4)."""
+    out: dict[int, str] = {}
+    for name, insn in insns.items():
+        if not name.startswith("amo"):
+            continue
+        funct5 = 0
+        for hi, lo, v in insn.fixed:
+            for bit in range(max(lo, 27), min(hi, 31) + 1):
+                funct5 |= ((v >> (bit - lo)) & 1) << (bit - 27)
+        out.setdefault(funct5, name.split(".")[0])
+    return out
 
 
 class Refusal(Exception):
@@ -278,12 +312,16 @@ def indent_tree(text: str) -> str:
     return "\n".join(out)
 
 
-def emit_sem(form: X.Sexp, where: str, extended: bool = False) -> str:
+def emit_sem(form: X.Sexp, where: str, extended: bool = False,
+             a_variants: bool = False, amo_set: frozenset = frozenset()) -> str:
     """Lower one effect expression to the `Sem` tree literal, fully broken one level per
     line; `indent_tree` gives it the shape rustfmt would. `extended` is the rv64gc
     module's operator surface (P4-SYSTEM.2 slice d): the privileged operators lower only
     there — the rv64i module's byte surface is frozen by DEF-GEN, and a privileged
-    operator in its corpus is a refusal, named, never silently emitted uncallable."""
+    operator in its corpus is a refusal, named, never silently emitted uncallable.
+    `a_variants` is the A extension's surface (P4-SYSTEM.4 slice b): its operators lower
+    only where the composition composes `riscv/a`, and `amo_set` is the closed Zaamo
+    operation set derived from the composed encodings (`amo_operations`)."""
     if isinstance(form, int):
         return f"Sem::Lit({lit64(form)})"
     if isinstance(form, str):
@@ -297,10 +335,17 @@ def emit_sem(form: X.Sexp, where: str, extended: bool = False) -> str:
     unary = dict(BASE_UNARY, **EXTENDED_UNARY)
     binary = dict(BINARY_OPS, trap="Trap", **EXTENDED_BINARY)
     ternary = {"load": "Load", "store": "Store", "if": "If"}
+    if a_variants:
+        ternary = dict(ternary, **A_TERNARY)
     if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY)
-                               | {"field", "inst", "mode"}):
+                               | A_OPERATORS | {"field", "inst", "mode"}):
         raise Refusal(f"{where}: ({op} …) is the rv64gc module's operator surface "
                       f"(P4-SYSTEM.2 slice b) — the rv64i corpus does not lower it")
+    if extended and not a_variants and op in A_OPERATORS:
+        raise Refusal(f"{where}: ({op} …) is the A extension's operator surface "
+                      f"(P4-SYSTEM.4 slice b), but this composition does not compose "
+                      f"riscv/a — the variants emit WITH the fragment, so a module "
+                      f"carrying them without it would not compile against its evaluator")
     if op == "reg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Reg({rust_str(str(args[0]))})"
     if op == "imm" and len(args) == 1 and isinstance(args[0], str):
@@ -321,24 +366,42 @@ def emit_sem(form: X.Sexp, where: str, extended: bool = False) -> str:
         return f"Sem::Lit({lit64(args[0])})"
     if op == "nop" and not args:
         return "Sem::Nop"
+    if op == "amo" and len(args) == 4:
+        # (amo op width addr value) — one of the closed Zaamo nine (P4-SYSTEM.4 slice
+        # b). The op is the operation's funct5 encoding as (lit N), and N must be one
+        # the composition itself encodes — the set is derived (amo_operations), so a
+        # sem file cannot invent an operation the pinned tables do not carry.
+        lit = args[0]
+        if not (isinstance(lit, list) and len(lit) == 2 and lit[0] == "lit"
+                and isinstance(lit[1], int)):
+            raise Refusal(f"{where}: (amo op …) takes the operation's funct5 as a "
+                          f"(lit N) — the value the instruction's own fixed bits carry")
+        if lit[1] not in amo_set:
+            raise Refusal(f"{where}: amo op {lit[1]:#04x} is not one of the closed Zaamo "
+                          f"nine this composition encodes "
+                          f"({', '.join(f'{v:#04x}' for v in sorted(amo_set)) or 'none — no AMO composed'}) "
+                          f"— derived from the composed encodings' own funct5 fixed bits")
+        return (f"Sem::Amo(\n{lit[1]},\n&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n"
+                f"&{emit_sem(args[2], where, extended, a_variants, amo_set)},\n"
+                f"&{emit_sem(args[3], where, extended, a_variants, amo_set)},\n)")
     if op == "seq":
-        inner = ",\n".join(f"&{emit_sem(a, where, extended)}" for a in args)
+        inner = ",\n".join(f"&{emit_sem(a, where, extended, a_variants, amo_set)}" for a in args)
         return f"Sem::Seq(&[\n{inner},\n])"
     if op in binary and len(args) == 2:
-        return (f"Sem::{binary[op]}(\n&{emit_sem(args[0], where, extended)},\n"
-                f"&{emit_sem(args[1], where, extended)},\n)")
+        return (f"Sem::{binary[op]}(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n"
+                f"&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n)")
     if op in WIDTH_OPS and len(args) == 2 and isinstance(args[0], int):
-        return f"Sem::{WIDTH_OPS[op]}(\n{args[0]},\n&{emit_sem(args[1], where, extended)},\n)"
+        return f"Sem::{WIDTH_OPS[op]}(\n{args[0]},\n&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n)"
     if op == "bits" and len(args) == 3 and isinstance(args[0], int) and isinstance(args[1], int):
-        return f"Sem::Bits(\n{args[0]},\n{args[1]},\n&{emit_sem(args[2], where, extended)},\n)"
+        return f"Sem::Bits(\n{args[0]},\n{args[1]},\n&{emit_sem(args[2], where, extended, a_variants, amo_set)},\n)"
     if op == "set" and len(args) == 2:
-        return (f"Sem::Set(\n&{emit_sem(args[0], where, extended)},\n"
-                f"&{emit_sem(args[1], where, extended)},\n)")
+        return (f"Sem::Set(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n"
+                f"&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n)")
     if op in unary and len(args) == 1:
-        return f"Sem::{unary[op]}(\n&{emit_sem(args[0], where, extended)},\n)"
+        return f"Sem::{unary[op]}(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n)"
     if op in ternary and len(args) == 3:
-        return (f"Sem::{ternary[op]}(\n&{emit_sem(args[0], where, extended)},\n"
-                f"&{emit_sem(args[1], where, extended)},\n&{emit_sem(args[2], where, extended)},\n)")
+        return (f"Sem::{ternary[op]}(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n"
+                f"&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n&{emit_sem(args[2], where, extended, a_variants, amo_set)},\n)")
     if op in (set(binary) | set(WIDTH_OPS) | {"bits"}) and args:
         raise Refusal(f"{where}: ({op} …) has an argument this lowering cannot state "
                       "as data — width arguments of trunc/sext/zext/bits must be literal "
@@ -429,9 +492,11 @@ def load_inputs(encoding_path: Path, state_path: Path):
     for fname, (hi, lo) in sorted(arg_lut.items()):
         pieces = tuple(layout.get(fname, ()))
         fields.append((fname, hi, lo, pieces))
+    a_variants = "riscv/a" in names
     return dict(profile=profile, ilen=ilen, names=names, insns=insns,
                 pseudos=pseudos, pseudo_rules=pseudo_rules, extended=extended,
-                fields=fields, rules=rules, inputs=inputs, source_pins=source_pins)
+                fields=fields, rules=rules, inputs=inputs, source_pins=source_pins,
+                a_variants=a_variants, amo_ops=amo_operations(insns))
 
 
 def emit(data: dict, generator_sha: str) -> str:
@@ -598,7 +663,8 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        operands: &[{ops}],")
         a(f"        from: {rust_str(insn.source)},")
         a(f"        source: {rust_str(source)},")
-        tree = indent_tree(emit_sem(effect, where, extended))
+        tree = indent_tree(emit_sem(effect, where, extended, data["a_variants"],
+                                    frozenset(data["amo_ops"])))
         tree_lines = tree.splitlines()
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
@@ -681,6 +747,25 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    /// `(tlb-invalidate va asid)` — SFENCE.VMA's four specified invalidation")
         a("    /// cases over the modelled TLB (RVP-SUPERVISOR §11.1.2.1; P4-SYSTEM.3).")
         a("    TlbInvalidate(&'static Sem, &'static Sem),")
+    if extended and data["a_variants"]:
+        # P4-SYSTEM.4 slice b's A-operator surface — emitted exactly when the composition
+        # composes `riscv/a` (the atomic bind, slice e): the evaluator's exhaustive match
+        # learns the arms in the same commit, so a module never carries a variant nothing
+        # can evaluate (the tracked module keeps its byte surface until then).
+        a("    /// `(load-reserved width signed? addr)` — LR's load: translates under the")
+        a("    /// load rules, sets/replaces the hart's reservation (physical address,")
+        a("    /// width, valid), yields the loaded value (RVI-A §12.1.2).")
+        a("    LoadReserved(&'static Sem, &'static Sem, &'static Sem),")
+        a("    /// `(store-conditional width addr value)` — SC: success (reservation valid")
+        a("    /// ∧ physical address ∧ width match) writes and yields 0; failure writes")
+        a("    /// nothing and yields 1; the reservation is cleared either way (the")
+        a("    /// deterministic policy, P4-SYSTEM.4 decision 3).")
+        a("    StoreConditional(&'static Sem, &'static Sem, &'static Sem),")
+        a("    /// `(amo op width addr value)` — one of the closed Zaamo nine (op the")
+        a("    /// funct5 encoding): one store/AMO-rules translation, the old value read,")
+        a("    /// op applied at width, the result written, the old value yielded —")
+        a("    /// never a seq(load, op, store) (P4-SYSTEM.4 decision 5).")
+        a("    Amo(u64, &'static Sem, &'static Sem, &'static Sem),")
     a("}")
     a("")
     a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")

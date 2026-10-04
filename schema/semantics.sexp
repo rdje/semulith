@@ -3,7 +3,7 @@
 ;; A semantics file is one (semantics …) holding the fragment id, the XLEN, and one
 ;; (sem …) per instruction: the instruction name, the specification locator the rule
 ;; was derived from, and the effect. The effect is an expression of the operator
-;; language declared below — the 40 forms `scripts/check_semantics.py` checks against,
+;; language declared below — the 43 forms `scripts/check_semantics.py` checks against,
 ;; AS DATA (SOT-FORMAT.2): a new semantic form is a line here, zero lines of Python.
 ;;
 ;; Operators are positional: `(add (reg rs1) (reg rs2))` is not made of (name value)
@@ -21,6 +21,28 @@
 ;; in sequence, and MEMORY and CSR reads see the state at their point of evaluation (a
 ;; load after a store in the same tree sees the store — the self-modifying-code
 ;; discipline). `(pc)` and `(inst)` are frame constants of the instruction.
+;;
+;; THE RESERVATION, stated once for the three atomic operators below (RVI-A §12.1.2;
+;; P4-SYSTEM.4 decisions 2–4, 6). The hart holds at most ONE reservation: (physical
+;; address, width, valid) of the most recent LR — the reservation SET is exactly the
+;; accessed word's or doubleword's bytes, the minimal conformant set ("An implementation
+;; can register an arbitrarily large reservation set … provided [it] includes all bytes
+;; of the addressed data word or doubleword", §12.1.2), keyed on the PHYSICAL address
+;; (the aliasing latitude — "allowed to succeed … using an alias … also allowed to
+;; fail" — resolved to exact physical match, laboratory authority). Invalidation is
+;; exactly the one-hart set the specification states: any LR REPLACES the reservation;
+;; any SC — success or failure, any address — CLEARS it ("Regardless of success or
+;; failure, executing an SC.W instruction invalidates any reservation held by this
+;; hart", §12.1.2); NOTHING else touches it — a trap does NOT invalidate (the spec
+;; gives no such rule; §12.1.3's trap is only a loop-exit event), and the
+;; context-switch scratch-SC guidance is software's duty, not machinery. The external
+;; invalidation event (another hart's store, a device write) cannot arise at harts=1
+;; with no devices; the boundary vocabulary for an environment to DELIVER one is
+;; P4-SYSTEM.9's contract item, never smuggled. Misaligned atomics take the
+;; ACCESS-FAULT cause (7): the spec offers misaligned-or-access-fault (§12.1.2,
+;; §12.1.4) and the laboratory's pinned override declares the atomic kinds AccessFault
+;; — the reference-matched policy (decision 6, laboratory authority), judged before
+;; translation (the P4-SYSTEM.3 decision-7 hand-off).
 
 (schema (id "semantics"))
 
@@ -142,3 +164,51 @@
 ;; recorded-not-taken: the effect is exactly the four cases, so the G-bit retention and
 ;; the per-ASID cases are genuinely testable. It writes no architectural register.
 (operator (name tlb-invalidate) (fixed 2))
+;; ---- atomic memory values (P4-SYSTEM.4 slice b; the reservation contract above) ---------
+;; (load-reserved width signed? addr) — LR's load, shaped like (load …): translates
+;; under the LOAD rules ("load and load-reserved instructions generate load
+;; exceptions", RVP-MACHINE's exception table), reads width bytes, SETS/REPLACES the
+;; reservation to (the translated physical address, width, valid), and yields the
+;; loaded value.
+(operator (name load-reserved) (fixed 3))
+;; (store-conditional width addr value) — SC's conditional store, yielding THE CODE
+;; for rd: 0 on success, 1 on failure — 1 is the "unspecified failure" code
+;; ("Portable software should only assume the failure code will be non-zero",
+;; §12.1.2). Under the declared deterministic policy (P4-SYSTEM.4 decision 3,
+;; laboratory authority, stated beside the reservation in the state document): SC
+;; succeeds iff the reservation is valid ∧ physical address equal ∧ width equal,
+;; writing the low width bits of value; otherwise it fails with code 1, writing
+;; NOTHING — a failed SC "does not give rise to any memory operations" (RVWMO
+;; §17.1.1.1). It NEVER spuriously fails: one legal point of the architectural
+;; nondeterminism, chosen so exact-value expectations stay derivable (EVD-05); under
+;; it a constrained loop at one hart succeeds on its FIRST SC — the eventuality
+;; guarantee's degenerate one-hart form (§12.1.3). It translates under the STORE/AMO
+;; rules ("store, store-conditional, and AMO instructions generate store/AMO
+;; exceptions", RVP-MACHINE) and CLEARS the reservation either way (the contract
+;; above).
+(operator (name store-conditional) (fixed 3))
+;; (amo op width addr value) — one of the closed nine atomic memory operations
+;; (RVI-A §12.1.4, Zaamo), NOT a seq(load, op, store) tree: the decomposition is
+;; expressible but delivers cause 13 where the architecture demands a store/AMO
+;; cause — "AMOs never raise load page-fault exceptions … attempting to perform an
+;; AMO on an unreadable page always raises a store page-fault exception"
+;; (RVP-SUPERVISOR). The operator translates ONCE under the store/AMO rules, reads
+;; the old value, computes op(old, value) at width, writes the result, and yields
+;; the OLD value — one instruction, completing or faulting as a unit (P4-SYSTEM.4
+;; decision 5; P4-SYSTEM.8's discipline); at the environment boundary the operation
+;; is a load followed by a store to the same address (a Request::Atomic variant was
+;; weighed and rejected: it would push the nine operations' semantics into the
+;; environment — the wrong layer — and at one hart the pair IS the single operation
+;; of RVWMO §17.1.1.1). op is the operation's funct5 encoding — the value the
+;; instruction's own fixed bits carry (the pinned tables' bits 31..27: add=0x00,
+;; swap=0x01, xor=0x04, or=0x08, and=0x0c, min=0x10, max=0x14, minu=0x18,
+;; maxu=0x1c); an op outside the closed nine is a refusal, named (gen_definition
+;; re-derives the set from the composed encodings, never from a typed table). The
+;; reservation is UNTOUCHED: an AMO is neither an LR nor an SC (the contract above).
+;; The .W forms' rd value sign-extends the old word — written in the instruction's
+;; own tree (sext, never implicit). aq/rl order nothing observable at one hart —
+;; every effect is defined "as viewed by other RISC-V harts" (§12.1.1) — so they
+;; decode (the fragment's fields) and carry no semantics here; all four combinations
+;; assemble and execute identically, the "Software should not" of §12.1.2 being a
+;; software rule, not a decode illegality (decision 1).
+(operator (name amo) (fixed 4))

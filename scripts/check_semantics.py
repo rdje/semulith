@@ -6,7 +6,7 @@ notation that quietly accepts an unknown operator produces a definition whose me
 state — which is worse than no definition, because it looks like one. Every form was added
 because an RV64I instruction needed it; none was added in anticipation.
 
-⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — the 40 operators and their arity — lives
+⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — the 43 operators and their arity — lives
 as `(operator …)` declarations in `schema/semantics.sexp` (SOT-FORMAT.2) and is loaded below
 through the schema kernel; adding a semantic form is a schema edit, zero lines of Python. This
 file owns what the schema cannot state: whether a bare symbol is an operand the instruction
@@ -482,6 +482,31 @@ def _selftest() -> int:
         lambda: pair_bad(
             '(sem (insn csrrs) (source "S §1") (effect (seq (csr-dance (field csr) (lit 1)))))',
             'undeclared operator "csr-dance"'))
+
+    # ---- the A-extension operators (P4-SYSTEM.4 slice b) ----------------------------------
+    frag_a = tmp / "t-pair-a.sexp"
+    frag_a.write_text(
+        '(fragment (id "riscv/t-pair-a") (kind isa-extension)\n'
+        '  (insn (name lr.w) (fixed (24 20 0x0) (14 12 0x2) (6 2 0xb) (1 0 0x3)) (operands rd rs1 aq rl))\n'
+        '  (insn (name sc.w) (fixed (14 12 0x2) (6 2 0xb) (1 0 0x3)) (operands rd rs1 rs2 aq rl))\n'
+        '  (insn (name amoadd.w) (fixed (31 29 0x0) (28 27 0x0) (14 12 0x2) (6 2 0xb) (1 0 0x3)) (operands rd rs1 rs2 aq rl)))\n')
+    arm("GREEN the A-extension operators check with their declared arities",
+        lambda: pair_ok(
+            '(sem (insn lr.w) (source "S §1 — why")\n'
+            '  (effect (set (reg rd) (sext 64 (load-reserved (lit 32) (lit 1) (reg rs1))))))\n'
+            '(sem (insn sc.w) (source "S §2 — why")\n'
+            '  (effect (set (reg rd) (store-conditional (lit 32) (reg rs1) (trunc 32 (reg rs2))))))\n'
+            '(sem (insn amoadd.w) (source "S §3 — why")\n'
+            '  (effect (set (reg rd) (sext 64 (amo (lit 0) (lit 32) (reg rs1) (trunc 32 (reg rs2)))))))',
+            "3 of 3 declared instruction(s) have checked semantics",
+            frag=frag_a))
+    arm("RED   an A-operator arity violation is the walk's refusal, by name",
+        lambda: pair_bad(
+            '(sem (insn lr.w) (source "S §1") (effect (set (reg rd) (load-reserved (lit 32) (reg rs1)))))\n'
+            '(sem (insn sc.w) (source "S §2") (effect (nop)))\n'
+            '(sem (insn amoadd.w) (source "S §3") (effect (nop)))',
+            "(load-reserved …) takes 3 argument(s)",
+            frag=frag_a))
 
     import shutil
     shutil.rmtree(tmp)
