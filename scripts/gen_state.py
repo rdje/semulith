@@ -469,21 +469,35 @@ def validate_gc(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dic
     if census is None:
         raise Refusal("rv64gc-lab-v0: no hidden_state_census (SEM-08) — the re-earned "
                       "census for the privileged state is the point of the document")
-    # P4-SYSTEM.3 decision 2: the translation cache is hart state the census must
-    # ACCOUNT FOR before the generator will emit its storage — a descriptor silent
-    # about it is an incomplete census, refused by name.
-    cache = [c for c in census.get("candidates_checked", [])
-             if c.get("candidate") == "address-translation caches (TLBs)" and c.get("present")]
-    if not cache:
-        raise Refusal("rv64gc-lab-v0: the hidden-state census does not declare a "
-                      "present translation-cache candidate — the TLB is hart state the "
-                      "census must account for before the module can carry it "
-                      "(P4-SYSTEM.3 slice d)")
+    # The carried hart state the census must ACCOUNT FOR before the generator will emit
+    # its storage — a descriptor silent about one is an incomplete census, refused by
+    # name (P4-SYSTEM.3 slice d's TLB gate, generalised at P4-SYSTEM.4 slice c).
+    for cand, label, why in REQUIRED_CENSUS_CANDIDATES:
+        found = [c for c in census.get("candidates_checked", [])
+                 if c.get("candidate") == cand and c.get("present")]
+        if not found:
+            raise Refusal(f"rv64gc-lab-v0: the hidden-state census does not declare a "
+                          f"present {label} candidate — {why}")
     named = []
     for n in ir["named_by_the_isa_chapter"]:
         m = re.fullmatch(r"x(\d+)", n["reg"])
         named.append({"index": int(m.group(1)), "ident": snake(n["role"]), **n})
     return named, regs, census
+
+
+# The census must ACCOUNT FOR each piece of optional hart state the module carries,
+# before the generator will emit its storage — a descriptor silent about one is an
+# incomplete census, refused by name. P4-SYSTEM.3 slice (d) introduced the gate for the
+# TLB; P4-SYSTEM.4 slice (c) generalised it when the reservation joined the carried
+# state: (the census's candidate name, the refusal's short label, the owning slice).
+REQUIRED_CENSUS_CANDIDATES = (
+    ("address-translation caches (TLBs)", "translation-cache",
+     "the TLB is hart state the census must account for before the module can carry it "
+     "(P4-SYSTEM.3 slice d)"),
+    ("reservation set (LR/SC)", "reservation",
+     "the reservation is hart state the census must account for before the module can "
+     "carry it (P4-SYSTEM.4 slice c)"),
+)
 
 
 def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
@@ -538,6 +552,10 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     # SEM-08 census declares it (the translation-cache candidate, present true —
     # validate_gc refuses a descriptor that does not account for it).
     a("    tlb: crate::translation::Tlb,")
+    # P4-SYSTEM.4 decision 2: the LR/SC reservation is hart state, emitted on the same
+    # discipline (the census's reservation candidate, the gate at
+    # REQUIRED_CENSUS_CANDIDATES).
+    a("    reservation: crate::reservation::Reservation,")
     a("}")
     a("")
     a("impl ArchitecturalState {")
@@ -558,6 +576,7 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
         a(f"                {c['_reset']:#x},")
     a("            ],")
     a("            tlb: crate::translation::Tlb::new(),")
+    a("            reservation: crate::reservation::Reservation::new(),")
     a("        }")
     a("    }")
     a("")
@@ -701,6 +720,9 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    }")
     a("    fn tlb(&mut self) -> &mut crate::translation::Tlb {")
     a("        &mut self.tlb")
+    a("    }")
+    a("    fn reservation(&mut self) -> &mut crate::reservation::Reservation {")
+    a("        &mut self.reservation")
     a("    }")
     a("}")
     a("")

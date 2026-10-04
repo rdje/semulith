@@ -1,5 +1,42 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0025 (leaf P4-SYSTEM.4, slice c) — the reservation state, the SC policy as data, the AMO/LR/SC arms proven in scratch
+
+- `crates/semulith-core/src/reservation.rs` (NEW, additive — the
+  `translation.rs`/TLB precedent): the reservation is (physical address, width,
+  valid) of the most recent LR — the minimal conformant set (decision 2),
+  physical-keyed. Invalidation is exactly the spec's one-hart set: any LR replaces;
+  any COMPLETED SC clears; a trap clears nothing — measured on Sail 0.14 before
+  choosing the clear sites (`zalrsc_insts.sail:71-79`: `cancel_reservation` fires
+  on the completed path, the `Err(e)` trap path cancels nothing). The deterministic
+  SC policy rides as DATA in `state.sexp` beside the census candidate (decision 3:
+  succeeds iff valid ∧ PA equal ∧ width equal; failure code 1; never spurious), and
+  `gen_state`'s census-candidate gate is GENERALISED: any hart state the module
+  carries must be census-declared (a RED arm, STATE-GEN 26→27). The state module
+  regenerates with the field/reset/accessor; rv64i's state is byte-identical.
+- The evaluator arms exist — in scratch, the `.2` slice-d discipline: the tracked
+  `exec_rv64gc.rs` cannot gain them until the bind (its `Sem` match is exhaustive),
+  so `target/p4-system-4/` carries the rv64gc+A definition module and the tracked
+  evaluator + the three arms. The proof passes **16/16**: the LR/SC pair; every
+  must-fail cell (address mismatch, width mismatch both ways, the intervening-SC
+  clear, LR-replaces both ways, a failed SC issuing NO memory operations); the
+  trapped SC keeping its reservation; misaligned atomics taking cause 7 before
+  translation (an unmapped VA included); the AMO nine × `.W`/`.D` with rd the old
+  value sign-extended and the load-then-store boundary pair asserted per op; the
+  rd=rs1=rs2 / rd=rs2 overlaps; the translated AMO on an unreadable Sv39 page
+  faulting 15 never 13 (a new `AccessKind::Atomic` judges R∧W under store/AMO
+  causes); the alias cell (the reservation is PHYSICAL-keyed); the constrained loop
+  succeeding on its first SC; aq/rl ×4 identical; cold-reset determinism. The proof
+  first caught three test-design defects of mine — the engine was right each time.
+- `make check` rc=0 (fmt + clippy `-D warnings` + 8 groups, 109 core tests incl. the
+  reservation module's 7 and the translation suite's 25→26), `make gate` green
+  (DERIVED-COUNTS 428→429). The slot stays declared, the census 65, the tracked
+  evaluator untouched; the bind's port mapping is recorded in the leaf. The
+  checklist archive SPLIT at its own ceiling: `archive/P4-SYSTEM.md` (part 1)
+  keeps the earlier sections, new `archive/P4-SYSTEM-2.md` (part 2) takes every
+  move onward. Next: slice (d) — the staged corpus + expectations + the matrix
+  rehearsal.
+
 ## SEMULITH-P4-0024 (leaf P4-SYSTEM.4, slice b) — the reservation contract, the three atomic operators, a.sem.sexp, the conditional lowering
 
 - `schema/semantics.sexp` grows 40→43 forms. A RESERVATION contract block states the
@@ -805,49 +842,4 @@
   the real board) + real run green; `make gate` → all doctrines green (DERIVED-COUNTS
   re-derived 32 → 33 doctrines, 359 → 365 arms); `make check` + `run_smoke` green;
   `mdbook build` rc 0; `gen_book_index.py --check` rc 0. No Rust surface touched.
-
-## SEMULITH-P5-0016 (tree P5-BOARD) — the `.4` design brief: the verdict's shape and the four dispositions decided
-
-- The verdict's shape recorded before execution: the mechanical discharge (green at
-  8/8 — but its platform-dependent edges land on `OB-PLATFORM`, the laboratory
-  guarantee) re-established at content level by the declared `satisfies` edges plus
-  four composition dispositions; a re-runner required (the MODEL-COMPOSE.4 lesson).
-- Four composition records, not three: `OB-NIC-STRAP-RESETS` (the strap values) joins
-  TIME-SOURCES / PHY-LINK / GPIO-PINS. Dispositions decided from the pinned datasheet:
-  D32 tied high (§3.6's native 32-bit mode; EEDIO has no internal pull — an explicit
-  board tie), SPEED_SEL unwired to its pull-up, the time sources frozen, the link
-  scene static-complete at 100BASE-TX FD, the pin reads tied off at 0.
-- The measured defect the brief caught: eth0's declared 16-bit width is mode-exclusive
-  per §3.6 and narrows to 32 with the leaf.
-
-## SEMULITH-P5-0015 (leaf P5-BOARD.12) — the two-tier per-part ceiling: authored content bounded, regeneration-gated derived members exempt as a checked property
-
-- The director-delegated ruling (`SEMULITH-P5-0014`,
-  `decision_derived-members-of-bounded-families`) executed: the per-part byte
-  ceiling's founding failure mode — silent accretion in hand-maintained files —
-  cannot occur in a regeneration-gated file, so the instrument now matches the
-  failure mode. Authored members keep the **65,536** ceiling (the day-old 128 KiB
-  interim raise reverted; `decision_profiles-family-composed-units` superseded in
-  part); derived members are exempt **as a checked property** — a
-  `doctrine/fact_ownership.tsv` mirror row with a regeneration-doctrine governor
-  (the closed set: STATE-GEN, DEF-GEN, GUEST-GEN, BOARD-GEN, GATE-REPORT,
-  MATERIALS-BILL, BOOK-INDEX) — never as a declaration.
-- `scripts/check_readme_routes.sh`: `derived_exempt` consumes the FACT-OWNERSHIP
-  registry (already completeness-checked — no second declaration surface);
-  `regen_set_registered` refuses set/driver drift so the exemption can never silently
-  widen; the per-part loop now judges EVERY over-ceiling member (it previously
-  inspected only the biggest) — exempt members are reported as proof, the rest fail
-  by name. Aggregates untouched.
-- Real-corpus verdict: both composed catalogues (104,372 / 94,027 B) exempt with
-  proof printed; the NIC's authored 60,112 B catalogue under the restored authored
-  ceiling (0.92×) — the rule discriminates exactly as ruled. Self-test 12 → 17 arms
-  (17/0; the RED authored-fail paths fire on fixtures, the real corpus's authored
-  members being correctly under the ceiling). Measured in execution: a new
-  `armregen` helper idiom made 2 arms invisible to DERIVED-COUNTS' enumerator
-  (357 ≠ 359) — folded into `arm`'s optional `[cmd...]` probe form instead.
-- The lesson PROMOTED: `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md`
-  (+ INDEX) — the instrument must match the failure mode.
-- Validation: `make gate` → all doctrines green (DERIVED-COUNTS re-derived 354 →
-  359 arms); `mdbook build` rc 0; `gen_book_index.py --check` rc 0. No Rust surface
-  touched. P7's soc/computer compositions inherit the rule.
 

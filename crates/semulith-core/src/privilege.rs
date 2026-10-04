@@ -137,6 +137,13 @@ pub trait PrivilegedHart {
     /// `translation-cache` candidate). The cache's own rules live in
     /// `crate::translation`.
     fn tlb(&mut self) -> &mut crate::translation::Tlb;
+
+    /// The hart's LR/SC reservation (`P4-SYSTEM.4` decision 2) — hart state like the
+    /// TLB, owned by the generated state module because the state document's SEM-08
+    /// census declares it (the `reservation set (LR/SC)` candidate, pre-declared so
+    /// the reservation could never be smuggled in silently). The reservation's own
+    /// rules live in [`crate::reservation`].
+    fn reservation(&mut self) -> &mut crate::reservation::Reservation;
 }
 
 // ---- name-addressed plumbing ----------------------------------------------------------

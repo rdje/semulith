@@ -18,15 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-04`, `SEMULITH-AC-0058`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (3/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed and flipped (`.2`), and Sv39 translation and protection CLOSED (`.3`): the 14-guest sv39 corpus green with EVD-05 spec-side expectations and the Sail matched experiment on three explicit dimensions — 13 AGREE + 1 AGREE-RECORDED of 14 (the A/D-placement convention), the tracked override's medeleg mask widened to 0xB3FF, verdict-neutral on the mm corpus).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.4` — atomics and reservations, slice (c): the reservation
-  state (the census-candidate gate generalised, the emit, the module) + the
-  deterministic SC policy as data + the engine's AMO/LR/SC evaluator arms proven in
-  scratch. Slices (a)+(b) landed `2026-10-04` (`SEMULITH-P4-0023`: the re-pin, the
-  fragment, the assembler's A machinery; `SEMULITH-P4-0024`: the reservation contract,
-  the three operators, `a.sem.sexp` 22/22, the conditional lowering — the slot stays
-  declared, the census 65). Then (d) the staged corpus, (e) THE BIND (65→87, one
-  green commit), (f) the Sail matched experiment + the leaf acceptance.
-  `P4-SYSTEM.3` closed `2026-10-04` with `SEMULITH-P4-0020` (DERIVED-COUNTS 428).
+- next_action: `P4-SYSTEM.4` — atomics and reservations, slice (d): the staged
+  corpus + expectations + the matrix rehearsal (untracked `target/`, the .2
+  discipline). Slices (a)–(c) landed (`SEMULITH-P4-0023` the re-pin/fragment/
+  assembler; `SEMULITH-P4-0024` the operators + `a.sem.sexp` + the lowering;
+  `SEMULITH-P4-0025` the reservation state + the SC policy as data + the AMO/LR/SC
+  arms proven 16/16 in scratch — the slot stays declared, the census 65, the tracked
+  evaluator untouched). Then (e) THE BIND (65→87, one green commit), (f) the Sail
+  matched experiment + the leaf acceptance. `P4-SYSTEM.3` closed `2026-10-04`
+  (DERIVED-COUNTS 429).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

@@ -21,6 +21,7 @@ pub mod exec;
 pub mod exec_rv64gc;
 pub mod outcome;
 pub mod privilege;
+pub mod reservation;
 pub mod state;
 pub mod state_rv64gc;
 pub mod translation;

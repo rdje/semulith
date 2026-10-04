@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `bec03abee6a73385b61e64ae6ea8164c534b8c4ebcd2b030cfa37c727f3492a4`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `a54f37b35c875f98a871ea1d68a0ba66a50981a68a07156a049a0bac4217d428`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, and the 33 CSRs of
@@ -118,6 +118,7 @@ pub struct ArchitecturalState {
     mode: PrivilegeMode,
     csrs: [u64; CSR_COUNT],
     tlb: crate::translation::Tlb,
+    reservation: crate::reservation::Reservation,
 }
 
 impl ArchitecturalState {
@@ -160,6 +161,7 @@ impl ArchitecturalState {
                 0x0,
             ],
             tlb: crate::translation::Tlb::new(),
+            reservation: crate::reservation::Reservation::new(),
         }
     }
 
@@ -1687,6 +1689,9 @@ impl crate::privilege::PrivilegedHart for ArchitecturalState {
     fn tlb(&mut self) -> &mut crate::translation::Tlb {
         &mut self.tlb
     }
+    fn reservation(&mut self) -> &mut crate::reservation::Reservation {
+        &mut self.reservation
+    }
 }
 
 /// SEM-08: the hidden-state census, re-earned for the privileged state — carried as
@@ -1721,7 +1726,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "reservation set (LR/SC)",
             present: true,
-            why: "the A extension is selected (D-RVWMO), so a reservation CAN exist architecturally; its semantics and single-core validation are P4-SYSTEM.4's, which owns modelling it — recorded here so .4 cannot smuggle it in silently",
+            why: "answered by P4-SYSTEM.4 slice (c): one reservation — (physical address, width, valid) of the most recent LR, the minimal conformant reservation set (exactly the accessed word's/doubleword's bytes, RVI-A §12.1.2), keyed on the PHYSICAL address (the aliasing latitude resolved to exact physical match, authority laboratory). Invalidation is exactly the spec's one-hart set: any LR replaces; any SC — success or failure, any address — clears; a trap does NOT invalidate (the SC's own trap included — the trap path is neither success nor failure). The deterministic SC policy (authority laboratory, decision 3): SC succeeds iff the reservation is valid ∧ physical address equal ∧ width equal, writing rs2's value and rd←0; otherwise it fails with rd←1 (the 'unspecified failure' code), writing nothing; it NEVER spuriously fails — one legal point of the architectural nondeterminism, chosen so exact-value expectations stay derivable (EVD-05). Misaligned atomics take the access-fault cause 7 (decision 6, reference-matched to the override's declared PMAs). The reservation is a pure function of the hart's own history — invalid at reset, changed only by the hart's own LR/SC — so cold-reset re-execution stays trace-identical and a cold-restored (invalid) reservation is always a legal state",
         },
         HiddenStateCandidate {
             candidate: "floating-point registers f0-f31 and the fcsr behaviour",

@@ -245,6 +245,7 @@ struct Fixture {
     mode: PrivilegeMode,
     csrs: [u64; 21],
     tlb: crate::translation::Tlb,
+    reservation: crate::reservation::Reservation,
 }
 
 static META: &[CsrMeta] = &[
@@ -386,6 +387,7 @@ impl Fixture {
             mode,
             csrs: [0; 21],
             tlb: crate::translation::Tlb::new(),
+            reservation: crate::reservation::Reservation::new(),
         };
         // The document's reset: each field's declared reset, placed (the generated
         // module's zeroed_at composes exactly this).
@@ -429,6 +431,9 @@ impl PrivilegedHart for Fixture {
     }
     fn tlb(&mut self) -> &mut crate::translation::Tlb {
         &mut self.tlb
+    }
+    fn reservation(&mut self) -> &mut crate::reservation::Reservation {
+        &mut self.reservation
     }
 }
 

@@ -188,6 +188,15 @@ pub enum AccessKind {
     Load,
     /// An explicit store.
     Store,
+    /// An atomic memory operation's single translation (`P4-SYSTEM.4` decision 5):
+    /// judged under the store/AMO rules — the cause vocabulary is the store's
+    /// (page fault 15, access fault 7, never the load's — "AMOs never raise load
+    /// page-fault exceptions … attempting to perform an AMO on an unreadable page
+    /// always raises a store page-fault exception", RVP-SUPERVISOR) — and the
+    /// permission requirement is read AND write, because the operation does both.
+    /// LR/SC translate as the plain kinds (LR a load, SC a store, RVP-MACHINE's
+    /// exception table); only the read-modify-write needs the joint rule.
+    Atomic,
 }
 
 /// The mode an access is judged under, with the walk's permission inputs read per
@@ -210,7 +219,7 @@ pub fn effective_mode<H: PrivilegedHart>(hart: &H, kind: AccessKind) -> Effectiv
     let mstatus = privilege::csr_state(hart, "mstatus");
     let mode = match kind {
         AccessKind::Fetch => hart.mode(),
-        AccessKind::Load | AccessKind::Store => {
+        AccessKind::Load | AccessKind::Store | AccessKind::Atomic => {
             if (mstatus >> MPRV) & 1 == 1 {
                 match (mstatus >> MPP_LO) & 0b11 {
                     0 => PrivilegeMode::U,
@@ -265,7 +274,7 @@ pub fn page_fault_cause(kind: AccessKind) -> u64 {
     match kind {
         AccessKind::Fetch => INSTRUCTION_PAGE_FAULT,
         AccessKind::Load => LOAD_PAGE_FAULT,
-        AccessKind::Store => STORE_PAGE_FAULT,
+        AccessKind::Store | AccessKind::Atomic => STORE_PAGE_FAULT,
     }
 }
 
@@ -275,7 +284,7 @@ fn access_fault_cause(kind: AccessKind) -> u64 {
     match kind {
         AccessKind::Fetch => 1,
         AccessKind::Load => 5,
-        AccessKind::Store => 7,
+        AccessKind::Store | AccessKind::Atomic => 7,
     }
 }
 
@@ -372,9 +381,12 @@ fn finish(entry: &TlbEntry, va: u64, kind: AccessKind, effective: EffectiveMode)
             return page_fault(kind, va);
         }
         AccessKind::Store if !entry.w => return page_fault(kind, va),
+        // the AMO rule (RVP-SUPERVISOR): read AND write permission, one fault, and it
+        // is the store/AMO cause — never a load page fault (decision 5)
+        AccessKind::Atomic if !(entry.r && entry.w) => return page_fault(kind, va),
         _ => {}
     }
-    if !entry.a || (kind == AccessKind::Store && !entry.d) {
+    if !entry.a || (matches!(kind, AccessKind::Store | AccessKind::Atomic) && !entry.d) {
         return page_fault(kind, va);
     }
     Translate::Physical(entry.pa_base | (va & 0xFFF))
@@ -623,7 +635,12 @@ mod tests {
     fn bare_is_identity_for_every_mode_and_kind() {
         let mut state = hart();
         let mut env = WalkEnv::new();
-        for kind in [AccessKind::Fetch, AccessKind::Load, AccessKind::Store] {
+        for kind in [
+            AccessKind::Fetch,
+            AccessKind::Load,
+            AccessKind::Store,
+            AccessKind::Atomic,
+        ] {
             assert_eq!(
                 translate(&mut state, &mut env, 0xDEAD_BEEF, kind),
                 Translate::Identity(0xDEAD_BEEF)
@@ -929,6 +946,49 @@ mod tests {
                 tval: va
             }
         );
+    }
+
+    #[test]
+    fn atomic_judges_read_and_write_under_store_causes() {
+        // P4-SYSTEM.4 decision 5: the AMO's ONE translation is judged under the
+        // store/AMO rules — read AND write permission required, and every fault is the
+        // store/AMO cause 15, never a load page fault ("AMOs never raise load
+        // page-fault exceptions … attempting to perform an AMO on an unreadable page
+        // always raises a store page-fault exception", RVP-SUPERVISOR).
+        let va = 0x0000_0000_0040_2000_u64;
+        let cells = [
+            (V | W | U | A | D, "R=0: an unreadable page faults"),
+            (V | R | U | A, "W=0: an unwritable page faults"),
+            (V | R | W | U | D, "A=0: Svade faults instead of updating"),
+            (V | R | W | U | A, "D=0: the AMO writes, so Svade faults"),
+        ];
+        for (flags, why) in cells {
+            let mut state = hart();
+            sv39(&mut state);
+            state.set_mode(PrivilegeMode::U);
+            let mut env = WalkEnv::new();
+            table_4k(&mut env, va, leaf_pte(0x8000_4000, flags));
+            assert_eq!(
+                translate(&mut state, &mut env, va, AccessKind::Atomic),
+                Translate::PageFault {
+                    cause: 15,
+                    tval: va
+                },
+                "{why} — cause 15, never 13"
+            );
+        }
+        let mut state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::U);
+        let mut env = WalkEnv::new();
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | U | A | D));
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Atomic),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF)),
+            "R∧W with A and D set: the AMO translates"
+        );
+        assert_eq!(page_fault_cause(AccessKind::Atomic), 15);
+        assert_eq!(access_fault_cause(AccessKind::Atomic), 7);
     }
 
     #[test]

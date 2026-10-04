@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the cancellation site is the spec sentence, and the proof grades the tests too (P4-SYSTEM.4 slice c)
+
+Execution of the `.4` brief's checkpoint (c) measured:
+
+- **"Regardless of success or failure" has a boundary, and Sail marks it.**
+  Decision 4's invalidation set says any SC clears — but Sail 0.14's execute
+  clause (`zalrsc_insts.sail:71-79`) runs `vmem_write` FIRST and cancels only on
+  the `Ok(b)` path; the `Err(e)` trap path cancels nothing. The spec sentence's
+  "success or failure" is exactly the completed path: an SC that page-faults is
+  neither, and the reservation survives. That is also decision 4's own second
+  half (a trap does NOT invalidate), now with a reference-model measurement
+  behind it — the evaluator arm's clear sites sit after the policy match and
+  after a successful store, never on a deliver path, and the scratch proof's
+  trapped-SC cell pins it (promotion: declined — the durability is the machinery:
+  the proof cell and the reservation module's suite arm it).
+- **The scratch proof grades the TESTS as hard as the engine.** The first run
+  came back 13/3, and all three failures were mine: an "LR replaces" sequence
+  that let the failing SC clear the reservation before the final SC (the engine
+  correctly failed it — any completed SC clears); a "trapped SC" cell using a
+  mismatched address, which fails with code 1 BEFORE any memory operation — no
+  trap exists to observe (the boundary-fault variant, with the address matching
+  and the store scripted to fault, tests the real path); and one expected value
+  that forgot the final SC's overwrite. A proof that only ever passes teaches
+  nothing; the 13/3 run is the evidence the harness discriminates.
+- **The AMO needs its own translation kind.** `AccessKind::Store` judges W only
+  (translation.rs:374), so an AMO on an unreadable page would have passed
+  translation untouched — while RVP-SUPERVISOR demands a store page fault (15,
+  never 13). `AccessKind::Atomic` judges R∧W under the store/AMO causes; the
+  translation suite's new cells fire all four fault flags.
+
 ## _(2026-10-04)_ — the operation is the encoding, and the variant waits for the composition (P4-SYSTEM.4 slice b)
 
 Execution of the `.4` brief's checkpoint (b) measured:
@@ -618,42 +648,4 @@ Execution of the `.2` brief's checkpoint (b) measured five things:
 Promotion: declined — the contracts are data in the schema and the pins, and every new
 rule is armed by self-test REDs (semantics 8→15, citations 10→13, corpus 7→8). Recorded
 in the owning leaf's checklist (LOCKSTEP).
-
-## _(2026-10-03)_ — the first multi-extension composition exposed two latent gate defects; a pseudo-op is not an encoding (P4-SYSTEM.2 slice a)
-
-Execution of the `.2` brief's checkpoint (a) measured four things the brief did not know:
-
-- **Upstream restructured without changing a byte.** riscv-opcodes moved every instruction
-  table from the repository root to `extensions/`; rv_i/rv64_i/rv_m/rv64_m hash
-  byte-identical to the rv64i pins. The fetch route's `master/<file>` would have 404'd any
-  fresh fetch — verify-only never noticed because it only hashes what is on disk. The route
-  now maps `rv_*` under `extensions/` and a scripted fresh re-fetch proved it live.
-- **Zicntr adds no encodings.** rdcycle/rdtime/rdinstret exist upstream only as `$pseudo_op`
-  rows of csrrs; emitting them as instructions collides with csrrs by mask math. The
-  fragment layer gained the `(pseudo …)` construct — assembler spellings the disjointness
-  gate decides under a specialization rule (every word a pseudo assembles must already be a
-  composed instruction's word; an unrealized pseudo "extends the encoding space it is
-  declared not to touch", a partial overlap is "the collision rule one level down"). The
-  fragment declares the dependency the rows state: `(requires "riscv/rv64i")
-  (requires "riscv/zicsr")`.
-- **Two latent defects, no reproducer until today.** `resolve_composition` read only the
-  FIRST `(extensions …)` form (`ext[0][1:]`) — every later form was silently dropped, and no
-  tracked composition had ever carried two. And the disjointness checker printed
-  `DUPLICATE NAME(S)` while returning 0 — the verdict text even claimed "no duplicate
-  names". Both fixed at root and armed by new self-test RED arms (disjointness 8→12,
-  unit-composition 8→9); the `.1` discipline held: measured in execution, fixed at root.
-- **IALIGN was a hard-code; csr was a label.** The assembler's label pass resolved names
-  for EVERY operand position and ate `csrrw x1, cycle, x2`'s csr name; labels now resolve
-  only where a label is legal (B/J scrambled offsets), and a csr name falls through to the
-  operand parser, which resolves it through the pinned csrs.csv. IALIGN is derived from the
-  unit's `profile.sexp` (rv64i 32, rv64gc 16). The operand spelling order (`csrrw rd, csr,
-  rs1` — the pinned table lists fields `rd rs1 csr`) is proven by the module's documented
-  second decoder: spike-dasm disassembles every emitted word back to the requested
-  spelling, all 13 forms exact.
-
-Promotion: declined — the durability is the machinery (the fixes are armed by self-test
-REDs; the pseudo and IALIGN designs are data in the schema and the pins). Recorded in the
-owning leaf's checklist (LOCKSTEP). Intra-tree follow-ups named there: the Rust-side
-IALIGN=32 entry check (slice d), csr-name resolution's migration to the tracked state
-document (slice c/f), rdcycle's coverage naming (slice e/f).
 
