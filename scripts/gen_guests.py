@@ -109,11 +109,18 @@ def load_guest(name: str, guests_dir: Path, asm: Assembler) -> dict:
             f"gap the check would read as 'writes nothing'")
     never = [reg_index(r, f"{rel(expected)} never_written")
              for r in (exp.get("never_written") or [])]
+    fetches = exp.get("fetches")
+    if fetches is not None and (not isinstance(fetches, int) or not 0 <= fetches <= 2 * steps):
+        raise GenError(
+            f"{rel(expected)}: fetches {fetches!r} is not an integer within "
+            f"[0, 2x the declared {steps} executed step(s)] — a step issues at most "
+            f"the two parcel fetches")
     return {
         "name": name,
         "entry": int(exp["entry"], 16),
         "words": words,
         "steps": steps,
+        "fetches": steps if fetches is None else fetches,
         "expectations": expectations,
         "never_written": sorted(set(never)),
         "cross_model": bool(exp.get("cross_model", True)),
@@ -198,6 +205,10 @@ def emit(guests: list[dict], encoding: Path) -> str:
     a.append("    pub words: &'static [u32],")
     a.append("    /// How many steps the program executes (the expectations declare it).")
     a.append("    pub executed_steps: usize,")
+    a.append("    /// How many fetch requests the run must make (the expectations")
+    a.append("    /// declare it — one per step, minus every step whose fetch page-faults")
+    a.append("    /// in the walk and never issues a request, P4-SYSTEM.3).")
+    a.append("    pub expected_fetches: usize,")
     a.append("    /// The expected register writes, one entry per executed step.")
     a.append("    pub expected: &'static [Expectation],")
     a.append("    /// Registers a correct execution must never write (the negative")
@@ -220,6 +231,7 @@ def emit(guests: list[dict], encoding: Path) -> str:
         a.append(f'        entry: {hex64(g["entry"])},')
         a.append(f"        words: WORDS_{name},")
         a.append(f'        executed_steps: {g["steps"]},')
+        a.append(f'        expected_fetches: {g["fetches"]},')
         a.append(f"        expected: EXPECTED_{name},")
         a.append(f"        never_written: {never},")
         a.append(f'        cross_model: {str(g["cross_model"]).lower()},')

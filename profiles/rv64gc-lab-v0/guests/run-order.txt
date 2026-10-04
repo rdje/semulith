@@ -65,3 +65,17 @@ mm-stimecmp
 mm-wfi
 mm-sfence
 mm-sret
+sv39-translate-4k
+sv39-translate-2m
+sv39-translate-1g
+sv39-fault-canonical
+sv39-fault-invalid
+sv39-fault-reserved
+sv39-fault-superpage
+sv39-perm-rwx
+sv39-perm-usr
+sv39-svade
+sv39-mprv
+sv39-tlb-fence
+sv39-straddle
+sv39-deleg

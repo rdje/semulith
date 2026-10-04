@@ -941,8 +941,9 @@ def expectations_to_form(doc: dict) -> list:
             _pair("program", doc["program"])]
     # P5-BOARD.2 (case sifive-uart-lab-v0): entry/instructions are optional — a device
     # register-read-expectation has no program entry or instruction count; both emit
-    # only when the document carries them
-    for k in ("entry", "instructions"):
+    # only when the document carries them. P4-SYSTEM.3: `fetches` likewise (the
+    # no-extraneous-fetch witness for a guest whose fetch can page-fault).
+    for k in ("entry", "instructions", "fetches"):
         if k in doc:
             root.append(_pair(k, doc[k]))
     root += _rep("never_written", doc.get("never_written") or [])
@@ -981,6 +982,9 @@ def expectations_to_doc(form) -> dict:
     instructions = _opt(form, "instructions", "expectations")
     if instructions is not None:
         doc["instructions"] = instructions
+    fetches = _opt(form, "fetches", "expectations")
+    if fetches is not None:
+        doc["fetches"] = fetches
     edf = _opt_child(form, "expect_divergence")
     if edf is not None:
         doc["expect_divergence"] = {

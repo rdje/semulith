@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-04)_ — the corpus that made the walk real, and three probe bugs it paid for (P4-SYSTEM.3 slice e part 1)
+
+Execution of the `.3` brief's checkpoint (e), part 1 (the corpus), measured:
+
+- **A guest is a different falsifier than a unit test.** The walk, TLB, MPRV
+  and Svade had 25 unit tests; the first full guest (`sv39-translate-4k`, 111
+  steps — build five page-table pages in M, csrw satp, drop to S, translate a
+  load/store/load, ecall home, then read the walked PTE back in M) passed only
+  after the pc-map audit trusted `pc_of` over the printed line index (a label
+  occupies an index but no bytes — the print lied, the map was right) and after
+  the stage token moved OUT of the S-mode cells: `csrrw mscratch` in S is an
+  illegal-instruction trap (cause 2), which the engine delivered correctly.
+  The family rule paid again: an unexpected-but-correct trace is a probe bug
+  until proven an engine bug. Tokens S must set now travel in sscratch, and
+  the handler routes on a two-token scheme.
+- **The fetch-count witness had to learn the architecture.** The corpus's
+  no-extraneous-fetch assertion was `fetches == steps`. Two real guests break
+  it honestly: a step whose FETCH page-faults in the walk issues walk accesses
+  but never a `Request::Fetch` (0 for that step), and the straddled
+  instruction on non-contiguous pages issues 2. The expectations schema grew
+  the optional `fetches` field — the count is a DECLARED observation with a
+  parcel-bounds refusal in the generator (RED-armed), never a computed
+  allowance — and the 62 pre-slice guests keep the old strictness by default.
+  My first model of the coalescing rule (one physical 32-bit unit) was wrong;
+  the engine's recorded rule is address contiguity (`pa[1] == pa[0] + 2`), and
+  the measured 53 fetches corrected the probe, not the engine.
+- **EVD-05 by a spec-side model.** `target/p4-system-2/sv39/sv39gen.py`'s
+  `Spec` re-derives the pinned 10-step walk (§11.1.3.2, LEVELS=3/PTESIZE=8 per
+  §11.1.4.1), Svade (a needed A/D update is a page fault, never a write), MPRV
+  effective mode, medeleg, the region bounds, and the slice-(d) TLB semantics
+  in Python — every expectation value comes from the chapters, and the corpus
+  runner falsifies all of them. The auipc+addi chain discipline (lui
+  sign-extends bit 19; ≤ 2047 per step; fixpoint layout; the audit accumulates
+  chains and knows the table targets) is what kept 14 guests' pc maps honest
+  (the classes above are the family's recorded probe-bug and pc-map
+  disciplines applied, and this slice's checklist carries the instances —
+  promotion: declined).
+
 ## _(2026-10-04)_ — the cache made the test suite honest twice (P4-SYSTEM.3 slice d)
 
 Execution of the `.3` brief's checkpoint (d) measured:
@@ -626,35 +664,4 @@ only counts the shapes it knows.
 Lesson: **promoted** — `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md`
 (the question form + the checked-exemption pattern; the ruling itself is
 `decision_derived-members-of-bounded-families`).
-
-## _(2026-10-02)_ — a freshness gate deferred to "the first tracked board" lands exactly once (P5-BOARD.3)
-
-`compose_units.py` shipped with its freshness proof explicitly deferred — "lands with
-the first tracked board" — and P5-BOARD.3 was that board. The shape that landed: one
-generator (`gen_board.py`, boards discovered by declaration, never a hardcoded id),
-seven artifacts per board, and the BOARD-GEN doctrine re-deriving all seven on every
-commit. The compose factorization is the part worth remembering: `compose()` took a
-manifest FILE, which pins part resolution to the manifest's location — useless inside a
-generator that derives the manifest itself and must compose in scratch. The fix was not
-a second materialization path but `compose_resolved(comp_id, part_dirs, out_dir)` — the
-manifest-file entry point and the generator both land on it (the refactor measured
-byte-identical on the real parts, self-test 9/9).
-
-Two measurements did the design's real work. The FACT-OWNERSHIP probe: placing the
-composed catalogues in the board directory tripped the gate's self-test on EXACTLY the
-two new restatement pairs — the gate refusing to judge an unregistered corpus is the
-registry doing its job; registration (8 rows), not weakening, was the fix. And the
-design brief's register-surface containment check turned out NOT implementable: the
-device dossiers carry register offsets in prose with datasheet citations (measured in
-both `state.sexp` documents and the expectations), never as machine-readable data — so
-the generator's refusals are scoped to what board.sexp itself proves (overlap, window ↔
-device resolution, executable-mmio, ghost console), and machine-readable offsets arrive
-with the device models, where the check belongs. A brief line that says "measured at
-execution" is a promise; the honest outcome can be "the data is not there".
-
-Lesson: `promotion: declined` (recorded in the leaf) — derive-from-declaration and
-measure-before-design already carry their decision records
-(`decision_device-applicability-by-declared-vehicle`, `decision_gate-applicability-by-
-declared-vehicle`); the compose factorization is recorded with the leaf and in
-`compose_units.py`'s own docstring.
 

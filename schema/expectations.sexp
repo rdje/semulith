@@ -15,6 +15,12 @@
 ;; stimulus expectation) has no program entry and no instruction count. `step.insn`
 ;; carries the stimulus name, and the observed registers travel as data in
 ;; `writes`/`never_written`, exactly as before.
+;;
+;; `P4-SYSTEM.3` (`2026-10-04`): `fetches` is OPTIONAL — the corpus's no-extraneous-fetch
+;; witness is "exactly one fetch request per executed step", and a step whose FETCH
+;; faults in the page-table walk (an instruction page fault) issues walk accesses but
+;; NO fetch request, so such a guest declares its expected fetch count explicitly
+;; rather than letting the witness read a real architectural event as extraneous.
 
 (schema (id "expectations"))
 
@@ -22,6 +28,7 @@
   (field (name program) (type string) (min-length 1))
   (field (name entry) (type string) (min-length 1) (optional yes))
   (field (name instructions) (type integer) (optional yes))
+  (field (name fetches) (type integer) (optional yes))
   (field (name never_written) (type string) (repeat yes))
   (field (name cross_model) (type symbol) (values true) (values false) (optional yes))
   (field (name expect_divergence) (type form) (head expect_divergence) (optional yes))

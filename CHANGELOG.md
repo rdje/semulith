@@ -1,5 +1,52 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0019 (leaf P4-SYSTEM.3, slice e part 1) — the sv39 guest corpus, the matrix cells, the fetch-count witness made declarational
+
+- The 14-guest sv39 corpus lands at `profiles/rv64gc-lab-v0/guests/`, every
+  expectation derived by a spec-side model of the pinned chapters (EVD-05 — the
+  10-step walk, Svade, MPRV, medeleg, the region bounds, and the slice-(d) TLB
+  semantics re-derived in Python, never read from an engine run) and falsified
+  green through the tracked engine: `sv39-translate-4k`/`2m`/`1g` (the happy
+  paths, each closing with the M-mode ld-back of the walked PTE byte-untouched
+  at its authored value after the translated accesses — the Svade side-effect
+  proof); `sv39-fault-canonical`/`-invalid`/`-reserved`/`-superpage` (the walk's
+  steps 1/3/4 and misaligned superpages, causes 12/13/15 with xtval = the VA);
+  `sv39-perm-rwx` (R-only store → 15, X-only load with MXR=0 → 13, a FETCH into
+  the X=0 page → 12); `sv39-perm-usr` (U/SUM/MXR from S through sstatus, then a
+  U-mode stage fetched from its own U=1 code page); `sv39-svade` (A=0 load and
+  D=0 store fault, the D=0 load is legal, both PTEs byte-untouched);
+  `sv39-mprv` (MPRV=1/MPP=S translated load+store in M with NO code mapping —
+  execution continuing is the fetch-immunity proof; MPP=U → page fault; MPRV=0 →
+  access fault, visibly distinct); `sv39-tlb-fence` (stale before the fence,
+  the ASID-selective fence retaining the G=1 entry, the full fence restoring
+  truth); `sv39-straddle` (a 32-bit instruction whose two parcels live on
+  non-contiguous pages — two fetch requests — with the IALIGN-16 cells that
+  coalesce); `sv39-deleg` (medeleg bit 13 routes the load page fault to the S
+  handler — scause/stval/sepc + sret — while the ecall still lands in M).
+- The fetch-count witness becomes a DECLARED observation: `fetches` enters the
+  expectations schema as an optional field (a step whose fetch page-faults in
+  the walk issues walk accesses but NO `Request::Fetch`; a straddled
+  instruction whose parcels' physical addresses are non-contiguous issues two —
+  the recorded coalescing rule is address contiguity, measured). The generator
+  refuses a count outside the parcel bounds (a RED arm, GUEST-GEN 15→16), the
+  corpus assertion compares the declared count, and the 62 pre-slice guests
+  keep exactly their old strictness (the field defaults to the step count).
+- The matrix names all 14 on the SAME seven axes (page faults are the fault
+  axis's 12/13/15 vocabulary; the walk's permissions are legality; medeleg's
+  page-fault bit is delegation; superpage sizes and the page-crossing fetch are
+  boundary; MPRV/MPP and the xret returns are restart) — 28 cells, every
+  disposition resolves, no axis added.
+- The Bare-identity proof is byte-exact on the corpus-extended engine: both
+  CLIs (a scratch worktree at `e839c1b`, removed after) drive all 62 pre-slice
+  guests — `62 byte-identical, 0 diverge`. The run's probe bugs are recorded
+  with their classes (mscratch is M-only — an S-mode write traps illegal, the
+  engine measured right; x8-already-zero records no change; the unit-vs-
+  contiguity fetch model, corrected by the measured 53 fetches). `make check`
+  8/8, `make gate` all green (DERIVED-COUNTS 423→424), smoke-bench 53 arms,
+  bench wasm, both books.
+  Next: slice (e) part 2 — the Sail matched experiment (PTW/TLB traces
+  explicit) + the leaf's acceptance and closure (`SEMULITH-P4-0020`).
+
 ## SEMULITH-P4-0018 (leaf P4-SYSTEM.3, slice d) — the TLB, sfence.vma's real four cases, the census/snapshot/determinism consequences
 
 - The minimal fully-specified TLB: **4 entries, fully-associative, FIFO replacement,
@@ -788,69 +835,4 @@
   unsanctioned dependency is worse than a plainer diagram).
 - The book builds; the index regenerates clean (`gen_book_index.py --check` rc 0);
   `make gate` green. The BOOK-APPARATUS tree closes (2/2).
-
-## SEMULITH-P5-0011 (leaf P5-BOARD.11) — registration day: the three units register; the materials-bill machinery goes route-keyed by declaration
-
-- `materials/units.sexp` now registers five units: `netboard-lab-v0` (kind `board`),
-  `sifive-uart-lab-v0` and `lan9118-lab-v0` (kind `device`) beside the two processors —
-  the schema's sanctioned "(values …) edit the day a real unit needs one":
-  `schema/units.sexp` kind +board/+device, the shared layer taxonomy +device.
-- The materials-bill machinery is **route-keyed by declaration**
-  (`gen_model_book.unit_shape`: `board.sexp` present → board; the profile's vehicle
-  route otherwise — never a guess): per-shape internal-contracts censuses (devices carry
-  `expectations/`, the board carries `board.sexp`+`DOSSIER.md`), route-honest fragment
-  content (a device has no encoding space and pins no reference models — the fragments
-  say so), and `check_materials_bill.sh`'s COMPLETENESS keyed on the same shape. The
-  pre-fix refusal was re-run from the parent commit and measured (`REFUSED —
-  references.sexp: the pinned document is missing`); the two processor books' fragments
-  regenerated byte-identical modulo the embedded generator hash. Four new self-test
-  arms pin the device and board shapes (MATERIALS-BILL 11/11).
-- The three per-unit books land under `docs/models/<unit-id>/` — authored chapters
-  (devices: introduction / materials bill / gaps / methodology / evidence; the board:
-  the composition narrative as its method, no evidence chapter until `.4`) with the
-  generated fragments; UNIT-BOOKS 5/5 build, MATERIALS-BILL 5/5 (every material states
-  what it does not supply), SCOPE-COVERAGE `5 unit(s) may code` over the 72 new census
-  rows (the board's absences are `out-of-scope` WITH their contract reasons — never
-  `missing`).
-- Measured and corrected at execution: the BREADTH report's stale "2 registered units"
-  prose was the **generator's** hardcoded string — fixed at `gate_report.py` (the count
-  and the processor-units claim now derive), the report regenerated (5 units, verdict
-  still `passed`); the project book's `models.md` updated to five units;
-  DERIVED-COUNTS' self-test-arm total re-derived 341→345 by its enumerator.
-- FACT-OWNERSHIP carries the book-side mirrors (46 fact kinds). The P5 frontier is
-  `.3` (generated maps) then `.4` (the composition verdict — the devices' composition
-  records are pre-wired to it).
-
-## SEMULITH-P5-0009 (leaf P5-BOARD.10) — the second device dossier: `lan9118-lab-v0`, fully gated with no machinery edit; the per-part bound bites
-
-- The LAN9118 NIC dossier lands under
-  [`profiles/lan9118-lab-v0/`](profiles/lan9118-lab-v0/DOSSIER.md): the DS00002266B-pinned
-  source (digest re-verified from the materials cache), 52 requirements (46 defined + the
-  reserved/unspecified/implementation-defined silences and deferrals), 52 mirrored
-  obligations (contract `lan9118-v0` v0, `device-guarantee`), the state document (49
-  registers across three indexing levels + 4 FIFO families + the earned hidden-state
-  census — the model additionally carries the TX command-parser state and the 16-bit
-  pairing latch), 52 verbatim decision mirrors (generated from requirements.sexp
-  mechanically — drift impossible by construction, refused by gate regardless), and 3
-  datasheet-derived expectation documents (cold-reset reads; exact TX free-space
-  accounting; the recorded-trace RX path) recorded **before any model exists**.
-- **No machinery edit**: `.2`'s generalization by declaration covered the NIC — the
-  gates attach by glob and derive device applicability from the `vehicle` declaration.
-  The mechanical re-pins: FACT-OWNERSHIP +6 registry rows and fixture re-pins
-  (`7→8`, `3→4`); the `profiles/` bound re-derived 4× → 5×
-  ([`decision_profiles-family-five-units`](docs/decisions/decision_profiles-family-five-units.md))
-  — where the **per-part bound bit for the first time** (32→64 KiB; the mirror
-  discipline on a 52-record contract puts the largest catalogue at 60,112 B).
-- Measured in execution, recorded at root: the two `pdftotext` modes disagree on
-  Table 5-1's Default column (per-register sections are the authority, arithmetic
-  cross-checks agree); §3.11's reset completion times render as `2 s`/`100 s` in the
-  PDF's **own text layer** (hexdump-verified µ mis-mapping — only cleanly stated figures
-  pinned); PHY ID2's model/revision nibbles are blank in the datasheet; ADDRH/ADDRL's
-  Table 5-6 defaults sit beside §5.4.2's "undefined until loaded" — both recorded,
-  nothing guessed. The lesson is promoted:
-  [`a-pdf-text-layer-is-not-the-page`](docs/knowledge/a-pdf-text-layer-is-not-the-page.md).
-- The design brief's sharpest finding is now contract data: the NIC's guest-readable
-  time sources (`REQ-D-NIC-TIME-SOURCES`), the wire-domain PHY link scene under replay
-  (`REQ-D-NIC-PHY-LINK`) and the pin tie-offs (`REQ-D-NIC-GPIO-PINS`) pre-wire
-  `P5-BOARD.4`'s composition verdict. Registration day (`.11`) is next.
 

@@ -183,6 +183,16 @@ PY
   arm "RED a register outside x0..x31 is refused" "$rc" 2 "$out" "x99"
   cp "$GUESTS_DIR/guest-control.expected.sexp" "$t/guests/guest-control.expected.sexp"
 
+  # RED: a fetch-count declaration outside the parcel bounds is refused (P4-SYSTEM.3
+  # slice e: a step whose fetch page-faults issues NO request, a page-straddling
+  # instruction issues TWO — the declared count lives in [0, 2x steps], and a count
+  # outside it is a lie the generator must not emit).
+  sed 's/(instructions 12)/(instructions 12) (fetches 25)/' "$GUESTS_DIR/smoke-arith.expected.sexp" \
+    > "$t/guests/smoke-arith.expected.sexp"
+  out="$(GEN --check 2>&1)"; rc=$?
+  arm "RED a fetches count outside the parcel bounds is refused" "$rc" 2 "$out" "fetches"
+  cp "$GUESTS_DIR/smoke-arith.expected.sexp" "$t/guests/smoke-arith.expected.sexp"
+
   # ---- directory derivation (P4-SYSTEM.2 slice d) ---------------------------------------------
   # RED: the run-order record missing is refused — the order is data, never the
   # directory's accident.

@@ -1425,3 +1425,113 @@ machinery shell, the 10-step walk, completed `2026-10-04`), split out on
   (unchanged — `.3` first), `docs/book/src/plan/p4.md` — shards at their
   ceilings.
 
+
+`P4-SYSTEM.3` slice (d) — the TLB + sfence.vma's real four-case effect + the census / snapshot / determinism consequences (`2026-10-04`, `SEMULITH-P4-0018`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (d): a minimal fully-specified
+  TLB and the fence's real effect (the brief's decision 2), replacing the stated
+  nop in `system.sem.sexp` and re-answering the SEM-08 census. Measured pre-slice:
+
+  ```
+  $ grep -c 'nop' definitions/riscv/system.sem.sexp
+  2                        # the stated nop: the header bullet + sfence.vma's effect
+  $ grep -o 'candidate "address-translation caches (TLBs)"' profiles/rv64gc-lab-v0/state.sexp | wc -l
+  1                        # the census's own reopen hook, (present false) with ".3
+                         # reopens this candidate" — the brief's own wording
+  $ grep -n 'sfence.vma x0, x0' profiles/rv64gc-lab-v0/guests/mm-sfence.s | wc -l
+  3                        # mm-sfence's fence cells (M legal, S/TVM=0 legal, S/TVM=1 illegal)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior; the slice makes
+  the cache real. Three design measurements, each recorded in the code:
+  1. **The parameters are the minimal ones that make every rule testable.** 4
+     entries, fully-associative, FIFO replacement, ASID-tagged at ASIDLEN=16,
+     keyed by 4 KiB page (a superpage's other pages re-walk and install
+     independently — conformant, and it keeps the fence's per-address case
+     exact). Authority laboratory; the state document's census carries the same
+     parameters as data, and the generator REFUSES a descriptor whose census
+     does not declare the cache present (a RED arm proves it:
+     `STATE-GEN --self-test: 26 pass / 0 fail`).
+  2. **satp visibility is per-access reads, never invalidation.** satp is read
+     at every access, so MODE and ASID changes are visible immediately (dispatch
+     and tagging); a root-PPN change is visible on the next MISS, and stale
+     entries may hit until a fence — §11.1.2.1's sanctioned staleness, the fence
+     being the contract. SUM/MXR are read per access in `effective_mode`, never
+     cached, so they always take effect immediately. The staleness tests prove
+     both halves (legal stale hit before the fence, restored truth after).
+  3. **A faulting access installs nothing — and a load past a D=0 leaf installs
+     the D=0 entry.** The two interact exactly as the spec sanctions: the cached
+     entry's D bit then faults a later store even after software sets D in the
+     PTE without fencing (a LEGAL stale fault), and the fence restores the
+     walk's truth. The walk's step-9 A/D check uses the entry's stored bits —
+     under Svade there is no hardware update for a cache to skip, and the fault
+     path must not be cached; both are tested.
+
+- [x] **FIX** — `crates/semulith-core/src/translation.rs` (`Tlb`/`TlbEntry` with
+  the stated parameters, `lookup`/`install`/`invalidate`, `fence`, the
+  lookup-before-walk dispatch with `finish` shared by hit and leaf, install only
+  on success); `schema/semantics.sexp` (the `tlb-invalidate` operator with its
+  four-case contract); `definitions/riscv/system.sem.sexp` (sfence.vma's effect
+  becomes `(tlb-invalidate (reg rs1) (reg rs2))`; the time-scoped nop bullet
+  superseded with its date; the fence's legality unchanged);
+  `scripts/gen_definition.py` (the extended binary map + the Sem variant);
+  `crates/semulith-core/src/definition_rv64gc.rs` (re-derived, DEF-GEN green;
+  rv64i's module fingerprint-only as always); `crates/semulith-core/src/privilege.rs`
+  (the `tlb` trait member — hart state like mode and the CSR file);
+  `profiles/rv64gc-lab-v0/state.sexp` (the census candidate re-answered
+  `present true` with the full parameter statement); `scripts/gen_state.py`
+  (the census-driven field emission + the refusal when the census is silent);
+  `crates/semulith-core/src/state_rv64gc.rs` (re-derived, STATE-GEN green);
+  `crates/semulith-core/src/exec_rv64gc.rs` (the `Sem::TlbInvalidate` arm —
+  rs1 the VA, rs2's low 16 the ASID, no register written).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core translation
+  test result: ok. 25 passed; 0 failed   # the walk's 17 fault-matrix tests PLUS the
+  # TLB suite: a hit skips the walk (walk count frozen), FIFO evicts in order
+  # (6 installs, the oldest re-walks), ASID tags (hit/miss by ASID, G hits under
+  # any), staleness legal without a fence then restored by it, Svade staleness
+  # through the cache (the D=0 install → the legal stale store fault → the fence),
+  # the four fence cases with their retentions, the non-canonical rs1 no-op, the
+  # fence INSTRUCTION end-to-end (sfence.vma x3,x4 through the evaluator empties
+  # the entry), and cold-reset determinism (two runs, outcome tuples identical)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed; 0 failed    # 62/62 on the TLB engine
+  $ git worktree add /tmp/pre-slice-d 9f65984   # both CLIs, all 62 guests:
+  1884  1884
+  cmp /tmp/traces-pre-d.txt /tmp/traces-post-d.txt
+  BARE-IDENTITY (slice d): all 62 guest traces byte-identical on the TLB engine
+  $ bash scripts/check_state_gen.sh --self-test
+  STATE-GEN --self-test: 26 pass / 0 fail   # +1 RED arm: a census silent on the
+                                            # translation cache is refused, named
+  $ bash scripts/check_definition_gen.sh | tail -2   # both pairs ok
+  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
+  $ make smoke-bench → ok (53 arms)     $ make bench → wasm builds   $ make book → both books
+  ```
+
+- [x] **NO REGRESSION** — the identity proof is byte-level on the TLB engine
+  (1,884 == 1,884 trace lines, `cmp` clean, worktree removed after); mm-sfence's
+  expectations needed NO re-derivation — measured: its two legal fence cells
+  never claimed a nop (their derivations say only "legal", and a fence writes no
+  register — exactly what the expectations record); the corpus's fetch counts
+  and determinism assertions hold; rv64i's engine and module untouched (its
+  definition.rs differs only by the embedded generator fingerprint, the standing
+  precedent); `git grep -c 'present false' profiles/rv64gc-lab-v0/state.sexp` →
+  the OTHER candidates unchanged (the translation cache is the only re-answered
+  one); the determinism rule is TESTED, not asserted (two cold runs, tuples
+  equal); snapshot measured and recorded: the rv64gc path has no snapshot
+  surface today (the CLI's snapshot/resume is rv64i-scoped by refusal from the
+  flip), and a cold-restored cache is always a legal state — a miss is never
+  wrong; DERIVED-COUNTS re-derived 422→423 (+1 STATE-GEN census arm).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice e),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the test-vs-cache classes — the reserved-word
+  encoding and the page-vs-address lookup; promotion: declined (both are the
+  family's own recorded disciplines applied, and this slice's checklist carries
+  the instances)), `LIVE_STATUS.md` (the re-derived 423 arms only),
+  `docs/TASK_TREE.md` (unchanged — `.3` first), `docs/book/src/plan/p4.md` —
+  shards at their ceilings.
+

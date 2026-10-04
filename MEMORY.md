@@ -16,16 +16,16 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-04`, `SEMULITH-AC-0058`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (2/10 — the profile resolved as `rv64gc-lab-v0` (`.1`) and the privileged machinery landed and flipped (`.2`); `.3` underway: slices (a)–(d) landed — the profile adds Svade, the translation machinery, the 10-step walk, and the minimal fully-specified TLB (4-entry FA FIFO, ASID-16, G-bit retention) with sfence.vma's real four cases over it; Bare byte-exact on the TLB engine).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-04`, `SEMULITH-AC-0058`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (2/10 — the profile resolved as `rv64gc-lab-v0` (`.1`) and the privileged machinery landed and flipped (`.2`); `.3` underway: slices (a)–(d) landed and slice (e) part 1 — the 14-guest sv39 corpus is green with EVD-05 spec-side expectations (every walk fault cause, the permission matrix, Svade's no-update, MPRV, the TLB's fence semantics, the straddle, delegation), Bare byte-exact).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.3` slice (e) — MPRV=1/SUM/MXR guests + the sv39 corpus
-  (guests build page tables in M, csrw satp, sfence.vma, sret into S/U; the tables
-  proven byte-identical after accesses under Svade) + the matrix cells for the new
-  guests + the Sail matched experiment (PTW/TLB traces explicit) + the reports and
-  the book — the leaf's last slice. Routed INTO `.5` from `.2`'s Sail attempt:
-  Sail 0.14 does not implement mstatus.TW's effect on WFI legality (the
-  measurement is in the `.2` slice-(h) part-2 checklist). Slice (d) landed
-  `SEMULITH-P4-0018` (DERIVED-COUNTS 423).
+- next_action: `P4-SYSTEM.3` slice (e) part 2 — the Sail matched experiment
+  (the PTW/TLB traces explicit via `--trace-ptw`/`--trace-tlb`, excluded from
+  `--trace`) against the Svade-flipped tracked override, `compare_sail.py`
+  extended — AGREE/divergence per guest recorded honestly (TLB-size/timing
+  differences are RECORDED differences, never normalized) — then the leaf's
+  acceptance and closure (`SEMULITH-P4-0020`; frontier → `.4` atomics and
+  reservations, LIVE_STATUS 3/10). Slice (e) part 1 landed `SEMULITH-P4-0019`
+  (DERIVED-COUNTS 424).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

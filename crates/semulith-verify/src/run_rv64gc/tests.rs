@@ -42,8 +42,9 @@ fn assert_guest_observations(name: &str) {
         );
     }
     assert_eq!(
-        trace.fetches as usize, g.executed_steps,
-        "{name}: exactly one fetch per executed step (no extraneous fetch)"
+        trace.fetches as usize, g.expected_fetches,
+        "{name}: the fetch-request count matches the declared expectation (one per \
+         step, minus every step whose fetch page-faults in the walk)"
     );
 }
 
