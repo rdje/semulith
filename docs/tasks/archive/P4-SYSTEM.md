@@ -1668,3 +1668,119 @@ machinery shell, the 10-step walk, completed `2026-10-04`), split out on
   only), `docs/TASK_TREE.md` (unchanged — `.3` first), `docs/book/src/plan/p4.md`
   — CHANGELOG/DEV_NOTES sharded at their ceilings.
 
+
+`P4-SYSTEM.2`'s LEAF ACCEPTANCE record and `P4-SYSTEM.3` slice (e) part 2's checklist
+(completed `2026-10-03` / `2026-10-04`), split out on `2026-10-04` at the live file's
+sixth ceiling firing:
+
+**LEAF ACCEPTANCE — `P4-SYSTEM.2` (privilege and mode transitions).** The criterion:
+"the same instruction's behaviour is tested **in each supported mode**, not once."
+Evidence: the mode-matrix corpus — 13 guests whose every cell is a mode crossing
+(CSR access in M vs S vs U (mm-csr-legality-s/-u, mm-readonly, mm-csr-rw); ecall's
+cause by mode (11/9/8) and its delegation to S with the M-ecall never delegating
+(mm-ecall-modes, mm-ecall-deleg); breakpoints delivered and resumed from M and U
+(mm-ebreak); mret's mode pops with MPRV cleared below M and preserved at M
+(mm-mret); sret legal in M and S, illegal in U, gated by TSR (mm-sret); wfi in
+M/S/U with the TW gate (mm-wfi); sfence.vma and satp under TVM (mm-sfence); the
+counter enables gating S then U (mm-counters); stimecmp under TM then STCE
+(mm-stimecmp)) — all falsified against EVD-05 expectations by the tracked engine
+(62/62, `cargo test -p semulith-verify run_rv64gc`, 4/4 groups) and 11 of the 13
+differentially AGREED against the matched Sail 0.14 (the twelfth partial, one
+cell named). The leaf is **done**.
+
+`P4-SYSTEM.3` slice (e) part 2 — the Sail matched experiment (PTW/TLB traces explicit) + the leaf's acceptance (`2026-10-04`, `SEMULITH-P4-0020`):
+
+- [x] **REPRODUCE / ISSUE** — the privileged matched experiment for the sv39
+  corpus. Pre-slice census:
+
+  ```
+  $ grep -c 'sv39' target/p4-system-2/sail/compare_sail.py
+  0                        # the mm driver names no sv39 guest
+  $ grep -c '0x0000_0000_0000_03FF' profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+  1                        # the override's medeleg mask: causes 0-9 only — page faults NOT
+                         # delegatable; state.sexp pins 0-10 | 12-15 | 18-20 as WARL-any
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --help | grep -c 'trace-ptw\|trace-tlb'
+  2                        # sail's PTW/TLB trace flags exist (own flags, never in --trace)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no engine defect; the slice makes the
+  implicit accesses explicit and matched. Three measurements:
+  1. **The image must sit at EXACTLY 0x8000_0000.** The chains compute
+     absolute table addresses; lld's `--image-base` lands .text at base+0x1158
+     (the mm guests never noticed — pc-relative addressing). The build
+     (`build_sv39_elfs.py`) lowers the TRACKED assembler's words to a
+     .word-only source and links with a PHDRS script — the tracked assembler
+     owns the bytes, clang never parses the corpus's operand syntax.
+  2. **Sail numbers the fetch-fault step but prints no row for it.** The
+     architecture leg indexes by Sail's PRINTED step number; the expectations'
+     `<fetch page fault>` pseudo-steps are then exactly the no-row, no-write
+     steps — the recorded harness convention (measured on sv39-perm-rwx).
+  3. **The tracked override's medeleg mask predated sv39.** `0x3FF` (causes
+     0-9) made medeleg bit 13 read-only-zero on Sail, so sv39-deleg's page
+     fault reached M, not S — measured as a one-register divergence (sail's
+     x22=13 vs the expectation's x7=13). state.sexp pins 0-10 | 12-15 | 18-20
+     WARL-any; Sail 0.14 REFUSES its reserved causes (the bisection named 10
+     and 14, 17-20 rejected wholesale), so the matched mask is `0xB3FF`
+     (0-9 | 12 | 13 | 15) — the widest both sides honor, the WARL latitude
+     recorded (no guest delegates the rejected causes):
+
+     ```
+     $ sail_riscv_sim --config-override <0x43FF-mask>.json sv39-deleg.elf 2>&1 | tail -1
+     Bits for reserved exceptions are set in `base.medeleg.delegatable_bits`.
+     $ sail_riscv_sim --config-override <0xB3FF-mask>.json sv39-deleg.elf 2>&1 | tail -1; echo rc=$?
+     Entry point: 0x80000000
+     rc=0
+     ```
+
+- [x] **FIX** — `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`
+  (delegatable_bits 0x3FF → 0xB3FF — the laboratory's medeleg discipline restricted
+  to what Sail 0.14 accepts; the only tracked content change — the experiment
+  tooling is untracked per convention: `build_sv39_elfs.py`, `compare_sail_sv39.py`,
+  sv39gen's walk/TLB logs + `simulate_n`/`simulate_until`);
+  `profiles/rv64gc-lab-v0/references.sexp` (matched_scope + trace_granularity, both
+  stale since slice h).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 target/p4-system-2/sail/compare_sail_sv39.py
+    AGREE           sv39-translate-4k      arch: 111 steps' change-observations exact
+                                           ptw:  2 walks read-for-read identical
+                                           tlb:  2 add(s), 0 flush(es) on both sides
+    ... (all three dimensions AGREE for translate-2m/1g, the four fault guests,
+         perm-rwx, perm-usr, mprv, tlb-fence (7 walks; 7 add / 2 flush), straddle,
+         deleg) ...
+    AGREE-RECORDED  sv39-svade             arch: 135 steps' change-observations exact
+                                           ptw:  3 walks read-for-read identical; 1 walk(s)
+                                                carry the A/D-placement convention
+                                           tlb:  2 add(s), 0 flush(es) on both sides
+  sv39 sail experiment: 13 AGREE, 1 AGREE-RECORDED, 0 DIVERGE of 14
+  $ python3 target/p4-system-2/sail/compare_sail.py | grep -c AGREE
+  11                       # the mm baseline reproduces (mm-wfi's named TW cell unchanged)
+  $ <the 12 mm guests' arch legs under the WIDENED tracked override> | grep -c AGREE
+  11                       # the mask widening is verdict-neutral (mm-wfi named as committed)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed; 0 failed    # 76/76 — the engine is untouched by the experiment
+  $ make check → 8× ok   $ make gate → === all doctrines green ===
+  ```
+
+- [x] **NO REGRESSION** — the only tracked content change is the override's
+  medeleg mask, proven verdict-neutral on the corpus that predates it (the
+  ADDRESSED box's two 11/12 measurements); the engine, the 76-guest corpus and
+  every gate are unchanged:
+
+  ```
+  $ git diff SEMULITH-P4-0019 -- crates/ profiles/rv64gc-lab-v0/guests/ | wc -l
+  0                        # the engine and the corpus are untouched
+  $ bash scripts/check_derived_counts.sh >/dev/null; echo rc=$?
+  rc=0                     # 424 arms, unchanged
+  ```
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
+  narrative + frontier → `.4` + checklist + logs + changelog), `docs/TASK_TREE.md`
+  (the row → `.4`, 3/10), `MEMORY.md` (next_action → `P4-SYSTEM.4`),
+  `LIVE_STATUS.md` (3/10), `CHANGELOG.md`, `DEV_NOTES.md` (the matched-mask
+  measurement and the A/D-placement convention; promotion: declined (the
+  override-mirror discipline is the rv64i dossier's recorded
+  DIFF-PLATFORM-DEFAULT lesson applied)), `docs/book/src/plan/p4.md`,
+  `profiles/rv64gc-lab-v0/references.sexp` (matched_scope + trace_granularity).
