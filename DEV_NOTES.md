@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-04)_ — the pin that exposed its own census's blind spot (P4-SYSTEM.4 slice a)
+
+Execution of the `.4` brief's checkpoint (a) measured:
+
+- **The scope-vs-tables leg could not see a 64-bit table.** The `extra` collector
+  in `fetch_references.sh` tested `n.startswith("rv_")` — so `rv64_a` (and
+  `rv64_m` before it) never joined the census the leg enumerates. The gap was
+  latent for exactly one reason: no profile had ever declared an A or M form
+  while pinning the 64-bit table, so the missing rows never faced a census that
+  expected them. The rv64_a pin was the first input that made the gap load-bearing:
+  with the collector fixed, the pin broke the leg outright — 87 enumerated vs 65
+  declared. Both halves of the fix are the dossier's own precedents: the rv64i
+  ledger's declared M exclusion ("pinned for the fragment test case, not the
+  scope") extends to the A tables verbatim in shape, with the same flip
+  condition — a declared lr./sc./amo form includes them, which is exactly what
+  slice (e)'s atomic bind will do when the census grows 65→87. A check whose
+  blind spot is found by the first input that needs it is the RED-before-green
+  discipline working as designed: the fix was written against the measured 87-vs-65
+  failure, not against a reading of the code (promotion: declined — the durability
+  is the machinery: the exclusion and its flip condition live in the fetch leg
+  itself, and the leg's own verdict arms them).
+- **The brief's "aqrl field" is two tokens in the tables.** Every rv_a/rv64_a row
+  lists `aq rl` as separate operand tokens; the pinned arg_lut.csv's `"aqrl",26,25`
+  is the combined field, and no row carries an `aqrl` (or `amoop`) token. So the
+  generated fragment owns `aq` and `rl` — the generator's own rule is that a field
+  nothing references invites a reader to believe it is supported — and the
+  assembler's suffix rule lands the `.aq`/`.rl`/`.aqrl` value in exactly those
+  bits. Deriving from the rows rather than from the brief's shorthand is what kept
+  the fragment generated, never hand-authored.
+- **spike-dasm prints `lr.w` plain for all four suffix words.** The aq/rl bits are
+  measurably set in the emitted words (0x100120af / 0x140120af / 0x120120af /
+  0x160120af) and sc/amo print their suffixes back exactly — lr's plain printing
+  is spike's own preference, the rdcycle-prints-as-csrr precedent from `.2` slice
+  (a). The round-trip is exact for the 22 forms × 4 suffix combinations with that
+  one recorded convention.
+
 ## _(2026-10-04)_ — the matched experiment that caught its own config (P4-SYSTEM.3 slice e part 2; the leaf closes)
 
 Execution of the `.3` brief's checkpoint (e), part 2, measured:
@@ -641,28 +677,4 @@ Promotion: declined — both findings' durability is the machinery itself (the d
 fired; the refusal is armed by a self-test RED), and the write-down-what-the-gate-
 catches discipline already has its cards. Recorded in the owning leaf's checklist
 (LOCKSTEP).
-
-## _(2026-10-02)_ — the summary sentence is not the operation chapter: a declaration read from §1.10 failed §3.6's mode exclusivity (P5-BOARD.4)
-
-The board's NIC declaration carried `access-widths 16 32` from the datasheet's §1.10
-summary ("supports 32-bit and 16-bit bus transfers") — written at `.1`, inherited by the
-dossier (the 16-bit pairing latch joined the model-state census *because the board
-declared the width*). The composition verdict's strap decision forced the real question:
-§3.6 makes the bus width a strap-selected, mode-exclusive property — 32-bit mode is "the
-native environment … no special requirements", and the two-contiguous-access pairing is
-16-bit-*mode* operation. With D32 strapped (the obvious choice for a 64-bit host), a
-16-bit access has no datasheet-defined behaviour at all, so the declaration was measured
-false and narrowed to 32 — and every downstream record justified by it (the census
-latch) flipped with its reason stated. The instrument that caught it is the durable
-part: the deferral was *data* (an obligation marked `composition_disposition
-"required"`), so the verdict could not close without deciding the strap, and deciding
-the strap forced re-reading the operation chapter. Decline-to-promote note: the finding
-itself lives in the verdict + BOARD-VERDICT, and the measure-against-the-source
-discipline already has its knowledge cards — no new card.
-
-Also worth remembering: the per-assumption discharge is the obligation-graph half only —
-its platform-dependent edges land on the *laboratory* guarantee (`OB-PLATFORM`), so a
-green discharge would pass with a CLINT bolted on. The board-level satisfaction has to
-be its own checked data (the `satisfies`/`answers` edges), which is why BOARD-VERDICT
-has three legs instead of one.
 

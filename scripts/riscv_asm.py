@@ -20,6 +20,8 @@ They come from `riscv-opcodes` (RISC-V International, BSD-3-Clause), pinned unde
     extensions/rv_i, extensions/rv64_i   the fixed bits and operand list per instruction
     extensions/rv_zicsr, rv_zicntr, rv_system, rv_s   Zicsr, Zicntr and the privileged
                                          system instructions (the rv64gc pin, P4-SYSTEM.2)
+    extensions/rv_a, extensions/rv64_a   the A extension's 22 atomic forms (the rv64gc
+                                         pin, P4-SYSTEM.4 slice a)
     arg_lut.csv                          the operand field positions
     csrs.csv                             the CSR name-to-address map (csr operand spellings)
 This module PARSES those files. It does not carry an opcode constant of its own, so a typo here
@@ -64,14 +66,24 @@ from pathlib import Path
 # and is distinguished from it BY FIELD NAME, exactly as the pinned arg_lut.csv rows do — imm12
 # is signed (-2048..2047), csr is the unsigned 12-bit CSR address (0..0xFFF, or a name resolved
 # through the pinned csrs.csv); `zimm5` is the unsigned 5-bit immediate of the csrr*i forms.
-# The POSITIONS always come from the pinned arg_lut.csv at load time — derived, never typed.
+# `aq` and `rl` are the A extension's ordering bits (`P4-SYSTEM.4` slice a): they are whitelisted
+# so the operand-field gate below knows them, but no operand ever SPELLS them — the
+# `.aq`/`.rl`/`.aqrl` mnemonic suffix supplies their values (see encode()). The POSITIONS
+# always come from the pinned arg_lut.csv at load time — derived, never typed.
 CONTIGUOUS_OPERANDS = {
     "rd", "rs1", "rs2", "imm12", "imm20", "shamtd", "shamtw", "imm12hi", "imm12lo",
-    "fm", "pred", "succ", "csr", "zimm5",
+    "fm", "pred", "succ", "csr", "zimm5", "aq", "rl",
 }
 # Fields whose immediate is spread across non-adjacent bits; the layout is read from the pinned
 # descriptor table rather than written down here.
 SCRAMBLED_OPERANDS = {"jimm20", "bimm12hi", "bimm12lo"}
+
+# The A extension's ordering suffix: a closed set, carrying the (aq, rl) field values.
+# All four combinations — none included — assemble and execute identically at one hart
+# (every aq/rl effect is defined "as viewed by other RISC-V harts"; the chapter's
+# "Software should not" is a software rule, not a decode illegality — P4-SYSTEM.4's
+# design brief, decision 1).
+AQRL_SUFFIXES = {"aq": (1, 0), "rl": (0, 1), "aqrl": (1, 1)}
 
 
 class AsmError(Exception):
@@ -439,15 +451,42 @@ class Assembler:
     def _imm(tok: str) -> int:
         return int(tok, 0)
 
+    @staticmethod
+    def _paren_reg(name: str, tok: str) -> int:
+        """The A forms' parenthesized address operand, `(rs1)` — nothing else is spelled."""
+        m = re.fullmatch(r"\(\s*([^()]+?)\s*\)", tok)
+        if not m:
+            raise AsmError(f"{name}: the address operand is spelled (rs1), got {tok!r} — "
+                           f"the A forms take no offset, so a bare register or an "
+                           f"offset(rs1) shape is not this instruction")
+        return Assembler._reg(m.group(1))
+
     def encode(self, mnemonic: str, args: list[str]) -> int:
         name = mnemonic.lower()
-        if name in self.insns:
-            insn = self.insns[name]
-        elif name in self.pseudos:
-            insn = self.pseudos[name]
-        else:
-            raise AsmError(f"{name!r} is not in the canonical definition's encoding space — "
-                           f"this assembler carries no opcodes of its own")
+        suffix = None
+        insn = self.insns.get(name) or self.pseudos.get(name)
+        if insn is None and "." in name:
+            # The A ordering suffix rides the MNEMONIC (`lr.w.aq`), while the pinned
+            # tables list the base names — the mnemonic token is looked up whole, so the
+            # suffix is split here and re-applied as the aq/rl FIELD VALUES, never as a
+            # table name. A suffix on a name the tables do not carry, a suffix outside
+            # the closed .aq/.rl/.aqrl set, and a suffix on a non-atomic form are all
+            # refusals BY NAME, never guesses (P4-SYSTEM.4 slice a).
+            base, _, suffix = name.rpartition(".")
+            insn = self.insns.get(base)
+            if insn is not None:
+                if suffix not in AQRL_SUFFIXES:
+                    raise AsmError(
+                        f"{name!r}: ordering suffix {suffix!r} is not one of .aq/.rl/.aqrl "
+                        f"— the only suffixes the A extension defines")
+                if not {"aq", "rl"} <= set(insn.operands):
+                    raise AsmError(
+                        f"{name!r}: an .aq/.rl ordering suffix belongs to an A form; "
+                        f"{base!r} has no aq/rl field in the pinned tables")
+                name = base
+        if insn is None:
+            raise AsmError(f"{mnemonic.lower()!r} is not in the canonical definition's "
+                           f"encoding space — this assembler carries no opcodes of its own")
         for op in insn.operands:
             if op not in CONTIGUOUS_OPERANDS and op not in SCRAMBLED_OPERANDS:
                 raise AsmError(f"{name!r} uses operand field {op!r}, which this assembler "
@@ -488,6 +527,29 @@ class Assembler:
             word |= _place(*self.arg_lut["rd"], self._reg(args[0]))
             word |= _place(*self.arg_lut["csr"], self._csr(args[1]))
             word |= _place(*self.arg_lut["rs1"], self._reg(args[2]))
+            return word
+
+        # The A forms: the pinned tables list the fields `rd rs1 [rs2] aq rl` with rs1 the
+        # ADDRESS, and the assembly convention writes it parenthesized and LAST —
+        # `lr.w rd, (rs1)` / `sc.w rd, rs2, (rs1)` / `amoadd.w rd, rs2, (rs1)`. The
+        # .aq/.rl/.aqrl mnemonic suffix supplies the aq/rl field values (absent suffix:
+        # both zero). Any other shape is refused by name, never guessed — the spelling is
+        # proven, not assumed: spike-dasm (the module's documented second decoder)
+        # disassembles the emitted words back to the requested spellings, suffixes
+        # included (P4-SYSTEM.4 slice a).
+        if {"aq", "rl"} <= set(insn.operands):
+            regs = [op for op in insn.operands if op in ("rd", "rs1", "rs2")]
+            want = len(regs)                       # 2 for lr (rd rs1), 3 for sc/amo
+            spelling = "(rd, (rs1))" if want == 2 else "(rd, rs2, (rs1))"
+            if len(args) != want:
+                raise AsmError(f"{name} expects {want} operands {spelling}, got {len(args)}")
+            word |= _place(*self.arg_lut["rd"], self._reg(args[0]))
+            if want == 3:
+                word |= _place(*self.arg_lut["rs2"], self._reg(args[1]))
+            word |= _place(*self.arg_lut["rs1"], self._paren_reg(name, args[-1]))
+            aq, rl = AQRL_SUFFIXES.get(suffix, (0, 0))
+            word |= _place(*self.arg_lut["aq"], aq)
+            word |= _place(*self.arg_lut["rl"], rl)
             return word
 
         supplied = [op for op in insn.operands if op in CONTIGUOUS_OPERANDS]

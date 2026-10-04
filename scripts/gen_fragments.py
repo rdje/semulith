@@ -85,6 +85,17 @@ FRAGMENTS = (
      "— the profile's selection from RVP-INSNS 18.1 (D-PRIV-INSNS). REQUIRES a base, because "
      "ecall/ebreak own the neighbouring fixed points of the SYSTEM opcode (P4-SYSTEM.2 "
      "slice a)."),
+    ("definitions/riscv/a.sexp", "riscv/a", "isa-extension", ("rv_a", "rv64_a"),
+     ("riscv/rv64i",), ("aq", "rl"), False, False,
+     "The A extension: the atomic memory operations — Zalrsc's load-reserved/"
+     "store-conditional pairs and Zaamo's nine AMOs, each .W and .D (22 forms; the pinned "
+     "RVWMO chapter's Tables 6/7 enumerate exactly this set). It OWNS the aq and rl operand "
+     "fields (the ordering bits — the pinned arg_lut.csv carries them at 26..26 and 25..25 "
+     "and the combined aqrl at 26..25; the tables list aq and rl as separate operand "
+     "tokens, and the .aq/.rl/.aqrl mnemonic suffix supplies their VALUES at assembly "
+     "time, so they are never positional operand spellings). lr's rs2-must-be-zero rule "
+     "is the row's own 24..20=0 fixed field, not a special case. REQUIRES a base: it "
+     "reuses rd/rs1/rs2 from it (P4-SYSTEM.4 slice a)."),
 )
 
 

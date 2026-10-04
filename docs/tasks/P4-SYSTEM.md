@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
   truth after the full one — Sail's `--trace-tlb` shows the same add/flush counts.
 
 - ID: `P4-SYSTEM.4` — **atomics and reservations**
-  Status: `pending` (design brief `2026-10-04`, `SEMULITH-P4-0022`)
+  Status: `pending` (design brief `2026-10-04`, `SEMULITH-P4-0022`; slice (a) done `2026-10-04`, `SEMULITH-P4-0023`)
   Goal: atomic widths, reservation semantics, failed conditional stores, overlap and external-write cases (catalog `C16`, `docs/CPU_ENVIRONMENT.md` §2).
   Acceptance: single-core reservation behaviour is validated here; multicore memory-model work is `MC-MULTICORE`, not smuggled in.
 
@@ -161,7 +161,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — `.3` closed `2026-10-04` (the sv39 corpus + the Sail matched experiment, 13 AGREE + 1 recorded of 14); `.4` is the next leaf on the CPU path the board waits on |
+| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — slice (a) landed (the `rv_a`/`rv64_a` re-pin, the `a.sexp` fragment, the assembler's A machinery); next is slice (b): `a.sem.sexp` + the new operators through the schema/check/generator path |
 
 ## Decisions
 
@@ -369,142 +369,10 @@ This gate authorises the planned next engineering stage: board implementation.
   leaf); F/D/C/Zifencei (their leaves); the rv64gc C16 disposition (registration
   day); registration; the gate.
 
-- `2026-10-03` (design brief for `.3`, recorded before its execution; sources: the pinned
-  privileged chapters re-read (`.materials/riscv/pinned-v20260120/priv/supervisor.html`
-  §11.1.1.11–§11.1.10, `machine.html` §2.1.1.6.4, §2.1.7.2, Table 7); the `.2` landing
-  measured in tree (`exec_rv64gc.rs` hooks, `state.sexp:569-581` satp,
-  `system.sem.sexp:53` the stated sfence nop); the U54 data point re-verified from the
-  pinned PDF `.materials/sifive/fu540-c000-v1p5.pdf` §4.7; Sail 0.14's TLB and A/D code
-  paths measured in `target/refs/sail-riscv-src/model/sys/vmem*.sail`; two explore-agent
-  censuses (C12 scope; translation machinery deltas) — the reports are conversation-only,
-  every load-bearing fact below re-measured by the signing engineer):
-  **The measured pre-conditions.** (1) **The hooks are three sites**: fetch
-  (`exec_rv64gc.rs:87`), load (`:291`), store (`:328`) go straight to the boundary with
-  physical addresses; page-fault causes 12/13/15 exist nowhere in core (census: `git
-  grep -c PageFault -- crates/ | wc -l` → 0); satp's storage/discipline landed at `.2`
-  (`state.sexp:569-581` — MODE `(one-of 0 8)`, reset Bare; the census names `.3`'s
-  reopen); sfence.vma is a stated nop in four places (`system.sem.sexp:14-19,53-59`,
-  the generated mirror, the state census). (2) **The walk falsifies a load-bearing
-  requirement**: REQ-D-FETCH-IMPLICIT's "Explicit reads and writes are made only by
-  load and store instructions" (`profiles/rv64i-lab-v0/requirements.sexp:27`) is false
-  the moment satp.MODE=Sv39 — every S/U access entails up to 3 implicit 8-byte reads.
-  (3) **The observation vocabulary cannot see memory**: expectations are x0..x31 writes
-  + `never_written` + one-fetch-per-step (`schema/expectations.sexp:48-53`;
-  `run_rv64gc/tests.rs:22-47`); a hardware A/D update is an implicit store no
-  instruction owns — no expectation form can pin it (measured, both files). (4) **The
-  A/D crux**: the pinned 1.13 text makes hardware update the DEFAULT when neither
-  Svade nor Svadu is implemented (§11.1.3.1), and the profile selects neither
-  (`profile.sexp:25`); the one measured implementation precedent — the U54 the
-  profile's Sv39 choice already cites (D-SV39) — "does not automatically set the A and
-  D bits … Instead, the U54 MMU will raise a page fault" (FU540 §4.7, re-verified from
-  the pinned PDF). (5) **Sail models a 64-entry unified TLB** "so that we can
-  meaningfully test SFENCE.VMA which would be a no-op without a TLB"
-  (`vmem_tlb.sail:9-12`); `--trace-ptw`/`--trace-tlb` exist but are excluded from
-  `--trace`; its A/D code (`vmem.sail:92-128`) does hardware update exactly when
-  `¬Svadu ∧ ¬Svade` — the tracked override's current setting — and flipping to the
-  Svade policy is a one-field override change its validator accepts
-  (`validate_config.sail:176-181`). (6) **A generator hole**: `gen_state.py`'s rv64gc
-  path (`validate_gc`) silently IGNORES `memory_spaces` instead of refusing it (the
-  rv64i path refuses at :103-106) — to be closed the next time the state document is
-  edited.
-  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
-  discipline):
-  1. **OQ-2 answered: the profile ADDS Svade** (page-fault-instead-of-A/D-update).
-     The evidence chain the acceptance demands ("validated against the selected
-     extensions and revision, not chosen as a knob"): (i) the pinned revision defines
-     exactly two schemes and names the page-fault one Svade (§11.1.3.1, §11.1.10); (ii)
-     the profile's own translation precedent — the U54, already load-bearing in D-SV39
-     — implements exactly that scheme (FU540 §4.7, quoted above); (iii) the
-     laboratory's observe-through-the-ISA discipline (`.2` decision 6) can evidence a
-     page fault (scause/stval via csrr) but CANNOT evidence an implicit PTE write
-     (pre-condition 3), so the hardware-update default would price a new observation
-     vocabulary (sized like `.2`'s slice-b) to test a side effect the laboratory need
-     not produce. The identity cost is recorded: the extension list and ISA string
-     gain `svade` (`rv64imafdc_zicntr_zicsr_zifencei_sstc_svade`, canonical order —
-     the `.1` gen_platform fix); Svadu is NOT selected (menvcfg's ADUE stays WPRI);
-     the Sail override's `Svade` flag flips `true`. Weighed and rejected: hardware
-     update + a memory-write expectations vocabulary (the pricing above; it can arrive
-     with Svadu the day a consumer needs it, never silently). The DOSSIER's OQ-2
-     closes with this brief; the profile-identity edit (D-SVADE decision + REQ/OB
-     mirrors) is execution's first slice.
-  2. **A minimal, fully-specified TLB is modelled.** The leaf's own goal names
-     "translation invalidation", and invalidation is testable only with something to
-     invalidate (the Sail comment, pre-condition 5, is the same reasoning). Shape: a
-     small fully-associative cache (size and FIFO replacement stated in the state
-     census), ASID-tagged (ASIDLEN = 16, the Sv39 maximum and Sail's default —
-     laboratory choice, recorded; ASID=0-only rejected: it would make the tagging
-     rules untestable), G-bit retention per §11.1.2.1. The TLB is hidden state: the
-     SEM-08 census re-answers `present true` with the cache described; the
-     determinism rule is stated — the cache is a pure function of the hart's own
-     history, so cold-reset re-execution and snapshot/replay stay exact (corpus must
-     never depend on stale-hit behaviour outside the spec's latitude). sfence.vma
-     gains its real effect with the FOUR rs1/rs2 cases implemented as specified
-     (§11.1.2.1); the over-fence latitude ("always legal") is recorded-not-taken, so
-     the G-bit retention and per-ASID cases are genuinely tested. Weighed and
-     rejected: no cache (walk every access) — conformant, but it leaves the leaf's
-     goal item untestable and forfeits the Sail PTW/TLB differential.
-  3. **Translation is evaluator machinery, not a tree operator** — a
-     `translation.rs` core module beside `privilege.rs` (the `.2` pattern), hooked at
-     the three sites (pre-condition 1). Fetch is not a tree node, so a `(translate …)`
-     operator could never cover it; hook-level uniformity beats tree-level
-     partiality. The 10-step walk (§11.1.3.2 with LEVELS=3/PTESIZE=8 per §11.1.4.1)
-     is cited step-by-step in the module: the canonical-VA check, reserved-bit/
-     PBMT/N checks (bits 63/62–61/60–54 zero — neither Svnapot nor Svpbmt selected),
-     superpage misalignment, U/SUM/MXR (step 6), R/W/X (step 8), and Svade's step-9
-     page fault. Page-fault causes 12/13/15 enter the core vocabulary (the raw-u64
-     rv64gc cause path absorbs them; the typed-enum asymmetry is a stated choice).
-  4. **Effective mode is a single computation**: fetch uses the current mode;
-     loads/stores use MPP when MPRV=1 (§2.1.1.6.4 — the `.2` deferral lands, with
-     SUM/MXR per the effective mode); M-mode fetch is never translated.
-  5. **Fetch translates in 16-bit parcels.** With C in the profile (IALIGN=16), a
-     4-byte instruction may straddle a 4 KiB boundary; each 16-bit parcel translates
-     independently (the architecturally natural reading; Sail's two-16-bit-fetch
-     granularity is the measured reference precedent, DIFF-FETCH-GRANULARITY).
-  6. **Walk accesses get their own boundary variant.** The D-FETCH-IMPLICIT precedent
-     (implicit accesses observable as their own `Request` variant) applies: PTE
-     reads/writes cross the environment boundary as a distinct walk-access kind
-     (8-byte, physical), never silently as data `Load`s. REQ-D-FETCH-IMPLICIT is
-     AMENDED by a new versioned requirement record naming the walk's implicit
-     accesses (the old record superseded, never edited); the one-fetch-per-step test
-     keeps its meaning (walk reads are not fetches); a walk-count witness may join
-     the sv39 guests. **Contract negotiation, recorded:** the FORMAL contract
-     versioning of this boundary vocabulary is `.9`'s charter ("translation inputs",
-     versioned not edited) — `.3` lands the engine variant and the requirement
-     amendment, and routes the contract-document wording to `.9`; it does not
-     pre-empt it.
-  7. **Misaligned-vs-page-fault priority is pinned now**: the current engine judges
-     misaligned before the boundary (= higher priority than page/access faults);
-     Table 7 makes this implementation-defined, so the choice is legal and stays;
-     the full priority TOPIC is `.8`'s, with this hand-off line recorded (the `.2`
-     decision-1 pattern).
-  8. **No new instructions, no new matrix axis.** The scope census, EXTRACTION and
-     EXERCISE-COVERAGE denominators are unchanged (Sv39 adds machinery, not forms);
-     the 62-guest corpus stays green because satp resets to Bare, an EXACT identity
-     path (measured: every existing guest runs in M/Bare). New sv39 guests join the
-     EXISTING matrix cells (fault×fault, fault×delegation, legality×…): translation
-     is machinery under the declared interaction kinds, not a new kind (an 8th axis
-     would cost 8 new cells to buy nothing).
-  9. **Corpus shape**: guests build page tables in M-mode (stores), csrw satp,
-     sfence.vma, sret into S/U; observation stays through the ISA (csrr scause/stval;
-     `ld`-back of PTEs — under Svade the permitted page-table side effects are NONE,
-     so the acceptance's second half is evidenced by proving the tables byte-identical
-     after accesses, plus the staleness/fence behaviour through the TLB). Expectations
-     stay x0..x31 (no vocabulary change — the discipline that priced decision 1).
-  10. **Execution slicing** (checkpoints inside the leaf, each committed with the leaf
-      id): (a) the Svade identity edit (profile.sexp + D-SVADE + REQ/OB mirrors +
-      sources + Sail override flip) and the `validate_gc` memory_spaces refusal; (b)
-      the translation module + the three hooks + effective mode + the Bare-identity
-      proof (62/62 unchanged); (c) the walk with its fault matrix + reserved-bit and
-      superpage checks + the requirement amendment + walk-access boundary variant;
-      (d) the TLB + sfence.vma's real four-case effect + the census/snapshot/
-      determinism consequences; (e) MPRV=1/SUM/MXR + the sv39 guests + matrix cells +
-      the Sail matched experiment (PTW/TLB traces explicit) + the reports and the
-      book.
-  **Not `.3`'s scope:** fault priority as a topic (`.8` — the pinned option and the
-  hand-off line above); interrupt injection during walks (`.5`); LR/SC page
-  constraints (`.4`); contract v1's formal wording (`.9`); Svnapot/Svpbmt/Svadu/
-  Sv48/Sv57 (unselected, named); PMP (D-NO-PMP); the hypervisor extension (D-NO-H);
-  registration.
+- `2026-10-03` (design brief for `.3`, recorded before its execution, `SEMULITH-P4-0014`):
+  archived verbatim to [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at
+  this file's seventh per-part ceiling crossing (`2026-10-04`, `.4` slice (a) landing; the
+  ceiling was obeyed, not raised — the `P2-SCALAR-designs` precedent).
 
 - `2026-10-03` (design brief for `.2`, recorded before its execution, `SEMULITH-P4-0003`):
   archived verbatim to [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at
@@ -566,10 +434,134 @@ its full acceptance checklist lives verbatim in
 file's 131,072 B per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed,
 not raised).
 
+`P4-SYSTEM.4` slice (a) — the rv_a/rv64_a re-pin + the a.sexp fragment + the
+assembler's A machinery (`2026-10-04`, `SEMULITH-P4-0023`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's pre-conditions re-measured, then the pinned
+  tables fetched through the tracked route and censused:
+
+  ```
+  $ grep -n 'rv_a\|rv64_a' profiles/rv64gc-lab-v0/references.sexp; echo rc=$?
+  rc=1                     # the A tables pinned nowhere (the :84 policy: pin only what is derived from)
+  $ ls definitions/riscv/ | wc -l; grep -c '^    ("definitions' scripts/gen_fragments.py
+  9 files, no a.sexp — FRAGMENTS has 5 entries, no A
+  $ grep -c '"aq"' scripts/riscv_asm.py; grep -n 'aq' target/refs/riscv-opcodes/arg_lut.csv
+  0 (pre-edit)             # the whitelists had no aq/rl …
+  "aqrl", 26, 25 / "aq", 26, 26 / "rl", 25, 25 / "amoop", 31, 27   # … but the pinned csv carries them
+  $ python3 -c "assemble('lr.w x1, (x2)')"        # the .2/-era assembler
+  AsmError: 'lr.w' is not in the canonical definition's encoding space
+  # the pinned A chapter (a-st-ext.html, Version 2.1) carries NO encodings (the format
+  # diagrams are images — the rv64i dossier's measured finding); rvwmo.html §17.1.3
+  # Tables 6/7 enumerate exactly the 22 forms (11 .W + 11 .D)
+  $ curl -sSL …/riscv-opcodes/master/extensions/{rv_a,rv64_a} | shasum -a 256; wc -c
+  d9eaa988c4779ca3…  858 bytes (rv_a) / 819e0487131bc97c…  885 bytes (rv64_a)
+  # census of the rows: 11 + 11 real forms, operand tokens `aq rl` (NO aqrl/amoop token —
+  # the funct5 is literal fixed bits in every row), lr's rs2-must-be-zero the row's own
+  # 24..20=0 fixed field; every mnemonic matches a Tables 6/7 row
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in existing behavior: the slice executes
+  the brief's decision 11 as recorded, and the WHY+WHERE of the two root fixes is
+  tool-backed, not read:
+
+  ```
+  $ python3 -  # the ledger's file names through BOTH collector shapes (scripts/dossier_sexp.py)
+  pre-fix collector  startswith('rv_')          -> ['rv_zicsr', 'rv_zicntr', 'rv_system', 'rv_s', 'rv_a']
+  fixed collector    startswith(('rv_','rv64_')) -> ['rv_zicsr', 'rv_zicntr', 'rv_system', 'rv_s', 'rv_a', 'rv64_a']
+  invisible to the pre-fix census: ['rv64_a']        # WHERE: the extra collector in scripts/fetch_references.sh
+  $ python3 -  # the pre-exclusion leg over the A-pinned ledger (the fix removed)
+  without the A exclusion: tables 87 vs declared 65, diff: ['amoadd.d', 'amoadd.w', 'amoand.d', ...]
+  ```
+
+  1. **The scope-vs-tables leg never collected rv64_* tables** — the `extra` collector
+     tested `n.startswith("rv_")`, so rv64_a (and rv64_m before it) was invisible to the
+     census; latent because no profile had ever declared an A or M form while pinning the
+     64-bit table (the first measurement above). Fixed to `startswith(("rv_", "rv64_"))`,
+     behavior-preserving for both existing profiles (65==65 and 52==52 unchanged, below).
+  2. **The A pin then breaks that leg without the declared distinction** (the second
+     measurement: 87 enumerated vs 65 declared). The rv64i dossier declares the
+     distinction for M ("pinned for the fragment test case, not the scope — excluded
+     unless the profile declares an M form"); the A tables get the SAME named exclusion
+     with the same flip condition (a declared lr./sc./amo form includes them — slice
+     (e)'s bind grows the census to 87 and flips it).
+  3. **The brief's "aqrl field ownership" phrasing measured imprecise**: the tables carry
+     no `aqrl` operand TOKEN — every row lists `aq rl` separately (the pinned csv's
+     `"aqrl",26,25` is the combined field). The fragment owns `aq` and `rl`, the fields its
+     instructions actually use (the generator's own rule: a field nothing references
+     invites a reader to believe it is supported).
+
+- [x] **FIX** — at the lowest-risk level that works, no Rust touched:
+  `profiles/rv64gc-lab-v0/references.sexp` (the rv_a/rv64_a re-pin: sha256+bytes, the
+  supplies sentence and the re-pin comment extended; rv64i's ledger untouched);
+  `scripts/fetch_references.sh` (the rv64_* collector fix + the named A exclusion);
+  `scripts/gen_fragments.py` (+1 FRAGMENTS entry: tables rv_a/rv64_a, requires rv64i,
+  owns aq/rl, the note recording the suffix-as-field-value design);
+  `definitions/riscv/a.sexp` (NEW, generated — never hand-authored);
+  `scripts/riscv_asm.py` (aq/rl whitelisted — positions always from the pinned
+  arg_lut.csv at load time; the `.aq`/`.rl`/`.aqrl` mnemonic-suffix rule re-applied as
+  the aq/rl FIELD VALUES, with garbage-suffix and suffix-on-non-atomic refusals by
+  name; the `(rs1)` parenthesized-address spelling for the lr/sc/amo shapes, every
+  other shape refused by name).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0
+  MATCH ×10 (the tables incl. rv_a/rv64_a + arg_lut) … MATCH encoding tables vs profile
+  scope 65 == 65, symmetric difference NONE … MATCH owned fragments agree … ok
+  $ bash scripts/fetch_references.sh --verify-only rv64i-lab-v0
+  … MATCH 52 == 52 … MATCH matched-profile ISA string rv64i_zvl32b … ok
+  $ mv target/refs/riscv-opcodes/rv_a /tmp && bash scripts/fetch_references.sh rv64gc-lab-v0
+  FETCH riscv-opcodes/extensions/rv_a → MATCH — refetched bytes identical (d9eaa988…)
+  $ python3 scripts/gen_fragments.py && git diff --stat -- definitions/
+  regenerated 6 fragment(s) — (empty diff: the existing five re-derive BYTE-IDENTICAL)
+  $ python3 scripts/check_sexp_schema.py definitions/riscv/a.sexp schema/fragment.sexp
+  check_sexp_schema: ok
+  $ python3 scripts/check_encoding_disjoint.py <synthetic unit doc>   # untracked, the .2 slice-a pattern
+  base+A: 74 instruction(s) — COMPOSE; base+zicsr+zicntr+system+A (m slotted):
+  84 instruction(s) (+ 3 pseudo-instruction(s)) — COMPOSE, PARTIAL declared
+  # the assembler probe (synthetic rv64a-trial unit, untracked):
+  assembled 88 words (22 forms × 4 suffix combinations)
+  0x100120af lr.w x1, (x2) … 0x0874232f amoswap.w x6, x7, (x8) … 0x1e42a1af sc.d.aqrl x3, x4, (x5)
+  $ target/refs/spike-build/spike-dasm < DASM-wrapped words    # the second-decoder round-trip
+  lr.w ra, (sp) / sc.w.aq gp, tp, (t0) / amoadd.w.rl t1, t2, (s0) / amomaxu.d.aqrl t1, t2, (s0)
+  … all 88 exact — lr's four suffix words decode to plain `lr.w` (spike's own printing
+  preference, the rdcycle-prints-as-csrr precedent; the aq/rl BITS measured set in the words)
+  ```
+
+- [x] **NO REGRESSION** — the changed leg fired RED first (the 87-vs-65 measurement above),
+  then the guard set: `check_encoding_disjoint.py --self-test` 12/12;
+  `check_unit_composition.sh --self-test` 9/9 and the tracked run `ok (3 unit
+  composition(s) decided)` — the rv64gc slot stays DECLARED, unbound, the census 65;
+  `check_source_format.sh` ok (210 files, a.sexp parses); `compare_readers.py` 1/1 agree
+  on a.sexp; gen_guests / gen_definition / gen_state / gen_board / gen_platform /
+  gen_model_book / gen_book_index `--check` all byte-exact (no Rust surface touched);
+  the assembler's manual RED probes (recorded with commands above): `lr.w.zz` →
+  "ordering suffix 'zz' is not one of .aq/.rl/.aqrl"; `add.aq` / `csrrw.aq` → "an
+  .aq/.rl ordering suffix belongs to an A form"; `lr.w x1, x2` / `lr.w x1, 0(x2)` /
+  `sc.w x3, x4, x5` / `amoadd.w x6, x7, 8(x8)` → "the address operand is spelled
+  (rs1)"; wrong arities named; `lr.w.aq.aq` / `amomaxu.q` → "not in the canonical
+  definition's encoding space". No self-test arms added: the slice changes no check's
+  semantics (the A fragment composes under the existing rules; the assembler's RED
+  arms are the recorded probes, the .2 slice-a pattern), so DERIVED-COUNTS stays 424.
+  `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog; the `.3` design brief archived verbatim to
+  `archive/P4-SYSTEM-designs.md` at this file's seventh per-part ceiling crossing — the
+  ceiling obeyed, not raised), `MEMORY.md` (next_action → slice b), `CHANGELOG.md`,
+  `DEV_NOTES.md` (the execution findings; the dated lesson's promotion decision:
+promotion: declined (the durability is the machinery — the collector fix and the named exclusion are armed by the fetch leg's own RED verdict, and the suffix/field design is data in the generated fragment)),
+  `LIVE_STATUS.md` (unchanged — no row's state moved and the arms count stays 424),
+  `docs/book/src/plan/p4.md` (the `.4` section opened) + the regenerated book index.
+
+`P4-SYSTEM.4` slices (b)–(f) : pending — filled at execution.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-04` | `.4` slice (a) | the pre-slice census (`grep rv_a\|rv64_a` over the ledger → rc=1; 9 files under definitions/riscv, no A; the whitelists aq-count 0; the whole-token lookup refusing `lr.w`; the pinned arg_lut.csv carrying aqrl/aq/rl/amoop; the A chapter encoding-free, RVWMO Tables 6/7 the 22-form enumeration); the tracked-route fetch (rv_a 858 B d9eaa988…, rv64_a 885 B 819e0487… — 11+11 real rows, tokens `aq rl`, no amoop/aqrl token, lr's 24..20=0); the root fixes measured RED-first (the rv64_* collector gap — the census saw neither rv64_a nor rv64_m; the A pin without the named exclusion → `tables 87 vs declared 65`, the M-exclusion shape followed); fetch_references `--verify-only` green for BOTH profiles (65==65, 52==52, ISA string MATCH) + a scripted fresh re-fetch of rv_a byte-identical; gen_fragments re-run with the existing five byte-identical (`git diff --stat -- definitions/` empty); check_sexp_schema ok on a.sexp; the trial compositions through a synthetic unit doc (base+A 74 COMPOSE; the 5-fragment union 84 + 3 pseudo COMPOSE, slot declared); the assembler probe (88 words = 22 forms × 4 suffix combinations, the spike-dasm round-trip exact — lr's suffix words print plain, spike's preference, the bits measured set; 11 RED refusals named: garbage suffix, suffix-on-non-atomic, bare/offset address shapes, wrong arities); disjoint self-test 12/12, unit-composition 9/9 + 3 units decided, SOURCE-FORMAT 210, compare_readers 1/1, all generators byte-exact; `make gate` green (DERIVED-COUNTS 424 unchanged) | slice (a) landed: the rv_a/rv64_a re-pin, the generated a.sexp fragment (owns aq/rl, requires rv64i), and the assembler's A machinery (the suffix-as-field-value rule, the `(rs1)` spelling, refusals by name); the slot stays declared, the census 65, rv64i's surfaces byte-identical |
 | `2026-10-04` | `.3` slice (e) part 2 | the pre-slice census (the mm driver names no sv39 guest; the override's medeleg mask 0x3FF — page faults not delegatable, the laboratory pins 0-10 \| 12-15 \| 18-20 WARL-any; sail's --trace-ptw/--trace-tlb present as own flags); the ELF build (the tracked assembler owns the bytes — a .word-only source + a PHDRS link at EXACTLY 0x8000_0000, the chains' absolute addressing requires it); the fetch-fault harness convention (sail numbers the step, prints no row — the `<fetch page fault>` pseudo-steps are exactly the no-row no-write steps); the sv39-deleg measurement (sail x22=13 vs expected x7=13 — the override's mask, not the engine); the mask bisection (sail 0.14 names causes 10/14 reserved, rejects 17-20 → 0xB3FF, the widest mask both sides honor); the experiment (13 AGREE + 1 AGREE-RECORDED of 14 — every walk read-for-read identical incl. tlb-fence's 7 add / 2 flush; svade's A/D-placement convention recorded: sail judges A/D after the walk, the laboratory at step 9, the delivered trap identical); the no-regression (the widened mask verdict-neutral: 11/12 mm AGREE under it, mm-wfi's TW cell named at the same step; `git diff SEMULITH-P4-0019 -- crates/ profiles/rv64gc-lab-v0/guests/ | wc -l` → 0); `cargo test -p semulith-verify run_rv64gc` 4/4; `make check` 8/8, `make gate` all green (DERIVED-COUNTS 424 unchanged) | slice (e) part 2 landed and the leaf CLOSES: the sv39 matched experiment — architecture, PTW and TLB explicit per guest — the acceptance met: the correct fault AND the permitted page-table side effects (none under Svade, the ld-back proof); A/D validated, not a knob |
 | `2026-10-04` | `.3` slice (e) part 1 | the pre-slice census (0 sv39 guests in the run order; the sv39 path proven only by the 25 translation unit tests; the one-fetch-per-step witness unable to speak about a fetch page fault); the authoring tooling (fixpoint layout + the chain-accumulating audit that knows table targets; the spec-side model — the pinned 10-step walk, Svade, MPRV, medeleg, region bounds, the slice-(d) TLB semantics — EVD-05, never engine output); the 14 guests each executed green through `demo` (translate-4k/2m/1g with the PTE-byte-untouched ld-backs; the four fault guests' causes 12/13/15 with xtval; the R/W/X and U/SUM/MXR permission matrices incl. the fetch page fault; the Svade no-update proofs; MPRV's translated/physical distinction incl. the no-code-mapping fetch-immunity proof; the TLB stale/fence/G-retention sequence; the non-contiguous-page straddle as two fetch requests; medeleg's selective routing S-vs-M); the probe-bug corrections (mscratch is M-only — an S-mode write traps illegal, engine measured right; x8-already-zero records no change; the coalescing rule is address contiguity, measured 53 fetches); `cargo test -p semulith-verify run_rv64gc` 4/4 (76/76, per-step writes + never_written + determinism + declared fetch counts); the `fetches` schema field optional with the parcel-bounds refusal (GUEST-GEN 15→16, the RED arm fired); INTERACTION-MATRIX 28 cells every disposition resolves (the 14 guests on the SAME seven axes); the byte-level identity proof (both CLIs, all 62 pre-slice guests, `62 byte-identical, 0 diverge`, worktree removed); `make check` 8/8, `make gate` all green (DERIVED-COUNTS 423→424), smoke-bench 53 arms, bench wasm, both books | slice (e) part 1 landed: the 14-guest sv39 corpus with EVD-05 spec-side expectations — every walk fault cause, the permission matrix, Svade's no-update, MPRV, the TLB's fence semantics, the straddle, and delegation — with Bare byte-exact and the fetch-count witness made declarational |
 | `2026-10-04` | `.3` slice (d) | the pre-slice census (the stated nop at `system.sem.sexp:14-19,53-59` — the header bullet + the effect; the census's own reopen hook — the `address-translation caches (TLBs)` candidate with `.3 reopens this candidate`; mm-sfence's three fence cells); the parameter decision recorded (4 entries, fully-associative, FIFO, ASID-tagged at ASIDLEN=16, keyed by 4 KiB page — minimal for every rule to be testable; authority laboratory; the census carries the same parameters as data and the generator REFUSES a silent one, with a RED arm); the satp-visibility measurement (per-access reads for MODE/ASID — immediate; root-PPN visible on the next miss with stale hits sanctioned until a fence, the fence being the contract; SUM/MXR never cached — always immediate); the install discipline (a faulting access installs nothing; a load past a D=0 leaf installs the D=0 entry — the legal stale store fault after software sets D without fencing, then the fence restores); the sem-operator landing (`tlb-invalidate` in schema + the extended binary map + the Sem variant + the evaluator arm — rs1 the VA, rs2's low 16 the ASID, no register written; the time-scoped nop superseded with its date); the TLB suite (25/25: hit skips the walk, FIFO evicts in order, ASID tags + G hits, staleness legal then restored, Svade staleness through the cache, the four fence cases with retentions, the non-canonical rs1 no-op, the fence INSTRUCTION end-to-end, cold-reset determinism — tuples identical); the census re-answer + STATE-GEN 26/26 (+1 RED arm) + DEF-GEN both pairs (the definition manifest re-derived after the descriptor change); mm-sfence measured — NO re-derivation needed (its cells never claimed a nop; a fence writes no register); the byte-level identity proof on the TLB engine (both CLIs, all 62 guests, 1,884 == 1,884, cmp clean, worktree removed); `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 422→423), smoke-bench 53 arms, bench wasm, both books | slice (d) landed: the minimal fully-specified TLB (4-entry FA FIFO, ASID-16, G-bit retention, keyed by 4 KiB page), sfence.vma's four cases implemented as specified over it (over-fence recorded-not-taken; the invalid rs1 VA a no-op), the census re-answered with the parameters as data and the storage emitted from it, and the determinism rule tested — all with Bare byte-exact |
@@ -592,6 +584,7 @@ not raised).
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.4` (slice a) | `SEMULITH-P4-0023 (leaf P4-SYSTEM.4): slice a — the rv_a/rv64_a re-pin, the a.sexp fragment, and the assembler's A machinery` | the re-pin through the tracked extensions/ route (sha256+bytes; the scope leg's rv64_* collector gap fixed at root and the A tables under the M exclusion's named shape until the bind); the generated fragment (22 forms, owns aq/rl — no aqrl token in the tables, measured); the suffix rule (.aq/.rl/.aqrl the aq/rl field values, garbage refused by name) + the (rs1) spelling; 88 words assembled, the spike-dasm round-trip exact, 11 named RED refusals; the existing five fragments and rv64i's surfaces byte-identical; the slot and the 65-form census untouched |
 | `.3` (slice e part 2; the leaf CLOSES) | `SEMULITH-P4-0020 (leaf P4-SYSTEM.3): slice e part 2 — the sv39 Sail matched experiment (PTW/TLB traces explicit); the leaf closes` | the 14-guest experiment on three explicit dimensions (architecture by the corpus's change-observation rule indexed on sail's printed step numbers with the fetch-fault no-row convention; PTW read-for-read against the spec-side model with the laboratory's 4-entry FIFO live; TLB add/flush counts — 13 AGREE + 1 AGREE-RECORDED with the A/D-placement convention recorded, 0 DIVERGE); the tracked override's medeleg mask 0x3FF → 0xB3FF (the laboratory's discipline restricted to sail's accepted causes — the bisection named 10/14 reserved; verdict-neutral on the mm corpus, measured); the ELF build (the tracked assembler's bytes, .word-only source, PHDRS link at exactly 0x8000_0000); references.sexp's matched_scope updated; the acceptance met (the Result narrative on the leaf row) |
 | `.3` (slice e part 1) | `SEMULITH-P4-0019 (leaf P4-SYSTEM.3): slice e part 1 — the sv39 guest corpus, the matrix cells, the fetch-count witness made declarational` | the 14-guest corpus (the three translate guests with the Svade PTE-untouched ld-backs; the four walk-fault guests across causes 12/13/15; the two permission guests incl. the U-mode stage; svade's no-update pair; mprv's MPRV/MPP cells with the fetch-immunity proof; tlb-fence's stale/selective-G/full sequence; the non-contiguous straddle; deleg's selective routing) — every expectation derived by the spec-side model (EVD-05) and falsified green; the spec-side model itself (the pinned walk + Svade + MPRV + medeleg + region bounds + the slice-(d) TLB semantics, with the authoring fixpoint layout and the chain-accumulating audit); the `fetches` declaration (a fetch page fault issues no request; the straddle issues two; the coalescing rule measured as address contiguity); the probe-bug record (mscratch M-only; the x8 no-change; the unit-vs-contiguity model); the matrix cells on the SAME seven axes; Bare byte-exact (62/62); DERIVED-COUNTS 423→424 |
 | `.3` (slice d) | `SEMULITH-P4-0018 (leaf P4-SYSTEM.3): slice d — the TLB, sfence.vma's real four cases, the census/snapshot/determinism consequences` | the minimal fully-specified cache (4 entries, fully-associative, FIFO — the minimal parameters making every rule testable; authority laboratory; the census carries them as data and the generator refuses a silent census, RED-armed); the satp-visibility record (MODE/ASID immediate by per-access reads; root-PPN visible on the next miss with stale hits sanctioned until a fence; SUM/MXR never cached); the install discipline (faults install nothing; the D=0 load installs — the legal stale store fault, then the fence restores); the `tlb-invalidate` operator through the full pipeline (schema + system.sem.sexp's effect + gen_definition + the Sem variant + the evaluator arm; the time-scoped nop superseded with its date); the TLB suite (25/25: hit/FIFO/tagging/staleness/Svade-staleness/the four cases with retentions/the non-canonical no-op/the fence instruction end-to-end/determinism tuples identical); the census re-answer (present true with the parameters) + the trait member + the generated field; mm-sfence needs no re-derivation (measured: no nop claim, a fence writes no register); snapshot measured: no rv64gc surface today, a cold-restored cache is always legal; DERIVED-COUNTS 422→423 |
@@ -612,6 +605,29 @@ not raised).
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-04`: `.4` slice (a) done (`SEMULITH-P4-0023`) — the `rv_a`/`rv64_a` re-pin,
+  the `a.sexp` fragment, and the assembler's A machinery. The two tables came through
+  the tracked `extensions/` fetch route and are pinned in the rv64gc ledger
+  (sha256+bytes; 11 + 11 real rows — Zaamo's nine AMOs and Zalrsc's lr/sc, each `.W`
+  and `.D`, exactly the pinned RVWMO Tables 6/7 enumeration). Measured in execution
+  and fixed at root: the scope-vs-tables leg never collected `rv64_*` tables (latent —
+  no profile had ever declared an A or M form while pinning the 64-bit table), and the
+  A pin then broke that leg (87 enumerated vs 65 declared) until the M exclusion's
+  declared shape — "pinned for the fragment, not the scope" — was extended to the A
+  tables with the same flip condition (the bind, slice e). The fragment owns the `aq`
+  and `rl` fields (the brief's "aqrl" phrasing measured imprecise: the tables carry no
+  `aqrl` operand token — the rows list `aq rl` separately; the pinned csv's combined
+  `aqrl` 26..25 is where the suffix's value lands). The assembler whitelists `aq`/`rl`
+  (positions from the pinned arg_lut.csv, derived never typed), parses the
+  `.aq`/`.rl`/`.aqrl` suffix as the aq/rl FIELD VALUES (garbage suffixes and
+  suffix-on-non-atomic refused by name), and accepts the `(rs1)` parenthesized-address
+  spelling — all 22 forms × 4 suffix combinations assemble (88 words) and round-trip
+  through spike-dasm exactly, with 11 named RED refusals. The `(slot (id a) …)` stays
+  declared and the census stays 65 — both grow only at the atomic bind. The existing
+  five fragments re-derive byte-identical; no Rust touched; `make gate` green.
+  Next: slice (b) — `a.sem.sexp` + the new operators (AMO with store/AMO fault
+  semantics, load-reserved, store-conditional) through the schema/check/generator path.
 
 - `2026-10-04`: `.3` slice (e) part 2 done and the LEAF CLOSES (`SEMULITH-P4-0020`) —
   the sv39 Sail matched experiment on three explicit dimensions: the architecture

@@ -200,7 +200,8 @@ PY
   # fragment's sake, not the scope's — the exclusion is BY NAME, and P4-SYSTEM.2 slice (e)
   # extended this leg for rv64gc's 65-form census: Zicntr's counter reads are $pseudo_op
   # rows of csrrs, so a pseudo-only table contributes its pseudo names — the spec's Zicntr
-  # listings ARE those rows).
+  # listings ARE those rows) and MINUS the A tables under the same named exclusion until
+  # P4-SYSTEM.4's atomic bind grows the census (slice e).
   if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.sexp" "$LEDGER" <<'PY'
 import sys, pathlib, re
 sys.path.insert(0, "scripts")
@@ -208,17 +209,23 @@ import dossier_sexp as D
 enc, prof, ledger = (pathlib.Path(a) for a in sys.argv[1:])
 scope = D.load_profile(prof)["scope"]
 declared = {m.lower() for v in scope.values() if isinstance(v, list) for m in v}
-# the ledger's pinned instruction tables beyond the base
+# the ledger's pinned instruction tables beyond the base — rv_* AND rv64_* (measured at
+# the P4-SYSTEM.4 slice-a re-pin: an rv64_-only test never collected rv64_a — or rv64_m —
+# so a bound A/M scope would have enumerated 11 rows short; no profile declared an A or M
+# form before, so the gap had never fired)
 extra = []
 for es in D.load_references(ledger).get("encoding_source", []):
     for f in es.get("file", []):
         n = f["name"]
-        if n.startswith("rv_") and n not in ("rv_i", "rv64_i"):
+        if n.startswith(("rv_", "rv64_")) and n not in ("rv_i", "rv64_i"):
             extra.append(n)
 # the M tables are pinned for the fragment test case, not the scope — excluded unless the
-# profile declares an M form
+# profile declares an M form; the A tables likewise until P4-SYSTEM.4's atomic bind grows
+# the census to 87 (slice e) — the same named exclusion, the same flip condition
 if not any(m.startswith(("mul", "div", "rem")) for m in declared):
     extra = [n for n in extra if n not in ("rv_m", "rv64_m")]
+if not any(m.startswith(("lr.", "sc.", "amo")) for m in declared):
+    extra = [n for n in extra if n not in ("rv_a", "rv64_a")]
 names = set()
 for f in ["rv_i", "rv64_i", *extra]:
     lines = (enc / f).read_text().splitlines()
