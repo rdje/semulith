@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-04)_ — the enum-addition census; parcels coalesce, the request shape is the contract (P4-SYSTEM.3 slice b)
+
+Execution of the `.3` brief's checkpoint (b) measured:
+
+- **Adding one enum variant is a census, and the compiler is the census-taker.**
+  `Request::WalkAccess` broke three exhaustive matches, and each site got its own
+  profile's honest answer: FlatMemory ANSWERS it (8-byte aligned region read,
+  never a fetch — the one-fetch-per-step census keeps its meaning), the bench's
+  Counting census gains a `walks` field (zero on the rv64i bench by construction),
+  and rv64i's TestEnv panics named (the base profile has no translation
+  machinery — a fixture seeing the variant is a test bug, not an answer). The
+  alternative — a wildcard arm anywhere — is the silent-lie shape every gate here
+  exists to refuse.
+- **The request shape is the contract; the parcel split is machinery under it.**
+  Decision 5's 16-bit fetch parcels are required by the C slot's straddle, but
+  the corpus pins one `Request::Fetch` per step. The resolution is WHERE the
+  coalescing is defined: not "one fetch per step" as an invariant to break and
+  apologize for, but "one request whenever both translated parcel addresses share
+  one physical 32-bit unit" — a rule that is every case under Bare (byte-exact
+  today) and that names the page-straddle case as slice (c)'s own case rather
+  than silently coalescing it. The proof is two-layer: the fetch-count
+  assertions (1/step, every guest) and a full byte-level diff — both CLIs, the
+  parent commit's and this one, over all 62 guests: 1,884 == 1,884 lines, `cmp`
+  clean. "Bare is an exact identity path" is now a byte-measured sentence, not a
+  design hope.
+- **The unimplemented case names its slice.** A scratch probe (satp.MODE=Sv39,
+  drop to S, `ld`) produces `model error: Unimplemented { what: "Sv39 translation
+  — the walk is P4-SYSTEM.3 slice (c)'s" }`, cli rc=1 — the machinery shell's
+  honesty: the walk entry can never answer wrong, because it answers by name.
+- **Validation:** 6 translation unit tests (Bare-identity, M-never-translated,
+  the sub-M walk entry, MPRV selects MPP for data accesses only with SUM/MXR
+  carried, the out-of-vocabulary satp.MODE named panic, the 12/13/15 vocabulary);
+  the corpus 62/62 with fetch counts unchanged; `make check` 8/8 groups;
+  `make gate` all green (DERIVED-COUNTS 422 unchanged — the new arms are cargo
+  tests, not gate census members); smoke-bench 53 arms, bench wasm, both books.
+  Promotion: declined (the enum-addition ripple is structural — the compiler
+  names every match site, and this slice's checklist records the dispositions).
+
 ## _(2026-10-03)_ — the override must name what it depends on (P4-SYSTEM.3 slice a)
 
 Execution of the `.3` brief's checkpoint (a) measured:
@@ -612,35 +650,4 @@ declaration already has its decision records
 (`decision_device-applicability-by-declared-vehicle`,
 `decision_gate-applicability-by-declared-vehicle`); the regenerate-vs-edit and
 verify-the-parent's-behaviour techniques are the house's standing rules.
-
-## _(2026-10-02)_ — the second device dossier: content only, and the PDF text layer lies (P5-BOARD.10)
-
-The LAN9118 dossier (`lan9118-lab-v0`) needed **no machinery edit** — the `.2`
-by-declaration generalization was measured sufficient at the design brief, and the
-measurement held: every gate derived the device route from the `vehicle` declaration on
-first contact. The leaf's substance was the datasheet itself (109 pages; a real MAC+PHY,
-not a UART): 52 mirrored records against the UART's 19, three indexing levels (direct
-CSRs → MAC_CSR synchronizer → MII PHY bridge), and mirrors **generated** from
-requirements.sexp (`target/gen_nic_mirrors.py`) so the 52/52/52 verbatim discipline is
-impossible to break by hand — the gate would refuse drift anyway, but not hand-writing
-it is the stronger guarantee.
-
-The two extraction hazards, both measured and both now durable: (1) `pdftotext -layout`
-and `-raw` **disagree on Table 5-1's Default column** (two-column pages scramble row
-pairing) — per-register sections are the authority, and arithmetic cross-checks confirm
-(TDFREE `1200h` = Table 5-3's 4608 B at the default split); (2) §3.11's "2 s"/"100 s"
-reset times are **the PDF's own text layer mis-mapping µ to ASCII s** (hexdump-verified —
-not an extraction drop), internally contradicted by §5.3.13's clean "100us" and §3.11.4's
-own 100 ms bound. Only cleanly stated figures were pinned; the defect is recorded in
-`REQ-D-NIC-RESETS`.
-
-The composition findings are the leaf's sharpest output: FREE_RUN/GPT_CNT/INT_DEAS are
-guest-readable time sources inside a device whose CPU contract excludes all of them
-(`REQ-D-NIC-TIME-SOURCES` — frozen/deterministic, never wall-clock, never the retired-
-instruction count; `.4` owns the verdict), and the PHY link scene under a recorded-trace
-wire (`REQ-D-NIC-PHY-LINK`). The `profiles/` per-part bound bit for the first time
-(32→64 KiB; `decision_profiles-family-five-units`).
-
-Lesson: **promoted** — `docs/knowledge/a-pdf-text-layer-is-not-the-page.md` (the two
-text-layer failure modes and the verify-with-hexdump rule).
 

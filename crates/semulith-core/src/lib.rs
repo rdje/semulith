@@ -23,3 +23,4 @@ pub mod outcome;
 pub mod privilege;
 pub mod state;
 pub mod state_rv64gc;
+pub mod translation;

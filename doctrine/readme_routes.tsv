@@ -229,7 +229,16 @@ schema/	reader_navigation	partitioned	the schema language and per-family constru
 #   invariant to the cut). Ceiling bytes 393216 -> 786432 (2x, the family's own precedent);
 #   files unchanged at 160 (97 — not the firing axis); per-part unchanged at 64 KiB.
 #   Reviewed decision: docs/decisions/decision_changelog-family-aggregate-rederivation.md.
-docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	6	196608	160	786432	65536
+# Re-derivation, SEMULITH-P4-0016 (2026-10-04), when the FILE-COUNT axis fired at 161 > 160:
+#   the inversion of the 2026-10-01 firing — 97 -> 161 files in three days (~21/day at the
+#   current leaf velocity: each slice commit shards both heads, eleven slice commits across
+#   two trees on 2026-10-03), while the byte axis sits at 580,654/786,432 (74%, not the
+#   firing axis). Coarser granularity examined and rejected again (it moves files between
+#   axes; the per-part 64 KiB bound is the monolith protection, not a knob). Ceiling files
+#   160 -> 320 (2x, the family's own precedent; ~15 days at the measured rate); bytes and
+#   per-part unchanged; health 6 -> 161 files / 580,654 B. Reviewed decision:
+#   docs/decisions/decision_changelog-family-count-rederivation.md.
+docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	161	580654	320	786432	65536
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 # Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:
 #   docs/push-approvals.md  1,045 B at adoption (the header alone; zero entries today).

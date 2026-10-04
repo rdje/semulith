@@ -93,6 +93,12 @@ impl Environment for TestEnv {
                 }
                 Ok(Response::StoreDone)
             }
+            Request::WalkAccess { .. } => {
+                panic!(
+                    "a walk access crossed rv64i's boundary — the base profile has no \
+                        translation machinery; a fixture that sees one is a test bug"
+                )
+            }
         }
     }
 }

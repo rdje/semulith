@@ -88,6 +88,18 @@ pub enum Request {
         /// Value; the access writes `data & (2^width - 1)`, little-endian.
         data: u64,
     },
+    /// An implicit page-table-WALK access: the translation machinery's own 8-byte
+    /// read of a page-table entry at a PHYSICAL `addr` (P4-SYSTEM.3 decision 6 — the
+    /// D-FETCH-IMPLICIT precedent applied: an implicit access is observable as its own
+    /// request kind, never silently as a data `Load`). Read-only by construction:
+    /// the profile implements Svade, so a walk never writes a PTE, and a walk write
+    /// would be a description defect, not a boundary shape. The formal contract
+    /// wording of this vocabulary is P4-SYSTEM.9's charter ("translation inputs",
+    /// versioned not edited) — recorded in the tree.
+    WalkAccess {
+        /// Physical address of the PTE; must be 8-byte aligned.
+        addr: u64,
+    },
 }
 
 /// The environment's success answer to a [`Request`].
@@ -101,6 +113,8 @@ pub enum Response {
     Load(u64),
     /// The store completed.
     StoreDone,
+    /// The page-table entry a walk access read: exactly 64 raw bits, little-endian.
+    WalkAccess(u64),
 }
 
 /// Target-facing failure responses — legitimate environment answers under named target

@@ -139,10 +139,12 @@ impl Environment for FlatMemory {
         let (addr, width) = match request {
             Request::Fetch { addr } => (addr, AccessWidth::W),
             Request::Load { width, addr } | Request::Store { width, addr, .. } => (addr, width),
+            Request::WalkAccess { addr } => (addr, AccessWidth::D),
         };
         // Alignment is judged before region membership (misalignment is a property of the
         // address alone). A FETCH aligns to the profile's IALIGN (the fixture's declared
-        // fetch alignment); a data access aligns to its own width.
+        // fetch alignment); a data access aligns to its own width; a walk access aligns
+        // to the PTE's 8 bytes.
         let align = if matches!(request, Request::Fetch { .. }) {
             self.fetch_align
         } else {
@@ -165,6 +167,11 @@ impl Environment for FlatMemory {
             Request::Store { data, .. } => {
                 self.write(addr, width, data);
                 Ok(Response::StoreDone)
+            }
+            Request::WalkAccess { .. } => {
+                // A walk access is an 8-byte physical read; it is NOT a fetch (the
+                // one-fetch-per-step census keeps its meaning) and never a store.
+                Ok(Response::WalkAccess(self.read(addr, AccessWidth::D)))
             }
         }
     }

@@ -467,6 +467,9 @@ pub struct Census {
     pub loads: u64,
     /// Store requests.
     pub stores: u64,
+    /// Page-table walk-access requests (P4-SYSTEM.3 — always zero on the rv64i bench;
+    /// the boundary vocabulary gained the kind with the translation machinery).
+    pub walks: u64,
     /// Target-facing failure answers (access fault / misaligned).
     pub faults: u64,
     /// Contract violations (the environment broke a rule).
@@ -484,6 +487,7 @@ impl<E: Environment> Environment for Counting<'_, E> {
             Request::Fetch { .. } => self.census.fetches += 1,
             Request::Load { .. } => self.census.loads += 1,
             Request::Store { .. } => self.census.stores += 1,
+            Request::WalkAccess { .. } => self.census.walks += 1,
         }
         let response = self.inner.request(request);
         match response {

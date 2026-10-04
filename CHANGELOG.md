@@ -1,5 +1,47 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0016 (leaf P4-SYSTEM.3, slice b) — the translation module + hooks + effective mode; the Bare-identity proof byte-exact
+
+- The translation machinery shell lands as evaluator machinery (the brief's
+  decisions 3–6): `crates/semulith-core/src/translation.rs` beside `privilege.rs` —
+  the effective-mode computation as ONE computation (RVP-MACHINE §2.1.1.6.4: fetch
+  uses the current mode and M-mode fetch is never translated; loads/stores use
+  mstatus.MPP when MPRV=1, with SUM/MXR carried for the walk); satp.MODE dispatch
+  (M-effective and Bare are exact identity; Sv39 enters `Translate::Walk` — slice
+  (c)'s entry, until then the named unimplemented case, never a wrong answer; an
+  out-of-vocabulary satp.MODE is a named panic); the page-fault causes 12/13/15
+  entering core as raw u64 with the typed-enum asymmetry stated (the privileged
+  engine's causes are delivered raw through the one trap-deliver path).
+- The three hooks wired in `exec_rv64gc.rs` (fetch at :87, load :291, store :328 —
+  the brief's own locators): fetch in 16-bit parcels (decision 5) with the
+  recorded coalescing choice — parcels translate independently, and the fetch
+  issues exactly one `Request::Fetch` whenever both translated addresses share one
+  physical 32-bit unit, which under Bare is every case, so the Bare request shape
+  is byte-exact by construction (the corpus's one-fetch-per-step assertions hold
+  it); loads and stores translate after the model-side misalignment check (the
+  pinned implementation-defined priority, decision 7).
+- The walk-access boundary variant enters the engine's vocabulary:
+  `Request::WalkAccess { addr }` + `Response::WalkAccess(u64)` — 8-byte physical,
+  read-only by construction under Svade (the D-FETCH-IMPLICIT precedent applied;
+  the formal contract wording routed to `.9`, recorded). Its three exhaustive-match
+  dispositions: FlatMemory answers it (8-byte aligned region read, never a fetch —
+  the one-fetch-per-step census keeps its meaning), the bench census gains
+  `walks`, and rv64i's TestEnv panics named (the base profile has no translation
+  machinery).
+- The Bare-identity proof is byte-level and complete: both CLIs (the parent
+  commit's engine and this one, via a scratch worktree) drive all 62 guests and
+  1,884 trace lines compare `cmp`-clean — beside the standing cargo assertions
+  (62/62, per-step writes, step counts, never_written, fetch counts, cold-reset
+  determinism) and the Sv39-entry probe (an S-mode `ld` with satp.MODE=Sv39 →
+  `model error: Unimplemented { what: "Sv39 translation — the walk is P4-SYSTEM.3
+  slice (c)'s" }`, cli rc=1 — the entry names itself, never a wrong answer).
+  rv64i's engine untouched; 6 translation unit tests (Bare-identity,
+  M-never-translated, the walk entry, the MPRV rule, the named defect, the cause
+  vocabulary); `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 422
+  unchanged), smoke-bench 53 arms, bench wasm, both books.
+  Next: slice (c) — the 10-step walk with its fault matrix, the reserved-bit and
+  superpage checks, and the REQ-D-FETCH-IMPLICIT amendment.
+
 ## SEMULITH-AC-0058 (tree ARTIFACT-CLEANUP) — the 2026-10-04 §8 run: 90 incremental caches deleted (245 MB)
 
 - The ~24 h trigger fired (the `2026-10-03` record was a day old). The census found
@@ -786,61 +828,4 @@
   the board-definition fact kind registered in `doctrine/fact_ownership.tsv`.
 - Validation: both schema validations ok; every pin re-derived from its source artifact;
   `make gate` green; `mdbook build docs/book` rc 0.
-
-## SEMULITH-BA-0001 (leaf BOOK-APPARATUS.1) — the book's index: generated from the book's own text, gated against drift
-
-- The director's `2026-10-02` apparatus directive audited against the real book: glossary
-  present and unforkable (build-time `{{#include}}` of the canonical `docs/GLOSSARY.md`),
-  two annexes present and on-policy — the **index was absent**. It lands derived, the only
-  honest shape for a fact about a changing population: `scripts/gen_book_index.py` reads
-  `SUMMARY.md` + the canonical glossary + the acronym table + every chapter's text;
-  `docs/book/src/index.md` is what that derives (15,019 B, 40 terms).
-- New project doctrine #31 **`BOOK-INDEX`** (`scripts/check_book_index.sh`): the index
-  regenerates byte-exact or the commit fails — a hand-maintained index is a running total,
-  and a running total is a memory of a measurement, not a measurement. Six self-test arms,
-  fired RED before registration (DRIFT ×2, refusal-by-name ×2). Registered and mirrored
-  (`DOCTRINE_ENFORCEMENT.md`, the book's doctrine chapter, `TOOLBOX.md`,
-  `doctrine/fact_ownership.tsv`).
-- The annex policy is stated in the book's introduction: chapters stay readable; what is too
-  technical for the main line lives in an annex.
-- The directive's second half became durable: `decision_mdbook-incremental-engaging` +
-  `BOOK-APPARATUS.2` (the reading-experience audit). The TOC request was withdrawn by the
-  director — the mdBook sidebar is the TOC; the contents page built for it was reverted.
-- Defect fixed at root, not reported: the generator's printed term count was a fudge factor
-  (read `47` against the real `40`); it now derives from the emitted rows.
-
-## SEMULITH-MP-0001 (leaf MEMORY-POINTER.1) — MEMORY.md slimmed to the §6 next-action pointer
-
-- The director's `2026-10-02` ruling executed: `MEMORY.md` exists solely to point at the next
-  action, overwrite-only per `MEMORY_ARCHITECTURE.md` §6. Measured before: 34 lines / 7,031 B
-  (97% of the hard cap; health 30 / 1,792). After: **29 lines / 1,865 B**.
-- The audit verified every dropped line's durable home (trees, `docs/decisions/`,
-  `docs/knowledge/`, TOOLBOX, git's submodule pin); exactly one ruling was dangling —
-  `document EVERYTHING` (2026-10-01) — backfilled as `decision_document-everything`. The
-  ruling itself is `decision_memory-next-action-pointer`.
-- Gate lesson recorded: `TREE-CLAIMS` scans the `Active trees:` claim PER PHYSICAL LINE — the
-  first slim draft wrapped the list and fired `MISSING ACTIVE`; the list stays on one line.
-
-## SEMULITH-DS-0004 (tree DOC-SHARDING) — the append heads shard ahead of the next slice
-
-- Trigger: `CHANGELOG.md` at 65,035 of 65,536 bytes (501 headroom) and `DEV_NOTES.md` at
-  49,000 of 49,152 (152) with the next slice's entries already measured larger than the
-  remaining room — the designed fire point, answered by sharding, never by raising the cap.
-- `shard_history.py --max-bytes 63488`: 2 entries → `docs/changelog/shard-0113.md`,
-  completeness `54 == 52 kept + 2 moved` order-and-bytes exact, head 65,035 → 62,570.
-- `shard_history.py --head DEV_NOTES.md --max-bytes 46080`: 3 entries →
-  `docs/changelog/shard-0114.md`, completeness `35 == 32 kept + 3 moved` exact, head
-  49,000 → 45,633. Manifest 114 → 116 rows.
-
-## SEMULITH-AC-0056 (tree ARTIFACT-CLEANUP) — the 2026-10-02 §8 cleanup: 105 incremental caches, 139 MB
-
-- Time-triggered §8 run (the `2026-10-01` run was a full day old): 105 cargo
-  incremental-cache `.bin` files deleted (139 MB), every one under a cargo
-  `*/incremental/*` directory of `target/` (84 the project's own debug profile, 21
-  wasm32) — exactly the enumerated safe scope; post-delete re-census 0; `target`
-  4.0 G → 3.9 G; `.app-data` unchanged at 1.4 G.
-- 0 stray `.bin`/`.log` in `target/release` / `target/debug/deps`; no
-  `target/refs/*.log` present this run; the 7 cargo-home crate test fixtures kept
-  by policy (inputs, not artifacts). `docs/ARTIFACT_CLEANUP.md` overwritten with
-  the one-line record.
 

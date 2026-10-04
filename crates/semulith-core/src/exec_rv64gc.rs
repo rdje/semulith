@@ -22,11 +22,23 @@
 //!   remaining writes do not land (the scratch corpus runner's measured fix, ridden into
 //!   the tracked engine here — `Frame.trapped`, checked at the top of the evaluator and
 //!   before every register write).
+//! - **Translation hooks** (`P4-SYSTEM.3`): every access address passes through
+//!   [`crate::translation`] before it crosses the boundary — fetch in 16-bit
+//!   parcels (decision 5, coalescing to exactly one request whenever the parcels'
+//!   translated addresses share one physical 32-bit unit; under Bare that is every
+//!   case, so the Bare request shape is byte-exact), loads and stores after the
+//!   model-side misalignment check (the pinned implementation-defined priority,
+//!   decision 7). Bare is the exact identity path; satp.MODE=Sv39 enters the walk
+//!   — slice (c)'s — and until then is the named unimplemented case, never a wrong
+//!   answer. The effective mode is the one computation (§2.1.1.6.4): fetch uses
+//!   the current mode, data accesses use MPP when MPRV=1, and M is never
+//!   translated.
 //! - **Misaligned data accesses** raise their address-misaligned cause (4/6) before the
 //!   boundary is crossed (D-MISALIGN-DATA: a request the contract forbids must not be
 //!   formed); an outside-every-region access is the boundary's `AccessFault` answer,
 //!   delivered as the matching load/store access-fault cause (5/7).
-//! - **Fetch** — one 32-bit `Fetch` at the pc. IALIGN is 16 with C, so a fetch is
+//! - **Fetch** — one 32-bit `Fetch` per instruction in Bare (the parcels coalesce —
+//!   above). IALIGN is 16 with C, so a fetch is
 //!   alignment-legal at any even address; the environment judges (it carries the
 //!   profile's IALIGN as data) and an `AccessFault`/`Misaligned` answer is delivered as
 //!   cause 1/0 with tval the pc. A taken branch or jump to an ODD target raises
@@ -46,6 +58,7 @@ use crate::env::{AccessWidth, BoundaryError, Environment, Failure, Request, Resp
 use crate::outcome::ModelError;
 use crate::privilege;
 use crate::state_rv64gc::{ArchitecturalState, CSR_ELEMENTS};
+use crate::translation;
 
 /// Everything observable about one executed instruction: either the effect ran (any
 /// delivered trap included — delivery is execution on this composition), or the decode
@@ -84,7 +97,36 @@ pub fn step_over(
     insns: &[InsnDef],
 ) -> StepRv64gc {
     let pc = state.pc();
-    let word = match env.request(Request::Fetch { addr: pc }) {
+    // The fetch's two 16-bit parcels, translated independently (P4-SYSTEM.3 decision 5).
+    // The recorded coalescing choice: when both parcels' TRANSLATED addresses lie in one
+    // physical 32-bit unit, the fetch is exactly one request — under Bare that is every
+    // case, so the Bare request shape is byte-exact (the corpus's one-fetch-per-step
+    // census is the measurement). A page-straddling instruction is slice (c)'s case,
+    // named rather than silently coalesced.
+    let parcels = translation::fetch_parcels(pc);
+    let mut parcel_pas = [0u64; 2];
+    for (i, parcel) in parcels.iter().enumerate() {
+        match translation::translate(state, *parcel, translation::AccessKind::Fetch) {
+            translation::Translate::Identity(pa) => parcel_pas[i] = pa,
+            translation::Translate::Walk { .. } => {
+                return StepRv64gc::Failed(ModelError::Unimplemented {
+                    what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s",
+                });
+            }
+            translation::Translate::PageFault { cause, tval } => {
+                deliver(state, cause, tval, pc);
+                return StepRv64gc::Executed;
+            }
+        }
+    }
+    if parcel_pas[1] != parcel_pas[0].wrapping_add(2) {
+        return StepRv64gc::Failed(ModelError::Unimplemented {
+            what: "a page-straddling fetch — the two-parcel physical pair is slice (c)'s",
+        });
+    }
+    let word = match env.request(Request::Fetch {
+        addr: parcel_pas[0],
+    }) {
         Ok(Response::Fetch(word)) => word,
         Ok(_) => {
             return StepRv64gc::Failed(ModelError::InvalidDescription {
@@ -288,7 +330,24 @@ impl Frame<'_> {
                     self.deliver(4, a);
                     return (0, 64);
                 }
-                match self.env.request(Request::Load { width, addr: a }) {
+                // the translation hook (P4-SYSTEM.3): misalignment is judged first by
+                // the pinned implementation-defined priority (decision 7); the address
+                // that crosses the boundary is the translated one
+                let pa = match translation::translate(self.state, a, translation::AccessKind::Load)
+                {
+                    translation::Translate::Identity(pa) => pa,
+                    translation::Translate::Walk { .. } => {
+                        self.failed = Some(ModelError::Unimplemented {
+                            what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s",
+                        });
+                        return (0, 64);
+                    }
+                    translation::Translate::PageFault { cause, tval } => {
+                        self.deliver(cause, tval);
+                        return (0, 64);
+                    }
+                };
+                match self.env.request(Request::Load { width, addr: pa }) {
                     Ok(Response::Load(v)) => (v, w as u32),
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {
@@ -325,9 +384,25 @@ impl Frame<'_> {
                     self.deliver(6, a);
                     return (0, 64);
                 }
+                // the translation hook (P4-SYSTEM.3): same ordering as the load — the
+                // address that crosses the boundary is the translated one
+                let pa = match translation::translate(self.state, a, translation::AccessKind::Store)
+                {
+                    translation::Translate::Identity(pa) => pa,
+                    translation::Translate::Walk { .. } => {
+                        self.failed = Some(ModelError::Unimplemented {
+                            what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s",
+                        });
+                        return (0, 64);
+                    }
+                    translation::Translate::PageFault { cause, tval } => {
+                        self.deliver(cause, tval);
+                        return (0, 64);
+                    }
+                };
                 match self.env.request(Request::Store {
                     width,
-                    addr: a,
+                    addr: pa,
                     data: v,
                 }) {
                     Ok(Response::StoreDone) => (0, 64),
