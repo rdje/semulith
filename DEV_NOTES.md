@@ -1,5 +1,40 @@
 # DEV_NOTES.md
 
+## _(2026-10-04)_ — the matched experiment that caught its own config (P4-SYSTEM.3 slice e part 2; the leaf closes)
+
+Execution of the `.3` brief's checkpoint (e), part 2, measured:
+
+- **The experiment's first DIVERGE was the override's, not the models'.**
+  sv39-deleg came back `sail x22=13 vs expected x7=13` — the delegated page
+  fault reached M on Sail. The engine delegates bit 13 (the corpus is green),
+  Sail delegates it when allowed — the tracked override's `delegatable_bits`
+  0x3FF (causes 0-9, authored at `.2` before page faults existed in the
+  corpus) was the stale fact. The laboratory's state.sexp pins 0-10 | 12-15 |
+  18-20 WARL-any; Sail 0.14 REFUSES a mask covering its reserved causes, so
+  the matched value is the bisection's 0xB3FF (0-9 | 12 | 13 | 15) — the
+  widest both sides honor, proven verdict-neutral on the mm corpus before the
+  sv39 run went green. The override mirrors the laboratory only up to the
+  reference's own validation; the latitude is recorded, never hidden (the
+  override-mirror discipline is the rv64i dossier's DIFF-PLATFORM-DEFAULT
+  lesson applied — the census before the config, the measurement before the
+  claim; promotion: declined).
+- **A/D placement is a vocabulary difference, not a behavior one.** sv39-svade
+  was the lone non-AGREE: the model's walk faults at step 9 (A=0 → page fault,
+  never an update), Sail's `--trace-ptw` prints `Success` and takes the fault
+  a step later. Same reads, same delivered trap — where the check is JUDGED
+  differs. Recorded as the A/D-placement convention, never normalized away:
+  the trace comparison keys on the read sequence, and the architecture leg
+  proves the outcomes identical.
+- **Sail prints no row for a fetch that page-faults — but numbers it.** The
+  step counter jumps across the faulting fetch; indexing the comparison by the
+  PRINTED number (never list position) makes the expectations' `<fetch page
+  fault>` pseudo-steps exactly the no-row, no-write steps. And the TLB
+  dimensions needed no normalization at all: sv39-tlb-fence's 7 adds and 2
+  flushes match the laboratory's 4-entry FIFO event-for-event — a stronger
+  match than the brief priced (TLB-size/timing differences were budgeted as
+  recorded differences; on THIS corpus, Sail's defaults and the laboratory's
+  minimal cache produce identical event counts).
+
 ## _(2026-10-04)_ — the corpus that made the walk real, and three probe bugs it paid for (P4-SYSTEM.3 slice e part 1)
 
 Execution of the `.3` brief's checkpoint (e), part 1 (the corpus), measured:
@@ -630,38 +665,4 @@ its platform-dependent edges land on the *laboratory* guarantee (`OB-PLATFORM`),
 green discharge would pass with a CLINT bolted on. The board-level satisfaction has to
 be its own checked data (the `satisfies`/`answers` edges), which is why BOARD-VERDICT
 has three legs instead of one.
-
-## _(2026-10-02)_ — the ceiling taxed a property the file could not have: the instrument must match the failure mode (P5-BOARD.12)
-
-The day after the composed-unit bound raise, the director delegated the policy question
-it stood on ("yours to decision and act upon … SOTA, SIGNOFF and PRODUCTION-GRADE").
-The ruling: a per-part byte ceiling exists to catch silent accretion in
-hand-maintained files, and a regeneration-gated derived file cannot accrete silently —
-every byte is re-derived on every commit, and its size is a pure function of
-already-bounded inputs. So the interim 128 KiB raise (one day old) was the right
-stopgap and the wrong instrument, and the gate went two-tier: authored members keep
-the 64 KiB ceiling, derived members are exempt **as a checked property** — a
-fact_ownership.tsv mirror row with a regeneration-doctrine governor (closed set), never
-a declaration. The exemption consuming the FACT-OWNERSHIP registry is the part that
-makes it signoff-grade: the registry is already completeness-checked (every governor
-registered, every corpus pair named), so no second declaration surface exists to drift,
-and an authored file cannot smuggle under the exemption because nothing regenerates it.
-
-Two implementation details worth remembering. The per-part loop previously inspected
-only the single biggest member (`sort -rn | head -1`) — a second over-ceiling file was
-never even reported; the two-tier rule forced judging EVERY member, which is strictly
-stronger for authored content too. And the self-test harness gained the arms in the
-real corpus's shape: the RED for an authored file over the ceiling fires on fixtures
-because the real corpus's authored members are all (correctly) under the ceiling — a
-control that only ever sees GREEN in production is exactly the kind that must be seen
-RED in the harness. And a third, caught by DERIVED-COUNTS itself: the regen-set arms
-were first written under a new `armregen` helper the enumerator does not count, so 2
-of 17 arms were invisible to the arm total (357 ≠ 359) — fixed by folding the probe
-into `arm`'s optional `[cmd...]` form rather than teaching the enumerator a third
-idiom. New self-test idioms are not free: the arm total is a census, and a census
-only counts the shapes it knows.
-
-Lesson: **promoted** — `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md`
-(the question form + the checked-exemption pattern; the ruling itself is
-`decision_derived-members-of-bounded-families`).
 

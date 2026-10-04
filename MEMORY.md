@@ -16,15 +16,13 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-04`, `SEMULITH-AC-0058`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (2/10 — the profile resolved as `rv64gc-lab-v0` (`.1`) and the privileged machinery landed and flipped (`.2`); `.3` underway: slices (a)–(d) landed and slice (e) part 1 — the 14-guest sv39 corpus is green with EVD-05 spec-side expectations (every walk fault cause, the permission matrix, Svade's no-update, MPRV, the TLB's fence semantics, the straddle, delegation), Bare byte-exact).
+- **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-04`, `SEMULITH-AC-0058`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (3/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed and flipped (`.2`), and Sv39 translation and protection CLOSED (`.3`): the 14-guest sv39 corpus green with EVD-05 spec-side expectations and the Sail matched experiment on three explicit dimensions — 13 AGREE + 1 AGREE-RECORDED of 14 (the A/D-placement convention), the tracked override's medeleg mask widened to 0xB3FF, verdict-neutral on the mm corpus).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.3` slice (e) part 2 — the Sail matched experiment
-  (the PTW/TLB traces explicit via `--trace-ptw`/`--trace-tlb`, excluded from
-  `--trace`) against the Svade-flipped tracked override, `compare_sail.py`
-  extended — AGREE/divergence per guest recorded honestly (TLB-size/timing
-  differences are RECORDED differences, never normalized) — then the leaf's
-  acceptance and closure (`SEMULITH-P4-0020`; frontier → `.4` atomics and
-  reservations, LIVE_STATUS 3/10). Slice (e) part 1 landed `SEMULITH-P4-0019`
+- next_action: `P4-SYSTEM.4` — atomics and reservations (atomic widths,
+  reservation semantics, failed conditional stores, overlap and external-write
+  cases; catalog `C16`, `docs/CPU_ENVIRONMENT.md` §2; the acceptance: single-core
+  reservation behaviour validated here, multicore memory-model work stays
+  `MC-MULTICORE`). `P4-SYSTEM.3` closed `2026-10-04` with `SEMULITH-P4-0020`
   (DERIVED-COUNTS 424).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the

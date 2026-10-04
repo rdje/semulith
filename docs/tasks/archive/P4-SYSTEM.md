@@ -1535,3 +1535,136 @@ machinery shell, the 10-step walk, completed `2026-10-04`), split out on
   `docs/TASK_TREE.md` (unchanged — `.3` first), `docs/book/src/plan/p4.md` —
   shards at their ceilings.
 
+
+`P4-SYSTEM.3` slice (e) part 1 — the sv39 guest corpus + the matrix cells + the Bare-identity proof (`2026-10-04`, `SEMULITH-P4-0019`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (e): MPRV=1/SUM/MXR + the sv39
+  guests + the matrix cells + the Sail matched experiment + the reports and the
+  book — the leaf's LAST slice, split at execution: part 1 is the corpus (this
+  commit); part 2 is the Sail matched experiment + leaf acceptance (`0020`).
+  Measured pre-slice: the tracked sv39 path was proven only by the 25 translation
+  unit tests — no full guest had ever executed a walk — and the corpus's
+  one-fetch-per-step witness had no way to speak about a guest whose FETCH
+  page-faults (such a step issues walk accesses but no `Request::Fetch`):
+
+  ```
+  $ grep -c 'sv39' profiles/rv64gc-lab-v0/guests/run-order.txt
+  0                        # no sv39 guest existed
+  $ grep -n 'trace.fetches as usize, g.executed_steps' crates/semulith-verify/src/run_rv64gc/tests.rs | wc -l
+  1                        # the witness that would misread a fetch page fault
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior; the slice builds
+  the guest-level falsification. Five design decisions, each recorded in the
+  authoring tooling (`target/p4-system-2/sv39/`):
+  1. **The tables are page-aligned and the code is identity-mapped** (the walk
+     reads `ppn×4096 + vpn×8`): ROOT/L1T/L0T/L1C/L0C each on its own page at
+     entry+0x1000..0x5000, code through root[2]→L1C[0]→L0C[0], the translated
+     test VA at 0x0040_2000 (vpn 0/2/2) landing on the staged data page.
+  2. **Addresses materialize by auipc+addi chains, never plain lui** (lui
+     sign-extends bit 19 of the upper half), ≤ 2047 per step, laid out by a
+     fixpoint and AUDITED: `author.py::write_guest` accumulates every chain and
+     refuses a target that is neither an in-range instruction nor a declared
+     table/data page.
+  3. **EVD-05 by a spec-side model** (`sv39gen.py::Spec`): the pinned 10-step
+     walk (RVP-SUPERVISOR §11.1.3.2, LEVELS=3/PTESIZE=8 per §11.1.4.1), Svade
+     (a needed A/D update is a page fault, never a write), MPRV effective mode,
+     medeleg, the laboratory's region bounds (access faults 1/5/7), and the
+     slice-(d) TLB semantics — re-derived in Python from the chapters, never
+     read from an engine run; the corpus runner falsifies every value.
+  4. **The stage-token handler discipline** — the run's own probe lesson:
+     mscratch is an M-only CSR, so an S-mode `csrrw mscratch` traps illegal
+     (cause 2) — the FIRST draft of two guests did exactly that and the engine
+     measured right (the family rule: a wrong trace answer is a probe bug until
+     proven an engine bug). Tokens that S must set travel in sscratch; the
+     handler routes on a two-token scheme (1 → the drop-to-M/U section, else
+     the fault-record path).
+  5. **The fetch count is a declared observation** (`fetches`): a step whose
+     fetch page-faults in the walk issues NO fetch request; a page-straddling
+     instruction whose parcels' physical addresses are non-contiguous issues
+     TWO — and the recorded coalescing rule is ADDRESS CONTIGUITY
+     (`parcel_pas[1] == parcel_pas[0] + 2`, exec_rv64gc.rs), which the slice's
+     first (unit-based) model got wrong and the measured 53 fetches corrected.
+
+- [x] **FIX** — the 14-guest corpus at `profiles/rv64gc-lab-v0/guests/`:
+  `sv39-translate-4k` (the happy path + the M-mode ld-back of the walked PTE,
+  byte-untouched at 0x2001_80CF after two translated loads and a translated
+  store — the Svade side-effect proof, x7/x8/x9 never_written), `-2m` and `-1g`
+  (the superpage walks terminating at levels 1/2); `sv39-fault-canonical`
+  (walk step 1), `-invalid` (V=0, step 3), `-reserved` (W-without-R, step 4),
+  `-superpage` (misaligned mega + giga); `sv39-perm-rwx` (R-only store → 15,
+  X-only load with MXR=0 → 13, a FETCH into the X=0 page → 12);
+  `sv39-perm-usr` (U/SUM/MXR from S via sstatus, then a U-mode stage on its own
+  U=1 code page — the U fetch from a U=0 page would fault, the negative shape);
+  `sv39-svade` (A=0 load → 13, D=0 store → 15, D=0 load LEGAL, both PTEs
+  ld-backed byte-untouched); `sv39-mprv` (MPRV=1/MPP=S translated load+store in
+  M with NO code mapping present — execution continuing is the fetch-immunity
+  proof; MPP=U → page fault 13; MPRV=0 → access fault 5, visibly distinct);
+  `sv39-tlb-fence` (stale before the fence, ASID-selective fence retaining the
+  G=1 entry, full fence restoring truth — the slice-(d) semantics as a guest);
+  `sv39-straddle` (a 32-bit instruction whose parcels live on non-contiguous
+  pages — two fetch requests — plus the IALIGN-16 cells that coalesce);
+  `sv39-deleg` (medeleg bit 13 routes the load page fault to the S handler —
+  scause/stval/sepc + sret — while the ecall still lands in M). Supporting:
+  `run-order.txt` (+14), `guests_rv64gc.rs` (regenerated, 76 guests),
+  `interactions.sexp` (the 14 mapped onto the SAME seven axes, no axis added),
+  `schema/expectations.sexp` + `scripts/dossier_sexp.py` (the optional
+  `fetches` field), `scripts/gen_guests.py` (the field + the parcel-bounds
+  refusal), `crates/semulith-verify/src/run_rv64gc/tests.rs` (the witness
+  compares the declared count), `crates/semulith-verify/src/guests.rs`
+  (regenerated — rv64i gains the struct field only),
+  `scripts/check_guest_gen.sh` (+1 RED arm).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ for g in sv39-translate-4k sv39-translate-2m sv39-translate-1g sv39-fault-canonical \
+             sv39-fault-invalid sv39-fault-reserved sv39-fault-superpage sv39-perm-rwx \
+             sv39-perm-usr sv39-svade sv39-mprv sv39-tlb-fence sv39-straddle sv39-deleg; do
+      semulith demo --profile=rv64gc-lab-v0 --guest=$g | tail -1; done
+  guest <name> (rv64gc-lab-v0): expectations met          # ×14
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed; 0 failed     # 76/76 on the walk+TLB engine, per-step
+    # writes exact, never_written, cold-reset determinism, declared fetch counts
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 | tail -1
+  28 cells declared, every disposition resolves
+  $ bash scripts/check_guest_gen.sh --self-test
+  GUEST-GEN --self-test: 16 pass / 0 fail   # +1 RED arm: a fetches count outside
+                                            # the parcel bounds is refused
+  $ bash scripts/check_derived_counts.sh | grep -c DRIFT; echo 0 drift after LIVE_STATUS 423->424
+  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
+  $ make smoke-bench → ok (53 arms)   $ make bench → wasm (133715 bytes)   $ make book → both books
+  ```
+
+- [x] **NO REGRESSION** — the Bare-identity proof is byte-level on the
+  corpus-extended engine: both CLIs (a scratch worktree at `e839c1b`, removed
+  after) drive all 62 pre-slice guests, every demo output byte-identical. The
+  62 pre-slice guests' expectations are untouched — `fetches` is OPTIONAL and
+  defaults to the declared instruction count, so the witness is exactly as
+  strict for them; rv64i's engine and expectations untouched (its fixture
+  regenerates with the new struct field only, the standing
+  generator-fingerprint precedent); DERIVED-COUNTS re-derived, never
+  incremented:
+
+  ```
+  $ <the identity loop over the parent's run-order, both CLIs> | tail -1
+  identity: 62 byte-identical, 0 diverge
+  $ git diff e839c1b -- profiles/rv64i-lab-v0/ | wc -l
+  0                        # rv64i's profile is untouched
+  $ git diff e839c1b --name-only -- profiles/rv64gc-lab-v0/guests/ | grep -v sv39
+  profiles/rv64gc-lab-v0/guests/run-order.txt   # the only non-sv39 change: the +14 order lines
+  $ bash scripts/check_derived_counts.sh >/dev/null; echo rc=$?
+  rc=0                     # 423->424 re-derived (+1 GUEST-GEN arm)
+  ```
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + the
+  slice-(d) checklist archived at the FOURTH per-part ceiling crossing +
+  checklist + verification/commit logs + changelog), `MEMORY.md` (next_action →
+  the Sail matched experiment, part 2), `CHANGELOG.md`, `DEV_NOTES.md` (the
+  probe-bug classes — the M-only-CSR token and the coalescing-rule model;
+  promotion: declined (both are the family's own recorded disciplines — a wrong
+  trace answer is a probe bug until proven an engine bug — and this slice's
+  checklist carries the instances)), `LIVE_STATUS.md` (the re-derived 424 arms
+  only), `docs/TASK_TREE.md` (unchanged — `.3` first), `docs/book/src/plan/p4.md`
+  — CHANGELOG/DEV_NOTES sharded at their ceilings.
+

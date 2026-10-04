@@ -1,5 +1,44 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0020 (leaf P4-SYSTEM.3, slice e part 2; the leaf CLOSES) — the sv39 Sail matched experiment (PTW/TLB traces explicit)
+
+- The sv39 matched experiment runs on THREE explicit dimensions against Sail 0.14
+  under the tracked Svade-flipped override: the ARCHITECTURE (the corpus's own
+  change-observation rule against the EVD-05 expectations, indexed on Sail's
+  printed step numbers — Sail numbers the fetch-fault step but prints no row for
+  it, and the expectations' `<fetch page fault>` pseudo-steps are exactly those
+  no-row, no-write steps, the recorded harness convention); the PAGE-TABLE WALKS
+  (Sail's `--trace-ptw` against the spec-side model's walk log with the
+  laboratory's 4-entry FIFO live — read-for-read identical on every guest:
+  the PTE values at the same addresses at the same levels); and the TLB EVENTS
+  (`--trace-tlb` — sv39-tlb-fence shows the same 7 adds / 2 flushes on both
+  sides). Verdict: **13 AGREE + 1 AGREE-RECORDED, 0 DIVERGE of 14**. The one
+  convention recorded, never normalized: Sail judges A/D AFTER the walk (PTW:
+  Success, then the trap), the laboratory's walk judges it at step 9 (a
+  walk-outcome fault) — the delivered trap (cause, xtval) is identical.
+- The one tracked content change: the matched override's medeleg mask widened
+  0x3FF → 0xB3FF — sv39-deleg measured the old mask making medeleg bit 13
+  read-only-zero on Sail (the page fault reached M, not S: sail's x22=13 against
+  the expectation's x7=13). The laboratory's state.sexp pins causes 0-10 | 12-15
+  | 18-20 WARL-any; Sail 0.14 refuses its reserved causes (the bisection named
+  10 and 14, 17-20 rejected wholesale), so 0xB3FF (0-9 | 12 | 13 | 15) is the
+  widest mask both sides honor — proven verdict-neutral on the mm corpus (11/12
+  AGREE under the widened override, mm-wfi's TW cell named at the same step).
+- The ELF build keeps the tracked assembler the owner of the bytes (the corpus's
+  operand syntax never reaches clang): a .word-only lowering plus a PHDRS link
+  script puts the image at EXACTLY 0x8000_0000 — the auipc+addi chains compute
+  absolute table addresses (the mm guests never noticed `--image-base`'s 0x1158
+  offset; their addressing is pc-relative).
+- The leaf's acceptance is met: permission failure produces the correct fault
+  AND the permitted page-table side effects (under Svade: none — every
+  translate/svade guest closes with the walked PTE read back byte-untouched);
+  the A/D policy is validated against the selected extensions and revision, not
+  chosen as a knob (Svade pinned at slice (a), Svadu not selected, the override
+  carries Svade:true/Svadu:false). The engine and the 76-guest corpus are
+  untouched (`git diff SEMULITH-P4-0019 -- crates/ profiles/.../guests/ | wc -l`
+  → 0); `make check` 8/8, `make gate` all green (DERIVED-COUNTS 424 unchanged).
+  Frontier → `P4-SYSTEM.4` atomics and reservations.
+
 ## SEMULITH-P4-0019 (leaf P4-SYSTEM.3, slice e part 1) — the sv39 guest corpus, the matrix cells, the fetch-count witness made declarational
 
 - The 14-guest sv39 corpus lands at `profiles/rv64gc-lab-v0/guests/`, every
@@ -807,32 +846,4 @@
   one reader before landing — parse gates work.
 - Fulfilment is chipdoc-side and asynchronous; a `MCU-DOCS.2` reconciles the answers
   when they arrive (the `P5-BOARD.9` pattern).
-
-## SEMULITH-BA-0002 (leaf BOOK-APPARATUS.2) — the reading-experience audit pass: 29 main-line chapters, 16 kept / 13 revised; the yield was factual drift
-
-- The first audit pass over the project book against
-  [`decision_mdbook-incremental-engaging`](docs/decisions/decision_mdbook-incremental-engaging.md):
-  six parallel chapter-group audits (the decision's four criteria operationalized), every
-  flagged item re-verified against the repository before any edit. The per-chapter
-  dispositions are recorded in [`docs/tasks/BOOK-APPARATUS.md`](docs/tasks/BOOK-APPARATUS.md).
-- **Twelve stale facts fixed at their lines** (each measured): `claim-scope.md` (four crates,
-  not three; the CPU-LAB self-contradiction; the 48+1-program corpus, not forty-one),
-  `plan/p0.md` (the contract is 36 obligations / 72 checks — the quote now matches the
-  regenerated G0-REPORT it claims to quote), `plan/p1.md` (G1 reads `passed` since
-  2026-09-30; 48 guests / 642 steps), `plan/p5-p7.md` (registration day is done),
-  `docs/ARCHITECTURE.md` (28/36/28 records), `docs/RISKS_AND_DECISIONS.md` §2 (four
-  current-state rows updated with measured states and dates — the column whose point is
-  tracking change), `docs/SOURCES_AND_NAMING.md` (the crates exist; the reservation claim
-  narrowed), `LIVE_STATUS.md` ("1 unit today" → 5).
-- **Three record violations revised**: the gates overview's duplicated sentence dropped;
-  `plan/p3.md`'s 68-line leaf-by-leaf update chain collapsed to a final-state paragraph
-  (both measured incidents kept; the tree carries the blow-by-blow); P7's cold mechanism
-  open gained its why-sentence. Terminology pointers added where a concept was leaned on
-  without introduction (F3/F6 → `docs/tasks/DSP-REVIEW.md`; CLINT glossed; the P3 forward
-  reference named).
-- **Two ` ```mermaid ` blocks rendered as raw source in the book** (no preprocessor) —
-  replaced by text-rendered flows; `mdbook-mermaid` deliberately NOT added (an
-  unsanctioned dependency is worse than a plainer diagram).
-- The book builds; the index regenerates clean (`gen_book_index.py --check` rc 0);
-  `make gate` green. The BOOK-APPARATUS tree closes (2/2).
 

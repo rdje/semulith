@@ -103,9 +103,23 @@ This gate authorises the planned next engineering stage: board implementation.
   stayed platform-conflicted by record, no attempt.
 
 - ID: `P4-SYSTEM.3` — **Sv39 translation and protection**
-  Status: `pending` (design brief `2026-10-03`, `SEMULITH-P4-0014`; slices (a) `SEMULITH-P4-0015`, (b) `SEMULITH-P4-0016`, (c) `SEMULITH-P4-0017` done, `2026-10-04`)
+  Status: **done** `2026-10-04` (design brief `SEMULITH-P4-0014`; slices (a) `SEMULITH-P4-0015`, (b) `SEMULITH-P4-0016`, (c) `SEMULITH-P4-0017`, (d) `SEMULITH-P4-0018`, (e) `SEMULITH-P4-0019` + `SEMULITH-P4-0020`)
   Goal: page-table format, walk ordering, permission checks, A/D update policy, ASIDs, translation invalidation, permitted walk side effects (catalog `C12`).
   Acceptance: permission failure produces the correct fault **and** the permitted page-table side effects; A/D policy is validated against the selected extensions and revision, not chosen as a knob.
+  Result: **met.** Permission failure produces the correct fault — the 14-guest corpus
+  falsifies every walk fault (non-canonical VA, V=0, reserved RWR, misaligned superpages,
+  the R/W/X and U/SUM/MXR refusals on load, store AND fetch) as causes 12/13/15 with
+  xtval = the VA, every expectation spec-derived (EVD-05), every one matched by Sail 0.14
+  (13 AGREE + 1 recorded convention of 14). The permitted page-table side effect under
+  the selected policy is **none**: every translate/svade guest closes with the M-mode
+  read-back of the walked PTE, byte-untouched — and Sail's `--trace-ptw` reads the same
+  PTEs at the same addresses on every walk. The A/D policy is validated against the
+  selected extensions and revision, not a knob: slice (a) pinned Svade (Svadu not
+  selected, ADUE WPRI), the override carries Svade:true/Svadu:false, and the one
+  vocabulary difference is recorded — Sail judges A/D after the walk, the laboratory
+  at step 9, the delivered trap identical. ASIDs and invalidation are validated as
+  behavior: stale before the fence, G=1 retained across the ASID-selective fence,
+  truth after the full one — Sail's `--trace-tlb` shows the same add/flush counts.
 
 - ID: `P4-SYSTEM.4` — **atomics and reservations**
   Status: `pending`
@@ -147,7 +161,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.3` | `pending` | Sv39 translation and protection — slices (a)–(d) landed (the Svade identity edit; the machinery shell; the 10-step walk; the TLB + sfence.vma's four cases) and slice (e) part 1 (the 14-guest sv39 corpus + matrix cells, Bare byte-exact); next is slice (e) part 2: the Sail matched experiment (PTW/TLB traces explicit) + the leaf's acceptance |
+| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — `.3` closed `2026-10-04` (the sv39 corpus + the Sail matched experiment, 13 AGREE + 1 recorded of 14); `.4` is the next leaf on the CPU path the board waits on |
 
 ## Decisions
 
@@ -560,150 +574,114 @@ counter enables gating S then U (mm-counters); stimecmp under TM then STCE
 differentially AGREED against the matched Sail 0.14 (the twelfth partial, one
 cell named). The leaf is **done**.
 
-`P4-SYSTEM.3` slices (a)–(d) (completed `2026-10-04`): their full acceptance
-checklists live verbatim in [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) — (a)–(c)
-split out at the third crossing of this file's 131,072 B per-part ceiling, (d) at
-the fourth (the `docs/tasks/` precedent; the ceiling was obeyed, not raised).
+`P4-SYSTEM.3` slices (a)–(d) and slice (e) part 1 (completed `2026-10-04`): their
+full acceptance checklists live verbatim in [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md)
+— (a)–(c) split out at the third crossing of this file's 131,072 B per-part ceiling,
+(d) at the fourth, (e) part 1 at the fifth (the `docs/tasks/` precedent; the ceiling
+was obeyed, not raised).
 
-`P4-SYSTEM.3` slice (e) part 1 — the sv39 guest corpus + the matrix cells + the Bare-identity proof (`2026-10-04`, `SEMULITH-P4-0019`):
+`P4-SYSTEM.3` slice (e) part 2 — the Sail matched experiment (PTW/TLB traces explicit) + the leaf's acceptance (`2026-10-04`, `SEMULITH-P4-0020`):
 
-- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (e): MPRV=1/SUM/MXR + the sv39
-  guests + the matrix cells + the Sail matched experiment + the reports and the
-  book — the leaf's LAST slice, split at execution: part 1 is the corpus (this
-  commit); part 2 is the Sail matched experiment + leaf acceptance (`0020`).
-  Measured pre-slice: the tracked sv39 path was proven only by the 25 translation
-  unit tests — no full guest had ever executed a walk — and the corpus's
-  one-fetch-per-step witness had no way to speak about a guest whose FETCH
-  page-faults (such a step issues walk accesses but no `Request::Fetch`):
+- [x] **REPRODUCE / ISSUE** — the privileged matched experiment for the sv39
+  corpus. Pre-slice census:
 
   ```
-  $ grep -c 'sv39' profiles/rv64gc-lab-v0/guests/run-order.txt
-  0                        # no sv39 guest existed
-  $ grep -n 'trace.fetches as usize, g.executed_steps' crates/semulith-verify/src/run_rv64gc/tests.rs | wc -l
-  1                        # the witness that would misread a fetch page fault
+  $ grep -c 'sv39' target/p4-system-2/sail/compare_sail.py
+  0                        # the mm driver names no sv39 guest
+  $ grep -c '0x0000_0000_0000_03FF' profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+  1                        # the override's medeleg mask: causes 0-9 only — page faults NOT
+                         # delegatable; state.sexp pins 0-10 | 12-15 | 18-20 as WARL-any
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --help | grep -c 'trace-ptw\|trace-tlb'
+  2                        # sail's PTW/TLB trace flags exist (own flags, never in --trace)
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior; the slice builds
-  the guest-level falsification. Five design decisions, each recorded in the
-  authoring tooling (`target/p4-system-2/sv39/`):
-  1. **The tables are page-aligned and the code is identity-mapped** (the walk
-     reads `ppn×4096 + vpn×8`): ROOT/L1T/L0T/L1C/L0C each on its own page at
-     entry+0x1000..0x5000, code through root[2]→L1C[0]→L0C[0], the translated
-     test VA at 0x0040_2000 (vpn 0/2/2) landing on the staged data page.
-  2. **Addresses materialize by auipc+addi chains, never plain lui** (lui
-     sign-extends bit 19 of the upper half), ≤ 2047 per step, laid out by a
-     fixpoint and AUDITED: `author.py::write_guest` accumulates every chain and
-     refuses a target that is neither an in-range instruction nor a declared
-     table/data page.
-  3. **EVD-05 by a spec-side model** (`sv39gen.py::Spec`): the pinned 10-step
-     walk (RVP-SUPERVISOR §11.1.3.2, LEVELS=3/PTESIZE=8 per §11.1.4.1), Svade
-     (a needed A/D update is a page fault, never a write), MPRV effective mode,
-     medeleg, the laboratory's region bounds (access faults 1/5/7), and the
-     slice-(d) TLB semantics — re-derived in Python from the chapters, never
-     read from an engine run; the corpus runner falsifies every value.
-  4. **The stage-token handler discipline** — the run's own probe lesson:
-     mscratch is an M-only CSR, so an S-mode `csrrw mscratch` traps illegal
-     (cause 2) — the FIRST draft of two guests did exactly that and the engine
-     measured right (the family rule: a wrong trace answer is a probe bug until
-     proven an engine bug). Tokens that S must set travel in sscratch; the
-     handler routes on a two-token scheme (1 → the drop-to-M/U section, else
-     the fault-record path).
-  5. **The fetch count is a declared observation** (`fetches`): a step whose
-     fetch page-faults in the walk issues NO fetch request; a page-straddling
-     instruction whose parcels' physical addresses are non-contiguous issues
-     TWO — and the recorded coalescing rule is ADDRESS CONTIGUITY
-     (`parcel_pas[1] == parcel_pas[0] + 2`, exec_rv64gc.rs), which the slice's
-     first (unit-based) model got wrong and the measured 53 fetches corrected.
+- [x] **ROOT CAUSE (WHY + WHERE)** — no engine defect; the slice makes the
+  implicit accesses explicit and matched. Three measurements:
+  1. **The image must sit at EXACTLY 0x8000_0000.** The chains compute
+     absolute table addresses; lld's `--image-base` lands .text at base+0x1158
+     (the mm guests never noticed — pc-relative addressing). The build
+     (`build_sv39_elfs.py`) lowers the TRACKED assembler's words to a
+     .word-only source and links with a PHDRS script — the tracked assembler
+     owns the bytes, clang never parses the corpus's operand syntax.
+  2. **Sail numbers the fetch-fault step but prints no row for it.** The
+     architecture leg indexes by Sail's PRINTED step number; the expectations'
+     `<fetch page fault>` pseudo-steps are then exactly the no-row, no-write
+     steps — the recorded harness convention (measured on sv39-perm-rwx).
+  3. **The tracked override's medeleg mask predated sv39.** `0x3FF` (causes
+     0-9) made medeleg bit 13 read-only-zero on Sail, so sv39-deleg's page
+     fault reached M, not S — measured as a one-register divergence (sail's
+     x22=13 vs the expectation's x7=13). state.sexp pins 0-10 | 12-15 | 18-20
+     WARL-any; Sail 0.14 REFUSES its reserved causes (the bisection named 10
+     and 14, 17-20 rejected wholesale), so the matched mask is `0xB3FF`
+     (0-9 | 12 | 13 | 15) — the widest both sides honor, the WARL latitude
+     recorded (no guest delegates the rejected causes):
 
-- [x] **FIX** — the 14-guest corpus at `profiles/rv64gc-lab-v0/guests/`:
-  `sv39-translate-4k` (the happy path + the M-mode ld-back of the walked PTE,
-  byte-untouched at 0x2001_80CF after two translated loads and a translated
-  store — the Svade side-effect proof, x7/x8/x9 never_written), `-2m` and `-1g`
-  (the superpage walks terminating at levels 1/2); `sv39-fault-canonical`
-  (walk step 1), `-invalid` (V=0, step 3), `-reserved` (W-without-R, step 4),
-  `-superpage` (misaligned mega + giga); `sv39-perm-rwx` (R-only store → 15,
-  X-only load with MXR=0 → 13, a FETCH into the X=0 page → 12);
-  `sv39-perm-usr` (U/SUM/MXR from S via sstatus, then a U-mode stage on its own
-  U=1 code page — the U fetch from a U=0 page would fault, the negative shape);
-  `sv39-svade` (A=0 load → 13, D=0 store → 15, D=0 load LEGAL, both PTEs
-  ld-backed byte-untouched); `sv39-mprv` (MPRV=1/MPP=S translated load+store in
-  M with NO code mapping present — execution continuing is the fetch-immunity
-  proof; MPP=U → page fault 13; MPRV=0 → access fault 5, visibly distinct);
-  `sv39-tlb-fence` (stale before the fence, ASID-selective fence retaining the
-  G=1 entry, full fence restoring truth — the slice-(d) semantics as a guest);
-  `sv39-straddle` (a 32-bit instruction whose parcels live on non-contiguous
-  pages — two fetch requests — plus the IALIGN-16 cells that coalesce);
-  `sv39-deleg` (medeleg bit 13 routes the load page fault to the S handler —
-  scause/stval/sepc + sret — while the ecall still lands in M). Supporting:
-  `run-order.txt` (+14), `guests_rv64gc.rs` (regenerated, 76 guests),
-  `interactions.sexp` (the 14 mapped onto the SAME seven axes, no axis added),
-  `schema/expectations.sexp` + `scripts/dossier_sexp.py` (the optional
-  `fetches` field), `scripts/gen_guests.py` (the field + the parcel-bounds
-  refusal), `crates/semulith-verify/src/run_rv64gc/tests.rs` (the witness
-  compares the declared count), `crates/semulith-verify/src/guests.rs`
-  (regenerated — rv64i gains the struct field only),
-  `scripts/check_guest_gen.sh` (+1 RED arm).
+     ```
+     $ sail_riscv_sim --config-override <0x43FF-mask>.json sv39-deleg.elf 2>&1 | tail -1
+     Bits for reserved exceptions are set in `base.medeleg.delegatable_bits`.
+     $ sail_riscv_sim --config-override <0xB3FF-mask>.json sv39-deleg.elf 2>&1 | tail -1; echo rc=$?
+     Entry point: 0x80000000
+     rc=0
+     ```
+
+- [x] **FIX** — `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`
+  (delegatable_bits 0x3FF → 0xB3FF — the laboratory's medeleg discipline restricted
+  to what Sail 0.14 accepts; the only tracked content change — the experiment
+  tooling is untracked per convention: `build_sv39_elfs.py`, `compare_sail_sv39.py`,
+  sv39gen's walk/TLB logs + `simulate_n`/`simulate_until`);
+  `profiles/rv64gc-lab-v0/references.sexp` (matched_scope + trace_granularity, both
+  stale since slice h).
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ for g in sv39-translate-4k sv39-translate-2m sv39-translate-1g sv39-fault-canonical \
-             sv39-fault-invalid sv39-fault-reserved sv39-fault-superpage sv39-perm-rwx \
-             sv39-perm-usr sv39-svade sv39-mprv sv39-tlb-fence sv39-straddle sv39-deleg; do
-      semulith demo --profile=rv64gc-lab-v0 --guest=$g | tail -1; done
-  guest <name> (rv64gc-lab-v0): expectations met          # ×14
+  $ python3 target/p4-system-2/sail/compare_sail_sv39.py
+    AGREE           sv39-translate-4k      arch: 111 steps' change-observations exact
+                                           ptw:  2 walks read-for-read identical
+                                           tlb:  2 add(s), 0 flush(es) on both sides
+    ... (all three dimensions AGREE for translate-2m/1g, the four fault guests,
+         perm-rwx, perm-usr, mprv, tlb-fence (7 walks; 7 add / 2 flush), straddle,
+         deleg) ...
+    AGREE-RECORDED  sv39-svade             arch: 135 steps' change-observations exact
+                                           ptw:  3 walks read-for-read identical; 1 walk(s)
+                                                carry the A/D-placement convention
+                                           tlb:  2 add(s), 0 flush(es) on both sides
+  sv39 sail experiment: 13 AGREE, 1 AGREE-RECORDED, 0 DIVERGE of 14
+  $ python3 target/p4-system-2/sail/compare_sail.py | grep -c AGREE
+  11                       # the mm baseline reproduces (mm-wfi's named TW cell unchanged)
+  $ <the 12 mm guests' arch legs under the WIDENED tracked override> | grep -c AGREE
+  11                       # the mask widening is verdict-neutral (mm-wfi named as committed)
   $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed; 0 failed     # 76/76 on the walk+TLB engine, per-step
-    # writes exact, never_written, cold-reset determinism, declared fetch counts
-  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 | tail -1
-  28 cells declared, every disposition resolves
-  $ bash scripts/check_guest_gen.sh --self-test
-  GUEST-GEN --self-test: 16 pass / 0 fail   # +1 RED arm: a fetches count outside
-                                            # the parcel bounds is refused
-  $ bash scripts/check_derived_counts.sh | grep -c DRIFT; echo 0 drift after LIVE_STATUS 423->424
-  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
-  $ make smoke-bench → ok (53 arms)   $ make bench → wasm (133715 bytes)   $ make book → both books
+  test result: ok. 4 passed; 0 failed    # 76/76 — the engine is untouched by the experiment
+  $ make check → 8× ok   $ make gate → === all doctrines green ===
   ```
 
-- [x] **NO REGRESSION** — the Bare-identity proof is byte-level on the
-  corpus-extended engine: both CLIs (a scratch worktree at `e839c1b`, removed
-  after) drive all 62 pre-slice guests, every demo output byte-identical. The
-  62 pre-slice guests' expectations are untouched — `fetches` is OPTIONAL and
-  defaults to the declared instruction count, so the witness is exactly as
-  strict for them; rv64i's engine and expectations untouched (its fixture
-  regenerates with the new struct field only, the standing
-  generator-fingerprint precedent); DERIVED-COUNTS re-derived, never
-  incremented:
+- [x] **NO REGRESSION** — the only tracked content change is the override's
+  medeleg mask, proven verdict-neutral on the corpus that predates it (the
+  ADDRESSED box's two 11/12 measurements); the engine, the 76-guest corpus and
+  every gate are unchanged:
 
   ```
-  $ <the identity loop over the parent's run-order, both CLIs> | tail -1
-  identity: 62 byte-identical, 0 diverge
-  $ git diff e839c1b -- profiles/rv64i-lab-v0/ | wc -l
-  0                        # rv64i's profile is untouched
-  $ git diff e839c1b --name-only -- profiles/rv64gc-lab-v0/guests/ | grep -v sv39
-  profiles/rv64gc-lab-v0/guests/run-order.txt   # the only non-sv39 change: the +14 order lines
+  $ git diff SEMULITH-P4-0019 -- crates/ profiles/rv64gc-lab-v0/guests/ | wc -l
+  0                        # the engine and the corpus are untouched
   $ bash scripts/check_derived_counts.sh >/dev/null; echo rc=$?
-  rc=0                     # 423->424 re-derived (+1 GUEST-GEN arm)
+  rc=0                     # 424 arms, unchanged
   ```
 
-- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + the
-  slice-(d) checklist archived at the FOURTH per-part ceiling crossing +
-  checklist + verification/commit logs + changelog), `MEMORY.md` (next_action →
-  the Sail matched experiment, part 2), `CHANGELOG.md`, `DEV_NOTES.md` (the
-  probe-bug classes — the M-only-CSR token and the coalescing-rule model;
-  promotion: declined (both are the family's own recorded disciplines — a wrong
-  trace answer is a probe bug until proven an engine bug — and this slice's
-  checklist carries the instances)), `LIVE_STATUS.md` (the re-derived 424 arms
-  only), `docs/TASK_TREE.md` (unchanged — `.3` first), `docs/book/src/plan/p4.md`
-  — CHANGELOG/DEV_NOTES sharded at their ceilings.
-
-`P4-SYSTEM.3` slice (e) part 2 : pending — the Sail matched experiment (PTW/TLB
-traces explicit, excluded from `--trace`) + the leaf's acceptance and closure.
+- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
+  narrative + frontier → `.4` + checklist + logs + changelog), `docs/TASK_TREE.md`
+  (the row → `.4`, 3/10), `MEMORY.md` (next_action → `P4-SYSTEM.4`),
+  `LIVE_STATUS.md` (3/10), `CHANGELOG.md`, `DEV_NOTES.md` (the matched-mask
+  measurement and the A/D-placement convention; promotion: declined (the
+  override-mirror discipline is the rv64i dossier's recorded
+  DIFF-PLATFORM-DEFAULT lesson applied)), `docs/book/src/plan/p4.md`,
+  `profiles/rv64gc-lab-v0/references.sexp` (matched_scope + trace_granularity).
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-04` | `.3` slice (e) part 2 | the pre-slice census (the mm driver names no sv39 guest; the override's medeleg mask 0x3FF — page faults not delegatable, the laboratory pins 0-10 \| 12-15 \| 18-20 WARL-any; sail's --trace-ptw/--trace-tlb present as own flags); the ELF build (the tracked assembler owns the bytes — a .word-only source + a PHDRS link at EXACTLY 0x8000_0000, the chains' absolute addressing requires it); the fetch-fault harness convention (sail numbers the step, prints no row — the `<fetch page fault>` pseudo-steps are exactly the no-row no-write steps); the sv39-deleg measurement (sail x22=13 vs expected x7=13 — the override's mask, not the engine); the mask bisection (sail 0.14 names causes 10/14 reserved, rejects 17-20 → 0xB3FF, the widest mask both sides honor); the experiment (13 AGREE + 1 AGREE-RECORDED of 14 — every walk read-for-read identical incl. tlb-fence's 7 add / 2 flush; svade's A/D-placement convention recorded: sail judges A/D after the walk, the laboratory at step 9, the delivered trap identical); the no-regression (the widened mask verdict-neutral: 11/12 mm AGREE under it, mm-wfi's TW cell named at the same step; `git diff SEMULITH-P4-0019 -- crates/ profiles/rv64gc-lab-v0/guests/ | wc -l` → 0); `cargo test -p semulith-verify run_rv64gc` 4/4; `make check` 8/8, `make gate` all green (DERIVED-COUNTS 424 unchanged) | slice (e) part 2 landed and the leaf CLOSES: the sv39 matched experiment — architecture, PTW and TLB explicit per guest — the acceptance met: the correct fault AND the permitted page-table side effects (none under Svade, the ld-back proof); A/D validated, not a knob |
 | `2026-10-04` | `.3` slice (e) part 1 | the pre-slice census (0 sv39 guests in the run order; the sv39 path proven only by the 25 translation unit tests; the one-fetch-per-step witness unable to speak about a fetch page fault); the authoring tooling (fixpoint layout + the chain-accumulating audit that knows table targets; the spec-side model — the pinned 10-step walk, Svade, MPRV, medeleg, region bounds, the slice-(d) TLB semantics — EVD-05, never engine output); the 14 guests each executed green through `demo` (translate-4k/2m/1g with the PTE-byte-untouched ld-backs; the four fault guests' causes 12/13/15 with xtval; the R/W/X and U/SUM/MXR permission matrices incl. the fetch page fault; the Svade no-update proofs; MPRV's translated/physical distinction incl. the no-code-mapping fetch-immunity proof; the TLB stale/fence/G-retention sequence; the non-contiguous-page straddle as two fetch requests; medeleg's selective routing S-vs-M); the probe-bug corrections (mscratch is M-only — an S-mode write traps illegal, engine measured right; x8-already-zero records no change; the coalescing rule is address contiguity, measured 53 fetches); `cargo test -p semulith-verify run_rv64gc` 4/4 (76/76, per-step writes + never_written + determinism + declared fetch counts); the `fetches` schema field optional with the parcel-bounds refusal (GUEST-GEN 15→16, the RED arm fired); INTERACTION-MATRIX 28 cells every disposition resolves (the 14 guests on the SAME seven axes); the byte-level identity proof (both CLIs, all 62 pre-slice guests, `62 byte-identical, 0 diverge`, worktree removed); `make check` 8/8, `make gate` all green (DERIVED-COUNTS 423→424), smoke-bench 53 arms, bench wasm, both books | slice (e) part 1 landed: the 14-guest sv39 corpus with EVD-05 spec-side expectations — every walk fault cause, the permission matrix, Svade's no-update, MPRV, the TLB's fence semantics, the straddle, and delegation — with Bare byte-exact and the fetch-count witness made declarational |
 | `2026-10-04` | `.3` slice (d) | the pre-slice census (the stated nop at `system.sem.sexp:14-19,53-59` — the header bullet + the effect; the census's own reopen hook — the `address-translation caches (TLBs)` candidate with `.3 reopens this candidate`; mm-sfence's three fence cells); the parameter decision recorded (4 entries, fully-associative, FIFO, ASID-tagged at ASIDLEN=16, keyed by 4 KiB page — minimal for every rule to be testable; authority laboratory; the census carries the same parameters as data and the generator REFUSES a silent one, with a RED arm); the satp-visibility measurement (per-access reads for MODE/ASID — immediate; root-PPN visible on the next miss with stale hits sanctioned until a fence, the fence being the contract; SUM/MXR never cached — always immediate); the install discipline (a faulting access installs nothing; a load past a D=0 leaf installs the D=0 entry — the legal stale store fault after software sets D without fencing, then the fence restores); the sem-operator landing (`tlb-invalidate` in schema + the extended binary map + the Sem variant + the evaluator arm — rs1 the VA, rs2's low 16 the ASID, no register written; the time-scoped nop superseded with its date); the TLB suite (25/25: hit skips the walk, FIFO evicts in order, ASID tags + G hits, staleness legal then restored, Svade staleness through the cache, the four fence cases with retentions, the non-canonical rs1 no-op, the fence INSTRUCTION end-to-end, cold-reset determinism — tuples identical); the census re-answer + STATE-GEN 26/26 (+1 RED arm) + DEF-GEN both pairs (the definition manifest re-derived after the descriptor change); mm-sfence measured — NO re-derivation needed (its cells never claimed a nop; a fence writes no register); the byte-level identity proof on the TLB engine (both CLIs, all 62 guests, 1,884 == 1,884, cmp clean, worktree removed); `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 422→423), smoke-bench 53 arms, bench wasm, both books | slice (d) landed: the minimal fully-specified TLB (4-entry FA FIFO, ASID-16, G-bit retention, keyed by 4 KiB page), sfence.vma's four cases implemented as specified over it (over-fence recorded-not-taken; the invalid rs1 VA a no-op), the census re-answered with the parameters as data and the storage emitted from it, and the determinism rule tested — all with Bare byte-exact |
 | `2026-10-04` | `.3` slice (c) | the pre-slice census (`grep -c FETCH` over rv64gc's requirements → 0: the amendment has NO mirrored record to supersede — the mirror's closure is 13 records and REQ-D-FETCH-IMPLICIT is not among them, so rv64i's owner record stays true of rv64i and the amendment lands as a new authored pair); the 10-step walk implemented cited step-by-step (§11.1.4.1's canonical check before any read; walk-access reads with the step-2 access fault by kind 1/5/7; V=0 and the W-without-R reserved case — the first draft's R∧W inversion caught by the fault-matrix tests written before the fix; bits 63/62–61/60–54 zero with Svnapot/Svpbmt named unselected; superpage misalignment; non-leaf D/A/U reserved; the shadow-stack step named N/A; U/SUM/MXR + R/W/X; Svade step 9 page-fault-instead-of-update with the byte-untouched proof; the PA by level); 17 translation tests covering the full matrix (3 leaf sizes with their walk counts 3/2/1, canonical-VA, V=0, reserved-RW, reserved bits ×3, misaligned superpage, non-leaf D/A/U ×3 + last-level pointer, U/SUM/MXR 6 cells, R/W/X 3 cells, Svade 4 cells, the step-2 access fault by kind, the MPRV cells, the satp.MODE defect, the straddle with 2 fetches + 6 walk reads + the joined word); `cargo test -p semulith-verify run_rv64gc` 4/4 groups; the byte-level identity proof on the walk-live engine (both CLIs, all 62 guests, 1,884 == 1,884, `cmp` clean, worktree removed); the probe updated (S-mode fetch under Sv39 with an empty root → V=0 → `mcause = 12`, `mtval =` the faulting VA — the slice-(b) stub now faults properly); the requirement amendment (D-WALK-IMPLICIT + verbatim REQ/OB mirrors, dependencies D-SV39/D-SVADE, RECORD-SCHEMA 20 files ok); `make check` 8/8 groups, `make gate` all green, smoke-bench 53 arms, bench wasm, both books | slice (c) landed: the 10-step Sv39 walk is live — cited step-by-step, the fault matrix proven cell-by-cell with the walk reads counted and the Svade PTE-untouched proof, the straddled fetch live, and the implicit-access vocabulary amended honestly (a new authored pair; the mirror measured absent) |
@@ -725,6 +703,7 @@ traces explicit, excluded from `--trace`) + the leaf's acceptance and closure.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.3` (slice e part 2; the leaf CLOSES) | `SEMULITH-P4-0020 (leaf P4-SYSTEM.3): slice e part 2 — the sv39 Sail matched experiment (PTW/TLB traces explicit); the leaf closes` | the 14-guest experiment on three explicit dimensions (architecture by the corpus's change-observation rule indexed on sail's printed step numbers with the fetch-fault no-row convention; PTW read-for-read against the spec-side model with the laboratory's 4-entry FIFO live; TLB add/flush counts — 13 AGREE + 1 AGREE-RECORDED with the A/D-placement convention recorded, 0 DIVERGE); the tracked override's medeleg mask 0x3FF → 0xB3FF (the laboratory's discipline restricted to sail's accepted causes — the bisection named 10/14 reserved; verdict-neutral on the mm corpus, measured); the ELF build (the tracked assembler's bytes, .word-only source, PHDRS link at exactly 0x8000_0000); references.sexp's matched_scope updated; the acceptance met (the Result narrative on the leaf row) |
 | `.3` (slice e part 1) | `SEMULITH-P4-0019 (leaf P4-SYSTEM.3): slice e part 1 — the sv39 guest corpus, the matrix cells, the fetch-count witness made declarational` | the 14-guest corpus (the three translate guests with the Svade PTE-untouched ld-backs; the four walk-fault guests across causes 12/13/15; the two permission guests incl. the U-mode stage; svade's no-update pair; mprv's MPRV/MPP cells with the fetch-immunity proof; tlb-fence's stale/selective-G/full sequence; the non-contiguous straddle; deleg's selective routing) — every expectation derived by the spec-side model (EVD-05) and falsified green; the spec-side model itself (the pinned walk + Svade + MPRV + medeleg + region bounds + the slice-(d) TLB semantics, with the authoring fixpoint layout and the chain-accumulating audit); the `fetches` declaration (a fetch page fault issues no request; the straddle issues two; the coalescing rule measured as address contiguity); the probe-bug record (mscratch M-only; the x8 no-change; the unit-vs-contiguity model); the matrix cells on the SAME seven axes; Bare byte-exact (62/62); DERIVED-COUNTS 423→424 |
 | `.3` (slice d) | `SEMULITH-P4-0018 (leaf P4-SYSTEM.3): slice d — the TLB, sfence.vma's real four cases, the census/snapshot/determinism consequences` | the minimal fully-specified cache (4 entries, fully-associative, FIFO — the minimal parameters making every rule testable; authority laboratory; the census carries them as data and the generator refuses a silent census, RED-armed); the satp-visibility record (MODE/ASID immediate by per-access reads; root-PPN visible on the next miss with stale hits sanctioned until a fence; SUM/MXR never cached); the install discipline (faults install nothing; the D=0 load installs — the legal stale store fault, then the fence restores); the `tlb-invalidate` operator through the full pipeline (schema + system.sem.sexp's effect + gen_definition + the Sem variant + the evaluator arm; the time-scoped nop superseded with its date); the TLB suite (25/25: hit/FIFO/tagging/staleness/Svade-staleness/the four cases with retentions/the non-canonical no-op/the fence instruction end-to-end/determinism tuples identical); the census re-answer (present true with the parameters) + the trait member + the generated field; mm-sfence needs no re-derivation (measured: no nop claim, a fence writes no register); snapshot measured: no rv64gc surface today, a cold-restored cache is always legal; DERIVED-COUNTS 422→423 |
 | `.3` (slice c) | `SEMULITH-P4-0017 (leaf P4-SYSTEM.3): slice c — the 10-step Sv39 walk, the fault matrix, the REQ-D-FETCH-IMPLICIT amendment` | the walk cited step-by-step (canonical-VA first; per-level walk-access reads with the step-2 access fault by kind 1/5/7; V=0 and W-without-R (the first draft's inversion caught by the tests); bits 63/62–61/60–54 zero with Svnapot/Svpbmt named unselected; misaligned superpage; non-leaf D/A/U reserved; U/SUM/MXR + R/W/X; Svade page-fault-instead-of-update with the PTE byte-untouched; the PA by level); the straddled fetch live (each parcel's own unit, joined); 17 fault-matrix tests with the walk reads counted per scenario (3/2/1 by leaf size, 0 for Bare and M-effective); the amendment measured first: the mirror's closure never carried REQ-D-FETCH-IMPLICIT, so the amendment is a NEW authored D-WALK-IMPLICIT + verbatim REQ/OB pair and rv64i's owner record stays true of rv64i; the Bare identity byte-exact on the walk-live engine (1,884 trace lines, cmp clean); the slice-(b) probe now faults properly (mcause 12, mtval = the VA) |
@@ -744,6 +723,17 @@ traces explicit, excluded from `--trace`) + the leaf's acceptance and closure.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-04`: `.3` slice (e) part 2 done and the LEAF CLOSES (`SEMULITH-P4-0020`) —
+  the sv39 Sail matched experiment on three explicit dimensions: the architecture
+  (the corpus's change-observation rule against sail 0.14 under the tracked
+  Svade-flipped override), the walks (`--trace-ptw` against the spec-side model's
+  walk log — read-for-read identical), and the TLB events (`--trace-tlb`; the same
+  7 add / 2 flush). 13 AGREE + 1 AGREE-RECORDED of 14 — sail judges A/D after the
+  walk, the laboratory at step 9, the delivered trap identical. The override's
+  medeleg mask widened 0x3FF → 0xB3FF (verdict-neutral on the mm corpus).
+  Acceptance met: the correct fault AND the permitted page-table side effects
+  (none under Svade); A/D validated, not a knob. Frontier → `.4` atomics.
 
 - `2026-10-04`: `.3` slice (e) part 1 done (`SEMULITH-P4-0019`) — the 14-guest sv39
   corpus: the happy-path translates with the M-mode ld-back of the walked PTE
