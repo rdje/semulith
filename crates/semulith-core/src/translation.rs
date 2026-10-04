@@ -46,6 +46,122 @@
 use crate::env::{BoundaryError, Environment, Request, Response};
 use crate::privilege::{self, PrivilegeMode, PrivilegedHart};
 
+/// The minimal fully-specified translation lookaside buffer (P4-SYSTEM.3 decision 2):
+/// the stated laboratory parameters — 4 entries, fully-associative, FIFO replacement,
+/// ASID-tagged at ASIDLEN=16, keyed by 4 KiB page (a superpage's other pages re-walk
+/// and install independently — conformant, and it keeps the fence's per-address case
+/// exact). Authority laboratory; the state document's SEM-08 census carries the same
+/// parameters as data (the `translation-cache` candidate, `present true`), and the
+/// generated state module owns the storage because the census declares it.
+pub const TLB_CAPACITY: usize = 4;
+
+/// One TLB entry: a 4 KiB page's translation as the installing walk proved it,
+/// including the A/D bits it had then (under Svade the hardware never updates them
+/// after, and software that changes a PTE must fence — §11.1.2.1's own rule).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct TlbEntry {
+    /// The entry holds a translation.
+    pub valid: bool,
+    /// The G bit: retained across per-ASID and per-address+ASID fences (§11.1.2.1).
+    pub global: bool,
+    /// The ASID the translation was installed under (satp.ASID, 16 bits).
+    pub asid: u16,
+    /// The virtual page number (va >> 12).
+    pub vpn: u64,
+    /// The physical base of the 4 KiB page the entry translates `vpn` to.
+    pub pa_base: u64,
+    /// The leaf PTE's R bit at install.
+    pub r: bool,
+    /// The leaf PTE's W bit at install.
+    pub w: bool,
+    /// The leaf PTE's X bit at install.
+    pub x: bool,
+    /// The leaf PTE's U bit at install.
+    pub u: bool,
+    /// The leaf PTE's A bit at install (Svade's step-9 input — never updated after).
+    pub a: bool,
+    /// The leaf PTE's D bit at install (Svade's step-9 input — never updated after).
+    pub d: bool,
+    /// The leaf's level (0 = 4 KiB, 1 = 2 MiB, 2 = 1 GiB) — evidence, not a key.
+    pub level: i64,
+}
+
+/// The cache itself: the entries and the FIFO cursor. A pure function of the hart's
+/// own history by construction — cold-reset re-execution is trace-identical, and a
+/// snapshot that restores a cold cache restores a legal state (a miss is never
+/// wrong, only slower). The rv64gc path has no snapshot surface today (the CLI's
+/// snapshot/resume is rv64i-scoped by refusal); that consequence is recorded here.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct Tlb {
+    entries: [TlbEntry; TLB_CAPACITY],
+    cursor: usize,
+}
+
+impl Tlb {
+    /// The cold cache (all entries invalid, cursor at 0).
+    #[must_use]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// A hit is an entry that is valid, page-matched, and either global or
+    /// ASID-matched (§11.1.2.1: a hit must be for a translation valid since the last
+    /// subsuming fence — the fence cases below are what makes that true).
+    #[must_use]
+    pub fn lookup(&self, vpn: u64, asid: u16) -> Option<TlbEntry> {
+        self.entries
+            .iter()
+            .copied()
+            .find(|e| e.valid && e.vpn == vpn && (e.global || e.asid == asid))
+    }
+
+    /// Install at the FIFO cursor (ordinary replacement may evict any entry, the
+    /// global ones included — only the FENCE cases retain globals).
+    pub fn install(&mut self, entry: TlbEntry) {
+        self.entries[self.cursor] = entry;
+        self.cursor = (self.cursor + 1) % TLB_CAPACITY;
+    }
+
+    /// SFENCE.VMA's four cases, exactly (§11.1.2.1; the over-fence latitude is
+    /// recorded-not-taken). A non-canonical VA has no effect and raises nothing.
+    pub fn invalidate(&mut self, va: u64, asid: u16) {
+        let vpn = va >> 12;
+        let top = va >> 39;
+        let canonical = if (va >> 38) & 1 == 1 {
+            (1u64 << 25) - 1
+        } else {
+            0
+        };
+        if top != canonical {
+            return; // an invalid rs1 VA: no effect, no exception — the spec's sentence
+        }
+        for e in &mut self.entries {
+            let subsumed = match (va == 0, asid == 0) {
+                (true, true) => true,                         // all address spaces, all ASIDs
+                (true, false) => !e.global && e.asid == asid, // per-ASID, globals retained
+                (false, true) => e.vpn == vpn,                // per-address, every space
+                (false, false) => !e.global && e.asid == asid && e.vpn == vpn,
+            };
+            if subsumed {
+                e.valid = false;
+            }
+        }
+    }
+
+    /// How many entries currently hold a translation (the tests' witness).
+    #[must_use]
+    pub fn occupied(&self) -> usize {
+        self.entries.iter().filter(|e| e.valid).count()
+    }
+}
+
+/// SFENCE.VMA's effect: invalidate the hart's cache per the four cases (the legality
+/// of the fence itself — U-mode, and S with TVM=1 — is the semantics data's, in
+/// `system.sem.sexp`; this is the effect reaching the cache).
+pub fn fence<H: PrivilegedHart>(hart: &mut H, va: u64, asid: u16) {
+    hart.tlb().invalidate(va, asid);
+}
+
 /// The page-fault causes (RVP-SUPERVISOR §11.1.5's cause table), entering the core
 /// vocabulary as raw u64 — the asymmetry with the base profile's typed enum is the
 /// stated choice documented in the module header.
@@ -179,12 +295,17 @@ pub fn fetch_parcels(pc: u64) -> [u64; 2] {
 
 /// Translate one access address. The dispatch: an M-effective access is never
 /// translated (RVP-MACHINE §2.1.1.6.4 and the bare-M rule of §11.1.2); satp.MODE 0
-/// (Bare) is the exact identity path; satp.MODE 8 (Sv39) enters the walk. Any
-/// other MODE cannot arise through the WARL discipline (satp.MODE is `one-of 0 8`
-/// in the state document) — reaching one is a description defect, named rather
-/// than silently identity-mapped.
+/// (Bare) is the exact identity path; satp.MODE 8 (Sv39) consults the TLB first
+/// (a hit must be for a translation valid since the last subsuming fence) and
+/// walks on a miss, installing the result. Any other MODE cannot arise through
+/// the WARL discipline (satp.MODE is `one-of 0 8` in the state document) —
+/// reaching one is a description defect, named rather than silently
+/// identity-mapped. satp itself is read per access, so MODE and ASID changes are
+/// visible immediately; a root-PPN change is visible on the next MISS, and stale
+/// entries may hit until a fence — §11.1.2.1's sanctioned staleness, the fence
+/// being the contract (the TLB never auto-invalidates).
 pub fn translate<H: PrivilegedHart>(
-    hart: &H,
+    hart: &mut H,
     env: &mut dyn Environment,
     va: u64,
     kind: AccessKind,
@@ -196,12 +317,67 @@ pub fn translate<H: PrivilegedHart>(
     let satp = privilege::csr_state(hart, "satp");
     match (satp >> SATP_MODE_LO) & 0xF {
         0 => Translate::Identity(va),
-        8 => walk(env, va, kind, effective, satp),
+        8 => {
+            // §11.1.4.1's canonical-VA check precedes the cache too (a non-canonical
+            // VA faults, never hits — and was never installable, so the order is
+            // only observational discipline).
+            let top = va >> 39;
+            let canonical = if (va >> 38) & 1 == 1 {
+                (1u64 << 25) - 1
+            } else {
+                0
+            };
+            if top != canonical {
+                return page_fault(kind, va);
+            }
+            let asid = ((satp >> 44) & 0xFFFF) as u16;
+            let vpn = va >> 12;
+            if let Some(entry) = hart.tlb().lookup(vpn, asid) {
+                return finish(&entry, va, kind, effective);
+            }
+            walk(hart, env, va, kind, effective, satp, asid)
+        }
         mode => panic!(
             "satp.MODE {mode} is outside the profile's one-of {{0, 8}} vocabulary — \
              a description defect, never an identity"
         ),
     }
+}
+
+/// The leaf's judgment, shared by the walk's step 8–10 and a TLB hit: the
+/// permission check with the CURRENT effective mode and SUM/MXR (never cached),
+/// Svade's step 9 from the entry's stored A/D bits (the walk never uses the cache
+/// for a hardware A/D update because under Svade there is none — a needed update
+/// is the fault path, and a faulting access installs nothing), and the physical
+/// address from the 4 KiB page base.
+fn finish(entry: &TlbEntry, va: u64, kind: AccessKind, effective: EffectiveMode) -> Translate {
+    match effective.mode {
+        PrivilegeMode::U => {
+            if !entry.u {
+                return page_fault(kind, va);
+            }
+        }
+        PrivilegeMode::S => {
+            if entry.u
+                && (kind == AccessKind::Fetch || (kind != AccessKind::Fetch && !effective.sum))
+            {
+                return page_fault(kind, va);
+            }
+        }
+        PrivilegeMode::M => unreachable!("the M-effective case is identity above"),
+    }
+    match kind {
+        AccessKind::Fetch if !entry.x => return page_fault(kind, va),
+        AccessKind::Load if !(entry.r || effective.mxr && entry.x) => {
+            return page_fault(kind, va);
+        }
+        AccessKind::Store if !entry.w => return page_fault(kind, va),
+        _ => {}
+    }
+    if !entry.a || (kind == AccessKind::Store && !entry.d) {
+        return page_fault(kind, va);
+    }
+    Translate::Physical(entry.pa_base | (va & 0xFFF))
 }
 
 /// The 10-step Sv39 walk (RVP-SUPERVISOR §11.1.3.2 with LEVELS=3 and PTESIZE=8 per
@@ -212,24 +388,15 @@ pub fn translate<H: PrivilegedHart>(
 /// tests prove that). The misaligned-versus-page-fault priority is the pinned
 /// implementation-defined choice (decision 7): the model judges the ORIGINAL
 /// access's alignment before this walk ever runs (Table 7's latitude, recorded).
-fn walk(
+fn walk<H: PrivilegedHart>(
+    hart: &mut H,
     env: &mut dyn Environment,
     va: u64,
     kind: AccessKind,
     effective: EffectiveMode,
     satp: u64,
+    asid: u16,
 ) -> Translate {
-    // §11.1.4.1 (Sv39): the canonical-VA check — VA bits 63:39 must equal bit 38,
-    // else the access page-faults with the VA as tval.
-    let top = va >> 39;
-    let canonical = if (va >> 38) & 1 == 1 {
-        (1u64 << 25) - 1
-    } else {
-        0
-    };
-    if top != canonical {
-        return page_fault(kind, va);
-    }
     // Step 1: a = satp.PPN × 4096; i = LEVELS-1 (= 2, Sv39's three levels).
     let mut a = (satp & ((1u64 << 44) - 1)) << 12;
     let mut i: i64 = 2;
@@ -290,44 +457,33 @@ fn walk(
         if i > 0 && ppn & ((1u64 << (9 * i)) - 1) != 0 {
             return page_fault(kind, va);
         }
-        // Step 8 (permission): the U bit against the effective mode with SUM, then
-        // R/W/X by access kind with MXR (the shadow-stack step 7 is N/A — Zicfiss
-        // is not selected, named). A U-mode access of a U=0 page faults; an S-mode
-        // access of a U=1 page faults unless it is a data access with SUM=1 — an
-        // S-mode FETCH of a U=1 page faults unconditionally.
-        match effective.mode {
-            PrivilegeMode::U => {
-                if u_bit == 0 {
-                    return page_fault(kind, va);
-                }
+        // Steps 8–10 are the leaf's shared judgment (`finish`): build the entry the
+        // walk proved, let finish judge it with the current effective mode, and
+        // install only on success — a faulting access installs nothing, so the next
+        // access re-walks and re-faults (Svade's fault path must not be cached).
+        let g = (pte >> 5) & 1 == 1;
+        let pa = (ppn << 12) | (va & ((1u64 << (12 + 9 * i)) - 1));
+        let entry = TlbEntry {
+            valid: true,
+            global: g,
+            asid,
+            vpn: va >> 12,
+            pa_base: pa & !0xFFF,
+            r: r == 1,
+            w: w == 1,
+            x: x == 1,
+            u: u_bit == 1,
+            a: a_bit == 1,
+            d: d_bit == 1,
+            level: i,
+        };
+        match finish(&entry, va, kind, effective) {
+            Translate::Physical(pa) => {
+                hart.tlb().install(entry);
+                return Translate::Physical(pa);
             }
-            PrivilegeMode::S => {
-                if u_bit == 1
-                    && (kind == AccessKind::Fetch || (kind != AccessKind::Fetch && !effective.sum))
-                {
-                    return page_fault(kind, va);
-                }
-            }
-            PrivilegeMode::M => unreachable!("the M-effective case is identity above"),
+            fault => return fault,
         }
-        match kind {
-            AccessKind::Fetch if x == 0 => return page_fault(kind, va),
-            AccessKind::Load if r == 0 && !(effective.mxr && x == 1) => {
-                return page_fault(kind, va);
-            }
-            AccessKind::Store if w == 0 => return page_fault(kind, va),
-            _ => {}
-        }
-        // Step 9 (Svade, D-SVADE): the walk NEVER updates a PTE — a needed A update
-        // (A=0 on any access) or D update (D=0 on a store) is a page fault, and the
-        // PTE is byte-untouched after it.
-        if a_bit == 0 || (kind == AccessKind::Store && d_bit == 0) {
-            return page_fault(kind, va);
-        }
-        // Step 10: the physical address — the PTE's PPN with the VA's low bits by
-        // level (4 KiB at i=0, 2 MiB at i=1, 1 GiB at i=2).
-        let low = va & ((1u64 << (12 + 9 * i)) - 1);
-        return Translate::Physical((ppn << 12) | low);
     }
 }
 
@@ -469,13 +625,13 @@ mod tests {
         let mut env = WalkEnv::new();
         for kind in [AccessKind::Fetch, AccessKind::Load, AccessKind::Store] {
             assert_eq!(
-                translate(&state, &mut env, 0xDEAD_BEEF, kind),
+                translate(&mut state, &mut env, 0xDEAD_BEEF, kind),
                 Translate::Identity(0xDEAD_BEEF)
             );
         }
         state.set_mode(PrivilegeMode::S);
         assert_eq!(
-            translate(&state, &mut env, 0x1234, AccessKind::Load),
+            translate(&mut state, &mut env, 0x1234, AccessKind::Load),
             Translate::Identity(0x1234)
         );
         assert_eq!(env.walks, 0, "Bare makes no walk accesses");
@@ -487,15 +643,15 @@ mod tests {
         sv39(&mut state);
         let mut env = WalkEnv::new();
         assert_eq!(
-            translate(&state, &mut env, 0x8000_0004, AccessKind::Fetch),
+            translate(&mut state, &mut env, 0x8000_0004, AccessKind::Fetch),
             Translate::Identity(0x8000_0004)
         );
         assert_eq!(
-            translate(&state, &mut env, 0x8000_1000, AccessKind::Load),
+            translate(&mut state, &mut env, 0x8000_1000, AccessKind::Load),
             Translate::Identity(0x8000_1000)
         );
         assert_eq!(
-            translate(&state, &mut env, 0x8000_1000, AccessKind::Store),
+            translate(&mut state, &mut env, 0x8000_1000, AccessKind::Store),
             Translate::Identity(0x8000_1000)
         );
         assert_eq!(env.walks, 0, "an M-effective access makes no walk accesses");
@@ -511,7 +667,7 @@ mod tests {
         let pa = 0x8000_4000_u64;
         table_4k(&mut env, va, leaf_pte(pa & !0xFFF, V | A | D | R | W | X));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical((pa & !0xFFF) | (va & 0xFFF))
         );
         assert_eq!(env.walks, 3, "a 4 KiB leaf is three PTE reads (LEVELS=3)");
@@ -527,7 +683,7 @@ mod tests {
         let va = 0x0000_0000_0060_0456_u64;
         table_2m(&mut env, va, leaf_pte(0x8000_0000, V | A | D | R | W));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Store),
+            translate(&mut state, &mut env, va, AccessKind::Store),
             Translate::Physical(0x8000_0000 | (va & 0x1F_FFFF))
         );
         assert_eq!(env.walks, 2, "a 2 MiB leaf is two PTE reads");
@@ -540,7 +696,7 @@ mod tests {
             leaf_pte(0x8000_0000, V | A | D | R),
         );
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_0000 | (va & 0x3FFF_FFFF))
         );
         assert_eq!(env.walks, 1, "a 1 GiB leaf is one PTE read");
@@ -554,7 +710,7 @@ mod tests {
         let mut env = WalkEnv::new();
         let va = 0x0000_8000_0000_0000_u64; // bit 39 set with bits 63:39 clear: non-canonical
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -572,7 +728,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, R | A | D)); // V=0
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -581,7 +737,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | W | A | D)); // W=1 ∧ R=0: reserved
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -603,7 +759,7 @@ mod tests {
                 leaf_pte(0x8000_4000, V | R | A | D) | (1u64 << bit),
             );
             assert_eq!(
-                translate(&state, &mut env, va, AccessKind::Load),
+                translate(&mut state, &mut env, va, AccessKind::Load),
                 Translate::PageFault {
                     cause: 13,
                     tval: va
@@ -623,7 +779,7 @@ mod tests {
         // a level-1 leaf whose low 9 PPN bits are nonzero: misaligned 2 MiB
         table_2m(&mut env, va, leaf_pte(0x8000_1000, A | D | R));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -641,7 +797,7 @@ mod tests {
             let mut env = WalkEnv::new();
             env.write(ROOT + ((va >> 30) & 0x1FF) * 8, 8, pointer_pte(L1T) | dirty);
             assert_eq!(
-                translate(&state, &mut env, va, AccessKind::Load),
+                translate(&mut state, &mut env, va, AccessKind::Load),
                 Translate::PageFault {
                     cause: 13,
                     tval: va
@@ -653,7 +809,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, pointer_pte(0x8000_4000));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -671,14 +827,18 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_4000 | (va & 0xFFF))
         );
-        // S mode, U=1 page, SUM=0: data accesses fault
+        // S mode, U=1 page, SUM=0: data accesses fault (a cold hart — the previous
+        // cell's installed entry must not mask this one; caching is its own suite)
+        state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | U | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -689,25 +849,27 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | U | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_4000 | (va & 0xFFF))
         );
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | X | U | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Fetch),
+            translate(&mut state, &mut env, va, AccessKind::Fetch),
             Translate::PageFault {
                 cause: 12,
                 tval: va
             },
             "an S-mode fetch of a U page faults regardless of SUM"
         );
-        // U mode, U=0 page: faults
+        // U mode, U=0 page: faults (a cold hart, same reason)
+        state = hart();
+        sv39(&mut state);
         state.set_mode(PrivilegeMode::U);
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -719,7 +881,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | X | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -729,7 +891,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | X | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_4000 | (va & 0xFFF))
         );
     }
@@ -743,7 +905,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | U | A | D)); // X=0
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Fetch),
+            translate(&mut state, &mut env, va, AccessKind::Fetch),
             Translate::PageFault {
                 cause: 12,
                 tval: va
@@ -752,7 +914,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | U | A | D)); // R=0, X=0
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -761,7 +923,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | U | A)); // W=0
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Store),
+            translate(&mut state, &mut env, va, AccessKind::Store),
             Translate::PageFault {
                 cause: 15,
                 tval: va
@@ -780,7 +942,7 @@ mod tests {
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | D)); // A=0
         let before = env.image();
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::PageFault {
                 cause: 13,
                 tval: va
@@ -796,7 +958,7 @@ mod tests {
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | A)); // A=1, D=0
         let before = env.image();
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Store),
+            translate(&mut state, &mut env, va, AccessKind::Store),
             Translate::PageFault {
                 cause: 15,
                 tval: va
@@ -807,18 +969,26 @@ mod tests {
             before,
             "Svade: the store fault leaves the PTE untouched"
         );
+        // a load past a D=0 leaf installs the entry — the Svade staleness suite
+        // exercises exactly that interaction; these outcome cells run cold
+        state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | A));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_4000 | (va & 0xFFF)),
             "Svade reads D but never sets it — a load past a D=0 leaf is legal"
         );
         // A=1, D=1: the store translates
+        state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Store),
+            translate(&mut state, &mut env, va, AccessKind::Store),
             Translate::Physical(0x8000_4000 | (va & 0xFFF))
         );
     }
@@ -832,16 +1002,16 @@ mod tests {
         let mut env = WalkEnv::new();
         let va = 0x0000_0000_0040_2000_u64;
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Fetch),
+            translate(&mut state, &mut env, va, AccessKind::Fetch),
             Translate::AccessFault { cause: 1, tval: va },
             "the walk read faults as an instruction access fault"
         );
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::AccessFault { cause: 5, tval: va }
         );
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Store),
+            translate(&mut state, &mut env, va, AccessKind::Store),
             Translate::AccessFault { cause: 7, tval: va }
         );
     }
@@ -854,7 +1024,7 @@ mod tests {
         // M with MPRV=0: identity even under Sv39, and ZERO walk reads
         let mut env = WalkEnv::new();
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Identity(va)
         );
         assert_eq!(env.walks, 0);
@@ -863,7 +1033,7 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Load),
+            translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_4000 | (va & 0xFFF))
         );
         assert_eq!(
@@ -873,7 +1043,7 @@ mod tests {
         // …but the FETCH ignores MPRV: the current mode is M, so identity
         let mut env = WalkEnv::new();
         assert_eq!(
-            translate(&state, &mut env, va, AccessKind::Fetch),
+            translate(&mut state, &mut env, va, AccessKind::Fetch),
             Translate::Identity(va)
         );
         assert_eq!(env.walks, 0);
@@ -886,7 +1056,7 @@ mod tests {
         state.write_csr(CSR_SATP, 5 << 60); // raw storage write bypasses the WARL discipline
         let mut env = WalkEnv::new();
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-            translate(&state, &mut env, 0x1000, AccessKind::Load)
+            translate(&mut state, &mut env, 0x1000, AccessKind::Load)
         }));
         let err = outcome.expect_err("an out-of-vocabulary satp.MODE must panic, named");
         let text = err
@@ -943,5 +1113,332 @@ mod tests {
         );
         assert_eq!(env.walks, 6, "each parcel walks three levels");
         assert_eq!(state.pc(), va + 4);
+    }
+
+    // ---- the TLB (P4-SYSTEM.3 slice d): caching, staleness, the fence cases --------
+
+    const G: u64 = 32; // the PTE G bit
+
+    fn sv39_asid(state: &mut ArchitecturalState, asid: u64) {
+        state.write_csr(CSR_SATP, (8u64 << 60) | (asid << 44) | (ROOT >> 12));
+    }
+
+    #[test]
+    fn a_hit_skips_the_walk_and_the_fifo_evicts_in_order() {
+        let va = 0x0000_0000_0040_2000_u64;
+        let mut state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+        assert_eq!(env.walks, 3, "the first access walks");
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+        assert_eq!(env.walks, 3, "the second access HITS — no walk at all");
+        assert_eq!(state.tlb().occupied(), 1);
+        // five MORE installs (6 total) evict the first two in FIFO order
+        for k in 1..=5u64 {
+            let kv = va + 0x1000 * k;
+            table_4k(
+                &mut env,
+                kv,
+                leaf_pte(0x8000_4000 + 0x1000 * k, V | R | A | D),
+            );
+            assert_eq!(
+                translate(&mut state, &mut env, kv, AccessKind::Load),
+                Translate::Physical((0x8000_4000 + 0x1000 * k) | (kv & 0xFFF))
+            );
+        }
+        assert_eq!(state.tlb().occupied(), TLB_CAPACITY);
+        let before = env.walks;
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+        assert!(
+            env.walks > before,
+            "the oldest entry was evicted in FIFO order — a re-walk"
+        );
+    }
+
+    #[test]
+    fn asid_tags_and_global_hits() {
+        let va = 0x0000_0000_0040_2000_u64;
+        // a non-global entry hits only under its own ASID
+        let mut state = hart();
+        sv39_asid(&mut state, 7);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
+        translate(&mut state, &mut env, va, AccessKind::Load);
+        let walks = env.walks;
+        sv39_asid(&mut state, 7);
+        translate(&mut state, &mut env, va, AccessKind::Load);
+        assert_eq!(env.walks, walks, "same ASID: hit");
+        sv39_asid(&mut state, 9);
+        assert_ne!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::PageFault {
+                cause: 13,
+                tval: va
+            }
+        );
+        assert!(env.walks > walks, "a different ASID misses and re-walks");
+        // a G-bit entry hits under ANY ASID
+        let mut state = hart();
+        sv39_asid(&mut state, 7);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D | G));
+        translate(&mut state, &mut env, va, AccessKind::Load);
+        let walks = env.walks;
+        sv39_asid(&mut state, 42);
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+        assert_eq!(env.walks, walks, "a G-bit entry hits under any ASID");
+    }
+
+    #[test]
+    fn staleness_is_legal_without_a_fence_and_the_fence_restores_truth() {
+        let va = 0x0000_0000_0040_2000_u64;
+        let mut state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+        // the PTE changes with NO fence: the stale hit is LEGAL (§11.1.2.1's own rule)
+        table_4k(&mut env, va, leaf_pte(0x8000_8000, V | R | A | D));
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF)),
+            "a stale hit without a fence is the spec's sanctioned staleness, not a bug"
+        );
+        // SFENCE.VMA at the VA: the subsuming fence — the next access re-walks
+        fence(&mut state, va, 0);
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_8000 | (va & 0xFFF)),
+            "after the subsuming fence the walk sees the new PTE"
+        );
+        // and an illegal stale hit after that fence would be the TLB's own bug — the
+        // third access must HIT the NEW entry, not re-fault to the old one
+        let walks = env.walks;
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_8000 | (va & 0xFFF))
+        );
+        assert_eq!(env.walks, walks, "the new translation hits");
+    }
+
+    #[test]
+    fn svade_staleness_through_the_cache() {
+        let va = 0x0000_0000_0040_2000_u64;
+        let mut state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        // a load past a D=0 leaf is legal and INSTALLS the D=0 entry
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | A));
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Load),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+        // software sets D in the PTE WITHOUT fencing; a store hits the stale D=0
+        // entry and Svade-faults — legal staleness, the entry's bits judging
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | W | A | D));
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Store),
+            Translate::PageFault {
+                cause: 15,
+                tval: va
+            },
+            "the cached entry's D bit judges the store — a legal stale fault"
+        );
+        // after the fence the store walks, sees D=1, and translates
+        fence(&mut state, va, 0);
+        assert_eq!(
+            translate(&mut state, &mut env, va, AccessKind::Store),
+            Translate::Physical(0x8000_4000 | (va & 0xFFF))
+        );
+    }
+
+    #[test]
+    fn the_four_fence_cases() {
+        let va1 = 0x0000_0000_0040_2000_u64;
+        let va2 = 0x0000_0000_0050_3000_u64;
+        let vg = 0x0000_0000_0060_4000_u64; // the global entry's own page
+        let build = |state: &mut ArchitecturalState, env: &mut WalkEnv| {
+            // two pages: va1 non-global ASID 7, va1 global (different pa), va2 non-global ASID 7
+            sv39_asid(state, 7);
+            table_4k(env, va1, leaf_pte(0x8000_4000, V | R | A | D));
+            table_4k(env, va2, leaf_pte(0x8000_8000, V | R | A | D));
+            translate(state, env, va1, AccessKind::Load);
+            translate(state, env, va2, AccessKind::Load);
+            // the G-bit entry on its own page (so the va1 entry cannot mask the install)
+            table_4k(env, vg, leaf_pte(0x8000_C000, V | R | A | D | G));
+            translate(state, env, vg, AccessKind::Load);
+        };
+        // case all-spaces (rs1=0, rs2=0): everything goes
+        let mut state = hart();
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        build(&mut state, &mut env);
+        fence(&mut state, 0, 0);
+        assert_eq!(
+            state.tlb().occupied(),
+            0,
+            "the all-spaces fence empties the cache"
+        );
+        // case per-ASID (rs1=0, rs2≠0): non-global entries of that ASID go, G stays
+        let mut state = hart();
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        build(&mut state, &mut env);
+        fence(&mut state, 0, 7);
+        assert_eq!(
+            state.tlb().occupied(),
+            1,
+            "only the G-bit entry is retained"
+        );
+        assert!(
+            state.tlb().lookup(vg >> 12, 42).is_some(),
+            "the retained entry is the global one"
+        );
+        // case per-address (rs1≠0, rs2=0): the VA's entries go in every space, G included
+        let mut state = hart();
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        build(&mut state, &mut env);
+        fence(&mut state, vg, 0);
+        assert_eq!(
+            state.tlb().occupied(),
+            2,
+            "the per-address fence evicts the global entry too"
+        );
+        assert!(state.tlb().lookup(va1 >> 12, 7).is_some());
+        // case per-address+ASID (rs1≠0, rs2≠0): only the matching non-global entry goes
+        let mut state = hart();
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        build(&mut state, &mut env);
+        fence(&mut state, va1, 7);
+        assert_eq!(
+            state.tlb().occupied(),
+            2,
+            "the va1 entry goes; va2 and the global stay"
+        );
+        assert!(state.tlb().lookup(va2 >> 12, 7).is_some());
+        assert!(
+            state.tlb().lookup(vg >> 12, 42).is_some(),
+            "the G entry is retained"
+        );
+    }
+
+    #[test]
+    fn a_noncanonical_rs1_va_has_no_effect_and_raises_nothing() {
+        let va = 0x0000_0000_0040_2000_u64;
+        let mut state = hart();
+        sv39(&mut state);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
+        translate(&mut state, &mut env, va, AccessKind::Load);
+        fence(&mut state, 0x0000_8000_0000_0000, 0); // non-canonical: no effect, no exception
+        assert_eq!(
+            state.tlb().occupied(),
+            1,
+            "a non-canonical rs1 VA invalidates nothing"
+        );
+    }
+
+    #[test]
+    fn the_fence_effect_runs_through_the_instruction() {
+        // sfence.vma x3, x4 through the evaluator's own effect tree: rs1 is the VA,
+        // rs2 the ASID — the per-address+ASID case, with the legality intact
+        use crate::definition_rv64gc::INSNS;
+        use crate::exec_rv64gc::{step_over, StepRv64gc};
+
+        let mut state = hart();
+        sv39_asid(&mut state, 7);
+        state.set_mode(PrivilegeMode::S);
+        let mut env = WalkEnv::new();
+        let va = 0x0000_0000_0040_2000_u64;
+        table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
+        translate(&mut state, &mut env, va, AccessKind::Load);
+        assert_eq!(state.tlb().occupied(), 1);
+        // sfence.vma x3, x4 = rs1=x3 (the VA), rs2=x4 (the ASID) — 0x12039073; executed
+        // in M (never translated — the fence instruction itself fetches identity)
+        state.set_mode(PrivilegeMode::M);
+        state.write_x(3, va);
+        state.write_x(4, 7);
+        state.set_pc(REGION_BASE);
+        env.write(REGION_BASE, 4, 0x1243_8073);
+        assert_eq!(step_over(&mut state, &mut env, INSNS), StepRv64gc::Executed);
+        assert_eq!(
+            state.tlb().occupied(),
+            0,
+            "the fence instruction invalidated the entry"
+        );
+        assert_eq!(state.pc(), REGION_BASE + 4);
+        // and a fence with rs2=x0 (the per-address case) hits nothing after it
+        let mut env2 = WalkEnv::new();
+        table_4k(&mut env2, va, leaf_pte(0x8000_4000, V | R | A | D));
+        translate(&mut state, &mut env2, va, AccessKind::Load);
+        state.set_mode(PrivilegeMode::M);
+        state.write_x(4, 0);
+        state.set_pc(REGION_BASE);
+        env2.write(REGION_BASE, 4, 0x1238_0073); // sfence.vma x3, x0
+        assert_eq!(
+            step_over(&mut state, &mut env2, INSNS),
+            StepRv64gc::Executed
+        );
+        assert_eq!(
+            state.tlb().occupied(),
+            0,
+            "the per-address fence also invalidates"
+        );
+    }
+
+    #[test]
+    fn determinism_from_cold_reset_is_trace_identical() {
+        let run = || {
+            let va = 0x0000_0000_0040_2000_u64;
+            let mut state = hart();
+            sv39_asid(&mut state, 7);
+            state.set_mode(PrivilegeMode::S);
+            let mut env = WalkEnv::new();
+            let mut outcomes = Vec::new();
+            table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
+            for k in 0..6u64 {
+                let kv = va + 0x1000 * k;
+                table_4k(
+                    &mut env,
+                    kv,
+                    leaf_pte(0x8000_4000 + 0x1000 * k, V | R | A | D),
+                );
+                outcomes.push(translate(&mut state, &mut env, kv, AccessKind::Load));
+            }
+            fence(&mut state, 0, 7);
+            outcomes.push(translate(&mut state, &mut env, va, AccessKind::Load));
+            (outcomes, env.walks, state.tlb().occupied())
+        };
+        let first = run();
+        let second = run();
+        assert_eq!(
+            first, second,
+            "the cache is a pure function of the hart's own history"
+        );
     }
 }

@@ -469,6 +469,16 @@ def validate_gc(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dic
     if census is None:
         raise Refusal("rv64gc-lab-v0: no hidden_state_census (SEM-08) — the re-earned "
                       "census for the privileged state is the point of the document")
+    # P4-SYSTEM.3 decision 2: the translation cache is hart state the census must
+    # ACCOUNT FOR before the generator will emit its storage — a descriptor silent
+    # about it is an incomplete census, refused by name.
+    cache = [c for c in census.get("candidates_checked", [])
+             if c.get("candidate") == "address-translation caches (TLBs)" and c.get("present")]
+    if not cache:
+        raise Refusal("rv64gc-lab-v0: the hidden-state census does not declare a "
+                      "present translation-cache candidate — the TLB is hart state the "
+                      "census must account for before the module can carry it "
+                      "(P4-SYSTEM.3 slice d)")
     named = []
     for n in ir["named_by_the_isa_chapter"]:
         m = re.fullmatch(r"x(\d+)", n["reg"])
@@ -524,6 +534,10 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    pc: u64,")
     a("    mode: PrivilegeMode,")
     a("    csrs: [u64; CSR_COUNT],")
+    # P4-SYSTEM.3 decision 2: the TLB is hart state, emitted because the descriptor's
+    # SEM-08 census declares it (the translation-cache candidate, present true —
+    # validate_gc refuses a descriptor that does not account for it).
+    a("    tlb: crate::translation::Tlb,")
     a("}")
     a("")
     a("impl ArchitecturalState {")
@@ -543,6 +557,7 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     for c in storage:
         a(f"                {c['_reset']:#x},")
     a("            ],")
+    a("            tlb: crate::translation::Tlb::new(),")
     a("        }")
     a("    }")
     a("")
@@ -683,6 +698,9 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    }")
     a("    fn csr_fields(&self) -> &'static [FieldMeta] {")
     a("        &CSR_FIELDS")
+    a("    }")
+    a("    fn tlb(&mut self) -> &mut crate::translation::Tlb {")
+    a("        &mut self.tlb")
     a("    }")
     a("}")
     a("")

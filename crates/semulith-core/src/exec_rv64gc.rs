@@ -537,6 +537,16 @@ impl Frame<'_> {
                 self.pc_written = true;
                 (0, 64)
             }
+            Sem::TlbInvalidate(va, asid) => {
+                // SFENCE.VMA's real effect (P4-SYSTEM.3 decision 2): the four cases
+                // over the modelled TLB — rs1's value is the VA, rs2's low 16 bits
+                // the ASID; a non-canonical VA is a no-op by the spec's own sentence.
+                // No architectural register is written.
+                let (va, _) = self.run(va);
+                let (asid, _) = self.run(asid);
+                translation::fence(self.state, va, (asid & 0xFFFF) as u16);
+                (0, 64)
+            }
         }
     }
 }

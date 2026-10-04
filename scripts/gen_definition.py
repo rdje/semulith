@@ -85,7 +85,8 @@ WIDTH_OPS = {"trunc": "Trunc", "sext": "Sext", "zext": "Zext"}
 # P4-SYSTEM.2 slice (b): the privileged operators, lowered for the rv64gc module only —
 # the rv64i module's byte surface is frozen by DEF-GEN, and its corpus never names them.
 EXTENDED_UNARY = {"csr-state": "CsrState", "csr-read": "CsrRead", "xret": "Xret"}
-EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver"}
+EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver",
+                   "tlb-invalidate": "TlbInvalidate"}
 BASE_UNARY = {"set-pc": "SetPc"}
 
 
@@ -677,6 +678,9 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    TrapDeliver(&'static Sem, &'static Sem),")
         a("    /// `(xret x)` — the privilege-stack pop and pc <- xepc.")
         a("    Xret(&'static Sem),")
+        a("    /// `(tlb-invalidate va asid)` — SFENCE.VMA's four specified invalidation")
+        a("    /// cases over the modelled TLB (RVP-SUPERVISOR §11.1.2.1; P4-SYSTEM.3).")
+        a("    TlbInvalidate(&'static Sem, &'static Sem),")
     a("}")
     a("")
     a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")

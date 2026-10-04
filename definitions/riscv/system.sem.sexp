@@ -11,12 +11,17 @@
 ;;   deterministic choice); illegal in S with mstatus.TW=1 (§2.1.1.6.6 — the "may always
 ;;   raise" latitude, resolved the same way); always legal in M.
 ;;
-;; - SFENCE.VMA'S INVALIDATION EFFECT IS A NOP AT THIS STAGE (authority: laboratory). The
-;;   model implements no translation scheme and no address-translation cache (Sv39 is
-;;   P4-SYSTEM.3), so there is nothing to invalidate — stated here, not silent. Its LEGALITY
-;;   is fully modelled: illegal in U (RVP-SUPERVISOR §11.1.9's shared-permission sentence
-;;   names SFENCE.VMA's permissions) and in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6);
-;;   TVM does not gate M.
+;; - SFENCE.VMA'S INVALIDATION EFFECT IS THE FOUR SPECIFIED CASES (authority: laboratory;
+;;   P4-SYSTEM.3 decision 2). With the minimal TLB modelled (4-entry fully-associative,
+;;   FIFO, ASID-tagged at 16 — the state census carries the parameters), the fence does
+;;   the §11.1.2.1 work: all-spaces flush; per-ASID except global; per-address;
+;;   per-address+ASID except global — and the over-fence latitude ("an implementation
+;;   may always invalidate more") is recorded-not-taken, so the G-bit retention and the
+;;   per-ASID cases are genuinely testable. A non-canonical rs1 VA has no effect and
+;;   raises nothing. (The earlier time-scoped nop statement — "no translation caches are
+;;   modelled" — is superseded by this effect, dated 2026-10-04.) Its LEGALITY is
+;;   unchanged: illegal in U (RVP-SUPERVISOR §11.1.9's shared-permission sentence) and
+;;   in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6); TVM does not gate M.
 ;;
 ;; - THE mstatus BIT POSITIONS are the pinned encoding.h's masks (the specification renders
 ;;   the layouts only as figure images — the same re-pin family as the instruction tables):
@@ -50,11 +55,11 @@
                             (ne (bits 21 21 (csr-state (lit 768))) (lit 0)))
                        (trap-deliver (lit 2) (inst))
                        (nop)))))
-  (sem (insn sfence.vma) (source "RVP-SUPERVISOR §11.1.2.1 — the translation fence; illegal in U (§11.1.9's shared-permission sentence) and in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6; TVM is bit 20); the invalidation effect is a NOP at this stage — no translation caches are modelled (Sv39 is P4-SYSTEM.3), stated in the header")
+  (sem (insn sfence.vma) (source "RVP-SUPERVISOR §11.1.2.1 — the translation fence; illegal in U (§11.1.9's shared-permission sentence) and in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6; TVM is bit 20); the invalidation effect is the four specified cases over the modelled TLB (P4-SYSTEM.3 decision 2; the header records the superseded time-scoped nop)")
        (effect (if (eq (mode) (lit 0))
                    (trap-deliver (lit 2) (inst))
                    (if (and (eq (mode) (lit 1))
                             (ne (bits 20 20 (csr-state (lit 768))) (lit 0)))
                        (trap-deliver (lit 2) (inst))
-                       (nop)))))
+                       (tlb-invalidate (reg rs1) (reg rs2))))))
 )

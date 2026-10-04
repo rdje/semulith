@@ -130,6 +130,13 @@ pub trait PrivilegedHart {
     fn csr_meta(&self) -> &'static [CsrMeta];
     /// The profile's per-field legalization tables.
     fn csr_fields(&self) -> &'static [FieldMeta];
+
+    /// The hart's translation lookaside buffer (`P4-SYSTEM.3` decision 2) — hart
+    /// state like the mode and the CSR file, owned by the generated state module
+    /// because the state document's SEM-08 census declares it (the
+    /// `translation-cache` candidate). The cache's own rules live in
+    /// `crate::translation`.
+    fn tlb(&mut self) -> &mut crate::translation::Tlb;
 }
 
 // ---- name-addressed plumbing ----------------------------------------------------------

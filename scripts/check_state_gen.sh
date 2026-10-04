@@ -181,7 +181,7 @@ PY
   (csr (id "sstatus") (address 256) (width_bits 64) (view_of "mstatus")
     (authority architecture) (source "s")
     (reset (value "as mstatus") (authority laboratory) (source "s") (statement "x")))
-  (hidden_state_census (question "q") (answer "No") (candidates (checked (candidate "c") (present false) (why "w"))) (consequence "c"))
+  (hidden_state_census (question "q") (answer "No") (candidates (checked (candidate "c") (present false) (why "w"))) (candidates (checked (candidate "address-translation caches (TLBs)") (present true) (why "w"))) (consequence "c"))
 )
 EOF
   }
@@ -239,6 +239,21 @@ PY
   out="$(python3 scripts/gen_state.py --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
         --out "$t/gc/state.rs" 2>&1)"; rc=$?
   arm "RED the rv64gc path refuses hardware_stack, named" "$rc" 2 "$out" "hardware_stack declared"
+
+  # P4-SYSTEM.3 slice (d): a descriptor whose census does not declare the translation
+  # cache present is refused, named — the TLB is hart state the census must account for.
+  gc_state ''
+  python3 - "$t/gc/state.sexp" <<'PY'
+import sys
+p = sys.argv[1]
+t = open(p).read()
+t = t.replace('(candidate "address-translation caches (TLBs)") (present true)',
+              '(candidate "address-translation caches (TLBs)") (present false)', 1)
+open(p, "w").write(t)
+PY
+  out="$(python3 scripts/gen_state.py --check --state "$t/gc/state.sexp" --arith "$t/arith.rs" \
+        --out "$t/gc/state.rs" 2>&1)"; rc=$?
+  arm "RED a census silent on the translation cache is refused, named" "$rc" 2 "$out" "does not declare a present translation-cache"
 
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.

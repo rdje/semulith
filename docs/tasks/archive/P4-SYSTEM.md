@@ -1122,3 +1122,306 @@ field tables, x0 and the mode transitions — 4/4, the harness and module at
   (the Sail outcome; promotion: declined (the TW gap's routing is recorded in this leaf)),
   `docs/book/src/plan/p4.md` — shards at their ceilings.
 
+`P4-SYSTEM.3` slices (a)–(c) (the Svade identity edit, the translation
+machinery shell, the 10-step walk, completed `2026-10-04`), split out on
+`2026-10-04` at the live file's third ceiling firing:
+
+`P4-SYSTEM.3` slice (a) — the Svade identity edit + the Sail override flip + the validate_gc refusal (`2026-10-03`, `SEMULITH-P4-0015`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (a): the profile's identity gains
+  Svade (the .3 brief's OQ-2 answer — page-fault-instead-of-A/D-update), the Sail
+  matched override flips to match, and gen_state's rv64gc path stops silently
+  ignoring three constructs. Measured pre-slice:
+
+  ```
+  $ grep -n 'ADUE\|wpri_62_0' profiles/rv64gc-lab-v0/state.sexp | head -2
+  (field (id "wpri_62_0") (bit_hi 62) (bit_lo 0) (discipline wpri) …)   # ADUE is WPRI
+                                                                          # by construction
+  $ grep -c 'Svade' profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+  1                        # (extension (name "Svade") (supported false)) — the .2 config
+                           # disabled it; the flip is one field, as the brief priced it
+  $ sed -n 385,386p scripts/gen_state.py    # validate_gc: NO register_family /
+  # memory_spaces / hardware_stack refusals (the brief's pre-condition 6 — the rv64i
+  # path refuses all three at :100-112)
+  $ git grep -l 'rv64imafdc' -- profiles/ docs/ scripts/ bench/ crates/ definitions/ schema/ materials/
+  docs/book/src/plan/p4.md · docs/models/rv64i-lab-v0/src/references.md · docs/tasks/P4-SYSTEM.md
+  docs/tasks/archive/P0-PROFILE.md · profiles/rv64gc-lab-v0/DOSSIER.md ·
+  profiles/rv64gc-lab-v0/profile.sexp · profiles/rv64i-lab-v0/DOSSIER.md
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior (the .2 experiment
+  never activated translation); the slice executes the brief's identity decision and
+  closes its own named hole. Three measurements shaped it:
+  1. **The override must NAME the flag it depends on.** Sail's default config has
+     `Svade.supported = true`, but the .2 override's template-driven generation set
+     it explicitly `false` — the .2 experiment ran with hardware-update policy
+     (irrelevant then: no guest activates translation). The flip to `true` is the
+     D-SVADE match, and the re-run measures it, never assumes:
+
+     ```
+     $ grep -o '(extension (name "Svade") (supported [a-z]*))' \
+         profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp
+     (extension (name "Svade") (supported true))     # false before this slice's flip
+     $ python3 -c "import json; print(json.load(open('target/refs/sail_default_config.clean.json'))['extensions']['Svade'])"
+     {'supported': True}
+     ```
+  2. **The canonical ISA order is the DECLARED order** (gen_platform's own rule —
+     the .1 fix): single-letters concatenated, then multi-letter underscore-joined,
+     Z* before S* and alphabetical within — `sstc` then `svade`. The string is
+     `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade`, matching the brief exactly.
+  3. **D-SV39's own text anticipated the follow-up** — its "not as this profile's
+     rule" clause is now historical; per the dossier's convention (the D-FENCE /
+     D-RESOLUTION-ROUTE precedent) it keeps its verbatim statement (RECORD-SCHEMA
+     rule 4 mirrors it) and gains a `(note …)` naming D-SVADE.
+
+- [x] **FIX** — `profiles/rv64gc-lab-v0/profile.sexp` (`(extensions "Svade")` in
+  declared order, the ISA-string comment, the D-SV39 note, the D-SVADE decision with
+  the brief's three evidence legs and authority laboratory);
+  `requirements.sexp` + `contract-obligations.sexp` (the verbatim REQ/OB mirrors,
+  the D-ROUTE-FLIP shape — contract `rv64gc-lab-env-v0` version `"0"` unchanged,
+  CHK-SVADE-POS/NEG); `DOSSIER.md` (OQ-2 CLOSED with the three legs quoted, the
+  ISA-string and Extensions and Translation table rows);
+  `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp` (the one-field
+  flip); `scripts/gen_state.py` (validate_gc's three refusals, the rv64i path's own
+  wording); `scripts/check_state_gen.sh` (three RED arms with mapping-valid injected
+  shapes, so the refusal that fires is validate_gc's own); the two ISA-string
+  surfaces (`docs/book/src/plan/p4.md`, the `.1` Result narrative — each amended
+  with the owner named). sources.sexp: NO new pins — measured: Svade is defined
+  inline in the already-pinned RVP-SUPERVISOR chapter (§11.1.3.1, §11.1.10; the pin
+  at sources.sexp:55 covers both), and the U54 FU540 pin D-SV39 already cites.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/profile.sexp schema/profile.sexp
+  check_sexp_schema: ok — … conforms to profile.sexp
+  $ bash scripts/check_requirements.sh
+  RECORD-SCHEMA: ok (20 record file(s) validate and agree with their profile; …)
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim \
+      --config-override target/refs/sail-rv64gc-lab-v0.override.json --validate-config
+  The default configuration merged with target/refs/sail-rv64gc-lab-v0.override.json is valid.
+  $ python3 <the slice-(h) compare driver>     # against the tracked-derived JSON:
+  re-run after the Svade flip: 11/12 guests AGREE against the tracked override's
+  derived JSON            # IDENTICAL to the pre-flip baseline — the flip changes NO
+                          # guest's verdict (the mm-wfi DIVERGE is the known TW cell)
+  $ bash scripts/check_state_gen.sh --self-test
+  STATE-GEN --self-test: 25 pass / 0 fail     # 22→25: the three construct refusals,
+                                              # each RED-named (register_family /
+                                              # memory_spaces / hardware_stack)
+  $ python3 scripts/gen_state.py --state profiles/rv64gc-lab-v0/state.sexp --arith … --out /tmp/sg.rs
+  real descriptor still regenerates byte-identical
+  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
+  ```
+
+- [x] **NO REGRESSION** — the refusals fire RED on synthetic descriptors and never on
+  the real one (both STATE-GEN pairs still `ok`, the modules byte-identical); the
+  experiment re-run is a full verdict census, not a spot check (all 12 guests,
+  baseline-versus-flip identical); the ISA-string census is quoted above with every
+  governed occurrence's disposition (two authored edits with owners named, the two
+  Sail-default mentions untouched, the archive untouched, gen_platform's derivation
+  needs no regeneration — no board pins rv64gc today); RECORD-SCHEMA's mirror rules
+  verified by its own run (rule 4 statement-identity, rule 9 restatement, the D-SV39
+  note not mirrored); `make gate` green with DERIVED-COUNTS 419→422 re-derived
+  (+3 STATE-GEN arms, never hand-incremented).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf `.3` status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → `.3` slice b),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the override-must-name-its-flag measurement;
+  promotion: declined (the matched-override discipline is already the reference
+  dossier's own record, and this slice's checklist carries the measurement)),
+  `LIVE_STATUS.md` (the re-derived 422 arms only), `docs/TASK_TREE.md`,
+  `docs/book/src/plan/p4.md` — shards at their ceilings.
+
+`P4-SYSTEM.3` slice (b) — the translation module + the three hooks + effective mode + the Bare-identity proof (`2026-10-04`, `SEMULITH-P4-0016`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (b): translation lands as
+  evaluator machinery (the brief's decisions 3–6) — a `translation.rs` beside
+  `privilege.rs`, hooked at the three access sites, with satp.MODE dispatch and
+  the effective-mode computation — and the corpus must not notice (Bare is an
+  exact identity path). Measured pre-slice:
+
+  ```
+  $ grep -n 'Request::Fetch\|Request::Load\|Request::Store' crates/semulith-core/src/exec_rv64gc.rs | head -3
+  87:    let word = match env.request(Request::Fetch { addr: pc }) {
+  291:                match self.env.request(Request::Load { width, addr: a }) {
+  328:                match self.env.request(Request::Store {
+  # …the brief's three hook sites, physical addresses straight to the boundary
+  $ grep -c 'MODE' profiles/rv64gc-lab-v0/state.sexp   # satp.MODE (one-of 0 8), reset Bare
+  $ git grep -c PageFault -- crates/ | wc -l
+  0                        # causes 12/13/15 exist nowhere in core yet
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior; the slice lands
+  the machinery the brief designed, and two measurements shaped it:
+  1. **The parcel split must not change the Bare request shape.** Decision 5
+     fetches in 16-bit parcels (the C slot's straddle is real), but the corpus
+     pins one `Request::Fetch` per step (`run_rv64gc/tests.rs`'s fetch-count
+     assertion family). The recorded choice: parcels translate independently,
+     and the fetch COALESCES into one request whenever both translated addresses
+     share one physical 32-bit unit — under Bare that is every case, so the Bare
+     request shape is byte-exact by construction. The measurement:
+
+     ```
+     $ grep -n 'exactly one fetch per executed step' crates/semulith-verify/src/run_rv64gc/tests.rs
+     58:        "{name}: exactly one fetch per executed step (no extraneous fetch)"
+     $ grep -c 'fetch_count' crates/semulith-verify/src/run_rv64gc.rs
+     1                        # the runner's fetch-request witness — the assertion's subject
+     ```
+  2. **The boundary variant ripples through exhaustive matches by design.**
+     Adding `Request::WalkAccess` broke three match sites, each answered for its
+     own profile: `fixtures.rs`'s FlatMemory (answers it — 8-byte aligned region
+     read, never a fetch), bench's Counting census (a `walks` field — zero on the
+     rv64i bench), and `exec/tests.rs`'s rv64i TestEnv (a named panic — the base
+     profile has no translation machinery, a fixture seeing one is a test bug).
+
+- [x] **FIX** — `crates/semulith-core/src/translation.rs` (new: `effective_mode`
+  per §2.1.1.6.4 — fetch uses the current mode, data accesses use MPP when
+  MPRV=1, SUM/MXR carried for the walk; `translate` — M-effective and Bare are
+  exact identity, Sv39 enters `Translate::Walk` as slice (c)'s entry, an
+  out-of-vocabulary satp.MODE is a named panic; the page-fault causes 12/13/15
+  as raw u64 with the stated typed-enum asymmetry; `fetch_parcels`; 6 unit
+  tests); `crates/semulith-core/src/env.rs` (`Request::WalkAccess { addr }` +
+  `Response::WalkAccess(u64)` — the D-FETCH-IMPLICIT precedent applied,
+  read-only by construction under Svade; the formal contract wording routed to
+  `.9` in the variant's own doc); `crates/semulith-core/src/exec_rv64gc.rs`
+  (the three hooks wired: fetch parcels with the coalescing rule, loads/stores
+  translate after the model-side misalignment check — the pinned priority,
+  decision 7; the walk entry reports `ModelError::Unimplemented` named, never a
+  wrong answer; the module header's rules brought in line);
+  `crates/semulith-verify/src/fixtures.rs` + `bench.rs` + `exec/tests.rs` (the
+  three match sites above); `lib.rs` (both crates, the new module).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core translation
+  test result: ok. 6 passed; 0 failed       # Bare-identity, M-never-translated,
+  # sub-M walk entry, MPRV selects MPP (data only, fetch ignores), the named
+  # satp.MODE defect, the 12/13/15 vocabulary
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed; 0 failed       # 62/62: per-step writes, step counts,
+  # never_written, AND the fetch-count assertions — 1 fetch per step, unchanged
+  $ git worktree add /tmp/pre-slice-b 4fdac5b   # the pre-change engine, both CLIs
+  # driving all 62 guests through `demo`:
+  wc -l /tmp/traces-pre.txt /tmp/traces-post.txt
+  1884  1884
+  cmp /tmp/traces-pre.txt /tmp/traces-post.txt
+  BARE-IDENTITY: all 62 guest traces byte-identical (pre-change vs post-change engine)
+  $ target/debug/semulith run /tmp/sv39-probe.elf --profile=rv64gc-lab-v0 --steps=20
+  run: model error: Unimplemented { what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s" }
+  cli rc=1               # the Sv39 entry names itself — never a wrong answer
+  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
+  $ make smoke-bench → ok (53 arms)     $ make bench → wasm builds   $ make book → both books
+  ```
+
+- [x] **NO REGRESSION** — the identity proof is byte-level and complete (1,884
+  trace lines over 62 guests, `cmp` clean between the parent commit's engine and
+  this one, worktree removed after); rv64i's engine is untouched (`git diff
+  4fdac5b..HEAD -- crates/semulith-core/src/exec.rs` → empty; its TestEnv's new
+  arm is a named panic for a case rv64i cannot produce); the fetch-count
+  assertions hold (the parcels coalesce — the measurement above); smoke-bench's
+  53 arms unchanged; the walk-access variant is vocabulary only (no gate arm
+  changed, DERIVED-COUNTS 422 re-derived unchanged); no expectation edited, no
+  check weakened.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice c),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the enum-addition census lesson; promotion:
+  declined (the ripple is structural — the compiler names every match site, and
+  the checklist records the dispositions)), `LIVE_STATUS.md` (unchanged — 422
+  arms), `docs/TASK_TREE.md` (unchanged — `.3` first), `docs/book/src/plan/p4.md`
+  — shards at their ceilings.
+
+`P4-SYSTEM.3` slice (c) — the 10-step walk + the fault matrix + the REQ-D-FETCH-IMPLICIT amendment (`2026-10-04`, `SEMULITH-P4-0017`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's checkpoint (c): the walk itself
+  (§11.1.3.2 with LEVELS=3/PTESIZE=8, cited step-by-step) and the requirement
+  amendment (decision 6). The boundary variant landed in slice (b); the walk
+  entry was a named unimplemented case. Measured pre-slice:
+
+  ```
+  $ grep -n 'Translate::Walk' crates/semulith-core/src/translation.rs | wc -l
+  1                        # the stub the slice replaces with the 10-step walk
+  $ grep -o 'id "REQ-D-[A-Z-]*"' profiles/rv64gc-lab-v0/requirements.sexp | grep -c FETCH
+  0                        # REQ-D-FETCH-IMPLICIT is NOT in rv64gc's catalogue —
+                         # measured: the mirror's closure is 13 records and it is not
+                         # among them; rv64i's owner record stays true of rv64i
+  $ grep -n 'fetch_parcels\|WalkAccess' crates/semulith-core/src/exec_rv64gc.rs | wc -l
+  4                        # the hooks and the variant, landed in slice (b)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in prior behavior; the slice fills
+  the walk. Two execution measurements shaped it:
+  1. **The reserved PTE encoding is W-without-R, and the walk caught my own
+     inversion.** The first draft faulted on R=1 ∧ W=1; the fault-matrix tests
+     named it instantly (three cells PageFault-for-the-wrong-reason). The pinned
+     rule: W=1 requires R=1; R=0 ∧ W=1 is the reserved case. The tests were
+     written before the fix and drove it (EVD-05 discipline at the test layer).
+  2. **The amendment has no mirrored record to supersede — the mirror never
+     carried it.** The brief's "old record superseded, never edited" read like a
+     mirror edit; the measurement (the `grep -c FETCH` above) shows rv64gc's
+     catalogue lacks the record entirely, so the honest shape is a NEW authored
+     decision+record pair naming the translated composition's implicit-access
+     vocabulary, with the owner relationship recorded in its statement.
+     rv64i's REQ-D-FETCH-IMPLICIT stays true of rv64i — no translation exists
+     there.
+
+- [x] **FIX** — `crates/semulith-core/src/translation.rs` (the 10-step walk,
+  cited step-by-step: §11.1.4.1's canonical-VA check before any read; per-level
+  PTE reads through the slice-(b) walk-access kind with a boundary fault
+  reported as the ORIGINAL access's access fault (1/5/7 by kind, step 2);
+  V=0 and W-without-R (step 3); reserved/PBMT/N bits 63/62–61/60–54 zero —
+  Svnapot/Svpbmt unselected (step 4); misaligned superpage (step 5); non-leaf
+  D/A/U reserved (step 6, §11.1.3.1); the shadow-stack step named N/A (step 7);
+  U/SUM/MXR and R/W/X by kind (step 8); Svade's page-fault-instead-of-update
+  with the PTE byte-untouched (step 9); the physical address by level (step 10));
+  the straddled fetch now LIVE in `exec_rv64gc.rs` (each parcel's own unit, 16
+  bits from each, joined; the coalescing rule is over translated addresses, not
+  pages). `profiles/rv64gc-lab-v0/profile.sexp` (D-WALK-IMPLICIT + the REQ/OB
+  verbatim mirrors, CHK-WALK-IMPLICIT-POS/NEG; dependencies REQ-D-SV39,
+  REQ-D-SVADE).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core translation
+  test result: ok. 17 passed; 0 failed    # the fault matrix: 4 KiB / 2 MiB / 1 GiB
+  # leaves with their walk-read counts (3/2/1), canonical-VA, V=0, W-without-R,
+  # reserved bits 63/61/54, misaligned superpage, non-leaf D/A/U ×3 + last-level
+  # pointer, U/SUM/MXR (6 cells), R/W/X (3 cells), Svade A/D (4 cells with the
+  # byte-untouched proof), step-2 access fault by kind (1/5/7), the MPRV cells,
+  # the satp.MODE defect, the straddle (2 fetches, 6 walk reads, the word joined)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed; 0 failed     # 62/62 on the walk-live engine
+  $ git worktree add /tmp/pre-slice-c f9a78f5   # both CLIs, all 62 guests:
+  1884  1884
+  cmp /tmp/traces-pre-c.txt /tmp/traces-post-c.txt
+  BARE-IDENTITY (slice c): all 62 guest traces byte-identical on the walk-live engine
+  $ target/debug/semulith run /tmp/sv39-probe.elf --profile=rv64gc-lab-v0 --steps=24
+  x7 <- 0x000000000000000c   # mcause = 12 (instruction page fault), delivered
+  x8 <- 0x0000000080000054   # mtval = the faulting VA — the slice-(b) stub probe
+                             # now faults properly through the live walk
+  $ make check → 8× 'test result: ok'   $ make gate → === all doctrines green ===
+  $ make smoke-bench → ok (53 arms)     $ make bench → wasm builds   $ make book → both books
+  ```
+
+- [x] **NO REGRESSION** — the identity proof is byte-level on the walk-live
+  engine (1,884 == 1,884 trace lines, `cmp` clean, worktree removed after);
+  the walk makes no silent reads (the tests assert walk counts per scenario: 3
+  for a 4 KiB leaf, 2 for 2 MiB, 1 for 1 GiB, 0 for Bare and for the canonical
+  check and for every M-effective access); the Svade cells prove the region
+  byte-identical across the fault (the permitted page-table side effects are
+  NONE, by construction not by inspection); rv64i's catalogue and engine
+  untouched (`git diff f9a78f5..HEAD -- profiles/rv64i-lab-v0 crates/semulith-core/src/exec.rs`
+  → empty); no expectation edited, no check weakened; the guests that exercise
+  the walk end-to-end land in slice (e), per the brief.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  verification/commit logs + changelog), `MEMORY.md` (next_action → slice d),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the probe-delta and slli-shift-out bugs —
+  the same class as the auipc audit; promotion: declined (the pc-map discipline
+  is already the family's recorded rule and this slice's checklist carries the
+  instances)), `LIVE_STATUS.md` (unchanged — 422 arms), `docs/TASK_TREE.md`
+  (unchanged — `.3` first), `docs/book/src/plan/p4.md` — shards at their
+  ceilings.
+

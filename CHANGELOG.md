@@ -1,5 +1,56 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0018 (leaf P4-SYSTEM.3, slice d) — the TLB, sfence.vma's real four cases, the census/snapshot/determinism consequences
+
+- The minimal fully-specified TLB: **4 entries, fully-associative, FIFO replacement,
+  ASID-tagged at ASIDLEN=16, keyed by 4 KiB page** — the minimal parameters that make
+  every rule testable (a superpage's other pages re-walk and install independently —
+  conformant, and it keeps the fence's per-address case exact). Authority laboratory;
+  the same parameters live as data in the state document's SEM-08 census (the
+  `address-translation caches (TLBs)` candidate re-answered `present true` — the
+  census's own ".3 reopens this candidate" hook), and gen_state emits the storage as
+  hart state from that declaration — refusing, RED-armed, a descriptor whose census
+  is silent on the cache (STATE-GEN 25→26 arms).
+- The visibility record: satp is read per access, so MODE and ASID changes take
+  effect immediately (dispatch and tagging); a root-PPN change is visible on the
+  next miss, and stale entries may hit until a fence — §11.1.2.1's sanctioned
+  staleness, the fence being the contract (the cache never auto-invalidates).
+  SUM/MXR are read per access, never cached, always immediate. The install
+  discipline: a faulting access installs nothing; a load past a D=0 leaf installs
+  the D=0 entry — the cached entry's D bit then faults a later store after software
+  sets D without fencing (a LEGAL stale fault), and the fence restores the walk's
+  truth. The walk's step-9 A/D check uses the entry's stored bits — under Svade
+  there is no hardware update for a cache to skip, and the fault path must not be
+  cached.
+- sfence.vma's effect lands through the full pipeline: the `tlb-invalidate` operator
+  (schema/semantics.sexp, the four-case contract) → `system.sem.sexp`'s effect
+  `(tlb-invalidate (reg rs1) (reg rs2))` — the time-scoped nop superseded with its
+  date, the legality untouched — → gen_definition's extended map + the
+  `Sem::TlbInvalidate` variant (DEF-GEN both pairs green, rv64i fingerprint-only) →
+  the evaluator arm (rs1 the VA, rs2's low 16 the ASID, no register written). The
+  over-fence latitude is recorded-not-taken, so the G-bit retention and the
+  per-ASID cases are genuinely tested.
+- The TLB suite (25/25 with the walk's 17): a hit skips the walk (count frozen);
+  FIFO evicts in order (6 installs, the oldest re-walks); ASID tags with G hitting
+  under any ASID; staleness legal without a fence then restored by it; Svade
+  staleness through the cache (the D=0 install → the legal stale store fault → the
+  fence); all four fence cases with their retentions (per-ASID and per-address+ASID
+  keep globals; per-address evicts them; all-spaces empties everything); the
+  non-canonical rs1 no-op; the fence INSTRUCTION end-to-end (sfence.vma x3,x4
+  through the evaluator empties the entry); and cold-reset determinism — two runs,
+  outcome tuples identical (the cache is a pure function of the hart's own history).
+  Snapshot measured and recorded: no rv64gc snapshot surface today (the CLI's
+  snapshot/resume is rv64i-scoped by refusal), and a cold-restored cache is always
+  a legal state — a miss is never wrong.
+- mm-sfence's expectations needed NO re-derivation — measured: its legal fence
+  cells never claimed a nop, and a fence writes no register, exactly what they
+  record. The Bare identity is byte-exact on the TLB engine: both CLIs over all
+  62 guests, 1,884 == 1,884 trace lines, `cmp` clean (worktree removed after).
+  `make check` 8/8, `make gate` all green (DERIVED-COUNTS 422→423), smoke-bench
+  53 arms, bench wasm, both books.
+  Next: slice (e) — MPRV/SUM/MXR + the sv39 guests + matrix cells + the Sail
+  matched experiment + the reports and the book.
+
 ## SEMULITH-P4-0017 (leaf P4-SYSTEM.3, slice c) — the 10-step Sv39 walk, the fault matrix, the REQ-D-FETCH-IMPLICIT amendment
 
 - The walk is live in `crates/semulith-core/src/translation.rs`, cited step-by-step
@@ -802,49 +853,4 @@
   time sources (`REQ-D-NIC-TIME-SOURCES`), the wire-domain PHY link scene under replay
   (`REQ-D-NIC-PHY-LINK`) and the pin tie-offs (`REQ-D-NIC-GPIO-PINS`) pre-wire
   `P5-BOARD.4`'s composition verdict. Registration day (`.11`) is next.
-
-## SEMULITH-P5-0007 (leaf P5-BOARD.2) — the first device dossier: `sifive-uart-lab-v0`, fully gated; the machinery generalized by declaration
-
-- The SiFive UART dossier lands under
-  [`profiles/sifive-uart-lab-v0/`](profiles/sifive-uart-lab-v0/DOSSIER.md): the §13-pinned
-  source (digest re-verified from the materials cache), 19 requirements (13 defined + 6
-  measured silences — Reserved bits, X-marked resets, FIFO reset, off-map/non-32-bit
-  accesses, the watermark mode), 19 mirrored obligations under contract `sifive-uart-v0`
-  v0 with the schema's new third direction `device-guarantee`, the state document with
-  its earned hidden-state census (registers + FIFO contents/occupancies, nothing else
-  MMIO-visible), 19 verbatim decision mirrors, and 3 datasheet-derived register-read
-  expectation documents recorded **before any model exists**.
-- The dossier machinery generalized **by declaration, not exemption**
-  ([`decision_device-applicability-by-declared-vehicle`](docs/decisions/decision_device-applicability-by-declared-vehicle.md)):
-  `vehicle (route device-model) (comparison register-expectations)`; `profile.sexp`'s
-  processor-only fields optional; `mmio_registers` scope; `expectations.sexp`
-  entry/instructions optional; EXTRACTION / EXERCISE-COVERAGE / INTERACTION-MATRIX derive
-  device applicability with contradiction = RED; a device-guarantee discharges a CPU
-  assumption by construction (pinned GREEN arm); PROFILE-CONSISTENCY needed no
-  conditional (measured by a new self-test arm).
-- Measured in execution, fixed at root: the §13.8 watermark bits' level-vs-hold gap
-  (`REQ-D-UART-WM-MODE` — expectations pin a bit only when its raised condition holds
-  under every reading); the `REQ-U-` id prefix colliding with RECORD-SCHEMA's mechanical
-  decision→requirement mapping (renamed); the interaction-matrix n/a note counted as a
-  cell (fixed); FIFO resets recorded as "unspecified" data rather than weakening the
-  every-element-a-reset contract.
-- FACT-OWNERSHIP re-pinned to three units (registry + fixtures); the `profiles/` bound
-  re-derived 4× ([`decision_profiles-family-four-units`](docs/decisions/decision_profiles-family-four-units.md)).
-  Registration of all three units consolidates into `.11`; the LAN9118 dossier is `.10`.
-- Validation: all dossier documents schema-validate; the three profile-glob gates decide
-  the device by declaration; every edited check's self-test green (17/9/14/41/7/14/10
-  arms, 0 fail); `make gate` all doctrines green; the mdBook builds.
-
-## SEMULITH-PKG-0017 (leaf SEMULITH-PKG.9) — the policy note's provenance triple now re-derives from the note
-
-- Session-start policy check (§14/§17/§18), measured live: `README_POLICY.md`'s neutral
-  body is byte-identical to the originating project's current revision (no unadopted
-  upstream change), and `docs/CLAIM_VERIFICATION.md`'s recorded source SHA-256
-  (`9f99df25…6046bd`) matches the pgen source exactly. Nothing to re-adopt.
-- One defect found and fixed: the policy adoption note's recorded SHA-256 / line / byte
-  triple did not state its digest span, so it failed to reproduce as written (the measured
-  span trims leading blank lines and the `---` separator). The note now states the span;
-  the re-deriving command lives in task leaf `SEMULITH-PKG.9`; the recorded
-  `77a1e934…c0182d6eefec` / `159 / 8,279` reproduces exactly.
-- `SEMULITH-PKG` complete (9/9). Validation: `scripts/check_doctrines.sh` all green.
 

@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `b77c7b3e35a7cbd27fabf6d25fa15372dad22468aec6a1b861cc4b8dbe908b5d`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `bec03abee6a73385b61e64ae6ea8164c534b8c4ebcd2b030cfa37c727f3492a4`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, and the 33 CSRs of
@@ -117,6 +117,7 @@ pub struct ArchitecturalState {
     pc: u64,
     mode: PrivilegeMode,
     csrs: [u64; CSR_COUNT],
+    tlb: crate::translation::Tlb,
 }
 
 impl ArchitecturalState {
@@ -158,6 +159,7 @@ impl ArchitecturalState {
                 0x0,
                 0x0,
             ],
+            tlb: crate::translation::Tlb::new(),
         }
     }
 
@@ -1682,6 +1684,9 @@ impl crate::privilege::PrivilegedHart for ArchitecturalState {
     fn csr_fields(&self) -> &'static [FieldMeta] {
         &CSR_FIELDS
     }
+    fn tlb(&mut self) -> &mut crate::translation::Tlb {
+        &mut self.tlb
+    }
 }
 
 /// SEM-08: the hidden-state census, re-earned for the privileged state — carried as
@@ -1755,8 +1760,8 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         },
         HiddenStateCandidate {
             candidate: "address-translation caches (TLBs)",
-            present: false,
-            why: "no translation scheme is modelled yet (Sv39 is P4-SYSTEM.3) — which is exactly why sfence.vma's invalidation effect is a stated NOP today; .3 reopens this candidate",
+            present: true,
+            why: "answered by P4-SYSTEM.3 slice (d): a minimal fully-specified TLB — 4 entries, fully-associative, FIFO replacement, ASID-tagged at ASIDLEN 16, keyed by 4 KiB page, G-bit entries retained across per-ASID and per-address+ASID fences (authority laboratory; the cache is a pure function of the hart's own history, so cold-reset re-execution stays trace-identical and a cold-restored cache is always a legal state)",
         },
     ],
     consequence: "A complete snapshot for this stage is the integer file, pc, memory, the current mode, and the 33 CSRs' storage (mstatus/mie/mip once — views carry none). Each later slice reopens its named candidate: .3 translation state, .4 the reservation, .5 interrupt/counter progress, .7 the FP file, .8 partial effects, .9 the environment contract.",

@@ -1,5 +1,46 @@
 # DEV_NOTES.md
 
+## _(2026-10-04)_ — the cache made the test suite honest twice (P4-SYSTEM.3 slice d)
+
+Execution of the `.3` brief's checkpoint (d) measured:
+
+- **The TLB caught test-design bugs the walk never could.** Two existing
+  fault-matrix cells failed the moment the cache was live — and the cache was
+  right both times: the SUM=0 cell "faulted" into a legal Physical because the
+  previous cell's installed entry answered first, and the A=1,D=1 store "faulted"
+  on the D=0 entry the D=0-load cell had installed (the spec's sanctioned
+  staleness, exactly as designed). The cells were never wrong about the walk —
+  they were wrong about SHARING a hart. Independent outcome cells now run cold,
+  and the interaction itself became the Svade-staleness suite (install D=0 via a
+  load, the stale store faults on the entry's bit, the fence restores truth) —
+  the failure was the specification working, not breaking.
+- **Two of my own bugs, two familiar classes.** The fence-instruction test wrote
+  `0x12039073` for sfence.vma x3,x4 — rs1 and rs2 swapped by a nibble (the real
+  word is `0x12438073`; the wrong one decoded RESERVED and the probe answered
+  correctly with a delivered cause 2 to mtvec=0). And the fence-case lookups
+  passed full addresses where the API takes page numbers. The cache was
+  acquitted on evidence both times; the test took the fix. The discipline the
+  family already owns — print the constructed word/address and treat an
+  unexpected-but-correct answer as a test bug until proven an engine bug — is
+  what closed both in minutes.
+- **The census drives the storage, and the gate guards the driver.** The TLB's
+  parameters live in the state document's SEM-08 census (the candidate
+  re-answered `present true` — the census's own reopen hook, placed at .2), and
+  gen_state emits the hart-state field FROM that declaration. The refusal that
+  anchors it — a descriptor silent on the cache is refused by name — fired on
+  the self-test's synthetic descriptor the moment it landed, and the fixture's
+  census now carries the candidate, with a RED arm pinning the refusal. The
+  generated module, the trait, and the document can no longer drift apart
+  silently in either direction.
+- **Validation:** 25/25 translation tests (the walk's 17 plus the TLB suite:
+  hit/FIFO/tagging/staleness/Svade-staleness/the four fence cases with
+  retentions/the non-canonical no-op/the fence instruction end-to-end/
+  determinism tuples identical); the corpus 62/62 and 1,884 == 1,884 trace lines
+  byte-clean against the parent engine; STATE-GEN 26/26, DEF-GEN both pairs;
+  `make check` 8/8, `make gate` all green (DERIVED-COUNTS 422→423). Promotion:
+  declined (both bug classes are the family's own recorded disciplines applied —
+  this slice's checklist carries the instances).
+
 ## _(2026-10-04)_ — the fault matrix catches the author; the amendment that wasn't there (P4-SYSTEM.3 slice c)
 
 Execution of the `.3` brief's checkpoint (c) measured:
@@ -616,48 +657,4 @@ measure-before-design already carry their decision records
 (`decision_device-applicability-by-declared-vehicle`, `decision_gate-applicability-by-
 declared-vehicle`); the compose factorization is recorded with the leaf and in
 `compose_units.py`'s own docstring.
-
-## _(2026-10-02)_ — the channel answered in hours; the survey's excluded layer was our own catalog (MCU-DOCS.2)
-
-The twelve MCU requests came back 12/12 fulfilled the same day — the channel's report
-(`build_responses.py --report`, rc 0) is the verification entry point, and the adoption
-pattern from P5-BOARD.9 (adopt → fetch with digest re-verification → mark our own file)
-carried unchanged. The routes the channel measured are worth reading in the answers:
-Arm's documentation-service API works; NXP/Microchip/ST's live URLs 404/403/reset to
-automated clients and the Wayback captures of the same official URLs carried the bytes.
-
-The execution's real event: the RP2040 datasheet answer read "already held before this
-request" — and it was held **twice**: corpus-side, and in our own tracked catalog as
-`RP2040-DS` since 2026-09-14 (digest-identical, cached). The `.1` survey had measured
-the corpus's proposals feed, not the corpus tree, and not our catalog — the
-survey-sampling failure class from MODEL-METHOD.13 recurring at a second layer. Fixed
-at root: no duplicate record adopted, the request's answer records the redundancy, and
-the knowledge card gained the three-layer "already held" rule with the cheap
-complement-check commands.
-
-Lesson: **promoted** — `docs/knowledge/a-survey-that-found-things-can-still-have-missed-things.md`
-(the recurrence + the three-layer rule).
-
-## _(2026-10-02)_ — the reading-experience audit's yield was drift, not style (BOOK-APPARATUS.2)
-
-The first audit pass against `decision_mdbook-incremental-engaging` ran as six parallel
-read-only chapter-group reviews with the decision's four criteria operationalized
-(incremental build-up; motivation before mechanism; layered density; both-audiences
-engagement), each returning per-chapter verdicts with line-level evidence. The signing
-discipline: **every flagged item was re-verified against the repository before any edit**
-— and that verification caught one audit false-positive class (a `grep -c` miscount of
-the rv64i profile's inline decision forms; the real count is 28, verified by enumerating
-the ids) and one of my own typos (a search string that silently didn't match —
-`grep`-verified after the edit, not assumed).
-
-The measured surprise: the audit's yield was **factual drift**, twelve places where
-hand-carried repository facts in the book had gone stale — the class DERIVED-COUNTS was
-founded on, living in chapters no enumerator covers. Three genuine style violations
-(a duplicated sentence, a cold open, a 68-line accreted list item) were the minority.
-Two mermaid blocks rendered as raw source in the book; replaced by text flows rather
-than adding `mdbook-mermaid` (a dependency the project hasn't sanctioned).
-
-Lesson: `promotion: declined` — the audit method is the decision record's own
-consequence clause (`.2` owns the pass; the pass is recorded); the drift fixes are
-per-slice history.
 

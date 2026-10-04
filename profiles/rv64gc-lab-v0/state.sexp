@@ -653,6 +653,6 @@
                (why "the model re-reads memory on every fetch (D-CODE-VISIBILITY, the rv64i document's identical recording)")))
       (candidates (checked (candidate "pending or partially committed effects") (present false)
                (why "at this stage every instruction completes or faults as a unit; fault priority and partial commits are P4-SYSTEM.8's, which reopens this candidate")))
-      (candidates (checked (candidate "address-translation caches (TLBs)") (present false)
-               (why "no translation scheme is modelled yet (Sv39 is P4-SYSTEM.3) — which is exactly why sfence.vma's invalidation effect is a stated NOP today; .3 reopens this candidate")))
+      (candidates (checked (candidate "address-translation caches (TLBs)") (present true)
+               (why "answered by P4-SYSTEM.3 slice (d): a minimal fully-specified TLB — 4 entries, fully-associative, FIFO replacement, ASID-tagged at ASIDLEN 16, keyed by 4 KiB page, G-bit entries retained across per-ASID and per-address+ASID fences (authority laboratory; the cache is a pure function of the hart's own history, so cold-reset re-execution stays trace-identical and a cold-restored cache is always a legal state)")))
     (consequence "A complete snapshot for this stage is the integer file, pc, memory, the current mode, and the 33 CSRs' storage (mstatus/mie/mip once — views carry none). Each later slice reopens its named candidate: .3 translation state, .4 the reservation, .5 interrupt/counter progress, .7 the FP file, .8 partial effects, .9 the environment contract.")))
