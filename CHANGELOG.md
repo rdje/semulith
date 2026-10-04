@@ -1,5 +1,54 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0017 (leaf P4-SYSTEM.3, slice c) — the 10-step Sv39 walk, the fault matrix, the REQ-D-FETCH-IMPLICIT amendment
+
+- The walk is live in `crates/semulith-core/src/translation.rs`, cited step-by-step
+  (§11.1.3.2 with LEVELS=3/PTESIZE=8 per §11.1.4.1): the canonical-VA check
+  (bits 63:39 == bit 38) before any read; per-level PTE reads through slice (b)'s
+  walk-access boundary kind, a boundary fault reported as the ORIGINAL access's
+  access fault (1/5/7 by kind, step 2); V=0 and the W-without-R reserved encoding
+  (step 3 — the first draft's R∧W inversion caught by the fault-matrix tests
+  written before the fix); reserved/PBMT/N bits 63/62–61/60–54 zero with
+  Svnapot/Svpbmt named unselected (step 4); misaligned superpage (step 5);
+  non-leaf D/A/U reserved per §11.1.3.1 (step 6); the shadow-stack step named
+  N/A (step 7); U/SUM/MXR and R/W/X by access kind (step 8); Svade's
+  page-fault-instead-of-update with the PTE byte-untouched (step 9 — the
+  permitted page-table side effects are NONE, by construction not by inspection);
+  the physical address by level (step 10).
+- The fault-matrix suite: 17 translation tests covering all three leaf sizes with
+  their walk-read counts (3 for 4 KiB, 2 for 2 MiB, 1 for 1 GiB), the canonical-VA
+  fault, V=0, reserved-RW, the reserved bits ×3, misaligned superpage, non-leaf
+  D/A/U ×3 + the last-level pointer, the U/SUM/MXR cells (S-page from S, U-page
+  from S with and without SUM, S-fetch of a U-page unconditionally, U-page from
+  U, MXR on/off), the R/W/X cells, the Svade A/D cells with the region
+  byte-identical across the fault, the step-2 access fault by kind, the MPRV
+  selection (data walks like S, fetch ignores MPRV, M never walks), and the
+  satp.MODE named defect. The straddled fetch is live end-to-end: two parcels on
+  non-adjacent physical pages, each fetched from its own unit and joined —
+  2 fetch requests, 6 walk reads, the word exact (the coalescing rule is over
+  translated addresses, not pages: adjacent physical pages correctly coalesce).
+- The requirement amendment was measured first: rv64gc's catalogue NEVER carried
+  REQ-D-FETCH-IMPLICIT (the mirror's closure is 13 records and it is not among
+  them — `grep -c FETCH` → 0), so the amendment lands as a NEW authored pair:
+  D-WALK-IMPLICIT in the profile and the verbatim REQ/OB mirrors
+  (CHK-WALK-IMPLICIT-POS/NEG, dependencies REQ-D-SV39 + REQ-D-SVADE), naming the
+  translated composition's implicit-access vocabulary (the fetch + up to LEVELS
+  implicit 8-byte walk reads per access; no implicit writes under Svade).
+  rv64i's owner record stays true of rv64i — no translation exists there;
+  RECORD-SCHEMA green by its own run.
+- The Bare identity is byte-exact on the walk-live engine: both CLIs (the parent
+  commit's and this one) over all 62 guests — 1,884 == 1,884 trace lines, `cmp`
+  clean (worktree removed after) — beside the standing cargo assertions (62/62,
+  fetch counts unchanged). The slice-(b) stub probe now faults properly: an
+  S-mode fetch under Sv39 with an empty root table page-faults (V=0) with
+  mcause 12 and mtval = the faulting VA; the walk-access boundary fault path is
+  measured separately (satp.PPN outside the region → access fault by kind with
+  tval = the original VA). `make check` 8/8 groups, `make gate` all green,
+  smoke-bench 53 arms, bench wasm, both books. The guests exercising the walk
+  end-to-end land in slice (e), per the brief.
+  Next: slice (d) — the TLB + sfence.vma's real four-case effect + the census /
+  snapshot / determinism consequences.
+
 ## SEMULITH-P4-0016 (leaf P4-SYSTEM.3, slice b) — the translation module + hooks + effective mode; the Bare-identity proof byte-exact
 
 - The translation machinery shell lands as evaluator machinery (the brief's
@@ -798,34 +847,4 @@
   the re-deriving command lives in task leaf `SEMULITH-PKG.9`; the recorded
   `77a1e934…c0182d6eefec` / `159 / 8,279` reproduces exactly.
 - `SEMULITH-PKG` complete (9/9). Validation: `scripts/check_doctrines.sh` all green.
-
-## SEMULITH-P5-0005 (leaf P5-BOARD.1) — the platform specified: `netboard-lab-v0` pins versions, not names; the 16550 label measured false and corrected
-
-- The first board's canonical definition lands: [`profiles/netboard-lab-v0/board.sexp`](profiles/netboard-lab-v0/board.sexp)
-  under the new [`schema/board.sexp`](schema/board.sexp) — the first non-processor
-  source-of-truth schema (DOSSIER-SCHEMA pairs them by basename) — narrated by
-  [`profiles/netboard-lab-v0/DOSSIER.md`](profiles/netboard-lab-v0/DOSSIER.md).
-- Every pin is a version, never a name (OWN-05, the leaf's acceptance): the processor by
-  unit id + version `0` + the GATE-REPORT-gated dossier content digest; each device by its
-  datasheet's material id + revision + sha256. The memory map (2 GiB RAM at the harness's
-  existing base, the UART at the sourced FU540 instance address, the NIC in the datasheet's
-  256-byte direct-register span), cold-only reset, and the serial console are data.
-- Timers and interrupt controllers are **absent by contract** — declared as data with their
-  reasons and the obligations they satisfy (`OB-ENV-VIRTUAL-TIME`, `OB-ENV-EVENT-DELIVERY`);
-  a CLINT/PLIC would be a composition rejection, not a feature. `satisfies` fields pre-wire
-  `.4`'s composition verdict. Both devices' interrupt lines unconnected-and-declared;
-  drivers poll. The NIC backend is recorded-trace replay RX / recording-sink TX.
-- **Measured defect, found and fixed in execution:** the design brief's "16550-compatible
-  UART" label is false against the pinned source — zero occurrences of "16550" in
-  FU540-C000 v1p5 (`pdftotext` census); §13 documents the SiFive UART. The source pin was
-  the intent: the board adopts the SiFive UART, `materials/catalog.sexp`'s supplies text is
-  corrected, and the correction is recorded as `D-BOARD-UART-KIND`.
-- Scope routing: board-unit registration (`materials/units.sexp`, the `kind` edit, the
-  per-unit book) lands with `.3` — registration day carries the UNIT-BOOKS /
-  MATERIALS-BILL / generator consequences, which are not a specification's to bear.
-- The `profiles/` family's third unit directory: the bound re-derived to 3× by the standing
-  arithmetic ([`docs/decisions/decision_profiles-family-three-units.md`](docs/decisions/decision_profiles-family-three-units.md));
-  the board-definition fact kind registered in `doctrine/fact_ownership.tsv`.
-- Validation: both schema validations ok; every pin re-derived from its source artifact;
-  `make gate` green; `mdbook build docs/book` rc 0.
 

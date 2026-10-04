@@ -101,52 +101,66 @@ pub fn step_over(
     // The recorded coalescing choice: when both parcels' TRANSLATED addresses lie in one
     // physical 32-bit unit, the fetch is exactly one request — under Bare that is every
     // case, so the Bare request shape is byte-exact (the corpus's one-fetch-per-step
-    // census is the measurement). A page-straddling instruction is slice (c)'s case,
-    // named rather than silently coalesced.
+    // census is the measurement). A page-straddling instruction fetches each parcel's
+    // own physical unit and joins the halves — two requests, its own case, never
+    // silently coalesced.
     let parcels = translation::fetch_parcels(pc);
     let mut parcel_pas = [0u64; 2];
     for (i, parcel) in parcels.iter().enumerate() {
-        match translation::translate(state, *parcel, translation::AccessKind::Fetch) {
-            translation::Translate::Identity(pa) => parcel_pas[i] = pa,
-            translation::Translate::Walk { .. } => {
-                return StepRv64gc::Failed(ModelError::Unimplemented {
-                    what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s",
-                });
+        match translation::translate(state, env, *parcel, translation::AccessKind::Fetch) {
+            translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                parcel_pas[i] = pa;
             }
-            translation::Translate::PageFault { cause, tval } => {
+            translation::Translate::PageFault { cause, tval }
+            | translation::Translate::AccessFault { cause, tval } => {
                 deliver(state, cause, tval, pc);
                 return StepRv64gc::Executed;
             }
+            translation::Translate::Failed(error) => return StepRv64gc::Failed(error),
         }
     }
-    if parcel_pas[1] != parcel_pas[0].wrapping_add(2) {
-        return StepRv64gc::Failed(ModelError::Unimplemented {
-            what: "a page-straddling fetch — the two-parcel physical pair is slice (c)'s",
-        });
-    }
-    let word = match env.request(Request::Fetch {
-        addr: parcel_pas[0],
-    }) {
-        Ok(Response::Fetch(word)) => word,
-        Ok(_) => {
-            return StepRv64gc::Failed(ModelError::InvalidDescription {
+    let coalesced = parcel_pas[1] == parcel_pas[0].wrapping_add(2);
+    let mut fetch16 = |addr: u64, va: u64| -> Result<u64, StepRv64gc> {
+        // one 32-bit fetch at the parcel's physical address; the caller keeps 16 bits
+        match env.request(Request::Fetch { addr }) {
+            Ok(Response::Fetch(word)) => Ok(u64::from(word)),
+            Ok(_) => Err(StepRv64gc::Failed(ModelError::InvalidDescription {
                 what: "environment answered a Fetch with a non-fetch response",
-            });
+            })),
+            Err(BoundaryError::Target(Failure::AccessFault)) => {
+                // the boundary's access fault at fetch, delivered (cause 1, tval = the VA)
+                deliver(state, 1, va, pc);
+                Err(StepRv64gc::Executed)
+            }
+            Err(BoundaryError::Target(Failure::Misaligned)) => {
+                // an odd pc — only a manipulated xepc/xTVEC produces one under IALIGN=16;
+                // the fetch-misaligned case, delivered (cause 0, tval = the VA)
+                deliver(state, 0, va, pc);
+                Err(StepRv64gc::Executed)
+            }
+            Err(BoundaryError::Violation(violation)) => {
+                Err(StepRv64gc::Failed(ModelError::ContractViolation(violation)))
+            }
         }
-        Err(BoundaryError::Target(Failure::AccessFault)) => {
-            // the boundary's access fault at fetch, delivered (cause 1, tval = pc)
-            deliver(state, 1, pc, pc);
-            return StepRv64gc::Executed;
+    };
+    let word = if coalesced {
+        // the parcels' one shared physical unit: exactly one fetch request (the Bare
+        // request shape, byte-exact)
+        match fetch16(parcel_pas[0], pc) {
+            Ok(w) => w as u32,
+            Err(outcome) => return outcome,
         }
-        Err(BoundaryError::Target(Failure::Misaligned)) => {
-            // an odd pc — only a manipulated xepc/xTVEC produces one under IALIGN=16;
-            // the fetch-misaligned case, delivered (cause 0, tval = pc)
-            deliver(state, 0, pc, pc);
-            return StepRv64gc::Executed;
-        }
-        Err(BoundaryError::Violation(violation)) => {
-            return StepRv64gc::Failed(ModelError::ContractViolation(violation));
-        }
+    } else {
+        // the straddle: each parcel's own unit, 16 bits from each
+        let lo = match fetch16(parcel_pas[0], parcels[0]) {
+            Ok(w) => w & 0xFFFF,
+            Err(outcome) => return outcome,
+        };
+        let hi = match fetch16(parcel_pas[1], parcels[1]) {
+            Ok(w) => w & 0xFFFF,
+            Err(outcome) => return outcome,
+        };
+        (lo | (hi << 16)) as u32
     };
     let Some(insn) = insns.iter().find(|i| word & i.mask == i.value) else {
         return StepRv64gc::ReservedDecode { at: pc, word };
@@ -333,17 +347,22 @@ impl Frame<'_> {
                 // the translation hook (P4-SYSTEM.3): misalignment is judged first by
                 // the pinned implementation-defined priority (decision 7); the address
                 // that crosses the boundary is the translated one
-                let pa = match translation::translate(self.state, a, translation::AccessKind::Load)
-                {
-                    translation::Translate::Identity(pa) => pa,
-                    translation::Translate::Walk { .. } => {
-                        self.failed = Some(ModelError::Unimplemented {
-                            what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s",
-                        });
+                let pa = match translation::translate(
+                    self.state,
+                    self.env,
+                    a,
+                    translation::AccessKind::Load,
+                ) {
+                    translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                        pa
+                    }
+                    translation::Translate::PageFault { cause, tval }
+                    | translation::Translate::AccessFault { cause, tval } => {
+                        self.deliver(cause, tval);
                         return (0, 64);
                     }
-                    translation::Translate::PageFault { cause, tval } => {
-                        self.deliver(cause, tval);
+                    translation::Translate::Failed(error) => {
+                        self.failed = Some(error);
                         return (0, 64);
                     }
                 };
@@ -386,17 +405,22 @@ impl Frame<'_> {
                 }
                 // the translation hook (P4-SYSTEM.3): same ordering as the load — the
                 // address that crosses the boundary is the translated one
-                let pa = match translation::translate(self.state, a, translation::AccessKind::Store)
-                {
-                    translation::Translate::Identity(pa) => pa,
-                    translation::Translate::Walk { .. } => {
-                        self.failed = Some(ModelError::Unimplemented {
-                            what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s",
-                        });
+                let pa = match translation::translate(
+                    self.state,
+                    self.env,
+                    a,
+                    translation::AccessKind::Store,
+                ) {
+                    translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                        pa
+                    }
+                    translation::Translate::PageFault { cause, tval }
+                    | translation::Translate::AccessFault { cause, tval } => {
+                        self.deliver(cause, tval);
                         return (0, 64);
                     }
-                    translation::Translate::PageFault { cause, tval } => {
-                        self.deliver(cause, tval);
+                    translation::Translate::Failed(error) => {
+                        self.failed = Some(error);
                         return (0, 64);
                     }
                 };
