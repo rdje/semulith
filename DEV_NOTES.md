@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the trap-entry stack runs the other way, and sip cannot clear SEIP (P4-SYSTEM.5 slice b)
+
+Execution of the `.5` brief's checkpoint (b) measured:
+
+- **The derivation tool had the xRET-side stack where trap entry runs the other
+  way.** The forked tool's `deliver()` wrote MIE <- MPIE, MPIE <- 0 — mret's
+  direction. Trap entry is MPIE <- MIE, MIE <- 0, and the engine's privilege.rs
+  had it right all along. The .2–.4 corpora never caught the tool: every prior
+  trap fired with MIE=MPIE=0, where the inverted and the correct forms coincide.
+  The first guest that enabled interrupts (i-deleg's ecall with MIE=1) nested the
+  re-posted SSI INSIDE the M handler and marched mepc into an mret self-loop —
+  the tracer showed MIE=1 one step after the ecall, where spec delivery leaves
+  it 0. A state-discipline bug hides exactly where every prior execution made
+  the wrong and the right form agree; the test that varies the input bit is the
+  one that matters (promotion: declined — the durability is the machinery: the
+  i-deleg guest and the interrupts suite re-run it).
+- **Two read-only bits are load-bearing guest-design facts.** i-vector's
+  SEI-to-S cell asked the S handler to clear SEIP through sip — read-only there
+  (Computed in the field tables); the engine would have re-delivered forever.
+  The guest now rides SEI to M (cleared through mip) and SSI to S (cleared
+  through sip) — the same vector evidence with legal clears. And i-accept's
+  mtvec delta was 8 bytes long: the delivery landed past the handler's two
+  evidence reads and the guest "passed" gutted — caught by reading the
+  derivation, not by any verdict. A guest that terminates is not a guest that
+  evidenced anything.
+- **Authoring against the wrong clock is a silent narrative lie.** i-timer's
+  stimecmp=3 assumed time counts the marker instructions; the declared domain
+  ticks every step, so time was 5 at that write and STIP never cleared. The
+  re-authored guest writes stimecmp=8 and observes 1→0→1 at steps 3→6→8, the
+  step counts spelled in the derivations. The same census discipline caught
+  S-mode `mstatus` accesses (illegal from S — the guests now ride sstatus) and
+  mstatus's UXL/SXL reset bits the tool never modeled (0xA00000000 — the
+  runner's first mismatch named them).
+
 ## _(2026-10-05)_ — the counters started moving, and a view that masked them appeared (P4-SYSTEM.5 slice a)
 
 Execution of the `.5` brief's checkpoint (a) measured:

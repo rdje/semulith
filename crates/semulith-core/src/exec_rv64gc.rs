@@ -55,6 +55,7 @@
 
 use crate::definition_rv64gc::{FieldDef, InsnDef, Sem, FIELDS, INSNS};
 use crate::env::{AccessWidth, BoundaryError, Environment, Failure, Request, Response};
+use crate::interrupts;
 use crate::outcome::ModelError;
 use crate::privilege;
 use crate::privilege::PrivilegedHart;
@@ -99,6 +100,16 @@ pub fn step_over(
     insns: &[InsnDef],
 ) -> StepRv64gc {
     let pc = state.pc();
+    // P4-SYSTEM.5 decision 3: pending evaluation at the HEAD of every step — "bounded
+    // amount of time" per-step by construction. An eligible interrupt is delivered
+    // BETWEEN instructions (mepc/sepc the un-fetched pc); the delivery is a step
+    // boundary (time ticks) that retires nothing (minstret does not move).
+    if let Some(pend) = interrupts::pending(state) {
+        let handler = interrupts::deliver(state, pend, pc);
+        state.set_pc(handler);
+        timekeeping::advance(state, false);
+        return StepRv64gc::Executed;
+    }
     // The fetch's two 16-bit parcels, translated independently (P4-SYSTEM.3 decision 5).
     // The recorded coalescing choice: when both parcels' TRANSLATED addresses lie in one
     // physical 32-bit unit, the fetch is exactly one request — under Bare that is every

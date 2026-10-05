@@ -27,6 +27,14 @@
 ;;              nop; the budget contract
 ;;   restart    the xret/xepc return discipline: resumption of preempted control flow at
 ;;              the recorded address and mode (mret/sret, SPP/MPP, the MPRV rule)
+;; `P4-SYSTEM.5` slice (b) (`2026-10-05`): the 7-guest interrupts corpus rides the SAME
+;; seven axes (decision 3 — no axis is added): the delivered interrupt's Interrupt-bit /
+;; cause / xepc shape and the synchronous-keeps-BASE vs vectored landing are the fault
+;; axis's delivery vocabulary, the global enables' taken-rule and the vectored MODE's
+;; WARL are legality, mideleg's mask (and the delegation-aware sip/mip views) is
+;; delegation, the time-reaches-stimecmp equality edge is boundary, the pending
+;; evaluation at every step head and continuation past a delivery are progress, and the
+;; nested xRET stack's restoration is restart.
 ;; `P4-SYSTEM.4` slice (e) (`2026-10-05`): the 12-guest atomics corpus rides the SAME
 ;; seven axes (decision 9 — no axis is added): misaligned atomics are the fault axis's
 ;; cause 7 vocabulary, the AMO permission rules and the reserved encodings are
@@ -62,10 +70,10 @@
 (cell (axis "fault") (axis "fault") (guest "it-prio-jump") (guest "it-prio-load"))
 (cell (axis "fault") (axis "alias") (guest "it-fault-alias") (guest "fault-ld-x0-mis") (guest "fault-ld-x0-fault"))
 (cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (guest "sv39-fault-canonical") (guest "sv39-fault-superpage") (guest "a-lrsc-fault"))
-(cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39"))
-(cell (axis "fault") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sv39-deleg") (guest "a-amo-sv39"))
-(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail"))
-(cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39"))
+(cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39") (guest "i-vector"))
+(cell (axis "fault") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sv39-deleg") (guest "a-amo-sv39") (guest "i-deleg"))
+(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer"))
+(cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest"))
 
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────
 (cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap"))
@@ -79,21 +87,21 @@
 (cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "dir-ext-matrix") (guest "scope-alu") (guest "a-amo-arith-w") (guest "a-amo-arith-d") (guest "a-amo-minmax-w") (guest "a-amo-minmax-d"))
 (cell (axis "boundary") (axis "legality") (guest "bound-shiftw") (guest "fault-shiftw-res"))
 (cell (axis "boundary") (axis "delegation") (degenerate "delegation routing is a function of the cause and the current mode, never of a data-domain edge: no staged guest composes them — the boundary layer is mode-agnostic and every delegation cell keys on cause and mode — reported, not omitted"))
-(cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw") (guest "dir-memwalk") (guest "dir-chain") (guest "scope-branch") (guest "dir-cmp-branch") (guest "sv39-translate-2m") (guest "sv39-translate-1g") (guest "sv39-straddle"))
+(cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw") (guest "dir-memwalk") (guest "dir-chain") (guest "scope-branch") (guest "dir-cmp-branch") (guest "sv39-translate-2m") (guest "sv39-translate-1g") (guest "sv39-straddle") (guest "i-timer"))
 (cell (axis "boundary") (axis "restart") (degenerate "no staged guest composes a data-domain edge with an xret return: the restart cells' observations are control state, and an xret to a domain-edge target (a 2-mod-4 mepc under IALIGN=16) is semantics this slice has not derived — reported, not omitted"))
 
 ;; ── legality × * ──────────────────────────────────────────────────────────────────
-(cell (axis "legality") (axis "legality") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "mm-readonly") (guest "mm-wfi") (guest "mm-sfence") (guest "mm-sret") (guest "sv39-perm-usr") (guest "a-lrsc-illegal"))
+(cell (axis "legality") (axis "legality") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "mm-readonly") (guest "mm-wfi") (guest "mm-sfence") (guest "mm-sret") (guest "sv39-perm-usr") (guest "a-lrsc-illegal") (guest "i-prio"))
 (cell (axis "legality") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp"))
-(cell (axis "legality") (axis "progress") (guest "mm-wfi") (guest "mm-ebreak") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "sv39-tlb-fence") (guest "a-amo-aqrl") (guest "a-lrsc-mustfail"))
+(cell (axis "legality") (axis "progress") (guest "mm-wfi") (guest "mm-ebreak") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "sv39-tlb-fence") (guest "a-amo-aqrl") (guest "a-lrsc-mustfail") (guest "i-accept") (guest "i-enable"))
 (cell (axis "legality") (axis "restart") (guest "mm-sret") (guest "mm-mret") (guest "mm-ecall-deleg") (guest "sv39-mprv") (guest "sv39-perm-usr"))
 
 ;; ── delegation × * ────────────────────────────────────────────────────────────────
-(cell (axis "delegation") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp"))
+(cell (axis "delegation") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "i-deleg"))
 (cell (axis "delegation") (axis "progress") (guest "mm-ecall-deleg") (guest "mm-counters"))
 (cell (axis "delegation") (axis "restart") (guest "mm-ecall-deleg") (guest "sv39-deleg"))
 
 ;; ── progress × *, restart × restart ───────────────────────────────────────────────
-(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem") (guest "mm-ecall-modes") (guest "sv39-translate-4k") (guest "a-lrsc-pair") (guest "a-lrsc-loop") (guest "a-lrsc-mustfail"))
+(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem") (guest "mm-ecall-modes") (guest "sv39-translate-4k") (guest "a-lrsc-pair") (guest "a-lrsc-loop") (guest "a-lrsc-mustfail") (guest "i-prio"))
 (cell (axis "progress") (axis "restart") (guest "mm-ebreak") (guest "mm-ecall-modes") (guest "mm-sret"))
-(cell (axis "restart") (axis "restart") (guest "mm-mret") (guest "mm-sret") (guest "mm-ecall-deleg")))
+(cell (axis "restart") (axis "restart") (guest "mm-mret") (guest "mm-sret") (guest "mm-ecall-deleg") (guest "i-nest")))

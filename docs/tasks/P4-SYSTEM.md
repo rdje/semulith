@@ -128,7 +128,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: single-core reservation behaviour is validated here; multicore memory-model work is `MC-MULTICORE`, not smuggled in.
 
 - ID: `P4-SYSTEM.5` — **interrupts, counters and wait**
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0029`; slice (a) done `2026-10-05`, `SEMULITH-P4-0030`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0029`; slices (a) `SEMULITH-P4-0030`, (b) `SEMULITH-P4-0031`, both done `2026-10-05`)
   Goal: masks, priority, pending/active state, nesting, return; counter width, rate, wrap and mode gating; a halted core still receiving its wake event (catalog `C14`, `C17`).
   Acceptance: timer or interrupt wake occurs **without CPU retirement** — the laboratory must be able to make time pass while nothing executes.
 
@@ -162,7 +162,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.5` | `pending` | interrupts, counters and wait — the brief landed `2026-10-05` and slice (a) with it (the virtual-time domain ticking per step, mm-counters re-derived, 87 guests byte-identical); next is slice (b): pending evaluation + interrupt-caused delivery (both vector modes) + the acceptance corpus |
+| 1 | `P4-SYSTEM.5` | `pending` | interrupts, counters and wait — slices (a) and (b) landed `2026-10-05` (the virtual-time domain; the step-head pending evaluation with both vector modes and the 7-guest i-* corpus — 95/95 with the 88 byte-identical); next is slice (c): the halted state + WFI's spec wake + `<halted>` + mm-wfi's re-derivation |
 
 ## Decisions
 
@@ -407,85 +407,78 @@ never raised, at every crossing. The index:
 
 - leaf `.1`, `.2` (all slices + LEAF ACCEPTANCE), `.3` (all slices), `.4` slice (a) →
   [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (crossings 1–7).
-- `.4` slices (b), (c), (d), (e), (f) → [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
-  (8th — the archive split — 9th, 10th, 11th, 12th, 13th).
+- `.4` slices (b), (c), (d), (e), (f), `.5` slice (a) →
+  [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
+  (8th — the archive split — 9th, 10th, 11th, 12th, 13th, 15th).
 
 
-`P4-SYSTEM.5` slice (a) — the virtual-time domain + counter progress + mm-counters' re-derivation (`2026-10-05`, `SEMULITH-P4-0030`):
+`P4-SYSTEM.5` slice (b) — the step-head pending evaluation + interrupt-caused delivery (both vector modes) + the acceptance corpus (`2026-10-05`, `SEMULITH-P4-0031`):
 
-- [x] **REPRODUCE / ISSUE** — the counters never moved, and one view path could never
-  have shown it if they had:
-
-  ```
-  $ grep -c "advance\|tick" crates/semulith-core/src/exec_rv64gc.rs
-  0 — time/mcycle/minstret all read their reset 0 forever (pre-slice)
-  $ grep -l "rdcycle\|rdtime\|rdinstret" profiles/rv64gc-lab-v0/guests/*.s
-  mm-counters.s  # the ONLY counter-reading guest of all 88 (7 reads — the brief's
-  # census re-measured); grep -l "mip\|sip" → 0 (no mip/sip reader: the STIP-at-reset
-  # quirk and the ticking STIP are unobservable in today's corpus); stimecmp only in
-  # mm-stimecmp.s, which reads stimecmp and NEVER mip/sip (clean, verified)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in decided behavior; the slice
-  implements decision 1, and execution caught one LATENT defect the moving counters
-  exposed, with the measurement on the page:
+- [x] **REPRODUCE / ISSUE** — decided-but-unimplemented behavior (decision 3), with a
+  census that makes the landing provably invisible to the existing corpus:
 
   ```
-  $ cargo test -p semulith-core --lib timekeeping    # the first run
-  test result: FAILED. 3 passed — csr_read of cycle (0xC00) read 0 where the storage
-  held 2: the view mask computed from the view's DECLARED fields is 0 for a
-  field-less view, so the counter views would have read 0 forever (rc=1)
+  $ grep -c "pending\|deliver" crates/semulith-core/src/exec_rv64gc.rs   # pre-slice
+  0 — no interrupt evaluation anywhere; mip/mie/mideleg reset to 0 and stayed there
+  $ grep -ln ", mie,\|, sie,\|, mideleg,\|0x304\b\|0x104\b\|0x303\b\|0x344\b\|0x144\b" \
+      profiles/rv64gc-lab-v0/guests/*.s | wc -l
+  0 — NO existing guest can become interrupt-eligible: the identity proof is unconditional
   ```
 
-  `csr_read`'s view path exposes exactly the view's declared non-WPRI fields; a
-  field-LESS view masks to ZERO (the `.2` zeros passed only because nothing moved).
-  Fixed at root: a view declaring no fields is a full-width shadow of its owner (the
-  statements' own meaning — "a read-only shadow of mcycle"). Also measured: decision
-  1's "one tick per step boundary" has exactly one honest read — time at executed
-  step k is k — and instret's genuine count is the trap-END discipline's own flag
-  (`!frame.trapped`).
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in decided behavior; execution caught
+  the authoring model's own defects, each measured (the derivation tool's deliver()
+  pushing xIE <- xPIE where trap entry wants xPIE <- xIE, xIE <- 0 — the .2–.4
+  corpora passed only because every prior trap fired with both 0; i-accept's mtvec
+  delta 8 bytes long; i-timer's stimecmp=3 authored against a retired-count clock):
 
-- [x] **FIX** — `timekeeping.rs` (NEW: the domain advance + 7 module tests — the
-  TLB/reservation suite pattern); the tick wired into `step_over` (every non-Failed
-  outcome, `!frame.trapped` for instret); `privilege.rs` (the full-shadow view fix);
-  `state.sexp` (time → view_of mcycle — one domain, one storage, FACT-OWNERSHIP's
-  discipline; mcycle/minstret statements carry the declared rate as DATA; the
-  census's environment-state candidate answered for the counter-progress part);
-  `state_rv64gc.rs` + `definition_rv64gc.rs` regenerated (the manifest cascade;
-  CSR storage 33 → 32 as the duplicate row retires); mm-counters' 5 value cells
-  re-derived BY DESIGN (the trap cells 13/39 untouched).
+  ```
+  $ grep -n "MPIE, take" crates/semulith-core/src/privilege.rs
+  465: mstatus = put(mstatus, MPIE, take(mstatus, MIE)); — the engine was right
+  all along; the DERIVATION TOOL was wrong, never the engine
+  ```
+
+- [x] **FIX** — `interrupts.rs` (NEW: `pending` — the (a)(b)(c) taken-rule + the
+  global rule + the delegation mask + the fixed priorities with the M-source bits
+  read-only 0 (decision 5) — and `deliver` — the Interrupt-bit shape, xepc the
+  un-fetched pc, xtval 0 (declared UNSPECIFIED), the stack, Direct AND Vectored
+  honoring xtvec.MODE; 8 module tests); `exec_rv64gc.rs` (the head evaluation
+  before the fetch; the boundary still ticks); the derivation tool hardened to the
+  engine's field tables (mstatus reset 0xA0000000, the sstatus/sie/sip views,
+  per-field write legalization, pc-keyed derivations, the `(fetches N)` convention);
+  EVD-05: the seven `i-*` guests + expectations derived BEFORE any engine run.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ cargo test -p semulith-core --lib timekeeping
-  test result: ok. 7 passed — the domain advances per boundary; instret moves only
-  on retired steps; cycle==time reads through the machine AND architectural paths;
-  the ticking STIP (reset 1, cleared above time, arriving on the third tick);
-  cold-reset determinism; the M-writable base survives the tick; the ACCESS gates
-  untouched (gated-off still counts)
+  $ cargo test -p semulith-core --lib interrupts
+  test result: ok. 8 passed; 0 failed
   $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed — 88/88 with the re-derived mm-counters (time values
-  0/1/2/25/51 at executed steps 0/1/2/25/51; the gating traps 13/39 unchanged)
-  $ cmp /tmp/p4s5a-traces-pre.txt /tmp/p4s5a-traces-post.txt
-  4,892 == 4,892 lines, clean — IDENTITY: all 87 non-counter guests byte-identical
-  against the parent engine (worktree, both CLIs, removed after)
+  test result: ok. 4 passed — 95/95 (the 88 + i-accept/deleg/enable/nest/prio/
+  timer/vector: 36+60+21+31+63+26+53 steps, 13 fetch-less deliveries)
+  $ <the 88 guests × demo on both builds, cmp> → 88/88 traces IDENTICAL against
+  the e37e664 engine (worktree removed) — the census prediction held
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0
+  28 cells declared, every disposition resolves (the 7 i-* mapped, no orphan)
   ```
 
 - [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8 groups);
-  `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged — the
-  new tests are Rust unit tests, invisible to the shell-arm enumerator);
-  STATE-GEN both pairs byte-exact against the changed descriptor; the CLI/demo
-  trace surface measured unchanged for every guest except mm-counters by design
-  (the identity proof above is that measurement — the tick writes no x-register).
+  `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged);
+  `git status --porcelain -- profiles/rv64gc-lab-v0/guests/ | grep -c "^ M"` → 1,
+  and it is run-order.txt's: 14 NEW i-* files, no pre-slice guest file touched,
+  nothing fitted.
 
 - [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
-  logs + changelog), `MEMORY.md` (next_action → slice b), `CHANGELOG.md`,
-  `DEV_NOTES.md` (the full-shadow measurement and the "time is k" reading; the
-  promotion decision:
-promotion: declined (the durability is the machinery — the ticking STIP cell and the full-shadow fix are armed by the timekeeping suite and the corpus, both in make check)),
-  `LIVE_STATUS.md` (the corpus count is unchanged at 88), `docs/book/src/plan/
-  p4.md` (the `.5` section opened).
+  logs + changelog; the slice-(a) checklist moved to the archive at the fifteenth
+  ceiling firing), `docs/TASK_TREE.md` (the `.5` row), `MEMORY.md` (next_action →
+  slice c), `CHANGELOG.md`, `DEV_NOTES.md` (the trap-entry stack measurement and
+  the read-only-SEIP lesson; the promotion decision:
+promotion: declined (the durability is the machinery — the stack discipline and the view legalizations are armed by the interrupts suite and the 7-guest corpus, both in make check)),
+  `LIVE_STATUS.md` (unchanged — it does not count guests), `docs/book/src/plan/
+  p4.md` (the `.5` section's slice line).
+
+
+
+
 
 ## Verification Log
 
@@ -496,6 +489,7 @@ obeyed, not raised). The `.3` and `.4` rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-05` | `.5` slice (b) | the pre-slice census (0 interrupt writes in all 88 guests — name and numeric form; 0 mip/sip/mie readers; mm-stimecmp stimecmp-only ⇒ the identity proof unconditional); the interrupts module 8/8 (the taken-rule per mode, the delegation mask, the priority walk, the delivery shape, both vector modes, the stack, the S view); the derivation tool hardened to the engine's field tables (mstatus reset 0xA0000000, sstatus/sie/sip views + per-field write legalization + the computed STIP, the CSR-privilege refusal, pc-keyed derivations, the (fetches N) convention) — the authoring model's own defects caught by execution and re-derived, never fitted (the tool's inverted trap-entry stack; i-accept's 8-byte-long mtvec delta; i-timer's retired-count clock; i-vector's SEIP-clear through read-only sip); the 7 i-* guests + EVD-05 expectations derived BEFORE any engine run (36/60/21/31/63/26/53 steps, 13 fetch-less deliveries); `cargo test -p semulith-verify run_rv64gc` 4/4 (95/95); the identity proof (88/88 traces cmp-clean against e37e664, worktree removed); the matrix (28 cells resolve, 7 mapped, no orphan); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged) | slice (b) landed: pending is evaluated at every step head and delivered honoring both vector modes — the corpus proves the taken-rule, the mask, the priorities, the timer, the vector arithmetic and the nesting stack; every pre-slice guest byte-identical |
 | `2026-10-05` | `.5` slice (a) | the pre-slice census (the counters frozen at 0; the full-88-guest read census — mm-counters the ONLY counter reader (7 reads), 0 mip/sip readers (the STIP-at-reset quirk and the ticking STIP unobservable today), mm-stimecmp clean of counter/mip/sip reads); the storage-shape decision (ONE domain — mcycle's storage, time a view, 'a valid implementation of RDTIME', §6.1; the duplicate row retired, FACT-OWNERSHIP); the LATENT view defect measured and fixed at root (a field-less view masked to 0 — the counters would have read 0 forever; a field-less view is now a full-width shadow); the timekeeping module 7/7 (advance per boundary, instret only on retired, cycle==time both read paths, the ticking STIP incl. the reset quirk, cold-reset determinism, the M-writable base, the ACCESS gates); mm-counters' 5 value cells re-derived BY DESIGN (0/1/2/25/51 — time at executed step k is k; the trap cells 13/39 untouched); `cargo test -p semulith-verify run_rv64gc` 4/4 (88/88); the identity proof (4,892 == 4,892 lines, cmp clean — 87 non-counter guests byte-identical, worktree removed); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged), STATE-GEN both pairs re-derived (CSR storage 33→32) | slice (a) landed: the declared virtual-time domain ticks one per step boundary (retired or halted), instret counts genuinely, the rate is state-document data, mm-counters re-derived, everyone else byte-identical |
 | `2026-10-05` | `.4` slice (f) + LEAF | the override census (validate-config rc=0; A/AMOCASQ/RsrvEventual/AccessFault all present — no change needed, pre-condition 7 re-measured); the 12 ELFs at exactly 0x8000_0000 (.word-only + PHDRS, the tracked assembler owning the bytes); the experiment (11 AGREE + 1 NAMED DIVERGENCE of 12 on the corpus's change-observation rule — the width cell: sail's address-only reservation matches sc.d-after-lr.w, the laboratory's declared width-equal policy fails, both legal; sail's SC deterministic under RsrvEventual; the alias cell physical-keyed on both sides); the REAL defect it caught (the bind-day uniform-7 misaligned policy measured ILLEGAL for LR — sail x11=5 vs expected 7; the exception table's kind mapping) fixed at root (engine arm, schema contract, state.sexp, D-ATOMIC-MISALIGN + note, verbatim mirrors) with exactly ONE guest file re-derived (a-lrsc-fault.expected.sexp; the other 87 untouched; the override unchanged); `cargo test -p semulith-verify run_rv64gc` 4/4 (88/88), the slice-(c) proof 16/16; `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged), RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5 | the LEAF CLOSES: single-core reservation behaviour validated — the corpus falsifies EVD-05 expectations and the differential confirms them (11 AGREE + 1 named of 12); the multicore boundary named (MC-MULTICORE, RVWMO §17.1.1–§17.1.1.4); frontier → `.5` |
 | `2026-10-05` | `.4` slice (e) — THE BIND | the pre-bind census (the slot open); the bind landed whole: slot→extension; the census dual edit 65→87 (+ the PARTS family); REQ-GC-ATOMICS (22) + three D-* mirror sets (RECORD-SCHEMA 20 files ok); definition_rv64gc.rs regenerated (22 forms + 3 variants + the era comment 40→43); the evaluator ported byte-identical to the scratch proof; the 12 guests + matrix cells tracked (28 resolve, no orphan); the one generator defect fixed at root (rustfmt's vertical array past 79 chars — stable by construction now); `cargo test -p semulith-verify run_rv64gc` 4/4 (88/88 with per-step writes, never_written, determinism, fetch counts); the scratch proofs against the TRACKED build (16/16, 88/88); the fetch leg flipped on its own (87==87, rv64i 52==52); BARE-IDENTITY 3,468 == 3,468 lines, cmp clean (parent worktree, both CLIs, 76 guests); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429), smoke-bench 53 arms, bench wasm, both books | THE BIND landed: the unit composes `riscv/a` — 87 forms judged, 88 guests green, the 76 pre-bind guests byte-identical |
@@ -525,6 +519,7 @@ obeyed, not raised). The `.3` and `.4` rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.5` (slice b) | `SEMULITH-P4-0031 (leaf P4-SYSTEM.5): slice b — the step-head pending evaluation + interrupt-caused delivery (both vector modes) + the 7-guest acceptance corpus` | interrupts.rs (pending/deliver + 8 tests: the (a)(b)(c) taken-rule + the global rule + the delegation mask + the fixed priorities, the M-source bits read-only 0; the Interrupt-bit delivery honoring xtvec.MODE); the head evaluation wired before the fetch (delivery steps tick, retire nothing); the derivation tool hardened to the field tables + pc-keyed derivations + the (fetches N) convention; 7 i-* guests (36/60/21/31/63/26/53 steps); 95/95 corpus; 88/88 identity cmp-clean; 28 cells resolve; make check + make gate green (DERIVED-COUNTS 429) |
 | `.5` (slice a) | `SEMULITH-P4-0030 (leaf P4-SYSTEM.5): slice a — the declared virtual-time domain (one tick per step), counter progress, mm-counters' by-design re-derivation` | timekeeping.rs (the domain advance + 7 tests); the tick in step_over (!frame.trapped for instret); time → view_of mcycle (one domain, the rate as data in state.sexp, the census answered for counter-progress); the latent field-less-view defect fixed at root (full-width shadow); mm-counters 0/1/2/25/51 re-derived, traps 13/39 untouched; 88/88 corpus, 87 guests byte-identical (4,892==4,892); make check + make gate green (DERIVED-COUNTS 429) |
 | `.4` (slice f) + LEAF | `SEMULITH-P4-0028 (leaf P4-SYSTEM.4): slice f — the Sail matched experiment (11 AGREE + 1 named of 12); the leaf closes` | the override unchanged (validate-config rc=0); the 12 ELFs via the tracked assembler; the width-cell divergence named (sail address-only vs the declared width-equal policy, both legal); the bind-day uniform-7 misaligned policy measured ILLEGAL for LR and fixed kind-matched (LR→5, SC/AMO→7) with the decision amended; one guest file re-derived; references.sexp's third experiment recorded; `make check` + `make gate` green (DERIVED-COUNTS 429); the leaf done, frontier → `.5` |
 | `.4` (slice e) | `SEMULITH-P4-0027 (leaf P4-SYSTEM.4): slice e — THE BIND: the unit composes riscv/a (87 forms, 88 guests, the arms tracked)` | slot→extension; the census dual edit 65→87 (+PARTS); REQ-GC-ATOMICS + three D-* mirrors; definition_rv64gc.rs (22 forms + 3 variants + the 43-forms comment); the evaluator byte-identical to the scratch proof; the 12 guests + matrix cells tracked; the rustfmt fix; 88/88, proofs re-run green, the fetch leg 87==87, BARE-IDENTITY 3,468==3,468; all gates green |
@@ -553,6 +548,30 @@ obeyed, not raised). The `.3` and `.4` rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-05`: `.5` slice (b) done (`SEMULITH-P4-0031`) — pending evaluation at the
+  head of every step (decision 3): the (a)(b)(c) taken-rule + the global rule + the
+  delegation mask + the fixed priorities MEI>MSI>MTI>SEI>SSI>STI with the M-source
+  bits read-only 0 (decision 5), and interrupt-caused delivery honoring BOTH
+  xtvec.MODEs (Direct = BASE, Vectored = BASE + 4×cause) with xcause =
+  cause|(1<<63), xepc the un-fetched pc, xtval 0 (declared UNSPECIFIED) and the
+  xPIE/xIE/xPP stack. `interrupts.rs` carries pending/deliver + 8 module tests; the
+  head evaluation is wired before the fetch and the boundary still ticks (delivery
+  steps retire nothing). The acceptance corpus is 7 new i-* guests (the taken-rule
+  per mode, the enable immediacy, the timer across the ticking domain, the
+  delegation mask with an S round-trip, the fixed-priority drain, both vector modes
+  with the synchronous trap keeping BASE, and a nested delivery's stack
+  restoration) — 290 steps, 13 of them fetch-less deliveries — with EVD-05
+  expectations derived BEFORE any engine run; the corpus reads 95/95. Execution
+  caught the authoring model's own defects (the derivation tool's inverted
+  trap-entry stack — the engine was right; i-accept's mtvec delta 8 bytes long;
+  i-timer's stimecmp authored against a retired-count clock; i-vector's SEIP-clear
+  through read-only sip) and re-derived, never fitted. The pre-slice census (0
+  interrupt writes in all 88 guests) made the identity proof unconditional, and it
+  held: 88/88 demo traces byte-identical against the e37e664 engine. The matrix
+  carries the 7 guests (28 cells resolve). `make check` rc=0, `make gate` green
+  (DERIVED-COUNTS 429 unchanged). Next: slice (c) — the halted state + WFI's spec
+  wake + `<halted>` + mm-wfi's re-derivation.
 
 - `2026-10-05`: `.5` slice (a) done (`SEMULITH-P4-0030`) — the declared virtual-time
   domain: one tick per step boundary, retired or halted (authority laboratory, the

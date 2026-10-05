@@ -19,6 +19,7 @@ pub mod definition_rv64gc;
 pub mod env;
 pub mod exec;
 pub mod exec_rv64gc;
+pub mod interrupts;
 pub mod outcome;
 pub mod privilege;
 pub mod reservation;

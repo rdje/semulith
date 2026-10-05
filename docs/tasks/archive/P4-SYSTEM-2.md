@@ -409,6 +409,87 @@ promotion: declined (the durability is the machinery — the kind-matched policy
   `docs/book/src/plan/p4.md` (the `.4` section completed) + the book index.
 
 
+`P4-SYSTEM.5` slice (a)'s checklist (completed `2026-10-05`,
+`SEMULITH-P4-0030`), split out on `2026-10-05` at the live file's fifteenth
+ceiling firing (slice (b) landing):
+
+`P4-SYSTEM.5` slice (a) — the virtual-time domain + counter progress + mm-counters' re-derivation (`2026-10-05`, `SEMULITH-P4-0030`):
+
+- [x] **REPRODUCE / ISSUE** — the counters never moved, and one view path could never
+  have shown it if they had:
+
+  ```
+  $ grep -c "advance\|tick" crates/semulith-core/src/exec_rv64gc.rs
+  0 — time/mcycle/minstret all read their reset 0 forever (pre-slice)
+  $ grep -l "rdcycle\|rdtime\|rdinstret" profiles/rv64gc-lab-v0/guests/*.s
+  mm-counters.s  # the ONLY counter-reading guest of all 88 (7 reads — the brief's
+  # census re-measured); grep -l "mip\|sip" → 0 (no mip/sip reader: the STIP-at-reset
+  # quirk and the ticking STIP are unobservable in today's corpus); stimecmp only in
+  # mm-stimecmp.s, which reads stimecmp and NEVER mip/sip (clean, verified)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in decided behavior; the slice
+  implements decision 1, and execution caught one LATENT defect the moving counters
+  exposed, with the measurement on the page:
+
+  ```
+  $ cargo test -p semulith-core --lib timekeeping    # the first run
+  test result: FAILED. 3 passed — csr_read of cycle (0xC00) read 0 where the storage
+  held 2: the view mask computed from the view's DECLARED fields is 0 for a
+  field-less view, so the counter views would have read 0 forever (rc=1)
+  ```
+
+  `csr_read`'s view path exposes exactly the view's declared non-WPRI fields; a
+  field-LESS view masks to ZERO (the `.2` zeros passed only because nothing moved).
+  Fixed at root: a view declaring no fields is a full-width shadow of its owner (the
+  statements' own meaning — "a read-only shadow of mcycle"). Also measured: decision
+  1's "one tick per step boundary" has exactly one honest read — time at executed
+  step k is k — and instret's genuine count is the trap-END discipline's own flag
+  (`!frame.trapped`).
+
+- [x] **FIX** — `timekeeping.rs` (NEW: the domain advance + 7 module tests — the
+  TLB/reservation suite pattern); the tick wired into `step_over` (every non-Failed
+  outcome, `!frame.trapped` for instret); `privilege.rs` (the full-shadow view fix);
+  `state.sexp` (time → view_of mcycle — one domain, one storage, FACT-OWNERSHIP's
+  discipline; mcycle/minstret statements carry the declared rate as DATA; the
+  census's environment-state candidate answered for the counter-progress part);
+  `state_rv64gc.rs` + `definition_rv64gc.rs` regenerated (the manifest cascade;
+  CSR storage 33 → 32 as the duplicate row retires); mm-counters' 5 value cells
+  re-derived BY DESIGN (the trap cells 13/39 untouched).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core --lib timekeeping
+  test result: ok. 7 passed — the domain advances per boundary; instret moves only
+  on retired steps; cycle==time reads through the machine AND architectural paths;
+  the ticking STIP (reset 1, cleared above time, arriving on the third tick);
+  cold-reset determinism; the M-writable base survives the tick; the ACCESS gates
+  untouched (gated-off still counts)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed — 88/88 with the re-derived mm-counters (time values
+  0/1/2/25/51 at executed steps 0/1/2/25/51; the gating traps 13/39 unchanged)
+  $ cmp /tmp/p4s5a-traces-pre.txt /tmp/p4s5a-traces-post.txt
+  4,892 == 4,892 lines, clean — IDENTITY: all 87 non-counter guests byte-identical
+  against the parent engine (worktree, both CLIs, removed after)
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8 groups);
+  `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged — the
+  new tests are Rust unit tests, invisible to the shell-arm enumerator);
+  STATE-GEN both pairs byte-exact against the changed descriptor; the CLI/demo
+  trace surface measured unchanged for every guest except mm-counters by design
+  (the identity proof above is that measurement — the tick writes no x-register).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  logs + changelog), `MEMORY.md` (next_action → slice b), `CHANGELOG.md`,
+  `DEV_NOTES.md` (the full-shadow measurement and the "time is k" reading; the
+  promotion decision:
+promotion: declined (the durability is the machinery — the ticking STIP cell and the full-shadow fix are armed by the timekeeping suite and the corpus, both in make check)),
+  `LIVE_STATUS.md` (the corpus count is unchanged at 88), `docs/book/src/plan/
+  p4.md` (the `.5` section opened).
+
+
 
 `P4-SYSTEM`'s Verification Log rows for leaves `.1` and `.2` (both closed `2026-10-03`),
 split out verbatim on `2026-10-05` at the live file's fourteenth ceiling firing — the

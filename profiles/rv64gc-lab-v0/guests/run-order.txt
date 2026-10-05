@@ -91,3 +91,10 @@ a-lrsc-illegal
 a-lrsc-loop
 a-lrsc-mustfail
 a-lrsc-pair
+i-accept
+i-deleg
+i-enable
+i-nest
+i-prio
+i-timer
+i-vector
