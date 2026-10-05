@@ -110,7 +110,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.s`  `98f034a39a435a823b639d7655b7213f591e30e6c166310626988973883a0f3f`
 //!   `profiles/rv64gc-lab-v0/guests/min-fencei.expected.sexp`  `396857246a741980100f75c2bd0bd4a3348e189530fbd6e965bd63c67bf8fe25`
 //!   `profiles/rv64gc-lab-v0/guests/min-fencei.s`  `0ee8c70ba9954b831817b732dd8e73e6219b019a74c88aff50327d14917b310f`
-//!   `profiles/rv64gc-lab-v0/guests/mm-counters.expected.sexp`  `e1cb3be3705e465c342e79ef677227d2d1e44c26abae139a0425e388c1c5c98e`
+//!   `profiles/rv64gc-lab-v0/guests/mm-counters.expected.sexp`  `bfde5f07c24a9c6feb3e95239f2448805654c496329de56e7b50170d5a47e92f`
 //!   `profiles/rv64gc-lab-v0/guests/mm-counters.s`  `01ee634e90f3725d763784ed91a24cfae974992fad85021abffafa7d08a14913`
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-legality-s.expected.sexp`  `52b94c71489ef107dce88d6316f30c54aecbe74277076531418b801fb0d5ee4c`
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-legality-s.s`  `5bd84ef9d77f952bbff6f676ad8a112cedf978e0d937dc253325927f8854d652`
@@ -2570,8 +2570,8 @@ static WORDS_MM_COUNTERS: &[u32] = &[
 #[rustfmt::skip]
 static EXPECTED_MM_COUNTERS: &[Expectation] = &[
     Expectation { step: 0, writes: &[] },
-    Expectation { step: 1, writes: &[] },
-    Expectation { step: 2, writes: &[] },
+    Expectation { step: 1, writes: &[(6, 0x0000000000000001)] },
+    Expectation { step: 2, writes: &[(7, 0x0000000000000002)] },
     Expectation { step: 3, writes: &[(1, 0x000000008000000C)] },
     Expectation { step: 4, writes: &[(1, 0x00000000800000B4)] },
     Expectation { step: 5, writes: &[] },
@@ -2594,7 +2594,7 @@ static EXPECTED_MM_COUNTERS: &[Expectation] = &[
     Expectation { step: 22, writes: &[(11, 0x0000000080000048)] },
     Expectation { step: 23, writes: &[] },
     Expectation { step: 24, writes: &[] },
-    Expectation { step: 25, writes: &[] },
+    Expectation { step: 25, writes: &[(8, 0x0000000000000019)] },
     Expectation { step: 26, writes: &[] },
     Expectation { step: 27, writes: &[] },
     Expectation { step: 28, writes: &[] },
@@ -2620,7 +2620,7 @@ static EXPECTED_MM_COUNTERS: &[Expectation] = &[
     Expectation { step: 48, writes: &[(11, 0x0000000080000088)] },
     Expectation { step: 49, writes: &[] },
     Expectation { step: 50, writes: &[] },
-    Expectation { step: 51, writes: &[(13, 0x0000000000000000)] },
+    Expectation { step: 51, writes: &[(13, 0x0000000000000033)] },
 ];
 
 #[rustfmt::skip]

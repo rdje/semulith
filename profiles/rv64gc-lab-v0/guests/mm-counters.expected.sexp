@@ -1,16 +1,19 @@
 ;; mm-counters.expected.sexp — the expected observations for `mm-counters.s` (P4-SYSTEM.2
-;; slice f, the mode-matrix corpus). EVD-05: every value below was derived from the
-;; pinned chapters BEFORE any engine run; the corpus runner falsifies against it.
+;; slice f, the mode-matrix corpus; the 7 counter cells RE-DERIVED BY DESIGN at
+;; P4-SYSTEM.5 slice (a) for the declared virtual-time domain — the .2 IALIGN-16
+;; precedent: re-derived from the pinned chapters + the declared rate, never fitted).
+;; EVD-05: every value below was derived from the pinned chapters BEFORE any engine
+;; run; the corpus runner falsifies against it.
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-counters.expected.sexp schema/expectations.sexp
 
 (expectations (program "mm-counters.s") (entry "0x0000000080000000") (instructions 52)
   (step (n 0) (insn "rdcycle x5") (writes)
     (derivation "in M the counters are always readable; the laboratory's counters read 0 — and x5 already holds 0, so no change is observed.") (source "RVI-Zicntr §2.1 (RDCYCLE); the laboratory's fixed-zero counter policy"))
-  (step (n 1) (insn "rdtime x6") (writes)
-    (derivation "same: RDTIME reads 0 in M, no register change observed.") (source "RVI-Zicntr §2.2 (RDTIME)"))
-  (step (n 2) (insn "rdinstret x7") (writes)
-    (derivation "same: RDINSTRET reads 0 in M, no register change observed.") (source "RVI-Zicntr §2.3 (RDINSTRET)"))
+    (step (n 1) (insn "rdtime x6") (writes (write (reg "x6") (value "0x0000000000000001")))
+    (derivation "one step boundary has passed: the declared virtual-time domain reads 1 (one tick per step boundary, retired or halted — the read at executed step k sees k). time is mcycle's read-only shadow, a valid RDTIME implementation.") (source "RVI-ZICNTR §6.1.1; state.sexp's mcycle row (P4-SYSTEM.5 decision 1)"))
+    (step (n 2) (insn "rdinstret x7") (writes (write (reg "x7") (value "0x0000000000000002")))
+    (derivation "minstret counts GENUINELY: two instructions retired cleanly (rdcycle, rdtime — no trap, no halt), so it reads 2. A trap-delivering, reserved-decoding or halted step would not increment.") (source "RVI-ZICNTR §6.1.1; state.sexp's minstret row (P4-SYSTEM.5 decision 1)"))
   (step (n 3) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x000000008000000c")))
     (derivation "auipc writes the instruction's own address (entry + 0xc).") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 4) (insn "addi x1, x1, 168") (writes (write (reg "x1") (value "0x00000000800000b4")))
@@ -31,7 +34,7 @@
     (derivation "mepc <- entry+0x44.") (source "RVI-ZICSR §5.1.1"))
   (step (n 12) (insn "mret") (writes)
     (derivation "drop to S at the counter cell.") (source "RVP-INSNS §3.3.2 (mret)"))
-  (step (n 13) (insn "rdcycle x8") (writes)
+    (step (n 13) (insn "rdcycle x8") (writes)
     (derivation "in S with mcounteren.CY clear, RDCYCLE traps illegal-instruction; mepc is entry+0x44.") (source "RVP-MACHINE §3.1.10 (mcounteren gates S/U counter reads)"))
   (step (n 14) (insn "csrrs x12, mscratch, x0") (writes)
     (derivation "the stage counter reads 0 — no change observed.") (source "RVI-ZICSR §5.1.1"))
@@ -55,8 +58,8 @@
     (derivation "mepc <- entry+0x48.") (source "RVI-ZICSR §5.1.1"))
   (step (n 24) (insn "mret") (writes)
     (derivation "back to S at the retry.") (source "RVP-INSNS §3.3.2 (mret)"))
-  (step (n 25) (insn "rdcycle x8") (writes)
-    (derivation "with mcounteren.CY set the S-mode read is legal and returns 0 — x8 already holds 0, no change observed; the legality is observed by the NEXT step's ecall reaching the handler with cause 9.") (source "RVP-MACHINE §3.1.10 (mcounteren)"))
+    (step (n 25) (insn "rdcycle x8") (writes (write (reg "x8") (value "0x0000000000000019")))
+    (derivation "the read at executed step k sees k = 25 — one tick per step boundary, retired or halted, every step in this flow included (the trapping .word steps tick too; only the values change, the trap/mode machinery is untouched).") (source "RVI-ZICNTR §6.1.1; state.sexp's mcycle row (P4-SYSTEM.5 decision 1)"))
   (step (n 26) (insn "ecall") (writes)
     (derivation "ecall from S: cause 9 — proves the rdcycle before it did NOT trap.") (source "RVP-MACHINE §2.1.3.1"))
   (step (n 27) (insn "csrrs x12, mscratch, x0") (writes)
@@ -83,7 +86,7 @@
     (derivation "mepc <- entry+0x84.") (source "RVI-ZICSR §5.1.1"))
   (step (n 38) (insn "mret") (writes)
     (derivation "drop to U at the counter cell.") (source "RVP-INSNS §3.3.2 (mret)"))
-  (step (n 39) (insn "rdcycle x13") (writes)
+    (step (n 39) (insn "rdcycle x13") (writes)
     (derivation "in U, BOTH mcounteren and scounteren must permit the read: scounteren.CY is still clear, so the read traps illegal-instruction even though mcounteren.CY is set.") (source "RVP-SUPERVISOR §5.1.7 (scounteren gates U-mode counter reads)"))
   (step (n 40) (insn "csrrs x12, mscratch, x0") (writes)
     (derivation "the stage counter reads 2 — no change observed.") (source "RVI-ZICSR §5.1.1"))
@@ -107,5 +110,6 @@
     (derivation "mepc <- entry+0x88.") (source "RVI-ZICSR §5.1.1"))
   (step (n 50) (insn "mret") (writes)
     (derivation "back to U at the retry.") (source "RVP-INSNS §3.3.2 (mret)"))
-  (step (n 51) (insn "rdcycle x13") (writes (write (reg "x13") (value "0x0000000000000000")))
-    (derivation "with both enables set the U-mode read is legal and returns 0 — observed as a change because x13 held 1.") (source "RVP-SUPERVISOR §5.1.7 (scounteren); the laboratory's fixed-zero counter policy")))
+    (step (n 51) (insn "rdcycle x13") (writes (write (reg "x13") (value "0x0000000000000033")))
+    (derivation "the read at executed step k sees k = 51 — one tick per step boundary, retired or halted, every step in this flow included (the trapping .word steps tick too; only the values change, the trap/mode machinery is untouched).") (source "RVI-ZICNTR §6.1.1; state.sexp's mcycle row (P4-SYSTEM.5 decision 1)"))
+)

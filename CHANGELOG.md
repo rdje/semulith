@@ -1,5 +1,41 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0030 (leaf P4-SYSTEM.5, slice a) — the declared virtual-time domain; mm-counters re-derived by design
+
+- The laboratory's virtual-time domain advances **one tick per step boundary,
+  retired or halted** (authority laboratory, the Zicntr §6.1 rate latitude, the
+  brief's pre-condition 8 answered: progress is a pure function of the step
+  index, so determinism and EVD-05's exact values hold by construction). The
+  storage shape is ONE domain: `mcycle` holds it, `time` views it read-only
+  ("cycle count might represent a valid implementation of RDTIME", §6.1) — the
+  duplicate `time` row retires (CSR storage 33 → 32), and the state document
+  carries the declared rate and the count rule as DATA (the `.3` TLB-parameter
+  precedent; the census's `.5` reopen answered for the counter-progress part).
+  `minstret` counts GENUINELY: +1 per retired instruction, never for a
+  trap-delivered, reserved-decoding or halted step.
+- The moving counters exposed a **latent defect**: `csr_read`'s view path
+  computed the exposed mask from a view's DECLARED fields, so a field-less view
+  masked to ZERO — the counter views would have read 0 forever (the `.2` zeros
+  passed only because nothing moved). Fixed at root: a view declaring no fields
+  is a full-width shadow of its owner — the statements' own meaning ("a
+  read-only shadow of mcycle").
+- mm-counters — the ONLY counter-reading guest of all 88 (the full census
+  re-measured: 7 reads; **0 mip/sip readers**, so the STIP-at-reset quirk and
+  the ticking STIP are unobservable in today's corpus; mm-stimecmp reads
+  stimecmp only, clean) — re-derives 5 cells BY DESIGN (time at executed step k
+  is k: 0/1/2/25/51; the gating traps 13/39 untouched), from the pinned chapters
+  + the declared rate, never fitted (the `.2` IALIGN-16 precedent).
+- `timekeeping.rs` carries the advance and 7 module tests (the ticking STIP:
+  reset 1, cleared above time, arriving on the third tick; cycle==time on both
+  read paths; cold-reset determinism; the ACCESS gates untouched). The corpus
+  reads **88/88**; the other 87 guests are **byte-identical** against the parent
+  engine (4,892 == 4,892 trace lines, both CLIs, worktree removed) — time
+  ticking is invisible outside the counter reads, and the CLI/demo surface is
+  unchanged. `make check` rc=0 (fmt + clippy `-D warnings` + 8 groups), `make
+  gate` all green (DERIVED-COUNTS 429 unchanged). Next: slice (b) — pending
+  evaluation + interrupt-caused delivery (both vector modes) + the acceptance
+  corpus.
+
 ## SEMULITH-P4-0028 (leaf P4-SYSTEM.4, slice f) — the Sail matched experiment (11 AGREE + 1 named of 12); the leaf CLOSES
 
 - The matched experiment runs the 12-guest atomics corpus under Sail 0.14 with the
@@ -810,46 +846,4 @@
   corpus gate 8/8 (+1); rv64i.sem.sexp untouched and rv64i's generated surfaces byte-exact
   (DEF-GEN/STATE-GEN/GUEST-GEN); both profiles' fetch verify green; `make gate` green
   (DERIVED-COUNTS 384→385 arms).
-
-## SEMULITH-P4-0004 (leaf P4-SYSTEM.2, slice a) — the Zicsr/Zicntr/privileged-system fragments from the re-pinned riscv-opcodes; the csr operand field; IALIGN as profile data
-
-- The upstream census (riscv-opcodes master, the fetch script's own route) measured what
-  the design brief delegated: the six Zicsr instructions are real rows in
-  `extensions/rv_zicsr`; mret/wfi live in `rv_system`, sret/sfence.vma in `rv_s`; and
-  Zicntr's rdcycle/rdtime/rdinstret exist ONLY as `$pseudo_op` rows of csrrs — Zicntr adds
-  no encodings. Upstream moved every table from the repository root to `extensions/`; the
-  moved rv_i/rv64_i/rv_m/rv64_m hash byte-identical to the rv64i pins, so the fetch route's
-  new `extensions/` mapping keeps both profiles' `--verify-only` green (a scripted fresh
-  re-fetch of rv_s came back byte-identical).
-- The re-pin landed as `profiles/rv64gc-lab-v0/references.sexp` (rv_zicsr, rv_zicntr,
-  rv_system, rv_s, csrs.csv + the shared arg_lut.csv — sha256+bytes each; rv64i's ledger
-  untouched; the pinned arg_lut already carried csr (31..20) and zimm5 (19..15), so no
-  arg_lut re-pin). Three new generated fragments: `definitions/riscv/zicsr.sexp` (owns the
-  csr/zimm5 fields), `zicntr.sexp` (the counter reads as `(pseudo …)` — a new fragment
-  construct for assembler spellings that add nothing to the encoding space, decided by the
-  disjointness gate under a specialization rule; requires rv64i AND zicsr, the pinned rows'
-  own `rv_zicsr::csrrs`), `system.sexp` (the D-PRIV-INSNS four). rv64i.sexp/m.sexp
-  re-derive byte-identical; the 62-instruction 4-fragment trial union is collision-free.
-- The assembler gained the csr/zimm5 operand fields (positions always derived from the
-  pinned arg_lut.csv), csr names resolved through the pinned csrs.csv, pseudo-op support
-  through the canonical path, and profile-derived IALIGN (rv64i 32 / rv64gc 16 — the
-  line-486 hard-code retired). All 13 new forms assemble and round-trip through spike-dasm
-  exactly. Measured in execution, fixed at root: `resolve_composition` silently dropped
-  every `(extensions …)` form after the first (latent since MODEL-COMPOSE.2), the
-  disjointness checker's `DUPLICATE NAME(S)` was advisory-only, and the assembler's label
-  pass ate csr names. No Rust surface touched.
-- Validation: check_encoding_disjoint self-test 12/12 (the pseudo and dupes arms RED
-  first), UNIT-COMPOSITION 9/9, EXERCISE-COVERAGE 21/21, the focused gates green,
-  fetch_references `--verify-only` green for BOTH profiles, `make gate` green
-  (DERIVED-COUNTS 383→384 self-test arms re-derived).
-
-## SEMULITH-AC-0057 (tree ARTIFACT-CLEANUP) — the 2026-10-03 §8 run: 0 incremental caches present to delete; the reference evidence logs kept
-
-- The ~24 h trigger fired (the `2026-10-02` record was a day old). The census found
-  **zero** cargo incremental `.bin` caches — none accumulated since the previous run —
-  and zero stray `.bin`/`.log` in `target/release`/`target/debug/deps`. 62
-  `target/refs/*.log` (2.2 M, evidence trails of the last reference run) and the 7
-  cargo-home crate fixtures (inputs) kept by standing policy. `docs/ARTIFACT_CLEANUP.md`
-  overwritten with the dated one-line record; `target` 3.9 G, `.app-data` 1.4 G,
-  unchanged.
 

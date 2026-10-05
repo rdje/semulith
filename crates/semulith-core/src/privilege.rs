@@ -312,13 +312,24 @@ pub fn csr_read<H: PrivilegedHart>(hart: &H, address: u16) -> Result<u64, Illega
     let value = csr_state(hart, owner);
     if meta.view_of.is_some() {
         // A view exposes exactly its own named (non-WPRI) fields; the rest reads zero
-        // (RVP-SUPERVISOR §11.1.1.1: the view is the subset).
-        let mask: u64 = hart
-            .csr_fields()
-            .iter()
-            .filter(|f| f.csr == meta.name && f.discipline != FieldDiscipline::Wpri)
-            .map(field_mask)
-            .fold(0, |a, b| a | b);
+        // (RVP-SUPERVISOR §11.1.1.1: the view is the subset). A view declaring NO
+        // fields is a full-width shadow of its owner (the counter views' own
+        // statements: "a read-only shadow of mcycle" — the subset rule cannot mean
+        // "reads zero", or the shadow would never shadow; measured at P4-SYSTEM.5
+        // slice a: the mask computed 0 and the counters would have read 0 forever).
+        let mask: u64 = {
+            let declared: u64 = hart
+                .csr_fields()
+                .iter()
+                .filter(|f| f.csr == meta.name && f.discipline != FieldDiscipline::Wpri)
+                .map(field_mask)
+                .fold(0, |a, b| a | b);
+            if declared == 0 {
+                u64::MAX
+            } else {
+                declared
+            }
+        };
         let mut viewed = value & mask;
         for f in hart.csr_fields().iter().filter(|f| f.csr == meta.name) {
             if f.legalize == Some(Legalize::Computed) {

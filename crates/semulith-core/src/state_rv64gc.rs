@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `3cbc383daefba030c876fe8f4e039d2758a7741e42df2ac4004b31671801f2fe`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `b099c8bc5b83ccec60cc516b18886110249449ec52c0a663eb0e72e963f9bb50`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, and the 33 CSRs of
@@ -24,10 +24,10 @@ pub const ALTERNATE_LINK_REGISTER: u8 = 5;
 /// — the codes are the architecture's own (the pinned encoding.h's PRV_U/PRV_S/PRV_M).
 pub use crate::privilege::{CsrMeta, FieldDiscipline, FieldMeta, Legalize, PrivilegeMode};
 
-/// Number of CSRs with storage (27 of 33; the rest are views —
+/// Number of CSRs with storage (26 of 33; the rest are views —
 /// a view declares no storage: sstatus/sie/sip restrict mstatus/mie/mip, the
 /// counters shadow their machine registers).
-pub const CSR_COUNT: usize = 27;
+pub const CSR_COUNT: usize = 26;
 
 /// Storage index of `mhartid` (address 0xf14).
 pub const CSR_MHARTID: usize = 0;
@@ -101,14 +101,11 @@ pub const CSR_SATP: usize = 22;
 /// Storage index of `stimecmp` (address 0x14d).
 pub const CSR_STIMECMP: usize = 23;
 
-/// Storage index of `time` (address 0xc01).
-pub const CSR_TIME: usize = 24;
-
 /// Storage index of `fflags` (address 0x001).
-pub const CSR_FFLAGS: usize = 25;
+pub const CSR_FFLAGS: usize = 24;
 
 /// Storage index of `frm` (address 0x002).
-pub const CSR_FRM: usize = 26;
+pub const CSR_FRM: usize = 25;
 
 /// The architectural register file, program counter, current mode and CSR storage:
 /// fixed-width inline, no heap (RUST-03).
@@ -135,7 +132,6 @@ impl ArchitecturalState {
                 0x0,
                 0x800000000014112d,
                 0xa00000000,
-                0x0,
                 0x0,
                 0x0,
                 0x0,
@@ -253,7 +249,6 @@ impl ArchitecturalState {
             0x106 => Some(CSR_SCOUNTEREN),
             0x180 => Some(CSR_SATP),
             0x14d => Some(CSR_STIMECMP),
-            0xc01 => Some(CSR_TIME),
             0x001 => Some(CSR_FFLAGS),
             0x002 => Some(CSR_FRM),
             _ => None,
@@ -407,7 +402,7 @@ pub const CSR_ELEMENTS: [CsrMeta; 33] = [
     CsrMeta {
         name: "time",
         address: 0xc01,
-        view_of: None,
+        view_of: Some("mcycle"),
     },
     CsrMeta {
         name: "instret",
@@ -1736,7 +1731,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "environment state (mtime, interrupt sources, the time register's value)",
             present: true,
-            why: "mtime/mtimecmp and the interrupt controllers are memory-mapped ENVIRONMENT state, not CSRs (the .2 brief); the environment contract (P4-SYSTEM.9) owns them, and the time register above says its value source is the environment",
+            why: "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely. The halt bit and the pending/source-evaluation reopen remain this leaf's (slices b/c). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)",
         },
         HiddenStateCandidate {
             candidate: "PMP configuration",

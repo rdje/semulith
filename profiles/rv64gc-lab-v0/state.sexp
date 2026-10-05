@@ -384,12 +384,12 @@
   (csr (id "mcycle") (address 2816) (width_bits 64) (authority architecture)
        (source "RVP-MACHINE §2.1.1.10; RVI-ZICNTR §6.1.1")
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.1.10; §2.1.4 (UNSPECIFIED)")
-              (statement "The cycle counter, writable in M; the laboratory resets it to 0. Its rate and progress are the environment contract's (P4-SYSTEM.5/.9) — D-ZICNTR's deferred job.")))
+              (statement "The cycle counter, writable in M; the laboratory resets it to 0. It IS the declared virtual-time domain's storage (P4-SYSTEM.5 decision 1, authority laboratory): the domain advances ONE TICK PER STEP BOUNDARY, retired or halted — the declared rate as data, a pure function of the step index (the Zicntr §6.1 rate latitude; determinism by construction). cycle and time view it read-only.")))
 
   (csr (id "minstret") (address 2818) (width_bits 64) (authority architecture)
        (source "RVP-MACHINE §2.1.1.10; RVI-ZICNTR §6.1.1")
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.1.10; §2.1.4 (UNSPECIFIED)")
-              (statement "The instructions-retired counter, writable in M; the laboratory resets it to 0. Rate/progress are P4-SYSTEM.5/.9's.")))
+              (statement "The instructions-retired counter, writable in M; the laboratory resets it to 0. It counts GENUINELY (P4-SYSTEM.5 decision 1): +1 per retired instruction — a step that delivers a trap, decodes reserved (no instruction), or halts does not increment; time advances regardless.")))
 
   ;; ---- supervisor level ----------------------------------------------------------------------
   (csr (id "sstatus") (address 256) (width_bits 64) (view_of "mstatus") (authority architecture)
@@ -591,10 +591,10 @@
        (reset (value "mcycle's") (authority laboratory) (source "RVI-ZICNTR §6.1.1")
               (statement "A read-only shadow of mcycle (csr[11:10]=0b11 makes every write an illegal instruction — the uniform permission model's); no storage, no independent reset. Access gating: mcounteren.CY then scounteren.CY.")))
 
-  (csr (id "time") (address 3073) (width_bits 64) (authority architecture)
+  (csr (id "time") (address 3073) (width_bits 64) (view_of "mcycle") (authority architecture)
        (source "RVI-ZICNTR §6.1.1")
-       (reset (value "0") (authority laboratory) (source "RVI-ZICNTR §6.1.1; D-SBI")
-              (statement "A read-only view of the wall-clock time — its source is the ENVIRONMENT's memory-mapped mtime, which is environment state, not a CSR (P4-SYSTEM.5/.9's contract; D-ZICNTR's deferred job). The laboratory's reset-time value is 0 until the contract says otherwise. Access gating: mcounteren.TM then scounteren.TM.")))
+       (reset (value "mcycle's") (authority laboratory) (source "RVI-ZICNTR §6.1.1")
+              (statement "A read-only view of the declared virtual-time domain — mcycle's storage ('cycle count might represent a valid implementation of RDTIME', Zicntr §6.1); no storage, no independent reset. The domain IS the environment's time supply (P4-SYSTEM.5 decision 1; the 'environment's mtime' phrasing refined, not contradicted — the contract wording for the supply is .9's). Access gating: mcounteren.TM then scounteren.TM.")))
 
   (csr (id "instret") (address 3074) (width_bits 64) (view_of "minstret") (authority architecture)
        (source "RVI-ZICNTR §6.1.1")
@@ -642,7 +642,7 @@
       (candidates (checked (candidate "floating-point registers f0-f31 and the fcsr behaviour") (present true)
                (why "F and D are selected (D-FP-DEFER); the FP file is NOT modelled until the backend qualification (P4-SYSTEM.7), and fflags/frm/fcsr are declared above as present-with-reset — the census records both halves so neither is forgotten nor silently active")))
       (candidates (checked (candidate "environment state (mtime, interrupt sources, the time register's value)") (present true)
-               (why "mtime/mtimecmp and the interrupt controllers are memory-mapped ENVIRONMENT state, not CSRs (the .2 brief); the environment contract (P4-SYSTEM.9) owns them, and the time register above says its value source is the environment")))
+               (why "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely. The halt bit and the pending/source-evaluation reopen remain this leaf's (slices b/c). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)")))
       (candidates (checked (candidate "PMP configuration") (present false)
                (why "PMP is excluded at v0 (D-NO-PMP)")))
       (candidates (checked (candidate "hypervisor state") (present false)

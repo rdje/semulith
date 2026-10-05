@@ -59,6 +59,7 @@ use crate::outcome::ModelError;
 use crate::privilege;
 use crate::privilege::PrivilegedHart;
 use crate::state_rv64gc::{ArchitecturalState, CSR_ELEMENTS};
+use crate::timekeeping;
 use crate::translation;
 
 /// Everything observable about one executed instruction: either the effect ran (any
@@ -115,6 +116,7 @@ pub fn step_over(
             translation::Translate::PageFault { cause, tval }
             | translation::Translate::AccessFault { cause, tval } => {
                 deliver(state, cause, tval, pc);
+                timekeeping::advance(state, false);
                 return StepRv64gc::Executed;
             }
             translation::Translate::Failed(error) => return StepRv64gc::Failed(error),
@@ -131,12 +133,14 @@ pub fn step_over(
             Err(BoundaryError::Target(Failure::AccessFault)) => {
                 // the boundary's access fault at fetch, delivered (cause 1, tval = the VA)
                 deliver(state, 1, va, pc);
+                timekeeping::advance(state, false);
                 Err(StepRv64gc::Executed)
             }
             Err(BoundaryError::Target(Failure::Misaligned)) => {
                 // an odd pc — only a manipulated xepc/xTVEC produces one under IALIGN=16;
                 // the fetch-misaligned case, delivered (cause 0, tval = the VA)
                 deliver(state, 0, va, pc);
+                timekeeping::advance(state, false);
                 Err(StepRv64gc::Executed)
             }
             Err(BoundaryError::Violation(violation)) => {
@@ -164,6 +168,9 @@ pub fn step_over(
         (lo | (hi << 16)) as u32
     };
     let Some(insn) = insns.iter().find(|i| word & i.mask == i.value) else {
+        // a step boundary without an instruction (the diagnostic policy converts one
+        // layer up): time ticks, minstret does not (P4-SYSTEM.5 decision 1)
+        timekeeping::advance(state, false);
         return StepRv64gc::ReservedDecode { at: pc, word };
     };
     let mut frame = Frame {
@@ -187,6 +194,10 @@ pub fn step_over(
     if !frame.pc_written {
         frame.state.set_pc(pc.wrapping_add(4));
     }
+    // P4-SYSTEM.5 decision 1: the declared virtual-time domain ticks at every step
+    // boundary; minstret counts GENUINELY — a trap-delivering instruction's step
+    // retires nothing (a completed one, `!frame.trapped`, retires one)
+    timekeeping::advance(frame.state, !frame.trapped);
     StepRv64gc::Executed
 }
 

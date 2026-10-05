@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the counters started moving, and a view that masked them appeared (P4-SYSTEM.5 slice a)
+
+Execution of the `.5` brief's checkpoint (a) measured:
+
+- **The `.2` zeros were right for the wrong reason.** mm-counters read 0 at
+  every cell because nothing moved — and nothing could have SHOWN a move: the
+  architectural CSR read computes a view's exposed mask from the view's declared
+  fields, and a field-LESS view masks to zero. The counter views would have read
+  0 forever, statements notwithstanding ("a read-only shadow of mcycle"). The
+  first timekeeping test caught it (cycle read 0 where the storage held 2,
+  rc=1), and the root fix is the statement's own meaning: a view declaring no
+  fields is a full-width shadow of its owner (promotion: declined — the
+  durability is the machinery: the suite and the corpus re-run it in make
+  check).
+- **"One tick per step boundary" has exactly one honest reading.** The runner
+  executes a count of steps; a tick at every non-Failed outcome makes time at
+  executed step k equal k — main flow, handler flow, trapping `.word` steps all
+  alike. That is what makes mm-counters' re-derivation mechanical (0/1/2/25/51
+  at steps 0/1/2/25/51) and the determinism proof trivial (the domain is a pure
+  function of the step index by construction, not by argument).
+- **instret's genuine count was already in the engine's vocabulary.** The
+  trap-END discipline's `frame.trapped` flag IS "the instruction did not
+  complete" — a delivered trap, a faulting fetch, a reserved decode. Retired is
+  its negation; no new state was needed, and the trap cells in mm-counters
+  (gated reads at 13/39) needed no re-derivation because a trap is not a read.
+
 ## _(2026-10-05)_ — the experiment that graded its own policy (P4-SYSTEM.4 slice f; the leaf closes)
 
 Execution of the `.4` brief's checkpoint (f) measured:
@@ -625,45 +651,4 @@ Execution of the `.2` brief's checkpoint (e) measured:
 Promotion: declined — the governor runs (rule 14), the census is recorded in the leaf, and
 the ceiling lifecycle has its decision records. Recorded in the owning leaf's checklist
 (LOCKSTEP).
-
-## _(2026-10-03)_ — the byte-frozen enum wall; a rotated digest exposes an arm's assumed first digit (P4-SYSTEM.2 slice d)
-
-Execution of the `.2` brief's checkpoint (d) measured:
-
-- **The two-profile shape has a hard wall, measured by construction.** The tracked
-  evaluator matches on rv64i's generated `Sem` enum, which DEF-GEN freezes byte-exact and
-  which lacks the slice-(b) variants — so the new operators' evaluation arms cannot exist
-  in tracked code until the rv64gc definition module is tracked (the flip). Three shapes
-  were measured and rejected before the chosen one: parameterizing the evaluator over the
-  tree (Rust enums don't extend); a shared evaluator over both Sem types (a second
-  evaluator is the OWN-01 failure); moving the Sem vocabulary to a hand-authored module
-  (changes rv64i's frozen bytes). What lands tracked instead: `privilege.rs`, the
-  MACHINERY over a `PrivilegedHart` trait — the generated rv64gc state module implements
-  the trait with the descriptor's tables, and the scratch proof compiles the tracked file
-  byte-identically (cmp-verified) against the scratch-generated modules. The evaluator's
-  new-variant arms are proven at scratch (the harness's tree-walker) and port at the flip.
-- **The WARL seam needed structured data.** Slice (c1)'s prose legalization could not be
-  applied mechanically; it became the `(legalize …)` mini-language (`(any)`,
-  `(read-only V)`, `(one-of V…)`, `(computed)`) across schema, document, mapping and
-  generator — with the cross-checks (a WARL field without one is refused; a read-only
-  constant must equal the field's reset). The proof caught my own defect: a CSR with no
-  field table (an atomic register) had every write preserve every bit — `covered=0` masked
-  the whole word; atomic registers write wholesale.
-- **The digest cascade works, and it exposed a fragile arm.** Adding the tracked
-  `run-order.txt` rotated the dossier digest; the designed cascade re-derived (reports →
-  board pin → board artifacts → platform manifest → both model books). PLATFORM-GEN's
-  stale-pin self-test arm mutated the pin by flipping its FIRST CHARACTER — which stopped
-  mutating the day the digest rotated to a different leading hex digit; the arm passed a
-  mutation that wasn't one. It now rewrites to a fixed wrong value of the same shape.
-- **The brief's "51-name list" was 49** (measured); the guest set is now
-  directory-derived with the run order as recorded data, cross-checked both directions.
-  And gen_definition's composition name list carried the third copy of slice (a)'s
-  dropped-`(extensions …)`-form bug — "4 declared instruction(s) have NO semantics: mret,
-  sfence.vma, sret, wfi" named it instantly. Three copies of one latent defect across
-  three readers of one schema shape — the fix pattern is now uniform (every form
-  contributes), and the corpus gates' arms prove it.
-
-Promotion: declined — the digest cascade is machinery with its own gates, the arm fix is
-its own evidence, and the wall's reasoning has its decision record. Recorded in the owning
-leaf's checklist (LOCKSTEP).
 

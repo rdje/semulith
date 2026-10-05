@@ -24,4 +24,5 @@ pub mod privilege;
 pub mod reservation;
 pub mod state;
 pub mod state_rv64gc;
+pub mod timekeeping;
 pub mod translation;
