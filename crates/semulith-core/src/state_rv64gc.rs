@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `e0774daf4104a2b586c7ab7e699926c2bec537384fcbad4be69b03a0fe98b497`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `7e1fedc634c5ad5f268521320e02d0aee9d14246d5b9b9f190dc188a0a6ac124`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, and the 33 CSRs of
@@ -1756,7 +1756,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "instruction-fetch cache state",
             present: false,
-            why: "the model re-reads memory on every fetch (D-CODE-VISIBILITY, the rv64i document's identical recording)",
+            why: "the model re-reads memory on every fetch (D-CODE-VISIBILITY) — a laboratory choice, not an absence of the possibility: Zifencei is declared AND bound (P4-SYSTEM.6 slice b), and the chapter's own latitude permits a caching hart regardless (visibility is guaranteed only after a FENCE.I), so the re-read choice stays laboratory policy and FENCE.I's nop is this unit's sanctioned implementation of the synchronization (the coherent/uncached-RAM latitude — nothing to flush). Re-answered in place at the bind, replacing rv64i's verbatim recording, which argued the choice from the extension's absence (true of rv64i, stale here)",
         },
         HiddenStateCandidate {
             candidate: "pending or partially committed effects",

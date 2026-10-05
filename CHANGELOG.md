@@ -1,5 +1,41 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0037 (leaf P4-SYSTEM.6, slice c) — the matched experiment 6 AGREE of 6; the LEAF CLOSES
+
+- The Sail matched experiment for the fence.i surface — decision 2's designed
+  AGREE measured, not assumed. The override is measured first (materialized
+  fresh from the tracked unit, unmoved since bfa6aaa; validate-config rc=0;
+  Zifencei supported true; NO change needed); sail's FENCEI measured in source:
+  its encdec carries the fields as VARIABLES (decoded-not-fixed — the
+  shall-ignore sentence quoted in its own comment), and its execute is a nop
+  for the memory model. Against the matched configuration, **6 AGREE of 6**:
+  it-fencei 3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8,
+  fault-selfmod 7, dir-selfmod-fence 8 — 29 steps' change-observations exact,
+  the patched fetch reading the new value on both engines; ZERO non-AGREE
+  cells. Verdict-neutrality measured: the wider corpus's expectations are
+  unmoved since their verdicts (the bind touched only the fencei surface).
+- The fetch-cache census candidate is re-answered in place (decision 6):
+  Zifencei declared AND bound; the re-read choice stays laboratory policy;
+  FENCE.I's nop is the unit's sanctioned implementation of the synchronization
+  (the consequence line unchanged; gen_state re-derived, build rc=0). One brief
+  phrasing measured imprecise and recorded: pre-condition 2's 'without
+  Zifencei' clause lives in rv64i's verbatim text, referenced by the candidate,
+  not in the candidate itself. references.sexp records the fifth experiment
+  (difference-free re-measured: 0 difference records).
+- **The LEAF ACCEPTANCE closes**: rewrite-code fixtures with and without the
+  architectural synchronization, measured on BOTH engines — WITH:
+  fencei-selfmod's fence.i retires between the store and the fetch, the patched
+  word reading 7 on both; WITHOUT: fault-selfmod's patch visible with no
+  synchronization, D-CODE-VISIBILITY named (the laboratory's declared legal
+  subset). The staleness half is answered as the declared latitude: intro.html's
+  implicit-reads sentence lets a valid implementation cache every fetchable
+  byte forever, and modelling such a hart would contradict the unit's
+  always-coherent census (rejected at the brief). `make check` rc=0, `make
+  gate` green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20,
+  PROFILE-CONSISTENCY 5, smoke-bench 53 arms, bench wasm, both books. Frontier
+  → `.7` (floating-point backend qualification — the design brief first,
+  starting from the routed-in SoftFloat shared-ancestry measurement).
+
 ## SEMULITH-P4-0036 (leaf P4-SYSTEM.6, slice b) — THE BIND: the unit composes riscv/zifencei
 
 - The slot becomes the extension and fence.i is legal in the tracked engine.
@@ -842,37 +878,4 @@
   untracked scratch — no gate arms this slice (the corpus's registry governor lands at
   the flip); `make gate` green (DERIVED-COUNTS unchanged at 408).
   Next: slice (g) — the interactions.sexp.
-
-## SEMULITH-P4-0009 (leaf P4-SYSTEM.2, slice e) — the 65-form census (dual edit), the base-corpus mirror + authored records, the flip's staged encoding
-
-- The scope census grows 52→65 by the mandated dual edit (`schema/profile.sexp` +
-  `dossier_sexp._SCOPE_LISTS`: +zicsr_csrs, +system_privileged, +zicntr_counters). The
-  pseudo-census decision, recorded in the profile's scope comment: the Zicntr counter
-  reads ARE census forms (the spec's Zicntr listings name them), the encoding realizes
-  them as csrrs specializations (the fragment's pseudos), and EXERCISE-COVERAGE observes
-  the spelling in the expectations' insn text — measured. EXTRACTION's integrative claim
-  now counts the composition's pseudo names (+2 self-test arms, 11 total).
-- The requirements growth: the base-corpus mirror is derived by closure, not typed — the
-  9 instruction family records + fence/ecall-ebreak + the XLEN/ENDIAN dependencies (13)
-  and their 13 obligations, byte-verbatim but for the profile-scoped fields, with
-  `mirrored_from` provenance, plus 3 authored requirement records (Zicsr access model +
-  permission refusals; the privileged four's per-mode legality; the Zicntr reads + gating)
-  and their obligations with POS+NEG check pairs — 34/34 in rv64gc's catalogues. The
-  governor: RECORD-SCHEMA rule 14 (MIRROR-DERIVE), registry-driven by two new
-  FACT-OWNERSHIP rows (63 kinds), its four RED arms fired (drift, missing,
-  ungoverned-authored, owner's-contract-kept).
-- The flip's encoding.sexp is staged at `target/p4-system-2/profiles/rv64gc-lab-v0/` with
-  the flip's own bytes (relative fragment-root, the definitions symlink, `(status
-  partial)` + six slots for m/a/f/d/c/zifencei), validated: schema conform, the union
-  collision-free (62 instructions + 3 pseudos), the holes honestly declared; the slice-(d)
-  execution proof regenerated from the staged bytes and re-run (26/26). The staged
-  payload's README records the flip mapping.
-- Measured in execution, fixed at root: the dropped-`(extensions …)`-form bug's census
-  found two MORE readers (check_exercise_coverage.sh, gen_model_book.py — six sites, the
-  pattern now extinct, `git grep` clean); PROFILE-CONSISTENCY's PARTS DRIFT learned the
-  extension families (it fired honestly on 40+12≠65 mid-edit); fetch_references' scope leg
-  covers the pinned tables, pseudo-aware (rv64gc 65==65, rv64i 52==52 unchanged). The
-  docs/tasks/ aggregate ceiling fired (63 files / 1,575,182 B > 1.5 MiB — the slice
-  checklists are the designed growth) and was re-derived to 3 MiB by decision record.
-  `make gate` green (DERIVED-COUNTS 404→408 arms). Next: slice (f) — the guests corpus.
 

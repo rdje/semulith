@@ -134,7 +134,8 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: timer or interrupt wake occurs **without CPU retirement** — the laboratory must be able to make time pass while nothing executes.
 
 - ID: `P4-SYSTEM.6` — **instruction visibility and fence semantics**
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0034`; slices (a) `SEMULITH-P4-0035`, (b) `SEMULITH-P4-0036`, both done `2026-10-05`)
+  Status: **done** `2026-10-05` (design brief `2026-10-05`, `SEMULITH-P4-0034`; slices (a) `SEMULITH-P4-0035`, (b) `SEMULITH-P4-0036`, (c) `SEMULITH-P4-0037`)
+  Result: **met.** The chapter's contract (RVI-ZIFENCEI §4.1, Version 2.0 — stores to instruction memory are not guaranteed visible until a FENCE.I; a FENCE.I ensures a later fetch sees the earlier stores; it orders the accesses before it ahead of the fetches after it) is validated on both engines, and the matched experiment confirms the landing: **6 AGREE of 6** against the matched Sail configuration (the fencei guests and both standing rewrite fixtures — 29 steps' change-observations exact; Sail's FENCEI is "a nop for the memory model" with its fields decoded-not-fixed, the shall-ignore sentence quoted in its own source). Newly written code becomes executable here by construction: this machine re-reads memory on every fetch (D-CODE-VISIBILITY), so the visibility the chapter conditions on FENCE.I is already unconditional — and the architectural synchronization still EXECUTES, legally, as the declared nop: the coherent/uncached-RAM latitude leaves nothing to flush ("just the fetch pipeline needs to be flushed at a FENCE.I"). WITH synchronization: `fencei-selfmod` — the store patches a later word, fence.i retires between the store and the fetch, and the patched instruction reads the new value (x2 ← 7) on both engines. WITHOUT: `fault-selfmod` stands — immediate visibility is the laboratory's declared choice, a legal subset of the chapter's may-or-may-not (dir-selfmod-fence's data fence measured NOT the fetch synchronization — its role is cross-hart, the comment corrected at the bind). When stale state MAY persist: answered as the declared latitude, never a fixture — intro.html's implicit-reads sentence lets a valid implementation cache every fetchable byte forever, and modelling such a hart would contradict the unit's always-coherent SEM-08 census (the caching-hart model weighed and rejected at the brief); the fetch-cache candidate is re-answered in place with the bind named (Zifencei declared AND bound; the re-read stays laboratory policy; FENCE.I's nop is the sanctioned implementation). The reserved-fields cell closes the forward-compatibility rule end-to-end: a fence.i word with nonzero funct12/rs1/rd executes as a nop on both engines (the shall-ignore decode). The fencei guests' own history fulfilled: the `.2` slice-(g) pre-commit ("re-derives this file to the legal fence.i when the slot binds") landed at the bind with the marker committing exactly as on both references — references.sexp stays difference-free, measured.
   Goal: when newly written code must become executable, and when stale state may persist (catalog `C13`).
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
@@ -163,7 +164,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.6` | `pending` | instruction visibility and fence semantics — slices (a) and (b) landed `2026-10-05` (the re-pin/fragment/sem; THE BIND: fence.i legal, 87→88, 101 green with 98 byte-identical); next is slice (c): the Sail matched experiment + the census re-answer + the reports + the leaf acceptance |
+| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — `.6` closed `2026-10-05` (the fence.i contract validated on both engines, 6 AGREE of 6, the acceptance pair landed); the design brief lands first, and it must start from the leaf card's routed-in measurement: both reference models vendor Berkeley SoftFloat (184/199 `.c` files byte-identical — a Sail-versus-Spike comparison executes ONE implementation twice) |
 
 ## Decisions
 
@@ -520,8 +521,9 @@ never raised, at every crossing. The index:
 
 - leaf `.1`, `.2` (all slices + LEAF ACCEPTANCE), `.3` (all slices), `.4` slice (a) →
   [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (crossings 1–7).
-- `.4` slices (b)–(f), `.5` slices (a)–(d), `.6` slice (a) →
+- `.4` slices (b)–(f), `.5` slices (a)–(d), `.6` slices (a), (b) →
   [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
+  (8th — the archive split — 9th–13th, 15th–20th).
   (8th — the archive split — 9th–13th, 15th–19th).
   (8th — the archive split — 9th–13th, 15th–18th).
   (8th — the archive split — 9th–13th, 15th–17th).
@@ -529,57 +531,86 @@ never raised, at every crossing. The index:
   (8th — the archive split — 9th, 10th, 11th, 12th, 13th, 15th).
 
 
-`P4-SYSTEM.6` slice (b) — THE BIND: fence.i legal in the tracked unit (`2026-10-05`, `SEMULITH-P4-0036`):
+`P4-SYSTEM.6` slice (c) — the Sail matched experiment + the census re-answer + the reports and the book; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0037`):
 
 - [x] **REPRODUCE / ISSUE** —
 
   ```
-  $ grep -c "slot (id zifencei)" profiles/rv64gc-lab-v0/encoding.sexp
-  1 — the slot waited (cause-2 pre-bind); 0 rows generated
+  $ <validate-config with the override materialized fresh from the tracked unit>
+  The default configuration merged with … is valid. rc=0; Zifencei supported
+  true (the .6 brief's pre-condition 3 re-measured; the tracked .sexp unmoved
+  since bfa6aaa — git log); NO override change needed
+  $ grep -c "instruction-fetch cache" profiles/rv64gc-lab-v0/state.sexp
+  1 — the candidate's why still read rv64i's recording, whose clause argues the
+  choice from the extension's ABSENCE (true of rv64i, stale at the bind)
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; one shape correction against my
-  own first draft, measured by the mirror governor (GUEST-GEN):
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; one brief phrasing measured
+  imprecise (recorded): pre-condition 2 located the 'without Zifencei' clause
+  IN rv64gc's candidate — it actually lives one hop away, in rv64i's verbatim
+  text the candidate references; the re-answer makes the bind's consequence
+  explicit in place either way. The designed outcome held everywhere else:
 
   ```
-  $ bash scripts/check_guest_gen.sh --self-test
-  MIRROR DRIFT — the four edited .s files broke byte-identity with their rv64i
-  owners: the mirror holds .s byte-identical ALWAYS; the bound-state story
-  belongs to the expectation comment blocks (the .2 slice-(g) shape)
+  $ grep -n "encdec = FENCEI" target/refs/sail-riscv-src/model/extensions/Zifencei/zifencei_insts.sail
+  mapping clause encdec = FENCEI(imm, rs, rd) — the fields are VARIABLES
+  (decoded-not-fixed), the shall-ignore sentence quoted in sail's own comment;
+  execute = sail_barrier + RETIRE_SUCCESS ('a nop for the memory model')
   ```
 
-- [x] **FIX** — encoding.sexp (slot→extension); the census dual edit 87→88
-  (the .4 lesson's four places, the zifencei_fencei family); definition_rv64gc.rs
-  regenerated; REQ-GC-FENCEI + OB-GC-FENCEI (no new D-* — the wfi-nop
-  precedent); the fencei re-derivations + the two new guests; the decision-3
-  corrections as recorded mirror re-derivations.
+- [x] **FIX** — the experiment tooling (`target/p4-system-6/sail/`: 6 ELFs at
+  exactly 0x8000_0000 — fencei-selfmod/dir-selfmod-fence's auipc-derived patch
+  targets MEASURED entry-relative, so the absolute entry matters); the row-keyed
+  comparator; `state.sexp`'s fetch-cache candidate re-answered in place (the
+  consequence line unchanged); `references.sexp`'s fifth experiment recorded;
+  the book's `.6` section completed.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ bash scripts/fetch_references.sh rv64gc-lab-v0 --verify-only
-  MATCH 88 == 88 — the exclusion flipped on its own (rv64i 52 == 52)
+  $ <the 6-guest comparator against sail 0.14, the matched override>
+  AGREE ×6 (it-fencei 3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8,
+  fault-selfmod 7, dir-selfmod-fence 8 — 29 steps' change-observations exact,
+  the patched fetch reading the new value on both sides): the designed AGREE
+  measured, not assumed; ZERO non-AGREE cells to name
+  $ git log --oneline -1 -- profiles/rv64gc-lab-v0/guests/a-amo-aqrl.expected.sexp
+  495b4b8 — the wider corpus's expectations unmoved since their verdicts;
+  nothing to re-run (the bind touched only the fencei surface)
+  $ python3 scripts/gen_state.py <the re-answered descriptor> && cargo build
+  wrote state_rv64gc.rs (the candidate's new why carried into the module),
+  rc=0; STATE-GEN's own pair check green at make gate
   $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed — 101/101 (x2 written, 0x0011118F ignored,
-  the patched fetch reads 7)
-  $ <99 pre-bind guests × demo, cmp> → 98 IDENTICAL; it-fencei the only
-  difference (min-fencei's trace byte-identical — the delivery wrote
-  nothing at mtvec=0); worktree removed
-  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0
-  28 cells declared, every disposition resolves; EXERCISE-COVERAGE 88/88;
-  GUEST-GEN self-test 16/16; RECORD-SCHEMA both files ok
+  test result: ok. 4 passed — 101/101
   ```
+
+- [x] **THE LEAF ACCEPTANCE** — "rewrite-code fixtures with and without the
+  architectural synchronization", measured on BOTH engines: WITH —
+  fencei-selfmod's fence.i retires between the store and the fetch and the
+  patched word reads 7 (sail AND semulith, step-for-step); WITHOUT —
+  fault-selfmod's patch is visible with NO synchronization, D-CODE-VISIBILITY
+  named (the laboratory's declared legal subset of the chapter's may-or-may-not);
+  the staleness half answered as the declared latitude (intro.html's
+  implicit-reads sentence — a valid implementation may cache every fetchable
+  byte forever; the caching-hart model rejected at the brief, decision 2).
 
 - [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8
   groups); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 430
-  unchanged); UNIT-COMPOSITION 3; SHARD-FREEZE 186 rows.
+  unchanged); RECORD-SCHEMA 20 files ok (references.sexp's matched_scope gain
+  and the two mirror files verbatim-identical); PROFILE-CONSISTENCY 5;
+  smoke-bench 53 arms + bench wasm + both books green (no tracked
+  engine/fixture content changed this slice beyond the re-derived
+  state/definition pair — the experiment tooling is untracked scratch; the
+  legs re-run anyway as the cheap proof).
 
-- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
-  logs + changelog; the slice-(a) checklist archived at the nineteenth
-  firing), `MEMORY.md` (next_action → slice c), `CHANGELOG.md`,
-  `DEV_NOTES.md` (the mirror-discipline lesson; the promotion decision:
-promotion: declined (the durability is the machinery — the mirror governor names drift on every gate run, and the bind's corpus verdicts are armed by make check)),
-  `LIVE_STATUS.md` (unchanged), `docs/book/src/plan/p4.md` + the book index.
+- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
+  narrative + frontier → `.7` + checklist + logs + changelog; the slice-(b)
+  checklist and the `.1`/`.2` changelog entries moved to the archive at the
+  twentieth ceiling firing), `docs/TASK_TREE.md` (6/10), `MEMORY.md`
+  (next_action → `.7`'s design brief, the routed ancestry flagged),
+  `LIVE_STATUS.md` (6/10, byte-neutral), `CHANGELOG.md`, `DEV_NOTES.md` (the
+  promotion decision:
+promotion: declined (the durability is the machinery — the six AGREEs are re-runnable against the materialized override, and the acceptance pair is armed by make check)),
+  `docs/book/src/plan/p4.md` (the `.6` section completed) + the book index.
 
 ## Verification Log
 
@@ -590,12 +621,14 @@ leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-05` | `.6` slice (c) + LEAF | the override measured first (materialized fresh from the tracked .sexp — unmoved since bfa6aaa; validate-config rc=0; Zifencei supported true, NO change needed); sail's FENCEI measured in source (encdec fields VARIABLES — decoded-not-fixed, the shall-ignore sentence in its own comment; execute a nop for the memory model); the 6 ELFs at exactly 0x8000_0000 (the selfmod pair's auipc-derived patch targets entry-relative, measured); the experiment (**6 AGREE of 6** — it-fencei 3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8, fault-selfmod 7, dir-selfmod-fence 8 = 29 steps' change-observations exact, the patched fetch reading 7 on both sides; ZERO non-AGREE cells); the verdict-neutrality measurement (the wider corpus's expectations unmoved since their verdicts — git log on a-amo-aqrl → 495b4b8; the bind touched only the fencei surface); the census re-answer (the fetch-cache candidate's why re-written in place — Zifencei declared AND bound, the re-read stays laboratory policy, FENCE.I's nop the sanctioned implementation; the consequence line unchanged; gen_state re-derived, build rc=0; the brief's clause-location phrasing measured imprecise and recorded — the clause is rv64i's text, referenced); references.sexp's fifth experiment (difference-free re-measured: 0 difference records); the acceptance box (WITH: fencei-selfmod on both engines; WITHOUT: fault-selfmod with D-CODE-VISIBILITY; the staleness half the declared latitude with intro.html's sentence); `cargo test -p semulith-verify run_rv64gc` 4/4 (101/101); `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5, smoke-bench 53 arms, bench wasm, both books | the LEAF CLOSES: the fence.i contract is validated on both engines — newly written code is executable by construction, the synchronization executes legally as the declared nop, the acceptance pair stands on both sides, and the staleness half is answered as the declared latitude; frontier → `.7` |
 | `2026-10-05` | `.6` slice (b) — THE BIND | the pre-bind census (the slot at encoding.sexp:18, 0 fence.i rows, the fencei guests trapping cause 2); slot→extension; the census dual edit 87→88 (the .4 lesson's four places); definition_rv64gc.rs regenerated (fence.i over Sem::Nop); REQ-GC-FENCEI + OB-GC-FENCEI, no new D-*; the fencei re-derivations (it-fencei 2→3 steps with x2 written — the pre-commit fulfilled; min-fencei one retiring nop); fencei-reserved (0x0011118F ignored) + fencei-selfmod (the acceptance pair's WITH member; fault-selfmod stands WITHOUT); the decision-3 corrections as recorded mirror re-derivations (the governor measured the .s edits as drift first); the flip 88==88; `cargo test -p semulith-verify run_rv64gc` 4/4 (101/101); the identity proof (98/99 byte-identical, it-fencei the designed exception, worktree removed); the matrix (28 cells resolve); EXERCISE-COVERAGE 88/88; GUEST-GEN 16/16; `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged) | THE BIND landed: the unit composes `riscv/zifencei` — fence.i legal over the existing nop, 88 forms, 101 guests green, 98 pre-bind byte-identical |
 | `2026-10-05` | `.6` slice (a) | the pre-slice census (rv_zifencei pinned nowhere; 6 FRAGMENTS entries; the slot at encoding.sexp:18); the tracked-route fetch (73 bytes, one row, be2d8f72…, fresh re-fetch byte-identical); the recorded deviation (decision 1's "no assembler shapes" FALSE for the bare spelling — the row's operand list refused it; the named zero-operand special case; no Sem variant / no generator change TRUE — mask 0x0000707f over Sem::Nop, rustc rc=0 ×2); the fragment (owns NO fields, requires rv64i, funct3=1; 6 others byte-identical); zifencei.sem.sexp (the three sentences + both latitudes re-located; pair 1/1, both composes, citations RVI-ZIFENCEI §4.1 ×1 offline, corpus 6/8); the disjointness trials (53 and 85+3 COMPOSE; self-test 12/12); the probe (bare+full spellings, the shall-ignore word, 3 named REDs, spike-dasm exact); both profiles 87==87/52==52 with the named exclusion; 99 guests byte-identical; `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged) | slice (a) landed: the pin, the fragment, the sem file and the assembler acceptance — the slot stays declared, the census stays 87, no corpus, no Rust |
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.6` (slice c) + LEAF | `SEMULITH-P4-0037 (leaf P4-SYSTEM.6): slice c — the matched experiment 6 AGREE of 6 + the census re-answer; the LEAF CLOSES` | the override measured first (validate-config rc=0, Zifencei true, unmoved); sail's FENCEI measured in source (fields decoded-not-fixed, nop for the memory model); 6 ELFs at exactly 0x8000_0000; 6 AGREE of 6 (29 steps, the patched fetch reading 7 on both sides, zero non-AGREE cells); the wider corpus unmoved since the verdicts (nothing to re-run); the fetch-cache candidate re-answered in place (the consequence line unchanged; gen_state re-derived); references.sexp's fifth experiment (difference-free); the acceptance box (WITH fencei-selfmod, WITHOUT fault-selfmod, the staleness half the declared latitude); 101/101 corpus; make check + make gate green (DERIVED-COUNTS 430), smoke-bench 53 arms, bench wasm, both books |
 | `.6` (slice b) — THE BIND | `SEMULITH-P4-0036 (leaf P4-SYSTEM.6): slice b — THE BIND: the unit composes riscv/zifencei (88 forms, 101 guests, the fencei arms tracked)` | slot→extension; the census dual edit 87→88 (the .4 lesson's four places); definition_rv64gc.rs regenerated; REQ-GC-FENCEI + OB-GC-FENCEI, no new D-*; the fencei re-derivations (the pre-commit fulfilled); fencei-reserved + fencei-selfmod (the acceptance pair); the decision-3 corrections as recorded mirror re-derivations; the flip 88==88; 101/101 corpus; 98/99 identity cmp-clean; 28 cells; EXERCISE-COVERAGE 88/88; make check + make gate green (DERIVED-COUNTS 430) |
 | `.6` (slice a) | `SEMULITH-P4-0035 (leaf P4-SYSTEM.6): slice a — the rv_zifencei re-pin + the one-form fragment + zifencei.sem.sexp + the assembler's zero-operand acceptance` | the tracked-route pin (73 bytes, one row, fresh re-fetch byte-identical); the named exclusion (flips at the bind); the fragment (owns NO fields, funct3=1; 6 others byte-identical); zifencei.sem.sexp ((effect (nop)) cited; pair 1/1, both composes, citations offline); the deviation ("no assembler shapes" false for the bare spelling → the named special case; no Sem variant / no generator change TRUE — rustc rc=0 ×2); the trials (53 and 85+3 COMPOSE); the probe (3 named REDs, spike-dasm exact); 87==87/52==52; 99 guests byte-identical; make check + make gate green (DERIVED-COUNTS 430) |
 | `.5` (slice d) + LEAF | `SEMULITH-P4-0033 (leaf P4-SYSTEM.5): slice d — the Sail matched attempt (6 AGREE + 6 named of 12, probe-tw's TW gap freshly measured); the LEAF CLOSES` | the override measured first (validate-config rc=0, no change, the tracked .sexp unmoved); 13 ELFs at exactly 0x8000_0000; the delivery-step convention measured identical (sail numbers it, prints no row); 6 AGREE (i-accept/i-deleg/i-enable/i-nest/i-vector/w-sw, 218 steps) + 6 named platform-shaped divergences (STIP's CLINT gate ×2, the `<halted>` counterpart ×4); probe-tw: the TW gap fresh (DIVERGE matched, AGREE 30/30 under the wfi-wait variant, the delivered trap identical); the .4 re-run verdict-neutral (11+1 of 12); the matrix invocation + 3 RED legs; references.sexp's fourth experiment; the acceptance quoted from w-timer's actual run (rdinstret=11, mcause=int\|5, mepc=wfi+4); make check + make gate green (DERIVED-COUNTS 430), smoke-bench 53 arms, bench wasm, both books |
@@ -629,6 +662,37 @@ leaf's rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-05`: `.6` slice (c) done and the LEAF CLOSES (`SEMULITH-P4-0037`) — the
+  Sail matched experiment for the fence.i surface, scoped to decision 2's designed
+  outcome and measured, not assumed: the override is measured first (materialized
+  fresh from the tracked unit — unmoved since bfa6aaa; validate-config rc=0;
+  Zifencei supported true; NO change needed), sail's FENCEI measured in source
+  (its encdec carries the fields as VARIABLES — decoded-not-fixed, the
+  shall-ignore sentence quoted in its own comment; execute is a nop for the
+  memory model). Against the matched configuration, **6 AGREE of 6**: it-fencei
+  3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8, fault-selfmod 7,
+  dir-selfmod-fence 8 — 29 steps' change-observations exact, the patched fetch
+  reading the new value on both engines; ZERO non-AGREE cells. Verdict-neutrality
+  measured: the wider corpus's expectations are unmoved since their verdicts
+  (git log → 495b4b8; the bind touched only the fencei surface). The fetch-cache
+  census candidate is re-answered in place (decision 6 — Zifencei declared AND
+  bound; the re-read stays laboratory policy; FENCE.I's nop is the sanctioned
+  implementation; the consequence line unchanged; gen_state re-derived, build
+  rc=0; the brief's clause-location phrasing measured imprecise and recorded —
+  the clause is rv64i's text, referenced). references.sexp records the fifth
+  experiment (difference-free re-measured: 0 difference records). **The LEAF
+  ACCEPTANCE**: rewrite-code fixtures with and without the architectural
+  synchronization, measured on BOTH engines — WITH: fencei-selfmod's fence.i
+  retires between the store and the fetch, the patched word reading 7 on both;
+  WITHOUT: fault-selfmod's patch visible with no synchronization,
+  D-CODE-VISIBILITY named (the laboratory's declared legal subset); the
+  staleness half answered as the declared latitude (intro.html's implicit-reads
+  sentence; the caching-hart model rejected at the brief). `make check` rc=0,
+  `make gate` green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20,
+  PROFILE-CONSISTENCY 5, smoke-bench 53 arms, bench wasm, both books. Next:
+  `.7` — floating-point backend qualification (the design brief first, starting
+  from the leaf card's routed-in SoftFloat shared-ancestry measurement).
 
 - `2026-10-05`: `.6` slice (b) done (`SEMULITH-P4-0036`) — **THE BIND**: the unit
   composes `riscv/zifencei`, and fence.i is legal in the tracked engine. The
@@ -1167,214 +1231,8 @@ leaf's rows stay inline below.
   `make gate` green (DERIVED-COUNTS unchanged at 408 — no arms this slice).
   Next: slice (h) — the atomic flip.
 
-- `2026-10-03`: `.2` slice (f) done (`SEMULITH-P4-0010`) — the guests corpus, executed.
-  The base mirror runs on the rv64gc engine: all 49 rv64i guests staged byte-identically
-  (c-scope.c excluded — the pinned toolchain script hard-codes `-march=rv64i`, the rv64gc
-  C-guest question recorded for the flip) and executed against their expectations by the
-  scratch corpus runner (the declared MainMemory map, fetch/load/store fault delivery on
-  the pinned cause vocabulary, the trap-END discipline fixed after it-fault-alias exposed
-  it, the rv64i verify runner's per-step x-register-change comparison rule). 46
-  expectation files carry over byte-identically; 3 were RE-DERIVED BY DESIGN — under
-  D-IALIGN-16 the misaligned-jump targets (2 mod 4) are legal (RVI-C 27.1), so the link
-  write lands and no fetch fault fires; a declared profile difference, measured, never a
-  soundness contradiction and never fitted to output. The mode matrix adds 13 guests with
-  EVD-05 expectations derived from the pinned chapters BEFORE the run: the six zicsr
-  forms' rw semantics, M-CSR legality per mode, delivered breakpoints that resume, ecall
-  causes 11/9/8 by mode and medeleg delegation to S (M-ecall never delegates), mret mode
-  pops with the MPRV clear-below-M / preserve-at-M rule, sret legality and the TSR gate,
-  wfi and the TW gate, sfence.vma/satp and the TVM gate, the counter enables
-  (mcounteren then scounteren), stimecmp's TM then STCE gating, read-only CSR writes and
-  the mstatus all-ones WARL read-back. Execution itself caught and fixed 14 stale
-  auipc+addi vector deltas (labels assemble to no word), two guest-design bugs (M-level
-  CSR writes inline in S-mode — the drops now happen before or inside the M handler),
-  one hex-digit slip in the mstatus WARL constant and one no-change mis-derivation —
-  every mismatch re-derived, never fitted. `corpus: 62 guest(s) PASS, 0 FAIL`, and the
-  coverage rehearsal over the staged 65-form scope reads 65/65 (the base 52 via the
-  mirror, the 13 extension forms via mm-*). Everything stays untracked scratch — no gate
-  arms this slice (the guests' registry governor lands at the flip); `make gate` green
-  (DERIVED-COUNTS unchanged at 408).
-  Next: slice (g) — the interactions.sexp.
 
-- `2026-10-03`: `.2` slice (e) done (`SEMULITH-P4-0009`) — the unit's census, catalogues,
-  and the flip's staged encoding. The scope census grows 52→65 by the mandated dual edit
-  (`schema/profile.sexp` + `dossier_sexp._SCOPE_LISTS`: +zicsr_csrs, +system_privileged,
-  +zicntr_counters). The pseudo-census decision, measured and recorded in the profile's
-  scope comment: the Zicntr reads ARE census forms (the spec's listings name them), the
-  encoding realizes them as csrrs specializations, and EXERCISE-COVERAGE observes the
-  spelling in the expectations' insn text (measured: the numerator is its first token);
-  EXTRACTION's integrative claim now counts the composition's pseudo names. The base
-  corpus's requirement mirror is derived, not typed: the closure probe measured 13
-  requirement records (the 9 instruction families + fence/ecall-ebreak + XLEN/ENDIAN
-  dependencies) and their 13 obligations; rv64gc's catalogues carry them byte-verbatim but
-  for the profile-scoped fields, with `mirrored_from` provenance, plus 3+3 authored records
-  for the new forms (34/34 each). RECORD-SCHEMA's new rule 14 (MIRROR-DERIVE) is the
-  governor, registry-driven by two new FACT-OWNERSHIP rows (63 kinds); its self-test arms
-  fired RED on a drifted, a missing, an ungoverned-authored, and a wrong-contract mirror.
-  The flip's encoding.sexp is staged at `target/p4-system-2/profiles/rv64gc-lab-v0/` with
-  the flip's own bytes (relative fragment-root, `(status partial)`, six slots), validated
-  collision-free; the slice-(d) proof regenerated from it and re-run (26/26). The
-  dropped-`(extensions …)`-form latent bug was censused to its SIXTH reader and the
-  pattern is gone (`git grep` clean). `make gate` green; the docs/tasks/ aggregate ceiling
-  re-derived 1.5→3 MiB by decision record (the slice checklists are the designed growth).
-  Next: slice (f) — the guests corpus.
-
-- `2026-10-03`: `.2` slice (d) done (`SEMULITH-P4-0008`) — the generators parameterize and
-  the privileged machinery lands. The two-profile shape was measured into existence: the
-  tracked evaluator matches rv64i's byte-frozen generated `Sem` enum, so the new
-  operators' evaluation arms cannot compile tracked until the rv64gc definition module is
-  tracked (the flip) — and the MACHINERY doesn't wait: `crates/semulith-core/src/
-  privilege.rs` owns trap delivery (delegation selection, the xPIE/xIE/xPP stack,
-  xepc/xcause/xtval, pc←xtvec), xret, the uniform CSR permission model and WPRI/WARL/WLRL
-  legalization over a `PrivilegedHart` trait whose metadata types it owns; the generated
-  rv64gc state module (scratch until the flip) implements the trait with the descriptor's
-  tables. The WARL seam closed: prose legalization became the structured `(legalize …)`
-  mini-language (schema + document + mapping + generator + the read-only/reset
-  cross-checks). gen_definition's rv64gc branch lowers the 8 slice-(b) operators and emits
-  pseudos as PSEUDOS metadata (60,984 bytes, rustc-clean at scratch); its composition name
-  list carried the THIRD copy of the dropped-`(extensions …)`-form bug — fixed. gen_guests
-  is directory-derived (the set is the directory; the run order is the tracked
-  run-order.txt, cross-checked both directions; rv64i regenerates hash-only — measured:
-  the brief's "51-name list" was 49). elf.rs's IALIGN is a parameter (rv64i 32, rv64gc 16
-  — the routed twin of the slice-(a) fix). The scratch execution proof: six assembled
-  guests through the generated modules + the tracked machinery — the CSR read/write
-  disciplines, trap delivery with and without delegation, the mret/sret mode pops, wfi/sret
-  legality per mode, counter gating, the TVM gate — 26/26, catching two authoring defects
-  on the way (an atomic CSR's write preserving everything; medeleg[8] delegated where an
-  S-ecall is cause 9). The dossier digest rotated on run-order.txt and the cascade
-  re-derived (reports, the board pin, the platform manifest, both model books); the
-  PLATFORM-GEN stale-pin arm that assumed the digest's leading digit was fixed to a
-  fixed-shape mutation. `make check` + `make gate` green (DERIVED-COUNTS 395→404 arms).
-  Next: slice (e) — the unit artifacts.
-
-- `2026-10-03`: `.2` slice (c2) done as a refinement (`SEMULITH-P4-0007`) — the tracked
-  landing of the rv64gc state module is flip-bound, measured, not assumed: STATE-GEN
-  proves rv64i's module byte-exact from its TRACKED descriptor in a fresh clone, and a
-  tracked module generated from the staged (untracked) document would be unjudgeable
-  there — a copy, not a derivation. The three alternatives were each measured dishonest
-  (a skip-if-absent gate leg is a standing hole in the byte-exact property; a hand-written
-  interim module is a second owner, OWN-01; a non-unit descriptor home is a category lie).
-  The interim evidence: the generated module (40,198 bytes) compiles standalone and a
-  scratch `rustc --test` harness proves it behaviorally (reset per the document, the
-  33-CSR address lookup, the view discipline, the field tables, x0/mode — 4/4).
-  `decision_generated-mirror-needs-tracked-input` records the rule; it constrains slice
-  (d)'s engine execution the same way. Next: slice (d) — gen_definition/gen_guests
-  parameterization + engine exec of the CSR/trap instructions.
-
-- `2026-10-03`: `.2` slice (c1) done (`SEMULITH-P4-0006`) — the state leg, split recorded:
-  (c1) zero Rust — the schema's privileged constructs, the staged document, the generator,
-  the gates; (c2) the engine-side consumption follows. `schema/state.sexp` gained
-  `privilege_mode` (hart state, not a CSR — the stack lives in mstatus) and the `csr`
-  construct with per-FIELD tables (WPRI/WARL/WLRL per RVP-CSR §1.1.3.1–3, legalization,
-  reset, locator per field; `view_of` records the sstatus/sie/sip and counter views — a
-  view declares no storage). The rv64gc state document is authored and fully validated
-  from `target/p4-system-2/state.sexp` — the route contradiction makes profiles/ placement
-  RED until the flip, so validation runs against the scratch path: schema conform, the new
-  `--csr-cross` probe (profile's (csrs …) == the document, 33/33 both directions),
-  `_state_resets` over the scratch dir, addresses == pinned csrs.csv 33/33, field coverage
-  complete. The 33 CSRs carry their tables: mstatus/sstatus with the xIE/xPIE/xPP stack
-  and the TSR/TW/TVM gates, mtvec/stvec BASE/MODE, medeleg with the brief's pinned
-  delegatable subset (11 and 16 read-only 0), mideleg all-delegatable, mepc/sepc bit-1
-  writable at IALIGN=16, misa read-only at the declared value (0x800000000014112D — a
-  stated laboratory WARL choice), satp MODE restricted to Bare|Sv39, menvcfg.STCE,
-  mcounteren/scounteren CY/TM/IR with Zihpm read-only 0, the counters with rate/progress
-  deferred to .5/.9, the FP CSRs present-with-reset with behaviour at .7. Resets: §2.1.4's
-  architectural ones cited; every UNSPECIFIED reset is a stated laboratory value. gen_state
-  emits both profiles — rv64i byte-identical, rv64gc to a scratch out (40198 bytes,
-  rustc-clean) with per-field resets composed and cross-checked against the csr-level value
-  (fired RED naturally: mstatus's UXL/SXL composite caught a hand-computed wrong value).
-  Gate gaps closed: PROFILE-CONSISTENCY's csr-set cross-check (+3 arms, 44 total) and
-  EXTRACTION's reset leg now counts csrs and the mode (+3 arms, 9 total); STATE-GEN 17
-  arms. `make gate` green (DERIVED-COUNTS 385→395). Next: slice (c2).
-
-- `2026-10-03`: `.2` slice (b) done (`SEMULITH-P4-0005`) — the semantics language learns
-  privilege. Eight operators joined the schema (32→39 forms), each with its meaning tied to
-  the pinned chapters: `(field X)` raw operand-field value; `(inst)` the instruction word;
-  `(mode)` current privilege; `(csr-state a)` the machine's own state read; `(csr-read a)`
-  / `(csr-write a v)` the architectural CSR access under a UNIFORM permission model
-  (address mode bits + read-only bits, counter-enables, TM/STCE, TVM — every CSR
-  instruction gets it once); `(trap-deliver c t)` delegation + the xPIE/xIE/xPP stack +
-  xepc/xcause/xtval + pc←xtvec; `(xret x)` the §2.1.3.2 stack pop incl. MPRV clear. The
-  language gained its READS-AND-WRITES contract (register reads see the pre-instruction
-  register file — the csrrw swap is exact for rd==rs1; no RV64I rule changes meaning). The
-  three sem files landed: zicsr (the read/write side-effect disciplines; ECALL/EBREAK
-  REFINED by declaration — MODEL-COMPOSE.6's anticipated case — cause 8/9/11 by mode),
-  zicntr (the pseudo-semantics mechanism, measured: specialization by NAME, no refines
-  possible or needed), system (mret/sret legality per mode + the TSR gate; wfi a stated
-  NOP-when-legal with the spec's latitudes resolved for trapping, laboratory authority;
-  sfence.vma's invalidation a stated NOP — Sv39 is `.3`'s). The WARL seam is recorded:
-  csr-write legalizes under slice (c)'s declared tables, applied at slice-(d) lowering.
-  Measured in execution, fixed at root: the corpus gate's COMPOSE leg carried slice (a)'s
-  dropped-`(extensions …)`-form bug (a silent override in the second form was invisible —
-  the new arm proven RED pre-fix); check_citations was hard-coded to rv64i.sem.sexp (the
-  new `--corpus` mode binds by declared pins: 52/52 ×3, 8/8, 3/3, 4/4 resolved); the
-  mstatus field positions are figure-only in the spec, so `encoding.h` + `causes.csv`
-  joined the rv64gc ledger. rv64i.sem.sexp untouched; `make gate` green. Next: slice (c) —
-  the state schema, gen_state and the 33-CSR document.
-
-- `2026-10-03`: `.2` slice (a) done (`SEMULITH-P4-0004`) — fragments + assembler whitelist +
-  IALIGN data. The upstream census measured what the brief delegated: Zicsr's six
-  instructions are real rows in `rv_zicsr`; mret/wfi live in `rv_system`, sret/sfence.vma in
-  `rv_s`; and Zicntr's rdcycle/rdtime/rdinstret exist ONLY as `$pseudo_op` rows of csrrs —
-  Zicntr adds no encodings. Upstream also moved every table from the repository root to
-  `extensions/` (the moved rv_i/rv64_i/rv_m/rv64_m hash byte-identical to the rv64i pins);
-  the fetch route now maps table names under `extensions/` and both profiles'
-  `--verify-only` stay green. The re-pin landed as `profiles/rv64gc-lab-v0/references.sexp`
-  (rv64i's ledger untouched; the pinned arg_lut.csv already carried csr/zimm5, so it needed
-  no re-pin). The fragment layer gained the `(pseudo …)` construct — assembler spellings
-  decided under a specialization rule, never encodings — and `zicntr.sexp` declares its real
-  dependency (`requires` rv64i AND zicsr, the rows' own `rv_zicsr::csrrs`). Measured in
-  execution and fixed at root: `resolve_composition` silently dropped every `(extensions …)`
-  form after the first (latent since MODEL-COMPOSE.2), the disjointness checker's
-  `DUPLICATE NAME(S)` was advisory-only, and the assembler's label pass ate csr names.
-  IALIGN is profile data now (rv64i 32, rv64gc 16 — the line-486 assumption retired).
-  rv64i.sexp/m.sexp re-derive byte-identical; all 13 new forms assemble and round-trip
-  through spike-dasm exactly; `make gate` green. The unit stays on the
-  `profile-resolution` route — the flip remains slice (h)'s atomic commit. Next: slice (b) —
-  the semantics-language operators + the new sem files.
-
-- `2026-10-03`: the `.2` design brief recorded (`SEMULITH-P4-0003`). The measured
-  pre-conditions: the route flip is atomic by construction (a partial flip is RED by
-  name in EXTRACTION/EXERCISE-COVERAGE/INTERACTION-MATRIX); the model has no privilege
-  or CSR concept anywhere executable; the three GEN generators are single-profile by
-  refusal; the assembler lacks the csr operand field and hard-codes IALIGN=32; no
-  privileged matched experiment has ever run (Spike's Sv57/CLINT platform conflicts
-  with this profile, worse than rv64i). The design: `.2` owns xRET + synchronous-trap
-  entry/exit + the CSR permission matrix + delegation + mode-dependent decode legality
-  (WFI/SFENCE.VMA/counters/STCE), with the boundary lines to `.3`/`.5`/`.8` drawn
-  explicitly; the flip composes base rv64i + Zicsr + privileged-system + Zicntr
-  fragments with slots declared partial; base-corpus inheritance is mirror-derivation
-  executed on the rv64gc engine; the mode-matrix guests observe through the ISA
-  (x0..x31 expectations unchanged); the generators parameterize behind the schema
-  layer with rv64i's surfaces re-derived byte-identical; Sail privileged matching
-  attempted, Spike recorded platform-conflicted. The tree's privilege-revision open
-  question closes (D-PRIV-REVISION). Eight execution checkpoints named.
-
-- `2026-09-13`: Created from `ROADMAP.md` §P4 and task card `T011` by `SEMULITH-TREES.2`.
-- `2026-09-14`: received a routed finding from `P0-PROFILE.7` — Sail and Spike share Berkeley
-  SoftFloat, 184 of 199 overlapping files byte-identical. `.7`'s ancestry inventory now starts
-  from a measurement instead of a suspicion, and its "independent numeric fixtures" requirement
-  has a concrete constraint to satisfy.
-- `2026-10-02`: the `.1` design brief recorded (`SEMULITH-P4-0001`) and the tree
-  activated. The measured pre-condition that shapes everything: the pinned v20260120
-  snapshot CARRIES the privileged chapters (`priv/` — 24 pages, digest-pinned), so the
-  privileged evidence base is citable today and the category census's "absent" phrasing
-  is superseded. The selection decided: `rv64gc-lab-v0` — RV64I + M/A/F/D/C/Zicsr/
-  Zifencei, M/S/U, Sv39, harts 1, IALIGN 16 with C; FP in the profile with its
-  execution evidence gated on `.7`'s backend qualification; SBI 2.0 / psABI 1.0 (both
-  already cached) as the firmware/toolchain contracts; the snapshot's `priv/` pages the
-  citation authority, the PDFs reference-only. The output: the unit's profile.sexp +
-  sources.sexp + DOSSIER.md, unregistered (the `.2`/`.11` precedent); catalogues arrive
-  with the evidence leaves.
-- `2026-10-03`: `.1` done (`SEMULITH-P4-0002`) — the profile resolved: **rv64gc-lab-v0**.
-  Every element source-located against the pinned publication: RV64I + M/A/F/D/C +
-  Zicntr + Zicsr + Zifencei (+ Sstc privileged), M/S/U, Sv39, IALIGN 16 / ILEN 32,
-  harts 1, the 33-CSR committed minimum, LP64D, SBI 2.0 for the P6 route. The pinned
-  snapshot's privileged chapters measured present (24 pages — the 2026-09-27 census's
-  "absent" phrasing superseded); the closure measured (D⇒F, F⇒Zicsr, C⇒Zca+Zcd at
-  RV64, G = IMAFDZicsr_Zifencei); FP declared with its evidence gated on `.7`. The
-  machinery gained the `profile-resolution` vehicle route by declaration (EXTRACTION /
-  EXERCISE-COVERAGE / INTERACTION-MATRIX honor it, contradiction = RED; self-tests
-  11/21/15); check_citations learned subdirectory `file` fields and named non-snapshot
-  skips; gen_platform's ISA derivation fixed to the canonical order. The unit is
-  deliberately unregistered — registration day is a later leaf. Frontier: `.2` —
-  privilege and mode transitions.
+The entries for the closed leaves `.1` and `.2` live verbatim in
+[`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — moved at this file's
+twentieth per-part ceiling crossing (the `.6` slice-(c) landing; the ceiling was
+obeyed, not raised). The `.3`–`.6` entries stay inline below.

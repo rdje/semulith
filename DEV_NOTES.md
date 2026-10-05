@@ -1,5 +1,38 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — a designed AGREE is still a measurement, and a clause can live one hop away (P4-SYSTEM.6 slice c)
+
+Execution of the `.6` brief's checkpoint (c) measured:
+
+- **"Sail lands identically" is a hypothesis until the trace agrees.** Decision
+  2 promised AGREE by design — Sail's FENCEI is "a nop for the memory model" —
+  and the experiment's job was to measure it, not assume it. The measurement
+  has two legs before any guest runs: the override validates unchanged
+  (Zifencei already true), and Sail's OWN source carries the shall-ignore
+  sentence as a comment while its encdec binds the fields as variables — so
+  0x0011118F decodes as FENCEI on both sides. Then the traces: 6 AGREE of 6,
+  zero non-AGREE cells to name. A designed outcome with zero divergences is
+  the easiest experiment to wave through, and the one that most needs the
+  numbers written down.
+- **A referenced clause is still load-bearing — and its location is not the
+  reference.** The brief's pre-condition 2 said the fetch-cache candidate's
+  why "says 'without Zifencei'" — the clause actually lives in rv64i's
+  verbatim text, which rv64gc's candidate only references. The re-answer would
+  have been the same either way, but the imprecision is recorded because the
+  census's whole point is that these sentences are checked, not remembered
+  (promotion: declined — the re-answered candidate is in the descriptor and
+  STATE-GEN re-derives it on every change).
+- **The staleness half of an acceptance can be honest as a latitude.** The
+  goal asks "when stale state MAY persist" — and the spec's own implicit-reads
+  sentence lets a valid implementation cache every fetchable byte forever. The
+  rejected option was modelling a caching hart to make staleness executable:
+  it would contradict the unit's own `present false` census to demonstrate a
+  machine this unit is not. The latitude is pinned by declaration (the
+  sentence is located, the choice is named, the census is re-answered), which
+  is the whole truth of the position — a fixture for it would have been a lie.
+
+promotion: declined (the durability is the machinery — the six AGREEs re-run
+against the materialized override; the acceptance pair is armed by make check).
 ## _(2026-10-05)_ — the mirror's byte-identity is the point, and a bind can be invisible in its own trace (P4-SYSTEM.6 slice b)
 
 Execution of the `.6` brief's checkpoint (b) measured:
@@ -645,50 +678,4 @@ Execution of the `.2` brief's decision 8 measured:
   mode crossing; 62/62 tracked-engine falsification; 11 full AGREE + 1 partial
   against Sail). Promotion: declined (the TW finding's routing is recorded in the
   leaf's checklist and the counter-rate policy is the profile's declared datum).
-
-## _(2026-10-03)_ — the flip measured four gate gaps; a generated module must be the formatter's fixed point (P4-SYSTEM.2 slice h, part 1)
-
-Execution of the `.2` brief's checkpoint (h), part 1, measured:
-
-- **Rehearse the flipped route before touching tracked files.** A copy of the staged
-  unit with the route string flipped told the truth in advance: INTERACTION-MATRIX
-  already green, EXTRACTION refusing on zicsr.sem.sexp's declared refinement points.
-  The four gaps that followed were all of the same kind — a checker that had learned
-  the one-unit world and had not been re-asked since: check_extraction's semantics
-  leg didn't honor the `(refines …)` relation its own sibling gate owns;
-  EXERCISE-COVERAGE's closure leg counted `(insn …)` children but not `(pseudo …)`
-  (the seventh pseudo-census site — the family pattern, now with a registry of
-  readers to census against); the three GEN gates judged one owner→mirror pair each;
-  FACT-OWNERSHIP's same-unit census was pinned at four units. Each fix went to the
-  owner with RED-first arms, never to a workaround.
-- **A generated module must be the formatter's fixed point.** `cargo fmt --all` runs
-  over `crates/` and STATE-GEN's `--check` compares the committed module against
-  regeneration — so when fmt rewrote gen_state's rv64gc emission (a long inline csr
-  reset array, one-line CsrMeta/FieldMeta rows, collapsed accessors) the gate
-  reported DRIFT against a file nobody hand-edited. The rv64i branch already emitted
-  rustfmt's own shape; the rv64gc branch now does too (verified: emission ==
-  rustfmt(emission)). The rule: a generator targeting a tree the formatter owns
-  must emit the formatter's fixed point, not approximately it.
-- **The environment's contract had the profile baked in.** FlatMemory judged fetch
-  alignment at 4 bytes — rv64i's IALIGN=32 wearing the contract's clothes. Under
-  IALIGN=16 the rv64gc corpus fetches legally at 2 mod 4 (three base guests exist
-  precisely to prove it). The fixture now carries the fetch alignment as profile
-  data (`with_fetch_align`); `new` keeps the 4-byte default so every rv64i call
-  site is byte-exact. Data-access alignment stayed the access width's own rule —
-  the two alignments are different facts and the fixture now says so.
-- **The trap-END discipline rode in as designed.** exec_rv64gc's `Frame.trapped`
-  (a delivered trap ends the step's remaining effects) is the scratch runner's
-  measured fix ported, not re-derived: the corpus proves it — the same 62 guests,
-  the same per-step expectations, now through the tracked engine
-  (`cargo test -p semulith-verify run_rv64gc`, 4/4 groups), with the
-  reserved-decode conversion kept one layer up in the verify-side runner where
-  the architecture says the policy lives.
-- **Validation:** `make check` (76 core / 184 verify), `make gate` all green
-  (DERIVED-COUNTS 408→419 re-derived), bench wasm + smoke-bench + both books
-  green, fetch_references MATCH both profiles, the CLI smoke (rv64gc run/demo
-  green, the named bench refusal, rv64i's trace byte-identical). The commit split
-  is recorded: the flip stands alone; the Sail attempt is part 2. Promotion:
-  declined — the pseudo-census class is already the family's running lesson
-  (docs/knowledge), and the rustfmt-fixed-point rule is encoded in the gate
-  itself (the census arms fire on drift).
 

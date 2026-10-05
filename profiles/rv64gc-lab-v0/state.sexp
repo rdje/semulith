@@ -650,7 +650,7 @@
       (candidates (checked (candidate "vector state (vtype, vl, vstart)") (present false)
                (why "V is not in this profile")))
       (candidates (checked (candidate "instruction-fetch cache state") (present false)
-               (why "the model re-reads memory on every fetch (D-CODE-VISIBILITY, the rv64i document's identical recording)")))
+               (why "the model re-reads memory on every fetch (D-CODE-VISIBILITY) — a laboratory choice, not an absence of the possibility: Zifencei is declared AND bound (P4-SYSTEM.6 slice b), and the chapter's own latitude permits a caching hart regardless (visibility is guaranteed only after a FENCE.I), so the re-read choice stays laboratory policy and FENCE.I's nop is this unit's sanctioned implementation of the synchronization (the coherent/uncached-RAM latitude — nothing to flush). Re-answered in place at the bind, replacing rv64i's verbatim recording, which argued the choice from the extension's absence (true of rv64i, stale here)")))
       (candidates (checked (candidate "pending or partially committed effects") (present false)
                (why "at this stage every instruction completes or faults as a unit; fault priority and partial commits are P4-SYSTEM.8's, which reopens this candidate")))
       (candidates (checked (candidate "address-translation caches (TLBs)") (present true)
