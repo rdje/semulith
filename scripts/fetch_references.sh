@@ -226,6 +226,10 @@ if not any(m.startswith(("mul", "div", "rem")) for m in declared):
     extra = [n for n in extra if n not in ("rv_m", "rv64_m")]
 if not any(m.startswith(("lr.", "sc.", "amo")) for m in declared):
     extra = [n for n in extra if n not in ("rv_a", "rv64_a")]
+# and the Zifencei table under the same named exclusion until P4-SYSTEM.6's bind grows
+# the census to 88 (slice b) — the same flip condition again
+if not any(m == "fence.i" for m in declared):
+    extra = [n for n in extra if n != "rv_zifencei"]
 names = set()
 for f in ["rv_i", "rv64_i", *extra]:
     lines = (enc / f).read_text().splitlines()

@@ -1,5 +1,37 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0035 (leaf P4-SYSTEM.6, slice a) — the rv_zifencei re-pin, the one-form fragment, zifencei.sem.sexp, the zero-operand assembler acceptance
+
+- The re-pin: `rv_zifencei` through the tracked `extensions/` fetch route — 73
+  bytes, exactly one row (`fence.i imm12 rs1 14..12=1 rd 6..2=0x03 1..0=3`,
+  sha256 be2d8f72…), recorded in references.sexp with the supplies amendment; a
+  scripted fresh re-fetch byte-identical. The fetch leg gains the named
+  zifencei exclusion (the M/A pattern — pinned for the fragment, not the scope,
+  until slice (b)'s bind flips it): both profiles' `--verify-only` green,
+  87==87 and 52==52, "owned fragments agree with the pinned upstream".
+- The FRAGMENTS entry generates `definitions/riscv/zifencei.sexp` — owns NO
+  operand fields (imm12/rs1/rd are the base's), requires rv64i, funct3=1
+  against fence's 0; the six existing fragments re-derive byte-identical.
+  `zifencei.sem.sexp` lands hand-written with `(effect (nop))`: the three
+  normative sentences, the coherent/uncached-RAM latitude (a re-read-per-fetch
+  machine has nothing to flush) and the shall-ignore rule, every sentence
+  re-located in the pinned chapter (Version 2.0); citations resolve offline
+  (RVI-ZIFENCEI §4.1 ×1; corpus 6 files / 8 resolutions).
+- One brief claim measured FALSE as written: decision 1's "no assembler
+  shapes" — the row's operand list refused the bare standard-software spelling,
+  so the zero-operand acceptance lands as a named, cited special case in
+  `riscv_asm.py` (the A-suffix precedent's shape): bare `fence.i` → 0x0000100f,
+  the full spelling unchanged, 3 named RED refusals, the spike-dasm round-trip
+  exact including the shall-ignore word 0x0011118f. The OTHER no-change claims
+  measured TRUE: no Sem variant, no generator change — gen_definition emits
+  fence.i with mask 0x0000707f (funct3+opcode only — the shall-ignore decode)
+  over the existing `Sem::Nop`, rustc rc=0 over both trial compositions.
+- check_encoding_disjoint COMPOSEs base+zifencei (53) and the profile's set
+  +zifencei (85+3); check_semantics pair 1/1 and both --compose green; all 99
+  guests re-assemble byte-identical. The slot STAYS declared, the census STAYS
+  87, no corpus, no Rust. `make check` rc=0, `make gate` green (DERIVED-COUNTS
+  430 unchanged).
+
 ## SEMULITH-P4-0033 (leaf P4-SYSTEM.5, slice d) — the Sail matched attempt; the LEAF CLOSES
 
 - The matched attempt, scoped to what is matchable (decision 9). The override is
@@ -845,22 +877,4 @@
   rv64i generated modules regenerate with only the embedded generator-hash lines changed.
   STATE-GEN 20/20, DEF-GEN 15/15, GUEST-GEN 10/10 (new arms RED-first); `make check` and
   `make gate` green (DERIVED-COUNTS 395→404). Next: slice (e) — the unit artifacts.
-
-## SEMULITH-P4-0007 (leaf P4-SYSTEM.2, slice c2) — the rv64gc module's tracked landing is flip-bound; the scratch engine proof recorded
-
-- The (c2) judgment, measured rather than assumed: STATE-GEN proves rv64i's state.rs
-  byte-exact from its TRACKED descriptor in a fresh clone; a tracked rv64gc module
-  generated from the staged (untracked) document would be unjudgeable there — a copy, not
-  a derivation. The three alternatives were each measured dishonest (a skip-if-absent
-  gate leg = a standing hole in the byte-exact property; a hand-written interim module =
-  a second owner, OWN-01; a non-unit descriptor home = a category lie). So the module
-  lands with the descriptor at the flip (slice h), in one green commit, with STATE-GEN's
-  census and the FACT-OWNERSHIP rows extending there. Recorded as
-  `decision_generated-mirror-needs-tracked-input`; constrains slice (d) the same way.
-- The interim evidence, at scratch: the generated module (40,198 bytes) compiles
-  standalone and a `rustc --test` harness exercises it behaviorally — reset per the
-  document (mode M, mstatus `0xA0000000`, misa at the declared value), the 33-CSR address
-  lookup, the view discipline, the field tables (the medeleg 11/16 read-only-0 rows, TSR
-  at bit 22 per the pinned encoding.h), x0 hardwired, mode transitions — 4 passed / 0
-  failed. Harness and module at `target/p4-system-2/gen/` (untracked, by design).
 

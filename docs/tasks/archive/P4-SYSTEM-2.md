@@ -626,6 +626,107 @@ promotion: declined (the durability is the machinery — the wake rule and the h
   p4.md` (the `.5` section's slice line).
 
 
+`P4-SYSTEM.5` slice (d)'s checklist (completed `2026-10-05`,
+`SEMULITH-P4-0033`; the leaf's acceptance record), split out on `2026-10-05`
+at the live file's eighteenth ceiling firing (the `.6` slice-(a) landing):
+
+`P4-SYSTEM.5` slice (d) — the Sail matched attempt + the reports + the book; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0033`):
+
+- [x] **REPRODUCE / ISSUE** —
+
+  ```
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --config-override \
+      target/refs/sail-rv64gc-lab-v0.override.json --validate-config
+  The default configuration merged with … is valid. rc=0 — the override needed
+  NO change (materialized fresh from the tracked .sexp, itself unchanged since
+  bfa6aaa — git log; mideleg/mip/mie/Sstc were already covered, pre-condition
+  measured, never assumed)
+  $ ls target/p4-system-5/sail/*.elf | wc -l
+  0 → 13 — the 12 corpus guests + the TW probe had no Sail-runnable images
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no engine defect this slice; the six named
+  divergences are all platform-shaped, each measured to its sentence:
+
+  ```
+  $ grep -n "plat_have_clint" target/refs/sail-riscv-src/model/core/interrupt_regs.sail
+  250:  let platform_has_timer = plat_have_clint; — the gate, measured in the pinned
+  source: with clint.supported=false (D-PLATFORM) mip[STI] never sets (i-prio step 24,
+  i-timer step 3); the counter registers themselves are the `.2` wall — Zicntr
+  supported=false, so rdtime/rdinstret trap illegal on sail (the mm-wfi trace's
+  tval=0xC01023F3). And platform.wfi_is_nop=true: sail's wfi never dwells and the
+  TW judgment lives only in the wait-exit path the nop never reaches (step.sail,
+  the run_hart_waiting arm)
+  ```
+
+- [x] **FIX** — untracked experiment tooling (`target/p4-system-5/sail/`: the ELF
+  builder — the tracked assembler's bytes, .word-only + PHDRS at exactly
+  0x8000_0000, measured; the row-keyed comparator — Sail NUMBERS the
+  interrupt-delivery step and prints no row, measured on i-accept's [9]→[11]
+  jump, the `.3` fetch-fault convention's own shape); probe-tw (the TW cells in
+  isolation); `references.sexp` (the fourth experiment recorded in
+  matched_scope); the book's `.5` section completed + the index regenerated.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 target/p4-system-5/sail/compare_sail.py
+  AGREE ×6 (i-accept 36, i-deleg 60, i-enable 21, i-nest 31, i-vector 53,
+  w-sw 17 — 218 steps' change-observations exact, the delivery-step convention
+  identical on both sides)
+  DIVERGE ×6, all named platform-shaped: i-prio step 24 (sail x13=2 vs 34 —
+  STIP), i-timer step 3 (sail x7=0 vs 32 — STIP), w-deleg step 12 / w-notrap
+  step 6 / w-timer step 11 / mm-wfi step 9 ('sail printed a row for the
+  <halted> step the convention says it skips')
+  $ probe-tw: DIVERGE under the matched config (step 25 — sail never judges
+  TW), AGREE 30/30 under the wfi-wait variant (cause 2, mepc = the wfi's pc,
+  xtval = the wfi's word — the delivered trap identical, only its timing is
+  sail's own)
+  $ the `.4` corpus re-run under the fresh override: 11 AGREE + 1 NAMED of 12
+  — the identical outcome (the width cell's sail x9=0 at step 22) —
+  verdict-neutral, the `.4` expectations untouched since 495b4b8
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0
+  28 cells declared, every disposition resolves; the three RED legs fired by
+  name on a scratch copy (ORPHAN GUEST w-timer / OMITTED CELL restart×restart
+  / UNKNOWN DIFFERENCE)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed — 99/99
+  ```
+
+- [x] **THE LEAF ACCEPTANCE** — "timer or interrupt wake occurs without CPU
+  retirement — the laboratory must be able to make time pass while nothing
+  executes", quoted from the actual w-timer run (`semulith demo --guest=w-timer`):
+
+  ```
+  [11] [M]: 0x000000008000002c      — three boundaries, no register observation
+  [12] [M]: 0x000000008000002c        (the two `<halted>` steps and the delivery)
+  [13] [M]: 0x000000008000002c
+  [14] [M]: 0x0000000080000030
+  x14 <- 0x000000000000000b         — rdinstret = 11 at the handler's first step:
+                                      the ten setup instructions and the wfi, and
+                                      NOTHING across the halt or the delivery —
+                                      the wake occurred WITHOUT CPU RETIREMENT
+  x11 <- 0x8000000000000005         — mcause: the Interrupt bit with cause 5
+  x12 <- 0x000000008000002c         — mepc = the wfi's pc + 4 (§2.1.3.3)
+  ```
+
+  `make check` rc=0 (fmt + clippy -D warnings + 8 groups), `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 430 unchanged); RECORD-SCHEMA
+  20 files ok (references.sexp's matched_scope gain); PROFILE-CONSISTENCY 5;
+  smoke-bench 53 arms + bench wasm + both books green — re-run this slice even
+  though no tracked engine/fixture content changed (the experiment tooling is
+  untracked scratch; the bench/books are the cheap proof, `make ci`'s legs).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
+  narrative + frontier → `.6` + checklist + logs + changelog; the slice-(c)
+  checklist moved to the archive at the seventeenth ceiling firing),
+  `docs/TASK_TREE.md` (5/10), `MEMORY.md` (next_action → `.6`'s design brief),
+  `LIVE_STATUS.md` (5/10), `CHANGELOG.md`, `DEV_NOTES.md` (the promotion
+  decision:
+promotion: declined (the durability is the machinery — the corpus verdicts are armed by make check, and the matched attempt is re-derivable: the override materializes from the tracked unit and the scratch comparator/ELFs are preserved under target/)),
+  `docs/book/src/plan/p4.md` (the `.5` section completed) + the book index.
+
+
 
 `P4-SYSTEM`'s Verification Log rows for leaves `.1` and `.2` (both closed `2026-10-03`),
 split out verbatim on `2026-10-05` at the live file's fourteenth ceiling firing — the

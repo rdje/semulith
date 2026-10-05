@@ -96,6 +96,13 @@ FRAGMENTS = (
      "time, so they are never positional operand spellings). lr's rs2-must-be-zero rule "
      "is the row's own 24..20=0 fixed field, not a special case. REQUIRES a base: it "
      "reuses rd/rs1/rs2 from it (P4-SYSTEM.4 slice a)."),
+    ("definitions/riscv/zifencei.sexp", "riscv/zifencei", "isa-extension", ("rv_zifencei",),
+     ("riscv/rv64i",), (), False, False,
+     "The Zifencei extension: fence.i, the instruction-fetch synchronization instruction — "
+     "ONE form (the pinned table's single row). It owns NO operand fields: imm12/rs1/rd are "
+     "the base's, and the chapter's own rule is that base implementations shall IGNORE them "
+     "(standard software shall zero them) — they are decoded, never legalization-rejected. "
+     "funct3=1 sits beside fence's 0 inside the MISC-MEM opcode (P4-SYSTEM.6 slice a)."),
 )
 
 

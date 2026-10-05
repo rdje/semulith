@@ -552,6 +552,16 @@ class Assembler:
             word |= _place(*self.arg_lut["rl"], rl)
             return word
 
+        # fence.i's ZERO-OPERAND spelling: the chapter's own standard-software rule zeroes
+        # the three fields — "base implementations shall ignore these fields [funct12,
+        # rs1, rd], and standard software shall zero these fields" (RVI-ZIFENCEI 2.0) —
+        # so the bare mnemonic assembles with imm12/rs1/rd zeroed (the ecall/ebreak
+        # zero-operand precedent). Measured at P4-SYSTEM.6 slice a: the table's operand
+        # list would otherwise force the full `fence.i 0, x0, x0` spelling, which stays
+        # accepted; a partial spelling (1–2 operands) refuses on arity, by name.
+        if name == "fence.i" and not args:
+            args = ["0", "x0", "x0"]
+
         supplied = [op for op in insn.operands if op in CONTIGUOUS_OPERANDS]
         if len(args) != len(supplied):
             raise AsmError(f"{name} expects {len(supplied)} operand(s) {supplied}, got {len(args)}")

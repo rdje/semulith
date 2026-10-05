@@ -134,7 +134,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: timer or interrupt wake occurs **without CPU retirement** — the laboratory must be able to make time pass while nothing executes.
 
 - ID: `P4-SYSTEM.6` — **instruction visibility and fence semantics**
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0034`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0034`; slice (a) done `2026-10-05`, `SEMULITH-P4-0035`)
   Goal: when newly written code must become executable, and when stale state may persist (catalog `C13`).
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
@@ -163,7 +163,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.6` | `pending` | instruction visibility and fence semantics — `.5` closed `2026-10-05` (the timer wake without CPU retirement evidenced; the Sail attempt 6 AGREE + 6 named of 12); the design brief lands first (the cadence) |
+| 1 | `P4-SYSTEM.6` | `pending` | instruction visibility and fence semantics — the brief landed `2026-10-05` and slice (a) with it (the rv_zifencei re-pin, the one-form fragment, zifencei.sem.sexp, the assembler's zero-operand acceptance; the slot stays declared, the census 87); next is slice (b) — THE BIND: slot→extension, 87→88, the re-derived fencei guests, the reserved-fields probe, the acceptance pair, the matrix cells, the identity proof |
 
 ## Decisions
 
@@ -520,108 +520,97 @@ never raised, at every crossing. The index:
 
 - leaf `.1`, `.2` (all slices + LEAF ACCEPTANCE), `.3` (all slices), `.4` slice (a) →
   [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (crossings 1–7).
-- `.4` slices (b)–(f), `.5` slices (a)–(c) →
+- `.4` slices (b)–(f), `.5` slices (a)–(d) →
   [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
+  (8th — the archive split — 9th–13th, 15th–18th).
   (8th — the archive split — 9th–13th, 15th–17th).
   (8th — the archive split — 9th–13th, 15th, 16th).
   (8th — the archive split — 9th, 10th, 11th, 12th, 13th, 15th).
 
 
-`P4-SYSTEM.5` slice (d) — the Sail matched attempt + the reports + the book; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0033`):
+`P4-SYSTEM.6` slice (a) — the rv_zifencei re-pin + the one-form fragment + zifencei.sem.sexp + the assembler acceptance (`2026-10-05`, `SEMULITH-P4-0035`):
 
 - [x] **REPRODUCE / ISSUE** —
 
   ```
-  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --config-override \
-      target/refs/sail-rv64gc-lab-v0.override.json --validate-config
-  The default configuration merged with … is valid. rc=0 — the override needed
-  NO change (materialized fresh from the tracked .sexp, itself unchanged since
-  bfa6aaa — git log; mideleg/mip/mie/Sstc were already covered, pre-condition
-  measured, never assumed)
-  $ ls target/p4-system-5/sail/*.elf | wc -l
-  0 → 13 — the 12 corpus guests + the TW probe had no Sail-runnable images
+  $ ls target/refs/riscv-opcodes/rv_zifencei 2>&1
+  No such file — the slot's table was pinned nowhere (pre-condition 1 re-measured)
+  $ curl -sSL -o target/refs/riscv-opcodes/rv_zifencei \
+      https://raw.githubusercontent.com/riscv/riscv-opcodes/master/extensions/rv_zifencei
+  $ shasum -a 256 target/refs/riscv-opcodes/rv_zifencei; wc -c < target/refs/riscv-opcodes/rv_zifencei
+  be2d8f7286e06fadafffbde14656e6adb3f923ce704ea0829229d3a3b5f35758; 73 bytes —
+  exactly one row: `fence.i imm12 rs1 14..12=1 rd 6..2=0x03 1..0=3`
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no engine defect this slice; the six named
-  divergences are all platform-shaped, each measured to its sentence:
+- [x] **ROOT CAUSE (WHY + WHERE)** — one brief claim measured FALSE as written and
+  is recorded honestly: decision 1's "no assembler shapes (the zero-operand
+  ecall/ebreak precedent)" — ecall/ebreak carry NO operand fields, but fence.i's
+  table row LISTS imm12/rs1/rd, so the table-driven assembler refused the
+  standard-software spelling:
 
   ```
-  $ grep -n "plat_have_clint" target/refs/sail-riscv-src/model/core/interrupt_regs.sail
-  250:  let platform_has_timer = plat_have_clint; — the gate, measured in the pinned
-  source: with clint.supported=false (D-PLATFORM) mip[STI] never sets (i-prio step 24,
-  i-timer step 3); the counter registers themselves are the `.2` wall — Zicntr
-  supported=false, so rdtime/rdinstret trap illegal on sail (the mm-wfi trace's
-  tval=0xC01023F3). And platform.wfi_is_nop=true: sail's wfi never dwells and the
-  TW judgment lives only in the wait-exit path the nop never reaches (step.sail,
-  the run_hart_waiting arm)
+  $ <assemble "fence.i" through the trial composition, pre-fix>
+  REFUSED 'fence.i' -> fence.i expects 3 operand(s) ['imm12', 'rs1', 'rd'], got 0
+  $ grep -c "shall ignore these fields" .materials/riscv/pinned-v20260120/unpriv/zifencei.html
+  1 — the sentence the acceptance implements, measured in the pinned chapter
   ```
 
-- [x] **FIX** — untracked experiment tooling (`target/p4-system-5/sail/`: the ELF
-  builder — the tracked assembler's bytes, .word-only + PHDRS at exactly
-  0x8000_0000, measured; the row-keyed comparator — Sail NUMBERS the
-  interrupt-delivery step and prints no row, measured on i-accept's [9]→[11]
-  jump, the `.3` fetch-fault convention's own shape); probe-tw (the TW cells in
-  isolation); `references.sexp` (the fourth experiment recorded in
-  matched_scope); the book's `.5` section completed + the index regenerated.
+  The chapter's own sentence ("base implementations shall ignore these fields,
+  and standard software shall zero these fields", RVI-ZIFENCEI §4.1 — every
+  normative sentence re-located in the pinned chapter) makes the bare spelling
+  the STANDARD one, so the acceptance lands as a named, cited special case in
+  `riscv_asm.py` (the A-suffix precedent's shape) — never a table edit. Decision
+  1's OTHER no-change claims measured TRUE: the nop effect needs no Sem variant
+  and no generator change (the lowering below).
+
+- [x] **FIX** — the pin (references.sexp's row + supplies/note amendments);
+  `fetch_references.sh`'s named exclusion (the `.4` slice-(a) M/A pattern: the
+  table is pinned for the fragment, not the scope, until slice (b)'s bind flips
+  it); the FRAGMENTS entry → generated `zifencei.sexp` (owns NO fields,
+  requires rv64i, funct3=1); `zifencei.sem.sexp` (hand-written, `(effect (nop))`
+  with the three normative sentences, the coherent/uncached-RAM latitude and the
+  shall-ignore rule cited); the zero-operand acceptance in `riscv_asm.py`.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ python3 target/p4-system-5/sail/compare_sail.py
-  AGREE ×6 (i-accept 36, i-deleg 60, i-enable 21, i-nest 31, i-vector 53,
-  w-sw 17 — 218 steps' change-observations exact, the delivery-step convention
-  identical on both sides)
-  DIVERGE ×6, all named platform-shaped: i-prio step 24 (sail x13=2 vs 34 —
-  STIP), i-timer step 3 (sail x7=0 vs 32 — STIP), w-deleg step 12 / w-notrap
-  step 6 / w-timer step 11 / mm-wfi step 9 ('sail printed a row for the
-  <halted> step the convention says it skips')
-  $ probe-tw: DIVERGE under the matched config (step 25 — sail never judges
-  TW), AGREE 30/30 under the wfi-wait variant (cause 2, mepc = the wfi's pc,
-  xtval = the wfi's word — the delivered trap identical, only its timing is
-  sail's own)
-  $ the `.4` corpus re-run under the fresh override: 11 AGREE + 1 NAMED of 12
-  — the identical outcome (the width cell's sail x9=0 at step 22) —
-  verdict-neutral, the `.4` expectations untouched since 495b4b8
-  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0
-  28 cells declared, every disposition resolves; the three RED legs fired by
-  name on a scratch copy (ORPHAN GUEST w-timer / OMITTED CELL restart×restart
-  / UNKNOWN DIFFERENCE)
-  $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed — 99/99
+  $ <fetch --verify-only, both profiles> — 87 == 87 (the exclusion holds),
+  52 == 52; "owned fragments agree with the pinned upstream"; a scripted fresh
+  re-fetch byte-identical (cmp clean)
+  $ python3 scripts/check_encoding_disjoint.py rv64i+zifencei
+  53 instruction(s), no collisions — COMPOSE; the profile's set + zifencei:
+  85 instruction(s) (+ 3 pseudo), no collisions — COMPOSE; self-test 12/12
+  $ python3 scripts/check_semantics.py zifencei.sexp zifencei.sem.sexp
+  1 of 1 checked; --compose base+zifencei and the full set: "the semantics
+  compose — every override is declared"; self-test 17/17
+  $ python3 scripts/check_citations.py --corpus
+  RVI-ZIFENCEI §4.1 ×1 — 6 sem files, 8 resolutions, offline
+  $ <the assembler probe> — 'fence.i' -> 0x0000100f; 'fence.i 0, x0, x0' the
+  same word; 'fence.i 1, x2, x3' -> 0x0011118f (the shall-ignore word);
+  REFUSED by name: 'fence.i x1', 'fence.i 0, x0', 'fence.i foo';
+  spike-dasm round-trip exact: DASM(0000100f) -> fence.i, DASM(0011118f) ->
+  fence.i (the second decoder applies the shall-ignore rule too)
+  $ <gen_definition over BOTH trial compositions> — fence.i emits mask
+  0x0000707f / value 0x0000100f over the EXISTING Sem::Nop (mask covers
+  funct3+opcode only — the shall-ignore decode); rustc rc=0 standalone; NO
+  generator change (the nop-effect one-form measured; justified)
+  $ <gen_fragments + gen_guests> — the six existing fragments byte-identical;
+  all 99 guests re-assemble byte-identical through the edited assembler
   ```
 
-- [x] **THE LEAF ACCEPTANCE** — "timer or interrupt wake occurs without CPU
-  retirement — the laboratory must be able to make time pass while nothing
-  executes", quoted from the actual w-timer run (`semulith demo --guest=w-timer`):
+- [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8
+  groups); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 430
+  unchanged — the exclusion is a script line, no new arm); the slot STAYS
+  declared (encoding.sexp untouched); the census STAYS 87; no corpus, no Rust.
 
-  ```
-  [11] [M]: 0x000000008000002c      — three boundaries, no register observation
-  [12] [M]: 0x000000008000002c        (the two `<halted>` steps and the delivery)
-  [13] [M]: 0x000000008000002c
-  [14] [M]: 0x0000000080000030
-  x14 <- 0x000000000000000b         — rdinstret = 11 at the handler's first step:
-                                      the ten setup instructions and the wfi, and
-                                      NOTHING across the halt or the delivery —
-                                      the wake occurred WITHOUT CPU RETIREMENT
-  x11 <- 0x8000000000000005         — mcause: the Interrupt bit with cause 5
-  x12 <- 0x000000008000002c         — mepc = the wfi's pc + 4 (§2.1.3.3)
-  ```
-
-  `make check` rc=0 (fmt + clippy -D warnings + 8 groups), `make gate` →
-  `=== all doctrines green ===` (DERIVED-COUNTS 430 unchanged); RECORD-SCHEMA
-  20 files ok (references.sexp's matched_scope gain); PROFILE-CONSISTENCY 5;
-  smoke-bench 53 arms + bench wasm + both books green — re-run this slice even
-  though no tracked engine/fixture content changed (the experiment tooling is
-  untracked scratch; the bench/books are the cheap proof, `make ci`'s legs).
-
-- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
-  narrative + frontier → `.6` + checklist + logs + changelog; the slice-(c)
-  checklist moved to the archive at the seventeenth ceiling firing),
-  `docs/TASK_TREE.md` (5/10), `MEMORY.md` (next_action → `.6`'s design brief),
-  `LIVE_STATUS.md` (5/10), `CHANGELOG.md`, `DEV_NOTES.md` (the promotion
-  decision:
-promotion: declined (the durability is the machinery — the corpus verdicts are armed by make check, and the matched attempt is re-derivable: the override materializes from the tracked unit and the scratch comparator/ELFs are preserved under target/)),
-  `docs/book/src/plan/p4.md` (the `.5` section completed) + the book index.
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  logs + changelog; the slice-(d) checklist moved to the archive at the
+  eighteenth ceiling firing), `MEMORY.md` (next_action → slice b, THE BIND),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the promotion decision:
+promotion: declined (the durability is the machinery — the zero-operand acceptance is armed by the probe spellings in this checklist and the 99-guest byte-exact re-assembly, both re-runnable)),
+  `LIVE_STATUS.md` (unchanged — the leaf is open), `docs/TASK_TREE.md` (unchanged
+  — the frontier leaf is `.6` already), `docs/book/src/plan/p4.md` (the `.6`
+  section's slice line) + the book index.
 
 ## Verification Log
 
@@ -632,10 +621,12 @@ leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-05` | `.6` slice (a) | the pre-slice census (rv_zifencei pinned nowhere, absent from the work_dir; 6 FRAGMENTS entries; the slot at encoding.sexp:18); the tracked-route fetch (73 bytes, one row, sha256 be2d8f72…, a scripted fresh re-fetch byte-identical); the recorded brief-claim deviation (decision 1's "no assembler shapes" measured FALSE for the bare spelling — the row's operand list refused it; the zero-operand acceptance landed as a named cited special case in riscv_asm.py, the A-suffix precedent; the OTHER no-change claims TRUE — no Sem variant, no generator change); the fragment (owns NO fields, requires rv64i, funct3=1; the six others byte-identical) + the generated module (mask 0x0000707f over the existing Sem::Nop, rustc rc=0 ×2 trial compositions); zifencei.sem.sexp (the three normative sentences + the coherent/uncached-RAM latitude + the shall-ignore rule re-located in the pinned chapter; pair 1/1, both --compose green, self-test 17/17, citations RVI-ZIFENCEI §4.1 ×1 offline, corpus 6 files / 8 resolutions); the disjointness trials (base+zifencei 53 COMPOSE; the profile's set+zifencei 85+3 COMPOSE; self-test 12/12); the assembler probe (bare and full spellings → 0x0000100f, the shall-ignore word 0x0011118f, 3 named RED refusals, spike-dasm round-trip exact); both profiles' fetch --verify-only (87==87 with the named exclusion, 52==52); the 99 guests re-assembled byte-identical; `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged) | slice (a) landed: the pin, the fragment, the sem file and the assembler acceptance — the slot stays declared, the census stays 87, no corpus, no Rust |
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.6` (slice a) | `SEMULITH-P4-0035 (leaf P4-SYSTEM.6): slice a — the rv_zifencei re-pin + the one-form fragment + zifencei.sem.sexp + the assembler's zero-operand acceptance` | the tracked-route pin (73 bytes, one row, be2d8f72…, fresh re-fetch byte-identical); the fetch leg's named zifencei exclusion (the M/A pattern, flips at the bind); the generated fragment (owns NO fields, requires rv64i, funct3=1 — 6 others byte-identical); zifencei.sem.sexp ((effect (nop)) with the three sentences + both latitudes cited; pair 1/1, both composes, citations offline); the measured deviation (decision 1's "no assembler shapes" false for the bare spelling → the named zero-operand special case; no Sem variant / no generator change measured TRUE — mask 0x0000707f over Sem::Nop, rustc rc=0 ×2); the disjointness trials (53 and 85+3 COMPOSE); the probe (bare+full spellings, the shall-ignore word, 3 named REDs, spike-dasm exact); both profiles 87==87/52==52; 99 guests byte-identical; make check + make gate green (DERIVED-COUNTS 430) |
 | `.5` (slice d) + LEAF | `SEMULITH-P4-0033 (leaf P4-SYSTEM.5): slice d — the Sail matched attempt (6 AGREE + 6 named of 12, probe-tw's TW gap freshly measured); the LEAF CLOSES` | the override measured first (validate-config rc=0, no change, the tracked .sexp unmoved); 13 ELFs at exactly 0x8000_0000; the delivery-step convention measured identical (sail numbers it, prints no row); 6 AGREE (i-accept/i-deleg/i-enable/i-nest/i-vector/w-sw, 218 steps) + 6 named platform-shaped divergences (STIP's CLINT gate ×2, the `<halted>` counterpart ×4); probe-tw: the TW gap fresh (DIVERGE matched, AGREE 30/30 under the wfi-wait variant, the delivered trap identical); the .4 re-run verdict-neutral (11+1 of 12); the matrix invocation + 3 RED legs; references.sexp's fourth experiment; the acceptance quoted from w-timer's actual run (rdinstret=11, mcause=int\|5, mepc=wfi+4); make check + make gate green (DERIVED-COUNTS 430), smoke-bench 53 arms, bench wasm, both books |
 | `.5` (slice c) | `SEMULITH-P4-0032 (leaf P4-SYSTEM.5): slice c — the halted state + WFI's real wake + the `<halted>` vocabulary + the wake corpus + mm-wfi's re-derivation` | wait.rs (the ACTIVE/WAITING bit, cold-ACTIVE, pure function of history); the halted-step head arm + the legal-wfi enter in step_over (the wake first, else tick-and-stay); wake_pending (mip & mie — §2.1.3.3's musts, globals/mideleg ignored); the SEM-08 wait-state candidate carried by gen_state (RED arm 27→28); system.sem.sexp's stated nop superseded; the w-* family (w-timer's rdinstret=11 the acceptance observed) + mm-wfi re-derived (TW/U cells unchanged); 99/99 corpus; 94/95 identity cmp-clean; 28 cells; make check + make gate green (DERIVED-COUNTS 429→430) |
 | `.5` (slice b) | `SEMULITH-P4-0031 (leaf P4-SYSTEM.5): slice b — the step-head pending evaluation + interrupt-caused delivery (both vector modes) + the 7-guest acceptance corpus` | interrupts.rs (pending/deliver + 8 tests: the (a)(b)(c) taken-rule + the global rule + the delegation mask + the fixed priorities, the M-source bits read-only 0; the Interrupt-bit delivery honoring xtvec.MODE); the head evaluation wired before the fetch (delivery steps tick, retire nothing); the derivation tool hardened to the field tables + pc-keyed derivations + the (fetches N) convention; 7 i-* guests (36/60/21/31/63/26/53 steps); 95/95 corpus; 88/88 identity cmp-clean; 28 cells resolve; make check + make gate green (DERIVED-COUNTS 429) |
@@ -667,6 +658,32 @@ leaf's rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-05`: `.6` slice (a) done (`SEMULITH-P4-0035`) — the `rv_zifencei`
+  re-pin through the tracked `extensions/` route (73 bytes, exactly one row,
+  sha256 be2d8f72…; a scripted fresh re-fetch byte-identical), recorded in
+  references.sexp with the supplies amendment; the fetch leg's named exclusion
+  (the M/A pattern — pinned for the fragment, not the scope, until slice (b)'s
+  bind flips it): both profiles' `--verify-only` green, 87==87 and 52==52. The
+  FRAGMENTS entry generates `zifencei.sexp` (owns NO fields — imm12/rs1/rd are
+  the base's; requires rv64i; funct3=1; the six others byte-identical) and
+  `zifencei.sem.sexp` lands hand-written with `(effect (nop))` — the three
+  normative sentences, the coherent/uncached-RAM latitude and the shall-ignore
+  rule re-located in the pinned chapter (Version 2.0; citations offline, corpus
+  6 files / 8 resolutions). One brief claim measured FALSE as written: decision
+  1's "no assembler shapes" — the row's operand list refused the
+  standard-software spelling, so the zero-operand acceptance lands as a named,
+  cited special case (the A-suffix precedent's shape): bare `fence.i` →
+  0x0000100f, the full spelling unchanged, 3 named REDs, spike-dasm exact incl.
+  the shall-ignore word 0x0011118f. The OTHER no-change claims measured TRUE:
+  no Sem variant, no generator change — gen_definition emits mask 0x0000707f
+  (the shall-ignore decode) over the existing Sem::Nop, rustc rc=0 over both
+  trial compositions; check_encoding_disjoint COMPOSEs base+zifencei (53) and
+  the profile's set +zifencei (85+3); all 99 guests re-assemble byte-identical. The slot STAYS
+  declared, the census STAYS 87, no corpus, no Rust. `make check` rc=0, `make
+  gate` green (DERIVED-COUNTS 430 unchanged). Next: slice (b) — THE BIND:
+  slot→extension, 87→88, the re-derived fencei guests, the reserved-fields
+  probe, the acceptance pair, the matrix cells, the identity proof.
 
 - `2026-10-05`: `.5` slice (d) done and the LEAF CLOSES (`SEMULITH-P4-0033`) — the
   Sail matched attempt, scoped to what is matchable (decision 9). The override is

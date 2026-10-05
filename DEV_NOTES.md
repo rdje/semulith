@@ -1,5 +1,38 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — "no assembler shapes" was true until the table said otherwise (P4-SYSTEM.6 slice a)
+
+Execution of the `.6` brief's checkpoint (a) measured:
+
+- **A no-change claim must be measured, not inherited.** Decision 1's "no
+  assembler shapes (the zero-operand ecall/ebreak precedent)" read true — and
+  was FALSE on first probe: ecall/ebreak carry no operand fields, but fence.i's
+  table row LISTS imm12/rs1/rd, and the table-driven arity check refused the
+  bare standard-software spelling. The chapter itself settles what the correct
+  behavior is ("standard software shall zero these fields"), so the acceptance
+  landed as a named, cited special case in the assembler — the same shape as
+  the A-suffix machinery, never a table edit. The OTHER no-change claims held
+  under the same discipline: the nop effect needs no Sem variant (the existing
+  arm), and gen_definition's lowering of the one-form fragment needs no
+  conditional support at all — the emitted mask covers funct3+opcode only,
+  which is exactly the shall-ignore decode, over two standalone-compiling trial
+  compositions.
+- **The pin's strength is the second measurement.** 73 bytes is one curl — the
+  evidence is the fresh re-fetch being byte-identical, the scope-vs-tables leg
+  enumerating 87==87 with the table pinned-but-excluded (the named exclusion
+  with its flip condition), and the fragment leg agreeing the generated
+  zifencei.sexp against the pin. A pin nobody re-derives is a number, not a
+  corroboration.
+- **The shall-ignore rule is a DECODE property, and both decoders show it.**
+  The fragment keeps the operand fields out of the mask, so 0x0011118f
+  (nonzero imm12/rs1/rd) decodes as fence.i in the generated module — and
+  spike-dasm, the documented second decoder, returns `fence.i` for the same
+  word. The reserved-fields probe cell at slice (b) is already sanctioned by
+  measurement.
+
+promotion: declined (the durability is the machinery — the zero-operand
+acceptance is armed by the probe spellings and the 99-guest byte-exact
+re-assembly, both re-runnable).
 ## _(2026-10-05)_ — Sail numbers the delivery step too, and a named gap can be configuration-shaped (P4-SYSTEM.5 slice d)
 
 The `.5` matched attempt measured:
