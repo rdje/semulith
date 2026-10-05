@@ -79,3 +79,15 @@ sv39-mprv
 sv39-tlb-fence
 sv39-straddle
 sv39-deleg
+a-amo-aqrl
+a-amo-arith-d
+a-amo-arith-w
+a-amo-minmax-d
+a-amo-minmax-w
+a-amo-overlap
+a-amo-sv39
+a-lrsc-fault
+a-lrsc-illegal
+a-lrsc-loop
+a-lrsc-mustfail
+a-lrsc-pair

@@ -571,7 +571,17 @@ def emit(data: dict, generator_sha: str) -> str:
     a("pub static MANIFEST: DefinitionManifest = DefinitionManifest {")
     a(f"    profile: {rust_str(data['profile'])},")
     a(f"    ilen: {data['ilen']},")
-    a(f"    fragments: &[{frag_list}],")
+    # rustfmt lays an array out vertically once it is wide enough — measured, not
+    # guessed: the 4-fragment line (79 chars) stays inline under `cargo fmt --check`,
+    # P4-SYSTEM.4 slice e's 5-fragment line (90) is broken one element per line. The
+    # emission must be rustfmt-stable BY CONSTRUCTION, so 80 is the cutoff.
+    frag_inline = f"    fragments: &[{frag_list}],"
+    if len(frag_inline) > 80:
+        frag_lines = "\n".join(f"        {rust_str(n)}," for n in data["names"])
+        frag_block = f"    fragments: &[\n{frag_lines}\n    ],"
+    else:
+        frag_block = frag_inline
+    a(frag_block)
     a("    generator: GeneratorPin {")
     a("        name: \"scripts/gen_definition.py\",")
     a(f"        sha256: {rust_str(generator_sha)},")
@@ -674,7 +684,7 @@ def emit(data: dict, generator_sha: str) -> str:
     a("")
     a("/// One node of a canonical semantics effect, lowered from the S-expression operator")
     if extended:
-        a("/// language (`schema/semantics.sexp`, the 40 forms `scripts/check_semantics.py`")
+        a("/// language (`schema/semantics.sexp`, the 43 forms `scripts/check_semantics.py`")
     else:
         a("/// language (`schema/semantics.sexp`, the 32 forms `scripts/check_semantics.py`")
     a("/// checks) by `scripts/gen_definition.py`. Literals are XLEN-wide two's-complement")

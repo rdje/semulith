@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the bind that fit in one commit, and the formatter that graded the manifest (P4-SYSTEM.4 slice e)
+
+Execution of the `.4` brief's checkpoint (e) — the atomic bind — measured:
+
+- **The flip mechanism is load-tested by construction.** The pieces the earlier
+  slices staged each landed once: the slot became an extension; the census dual
+  edit (schema + `_SCOPE_LISTS` + the scope block + the PARTS family) read 87;
+  the fetch leg's slice-(a) exclusion flipped ON ITS OWN the moment the census
+  declared the A forms (87 == 87, rv64i unchanged) — the flip condition written
+  six days earlier did exactly what it was written to do. The evaluator arms
+  ported byte-identically from the scratch proof, so the tracked engine is the
+  proven one, and the 88/88 corpus plus the 16/16 cell proof re-ran against the
+  tracked build with the same tallies (promotion: declined — the durability is
+  the machinery: the gates judge the bound unit on every commit from here).
+- **rustfmt is a generator constraint, not a style preference.** The manifest's
+  five-fragment list tripped rustfmt's vertical array layout where the
+  four-fragment one had stayed inline — measured: 79 chars inline-clean, 90
+  broken. A generator that emits code a formatter would rewrite produces drift
+  on every regeneration; the emission now decides the layout by construction
+  (the 80-char cutoff), and `cargo fmt --check` inside `make check` is the gate
+  that arms it.
+- **The identity proof is the bind's spine.** 76 pre-bind guests, both CLIs,
+  the parent worktree against the post-bind build: 3,468 == 3,468 trace lines,
+  `cmp` clean. Additive extensions are supposed to leave the old corpus alone —
+  but "supposed to" is a hope and 3,468 lines is a measurement.
+
 ## _(2026-10-05)_ — the corpus grades its author four times before it grades the engine once (P4-SYSTEM.4 slice d)
 
 Execution of the `.4` brief's checkpoint (d) measured:
@@ -642,40 +668,4 @@ the tree — measured:
 Promotion: declined — the consistency rules are armed by self-test REDs (STATE-GEN 17,
 PROFILE-CONSISTENCY 44, EXTRACTION 9), and the natural RED is recorded in the leaf.
 Recorded in the owning leaf's checklist (LOCKSTEP).
-
-## _(2026-10-03)_ — a swap forces the language's reads contract; a checker hard-coded to one file checks the other three never (P4-SYSTEM.2 slice b)
-
-Execution of the `.2` brief's checkpoint (b) measured five things:
-
-- **The register-swap hazard decides the reads contract.** csrrw exchanges a register with
-  a CSR; a state-threaded `(reg rs1)` after `(set (reg rd) …)` is wrong exactly when
-  rd==rs1. No RV64I rule reads a register after writing one, so the language adopted the
-  contract without changing any existing meaning: register reads see the PRE-INSTRUCTION
-  register file; memory and CSR reads see state at their evaluation point (the
-  self-modifying-code discipline is untouched); `(pc)`/`(inst)` are frame constants. It is
-  stated once in schema/semantics.sexp, the language's own home.
-- **A pseudo's semantics specialize by NAME.** rdcycle ≠ csrrs, so the compose rule's
-  `(refines …)` mechanism does not apply and none is needed — the pseudo's own rule IS the
-  specialization (rs1=x0 → no write; the row's fixed address), exact because the counter
-  gating lives in csr-read's uniform permission model rather than per-instruction. The
-  checker indexes `(pseudo …)` operand rows: checked, never demanded nor coverage-counted.
-- **The corpus gate's COMPOSE leg had slice (a)'s dropped-form bug.** A silent override in
-  the SECOND `(extensions …)` form was invisible — the new self-test arm was proven RED
-  pre-fix ("right verdict, wrong reason") before the one-hunk repair, the `.1` discipline.
-- **check_citations was a single-file tool.** Its main() hard-coded rv64i.sem.sexp, so the
-  three new sem files' locators resolved against nothing. The `--corpus` mode derives the
-  binding — each sem file checks against every profile pinning all its cited source-ids,
-  and a file no profile fully pins is named. rv64i.sem now resolves under THREE profiles
-  (netboard pins the same unpriv pages — a resolution never previously run); the new files
-  resolve 8/8, 3/3, 4/4 under rv64gc's 21 pins.
-- **The mstatus field positions are figure images again.** The specification's encodings-
-  as-images pattern recurs one level down: TSR/TW/TVM/MPRV exist in the pinned chapters
-  only as figures, so upstream's checked-in `encoding.h` (masks) and `causes.csv` (trap
-  causes — in the cache since the rv64i era, never pinned, measured byte-identical) joined
-  the rv64gc ledger. Also measured: `(xret m)`'s bare mode symbol read as an operand
-  reference — x is the architectural mode code (3=M, 1=S), the xPP encoding itself.
-
-Promotion: declined — the contracts are data in the schema and the pins, and every new
-rule is armed by self-test REDs (semantics 8→15, citations 10→13, corpus 7→8). Recorded
-in the owning leaf's checklist (LOCKSTEP).
 

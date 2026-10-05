@@ -57,6 +57,7 @@ use crate::definition_rv64gc::{FieldDef, InsnDef, Sem, FIELDS, INSNS};
 use crate::env::{AccessWidth, BoundaryError, Environment, Failure, Request, Response};
 use crate::outcome::ModelError;
 use crate::privilege;
+use crate::privilege::PrivilegedHart;
 use crate::state_rv64gc::{ArchitecturalState, CSR_ELEMENTS};
 use crate::translation;
 
@@ -546,6 +547,273 @@ impl Frame<'_> {
                 let (asid, _) = self.run(asid);
                 translation::fence(self.state, va, (asid & 0xFFFF) as u16);
                 (0, 64)
+            }
+            Sem::LoadReserved(width, _signed, addr) => {
+                let (w, _) = self.run(width);
+                let (a, _) = self.run(addr);
+                let Ok(width) = access_width(w) else {
+                    self.failed = Some(ModelError::InvalidDescription {
+                        what: "a load-reserved width outside the access-width vocabulary",
+                    });
+                    return (0, 64);
+                };
+                if a % (w / 8) != 0 {
+                    // misaligned atomic: the declared policy is the access-fault cause 7
+                    // (P4-SYSTEM.4 decision 6, reference-matched to the override's
+                    // declared PMAs), judged before translation (the .3 decision-7
+                    // hand-off) — and the trap clears nothing (decision 4)
+                    self.deliver(7, a);
+                    return (0, 64);
+                }
+                // LR translates under the LOAD rules (RVP-MACHINE's exception table)
+                let pa = match translation::translate(
+                    self.state,
+                    self.env,
+                    a,
+                    translation::AccessKind::Load,
+                ) {
+                    translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                        pa
+                    }
+                    translation::Translate::PageFault { cause, tval }
+                    | translation::Translate::AccessFault { cause, tval } => {
+                        self.deliver(cause, tval);
+                        return (0, 64);
+                    }
+                    translation::Translate::Failed(error) => {
+                        self.failed = Some(error);
+                        return (0, 64);
+                    }
+                };
+                match self.env.request(Request::Load { width, addr: pa }) {
+                    Ok(Response::Load(v)) => {
+                        // a COMPLETED LR registers the reservation — any LR replaces
+                        // (decision 4); the faulting paths above establish nothing
+                        self.state.reservation().establish(pa, (w / 8) as u8);
+                        (v, w as u32)
+                    }
+                    Ok(_) => {
+                        self.failed = Some(ModelError::InvalidDescription {
+                            what: "environment answered a Load with a non-load response",
+                        });
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Target(Failure::AccessFault)) => {
+                        self.deliver(5, a);
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Target(Failure::Misaligned)) => {
+                        self.deliver(7, a);
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Violation(v)) => {
+                        self.failed = Some(ModelError::ContractViolation(v));
+                        (0, 64)
+                    }
+                }
+            }
+            Sem::StoreConditional(width, addr, value) => {
+                let (w, _) = self.run(width);
+                let (a, _) = self.run(addr);
+                let (v, _) = self.run(value);
+                let Ok(width) = access_width(w) else {
+                    self.failed = Some(ModelError::InvalidDescription {
+                        what: "a store-conditional width outside the access-width vocabulary",
+                    });
+                    return (0, 64);
+                };
+                if a % (w / 8) != 0 {
+                    // misaligned atomic: cause 7, before translation (decision 6)
+                    self.deliver(7, a);
+                    return (0, 64);
+                }
+                // SC translates under the STORE/AMO rules (RVP-MACHINE's exception table)
+                let pa = match translation::translate(
+                    self.state,
+                    self.env,
+                    a,
+                    translation::AccessKind::Store,
+                ) {
+                    translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                        pa
+                    }
+                    translation::Translate::PageFault { cause, tval }
+                    | translation::Translate::AccessFault { cause, tval } => {
+                        self.deliver(cause, tval);
+                        return (0, 64);
+                    }
+                    translation::Translate::Failed(error) => {
+                        self.failed = Some(error);
+                        return (0, 64);
+                    }
+                };
+                // The deterministic policy (decision 3), judged before ANY memory
+                // operation — a failed SC "does not give rise to any memory
+                // operations" (RVWMO §17.1.1.1). The reservation clears on the
+                // COMPLETED path either way (§12.1.2's own sentence); the trap paths
+                // clear nothing (a trap does not invalidate — Sail 0.14 cancels on
+                // the completed path only).
+                if !self.state.reservation().matches(pa, (w / 8) as u8) {
+                    self.state.reservation().clear();
+                    return (1, 64);
+                }
+                match self.env.request(Request::Store {
+                    width,
+                    addr: pa,
+                    data: v,
+                }) {
+                    Ok(Response::StoreDone) => {
+                        self.state.reservation().clear();
+                        (0, 64)
+                    }
+                    Ok(_) => {
+                        self.failed = Some(ModelError::InvalidDescription {
+                            what: "environment answered a Store with a non-store response",
+                        });
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Target(Failure::AccessFault)) => {
+                        self.deliver(7, a);
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Target(Failure::Misaligned)) => {
+                        self.deliver(7, a);
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Violation(viol)) => {
+                        self.failed = Some(ModelError::ContractViolation(viol));
+                        (0, 64)
+                    }
+                }
+            }
+            Sem::Amo(funct5, width, addr, value) => {
+                let (w, _) = self.run(width);
+                let (a, _) = self.run(addr);
+                let (v, _) = self.run(value);
+                let Ok(width) = access_width(w) else {
+                    self.failed = Some(ModelError::InvalidDescription {
+                        what: "an AMO width outside the access-width vocabulary",
+                    });
+                    return (0, 64);
+                };
+                if a % (w / 8) != 0 {
+                    // misaligned atomic: cause 7, before translation (decision 6)
+                    self.deliver(7, a);
+                    return (0, 64);
+                }
+                // ONE translation under the store/AMO rules (decision 5): R and W
+                // judged once, the cause always the store/AMO one — never a load
+                // page fault
+                let pa = match translation::translate(
+                    self.state,
+                    self.env,
+                    a,
+                    translation::AccessKind::Atomic,
+                ) {
+                    translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                        pa
+                    }
+                    translation::Translate::PageFault { cause, tval }
+                    | translation::Translate::AccessFault { cause, tval } => {
+                        self.deliver(cause, tval);
+                        return (0, 64);
+                    }
+                    translation::Translate::Failed(error) => {
+                        self.failed = Some(error);
+                        return (0, 64);
+                    }
+                };
+                // The boundary pair (decision 5): a load followed by a store to the
+                // same address — the nine operations are the model's, never the
+                // environment's (a Request::Atomic variant would push them there).
+                let old = match self.env.request(Request::Load { width, addr: pa }) {
+                    Ok(Response::Load(v)) => v,
+                    Ok(_) => {
+                        self.failed = Some(ModelError::InvalidDescription {
+                            what: "environment answered an AMO's load with a non-load response",
+                        });
+                        return (0, 64);
+                    }
+                    Err(BoundaryError::Target(Failure::AccessFault)) => {
+                        self.deliver(7, a);
+                        return (0, 64);
+                    }
+                    Err(BoundaryError::Target(Failure::Misaligned)) => {
+                        self.deliver(7, a);
+                        return (0, 64);
+                    }
+                    Err(BoundaryError::Violation(v)) => {
+                        self.failed = Some(ModelError::ContractViolation(v));
+                        return (0, 64);
+                    }
+                };
+                let mask = mask64(w as u32);
+                let new = match *funct5 {
+                    0x00 => old.wrapping_add(v),
+                    0x01 => v,
+                    0x04 => old ^ v,
+                    0x08 => old | v,
+                    0x0c => old & v,
+                    0x10 => {
+                        if sext64(old, w as u32) as i64 <= sext64(v, w as u32) as i64 {
+                            old
+                        } else {
+                            v
+                        }
+                    }
+                    0x14 => {
+                        if sext64(old, w as u32) as i64 >= sext64(v, w as u32) as i64 {
+                            old
+                        } else {
+                            v
+                        }
+                    }
+                    0x18 => {
+                        if old & mask <= v & mask {
+                            old
+                        } else {
+                            v
+                        }
+                    }
+                    0x1c => {
+                        if old & mask >= v & mask {
+                            old
+                        } else {
+                            v
+                        }
+                    }
+                    _ => {
+                        self.failed = Some(ModelError::InvalidDescription {
+                            what: "an AMO funct5 outside the closed Zaamo nine",
+                        });
+                        return (0, 64);
+                    }
+                } & mask;
+                match self.env.request(Request::Store {
+                    width,
+                    addr: pa,
+                    data: new,
+                }) {
+                    Ok(Response::StoreDone) => (old, w as u32),
+                    Ok(_) => {
+                        self.failed = Some(ModelError::InvalidDescription {
+                            what: "environment answered an AMO's store with a non-store response",
+                        });
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Target(Failure::AccessFault)) => {
+                        self.deliver(7, a);
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Target(Failure::Misaligned)) => {
+                        self.deliver(7, a);
+                        (0, 64)
+                    }
+                    Err(BoundaryError::Violation(viol)) => {
+                        self.failed = Some(ModelError::ContractViolation(viol));
+                        (0, 64)
+                    }
+                }
             }
         }
     }

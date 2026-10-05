@@ -214,3 +214,63 @@ promotion: declined (the durability is the machinery — the completed-path-only
   match after `Sem::TlbInvalidate` with `use crate::privilege::PrivilegedHart;`;
   the proof's cells inform slice (d)'s corpus design.
 
+
+
+`P4-SYSTEM.4` slice (d)'s checklist (completed `2026-10-05`,
+`SEMULITH-P4-0026`), split out on `2026-10-05` at the live file's eleventh
+ceiling firing (slice (e) landing):
+
+`P4-SYSTEM.4` slice (d) — the staged corpus + expectations + the matrix rehearsal (`2026-10-05`, `SEMULITH-P4-0026`; untracked `target/p4-system-4/`):
+
+- [x] **REPRODUCE / ISSUE** — the slice-(c) engine is proven, but the bind's
+  corpus did not exist yet:
+
+  ```
+  $ ls target/p4-system-4/corpus 2>&1 | head -1
+  No such file or directory — 0 atomics guests; the tracked matrix's guests are all
+  pre-A (its denominator 65, the A forms exercised by none of them)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in tracked behavior; the slice builds
+  the staging, and execution caught FOUR authoring defects of mine, each named and
+  fixed by re-derivation, never fitting (the corpus's first run read `1 guest(s)
+  PASS, 11 FAIL`, rc=1): (1) the derivation tool RECORDED register writes but
+  never APPLIED them (downstream values read zeros — the truncation named it at the
+  first `sw`); (2) the runner's change-comparison
+  rule was unmodeled — a register written ITS OWN VALUE is no observation (the .3
+  "x8-already-zero" rule; the first corpus run named 11/12 on exactly this); (3) my
+  "reserved funct5 0x02" was LR's OWN funct5 — the .word decoded as `lr.w x6, (x1)`
+  and EXECUTED (the observed handler-word read named it; 0x05 replaced it); (4) the
+  sv39 data PA collided with the ROOT TABLE (cell 3's store overwrote root[0]; moved
+  to base+0x4000).
+
+- [x] **FIX** — staging only: 12 guests (`corpus/*.s` with inline derivation
+  directives); `tools/derive_expectations.py` (the EVD-05 spec-side model — from the
+  pinned chapters + state.sexp's declared policy, NEVER engine output); its
+  `.expected.sexp` (schema-valid ×12) + `run-order.txt`; `guests_staged.rs`
+  (gen_guests — the TRACKED assembler assembled every word); `corpus-run/main.rs`;
+  `unit/` + `unit-red/` (the staged matrix and the RED legs). No tracked content
+  changed.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ target/p4-system-4/corpus-run/corpus-run; ./corpus-run > r1 && ./corpus-run > r2 && cmp r1 r2
+  corpus: 12 guest(s) PASS, 0 FAIL
+  $ python3 scripts/check_interaction_matrix.py target/p4-system-4/unit
+  28 cells declared, every disposition resolves (rc=0); coverage reads 22 of 22 A
+  forms exercised (87 = 65 + 22)
+  ```
+
+- [x] **NO REGRESSION** — the RED legs fired by name on `unit-red/`: ORPHAN GUEST,
+  OMITTED CELL, UNKNOWN DIFFERENCE. Nothing tracked changed; `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged).
+
+- [x] **LOCKSTEP** — same commit: this tree (status + frontier + checklist + logs +
+  changelog; slice (c)'s checklist archived at the TENTH crossing), `MEMORY.md`
+  (→ slice e, THE BIND), `CHANGELOG.md`, `DEV_NOTES.md` (the authoring defects; the
+  promotion decision:
+promotion: declined (the durability is the machinery — the change-comparison rule and the funct5 census are armed by the runner and the corpus, re-runnable at the bind)),
+  `LIVE_STATUS.md` (unchanged), `docs/book/src/plan/p4.md` (the slice line). The
+  bind's re-run commands are recorded in the changelog.
+

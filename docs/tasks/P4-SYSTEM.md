@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
   truth after the full one — Sail's `--trace-tlb` shows the same add/flush counts.
 
 - ID: `P4-SYSTEM.4` — **atomics and reservations**
-  Status: `pending` (design brief `2026-10-04`, `SEMULITH-P4-0022`; slices (a)–(d) `SEMULITH-P4-0023`…`0026` done `2026-10-05`)
+  Status: `pending` (design brief `2026-10-04`, `SEMULITH-P4-0022`; slices (a)–(e) `…P4-0023`…`0027` done `2026-10-05`)
   Goal: atomic widths, reservation semantics, failed conditional stores, overlap and external-write cases (catalog `C16`, `docs/CPU_ENVIRONMENT.md` §2).
   Acceptance: single-core reservation behaviour is validated here; multicore memory-model work is `MC-MULTICORE`, not smuggled in.
 
@@ -161,7 +161,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — slices (a)–(d) landed (the fragment; the operators; the reservation + arms; the staged corpus 12/12 + rehearsals); next is slice (e): THE BIND — slot→extension, the 65→87 census, one green commit |
+| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — slices (a)–(e) landed, THE BIND done (the unit composes `riscv/a`: 87 forms, 88 guests); next is slice (f): the Sail experiment + the leaf acceptance |
 
 ## Decisions
 
@@ -406,112 +406,79 @@ This gate authorises the planned next engineering stage: board implementation.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-Leaf `.1`'s checklist and leaf `.2`'s slices (a)–(g) (completed `2026-10-03`):
-their full acceptance checklists live verbatim in
-[`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) — split out when this file crossed its
-131,072 B per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed, not
-raised).
+Completed checklists live verbatim in the archive — the per-part ceiling was obeyed,
+never raised, at every crossing. The index:
 
-`P4-SYSTEM.2` slices (h) part 1 and part 2 (completed `2026-10-03`): their full
-acceptance checklists live verbatim in [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) —
-split out when this file crossed its 131,072 B per-part ceiling a second time (the
-`docs/tasks/` precedent; the ceiling was obeyed, not raised).
+- leaf `.1`, `.2` slices (a)–(g) → [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (1st).
+- `.2` slices (h) part 1 and part 2 → [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (2nd).
+- `.2`'s LEAF ACCEPTANCE record → [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (6th).
+- `.3` slices (a)–(e) → [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (3rd–6th).
+- `.4` slice (a) → [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (7th).
+- `.4` slices (b), (c), (d) → [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) (8th — the archive split — 9th, 10th, 11th).
 
-`P4-SYSTEM.2`'s LEAF ACCEPTANCE record (completed `2026-10-03`): its full text lives
-verbatim in [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) — split out at the sixth
-crossing of this file's 131,072 B per-part ceiling (the `docs/tasks/` precedent; the
-ceiling was obeyed, not raised).
+`P4-SYSTEM.4` slice (e) — THE BIND (`2026-10-05`, `SEMULITH-P4-0027`):
 
-`P4-SYSTEM.3` slices (a)–(d) and slice (e) part 1 (completed `2026-10-04`): their
-full acceptance checklists live verbatim in [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md)
-— (a)–(c) split out at the third crossing of this file's 131,072 B per-part ceiling,
-(d) at the fourth, (e) part 1 at the fifth (the `docs/tasks/` precedent; the ceiling
-was obeyed, not raised).
-
-`P4-SYSTEM.3` slice (e) part 2's checklist (completed `2026-10-04`, `SEMULITH-P4-0020`):
-its full acceptance checklist lives verbatim in
-[`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) — split out at the sixth crossing of this
-file's 131,072 B per-part ceiling (the `docs/tasks/` precedent; the ceiling was obeyed,
-not raised).
-
-`P4-SYSTEM.4` slice (a)'s checklist (completed `2026-10-04`, `SEMULITH-P4-0023`):
-its full acceptance checklist lives verbatim in
-[`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) — split out at the eighth crossing of this
-file's 131,072 B per-part ceiling (`2026-10-04`, slice (b) landing; the `docs/tasks/`
-precedent; the ceiling was obeyed, not raised).
-
-`P4-SYSTEM.4` slice (b)'s checklist (completed `2026-10-04`, `SEMULITH-P4-0024`):
-its full acceptance checklist lives verbatim in
-[`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — split out at the ninth crossing of
-this file's per-part ceiling (`2026-10-05`, slice (c) landing; the ceiling was obeyed,
-not raised — the archive was full, so it split: part 2 takes this move onward).
-
-`P4-SYSTEM.4` slice (c)'s checklist (completed `2026-10-05`, `SEMULITH-P4-0025`):
-its full acceptance checklist lives verbatim in
-[`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — split out at the tenth crossing of
-this file's per-part ceiling (`2026-10-05`, slice (d) landing; the ceiling obeyed,
-not raised).
-
-`P4-SYSTEM.4` slice (d) — the staged corpus + expectations + the matrix rehearsal (`2026-10-05`, `SEMULITH-P4-0026`; untracked `target/p4-system-4/`):
-
-- [x] **REPRODUCE / ISSUE** — the slice-(c) engine is proven, but the bind's
-  corpus did not exist yet:
+- [x] **REPRODUCE / ISSUE** —
 
   ```
-  $ ls target/p4-system-4/corpus 2>&1 | head -1
-  No such file or directory — 0 atomics guests; the tracked matrix's guests are all
-  pre-A (its denominator 65, the A forms exercised by none of them)
+  $ grep -n 'slot (id a)' profiles/rv64gc-lab-v0/encoding.sexp
+  14:    (slot (id a) (requires "riscv/a")) — the staging proven, but A unbound, the
+  census 65, the 12 guests and the arms untracked
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in tracked behavior; the slice builds
-  the staging, and execution caught FOUR authoring defects of mine, each named and
-  fixed by re-derivation, never fitting (the corpus's first run read `1 guest(s)
-  PASS, 11 FAIL`, rc=1): (1) the derivation tool RECORDED register writes but
-  never APPLIED them (downstream values read zeros — the truncation named it at the
-  first `sw`); (2) the runner's change-comparison
-  rule was unmodeled — a register written ITS OWN VALUE is no observation (the .3
-  "x8-already-zero" rule; the first corpus run named 11/12 on exactly this); (3) my
-  "reserved funct5 0x02" was LR's OWN funct5 — the .word decoded as `lr.w x6, (x1)`
-  and EXECUTED (the observed handler-word read named it; 0x05 replaced it); (4) the
-  sv39 data PA collided with the ROOT TABLE (cell 3's store overwrote root[0]; moved
-  to base+0x4000).
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the bind is decision 10. One measured
+  generator defect, fixed at root: rustfmt lays the five-fragment list out vertically
+  where the four-fragment one stayed inline (79 inline-clean, 90 broken) —
+  `gen_definition.py`'s emission was not rustfmt-stable past 80 chars and is now, by
+  construction (`cargo fmt --check` rc=0).
 
-- [x] **FIX** — staging only: 12 guests (`corpus/*.s` with inline derivation
-  directives); `tools/derive_expectations.py` (the EVD-05 spec-side model — from the
-  pinned chapters + state.sexp's declared policy, NEVER engine output); its
-  `.expected.sexp` (schema-valid ×12) + `run-order.txt`; `guests_staged.rs`
-  (gen_guests — the TRACKED assembler assembled every word); `corpus-run/main.rs`;
-  `unit/` + `unit-red/` (the staged matrix and the RED legs). No tracked content
-  changed.
+- [x] **FIX** — one atomic commit: `encoding.sexp` (slot→extension); the census dual
+  edit (schema/profile.sexp + dossier_sexp._SCOPE_LISTS + the scope block 65→87 +
+  the PARTS family); REQ-GC-ATOMICS + three D-* mirror sets with CHK pairs;
+  `gen_definition.py` (+43-forms comment, +the fmt-stable emission) →
+  `definition_rv64gc.rs` (22 forms + 3 variants); the arms ported — the tracked
+  evaluator is BYTE-IDENTICAL to the scratch-proven copy; the 12 guests + run-order
+  tracked (88); `interactions.sexp` (the staged cells).
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ target/p4-system-4/corpus-run/corpus-run; ./corpus-run > r1 && ./corpus-run > r2 && cmp r1 r2
-  corpus: 12 guest(s) PASS, 0 FAIL
-  $ python3 scripts/check_interaction_matrix.py target/p4-system-4/unit
-  28 cells declared, every disposition resolves (rc=0); coverage reads 22 of 22 A
-  forms exercised (87 = 65 + 22)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed — 88/88; the scratch proofs against the TRACKED build:
+  16/16, 88/88
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 / rv64i-lab-v0
+  MATCH encoding tables vs profile scope 87 == 87 (the exclusion flipped on its own)
+  / 52 == 52; owned fragments agree
+  $ cmp /tmp/p4s4e-traces-pre.txt /tmp/p4s4e-traces-post.txt
+  3,468 == 3,468, clean — BARE-IDENTITY: all 76 pre-bind guests byte-identical
   ```
 
-- [x] **NO REGRESSION** — the RED legs fired by name on `unit-red/`: ORPHAN GUEST,
-  OMITTED CELL, UNKNOWN DIFFERENCE. Nothing tracked changed; `make gate` →
-  `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged).
+- [x] **NO REGRESSION** — `make check` rc=0 (8 groups); EXTRACTION 5,
+  EXERCISE-COVERAGE (87/87, 52/52), UNIT-COMPOSITION 3 (partial declared),
+  INTERACTION-MATRIX 5, RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5; `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 429); smoke-bench 53 arms, bench
+  wasm, both books.
 
-- [x] **LOCKSTEP** — same commit: this tree (status + frontier + checklist + logs +
-  changelog; slice (c)'s checklist archived at the TENTH crossing), `MEMORY.md`
-  (→ slice e, THE BIND), `CHANGELOG.md`, `DEV_NOTES.md` (the authoring defects; the
-  promotion decision:
-promotion: declined (the durability is the machinery — the change-comparison rule and the funct5 census are armed by the runner and the corpus, re-runnable at the bind)),
-  `LIVE_STATUS.md` (unchanged), `docs/book/src/plan/p4.md` (the slice line). The
-  bind's re-run commands are recorded in the changelog.
+- [x] **LOCKSTEP** — same commit: this tree (slice (d)'s checklist archived at the
+  11th crossing), `MEMORY.md` (→ slice f), `CHANGELOG.md`, `DEV_NOTES.md` (the
+  fmt-stability measurement; the promotion decision:
+promotion: declined (the durability is the machinery — the rustfmt-stable emission is armed by cargo fmt --check inside make check, which the gate re-runs)),
+  `LIVE_STATUS.md` (the P4 row), `docs/book/src/plan/p4.md` + the book index.
 
-`P4-SYSTEM.4` slices (e)–(f) : pending — filled at execution.
+`P4-SYSTEM.4` slice (f) : pending — the Sail matched experiment + the leaf acceptance.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-05` | `.4` slice (e) — THE BIND | the pre-bind census (the slot open); the bind landed whole: slot→extension; the census dual edit 65→87 (+ the PARTS family); REQ-GC-ATOMICS (22) + three D-* mirror sets (RECORD-SCHEMA 20 files ok); definition_rv64gc.rs regenerated (22 forms + 3 variants + the era comment 40→43); the evaluator ported byte-identical to the scratch proof; the 12 guests + matrix cells tracked (28 resolve, no orphan); the one generator defect fixed at root (rustfmt's vertical array past 79 chars — stable by construction now); `cargo test -p semulith-verify run_rv64gc` 4/4 (88/88 with per-step writes, never_written, determinism, fetch counts); the scratch proofs against the TRACKED build (16/16, 88/88); the fetch leg flipped on its own (87==87, rv64i 52==52); BARE-IDENTITY 3,468 == 3,468 lines, cmp clean (parent worktree, both CLIs, 76 guests); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429), smoke-bench 53 arms, bench wasm, both books | THE BIND landed: the unit composes `riscv/a` — 87 forms judged, 88 guests green, the 76 pre-bind guests byte-identical |
+
+
+
+
+
+
+
 | `2026-10-05` | `.4` slice (d) | the pre-slice census (0 atomics guests); the 12-guest staged corpus with the EVD-05 spec-side derivation (schema-valid ×12); four authoring defects caught and re-derived (the tool's unapplied register writes; the same-value-write rule; the "reserved" funct5 0x02 that IS LR's; the sv39 data PA in the root table); every word through the TRACKED assembler; the corpus through the slice-(c) scratch engine: **12 PASS / 0 FAIL**, deterministic re-run identical; the matrix rehearsal 28 cells resolve with the three named RED legs; coverage 22/22 (87 = 65 + 22); nothing tracked changed; `make gate` all green (DERIVED-COUNTS 429) | slice (d) landed: the atomics corpus staged and proven — the bind's payload is ready |
 
 
@@ -542,6 +509,7 @@ promotion: declined (the durability is the machinery — the change-comparison r
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.4` (slice e) | `SEMULITH-P4-0027 (leaf P4-SYSTEM.4): slice e — THE BIND: the unit composes riscv/a (87 forms, 88 guests, the arms tracked)` | slot→extension; the census dual edit 65→87 (+PARTS); REQ-GC-ATOMICS + three D-* mirrors; definition_rv64gc.rs (22 forms + 3 variants + the 43-forms comment); the evaluator byte-identical to the scratch proof; the 12 guests + matrix cells tracked; the rustfmt fix; 88/88, proofs re-run green, the fetch leg 87==87, BARE-IDENTITY 3,468==3,468; all gates green |
 | `.4` (slice d) | `SEMULITH-P4-0026 (leaf P4-SYSTEM.4): slice d — the staged atomics corpus (12/12), the EVD-05 derivation tooling, the matrix + coverage rehearsals` | 12 guests over the families; the four caught authoring defects; 28 cells resolve with 3 named RED legs; coverage 22/22 (87 = 65 + 22); all untracked staging — the bind re-runs it tracked |
 
 | `.4` (slice c) | `SEMULITH-P4-0025 (leaf P4-SYSTEM.4): slice c — the reservation state, the deterministic SC policy as data, the AMO/LR/SC arms proven in scratch` | reservation.rs (PA,width,valid; any LR replaces, any completed SC clears, a trap clears nothing — the Sail zalrsc measurement); the census gate generalised with a RED arm (STATE-GEN 26→27); the policy as state.sexp data; AccessKind::Atomic (R∧W, 15/7); the 16/16 scratch proof; the archive SPLIT (part 2) at the ninth crossing; rv64i's surfaces byte-identical |
@@ -567,6 +535,18 @@ promotion: declined (the durability is the machinery — the change-comparison r
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-05`: `.4` slice (e) done (`SEMULITH-P4-0027`) — THE BIND: one green commit
+  makes the A extension real in the tracked unit — slot→extension; the census dual
+  edit 65→87; REQ-GC-ATOMICS + the reservation/SC-policy/misaligned-cause-7 decision
+  mirrors; `definition_rv64gc.rs` (22 forms + 3 `Sem` variants); the evaluator arms
+  ported byte-identical from the scratch proof; the 12 guests tracked (88/88
+  through the tracked engine, the 16/16 proof re-run green); the matrix cells
+  resolve; the fetch leg flips on its own to 87==87; every pre-bind guest
+  byte-identical (3,468 == 3,468 trace lines). One defect fixed at root (the
+  emission's rustfmt stability at five fragments). `make check`, `make gate`
+  (DERIVED-COUNTS 429), smoke-bench, bench, both books green. Next: slice (f) —
+  the Sail matched experiment + the leaf acceptance.
 
 - `2026-10-05`: `.4` slice (d) done (`SEMULITH-P4-0026`) — the staged atomics corpus:
   12 guests over the brief's families, EVD-05 spec-side expectations, every word

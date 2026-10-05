@@ -14,6 +14,8 @@
 //! any rule, and the interpreter slice (`P1-LAB.8`) evaluates exactly these trees.
 //!
 //! Canonical inputs (sha256):
+//!   `definitions/riscv/a.sem.sexp`  `fb57591fc3e511184e7285ab12890bd24a019b76e05b06b76e198a2d9bb32606`
+//!   `definitions/riscv/a.sexp`  `f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `definitions/riscv/system.sem.sexp`  `2c492bdde2c7d2246abaace02232bcfbabb6fbc3366e60a692e25bc9e4f5667a`
@@ -22,9 +24,9 @@
 //!   `definitions/riscv/zicntr.sexp`  `f0c483e24e2515c12f32d2a95ac55be3a663e2c7ca355cc804890a2f2c3bc675`
 //!   `definitions/riscv/zicsr.sem.sexp`  `823278a9ab48c7f95005998d183e5127f76d6c8c276f70f74a58e4cf22b64975`
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `e86cdda3701aec56e9d5006d1ffc8018a7d3ef60e95bd410374045f16b2f5f1e`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `a54f37b35c875f98a871ea1d68a0ba66a50981a68a07156a049a0bac4217d428`
-//! Generator: `scripts/gen_definition.py` (sha256 `c9777750087889bdda81045f2cb67d4a0bbd4a88e3da69f58f0a93afe124ce9e`)
+//! Generator: `scripts/gen_definition.py` (sha256 `11244266f1e953d5d71243027dbf890c90853b129f0ade99e94f469e170757a9`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -67,12 +69,26 @@ pub struct SourcePin {
 pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     profile: "rv64gc-lab-v0",
     ilen: 32,
-    fragments: &["riscv/rv64i", "riscv/zicsr", "riscv/zicntr", "riscv/system"],
+    fragments: &[
+        "riscv/rv64i",
+        "riscv/zicsr",
+        "riscv/zicntr",
+        "riscv/system",
+        "riscv/a",
+    ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "c9777750087889bdda81045f2cb67d4a0bbd4a88e3da69f58f0a93afe124ce9e",
+        sha256: "11244266f1e953d5d71243027dbf890c90853b129f0ade99e94f469e170757a9",
     },
     inputs: &[
+        InputPin {
+            path: "definitions/riscv/a.sem.sexp",
+            sha256: "fb57591fc3e511184e7285ab12890bd24a019b76e05b06b76e198a2d9bb32606",
+        },
+        InputPin {
+            path: "definitions/riscv/a.sexp",
+            sha256: "f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b",
+        },
         InputPin {
             path: "definitions/riscv/rv64i.sem.sexp",
             sha256: "c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e",
@@ -107,7 +123,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/encoding.sexp",
-            sha256: "e86cdda3701aec56e9d5006d1ffc8018a7d3ef60e95bd410374045f16b2f5f1e",
+            sha256: "aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e",
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
@@ -116,8 +132,16 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     sources: &[
         SourcePin {
+            file: "rv64_a",
+            sha256: "819e0487131bc97cfc0b6f3de62390f2f9936b43e80aef7c6cec14fbe7c7a1b6",
+        },
+        SourcePin {
             file: "rv64_i",
             sha256: "262cbd0884fe1383fcb7c42070cbc73e309d0452ff8d00b38452a4dee7cfa7f5",
+        },
+        SourcePin {
+            file: "rv_a",
+            sha256: "d9eaa988c4779ca352d9da9eabacf6c71771d0b81e04b234302627f69e0863d9",
         },
         SourcePin {
             file: "rv_i",
@@ -153,12 +177,18 @@ pub struct FieldDef {
     pub scatter: &'static [(u8, u8)],
 }
 
-/// The 17 operand fields the composed fragments declare, sorted by
+/// The 19 operand fields the composed fragments declare, sorted by
 /// name: what the decoder extracts, and how the scrambled immediates unscramble.
 /// Every declared operand names a field — this generator refuses one that does not,
 /// because extraction for it would be silent (ARCHITECTURE §2: an unsupported
 /// construct is a model-generation failure, never a guessed translation).
 pub static FIELDS: &[FieldDef] = &[
+    FieldDef {
+        name: "aq",
+        hi: 26,
+        lo: 26,
+        scatter: &[],
+    },
     FieldDef {
         name: "bimm12hi",
         hi: 31,
@@ -226,6 +256,12 @@ pub static FIELDS: &[FieldDef] = &[
         scatter: &[],
     },
     FieldDef {
+        name: "rl",
+        hi: 25,
+        lo: 25,
+        scatter: &[],
+    },
+    FieldDef {
         name: "rs1",
         hi: 19,
         lo: 15,
@@ -286,7 +322,7 @@ pub struct InsnDef {
     pub effect: &'static Sem,
 }
 
-/// The 62 instructions of the composed definition, sorted by name. Every
+/// The 84 instructions of the composed definition, sorted by name. Every
 /// declared instruction carries its semantics — completeness is a generation-time
 /// refusal, not a hope (EXTRACTION).
 pub static INSNS: &[InsnDef] = &[
@@ -372,6 +408,366 @@ pub static INSNS: &[InsnDef] = &[
                             32,
                             &Sem::Reg("rs2"),
                         ),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoadd.d",
+        mask: 0xf800707f,
+        value: 0x0000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOADD.D atomically adds rs2's 64 bits to the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x00, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                0,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoadd.w",
+        mask: 0xf800707f,
+        value: 0x0000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOADD.W atomically adds rs2's low 32 bits to the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x00, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    0,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoand.d",
+        mask: 0xf800707f,
+        value: 0x6000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOAND.D atomically ANDs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x0c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                12,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoand.w",
+        mask: 0xf800707f,
+        value: 0x6000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOAND.W atomically ANDs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x0c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    12,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amomax.d",
+        mask: 0xf800707f,
+        value: 0xa000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMAX.D atomically takes the signed maximum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x14, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                20,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amomax.w",
+        mask: 0xf800707f,
+        value: 0xa000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMAX.W atomically takes the signed maximum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x14, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    20,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amomaxu.d",
+        mask: 0xf800707f,
+        value: 0xe000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMAXU.D atomically takes the unsigned maximum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x1c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                28,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amomaxu.w",
+        mask: 0xf800707f,
+        value: 0xe000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMAXU.W atomically takes the unsigned maximum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x1c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    28,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amomin.d",
+        mask: 0xf800707f,
+        value: 0x8000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMIN.D atomically takes the signed minimum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x10, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                16,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amomin.w",
+        mask: 0xf800707f,
+        value: 0x8000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMIN.W atomically takes the signed minimum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x10, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    16,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amominu.d",
+        mask: 0xf800707f,
+        value: 0xc000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMINU.D atomically takes the unsigned minimum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x18, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                24,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amominu.w",
+        mask: 0xf800707f,
+        value: 0xc000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMINU.W atomically takes the unsigned minimum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x18, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    24,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoor.d",
+        mask: 0xf800707f,
+        value: 0x4000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOOR.D atomically ORs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x08, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                8,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoor.w",
+        mask: 0xf800707f,
+        value: 0x4000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOOR.W atomically ORs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x08, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    8,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoswap.d",
+        mask: 0xf800707f,
+        value: 0x0800302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOSWAP.D atomically writes rs2's 64 bits to the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x01, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                1,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoswap.w",
+        mask: 0xf800707f,
+        value: 0x0800202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOSWAP.W atomically writes rs2's low 32 bits to the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x01, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    1,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoxor.d",
+        mask: 0xf800707f,
+        value: 0x2000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOXOR.D atomically XORs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x04, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                4,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "amoxor.w",
+        mask: 0xf800707f,
+        value: 0x2000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOXOR.W atomically XORs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x04, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    4,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
                     ),
                 ),
             ),
@@ -1032,6 +1428,41 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "lr.d",
+        mask: 0xf9f0707f,
+        value: 0x1000302f,
+        operands: &["rd", "rs1", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.2 — LR.D loads a doubleword from rs1's address into rd and registers a reservation on the addressed bytes; a full XLEN load needs no extension",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::LoadReserved(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Reg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "lr.w",
+        mask: 0xf9f0707f,
+        value: 0x1000202f,
+        operands: &["rd", "rs1", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.2 — LR.W loads a word from rs1's address, sign-extends it into rd, and registers a reservation on the addressed bytes (the reservation contract is the operators', schema/semantics.sexp)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::LoadReserved(
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Lit(0x0000000000000001),
+                    &Sem::Reg("rs1"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
         name: "lui",
         mask: 0x0000007f,
         value: 0x00000037,
@@ -1172,6 +1603,41 @@ pub static INSNS: &[InsnDef] = &[
             &Sem::Trunc(
                 8,
                 &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "sc.d",
+        mask: 0xf800707f,
+        value: 0x1800302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.2 — SC.D conditionally stores rs2's 64 bits to rs1's address and writes the code to rd (0 success / 1 failure); success or failure, the reservation is cleared — the section's own sentence",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::StoreConditional(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "sc.w",
+        mask: 0xf800707f,
+        value: 0x1800202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.2 — SC.W conditionally stores rs2's low 32 bits to rs1's address and writes the code to rd (0 success / 1 failure; the deterministic never-spurious policy is decision 3's, stated at the operator); success or failure, the reservation is cleared — the section's own sentence",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::StoreConditional(
+                &Sem::Lit(0x0000000000000020),
+                &Sem::Reg("rs1"),
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
             ),
         )
     },
@@ -1768,7 +2234,7 @@ pub static INSNS: &[InsnDef] = &[
 ];
 
 /// One node of a canonical semantics effect, lowered from the S-expression operator
-/// language (`schema/semantics.sexp`, the 40 forms `scripts/check_semantics.py`
+/// language (`schema/semantics.sexp`, the 43 forms `scripts/check_semantics.py`
 /// checks) by `scripts/gen_definition.py`. Literals are XLEN-wide two's-complement
 /// constants, masked to 64 bits; widths are explicit data everywhere the language
 /// states them (`Trunc`/`Sext`/`Zext`/`Bits`). Evaluation — what the forms DO — is
@@ -1864,10 +2330,24 @@ pub enum Sem {
     /// `(tlb-invalidate va asid)` — SFENCE.VMA's four specified invalidation
     /// cases over the modelled TLB (RVP-SUPERVISOR §11.1.2.1; P4-SYSTEM.3).
     TlbInvalidate(&'static Sem, &'static Sem),
+    /// `(load-reserved width signed? addr)` — LR's load: translates under the
+    /// load rules, sets/replaces the hart's reservation (physical address,
+    /// width, valid), yields the loaded value (RVI-A §12.1.2).
+    LoadReserved(&'static Sem, &'static Sem, &'static Sem),
+    /// `(store-conditional width addr value)` — SC: success (reservation valid
+    /// ∧ physical address ∧ width match) writes and yields 0; failure writes
+    /// nothing and yields 1; the reservation is cleared either way (the
+    /// deterministic policy, P4-SYSTEM.4 decision 3).
+    StoreConditional(&'static Sem, &'static Sem, &'static Sem),
+    /// `(amo op width addr value)` — one of the closed Zaamo nine (op the
+    /// funct5 encoding): one store/AMO-rules translation, the old value read,
+    /// op applied at width, the result written, the old value yielded —
+    /// never a seq(load, op, store) (P4-SYSTEM.4 decision 5).
+    Amo(u64, &'static Sem, &'static Sem, &'static Sem),
 }
 
 /// Decode a 32-bit word to its instruction definition by the fixed bits: the first
-/// entry whose `mask`ed bits equal its `value`. Linear over the 62
+/// entry whose `mask`ed bits equal its `value`. Linear over the 84
 /// entries — no allocation, and no failure family of its own: a word no entry
 /// matches is the reserved-decode case (`outcome::UndefinedCase::ReservedDecode`,
 /// REQ-D-RESERVED-DECODE), and that classification is the caller's, not this

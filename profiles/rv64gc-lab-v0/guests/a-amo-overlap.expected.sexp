@@ -1,0 +1,43 @@
+;; a-amo-overlap.expected.sexp — the expected observations for `a-amo-overlap.s` (P4-SYSTEM.4
+;; slice d, the atomics corpus). EVD-05: every value below was derived from the pinned
+;; chapters and the declared deterministic SC policy (state.sexp) by the spec-side
+;; authoring model BEFORE any engine run; the corpus runner falsifies against it.
+;; Validate with
+;;   python3 scripts/check_sexp_schema.py a-amo-overlap.expected.sexp schema/expectations.sexp
+
+(expectations (program "a-amo-overlap.s") (entry "0x0000000080000000") (instructions 16)
+  (never_written "x28")
+  (never_written "x29")
+  (step (n 0) (insn "addi x10, x0, 1") (writes (write (reg "x10") (value "0x0000000000000001")))
+    (derivation "raw material for the region base.") (source "RVI-RV32I §1.1.4"))
+  (step (n 1) (insn "slli x10, x10, 31") (writes (write (reg "x10") (value "0x0000000080000000")))
+    (derivation "x10 = 0x8000_0000.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 2) (insn "addi x1, x10, 256") (writes (write (reg "x1") (value "0x0000000080000100")))
+    (derivation "re-establish the address.") (source "RVI-RV32I §1.1.4"))
+  (step (n 3) (insn "addi x7, x0, 16") (writes (write (reg "x7") (value "0x0000000000000010")))
+    (derivation "the initial word 0x10.") (source "RVI-RV32I §1.1.4"))
+  (step (n 4) (insn "sw x7, 0, x1") (writes)
+    (derivation "mem = 0x10 (the rd=rs1=rs2 cell).") (source "RVI-RV64I §3.1.3"))
+  (step (n 5) (insn "amoadd.w x1, x1, (x1)") (writes (write (reg "x1") (value "0x0000000000000010")))
+    (derivation "rs1's PRE-value is the address AND the added value: mem <- 0x10 + low32(0x80000100) = 0x80000110; rd <- the old word 0x10.") (source "RVI-A §12.1.4; the READS-AND-WRITES contract (schema/semantics.sexp)"))
+  (step (n 6) (insn "addi x1, x10, 256") (writes (write (reg "x1") (value "0x0000000080000100")))
+    (derivation "re-establish the address.") (source "RVI-RV32I §1.1.4"))
+  (step (n 7) (insn "lw x8, x1, 0") (writes (write (reg "x8") (value "0xffffffff80000110")))
+    (derivation "read-back: 7.") (source "RVI-RV64I §3.1.3"))
+  (step (n 8) (insn "addi x6, x0, 5") (writes (write (reg "x6") (value "0x0000000000000005")))
+    (derivation "rs2 = 5 (the rd=rs2 cell).") (source "RVI-RV32I §1.1.4"))
+  (step (n 9) (insn "amoadd.w x6, x6, (x1)") (writes (write (reg "x6") (value "0xffffffff80000110")))
+    (derivation "rs2's PRE-value (5) is added: mem <- 0x80000110 + 5 = 0x80000115; rd <- the old word 0x80000110, sign-extended (0xFFFFFFFF80000110).") (source "RVI-A §12.1.4; the READS-AND-WRITES contract"))
+  (step (n 10) (insn "lw x8, x1, 0") (writes (write (reg "x8") (value "0xffffffff80000115")))
+    (derivation "read-back: 7.") (source "RVI-RV64I §3.1.3"))
+  (step (n 11) (insn "lr.w x1, (x1)") (writes (write (reg "x1") (value "0xffffffff80000115")))
+    (derivation "rd=rs1 on LR: the address is x1's PRE-value; rd <- the old word 0x80000115 sign-extended, and the reservation registers.") (source "RVI-A §12.1.2; the READS-AND-WRITES contract"))
+  (step (n 12) (insn "addi x1, x10, 256") (writes (write (reg "x1") (value "0x0000000080000100")))
+    (derivation "re-establish the address.") (source "RVI-RV32I §1.1.4"))
+  (step (n 13) (insn "addi x6, x0, 7") (writes (write (reg "x6") (value "0x0000000000000007")))
+    (derivation "rs2 = 7 (the rd=rs2 SC cell).") (source "RVI-RV32I §1.1.4"))
+  (step (n 14) (insn "sc.w x6, x6, (x1)") (writes (write (reg "x6") (value "0x0000000000000000")))
+    (derivation "the reservation pairs: mem <- rs2's PRE-value 7; rd <- the success code 0.") (source "RVI-A §12.1.2; the READS-AND-WRITES contract"))
+  (step (n 15) (insn "lw x8, x1, 0") (writes (write (reg "x8") (value "0x0000000000000007")))
+    (derivation "read-back: 7.") (source "RVI-RV64I §3.1.3"))
+)
