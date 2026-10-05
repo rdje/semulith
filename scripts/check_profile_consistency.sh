@@ -107,12 +107,12 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
         # the part-counts must also add up to the whole: the base split, plus — since
         # P4-SYSTEM.2 slice (e) — the extension family lists when the profile carries them
         # (the rv64gc census: base 40 + rv64i 12 + zicsr 6 + system 4 + zicntr 3 = 65;
-        # P4-SYSTEM.4 slice (e): + a_atomics 22 = 87)
+        # P4-SYSTEM.4 slice (e): + a_atomics 22 = 87; P4-SYSTEM.6 slice (b): + zifencei_fencei 1 = 88)
         a, b = scope.get("count_base"), scope.get("count_rv64i_additions")
         if a is not None and b is not None and declared is not None:
             ext = sum(len(scope.get(k) or [])
                       for k in ("zicsr_csrs", "system_privileged", "zicntr_counters",
-                                "a_atomics"))
+                                "a_atomics", "zifencei_fencei"))
             if a + b + ext != declared:
                 findings.append(
                     f"PARTS DRIFT {name}: count_base {a} + count_rv64i_additions {b}"

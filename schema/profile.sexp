@@ -137,7 +137,12 @@
   ;; 65 → 87. The 22 names are the pinned RVWMO chapter's Tables 6/7 enumeration (the
   ;; nine Zaamo operations and the Zalrsc pair, each .W and .D, RVI-A §12.1), realized
   ;; by the rv_a/rv64_a tables (definitions/riscv/a.sexp).
-  (field (name a_atomics) (type string) (repeat yes) (optional yes)))
+  (field (name a_atomics) (type string) (repeat yes) (optional yes))
+  ;; `P4-SYSTEM.6` slice (b) (`2026-10-05`): Zifencei binds — the census grows 87 → 88.
+  ;; The one name is the pinned chapter's own instruction (FENCE.I, RVI-ZIFENCEI §4.1,
+  ;; Version 2.0), realized by the rv_zifencei table's single row
+  ;; (definitions/riscv/zifencei.sexp).
+  (field (name zifencei_fencei) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

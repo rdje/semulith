@@ -36,12 +36,16 @@ OUT="crates/semulith-verify/src/guests.rs"
 # base mirror's recorded re-derivations (slice f: the three D-IALIGN-16 guests —
 # 2-mod-4 targets are legal with C, RVI-C 27.1; slice g: the two fencei guests —
 # rv64gc DECLARES Zifencei and the staged encoding's slot is unbound, so rv64i's
-# DIFF-FENCEI-EXECUTED pin does not transfer). Every other mirrored file is
-# byte-identical to its rv64i owner, and the governor below names any drift.
+# DIFF-FENCEI-EXECUTED pin does not transfer; P4-SYSTEM.6 slice b: the two selfmod
+# guests' expectation comments — the fence.i bind makes "without Zifencei" stale in
+# this unit, and the data fence is not the fetch synchronization: the chapter
+# guarantees visibility only after a FENCE.I, the data fence's role is cross-hart).
+# Every other mirrored file is byte-identical to its rv64i owner, and the governor
+# below names any drift.
 ENCODING_GC="profiles/rv64gc-lab-v0/encoding.sexp"
 GUESTS_DIR_GC="profiles/rv64gc-lab-v0/guests"
 OUT_GC="crates/semulith-verify/src/guests_rv64gc.rs"
-MIRROR_REDERIVED="fault-jal-mis fault-jalr-mis it-prio-jump it-fencei min-fencei"
+MIRROR_REDERIVED="fault-jal-mis fault-jalr-mis it-prio-jump it-fencei min-fencei dir-selfmod-fence fault-selfmod"
 
 # ── the base-mirror governor (P4-SYSTEM.2 slice f disposition, registered at the flip) ─
 # The rv64gc guests/ directory is a DERIVED mirror of rv64i's: every mirrored file is

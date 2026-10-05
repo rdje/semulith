@@ -102,3 +102,5 @@ w-deleg
 w-notrap
 w-sw
 w-timer
+fencei-reserved
+fencei-selfmod

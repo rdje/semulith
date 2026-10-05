@@ -1,5 +1,37 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the mirror's byte-identity is the point, and a bind can be invisible in its own trace (P4-SYSTEM.6 slice b)
+
+Execution of the `.6` brief's checkpoint (b) measured:
+
+- **The mirror holds .s byte-identical ALWAYS — and that is the discipline, not
+  an obstacle.** My first draft restated four .s headers to the bound state, and
+  the governor measured every one as MIRROR DRIFT: the base mirror's rule is
+  that rv64gc's .s files are byte-identical to rv64i's owners with NO exception
+  list, while an .expected.sexp may differ only for a RECORDED re-derivation.
+  The `.2` slice-(g) shape was already the answer: the rv64gc-specific reading
+  lives in the expectation comment block, never in the mirrored source. The
+  decision-3 corrections (dir-selfmod-fence's data fence is not the fetch
+  synchronization; fault-selfmod's stale "without Zifencei") landed exactly
+  there, with both names joining MIRROR_REDERIVED and the reason recorded
+  beside the slice-(f)/(g) reasons (promotion: declined — the durability is the
+  machinery: the governor names drift on every gate run).
+- **A bind can be invisible in its own trace.** min-fencei's demo trace is
+  byte-identical pre- and post-bind: the pre-bind ReservedDecode delivery wrote
+  no register and vectored to mtvec=0, so the recorded step (pc, mode, writes)
+  is the same tuple as the post-bind retiring nop. The semantic change (a
+  trap-conversion vs a retirement) is real and shows in the expectations; the
+  trace just has no slot for it. it-fencei carries the visible half: the
+  continuation marker commits now (x2 ← 7), exactly as on both references.
+- **Memory-backed fetch is a derivation-level discipline too.** The new
+  fencei-selfmod guest needs the spec-side model to re-read the patched word —
+  the store's effect lands in the program map with the patch named in the insn
+  text (the `.2` comment convention, tooled at last). The engine always re-read
+  (D-CODE-VISIBILITY); the derivation tool simply had to catch up — a guest
+  whose patch the model ignores would derive the WRONG patched step silently.
+
+promotion: declined (the durability is the machinery — the mirror governor and
+the 101-guest corpus re-run every one of these).
 ## _(2026-10-05)_ — "no assembler shapes" was true until the table said otherwise (P4-SYSTEM.6 slice a)
 
 Execution of the `.6` brief's checkpoint (a) measured:
@@ -659,41 +691,4 @@ Execution of the `.2` brief's checkpoint (h), part 1, measured:
   declined — the pseudo-census class is already the family's running lesson
   (docs/knowledge), and the rustfmt-fixed-point rule is encoded in the gate
   itself (the census arms fire on drift).
-
-## _(2026-10-03)_ — the matrix designed the mirror's fourth re-derivation; restart is guest-shaped here (P4-SYSTEM.2 slice g)
-
-Execution of the `.2` brief's checkpoint (g) measured:
-
-- **The DIFFS rule reads guests, not just cells.** INTERACTION-MATRIX's difference leg
-  collects every named guest's `expect_divergence` declaration, not only the ids a cell
-  writes — so the two fencei files' rv64i pin (DIFF-FENCEI-EXECUTED) became a finding
-  the moment the matrix named them (and NO ORPHANS meant they had to be named). The
-  honest resolution was re-derivation, not registration: the id's record ("the matched
-  configuration excludes Zifencei") is false for rv64gc, which DECLARES Zifencei and
-  stages its encoding slot unbound. The files keep their steps/writes/never_written
-  (the observed behaviour is identical) and drop the divergence form with the reason in
-  the comment — the mirror's fourth and fifth re-derivations, each with provenance.
-  Registering a new difference id was the alternative the brief allowed; it was declined
-  because this staging runs no cross-model comparison, so the record would pin a
-  divergence nothing consumes.
-- **Restart needed reframing, not a mechanism.** rv64i's restart axis is mechanism-shaped
-  (cold-reset determinism; the check's MECHANISMS registry is closed at four entries and
-  none runs rv64gc today — naming one would claim a mechanism that does not exercise this
-  unit). The privileged leaf offers the honest guest shape: the xret/xepc return
-  discipline IS restart, and mm-mret/mm-sret/mm-ebreak/mm-ecall-deleg already observe it
-  (the MPRV clear-below-M / preserve-at-M rule, SPP returns, the breakpoint resume). No
-  registry change, no new arms, no fabricated cells.
-- **Degenerate-with-reason is a report, not a shrug.** Three of 28 cells (alias×restart,
-  boundary×delegation, boundary×restart) compose nothing in the staged corpus; each
-  reason says WHY the corpus has nothing there (delegation keys on cause/mode, never
-  data edges; an xret to a domain-edge target is underived semantics), which is exactly
-  the doctrine's "unexercised cells are reported, never omitted".
-- **Validation:** the rehearsal used the check's own invocation
-  (`check_interaction_matrix.py <unit-dir>` — the `.sh` driver discovers tracked
-  `profiles/*/` only at the flip): 28 cells declared, every disposition resolves, rc=0.
-  RED-first: all three rule legs fired by name against a scratch copy of the staged unit
-  (DIFFS on the pre-re-derivation state, ORPHAN GUEST, OMITTED CELL). The corpus
-  re-proven 62/62 after the fencei re-derivations; driver self-test 15/15; `make gate`
-  green, DERIVED-COUNTS unchanged at 408. Promotion: declined — the axis rationale is
-  data in the staged matrix header and the slice checklist.
 

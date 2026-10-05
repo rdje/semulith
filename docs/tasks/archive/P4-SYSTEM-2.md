@@ -727,6 +727,95 @@ promotion: declined (the durability is the machinery — the corpus verdicts are
   `docs/book/src/plan/p4.md` (the `.5` section completed) + the book index.
 
 
+`P4-SYSTEM.6` slice (a)'s checklist (completed `2026-10-05`,
+`SEMULITH-P4-0035`), split out on `2026-10-05` at the live file's nineteenth
+ceiling firing (slice (b) landing):
+
+`P4-SYSTEM.6` slice (a) — the rv_zifencei re-pin + the one-form fragment + zifencei.sem.sexp + the assembler acceptance (`2026-10-05`, `SEMULITH-P4-0035`):
+
+- [x] **REPRODUCE / ISSUE** —
+
+  ```
+  $ ls target/refs/riscv-opcodes/rv_zifencei 2>&1
+  No such file — the slot's table was pinned nowhere (pre-condition 1 re-measured)
+  $ curl -sSL -o target/refs/riscv-opcodes/rv_zifencei \
+      https://raw.githubusercontent.com/riscv/riscv-opcodes/master/extensions/rv_zifencei
+  $ shasum -a 256 target/refs/riscv-opcodes/rv_zifencei; wc -c < target/refs/riscv-opcodes/rv_zifencei
+  be2d8f7286e06fadafffbde14656e6adb3f923ce704ea0829229d3a3b5f35758; 73 bytes —
+  exactly one row: `fence.i imm12 rs1 14..12=1 rd 6..2=0x03 1..0=3`
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — one brief claim measured FALSE as written and
+  is recorded honestly: decision 1's "no assembler shapes (the zero-operand
+  ecall/ebreak precedent)" — ecall/ebreak carry NO operand fields, but fence.i's
+  table row LISTS imm12/rs1/rd, so the table-driven assembler refused the
+  standard-software spelling:
+
+  ```
+  $ <assemble "fence.i" through the trial composition, pre-fix>
+  REFUSED 'fence.i' -> fence.i expects 3 operand(s) ['imm12', 'rs1', 'rd'], got 0
+  $ grep -c "shall ignore these fields" .materials/riscv/pinned-v20260120/unpriv/zifencei.html
+  1 — the sentence the acceptance implements, measured in the pinned chapter
+  ```
+
+  The chapter's own sentence ("base implementations shall ignore these fields,
+  and standard software shall zero these fields", RVI-ZIFENCEI §4.1 — every
+  normative sentence re-located in the pinned chapter) makes the bare spelling
+  the STANDARD one, so the acceptance lands as a named, cited special case in
+  `riscv_asm.py` (the A-suffix precedent's shape) — never a table edit. Decision
+  1's OTHER no-change claims measured TRUE: the nop effect needs no Sem variant
+  and no generator change (the lowering below).
+
+- [x] **FIX** — the pin (references.sexp's row + supplies/note amendments);
+  `fetch_references.sh`'s named exclusion (the `.4` slice-(a) M/A pattern: the
+  table is pinned for the fragment, not the scope, until slice (b)'s bind flips
+  it); the FRAGMENTS entry → generated `zifencei.sexp` (owns NO fields,
+  requires rv64i, funct3=1); `zifencei.sem.sexp` (hand-written, `(effect (nop))`
+  with the three normative sentences, the coherent/uncached-RAM latitude and the
+  shall-ignore rule cited); the zero-operand acceptance in `riscv_asm.py`.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ <fetch --verify-only, both profiles> — 87 == 87 (the exclusion holds),
+  52 == 52; "owned fragments agree with the pinned upstream"; a scripted fresh
+  re-fetch byte-identical (cmp clean)
+  $ python3 scripts/check_encoding_disjoint.py rv64i+zifencei
+  53 instruction(s), no collisions — COMPOSE; the profile's set + zifencei:
+  85 instruction(s) (+ 3 pseudo), no collisions — COMPOSE; self-test 12/12
+  $ python3 scripts/check_semantics.py zifencei.sexp zifencei.sem.sexp
+  1 of 1 checked; --compose base+zifencei and the full set: "the semantics
+  compose — every override is declared"; self-test 17/17
+  $ python3 scripts/check_citations.py --corpus
+  RVI-ZIFENCEI §4.1 ×1 — 6 sem files, 8 resolutions, offline
+  $ <the assembler probe> — 'fence.i' -> 0x0000100f; 'fence.i 0, x0, x0' the
+  same word; 'fence.i 1, x2, x3' -> 0x0011118f (the shall-ignore word);
+  REFUSED by name: 'fence.i x1', 'fence.i 0, x0', 'fence.i foo';
+  spike-dasm round-trip exact: DASM(0000100f) -> fence.i, DASM(0011118f) ->
+  fence.i (the second decoder applies the shall-ignore rule too)
+  $ <gen_definition over BOTH trial compositions> — fence.i emits mask
+  0x0000707f / value 0x0000100f over the EXISTING Sem::Nop (mask covers
+  funct3+opcode only — the shall-ignore decode); rustc rc=0 standalone; NO
+  generator change (the nop-effect one-form measured; justified)
+  $ <gen_fragments + gen_guests> — the six existing fragments byte-identical;
+  all 99 guests re-assemble byte-identical through the edited assembler
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8
+  groups); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 430
+  unchanged — the exclusion is a script line, no new arm); the slot STAYS
+  declared (encoding.sexp untouched); the census STAYS 87; no corpus, no Rust.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  logs + changelog; the slice-(d) checklist moved to the archive at the
+  eighteenth ceiling firing), `MEMORY.md` (next_action → slice b, THE BIND),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the promotion decision:
+promotion: declined (the durability is the machinery — the zero-operand acceptance is armed by the probe spellings in this checklist and the 99-guest byte-exact re-assembly, both re-runnable)),
+  `LIVE_STATUS.md` (unchanged — the leaf is open), `docs/TASK_TREE.md` (unchanged
+  — the frontier leaf is `.6` already), `docs/book/src/plan/p4.md` (the `.6`
+  section's slice line) + the book index.
+
+
 
 `P4-SYSTEM`'s Verification Log rows for leaves `.1` and `.2` (both closed `2026-10-03`),
 split out verbatim on `2026-10-05` at the live file's fourteenth ceiling firing — the

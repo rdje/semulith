@@ -1,5 +1,37 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0036 (leaf P4-SYSTEM.6, slice b) — THE BIND: the unit composes riscv/zifencei
+
+- The slot becomes the extension and fence.i is legal in the tracked engine.
+  encoding.sexp's `(slot (id zifencei) …)` becomes `(extensions "riscv/zifencei")`
+  (four slots stay, partial stays, the header's census restated); the census dual
+  edit 87→88 lands in all four places (schema/profile.sexp +
+  dossier_sexp._SCOPE_LISTS + the scope block + PROFILE-CONSISTENCY's PARTS key —
+  the one-form zifencei_fencei family, RVI-ZIFENCEI §4.1);
+  `definition_rv64gc.rs` regenerates with fence.i over the existing `Sem::Nop`
+  (mask 0x0000707f — the shall-ignore decode, the manifest cascade);
+  REQ-GC-FENCEI + OB-GC-FENCEI with no new D-* decision (the nop is the sem
+  file's stated decision — the wfi-nop precedent; RECORD-SCHEMA both files ok).
+- The fencei guests re-derive to the legal fence.i — the `.2` slice-(g)
+  pre-commit FULFILLED: it-fencei grows 2→3 steps with the continuation marker
+  committing (x2 ← 7, exactly as on both references); min-fencei is one retiring
+  nop — and its demo trace stays byte-identical anyway (the pre-bind delivery
+  wrote nothing observable at mtvec=0, measured). `fencei-reserved` exercises
+  the shall-ignore decode end-to-end (0x0011118F ignored); `fencei-selfmod` is
+  the acceptance pair's WITH member (the store, the legal fence.i, the patched
+  fetch reading 7 through the new memory-backed derivation); fault-selfmod
+  stands WITHOUT. The decision-3 comment corrections land as RECORDED mirror
+  re-derivations — the governor measured my direct .s edits as drift: the mirror
+  holds .s byte-identical to rv64i's owners ALWAYS, so the bound-state story
+  lives in the expectation comment blocks (dir-selfmod-fence's data fence is
+  not the fetch synchronization; fault-selfmod's stale qualifier corrected).
+- The fetch leg's exclusion flipped on its own (88==88, rv64i 52==52); the
+  corpus reads **101/101**; the identity proof holds 98/99 (it-fencei the
+  designed exception, worktree removed); the matrix resolves 28 cells;
+  EXERCISE-COVERAGE 88/88; EXTRACTION ok; GUEST-GEN 16/16; UNIT-COMPOSITION 3;
+  SHARD-FREEZE 186 rows. `make check` rc=0, `make gate` green (DERIVED-COUNTS
+  430 unchanged).
+
 ## SEMULITH-P4-0035 (leaf P4-SYSTEM.6, slice a) — the rv_zifencei re-pin, the one-form fragment, zifencei.sem.sexp, the zero-operand assembler acceptance
 
 - The re-pin: `rv_zifencei` through the tracked `extensions/` fetch route — 73
@@ -843,38 +875,4 @@
   docs/tasks/ aggregate ceiling fired (63 files / 1,575,182 B > 1.5 MiB — the slice
   checklists are the designed growth) and was re-derived to 3 MiB by decision record.
   `make gate` green (DERIVED-COUNTS 404→408 arms). Next: slice (f) — the guests corpus.
-
-## SEMULITH-P4-0008 (leaf P4-SYSTEM.2, slice d) — the generators parameterize to rv64gc, the privilege machinery lands, the scratch execution proof passes
-
-- The two-profile shape, measured into existence: the tracked evaluator matches rv64i's
-  byte-frozen generated `Sem` enum, so the slice-(b) operators' evaluation arms cannot
-  compile tracked until the rv64gc definition module is tracked (the flip). The machinery
-  doesn't wait: `crates/semulith-core/src/privilege.rs` (tracked, hand-authored) owns trap
-  delivery (delegation selection, the xPIE/xIE/xPP stack, xepc/xcause/xtval, pc←xtvec),
-  xret, the uniform CSR permission model (mode bits, read-only bits, counter-enables,
-  TM/STCE, TVM) and WPRI/WARL/WLRL legalization — over a `PrivilegedHart` trait whose
-  metadata vocabulary it owns; the generated rv64gc state module implements the trait with
-  the descriptor's tables. The WARL seam closed: prose legalization became the structured
-  `(legalize …)` mini-language, applied by the engine as a lookup. 11 machinery tests over
-  a fixture hart.
-- gen_definition's rv64gc branch lowers all 8 slice-(b) operators, emits pseudos as
-  PSEUDOS metadata (the coverage mapping is slice (f)'s), and composes three separate
-  `(extensions …)` forms correctly — its name list carried the THIRD copy of the
-  dropped-form bug. gen_guests is directory-derived (the set is the directory; the run
-  order is the tracked run-order.txt, cross-checked both directions; rv64i regenerates
-  hash-only — the brief's "51-name list" measured 49). elf.rs's IALIGN is a parameter
-  (the routed twin of slice a's assembler fix); the CLI passes the profile datum (32)
-  explicitly. The dossier digest rotated on run-order.txt; the cascade re-derived
-  (reports, the board's pin, the platform manifest, both books), and the PLATFORM-GEN
-  stale-pin arm that assumed the digest's leading digit was fixed.
-- Validation: the scratch execution proof — six guests assembled with the tracked
-  assembler against the staged composition, run through the generated modules + the
-  tracked machinery: the CSR disciplines (rs1=x0 never writes, the swap exact for
-  rd==rs1), ecall delivered in M (cause 11, xepc=own address) and delegated to S (cause 9,
-  the S handler, sret back), wfi legal-nop in M / illegal in U, sret illegal in U,
-  sfence.vma under TVM, rdcycle gated then enabled — 26/26, catching two authoring defects
-  on the way (an atomic CSR's write preserving everything; a wrong delegation bit). Both
-  rv64i generated modules regenerate with only the embedded generator-hash lines changed.
-  STATE-GEN 20/20, DEF-GEN 15/15, GUEST-GEN 10/10 (new arms RED-first); `make check` and
-  `make gate` green (DERIVED-COUNTS 395→404). Next: slice (e) — the unit artifacts.
 

@@ -24,7 +24,9 @@
 //!   `definitions/riscv/zicntr.sexp`  `f0c483e24e2515c12f32d2a95ac55be3a663e2c7ca355cc804890a2f2c3bc675`
 //!   `definitions/riscv/zicsr.sem.sexp`  `823278a9ab48c7f95005998d183e5127f76d6c8c276f70f74a58e4cf22b64975`
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e`
+//!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
+//!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `3dd1ab658eed1a72e95b9a13108e7701d0fc59c9c8e9605c631bcaebfcabfe33`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `e0774daf4104a2b586c7ab7e699926c2bec537384fcbad4be69b03a0fe98b497`
 //! Generator: `scripts/gen_definition.py` (sha256 `11244266f1e953d5d71243027dbf890c90853b129f0ade99e94f469e170757a9`)
 
@@ -75,6 +77,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         "riscv/zicntr",
         "riscv/system",
         "riscv/a",
+        "riscv/zifencei",
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
@@ -122,8 +125,16 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
             sha256: "f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2",
         },
         InputPin {
+            path: "definitions/riscv/zifencei.sem.sexp",
+            sha256: "048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c",
+        },
+        InputPin {
+            path: "definitions/riscv/zifencei.sexp",
+            sha256: "7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003",
+        },
+        InputPin {
             path: "profiles/rv64gc-lab-v0/encoding.sexp",
-            sha256: "aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e",
+            sha256: "3dd1ab658eed1a72e95b9a13108e7701d0fc59c9c8e9605c631bcaebfcabfe33",
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
@@ -162,6 +173,10 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         SourcePin {
             file: "rv_zicsr",
             sha256: "dd8cc0e2c32fb5658d4aa719cef6ab1b714e2145ba071c9aeb382d9963e4901f",
+        },
+        SourcePin {
+            file: "rv_zifencei",
+            sha256: "be2d8f7286e06fadafffbde14656e6adb3f923ce704ea0829229d3a3b5f35758",
         },
     ],
 };
@@ -322,7 +337,7 @@ pub struct InsnDef {
     pub effect: &'static Sem,
 }
 
-/// The 84 instructions of the composed definition, sorted by name. Every
+/// The 85 instructions of the composed definition, sorted by name. Every
 /// declared instruction carries its semantics — completeness is a generation-time
 /// refusal, not a hope (EXTRACTION).
 pub static INSNS: &[InsnDef] = &[
@@ -1248,6 +1263,15 @@ pub static INSNS: &[InsnDef] = &[
         operands: &["fm", "pred", "succ", "rs1", "rd"],
         from: "rv_i",
         source: "RVI-RV32I §1.1.7 — D-FENCE: one hart, no devices, in-order; decoded, must not trap, no observable effect",
+        effect: &Sem::Nop
+    },
+    InsnDef {
+        name: "fence.i",
+        mask: 0x0000707f,
+        value: 0x0000100f,
+        operands: &["imm12", "rs1", "rd"],
+        from: "rv_zifencei",
+        source: "RVI-ZIFENCEI §4.1 — the declared nop: the coherent/uncached-RAM latitude ('just the fetch pipeline needs to be flushed at a FENCE.I') meets a re-read-per-fetch machine (nothing to flush, D-CODE-VISIBILITY); funct12/rs1/rd decoded-and-ignored per the chapter's shall-ignore rule, never legalization-rejected",
         effect: &Sem::Nop
     },
     InsnDef {
@@ -2347,7 +2371,7 @@ pub enum Sem {
 }
 
 /// Decode a 32-bit word to its instruction definition by the fixed bits: the first
-/// entry whose `mask`ed bits equal its `value`. Linear over the 84
+/// entry whose `mask`ed bits equal its `value`. Linear over the 85
 /// entries — no allocation, and no failure family of its own: a word no entry
 /// matches is the reserved-decode case (`outcome::UndefinedCase::ReservedDecode`,
 /// REQ-D-RESERVED-DECODE), and that classification is the caller's, not this

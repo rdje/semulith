@@ -18,16 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-04`, `SEMULITH-AC-0058`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (5/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed and flipped (`.2`), Sv39 translation and protection CLOSED (`.3`), atomics and reservations CLOSED (`.4`), and interrupts, counters and wait CLOSED (`.5`): the declared virtual-time domain, the step-head pending evaluation with both vector modes, the halted state with WFI's real wake — the timer wake WITHOUT CPU RETIREMENT evidenced by w-timer's own run; the Sail attempt 6 AGREE + 6 named of 12).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.6` — instruction visibility and fence semantics, slice (b):
-  THE BIND — slot→extension, the census 87→88, it-fencei/min-fencei re-derived to
-  the legal fence.i, the reserved-fields probe, the acceptance pair (rewrite-code
-  with and without the synchronization), the matrix cells, the identity proof for
-  the 97 untouched guests. Slice (a) landed `2026-10-05` (`SEMULITH-P4-0035`): the
-  rv_zifencei re-pin (73 bytes, one row), the one-form fragment, zifencei.sem.sexp
-  (the declared nop), the assembler's zero-operand acceptance (decision 1's "no
-  assembler shapes" measured false for the bare spelling — a named special case);
-  the slot stays declared, the census 87. Then (c) the Sail matched experiment +
-  the census re-answer + the leaf acceptance. `P4-SYSTEM.5` closed `2026-10-05`
+- next_action: `P4-SYSTEM.6` — instruction visibility and fence semantics, slice (c):
+  the Sail matched experiment (the fencei guests AGREE by design — Sail's FENCEI is
+  "a nop for the memory model" too) + the fetch-cache census re-answer (decision 6)
+  + the reports and the book + the leaf acceptance. Slice (b) landed `2026-10-05`
+  (`SEMULITH-P4-0036`): THE BIND — the unit composes riscv/zifencei (slot→extension,
+  the census 87→88), fence.i legal over the existing Sem::Nop, REQ-GC-FENCEI +
+  OB-GC-FENCEI, the fencei guests re-derived (the slice-(g) pre-commit fulfilled),
+  the acceptance pair landed (fencei-selfmod WITH, fault-selfmod WITHOUT), 101/101
+  corpus, 98/99 pre-bind guests byte-identical. `P4-SYSTEM.5` closed `2026-10-05`
   (`SEMULITH-P4-0033`): the timer wake WITHOUT CPU RETIREMENT evidenced by
   w-timer's own run; the Sail attempt 6 AGREE + 6 named of 12; DERIVED-COUNTS 430.
 - in_flight_uncommitted: none.

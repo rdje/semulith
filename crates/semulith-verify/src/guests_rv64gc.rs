@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_guests.py`; drift between this fixture and the tracked guest sources is refused by the GUEST-GEN doctrine (`scripts/check_guest_gen.sh`). This module lowers the tracked assembly guests and their specification-derived expectations into data for the verify-side execution tests (`P1-LAB.8`): every expectation value was derived from the pinned specification prose before any model ran (EVD-05), so the commit gate re-runs the first-execution-slice differential offline.
 //!
 //! Canonical inputs (sha256):
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `3dd1ab658eed1a72e95b9a13108e7701d0fc59c9c8e9605c631bcaebfcabfe33`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-aqrl.expected.sexp`  `fa02e95edbaedf56aef0677caff6202045b035bd9c3c4d8c587d585e8bdba012`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-aqrl.s`  `3eaf32f2f97e66d578f37bbaa558c0c4934db7cbe2184cf7499d1d21e0005e3c`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-arith-d.expected.sexp`  `3f9016ae4411b5510816851cbaa0cefa96801964c4949c0029a89917680ddff4`
@@ -48,7 +48,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/dir-memwalk.s`  `2d939ac2d8a2a4780032d631b3e0c68739ae7b2328a4988c03067329aedb3036`
 //!   `profiles/rv64gc-lab-v0/guests/dir-runoff.expected.sexp`  `16cba7629001418e756c0963022fb0430f97e45f3881b39eac2d8d8fb62f2e7a`
 //!   `profiles/rv64gc-lab-v0/guests/dir-runoff.s`  `384fe5d7f276e5b2ded2173cec8e880577128d161cdbda046f0c304a104dc8e4`
-//!   `profiles/rv64gc-lab-v0/guests/dir-selfmod-fence.expected.sexp`  `1f495af021278ce85cd3c8c1f195fe67d11907dd2515e7238b5015e13513cd77`
+//!   `profiles/rv64gc-lab-v0/guests/dir-selfmod-fence.expected.sexp`  `7d681c67a30ab5b25f3e7eca65a7f6d71a6d8dd0665dd72d77980f206d13cd08`
 //!   `profiles/rv64gc-lab-v0/guests/dir-selfmod-fence.s`  `15f6684165d656d8af857cfcdece9a873c919f165ef979ee2c1909863df49a3e`
 //!   `profiles/rv64gc-lab-v0/guests/dir-x0-writes.expected.sexp`  `99ef2f9d93df14929678aa8b82f9c728158c82a59f14bee3bc7a3ad281624c5f`
 //!   `profiles/rv64gc-lab-v0/guests/dir-x0-writes.s`  `2daf04a0f2f0f3b7141b42e228d673c6594fe32817a94069b846054ae78c308c`
@@ -78,7 +78,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/fault-ld-x0-mis.s`  `b144786699c73dd2360ea28f5eafdc10678b9ebb012c579bc6ad0111548d4d2c`
 //!   `profiles/rv64gc-lab-v0/guests/fault-reserved.expected.sexp`  `47caf3d332c4668e80949523e52ec98e687c79bfc3ac7900c4c9d8d2b2d18ebc`
 //!   `profiles/rv64gc-lab-v0/guests/fault-reserved.s`  `65bf2c9805b77047f0c599a9d48af11d1c7e33ef061a0aea028df4684d67f01e`
-//!   `profiles/rv64gc-lab-v0/guests/fault-selfmod.expected.sexp`  `1c68412cb5eea6d1e48edfd187a3d51043b04e8bcf1470e09753ac57917a1108`
+//!   `profiles/rv64gc-lab-v0/guests/fault-selfmod.expected.sexp`  `343244fbafd8982d25349509e06a9945993b2decdbf8bf41a134727844fcc6e9`
 //!   `profiles/rv64gc-lab-v0/guests/fault-selfmod.s`  `9cbd4bffa445e2adc3975ffd8fe6880c98156be3013e6b665ca0876c08163d04`
 //!   `profiles/rv64gc-lab-v0/guests/fault-shiftw-res.expected.sexp`  `9659ef1277e9bb0a64b19a7f31f0927749f71fd7a1800d9a8c2583ea1eab1f36`
 //!   `profiles/rv64gc-lab-v0/guests/fault-shiftw-res.s`  `9129c4d9559648ea63e6aa21da18b3cb98514ced7f789c50896da54e6f1f9855`
@@ -88,6 +88,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/fault-st-mis-h.s`  `5ade62462a835877d09c9541f94069f47444ac65734f153d3d15b4d5a982e003`
 //!   `profiles/rv64gc-lab-v0/guests/fault-st-mis-w.expected.sexp`  `4a438ca7ea4a4e5151bd4b03cd426051c7d732889eda849d568794f88c7e019f`
 //!   `profiles/rv64gc-lab-v0/guests/fault-st-mis-w.s`  `a8e4b686e75bb63e187852063bf609bd7922dcca6f4bb15c3d99201cbda7dabe`
+//!   `profiles/rv64gc-lab-v0/guests/fencei-reserved.expected.sexp`  `7ce7e287b31c125daac947a920608a36c85e0ec1083ae01ffaa91a32bc69a5cd`
+//!   `profiles/rv64gc-lab-v0/guests/fencei-reserved.s`  `a184809b88d96cef43b841f9eb2853575cb5c2f32294f0d4fe69168fe48320a2`
+//!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.expected.sexp`  `43cb3e21ccf6ec0e6a34da37ca0d3c9c6978cea25471c3f767f4da866ecc319f`
+//!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.s`  `39ef7e47eaf77ebb13c56ef469abb2cde318a84e533d2d1554cf6894ad430a3d`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.expected.sexp`  `4caae2a18515bc4b479ca810df3edd2d23c534f19b8cb9afc081a97cb48485ac`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.s`  `497f63c79cd8e25918d845d5cc7d3430566b2f504a31cd33b2deb572f94694e6`
 //!   `profiles/rv64gc-lab-v0/guests/guest-no-device.expected.sexp`  `2be4382d503c302ed52b68335f6b52a4b8848aa80bfca4b96f503666305336b7`
@@ -114,7 +118,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/it-fault-wrap-ld.s`  `8a33575014793c4f23d8ce6e6e48f3eb3f2e833a2f5026d4d426627d33ece0e5`
 //!   `profiles/rv64gc-lab-v0/guests/it-fault-wrap-sd.expected.sexp`  `c129b45cc8aa897533dcd2921bf92617f8acccce92a55001181a53c2051da5d4`
 //!   `profiles/rv64gc-lab-v0/guests/it-fault-wrap-sd.s`  `b84984b4f170336c92639fe40336141a6fff6951024dad8df94c460b670aff9f`
-//!   `profiles/rv64gc-lab-v0/guests/it-fencei.expected.sexp`  `3ce55f7ba7d79922854f3e0b95b77d8da2e59483c96f28d4f7cbbb6aa7bd45cc`
+//!   `profiles/rv64gc-lab-v0/guests/it-fencei.expected.sexp`  `e67c5cec283fdace7720b7bf0da13a156d8f205ac6ae9ce647f5bfe0cd415393`
 //!   `profiles/rv64gc-lab-v0/guests/it-fencei.s`  `44471db1f1454d90484e182fe083101c9e9357e829e1c39a37c8536d496cbda5`
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-jump.expected.sexp`  `610945e8b1bda02d20b60e8bc0322d175edf13a7d5423fccc7ed013664ebf3b8`
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-jump.s`  `5c4c0442f763a484321617598885dc49c534505b60eada2a0499c930414a2206`
@@ -122,7 +126,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-load.s`  `ad39fe5f0a602818f486e66ea50ac30be9fc8975da300250b10d050eebd7a05a`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.expected.sexp`  `8318bacf7fb31c2c5f9df96b80c5d93cd19a7fd9af8244d3b9d50cf5f2c9b955`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.s`  `98f034a39a435a823b639d7655b7213f591e30e6c166310626988973883a0f3f`
-//!   `profiles/rv64gc-lab-v0/guests/min-fencei.expected.sexp`  `396857246a741980100f75c2bd0bd4a3348e189530fbd6e965bd63c67bf8fe25`
+//!   `profiles/rv64gc-lab-v0/guests/min-fencei.expected.sexp`  `18765df9db0dd31070032638d6816468173fa7cdfd1cf4fcc973876d7cc40961`
 //!   `profiles/rv64gc-lab-v0/guests/min-fencei.s`  `0ee8c70ba9954b831817b732dd8e73e6219b019a74c88aff50327d14917b310f`
 //!   `profiles/rv64gc-lab-v0/guests/mm-counters.expected.sexp`  `bfde5f07c24a9c6feb3e95239f2448805654c496329de56e7b50170d5a47e92f`
 //!   `profiles/rv64gc-lab-v0/guests/mm-counters.s`  `01ee634e90f3725d763784ed91a24cfae974992fad85021abffafa7d08a14913`
@@ -1498,9 +1502,8 @@ static WORDS_IT_FENCEI: &[u32] = &[
 static EXPECTED_IT_FENCEI: &[Expectation] = &[
     Expectation { step: 0, writes: &[(1, 0x0000000000000001)] },
     Expectation { step: 1, writes: &[] },
+    Expectation { step: 2, writes: &[(2, 0x0000000000000007)] },
 ];
-#[rustfmt::skip]
-static NEVER_WRITTEN_IT_FENCEI: &[u8] = &[2];
 
 #[rustfmt::skip]
 static WORDS_DIR_RUNOFF: &[u32] = &[
@@ -13511,6 +13514,44 @@ static EXPECTED_W_TIMER: &[Expectation] = &[
 #[rustfmt::skip]
 static NEVER_WRITTEN_W_TIMER: &[u8] = &[28, 29];
 
+#[rustfmt::skip]
+static WORDS_FENCEI_RESERVED: &[u32] = &[
+    0x0011118F,
+    0x02A00493,
+];
+#[rustfmt::skip]
+static EXPECTED_FENCEI_RESERVED: &[Expectation] = &[
+    Expectation { step: 0, writes: &[] },
+    Expectation { step: 1, writes: &[(9, 0x000000000000002A)] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_FENCEI_RESERVED: &[u8] = &[28, 29];
+
+#[rustfmt::skip]
+static WORDS_FENCEI_SELFMOD: &[u32] = &[
+    0x007000B7,
+    0x11308093,
+    0x00000197,
+    0x0011A823,
+    0x0000100F,
+    0x00400213,
+    0x00200113,
+    0x00500293,
+];
+#[rustfmt::skip]
+static EXPECTED_FENCEI_SELFMOD: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000000700000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000000700113)] },
+    Expectation { step: 2, writes: &[(3, 0x0000000080000008)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[] },
+    Expectation { step: 5, writes: &[(4, 0x0000000000000004)] },
+    Expectation { step: 6, writes: &[(2, 0x0000000000000007)] },
+    Expectation { step: 7, writes: &[(5, 0x0000000000000005)] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_FENCEI_SELFMOD: &[u8] = &[28, 29];
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -13934,10 +13975,10 @@ pub static GUESTS: &[Guest] = &[
         name: "it-fencei",
         entry: 0x0000000080000000,
         words: WORDS_IT_FENCEI,
-        executed_steps: 2,
-        expected_fetches: 2,
+        executed_steps: 3,
+        expected_fetches: 3,
         expected: EXPECTED_IT_FENCEI,
-        never_written: NEVER_WRITTEN_IT_FENCEI,
+        never_written: &[],
         cross_model: true,
     },
     Guest {
@@ -14528,6 +14569,26 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 20,
         expected: EXPECTED_W_TIMER,
         never_written: NEVER_WRITTEN_W_TIMER,
+        cross_model: true,
+    },
+    Guest {
+        name: "fencei-reserved",
+        entry: 0x0000000080000000,
+        words: WORDS_FENCEI_RESERVED,
+        executed_steps: 2,
+        expected_fetches: 2,
+        expected: EXPECTED_FENCEI_RESERVED,
+        never_written: NEVER_WRITTEN_FENCEI_RESERVED,
+        cross_model: true,
+    },
+    Guest {
+        name: "fencei-selfmod",
+        entry: 0x0000000080000000,
+        words: WORDS_FENCEI_SELFMOD,
+        executed_steps: 8,
+        expected_fetches: 8,
+        expected: EXPECTED_FENCEI_SELFMOD,
+        never_written: NEVER_WRITTEN_FENCEI_SELFMOD,
         cross_model: true,
     },
 ];
