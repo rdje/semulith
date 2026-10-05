@@ -12,8 +12,8 @@
 ;; the deterministic SC policy (0 on success, 1 on failure, never spurious — decision 3,
 ;; laboratory authority); the AMO's store/AMO fault semantics (one translation, never a
 ;; load page fault — decision 5, RVP-SUPERVISOR); misaligned atomics taking the
-;; access-fault cause 7 (decision 6, reference-matched to the pinned override's declared
-;; PMAs). The failed SC's UNSPECIFIED translation side effects (§12.1.2) are DISCHARGED by
+;; access-fault family by kind — 5 for LR, 7 for SC/AMO (decision 6, reference-matched to
+;; the pinned override's declared PMAs and the exception table's kind mapping). The failed SC's UNSPECIFIED translation side effects (§12.1.2) are DISCHARGED by
 ;; the profile's Svade: the named side effect is the PTE D-bit update Svade replaces with a
 ;; fault, so no side effect can exist. aq/rl decode and order nothing observable at one
 ;; hart (decision 1) — no rule below mentions them. The op literal in each AMO rule is the

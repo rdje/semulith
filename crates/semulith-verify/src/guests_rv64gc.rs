@@ -16,7 +16,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-overlap.s`  `9e5110b0b0840b2ac354ecf4a04a47c74b849e7b6815022b88d705e80f52c400`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-sv39.expected.sexp`  `163712f25bf9c4a0ac4c96ffe5d71cc3842e9c2c679a8ce74363c2323ef921cf`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-sv39.s`  `e206eb63bcacfcdbcc64ae4a6b8a10d99fa0a4e7b4ebf02eb859fe9322fb334f`
-//!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.expected.sexp`  `e2e2bf3d3564c6fcdd7689b96c884b670faa6a6cb471e98e9c1003efaf68677e`
+//!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.expected.sexp`  `cb60dab101e92346e6e0ec2315b0882eccda01cd4c051c1f6a726e33ebe8ec76`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.s`  `7747d806d907d7b5cefde5c42ac392cf6dd3311cf0c3a57b144b890f66914178`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-illegal.expected.sexp`  `2fd2f43aad44f6da97a8d0c2bea805c4f3bcec748504a8327df883458b609185`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-illegal.s`  `06a21af22a864c488c0c25236e7cde03f1688776715f4d5e7f6565bd70819057`
@@ -12447,14 +12447,14 @@ static EXPECTED_A_LRSC_FAULT: &[Expectation] = &[
     Expectation { step: 8, writes: &[(6, 0x000000000000002A)] },
     Expectation { step: 9, writes: &[] },
     Expectation { step: 10, writes: &[] },
-    Expectation { step: 11, writes: &[(11, 0x0000000000000007)] },
+    Expectation { step: 11, writes: &[(11, 0x0000000000000005)] },
     Expectation { step: 12, writes: &[(12, 0x00000000800000FE)] },
     Expectation { step: 13, writes: &[(13, 0x0000000080000028)] },
     Expectation { step: 14, writes: &[(13, 0x000000008000002C)] },
     Expectation { step: 15, writes: &[] },
     Expectation { step: 16, writes: &[] },
     Expectation { step: 17, writes: &[] },
-    Expectation { step: 18, writes: &[] },
+    Expectation { step: 18, writes: &[(11, 0x0000000000000007)] },
     Expectation { step: 19, writes: &[] },
     Expectation { step: 20, writes: &[] },
     Expectation { step: 21, writes: &[(13, 0x0000000080000030)] },

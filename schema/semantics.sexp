@@ -39,10 +39,13 @@
 ;; invalidation event (another hart's store, a device write) cannot arise at harts=1
 ;; with no devices; the boundary vocabulary for an environment to DELIVER one is
 ;; P4-SYSTEM.9's contract item, never smuggled. Misaligned atomics take the
-;; ACCESS-FAULT cause (7): the spec offers misaligned-or-access-fault (§12.1.2,
-;; §12.1.4) and the laboratory's pinned override declares the atomic kinds AccessFault
-;; — the reference-matched policy (decision 6, laboratory authority), judged before
-;; translation (the P4-SYSTEM.3 decision-7 hand-off).
+;; ACCESS-FAULT family by kind (5 for LR, 7 for SC/AMO): the spec offers
+;; misaligned-or-access-fault (§12.1.2, §12.1.4) and the laboratory's pinned override
+;; declares the atomic kinds AccessFault (decision 6, laboratory authority) — within
+;; access-fault the cause follows RVP-MACHINE's exception table ("load and
+;; load-reserved instructions generate load exceptions, whereas store,
+;; store-conditional, and AMO instructions generate store/AMO exceptions"), judged
+;; before translation (the P4-SYSTEM.3 decision-7 hand-off).
 
 (schema (id "semantics"))
 

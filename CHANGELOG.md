@@ -1,5 +1,42 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0028 (leaf P4-SYSTEM.4, slice f) — the Sail matched experiment (11 AGREE + 1 named of 12); the leaf CLOSES
+
+- The matched experiment runs the 12-guest atomics corpus under Sail 0.14 with the
+  tracked override — validated unchanged (`--validate-config` rc=0; A supported
+  true, the region's AMOCASQ / RsrvEventual / `(amo|lrsc AccessFault)` all
+  re-measured present, the brief's pre-condition 7 confirmed by measurement, not
+  assumed). The 12 ELFs are built at exactly 0x8000_0000 by the tracked assembler
+  (a .word-only lowering + a PHDRS link — clang never parses the corpus's operand
+  syntax), and the comparison rides the corpus's own change-observation rule
+  against the EVD-05 expectations: **11 AGREE** (every LR/SC cell, the AMOs at
+  both widths with old-value rd sign-extended, the suffix cells, the translated
+  AMO faulting 15 never 13, the alias cell, the first-SC loop — Sail's SC proves
+  deterministic under RsrvEventual, exactly the declared never-spurious policy).
+- **1 NAMED DIVERGENCE** (the `.2` mm-wfi naming precedent): `a-lrsc-mustfail`'s
+  width cells — Sail's platform reservation matches a `.D` SC after a `.W` LR on
+  the physical ADDRESS alone (the externs take physaddrbits, no width), while the
+  laboratory's declared width-equal policy fails with code 1. Both are legal
+  under §12.1.2's latitude; the laboratory's is the declared, more-discriminating
+  rule (state.sexp, decision 3). The trace is quoted in the leaf.
+- The experiment also caught a REAL defect: the bind-day uniform-cause-7
+  misaligned policy is **illegal for LR** — Sail delivered the LOAD access-fault
+  cause 5 for a misaligned LR, and RVP-MACHINE's exception table says why ("load
+  and load-reserved instructions generate load exceptions"). The policy is now
+  kind-matched (LR → 5, SC/AMO → 7) in the engine arm, the schema contract, the
+  state.sexp policy text, and the D-ATOMIC-MISALIGN decision (amended with its
+  note; the REQ/OB mirrors verbatim-identical). Exactly ONE guest expectation was
+  re-derived (`a-lrsc-fault.expected.sexp`); the other 87 guests and the override
+  are untouched.
+- The LEAF CLOSES: single-core reservation behaviour is validated — atomic
+  widths, reservation semantics, failed conditional stores, overlap and
+  external-write cases — against EVD-05 expectations AND the differential; the
+  multicore memory model stays `MC-MULTICORE`'s (RVWMO §17.1.1–§17.1.1.4), never
+  smuggled. `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS
+  429 unchanged). `references.sexp` records the third experiment in
+  matched_scope. Next: `P4-SYSTEM.5` — interrupts, counters and wait, its
+  design brief first.
+
 ## SEMULITH-P4-0027 (leaf P4-SYSTEM.4, slice e) — THE BIND: the unit composes `riscv/a` (87 forms, 88 guests, the arms tracked)
 
 - One green commit makes the A extension real in the tracked unit, the `.2` flip's
@@ -815,26 +852,4 @@
   cargo-home crate fixtures (inputs) kept by standing policy. `docs/ARTIFACT_CLEANUP.md`
   overwritten with the dated one-line record; `target` 3.9 G, `.app-data` 1.4 G,
   unchanged.
-
-## SEMULITH-P4-0002 (leaf P4-SYSTEM.1) — the profile resolved: rv64gc-lab-v0, every element source-located; the profile-resolution vehicle route
-
-- The Linux-capable profile is selected and recorded as data: `profiles/rv64gc-lab-v0/`
-  carries the resolution — RV64I + M/A/F/D/C + Zicntr + Zicsr + Zifencei (+ Sstc
-  privileged), M/S/U modes, Sv39, IALIGN 16 with C, one hart, the 33-CSR committed
-  minimum, LP64D ABI, SBI 2.0 as the P6 firmware contract. 18 decisions, each mirrored
-  verbatim into a requirement and a contract obligation (`rv64gc-lab-env-v0` v0), every
-  element with its source locator. The pinned v20260120 snapshot was measured to CARRY
-  the privileged chapters (24 priv/ + 46 unpriv/ pages, 21/21 pins re-hashed against
-  the tracked SHA256SUMS); the 2026-09-27 census's "privileged volume absent" phrasing
-  is superseded. The closure is measured (G = IMAFDZicsr_Zifencei; D⇒F; F⇒Zicsr;
-  C⇒Zca+Zcd at RV64). FP is in the profile; its model evidence is gated on `.7`'s
-  backend qualification. The unit is deliberately unregistered.
-- The machinery gained the `profile-resolution` vehicle route by declaration (the .2
-  discipline): EXTRACTION / EXERCISE-COVERAGE / INTERACTION-MATRIX honor it, a
-  definition-pipeline document beside the declaration is RED (self-tests 11/11, 21/21,
-  15/15). check_citations.py learned subdirectory `file` fields and named non-snapshot
-  skips; gen_platform.py's ISA derivation fixed to the canonical order. FACT-OWNERSHIP
-  +4 rows (61 kinds), the obligations fixture re-pinned to six units.
-- Validation: `make gate` green (DERIVED-COUNTS 376→383 arms re-derived);
-  check_citations 52/52 for both RISC-V units offline; RECORD-SCHEMA 18 record files.
 

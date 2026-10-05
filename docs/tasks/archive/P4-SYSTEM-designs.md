@@ -1,12 +1,12 @@
 # P4-SYSTEM — archived completed-leaf designs
 
 The recorded-before-execution design briefs of the completed leaves of the
-[`P4-SYSTEM`](../P4-SYSTEM.md) tree — `.3` (Sv39 translation and protection), `.2`
-(privilege and mode transitions) and `.1` (the profile resolution) — split from the
-live file on `2026-10-04`: `.2` and `.1` at its sixth per-part ceiling crossing, `.3`
-at its seventh (the ceiling was obeyed, not raised — the `P2-SCALAR-designs`
-precedent). The checklists live in `P4-SYSTEM.md` beside this
-file. Archived design sections, verbatim:
+[`P4-SYSTEM`](../P4-SYSTEM.md) tree — `.4` (atomics and reservations), `.3` (Sv39
+translation and protection), `.2` (privilege and mode transitions) and `.1` (the
+profile resolution) — split from the live file: `.2` and `.1` at its sixth per-part
+ceiling crossing, `.3` at its seventh, `.4` at its thirteenth (the ceiling was
+obeyed, not raised — the `P2-SCALAR-designs` precedent). The checklists live in
+`P4-SYSTEM.md` beside this file. Archived design sections, verbatim:
 
 - `2026-10-03` (design brief for `.2`, recorded before its execution; sources: the
   resolved unit dossier `profiles/rv64gc-lab-v0/` re-read in full this day; the pinned
@@ -376,4 +376,217 @@ was obeyed, not raised. What follows is the verbatim text of the decision entry.
   constraints (`.4`); contract v1's formal wording (`.9`); Svnapot/Svpbmt/Svadu/
   Sv48/Sv57 (unselected, named); PMP (D-NO-PMP); the hypervisor extension (D-NO-H);
   registration.
+
+
+
+---
+
+(archived verbatim from `docs/tasks/P4-SYSTEM.md` at that file's thirteenth
+per-part ceiling crossing, `2026-10-05` — the `.4` design brief, its leaf closed
+the same day; the ceiling was obeyed, not raised. What follows is the verbatim
+text of the decision entry.)
+
+- `2026-10-04` (design brief for `.4`, recorded before its execution; sources: the pinned
+  A and memory-model chapters re-read (`.materials/riscv/pinned-v20260120/unpriv/
+  a-st-ext.html` §12.1.1–§12.1.4 — 39 norm anchors — Version 2.1 measured from the page
+  title; `unpriv/rvwmo.html` §17.1–§17.1.3 incl. Tables 6/7 — Version 2.0; `priv/
+  machine.html` §2.1.6.3–§2.1.6.4 the atomicity PMAs and the exception table; `priv/
+  supervisor.html` the AMO fault rules); the unit measured in tree (`encoding.sexp:14`
+  the declared slot, `profile.sexp:29` the 65-form scope, `state.sexp:640-641` the
+  pre-declared reservation candidate, `references.sexp:84-92` the pins, `override.sexp:6`
+  the Sail platform attributes); Sail 0.14's A implementation measured in
+  `target/refs/sail-riscv-src/model/extensions/A/` + `sys/sys_reservation.sail` +
+  `sys/sys_control.sail`; two explore-agent censuses (the C16/A-extension scope against
+  the pinned chapters; the machinery deltas) — the reports are conversation-only, every
+  load-bearing fact below re-measured by the signing engineer, including one census
+  claim measured FALSE and corrected at pre-condition 7):
+  **The measured pre-conditions.** (1) **The slot is declared, the fragment absent**:
+  `encoding.sexp:14` `(slot (id a) (requires "riscv/a"))` under `(status partial)`;
+  `definitions/riscv/` holds no `a.sexp`/`a.sem.sexp` (census: `ls definitions/riscv/` —
+  9 files; M is the same shape of hole: `m.sexp` landed, `m.sem.sexp` is its own
+  evidence leaf's); `gen_fragments.py:46-88`'s FRAGMENTS tuple has 5 entries, no A. The
+  scope census is 65 forms with A contributing 0 (`profile.sexp:29`; D-SCOPE-CENSUS:
+  the declared scope grows only with the fragment). (2) **The encoding tables are not
+  pinned**: `references.sexp:85-92` pins 8 files with `rv_a`/`rv64_a` absent by the
+  stated policy ("pinning a table nothing derives from would invite a reader to believe
+  it is used", :84; census: `grep -n 'rv_a\|rv64_a' references.sexp` rc=1); the fetch
+  route maps `rv_*` names to `extensions/<name>` (`fetch_references.sh:175-179`, the
+  `2026-10-03` upstream move). The pinned A chapter carries NO encodings — the format
+  diagrams are images (the rv64i dossier's measured finding); the pinned RVWMO Tables
+  6/7 (`rvwmo.html` §17.1.3) enumerate exactly the 22 forms (11 `.W` + 11 `.D`) that
+  upstream `rv_a`/`rv64_a` row-list, so the pin corroborates rather than surprises.
+  (3) **The assembler cannot express an A form**: the whitelists carry no
+  `aqrl`/`aq`/`rl` (`riscv_asm.py:68-74`), the mnemonic token is looked up whole so
+  `lr.w.aq` misses (`riscv_asm.py:589-601`), and the `lr.w rd, (rs1)` /
+  `sc.w rd, rs2, (rs1)` parenthesized-address spelling has no operand-shape special
+  case. The pinned `arg_lut.csv` already carries the positions (`"aqrl",26,25`,
+  `"aq",26,26`, `"rl",25,25`, `"amoop",31,27`) — derived, never typed; no re-pin of it.
+  (4) **The semantics language has no atomic operator, and a tree decomposition is
+  wrong on the fault cause**: the memory operators are exactly `(load width signed?
+  addr)` and `(store width addr value)` (`schema/semantics.sexp:71-72`); the boundary
+  vocabulary is `Request::{Fetch, Load, Store, WalkAccess}` (`env.rs:67-103`) — no
+  atomic kind; no operator sets, matches, or cancels a reservation. An AMO decomposed
+  as `seq(load, op, store)` is expressible but delivers cause 13 where the architecture
+  demands a store/AMO cause: "AMOs never raise load page-fault exceptions … attempting
+  to perform an AMO on an unreadable page always raises a store page-fault exception"
+  (`supervisor.html`); "load and load-reserved instructions generate load exceptions,
+  whereas store, store-conditional, and AMO instructions generate store/AMO exceptions"
+  (`machine.html`). (5) **The reservation is pre-declared but ungated**:
+  `state.sexp:640-641` declares the "reservation set (LR/SC)" candidate `present true`
+  with `.4` owning it ("recorded here so .4 cannot smuggle it in silently");
+  `gen_state.py:472-481`'s census gate fires only on the TLB candidate — the
+  reservation's emit path (field + reset + accessor, the TLB precedent at
+  `gen_state.py:540,560,702`) is this leaf's to build. (6) **The spec's single-hart
+  surface is exact** (the a-st-ext re-read, every phrase located): any SC invalidates
+  the reservation, success or failure ("Regardless of success or failure, executing an
+  SC.W instruction invalidates any reservation held by this hart", §12.1.2); an SC
+  pairs only with the most recent LR in program order (§12.1.2); the must-fails that
+  can fire at one hart are the address-not-in-reservation-set and the intervening-SC
+  cases — the other-hart-store and device-write must-fails are vacuous at harts=1 and
+  are the environment's inputs when they exist (the `CPU_ENVIRONMENT.md` §2 row,
+  verified: "Report external invalidation events required by the selected contract");
+  failure writes a nonzero code to rd (value 1 = unspecified failure; "Portable
+  software should only assume the failure code will be non-zero"), writes no memory,
+  and "does not give rise to any memory operations" (RVWMO §17.1.1.1); success writes
+  0 to rd. The constrained loop is at most 16 sequential instructions of the base-I
+  subset (Zca/Zcb permitted), same address and size, and the eventuality guarantee is
+  on the EXECUTION ENVIRONMENT (§12.1.3) — "Implementations are permitted to
+  unconditionally fail any unconstrained LR/SC sequence." Misalignment raises "an
+  address-misaligned exception or an access-fault exception" — the implementation's
+  choice (§12.1.2, §12.1.4; causes 6/7, `machine.html`'s exception table), its priority
+  against page/access faults implementation-defined (the `.3` decision-7 precedent
+  already pins misaligned-first). The failed-SC UNSPECIFIED translation side effects
+  (§12.1.2) are DISCHARGED by the profile's Svade: the named side effect is the D-bit
+  update Svade replaces with a fault — no side effect can exist. (7) **Sail 0.14's
+  reservation is four platform externs** (`sys_reservation.sail:20-23`: load/match/
+  cancel/valid, taking `physaddrbits` — physical-address keyed), cancelled at exactly
+  two call sites (census: `grep -rn cancel_reservation model/ --include='*.sail'`):
+  every SC (`zalrsc_insts.sail:76`) and reset (`sys_control.sail:448`, "For
+  implementations with the "A" standard extension, there is no valid load
+  reservation"). The explore census's "cancelled on privilege transitions" is measured
+  FALSE for 0.14 — the header comment's aspiration is not the code. The override needs
+  NO change: A is `supported true` (Zaamo/Zalrsc `false` is Sail's internal naming; A
+  enables them), and the memory region already declares `atomic_support "AMOCASQ"`,
+  `reservability "RsrvEventual"`, misaligned `(amo "AccessFault") (lrsc "AccessFault")`
+  (`override.sexp:6`). (8) **C16's disposition is rv64i's row**: no rv64gc section
+  exists in `materials/category-needs.sexp` (census: `grep -n rv64gc` rc=1 over the
+  file); the rv64i row routes the memory-consistency closure wholesale to MC-MULTICORE.
+  `.4` SPLITS C16 — the single-hart reservation semantics land here; everything whose
+  truth needs ≥2 observers (the global memory order, PPO rules 5–7, RCsc/RCpc effects,
+  the Atomicity Axiom's other-hart clause, Ztso; locators `rvwmo.html` §17.1.1–
+  §17.1.1.4, every aq/rl effect defined "as viewed by other RISC-V harts" §12.1.1)
+  stays MC-MULTICORE's, as D-RVWMO (`profile.sexp:47`) already records. The rv64gc C16
+  disposition lands at registration day (the `.1` precedent — the unit is deliberately
+  unregistered).
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **Scope: the A fragment is Zaamo + Zalrsc's 22 forms** — the chapter's own
+     composition ("The A extension comprises instructions provided by the Zaamo and
+     Zalrsc extensions", §12.1): LR/SC and the nine AMOs, each `.W` and `.D` (RVWMO
+     Tables 6/7 the pinned enumeration; `rv_a`/`rv64_a` the encoding source, pinned
+     through the `extensions/` route). The scope census grows 65 → 87 by the mandated
+     dual edit at the bind, not before (D-SCOPE-CENSUS). aq/rl DECODE but order nothing
+     observable at one hart — every effect is defined "as viewed by other RISC-V
+     harts" (§12.1.1); all four aq/rl combinations assemble and execute identically,
+     including the software-discouraged ones (the "Software should not" of §12.1.2 is
+     a software rule, not a decode illegality — execution measures the wording).
+  2. **The reservation is exact, minimal hart state**: one reservation = (physical
+     address, width, valid) of the most recent LR — the reservation SET is exactly the
+     accessed word's/doubleword's bytes, the minimal conformant set ("An implementation
+     can register an arbitrarily large reservation set … provided [it] includes all
+     bytes of the addressed data word or doubleword", §12.1.2; the TLB's
+     minimal-fully-specified precedent). Keyed on the PHYSICAL address (the Sail
+     precedent; the aliasing latitude — "allowed to succeed … using an alias … also
+     allowed to fail" — resolved to exact physical match, laboratory authority).
+  3. **The deterministic SC policy is DATA**: SC succeeds iff reservation valid ∧
+     physical address equal ∧ width equal, writing rs2's value and rd←0; otherwise it
+     fails with rd←1 (the "unspecified failure" code), writing nothing. It NEVER
+     spuriously fails — one legal point of the architectural nondeterminism, picked so
+     the exact-value expectations stay derivable (EVD-05 + the declared policy);
+     authority laboratory, stated in the state document beside the reservation. Under
+     it, a constrained loop at one hart succeeds on its FIRST SC — the eventuality
+     guarantee's degenerate one-hart form, recorded; the environment-fairness wording
+     is `.9`'s contract (the `CPU_ENVIRONMENT.md` §3 "eventually" rule cited).
+  4. **Invalidation is exactly the spec's set at one hart**: any LR replaces; any SC
+     (success or failure, any address) clears; nothing else — a trap does NOT
+     invalidate (the spec gives no such rule; §12.1.3's trap is only a loop-exit
+     event), and the context-switch guidance ("a store-conditional instruction to a
+     scratch word … during a preemptive context switch") is SOFTWARE's duty, not
+     machinery. The external-invalidation event (another hart's store, a device write)
+     cannot arise at harts=1 with no devices: the CPU-side RULE (an invalidated
+     reservation fails its SC) is validated at the module level by direct
+     invalidation; the boundary vocabulary for an environment to DELIVER such an event
+     is `.9`'s contract item (the `.3` contract-wording routing), never smuggled.
+     Sail 0.14's exact two cancellation points (every SC, reset — pre-condition 7)
+     match this set at one hart.
+  5. **AMOs lower as one new operator with store/AMO fault semantics** — NOT a
+     `seq(load, op, store)` tree: the decomposition is expressible but delivers the
+     wrong fault cause (pre-condition 4). The operator carries the closed nine
+     operations; it translates ONCE under the store/AMO rules (never a load page
+     fault; an unreadable page faults 15), reads the old value, computes, writes, and
+     sets rd to the old value (`.W` sign-extended) — one instruction, the `.8`
+     candidate's discipline ("every instruction completes or faults as a unit"). The
+     boundary crossing is a load followed by a store to the same address (Sail's own
+     write_ea→read→write_value shape); a new `Request::Atomic` variant was weighed and
+     rejected: it would push the nine operations' semantics into the environment — the
+     wrong layer — and at one hart the pair IS the single operation of RVWMO
+     §17.1.1.1. LR/SC get their own operators (`load-reserved`;
+     `store-conditional` yielding the code for rd) — the `tlb-invalidate` precedent
+     for an operator's full pipeline path (schema → sem file → gen_definition → Sem
+     variant → evaluator arm).
+  6. **Misaligned atomics take the access-fault cause (7), matching the pinned
+     reference**: the spec offers misaligned-or-access-fault (§12.1.2/§12.1.4); the
+     laboratory's plain load/store policy is cause 4/6 (measured: `exec_rv64gc.rs`'s
+     Load arm delivers 4 before the boundary) but the tracked override's region
+     declares `(amo "AccessFault") (lrsc "AccessFault")` — choosing 7 for the atomic
+     kinds is equally legal and makes the matched experiment's misaligned cells AGREE
+     rather than recorded-divergent. Authority laboratory, reference-matched; the
+     alternative named in the decision record. The misaligned-before-translation
+     priority stands (the `.3` decision-7 hand-off; the fault-priority TOPIC stays
+     `.8`'s).
+  7. **The observation vocabulary is unchanged**: SC's code is an ordinary rd write;
+     an AMO's memory effect is observed by a later load (the bound-ext read-back
+     pattern); the reservation itself stays hidden by design (the census's candidate).
+     No expectations-schema change — the discipline that priced `.3`'s decision 1.
+  8. **The corpus families** (names at execution): `a-amo-*` — the nine operations ×
+     `.W`/`.D`, the sign-extension edges, min/max signed-vs-unsigned cells, rd=rs1/rs2
+     overlaps, the aq/rl suffixes executed; `a-lrsc-*` — the paired sequence
+     succeeding, the must-fails (SC to a different address; an intervening SC to any
+     address; LR replacing a reservation), the any-SC-clears case, a failed SC's
+     no-memory-write proven by read-back, a constrained loop terminating on the first
+     SC under the declared policy (decision 3's degenerate form); the misaligned cells
+     (cause 7) and the translated-AMO cells (an AMO on an unreadable Sv39 page → 15,
+     never 13) riding the `.3` machinery.
+  9. **No new matrix axis** (the `.3` precedent): the new guests ride the seven
+     existing axes — fault (the misaligned and translated-AMO cells), legality
+     (reserved encodings: LR with rs2≠0, reserved AMO funct values — execution
+     measures the tables), alias (rd=rs1=rs2), boundary (the `.W` sign-extension),
+     progress (LR/SC sequences), delegation (a translated AMO's page fault routed),
+     restart (a faulting atomic's xepc discipline).
+  10. **The landing is an ATOMIC BIND, the `.2` discipline**: binding the slot
+      (`(extensions "riscv/a")` replacing `(slot (id a) …)`) makes EXTRACTION and
+      EXERCISE-COVERAGE judge the 22 forms — encoding AND semantics AND requirement
+      AND execution, one green commit. Slices (a)–(d) build and prove in staging
+      (untracked `target/`, the `.2` precedent); the pins, fragment, assembler,
+      operators and reservation state land tracked-green BEFORE the bind exactly as
+      `m.sexp` and the TLB did (additive, no unit artifact judged).
+  11. **Execution slicing** (checkpoints inside the leaf, each committed with the
+      leaf id): (a) the `rv_a`/`rv64_a` re-pin + the `a.sexp` fragment (the FRAGMENTS
+      entry, the aqrl field ownership) + the assembler's A machinery (the field
+      whitelist, the `.aq`/`.rl` suffix rule, the `(rs1)` spelling); (b) `a.sem.sexp`
+      + the new operators through the schema/check/generator path; (c) the
+      reservation state (the census-candidate gate generalised, the emit, the
+      module) + the deterministic policy as data + the engine's AMO/LR/SC arms proven
+      in scratch; (d) the staged corpus + expectations + the matrix rehearsal; (e)
+      THE BIND: slot→extension, the 65→87 census dual edit, the requirement/
+      obligation growth, the generated mirrors, the corpus tracked, the matrix
+      cells — one green commit with the full gate suite; (f) the Sail matched
+      experiment + the reports and the book + the leaf acceptance.
+  **Not `.4`'s scope:** the multicore memory model (MC-MULTICORE, pre-condition 8's
+  locators); the external-invalidation boundary vocabulary and the eventuality/
+  fairness contract wording (`.9`); fault priority as a topic (`.8` — the
+  misaligned-first precedent stands); Zacas/Zawrs/Zabha and the other unselected
+  atomic extensions (named, pinned-not-selected); `m.sem.sexp` (M's own evidence
+  leaf); F/D/C/Zifencei (their leaves); the rv64gc C16 disposition (registration
+  day); registration; the gate.
 

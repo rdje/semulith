@@ -558,11 +558,13 @@ impl Frame<'_> {
                     return (0, 64);
                 };
                 if a % (w / 8) != 0 {
-                    // misaligned atomic: the declared policy is the access-fault cause 7
-                    // (P4-SYSTEM.4 decision 6, reference-matched to the override's
-                    // declared PMAs), judged before translation (the .3 decision-7
+                    // misaligned LR: the LOAD access-fault cause 5 — RVP-MACHINE's
+                    // exception table maps load-reserved to load exceptions ("load and
+                    // load-reserved instructions generate load exceptions"), and the
+                    // declared policy (decision 6, reference-matched) takes access-fault
+                    // over misaligned; judged before translation (the .3 decision-7
                     // hand-off) — and the trap clears nothing (decision 4)
-                    self.deliver(7, a);
+                    self.deliver(5, a);
                     return (0, 64);
                 }
                 // LR translates under the LOAD rules (RVP-MACHINE's exception table)

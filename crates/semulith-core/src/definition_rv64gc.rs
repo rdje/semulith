@@ -14,7 +14,7 @@
 //! any rule, and the interpreter slice (`P1-LAB.8`) evaluates exactly these trees.
 //!
 //! Canonical inputs (sha256):
-//!   `definitions/riscv/a.sem.sexp`  `fb57591fc3e511184e7285ab12890bd24a019b76e05b06b76e198a2d9bb32606`
+//!   `definitions/riscv/a.sem.sexp`  `929f7d11f11856e303460d4f4c9f5094314a8090ce7ce710efe83fb5dfb9c306`
 //!   `definitions/riscv/a.sexp`  `f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
@@ -25,7 +25,7 @@
 //!   `definitions/riscv/zicsr.sem.sexp`  `823278a9ab48c7f95005998d183e5127f76d6c8c276f70f74a58e4cf22b64975`
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e`
-//!   `profiles/rv64gc-lab-v0/state.sexp`  `a54f37b35c875f98a871ea1d68a0ba66a50981a68a07156a049a0bac4217d428`
+//!   `profiles/rv64gc-lab-v0/state.sexp`  `3cbc383daefba030c876fe8f4e039d2758a7741e42df2ac4004b31671801f2fe`
 //! Generator: `scripts/gen_definition.py` (sha256 `11244266f1e953d5d71243027dbf890c90853b129f0ade99e94f469e170757a9`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
@@ -83,7 +83,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     inputs: &[
         InputPin {
             path: "definitions/riscv/a.sem.sexp",
-            sha256: "fb57591fc3e511184e7285ab12890bd24a019b76e05b06b76e198a2d9bb32606",
+            sha256: "929f7d11f11856e303460d4f4c9f5094314a8090ce7ce710efe83fb5dfb9c306",
         },
         InputPin {
             path: "definitions/riscv/a.sexp",
@@ -127,7 +127,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
-            sha256: "a54f37b35c875f98a871ea1d68a0ba66a50981a68a07156a049a0bac4217d428",
+            sha256: "3cbc383daefba030c876fe8f4e039d2758a7741e42df2ac4004b31671801f2fe",
         },
     ],
     sources: &[

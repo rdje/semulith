@@ -1,5 +1,37 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the experiment that graded its own policy (P4-SYSTEM.4 slice f; the leaf closes)
+
+Execution of the `.4` brief's checkpoint (f) measured:
+
+- **"AccessFault" is a family, not a number.** Decision 6's reasoning — "the
+  override declares AccessFault for the atomic kinds, so uniform cause 7 makes
+  the cells AGREE" — measured FALSE the first time `a-lrsc-fault` ran under
+  Sail: a misaligned LR came back cause 5, and the exception table says why
+  ("load and load-reserved instructions generate load exceptions"). The offered
+  choice is misaligned (4/6) OR access-fault (5/7), and within access-fault the
+  cause follows the access kind. The bind-day uniform-7 was not a legal option
+  for LR at all — and the matched experiment is what caught it, exactly the job
+  it exists for. The policy is now kind-matched (LR → 5, SC/AMO → 7) everywhere
+  the policy is written down: the engine arm, the schema contract, the state
+  document, and the decision record with its verbatim mirrors (promotion:
+  declined — the durability is the machinery: the a-lrsc-fault guest and the
+  comparator re-run it).
+- **A declared policy and a platform extern can honestly disagree.** The width
+  cell was the leaf's flagged watch item from slice (c) onward, and it measured
+  exactly as flagged: Sail's reservation externs take physaddrbits and no width,
+  so `sc.d` after `lr.w` matches and stores; the laboratory's declared
+  width-equal policy fails with code 1. Both are legal under §12.1.2's latitude
+  — the spec's must-fails key on the reservation SET and implementations may
+  fail any unconstrained sequence. The verdict is a named divergence, not a
+  defect on either side, and the divergence's downstream is consequential (the
+  re-converging recovery pair is the corpus's own consistency proof).
+- **The flip condition outlived its slice.** The fetch leg's A exclusion,
+  written at slice (a) with the M precedent's shape, flipped on its own the
+  moment the census declared the A forms — 87 == 87 the day of the bind, no edit
+  needed. A check written against the future state it will judge is the
+  difference between a mechanism and a to-do list.
+
 ## _(2026-10-05)_ — the bind that fit in one commit, and the formatter that graded the manifest (P4-SYSTEM.4 slice e)
 
 Execution of the `.4` brief's checkpoint (e) — the atomic bind — measured:
@@ -634,38 +666,4 @@ Execution of the `.2` brief's checkpoint (d) measured:
 Promotion: declined — the digest cascade is machinery with its own gates, the arm fix is
 its own evidence, and the wall's reasoning has its decision record. Recorded in the owning
 leaf's checklist (LOCKSTEP).
-
-## _(2026-10-03)_ — one reset, one value: the composed-field cross-check fired on the document being written (P4-SYSTEM.2 slice c1)
-
-Execution of the `.2` brief's checkpoint (c) — split into (c1)/(c2), the seam recorded in
-the tree — measured:
-
-- **The staging problem is the design.** A state.sexp under `profiles/rv64gc-lab-v0/` is a
-  refused route contradiction until the flip, so the 33-CSR document is authored at
-  `target/p4-system-2/state.sexp` and validated from there — the gates that discover by
-  path were measured first (DOSSIER-SCHEMA scans `profiles/*/*.sexp`, PROFILE-CONSISTENCY
-  reads a sibling state.sexp, EXTRACTION the unit dir; none sees target/), and the
-  validations were given scratch-path forms (`check_sexp_schema.py` takes the path, the
-  new `--csr-cross` probe, `_state_resets` on the scratch dir).
-- **The house shape decides the nesting.** The schema kernel's form-field rule refused my
-  first draft's `(fields (field …) (field …))` and the 11-child `(candidates …)` wrapper
-  by name; the construct repeats bare `(field …)` under `(csr …)`, exactly the
-  `register_family` shape. The first draft also overlapped full-width `wpri_rest` rows
-  with named bits — an ambiguous legalization table; a coverage probe computed the true
-  gap sets.
-- **One reset, stated twice, must agree — mechanically.** gen_state composes a CSR's reset
-  from its per-field resets and cross-checks the csr-level declared value. It fired RED
-  *naturally*, on this very document: mstatus's composite is 0xA0000000 (UXL=2 | SXL=2),
-  not the hand-computed 0x300000000. The descriptor was wrong; the check named it; the
-  fix was re-derivation, and the self-test arm now keeps it repeatable.
-- **gen_state parameterizes, never forks** — the rv64i emission path is untouched (the
-  module re-derives byte-identical under the extended generator), and the rv64gc branch
-  validates by refusal (undeclared view, duplicate address, uncovered field bits, a
-  privileged construct under rv64i — each named) and emits to a scratch out until (c2)
-  wires the consumer. The csr name↔address ownership migration is deferred to the flip
-  with its probe recorded (33/33 exact against the pinned csrs.csv).
-
-Promotion: declined — the consistency rules are armed by self-test REDs (STATE-GEN 17,
-PROFILE-CONSISTENCY 44, EXTRACTION 9), and the natural RED is recorded in the leaf.
-Recorded in the owning leaf's checklist (LOCKSTEP).
 

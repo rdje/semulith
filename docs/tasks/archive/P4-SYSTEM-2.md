@@ -274,3 +274,60 @@ promotion: declined (the durability is the machinery — the change-comparison r
   `LIVE_STATUS.md` (unchanged), `docs/book/src/plan/p4.md` (the slice line). The
   bind's re-run commands are recorded in the changelog.
 
+
+
+`P4-SYSTEM.4` slice (e)'s checklist (completed `2026-10-05`,
+`SEMULITH-P4-0027`), split out on `2026-10-05` at the live file's twelfth
+ceiling firing (slice (f) landing):
+
+`P4-SYSTEM.4` slice (e) — THE BIND (`2026-10-05`, `SEMULITH-P4-0027`):
+
+- [x] **REPRODUCE / ISSUE** —
+
+  ```
+  $ grep -n 'slot (id a)' profiles/rv64gc-lab-v0/encoding.sexp
+  14:    (slot (id a) (requires "riscv/a")) — the staging proven, but A unbound, the
+  census 65, the 12 guests and the arms untracked
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the bind is decision 10. One measured
+  generator defect, fixed at root: rustfmt lays the five-fragment list out vertically
+  where the four-fragment one stayed inline (79 inline-clean, 90 broken) —
+  `gen_definition.py`'s emission was not rustfmt-stable past 80 chars and is now, by
+  construction (`cargo fmt --check` rc=0).
+
+- [x] **FIX** — one atomic commit: `encoding.sexp` (slot→extension); the census dual
+  edit (schema/profile.sexp + dossier_sexp._SCOPE_LISTS + the scope block 65→87 +
+  the PARTS family); REQ-GC-ATOMICS + three D-* mirror sets with CHK pairs;
+  `gen_definition.py` (+43-forms comment, +the fmt-stable emission) →
+  `definition_rv64gc.rs` (22 forms + 3 variants); the arms ported — the tracked
+  evaluator is BYTE-IDENTICAL to the scratch-proven copy; the 12 guests + run-order
+  tracked (88); `interactions.sexp` (the staged cells).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed — 88/88; the scratch proofs against the TRACKED build:
+  16/16, 88/88
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 / rv64i-lab-v0
+  MATCH encoding tables vs profile scope 87 == 87 (the exclusion flipped on its own)
+  / 52 == 52; owned fragments agree
+  $ cmp /tmp/p4s4e-traces-pre.txt /tmp/p4s4e-traces-post.txt
+  3,468 == 3,468, clean — BARE-IDENTITY: all 76 pre-bind guests byte-identical
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (8 groups); EXTRACTION 5,
+  EXERCISE-COVERAGE (87/87, 52/52), UNIT-COMPOSITION 3 (partial declared),
+  INTERACTION-MATRIX 5, RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5; `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 429); smoke-bench 53 arms, bench
+  wasm, both books.
+
+- [x] **LOCKSTEP** — same commit: this tree (slice (d)'s checklist archived at the
+  11th crossing), `MEMORY.md` (→ slice f), `CHANGELOG.md`, `DEV_NOTES.md` (the
+  fmt-stability measurement; the promotion decision:
+promotion: declined (the durability is the machinery — the rustfmt-stable emission is armed by cargo fmt --check inside make check, which the gate re-runs)),
+  `LIVE_STATUS.md` (the P4 row), `docs/book/src/plan/p4.md` + the book index.
+
+`P4-SYSTEM.4` slice (f) : pending — the Sail matched experiment + the leaf acceptance.
+
