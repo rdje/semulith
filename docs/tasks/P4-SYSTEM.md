@@ -134,7 +134,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: timer or interrupt wake occurs **without CPU retirement** — the laboratory must be able to make time pass while nothing executes.
 
 - ID: `P4-SYSTEM.6` — **instruction visibility and fence semantics**
-  Status: `pending`
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0034`)
   Goal: when newly written code must become executable, and when stale state may persist (catalog `C13`).
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
@@ -166,6 +166,118 @@ This gate authorises the planned next engineering stage: board implementation.
 | 1 | `P4-SYSTEM.6` | `pending` | instruction visibility and fence semantics — `.5` closed `2026-10-05` (the timer wake without CPU retirement evidenced; the Sail attempt 6 AGREE + 6 named of 12); the design brief lands first (the cadence) |
 
 ## Decisions
+
+- `2026-10-05` (design brief for `.6`, recorded before its execution; sources: the pinned
+  chapters re-read (`.materials/riscv/pinned-v20260120/unpriv/zifencei.html` — Version 2.0
+  measured from the page title; `unpriv/intro.html` the implicit-reads latitude;
+  `unpriv/rvwmo.html` §17.1); the unit measured in tree (`encoding.sexp:18` the slot;
+  `state.sexp:652-653` the fetch-cache candidate; the four selfmod/fencei guests;
+  `references.sexp` both profiles; `rv64i.sem.sexp:137-138` the fence nop); Sail 0.14's
+  FENCEI measured in `target/refs/sail-riscv-src/model/extensions/Zifencei/
+  zifencei_insts.sail:20-33` + an icache grep over `model/`; two explore-agent censuses
+  (the C13/Zifencei scope; the machinery deltas) — the reports are conversation-only,
+  every load-bearing fact below re-measured by the signing engineer):
+  **The measured pre-conditions.** (1) **The slot waits; the pin and fragment are
+  absent**: `(slot (id zifencei) (requires "riscv/zifencei"))` at `encoding.sexp:18`
+  (five slots remain after `.4`'s bind); no `definitions/riscv/zifencei.sexp`, no
+  FRAGMENTS entry (6 entries, `gen_fragments.py:46-99`), `rv_zifencei` pinned nowhere
+  and absent from `target/refs/riscv-opcodes/` (both censuses re-run); upstream
+  carries exactly one row (73 bytes) under the `extensions/` route. The SPEC side is
+  already pinned (`sources.sexp:49` RVI-ZIFENCEI 2.0). (2) **The engine is
+  always-coherent by construction**: fetch re-reads every step (`fixtures.rs:161-162`
+  — "Re-read every time: OB-CODE-VISIBILITY — a store to a later-fetched address is
+  visible to the next fetch immediately"); a store commits before StoreDone; no write
+  buffer; the TLB caches translations, never contents (`translation.rs:62-87`). The
+  census candidate "instruction-fetch cache state" is `present false`
+  (`state.sexp:652-653`) — but its why is rv64i's verbatim recording and says
+  "without Zifencei", FALSE for this declaring unit the moment the slot binds.
+  (3) **fence.i is a nop on both sides of the differential**: the base fence is a
+  declared nop (`rv64i.sem.sexp:137-138`, D-FENCE); Sail's FENCEI execute is
+  `sail_barrier` + "fence.i is a nop for the memory model"
+  (`zifencei_insts.sail:20-33`) with NO icache state anywhere in `model/` (grep
+  census); the tracked override already carries `Zifencei supported true` — the only
+  gap is the unbound slot on this side. (4) **The spec's contract is three sentences
+  and two latitudes** (the zifencei re-read, every phrase located): "RISC-V does not
+  guarantee that stores to instruction memory will be made visible to instruction
+  fetches on a RISC-V hart until that hart executes a FENCE.I instruction"; "A
+  FENCE.I instruction ensures that a subsequent instruction fetch … will see any
+  previous data stores already visible to the same RISC-V hart"; "A FENCE.I
+  instruction orders all explicit memory accesses that precede the FENCE.I in
+  program order before all instruction fetches that follow" — and "An instruction
+  fetch is always ordered before any explicit memory accesses that instruction gives
+  rise to." The latitudes: coherent caches or uncached RAM means "just the fetch
+  pipeline needs to be flushed at a FENCE.I" (a re-read-per-fetch machine has nothing
+  to flush); "base implementations shall ignore these fields [funct12, rs1, rd], and
+  standard software shall zero these fields". RVWMO §17.1 explicitly does NOT
+  formalize fetches/FENCE.I — no memory-model obligations to discharge. intro.html's
+  implicit-reads sentence is the sharpest stale-state form (a valid implementation
+  could "cache as many fetchable (executable) bytes as possible … and avoid reading
+  main memory for instruction fetches ever again") — the locator D-CODE-VISIBILITY
+  cites. (5) **The inherited obligations are named in the corpus**: it-fencei and
+  min-fencei's comment blocks pre-commit "the slot-binding leaf re-derives this file
+  to the legal fence.i when the slot binds" (both quoted); fault-selfmod (a rewrite
+  with NO synchronization) and dir-selfmod-fence (a rewrite behind the DATA fence —
+  which per decision 4's contract does NOT synchronize fetches) already execute;
+  DIFF-FENCEI-EXECUTED is rv64i's record, dropped for this unit at `.2` slice (g).
+  (6) **The vocabulary suffices, with one named limit**: visibility is observed
+  through the patched instruction's EFFECTS (fault-selfmod's step-5 x2←7) or a
+  trap's tval — the per-step insn text is not machine-asserted
+  (`run_rv64gc/tests.rs:22-31` compares order + writes); on an always-coherent
+  engine a with/without-fence.i pair cannot differ observably beyond fence.i's
+  decode legality itself.
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **The bind is the `.4` checklist miniaturized to one form**: pin `rv_zifencei`
+     through the `extensions/` route; the FRAGMENTS entry → generated
+     `zifencei.sexp` (owns NO fields — imm12/rs1/rd are the base's; requires
+     `riscv/rv64i`; funct3=1 against fence's 0); a hand-written `zifencei.sem.sexp`
+     with `(effect (nop))` and the shall-ignore rule cited; slot→extension with the
+     mandated census dual edit 87→88 (a one-form `zifencei_*` family); gen_definition
+     regenerates (no new Sem variant — the existing nop); the fetch-leg census flips
+     on its own (88==88); no new operators, no new state, no assembler shapes (the
+     zero-operand ecall/ebreak precedent).
+  2. **fence.i's effect is the declared nop — the honest landing, not a shortcut**:
+     the coherent/uncached-RAM latitude (pre-condition 4) sanctions it; Sail lands
+     identically ("a nop for the memory model"), so the matched experiment can AGREE
+     rather than recorded-diverge. Weighed and rejected: modelling a caching hart so
+     staleness becomes executable — it contradicts the `present false` census to
+     demonstrate a machine this unit is not; the acceptance's "when stale state MAY
+     persist" half is a LATITUDE, pinned by declaration with the intro.html sentence,
+     not by a fixture.
+  3. **The acceptance pair**: WITH synchronization — a new rewrite-code guest
+     carrying fence.i between the store and the fetch (the architectural
+     synchronization executed and legal; the patched instruction observed through
+     its effects, derivation EVD-05); WITHOUT — the existing fault-selfmod stays,
+     its derivation naming D-CODE-VISIBILITY (immediate visibility is the
+     laboratory's declared choice, a legal subset of the spec's may-or-may-not).
+     dir-selfmod-fence is measured at execution: if its comments read the data fence
+     as the synchronization, they are corrected to the spec's contract (fence ≠
+     fence.i) in the same commit — no stale comments.
+  4. **it-fencei/min-fencei re-derive to the legal fence.i** (their comments
+     pre-commit it): the word retires as a nop; this unit records NO DIFF
+     counterpart (both sides execute it legally — `references.sexp` stays
+     difference-free, measured).
+  5. **The reserved-fields cell**: a `.word` probe with nonzero funct12/rs1/rd
+     executes (the shall-ignore rule); the assembler accepts the zero-operand
+     `fence.i` spelling (standard software zeroes).
+  6. **The census re-answer**: the fetch-cache candidate's why drops the rv64i
+     "without Zifencei" clause — Zifencei is declared and now bound; the re-read
+     choice stays laboratory policy, and FENCE.I's nop is the unit's sanctioned
+     implementation of the synchronization (the `.4` reservation-candidate
+     precedent: re-answered in place, the consequence line unchanged).
+  7. **Execution slicing** (checkpoints inside the leaf, each committed with the
+     leaf id): (a) the re-pin + the fragment + `zifencei.sem.sexp` + the assembler
+     acceptance (the slot stays declared); (b) THE BIND: slot→extension, 87→88,
+     the re-derived fencei guests, the reserved-fields probe, the acceptance pair,
+     the matrix cells, the identity proof for the 97 untouched guests; (c) the
+     Sail matched experiment + the census re-answer + the reports and the book +
+     the leaf acceptance.
+  **Not `.6`'s scope:** a caching-hart model (decision 2, rejected); the rv64gc C13
+  disposition (registration day — no rv64gc section exists in `category-needs.sexp`);
+  fence.tso/pause pseudo spellings (D-FENCE's numeric-spelling precedent stands);
+  RVWMO's fetch formalization (the spec itself defers it); Zicbom/Zicboz cache-block
+  operations (unselected, named); the m/f/d/c slots (their leaves); the hypervisor
+  (D-NO-H); registration; the gate.
 
 - `2026-10-05` (design brief for `.5`, recorded before its execution; sources: the pinned
   chapters re-read (`.materials/riscv/pinned-v20260120/priv/machine.html` §2.1.1.6.1,
@@ -513,17 +625,13 @@ promotion: declined (the durability is the machinery — the corpus verdicts are
 
 ## Verification Log
 
-The rows for leaves `.1` and `.2` (closed `2026-10-03`) live verbatim in
-[`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — moved at this file's fourteenth
-per-part ceiling crossing (`2026-10-05`, the `.5` design brief landing; the ceiling was
-obeyed, not raised). The closed `.4` and `.3` leaves' rows joined them at the sixteenth and seventeenth crossings (the `.5` slice-(c)/(d) landings). Only the active `.5` leaf's rows stay inline below.
+Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
+`.1` and `.2` (14th crossing), `.4` and `.3` (16th/17th), `.5` (18th — `2026-10-05`, the
+`.6` design brief landing). The ceiling was obeyed, never raised; only the ACTIVE
+leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| `2026-10-05` | `.5` slice (d) + LEAF | the override measured first (materialized fresh from the tracked .sexp — unchanged since bfa6aaa; validate-config rc=0, NO change needed); the 13 ELFs at exactly 0x8000_0000 (.word-only + PHDRS, the tracked assembler owning the bytes); the row-keyed comparator with the delivery-step convention MEASURED (sail numbers the interrupt-delivery step and prints no row — i-accept's [9]→[11] jump, the .3 fetch-fault convention's own shape); the experiment (6 AGREE + 6 NAMED of 12 — the six named all platform-shaped: sail's timer block gated on plat_have_clint so STIP never sets (i-prio step 24 sail x13=2 vs 34, i-timer step 3 sail x7=0 vs 32), sail's wfi a nop under the matched platform so the halt has no counterpart (w-deleg 12 / w-notrap 6 / w-timer 11 / mm-wfi 9 — 'sail printed a row for the `<halted>` step'), and probe-tw DIVERGE under the matched config (sail never judges TW — the judgment lives only in the wait-exit path the nop never reaches) but AGREE 30/30 under the wfi-wait variant with the delivered trap identical — cause 2, mepc = the wfi's pc, xtval = the wfi's word); the verdict-neutrality re-run (the .4 corpus under the fresh override reproduces 11 AGREE + 1 NAMED of 12 exactly); the matrix invocation (28 cells resolve) + the three RED legs fired by name on a scratch copy (ORPHAN GUEST / OMITTED CELL / UNKNOWN DIFFERENCE); references.sexp's fourth experiment recorded; the acceptance evidence quoted from the actual w-timer run (rdinstret=11 at the handler's first step; mcause=int\|5; mepc=wfi+4); `cargo test -p semulith-verify run_rv64gc` 4/4 (99/99); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5, smoke-bench 53 arms + bench wasm + both books | the LEAF CLOSES: the timer wake occurs WITHOUT CPU RETIREMENT (w-timer's own run quoted); masks, priority, pending/active state, nesting and return validated; the 64-bit domain's width and declared rate validated with the wrap position stated honestly; the mode gates stand; the matched attempt confirms the matchable cells and records every not-matchable with its measurement; frontier → `.6` |
-| `2026-10-05` | `.5` slice (c) | the pre-slice census (0 waiting/wake in the step; mm-wfi the ONLY wfi guest of the 95); §2.1.3.3's wake sentences measured verbatim (the delegation claim TRUE — the wake is exactly mip & mie; xepc = wfi+4 falls out of the generic delivery, the WFI retiring into the halt); the wait module 2/2 + the wake tests 2/2 (globals/mideleg ignored, the timer's arrival through the domain); the SEM-08 wait-state candidate with gen_state carrying the bit and the RED arm (the synthetic fixture + the present-false surgery); the 4 w-* guests + mm-wfi re-derived BEFORE any engine run (23/19/26/17/61 steps, 10 `<halted>` at fetches 0 — w-timer's rdinstret=11 the acceptance observed; mm-wfi's TW/U cells unchanged; the end_at text-collision caught and fixed at the guest); `cargo test -p semulith-verify run_rv64gc` 4/4 (99/99); the identity proof (94/95 byte-identical, mm-wfi the designed exception, worktree removed); the matrix (28 cells resolve, the family mapped); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429→430 re-derived) | slice (c) landed: the hart halts and time passes anyway — the timer wake occurs WITHOUT CPU RETIREMENT, the TW resolutions stand, only mm-wfi's trace moved |
-| `2026-10-05` | `.5` slice (b) | the pre-slice census (0 interrupt writes in all 88 guests — name and numeric form; 0 mip/sip/mie readers; mm-stimecmp stimecmp-only ⇒ the identity proof unconditional); the interrupts module 8/8 (the taken-rule per mode, the delegation mask, the priority walk, the delivery shape, both vector modes, the stack, the S view); the derivation tool hardened to the engine's field tables (mstatus reset 0xA0000000, sstatus/sie/sip views + per-field write legalization + the computed STIP, the CSR-privilege refusal, pc-keyed derivations, the (fetches N) convention) — the authoring model's own defects caught by execution and re-derived, never fitted (the tool's inverted trap-entry stack; i-accept's 8-byte-long mtvec delta; i-timer's retired-count clock; i-vector's SEIP-clear through read-only sip); the 7 i-* guests + EVD-05 expectations derived BEFORE any engine run (36/60/21/31/63/26/53 steps, 13 fetch-less deliveries); `cargo test -p semulith-verify run_rv64gc` 4/4 (95/95); the identity proof (88/88 traces cmp-clean against e37e664, worktree removed); the matrix (28 cells resolve, 7 mapped, no orphan); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged) | slice (b) landed: pending is evaluated at every step head and delivered honoring both vector modes — the corpus proves the taken-rule, the mask, the priorities, the timer, the vector arithmetic and the nesting stack; every pre-slice guest byte-identical |
-| `2026-10-05` | `.5` slice (a) | the pre-slice census (the counters frozen at 0; the full-88-guest read census — mm-counters the ONLY counter reader (7 reads), 0 mip/sip readers (the STIP-at-reset quirk and the ticking STIP unobservable today), mm-stimecmp clean of counter/mip/sip reads); the storage-shape decision (ONE domain — mcycle's storage, time a view, 'a valid implementation of RDTIME', §6.1; the duplicate row retired, FACT-OWNERSHIP); the LATENT view defect measured and fixed at root (a field-less view masked to 0 — the counters would have read 0 forever; a field-less view is now a full-width shadow); the timekeeping module 7/7 (advance per boundary, instret only on retired, cycle==time both read paths, the ticking STIP incl. the reset quirk, cold-reset determinism, the M-writable base, the ACCESS gates); mm-counters' 5 value cells re-derived BY DESIGN (0/1/2/25/51 — time at executed step k is k; the trap cells 13/39 untouched); `cargo test -p semulith-verify run_rv64gc` 4/4 (88/88); the identity proof (4,892 == 4,892 lines, cmp clean — 87 non-counter guests byte-identical, worktree removed); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged), STATE-GEN both pairs re-derived (CSR storage 33→32) | slice (a) landed: the declared virtual-time domain ticks one per step boundary (retired or halted), instret counts genuinely, the rate is state-document data, mm-counters re-derived, everyone else byte-identical |
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
