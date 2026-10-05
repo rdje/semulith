@@ -84,6 +84,22 @@ pub fn pending<H: PrivilegedHart>(hart: &H) -> Option<Pending> {
     None
 }
 
+/// The WFI wake evaluation (RVP-MACHINE §2.1.3.3 — `P4-SYSTEM.5` decision 4): resume
+/// on a LOCALLY-enabled pending interrupt at any privilege level, regardless of the
+/// global enables and of mideleg — the section's own musts: "the hart must resume if a
+/// locally enabled interrupt becomes pending, even if it has been delegated to a
+/// less-privileged mode" and "WFI is also required to resume execution for locally
+/// enabled interrupts pending at any privilege level, regardless of the global
+/// interrupt enable at each privilege level"; the same sentence's should is honored
+/// ("should honor the individual interrupt enables"), so the condition is exactly
+/// `mip & mie != 0` — mip read through `csr_state`, so STIP arrives COMPUTED (the
+/// timer's arrival during the halt is the acceptance's wake source).
+pub fn wake_pending<H: PrivilegedHart>(hart: &H) -> bool {
+    let mip = privilege::csr_state(hart, "mip");
+    let mie = privilege::csr_state(hart, "mie");
+    mip & mie != 0
+}
+
 /// Deliver an interrupt (decision 3): mcause/scause carries the Interrupt bit (63)
 /// with the cause code; mepc/sepc ← the NEXT instruction's pc (interrupts are taken
 /// BETWEEN instructions — the caller's pc at the step head); the xPIE/xIE/xPP stack;
@@ -147,7 +163,8 @@ pub fn deliver<H: PrivilegedHart>(hart: &mut H, pend: Pending, next_pc: u64) -> 
 mod tests {
     use super::*;
     use crate::state_rv64gc::{
-        ArchitecturalState, CSR_MIDELEG, CSR_MIE, CSR_MIP, CSR_MSTATUS, CSR_MTVEC, CSR_STVEC,
+        ArchitecturalState, CSR_MIDELEG, CSR_MIE, CSR_MIP, CSR_MSTATUS, CSR_MTVEC, CSR_STIMECMP,
+        CSR_STVEC,
     };
 
     fn hart() -> ArchitecturalState {
@@ -324,5 +341,42 @@ mod tests {
         );
         assert_eq!((mstatus >> 3) & 1, 0, "MIE <- 0 (the handler is quiet)");
         assert_eq!((mstatus >> 11) & 0b11, 3, "MPP <- M");
+    }
+
+    #[test]
+    fn the_wake_ignores_the_global_enables_and_mideleg() {
+        let mut h = hart();
+        set(&mut h, CSR_MIP, 1 << 1); // SSIP
+        assert!(
+            !wake_pending(&h),
+            "pending without the individual enable does not wake (the should)"
+        );
+        set(&mut h, CSR_MIE, 1 << 1); // SSIE
+        assert!(
+            wake_pending(&h),
+            "locally-enabled pending wakes with MIE clear (the must)"
+        );
+        set(&mut h, CSR_MIDELEG, 1 << 1);
+        assert!(
+            wake_pending(&h),
+            "… and even delegated to a less-privileged mode"
+        );
+        h.set_mode(PrivilegeMode::S);
+        assert!(wake_pending(&h), "at any privilege level, SIE clear too");
+    }
+
+    #[test]
+    fn the_timers_arrival_wakes_through_the_domain() {
+        let mut h = hart();
+        h.write_csr(CSR_STIMECMP, 2);
+        set(&mut h, CSR_MIE, 1 << 5); // STIE
+        assert!(!wake_pending(&h), "time 0 < 2: the timer has not arrived");
+        crate::timekeeping::advance(&mut h, false);
+        assert!(!wake_pending(&h), "time 1 < 2 still");
+        crate::timekeeping::advance(&mut h, false);
+        assert!(
+            wake_pending(&h),
+            "time reaches stimecmp — STIP computes 1 and the hart must resume"
+        );
     }
 }

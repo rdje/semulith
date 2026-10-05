@@ -98,3 +98,7 @@ i-nest
 i-prio
 i-timer
 i-vector
+w-deleg
+w-notrap
+w-sw
+w-timer

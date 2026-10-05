@@ -4,12 +4,19 @@
 ;; ⛔ HAND-WRITTEN FROM THE PINNED SPECIFICATION. The stated, dated decisions (2026-10-03),
 ;; each with its authority:
 ;;
-;; - WFI IS A NOP WHEN LEGAL (authority: laboratory). The specification permits it ("WFI may
-;;   be implemented as a NOP", RVP-MACHINE §2.1.3.3); the wake event is P4-SYSTEM.5's, never
-;;   this slice's. Legality, with the spec's latitudes resolved and recorded: illegal in U
-;;   with S present (§2.1.3.3 — the bounded-time latitude is resolved FOR trapping, the
-;;   deterministic choice); illegal in S with mstatus.TW=1 (§2.1.1.6.6 — the "may always
-;;   raise" latitude, resolved the same way); always legal in M.
+;; - WFI'S LEGALITY IS RESOLVED, AND A LEGAL WFI ENTERS THE WAIT (authority: laboratory;
+;;   the halt landed at P4-SYSTEM.5 slice (c), 2026-10-05). Legality, with the spec's
+;;   latitudes resolved and recorded: illegal in U with S present (§2.1.3.3 — the
+;;   bounded-time latitude is resolved FOR trapping, the deterministic choice); illegal
+;;   in S with mstatus.TW=1 (§2.1.1.6.6 — the "may always raise" latitude, resolved the
+;;   same way); always legal in M. The wait itself is the STEP MACHINERY's (decision 4 —
+;;   the hart-state bit is hart state, not instruction semantics; the sem tree below is
+;;   legality-only, and the step loop performs the entry after the legal evaluation):
+;;   the nop latitude ("a legal implementation is to simply implement the WFI
+;;   instruction as a NOP", §2.1.3.3) is recorded-NOT-taken — taking it would leave the
+;;   leaf's acceptance untestable (the .3 over-fence precedent). (The earlier stated
+;;   nop — "the wake event is P4-SYSTEM.5's" — is superseded by the halt, dated
+;;   2026-10-05.)
 ;;
 ;; - SFENCE.VMA'S INVALIDATION EFFECT IS THE FOUR SPECIFIED CASES (authority: laboratory;
 ;;   P4-SYSTEM.3 decision 2). With the minimal TLB modelled (4-entry fully-associative,
@@ -48,7 +55,7 @@
                             (ne (bits 22 22 (csr-state (lit 768))) (lit 0)))
                        (trap-deliver (lit 2) (inst))
                        (xret (lit 1))))))
-  (sem (insn wfi) (source "RVP-MACHINE §2.1.3.3 — a NOP when legal (the spec's own latitude; the wake is P4-SYSTEM.5's); illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21); the latitudes are laboratory choices, recorded in the header")
+  (sem (insn wfi) (source "RVP-MACHINE §2.1.3.3 — legality: illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21), always legal in M; a LEGAL wfi enters the wait state — the halt entry is the step machinery's (P4-SYSTEM.5 decision 4; the nop latitude recorded-not-taken, the header)")
        (effect (if (eq (mode) (lit 0))
                    (trap-deliver (lit 2) (inst))
                    (if (and (lt (mode) (lit 3))

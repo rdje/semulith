@@ -497,6 +497,9 @@ REQUIRED_CENSUS_CANDIDATES = (
     ("reservation set (LR/SC)", "reservation",
      "the reservation is hart state the census must account for before the module can "
      "carry it (P4-SYSTEM.4 slice c)"),
+    ("hart wait state (ACTIVE/WAITING)", "wait-state",
+     "the wait state is hart state the census must account for before the module can "
+     "carry it (P4-SYSTEM.5 slice c)"),
 )
 
 
@@ -556,6 +559,10 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     # discipline (the census's reservation candidate, the gate at
     # REQUIRED_CENSUS_CANDIDATES).
     a("    reservation: crate::reservation::Reservation,")
+    # P4-SYSTEM.5 decision 4: the wait state is hart state, emitted on the same
+    # discipline (the census's wait-state candidate, the gate at
+    # REQUIRED_CENSUS_CANDIDATES).
+    a("    hart_state: crate::wait::HartState,")
     a("}")
     a("")
     a("impl ArchitecturalState {")
@@ -577,6 +584,7 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("            ],")
     a("            tlb: crate::translation::Tlb::new(),")
     a("            reservation: crate::reservation::Reservation::new(),")
+    a("            hart_state: crate::wait::HartState::new(),")
     a("        }")
     a("    }")
     a("")
@@ -723,6 +731,9 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    }")
     a("    fn reservation(&mut self) -> &mut crate::reservation::Reservation {")
     a("        &mut self.reservation")
+    a("    }")
+    a("    fn hart_state(&mut self) -> &mut crate::wait::HartState {")
+    a("        &mut self.hart_state")
     a("    }")
     a("}")
     a("")

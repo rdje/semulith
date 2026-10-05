@@ -144,6 +144,13 @@ pub trait PrivilegedHart {
     /// the reservation could never be smuggled in silently). The reservation's own
     /// rules live in [`crate::reservation`].
     fn reservation(&mut self) -> &mut crate::reservation::Reservation;
+
+    /// The hart's wait state (`P4-SYSTEM.5` decision 4) — hart state on the same
+    /// discipline, owned by the generated state module because the state document's
+    /// SEM-08 census declares it (the `hart wait state (ACTIVE/WAITING)` candidate).
+    /// The wait's own rules live in [`crate::wait`]; the wake's evaluation lives in
+    /// [`crate::interrupts`].
+    fn hart_state(&mut self) -> &mut crate::wait::HartState;
 }
 
 // ---- name-addressed plumbing ----------------------------------------------------------

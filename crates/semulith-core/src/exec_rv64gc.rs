@@ -91,6 +91,11 @@ pub fn step(state: &mut ArchitecturalState, env: &mut impl Environment) -> StepR
     step_over(state, env, INSNS)
 }
 
+/// The WFI instruction word (the pinned `rv_system` table's row — its mask is all-ones,
+/// so the word IS the instruction's identity; `P4-SYSTEM.5` decision 4's halt entry
+/// keys on it).
+const WFI_WORD: u32 = 0x1050_0073;
+
 /// Execute one instruction decoded from a caller-supplied instruction table — the same
 /// seam `exec::step_over` documents for the base profile: the table is data, and over
 /// the generated table this is the production definition.
@@ -100,6 +105,22 @@ pub fn step_over(
     insns: &[InsnDef],
 ) -> StepRv64gc {
     let pc = state.pc();
+    // P4-SYSTEM.5 decision 4: the halted step. While WAITING the step head evaluates
+    // the wake FIRST (§2.1.3.3 — a locally-enabled pending interrupt at any privilege,
+    // regardless of the global enables and mideleg). The step the wake does not fire
+    // on retires nothing, issues no fetch and advances the domain one tick (slice (a)'s
+    // rule — this is what makes the leaf's acceptance true); the step it fires on is
+    // ordinary (decision 6): it falls through to the head evaluation below, so a taken
+    // trap's xepc is this pc — the WFI's pc + 4, the section's own rule, which the
+    // generic between-instructions delivery computes for free because the WFI retired
+    // into the halt with pc advanced — and an untrapped resume continues here.
+    if state.hart_state().is_waiting() {
+        if !interrupts::wake_pending(state) {
+            timekeeping::advance(state, false);
+            return StepRv64gc::Executed;
+        }
+        state.hart_state().wake();
+    }
     // P4-SYSTEM.5 decision 3: pending evaluation at the HEAD of every step — "bounded
     // amount of time" per-step by construction. An eligible interrupt is delivered
     // BETWEEN instructions (mepc/sepc the un-fetched pc); the delivery is a step
@@ -201,6 +222,12 @@ pub fn step_over(
     frame.run(insn.effect);
     if let Some(error) = frame.failed {
         return StepRv64gc::Failed(error);
+    }
+    // P4-SYSTEM.5 decision 4: a LEGAL wfi enters the wait (the generated effect's legality
+    // — illegal in U with S present, illegal in S with TW=1 — stands, corpus-proven; the
+    // nop latitude is recorded-not-taken). A trapped wfi waits for nothing.
+    if word == WFI_WORD && !frame.trapped {
+        frame.state.hart_state().enter();
     }
     if !frame.pc_written {
         frame.state.set_pc(pc.wrapping_add(4));

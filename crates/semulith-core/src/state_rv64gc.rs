@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `b099c8bc5b83ccec60cc516b18886110249449ec52c0a663eb0e72e963f9bb50`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `e0774daf4104a2b586c7ab7e699926c2bec537384fcbad4be69b03a0fe98b497`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, and the 33 CSRs of
@@ -116,6 +116,7 @@ pub struct ArchitecturalState {
     csrs: [u64; CSR_COUNT],
     tlb: crate::translation::Tlb,
     reservation: crate::reservation::Reservation,
+    hart_state: crate::wait::HartState,
 }
 
 impl ArchitecturalState {
@@ -158,6 +159,7 @@ impl ArchitecturalState {
             ],
             tlb: crate::translation::Tlb::new(),
             reservation: crate::reservation::Reservation::new(),
+            hart_state: crate::wait::HartState::new(),
         }
     }
 
@@ -1687,6 +1689,9 @@ impl crate::privilege::PrivilegedHart for ArchitecturalState {
     fn reservation(&mut self) -> &mut crate::reservation::Reservation {
         &mut self.reservation
     }
+    fn hart_state(&mut self) -> &mut crate::wait::HartState {
+        &mut self.hart_state
+    }
 }
 
 /// SEM-08: the hidden-state census, re-earned for the privileged state — carried as
@@ -1731,7 +1736,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "environment state (mtime, interrupt sources, the time register's value)",
             present: true,
-            why: "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely. The halt bit and the pending/source-evaluation reopen remain this leaf's (slices b/c). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)",
+            why: "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely; and by slice (b) for the PENDING/SOURCE-EVALUATION part (the (a)(b)(c) taken-rule with the global rule, the delegation mask and the fixed priorities, interrupt-caused delivery honoring both xtvec.MODEs). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)",
         },
         HiddenStateCandidate {
             candidate: "PMP configuration",
@@ -1762,6 +1767,11 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
             candidate: "address-translation caches (TLBs)",
             present: true,
             why: "answered by P4-SYSTEM.3 slice (d): a minimal fully-specified TLB — 4 entries, fully-associative, FIFO replacement, ASID-tagged at ASIDLEN 16, keyed by 4 KiB page, G-bit entries retained across per-ASID and per-address+ASID fences (authority laboratory; the cache is a pure function of the hart's own history, so cold-reset re-execution stays trace-identical and a cold-restored cache is always a legal state)",
+        },
+        HiddenStateCandidate {
+            candidate: "hart wait state (ACTIVE/WAITING)",
+            present: true,
+            why: "answered by P4-SYSTEM.5 slice (c): one hart-state bit — ACTIVE or WAITING (Sail 0.14's HART_WAITING precedent), cold-ACTIVE at reset. A legal WFI ENTERS waiting (the nop latitude recorded-not-taken — taking it would leave the leaf's acceptance untestable); while WAITING a step retires nothing, issues no fetch, advances the virtual-time domain one tick, and the step's head evaluates the wake — resume on a locally-enabled pending interrupt at any privilege level, regardless of the global enables and of mideleg (RVP-MACHINE §2.1.3.3's musts); on resume the taken-rule decides trap (xepc = the WFI's pc + 4) or pc + 4 continuation. The bit is a pure function of the hart's own history — changed only by the hart's own WFI/wake — so cold-reset re-execution stays trace-identical (the TLB/reservation determinism argument)",
         },
     ],
     consequence: "A complete snapshot for this stage is the integer file, pc, memory, the current mode, and the 33 CSRs' storage (mstatus/mie/mip once — views carry none). Each later slice reopens its named candidate: .3 translation state, .4 the reservation, .5 interrupt/counter progress, .7 the FP file, .8 partial effects, .9 the environment contract.",

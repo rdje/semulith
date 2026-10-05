@@ -44,7 +44,9 @@ fn assert_guest_observations(name: &str) {
     assert_eq!(
         trace.fetches as usize, g.expected_fetches,
         "{name}: the fetch-request count matches the declared expectation (one per \
-         step, minus every step whose fetch page-faults in the walk)"
+         step, minus every step whose fetch page-faults in the walk, every \
+         interrupt-delivery step, and every halted step — the `.5` `<halted>` \
+         convention: a waiting hart issues no fetch)"
     );
 }
 

@@ -27,6 +27,14 @@
 ;;              nop; the budget contract
 ;;   restart    the xret/xepc return discipline: resumption of preempted control flow at
 ;;              the recorded address and mode (mret/sret, SPP/MPP, the MPRV rule)
+;; `P4-SYSTEM.5` slice (c) (`2026-10-05`): the wake family and mm-wfi's re-derivation
+;; ride the SAME seven axes (decision 8 — no axis is added): the timer interrupt's
+;; delivery shape (the Interrupt-bit cause, xepc = the WFI's pc + 4) is the fault
+;; axis's vocabulary, the wake's individual-enable rule (globals and mideleg ignored)
+;; is legality, the delegated-source wake is delegation, time observed passing through
+;; the halt and the pc+4 continuations are progress (the axis's own wording names
+;; wfi), and the handler's mret after a wake-trap is the restart axis's xRET
+;; discipline.
 ;; `P4-SYSTEM.5` slice (b) (`2026-10-05`): the 7-guest interrupts corpus rides the SAME
 ;; seven axes (decision 3 — no axis is added): the delivered interrupt's Interrupt-bit /
 ;; cause / xepc shape and the synchronous-keeps-BASE vs vectored landing are the fault
@@ -71,9 +79,9 @@
 (cell (axis "fault") (axis "alias") (guest "it-fault-alias") (guest "fault-ld-x0-mis") (guest "fault-ld-x0-fault"))
 (cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (guest "sv39-fault-canonical") (guest "sv39-fault-superpage") (guest "a-lrsc-fault"))
 (cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39") (guest "i-vector"))
-(cell (axis "fault") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sv39-deleg") (guest "a-amo-sv39") (guest "i-deleg"))
-(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer"))
-(cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest"))
+(cell (axis "fault") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sv39-deleg") (guest "a-amo-sv39") (guest "i-deleg") (guest "w-deleg"))
+(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer") (guest "w-timer"))
+(cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest") (guest "w-timer"))
 
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────
 (cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap"))
@@ -93,15 +101,15 @@
 ;; ── legality × * ──────────────────────────────────────────────────────────────────
 (cell (axis "legality") (axis "legality") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "mm-readonly") (guest "mm-wfi") (guest "mm-sfence") (guest "mm-sret") (guest "sv39-perm-usr") (guest "a-lrsc-illegal") (guest "i-prio"))
 (cell (axis "legality") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp"))
-(cell (axis "legality") (axis "progress") (guest "mm-wfi") (guest "mm-ebreak") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "sv39-tlb-fence") (guest "a-amo-aqrl") (guest "a-lrsc-mustfail") (guest "i-accept") (guest "i-enable"))
+(cell (axis "legality") (axis "progress") (guest "mm-wfi") (guest "mm-ebreak") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "sv39-tlb-fence") (guest "a-amo-aqrl") (guest "a-lrsc-mustfail") (guest "i-accept") (guest "i-enable") (guest "w-sw"))
 (cell (axis "legality") (axis "restart") (guest "mm-sret") (guest "mm-mret") (guest "mm-ecall-deleg") (guest "sv39-mprv") (guest "sv39-perm-usr"))
 
 ;; ── delegation × * ────────────────────────────────────────────────────────────────
-(cell (axis "delegation") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "i-deleg"))
+(cell (axis "delegation") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "i-deleg") (guest "w-deleg"))
 (cell (axis "delegation") (axis "progress") (guest "mm-ecall-deleg") (guest "mm-counters"))
 (cell (axis "delegation") (axis "restart") (guest "mm-ecall-deleg") (guest "sv39-deleg"))
 
 ;; ── progress × *, restart × restart ───────────────────────────────────────────────
-(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem") (guest "mm-ecall-modes") (guest "sv39-translate-4k") (guest "a-lrsc-pair") (guest "a-lrsc-loop") (guest "a-lrsc-mustfail") (guest "i-prio"))
+(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem") (guest "mm-ecall-modes") (guest "sv39-translate-4k") (guest "a-lrsc-pair") (guest "a-lrsc-loop") (guest "a-lrsc-mustfail") (guest "i-prio") (guest "w-notrap") (guest "mm-wfi"))
 (cell (axis "progress") (axis "restart") (guest "mm-ebreak") (guest "mm-ecall-modes") (guest "mm-sret"))
 (cell (axis "restart") (axis "restart") (guest "mm-mret") (guest "mm-sret") (guest "mm-ecall-deleg") (guest "i-nest")))

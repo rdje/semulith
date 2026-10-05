@@ -55,7 +55,7 @@ on the same commit. One commit per completed leaf.
 | [`P2-SCALAR`](tasks/P2-SCALAR.md) | `done` | — (9/9 leaves complete; the CPU-LAB report reads `incomplete` with G-CONTRACT/G-OBLIGATIONS named — the release decision is the EXPERIMENTAL release of the versioned artifact, `decision_release-rv64i-lab-v0`) | repo-local |
 | [`DSP-REVIEW`](tasks/DSP-REVIEW.md) | `done` | — (8/8 leaves complete; six findings routed to P3-BREADTH's first leaf, each with its ROUTING EVIDENCE — none reproduces on the scalar profile) | repo-local |
 | [`P3-BREADTH`](tasks/P3-BREADTH.md) | `done` | — (8/8 leaves complete; gate `BREADTH` RUN `2026-10-01`, verdict **`passed`** — the capability report published at `docs/BREADTH-REPORT.md`) | repo-local |
-| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.5` — interrupts, counters and wait (4/10 leaves done; `.5` slices (a)–(b) landed: the virtual-time domain, the step-head pending evaluation + both vector modes, 95/95 with the 88 byte-identical) | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.5` — interrupts, counters and wait (4/10 leaves done; `.5` slices (a)–(c) landed: the virtual-time domain, the step-head pending evaluation + both vector modes, the halted state + WFI's real wake — the timer wake without retirement evidenced, 99/99) | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.5` — firmware probes, gated on the CPU's acceptance trajectory (10/12 leaves done; the platform capability manifest landed, drift-gated by PLATFORM-GEN) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |

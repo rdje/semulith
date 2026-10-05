@@ -1,5 +1,33 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0032 (leaf P4-SYSTEM.5, slice c) — the halted state, WFI's real wake, the `<halted>` vocabulary, the wake corpus
+
+- The hart gains its wait state (decision 4): one ACTIVE/WAITING bit (Sail's
+  `HART_WAITING` precedent), cold-ACTIVE at reset, engine-owned hart state on the
+  TLB/reservation discipline — the state document's SEM-08 census declares the
+  `hart wait state (ACTIVE/WAITING)` candidate and gen_state carries the bit (the
+  RED arm 27→28). A legal WFI ENTERS the wait (the nop latitude recorded-not-taken);
+  a halted step retires nothing, issues no fetch, and ticks the domain once; the
+  step's head evaluates the wake — exactly `mip & mie != 0`, regardless of the
+  global enables and of mideleg (RVP-MACHINE §2.1.3.3's musts, measured verbatim).
+  On resume the taken-rule decides: trap with xepc = the WFI's pc + 4 (the
+  section's own rule, which the generic between-instructions delivery computes
+  for free) or pc + 4 continuation.
+- The wake corpus (EVD-05, derived before any engine run): **w-timer** — THE
+  acceptance cell: the timer's arrival during the halt wakes the hart and the trap
+  is taken, and the handler's rdinstret reads 11 at its first step — the wake
+  occurred **without CPU retirement**; **w-notrap** — wake-without-trap and the
+  spec's idle-loop idiom (two halts, pc + 4 each); **w-deleg** — a delegated STI
+  wakes an M-mode hart anyway ("even if it has been delegated"), no trap fires
+  until un-delegated; **w-sw** — the software-posted SSIP/SEIP sources waking with
+  the globals off. mm-wfi re-derives (decision 10): its legal cells halt with
+  arranged timer wakes (the S cell's source delegated), the TW=1 and U trap cells
+  measured unchanged. The expectations vocabulary gains the `<halted>` pseudo-step
+  (decision 6 — empty writes, fetches 0). The corpus reads **99/99**; the other
+  94 pre-slice guests are byte-identical (only mm-wfi contains wfi — the census).
+- The matrix carries the wake family (28 cells resolve). `make check` rc=0,
+  `make gate` green (DERIVED-COUNTS 429 → 430 re-derived — the wait-state RED arm).
+
 ## SEMULITH-P4-0031 (leaf P4-SYSTEM.5, slice b) — the step-head pending evaluation; both vector modes; the 7-guest corpus
 
 - Pending is evaluated at the head of **every step** (decision 3): the (a)(b)(c)

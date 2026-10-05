@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the wake is a head evaluation like any other, and the span-zero wake is still evidence (P4-SYSTEM.5 slice c)
+
+Execution of the `.5` brief's checkpoint (c) measured:
+
+- **The WFI-specific mepc rule needs no special case.** §2.1.3.3's "execution
+  resumes in the trap handler and mepc = pc + 4" looked like a WFI-only delivery
+  path. It falls out of the generic machinery: the WFI RETIRES into the halt (pc
+  advanced, instret counted), so the resume's between-instructions delivery writes
+  xepc = the hart's pc, which IS the WFI's pc + 4. The halt's whole shape is one
+  head evaluation in front of slice (b)'s: waiting → wake? → fall through to the
+  ordinary pending evaluation — the same step does wake and delivery, and the
+  untrapped resume just executes. One evaluation point, no parallel path.
+- **A software-posted source wakes in zero halted steps — and the cell still
+  falsifies.** With SSIP posted before the wfi, the very next head resumes, so
+  the trace is observationally a nop's. The cell's power is against the WRONG
+  wake rule: a wake that required the global enable would stall the guest
+  forever, and its expectations (which continue past the wfi) could never derive.
+  Evidence strength is not always a trace difference; sometimes it is the
+  impossibility of deriving the same file under the false rule (promotion:
+  declined — the durability is the machinery: w-sw and the wake suite re-run it).
+- **The text-keyed `#|end` is a collision hazard.** mm-wfi's derivation stopped
+  26 steps early: stage1's `csrrs x8, mepc, x0` has the same text as the
+  fall-through's `#|end` instruction, and the text-keyed marker fired at the
+  first occurrence the flow reached. The pc-keyed directives fixed this class
+  for derivations at slice (b); the end marker still keys on text — stage1's
+  mepc-step moved to x10 to disambiguate. A marker keyed on content will
+  eventually meet two identical instructions; the fix is at the guest, never by
+  weakening the convention.
+- **A gated CSR read is a delivery, not a refusal.** The derivation tool models
+  the counter-ACCESS gates (rdtime below M with the gates shut) as the engine's
+  own cause-2 trap; the mode-privilege refusal stays for authoring errors. The
+  wake corpus reads counters in M only, but the honest mirror is what lets a
+  future guest exercise the gate without tooling work.
+
+promotion: declined (the durability is the machinery — the wait/interrupts suites
+and the 99-guest corpus re-run every one of these).
 ## _(2026-10-05)_ — the trap-entry stack runs the other way, and sip cannot clear SEIP (P4-SYSTEM.5 slice b)
 
 Execution of the `.5` brief's checkpoint (b) measured:
@@ -649,40 +685,4 @@ Execution of the `.2` brief's checkpoint (f) measured:
   corpus is untracked scratch, so no new arms; the guests' registry governor lands at
   the flip. Promotion: declined — the auipc-delta audit and the M-level-before-drop
   rule are recorded in the leaf's checklist and encoded in the guests themselves.
-
-## _(2026-10-03)_ — a latent bug censused to extinction; the mirror is a closure, not a list (P4-SYSTEM.2 slice e)
-
-Execution of the `.2` brief's checkpoint (e) measured:
-
-- **The dropped-`(extensions …)`-form bug had SIX readers, not four.** Slice (a) fixed the
-  resolver; slice (b) the corpus gate; slice (d) gen_definition. Writing slice (e)'s
-  checklist with the claim "the pattern is gone" sent me to `git grep -n 'ext\[0\]\[1:\]'`
-  — which found TWO more (check_exercise_coverage.sh's scope closure, gen_model_book.py's
-  ISA derivation), each silent until a composition carries a second extensions form. The
-  fix pattern is uniform (every form contributes), the census command is in the leaf, and
-  the pattern is now extinct. The lesson the family already owns
-  (a checklist claim is a measurement you re-run) fired on my own sentence before commit.
-- **The mirror's extent is a closure, not a list.** "The 52 base forms' instruction
-  requirements" reads as "the instruction-kind records" — measured, those 9 records cover
-  49 of 52: ecall/ebreak ride the event record and fence the memory record, and the
-  dependency closure pulls REQ-D-XLEN and REQ-D-ENDIAN. The probe derives the closure from
-  the owner's catalogue at gate time, so the mirror's extent can never go stale when the
-  owner's corpus grows. The governor is RECORD-SCHEMA's rule 14, registry-driven by the
-  FACT-OWNERSHIP rows — the registration IS the wiring.
-- **The MIRROR rule caught my own authored obligations.** The new obligations condensed
-  their requirements' statements — rule 9 (the obligation restates its requirement
-  EXACTLY) refused them, and the fix was verbatim restatement, not a weaker gate.
-- **The fetch leg's census needed the profile's own pin list.** Extending the
-  encoding-tables-vs-scope check from the hard-coded base tables to the ledger's pinned
-  tables would have counted rv64i's M tables (pinned for the fragment test case, not the
-  scope) — the exclusion is BY NAME, recorded; and a pseudo-only table (rv_zicntr)
-  contributes its pseudo names, because the spec's Zicntr listings ARE those rows.
-- **The aggregate ceiling fired on mandated content.** docs/tasks/ at 63 files /
-  1,575,182 B over the 1.5 MiB ceiling by 0.15% — the P4-SYSTEM tree's per-slice
-  checklists; re-derived to 3 MiB by decision record (the family's documented lifecycle),
-  per-part and count axes unmoved.
-
-Promotion: declined — the governor runs (rule 14), the census is recorded in the leaf, and
-the ceiling lifecycle has its decision records. Recorded in the owning leaf's checklist
-(LOCKSTEP).
 

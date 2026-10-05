@@ -246,6 +246,7 @@ struct Fixture {
     csrs: [u64; 21],
     tlb: crate::translation::Tlb,
     reservation: crate::reservation::Reservation,
+    hart_state: crate::wait::HartState,
 }
 
 static META: &[CsrMeta] = &[
@@ -388,6 +389,7 @@ impl Fixture {
             csrs: [0; 21],
             tlb: crate::translation::Tlb::new(),
             reservation: crate::reservation::Reservation::new(),
+            hart_state: crate::wait::HartState::new(),
         };
         // The document's reset: each field's declared reset, placed (the generated
         // module's zeroed_at composes exactly this).
@@ -434,6 +436,9 @@ impl PrivilegedHart for Fixture {
     }
     fn reservation(&mut self) -> &mut crate::reservation::Reservation {
         &mut self.reservation
+    }
+    fn hart_state(&mut self) -> &mut crate::wait::HartState {
+        &mut self.hart_state
     }
 }
 

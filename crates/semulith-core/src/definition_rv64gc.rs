@@ -18,14 +18,14 @@
 //!   `definitions/riscv/a.sexp`  `f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
-//!   `definitions/riscv/system.sem.sexp`  `2c492bdde2c7d2246abaace02232bcfbabb6fbc3366e60a692e25bc9e4f5667a`
+//!   `definitions/riscv/system.sem.sexp`  `cb25de97e2197c5d443779f28579589dd1384bf9eb1ae0028166678bdd94692b`
 //!   `definitions/riscv/system.sexp`  `c89d687d7a52c8e1cb19e8d87633c0f3bc70a7e7819f3ba8e2c3e895f20518e9`
 //!   `definitions/riscv/zicntr.sem.sexp`  `9308b046ae1213e4302a2258c55e17e4f12f2d81f7e10c9a2e248646084b7570`
 //!   `definitions/riscv/zicntr.sexp`  `f0c483e24e2515c12f32d2a95ac55be3a663e2c7ca355cc804890a2f2c3bc675`
 //!   `definitions/riscv/zicsr.sem.sexp`  `823278a9ab48c7f95005998d183e5127f76d6c8c276f70f74a58e4cf22b64975`
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aec851b47b685fa74108754ffe072a8825acd46e0308825c0fb4f91c1292972e`
-//!   `profiles/rv64gc-lab-v0/state.sexp`  `b099c8bc5b83ccec60cc516b18886110249449ec52c0a663eb0e72e963f9bb50`
+//!   `profiles/rv64gc-lab-v0/state.sexp`  `e0774daf4104a2b586c7ab7e699926c2bec537384fcbad4be69b03a0fe98b497`
 //! Generator: `scripts/gen_definition.py` (sha256 `11244266f1e953d5d71243027dbf890c90853b129f0ade99e94f469e170757a9`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
@@ -99,7 +99,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "definitions/riscv/system.sem.sexp",
-            sha256: "2c492bdde2c7d2246abaace02232bcfbabb6fbc3366e60a692e25bc9e4f5667a",
+            sha256: "cb25de97e2197c5d443779f28579589dd1384bf9eb1ae0028166678bdd94692b",
         },
         InputPin {
             path: "definitions/riscv/system.sexp",
@@ -127,7 +127,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
-            sha256: "b099c8bc5b83ccec60cc516b18886110249449ec52c0a663eb0e72e963f9bb50",
+            sha256: "e0774daf4104a2b586c7ab7e699926c2bec537384fcbad4be69b03a0fe98b497",
         },
     ],
     sources: &[
@@ -2163,7 +2163,7 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x10500073,
         operands: &[],
         from: "rv_system",
-        source: "RVP-MACHINE §2.1.3.3 — a NOP when legal (the spec's own latitude; the wake is P4-SYSTEM.5's); illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21); the latitudes are laboratory choices, recorded in the header",
+        source: "RVP-MACHINE §2.1.3.3 — legality: illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21), always legal in M; a LEGAL wfi enters the wait state — the halt entry is the step machinery's (P4-SYSTEM.5 decision 4; the nop latitude recorded-not-taken, the header)",
         effect: &Sem::If(
             &Sem::Eq(
                 &Sem::Mode,
