@@ -1,5 +1,43 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0026 (leaf P4-SYSTEM.4, slice d) — the staged atomics corpus: 12 guests, EVD-05 expectations, the matrix + coverage rehearsals
+
+- Twelve staged guests (`target/p4-system-4/`, untracked — the `.2` slices-(f)/(g)
+  discipline) cover the brief's families: the nine AMOs × `.W`/`.D` with rd the old
+  value sign-extended at the 0x8000_0005 edge and the min/max signed-vs-unsigned
+  disagreement cells; every aq/rl combination executed identically at one hart;
+  rd=rs1=rs2 / rd=rs2 / rd=rs1 overlaps; the LR/SC pairs at both widths; every
+  one-hart must-fail (different address, an intervening SC clearing, LR-replaces,
+  width mismatch both ways, SC-without-LR — each with its no-memory-write read-back)
+  plus recovery; a constrained loop terminating on its first SC; misaligned atomics
+  taking cause 7 before translation; the 77-step `a-amo-sv39` — an AMO on an
+  unreadable page faulting 15 NEVER 13, W=0 → 15, R∧W succeeding, the alias cell
+  (the reservation is PHYSICAL-keyed), a trapped SC trapping AGAIN (survival
+  proven), misaligned-before-translation under Sv39; and three reserved encodings
+  delivered as cause 2 with xtval the word.
+- Expectations are EVD-05 specification-derived: a spec-side model
+  (`tools/derive_expectations.py`) written from the pinned chapters and the
+  declared deterministic policy (state.sexp's reservation candidate) — never
+  engine output — emits each `.expected.sexp` (schema-valid ×12); every word is
+  assembled by the TRACKED assembler's A machinery (gen_guests ×12). The scratch
+  runner mirrors run_rv64gc's comparison semantics and the corpus executes
+  **12 PASS / 0 FAIL** through the slice-(c) engine, deterministic on re-run.
+  Execution caught FOUR authoring defects — the tool's unapplied register writes,
+  the unmodeled same-value-write comparison rule (the `.3` "x8-already-zero"
+  rule), a "reserved" funct5 0x02 that is LR's own (it decoded and EXECUTED), and
+  the sv39 data PA colliding with the root page table — each fixed by
+  re-derivation, never fitted.
+- The matrix rehearsal: `check_interaction_matrix.py target/p4-system-4/unit` —
+  28 cells declared, every disposition resolves, the new guests riding the seven
+  EXISTING axes (decision 9); the three RED legs fired by name on a scratch copy
+  (ORPHAN GUEST, OMITTED CELL, UNKNOWN DIFFERENCE). The coverage rehearsal reads
+  22/22 A forms exercised — the bind's 87-form denominator (65 measured at `.2`
+  slice f + these 22). Nothing tracked changed; `make gate` green (DERIVED-COUNTS
+  429). Next: slice (e) — THE BIND: slot→extension, the 65→87 census dual edit,
+  the requirement/obligation growth, the generated mirrors, this corpus tracked,
+  the evaluator arms, the matrix cells — one green commit with the full gate
+  suite.
+
 ## SEMULITH-P4-0025 (leaf P4-SYSTEM.4, slice c) — the reservation state, the SC policy as data, the AMO/LR/SC arms proven in scratch
 
 - `crates/semulith-core/src/reservation.rs` (NEW, additive — the
@@ -805,41 +843,4 @@
   11/11); schema validation on all touched documents incl. the schema fixpoint;
   BOARD-GEN / BOARD-VERDICT / GATE-REPORT / MATERIALS-BILL / UNIT-BOOKS green;
   `make gate` → all doctrines green; both books build; the book index regenerated.
-
-## SEMULITH-P5-0017 (leaf P5-BOARD.4) — the composition verdict: ACCEPTED, decided on every commit by BOARD-VERDICT; four dispositions as data; the 16-bit declaration measured false and narrowed
-
-- The gate's core obligation landed: for every CPU environment assumption, the named
-  board or device guarantee that satisfies it — or a rejection. The verdict is
-  **ACCEPTED** and re-decided on every commit by the 33rd project doctrine,
-  **BOARD-VERDICT** (`scripts/board_verdict.py` + `scripts/check_board_verdict.sh`):
-  the discharge over the composed catalogues (8/8), every `satisfies` edge resolved to
-  a discharged assumption (3/3), and every board-deferred device obligation bound to
-  exactly one decision `answers` edge (4/4) — an unmatched assumption or a dangling
-  edge is a REJECTION by name, never a note.
-- The machinery: four deferred obligations (`OB-NIC-STRAP-RESETS` joined the three
-  `.10` pre-wired records) carry the marker param `composition_disposition "required"`;
-  `schema/board.sexp`'s `decision` gained the optional `answers` edge; the
-  dispositions mirror into `hardware.sexp` (schema + `gen_board.py`) for the model
-  route. The dispositions, decided: D32 tied high + SPEED_SEL at its pull-up
-  (`D-BOARD-NIC-STRAPS`); the NIC's guest-readable time sources frozen
-  (`D-BOARD-NIC-TIME-FROZEN`); the replay link scene static-complete at 100BASE-TX FD
-  from before the guest's first access (`D-BOARD-NIC-LINK-SCENE`, BSR `0x782D`); pin
-  reads tied off at 0 (`D-BOARD-NIC-PIN-TIEOFFS`).
-- Measured in execution, fixed at root: the board's eth0 declared 16-bit accesses from
-  the datasheet's summary sentence (§1.10), but §3.6 makes the bus widths
-  mode-exclusive — with D32 strapped the declaration narrowed to 32; the NIC dossier's
-  pairing-latch census entry flipped to absent with the new reason. The expectations
-  re-pinned what the verdict determines (`hw_cfg` `0x00050004`, `free_run` `0` frozen,
-  `phy_basic_status` `0x782D`).
-- The authored verdict: `profiles/netboard-lab-v0/COMPOSITION-VERDICT.md` — the
-  per-assumption table (every §5 aspect enumerated; the not-arising ones recorded with
-  reasons), the `OB-PLATFORM` note (the discharge edges alone would be materially
-  misleading), the interface-test leg (`make check` + smoke green — the RAM half; the
-  MMIO halves attach with the device models, named), and MODEL-COMPOSE's open question
-  answered for this board shape: no operator beyond union + discharge is needed.
-  Included as the board book's verdict chapter.
-- Validation: BOARD-VERDICT self-test 6/6 (every RED asserting its reason on copies of
-  the real board) + real run green; `make gate` → all doctrines green (DERIVED-COUNTS
-  re-derived 32 → 33 doctrines, 359 → 365 arms); `make check` + `run_smoke` green;
-  `mdbook build` rc 0; `gen_book_index.py --check` rc 0. No Rust surface touched.
 

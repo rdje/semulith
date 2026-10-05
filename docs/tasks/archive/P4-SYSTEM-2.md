@@ -126,3 +126,91 @@ promotion: declined (the durability is the machinery — the funct5-as-literal d
   `docs/tasks/archive/P4-SYSTEM.md` archive sits 91 B under its own ceiling — the next
   archive event must split the archive (the `P2-SCALAR` checklists/designs precedent).
 
+
+
+`P4-SYSTEM.4` slice (c)'s checklist (completed `2026-10-05`,
+`SEMULITH-P4-0025`), split out on `2026-10-05` at the live file's tenth
+ceiling firing (slice (d) landing):
+
+`P4-SYSTEM.4` slice (c) — the reservation state + the SC policy as data + the AMO/LR/SC arms in scratch (`2026-10-05`, `SEMULITH-P4-0025`):
+
+- [x] **REPRODUCE / ISSUE** — the pre-slice census:
+
+  ```
+  $ sed -n '640,641p' profiles/rv64gc-lab-v0/state.sexp; git grep -c 'Reservation' -- crates/ | wc -l
+  (candidate "reservation set (LR/SC)") (present true) — pre-declared ("so .4 cannot
+  smuggle it in silently") but UNGATED: gen_state refused only a TLB-silent census
+  (gen_state.py:472-481 pre-edit) / 0 — no reservation module existed
+  $ sed -n '370,374p' crates/semulith-core/src/translation.rs
+  AccessKind::Store if !entry.w — W only: an AMO on an unreadable page would PASS
+  (decision 5 needs R∧W under store/AMO causes)
+  $ sed -n '66,80p' target/refs/sail-riscv-src/model/extensions/A/zalrsc_insts.sail
+  vmem_write first; on Ok(b): rd <- code, cancel_reservation() — on Err(e): e, NO
+  cancel. Sail's two cancellation sites: the COMPLETED SC and reset.
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in existing behavior; the slice
+  implements the slice-(b) contract, and execution settled three points, each
+  tool-backed (the census above; the `13 pass / 3 fail` initial run):
+  1. **The SC clears on the COMPLETED path only** — the Sail measurement above:
+     decision 4's "success or failure" is exactly the completed path; a trap clears
+     nothing. The arm's clear sites sit after the policy match and after a
+     successful store, never on a deliver path.
+  2. **The AMO needs `AccessKind::Atomic`** (the census's third line): W-only
+     judgment would pass an unreadable page, so the joint R∧W rule with store causes
+     (15/7, never 13) got its own kind — additive in `translation.rs` (a scope
+     judgment call inside "the additive module" reading, flagged for re-verify).
+  3. **The proof caught three TEST-design defects of mine, the engine right each
+     time** (the initial run: `13 pass / 3 fail`): my "LR replaces" let the failing
+     SC clear before the final SC; my "trapped SC" used a mismatched address, which
+     fails with code 1 BEFORE any memory operation — no trap exists to test (the
+     scripted boundary-fault variant tests the real path); one expected value
+     ignored the final SC's overwrite.
+
+- [x] **FIX** — tracked, additive: `reservation.rs` (NEW — (physical address, width,
+  valid), 7 unit tests); `lib.rs`; `privilege.rs` (+ the `reservation()` trait
+  accessor) + `privilege/tests.rs` (the Fixture); `translation.rs`
+  (`AccessKind::Atomic` + tests); `state.sexp` (the candidate's why → the answered
+  form with the deterministic SC policy as DATA, decision 3); `gen_state.py`
+  (REQUIRED_CENSUS_CANDIDATES generalising the census gate + the
+  field/reset/accessor emit); `state_rv64gc.rs` regenerated (rv64i's
+  `state.rs` byte-identical); `definition_rv64gc.rs` regenerated (manifest-hash
+  only); `check_state_gen.sh` (+1 RED arm). Scratch (`target/p4-system-4/`,
+  untracked): the rv64gc+A module, `proof/exec_rv64gc_a.rs` (the tracked evaluator
+  + the three arms), `proof/proof.rs`.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core --lib reservation / translation
+  test result: ok. 7 passed (establish/replace/clear/mismatches/cold/determinism) /
+  26 passed (25→26: R=0/W=0/A=0/D=0 → 15, R∧W ok, causes 15/7)
+  $ bash scripts/check_state_gen.sh --self-test
+  STATE-GEN --self-test: 27 pass / 0 fail (26→27: the RED census-silent-on-the-
+    reservation arm — "does not declare a present reservation")
+  $ target/p4-system-4/proof/proof
+  PASS ×16, 0 fail — every cell named in the verification log row below
+  $ git diff --stat HEAD -- crates/semulith-core/src/state.rs
+  (empty — rv64i's state byte-identical; rv64gc's definition manifest-hash-only, 4 lines)
+  ```
+
+- [x] **NO REGRESSION** — RED-first (the initial 13/3 proof run; the STATE-GEN arm's
+  RED fired on the fixture), then the guard set: STATE-GEN 26→27, DEF-GEN 23/23,
+  corpus 9/9, SOURCE-FORMAT 211; every generator's `--check` byte-exact;
+  fetch_references `--verify-only` green both profiles; `make check` rc=0 (fmt +
+  clippy -D warnings + 8 groups incl. the new 7+1); `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 428→429 arms).
+
+- [x] **LOCKSTEP** — same commit: this tree (status + frontier + checklist + logs +
+  changelog; slice (b)'s checklist archived verbatim at the NINTH crossing — the
+  archive was full, so it SPLIT: `archive/P4-SYSTEM.md` (part 1) keeps the earlier
+  sections, NEW `archive/P4-SYSTEM-2.md` (part 2) takes this move onward),
+  `MEMORY.md` (→ slice d), `CHANGELOG.md`, `DEV_NOTES.md` (the Sail cancellation
+  measurement and the three test-design defects; the dated lesson's promotion
+  decision:
+promotion: declined (the durability is the machinery — the completed-path-only clear is armed by the trapped-SC proof cell and the reservation module's own suite, and the census gate refuses a silent descriptor by name)),
+  `LIVE_STATUS.md` (the arms count 428→429 only), `docs/book/src/plan/p4.md` (the
+  slice line). The bind's port mapping: the three arms land in `exec_rv64gc.rs`'s
+  match after `Sem::TlbInvalidate` with `use crate::privilege::PrivilegedHart;`;
+  the proof's cells inform slice (d)'s corpus design.
+

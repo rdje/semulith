@@ -122,7 +122,7 @@ This gate authorises the planned next engineering stage: board implementation.
   truth after the full one — Sail's `--trace-tlb` shows the same add/flush counts.
 
 - ID: `P4-SYSTEM.4` — **atomics and reservations**
-  Status: `pending` (design brief `2026-10-04`, `SEMULITH-P4-0022`; slices (a) `SEMULITH-P4-0023`, (b) `SEMULITH-P4-0024`, (c) `SEMULITH-P4-0025` done `2026-10-05`)
+  Status: `pending` (design brief `2026-10-04`, `SEMULITH-P4-0022`; slices (a)–(d) `SEMULITH-P4-0023`…`0026` done `2026-10-05`)
   Goal: atomic widths, reservation semantics, failed conditional stores, overlap and external-write cases (catalog `C16`, `docs/CPU_ENVIRONMENT.md` §2).
   Acceptance: single-core reservation behaviour is validated here; multicore memory-model work is `MC-MULTICORE`, not smuggled in.
 
@@ -161,7 +161,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — slices (a)–(c) landed (the fragment; the operators + sem file; the reservation state + the scratch-proven evaluator arms); next is slice (d): the staged corpus + expectations + the matrix rehearsal |
+| 1 | `P4-SYSTEM.4` | `pending` | atomics and reservations — slices (a)–(d) landed (the fragment; the operators; the reservation + arms; the staged corpus 12/12 + rehearsals); next is slice (e): THE BIND — slot→extension, the 65→87 census, one green commit |
 
 ## Decisions
 
@@ -443,98 +443,80 @@ precedent; the ceiling was obeyed, not raised).
 `P4-SYSTEM.4` slice (b)'s checklist (completed `2026-10-04`, `SEMULITH-P4-0024`):
 its full acceptance checklist lives verbatim in
 [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — split out at the ninth crossing of
-this file's 131,072 B per-part ceiling (`2026-10-05`, slice (c) landing; the ceiling
-was obeyed, not raised — the archive was full, so it split: part 2 takes this move
-onward).
+this file's per-part ceiling (`2026-10-05`, slice (c) landing; the ceiling was obeyed,
+not raised — the archive was full, so it split: part 2 takes this move onward).
 
-`P4-SYSTEM.4` slice (c) — the reservation state + the SC policy as data + the AMO/LR/SC arms in scratch (`2026-10-05`, `SEMULITH-P4-0025`):
+`P4-SYSTEM.4` slice (c)'s checklist (completed `2026-10-05`, `SEMULITH-P4-0025`):
+its full acceptance checklist lives verbatim in
+[`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — split out at the tenth crossing of
+this file's per-part ceiling (`2026-10-05`, slice (d) landing; the ceiling obeyed,
+not raised).
 
-- [x] **REPRODUCE / ISSUE** — the pre-slice census:
+`P4-SYSTEM.4` slice (d) — the staged corpus + expectations + the matrix rehearsal (`2026-10-05`, `SEMULITH-P4-0026`; untracked `target/p4-system-4/`):
+
+- [x] **REPRODUCE / ISSUE** — the slice-(c) engine is proven, but the bind's
+  corpus did not exist yet:
 
   ```
-  $ sed -n '640,641p' profiles/rv64gc-lab-v0/state.sexp; git grep -c 'Reservation' -- crates/ | wc -l
-  (candidate "reservation set (LR/SC)") (present true) — pre-declared ("so .4 cannot
-  smuggle it in silently") but UNGATED: gen_state refused only a TLB-silent census
-  (gen_state.py:472-481 pre-edit) / 0 — no reservation module existed
-  $ sed -n '370,374p' crates/semulith-core/src/translation.rs
-  AccessKind::Store if !entry.w — W only: an AMO on an unreadable page would PASS
-  (decision 5 needs R∧W under store/AMO causes)
-  $ sed -n '66,80p' target/refs/sail-riscv-src/model/extensions/A/zalrsc_insts.sail
-  vmem_write first; on Ok(b): rd <- code, cancel_reservation() — on Err(e): e, NO
-  cancel. Sail's two cancellation sites: the COMPLETED SC and reset.
+  $ ls target/p4-system-4/corpus 2>&1 | head -1
+  No such file or directory — 0 atomics guests; the tracked matrix's guests are all
+  pre-A (its denominator 65, the A forms exercised by none of them)
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in existing behavior; the slice
-  implements the slice-(b) contract, and execution settled three points, each
-  tool-backed (the census above; the `13 pass / 3 fail` initial run):
-  1. **The SC clears on the COMPLETED path only** — the Sail measurement above:
-     decision 4's "success or failure" is exactly the completed path; a trap clears
-     nothing. The arm's clear sites sit after the policy match and after a
-     successful store, never on a deliver path.
-  2. **The AMO needs `AccessKind::Atomic`** (the census's third line): W-only
-     judgment would pass an unreadable page, so the joint R∧W rule with store causes
-     (15/7, never 13) got its own kind — additive in `translation.rs` (a scope
-     judgment call inside "the additive module" reading, flagged for re-verify).
-  3. **The proof caught three TEST-design defects of mine, the engine right each
-     time** (the initial run: `13 pass / 3 fail`): my "LR replaces" let the failing
-     SC clear before the final SC; my "trapped SC" used a mismatched address, which
-     fails with code 1 BEFORE any memory operation — no trap exists to test (the
-     scripted boundary-fault variant tests the real path); one expected value
-     ignored the final SC's overwrite.
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in tracked behavior; the slice builds
+  the staging, and execution caught FOUR authoring defects of mine, each named and
+  fixed by re-derivation, never fitting (the corpus's first run read `1 guest(s)
+  PASS, 11 FAIL`, rc=1): (1) the derivation tool RECORDED register writes but
+  never APPLIED them (downstream values read zeros — the truncation named it at the
+  first `sw`); (2) the runner's change-comparison
+  rule was unmodeled — a register written ITS OWN VALUE is no observation (the .3
+  "x8-already-zero" rule; the first corpus run named 11/12 on exactly this); (3) my
+  "reserved funct5 0x02" was LR's OWN funct5 — the .word decoded as `lr.w x6, (x1)`
+  and EXECUTED (the observed handler-word read named it; 0x05 replaced it); (4) the
+  sv39 data PA collided with the ROOT TABLE (cell 3's store overwrote root[0]; moved
+  to base+0x4000).
 
-- [x] **FIX** — tracked, additive: `reservation.rs` (NEW — (physical address, width,
-  valid), 7 unit tests); `lib.rs`; `privilege.rs` (+ the `reservation()` trait
-  accessor) + `privilege/tests.rs` (the Fixture); `translation.rs`
-  (`AccessKind::Atomic` + tests); `state.sexp` (the candidate's why → the answered
-  form with the deterministic SC policy as DATA, decision 3); `gen_state.py`
-  (REQUIRED_CENSUS_CANDIDATES generalising the census gate + the
-  field/reset/accessor emit); `state_rv64gc.rs` regenerated (rv64i's
-  `state.rs` byte-identical); `definition_rv64gc.rs` regenerated (manifest-hash
-  only); `check_state_gen.sh` (+1 RED arm). Scratch (`target/p4-system-4/`,
-  untracked): the rv64gc+A module, `proof/exec_rv64gc_a.rs` (the tracked evaluator
-  + the three arms), `proof/proof.rs`.
+- [x] **FIX** — staging only: 12 guests (`corpus/*.s` with inline derivation
+  directives); `tools/derive_expectations.py` (the EVD-05 spec-side model — from the
+  pinned chapters + state.sexp's declared policy, NEVER engine output); its
+  `.expected.sexp` (schema-valid ×12) + `run-order.txt`; `guests_staged.rs`
+  (gen_guests — the TRACKED assembler assembled every word); `corpus-run/main.rs`;
+  `unit/` + `unit-red/` (the staged matrix and the RED legs). No tracked content
+  changed.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ cargo test -p semulith-core --lib reservation / translation
-  test result: ok. 7 passed (establish/replace/clear/mismatches/cold/determinism) /
-  26 passed (25→26: R=0/W=0/A=0/D=0 → 15, R∧W ok, causes 15/7)
-  $ bash scripts/check_state_gen.sh --self-test
-  STATE-GEN --self-test: 27 pass / 0 fail (26→27: the RED census-silent-on-the-
-    reservation arm — "does not declare a present reservation")
-  $ target/p4-system-4/proof/proof
-  PASS ×16, 0 fail — every cell named in the verification log row below
-  $ git diff --stat HEAD -- crates/semulith-core/src/state.rs
-  (empty — rv64i's state byte-identical; rv64gc's definition manifest-hash-only, 4 lines)
+  $ target/p4-system-4/corpus-run/corpus-run; ./corpus-run > r1 && ./corpus-run > r2 && cmp r1 r2
+  corpus: 12 guest(s) PASS, 0 FAIL
+  $ python3 scripts/check_interaction_matrix.py target/p4-system-4/unit
+  28 cells declared, every disposition resolves (rc=0); coverage reads 22 of 22 A
+  forms exercised (87 = 65 + 22)
   ```
 
-- [x] **NO REGRESSION** — RED-first (the initial 13/3 proof run; the STATE-GEN arm's
-  RED fired on the fixture), then the guard set: STATE-GEN 26→27, DEF-GEN 23/23,
-  corpus 9/9, SOURCE-FORMAT 211; every generator's `--check` byte-exact;
-  fetch_references `--verify-only` green both profiles; `make check` rc=0 (fmt +
-  clippy -D warnings + 8 groups incl. the new 7+1); `make gate` →
-  `=== all doctrines green ===` (DERIVED-COUNTS 428→429 arms).
+- [x] **NO REGRESSION** — the RED legs fired by name on `unit-red/`: ORPHAN GUEST,
+  OMITTED CELL, UNKNOWN DIFFERENCE. Nothing tracked changed; `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged).
 
 - [x] **LOCKSTEP** — same commit: this tree (status + frontier + checklist + logs +
-  changelog; slice (b)'s checklist archived verbatim at the NINTH crossing — the
-  archive was full, so it SPLIT: `archive/P4-SYSTEM.md` (part 1) keeps the earlier
-  sections, NEW `archive/P4-SYSTEM-2.md` (part 2) takes this move onward),
-  `MEMORY.md` (→ slice d), `CHANGELOG.md`, `DEV_NOTES.md` (the Sail cancellation
-  measurement and the three test-design defects; the dated lesson's promotion
-  decision:
-promotion: declined (the durability is the machinery — the completed-path-only clear is armed by the trapped-SC proof cell and the reservation module's own suite, and the census gate refuses a silent descriptor by name)),
-  `LIVE_STATUS.md` (the arms count 428→429 only), `docs/book/src/plan/p4.md` (the
-  slice line). The bind's port mapping: the three arms land in `exec_rv64gc.rs`'s
-  match after `Sem::TlbInvalidate` with `use crate::privilege::PrivilegedHart;`;
-  the proof's cells inform slice (d)'s corpus design.
+  changelog; slice (c)'s checklist archived at the TENTH crossing), `MEMORY.md`
+  (→ slice e, THE BIND), `CHANGELOG.md`, `DEV_NOTES.md` (the authoring defects; the
+  promotion decision:
+promotion: declined (the durability is the machinery — the change-comparison rule and the funct5 census are armed by the runner and the corpus, re-runnable at the bind)),
+  `LIVE_STATUS.md` (unchanged), `docs/book/src/plan/p4.md` (the slice line). The
+  bind's re-run commands are recorded in the changelog.
 
-`P4-SYSTEM.4` slices (d)–(f) : pending — filled at execution.
+`P4-SYSTEM.4` slices (e)–(f) : pending — filled at execution.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-05` | `.4` slice (d) | the pre-slice census (0 atomics guests); the 12-guest staged corpus with the EVD-05 spec-side derivation (schema-valid ×12); four authoring defects caught and re-derived (the tool's unapplied register writes; the same-value-write rule; the "reserved" funct5 0x02 that IS LR's; the sv39 data PA in the root table); every word through the TRACKED assembler; the corpus through the slice-(c) scratch engine: **12 PASS / 0 FAIL**, deterministic re-run identical; the matrix rehearsal 28 cells resolve with the three named RED legs; coverage 22/22 (87 = 65 + 22); nothing tracked changed; `make gate` all green (DERIVED-COUNTS 429) | slice (d) landed: the atomics corpus staged and proven — the bind's payload is ready |
+
+
+
+
 | `2026-10-05` | `.4` slice (c) | the pre-slice census (the reservation candidate pre-declared but ungated; 0 reservation module; Store judging W-only at translation.rs:374; Sail's cancellation sites read at zalrsc_insts.sail:71-79 — completed-path cancel only); the reservation module 7/7; AccessKind::Atomic with the suite 25→26 (R=0/W=0/A=0/D=0 → 15 never 13); the generalised census gate with the STATE-GEN RED arm 26→27; rv64i's state byte-identical, the definition manifest hash-only; the scratch proof 16/16 (every must-fail cell, the trapped SC keeping its reservation, misaligned → 7 before translation, the AMO nine × .W/.D with the boundary pair asserted, the translated-AMO and alias cells, the first-SC loop, cold-reset determinism — plus three caught test-design defects of mine); gen pairs byte-exact; fetch `--verify-only` both profiles; `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 428→429) | slice (c) landed: the reservation state with the SC policy as state-document data, the generalised census gate, and the AMO/LR/SC arms proven in scratch — the tracked evaluator untouched, the bind's port mapping recorded |
 | `2026-10-04` | `.4` slice (b) | the pre-slice census (40 operators, no atomic form; the memory operators exactly load/store; no a.sem.sexp; the generator knowing no A operator; the evaluator's Sem match exhaustive — TlbInvalidate the last arm, no wildcard); the normative sentences re-located in the pinned chapters (the AMO store/AMO fault rules ×1 each in RVP-SUPERVISOR/RVP-MACHINE; the SC-invalidates and nonzero-code sentences ×1 in RVI-A §12.1.2; the 16-instruction loop ×1 in §12.1.3); the bare-symbol-op probe (`'add' is not an operand this instruction has` rc=1 — the funct5-as-lit design); the pair check 22/22, the two trial compositions (--compose base+A and the 5-fragment set) with every override declared; the corpus gate ok (8 checks) and the citations corpus (a.sem.sexp vs rv64gc offline: RVI-A §12.1.2 ×4, §12.1.4 ×18; 5 files / 7 resolutions); the scratch lowering (78,752-byte module over base+zicsr+zicntr+system+A, rustc rc=0 standalone, the lr.w/amoadd.w trees inspected) with three named RED probes (the closed-nine refusal derived from the composed encodings, the no-A-composition guard, the rv64i guard); self-tests check_semantics 15→17, DEF-GEN 17→23, corpus 8/8, citations 13/13; the tracked modules hash-only (0 non-hash diff lines); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 424→428) | slice (b) landed: the 43-form language with the reservation contract, a.sem.sexp for all 22 forms cited, and the conditional lowering — the tracked surfaces gain not one A byte, the slot stays declared, rv64i's module hash-only |
 | `2026-10-04` | `.4` slice (a) | the pre-slice census (`grep rv_a\|rv64_a` over the ledger → rc=1; 9 files under definitions/riscv, no A; the whitelists aq-count 0; the whole-token lookup refusing `lr.w`; the pinned arg_lut.csv carrying aqrl/aq/rl/amoop; the A chapter encoding-free, RVWMO Tables 6/7 the 22-form enumeration); the tracked-route fetch (rv_a 858 B d9eaa988…, rv64_a 885 B 819e0487… — 11+11 real rows, tokens `aq rl`, no amoop/aqrl token, lr's 24..20=0); the root fixes measured RED-first (the rv64_* collector gap — the census saw neither rv64_a nor rv64_m; the A pin without the named exclusion → `tables 87 vs declared 65`, the M-exclusion shape followed); fetch_references `--verify-only` green for BOTH profiles (65==65, 52==52, ISA string MATCH) + a scripted fresh re-fetch of rv_a byte-identical; gen_fragments re-run with the existing five byte-identical (`git diff --stat -- definitions/` empty); check_sexp_schema ok on a.sexp; the trial compositions through a synthetic unit doc (base+A 74 COMPOSE; the 5-fragment union 84 + 3 pseudo COMPOSE, slot declared); the assembler probe (88 words = 22 forms × 4 suffix combinations, the spike-dasm round-trip exact — lr's suffix words print plain, spike's preference, the bits measured set; 11 RED refusals named: garbage suffix, suffix-on-non-atomic, bare/offset address shapes, wrong arities); disjoint self-test 12/12, unit-composition 9/9 + 3 units decided, SOURCE-FORMAT 210, compare_readers 1/1, all generators byte-exact; `make gate` green (DERIVED-COUNTS 424 unchanged) | slice (a) landed: the rv_a/rv64_a re-pin, the generated a.sexp fragment (owns aq/rl, requires rv64i), and the assembler's A machinery (the suffix-as-field-value rule, the `(rs1)` spelling, refusals by name); the slot stays declared, the census 65, rv64i's surfaces byte-identical |
@@ -560,6 +542,8 @@ promotion: declined (the durability is the machinery — the completed-path-only
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.4` (slice d) | `SEMULITH-P4-0026 (leaf P4-SYSTEM.4): slice d — the staged atomics corpus (12/12), the EVD-05 derivation tooling, the matrix + coverage rehearsals` | 12 guests over the families; the four caught authoring defects; 28 cells resolve with 3 named RED legs; coverage 22/22 (87 = 65 + 22); all untracked staging — the bind re-runs it tracked |
+
 | `.4` (slice c) | `SEMULITH-P4-0025 (leaf P4-SYSTEM.4): slice c — the reservation state, the deterministic SC policy as data, the AMO/LR/SC arms proven in scratch` | reservation.rs (PA,width,valid; any LR replaces, any completed SC clears, a trap clears nothing — the Sail zalrsc measurement); the census gate generalised with a RED arm (STATE-GEN 26→27); the policy as state.sexp data; AccessKind::Atomic (R∧W, 15/7); the 16/16 scratch proof; the archive SPLIT (part 2) at the ninth crossing; rv64i's surfaces byte-identical |
 | `.4` (slice b) | `SEMULITH-P4-0024 (leaf P4-SYSTEM.4): slice b — the reservation contract + the three atomic operators in the language, a.sem.sexp for all 22 forms, the conditional lowering` | schema/semantics.sexp 40→43 forms (the reservation block citing §12.1.2/§12.1.3 + decisions 2–4/6; load-reserved / store-conditional / amo with the deterministic SC policy and the store/AMO fault rules); a.sem.sexp hand-written, 22/22 checked, citations resolving offline; gen_definition's A surface derived (the funct5 closed set from the composed encodings) and gated (variants emit WITH the fragment; two named guards); scratch module compiles standalone, 3 RED probes; self-tests 15→17 / 17→23; the tracked modules hash-only, no Rust edited |
 | `.4` (slice a) | `SEMULITH-P4-0023 (leaf P4-SYSTEM.4): slice a — the rv_a/rv64_a re-pin, the a.sexp fragment, and the assembler's A machinery` | the re-pin through the tracked extensions/ route (sha256+bytes; the scope leg's rv64_* collector gap fixed at root and the A tables under the M exclusion's named shape until the bind); the generated fragment (22 forms, owns aq/rl — no aqrl token in the tables, measured); the suffix rule (.aq/.rl/.aqrl the aq/rl field values, garbage refused by name) + the (rs1) spelling; 88 words assembled, the spike-dasm round-trip exact, 11 named RED refusals; the existing five fragments and rv64i's surfaces byte-identical; the slot and the 65-form census untouched |
@@ -583,6 +567,17 @@ promotion: declined (the durability is the machinery — the completed-path-only
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-05`: `.4` slice (d) done (`SEMULITH-P4-0026`) — the staged atomics corpus:
+  12 guests over the brief's families, EVD-05 spec-side expectations, every word
+  through the tracked assembler, **12 PASS / 0 FAIL** through the slice-(c) scratch
+  engine (deterministic re-run identical). Execution caught four authoring defects —
+  each re-derived, never fitted (the tool's unapplied register writes; the
+  same-value-write rule; a "reserved" funct5 that was LR's own; the sv39 data PA
+  in the root table). Matrix rehearsal 28 cells resolve with three named RED legs;
+  coverage 22/22 (87 = 65 + 22). All untracked staging; `make gate` green
+  (DERIVED-COUNTS 429). Next: slice (e) — THE BIND: slot→extension, the 65→87
+  census, the corpus tracked, the evaluator arms — one green commit.
 
 - `2026-10-05`: `.4` slice (c) done (`SEMULITH-P4-0025`) — the reservation state
   (`reservation.rs`: (PA, width, valid); any LR replaces, any COMPLETED SC clears, a

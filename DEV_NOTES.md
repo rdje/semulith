@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-05)_ — the corpus grades its author four times before it grades the engine once (P4-SYSTEM.4 slice d)
+
+Execution of the `.4` brief's checkpoint (d) measured:
+
+- **A derivation tool that never applies its writes derives a fiction.** The
+  spec-side stepper computed every register write into the expectation and
+  mutated nothing — so the next instruction read zeros, and the first run
+  "completed" every guest in 5-6 steps. Caught at the first `sw`: the step after
+  it left the program. The READS-AND-WRITES contract is what makes the fix
+  correct by construction: execute reads the pre-instruction file throughout,
+  the writes land after the whole effect (promotion: declined — the corpus
+  itself re-runs the rule at the bind).
+- **The comparison rule is part of the corpus's vocabulary, not a detail.** The
+  runner observes register CHANGES, so a register written its own value is no
+  observation — the `.3` "x8-already-zero" rule. Eleven of twelve guests failed
+  the first run on exactly this (the aq/rl cells' repeated 41s, the handlers'
+  repeated CSR reads). The expectations now derive only observable changes.
+- **"Reserved" must be checked against the decode table, not remembered.**
+  funct5 0x02 is LR's OWN — my "reserved AMO funct5" `.word` decoded as
+  `lr.w x6, (x1)` and executed, reading the handler's first word through a
+  register the mtvec setup had consumed (the observed `0x342025f3` named it).
+  The genuinely reserved 0x05 replaced it; the census that matters is the closed
+  set {0x00,0x01,0x04,0x08,0x0C,0x10,0x14,0x18,0x1C} plus LR 0x02 and SC 0x03.
+- **A data PA is an allocation, and allocations collide.** The sv39 guest's data
+  leaf pointed at base+0x1000 — the ROOT TABLE's page. Cell 3's own store
+  overwrote root[0] with 17, turning it into a leaf with R=0, and every later
+  walk faulted on schedule. The fix is the honest one (move the data to
+  base+0x4000), and the failure mode is now a named audit step: a guest's data
+  addresses and its page-table addresses live in one map.
+
 ## _(2026-10-05)_ — the cancellation site is the spec sentence, and the proof grades the tests too (P4-SYSTEM.4 slice c)
 
 Execution of the `.4` brief's checkpoint (c) measured:
