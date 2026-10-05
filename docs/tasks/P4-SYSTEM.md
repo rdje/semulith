@@ -128,7 +128,8 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: single-core reservation behaviour is validated here; multicore memory-model work is `MC-MULTICORE`, not smuggled in.
 
 - ID: `P4-SYSTEM.5` — **interrupts, counters and wait**
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0029`; slices (a) `SEMULITH-P4-0030`, (b) `SEMULITH-P4-0031`, (c) `SEMULITH-P4-0032`, all done `2026-10-05`)
+  Status: **done** `2026-10-05` (design brief `2026-10-05`, `SEMULITH-P4-0029`; slices (a) `SEMULITH-P4-0030`, (b) `SEMULITH-P4-0031`, (c) `SEMULITH-P4-0032`, (d) `SEMULITH-P4-0033`)
+  Result: **met.** The 99-guest corpus falsifies the interrupt/counter/wait semantics against EVD-05 expectations, and the Sail matched attempt confirms the matchable cells: **6 AGREE + 6 NAMED of 12, every named one platform-shaped** (probe-tw: the named TW gap freshly measured — DIVERGE under the matched config, AGREE 30/30 under the wfi-wait variant with the delivered trap identical). Masks: the per-cause enables gate exactly — pending with the enable clear is never taken, and the write's immediacy is one boundary by construction (i-enable). Priority: the fixed order MEI>MSI>MTI>SEI>SSI>STI drains simultaneous pending in the spec's sequence (i-prio's three-delivery walk). Pending/active state: pending is evaluated at the head of every step — the (a)(b)(c) taken-rule with the global rule and the delegation mask (i-accept per mode; i-deleg's S round-trip) — mip's STIP arrives computed from the declared domain, the M-source bits read-only 0 by declaration. Nesting: an interrupt taken inside a handler pushes and pops the xPIE/xIE/xPP stack exactly (i-nest's two-level return). Return: the xRET discipline restores mode and pc through every delivery, and both xtvec.MODEs are honored — Direct keeps BASE, Vectored rides BASE + 4×cause, the synchronous trap keeps BASE (i-vector). Counter width: the domain is 64-bit end to end (mcycle's storage, the time/cycle read-only views). Rate: one tick per step boundary, retired or halted — declared data under Zicntr §6.1's latitude. Wrap: §6.1's "should never overflow in practice" — a 64-bit domain's wrap is not architecturally scheduled and is not modelled as a reachable case; the width and the rate are the validated parts, and that position is the honest one. Mode gating: the mcounteren/scounteren ACCESS gates stand on live values (gated-off still counts). The halted core's wake: a legal WFI enters WAITING, the domain ticks through the halt, and the wake fires on a locally-enabled pending interrupt at any privilege regardless of the global enables and of mideleg (RVP-MACHINE §2.1.3.3's musts) — the acceptance criterion is w-timer's own run: three boundaries with no register observation (two `<halted>` steps and the delivery), the handler's first read rdinstret = 11 (nothing retired across the halt), then the timer trap with mcause = the Interrupt bit|5 and mepc = the wfi's pc + 4. Time passed while nothing executed.
   Goal: masks, priority, pending/active state, nesting, return; counter width, rate, wrap and mode gating; a halted core still receiving its wake event (catalog `C14`, `C17`).
   Acceptance: timer or interrupt wake occurs **without CPU retirement** — the laboratory must be able to make time pass while nothing executes.
 
@@ -162,7 +163,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.5` | `pending` | interrupts, counters and wait — slices (a)–(c) landed `2026-10-05` (the virtual-time domain; the step-head pending evaluation with both vector modes; the halted state + WFI's real wake — the timer wake without retirement evidenced, 99/99 with the 94 non-wfi guests byte-identical); next is slice (d): the matrix cells + the Sail attempt + the reports and the book + the leaf acceptance |
+| 1 | `P4-SYSTEM.6` | `pending` | instruction visibility and fence semantics — `.5` closed `2026-10-05` (the timer wake without CPU retirement evidenced; the Sail attempt 6 AGREE + 6 named of 12); the design brief lands first (the cadence) |
 
 ## Decisions
 
@@ -407,97 +408,127 @@ never raised, at every crossing. The index:
 
 - leaf `.1`, `.2` (all slices + LEAF ACCEPTANCE), `.3` (all slices), `.4` slice (a) →
   [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (crossings 1–7).
-- `.4` slices (b)–(f), `.5` slices (a), (b) →
+- `.4` slices (b)–(f), `.5` slices (a)–(c) →
   [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
+  (8th — the archive split — 9th–13th, 15th–17th).
   (8th — the archive split — 9th–13th, 15th, 16th).
   (8th — the archive split — 9th, 10th, 11th, 12th, 13th, 15th).
 
 
-`P4-SYSTEM.5` slice (c) — the halted state + WFI's real wake + the `<halted>` vocabulary + the wake corpus + mm-wfi's re-derivation (`2026-10-05`, `SEMULITH-P4-0032`):
+`P4-SYSTEM.5` slice (d) — the Sail matched attempt + the reports + the book; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0033`):
 
-- [x] **REPRODUCE / ISSUE** — the acceptance's enabling machinery was absent, and
-  exactly one guest's legal-WFI cells depended on the stated nop:
+- [x] **REPRODUCE / ISSUE** —
 
   ```
-  $ grep -c "waiting\|wake" crates/semulith-core/src/exec_rv64gc.rs   # pre-slice
-  0 — no hart-state bit, no wake; a legal wfi retired as a stated nop
-  $ grep -ln "wfi" profiles/rv64gc-lab-v0/guests/*.s
-  mm-wfi.s — the ONLY guest containing wfi (the hard boundary's census,
-  re-measured): the identity proof's by-design exception is exactly one guest
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --config-override \
+      target/refs/sail-rv64gc-lab-v0.override.json --validate-config
+  The default configuration merged with … is valid. rc=0 — the override needed
+  NO change (materialized fresh from the tracked .sexp, itself unchanged since
+  bfa6aaa — git log; mideleg/mip/mie/Sstc were already covered, pre-condition
+  measured, never assumed)
+  $ ls target/p4-system-5/sail/*.elf | wc -l
+  0 → 13 — the 12 corpus guests + the TW probe had no Sail-runnable images
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect in decided behavior; the wake
-  sentences were measured verbatim before authoring (the delegation-wake cell
-  especially): RVP-MACHINE §2.1.3.3 — 'the hart must resume if a locally enabled
-  interrupt becomes pending, even if it has been delegated to a less-privileged
-  mode', 'required to resume … at any privilege level, regardless of the global
-  interrupt enable', and the WFI-specific 'mepc = pc + 4'. The brief's claims
-  measured TRUE, so the wake condition is exactly mip & mie != 0 — no globals,
-  no mideleg — and a delegated source waking an M-mode hart is spec-backed
-  (w-deleg rides it).
+- [x] **ROOT CAUSE (WHY + WHERE)** — no engine defect this slice; the six named
+  divergences are all platform-shaped, each measured to its sentence:
 
-- [x] **FIX** — `wait.rs` (NEW: the ACTIVE/WAITING bit, cold-ACTIVE at reset, a
-  pure function of hart history — the TLB/reservation module discipline);
-  `exec_rv64gc.rs` (the halted-step head arm — the wake first, else tick-and-
-  stay — and the legal-wfi enter); `interrupts.rs` (`wake_pending` + 2 tests);
-  the SEM-08 census's wait-state candidate (gen_state carries the bit, the gate
-  gains the RED arm); `system.sem.sexp`'s stated nop superseded by the halt with
-  its date; EVD-05: the 4 w-* guests + mm-wfi re-derived, never fitted.
+  ```
+  $ grep -n "plat_have_clint" target/refs/sail-riscv-src/model/core/interrupt_regs.sail
+  250:  let platform_has_timer = plat_have_clint; — the gate, measured in the pinned
+  source: with clint.supported=false (D-PLATFORM) mip[STI] never sets (i-prio step 24,
+  i-timer step 3); the counter registers themselves are the `.2` wall — Zicntr
+  supported=false, so rdtime/rdinstret trap illegal on sail (the mm-wfi trace's
+  tval=0xC01023F3). And platform.wfi_is_nop=true: sail's wfi never dwells and the
+  TW judgment lives only in the wait-exit path the nop never reaches (step.sail,
+  the run_hart_waiting arm)
+  ```
+
+- [x] **FIX** — untracked experiment tooling (`target/p4-system-5/sail/`: the ELF
+  builder — the tracked assembler's bytes, .word-only + PHDRS at exactly
+  0x8000_0000, measured; the row-keyed comparator — Sail NUMBERS the
+  interrupt-delivery step and prints no row, measured on i-accept's [9]→[11]
+  jump, the `.3` fetch-fault convention's own shape); probe-tw (the TW cells in
+  isolation); `references.sexp` (the fourth experiment recorded in
+  matched_scope); the book's `.5` section completed + the index regenerated.
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ cargo test -p semulith-core --lib
-  test result: ok. 128 passed — the bit, the wake (globals/mideleg ignored,
-  the timer's arrival through the domain), the whole suite
+  $ python3 target/p4-system-5/sail/compare_sail.py
+  AGREE ×6 (i-accept 36, i-deleg 60, i-enable 21, i-nest 31, i-vector 53,
+  w-sw 17 — 218 steps' change-observations exact, the delivery-step convention
+  identical on both sides)
+  DIVERGE ×6, all named platform-shaped: i-prio step 24 (sail x13=2 vs 34 —
+  STIP), i-timer step 3 (sail x7=0 vs 32 — STIP), w-deleg step 12 / w-notrap
+  step 6 / w-timer step 11 / mm-wfi step 9 ('sail printed a row for the
+  <halted> step the convention says it skips')
+  $ probe-tw: DIVERGE under the matched config (step 25 — sail never judges
+  TW), AGREE 30/30 under the wfi-wait variant (cause 2, mepc = the wfi's pc,
+  xtval = the wfi's word — the delivered trap identical, only its timing is
+  sail's own)
+  $ the `.4` corpus re-run under the fresh override: 11 AGREE + 1 NAMED of 12
+  — the identical outcome (the width cell's sail x9=0 at step 22) —
+  verdict-neutral, the `.4` expectations untouched since 495b4b8
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0
+  28 cells declared, every disposition resolves; the three RED legs fired by
+  name on a scratch copy (ORPHAN GUEST w-timer / OMITTED CELL restart×restart
+  / UNKNOWN DIFFERENCE)
   $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed — 99/99: the wake family (w-timer 23 steps with
-  rdinstret=11 at the handler's first step — the acceptance observed; w-notrap
-  19, w-deleg 26, w-sw 17; 6 `<halted>` steps at fetches 0), mm-wfi 61 (4
-  halted; the TW=1/U trap cells measured unchanged), and everyone else
-  $ <the 95 pre-slice guests × demo on both builds, cmp> → 94 IDENTICAL,
-  mm-wfi the only difference (by design, corpus-proven; the worktree removed)
+  test result: ok. 4 passed — 99/99
   ```
 
-- [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8
-  groups); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 429 →
-  430 re-derived — the wait-state RED arm; LIVE_STATUS's count re-derived,
-  byte-neutral); STATE-GEN: both pairs in sync with the new candidate gated
-  RED-first; the matrix resolves 28 cells with the wake family mapped.
+- [x] **THE LEAF ACCEPTANCE** — "timer or interrupt wake occurs without CPU
+  retirement — the laboratory must be able to make time pass while nothing
+  executes", quoted from the actual w-timer run (`semulith demo --guest=w-timer`):
 
-- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
-  logs + changelog; the slice-(b) checklist and the closed `.4` leaf's log rows
-  moved to the archive at the sixteenth ceiling firing), `docs/TASK_TREE.md`,
-  `MEMORY.md` (next_action → slice d), `CHANGELOG.md`, `DEV_NOTES.md` (the
-  span-zero wake and the end-marker text-collision lessons; the promotion
+  ```
+  [11] [M]: 0x000000008000002c      — three boundaries, no register observation
+  [12] [M]: 0x000000008000002c        (the two `<halted>` steps and the delivery)
+  [13] [M]: 0x000000008000002c
+  [14] [M]: 0x0000000080000030
+  x14 <- 0x000000000000000b         — rdinstret = 11 at the handler's first step:
+                                      the ten setup instructions and the wfi, and
+                                      NOTHING across the halt or the delivery —
+                                      the wake occurred WITHOUT CPU RETIREMENT
+  x11 <- 0x8000000000000005         — mcause: the Interrupt bit with cause 5
+  x12 <- 0x000000008000002c         — mepc = the wfi's pc + 4 (§2.1.3.3)
+  ```
+
+  `make check` rc=0 (fmt + clippy -D warnings + 8 groups), `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 430 unchanged); RECORD-SCHEMA
+  20 files ok (references.sexp's matched_scope gain); PROFILE-CONSISTENCY 5;
+  smoke-bench 53 arms + bench wasm + both books green — re-run this slice even
+  though no tracked engine/fixture content changed (the experiment tooling is
+  untracked scratch; the bench/books are the cheap proof, `make ci`'s legs).
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
+  narrative + frontier → `.6` + checklist + logs + changelog; the slice-(c)
+  checklist moved to the archive at the seventeenth ceiling firing),
+  `docs/TASK_TREE.md` (5/10), `MEMORY.md` (next_action → `.6`'s design brief),
+  `LIVE_STATUS.md` (5/10), `CHANGELOG.md`, `DEV_NOTES.md` (the promotion
   decision:
-promotion: declined (the durability is the machinery — the wake rule and the halt are armed by the wait/interrupts suites and the 99-guest corpus, both in make check)),
-  `LIVE_STATUS.md` (the arm count re-derived 429→430), `docs/book/src/plan/
-  p4.md` (the `.5` section's slice line).
+promotion: declined (the durability is the machinery — the corpus verdicts are armed by make check, and the matched attempt is re-derivable: the override materializes from the tracked unit and the scratch comparator/ELFs are preserved under target/)),
+  `docs/book/src/plan/p4.md` (the `.5` section completed) + the book index.
 
 ## Verification Log
 
 The rows for leaves `.1` and `.2` (closed `2026-10-03`) live verbatim in
 [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — moved at this file's fourteenth
 per-part ceiling crossing (`2026-10-05`, the `.5` design brief landing; the ceiling was
-obeyed, not raised). The closed `.4` leaf's rows joined them at the sixteenth crossing (the `.5` slice-(c) landing). The `.3` rows stay inline below.
+obeyed, not raised). The closed `.4` and `.3` leaves' rows joined them at the sixteenth and seventeenth crossings (the `.5` slice-(c)/(d) landings). Only the active `.5` leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-05` | `.5` slice (d) + LEAF | the override measured first (materialized fresh from the tracked .sexp — unchanged since bfa6aaa; validate-config rc=0, NO change needed); the 13 ELFs at exactly 0x8000_0000 (.word-only + PHDRS, the tracked assembler owning the bytes); the row-keyed comparator with the delivery-step convention MEASURED (sail numbers the interrupt-delivery step and prints no row — i-accept's [9]→[11] jump, the .3 fetch-fault convention's own shape); the experiment (6 AGREE + 6 NAMED of 12 — the six named all platform-shaped: sail's timer block gated on plat_have_clint so STIP never sets (i-prio step 24 sail x13=2 vs 34, i-timer step 3 sail x7=0 vs 32), sail's wfi a nop under the matched platform so the halt has no counterpart (w-deleg 12 / w-notrap 6 / w-timer 11 / mm-wfi 9 — 'sail printed a row for the `<halted>` step'), and probe-tw DIVERGE under the matched config (sail never judges TW — the judgment lives only in the wait-exit path the nop never reaches) but AGREE 30/30 under the wfi-wait variant with the delivered trap identical — cause 2, mepc = the wfi's pc, xtval = the wfi's word); the verdict-neutrality re-run (the .4 corpus under the fresh override reproduces 11 AGREE + 1 NAMED of 12 exactly); the matrix invocation (28 cells resolve) + the three RED legs fired by name on a scratch copy (ORPHAN GUEST / OMITTED CELL / UNKNOWN DIFFERENCE); references.sexp's fourth experiment recorded; the acceptance evidence quoted from the actual w-timer run (rdinstret=11 at the handler's first step; mcause=int\|5; mepc=wfi+4); `cargo test -p semulith-verify run_rv64gc` 4/4 (99/99); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5, smoke-bench 53 arms + bench wasm + both books | the LEAF CLOSES: the timer wake occurs WITHOUT CPU RETIREMENT (w-timer's own run quoted); masks, priority, pending/active state, nesting and return validated; the 64-bit domain's width and declared rate validated with the wrap position stated honestly; the mode gates stand; the matched attempt confirms the matchable cells and records every not-matchable with its measurement; frontier → `.6` |
 | `2026-10-05` | `.5` slice (c) | the pre-slice census (0 waiting/wake in the step; mm-wfi the ONLY wfi guest of the 95); §2.1.3.3's wake sentences measured verbatim (the delegation claim TRUE — the wake is exactly mip & mie; xepc = wfi+4 falls out of the generic delivery, the WFI retiring into the halt); the wait module 2/2 + the wake tests 2/2 (globals/mideleg ignored, the timer's arrival through the domain); the SEM-08 wait-state candidate with gen_state carrying the bit and the RED arm (the synthetic fixture + the present-false surgery); the 4 w-* guests + mm-wfi re-derived BEFORE any engine run (23/19/26/17/61 steps, 10 `<halted>` at fetches 0 — w-timer's rdinstret=11 the acceptance observed; mm-wfi's TW/U cells unchanged; the end_at text-collision caught and fixed at the guest); `cargo test -p semulith-verify run_rv64gc` 4/4 (99/99); the identity proof (94/95 byte-identical, mm-wfi the designed exception, worktree removed); the matrix (28 cells resolve, the family mapped); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429→430 re-derived) | slice (c) landed: the hart halts and time passes anyway — the timer wake occurs WITHOUT CPU RETIREMENT, the TW resolutions stand, only mm-wfi's trace moved |
 | `2026-10-05` | `.5` slice (b) | the pre-slice census (0 interrupt writes in all 88 guests — name and numeric form; 0 mip/sip/mie readers; mm-stimecmp stimecmp-only ⇒ the identity proof unconditional); the interrupts module 8/8 (the taken-rule per mode, the delegation mask, the priority walk, the delivery shape, both vector modes, the stack, the S view); the derivation tool hardened to the engine's field tables (mstatus reset 0xA0000000, sstatus/sie/sip views + per-field write legalization + the computed STIP, the CSR-privilege refusal, pc-keyed derivations, the (fetches N) convention) — the authoring model's own defects caught by execution and re-derived, never fitted (the tool's inverted trap-entry stack; i-accept's 8-byte-long mtvec delta; i-timer's retired-count clock; i-vector's SEIP-clear through read-only sip); the 7 i-* guests + EVD-05 expectations derived BEFORE any engine run (36/60/21/31/63/26/53 steps, 13 fetch-less deliveries); `cargo test -p semulith-verify run_rv64gc` 4/4 (95/95); the identity proof (88/88 traces cmp-clean against e37e664, worktree removed); the matrix (28 cells resolve, 7 mapped, no orphan); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged) | slice (b) landed: pending is evaluated at every step head and delivered honoring both vector modes — the corpus proves the taken-rule, the mask, the priorities, the timer, the vector arithmetic and the nesting stack; every pre-slice guest byte-identical |
 | `2026-10-05` | `.5` slice (a) | the pre-slice census (the counters frozen at 0; the full-88-guest read census — mm-counters the ONLY counter reader (7 reads), 0 mip/sip readers (the STIP-at-reset quirk and the ticking STIP unobservable today), mm-stimecmp clean of counter/mip/sip reads); the storage-shape decision (ONE domain — mcycle's storage, time a view, 'a valid implementation of RDTIME', §6.1; the duplicate row retired, FACT-OWNERSHIP); the LATENT view defect measured and fixed at root (a field-less view masked to 0 — the counters would have read 0 forever; a field-less view is now a full-width shadow); the timekeeping module 7/7 (advance per boundary, instret only on retired, cycle==time both read paths, the ticking STIP incl. the reset quirk, cold-reset determinism, the M-writable base, the ACCESS gates); mm-counters' 5 value cells re-derived BY DESIGN (0/1/2/25/51 — time at executed step k is k; the trap cells 13/39 untouched); `cargo test -p semulith-verify run_rv64gc` 4/4 (88/88); the identity proof (4,892 == 4,892 lines, cmp clean — 87 non-counter guests byte-identical, worktree removed); `make check` rc=0 (8 groups), `make gate` all green (DERIVED-COUNTS 429 unchanged), STATE-GEN both pairs re-derived (CSR storage 33→32) | slice (a) landed: the declared virtual-time domain ticks one per step boundary (retired or halted), instret counts genuinely, the rate is state-document data, mm-counters re-derived, everyone else byte-identical |
-| `2026-10-04` | `.3` slice (e) part 2 | the pre-slice census (the mm driver names no sv39 guest; the override's medeleg mask 0x3FF — page faults not delegatable, the laboratory pins 0-10 \| 12-15 \| 18-20 WARL-any; sail's --trace-ptw/--trace-tlb present as own flags); the ELF build (the tracked assembler owns the bytes — a .word-only source + a PHDRS link at EXACTLY 0x8000_0000, the chains' absolute addressing requires it); the fetch-fault harness convention (sail numbers the step, prints no row — the `<fetch page fault>` pseudo-steps are exactly the no-row no-write steps); the sv39-deleg measurement (sail x22=13 vs expected x7=13 — the override's mask, not the engine); the mask bisection (sail 0.14 names causes 10/14 reserved, rejects 17-20 → 0xB3FF, the widest mask both sides honor); the experiment (13 AGREE + 1 AGREE-RECORDED of 14 — every walk read-for-read identical incl. tlb-fence's 7 add / 2 flush; svade's A/D-placement convention recorded: sail judges A/D after the walk, the laboratory at step 9, the delivered trap identical); the no-regression (the widened mask verdict-neutral: 11/12 mm AGREE under it, mm-wfi's TW cell named at the same step; `git diff SEMULITH-P4-0019 -- crates/ profiles/rv64gc-lab-v0/guests/ | wc -l` → 0); `cargo test -p semulith-verify run_rv64gc` 4/4; `make check` 8/8, `make gate` all green (DERIVED-COUNTS 424 unchanged) | slice (e) part 2 landed and the leaf CLOSES: the sv39 matched experiment — architecture, PTW and TLB explicit per guest — the acceptance met: the correct fault AND the permitted page-table side effects (none under Svade, the ld-back proof); A/D validated, not a knob |
-| `2026-10-04` | `.3` slice (e) part 1 | the pre-slice census (0 sv39 guests in the run order; the sv39 path proven only by the 25 translation unit tests; the one-fetch-per-step witness unable to speak about a fetch page fault); the authoring tooling (fixpoint layout + the chain-accumulating audit that knows table targets; the spec-side model — the pinned 10-step walk, Svade, MPRV, medeleg, region bounds, the slice-(d) TLB semantics — EVD-05, never engine output); the 14 guests each executed green through `demo` (translate-4k/2m/1g with the PTE-byte-untouched ld-backs; the four fault guests' causes 12/13/15 with xtval; the R/W/X and U/SUM/MXR permission matrices incl. the fetch page fault; the Svade no-update proofs; MPRV's translated/physical distinction incl. the no-code-mapping fetch-immunity proof; the TLB stale/fence/G-retention sequence; the non-contiguous-page straddle as two fetch requests; medeleg's selective routing S-vs-M); the probe-bug corrections (mscratch is M-only — an S-mode write traps illegal, engine measured right; x8-already-zero records no change; the coalescing rule is address contiguity, measured 53 fetches); `cargo test -p semulith-verify run_rv64gc` 4/4 (76/76, per-step writes + never_written + determinism + declared fetch counts); the `fetches` schema field optional with the parcel-bounds refusal (GUEST-GEN 15→16, the RED arm fired); INTERACTION-MATRIX 28 cells every disposition resolves (the 14 guests on the SAME seven axes); the byte-level identity proof (both CLIs, all 62 pre-slice guests, `62 byte-identical, 0 diverge`, worktree removed); `make check` 8/8, `make gate` all green (DERIVED-COUNTS 423→424), smoke-bench 53 arms, bench wasm, both books | slice (e) part 1 landed: the 14-guest sv39 corpus with EVD-05 spec-side expectations — every walk fault cause, the permission matrix, Svade's no-update, MPRV, the TLB's fence semantics, the straddle, and delegation — with Bare byte-exact and the fetch-count witness made declarational |
-| `2026-10-04` | `.3` slice (d) | the pre-slice census (the stated nop at `system.sem.sexp:14-19,53-59` — the header bullet + the effect; the census's own reopen hook — the `address-translation caches (TLBs)` candidate with `.3 reopens this candidate`; mm-sfence's three fence cells); the parameter decision recorded (4 entries, fully-associative, FIFO, ASID-tagged at ASIDLEN=16, keyed by 4 KiB page — minimal for every rule to be testable; authority laboratory; the census carries the same parameters as data and the generator REFUSES a silent one, with a RED arm); the satp-visibility measurement (per-access reads for MODE/ASID — immediate; root-PPN visible on the next miss with stale hits sanctioned until a fence, the fence being the contract; SUM/MXR never cached — always immediate); the install discipline (a faulting access installs nothing; a load past a D=0 leaf installs the D=0 entry — the legal stale store fault after software sets D without fencing, then the fence restores); the sem-operator landing (`tlb-invalidate` in schema + the extended binary map + the Sem variant + the evaluator arm — rs1 the VA, rs2's low 16 the ASID, no register written; the time-scoped nop superseded with its date); the TLB suite (25/25: hit skips the walk, FIFO evicts in order, ASID tags + G hits, staleness legal then restored, Svade staleness through the cache, the four fence cases with retentions, the non-canonical rs1 no-op, the fence INSTRUCTION end-to-end, cold-reset determinism — tuples identical); the census re-answer + STATE-GEN 26/26 (+1 RED arm) + DEF-GEN both pairs (the definition manifest re-derived after the descriptor change); mm-sfence measured — NO re-derivation needed (its cells never claimed a nop; a fence writes no register); the byte-level identity proof on the TLB engine (both CLIs, all 62 guests, 1,884 == 1,884, cmp clean, worktree removed); `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 422→423), smoke-bench 53 arms, bench wasm, both books | slice (d) landed: the minimal fully-specified TLB (4-entry FA FIFO, ASID-16, G-bit retention, keyed by 4 KiB page), sfence.vma's four cases implemented as specified over it (over-fence recorded-not-taken; the invalid rs1 VA a no-op), the census re-answered with the parameters as data and the storage emitted from it, and the determinism rule tested — all with Bare byte-exact |
-| `2026-10-04` | `.3` slice (c) | the pre-slice census (`grep -c FETCH` over rv64gc's requirements → 0: the amendment has NO mirrored record to supersede — the mirror's closure is 13 records and REQ-D-FETCH-IMPLICIT is not among them, so rv64i's owner record stays true of rv64i and the amendment lands as a new authored pair); the 10-step walk implemented cited step-by-step (§11.1.4.1's canonical check before any read; walk-access reads with the step-2 access fault by kind 1/5/7; V=0 and the W-without-R reserved case — the first draft's R∧W inversion caught by the fault-matrix tests written before the fix; bits 63/62–61/60–54 zero with Svnapot/Svpbmt named unselected; superpage misalignment; non-leaf D/A/U reserved; the shadow-stack step named N/A; U/SUM/MXR + R/W/X; Svade step 9 page-fault-instead-of-update with the byte-untouched proof; the PA by level); 17 translation tests covering the full matrix (3 leaf sizes with their walk counts 3/2/1, canonical-VA, V=0, reserved-RW, reserved bits ×3, misaligned superpage, non-leaf D/A/U ×3 + last-level pointer, U/SUM/MXR 6 cells, R/W/X 3 cells, Svade 4 cells, the step-2 access fault by kind, the MPRV cells, the satp.MODE defect, the straddle with 2 fetches + 6 walk reads + the joined word); `cargo test -p semulith-verify run_rv64gc` 4/4 groups; the byte-level identity proof on the walk-live engine (both CLIs, all 62 guests, 1,884 == 1,884, `cmp` clean, worktree removed); the probe updated (S-mode fetch under Sv39 with an empty root → V=0 → `mcause = 12`, `mtval =` the faulting VA — the slice-(b) stub now faults properly); the requirement amendment (D-WALK-IMPLICIT + verbatim REQ/OB mirrors, dependencies D-SV39/D-SVADE, RECORD-SCHEMA 20 files ok); `make check` 8/8 groups, `make gate` all green, smoke-bench 53 arms, bench wasm, both books | slice (c) landed: the 10-step Sv39 walk is live — cited step-by-step, the fault matrix proven cell-by-cell with the walk reads counted and the Svade PTE-untouched proof, the straddled fetch live, and the implicit-access vocabulary amended honestly (a new authored pair; the mirror measured absent) |
-| `2026-10-04` | `.3` slice (b) | the pre-slice census (the brief's three hook sites read at exec_rv64gc.rs:87/291/328; satp.MODE `(one-of 0 8)` reset Bare in the state document; `git grep -c PageFault -- crates/ | wc -l` → 0); the parcel/coalescing measurement (decision 5's 16-bit parcels translate independently, but the fetch issues exactly one request whenever both translated addresses share one physical 32-bit unit — under Bare every case, so the Bare request shape is byte-exact by construction; the fetch-count assertion family holds it); the translation module (6 unit tests: Bare-identity × mode/kind, M never translated even under Sv39, the sub-M walk entry, MPRV selects MPP for data accesses only with SUM/MXR carried, the out-of-vocabulary satp.MODE named panic, the 12/13/15 vocabulary); the walk-access variant's three match sites answered per profile (FlatMemory answers, the bench census gains `walks`, rv64i's TestEnv panics named); `cargo test -p semulith-verify run_rv64gc` 4/4 groups (62/62, fetch counts unchanged); the byte-level identity proof (both CLIs from a 4fdac5b worktree vs the post-change build over all 62 guests: 1,884 == 1,884 trace lines, `cmp` clean); the Sv39-entry probe (an S-mode `ld` with satp.MODE=Sv39 → `model error: Unimplemented { what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s" }`, cli rc=1); `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 422 unchanged), smoke-bench 53 arms, bench wasm, both books | slice (b) landed: the translation machinery shell — the effective-mode computation, satp.MODE dispatch, the page-fault vocabulary, the parcels with their recorded coalescing choice, the walk-access boundary variant — with Bare proven an EXACT identity path byte-for-byte |
-| `2026-10-03` | `.3` slice (a) | the pre-slice census (ADUE inside menvcfg's wpri_62_0 by construction; the .2 override's Svade explicitly `false` against Sail's default `true`; validate_gc carrying NONE of the rv64i path's three construct refusals; the ISA-string census over seven trees); the canonical-order re-derivation (gen_platform's declared-order rule — the string is `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` exactly as the brief names it); the dossier flip (D-SVADE with the three evidence legs + the D-SV39 note, the verbatim REQ/OB mirrors — RECORD-SCHEMA 20 files ok, rule 4/rule 9 by its own run); DOSSIER OQ-2 CLOSED with the legs quoted; sources measured (RVP-SUPERVISOR's pin covers §11.1.3.1/§11.1.10 inline — NO new pins); the override one-field flip + `--validate-config` valid + the full 12-guest re-run (`re-run after the Svade flip: 11/12 guests AGREE against the tracked override's derived JSON` — baseline-identical, the mm-wfi TW cell unchanged); the validate_gc refusals with three RED arms on mapping-valid injected shapes (STATE-GEN 22→25 arms, both real pairs byte-identical); `make check` 8/8 groups; `make gate` all green (DERIVED-COUNTS 419→422 re-derived) | slice (a) landed: the profile's identity is Svade (OQ-2 closed with evidence), the reference flips to match with every verdict measured unchanged, and the generator hole the brief named is refused by name |
-
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.5` (slice d) + LEAF | `SEMULITH-P4-0033 (leaf P4-SYSTEM.5): slice d — the Sail matched attempt (6 AGREE + 6 named of 12, probe-tw's TW gap freshly measured); the LEAF CLOSES` | the override measured first (validate-config rc=0, no change, the tracked .sexp unmoved); 13 ELFs at exactly 0x8000_0000; the delivery-step convention measured identical (sail numbers it, prints no row); 6 AGREE (i-accept/i-deleg/i-enable/i-nest/i-vector/w-sw, 218 steps) + 6 named platform-shaped divergences (STIP's CLINT gate ×2, the `<halted>` counterpart ×4); probe-tw: the TW gap fresh (DIVERGE matched, AGREE 30/30 under the wfi-wait variant, the delivered trap identical); the .4 re-run verdict-neutral (11+1 of 12); the matrix invocation + 3 RED legs; references.sexp's fourth experiment; the acceptance quoted from w-timer's actual run (rdinstret=11, mcause=int\|5, mepc=wfi+4); make check + make gate green (DERIVED-COUNTS 430), smoke-bench 53 arms, bench wasm, both books |
 | `.5` (slice c) | `SEMULITH-P4-0032 (leaf P4-SYSTEM.5): slice c — the halted state + WFI's real wake + the `<halted>` vocabulary + the wake corpus + mm-wfi's re-derivation` | wait.rs (the ACTIVE/WAITING bit, cold-ACTIVE, pure function of history); the halted-step head arm + the legal-wfi enter in step_over (the wake first, else tick-and-stay); wake_pending (mip & mie — §2.1.3.3's musts, globals/mideleg ignored); the SEM-08 wait-state candidate carried by gen_state (RED arm 27→28); system.sem.sexp's stated nop superseded; the w-* family (w-timer's rdinstret=11 the acceptance observed) + mm-wfi re-derived (TW/U cells unchanged); 99/99 corpus; 94/95 identity cmp-clean; 28 cells; make check + make gate green (DERIVED-COUNTS 429→430) |
 | `.5` (slice b) | `SEMULITH-P4-0031 (leaf P4-SYSTEM.5): slice b — the step-head pending evaluation + interrupt-caused delivery (both vector modes) + the 7-guest acceptance corpus` | interrupts.rs (pending/deliver + 8 tests: the (a)(b)(c) taken-rule + the global rule + the delegation mask + the fixed priorities, the M-source bits read-only 0; the Interrupt-bit delivery honoring xtvec.MODE); the head evaluation wired before the fetch (delivery steps tick, retire nothing); the derivation tool hardened to the field tables + pc-keyed derivations + the (fetches N) convention; 7 i-* guests (36/60/21/31/63/26/53 steps); 95/95 corpus; 88/88 identity cmp-clean; 28 cells resolve; make check + make gate green (DERIVED-COUNTS 429) |
 | `.5` (slice a) | `SEMULITH-P4-0030 (leaf P4-SYSTEM.5): slice a — the declared virtual-time domain (one tick per step), counter progress, mm-counters' by-design re-derivation` | timekeeping.rs (the domain advance + 7 tests); the tick in step_over (!frame.trapped for instret); time → view_of mcycle (one domain, the rate as data in state.sexp, the census answered for counter-progress); the latent field-less-view defect fixed at root (full-width shadow); mm-counters 0/1/2/25/51 re-derived, traps 13/39 untouched; 88/88 corpus, 87 guests byte-identical (4,892==4,892); make check + make gate green (DERIVED-COUNTS 429) |
@@ -528,6 +559,35 @@ obeyed, not raised). The closed `.4` leaf's rows joined them at the sixteenth cr
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-05`: `.5` slice (d) done and the LEAF CLOSES (`SEMULITH-P4-0033`) — the
+  Sail matched attempt, scoped to what is matchable (decision 9). The override is
+  measured first: materialized fresh from the tracked unit (unchanged since
+  bfa6aaa), validate-config rc=0, NO change needed. Against it, the
+  software-posted-bit cells match exactly — **6 AGREE of 12** (i-accept 36,
+  i-deleg 60, i-enable 21, i-nest 31, i-vector 53, w-sw 17 — 218 steps of
+  change-observations, with Sail numbering the interrupt-delivery step and
+  printing no row, the same convention the laboratory declares, measured on
+  i-accept's [9]→[11] jump). The **6 NAMED divergences are all platform-shaped**:
+  Sail's timer block gates on plat_have_clint, so STIP never sets without a CLINT
+  (i-prio step 24, i-timer step 3); Sail's WFI is a nop under the matched
+  platform, so the real halt has no counterpart (the four `<halted>`-step
+  guests); and mm-wfi's TW cell is the `.2` named gap freshly measured with the
+  isolated probe — DIVERGE under the matched config (Sail never judges TW: the
+  judgment lives only in the wait-exit path the nop never reaches), AGREE 30/30
+  under the wfi-wait variant with the delivered trap identical (cause 2, mepc =
+  the wfi's pc, xtval = the wfi's word). Verdict-neutrality: the `.4` corpus
+  re-run under the fresh override reproduces 11 AGREE + 1 NAMED of 12 exactly.
+  The matrix invocation resolves 28 cells with the three RED legs fired by name
+  (ORPHAN GUEST / OMITTED CELL / UNKNOWN DIFFERENCE); references.sexp records
+  the fourth experiment. The LEAF ACCEPTANCE is w-timer's own run: three
+  boundaries with no register observation (the two `<halted>` steps and the
+  delivery), the handler's first read rdinstret = 11 — nothing retired across
+  the halt — then the timer trap with mcause = Interrupt|5 and mepc = the wfi's
+  pc + 4. The timer wake occurred WITHOUT CPU RETIREMENT. `make check` rc=0,
+  `make gate` green (DERIVED-COUNTS 430), RECORD-SCHEMA 20, PROFILE-CONSISTENCY
+  5, smoke-bench 53 arms, bench wasm, both books. Next: `.6` — instruction
+  visibility and fence semantics (the design brief first, the cadence).
 
 - `2026-10-05`: `.5` slice (c) done (`SEMULITH-P4-0032`) — the halted state and
   WFI's real wake (decision 4): one ACTIVE/WAITING hart bit (Sail's HART_WAITING
