@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending`
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -167,6 +167,146 @@ This gate authorises the planned next engineering stage: board implementation.
 | 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — `.6` closed `2026-10-05` (the fence.i contract validated on both engines, 6 AGREE of 6, the acceptance pair landed); the design brief lands first, and it must start from the leaf card's routed-in measurement: both reference models vendor Berkeley SoftFloat (184/199 `.c` files byte-identical — a Sail-versus-Spike comparison executes ONE implementation twice) |
 
 ## Decisions
+
+- `2026-10-05` (design brief for `.7`, recorded before its execution; sources: the pinned
+  FP chapters re-read (`.materials/riscv/pinned-v20260120/unpriv/f-st-ext.html` §20.1.1–
+  §20.1.4, `d-st-ext.html` §21.1.2 — Versions 2.2/2.2 measured from the page titles;
+  `priv/machine.html` the FS field); the routed ancestry record re-read in full
+  (`docs/decisions/reference_softfloat-shared-ancestry.md`); the rule texts quoted
+  (`RULES.md` RUST-01/SEM-03/EVD-04, `docs/ARCHITECTURE.md` §6); the unit measured in tree
+  (`state.sexp:70` misa, `:101-103` FS, `:604-631` the FP CSRs, `:642-643` the census
+  candidate; `privilege.rs:163-166` the single-owner view resolution; `encoding.sexp:
+  16-17` the slots); Sail 0.14's FP measured in `target/refs/sail-riscv-src/model/core/
+  softfloat_interface.sail` + `extensions/FD/`; two explore-agent censuses (the candidate
+  landscape + ancestry; the machinery deltas) — the reports are conversation-only, every
+  load-bearing fact below re-measured by the signing engineer where it lives in this
+  repository, and the candidate-landscape claims re-measured at slice (a), which IS the
+  qualification):
+  **The measured pre-conditions.** (1) **The declared-then-trapping window is real**:
+  misa advertises F and D (read-only `0x14112D`, `state.sexp:70`) while every FP word
+  decodes reserved → cause 2 (the decode miss → `run_rv64gc.rs:99-104`); the f/d slots
+  sit at `encoding.sexp:16-17`; no `f.sexp`/`d.sexp` (7 FRAGMENTS entries), no
+  `rv_f`/`rv_d`/`rv64_f`/`rv64_d` pins. The upstream census (execution re-derives from
+  the fetched tables): F = 30 forms (26 rv_f + 4 rv64_f; 13 pseudos incl. the 8 FP-CSR
+  aliases), D = 32 (26 rv_d + 6 rv64_d; 3 pseudos); the pinned `arg_lut.csv` already
+  carries `rs3` (31..27) and `rm` (14..12). (2) **The SoftFloat shared ancestry is
+  re-verified**: 184/199 `.c` files byte-identical across the two vendored copies (the
+  active decision record); Sail's ENTIRE FP surface is SoftFloat externs
+  (`softfloat_interface.sail:42` — every operation `pure {cpp: "softfloat_*"}`; no
+  independent Sail FP path exists); both checkouts present (sail `29e6158`, spike
+  `1e05dda`). Two descendants agreeing is one opinion (EVD-04); the record's own
+  escape: "a hardware observation, an independently implemented arithmetic, or a
+  specification-derived expected value computed by hand." (3) **The candidate
+  landscape** (web research, re-measured at slice (a)): exactly two pure-Rust,
+  wasm-compilable, non-SoftFloat candidates — `rustc_apfloat 0.2.3+llvm-462a31f5a5ab`
+  (LLVM APFloat lineage; the version string pins the source commit; its docs claim no
+  unsafe/global state/side-effects) and `softfloat 1.0.0` (independent authorship,
+  no_std + const, TestFloat-verified upstream); every SoftFloat-derived option fails
+  RUST-01 (FFI) or PORT-WEB (wasm) or EVD-04 (ancestry); native host floats fail §6 on
+  CAPABILITY grounds (no per-op rounding-mode control, no flag access, NaN-payload
+  nondeterminism on wasm32) — the textual bar is "silent", the capability bar is
+  decisive. MPFR is a third independent lineage for expected-value generation;
+  `testfloat_gen`'s operands-only mode is lineage-clean, its computed expectations are
+  not. (4) **The target policy is model-layer, never backend** (ARCH §6's own
+  sentence): canonical NaN (`0x7fc00000` single, §20.1.3 — "Except when otherwise
+  stated, if the result of a floating-point operation is NaN, it is the canonical
+  NaN"); NaN-boxing ("The upper bits of a valid NaN-boxed value must be all 1s";
+  unboxed input → the n-bit canonical NaN; §21.1.2); the FMA ∞×0 NV rule; the
+  fmin/fmax NaN rules; subnormals full IEEE 754-2008, no FTZ latitude (§20.1.4);
+  sticky accrued flags (§20.1.1); dyn/frm resolution with rm 101/110 reserved →
+  illegal. No crate ships this policy — APFloat quiets sNaNs and follows LLVM payload
+  conventions; the model layer owns the mapping opStatus → NV/DZ/OF/UF/NX.
+  (5) **Two latent defects `.7` owns at root** (re-measured): (i) fcsr's
+  `(view_of "fflags, frm")` is a TWO-owner view — the engine resolves ONE
+  (`privilege.rs:163-166`; the generated mirror carries the literal `"fflags, frm"`,
+  `state_rv64gc.rs:427`), so fcsr reads 0 and writes refuse TODAY; (ii) mstatus.FS is
+  declared (bits 14:13, WARL one-of 0 1 2 3, reset 0 = Off, `state.sexp:101-103`)
+  with NO gate anywhere — `permitted()` has no fflags/frm/fcsr arm, so FP CSR access
+  at FS=Off is not illegal today; the spec gates the unit's instructions AND its CSRs
+  (machine.html's Off-state sentence; Sail's `fdext_control.sail:19`).
+  (6) **Observation through x-registers is complete** (the machinery census's table,
+  spot-verified): `fmv.x.w`/`fmv.x.d` move raw bits, `feq/flt/fle` land 0/1, `fclass`
+  the 10-bit mask, the `fcvt.*.w/l` forms convert, `fsw/fsd` read back by integer
+  loads, fflags/frm via csrrs — no expectations-vocabulary change (the `.2`
+  mode-matrix discipline); the f-file stays census-hidden state (`state.sexp:642-643`
+  names `.7` its owner). (7) **The FS policy the corpus needs**: FS resets 0 = Off
+  (laboratory), so every FP instruction and FP-CSR access is illegal until M software
+  enables — the corpus sets FS first (the `.2` counter-gating precedent); the
+  four-state FS with Dirty-on-f-write (Sail's `dirty_fd_context`; the override's
+  `fs_legal_states FourState`) is the measurable, reference-matching choice; SD is
+  already computed. (8) **Performance machinery**: `semulith bench` refuses rv64gc by
+  name (`main.rs:1092` — "a later leaf"); the leaf's performance evidence is a
+  scratch timing harness over the candidates (per-op costs on this host), not the
+  tracked bench; the PORT-WEB wasm gate mechanically excludes every C-FFI option.
+  (9) **C07 and the Zcd inheritance**: FP is category C07; rv64i's row reads
+  "Closing: an F/D-admitting profile revision" — this unit IS that revision, but no
+  rv64gc section exists in `category-needs.sexp` (registration day, the `.1`
+  precedent). The C slot inherits 4 Zcd forms when D binds (D-EXT-CLOSURE: "C
+  decomposes as Zca always plus Zcd when D is present") — Zcd rides the C leaf,
+  named, never smuggled; the override already runs Zcd true.
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **The qualification runs FIRST, in scratch, and is the leaf's own slice (a)** —
+     the leaf's title is the qualification. Probe harnesses (untracked `target/`)
+     evaluate both candidates against (i) each other, (ii) MPFR-generated expected
+     vectors over a directed operand corpus (zeros, subnormals, NaNs with payloads,
+     infinities, rounding-boundary halves, conversion edges — plus seeded pseudorandom
+     streams; `testfloat_gen`'s operands-only mode if fetchable, a recorded generator
+     otherwise), per operation × rounding mode × both widths, and (iii) per-op timing
+     on this host. The criteria are ARCH §6's: rounding modes, flags, result bits,
+     conversions, NaN payloads, the boxing surface. The outcome is a decision record
+     in `docs/decisions/` with the measured tables — and the fallback named: if
+     neither passes, implement the required subset in Rust and defer the capability
+     (the gate reads `incomplete`, never `passed`).
+  2. **The independence argument, stated once**: the qualified backend is confirmed
+     by the OTHER candidate + MPFR vectors — three lineages, none Berkeley. Sail/Spike
+     FP agreement is recorded as one opinion (EVD-04); the closing Sail matched
+     experiment is an ENCODING/STATE match (decode, FS gating, NaN-boxing, flag
+     accrual points, the fmv paths), never numeric independence — the numeric
+     independence comes from the fixtures. This is the honest reading of the routed
+     constraint.
+  3. **The dependency joins as a workspace crate with its ancestry recorded** —
+     RUST-01 satisfied (pure Rust by default); the decision record carries the exact
+     version, the pinned source commit, the license (measured at execution), the
+     ancestry inventory, and the wasm-build proof (PORT-WEB stays green; the cargo
+     cache stays on-volume, the `.app-data/cargo-home` precedent). If license or wasm
+     fails: the other candidate; if both: the fallback (decision 1).
+  4. **The model layer owns the target policy** (pre-condition 4): a new core module
+     (`fp.rs`, the privilege/translation pattern) between the evaluator arms and the
+     backend crate, every rule cited to the pinned chapter — canonical NaN, NaN-
+     boxing/unboxing, the opStatus→flags mapping, dyn/frm resolution (reserved rm →
+     illegal), the FMA and fmin/fmax NaN rules, subnormal passthrough.
+  5. **FS gating lands with FP** (pre-conditions 5, 7): the four-state FS with
+     Dirty-on-f-write (SD already computed); the gate applied to FP instructions AND
+     the fflags/frm/fcsr CSRs — both latent defects fixed at root with tests; the
+     FS=Off illegal cells are guests; the corpus sets FS≠0 before any FP use.
+  6. **fcsr's two-owner view fixed at root** (pre-condition 5): the view resolution
+     learns the composition (the generator already splits the comma list for
+     validation — the engine's read/write paths learn it; the cheapest honest fix,
+     measured), with fcsr read/write guests.
+  7. **The semantics language gains fp operators** — op-as-data where the encoding
+     carries it (the `(amo op …)` precedent); the flags side channel is genuinely new
+     (values are `(u64, width)` today): the fp operator yields result+flags and the
+     tree accrues (Sail's `accrue_fflags` shape), the exact form execution measures
+     with the sem-corpus gate as judge. NaN-boxing is bit-level (expressible today);
+     the IEEE arithmetic is the backend's.
+  8. **Observation stays through x-registers** (pre-condition 6): no expectations-
+     vocabulary change; the corpus bootstraps on the fmv/fclass/compare forms
+     arriving with the same bind.
+  9. **Execution slicing** (checkpoints inside the leaf, each committed with the
+     leaf id): (a) the backend qualification (the scratch harnesses, the measured
+     tables, the decision record, the dependency landing with the wasm proof); (b)
+     the FP state (the f-file + FS gating + the fcsr fix + fflags/frm semantics +
+     the census re-answer) with the FS=Off corpus; (c) the F bind (30 forms +
+     pseudos, the pin/fragment/assembler/corpus — the `.4`/`.6` bind shape); (d) the
+     D bind (32 forms + FLEN=64 NaN-boxing + the corpus); (e) the independent
+     numeric fixtures at scale + the Sail encoding/state match + the reports and
+     the book + the leaf acceptance.
+  **Not `.7`'s scope:** Zcd's 4 compressed forms (the C leaf — pre-condition 9);
+  Zfa/Zfh/Zfinx/Zdinx/Zfhmin (unselected, named); Q (unselected); the tracked rv64gc
+  bench mix (a later leaf — scratch timing here); the rv64gc C07 disposition
+  (registration day); the m/c slots (their leaves); the hypervisor (D-NO-H);
+  registration; the gate.
 
 - `2026-10-05` (design brief for `.6`, recorded before its execution; sources: the pinned
   chapters re-read (`.materials/riscv/pinned-v20260120/unpriv/zifencei.html` — Version 2.0
@@ -615,15 +755,12 @@ promotion: declined (the durability is the machinery — the six AGREEs are re-r
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
-`.1` and `.2` (14th crossing), `.4` and `.3` (16th/17th), `.5` (18th — `2026-10-05`, the
-`.6` design brief landing). The ceiling was obeyed, never raised; only the ACTIVE
-leaf's rows stay inline below.
+`.1` and `.2` (14th crossing), `.4` and `.3` (16th/17th), `.5` (18th), `.6` (19th —
+`2026-10-05`, the `.7` design brief landing). The ceiling was obeyed, never raised;
+only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| `2026-10-05` | `.6` slice (c) + LEAF | the override measured first (materialized fresh from the tracked .sexp — unmoved since bfa6aaa; validate-config rc=0; Zifencei supported true, NO change needed); sail's FENCEI measured in source (encdec fields VARIABLES — decoded-not-fixed, the shall-ignore sentence in its own comment; execute a nop for the memory model); the 6 ELFs at exactly 0x8000_0000 (the selfmod pair's auipc-derived patch targets entry-relative, measured); the experiment (**6 AGREE of 6** — it-fencei 3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8, fault-selfmod 7, dir-selfmod-fence 8 = 29 steps' change-observations exact, the patched fetch reading 7 on both sides; ZERO non-AGREE cells); the verdict-neutrality measurement (the wider corpus's expectations unmoved since their verdicts — git log on a-amo-aqrl → 495b4b8; the bind touched only the fencei surface); the census re-answer (the fetch-cache candidate's why re-written in place — Zifencei declared AND bound, the re-read stays laboratory policy, FENCE.I's nop the sanctioned implementation; the consequence line unchanged; gen_state re-derived, build rc=0; the brief's clause-location phrasing measured imprecise and recorded — the clause is rv64i's text, referenced); references.sexp's fifth experiment (difference-free re-measured: 0 difference records); the acceptance box (WITH: fencei-selfmod on both engines; WITHOUT: fault-selfmod with D-CODE-VISIBILITY; the staleness half the declared latitude with intro.html's sentence); `cargo test -p semulith-verify run_rv64gc` 4/4 (101/101); `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20 files, PROFILE-CONSISTENCY 5, smoke-bench 53 arms, bench wasm, both books | the LEAF CLOSES: the fence.i contract is validated on both engines — newly written code is executable by construction, the synchronization executes legally as the declared nop, the acceptance pair stands on both sides, and the staleness half is answered as the declared latitude; frontier → `.7` |
-| `2026-10-05` | `.6` slice (b) — THE BIND | the pre-bind census (the slot at encoding.sexp:18, 0 fence.i rows, the fencei guests trapping cause 2); slot→extension; the census dual edit 87→88 (the .4 lesson's four places); definition_rv64gc.rs regenerated (fence.i over Sem::Nop); REQ-GC-FENCEI + OB-GC-FENCEI, no new D-*; the fencei re-derivations (it-fencei 2→3 steps with x2 written — the pre-commit fulfilled; min-fencei one retiring nop); fencei-reserved (0x0011118F ignored) + fencei-selfmod (the acceptance pair's WITH member; fault-selfmod stands WITHOUT); the decision-3 corrections as recorded mirror re-derivations (the governor measured the .s edits as drift first); the flip 88==88; `cargo test -p semulith-verify run_rv64gc` 4/4 (101/101); the identity proof (98/99 byte-identical, it-fencei the designed exception, worktree removed); the matrix (28 cells resolve); EXERCISE-COVERAGE 88/88; GUEST-GEN 16/16; `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged) | THE BIND landed: the unit composes `riscv/zifencei` — fence.i legal over the existing nop, 88 forms, 101 guests green, 98 pre-bind byte-identical |
-| `2026-10-05` | `.6` slice (a) | the pre-slice census (rv_zifencei pinned nowhere; 6 FRAGMENTS entries; the slot at encoding.sexp:18); the tracked-route fetch (73 bytes, one row, be2d8f72…, fresh re-fetch byte-identical); the recorded deviation (decision 1's "no assembler shapes" FALSE for the bare spelling — the row's operand list refused it; the named zero-operand special case; no Sem variant / no generator change TRUE — mask 0x0000707f over Sem::Nop, rustc rc=0 ×2); the fragment (owns NO fields, requires rv64i, funct3=1; 6 others byte-identical); zifencei.sem.sexp (the three sentences + both latitudes re-located; pair 1/1, both composes, citations RVI-ZIFENCEI §4.1 ×1 offline, corpus 6/8); the disjointness trials (53 and 85+3 COMPOSE; self-test 12/12); the probe (bare+full spellings, the shall-ignore word, 3 named REDs, spike-dasm exact); both profiles 87==87/52==52 with the named exclusion; 99 guests byte-identical; `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged) | slice (a) landed: the pin, the fragment, the sem file and the assembler acceptance — the slot stays declared, the census stays 87, no corpus, no Rust |
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
