@@ -128,7 +128,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: single-core reservation behaviour is validated here; multicore memory-model work is `MC-MULTICORE`, not smuggled in.
 
 - ID: `P4-SYSTEM.5` — **interrupts, counters and wait**
-  Status: `pending`
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0029`)
   Goal: masks, priority, pending/active state, nesting, return; counter width, rate, wrap and mode gating; a halted core still receiving its wake event (catalog `C14`, `C17`).
   Acceptance: timer or interrupt wake occurs **without CPU retirement** — the laboratory must be able to make time pass while nothing executes.
 
@@ -165,6 +165,200 @@ This gate authorises the planned next engineering stage: board implementation.
 | 1 | `P4-SYSTEM.5` | `pending` | interrupts, counters and wait — `.4` closed `2026-10-05` (11 AGREE + 1 named of 12); `.5` is the next leaf on the CPU path the board waits on, its design brief first (the `.3`/`.4` cadence) |
 
 ## Decisions
+
+- `2026-10-05` (design brief for `.5`, recorded before its execution; sources: the pinned
+  chapters re-read (`.materials/riscv/pinned-v20260120/priv/machine.html` §2.1.1.6.1,
+  §2.1.1.8–§2.1.1.12, §2.1.2.1, §2.1.3.3; `priv/supervisor.html` §11.1.1.3, §11.1.1.12;
+  `priv/sstc.html` 12.1; `unpriv/counters.html` §6.1 — versions 1.13/1.13/1.0/2.0 measured
+  from the page titles); the unit measured in tree (`state.sexp:274-316` mip, `:583-588`
+  stimecmp, `:590-600` the counter views; `privilege.rs:202-206` the live STIP overlay,
+  `:423-435` the synchronous-only delivery; `exec_rv64gc.rs:88-191` the hookless step;
+  `run_rv64gc.rs:77-131` the count-driven runner; `system.sem.sexp:7-12,51-57` the stated
+  WFI nop; `env.rs:7-8,178-179` the CPU-driven boundary); Sail 0.14's interrupt/wait
+  machinery measured in `target/refs/sail-riscv-src/model/` (`sys_control.sail:117-178`,
+  `interrupt_regs.sail:241-262`, `step.sail:11,49-77,310-326`, `validate_config.sail:
+  876-879`); two explore-agent censuses (the C14/C17 scope; the machinery deltas) — the
+  reports are conversation-only, every load-bearing fact below re-measured by the
+  signing engineer):
+  **The measured pre-conditions.** (1) **The seam is marked in the state document, and
+  one computed bit is already live**: mip's MSIP/MTIP/MEIP are `(read-only 0)` by
+  legalization ("Pending-state behaviour is P4-SYSTEM.5's", `state.sexp:316`); STIP is
+  `(computed)` — `time >= stimecmp` evaluated live on every mip/sip access
+  (`privilege.rs:202-206`). **The reset quirk, measured**: time and stimecmp both reset
+  0 (laboratory, RVP-MACHINE §2.1.4 UNSPECIFIED cited), so the honest computation reads
+  **STIP=1 at reset** — legal (§11.1.1.3; mip's "Nothing pending at reset" speaks of
+  STORAGE — STIP is computed, not stored), unobserved today (census: `grep 'mip\|sip'
+  guests/mm-*.expected.sexp` → 0), and the corpus must face it. (2) **No pending evaluation exists anywhere** — census:
+  `grep -n 'mip\|mie\|mideleg' crates/semulith-core/src/exec_rv64gc.rs` → 0 matches;
+  `trap_deliver` is synchronous-only by name (`privilege.rs:423-429`: "interrupt-caused
+  delivery is P4-SYSTEM.5's … the vectored mode is the interrupt case's"); delegation
+  reads only medeleg. (3) **The step model has no hook,
+  no halt, and the vocabulary cannot say "nothing retired"** — `step_over`
+  (`exec_rv64gc.rs:88-191`) runs fetch→decode→eval→pc+=4 with no pre-instruction
+  check; no halted bit exists; the runner loops exactly `executed_steps` with
+  `steps.len` asserted (`run_rv64gc.rs:77-131`, `tests.rs:17-21`); the expectations
+  schema is strictly per-step — "N ticks passed, nothing retired" is inexpressible
+  (measured, both files). The `.3` `<fetch page fault>` pseudo-step is the
+  vocabulary-extension precedent. (4) **WFI is a stated nop when legal**
+  (`system.sem.sexp:51-57` + header `:7-12` — "the wake event is P4-SYSTEM.5's"); the
+  legality latitudes are resolved FOR immediate trapping (illegal in U with S
+  present; illegal in S with TW=1 — §2.1.3.3/§2.1.1.6.6's "may always raise"
+  resolved deterministically); the `.2` Sail experiment named mm-wfi's TW cell a
+  Sail-side gap (Sail judges TW only on forced wait exit, `step.sail:65-75`) and
+  routed it here. (5) **The boundary is CPU-driven only** — `env.rs:178-179`:
+  "Implementors answer every request; they never initiate one — the CPU drives";
+  `:7-8`: "No device, no time source, no asynchronous event exists to model";
+  FlatMemory's one region makes a CLINT mtime load fault by contract
+  (guest-no-device, D-PLATFORM); `ScriptedEnv` answers FIXED values only — no
+  progress, no asynchrony (measured, `fixtures.rs:192-226`).
+  (6) **The spec's acceptance machinery is exact** (the machine/supervisor re-read,
+  every phrase located): the taken rule — for M: (a) mode M with MIE set OR any lower
+  mode, (b) the bit set in mip AND mie, (c) the bit NOT in mideleg (§2.1.1.9); the
+  S-form (supervisor §11.1.1.3); the global rule — higher-privilege interrupts always
+  enabled, lower always disabled (§2.1.1.6.1); delegation masks at the delegator
+  (§2.1.1.8); fixed priorities (M: MEI MSI MTI SEI SSI STI; S: SEI SSI STI);
+  evaluation bounded and immediate after xRET or a dependent-CSR write (§2.1.1.9);
+  per-bit mip writability (MTIP read-only, cleared via mtimecmp; SSIP
+  writable; SEIP's B∥E; STIP read-only under Sstc, set when time ≥ stimecmp, cleared
+  by writing stimecmp above time — §11.1.1.3/§11.1.1.12). WFI's resume rule: MUST
+  resume on a locally-enabled pending interrupt "regardless of the global interrupt
+  enable at each privilege level" and of mideleg, even globally disabled; resumption
+  "for any reason" permitted (the nop latitude); the taken trap resumes "on the
+  following instruction … mepc = pc + 4" (§2.1.3.3). (7) **Rates are environment property everywhere** — Zicntr §6.1 ("The
+  execution environment should provide a means to determine the current rate"); mtime
+  §2.1.2.1 ("must increment at constant frequency"); STIP/MTIP reflection
+  "eventually, but not necessarily immediately" — the fairness assumption
+  `CPU_ENVIRONMENT.md` §3 demands be named, never a test timeout. mm-counters stayed
+  NOT MATCHABLE at `.2` because Sail refuses Zicntr without a CLINT time source
+  (`validate_config.sail:876-879`) and D-PLATFORM declares no devices. (8)
+  **Determinism is the design's spine** — every modelled state so far is a pure
+  function of the hart's own history (the TLB/reservation census discipline,
+  `state.sexp:656-657`); `every_guest_re_executes_identically_from_cold_reset`
+  (`run_rv64gc/tests.rs:96-109`) and EVD-05's exact values both break if time and
+  event injection are not a replayable, DECLARED schedule. Sail's own time ticks
+  only per-instruction (`step.sail:319-326`) and its loop never dwells in WFI
+  (`exit_wait=true`, `:310`) — time-without-retirement is unmatched-by-construction
+  on the reference side, recorded now. (9) **C14/C17 and the contract rows name the split** — no rv64gc
+  section exists in `category-needs.sexp` (the unit is deliberately unregistered);
+  `CPU_ENVIRONMENT.md` §2's Interrupts / Counter input / Waiting rows assign the CPU
+  the mask/priority/acceptance/return, access/width/state, and suspend/continue
+  rules, and the environment the source state, the declared virtual-time progress,
+  and event progress while the CPU waits ("Timer/interrupt wake without CPU
+  retirement" — the acceptance's exact words); §6: "Time-based devices need progress
+  when no instruction retires." The `.2` brief's drawn-out list routes in:
+  interrupt-CAUSED entry, counter values/rate/wrap/progress (with `.9`), WFI's wake,
+  the mcountinhibit contract decision, mtime/mtimecmp as environment state
+  (with `.9`).
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **A declared virtual-time domain, uniform and replayable** — the acceptance's
+     enabling choice. The laboratory's time advances **one tick per step boundary,
+     retired or halted** (authority laboratory — the Zicntr latitude "the rate … will
+     depend on the implementation and operating environment", §6.1; pre-condition 7's
+     fairness assumption answered: progress is a pure function of the step index,
+     declared as data, never a timeout). `time` reads the domain directly (the state
+     document's "environment's mtime" phrasing is refined, not contradicted: the
+     domain IS the environment's supply; the contract wording is `.9`'s). `mcycle`
+     reads the same domain ("cycle count might represent a valid implementation of
+     RDTIME", §6.1). `minstret` counts GENUINELY: +1 per retired instruction, never
+     for a halted or a faulting step (the `.8`-candidate unit discipline).
+     Determinism holds by construction (pre-condition 8).
+  2. **The counter-reading corpus re-derives BY DESIGN** — measured: `mm-counters.s`
+     is the ONLY guest reading counters (7 reads; census `grep -c 'rdcycle\|rdtime\|
+     rdinstret' guests/*.s | grep -v ':0'` → 1 file); its zero-expecting cells
+     re-derive to the declared tick values (the `.2` IALIGN-16 precedent — re-derived,
+     never fitted); mm-stimecmp measured clean of counter reads.
+  3. **Pending evaluation and interrupt-caused delivery, at the spec's own evaluation
+     points** — the engine gains the (a)(b)(c) computation with the global rule, the
+     delegation mask, and the fixed priorities, evaluated at the HEAD of every step
+     (the Sail `dispatchInterrupt`-at-head precedent, `sys_control.sail:117-141`
+     measured): per-step evaluation satisfies "bounded amount of time" and covers the
+     xRET/CSR-write immediacy by construction. Delivery: mcause's Interrupt bit set
+     (bit 63 — the field already declared), mepc ← the next instruction's pc
+     (interrupts are taken BETWEEN instructions), the xPIE/xIE/xPP stack, pc ← the
+     vector — **both mtvec/stvec modes delivered as declared** (synchronous keeps
+     BASE; interrupt delivery honors MODE — the storage already admits it, and
+     delivering MODE=1 as BASE would be a description lie). mideleg is read for the
+     first time, with the delegator-masking rule.
+  4. **The halted state and WFI's real wake** — the nop latitude recorded-not-taken
+     (the `.3` over-fence precedent: taking it would leave the leaf's acceptance
+     untestable). A hart-state bit (ACTIVE/WAITING — Sail's `HART_WAITING` precedent,
+     `step.sail:11`), cold-ACTIVE at reset, a pure function of hart history under the
+     declared time domain; it joins the SEM-08 census (the named `.5` reopen,
+     `state.sexp:658`) with the TLB/reservation discipline. While WAITING a step
+     retires nothing, issues no fetch, advances time one tick, and evaluates the
+     wake: resume on a LOCALLY-enabled pending interrupt at ANY privilege regardless
+     of global enables and mideleg (§2.1.3.3's must); on resume the trap is taken if
+     the taken-conditions hold (mepc = pc + 4 — the WFI-specific rule), else
+     execution continues at pc + 4 and software may loop. The `.2` TW resolutions
+     stand; mm-wfi's TW cell re-tests against Sail's named gap unchanged.
+  5. **The source set is exactly what the platform can supply** — STIP (the live
+     stimecmp-vs-time computation, Sstc), SSIP and SEIP's software-writable B parts
+     (already storage). **MTIP/MSIP/MEIP STAY read-only 0 BY DECLARATION**:
+     mtime/mtimecmp are memory-mapped ENVIRONMENT registers (§2.1.2.1) in a platform
+     that declares no I/O region (D-PLATFORM; guest-no-device proves the fault
+     today), MSIP is read-only-0-legal at one hart (§2.1.1.9's own latitude), and no
+     external controller exists — the M-level machinery is fully testable through
+     the software-writable bits (mideleg clear → SSIP/SEIP trap to M). The mtime/
+     MMIO contract and any source-delivery vocabulary are `.9`'s charter — the `.4`
+     external-invalidation routing precedent; nothing is smuggled. The timer wake
+     the acceptance names rides the Sstc path, which needs no MMIO.
+  6. **The expectations vocabulary gains the halted step, minimally** — a `<halted>`
+     pseudo-step (the `.3` `<fetch page fault>` precedent): declared
+     `(insn "<halted>")`, empty `(writes)`, `fetches 0` (the `.3` declarational fetch
+     witness gains the 0 arm); the wake step itself is ordinary — the taken trap is
+     observed through handler control flow and csrr reads (the `.2` mode-matrix
+     discipline), an untrapped resume through the pc+4 continuation. The runner's
+     count-driven termination is unchanged — halted steps count as steps; the
+     fetch-count and steps.len assertions gain exactly the halted-step arm, recorded
+     as the harness convention.
+  7. **mcountinhibit stays excluded, now as the measured equivalence** — §2.1.1.12:
+     "If the mcountinhibit register is not implemented, the implementation behaves
+     as though the register were set to zero" — counters always count, exactly what
+     decision 1 models; the contract decision the `.2` brief deferred is ANSWERED
+     here by that citation (the committed 33 stands).
+  8. **The corpus families** (names at execution): acceptance cells (eligible/
+     ineligible boundaries per mode, the global rule, per-cause enables, pending/
+     clear through the software-writable bits, delegation masking, the fixed
+     priorities among simultaneous pending); the timer guests (STIP set/clear
+     through stimecmp writes, the landed STCE/TM gates re-exercised against live
+     STIP); the wake guests (halt with time observed passing through the handler's
+     rdtime, wake-with-trap (mepc=pc+4) and wake-without-trap (pc+4 continuation),
+     the locally-enabled-regardless-of-delegation cell); nesting and return (an
+     interrupt inside a handler, the xRET stack restoration); counters (the
+     declared rate observed, instret's genuine count incl. zero across halted
+     steps, the mode-gating matrix on live values). Matrix: the seven existing
+     axes (the progress axis's own wording already names wfi) — no new axis.
+  9. **The Sail matched experiment, scoped to what is matchable** — EVD-05 stays
+     primary. MATCHABLE: the acceptance/delegation/priority cells driven by the
+     software-writable pending bits (no external source needed on either side —
+     SSIP/SEIP via csrrs), the override measured first (the `.4` validate-config
+     discipline). NOT MATCHABLE, recorded: time-without-retirement (pre-condition
+     8), the counter rate (the `.2` CLINT wall stands — enabling Sail's CLINT/SIG
+     to force a match was weighed and rejected at `.2`), the TW cell (the named
+     gap). Any override change re-proves verdict-neutrality on the existing corpus
+     (the `.3`/`.4` pattern).
+  10. **No new instructions, no bind** — `.5` is machinery, not forms (the `.3`
+      precedent): the scope census (87), the encoding composition and the assembler
+      are untouched; slices land tracked and green incrementally. The corpus
+      consequences (decision 2's re-derivation; mm-wfi's legal-WFI cells facing the
+      real halt) land with the slices that cause them, each with its per-guest
+      identity measurement (the `.3` discipline).
+  11. **Execution slicing** (checkpoints inside the leaf, each committed with the
+      leaf id): (a) the virtual-time domain + counter progress (the rate as data,
+      instret genuine, cycle=time) + mm-counters' by-design re-derivation + the
+      determinism proof; (b) pending evaluation + interrupt-caused delivery (both
+      vector modes) + the acceptance corpus; (c) the halted state + WFI's wake +
+      the `<halted>` vocabulary + the wake corpus + mm-wfi's re-derivation + the
+      census reopen; (d) the matrix cells + the Sail attempt + the reports and the
+      book + the leaf acceptance.
+  **Not `.5`'s scope:** mtime/mtimecmp's MMIO and the MTIP/MSIP/MEIP sources (`.9`'s
+  contract; the board's CLINT is the P5 layer); mcountinhibit the REGISTER (excluded —
+  decision 7's equivalence); HPM/Zihpm (unselected); the hypervisor timer (D-NO-H);
+  fault priority as a topic (`.8`); multicore time synchronization (MC-MULTICORE —
+  vacuous at harts=1); the counter-rate and event-delivery CONTRACT wording (`.9` —
+  the laboratory's domain is data here, the TLB-parameter precedent); the rv64gc
+  C14/C17 dispositions (registration day); registration; the gate.
 
 - `2026-10-04` (design brief for `.4`, recorded before its execution, `SEMULITH-P4-0022`):
   archived verbatim to [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at
@@ -213,84 +407,16 @@ never raised, at every crossing. The index:
 
 - leaf `.1`, `.2` (all slices + LEAF ACCEPTANCE), `.3` (all slices), `.4` slice (a) →
   [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (crossings 1–7).
-- `.4` slices (b), (c), (d), (e) → [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
-  (8th — the archive split — 9th, 10th, 11th, 12th).
-
-`P4-SYSTEM.4` slice (f) — the Sail matched experiment; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0028`):
-
-- [x] **REPRODUCE / ISSUE** —
-
-  ```
-  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --config-override <derived>.json --validate-config
-  The default configuration merged with … is valid. rc=0 — the override needed NO
-  change (A supported true; the region's AMOCASQ / RsrvEventual / (amo|lrsc
-  AccessFault) all present — pre-condition 7 re-measured, not assumed)
-  $ ls target/p4-system-4/sail/*.elf | wc -l
-  0 — the 12 guests had no Sail-runnable images (the corpus ran only in-engine)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — one REAL defect found by the experiment, fixed at
-  root, with the measurements on the page:
-
-  ```
-  $ <the comparator, first run>        — DIVERGE a-lrsc-fault — step 11 (csrrs x11,
-  mcause, x0): sail {'x11': 5}, expectations {'x11': 7}
-  $ git diff --stat -- profiles/rv64gc-lab-v0/guests/    # after the fix
-  1 file changed, 2 insertions(+), 2 deletions(-) — a-lrsc-fault.expected.sexp only
-  ```
-
-  The bind-day misaligned policy (uniform cause 7 for the atomic kinds) is
-  measured ILLEGAL for LR — `a-lrsc-fault` came back `sail x11=5 vs expected 7`, and
-  RVP-MACHINE's exception table says why: "load and load-reserved instructions
-  generate LOAD exceptions" (measured ×1 in the pinned chapter), so the legal set for
-  a misaligned LR is causes 4/5, never 7. The policy is now kind-matched (LR → 5,
-  SC/AMO → 7) in the engine arm, the schema contract, the state.sexp policy text, the
-  D-ATOMIC-MISALIGN decision (+amendment note) and its verbatim REQ/OB mirrors —
-  decision 6's "makes the cells AGREE" clause measured false as written and true now.
-  The flagged width cell measured as designed: Sail's platform reservation matches on
-  the physical ADDRESS alone (the externs take physaddrbits, no width), the
-  laboratory's declared width-equal policy fails — both legal, a named divergence.
-
-- [x] **FIX** — untracked experiment tooling (the 12 ELFs at exactly 0x8000_0000 —
-  .word-only source + PHDRS link, the tracked assembler owning the bytes; the
-  arch-leg comparator on the corpus's change-observation rule); the kind-matched
-  policy fix (the files above + the a-lrsc-fault expectations re-derived — the ONLY
-  guest file changed, by design, the `.2` slice-f re-derivation pattern);
-  `references.sexp` (the third experiment recorded in matched_scope).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ <the 12-guest comparator against sail 0.14, the tracked override>
-  AGREE ×11 (21/20/22/17/18/16/77/41/33/11/14 steps' change-observations exact)
-  DIVERGE a-lrsc-mustfail — step 22 (sc.d after lr.w): sail x9<-0 and the store lands
-  (trace quoted), the laboratory fails with code 1 under the declared width-equal
-  policy; 11 AGREE + 1 NAMED DIVERGENCE of 12. Sail's SC is deterministic under
-  RsrvEventual (the pair/loop cells AGREE — the declared never-spurious policy
-  matches); the alias cell AGREEs (physical-keyed on both sides)
-  $ git diff --stat -- profiles/rv64gc-lab-v0/guests/
-  1 file changed — a-lrsc-fault.expected.sexp only (the other 87 guests untouched;
-  the override unchanged — nothing predates the policy fix except my own guest)
-  $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed — 88/88; the slice-(c) proof 16/16 against the fixed engine
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0 (8 groups), `make gate` →
-  `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged); the definition and
-  state manifests re-derived (input-hash cascade only); RECORD-SCHEMA 20 files ok
-  (the amended decision and its mirrors verbatim-identical); PROFILE-CONSISTENCY 5.
-
-- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
-  narrative + frontier → `.5` + checklist + logs + changelog), `docs/TASK_TREE.md`
-  (4/10), `MEMORY.md` (next_action → `.5`'s design brief), `LIVE_STATUS.md` (4/10),
-  `CHANGELOG.md`, `DEV_NOTES.md` (the exception-table measurement and the width-cell
-  verdict; the promotion decision:
-promotion: declined (the durability is the machinery — the kind-matched policy is armed by the a-lrsc-fault guest and the Sail comparator, both re-runnable)),
-  `docs/book/src/plan/p4.md` (the `.4` section completed) + the book index.
-
+- `.4` slices (b), (c), (d), (e), (f) → [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
+  (8th — the archive split — 9th, 10th, 11th, 12th, 13th).
 
 
 ## Verification Log
+
+The rows for leaves `.1` and `.2` (closed `2026-10-03`) live verbatim in
+[`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md) — moved at this file's fourteenth
+per-part ceiling crossing (`2026-10-05`, the `.5` design brief landing; the ceiling was
+obeyed, not raised). The `.3` and `.4` rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
@@ -317,17 +443,6 @@ promotion: declined (the durability is the machinery — the kind-matched policy
 | `2026-10-04` | `.3` slice (c) | the pre-slice census (`grep -c FETCH` over rv64gc's requirements → 0: the amendment has NO mirrored record to supersede — the mirror's closure is 13 records and REQ-D-FETCH-IMPLICIT is not among them, so rv64i's owner record stays true of rv64i and the amendment lands as a new authored pair); the 10-step walk implemented cited step-by-step (§11.1.4.1's canonical check before any read; walk-access reads with the step-2 access fault by kind 1/5/7; V=0 and the W-without-R reserved case — the first draft's R∧W inversion caught by the fault-matrix tests written before the fix; bits 63/62–61/60–54 zero with Svnapot/Svpbmt named unselected; superpage misalignment; non-leaf D/A/U reserved; the shadow-stack step named N/A; U/SUM/MXR + R/W/X; Svade step 9 page-fault-instead-of-update with the byte-untouched proof; the PA by level); 17 translation tests covering the full matrix (3 leaf sizes with their walk counts 3/2/1, canonical-VA, V=0, reserved-RW, reserved bits ×3, misaligned superpage, non-leaf D/A/U ×3 + last-level pointer, U/SUM/MXR 6 cells, R/W/X 3 cells, Svade 4 cells, the step-2 access fault by kind, the MPRV cells, the satp.MODE defect, the straddle with 2 fetches + 6 walk reads + the joined word); `cargo test -p semulith-verify run_rv64gc` 4/4 groups; the byte-level identity proof on the walk-live engine (both CLIs, all 62 guests, 1,884 == 1,884, `cmp` clean, worktree removed); the probe updated (S-mode fetch under Sv39 with an empty root → V=0 → `mcause = 12`, `mtval =` the faulting VA — the slice-(b) stub now faults properly); the requirement amendment (D-WALK-IMPLICIT + verbatim REQ/OB mirrors, dependencies D-SV39/D-SVADE, RECORD-SCHEMA 20 files ok); `make check` 8/8 groups, `make gate` all green, smoke-bench 53 arms, bench wasm, both books | slice (c) landed: the 10-step Sv39 walk is live — cited step-by-step, the fault matrix proven cell-by-cell with the walk reads counted and the Svade PTE-untouched proof, the straddled fetch live, and the implicit-access vocabulary amended honestly (a new authored pair; the mirror measured absent) |
 | `2026-10-04` | `.3` slice (b) | the pre-slice census (the brief's three hook sites read at exec_rv64gc.rs:87/291/328; satp.MODE `(one-of 0 8)` reset Bare in the state document; `git grep -c PageFault -- crates/ | wc -l` → 0); the parcel/coalescing measurement (decision 5's 16-bit parcels translate independently, but the fetch issues exactly one request whenever both translated addresses share one physical 32-bit unit — under Bare every case, so the Bare request shape is byte-exact by construction; the fetch-count assertion family holds it); the translation module (6 unit tests: Bare-identity × mode/kind, M never translated even under Sv39, the sub-M walk entry, MPRV selects MPP for data accesses only with SUM/MXR carried, the out-of-vocabulary satp.MODE named panic, the 12/13/15 vocabulary); the walk-access variant's three match sites answered per profile (FlatMemory answers, the bench census gains `walks`, rv64i's TestEnv panics named); `cargo test -p semulith-verify run_rv64gc` 4/4 groups (62/62, fetch counts unchanged); the byte-level identity proof (both CLIs from a 4fdac5b worktree vs the post-change build over all 62 guests: 1,884 == 1,884 trace lines, `cmp` clean); the Sv39-entry probe (an S-mode `ld` with satp.MODE=Sv39 → `model error: Unimplemented { what: "Sv39 translation — the walk is P4-SYSTEM.3 slice (c)'s" }`, cli rc=1); `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 422 unchanged), smoke-bench 53 arms, bench wasm, both books | slice (b) landed: the translation machinery shell — the effective-mode computation, satp.MODE dispatch, the page-fault vocabulary, the parcels with their recorded coalescing choice, the walk-access boundary variant — with Bare proven an EXACT identity path byte-for-byte |
 | `2026-10-03` | `.3` slice (a) | the pre-slice census (ADUE inside menvcfg's wpri_62_0 by construction; the .2 override's Svade explicitly `false` against Sail's default `true`; validate_gc carrying NONE of the rv64i path's three construct refusals; the ISA-string census over seven trees); the canonical-order re-derivation (gen_platform's declared-order rule — the string is `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` exactly as the brief names it); the dossier flip (D-SVADE with the three evidence legs + the D-SV39 note, the verbatim REQ/OB mirrors — RECORD-SCHEMA 20 files ok, rule 4/rule 9 by its own run); DOSSIER OQ-2 CLOSED with the legs quoted; sources measured (RVP-SUPERVISOR's pin covers §11.1.3.1/§11.1.10 inline — NO new pins); the override one-field flip + `--validate-config` valid + the full 12-guest re-run (`re-run after the Svade flip: 11/12 guests AGREE against the tracked override's derived JSON` — baseline-identical, the mm-wfi TW cell unchanged); the validate_gc refusals with three RED arms on mapping-valid injected shapes (STATE-GEN 22→25 arms, both real pairs byte-identical); `make check` 8/8 groups; `make gate` all green (DERIVED-COUNTS 419→422 re-derived) | slice (a) landed: the profile's identity is Svade (OQ-2 closed with evidence), the reference flips to match with every verdict measured unchanged, and the generator hole the brief named is refused by name |
-| `2026-10-03` | `.2` slice (h) part 2 + LEAF | the config-namespace census (Sail 0.14 git 29e6158, the schema + default pinned; the rv64i override precedent); the validator's three named constraints measured (Zicntr needs a CLINT time source — D-PLATFORM forbids it; medeleg's reserved bit 10 with H off and undelegatable bit 11 — the rule the corpus proves; mideleg's string-typed default len) and the matched mask 0x3FF derived by bisection; the matched override authored and validated; the dossier-format owners extended (schema/override.sexp optional fields — rv64i re-validated; dossier_sexp both directions, self-test 13→14; convert round-trip field-for-field exact); the evidence chain closed (the TRACKED .sexp → materialize_sail_override → Sail → `experiment: 11/12 guests AGREE against the tracked override's derived JSON` — step-for-step on the spec-derived expectations, mm-readonly's all-ones WARL read-back bit-exact); the mm-wfi TW cell named with both wfi-mode traces + the writable-bit proof; mm-counters NOT MATCHABLE with the validator line + the first-step trap; `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 419 unchanged) | slice (h) part 2 landed and the LEAF is done: the Sail privileged matched experiment ATTEMPTED and honestly recorded — 11/12 AGREE, mm-wfi's TW cell a named divergence routed to `.5`, mm-counters NOT MATCHABLE with evidence; the leaf's acceptance criterion evidenced by the mode matrix |
-| `2026-10-03` | `.2` slice (h) part 1 | the pre-flip rehearsal (a flipped-route copy: EXTRACTION's refines gap and INTERACTION-MATRIX green measured before any tracked edit); the payload byte-probe (state + encoding + interactions + 125 guest files byte-exact from the proven staging); the dossier flip (route `generated-definition`, D-RESOLUTION-ROUTE superseded by note per the D-FENCE precedent, D-ROUTE-FLIP + REQ/OB pair — RECORD-SCHEMA 20 files ok); the generated mirrors content-hash-identical to the scratch-proven modules; `cargo test -p semulith-verify run_rv64gc` 4/4 groups (62/62 on the TRACKED engine path, per-step writes exact + never_written + determinism); the engine port (exec_rv64gc with the trap-END discipline; FlatMemory's fetch alignment as profile data); the CLI smoke (rv64gc run/demo green, bench refusal rc=2, rv64i default trace byte-identical); the gate census (STATE-GEN 22/22 +2 arms, DEF-GEN 17/17 +2, GUEST-GEN 15/15 +5, EXTRACTION 13/13 +2, EXERCISE-COVERAGE 23/23 +2, FACT-OWNERSHIP 10/10, re-pinned 5 units / 74 kinds); the generator's rustfmt-stability fixed at the source (STATE-GEN `--check` compares against regeneration, `cargo fmt` runs over crates/); the CSR migration (the state document owns; csrs.csv 33/33 the derivation source; the pmpaddr0 RED probe); fetch_references both profiles MATCH; `make check` (76 core / 184 verify), `make gate` all green (DERIVED-COUNTS 408→419 re-derived), bench wasm + smoke-bench 53 arms + both books green | the flip landed: the staged unit, corpus, encoding, state and matrix tracked in one atomic commit; the route is `generated-definition`; every gate judges rv64gc fully with rv64i's verdicts unchanged; the split (flip first, Sail second) recorded |
-| `2026-10-03` | `.2` slice (g) | the pre-slice census (rv64i's matrix the model — 6 axes/21 cells; the check's four rules read from source; 2 staged expectations carrying rv64i's DIFF-FENCEI-EXECUTED against a references.sexp with 0 difference records; 62 guests to absorb); the axis design derived from the leaf's vocabulary (the 4 corpus layers + legality + delegation + restart REFRAMED guest-shaped — the mechanism registry is closed and no rv64gc mechanism exists); the DIFFS-forced re-derivation of it-fencei/min-fencei (steps unchanged, the divergence form dropped with the reason recorded — the mirror now 44 byte-identical + 5 re-derived); the matrix schema-valid and rehearsed via the check's own invocation (`check_interaction_matrix.py <unit-dir>`): 28 cells declared, every disposition resolves, rc=0; the three RED legs fired by name against a scratch copy (DIFFS on the pre-re-derivation state, ORPHAN GUEST on a dropped name, OMITTED CELL on a deleted cell); the corpus re-proven 62/62; the driver self-test 15/15 and the tracked run `INTERACTION-MATRIX: ok (5 unit(s))`; `make gate` green (DERIVED-COUNTS unchanged at 408) | slice (g) landed: the 7-axis × 28-cell interaction matrix authored at staging (route-contradicted until the flip), all 62 staged guests mapped, 3 cells honestly reported degenerate, no difference ids — the flip's matrix proven |
-| `2026-10-03` | `.2` slice (f) | the pre-slice census (49 base guests on disk — c-scope.c toolchain-scoped to rv64i by `scripts/build_c_guest.sh`'s hard-coded `-march=rv64i`; the laboratory memory map and cause vocabulary in the runner); the mirror byte-probe (49 `.s` byte-identical, 46/49 expectations byte-identical, 3 re-derived BY DESIGN under D-IALIGN-16 — targets 2 mod 4 legal with C, RVI-C 27.1 — never fitted); the trap-END bug found by it-fault-alias and fixed in the runner (`trapped` flag); the auipc+addi target audit through the real assembler (14 stale deltas, labels assemble to no word); two execution-caught guest-design bugs (M-level CSR writes inline in S — mm-mret re-laid-out, mm-ecall-modes' handler stage-aware); all 13 mm expectations schema-valid and EVD-05-derived before the run; `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mm, per-step writes exact, deterministic re-run); the coverage rehearsal over the staged 65-form scope (denominator 65 consistent, exercised 65/65, the 13 extension forms via mm-*); `make gate` green (13 checks, DERIVED-COUNTS unchanged at 408 — no arm added) | slice (f) landed: the base mirror executed 49/49 on the rv64gc engine (3 declared IALIGN-16 divergences), the mode-matrix corpus 13/13 with EVD-05 expectations, the 65/65 coverage rehearsal — all untracked scratch, the flip's corpus proven |
-| `2026-10-03` | `.2` slice (e) | the pre-slice census (rv64gc scope 52 vs the fragments' 62+3; the catalogues at 18/18 decision mirrors; the rv64i requirement corpus covers 49 of 52 base forms in 9 instruction records — ecall/ebreak/fence ride event/memory records, the closure measured by probe); the pseudo-census decision measured against EXERCISE-COVERAGE's numerator (the first token of the expectations' insn text observes the spelling); the FOURTH dropped-`(extensions …)`-form copy found and fixed (`_semantics_names`) and the pattern then censused to two MORE readers (check_exercise_coverage.sh, gen_model_book.py — all six sites now uniform, `git grep` clean); the mirror extent derived as a closure (13 requirements + 13 obligations), RECORD-SCHEMA rule 14 MIRROR-DERIVE registered as the governor (self-test 39→43, arms RED-first: drift / missing / ungoverned-authored / owner's contract kept); the fetch leg extended (rv64gc 65==65, rv64i 52==52 unchanged); PARTS DRIFT learned the extension families; EXTRACTION counts pseudos (self-test 9→11); the staged encoding validated (62 + 3 pseudo, PARTIAL with 6 slots, schema conform) and the slice-(d) proof regenerated from it and re-run (26/26); `make gate` green (DERIVED-COUNTS 404→408 arms; the docs/tasks/ aggregate ceiling re-derived 1.5→3 MiB by `decision_task-tree-family-aggregate-rederivation`) | slice (e) landed: the 65-form census by the mandated dual edit, the base-corpus mirror + 3 authored records (34/34), the flip's encoding staged byte-ready, the registry rows (63 fact kinds) |
-| `2026-10-03` | `.2` slice (d) | the pre-slice census (gen_definition refuses rv64gc by name; gen_guests' list measured 49 names — the brief's "51" was stale; no privileged arms in exec.rs; elf.rs:88's hard-coded IALIGN=32; the CLI's profile statically rv64i's at main.rs:83); the third copy of the dropped-extensions-form bug (gen_definition's name list — "4 declared instruction(s) have NO semantics: mret, …" named it); `cargo test -p semulith-core --lib privilege` 11/11 (permission model, legalization, views, delivery both ways, xret, computed SD); the scratch execution proof (26/26 checks over six guests — the CSR disciplines, trap delivery with and without delegation, xret mode pops, wfi/sret legality per mode, counter gating, the TVM gate); the digest cascade re-derived (reports + board pin + board artifacts + platform manifest + both books); the PLATFORM-GEN stale-pin arm fixed (it assumed the digest's leading digit); STATE-GEN 20/20 (+3), DEF-GEN 15/15 (+6), GUEST-GEN 10/10 (+3); `make check` green (76 core / 180 verify tests), `make gate` green (DERIVED-COUNTS 395→404) | slice (d) landed: both generators parameterize (rv64i surfaces regenerate hash-only — the embedded generator fingerprints); the tracked privilege.rs machinery over the generated tables; elf.rs's IALIGN is profile data; the scratch execution proof green; the evaluator's new-variant arms port at the flip |
-| `2026-10-03` | `.2` slice (c2) | the landing question measured against the gates: STATE-GEN proves the tracked state.rs byte-exact from the TRACKED descriptor in a fresh clone; a tracked rv64gc module from the staged (untracked) descriptor would be unjudgeable there — the three alternatives (skip-if-absent leg, a hand-written interim module, a non-unit descriptor home) each measured dishonest. The scratch proof: gen_state emits `target/p4-system-2/gen/state_rv64gc.rs` (40,198 bytes); a `rustc --test` harness over it — reset-is-the-document (mode M, mstatus 0xA0000000, misa 0x800000000014112D), the 33-CSR address lookup, the view discipline (views carry no storage, every view_of resolves), the field tables (WARL-without-legalization absent, the medeleg 11/16 read-only-0 rows, TSR at bit 22 per the pinned encoding.h), x0/mode transitions — 4 passed / 0 failed | slice (c2) refined: the tracked landing rides the flip (one green commit with the descriptor's move); the interim evidence is recorded; `decision_generated-mirror-needs-tracked-input` |
-| `2026-10-03` | `.2` slice (c1) | the pre-slice census (no privileged construct in schema/state.sexp; the route contradiction measured at scripts/check_extraction.py:224-233; gen_state single-profile by refusal; PROFILE-CONSISTENCY csrs cross-check absent, EXTRACTION's reset leg csr-blind); the house-shape refusals (fields wrapper, candidates wrapper — refused by name, reshaped); the staged document validated from target/p4-system-2/: schema conform, --csr-cross 33/33 both directions, _state_resets over the scratch dir green, addresses == pinned csrs.csv 33/33 EXACT, field tables no-overlap/full-coverage; gen_state rv64i byte-identical + rv64gc emits 40198 bytes and rustc-compiles standalone; the composed-reset cross-check fired RED naturally on the real document (mstatus 0xA0000000 ≠ hand-computed 0x300000000 — the descriptor was wrong, the check named it); STATE-GEN self-test 17/17 (+7), PROFILE-CONSISTENCY 44/44 (+3), EXTRACTION 9/9 (+3); `make gate` green (DERIVED-COUNTS 385→395) | slice (c1) landed: the privileged state constructs (csr + per-field discipline tables + privilege_mode), the staged 33-CSR document with the re-earned SEM-08 census, gen_state's two-profile branch with rv64i byte-exact, the two gate gaps closed; the (c1)/(c2) split recorded |
-| `2026-10-03` | `.2` slice (b) | the pre-slice census (32 operators, no csr/mode/xret form; ecall's cause a constant 11; a pseudo could not carry semantics; check_citations hard-coded to rv64i.sem.sexp); the spec-text census (xRET/WFI/TSR/TW/TVM/mcounteren/scounteren/STCE/sfence locators read from the pinned chapters; mstatus positions figure-only → encoding.h pinned); check_semantics pair checks 6/6 + 0/0(+3 pseudo) + 4/4 and `--compose` over the trial composition (refinement points ebreak/ecall declared); check_citations `--corpus` 6 resolution(s) — rv64i 52/52 ×3 profiles, zicsr 8/8, zicntr 3/3, system 4/4 under rv64gc; self-tests semantics 15/15 (+7), citations 13/13 (+3), corpus 8/8 (+1, the dropped-form arm proven RED pre-fix); fetch_references `--verify-only` green both profiles (+encoding.h, +causes.csv); DEF-GEN/STATE-GEN/GUEST-GEN byte-exact; `make gate` green (DERIVED-COUNTS 384→385) | slice (b) landed: 8 new operators (field, inst, mode, csr-state, csr-read, csr-write, trap-deliver, xret), the three sem files with every per-instruction decision cited, the WARL seam recorded for slice (c), rv64i.sem.sexp untouched |
-| `2026-10-03` | `.2` slice (a) | the upstream census (13 mnemonics over master's `extensions/`: rv_zicsr 6 real rows, rv_zicntr 3 pseudo-only rows of csrrs, rv_system mret/wfi + rv_s sret/sfence.vma; the moved rv_* tables byte-identical to the rv64i pins; the pinned arg_lut.csv already carries csr/zimm5); fetch_references `--verify-only` green for BOTH profiles + a scripted fresh re-fetch of rv_s byte-identical; check_sexp_schema on the new references.sexp and all 5 fragments; check_encoding_disjoint self-test 12/12 (+3 pseudo arms, +1 dupes arm) and the trial compositions (base+each new fragment; the 62-instruction 4-fragment union collision-free through a synthetic unit doc); the assembler probe (all 13 forms assembled, the spike-dasm round-trip exact, 4 RED operand refusals named, IALIGN 32 refuses / 16 accepts an entry 2 mod 4, rv64i derives 32 and rv64gc 16); UNIT-COMPOSITION self-test 9/9; EXERCISE-COVERAGE 21/21; EXTRACTION / INTERACTION-MATRIX / SOURCE-FORMAT / SEMANTICS / DOSSIER-SCHEMA / PROFILE-CONSISTENCY green; GUEST-GEN / DEF-GEN / STATE-GEN byte-exact; `make gate` green (DERIVED-COUNTS 383→384 arms re-derived) | slice (a) landed: the Zicsr / Zicntr / privileged-system fragments from the re-pinned tables, the csr operand field and IALIGN as profile data; rv64i's generated surfaces byte-identical; the unit stays on the `profile-resolution` route |
-| `2026-10-03` | `.1` | the snapshot census measured on disk (24 priv + 46 unpriv pages, 21/21 pins re-hashed against the tracked SHA256SUMS); the chapter versions measured from the page titles (M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicsr/Zifencei/Zicntr 2.0, RVWMO 2.0, Machine/Supervisor 1.13, Sstc 1.0); the closure statements measured (G = IMAFDZicsr_Zifencei — naming 36.1; D⇒F — 21.1; F⇒Zicsr — 20.1; C⇒Zca+Zcd at RV64 — zc 28.1.2; IALIGN=16 — 27.1); the PDF pins re-verified against the catalog (3/3); RECORD-SCHEMA 18 record files; EXTRACTION 5 units (the resolution leg: obligations checked both ways); EXERCISE-COVERAGE / INTERACTION-MATRIX 5 units (n/a by declaration); PROFILE-CONSISTENCY 5 dossiers; FACT-OWNERSHIP 61 kinds (fixture re-pinned 9→10); check_citations 52/52 for both units + the 3 named skips; route self-tests 11/11 + 21/21 + 15/15; `make gate` green (DERIVED-COUNTS 376→383 arms re-derived) | the profile resolved: rv64gc-lab-v0 — every element source-located, the closure measured, the dossier landed unregistered with the new profile-resolution route honored by declaration in three gates |
 
 ## Commit Log
 

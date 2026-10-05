@@ -331,3 +331,100 @@ promotion: declined (the durability is the machinery — the rustfmt-stable emis
 
 `P4-SYSTEM.4` slice (f) : pending — the Sail matched experiment + the leaf acceptance.
 
+
+`P4-SYSTEM.4` slice (f)'s checklist (completed `2026-10-05`, `SEMULITH-P4-0028`; the
+leaf's acceptance record), split out on `2026-10-05` at the live file's thirteenth
+ceiling firing — moved to make room for the `.5` design brief:
+
+`P4-SYSTEM.4` slice (f) — the Sail matched experiment; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0028`):
+
+- [x] **REPRODUCE / ISSUE** —
+
+  ```
+  $ target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim --config-override <derived>.json --validate-config
+  The default configuration merged with … is valid. rc=0 — the override needed NO
+  change (A supported true; the region's AMOCASQ / RsrvEventual / (amo|lrsc
+  AccessFault) all present — pre-condition 7 re-measured, not assumed)
+  $ ls target/p4-system-4/sail/*.elf | wc -l
+  0 — the 12 guests had no Sail-runnable images (the corpus ran only in-engine)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — one REAL defect found by the experiment, fixed at
+  root, with the measurements on the page:
+
+  ```
+  $ <the comparator, first run>        — DIVERGE a-lrsc-fault — step 11 (csrrs x11,
+  mcause, x0): sail {'x11': 5}, expectations {'x11': 7}
+  $ git diff --stat -- profiles/rv64gc-lab-v0/guests/    # after the fix
+  1 file changed, 2 insertions(+), 2 deletions(-) — a-lrsc-fault.expected.sexp only
+  ```
+
+  The bind-day misaligned policy (uniform cause 7 for the atomic kinds) is
+  measured ILLEGAL for LR — `a-lrsc-fault` came back `sail x11=5 vs expected 7`, and
+  RVP-MACHINE's exception table says why: "load and load-reserved instructions
+  generate LOAD exceptions" (measured ×1 in the pinned chapter), so the legal set for
+  a misaligned LR is causes 4/5, never 7. The policy is now kind-matched (LR → 5,
+  SC/AMO → 7) in the engine arm, the schema contract, the state.sexp policy text, the
+  D-ATOMIC-MISALIGN decision (+amendment note) and its verbatim REQ/OB mirrors —
+  decision 6's "makes the cells AGREE" clause measured false as written and true now.
+  The flagged width cell measured as designed: Sail's platform reservation matches on
+  the physical ADDRESS alone (the externs take physaddrbits, no width), the
+  laboratory's declared width-equal policy fails — both legal, a named divergence.
+
+- [x] **FIX** — untracked experiment tooling (the 12 ELFs at exactly 0x8000_0000 —
+  .word-only source + PHDRS link, the tracked assembler owning the bytes; the
+  arch-leg comparator on the corpus's change-observation rule); the kind-matched
+  policy fix (the files above + the a-lrsc-fault expectations re-derived — the ONLY
+  guest file changed, by design, the `.2` slice-f re-derivation pattern);
+  `references.sexp` (the third experiment recorded in matched_scope).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ <the 12-guest comparator against sail 0.14, the tracked override>
+  AGREE ×11 (21/20/22/17/18/16/77/41/33/11/14 steps' change-observations exact)
+  DIVERGE a-lrsc-mustfail — step 22 (sc.d after lr.w): sail x9<-0 and the store lands
+  (trace quoted), the laboratory fails with code 1 under the declared width-equal
+  policy; 11 AGREE + 1 NAMED DIVERGENCE of 12. Sail's SC is deterministic under
+  RsrvEventual (the pair/loop cells AGREE — the declared never-spurious policy
+  matches); the alias cell AGREEs (physical-keyed on both sides)
+  $ git diff --stat -- profiles/rv64gc-lab-v0/guests/
+  1 file changed — a-lrsc-fault.expected.sexp only (the other 87 guests untouched;
+  the override unchanged — nothing predates the policy fix except my own guest)
+  $ cargo test -p semulith-verify run_rv64gc
+  test result: ok. 4 passed — 88/88; the slice-(c) proof 16/16 against the fixed engine
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (8 groups), `make gate` →
+  `=== all doctrines green ===` (DERIVED-COUNTS 429 unchanged); the definition and
+  state manifests re-derived (input-hash cascade only); RECORD-SCHEMA 20 files ok
+  (the amended decision and its mirrors verbatim-identical); PROFILE-CONSISTENCY 5.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
+  narrative + frontier → `.5` + checklist + logs + changelog), `docs/TASK_TREE.md`
+  (4/10), `MEMORY.md` (next_action → `.5`'s design brief), `LIVE_STATUS.md` (4/10),
+  `CHANGELOG.md`, `DEV_NOTES.md` (the exception-table measurement and the width-cell
+  verdict; the promotion decision:
+promotion: declined (the durability is the machinery — the kind-matched policy is armed by the a-lrsc-fault guest and the Sail comparator, both re-runnable)),
+  `docs/book/src/plan/p4.md` (the `.4` section completed) + the book index.
+
+
+
+`P4-SYSTEM`'s Verification Log rows for leaves `.1` and `.2` (both closed `2026-10-03`),
+split out verbatim on `2026-10-05` at the live file's fourteenth ceiling firing — the
+first LOG-ROW move in this tree (the checklists and design briefs moved before; the
+rows' content is preserved here, never summarised):
+
+| Date | Leaf | Checks | Result |
+| --- | --- | --- | --- |
+| `2026-10-03` | `.2` slice (h) part 2 + LEAF | the config-namespace census (Sail 0.14 git 29e6158, the schema + default pinned; the rv64i override precedent); the validator's three named constraints measured (Zicntr needs a CLINT time source — D-PLATFORM forbids it; medeleg's reserved bit 10 with H off and undelegatable bit 11 — the rule the corpus proves; mideleg's string-typed default len) and the matched mask 0x3FF derived by bisection; the matched override authored and validated; the dossier-format owners extended (schema/override.sexp optional fields — rv64i re-validated; dossier_sexp both directions, self-test 13→14; convert round-trip field-for-field exact); the evidence chain closed (the TRACKED .sexp → materialize_sail_override → Sail → `experiment: 11/12 guests AGREE against the tracked override's derived JSON` — step-for-step on the spec-derived expectations, mm-readonly's all-ones WARL read-back bit-exact); the mm-wfi TW cell named with both wfi-mode traces + the writable-bit proof; mm-counters NOT MATCHABLE with the validator line + the first-step trap; `make check` 8/8 groups, `make gate` all green (DERIVED-COUNTS 419 unchanged) | slice (h) part 2 landed and the LEAF is done: the Sail privileged matched experiment ATTEMPTED and honestly recorded — 11/12 AGREE, mm-wfi's TW cell a named divergence routed to `.5`, mm-counters NOT MATCHABLE with evidence; the leaf's acceptance criterion evidenced by the mode matrix |
+| `2026-10-03` | `.2` slice (h) part 1 | the pre-flip rehearsal (a flipped-route copy: EXTRACTION's refines gap and INTERACTION-MATRIX green measured before any tracked edit); the payload byte-probe (state + encoding + interactions + 125 guest files byte-exact from the proven staging); the dossier flip (route `generated-definition`, D-RESOLUTION-ROUTE superseded by note per the D-FENCE precedent, D-ROUTE-FLIP + REQ/OB pair — RECORD-SCHEMA 20 files ok); the generated mirrors content-hash-identical to the scratch-proven modules; `cargo test -p semulith-verify run_rv64gc` 4/4 groups (62/62 on the TRACKED engine path, per-step writes exact + never_written + determinism); the engine port (exec_rv64gc with the trap-END discipline; FlatMemory's fetch alignment as profile data); the CLI smoke (rv64gc run/demo green, bench refusal rc=2, rv64i default trace byte-identical); the gate census (STATE-GEN 22/22 +2 arms, DEF-GEN 17/17 +2, GUEST-GEN 15/15 +5, EXTRACTION 13/13 +2, EXERCISE-COVERAGE 23/23 +2, FACT-OWNERSHIP 10/10, re-pinned 5 units / 74 kinds); the generator's rustfmt-stability fixed at the source (STATE-GEN `--check` compares against regeneration, `cargo fmt` runs over crates/); the CSR migration (the state document owns; csrs.csv 33/33 the derivation source; the pmpaddr0 RED probe); fetch_references both profiles MATCH; `make check` (76 core / 184 verify), `make gate` all green (DERIVED-COUNTS 408→419 re-derived), bench wasm + smoke-bench 53 arms + both books green | the flip landed: the staged unit, corpus, encoding, state and matrix tracked in one atomic commit; the route is `generated-definition`; every gate judges rv64gc fully with rv64i's verdicts unchanged; the split (flip first, Sail second) recorded |
+| `2026-10-03` | `.2` slice (g) | the pre-slice census (rv64i's matrix the model — 6 axes/21 cells; the check's four rules read from source; 2 staged expectations carrying rv64i's DIFF-FENCEI-EXECUTED against a references.sexp with 0 difference records; 62 guests to absorb); the axis design derived from the leaf's vocabulary (the 4 corpus layers + legality + delegation + restart REFRAMED guest-shaped — the mechanism registry is closed and no rv64gc mechanism exists); the DIFFS-forced re-derivation of it-fencei/min-fencei (steps unchanged, the divergence form dropped with the reason recorded — the mirror now 44 byte-identical + 5 re-derived); the matrix schema-valid and rehearsed via the check's own invocation (`check_interaction_matrix.py <unit-dir>`): 28 cells declared, every disposition resolves, rc=0; the three RED legs fired by name against a scratch copy (DIFFS on the pre-re-derivation state, ORPHAN GUEST on a dropped name, OMITTED CELL on a deleted cell); the corpus re-proven 62/62; the driver self-test 15/15 and the tracked run `INTERACTION-MATRIX: ok (5 unit(s))`; `make gate` green (DERIVED-COUNTS unchanged at 408) | slice (g) landed: the 7-axis × 28-cell interaction matrix authored at staging (route-contradicted until the flip), all 62 staged guests mapped, 3 cells honestly reported degenerate, no difference ids — the flip's matrix proven |
+| `2026-10-03` | `.2` slice (f) | the pre-slice census (49 base guests on disk — c-scope.c toolchain-scoped to rv64i by `scripts/build_c_guest.sh`'s hard-coded `-march=rv64i`; the laboratory memory map and cause vocabulary in the runner); the mirror byte-probe (49 `.s` byte-identical, 46/49 expectations byte-identical, 3 re-derived BY DESIGN under D-IALIGN-16 — targets 2 mod 4 legal with C, RVI-C 27.1 — never fitted); the trap-END bug found by it-fault-alias and fixed in the runner (`trapped` flag); the auipc+addi target audit through the real assembler (14 stale deltas, labels assemble to no word); two execution-caught guest-design bugs (M-level CSR writes inline in S — mm-mret re-laid-out, mm-ecall-modes' handler stage-aware); all 13 mm expectations schema-valid and EVD-05-derived before the run; `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mm, per-step writes exact, deterministic re-run); the coverage rehearsal over the staged 65-form scope (denominator 65 consistent, exercised 65/65, the 13 extension forms via mm-*); `make gate` green (13 checks, DERIVED-COUNTS unchanged at 408 — no arm added) | slice (f) landed: the base mirror executed 49/49 on the rv64gc engine (3 declared IALIGN-16 divergences), the mode-matrix corpus 13/13 with EVD-05 expectations, the 65/65 coverage rehearsal — all untracked scratch, the flip's corpus proven |
+| `2026-10-03` | `.2` slice (e) | the pre-slice census (rv64gc scope 52 vs the fragments' 62+3; the catalogues at 18/18 decision mirrors; the rv64i requirement corpus covers 49 of 52 base forms in 9 instruction records — ecall/ebreak/fence ride event/memory records, the closure measured by probe); the pseudo-census decision measured against EXERCISE-COVERAGE's numerator (the first token of the expectations' insn text observes the spelling); the FOURTH dropped-`(extensions …)`-form copy found and fixed (`_semantics_names`) and the pattern then censused to two MORE readers (check_exercise_coverage.sh, gen_model_book.py — all six sites now uniform, `git grep` clean); the mirror extent derived as a closure (13 requirements + 13 obligations), RECORD-SCHEMA rule 14 MIRROR-DERIVE registered as the governor (self-test 39→43, arms RED-first: drift / missing / ungoverned-authored / owner's contract kept); the fetch leg extended (rv64gc 65==65, rv64i 52==52 unchanged); PARTS DRIFT learned the extension families; EXTRACTION counts pseudos (self-test 9→11); the staged encoding validated (62 + 3 pseudo, PARTIAL with 6 slots, schema conform) and the slice-(d) proof regenerated from it and re-run (26/26); `make gate` green (DERIVED-COUNTS 404→408 arms; the docs/tasks/ aggregate ceiling re-derived 1.5→3 MiB by `decision_task-tree-family-aggregate-rederivation`) | slice (e) landed: the 65-form census by the mandated dual edit, the base-corpus mirror + 3 authored records (34/34), the flip's encoding staged byte-ready, the registry rows (63 fact kinds) |
+| `2026-10-03` | `.2` slice (d) | the pre-slice census (gen_definition refuses rv64gc by name; gen_guests' list measured 49 names — the brief's "51" was stale; no privileged arms in exec.rs; elf.rs:88's hard-coded IALIGN=32; the CLI's profile statically rv64i's at main.rs:83); the third copy of the dropped-extensions-form bug (gen_definition's name list — "4 declared instruction(s) have NO semantics: mret, …" named it); `cargo test -p semulith-core --lib privilege` 11/11 (permission model, legalization, views, delivery both ways, xret, computed SD); the scratch execution proof (26/26 checks over six guests — the CSR disciplines, trap delivery with and without delegation, xret mode pops, wfi/sret legality per mode, counter gating, the TVM gate); the digest cascade re-derived (reports + board pin + board artifacts + platform manifest + both books); the PLATFORM-GEN stale-pin arm fixed (it assumed the digest's leading digit); STATE-GEN 20/20 (+3), DEF-GEN 15/15 (+6), GUEST-GEN 10/10 (+3); `make check` green (76 core / 180 verify tests), `make gate` green (DERIVED-COUNTS 395→404) | slice (d) landed: both generators parameterize (rv64i surfaces regenerate hash-only — the embedded generator fingerprints); the tracked privilege.rs machinery over the generated tables; elf.rs's IALIGN is profile data; the scratch execution proof green; the evaluator's new-variant arms port at the flip |
+| `2026-10-03` | `.2` slice (c2) | the landing question measured against the gates: STATE-GEN proves the tracked state.rs byte-exact from the TRACKED descriptor in a fresh clone; a tracked rv64gc module from the staged (untracked) descriptor would be unjudgeable there — the three alternatives (skip-if-absent leg, a hand-written interim module, a non-unit descriptor home) each measured dishonest. The scratch proof: gen_state emits `target/p4-system-2/gen/state_rv64gc.rs` (40,198 bytes); a `rustc --test` harness over it — reset-is-the-document (mode M, mstatus 0xA0000000, misa 0x800000000014112D), the 33-CSR address lookup, the view discipline (views carry no storage, every view_of resolves), the field tables (WARL-without-legalization absent, the medeleg 11/16 read-only-0 rows, TSR at bit 22 per the pinned encoding.h), x0/mode transitions — 4 passed / 0 failed | slice (c2) refined: the tracked landing rides the flip (one green commit with the descriptor's move); the interim evidence is recorded; `decision_generated-mirror-needs-tracked-input` |
+| `2026-10-03` | `.2` slice (c1) | the pre-slice census (no privileged construct in schema/state.sexp; the route contradiction measured at scripts/check_extraction.py:224-233; gen_state single-profile by refusal; PROFILE-CONSISTENCY csrs cross-check absent, EXTRACTION's reset leg csr-blind); the house-shape refusals (fields wrapper, candidates wrapper — refused by name, reshaped); the staged document validated from target/p4-system-2/: schema conform, --csr-cross 33/33 both directions, _state_resets over the scratch dir green, addresses == pinned csrs.csv 33/33 EXACT, field tables no-overlap/full-coverage; gen_state rv64i byte-identical + rv64gc emits 40198 bytes and rustc-compiles standalone; the composed-reset cross-check fired RED naturally on the real document (mstatus 0xA0000000 ≠ hand-computed 0x300000000 — the descriptor was wrong, the check named it); STATE-GEN self-test 17/17 (+7), PROFILE-CONSISTENCY 44/44 (+3), EXTRACTION 9/9 (+3); `make gate` green (DERIVED-COUNTS 385→395) | slice (c1) landed: the privileged state constructs (csr + per-field discipline tables + privilege_mode), the staged 33-CSR document with the re-earned SEM-08 census, gen_state's two-profile branch with rv64i byte-exact, the two gate gaps closed; the (c1)/(c2) split recorded |
+| `2026-10-03` | `.2` slice (b) | the pre-slice census (32 operators, no csr/mode/xret form; ecall's cause a constant 11; a pseudo could not carry semantics; check_citations hard-coded to rv64i.sem.sexp); the spec-text census (xRET/WFI/TSR/TW/TVM/mcounteren/scounteren/STCE/sfence locators read from the pinned chapters; mstatus positions figure-only → encoding.h pinned); check_semantics pair checks 6/6 + 0/0(+3 pseudo) + 4/4 and `--compose` over the trial composition (refinement points ebreak/ecall declared); check_citations `--corpus` 6 resolution(s) — rv64i 52/52 ×3 profiles, zicsr 8/8, zicntr 3/3, system 4/4 under rv64gc; self-tests semantics 15/15 (+7), citations 13/13 (+3), corpus 8/8 (+1, the dropped-form arm proven RED pre-fix); fetch_references `--verify-only` green both profiles (+encoding.h, +causes.csv); DEF-GEN/STATE-GEN/GUEST-GEN byte-exact; `make gate` green (DERIVED-COUNTS 384→385) | slice (b) landed: 8 new operators (field, inst, mode, csr-state, csr-read, csr-write, trap-deliver, xret), the three sem files with every per-instruction decision cited, the WARL seam recorded for slice (c), rv64i.sem.sexp untouched |
+| `2026-10-03` | `.2` slice (a) | the upstream census (13 mnemonics over master's `extensions/`: rv_zicsr 6 real rows, rv_zicntr 3 pseudo-only rows of csrrs, rv_system mret/wfi + rv_s sret/sfence.vma; the moved rv_* tables byte-identical to the rv64i pins; the pinned arg_lut.csv already carries csr/zimm5); fetch_references `--verify-only` green for BOTH profiles + a scripted fresh re-fetch of rv_s byte-identical; check_sexp_schema on the new references.sexp and all 5 fragments; check_encoding_disjoint self-test 12/12 (+3 pseudo arms, +1 dupes arm) and the trial compositions (base+each new fragment; the 62-instruction 4-fragment union collision-free through a synthetic unit doc); the assembler probe (all 13 forms assembled, the spike-dasm round-trip exact, 4 RED operand refusals named, IALIGN 32 refuses / 16 accepts an entry 2 mod 4, rv64i derives 32 and rv64gc 16); UNIT-COMPOSITION self-test 9/9; EXERCISE-COVERAGE 21/21; EXTRACTION / INTERACTION-MATRIX / SOURCE-FORMAT / SEMANTICS / DOSSIER-SCHEMA / PROFILE-CONSISTENCY green; GUEST-GEN / DEF-GEN / STATE-GEN byte-exact; `make gate` green (DERIVED-COUNTS 383→384 arms re-derived) | slice (a) landed: the Zicsr / Zicntr / privileged-system fragments from the re-pinned tables, the csr operand field and IALIGN as profile data; rv64i's generated surfaces byte-identical; the unit stays on the `profile-resolution` route |
+| `2026-10-03` | `.1` | the snapshot census measured on disk (24 priv + 46 unpriv pages, 21/21 pins re-hashed against the tracked SHA256SUMS); the chapter versions measured from the page titles (M 2.0, A 2.1, F 2.2, D 2.2, C 2.0, Zicsr/Zifencei/Zicntr 2.0, RVWMO 2.0, Machine/Supervisor 1.13, Sstc 1.0); the closure statements measured (G = IMAFDZicsr_Zifencei — naming 36.1; D⇒F — 21.1; F⇒Zicsr — 20.1; C⇒Zca+Zcd at RV64 — zc 28.1.2; IALIGN=16 — 27.1); the PDF pins re-verified against the catalog (3/3); RECORD-SCHEMA 18 record files; EXTRACTION 5 units (the resolution leg: obligations checked both ways); EXERCISE-COVERAGE / INTERACTION-MATRIX 5 units (n/a by declaration); PROFILE-CONSISTENCY 5 dossiers; FACT-OWNERSHIP 61 kinds (fixture re-pinned 9→10); check_citations 52/52 for both units + the 3 named skips; route self-tests 11/11 + 21/21 + 15/15; `make gate` green (DERIVED-COUNTS 376→383 arms re-derived) | the profile resolved: rv64gc-lab-v0 — every element source-located, the closure measured, the dossier landed unregistered with the new profile-resolution route honored by declaration in three gates |
