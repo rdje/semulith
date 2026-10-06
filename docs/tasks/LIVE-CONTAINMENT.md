@@ -86,14 +86,22 @@ answer once ceilings fire.
   `promotion: declined (per-surface drift, corrected; the class — hand-curated orientation text — is .4's inventory question).`
 
 - ID: `LIVE-CONTAINMENT.3` — **headroom for TOOLBOX.md and DOCTRINE_ENFORCEMENT.md**
-  Status: `pending`
+  Status: `done` (`2026-10-06`, `SEMULITH-LC-0003`)
   Goal: `TOOLBOX.md` (20,478 / 20,480 B) and `DOCTRINE_ENFORCEMENT.md` (32,669 / 32,768 B) —
   both "one row per" normative tables — are partitioned behind a bounded index (the book's
   `partitioned` precedent), so the next tool or doctrine can be registered.
   Acceptance: both below their health targets; REGISTRY-MIRROR, MEMORY-ARCH and
   README-ROUTING-CLOSURE green; no row lost (an enumerated before/after census).
-  Verification: pending
-  Commit: pending
+  Result: **met.** `DOCTRINE_ENFORCEMENT.md` 32,669 → ~11 KB: the 35 long-form project
+  rows moved verbatim into `docs/doctrines/{governance,definition,evidence,board}.md`, the
+  parent keeping a complete id → family index (still a full REGISTRY-MIRROR mirror), and
+  REGISTRY-MIRROR now also judges the families' union in a new project scope (13/13 arms; RED
+  when one long-form row is removed). `TOOLBOX.md` 20,478 → ~3.2 KB: the 76 rows moved
+  verbatim into `docs/toolbox/{governance,definition,composition,execution}.md` behind a
+  family index. Both families registered (partitioned, bounded per part).
+  Verification: `2026-10-06` — the Verification Log below.
+  Commit: `SEMULITH-LC-0003`
+  `promotion: declined (the census lesson — a verbatim-move check that reuses the mover's own row filter cannot see what the filter drops — is the existing card a-survey-that-found-things-can-still-have-missed-things.md in another costume).`
 
 - ID: `LIVE-CONTAINMENT.4` — **adopt the live-document containment doctrine**
   Status: `proposed`
@@ -110,8 +118,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.3` | `pending` | the next registered tool or doctrine cannot fit; due before `P4-SYSTEM.7` slice (c5) |
-| 2 | `LIVE-CONTAINMENT.4` | `proposed` | the README policy's own trigger has fired (CHANGELOG/DEV_NOTES shards, the P4 tree archive, the book partition — 2026-10-06 alone) |
+| 1 | `LIVE-CONTAINMENT.4` | `proposed` | the README policy's own trigger has fired (CHANGELOG/DEV_NOTES shards, the P4 tree archive, the book partition — 2026-10-06 alone) |
 
 ## Decisions
 
@@ -197,11 +204,46 @@ answer once ceilings fire.
 - [x] **LOCKSTEP** — `KNOWLEDGE_MAP.md` regenerated; this tree; `docs/TASK_TREE.md`;
   `MEMORY.md`; `CHANGELOG.md`.
 
+`LIVE-CONTAINMENT.3` — TOOLBOX/DOCTRINE_ENFORCEMENT headroom (`2026-10-06`, `SEMULITH-LC-0003`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — both are "one row per" normative tables with a fixed
+  ceiling and no partition: `wc -c TOOLBOX.md DOCTRINE_ENFORCEMENT.md` → 20,478 / 32,669 of
+  20,480 / 32,768 B after `SEMULITH-CA-0001`'s rows were tightened to fit (the guide's named
+  anti-pattern); the section census → 19,055 B of TOOLBOX is its tool table, 24,966 B of
+  DOCTRINE_ENFORCEMENT its project-doctrine table.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  the move census (rows before, from HEAD): doctrine rows 35 each exactly once: True;
+    tool rows 76 each exactly once: True  (a FIRST pass found 75 — its row filter keyed on
+    a backticked first cell and dropped `| any project check's --self-test |`; a second
+    census by table position caught it; the move re-run from HEAD)
+  $ wc -c TOOLBOX.md DOCTRINE_ENFORCEMENT.md → ~3.2 KB / ~11 KB
+  $ bash scripts/check_registry_mirror.sh --self-test → REGISTRY-MIRROR --self-test: 13 pass / 0 fail
+  RED — CITATION-QUOTES' long-form row removed from docs/doctrines/definition.md:
+    NOT MIRRORED docs-doctrines-union.md: 'CITATION-QUOTES' is registered and has no row
+  $ bash scripts/check_registry_mirror.sh → ok (3 document(s) mirror the registry)
+  ```
+
+- [x] **NO REGRESSION** — README-ROUTING-CLOSURE ok (36 governed destinations);
+  DERIVED-COUNTS re-derived (36 destinations, 451 arms); `make book` rc=0; `make gate` →
+  `=== all doctrines green ===`.
+
+- [x] **FIX** — the two partitions (scratch mover `target/live-containment/partition.py`,
+  verbatim, census-checked); REGISTRY-MIRROR's `project:` mirror scope + the union
+  invocation + 2 arms; the parents' bounded indexes; "Adding a doctrine" and TOOLBOX's
+  add-a-row note point at the families; both families registered with derivation comments.
+
+- [x] **LOCKSTEP** — this tree, `docs/TASK_TREE.md`, `MEMORY.md`, `LIVE_STATUS.md` (36 /
+  451), `CHANGELOG.md`, `DEV_NOTES.md`, `doctrine/readme_routes.tsv`.
+
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.3` | the section census; the verbatim moves (35 + 76 rows, each exactly once — the first pass's dropped row caught by a positional census); REGISTRY-MIRROR's project scope (13/13; the union RED on a removed row); the families registered | **met** — DOCTRINE_ENFORCEMENT ~11 KB, TOOLBOX ~3.2 KB; the next tool and doctrine fit |
 | `2026-10-06` | `.2` | the three drifts measured (crates/app absent; the scaffold header; the 16,228-byte note); each corrected text checked against `ls crates/`, the CLI's subcommand match, `ls profiles/`; the map regenerated | **met** — the orientation sources state today's repository |
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
@@ -209,11 +251,14 @@ answer once ceilings fire.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.3` | `SEMULITH-LC-0003 (leaf LIVE-CONTAINMENT.3): TOOLBOX and DOCTRINE_ENFORCEMENT partitioned behind bounded indexes — 76 tool rows and 35 doctrine rows moved verbatim, REGISTRY-MIRROR judges the family union` | both surfaces regain headroom; no row lost |
 | `.2` | `SEMULITH-LC-0002 (leaf LIVE-CONTAINMENT.2): the stale orientation sources corrected — the knowledge map's subsystems, the workspace header, the README policy's measurements` | three drifts; the policy decision untouched |
 | `.1` | `SEMULITH-LC-0001 (leaf LIVE-CONTAINMENT.1): the closed-tree register — completed trees leave the index (22 rows moved verbatim), FRONTIER-SYNC gates both files` | the control applied and enforced; the index 8,172 → 4,053 B |
 
 ## Changelog
 
+- `2026-10-06`: `.3` done (`SEMULITH-LC-0003`) — TOOLBOX and DOCTRINE_ENFORCEMENT partitioned
+  into family files behind bounded indexes; REGISTRY-MIRROR judges the doctrine families' union.
 - `2026-10-06`: `.2` done (`SEMULITH-LC-0002`) — the orientation map names the real crates and
   subsystems; the scaffold header and the policy note's stale measurements corrected.
 - `2026-10-06`: `.1` done (`SEMULITH-LC-0001`) — completed trees leave the index: 22 rows

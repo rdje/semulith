@@ -166,7 +166,12 @@ RULES.md	reader_navigation	normative	stable rule IDs; changes by reviewed decisi
 #               -> 20 KiB; health stays 0 (a row arrives, not a paragraph).
 #   DOCTRINE_ENFORCEMENT.md  24,573 B of 24,576 B at HEAD — the same 25th row on the registry's
 #               human-readable mirror. Ceiling 24 KiB -> 28 KiB; health stays 0.
-TOOLBOX.md	both	normative	one row per tracked diagnostic	0	0	0	20480	0
+TOOLBOX.md	both	normative	the tools-first doctrine + the bounded index of tool families (the rows live in docs/toolbox/)	0	0	0	20480	0
+# docs/toolbox/ — partitioned at LIVE-CONTAINMENT.3 (2026-10-06) when TOOLBOX.md reached 20,478 of
+#   20,480 B: its 76 rows moved verbatim into four family tables (4 files / ~19.6 KB; largest
+#   definition.md ~7.5 KB). A row is ~250 B: health 8 files / 40 KiB, ceiling 16 / 80 KiB,
+#   per-part 16 KiB (~35 more tools in the largest family before it must split again).
+docs/toolbox/	both	partitioned	one table per tool family; TOOLBOX.md is the bounded index	8	40960	16	81920	16384
 COMMIT.md	reader_navigation	normative	the commit workflow	0	0	0	12288	0
 CLAUDE.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	8192	0
 AGENTS.md	reader_navigation	normative	agent bootstrap pointer	0	0	0	4096	0
@@ -184,7 +189,13 @@ MEMORY_ARCHITECTURE.md	reader_navigation	normative	portable standard, locally ow
 #               approval 2026-10-02 ("if you need more headroom, just ask and I will approve"),
 #               standing since 2026-10-01. Ceiling 28 KiB -> 32 KiB (~34 rows at the measured
 #               ~930 B/row); health stays 0 (a doctrine row arrives, not a paragraph).
-DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry	0	0	0	32768	0
+DOCTRINE_ENFORCEMENT.md	reader_navigation	normative	human-readable mirror of the enforcer registry; the project doctrines as a bounded id index (long-form rows in docs/doctrines/)	0	0	0	32768	0
+# docs/doctrines/ — partitioned at LIVE-CONTAINMENT.3 (2026-10-06) when DOCTRINE_ENFORCEMENT.md
+#   reached 32,669 of 32,768 B: the 35 long-form project-doctrine rows moved verbatim into four
+#   family files (~26 KB; largest governance.md ~11 KB). A row is ~700 B: health 8 files / 48
+#   KiB, ceiling 16 / 96 KiB, per-part 24 KiB (~18 more doctrines in the largest family).
+#   REGISTRY-MIRROR judges the families' union as a project-scoped mirror.
+docs/doctrines/	both	partitioned	one file per doctrine family; DOCTRINE_ENFORCEMENT.md is the bounded index; REGISTRY-MIRROR judges the union	8	49152	16	98304	24576
 CHANGELOG.md	author_overflow	append_history	git history is canonical; shard when the ceiling fires	0	49152	0	65536	0
 definitions/	reader_navigation	partitioned	reusable definition fragments; one file per fragment, composed by units	12	131072	30	262144	65536
 # Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign record gained its

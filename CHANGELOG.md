@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0003 (leaf LIVE-CONTAINMENT.3) — TOOLBOX and DOCTRINE_ENFORCEMENT partitioned behind bounded indexes
+
+- `DOCTRINE_ENFORCEMENT.md` (32,669 / 32,768 B): the 35 long-form project-doctrine rows
+  moved verbatim into `docs/doctrines/` (governance / definition / evidence / board); the
+  parent keeps a complete id → family index. REGISTRY-MIRROR gains a project-scoped mirror
+  and judges the families' union (13/13 arms; RED on a removed row).
+- `TOOLBOX.md` (20,478 / 20,480 B): the 76 tool rows moved verbatim into `docs/toolbox/`
+  (governance / definition / composition / execution) behind a family index. A first pass
+  dropped one row (its first cell had no backtick) and a census reusing the mover's filter
+  missed it; a positional census caught it and the move re-ran from HEAD.
+- Both families registered (partitioned, per-part bounds); "Adding a doctrine" and the
+  add-a-tool note point at the families; LIVE_STATUS 36 destinations / 451 arms; `make
+  gate` green, `make book` rc=0.
+
 ## SEMULITH-LC-0002 (leaf LIVE-CONTAINMENT.2) — the stale orientation sources corrected
 
 - `knowledge-map/subsystems.md` (the one hand-curated input to the derived Knowledge Map)

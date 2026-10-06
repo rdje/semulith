@@ -45,7 +45,11 @@ python3 - "$@" <<'PY'
 import re, sys, pathlib
 
 universal_p, project_p = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-mirrors = [pathlib.Path(a) for a in sys.argv[3:]]
+# A mirror argument prefixed `project:` is judged against the PROJECT registry only — the
+# partitioned family files under docs/doctrines/ (LIVE-CONTAINMENT.3) restate the project's own
+# doctrines and never the universal ones, so their union is a project-scoped mirror.
+mirrors = [(pathlib.Path(a[len("project:"):]), "project") if a.startswith("project:")
+           else (pathlib.Path(a), "all") for a in sys.argv[3:]]
 findings = []
 
 # A registry entry is a quoted "ID|what it proves|path/to/check.sh". Comment lines are excluded
@@ -88,7 +92,7 @@ WORDS = {w: i for i, w in enumerate(
     "twentyfour twentyfive".split())}
 
 checked = 0
-for mirror in mirrors:
+for mirror, scope in mirrors:
     if not mirror.is_file():
         findings.append(f"NO MIRROR  {mirror} does not exist")
         continue
@@ -111,7 +115,7 @@ for mirror in mirrors:
             listed[m.group("id")] = in_project[i]
 
     # 1. COVERAGE ----------------------------------------------------------------
-    for did in sorted(registered):
+    for did in sorted(project if scope == "project" else registered):
         if did not in listed:
             findings.append(
                 f"NOT MIRRORED {mirror.name}: '{did}' is registered and has no row — "
@@ -187,7 +191,7 @@ EOF
   }
   arm() { # arm <name> <expected-rc> <expected-substring>
     argc 3 "$#" arm || return
-    out="$(check_mirror "$t/u.sh" "$t/p.sh" "$t/M.md" 2>&1)"; rc=$?
+    out="$(check_mirror "$t/u.sh" "$t/p.sh" "${MIRROR_ARG:-$t/M.md}" 2>&1)"; rc=$?
     if [ "$rc" != "$2" ]; then
       fail=$((fail+1)); printf 'REGISTRY-MIRROR self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$1" "$2" "$rc" "$out" >&2
     elif ! printf '%s' "$out" | grep -qF "$3"; then
@@ -245,6 +249,15 @@ One checks run today.'
   mirror "$GOOD"
   printf 'DOCTRINES=(\n)\n' > "$t/u.sh";              arm "REFUSE the registry parses to nothing" 2 "NO REGISTRY"
 
+  # The project-scoped mirror (LIVE-CONTAINMENT.3): the partitioned family union restates the
+  # project's doctrines only — it is judged against the project registry, never the universal.
+  drivers
+  printf '# family\n\n## This project'"'"'s own doctrines — f\n\n| ID | Proves |\n| --- | --- |\n| `BETA` | b |\n' > "$t/F.md"
+  MIRROR_ARG="project:$t/F.md";                       arm "GREEN a project-scoped mirror needs no universal row" 0 "__CHECKED__ 1"
+  printf '# family\n\n## This project'"'"'s own doctrines — f\n\n| ID | Proves |\n| --- | --- |\n' > "$t/F.md"
+                                                      arm "RED   the family union lost a project doctrine" 1 "NOT MIRRORED"
+  unset MIRROR_ARG
+
   rm -rf "$t"
   printf 'REGISTRY-MIRROR --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -257,6 +270,13 @@ self_test >/dev/null 2>&1 || {
   echo "REGISTRY-MIRROR: REFUSED — the check does not discriminate (self-test failed)." >&2; exit 2; }
 
 MIRRORS=(DOCTRINE_ENFORCEMENT.md docs/book/src/working/doctrines.md)
+# The partitioned long-form rows (LIVE-CONTAINMENT.3): their UNION is a project-scoped mirror,
+# so a doctrine registered without its long-form row — in any family — is NOT MIRRORED.
+if [ -d docs/doctrines ]; then
+  union="$ROOT/target/registry-mirror/docs-doctrines-union.md"; mkdir -p "$(dirname "$union")"
+  cat docs/doctrines/*.md > "$union"
+  MIRRORS+=("project:$union")
+fi
 out="$(check_mirror scripts/check_doctrines.sh scripts/check_doctrines.project.sh "${MIRRORS[@]}")"; rc=$?
 count="$(printf '%s' "$out" | sed -n 's/^__CHECKED__ //p')"
 body="$(printf '%s' "$out" | grep -v '^__CHECKED__ ' || true)"
