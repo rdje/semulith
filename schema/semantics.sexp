@@ -3,7 +3,7 @@
 ;; A semantics file is one (semantics …) holding the fragment id, the XLEN, and one
 ;; (sem …) per instruction: the instruction name, the specification locator the rule
 ;; was derived from, and the effect. The effect is an expression of the operator
-;; language declared below — the 43 forms `scripts/check_semantics.py` checks against,
+;; language declared below — the forms `scripts/check_semantics.py` checks against,
 ;; AS DATA (SOT-FORMAT.2): a new semantic form is a line here, zero lines of Python.
 ;;
 ;; Operators are positional: `(add (reg rs1) (reg rs2))` is not made of (name value)
@@ -215,3 +215,110 @@
 ;; assemble and execute identically, the "Software should not" of §12.1.2 being a
 ;; software rule, not a decode illegality (decision 1).
 (operator (name amo) (fixed 4))
+;; ---- floating point (P4-SYSTEM.7 slice c3; the F bind, D at slice d) --------------------------
+;; THE FLOATING-POINT STATE, stated once for every operator of this block (the reservation
+;; block's precedent — the shared rules are the operators' meaning, so no rule restates them):
+;;
+;; - (freg x) in a value position denotes the PRE-INSTRUCTION f-register file — the
+;;   READS-AND-WRITES contract above, as (reg x) — and yields the raw FLEN = 64 bits (D is
+;;   selected; RVI-D §21.1.1). (set (freg rd) v) writes v's 64 bits and marks mstatus.FS
+;;   Dirty UNCONDITIONALLY — a write is a write: the pinned FS section makes the
+;;   unaltered-contents case implementation-defined ("If an instruction explicitly or
+;;   implicitly writes a floating-point register or the fcsr but does not alter its
+;;   contents, and FS=Initial or FS=Clean, it is implementation-defined whether FS
+;;   transitions to Dirty", RVP-MACHINE §2.1.1.6.7), and the laboratory resolves it the way
+;;   Sail 0.14's wF does (laboratory authority).
+;; - THE OFF GATE: an instruction whose rule reads or writes the floating-point state — any
+;;   (freg …), any operator of this block — is ILLEGAL at mstatus.FS = Off: illegal
+;;   instruction (cause 2, xtval the instruction word), judged at the HEAD of the
+;;   instruction, before ANY effect of its rule (an FLW at FS=Off raises 2, never its
+;;   load's own fault). The spec quantifies over exactly that population — "any
+;;   instruction that attempts to read or write the corresponding state will cause an
+;;   illegal-instruction exception" (RVP-MACHINE §2.1.1.6.7) — so the gate is DERIVED from
+;;   the rule, never a per-rule guard a rule could forget (P4-SYSTEM.7's split decision;
+;;   Sail 0.14 judges it at decode, fdext_control.sail:19). The FP CSRs are gated by
+;;   csr-read/csr-write's permission model (slice b), not here.
+;; - THE ARITHMETIC: the value operators below take n-bit IEEE 754-2008 encodings (n = 32 or
+;;   64, a literal: the format is data, like a width) and, where they round, the EFFECTIVE
+;;   rounding mode of (rounding …); they yield the n-bit result, IEEE-correctly rounded —
+;;   one rounding; subnormals per IEEE, no flush ("Operations on subnormal numbers are
+;;   handled in accordance with the IEEE 754-2008 standard", tininess detected after
+;;   rounding — RVI-F §20.1.4) — and any NaN result is the CANONICAL NaN ("if the result of
+;;   a floating-point operation is NaN, it is the canonical NaN", RVI-F §20.1.3:
+;;   0x7fc00000 single, 0x7ff8000000000000 double). Each ACCRUES its IEEE exception flags
+;;   into fflags (NV DZ OF UF NX at bits 4..0) by OR — sticky, never cleared by an
+;;   instruction (RVI-F §20.1.2) — and the accrual marks FS Dirty iff fflags CHANGES (the
+;;   same implementation-defined latitude, resolved as Sail 0.14's default
+;;   Fflags_Dirty_Precise; laboratory authority). The arithmetic is rustc_apfloat behind
+;;   the model layer, which owns the target policy and the two measured LLVM-vs-IEEE flag
+;;   deviations (decision_fp-backend-qualification): an evaluator arm never touches the
+;;   backend directly.
+;; - NaN-BOXING is the tree's, in bits (RVI-D §21.1.2): a narrower result is written
+;;   through (fbox n v); a narrower operand is read through (funbox n v); the transfer
+;;   instructions (FLW/FSW, FMV.X.W/FMV.W.X) move bits and never unbox — "A narrower n-bit
+;;   transfer out of the floating-point registers will transfer the lower n bits of the
+;;   register ignoring the upper FLEN-n bits".
+;;
+;; (freg x) — the f-register the operand field x names (RVI-F §20.1.1).
+(operator (name freg) (fixed 1) (arg symbol))
+;; (fbox n v) — v's low n bits NaN-boxed into FLEN: all 1s above ("Any operation that writes
+;; a narrower result to an 'f' register must write all 1s to the uppermost FLEN-n bits",
+;; RVI-D §21.1.2). n = 64 is the identity.
+(operator (name fbox) (fixed 2))
+;; (funbox n v) — the n-bit operand an FLEN-bit register value carries: its low n bits when
+;; the upper FLEN-n bits are all 1s, else the n-bit canonical NaN ("otherwise the input value
+;; is treated as an n-bit canonical NaN", RVI-D §21.1.2). n = 64 is the identity.
+(operator (name funbox) (fixed 2))
+;; (rounding rm) — the EFFECTIVE rounding mode of the instruction's rm field, 0..4
+;; (RNE RTZ RDN RUP RMM — RVI-F §20.1.2's Table 2): 111 (DYN) resolves to frm's current
+;; value. A RESERVED rounding mode — static 101/110, or DYN with frm holding 101–111 —
+;; raises illegal-instruction (cause 2, xtval the word) and the step ends: the pinned
+;; revision makes the behavior "reserved" and keeps the ratified illegal-instruction
+;; mandate "still valid behavior"; the laboratory takes it (Sail 0.14's Fcsr_RM_Illegal;
+;; P4-SYSTEM.7 slice c1). Its argument is the instruction's own (field rm), never a
+;; computed value; an encoding that carries rm resolves it in its rule even where the
+;; operation cannot round — "implementations must treat the rm field as usual (in
+;; particular, with regard to decoding legal vs. reserved encodings)".
+(operator (name rounding) (fixed 1))
+;; (fadd n rm a b) (fsub n rm a b) (fmul n rm a b) (fdiv n rm a b) — a+b, a-b, a×b, a÷b
+;; (RVI-F §20.1.6; division by zero raises DZ, 0/0 and ∞-∞ NV — IEEE 754-2008 §7).
+(operator (name fadd) (fixed 4))
+(operator (name fsub) (fixed 4))
+(operator (name fmul) (fixed 4))
+(operator (name fdiv) (fixed 4))
+;; (fsqrt n rm a) — √a; a negative non-zero operand is invalid: NV, the canonical NaN
+;; (RVI-F §20.1.6; IEEE 754-2008 §5.4.1, §7.2). The backend carries no square root: the
+;; model layer computes it (the qualification record's one named gap).
+(operator (name fsqrt) (fixed 3))
+;; (fmadd n rm a b c) — (a×b)+c with ONE rounding (RVI-F §20.1.6). ∞×0 raises NV even when c
+;; is a quiet NaN ("The fused multiply-add instructions must set the invalid operation
+;; exception flag when the multiplicands are ∞ and zero, even when the addend is a quiet
+;; NaN"). The negated forms negate an OPERAND in the tree (a sign-bit XOR), never the
+;; result: -(a×b)+c is (fmadd n rm -a b c) exactly — negation is exact and the single
+;; rounding then sees the true value in every rounding mode (Sail 0.14's negate_S shape).
+(operator (name fmadd) (fixed 5))
+;; (fmin n a b) (fmax n a b) — IEEE 754-201x minimumNumber/maximumNumber as RVI-F §20.1.6
+;; amends them: −0.0 < +0.0; both NaN → the canonical NaN; one NaN → the other operand; a
+;; signaling-NaN input raises NV "even when the result is not NaN". No rounding.
+(operator (name fmin) (fixed 3))
+(operator (name fmax) (fixed 3))
+;; (feq n a b) (flt n a b) (fle n a b) — 1 if a=b / a<b / a≤b, else 0 (an XLEN value); 0 when
+;; either operand is NaN. FEQ is QUIET (NV only for a signaling NaN); FLT and FLE are
+;; SIGNALING (NV for any NaN) — RVI-F §20.1.8.
+(operator (name feq) (fixed 3))
+(operator (name flt) (fixed 3))
+(operator (name fle) (fixed 3))
+;; (fclass n a) — the 10-bit class mask of a, exactly one bit set (RVI-F §20.1.9, Table 6:
+;; bit 0 −∞ … bit 7 +∞, bit 8 signaling NaN, bit 9 quiet NaN); raises no flag.
+(operator (name fclass) (fixed 2))
+;; (f2i n iw s rm a) — a (an n-bit float) converted to an iw-bit integer, signed when s is 1,
+;; rounded by rm (RVI-F §20.1.7); n, iw and s are literals. A result outside the target
+;; range is CLIPPED and raises NV (Table 5: out-of-range negative and −∞ → the minimum; out-of
+;; -range positive, +∞ and NaN → the maximum); NX otherwise when the rounded value differs
+;; from a ("All floating-point conversion instructions set the Inexact exception flag if the
+;; rounded result differs from the operand value and the Invalid exception flag is not set").
+;; The W forms' sign extension to XLEN is the rule's own (sext 64 …).
+(operator (name f2i) (fixed 5))
+;; (i2f n iw s rm v) — v's low iw bits as an integer (signed when s is 1) converted to an
+;; n-bit float, rounded by rm; NX when inexact (RVI-F §20.1.7).
+(operator (name i2f) (fixed 5))

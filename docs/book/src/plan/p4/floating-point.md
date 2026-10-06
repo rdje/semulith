@@ -1,6 +1,6 @@
 # P4.7 — Floating point
 
-**Status:** Underway (slices a–b, c1–c2; 2026-10-06)
+**Status:** Underway (slices a–b, c1–c3; 2026-10-06)
 
 The P4 chapter's [floating-point condition](../p4.md#the-floating-point-condition) now has its
 measurement. Slice (a)
@@ -36,3 +36,23 @@ names is the instruction's meaning, so it will come from the semantics, not the
 encoding table. The tables' thirteen pseudo-instructions (`fmv.s`, `frcsr`, …) are
 not carried: they are spellings of real instructions, and guests write the real
 form, as everywhere else in this repository.
+
+Checkpoint (c3) taught the semantics language floating point. The shared rules are stated
+once, as the meaning of the new operators: reading `(freg x)` sees the register file as it
+was before the instruction; writing an f-register marks `mstatus.FS` Dirty; every
+instruction whose rule touches floating-point state is illegal while FS is Off — judged
+before it does anything, so an `flw` with FS Off raises illegal-instruction, never its
+load's fault; arithmetic rounds once, keeps subnormals, returns the canonical NaN, and ORs
+its exception flags into `fflags`. The thirty F rules then read like the chapter:
+
+```text
+fadd.s   (set (freg rd) (fbox 32 (fadd 32 (rounding (field rm))
+                                   (funbox 32 (freg rs1)) (funbox 32 (freg rs2)))))
+fmv.x.w  (set (reg rd) (sext 64 (bits 31 0 (freg rs1))))   ; a transfer: bits, no unboxing
+```
+
+`fbox`/`funbox` are NaN-boxing made visible (the D chapter's rule — a single lives in the
+low half of a 64-bit register whose upper half is all ones). Because the rules say which
+operands are f-registers, the assembler now derives its `f0..f31` spelling from them, and
+refuses the wrong one by name. Nothing executes yet: the generated module grows the
+floating-point vocabulary only at the bind.

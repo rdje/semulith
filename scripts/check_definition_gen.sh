@@ -230,6 +230,45 @@ EOF
   arm "RED an A operator without riscv/a composed is refused, named" "$rc" 2 "$out" "does not compose riscv/a"
   cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
 
+  # ---- the floating-point operator surface (P4-SYSTEM.7 slice c3) --------------------------
+  # The F variants emit exactly when the composition composes riscv/f — the A discipline:
+  # the tracked rv64gc module keeps its byte surface until the F bind (slice c6), and the
+  # staged composition WITH the fragment proves the lowering.
+  cp definitions/riscv/f.sexp "$t/gc/definitions/riscv/f.sexp"
+  cp definitions/riscv/f.sem.sexp "$t/gc/definitions/riscv/f.sem.sexp"
+  cat > "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" <<EOF
+(encoding (profile "rv64gc-lab-v0") (ilen 32)
+  (compose (base "riscv/rv64i")
+    (extensions "riscv/zicsr") (extensions "riscv/zicntr") (extensions "riscv/system")
+    (extensions "riscv/f")
+    (status partial) (slot (id m) (requires "riscv/m")))
+  (fragment-root "definitions"))
+EOF
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-f-definition.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc+F composition emits the floating-point module" "$rc" 0 "$out" "wrote"
+  for needle in "FReg(&'static str)" "Rounding(&'static Sem)" "FMadd(u8" "FToI(u8, u8, bool" "Sem::FUnbox("; do
+    grep -qF "$needle" "$t/gc-f-definition.rs"; rc=$?
+    arm "GREEN the emitted module carries $needle" "$rc" 0 "" ""
+  done
+  # RED: an FP rule whose encoding carries rm but which never resolves it is refused —
+  # check_semantics.check_fp, re-derived by the generator that emits the table.
+  sed 's/(fadd 32 (rounding (field rm))/(fadd 32 (lit 0)/' definitions/riscv/f.sem.sexp \
+    > "$t/gc/definitions/riscv/f.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-f-definition.rs" 2>&1)"; rc=$?
+  arm "RED an FP rule that never resolves its rm is refused, naming it" "$rc" 2 "$out" "never resolves it through (rounding (field rm))"
+  cp definitions/riscv/f.sem.sexp "$t/gc/definitions/riscv/f.sem.sexp"
+  # RED: an FP operator where the composition does not compose riscv/f is refused, named.
+  grep -v 'extensions "riscv/f"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+    > "$t/gc/enc-nof.sexp" && mv "$t/gc/enc-nof.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
+  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (fclass 32 (reg rs2)))/' \
+    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-f-definition.rs" 2>&1)"; rc=$?
+  arm "RED an FP operator without riscv/f composed is refused, named" "$rc" 2 "$out" "does not compose riscv/f"
+  cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \

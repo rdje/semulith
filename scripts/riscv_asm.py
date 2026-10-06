@@ -22,10 +22,22 @@ They come from `riscv-opcodes` (RISC-V International, BSD-3-Clause), pinned unde
                                          system instructions (the rv64gc pin, P4-SYSTEM.2)
     extensions/rv_a, extensions/rv64_a   the A extension's 22 atomic forms (the rv64gc
                                          pin, P4-SYSTEM.4 slice a)
+    extensions/rv_f, extensions/rv64_f   the F extension's 30 forms (the rv64gc pin,
+                                         P4-SYSTEM.7 slice c2)
     arg_lut.csv                          the operand field positions
     csrs.csv                             the CSR name-to-address map (csr operand spellings)
 This module PARSES those files. It does not carry an opcode constant of its own, so a typo here
 cannot invent an instruction — it can only fail to find one.
+
+⛔ WHICH REGISTER FILE AN OPERAND NAMES IS DERIVED, NOT TYPED (P4-SYSTEM.7 slice c3). The pinned
+rows name only the FIELD (`rd rs1 rs2 rs3`); `fcvt.w.s rd, rs1` reads an f-register and writes
+an x-register, and nothing in the table says so. The semantics do: a rule reads `(freg rs1)` or
+`(reg rs1)`. A unit's assembler therefore reads its composed fragments' `.sem.sexp` rules and
+spells an operand `f0..f31` exactly when its rule names it through `(freg …)`, `x0..x31`
+otherwise — and refuses the other spelling BY NAME, so `fadd.s x1, x2, x3` is an error, never
+a silently different instruction. The rounding-mode field `rm` is spelled as its 3-bit value
+(0..7; the mode names live in the specification's Table 2, which this module does not carry —
+a guest's directive names the mode).
 
 ⚠️ SHARED ANCESTRY, STATED NOT HIDDEN. `riscv-opcodes` is upstream of both Sail and Spike for
 encodings, so "our bytes decode the way the model expects" is NOT an independent confirmation of
@@ -72,8 +84,11 @@ from pathlib import Path
 # always come from the pinned arg_lut.csv at load time — derived, never typed.
 CONTIGUOUS_OPERANDS = {
     "rd", "rs1", "rs2", "imm12", "imm20", "shamtd", "shamtw", "imm12hi", "imm12lo",
-    "fm", "pred", "succ", "csr", "zimm5", "aq", "rl",
+    "fm", "pred", "succ", "csr", "zimm5", "aq", "rl", "rs3", "rm",
 }
+# The register-valued fields: their spelling is x0..x31 or f0..f31 by the instruction's own
+# semantics (load_register_files); every other field is a number.
+REGISTER_FIELDS = ("rd", "rs1", "rs2", "rs3")
 # Fields whose immediate is spread across non-adjacent bits; the layout is read from the pinned
 # descriptor table rather than written down here.
 SCRAMBLED_OPERANDS = {"jimm20", "bimm12hi", "bimm12lo"}
@@ -305,6 +320,53 @@ def resolve_composition(enc, path: Path):
     return merged
 
 
+def load_register_files(path: Path) -> dict[str, set[str]]:
+    """Per instruction, the operand fields its semantics read or write through `(freg …)` —
+    the operands this assembler spells f0..f31 (P4-SYSTEM.7 slice c3). Derived from the
+    unit's composed fragments' `.sem.sexp` rules, in composition order, a later rule (a
+    declared refinement) replacing an earlier one. A fragment without a semantics document
+    contributes nothing (every operand stays an x-register — the rv64i-era default the
+    tables themselves imply). One field in BOTH files within one rule is refused: no spelling
+    could be right (check_semantics.check_fp refuses the same rule upstream)."""
+    import sexp as _sexp
+    forms = _sexp.read_file(path)
+    enc = forms[0] if forms else []
+    comp = _sexp.children(enc, "compose")
+    if not comp:
+        return {}
+    root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
+    names = [str(_sexp.field(comp[0], "base", str(path)))]
+    for e in _sexp.children(comp[0], "extensions"):
+        names += [str(x) for x in e[1:]]
+    files: dict[str, set[str]] = {}
+    for name in names:
+        sem_path = root / (name + ".sem.sexp")
+        if not sem_path.is_file():
+            continue
+        for rule in _sexp.children(_sexp.read_file(sem_path)[0], "sem"):
+            insn = str(_sexp.field(rule, "insn", str(sem_path)))
+            reg_ops: set[str] = set()
+            freg_ops: set[str] = set()
+
+            def walk(f) -> None:
+                if not isinstance(f, list) or not f:
+                    return
+                head = str(f[0])
+                if head in ("reg", "freg") and len(f) == 2:
+                    (freg_ops if head == "freg" else reg_ops).add(str(f[1]))
+                for a in f[1:]:
+                    walk(a)
+
+            for effect in _sexp.children(rule, "effect"):
+                walk(effect)
+            both = reg_ops & freg_ops
+            if both:
+                raise AsmError(f"{sem_path.name} [{insn}]: operand(s) {sorted(both)} are read "
+                               f"as BOTH (reg …) and (freg …) — no spelling could be right")
+            files[insn] = freg_ops
+    return files
+
+
 def load_canonical_encoding(path: Path, with_pseudos: bool = False):
     """Read `encoding.sexp` — the encodings the REPOSITORY owns.
 
@@ -385,9 +447,11 @@ class Assembler:
         keep resolving through the pinned csrs.csv — the upstream derivation source the
         state document's own addresses were checked against (the 33/33 probe)."""
         self.ialign = 32
+        self.fregs: dict[str, set[str]] = {}
         if source.is_file():
             self.arg_lut, self.insns, self.imm_layout, self.pseudos = \
                 load_canonical_encoding(source, with_pseudos=True)
+            self.fregs = load_register_files(source)
             prof = source.parent / "profile.sexp"
             if prof.is_file():
                 import dossier_sexp as D
@@ -447,6 +511,21 @@ class Assembler:
                            f"assembler deliberately does not accept them.")
         return int(tok[1:])
 
+    def _reg_of(self, insn: str, field: str, tok: str) -> int:
+        """A register operand, spelled in the file the instruction's semantics name it
+        through: f0..f31 for a `(freg field)` operand, x0..x31 otherwise — the other
+        spelling refused BY NAME (P4-SYSTEM.7 slice c3)."""
+        if field in self.fregs.get(insn, set()):
+            t = tok.strip()
+            if not re.fullmatch(r"f(\d|[12]\d|3[01])", t):
+                raise AsmError(f"{insn}: operand {field} is an f-register (its semantics read "
+                               f"(freg {field})) — spell it f0..f31, got {t!r}")
+            return int(t[1:])
+        if re.fullmatch(r"f\d+", tok.strip()):
+            raise AsmError(f"{insn}: operand {field} is an x-register (its semantics read "
+                           f"(reg {field})) — spell it x0..x31, got {tok.strip()!r}")
+        return self._reg(tok)
+
     @staticmethod
     def _imm(tok: str) -> int:
         return int(tok, 0)
@@ -505,7 +584,8 @@ class Assembler:
         if "imm12hi" in insn.operands and "imm12lo" in insn.operands:
             if len(args) != 3:
                 raise AsmError(f"{name} expects 3 operands (rs2, imm, rs1), got {len(args)}")
-            rs2, imm, rs1 = self._reg(args[0]), self._imm(args[1]), self._reg(args[2])
+            rs2, imm = self._reg_of(name, "rs2", args[0]), self._imm(args[1])
+            rs1 = self._reg_of(name, "rs1", args[2])
             if not -2048 <= imm <= 2047:
                 raise AsmError(f"{name}: store offset {imm} is outside the signed 12-bit range")
             u = imm & 0xFFF
@@ -567,8 +647,8 @@ class Assembler:
             raise AsmError(f"{name} expects {len(supplied)} operand(s) {supplied}, got {len(args)}")
         for op, arg in zip(supplied, args):
             hi, lo = self.arg_lut[op]
-            if op in ("rd", "rs1", "rs2"):
-                word |= _place(hi, lo, self._reg(arg))
+            if op in REGISTER_FIELDS:
+                word |= _place(hi, lo, self._reg_of(name, op, arg))
             elif op == "imm12":
                 imm = self._imm(arg)
                 if not -2048 <= imm <= 2047:
@@ -582,7 +662,7 @@ class Assembler:
                 word |= _place(hi, lo, imm)
             elif op == "csr":
                 word |= _place(hi, lo, self._csr(arg))
-            else:                                     # shamtd / shamtw / fm / pred / succ / zimm5
+            else:                     # shamtd / shamtw / fm / pred / succ / zimm5 / rm
                 sh = self._imm(arg)
                 width = hi - lo + 1
                 if not 0 <= sh < (1 << width):

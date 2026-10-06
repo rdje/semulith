@@ -54,6 +54,12 @@ clothes:
   composition itself encodes — the set is DERIVED from the composed encodings' own
   funct5 fixed bits (a constant that is a function of the pinned tables is derived,
   never typed);
+- a floating-point operator (`freg`, `fbox`, `fadd`, … — `schema/semantics.sexp`'s
+  floating-point block) where the composition does not compose `riscv/f` — the variants
+  emit WITH the fragment (P4-SYSTEM.7 slice c3, the A precedent); and an FP rule the
+  semantics checker's `check_fp` refuses (an unresolved rm, a non-literal format, one
+  operand in both register files) — re-derived here because this generator emits the
+  executable table;
 - fixed-bit fields that overlap or do not fit their range.
 
 Usage:
@@ -105,6 +111,33 @@ EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver",
 A_TERNARY = {"load-reserved": "LoadReserved", "store-conditional": "StoreConditional"}
 A_OPERATORS = set(A_TERNARY) | {"amo"}
 BASE_UNARY = {"set-pc": "SetPc"}
+# P4-SYSTEM.7 slice (c3): the floating-point block. Its operators lower only where the
+# composition composes `riscv/f` (the A precedent: the tracked rv64gc module keeps its byte
+# surface until the F bind, slice c6). The format, and f2i/i2f's integer width and
+# signedness, are LITERALS lowered as data (check_semantics.check_fp refuses anything else).
+F_FORMAT_UNARY = {"fbox": "FBox", "funbox": "FUnbox", "fclass": "FClass"}            # (op n v)
+F_FORMAT_BINARY = {"fmin": "FMin", "fmax": "FMax",
+                   "feq": "FEq", "flt": "FLt", "fle": "FLe"}                         # (op n a b)
+F_ROUNDED_UNARY = {"fsqrt": "FSqrt"}                                                 # (op n rm a)
+F_ROUNDED_BINARY = {"fadd": "FAdd", "fsub": "FSub", "fmul": "FMul", "fdiv": "FDiv"}  # (op n rm a b)
+F_ROUNDED_TERNARY = {"fmadd": "FMadd"}                                               # (op n rm a b c)
+F_CONVERSIONS = {"f2i": "FToI", "i2f": "IToF"}                                       # (op n iw s rm v)
+F_OPERATORS = (set(F_FORMAT_UNARY) | set(F_FORMAT_BINARY) | set(F_ROUNDED_UNARY)
+               | set(F_ROUNDED_BINARY) | set(F_ROUNDED_TERNARY) | set(F_CONVERSIONS)
+               | {"freg", "rounding"})
+
+
+class Surface:
+    """Which operator families a module lowers — one value threaded through the lowering
+    rather than one parameter per family. `extended` is the rv64gc module's privileged
+    surface (P4-SYSTEM.2 slice d); `a` the A extension's (P4-SYSTEM.4 slice b) with
+    `amo_set` its closed operation set; `f` the floating-point block's (P4-SYSTEM.7 slice
+    c3). Each family emits WITH its fragment: a module carrying variants its evaluator
+    match cannot see would not compile."""
+
+    def __init__(self, extended: bool = False, a: bool = False,
+                 amo_set: frozenset = frozenset(), f: bool = False) -> None:
+        self.extended, self.a, self.amo_set, self.f = extended, a, amo_set, f
 
 
 def amo_operations(insns: dict) -> dict[int, str]:
@@ -233,6 +266,7 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
                              else (pseudos or {})[insn].operands)
             try:
                 SEM.check_expr(effect, where, bound_operands(operand_names))
+                SEM.check_fp(effect, where, bound_operands(operand_names))
             except SEM.SemError as exc:
                 raise Refusal(str(exc))
             if insn in (pseudos or {}):
@@ -312,16 +346,19 @@ def indent_tree(text: str) -> str:
     return "\n".join(out)
 
 
-def emit_sem(form: X.Sexp, where: str, extended: bool = False,
-             a_variants: bool = False, amo_set: frozenset = frozenset()) -> str:
+def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
     """Lower one effect expression to the `Sem` tree literal, fully broken one level per
     line; `indent_tree` gives it the shape rustfmt would. `extended` is the rv64gc
     module's operator surface (P4-SYSTEM.2 slice d): the privileged operators lower only
     there — the rv64i module's byte surface is frozen by DEF-GEN, and a privileged
-    operator in its corpus is a refusal, named, never silently emitted uncallable.
-    `a_variants` is the A extension's surface (P4-SYSTEM.4 slice b): its operators lower
-    only where the composition composes `riscv/a`, and `amo_set` is the closed Zaamo
-    operation set derived from the composed encodings (`amo_operations`)."""
+    operator in its corpus is a refusal, named, never silently emitted uncallable. The
+    A extension's operators lower only where the composition composes `riscv/a`, with the
+    closed Zaamo set derived from the composed encodings (`amo_operations`); the
+    floating-point block's only where it composes `riscv/f` (`Surface`)."""
+    extended, a_variants, amo_set = surface.extended, surface.a, surface.amo_set
+
+    def sub(x):
+        return emit_sem(x, where, surface)
     if isinstance(form, int):
         return f"Sem::Lit({lit64(form)})"
     if isinstance(form, str):
@@ -338,7 +375,7 @@ def emit_sem(form: X.Sexp, where: str, extended: bool = False,
     if a_variants:
         ternary = dict(ternary, **A_TERNARY)
     if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY)
-                               | A_OPERATORS | {"field", "inst", "mode"}):
+                               | A_OPERATORS | F_OPERATORS | {"field", "inst", "mode"}):
         raise Refusal(f"{where}: ({op} …) is the rv64gc module's operator surface "
                       f"(P4-SYSTEM.2 slice b) — the rv64i corpus does not lower it")
     if extended and not a_variants and op in A_OPERATORS:
@@ -346,8 +383,33 @@ def emit_sem(form: X.Sexp, where: str, extended: bool = False,
                       f"(P4-SYSTEM.4 slice b), but this composition does not compose "
                       f"riscv/a — the variants emit WITH the fragment, so a module "
                       f"carrying them without it would not compile against its evaluator")
+    if extended and not surface.f and op in F_OPERATORS:
+        raise Refusal(f"{where}: ({op} …) is the floating-point operator surface "
+                      f"(P4-SYSTEM.7 slice c3), but this composition does not compose "
+                      f"riscv/f — the variants emit WITH the fragment, so a module "
+                      f"carrying them without it would not compile against its evaluator")
     if op == "reg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Reg({rust_str(str(args[0]))})"
+    if op == "freg" and len(args) == 1 and isinstance(args[0], str):
+        return f"Sem::FReg({rust_str(str(args[0]))})"
+    if op == "rounding" and len(args) == 1:
+        return f"Sem::Rounding(\n&{sub(args[0])},\n)"
+    if op in F_FORMAT_UNARY and len(args) == 2:
+        return f"Sem::{F_FORMAT_UNARY[op]}(\n{args[0]},\n&{sub(args[1])},\n)"
+    if op in F_FORMAT_BINARY and len(args) == 3:
+        return f"Sem::{F_FORMAT_BINARY[op]}(\n{args[0]},\n&{sub(args[1])},\n&{sub(args[2])},\n)"
+    if op in F_ROUNDED_UNARY and len(args) == 3:
+        return f"Sem::{F_ROUNDED_UNARY[op]}(\n{args[0]},\n&{sub(args[1])},\n&{sub(args[2])},\n)"
+    if op in F_ROUNDED_BINARY and len(args) == 4:
+        return (f"Sem::{F_ROUNDED_BINARY[op]}(\n{args[0]},\n&{sub(args[1])},\n"
+                f"&{sub(args[2])},\n&{sub(args[3])},\n)")
+    if op in F_ROUNDED_TERNARY and len(args) == 5:
+        return (f"Sem::{F_ROUNDED_TERNARY[op]}(\n{args[0]},\n&{sub(args[1])},\n"
+                f"&{sub(args[2])},\n&{sub(args[3])},\n&{sub(args[4])},\n)")
+    if op in F_CONVERSIONS and len(args) == 5:
+        signed = "true" if args[2] == 1 else "false"
+        return (f"Sem::{F_CONVERSIONS[op]}(\n{args[0]},\n{args[1]},\n{signed},\n"
+                f"&{sub(args[3])},\n&{sub(args[4])},\n)")
     if op == "imm" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Imm({rust_str(str(args[0]))})"
     if op == "field" and len(args) == 1 and isinstance(args[0], str):
@@ -381,27 +443,27 @@ def emit_sem(form: X.Sexp, where: str, extended: bool = False,
                           f"nine this composition encodes "
                           f"({', '.join(f'{v:#04x}' for v in sorted(amo_set)) or 'none — no AMO composed'}) "
                           f"— derived from the composed encodings' own funct5 fixed bits")
-        return (f"Sem::Amo(\n{lit[1]},\n&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n"
-                f"&{emit_sem(args[2], where, extended, a_variants, amo_set)},\n"
-                f"&{emit_sem(args[3], where, extended, a_variants, amo_set)},\n)")
+        return (f"Sem::Amo(\n{lit[1]},\n&{sub(args[1])},\n"
+                f"&{sub(args[2])},\n"
+                f"&{sub(args[3])},\n)")
     if op == "seq":
-        inner = ",\n".join(f"&{emit_sem(a, where, extended, a_variants, amo_set)}" for a in args)
+        inner = ",\n".join(f"&{sub(a)}" for a in args)
         return f"Sem::Seq(&[\n{inner},\n])"
     if op in binary and len(args) == 2:
-        return (f"Sem::{binary[op]}(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n"
-                f"&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n)")
+        return (f"Sem::{binary[op]}(\n&{sub(args[0])},\n"
+                f"&{sub(args[1])},\n)")
     if op in WIDTH_OPS and len(args) == 2 and isinstance(args[0], int):
-        return f"Sem::{WIDTH_OPS[op]}(\n{args[0]},\n&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n)"
+        return f"Sem::{WIDTH_OPS[op]}(\n{args[0]},\n&{sub(args[1])},\n)"
     if op == "bits" and len(args) == 3 and isinstance(args[0], int) and isinstance(args[1], int):
-        return f"Sem::Bits(\n{args[0]},\n{args[1]},\n&{emit_sem(args[2], where, extended, a_variants, amo_set)},\n)"
+        return f"Sem::Bits(\n{args[0]},\n{args[1]},\n&{sub(args[2])},\n)"
     if op == "set" and len(args) == 2:
-        return (f"Sem::Set(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n"
-                f"&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n)")
+        return (f"Sem::Set(\n&{sub(args[0])},\n"
+                f"&{sub(args[1])},\n)")
     if op in unary and len(args) == 1:
-        return f"Sem::{unary[op]}(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n)"
+        return f"Sem::{unary[op]}(\n&{sub(args[0])},\n)"
     if op in ternary and len(args) == 3:
-        return (f"Sem::{ternary[op]}(\n&{emit_sem(args[0], where, extended, a_variants, amo_set)},\n"
-                f"&{emit_sem(args[1], where, extended, a_variants, amo_set)},\n&{emit_sem(args[2], where, extended, a_variants, amo_set)},\n)")
+        return (f"Sem::{ternary[op]}(\n&{sub(args[0])},\n"
+                f"&{sub(args[1])},\n&{sub(args[2])},\n)")
     if op in (set(binary) | set(WIDTH_OPS) | {"bits"}) and args:
         raise Refusal(f"{where}: ({op} …) has an argument this lowering cannot state "
                       "as data — width arguments of trunc/sext/zext/bits must be literal "
@@ -493,10 +555,11 @@ def load_inputs(encoding_path: Path, state_path: Path):
         pieces = tuple(layout.get(fname, ()))
         fields.append((fname, hi, lo, pieces))
     a_variants = "riscv/a" in names
+    f_variants = "riscv/f" in names
     return dict(profile=profile, ilen=ilen, names=names, insns=insns,
                 pseudos=pseudos, pseudo_rules=pseudo_rules, extended=extended,
                 fields=fields, rules=rules, inputs=inputs, source_pins=source_pins,
-                a_variants=a_variants, amo_ops=amo_operations(insns))
+                a_variants=a_variants, amo_ops=amo_operations(insns), f_variants=f_variants)
 
 
 def emit(data: dict, generator_sha: str) -> str:
@@ -673,8 +736,8 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        operands: &[{ops}],")
         a(f"        from: {rust_str(insn.source)},")
         a(f"        source: {rust_str(source)},")
-        tree = indent_tree(emit_sem(effect, where, extended, data["a_variants"],
-                                    frozenset(data["amo_ops"])))
+        tree = indent_tree(emit_sem(effect, where, Surface(
+            extended, data["a_variants"], frozenset(data["amo_ops"]), data["f_variants"])))
         tree_lines = tree.splitlines()
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
@@ -684,7 +747,9 @@ def emit(data: dict, generator_sha: str) -> str:
     a("")
     a("/// One node of a canonical semantics effect, lowered from the S-expression operator")
     if extended:
-        a("/// language (`schema/semantics.sexp`, the 43 forms `scripts/check_semantics.py`")
+        # the language's size is DERIVED from the loaded schema (P4-SYSTEM.7 slice c3: the
+        # typed "43" had been wrong since the A operators landed — 44 forms)
+        a(f"/// language (`schema/semantics.sexp`, the {len(SEM.FORMS)} forms `scripts/check_semantics.py`")
     else:
         a("/// language (`schema/semantics.sexp`, the 32 forms `scripts/check_semantics.py`")
     a("/// checks) by `scripts/gen_definition.py`. Literals are XLEN-wide two's-complement")
@@ -776,6 +841,43 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    /// op applied at width, the result written, the old value yielded —")
         a("    /// never a seq(load, op, store) (P4-SYSTEM.4 decision 5).")
         a("    Amo(u64, &'static Sem, &'static Sem, &'static Sem),")
+    if extended and data["f_variants"]:
+        # P4-SYSTEM.7 slice c3's floating-point surface — emitted exactly when the
+        # composition composes `riscv/f` (the F bind, slice c6). The contracts are
+        # `schema/semantics.sexp`'s floating-point block; the arithmetic is the model
+        # layer's (`fp.rs`), never the backend's directly.
+        a("    /// `(freg NAME)` — the f-register the operand field names: the raw FLEN = 64")
+        a("    /// bits of the pre-instruction file; as a `set` target, a write that marks FS Dirty.")
+        a("    FReg(&'static str),")
+        a("    /// `(rounding rm)` — the effective rounding mode (0..4); DYN resolves to frm;")
+        a("    /// a reserved mode raises illegal-instruction (cause 2).")
+        a("    Rounding(&'static Sem),")
+        a("    /// `(fbox n v)` — v's low n bits NaN-boxed into FLEN (all 1s above).")
+        a("    FBox(u8, &'static Sem),")
+        a("    /// `(funbox n v)` — the n-bit operand of an FLEN value: its low n bits when")
+        a("    /// properly NaN-boxed, else the n-bit canonical NaN.")
+        a("    FUnbox(u8, &'static Sem),")
+        a("    /// `(fclass n a)` — the 10-bit class mask; raises no flag.")
+        a("    FClass(u8, &'static Sem),")
+        for rust in ("FMin", "FMax"):
+            a(f"    /// `({rust[1:].lower()} n a b)` — minimumNumber/maximumNumber as RVI-F")
+            a("    /// §20.1.6 amends them (−0 < +0; NaN rules; NV on a signaling input).")
+            a(f"    {rust}(u8, &'static Sem, &'static Sem),")
+        for rust, what in (("FEq", "a = b, quiet"), ("FLt", "a < b, signaling"),
+                           ("FLe", "a ≤ b, signaling")):
+            a(f"    /// `({rust[1:].lower()} n a b)` — 1 if {what}; 0 if either is NaN.")
+            a(f"    {rust}(u8, &'static Sem, &'static Sem),")
+        a("    /// `(fsqrt n rm a)` — √a, rounded; flags accrued.")
+        a("    FSqrt(u8, &'static Sem, &'static Sem),")
+        for rust, what in (("FAdd", "a+b"), ("FSub", "a-b"), ("FMul", "a×b"), ("FDiv", "a÷b")):
+            a(f"    /// `({rust[1:].lower()} n rm a b)` — {what}, rounded; flags accrued.")
+            a(f"    {rust}(u8, &'static Sem, &'static Sem, &'static Sem),")
+        a("    /// `(fmadd n rm a b c)` — (a×b)+c with one rounding; ∞×0 raises NV.")
+        a("    FMadd(u8, &'static Sem, &'static Sem, &'static Sem, &'static Sem),")
+        a("    /// `(f2i n iw signed rm a)` — float to an iw-bit integer, clipped with NV.")
+        a("    FToI(u8, u8, bool, &'static Sem, &'static Sem),")
+        a("    /// `(i2f n iw signed rm v)` — v's low iw bits to an n-bit float, rounded.")
+        a("    IToF(u8, u8, bool, &'static Sem, &'static Sem),")
     a("}")
     a("")
     a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")

@@ -1,5 +1,24 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0044 (leaf P4-SYSTEM.7, slice c3 part 2) — the semantics language learns FP; f.sem.sexp; the gated lowering; the assembler's derived register files
+
+- `schema/semantics.sexp`'s floating-point block: the FP-state contract stated once (f-file
+  reads pre-instruction, writes mark FS Dirty, the Off gate judged at the head of any rule
+  that touches FP state, sticky accrual with Precise dirtiness, NaN-boxing in the tree, the
+  reserved-rm policy) and 18 operators (freg fbox funbox rounding fadd fsub fmul fdiv fsqrt
+  fmadd fmin fmax feq flt fle fclass f2i i2f).
+- `definitions/riscv/f.sem.sexp`: the 30 F rules, cited (26 quotes judged by CITATION-QUOTES,
+  0 findings). `check_semantics.py`'s `check_fp`: an rm-carrying encoding must resolve
+  `(rounding (field rm))`; literal formats/widths/signedness; one register file per operand
+  (+6 arms, 23/23).
+- `gen_definition.py`: the `Surface` bundle; the F lowering and Sem variants emitted only
+  when `riscv/f` is composed (+8 DEF-GEN arms, 31/31); `check_fp` re-derived; the module's
+  form count derived (62) — the typed "43" had been wrong (44) since `.4` slice b.
+- `riscv_asm.py`: an operand is spelled `f0..f31` exactly when its rule names it through
+  `(freg …)` (derived from the composed semantics; the other spelling refused by name);
+  `rs3`/`rm` supported. 30/30 F forms round-trip through spike-dasm. Both definition modules
+  and both guest fixtures emission-neutral; `make check` + `make gate` green (455 arms).
+
 ## SEMULITH-LC-0003 (leaf LIVE-CONTAINMENT.3) — TOOLBOX and DOCTRINE_ENFORCEMENT partitioned behind bounded indexes
 
 - `DOCTRINE_ENFORCEMENT.md` (32,669 / 32,768 B): the 35 long-form project-doctrine rows
@@ -872,14 +891,4 @@
   unchanged), smoke-bench 53 arms, bench wasm, both books.
   Next: slice (c) — the 10-step walk with its fault matrix, the reserved-bit and
   superpage checks, and the REQ-D-FETCH-IMPLICIT amendment.
-
-## SEMULITH-AC-0058 (tree ARTIFACT-CLEANUP) — the 2026-10-04 §8 run: 90 incremental caches deleted (245 MB)
-
-- The ~24 h trigger fired (the `2026-10-03` record was a day old). The census found
-  90 cargo incremental `.bin` caches (245 MB; 72 `target/debug`, 18 wasm32), all under
-  the enumerated `*/incremental/*` scope, deleted; 0 stray `.bin`/`.log` in
-  `target/release`/`target/debug/deps`. 62 `target/refs/*.log` (2.2 M, evidence trails)
-  and the 7 cargo-home crate fixtures (inputs) kept by standing policy.
-  `docs/ARTIFACT_CLEANUP.md` overwritten with the dated one-line record; `target`
-  4.2 G → 4.0 G, `.app-data` 1.4 G unchanged.
 

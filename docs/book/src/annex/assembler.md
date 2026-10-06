@@ -112,10 +112,28 @@ records statements and label addresses, pass two resolves a label operand to
 `target − pc` — exactly what the specification means by "added to the address of the branch
 instruction". Duplicate and undefined labels are refused.
 
-Registers are accepted only as `x0`..`x31`. ABI names (`ra`, `sp`, `a0`, …) are a software
-convention, not architecture, and the assembler deliberately does not know them — a guest
-that means `x1` says `x1`, and the trace, the expectations, and the source all speak the
-same names. Pseudo-instructions (`li`, `mv`, `nop`, …) are likewise absent: every line of a
+Registers are accepted only as `x0`..`x31` — or `f0`..`f31` where the operand is a
+floating-point register. ABI names (`ra`, `sp`, `a0`, `ft0`, …) are a software convention,
+not architecture, and the assembler deliberately does not know them — a guest that means
+`x1` says `x1`, and the trace, the expectations, and the source all speak the same names.
+
+**Which file an operand names is derived, not typed** (`P4-SYSTEM.7`). The opcode tables
+name only the *field* — `fcvt.w.s` lists `rd rs1 rm` — yet its `rd` is an integer register
+and its `rs1` a floating-point one. The semantics say which: the rule reads `(freg rs1)` and
+writes `(reg rd)`. So the assembler reads the unit's composed semantics files and spells an
+operand `f0..f31` exactly when its rule names it through `(freg …)`; the other spelling is
+refused by name:
+
+```text
+fcvt.w.s x5, f1, 1      # x5 <- f1 converted, rounding mode 1 (RTZ)
+fadd.s x1, f2, f3, 0    # refused: "operand rd is an f-register (its semantics read
+                        #  (freg rd)) — spell it f0..f31, got 'x1'"
+```
+
+The rounding-mode field `rm` is written as its 3-bit value (`0` RNE … `4` RMM, `7` DYN): the
+mode names belong to the specification's table, not to this assembler, and the guest's
+comment names the mode. Against the second decoder, all 30 F forms round-trip through
+`spike-dasm` (which prints no rounding mode — the field is checked as bits 14..12). Pseudo-instructions (`li`, `mv`, `nop`, …) are likewise absent: every line of a
 guest is a real instruction with a real encoding, so a reader never has to wonder what a
 shorthand expanded to.
 

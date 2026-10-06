@@ -6,7 +6,7 @@ notation that quietly accepts an unknown operator produces a definition whose me
 state — which is worse than no definition, because it looks like one. Every form was added
 because an RV64I instruction needed it; none was added in anticipation.
 
-⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — the 43 operators and their arity — lives
+⭐ THE LANGUAGE IS DATA, NOT CODE. The form table — every operator and its arity — lives
 as `(operator …)` declarations in `schema/semantics.sexp` (SOT-FORMAT.2) and is loaded below
 through the schema kernel; adding a semantic form is a schema edit, zero lines of Python. This
 file owns what the schema cannot state: whether a bare symbol is an operand the instruction
@@ -97,6 +97,75 @@ def check_expr(form, where: str, allowed: set[str] | None) -> None:
         raise SemError(f"{where}: ({op} …) takes {arity} argument(s), got {len(args)}")
     for a in args:
         check_expr(a, where, allowed)
+
+
+# The floating-point block (P4-SYSTEM.7 slice c3): the operators whose FIRST argument is a
+# format literal, and the two conversions whose first three are (format, integer width,
+# signedness) literals. The schema states their arities; these are the facts it cannot.
+FP_FORMAT_FIRST = {"fbox", "funbox", "fadd", "fsub", "fmul", "fdiv", "fsqrt", "fmadd",
+                   "fmin", "fmax", "feq", "flt", "fle", "fclass"}
+FP_CONVERSIONS = {"f2i", "i2f"}
+FP_WIDTHS = {32, 64}
+
+
+def check_fp(effect, where: str, operands: set[str]) -> None:
+    """The floating-point block's per-rule rules — what the schema's arities cannot state.
+
+    - An encoding that carries `rm` RESOLVES it: the rule contains `(rounding (field rm))`.
+      A reserved static rounding mode is illegal even where the operation cannot round
+      ("implementations must treat the rm field as usual", RVI-F §20.1.2); a rule that never
+      resolves its rm would execute a reserved encoding silently.
+    - `(rounding X)` takes the instruction's own `(field rm)` — never a computed value.
+    - A format is a literal 32 or 64; f2i/i2f's integer width a literal 32 or 64 and their
+      signedness a literal 0 or 1 — the lowering states them as data, never evaluates them.
+    - One operand, one register file: a field read as `(reg x)` AND as `(freg x)` names two
+      different registers, and no assembler could spell it.
+    """
+    reg_ops: set[str] = set()
+    freg_ops: set[str] = set()
+    resolved = False
+
+    def lit_in(arg, allowed: set[int], what: str, op: str) -> None:
+        if not (isinstance(arg, int) and arg in allowed):
+            raise SemError(f"{where}: ({op} …) takes its {what} as a literal "
+                           f"{' or '.join(str(a) for a in sorted(allowed))}, got {arg!r} — "
+                           f"the lowering states it as data")
+
+    def walk(f) -> None:
+        nonlocal resolved
+        if not isinstance(f, list) or not f:
+            return
+        op, args = str(f[0]), f[1:]
+        if op == "reg" and args:
+            reg_ops.add(str(args[0]))
+        elif op == "freg" and args:
+            freg_ops.add(str(args[0]))
+        elif op == "rounding":
+            a = args[0] if args else None
+            if not (isinstance(a, list) and [str(x) for x in a] == ["field", "rm"]):
+                raise SemError(f"{where}: (rounding …) resolves the instruction's own "
+                               f"(field rm), got {a!r} — a rounding mode is the encoding's "
+                               f"field or frm through DYN, never a computed value")
+            resolved = True
+        elif op in FP_FORMAT_FIRST and args:
+            lit_in(args[0], FP_WIDTHS, "format", op)
+        elif op in FP_CONVERSIONS and len(args) >= 3:
+            lit_in(args[0], FP_WIDTHS, "format", op)
+            lit_in(args[1], FP_WIDTHS, "integer width", op)
+            lit_in(args[2], {0, 1}, "signedness", op)
+        for a in args:
+            walk(a)
+
+    walk(effect)
+    if "rm" in operands and not resolved:
+        raise SemError(f"{where}: the encoding carries rm, but the rule never resolves it "
+                       f"through (rounding (field rm)) — a reserved static rounding mode must "
+                       f"raise illegal-instruction even where the operation cannot round "
+                       f"(RVI-F §20.1.2)")
+    both = sorted(reg_ops & freg_ops)
+    if both:
+        raise SemError(f"{where}: operand(s) {', '.join(both)} read as BOTH (reg …) and "
+                       f"(freg …) — one field names one register; no assembler could spell it")
 
 
 def _schema_validate_sem_file(path: Path) -> None:
@@ -271,6 +340,8 @@ def check_pair(enc_path: Path, sem_path: Path) -> int:
             try:
                 for sub in e[1:]:
                     check_expr(sub, where, allowed)
+                    if allowed is not None:
+                        check_fp(sub, where, allowed)
             except SemError as exc:
                 errors.append(str(exc))
 
@@ -507,6 +578,39 @@ def _selftest() -> int:
             '(sem (insn amoadd.w) (source "S §3") (effect (nop)))',
             "(load-reserved …) takes 3 argument(s)",
             frag=frag_a))
+
+    # ---- the floating-point block (P4-SYSTEM.7 slice c3) ------------------------------------
+    frag_f = tmp / "t-f.sexp"
+    frag_f.write_text(
+        '(fragment (id "riscv/t-pair") (kind isa-extension)\n'
+        '  (insn (name fadd.s) (fixed (6 2 0x14)) (operands rd rs1 rs2 rm))\n'
+        '  (insn (name fcvt.w.s) (fixed (6 2 0x15)) (operands rd rs1 rm))\n'
+        '  (insn (name fmv.x.w) (fixed (6 2 0x16)) (operands rd rs1)))\n')
+    FADD = ('(sem (insn fadd.s) (source "S §1 — why") (effect (set (freg rd) (fbox 32 '
+            '(fadd 32 (rounding (field rm)) (funbox 32 (freg rs1)) (funbox 32 (freg rs2)))))))\n')
+    FCVT = ('(sem (insn fcvt.w.s) (source "S §2 — why") (effect (set (reg rd) (sext 64 '
+            '(f2i 32 32 1 (rounding (field rm)) (funbox 32 (freg rs1)))))))\n')
+    FMV = ('(sem (insn fmv.x.w) (source "S §3 — why") '
+           '(effect (set (reg rd) (sext 64 (bits 31 0 (freg rs1))))))\n')
+    arm("GREEN the floating-point operators check, register files and rm resolved",
+        lambda: pair_ok(FADD + FCVT + FMV, "3 of 3 declared instruction(s) have checked semantics",
+                        frag=frag_f))
+    arm("RED   an rm-carrying encoding whose rule never resolves rm",
+        lambda: pair_bad(FADD.replace("(rounding (field rm))", "(lit 0)") + FCVT + FMV,
+                         "never resolves it through (rounding (field rm))", frag=frag_f))
+    arm("RED   (rounding …) of a computed value",
+        lambda: pair_bad(FADD + FCVT.replace("(rounding (field rm))", "(rounding (lit 7))") + FMV,
+                         "resolves the instruction's own (field rm)", frag=frag_f))
+    arm("RED   a format outside 32/64",
+        lambda: pair_bad(FADD.replace("(fbox 32", "(fbox 16") + FCVT + FMV,
+                         "takes its format as a literal 32 or 64", frag=frag_f))
+    arm("RED   a conversion's signedness outside 0/1",
+        lambda: pair_bad(FADD + FCVT.replace("(f2i 32 32 1", "(f2i 32 32 2") + FMV,
+                         "takes its signedness as a literal 0 or 1", frag=frag_f))
+    arm("RED   one operand read from both register files",
+        lambda: pair_bad(FADD + FCVT + FMV.replace("(bits 31 0 (freg rs1))",
+                                                   "(add (reg rs1) (freg rs1))"),
+                         "read as BOTH (reg …) and (freg …)", frag=frag_f))
 
     import shutil
     shutil.rmtree(tmp)
