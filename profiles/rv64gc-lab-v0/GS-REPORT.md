@@ -32,7 +32,7 @@ is not a claim with a denominator.
 | `G-STATE` | `P4-SYSTEM.13` | The hidden-state census's consequence still describes the P4-SYSTEM.2 snapshot (the integer file, pc, memory, mode and 33 CSRs); every later candidate is answered but the consequence was never re-answered. |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-CONTRACT` | `P4-SYSTEM.13` | v0's checks are declared and not realized; rv64i's base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE). |
-| `G-TRACE` | `P4-SYSTEM.14` | The seven Sail matched experiments (P4-SYSTEM.2 to .8) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them, and their comparators are scratch. |
+| `G-TRACE` | `P4-SYSTEM.14` | The eight Sail matched experiments (P4-SYSTEM.2 to .8, and .11's M corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them, and their comparators are scratch. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
@@ -69,7 +69,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 d1f83e4b38de44a83682efc4e2a85b4da1834ab9df752788028de2f740ff7a7a`
+  `sha256 9f56b6fcde9738adfd314be0cc95cdb86d91ae48d0505bb069d2fe37c425e1d5`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

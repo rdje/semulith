@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0076 (leaf P4-SYSTEM.11, slice c2) — Sail over the M corpus: 4 AGREE of 4
+
+- The `.7` harness over the four `m-*` guests under the tracked matched configuration (re-
+  materialized, unchanged; M supported): 99 steps, every change-observation exact. A planted
+  wrong overflow quotient DIVERGES at its step. Recorded as the ledger's eighth experiment —
+  for integer M the pair shares no code.
+
 ## SEMULITH-P4-0075 (leaf P4-SYSTEM.11, slice c1) — 4,485 generated M vectors through the engine; M-VECTORS
 
 - `scripts/gen_m_vectors.py`: a spec-side exact-integer reference (truncation written out,

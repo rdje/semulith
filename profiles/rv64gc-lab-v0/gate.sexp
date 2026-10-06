@@ -29,7 +29,7 @@
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
   (statement "v0's checks are declared and not realized; rv64i's base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE)."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
-  (statement "The seven Sail matched experiments (P4-SYSTEM.2 to .8) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them, and their comparators are scratch."))
+  (statement "The eight Sail matched experiments (P4-SYSTEM.2 to .8, and .11's M corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them, and their comparators are scratch."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")
   (statement "Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5."))
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")

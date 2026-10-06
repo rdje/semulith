@@ -170,7 +170,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the full processor gate over the complete declared profile.
   Acceptance: reproducible from pinned inputs; fidelity reported per axis; missing checks read `incomplete`.
 - ID: `P4-SYSTEM.11` — **bind M** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slices (a)–(c1) done `SEMULITH-P4-0073`–`-0075`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slices (a)–(c2) done `SEMULITH-P4-0073`–`-0076`)
   Goal: the M extension composed into the unit — `m.sem.sexp` (the 13 instructions, the
   division edge cases: divide by zero and signed overflow return their defined values, never a
   trap), the bind, an EVD-05 corpus, the Sail matched experiment.
@@ -227,7 +227,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (c2): the Sail matched experiment over the M corpus (the `.7` harness, SAIL_GUESTS; Sail's matched config supports M); then (d) the close |
+| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (d): THE LEAF ACCEPTANCE and the close (the m slot filled; every M form on both engines from expectations derived before either ran); then `.12` bind C |
 
 ## Decisions
 
@@ -942,6 +942,45 @@ never raised, at every crossing. The index:
   `LIVE_STATUS.md` (38 doctrines), the book (`plan/p4/m.md`).
   promotion: declined (an evidence slice on the FP-VECTORS precedent; its one judgment call — run the table through the engine, since half of Table 1 is the definition's — is recorded in its doctrine and test docs)
 
+`P4-SYSTEM.11` slice (c2) — the Sail matched experiment over the M corpus: 4 AGREE of 4 (`2026-10-06`, `SEMULITH-P4-0076`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's decision 4's third route; the matched configuration
+  measured first (the cached JSON re-materialized from the tracked override — byte-identical):
+
+  ```
+  $ python3 -c "…D.materialize_sail_override(…, 'rv64gc-lab-v0')" (rc=0); cmp before/after → unchanged
+  M supported: {'supported': True}
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the reference route. The `.7` harness
+  (`target/p4-system-7/sail/build_elfs.py`, `compare_sail.py`) copied to
+  `target/p4-system-11/sail/` with the four `m-*` names; the comparison rule is the corpus's own
+  (a register observation is a CHANGE):
+
+  ```
+  $ python3 target/p4-system-11/sail/build_elfs.py (rc=0) → built m-mul.elf (26 words), m-div (27), m-word (32), m-alias (14)
+  ```
+
+- [x] **FIX** — the experiment recorded in the sail-riscv `matched_scope` (the eighth — prose, as
+  the seven before it; `.14` makes them records): the result, the pair's independence for integer
+  M stated as what is true by construction (no shared code), the comparator's discrimination;
+  `gate.sexp`'s G-TRACE item counts eight; `GS-REPORT.md` regenerated.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 target/p4-system-11/sail/compare_sail.py (rc=0) → AGREE m-mul 26, m-div 27, m-word 32, m-alias 14
+    steps' change-observations exact; verdict: 4 AGREE of 4
+  a planted wrong overflow quotient in a scratch copy (SAIL_GUESTS) → DIVERGE m-div step 17 (div x22, x20, x21):
+    sail {'x22': 9223372036854775808}, expectations {'x22': 0}; verdict: 3 AGREE of 4, rc=1
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — the ledger, the manifest, `GS-REPORT.md`, this tree, `CHANGELOG.md`,
+  `MEMORY.md`, the book (`plan/p4/m.md`).
+  promotion: declined (a reference run on the .7 harness; the comparator's RED control is the standing practice)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -951,6 +990,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.11` slice (c2) | Sail over the M corpus: 4 AGREE of 4 (99 steps); a planted wrong quotient DIVERGES | the reference route |
 | `2026-10-06` | `.11` slice (c1) | 4,485 vectors through the engine; M-VECTORS ok, 6/6 controls; a hand-edited vector RED twice | the generated evidence route |
 | `2026-10-06` | `.11` slice (b) | corpus 139/139; identity 135/0 + 4 RED; census 163 == 163; CONTRACT-FREEZE 3 versions; the generator's controls 17/17 (re-written relative) | M bound |
 | `2026-10-06` | `.11` slice (a) | SEMANTICS 32/32; DEF-GEN 45/45; muldiv 6/6 + two mutations RED | the language carries M |
@@ -992,6 +1032,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.11` (slice c2) | `SEMULITH-P4-0076 (leaf P4-SYSTEM.11): slice c2 — the Sail matched experiment over the M corpus: 4 AGREE of 4` | (d) next |
 | `.11` (slice c1) | `SEMULITH-P4-0075 (leaf P4-SYSTEM.11): slice c1 — 4,485 generated M vectors through the engine; M-VECTORS, the 38th doctrine, gates the table and judges its reference` | (c2) next |
 | `.11` (slice b) | `SEMULITH-P4-0074 (leaf P4-SYSTEM.11): slice b — THE BIND: the unit composes riscv/m; the M corpus (139/139, 135 byte-identical + 4 RED on the parent); OB-GC-M opens contract v2` | (c) next |
 | `.11` (slice a) | `SEMULITH-P4-0073 (leaf P4-SYSTEM.11): slice a — the language for M: eight arithmetic operators, the division-domain rule, m.sem.sexp, the generator, the model layer` | (b) next |
@@ -1029,6 +1070,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.11` slice (c2) done (`SEMULITH-P4-0076`) — Sail agrees with the M corpus, 4 of 4.
 
 - `2026-10-06`: `.11` slice (c1) done (`SEMULITH-P4-0075`) — 4,485 generated M vectors run through the engine; M-VECTORS registered (38 doctrines).
 

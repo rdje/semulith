@@ -18,9 +18,8 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (10/18 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and eight leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), the environment contract v1 (`.9`), and the CPU-SYSTEM report (`.10`, `incomplete`, 9/10 axes open)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.11` slice (c2) — the Sail matched experiment over the M corpus
-  (copy target/p4-system-7/sail/{build_elfs,compare_sail}.py to target/p4-system-11/sail,
-  NAMES = the four m-* guests; SAIL_GUESTS; Sail's override supports M). Then (d): close.
+- next_action: `P4-SYSTEM.11` slice (d) — THE LEAF ACCEPTANCE + close (status done, Result,
+  frontier → `.12` bind C, TASK_TREE 11/18, LIVE_STATUS, book closed). Then the `.12` brief.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

@@ -1,6 +1,6 @@
 # P4.11 — Integer multiply and divide (M)
 
-**Status:** Underway (slices a–c1, 2026-10-06)
+**Status:** Underway (slices a–c2, 2026-10-06)
 
 The Linux-capable profile includes M, the standard extension for integer multiplication and
 division, but until this leaf the processor model could not execute it. The instruction
@@ -44,3 +44,9 @@ project's 38th rule, refuses the table if anyone edits it by hand. It also check
 against the rules the specification itself states, such as "dividend = divisor × quotient +
 remainder" and the remainder taking the dividend's sign, so a wrong reference cannot quietly
 produce a wrong table.
+
+Slice (c2) ran the four M programs on Sail, the reference RISC-V model, as well. All four
+agreed, every value at every step. For integer arithmetic this comparison is genuinely
+independent, because the two share no code; that was not true of the floating-point
+comparison. The comparison was also shown to catch mistakes: one planted wrong answer was
+caught at the exact step.
