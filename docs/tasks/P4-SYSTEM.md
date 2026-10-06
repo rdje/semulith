@@ -147,7 +147,8 @@ This gate authorises the planned next engineering stage: board implementation.
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
 
 - ID: `P4-SYSTEM.8` — **faults, restart and partial progress**
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slices (a)–(d) done `SEMULITH-P4-0058`–`-0061`)
+  Status: **done** `2026-10-06` (design brief `SEMULITH-P4-0057`; slices (a)–(e) `SEMULITH-P4-0058`–`-0062`)
+  Result: **met.** Every instruction completes or faults as a unit (`OB-GC-PARTIAL-PROGRESS`), the reads that crossed before a fault declared, not rolled back (SEM-06). The one place that broke it — a CSR instruction committing rd before its write was refused — fixed at root (`csr-rw`, sail AGREE). Fault priority declared (`D-FAULT-PRIORITY`) and every realizable adjacent pair pinned on both engines (prio-sv39 AGREE). Typed, environment-shaped fault injection (declared refusal regions honoured by the runner and the spec-side model) drives six guests that refuse a chosen suboperation's access on every multi-suboperation instruction — LR/SC/AMO halves, the FP transfers, a walk at each Sv39 level — 134/134. Sail cannot inject (named).
   Goal: fault priority, suppressed effects, restart locations, partial commits under the new system features (`SEM-04`, `SEM-06`).
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
@@ -165,7 +166,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); (b) the priority table declared and pinned; (c) the typed injection carrier; (d) the injected-fault corpus + the obligation; next: slice (e), the sail attempt, the reports, the leaf acceptance |
+| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 (`G-CONTRACT`) — the design brief first (`.8` closed `2026-10-06`: the unit discipline declared and checked, fault priority pinned, typed fault injection); the acceptance: every new assumption has a positive and a negative fixture, the contract versioned, not edited in place |
 
 ## Decisions
 
@@ -975,6 +976,55 @@ never raised, at every crossing. The index:
   `CHANGELOG.md`, `MEMORY.md` (next_action → e), the book (P4.8 chapter).
   `promotion: declined (per-slice corpus; the discipline is the obligation record itself).`
 
+`P4-SYSTEM.8` slice (e) — the sail attempt, the reports, the book and THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0062`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "a fault injected after the Nth
+  suboperation leaves the architecturally required state"; the second engine's view of the
+  `.8` corpus was unmeasured for the injected guests.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the closing step. What sail can say was
+  measured, not assumed: its configuration has no refusal regions
+  (`grep -c refuse target/refs/sail-rv64gc-lab-v0.override.json` → 0), so an injected guest's
+  refused access PROCEEDS there — those cells are not matchable by construction.
+
+- [x] **FIX** — the experiment over all ten `.8` guests (`target/p4-system-8/sail/`); the
+  ledger's seventh experiment (`references.sexp`); the leaf's status **done** and Result;
+  the frontier → `.9` (the environment contract v1 — the design brief first);
+  `docs/TASK_TREE.md`, MEMORY, LIVE_STATUS; the book's P4.8 chapter closed.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ compare_sail.py (matched config, ten guests) → AGREE mm-csr-ro-write 51, a-lrsc-fault 41,
+    prio-sv39 128; DIVERGE mm-csr-ro-counters at its legal cycle read (Zicntr off — named);
+    DIVERGE inj-carrier step 12, inj-atomics 14, inj-fp 21, inj-walk-l2/l1/l0 64 — each at its
+    FIRST refused access (sail lets it proceed; the walks reach L0T[3]'s V=0 and page-fault 13)
+    — "verdict: 3 AGREE of 10"
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 5 passed (134 guests)
+  ```
+
+- [x] **THE LEAF ACCEPTANCE** — "a fault injected after the Nth suboperation leaves the
+  architecturally required state": the typed carrier (c) refuses a chosen suboperation's
+  access, and on every multi-suboperation instruction the profile has, the state is the
+  required one — an AMO's store refused after its completed load (inj-carrier, inj-atomics:
+  rd and memory untouched), an LR's load (no reservation registered), an SC's store, the FP
+  transfers (no f-register write, FS not dirtied), a translation walk refused at each of its
+  three levels (the original access's access fault) — each derived spec-side and satisfied by
+  the engine (134/134), with the mutation that maps a refused walk read to a page fault caught.
+  The goal's other parts: fault priority declared (D-FAULT-PRIORITY) and pinned on both engines
+  (prio-sv39 AGREE); suppressed effects (the CSR rd-before-trap defect fixed at root, sail
+  AGREE); restart locations (every cell resumes at xepc + 4 through its handler — the
+  continuation proofs); partial commits under the new system features declared impossible and
+  checked (OB-GC-PARTIAL-PROGRESS), the standing reads declared (SEM-06).
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`;
+  records only.
+
+- [x] **LOCKSTEP** — `references.sexp`, this tree (status, result, frontier, checklist, logs,
+  changelog), `docs/TASK_TREE.md`, `MEMORY.md` (P4 8/10; next_action → the `.9` design brief),
+  `LIVE_STATUS.md`, `CHANGELOG.md`, the book.
+  `promotion: declined (the leaf's lessons were promoted at their slices — the oracle card's mirror case).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -984,6 +1034,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.8` slice (e) + LEAF | sail over the ten `.8` guests (3 AGREE; the counters cell and the six injected guests named — each injected one diverging at its first refused access); 134/134 | **met** — the leaf closes |
 | `2026-10-06` | `.8` slice (d) | five injected guests derived (every cell as designed) and green (134 guests); RED — a refused walk read as a page fault is caught first by inj-walk-l2 (the 129 earlier guests blind); RECORD-SCHEMA ok; STATE-GEN re-derived | **met** — a fault injected at a chosen suboperation leaves the architecturally required state, on every multi-suboperation instruction the profile has |
 | `2026-10-06` | `.8` slice (c) | inj-carrier derived and green (129 guests); RED with the runner's refusals emptied (step 12); the predicate's boundary test; the schema refuses an unknown kind; the tool regression 80/80 | **met** — injection is typed, declared and honoured on both the engine's and the model's side |
 | `2026-10-06` | `.8` slice (b) | the pins census; prio-sv39 derived (causes 4 6 13 4 5 7 2 2) and green on the engine (128 guests); sail AGREE 128 steps; RECORD-SCHEMA ok; the matrix 28 cells | **met** — the table declared, every realizable adjacent pair pinned on both engines |
@@ -1014,6 +1065,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.8` (slice e) + LEAF | `SEMULITH-P4-0062 (leaf P4-SYSTEM.8): slice e — the sail attempt over the faults corpus (3 AGREE + 7 NAMED of 10), THE LEAF ACCEPTANCE; the leaf CLOSES` | frontier → `.9` |
 | `.8` (slice d) | `SEMULITH-P4-0061 (leaf P4-SYSTEM.8): slice d — the injected-fault corpus (LR/SC/AMO halves, FP transfers, a walk refused at each Sv39 level); OB-GC-PARTIAL-PROGRESS declared; the state candidate re-answered` | fetch refusals named out (no fetch model in the authoring tool) |
 | `.8` (slice c) | `SEMULITH-P4-0060 (leaf P4-SYSTEM.8): slice c — the typed fault-injection carrier: declared refusal regions honoured by the runner and the spec-side model alike; inj-carrier proves it end to end (an AMO's store refused after its load)` | both guest modules regenerated |
 | `.8` (slice b) | `SEMULITH-P4-0059 (leaf P4-SYSTEM.8): slice b — the fault-priority table declared (D-FAULT-PRIORITY + its mirrors); prio-sv39 pins the missing adjacent pairs, sail AGREE` | a characterization guest, no engine change |
@@ -1038,6 +1090,11 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.8` slice (e) done and the LEAF CLOSES (`SEMULITH-P4-0062`) — faults, restart
+  and partial progress validated: a fault injected at any suboperation leaves the required
+  state; fault priority declared and pinned on both engines; the one place that broke the
+  unit discipline fixed at root. Sail: 3 AGREE + 7 NAMED of 10. Frontier → `.9`.
 
 - `2026-10-06`: `.8` slice (d) done (`SEMULITH-P4-0061`) — **the injected-fault corpus**: five
   guests refuse one suboperation's access each (LR/SC/AMO halves, FP transfers, a walk at every

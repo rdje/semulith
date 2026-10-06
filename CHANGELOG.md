@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0062 (leaf P4-SYSTEM.8, slice e) — the sail attempt over the faults corpus; the leaf CLOSES
+
+- Sail over the ten `.8` guests: 3 AGREE (mm-csr-ro-write, a-lrsc-fault, prio-sv39) + 7 NAMED
+  — the counters guest (Zicntr off in the matched config) and the six injected guests, each
+  diverging exactly at its first refused access (Sail's configuration carries no refusal
+  regions). Recorded as the ledger's seventh experiment.
+- `P4-SYSTEM.8` is **done**: every instruction completes or faults as a unit, fault priority
+  is declared and pinned, and a fault injected at any suboperation leaves the required state.
+  The tree reads 8/10; the frontier moves to `.9` (the environment contract v1 — design brief
+  first). `make check` + `make gate` green.
+
 ## SEMULITH-P4-0061 (leaf P4-SYSTEM.8, slice d) — the injected-fault corpus; the partial-progress obligation
 
 - Five guests over the typed carrier, each refusing one suboperation's access: `inj-atomics`

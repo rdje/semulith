@@ -1,6 +1,6 @@
 # P4.8 — Faults, restart and partial progress
 
-**Status:** Underway (slices a–d, 2026-10-06)
+**Status:** Landed and closed (a–e, 2026-10-06)
 
 An instruction can do several things — read a register, access memory, update a control
 register, write its result. If something goes wrong part-way, what must the machine look
@@ -46,3 +46,9 @@ refused), the floating-point loads and stores, and an address-translation walk r
 each of its three levels. In every case the instruction faults cleanly — no register, no
 memory, no floating-point status changes — and the reads that already happened are declared
 rather than pretended away. The processor's contract now states this as an obligation.
+
+**The leaf is closed (2026-10-06).** On the Sail reference model, the programs it can run
+agree step for step; it cannot run the injected ones as designed — it has no way to refuse an
+access — and each of those diverges exactly at its first refused access, which is recorded
+rather than hidden. Faults, their priority and their restart are now part of the processor's
+declared and tested behaviour.
