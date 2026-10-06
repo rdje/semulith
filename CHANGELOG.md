@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0061 (leaf P4-SYSTEM.8, slice d) — the injected-fault corpus; the partial-progress obligation
+
+- Five guests over the typed carrier, each refusing one suboperation's access: `inj-atomics`
+  (an LR's load — 5, no reservation registered; an SC's store — 7; an AMO's store after its
+  load, and an AMO's load before its store — 7, rd and memory untouched), `inj-fp` (refused
+  FP loads leave the f-register unwritten and FS Clean; refused FP stores leave memory
+  unchanged), `inj-walk-l2/l1/l0` (a page-table read refused at each Sv39 level — the original
+  access's access fault, never a page fault). 134/134; a mutation turning a refused walk read
+  into a page fault is caught (and was invisible to the 129 earlier guests).
+- rv64gc declares `OB-GC-PARTIAL-PROGRESS` (+ `REQ-GC-PARTIAL-PROGRESS`): every instruction
+  completes or faults as a unit; the reads that crossed before a fault are declared, not rolled
+  back; the fixtures named. The state candidate "pending or partially committed effects" is
+  answered. Fetch-refusal guests named out of scope (no fetch model in the authoring tool).
+  `make check` + `make gate` green.
+
 ## SEMULITH-P4-0060 (leaf P4-SYSTEM.8, slice c) — the typed fault-injection carrier
 
 - A guest's expectations may declare `(refuse (kind fetch|load|store|walk) (base …) (size …))`

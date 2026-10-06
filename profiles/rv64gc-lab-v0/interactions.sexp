@@ -27,6 +27,11 @@
 ;;              nop; the budget contract
 ;;   restart    the xret/xepc return discipline: resumption of preempted control flow at
 ;;              the recorded address and mode (mret/sret, SPP/MPP, the MPRV rule)
+;; `P4-SYSTEM.8` slice (d) (`2026-10-06`): the injected-fault corpus — every refused
+;; suboperation's suppressed effect is the fault axis (fault × fault), every resume the
+;; progress axis; inj-fp's FS-staying-Clean is fault × legality, its in-region byte edges
+;; fault × boundary. No axis is added: partial progress IS the fault axis's 'suppressed
+;; effects', now injected at a chosen suboperation.
 ;; `P4-SYSTEM.8` slice (c) (`2026-10-06`): inj-carrier, the injection carrier's proof — its
 ;; refused store/load/AMO-store are the fault axis's suppressed effects, the refusal
 ;; regions' adjacent bytes the boundary axis, its resumes the progress axis. No axis.
@@ -117,12 +122,12 @@
 (axis (id "restart") (covers "the xret/xepc return discipline: resumption of preempted control flow at the recorded address and mode (mret/sret, SPP/MPP, the MPRV clear-below-M / preserve-at-M rule)"))
 
 ;; ── fault × * ─────────────────────────────────────────────────────────────────────
-(cell (axis "fault") (axis "fault") (guest "it-prio-jump") (guest "it-prio-load") (guest "prio-sv39") (guest "inj-carrier"))
+(cell (axis "fault") (axis "fault") (guest "it-prio-jump") (guest "it-prio-load") (guest "prio-sv39") (guest "inj-carrier") (guest "inj-atomics") (guest "inj-fp") (guest "inj-walk-l2") (guest "inj-walk-l1") (guest "inj-walk-l0"))
 (cell (axis "fault") (axis "alias") (guest "it-fault-alias") (guest "fault-ld-x0-mis") (guest "fault-ld-x0-fault") (guest "mm-csr-ro-write") (guest "mm-csr-ro-counters"))
-(cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (guest "sv39-fault-canonical") (guest "sv39-fault-superpage") (guest "a-lrsc-fault") (guest "inj-carrier"))
-(cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39") (guest "i-vector") (guest "fencei-reserved") (guest "fp-fs-off") (guest "f-fs-off") (guest "f-rounding") (guest "d-fs-off") (guest "d-rounding") (guest "mm-csr-ro-write") (guest "mm-csr-ro-counters") (guest "prio-sv39"))
+(cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (guest "sv39-fault-canonical") (guest "sv39-fault-superpage") (guest "a-lrsc-fault") (guest "inj-carrier") (guest "inj-fp"))
+(cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39") (guest "i-vector") (guest "fencei-reserved") (guest "fp-fs-off") (guest "f-fs-off") (guest "f-rounding") (guest "d-fs-off") (guest "d-rounding") (guest "mm-csr-ro-write") (guest "mm-csr-ro-counters") (guest "prio-sv39") (guest "inj-fp"))
 (cell (axis "fault") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sv39-deleg") (guest "a-amo-sv39") (guest "i-deleg") (guest "w-deleg"))
-(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer") (guest "w-timer") (guest "fencei-selfmod") (guest "f-fs-off") (guest "f-rounding") (guest "d-fs-off") (guest "d-rounding") (guest "mm-csr-ro-write") (guest "mm-csr-ro-counters") (guest "prio-sv39") (guest "inj-carrier"))
+(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer") (guest "w-timer") (guest "fencei-selfmod") (guest "f-fs-off") (guest "f-rounding") (guest "d-fs-off") (guest "d-rounding") (guest "mm-csr-ro-write") (guest "mm-csr-ro-counters") (guest "prio-sv39") (guest "inj-carrier") (guest "inj-atomics") (guest "inj-fp") (guest "inj-walk-l2") (guest "inj-walk-l1") (guest "inj-walk-l0"))
 (cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest") (guest "w-timer") (guest "f-rounding") (guest "d-rounding"))
 
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────

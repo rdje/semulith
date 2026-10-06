@@ -1,6 +1,6 @@
 # P4.8 — Faults, restart and partial progress
 
-**Status:** Underway (slices a–c, 2026-10-06)
+**Status:** Underway (slices a–d, 2026-10-06)
 
 An instruction can do several things — read a register, access memory, update a control
 register, write its result. If something goes wrong part-way, what must the machine look
@@ -39,3 +39,10 @@ of memory the environment refuses — not readable, not writable, page tables no
 the engine and the specification-side model both answer a refused access as a fault. The
 first program to use it shows the leaf's central case: an atomic memory operation whose read
 succeeds and whose write is refused traps without changing its destination register or memory.
+
+Slice (d) used it across every instruction that does more than one thing at the memory
+boundary: load-reserved and store-conditional, the atomic operations (with either half
+refused), the floating-point loads and stores, and an address-translation walk refused at
+each of its three levels. In every case the instruction faults cleanly — no register, no
+memory, no floating-point status changes — and the reads that already happened are declared
+rather than pretended away. The processor's contract now states this as an obligation.

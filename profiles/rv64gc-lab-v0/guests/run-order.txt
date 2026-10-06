@@ -132,3 +132,8 @@ mm-csr-ro-write
 mm-csr-ro-counters
 prio-sv39
 inj-carrier
+inj-atomics
+inj-fp
+inj-walk-l2
+inj-walk-l1
+inj-walk-l0

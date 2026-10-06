@@ -147,7 +147,7 @@ This gate authorises the planned next engineering stage: board implementation.
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
 
 - ID: `P4-SYSTEM.8` — **faults, restart and partial progress**
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slices (a)–(c) done `SEMULITH-P4-0058`–`-0060`)
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slices (a)–(d) done `SEMULITH-P4-0058`–`-0061`)
   Goal: fault priority, suppressed effects, restart locations, partial commits under the new system features (`SEM-04`, `SEM-06`).
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
@@ -165,7 +165,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); (b) the priority table declared and pinned; (c) the typed injection carrier; next: slice (d), the injected-fault corpus + the unit-discipline obligation |
+| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); (b) the priority table declared and pinned; (c) the typed injection carrier; (d) the injected-fault corpus + the obligation; next: slice (e), the sail attempt, the reports, the leaf acceptance |
 
 ## Decisions
 
@@ -921,6 +921,60 @@ never raised, at every crossing. The index:
 - [x] **LOCKSTEP** — this tree, `CHANGELOG.md`, `MEMORY.md` (next_action → d), the book (P4.8
   chapter). `promotion: declined (the carrier's design is the schema comment and the brief's decision 4).`
 
+`P4-SYSTEM.8` slice (d) — the injected-fault corpus; rv64gc's partial-progress obligation; the state candidate re-answered (`2026-10-06`, `SEMULITH-P4-0061`):
+
+- [x] **REPRODUCE / ISSUE** — rv64gc declared no partial-progress obligation and its state
+  candidate waited on `.8`:
+
+  ```
+  $ git show HEAD:profiles/rv64gc-lab-v0/contract-obligations.sexp | grep -c PARTIAL-PROGRESS → 0
+  state.sexp's "pending or partially committed effects": "… P4-SYSTEM.8's, which reopens
+    this candidate"; the carrier (c) had one proof guest and no corpus
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the leaf's acceptance ("a fault injected
+  after the Nth suboperation leaves the architecturally required state") needs the injected
+  cells and the declared discipline; the census of which suboperations exist is the brief's
+  pre-condition 2 (`git show HEAD:crates/semulith-core/src/env.rs | grep -cE '^    (Fetch|Load|Store|WalkAccess) \{'` → 4 boundary request kinds).
+
+- [x] **FIX** — five guests over the carrier: `inj-atomics` (an LR whose load is refused —
+  cause 5, no reservation, so the next SC fails rd←1; an SC whose store is refused — 7, rd
+  and memory untouched; an AMO's store refused after its load, and an AMO's load refused so
+  its store never issues — 7 both, rd untouched), `inj-fp` (FLD/FLW refused — 5, the f-register
+  unwritten and FS NOT dirtied; FSD/FSW refused — 7, memory unchanged), `inj-walk-l2/l1/l0`
+  (a walk read refused at each Sv39 level — the ORIGINAL access's access fault 5/7/7, never a
+  page fault); `OB-GC-PARTIAL-PROGRESS` + its mirror `REQ-GC-PARTIAL-PROGRESS` (the unit
+  discipline, the standing reads declared, the fixtures named); `state.sexp`'s candidate
+  re-answered (`state_rv64gc.rs` regenerated); the matrix's placements. Two authoring defects
+  re-derived, never fitted: the walk guests' prologue sliced one line early (its own `csrrw
+  mtvec` doubled, every pc-relative table address off by 4 — the derivation showed the table
+  stores faulting with 6); read-backs into registers already 0 (no observable change —
+  sentinels added). Out of scope, named: a FETCH-refusal guest — the carrier honours fetch
+  refusals, but the authoring model has no fetch translation model; fetch faults stay covered
+  by fault-fetch (region) and sv39-straddle (translation).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  derived: inj-atomics lr.d 5, sc.d (no reservation) x6 <- 1, M still 0, sc.d 7, amoadd.w 7,
+    A still 0, amoor.d 7; inj-fp fld 5, mstatus FS Clean (0x4080), fsd 7, A still 0, flw 5,
+    fsw 7, FS still Clean; inj-walk-l2/l1/l0 ld 5, sd 7, amoadd.d 7
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 5 passed (134 guests)
+    RED — a refused walk read mutated into a page fault (translation.rs): FAILED, "inj-walk-l2:
+    step 64 writes match…" — the first failing guest, so the 129 before it were blind to it;
+    restored → ok
+  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok (20 record file(s) …)
+  gen_state → state_rv64gc.rs: the candidate's why only (2 lines); definition_rv64gc.rs
+    re-fingerprints the state document (DEF-GEN named the drift); the matrix 28 cells
+  ```
+
+- [x] **NO REGRESSION** — no engine change; every pre-existing guest unchanged; `make check`
+  rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — this tree, the two record files and `state.sexp` (+ its module),
+  `CHANGELOG.md`, `MEMORY.md` (next_action → e), the book (P4.8 chapter).
+  `promotion: declined (per-slice corpus; the discipline is the obligation record itself).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -930,6 +984,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.8` slice (d) | five injected guests derived (every cell as designed) and green (134 guests); RED — a refused walk read as a page fault is caught first by inj-walk-l2 (the 129 earlier guests blind); RECORD-SCHEMA ok; STATE-GEN re-derived | **met** — a fault injected at a chosen suboperation leaves the architecturally required state, on every multi-suboperation instruction the profile has |
 | `2026-10-06` | `.8` slice (c) | inj-carrier derived and green (129 guests); RED with the runner's refusals emptied (step 12); the predicate's boundary test; the schema refuses an unknown kind; the tool regression 80/80 | **met** — injection is typed, declared and honoured on both the engine's and the model's side |
 | `2026-10-06` | `.8` slice (b) | the pins census; prio-sv39 derived (causes 4 6 13 4 5 7 2 2) and green on the engine (128 guests); sail AGREE 128 steps; RECORD-SCHEMA ok; the matrix 28 cells | **met** — the table declared, every realizable adjacent pair pinned on both engines |
 | `2026-10-06` | `.8` slice (a) | the probe on the HEAD engine (x5 written, then cause 2); the RED guest on the old engine (step 9); 127/127 after the fix; identity 125/0 + 2 RED; sail AGREE mm-csr-ro-write (51) and a-lrsc-fault (41), the counters guest the named Zicntr-absent cell; the tool before/after 76/76 + F/D 22/22 | **met** — a refused CSR write leaves rd untouched on both engines |
@@ -959,6 +1014,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.8` (slice d) | `SEMULITH-P4-0061 (leaf P4-SYSTEM.8): slice d — the injected-fault corpus (LR/SC/AMO halves, FP transfers, a walk refused at each Sv39 level); OB-GC-PARTIAL-PROGRESS declared; the state candidate re-answered` | fetch refusals named out (no fetch model in the authoring tool) |
 | `.8` (slice c) | `SEMULITH-P4-0060 (leaf P4-SYSTEM.8): slice c — the typed fault-injection carrier: declared refusal regions honoured by the runner and the spec-side model alike; inj-carrier proves it end to end (an AMO's store refused after its load)` | both guest modules regenerated |
 | `.8` (slice b) | `SEMULITH-P4-0059 (leaf P4-SYSTEM.8): slice b — the fault-priority table declared (D-FAULT-PRIORITY + its mirrors); prio-sv39 pins the missing adjacent pairs, sail AGREE` | a characterization guest, no engine change |
 | `.8` (slice a) | `SEMULITH-P4-0058 (leaf P4-SYSTEM.8): slice a — the CSR rd-before-trap defect fixed at root (csr-rw, the atomic read-write; RED-first, sail AGREE on mhartid); LR's wrong unreachable cause and a-lrsc-fault's stale prose` | the brief's sail evidence corrected |
@@ -982,6 +1038,12 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.8` slice (d) done (`SEMULITH-P4-0061`) — **the injected-fault corpus**: five
+  guests refuse one suboperation's access each (LR/SC/AMO halves, FP transfers, a walk at every
+  Sv39 level) and pin the architecturally required state; rv64gc declares its partial-progress
+  obligation; the state candidate is answered. Next: slice (e) — Sail, the reports, the leaf
+  acceptance.
 
 - `2026-10-06`: `.8` slice (c) done (`SEMULITH-P4-0060`) — **the injection carrier**: a guest
   declares refusal regions (fetch/load/store/walk); the runner answers matching requests

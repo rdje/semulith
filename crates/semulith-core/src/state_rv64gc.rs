@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `2a37e8c63b914d01a3a887171d7fe6054d5fa84eaabedd37d37b7d5ed2b6836a`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, the 32 × 64-bit
@@ -1784,7 +1784,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "pending or partially committed effects",
             present: false,
-            why: "at this stage every instruction completes or faults as a unit; fault priority and partial commits are P4-SYSTEM.8's, which reopens this candidate",
+            why: "answered by P4-SYSTEM.8: no pending or partially committed effect exists - every instruction completes or faults as a unit (OB-GC-PARTIAL-PROGRESS; the one place that broke it, a CSR write committing rd before its refusal, fixed at slice a); the reads that crossed the boundary before a fault (earlier walk reads and the TLB fill, a straddling fetch's first parcel, an AMO's completed load) are declared, not rolled back (SEM-06), and change no architectural state; fault priority is D-FAULT-PRIORITY",
         },
         HiddenStateCandidate {
             candidate: "address-translation caches (TLBs)",
