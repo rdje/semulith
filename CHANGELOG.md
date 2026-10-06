@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0055 (leaf P4-SYSTEM.7, slice e2) — the numeric fixtures at scale + the per-op cost
+
+- `scripts/gen_fp_vectors.py` now also emits `fp/tests/fixtures.txt`: 3,168 seeded cases from
+  the exact-rational reference, biased toward the classes the rules distinguish, across all
+  21 model-layer operations × both formats × every rounding mode (162 combinations; every
+  flag raised). Read by `include_str!` and driven by a new unit test — all pass; RED when
+  the underflow rule is removed. FP-VECTORS gates the second table with the same DRIFT rule
+  (a new arm, 7/7); its doctrine row's stale "176 vectors" corrected.
+- The final model layer's per-op cost measured beside the raw backend (release, 2M
+  iterations): f64 add 47.8 vs 8.3 ns, div 122.7 vs 44.5 — 2.8–6.9× on the arithmetic core,
+  the cost of evaluating every rounded result a second time for exact OF/UF. `make check` +
+  `make gate` green.
+
 ## SEMULITH-P4-0054 (leaf P4-SYSTEM.7, slice e1) — the Sail matched experiment over the FP corpus: 24 AGREE of 24
 
 - The override re-materialized from the tracked unit (unmoved since `.6`) and validated; Sail

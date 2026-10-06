@@ -139,3 +139,10 @@ test programs on the Sail reference model: every one agrees with its specificati
 expectations, step for step (927 steps). Sail computes floating point with Berkeley SoftFloat,
 so this shows the instructions are decoded, gated, boxed and flagged the same way on both
 engines — not that the arithmetic is independently right; that is the next checkpoint's job.
+
+The second checkpoint made the numeric evidence broad and permanent: 3,168 generated test
+cases — every floating-point operation, in both widths and all five rounding modes, with
+operands chosen to hit the awkward classes (zeros, subnormals, infinities, NaNs, values at
+the range edges) — each checked against the exact-arithmetic reference on every build. It
+also measured the cost of exactness: computing overflow and underflow exactly makes each
+rounded operation roughly three to seven times slower than the bare arithmetic library.

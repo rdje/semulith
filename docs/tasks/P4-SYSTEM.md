@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c6) done `2026-10-06`, `SEMULITH-P4-0041`–`-0048` — F BOUND; slice (d) split into (d1)–(d5), (d1)–(d5) done `SEMULITH-P4-0049`–`-0053` — D BOUND; slice (e) split into (e1)–(e3), (e1) done `SEMULITH-P4-0054`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c6) done `2026-10-06`, `SEMULITH-P4-0041`–`-0048` — F BOUND; slice (d) split into (d1)–(d5), (d1)–(d5) done `SEMULITH-P4-0049`–`-0053` — D BOUND; slice (e) split into (e1)–(e3), (e1)–(e2) done `SEMULITH-P4-0054`–`-0055`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -164,7 +164,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; (c5) the staged F corpus (11 guests, spec-derived); (c6) THE BIND — F executes in the tracked engine (118 forms, 114/114); (d1) the D tables pinned + `d.sexp`; (d2) `f2f` + `d.sem.sexp`; (d3) `fp.rs`'s conversions (the record's deviation (ii) withdrawn); (d4) the staged D corpus; (d5) THE BIND — D executes in the tracked engine (150 forms, 125/125); (e1) the Sail matched experiment 24 AGREE of 24; next (e2): the numeric fixtures at scale |
+| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; (c5) the staged F corpus (11 guests, spec-derived); (c6) THE BIND — F executes in the tracked engine (118 forms, 114/114); (d1) the D tables pinned + `d.sexp`; (d2) `f2f` + `d.sem.sexp`; (d3) `fp.rs`'s conversions (the record's deviation (ii) withdrawn); (d4) the staged D corpus; (d5) THE BIND — D executes in the tracked engine (150 forms, 125/125); (e1) the Sail matched experiment 24 AGREE of 24; (e2) 3,168 fixtures + the per-op cost; next (e3): the leaf acceptance |
 
 ## Decisions
 
@@ -1086,6 +1086,59 @@ never raised, at every crossing. The index:
   `references.sexp`, `CHANGELOG.md` (sharded first: 0202), `MEMORY.md` (next_action → e2),
   the book (P4.7 chapter). DEV_NOTES: no entry — the designed AGREE, measured.
 
+`P4-SYSTEM.7` slice (e2) — the numeric fixtures at scale + the model layer's per-op cost (`2026-10-06`, `SEMULITH-P4-0055`):
+
+- [x] **REPRODUCE / ISSUE** — the tracked numeric proof was the directed vectors alone:
+
+  ```
+  $ git ls-tree HEAD crates/semulith-core/src/fp/tests/ → vectors.rs only (230 rows,
+    the rules); the 63,752-case breadth lived in an untracked scratch run (fpcheck)
+  $ git show HEAD:crates/semulith-core/src/fp/tests.rs | grep -c '"f2i64"\|"u2f32"' → 0 —
+    two model-layer conversions no tracked case drove
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the brief's (e) "independent numeric
+  fixtures at scale". A breadth result that lives only in scratch is not re-run by CI
+  (`git ls-files target/p4-system-7/fpcheck` → nothing — untracked by design); the directed
+  vectors pin the rules but not the space between them.
+
+- [x] **FIX** — `scripts/gen_fp_vectors.py` emits a second table, `fp/tests/fixtures.txt`:
+  seed 20261006, operands biased toward the classes the rules distinguish (zeros,
+  subnormals, the exponent edges, infinities, quiet/signaling NaNs, near-cancelling pairs,
+  the integer-conversion edges) — 16 per (operation, format, mode) for the rounded
+  operations, 64 per (operation, format) for the mode-free ones; plain text read by
+  `include_str!` (rustc pays nothing); `fp/tests.rs`: the fixture test + the two missing
+  dispatch arms; `scripts/check_fp_vectors.sh`: the same DRIFT rule on the second table (a
+  new RED arm) and the count in its verdict; `docs/doctrines/definition.md`'s FP-VECTORS row
+  corrected — it still said "176 unit vectors" (stale since (d3)), now count-free. The
+  per-op cost re-measured on the final model layer (scratch `fpcheck/src/bin/timing.rs`).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/gen_fp_vectors.py → 230 vectors (vectors.rs byte-unchanged) and 3168
+    fixtures: 162 (operation, format, mode) combinations, 21 operations; flags raised —
+    NX 1202, NV 488, UF 94, OF 58, DZ 4
+  $ cargo test -p semulith-core --lib fp:: → test result: ok. 8 passed
+    RED — finish()'s UF line removed: every_spec_side_fixture_holds FAILED; restored → ok
+  $ bash scripts/check_fp_vectors.sh --self-test → 7 pass / 0 fail (the new arm: a fixture's
+    expected value edited by hand → DRIFT, rc=1)
+  $ bash scripts/check_fp_vectors.sh → ok (… 230 vectors + 3168 fixtures; reference vs
+    hardware RNE: agree 2131)
+  timing (release, 2M iterations, black_box operands): the backend f64 add 8.3 / mul 6.9 /
+    div 44.5 ns/op; the model layer f64 add 47.8 / mul 47.4 / div 122.7, f32 add 46.2,
+    fma 65.8, sqrt 83.7 (f64) / 58.7 (f32), convert d→s 27.2 / s→d 6.8, to_int 5.5,
+    from_int 8.2, min 4.3 — 2.8–6.9× the backend on the arithmetic core: the exact
+    OF/UF's second, wide evaluation on every rounded operation
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (344 passed — the fixture test the one new); `make
+  gate` → `=== all doctrines green ===` (DERIVED-COUNTS re-derived 466 arms).
+
+- [x] **LOCKSTEP** — this tree, `docs/doctrines/definition.md`, `CHANGELOG.md`, `MEMORY.md`
+  (next_action → e3), `LIVE_STATUS.md` (the arm count if it moves), the book (P4.7 chapter).
+  `promotion: declined (the breadth-vs-rules split is the generator's own docstring; the stale doctrine count is the unmechanized constant sweep already on LIVE_STATUS).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1095,6 +1148,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (e2) | 3,168 fixtures (162 combinations, 21 operations, every flag raised) pass on the first run; RED with UF removed; FP-VECTORS 7/7 (fixture DRIFT arm); the per-op cost on the final model layer and on the raw backend in one run | **met** — breadth tracked and gated; performance measured (2.8–6.9× the backend on the arithmetic core, the exact OF/UF's cost) |
 | `2026-10-06` | `.7` slice (e1) | the override re-materialized (unmoved) and validated; sail's F/D config read (Precise dirtiness, FourState FS); 24 FP guests on sail 0.14 — 24 AGREE, 927 steps exact; the comparator's RED (one corrupted expectation → DIVERGE at that step) | **met** — the encoding/state surface agrees with the second engine on every cell |
 | `2026-10-06` | `.7` slice (d5) — THE BIND | the pre-bind census (the slot at encoding.sexp:17, 0 D rows, count_total 118, no FToF); the payload landed 34/34 byte-identical; run_rv64gc 4/4 over 125; 32/32 D forms generated; 150 == 150 (the exclusion flipped itself); coverage 150/150; the matrix 28 cells; DOSSIER-SCHEMA 224 judged | **met** — D executes in the tracked engine; the 114 older guests byte-identical |
 | `2026-10-06` | `.7` slice (d4) | the tool's D refusal measured; F re-derived 11/11 identical through the D-taught tool; D derived 11/11 schema-valid, re-derived 22/22 identical; three authoring defects re-derived (alignment, andi, a false comment); the scratch engine 125 guests 4/4 (RED: FToF's mode ignored → d-f2f step 13); identity 114/0 + 11 RED | **met** — every D guest spec-derived and satisfied on the scratch engine; the bind lands it |
@@ -1119,6 +1173,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice e2) | `SEMULITH-P4-0055 (leaf P4-SYSTEM.7): slice e2 — the numeric fixtures at scale (3,168 seeded spec-side cases, every operation × format × mode, gated by FP-VECTORS) + the model layer's per-op cost measured` | the doctrine row's stale count corrected |
 | `.7` (slice e1) | `SEMULITH-P4-0054 (leaf P4-SYSTEM.7): slice e1 — the Sail matched experiment over the FP corpus: 24 AGREE of 24 (927 steps), an encoding/state match; the slice (e) split recorded` | the ledger's sixth experiment |
 | `.7` (slice d5) — THE BIND | `SEMULITH-P4-0053 (leaf P4-SYSTEM.7): slice d5 — THE BIND: the unit composes riscv/d (150 forms, 125 guests, the FToF arm tracked)` | the staged payload landed; the worktree removed |
 | `.7` (slice d4) | `SEMULITH-P4-0052 (leaf P4-SYSTEM.7): slice d4 — the staged D corpus (11 guests, 125/125 on the scratch engine, identity 114/0 + 11 RED)` | records only; the payload stays staged for (d5) |
@@ -1137,6 +1192,12 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (e2) done (`SEMULITH-P4-0055`) — **the fixtures at scale**: 3,168
+  seeded cases from the exact-rational reference over every model-layer operation, format
+  and rounding mode, tracked and gated; all pass. The model layer's per-op cost measured:
+  2.8–6.9× the raw backend on the arithmetic core — the price of exact overflow/underflow.
+  Next: slice (e3) — the reports, the book, the leaf acceptance.
 
 - `2026-10-06`: `.7` slice (e1) done (`SEMULITH-P4-0054`) — **the Sail matched experiment**:
   all 24 floating-point guests agree with Sail 0.14 step for step (927 steps). Sail's FP is

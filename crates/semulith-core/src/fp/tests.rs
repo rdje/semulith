@@ -28,8 +28,10 @@ fn run(op: &str, n: u32, rm: Rm, a: u64, b: u64, c: u64) -> Flagged {
         },
         "f2i32" => to_int(n, 32, true, rm, a),
         "f2u32" => to_int(n, 32, false, rm, a),
+        "f2i64" => to_int(n, 64, true, rm, a),
         "f2u64" => to_int(n, 64, false, rm, a),
         "i2f32" => from_int(n, 32, true, rm, a),
+        "u2f32" => from_int(n, 32, false, rm, a),
         "i2f64" => from_int(n, 64, true, rm, a),
         "u2f64" => from_int(n, 64, false, rm, a),
         "f2f" => convert(n, if n == 32 { 64 } else { 32 }, rm, a),
@@ -57,6 +59,47 @@ fn every_spec_side_vector_holds() {
         "{} of {} vectors:\n{}",
         failures.len(),
         VECTORS.len(),
+        failures.join("\n")
+    );
+}
+
+/// The fixtures AT SCALE (`P4-SYSTEM.7` slice (e2)): the same reference over seeded operands
+/// biased toward the classes the rules distinguish, every operation × format × mode — the
+/// directed vectors are the rules, these are the breadth. `op n rm a b c bits flags`, hex.
+#[test]
+fn every_spec_side_fixture_holds() {
+    let text = include_str!("tests/fixtures.txt");
+    let hex = |s: &str| u64::from_str_radix(s, 16).expect("a hex field");
+    let (mut cases, mut failures) = (0usize, Vec::new());
+    for line in text
+        .lines()
+        .filter(|l| !l.starts_with('#') && !l.is_empty())
+    {
+        let f: Vec<&str> = line.split(' ').collect();
+        assert_eq!(f.len(), 8, "a fixture row has 8 fields: {line}");
+        let (op, n) = (f[0], f[1].parse::<u32>().expect("a format"));
+        let rm = Rm::from_bits(hex(f[2])).expect("a legal rounding mode");
+        let want = Flagged {
+            bits: hex(f[6]),
+            flags: hex(f[7]),
+        };
+        let got = run(op, n, rm, hex(f[3]), hex(f[4]), hex(f[5]));
+        cases += 1;
+        if got != want && failures.len() < 20 {
+            failures.push(format!(
+                "{line}: got bits {:#x} flags {:#x}",
+                got.bits, got.flags
+            ));
+        }
+    }
+    assert!(
+        cases > 3000,
+        "the fixture table holds {cases} cases — truncated?"
+    );
+    assert!(
+        failures.is_empty(),
+        "fixtures disagreeing with the reference (first {}):\n{}",
+        failures.len(),
         failures.join("\n")
     );
 }

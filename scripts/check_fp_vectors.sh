@@ -139,6 +139,13 @@ self_test() {
   printf '\n// one more row, by hand\n' >> "$t/vectors.rs"
   out="$(python3 "$GEN" --check --out "$t/vectors.rs" 2>&1)"; rc=$?
   arm "RED a hand-appended line is refused as DRIFT" "$rc" 1 "$out" "DRIFT"
+  # the fixtures at scale (P4-SYSTEM.7 slice e2): the same DRIFT rule on the second table —
+  # one expected value edited by hand in a copy, the vectors faithful
+  python3 "$GEN" --out "$t/vectors.rs" --fixtures-out "$t/fixtures.txt" >/dev/null 2>&1
+  awk 'BEGIN{done=0} !/^#/ && !done {$7 = ($7 == "0" ? "1" : "0"); done=1} {print}' \
+    "$t/fixtures.txt" > "$t/fixtures-edited.txt"
+  out="$(python3 "$GEN" --check --out "$t/vectors.rs" --fixtures-out "$t/fixtures-edited.txt" 2>&1)"; rc=$?
+  arm "RED a fixture's expected value edited by hand is refused as DRIFT" "$rc" 1 "$out" "DRIFT"
 
   out="$(hardware_crosscheck scripts 2>&1)"; rc=$?
   arm "GREEN the reference agrees with the host's hardware IEEE (RNE)" "$rc" 0 "$out" "agree"
@@ -182,6 +189,7 @@ xc="$(hardware_crosscheck scripts 2>&1)" || {
   exit 1
 }
 rows="$(grep -c '^    Vector {' "$OUT")"
-printf 'FP-VECTORS: ok (%s matches the spec-side reference, %s vectors; reference vs hardware RNE: %s)\n' \
-  "$OUT" "$rows" "$xc"
+fixtures="$(grep -vc '^#' "$(dirname "$OUT")/fixtures.txt")"
+printf 'FP-VECTORS: ok (%s matches the spec-side reference, %s vectors + %s fixtures; reference vs hardware RNE: %s)\n' \
+  "$OUT" "$rows" "$fixtures" "$xc"
 exit 0

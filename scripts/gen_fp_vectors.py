@@ -5,9 +5,17 @@ pins; its expected bits and flags are specfp's — derived from the pinned chapt
 754-2008, never from an engine. The output is TRACKED and gated (FP-VECTORS): a hand edit of
 an expected value is refused as DRIFT.
 
-usage: gen_fp_vectors.py            write crates/semulith-core/src/fp/tests/vectors.rs
-       gen_fp_vectors.py --check    exit 0 iff the tracked table is the generator's output
-       gen_fp_vectors.py --out P    write (or with --check, compare) P instead
+THE FIXTURES AT SCALE (P4-SYSTEM.7 slice e2): a second, generated table — fp/tests/fixtures.txt,
+seeded operands biased toward the classes the rules distinguish (zeros, subnormals, the
+exponent edges, infinities, quiet and signaling NaNs, near-cancelling pairs, the integer
+conversion edges), across every model-layer operation × format × rounding mode, expected
+values from the same reference. The directed vectors are the RULES; the fixtures are the
+BREADTH. Plain text, loaded by include_str!, so the table costs rustc nothing.
+
+usage: gen_fp_vectors.py            write vectors.rs AND fixtures.txt
+       gen_fp_vectors.py --check    exit 0 iff both tracked tables are the generator's output
+       gen_fp_vectors.py --out P    write (or with --check, compare) the vectors at P only
+       … --fixtures-out F           also write (or compare) the fixtures at F
 """
 import io
 import sys
@@ -137,6 +145,91 @@ for a, note in ((SNAN, "single sNaN → double: canonical, NV (the backend's dev
     for rm in (0, 1):
         row("f2f", 64, rm, a, 0, 0, note, lambda: S.convert(64, 32, rm, a))
 
+FIX_OUT = OUT.parent / "fixtures.txt"
+FIX_SEED = 20261006
+FIX_PER_ROUNDED = 16      # cases per (operation, format, rounding mode)
+FIX_PER_UNROUNDED = 64    # cases per (operation, format) for the mode-free operations
+
+
+def fx_float(rnd, n):
+    """One operand: a quarter uniform bit patterns; the rest a random sign, an exponent from
+    the edges (0 — zeros and subnormals —, 1, the bias neighbourhood, max-1, max — infinities
+    and NaNs, quiet and signaling) or uniform, and an edge or random significand."""
+    p, eb, bias, emin, emax = S.params(n)
+    if rnd.random() < 0.25:
+        return rnd.getrandbits(n)
+    sign = rnd.getrandbits(1)
+    e_max = (1 << eb) - 1
+    e = rnd.choice([0, 0, 1, 2, bias - 1, bias, bias + 1, e_max - 1, e_max, e_max,
+                    rnd.randrange(1, e_max)])
+    m_bits = p - 1
+    m = rnd.choice([0, 1, (1 << m_bits) - 1, 1 << (m_bits - 1), (1 << (m_bits - 1)) | 1,
+                    rnd.getrandbits(m_bits), rnd.getrandbits(m_bits)])
+    return (sign << (n - 1)) | (e << m_bits) | m
+
+
+def fx_int(rnd):
+    """A 64-bit integer operand, biased to the conversion edges (0, ±1, 2^31, 2^32, 2^53,
+    2^63, 2^64 and their neighbours) or uniform."""
+    if rnd.random() < 0.4:
+        return rnd.getrandbits(64)
+    base = rnd.choice([0, 1 << 31, 1 << 32, 1 << 53, 1 << 63, (1 << 64) - 1, 1 << 24])
+    return (base + rnd.choice([-2, -1, 0, 1, 2])) & ((1 << 64) - 1)
+
+
+fixtures = []
+
+
+def fixture_rows():
+    rnd = __import__("random").Random(FIX_SEED)
+    for n in (32, 64):
+        for rm in range(5):
+            for op in ("add", "sub", "mul", "div"):
+                for _ in range(FIX_PER_ROUNDED):
+                    a, b = fx_float(rnd, n), fx_float(rnd, n)
+                    if op == "sub" and rnd.random() < 0.3:
+                        b = a ^ rnd.getrandbits(3)          # near-cancellation
+                    fixtures.append((op, n, rm, a, b, 0, *getattr(S, op)(n, rm, a, b)))
+            for _ in range(FIX_PER_ROUNDED):
+                a, b, c = (fx_float(rnd, n) for _ in range(3))
+                fixtures.append(("fma", n, rm, a, b, c, *S.fma(n, rm, a, b, c)))
+                a = fx_float(rnd, n)
+                fixtures.append(("sqrt", n, rm, a, 0, 0, *S.sqrt(n, rm, a)))
+            for name, iw, signed in (("f2i32", 32, True), ("f2u32", 32, False),
+                                     ("f2i64", 64, True), ("f2u64", 64, False)):
+                for _ in range(FIX_PER_ROUNDED):
+                    a = fx_float(rnd, n)
+                    fixtures.append((name, n, rm, a, 0, 0, *S.to_int(n, iw, signed, rm, a)))
+            for name, iw, signed in (("i2f32", 32, True), ("u2f32", 32, False),
+                                     ("i2f64", 64, True), ("u2f64", 64, False)):
+                for _ in range(FIX_PER_ROUNDED):
+                    v = fx_int(rnd)
+                    fixtures.append((name, n, rm, v, 0, 0, *S.from_int(n, iw, signed, rm, v)))
+            for _ in range(FIX_PER_ROUNDED):
+                a = fx_float(rnd, 96 - n)
+                fixtures.append(("f2f", n, rm, a, 0, 0, *S.convert(n, 96 - n, rm, a)))
+        for _ in range(FIX_PER_UNROUNDED):
+            a, b = fx_float(rnd, n), fx_float(rnd, n)
+            fixtures.append(("min", n, 0, a, b, 0, *S.min_max(n, a, b, False)))
+            fixtures.append(("max", n, 0, a, b, 0, *S.min_max(n, a, b, True)))
+            for k in ("eq", "lt", "le"):
+                fixtures.append((f"f{k}", n, 0, a, b, 0, *S.compare(n, k, a, b)))
+            fixtures.append(("class", n, 0, a, 0, 0, S.classify(n, a), 0))
+
+
+def emit_fixtures() -> str:
+    """The fixtures, as the bytes the tracked file must hold: one case per line,
+    `op n rm a b c bits flags` (hex without 0x; rm 0..4 — RNE RTZ RDN RUP RMM)."""
+    if not fixtures:
+        fixture_rows()
+    lines = ["# GENERATED by scripts/gen_fp_vectors.py (the fixtures at scale, P4-SYSTEM.7 slice e2)",
+             "# from the spec-side exact-rational reference scripts/specfp.py — neither SoftFloat,",
+             "# APFloat nor MPFR. Do not edit; regenerate. Gated by FP-VECTORS.",
+             f"# seed {FIX_SEED}; {len(fixtures)} cases; op n rm a b c bits flags"]
+    for op, n, rm, a, b, c, bits, flags in fixtures:
+        lines.append(f"{op} {n} {rm} {a:x} {b:x} {c:x} {bits & ((1 << 64) - 1):x} {flags:x}")
+    return "\n".join(lines) + "\n"
+
 def emit() -> str:
     """The table, as the bytes the tracked file must hold."""
     buf = io.StringIO()
@@ -164,18 +257,28 @@ def emit() -> str:
 
 def main(argv: list[str]) -> int:
     out = OUT
+    fix_out = FIX_OUT
     if "--out" in argv:
         out = Path(argv[argv.index("--out") + 1])
-    text = emit()
+        fix_out = None      # a redirected vector table never touches the tracked fixtures
+    if "--fixtures-out" in argv:
+        fix_out = Path(argv[argv.index("--fixtures-out") + 1])
+    pairs = [(out, emit())]
+    if fix_out is not None:
+        pairs.append((fix_out, emit_fixtures()))
     if "--check" in argv:
-        have = out.read_text() if out.exists() else ""
-        if have == text:
-            return 0
-        print(f"gen_fp_vectors: DRIFT — {out} is not the generator's output; regenerate, never "
-              f"edit: python3 scripts/gen_fp_vectors.py", file=sys.stderr)
-        return 1
-    out.write_text(text)
-    print(f"gen_fp_vectors: wrote {out} ({len(rows)} vectors)")
+        bad = 0
+        for path, text in pairs:
+            have = path.read_text() if path.exists() else ""
+            if have != text:
+                print(f"gen_fp_vectors: DRIFT — {path} is not the generator's output; regenerate, "
+                      f"never edit: python3 scripts/gen_fp_vectors.py", file=sys.stderr)
+                bad = 1
+        return bad
+    for path, text in pairs:
+        path.write_text(text)
+    print(f"gen_fp_vectors: wrote {out} ({len(rows)} vectors)"
+          + (f" and {fix_out} ({len(fixtures)} fixtures)" if fix_out is not None else ""))
     return 0
 
 
