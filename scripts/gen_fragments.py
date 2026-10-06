@@ -103,6 +103,19 @@ FRAGMENTS = (
      "the base's, and the chapter's own rule is that base implementations shall IGNORE them "
      "(standard software shall zero them) — they are decoded, never legalization-rejected. "
      "funct3=1 sits beside fence's 0 inside the MISC-MEM opcode (P4-SYSTEM.6 slice a)."),
+    ("definitions/riscv/f.sexp", "riscv/f", "isa-extension", ("rv_f", "rv64_f"),
+     ("riscv/rv64i",), ("rs3", "rm"), False, False,
+     "The F extension: single-precision floating point — 30 forms (26 in rv_f: the "
+     "FLW/FSW transfers, the four fused multiply-adds, add/sub/mul/div/sqrt, sign "
+     "injection, min/max, the three compares, fclass, the 32-bit integer conversions "
+     "and the FMV bit moves; 4 in rv64_f: the 64-bit integer conversions). It OWNS rs3 "
+     "(the fused forms' third source) and rm (the rounding-mode field, which sits where "
+     "the non-rounding rows carry a fixed funct3 — the rows decide which). rd/rs1/rs2 "
+     "and the load/store immediates are the base's fields: which REGISTER FILE an "
+     "operand addresses is the instruction's semantics (f.sem.sexp), not its encoding "
+     "— the pinned rows name only the field. The tables' 13 $pseudo_op rows are NOT "
+     "carried: they spell real forms (the rv64i write-it-out policy), and the pseudo "
+     "flag is for forms that exist upstream ONLY as pseudo-ops (P4-SYSTEM.7 slice c2)."),
 )
 
 

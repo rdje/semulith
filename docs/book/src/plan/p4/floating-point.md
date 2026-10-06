@@ -1,6 +1,6 @@
 # P4.7 — Floating point
 
-**Status:** Underway (slices a–b, c1; 2026-10-06)
+**Status:** Underway (slices a–b, c1–c2; 2026-10-06)
 
 The P4 chapter's [floating-point condition](../p4.md#the-floating-point-condition) now has its
 measurement. Slice (a)
@@ -28,3 +28,11 @@ will raise illegal-instruction — the pinned revision weakened that mandate to
 "reserved" but still calls it valid, and it is Sail's configured behaviour. The
 guest pinning the old rule was re-derived spec-side first and caught the
 unfixed engine (fcsr read `0x45` where the spec gives `0xE5`).
+Checkpoint (c2) pinned the upstream F tables (`rv_f`, `rv64_f`: 26 + 4 forms) and
+generated the repository's own `f.sexp` fragment from them. It owns two new operand
+fields — `rs3`, the fused multiply-adds' third source, and `rm`, the rounding-mode
+field — while `rd`/`rs1`/`rs2` stay the base's: which register *file* an operand
+names is the instruction's meaning, so it will come from the semantics, not the
+encoding table. The tables' thirteen pseudo-instructions (`fmv.s`, `frcsr`, …) are
+not carried: they are spellings of real instructions, and guests write the real
+form, as everywhere else in this repository.

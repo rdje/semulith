@@ -201,7 +201,8 @@ PY
   # extended this leg for rv64gc's 65-form census: Zicntr's counter reads are $pseudo_op
   # rows of csrrs, so a pseudo-only table contributes its pseudo names — the spec's Zicntr
   # listings ARE those rows) and MINUS the A tables under the same named exclusion until
-  # P4-SYSTEM.4's atomic bind grows the census (slice e).
+  # P4-SYSTEM.4's atomic bind grows the census (slice e) — and likewise the Zifencei and F
+  # tables until their own binds (P4-SYSTEM.6 slice b; P4-SYSTEM.7 slice c6).
   if out="$(python3 - "$ENC_DIR" "profiles/$PROFILE/profile.sexp" "$LEDGER" <<'PY'
 import sys, pathlib, re
 sys.path.insert(0, "scripts")
@@ -230,6 +231,10 @@ if not any(m.startswith(("lr.", "sc.", "amo")) for m in declared):
 # the census to 88 (slice b) — the same flip condition again
 if not any(m == "fence.i" for m in declared):
     extra = [n for n in extra if n != "rv_zifencei"]
+# and the F tables under the same named exclusion until P4-SYSTEM.7's F bind grows the
+# census by 30 (slice c6) — the same flip condition: the scope declares an F form
+if not any(m in ("flw", "fsw") for m in declared):
+    extra = [n for n in extra if n not in ("rv_f", "rv64_f")]
 names = set()
 for f in ["rv_i", "rv64_i", *extra]:
     lines = (enc / f).read_text().splitlines()
