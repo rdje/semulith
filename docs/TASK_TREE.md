@@ -58,5 +58,5 @@ on the same commit. One commit per completed leaf.
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
 | [`CITATION-ACCURACY`](tasks/CITATION-ACCURACY.md) | `active` | `.2` — proposed: the Markdown census (1 of 2 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (1/1 leaves done; next cleanup is time-triggered) | repo-local |
-| [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.2` — the stale orientation sources (1 of 4 leaves done) | repo-local |
+| [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.3` — TOOLBOX/DOCTRINE_ENFORCEMENT headroom (2 of 4 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

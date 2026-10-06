@@ -66,7 +66,7 @@ answer once ceilings fire.
   `promotion: declined (the lesson — a registered pressure control nothing enforces is a wish — is mechanized: FRONTIER-SYNC now refuses a completed tree in the index).`
 
 - ID: `LIVE-CONTAINMENT.2` — **the stale orientation sources**
-  Status: `pending`
+  Status: `done` (`2026-10-06`, `SEMULITH-LC-0002`)
   Goal: correct the three measured drifts: `knowledge-map/subsystems.md` (the one
   hand-curated input to the derived Knowledge Map) describes a `crates/app/` scaffold
   placeholder that does not exist and omits the definition, unit, schema, materials and
@@ -75,8 +75,15 @@ answer once ceilings fire.
   no measured pressure … the largest live surface is `CHANGELOG.md` at 16,228 bytes".
   Acceptance: each corrected statement measured against the tree; the derived map
   regenerated; `make check` + `make gate` green.
-  Verification: pending
-  Commit: pending
+  Result: **met.** The map's subsystem section now names the four real crates (their
+  roles and the CLI's nine subcommands read from the sources), the definition fragments and
+  their semantics, the six unit directories, the schemas/materials, and both book
+  families; the workspace header names its members; the README policy's adoption note
+  states the measured firings and routes the doctrine adoption to `.4` (the policy's
+  decision itself unchanged — it changes by reviewed decision).
+  Verification: `2026-10-06` — the Verification Log below.
+  Commit: `SEMULITH-LC-0002`
+  `promotion: declined (per-surface drift, corrected; the class — hand-curated orientation text — is .4's inventory question).`
 
 - ID: `LIVE-CONTAINMENT.3` — **headroom for TOOLBOX.md and DOCTRINE_ENFORCEMENT.md**
   Status: `pending`
@@ -103,9 +110,8 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.2` | `pending` | the orientation map every session reads describes a crate that does not exist |
-| 2 | `LIVE-CONTAINMENT.3` | `pending` | the next registered tool or doctrine cannot fit; due before `P4-SYSTEM.7` slice (c5) |
-| 3 | `LIVE-CONTAINMENT.4` | `proposed` | the README policy's own trigger has fired (CHANGELOG/DEV_NOTES shards, the P4 tree archive, the book partition — 2026-10-06 alone) |
+| 1 | `LIVE-CONTAINMENT.3` | `pending` | the next registered tool or doctrine cannot fit; due before `P4-SYSTEM.7` slice (c5) |
+| 2 | `LIVE-CONTAINMENT.4` | `proposed` | the README policy's own trigger has fired (CHANGELOG/DEV_NOTES shards, the P4 tree archive, the book partition — 2026-10-06 alone) |
 
 ## Decisions
 
@@ -162,20 +168,54 @@ answer once ceilings fire.
   `LIVE_STATUS.md` (34 / 449), `CHANGELOG.md`, `DEV_NOTES.md`, `DOCTRINE_ENFORCEMENT.md` +
   the book's doctrine row, `doctrine/readme_routes.tsv` (the row + its derivation comment).
 
+`LIVE-CONTAINMENT.2` — the stale orientation sources (`2026-10-06`, `SEMULITH-LC-0002`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — hand-curated orientation text with no derivation:
+  `grep -n "crates/app" knowledge-map/subsystems.md` → line 6 ("Still the scaffold's
+  placeholder `main.rs`"), while `ls crates/` → semulith-cli semulith-core
+  semulith-dsp56300 semulith-verify; `head -2 Cargo.toml` → "Rename/replace the starter `app`
+  crate"; `grep -n "16,228" README_POLICY.md` → the adoption note's "no measured pressure"
+  (CHANGELOG is 64 KiB and shards; four ceilings fired 2026-10-06). The KNOWLEDGE-MAP gate
+  proves the map is the function of its sources — never that the curated source is true.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ grep -c "crates/app" KNOWLEDGE_MAP.md → 0   (was 1)
+  $ grep -n 'Some("' crates/semulith-cli/src/main.rs → check-examples, run, demo, bundle,
+    replay, snapshot, resume, reduce, bench — the nine the corrected text names
+  $ ls profiles/ → the six units the corrected text names
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (the Cargo.toml edit is comment-only);
+  `make gate` → `=== all doctrines green ===` (KNOWLEDGE-MAP regenerated).
+
+- [x] **FIX** — `knowledge-map/subsystems.md` (the crates paragraph rewritten; definitions,
+  profiles, schema/materials and the two book families added); `Cargo.toml`'s header;
+  `README_POLICY.md`'s adoption-note paragraph (measurements only, routed to `.4`).
+
+- [x] **LOCKSTEP** — `KNOWLEDGE_MAP.md` regenerated; this tree; `docs/TASK_TREE.md`;
+  `MEMORY.md`; `CHANGELOG.md`.
+
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.2` | the three drifts measured (crates/app absent; the scaffold header; the 16,228-byte note); each corrected text checked against `ls crates/`, the CLI's subcommand match, `ls profiles/`; the map regenerated | **met** — the orientation sources state today's repository |
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` | `SEMULITH-LC-0002 (leaf LIVE-CONTAINMENT.2): the stale orientation sources corrected — the knowledge map's subsystems, the workspace header, the README policy's measurements` | three drifts; the policy decision untouched |
 | `.1` | `SEMULITH-LC-0001 (leaf LIVE-CONTAINMENT.1): the closed-tree register — completed trees leave the index (22 rows moved verbatim), FRONTIER-SYNC gates both files` | the control applied and enforced; the index 8,172 → 4,053 B |
 
 ## Changelog
 
+- `2026-10-06`: `.2` done (`SEMULITH-LC-0002`) — the orientation map names the real crates and
+  subsystems; the scaffold header and the policy note's stale measurements corrected.
 - `2026-10-06`: `.1` done (`SEMULITH-LC-0001`) — completed trees leave the index: 22 rows
   moved verbatim into `docs/TASK_TREE_CLOSED.md`, FRONTIER-SYNC gates both files.
 - `2026-10-06`: Created after `SEMULITH-CA-0001` measured the stale orientation map and the

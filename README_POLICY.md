@@ -33,11 +33,13 @@
   (`scripts/shard_history.py`), the freeze manifest, and the `SHARD-FREEZE` check now exist, and
   the fired ceiling was answered by sharding — never by raising the cap. `DEV_NOTES.md` keeps the
   trigger: the same tool serves it when its ceiling fires.
-- **Full live-document-size containment is deliberately NOT adopted yet.** That programme
-  governs every long-lived document family, and this repository has no measured pressure to
-  justify it: the largest live surface is `CHANGELOG.md` at 16,228 bytes. The trigger is
-  written into the registry as the ceilings above; when one fires, the containment doctrine is
-  adopted rather than the ceiling raised.
+- **Full live-document-size containment is NOT yet adopted as a doctrine.** That programme
+  governs every long-lived document family. Its trigger — a fired ceiling — HAS fired
+  (measured 2026-10-06: `CHANGELOG.md` and `DEV_NOTES.md` shard routinely at 64 / 48 KiB; the
+  P4 tree file archived at its per-part ceiling; the book's P4 chapter partitioned; the
+  task-tree index applying "completed trees leave the index"), and every firing was answered
+  by the surface's own control, never a raised number. Adopting the doctrine itself is owned
+  by `LIVE-CONTAINMENT.4` (`docs/tasks/LIVE-CONTAINMENT.md`).
 <!-- README-POLICY-LOCAL-ADOPTION:END -->
 
 ---

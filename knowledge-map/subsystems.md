@@ -3,9 +3,25 @@
      gen_knowledge_map.sh embeds this section verbatim; the task-tree and decision sections
      are generated automatically. -->
 
-- `crates/app/` — the `semulith` binary crate. Still the scaffold's placeholder `main.rs`;
-  the real crates (`semulith-core`, `semulith-verify`, `semulith-cli`) are a P1 deliverable
-  specified in `docs/ARCHITECTURE.md` §4.
+- `crates/` — the Rust workspace (`docs/ARCHITECTURE.md` §4): `semulith-core` (generated
+  state and definition modules, the rv64i and rv64gc interpreters, the privilege /
+  translation / interrupt machinery, the environment contract), `semulith-verify` (the
+  guest corpora as generated fixtures, the runners, replay / snapshot / reduce, the record
+  graph and schema checks, bench, mutation, the wasm bench exports), `semulith-cli` (the
+  `semulith` binary: run, replay, snapshot, resume, reduce, bundle, bench, demo,
+  check-examples) and `semulith-dsp56300` (the DSP slice).
+- `definitions/riscv/` — the canonical definition FRAGMENTS (`<ext>.sexp`, generated from
+  the pinned riscv-opcodes tables) beside their hand-written, cited semantics
+  (`<ext>.sem.sexp`); `profiles/<unit>/encoding.sexp` composes them.
+- `profiles/` — one directory per modelled unit (`rv64i-lab-v0`, `rv64gc-lab-v0`,
+  `dsp56300-lab-v0`, `sifive-uart-lab-v0`, `lan9118-lab-v0`, `netboard-lab-v0`): the
+  dossier, pinned sources and references, state, requirements, obligations, guests with
+  their specification-derived expectations, the interaction matrix.
+- `schema/` + `materials/` — the S-expression schemas every source of truth validates
+  against; the materials catalogue (the pinned primary sources, the unit registry, the
+  per-category needs).
+- `docs/book/` + `docs/models/` — the project mdBook (the reviewable narrative) and one
+  mdBook per registered unit.
 - `ROADMAP.md` + `RULES.md` — the plan and the normative engineering rules with stable IDs
   (`SCP-`, `OWN-`, `SEM-`, `ENV-`, `EVD-`, `RUST-`, `AI-`, `SRC-`). Rule IDs are cited by
   task leaves and evidence records, so they are the project's stable vocabulary.

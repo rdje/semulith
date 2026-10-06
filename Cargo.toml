@@ -1,5 +1,5 @@
-# Workspace root. Add crates under crates/*. Rename/replace the starter `app` crate with
-# your project's crates (cargo-generate substitutes {{project-name}} if you use that path).
+# Workspace root: every crate under crates/* is a member (semulith-core, semulith-verify,
+# semulith-cli, semulith-dsp56300 — docs/ARCHITECTURE.md §4 owns their boundaries).
 [workspace]
 resolver = "2"
 members = ["crates/*"]
