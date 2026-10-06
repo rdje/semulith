@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0077 (leaf P4-SYSTEM.11, slice d) — THE LEAF ACCEPTANCE; the leaf CLOSES
+
+- Measured: the `m` slot gone; 13 of 13 M forms in the four guests, on the lab engine (139/139)
+  and on Sail (4 of 4), from expectations pinned before the engine had M; Table 1's rows at both
+  widths in 17 guest lines and among the 4,485 engine-run vectors.
+- `P4-SYSTEM.11` is **done**; the tree reads 11/18; the frontier moves to `.12`, bind C.
+  `.9`'s and `.10`'s checklists archived verbatim to part 4.
+
 ## SEMULITH-P4-0076 (leaf P4-SYSTEM.11, slice c2) — Sail over the M corpus: 4 AGREE of 4
 
 - The `.7` harness over the four `m-*` guests under the tracked matched configuration (re-

@@ -170,7 +170,15 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the full processor gate over the complete declared profile.
   Acceptance: reproducible from pinned inputs; fidelity reported per axis; missing checks read `incomplete`.
 - ID: `P4-SYSTEM.11` — **bind M** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slices (a)–(c2) done `SEMULITH-P4-0073`–`-0076`)
+  Status: **done** `2026-10-06` (design brief `SEMULITH-P4-0072`; slices (a)–(d) `SEMULITH-P4-0073`–`-0077`)
+  Result: **met.** The language gained eight arithmetic operators (overflow wraps; a zero divisor
+  outside the domain, RISC-V's results stated by guards in `m.sem.sexp`, a static rule refusing
+  an unguarded division); the unit composes `riscv/m` (163 forms); 13 of 13 forms exercised by
+  four guests whose expectations were derived and pinned before the engine had M — 139/139 on the
+  lab engine with the pre-slice corpus byte-identical, 4 AGREE of 4 on Sail — and 4,485 generated
+  vectors run through the engine, gated by M-VECTORS (the 38th doctrine). `OB-GC-M` opened
+  contract v2. On the way: the generator's controls stopped pinning the live unit's numbers, and
+  the `profiles/` byte ceiling was re-derived for the processor's corpus.
   Goal: the M extension composed into the unit — `m.sem.sexp` (the 13 instructions, the
   division edge cases: divide by zero and signed overflow return their defined values, never a
   trap), the bind, an EVD-05 corpus, the Sail matched experiment.
@@ -227,7 +235,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (d): THE LEAF ACCEPTANCE and the close (the m slot filled; every M form on both engines from expectations derived before either ran); then `.12` bind C |
+| 1 | `P4-SYSTEM.12` | `pending` | bind C — the design brief first (`.11` closed `2026-10-06`: M bound and evidenced three ways; G-SCOPE's one open item is now the `c` slot: no compressed fragment, IALIGN 16 declared, Zca + Zcd at RV64 with D) |
 
 ## Decisions
 
@@ -452,338 +460,8 @@ never raised, at every crossing. The index:
   part 2 (the (d2) crossing), (c4)–(c6) (the (d5) crossing), and (d1)–(e3) — `.7`
   complete — (the `.9` slice-(d) crossing).
 - part 4 opened at the `2026-10-06` `.11` design crossing (part 3 near its ceiling):
-  [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e).
-
-`P4-SYSTEM.9` slice (a) — the contract becomes a versioned document; v0 recorded and frozen; CONTRACT-FREEZE (`2026-10-06`, `SEMULITH-P4-0064`):
-
-- [x] **REPRODUCE / ISSUE** — the brief's pre-condition 1, measured:
-
-  ```
-  $ git ls-tree --name-only HEAD schema/ | grep -c "contract.sexp$" → 0 (no contract construct)
-  $ git show HEAD:profiles/rv64gc-lab-v0/contract-obligations.sexp | grep -c '^(obligation' → 46,
-    every one contract_version "0"; nothing checks the version or which records make it up
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — the version was data on each record and nothing else
-  (`git grep -n contract_version HEAD -- 'scripts/*.py' 'scripts/*.sh'` → the record
-  reader/writer, the board/platform generators' pins and self-test fixtures — no rule judges
-  which records make up a version), so "versioned, not edited in place" could not be checked
-  and seven leaves added records under v0.
-
-- [x] **FIX** — `schema/contract.sexp` (one `contract` per version: id, version, extends,
-  status open/frozen, statement, `member`s with a sha256 once frozen, `supersede` entries);
-  `profiles/rv64gc-lab-v0/contract.sexp` recording v0 as it stands — 46 members, FROZEN, each
-  record line pinned; `scripts/check_contract_freeze.sh` — CONTRACT-FREEZE, the 37th project
-  doctrine (members real and of their version; every record in exactly one version; frozen
-  records unedited; extends and supersede well-formed), registered on its five surfaces.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ bash scripts/check_contract_freeze.sh --self-test → 7 pass / 0 fail (GREEN the real
-    contract; RED an edited frozen record — FROZEN RECORD EDITED; a dropped member —
-    UNVERSIONED RECORD; a member naming nothing; a member of another version; an extension of
-    no version; a supersession of a record not inherited)
-  $ bash scripts/check_contract_freeze.sh → CONTRACT-FREEZE: ok (1 versioned unit(s), 1
-    version(s), 0 finding(s))
-  $ check_sexp_schema contract.sexp schema/contract.sexp → ok
-  ```
-
-- [x] **NO REGRESSION** — no record changed (v0 pins today's bytes); `make check` rc=0; `make
-  gate` → `=== all doctrines green ===` (DERIVED-COUNTS re-derived: 37 doctrines, 473 arms).
-
-- [x] **LOCKSTEP** — this tree, the doctrine surfaces (registry, `docs/doctrines/definition.md`,
-  `DOCTRINE_ENFORCEMENT.md`, the book's doctrine chapter, `docs/toolbox/definition.md`),
-  `LIVE_STATUS.md`, `CHANGELOG.md`, `MEMORY.md` (next_action → b), the book (the new P4.9
-  chapter). `promotion: declined (the mechanism is the doctrine row and the schema's own comment).`
-
-`P4-SYSTEM.9` slice (b) — contract v1: the four environment assumptions, each with realized POS/NEG fixtures; the check registry (`2026-10-06`, `SEMULITH-P4-0065`):
-
-- [x] **REPRODUCE / ISSUE** — the brief's pre-conditions 2 and 4, measured:
-
-  ```
-  $ git show HEAD:profiles/rv64gc-lab-v0/contract-obligations.sexp | grep -c environment-assumption → 0
-  $ git grep -c "CHK-ENV-" HEAD -- crates scripts → nothing (no check names a fixture)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the four topics were routed to `.9` by name
-  (`env.rs:96-98`, `reservation.rs:26-28`, `timekeeping.rs:8-9`, `state.sexp:652`) and the
-  gate report counts a check implemented only when its id appears in code
-  (`gate_report.py:63-77` — `git grep` of the id), so declared-only checks read 0 forever.
-
-- [x] **FIX** — contract v1 (`contract.sexp`: extends v0, open) with four
-  `environment-assumption` records under `rv64gc-lab-env-v1`: `OB-GC-ENV-TRANSLATION-INPUTS`
-  (walk reads are the WalkAccess kind, from the memory the hart's stores write; the
-  environment never writes a PTE; a refused walk read is the original access's access
-  fault), `OB-GC-ENV-INTERRUPT-SOURCES` (v1 supplies none: MSIP/MTIP/MEIP 0 and unwritable, STIP
-  the hart's own comparison, SSIP/SEIP software's), `OB-GC-ENV-VIRTUAL-TIME` (one tick per step
-  boundary, retired or halted or trapping; instret on retirement only; no host time),
-  `OB-GC-ENV-RESERVATION-EVENTS` (no external invalidation at one hart; the eventuality holds
-  trivially) — each stating what would falsify it, with typed parameters; the missing
-  negative fixture written (`env-irq-sources`: ones written to mip leave only SSIP/SEIP —
-  0x202 — and STIP appears only from time >= stimecmp); the check registry
-  `crates/semulith-verify/src/contract_checks_rv64gc.rs` (10 checks → guests, `.8`'s
-  partial-progress pair included) and its tests; the corpus's comparison helper moved up so
-  both judge by one rule.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ cargo test -p semulith-verify contract_checks → test result: ok. 2 passed (every
-    realized check's guests exist and hold; every v1 and partial-progress check realized —
-    10 declared, 10 registered under their own obligations)
-    RED — one registry entry dropped: FAILED, "OB-GC-ENV-INTERRUPT-SOURCES declares
-    CHK-GC-ENV-INTERRUPT-SOURCES-NEG, which no registry entry realizes"; restored → ok
-  $ bash scripts/check_contract_freeze.sh → ok (1 versioned unit(s), 2 version(s), 0 finding(s))
-  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok
-  $ cargo test -p semulith-verify run_rv64gc → test result: ok (135 guests)
-  ```
-
-- [x] **NO REGRESSION** — v0 untouched (its pins hold); `make check` rc=0; `make gate` →
-  `=== all doctrines green ===`. On the way GATE-REPORT refused: rv64i's G0 report suddenly
-  read "2 are implemented" — the v1 records were first named `OB-ENV-VIRTUAL-TIME` etc., and
-  rv64i's own `OB-ENV-VIRTUAL-TIME` declares `CHK-ENV-VIRTUAL-TIME-POS/NEG`, so the report's
-  measure (`git grep` of a check id under `scripts/`/`crates/`) credited rv64i with rv64gc's
-  registry. The ids are now unit-unique (`OB-GC-ENV-…`, `CHK-GC-ENV-…`); the measure itself is
-  not unit-scoped — named for `.10`.
-
-- [x] **LOCKSTEP** — this tree, `contract.sexp` + the obligations file, the matrix,
-  `CHANGELOG.md`, `MEMORY.md` (next_action → c), the book (P4.9 chapter).
-  `promotion: declined (the registry's purpose is its module doc; no new lesson).`
-
-`P4-SYSTEM.9` slice (c) — the stale v0 statements superseded in v1; the forward references in code resolved (`2026-10-06`, `SEMULITH-P4-0066`):
-
-- [x] **REPRODUCE / ISSUE** — two frozen v0 statements are false of this unit, measured:
-
-  ```
-  $ grep -o '(obligation (id "OB-GC-PRIV-INSNS").*' contract-obligations.sexp → "wfi executes
-    as a no-op when legal … sfence.vma … its invalidation effect is a stated no-op at this stage
-    (no translation caches are modelled" — a wait state since .5 (wait.rs), a TLB since .3
-  $ sed -n 26p contract-obligations.sexp → OB-ECALL-EBREAK (an rv64i mirror): "With no
-    privileged modes in this profile … reported to the harness … execution stops" — this
-    composition delivers the trap to a handler
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — v0 was edited by no one after `.2` wrote it
-  (`git log -S 'wfi executes as a no-op when legal' --format=%h -- …contract-obligations.sexp`
-  → b95af58 only, `.2` slice e; correctly — contract changes were `.9`'s charter), and the
-  base mirror must stay byte-identical to its
-  rv64i owner (MIRROR-DERIVE, `check_requirements.sh:544-552`); with v0 now frozen
-  (CONTRACT-FREEZE), the only legal correction is a later version's record.
-
-- [x] **FIX** — v1 gains `OB-GC-PRIV-INSNS-V1` (wfi ENTERS the wait; sfence.vma invalidates the
-  modelled TLB by the four cases) and `OB-GC-ECALL-EBREAK-V1` (the traps are delivered — cause
-  by originating mode, delegation, the handler — never a harness report), each with a
-  `supersede` entry naming the v0 record and why; their four checks realized in the registry
-  (mm-wfi, w-timer, sv39-tlb-fence / mm-csr-legality-u, w-notrap; mm-ecall-modes, mm-ebreak /
-  mm-ecall-deleg); the code comments that pointed forward to "`.9`'s charter" (`env.rs` ×2,
-  `translation.rs`, `reservation.rs`, `timekeeping.rs`) now name the v1 obligations, and
-  `env.rs`'s module doc no longer says the boundary's scope is rv64i's alone.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ bash scripts/check_contract_freeze.sh → ok (1 versioned unit(s), 2 version(s), 0
-    finding(s)) — both supersessions replace an inherited record by a v1 member
-  $ cargo test -p semulith-verify contract_checks → test result: ok. 2 passed (14 declared
-    checks, 14 realized)
-  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok
-  ```
-
-- [x] **NO REGRESSION** — v0 untouched (its 46 pins hold); `make check` rc=0; `make gate` →
-  `=== all doctrines green ===`. Named, not changed: the requirement mirrors of the two
-  superseded records (REQ-GC-PRIV-INSNS, REQ-D-ECALL-EBREAK) still state v0's text — they
-  mirror the frozen v0 obligations by the MIRROR rule; the contract is where v1 corrects them.
-
-- [x] **LOCKSTEP** — this tree, `contract.sexp` + the obligations file, the registry, the five
-  code comments, `CHANGELOG.md`, `MEMORY.md` (next_action → d), the book (P4.9 chapter).
-  `promotion: declined (supersession is the contract schema's own mechanism).`
-
-`P4-SYSTEM.9` slice (d) — the ENVIRONMENT document, v1 frozen, THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0067`):
-
-- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "every new assumption has a positive
-  and a negative fixture; the contract is versioned, not edited in place"; rv64gc had no
-  contract-level prose (`git ls-files profiles/rv64gc-lab-v0/ENVIRONMENT.md` → nothing) and v1
-  was still open.
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the closing step. One defect found on the way,
-  in this leaf's own gate: CONTRACT-FREEZE ran its controls before judging and its GREEN arm
-  copied the live files, so an edited frozen record surfaced as "REFUSED — the check does not
-  discriminate" (rc=2) instead of the finding — measured by editing a pinned v1 record.
-
-- [x] **FIX** — `profiles/rv64gc-lab-v0/ENVIRONMENT.md` (the versions, the boundary inventory
-  dispositioned, the four assumptions with what would falsify each, the supersessions, the
-  realized fixtures, what is deliberately not here — including the named gap: rv64i's eight base
-  `OB-ENV-*` assumptions were never restated for rv64gc); v1 FROZEN (its six members pinned);
-  CONTRACT-FREEZE judges first and runs its controls only to certify a pass; the leaf's status
-  **done** and Result; the frontier → `.10`; `docs/TASK_TREE.md`, MEMORY, LIVE_STATUS; the book.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  a frozen v1 record edited (a scratch edit, restored after) → bash scripts/check_contract_freeze.sh
-    → "FROZEN RECORD EDITED rv64gc-lab-v0 [rv64gc-lab-env-v1]: OB-GC-ENV-VIRTUAL-TIME no longer
-    matches its pin", rc=1; restored → ok (1 versioned unit(s), 2 version(s), 0 finding(s)), rc=0
-  $ bash scripts/check_contract_freeze.sh --self-test → 7 pass / 0 fail
-  $ cargo test -p semulith-verify → test result: ok (the registry: 14 checks realized)
-  ```
-
-- [x] **THE LEAF ACCEPTANCE** — "every new assumption has a positive and a negative fixture": the
-  four v1 environment assumptions (and v1's two superseding guarantees) each name a POS and a
-  NEG check, and every one is realized — bound to tracked guests by the registry, run under the
-  corpus's rule, a declared-but-unrealized check refused (RED-proven); "the contract is
-  versioned, not edited in place": versions are documents with listed members, v0 and v1 are
-  frozen by content pins, CONTRACT-FREEZE refuses an edited frozen record (RED-proven on v0 at
-  (a) and on v1 here), and v0's two wrong statements were superseded by v1 records, never
-  rewritten. Goal coverage: translation inputs, interrupt sources, counter progress and
-  reservation invalidation are each stated (`OB-GC-ENV-*`).
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — `ENVIRONMENT.md`, `contract.sexp`, the gate, this tree, `docs/TASK_TREE.md`,
-  `DEV_NOTES.md` (PROMOTED — the self-test card's masking-control case), `CHANGELOG.md`,
-  `MEMORY.md` (9/10; next_action → the `.10` design brief), `LIVE_STATUS.md`, the book.
-
-`P4-SYSTEM.10` slice (a) — the contract measure, unit-scoped and supersession-aware (`2026-10-06`, `SEMULITH-P4-0069`):
-
-- [x] **REPRODUCE / ISSUE** — the census at `293fad3`: the G-CONTRACT measure was a tree-wide
-  grep (`git show HEAD:scripts/gate_report.py | grep -c '"git", "grep"'` → 2: `build()` and
-  `build_cpulab()`), MIRROR-DERIVE shares 26 check ids across the units, and the denominator
-  counted v1's two superseded records (rv64gc 14 of 104).
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `gate_report.py:63-77` and `:546-552` asked "does any tracked
-  executable NAME this id", a question about the tree, not about the unit. Measured in a scratch
-  worktree (`git worktree add --detach target/p4-system-10/wt HEAD`, removed after) with
-  `CHK-ALU-IMM-POS` realized only in rv64gc's registry:
-
-  ```
-  $ git show HEAD:scripts/gate_report.py > wt/scripts/gate_report.py (HEAD's generator, rc=0)
-    → G0 "which **1 is implemented"; GC "| `G-CONTRACT` | 1 of 72 declared obligation checks implemented"
-  ```
-
-- [x] **FIX** — `contract_measure()`: the effective contract (the latest version's chain, minus
-  every superseded record; a unit with no contract document is all its records) and the pairs
-  THIS unit's registry realizes under the obligation that declares them, read exactly (an entry
-  the reader cannot parse is a refusal). The registry is named by a new `(registry (path …))`
-  construct (`schema/contract.sexp`; rv64gc's `contract.sexp` names
-  `contract_checks_rv64gc.rs`). Both builders use it. The generator gained `--self-test` (7
-  arms), run by GATE-REPORT's self-test. The registry gained the pairing test (every entry
-  realizes a check its own obligation declares). G0's measure paragraph and the book's quote
-  of it re-worded.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  the same scratch tree, the new generator → G0 "which **0 are implemented", GC "0 of 72";
-    rv64gc 15 of 100 (the shared id credited to the unit that realizes it, only)
-  live: rv64gc 14 of 100 (50 effective obligations), rv64i 0 of 72
-  $ python3 scripts/gate_report.py --self-test → 7 pass / 0 fail
-  $ bash scripts/check_gate_report.sh --self-test → 13 pass / 0 fail
-  a registry entry CHK-SVADE-POS under OB-GC-ENV-VIRTUAL-TIME (a backed-up scratch edit, restored
-    — git diff clean) → cargo test -p semulith-verify contract_checks → test result: FAILED.
-    "no obligation record declares this pair"; restored → test result: ok. 3 passed
-  ```
-
-- [x] **NO REGRESSION** — rv64i's GC and G1 reports byte-identical under the new measure
-  (`diff` empty); G0's counts and verdict unchanged, its measure paragraph re-worded;
-  `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — the generator, the schema, the contract document, the registry test, the
-  GATE-REPORT controls, G0-REPORT, the book (`plan/p0.md`'s quote; the new `plan/p4/gate.md`),
-  this tree, `CHANGELOG.md`, `MEMORY.md`.
-  promotion: declined (the cross-unit credit is recorded where it lives — the `contract_measure` comment's "third wrong cut", beside the two before it; no new general lesson beyond the zero-hits card's scoping row)
-
-`P4-SYSTEM.10` slice (b) — the `GS` builder over all ten axes; the unit's evidence manifest; the first report (`2026-10-06`, `SEMULITH-P4-0070`):
-
-- [x] **REPRODUCE / ISSUE** — no CPU-SYSTEM path: `main()` accepted `G0`/`G1`/`GC`/`BREADTH`;
-  the nearest builder run on rv64gc (stdout only, nothing written) read G-REPLAY green from
-  rv64i's suites and G-INTERACTIONS incomplete on a hard-coded 21:
-
-  ```
-  $ python3 scripts/gate_report.py rv64gc-lab-v0 --gate GC --stdout (rc=0)
-    | `G-REPLAY` | replay bundles (P1-LAB.10) + mid-execution snapshots (P2-SCALAR.7): 5 snapshot suites … | **green**
-    | `G-INTERACTIONS` | 28 cells declared, every disposition resolving (217 dispositions) … | **incomplete**
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `build_cpulab` (`git show HEAD:scripts/gate_report.py`,
-  `:574-578`, `:591`, `:599`, `:604`) holds one unit's facts as constants and its suite
-  locations as paths; five of §7's axes are answered by suites and records whose location is the
-  unit's business, so a generator that hard-codes them reports one unit's evidence about another.
-
-- [x] **FIX** — `build_cpusystem()` (`--gate GS`): all ten §7 axes; G-SCOPE (the composition's
-  status and unfilled slots), G-STATE (the census answered + the `state` requirements
-  implemented), G-CONTRACT (`contract_measure` + the latest version frozen), G-OBLIGATIONS
-  (every requirement resolved and implemented, under a tracked `EVIDENCE_POLICY.md`),
-  G-INTERACTIONS (per cell, never an aggregate) computed from the dossier; G-TRACE,
-  G-REGRESSION, G-PORTABILITY, G-REPLAY, G-RELEASE answered by the unit's new evidence manifest
-  (`schema/gate.sexp`; `profiles/rv64gc-lab-v0/gate.sexp`), every declaration VERIFIED (a test
-  function in a tracked file; a tracked record with a passing recorded verdict; an experiment
-  record), the required kinds held by the generator (`GS_KINDS`). Every open item names its
-  owning leaf (`.11`–`.18`); an open axis without one prints **unowned**. `passed` needs all ten
-  green (`_gs_verdict`). `GS-REPORT.md` generated; GATE-REPORT discovers and syncs it.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 scripts/gate_report.py rv64gc-lab-v0 --gate GS (rc=0) → **Verdict: `incomplete`.** Open axes (9 of 10);
-    G-REPLAY "1 of 4 required kinds evidenced — open: `snapshot`, `replay-bundle`, `reduction`";
-    G-INTERACTIONS "28 cells declared, 28 with a resolving disposition" **green**
-  $ python3 scripts/gate_report.py --self-test → 17 pass / 0 fail (the 7 measure arms + 10 GS arms:
-    a missing test fn, a foreign kind, two locators, not-applicable, a failing record, an unowned
-    axis, the slots filled → G-SCOPE green, an undispositioned cell, the verdict function)
-  $ bash scripts/check_gate_report.sh → GATE-REPORT: ok (5 generated report(s) in sync with their inputs)
-  $ bash scripts/check_gate_report.sh --self-test → 16 pass / 0 fail
-  the literal census (ast over build_cpusystem/_verify_evidence/_gs_verdict/contract_measure): only
-    0/1/2 — indices and the rules "exactly one locator", "none open", "at most one registry"; no unit fact
-  ```
-
-- [x] **NO REGRESSION** — rv64i's G0/G1/GC reports in sync (GATE-REPORT above); `make check`
-  rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — the generator, `schema/gate.sexp`, the manifest, `GS-REPORT.md`, this tree,
-  the book (`plan/p4/gate.md`), `CHANGELOG.md`, `MEMORY.md`.
-  promotion: declined (the hard-coded-unit-facts defect is recorded where it lives — the `build_cpusystem` header beside `build_cpulab`; the manifest-verified-by-generator pattern is this leaf's design, in its brief)
-
-`P4-SYSTEM.10` slice (c) — THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0071`):
-
-- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "reproducible from pinned inputs;
-  fidelity reported per axis; missing checks read `incomplete`"; at `f8567fb` the report
-  existed and its reproducibility was not yet measured outside this checkout.
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the closing step. The one input that could
-  break reproduction is anything untracked — `target/` holds the reference binaries and every
-  scratch tool — so the measurement is a checkout that has none:
-
-  ```
-  $ git worktree add -q --detach target/p4-system-10/fresh HEAD (rc=0); in it: ls target → "No such file or directory"
-  ```
-
-- [x] **FIX** — the leaf's status **done** and its Result; the frontier → `.11` (bind M, its
-  design brief first); `docs/TASK_TREE.md`, MEMORY, LIVE_STATUS; the book chapter closed.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  in the fresh worktree (no target/), each report regenerated to stdout and diffed (rc=0 each):
-    rv64gc-lab-v0 GS, rv64i-lab-v0 GC, G1, G0: byte-identical in a fresh worktree
-    GS sha256 bba3e6f20aa2a040… regenerated = bba3e6f20aa2a040… tracked
-  ```
-
-- [x] **THE LEAF ACCEPTANCE** — "reproducible from pinned inputs": the report reads only tracked
-  files (the dossier, its manifest, the registry, the test sources) and regenerates byte-identically
-  in a checkout with no `target/` (above), and GATE-REPORT refuses a report out of sync with its
-  inputs. "Fidelity reported per axis": one row per §7 axis — ten — each with its own measured
-  state and verdict, never rolled up; no sentence says the profile is supported. "Missing checks
-  read `incomplete`": G-CONTRACT reads 14 of 100 realized → **incomplete**; every required kind
-  with no verified evidence reads open; `passed` is reachable only with all ten green (the
-  `_gs_verdict` arm, `python3 scripts/gate_report.py --self-test` → 17 pass / 0 fail). The verdict
-  today is `incomplete`, 9 of 10 axes open, each open item owned by `.11`–`.18`.
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — this tree (status, Result, frontier), `docs/TASK_TREE.md`, `MEMORY.md`,
-  `LIVE_STATUS.md`, `CHANGELOG.md`, the book (`plan/p4/gate.md` closed; the `plan/p4.md` index).
-  promotion: declined (a closing slice — the reproduction measurement is the leaf acceptance's own evidence; no new lesson)
+  [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
+  (a)–(c) at the `.11` slice-(d) crossing.
 
 `P4-SYSTEM.11` slice (a) — the language for M: eight arithmetic operators, the division-domain rule, `m.sem.sexp`, the generator, the model layer (`2026-10-06`, `SEMULITH-P4-0073`):
 
@@ -981,6 +659,49 @@ never raised, at every crossing. The index:
   `MEMORY.md`, the book (`plan/p4/m.md`).
   promotion: declined (a reference run on the .7 harness; the comparator's RED control is the standing practice)
 
+`P4-SYSTEM.11` slice (d) — THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0077`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "the encoding's `m` slot filled; every M
+  form exercised on both engines by expectations derived before either runs, the division edge
+  cases included"; at `1372feb` every piece was landed and not yet judged as the acceptance.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the closing step, measured from the tree:
+
+  ```
+  $ git grep -c "slot (id m)" -- profiles/rv64gc-lab-v0/encoding.sexp → nothing, rc=1
+  the four m-* guests' mnemonics against the 13 forms → 13 of 13 M forms exercised; missing: none
+  lines citing Table 1 (zero divisor / overflow) in m-div, m-word, m-alias → 17
+  ```
+
+- [x] **FIX** — the leaf's status **done** and its Result; `.9`'s and `.10`'s closed checklists
+  archived verbatim to part 4 (the live part at 122,947 B before, 101,350 B after); the frontier →
+  `.12` (bind C, its design brief first); `docs/TASK_TREE.md`, MEMORY, LIVE_STATUS; the book.
+
+- [x] **ADDRESSED (verified)** — the acceptance's evidence, each from its slice:
+
+  ```
+  (b) $ cargo test -p semulith-verify run_rv64gc → test result: ok. 5 passed (139 guests); identity 135/0 + 4 RED
+  (b) EVD-05: sha256sum -c of the four expectations, pinned with 0 M arms in the engine → OK ×4
+  (c1) $ cargo test -p semulith-verify m_vectors → test result: ok. 1 passed (4485 vectors through the engine)
+  (c2) $ python3 target/p4-system-11/sail/compare_sail.py → verdict: 4 AGREE of 4 (rc=0)
+  ```
+
+- [x] **THE LEAF ACCEPTANCE** — "the encoding's `m` slot filled": the encoding composes `riscv/m`,
+  the slot is gone, and the CPU-SYSTEM report's G-SCOPE names only `c` unfilled. "Every M form
+  exercised on both engines": 13 of 13 forms in the four guests, run on the lab engine (139/139,
+  the pre-slice corpus byte-identical) and on Sail (4 AGREE of 4 — for integer M a pair sharing
+  no code). "By expectations derived before either runs": derived spec-side with exact integers
+  and digest-pinned while the engine had no M arm, unchanged after both runs. "The division edge
+  cases included": Table 1's rows at both widths — 17 guest lines (division by zero ×4 forms ×2
+  widths, overflow ×2 widths, a divisor zero only as a word, x0 destinations) — and the 4,485
+  generated vectors, every edge pair among them, through the engine.
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — this tree (status, Result, frontier; the archive crossing), `docs/TASK_TREE.md`,
+  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, the book (`plan/p4/m.md` closed; the `plan/p4.md` index).
+  promotion: declined (a closing slice; the leaf's lessons were promoted at slice b)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -990,6 +711,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.11` slice (d) + LEAF | 13/13 forms; lab 139/139 + Sail 4/4; EVD-05 pin OK; 4,485 vectors | **met** — the leaf closes |
 | `2026-10-06` | `.11` slice (c2) | Sail over the M corpus: 4 AGREE of 4 (99 steps); a planted wrong quotient DIVERGES | the reference route |
 | `2026-10-06` | `.11` slice (c1) | 4,485 vectors through the engine; M-VECTORS ok, 6/6 controls; a hand-edited vector RED twice | the generated evidence route |
 | `2026-10-06` | `.11` slice (b) | corpus 139/139; identity 135/0 + 4 RED; census 163 == 163; CONTRACT-FREEZE 3 versions; the generator's controls 17/17 (re-written relative) | M bound |
@@ -1032,6 +754,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.11` (slice d) + LEAF | `SEMULITH-P4-0077 (leaf P4-SYSTEM.11): slice d — THE LEAF ACCEPTANCE: M bound, every form on both engines from expectations derived first; the leaf CLOSES` | frontier → `.12` |
 | `.11` (slice c2) | `SEMULITH-P4-0076 (leaf P4-SYSTEM.11): slice c2 — the Sail matched experiment over the M corpus: 4 AGREE of 4` | (d) next |
 | `.11` (slice c1) | `SEMULITH-P4-0075 (leaf P4-SYSTEM.11): slice c1 — 4,485 generated M vectors through the engine; M-VECTORS, the 38th doctrine, gates the table and judges its reference` | (c2) next |
 | `.11` (slice b) | `SEMULITH-P4-0074 (leaf P4-SYSTEM.11): slice b — THE BIND: the unit composes riscv/m; the M corpus (139/139, 135 byte-identical + 4 RED on the parent); OB-GC-M opens contract v2` | (c) next |
@@ -1070,6 +793,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.11` slice (d) done and the LEAF CLOSES (`SEMULITH-P4-0077`) — M bound and evidenced three ways. Frontier → `.12` (bind C).
 
 - `2026-10-06`: `.11` slice (c2) done (`SEMULITH-P4-0076`) — Sail agrees with the M corpus, 4 of 4.
 

@@ -1,6 +1,6 @@
 # P4.11 — Integer multiply and divide (M)
 
-**Status:** Underway (slices a–c2, 2026-10-06)
+**Status:** Landed and closed (a–d, 2026-10-06)
 
 The Linux-capable profile includes M, the standard extension for integer multiplication and
 division, but until this leaf the processor model could not execute it. The instruction
@@ -50,3 +50,9 @@ agreed, every value at every step. For integer arithmetic this comparison is gen
 independent, because the two share no code; that was not true of the floating-point
 comparison. The comparison was also shown to catch mistakes: one planted wrong answer was
 caught at the exact step.
+
+**The leaf is closed (2026-10-06).** All 13 M instructions are part of the processor model. Each
+is exercised by test programs whose expected results were fixed before the processor could run
+them, and each was checked on both the project's engine and Sail, with division by zero and
+overflow covered at both 64 and 32 bits. On the gate's scoreboard, the "complete profile" axis
+now has one gap left: the compressed instructions, which are the next leaf.
