@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — a registered pressure control nothing enforces is a wish (LIVE-CONTAINMENT.1)
+
+`docs/TASK_TREE.md`'s registry row has said "one row per active tree; completed trees
+leave the index" since SEMULITH-TREES.4 — and the index carried 22 completed trees (of
+31) at 8,172 / 8,192 B. Nothing had ever applied the control, and the reason was
+mechanical: FRONTIER-SYNC's CLOSURE rule demanded an index row for EVERY tree file, so
+obeying the registry would have failed the gate. The two rules contradicted each other
+and the enforced one won by default. Now the completed rows live verbatim in
+`docs/TASK_TREE_CLOSED.md` (registered, bounded), and FRONTIER-SYNC gates both files:
+one row per tree by its status, a completed tree left in the index refused (22 such
+findings against the real pre-move index), the leaf-count checks running on the
+register too. The book includes both anchors live.
+
+- **Validation:** FRONTIER-SYNC 20/20 (4 new arms); RED 22× on the real pre-move index;
+  the move census exact; README-ROUTING-CLOSURE, TREE-CLAIMS, DERIVED-COUNTS green;
+  `make book` rc=0; `make gate` green.
+- Promotion: declined (mechanized — FRONTIER-SYNC refuses the state this lesson describes).
+
 ## _(2026-10-06)_ — a locator that resolves can still name the wrong section (CITATION-ACCURACY.1)
 
 `P4-SYSTEM.7` slice (c3) part 1 found the rv64gc FP-CSR content cited `RVI-F §20.1.1`

@@ -29,5 +29,7 @@ the current leaf beyond a safe slice. The tree is meant to grow as understanding
 
 ## When a tree completes
 
-Mark it `done` in `TASK_TREE.md`, ensure every leaf's evidence and commit is recorded, and
-confirm the repo is clean before pivoting to another tree (the pivot rule).
+Mark it `done` in its own Metadata, move its index row — verbatim, status `done` — from
+`TASK_TREE.md` to [`TASK_TREE_CLOSED.md`](TASK_TREE_CLOSED.md) (completed trees leave the
+index; FRONTIER-SYNC refuses one left behind), ensure every leaf's evidence and commit is
+recorded, and confirm the repo is clean before pivoting to another tree (the pivot rule).

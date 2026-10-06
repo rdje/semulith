@@ -46,9 +46,15 @@ switch — even when asked to switch immediately.
 ## Every lane of the plan, and who owns it
 
 Included live from `docs/TASK_TREE.md`, so this map cannot drift from the index the repository
-maintains:
+maintains — the OPEN trees:
 
 {{#include ../../../TASK_TREE.md:trees}}
+
+A tree that completes leaves the index and keeps its row, verbatim, in the closed-tree register
+(`docs/TASK_TREE_CLOSED.md`, included live too); FRONTIER-SYNC gates both files, so every tree
+has exactly one row, by its status:
+
+{{#include ../../../TASK_TREE_CLOSED.md:closed}}
 
 A milestone tree's **acceptance criteria are its gate** — quoted from
 `docs/EVIDENCE_AND_GATES.md`, not restated, because a restated gate is a second owner. Its

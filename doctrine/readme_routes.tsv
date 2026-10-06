@@ -254,6 +254,14 @@ docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 o
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
 docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0
 docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	85	5120	110	8192	0
+# Derivation, LIVE-CONTAINMENT.1 (2026-10-06), when the index reached 8,172 / 8,192 B with 22 of
+#   its 31 rows COMPLETED trees — its own control ("completed trees leave the index") had never
+#   been applied: the 22 rows moved verbatim into docs/TASK_TREE_CLOSED.md (4,861 B), the index
+#   fell to 4,053 B, and FRONTIER-SYNC gates both files (one row per tree, by status). The
+#   register gains ~200 B per closing tree: health 8 KiB (~16 more closures), ceiling 16 KiB.
+#   Registered in the commit that created it — an unregistered overflow file is this
+#   registry's founding failure.
+docs/TASK_TREE_CLOSED.md	reader_navigation	append_history	one row per completed tree, moved verbatim from the index at closure; a reopened tree moves back; FRONTIER-SYNC gates it	0	8192	0	16384	0
 # Re-derivation, SEMILITH-PL-0009 (2026-09-28), when the aggregate fired at 665,577 B over 655,360
 #   (same family, second firing): docs/tasks/ 32 files / 665,577 B; the per-part ceiling bit
 #   correctly in the same commit — P1-LAB.md crossed 64 KiB and split its .1–.8 checklists into

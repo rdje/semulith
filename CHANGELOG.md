@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0001 (leaf LIVE-CONTAINMENT.1) — the closed-tree register: completed trees leave the index
+
+- New tree `LIVE-CONTAINMENT` (true and bounded live surfaces; four leaves). Its first
+  leaf applies `docs/TASK_TREE.md`'s own registered control — "completed trees leave the
+  index" — which had never been applied: FRONTIER-SYNC's CLOSURE rule required an index
+  row for every tree, so obeying the registry would have failed the gate.
+- The 22 completed rows moved verbatim into `docs/TASK_TREE_CLOSED.md` (registered: health
+  8 / ceiling 16 KiB); the index 8,172 → 4,053 B. FRONTIER-SYNC gates both files (CLOSURE
+  over the union; COMPLETED IN INDEX, OPEN TREE IN REGISTER, DUPLICATE ROW; 20/20 arms) —
+  RED 22× on the real pre-move index. COMMIT.md, TASK_TREE_README.md and the book's
+  task-tree chapter (both anchors included live) describe the move.
+
 ## SEMULITH-CA-0001 (leaf CITATION-ACCURACY.1) — the quoted-phrase-in-section gate: CITATION-QUOTES registered
 
 - New tree `CITATION-ACCURACY`, owning the gap `P4-SYSTEM.7` slice (c3) part 1

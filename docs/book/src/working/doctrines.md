@@ -42,7 +42,7 @@ These ship with the discipline spine and are project-neutral:
 | `README-ROUTING-CLOSURE` | every destination the landing page routes to is governed, exists, and stays under its ceiling — the per-part ceiling two-tiered: authored members are bounded, regeneration-gated derived members are exempt as a checked property (a fact-ownership mirror row with a regeneration governor), reported as proof |
 | `PROFILE-CONSISTENCY` | a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source |
 | `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
-| `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next |
+| `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next, and every tree has exactly one row — the index while open, `docs/TASK_TREE_CLOSED.md` once done |
 | `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |
 | `UPSTREAM-INDEX` | a defect raised against a dependency is tracked like our own: each issue is a self-contained subtree under `docs/upstream/` whose `issue.sexp` owns its id, severity, state and dated history, and every index of it is a checked mirror — because self-containment and a second source of truth cannot both hold |
 | `TREE-CLAIMS` | every live document's leaf counts, active trees and frontier leaf match `docs/tasks/` |

@@ -12,7 +12,9 @@ When the completed work belongs to a task-tree leaf (a node under `docs/tasks/`)
 
 - Update the owning `docs/tasks/<TREE>.md`: leaf status, verification log, commit log,
   frontier, decisions, blockers as applicable.
-- Update `docs/TASK_TREE.md` (the Active Task Trees index) only if the frontier changes.
+- Update `docs/TASK_TREE.md` (the Active Task Trees index) only if the frontier changes; a tree
+  that closes moves its row, verbatim, to `docs/TASK_TREE_CLOSED.md` (FRONTIER-SYNC refuses a
+  completed tree left in the index).
 - The commit subject or first body line names the leaf ID alongside the work-unit id,
   e.g. `MYPROJ-AREA-0007 (leaf FEATURE-X.2): <summary>`.
 - ⭐ The work-unit id's project prefix is **pinned**: `SEMULITH-`, never `SEMILITH-` (director

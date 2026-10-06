@@ -21,7 +21,12 @@
 #   4. COUNT      an index cell claiming `(A/B leaves complete)` or `A of B leaves done` matches
 #                 the tree's real A and B — a count typed by hand is a constant, and a constant
 #                 that is a function of the repository is derived or gated, never carried.
-#   5. CLOSURE    every tree file has an index row, and every index row names a tree file.
+#   5. CLOSURE    every tree file has exactly one row — in the index while it is open, in the
+#                 closed-tree register (`docs/TASK_TREE_CLOSED.md`) once it is `done` — and every
+#                 row names a tree file. The index's registered pressure control is "one row per
+#                 active tree; completed trees leave the index" (LIVE-CONTAINMENT.1): a `done`
+#                 tree still in the index, an open tree in the register, and a tree in both are
+#                 breaches. Every other check runs on the register's rows too.
 #   6. EXISTS     every leaf id either file names is a leaf the tree actually declares.
 #
 # ⚠️ HONEST LIMIT, stated rather than implied: this proves the two documents AGREE and that
@@ -56,6 +61,17 @@ text = index_path.read_text()
 # The index rows live between the anchors when they exist; otherwise every table row counts.
 m = re.search(r"<!-- ANCHOR: trees -->(.*?)<!-- ANCHOR_END: trees -->", text, re.S)
 block = m.group(1) if m else text
+# The closed-tree register (LIVE-CONTAINMENT.1) — optional: a repository whose trees are all
+# open has none. Its rows live between their own anchors.
+closed_path = root / "TASK_TREE_CLOSED.md"
+closed_block = ""
+if closed_path.is_file():
+    mc_ = re.search(r"<!-- ANCHOR: closed -->(.*?)<!-- ANCHOR_END: closed -->",
+                    closed_path.read_text(), re.S)
+    if not mc_:
+        print(f"NO ANCHORS {closed_path.name} has no `<!-- ANCHOR: closed -->` block — the "
+              f"register cannot be read"); print("__CHECKED__ 0"); sys.exit(2)
+    closed_block = mc_.group(1)
 
 ROW  = re.compile(r"^\|(?P<cells>.*)\|\s*$", re.M)
 LINK = re.compile(r"\(tasks/(?P<id>[A-Za-z0-9][A-Za-z0-9._-]*)\.md\)")
@@ -77,16 +93,21 @@ def suffix(leaf):
     return "." + leaf.rsplit(".", 1)[1]
 
 # ---------------------------------------------------------------- parse the index rows
-rows = {}          # tree id -> (status cell, frontier cell)
-for line in ROW.findall(block):
-    line = "|" + line + "|"
-    c = cells(line)
-    if len(c) < 3 or set("".join(c)) <= set("- :"):
-        continue                                    # separator or malformed
-    link = LINK.search(c[0])
-    if not link:
-        continue                                    # the header row, or a non-tree row
-    rows[link.group("id")] = (c[1], c[2] if len(c) > 2 else "")
+def table_rows(blk):
+    out = {}
+    for line in ROW.findall(blk):
+        line = "|" + line + "|"
+        c = cells(line)
+        if len(c) < 3 or set("".join(c)) <= set("- :"):
+            continue                                # separator or malformed
+        link = LINK.search(c[0])
+        if not link:
+            continue                                # the header row, or a non-tree row
+        out[link.group("id")] = (c[1], c[2] if len(c) > 2 else "")
+    return out
+
+rows = table_rows(block)            # tree id -> (status cell, frontier cell): the open trees
+closed = table_rows(closed_block)   # the same shape, for the completed trees
 
 if not rows:
     print("NO ROWS    the index parsed to zero tree rows — the checker cannot judge")
@@ -133,7 +154,11 @@ def parse_tree(path):
     return status, leaves, frontier
 
 checked = 0
-for tree_id, (status_cell, frontier_cell) in sorted(rows.items()):
+for tree_id in sorted(set(rows) & set(closed)):
+    findings.append(f"DUPLICATE ROW {tree_id}: the tree has a row in the index AND in "
+                    f"{closed_path.name} — exactly one home, by its status")
+every = [(t, v, "index") for t, v in rows.items()] + [(t, v, "closed") for t, v in closed.items()]
+for tree_id, (status_cell, frontier_cell), home in sorted(every):
     path = tasks_dir / f"{tree_id}.md"
     if not path.is_file():
         findings.append(f"NO TREE FILE {tree_id}: the index links tasks/{tree_id}.md, which does not exist")
@@ -152,6 +177,14 @@ for tree_id, (status_cell, frontier_cell) in sorted(rows.items()):
     elif idx_status != tree_status:
         findings.append(
             f"STATUS DRIFT {tree_id}: index says '{idx_status}', tree Metadata says '{tree_status}'")
+    if home == "index" and tree_status == "done":
+        findings.append(
+            f"COMPLETED IN INDEX {tree_id}: the tree is `done` — completed trees leave the index "
+            f"(its registered pressure control); move the row, verbatim, to {closed_path.name}")
+    if home == "closed" and tree_status is not None and tree_status != "done":
+        findings.append(
+            f"OPEN TREE IN REGISTER {tree_id}: {closed_path.name} holds a tree whose Metadata "
+            f"says '{tree_status}' — an open tree's row lives in the index, where resume reads it")
 
     # the tree's own next frontier leaf: the first row carrying a numeric order
     tree_next = None
@@ -224,10 +257,10 @@ if tasks_dir.is_dir():
     for path in sorted(tasks_dir.glob("*.md")):
         if path.stem == "TEMPLATE":
             continue
-        if path.stem not in rows:
+        if path.stem not in rows and path.stem not in closed:
             findings.append(
-                f"UNLISTED TREE {path.stem}: tasks/{path.name} exists with no row in the index — "
-                f"a tree nobody can reach from the index is a tree nobody resumes")
+                f"UNLISTED TREE {path.stem}: tasks/{path.name} exists with no row in the index "
+                f"or the closed-tree register — a tree nobody can reach is a tree nobody resumes")
 
 for f in findings:
     print(f)
@@ -293,6 +326,30 @@ EOF
 <!-- ANCHOR_END: trees -->
 EOF
   }
+  index_for() { # index_for() <id> <status-cell> <frontier-cell> — a one-row index for tree <id>
+    argc 3 "$#" index_for || return
+    cat > "$t/TASK_TREE.md" <<EOF
+# index
+
+<!-- ANCHOR: trees -->
+| Tree | Status | Frontier (next leaf) | Owner |
+| --- | --- | --- | --- |
+| [\`$1\`](tasks/$1.md) | \`$2\` | $3 | repo-local |
+<!-- ANCHOR_END: trees -->
+EOF
+  }
+  closed() { # closed() <id> <status-cell> <frontier-cell> — a one-row closed-tree register
+    argc 3 "$#" closed || return
+    cat > "$t/TASK_TREE_CLOSED.md" <<EOF
+# closed
+
+<!-- ANCHOR: closed -->
+| Tree | Status | Outcome | Owner |
+| --- | --- | --- | --- |
+| [\`$1\`](tasks/$1.md) | \`$2\` | $3 | repo-local |
+<!-- ANCHOR_END: closed -->
+EOF
+  }
   arm() { # arm <name> <expected-rc> <expected-substring>
     out="$(check_frontier "$t" 2>&1)"; rc=$?
     if [ "$rc" != "$2" ]; then
@@ -314,11 +371,25 @@ EOF
   tree T active 1 pending done pending
   index active '`.1` — first';                 arm "RED   frontier points at a done leaf" 1 "DONE FRONTIER"
 
+  # Completed trees live in the closed-tree register (LIVE-CONTAINMENT.1); an open companion A
+  # keeps the index non-empty.
+  tree A active 2 pending done pending
+  index_for A active '`.2` — second'
   tree T done - done done done
-  index done '— (2/2 leaves complete)';        arm "GREEN completed tree"           0 "__CHECKED__ 1"
-  index done '— (1/3 leaves complete)';        arm "RED   completed count drifts"   1 "COUNT DRIFT"
-  index done '— (0 of 7 leaves done)';         arm "RED   the prose spelling drifts too" 1 "COUNT DRIFT"
-  index done '`.2` — second';                  arm "RED   index points at a retired frontier" 1 "STALE FRONTIER"
+  closed T done '— (2/2 leaves complete)';     arm "GREEN completed tree in the register" 0 "__CHECKED__ 2"
+  closed T done '— (1/3 leaves complete)';     arm "RED   completed count drifts"   1 "COUNT DRIFT"
+  closed T done '— (0 of 7 leaves done)';      arm "RED   the prose spelling drifts too" 1 "COUNT DRIFT"
+  closed T done '`.2` — second';               arm "RED   register points at a retired frontier" 1 "STALE FRONTIER"
+  rm -f "$t/TASK_TREE_CLOSED.md"
+  index done '— (2/2 leaves complete)';        arm "RED   a completed tree left in the index" 1 "COMPLETED IN INDEX"
+  tree A active 2 pending done pending
+  index_for A active '`.2` — second'
+  closed T done '— (2/2 leaves complete)'
+  tree T active 2 pending done pending;        arm "RED   an open tree in the register" 1 "OPEN TREE IN REGISTER"
+  index active '`.2` — second';                arm "RED   a tree with a row in both files" 1 "DUPLICATE ROW"
+  printf '# closed\n\nno anchors here\n' > "$t/TASK_TREE_CLOSED.md"
+                                              arm "REFUSE a register with no anchors" 2 "NO ANCHORS"
+  rm -f "$t/TASK_TREE_CLOSED.md" "$t/tasks/A.md"
 
   tree T active 9 pending done pending
   index active '`.9` — ninth';                 arm "RED   the tree's own frontier leaf does not exist" 1 "UNKNOWN LEAF"

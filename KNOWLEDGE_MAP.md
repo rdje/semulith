@@ -37,6 +37,7 @@
 - [`DOC-SHARDING.md`](docs/tasks/DOC-SHARDING.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
 - [`LAB-BENCH.md`](docs/tasks/LAB-BENCH.md)
+- [`LIVE-CONTAINMENT.md`](docs/tasks/LIVE-CONTAINMENT.md)
 - [`MC-MULTICORE.md`](docs/tasks/MC-MULTICORE.md)
 - [`MCU-DOCS.md`](docs/tasks/MCU-DOCS.md)
 - [`MEMORY-POINTER.md`](docs/tasks/MEMORY-POINTER.md)
