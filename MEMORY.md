@@ -27,6 +27,6 @@
   in `schema/semantics.sexp`, `f.sem.sexp` (30 rules), the generator's gated lowering
   (`Surface`), the assembler's register files derived from `(freg …)`. Then (d) D, (e)
   fixtures at scale + the Sail match.
-- in_flight_uncommitted: none.
+- in_flight_uncommitted: slice (c4) part 2 — `crates/semulith-core/src/fp.rs` + `fp/tests.rs` + `fp/tests/vectors.rs` (+ the lib.rs/Cargo.toml comments) in the working tree, green (`make check` rc=0); the next commit lands them with the MPFR re-qualification and the decision-record amendment (the UF deviation).
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

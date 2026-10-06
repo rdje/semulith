@@ -168,6 +168,25 @@ This gate authorises the planned next engineering stage: board implementation.
 
 ## Decisions
 
+- `2026-10-06` (slice (c4) part 1, recorded before execution — a §13 data-locality defect of
+  slice (a), measured while preparing (c4)'s scratch driver): `ls ~/.cargo/registry/src/*/`
+  → `rustc_apfloat-0.2.3+llvm-462a31f5a5ab` (src + `.crate`, mtime 2026-10-06 08:39 — slice
+  (a)'s landing) inside the SHARED user-home cache (666 crates of many projects). Slice (a)
+  recorded "the cargo cache stays on-volume" for its own fetch, but the workspace has no
+  mechanism making ROUTINE builds use it: no `.cargo/config.toml`, no `CARGO_HOME` in the
+  Makefile, the shell's `CARGO_HOME` unset — so since the workspace's first registry
+  dependency every plain `cargo` run (`make check`, the wasm gate) resolves `rustc_apfloat`,
+  `bitflags` and `smallvec` through `~/.cargo`. **The fix, decided:** `.cargo/config.toml`
+  source replacement — the one mechanism EVERY cargo invocation inside the repository obeys
+  — to an UNTRACKED on-volume directory `.app-data/vendor/` populated by `make vendor`
+  (`cargo vendor --locked` under the on-volume `CARGO_HOME`; `cargo vendor` ignores
+  `[source]` by default, so it populates a missing directory); identity stays the tracked
+  `Cargo.lock`'s checksums. Untracked, not committed: the repository's stance on third-party
+  content is "catalogue identity, cache locally, never redistribute" (`.materials/`), and a
+  commit of 1.1 MB of third-party source would be permanent in history; the cost is one
+  populate step in each CI workflow and in bootstrap. The shared cache is NOT cleaned (§13:
+  never delete an ambiguously shared global cache); the project stops consulting it.
+
 - `2026-10-06` (slice (c) execution split + a slice-(b) defect, recorded before execution;
   sources: the fetched `rv_f`/`rv64_f` (3,050/320 bytes — 26 + 4 = 30 forms, 13 pseudo
   rows: the two old fmv names, fmv.s/fabs.s/fneg.s, the 8 FP-CSR aliases — the brief's
@@ -1012,6 +1031,49 @@ never raised, at every crossing. The index:
   `LIVE_STATUS.md` (455), the book (`plan/p4/floating-point.md`; `annex/assembler.md` — the
   FP spelling), `docs/TASK_TREE.md` (unchanged — the leaf is `.7`).
 
+`P4-SYSTEM.7` slice (c4) part 1 — the dependency store on-volume (`2026-10-06`, `SEMULITH-P4-0045`):
+
+- [x] **REPRODUCE / ISSUE** — `ls ~/.cargo/registry/src/*/` → `rustc_apfloat-0.2.3+llvm-…`
+  (mtime 2026-10-06 08:39, slice (a)'s landing) in the SHARED user-home cache (666 crates).
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — nothing routes routine builds to the on-volume home:
+
+  ```
+  $ cat .cargo/config.toml → absent; grep -n CARGO_HOME Makefile → none; echo $CARGO_HOME → ""
+  $ cargo metadata (rustc_apfloat's manifest_path) →
+    ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_apfloat-0.2.3+…/Cargo.toml
+  ```
+
+  Slice (a) fetched into `.app-data/cargo-home` explicitly, but every later plain `cargo`
+  run (`make check`, the wasm gate) resolved through the default home — off the repository
+  volume since the workspace's first registry dependency.
+
+- [x] **FIX** — `.cargo/config.toml`: crates.io replaced by the directory source
+  `.app-data/vendor` (untracked, on-volume — the decision above); `make vendor` (idempotent:
+  re-vendors only when missing or Cargo.lock is newer; downloads land in the on-volume
+  `CARGO_HOME`) as a prerequisite of check/clippy/test/bench/gate; the populate step in the
+  three CI workflows (4 jobs) and in bootstrap; README's command table; the book's
+  first-model annex (a fresh clone runs `make vendor` once).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo metadata → rustc_apfloat's manifest_path: .app-data/vendor/rustc_apfloat/Cargo.toml
+    (the config moved away: ~/.cargo/registry/src/…/Cargo.toml — the before)
+  the shared cache's stat snapshot (registry, .global-cache, .package-cache): 0888b8be… →
+    0888b8be… across a full `cargo build --workspace --all-targets` + the wasm32 build
+  RED — the vendor dir moved away: error: failed to get `rustc_apfloat` … failed to load
+    source for dependency `rustc_apfloat` (loud, no fall-back)
+  $ make vendor (twice) → populated, then silent; deleted and re-populated → diff -rq: identical
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (core 141, verify 184, cli 17); `make gate` →
+  `=== all doctrines green ===` (the wasm leg builds from the vendored store). The shared
+  cache is left as it was (§13: never delete an ambiguously shared global cache).
+
+- [x] **LOCKSTEP** — this tree (the decision, this checklist, the logs), `CHANGELOG.md`,
+  `DEV_NOTES.md`, `MEMORY.md`, `README.md`, the book's annex; `promotion:` see DEV_NOTES.
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1021,6 +1083,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (c4) part 1 | the shared cache census (rustc_apfloat at slice (a)'s landing time); cargo metadata's resolution path before (~/.cargo) and after (.app-data/vendor); the shared cache's stat snapshot unchanged by a full + wasm build; the missing-store RED (loud); make vendor idempotent and reproducible | **met** — every cargo run in the repository resolves on-volume; CI and bootstrap populate the store |
 | `2026-10-06` | `.7` slice (c3) part 2 | the language census (44 operators; the typed 43); the FP block (18 operators, the contract once); f.sem.sexp 30/30 + 26 quotes judged; check_fp + 6 arms (23/23); the F lowering on a staged composition + 8 DEF-GEN arms (31/31); the assembler's derived register files — 30/30 spike-dasm round trip, 6/6 refusals; both modules and both fixtures emission-neutral | **met** — the F vocabulary exists, checked and lowered; the tracked module unmoved until the bind |
 | `2026-10-06` | `.7` slice (c3) part 1 | the pinned F/D chapters' heading census against every `RVI-F §20.1.1` / `RVI-D §21.1.2` locator; the fcsr content re-cited §20.1.2, FLEN=64 §21.1.1; both FP guests re-derived (sources only, values byte-identical); 103/103; check_citations 52/52 (its scope measured: sem files only, existence only) | **met** — the locators name the sections that hold their content; the tool gap owned by `CITATION-ACCURACY` |
 | `2026-10-06` | `.7` slice (c2) | the pre-slice census (F pinned nowhere; 7 FRAGMENTS entries; the fetched tables 26 + 4 rows, 13 pseudo rows; rs3/rm already in arg_lut.csv); the tracked-route fetch byte-identical to the census fetch; the named exclusion RED without it (118 vs 88, exactly the 30 F names); f.sexp generated (30 forms, owns rs3/rm, no pseudos), the seven others byte-identical; schema + disjointness (115-form trial union collision-free) | **met** — the F tables pinned and owned as a fragment; the scope and the slot unmoved until the bind; both profiles verify; `make gate` green |
@@ -1031,6 +1094,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice c4 part 1) | `SEMULITH-P4-0045 (leaf P4-SYSTEM.7): slice c4 part 1 — the dependency store on-volume: .cargo/config.toml routes every cargo run to .app-data/vendor (slice a's first registry dependency resolved through ~/.cargo)` | source replacement; make vendor; CI + bootstrap populate; RED-proven |
 | `.7` (slice c3 part 2) | `SEMULITH-P4-0044 (leaf P4-SYSTEM.7): slice c3 part 2 — the semantics language learns FP (18 operators, the FP-state contract once), f.sem.sexp (30 rules), the gated lowering, the assembler's derived register files` | check_fp; the Surface bundle; the derived form count (the typed 43 was 44); 30/30 round trip |
 | `.7` (slice c3 part 1) | `SEMULITH-P4-0043 (leaf P4-SYSTEM.7): slice c3 part 1 — the FP-CSR locators corrected (fcsr is RVI-F §20.1.2, FLEN=64 is RVI-D §21.1.1)` | the heading census; 24+ locators re-cited; both guests re-derived sources-only; the citation tool's blind spot measured and routed to CITATION-ACCURACY |
 | `.7` (slice c2) | `SEMULITH-P4-0042 (leaf P4-SYSTEM.7): slice c2 — the rv_f/rv64_f re-pin (30 forms) + the f.sexp fragment (owns rs3/rm; the 13 pseudo rows written out, not carried)` | the tracked-route fetch byte-identical; the bind-gated exclusion RED-proven; the fragment generated, the others byte-identical; trial union 115 collision-free; both profiles verify |
@@ -1071,6 +1135,12 @@ only the ACTIVE leaf's rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (c4) part 1 done (`SEMULITH-P4-0045`) — **the dependency store
+  on-volume**: slice (a)'s first registry dependency had been resolved by every routine
+  build through the shared `~/.cargo` (cargo metadata named the path); `.cargo/config.toml`
+  now replaces crates.io with the untracked on-volume `.app-data/vendor` (`make vendor`, in
+  CI and bootstrap too), and a missing store fails loudly. Part 2 (`fp.rs`) continues.
 
 - `2026-10-06`: `.7` slice (c3) part 2 done (`SEMULITH-P4-0044`) — **the semantics language
   learns FP**: the floating-point block states the FP-state contract once (the f-file read

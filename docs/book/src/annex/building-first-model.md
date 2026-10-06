@@ -240,8 +240,14 @@ exactly this reason.
 **Feel it.**
 
 ```sh
+make vendor                            # once per clone: the on-volume dependency store
 cargo test -p semulith-verify          # the offline differential: every guest, every step
 ```
+
+(`make vendor` populates `.app-data/vendor/`, where `.cargo/config.toml` sends every cargo
+command in this repository — the dependencies never come from a cache outside the repository's
+volume. The `make` targets run it for you; a bare `cargo` command on a fresh clone fails loudly
+until it has run.)
 
 ## Step 9 — the laboratory: one observation vocabulary
 

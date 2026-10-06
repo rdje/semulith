@@ -41,6 +41,7 @@ execute and validate them against.
 
 | Command | Does |
 | --- | --- |
+| `make vendor` | populate the on-volume dependency store (`.cargo/config.toml` routes every cargo run there) |
 | `make gate` | run the doctrine enforcer — also the pre-commit hook and CI |
 | `make check` | `cargo fmt --check` + `clippy -D warnings` + `cargo test --all` |
 | `make book` | build the mdBook |

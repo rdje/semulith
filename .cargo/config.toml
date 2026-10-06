@@ -1,0 +1,19 @@
+# .cargo/config.toml — the dependency store stays on the repository volume (session §13;
+# P4-SYSTEM.7 slice (c4) part 1).
+#
+# Every cargo invocation inside this repository resolves crates.io packages from the
+# UNTRACKED on-volume directory below — never the shared user-home cache, which the
+# workspace's first registry dependency (rustc_apfloat, P4-SYSTEM.7 slice a) had silently
+# put in use for every routine build. Identity is the tracked Cargo.lock's checksums; the
+# directory is a regenerable cache, like .materials/ (catalogue identity, cache locally,
+# never redistribute). Populate it once per clone and after every Cargo.lock change:
+#
+#     make vendor
+#
+# A missing directory is a LOUD build failure, never a silent fall-back to the network or
+# the user-home cache.
+[source.crates-io]
+replace-with = "project-vendor"
+
+[source.project-vendor]
+directory = ".app-data/vendor"

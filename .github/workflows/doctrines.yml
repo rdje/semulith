@@ -16,5 +16,7 @@ jobs:
         run: chmod +x scripts/*.sh knowledge-map/scripts/*.sh .githooks/pre-commit .githooks/commit-msg || true
       - name: Add the browser target (PORT-WEB doctrine builds for wasm32)
         run: rustup target add wasm32-unknown-unknown
+      - name: Vendor the dependency store (on-volume — .cargo/config.toml routes cargo there)
+        run: make vendor
       - name: Run the doctrine enforcer
         run: scripts/check_doctrines.sh

@@ -78,6 +78,12 @@ fi
 git config core.hooksPath .githooks
 echo "✓ git hooks activated (core.hooksPath=.githooks)"
 
+# 1b) the on-volume dependency store (.cargo/config.toml routes every cargo run there —
+#     session §13; P4-SYSTEM.7 slice c4 part 1)
+if [ -f .cargo/config.toml ] && command -v cargo >/dev/null 2>&1; then
+  make vendor >/dev/null && echo "✓ dependency store vendored on-volume (.app-data/vendor)"
+fi
+
 # 2) make the spine scripts executable
 chmod +x scripts/*.sh knowledge-map/scripts/*.sh .githooks/pre-commit .githooks/commit-msg 2>/dev/null || true
 echo "✓ scripts marked executable"

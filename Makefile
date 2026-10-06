@@ -1,9 +1,10 @@
 # Makefile — standard commands. `make gate` = the doctrine enforcer; `make check` = Rust.
 SHELL := /usr/bin/env bash
 
-.PHONY: help gate check ci fmt clippy test book bench smoke-bench hooks bootstrap update-scaffold
+.PHONY: help vendor gate check ci fmt clippy test book bench smoke-bench hooks bootstrap update-scaffold
 
 help:
+	@echo "make vendor          - populate the on-volume dependency store (.app-data/vendor; .cargo/config.toml)"
 	@echo "make gate            - run the doctrine enforcer (scripts/check_doctrines.sh)"
 	@echo "make check           - cargo fmt --check + clippy (deny warnings) + test"
 	@echo "make fmt             - cargo fmt --all"
@@ -17,10 +18,22 @@ help:
 	@echo "make bootstrap       - first-time project bootstrap"
 	@echo "make update-scaffold - pull the latest bedrock spine (set URL=<bedrock-repo>)"
 
-gate:
+# make vendor — the on-volume dependency store. `.cargo/config.toml` routes EVERY cargo run
+# in this repository to .app-data/vendor (session §13; P4-SYSTEM.7 slice c4 part 1): never the
+# shared user-home cache. Idempotent — re-vendors only when the directory is missing or
+# Cargo.lock changed; any download lands in the on-volume CARGO_HOME. `cargo vendor` ignores
+# [source] configuration by default, so it can populate a missing directory.
+vendor:
+	@if [ ! -d .app-data/vendor ] || [ Cargo.lock -nt .app-data/vendor.stamp ]; then \
+	  out="$$(CARGO_HOME="$(CURDIR)/.app-data/cargo-home" cargo vendor --locked .app-data/vendor 2>&1)" \
+	    || { printf '%s\n' "$$out" >&2; exit 1; }; \
+	  touch .app-data/vendor.stamp && echo "vendor: .app-data/vendor populated from Cargo.lock"; \
+	fi
+
+gate: vendor
 	scripts/check_doctrines.sh
 
-check:
+check: vendor
 	cargo fmt --all -- --check
 	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --all
@@ -28,10 +41,10 @@ check:
 fmt:
 	cargo fmt --all
 
-clippy:
+clippy: vendor
 	cargo clippy --all-targets --all-features -- -D warnings
 
-test:
+test: vendor
 	cargo test --all
 
 book:
@@ -52,7 +65,7 @@ book:
 ci: check gate bench smoke-bench book
 	@echo "ci: all legs green (check, gate, bench, smoke-bench, book)"
 
-bench:
+bench: vendor
 	scripts/build_bench.sh
 
 smoke-bench:

@@ -1,5 +1,22 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — "the cargo cache stays on-volume" was true of one command (P4-SYSTEM.7 slice c4 part 1)
+
+Slice (a) fetched `rustc_apfloat` with `CARGO_HOME=.app-data/cargo-home` and recorded the
+cache as on-volume. It was — for that command. Nothing made it true for the next one: no
+`.cargo/config.toml`, no `CARGO_HOME` in the Makefile, none in the shell. The workspace had
+never had a registry dependency before, so every later `cargo` run silently resolved the
+crate through the shared `~/.cargo` (`cargo metadata` named
+`~/.cargo/registry/src/…/rustc_apfloat-…/Cargo.toml`). A locality claim about a store is a
+claim about EVERY path that reads it; the acquisition path is one of them. The fix is the one
+mechanism every cargo invocation in the tree obeys — `.cargo/config.toml` source replacement
+to an untracked on-volume directory populated by `make vendor` — and its RED is loud: with the
+store absent, cargo refuses to build rather than falling back.
+
+- **Validation:** cargo metadata's path before/after; the shared cache's stat snapshot
+  unchanged by a full build; the missing-store failure; `make check` + `make gate` green.
+- Promotion: PROMOTED — docs/knowledge/a-locality-claim-covers-every-reader-of-the-store.md + INDEX.
+
 ## _(2026-10-06)_ — a move census that reuses the mover's filter cannot see what the filter drops (LIVE-CONTAINMENT.3)
 
 Partitioning TOOLBOX.md's 76-row table, the mover selected rows by `startswith("| \`")`
