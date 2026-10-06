@@ -185,7 +185,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: the encoding's `m` slot filled; every M form exercised on both engines by
   expectations derived before either runs, the division edge cases included.
 - ID: `P4-SYSTEM.12` — **bind C** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`; slice (a) done `SEMULITH-P4-0079`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`; slices (a)–(a2) done `SEMULITH-P4-0079`–`-0080`)
   Goal: the compressed instructions at RV64 with D (Zca + Zcd, `.1`'s closure): each 16-bit
   parcel decodes to the base instruction it expands to; fetch at two-byte granularity (IALIGN
   16); the reserved and illegal encodings refused.
@@ -239,6 +239,11 @@ This gate authorises the planned next engineering stage: board implementation.
 
 ## Decisions
 
+- `2026-10-06` (a found defect, owned before slice (b), `SEMULITH-P4-0080`): reading `extract()` for
+  C's scattered immediates found JAL's offset sign taken from bit 19 in BOTH engines (a scattered field
+  carried its field width, not its immediate's) — reproduced, fixed and pinned as slice (a2) here,
+  because C's `c.j` offset (imm[11:1] in an 11-bit field) would have inherited it; the rv64i release
+  decision amended (its recorded evidence unaffected by construction — every result a PASS).
 - `2026-10-06` (design brief for `.12`, recorded before its execution, `SEMULITH-P4-0078`;
   sources: a read-only census of the C surface — an explore agent's report, conversation-only;
   every load-bearing fact re-measured where it lives; RVI-C §27.1, RVI-ZC §28.1, the unprivileged
@@ -828,6 +833,47 @@ never raised, at every crossing. The index:
   this tree, `CHANGELOG.md`, `MEMORY.md`, the book (`plan/p4/c.md`, new).
   promotion: declined (the overlap-by-design rule is recorded in its schema construct and its checker; no general lesson)
 
+`P4-SYSTEM.12` slice (a2) — a found defect, owned: JAL's offset sign taken from bit 19 in both engines (`2026-10-06`, `SEMULITH-P4-0080`):
+
+- [x] **REPRODUCE / ISSUE** — found reading `extract()` for slice (b) (C's immediates are scattered
+  pieces too), then reproduced on both CLIs with assembler-built ELFs:
+
+  ```
+  $ semulith run jal-back-rv64i-lab-v0.elf --profile=rv64i-lab-v0 --steps=2 (rc=1) → trap cause=0x00
+    tval=0x000000008007fffe — the specification's target is 0x7ff7fffe (pc - 0x80002)
+  $ semulith run jal-fwd-rv64gc-lab-v0.elf --profile=rv64gc-lab-v0 --steps=2 → [1] [M]: 0x000000007ff80000
+    — the specification's target is 0x80080000 (pc + 0x80000)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — both extractors push a scattered field at its FIELD width:
+  `git show HEAD:crates/semulith-core/src/exec.rs` (`let width = u32::from(f.hi - f.lo + 1)` in the
+  generic arm) and `exec_rv64gc.rs` `extract()` (the same). `jimm20` is 20 bits wide but carries
+  imm[20:1], so `(sext 64 (imm jimm20))` extended from bit 19. `exec.rs`'s own module doc states the
+  intended algebra — "an `Imm` carries its composed field width (12/13/21/20 for
+  imm12/bimm12/jimm20/imm20)" — and `bimm12` was special-cased to 13; `jimm20` never was. No corpus
+  program jumps ±512 KiB.
+
+- [x] **FIX** — a scattered field carries the width of the immediate it composes (its highest piece
+  bit + 1) in both extractors; `jal_offsets_at_the_sign_boundary_reach_their_targets` in both engines'
+  tests (the words from the tracked assembler: a below-boundary control, +2^19, −2^19 − 4, and both
+  extremes); the rv64i release decision amended (the released evidence unaffected by construction).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  before the fix: cargo test -p semulith-core jal_offsets → test result: FAILED. "jal 0x80000 … left:
+    18446744073709031424, right: 528384"; cargo test -p semulith-verify jal_offsets → test result: FAILED.
+  after: both → test result: ok. 1 passed
+  $ cargo test -p semulith-verify run → test result: ok. 76 passed (both corpora: no guest's observations moved)
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — both engines and their tests, the rv64i release decision (amendment), this tree
+  (the execution decision recorded), `DEV_NOTES.md`, `CHANGELOG.md`, `MEMORY.md`, the book
+  (`plan/p4/c.md`).
+  promotion: declined (the boundary test is the durable record; the class — small corpus programs never reach an immediate's sign boundary — is mechanized for C at slice (b), whose expansion vectors cover every immediate's extremes)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -837,6 +883,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.12` slice (a2) | the boundary tests RED on both engines, then GREEN; both corpora unchanged (76/76) | JAL's offset sign fixed |
 | `2026-10-06` | `.12` slice (a) | C composes (37; 192 with the extensions); the disjointness self-test 17/17; the census 163 == 163 | the C fragment |
 | `2026-10-06` | `.11` slice (d) + LEAF | 13/13 forms; lab 139/139 + Sail 4/4; EVD-05 pin OK; 4,485 vectors | **met** — the leaf closes |
 | `2026-10-06` | `.11` slice (c2) | Sail over the M corpus: 4 AGREE of 4 (99 steps); a planted wrong quotient DIVERGES | the reference route |
@@ -881,6 +928,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice a2) | `SEMULITH-P4-0080 (leaf P4-SYSTEM.12): slice a2 — a found defect owned: JAL's offset sign was taken from bit 19 in both engines; pinned at the boundary and the extremes` | (b) next |
 | `.12` (slice a) | `SEMULITH-P4-0079 (leaf P4-SYSTEM.12): slice a — the C re-pin and the fragment: 37 forms, their scatter layouts, the six declared specializations` | (b) next |
 | `.12` brief | `SEMULITH-P4-0078 (tree P4-SYSTEM): the .12 design brief — bind C: each compressed form declared by its expansion, decoded by specificity, fetched parcel-first` | (a) next |
 | `.11` (slice d) + LEAF | `SEMULITH-P4-0077 (leaf P4-SYSTEM.11): slice d — THE LEAF ACCEPTANCE: M bound, every form on both engines from expectations derived first; the leaf CLOSES` | frontier → `.12` |
@@ -922,6 +970,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.12` slice (a2) done (`SEMULITH-P4-0080`) — a found defect owned: JAL offsets beyond ±512 KiB had the wrong sign in both engines.
 
 - `2026-10-06`: `.12` slice (a) done (`SEMULITH-P4-0079`) — the C tables pinned, `c.sexp` generated (37 forms, 6 declared specializations).
 

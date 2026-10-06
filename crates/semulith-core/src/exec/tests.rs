@@ -235,6 +235,36 @@ fn jal_links_pc_plus_4_and_transfers() {
     assert_eq!(state.pc(), ENTRY + 8);
 }
 
+/// `P4-SYSTEM.12` slice (a2): JAL's offset is a 21-bit signed immediate (RVI-RV32I §1.1.5.1 — "the
+/// offset is sign-extended and added to the address of the jump instruction"). Its scattered field
+/// is 20 bits wide but carries immediate bits [20:1]; extending from the FIELD width took bit 19 as
+/// the sign — a forward jump of 2^19 went backward, a backward one past -2^19 went forward. Every
+/// corpus jump was small; this pins the boundary and both extremes.
+#[test]
+fn jal_offsets_at_the_sign_boundary_reach_their_targets() {
+    let cases: [(u32, i64); 5] = [
+        // (word, offset): the words from the tracked assembler, not this file's encoder
+        (0x7fd7f06f, 0x7fffc),  // the control: below the boundary, bit 19 clear
+        (0x0008006f, 0x80000),  // +2^19: bit 19 set, bit 20 clear — a FORWARD jump
+        (0xffd7f06f, -0x80004), // just past -2^19: bit 20 set, bit 19 clear — a BACKWARD jump
+        (0x7fdff06f, 0xffffc),  // the largest forward offset
+        (0x8000006f, -0x100000), // the most negative offset
+    ];
+    for (word, offset) in cases {
+        let (mut state, mut env) = setup(&[word]);
+        assert_eq!(
+            step(&mut state, &mut env),
+            StepOutcome::Advanced(Advance::Completed),
+            "jal {offset:#x}"
+        );
+        assert_eq!(
+            state.pc(),
+            ENTRY.wrapping_add(offset as u64),
+            "jal {offset:#x}: the target is the jump's address plus the SIGNED offset"
+        );
+    }
+}
+
 #[test]
 fn jalr_clears_the_target_lsb() {
     // D-JALR-LSB: x1 + imm is odd; the target lands with the low bit cleared.

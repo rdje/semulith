@@ -125,3 +125,36 @@ fn the_refusal_predicate_refuses_exactly_the_declared_bytes_and_kind() {
         "the PTE before"
     );
 }
+
+/// `P4-SYSTEM.12` slice (a2): the rv64gc engine's JAL at the offset's sign boundary and both
+/// extremes (the defect and its cause are stated at `exec::tests`' twin of this test).
+#[test]
+fn jal_offsets_at_the_sign_boundary_reach_their_targets() {
+    use crate::fixtures::FlatMemory;
+    use semulith_core::exec_rv64gc::{step, StepRv64gc};
+    use semulith_core::state_rv64gc::ArchitecturalState;
+    const ENTRY: u64 = 0x8000_0000;
+    let cases: [(u32, i64); 5] = [
+        // (word, offset): the words from the tracked assembler, not this file's encoder
+        (0x7fd7f06f, 0x7fffc),  // the control: below the boundary, bit 19 clear
+        (0x0008006f, 0x80000),  // +2^19: bit 19 set, bit 20 clear — a FORWARD jump
+        (0xffd7f06f, -0x80004), // just past -2^19: bit 20 set, bit 19 clear — a BACKWARD jump
+        (0x7fdff06f, 0xffffc),  // the largest forward offset
+        (0x8000006f, -0x100000), // the most negative offset
+    ];
+    for (word, offset) in cases {
+        let mut memory = FlatMemory::new(ENTRY, 4096);
+        memory.load_image(0, &word.to_le_bytes());
+        let mut state = ArchitecturalState::zeroed_at(ENTRY);
+        assert_eq!(
+            step(&mut state, &mut memory),
+            StepRv64gc::Executed,
+            "jal {offset:#x}"
+        );
+        assert_eq!(
+            state.pc(),
+            ENTRY.wrapping_add(offset as u64),
+            "jal {offset:#x}: the target is the jump's address plus the SIGNED offset"
+        );
+    }
+}

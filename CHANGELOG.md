@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0080 (leaf P4-SYSTEM.12, slice a2) — a found defect: JAL's offset sign, both engines
+
+- Both extractors pushed a scattered immediate at its FIELD width; `jimm20` holds imm[20:1] in
+  20 bits, so JAL offsets were sign-extended from bit 19 — a +512 KiB jump went backward, a
+  −512 KiB − 4 one forward (reproduced on both CLIs). `exec.rs`'s own doc stated the right
+  algebra (21). Fixed: a scattered field carries its composed immediate's width.
+- `jal_offsets_at_the_sign_boundary_reach_their_targets` in both engines (RED before, GREEN
+  after); both corpora unchanged. The rv64i release decision amended: its recorded evidence is
+  unaffected by construction (every result a PASS).
+
 ## SEMULITH-P4-0079 (leaf P4-SYSTEM.12, slice a) — the C re-pin and the fragment
 
 - The ledger pins `rv_c` (23), `rv64_c` (10), `rv_c_d` (4) by content; the census excludes them

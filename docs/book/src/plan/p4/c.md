@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slice a, 2026-10-06)
+**Status:** Underway (slices a–a2, 2026-10-06)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -22,3 +22,13 @@ instructions overlap on purpose: for example, the no-operation instruction is a 
 recorded as a deliberate special case that the decoder must try first. The composition checker
 still refuses any overlap that has not been declared this way, and any declaration that isn't
 genuinely a special case.
+
+Reading how the model takes instructions apart turned up an older bug (slice a2). A jump's
+target is the instruction's own address plus a signed offset. For the jump-and-link
+instruction, the model took the offset's sign from the wrong bit. So a jump of more than 512 KB
+forward went backward, and the reverse. This had been true in both processor models since the
+first phase. No test program jumps that far, so every check passed. It surfaced because the
+compressed jump has the same shape. It is now fixed in both models, tested at exactly the
+boundary and at both extremes, and recorded against the earlier scalar release. That release's
+recorded results are unaffected: each one is a pass, and any test that had reached this range
+would have failed.

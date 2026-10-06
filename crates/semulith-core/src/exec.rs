@@ -200,17 +200,29 @@ fn extract_operands(insn: &InsnDef, word: u32) -> Result<Vec<Operand>, ModelErro
                         what: "an operand names no field — the generator refuses this table",
                     });
                 };
-                let width = u32::from(f.hi - f.lo + 1);
-                let value = if f.scatter.is_empty() {
-                    raw(f)
+                // A scattered field carries the width of the immediate it COMPOSES — its highest
+                // piece bit + 1 (21 for jimm20, the module doc's algebra) — never the field's own
+                // width: jimm20's 20-bit field holds imm[20:1], and extending from bit 19 turned
+                // a +2^19 jump backward (P4-SYSTEM.12 slice a2).
+                let (value, width) = if f.scatter.is_empty() {
+                    (raw(f), u32::from(f.hi - f.lo + 1))
                 } else {
-                    scattered(f)
+                    (scattered(f), composed_width(f))
                 };
                 operands.push((name, value, width));
             }
         }
     }
     Ok(operands)
+}
+
+/// The width of the immediate a scattered field composes: its highest piece bit + 1.
+fn composed_width(f: &FieldDef) -> u32 {
+    f.scatter
+        .iter()
+        .map(|&(hi, _)| u32::from(hi) + 1)
+        .max()
+        .expect("a scattered field has pieces")
 }
 
 fn mask_u64(width: u32) -> u64 {

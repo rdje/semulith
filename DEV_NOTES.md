@@ -1,5 +1,19 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — the doc had the right algebra; the code had the field width (P4-SYSTEM.12 slice a2)
+
+`exec.rs`'s module doc says an immediate carries its composed width — 21 for JAL's `jimm20`. The
+code pushed the field's width, 20, so a JAL's offset was sign-extended from bit 19: a jump of
++512 KiB went backward, one past −512 KiB went forward, in both engines since P1. `bimm12` had
+been special-cased correctly, `jimm20` never was, and no corpus program jumps that far — so
+every gate stayed green. It surfaced only because C's `c.j` offset has the same shape (imm[11:1]
+in an 11-bit field) and binding it meant reading the extractor closely.
+
+- **Validation:** the boundary tests RED on both engines before the fix, GREEN after; both
+  corpora unchanged; the rv64i release decision amended.
+- Promotion: declined — the boundary test is the record; slice (b)'s expansion vectors make
+  "every immediate at its extremes" mechanical for C.
+
 ## _(2026-10-06)_ — a control that pinned today's numbers, and a tool that would have read mul as sub (P4-SYSTEM.11 slice b)
 
 M bound cleanly — 139/139, the 135 pre-slice guests byte-identical, the four new ones RED on the

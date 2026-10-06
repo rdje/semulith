@@ -39,3 +39,15 @@ and is explicitly **NOT an accepted/validated CPU profile**. The name is the dec
   in `profiles/rv64i-lab-v0/GC-REPORT.md` and re-derivable from pinned inputs.
 - **Is not:** a conformance claim, a validated-CPU claim, or evidence for any other
   profile or host beyond the recorded ones. "Supports RV64I" appears nowhere.
+
+## Amendment — an engine defect found after release (2026-10-06, `P4-SYSTEM.12` slice a2)
+
+The engine took JAL's 21-bit offset sign from bit 19 instead of bit 20: a jump of +2^19 or
+more went backward, one of −2^19 − 4 or less went forward (measured on this profile's CLI:
+`jal x0, -524290` trapped with tval `0x8007fffe`, the specification's target being
+`0x7ff7fffe`). Fixed in both engines; pinned by `exec::tests::
+jal_offsets_at_the_sign_boundary_reach_their_targets`. **The released evidence is unaffected,
+by construction rather than by re-run:** every recorded result is a PASS, and a test that
+exercised the defect's range would have failed — so none did (the corpus, the smoke
+experiments, the ACT4 campaign's `I-jal-00.S`). What changes is the artifact's capability
+limit: until this date the engine computed wrong targets for JAL offsets beyond ±512 KiB.

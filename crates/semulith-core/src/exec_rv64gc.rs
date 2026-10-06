@@ -1265,16 +1265,22 @@ fn extract(insn: &InsnDef, word: u32) -> Vec<(&'static str, u64, u32)> {
             "shamtw" => out.push(("shamt", raw(field("shamtw")), 5)),
             _ => {
                 let f = field(name);
-                let width = u32::from(f.hi - f.lo) + 1;
-                out.push((
-                    name,
-                    if f.scatter.is_empty() {
-                        raw(f)
-                    } else {
-                        scattered(f)
-                    },
-                    width,
-                ));
+                // a scattered field carries the width of the immediate it COMPOSES (its highest
+                // piece bit + 1: 21 for jimm20), never the field's own width — extending
+                // jimm20 from bit 19 turned a +2^19 jump backward (P4-SYSTEM.12 slice a2)
+                let (value, width) = if f.scatter.is_empty() {
+                    (raw(f), u32::from(f.hi - f.lo) + 1)
+                } else {
+                    (
+                        scattered(f),
+                        f.scatter
+                            .iter()
+                            .map(|&(hi, _)| u32::from(hi) + 1)
+                            .max()
+                            .expect("a scattered field has pieces"),
+                    )
+                };
+                out.push((name, value, width));
             }
         }
     }
