@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0059 (tree ARTIFACT-CLEANUP) — the 2026-10-06 §8 run: 192 incremental caches deleted (607 MB)
+
+- The ~24 h trigger fired (the `2026-10-04` record was two days old). The census found
+  192 cargo incremental `.bin` caches (607 MB; 144 `target/debug`, 36 wasm32, 12 the `.7`
+  slice-(b) scratch probe's own cargo build under `target/p4-system-7/`), all under the
+  enumerated `*/incremental/*` scope, deleted; 0 stray `.bin`/`.log` in
+  `target/release`/`target/debug/deps`. 62 `target/refs/**/*.log` (2.2 M, evidence trails)
+  and the 7 cargo-home crate fixtures (inputs) kept by standing policy.
+  `docs/ARTIFACT_CLEANUP.md` overwritten with the dated one-line record; `target`
+  4.8 G → 4.2 G, `.app-data` 1.4 G unchanged.
+
 ## SEMULITH-P4-0040 (leaf P4-SYSTEM.7, slice b) — the FP state: the f-file census-gated, the FS gate live, the fcsr two-owner view fixed at root
 
 - The f0–f31 register file (FLEN=64, the LP64D ABI) is declared in the state
