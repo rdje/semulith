@@ -238,7 +238,7 @@ _SCOPE_LISTS = ("base_u_type", "base_jumps", "base_branches", "base_loads", "bas
                 "moves", "alu_core", "multiplies", "flow", "loops",
                 "mmio_registers",
                 "zicsr_csrs", "system_privileged", "zicntr_counters", "a_atomics",
-                "zifencei_fencei", "f_single", "d_double")
+                "zifencei_fencei", "f_single", "d_double", "m_muldiv")
 
 _PROFILE_SPEC = [("id", "str"), ("version", "str"), ("status", "str"), ("architecture", "str"),
                  ("base", "str"), ("chapter_version", "str"), ("spec_revision", "str"),

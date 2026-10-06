@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — a control that pinned today's numbers, and a tool that would have read mul as sub (P4-SYSTEM.11 slice b)
+
+M bound cleanly — 139/139, the 135 pre-slice guests byte-identical, the four new ones RED on the
+parent — but three things surfaced on the way. The gate report's own controls, written one leaf
+earlier, asserted rv64gc's live counts ("100 checks, 14 realized"); the first legitimate growth of
+the contract broke them, exactly the hard-coded-unit-fact defect the generator was built to
+remove. They now assert deltas from a baseline taken at run time, plus one independent recount.
+The authoring tool's OP branch read any funct3=0 word with a nonzero funct7 as `sub`, so `mul`
+would have been mis-derived silently; the M branch decodes first. And four expected results
+landed in registers already holding 0 — no change observed, so an engine that wrote nothing would
+have passed; sentinels fixed them (the `.8` lesson, again).
+
+- **Validation:** identity 135/0 + 4 RED; EVD-05 digests pinned before the engine had M; the
+  generator's controls 17/17 with two mutations caught; the census leg 163 == 163.
+- Promotion: PROMOTED — docs/knowledge/self-test-arms-that-never-ran.md extended (a control pinned to the live data).
+
 ## _(2026-10-06)_ — a contract that could only grow, and a gate whose own control hid its finding (P4-SYSTEM.9)
 
 The environment contract's "version" was a string on every record that nothing checked, and seven

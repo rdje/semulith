@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_guests.py`; drift between this fixture and the tracked guest sources is refused by the GUEST-GEN doctrine (`scripts/check_guest_gen.sh`). This module lowers the tracked assembly guests and their specification-derived expectations into data for the verify-side execution tests (`P1-LAB.8`): every expectation value was derived from the pinned specification prose before any model ran (EVD-05), so the commit gate re-runs the first-execution-slice differential offline.
 //!
 //! Canonical inputs (sha256):
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aa34d38477c0de3ca5e5ae0393d40c690f601067a39f0983fa8a091156721333`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-aqrl.expected.sexp`  `fa02e95edbaedf56aef0677caff6202045b035bd9c3c4d8c587d585e8bdba012`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-aqrl.s`  `3eaf32f2f97e66d578f37bbaa558c0c4934db7cbe2184cf7499d1d21e0005e3c`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-arith-d.expected.sexp`  `3f9016ae4411b5510816851cbaa0cefa96801964c4949c0029a89917680ddff4`
@@ -188,6 +188,14 @@
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-load.s`  `ad39fe5f0a602818f486e66ea50ac30be9fc8975da300250b10d050eebd7a05a`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.expected.sexp`  `8318bacf7fb31c2c5f9df96b80c5d93cd19a7fd9af8244d3b9d50cf5f2c9b955`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.s`  `98f034a39a435a823b639d7655b7213f591e30e6c166310626988973883a0f3f`
+//!   `profiles/rv64gc-lab-v0/guests/m-alias.expected.sexp`  `9cede651d74899f79ac268f9c0bbf3ae6689271b0069a338dac9ef2b0cf06982`
+//!   `profiles/rv64gc-lab-v0/guests/m-alias.s`  `b403f5a4617078cba591f88ac319117ce8cdc94e0d08a2b2eece257f625c91a8`
+//!   `profiles/rv64gc-lab-v0/guests/m-div.expected.sexp`  `f40d94056e9f83d6e66f37dc59becbf461e7b5a0a04a19217615a6413e97fb92`
+//!   `profiles/rv64gc-lab-v0/guests/m-div.s`  `a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f`
+//!   `profiles/rv64gc-lab-v0/guests/m-mul.expected.sexp`  `3ca8ac6f895cfb74af82a28779485b7bda54d2160eacbba36d7c8c15628517a3`
+//!   `profiles/rv64gc-lab-v0/guests/m-mul.s`  `bd22f1a6ffb596d518bebf39664e9a8e35849e6b557be126b4751bbc98775097`
+//!   `profiles/rv64gc-lab-v0/guests/m-word.expected.sexp`  `8ad5a20e7a9eacb9469ba505da8a1eb8ac7ae49e3aeab531b557f47e5c0ff71c`
+//!   `profiles/rv64gc-lab-v0/guests/m-word.s`  `e24814f6a07ff0db7d1e5a94509be021ac1dd059a55227acbcd86ac96b84210d`
 //!   `profiles/rv64gc-lab-v0/guests/min-fencei.expected.sexp`  `18765df9db0dd31070032638d6816468173fa7cdfd1cf4fcc973876d7cc40961`
 //!   `profiles/rv64gc-lab-v0/guests/min-fencei.s`  `0ee8c70ba9954b831817b732dd8e73e6219b019a74c88aff50327d14917b310f`
 //!   `profiles/rv64gc-lab-v0/guests/mm-counters.expected.sexp`  `bfde5f07c24a9c6feb3e95239f2448805654c496329de56e7b50170d5a47e92f`
@@ -16739,6 +16747,232 @@ static EXPECTED_ENV_IRQ_SOURCES: &[Expectation] = &[
 #[rustfmt::skip]
 static NEVER_WRITTEN_ENV_IRQ_SOURCES: &[u8] = &[28, 29];
 
+#[rustfmt::skip]
+static WORDS_M_MUL: &[u32] = &[
+    0x00700293,
+    0xFFD00313,
+    0x026283B3,
+    0x02629433,
+    0x0262A4B3,
+    0x0262B533,
+    0x025325B3,
+    0x00100613,
+    0x03F61613,
+    0x00D00693,
+    0x02C606B3,
+    0x02C61733,
+    0x02C637B3,
+    0x02C62833,
+    0xFFF00893,
+    0x03188933,
+    0x01300993,
+    0x031899B3,
+    0x0318BA33,
+    0x0318AAB3,
+    0x03160B33,
+    0x01700B93,
+    0x03161BB3,
+    0x0018DC13,
+    0x038C3CB3,
+    0x02CC1D33,
+];
+#[rustfmt::skip]
+static EXPECTED_M_MUL: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000007)] },
+    Expectation { step: 1, writes: &[(6, 0xFFFFFFFFFFFFFFFD)] },
+    Expectation { step: 2, writes: &[(7, 0xFFFFFFFFFFFFFFEB)] },
+    Expectation { step: 3, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 4, writes: &[(9, 0x0000000000000006)] },
+    Expectation { step: 5, writes: &[(10, 0x0000000000000006)] },
+    Expectation { step: 6, writes: &[(11, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 7, writes: &[(12, 0x0000000000000001)] },
+    Expectation { step: 8, writes: &[(12, 0x8000000000000000)] },
+    Expectation { step: 9, writes: &[(13, 0x000000000000000D)] },
+    Expectation { step: 10, writes: &[(13, 0x0000000000000000)] },
+    Expectation { step: 11, writes: &[(14, 0x4000000000000000)] },
+    Expectation { step: 12, writes: &[(15, 0x4000000000000000)] },
+    Expectation { step: 13, writes: &[(16, 0xC000000000000000)] },
+    Expectation { step: 14, writes: &[(17, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 15, writes: &[(18, 0x0000000000000001)] },
+    Expectation { step: 16, writes: &[(19, 0x0000000000000013)] },
+    Expectation { step: 17, writes: &[(19, 0x0000000000000000)] },
+    Expectation { step: 18, writes: &[(20, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 19, writes: &[(21, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 20, writes: &[(22, 0x8000000000000000)] },
+    Expectation { step: 21, writes: &[(23, 0x0000000000000017)] },
+    Expectation { step: 22, writes: &[(23, 0x0000000000000000)] },
+    Expectation { step: 23, writes: &[(24, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 24, writes: &[(25, 0x3FFFFFFFFFFFFFFF)] },
+    Expectation { step: 25, writes: &[(26, 0xC000000000000000)] },
+];
+
+#[rustfmt::skip]
+static WORDS_M_DIV: &[u32] = &[
+    0xFF900293,
+    0x00200313,
+    0x0262C3B3,
+    0x0262E433,
+    0x00700513,
+    0xFFE00593,
+    0x02B54633,
+    0x02B566B3,
+    0x02B2C733,
+    0x02B2E7B3,
+    0x0202C833,
+    0x0202D8B3,
+    0x0202E933,
+    0x0202F9B3,
+    0x00100A13,
+    0x03FA1A13,
+    0xFFF00A93,
+    0x035A4B33,
+    0x01700B93,
+    0x035A6BB3,
+    0x026ADC33,
+    0x026AFCB3,
+    0x01A00D13,
+    0x0352DD33,
+    0x0352FDB3,
+    0x026A4E33,
+    0x026A5EB3,
+];
+#[rustfmt::skip]
+static EXPECTED_M_DIV: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 1, writes: &[(6, 0x0000000000000002)] },
+    Expectation { step: 2, writes: &[(7, 0xFFFFFFFFFFFFFFFD)] },
+    Expectation { step: 3, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 4, writes: &[(10, 0x0000000000000007)] },
+    Expectation { step: 5, writes: &[(11, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 6, writes: &[(12, 0xFFFFFFFFFFFFFFFD)] },
+    Expectation { step: 7, writes: &[(13, 0x0000000000000001)] },
+    Expectation { step: 8, writes: &[(14, 0x0000000000000003)] },
+    Expectation { step: 9, writes: &[(15, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 10, writes: &[(16, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 11, writes: &[(17, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 12, writes: &[(18, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 13, writes: &[(19, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 14, writes: &[(20, 0x0000000000000001)] },
+    Expectation { step: 15, writes: &[(20, 0x8000000000000000)] },
+    Expectation { step: 16, writes: &[(21, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 17, writes: &[(22, 0x8000000000000000)] },
+    Expectation { step: 18, writes: &[(23, 0x0000000000000017)] },
+    Expectation { step: 19, writes: &[(23, 0x0000000000000000)] },
+    Expectation { step: 20, writes: &[(24, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 21, writes: &[(25, 0x0000000000000001)] },
+    Expectation { step: 22, writes: &[(26, 0x000000000000001A)] },
+    Expectation { step: 23, writes: &[(26, 0x0000000000000000)] },
+    Expectation { step: 24, writes: &[(27, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 25, writes: &[(28, 0xC000000000000000)] },
+    Expectation { step: 26, writes: &[(29, 0x4000000000000000)] },
+];
+
+#[rustfmt::skip]
+static WORDS_M_WORD: &[u32] = &[
+    0x123452B7,
+    0x67828293,
+    0x02029293,
+    0xFF900393,
+    0x02039393,
+    0x0203D393,
+    0x0072E2B3,
+    0x2BCDF337,
+    0xF0130313,
+    0x02031313,
+    0x00230313,
+    0x0262843B,
+    0x0262C4BB,
+    0x0262E53B,
+    0x0262D5BB,
+    0x0262F63B,
+    0x00100693,
+    0x02069693,
+    0x02D2C73B,
+    0x02D2D7BB,
+    0x02D2E83B,
+    0x02D2F8BB,
+    0x80000937,
+    0xFFF00993,
+    0x03394A3B,
+    0x01500A93,
+    0x03396ABB,
+    0x00100B13,
+    0x0369DBBB,
+    0x40000C37,
+    0x00200C93,
+    0x039C0D3B,
+];
+#[rustfmt::skip]
+static EXPECTED_M_WORD: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000012345000)] },
+    Expectation { step: 1, writes: &[(5, 0x0000000012345678)] },
+    Expectation { step: 2, writes: &[(5, 0x1234567800000000)] },
+    Expectation { step: 3, writes: &[(7, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 4, writes: &[(7, 0xFFFFFFF900000000)] },
+    Expectation { step: 5, writes: &[(7, 0x00000000FFFFFFF9)] },
+    Expectation { step: 6, writes: &[(5, 0x12345678FFFFFFF9)] },
+    Expectation { step: 7, writes: &[(6, 0x000000002BCDF000)] },
+    Expectation { step: 8, writes: &[(6, 0x000000002BCDEF01)] },
+    Expectation { step: 9, writes: &[(6, 0x2BCDEF0100000000)] },
+    Expectation { step: 10, writes: &[(6, 0x2BCDEF0100000002)] },
+    Expectation { step: 11, writes: &[(8, 0xFFFFFFFFFFFFFFF2)] },
+    Expectation { step: 12, writes: &[(9, 0xFFFFFFFFFFFFFFFD)] },
+    Expectation { step: 13, writes: &[(10, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 14, writes: &[(11, 0x000000007FFFFFFC)] },
+    Expectation { step: 15, writes: &[(12, 0x0000000000000001)] },
+    Expectation { step: 16, writes: &[(13, 0x0000000000000001)] },
+    Expectation { step: 17, writes: &[(13, 0x0000000100000000)] },
+    Expectation { step: 18, writes: &[(14, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 19, writes: &[(15, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 20, writes: &[(16, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 21, writes: &[(17, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 22, writes: &[(18, 0xFFFFFFFF80000000)] },
+    Expectation { step: 23, writes: &[(19, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 24, writes: &[(20, 0xFFFFFFFF80000000)] },
+    Expectation { step: 25, writes: &[(21, 0x0000000000000015)] },
+    Expectation { step: 26, writes: &[(21, 0x0000000000000000)] },
+    Expectation { step: 27, writes: &[(22, 0x0000000000000001)] },
+    Expectation { step: 28, writes: &[(23, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 29, writes: &[(24, 0x0000000040000000)] },
+    Expectation { step: 30, writes: &[(25, 0x0000000000000002)] },
+    Expectation { step: 31, writes: &[(26, 0xFFFFFFFF80000000)] },
+];
+
+#[rustfmt::skip]
+static WORDS_M_ALIAS: &[u32] = &[
+    0x00600293,
+    0x025282B3,
+    0xFF700313,
+    0x02634333,
+    0x00D00393,
+    0x0273E3B3,
+    0x02528033,
+    0x0202C033,
+    0x0252B033,
+    0x02045433,
+    0x0292F4B3,
+    0x00A00513,
+    0x02731533,
+    0x0262C5BB,
+];
+#[rustfmt::skip]
+static EXPECTED_M_ALIAS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000006)] },
+    Expectation { step: 1, writes: &[(5, 0x0000000000000024)] },
+    Expectation { step: 2, writes: &[(6, 0xFFFFFFFFFFFFFFF7)] },
+    Expectation { step: 3, writes: &[(6, 0x0000000000000001)] },
+    Expectation { step: 4, writes: &[(7, 0x000000000000000D)] },
+    Expectation { step: 5, writes: &[(7, 0x0000000000000000)] },
+    Expectation { step: 6, writes: &[] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[] },
+    Expectation { step: 9, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 10, writes: &[(9, 0x0000000000000024)] },
+    Expectation { step: 11, writes: &[(10, 0x000000000000000A)] },
+    Expectation { step: 12, writes: &[(10, 0x0000000000000000)] },
+    Expectation { step: 13, writes: &[(11, 0x0000000000000024)] },
+];
+
 /// The kind of boundary request a refusal region answers with an access fault
 /// (P4-SYSTEM.8 slice c — typed fault injection, environment-shaped).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -18279,6 +18513,50 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 11,
         expected: EXPECTED_ENV_IRQ_SOURCES,
         never_written: NEVER_WRITTEN_ENV_IRQ_SOURCES,
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "m-mul",
+        entry: 0x0000000080000000,
+        words: WORDS_M_MUL,
+        executed_steps: 26,
+        expected_fetches: 26,
+        expected: EXPECTED_M_MUL,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "m-div",
+        entry: 0x0000000080000000,
+        words: WORDS_M_DIV,
+        executed_steps: 27,
+        expected_fetches: 27,
+        expected: EXPECTED_M_DIV,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "m-word",
+        entry: 0x0000000080000000,
+        words: WORDS_M_WORD,
+        executed_steps: 32,
+        expected_fetches: 32,
+        expected: EXPECTED_M_WORD,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "m-alias",
+        entry: 0x0000000080000000,
+        words: WORDS_M_ALIAS,
+        executed_steps: 14,
+        expected_fetches: 14,
+        expected: EXPECTED_M_ALIAS,
+        never_written: &[],
         refusals: &[],
         cross_model: true,
     },

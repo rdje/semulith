@@ -70,4 +70,16 @@ run the controls only to certify a PASS.
 - Audit any check whose GREEN control reads the live tree: a broken tree must surface as the
   finding, not as "does not discriminate".
 
+## A third failure — a control pinned to the live data (2026-10-06, P4-SYSTEM.11 slice b)
+
+The gate report's controls built scratch copies of the REAL unit and asserted its numbers as
+they stood ("100 effective checks, 14 realized"). They were right for one leaf. The contract's
+first legitimate growth turned them red, and through GATE-REPORT's self-test they would have
+refused every later commit, for a change that was correct. A control over live data must
+assert what the check DOES — a delta from a baseline measured at run time (+1 realized for an
+added entry; −1 for a misregistered one), or agreement with an independent recount — never
+today's totals.
+
+- When writing a control, ask: would a correct change to the data turn this red?
+
 Related: [[census-instrument-signature-gap]], [[re-derivable-vs-cited-evidence]].

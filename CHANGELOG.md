@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0074 (leaf P4-SYSTEM.11, slice b) — THE BIND: the unit composes `riscv/m`
+
+- The encoding composes M (slot `c` the one left); the census 150 → 163 (`m_muldiv`); the module
+  regenerated; the engine's M arms through `muldiv`; the ledger re-pins `rv_m`/`rv64_m`.
+- Four guests — `m-mul`, `m-div`, `m-word`, `m-alias` — every form at Table 1's edges, their
+  expectations derived spec-side and digest-pinned before the engine had M: 139/139; the 135
+  pre-slice guests byte-identical on the bound engine, the four RED on the parent.
+- `REQ-GC-M`; `OB-GC-M` opens contract v2 (extends v1), realized in the registry at once.
+- The generator's controls no longer pin the live unit's numbers (deltas from a run-time
+  baseline + an independent recount; two mutations caught).
+- `profiles/` crossed its byte ceiling — one unit's directed corpus, not a new unit:
+  `decision_profiles-family-processor-corpus.md` re-derives it (2,867,200 → 3,145,728) and
+  proposes the structural fix.
+
 ## SEMULITH-P4-0073 (leaf P4-SYSTEM.11, slice a) — the language for M
 
 - `schema/semantics.sexp`: `mul`, `mulh`, `mulhsu`, `mulhu`, `div`, `divu`, `rem`, `remu` —

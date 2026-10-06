@@ -134,18 +134,18 @@
 (cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest") (guest "w-timer") (guest "f-rounding") (guest "d-rounding"))
 
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────
-(cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap") (guest "f-sgnj") (guest "d-sgnj"))
-(cell (axis "alias") (axis "boundary") (guest "it-alias-bound") (guest "smoke-arith"))
+(cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap") (guest "f-sgnj") (guest "d-sgnj") (guest "m-alias"))
+(cell (axis "alias") (axis "boundary") (guest "it-alias-bound") (guest "smoke-arith") (guest "m-alias"))
 (cell (axis "alias") (axis "legality") (guest "mm-csr-rw") (guest "mm-readonly") (guest "fp-fcsr-view"))
 (cell (axis "alias") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters"))
 (cell (axis "alias") (axis "progress") (guest "bound-alias") (guest "it-progress-loop"))
 (cell (axis "alias") (axis "restart") (degenerate "the staged corpus composes no x0/aliasing case with an xret return: the restart cells observe control state (xepc, xPP, MPRV) through CSR reads by design, and the alias layer's x0 discipline is exercised against CSR access (alias x legality) and loop progress (alias x progress) — reported, not omitted"))
 
 ;; ── boundary × * ──────────────────────────────────────────────────────────────────
-(cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "dir-ext-matrix") (guest "scope-alu") (guest "a-amo-arith-w") (guest "a-amo-arith-d") (guest "a-amo-minmax-w") (guest "a-amo-minmax-d") (guest "f-arith") (guest "f-fused") (guest "f-convert") (guest "f-class") (guest "f-compare") (guest "f-minmax") (guest "f-rounding") (guest "d-arith") (guest "d-fused") (guest "d-convert") (guest "d-class") (guest "d-compare") (guest "d-minmax") (guest "d-f2f"))
+(cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "dir-ext-matrix") (guest "scope-alu") (guest "a-amo-arith-w") (guest "a-amo-arith-d") (guest "a-amo-minmax-w") (guest "a-amo-minmax-d") (guest "f-arith") (guest "f-fused") (guest "f-convert") (guest "f-class") (guest "f-compare") (guest "f-minmax") (guest "f-rounding") (guest "d-arith") (guest "d-fused") (guest "d-convert") (guest "d-class") (guest "d-compare") (guest "d-minmax") (guest "d-f2f") (guest "m-mul") (guest "m-div") (guest "m-word"))
 (cell (axis "boundary") (axis "legality") (guest "bound-shiftw") (guest "fault-shiftw-res"))
 (cell (axis "boundary") (axis "delegation") (degenerate "delegation routing is a function of the cause and the current mode, never of a data-domain edge: no staged guest composes them — the boundary layer is mode-agnostic and every delegation cell keys on cause and mode — reported, not omitted"))
-(cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw") (guest "dir-memwalk") (guest "dir-chain") (guest "scope-branch") (guest "dir-cmp-branch") (guest "sv39-translate-2m") (guest "sv39-translate-1g") (guest "sv39-straddle") (guest "i-timer") (guest "f-move-box") (guest "d-move"))
+(cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw") (guest "dir-memwalk") (guest "dir-chain") (guest "scope-branch") (guest "dir-cmp-branch") (guest "sv39-translate-2m") (guest "sv39-translate-1g") (guest "sv39-straddle") (guest "i-timer") (guest "f-move-box") (guest "d-move") (guest "m-div"))
 (cell (axis "boundary") (axis "restart") (degenerate "no staged guest composes a data-domain edge with an xret return: the restart cells' observations are control state, and an xret to a domain-edge target (a 2-mod-4 mepc under IALIGN=16) is semantics this slice has not derived — reported, not omitted"))
 
 ;; ── legality × * ──────────────────────────────────────────────────────────────────

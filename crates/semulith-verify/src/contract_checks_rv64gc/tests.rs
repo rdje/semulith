@@ -50,15 +50,17 @@ fn declared_checks(select: impl Fn(&str) -> bool) -> Vec<(String, String)> {
 }
 
 #[test]
-fn every_v1_check_and_the_partial_progress_checks_are_realized() {
+fn every_check_declared_since_v1_and_the_partial_progress_checks_are_realized() {
+    // every version after v0 is born realized: v1's four assumptions and two supersessions,
+    // v2's guarantees as each binds (M at P4-SYSTEM.11), and the partial-progress guarantee
     let declared = declared_checks(|l| {
-        l.contains("(contract_version \"1\")")
+        !l.contains("(contract_version \"0\")")
             || l.starts_with("(obligation (id \"OB-GC-PARTIAL-PROGRESS\")")
     });
     assert_eq!(
         declared.len(),
-        14,
-        "v1\'s four assumptions and two supersessions, and the partial-progress guarantee, POS + NEG each"
+        16,
+        "v1's six records, v2's M guarantee, and the partial-progress guarantee, POS + NEG each"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

@@ -20,9 +20,19 @@ pub struct ContractCheck {
 }
 
 /// The realized checks: v1's four environment assumptions and its two superseding
-/// guarantees, and `.8`'s partial-progress guarantee (whose statement already named its
-/// fixtures).
+/// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
+/// fixtures), and v2's guarantees as each binds — M first (`P4-SYSTEM.11` slice b).
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-GC-M-POS",
+        obligation: "OB-GC-M",
+        guests: &["m-mul", "m-word"],
+    },
+    ContractCheck {
+        id: "CHK-GC-M-NEG",
+        obligation: "OB-GC-M",
+        guests: &["m-div", "m-alias"],
+    },
     ContractCheck {
         id: "CHK-GC-ENV-TRANSLATION-INPUTS-POS",
         obligation: "OB-GC-ENV-TRANSLATION-INPUTS",

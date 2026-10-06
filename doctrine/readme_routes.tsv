@@ -392,7 +392,7 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #   keep it (65,536; the NIC's 60,112 B at 0.92x), derived members are exempt as a
 #   CHECKED property (a fact_ownership.tsv mirror row with a regeneration-doctrine
 #   governor — the composed catalogues, BOARD-GEN), reported as proof, never failed.
-profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× aggregate bound is decision_profiles-family-five-units, the two-tier per-part (64 KiB authored, derived exempt via FACT-OWNERSHIP) decision_derived-members-of-bounded-families (2026-10-02)	590	2450000	600	2867200	65536
+profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× aggregate bound is decision_profiles-family-five-units, its byte ceiling re-derived for the processor's evidence corpus by decision_profiles-family-processor-corpus (2026-10-06), the two-tier per-part (64 KiB authored, derived exempt via FACT-OWNERSHIP) decision_derived-members-of-bounded-families (2026-10-02)	590	2690000	600	3145728	65536
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

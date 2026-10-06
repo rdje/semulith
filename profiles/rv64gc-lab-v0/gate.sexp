@@ -17,8 +17,6 @@
   (test (file "crates/semulith-verify/src/run_rv64gc/tests.rs") (fn "every_guest_re_executes_identically_from_cold_reset"))
   (statement "Every guest re-executes identically from cold reset: the run is a function of the definition and the program."))
 
-(open (axis G-SCOPE) (owner "P4-SYSTEM.11")
-  (statement "M is declared by the profile and not bound: the encoding's m slot is unfilled; definitions/riscv/m.sexp has no semantics fragment."))
 (open (axis G-SCOPE) (owner "P4-SYSTEM.12")
   (statement "C is declared by the profile and not bound: the encoding's c slot is unfilled; no compressed fragment exists."))
 (open (axis G-STATE) (owner "P4-SYSTEM.13")

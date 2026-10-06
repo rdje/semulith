@@ -154,7 +154,12 @@
   ;; Version 2.2: FLD/FSD, the fused four, the arithmetic, sign injection, min/max, the
   ;; two format conversions, the compares, FCLASS.D, the integer conversions, the
   ;; FMV.X.D/FMV.D.X moves), realized by the rv_d/rv64_d tables (definitions/riscv/d.sexp).
-  (field (name d_double) (type string) (repeat yes) (optional yes)))
+  (field (name d_double) (type string) (repeat yes) (optional yes))
+  ;; `P4-SYSTEM.11` slice (b) (`2026-10-06`): M binds — the census grows 150 → 163. The 13
+  ;; names are the pinned chapter's multiply/divide forms (RVI-M §11.1.1–§11.1.2, Version 2.0:
+  ;; MUL/MULH/MULHSU/MULHU, DIV/DIVU/REM/REMU and the RV64 word forms MULW/DIVW/DIVUW/REMW/
+  ;; REMUW), realized by the rv_m/rv64_m tables (definitions/riscv/m.sexp).
+  (field (name m_muldiv) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

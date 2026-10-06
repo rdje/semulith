@@ -1308,21 +1308,47 @@ def _selftest() -> int:
             return
         raise AssertionError("not refused")
 
+    # ⛔ NO ARM PINS THE LIVE UNIT'S NUMBERS. The first cut asserted rv64gc's counts (100, 14)
+    # and broke at the contract's first growth (P4-SYSTEM.11 slice b) — the hard-coded unit fact
+    # this generator exists to remove. Each RED arm asserts a DELTA from the baseline the real
+    # unit gives at run time; the GREEN arm checks that baseline against an independent recount.
+    obs_real = R.load(real / "contract-obligations.sexp")
+    every = sum(len(o["required_checks"]) for o in obs_real)
+    superseded = set(re.findall(r'\(supersede \(record "([^"]+)"\)',
+                                (real / "contract.sexp").read_text(encoding="utf-8")))
     try:
-        arm("GREEN the real contract: 100 effective checks, 14 realized",
-            lambda: counts(unit("green"), (100, 14)))
+        base = tuple(len(x) for x in measure(unit("green")))
+    except Exception as e:                          # noqa: BLE001 — every arm then misses
+        base = (-1, -1)
+        missed.append(f"the baseline measure itself failed: {e}")
+
+    def delta(d, dd, dr):
+        counts(d, (base[0] + dd, base[1] + dr))
+
+    def independent():
+        # every record's checks minus the superseded records' — no version chain walked — and
+        # every registry entry (each a declared pair: the Rust pairing test's guarantee)
+        want = (sum(len(o["required_checks"]) for o in obs_real if o["id"] not in superseded),
+                len(_ENTRY.findall(reg_src)))
+        assert base == want, f"the measure {base}, an independent recount {want}"
+        assert 0 < base[1] <= base[0], f"a degenerate baseline {base}"
+
+    try:
+        arm("GREEN the measure agrees with an independent recount of the real contract", independent)
         add = reg_src.replace("pub static CHECKS: &[ContractCheck] = &[\n",
                               "pub static CHECKS: &[ContractCheck] = &[\n" + extra)
-        arm("RED a shared id realized in THIS unit's registry counts for it",
-            lambda: counts(unit("shared", registry=add), (100, 15)))
+        arm("RED a shared id realized in THIS unit's registry counts for it (+1 realized)",
+            lambda: delta(unit("shared", registry=add), 0, 1))
         arm("RED the same id does not credit a unit whose contract names no registry",
-            lambda: counts(unit("other", with_contract=False, registry=add), (104, 0)))
-        arm("RED dropping v1's supersessions raises the denominator to every record",
-            lambda: counts(unit("nosup", lambda s: re.sub(
-                r'\(supersede \(record "[^"]*"\) \(by "[^"]*"\) \(why "[^"]*"\)\)', "", s)), (104, 14)))
+            lambda: counts(unit("other", with_contract=False, registry=add), (every, 0)))
+        arm("RED dropping the supersessions raises the denominator to every record",
+            lambda: (assert_eq(bool(superseded), True),
+                     counts(unit("nosup", lambda s: re.sub(
+                         r'\(supersede \(record "[^"]*"\) \(by "[^"]*"\) \(why "[^"]*"\)\)', "", s)),
+                         (every, base[1]))))
         wrong = reg_src.replace('obligation: "OB-GC-ENV-VIRTUAL-TIME"', 'obligation: "OB-SVADE"', 1)
-        arm("RED a check registered under an obligation that does not declare it is not counted",
-            lambda: counts(unit("wrong", registry=wrong), (100, 13)))
+        arm("RED a check registered under an obligation that does not declare it is not counted (-1)",
+            lambda: delta(unit("wrong", registry=wrong), 0, -1))
         odd = reg_src.replace("pub static CHECKS: &[ContractCheck] = &[\n",
                               "pub static CHECKS: &[ContractCheck] = &[\n    ContractCheck {\n"
                               "        obligation: \"OB-SVADE\",\n        id: \"CHK-SVADE-POS\",\n"
@@ -1369,13 +1395,31 @@ def _selftest() -> int:
             raise AssertionError("not refused")
 
         ev = lambda body: (lambda s: s + "\n" + body + "\n")  # noqa: E731
-        arm("GREEN the real manifest: 9 axes open, G-INTERACTIONS green, 2 of 5 regression kinds",
-            lambda: has(gs("green"), "Open axes (9 of 10)", "2 of 5 required kinds evidenced",
-                        "28 with a resolving disposition"))
-        arm("RED a test function that does not exist is not evidence",
-            lambda: has(gs("nofn", {"gate.sexp": lambda s: s.replace(
-                '(fn "every_guest_matches_its_expectations")', '(fn "no_such_test")')}),
-                "1 of 5 required kinds evidenced", "**no** — no such test function in the file"))
+
+        def kinds(report, axis):
+            m = re.search(rf"\| `{axis}` \| [^|]* \| (\d+) of \d+ required kinds evidenced", report)
+            assert m, f"no kinds count in the {axis} row"
+            return int(m.group(1))
+
+        def verdict_of(report, axis):
+            return row(report, axis).rstrip(" |").rsplit("**", 2)[-2]
+
+        try:
+            rep0 = gs("green")
+        except Exception as e:                      # noqa: BLE001 — every GS arm then misses
+            rep0 = ""
+            missed.append(f"the baseline CPU-SYSTEM report itself failed: {e}")
+
+        def green():
+            rows = [a for a in GS_AXES if f"| `{a}` | " in rep0]
+            assert rows == list(GS_AXES), f"the axis rows {rows}"
+            assert "**Verdict: `" in rep0 and "Unowned" not in rep0, "a verdict line, every open axis owned"
+        arm("GREEN the real manifest: all ten axes reported, a verdict, every open axis owned", green)
+        arm("RED a test function that does not exist is not evidence (-1 regression kind)",
+            lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION") - 1),
+                                has(r, "**no** — no such test function in the file")))(
+                gs("nofn", {"gate.sexp": lambda s: s.replace(
+                    '(fn "every_guest_matches_its_expectations")', '(fn "no_such_test")')})))
         arm("RED a kind the axis does not require is refused",
             lambda: gs_refuses("badkind", {"gate.sexp": ev(
                 '(evidence (axis G-REPLAY) (kind directed) (experiment "x") (statement "s"))')},
@@ -1384,27 +1428,34 @@ def _selftest() -> int:
             lambda: gs_refuses("twoloc", {"gate.sexp": ev(
                 '(evidence (axis G-TRACE) (kind experiment) (experiment "x") (record "y") (statement "s"))')},
                 "names exactly one of test / record / experiment"))
-        arm("RED a not-applicable kind counts, and is printed with its reason",
-            lambda: has(gs("na", {"gate.sexp": ev(
-                '(not-applicable (axis G-REGRESSION) (kind workload) (why "the stated reason"))')}),
-                "3 of 5 required kinds evidenced", "not applicable — the stated reason"))
+        arm("RED a not-applicable kind counts (+1), and is printed with its reason",
+            lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION") + 1),
+                                has(r, "not applicable — the stated reason")))(
+                gs("na", {"gate.sexp": ev(
+                    '(not-applicable (axis G-REGRESSION) (kind workload) (why "the stated reason"))')})))
         rec = (tmp / "gs-failrec" / "act.sexp").relative_to(ROOT).as_posix()
         arm("RED a verdict-bearing record that reads a failure is not evidence",
-            lambda: has(gs("failrec", {"gate.sexp": ev(
-                f'(evidence (axis G-REGRESSION) (kind external) (record "{rec}") (statement "s"))')},
-                {"act.sexp": '(campaign (verdicts "3 pass / 1 fail"))\n'}),
-                "2 of 5 required kinds evidenced", "**no** — the record reads 1 fail"))
+            lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION")),
+                                has(r, "**no** — the record reads 1 fail")))(
+                gs("failrec", {"gate.sexp": ev(
+                    f'(evidence (axis G-REGRESSION) (kind external) (record "{rec}") (statement "s"))')},
+                   {"act.sexp": '(campaign (verdicts "3 pass / 1 fail"))\n'})))
         arm("RED an open axis with no declared owner reads unowned",
             lambda: has(gs("unowned", {"gate.sexp": lambda s: s[:s.index('(open (axis G-RELEASE)')]}),
                         "**Unowned open axes: `G-RELEASE`**"))
-        arm("RED the scope measure discriminates: the slots filled, G-SCOPE reads green",
-            lambda: has(gs("scope", {"encoding.sexp": lambda s: re.sub(
-                r"\s*\(status partial\)|\s*\(slot \(id [mc]\) \(requires \"riscv/[mc]\"\)\)", "", s)}),
-                "Open axes (8 of 10)", "unfilled slots: none"))
+        unslotted = lambda s: re.sub(r"\s*\(status partial\)|\s*\(slot \(id [a-z]+\) \(requires \"[^\"]+\"\)\)",  # noqa: E731
+                                     "", s)
+        slotted = lambda s: unslotted(s).replace('(extensions "riscv/zicsr")',  # noqa: E731
+                                                 '(extensions "riscv/zicsr") (status partial) (slot (id z) (requires "riscv/z"))', 1)
+        arm("RED the scope measure discriminates: no slot reads green, one unfilled slot incomplete",
+            lambda: (assert_eq(verdict_of(gs("scope0", {"encoding.sexp": unslotted}), "G-SCOPE"), "green"),
+                     (lambda r: (assert_eq(verdict_of(r, "G-SCOPE"), "incomplete"),
+                                 has(r, "unfilled slots: `z`")))(gs("scope1", {"encoding.sexp": slotted}))))
         arm("RED an undispositioned cell opens G-INTERACTIONS",
-            lambda: has(gs("cell", {"interactions.sexp": lambda s: re.sub(
-                r'(\(cell \(axis "fault"\) \(axis "alias"\))[^\n]*', r"\1)", s, count=1)}),
-                "Open axes (10 of 10)", "undispositioned: fault × alias"))
+            lambda: (lambda r: (assert_eq(verdict_of(r, "G-INTERACTIONS"), "incomplete"),
+                                has(r, "undispositioned: fault × alias")))(
+                gs("cell", {"interactions.sexp": lambda s: re.sub(
+                    r'(\(cell \(axis "fault"\) \(axis "alias"\))[^\n]*', r"\1)", s, count=1)})))
         arm("RED `passed` is unreachable while any axis is open, and reached when none is",
             lambda: (assert_eq(_gs_verdict({a: ("", True) for a in GS_AXES})[0], "passed"),
                      assert_eq(_gs_verdict({**{a: ("", True) for a in GS_AXES}, "G-REPLAY": ("", False)}),

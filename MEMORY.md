@@ -18,10 +18,10 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (10/18 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and eight leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), the environment contract v1 (`.9`), and the CPU-SYSTEM report (`.10`, `incomplete`, 9/10 axes open)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.11` slice (b) — the M corpus (expectations derived spec-side with
-  exact integers BEFORE either engine runs; every form at its edges) + the bind (compose
-  `riscv/m`; exec arms → `muldiv`, an unguarded zero divisor a defect; scope 163; REQ-GC-M;
-  OB-GC-M in contract v2 open + registry; interactions; gate.sexp; GS regenerated).
+- next_action: `P4-SYSTEM.11` slice (c) — a tracked M operand-table generator (spec-side
+  exact results vs `muldiv`, the FP-VECTORS pattern) + the Sail matched experiment over the
+  M corpus (target/p4-system-7/sail harness, SAIL_GUESTS). Then (d): close; GS regenerated.
+  Scratch tools for `.11`: target/p4-system-11/ (derive fork, identity_m.py).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

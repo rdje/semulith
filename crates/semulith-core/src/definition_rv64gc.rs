@@ -20,6 +20,8 @@
 //!   `definitions/riscv/d.sexp`  `c0cdc058273c25ac636adb33761aac51956a534c161f17db51e5b34ebe6f0dc0`
 //!   `definitions/riscv/f.sem.sexp`  `fea32f7229d98271567372e618838f725fe9acb66d5f355ee49caf7fc071e49e`
 //!   `definitions/riscv/f.sexp`  `4d3232c6f9c9298c6814fce8c4865ae103a46f4308b7649d7b4a71be02c28a9a`
+//!   `definitions/riscv/m.sem.sexp`  `9f53ca1642ed520be3bf0cd8adc6f13dc4ceb9663575bc95524145d230097df8`
+//!   `definitions/riscv/m.sexp`  `0f48d4348b850b5fcfd296b220409a2a711d8b13075fdea9059b33d67544a386`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `definitions/riscv/system.sem.sexp`  `cb25de97e2197c5d443779f28579589dd1384bf9eb1ae0028166678bdd94692b`
@@ -30,7 +32,7 @@
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
 //!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aa34d38477c0de3ca5e5ae0393d40c690f601067a39f0983fa8a091156721333`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`
 //! Generator: `scripts/gen_definition.py` (sha256 `8827d20f555b51457b1e04335508187796cb96b879b2fffefe2a111b4e69484b`)
 
@@ -84,6 +86,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         "riscv/zifencei",
         "riscv/f",
         "riscv/d",
+        "riscv/m",
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
@@ -113,6 +116,14 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         InputPin {
             path: "definitions/riscv/f.sexp",
             sha256: "4d3232c6f9c9298c6814fce8c4865ae103a46f4308b7649d7b4a71be02c28a9a",
+        },
+        InputPin {
+            path: "definitions/riscv/m.sem.sexp",
+            sha256: "9f53ca1642ed520be3bf0cd8adc6f13dc4ceb9663575bc95524145d230097df8",
+        },
+        InputPin {
+            path: "definitions/riscv/m.sexp",
+            sha256: "0f48d4348b850b5fcfd296b220409a2a711d8b13075fdea9059b33d67544a386",
         },
         InputPin {
             path: "definitions/riscv/rv64i.sem.sexp",
@@ -156,7 +167,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/encoding.sexp",
-            sha256: "aa34d38477c0de3ca5e5ae0393d40c690f601067a39f0983fa8a091156721333",
+            sha256: "1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9",
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
@@ -181,6 +192,10 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
             sha256: "262cbd0884fe1383fcb7c42070cbc73e309d0452ff8d00b38452a4dee7cfa7f5",
         },
         SourcePin {
+            file: "rv64_m",
+            sha256: "112bf223a31b7cc51761ce1572a8a35c2502ab2c5a6e318db80c0601b587480e",
+        },
+        SourcePin {
             file: "rv_a",
             sha256: "d9eaa988c4779ca352d9da9eabacf6c71771d0b81e04b234302627f69e0863d9",
         },
@@ -195,6 +210,10 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         SourcePin {
             file: "rv_i",
             sha256: "146e297ddbe346f325d993aaf56d7006f1bfde39df584b888b221543def17b97",
+        },
+        SourcePin {
+            file: "rv_m",
+            sha256: "1a53ea03820b7044de4f0f04d207c1e4fc0ced46deb2c6ed4a3ca268fa37ddbe",
         },
         SourcePin {
             file: "rv_s",
@@ -387,7 +406,7 @@ pub struct InsnDef {
     pub effect: &'static Sem,
 }
 
-/// The 147 instructions of the composed definition, sorted by name. Every
+/// The 160 instructions of the composed definition, sorted by name. Every
 /// declared instruction carries its semantics — completeness is a generation-time
 /// refusal, not a hope (EXTRACTION).
 pub static INSNS: &[InsnDef] = &[
@@ -1227,6 +1246,148 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Zext(
                         64,
                         &Sem::Field("zimm5"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "div",
+        mask: 0xfe00707f,
+        value: 0x02004033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — signed division rounding towards zero; Table 1: a zero divisor yields a quotient with all bits set, overflow the dividend (the operator's wrap)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Lit(0xffffffffffffffff),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Div(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "divu",
+        mask: 0xfe00707f,
+        value: 0x02005033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — unsigned division; Table 1: a zero divisor yields 2^XLEN − 1, all bits set",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Lit(0xffffffffffffffff),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::DivU(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "divuw",
+        mask: 0xfe00707f,
+        value: 0x0200503b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — DIVUW as unsigned integers, the 32-bit quotient sign-extended; Table 1 at L = 32: 2^32 − 1",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Lit(0xffffffffffffffff),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::DivU(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "divw",
+        mask: 0xfe00707f,
+        value: 0x0200403b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — DIVW divides the lower 32 bits of rs1 by the lower 32 bits of rs2 as signed integers, the 32-bit quotient sign-extended; Table 1 at L = 32",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Lit(0xffffffffffffffff),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Div(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
                     ),
                 ),
             ),
@@ -2991,6 +3152,93 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "mul",
+        mask: 0xfe00707f,
+        value: 0x02000033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — MUL \"places the lower XLEN bits in the destination register\"",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Mul(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "mulh",
+        mask: 0xfe00707f,
+        value: 0x02001033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, signed×signed",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::MulH(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "mulhsu",
+        mask: 0xfe00707f,
+        value: 0x02002033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, signed rs1 × unsigned rs2",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::MulHsu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "mulhu",
+        mask: 0xfe00707f,
+        value: 0x02003033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, unsigned×unsigned",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::MulHu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "mulw",
+        mask: 0xfe00707f,
+        value: 0x0200003b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.1 — MULW \"multiplies the lower 32 bits of the source registers, placing the sign extension of the lower 32 bits of the result into the destination register\"",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Mul(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
         name: "or",
         mask: 0xfe00707f,
         value: 0x00006033,
@@ -3019,6 +3267,148 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Sext(
                     64,
                     &Sem::Imm("imm12"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "rem",
+        mask: 0xfe00707f,
+        value: 0x02006033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — \"For REM, the sign of a nonzero result equals the sign of the dividend\"; Table 1: a zero divisor yields the dividend, overflow 0 (the operator's wrap)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Reg("rs1"),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Rem(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "remu",
+        mask: 0xfe00707f,
+        value: 0x02007033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — the unsigned remainder; Table 1: a zero divisor yields the dividend",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Reg("rs1"),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::RemU(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "remuw",
+        mask: 0xfe00707f,
+        value: 0x0200703b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — \"Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero\"",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs1"),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::RemU(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "remw",
+        mask: 0xfe00707f,
+        value: 0x0200603b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — \"Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero\"",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs1"),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Rem(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
                 ),
             ),
         )
@@ -3830,10 +4220,26 @@ pub enum Sem {
     /// `(f2f m n rm a)` — an n-bit float to an m-bit float: narrowing rounds,
     /// widening is exact; a signaling NaN raises NV, any NaN yields the canonical NaN.
     FToF(u8, u8, &'static Sem, &'static Sem),
+    /// `(mul a b)` — the low w bits of a×b.
+    Mul(&'static Sem, &'static Sem),
+    /// `(mulh a b)` — the high w bits of the 2w-bit a×b, signed×signed.
+    MulH(&'static Sem, &'static Sem),
+    /// `(mulhsu a b)` — the high w bits of the 2w-bit a×b, signed×unsigned.
+    MulHsu(&'static Sem, &'static Sem),
+    /// `(mulhu a b)` — the high w bits of the 2w-bit a×b, unsigned×unsigned.
+    MulHu(&'static Sem, &'static Sem),
+    /// `(div a b)` — a÷b signed, truncating; overflow wraps; b ≠ 0 (guarded).
+    Div(&'static Sem, &'static Sem),
+    /// `(divu a b)` — a÷b unsigned; b ≠ 0 (guarded).
+    DivU(&'static Sem, &'static Sem),
+    /// `(rem a b)` — the signed remainder, the dividend's sign; b ≠ 0 (guarded).
+    Rem(&'static Sem, &'static Sem),
+    /// `(remu a b)` — the unsigned remainder; b ≠ 0 (guarded).
+    RemU(&'static Sem, &'static Sem),
 }
 
 /// Decode a 32-bit word to its instruction definition by the fixed bits: the first
-/// entry whose `mask`ed bits equal its `value`. Linear over the 147
+/// entry whose `mask`ed bits equal its `value`. Linear over the 160
 /// entries — no allocation, and no failure family of its own: a word no entry
 /// matches is the reserved-decode case (`outcome::UndefinedCase::ReservedDecode`,
 /// REQ-D-RESERVED-DECODE), and that classification is the caller's, not this

@@ -138,3 +138,7 @@ inj-walk-l2
 inj-walk-l1
 inj-walk-l0
 env-irq-sources
+m-mul
+m-div
+m-word
+m-alias

@@ -66,6 +66,7 @@ use crate::definition_rv64gc::{FieldDef, InsnDef, Sem, FIELDS, INSNS};
 use crate::env::{AccessWidth, BoundaryError, Environment, Failure, Request, Response};
 use crate::fp;
 use crate::interrupts;
+use crate::muldiv;
 use crate::outcome::ModelError;
 use crate::privilege;
 use crate::privilege::PrivilegedHart;
@@ -384,6 +385,15 @@ impl Frame<'_> {
             Sem::Ltu(a, b) => cmp2(self, a, b, |x, y| x < y),
             Sem::Ge(a, b) => cmp2(self, a, b, |x, y| (x as i64) >= (y as i64)),
             Sem::Geu(a, b) => cmp2(self, a, b, |x, y| x >= y),
+            // P4-SYSTEM.11 (b): M — at the operands' width, through the model layer.
+            Sem::Mul(a, b) => muldiv2(self, a, b, muldiv::mul),
+            Sem::MulH(a, b) => muldiv2(self, a, b, muldiv::mulh),
+            Sem::MulHsu(a, b) => muldiv2(self, a, b, muldiv::mulhsu),
+            Sem::MulHu(a, b) => muldiv2(self, a, b, muldiv::mulhu),
+            Sem::Div(a, b) => div2(self, a, b, "div", muldiv::div),
+            Sem::DivU(a, b) => div2(self, a, b, "divu", muldiv::divu),
+            Sem::Rem(a, b) => div2(self, a, b, "rem", muldiv::rem),
+            Sem::RemU(a, b) => div2(self, a, b, "remu", muldiv::remu),
             Sem::Trunc(w, v) => {
                 let (v, _) = self.run(v);
                 (v & mask64(*w as u32), *w as u32)
@@ -1126,6 +1136,14 @@ fn touches_fp_state(sem: &Sem) -> bool {
         | Sem::Ltu(a, b)
         | Sem::Ge(a, b)
         | Sem::Geu(a, b)
+        | Sem::Mul(a, b)
+        | Sem::MulH(a, b)
+        | Sem::MulHsu(a, b)
+        | Sem::MulHu(a, b)
+        | Sem::Div(a, b)
+        | Sem::DivU(a, b)
+        | Sem::Rem(a, b)
+        | Sem::RemU(a, b)
         | Sem::Set(a, b)
         | Sem::Trap(a, b)
         | Sem::CsrWrite(a, b)
@@ -1156,6 +1174,39 @@ fn arith2(f: &mut Frame, a: &Sem, b: &Sem, op: impl Fn(u64, u64) -> u64) -> (u64
     let (x, wx) = f.run(a);
     let (y, wy) = f.run(b);
     (op(x, y), wx.max(wy))
+}
+
+/// An M multiply (`P4-SYSTEM.11`): at the operands' width — the wider of the two — through the
+/// model layer (`muldiv`), which yields a value of that width.
+fn muldiv2(f: &mut Frame, a: &Sem, b: &Sem, op: fn(u64, u64, u32) -> u64) -> (u64, u32) {
+    let (x, wx) = f.run(a);
+    let (y, wy) = f.run(b);
+    let w = wx.max(wy);
+    (op(x, y, w), w)
+}
+
+/// An M division (`P4-SYSTEM.11`). A zero divisor is outside the operator's domain: the
+/// definition guards every division (`check_semantics`' domain rule; the generator re-derives
+/// it), so reaching one is a DEFINITION defect, never a guest behaviour — refused loudly, as a
+/// tree reading an operand the encoding does not provide is. A step that already trapped or
+/// failed evaluates its operands as 0 and divides nothing.
+fn div2(
+    f: &mut Frame,
+    a: &Sem,
+    b: &Sem,
+    name: &str,
+    op: fn(u64, u64, u32) -> Option<u64>,
+) -> (u64, u32) {
+    let (x, wx) = f.run(a);
+    let (y, wy) = f.run(b);
+    if f.trapped || f.failed.is_some() {
+        return (0, 64);
+    }
+    let w = wx.max(wy);
+    let q = op(x, y, w).unwrap_or_else(|| {
+        panic!("({name} …) reached with a zero divisor — the definition must guard it")
+    });
+    (q, w)
 }
 
 fn cmp2(f: &mut Frame, a: &Sem, b: &Sem, op: impl Fn(u64, u64) -> bool) -> (u64, u32) {

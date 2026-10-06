@@ -170,7 +170,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the full processor gate over the complete declared profile.
   Acceptance: reproducible from pinned inputs; fidelity reported per axis; missing checks read `incomplete`.
 - ID: `P4-SYSTEM.11` — **bind M** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slice (a) done `SEMULITH-P4-0073`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slices (a)–(b) done `SEMULITH-P4-0073`–`-0074`)
   Goal: the M extension composed into the unit — `m.sem.sexp` (the 13 instructions, the
   division edge cases: divide by zero and signed overflow return their defined values, never a
   trap), the bind, an EVD-05 corpus, the Sail matched experiment.
@@ -227,7 +227,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (b): the staged EVD-05 corpus (expectations derived spec-side, every form at its edges) and the bind (the encoding composes `riscv/m`; the engine arms; the scope; `REQ-GC-M`; `OB-GC-M` in contract v2, open, realized; the interactions); (a) done |
+| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (c): the generated operand table (a tracked generator, spec-side results, checked against the model layer — G-REGRESSION's `generated` kind) and the Sail matched experiment over the M corpus; (a)–(b) done |
 
 ## Decisions
 
@@ -832,6 +832,67 @@ never raised, at every crossing. The index:
   `MEMORY.md`, `LIVE_STATUS.md` (arms 478, chapters 43).
   promotion: declined (the §13-from-memory slip is the claim-verification standard's own rule — verify a locator against the pinned page before writing it — caught before execution by re-reading the pinned headings; no new lesson)
 
+`P4-SYSTEM.11` slice (b) — THE BIND: the unit composes `riscv/m`; the M corpus; `OB-GC-M` in contract v2 (`2026-10-06`, `SEMULITH-P4-0074`):
+
+- [x] **REPRODUCE / ISSUE** — the pre-bind census at `b943d35`:
+
+  ```
+  $ git show HEAD:profiles/rv64gc-lab-v0/encoding.sexp | grep -c "slot (id m)" → 1
+  $ git show HEAD:crates/semulith-core/src/definition_rv64gc.rs | grep -c '"mulhsu"' → 0
+  $ git show HEAD:profiles/rv64gc-lab-v0/profile.sexp | grep -o "(count_total [0-9]*)" → (count_total 150)
+  $ git show HEAD:profiles/rv64gc-lab-v0/references.sexp | grep -c '(name "rv_m")' → 0
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — M was a declared slot until its language existed (slice a).
+  Four things measured on the way, each owned here: (1) the authoring tool's OP branch
+  (`target/p4-system-7/tools/derive_expectations.py`, `elif f3 == 0` → `sub`) would have
+  derived `mul` as subtraction silently — the M branch decodes funct7=1 first; (2) seven expected
+  results landed in registers already 0 — no change observed, an engine writing nothing would
+  pass — sentinels added before re-deriving; (3) rv64gc's ledger never pinned `rv_m`/`rv64_m`
+  (`fetch_references.sh --verify-only` → "tables enumerate 150, profile declares 163", rc=1) — the
+  D-bind precedent's re-pin; (4) the generator's slice-(a) controls pinned the live unit's counts
+  (`python3 scripts/gate_report.py --self-test` → 12 pass / 5 fail at the contract's growth) — the
+  hard-coded unit fact `.10` removed from the report, in its own controls.
+
+- [x] **FIX** — `encoding.sexp` composes `riscv/m` (slot `c` the one left); the census 150 → 163 in
+  all four places (`m_muldiv`, RVI-M §11.1.1–§11.1.2); `definition_rv64gc.rs` regenerated (the M
+  variants); `exec_rv64gc.rs`: the M arms through `muldiv` (a zero divisor reached unguarded a
+  definition defect; a trapped step divides nothing); four guests (`m-mul`, `m-div`, `m-word`,
+  `m-alias`) + `run-order.txt` + `guests_rv64gc.rs` (139); the ledger re-pins `rv_m`/`rv64_m` (the
+  bytes `m.sexp` names); `REQ-GC-M`; `OB-GC-M` in contract **v2** (`open`, extends v1), its POS
+  and NEG realized in the registry (the test generalized: every check since v1, 16); the matrix's
+  placements (alias×alias, alias×boundary, boundary×boundary, boundary×progress); `gate.sexp`'s M
+  item closed; `GS-REPORT.md` regenerated; the generator's controls rewritten as deltas from a
+  run-time baseline plus an independent recount; the `profiles/` byte ceiling re-derived
+  (`decision_profiles-family-processor-corpus.md`).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  EVD-05: the four expectation digests pinned with 0 M arms in the engine and 0 M variants in the
+    module; after the bind: sha256sum -c → m-alias/m-div/m-mul/m-word.expected.sexp: OK
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 5 passed (139 guests)
+  $ python3 target/p4-system-11/identity_m.py <bound CLI> <parent CLI> (rc=0) → identity: 135 byte-identical,
+    0 diverge (pre-slice guests); RED m-alias/m-div/m-mul/m-word: diverges on the parent engine
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 → MATCH encoding tables vs profile scope 163 == 163, symmetric difference NONE
+  $ bash scripts/check_exercise_coverage.sh → 163/163
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 → 28 cells declared, every disposition resolves
+  $ bash scripts/check_contract_freeze.sh → CONTRACT-FREEZE: ok (1 versioned unit(s), 3 version(s), 0 finding(s))
+  $ cargo test -p semulith-verify contract_checks → test result: ok. 3 passed (16 checks since v1)
+  $ python3 scripts/gate_report.py --self-test → 17 pass / 0 fail; mutations (restored, cmp clean):
+    supersessions ignored → 16 pass / 1 fail (the independent recount); the fn check skipped → 16 pass / 1 fail
+  GS-REPORT: G-SCOPE "unfilled slots: `c`"; G-CONTRACT "16 of 102 … latest version `rv64gc-lab-env-v2` open"
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`; the 135
+  pre-slice guests byte-identical on the bound engine.
+
+- [x] **LOCKSTEP** — the encoding, the scope (schema, reader, consistency check, profile), the
+  ledger, the module, the engine, the corpus, the records, the contract, the registry, the matrix,
+  the manifest, the report, the routes registry and its decision (+ INDEX row), this tree,
+  `DEV_NOTES.md` (PROMOTED — the self-test card's pinned-control case), `CHANGELOG.md`, `MEMORY.md`,
+  `LIVE_STATUS.md`, the book (`plan/p4/m.md`).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -841,6 +902,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.11` slice (b) | corpus 139/139; identity 135/0 + 4 RED; census 163 == 163; CONTRACT-FREEZE 3 versions; the generator's controls 17/17 (re-written relative) | M bound |
 | `2026-10-06` | `.11` slice (a) | SEMANTICS 32/32; DEF-GEN 45/45; muldiv 6/6 + two mutations RED | the language carries M |
 | `2026-10-06` | `.10` slice (c) + LEAF | the four reports regenerated in a fresh worktree (no `target/`), byte-identical | **met** — the leaf closes |
 | `2026-10-06` | `.10` slice (b) | the generator's controls 17/17; GATE-REPORT 16/16, 5 reports in sync; the literal census | `GS-REPORT.md`: incomplete, 9 of 10 open, every one owned |
@@ -880,6 +942,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.11` (slice b) | `SEMULITH-P4-0074 (leaf P4-SYSTEM.11): slice b — THE BIND: the unit composes riscv/m; the M corpus (139/139, 135 byte-identical + 4 RED on the parent); OB-GC-M opens contract v2` | (c) next |
 | `.11` (slice a) | `SEMULITH-P4-0073 (leaf P4-SYSTEM.11): slice a — the language for M: eight arithmetic operators, the division-domain rule, m.sem.sexp, the generator, the model layer` | (b) next |
 | `.11` brief | `SEMULITH-P4-0072 (tree P4-SYSTEM): the .11 design brief — bind M: eight arithmetic operators, the division-by-zero results stated in the definition, contract v2 opened` | (a) next |
 | `.10` (slice c) + LEAF | `SEMULITH-P4-0071 (leaf P4-SYSTEM.10): slice c — THE LEAF ACCEPTANCE: every report regenerates byte-identically in a checkout with no target/; the leaf CLOSES` | frontier → `.11` |
@@ -915,6 +978,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.11` slice (b) done (`SEMULITH-P4-0074`) — M bound (163 forms, 139 guests); contract v2 opened; the profiles/ byte ceiling re-derived.
 
 - `2026-10-06`: `.11` slice (a) done (`SEMULITH-P4-0073`) — the language carries M (eight operators, the division-domain rule), `m.sem.sexp` written.
 

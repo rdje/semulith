@@ -10,11 +10,11 @@
 
 | Axis | Required (§7) | Measured state | Verdict |
 | --- | --- | --- | --- |
-| `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 7 extensions; status `partial`; unfilled slots: `m`, `c` | **incomplete** |
+| `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 8 extensions; status `partial`; unfilled slots: `c` | **incomplete** |
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
-| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 14 of 100 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v1` frozen | **incomplete** |
+| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 16 of 102 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` open | **incomplete** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 46 requirements: 46 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); predeclared policy (`EVIDENCE_POLICY.md`): absent | **incomplete** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 47 requirements: 47 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); predeclared policy (`EVIDENCE_POLICY.md`): absent | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 2 of 5 required kinds evidenced — open: `external`, `workload`, `validator-mutation` | **incomplete** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 0 of 3 required kinds evidenced — open: `x86-64`, `aarch64`, `miri` | **incomplete** |
@@ -28,7 +28,6 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-SCOPE` | `P4-SYSTEM.11` | M is declared by the profile and not bound: the encoding's m slot is unfilled; definitions/riscv/m.sexp has no semantics fragment. |
 | `G-SCOPE` | `P4-SYSTEM.12` | C is declared by the profile and not bound: the encoding's c slot is unfilled; no compressed fragment exists. |
 | `G-STATE` | `P4-SYSTEM.13` | The hidden-state census's consequence still describes the P4-SYSTEM.2 snapshot (the integer file, pc, memory, mode and 33 CSRs); every later candidate is answered but the consequence was never re-answered. |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
@@ -69,7 +68,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 c4fe231c8bd7dd2c416e39f7112398e9eddc274b321689b3aaf417e89a01a94c`
+  `sha256 baa02fa959550269f5ef4b55ba3de048d40e0297273344e4201cac2845f83c8b`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)
