@@ -25,7 +25,8 @@
   (field (name field) (type form) (head field) (repeat yes) (optional yes))
   (field (name scatter) (type form) (head scatter) (repeat yes) (optional yes))
   (field (name insn) (type form) (head insn) (repeat yes))
-  (field (name pseudo) (type form) (head pseudo) (repeat yes) (optional yes)))
+  (field (name pseudo) (type form) (head pseudo) (repeat yes) (optional yes))
+  (field (name specializes) (type form) (head specializes) (repeat yes) (optional yes)))
 
 (construct (name source)
   (field (name file) (type form) (head file) (repeat yes))
@@ -58,6 +59,17 @@
   (field (name of) (type string))
   (field (name fixed) (type form) (head fixed))
   (field (name operands) (type form) (head operands))
+  (field (name from) (type string)))
+
+;; A DECLARED SPECIALIZATION (P4-SYSTEM.12 slice a): two instructions whose encodings overlap
+;; by design — the SPECIAL row's word set inside the GENERAL row's (its fixed bits a strict
+;; superset, agreeing where both constrain). The upstream table states which pairs overlap
+;; (riscv-opcodes constants.py `overlapping_instructions`; e.g. c.nop is c.addi with rd=0 and
+;; imm=0); check_encoding_disjoint accepts exactly the declared pairs that ARE strict
+;; specializations and refuses every other overlap, and a decoder must try the special row first.
+(construct (name specializes)
+  (field (name special) (type symbol))
+  (field (name general) (type symbol))
   (field (name from) (type string)))
 
 (operator (name fixed) (variadic) (arg (integer integer integer)))

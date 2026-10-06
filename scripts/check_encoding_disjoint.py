@@ -187,6 +187,49 @@ def collisions(insns: list[Insn]) -> list[tuple[Insn, Insn]]:
     return out
 
 
+def load_specializations(path: Path) -> list[tuple[str, str]]:
+    """The (special, general) pairs a fragment — or a unit's resolved composition — DECLARES
+    (`(specializes …)`, schema/fragment.sexp; P4-SYSTEM.12 slice a). An opcodes table
+    declares none."""
+    if path.suffix != ".sexp":
+        return []
+    root = _sexp.read_file(path)[0]
+    if _sexp.head(root, str(path)) == "encoding":
+        import riscv_asm
+        try:
+            root = riscv_asm.resolve_composition(root, path)
+        except riscv_asm.AsmError as exc:
+            raise CompositionError(str(exc))
+    return [(str(_sexp.field(s, "special", str(path))), str(_sexp.field(s, "general", str(path))))
+            for s in _sexp.children(root, "specializes")]
+
+
+def judge_overlaps(insns: list[Insn], specs: list[tuple[str, str]]):
+    """(undeclared collisions, accepted specializations, declaration problems).
+
+    An overlap is legal exactly when it is DECLARED and IS a strict specialization: the special
+    row's fixed bits a strict superset of the general row's, the two agreeing where the general
+    row constrains — so every word of the special row is also a word of the general one, and a
+    decoder that tries the special row first is unambiguous. A declaration naming a row the
+    composition lacks, or a pair that is not such a specialization, is itself refused: a
+    declaration must not be a way to silence a collision."""
+    by = {i.name: i for i in insns}
+    problems, accepted = [], set()
+    for special, general in specs:
+        s, g = by.get(special), by.get(general)
+        if s is None or g is None:
+            problems.append(f"specialization {special} ⊂ {general} names an instruction the "
+                            f"composition does not carry")
+            continue
+        if g.mask & ~s.mask or not (s.mask & ~g.mask) or (s.value ^ g.value) & g.mask:
+            problems.append(f"specialization {special} ⊂ {general} is declared, but {special}'s "
+                            f"word set is not strictly inside {general}'s")
+            continue
+        accepted.add(frozenset((special, general)))
+    bad = [(a, b) for a, b in collisions(insns) if frozenset((a.name, b.name)) not in accepted]
+    return bad, sorted(tuple(sorted(x)) for x in accepted), problems
+
+
 def pseudo_problems(insns: list[Insn], pseudos: list[Insn]) -> list[str]:
     """Decide the pseudo-instructions against the composed instruction set.
 
@@ -223,6 +266,7 @@ def main(argv: list[str]) -> int:
         return 2
     insns: list[Insn] = []
     pseudos: list[Insn] = []
+    specs: list[tuple[str, str]] = []
     all_slots: list[tuple[str, list[str]]] = []
     try:
         for arg in argv[1:]:
@@ -243,17 +287,20 @@ def main(argv: list[str]) -> int:
                   + (f", {len(part_pseudos)} pseudo-instruction(s)" if part_pseudos else ""))
             insns += part
             pseudos += part_pseudos
+            specs += load_specializations(p)
     except (CompositionError, _sexp.SexpError, ValueError) as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 2
 
     names = [i.name for i in insns] + [p.name for p in pseudos]
     dupes = [n for n in set(names) if names.count(n) > 1]
-    bad = collisions(insns)
-    problems = pseudo_problems(insns, pseudos)
+    bad, accepted, spec_problems = judge_overlaps(insns, specs)
+    problems = pseudo_problems(insns, pseudos) + spec_problems
     print(f"\n  composed set: {len(insns)} instruction(s)"
           + (f" (+ {len(pseudos)} pseudo-instruction(s))" if pseudos else "")
           + f" from {len(argv) - 1} fragment(s)")
+    if accepted:
+        print(f"  declared specializations: {len(accepted)} (the special row decodes first)")
     if dupes:
         print(f"  DUPLICATE NAME(S): {sorted(dupes)}")
     if bad:
@@ -410,6 +457,36 @@ def _selftest() -> int:
                         "DUPLICATE NAME(S)", 1))
 
     import shutil
+    # declared specializations (P4-SYSTEM.12 slice a): the c.addi/c.nop shape — a general row
+    # and a special row whose fixed bits strictly contain it. These fragments are read
+    # DIRECTLY, so they are schema-complete (the composed-unit arms above never validate theirs).
+    def spec_frag(frag_id, body):
+        p = defs / f"{frag_id}.sexp"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(f'(fragment (id "{frag_id}") (kind isa-extension) (requires)\n'
+                     f'  (source (file (name "t") (sha256 "0")) (origin "t") (license "t"))\n{body})')
+    GEN = '(insn (name gen) (fixed (1 0 0x1) (15 13 0x0)) (operands) (from "t"))\n'
+    SPC = '(insn (name spc) (fixed (1 0 0x1) (15 13 0x0) (11 7 0x0)) (operands) (from "t"))\n'
+    OTH = '(insn (name oth) (fixed (1 0 0x1) (15 13 0x0) (6 2 0x3)) (operands) (from "t"))\n'
+    DECL = '(specializes (special spc) (general gen) (from "t"))\n'
+    spec_frag("riscv/t-spec-ok", GEN + SPC + DECL)
+    spec_frag("riscv/t-spec-undeclared", GEN + SPC)
+    spec_frag("riscv/t-spec-reversed", GEN + SPC + '(specializes (special gen) (general spc) (from "t"))\n')
+    spec_frag("riscv/t-spec-ghost", GEN + OTH + '(specializes (special ghost) (general gen) (from "t"))\n'
+              + '(specializes (special oth) (general gen) (from "t"))\n')
+    spec_frag("riscv/t-spec-other", OTH)
+    arm("GREEN a declared strict specialization composes, reported",
+        lambda: composes([str(defs / "riscv/t-spec-ok.sexp")], "declared specializations: 1"))
+    arm("RED   the same overlap undeclared is still a collision",
+        lambda: refuses([str(defs / "riscv/t-spec-undeclared.sexp")], "COLLISIONS: 1", 1))
+    arm("RED   a declaration whose 'special' row is the wider one is refused, not obeyed",
+        lambda: refuses([str(defs / "riscv/t-spec-reversed.sexp")], "is not strictly inside", 1))
+    arm("RED   a declaration naming an instruction the composition lacks is refused",
+        lambda: refuses([str(defs / "riscv/t-spec-ghost.sexp")], "does not carry", 1))
+    arm("RED   a declaration cannot silence an overlap it does not name",
+        lambda: refuses([str(defs / "riscv/t-spec-ok.sexp"), str(defs / "riscv/t-spec-other.sexp")],
+                        "COLLISIONS: 2", 1))
+
     shutil.rmtree(tmp)
     print(f"check_encoding_disjoint --self-test: {passed} pass / {failed} fail")
     return 1 if failed else 0

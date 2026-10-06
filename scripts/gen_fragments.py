@@ -127,7 +127,58 @@ FRAGMENTS = (
      "chapter states it (D depends on F, RVI-D 21.1). The tables' 3 $pseudo_op rows "
      "(fmv.d/fabs.d/fneg.d) are NOT carried: they spell the sign-injection forms (the "
      "rv64i write-it-out policy, as F's) (P4-SYSTEM.7 slice d1)."),
+    ("definitions/riscv/c.sexp", "riscv/c", "isa-extension", ("rv_c", "rv64_c", "rv_c_d"),
+     ("riscv/rv64i", "riscv/f", "riscv/d"), ('rd_p', 'rs1_p', 'rs2_p', 'rd_rs1_p', 'rd_rs1_n0', 'rd_n0', 'rd_n2', 'rs1_n0', 'c_rs1_n0', 'c_rs2', 'c_rs2_n0', 'c_nzuimm10', 'c_uimm7lo', 'c_uimm7hi', 'c_uimm8lo', 'c_uimm8hi', 'c_nzimm6lo', 'c_nzimm6hi', 'c_imm6lo', 'c_imm6hi', 'c_nzimm10hi', 'c_nzimm10lo', 'c_nzimm18hi', 'c_nzimm18lo', 'c_imm12', 'c_bimm9lo', 'c_bimm9hi', 'c_nzuimm6lo', 'c_nzuimm6hi', 'c_uimm8splo', 'c_uimm8sphi', 'c_uimm8sp_s', 'c_uimm9splo', 'c_uimm9sphi', 'c_uimm9sp_s'), ('c_nzuimm10', 'c_uimm7lo', 'c_uimm7hi', 'c_uimm8lo', 'c_uimm8hi', 'c_nzimm6lo', 'c_nzimm6hi', 'c_imm6lo', 'c_imm6hi', 'c_nzimm10hi', 'c_nzimm10lo', 'c_nzimm18hi', 'c_nzimm18lo', 'c_imm12', 'c_bimm9lo', 'c_bimm9hi', 'c_nzuimm6lo', 'c_nzuimm6hi', 'c_uimm8splo', 'c_uimm8sphi', 'c_uimm8sp_s', 'c_uimm9splo', 'c_uimm9sphi', 'c_uimm9sp_s'), False,
+     "The compressed instructions at RV64 with D — Zca (rv_c 23 + rv64_c 10) and Zcd (rv_c_d: "
+     "c.fld, c.fsd, c.fldsp, c.fsdsp), 37 16-bit forms; the RV32-only rows (rv32_c, rv32_c_f) are "
+     "not carried (RVI-ZC 28.1.4). It OWNS the compressed operand fields: the 3-bit registers "
+     "(rd_p, rs1_p, rs2_p, rd_rs1_p — x8..x15), the 5-bit register fields under their upstream "
+     "constraint NAMES (rd_n0, rd_n2, c_rs2_n0 …: the names are upstream's, the constraints are "
+     "NOT decoded from them — most name HINTs, which execute their expansion), and every scrambled "
+     "immediate PIECE (lo/hi), its bits mapped by the pinned descriptor table. The six upstream "
+     "overlaps are DECLARED specializations (constants.py overlapping_instructions): the special "
+     "row decodes first. It REQUIRES riscv/d for Zcd's transfers (P4-SYSTEM.12 slice a)."),
 )
+
+
+def load_overlaps(path: Path) -> dict[str, set[str]]:
+    """The pinned table's own list of instruction pairs that overlap by design
+    (`overlapping_instructions`, upstream names with `_` for `.`)."""
+    import re
+    text = path.read_text()
+    body = re.search(r"overlapping_instructions\s*=\s*\{(.*?)\n\}", text, re.S)
+    if not body:
+        raise SystemExit(f"gen_fragments: {path}: no overlapping_instructions table — the format changed")
+    out: dict[str, set[str]] = {}
+    for a, rest in re.findall(r'"([a-z0-9_]+)":\s*\{([^}]*)\}', body.group(1)):
+        out[a.replace("_", ".")] = {b.replace("_", ".") for b in re.findall(r'"([a-z0-9_]+)"', rest)}
+    return out
+
+
+def specializations(insns: dict, overlaps: dict[str, set[str]], rel: str) -> list[tuple[str, str]]:
+    """The declared pairs among THIS fragment's rows, each oriented special ⊂ general by the
+    fixed bits — and REFUSED if neither row's word set contains the other's (an overlap that
+    is not a specialization is a decode ambiguity no declaration can make legal)."""
+    def mv(i):
+        m = v = 0
+        for hi, lo, val in i.fixed:
+            m |= ((1 << (hi - lo + 1)) - 1) << lo
+            v |= val << lo
+        return m, v
+    out = []
+    for a, bs in sorted(overlaps.items()):
+        for b in sorted(bs):
+            if a not in insns or b not in insns:
+                continue
+            (ma, va), (mb, vb) = mv(insns[a]), mv(insns[b])
+            if ma & ~mb == 0 and mb & ~ma and (va ^ vb) & ma == 0:
+                out.append((b, a))                      # b's fixed bits ⊋ a's: b is special
+            elif mb & ~ma == 0 and ma & ~mb and (va ^ vb) & mb == 0:
+                out.append((a, b))
+            else:
+                raise SystemExit(f"gen_fragments: {rel}: {a} and {b} are listed as overlapping, but "
+                                 f"neither's word set strictly contains the other's")
+    return sorted(out)
 
 
 def regenerate() -> int:
@@ -135,6 +186,7 @@ def regenerate() -> int:
         load_pseudo_ops
     arg_lut = load_arg_lut(UPSTREAM / "arg_lut.csv")
     layout = load_immediate_layout(UPSTREAM / "constants.py", arg_lut)
+    overlaps = load_overlaps(UPSTREAM / "constants.py")
     for rel, fid, kind, tables, requires, fields, scatter, pseudo, note in FRAGMENTS:
         insns = load_encodings([UPSTREAM / t for t in tables], allow_empty=pseudo)
         pseudos = load_pseudo_ops([UPSTREAM / t for t in tables]) if pseudo else {}
@@ -166,10 +218,13 @@ def regenerate() -> int:
                 L.append(f"  (field (name {n}) (hi {hi}) (lo {lo}))")
             L.append("")
         if scatter:
+            # True: the base's scrambled set; a tuple: the fragment's own piece fields (C)
+            lay = layout if scatter is True else load_immediate_layout(
+                UPSTREAM / "constants.py", arg_lut, scatter)
             L.append("  ;; ---- immediates SCATTERED across their field, MSB piece first -------")
-            for n in sorted(layout):
+            for n in sorted(lay):
                 hi, lo = arg_lut[n]
-                pieces = " ".join(f"({h} {l})" for h, l in layout[n])
+                pieces = " ".join(f"({h} {l})" for h, l in lay[n])
                 L.append(f"  (scatter (name {n}) (hi {hi}) (lo {lo}) (pieces {pieces}))")
             L.append("")
         L.append(f"  ;; ---- {len(insns)} instruction(s) ----")
@@ -190,6 +245,14 @@ def regenerate() -> int:
                 ops = " ".join(str(o) for o in i.operands)
                 L.append(f'  (pseudo (name {name}) (of "{i.of}") (fixed {fixed}) '
                          f'(operands {ops}) (from "{i.source}"))')
+        specs = specializations(insns, overlaps, rel)
+        if specs:
+            L += ["",
+                  "  ;; ---- declared specializations: overlapping BY DESIGN, the special row first ----",
+                  ]
+            for special, general in specs:
+                L.append(f'  (specializes (special {special}) (general {general}) '
+                         f'(from "constants.py overlapping_instructions"))')
         L.append(")")
         (ROOT / rel).write_text("\n".join(L) + "\n")
     return len(FRAGMENTS)

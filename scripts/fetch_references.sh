@@ -226,6 +226,10 @@ for es in D.load_references(ledger).get("encoding_source", []):
 # the census to 87 (slice e) — the same named exclusion, the same flip condition
 if not any(m.startswith(("mul", "div", "rem")) for m in declared):
     extra = [n for n in extra if n not in ("rv_m", "rv64_m")]
+# and the C tables (P4-SYSTEM.12 slice a) under the same named exclusion until the C bind grows
+# the census to 200 (slice e) — the same flip condition: the scope declares a c. form
+if not any(m.startswith("c.") for m in declared):
+    extra = [n for n in extra if n not in ("rv_c", "rv64_c", "rv_c_d")]
 if not any(m.startswith(("lr.", "sc.", "amo")) for m in declared):
     extra = [n for n in extra if n not in ("rv_a", "rv64_a")]
 # and the Zifencei table under the same named exclusion until P4-SYSTEM.6's bind grows

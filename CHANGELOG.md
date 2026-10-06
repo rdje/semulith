@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0079 (leaf P4-SYSTEM.12, slice a) — the C re-pin and the fragment
+
+- The ledger pins `rv_c` (23), `rv64_c` (10), `rv_c_d` (4) by content; the census excludes them
+  by name until the bind.
+- `definitions/riscv/c.sexp` generated: 37 forms, the compressed register fields, 24 immediate
+  piece layouts (the loader generalized; the base path byte-identical), and the six upstream
+  overlaps as declared specializations (`schema/fragment.sexp` `specializes`).
+- `check_encoding_disjoint.judge_overlaps`: only DECLARED strict specializations are legal (5 new
+  controls, 17/17); UNIT-COMPOSITION uses the same rule.
+- Book: `plan/p4/c.md` (44 chapters).
+
 ## SEMULITH-P4-0078 (tree P4-SYSTEM) — the `.12` design brief: bind C
 
 - Recorded before execution. Measured: no C table on disk or pinned; 37 forms at RV64 + D

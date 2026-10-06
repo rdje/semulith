@@ -124,7 +124,8 @@ def _place(hi: int, lo: int, value: int) -> int:
     return value << lo
 
 
-def load_immediate_layout(path: Path, arg_lut: dict[str, tuple[int, int]]) -> dict[str, list[tuple[int, int]]]:
+def load_immediate_layout(path: Path, arg_lut: dict[str, tuple[int, int]],
+                          fields=None) -> dict[str, list[tuple[int, int]]]:
     """The bit layout of each scrambled immediate field, from riscv-opcodes' own table.
 
     Returns, per field, the immediate bit ranges it carries in MSB-to-LSB order — so
@@ -135,6 +136,10 @@ def load_immediate_layout(path: Path, arg_lut: dict[str, tuple[int, int]]) -> di
     makes parsing a foreign table safe: a descriptor this module misreads almost certainly
     produces the wrong total, and a silently wrong immediate is an instruction that assembles and
     jumps to the wrong address.
+
+    `fields` (P4-SYSTEM.12 slice a): the fields to read — the base's scrambled set by default;
+    the compressed immediates' PIECE fields for the C fragment, whose descriptors name the
+    immediate's kind (`uimm[…]`, `nzimm[…]`, `nzuimm[…]`) as well as its bits.
     """
     text = path.read_text()
     body = re.search(r"\{(.*?)\n\}", text[text.index('"imm20"') - 200:], re.S)
@@ -143,11 +148,11 @@ def load_immediate_layout(path: Path, arg_lut: dict[str, tuple[int, int]]) -> di
     raw = dict(re.findall(r'"([a-z0-9_]+)":\s*"([^"]+)"', body.group(1)))
 
     out: dict[str, list[tuple[int, int]]] = {}
-    for field in sorted(SCRAMBLED_OPERANDS):
+    for field in sorted(SCRAMBLED_OPERANDS if fields is None else fields):
         if field not in raw:
             raise AsmError(f"{path}: no descriptor for {field!r}")
         # the table is LaTeX-decorated in the source: `$\vert$` stands for the separator
-        inner = re.fullmatch(r"imm\[(.*)\]", re.sub(r"\$\\+vert\$", "|", raw[field]))
+        inner = re.fullmatch(r"(?:nz|u|nzu)?imm\[(.*)\]", re.sub(r"\$\\+vert\$", "|", raw[field]))
         if not inner:
             raise AsmError(f"{path}: {field!r} descriptor {raw[field]!r} is not an imm[...] form")
         parts: list[tuple[int, int]] = []
@@ -316,7 +321,7 @@ def resolve_composition(enc, path: Path):
                         f"composition does not provide before it. A fragment with an unmet "
                         f"dependency composes by luck, not by construction.")
         merged += [c for c in frag if isinstance(c, list)
-                   and c and c[0] in ("field", "scatter", "insn", "pseudo")]
+                   and c and c[0] in ("field", "scatter", "insn", "pseudo", "specializes")]
     return merged
 
 

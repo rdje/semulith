@@ -55,10 +55,12 @@ for doc in docs:
     except (C.CompositionError, Exception) as exc:  # noqa: BLE001 — name the document, not a traceback
         findings.append(f"REFUSED {doc}: {exc}")
         continue
-    bad = C.collisions(insns)
+    # declared specializations (P4-SYSTEM.12 slice a) are judged by the ONE rule the
+    # disjointness checker owns — never a second reading of the same question
+    bad, _accepted, spec_problems = C.judge_overlaps(insns, C.load_specializations(doc))
     names = [i.name for i in insns] + [p.name for p in pseudos]
     dupes = [n for n in set(names) if names.count(n) > 1]
-    problems = C.pseudo_problems(insns, pseudos)
+    problems = C.pseudo_problems(insns, pseudos) + spec_problems
     if bad or dupes or problems:
         findings.append(f"REJECTED {doc}: {len(bad)} collision(s), {len(dupes)} duplicate name(s), "
                         f"{len(problems)} pseudo problem(s) "

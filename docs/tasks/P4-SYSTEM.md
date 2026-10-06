@@ -185,7 +185,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: the encoding's `m` slot filled; every M form exercised on both engines by
   expectations derived before either runs, the division edge cases included.
 - ID: `P4-SYSTEM.12` — **bind C** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`; slice (a) done `SEMULITH-P4-0079`)
   Goal: the compressed instructions at RV64 with D (Zca + Zcd, `.1`'s closure): each 16-bit
   parcel decodes to the base instruction it expands to; fetch at two-byte granularity (IALIGN
   16); the reserved and illegal encodings refused.
@@ -235,7 +235,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `pending` | bind C — the design brief recorded `2026-10-06`; slice (a): the re-pin (rv_c, rv64_c, rv_c_d) and the fragment `c.sexp` (37 forms, scatter layouts, declared specializations and reserved code points; the disjointness rule for specializations) |
+| 1 | `P4-SYSTEM.12` | `pending` | bind C — slice (b): the language for C (the expansion construct and its checks — the base instruction named, the operands mapped, the spec's "expands into" sentence quoted; C.JALR's own rule; the reserved code points; `c.sem.sexp`; the generator's specificity decode); (a) done |
 
 ## Decisions
 
@@ -779,6 +779,55 @@ never raised, at every crossing. The index:
   `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, the book (`plan/p4/m.md` closed; the `plan/p4.md` index).
   promotion: declined (a closing slice; the leaf's lessons were promoted at slice b)
 
+`P4-SYSTEM.12` slice (a) — the C re-pin and the fragment: 37 forms, their scatter layouts, the declared specializations (`2026-10-06`, `SEMULITH-P4-0079`):
+
+- [x] **REPRODUCE / ISSUE** — at `2c7c454` no C table is on disk or pinned and no fragment exists:
+
+  ```
+  $ ls target/refs/riscv-opcodes/ | grep -c _c → 0
+  $ git ls-files 'definitions/riscv/c.sexp' → nothing
+  $ python3 scripts/check_encoding_disjoint.py definitions/riscv/c.sexp (first draft, before the rule) → rc=1:
+    COLLISIONS … c.addi16sp overlaps c.lui, c.ebreak overlaps c.jalr, c.jr overlaps c.mv … REJECTED
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: C's first slice. Two measured facts shaped it:
+  the base layout loader accepted only `imm[…]` descriptors (`git show HEAD:scripts/riscv_asm.py`,
+  `load_immediate_layout` — the C pieces read `uimm[…]`, `nzimm[…]`, `nzuimm[…]`); and the
+  disjointness rule had no notion of an overlap BY DESIGN, which the pinned table itself lists
+  (`constants.py` `overlapping_instructions`, six pairs).
+
+- [x] **FIX** — the ledger re-pins `rv_c` (23 rows), `rv64_c` (10), `rv_c_d` (4) by content (the
+  RV32-only tables deliberately not pinned); `fetch_references.sh`'s census gains the named C
+  exclusion (flips when the scope declares a `c.` form); `load_immediate_layout` takes a field set
+  and the C descriptors (the base path byte-identical: all nine fragments regenerate unchanged);
+  `gen_fragments.py` emits `definitions/riscv/c.sexp` — 37 forms, 11 register fields, 24
+  immediate-piece scatter layouts, and the six upstream overlaps as `(specializes …)` oriented by
+  the fixed bits (refused at generation if neither row contains the other); `schema/fragment.sexp`
+  gains the construct; the resolver carries it; `check_encoding_disjoint.judge_overlaps` accepts
+  exactly the DECLARED strict specializations — one rule, used by UNIT-COMPOSITION too.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_encoding_disjoint.py definitions/riscv/c.sexp → composed set: 37 instruction(s);
+    declared specializations: 6 (the special row decodes first); no collisions … the fragments COMPOSE
+  $ python3 scripts/check_encoding_disjoint.py <rv64i zicsr f d a m c> → composed set: 192 instruction(s) … COMPOSE
+  $ python3 scripts/check_encoding_disjoint.py --self-test → 17 pass / 0 fail (5 new: a declared strict
+    specialization GREEN; the same overlap undeclared, a reversed declaration, a declaration naming an absent
+    row, an overlap the declaration does not name — each RED)
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 → MATCH rv_c / rv64_c / rv_c_d; MATCH encoding
+    tables vs profile scope 163 == 163 (C excluded by name until the bind); fetch_references: ok
+  every C piece layout reconciles with its field width (24 of 24; e.g. c_imm12 (12, 2) [(11,11),(4,4),(9,8),(10,10),(6,6),(7,7),(3,1),(5,5)])
+  ```
+
+- [x] **NO REGRESSION** — the nine existing fragments byte-identical (`git status --short definitions` →
+  only `c.sexp` new); `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — the ledger, the fetch/census script, the loader, the fragment generator, the
+  fragment and its schema, the resolver, the disjointness rule and UNIT-COMPOSITION, `GS-REPORT.md`,
+  this tree, `CHANGELOG.md`, `MEMORY.md`, the book (`plan/p4/c.md`, new).
+  promotion: declined (the overlap-by-design rule is recorded in its schema construct and its checker; no general lesson)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -788,6 +837,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.12` slice (a) | C composes (37; 192 with the extensions); the disjointness self-test 17/17; the census 163 == 163 | the C fragment |
 | `2026-10-06` | `.11` slice (d) + LEAF | 13/13 forms; lab 139/139 + Sail 4/4; EVD-05 pin OK; 4,485 vectors | **met** — the leaf closes |
 | `2026-10-06` | `.11` slice (c2) | Sail over the M corpus: 4 AGREE of 4 (99 steps); a planted wrong quotient DIVERGES | the reference route |
 | `2026-10-06` | `.11` slice (c1) | 4,485 vectors through the engine; M-VECTORS ok, 6/6 controls; a hand-edited vector RED twice | the generated evidence route |
@@ -831,6 +881,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice a) | `SEMULITH-P4-0079 (leaf P4-SYSTEM.12): slice a — the C re-pin and the fragment: 37 forms, their scatter layouts, the six declared specializations` | (b) next |
 | `.12` brief | `SEMULITH-P4-0078 (tree P4-SYSTEM): the .12 design brief — bind C: each compressed form declared by its expansion, decoded by specificity, fetched parcel-first` | (a) next |
 | `.11` (slice d) + LEAF | `SEMULITH-P4-0077 (leaf P4-SYSTEM.11): slice d — THE LEAF ACCEPTANCE: M bound, every form on both engines from expectations derived first; the leaf CLOSES` | frontier → `.12` |
 | `.11` (slice c2) | `SEMULITH-P4-0076 (leaf P4-SYSTEM.11): slice c2 — the Sail matched experiment over the M corpus: 4 AGREE of 4` | (d) next |
@@ -871,6 +922,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.12` slice (a) done (`SEMULITH-P4-0079`) — the C tables pinned, `c.sexp` generated (37 forms, 6 declared specializations).
 
 - `2026-10-06`: `.12` design brief recorded (`SEMULITH-P4-0078`) — C binds as declared expansions (the spec's own constraint, made the representation), decoded by specificity with reserved code points from the spec, fetched parcel-first. Slices (a)–(f).
 
