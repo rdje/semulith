@@ -1,6 +1,6 @@
-;; fp-fcsr-view.expected.sexp — the expected observations for `fp-fcsr-view.s` (P4-SYSTEM.5
-;; slice b, the interrupts corpus). EVD-05: every value below was derived from the pinned
-;; chapters and the .5 brief's declared delivery rule by the spec-side authoring model
+;; fp-fcsr-view.expected.sexp — the expected observations for `fp-fcsr-view.s` (P4-SYSTEM.7,
+;; the floating-point corpus). EVD-05: every value below was derived from the pinned
+;; chapters and the .7 brief's declared FP-state rules by the spec-side authoring model
 ;; BEFORE any engine run; the corpus runner falsifies against it.
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py fp-fcsr-view.expected.sexp schema/expectations.sexp
@@ -19,7 +19,7 @@
   (step (n 5) (insn "addi x6, x0, 3") (writes (write (reg "x6") (value "0x0000000000000003")))
     (derivation "RDN is 3 in the rm/frm vocabulary.") (source "RVI-F §20.1.1 (the rounding-mode table)"))
   (step (n 6) (insn "csrrw x0, frm, x6") (writes)
-    (derivation "frm <- 3 (legal: one-of 0..4).") (source "RVI-F §20.1.1"))
+    (derivation "frm <- 3 (the three low bits of rs1 — the FSRM sentence).") (source "RVI-F §20.1.1"))
   (step (n 7) (insn "csrrs x7, fcsr, x0") (writes (write (reg "x7") (value "0x000000000000007f")))
     (derivation "x7 = 0x7F — the composed read: fflags[4:0] with frm[2:0] at bits 7:5.") (source "RVI-F §20.1.1 (the fcsr figure)"))
   (step (n 8) (insn "addi x9, x0, 64") (writes (write (reg "x9") (value "0x0000000000000040")))
@@ -32,18 +32,18 @@
     (derivation "x10 = 0 — the fflags slice of the fcsr write landed (and cleared).") (source "RVI-F §20.1.1"))
   (step (n 12) (insn "csrrs x11, frm, x0") (writes (write (reg "x11") (value "0x0000000000000002")))
     (derivation "x11 = 2 — the frm slice landed.") (source "RVI-F §20.1.1"))
-  (step (n 13) (insn "addi x9, x0, 0xE5") (writes (write (reg "x9") (value "0x00000000000000e5")))
-    (derivation "0xE5: frm slice 7 (illegal), flags slice 0x05.") (source "RVI-RV32I §1.1.4"))
+  (step (n 13) (insn "addi x9, x0, 0x1E5") (writes (write (reg "x9") (value "0x00000000000001e5")))
+    (derivation "0x1E5: bit 8 (beyond fcsr's two fields), frm slice 7, flags slice 0x05.") (source "RVI-RV32I §1.1.4"))
   (step (n 14) (insn "csrrw x0, fcsr, x9") (writes)
-    (derivation "the frm slice 7 is outside one-of 0..4 — frm RETAINS 2; the flags slice lands.") (source "RVI-F §20.1.1; RVP-CSR §1.1.3.1 (the WARL retain rule)"))
-  (step (n 15) (insn "csrrs x12, fcsr, x0") (writes (write (reg "x12") (value "0x0000000000000045")))
-    (derivation "x12 = 0x45 — the retention observed through the composed view.") (source "RVI-F §20.1.1"))
-  (step (n 16) (insn "addi x13, x0, 6") (writes (write (reg "x13") (value "0x0000000000000006")))
-    (derivation "6 is illegal for frm.") (source "RVI-RV32I §1.1.4"))
+    (derivation "both slices land: frm <- 7 (any 3-bit value — 111 in frm is a dynamic RESERVED rounding mode, reachable by construction), fflags <- 0x05; bit 8 is ignored ('implementations shall ignore writes to these bits').") (source "RVI-F §20.1.1"))
+  (step (n 15) (insn "csrrs x12, fcsr, x0") (writes (write (reg "x12") (value "0x00000000000000e5")))
+    (derivation "x12 = 0xE5 — frm 7 composed above flags 0x05; bit 8 reads zero ('supply a zero value when read').") (source "RVI-F §20.1.1"))
+  (step (n 16) (insn "addi x13, x0, 14") (writes (write (reg "x13") (value "0x000000000000000e")))
+    (derivation "0b1110: low three bits 6, bit 3 beyond frm's field.") (source "RVI-RV32I §1.1.4"))
   (step (n 17) (insn "csrrw x0, frm, x13") (writes)
-    (derivation "frm retains 2 at its own address too.") (source "RVI-F §20.1.1"))
-  (step (n 18) (insn "csrrs x14, frm, x0") (writes (write (reg "x14") (value "0x0000000000000002")))
-    (derivation "x14 = 2.") (source "RVI-F §20.1.1"))
+    (derivation "frm <- 6 — 'the three least-significant bits of integer register rs1'; bit 3 drops.") (source "RVI-F §20.1.1"))
+  (step (n 18) (insn "csrrs x14, frm, x0") (writes (write (reg "x14") (value "0x0000000000000006")))
+    (derivation "x14 = 6 (FRRM: frm in the low three bits, zero above).") (source "RVI-F §20.1.1"))
   (step (n 19) (insn "csrrs x15, mstatus, x0") (writes (write (reg "x15") (value "0x8000000a00006000")))
     (derivation "x15 observes FS=Dirty with SD=1 — the FP-CSR writes dirtied the context.") (source "RVP-MACHINE §2.1.1.6.7"))
 )

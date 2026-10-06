@@ -27,7 +27,7 @@
 //!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `3dd1ab658eed1a72e95b9a13108e7701d0fc59c9c8e9605c631bcaebfcabfe33`
-//!   `profiles/rv64gc-lab-v0/state.sexp`  `ea6c4ef14b592100f3c691ea64e71bf6851928a076b1628c95570ab372736e4b`
+//!   `profiles/rv64gc-lab-v0/state.sexp`  `59282e4fac25443c6c4560503b7c5587c02fe1be74c42b5e1d972f1ed8904792`
 //! Generator: `scripts/gen_definition.py` (sha256 `11244266f1e953d5d71243027dbf890c90853b129f0ade99e94f469e170757a9`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
@@ -138,7 +138,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
-            sha256: "ea6c4ef14b592100f3c691ea64e71bf6851928a076b1628c95570ab372736e4b",
+            sha256: "59282e4fac25443c6c4560503b7c5587c02fe1be74c42b5e1d972f1ed8904792",
         },
     ],
     sources: &[

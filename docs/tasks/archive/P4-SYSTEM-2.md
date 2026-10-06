@@ -6,7 +6,8 @@ of the 131,072 B per-part ceiling on `2026-10-04`: every archive move from
 the `docs/tasks/` precedent (the `P2-SCALAR` checklists/designs split). The live
 tree keeps the frontier, the decisions, the open questions, the blockers, every
 leaf's goal/acceptance/result narrative, the ACTIVE slice's checklist, and both
-logs.
+logs. Moves from the `2026-10-06` `.7` slice-(c1) crossing onward land in
+[part 3](P4-SYSTEM-3.md).
 
 Archived sections, verbatim:
 

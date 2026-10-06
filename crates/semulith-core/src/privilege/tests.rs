@@ -241,9 +241,10 @@ static FIELDS: &[FieldMeta] = &[
         Some(Legalize::Computed),
     ),
     f("sstatus", "wpri", 62, 0, FieldDiscipline::Wpri, None),
-    // The FP CSRs (P4-SYSTEM.7 slice b): the document's shapes — fflags' accrued flags
-    // WARL-any, frm WARL one-of 0..4, both WPRI above; fcsr declares no fields (the
-    // composition reads the owners' tables).
+    // The FP CSRs (P4-SYSTEM.7 slice b; frm corrected at slice c1): the document's
+    // shapes — fflags' accrued flags WARL-any, frm holding ANY 3-bit value (the FSRM
+    // sentence), both WPRI above; fcsr declares no fields (the composition reads the
+    // owners' tables).
     f(
         "fflags",
         "flags_4_0",
@@ -259,7 +260,7 @@ static FIELDS: &[FieldMeta] = &[
         2,
         0,
         FieldDiscipline::Warl,
-        Some(Legalize::OneOf(&[0, 1, 2, 3, 4])),
+        Some(Legalize::Any),
     ),
     f("frm", "wpri", 63, 3, FieldDiscipline::Wpri, None),
 ];
@@ -774,22 +775,24 @@ fn fcsr_write_splits_back_into_the_owners() {
     csr_write(&mut h, 0x003, 0x5F).unwrap(); // frm=2, flags=0x1F
     assert_eq!(csr_read(&h, 0x001).unwrap(), 0x1F);
     assert_eq!(csr_read(&h, 0x002).unwrap(), 0x2);
-    // An illegal frm slice retains the old value (the field's one-of rule judges the
-    // slice); the fflags slice still lands. Bits 63:8 drop (WPRI).
+    // frm holds ANY 3-bit value — "FSRM … writing a new value obtained from the three
+    // least-significant bits of integer register rs1 into frm" (RVI-F §20.1.1): slice 7
+    // lands (111 in frm is a dynamic RESERVED rounding mode, reachable by construction);
+    // the fflags slice lands; bits 63:8 drop (WPRI).
     csr_write(&mut h, 0x003, u64::MAX).unwrap();
     assert_eq!(
         csr_read(&h, 0x002).unwrap(),
-        0x2,
-        "frm slice 7 is illegal: retained"
+        0x7,
+        "frm slice 7 lands: no legalization"
     );
     assert_eq!(csr_read(&h, 0x001).unwrap(), 0x1F);
-    assert_eq!(csr_read(&h, 0x003).unwrap(), 0x1F | (2 << 5));
-    // frm's own address judges the same rule.
-    csr_write(&mut h, 0x002, 0x6).unwrap();
+    assert_eq!(csr_read(&h, 0x003).unwrap(), 0x1F | (7 << 5));
+    // frm's own address stores the three low bits too; the rest drop (WPRI).
+    csr_write(&mut h, 0x002, 0xE).unwrap();
     assert_eq!(
         csr_read(&h, 0x002).unwrap(),
-        0x2,
-        "one-of 0..4 at the owner too"
+        0x6,
+        "the three low bits of the write, at the owner too"
     );
 }
 

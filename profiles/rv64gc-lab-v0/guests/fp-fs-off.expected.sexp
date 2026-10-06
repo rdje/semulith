@@ -1,6 +1,6 @@
-;; fp-fs-off.expected.sexp — the expected observations for `fp-fs-off.s` (P4-SYSTEM.5
-;; slice b, the interrupts corpus). EVD-05: every value below was derived from the pinned
-;; chapters and the .5 brief's declared delivery rule by the spec-side authoring model
+;; fp-fs-off.expected.sexp — the expected observations for `fp-fs-off.s` (P4-SYSTEM.7,
+;; the floating-point corpus). EVD-05: every value below was derived from the pinned
+;; chapters and the .7 brief's declared FP-state rules by the spec-side authoring model
 ;; BEFORE any engine run; the corpus runner falsifies against it.
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py fp-fs-off.expected.sexp schema/expectations.sexp

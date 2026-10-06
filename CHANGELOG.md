@@ -1,5 +1,28 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0041 (leaf P4-SYSTEM.7, slice c1) — frm holds any 3-bit value: slice (b)'s WARL retention fixed at root; the slice (c) split recorded
+
+- **The defect, measured against the pinned chapter**: slice (b) declared `frm`
+  WARL one-of 0..4 (an illegal write retaining the old value); RVI-F §20.1.1 says
+  FSRM writes "the three least-significant bits of integer register rs1 into frm"
+  and names 101–111 dynamic reserved rounding modes — values frm must hold. Fixed
+  at the declaration (`(legalize (any))`, the sentence quoted), the generated
+  state mirror and the definition manifest regenerated, the privilege unit tests
+  rewritten to the spec rule.
+- `fp-fcsr-view` re-derived spec-side first (the authoring tool corrected) and
+  RED against the unfixed engine (fcsr `0x45` vs the spec's `0xE5`), green after;
+  its step 13 now also exercises fcsr's ignored bit 8. Both FP guests' headers
+  corrected (they named "P4-SYSTEM.5 … the interrupts corpus"); the authoring
+  tool refuses a `"` in a directive by name.
+- The reserved-rm policy recorded: the pinned revision makes it "reserved"; the
+  laboratory takes illegal-instruction (still valid per the spec; Sail's
+  `Fcsr_RM_Illegal`) — stated in the operator contract at slice (c3).
+- The slice (c) execution split recorded in the tree (c1–c6; the FS gate judged
+  at the head of any instruction whose rule touches FP state). Book: the
+  duplicated `## Gate CPU-SYSTEM` heading and the stale `.3`/`.4` "underway"
+  headings fixed; the `.7` section records the correction. Knowledge card
+  promoted. 103/103; `make check` + `make gate` green.
+
 ## SEMULITH-AC-0059 (tree ARTIFACT-CLEANUP) — the 2026-10-06 §8 run: 192 incremental caches deleted (607 MB)
 
 - The ~24 h trigger fired (the `2026-10-04` record was two days old). The census found

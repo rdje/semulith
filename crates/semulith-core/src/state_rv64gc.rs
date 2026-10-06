@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `ea6c4ef14b592100f3c691ea64e71bf6851928a076b1628c95570ab372736e4b`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `59282e4fac25443c6c4560503b7c5587c02fe1be74c42b5e1d972f1ed8904792`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, the 32 × 64-bit
@@ -1664,7 +1664,7 @@ pub const CSR_FIELDS: [FieldMeta; 136] = [
         bit_hi: 2,
         bit_lo: 0,
         discipline: FieldDiscipline::Warl,
-        legalize: Some(Legalize::OneOf(&[0, 1, 2, 3, 4])),
+        legalize: Some(Legalize::Any),
         reset: 0,
     },
     FieldMeta {
@@ -1754,7 +1754,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "floating-point registers f0-f31 and the fcsr behaviour",
             present: true,
-            why: "answered by P4-SYSTEM.7 slice (b) after slice (a)'s qualification (SEMULITH-P4-0039, rustc_apfloat): the file is modelled — 32 x 64-bit (FLEN=64 with D, the LP64D ABI), declared above with its laboratory reset; mstatus.FS gates the FP instructions AND the fflags/frm/fcsr CSRs (four-state FS, reset 0 = Off, Dirty on any FP state write — Sail 0.14's dirty_fd_context measured; SD is the computed summary and follows); fflags is the sticky accrued-flags register (software-clearable); frm is WARL one-of 0..4 with dyn/reserved-rm resolution stated; fcsr is the two-owner VIEW, composed by the engine from fflags[4:0] and frm[2:0] (the pre-slice single-owner resolution read 0 and refused writes — measured, fixed at root). Observation stays through the x-registers (decision 8): the file itself is never an expectations-vocabulary item",
+            why: "answered by P4-SYSTEM.7 slice (b) after slice (a)'s qualification (SEMULITH-P4-0039, rustc_apfloat): the file is modelled — 32 x 64-bit (FLEN=64 with D, the LP64D ABI), declared above with its laboratory reset; mstatus.FS gates the FP instructions AND the fflags/frm/fcsr CSRs (four-state FS, reset 0 = Off, Dirty on any FP state write — Sail 0.14's dirty_fd_context measured; SD is the computed summary and follows); fflags is the sticky accrued-flags register (software-clearable); frm holds any 3-bit value (the FSRM sentence — slice (c1) corrected slice (b)'s WARL one-of 0..4), with the dyn/reserved-rm resolution stated; fcsr is the two-owner VIEW, composed by the engine from fflags[4:0] and frm[2:0] (the pre-slice single-owner resolution read 0 and refused writes — measured, fixed at root). Observation stays through the x-registers (decision 8): the file itself is never an expectations-vocabulary item",
         },
         HiddenStateCandidate {
             candidate: "environment state (mtime, interrupt sources, the time register's value)",

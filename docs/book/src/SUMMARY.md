@@ -20,6 +20,12 @@
     - [P2 — the first validated profile](plan/p2.md)
     - [P3 — breadth, and the DSP pressure](plan/p3.md)
     - [P4 — the Linux CPU profile](plan/p4.md)
+        - [P4.2 — Privilege and mode transitions](plan/p4/privilege.md)
+        - [P4.3 — Sv39 translation and protection](plan/p4/sv39.md)
+        - [P4.4 — Atomics and reservations](plan/p4/atomics.md)
+        - [P4.5 — Interrupts, counters and wait](plan/p4/interrupts.md)
+        - [P4.6 — Instruction visibility and fence semantics](plan/p4/fence-i.md)
+        - [P4.7 — Floating point](plan/p4/floating-point.md)
     - [P5–P7 — board, Linux, computer](plan/p5-p7.md)
     - [Multicore and optimization](plan/multicore.md)
 

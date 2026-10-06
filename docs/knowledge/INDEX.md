@@ -34,4 +34,5 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`pin-the-mechanism-slope-before-the-number.md`](pin-the-mechanism-slope-before-the-number.md) | my measurement says "1.4 allocations per step" — is that signoff-grade? |
 | [`an-inherited-label-is-a-claim-to-re-derive.md`](an-inherited-label-is-a-claim-to-re-derive.md) | a design brief names a device — can I trust the label, or must I measure it? |
 | [`an-identity-proof-needs-a-must-diverge-control.md`](an-identity-proof-needs-a-must-diverge-control.md) | my before/after comparison is byte-identical on every case — how do I know the harness can tell different apart at all? |
+| [`a-legalization-rule-is-a-claim-the-spec-must-grant.md`](a-legalization-rule-is-a-claim-the-spec-must-grant.md) | I am about to declare a CSR field WARL with a laboratory legal-value set — what must the specification say first? |
 | [`the-chipdoc-channel.md`](the-chipdoc-channel.md) | how does semulith ask chipdoc for a document, and know it was heard? (`materials/requests.sexp` with `(status open)` — preferred; catalog gaps the fallback; exactly-once ids; the 2026-09-30 incident's lesson) |

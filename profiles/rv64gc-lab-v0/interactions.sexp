@@ -45,8 +45,11 @@
 ;; `P4-SYSTEM.7` slice (b) (`2026-10-06`): the 2-guest FP-state corpus rides the SAME
 ;; seven axes (no axis is added): the FS=Off illegal-instruction cells are the fault
 ;; axis's cause-2 vocabulary and the legality axis's permission/refusal story (the gate
-;; is dynamic state, not encoding), the FS transitions and frm's WARL retention are
-;; legality, and fcsr's two-owner composition is the alias axis's CSR-access story (one
+;; is dynamic state, not encoding), the FS transitions and the FP CSRs' write
+;; legality are legality — fcsr's ignored bits 31..8 and the bits beyond frm's three
+;; (slice (c1), 2026-10-06, replaced slice (b)'s frm WARL-retention cell: frm holds ANY
+;; 3-bit value, the FSRM sentence — the retention contradicted it, measured and fixed at
+;; root) — and fcsr's two-owner composition is the alias axis's CSR-access story (one
 ;; storage, three names). The FS=Off INSTRUCTION cells are the F bind's (slice c) — no
 ;; FP instruction decodes yet, so pre-bind the gate is unobservable on the instruction
 ;; path, measured.

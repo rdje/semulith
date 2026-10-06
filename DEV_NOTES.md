@@ -1,5 +1,47 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — frm held what the spec writes, not what the laboratory preferred (P4-SYSTEM.7 slice c1)
+
+Slice (b) declared `frm` WARL one-of 0..4 — an illegal write retaining the old
+value — and parked Sail's "stores anything" as a named difference for slice (e).
+Re-reading the pinned F chapter for slice (c)'s dyn-rm resolution exposed it: FSRM
+writes "the three least-significant bits of integer register rs1 into frm" (no
+legalization), and the rounding-mode table names 101–111 *dynamic reserved
+rounding modes*, a state frm must be able to HOLD for the sentence to mean
+anything. Three artifacts had encoded the one misreading — the declaration, the
+privilege unit tests, the spec-side authoring tool — so every check agreed with
+every other. The fix went in at the declaration (`(legalize (any))`, the FSRM
+sentence quoted in the statement); the generated state mirror and the definition
+manifest regenerated; the tests now assert 7 lands from a fcsr slice and 6 from a
+frm write of 0b1110. `fp-fcsr-view` was re-derived spec-side FIRST (the tool
+corrected) and run against the unfixed engine: step 15 read `0x45` where the
+specification gives `0xE5` — RED for the right reason — then green on the fix.
+The guest's step 13 now also writes bit 8, so the legality cell it sits in is
+fcsr's own "shall ignore writes to these bits / supply a zero value" sentence, not
+a retention the spec never granted.
+
+Also recorded here: the pinned revision WEAKENED the reserved-rm rule — "The
+behavior of floating-point instructions that depend on rounding mode when executed
+with a reserved rounding mode is reserved" — while calling the ratified
+illegal-instruction mandate "still valid behavior". The laboratory takes
+illegal-instruction for static 101/110 and dynamic 101–111 (Sail's
+`Fcsr_RM_Illegal`, `fext_insts.sail:51-63`); slice (c3) states it in the
+operator's contract. Two incidental defects of the authoring tool were fixed in
+passing: its header template still named "P4-SYSTEM.5 slice b, the interrupts
+corpus" (both FP guests carried that false provenance line — corrected, values
+byte-unchanged in `fp-fs-off`), and it wrote directives into S-expression strings
+unescaped, so a `"` in a directive would have silently broken the file — it now
+refuses by name (fired RED once). And the book's P4 chapter carried a duplicated
+`## Gate CPU-SYSTEM` heading (slice b) and "underway" headings over the closed
+`.3`/`.4` sections — fixed.
+
+- **Validation:** `cargo test -p semulith-core --lib` 134/134; `cargo test -p
+  semulith-verify run_rv64gc` 4/4 (103/103) — and RED against the unfixed
+  legalization (fp-fcsr-view step 15); `gen_state.py --check` byte-exact after the
+  restore; INTERACTION-MATRIX ok; `make check` + `make gate` green.
+- Promotion: PROMOTED — docs/knowledge/a-legalization-rule-is-a-claim-the-spec-must-grant.md
+  + INDEX (the map regenerated).
+
 ## _(2026-10-06)_ — the identity proof's RED control is what makes it a proof (P4-SYSTEM.7 slice b)
 
 Slice (b)'s byte-level identity proof (101 pre-slice guests, both CLIs — the
@@ -659,44 +701,4 @@ Execution of the `.3` brief's checkpoint (b) measured:
   tests, not gate census members); smoke-bench 53 arms, bench wasm, both books.
   Promotion: declined (the enum-addition ripple is structural — the compiler
   names every match site, and this slice's checklist records the dispositions).
-
-## _(2026-10-03)_ — the override must name what it depends on (P4-SYSTEM.3 slice a)
-
-Execution of the `.3` brief's checkpoint (a) measured:
-
-- **Sail's default had Svade on all along.** The .2 override's template-driven
-  generation set every extension it named — including `Svade supported: false` —
-  so the .2 experiment ran with the hardware-update policy (irrelevant then: no
-  guest activates translation). But the default config's `Svade.supported` is
-  `true`: had the template not named it, the .2 config would have silently
-  inherited the Svade policy. The flip to `true` is the D-SVADE match — and the
-  discipline it crystallizes: a matched override NAMES every flag its experiment
-  depends on, because inheriting a default is a silent config, not a chosen one.
-  The re-run is the proof the flip is behavior-free for this corpus: 11/12 AGREE,
-  byte-identical verdicts to the pre-flip baseline (measured, never assumed).
-- **The refusal arm's fixture must pass the mapping first.** The first
-  validate_gc refusal arms failed for the wrong reason — my synthetic
-  `(hardware_stack (placeholder true))` was refused by the dossier MAPPING
-  (`missing (levels …)`) before validate_gc ever ran. A RED arm proves the right
-  refusal only when its fixture is valid up to the layer under test: the arms now
-  inject mapping-valid construct shapes, so the refusal that fires is
-  validate_gc's own, named. (The same discipline the acceptance boxes' census
-  arms already carry — a RED against the wrong layer is a GREEN lie wearing red.)
-- **The ISA string is the declared order, and the brief's string was checkable.**
-  gen_platform's rule (the .1 fix): single-letters concatenated, multi-letter
-  underscore-joined, Z* before S*, alphabetical within. Appending Svade after
-  Sstc yields exactly the brief's `rv64imafdc_zicntr_zicsr_zifencei_sstc_svade` —
-  the brief's own string was right, and the rule re-derived it rather than
-  trusting it. The census (`git grep -l 'rv64imafdc'` over seven trees) found two
-  authored occurrences to amend (with owners named), two Sail-DEFAULT mentions to
-  leave (not our string), one archive to leave, and no derived surface to
-  regenerate (no board pins rv64gc today).
-- **Validation:** the dossier flips schema-valid and RECORD-SCHEMA green (rule 4
-  statement-identity, rule 9 restatement, the D-SV39 note correctly NOT
-  mirrored); the override flip config-valid; the full 12-guest re-run
-  baseline-identical; STATE-GEN 22→25 arms, both real pairs byte-identical;
-  `make check` 8/8, `make gate` all green (DERIVED-COUNTS 419→422 re-derived).
-  Promotion: declined (the matched-override name-your-flag discipline is the
-  reference dossier's own record, and this slice's checklist carries the
-  measurement).
 

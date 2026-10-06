@@ -92,9 +92,9 @@
 //!   `profiles/rv64gc-lab-v0/guests/fencei-reserved.s`  `a184809b88d96cef43b841f9eb2853575cb5c2f32294f0d4fe69168fe48320a2`
 //!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.expected.sexp`  `43cb3e21ccf6ec0e6a34da37ca0d3c9c6978cea25471c3f767f4da866ecc319f`
 //!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.s`  `39ef7e47eaf77ebb13c56ef469abb2cde318a84e533d2d1554cf6894ad430a3d`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.expected.sexp`  `7683a70af7480259cd0008966c12c01c16153d5518565017528968982ca06e5c`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.s`  `cd7bb356e339fc0084d21a63bd4a5e22f5b9f2ef966d3a5dd25e9fbd9e2d1316`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.expected.sexp`  `bb3dcc70908d80de2de06c30ade6f9fa062c3cbf99244225494b1c7d87c8e443`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.expected.sexp`  `ea3369f0f642d2c62fa649fd9f982796f7d6d17cda5e5a2d36f822c537f292bb`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.s`  `89e4a17dc2476936e6cccb0104fd5647b4dc1c85ba2da7b206915288b2da3688`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.expected.sexp`  `111c631a45833e658b8304828f356b5d12600fe2d2f5f020398189ce00c8c571`
 //!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.s`  `a05060f593ca53dd4b6f0efdab183c4c3dc9f8b27e52ef2cc2eda8806faea405`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.expected.sexp`  `4caae2a18515bc4b479ca810df3edd2d23c534f19b8cb9afc081a97cb48485ac`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.s`  `497f63c79cd8e25918d845d5cc7d3430566b2f504a31cd33b2deb572f94694e6`
@@ -13643,10 +13643,10 @@ static WORDS_FP_FCSR_VIEW: &[u32] = &[
     0x00500513,
     0x00102573,
     0x002025F3,
-    0x0E500493,
+    0x1E500493,
     0x00349073,
     0x00302673,
-    0x00600693,
+    0x00E00693,
     0x00269073,
     0x00202773,
     0x300027F3,
@@ -13666,12 +13666,12 @@ static EXPECTED_FP_FCSR_VIEW: &[Expectation] = &[
     Expectation { step: 10, writes: &[(10, 0x0000000000000005)] },
     Expectation { step: 11, writes: &[(10, 0x0000000000000000)] },
     Expectation { step: 12, writes: &[(11, 0x0000000000000002)] },
-    Expectation { step: 13, writes: &[(9, 0x00000000000000E5)] },
+    Expectation { step: 13, writes: &[(9, 0x00000000000001E5)] },
     Expectation { step: 14, writes: &[] },
-    Expectation { step: 15, writes: &[(12, 0x0000000000000045)] },
-    Expectation { step: 16, writes: &[(13, 0x0000000000000006)] },
+    Expectation { step: 15, writes: &[(12, 0x00000000000000E5)] },
+    Expectation { step: 16, writes: &[(13, 0x000000000000000E)] },
     Expectation { step: 17, writes: &[] },
-    Expectation { step: 18, writes: &[(14, 0x0000000000000002)] },
+    Expectation { step: 18, writes: &[(14, 0x0000000000000006)] },
     Expectation { step: 19, writes: &[(15, 0x8000000A00006000)] },
 ];
 
