@@ -11,9 +11,13 @@ description = "Canonical processor-model core: state, decode, semantics, environ
 
 [dependencies]
 # P4-SYSTEM.7 slice (a): the FP backend, qualified by measurement and pinned exactly
-# (docs/decisions/decision_fp-backend-qualification.md). Used from slice (b)'s fp.rs;
-# the lib.rs re-export is this slice's compile-use.
-rustc_apfloat = "=0.2.3+llvm-462a31f5a5ab"
+# (docs/decisions/decision_fp-backend-qualification.md). Its one consumer is the model
+# layer, src/fp.rs (slice c4), which owns the RISC-V target policy over it.
+# The requirement pins the VERSION exactly; the build metadata (+llvm-462a31f5a5ab, the LLVM
+# commit the port tracks) is not part of a requirement — Cargo ignores it there, and
+# crates.io never publishes two artifacts of one version — so the exact artifact is pinned
+# by Cargo.lock's version string and checksum (and verified against the vendored copy).
+rustc_apfloat = "=0.2.3"
 
 [lints]
 workspace = true

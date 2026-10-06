@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c3) done `2026-10-06`, `SEMULITH-P4-0041`–`-0044`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c4) done `2026-10-06`, `SEMULITH-P4-0041`–`-0046`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -164,7 +164,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); next (c4): `fp.rs`, the model layer over rustc_apfloat |
+| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; next (c5): the staged F corpus |
 
 ## Decisions
 
@@ -1074,6 +1074,58 @@ never raised, at every crossing. The index:
 - [x] **LOCKSTEP** — this tree (the decision, this checklist, the logs), `CHANGELOG.md`,
   `DEV_NOTES.md`, `MEMORY.md`, `README.md`, the book's annex; `promotion:` see DEV_NOTES.
 
+`P4-SYSTEM.7` slice (c4) part 2 — `fp.rs`, the model layer; the oracle's two rule defects (`2026-10-06`, `SEMULITH-P4-0046`):
+
+- [x] **REPRODUCE / ISSUE** — the first run of the spec-side vectors against `fp.rs`:
+
+  ```
+  $ cargo test -p semulith-core --lib fp:: → 3 of 176 vectors: mul f32 Rne/Rup/Rmm
+    a=0x800000 b=0x3f7fffff: got bits 0x800000 flags 0x1, the specification gives 0x3
+    (2^-126·(1−2^-24): tiny after rounding, inexact — UF)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the backend judges tininess on the DELIVERED result
+  (`Status::UNDERFLOW` absent when the result rounds up to the smallest normal); RISC-V and
+  IEEE §7.5 judge the unbounded-exponent rounded result. Slice (a) could not see it: `grep -n
+  "uf_flag = 1" target/p4-system-7/mpfr/vec_gen.c` → four sites, each `e == 0` on the
+  delivered result (the backend's convention); and its OF rule, `mpfr_cmpabs(ze, MAXF) > 0`, is
+  the EXACT magnitude, not §7.4's rounded one. SoftFloat (`s_roundPackToF32.c:72-74`,
+  `specialize.h:48` — after rounding) takes the IEEE side on both.
+
+- [x] **FIX** — `crates/semulith-core/src/fp.rs`: the model layer (canonical NaN, boxing,
+  `resolve_rm`, the four arithmetic ops + fma + sqrt, min/max/compares/class in bits,
+  to_int/from_int with Table 5), OF and UF both judged on the exactly-unbounded value
+  (`WideSingleS`/`WideDoubleS`); `fp/tests.rs` + the generated `fp/tests/vectors.rs` (176
+  spec-side vectors); `scripts/specfp.py` (the exact-rational reference) +
+  `scripts/gen_fp_vectors.py` tracked; `scripts/check_fp_vectors.sh` registered (FP-VECTORS);
+  the manifest pin expressed `=0.2.3` (Cargo ignored the build metadata, warning every build);
+  the lib.rs/Cargo.toml comments corrected (they named slice (b) as fp.rs's); the scratch
+  oracle's OF/UF rules corrected; the decision record amended.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core --lib fp:: → test result: ok. 7 passed (176/176 vectors)
+  $ python3 target/p4-system-7/fpcheck/compare.py (fp.rs over the 63,752-case corpus) →
+    vs MPFR (corrected, canonical-NaN): 51840 cases, 0 disagreements
+    vs the exact-rational spec reference: 63480 cases, 0 disagreements
+    RED — one corrupted line: 1 disagreement in each
+  the corrected oracle vs slice (a)'s: 72 lines changed, all OFNX -> NX; the backend's flag
+    deviations re-measured: 290 OF-on-clamp + 24 NV-on-sNaN-conversion (+ the UF boundary)
+  $ bash scripts/check_fp_vectors.sh --self-test → FP-VECTORS --self-test: 6 pass / 0 fail
+    (the reference-mutation arm: a half-up tie rule caught by the directed ties — it had
+    survived 1,313 random cases)
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (core 141); `make gate` → `=== all doctrines
+  green ===` (DERIVED-COUNTS: 36 doctrines, 461 arms; REGISTRY-MIRROR 3 mirrors); nothing
+  outside `fp.rs` calls the model layer yet — the arms land at the bind.
+
+- [x] **LOCKSTEP** — this tree, the decision record's amendment, `DEV_NOTES.md` (PROMOTED —
+  the oracle card + INDEX), `CHANGELOG.md`, `MEMORY.md` (next_action → c5), `LIVE_STATUS.md`,
+  the book (P4.7 chapter; the doctrine chapter row), `docs/doctrines/definition.md`,
+  `DOCTRINE_ENFORCEMENT.md`, `docs/toolbox/definition.md`.
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1083,6 +1135,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (c4) part 2 | 176 spec-side vectors (3 RED first — the UF boundary); the oracle's OF/UF rules read in source and corrected (72 false OFs; UF delivered-result) with SoftFloat's RISC-V roundPack read as the cross-reference; fp.rs over the corpus — 0/51,840 vs corrected MPFR, 0/63,480 vs the exact-rational reference, RED on one corruption; FP-VECTORS 6/6 with the reference-mutation arm | **met** — the model layer is the RISC-V policy over the backend, OF/UF exact; the qualification record amended |
 | `2026-10-06` | `.7` slice (c4) part 1 | the shared cache census (rustc_apfloat at slice (a)'s landing time); cargo metadata's resolution path before (~/.cargo) and after (.app-data/vendor); the shared cache's stat snapshot unchanged by a full + wasm build; the missing-store RED (loud); make vendor idempotent and reproducible | **met** — every cargo run in the repository resolves on-volume; CI and bootstrap populate the store |
 | `2026-10-06` | `.7` slice (c3) part 2 | the language census (44 operators; the typed 43); the FP block (18 operators, the contract once); f.sem.sexp 30/30 + 26 quotes judged; check_fp + 6 arms (23/23); the F lowering on a staged composition + 8 DEF-GEN arms (31/31); the assembler's derived register files — 30/30 spike-dasm round trip, 6/6 refusals; both modules and both fixtures emission-neutral | **met** — the F vocabulary exists, checked and lowered; the tracked module unmoved until the bind |
 | `2026-10-06` | `.7` slice (c3) part 1 | the pinned F/D chapters' heading census against every `RVI-F §20.1.1` / `RVI-D §21.1.2` locator; the fcsr content re-cited §20.1.2, FLEN=64 §21.1.1; both FP guests re-derived (sources only, values byte-identical); 103/103; check_citations 52/52 (its scope measured: sem files only, existence only) | **met** — the locators name the sections that hold their content; the tool gap owned by `CITATION-ACCURACY` |
@@ -1094,6 +1147,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice c4 part 2) | `SEMULITH-P4-0046 (leaf P4-SYSTEM.7): slice c4 part 2 — fp.rs, the model layer over rustc_apfloat (OF/UF exact on the unbounded value, sqrt computed); the qualification oracle's two rule defects found and the record amended; FP-VECTORS registered` | 176 vectors; 0/51,840 + 0/63,480; the third deviation; the pin expressed =0.2.3 |
 | `.7` (slice c4 part 1) | `SEMULITH-P4-0045 (leaf P4-SYSTEM.7): slice c4 part 1 — the dependency store on-volume: .cargo/config.toml routes every cargo run to .app-data/vendor (slice a's first registry dependency resolved through ~/.cargo)` | source replacement; make vendor; CI + bootstrap populate; RED-proven |
 | `.7` (slice c3 part 2) | `SEMULITH-P4-0044 (leaf P4-SYSTEM.7): slice c3 part 2 — the semantics language learns FP (18 operators, the FP-state contract once), f.sem.sexp (30 rules), the gated lowering, the assembler's derived register files` | check_fp; the Surface bundle; the derived form count (the typed 43 was 44); 30/30 round trip |
 | `.7` (slice c3 part 1) | `SEMULITH-P4-0043 (leaf P4-SYSTEM.7): slice c3 part 1 — the FP-CSR locators corrected (fcsr is RVI-F §20.1.2, FLEN=64 is RVI-D §21.1.1)` | the heading census; 24+ locators re-cited; both guests re-derived sources-only; the citation tool's blind spot measured and routed to CITATION-ACCURACY |
@@ -1135,6 +1189,15 @@ only the ACTIVE leaf's rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (c4) part 2 done (`SEMULITH-P4-0046`) — **the model layer**:
+  `fp.rs` owns the RISC-V policy over rustc_apfloat (canonical NaN, boxing, rounding-mode
+  resolution, sqrt computed exactly, min/max/compares/class in bits, Table 5's NaN→int, the
+  FMA ∞×0 rule), with OF and UF judged on the exactly-unbounded result. Its spec-side vectors
+  exposed that slice (a)'s MPFR oracle shared two of the backend's conventions (OF on the
+  exact magnitude: 72 false overflows; UF on the delivered result: a third deviation hidden);
+  corrected, fp.rs disagrees with neither oracle on the 63,752-case corpus. FP-VECTORS
+  registered; the decision record amended. Next: slice (c5) — the staged F corpus.
 
 - `2026-10-06`: `.7` slice (c4) part 1 done (`SEMULITH-P4-0045`) — **the dependency store
   on-volume**: slice (a)'s first registry dependency had been resolved by every routine

@@ -51,6 +51,7 @@ PROJECT_DOCTRINES=(
   "COMMIT-PREFIX|the commit-msg hook pins the SEMULITH- work-unit prefix — a SEMILITH- subject is refused with SEMULITH named, a SEMULITH- subject passes; the probe is behavioural, so a scaffold sync that reverts the neutral hook turns the very next commit RED; fired RED against the real tree before the pin existed (PREFIX-DISCIPLINE.1)|scripts/check_commit_prefix.sh"
   "BOOK-INDEX|the book's index is still what the book's own text derives — a hand-edited or stale index is a running total, and a running total is a memory of a measurement, not a measurement; the generator refuses a shape it cannot emit (a missing chapter, an undeclared chapter set) by name; fired RED against the real book before registration (BOOK-APPARATUS.1)|scripts/check_book_index.sh"
   "CITATION-QUOTES|every quoted phrase a tracked source-of-truth document attributes to a pinned section occurs IN that section — a locator that resolves but names the wrong section is refused, naming where the phrase is; judged when the pinned pages are present, a NAMED SKIP otherwise|scripts/check_citation_quotes.sh"
+  "FP-VECTORS|the floating-point model layer's unit vectors are still the byte-exact output of the spec-side exact-rational IEEE reference, and that reference still agrees with the host's hardware IEEE on directed ties and seeded cases — an expected value edited by hand is DRIFT|scripts/check_fp_vectors.sh"
 )
 
 fails=0

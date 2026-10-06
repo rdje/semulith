@@ -1,6 +1,6 @@
 # P4.7 — Floating point
 
-**Status:** Underway (slices a–b, c1–c3; 2026-10-06)
+**Status:** Underway (slices a–b, c1–c4; 2026-10-06)
 
 The P4 chapter's [floating-point condition](../p4.md#the-floating-point-condition) now has its
 measurement. Slice (a)
@@ -56,3 +56,27 @@ low half of a 64-bit register whose upper half is all ones). Because the rules s
 operands are f-registers, the assembler now derives its `f0..f31` spelling from them, and
 refuses the wrong one by name. Nothing executes yet: the generated module grows the
 floating-point vocabulary only at the bind.
+
+Checkpoint (c4) landed the **model layer**, `fp.rs` — the one place the RISC-V rules meet
+the arithmetic backend. It returns the canonical NaN for every NaN result, unpacks and packs
+NaN-boxed singles, resolves the rounding mode, implements min/max, the compares and the
+class mask directly in bits, converts a NaN to the integer maximum, applies the fused
+multiply-add's ∞×0 rule — and computes the **square root** itself, because the backend has
+none: an exact integer square root whose remainder says whether the result is exact.
+
+Overflow and underflow are where it got interesting. IEEE 754 defines both on the result
+"computed as though the exponent range were unbounded". `fp.rs` computes exactly that value —
+the same operation at the same precision with a far wider exponent — and judges both flags
+on it. Against a new spec-side reference (exact fractions, written from the standard and
+checked against the computer's own IEEE hardware), three test vectors failed at one boundary:
+a value just below the smallest normal number that rounds *up* to it is still an underflow,
+and the backend did not say so. The slice-(a) qualification had missed it because its MPFR
+oracle judged underflow the backend's way; the same oracle had also counted 72 false
+overflows against the backend. Corrected, `fp.rs` agrees with both oracles on every one of
+the 63,752 cases, and the qualification record carries a dated amendment. The test vectors
+and their reference are tracked and gated (FP-VECTORS), and the reference is re-checked
+against the hardware on every commit.
+
+The same checkpoint fixed where the build gets its dependencies: the backend crate had been
+resolved from a cache in the user's home directory, off the repository's volume; every cargo
+command now reads it from `.app-data/vendor/` (`make vendor`).

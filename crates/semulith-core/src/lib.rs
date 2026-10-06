@@ -19,6 +19,7 @@ pub mod definition_rv64gc;
 pub mod env;
 pub mod exec;
 pub mod exec_rv64gc;
+pub mod fp;
 pub mod interrupts;
 pub mod outcome;
 pub mod privilege;
@@ -31,6 +32,6 @@ pub mod wait;
 
 /// The qualified FP backend (`P4-SYSTEM.7` slice (a), measured in
 /// `docs/decisions/decision_fp-backend-qualification.md`) — pinned exact; the model
-/// layer's `fp.rs` (slice (b)) is the only consumer of record. This re-export is the
-/// landing slice's compile-use: the dependency is visible, linked, and version-locked.
+/// layer [`fp`] (slice (c4)) is its only consumer of record — an evaluator arm never
+/// calls it directly. Re-exported so a harness can name the exact backend version.
 pub use rustc_apfloat;

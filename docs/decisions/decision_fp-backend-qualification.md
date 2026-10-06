@@ -14,6 +14,11 @@ backend for the rv64gc model's F/D work, pinned with `=0.2.3+llvm-462a31f5a5ab`.
 layer (`fp.rs`, `P4-SYSTEM.7` slice (b)) owns the RISC-V target policy AND the measured
 LLVM-vs-IEEE deviations listed below — the crate is arithmetic machinery, not policy.
 
+> **Amended `2026-10-06` (`P4-SYSTEM.7` slice (c4))** — see "Amendment" at the end: the
+> model layer landed at slice (c4), not (b); the overflow count below is 290, not 362 (72 were
+> the oracle's false overflows); a THIRD deviation exists (underflow), invisible to this
+> record's oracle because the oracle shared it; the manifest pin is expressed `=0.2.3`.
+
 ## Why — the measurements (all reproducible from the scratch harness)
 
 **The candidate landscape, re-measured** (the census's web claims re-verified against the
@@ -125,3 +130,45 @@ clean for `wasm32-unknown-unknown`.
   re-runs the scratch qualification (`probe run` regenerates the tables above).
 - The fallback stays named (decision 1 of the `.7` brief): had neither candidate passed,
   the subset would be implemented in Rust and the capability deferred.
+
+## Amendment — `2026-10-06`, `P4-SYSTEM.7` slice (c4): the oracle shared two of the backend's conventions
+
+Writing the model layer against a SECOND spec-side oracle — `scripts/specfp.py`, exact
+rationals written from the pinned chapters and IEEE 754-2008 (checked against the host's
+hardware IEEE in RNE) — exposed two rule defects in this record's MPFR generator
+(`target/p4-system-7/mpfr/vec_gen.c`) and one deviation they had hidden:
+
+- **Overflow.** The generator flagged OF when the EXACT magnitude exceeded the largest finite.
+  IEEE 754-2008 §7.4 judges "what would have been the rounded floating-point result were the
+  exponent range unbounded": MAX+1 in RTZ rounds back to MAX and is NO overflow (Berkeley
+  SoftFloat's RISC-V roundPack agrees — `sig + roundIncrement` at full precision). Re-run with
+  the corrected rule, 72 of the 362 "deviation (i)" cases were the oracle's false overflows and
+  the backend was right; the genuine deviation (i) is **290 cases**, the total flag
+  disagreements **314** (290 + the 24 of deviation (ii)), not 386.
+- **Underflow — deviation (iii), new.** The generator flagged UF when the DELIVERED result was
+  subnormal — the backend's own convention — so the two agreed by construction. RISC-V
+  specifies tininess AFTER rounding (RVI-F §20.1.4), which §7.5 defines on the
+  unbounded-exponent rounded result: 2^-126·(1−2^-24) is tiny, and when it rounds (RNE, RUP,
+  RMM) up to the smallest normal the result is still an UNDERFLOW (tiny and inexact) — the
+  backend raises none (measured; SoftFloat's RISC-V specialization, `init_detectTininess` =
+  after rounding, raises it). The slice-(a) corpus never contained that boundary.
+- **The model layer computes both flags from one exact value**: the same operation in a
+  backend format with the SAME precision and a 15-bit exponent (`fp.rs`'s `WideSingleS` /
+  `WideDoubleS`) — rounding there IS rounding with an unbounded exponent. OF = that value
+  finite and beyond the largest finite; UF = that value tiny and the delivered result inexact.
+- **Re-qualification of the model layer** (scratch: `target/p4-system-7/fpcheck/`): over the
+  same 63,752-case corpus, `fp.rs` disagrees with the corrected MPFR oracle on **0 of 51,840**
+  comparable cases (canonical-NaN transform; compares excluded — the generator's compare-NV
+  logic is not a reference) and with the exact-rational reference on **0 of 63,480**; a
+  one-line corruption is caught by both (the RED control). The tracked proof is the 176
+  spec-side unit vectors (`crates/semulith-core/src/fp/tests/vectors.rs`, gated by
+  FP-VECTORS), which include the underflow boundary.
+- **The pin, expressed honestly.** Cargo ignores build metadata in a version REQUIREMENT (it
+  warned on every build); the manifest now reads `=0.2.3`, and the exact artifact
+  `0.2.3+llvm-462a31f5a5ab` is pinned by `Cargo.lock`'s version string and checksum, verified
+  against the on-volume vendored copy (`.cargo/config.toml`, slice (c4) part 1).
+
+The lesson is the record's own subject, one level down: a second lineage is not a second
+opinion when its DERIVATION shares the first one's convention — the oracle's rule text has to
+be checked against the specification's sentence, not against the thing it judges
+([[decision_claim-verification-adopted]]; `docs/knowledge/an-oracle-can-share-the-convention-it-judges.md`).

@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — the FP model layer, and the oracle that agreed because it shared the convention (P4-SYSTEM.7 slice c4)
+
+`fp.rs` is the RISC-V policy over rustc_apfloat: canonical NaN, NaN-boxing, the rounding-mode
+resolution, min/max/compares/class in bits, NaN→int's maximum, the FMA ∞×0 rule, and a
+square root of its own (exact integer √ with a sticky remainder — the backend has none). Its
+overflow and underflow come from ONE exactly-unbounded value: the same operation in a
+backend format of equal precision and a 15-bit exponent, so "rounded as though the exponent
+range were unbounded" (IEEE §7.4/§7.5) is computed, not approximated.
+
+Its unit vectors came from a new spec-side reference in exact rationals. Three of 176 failed
+on first run — at 2^-126·(1−2^-24), RNE/RUP/RMM, the backend raised no UF — and the cause
+was not in `fp.rs`. Slice (a)'s MPFR generator judged UF on the DELIVERED result (the
+backend's own convention) and OF on the EXACT magnitude (IEEE judges the unbounded ROUNDED
+result): the oracle had agreed with the backend by sharing its rules. Corrected, 72 of the
+recorded overflow "deviations" were the oracle's own false positives, and a third backend
+deviation (underflow) appeared. SoftFloat's RISC-V specialization, read in source, takes the
+IEEE side on both. The decision record carries a dated amendment; the generator and
+reference are tracked (`scripts/specfp.py`, `scripts/gen_fp_vectors.py`) and gated by the new
+FP-VECTORS doctrine, which also re-checks the reference against the host's hardware IEEE on
+directed ties every run (a half-up mutation had survived 1,313 random cases).
+
+- **Validation:** 176/176 spec-side vectors; `fp.rs` vs the corrected MPFR oracle 0/51,840,
+  vs the exact-rational reference 0/63,480 (RED: one corrupted line caught by both); FP-VECTORS
+  6/6 with the reference-mutation arm; `make check` + `make gate` green.
+- Promotion: PROMOTED — docs/knowledge/an-oracle-can-share-the-convention-it-judges.md + INDEX.
+
 ## _(2026-10-06)_ — "the cargo cache stays on-volume" was true of one command (P4-SYSTEM.7 slice c4 part 1)
 
 Slice (a) fetched `rustc_apfloat` with `CARGO_HOME=.app-data/cargo-home` and recorded the
@@ -657,45 +683,4 @@ Execution of the `.3` brief's checkpoint (e), part 1 (the corpus), measured:
   (the classes above are the family's recorded probe-bug and pc-map
   disciplines applied, and this slice's checklist carries the instances —
   promotion: declined).
-
-## _(2026-10-04)_ — the cache made the test suite honest twice (P4-SYSTEM.3 slice d)
-
-Execution of the `.3` brief's checkpoint (d) measured:
-
-- **The TLB caught test-design bugs the walk never could.** Two existing
-  fault-matrix cells failed the moment the cache was live — and the cache was
-  right both times: the SUM=0 cell "faulted" into a legal Physical because the
-  previous cell's installed entry answered first, and the A=1,D=1 store "faulted"
-  on the D=0 entry the D=0-load cell had installed (the spec's sanctioned
-  staleness, exactly as designed). The cells were never wrong about the walk —
-  they were wrong about SHARING a hart. Independent outcome cells now run cold,
-  and the interaction itself became the Svade-staleness suite (install D=0 via a
-  load, the stale store faults on the entry's bit, the fence restores truth) —
-  the failure was the specification working, not breaking.
-- **Two of my own bugs, two familiar classes.** The fence-instruction test wrote
-  `0x12039073` for sfence.vma x3,x4 — rs1 and rs2 swapped by a nibble (the real
-  word is `0x12438073`; the wrong one decoded RESERVED and the probe answered
-  correctly with a delivered cause 2 to mtvec=0). And the fence-case lookups
-  passed full addresses where the API takes page numbers. The cache was
-  acquitted on evidence both times; the test took the fix. The discipline the
-  family already owns — print the constructed word/address and treat an
-  unexpected-but-correct answer as a test bug until proven an engine bug — is
-  what closed both in minutes.
-- **The census drives the storage, and the gate guards the driver.** The TLB's
-  parameters live in the state document's SEM-08 census (the candidate
-  re-answered `present true` — the census's own reopen hook, placed at .2), and
-  gen_state emits the hart-state field FROM that declaration. The refusal that
-  anchors it — a descriptor silent on the cache is refused by name — fired on
-  the self-test's synthetic descriptor the moment it landed, and the fixture's
-  census now carries the candidate, with a RED arm pinning the refusal. The
-  generated module, the trait, and the document can no longer drift apart
-  silently in either direction.
-- **Validation:** 25/25 translation tests (the walk's 17 plus the TLB suite:
-  hit/FIFO/tagging/staleness/Svade-staleness/the four fence cases with
-  retentions/the non-canonical no-op/the fence instruction end-to-end/
-  determinism tuples identical); the corpus 62/62 and 1,884 == 1,884 trace lines
-  byte-clean against the parent engine; STATE-GEN 26/26, DEF-GEN both pairs;
-  `make check` 8/8, `make gate` all green (DERIVED-COUNTS 422→423). Promotion:
-  declined (both bug classes are the family's own recorded disciplines applied —
-  this slice's checklist carries the instances).
 
