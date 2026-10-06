@@ -123,6 +123,7 @@
 - [`decision_task-tree-family-count-rederivation.md`](docs/decisions/decision_task-tree-family-count-rederivation.md)
 - [`decision_task-tree-per-part-growth.md`](docs/decisions/decision_task-tree-per-part-growth.md)
 - [`decision_work-unit-prefix-semulith.md`](docs/decisions/decision_work-unit-prefix-semulith.md)
+- [`reference_fp-model-layer-acceptance.md`](docs/decisions/reference_fp-model-layer-acceptance.md)
 - [`reference_softfloat-shared-ancestry.md`](docs/decisions/reference_softfloat-shared-ancestry.md)
 - [`reference_upstream-spine-defects.md`](docs/decisions/reference_upstream-spine-defects.md)
 - [`reference_what-running-real-rust-actually-requires.md`](docs/decisions/reference_what-running-real-rust-actually-requires.md)

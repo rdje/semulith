@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0056 (leaf P4-SYSTEM.7, slice e3) — the decision record's closing measurement; the leaf CLOSES
+
+- The qualification record's closing measurement, re-run at HEAD, lands as its own record
+  (`reference_fp-model-layer-acceptance.md` — the decision record sits at its family's
+  per-part ceiling): correctness spec-side and tracked (230 directed vectors
+  + 3,168 seeded fixtures from the hardware-checked exact-rational reference), at corpus
+  scale (0 of 63,752 disagreements), end to end on both engines (125/125 on the tracked
+  engine; Sail 24 AGREE of 24 — an encoding/state match, Sail's FP being SoftFloat), and
+  performance (the model layer 2.8–6.9× the raw backend, the exact OF/UF's cost).
+- `P4-SYSTEM.7` is **done**: rustc_apfloat qualified behind `fp.rs`; F and D bound (150
+  forms). The tree reads 7/10; the frontier moves to `.8` (faults, restart and partial
+  progress — design brief first). `make check` + `make gate` green.
+
 ## SEMULITH-P4-0055 (leaf P4-SYSTEM.7, slice e2) — the numeric fixtures at scale + the per-op cost
 
 - `scripts/gen_fp_vectors.py` now also emits `fp/tests/fixtures.txt`: 3,168 seeded cases from

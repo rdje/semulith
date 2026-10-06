@@ -1,6 +1,6 @@
 # P4.7 — Floating point
 
-**Status:** Underway (slices a–b, c1–c4; 2026-10-06)
+**Status:** Landed and closed (slices a–b, c1–c6, d1–d5, e1–e3; 2026-10-06)
 
 The P4 chapter's [floating-point condition](../p4.md#the-floating-point-condition) now has its
 measurement. Slice (a)
@@ -146,3 +146,9 @@ operands chosen to hit the awkward classes (zeros, subnormals, infinities, NaNs,
 the range edges) — each checked against the exact-arithmetic reference on every build. It
 also measured the cost of exactness: computing overflow and underflow exactly makes each
 rounded operation roughly three to seven times slower than the bare arithmetic library.
+
+**The leaf is closed (2026-10-06).** The qualification record now ends with the evidence its
+acceptance asked for: correctness measured three ways — thousands of specification-derived
+cases checked on every build, zero disagreements across the original 63,752-case corpus, and
+all floating-point programs agreeing with the Sail reference — and the measured cost of the
+model layer. Single and double precision are part of the processor.

@@ -24,6 +24,11 @@ LLVM-vs-IEEE deviations listed below — the crate is arithmetic machinery, not 
 > (MPFR has no signaling NaN), not the backend's: the backend raises NV for a signaling NaN
 > through a format conversion. The backend's genuine flag deviations are TWO — overflow on a
 > directed-mode clamp (290) and underflow at the smallest-normal boundary.
+>
+> **Closed `2026-10-06` (`P4-SYSTEM.7` slice (e3))** — the leaf's acceptance measured:
+> [`reference_fp-model-layer-acceptance.md`](reference_fp-model-layer-acceptance.md)
+> (correctness at scale, the second engine, the model layer's cost) — its own record, this
+> one being at the `docs/decisions/` per-part ceiling.
 
 ## Why — the measurements (all reproducible from the scratch harness)
 
@@ -208,4 +213,3 @@ the record of what was believed; this amendment is the correction.
 
 It is the c4 lesson a third time, in its starkest form: an oracle cannot disagree about a
 case it cannot represent, and the disagreement it reports there belongs to the oracle.
-
