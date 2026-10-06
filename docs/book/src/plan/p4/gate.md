@@ -1,6 +1,6 @@
 # P4.10 — The CPU-SYSTEM gate report
 
-**Status:** Underway (slices a–b, 2026-10-06)
+**Status:** Landed and closed (a–c, 2026-10-06)
 
 The processor gate has ten parts, called *axes*. Each one asks a different question: is the
 profile exactly defined, is its state fully accounted for, is its contract with the
@@ -43,3 +43,9 @@ combinations of faults, aliases, boundaries, events, progress and restart has a 
 or an argument recorded against it. The old scalar-profile report, run on this profile, would
 have called the replay axis green by reading the *scalar* profile's replay tests. The new
 report reads it as one of four required kinds present.
+
+**The leaf is closed (2026-10-06).** The report was regenerated from scratch in a clean copy of
+the repository that holds none of the downloaded reference tools or build outputs, and it came
+out identical to the tracked file, byte for byte. That is what "reproducible from pinned
+inputs" means here. The gate itself is not passed: the report is now the scoreboard the next
+eight leaves work against, and each of them closes the axes it owns.

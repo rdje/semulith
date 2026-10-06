@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0071 (leaf P4-SYSTEM.10, slice c) — THE LEAF ACCEPTANCE; the leaf CLOSES
+
+- Reproducible from pinned inputs, measured: in a fresh worktree with no `target/`, the GS,
+  GC, G1 and G0 reports regenerate byte-identically. Fidelity per axis: ten rows, never
+  rolled up. Missing checks read `incomplete`: G-CONTRACT 14 of 100.
+- `P4-SYSTEM.10` is **done**; the tree reads 10/18; the frontier moves to `.11`, bind M.
+
 ## SEMULITH-P4-0070 (leaf P4-SYSTEM.10, slice b) — the first CPU-SYSTEM report: incomplete, every open axis owned
 
 - `scripts/gate_report.py --gate GS` (`build_cpusystem`): all ten processor-gate axes, each
