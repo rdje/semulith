@@ -18,11 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (7/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and five leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), and the FP backend with F and D bound (`.7`, Sail 24 AGREE of 24)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.8` — faults, restart and partial progress: the DESIGN BRIEF first
-  (recorded in the tree before any change, the `.4`–`.7` precedent: measured
-  pre-conditions, decisions, the execution slicing). Its acceptance: a fault injected
-  after the Nth suboperation leaves the architecturally required state (SEM-04, SEM-06).
-  `.7` closed `2026-10-06` (`-0056`): FP qualified, F+D bound, 150 forms, 125/125.
+- next_action: `P4-SYSTEM.8` slice (a) — the CSR rd-before-trap defect at root (the brief's
+  pre-condition 3: `csrrw x5, cycle, x6` commits x5 then traps; sail traps with no write):
+  the permission judged before any commit in the zicsr semantics; RED guest first; sail
+  AGREE; + LR's unreachable boundary-Misaligned arm (7 → 5) and a-lrsc-fault.s:18's stale
+  comment. Probe: `target/p4-system-8/probe/csr_ro.py`. Then (b) priority table, (c) typed
+  injection carrier, (d) injected-fault corpus + obligation, (e) sail + acceptance.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

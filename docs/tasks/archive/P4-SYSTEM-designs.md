@@ -590,3 +590,558 @@ text of the decision entry.)
   leaf); F/D/C/Zifencei (their leaves); the rv64gc C16 disposition (registration
   day); registration; the gate.
 
+The closed leaves `.5` (interrupts, counters and wait), `.6` (instruction visibility) and
+`.7` (the floating-point backend qualification — its design brief and its four slice-split
+and slice decisions), split from the live file verbatim on `2026-10-06` at the `.8` design
+brief's crossing (the ceiling was obeyed, not raised):
+
+- `2026-10-06` (slice (e) execution split, recorded with (e1) — the Sail leg measured first,
+  as each prior leaf's matched attempt was; sources: the override re-materialized from the
+  tracked unit (byte-identical to the `.6` materialization; validate-config rc=0; F and D
+  supported, `Fflags_Dirty_Precise` sail's default; FourState FS), the brief's decision 2
+  re-read): **(e1)** the Sail matched experiment over the FP corpus — an ENCODING/STATE match
+  (sail's FP is SoftFloat externs: one opinion with spike's, EVD-04), recorded as the
+  ledger's sixth experiment; **(e2)** the independent numeric fixtures AT SCALE — tracked and
+  gated, expected values from the exact-rational reference (`scripts/specfp.py`: neither
+  SoftFloat, APFloat nor MPFR), seeded directed + random operands per operation × mode ×
+  width, run against `fp.rs` by a unit test under FP-VECTORS' DRIFT rule (the 230 directed
+  vectors are the rules; the fixtures are the breadth), and the model layer's per-op cost
+  re-measured on this host (the leaf's performance evidence, slice (a)'s harness shape);
+  **(e3)** the reports (the decision record's closing measurement), the book, and the LEAF
+  ACCEPTANCE — "a decision record with measured correctness and performance evidence" —
+  then the frontier to `.8`.
+
+- `2026-10-06` (slice (d) execution split, recorded with (d1) — its measurements taken before
+  any (d) edit; sources: the fetched `rv_d`/`rv64_d` (2,091/465 B — 26 + 6 = 32 forms, the
+  brief's census re-derived; 3 `$pseudo_op` rows, fmv.d/fabs.d/fneg.d); the pinned
+  `d-st-ext.html` re-read (§21.1.1–§21.1.7); `rv_f`/`rv64_f` on upstream master re-fetched
+  byte-identical to the pins; the machinery re-measured): **the FP vocabulary is already
+  width-generic** — every operator takes the format `n` as data (`schema/semantics.sexp`'s
+  FP block: `fbox`/`funbox` "n = 64 is the identity", `fp::funbox` returns `v` at 64), the
+  f-file is FLEN=64 since slice (b), `misa` already reads `0x14112D` (D's bit 3 set — the
+  declared selection) — so D's 32 rules reuse the 18 operators, and the language gains
+  exactly ONE: the format conversion FCVT.S.D/FCVT.D.S (`f2f`: a signaling-NaN input raises
+  NV and yields the canonical NaN; widening is exact, narrowing rounds by rm). Its model
+  carries the qualification record's deviation (ii) — the backend raises no NV for an sNaN
+  through a format conversion (24 measured cases) — patched in `fp.rs`, the record's own
+  disposition. **The execution split** (the (c) shape, minus what (c) already built): (d1)
+  the `rv_d`/`rv64_d` re-pin + the `d.sexp` fragment (requires `riscv/f` by name — D
+  depends on F and reuses its rs3/rm; owns no field; the pseudo rows written out, as F's)
+  under the bind-gated named exclusion; (d2) the language: `f2f` (schema, check, lowering,
+  `Sem` variant), `d.sem.sexp` (32 rules), the gated lowering and the assembler's derived
+  register files on a staged composition; (d3) `fp.rs`'s format conversions with deviation
+  (ii) patched, `specfp`'s conversion, FP-VECTORS extended; (d4) the staged D corpus with
+  its EVD-05 derivations; (d5) THE BIND (slot → extension, the census 118 → 150, the arms,
+  the corpus, the matrix). ⚠ **Corrected at (d3)**: deviation (ii) does not exist — the
+  backend, measured, raises NV for a signaling NaN through a format conversion; the record's
+  24 cases were the MPFR oracle's (it has no signaling NaN). `fp.rs` patches nothing there;
+  the record carries a second amendment.
+
+- `2026-10-06` (slice (c4) part 1, recorded before execution — a §13 data-locality defect of
+  slice (a), measured while preparing (c4)'s scratch driver): `ls ~/.cargo/registry/src/*/`
+  → `rustc_apfloat-0.2.3+llvm-462a31f5a5ab` (src + `.crate`, mtime 2026-10-06 08:39 — slice
+  (a)'s landing) inside the SHARED user-home cache (666 crates of many projects). Slice (a)
+  recorded "the cargo cache stays on-volume" for its own fetch, but the workspace has no
+  mechanism making ROUTINE builds use it: no `.cargo/config.toml`, no `CARGO_HOME` in the
+  Makefile, the shell's `CARGO_HOME` unset — so since the workspace's first registry
+  dependency every plain `cargo` run (`make check`, the wasm gate) resolves `rustc_apfloat`,
+  `bitflags` and `smallvec` through `~/.cargo`. **The fix, decided:** `.cargo/config.toml`
+  source replacement — the one mechanism EVERY cargo invocation inside the repository obeys
+  — to an UNTRACKED on-volume directory `.app-data/vendor/` populated by `make vendor`
+  (`cargo vendor --locked` under the on-volume `CARGO_HOME`; `cargo vendor` ignores
+  `[source]` by default, so it populates a missing directory); identity stays the tracked
+  `Cargo.lock`'s checksums. Untracked, not committed: the repository's stance on third-party
+  content is "catalogue identity, cache locally, never redistribute" (`.materials/`), and a
+  commit of 1.1 MB of third-party source would be permanent in history; the cost is one
+  populate step in each CI workflow and in bootstrap. The shared cache is NOT cleaned (§13:
+  never delete an ambiguously shared global cache); the project stops consulting it.
+
+- `2026-10-06` (slice (c) execution split + a slice-(b) defect, recorded before execution;
+  sources: the fetched `rv_f`/`rv64_f` (3,050/320 bytes — 26 + 4 = 30 forms, 13 pseudo
+  rows: the two old fmv names, fmv.s/fabs.s/fneg.s, the 8 FP-CSR aliases — the brief's
+  census re-derived exactly); the pinned `f-st-ext.html` re-read (§20.1.1–§20.1.9); the
+  machinery re-measured (`gen_definition.py`'s per-fragment variant emission,
+  `exec_rv64gc.rs`'s `Frame`, `riscv_asm.py`'s x-only register spelling)):
+  **The defect, measured — `frm` must hold any 3-bit value.** Slice (b) declared
+  `frm_2_0` WARL one-of 0..4 with an illegal write RETAINING the old value. The pinned
+  chapter states the opposite twice: "FSRM … writing a new value obtained from the three
+  least-significant bits of integer register rs1 into frm" (no legalization), and the
+  rm table names 101–111 *dynamic reserved rounding modes* — a state frm can only reach
+  by holding them (the table's 111 row: "In Rounding Mode register, reserved"). The spec
+  labels no WARL on frm; a laboratory WARL where the spec writes the value is a
+  deviation, not a latitude. `fp-fcsr-view` pinned the wrong rule (steps 13–18), the
+  privilege unit tests asserted it, and the authoring tool modelled it. Its reach: the
+  dyn-rm resolution this slice lands needs frm=5..7 reachable. **The pinned revision's
+  reserved-rm wording, recorded**: "The behavior of floating-point instructions that
+  depend on rounding mode when executed with a reserved rounding mode is reserved"
+  (weakened from the ratified illegal-instruction mandate, which "is still valid
+  behavior") — the laboratory takes illegal-instruction (cause 2, xtval the word) for
+  both static 101/110 and dynamic 101–111, Sail's `Fcsr_RM_Illegal` shape
+  (`fext_insts.sail:51-63`). Two book defects ride the same fix: `plan/p4.md` carries
+  a duplicated `## Gate CPU-SYSTEM` heading (introduced at slice (b)) and the `.3`/`.4`
+  section headings still read "underway" over bodies recording closed leaves.
+  **The execution split** (the brief's slice (c) is the `.4`/`.6` bind shape — four of
+  `.4`'s six slices — so it executes as checkpoints, each committed with the leaf id):
+  (c1) the frm defect fixed at root (state.sexp + the generated mirror + the unit tests
+  + the authoring tool + `fp-fcsr-view` re-derived, its header's stale `.5` provenance
+  line corrected with `fp-fs-off`'s) + the two book defects; (c2) the `rv_f`/`rv64_f`
+  re-pin + the `f.sexp` fragment (owning `rs3`/`rm`) under the bind-gated named
+  exclusion; (c3) the semantics language learns FP — the FP-state contract stated once
+  (the f-file read/write, the Off gate judged at the instruction head for any rule
+  that touches FP state, accrual sticky and Dirty-marking), the operators, `f.sem.sexp`,
+  the lowering — and the assembler's FP spelling (f-register class DERIVED from the
+  semantics' own operand use, never typed); (c4) `fp.rs`, the model layer over
+  rustc_apfloat (the target policy + the two measured deviations patched + sqrt), unit-
+  proven; (c5) the staged F corpus with its EVD-05 derivations; (c6) THE BIND (slot →
+  extension, the census 88 → 118, the arms tracked, the corpus tracked, the matrix).
+  The FS gate's placement is decided here: the Off sentence quantifies over "any
+  instruction that attempts to read or write the corresponding state", so the gate is
+  the FP-state contract's, judged at the head of every instruction whose rule touches
+  FP state — never a per-rule guard a rule could forget, never the f-file accessor
+  (an `flw` at FS=Off must raise 2, not the load's own fault).
+
+- `2026-10-05` (design brief for `.7`, recorded before its execution; sources: the pinned
+  FP chapters re-read (`.materials/riscv/pinned-v20260120/unpriv/f-st-ext.html` §20.1.1–
+  §20.1.4, `d-st-ext.html` §21.1.2 — Versions 2.2/2.2 measured from the page titles;
+  `priv/machine.html` the FS field); the routed ancestry record re-read in full
+  (`docs/decisions/reference_softfloat-shared-ancestry.md`); the rule texts quoted
+  (`RULES.md` RUST-01/SEM-03/EVD-04, `docs/ARCHITECTURE.md` §6); the unit measured in tree
+  (`state.sexp:70` misa, `:101-103` FS, `:604-631` the FP CSRs, `:642-643` the census
+  candidate; `privilege.rs:163-166` the single-owner view resolution; `encoding.sexp:
+  16-17` the slots); Sail 0.14's FP measured in `target/refs/sail-riscv-src/model/core/
+  softfloat_interface.sail` + `extensions/FD/`; two explore-agent censuses (the candidate
+  landscape + ancestry; the machinery deltas) — the reports are conversation-only, every
+  load-bearing fact below re-measured by the signing engineer where it lives in this
+  repository, and the candidate-landscape claims re-measured at slice (a), which IS the
+  qualification):
+  **The measured pre-conditions.** (1) **The declared-then-trapping window is real**:
+  misa advertises F and D (read-only `0x14112D`, `state.sexp:70`) while every FP word
+  decodes reserved → cause 2 (the decode miss → `run_rv64gc.rs:99-104`); the f/d slots
+  sit at `encoding.sexp:16-17`; no `f.sexp`/`d.sexp` (7 FRAGMENTS entries), no
+  `rv_f`/`rv_d`/`rv64_f`/`rv64_d` pins. The upstream census (execution re-derives from
+  the fetched tables): F = 30 forms (26 rv_f + 4 rv64_f; 13 pseudos incl. the 8 FP-CSR
+  aliases), D = 32 (26 rv_d + 6 rv64_d; 3 pseudos); the pinned `arg_lut.csv` already
+  carries `rs3` (31..27) and `rm` (14..12). (2) **The SoftFloat shared ancestry is
+  re-verified**: 184/199 `.c` files byte-identical across the two vendored copies (the
+  active decision record); Sail's ENTIRE FP surface is SoftFloat externs
+  (`softfloat_interface.sail:42` — every operation `pure {cpp: "softfloat_*"}`; no
+  independent Sail FP path exists); both checkouts present (sail `29e6158`, spike
+  `1e05dda`). Two descendants agreeing is one opinion (EVD-04); the record's own
+  escape: "a hardware observation, an independently implemented arithmetic, or a
+  specification-derived expected value computed by hand." (3) **The candidate
+  landscape** (web research, re-measured at slice (a)): exactly two pure-Rust,
+  wasm-compilable, non-SoftFloat candidates — `rustc_apfloat 0.2.3+llvm-462a31f5a5ab`
+  (LLVM APFloat lineage; the version string pins the source commit; its docs claim no
+  unsafe/global state/side-effects) and `softfloat 1.0.0` (independent authorship,
+  no_std + const, TestFloat-verified upstream); every SoftFloat-derived option fails
+  RUST-01 (FFI) or PORT-WEB (wasm) or EVD-04 (ancestry); native host floats fail §6 on
+  CAPABILITY grounds (no per-op rounding-mode control, no flag access, NaN-payload
+  nondeterminism on wasm32) — the textual bar is "silent", the capability bar is
+  decisive. MPFR is a third independent lineage for expected-value generation;
+  `testfloat_gen`'s operands-only mode is lineage-clean, its computed expectations are
+  not. (4) **The target policy is model-layer, never backend** (ARCH §6's own
+  sentence): canonical NaN (`0x7fc00000` single, §20.1.3 — "Except when otherwise
+  stated, if the result of a floating-point operation is NaN, it is the canonical
+  NaN"); NaN-boxing ("The upper bits of a valid NaN-boxed value must be all 1s";
+  unboxed input → the n-bit canonical NaN; §21.1.2); the FMA ∞×0 NV rule; the
+  fmin/fmax NaN rules; subnormals full IEEE 754-2008, no FTZ latitude (§20.1.4);
+  sticky accrued flags (§20.1.1); dyn/frm resolution with rm 101/110 reserved →
+  illegal. No crate ships this policy — APFloat quiets sNaNs and follows LLVM payload
+  conventions; the model layer owns the mapping opStatus → NV/DZ/OF/UF/NX.
+  (5) **Two latent defects `.7` owns at root** (re-measured): (i) fcsr's
+  `(view_of "fflags, frm")` is a TWO-owner view — the engine resolves ONE
+  (`privilege.rs:163-166`; the generated mirror carries the literal `"fflags, frm"`,
+  `state_rv64gc.rs:427`), so fcsr reads 0 and writes refuse TODAY; (ii) mstatus.FS is
+  declared (bits 14:13, WARL one-of 0 1 2 3, reset 0 = Off, `state.sexp:101-103`)
+  with NO gate anywhere — `permitted()` has no fflags/frm/fcsr arm, so FP CSR access
+  at FS=Off is not illegal today; the spec gates the unit's instructions AND its CSRs
+  (machine.html's Off-state sentence; Sail's `fdext_control.sail:19`).
+  (6) **Observation through x-registers is complete** (the machinery census's table,
+  spot-verified): `fmv.x.w`/`fmv.x.d` move raw bits, `feq/flt/fle` land 0/1, `fclass`
+  the 10-bit mask, the `fcvt.*.w/l` forms convert, `fsw/fsd` read back by integer
+  loads, fflags/frm via csrrs — no expectations-vocabulary change (the `.2`
+  mode-matrix discipline); the f-file stays census-hidden state (`state.sexp:642-643`
+  names `.7` its owner). (7) **The FS policy the corpus needs**: FS resets 0 = Off
+  (laboratory), so every FP instruction and FP-CSR access is illegal until M software
+  enables — the corpus sets FS first (the `.2` counter-gating precedent); the
+  four-state FS with Dirty-on-f-write (Sail's `dirty_fd_context`; the override's
+  `fs_legal_states FourState`) is the measurable, reference-matching choice; SD is
+  already computed. (8) **Performance machinery**: `semulith bench` refuses rv64gc by
+  name (`main.rs:1092` — "a later leaf"); the leaf's performance evidence is a
+  scratch timing harness over the candidates (per-op costs on this host), not the
+  tracked bench; the PORT-WEB wasm gate mechanically excludes every C-FFI option.
+  (9) **C07 and the Zcd inheritance**: FP is category C07; rv64i's row reads
+  "Closing: an F/D-admitting profile revision" — this unit IS that revision, but no
+  rv64gc section exists in `category-needs.sexp` (registration day, the `.1`
+  precedent). The C slot inherits 4 Zcd forms when D binds (D-EXT-CLOSURE: "C
+  decomposes as Zca always plus Zcd when D is present") — Zcd rides the C leaf,
+  named, never smuggled; the override already runs Zcd true.
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **The qualification runs FIRST, in scratch, and is the leaf's own slice (a)** —
+     the leaf's title is the qualification. Probe harnesses (untracked `target/`)
+     evaluate both candidates against (i) each other, (ii) MPFR-generated expected
+     vectors over a directed operand corpus (zeros, subnormals, NaNs with payloads,
+     infinities, rounding-boundary halves, conversion edges — plus seeded pseudorandom
+     streams; `testfloat_gen`'s operands-only mode if fetchable, a recorded generator
+     otherwise), per operation × rounding mode × both widths, and (iii) per-op timing
+     on this host. The criteria are ARCH §6's: rounding modes, flags, result bits,
+     conversions, NaN payloads, the boxing surface. The outcome is a decision record
+     in `docs/decisions/` with the measured tables — and the fallback named: if
+     neither passes, implement the required subset in Rust and defer the capability
+     (the gate reads `incomplete`, never `passed`).
+  2. **The independence argument, stated once**: the qualified backend is confirmed
+     by the OTHER candidate + MPFR vectors — three lineages, none Berkeley. Sail/Spike
+     FP agreement is recorded as one opinion (EVD-04); the closing Sail matched
+     experiment is an ENCODING/STATE match (decode, FS gating, NaN-boxing, flag
+     accrual points, the fmv paths), never numeric independence — the numeric
+     independence comes from the fixtures. This is the honest reading of the routed
+     constraint.
+  3. **The dependency joins as a workspace crate with its ancestry recorded** —
+     RUST-01 satisfied (pure Rust by default); the decision record carries the exact
+     version, the pinned source commit, the license (measured at execution), the
+     ancestry inventory, and the wasm-build proof (PORT-WEB stays green; the cargo
+     cache stays on-volume, the `.app-data/cargo-home` precedent). If license or wasm
+     fails: the other candidate; if both: the fallback (decision 1).
+  4. **The model layer owns the target policy** (pre-condition 4): a new core module
+     (`fp.rs`, the privilege/translation pattern) between the evaluator arms and the
+     backend crate, every rule cited to the pinned chapter — canonical NaN, NaN-
+     boxing/unboxing, the opStatus→flags mapping, dyn/frm resolution (reserved rm →
+     illegal), the FMA and fmin/fmax NaN rules, subnormal passthrough.
+  5. **FS gating lands with FP** (pre-conditions 5, 7): the four-state FS with
+     Dirty-on-f-write (SD already computed); the gate applied to FP instructions AND
+     the fflags/frm/fcsr CSRs — both latent defects fixed at root with tests; the
+     FS=Off illegal cells are guests; the corpus sets FS≠0 before any FP use.
+  6. **fcsr's two-owner view fixed at root** (pre-condition 5): the view resolution
+     learns the composition (the generator already splits the comma list for
+     validation — the engine's read/write paths learn it; the cheapest honest fix,
+     measured), with fcsr read/write guests.
+  7. **The semantics language gains fp operators** — op-as-data where the encoding
+     carries it (the `(amo op …)` precedent); the flags side channel is genuinely new
+     (values are `(u64, width)` today): the fp operator yields result+flags and the
+     tree accrues (Sail's `accrue_fflags` shape), the exact form execution measures
+     with the sem-corpus gate as judge. NaN-boxing is bit-level (expressible today);
+     the IEEE arithmetic is the backend's.
+  8. **Observation stays through x-registers** (pre-condition 6): no expectations-
+     vocabulary change; the corpus bootstraps on the fmv/fclass/compare forms
+     arriving with the same bind.
+  9. **Execution slicing** (checkpoints inside the leaf, each committed with the
+     leaf id): (a) the backend qualification (the scratch harnesses, the measured
+     tables, the decision record, the dependency landing with the wasm proof); (b)
+     the FP state (the f-file + FS gating + the fcsr fix + fflags/frm semantics +
+     the census re-answer) with the FS=Off corpus; (c) the F bind (30 forms +
+     pseudos, the pin/fragment/assembler/corpus — the `.4`/`.6` bind shape); (d) the
+     D bind (32 forms + FLEN=64 NaN-boxing + the corpus); (e) the independent
+     numeric fixtures at scale + the Sail encoding/state match + the reports and
+     the book + the leaf acceptance.
+  **Not `.7`'s scope:** Zcd's 4 compressed forms (the C leaf — pre-condition 9);
+  Zfa/Zfh/Zfinx/Zdinx/Zfhmin (unselected, named); Q (unselected); the tracked rv64gc
+  bench mix (a later leaf — scratch timing here); the rv64gc C07 disposition
+  (registration day); the m/c slots (their leaves); the hypervisor (D-NO-H);
+  registration; the gate.
+
+- `2026-10-05` (design brief for `.6`, recorded before its execution; sources: the pinned
+  chapters re-read (`.materials/riscv/pinned-v20260120/unpriv/zifencei.html` — Version 2.0
+  measured from the page title; `unpriv/intro.html` the implicit-reads latitude;
+  `unpriv/rvwmo.html` §17.1); the unit measured in tree (`encoding.sexp:18` the slot;
+  `state.sexp:652-653` the fetch-cache candidate; the four selfmod/fencei guests;
+  `references.sexp` both profiles; `rv64i.sem.sexp:137-138` the fence nop); Sail 0.14's
+  FENCEI measured in `target/refs/sail-riscv-src/model/extensions/Zifencei/
+  zifencei_insts.sail:20-33` + an icache grep over `model/`; two explore-agent censuses
+  (the C13/Zifencei scope; the machinery deltas) — the reports are conversation-only,
+  every load-bearing fact below re-measured by the signing engineer):
+  **The measured pre-conditions.** (1) **The slot waits; the pin and fragment are
+  absent**: `(slot (id zifencei) (requires "riscv/zifencei"))` at `encoding.sexp:18`
+  (five slots remain after `.4`'s bind); no `definitions/riscv/zifencei.sexp`, no
+  FRAGMENTS entry (6 entries, `gen_fragments.py:46-99`), `rv_zifencei` pinned nowhere
+  and absent from `target/refs/riscv-opcodes/` (both censuses re-run); upstream
+  carries exactly one row (73 bytes) under the `extensions/` route. The SPEC side is
+  already pinned (`sources.sexp:49` RVI-ZIFENCEI 2.0). (2) **The engine is
+  always-coherent by construction**: fetch re-reads every step (`fixtures.rs:161-162`
+  — "Re-read every time: OB-CODE-VISIBILITY — a store to a later-fetched address is
+  visible to the next fetch immediately"); a store commits before StoreDone; no write
+  buffer; the TLB caches translations, never contents (`translation.rs:62-87`). The
+  census candidate "instruction-fetch cache state" is `present false`
+  (`state.sexp:652-653`) — but its why is rv64i's verbatim recording and says
+  "without Zifencei", FALSE for this declaring unit the moment the slot binds.
+  (3) **fence.i is a nop on both sides of the differential**: the base fence is a
+  declared nop (`rv64i.sem.sexp:137-138`, D-FENCE); Sail's FENCEI execute is
+  `sail_barrier` + "fence.i is a nop for the memory model"
+  (`zifencei_insts.sail:20-33`) with NO icache state anywhere in `model/` (grep
+  census); the tracked override already carries `Zifencei supported true` — the only
+  gap is the unbound slot on this side. (4) **The spec's contract is three sentences
+  and two latitudes** (the zifencei re-read, every phrase located): "RISC-V does not
+  guarantee that stores to instruction memory will be made visible to instruction
+  fetches on a RISC-V hart until that hart executes a FENCE.I instruction"; "A
+  FENCE.I instruction ensures that a subsequent instruction fetch … will see any
+  previous data stores already visible to the same RISC-V hart"; "A FENCE.I
+  instruction orders all explicit memory accesses that precede the FENCE.I in
+  program order before all instruction fetches that follow" — and "An instruction
+  fetch is always ordered before any explicit memory accesses that instruction gives
+  rise to." The latitudes: coherent caches or uncached RAM means "just the fetch
+  pipeline needs to be flushed at a FENCE.I" (a re-read-per-fetch machine has nothing
+  to flush); "base implementations shall ignore these fields [funct12, rs1, rd], and
+  standard software shall zero these fields". RVWMO §17.1 explicitly does NOT
+  formalize fetches/FENCE.I — no memory-model obligations to discharge. intro.html's
+  implicit-reads sentence is the sharpest stale-state form (a valid implementation
+  could "cache as many fetchable (executable) bytes as possible … and avoid reading
+  main memory for instruction fetches ever again") — the locator D-CODE-VISIBILITY
+  cites. (5) **The inherited obligations are named in the corpus**: it-fencei and
+  min-fencei's comment blocks pre-commit "the slot-binding leaf re-derives this file
+  to the legal fence.i when the slot binds" (both quoted); fault-selfmod (a rewrite
+  with NO synchronization) and dir-selfmod-fence (a rewrite behind the DATA fence —
+  which per decision 4's contract does NOT synchronize fetches) already execute;
+  DIFF-FENCEI-EXECUTED is rv64i's record, dropped for this unit at `.2` slice (g).
+  (6) **The vocabulary suffices, with one named limit**: visibility is observed
+  through the patched instruction's EFFECTS (fault-selfmod's step-5 x2←7) or a
+  trap's tval — the per-step insn text is not machine-asserted
+  (`run_rv64gc/tests.rs:22-31` compares order + writes); on an always-coherent
+  engine a with/without-fence.i pair cannot differ observably beyond fence.i's
+  decode legality itself.
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **The bind is the `.4` checklist miniaturized to one form**: pin `rv_zifencei`
+     through the `extensions/` route; the FRAGMENTS entry → generated
+     `zifencei.sexp` (owns NO fields — imm12/rs1/rd are the base's; requires
+     `riscv/rv64i`; funct3=1 against fence's 0); a hand-written `zifencei.sem.sexp`
+     with `(effect (nop))` and the shall-ignore rule cited; slot→extension with the
+     mandated census dual edit 87→88 (a one-form `zifencei_*` family); gen_definition
+     regenerates (no new Sem variant — the existing nop); the fetch-leg census flips
+     on its own (88==88); no new operators, no new state, no assembler shapes (the
+     zero-operand ecall/ebreak precedent).
+  2. **fence.i's effect is the declared nop — the honest landing, not a shortcut**:
+     the coherent/uncached-RAM latitude (pre-condition 4) sanctions it; Sail lands
+     identically ("a nop for the memory model"), so the matched experiment can AGREE
+     rather than recorded-diverge. Weighed and rejected: modelling a caching hart so
+     staleness becomes executable — it contradicts the `present false` census to
+     demonstrate a machine this unit is not; the acceptance's "when stale state MAY
+     persist" half is a LATITUDE, pinned by declaration with the intro.html sentence,
+     not by a fixture.
+  3. **The acceptance pair**: WITH synchronization — a new rewrite-code guest
+     carrying fence.i between the store and the fetch (the architectural
+     synchronization executed and legal; the patched instruction observed through
+     its effects, derivation EVD-05); WITHOUT — the existing fault-selfmod stays,
+     its derivation naming D-CODE-VISIBILITY (immediate visibility is the
+     laboratory's declared choice, a legal subset of the spec's may-or-may-not).
+     dir-selfmod-fence is measured at execution: if its comments read the data fence
+     as the synchronization, they are corrected to the spec's contract (fence ≠
+     fence.i) in the same commit — no stale comments.
+  4. **it-fencei/min-fencei re-derive to the legal fence.i** (their comments
+     pre-commit it): the word retires as a nop; this unit records NO DIFF
+     counterpart (both sides execute it legally — `references.sexp` stays
+     difference-free, measured).
+  5. **The reserved-fields cell**: a `.word` probe with nonzero funct12/rs1/rd
+     executes (the shall-ignore rule); the assembler accepts the zero-operand
+     `fence.i` spelling (standard software zeroes).
+  6. **The census re-answer**: the fetch-cache candidate's why drops the rv64i
+     "without Zifencei" clause — Zifencei is declared and now bound; the re-read
+     choice stays laboratory policy, and FENCE.I's nop is the unit's sanctioned
+     implementation of the synchronization (the `.4` reservation-candidate
+     precedent: re-answered in place, the consequence line unchanged).
+  7. **Execution slicing** (checkpoints inside the leaf, each committed with the
+     leaf id): (a) the re-pin + the fragment + `zifencei.sem.sexp` + the assembler
+     acceptance (the slot stays declared); (b) THE BIND: slot→extension, 87→88,
+     the re-derived fencei guests, the reserved-fields probe, the acceptance pair,
+     the matrix cells, the identity proof for the 97 untouched guests; (c) the
+     Sail matched experiment + the census re-answer + the reports and the book +
+     the leaf acceptance.
+  **Not `.6`'s scope:** a caching-hart model (decision 2, rejected); the rv64gc C13
+  disposition (registration day — no rv64gc section exists in `category-needs.sexp`);
+  fence.tso/pause pseudo spellings (D-FENCE's numeric-spelling precedent stands);
+  RVWMO's fetch formalization (the spec itself defers it); Zicbom/Zicboz cache-block
+  operations (unselected, named); the m/f/d/c slots (their leaves); the hypervisor
+  (D-NO-H); registration; the gate.
+
+- `2026-10-05` (design brief for `.5`, recorded before its execution; sources: the pinned
+  chapters re-read (`.materials/riscv/pinned-v20260120/priv/machine.html` §2.1.1.6.1,
+  §2.1.1.8–§2.1.1.12, §2.1.2.1, §2.1.3.3; `priv/supervisor.html` §11.1.1.3, §11.1.1.12;
+  `priv/sstc.html` 12.1; `unpriv/counters.html` §6.1 — versions 1.13/1.13/1.0/2.0 measured
+  from the page titles); the unit measured in tree (`state.sexp:274-316` mip, `:583-588`
+  stimecmp, `:590-600` the counter views; `privilege.rs:202-206` the live STIP overlay,
+  `:423-435` the synchronous-only delivery; `exec_rv64gc.rs:88-191` the hookless step;
+  `run_rv64gc.rs:77-131` the count-driven runner; `system.sem.sexp:7-12,51-57` the stated
+  WFI nop; `env.rs:7-8,178-179` the CPU-driven boundary); Sail 0.14's interrupt/wait
+  machinery measured in `target/refs/sail-riscv-src/model/` (`sys_control.sail:117-178`,
+  `interrupt_regs.sail:241-262`, `step.sail:11,49-77,310-326`, `validate_config.sail:
+  876-879`); two explore-agent censuses (the C14/C17 scope; the machinery deltas) — the
+  reports are conversation-only, every load-bearing fact below re-measured by the
+  signing engineer):
+  **The measured pre-conditions.** (1) **The seam is marked in the state document, and
+  one computed bit is already live**: mip's MSIP/MTIP/MEIP are `(read-only 0)` by
+  legalization ("Pending-state behaviour is P4-SYSTEM.5's", `state.sexp:316`); STIP is
+  `(computed)` — `time >= stimecmp` evaluated live on every mip/sip access
+  (`privilege.rs:202-206`). **The reset quirk, measured**: time and stimecmp both reset
+  0 (laboratory, RVP-MACHINE §2.1.4 UNSPECIFIED cited), so the honest computation reads
+  **STIP=1 at reset** — legal (§11.1.1.3; mip's "Nothing pending at reset" speaks of
+  STORAGE — STIP is computed, not stored), unobserved today (census: `grep 'mip\|sip'
+  guests/mm-*.expected.sexp` → 0), and the corpus must face it. (2) **No pending evaluation exists anywhere** — census:
+  `grep -n 'mip\|mie\|mideleg' crates/semulith-core/src/exec_rv64gc.rs` → 0 matches;
+  `trap_deliver` is synchronous-only by name (`privilege.rs:423-429`: "interrupt-caused
+  delivery is P4-SYSTEM.5's … the vectored mode is the interrupt case's"); delegation
+  reads only medeleg. (3) **The step model has no hook,
+  no halt, and the vocabulary cannot say "nothing retired"** — `step_over`
+  (`exec_rv64gc.rs:88-191`) runs fetch→decode→eval→pc+=4 with no pre-instruction
+  check; no halted bit exists; the runner loops exactly `executed_steps` with
+  `steps.len` asserted (`run_rv64gc.rs:77-131`, `tests.rs:17-21`); the expectations
+  schema is strictly per-step — "N ticks passed, nothing retired" is inexpressible
+  (measured, both files). The `.3` `<fetch page fault>` pseudo-step is the
+  vocabulary-extension precedent. (4) **WFI is a stated nop when legal**
+  (`system.sem.sexp:51-57` + header `:7-12` — "the wake event is P4-SYSTEM.5's"); the
+  legality latitudes are resolved FOR immediate trapping (illegal in U with S
+  present; illegal in S with TW=1 — §2.1.3.3/§2.1.1.6.6's "may always raise"
+  resolved deterministically); the `.2` Sail experiment named mm-wfi's TW cell a
+  Sail-side gap (Sail judges TW only on forced wait exit, `step.sail:65-75`) and
+  routed it here. (5) **The boundary is CPU-driven only** — `env.rs:178-179`:
+  "Implementors answer every request; they never initiate one — the CPU drives";
+  `:7-8`: "No device, no time source, no asynchronous event exists to model";
+  FlatMemory's one region makes a CLINT mtime load fault by contract
+  (guest-no-device, D-PLATFORM); `ScriptedEnv` answers FIXED values only — no
+  progress, no asynchrony (measured, `fixtures.rs:192-226`).
+  (6) **The spec's acceptance machinery is exact** (the machine/supervisor re-read,
+  every phrase located): the taken rule — for M: (a) mode M with MIE set OR any lower
+  mode, (b) the bit set in mip AND mie, (c) the bit NOT in mideleg (§2.1.1.9); the
+  S-form (supervisor §11.1.1.3); the global rule — higher-privilege interrupts always
+  enabled, lower always disabled (§2.1.1.6.1); delegation masks at the delegator
+  (§2.1.1.8); fixed priorities (M: MEI MSI MTI SEI SSI STI; S: SEI SSI STI);
+  evaluation bounded and immediate after xRET or a dependent-CSR write (§2.1.1.9);
+  per-bit mip writability (MTIP read-only, cleared via mtimecmp; SSIP
+  writable; SEIP's B∥E; STIP read-only under Sstc, set when time ≥ stimecmp, cleared
+  by writing stimecmp above time — §11.1.1.3/§11.1.1.12). WFI's resume rule: MUST
+  resume on a locally-enabled pending interrupt "regardless of the global interrupt
+  enable at each privilege level" and of mideleg, even globally disabled; resumption
+  "for any reason" permitted (the nop latitude); the taken trap resumes "on the
+  following instruction … mepc = pc + 4" (§2.1.3.3). (7) **Rates are environment property everywhere** — Zicntr §6.1 ("The
+  execution environment should provide a means to determine the current rate"); mtime
+  §2.1.2.1 ("must increment at constant frequency"); STIP/MTIP reflection
+  "eventually, but not necessarily immediately" — the fairness assumption
+  `CPU_ENVIRONMENT.md` §3 demands be named, never a test timeout. mm-counters stayed
+  NOT MATCHABLE at `.2` because Sail refuses Zicntr without a CLINT time source
+  (`validate_config.sail:876-879`) and D-PLATFORM declares no devices. (8)
+  **Determinism is the design's spine** — every modelled state so far is a pure
+  function of the hart's own history (the TLB/reservation census discipline,
+  `state.sexp:656-657`); `every_guest_re_executes_identically_from_cold_reset`
+  (`run_rv64gc/tests.rs:96-109`) and EVD-05's exact values both break if time and
+  event injection are not a replayable, DECLARED schedule. Sail's own time ticks
+  only per-instruction (`step.sail:319-326`) and its loop never dwells in WFI
+  (`exit_wait=true`, `:310`) — time-without-retirement is unmatched-by-construction
+  on the reference side, recorded now. (9) **C14/C17 and the contract rows name the split** — no rv64gc
+  section exists in `category-needs.sexp` (the unit is deliberately unregistered);
+  `CPU_ENVIRONMENT.md` §2's Interrupts / Counter input / Waiting rows assign the CPU
+  the mask/priority/acceptance/return, access/width/state, and suspend/continue
+  rules, and the environment the source state, the declared virtual-time progress,
+  and event progress while the CPU waits ("Timer/interrupt wake without CPU
+  retirement" — the acceptance's exact words); §6: "Time-based devices need progress
+  when no instruction retires." The `.2` brief's drawn-out list routes in:
+  interrupt-CAUSED entry, counter values/rate/wrap/progress (with `.9`), WFI's wake,
+  the mcountinhibit contract decision, mtime/mtimecmp as environment state
+  (with `.9`).
+  **The design, decided** (the execution measures and fixes at root, the `.1`/`.2`
+  discipline):
+  1. **A declared virtual-time domain, uniform and replayable** — the acceptance's
+     enabling choice. The laboratory's time advances **one tick per step boundary,
+     retired or halted** (authority laboratory — the Zicntr latitude "the rate … will
+     depend on the implementation and operating environment", §6.1; pre-condition 7's
+     fairness assumption answered: progress is a pure function of the step index,
+     declared as data, never a timeout). `time` reads the domain directly (the state
+     document's "environment's mtime" phrasing is refined, not contradicted: the
+     domain IS the environment's supply; the contract wording is `.9`'s). `mcycle`
+     reads the same domain ("cycle count might represent a valid implementation of
+     RDTIME", §6.1). `minstret` counts GENUINELY: +1 per retired instruction, never
+     for a halted or a faulting step (the `.8`-candidate unit discipline).
+     Determinism holds by construction (pre-condition 8).
+  2. **The counter-reading corpus re-derives BY DESIGN** — measured: `mm-counters.s`
+     is the ONLY guest reading counters (7 reads; census `grep -c 'rdcycle\|rdtime\|
+     rdinstret' guests/*.s | grep -v ':0'` → 1 file); its zero-expecting cells
+     re-derive to the declared tick values (the `.2` IALIGN-16 precedent — re-derived,
+     never fitted); mm-stimecmp measured clean of counter reads.
+  3. **Pending evaluation and interrupt-caused delivery, at the spec's own evaluation
+     points** — the engine gains the (a)(b)(c) computation with the global rule, the
+     delegation mask, and the fixed priorities, evaluated at the HEAD of every step
+     (the Sail `dispatchInterrupt`-at-head precedent, `sys_control.sail:117-141`
+     measured): per-step evaluation satisfies "bounded amount of time" and covers the
+     xRET/CSR-write immediacy by construction. Delivery: mcause's Interrupt bit set
+     (bit 63 — the field already declared), mepc ← the next instruction's pc
+     (interrupts are taken BETWEEN instructions), the xPIE/xIE/xPP stack, pc ← the
+     vector — **both mtvec/stvec modes delivered as declared** (synchronous keeps
+     BASE; interrupt delivery honors MODE — the storage already admits it, and
+     delivering MODE=1 as BASE would be a description lie). mideleg is read for the
+     first time, with the delegator-masking rule.
+  4. **The halted state and WFI's real wake** — the nop latitude recorded-not-taken
+     (the `.3` over-fence precedent: taking it would leave the leaf's acceptance
+     untestable). A hart-state bit (ACTIVE/WAITING — Sail's `HART_WAITING` precedent,
+     `step.sail:11`), cold-ACTIVE at reset, a pure function of hart history under the
+     declared time domain; it joins the SEM-08 census (the named `.5` reopen,
+     `state.sexp:658`) with the TLB/reservation discipline. While WAITING a step
+     retires nothing, issues no fetch, advances time one tick, and evaluates the
+     wake: resume on a LOCALLY-enabled pending interrupt at ANY privilege regardless
+     of global enables and mideleg (§2.1.3.3's must); on resume the trap is taken if
+     the taken-conditions hold (mepc = pc + 4 — the WFI-specific rule), else
+     execution continues at pc + 4 and software may loop. The `.2` TW resolutions
+     stand; mm-wfi's TW cell re-tests against Sail's named gap unchanged.
+  5. **The source set is exactly what the platform can supply** — STIP (the live
+     stimecmp-vs-time computation, Sstc), SSIP and SEIP's software-writable B parts
+     (already storage). **MTIP/MSIP/MEIP STAY read-only 0 BY DECLARATION**:
+     mtime/mtimecmp are memory-mapped ENVIRONMENT registers (§2.1.2.1) in a platform
+     that declares no I/O region (D-PLATFORM; guest-no-device proves the fault
+     today), MSIP is read-only-0-legal at one hart (§2.1.1.9's own latitude), and no
+     external controller exists — the M-level machinery is fully testable through
+     the software-writable bits (mideleg clear → SSIP/SEIP trap to M). The mtime/
+     MMIO contract and any source-delivery vocabulary are `.9`'s charter — the `.4`
+     external-invalidation routing precedent; nothing is smuggled. The timer wake
+     the acceptance names rides the Sstc path, which needs no MMIO.
+  6. **The expectations vocabulary gains the halted step, minimally** — a `<halted>`
+     pseudo-step (the `.3` `<fetch page fault>` precedent): declared
+     `(insn "<halted>")`, empty `(writes)`, `fetches 0` (the `.3` declarational fetch
+     witness gains the 0 arm); the wake step itself is ordinary — the taken trap is
+     observed through handler control flow and csrr reads (the `.2` mode-matrix
+     discipline), an untrapped resume through the pc+4 continuation. The runner's
+     count-driven termination is unchanged — halted steps count as steps; the
+     fetch-count and steps.len assertions gain exactly the halted-step arm, recorded
+     as the harness convention.
+  7. **mcountinhibit stays excluded, now as the measured equivalence** — §2.1.1.12:
+     "If the mcountinhibit register is not implemented, the implementation behaves
+     as though the register were set to zero" — counters always count, exactly what
+     decision 1 models; the contract decision the `.2` brief deferred is ANSWERED
+     here by that citation (the committed 33 stands).
+  8. **The corpus families** (names at execution): acceptance cells (eligible/
+     ineligible boundaries per mode, the global rule, per-cause enables, pending/
+     clear through the software-writable bits, delegation masking, the fixed
+     priorities among simultaneous pending); the timer guests (STIP set/clear
+     through stimecmp writes, the landed STCE/TM gates re-exercised against live
+     STIP); the wake guests (halt with time observed passing through the handler's
+     rdtime, wake-with-trap (mepc=pc+4) and wake-without-trap (pc+4 continuation),
+     the locally-enabled-regardless-of-delegation cell); nesting and return (an
+     interrupt inside a handler, the xRET stack restoration); counters (the
+     declared rate observed, instret's genuine count incl. zero across halted
+     steps, the mode-gating matrix on live values). Matrix: the seven existing
+     axes (the progress axis's own wording already names wfi) — no new axis.
+  9. **The Sail matched experiment, scoped to what is matchable** — EVD-05 stays
+     primary. MATCHABLE: the acceptance/delegation/priority cells driven by the
+     software-writable pending bits (no external source needed on either side —
+     SSIP/SEIP via csrrs), the override measured first (the `.4` validate-config
+     discipline). NOT MATCHABLE, recorded: time-without-retirement (pre-condition
+     8), the counter rate (the `.2` CLINT wall stands — enabling Sail's CLINT/SIG
+     to force a match was weighed and rejected at `.2`), the TW cell (the named
+     gap). Any override change re-proves verdict-neutrality on the existing corpus
+     (the `.3`/`.4` pattern).
+  10. **No new instructions, no bind** — `.5` is machinery, not forms (the `.3`
+      precedent): the scope census (87), the encoding composition and the assembler
+      are untouched; slices land tracked and green incrementally. The corpus
+      consequences (decision 2's re-derivation; mm-wfi's legal-WFI cells facing the
+      real halt) land with the slices that cause them, each with its per-guest
+      identity measurement (the `.3` discipline).
+  11. **Execution slicing** (checkpoints inside the leaf, each committed with the
+      leaf id): (a) the virtual-time domain + counter progress (the rate as data,
+      instret genuine, cycle=time) + mm-counters' by-design re-derivation + the
+      determinism proof; (b) pending evaluation + interrupt-caused delivery (both
+      vector modes) + the acceptance corpus; (c) the halted state + WFI's wake +
+      the `<halted>` vocabulary + the wake corpus + mm-wfi's re-derivation + the
+      census reopen; (d) the matrix cells + the Sail attempt + the reports and the
+      book + the leaf acceptance.
+  **Not `.5`'s scope:** mtime/mtimecmp's MMIO and the MTIP/MSIP/MEIP sources (`.9`'s
+  contract; the board's CLINT is the P5 layer); mcountinhibit the REGISTER (excluded —
+  decision 7's equivalence); HPM/Zihpm (unselected); the hypervisor timer (D-NO-H);
+  fault priority as a topic (`.8`); multicore time synchronization (MC-MULTICORE —
+  vacuous at harts=1); the counter-rate and event-delivery CONTRACT wording (`.9` —
+  the laboratory's domain is data here, the TLB-parameter precedent); the rv64gc
+  C14/C17 dispositions (registration day); registration; the gate.

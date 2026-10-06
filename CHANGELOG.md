@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0057 (tree P4-SYSTEM): the .8 design brief — the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection
+
+- The `.8` brief recorded before execution: SEM-04/SEM-06 and the laboratory's declared
+  preciseness; the engine's write-straight-through design (correct only where every fault
+  point precedes every commit); a defect measured on both engines — a CSR instruction whose
+  write is refused commits rd before trapping (semulith writes x5, sail does not); the
+  standing implicit crossings declared, not hidden; the pinned fault-priority table; no
+  rv64gc fault injection yet — designed as declared environment refusal regions. Slices
+  (a)–(e).
+- The closed `.5`/`.6`/`.7` design briefs and `.7`'s slice decisions archived verbatim to
+  `archive/P4-SYSTEM-designs.md` (44,080 B; census exact). `make gate` green.
+
 ## SEMULITH-P4-0056 (leaf P4-SYSTEM.7, slice e3) — the decision record's closing measurement; the leaf CLOSES
 
 - The qualification record's closing measurement, re-run at HEAD, lands as its own record
