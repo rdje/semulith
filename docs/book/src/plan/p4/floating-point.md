@@ -101,3 +101,10 @@ takes its mode from the instruction or from `frm` (a reserved mode traps), its f
 accumulate in `fflags`, and the state is marked dirty only when something actually changed.
 The instruction census grows from 88 to 118, matching the pinned upstream tables exactly,
 and all 114 test programs pass — the 103 that existed before byte-for-byte unchanged.
+
+Slice (d) brings in **double precision** the same way, in five checkpoints. The first pinned
+the upstream D tables (32 instructions) and generated their definition fragment, which
+declares that it needs F — D reuses F's register-file fields and the specification makes D
+depend on F; a composition that tries D without F is refused by name. Because every
+floating-point operation in the semantics language already takes its width as data, D needs
+only one new operation: converting between single and double precision.

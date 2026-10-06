@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0049 (leaf P4-SYSTEM.7, slice d1) — the rv_d/rv64_d re-pin + the d.sexp fragment
+
+- `rv_d`/`rv64_d` pinned in the rv64gc ledger (2,091/465 B; 26 + 6 = 32 forms; 3 pseudo
+  rows written out, not carried), fetched through the tracked route and byte-identical to
+  the census fetch; the census leg excludes them by name until the bind (RED-proven:
+  exactly the 32 D names without it).
+- `definitions/riscv/d.sexp` generated: requires `riscv/rv64i` and `riscv/f` (D depends on
+  F and reuses its rs3/rm), owns no field. Trial units: D without F refused by name; F + D
+  composes 147 instructions collision-free. The other 8 fragments byte-identical.
+- The slice (d) split recorded: the FP vocabulary is width-generic, so D adds only the
+  format conversion. `make gate` green; no Rust touched.
+
 ## SEMULITH-P4-0048 (leaf P4-SYSTEM.7, slice c6) — THE BIND: the unit composes riscv/f
 
 - `encoding.sexp`: the `f` slot becomes `(extensions "riscv/f")`; the census 88 → 118 in

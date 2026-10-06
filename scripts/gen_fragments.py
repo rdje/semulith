@@ -116,6 +116,17 @@ FRAGMENTS = (
      "— the pinned rows name only the field. The tables' 13 $pseudo_op rows are NOT "
      "carried: they spell real forms (the rv64i write-it-out policy), and the pseudo "
      "flag is for forms that exist upstream ONLY as pseudo-ops (P4-SYSTEM.7 slice c2)."),
+    ("definitions/riscv/d.sexp", "riscv/d", "isa-extension", ("rv_d", "rv64_d"),
+     ("riscv/rv64i", "riscv/f"), (), False, False,
+     "The D extension: double-precision floating point — 32 forms (26 in rv_d: the "
+     "FLD/FSD transfers, the four fused multiply-adds, add/sub/mul/div/sqrt, sign "
+     "injection, min/max, the two format conversions FCVT.S.D/FCVT.D.S, the three "
+     "compares, fclass and the 32-bit integer conversions; 6 in rv64_d: the 64-bit "
+     "integer conversions and the FMV.X.D/FMV.D.X bit moves). It owns NO operand field: "
+     "rs3 and rm are F's, and it REQUIRES riscv/f by name for them — and because the "
+     "chapter states it (D depends on F, RVI-D 21.1). The tables' 3 $pseudo_op rows "
+     "(fmv.d/fabs.d/fneg.d) are NOT carried: they spell the sign-injection forms (the "
+     "rv64i write-it-out policy, as F's) (P4-SYSTEM.7 slice d1)."),
 )
 
 

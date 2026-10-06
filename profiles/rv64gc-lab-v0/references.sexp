@@ -98,14 +98,22 @@
            " aliases of Zicsr), which the fragment does NOT carry: they are"
            " spellings of real forms (the rv64i write-it-out policy), not forms the"
            " profile selects. The pinned arg_lut.csv already carries rs3 (31..27)"
-           " and rm (14..12), so it needs no re-pin. The D tables are slice (d)'s.")
+           " and rm (14..12), so it needs no re-pin. rv_d/rv64_d (added at P4-SYSTEM.7"
+           " slice d1, 2026-10-06, through the same route) carry the D extension's"
+           " 32 forms — 26 rows in rv_d (FLD/FSD, the four fused multiply-adds, the"
+           " arithmetic, sign injection, min/max, the two format conversions"
+           " fcvt.s.d/fcvt.d.s, the compares, fclass and the 32-bit integer"
+           " conversions) and 6 in rv64_d (the 64-bit integer conversions and the"
+           " fmv.x.d/fmv.d.x bit moves) — plus 3 $pseudo_op rows (fmv.d/fabs.d/fneg.d,"
+           " spellings of the sign-injection forms) the fragment does NOT carry; D"
+           " reuses F's rs3/rm and owns no field.")
   (encoding_source
     (id "RISCV-OPCODES")
     (origin "https://github.com/riscv/riscv-opcodes")
     (license "BSD-3-Clause (RISC-V International, 2022)")
     (retrieved "2026-10-03")
     (work_dir "target/refs/riscv-opcodes")
-    (supplies "instruction fixed bits and operand lists for Zicsr (rv_zicsr: csrrw/csrrs/csrrc and their immediate forms), the Zicntr counter reads (rv_zicntr: rdcycle/rdtime/rdinstret as pinned pseudo-op rows of csrrs), the privileged system instructions (rv_system: mret, wfi; rv_s: sret, sfence.vma — RVP-INSNS 18.1), the A extension (rv_a: lr.w/sc.w and the nine amo*.w; rv64_a: the eleven .D forms), Zifencei (rv_zifencei: fence.i) and the F extension (rv_f: the 26 RV32F forms; rv64_f: the four 64-bit integer conversions); the csr and zimm5 operand field positions plus the aq/rl ordering-field positions and F's rs3/rm positions (arg_lut.csv); the CSR name-to-address map (csrs.csv); the CSR field masks (encoding.h — mstatus.TSR/TW/TVM/MPRV, the xIE/xPIE/xPP positions); and the trap cause codes (causes.csv).")
+    (supplies "instruction fixed bits and operand lists for Zicsr (rv_zicsr: csrrw/csrrs/csrrc and their immediate forms), the Zicntr counter reads (rv_zicntr: rdcycle/rdtime/rdinstret as pinned pseudo-op rows of csrrs), the privileged system instructions (rv_system: mret, wfi; rv_s: sret, sfence.vma — RVP-INSNS 18.1), the A extension (rv_a: lr.w/sc.w and the nine amo*.w; rv64_a: the eleven .D forms), Zifencei (rv_zifencei: fence.i), the F extension (rv_f: the 26 RV32F forms; rv64_f: the four 64-bit integer conversions) and the D extension (rv_d: the 26 RV32D forms; rv64_d: the four 64-bit integer conversions and the two 64-bit bit moves); the csr and zimm5 operand field positions plus the aq/rl ordering-field positions and F's rs3/rm positions (arg_lut.csv); the CSR name-to-address map (csrs.csv); the CSR field masks (encoding.h — mstatus.TSR/TW/TVM/MPRV, the xIE/xPIE/xPP positions); and the trap cause codes (causes.csv).")
     (note "The hypervisor, Sm* and other pinned-but-unselected tables (D-NO-H, D-NO-PMP) are deliberately NOT in this pin: the fragment must carry only the profile's selection, and pinning a table nothing derives from would invite a reader to believe it is used. The selected tables carry no unselected instruction — measured row by row at the re-pin.")
     (file (name "rv_zicsr") (sha256 "dd8cc0e2c32fb5658d4aa719cef6ab1b714e2145ba071c9aeb382d9963e4901f") (bytes 940))
     (file (name "rv_zicntr") (sha256 "34ed6bb1cf98448c7c40abbd6f67cbccee0788bd42429a2b1a9538952f6cca8c") (bytes 298))
@@ -116,6 +124,8 @@
     (file (name "rv_zifencei") (sha256 "be2d8f7286e06fadafffbde14656e6adb3f923ce704ea0829229d3a3b5f35758") (bytes 73))
     (file (name "rv_f") (sha256 "227e09504c0d758add114d5a77ac06d7e2ffab9c6a9509633c4f531db58b3e3e") (bytes 3050))
     (file (name "rv64_f") (sha256 "5c01c243ccd8a1c0e24a48a1ffcf62eecb10aa36fd6bdcedf7392e670cd46cf9") (bytes 320))
+    (file (name "rv_d") (sha256 "24bc7c6384f9a009dbafb3f177ec68b0d4f8fb1c2c2b7b07767320fdd7d4acbc") (bytes 2091))
+    (file (name "rv64_d") (sha256 "883e668be4c536d0dfdb8c02bd1f3eb959801eb953f1fb7a4b4e5e623cbf19a9") (bytes 465))
     (file (name "csrs.csv") (sha256 "caf7f732356167cbc5a93eeb6b37ddbaf5c8483229b50ee7cb7a56bb6d29d493") (bytes 6101))
     (file (name "encoding.h") (sha256 "6ce1b7caafd51379ad1f775cbb59f978eda8cdae35bc19ffd0ee00482543d944") (bytes 22687))
     (file (name "causes.csv") (sha256 "237491f164e0818afcacb8853f665a97dedb585e21c64d784433b80ae870ee69") (bytes 554))
