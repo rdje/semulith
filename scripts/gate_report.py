@@ -728,6 +728,298 @@ def build_cpulab(profile: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Gate CPU-SYSTEM — the processor gate over a complete declared profile (`P4-SYSTEM.10` slice b).
+# ALL TEN axes of `docs/EVIDENCE_AND_GATES.md` §7, per axis, never rolled up (SCP-05), each
+# measured from THIS unit's tracked files. ⛔ No axis is a constant and no count is hard-coded:
+# `build_cpulab` above carries rv64i's facts as numbers (21 cells, 51 ACT4 tests) and reads rv64i's
+# replay suites whatever the unit — run on rv64gc it read G-REPLAY green from rv64i's evidence.
+# Five axes are COMPUTED from the unit's dossier; five are answered by suites and records whose
+# location is the unit's business, so the unit DECLARES them (`gate.sexp`, schema/gate.sexp) and
+# this generator VERIFIES every declaration against the tree. The kinds each of those axes
+# requires are §7's, held HERE (`GS_KINDS`), never by the unit: a required kind with no verified
+# evidence reads open, whatever the manifest says. `passed` needs all ten green (EVD-08).
+# ---------------------------------------------------------------------------
+
+GS_AXES = ("G-SCOPE", "G-STATE", "G-CONTRACT", "G-TRACE", "G-OBLIGATIONS", "G-INTERACTIONS",
+           "G-REGRESSION", "G-PORTABILITY", "G-REPLAY", "G-RELEASE")
+# §7's required evidence for the five declared axes, as kinds (the table's own words).
+GS_KINDS = {
+    "G-TRACE": ("experiment",),
+    "G-REGRESSION": ("directed", "external", "generated", "workload", "validator-mutation"),
+    "G-PORTABILITY": ("x86-64", "aarch64", "miri"),
+    "G-REPLAY": ("determinism", "snapshot", "replay-bundle", "reduction"),
+    "G-RELEASE": ("decision",),
+}
+# Kinds whose record must carry a passing recorded verdict, not merely exist.
+GS_VERDICT_KINDS = ("external", "workload", "validator-mutation", "x86-64", "aarch64", "miri")
+GS_REQUIRED = {  # §7's table, quoted per axis for the report
+    "G-SCOPE": "exact profile, source revisions, observation contract, complete dependency closure",
+    "G-STATE": "state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence",
+    "G-CONTRACT": "enumerable CPU/environment assumptions and guarantees; validated mappings",
+    "G-TRACE": "graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules",
+    "G-OBLIGATIONS": "every included requirement meets its predeclared verification policy",
+    "G-INTERACTIONS": "the declared fault/alias/boundary/event/progress/restart matrix exercised",
+    "G-REGRESSION": "full applicable directed, external, generated, workload, validator-mutation suites pass",
+    "G-PORTABILITY": "native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes",
+    "G-REPLAY": "reports and relevant successes/failures reproduce from recorded inputs and event choices",
+    "G-RELEASE": "reproducible report, explicit capability limits, named release decision, versioned artifact",
+}
+
+
+def _forms(path: Path, head: str) -> list:
+    """Every list whose head is `head`, at any depth of the document."""
+    out, stack = [], [f for f in S.read_file(path) if isinstance(f, list)]
+    while stack:
+        f = stack.pop(0)
+        if f and str(f[0]) == head:
+            out.append(f)
+        stack.extend(c for c in f[1:] if isinstance(c, list))
+    return out
+
+
+def _one(form: list, name: str):
+    found = S.children(form, name)
+    return str(found[0][1]) if found else None
+
+
+def _tracked() -> set[str]:
+    return set(subprocess.run(["git", "ls-files"], capture_output=True, text=True, cwd=ROOT,
+                              check=True).stdout.split())
+
+
+def _verify_evidence(ev: list, tracked: set[str], experiments: set[str], where: str) -> tuple[str, str | None]:
+    """(what the evidence names, None if verified — else why it is not)."""
+    test, record, exp = S.children(ev, "test"), _one(ev, "record"), _one(ev, "experiment")
+    if len(test) + (record is not None) + (exp is not None) != 1:
+        raise SystemExit(f"gate_report: {where}: an evidence form names exactly one of test / record / "
+                         f"experiment — this one names {len(test) + (record is not None) + (exp is not None)}")
+    kind = _one(ev, "kind")
+    if test:
+        file, fn = _one(test[0], "file"), _one(test[0], "fn")
+        label = f"`{file}` `{fn}`"
+        if file not in tracked:
+            return label, "the file is not tracked"
+        if not re.search(rf"\bfn {re.escape(fn)}\s*\(", (ROOT / file).read_text(encoding="utf-8")):
+            return label, "no such test function in the file"
+        return label, None
+    if exp is not None:
+        label = f"experiment `{exp}`"
+        return label, None if exp in experiments else "no such experiment record in references.sexp"
+    label = f"`{record}`"
+    if record not in tracked:
+        return label, "the record is not tracked"
+    if kind in GS_VERDICT_KINDS:
+        text = (ROOT / record).read_text(encoding="utf-8")
+        m = re.search(r'\(verdicts "([0-9]+) pass / ([0-9]+) fail"\)', text)
+        v = re.search(r'\(verdict "([a-z]+)"\)', text)
+        if m:
+            return label, None if m.group(2) == "0" else f"the record reads {m.group(2)} fail"
+        if v:
+            return label, None if v.group(1) == "passed" else f"the recorded verdict is {v.group(1)}"
+        return label, "the record carries no recorded verdict"
+    return label, None
+
+
+def _gs_verdict(axes: dict[str, tuple[str, bool]]) -> tuple[str, list[str]]:
+    """EVD-08's shape: `passed` exactly when all ten axes are present and green."""
+    incomplete = [a for a in GS_AXES if a not in axes or not axes[a][1]]
+    return ("passed" if not incomplete else "incomplete"), incomplete
+
+
+def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | None = None) -> str:
+    """`d`/`tracked` exist for the controls (`_selftest`), which run the builder over a scratch
+    copy of a real unit; the report itself always reads the unit's tracked dossier."""
+    d = d or ROOT / "profiles" / profile
+    prof = D.load_profile(d / "profile.sexp")
+    obs = R.load(d / "contract-obligations.sexp")
+    reqs = R.load(d / "requirements.sexp")
+    refs = D.load_references(d / "references.sexp")
+    tracked = tracked if tracked is not None else _tracked()
+    rel = lambda name: (d / name).relative_to(ROOT).as_posix()  # noqa: E731
+    manifest = d / "gate.sexp"
+    if rel("gate.sexp") not in tracked:
+        raise SystemExit(f"gate_report: {rel('gate.sexp')} is not tracked — the CPU-SYSTEM report "
+                         f"reads the unit's evidence manifest (schema/gate.sexp)")
+    axes: dict[str, tuple[str, bool]] = {}
+
+    # G-SCOPE — the composition is complete: no unfilled slot, no partial status.
+    compose = _forms(d / "encoding.sexp", "compose")[0]
+    exts = [str(c[1]) for c in S.children(compose, "extensions")]
+    slots = [str(_one(s, "id")) for s in S.children(compose, "slot")]
+    status = _one(compose, "status") or "complete"
+    axes["G-SCOPE"] = (f"the encoding composes `{_one(compose, 'base')}` + {len(exts)} extensions; "
+                       f"status `{status}`; unfilled slots: "
+                       + (", ".join(f"`{s}`" for s in slots) if slots else "none"),
+                       status != "partial" and not slots)
+
+    # G-STATE — the hidden-state census answered, and the state requirements implemented.
+    census = _forms(d / "state.sexp", "hidden_state_census")
+    cands = [c for h in census for c in _forms_in(h, "checked")]
+    answered = [c for c in cands if (_one(c, "why") or "").strip()]
+    state_reqs = [r for r in reqs if r["kind"] == "state"]
+    state_done = [r for r in state_reqs if r["implementation_status"] in ("implemented", "not-applicable")]
+    axes["G-STATE"] = (f"the hidden-state census: {len(answered)} of {len(cands)} candidates answered; "
+                       f"{len(state_done)} of {len(state_reqs)} `state` requirements implemented",
+                       bool(census) and len(answered) == len(cands)
+                       and bool(state_reqs) and len(state_done) == len(state_reqs))
+
+    # G-CONTRACT — the effective contract's checks, realized by THIS unit's registry; frozen.
+    declared, realized = contract_measure(d, obs)
+    versions = _forms(d / "contract.sexp", "contract") if (d / "contract.sexp").is_file() else []
+    latest = max(versions, key=lambda v: int(_one(v, "version"))) if versions else None
+    frozen = latest is not None and _one(latest, "status") == "frozen"
+    axes["G-CONTRACT"] = (f"{len(realized)} of {len(declared)} checks of the effective contract "
+                          f"realized by the unit's registry; latest version "
+                          + (f"`{_one(latest, 'id')}` {_one(latest, 'status')}" if latest else "— none"),
+                          bool(declared) and len(realized) == len(declared) and frozen)
+
+    # G-OBLIGATIONS — every requirement resolved and implemented, under a predeclared policy.
+    unresolved = [r["id"] for r in reqs if r["research_status"] != "resolved"]
+    by_status: dict[str, int] = {}
+    for r in reqs:
+        by_status[r["implementation_status"]] = by_status.get(r["implementation_status"], 0) + 1
+    open_reqs = sum(n for s, n in by_status.items() if s not in ("implemented", "not-applicable"))
+    policy = rel("EVIDENCE_POLICY.md") in tracked
+    axes["G-OBLIGATIONS"] = (f"{len(reqs)} requirements: "
+                             + ", ".join(f"{n} `{s}`" for s, n in sorted(by_status.items()))
+                             + f"; {len(unresolved)} not resolved"
+                             + (f" ({', '.join(f'`{u}`' for u in unresolved)})" if unresolved else "")
+                             + f"; predeclared policy (`EVIDENCE_POLICY.md`): {'present' if policy else 'absent'}",
+                             bool(reqs) and not unresolved and open_reqs == 0 and policy)
+
+    # G-INTERACTIONS — every declared cell carries a resolving disposition.
+    cells = _forms(d / "interactions.sexp", "cell")
+    empty = [" × ".join(str(a[1]) for a in S.children(c, "axis")) for c in cells
+             if not (S.children(c, "guest") or S.children(c, "mechanism") or S.children(c, "degenerate"))]
+    axes["G-INTERACTIONS"] = (f"{len(cells)} cells declared, {len(cells) - len(empty)} with a resolving "
+                              f"disposition (a guest, a mechanism or a degenerate argument)"
+                              + (f"; undispositioned: {', '.join(empty)}" if empty else ""),
+                              bool(cells) and not empty)
+
+    # The five declared axes — the manifest's evidence, verified; §7's kinds required.
+    experiments = {e["id"] for e in refs.get("experiment", [])}
+    found: dict[tuple[str, str], list[tuple[str, str | None]]] = {}
+    for ev in _forms(manifest, "evidence"):
+        axis, kind = _one(ev, "axis"), _one(ev, "kind")
+        if kind not in GS_KINDS.get(axis, ()):
+            raise SystemExit(f"gate_report: {rel('gate.sexp')}: evidence kind `{kind}` is not one "
+                             f"{axis} requires ({', '.join(GS_KINDS.get(axis, ()))})")
+        found.setdefault((axis, kind), []).append(_verify_evidence(ev, tracked, experiments, rel("gate.sexp")))
+    na = {}
+    for f in _forms(manifest, "not-applicable"):
+        axis, kind = _one(f, "axis"), _one(f, "kind")
+        if kind not in GS_KINDS.get(axis, ()):
+            raise SystemExit(f"gate_report: {rel('gate.sexp')}: not-applicable `{axis}`/`{kind}` names no required kind")
+        na[(axis, kind)] = _one(f, "why")
+    for axis, kinds in GS_KINDS.items():
+        if axis == "G-RELEASE":
+            continue
+        have = [k for k in kinds if any(v is None for _, v in found.get((axis, k), [])) or (axis, k) in na]
+        missing = [k for k in kinds if k not in have]
+        axes[axis] = (f"{len(have)} of {len(kinds)} required kinds evidenced"
+                      + (f" — open: {', '.join(f'`{k}`' for k in missing)}" if missing else ""),
+                      not missing)
+    others_green = all(g for a, (_, g) in axes.items())
+    decided = any(v is None for _, v in found.get(("G-RELEASE", "decision"), []))
+    axes["G-RELEASE"] = (("a release decision is recorded" if decided else "no release decision recorded")
+                         + "; this report is generated from tracked inputs and gated for sync (GATE-REPORT); "
+                         + ("every other axis green" if others_green else "other axes open"),
+                         decided and others_green)
+
+    opens: dict[str, list[tuple[str, str]]] = {}
+    for f in _forms(manifest, "open"):
+        axis = _one(f, "axis")
+        if axis not in GS_AXES:
+            raise SystemExit(f"gate_report: {rel('gate.sexp')}: open item on unknown axis `{axis}`")
+        opens.setdefault(axis, []).append((_one(f, "owner"), _one(f, "statement")))
+    verdict, incomplete = _gs_verdict(axes)
+    unowned = [a for a in incomplete if a not in opens]
+
+    L: list[str] = []
+    A = L.append
+    A(f"# Gate `CPU-SYSTEM` report — `{profile}`")
+    A("")
+    A("<!-- DERIVED — DO NOT EDIT. Regenerated by `scripts/gate_report.py --gate GS`;")
+    A("     the `GATE-REPORT` doctrine fails the commit if this file and its inputs")
+    A("     disagree. Edit the INPUTS (the dossier and its gate.sexp). -->")
+    A("")
+    A(f"**Verdict: `{verdict}`.**" + ("" if verdict == "passed" else
+      f" Open axes ({len(incomplete)} of {len(GS_AXES)}): {', '.join(f'`{n}`' for n in incomplete)}."))
+    A("")
+    A("## The processor gate, per axis (`SCP-05` — never rolled up)")
+    A("")
+    A("| Axis | Required (§7) | Measured state | Verdict |")
+    A("| --- | --- | --- | --- |")
+    for a in GS_AXES:
+        state, green = axes[a]
+        A(f"| `{a}` | {GS_REQUIRED[a]} | {state} | **{'green' if green else 'incomplete'}** |")
+    A("")
+    A("Fidelity is reported per axis. No sentence here says the profile is supported: a banner")
+    A("is not a claim with a denominator.")
+    A("")
+    A("## What stands open, and who owns it")
+    A("")
+    if incomplete:
+        A("| Axis | Owner | Open item |")
+        A("| --- | --- | --- |")
+        for a in incomplete:
+            for owner, statement in opens.get(a, [("**unowned**", "no open item is declared for this axis")]):
+                A(f"| `{a}` | `{owner}` | {statement} |")
+        if unowned:
+            A("")
+            A(f"**Unowned open axes: {', '.join(f'`{u}`' for u in unowned)}** — an open axis with no owning leaf.")
+    else:
+        A("Nothing.")
+    A("")
+    A("## The evidence the unit declares (`gate.sexp`), verified against the tree")
+    A("")
+    A("| Axis | Kind | Evidence | Verified |")
+    A("| --- | --- | --- | --- |")
+    for axis, kinds in GS_KINDS.items():
+        for k in kinds:
+            for label, why in found.get((axis, k), []):
+                A(f"| `{axis}` | `{k}` | {label} | {'yes' if why is None else f'**no** — {why}'} |")
+            if (axis, k) in na:
+                A(f"| `{axis}` | `{k}` | not applicable — {na[(axis, k)]} | declared |")
+            if not found.get((axis, k)) and (axis, k) not in na:
+                A(f"| `{axis}` | `{k}` | — | **none declared** |")
+    A("")
+    A("A test function is verified to exist in a tracked file; it PASSES because `make check` runs")
+    A("`cargo test` before every commit. A record is verified to be tracked and, for a verdict-bearing")
+    A("kind, to carry a passing recorded verdict. What a declaration claims a test exercises is the")
+    A("reviewer's to judge — that much this report cannot measure.")
+    A("")
+    A("## The versioned artifact")
+    A("")
+    A(f"- profile `{profile}`, version `{prof['profile'].get('version', '?')}`")
+    A("- the dossier's content digest (every tracked SOURCE file under")
+    A(f"  `profiles/{profile}/` — the generated reports excluded, as derived):")
+    A(f"  `sha256 {dossier_digest(d)}`")
+    A(f"- regenerate: `scripts/gate_report.py {profile} --gate GS`")
+    A("")
+    A("## Capability limits (explicit)")
+    A("")
+    if incomplete:
+        A("Every open item above is a limit of what this profile is evidence for today. Until each")
+        A("closes, a claim about this processor holds only on the axes that read green, and only")
+        A("for the inputs those axes measured.")
+    else:
+        A("Every axis is green over the inputs it measured; finite testing is not proof.")
+    return "\n".join(L) + "\n"
+
+
+def _forms_in(form: list, head: str) -> list:
+    out, stack = [], [c for c in form[1:] if isinstance(c, list)]
+    while stack:
+        f = stack.pop(0)
+        if f and str(f[0]) == head:
+            out.append(f)
+        stack.extend(c for c in f[1:] if isinstance(c, list))
+    return out
+
+
+
+# ---------------------------------------------------------------------------
 # Gate BREADTH — the cross-architecture capability report (`P3-BREADTH.6`). Same doctrine
 # as the per-profile gates, one level sideways: derived entirely from TRACKED files (the
 # unit registry, the units' dossiers, the schemas, the refusal-boundary pins, the family
@@ -963,6 +1255,10 @@ def build_breadth() -> str:
 # arm count is asserted, so an arm that silently never ran is a failure, not a pass.
 # ---------------------------------------------------------------------------
 
+def assert_eq(got, want):
+    assert got == want, f"got {got!r}, want {want!r}"
+
+
 def _selftest() -> int:
     import shutil
     import tempfile
@@ -1035,11 +1331,90 @@ def _selftest() -> int:
             lambda: refuses(unit("odd", registry=odd), "read exactly"))
         arm("RED two registries in one contract document are refused",
             lambda: refuses(unit("tworeg", lambda s: s + s[s.index("(registry "):]), "at most one registry"))
+
+        # ---- the CPU-SYSTEM builder (`P4-SYSTEM.10` slice b) over a scratch copy of the unit ----
+        docs = ("profile.sexp", "contract-obligations.sexp", "requirements.sexp", "references.sexp",
+                "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp", "gate.sexp")
+        live = _tracked()
+
+        def gs(name, edits=None, extra_files=None):
+            g = tmp / f"gs-{name}"
+            g.mkdir()
+            for doc in docs:
+                text = (real / doc).read_text(encoding="utf-8")
+                for target, fn in (edits or {}).items():
+                    if target == doc:
+                        text = fn(text)
+                (g / doc).write_text(text, encoding="utf-8")
+            files = {(g / doc).relative_to(ROOT).as_posix() for doc in docs}
+            for fname, text in (extra_files or {}).items():
+                (g / fname).write_text(text, encoding="utf-8")
+                files.add((g / fname).relative_to(ROOT).as_posix())
+            return build_cpusystem("rv64gc-lab-v0", d=g, tracked=live | files)
+
+        def row(report, axis):
+            return next(l for l in report.splitlines() if l.startswith(f"| `{axis}` | ") and "Required" not in l
+                        and l.count("|") == 5)
+
+        def has(report, *needles):
+            for n in needles:
+                assert n in report, f"missing {n!r}"
+
+        def gs_refuses(name, edits, needle):
+            try:
+                gs(name, edits)
+            except SystemExit as e:
+                assert needle in str(e), f"refused, but for {e}"
+                return
+            raise AssertionError("not refused")
+
+        ev = lambda body: (lambda s: s + "\n" + body + "\n")  # noqa: E731
+        arm("GREEN the real manifest: 9 axes open, G-INTERACTIONS green, 2 of 5 regression kinds",
+            lambda: has(gs("green"), "Open axes (9 of 10)", "2 of 5 required kinds evidenced",
+                        "28 with a resolving disposition"))
+        arm("RED a test function that does not exist is not evidence",
+            lambda: has(gs("nofn", {"gate.sexp": lambda s: s.replace(
+                '(fn "every_guest_matches_its_expectations")', '(fn "no_such_test")')}),
+                "1 of 5 required kinds evidenced", "**no** — no such test function in the file"))
+        arm("RED a kind the axis does not require is refused",
+            lambda: gs_refuses("badkind", {"gate.sexp": ev(
+                '(evidence (axis G-REPLAY) (kind directed) (experiment "x") (statement "s"))')},
+                "is not one G-REPLAY requires"))
+        arm("RED an evidence form naming two locators is refused",
+            lambda: gs_refuses("twoloc", {"gate.sexp": ev(
+                '(evidence (axis G-TRACE) (kind experiment) (experiment "x") (record "y") (statement "s"))')},
+                "names exactly one of test / record / experiment"))
+        arm("RED a not-applicable kind counts, and is printed with its reason",
+            lambda: has(gs("na", {"gate.sexp": ev(
+                '(not-applicable (axis G-REGRESSION) (kind workload) (why "the stated reason"))')}),
+                "3 of 5 required kinds evidenced", "not applicable — the stated reason"))
+        rec = (tmp / "gs-failrec" / "act.sexp").relative_to(ROOT).as_posix()
+        arm("RED a verdict-bearing record that reads a failure is not evidence",
+            lambda: has(gs("failrec", {"gate.sexp": ev(
+                f'(evidence (axis G-REGRESSION) (kind external) (record "{rec}") (statement "s"))')},
+                {"act.sexp": '(campaign (verdicts "3 pass / 1 fail"))\n'}),
+                "2 of 5 required kinds evidenced", "**no** — the record reads 1 fail"))
+        arm("RED an open axis with no declared owner reads unowned",
+            lambda: has(gs("unowned", {"gate.sexp": lambda s: s[:s.index('(open (axis G-RELEASE)')]}),
+                        "**Unowned open axes: `G-RELEASE`**"))
+        arm("RED the scope measure discriminates: the slots filled, G-SCOPE reads green",
+            lambda: has(gs("scope", {"encoding.sexp": lambda s: re.sub(
+                r"\s*\(status partial\)|\s*\(slot \(id [mc]\) \(requires \"riscv/[mc]\"\)\)", "", s)}),
+                "Open axes (8 of 10)", "unfilled slots: none"))
+        arm("RED an undispositioned cell opens G-INTERACTIONS",
+            lambda: has(gs("cell", {"interactions.sexp": lambda s: re.sub(
+                r'(\(cell \(axis "fault"\) \(axis "alias"\))[^\n]*', r"\1)", s, count=1)}),
+                "Open axes (10 of 10)", "undispositioned: fault × alias"))
+        arm("RED `passed` is unreachable while any axis is open, and reached when none is",
+            lambda: (assert_eq(_gs_verdict({a: ("", True) for a in GS_AXES})[0], "passed"),
+                     assert_eq(_gs_verdict({**{a: ("", True) for a in GS_AXES}, "G-REPLAY": ("", False)}),
+                               ("incomplete", ["G-REPLAY"])),
+                     assert_eq(_gs_verdict({a: ("", True) for a in GS_AXES[:-1]})[0], "incomplete")))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 7
+    want = 17
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")
@@ -1074,14 +1449,15 @@ def main(argv: list[str]) -> int:
         print(f"wrote {out.relative_to(ROOT)} ({len(text)} bytes)")
         return 0
     if not rest or rest[0].startswith("--"):
-        print("usage: gate_report.py <profile> [--gate G0|G1|GC] [--stdout]", file=sys.stderr)
+        print("usage: gate_report.py <profile> [--gate G0|G1|GC|GS] [--stdout]", file=sys.stderr)
         print("       gate_report.py --gate BREADTH [--stdout]", file=sys.stderr)
         return 2
-    if gate not in ("G0", "G1", "GC"):
-        print(f"gate_report: unknown gate '{gate}' (G0, G1, GC or BREADTH)", file=sys.stderr)
+    builders = {"G0": build, "G1": build_g1, "GC": build_cpulab, "GS": build_cpusystem}
+    if gate not in builders:
+        print(f"gate_report: unknown gate '{gate}' (G0, G1, GC, GS or BREADTH)", file=sys.stderr)
         return 2
     profile = rest[0]
-    text = build(profile) if gate == "G0" else build_g1(profile) if gate == "G1" else build_cpulab(profile)
+    text = builders[gate](profile)
     if "--stdout" in rest:
         sys.stdout.write(text)
         return 0

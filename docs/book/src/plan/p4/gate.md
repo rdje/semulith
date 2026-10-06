@@ -1,6 +1,6 @@
 # P4.10 — The CPU-SYSTEM gate report
 
-**Status:** Underway (slice a, 2026-10-06)
+**Status:** Underway (slices a–b, 2026-10-06)
 
 The processor gate has ten parts, called *axes*. Each one asks a different question: is the
 profile exactly defined, is its state fully accounted for, is its contract with the
@@ -27,3 +27,19 @@ names its own *registry* of checks, and only the checks its registry runs are co
 replaced by a newer contract version no longer count either. The Linux-capable profile reads
 **14 of 100** checks realized; the scalar profile still reads 0 of 72, and its existing reports
 did not change.
+
+Slice (b) built the report itself. It answers all ten questions for the Linux-capable profile,
+and for each one it either measures the answer from the profile's own files or checks the
+evidence the profile points to. Some evidence lives in places only the profile knows: which
+test runs its example programs, where an external test campaign recorded its results. For
+those, the profile keeps a small *evidence manifest*. The report generator verifies every
+entry in it: a named test must really exist, a named record must really be in the repository
+and show a pass. The list of what each question requires belongs to the generator, not to the
+profile, so a profile cannot make a question easier by leaving something out.
+
+The first report reads **incomplete**. Nine of the ten axes are open, and each open item names
+the leaf that will close it. The one green axis is the interaction matrix: every one of its 28
+combinations of faults, aliases, boundaries, events, progress and restart has a test program
+or an argument recorded against it. The old scalar-profile report, run on this profile, would
+have called the replay axis green by reading the *scalar* profile's replay tests. The new
+report reads it as one of four required kinds present.

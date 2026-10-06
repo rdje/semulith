@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0070 (leaf P4-SYSTEM.10, slice b) — the first CPU-SYSTEM report: incomplete, every open axis owned
+
+- `scripts/gate_report.py --gate GS` (`build_cpusystem`): all ten processor-gate axes, each
+  measured from the unit's own files — no constant, no hard-coded count. Five computed from the
+  dossier; five answered by the unit's evidence manifest (`schema/gate.sexp`,
+  `profiles/rv64gc-lab-v0/gate.sexp`), every declaration verified against the tree, the
+  required kinds held by the generator. `passed` needs all ten green.
+- `profiles/rv64gc-lab-v0/GS-REPORT.md`: `incomplete` — 9 of 10 open (G-INTERACTIONS green: 28
+  cells, each dispositioned), every open item owned by `.11`–`.18`.
+- Controls: the generator's self-test 17/17; GATE-REPORT 16/16, five reports in sync.
+
 ## SEMULITH-P4-0069 (leaf P4-SYSTEM.10, slice a) — the contract measure becomes the unit's own
 
 - `scripts/gate_report.py` `contract_measure()`: a check is implemented for a unit exactly when
