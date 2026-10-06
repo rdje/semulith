@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0072 (tree P4-SYSTEM) — the `.11` design brief: bind M
+
+- Recorded before execution. Measured: `m.sexp` exists (13 instructions, pinned) with no
+  semantics — the `.2` brief assigned it to an "M evidence leaf" that was never created; the
+  language has no multiply or divide; the definition states ISA choices explicitly (`sll`'s
+  mask) while operators stay arithmetic; RVI-M defines every edge (no trap); Sail's matched
+  configuration supports M; v1 is frozen.
+- The design: eight arithmetic operators (signed overflow wraps, as `add` does; a zero divisor
+  is outside the domain, RISC-V's results stated by guards in `m.sem.sexp`, a static guard
+  rule RED-proven); the bind with `OB-GC-M` in contract v2 (open); three evidence routes —
+  an EVD-05 corpus, a generated operand table, the Sail matched experiment. Slices (a)–(d).
+- `.8`'s closed checklists archived verbatim to `archive/P4-SYSTEM-4.md` (part 4 opened).
+
 ## SEMULITH-P4-0071 (leaf P4-SYSTEM.10, slice c) — THE LEAF ACCEPTANCE; the leaf CLOSES
 
 - Reproducible from pinned inputs, measured: in a fresh worktree with no `target/`, the GS,

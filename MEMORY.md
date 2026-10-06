@@ -18,10 +18,10 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (10/18 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and eight leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), the environment contract v1 (`.9`), and the CPU-SYSTEM report (`.10`, `incomplete`, 9/10 axes open)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.11` — bind M: the DESIGN BRIEF first (`m.sexp` exists, 13 insns,
-  no `m.sem.sexp`; div-by-zero/overflow defined results; EVD-05 corpus; Sail matched).
-  `GS-REPORT.md` is the scoreboard: regenerate it after any rv64gc dossier edit
-  (`scripts/gate_report.py rv64gc-lab-v0 --gate GS`); close its `gate.sexp` open items.
+- next_action: `P4-SYSTEM.11` slice (a) — the language for M: `mul`, `mulh`/`mulhsu`/`mulhu`,
+  `div`/`divu`/`rem`/`remu` (overflow wraps; zero divisor outside the domain, guarded in the
+  definition; a static guard rule in check_semantics.py, RED-proven), the generator, engine
+  arms + unit tests. `GS-REPORT.md` is the scoreboard (regenerate after rv64gc edits).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).
