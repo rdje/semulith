@@ -346,6 +346,20 @@ def from_int(n, iw, signed, mode, v):
     return round_rational(n, Fraction(v), mode)
 
 
+def convert(m, n, mode, a):
+    """FCVT.S.D / FCVT.D.S (RVI-D §21.1.5): the n-bit float a as an m-bit float. A NaN →
+    the canonical NaN, NV iff signaling; ±∞ and ±0 keep their sign; a finite value is the
+    exact rational re-rounded in format m (narrowing rounds by mode with IEEE's OF/UF;
+    widening is exact — every single is a double)."""
+    x = Val(n, a)
+    if x.nan:
+        return nan_result(m, x)
+    if x.kind == "inf":
+        return inf(m, x.sign), 0
+    if x.kind == "zero":
+        return round_rational(m, Fraction(0), mode, x.sign)
+    return round_rational(m, x.q, mode)
+
 def fbits(x):
     import struct
     return struct.unpack("<I", struct.pack("<f", x))[0]

@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — the patch that passed without itself, and a deviation that was the oracle's (P4-SYSTEM.7 slice d3)
+
+The plan, recorded at (d1), was to patch the qualification record's deviation (ii) in the new
+`fp::convert`: "an sNaN through a format conversion gets no NV flag". The spec-side vectors
+passed — and passed again with the patch bypassed. A patch whose absence the tests cannot see
+is either untested or patching nothing, so the backend was probed directly: `convert_r` raises
+INVALID_OP for a signaling NaN in both directions. Slice (a)'s own run file then said the
+rest: all 24 recorded disagreements are `apfloat NV, mpfr -`. MPFR has a single NaN kind and
+cannot express a signaling one; the record had booked the oracle's silence against the
+backend. The correction went to the record (a second dated amendment), not just to the code —
+and to three places this session had propagated the error, including a (c6) "fix" that raised
+a correct count of two deviations to an incorrect three on the record's word.
+
+- **Validation:** 230/230 vectors (54 conversions); FP-VECTORS hardware agree 2131 (the tie
+  mutation caught on the conversion leg); fp.rs over the 63,752-case corpus: 0 vs the
+  exact-rational reference, 24 vs MPFR — all signaling NaNs, all the oracle's.
+- Promotion: PROMOTED — docs/knowledge/an-oracle-can-share-the-convention-it-judges.md extended (the starkest form: an oracle that cannot represent the case).
+
 ## _(2026-10-06)_ — the bind that was already proven, a green gate that never saw the new files, and a number corrected in the slice that wrote it (P4-SYSTEM.7 slice c6)
 
 The bind itself was uneventful by design: every leg had run green in the staging worktree, so

@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c6) done `2026-10-06`, `SEMULITH-P4-0041`–`-0048` — F BOUND; slice (d) split into (d1)–(d5), (d1)–(d2) done `SEMULITH-P4-0049`–`-0050`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c6) done `2026-10-06`, `SEMULITH-P4-0041`–`-0048` — F BOUND; slice (d) split into (d1)–(d5), (d1)–(d3) done `SEMULITH-P4-0049`–`-0051`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -164,7 +164,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; (c5) the staged F corpus (11 guests, spec-derived); (c6) THE BIND — F executes in the tracked engine (118 forms, 114/114); (d1) the D tables pinned + `d.sexp`; (d2) `f2f` + `d.sem.sexp`; next (d3): `fp.rs`'s format conversions |
+| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; (c5) the staged F corpus (11 guests, spec-derived); (c6) THE BIND — F executes in the tracked engine (118 forms, 114/114); (d1) the D tables pinned + `d.sexp`; (d2) `f2f` + `d.sem.sexp`; (d3) `fp.rs`'s conversions (the record's deviation (ii) withdrawn); next (d4): the staged D corpus |
 
 ## Decisions
 
@@ -189,7 +189,10 @@ This gate authorises the planned next engineering stage: board implementation.
   register files on a staged composition; (d3) `fp.rs`'s format conversions with deviation
   (ii) patched, `specfp`'s conversion, FP-VECTORS extended; (d4) the staged D corpus with
   its EVD-05 derivations; (d5) THE BIND (slot → extension, the census 118 → 150, the arms,
-  the corpus, the matrix).
+  the corpus, the matrix). ⚠ **Corrected at (d3)**: deviation (ii) does not exist — the
+  backend, measured, raises NV for a signaling NaN through a format conversion; the record's
+  24 cases were the MPFR oracle's (it has no signaling NaN). `fp.rs` patches nothing there;
+  the record carries a second amendment.
 
 - `2026-10-06` (slice (c4) part 1, recorded before execution — a §13 data-locality defect of
   slice (a), measured while preparing (c4)'s scratch driver): `ls ~/.cargo/registry/src/*/`
@@ -1091,6 +1094,62 @@ never raised, at every crossing. The index:
   `CHANGELOG.md`, `LIVE_STATUS.md` (465 arms), the book (P4.7 chapter). DEV_NOTES: no entry
   — the vocabulary's width-genericity was the slice's design premise, measured, not a lesson.
 
+`P4-SYSTEM.7` slice (d3) — `fp.rs`'s format conversions; the record's deviation (ii) withdrawn (`2026-10-06`, `SEMULITH-P4-0051`):
+
+- [x] **REPRODUCE / ISSUE** — the pre-slice census at `4495759`, then the measurement that
+  overturned the plan:
+
+  ```
+  $ git show HEAD:crates/semulith-core/src/fp.rs | grep -c "pub fn convert" → 0
+  $ git show HEAD:scripts/specfp.py | grep -c "^def convert" → 0; vectors 176
+  the planned sNaN patch BYPASSED (`if false && x.is_nan()` in both arms) →
+    cargo test -p semulith-core --lib fp:: → ok. 7 passed — the patch was dead
+  the backend probed directly (rustc_apfloat 0.2.3, convert_r — slice (a)'s own call):
+    d->s 0x7ff4000000000000 status INVALID_OP · s->d 0x7fa00000 status INVALID_OP
+    (the quiet NaNs: status 0)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — D's FCVT.S.D/FCVT.D.S had no model; and the record's
+  deviation (ii) ("an sNaN through a format conversion gets no NV flag", 24 cases) is the
+  ORACLE's: `grep -cE "FLAGS (f32_64|f64_32) .*apfloat NV, mpfr -"
+  target/p4-system-7/probe/run.corrected.txt` → 24 — every one backend NV, MPFR none (the
+  other 4 conversion FLAGS rows are deviation (i)'s clamps). The MPFR generator reads NaNs
+  through `mpfr_set_flt`/`mpfr_set_d` (`target/p4-system-7/mpfr/vec_gen.c:352-358`) into
+  MPFR's one NaN kind — no signaling NaN, so no invalid flag for one. Today's (c6) and (d2)
+  text repeated the misattribution (`schema/semantics.sexp` "three" deviations; the f2f
+  comment; `fp.rs`'s module doc; this tree's (d) split decision).
+
+- [x] **FIX** — `fp.rs`: `convert(m, n, rm, a)` — narrowing through the backend with OF/UF
+  judged on the exact `WideSingle` rounding (the common `finish` tail), widening exact, NaN
+  canonical and NV on a signaling NaN from the backend's own `INVALID_OP` (no patch);
+  `scripts/specfp.py`: `convert` (the exact rational re-rounded); `gen_fp_vectors.py`: 54
+  conversion vectors (per-mode narrowing incl. overflow, the UF boundary, ties, the minimum
+  subnormal; NaNs, zeros, infinities both ways); FP-VECTORS' hardware arm: double → single
+  RNE against the host's own narrowing (directed ties first) and single → double exact;
+  the decision record's second dated amendment (deviation (ii) withdrawn; two genuine
+  deviations); the stale text corrected (schema ×2, `fp.rs` doc, the split decision's note).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core --lib fp:: → ok. 7 passed (230/230 vectors)
+  $ bash scripts/check_fp_vectors.sh → FP-VECTORS: ok (… 230 vectors; reference vs hardware
+    RNE: agree 2131) — was 1329; --self-test 6 pass / 0 fail
+  the half-up tie mutation of specfp, on the conversion leg alone: 1 + 2^-24 → reference
+    0x3f800001, hardware 0x3f800000 — MISS
+  fpcheck (fp.rs over slice (a)'s 63,752-case corpus, now driving the 272 conversions) →
+    vs the exact-rational spec reference: 63752 cases, 0 disagreements;
+    vs MPFR: 52112 cases, 24 disagreements — 20 f64_32 + 4 f32_64, all "-->NV"
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (343 passed); `make gate` → `=== all doctrines
+  green ===`; `gen_fp_vectors.py --check` rc=0; no tracked module or evaluator touched — the
+  FToF arm lands at the bind.
+
+- [x] **LOCKSTEP** — this tree (the split decision's correction note), the decision record
+  (second amendment + banner), `DEV_NOTES.md` (PROMOTED — the oracle card extended),
+  `CHANGELOG.md`, `MEMORY.md` (next_action → d4), the book (P4.7 chapter).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1100,6 +1159,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (d3) | the planned sNaN patch bypassed (vectors still green — dead); the backend probed (INVALID_OP both ways); slice (a)'s 24 conversion FLAGS rows read (all backend NV, MPFR none); 230/230 vectors; FP-VECTORS hardware agree 2131 with the tie mutation caught on the conversion leg; fp.rs over the 63,752-case corpus 0 vs the reference, 24 vs MPFR (the oracle's) | **met** — the conversions modeled; the record corrected at its source |
 | `2026-10-06` | `.7` slice (d2) | the operator census (only f2f new; 62 → 63); d.sem.sexp 32/32 + 19 quotes judged (0 findings); check_semantics 26/26; DEF-GEN 37/37 with the D-gate RED by mutation; the F + D staged module emits FToF; the assembler's D spelling 32/32 vs spike-dasm + 4 refusals; the tracked modules fingerprint-only | **met** — the language states D; nothing tracked executes it until the bind |
 | `2026-10-06` | `.7` slice (d1) | the pre-slice census (D pinned nowhere); the fetch through the tracked route (MATCH both pins, 118 == 118) and byte-identical to the census fetch; the exclusion RED (exactly the 32 D names); 9 fragments regenerated, 8 byte-identical; d.sexp schema ok; trial units — D without F refused by name, F + D composes 147 + 3; rv64i 52 == 52 | **met** — D pinned and fragmented, the slot unmoved |
 | `2026-10-06` | `.7` slice (c6) — THE BIND | the pre-bind census (the slot at encoding.sexp:16, 0 F rows, count_total 88, no fp:: in the evaluator); the payload landed 38/38 byte-identical from the worktree; run_rv64gc 4/4 over 114; 30/30 F forms generated; 118 == 118 vs the pinned tables; EXERCISE-COVERAGE 118/118; the matrix 28 cells; RECORD-SCHEMA, PROFILE-CONSISTENCY, EXTRACTION, DEF-GEN, GUEST-GEN, CITATION-QUOTES ok; two stale facts swept (fp.rs 362 → 290; the schema's deviation count) | **met** — F executes in the tracked engine; the 103 older guests byte-identical |
@@ -1120,6 +1180,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice d3) | `SEMULITH-P4-0051 (leaf P4-SYSTEM.7): slice d3 — fp.rs's format conversions (54 spec-side vectors, the hardware arm extended); the record's deviation (ii) withdrawn — the 24 cases were the MPFR oracle's missing signaling NaN` | the decision record's second amendment |
 | `.7` (slice d2) | `SEMULITH-P4-0050 (leaf P4-SYSTEM.7): slice d2 — the language for D: f2f (the one new operator, gated on riscv/d), d.sem.sexp (32 rules at format 64), the assembler's D spelling derived (32/32 round trip)` | the closed (b)–(c3) part 2 checklists archived |
 | `.7` (slice d1) | `SEMULITH-P4-0049 (leaf P4-SYSTEM.7): slice d1 — the rv_d/rv64_d re-pin (32 forms) + the d.sexp fragment (requires riscv/f, owns no field; the 3 pseudo rows written out); the slice (d) split recorded` | no Rust touched; the slot unmoved |
 | `.7` (slice c6) — THE BIND | `SEMULITH-P4-0048 (leaf P4-SYSTEM.7): slice c6 — THE BIND: the unit composes riscv/f (118 forms, 114 guests, the F arms tracked)` | the staged payload landed; the worktree removed |
@@ -1134,6 +1195,13 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (d3) done (`SEMULITH-P4-0051`) — **the format conversions**:
+  `fp.rs::convert` and its exact reference, 54 vectors, the hardware cross-check extended.
+  Measuring the backend before patching it overturned the qualification record's deviation
+  (ii): the backend does raise NV for a signaling NaN through a conversion — the 24 cases
+  were the MPFR oracle's, which has no signaling NaN. Two genuine deviations remain. Next:
+  slice (d4) — the staged D corpus.
 
 - `2026-10-06`: `.7` slice (d2) done (`SEMULITH-P4-0050`) — **the language for D**: one new
   operator, `f2f` (the format conversion), lowered only where `riscv/d` is composed;

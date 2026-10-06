@@ -18,6 +18,12 @@ LLVM-vs-IEEE deviations listed below — the crate is arithmetic machinery, not 
 > model layer landed at slice (c4), not (b); the overflow count below is 290, not 362 (72 were
 > the oracle's false overflows); a THIRD deviation exists (underflow), invisible to this
 > record's oracle because the oracle shared it; the manifest pin is expressed `=0.2.3`.
+>
+> **Amended again `2026-10-06` (`P4-SYSTEM.7` slice (d3))** — see the second amendment at
+> the end: deviation (ii) below is WITHDRAWN. Its 24 cases were the MPFR oracle's silence
+> (MPFR has no signaling NaN), not the backend's: the backend raises NV for a signaling NaN
+> through a format conversion. The backend's genuine flag deviations are TWO — overflow on a
+> directed-mode clamp (290) and underflow at the smallest-normal boundary.
 
 ## Why — the measurements (all reproducible from the scratch harness)
 
@@ -172,3 +178,34 @@ The lesson is the record's own subject, one level down: a second lineage is not 
 opinion when its DERIVATION shares the first one's convention — the oracle's rule text has to
 be checked against the specification's sentence, not against the thing it judges
 ([[decision_claim-verification-adopted]]; `docs/knowledge/an-oracle-can-share-the-convention-it-judges.md`).
+
+## Amendment — `2026-10-06`, `P4-SYSTEM.7` slice (d3): deviation (ii) was the oracle's
+
+Writing `fp.rs`'s format conversion (`f2f`, FCVT.S.D/FCVT.D.S) to "patch deviation (ii)", the
+model layer's vectors passed with the patch BYPASSED — so the patch was dead, and the backend
+was measured directly instead of trusted to the record:
+
+```
+rustc_apfloat 0.2.3, convert_r (the slice-(a) probe's own call, target/p4-system-7/probe):
+  d->s 0x7ff4000000000000 (sNaN): status INVALID_OP     d->s 0x7ff8000000000001 (qNaN): 0
+  s->d 0x7fa00000         (sNaN): status INVALID_OP     s->d 0x7fc00001         (qNaN): 0
+$ grep -cE "FLAGS (f32_64|f64_32) .*apfloat NV, mpfr -" probe/run.corrected.txt → 24
+$ grep -E "FLAGS (f32_64|f64_32)" probe/run.corrected.txt | grep -v "apfloat NV, mpfr -"
+  → the 4 RTZ/RDN/RUP clamp rows of deviation (i) (apfloat NX, mpfr OFNX) — nothing else
+```
+
+Every one of the 24 disagreements is **backend NV, oracle none**. The MPFR generator reads a
+binary NaN through `mpfr_set_flt`/`mpfr_set_d` into MPFR's single NaN kind — it has no
+signaling NaN, so it cannot raise invalid for one — and the record read the oracle's silence
+as the backend's omission. IEEE 754-2008 §7.2 makes an operation on a signaling NaN invalid;
+the backend is right. **Consequences:** the genuine backend flag deviations are two — (i)
+overflow on a directed-mode clamp, 290 cases (the 4 conversion clamps among them), and (iii)
+underflow at the smallest-normal boundary; of the 314 flag disagreements, 24 are this
+record's oracle. `fp.rs::convert` relies on the backend's `INVALID_OP` (the result
+canonicalized by the common tail), and its 54 spec-side conversion vectors — signaling NaNs
+both ways among them — pass on the backend's own status. The text above is kept verbatim as
+the record of what was believed; this amendment is the correction.
+
+It is the c4 lesson a third time, in its starkest form: an oracle cannot disagree about a
+case it cannot represent, and the disagreement it reports there belongs to the oracle.
+

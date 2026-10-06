@@ -114,3 +114,10 @@ counterpart at width 64 — the specification itself defines them "analogously" 
 two format conversions, which needed the language's one new operation. The assembler learns
 which register file each D operand uses from those rules alone, and agrees with an
 independent disassembler on all 32 instructions.
+
+The third checkpoint added the conversion itself, and corrected the record. The backend's
+qualification had listed a second flag defect: no "invalid" flag when a signaling NaN is
+converted between formats. The fix was written — and the tests passed with it switched off.
+Probed directly, the backend does raise the flag; every one of the 24 recorded cases came from
+the reference oracle, which has no notion of a signaling NaN at all. The qualification record
+now carries that correction: the backend has two genuine flag deviations, not three.

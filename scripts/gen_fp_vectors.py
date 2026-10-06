@@ -104,6 +104,39 @@ for a, note in ((QNAN, "NaN → the maximum, NV (Table 5)"), (INF, "+∞ → the
     row("f2i32", 32, 0, a, 0, 0, note, lambda: S.to_int(32, 32, True, 0, a))
     row("f2u64", 32, 0, a, 0, 0, note, lambda: S.to_int(32, 64, False, 0, a))
 
+# P4-SYSTEM.7 slice (d3): the format conversions (row n = the TARGET format; the source is the
+# other one). Narrowing rounds with IEEE's OF/UF on the unbounded value; widening is exact; a
+# signaling NaN raises NV — the backend's deviation (ii), which fp.rs patches.
+D_THIRD, D_TINY_UP, D_TIE_EVEN, D_TIE_UP = 0x3FD5555555555555, 0x380FFFFFE0000000, 0x3FF0000010000000, 0x3FF0000030000000
+D_SNAN, D_QNAN = 0x7FF4000000000000, 0x7FF8000000000001
+for rm in range(5):
+    row("f2f", 32, rm, D_THIRD, 0, 0, "1/3 double → single per mode, inexact",
+        lambda: S.convert(32, 64, rm, D_THIRD))
+    row("f2f", 32, rm, D_MAX, 0, 0, "double MAX → single: overflow per mode (directed modes clamp WITH OF)",
+        lambda: S.convert(32, 64, rm, D_MAX))
+    row("f2f", 32, rm, 0xFFEFFFFFFFFFFFFF, 0, 0, "double -MAX → single: negative overflow per mode",
+        lambda: S.convert(32, 64, rm, 0xFFEFFFFFFFFFFFFF))
+    row("f2f", 32, rm, D_TINY_UP, 0, 0, "2^-126·(1−2^-24) → single: tiny unbounded, inexact — UF even where it rounds up to the smallest normal",
+        lambda: S.convert(32, 64, rm, D_TINY_UP))
+    row("f2f", 32, rm, 0x1, 0, 0, "double min subnormal → single: underflow to 0 or the min subnormal per mode",
+        lambda: S.convert(32, 64, rm, 0x1))
+    row("f2f", 32, rm, D_TIE_EVEN, 0, 0, "1 + 2^-24 → single: a tie (RNE to even 1.0, RMM away)",
+        lambda: S.convert(32, 64, rm, D_TIE_EVEN))
+    row("f2f", 32, rm, D_TIE_UP, 0, 0, "1 + 3·2^-24 → single: a tie whose even neighbour is above",
+        lambda: S.convert(32, 64, rm, D_TIE_UP))
+for a, note in ((D_SNAN, "double sNaN → single: canonical, NV (the backend's deviation (ii))"),
+                (D_QNAN, "double qNaN with a payload → single: canonical, no flag"),
+                (0x8000000000000000, "double -0 → single -0"), (0xFFF0000000000000, "double -∞ → single -∞"),
+                (D_ONE, "double 1.0 → single 1.0 exactly")):
+    row("f2f", 32, 0, a, 0, 0, note, lambda: S.convert(32, 64, 0, a))
+for a, note in ((SNAN, "single sNaN → double: canonical, NV (the backend's deviation (ii))"),
+                (QNAN, "single qNaN → double: canonical, no flag"),
+                (F_MIN_SUB, "single min subnormal → double: exact (a normal double)"),
+                (F_MAX, "single MAX → double: exact"), (NZ, "single -0 → double -0"),
+                (NINF, "single -∞ → double -∞"), (0x3EAAAAAB, "single ≈1/3 → double: exact, no NX")):
+    for rm in (0, 1):
+        row("f2f", 64, rm, a, 0, 0, note, lambda: S.convert(64, 32, rm, a))
+
 def emit() -> str:
     """The table, as the bytes the tracked file must hold."""
     buf = io.StringIO()

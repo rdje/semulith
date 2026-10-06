@@ -251,10 +251,10 @@
 ;;   same implementation-defined latitude, resolved as Sail 0.14's default
 ;;   Fflags_Dirty_Precise; laboratory authority). The arithmetic is rustc_apfloat behind
 ;;   the model layer, which owns the target policy and the measured LLVM-vs-IEEE flag
-;;   deviations — three since the record's `2026-10-06` amendment: OF on a directed-mode
-;;   clamp, UF at the smallest-normal boundary, NV on a signaling-NaN format conversion
-;;   (decision_fp-backend-qualification): an evaluator arm never touches the backend
-;;   directly.
+;;   deviations — two: OF on a directed-mode clamp and UF at the smallest-normal
+;;   boundary (decision_fp-backend-qualification, amended `2026-10-06` twice: the record's
+;;   third, no NV on a signaling-NaN conversion, was the MPFR oracle's — P4-SYSTEM.7 slice
+;;   d3): an evaluator arm never touches the backend directly.
 ;; - NaN-BOXING is the tree's, in bits (RVI-D §21.1.2): a narrower result is written
 ;;   through (fbox n v); a narrower operand is read through (funbox n v); the transfer
 ;;   instructions (FLW/FSW, FMV.X.W/FMV.W.X) move bits and never unbox — "A narrower n-bit
@@ -331,6 +331,6 @@
 ;; FCVT.D.S will never round" — yet a widening rule still resolves its rm (the reserved-mode
 ;; decode every rm-carrying encoding owes). A NaN input yields the canonical NaN (RVI-F
 ;; §20.1.3); a signaling-NaN input raises NV (IEEE 754-2008 §7.2 — an operation on a
-;; signaling NaN is invalid), which the backend omits for a format conversion: the
-;; qualification record's deviation (ii), patched in the model layer (P4-SYSTEM.7 slice d2).
+;; signaling NaN is invalid) — the backend's own status, measured (P4-SYSTEM.7 slices
+;; d2/d3; the record's "deviation (ii)" was the MPFR oracle's missing signaling NaN).
 (operator (name f2f) (fixed 4))

@@ -25,11 +25,12 @@
 //!   result computed as though the exponent range were unbounded would lie strictly between
 //!   ±b^emin", and the flag is tiny AND inexact. The backend instead judges the DELIVERED
 //!   result, so a value that is tiny unbounded but rounds up to the smallest normal raises
-//!   no UF there — a third deviation, measured at slice (c4) (2^-126·(1−2^-24) in RNE), which
+//!   no UF there — the second deviation, measured at slice (c4) (2^-126·(1−2^-24) in RNE), which
 //!   slice (a)'s MPFR-side rule shared and so could not see; Berkeley SoftFloat's RISC-V
 //!   specialization tests tininess the IEEE way (`init_detectTininess` = after rounding).
-//!   (The remaining deviation, NV on a signaling NaN through a format conversion, is the D
-//!   bind's `fcvt.s.d`/`fcvt.d.s`.)
+//!   (The record's other named deviation — no NV for a signaling NaN through a format
+//!   conversion — was the MPFR oracle's, not the backend's: measured at slice (d3), the
+//!   backend raises it; see [`convert`].)
 //! - **The policy surfaces the backend does not own**: a NaN converted to an integer yields
 //!   the target's maximum with NV (Table 5 — the backend returns 0); min/max are RVI-F
 //!   §20.1.6's minimumNumber/maximumNumber (−0 < +0, both-NaN canonical, one NaN → the other
@@ -693,6 +694,38 @@ pub fn from_int(n: u32, iw: u32, signed: bool, rm: Rm, v: u64) -> Flagged {
         from_int_in::<Single>(iw, signed, rm, v)
     } else {
         from_int_in::<Double>(iw, signed, rm, v)
+    }
+}
+
+/// `(f2f m n rm a)` — the n-bit float `a` converted to an m-bit float: FCVT.S.D and FCVT.D.S
+/// (RVI-D §21.1.5 — "FCVT.S.D rounds according to the RM field; FCVT.D.S will never round").
+/// Narrowing rounds through the backend with OVERFLOW and UNDERFLOW judged on the
+/// exactly-unbounded result (the same value rounded at the target's precision over a 15-bit
+/// exponent), as for every rounded operation; widening is exact. A NaN input yields the
+/// canonical NaN ([`finish`]), and a SIGNALING NaN raises NV — the backend's own
+/// `INVALID_OP`, measured at slice (d3) in both directions. (The qualification record had
+/// named this a backend deviation; its 24 cases were the MPFR oracle's silence — MPFR has no
+/// signaling NaN — and the record carries the correction.)
+#[must_use]
+pub fn convert(m: u32, n: u32, rm: Rm, a: u64) -> Flagged {
+    check_format(m);
+    check_format(n);
+    assert!(
+        m != n,
+        "a conversion from format {n} to itself is no conversion"
+    );
+    let mut loses = false;
+    if n == 64 {
+        let x = Double::from_bits(u128::from(a));
+        let r: StatusAnd<Single> = x.convert_r(rm.round(), &mut loses);
+        let wide = x
+            .is_finite()
+            .then(|| FloatConvert::<WideSingle>::convert_r(x, rm.round(), &mut loses).value);
+        finish(m, r, wide)
+    } else {
+        let x = Single::from_bits(u128::from(a & mask(32)));
+        let r: StatusAnd<Double> = x.convert_r(rm.round(), &mut loses);
+        finish(m, r, None::<WideDouble>)
     }
 }
 

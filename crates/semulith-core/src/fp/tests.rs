@@ -32,6 +32,7 @@ fn run(op: &str, n: u32, rm: Rm, a: u64, b: u64, c: u64) -> Flagged {
         "i2f32" => from_int(n, 32, true, rm, a),
         "i2f64" => from_int(n, 64, true, rm, a),
         "u2f64" => from_int(n, 64, false, rm, a),
+        "f2f" => convert(n, if n == 32 { 64 } else { 32 }, rm, a),
         other => panic!("a vector names an operation this test does not drive: {other}"),
     }
 }

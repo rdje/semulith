@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0051 (leaf P4-SYSTEM.7, slice d3) — fp.rs's format conversions; the record's deviation (ii) withdrawn
+
+- `fp.rs::convert(m, n, rm, a)` (FCVT.S.D/FCVT.D.S): narrowing through the backend with OF/UF
+  on the exactly-unbounded value, widening exact, NaN canonical, NV on a signaling NaN from
+  the backend's own status; `specfp.convert`; 54 spec-side vectors (230 total); FP-VECTORS'
+  hardware arm now also checks double→single RNE narrowing (directed ties) and exact widening
+  (agree 2131).
+- The planned patch for the qualification record's "deviation (ii)" passed its tests while
+  bypassed; probed, the backend raises NV for a signaling NaN through a conversion, and all 24
+  recorded cases were the MPFR oracle's (no signaling NaN in MPFR). The record carries a
+  second dated amendment: two genuine backend flag deviations, not three. The schema, `fp.rs`
+  and the tree text that repeated the error corrected; the oracle knowledge card extended.
+- fp.rs over slice (a)'s 63,752-case corpus: 0 disagreements with the exact-rational
+  reference. `make check` + `make gate` green.
+
 ## SEMULITH-P4-0050 (leaf P4-SYSTEM.7, slice d2) — the language for D: f2f + d.sem.sexp
 
 - `schema/semantics.sexp`: `(f2f m n rm a)`, the format conversion — the one operation the

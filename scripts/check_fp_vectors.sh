@@ -11,7 +11,8 @@
 # ⭐ IT ALSO JUDGES THE REFERENCE. A generator whose oracle drifted would regenerate a wrong table
 # perfectly; so the reference's round-to-nearest-even add/mul/div/sqrt are re-checked on every
 # run against the host's hardware IEEE (Python floats — an independent lineage), 400 seeded
-# binary64 cases. Founding failure (slice c4): the slice-(a) MPFR oracle judged overflow on the
+# binary64 cases — and, since P4-SYSTEM.7 slice (d3), its format conversions (double -> single
+# narrowing in RNE with directed ties, single -> double exact). Founding failure (slice c4): the slice-(a) MPFR oracle judged overflow on the
 # EXACT magnitude and underflow on the DELIVERED result — both against IEEE 754-2008 §7.4/§7.5 —
 # and agreed with the backend because it shared the backend's convention.
 #
@@ -66,6 +67,36 @@ for a, b in pairs:
             print(f"MISS sqrt {a:#x}: reference {got:#x}, hardware {S.dbits(math.sqrt(x)):#x}")
             sys.exit(1)
         agree += 1
+# the format conversions (P4-SYSTEM.7 slice d3): double -> single in RNE is the host's own
+# narrowing (struct "<f" packs a double through a C float conversion, ties to even), with
+# directed ties (1 + 2^-24 to even below, 1 + 3*2^-24 to even above), the UF boundary and the
+# minimum subnormal first, then doubles drawn inside and just outside single's range;
+# single -> double is exact.
+def f32(b): return struct.unpack("<f", struct.pack("<I", b))[0]
+narrow = [0x3FF0000010000000, 0x3FF0000030000000, 0x380FFFFFE0000000, 0x0000000000000001]
+for _ in range(400):
+    e = random.randint(1023 - 152, 1023 + 127)
+    narrow.append((random.getrandbits(1) << 63) | (e << 52) | random.getrandbits(52))
+for a in narrow:
+    try:
+        h = struct.unpack("<I", struct.pack("<f", f(a)))[0]
+    except OverflowError:
+        continue
+    got, _ = S.convert(32, 64, S.RNE, a)
+    if got != h:
+        print(f"MISS f2f d->s {a:#x}: reference {got:#x}, hardware {h:#x}")
+        sys.exit(1)
+    agree += 1
+for _ in range(400):
+    b = random.getrandbits(32)
+    y = f32(b)
+    if math.isnan(y):
+        continue
+    got, _ = S.convert(64, 32, S.RNE, b)
+    if got != S.dbits(y):
+        print(f"MISS f2f s->d {b:#x}: reference {got:#x}, hardware {S.dbits(y):#x}")
+        sys.exit(1)
+    agree += 1
 print(f"agree {agree}")
 PY
 }
