@@ -27,6 +27,12 @@
 ;;              nop; the budget contract
 ;;   restart    the xret/xepc return discipline: resumption of preempted control flow at
 ;;              the recorded address and mode (mret/sret, SPP/MPP, the MPRV rule)
+;; `P4-SYSTEM.7` slice (d5) (`2026-10-06`): the D bind rides the SAME seven axes, as F's
+;; did — FS=Off and the reserved modes (on operations that cannot round, too) are
+;; legality refusals delivered as cause 2; the flag/rounding/NaN/saturation/class and
+;; format-conversion edges are the boundary axis at format 64; FNEG.D/FABS.D are the
+;; alias axis; the 64-bit transfers (and a boxed single read as a double) are boundary
+;; × progress. No axis is added.
 ;; `P4-SYSTEM.7` slice (c6) (`2026-10-06`): the F bind rides the SAME seven axes —
 ;; FS=Off and the reserved rounding modes are the legality axis's refusals, DELIVERED
 ;; as cause 2 (fault) with continuation past the handler (progress, restart); the
@@ -104,13 +110,13 @@
 (cell (axis "fault") (axis "fault") (guest "it-prio-jump") (guest "it-prio-load"))
 (cell (axis "fault") (axis "alias") (guest "it-fault-alias") (guest "fault-ld-x0-mis") (guest "fault-ld-x0-fault"))
 (cell (axis "fault") (axis "boundary") (guest "it-fault-wrap-ld") (guest "it-fault-wrap-sd") (guest "sv39-fault-canonical") (guest "sv39-fault-superpage") (guest "a-lrsc-fault"))
-(cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39") (guest "i-vector") (guest "fencei-reserved") (guest "fp-fs-off") (guest "f-fs-off") (guest "f-rounding"))
+(cell (axis "fault") (axis "legality") (guest "fault-reserved") (guest "dir-runoff") (guest "it-fencei") (guest "min-fencei") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "sv39-fault-invalid") (guest "sv39-fault-reserved") (guest "sv39-perm-rwx") (guest "sv39-svade") (guest "sv39-mprv") (guest "a-lrsc-illegal") (guest "a-amo-sv39") (guest "i-vector") (guest "fencei-reserved") (guest "fp-fs-off") (guest "f-fs-off") (guest "f-rounding") (guest "d-fs-off") (guest "d-rounding"))
 (cell (axis "fault") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sv39-deleg") (guest "a-amo-sv39") (guest "i-deleg") (guest "w-deleg"))
-(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer") (guest "w-timer") (guest "fencei-selfmod") (guest "f-fs-off") (guest "f-rounding"))
-(cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest") (guest "w-timer") (guest "f-rounding"))
+(cell (axis "fault") (axis "progress") (guest "smoke-trap") (guest "guest-no-device") (guest "fault-jal-mis") (guest "fault-jalr-mis") (guest "fault-branch-nt") (guest "fault-fetch") (guest "fault-ld-mis-h") (guest "fault-ld-mis-d") (guest "fault-st-mis-h") (guest "fault-st-mis-w") (guest "fault-st-mis-d") (guest "fault-access-ld") (guest "fault-access-sd") (guest "fault-fence") (guest "fault-hints") (guest "fault-selfmod") (guest "dir-selfmod-fence") (guest "a-lrsc-fault") (guest "a-lrsc-mustfail") (guest "i-timer") (guest "w-timer") (guest "fencei-selfmod") (guest "f-fs-off") (guest "f-rounding") (guest "d-fs-off") (guest "d-rounding"))
+(cell (axis "fault") (axis "restart") (guest "mm-ebreak") (guest "mm-mret") (guest "a-lrsc-fault") (guest "a-amo-sv39") (guest "i-nest") (guest "w-timer") (guest "f-rounding") (guest "d-rounding"))
 
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────
-(cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap") (guest "f-sgnj"))
+(cell (axis "alias") (axis "alias") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap") (guest "f-sgnj") (guest "d-sgnj"))
 (cell (axis "alias") (axis "boundary") (guest "it-alias-bound") (guest "smoke-arith"))
 (cell (axis "alias") (axis "legality") (guest "mm-csr-rw") (guest "mm-readonly") (guest "fp-fcsr-view"))
 (cell (axis "alias") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters"))
@@ -118,10 +124,10 @@
 (cell (axis "alias") (axis "restart") (degenerate "the staged corpus composes no x0/aliasing case with an xret return: the restart cells observe control state (xepc, xPP, MPRV) through CSR reads by design, and the alias layer's x0 discipline is exercised against CSR access (alias x legality) and loop progress (alias x progress) — reported, not omitted"))
 
 ;; ── boundary × * ──────────────────────────────────────────────────────────────────
-(cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "dir-ext-matrix") (guest "scope-alu") (guest "a-amo-arith-w") (guest "a-amo-arith-d") (guest "a-amo-minmax-w") (guest "a-amo-minmax-d") (guest "f-arith") (guest "f-fused") (guest "f-convert") (guest "f-class") (guest "f-compare") (guest "f-minmax") (guest "f-rounding"))
+(cell (axis "boundary") (axis "boundary") (guest "bound-arith") (guest "bound-shift") (guest "bound-shiftw") (guest "bound-ext") (guest "dir-ext-matrix") (guest "scope-alu") (guest "a-amo-arith-w") (guest "a-amo-arith-d") (guest "a-amo-minmax-w") (guest "a-amo-minmax-d") (guest "f-arith") (guest "f-fused") (guest "f-convert") (guest "f-class") (guest "f-compare") (guest "f-minmax") (guest "f-rounding") (guest "d-arith") (guest "d-fused") (guest "d-convert") (guest "d-class") (guest "d-compare") (guest "d-minmax") (guest "d-f2f"))
 (cell (axis "boundary") (axis "legality") (guest "bound-shiftw") (guest "fault-shiftw-res"))
 (cell (axis "boundary") (axis "delegation") (degenerate "delegation routing is a function of the cause and the current mode, never of a data-domain edge: no staged guest composes them — the boundary layer is mode-agnostic and every delegation cell keys on cause and mode — reported, not omitted"))
-(cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw") (guest "dir-memwalk") (guest "dir-chain") (guest "scope-branch") (guest "dir-cmp-branch") (guest "sv39-translate-2m") (guest "sv39-translate-1g") (guest "sv39-straddle") (guest "i-timer") (guest "f-move-box"))
+(cell (axis "boundary") (axis "progress") (guest "bound-shift") (guest "bound-shiftw") (guest "dir-memwalk") (guest "dir-chain") (guest "scope-branch") (guest "dir-cmp-branch") (guest "sv39-translate-2m") (guest "sv39-translate-1g") (guest "sv39-straddle") (guest "i-timer") (guest "f-move-box") (guest "d-move"))
 (cell (axis "boundary") (axis "restart") (degenerate "no staged guest composes a data-domain edge with an xret return: the restart cells' observations are control state, and an xret to a domain-edge target (a 2-mod-4 mepc under IALIGN=16) is semantics this slice has not derived — reported, not omitted"))
 
 ;; ── legality × * ──────────────────────────────────────────────────────────────────

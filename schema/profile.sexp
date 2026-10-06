@@ -148,7 +148,13 @@
   ;; Version 2.2: the FLW/FSW transfers, the four fused multiply-adds, the arithmetic,
   ;; sign injection, min/max, the conversions and moves, the compares, FCLASS.S),
   ;; realized by the rv_f/rv64_f tables (definitions/riscv/f.sexp).
-  (field (name f_single) (type string) (repeat yes) (optional yes)))
+  (field (name f_single) (type string) (repeat yes) (optional yes))
+  ;; `P4-SYSTEM.7` slice (d5) (`2026-10-06`): D binds — the census grows 118 → 150. The
+  ;; 32 names are the pinned chapter's double-precision forms (RVI-D §21.1.3–§21.1.7,
+  ;; Version 2.2: FLD/FSD, the fused four, the arithmetic, sign injection, min/max, the
+  ;; two format conversions, the compares, FCLASS.D, the integer conversions, the
+  ;; FMV.X.D/FMV.D.X moves), realized by the rv_d/rv64_d tables (definitions/riscv/d.sexp).
+  (field (name d_double) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

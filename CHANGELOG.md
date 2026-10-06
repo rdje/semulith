@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0053 (leaf P4-SYSTEM.7, slice d5) — THE BIND: the unit composes riscv/d
+
+- `encoding.sexp`: the `d` slot becomes `(extensions "riscv/d")` (147 instructions + 3 pseudo
+  spellings; M and C remain slots); the census 118 → 150 in all four places as the 32-form
+  `d_double` family; `definition_rv64gc.rs` regenerated (32/32 D forms, `FToF`).
+- `exec_rv64gc.rs`: the `FToF` arm through `fp::convert`, flags accrued; `touches_fp_state`
+  covers it. The 11 D guests tracked (125/125; the 114 older guests byte-identical);
+  REQ-GC-D + OB-GC-D; the matrix places them on the seven existing axes.
+- The census leg's D exclusion flipped by its own condition (150 == 150). The P4 tree's
+  closed (c4)–(c6) checklists archived. `make check` + `make gate` green.
+
 ## SEMULITH-P4-0052 (leaf P4-SYSTEM.7, slice d4) — the staged D corpus
 
 - 11 D guests staged in the bind worktree (the (c5) discipline), every expectation derived

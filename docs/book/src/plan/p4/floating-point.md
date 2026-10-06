@@ -126,3 +126,10 @@ The fourth checkpoint wrote the double-precision test programs — eleven of the
 expected value derived from the specification by the authoring model before any engine ran.
 On an engine staged outside the tracked tree, all 125 programs pass; the 114 that existed
 before run byte-for-byte unchanged, and every new one fails on the previous engine.
+
+The fifth checkpoint is **the bind** for double precision: the profile composes D, and its
+32 instructions execute in the tracked engine. The instruction census grows from 118 to 150,
+matching the pinned upstream tables exactly, and all 125 test programs pass — the 114 that
+existed before unchanged. Both floating-point extensions now run; what remains of this leaf is
+broader numeric evidence, the structural comparison against the Sail reference, and the
+leaf's own acceptance.

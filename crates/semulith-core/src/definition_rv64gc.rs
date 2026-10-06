@@ -16,6 +16,8 @@
 //! Canonical inputs (sha256):
 //!   `definitions/riscv/a.sem.sexp`  `929f7d11f11856e303460d4f4c9f5094314a8090ce7ce710efe83fb5dfb9c306`
 //!   `definitions/riscv/a.sexp`  `f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b`
+//!   `definitions/riscv/d.sem.sexp`  `92e92f9242414c53f2297962a236e9318822318acb322cb65fe4969e63ac375e`
+//!   `definitions/riscv/d.sexp`  `c0cdc058273c25ac636adb33761aac51956a534c161f17db51e5b34ebe6f0dc0`
 //!   `definitions/riscv/f.sem.sexp`  `fea32f7229d98271567372e618838f725fe9acb66d5f355ee49caf7fc071e49e`
 //!   `definitions/riscv/f.sexp`  `4d3232c6f9c9298c6814fce8c4865ae103a46f4308b7649d7b4a71be02c28a9a`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
@@ -28,7 +30,7 @@
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
 //!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `3784aac49d6b41ad642060de4f7f2de4c12be0c13271ff50da220155c482f7fb`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aa34d38477c0de3ca5e5ae0393d40c690f601067a39f0983fa8a091156721333`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `2a37e8c63b914d01a3a887171d7fe6054d5fa84eaabedd37d37b7d5ed2b6836a`
 //! Generator: `scripts/gen_definition.py` (sha256 `e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8`)
 
@@ -81,6 +83,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         "riscv/a",
         "riscv/zifencei",
         "riscv/f",
+        "riscv/d",
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
@@ -94,6 +97,14 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         InputPin {
             path: "definitions/riscv/a.sexp",
             sha256: "f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b",
+        },
+        InputPin {
+            path: "definitions/riscv/d.sem.sexp",
+            sha256: "92e92f9242414c53f2297962a236e9318822318acb322cb65fe4969e63ac375e",
+        },
+        InputPin {
+            path: "definitions/riscv/d.sexp",
+            sha256: "c0cdc058273c25ac636adb33761aac51956a534c161f17db51e5b34ebe6f0dc0",
         },
         InputPin {
             path: "definitions/riscv/f.sem.sexp",
@@ -145,7 +156,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/encoding.sexp",
-            sha256: "3784aac49d6b41ad642060de4f7f2de4c12be0c13271ff50da220155c482f7fb",
+            sha256: "aa34d38477c0de3ca5e5ae0393d40c690f601067a39f0983fa8a091156721333",
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
@@ -158,6 +169,10 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
             sha256: "819e0487131bc97cfc0b6f3de62390f2f9936b43e80aef7c6cec14fbe7c7a1b6",
         },
         SourcePin {
+            file: "rv64_d",
+            sha256: "883e668be4c536d0dfdb8c02bd1f3eb959801eb953f1fb7a4b4e5e623cbf19a9",
+        },
+        SourcePin {
             file: "rv64_f",
             sha256: "5c01c243ccd8a1c0e24a48a1ffcf62eecb10aa36fd6bdcedf7392e670cd46cf9",
         },
@@ -168,6 +183,10 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         SourcePin {
             file: "rv_a",
             sha256: "d9eaa988c4779ca352d9da9eabacf6c71771d0b81e04b234302627f69e0863d9",
+        },
+        SourcePin {
+            file: "rv_d",
+            sha256: "24bc7c6384f9a009dbafb3f177ec68b0d4f8fb1c2c2b7b07767320fdd7d4acbc",
         },
         SourcePin {
             file: "rv_f",
@@ -368,7 +387,7 @@ pub struct InsnDef {
     pub effect: &'static Sem,
 }
 
-/// The 115 instructions of the composed definition, sorted by name. Every
+/// The 147 instructions of the composed definition, sorted by name. Every
 /// declared instruction carries its semantics — completeness is a generation-time
 /// refusal, not a hope (EXTRACTION).
 pub static INSNS: &[InsnDef] = &[
@@ -1288,6 +1307,25 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fadd.d",
+        mask: 0xfe00007f,
+        value: 0x02000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FADD.S's addition at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FAdd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fadd.s",
         mask: 0xfe00007f,
         value: 0x00000053,
@@ -1316,6 +1354,21 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fclass.d",
+        mask: 0xfff0707f,
+        value: 0xe2001053,
+        operands: &["rd", "rs1"],
+        from: "rv_d",
+        source: "RVI-D §21.1.7 — 'FCLASS.D, is defined analogously to its single-precision counterpart, but operates on double-precision operands': FCLASS.S's 10-bit mask at format 64, no flag",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FClass(
+                64,
+                &Sem::FReg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fclass.s",
         mask: 0xfff0707f,
         value: 0xe0001053,
@@ -1330,6 +1383,128 @@ pub static INSNS: &[InsnDef] = &[
                     32,
                     &Sem::FReg("rs1"),
                 ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.d.l",
+        mask: 0xfff0007f,
+        value: 0xd2200053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — FCVT.D.L converts the signed 64-bit integer in rs1 to a double in rd, rounded by rm ('All floating-point to integer and integer to floating-point conversion instructions round according to the rm field')",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::IToF(
+                64,
+                64,
+                true,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Reg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.d.lu",
+        mask: 0xfff0007f,
+        value: 0xd2300053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — FCVT.D.LU converts the unsigned 64-bit integer in rs1 to a double in rd, rounded by rm (RV64-only)",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::IToF(
+                64,
+                64,
+                false,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Reg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.d.s",
+        mask: 0xfff0007f,
+        value: 0x42000053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — 'FCVT.D.S will never round': the single in rs1 (unboxed) widened exactly; its rm is still resolved (the reserved-mode decode)",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FToF(
+                64,
+                32,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FUnbox(
+                    32,
+                    &Sem::FReg("rs1"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.d.w",
+        mask: 0xfff0007f,
+        value: 0xd2000053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — FCVT.D.W converts the signed 32-bit integer in rs1 to a double in rd; 'Note FCVT.D.W[U] always produces an exact result and is unaffected by rounding mode' — its rm is still resolved (the reserved-mode decode)",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::IToF(
+                64,
+                32,
+                true,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Reg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.d.wu",
+        mask: 0xfff0007f,
+        value: 0xd2100053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — FCVT.D.WU converts the unsigned 32-bit integer in rs1 to a double in rd, exactly",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::IToF(
+                64,
+                32,
+                false,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Reg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.l.d",
+        mask: 0xfff0007f,
+        value: 0xc2200053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — FCVT.L.D converts rs1 to a signed 64-bit integer; 'FCVT.L[U].D and FCVT.D.L[U] are RV64-only instructions'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FToI(
+                64,
+                64,
+                true,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
             ),
         )
     },
@@ -1357,6 +1532,26 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fcvt.lu.d",
+        mask: 0xfff0007f,
+        value: 0xc2300053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — FCVT.LU.D converts rs1 to an unsigned 64-bit integer (RV64-only), clipped with NV out of range as FCVT.int.S",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FToI(
+                64,
+                64,
+                false,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fcvt.lu.s",
         mask: 0xfff0007f,
         value: 0xc0300053,
@@ -1374,6 +1569,28 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::FUnbox(
                     32,
+                    &Sem::FReg("rs1"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.s.d",
+        mask: 0xfff0007f,
+        value: 0x40100053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — 'FCVT.S.D rounds according to the RM field': the double in rs1 narrowed to a single, NaN-boxed into rd",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FToF(
+                    32,
+                    64,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
                     &Sem::FReg("rs1"),
                 ),
             ),
@@ -1472,6 +1689,29 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fcvt.w.d",
+        mask: 0xfff0007f,
+        value: 0xc2000053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — 'FCVT.W.D or FCVT.L.D converts a double-precision floating-point number in floating-point register rs1 to a signed 32-bit or 64-bit integer'; 'For RV64, FCVT.W[U].D sign-extends the 32-bit result'; the invalid-input behavior is FCVT.int.S's",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::FToI(
+                    64,
+                    32,
+                    true,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::FReg("rs1"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
         name: "fcvt.w.s",
         mask: 0xfff0007f,
         value: 0xc0000053,
@@ -1493,6 +1733,29 @@ pub static INSNS: &[InsnDef] = &[
                         32,
                         &Sem::FReg("rs1"),
                     ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fcvt.wu.d",
+        mask: 0xfff0007f,
+        value: 0xc2100053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — FCVT.WU.D converts rs1 to an unsigned 32-bit integer, 'the same as for FCVT.int.S' out of range; the 32-bit result sign-extended to XLEN",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::FToI(
+                    64,
+                    32,
+                    false,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::FReg("rs1"),
                 ),
             ),
         )
@@ -1520,6 +1783,25 @@ pub static INSNS: &[InsnDef] = &[
                         &Sem::FReg("rs1"),
                     ),
                 ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fdiv.d",
+        mask: 0xfe00007f,
+        value: 0x1a000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FDIV.S's division of rs1 by rs2 at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FDiv(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
             ),
         )
     },
@@ -1570,6 +1852,22 @@ pub static INSNS: &[InsnDef] = &[
         effect: &Sem::Nop
     },
     InsnDef {
+        name: "feq.d",
+        mask: 0xfe00707f,
+        value: 0xa2002053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.6 — the compares 'are defined analogously to their single-precision counterparts, but operate on double-precision operands': FEQ.S's quiet comparison at format 64",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FEq(
+                64,
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
         name: "feq.s",
         mask: 0xfe00707f,
         value: 0xa0002053,
@@ -1592,6 +1890,44 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fld",
+        mask: 0x0000707f,
+        value: 0x00003007,
+        operands: &["rd", "rs1", "imm12"],
+        from: "rv_d",
+        source: "RVI-D §21.1.3 — 'The FLD instruction loads a double-precision floating-point value from memory into floating-point register rd', base+offset like the integer loads; 'FLD and FSD do not modify the bits being transferred'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Load(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Add(
+                    &Sem::Reg("rs1"),
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("imm12"),
+                    ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fle.d",
+        mask: 0xfe00707f,
+        value: 0xa2000053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.6 — FLE.S's signaling comparison at format 64: NV for any NaN input",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FLe(
+                64,
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fle.s",
         mask: 0xfe00707f,
         value: 0xa0000053,
@@ -1610,6 +1946,22 @@ pub static INSNS: &[InsnDef] = &[
                     32,
                     &Sem::FReg("rs2"),
                 ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "flt.d",
+        mask: 0xfe00707f,
+        value: 0xa2001053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.6 — FLT.S's signaling comparison at format 64: NV for any NaN input",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FLt(
+                64,
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
             ),
         )
     },
@@ -1661,6 +2013,26 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fmadd.d",
+        mask: 0x0600007f,
+        value: 0x02000043,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — the computational instructions 'are defined analogously to their single-precision counterparts, but operate on double-precision operands and produce double-precision results': FMADD.S's (rs1×rs2)+rs3 with one rounding",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+                &Sem::FReg("rs3"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fmadd.s",
         mask: 0x0600007f,
         value: 0x00000043,
@@ -1693,6 +2065,22 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fmax.d",
+        mask: 0xfe00707f,
+        value: 0x2a001053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FMAX.S's maximumNumber at format 64 (−0.0 < +0.0, NaN handling and NV per the operator's contract)",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMax(
+                64,
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fmax.s",
         mask: 0xfe00707f,
         value: 0x28001053,
@@ -1718,6 +2106,22 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fmin.d",
+        mask: 0xfe00707f,
+        value: 0x2a000053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FMIN.S's minimumNumber at format 64 (−0.0 < +0.0, NaN handling and NV per the operator's contract)",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMin(
+                64,
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fmin.s",
         mask: 0xfe00707f,
         value: 0x28000053,
@@ -1738,6 +2142,29 @@ pub static INSNS: &[InsnDef] = &[
                         32,
                         &Sem::FReg("rs2"),
                     ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fmsub.d",
+        mask: 0x0600007f,
+        value: 0x02000047,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FMSUB.S's (rs1×rs2)−rs3 at format 64: rs3's sign bit flipped into the one fused operation",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+                &Sem::Xor(
+                    &Sem::FReg("rs3"),
+                    &Sem::Lit(0x8000000000000000),
                 ),
             ),
         )
@@ -1778,6 +2205,25 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fmul.d",
+        mask: 0xfe00007f,
+        value: 0x12000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FMUL.S's multiplication at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMul(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fmul.s",
         mask: 0xfe00007f,
         value: 0x10000053,
@@ -1806,6 +2252,18 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fmv.d.x",
+        mask: 0xfff0707f,
+        value: 0xf2000053,
+        operands: &["rd", "rs1"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — 'FMV.D.X moves the double-precision value encoded in IEEE 754-2008 standard encoding from the integer register rs1 to the floating-point register rd'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Reg("rs1"),
+        )
+    },
+    InsnDef {
         name: "fmv.w.x",
         mask: 0xfff0707f,
         value: 0xf0000053,
@@ -1825,6 +2283,18 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fmv.x.d",
+        mask: 0xfff0707f,
+        value: 0xe2000053,
+        operands: &["rd", "rs1"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — 'FMV.X.D moves the double-precision value in floating-point register rs1 to a representation in IEEE 754-2008 standard encoding in integer register rd'; 'FMV.X.D and FMV.D.X do not modify the bits being transferred'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FReg("rs1"),
+        )
+    },
+    InsnDef {
         name: "fmv.x.w",
         mask: 0xfff0707f,
         value: 0xe0000053,
@@ -1839,6 +2309,32 @@ pub static INSNS: &[InsnDef] = &[
                     31,
                     0,
                     &Sem::FReg("rs1"),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fnmadd.d",
+        mask: 0x0600007f,
+        value: 0x0200004f,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FNMADD.S's −(rs1×rs2)−rs3 at format 64: rs1's and rs3's sign bits flipped",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Xor(
+                    &Sem::FReg("rs1"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+                &Sem::FReg("rs2"),
+                &Sem::Xor(
+                    &Sem::FReg("rs3"),
+                    &Sem::Lit(0x8000000000000000),
                 ),
             ),
         )
@@ -1882,6 +2378,29 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fnmsub.d",
+        mask: 0x0600007f,
+        value: 0x0200004b,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FNMSUB.S's −(rs1×rs2)+rs3 at format 64: rs1's sign bit flipped, so the product is negated before the single rounding",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Xor(
+                    &Sem::FReg("rs1"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+                &Sem::FReg("rs2"),
+                &Sem::FReg("rs3"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fnmsub.s",
         mask: 0x0600007f,
         value: 0x0000004b,
@@ -1917,6 +2436,46 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fsd",
+        mask: 0x0000707f,
+        value: 0x00003027,
+        operands: &["imm12hi", "rs1", "rs2", "imm12lo"],
+        from: "rv_d",
+        source: "RVI-D §21.1.3 — 'FSD stores a double-precision value from the floating-point registers to memory'; 'the payloads of non-canonical NaNs are preserved'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000040),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::FReg("rs2"),
+        )
+    },
+    InsnDef {
+        name: "fsgnj.d",
+        mask: 0xfe00707f,
+        value: 0x22000053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — 'Floating-point to floating-point sign-injection instructions, FSGNJ.D, FSGNJN.D, and FSGNJX.D are defined analogously to the single-precision sign-injection instruction': rs1's magnitude, rs2's sign",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Or(
+                &Sem::And(
+                    &Sem::FReg("rs1"),
+                    &Sem::Lit(0x7fffffffffffffff),
+                ),
+                &Sem::And(
+                    &Sem::FReg("rs2"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+            ),
+        )
+    },
+    InsnDef {
         name: "fsgnj.s",
         mask: 0xfe00707f,
         value: 0x20000053,
@@ -1942,6 +2501,30 @@ pub static INSNS: &[InsnDef] = &[
                         ),
                         &Sem::Lit(0x0000000080000000),
                     ),
+                ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fsgnjn.d",
+        mask: 0xfe00707f,
+        value: 0x22001053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — FSGNJN.S's rule at format 64: rs1's magnitude, the opposite of rs2's sign",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Or(
+                &Sem::And(
+                    &Sem::FReg("rs1"),
+                    &Sem::Lit(0x7fffffffffffffff),
+                ),
+                &Sem::And(
+                    &Sem::Xor(
+                        &Sem::FReg("rs2"),
+                        &Sem::Lit(0x8000000000000000),
+                    ),
+                    &Sem::Lit(0x8000000000000000),
                 ),
             ),
         )
@@ -1980,6 +2563,24 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fsgnjx.d",
+        mask: 0xfe00707f,
+        value: 0x22002053,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_d",
+        source: "RVI-D §21.1.5 — FSGNJX.S's rule at format 64: rs1's magnitude, the XOR of the two signs",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Xor(
+                &Sem::FReg("rs1"),
+                &Sem::And(
+                    &Sem::FReg("rs2"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+            ),
+        )
+    },
+    InsnDef {
         name: "fsgnjx.s",
         mask: 0xfe00707f,
         value: 0x20002053,
@@ -2007,6 +2608,24 @@ pub static INSNS: &[InsnDef] = &[
         )
     },
     InsnDef {
+        name: "fsqrt.d",
+        mask: 0xfff0007f,
+        value: 0x5a000053,
+        operands: &["rd", "rs1", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FSQRT.S's square root of rs1 at format 64; the row's rs2 field is fixed 0",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FSqrt(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+            ),
+        )
+    },
+    InsnDef {
         name: "fsqrt.s",
         mask: 0xfff0007f,
         value: 0x58000053,
@@ -2027,6 +2646,25 @@ pub static INSNS: &[InsnDef] = &[
                         &Sem::FReg("rs1"),
                     ),
                 ),
+            ),
+        )
+    },
+    InsnDef {
+        name: "fsub.d",
+        mask: 0xfe00007f,
+        value: 0x0a000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FSUB.S's subtraction of rs2 from rs1 at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FSub(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
             ),
         )
     },
@@ -3216,10 +3854,13 @@ pub enum Sem {
     FToI(u8, u8, bool, &'static Sem, &'static Sem),
     /// `(i2f n iw signed rm v)` — v's low iw bits to an n-bit float, rounded.
     IToF(u8, u8, bool, &'static Sem, &'static Sem),
+    /// `(f2f m n rm a)` — an n-bit float to an m-bit float: narrowing rounds,
+    /// widening is exact; a signaling NaN raises NV, any NaN yields the canonical NaN.
+    FToF(u8, u8, &'static Sem, &'static Sem),
 }
 
 /// Decode a 32-bit word to its instruction definition by the fixed bits: the first
-/// entry whose `mask`ed bits equal its `value`. Linear over the 115
+/// entry whose `mask`ed bits equal its `value`. Linear over the 147
 /// entries — no allocation, and no failure family of its own: a word no entry
 /// matches is the reserved-decode case (`outcome::UndefinedCase::ReservedDecode`,
 /// REQ-D-RESERVED-DECODE), and that classification is the caller's, not this

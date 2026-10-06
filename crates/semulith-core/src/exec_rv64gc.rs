@@ -979,6 +979,15 @@ impl Frame<'_> {
                 let r = fp::from_int(u32::from(*n), u32::from(*iw), *signed, effective(m), v);
                 self.accrue(r, u32::from(*n))
             }
+            Sem::FToF(m, n, rm, a) => {
+                let (mode, _) = self.run(rm);
+                let (a, _) = self.run(a);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let r = fp::convert(u32::from(*m), u32::from(*n), effective(mode), a);
+                self.accrue(r, u32::from(*m))
+            }
         }
     }
 
@@ -1068,7 +1077,8 @@ fn touches_fp_state(sem: &Sem) -> bool {
         | Sem::FDiv(..)
         | Sem::FMadd(..)
         | Sem::FToI(..)
-        | Sem::IToF(..) => true,
+        | Sem::IToF(..)
+        | Sem::FToF(..) => true,
         Sem::Lit(_)
         | Sem::Reg(_)
         | Sem::Imm(_)

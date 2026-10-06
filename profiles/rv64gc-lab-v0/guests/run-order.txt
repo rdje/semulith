@@ -117,3 +117,14 @@ f-class
 f-convert
 f-rounding
 f-dirty
+d-fs-off
+d-move
+d-arith
+d-fused
+d-sgnj
+d-minmax
+d-compare
+d-class
+d-convert
+d-f2f
+d-rounding

@@ -849,3 +849,240 @@ completed slice's checklist moves while its leaf stays active:
 - [x] **LOCKSTEP** — this tree, `MEMORY.md` (next_action → c4), `CHANGELOG.md`,
   `LIVE_STATUS.md` (455), the book (`plan/p4/floating-point.md`; `annex/assembler.md` — the
   FP spelling), `docs/TASK_TREE.md` (unchanged — the leaf is `.7`).
+
+`P4-SYSTEM.7`'s closed slice checklists (c4) part 1, (c4) part 2, (c5) and (c6),
+split out verbatim on `2026-10-06` at the live file's crossing during slice (d5) (the
+slice's records would have taken it past 131,072 B) — the `.4` slice-(c) precedent: a
+completed slice's checklist moves while its leaf stays active:
+
+`P4-SYSTEM.7` slice (c4) part 1 — the dependency store on-volume (`2026-10-06`, `SEMULITH-P4-0045`):
+
+- [x] **REPRODUCE / ISSUE** — `ls ~/.cargo/registry/src/*/` → `rustc_apfloat-0.2.3+llvm-…`
+  (mtime 2026-10-06 08:39, slice (a)'s landing) in the SHARED user-home cache (666 crates).
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — nothing routes routine builds to the on-volume home:
+
+  ```
+  $ cat .cargo/config.toml → absent; grep -n CARGO_HOME Makefile → none; echo $CARGO_HOME → ""
+  $ cargo metadata (rustc_apfloat's manifest_path) →
+    ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustc_apfloat-0.2.3+…/Cargo.toml
+  ```
+
+  Slice (a) fetched into `.app-data/cargo-home` explicitly, but every later plain `cargo`
+  run (`make check`, the wasm gate) resolved through the default home — off the repository
+  volume since the workspace's first registry dependency.
+
+- [x] **FIX** — `.cargo/config.toml`: crates.io replaced by the directory source
+  `.app-data/vendor` (untracked, on-volume — the decision above); `make vendor` (idempotent:
+  re-vendors only when missing or Cargo.lock is newer; downloads land in the on-volume
+  `CARGO_HOME`) as a prerequisite of check/clippy/test/bench/gate; the populate step in the
+  three CI workflows (4 jobs) and in bootstrap; README's command table; the book's
+  first-model annex (a fresh clone runs `make vendor` once).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo metadata → rustc_apfloat's manifest_path: .app-data/vendor/rustc_apfloat/Cargo.toml
+    (the config moved away: ~/.cargo/registry/src/…/Cargo.toml — the before)
+  the shared cache's stat snapshot (registry, .global-cache, .package-cache): 0888b8be… →
+    0888b8be… across a full `cargo build --workspace --all-targets` + the wasm32 build
+  RED — the vendor dir moved away: error: failed to get `rustc_apfloat` … failed to load
+    source for dependency `rustc_apfloat` (loud, no fall-back)
+  $ make vendor (twice) → populated, then silent; deleted and re-populated → diff -rq: identical
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (core 141, verify 184, cli 17); `make gate` →
+  `=== all doctrines green ===` (the wasm leg builds from the vendored store). The shared
+  cache is left as it was (§13: never delete an ambiguously shared global cache).
+
+- [x] **LOCKSTEP** — this tree (the decision, this checklist, the logs), `CHANGELOG.md`,
+  `DEV_NOTES.md`, `MEMORY.md`, `README.md`, the book's annex; `promotion:` see DEV_NOTES.
+
+`P4-SYSTEM.7` slice (c4) part 2 — `fp.rs`, the model layer; the oracle's two rule defects (`2026-10-06`, `SEMULITH-P4-0046`):
+
+- [x] **REPRODUCE / ISSUE** — the first run of the spec-side vectors against `fp.rs`:
+
+  ```
+  $ cargo test -p semulith-core --lib fp:: → 3 of 176 vectors: mul f32 Rne/Rup/Rmm
+    a=0x800000 b=0x3f7fffff: got bits 0x800000 flags 0x1, the specification gives 0x3
+    (2^-126·(1−2^-24): tiny after rounding, inexact — UF)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the backend judges tininess on the DELIVERED result
+  (`Status::UNDERFLOW` absent when the result rounds up to the smallest normal); RISC-V and
+  IEEE §7.5 judge the unbounded-exponent rounded result. Slice (a) could not see it: `grep -n
+  "uf_flag = 1" target/p4-system-7/mpfr/vec_gen.c` → four sites, each `e == 0` on the
+  delivered result (the backend's convention); and its OF rule, `mpfr_cmpabs(ze, MAXF) > 0`, is
+  the EXACT magnitude, not §7.4's rounded one. SoftFloat (`s_roundPackToF32.c:72-74`,
+  `specialize.h:48` — after rounding) takes the IEEE side on both.
+
+- [x] **FIX** — `crates/semulith-core/src/fp.rs`: the model layer (canonical NaN, boxing,
+  `resolve_rm`, the four arithmetic ops + fma + sqrt, min/max/compares/class in bits,
+  to_int/from_int with Table 5), OF and UF both judged on the exactly-unbounded value
+  (`WideSingleS`/`WideDoubleS`); `fp/tests.rs` + the generated `fp/tests/vectors.rs` (176
+  spec-side vectors); `scripts/specfp.py` (the exact-rational reference) +
+  `scripts/gen_fp_vectors.py` tracked; `scripts/check_fp_vectors.sh` registered (FP-VECTORS);
+  the manifest pin expressed `=0.2.3` (Cargo ignored the build metadata, warning every build);
+  the lib.rs/Cargo.toml comments corrected (they named slice (b) as fp.rs's); the scratch
+  oracle's OF/UF rules corrected; the decision record amended.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-core --lib fp:: → test result: ok. 7 passed (176/176 vectors)
+  $ python3 target/p4-system-7/fpcheck/compare.py (fp.rs over the 63,752-case corpus) →
+    vs MPFR (corrected, canonical-NaN): 51840 cases, 0 disagreements
+    vs the exact-rational spec reference: 63480 cases, 0 disagreements
+    RED — one corrupted line: 1 disagreement in each
+  the corrected oracle vs slice (a)'s: 72 lines changed, all OFNX -> NX; the backend's flag
+    deviations re-measured: 290 OF-on-clamp + 24 NV-on-sNaN-conversion (+ the UF boundary)
+  $ bash scripts/check_fp_vectors.sh --self-test → FP-VECTORS --self-test: 6 pass / 0 fail
+    (the reference-mutation arm: a half-up tie rule caught by the directed ties — it had
+    survived 1,313 random cases)
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (core 141); `make gate` → `=== all doctrines
+  green ===` (DERIVED-COUNTS: 36 doctrines, 461 arms; REGISTRY-MIRROR 3 mirrors); nothing
+  outside `fp.rs` calls the model layer yet — the arms land at the bind.
+
+- [x] **LOCKSTEP** — this tree, the decision record's amendment, `DEV_NOTES.md` (PROMOTED —
+  the oracle card + INDEX), `CHANGELOG.md`, `MEMORY.md` (next_action → c5), `LIVE_STATUS.md`,
+  the book (P4.7 chapter; the doctrine chapter row), `docs/doctrines/definition.md`,
+  `DOCTRINE_ENFORCEMENT.md`, `docs/toolbox/definition.md`.
+
+`P4-SYSTEM.7` slice (c5) — the staged F corpus; the reference learns the signed fused forms (`2026-10-06`, `SEMULITH-P4-0047`):
+
+- [x] **REPRODUCE / ISSUE** — the corpus's EVD-05 expectations need the four fused forms as
+  the chapter states them, and the tracked reference computed only one:
+
+  ```
+  $ grep -n "def fma" scripts/specfp.py  (at b1e64d3)
+  222:def fma(n, mode, a, b, c):   → q = x.q * y.q + z.q — FMADD only; FMSUB/FNMSUB/FNMADD
+    (RVI-F §20.1.6: (rs1×rs2)−rs3, −(rs1×rs2)+rs3, −(rs1×rs2)−rs3) had no spec-side value
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — slice (c4) tracked `specfp.py` as the vectors'
+  reference, and `fp.rs`'s vectors exercise the backend's single fused primitive, so the
+  reference stopped where its first consumer did: `git show b1e64d3:scripts/specfp.py | grep
+  -n negate` → only `add`'s `negate_b` (lines 167/169/189, the subtraction) — `fma` (line
+  222) takes no sign arguments and forms `x.q * y.q + z.q` (line 236). The signed forms differ
+  from FMADD exactly where the signs are read, not merely carried: the zero-sum sign (RDN's
+  −0) and the ∞−∞ invalid case read the SIGNED terms.
+
+- [x] **FIX** — `scripts/specfp.py`: `fma(…, negate_product, negate_addend)` computes the
+  signed terms exactly (the product's and the addend's signs, the ∞ cases and the zero-sum
+  sign all read them) — the spec's construction, independent of the model's
+  sign-bit-flip one. The staged corpus (untracked, in the bind worktree — the `.4` slice-(d)
+  discipline): 11 guests (`f-fs-off f-move-box f-arith f-fused f-sgnj f-minmax f-compare
+  f-class f-convert f-rounding f-dirty`) authored by a scratch writer whose trap-handler
+  offsets are computed from the body, never typed; expectations derived by the F-capable
+  EVD-05 tool; the evaluator's F arms + `accrue_fflags` on the scratch engine. Two
+  authoring defects re-derived, never fitted: `f-move-box`'s data address (first built by
+  lui+srli, outside the region → `auipc` + `addi 1024`); the tool's encoding path
+  (`guests/../encoding.sexp` broke the resolver → the resolved path).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 target/p4-system-7/c5/check_fma_signs.py scripts → fma signed forms: 464000
+    cases, 0 disagreements (directed edges × 5 modes × 4 sign pairs + random + near-
+    cancellation, both widths, vs the sign-flip construction)
+    RED — zero-sum sign on the unsigned addend: 490 disagreements; product never
+    negated: 153438
+  re-authored + re-derived from scratch → 22 of 22 files byte-identical to the staged corpus
+  f-fused derived with the product-never-negated reference → 9 expectation lines differ
+  $ cargo test -p semulith-verify run_rv64gc (scratch engine, 114 guests) → ok. 4 passed
+    RED — accrual dropped: FAILED, "f-arith: step 9 writes match the specification-derived
+    expectations"; restored → ok. 4 passed
+  $ identity_f.py <scratch CLI> <HEAD CLI> → identity: 103 byte-identical, 0 diverge
+    (pre-slice guests); RED ×11 — every F guest diverges on the parent engine
+  ```
+
+- [x] **NO REGRESSION** — `bash scripts/check_fp_vectors.sh` → `FP-VECTORS: ok (… 176
+  vectors; reference vs hardware RNE: agree 1329)`; `python3 scripts/gen_fp_vectors.py
+  --check` rc=0 (the default arguments keep FMADD's exact bytes); `make check` rc=0;
+  `make gate` → `=== all doctrines green ===`. No other tracked content changed — the bind
+  (c6) lands the staged payload.
+
+- [x] **LOCKSTEP** — this tree (the Commit Log's closed rows archived to part 3),
+  `DEV_NOTES.md`, `CHANGELOG.md` (both sharded first), `MEMORY.md` (next_action → c6),
+  `LIVE_STATUS.md`, the book (P4.7 chapter).
+  `promotion: declined (the signed-term construction is fma's own docstring; the independent-construction lesson is the c4 oracle card's, applied here, not extended).`
+
+`P4-SYSTEM.7` slice (c6) — THE BIND: the unit composes `riscv/f` (`2026-10-06`, `SEMULITH-P4-0048`):
+
+- [x] **REPRODUCE / ISSUE** — the pre-bind census at `3f49db1`:
+
+  ```
+  $ git show HEAD:profiles/rv64gc-lab-v0/encoding.sexp | grep -n "slot (id f)"
+  16:    (slot (id f) (requires "riscv/f"))
+  $ git show HEAD:crates/semulith-core/src/definition_rv64gc.rs | grep -c '"fadd.s"' → 0
+  $ git show HEAD:profiles/rv64gc-lab-v0/profile.sexp | grep -o "(count_total [0-9]*)" →
+    (count_total 88)
+  $ git show HEAD:crates/semulith-core/src/exec_rv64gc.rs | grep -c "fp::" → 0
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — F was a declared slot by design until its corpus and
+  arms were proven (the `.4`/`.6` bind discipline): the encoding leaves `f` unbound, so
+  every F word decodes as reserved (cause 2 — the 11 RED legs of (c5)'s identity proof), and
+  the scope block, the schema, the dossier reader and PROFILE-CONSISTENCY's PARTS key still
+  enumerate 88 forms. The sweep for stale facts found two more, both earlier slices':
+  `grep -n "362 measured" crates/semulith-core/src/fp.rs` → line 20 (written at (c4) part 2,
+  the slice whose amendment re-measured it to 290 — 72 were the oracle's false overflows);
+  `grep -n "two measured LLVM" schema/semantics.sexp` → line 253 (three since the amendment).
+  And one of (c5)'s own, caught only when the guests were STAGED: the commit's pre-commit run
+  refused `f-sgnj.expected.sexp` (DOSSIER-SCHEMA: `field "derivation" is shorter than
+  min-length 1, got ''`) — the authored comment began `|sNaN|:`, and `|` is the directive's
+  derivation/source separator; the authoring tool partitioned it and emitted the empty
+  derivation instead of refusing. Both earlier `make gate` runs were green because the sweep
+  enumerates `git ls-files` (`scripts/check_dossier_schema.sh:44`) and the files were
+  untracked.
+
+- [x] **FIX** — `encoding.sexp`: the slot becomes `(extensions "riscv/f")` (the header's
+  census restated); the census dual edit 88 → 118 in all four places (`schema/profile.sexp`
+  + `dossier_sexp._SCOPE_LISTS` + the scope block + PROFILE-CONSISTENCY's PARTS key — the
+  30-form `f_single` family, RVI-F §20.1.5–§20.1.9); `definition_rv64gc.rs` regenerated (the
+  F rows, the FP `Sem` variants); `exec_rv64gc.rs`: the Off gate at the instruction head
+  (cause 2 before any frame), the FReg write marking Dirty, the Rounding arm (static rm or
+  frm; reserved → cause 2), every F arm through `fp.rs`, `touches_fp_state` exhaustive;
+  `privilege::accrue_fflags` (sticky OR; Dirty only on change) + its test; `fp::Rm::bits`;
+  the 11 guests + `run-order.txt` + `guests_rv64gc.rs` regenerated; REQ-GC-F + OB-GC-F (no
+  new D-* — the Precise rule is the FP-state contract's stated laboratory choice in
+  `schema/semantics.sexp`); the matrix's 11 placements on the SAME seven axes; the two stale
+  facts corrected (fp.rs 290; the schema's three deviations, named); the authoring tool
+  refuses an empty derivation by name, the `f-sgnj` comment re-worded ("the absolute value of
+  a signaling NaN"), the pair re-derived, `guests_rv64gc.rs` regenerated.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (114 guests:
+    grep -c 'name: "' guests_rv64gc.rs → 114)
+  F forms in the generated module: 30/30
+  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 → MATCH encoding tables
+    vs profile scope 118 == 118, symmetric difference NONE; fetch_references: ok
+  $ bash scripts/check_exercise_coverage.sh → ok … 19/19 118/118 52/52
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 → 28 cells
+    declared, every disposition resolves
+  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok (20 record file(s) …)
+  PROFILE-CONSISTENCY ok; EXTRACTION ok (5 units); DEF-GEN ok (encoding sha256
+    3784aac49d6b41ad); GUEST-GEN ok (91 byte-identical, 7 recorded re-derivations);
+    CITATION-QUOTES 50 judged, 0 findings
+  identity (c5, unchanged engine): 103/0 + the 11 F guests RED on the parent
+  the old `|sNaN|:` line through the fixed tool → Refusal: … the derivation before the
+    first '|' is empty; the 11 re-derived → only f-sgnj.s and f-sgnj.expected.sexp differ,
+    one line each (the comment; the derivation/source split)
+  $ bash scripts/check_dossier_schema.sh → DOSSIER-SCHEMA: ok (213 …) with the guests staged
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (343 passed, 0 failed); `make gate` → `===
+  all doctrines green ===`; the 103 pre-slice guests byte-identical on the bound engine.
+
+- [x] **LOCKSTEP** — this tree, `DEV_NOTES.md`, `CHANGELOG.md`, `MEMORY.md` (next_action →
+  slice (d)), `LIVE_STATUS.md`, the book (P4.7 chapter, the P4 index line; `index.md`
+  regenerated — BOOK-INDEX named the drift); the bind worktree removed.
+  PROMOTED — `docs/knowledge/zero-hits-absence-or-blindness.md` extended (a new table row +
+  the measured case: DOSSIER-SCHEMA printed 202 judged unstaged, 213 staged) + its INDEX row
+  (a new card would have been the family's 31st file over its 30-file ceiling)
+  (the stale-constant half is per-slice history: the claim-verification standard's constant
+  sweep is the unmechanized rule, already on LIVE_STATUS).
