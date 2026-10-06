@@ -30,9 +30,23 @@
   (field (name instructions) (type integer) (optional yes))
   (field (name fetches) (type integer) (optional yes))
   (field (name never_written) (type string) (repeat yes))
+  (field (name refuse) (type form) (head refuse) (repeat yes) (optional yes))
   (field (name cross_model) (type symbol) (values true) (values false) (optional yes))
   (field (name expect_divergence) (type form) (head expect_divergence) (optional yes))
   (field (name step) (type form) (head step) (repeat yes) (min 1)))
+
+;; `refuse` (P4-SYSTEM.8 slice c) is TYPED FAULT INJECTION, environment-shaped: the corpus
+;; environment answers every boundary request of `kind` whose bytes intersect
+;; [base, base + size) with an access fault — a region readable but not writable (`store`),
+;; not readable (`load`), whose page-table entries cannot be read (`walk`), or not
+;; fetchable (`fetch`). It is part of the guest's EXPERIMENT, declared beside its expected
+;; observations, and honoured alike by the runner and the spec-side authoring model — never a
+;; hook inside an instruction: "a fault injected after the Nth suboperation" is the Nth
+;; suboperation's own access refused (an AMO's store after its load completed).
+(construct (name refuse)
+  (field (name kind) (type symbol) (values fetch) (values load) (values store) (values walk))
+  (field (name base) (type string) (min-length 1))
+  (field (name size) (type string) (min-length 1)))
 
 ;; `expect_divergence` (P2-SCALAR.4) declares that the cross-model comparison MUST diverge in
 ;; exactly one named way: `difference` is a `[[difference]]` id in references.sexp, `at_step`

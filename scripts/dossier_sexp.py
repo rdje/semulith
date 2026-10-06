@@ -974,6 +974,10 @@ def expectations_to_form(doc: dict) -> list:
         if k in doc:
             root.append(_pair(k, doc[k]))
     root += _rep("never_written", doc.get("never_written") or [])
+    # P4-SYSTEM.8 slice (c): typed fault injection, the experiment's refusal regions
+    for r in doc.get("refuse") or []:
+        root.append([S.Symbol("refuse"), [S.Symbol("kind"), S.Symbol(r["kind"])],
+                     _pair("base", r["base"]), _pair("size", r["size"])])
     if "cross_model" in doc:
         root.append(_bool_field("cross_model", doc["cross_model"]))
     if "expect_divergence" in doc:
@@ -1021,6 +1025,12 @@ def expectations_to_doc(form) -> dict:
     # observation is not the same as an empty one
     if any(str(c[0]) == "never_written" for c in _fields(form)):
         doc["never_written"] = [_s(v) for v in _rep_in(form, "never_written")]
+    refusals = [{"kind": str(_req(rf, "kind", "refuse")),
+                 "base": _s(_req(rf, "base", "refuse")),
+                 "size": _s(_req(rf, "size", "refuse"))}
+                for rf in _children_in(form, "refuse")]
+    if refusals:
+        doc["refuse"] = refusals
     for sf in _children_in(form, "step"):
         writes = {}
         wf = _child_in(sf, "writes")

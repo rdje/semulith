@@ -109,3 +109,63 @@ fn every_guest_re_executes_identically_from_cold_reset() {
         );
     }
 }
+
+/// The injection carrier's predicate (`P4-SYSTEM.8` slice c): a request is refused exactly
+/// when its kind matches and its bytes intersect the region — no more, no less.
+#[test]
+fn the_refusal_predicate_refuses_exactly_the_declared_bytes_and_kind() {
+    use super::{refused, Refusal, RefusalKind};
+    use semulith_core::env::{AccessWidth, Request};
+    let regions = [Refusal {
+        kind: RefusalKind::Store,
+        base: 0x8000_0400,
+        size: 8,
+    }];
+    let store = |addr| Request::Store {
+        width: AccessWidth::W,
+        addr,
+        data: 0,
+    };
+    assert!(
+        refused(&regions, &store(0x8000_0400)),
+        "the first word inside"
+    );
+    assert!(
+        refused(&regions, &store(0x8000_0404)),
+        "the last word inside"
+    );
+    assert!(
+        refused(&regions, &store(0x8000_03FE)),
+        "straddling the start"
+    );
+    assert!(refused(&regions, &store(0x8000_0406)), "straddling the end");
+    assert!(
+        !refused(&regions, &store(0x8000_03FC)),
+        "adjacent below: untouched"
+    );
+    assert!(
+        !refused(&regions, &store(0x8000_0408)),
+        "adjacent above: untouched"
+    );
+    let load = Request::Load {
+        width: AccessWidth::W,
+        addr: 0x8000_0400,
+    };
+    assert!(
+        !refused(&regions, &load),
+        "another kind on the same bytes: untouched"
+    );
+    let walk = [Refusal {
+        kind: RefusalKind::Walk,
+        base: 0x8000_3018,
+        size: 8,
+    }];
+    assert!(
+        refused(&walk, &Request::WalkAccess { addr: 0x8000_3018 }),
+        "a PTE read"
+    );
+    assert!(
+        !refused(&walk, &Request::WalkAccess { addr: 0x8000_3010 }),
+        "the PTE before"
+    );
+}

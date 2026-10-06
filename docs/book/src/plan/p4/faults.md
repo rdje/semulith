@@ -1,6 +1,6 @@
 # P4.8 — Faults, restart and partial progress
 
-**Status:** Underway (slices a–b, 2026-10-06)
+**Status:** Underway (slices a–c, 2026-10-06)
 
 An instruction can do several things — read a register, access memory, update a control
 register, write its result. If something goes wrong part-way, what must the machine look
@@ -33,3 +33,9 @@ specification gives a fixed order — fetch problems first, then illegal instruc
 faults, then the physical access — and this laboratory takes misalignment early, before
 translation. A new test program builds page tables so that one instruction at a time meets
 two problems at once; every case resolves as declared, and Sail agrees on all of them.
+
+Slice (c) built the means to break things on purpose. A test program can now declare regions
+of memory the environment refuses — not readable, not writable, page tables not walkable — and
+the engine and the specification-side model both answer a refused access as a fault. The
+first program to use it shows the leaf's central case: an atomic memory operation whose read
+succeeds and whose write is refused traps without changing its destination register or memory.

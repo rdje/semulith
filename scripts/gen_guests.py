@@ -109,6 +109,16 @@ def load_guest(name: str, guests_dir: Path, asm: Assembler) -> dict:
             f"gap the check would read as 'writes nothing'")
     never = [reg_index(r, f"{rel(expected)} never_written")
              for r in (exp.get("never_written") or [])]
+    # P4-SYSTEM.8 slice (c): the experiment's refusal regions — typed fault injection
+    refusals = []
+    for r in exp.get("refuse") or []:
+        kind = r["kind"]
+        if kind not in ("fetch", "load", "store", "walk"):
+            raise GenError(f"{rel(expected)}: refuse kind {kind!r} — fetch, load, store or walk")
+        base, size = int(r["base"], 16), int(r["size"], 16)
+        if size <= 0:
+            raise GenError(f"{rel(expected)}: refuse size {r['size']} — an empty region refuses nothing")
+        refusals.append((kind, base, size))
     fetches = exp.get("fetches")
     if fetches is not None and (not isinstance(fetches, int) or not 0 <= fetches <= 2 * steps):
         raise GenError(
@@ -123,6 +133,7 @@ def load_guest(name: str, guests_dir: Path, asm: Assembler) -> dict:
         "fetches": steps if fetches is None else fetches,
         "expectations": expectations,
         "never_written": sorted(set(never)),
+        "refusals": refusals,
         "cross_model": bool(exp.get("cross_model", True)),
         "sources": (source, expected),
     }
@@ -193,7 +204,38 @@ def emit(guests: list[dict], encoding: Path) -> str:
             inner = ", ".join(str(i) for i in g["never_written"])
             a.append(f"#[rustfmt::skip]")
             a.append(f"static NEVER_WRITTEN_{name}: &[u8] = &[{inner}];")
+        if g["refusals"]:
+            inner = ", ".join(f"Refusal {{ kind: RefusalKind::{k.capitalize()}, base: {hex64(b)}, "
+                              f"size: {hex64(s)} }}" for k, b, s in g["refusals"])
+            a.append(f"#[rustfmt::skip]")
+            a.append(f"static REFUSALS_{name}: &[Refusal] = &[{inner}];")
         a.append("")
+    a.append("/// The kind of boundary request a refusal region answers with an access fault")
+    a.append("/// (P4-SYSTEM.8 slice c — typed fault injection, environment-shaped).")
+    a.append("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
+    a.append("pub enum RefusalKind {")
+    a.append("    /// The implicit instruction read.")
+    a.append("    Fetch,")
+    a.append("    /// An explicit read.")
+    a.append("    Load,")
+    a.append("    /// An explicit write.")
+    a.append("    Store,")
+    a.append("    /// A page-table-walk read.")
+    a.append("    Walk,")
+    a.append("}")
+    a.append("")
+    a.append("/// One refusal region of a guest's experiment: requests of `kind` whose bytes")
+    a.append("/// intersect `[base, base + size)` are answered with an access fault.")
+    a.append("#[derive(Clone, Copy, Debug, PartialEq, Eq)]")
+    a.append("pub struct Refusal {")
+    a.append("    /// The request kind refused.")
+    a.append("    pub kind: RefusalKind,")
+    a.append("    /// The region's first byte.")
+    a.append("    pub base: u64,")
+    a.append("    /// The region's length in bytes.")
+    a.append("    pub size: u64,")
+    a.append("}")
+    a.append("")
     a.append("/// A tracked guest program (assembled bytes) and the specification-derived")
     a.append("/// observations it must produce under the definitional interpreter.")
     a.append("pub struct Guest {")
@@ -215,6 +257,9 @@ def emit(guests: list[dict], encoding: Path) -> str:
     a.append("    /// observations; a control transfer that failed to skip is invisible to")
     a.append("    /// positive checks alone).")
     a.append("    pub never_written: &'static [u8],")
+    a.append("    /// The experiment's refusal regions (typed fault injection; empty for")
+    a.append("    /// every guest that injects nothing).")
+    a.append("    pub refusals: &'static [Refusal],")
     a.append("    /// Whether the cross-model comparison is enabled for this guest (a")
     a.append("    /// recorded platform difference may disable it; the skip is printed,")
     a.append("    /// never silent).")
@@ -226,6 +271,7 @@ def emit(guests: list[dict], encoding: Path) -> str:
     for g in guests:
         name = g["name"].upper().replace("-", "_")
         never = f"NEVER_WRITTEN_{name}" if g["never_written"] else "&[]"
+        refusals = f"REFUSALS_{name}" if g["refusals"] else "&[]"
         a.append("    Guest {")
         a.append(f'        name: "{g["name"]}",')
         a.append(f'        entry: {hex64(g["entry"])},')
@@ -234,6 +280,7 @@ def emit(guests: list[dict], encoding: Path) -> str:
         a.append(f'        expected_fetches: {g["fetches"]},')
         a.append(f"        expected: EXPECTED_{name},")
         a.append(f"        never_written: {never},")
+        a.append(f"        refusals: {refusals},")
         a.append(f'        cross_model: {str(g["cross_model"]).lower()},')
         a.append("    },")
     a.append("];")

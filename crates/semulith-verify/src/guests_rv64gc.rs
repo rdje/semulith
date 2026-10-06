@@ -158,6 +158,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/i-timer.s`  `5e0a51be54985c76f98ae53b333a6489eb47f4d050bae331a014fda3bc1b4b0c`
 //!   `profiles/rv64gc-lab-v0/guests/i-vector.expected.sexp`  `748085fb501dad8c628d5f5f8f3779307d434b2857db208f5e2a8187e0789a98`
 //!   `profiles/rv64gc-lab-v0/guests/i-vector.s`  `b9797cf4b2bca264ed2e216b45c43ac0f136e1dd1803d276d929c9f85935991b`
+//!   `profiles/rv64gc-lab-v0/guests/inj-carrier.expected.sexp`  `21203152ca6d2580069b4c1947cc4cf11699ea08d910aa8c36d6e40078c1d356`
+//!   `profiles/rv64gc-lab-v0/guests/inj-carrier.s`  `761deb93c123c4a41228d241e4e1952a5261a9a4c3bfcc3be268c09a3cb55135`
 //!   `profiles/rv64gc-lab-v0/guests/it-alias-bound.expected.sexp`  `5d602f4e52567cca76696bbe1039da02a9f9b7539c4265c404f62f9e1445dcfe`
 //!   `profiles/rv64gc-lab-v0/guests/it-alias-bound.s`  `2f09ca9262b6bc236660c461b68be3a6d3c2a13f020751c7bfc18f54e0e7b39c`
 //!   `profiles/rv64gc-lab-v0/guests/it-fault-alias.expected.sexp`  `6ac459aa3f8c25b2be0287b3843ae465851364b994823c6fc9a0311aebef5b5d`
@@ -258,7 +260,7 @@
 //!   `profiles/rv64gc-lab-v0/guests/w-sw.s`  `bd9bfc53b291dc2d33dbec6b6056ae5f20cdea0ffca316fbb7e0e14a53ae9f27`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.expected.sexp`  `123967acbe9b895f249f361dafb6b6b627085245ec6980c2cad4d0778dc3f1c2`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.s`  `00d30631411e7a4394644635f1ecf9244fdb7544b120d07abb895b537cded1f8`
-//! Generator: `scripts/gen_guests.py` (sha256 `d34cbe3c2d57662edde071194d0f1e87b5dade04fc7c1100557bfbc7c9cca7f1`)
+//! Generator: `scripts/gen_guests.py` (sha256 `b14a48045a7e49a03305e815c5de04fb2da4f277d4169f6c097109524078302a`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
 //! byte-stable by construction (one entry per line), so regeneration and the
@@ -15920,6 +15922,113 @@ static EXPECTED_PRIO_SV39: &[Expectation] = &[
 #[rustfmt::skip]
 static NEVER_WRITTEN_PRIO_SV39: &[u8] = &[28];
 
+#[rustfmt::skip]
+static WORDS_INJ_CARRIER: &[u32] = &[
+    0x00000097,
+    0x05408093,
+    0x30509073,
+    0x00100513,
+    0x01F51513,
+    0x40050513,
+    0x05500293,
+    0x00300313,
+    0x00400393,
+    0x00500413,
+    0x00600593,
+    0x00553023,
+    0x00053303,
+    0x00553423,
+    0x00853383,
+    0x00C52403,
+    0x00553823,
+    0x01053483,
+    0x085535AF,
+    0x00053603,
+    0x342026F3,
+    0x34202EF3,
+    0x34302F73,
+    0x34102FF3,
+    0x004F8F93,
+    0x341F9073,
+    0x30200073,
+];
+#[rustfmt::skip]
+static EXPECTED_INJ_CARRIER: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000054)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(10, 0x0000000000000001)] },
+    Expectation { step: 4, writes: &[(10, 0x0000000080000000)] },
+    Expectation { step: 5, writes: &[(10, 0x0000000080000400)] },
+    Expectation { step: 6, writes: &[(5, 0x0000000000000055)] },
+    Expectation { step: 7, writes: &[(6, 0x0000000000000003)] },
+    Expectation { step: 8, writes: &[(7, 0x0000000000000004)] },
+    Expectation { step: 9, writes: &[(8, 0x0000000000000005)] },
+    Expectation { step: 10, writes: &[(11, 0x0000000000000006)] },
+    Expectation { step: 11, writes: &[] },
+    Expectation { step: 12, writes: &[(29, 0x0000000000000007)] },
+    Expectation { step: 13, writes: &[(30, 0x0000000080000400)] },
+    Expectation { step: 14, writes: &[(31, 0x000000008000002C)] },
+    Expectation { step: 15, writes: &[(31, 0x0000000080000030)] },
+    Expectation { step: 16, writes: &[] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(6, 0x0000000000000000)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[] },
+    Expectation { step: 21, writes: &[(29, 0x0000000000000005)] },
+    Expectation { step: 22, writes: &[(30, 0x0000000080000408)] },
+    Expectation { step: 23, writes: &[(31, 0x0000000080000038)] },
+    Expectation { step: 24, writes: &[(31, 0x000000008000003C)] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[] },
+    Expectation { step: 27, writes: &[] },
+    Expectation { step: 28, writes: &[] },
+    Expectation { step: 29, writes: &[(30, 0x000000008000040C)] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[(31, 0x0000000080000040)] },
+    Expectation { step: 32, writes: &[] },
+    Expectation { step: 33, writes: &[] },
+    Expectation { step: 34, writes: &[] },
+    Expectation { step: 35, writes: &[(9, 0x0000000000000055)] },
+    Expectation { step: 36, writes: &[] },
+    Expectation { step: 37, writes: &[(29, 0x0000000000000007)] },
+    Expectation { step: 38, writes: &[(30, 0x0000000080000400)] },
+    Expectation { step: 39, writes: &[(31, 0x0000000080000048)] },
+    Expectation { step: 40, writes: &[(31, 0x000000008000004C)] },
+    Expectation { step: 41, writes: &[] },
+    Expectation { step: 42, writes: &[] },
+    Expectation { step: 43, writes: &[] },
+    Expectation { step: 44, writes: &[(13, 0x0000000000000007)] },
+];
+#[rustfmt::skip]
+static REFUSALS_INJ_CARRIER: &[Refusal] = &[Refusal { kind: RefusalKind::Store, base: 0x0000000080000400, size: 0x0000000000000008 }, Refusal { kind: RefusalKind::Load, base: 0x0000000080000408, size: 0x0000000000000008 }];
+
+/// The kind of boundary request a refusal region answers with an access fault
+/// (P4-SYSTEM.8 slice c — typed fault injection, environment-shaped).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum RefusalKind {
+    /// The implicit instruction read.
+    Fetch,
+    /// An explicit read.
+    Load,
+    /// An explicit write.
+    Store,
+    /// A page-table-walk read.
+    Walk,
+}
+
+/// One refusal region of a guest's experiment: requests of `kind` whose bytes
+/// intersect `[base, base + size)` are answered with an access fault.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Refusal {
+    /// The request kind refused.
+    pub kind: RefusalKind,
+    /// The region's first byte.
+    pub base: u64,
+    /// The region's length in bytes.
+    pub size: u64,
+}
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -15941,6 +16050,9 @@ pub struct Guest {
     /// observations; a control transfer that failed to skip is invisible to
     /// positive checks alone).
     pub never_written: &'static [u8],
+    /// The experiment's refusal regions (typed fault injection; empty for
+    /// every guest that injects nothing).
+    pub refusals: &'static [Refusal],
     /// Whether the cross-model comparison is enabled for this guest (a
     /// recorded platform difference may disable it; the skip is printed,
     /// never silent).
@@ -15957,6 +16069,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 12,
         expected: EXPECTED_SMOKE_ARITH,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -15967,6 +16080,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 13,
         expected: EXPECTED_GUEST_CONTROL,
         never_written: NEVER_WRITTEN_GUEST_CONTROL,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -15977,6 +16091,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_SMOKE_TRAP,
         never_written: NEVER_WRITTEN_SMOKE_TRAP,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -15987,6 +16102,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 6,
         expected: EXPECTED_GUEST_NO_DEVICE,
         never_written: NEVER_WRITTEN_GUEST_NO_DEVICE,
+        refusals: &[],
         cross_model: false,
     },
     Guest {
@@ -15997,6 +16113,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 31,
         expected: EXPECTED_SCOPE_ALU,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16007,6 +16124,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 29,
         expected: EXPECTED_SCOPE_MEM,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16017,6 +16135,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 19,
         expected: EXPECTED_SCOPE_BRANCH,
         never_written: NEVER_WRITTEN_SCOPE_BRANCH,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16027,6 +16146,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_SCOPE_ECALL,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16037,6 +16157,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_SCOPE_EBREAK,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16047,6 +16168,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 89,
         expected: EXPECTED_BOUND_SHIFT,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16057,6 +16179,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 55,
         expected: EXPECTED_BOUND_SHIFTW,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16067,6 +16190,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 31,
         expected: EXPECTED_BOUND_ARITH,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16077,6 +16201,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 47,
         expected: EXPECTED_BOUND_EXT,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16087,6 +16212,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 37,
         expected: EXPECTED_BOUND_ALIAS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16097,6 +16223,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FAULT_JAL_MIS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16107,6 +16234,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FAULT_JALR_MIS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16117,6 +16245,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 14,
         expected: EXPECTED_FAULT_BRANCH_NT,
         never_written: NEVER_WRITTEN_FAULT_BRANCH_NT,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16127,6 +16256,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_FAULT_FETCH,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16137,6 +16267,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_FAULT_LD_MIS_H,
         never_written: NEVER_WRITTEN_FAULT_LD_MIS_H,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16147,6 +16278,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_FAULT_LD_MIS_D,
         never_written: NEVER_WRITTEN_FAULT_LD_MIS_D,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16157,6 +16289,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 4,
         expected: EXPECTED_FAULT_ST_MIS_H,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16167,6 +16300,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 4,
         expected: EXPECTED_FAULT_ST_MIS_W,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16177,6 +16311,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 4,
         expected: EXPECTED_FAULT_ST_MIS_D,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16187,6 +16322,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_FAULT_LD_X0_MIS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16197,6 +16333,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FAULT_LD_X0_FAULT,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16207,6 +16344,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FAULT_ACCESS_LD,
         never_written: NEVER_WRITTEN_FAULT_ACCESS_LD,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16217,6 +16355,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_FAULT_ACCESS_SD,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16227,6 +16366,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FAULT_RESERVED,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16237,6 +16377,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FAULT_SHIFTW_RES,
         never_written: NEVER_WRITTEN_FAULT_SHIFTW_RES,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16247,6 +16388,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 8,
         expected: EXPECTED_FAULT_FENCE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16257,6 +16399,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 10,
         expected: EXPECTED_FAULT_HINTS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16267,6 +16410,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 7,
         expected: EXPECTED_FAULT_SELFMOD,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16277,6 +16421,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 4,
         expected: EXPECTED_IT_PRIO_JUMP,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16287,6 +16432,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_IT_PRIO_LOAD,
         never_written: NEVER_WRITTEN_IT_PRIO_LOAD,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16297,6 +16443,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_IT_FAULT_ALIAS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16307,6 +16454,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_IT_FAULT_WRAP_LD,
         never_written: NEVER_WRITTEN_IT_FAULT_WRAP_LD,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16317,6 +16465,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_IT_FAULT_WRAP_SD,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16327,6 +16476,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 10,
         expected: EXPECTED_IT_ALIAS_BOUND,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16337,6 +16487,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 13,
         expected: EXPECTED_IT_PROGRESS_LOOP,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16347,6 +16498,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_IT_FENCEI,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16357,6 +16509,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 3,
         expected: EXPECTED_DIR_RUNOFF,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16367,6 +16520,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 17,
         expected: EXPECTED_DIR_CHASE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16377,6 +16531,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 35,
         expected: EXPECTED_DIR_EXT_MATRIX,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16387,6 +16542,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 8,
         expected: EXPECTED_DIR_SELFMOD_FENCE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16397,6 +16553,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 13,
         expected: EXPECTED_DIR_CMP_BRANCH,
         never_written: NEVER_WRITTEN_DIR_CMP_BRANCH,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16407,6 +16564,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 37,
         expected: EXPECTED_DIR_MEMWALK,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16417,6 +16575,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 19,
         expected: EXPECTED_DIR_CHAIN,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16427,6 +16586,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 18,
         expected: EXPECTED_DIR_X0_WRITES,
         never_written: NEVER_WRITTEN_DIR_X0_WRITES,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16437,6 +16597,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 1,
         expected: EXPECTED_MIN_FENCEI,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16447,6 +16608,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 9,
         expected: EXPECTED_MM_CSR_RW,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16457,6 +16619,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 17,
         expected: EXPECTED_MM_CSR_LEGALITY_S,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16467,6 +16630,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 16,
         expected: EXPECTED_MM_CSR_LEGALITY_U,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16477,6 +16641,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 24,
         expected: EXPECTED_MM_EBREAK,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16487,6 +16652,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 61,
         expected: EXPECTED_MM_ECALL_MODES,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16497,6 +16663,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 56,
         expected: EXPECTED_MM_ECALL_DELEG,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16507,6 +16674,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 43,
         expected: EXPECTED_MM_MRET,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16517,6 +16685,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 14,
         expected: EXPECTED_MM_READONLY,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16527,6 +16696,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 52,
         expected: EXPECTED_MM_COUNTERS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16537,6 +16707,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 35,
         expected: EXPECTED_MM_STIMECMP,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16547,6 +16718,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 57,
         expected: EXPECTED_MM_WFI,
         never_written: NEVER_WRITTEN_MM_WFI,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16557,6 +16729,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 43,
         expected: EXPECTED_MM_SFENCE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16567,6 +16740,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 50,
         expected: EXPECTED_MM_SRET,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16577,6 +16751,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 111,
         expected: EXPECTED_SV39_TRANSLATE_4K,
         never_written: NEVER_WRITTEN_SV39_TRANSLATE_4K,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16587,6 +16762,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 99,
         expected: EXPECTED_SV39_TRANSLATE_2M,
         never_written: NEVER_WRITTEN_SV39_TRANSLATE_2M,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16597,6 +16773,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 89,
         expected: EXPECTED_SV39_TRANSLATE_1G,
         never_written: NEVER_WRITTEN_SV39_TRANSLATE_1G,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16607,6 +16784,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 58,
         expected: EXPECTED_SV39_FAULT_CANONICAL,
         never_written: NEVER_WRITTEN_SV39_FAULT_CANONICAL,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16617,6 +16795,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 71,
         expected: EXPECTED_SV39_FAULT_INVALID,
         never_written: NEVER_WRITTEN_SV39_FAULT_INVALID,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16627,6 +16806,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 81,
         expected: EXPECTED_SV39_FAULT_RESERVED,
         never_written: NEVER_WRITTEN_SV39_FAULT_RESERVED,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16637,6 +16817,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 82,
         expected: EXPECTED_SV39_FAULT_SUPERPAGE,
         never_written: NEVER_WRITTEN_SV39_FAULT_SUPERPAGE,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16647,6 +16828,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 113,
         expected: EXPECTED_SV39_PERM_RWX,
         never_written: NEVER_WRITTEN_SV39_PERM_RWX,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16657,6 +16839,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 169,
         expected: EXPECTED_SV39_PERM_USR,
         never_written: NEVER_WRITTEN_SV39_PERM_USR,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16667,6 +16850,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 135,
         expected: EXPECTED_SV39_SVADE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16677,6 +16861,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 76,
         expected: EXPECTED_SV39_MPRV,
         never_written: NEVER_WRITTEN_SV39_MPRV,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16687,6 +16872,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 198,
         expected: EXPECTED_SV39_TLB_FENCE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16697,6 +16883,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 53,
         expected: EXPECTED_SV39_STRADDLE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16707,6 +16894,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 82,
         expected: EXPECTED_SV39_DELEG,
         never_written: NEVER_WRITTEN_SV39_DELEG,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16717,6 +16905,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 21,
         expected: EXPECTED_A_AMO_AQRL,
         never_written: NEVER_WRITTEN_A_AMO_AQRL,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16727,6 +16916,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 20,
         expected: EXPECTED_A_AMO_ARITH_D,
         never_written: NEVER_WRITTEN_A_AMO_ARITH_D,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16737,6 +16927,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 22,
         expected: EXPECTED_A_AMO_ARITH_W,
         never_written: NEVER_WRITTEN_A_AMO_ARITH_W,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16747,6 +16938,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 17,
         expected: EXPECTED_A_AMO_MINMAX_D,
         never_written: NEVER_WRITTEN_A_AMO_MINMAX_D,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16757,6 +16949,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 18,
         expected: EXPECTED_A_AMO_MINMAX_W,
         never_written: NEVER_WRITTEN_A_AMO_MINMAX_W,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16767,6 +16960,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 16,
         expected: EXPECTED_A_AMO_OVERLAP,
         never_written: NEVER_WRITTEN_A_AMO_OVERLAP,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16777,6 +16971,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 77,
         expected: EXPECTED_A_AMO_SV39,
         never_written: NEVER_WRITTEN_A_AMO_SV39,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16787,6 +16982,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 41,
         expected: EXPECTED_A_LRSC_FAULT,
         never_written: NEVER_WRITTEN_A_LRSC_FAULT,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16797,6 +16993,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 33,
         expected: EXPECTED_A_LRSC_ILLEGAL,
         never_written: NEVER_WRITTEN_A_LRSC_ILLEGAL,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16807,6 +17004,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 11,
         expected: EXPECTED_A_LRSC_LOOP,
         never_written: NEVER_WRITTEN_A_LRSC_LOOP,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16817,6 +17015,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 30,
         expected: EXPECTED_A_LRSC_MUSTFAIL,
         never_written: NEVER_WRITTEN_A_LRSC_MUSTFAIL,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16827,6 +17026,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 14,
         expected: EXPECTED_A_LRSC_PAIR,
         never_written: NEVER_WRITTEN_A_LRSC_PAIR,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16837,6 +17037,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 34,
         expected: EXPECTED_I_ACCEPT,
         never_written: NEVER_WRITTEN_I_ACCEPT,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16847,6 +17048,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 58,
         expected: EXPECTED_I_DELEG,
         never_written: NEVER_WRITTEN_I_DELEG,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16857,6 +17059,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 20,
         expected: EXPECTED_I_ENABLE,
         never_written: NEVER_WRITTEN_I_ENABLE,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16867,6 +17070,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 29,
         expected: EXPECTED_I_NEST,
         never_written: NEVER_WRITTEN_I_NEST,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16877,6 +17081,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 60,
         expected: EXPECTED_I_PRIO,
         never_written: NEVER_WRITTEN_I_PRIO,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16887,6 +17092,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 25,
         expected: EXPECTED_I_TIMER,
         never_written: NEVER_WRITTEN_I_TIMER,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16897,6 +17103,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 51,
         expected: EXPECTED_I_VECTOR,
         never_written: NEVER_WRITTEN_I_VECTOR,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16907,6 +17114,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 24,
         expected: EXPECTED_W_DELEG,
         never_written: NEVER_WRITTEN_W_DELEG,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16917,6 +17125,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 16,
         expected: EXPECTED_W_NOTRAP,
         never_written: NEVER_WRITTEN_W_NOTRAP,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16927,6 +17136,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 17,
         expected: EXPECTED_W_SW,
         never_written: NEVER_WRITTEN_W_SW,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16937,6 +17147,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 20,
         expected: EXPECTED_W_TIMER,
         never_written: NEVER_WRITTEN_W_TIMER,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16947,6 +17158,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 2,
         expected: EXPECTED_FENCEI_RESERVED,
         never_written: NEVER_WRITTEN_FENCEI_RESERVED,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16957,6 +17169,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 8,
         expected: EXPECTED_FENCEI_SELFMOD,
         never_written: NEVER_WRITTEN_FENCEI_SELFMOD,
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16967,6 +17180,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 40,
         expected: EXPECTED_FP_FS_OFF,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16977,6 +17191,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 20,
         expected: EXPECTED_FP_FCSR_VIEW,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16987,6 +17202,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 46,
         expected: EXPECTED_F_FS_OFF,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -16997,6 +17213,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 21,
         expected: EXPECTED_F_MOVE_BOX,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17007,6 +17224,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 50,
         expected: EXPECTED_F_ARITH,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17017,6 +17235,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 41,
         expected: EXPECTED_F_FUSED,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17027,6 +17246,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 24,
         expected: EXPECTED_F_SGNJ,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17037,6 +17257,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 26,
         expected: EXPECTED_F_MINMAX,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17047,6 +17268,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 31,
         expected: EXPECTED_F_COMPARE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17057,6 +17279,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 35,
         expected: EXPECTED_F_CLASS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17067,6 +17290,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 39,
         expected: EXPECTED_F_CONVERT,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17077,6 +17301,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 41,
         expected: EXPECTED_F_ROUNDING,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17087,6 +17312,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 32,
         expected: EXPECTED_F_DIRTY,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17097,6 +17323,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 52,
         expected: EXPECTED_D_FS_OFF,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17107,6 +17334,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 26,
         expected: EXPECTED_D_MOVE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17117,6 +17345,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 60,
         expected: EXPECTED_D_ARITH,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17127,6 +17356,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 41,
         expected: EXPECTED_D_FUSED,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17137,6 +17367,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 35,
         expected: EXPECTED_D_SGNJ,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17147,6 +17378,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 32,
         expected: EXPECTED_D_MINMAX,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17157,6 +17389,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 35,
         expected: EXPECTED_D_COMPARE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17167,6 +17400,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 58,
         expected: EXPECTED_D_CLASS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17177,6 +17411,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 39,
         expected: EXPECTED_D_CONVERT,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17187,6 +17422,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 65,
         expected: EXPECTED_D_F2F,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17197,6 +17433,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 38,
         expected: EXPECTED_D_ROUNDING,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17207,6 +17444,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 51,
         expected: EXPECTED_MM_CSR_RO_WRITE,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17217,6 +17455,7 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 49,
         expected: EXPECTED_MM_CSR_RO_COUNTERS,
         never_written: &[],
+        refusals: &[],
         cross_model: true,
     },
     Guest {
@@ -17227,6 +17466,18 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 128,
         expected: EXPECTED_PRIO_SV39,
         never_written: NEVER_WRITTEN_PRIO_SV39,
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "inj-carrier",
+        entry: 0x0000000080000000,
+        words: WORDS_INJ_CARRIER,
+        executed_steps: 45,
+        expected_fetches: 45,
+        expected: EXPECTED_INJ_CARRIER,
+        never_written: &[],
+        refusals: REFUSALS_INJ_CARRIER,
         cross_model: true,
     },
 ];

@@ -17,19 +17,19 @@
 //! illegal-instruction cause with tval the word — the same rule as rv64i's, delivered
 //! rather than reported on this composition.
 
-use semulith_core::env::{BoundaryError, Environment, Request, Response};
+use semulith_core::env::{BoundaryError, Environment, Failure, Request, Response};
 use semulith_core::exec_rv64gc::{self, StepRv64gc};
 use semulith_core::privilege;
 use semulith_core::state_rv64gc::ArchitecturalState;
 
 use crate::fixtures::FlatMemory;
-use crate::guests_rv64gc::{Guest, GUESTS};
+use crate::guests_rv64gc::{Guest, Refusal, RefusalKind, GUESTS};
 
 /// The fetch-request witness: forwards every crossing and counts fetch REQUESTS
 /// (successful or faulted — a delivered fetch-fault step's request crossed the boundary
 /// and was refused, which is still exactly one fetch for that step).
 struct CountFetches<'a> {
-    inner: &'a mut FlatMemory,
+    inner: &'a mut Refusing<'a>,
     fetches: u64,
 }
 
@@ -37,6 +37,45 @@ impl Environment for CountFetches<'_> {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         if matches!(request, Request::Fetch { .. }) {
             self.fetches += 1;
+        }
+        self.inner.request(request)
+    }
+}
+
+/// The experiment's TYPED fault injection (`P4-SYSTEM.8` slice c): every request whose kind
+/// a declared refusal names and whose bytes intersect its region is answered with an access
+/// fault — the environment refusing, never a hook inside an instruction. Everything else
+/// forwards untouched.
+struct Refusing<'a> {
+    inner: &'a mut FlatMemory,
+    refusals: &'static [Refusal],
+}
+
+/// The bytes a request touches, and the refusal kind it answers to.
+fn request_span(request: &Request) -> (RefusalKind, u64, u64) {
+    match *request {
+        Request::Fetch { addr } => (RefusalKind::Fetch, addr, 4),
+        Request::Load { width, addr } => (RefusalKind::Load, addr, width.bytes()),
+        Request::Store { width, addr, .. } => (RefusalKind::Store, addr, width.bytes()),
+        Request::WalkAccess { addr } => (RefusalKind::Walk, addr, 8),
+    }
+}
+
+/// Does a refusal region answer this request? Intersection of `[addr, addr + len)` with
+/// `[base, base + size)`, computed in u128 so no region wraps.
+fn refused(refusals: &[Refusal], request: &Request) -> bool {
+    let (kind, addr, len) = request_span(request);
+    refusals.iter().any(|r| {
+        r.kind == kind
+            && u128::from(addr) < u128::from(r.base) + u128::from(r.size)
+            && u128::from(r.base) < u128::from(addr) + u128::from(len)
+    })
+}
+
+impl Environment for Refusing<'_> {
+    fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
+        if refused(self.refusals, &request) {
+            return Err(Failure::AccessFault.into());
         }
         self.inner.request(request)
     }
@@ -88,8 +127,12 @@ pub fn run_guest(guest: &Guest) -> (Trace, FlatMemory) {
     for _ in 0..guest.executed_steps {
         let pc = state.pc();
         let before: Vec<u64> = (0..32).map(|i| state.read_x(i)).collect();
-        let mut counting = CountFetches {
+        let mut refusing = Refusing {
             inner: &mut env,
+            refusals: guest.refusals,
+        };
+        let mut counting = CountFetches {
+            inner: &mut refusing,
             fetches: 0,
         };
         let outcome = exec_rv64gc::step(&mut state, &mut counting);

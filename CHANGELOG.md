@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0060 (leaf P4-SYSTEM.8, slice c) — the typed fault-injection carrier
+
+- A guest's expectations may declare `(refuse (kind fetch|load|store|walk) (base …) (size …))`
+  regions; the rv64gc runner answers every boundary request whose kind matches and whose
+  bytes intersect with an access fault (a `Refusing` environment under the fetch counter), and
+  the spec-side authoring model predicts the same with the engine's own per-half causes. Both
+  generated guest modules carry the refusal table.
+- `inj-carrier` proves it end to end — a refused store, a refused load, an unrefused control,
+  and an AMO whose store half is refused after its load completed (cause 7, rd and memory
+  untouched). RED when the runner ignores refusals; a unit test pins the predicate's edges;
+  the schema refuses an unknown kind. The authoring model's walk now answers an out-of-region
+  PTE read with an access fault (it read zeros before). `make check` + `make gate` green.
+
 ## SEMULITH-P4-0059 (leaf P4-SYSTEM.8, slice b) — the fault-priority table declared and pinned
 
 - `profile.sexp` declares `D-FAULT-PRIORITY` (with REQ-D-FAULT-PRIORITY and OB-FAULT-PRIORITY):

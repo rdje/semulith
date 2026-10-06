@@ -18,11 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (7/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and five leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), and the FP backend with F and D bound (`.7`, Sail 24 AGREE of 24)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.8` slice (c) — the TYPED fault-injection carrier (the brief's
-  decision 4): declared environment refusal regions (readable-not-writable, not-walkable,
-  not-fetchable) in the guest's expectations, honoured by the corpus runner (FlatMemory) and
-  the authoring tool alike, with RED/GREEN controls; schema/expectations.sexp grows. Then
-  (d) the injected corpus + the obligation, (e) sail + acceptance. (b) landed (`-0059`).
+- next_action: `P4-SYSTEM.8` slice (d) — the injected-fault corpus over the carrier: LR's load
+  refused (5), SC's store refused (7, the reservation's fate per the policy), FLD/FSD refused,
+  a walk refused at each Sv39 level (the original access's access fault), AMO .W/.D halves;
+  then rv64gc's partial-progress OBLIGATION (rv64i's OB-ENV-PARTIAL-PROGRESS adapted, its
+  POS/NEG checks naming these guests) and the state candidate's re-answer. Fetch refusals:
+  the tool has no fetch translation model — decide (sv39gen, or record out of scope).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

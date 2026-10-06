@@ -147,7 +147,7 @@ This gate authorises the planned next engineering stage: board implementation.
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
 
 - ID: `P4-SYSTEM.8` — **faults, restart and partial progress**
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slices (a)–(b) done `SEMULITH-P4-0058`–`-0059`)
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slices (a)–(c) done `SEMULITH-P4-0058`–`-0060`)
   Goal: fault priority, suppressed effects, restart locations, partial commits under the new system features (`SEM-04`, `SEM-06`).
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
@@ -165,7 +165,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); (b) the priority table declared and pinned; next: slice (c), the typed fault-injection carrier |
+| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); (b) the priority table declared and pinned; (c) the typed injection carrier; next: slice (d), the injected-fault corpus + the unit-discipline obligation |
 
 ## Decisions
 
@@ -870,6 +870,57 @@ never raised, at every crossing. The index:
   `MEMORY.md` (next_action → c), the book (P4.8 chapter).
   `promotion: declined (the priority table is the decision record itself; no new lesson).`
 
+`P4-SYSTEM.8` slice (c) — the typed fault-injection carrier (`2026-10-06`, `SEMULITH-P4-0060`):
+
+- [x] **REPRODUCE / ISSUE** — the acceptance needs "a fault injected after the Nth
+  suboperation", and no rv64gc mechanism could inject one:
+
+  ```
+  $ git show HEAD:schema/expectations.sexp | grep -c refuse → 0
+  $ git show HEAD:crates/semulith-verify/src/run_rv64gc.rs | grep -c Refusing → 0
+  the corpus environment (FlatMemory) refuses only by region and alignment; an AMO's two
+    halves share address and width, so no split was reachable (the brief's pre-condition 4)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the brief's decision 4 builds it. The
+  boundary already carries the shape — four request kinds (`git show HEAD:crates/semulith-core/src/env.rs | grep -cE '^    (Fetch|Load|Store|WalkAccess) \{'` → 4; an AMO issues a Load then a Store) and one access-fault answer the
+  engine maps to the architectural cause by kind — so injection is a refusal at the boundary,
+  never a hook inside an instruction.
+
+- [x] **FIX** — `schema/expectations.sexp`: `(refuse (kind fetch|load|store|walk) (base …)
+  (size …))`, the experiment's refusal regions; `dossier_sexp.py`: their round trip;
+  `gen_guests.py`: `RefusalKind`/`Refusal` and a per-guest refusal table in both generated
+  modules (empty for every guest that injects nothing — `guests.rs` regenerated too);
+  `run_rv64gc.rs`: `Refusing`, under the fetch counter (a refused fetch is still counted),
+  answering every request whose kind matches and whose bytes intersect a region with an
+  access fault; the authoring tool: `#|refuse:` honoured with the engine's own per-half causes
+  (a refused LR/plain load 5, store/SC 7, either half of an AMO 7, a walk read the original
+  access's access fault) — and its walk now answers an out-of-region PTE read with that access
+  fault where it read zeros (a page fault) before; fetch refusals refused by name (it has no
+  fetch translation model). `inj-carrier`: the carrier's end-to-end proof.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  inj-carrier derived: the refused store 7 (A unchanged, read back 0); the refused load 5
+    and the word inside its bytes 5 (sentinels untouched); the unrefused C round-trips 0x55;
+    the AMO on A — its load completes, its store is refused — cause 7, x11 untouched, A 0
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (129 guests)
+    RED — the runner's refusals emptied: FAILED, "inj-carrier: step 12 writes match the
+    specification-derived expectations"; restored → ok
+  $ cargo test -p semulith-verify the_refusal_predicate → test result: ok. 1 passed (inside,
+    straddling both edges, adjacent both sides, another kind, a PTE read)
+  $ check_sexp_schema (an unknown kind, a scratch copy) → REFUSED … "poke" is not one of
+    ['fetch', 'load', 'store', 'walk'], rc=1
+  the tool before/after over the corpus: 80 of 80 jointly derivable files byte-identical
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`; every
+  pre-existing guest's expectations byte-identical; the matrix 28 cells.
+
+- [x] **LOCKSTEP** — this tree, `CHANGELOG.md`, `MEMORY.md` (next_action → d), the book (P4.8
+  chapter). `promotion: declined (the carrier's design is the schema comment and the brief's decision 4).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -879,6 +930,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.8` slice (c) | inj-carrier derived and green (129 guests); RED with the runner's refusals emptied (step 12); the predicate's boundary test; the schema refuses an unknown kind; the tool regression 80/80 | **met** — injection is typed, declared and honoured on both the engine's and the model's side |
 | `2026-10-06` | `.8` slice (b) | the pins census; prio-sv39 derived (causes 4 6 13 4 5 7 2 2) and green on the engine (128 guests); sail AGREE 128 steps; RECORD-SCHEMA ok; the matrix 28 cells | **met** — the table declared, every realizable adjacent pair pinned on both engines |
 | `2026-10-06` | `.8` slice (a) | the probe on the HEAD engine (x5 written, then cause 2); the RED guest on the old engine (step 9); 127/127 after the fix; identity 125/0 + 2 RED; sail AGREE mm-csr-ro-write (51) and a-lrsc-fault (41), the counters guest the named Zicntr-absent cell; the tool before/after 76/76 + F/D 22/22 | **met** — a refused CSR write leaves rd untouched on both engines |
 | `2026-10-06` | `.7` slice (e3) + LEAF | the acceptance evidence re-run at HEAD: fp:: 8 passed (230 + 3,168), run_rv64gc 4/4 (125), FP-VECTORS ok (agree 2131), Sail 24 AGREE rc=0, fpcheck 0 of 63,752 vs the reference | **met** — the leaf closes |
@@ -907,6 +959,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.8` (slice c) | `SEMULITH-P4-0060 (leaf P4-SYSTEM.8): slice c — the typed fault-injection carrier: declared refusal regions honoured by the runner and the spec-side model alike; inj-carrier proves it end to end (an AMO's store refused after its load)` | both guest modules regenerated |
 | `.8` (slice b) | `SEMULITH-P4-0059 (leaf P4-SYSTEM.8): slice b — the fault-priority table declared (D-FAULT-PRIORITY + its mirrors); prio-sv39 pins the missing adjacent pairs, sail AGREE` | a characterization guest, no engine change |
 | `.8` (slice a) | `SEMULITH-P4-0058 (leaf P4-SYSTEM.8): slice a — the CSR rd-before-trap defect fixed at root (csr-rw, the atomic read-write; RED-first, sail AGREE on mhartid); LR's wrong unreachable cause and a-lrsc-fault's stale prose` | the brief's sail evidence corrected |
 | `.7` (slice e3) + LEAF | `SEMULITH-P4-0056 (leaf P4-SYSTEM.7): slice e3 — the decision record's closing measurement + THE LEAF ACCEPTANCE; the leaf CLOSES (F and D bound and validated)` | frontier → `.8` |
@@ -929,6 +982,12 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.8` slice (c) done (`SEMULITH-P4-0060`) — **the injection carrier**: a guest
+  declares refusal regions (fetch/load/store/walk); the runner answers matching requests
+  with an access fault and the authoring model predicts the same. `inj-carrier` proves it,
+  including an AMO whose store is refused after its load completed. Next: slice (d) — the
+  injected-fault corpus and the obligation.
 
 - `2026-10-06`: `.8` slice (b) done (`SEMULITH-P4-0059`) — **the fault-priority table**:
   declared as `D-FAULT-PRIORITY` (the pinned table, the laboratory's misaligned-high choice,
