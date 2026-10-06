@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0078 (tree P4-SYSTEM) — the `.12` design brief: bind C
+
+- Recorded before execution. Measured: no C table on disk or pinned; 37 forms at RV64 + D
+  (Zca 33 + Zcd 4); ILEN stays 32 — what is missing is instruction length; the fetch
+  translates both parcels before reading either, and the pc advances by a hard-coded 4;
+  upstream's constraints live in field names and six overlapping pairs, which the name-ordered
+  decoder would resolve wrongly; every tool assumes 4-byte instructions; Sail selects Zca/Zcd.
+- The design: each compressed form declared by the base instruction it expands into, operands
+  mapped, the spec's own sentence quoted (C.JALR its own rule — the spec's stated exception);
+  decode by specificity with reserved code points from the spec; a parcel-first fetch;
+  parcel-aware tools; an EVD-05 corpus with the second-parcel page fault; Sail. Slices (a)–(f).
+
 ## SEMULITH-P4-0077 (leaf P4-SYSTEM.11, slice d) — THE LEAF ACCEPTANCE; the leaf CLOSES
 
 - Measured: the `m` slot gone; 13 of 13 M forms in the four guests, on the lab engine (139/139)

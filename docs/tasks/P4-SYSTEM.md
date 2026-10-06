@@ -185,7 +185,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: the encoding's `m` slot filled; every M form exercised on both engines by
   expectations derived before either runs, the division edge cases included.
 - ID: `P4-SYSTEM.12` — **bind C** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`)
   Goal: the compressed instructions at RV64 with D (Zca + Zcd, `.1`'s closure): each 16-bit
   parcel decodes to the base instruction it expands to; fetch at two-byte granularity (IALIGN
   16); the reserved and illegal encodings refused.
@@ -235,10 +235,87 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `pending` | bind C — the design brief first (`.11` closed `2026-10-06`: M bound and evidenced three ways; G-SCOPE's one open item is now the `c` slot: no compressed fragment, IALIGN 16 declared, Zca + Zcd at RV64 with D) |
+| 1 | `P4-SYSTEM.12` | `pending` | bind C — the design brief recorded `2026-10-06`; slice (a): the re-pin (rv_c, rv64_c, rv_c_d) and the fragment `c.sexp` (37 forms, scatter layouts, declared specializations and reserved code points; the disjointness rule for specializations) |
 
 ## Decisions
 
+- `2026-10-06` (design brief for `.12`, recorded before its execution, `SEMULITH-P4-0078`;
+  sources: a read-only census of the C surface — an explore agent's report, conversation-only;
+  every load-bearing fact re-measured where it lives; RVI-C §27.1, RVI-ZC §28.1, the unprivileged
+  "Base Instruction-Length Encoding", RVP-MACHINE §2.1.1.16; `exec_rv64gc.rs`;
+  `scripts/riscv_asm.py`; the pinned `constants.py`):
+  **The measured pre-conditions.** (1) **No C table is on disk or pinned**: `ls
+  target/refs/riscv-opcodes/ | grep -c _c` → 0; the ledger pins 17 files, none C. The re-pin is
+  the first act. (2) **The selection is 37 forms**: Zca at RV64 (33) + Zcd (4: c.fld, c.fsd,
+  c.fldsp, c.fsdsp) — RVI-ZC §28.1.4 "Zca, Zcd if D is specified (RV64 only)"; the five RV32-only
+  forms (C.JAL, C.FLW[SP], C.FSW[SP]) excluded; the census grows 163 → 200. (3) **ILEN stays 32**
+  (`profile.sexp:25` `(ilen 32) (ialign 16)`): what is missing is instruction LENGTH, not width.
+  (4) **The fetch translates both parcels before reading either** (`exec_rv64gc.rs:152-167`): a
+  16-bit instruction in a page's last halfword, the next page unmapped, would page-fault today;
+  the pc advances by a hard-coded 4 (`:255`). (5) **Upstream marks its constraints in field
+  NAMES** (`rd_n0`, `c_rs2_n0`, `c_nzimm6` …), and the pinned `constants.py:16-22` lists six
+  overlapping pairs (c.addi/c.nop, c.lui/c.addi16sp, c.mv/c.jr, c.jalr/c.ebreak,
+  c.add/{c.ebreak, c.jalr}); the decoder takes the first match in NAME order
+  (`gen_definition.py:753`), so c.ebreak's and c.jalr's words would decode as c.add, and
+  `check_encoding_disjoint.py` refuses any overlap. (6) **The spec's RVC listings are SVG
+  figures** (none on disk); the expansions are per-instruction prose — "C.MV expands into add
+  rd, x0, rs2" (§27.1.5.3) — and §27.1.1 states the constraint "each RVC instruction expands into
+  a single 32-bit instruction"; §27.1.4 states the one exception, "C.JALR does not expand exactly
+  … the value added to the PC to form the link address is 2 rather than 4". (7) **The spec states
+  every fault rule C needs**: parcels are 16-bit little-endian, lowest bits first, an
+  all-zero parcel illegal ("Base Instruction-Length Encoding"); "no instructions can raise
+  instruction-address-misaligned exceptions" (§27.1.1); a fault on a variable-length
+  instruction reports "the virtual address of the portion of the instruction that caused the
+  fault, while mepc will point to the beginning" (RVP-MACHINE §2.1.1.16); an illegal 16-bit
+  instruction's mtval is its 16 bits, right-justified. (8) **Every tool assumes 4-byte
+  instructions**: the assembler (`pc += 4`, `.word` only, no C operand), `gen_guests.py`
+  (`&[u32]` words), the authoring tool (a 4-byte program map, 37 `pc + 4` sites), the Sail
+  harness (`.word`). (9) **Sail's matched configuration already selects Zca and Zcd**
+  (`(extension (name "Zca") (supported true))`, Zcd true, Zcf false). (10) The interaction
+  matrix's boundary×restart cell is DEGENERATE today for want of a 2-mod-4 mepc — C makes it
+  derivable.
+  **The design, decided:**
+  1. **A compressed form is declared by its EXPANSION, as data** — the constraint §27.1.1 states,
+     made the representation: each of the 37 rows names the base instruction it expands into and
+     maps its operands by expressions over the C fields (`rd'` = 8 + the 3-bit field; the
+     scrambled immediates scaled and extended), with the spec's own "expands into" sentence as its
+     quoted source (CITATION-QUOTES verifies it in its section). The engine executes the BASE
+     rule over the mapped operands. C.JALR alone has its own rule, citing §27.1.4's exception.
+     The acceptance's "proven against the source's expansion table" is then mechanical: every
+     row names an instruction the composition defines, and its quoted sentence names it.
+  2. **Decode by specificity, and reserved code points declared**: among the rows a parcel
+     matches, the one with the most fixed bits wins (c.ebreak > c.jalr > c.add; c.nop > c.addi;
+     c.addi16sp > c.lui; c.jr > c.mv) — the six upstream overlaps declared as specializations,
+     which the disjointness check accepts where the special row's fixed bits strictly contain the
+     general row's. The RESERVED code points are declared from the spec's own sentences
+     (§27.1.3.1, §27.1.4, §27.1.5.1–§27.1.5.2, the all-zero parcel) — never inferred from
+     upstream's `n0`/`nz` names, because most of those name HINTs, which simply execute their
+     expansion (an x0 destination writes nothing).
+  3. **The fetch reads a parcel, decides the length, and touches the next parcel only for a
+     32-bit instruction**: translate parcel 0; within one page, one request covers both parcels
+     (the corpus's fetch counts unchanged); at a page's last halfword, parcel 0 is fetched alone
+     and parcel 1 is translated and fetched only if bits [1:0] are 11 — a fault there reports the
+     second parcel's address in xtval and the instruction's start in xepc. The pc advances by
+     the instruction's length; `(inst)` is the instruction's own bits (16 for C). The boundary's
+     fetch contract is restated in contract v2 (a parcel-granular fetch the environment answers).
+  4. **The tools learn parcels**: the assembler (C operand syntax, `x8`–`x15` for the 3-bit
+     registers, `.half`, a byte image); `gen_guests.py` (parcels for rv64gc, rv64i's module
+     byte-identical); the authoring tool (an image by halfword, a C expander written by hand from
+     the spec's sentences — independent of the fragment's expansion data — and the parcel-wise
+     fetch walk); the Sail harness (`.half`).
+  5. **Evidence**: an EVD-05 corpus exercising all 37 forms (the 3-bit registers, every
+     immediate's extremes, HINTs executing, a reserved code point raising illegal-instruction
+     with a 16-bit tval, a 2-mod-4 jump target, 16/32-bit instructions intermixed across a page
+     boundary, and the second-parcel page fault: cause 12, xtval pc + 2, xepc pc); Sail matched;
+     the boundary×restart cell re-answered with a guest.
+  6. **Slices**: (a) the re-pin and the fragment (`c.sexp`: 37 forms, the scatter layouts, the
+     declared specializations and reserved points; the disjointness rule); (b) the language for C
+     (the expansion construct, its checks, `c.sem.sexp`, the generator's specificity decode); (c)
+     the engine (parcel-first fetch, length-aware pc, the expansion executor, the 16-bit `inst`);
+     (d) the tools (assembler, guest generator, authoring tool, Sail harness); (e) the staged
+     corpus and THE BIND (`(status partial)` gone, scope 200, `REQ-GC-C`, `OB-GC-C` and the fetch
+     restatement in contract v2, realized; the matrix; `gate.sexp`; identity proof); (f) the
+     straddle-fault evidence, the Sail matched experiment, THE LEAF ACCEPTANCE.
 - `2026-10-06` (slice (c) execution split, recorded at its first half, `SEMULITH-P4-0075`): (c1) the
   generated M vectors and their doctrine (M-VECTORS); (c2) the Sail matched experiment over the M
   corpus — two instruments, each with its own evidence and its own commit. The vectors run through
@@ -754,6 +831,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` brief | `SEMULITH-P4-0078 (tree P4-SYSTEM): the .12 design brief — bind C: each compressed form declared by its expansion, decoded by specificity, fetched parcel-first` | (a) next |
 | `.11` (slice d) + LEAF | `SEMULITH-P4-0077 (leaf P4-SYSTEM.11): slice d — THE LEAF ACCEPTANCE: M bound, every form on both engines from expectations derived first; the leaf CLOSES` | frontier → `.12` |
 | `.11` (slice c2) | `SEMULITH-P4-0076 (leaf P4-SYSTEM.11): slice c2 — the Sail matched experiment over the M corpus: 4 AGREE of 4` | (d) next |
 | `.11` (slice c1) | `SEMULITH-P4-0075 (leaf P4-SYSTEM.11): slice c1 — 4,485 generated M vectors through the engine; M-VECTORS, the 38th doctrine, gates the table and judges its reference` | (c2) next |
@@ -793,6 +871,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.12` design brief recorded (`SEMULITH-P4-0078`) — C binds as declared expansions (the spec's own constraint, made the representation), decoded by specificity with reserved code points from the spec, fetched parcel-first. Slices (a)–(f).
 
 - `2026-10-06`: `.11` slice (d) done and the LEAF CLOSES (`SEMULITH-P4-0077`) — M bound and evidenced three ways. Frontier → `.12` (bind C).
 
