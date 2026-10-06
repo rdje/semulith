@@ -1,5 +1,28 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — a locator that resolves can still name the wrong section (CITATION-ACCURACY.1)
+
+`P4-SYSTEM.7` slice (c3) part 1 found the rv64gc FP-CSR content cited `RVI-F §20.1.1`
+(the F register state — real, and wrong: the fcsr is §20.1.2), with every gate green.
+The measurement of WHY nothing saw it: `check_citations.py` globs the semantics files
+only and asks whether the cited section EXISTS — a wrong-but-real locator passes it by
+construction, and no gate read a quote at all. The new tool reads every string atom of
+every tracked `.sexp`, attributes a quoted phrase only when the attribution is decidable
+(R1 adjacency, R2 a source's leading locator, R3 an expectation step's source, R4 a
+single-locator string — 24 of 108 quotes today; the rest counted, never guessed at), and
+checks the phrase against the cited section in order, ellipses honoured. Two renderings
+of the pinned HTML had to be measured before matching was honest: code literals arrive
+quoted (`('pc'+4)`) and dash ranges carry zero-width spaces (`7—\u200b5`). Run against
+the real pre-fix files it reports six misses and, for each, the section that does hold
+the sentence (§20.1.2) — the refusal names the cure.
+
+- **Validation:** the doctrine's 14 controls pass on synthetic pages; a mutation (the
+  matcher forced to always-match) turns 6 RED arms red; HEAD judges 24 quotes, 0
+  findings; the pre-fix corpus 6 misses; DERIVED-COUNTS 431 → 445 arms, 34 → 35
+  doctrines; `make gate` green.
+- Promotion: declined — the lesson is mechanized: the CITATION-QUOTES row in
+  DOCTRINE_ENFORCEMENT.md is its retrievable statement, and the gate enforces it.
+
 ## _(2026-10-06)_ — frm held what the spec writes, not what the laboratory preferred (P4-SYSTEM.7 slice c1)
 
 Slice (b) declared `frm` WARL one-of 0..4 — an illegal write retaining the old
@@ -663,42 +686,4 @@ Execution of the `.3` brief's checkpoint (c) measured:
   gate` all green. Promotion: declined (the pc-map/constructed-value discipline
   is already the family's recorded rule — this slice's checklist carries the
   instances).
-
-## _(2026-10-04)_ — the enum-addition census; parcels coalesce, the request shape is the contract (P4-SYSTEM.3 slice b)
-
-Execution of the `.3` brief's checkpoint (b) measured:
-
-- **Adding one enum variant is a census, and the compiler is the census-taker.**
-  `Request::WalkAccess` broke three exhaustive matches, and each site got its own
-  profile's honest answer: FlatMemory ANSWERS it (8-byte aligned region read,
-  never a fetch — the one-fetch-per-step census keeps its meaning), the bench's
-  Counting census gains a `walks` field (zero on the rv64i bench by construction),
-  and rv64i's TestEnv panics named (the base profile has no translation
-  machinery — a fixture seeing the variant is a test bug, not an answer). The
-  alternative — a wildcard arm anywhere — is the silent-lie shape every gate here
-  exists to refuse.
-- **The request shape is the contract; the parcel split is machinery under it.**
-  Decision 5's 16-bit fetch parcels are required by the C slot's straddle, but
-  the corpus pins one `Request::Fetch` per step. The resolution is WHERE the
-  coalescing is defined: not "one fetch per step" as an invariant to break and
-  apologize for, but "one request whenever both translated parcel addresses share
-  one physical 32-bit unit" — a rule that is every case under Bare (byte-exact
-  today) and that names the page-straddle case as slice (c)'s own case rather
-  than silently coalescing it. The proof is two-layer: the fetch-count
-  assertions (1/step, every guest) and a full byte-level diff — both CLIs, the
-  parent commit's and this one, over all 62 guests: 1,884 == 1,884 lines, `cmp`
-  clean. "Bare is an exact identity path" is now a byte-measured sentence, not a
-  design hope.
-- **The unimplemented case names its slice.** A scratch probe (satp.MODE=Sv39,
-  drop to S, `ld`) produces `model error: Unimplemented { what: "Sv39 translation
-  — the walk is P4-SYSTEM.3 slice (c)'s" }`, cli rc=1 — the machinery shell's
-  honesty: the walk entry can never answer wrong, because it answers by name.
-- **Validation:** 6 translation unit tests (Bare-identity, M-never-translated,
-  the sub-M walk entry, MPRV selects MPP for data accesses only with SUM/MXR
-  carried, the out-of-vocabulary satp.MODE named panic, the 12/13/15 vocabulary);
-  the corpus 62/62 with fetch counts unchanged; `make check` 8/8 groups;
-  `make gate` all green (DERIVED-COUNTS 422 unchanged — the new arms are cargo
-  tests, not gate census members); smoke-bench 53 arms, bench wasm, both books.
-  Promotion: declined (the enum-addition ripple is structural — the compiler
-  names every match site, and this slice's checklist records the dispositions).
 

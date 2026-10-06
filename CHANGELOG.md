@@ -1,5 +1,21 @@
 # CHANGELOG.md
 
+## SEMULITH-CA-0001 (leaf CITATION-ACCURACY.1) — the quoted-phrase-in-section gate: CITATION-QUOTES registered
+
+- New tree `CITATION-ACCURACY`, owning the gap `P4-SYSTEM.7` slice (c3) part 1
+  measured: a locator can resolve and still name the wrong section, and no gate read
+  quotes (`check_citations.py` checks the semantics files' locators for existence only).
+- `scripts/check_citation_quotes.py` judges every quoted phrase a tracked `.sexp`
+  attributes to a pinned section (four decidable attribution rules; ellipsis pieces in
+  order; case/whitespace/quote/dash folding and zero-width removal, both renderings
+  measured on the pinned pages); a miss names where the phrase actually is.
+- `scripts/check_citation_quotes.sh` — the 35th project doctrine: 14 controls on
+  synthetic pages (a matcher mutation turns 6 red), a NAMED SKIP without the pinned
+  pages. RED on the real pre-fix corpus: 6 misses, each "found in §20.1.2". HEAD: 24
+  quotes judged, 0 findings. Mirrors: DOCTRINE_ENFORCEMENT.md, the book's doctrine
+  chapter, TOOLBOX.md, LIVE_STATUS (35 doctrines, 445 arms). `.2` (the Markdown
+  census) proposed.
+
 ## SEMULITH-P4-0043 (leaf P4-SYSTEM.7, slice c3 part 1) — the FP-CSR locators corrected
 
 - The pinned F chapter numbers the fcsr section §20.1.2 (§20.1.1 is "F Register

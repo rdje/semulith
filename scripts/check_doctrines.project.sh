@@ -50,6 +50,7 @@ PROJECT_DOCTRINES=(
   "PUSH-RECORD|the push-approval ledger is append-only and every entry well-formed — a staged change must keep HEAD's content a PREFIX of the new content (history is never rewritten), and every entry carries who/when/why/range with sequential ids; fired RED against the real corpus before registration (PUSH-DISCIPLINE.3)|scripts/check_push_record.sh"
   "COMMIT-PREFIX|the commit-msg hook pins the SEMULITH- work-unit prefix — a SEMILITH- subject is refused with SEMULITH named, a SEMULITH- subject passes; the probe is behavioural, so a scaffold sync that reverts the neutral hook turns the very next commit RED; fired RED against the real tree before the pin existed (PREFIX-DISCIPLINE.1)|scripts/check_commit_prefix.sh"
   "BOOK-INDEX|the book's index is still what the book's own text derives — a hand-edited or stale index is a running total, and a running total is a memory of a measurement, not a measurement; the generator refuses a shape it cannot emit (a missing chapter, an undeclared chapter set) by name; fired RED against the real book before registration (BOOK-APPARATUS.1)|scripts/check_book_index.sh"
+  "CITATION-QUOTES|every quoted phrase a tracked source-of-truth document attributes to a pinned section occurs IN that section — a locator that resolves but names the wrong section is refused, naming where the phrase is; judged when the pinned pages are present, a NAMED SKIP otherwise|scripts/check_citation_quotes.sh"
 )
 
 fails=0

@@ -33,6 +33,7 @@
 - [`ARTIFACT-CLEANUP.md`](docs/tasks/ARTIFACT-CLEANUP.md)
 - [`BOOK-APPARATUS.md`](docs/tasks/BOOK-APPARATUS.md)
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
+- [`CITATION-ACCURACY.md`](docs/tasks/CITATION-ACCURACY.md)
 - [`DOC-SHARDING.md`](docs/tasks/DOC-SHARDING.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)
 - [`LAB-BENCH.md`](docs/tasks/LAB-BENCH.md)
