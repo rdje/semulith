@@ -170,7 +170,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the full processor gate over the complete declared profile.
   Acceptance: reproducible from pinned inputs; fidelity reported per axis; missing checks read `incomplete`.
 - ID: `P4-SYSTEM.11` — **bind M** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slices (a)–(b) done `SEMULITH-P4-0073`–`-0074`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slices (a)–(c1) done `SEMULITH-P4-0073`–`-0075`)
   Goal: the M extension composed into the unit — `m.sem.sexp` (the 13 instructions, the
   division edge cases: divide by zero and signed overflow return their defined values, never a
   trap), the bind, an EVD-05 corpus, the Sail matched experiment.
@@ -227,10 +227,14 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (c): the generated operand table (a tracked generator, spec-side results, checked against the model layer — G-REGRESSION's `generated` kind) and the Sail matched experiment over the M corpus; (a)–(b) done |
+| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (c2): the Sail matched experiment over the M corpus (the `.7` harness, SAIL_GUESTS; Sail's matched config supports M); then (d) the close |
 
 ## Decisions
 
+- `2026-10-06` (slice (c) execution split, recorded at its first half, `SEMULITH-P4-0075`): (c1) the
+  generated M vectors and their doctrine (M-VECTORS); (c2) the Sail matched experiment over the M
+  corpus — two instruments, each with its own evidence and its own commit. The vectors run through
+  the ENGINE, not `muldiv` alone: half of Table 1 is the definition's (its zero-divisor guards).
 - `2026-10-06` (design brief for `.11`, recorded before its execution, `SEMULITH-P4-0072`;
   sources: `definitions/riscv/m.sexp`; `schema/semantics.sexp`; `scripts/gen_definition.py`;
   `crates/semulith-core/src/exec_rv64gc.rs`; `scripts/fetch_references.sh`; the Sail override;
@@ -893,6 +897,51 @@ never raised, at every crossing. The index:
   `DEV_NOTES.md` (PROMOTED — the self-test card's pinned-control case), `CHANGELOG.md`, `MEMORY.md`,
   `LIVE_STATUS.md`, the book (`plan/p4/m.md`).
 
+`P4-SYSTEM.11` slice (c1) — the generated M vectors through the engine; M-VECTORS (the 38th doctrine) (`2026-10-06`, `SEMULITH-P4-0075`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's decision 4 asks for a generated operand table checked
+  against the model layer, the FP-VECTORS pattern; at `23418c1` none exists:
+
+  ```
+  $ git ls-files 'scripts/gen_m_vectors.py' 'crates/semulith-verify/src/m_vectors*' → nothing
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the evidence slice. One choice measured first:
+  checking the table against `muldiv` alone would skip the half of Table 1 that lives in the
+  DEFINITION (the zero-divisor guards — `git show HEAD:definitions/riscv/m.sem.sexp | grep -c
+  "(lit 0))"` → 8), so the table runs through `exec_rv64gc::step` — decode, rule, guard,
+  operators at their width — with the words built from the chapter's R-type layout, not read from
+  the generated decode table.
+
+- [x] **FIX** — `scripts/gen_m_vectors.py`: exact Python integers, truncation written out, Table
+  1's rows by name, 4,485 vectors (15 edge operands pairwise, 20 seeded against 5 divisors, over
+  the 13 forms) → `crates/semulith-verify/src/m_vectors/vectors.txt`; `m_vectors/tests.rs`
+  `every_generated_vector_holds_through_the_engine` (rd, `Executed`, pc + 4 — no trap; the
+  table's own declared count judged); `scripts/check_m_vectors.sh` — M-VECTORS: DRIFT + the
+  reference judged against the chapter's stated identities on an operand set the table does not
+  use (judge first, controls only to certify a pass); registered in `check_doctrines.project.sh`,
+  `DOCTRINE_ENFORCEMENT.md`, `docs/doctrines/definition.md`, `docs/toolbox/definition.md`, the
+  book; `gate.sexp`'s G-REGRESSION `generated` evidence gains the table.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify m_vectors → test result: ok. 1 passed (4485 vectors through the engine)
+  $ bash scripts/check_m_vectors.sh → M-VECTORS: ok (4485 vectors in sync with the generator; the reference
+    judged on 151x48 operand pairs at both widths; 0 finding(s))
+  $ bash scripts/check_m_vectors.sh --self-test → 6 pass / 0 fail (a hand-edited vector DRIFT; a flooring
+    reference, a zero-divisor-yields-0 reference, a signed-rs2 MULHSU, an unextended word result — each RED by its finding)
+  one vector hand-edited (backed up, restored, cmp clean) → test result: FAILED. "div 8000000000000000
+    ffffffffffffffff 0: rd 0x8000000000000000, the reference 0x0"; M-VECTORS → DRIFT, rc=1
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — the generator, the table, the test, the doctrine and its five registrations,
+  the manifest, `GS-REPORT.md`, this tree (the (c) split recorded), `CHANGELOG.md`, `MEMORY.md`,
+  `LIVE_STATUS.md` (38 doctrines), the book (`plan/p4/m.md`).
+  promotion: declined (an evidence slice on the FP-VECTORS precedent; its one judgment call — run the table through the engine, since half of Table 1 is the definition's — is recorded in its doctrine and test docs)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -902,6 +951,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.11` slice (c1) | 4,485 vectors through the engine; M-VECTORS ok, 6/6 controls; a hand-edited vector RED twice | the generated evidence route |
 | `2026-10-06` | `.11` slice (b) | corpus 139/139; identity 135/0 + 4 RED; census 163 == 163; CONTRACT-FREEZE 3 versions; the generator's controls 17/17 (re-written relative) | M bound |
 | `2026-10-06` | `.11` slice (a) | SEMANTICS 32/32; DEF-GEN 45/45; muldiv 6/6 + two mutations RED | the language carries M |
 | `2026-10-06` | `.10` slice (c) + LEAF | the four reports regenerated in a fresh worktree (no `target/`), byte-identical | **met** — the leaf closes |
@@ -942,6 +992,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.11` (slice c1) | `SEMULITH-P4-0075 (leaf P4-SYSTEM.11): slice c1 — 4,485 generated M vectors through the engine; M-VECTORS, the 38th doctrine, gates the table and judges its reference` | (c2) next |
 | `.11` (slice b) | `SEMULITH-P4-0074 (leaf P4-SYSTEM.11): slice b — THE BIND: the unit composes riscv/m; the M corpus (139/139, 135 byte-identical + 4 RED on the parent); OB-GC-M opens contract v2` | (c) next |
 | `.11` (slice a) | `SEMULITH-P4-0073 (leaf P4-SYSTEM.11): slice a — the language for M: eight arithmetic operators, the division-domain rule, m.sem.sexp, the generator, the model layer` | (b) next |
 | `.11` brief | `SEMULITH-P4-0072 (tree P4-SYSTEM): the .11 design brief — bind M: eight arithmetic operators, the division-by-zero results stated in the definition, contract v2 opened` | (a) next |
@@ -978,6 +1029,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.11` slice (c1) done (`SEMULITH-P4-0075`) — 4,485 generated M vectors run through the engine; M-VECTORS registered (38 doctrines).
 
 - `2026-10-06`: `.11` slice (b) done (`SEMULITH-P4-0074`) — M bound (163 forms, 139 guests); contract v2 opened; the profiles/ byte ceiling re-derived.
 

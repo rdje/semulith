@@ -1,6 +1,6 @@
 # P4.11 — Integer multiply and divide (M)
 
-**Status:** Underway (slices a–b, 2026-10-06)
+**Status:** Underway (slices a–c1, 2026-10-06)
 
 The Linux-capable profile includes M, the standard extension for integer multiplication and
 division, but until this leaf the processor model could not execute it. The instruction
@@ -36,3 +36,11 @@ some of the gate report's own self-checks had baked in today's numbers, so they 
 as the contract grew; they now check how a number changes rather than its exact value. The
 profile's files also outgrew their size budget, because every new extension adds evidence; a
 recorded decision raised the budget a little and proposed a cleaner long-term rule.
+
+Slice (c1) added breadth. A program works out the expected result of every M instruction over
+4,485 operand combinations, using exact arithmetic and Table 1's special cases written out by
+name, and each one is run through the processor model as a real instruction. A new gate, the
+project's 38th rule, refuses the table if anyone edits it by hand. It also checks the program
+against the rules the specification itself states, such as "dividend = divisor × quotient +
+remainder" and the remainder taking the dividend's sign, so a wrong reference cannot quietly
+produce a wrong table.

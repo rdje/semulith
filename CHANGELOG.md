@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0075 (leaf P4-SYSTEM.11, slice c1) — 4,485 generated M vectors through the engine; M-VECTORS
+
+- `scripts/gen_m_vectors.py`: a spec-side exact-integer reference (truncation written out,
+  Table 1 by name) → `crates/semulith-verify/src/m_vectors/vectors.txt` (4,485 vectors over the
+  13 forms). `m_vectors/tests.rs` runs each through `exec_rv64gc::step` — decode, the rule's
+  guard, the operators at their width — with words built from the chapter's layout.
+- `scripts/check_m_vectors.sh` — M-VECTORS, the 38th doctrine: DRIFT, and the reference judged
+  against the chapter's own identities on operands the table does not use (6/6 controls).
+- `gate.sexp`: the table is G-REGRESSION `generated` evidence.
+
 ## SEMULITH-P4-0074 (leaf P4-SYSTEM.11, slice b) — THE BIND: the unit composes `riscv/m`
 
 - The encoding composes M (slot `c` the one left); the census 150 → 163 (`m_muldiv`); the module

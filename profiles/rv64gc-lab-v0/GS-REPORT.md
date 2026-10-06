@@ -47,6 +47,7 @@ is not a claim with a denominator.
 | `G-REGRESSION` | `directed` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_matches_its_expectations` | yes |
 | `G-REGRESSION` | `external` | — | **none declared** |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
+| `G-REGRESSION` | `generated` | `crates/semulith-verify/src/m_vectors/tests.rs` `every_generated_vector_holds_through_the_engine` | yes |
 | `G-REGRESSION` | `workload` | — | **none declared** |
 | `G-REGRESSION` | `validator-mutation` | — | **none declared** |
 | `G-PORTABILITY` | `x86-64` | — | **none declared** |
@@ -68,7 +69,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 baa02fa959550269f5ef4b55ba3de048d40e0297273344e4201cac2845f83c8b`
+  `sha256 d1f83e4b38de44a83682efc4e2a85b4da1834ab9df752788028de2f740ff7a7a`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)
