@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — a contract that could only grow, and a gate whose own control hid its finding (P4-SYSTEM.9)
+
+The environment contract's "version" was a string on every record that nothing checked, and seven
+leaves had added records under v0. `.9` made a version a document — its members listed, frozen by
+content hashes — so "versioned, not edited in place" is now something a gate can refuse. Two
+things went wrong on the way and both were caught by gates. The first v1 ids collided with rv64i's
+(`OB-ENV-VIRTUAL-TIME` exists there with the same check ids), and the gate report — which counts a
+check as implemented when its id appears anywhere in code — credited rv64i with rv64gc's new
+registry; GATE-REPORT noticed its own output change. The second was in the new gate itself: its
+GREEN control copied the live files, so an edited frozen record made the self-test fail and the
+gate said "does not discriminate" rather than naming the edit. Judging first fixed it.
+
+- **Validation:** CONTRACT-FREEZE 7/7 controls; an edited frozen v1 record named and refused
+  (rc=1); the check registry 14/14; RECORD-SCHEMA ok; the corpus 135/135.
+- Promotion: PROMOTED — docs/knowledge/self-test-arms-that-never-ran.md extended (the masking GREEN control).
+
 ## _(2026-10-06)_ — the instruction that wrote its result and then trapped, and a reference that agreed for the wrong reason (P4-SYSTEM.8 slice a)
 
 The engine writes straight through to state, so "completes or faults as a unit" holds only

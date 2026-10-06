@@ -156,7 +156,16 @@ if [ "${1:-}" = "--self-test" ]; then
   self_test
   exit $?
 fi
+# Judge FIRST: a finding is a verdict on its own. Only a PASS needs the controls' proof that
+# the check discriminates — and the GREEN control copies the live files, so running it first
+# would let a broken tree mask its own finding behind "does not discriminate" (measured at
+# P4-SYSTEM.9 slice d with a frozen v1 record edited).
+out="$(judge "$ROOT" 2>&1)"; rc=$?
+if [ "$rc" -ne 0 ]; then
+  printf '%s\n' "$out" >&2
+  exit 1
+fi
 self_test >/dev/null 2>&1 || {
   echo "CONTRACT-FREEZE: REFUSED — the check does not discriminate (self-test failed)." >&2
   exit 2; }
-judge "$ROOT"
+printf '%s\n' "$out"

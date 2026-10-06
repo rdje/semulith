@@ -1,6 +1,6 @@
 # P4.9 — The environment contract, version 1
 
-**Status:** Underway (slices a–c, 2026-10-06)
+**Status:** Landed and closed (a–d, 2026-10-06)
 
 The processor model does not stand alone: it relies on its environment — memory that
 answers reads and writes, page tables that can be walked, a supply of time, events that may
@@ -31,3 +31,10 @@ wrong as the processor grew — one still described the wait-for-interrupt instr
 translation-cache flush as doing nothing, another still said environment calls stop the run
 — and version 1 replaces them with correct statements while the originals stay, frozen, on
 the record, each replacement saying what it replaces and why.
+
+**The leaf is closed (2026-10-06).** Both versions are now frozen, and the profile has an
+environment document a reader can follow: what each boundary item is, which obligation covers
+it, what would prove each assumption wrong, and which tests show it. It also says plainly what
+is still missing — the basic memory and reset assumptions were written for the simpler profile
+and never restated for this one — so the final gate report can count that as unfinished
+rather than overlook it.

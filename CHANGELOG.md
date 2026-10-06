@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0067 (leaf P4-SYSTEM.9, slice d) — the ENVIRONMENT document, v1 frozen; the leaf CLOSES
+
+- `profiles/rv64gc-lab-v0/ENVIRONMENT.md`: the versions, the boundary inventory dispositioned,
+  the four assumptions with what would falsify each, the supersessions, the realized fixtures —
+  and the gap it leaves, named: rv64i's eight base boundary assumptions were never restated
+  for rv64gc.
+- v1 is FROZEN (six members pinned). CONTRACT-FREEZE now judges before running its controls:
+  its GREEN control copied the live files, so a broken tree read as "does not discriminate"
+  instead of naming the edited record (the self-test knowledge card extended).
+- `P4-SYSTEM.9` is **done**; the tree reads 9/10; the frontier moves to `.10`, the CPU-SYSTEM
+  gate report. `make check` + `make gate` green.
+
 ## SEMULITH-P4-0066 (leaf P4-SYSTEM.9, slice c) — v0's stale statements superseded in v1
 
 - Two frozen v0 statements are false of this unit: `OB-GC-PRIV-INSNS` calls wfi and

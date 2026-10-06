@@ -153,7 +153,8 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
 - ID: `P4-SYSTEM.9` — **environment contract v1** — `G-CONTRACT`
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`; slices (a)–(c) done `SEMULITH-P4-0064`–`-0066`)
+  Status: **done** `2026-10-06` (design brief `SEMULITH-P4-0063`; slices (a)–(d) `SEMULITH-P4-0064`–`-0067`)
+  Result: **met.** A contract version is now a document (`schema/contract.sexp`): rv64gc's v0 (46 records, as `.1`–`.8` left them) and v1 are both FROZEN by content pins, and CONTRACT-FREEZE (the 37th doctrine) refuses an edited frozen record. v1 states the unit's first environment assumptions — translation inputs, interrupt sources (none in v1), the virtual-time supply, reservation events (none at one hart) — and supersedes v0's two wrong statements by new records. Every v1 check (and `.8`'s pair) is realized by a tracked registry that runs its guests. `profiles/rv64gc-lab-v0/ENVIRONMENT.md` dispositions the boundary and names the gap it leaves (rv64i's base boundary assumptions, never restated).
   Goal: extend the contract to cover translation inputs, interrupt sources, counter progress and reservation invalidation for this profile.
   Acceptance: every new assumption has a positive and a negative fixture; the contract is versioned, not edited in place.
 
@@ -166,7 +167,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); (a) the contract versioned, v0 frozen; (b) v1's four assumptions with realized fixtures; (c) the stale v0 statements superseded; next: slice (d), the reports, v1 frozen, the leaf acceptance |
+| 1 | `P4-SYSTEM.10` | `pending` | the `CPU-SYSTEM` gate report — the design brief first (`.9` closed `2026-10-06`: the contract versioned and frozen, v1's assumptions realized); the acceptance: reproducible from pinned inputs, fidelity per axis, missing checks read `incomplete` |
 
 ## Decisions
 
@@ -407,428 +408,8 @@ never raised, at every crossing. The index:
 - part 3 opened at the `2026-10-06` `.7` slice-(c1) crossing (part 2 at its own
   ceiling): [`archive/P4-SYSTEM-3.md`](archive/P4-SYSTEM-3.md) — the closed leaves'
   changelog entries and Commit Log rows (the (c5) crossing), and `.7` slices (b)–(c3)
-  part 2 (the (d2) crossing) and (c4)–(c6) (the (d5) crossing).
-
-`P4-SYSTEM.7` slice (d1) — the `rv_d`/`rv64_d` re-pin + the `d.sexp` fragment (`2026-10-06`, `SEMULITH-P4-0049`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-slice census at `dd9bc1c`: D pinned nowhere, no fragment.
-
-  ```
-  $ git show HEAD:profiles/rv64gc-lab-v0/references.sexp | grep -c 'rv_d\|rv64_d' → 0
-  $ git ls-tree --name-only HEAD definitions/riscv/ → 15 files, no d.sexp;
-    gen_fragments.py FRAGMENTS: 8 entries
-  $ curl …/extensions/rv_d, rv64_d → 2,091 / 465 B; 26 + 6 real rows; 3 $pseudo_op rows
-    (rv_d::fsgnj.d / fsgnjx.d / fsgnjn.d — fmv.d / fabs.d / fneg.d); rv_f/rv64_f re-fetched
-    from master byte-identical to their pins
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the D bind's first input (the (c2)
-  shape). The design questions answered by measurement: the pseudo rows — all 3 spell
-  real sign-injection forms (`grep -o '^$pseudo_op [a-z_0-9]*::[a-z.]*' rv_d` → rv_d::fsgnj.d,
-  rv_d::fsgnjx.d, rv_d::fsgnjn.d), so the write-it-out policy applies; the fields — every
-  D row's rs3/rm is F's (`f.sexp` owns them), so `riscv/d` owns none and REQUIRES `riscv/f`
-  by name.
-
-- [x] **FIX** — the ledger: `rv_d`/`rv64_d` pinned (sha256 + bytes) with the commentary and
-  the `supplies` clause; `fetch_references.sh`: the D tables under the named exclusion
-  until the bind (flip condition: the scope declares `fld`/`fsd`); `gen_fragments.py`: the
-  `riscv/d` entry (requires `riscv/rv64i` + `riscv/f`, owns nothing, no pseudos) →
-  `definitions/riscv/d.sexp` (32 forms).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ scripts/fetch_references.sh rv64gc-lab-v0 → FETCH riscv-opcodes/extensions/rv_d,
-    rv64_d; MATCH both pins; MATCH encoding tables vs profile scope 118 == 118;
-    fetch_references: ok
-  $ cmp (the census fetch) (the tracked-route fetch) → byte-identical, both tables
-  RED — the exclusion removed (a scratch copy): DIFFERS encoding tables vs profile scope,
-    symmetric difference: fadd.d,fclass.d,…,fsub.d (exactly the 32 D names)
-  $ python3 scripts/gen_fragments.py → regenerated 9 fragment(s); git status: only d.sexp
-    new — the eight others byte-identical
-  $ python3 scripts/check_sexp_schema.py definitions/riscv/d.sexp schema/fragment.sexp → ok
-  trial units (scratch copies of encoding.sexp, fragment-root via a scratch symlink):
-    D without F → REFUSED: fragment 'riscv/d' requires 'riscv/f', which this composition
-    does not provide before it; F + D → composed set: 147 instruction(s) (+ 3
-    pseudo-instruction(s)); no collisions, no duplicate names — the fragments COMPOSE
-  ```
-
-- [x] **NO REGRESSION** — `scripts/fetch_references.sh --verify-only rv64i-lab-v0` → ok
-  (52 == 52); UNIT-COMPOSITION ok (3 units; rv64gc still PARTIAL with the d slot declared);
-  SOURCE-FORMAT ok (254 files); no Rust touched; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — same commit: this tree (the (d) split decision, checklist, logs,
-  changelog, status, frontier), `MEMORY.md` (next_action → d2), `CHANGELOG.md`, the book
-  (P4.7 chapter). DEV_NOTES: no entry — a mechanical re-pin on the (c2) precedent.
-
-`P4-SYSTEM.7` slice (d2) — the language for D: `f2f` + `d.sem.sexp` (`2026-10-06`, `SEMULITH-P4-0050`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-slice census at `0deb6cd`:
-
-  ```
-  $ git show HEAD:schema/semantics.sexp | grep -c "^(operator" → 62; no (name f2f)
-  $ git ls-tree --name-only HEAD definitions/riscv/ | grep -c d.sem.sexp → 0
-  $ grep -c "f2f\|FToF" (HEAD's scripts/gen_definition.py) → 0
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: D's semantics need exactly one operation
-  the language cannot state, measured by writing all 32 rules and diffing their operator
-  heads against HEAD's schema: `for op in $(grep -o "([a-z0-9-]*" d.sem.sexp …); do git show
-  HEAD:schema/semantics.sexp | grep -q "(name $op)" || echo NEW` → `f2f` (the other hits are
-  prose inside comments). Everything else — the 18 FP operators, load/store at width 64 —
-  already takes the format as data.
-
-- [x] **FIX** — `schema/semantics.sexp`: `(f2f m n rm a)` (narrowing rounds, widening exact,
-  rm still resolved, NaN → canonical, sNaN → NV — deviation (ii) named for the model layer);
-  `scripts/check_semantics.py`: both formats literal and distinct + 3 arms; `scripts/
-  gen_definition.py`: `f2f` → `Sem::FToF(m, n, rm, a)` emitted only where `riscv/d` is
-  composed (`Surface.d`; refused by name otherwise; the tracked modules change only their
-  generator fingerprint and the derived language count 62 → 63); `check_definition_gen.sh`:
-  the D arms (the F + D staged composition emits `FToF` and `fcvt.d.s`; F without D refused);
-  `definitions/riscv/d.sem.sexp`: 32 rules, each F's counterpart at format 64 (no
-  fbox/funbox at 64 — the identity), the two conversions box/unbox their single side.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 scripts/check_semantics.py definitions/riscv/d.sexp definitions/riscv/d.sem.sexp
-    → 32 of 32 declared instruction(s) have checked semantics
-  $ python3 scripts/check_semantics.py --self-test → 26 pass / 0 fail
-  $ bash scripts/check_definition_gen.sh --self-test → DEF-GEN --self-test: 37 pass / 0 fail
-    RED — the D refusal disabled (`if False and …`): MISS "the format conversion without
-    riscv/d composed is refused, named"; restored (cmp) → 37 / 0
-  $ bash scripts/check_citation_quotes.sh (d.sem.sexp intent-to-add) → 69 attributed
-    quote(s) judged (was 50); 0 finding(s)
-  $ python3 target/p4-system-7/d0/asm_roundtrip_d.py (F + D trial unit, pinned spike-dasm)
-    → round trip: 32 of 32 agree; refusals: 4 of 4 by name — the register files derived
-    from d.sem.sexp, no assembler change
-  ```
-
-- [x] **NO REGRESSION** — SEMANTICS ok (12 checks, d.sem.sexp paired); DEF-GEN ok (both
-  tracked modules: fingerprint + language-count lines only); `make check` rc=0 (343
-  passed); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS re-derived 465 arms).
-
-- [x] **LOCKSTEP** — this tree (the closed (b)–(c3) part 2 checklists archived verbatim to
-  part 3 — census 125,009 B = 106,826 live + 18,183 moved), `MEMORY.md` (next_action → d3),
-  `CHANGELOG.md`, `LIVE_STATUS.md` (465 arms), the book (P4.7 chapter). DEV_NOTES: no entry
-  — the vocabulary's width-genericity was the slice's design premise, measured, not a lesson.
-
-`P4-SYSTEM.7` slice (d3) — `fp.rs`'s format conversions; the record's deviation (ii) withdrawn (`2026-10-06`, `SEMULITH-P4-0051`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-slice census at `4495759`, then the measurement that
-  overturned the plan:
-
-  ```
-  $ git show HEAD:crates/semulith-core/src/fp.rs | grep -c "pub fn convert" → 0
-  $ git show HEAD:scripts/specfp.py | grep -c "^def convert" → 0; vectors 176
-  the planned sNaN patch BYPASSED (`if false && x.is_nan()` in both arms) →
-    cargo test -p semulith-core --lib fp:: → ok. 7 passed — the patch was dead
-  the backend probed directly (rustc_apfloat 0.2.3, convert_r — slice (a)'s own call):
-    d->s 0x7ff4000000000000 status INVALID_OP · s->d 0x7fa00000 status INVALID_OP
-    (the quiet NaNs: status 0)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — D's FCVT.S.D/FCVT.D.S had no model; and the record's
-  deviation (ii) ("an sNaN through a format conversion gets no NV flag", 24 cases) is the
-  ORACLE's: `grep -cE "FLAGS (f32_64|f64_32) .*apfloat NV, mpfr -"
-  target/p4-system-7/probe/run.corrected.txt` → 24 — every one backend NV, MPFR none (the
-  other 4 conversion FLAGS rows are deviation (i)'s clamps). The MPFR generator reads NaNs
-  through `mpfr_set_flt`/`mpfr_set_d` (`target/p4-system-7/mpfr/vec_gen.c:352-358`) into
-  MPFR's one NaN kind — no signaling NaN, so no invalid flag for one. Today's (c6) and (d2)
-  text repeated the misattribution (`schema/semantics.sexp` "three" deviations; the f2f
-  comment; `fp.rs`'s module doc; this tree's (d) split decision).
-
-- [x] **FIX** — `fp.rs`: `convert(m, n, rm, a)` — narrowing through the backend with OF/UF
-  judged on the exact `WideSingle` rounding (the common `finish` tail), widening exact, NaN
-  canonical and NV on a signaling NaN from the backend's own `INVALID_OP` (no patch);
-  `scripts/specfp.py`: `convert` (the exact rational re-rounded); `gen_fp_vectors.py`: 54
-  conversion vectors (per-mode narrowing incl. overflow, the UF boundary, ties, the minimum
-  subnormal; NaNs, zeros, infinities both ways); FP-VECTORS' hardware arm: double → single
-  RNE against the host's own narrowing (directed ties first) and single → double exact;
-  the decision record's second dated amendment (deviation (ii) withdrawn; two genuine
-  deviations); the stale text corrected (schema ×2, `fp.rs` doc, the split decision's note).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ cargo test -p semulith-core --lib fp:: → ok. 7 passed (230/230 vectors)
-  $ bash scripts/check_fp_vectors.sh → FP-VECTORS: ok (… 230 vectors; reference vs hardware
-    RNE: agree 2131) — was 1329; --self-test 6 pass / 0 fail
-  the half-up tie mutation of specfp, on the conversion leg alone: 1 + 2^-24 → reference
-    0x3f800001, hardware 0x3f800000 — MISS
-  fpcheck (fp.rs over slice (a)'s 63,752-case corpus, now driving the 272 conversions) →
-    vs the exact-rational spec reference: 63752 cases, 0 disagreements;
-    vs MPFR: 52112 cases, 24 disagreements — 20 f64_32 + 4 f32_64, all "-->NV"
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0 (343 passed); `make gate` → `=== all doctrines
-  green ===`; `gen_fp_vectors.py --check` rc=0; no tracked module or evaluator touched — the
-  FToF arm lands at the bind.
-
-- [x] **LOCKSTEP** — this tree (the split decision's correction note), the decision record
-  (second amendment + banner), `DEV_NOTES.md` (PROMOTED — the oracle card extended),
-  `CHANGELOG.md`, `MEMORY.md` (next_action → d4), the book (P4.7 chapter).
-
-`P4-SYSTEM.7` slice (d4) — the staged D corpus (`2026-10-06`, `SEMULITH-P4-0052`):
-
-- [x] **REPRODUCE / ISSUE** — the D bind needs a spec-derived corpus, and the authoring tool
-  could not derive one:
-
-  ```
-  $ grep -n "D is slice (d)'s" target/p4-system-7/tools/derive_expectations.c6.py
-  895:        raise Refusal(f"F word {word:#010x}: fmt {fmt} is not S — D is slice (d)'s")
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the bind's input (the (c5) shape). The tool
-  dispatched OP-FP by F's funct7, so every D word was refused by name (line 895 above);
-  D's rules are F's at format 64 (RVI-D §21.1.4), so the stepper takes the format as data.
-
-- [x] **FIX** — untracked, in the (c5) discipline: the authoring tool's OP-FP section keyed
-  by funct5 with the format as data (S: unbox/box; D: the register) plus FLD/FSD, FCVT.S.D/
-  FCVT.D.S (through the tracked `specfp.convert`), FMV.X.D/FMV.D.X and `andi`; the bind
-  worktree `target/p4-system-7/bind-d` (riscv/d composed, the module regenerated with
-  `FToF`, the evaluator's `FToF` arm + `touches_fp_state`); 11 guests (`d-fs-off d-move
-  d-arith d-fused d-sgnj d-minmax d-compare d-class d-convert d-f2f d-rounding`) written by
-  a scratch writer (64-bit patterns built in x-registers, handler offsets computed). Three
-  authoring defects caught and re-derived, never fitted: `d-move`'s data address was not
-  doubleword-aligned (`auipc`+1024 = `…42c`; the derivation stopped at the faulting FSD after
-  14 steps — `andi …, -8` added); the tool refused `andi` by name (taught from RVI-RV32I
-  §1.1.4's sentence); a hand spot-check of the derived values found `d-f2f`'s "RUP: one ulp
-  higher" comment false (RNE already rounds 1/3 up — the step now uses RTZ, truly one lower).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  the F guests through the D-taught tool → 11 of 11 byte-identical to the tracked
-    expectations (the restructure is behavior-preserving for F)
-  the D guests → 11 derived (14…65 steps), all schema-valid (check_sexp_schema each —
-    untracked files, so checked directly); re-authored + re-derived from scratch → 22 of 22
-    byte-identical
-  $ cargo test -p semulith-verify run_rv64gc (scratch engine, 125 guests) → ok. 4 passed
-    RED — FToF ignoring its rounding mode: FAILED, "d-f2f: step 13 writes match the
-    specification-derived expectations"; restored → ok. 4 passed
-  $ identity_d.py <scratch CLI> <HEAD CLI> → identity: 114 byte-identical, 0 diverge
-    (pre-slice guests); RED ×11 — every D guest diverges on the parent engine
-  ```
-
-- [x] **NO REGRESSION** — no tracked content changed beyond these records; `make check`
-  rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — this tree, `CHANGELOG.md`, `MEMORY.md` (next_action → d5), the book
-  (P4.7 chapter). `promotion: declined (per-slice history; the derivation-as-check and spot-check pattern is the (c5) record's and the zero-hits card's, applied).`
-
-`P4-SYSTEM.7` slice (d5) — THE BIND: the unit composes `riscv/d` (`2026-10-06`, `SEMULITH-P4-0053`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-bind census at `01bcebb`:
-
-  ```
-  $ git show HEAD:profiles/rv64gc-lab-v0/encoding.sexp | grep -n "slot (id d)"
-  17:    (slot (id d) (requires "riscv/d"))
-  $ git show HEAD:crates/semulith-core/src/definition_rv64gc.rs | grep -c '"fadd.d"' → 0
-  $ git show HEAD:profiles/rv64gc-lab-v0/profile.sexp | grep -o "(count_total [0-9]*)" →
-    (count_total 118)
-  $ git show HEAD:crates/semulith-core/src/exec_rv64gc.rs | grep -c "FToF" → 0
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — D was a declared slot by design until its corpus and arm
-  were proven ((d4)): every D word decoded as reserved (cause 2 — `identity_d.py` → RED ×11,
-  every D guest diverges on the parent engine), and the scope block, the schema, the dossier
-  reader and PROFILE-CONSISTENCY's PARTS key enumerated 118 forms (`git show
-  HEAD:scripts/check_profile_consistency.sh | grep -c d_double` → 0; the same for
-  `scripts/dossier_sexp.py` → 0).
-
-- [x] **FIX** — `encoding.sexp`: the slot becomes `(extensions "riscv/d")` (the header's
-  census restated: 147 instructions + 3 pseudo spellings; M/C the remaining slots); the
-  census dual edit 118 → 150 in all four places (the 32-form `d_double` family, RVI-D
-  §21.1.3–§21.1.7); `definition_rv64gc.rs` regenerated (32/32 D forms, `FToF`);
-  `exec_rv64gc.rs`: the `FToF` arm (`fp::convert`, flags accrued) and `touches_fp_state`;
-  the 11 guests + `run-order.txt` + `guests_rv64gc.rs` (125 guests); REQ-GC-D + OB-GC-D (no
-  new D-* — D's rules are F's at 64, the shared policies REQ-GC-F's); the matrix's 11
-  placements on the SAME seven axes. The payload is (d4)'s, landed 34/34 byte-identical.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (125 guests)
-  D forms in the generated module: 32/32
-  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 → MATCH encoding tables
-    vs profile scope 150 == 150, symmetric difference NONE — the named exclusion flipped by
-    its own condition (the scope declares fld/fsd); rv64i 52 == 52
-  $ bash scripts/check_exercise_coverage.sh → ok … 19/19 150/150 52/52
-  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 → 28 cells declared,
-    every disposition resolves
-  $ bash scripts/check_dossier_schema.sh → DOSSIER-SCHEMA: ok (224 …) — the 11 new
-    expectations in the denominator (intent-to-add before the run)
-  RECORD-SCHEMA, PROFILE-CONSISTENCY, EXTRACTION ok; identity (d4, engine unchanged since):
-    114/0 + the 11 D guests RED on the parent
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`
-  (in the worktree before landing, and in the main tree with everything staged); the 114
-  pre-slice guests byte-identical on the bound engine.
-
-- [x] **LOCKSTEP** — this tree (the closed (c4)–(c6) checklists archived verbatim to part 3
-  — census 120,632 B = 105,656 live + 14,976 moved), `CHANGELOG.md`, `MEMORY.md`
-  (next_action → slice (e)), `LIVE_STATUS.md`, the book (P4.7 chapter, the P4 index line);
-  the bind worktree removed.
-  `promotion: declined (a mechanical bind on the (c6) precedent; the intent-to-add discipline it applied is the zero-hits card's).`
-
-`P4-SYSTEM.7` slice (e1) — the Sail matched experiment over the FP corpus: 24 AGREE of 24 (`2026-10-06`, `SEMULITH-P4-0054`):
-
-- [x] **REPRODUCE / ISSUE** — the brief's decision 2 calls for an encoding/state match
-  against Sail; the matched configuration measured first:
-
-  ```
-  $ python3 -c "…dossier_sexp.materialize_sail_override(…, 'rv64gc-lab-v0')" → written;
-    cmp with the .6 materialization → identical (the override unmoved)
-  $ sail_riscv_sim --config-override …override.json --validate-config → "The default
-    configuration merged with … is valid."
-  default config: F {supported true, fflags_dirty_policy Fflags_Dirty_Precise}, D
-    {supported true}; the override: F/D supported, fs_legal_states ExtContext_FourState
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the leaf's closing evidence. What the match
-  can and cannot say, measured where it lives: sail's FP is SoftFloat externs
-  (`grep -c 'cpp: "softfloat_' target/refs/sail-riscv-src/model/core/softfloat_interface.sail`
-  → 67, every operation an extern), the brief's pre-condition 2 — so agreement is an
-  ENCODING/STATE match plus one more numeric opinion, never numeric independence.
-
-- [x] **FIX** — the experiment tooling (`target/p4-system-7/sail/`: the `.5` builder and
-  comparator re-pointed at the 24 FP guests — fp-fs-off, fp-fcsr-view, the 11 F, the 11 D —
-  ELFs at exactly 0x8000_0000 through the tracked assembler; the comparator's guests dir
-  overridable for its RED control); `references.sexp`'s `matched_scope` records the sixth
-  experiment.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 target/p4-system-7/sail/compare_sail.py → AGREE ×24: fp-fs-off 40, fp-fcsr-view
-    20, f-fs-off 46, f-move-box 21, f-arith 50, f-fused 41, f-sgnj 24, f-minmax 26,
-    f-compare 31, f-class 35, f-convert 39, f-rounding 41, f-dirty 32, d-fs-off 52, d-move
-    26, d-arith 60, d-fused 41, d-sgnj 35, d-minmax 32, d-compare 35, d-class 58,
-    d-convert 39, d-f2f 65, d-rounding 38 — 927 steps' change-observations exact; ZERO
-    non-AGREE cells; "verdict: 24 AGREE of 24", rc=0
-  RED — one expectation corrupted in a scratch copy (d-f2f x7, RTZ's 0x…3eaaaaaa replaced
-    by RNE's …ab) → DIVERGE d-f2f step 15 (fmv.x.d x7, f3); "verdict: 23 AGREE of 24",
-    rc=1 (the .5 comparator printed its verdict but always exited 0 — measured, rc=0 on the
-    RED run too; its exit code now carries the verdict)
-  ```
-
-- [x] **NO REGRESSION** — `references.sexp` schema ok (RECORD-SCHEMA at the gate); no engine,
-  corpus or expectation changed; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — this tree (the (e) split decision, checklist, logs, changelog, frontier),
-  `references.sexp`, `CHANGELOG.md` (sharded first: 0202), `MEMORY.md` (next_action → e2),
-  the book (P4.7 chapter). DEV_NOTES: no entry — the designed AGREE, measured.
-
-`P4-SYSTEM.7` slice (e2) — the numeric fixtures at scale + the model layer's per-op cost (`2026-10-06`, `SEMULITH-P4-0055`):
-
-- [x] **REPRODUCE / ISSUE** — the tracked numeric proof was the directed vectors alone:
-
-  ```
-  $ git ls-tree HEAD crates/semulith-core/src/fp/tests/ → vectors.rs only (230 rows,
-    the rules); the 63,752-case breadth lived in an untracked scratch run (fpcheck)
-  $ git show HEAD:crates/semulith-core/src/fp/tests.rs | grep -c '"f2i64"\|"u2f32"' → 0 —
-    two model-layer conversions no tracked case drove
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the brief's (e) "independent numeric
-  fixtures at scale". A breadth result that lives only in scratch is not re-run by CI
-  (`git ls-files target/p4-system-7/fpcheck` → nothing — untracked by design); the directed
-  vectors pin the rules but not the space between them.
-
-- [x] **FIX** — `scripts/gen_fp_vectors.py` emits a second table, `fp/tests/fixtures.txt`:
-  seed 20261006, operands biased toward the classes the rules distinguish (zeros,
-  subnormals, the exponent edges, infinities, quiet/signaling NaNs, near-cancelling pairs,
-  the integer-conversion edges) — 16 per (operation, format, mode) for the rounded
-  operations, 64 per (operation, format) for the mode-free ones; plain text read by
-  `include_str!` (rustc pays nothing); `fp/tests.rs`: the fixture test + the two missing
-  dispatch arms; `scripts/check_fp_vectors.sh`: the same DRIFT rule on the second table (a
-  new RED arm) and the count in its verdict; `docs/doctrines/definition.md`'s FP-VECTORS row
-  corrected — it still said "176 unit vectors" (stale since (d3)), now count-free. The
-  per-op cost re-measured on the final model layer (scratch `fpcheck/src/bin/timing.rs`).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 scripts/gen_fp_vectors.py → 230 vectors (vectors.rs byte-unchanged) and 3168
-    fixtures: 162 (operation, format, mode) combinations, 21 operations; flags raised —
-    NX 1202, NV 488, UF 94, OF 58, DZ 4
-  $ cargo test -p semulith-core --lib fp:: → test result: ok. 8 passed
-    RED — finish()'s UF line removed: every_spec_side_fixture_holds FAILED; restored → ok
-  $ bash scripts/check_fp_vectors.sh --self-test → 7 pass / 0 fail (the new arm: a fixture's
-    expected value edited by hand → DRIFT, rc=1)
-  $ bash scripts/check_fp_vectors.sh → ok (… 230 vectors + 3168 fixtures; reference vs
-    hardware RNE: agree 2131)
-  timing (release, 2M iterations, black_box operands): the backend f64 add 8.3 / mul 6.9 /
-    div 44.5 ns/op; the model layer f64 add 47.8 / mul 47.4 / div 122.7, f32 add 46.2,
-    fma 65.8, sqrt 83.7 (f64) / 58.7 (f32), convert d→s 27.2 / s→d 6.8, to_int 5.5,
-    from_int 8.2, min 4.3 — 2.8–6.9× the backend on the arithmetic core: the exact
-    OF/UF's second, wide evaluation on every rounded operation
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0 (344 passed — the fixture test the one new); `make
-  gate` → `=== all doctrines green ===` (DERIVED-COUNTS re-derived 466 arms).
-
-- [x] **LOCKSTEP** — this tree, `docs/doctrines/definition.md`, `CHANGELOG.md`, `MEMORY.md`
-  (next_action → e3), `LIVE_STATUS.md` (the arm count if it moves), the book (P4.7 chapter).
-  `promotion: declined (the breadth-vs-rules split is the generator's own docstring; the stale doctrine count is the unmechanized constant sweep already on LIVE_STATUS).`
-
-`P4-SYSTEM.7` slice (e3) — the reports, the book and THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0056`):
-
-- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "a decision record with
-  **measured** correctness and performance evidence"; the record carried the qualification
-  and two amendments but no closing measurement:
-
-  ```
-  $ git show HEAD:docs/decisions/decision_fp-backend-qualification.md | grep -c "^## Closing" → 0
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the leaf's closing step. Every piece of
-  evidence exists and was re-run fresh at HEAD for this record (the ADDRESSED box), so the
-  record states measurements, not memories (`git show HEAD:…` above: no closing yet).
-
-- [x] **FIX** — the closing measurement (correctness spec-side and tracked, at corpus
-  scale, end to end on both engines; the per-op cost; the ancestry line) as its own record,
-  `reference_fp-model-layer-acceptance.md` (the decision record sits at the `docs/decisions/`
-  16,384 B per-part ceiling — a closing section appended there took it to 17,812 B, refused by
-  README-ROUTING-CLOSURE; moved, not raised) + the decision's banner pointing to it + an
-  INDEX row; the leaf's status **done** and Result; the frontier → `.8` (faults, restart and
-  partial progress — the design brief first); `docs/TASK_TREE.md`'s row; the book's P4.7
-  chapter closed and the P4 index line.
-
-- [x] **ADDRESSED (verified)** — re-run at HEAD (`c377bcc`):
-
-  ```
-  $ cargo test -p semulith-core --lib fp:: → test result: ok. 8 passed (230 vectors +
-    3168 fixtures)
-  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (125 guests)
-  $ bash scripts/check_fp_vectors.sh → ok (… 230 vectors + 3168 fixtures; reference vs
-    hardware RNE: agree 2131)
-  $ python3 target/p4-system-7/sail/compare_sail.py → verdict: 24 AGREE of 24, rc=0
-  fpcheck (fp.rs over the 63,752-case corpus) → vs the exact-rational spec reference:
-    63752 cases, 0 disagreements; vs MPFR: 52112 cases, 24 disagreements (the oracle's
-    signaling-NaN conversions, the record's second amendment)
-  ```
-
-- [x] **THE LEAF ACCEPTANCE** — "a decision record with **measured** correctness and
-  performance evidence": `docs/decisions/decision_fp-backend-qualification.md` carries the
-  qualification (slice a: two candidates, three lineages, 63,752 MPFR cases) and its two
-  dated amendments (the oracle's OF/UF conventions; the withdrawn deviation (ii));
-  `reference_fp-model-layer-acceptance.md` the closing measurement — correctness (the tracked 230 + 3,168 spec-side cases; 0 of 63,752;
-  Sail 24 AGREE of 24 on the guests) and performance (the model layer's per-op cost beside
-  the raw backend: f64 add 47.8 vs 8.3 ns, 2.8–6.9× on the arithmetic core). A candidate
-  passed, so the "implement the required subset" fallback was not needed. TestFloat's
-  SoftFloat expected-value path is recorded as shared ancestry and never counted (RK07,
-  EVD-04).
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`;
-  records only beyond the decision record.
-
-- [x] **LOCKSTEP** — the decision record, this tree (status, result, frontier, checklist,
-  logs, changelog), `docs/TASK_TREE.md`, `MEMORY.md` (P4 7/10; next_action → the `.8` design
-  brief), `LIVE_STATUS.md`, `CHANGELOG.md`, the book.
-  `promotion: declined (the leaf's lessons were promoted at their slices — the oracle card twice, the zero-hits card; this closing records measurements).`
+  part 2 (the (d2) crossing), (c4)–(c6) (the (d5) crossing), and (d1)–(e3) — `.7`
+  complete — (the `.9` slice-(d) crossing).
 
 `P4-SYSTEM.8` slice (a) — the CSR rd-before-trap defect fixed at root; two stale texts and a wrong unreachable cause (`2026-10-06`, `SEMULITH-P4-0058`):
 
@@ -1237,6 +818,51 @@ never raised, at every crossing. The index:
   code comments, `CHANGELOG.md`, `MEMORY.md` (next_action → d), the book (P4.9 chapter).
   `promotion: declined (supersession is the contract schema's own mechanism).`
 
+`P4-SYSTEM.9` slice (d) — the ENVIRONMENT document, v1 frozen, THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0067`):
+
+- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "every new assumption has a positive
+  and a negative fixture; the contract is versioned, not edited in place"; rv64gc had no
+  contract-level prose (`git ls-files profiles/rv64gc-lab-v0/ENVIRONMENT.md` → nothing) and v1
+  was still open.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the closing step. One defect found on the way,
+  in this leaf's own gate: CONTRACT-FREEZE ran its controls before judging and its GREEN arm
+  copied the live files, so an edited frozen record surfaced as "REFUSED — the check does not
+  discriminate" (rc=2) instead of the finding — measured by editing a pinned v1 record.
+
+- [x] **FIX** — `profiles/rv64gc-lab-v0/ENVIRONMENT.md` (the versions, the boundary inventory
+  dispositioned, the four assumptions with what would falsify each, the supersessions, the
+  realized fixtures, what is deliberately not here — including the named gap: rv64i's eight base
+  `OB-ENV-*` assumptions were never restated for rv64gc); v1 FROZEN (its six members pinned);
+  CONTRACT-FREEZE judges first and runs its controls only to certify a pass; the leaf's status
+  **done** and Result; the frontier → `.10`; `docs/TASK_TREE.md`, MEMORY, LIVE_STATUS; the book.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  a frozen v1 record edited (a scratch edit, restored after) → bash scripts/check_contract_freeze.sh
+    → "FROZEN RECORD EDITED rv64gc-lab-v0 [rv64gc-lab-env-v1]: OB-GC-ENV-VIRTUAL-TIME no longer
+    matches its pin", rc=1; restored → ok (1 versioned unit(s), 2 version(s), 0 finding(s)), rc=0
+  $ bash scripts/check_contract_freeze.sh --self-test → 7 pass / 0 fail
+  $ cargo test -p semulith-verify → test result: ok (the registry: 14 checks realized)
+  ```
+
+- [x] **THE LEAF ACCEPTANCE** — "every new assumption has a positive and a negative fixture": the
+  four v1 environment assumptions (and v1's two superseding guarantees) each name a POS and a
+  NEG check, and every one is realized — bound to tracked guests by the registry, run under the
+  corpus's rule, a declared-but-unrealized check refused (RED-proven); "the contract is
+  versioned, not edited in place": versions are documents with listed members, v0 and v1 are
+  frozen by content pins, CONTRACT-FREEZE refuses an edited frozen record (RED-proven on v0 at
+  (a) and on v1 here), and v0's two wrong statements were superseded by v1 records, never
+  rewritten. Goal coverage: translation inputs, interrupt sources, counter progress and
+  reservation invalidation are each stated (`OB-GC-ENV-*`).
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — `ENVIRONMENT.md`, `contract.sexp`, the gate, this tree, `docs/TASK_TREE.md`,
+  `DEV_NOTES.md` (PROMOTED — the self-test card's masking-control case), `CHANGELOG.md`,
+  `MEMORY.md` (9/10; next_action → the `.10` design brief), `LIVE_STATUS.md`, the book.
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1246,6 +872,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.9` slice (d) + LEAF | v1 frozen; an edited v1 record named and refused (rc=1); the controls 7/7; the registry 14/14 | **met** — the leaf closes |
 | `2026-10-06` | `.9` slice (c) | CONTRACT-FREEZE ok with two supersessions; the registry 14/14; RECORD-SCHEMA ok | **met** — the wrong v0 statements corrected by v1, never rewritten |
 | `2026-10-06` | `.9` slice (b) | the registry's two tests (10 checks realized, every guest holding); RED with one entry dropped; CONTRACT-FREEZE (2 versions) and RECORD-SCHEMA ok; 135/135 | **met** — every new assumption has a positive and a negative fixture that exist and run |
 | `2026-10-06` | `.9` slice (a) | CONTRACT-FREEZE 7/7 controls; the real contract clean (1 unit, 1 version); the schema ok; no record changed | **met** — a contract version is a checked document, v0 frozen |
@@ -1280,6 +907,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.9` (slice d) + LEAF | `SEMULITH-P4-0067 (leaf P4-SYSTEM.9): slice d — rv64gc's ENVIRONMENT document, v1 frozen, CONTRACT-FREEZE judges before certifying; THE LEAF ACCEPTANCE — the leaf CLOSES` | frontier → `.10` |
 | `.9` (slice c) | `SEMULITH-P4-0066 (leaf P4-SYSTEM.9): slice c — v0's stale statements superseded in v1 (OB-GC-PRIV-INSNS-V1, OB-GC-ECALL-EBREAK-V1, their checks realized); the code's forward references to .9 resolved` | the two requirement mirrors named |
 | `.9` (slice b) | `SEMULITH-P4-0065 (leaf P4-SYSTEM.9): slice b — contract v1: four environment assumptions (translation inputs, interrupt sources, virtual time, reservation events), each with realized POS/NEG fixtures; the check registry` | env-irq-sources the one new fixture |
 | `.9` (slice a) | `SEMULITH-P4-0064 (leaf P4-SYSTEM.9): slice a — the contract becomes a versioned document (schema/contract.sexp), rv64gc's v0 recorded and frozen (46 members pinned), CONTRACT-FREEZE registered (the 37th doctrine)` | the doctrine on its five surfaces |
@@ -1308,6 +936,10 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.9` slice (d) done and the LEAF CLOSES (`SEMULITH-P4-0067`) — the environment
+  contract is versioned and frozen (v0, v1), v1 states the four environment assumptions with
+  realized fixtures, and rv64gc has its ENVIRONMENT document. Frontier → `.10`.
 
 - `2026-10-06`: `.9` slice (c) done (`SEMULITH-P4-0066`) — **the supersessions**: v1 replaces
   v0's wrong wfi/sfence.vma and ecall/ebreak statements by new records, the old ones frozen

@@ -58,4 +58,16 @@ arguments will swallow a whole command silently.** Any `f() { use "$1" "$2"; }` 
 `;` into deleted code rather than into an error. Writing `local` parameters or a
 `[ $# -eq 2 ] || return 2` guard in a test helper converts that silence into a failure.
 
+## A sibling failure — a GREEN control that masks the finding (2026-10-06, P4-SYSTEM.9 slice d)
+
+CONTRACT-FREEZE ran its controls BEFORE judging (the project's convention), and its GREEN arm
+copied the LIVE contract files. With a frozen record edited, the GREEN arm failed, the self-test
+failed, and the gate printed "REFUSED — the check does not discriminate" instead of naming the
+edited record: the finding hid behind a harness message. A failing verdict needs no proof that the
+check discriminates — only a passing one does. The fix: judge first, exit 1 with the findings;
+run the controls only to certify a PASS.
+
+- Audit any check whose GREEN control reads the live tree: a broken tree must surface as the
+  finding, not as "does not discriminate".
+
 Related: [[census-instrument-signature-gap]], [[re-derivable-vs-cited-evidence]].
