@@ -26,7 +26,7 @@
 (state
   (profile_id "rv64gc-lab-v0")
   (xlen 64)
-  (note "Architectural state of the resolved rv64gc-lab-v0 selection (P4-SYSTEM.1): the RV64I integer file and pc; the current privilege mode (M/S/U, D-PRIV-MODES); and the 33 CSRs of D-CSR-SET with their per-field WPRI/WARL/WLRL tables. The f0-f31 floating-point file is selected (D-FP-DEFER) but modelled at P4-SYSTEM.7 — the hidden-state census accounts for it. Staged at target/p4-system-2/ until the route flip; see the header.")
+  (note "Architectural state of the resolved rv64gc-lab-v0 selection (P4-SYSTEM.1): the RV64I integer file and pc; the current privilege mode (M/S/U, D-PRIV-MODES); the f0-f31 floating-point file at FLEN=64 (P4-SYSTEM.7 slice b); and the 33 CSRs of D-CSR-SET with their per-field WPRI/WARL/WLRL tables. Staged at target/p4-system-2/ until the route flip; see the header.")
   (integer_registers
     (count 32) (width_bits 64) (ids "x0..x31") (authority architecture)
     (source "RVI-RV32I §1.1.1; RVI-RV64I §3.1.1")
@@ -48,6 +48,13 @@
     (source "RVP-INTRO (the modes and their intent); D-PRIV-MODES")
     (reset (value "m") (authority architecture) (source "RVP-MACHINE §2.1.4")
            (statement "Upon reset, a hart's privilege mode is set to M. The mode is hart state, not a CSR: it changes on trap delivery and xret and is readable nowhere as a register; the two-level stack that restores it (xPP/xPIE/xIE) lives in mstatus, architected.")))
+
+  ;; ---- the floating-point register file (P4-SYSTEM.7 slice b — modelled after the slice-(a)
+  ;;      qualification, SEMULITH-P4-0039) -----------------------------------------------------
+  (fp_registers (count 32) (width_bits 64) (ids "f0..f31")
+       (authority architecture) (source "RVI-F §20.1.1 (the f registers f0-f31); RVI-D §21.1.2 (FLEN=64 with D selected; the LP64D ABI, D-ABI)")
+       (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.4 (UNSPECIFIED)")
+              (statement "The f-file's reset content is architecturally UNSPECIFIED; the laboratory resets it to 0 — unobservable as such (FS resets Off, so the file is unreadable until software enables FP, and NaN-boxing is the write-side discipline of the instructions that fill it, not the file's). The file is census-hidden state: observations are through the x-registers alone (the leaf's decision 8 — fmv/fclass/compares/stores, fflags/frm via Zicsr).")))
 
   ;; ==========================================================================================
   ;; the 33 CSRs of D-CSR-SET (profile.sexp's state block), machine level first
@@ -601,9 +608,9 @@
        (reset (value "minstret's") (authority laboratory) (source "RVI-ZICNTR §6.1.1")
               (statement "A read-only shadow of minstret; no storage, no independent reset. Access gating: mcounteren.IR then scounteren.IR.")))
 
-  ;; ---- the floating-point CSRs (present; behavioural use is P4-SYSTEM.7's) --------------------
+  ;; ---- the floating-point CSRs (semantics landed at P4-SYSTEM.7 slice b) ----------------------
   (csr (id "fflags") (address 1) (width_bits 64) (authority architecture)
-       (source "RVI-F §20.1.1 — the FP accrued-flags register; F is selected (D-FP-DEFER) and its behavioural use is P4-SYSTEM.7's")
+       (source "RVI-F §20.1.1 — the FP accrued-flags register")
        (field (id "flags_4_0") (bit_hi 4) (bit_lo 0) (discipline warl)
               (legalize (any)) (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVI-F §20.1.1"))
@@ -611,10 +618,10 @@
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
        (reset (value "0") (authority laboratory) (source "RVI-F §20.1.1; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
-              (statement "Present with a defined reset because Zicsr makes the address real today; flag SEMANTICS arrive with the backend qualification (.7).")))
+              (statement "The accrued exception flags (NV/DZ/OF/UF/NX at bits 4..0): STICKY — the FP instructions accrue by OR-ing (Sail's accrue_fflags shape; the accrual lands with the F bind, slice c) and never clear themselves; software clears with an explicit write. Access is gated by mstatus.FS: at FS=Off the access is illegal-instruction (the Off-state sentence, RVP-MACHINE §2.1.1.6.7; Sail 0.14 fdext_control.sail).")))
 
   (csr (id "frm") (address 2) (width_bits 64) (authority architecture)
-       (source "RVI-F §20.1.1 — the FP rounding-mode register; behavioural use is P4-SYSTEM.7's")
+       (source "RVI-F §20.1.1 — the FP rounding-mode register")
        (field (id "frm_2_0") (bit_hi 2) (bit_lo 0) (discipline warl)
               (legalize (one-of 0 1 2 3 4)) (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVI-F §20.1.1"))
@@ -622,12 +629,12 @@
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
        (reset (value "0") (authority laboratory) (source "RVI-F §20.1.1; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
-              (statement "Present with a defined reset, as fflags.")))
+              (statement "The dynamic rounding mode: WARL one-of 0..4 (RNE/RTZ/RDN/RUP/RMM) — an illegal write retains the old value (the laboratory's WARL choice; Sail stores anything, a named difference for slice e's match). An instruction rm field of 111 (dyn) resolves to frm; rm 101/110 are reserved — the instruction is illegal (RVI-F §20.1.1's rm table; the resolution is the semantics layer's, slice c). Access FS-gated as fflags.")))
 
   (csr (id "fcsr") (address 3) (width_bits 64) (view_of "fflags, frm") (authority architecture)
-       (source "RVI-F §20.1.1 — fflags and frm as one register; behavioural use is P4-SYSTEM.7's")
+       (source "RVI-F §20.1.1 — fflags and frm as one register")
        (reset (value "fflags' and frm's") (authority laboratory) (source "RVI-F §20.1.1")
-              (statement "The combined view of fflags (bits 4:0) and frm (bits 7:5); no storage, no independent reset.")))
+              (statement "The combined view of fflags (bits 4:0) and frm (bits 7:5); no storage, no independent reset. A MULTI-owner view: the read composes the owners' non-WPRI field bits low-to-high in list order and a write splits back into the owners under each owner's own field table (the engine's composition rule, P4-SYSTEM.7 slice b — the single-owner resolution read 0 and refused writes, measured pre-slice). Access FS-gated as fflags.")))
 
   ;; ---- the re-earned census (SEM-08) ----------------------------------------------------------
   (hidden_state_census
@@ -640,7 +647,7 @@
       (candidates (checked (candidate "reservation set (LR/SC)") (present true)
                (why "answered by P4-SYSTEM.4 slice (c): one reservation — (physical address, width, valid) of the most recent LR, the minimal conformant reservation set (exactly the accessed word's/doubleword's bytes, RVI-A §12.1.2), keyed on the PHYSICAL address (the aliasing latitude resolved to exact physical match, authority laboratory). Invalidation is exactly the spec's one-hart set: any LR replaces; any SC — success or failure, any address — clears; a trap does NOT invalidate (the SC's own trap included — the trap path is neither success nor failure). The deterministic SC policy (authority laboratory, decision 3): SC succeeds iff the reservation is valid ∧ physical address equal ∧ width equal, writing rs2's value and rd←0; otherwise it fails with rd←1 (the 'unspecified failure' code), writing nothing; it NEVER spuriously fails — one legal point of the architectural nondeterminism, chosen so exact-value expectations stay derivable (EVD-05). Misaligned atomics take the access-fault family by kind (5 for LR, 7 for SC/AMO — decision 6, reference-matched to the override's declared PMAs, the exception table's kind mapping). The reservation is a pure function of the hart's own history — invalid at reset, changed only by the hart's own LR/SC — so cold-reset re-execution stays trace-identical and a cold-restored (invalid) reservation is always a legal state")))
       (candidates (checked (candidate "floating-point registers f0-f31 and the fcsr behaviour") (present true)
-               (why "F and D are selected (D-FP-DEFER); the FP file is NOT modelled until the backend qualification (P4-SYSTEM.7), and fflags/frm/fcsr are declared above as present-with-reset — the census records both halves so neither is forgotten nor silently active")))
+               (why "answered by P4-SYSTEM.7 slice (b) after slice (a)'s qualification (SEMULITH-P4-0039, rustc_apfloat): the file is modelled — 32 x 64-bit (FLEN=64 with D, the LP64D ABI), declared above with its laboratory reset; mstatus.FS gates the FP instructions AND the fflags/frm/fcsr CSRs (four-state FS, reset 0 = Off, Dirty on any FP state write — Sail 0.14's dirty_fd_context measured; SD is the computed summary and follows); fflags is the sticky accrued-flags register (software-clearable); frm is WARL one-of 0..4 with dyn/reserved-rm resolution stated; fcsr is the two-owner VIEW, composed by the engine from fflags[4:0] and frm[2:0] (the pre-slice single-owner resolution read 0 and refused writes — measured, fixed at root). Observation stays through the x-registers (decision 8): the file itself is never an expectations-vocabulary item")))
       (candidates (checked (candidate "environment state (mtime, interrupt sources, the time register's value)") (present true)
                (why "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely; and by slice (b) for the PENDING/SOURCE-EVALUATION part (the (a)(b)(c) taken-rule with the global rule, the delegation mask and the fixed priorities, interrupt-caused delivery honoring both xtvec.MODEs). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)")))
       (candidates (checked (candidate "PMP configuration") (present false)

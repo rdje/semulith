@@ -32,6 +32,8 @@ const STORAGE: &[(&str, u16)] = &[
     ("sepc", 0x141),
     ("scause", 0x142),
     ("stval", 0x143),
+    ("fflags", 0x001),
+    ("frm", 0x002),
 ];
 
 const fn f(
@@ -239,11 +241,33 @@ static FIELDS: &[FieldMeta] = &[
         Some(Legalize::Computed),
     ),
     f("sstatus", "wpri", 62, 0, FieldDiscipline::Wpri, None),
+    // The FP CSRs (P4-SYSTEM.7 slice b): the document's shapes — fflags' accrued flags
+    // WARL-any, frm WARL one-of 0..4, both WPRI above; fcsr declares no fields (the
+    // composition reads the owners' tables).
+    f(
+        "fflags",
+        "flags_4_0",
+        4,
+        0,
+        FieldDiscipline::Warl,
+        Some(Legalize::Any),
+    ),
+    f("fflags", "wpri", 63, 5, FieldDiscipline::Wpri, None),
+    f(
+        "frm",
+        "frm_2_0",
+        2,
+        0,
+        FieldDiscipline::Warl,
+        Some(Legalize::OneOf(&[0, 1, 2, 3, 4])),
+    ),
+    f("frm", "wpri", 63, 3, FieldDiscipline::Wpri, None),
 ];
 
 struct Fixture {
     mode: PrivilegeMode,
-    csrs: [u64; 21],
+    csrs: [u64; 23],
+    fregs: [u64; 32],
     tlb: crate::translation::Tlb,
     reservation: crate::reservation::Reservation,
     hart_state: crate::wait::HartState,
@@ -380,13 +404,29 @@ static META: &[CsrMeta] = &[
         address: 0xC02,
         view_of: Some("mcycle"),
     },
+    CsrMeta {
+        name: "fflags",
+        address: 0x001,
+        view_of: None,
+    },
+    CsrMeta {
+        name: "frm",
+        address: 0x002,
+        view_of: None,
+    },
+    CsrMeta {
+        name: "fcsr",
+        address: 0x003,
+        view_of: Some("fflags, frm"),
+    },
 ];
 
 impl Fixture {
     fn at(mode: PrivilegeMode) -> Self {
         let mut h = Self {
             mode,
-            csrs: [0; 21],
+            csrs: [0; 23],
+            fregs: [0; 32],
             tlb: crate::translation::Tlb::new(),
             reservation: crate::reservation::Reservation::new(),
             hart_state: crate::wait::HartState::new(),
@@ -439,6 +479,9 @@ impl PrivilegedHart for Fixture {
     }
     fn hart_state(&mut self) -> &mut crate::wait::HartState {
         &mut self.hart_state
+    }
+    fn fregs(&mut self) -> &mut [u64; 32] {
+        &mut self.fregs
     }
 }
 
@@ -651,4 +694,137 @@ fn sd_is_the_fs_xs_vs_summary() {
     assert_eq!(csr_read(&h, 0x300).unwrap() >> 63, 0);
     write_raw(&mut h, "mstatus", 0b11 << 13); // FS = Dirty
     assert_eq!(csr_read(&h, 0x300).unwrap() >> 63, 1, "SD computes from FS");
+}
+
+// ---- the floating-point state gate and the two-owner view (P4-SYSTEM.7 slice b) -----------
+
+/// The fixture's mstatus starts with FS=Off, as the document's reset row declares.
+fn set_fs(h: &mut Fixture, value: u64) {
+    let old = read_raw(h, "mstatus");
+    write_raw(h, "mstatus", (old & !(0b11 << 13)) | (value << 13));
+}
+
+#[test]
+fn fs_off_makes_the_fp_csrs_illegal_in_every_mode() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    assert_eq!(fs(&h), 0, "the document's reset: FS=Off");
+    for mode in [PrivilegeMode::M, PrivilegeMode::S, PrivilegeMode::U] {
+        h.set_mode(mode);
+        for (addr, name) in [(0x001u16, "fflags"), (0x002, "frm"), (0x003, "fcsr")] {
+            assert!(
+                permitted(&h, addr, false).is_err(),
+                "{name} read at FS=Off, mode {mode:?}"
+            );
+            assert!(
+                permitted(&h, addr, true).is_err(),
+                "{name} write at FS=Off, mode {mode:?}"
+            );
+            assert!(csr_read(&h, addr).is_err(), "{name} csr_read at FS=Off");
+        }
+    }
+}
+
+#[test]
+fn fs_initial_clean_dirty_all_open_the_fp_csrs() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    for value in [1u64, 2, 3] {
+        set_fs(&mut h, value);
+        assert!(fp_enabled(&h));
+        for addr in [0x001u16, 0x002, 0x003] {
+            assert!(
+                permitted(&h, addr, false).is_ok(),
+                "FS={value} opens {addr:#x}"
+            );
+            assert!(permitted(&h, addr, true).is_ok());
+        }
+    }
+    set_fs(&mut h, 0);
+    assert!(!fp_enabled(&h));
+    assert!(
+        csr_read(&h, 0x001).is_err(),
+        "the gate closes again at FS=Off"
+    );
+}
+
+#[test]
+fn fcsr_read_composes_the_two_owners() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    set_fs(&mut h, 1);
+    csr_write(&mut h, 0x001, 0x1F).unwrap(); // fflags = all five flags
+    csr_write(&mut h, 0x002, 0x3).unwrap(); // frm = RDN
+    assert_eq!(
+        csr_read(&h, 0x003).unwrap(),
+        0x1F | (3 << 5),
+        "fflags[4:0] with frm[2:0] above"
+    );
+    assert_eq!(
+        csr_state(&h, "fcsr"),
+        0x7F,
+        "the machine's own read composes too"
+    );
+    // The owners' WPRI bits are never view content.
+    csr_write(&mut h, 0x001, u64::MAX).unwrap();
+    assert_eq!(csr_read(&h, 0x003).unwrap(), 0x1F | (3 << 5));
+}
+
+#[test]
+fn fcsr_write_splits_back_into_the_owners() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    set_fs(&mut h, 1);
+    csr_write(&mut h, 0x003, 0x5F).unwrap(); // frm=2, flags=0x1F
+    assert_eq!(csr_read(&h, 0x001).unwrap(), 0x1F);
+    assert_eq!(csr_read(&h, 0x002).unwrap(), 0x2);
+    // An illegal frm slice retains the old value (the field's one-of rule judges the
+    // slice); the fflags slice still lands. Bits 63:8 drop (WPRI).
+    csr_write(&mut h, 0x003, u64::MAX).unwrap();
+    assert_eq!(
+        csr_read(&h, 0x002).unwrap(),
+        0x2,
+        "frm slice 7 is illegal: retained"
+    );
+    assert_eq!(csr_read(&h, 0x001).unwrap(), 0x1F);
+    assert_eq!(csr_read(&h, 0x003).unwrap(), 0x1F | (2 << 5));
+    // frm's own address judges the same rule.
+    csr_write(&mut h, 0x002, 0x6).unwrap();
+    assert_eq!(
+        csr_read(&h, 0x002).unwrap(),
+        0x2,
+        "one-of 0..4 at the owner too"
+    );
+}
+
+#[test]
+fn fp_csr_writes_mark_fs_dirty_and_sd_follows() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    set_fs(&mut h, 1); // Initial
+    csr_write(&mut h, 0x001, 0x01).unwrap();
+    assert_eq!(
+        fs(&h),
+        3,
+        "Sail's write_fcsr dirties the context (fdext_regs.sail:455)"
+    );
+    assert_eq!(
+        csr_read(&h, 0x300).unwrap() >> 63,
+        1,
+        "SD is the computed summary"
+    );
+    set_fs(&mut h, 2); // Clean
+    csr_write(&mut h, 0x003, 0x00).unwrap();
+    assert_eq!(fs(&h), 3, "an fcsr write dirties too");
+}
+
+#[test]
+fn mark_fp_dirty_is_the_f_write_discipline() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    set_fs(&mut h, 1);
+    let before = read_raw(&h, "mstatus") & !(0b11 << 13);
+    mark_fp_dirty(&mut h);
+    assert_eq!(fs(&h), 3);
+    assert_eq!(
+        csr_read(&h, 0x300).unwrap() >> 63,
+        1,
+        "SD computes from FS=Dirty"
+    );
+    // The rest of mstatus is untouched.
+    assert_eq!(read_raw(&h, "mstatus") & !(0b11 << 13), before);
 }

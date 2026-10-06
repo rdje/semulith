@@ -960,6 +960,77 @@ promotion: declined (the durability is the machinery — the six AGREEs are re-r
 
 
 
+`P4-SYSTEM.7` slice (a)'s checklist (completed `2026-10-06`,
+`SEMULITH-P4-0039`), split out on `2026-10-06` at the live file's
+twenty-third ceiling firing (the `.7` slice-(b) landing):
+
+`P4-SYSTEM.7` slice (a) — the backend qualification: rustc_apfloat QUALIFIED (`2026-10-06`, `SEMULITH-P4-0039`):
+
+- [x] **REPRODUCE / ISSUE** — the acceptance requires the qualification MEASURED,
+  and the census's claims were web leads:
+
+  ```
+  $ curl -sSL crates.io/api/v1/crates/{rustc_apfloat,softfloat} + the .crate tarballs
+  rustc_apfloat: 0.2.3+llvm-462a31f5a5ab, updated 2025-06-11, Apache-2.0 WITH
+    LLVM-exception (the LICENSE texts measured in the extracted crate)
+  softfloat: 1.0.0, updated 2023-11-03, MIT OR Apache-2.0 — the musl-libc
+    lineage via const_soft_float, NOT Berkeley
+  the negatives re-confirmed: softfloat-sys/-wrapper are Berkeley C FFI;
+  softfloat-pure does not resolve
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the capability gaps measured in
+  the extracted sources (the `grep -c` tallies are on the vlog row): softfloat
+  has NO rounding modes, NO exception flags ("Not Asserted" is a comment), NO
+  fma, NO 64-bit int conversions, NO min/max — five of ARCH §6's explicit
+  requirements; rustc_apfloat carries the whole surface EXCEPT sqrt (never
+  ported) and two measured LLVM-vs-IEEE flag deviations. One census claim
+  measured UNVERIFIABLE (softfloat's "TestFloat-verified upstream" — its own
+  documents carry no such statement; recorded, not counted). The MPFR path
+  needed four measured corrections of MPFR's own semantics (a reference
+  library's flags are ITS semantics; a generator that trusts them writes a
+  wrong spec).
+
+- [x] **FIX** — the scratch harnesses (`target/p4-system-7/`: `probe/` the
+  corpus/APFloat/softfloat/cross-check/timing harness; `mpfr/vec_gen.c` the
+  MPFR vector generator over the system libmpfr 4.2.2, MPFR's own semantics
+  corrected spec-side: RNDNA, exponent-range OF/UF, NaN canonicalization,
+  NAN ≠ NV); the decision record + INDEX + the knowledge card; the dependency
+  landing (`=0.2.3+llvm-462a31f5a5ab` pinned in semulith-core, the lib.rs
+  re-export compile-use, the cargo home on-volume).
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ probe run (63,752 cases, directed + seeded, per op × 5 modes × 2 widths):
+  ZERO arithmetic-core value disagreements; 612 value + 386 flag disagreements,
+  all named — the two LLVM-vs-IEEE deviations (362 want OFNX; 24 want NV on
+  sNaN conversions) and the policy surfaces (NaN→int 340, fmin/fmax 240, NaN
+  payloads 32); sqrt not probed on APFloat (1,440 — fp.rs owns it); SOFTFLOAT
+  vs MPFR (4,416): 68, ALL the NaN-sign family — MPFR-exact where it exists
+  $ probe time: apfloat f64 add/mul/div 10.1/10.5/40.7 ns/op, fma 15.7;
+  softfloat 3.2/2.3/5.1, sqrt 44.1
+  $ cargo build --release --target wasm32-unknown-unknown (both): Finished —
+  PORT-WEB proof for both
+  $ <the landing> — Cargo.lock 4 → 7 (rustc_apfloat + bitflags + smallvec);
+  make bench wasm 133,715 bytes, smoke-bench 53 arms ok
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8
+  groups); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 430
+  unchanged; the knowledge map regenerated for the new decision record); no
+  corpus touch, no engine touch.
+
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  logs + changelog; the `.6` slice-(c) checklist + changelog entries archived at
+  the 21st/22nd ceiling firings), `MEMORY.md` (next_action → slice b),
+  `CHANGELOG.md`, `DEV_NOTES.md` — the promotion MEASURED positive: the
+  candidate-landscape lesson promoted to docs/knowledge/
+  (a-candidate-landscape-census-entry-is-a-lead.md + INDEX), `docs/decisions/`
+  INDEX + the new record, `LIVE_STATUS.md` (unchanged), `docs/TASK_TREE.md`
+  (unchanged — the frontier leaf is `.7` already), `docs/book/src/plan/p4.md`
+  (the `.7` section opened) + the book index.
+
 `P4-SYSTEM`'s Verification Log rows for leaves `.1` and `.2` (both closed `2026-10-03`),
 split out verbatim on `2026-10-05` at the live file's fourteenth ceiling firing — the
 first LOG-ROW move in this tree (the checklists and design briefs moved before; the
@@ -1251,10 +1322,64 @@ brief landing) — the closed-leaf log-row lifecycle established at the fourteen
 | `2026-10-05` | `.6` slice (a) | the pre-slice census (rv_zifencei pinned nowhere; 6 FRAGMENTS entries; the slot at encoding.sexp:18); the tracked-route fetch (73 bytes, one row, be2d8f72…, fresh re-fetch byte-identical); the recorded deviation (decision 1's "no assembler shapes" FALSE for the bare spelling — the row's operand list refused it; the named zero-operand special case; no Sem variant / no generator change TRUE — mask 0x0000707f over Sem::Nop, rustc rc=0 ×2); the fragment (owns NO fields, requires rv64i, funct3=1; 6 others byte-identical); zifencei.sem.sexp (the three sentences + both latitudes re-located; pair 1/1, both composes, citations RVI-ZIFENCEI §4.1 ×1 offline, corpus 6/8); the disjointness trials (53 and 85+3 COMPOSE; self-test 12/12); the probe (bare+full spellings, the shall-ignore word, 3 named REDs, spike-dasm exact); both profiles 87==87/52==52 with the named exclusion; 99 guests byte-identical; `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430 unchanged) | slice (a) landed: the pin, the fragment, the sem file and the assembler acceptance — the slot stays declared, the census stays 87, no corpus, no Rust |
 
 
-`P4-SYSTEM`'s Changelog entries for leaf `.6` (closed `2026-10-05`),
-split out verbatim on `2026-10-06` at the live file's twenty-second ceiling
-firing (the `.7` slice-(a) landing) — the closed-leaf lifecycle the `.1`/`.2`
-entries established at the twentieth:
+`P4-SYSTEM`'s Changelog entries for leaf `.6` (closed `2026-10-05`):
+slice (a)'s entry split out verbatim on `2026-10-06` at the live file's
+twenty-second ceiling firing (the `.7` slice-(a) landing), slices (c) and (b)
+at the twenty-fourth (the `.7` slice-(b) landing) — the closed-leaf lifecycle
+the `.1`/`.2` entries established at the twentieth:
+
+- `2026-10-05`: `.6` slice (c) done and the LEAF CLOSES (`SEMULITH-P4-0037`) — the
+  Sail matched experiment for the fence.i surface, scoped to decision 2's designed
+  outcome and measured, not assumed: the override is measured first (materialized
+  fresh from the tracked unit — unmoved since bfa6aaa; validate-config rc=0;
+  Zifencei supported true; NO change needed), sail's FENCEI measured in source
+  (its encdec carries the fields as VARIABLES — decoded-not-fixed, the
+  shall-ignore sentence quoted in its own comment; execute is a nop for the
+  memory model). Against the matched configuration, **6 AGREE of 6**: it-fencei
+  3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8, fault-selfmod 7,
+  dir-selfmod-fence 8 — 29 steps' change-observations exact, the patched fetch
+  reading the new value on both engines; ZERO non-AGREE cells. Verdict-neutrality
+  measured: the wider corpus's expectations are unmoved since their verdicts
+  (git log → 495b4b8; the bind touched only the fencei surface). The fetch-cache
+  census candidate is re-answered in place (decision 6 — Zifencei declared AND
+  bound; the re-read stays laboratory policy; FENCE.I's nop is the sanctioned
+  implementation; the consequence line unchanged; gen_state re-derived, build
+  rc=0; the brief's clause-location phrasing measured imprecise and recorded —
+  the clause is rv64i's text, referenced). references.sexp records the fifth
+  experiment (difference-free re-measured: 0 difference records). **The LEAF
+  ACCEPTANCE**: rewrite-code fixtures with and without the architectural
+  synchronization, measured on BOTH engines — WITH: fencei-selfmod's fence.i
+  retires between the store and the fetch, the patched word reading 7 on both;
+  WITHOUT: fault-selfmod's patch visible with no synchronization,
+  D-CODE-VISIBILITY named (the laboratory's declared legal subset); the
+  staleness half answered as the declared latitude (intro.html's implicit-reads
+  sentence; the caching-hart model rejected at the brief). `make check` rc=0,
+  `make gate` green (DERIVED-COUNTS 430 unchanged), RECORD-SCHEMA 20,
+  PROFILE-CONSISTENCY 5, smoke-bench 53 arms, bench wasm, both books. Next:
+  `.7` — floating-point backend qualification (the design brief first, starting
+  from the leaf card's routed-in SoftFloat shared-ancestry measurement).
+
+- `2026-10-05`: `.6` slice (b) done (`SEMULITH-P4-0036`) — **THE BIND**: the unit
+  composes `riscv/zifencei`, and fence.i is legal in the tracked engine. The
+  slot becomes the extension (the header restated); the census dual edit 87→88
+  lands in all four places (the zifencei_fencei family, RVI-ZIFENCEI §4.1);
+  definition_rv64gc.rs regenerates with fence.i over the existing Sem::Nop;
+  REQ-GC-FENCEI + OB-GC-FENCEI with no new D-* (the wfi-nop precedent).
+  it-fencei/min-fencei re-derive to the legal fence.i — the slice-(g) pre-commit
+  FULFILLED (it-fencei grows 2→3 steps, the marker committing as on both
+  references; min-fencei one retiring nop, its demo trace byte-identical
+  anyway — the pre-bind delivery wrote nothing at mtvec=0). fencei-reserved
+  exercises the shall-ignore decode end-to-end; fencei-selfmod is the
+  acceptance pair's WITH member (the patched fetch reading 7); fault-selfmod
+  stands WITHOUT. The decision-3 comment corrections land as RECORDED mirror
+  re-derivations — the governor measured my direct .s edits as drift (the
+  mirror holds .s byte-identical ALWAYS). The fetch leg's exclusion flipped on
+  its own (88==88, rv64i 52==52); the corpus reads **101/101**; the identity
+  proof holds 98/99 (it-fencei the designed exception); the matrix resolves 28
+  cells; EXERCISE-COVERAGE 88/88; GUEST-GEN 16/16. `make check` rc=0, `make
+  gate` green (DERIVED-COUNTS 430 unchanged). Next: slice (c) — the Sail
+  matched experiment + the census re-answer + the reports and the book + the
+  leaf acceptance.
 
 - `2026-10-05`: `.6` slice (a) done (`SEMULITH-P4-0035`) — the `rv_zifencei`
   re-pin through the tracked `extensions/` route (73 bytes, one row, sha256

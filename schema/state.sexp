@@ -28,7 +28,13 @@
 ;; legalization (where WARL — the value set or rule), its reset and the locator it was
 ;; read from; `view_of` records that one CSR is a restricted VIEW of another's storage
 ;; (sstatus of mstatus, cycle of mcycle) — a view has no storage of its own, exactly the
-;; alias discipline the integer file already states.
+;; alias discipline the integer file already states. A comma-separated `view_of` list is
+;; the architecture's concatenation of several owners' fields, low to high in list order
+;; (fcsr of fflags and frm — P4-SYSTEM.7 slice (b)).
+;;
+;; `P4-SYSTEM.7` slice (b) (`2026-10-06`): the `fp_registers` construct, case
+;; rv64gc-lab-v0 — the floating-point register file as hart state the SEM-08 census
+;; accounts for (the generator refuses to emit its storage otherwise).
 
 (schema (id "state"))
 
@@ -37,6 +43,7 @@
   (field (name xlen) (type integer) (optional yes))
   (field (name note) (type string) (min-length 1))
   (field (name integer_registers) (type form) (head integer_registers) (optional yes))
+  (field (name fp_registers) (type form) (head fp_registers) (optional yes))
   (field (name register_family) (type form) (head register_family) (repeat yes) (optional yes))
   (field (name special_registers) (type form) (head register) (repeat yes))
   (field (name privilege_mode) (type form) (head privilege_mode) (optional yes))
@@ -189,6 +196,21 @@
   (field (name reset) (type string) (min-length 1))
   (field (name reset_authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory)))
+
+;; P4-SYSTEM.7 slice (b) — case rv64gc-lab-v0: the floating-point register file. A plain
+;; named file (no hardwired zero, no ISA-named roles): count, width (FLEN — 64 when D is
+;; selected, RVI-D §21.1.2), the id range, and a reset (UNSPECIFIED architecturally, so
+;; the laboratory states its value). Observation stays through the x-registers (the
+;; leaf's decision 8) — the file is census-hidden state, never an expectations
+;; vocabulary item.
+(construct (name fp_registers)
+  (field (name count) (type integer))
+  (field (name width_bits) (type integer))
+  (field (name ids) (type string) (min-length 1))
+  (field (name authority) (type symbol)
+         (values architecture) (values execution-environment) (values laboratory))
+  (field (name source) (type string) (min-length 1))
+  (field (name reset) (type form) (head reset)))
 
 (construct (name hidden_state_census)
   (field (name question) (type string) (min-length 1))

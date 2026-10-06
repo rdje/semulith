@@ -151,6 +151,14 @@ pub trait PrivilegedHart {
     /// The wait's own rules live in [`crate::wait`]; the wake's evaluation lives in
     /// [`crate::interrupts`].
     fn hart_state(&mut self) -> &mut crate::wait::HartState;
+
+    /// The hart's floating-point register file (`P4-SYSTEM.7` slice b) — hart state on
+    /// the same discipline, owned by the generated state module because the state
+    /// document's SEM-08 census declares it (the `floating-point registers f0-f31 and
+    /// the fcsr behaviour` candidate). 32 × 64-bit raw storage (FLEN=64, D selected):
+    /// NaN-boxing is the instructions' write-side discipline, not the file's, and
+    /// observation stays through the x-registers (the leaf's decision 8).
+    fn fregs(&mut self) -> &mut [u64; 32];
 }
 
 // ---- name-addressed plumbing ----------------------------------------------------------
@@ -170,8 +178,16 @@ fn index_by_name<H: PrivilegedHart>(hart: &H, name: &str) -> Option<usize> {
 /// language: no permission model, views resolved, computed fields applied.
 #[must_use]
 pub fn csr_state<H: PrivilegedHart>(hart: &H, name: &str) -> u64 {
-    let Some(index) = index_by_name(hart, name) else {
+    let Some(meta) = meta_by_name(hart, name) else {
         return 0; // an absent register reads zero — the profile never names it
+    };
+    if let Some(list) = meta.view_of {
+        if list.contains(',') {
+            return compose_view(hart, list);
+        }
+    }
+    let Some(index) = index_by_name(hart, name) else {
+        return 0;
     };
     let mut value = hart.csr_raw(index);
     for f in hart.csr_fields().iter().filter(|f| f.csr == name) {
@@ -179,6 +195,34 @@ pub fn csr_state<H: PrivilegedHart>(hart: &H, name: &str) -> u64 {
             let mask = field_mask(f);
             value = (value & !mask) | (computed(hart, f) & mask);
         }
+    }
+    value
+}
+
+/// The bit mask of one CSR's declared non-WPRI fields — the block a multi-owner view
+/// composes from that owner (its WPRI bits are reserved, never view content).
+fn owner_block_mask<H: PrivilegedHart>(hart: &H, owner: &str) -> u64 {
+    hart.csr_fields()
+        .iter()
+        .filter(|f| f.csr == owner && f.discipline != FieldDiscipline::Wpri)
+        .map(field_mask)
+        .fold(0, |a, b| a | b)
+}
+
+/// The multi-owner view's read side (P4-SYSTEM.7 slice b, the two-owner fix): the
+/// descriptor's comma-separated `view_of` list as the generated mirror carries it,
+/// composed as the architecture's concatenation of each owner's field block, low to
+/// high in list order — fcsr is fflags[4:0] with frm[2:0] above it (RVI-F §20.1.1's
+/// figure). Each owner's block is contiguous in the declarations today; a holed one
+/// is descriptor work, not a case to guess.
+fn compose_view<H: PrivilegedHart>(hart: &H, list: &str) -> u64 {
+    let mut value = 0u64;
+    let mut shift = 0u32;
+    for owner in list.split(',').map(str::trim) {
+        let mask = owner_block_mask(hart, owner);
+        let block = (csr_state(hart, owner) & mask) >> mask.trailing_zeros();
+        value |= block << shift;
+        shift += mask.count_ones();
     }
     value
 }
@@ -220,6 +264,38 @@ fn csr_state_raw<H: PrivilegedHart>(hart: &H, name: &str) -> u64 {
     index_by_name(hart, name).map_or(0, |i| hart.csr_raw(i))
 }
 
+// ---- the floating-point state gate (RVP-MACHINE §2.1.1.6.7) ------------------------------
+
+/// The mstatus.FS field's low bit (the pinned encoding.h's MSTATUS_FS shift): the values
+/// are 0 Off, 1 Initial, 2 Clean, 3 Dirty.
+const FS_LO: u8 = 13;
+
+/// The current value of mstatus.FS, read from raw storage.
+pub fn fs<H: PrivilegedHart>(hart: &H) -> u64 {
+    (csr_state_raw(hart, "mstatus") >> FS_LO) & 0b11
+}
+
+/// May software touch the floating-point state? — the Off sentence: at FS=Off the unit's
+/// FP instructions AND its FP CSRs are illegal (Sail 0.14's `currentlyEnabled(Ext_F)` is
+/// `mstatus[FS] != 0b00`, measured at fdext_control.sail:19). The CSR side is enforced in
+/// `permitted`; the instruction side calls this from the F/D binds' evaluator arms
+/// (P4-SYSTEM.7 slices c/d — no FP instruction decodes yet).
+pub fn fp_enabled<H: PrivilegedHart>(hart: &H) -> bool {
+    fs(hart) != 0
+}
+
+/// The Dirty-on-f-write discipline (Sail 0.14's `dirty_fd_context`, fdext_regs.sail:110):
+/// any FP state change — an f-file write, an FP-CSR write, flag accrual — marks
+/// FS=Dirty. SD is a computed field, so setting FS suffices. The caller is past the
+/// gate (FS is never Off here), and 3 is in the field's declared one-of set.
+pub fn mark_fp_dirty<H: PrivilegedHart>(hart: &mut H) {
+    let Some(index) = index_by_name(hart, "mstatus") else {
+        return; // a profile without mstatus carries no FS — nothing to mark
+    };
+    let value = hart.csr_raw(index) | (0b11 << FS_LO);
+    hart.csr_write_raw(index, value);
+}
+
 // ---- the permission model (RVP-CSR §1.1.1 + the enable gates) --------------------------
 
 /// May an instruction at the current mode perform this access? The uniform model of
@@ -253,6 +329,14 @@ pub fn permitted<H: PrivilegedHart>(
     }
     let name = meta_by_name_addr(hart, address).map(|m| m.name);
     match name {
+        // mstatus.FS gates the floating-point CSRs in every mode (the Off-state
+        // sentence, RVP-MACHINE §2.1.1.6.7; Sail 0.14's fdext_control.sail
+        // is_CSR_accessible 0x001–0x003 = currentlyEnabled(Ext_F) — the same rule).
+        // P4-SYSTEM.7 slice (b): the pre-slice absence of this arm measured at the
+        // probe (all six permitted() calls Ok at FS=Off).
+        Some("fflags" | "frm" | "fcsr") if !fp_enabled(hart) => {
+            return refuse("mstatus.FS is Off: the FP CSRs are inaccessible");
+        }
         // The counter-enable gates: cycle/time/instret below M need mcounteren's CY/TM/IR
         // (bit positions: the pinned encoding.h's MCOUNTEREN_CY/TM/IR shifts), and in U
         // additionally scounteren's (RVP-SUPERVISOR §11.1.1.5). The counters keep
@@ -315,6 +399,13 @@ pub fn csr_read<H: PrivilegedHart>(hart: &H, address: u16) -> Result<u64, Illega
         address,
         why: "unimplemented",
     })?;
+    if let Some(list) = meta.view_of {
+        if list.contains(',') {
+            // The composed view IS the whole register's readable content: the owners'
+            // field blocks, concatenated; every other bit is WPRI and reads zero.
+            return Ok(compose_view(hart, list));
+        }
+    }
     let owner = meta.view_of.unwrap_or(meta.name);
     let value = csr_state(hart, owner);
     if meta.view_of.is_some() {
@@ -363,24 +454,64 @@ pub fn csr_write<H: PrivilegedHart>(
         address,
         why: "unimplemented",
     })?;
-    let owner = meta.view_of.unwrap_or(meta.name);
-    let index = index_by_name(hart, owner).ok_or(IllegalCsrAccess {
-        address,
-        why: "a view whose owner has no storage",
-    })?;
+    if let Some(list) = meta.view_of {
+        if list.contains(',') {
+            // The multi-owner write (P4-SYSTEM.7 slice b) — the composition's inverse:
+            // each owner's block of the incoming word legalizes into the owner's own
+            // storage under its own table; bits no owner covers are dropped (fcsr's
+            // 63:8 are WPRI).
+            let mut shift = 0u32;
+            for owner in list.split(',').map(str::trim) {
+                let mask = owner_block_mask(hart, owner);
+                let lo = mask.trailing_zeros();
+                let slice = ((value >> shift) & (mask >> lo)) << lo;
+                let index = index_by_name(hart, owner).ok_or(IllegalCsrAccess {
+                    address,
+                    why: "a view whose owner has no storage",
+                })?;
+                write_legalized(hart, index, owner, slice);
+                shift += mask.count_ones();
+            }
+        } else {
+            let owner = list.trim();
+            let index = index_by_name(hart, owner).ok_or(IllegalCsrAccess {
+                address,
+                why: "a view whose owner has no storage",
+            })?;
+            // A view writes through under the view's OWN table (sstatus's fields judge
+            // the write into mstatus's storage).
+            write_legalized(hart, index, meta.name, value);
+        }
+    } else {
+        let index = index_by_name(hart, meta.name).ok_or(IllegalCsrAccess {
+            address,
+            why: "a view whose owner has no storage",
+        })?;
+        write_legalized(hart, index, meta.name, value);
+    }
+    // An FP-CSR write is an FP state change: FS marks Dirty (Sail 0.14's write_fcsr →
+    // dirty_fd_context_if_present, measured at fdext_regs.sail:455). SD follows, being
+    // computed.
+    if matches!(meta.name, "fflags" | "frm" | "fcsr") {
+        mark_fp_dirty(hart);
+    }
+    Ok(())
+}
+
+/// The per-field legalization write into one CSR's storage — `csr-write`'s lowering:
+/// WPRI preserves, WARL/WLRL apply their `(legalize …)` rule, computed fields ignore the
+/// write; a register with NO field table is atomic (a scratch, a tval) — the whole word
+/// is writable storage.
+fn write_legalized<H: PrivilegedHart>(hart: &mut H, index: usize, table_name: &str, value: u64) {
     let old = hart.csr_raw(index);
-    // The fields that judge this write: a view's own table; a storage CSR's own table.
-    let table_name = meta.name;
     let mut table = hart
         .csr_fields()
         .iter()
         .filter(|f| f.csr == table_name)
         .peekable();
     if table.peek().is_none() {
-        // An ATOMIC register (the descriptor declares no fields — a scratch, a tval):
-        // the whole word is writable storage.
         hart.csr_write_raw(index, value);
-        return Ok(());
+        return;
     }
     let mut new = old;
     let mut covered = 0u64;
@@ -409,7 +540,6 @@ pub fn csr_write<H: PrivilegedHart>(
     // Bits no field covers: a complete table accounts for every bit (the generator
     // refuses a holed one); anything uncovered is preserved rather than guessed.
     hart.csr_write_raw(index, (new & covered) | (old & !covered));
-    Ok(())
 }
 
 // ---- trap delivery and xret -------------------------------------------------------------

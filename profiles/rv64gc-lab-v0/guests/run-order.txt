@@ -104,3 +104,5 @@ w-sw
 w-timer
 fencei-reserved
 fencei-selfmod
+fp-fs-off
+fp-fcsr-view

@@ -92,6 +92,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/fencei-reserved.s`  `a184809b88d96cef43b841f9eb2853575cb5c2f32294f0d4fe69168fe48320a2`
 //!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.expected.sexp`  `43cb3e21ccf6ec0e6a34da37ca0d3c9c6978cea25471c3f767f4da866ecc319f`
 //!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.s`  `39ef7e47eaf77ebb13c56ef469abb2cde318a84e533d2d1554cf6894ad430a3d`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.expected.sexp`  `7683a70af7480259cd0008966c12c01c16153d5518565017528968982ca06e5c`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.s`  `cd7bb356e339fc0084d21a63bd4a5e22f5b9f2ef966d3a5dd25e9fbd9e2d1316`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.expected.sexp`  `bb3dcc70908d80de2de06c30ade6f9fa062c3cbf99244225494b1c7d87c8e443`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.s`  `a05060f593ca53dd4b6f0efdab183c4c3dc9f8b27e52ef2cc2eda8806faea405`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.expected.sexp`  `4caae2a18515bc4b479ca810df3edd2d23c534f19b8cb9afc081a97cb48485ac`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.s`  `497f63c79cd8e25918d845d5cc7d3430566b2f504a31cd33b2deb572f94694e6`
 //!   `profiles/rv64gc-lab-v0/guests/guest-no-device.expected.sexp`  `2be4382d503c302ed52b68335f6b52a4b8848aa80bfca4b96f503666305336b7`
@@ -13552,6 +13556,125 @@ static EXPECTED_FENCEI_SELFMOD: &[Expectation] = &[
 #[rustfmt::skip]
 static NEVER_WRITTEN_FENCEI_SELFMOD: &[u8] = &[28, 29];
 
+#[rustfmt::skip]
+static WORDS_FP_FS_OFF: &[u32] = &[
+    0x00000097,
+    0x05008093,
+    0x30509073,
+    0x001022F3,
+    0x00202373,
+    0x003023F3,
+    0x00100413,
+    0x00D41413,
+    0x30042073,
+    0x001024F3,
+    0x00202573,
+    0x003025F3,
+    0x30002673,
+    0x00300893,
+    0x00D89893,
+    0x3008A073,
+    0x300026F3,
+    0x3008B073,
+    0x00102773,
+    0x300029F3,
+    0x342027F3,
+    0x34102873,
+    0x00480813,
+    0x34181073,
+    0x30200073,
+];
+#[rustfmt::skip]
+static EXPECTED_FP_FS_OFF: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000050)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(15, 0x0000000000000002)] },
+    Expectation { step: 5, writes: &[(16, 0x000000008000000C)] },
+    Expectation { step: 6, writes: &[(16, 0x0000000080000010)] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[] },
+    Expectation { step: 11, writes: &[] },
+    Expectation { step: 12, writes: &[(16, 0x0000000080000014)] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(16, 0x0000000080000018)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[] },
+    Expectation { step: 21, writes: &[(8, 0x0000000000000001)] },
+    Expectation { step: 22, writes: &[(8, 0x0000000000002000)] },
+    Expectation { step: 23, writes: &[] },
+    Expectation { step: 24, writes: &[] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[] },
+    Expectation { step: 27, writes: &[(12, 0x0000000A00002080)] },
+    Expectation { step: 28, writes: &[(17, 0x0000000000000003)] },
+    Expectation { step: 29, writes: &[(17, 0x0000000000006000)] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[(13, 0x8000000A00006080)] },
+    Expectation { step: 32, writes: &[] },
+    Expectation { step: 33, writes: &[] },
+    Expectation { step: 34, writes: &[] },
+    Expectation { step: 35, writes: &[(16, 0x0000000080000048)] },
+    Expectation { step: 36, writes: &[(16, 0x000000008000004C)] },
+    Expectation { step: 37, writes: &[] },
+    Expectation { step: 38, writes: &[] },
+    Expectation { step: 39, writes: &[(19, 0x0000000A00000080)] },
+];
+
+#[rustfmt::skip]
+static WORDS_FP_FCSR_VIEW: &[u32] = &[
+    0x00100413,
+    0x00D41413,
+    0x30042073,
+    0x01F00293,
+    0x00129073,
+    0x00300313,
+    0x00231073,
+    0x003023F3,
+    0x04000493,
+    0x00349073,
+    0x00500513,
+    0x00102573,
+    0x002025F3,
+    0x0E500493,
+    0x00349073,
+    0x00302673,
+    0x00600693,
+    0x00269073,
+    0x00202773,
+    0x300027F3,
+];
+#[rustfmt::skip]
+static EXPECTED_FP_FCSR_VIEW: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(8, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(8, 0x0000000000002000)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(5, 0x000000000000001F)] },
+    Expectation { step: 4, writes: &[] },
+    Expectation { step: 5, writes: &[(6, 0x0000000000000003)] },
+    Expectation { step: 6, writes: &[] },
+    Expectation { step: 7, writes: &[(7, 0x000000000000007F)] },
+    Expectation { step: 8, writes: &[(9, 0x0000000000000040)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(10, 0x0000000000000005)] },
+    Expectation { step: 11, writes: &[(10, 0x0000000000000000)] },
+    Expectation { step: 12, writes: &[(11, 0x0000000000000002)] },
+    Expectation { step: 13, writes: &[(9, 0x00000000000000E5)] },
+    Expectation { step: 14, writes: &[] },
+    Expectation { step: 15, writes: &[(12, 0x0000000000000045)] },
+    Expectation { step: 16, writes: &[(13, 0x0000000000000006)] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(14, 0x0000000000000002)] },
+    Expectation { step: 19, writes: &[(15, 0x8000000A00006000)] },
+];
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -14589,6 +14712,26 @@ pub static GUESTS: &[Guest] = &[
         expected_fetches: 8,
         expected: EXPECTED_FENCEI_SELFMOD,
         never_written: NEVER_WRITTEN_FENCEI_SELFMOD,
+        cross_model: true,
+    },
+    Guest {
+        name: "fp-fs-off",
+        entry: 0x0000000080000000,
+        words: WORDS_FP_FS_OFF,
+        executed_steps: 40,
+        expected_fetches: 40,
+        expected: EXPECTED_FP_FS_OFF,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "fp-fcsr-view",
+        entry: 0x0000000080000000,
+        words: WORDS_FP_FCSR_VIEW,
+        executed_steps: 20,
+        expected_fetches: 20,
+        expected: EXPECTED_FP_FCSR_VIEW,
+        never_written: &[],
         cross_model: true,
     },
 ];

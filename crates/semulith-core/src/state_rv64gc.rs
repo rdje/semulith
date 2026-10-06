@@ -1,15 +1,20 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `7e1fedc634c5ad5f268521320e02d0aee9d14246d5b9b9f190dc188a0a6ac124`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `ea6c4ef14b592100f3c691ea64e71bf6851928a076b1628c95570ab372736e4b`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
-//! hardwired), the program counter, the current privilege mode, and the 33 CSRs of
+//! hardwired), the program counter, the current privilege mode, the 32 × 64-bit
+//! floating-point file (FLEN=64 — P4-SYSTEM.7 slice b), and the 33 CSRs of
 //! D-CSR-SET with their per-field WPRI/WARL/WLRL tables as DATA — legalization is
 //! applied by the engine at lowering (P4-SYSTEM.2 slices c2/d), never by hand here.
 
 /// Number of integer registers in the architectural register file. — REQ-D-XLEN
 pub const INTEGER_COUNT: usize = 32;
+
+/// Number of floating-point registers (f0–f31) at FLEN=64 — D is selected, the
+/// LP64D ABI (RVI-D §21.1.2; P4-SYSTEM.7 slice b).
+pub const FP_COUNT: usize = 32;
 
 /// x1 — alias view, "return address for a call" (software convention).
 pub const RETURN_ADDRESS_FOR_A_CALL: u8 = 1;
@@ -114,6 +119,7 @@ pub struct ArchitecturalState {
     pc: u64,
     mode: PrivilegeMode,
     csrs: [u64; CSR_COUNT],
+    fregs: [u64; FP_COUNT],
     tlb: crate::translation::Tlb,
     reservation: crate::reservation::Reservation,
     hart_state: crate::wait::HartState,
@@ -157,6 +163,7 @@ impl ArchitecturalState {
                 0x0,
                 0x0,
             ],
+            fregs: [0; FP_COUNT],
             tlb: crate::translation::Tlb::new(),
             reservation: crate::reservation::Reservation::new(),
             hart_state: crate::wait::HartState::new(),
@@ -183,6 +190,19 @@ impl ArchitecturalState {
         if index != 0 {
             self.regs[index as usize] = value;
         }
+    }
+
+    /// Architectural read of `f(index)` — the raw FLEN bits (NaN-boxing is the
+    /// instructions' write-side discipline, P4-SYSTEM.7; the file carries raw
+    /// storage only).
+    #[must_use]
+    pub fn read_f(&self, index: u8) -> u64 {
+        self.fregs[index as usize]
+    }
+
+    /// Architectural write of `f(index)` — no hardwired zero in the FP file.
+    pub fn write_f(&mut self, index: u8, value: u64) {
+        self.fregs[index as usize] = value;
     }
 
     /// The program counter (RVI-RV32I §1.1.1).
@@ -1692,6 +1712,9 @@ impl crate::privilege::PrivilegedHart for ArchitecturalState {
     fn hart_state(&mut self) -> &mut crate::wait::HartState {
         &mut self.hart_state
     }
+    fn fregs(&mut self) -> &mut [u64; 32] {
+        &mut self.fregs
+    }
 }
 
 /// SEM-08: the hidden-state census, re-earned for the privileged state — carried as
@@ -1731,7 +1754,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "floating-point registers f0-f31 and the fcsr behaviour",
             present: true,
-            why: "F and D are selected (D-FP-DEFER); the FP file is NOT modelled until the backend qualification (P4-SYSTEM.7), and fflags/frm/fcsr are declared above as present-with-reset — the census records both halves so neither is forgotten nor silently active",
+            why: "answered by P4-SYSTEM.7 slice (b) after slice (a)'s qualification (SEMULITH-P4-0039, rustc_apfloat): the file is modelled — 32 x 64-bit (FLEN=64 with D, the LP64D ABI), declared above with its laboratory reset; mstatus.FS gates the FP instructions AND the fflags/frm/fcsr CSRs (four-state FS, reset 0 = Off, Dirty on any FP state write — Sail 0.14's dirty_fd_context measured; SD is the computed summary and follows); fflags is the sticky accrued-flags register (software-clearable); frm is WARL one-of 0..4 with dyn/reserved-rm resolution stated; fcsr is the two-owner VIEW, composed by the engine from fflags[4:0] and frm[2:0] (the pre-slice single-owner resolution read 0 and refused writes — measured, fixed at root). Observation stays through the x-registers (decision 8): the file itself is never an expectations-vocabulary item",
         },
         HiddenStateCandidate {
             candidate: "environment state (mtime, interrupt sources, the time register's value)",

@@ -342,6 +342,20 @@ def state_to_form(doc: dict) -> list:
                         _pair("source", r["source"]),
                         _pair("statement", r["statement"])])
         root.append(reg)
+    if "fp_registers" in doc:
+        fp = doc["fp_registers"]
+        r = fp["reset"]
+        root.append([S.Symbol("fp_registers"),
+                     _pair("count", fp["count"]),
+                     _pair("width_bits", fp["width_bits"]),
+                     _pair("ids", fp["ids"]),
+                     _pair("authority", _sym(fp["authority"])),
+                     _pair("source", fp["source"]),
+                     [S.Symbol("reset"),
+                      _pair("value", r["value"]),
+                      _pair("authority", _sym(r["authority"])),
+                      _pair("source", r["source"]),
+                      _pair("statement", r["statement"])]])
     for fam in doc.get("register_family", []):
         ff = [S.Symbol("register_family"),
               _pair("id", fam["id"]),
@@ -502,6 +516,18 @@ def state_to_doc(form) -> dict:
                            "source": _s(_req(rf, "source", "reset")),
                            "statement": _s(_req(rf, "statement", "reset"))}
         doc["integer_registers"] = ir
+    # P4-SYSTEM.7 slice (b), case rv64gc-lab-v0: the floating-point register file —
+    # a declared form reaches the generator as data, never silently dropped (the
+    # P3-BREADTH.5 rule).
+    fpf = _opt_child(form, "fp_registers")
+    if fpf is not None:
+        doc["fp_registers"] = {
+            "count": _req(fpf, "count", "fp_registers"),
+            "width_bits": _req(fpf, "width_bits", "fp_registers"),
+            "ids": _s(_req(fpf, "ids", "fp_registers")),
+            "authority": _s(_req(fpf, "authority", "fp_registers")),
+            "source": _s(_req(fpf, "source", "fp_registers")),
+            "reset": _reset_doc(_child_in(fpf, "reset"))}
     # P3-BREADTH.5 slice 1: the mapping owner CARRIES the dsp56300-lab-v0 constructs —
     # a declared form must reach the generator as data, never be silently dropped here.
     fams = []

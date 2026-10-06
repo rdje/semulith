@@ -417,6 +417,15 @@ def validate_gc(doc: dict, arith_xlen: int) -> tuple[list[dict], list[dict], dic
     if pm["reset"]["value"] not in pm["modes"]:
         raise Refusal(f"rv64gc-lab-v0: mode reset {pm['reset']['value']!r} is not one of "
                       f"the declared modes {pm['modes']!r}")
+    fp = doc.get("fp_registers")
+    if fp is None:
+        raise Refusal("rv64gc-lab-v0: no fp_registers element — F and D are selected "
+                      "(D-FP-DEFER resolved at P4-SYSTEM.7); the f-file is hart state the "
+                      "descriptor must declare")
+    if fp["count"] != 32 or fp["width_bits"] != SUPPORTED_WIDTH or fp["ids"] != "f0..f31":
+        raise Refusal(f"rv64gc-lab-v0: the FP file is f0..f31 at FLEN=64 — got count "
+                      f"{fp['count']}, width {fp['width_bits']}, ids {fp['ids']!r}; "
+                      f"anything else is generator work")
     csrs = doc.get("csr") or []
     if not csrs:
         raise Refusal("rv64gc-lab-v0: no csr elements — a privileged profile without its "
@@ -500,6 +509,9 @@ REQUIRED_CENSUS_CANDIDATES = (
     ("hart wait state (ACTIVE/WAITING)", "wait-state",
      "the wait state is hart state the census must account for before the module can "
      "carry it (P4-SYSTEM.5 slice c)"),
+    ("floating-point registers f0-f31 and the fcsr behaviour", "fp-file",
+     "the FP register file is hart state the census must account for before the module "
+     "can carry it (P4-SYSTEM.7 slice b)"),
 )
 
 
@@ -520,12 +532,17 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a(f"//! Source: `{state_rel}` (sha256 `{state_sha}`).")
     a("//!")
     a("//! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0")
-    a("//! hardwired), the program counter, the current privilege mode, and the 33 CSRs of")
+    a("//! hardwired), the program counter, the current privilege mode, the 32 × 64-bit")
+    a("//! floating-point file (FLEN=64 — P4-SYSTEM.7 slice b), and the 33 CSRs of")
     a("//! D-CSR-SET with their per-field WPRI/WARL/WLRL tables as DATA — legalization is")
     a("//! applied by the engine at lowering (P4-SYSTEM.2 slices c2/d), never by hand here.")
     a("")
     a("/// Number of integer registers in the architectural register file. — REQ-D-XLEN")
     a(f"pub const INTEGER_COUNT: usize = {count};")
+    a("")
+    a("/// Number of floating-point registers (f0–f31) at FLEN=64 — D is selected, the")
+    a("/// LP64D ABI (RVI-D §21.1.2; P4-SYSTEM.7 slice b).")
+    a("pub const FP_COUNT: usize = 32;")
     a("")
     for n in sorted(named, key=lambda d: d["index"]):
         a(f"/// x{n['index']} — alias view, {rust_str(n['role'])} (software convention).")
@@ -551,6 +568,10 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    pc: u64,")
     a("    mode: PrivilegeMode,")
     a("    csrs: [u64; CSR_COUNT],")
+    # P4-SYSTEM.7 slice (b): the FP register file is hart state, emitted on the
+    # TLB/reservation/wait-state discipline (the census's fp-file candidate, the gate at
+    # REQUIRED_CENSUS_CANDIDATES) — the descriptor's fp_registers element is its authority.
+    a("    fregs: [u64; FP_COUNT],")
     # P4-SYSTEM.3 decision 2: the TLB is hart state, emitted because the descriptor's
     # SEM-08 census declares it (the translation-cache candidate, present true —
     # validate_gc refuses a descriptor that does not account for it).
@@ -582,6 +603,7 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     for c in storage:
         a(f"                {c['_reset']:#x},")
     a("            ],")
+    a("            fregs: [0; FP_COUNT],")
     a("            tlb: crate::translation::Tlb::new(),")
     a("            reservation: crate::reservation::Reservation::new(),")
     a("            hart_state: crate::wait::HartState::new(),")
@@ -608,6 +630,19 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("        if index != 0 {")
     a("            self.regs[index as usize] = value;")
     a("        }")
+    a("    }")
+    a("")
+    a("    /// Architectural read of `f(index)` — the raw FLEN bits (NaN-boxing is the")
+    a("    /// instructions' write-side discipline, P4-SYSTEM.7; the file carries raw")
+    a("    /// storage only).")
+    a("    #[must_use]")
+    a("    pub fn read_f(&self, index: u8) -> u64 {")
+    a("        self.fregs[index as usize]")
+    a("    }")
+    a("")
+    a("    /// Architectural write of `f(index)` — no hardwired zero in the FP file.")
+    a("    pub fn write_f(&mut self, index: u8, value: u64) {")
+    a("        self.fregs[index as usize] = value;")
     a("    }")
     a("")
     a("    /// The program counter (RVI-RV32I §1.1.1).")
@@ -734,6 +769,9 @@ def emit_gc(doc: dict, named: list[dict], regs: list[dict], census: dict,
     a("    }")
     a("    fn hart_state(&mut self) -> &mut crate::wait::HartState {")
     a("        &mut self.hart_state")
+    a("    }")
+    a("    fn fregs(&mut self) -> &mut [u64; 32] {")
+    a("        &mut self.fregs")
     a("    }")
     a("}")
     a("")
