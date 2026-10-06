@@ -28,3 +28,9 @@ pub mod state_rv64gc;
 pub mod timekeeping;
 pub mod translation;
 pub mod wait;
+
+/// The qualified FP backend (`P4-SYSTEM.7` slice (a), measured in
+/// `docs/decisions/decision_fp-backend-qualification.md`) — pinned exact; the model
+/// layer's `fp.rs` (slice (b)) is the only consumer of record. This re-export is the
+/// landing slice's compile-use: the dependency is visible, linked, and version-locked.
+pub use rustc_apfloat;

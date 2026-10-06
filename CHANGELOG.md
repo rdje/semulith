@@ -1,5 +1,50 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0039 (leaf P4-SYSTEM.7, slice a) — the backend qualification: rustc_apfloat QUALIFIED by measurement
+
+- The candidate landscape re-measured against the fetched artifacts (the census's
+  web claims were leads): `rustc_apfloat 0.2.3+llvm-462a31f5a5ab` (updated
+  2025-06-11, ~6.3M downloads; Apache-2.0 WITH LLVM-exception, LICENSE-DETAILS.md
+  recording the port's provenance; forbid(unsafe_code), no_std, pure-value API)
+  and `softfloat 1.0.0` (koute, 2023-11-03; MIT OR Apache-2.0; musl-libc lineage
+  via const_soft_float — EVD-04-clean). The negatives re-confirmed from the
+  metadata: softfloat-sys/softfloat-wrapper are Berkeley C FFI; softfloat-pure
+  does not resolve. One census claim measured UNVERIFIABLE (softfloat's
+  "TestFloat-verified upstream" — the crate's own documents carry no such
+  statement; recorded, not counted).
+- The capability measurement (the extracted sources): softfloat has NO rounding
+  modes, NO exception flags, NO FMA, NO 64-bit int conversions, NO min/max — five
+  of ARCH §6's explicit requirements; rustc_apfloat carries the whole surface
+  EXCEPT sqrt (never ported) and two measured LLVM-vs-IEEE flag deviations
+  (opOverflow only for ±inf results; no NV on sNaN format conversions). The
+  **correctness tables** (63,752 cases vs MPFR, directed + seeded streams, per op
+  × 5 modes × f32/f64): the arithmetic core (add/sub/mul/div/fma values, all
+  modes, both widths) has **ZERO disagreements**; the 612 value disagreements are
+  all model-layer policy surfaces (NaN→int 340, fmin/fmax signed-zero +
+  both-NaN canonical 240, NaN payloads on format conversion 32) and the 386 flag
+  disagreements are the two named deviations. softfloat vs MPFR on its 4,416-case
+  shared set: 68, ALL the NaN-sign family (its arithmetic core is MPFR-exact
+  where it exists, INCLUDING sqrt — the bar fp.rs's own sqrt must match).
+- The MPFR path, recorded: no CLI/gmpy2/mpmath on this host — the system Homebrew
+  libmpfr 4.2.2 driven by a scratch C generator with MPFR's own semantics
+  measured and corrected spec-side (the DON'T-USE MPFR_RNDNA, the
+  exponent-range-shaped OF/UF flags, the NaN canonicalization, the NAN-flag-is-
+  not-NV mapping). Timing on this host: apfloat f64 add 10.1 / mul 10.5 / div
+  40.7 ns/op (fma 15.7, conversions 3.5-5.4); softfloat ~3-5× cheaper where it
+  exists. Both candidates build clean for wasm32-unknown-unknown (PORT-WEB).
+- **The decision record** (`docs/decisions/decision_fp-backend-qualification.md`
+  + INDEX; the candidate-landscape lesson PROMOTED to
+  `docs/knowledge/a-candidate-landscape-census-entry-is-a-lead.md`): the FP
+  backend is rustc_apfloat, pinned `=0.2.3+llvm-462a31f5a5ab`; the model layer
+  (fp.rs, slice b) owns the RISC-V target policy AND the named deviations;
+  softfloat disqualified on capability; the fallback stays named. The dependency
+  lands in semulith-core (Cargo.lock 4 → 7 packages: rustc_apfloat + bitflags +
+  smallvec; the cargo home stays on-volume), the lib.rs re-export as the
+  compile-use. `make check` rc=0, `make gate` green (DERIVED-COUNTS 430
+  unchanged), make bench wasm 133,715 bytes + smoke-bench 53 arms + both books.
+  Next: slice (b) — the FP state (the f-file + FS gating + the fcsr fix +
+  fflags/frm semantics + the census re-answer) with the FS=Off corpus.
+
 ## SEMULITH-P4-0037 (leaf P4-SYSTEM.6, slice c) — the matched experiment 6 AGREE of 6; the LEAF CLOSES
 
 - The Sail matched experiment for the fence.i surface — decision 2's designed
@@ -843,39 +888,4 @@
   CELL on a deleted cell. Driver self-test 15/15; tracked units untouched
   (`INTERACTION-MATRIX: ok (5 unit(s))`); `make gate` green (DERIVED-COUNTS unchanged at
   408 — no arms this slice). Next: slice (h) — the atomic flip.
-
-## SEMULITH-P4-0010 (leaf P4-SYSTEM.2, slice f) — the base mirror executed (49/49), the mode-matrix corpus, the coverage rehearsal
-
-- The rv64i guest corpus runs on the rv64gc engine: all 49 guests staged byte-identically
-  (c-scope.c excluded — `scripts/build_c_guest.sh` hard-codes `-march=rv64i`; the rv64gc
-  C-guest question is recorded for the flip) and executed by the scratch corpus runner
-  (`target/p4-system-2/proof/corpus.rs`) — the declared MainMemory map, fault delivery on
-  the pinned cause vocabulary, the per-step x-register-change comparison rule from the
-  rv64i verify runner. The runner's trap-END discipline was a real bug it-fault-alias
-  exposed: a delivered trap now aborts the step's remaining effects.
-- 46 expectation files carry over byte-identically; fault-jal-mis, fault-jalr-mis and
-  it-prio-jump were RE-DERIVED BY DESIGN — under D-IALIGN-16 their 2-mod-4 jump targets
-  are legal (RVI-C 27.1), so the link write lands and no misaligned-fetch fault fires. A
-  declared profile difference, measured and re-derived from the pinned chapters — never
-  fitted to engine output (EVD-05).
-- The mode matrix: 13 new guests with expectations derived BEFORE the run — the six
-  zicsr forms' read/write/set/clear semantics; M-CSR legality in S and U (mtval = the
-  faulting word); delivered breakpoints that resume; ecall causes 11/9/8 by mode and
-  medeleg delegation to S with sret return (an M-mode ecall never delegates); mret mode
-  pops with MPRV cleared when the target is below M and preserved at M; sret legal in
-  M/S, illegal in U, and the TSR gate; wfi and the TW gate; sfence.vma and satp reads
-  under TVM; counter reads under mcounteren then scounteren; stimecmp under TM then
-  STCE; read-only CSR writes trapping while misa (WARL) ignores them; the mstatus
-  all-ones WARL read-back (0x8000000A007E79AA, the state document's field table).
-- Execution was the falsifier: it caught 14 stale auipc+addi vector deltas (labels
-  assemble to no word — every vector target re-audited through the real assembler), two
-  guest-design bugs (M-level CSR writes inline in S-mode in mm-mret and mm-ecall-modes —
-  the drops moved before/inside the M handler), one hex-digit slip in the mstatus WARL
-  constant and one no-change mis-derivation. Every mismatch was re-derived, never
-  fitted. `corpus: 62 guest(s) PASS, 0 FAIL` (49 base + 13 mode matrix, deterministic
-  re-run); the coverage rehearsal over the staged 65-form scope reads 65/65 (the base 52
-  via the mirror, the 13 extension forms via mm-*, per-guest counts recorded). All
-  untracked scratch — no gate arms this slice (the corpus's registry governor lands at
-  the flip); `make gate` green (DERIVED-COUNTS unchanged at 408).
-  Next: slice (g) — the interactions.sexp.
 

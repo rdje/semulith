@@ -9,5 +9,11 @@ edition.workspace = true
 license.workspace = true
 description = "Canonical processor-model core: state, decode, semantics, environment contract, execution control"
 
+[dependencies]
+# P4-SYSTEM.7 slice (a): the FP backend, qualified by measurement and pinned exactly
+# (docs/decisions/decision_fp-backend-qualification.md). Used from slice (b)'s fp.rs;
+# the lib.rs re-export is this slice's compile-use.
+rustc_apfloat = "=0.2.3+llvm-462a31f5a5ab"
+
 [lints]
 workspace = true

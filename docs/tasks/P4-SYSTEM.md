@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slice (a) done `2026-10-06`, `SEMULITH-P4-0039`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -164,7 +164,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — `.6` closed `2026-10-05` (the fence.i contract validated on both engines, 6 AGREE of 6, the acceptance pair landed); the design brief lands first, and it must start from the leaf card's routed-in measurement: both reference models vendor Berkeley SoftFloat (184/199 `.c` files byte-identical — a Sail-versus-Spike comparison executes ONE implementation twice) |
+| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slice (a) landed `2026-10-06` (rustc_apfloat QUALIFIED by measurement, 63,752 MPFR cases with a zero arithmetic-core disagreement; softfloat fails §6 on capability; the dependency pinned and wasm-proven); next is slice (b): the FP state with the FS=Off corpus |
 
 ## Decisions
 
@@ -661,96 +661,77 @@ never raised, at every crossing. The index:
 
 - leaf `.1`, `.2` (all slices + LEAF ACCEPTANCE), `.3` (all slices), `.4` slice (a) →
   [`archive/P4-SYSTEM.md`](archive/P4-SYSTEM.md) (crossings 1–7).
-- `.4` slices (b)–(f), `.5` slices (a)–(d), `.6` slices (a), (b) →
+- `.4` slices (b)–(f), `.5` slices (a)–(d), `.6` slices (a)–(c) →
   [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md)
-  (8th — the archive split — 9th–13th, 15th–20th).
-  (8th — the archive split — 9th–13th, 15th–19th).
-  (8th — the archive split — 9th–13th, 15th–18th).
-  (8th — the archive split — 9th–13th, 15th–17th).
-  (8th — the archive split — 9th–13th, 15th, 16th).
-  (8th — the archive split — 9th, 10th, 11th, 12th, 13th, 15th).
+  (8th — the archive split — 9th–13th, 15th–22nd).
 
 
-`P4-SYSTEM.6` slice (c) — the Sail matched experiment + the census re-answer + the reports and the book; the LEAF CLOSES (`2026-10-05`, `SEMULITH-P4-0037`):
+`P4-SYSTEM.7` slice (a) — the backend qualification: rustc_apfloat QUALIFIED (`2026-10-06`, `SEMULITH-P4-0039`):
 
-- [x] **REPRODUCE / ISSUE** —
+- [x] **REPRODUCE / ISSUE** — the acceptance requires the qualification MEASURED,
+  and the census's claims were web leads:
 
   ```
-  $ <validate-config with the override materialized fresh from the tracked unit>
-  The default configuration merged with … is valid. rc=0; Zifencei supported
-  true (the .6 brief's pre-condition 3 re-measured; the tracked .sexp unmoved
-  since bfa6aaa — git log); NO override change needed
-  $ grep -c "instruction-fetch cache" profiles/rv64gc-lab-v0/state.sexp
-  1 — the candidate's why still read rv64i's recording, whose clause argues the
-  choice from the extension's ABSENCE (true of rv64i, stale at the bind)
+  $ curl -sSL crates.io/api/v1/crates/{rustc_apfloat,softfloat} + the .crate tarballs
+  rustc_apfloat: 0.2.3+llvm-462a31f5a5ab, updated 2025-06-11, Apache-2.0 WITH
+    LLVM-exception (the LICENSE texts measured in the extracted crate)
+  softfloat: 1.0.0, updated 2023-11-03, MIT OR Apache-2.0 — the musl-libc
+    lineage via const_soft_float, NOT Berkeley
+  the negatives re-confirmed: softfloat-sys/-wrapper are Berkeley C FFI;
+  softfloat-pure does not resolve
   ```
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; one brief phrasing measured
-  imprecise (recorded): pre-condition 2 located the 'without Zifencei' clause
-  IN rv64gc's candidate — it actually lives one hop away, in rv64i's verbatim
-  text the candidate references; the re-answer makes the bind's consequence
-  explicit in place either way. The designed outcome held everywhere else:
+- [x] **ROOT CAUSE (WHY + WHERE)** — no defect; the capability gaps measured in
+  the extracted sources (the `grep -c` tallies are on the vlog row): softfloat
+  has NO rounding modes, NO exception flags ("Not Asserted" is a comment), NO
+  fma, NO 64-bit int conversions, NO min/max — five of ARCH §6's explicit
+  requirements; rustc_apfloat carries the whole surface EXCEPT sqrt (never
+  ported) and two measured LLVM-vs-IEEE flag deviations. One census claim
+  measured UNVERIFIABLE (softfloat's "TestFloat-verified upstream" — its own
+  documents carry no such statement; recorded, not counted). The MPFR path
+  needed four measured corrections of MPFR's own semantics (a reference
+  library's flags are ITS semantics; a generator that trusts them writes a
+  wrong spec).
 
-  ```
-  $ grep -n "encdec = FENCEI" target/refs/sail-riscv-src/model/extensions/Zifencei/zifencei_insts.sail
-  mapping clause encdec = FENCEI(imm, rs, rd) — the fields are VARIABLES
-  (decoded-not-fixed), the shall-ignore sentence quoted in sail's own comment;
-  execute = sail_barrier + RETIRE_SUCCESS ('a nop for the memory model')
-  ```
-
-- [x] **FIX** — the experiment tooling (`target/p4-system-6/sail/`: 6 ELFs at
-  exactly 0x8000_0000 — fencei-selfmod/dir-selfmod-fence's auipc-derived patch
-  targets MEASURED entry-relative, so the absolute entry matters); the row-keyed
-  comparator; `state.sexp`'s fetch-cache candidate re-answered in place (the
-  consequence line unchanged); `references.sexp`'s fifth experiment recorded;
-  the book's `.6` section completed.
+- [x] **FIX** — the scratch harnesses (`target/p4-system-7/`: `probe/` the
+  corpus/APFloat/softfloat/cross-check/timing harness; `mpfr/vec_gen.c` the
+  MPFR vector generator over the system libmpfr 4.2.2, MPFR's own semantics
+  corrected spec-side: RNDNA, exponent-range OF/UF, NaN canonicalization,
+  NAN ≠ NV); the decision record + INDEX + the knowledge card; the dependency
+  landing (`=0.2.3+llvm-462a31f5a5ab` pinned in semulith-core, the lib.rs
+  re-export compile-use, the cargo home on-volume).
 
 - [x] **ADDRESSED (verified)** —
 
   ```
-  $ <the 6-guest comparator against sail 0.14, the matched override>
-  AGREE ×6 (it-fencei 3, min-fencei 1, fencei-reserved 2, fencei-selfmod 8,
-  fault-selfmod 7, dir-selfmod-fence 8 — 29 steps' change-observations exact,
-  the patched fetch reading the new value on both sides): the designed AGREE
-  measured, not assumed; ZERO non-AGREE cells to name
-  $ git log --oneline -1 -- profiles/rv64gc-lab-v0/guests/a-amo-aqrl.expected.sexp
-  495b4b8 — the wider corpus's expectations unmoved since their verdicts;
-  nothing to re-run (the bind touched only the fencei surface)
-  $ python3 scripts/gen_state.py <the re-answered descriptor> && cargo build
-  wrote state_rv64gc.rs (the candidate's new why carried into the module),
-  rc=0; STATE-GEN's own pair check green at make gate
-  $ cargo test -p semulith-verify run_rv64gc
-  test result: ok. 4 passed — 101/101
+  $ probe run (63,752 cases, directed + seeded, per op × 5 modes × 2 widths):
+  ZERO arithmetic-core value disagreements; 612 value + 386 flag disagreements,
+  all named — the two LLVM-vs-IEEE deviations (362 want OFNX; 24 want NV on
+  sNaN conversions) and the policy surfaces (NaN→int 340, fmin/fmax 240, NaN
+  payloads 32); sqrt not probed on APFloat (1,440 — fp.rs owns it); SOFTFLOAT
+  vs MPFR (4,416): 68, ALL the NaN-sign family — MPFR-exact where it exists
+  $ probe time: apfloat f64 add/mul/div 10.1/10.5/40.7 ns/op, fma 15.7;
+  softfloat 3.2/2.3/5.1, sqrt 44.1
+  $ cargo build --release --target wasm32-unknown-unknown (both): Finished —
+  PORT-WEB proof for both
+  $ <the landing> — Cargo.lock 4 → 7 (rustc_apfloat + bitflags + smallvec);
+  make bench wasm 133,715 bytes, smoke-bench 53 arms ok
   ```
-
-- [x] **THE LEAF ACCEPTANCE** — "rewrite-code fixtures with and without the
-  architectural synchronization", measured on BOTH engines: WITH —
-  fencei-selfmod's fence.i retires between the store and the fetch and the
-  patched word reads 7 (sail AND semulith, step-for-step); WITHOUT —
-  fault-selfmod's patch is visible with NO synchronization, D-CODE-VISIBILITY
-  named (the laboratory's declared legal subset of the chapter's may-or-may-not);
-  the staleness half answered as the declared latitude (intro.html's
-  implicit-reads sentence — a valid implementation may cache every fetchable
-  byte forever; the caching-hart model rejected at the brief, decision 2).
 
 - [x] **NO REGRESSION** — `make check` rc=0 (fmt + clippy -D warnings + 8
   groups); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS 430
-  unchanged); RECORD-SCHEMA 20 files ok (references.sexp's matched_scope gain
-  and the two mirror files verbatim-identical); PROFILE-CONSISTENCY 5;
-  smoke-bench 53 arms + bench wasm + both books green (no tracked
-  engine/fixture content changed this slice beyond the re-derived
-  state/definition pair — the experiment tooling is untracked scratch; the
-  legs re-run anyway as the cheap proof).
+  unchanged; the knowledge map regenerated for the new decision record); no
+  corpus touch, no engine touch.
 
-- [x] **LOCKSTEP** — same commit: this tree (leaf status **done** + the Result
-  narrative + frontier → `.7` + checklist + logs + changelog; the slice-(b)
-  checklist and the `.1`/`.2` changelog entries moved to the archive at the
-  twentieth ceiling firing), `docs/TASK_TREE.md` (6/10), `MEMORY.md`
-  (next_action → `.7`'s design brief, the routed ancestry flagged),
-  `LIVE_STATUS.md` (6/10, byte-neutral), `CHANGELOG.md`, `DEV_NOTES.md` (the
-  promotion decision:
-promotion: declined (the durability is the machinery — the six AGREEs are re-runnable against the materialized override, and the acceptance pair is armed by make check)),
-  `docs/book/src/plan/p4.md` (the `.6` section completed) + the book index.
+- [x] **LOCKSTEP** — same commit: this tree (leaf status + frontier + checklist +
+  logs + changelog; the `.6` slice-(c) checklist + changelog entries archived at
+  the 21st/22nd ceiling firings), `MEMORY.md` (next_action → slice b),
+  `CHANGELOG.md`, `DEV_NOTES.md` — the promotion MEASURED positive: the
+  candidate-landscape lesson promoted to docs/knowledge/
+  (a-candidate-landscape-census-entry-is-a-lead.md + INDEX), `docs/decisions/`
+  INDEX + the new record, `LIVE_STATUS.md` (unchanged), `docs/TASK_TREE.md`
+  (unchanged — the frontier leaf is `.7` already), `docs/book/src/plan/p4.md`
+  (the `.7` section opened) + the book index.
 
 ## Verification Log
 
@@ -761,10 +742,12 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (a) | the candidate re-measurement (LICENSE texts from the fetched artifacts; the negatives re-confirmed; the TestFloat claim unverifiable, not counted); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (the system libmpfr 4.2.2 via vec_gen.c, four measured corrections); the probe (63,752 cases: ZERO arithmetic-core disagreements; 612 value + 386 flag disagreements, all named — policy surfaces or the two LLVM-vs-IEEE deviations; softfloat's 4,416 shared cases with 68, all NaN-sign, its sqrt MPFR-exact); the timing table (apfloat f64 add/mul/div 10.1/10.5/40.7 ns/op, fma 15.7; softfloat 3.2/2.3/5.1, sqrt 44.1); the wasm proof (both candidates); the decision record + INDEX + the PROMOTED knowledge card; the dependency landing (pinned =0.2.3+llvm-462a31f5a5ab; Cargo.lock 4→7; on-volume cargo home); `make check` rc=0, `make gate` all green (DERIVED-COUNTS 430; the knowledge map regenerated), bench wasm + smoke-bench + both books | slice (a) landed: rustc_apfloat QUALIFIED by measurement; softfloat disqualified on capability; the fallback stays named |
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 | `.6` (slice c) + LEAF | `SEMULITH-P4-0037 (leaf P4-SYSTEM.6): slice c — the matched experiment 6 AGREE of 6 + the census re-answer; the LEAF CLOSES` | the override measured first (validate-config rc=0, Zifencei true, unmoved); sail's FENCEI measured in source (fields decoded-not-fixed, nop for the memory model); 6 ELFs at exactly 0x8000_0000; 6 AGREE of 6 (29 steps, the patched fetch reading 7 on both sides, zero non-AGREE cells); the wider corpus unmoved since the verdicts (nothing to re-run); the fetch-cache candidate re-answered in place (the consequence line unchanged; gen_state re-derived); references.sexp's fifth experiment (difference-free); the acceptance box (WITH fencei-selfmod, WITHOUT fault-selfmod, the staleness half the declared latitude); 101/101 corpus; make check + make gate green (DERIVED-COUNTS 430), smoke-bench 53 arms, bench wasm, both books |
 | `.6` (slice b) — THE BIND | `SEMULITH-P4-0036 (leaf P4-SYSTEM.6): slice b — THE BIND: the unit composes riscv/zifencei (88 forms, 101 guests, the fencei arms tracked)` | slot→extension; the census dual edit 87→88 (the .4 lesson's four places); definition_rv64gc.rs regenerated; REQ-GC-FENCEI + OB-GC-FENCEI, no new D-*; the fencei re-derivations (the pre-commit fulfilled); fencei-reserved + fencei-selfmod (the acceptance pair); the decision-3 corrections as recorded mirror re-derivations; the flip 88==88; 101/101 corpus; 98/99 identity cmp-clean; 28 cells; EXERCISE-COVERAGE 88/88; make check + make gate green (DERIVED-COUNTS 430) |
 | `.6` (slice a) | `SEMULITH-P4-0035 (leaf P4-SYSTEM.6): slice a — the rv_zifencei re-pin + the one-form fragment + zifencei.sem.sexp + the assembler's zero-operand acceptance` | the tracked-route pin (73 bytes, one row, fresh re-fetch byte-identical); the named exclusion (flips at the bind); the fragment (owns NO fields, funct3=1; 6 others byte-identical); zifencei.sem.sexp ((effect (nop)) cited; pair 1/1, both composes, citations offline); the deviation ("no assembler shapes" false for the bare spelling → the named special case; no Sem variant / no generator change TRUE — rustc rc=0 ×2); the trials (53 and 85+3 COMPOSE); the probe (3 named REDs, spike-dasm exact); 87==87/52==52; 99 guests byte-identical; make check + make gate green (DERIVED-COUNTS 430) |
@@ -799,6 +782,26 @@ only the ACTIVE leaf's rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (a) done (`SEMULITH-P4-0039`) — **rustc_apfloat QUALIFIED**
+  by measurement: the arithmetic core (add/sub/mul/div/fma values, all 5 modes,
+  both widths) is MPFR-exact over 63,752 probe cases; the 612 value + 386 flag
+  disagreements are all named — the model-layer policy surfaces (NaN→int 340,
+  fmin/fmax 240, NaN payloads 32) and the two LLVM-vs-IEEE deviations (opOverflow
+  only for ±inf results; no NV on sNaN conversions) — all fp.rs's by name.
+  softfloat fails ARCH §6 on capability (no rounding modes, no flags, no FMA, no
+  64-bit conversions, no min/max) while measuring MPFR-exact where it exists
+  (the 68 disagreements are all its NaN-sign convention). The MPFR path: the
+  system libmpfr 4.2.2 via a scratch C generator, its semantics corrected
+  spec-side (RNDNA, exponent-range OF/UF, NaN canonicalization, NAN ≠ NV).
+  Licenses/provenance measured from the extracted crates (Apache-2.0 WITH
+  LLVM-exception, LLVM APFloat f3598e8f / MIT OR Apache-2.0, musl-libc lineage);
+  three lineages, none Berkeley. The decision record lands
+  (decision_fp-backend-qualification.md + INDEX + the PROMOTED knowledge card);
+  the dependency pinned (`=0.2.3+llvm-462a31f5a5ab`, Cargo.lock 4→7, on-volume
+  cargo home, the re-export compile-use). `make check` rc=0, `make gate` green
+  (DERIVED-COUNTS 430), bench wasm + smoke-bench 53 arms + both books. Next:
+  slice (b) — the FP state with the FS=Off corpus.
 
 - `2026-10-05`: `.6` slice (c) done and the LEAF CLOSES (`SEMULITH-P4-0037`) — the
   Sail matched experiment for the fence.i surface, scoped to decision 2's designed
@@ -852,32 +855,6 @@ only the ACTIVE leaf's rows stay inline below.
   gate` green (DERIVED-COUNTS 430 unchanged). Next: slice (c) — the Sail
   matched experiment + the census re-answer + the reports and the book + the
   leaf acceptance.
-
-- `2026-10-05`: `.6` slice (a) done (`SEMULITH-P4-0035`) — the `rv_zifencei`
-  re-pin through the tracked `extensions/` route (73 bytes, one row, sha256
-  be2d8f72…; a fresh re-fetch byte-identical), recorded in references.sexp with
-  the supplies amendment; the fetch leg's named exclusion (the M/A pattern —
-  pinned for the fragment, not the scope, until slice (b)'s bind flips it):
-  both profiles' `--verify-only` green, 87==87 and 52==52. The
-  FRAGMENTS entry generates `zifencei.sexp` (owns NO fields — imm12/rs1/rd are
-  the base's; requires rv64i; funct3=1; the six others byte-identical) and
-  `zifencei.sem.sexp` lands hand-written with `(effect (nop))` — the three
-  normative sentences, the coherent/uncached-RAM latitude and the shall-ignore
-  rule re-located in the pinned chapter (Version 2.0; citations offline, corpus
-  6 files / 8 resolutions). One brief claim measured FALSE as written: decision
-  1's "no assembler shapes" — the row's operand list refused the
-  standard-software spelling, so the zero-operand acceptance lands as a named,
-  cited special case (the A-suffix precedent's shape): bare `fence.i` →
-  0x0000100f, the full spelling unchanged, 3 named REDs, spike-dasm exact incl.
-  the shall-ignore word 0x0011118f. The OTHER no-change claims measured TRUE:
-  no Sem variant, no generator change — gen_definition emits mask 0x0000707f
-  (the shall-ignore decode) over the existing Sem::Nop, rustc rc=0 over both
-  trial compositions; check_encoding_disjoint COMPOSEs base+zifencei (53) and
-  the profile's set +zifencei (85+3); all 99 guests re-assemble byte-identical. The slot STAYS
-  declared, the census STAYS 87, no corpus, no Rust. `make check` rc=0, `make
-  gate` green (DERIVED-COUNTS 430 unchanged). Next: slice (b) — THE BIND:
-  slot→extension, 87→88, the re-derived fencei guests, the reserved-fields
-  probe, the acceptance pair, the matrix cells, the identity proof.
 
 - `2026-10-05`: `.5` slice (d) done and the LEAF CLOSES (`SEMULITH-P4-0033`) — the
   Sail matched attempt, scoped to what is matchable (decision 9). The override is
