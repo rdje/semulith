@@ -11,10 +11,10 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (36 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 466 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
+| Project doctrines (37 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 473 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 36 destinations governed; containment deferred with a trigger |
-| mdBook is the review surface | Done | 40 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
+| mdBook is the review surface | Done | 41 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — index, doctrine documents, task-tree facts, derived counts |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
 

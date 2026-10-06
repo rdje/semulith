@@ -82,6 +82,7 @@ judged too.
 | `BOOK-INDEX` | [governance](docs/doctrines/governance.md) |
 | `CITATION-QUOTES` | [definition](docs/doctrines/definition.md) |
 | `FP-VECTORS` | [definition](docs/doctrines/definition.md) |
+| `CONTRACT-FREEZE` | [definition](docs/doctrines/definition.md) |
 
 Each ships a `--self-test` whose RED arms assert the **reason** as well as the verdict, each
 was fired RED before being registered, and each **refuses** (exit 2) rather than passing if its

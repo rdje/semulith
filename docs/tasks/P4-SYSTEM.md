@@ -153,7 +153,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
 - ID: `P4-SYSTEM.9` — **environment contract v1** — `G-CONTRACT`
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`)
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`; slice (a) done `SEMULITH-P4-0064`)
   Goal: extend the contract to cover translation inputs, interrupt sources, counter progress and reservation invalidation for this profile.
   Acceptance: every new assumption has a positive and a negative fixture; the contract is versioned, not edited in place.
 
@@ -166,7 +166,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); next: slice (a), the contract construct, v0 recorded and frozen |
+| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); (a) the contract versioned, v0 frozen; next: slice (b), v1's four assumptions and the check registry |
 
 ## Decisions
 
@@ -1092,6 +1092,49 @@ never raised, at every crossing. The index:
   `LIVE_STATUS.md`, `CHANGELOG.md`, the book.
   `promotion: declined (the leaf's lessons were promoted at their slices — the oracle card's mirror case).`
 
+`P4-SYSTEM.9` slice (a) — the contract becomes a versioned document; v0 recorded and frozen; CONTRACT-FREEZE (`2026-10-06`, `SEMULITH-P4-0064`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's pre-condition 1, measured:
+
+  ```
+  $ git ls-tree --name-only HEAD schema/ | grep -c "contract.sexp$" → 0 (no contract construct)
+  $ git show HEAD:profiles/rv64gc-lab-v0/contract-obligations.sexp | grep -c '^(obligation' → 46,
+    every one contract_version "0"; nothing checks the version or which records make it up
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the version was data on each record and nothing else
+  (`git grep -n contract_version HEAD -- 'scripts/*.py' 'scripts/*.sh'` → the record
+  reader/writer, the board/platform generators' pins and self-test fixtures — no rule judges
+  which records make up a version), so "versioned, not edited in place" could not be checked
+  and seven leaves added records under v0.
+
+- [x] **FIX** — `schema/contract.sexp` (one `contract` per version: id, version, extends,
+  status open/frozen, statement, `member`s with a sha256 once frozen, `supersede` entries);
+  `profiles/rv64gc-lab-v0/contract.sexp` recording v0 as it stands — 46 members, FROZEN, each
+  record line pinned; `scripts/check_contract_freeze.sh` — CONTRACT-FREEZE, the 37th project
+  doctrine (members real and of their version; every record in exactly one version; frozen
+  records unedited; extends and supersede well-formed), registered on its five surfaces.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/check_contract_freeze.sh --self-test → 7 pass / 0 fail (GREEN the real
+    contract; RED an edited frozen record — FROZEN RECORD EDITED; a dropped member —
+    UNVERSIONED RECORD; a member naming nothing; a member of another version; an extension of
+    no version; a supersession of a record not inherited)
+  $ bash scripts/check_contract_freeze.sh → CONTRACT-FREEZE: ok (1 versioned unit(s), 1
+    version(s), 0 finding(s))
+  $ check_sexp_schema contract.sexp schema/contract.sexp → ok
+  ```
+
+- [x] **NO REGRESSION** — no record changed (v0 pins today's bytes); `make check` rc=0; `make
+  gate` → `=== all doctrines green ===` (DERIVED-COUNTS re-derived: 37 doctrines, 473 arms).
+
+- [x] **LOCKSTEP** — this tree, the doctrine surfaces (registry, `docs/doctrines/definition.md`,
+  `DOCTRINE_ENFORCEMENT.md`, the book's doctrine chapter, `docs/toolbox/definition.md`),
+  `LIVE_STATUS.md`, `CHANGELOG.md`, `MEMORY.md` (next_action → b), the book (the new P4.9
+  chapter). `promotion: declined (the mechanism is the doctrine row and the schema's own comment).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1101,6 +1144,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.9` slice (a) | CONTRACT-FREEZE 7/7 controls; the real contract clean (1 unit, 1 version); the schema ok; no record changed | **met** — a contract version is a checked document, v0 frozen |
 | `2026-10-06` | `.8` slice (e) + LEAF | sail over the ten `.8` guests (3 AGREE; the counters cell and the six injected guests named — each injected one diverging at its first refused access); 134/134 | **met** — the leaf closes |
 | `2026-10-06` | `.8` slice (d) | five injected guests derived (every cell as designed) and green (134 guests); RED — a refused walk read as a page fault is caught first by inj-walk-l2 (the 129 earlier guests blind); RECORD-SCHEMA ok; STATE-GEN re-derived | **met** — a fault injected at a chosen suboperation leaves the architecturally required state, on every multi-suboperation instruction the profile has |
 | `2026-10-06` | `.8` slice (c) | inj-carrier derived and green (129 guests); RED with the runner's refusals emptied (step 12); the predicate's boundary test; the schema refuses an unknown kind; the tool regression 80/80 | **met** — injection is typed, declared and honoured on both the engine's and the model's side |
@@ -1132,6 +1176,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.9` (slice a) | `SEMULITH-P4-0064 (leaf P4-SYSTEM.9): slice a — the contract becomes a versioned document (schema/contract.sexp), rv64gc's v0 recorded and frozen (46 members pinned), CONTRACT-FREEZE registered (the 37th doctrine)` | the doctrine on its five surfaces |
 | `.8` (slice e) + LEAF | `SEMULITH-P4-0062 (leaf P4-SYSTEM.8): slice e — the sail attempt over the faults corpus (3 AGREE + 7 NAMED of 10), THE LEAF ACCEPTANCE; the leaf CLOSES` | frontier → `.9` |
 | `.8` (slice d) | `SEMULITH-P4-0061 (leaf P4-SYSTEM.8): slice d — the injected-fault corpus (LR/SC/AMO halves, FP transfers, a walk refused at each Sv39 level); OB-GC-PARTIAL-PROGRESS declared; the state candidate re-answered` | fetch refusals named out (no fetch model in the authoring tool) |
 | `.8` (slice c) | `SEMULITH-P4-0060 (leaf P4-SYSTEM.8): slice c — the typed fault-injection carrier: declared refusal regions honoured by the runner and the spec-side model alike; inj-carrier proves it end to end (an AMO's store refused after its load)` | both guest modules regenerated |
@@ -1157,6 +1202,11 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.9` slice (a) done (`SEMULITH-P4-0064`) — **the contract is versioned**: a
+  contract document lists each version's records; rv64gc's v0 is recorded as it stands and
+  frozen, every record pinned; CONTRACT-FREEZE refuses an edited frozen record. Next: slice
+  (b) — v1's four environment assumptions with their fixtures.
 
 - `2026-10-06`: `.8` slice (e) done and the LEAF CLOSES (`SEMULITH-P4-0062`) — faults, restart
   and partial progress validated: a fault injected at any suboperation leaves the required

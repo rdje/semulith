@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0064 (leaf P4-SYSTEM.9, slice a) — the contract becomes a versioned document; v0 frozen; CONTRACT-FREEZE
+
+- `schema/contract.sexp`: one `contract` form per version — its id, number, the version it
+  extends, open or frozen, a statement, its member records (pinned by sha256 once frozen) and
+  its supersessions. `profiles/rv64gc-lab-v0/contract.sexp` records v0 as it stands: 46
+  members, frozen.
+- CONTRACT-FREEZE (`scripts/check_contract_freeze.sh`, the 37th doctrine): every obligation
+  belongs to exactly one version and carries its id and number; a frozen version's records
+  still match their pins; extensions and supersessions are well-formed. 7/7 controls.
+  Registered on its five surfaces; LIVE_STATUS re-derived (37 doctrines, 473 arms).
+  `make check` + `make gate` green.
+
 ## SEMULITH-P4-0063 (tree P4-SYSTEM): the .9 design brief — a contract becomes a versioned, frozen document; v1 states the four environment assumptions with real fixtures
 
 - Recorded before execution: contracts have no version mechanism (the version is a repeated

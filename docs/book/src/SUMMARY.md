@@ -27,6 +27,7 @@
         - [P4.6 — Instruction visibility and fence semantics](plan/p4/fence-i.md)
         - [P4.7 — Floating point](plan/p4/floating-point.md)
         - [P4.8 — Faults, restart and partial progress](plan/p4/faults.md)
+        - [P4.9 — The environment contract, version 1](plan/p4/contract.md)
     - [P5–P7 — board, Linux, computer](plan/p5-p7.md)
     - [Multicore and optimization](plan/multicore.md)
 
