@@ -18,10 +18,10 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (8/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and six leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), and faults/restart/partial progress (`.8`)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.9` slice (c) — supersede the stale v0 statements in v1 (new
-  records + (supersede …) entries, never a rewrite): OB-GC-PRIV-INSNS (wfi no-op, sfence
-  no-op + no TLB), OB-ZICNTR/OB-GC-COUNTERS (rate/progress deferred to .9 — now
-  OB-GC-ENV-VIRTUAL-TIME); fix env.rs's stale module doc. Then (d) reports + acceptance.
+- next_action: `P4-SYSTEM.9` slice (d) — the reports: rv64gc's ENVIRONMENT document (v0/v1,
+  the four assumptions, the supersessions, the check registry), v1 FROZEN (pins written,
+  CONTRACT-FREEZE judging), the book, THE LEAF ACCEPTANCE; frontier → `.10` (the CPU-SYSTEM
+  gate report — note for it: gate_report's implemented measure is not unit-scoped).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

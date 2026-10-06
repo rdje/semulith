@@ -24,8 +24,9 @@
 //!   completed SC and reset);
 //! - **nothing else touches it** — the context-switch scratch-SC guidance is software's
 //!   duty, not machinery, and the external invalidation event (another hart's store, a
-//!   device write) cannot arise at harts=1 with no devices (the boundary vocabulary for
-//!   an environment to DELIVER one is `P4-SYSTEM.9`'s contract item).
+//!   device write) cannot arise at harts=1 with no devices — `rv64gc-lab-env-v1`'s
+//!   `OB-GC-ENV-RESERVATION-EVENTS` states it (P4-SYSTEM.9); a multi-agent environment
+//!   that delivers one is a later contract version (`MC-MULTICORE`).
 //!
 //! The deterministic SC policy is the state document's DATA (decision 3, stated beside
 //! the reservation in `state.sexp`): an SC succeeds iff [`Reservation::matches`] holds —

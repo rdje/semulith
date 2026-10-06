@@ -40,8 +40,8 @@
 //!   an implicit access is observable as its own request, never silently as a data
 //!   `Load`. The kind is read-only by construction: the profile implements Svade,
 //!   so a walk never writes a PTE. The formal contract wording of the vocabulary
-//!   is P4-SYSTEM.9's charter ("translation inputs", versioned not edited) —
-//!   routed and recorded in the tree.
+//!   is `rv64gc-lab-env-v1`'s `OB-GC-ENV-TRANSLATION-INPUTS` (P4-SYSTEM.9 —
+//!   versioned, not edited).
 
 use crate::env::{BoundaryError, Environment, Request, Response};
 use crate::privilege::{self, PrivilegeMode, PrivilegedHart};

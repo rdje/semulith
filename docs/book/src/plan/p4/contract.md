@@ -1,6 +1,6 @@
 # P4.9 — The environment contract, version 1
 
-**Status:** Underway (slices a–b, 2026-10-06)
+**Status:** Underway (slices a–c, 2026-10-06)
 
 The processor model does not stand alone: it relies on its environment — memory that
 answers reads and writes, page tables that can be walked, a supply of time, events that may
@@ -25,3 +25,9 @@ time advances exactly one tick per step, even while the processor waits; and not
 the processor ever cancels a load-reserved reservation. Each assumption has a test that shows
 it holding and a test that shows what breaking it would look like, and a registry runs them
 all on every build.
+
+Slice (c) put the versioning to its first real use. Two version-0 statements had become
+wrong as the processor grew — one still described the wait-for-interrupt instruction and the
+translation-cache flush as doing nothing, another still said environment calls stop the run
+— and version 1 replaces them with correct statements while the originals stay, frozen, on
+the record, each replacement saying what it replaces and why.

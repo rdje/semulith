@@ -2,10 +2,14 @@
 //! laboratory implements (`docs/ARCHITECTURE.md` §4: "describes boundary, does not
 //! implement board devices").
 //!
-//! Scope is exactly the `rv64i-lab-env-v0` dispositions (`profiles/rv64i-lab-v0/ENVIRONMENT.md`
-//! §"The boundary inventory"): fetch supply, data access, reset, code visibility. No
-//! device, no time source, no asynchronous event exists to model — the platform declares
-//! none, and an absence has to be a platform property to be real.
+//! Scope: the `rv64i-lab-env-v0` dispositions (`profiles/rv64i-lab-v0/ENVIRONMENT.md`
+//! §"The boundary inventory") — fetch supply, data access, reset, code visibility — plus,
+//! for the rv64gc composition, the page-table walk's own read kind ([`Request::WalkAccess`];
+//! `rv64gc-lab-env-v1`'s `OB-GC-ENV-TRANSLATION-INPUTS`). No device, no asynchronous event
+//! and no external time source exists to model: the time supply is the hart's own virtual
+//! domain (`OB-GC-ENV-VIRTUAL-TIME`), and v1 supplies no interrupt source and no reservation
+//! invalidation (`OB-GC-ENV-INTERRUPT-SOURCES`, `OB-GC-ENV-RESERVATION-EVENTS`) — the
+//! platform declares none, and an absence has to be a platform property to be real.
 //!
 //! The contract pins, as types rather than prose:
 //!
@@ -94,8 +98,8 @@ pub enum Request {
     /// request kind, never silently as a data `Load`). Read-only by construction:
     /// the profile implements Svade, so a walk never writes a PTE, and a walk write
     /// would be a description defect, not a boundary shape. The formal contract
-    /// wording of this vocabulary is P4-SYSTEM.9's charter ("translation inputs",
-    /// versioned not edited) — recorded in the tree.
+    /// wording of this vocabulary is `rv64gc-lab-env-v1`'s
+    /// `OB-GC-ENV-TRANSLATION-INPUTS` (P4-SYSTEM.9 — versioned, not edited).
     WalkAccess {
         /// Physical address of the PTE; must be 8-byte aligned.
         addr: u64,

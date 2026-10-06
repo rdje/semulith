@@ -57,8 +57,8 @@ fn every_v1_check_and_the_partial_progress_checks_are_realized() {
     });
     assert_eq!(
         declared.len(),
-        10,
-        "four v1 assumptions and the partial-progress guarantee, POS + NEG each"
+        14,
+        "v1\'s four assumptions and two supersessions, and the partial-progress guarantee, POS + NEG each"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

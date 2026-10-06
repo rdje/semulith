@@ -6,7 +6,7 @@
 //! the implementation and operating environment", §6.1) answered as a pure function of
 //! the step index, so cold-reset re-execution and EVD-05's exact values hold by
 //! construction (the brief's pre-condition 8). The domain IS the environment's time
-//! supply (the contract wording for that supply is `P4-SYSTEM.9`'s); the domain's
+//! supply (`rv64gc-lab-env-v1`'s `OB-GC-ENV-VIRTUAL-TIME`, P4-SYSTEM.9); the domain's
 //! storage is `mcycle` ("cycle count might represent a valid implementation of
 //! RDTIME", §6.1), and `time` views it read-only.
 //!

@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0066 (leaf P4-SYSTEM.9, slice c) — v0's stale statements superseded in v1
+
+- Two frozen v0 statements are false of this unit: `OB-GC-PRIV-INSNS` calls wfi and
+  sfence.vma no-ops (a wait state and a TLB exist since `.5`/`.3`), and the mirrored
+  `OB-ECALL-EBREAK` says the traps are reported to the harness and stop execution (here they
+  are delivered). v1 adds `OB-GC-PRIV-INSNS-V1` and `OB-GC-ECALL-EBREAK-V1` with `supersede`
+  entries naming the old records and why; the old records stay, frozen. Their four checks are
+  realized in the registry (14 of 14).
+- The code comments that pointed forward to "`.9`'s charter" now name the v1 obligations, and
+  `env.rs`'s module doc no longer scopes the boundary to rv64i alone. `make check` + `make
+  gate` green.
+
 ## SEMULITH-P4-0065 (leaf P4-SYSTEM.9, slice b) — contract v1: the four environment assumptions, with realized fixtures
 
 - `contract.sexp` gains v1 (extends v0, open) with the unit's first environment assumptions:

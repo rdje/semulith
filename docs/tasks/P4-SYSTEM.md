@@ -153,7 +153,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
 - ID: `P4-SYSTEM.9` — **environment contract v1** — `G-CONTRACT`
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`; slices (a)–(b) done `SEMULITH-P4-0064`–`-0065`)
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`; slices (a)–(c) done `SEMULITH-P4-0064`–`-0066`)
   Goal: extend the contract to cover translation inputs, interrupt sources, counter progress and reservation invalidation for this profile.
   Acceptance: every new assumption has a positive and a negative fixture; the contract is versioned, not edited in place.
 
@@ -166,7 +166,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); (a) the contract versioned, v0 frozen; (b) v1's four assumptions with realized fixtures; next: slice (c), the stale v0 statements superseded |
+| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); (a) the contract versioned, v0 frozen; (b) v1's four assumptions with realized fixtures; (c) the stale v0 statements superseded; next: slice (d), the reports, v1 frozen, the leaf acceptance |
 
 ## Decisions
 
@@ -1189,6 +1189,54 @@ never raised, at every crossing. The index:
   `CHANGELOG.md`, `MEMORY.md` (next_action → c), the book (P4.9 chapter).
   `promotion: declined (the registry's purpose is its module doc; no new lesson).`
 
+`P4-SYSTEM.9` slice (c) — the stale v0 statements superseded in v1; the forward references in code resolved (`2026-10-06`, `SEMULITH-P4-0066`):
+
+- [x] **REPRODUCE / ISSUE** — two frozen v0 statements are false of this unit, measured:
+
+  ```
+  $ grep -o '(obligation (id "OB-GC-PRIV-INSNS").*' contract-obligations.sexp → "wfi executes
+    as a no-op when legal … sfence.vma … its invalidation effect is a stated no-op at this stage
+    (no translation caches are modelled" — a wait state since .5 (wait.rs), a TLB since .3
+  $ sed -n 26p contract-obligations.sexp → OB-ECALL-EBREAK (an rv64i mirror): "With no
+    privileged modes in this profile … reported to the harness … execution stops" — this
+    composition delivers the trap to a handler
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — v0 was edited by no one after `.2` wrote it
+  (`git log -S 'wfi executes as a no-op when legal' --format=%h -- …contract-obligations.sexp`
+  → b95af58 only, `.2` slice e; correctly — contract changes were `.9`'s charter), and the
+  base mirror must stay byte-identical to its
+  rv64i owner (MIRROR-DERIVE, `check_requirements.sh:544-552`); with v0 now frozen
+  (CONTRACT-FREEZE), the only legal correction is a later version's record.
+
+- [x] **FIX** — v1 gains `OB-GC-PRIV-INSNS-V1` (wfi ENTERS the wait; sfence.vma invalidates the
+  modelled TLB by the four cases) and `OB-GC-ECALL-EBREAK-V1` (the traps are delivered — cause
+  by originating mode, delegation, the handler — never a harness report), each with a
+  `supersede` entry naming the v0 record and why; their four checks realized in the registry
+  (mm-wfi, w-timer, sv39-tlb-fence / mm-csr-legality-u, w-notrap; mm-ecall-modes, mm-ebreak /
+  mm-ecall-deleg); the code comments that pointed forward to "`.9`'s charter" (`env.rs` ×2,
+  `translation.rs`, `reservation.rs`, `timekeeping.rs`) now name the v1 obligations, and
+  `env.rs`'s module doc no longer says the boundary's scope is rv64i's alone.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ bash scripts/check_contract_freeze.sh → ok (1 versioned unit(s), 2 version(s), 0
+    finding(s)) — both supersessions replace an inherited record by a v1 member
+  $ cargo test -p semulith-verify contract_checks → test result: ok. 2 passed (14 declared
+    checks, 14 realized)
+  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok
+  ```
+
+- [x] **NO REGRESSION** — v0 untouched (its 46 pins hold); `make check` rc=0; `make gate` →
+  `=== all doctrines green ===`. Named, not changed: the requirement mirrors of the two
+  superseded records (REQ-GC-PRIV-INSNS, REQ-D-ECALL-EBREAK) still state v0's text — they
+  mirror the frozen v0 obligations by the MIRROR rule; the contract is where v1 corrects them.
+
+- [x] **LOCKSTEP** — this tree, `contract.sexp` + the obligations file, the registry, the five
+  code comments, `CHANGELOG.md`, `MEMORY.md` (next_action → d), the book (P4.9 chapter).
+  `promotion: declined (supersession is the contract schema's own mechanism).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1198,6 +1246,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.9` slice (c) | CONTRACT-FREEZE ok with two supersessions; the registry 14/14; RECORD-SCHEMA ok | **met** — the wrong v0 statements corrected by v1, never rewritten |
 | `2026-10-06` | `.9` slice (b) | the registry's two tests (10 checks realized, every guest holding); RED with one entry dropped; CONTRACT-FREEZE (2 versions) and RECORD-SCHEMA ok; 135/135 | **met** — every new assumption has a positive and a negative fixture that exist and run |
 | `2026-10-06` | `.9` slice (a) | CONTRACT-FREEZE 7/7 controls; the real contract clean (1 unit, 1 version); the schema ok; no record changed | **met** — a contract version is a checked document, v0 frozen |
 | `2026-10-06` | `.8` slice (e) + LEAF | sail over the ten `.8` guests (3 AGREE; the counters cell and the six injected guests named — each injected one diverging at its first refused access); 134/134 | **met** — the leaf closes |
@@ -1231,6 +1280,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.9` (slice c) | `SEMULITH-P4-0066 (leaf P4-SYSTEM.9): slice c — v0's stale statements superseded in v1 (OB-GC-PRIV-INSNS-V1, OB-GC-ECALL-EBREAK-V1, their checks realized); the code's forward references to .9 resolved` | the two requirement mirrors named |
 | `.9` (slice b) | `SEMULITH-P4-0065 (leaf P4-SYSTEM.9): slice b — contract v1: four environment assumptions (translation inputs, interrupt sources, virtual time, reservation events), each with realized POS/NEG fixtures; the check registry` | env-irq-sources the one new fixture |
 | `.9` (slice a) | `SEMULITH-P4-0064 (leaf P4-SYSTEM.9): slice a — the contract becomes a versioned document (schema/contract.sexp), rv64gc's v0 recorded and frozen (46 members pinned), CONTRACT-FREEZE registered (the 37th doctrine)` | the doctrine on its five surfaces |
 | `.8` (slice e) + LEAF | `SEMULITH-P4-0062 (leaf P4-SYSTEM.8): slice e — the sail attempt over the faults corpus (3 AGREE + 7 NAMED of 10), THE LEAF ACCEPTANCE; the leaf CLOSES` | frontier → `.9` |
@@ -1258,6 +1308,10 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.9` slice (c) done (`SEMULITH-P4-0066`) — **the supersessions**: v1 replaces
+  v0's wrong wfi/sfence.vma and ecall/ebreak statements by new records, the old ones frozen
+  in place; their checks realized. Next: slice (d) — the reports and the leaf acceptance.
 
 - `2026-10-06`: `.9` slice (b) done (`SEMULITH-P4-0065`) — **contract v1's assumptions**: the
   unit's first environment assumptions — translation inputs, interrupt sources (none), the

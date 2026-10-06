@@ -19,8 +19,9 @@ pub struct ContractCheck {
     pub guests: &'static [&'static str],
 }
 
-/// The realized checks: v1's four environment assumptions, and `.8`'s partial-progress
-/// guarantee (whose statement already named its fixtures).
+/// The realized checks: v1's four environment assumptions and its two superseding
+/// guarantees, and `.8`'s partial-progress guarantee (whose statement already named its
+/// fixtures).
 pub static CHECKS: &[ContractCheck] = &[
     ContractCheck {
         id: "CHK-GC-ENV-TRANSLATION-INPUTS-POS",
@@ -71,6 +72,26 @@ pub static CHECKS: &[ContractCheck] = &[
         id: "CHK-GC-PARTIAL-PROGRESS-NEG",
         obligation: "OB-GC-PARTIAL-PROGRESS",
         guests: &["mm-csr-ro-write", "inj-walk-l2"],
+    },
+    ContractCheck {
+        id: "CHK-GC-PRIV-INSNS-V1-POS",
+        obligation: "OB-GC-PRIV-INSNS-V1",
+        guests: &["mm-wfi", "w-timer", "sv39-tlb-fence"],
+    },
+    ContractCheck {
+        id: "CHK-GC-PRIV-INSNS-V1-NEG",
+        obligation: "OB-GC-PRIV-INSNS-V1",
+        guests: &["mm-csr-legality-u", "w-notrap"],
+    },
+    ContractCheck {
+        id: "CHK-GC-ECALL-EBREAK-V1-POS",
+        obligation: "OB-GC-ECALL-EBREAK-V1",
+        guests: &["mm-ecall-modes", "mm-ebreak"],
+    },
+    ContractCheck {
+        id: "CHK-GC-ECALL-EBREAK-V1-NEG",
+        obligation: "OB-GC-ECALL-EBREAK-V1",
+        guests: &["mm-ecall-deleg"],
     },
 ];
 
