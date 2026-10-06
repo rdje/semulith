@@ -15,7 +15,7 @@
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `profiles/rv64i-lab-v0/encoding.sexp`  `93a2d4718a50b60c23c3b5e64afa64499b09fcf41a906d46d83e63eebab2e5e9`
 //!   `profiles/rv64i-lab-v0/state.sexp`  `ff53fb04f3ed7ac25e4db78e6e92cc3e0caa086df438e221350627194cbea5a4`
-//! Generator: `scripts/gen_definition.py` (sha256 `71a562b02e5eb830284c373702b5c27b76106e68bb922fd9a5199955d1e4f8f4`)
+//! Generator: `scripts/gen_definition.py` (sha256 `e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -61,7 +61,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     fragments: &["riscv/rv64i"],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "71a562b02e5eb830284c373702b5c27b76106e68bb922fd9a5199955d1e4f8f4",
+        sha256: "e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8",
     },
     inputs: &[
         InputPin {

@@ -125,6 +125,10 @@ F_CONVERSIONS = {"f2i": "FToI", "i2f": "IToF"}                                  
 F_OPERATORS = (set(F_FORMAT_UNARY) | set(F_FORMAT_BINARY) | set(F_ROUNDED_UNARY)
                | set(F_ROUNDED_BINARY) | set(F_ROUNDED_TERNARY) | set(F_CONVERSIONS)
                | {"freg", "rounding"})
+# P4-SYSTEM.7 slice (d2): D's one operator, the format conversion. It lowers only where the
+# composition composes `riscv/d` (the F precedent: the tracked rv64gc module keeps its byte
+# surface until the D bind, slice d5); both formats are literals lowered as data.
+D_FORMAT_PAIR = {"f2f": "FToF"}                                                      # (op m n rm a)
 
 
 class Surface:
@@ -132,12 +136,13 @@ class Surface:
     rather than one parameter per family. `extended` is the rv64gc module's privileged
     surface (P4-SYSTEM.2 slice d); `a` the A extension's (P4-SYSTEM.4 slice b) with
     `amo_set` its closed operation set; `f` the floating-point block's (P4-SYSTEM.7 slice
-    c3). Each family emits WITH its fragment: a module carrying variants its evaluator
-    match cannot see would not compile."""
+    c3); `d` the format conversion D adds (P4-SYSTEM.7 slice d2). Each family emits WITH
+    its fragment: a module carrying variants its evaluator match cannot see would not
+    compile."""
 
     def __init__(self, extended: bool = False, a: bool = False,
-                 amo_set: frozenset = frozenset(), f: bool = False) -> None:
-        self.extended, self.a, self.amo_set, self.f = extended, a, amo_set, f
+                 amo_set: frozenset = frozenset(), f: bool = False, d: bool = False) -> None:
+        self.extended, self.a, self.amo_set, self.f, self.d = extended, a, amo_set, f, d
 
 
 def amo_operations(insns: dict) -> dict[int, str]:
@@ -375,7 +380,8 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
     if a_variants:
         ternary = dict(ternary, **A_TERNARY)
     if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY)
-                               | A_OPERATORS | F_OPERATORS | {"field", "inst", "mode"}):
+                               | A_OPERATORS | F_OPERATORS | set(D_FORMAT_PAIR)
+                               | {"field", "inst", "mode"}):
         raise Refusal(f"{where}: ({op} …) is the rv64gc module's operator surface "
                       f"(P4-SYSTEM.2 slice b) — the rv64i corpus does not lower it")
     if extended and not a_variants and op in A_OPERATORS:
@@ -388,6 +394,11 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
                       f"(P4-SYSTEM.7 slice c3), but this composition does not compose "
                       f"riscv/f — the variants emit WITH the fragment, so a module "
                       f"carrying them without it would not compile against its evaluator")
+    if extended and not surface.d and op in D_FORMAT_PAIR:
+        raise Refusal(f"{where}: ({op} …) is the D extension's format conversion "
+                      f"(P4-SYSTEM.7 slice d2), but this composition does not compose "
+                      f"riscv/d — the variant emits WITH the fragment, so a module "
+                      f"carrying it without it would not compile against its evaluator")
     if op == "reg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Reg({rust_str(str(args[0]))})"
     if op == "freg" and len(args) == 1 and isinstance(args[0], str):
@@ -406,6 +417,9 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
     if op in F_ROUNDED_TERNARY and len(args) == 5:
         return (f"Sem::{F_ROUNDED_TERNARY[op]}(\n{args[0]},\n&{sub(args[1])},\n"
                 f"&{sub(args[2])},\n&{sub(args[3])},\n&{sub(args[4])},\n)")
+    if op in D_FORMAT_PAIR and len(args) == 4:
+        return (f"Sem::{D_FORMAT_PAIR[op]}(\n{args[0]},\n{args[1]},\n"
+                f"&{sub(args[2])},\n&{sub(args[3])},\n)")
     if op in F_CONVERSIONS and len(args) == 5:
         signed = "true" if args[2] == 1 else "false"
         return (f"Sem::{F_CONVERSIONS[op]}(\n{args[0]},\n{args[1]},\n{signed},\n"
@@ -556,10 +570,12 @@ def load_inputs(encoding_path: Path, state_path: Path):
         fields.append((fname, hi, lo, pieces))
     a_variants = "riscv/a" in names
     f_variants = "riscv/f" in names
+    d_variants = "riscv/d" in names
     return dict(profile=profile, ilen=ilen, names=names, insns=insns,
                 pseudos=pseudos, pseudo_rules=pseudo_rules, extended=extended,
                 fields=fields, rules=rules, inputs=inputs, source_pins=source_pins,
-                a_variants=a_variants, amo_ops=amo_operations(insns), f_variants=f_variants)
+                a_variants=a_variants, amo_ops=amo_operations(insns), f_variants=f_variants,
+                d_variants=d_variants)
 
 
 def emit(data: dict, generator_sha: str) -> str:
@@ -737,7 +753,8 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        from: {rust_str(insn.source)},")
         a(f"        source: {rust_str(source)},")
         tree = indent_tree(emit_sem(effect, where, Surface(
-            extended, data["a_variants"], frozenset(data["amo_ops"]), data["f_variants"])))
+            extended, data["a_variants"], frozenset(data["amo_ops"]), data["f_variants"],
+            data["d_variants"])))
         tree_lines = tree.splitlines()
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
@@ -878,6 +895,12 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    FToI(u8, u8, bool, &'static Sem, &'static Sem),")
         a("    /// `(i2f n iw signed rm v)` — v's low iw bits to an n-bit float, rounded.")
         a("    IToF(u8, u8, bool, &'static Sem, &'static Sem),")
+    if extended and data["d_variants"]:
+        # P4-SYSTEM.7 slice d2's one D operator — emitted exactly when the composition
+        # composes `riscv/d` (the D bind, slice d5).
+        a("    /// `(f2f m n rm a)` — an n-bit float to an m-bit float: narrowing rounds,")
+        a("    /// widening is exact; a signaling NaN raises NV, any NaN yields the canonical NaN.")
+        a("    FToF(u8, u8, &'static Sem, &'static Sem),")
     a("}")
     a("")
     a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")

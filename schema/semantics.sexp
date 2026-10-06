@@ -324,3 +324,13 @@
 ;; (i2f n iw s rm v) — v's low iw bits as an integer (signed when s is 1) converted to an
 ;; n-bit float, rounded by rm; NX when inexact (RVI-F §20.1.7).
 (operator (name i2f) (fixed 5))
+;; (f2f m n rm a) — a (an n-bit float) converted to an m-bit float: FCVT.S.D and FCVT.D.S,
+;; where "both the source and destination are floating-point registers" (RVI-D §21.1.5); m
+;; and n are DISTINCT literals 32/64. Narrowing rounds by rm, with OF/UF/NX as for any
+;; rounded result, and widening is exact: "FCVT.S.D rounds according to the RM field;
+;; FCVT.D.S will never round" — yet a widening rule still resolves its rm (the reserved-mode
+;; decode every rm-carrying encoding owes). A NaN input yields the canonical NaN (RVI-F
+;; §20.1.3); a signaling-NaN input raises NV (IEEE 754-2008 §7.2 — an operation on a
+;; signaling NaN is invalid), which the backend omits for a format conversion: the
+;; qualification record's deviation (ii), patched in the model layer (P4-SYSTEM.7 slice d2).
+(operator (name f2f) (fixed 4))

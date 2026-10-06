@@ -269,6 +269,40 @@ EOF
   arm "RED an FP operator without riscv/f composed is refused, named" "$rc" 2 "$out" "does not compose riscv/f"
   cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
 
+  # ---- the D format conversion (P4-SYSTEM.7 slice d2) ---------------------------------------
+  # FToF emits exactly when the composition composes riscv/d (the D bind, slice d5); the
+  # staged composition WITH F and D proves the lowering of all 32 D rules.
+  cp definitions/riscv/d.sexp "$t/gc/definitions/riscv/d.sexp"
+  cp definitions/riscv/d.sem.sexp "$t/gc/definitions/riscv/d.sem.sexp"
+  cat > "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" <<EOF
+(encoding (profile "rv64gc-lab-v0") (ilen 32)
+  (compose (base "riscv/rv64i")
+    (extensions "riscv/zicsr") (extensions "riscv/zicntr") (extensions "riscv/system")
+    (extensions "riscv/f") (extensions "riscv/d")
+    (status partial) (slot (id m) (requires "riscv/m")))
+  (fragment-root "definitions"))
+EOF
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-d-definition.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc+F+D composition emits the double-precision module" "$rc" 0 "$out" "wrote"
+  for needle in "FToF(u8, u8, &'static Sem, &'static Sem)" "Sem::FToF(" "\"fcvt.d.s\""; do
+    grep -qF "$needle" "$t/gc-d-definition.rs"; rc=$?
+    arm "GREEN the emitted module carries $needle" "$rc" 0 "" ""
+  done
+  # RED: the format conversion where the composition does not compose riscv/d is refused.
+  # F stays composed: the refusal is D's own, not the F surface's.
+  sed 's/(extensions "riscv\/f") (extensions "riscv\/d")/(extensions "riscv\/f")/' \
+    "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" > "$t/gc/enc-nod.sexp" \
+    && mv "$t/gc/enc-nod.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
+  grep -q 'extensions "riscv/f"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"; rc=$?
+  arm "GREEN the no-D composition still composes riscv/f" "$rc" 0 "" ""
+  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (f2f 32 64 (reg rs1) (reg rs2)))/' \
+    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-d-definition.rs" 2>&1)"; rc=$?
+  arm "RED the format conversion without riscv/d composed is refused, named" "$rc" 2 "$out" "does not compose riscv/d"
+  cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \

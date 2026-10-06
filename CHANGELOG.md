@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0050 (leaf P4-SYSTEM.7, slice d2) — the language for D: f2f + d.sem.sexp
+
+- `schema/semantics.sexp`: `(f2f m n rm a)`, the format conversion — the one operation the
+  D rules need that the width-generic FP vocabulary could not state (62 → 63 operators);
+  `check_semantics.py` requires both formats literal and distinct (3 new arms).
+- `gen_definition.py` lowers it to `Sem::FToF` only where `riscv/d` is composed (refused by
+  name otherwise — RED-proven by mutation); the tracked modules change only their generator
+  fingerprint and the derived language count; DEF-GEN 37 arms.
+- `definitions/riscv/d.sem.sexp`: 32 rules, each F's counterpart at format 64, quoting the
+  pinned D chapter (19 quotes judged, 0 findings). The assembler derives D's register files
+  from them: 32/32 against spike-dasm, 4 refusals by name.
+- The P4 tree's closed (b)–(c3) part 2 checklists archived verbatim. `make check` + `make
+  gate` green.
+
 ## SEMULITH-P4-0049 (leaf P4-SYSTEM.7, slice d1) — the rv_d/rv64_d re-pin + the d.sexp fragment
 
 - `rv_d`/`rv64_d` pinned in the rv64gc ledger (2,091/465 B; 26 + 6 = 32 forms; 3 pseudo

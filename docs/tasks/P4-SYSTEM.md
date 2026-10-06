@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c6) done `2026-10-06`, `SEMULITH-P4-0041`–`-0048` — F BOUND; slice (d) split into (d1)–(d5), (d1) done `SEMULITH-P4-0049`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c6) done `2026-10-06`, `SEMULITH-P4-0041`–`-0048` — F BOUND; slice (d) split into (d1)–(d5), (d1)–(d2) done `SEMULITH-P4-0049`–`-0050`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -164,7 +164,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; (c5) the staged F corpus (11 guests, spec-derived); (c6) THE BIND — F executes in the tracked engine (118 forms, 114/114); (d1) the D tables pinned + `d.sexp`; next (d2): `f2f` + `d.sem.sexp` |
+| 1 | `P4-SYSTEM.7` | `pending` | floating-point backend qualification — slices (a)–(b) landed `2026-10-06` (rustc_apfloat QUALIFIED and pinned; the FP STATE landed: the f-file census-gated and emitted, the FS gate live on the FP CSRs with the instruction-side hook for the binds, the fcsr two-owner view fixed at root; 103/103 corpus); slice (c), THE F BIND (30 forms + pseudos), executes as checkpoints (c1)–(c6) — the `2026-10-06` split decision; (c1)–(c3) done (frm fixed at root; the F tables pinned as `f.sexp`; the FP vocabulary, `f.sem.sexp`, the gated lowering and the assembler's derived register files); (c4) `fp.rs`, the model layer (OF/UF exact; the qualification oracle amended) and the dependency store on-volume; (c5) the staged F corpus (11 guests, spec-derived); (c6) THE BIND — F executes in the tracked engine (118 forms, 114/114); (d1) the D tables pinned + `d.sexp`; (d2) `f2f` + `d.sem.sexp`; next (d3): `fp.rs`'s format conversions |
 
 ## Decisions
 
@@ -752,307 +752,8 @@ never raised, at every crossing. The index:
   (8th — the archive split — 9th–13th, 15th–23rd).
 - part 3 opened at the `2026-10-06` `.7` slice-(c1) crossing (part 2 at its own
   ceiling): [`archive/P4-SYSTEM-3.md`](archive/P4-SYSTEM-3.md) — the closed leaves'
-  changelog entries so far; later checklist moves land there.
-
-`P4-SYSTEM.7` slice (b) — the FP state: the f-file + FS gating + the fcsr fix (`2026-10-06`, `SEMULITH-P4-0040`):
-
-- [x] **REPRODUCE / ISSUE** — the brief's two latent defects re-measured live
-  (the `target/p4-system-7/fsprobe` probe on the parent engine):
-
-  ```
-  permitted(fflags|frm|fcsr, read|write) at FS=Off: Ok ×6 — no gate anywhere
-  fcsr reads 0x0 with fflags=0x1F, frm=3 (want 0x7f); the fcsr write REFUSED:
-  "a view whose owner has no storage" — the comma literal resolves as ONE name
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — (i) the view resolution was single-owner:
-  `index_by_name` looked the literal "fflags, frm" up as ONE CSR name
-  (privilege.rs — measured above); (ii) `permitted()` had no FP-CSR arm —
-  mstatus.FS was declared (WARL one-of 0..3, reset 0 = Off) and read by nothing.
-  The FS-gate placement measured against the reference (`grep -n` over Sail
-  0.14): the gate rides DECODE-time legality (`encdec … when
-  currentlyEnabled(Ext_F)`, fext_insts.sail:888; `mstatus[FS] != 0b00`,
-  fdext_control.sail:19) — dynamic state, not the encoding — so the CSR side
-  lands in the permission model now, the instruction side is `fp_enabled()` for
-  the binds' arms. No FP instruction decodes pre-bind (an unbound word is
-  ReservedDecode → cause 2 already), so the FS=Off INSTRUCTION cells and the
-  Dirty-on-f-write cell are the bind's — recorded, per the brief's fallback.
-
-- [x] **FIX** — the `fp_registers` descriptor element (schema/state.sexp +
-  dossier_sexp both directions + gen_state's validation/emission: FP_COUNT, the
-  fregs field and reset, read_f/write_f, the PrivilegedHart accessor; the 4th
-  REQUIRED_CENSUS_CANDIDATES entry) with the census candidate re-answered in
-  place and the three FP-CSR statements refined; privilege.rs — the FS section
-  (fs/fp_enabled/mark_fp_dirty), the permitted() arm, the multi-owner
-  composition (compose_view/write_legalized), FP-CSR writes mark FS=Dirty
-  (Sail's write_fcsr → dirty_fd_context, fdext_regs.sail:455); the corpus (2
-  guests, EVD-05 spec-side via the forked tool) + the matrix cells.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ cargo test -p semulith-core --lib → test result: ok. 134 passed (128 + 6:
-  the FS cells × modes, the fcsr compose/split/retention, dirty + SD)
-  $ bash scripts/check_state_gen.sh --self-test → 29 pass / 0 fail (28 + the
-  fp-file RED arm)
-  $ cargo test -p semulith-verify run_rv64gc → 4/4 groups, 103 guests
-  (fp-fs-off 40 steps, fp-fcsr-view 20)
-  $ python3 target/p4-system-7/identity.py <both CLIs, the parent worktree>:
-  101 byte-identical, 0 diverge (5,491 trace lines); RED — both new guests
-  DIVERGE on the parent engine (it caught the harness's own `--profile=`
-  syntax bug first: two identical usage errors are not identity)
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0 (8 groups); `make gate` →
-  `=== all doctrines green ===` (DERIVED-COUNTS 430→431 re-derived; STATE-GEN
-  29 arms, both pairs byte-exact — rv64i untouched; DEF-GEN re-derived;
-  INTERACTION-MATRIX no orphans; GUEST-GEN + the mirror); bench wasm 134,105
-  bytes, smoke-bench 53 arms ok, both books.
-
-- [x] **LOCKSTEP** — same commit: this tree (status + frontier + checklist +
-  logs + changelog; the `.7` slice-(a) checklist archived at the 23rd ceiling
-  firing, the `.6` slice-(b)/(c) changelog entries at the 24th), `MEMORY.md`
-  (next_action → slice c — THE F BIND), `CHANGELOG.md`, `DEV_NOTES.md` (the
-  promotion decision: PROMOTED — the must-diverge-control lesson, the knowledge
-  card + INDEX + the map), `LIVE_STATUS.md` (431
-  re-derived), `docs/book/src/plan/p4.md` (the `.7` section extended within the
-  byte bound) + the book index, `docs/TASK_TREE.md` (unchanged — the frontier
-  leaf is `.7` still).
-
-`P4-SYSTEM.7` slice (c1) — frm holds any 3-bit value; the slice (c) split recorded (`2026-10-06`, `SEMULITH-P4-0041`):
-
-- [x] **REPRODUCE / ISSUE** — the slice-(b) rule measured against the pinned chapter,
-  then on the engine (the guest assembled by the tracked assembler, traced by the CLI):
-
-  ```
-  f-st-ext.html §20.1.2: "FSRM … writing a new value obtained from the three
-  least-significant bits of integer register rs1 into frm"; rm table: 101–111 are
-  "dynamic reserved rounding modes" (111: "In Rounding Mode register, reserved")
-  $ semulith run fp-fcsr-view.elf --profile=rv64gc-lab-v0 --steps=20
-  [15] x12 <- 0x45   (fcsr after writing 0xE5: frm RETAINED 2 — spec: 0xE5)
-  [18] x14 <- 0x2    (frm after writing 6: RETAINED — spec: 6)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `profiles/rv64gc-lab-v0/state.sexp` `frm_2_0`
-  declared `(legalize (one-of 0 1 2 3 4))` at slice (b) — a laboratory WARL where the
-  chapter writes the value and labels no WARL; the generated mirror carried it
-  (`git diff` on `state_rv64gc.rs`: `Legalize::OneOf(&[0, 1, 2, 3, 4])`) into the
-  WARL write path. The same misreading sat in the privilege unit tests (two
-  assertions of retention) and the spec-side authoring tool (`grep -n "one-of 0..4"`
-  → its frm/fcsr write model), so all three agreed with each other — no check could
-  see it. Two companions measured: the tool's header template hard-coded
-  "P4-SYSTEM.5 slice b, the interrupts corpus" into both FP guests, and it wrote
-  directives into S-expression strings unescaped.
-
-- [x] **FIX** — `frm_2_0` → `(legalize (any))` with the FSRM sentence quoted in its
-  statement (and the census candidate's text); `gen_state.py` + `gen_definition.py`
-  regenerated (the mirror's legalize row; the manifest's state hash); the unit tests
-  rewritten to the spec (7 lands from a fcsr slice; 0b1110 → frm 6); the authoring
-  tool's frm/fcsr model and header corrected, a `"` in a directive refused by name;
-  `fp-fcsr-view` re-derived spec-side (step 13 now writes bit 8 — fcsr's "shall
-  ignore writes … supply a zero value" legality), `fp-fs-off` re-derived (header
-  only, values byte-identical); the matrix commentary; the book (below).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (103/103)
-  RED first — the re-derived expectations against the UNFIXED legalization:
-  panicked at run_rv64gc/tests.rs:27:9: fp-fcsr-view: step 15 writes match the
-  specification-derived expectations → test result: FAILED. 3 passed; 1 failed
-  (restored; gen_state.py --check rc=0)
-  $ cargo test -p semulith-core --lib → test result: ok. 134 passed
-  $ derive_expectations.py q.s (a directive carrying a "quoted" phrase) → Refusal, rc=1
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0 (core 134, verify 184, cli 17; fmt +
-  clippy `-D warnings`); `make gate` → `=== all doctrines green ===` after the three
-  ceiling crossings this slice's text triggered, each resolved by its own procedure:
-  DEV_NOTES sharded (`scripts/shard_history.py --head DEV_NOTES.md`: 50,971 → 48,185
-  B, "completeness: 22 entries before == 21 kept + 1 moved"); this file's closed-leaf
-  changelog entries moved to the new `archive/P4-SYSTEM-3.md` (134,833 → 97,980 B;
-  a scripted check: 22 entries before == 2 inline + 20 archived, order and bytes
-  exact); the book's `plan/p4.md` (33,544 > 32,768) PARTITIONED per its registry row
-  ("one chapter per subject") into six per-leaf chapters — DERIVED-COUNTS re-derived
-  33 → 39 book chapters. INTERACTION-MATRIX ok.
-
-- [x] **LOCKSTEP** — same commit: this tree (the split decision, the frontier, this
-  checklist, the logs, the changelog entry, the archive-part-3 index line),
-  `archive/P4-SYSTEM-3.md` (new) + part 2's forward pointer, `MEMORY.md`
-  (next_action → slice c2), `CHANGELOG.md`, `DEV_NOTES.md` (PROMOTED — the
-  knowledge card + INDEX + the map) + its shard, `LIVE_STATUS.md` (39 chapters),
-  the book (`plan/p4.md` → overview + `plan/p4/*.md`, SUMMARY nested, the index
-  regenerated; the duplicated heading and the stale `.3`/`.4` headings fixed),
-  `docs/TASK_TREE.md` (unchanged — the frontier leaf is `.7` still).
-
-`P4-SYSTEM.7` slice (c2) — the `rv_f`/`rv64_f` re-pin + the `f.sexp` fragment (`2026-10-06`, `SEMULITH-P4-0042`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-slice census: F pinned nowhere, no fragment.
-
-  ```
-  $ grep -c 'rv_f\|rv64_f' profiles/rv64gc-lab-v0/references.sexp → 0
-  $ ls definitions/riscv/ → 13 files, no f.sexp; gen_fragments.py FRAGMENTS: 7 entries
-  $ curl …/extensions/rv_f, rv64_f → 3,050 / 320 B; 26 + 4 real rows, 13 $pseudo_op
-    rows (fmv.x.s/fmv.s.x, fmv.s/fabs.s/fneg.s, the 8 FP-CSR aliases of rv_zicsr)
-  $ grep -E '"(rs3|rm)"' arg_lut.csv → "rs3", 31, 27 / "rm", 14, 12 (no re-pin)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the F bind's first input (the
-  `.4`/`.6` bind shape — slice (a) of each). The design question this slice answers
-  by measurement: which of the 13 pseudo rows the fragment carries. None — every one
-  spells a real form, measured by its realizing base:
-
-  ```
-  $ grep -c '^$pseudo_op' rv_f rv64_f → 13 / 0
-  $ grep -o '^$pseudo_op [a-z_]*::[a-z.]*' rv_f | awk '{print $2}' | sort | uniq -c
-    1 rv_f::fmv.w.x  1 rv_f::fmv.x.w  1 rv_f::fsgnj.s  1 rv_f::fsgnjn.s
-    1 rv_f::fsgnjx.s  3 rv_zicsr::csrrs  3 rv_zicsr::csrrw  2 rv_zicsr::csrrwi
-  ```
-
-  So the rv64i write-it-out policy applies and `gen_fragments.py`'s pseudo flag (for
-  forms that exist upstream ONLY as pseudo-ops — Zicntr's) stays off; carrying the 8
-  Zicsr-based aliases would also have made `riscv/f` require `riscv/zicsr` for
-  spellings alone.
-
-- [x] **FIX** — the ledger: `rv_f`/`rv64_f` pinned (sha256 + bytes) with the
-  commentary and the `supplies` list (its missing comma before the A clause fixed in
-  passing); `fetch_references.sh`: the F tables under the named exclusion until the
-  bind (flip condition: the scope declares `flw`/`fsw`); `gen_fragments.py`: the
-  `riscv/f` entry (requires `riscv/rv64i`, owns `rs3`/`rm`, no pseudos) →
-  `definitions/riscv/f.sexp` (30 forms).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ scripts/fetch_references.sh rv64gc-lab-v0 → FETCH riscv-opcodes/extensions/rv_f,
-    rv64_f; MATCH both pins; MATCH encoding tables vs profile scope 88 == 88; MATCH
-    owned fragments agree with the pinned upstream; fetch_references: ok
-  $ cmp (the census fetch) (the tracked-route fetch) → byte-identical, both tables
-  RED — the exclusion removed (a scratch copy): DIFFERS tables enumerate 118, profile
-    declares 88, symmetric difference: fadd.s,fclass.s,… (exactly the 30 F names)
-  $ python3 scripts/gen_fragments.py → regenerated 8 fragment(s); git status: only
-    f.sexp new — the seven others byte-identical
-  $ python3 scripts/check_sexp_schema.py definitions/riscv/f.sexp schema/fragment.sexp → ok
-  $ python3 scripts/check_encoding_disjoint.py <the unit's 6 fragments> f.sexp →
-    composed set: 115 instruction(s) (+ 3 pseudo-instruction(s)) from 7 fragment(s);
-    no collisions, no duplicate names
-  ```
-
-- [x] **NO REGRESSION** — `scripts/fetch_references.sh --verify-only rv64i-lab-v0` →
-  ok (52 == 52 unchanged); UNIT-COMPOSITION ok (3 units; rv64gc still PARTIAL with the
-  f slot declared — the slot flips at the bind); SOURCE-FORMAT ok (241 files); no Rust
-  touched, every generator `--check` byte-exact; `make gate` → `=== all doctrines
-  green ===`.
-
-- [x] **LOCKSTEP** — same commit: this tree (checklist, logs, changelog, status,
-  frontier), `MEMORY.md` (next_action → slice c3), `CHANGELOG.md` (sharded at its
-  ceiling: `shard_history.py` → shard 0193, "26 entries before == 25 kept + 1
-  moved, order and bytes exact"), the book
-  (`plan/p4/floating-point.md` + the overview's status line), `docs/TASK_TREE.md`
-  (unchanged). DEV_NOTES: no entry — a mechanical re-pin on the `.4`/`.6` precedent,
-  no new lesson (the pseudo-row decision is recorded above and in the fragment's
-  own header).
-
-`P4-SYSTEM.7` slice (c3) part 1 — the FP-CSR locators corrected (`2026-10-06`, `SEMULITH-P4-0043`):
-
-- [x] **REPRODUCE / ISSUE** — found while locating slice (c3)'s citations: the pinned
-  chapter's own heading numbers contradict the FP-CSR locators slice (b) wrote.
-
-  ```
-  $ (the h3 census of unpriv/f-st-ext.html) → 20.1.1. F Register State / 20.1.2.
-    Floating-Point Control and Status Register / 20.1.3. NaN Generation … / 20.1.9
-  $ git grep -n "RVI-F §20.1.1" → 9 fflags/frm/fcsr lines in state.sexp, 15 directives
-    in the two FP guests (+ their derived expectations), privilege.rs:215, tests.rs:779,
-    the c1 CHANGELOG/tree lines — all naming fcsr content; only state.sexp:55 (the f
-    registers) is §20.1.1's
-  $ (the d-st-ext.html h3 census) → 21.1.1. D Register State (FLEN=64) / 21.1.2. NaN
-    Boxing — state.sexp:55 cited §21.1.2 for FLEN=64
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — the locators were written from memory of the
-  ratified chapter's layout, never measured against the pinned page's headings; the
-  only citation tool cannot see the class: `grep -n "glob" scripts/check_citations.py`
-  → line 180 reads `definitions/**/*.sem.sexp` rule sources alone, and it proves a §
-  EXISTS in the pinned artifact (§20.1.1 does), not that it holds the cited content.
-  State-document locators are outside every gate. Owned: tree `CITATION-ACCURACY`
-  (opened next, a quoted-phrase-in-section gate).
-
-- [x] **FIX** — every fcsr/fflags/frm locator → §20.1.2 (state.sexp ×9, both guests'
-  directives, privilege.rs, the unit test, the c1 CHANGELOG and checklist lines);
-  state.sexp:55's FLEN=64 → §21.1.1; the split decision's "§20.1.1–§20.2" → "§20.1.9".
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ git grep -n "RVI-F §20.1.1" (live surfaces) → state.sexp:55 only (the f registers)
-  $ derive_expectations.py fp-fcsr-view.s fp-fs-off.s → 20 / 40 steps; git diff: only
-    (source …) strings moved, every (value …) byte-identical
-  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (103/103)
-  $ python3 scripts/check_citations.py rv64gc-lab-v0 → 52 of 52 instruction citations resolve
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`
-  (STATE-GEN/DEF-GEN/GUEST-GEN re-derived byte-exact — the mirrors re-hash only).
-
-- [x] **LOCKSTEP** — this tree, `CHANGELOG.md`; MEMORY.md (next_action unchanged in
-  substance — c3 part 2 after the CITATION-ACCURACY gate); no book surface cites these.
-
-`P4-SYSTEM.7` slice (c3) part 2 — the semantics language learns FP (`2026-10-06`, `SEMULITH-P4-0044`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-slice census: the language had no FP vocabulary.
-
-  ```
-  $ git show HEAD:schema/semantics.sexp | grep -c "^(operator" → 44 (no freg, no FP operator)
-  $ ls definitions/riscv/f.sem.sexp → absent; riscv_asm.py: registers x0..x31 only
-  $ git log -S"the 43 forms" → 44cf271 (.4 slice b) — the typed count was 43 against 44
-    operators from the day it was written (schema header, check_semantics docstring, and
-    the emitted rv64gc Sem doc)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect for the vocabulary (the bind's input, the
-  brief's decision 7); the measured design facts: (1) the register FILE of an operand is in
-  no pinned table (`grep -c freg target/refs/riscv-opcodes/rv_f` → 0) — only the semantics
-  can say it, so the assembler derives it from `(freg …)` use; (2) the Off gate's spec
-  sentence quantifies over "any instruction that attempts to read or write the corresponding
-  state" — a property of the rule, so the gate is the contract's, derived, never a per-rule
-  guard; (3) Sail 0.14's accrual dirtiness is a configured policy (`fdext_regs.sail:451`,
-  default `Fflags_Dirty_Precise`) inside the pinned FS section's implementation-defined
-  latitude — the laboratory declares the same resolution.
-
-- [x] **FIX** — `schema/semantics.sexp`: the floating-point block (the FP-state contract
-  stated once + 18 operators: freg fbox funbox rounding fadd fsub fmul fdiv fsqrt fmadd fmin
-  fmax feq flt fle fclass f2i i2f); `definitions/riscv/f.sem.sexp` (30 cited rules);
-  `check_semantics.py` `check_fp` (rm resolved, `(rounding (field rm))` only, literal
-  formats/widths/signedness, one register file per operand) + 6 arms; `gen_definition.py`:
-  the `Surface` bundle (one value threaded instead of three parameters), the F lowering and
-  enum variants gated on `riscv/f`, `check_fp` re-derived, the form count DERIVED (62) + 8
-  DEF-GEN arms; `riscv_asm.py`: `load_register_files`, `_reg_of` (f0..f31 by the semantics,
-  the other spelling refused), `rs3`/`rm`; the typed "43" removed from the prose.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 scripts/check_semantics.py definitions/riscv/f.sexp definitions/riscv/f.sem.sexp
-    → 30 of 30 declared instruction(s) have checked semantics
-  $ python3 scripts/check_semantics.py --self-test → 23 pass / 0 fail (17 + 6)
-  $ check_citation_quotes (f.sem.sexp) → 26 attributed quote(s) judged … 0 finding(s)
-  $ bash scripts/check_definition_gen.sh --self-test → DEF-GEN --self-test: 31 pass / 0 fail
-    (the staged rv64gc+F composition lowers FReg/Rounding/FMadd/FToI/FUnbox; an unresolved rm
-    and an FP operator without riscv/f both refused by name)
-  $ python3 target/p4-system-7/asm_roundtrip.py → round trip: 30 of 30 agree (spike-dasm:
-    mnemonic + registers; rm as bits 14..12 — this spike-dasm prints no rounding mode,
-    measured); refusals: 6 of 6 by name
-  ```
-
-- [x] **NO REGRESSION** — both definition modules regenerate with only the generator hash
-  and the derived form count moving (`git diff --stat` → 4 + 6 lines; the refactor is
-  emission-neutral); both guest fixtures byte-identical (`gen_guests.py --check` rc=0 ×2);
-  SEMANTICS ok (10 checks); `make check` rc=0 (core 134, verify 184, cli 17); `make gate` →
-  `=== all doctrines green ===` (DERIVED-COUNTS 451 → 455 arms).
-
-- [x] **LOCKSTEP** — this tree, `MEMORY.md` (next_action → c4), `CHANGELOG.md`,
-  `LIVE_STATUS.md` (455), the book (`plan/p4/floating-point.md`; `annex/assembler.md` — the
-  FP spelling), `docs/TASK_TREE.md` (unchanged — the leaf is `.7`).
+  changelog entries and Commit Log rows (the (c5) crossing), and `.7` slices (b)–(c3)
+  part 2 (the (d2) crossing).
 
 `P4-SYSTEM.7` slice (c4) part 1 — the dependency store on-volume (`2026-10-06`, `SEMULITH-P4-0045`):
 
@@ -1338,6 +1039,58 @@ never raised, at every crossing. The index:
   changelog, status, frontier), `MEMORY.md` (next_action → d2), `CHANGELOG.md`, the book
   (P4.7 chapter). DEV_NOTES: no entry — a mechanical re-pin on the (c2) precedent.
 
+`P4-SYSTEM.7` slice (d2) — the language for D: `f2f` + `d.sem.sexp` (`2026-10-06`, `SEMULITH-P4-0050`):
+
+- [x] **REPRODUCE / ISSUE** — the pre-slice census at `0deb6cd`:
+
+  ```
+  $ git show HEAD:schema/semantics.sexp | grep -c "^(operator" → 62; no (name f2f)
+  $ git ls-tree --name-only HEAD definitions/riscv/ | grep -c d.sem.sexp → 0
+  $ grep -c "f2f\|FToF" (HEAD's scripts/gen_definition.py) → 0
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: D's semantics need exactly one operation
+  the language cannot state, measured by writing all 32 rules and diffing their operator
+  heads against HEAD's schema: `for op in $(grep -o "([a-z0-9-]*" d.sem.sexp …); do git show
+  HEAD:schema/semantics.sexp | grep -q "(name $op)" || echo NEW` → `f2f` (the other hits are
+  prose inside comments). Everything else — the 18 FP operators, load/store at width 64 —
+  already takes the format as data.
+
+- [x] **FIX** — `schema/semantics.sexp`: `(f2f m n rm a)` (narrowing rounds, widening exact,
+  rm still resolved, NaN → canonical, sNaN → NV — deviation (ii) named for the model layer);
+  `scripts/check_semantics.py`: both formats literal and distinct + 3 arms; `scripts/
+  gen_definition.py`: `f2f` → `Sem::FToF(m, n, rm, a)` emitted only where `riscv/d` is
+  composed (`Surface.d`; refused by name otherwise; the tracked modules change only their
+  generator fingerprint and the derived language count 62 → 63); `check_definition_gen.sh`:
+  the D arms (the F + D staged composition emits `FToF` and `fcvt.d.s`; F without D refused);
+  `definitions/riscv/d.sem.sexp`: 32 rules, each F's counterpart at format 64 (no
+  fbox/funbox at 64 — the identity), the two conversions box/unbox their single side.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_semantics.py definitions/riscv/d.sexp definitions/riscv/d.sem.sexp
+    → 32 of 32 declared instruction(s) have checked semantics
+  $ python3 scripts/check_semantics.py --self-test → 26 pass / 0 fail
+  $ bash scripts/check_definition_gen.sh --self-test → DEF-GEN --self-test: 37 pass / 0 fail
+    RED — the D refusal disabled (`if False and …`): MISS "the format conversion without
+    riscv/d composed is refused, named"; restored (cmp) → 37 / 0
+  $ bash scripts/check_citation_quotes.sh (d.sem.sexp intent-to-add) → 69 attributed
+    quote(s) judged (was 50); 0 finding(s)
+  $ python3 target/p4-system-7/d0/asm_roundtrip_d.py (F + D trial unit, pinned spike-dasm)
+    → round trip: 32 of 32 agree; refusals: 4 of 4 by name — the register files derived
+    from d.sem.sexp, no assembler change
+  ```
+
+- [x] **NO REGRESSION** — SEMANTICS ok (12 checks, d.sem.sexp paired); DEF-GEN ok (both
+  tracked modules: fingerprint + language-count lines only); `make check` rc=0 (343
+  passed); `make gate` → `=== all doctrines green ===` (DERIVED-COUNTS re-derived 465 arms).
+
+- [x] **LOCKSTEP** — this tree (the closed (b)–(c3) part 2 checklists archived verbatim to
+  part 3 — census 125,009 B = 106,826 live + 18,183 moved), `MEMORY.md` (next_action → d3),
+  `CHANGELOG.md`, `LIVE_STATUS.md` (465 arms), the book (P4.7 chapter). DEV_NOTES: no entry
+  — the vocabulary's width-genericity was the slice's design premise, measured, not a lesson.
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1347,6 +1100,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (d2) | the operator census (only f2f new; 62 → 63); d.sem.sexp 32/32 + 19 quotes judged (0 findings); check_semantics 26/26; DEF-GEN 37/37 with the D-gate RED by mutation; the F + D staged module emits FToF; the assembler's D spelling 32/32 vs spike-dasm + 4 refusals; the tracked modules fingerprint-only | **met** — the language states D; nothing tracked executes it until the bind |
 | `2026-10-06` | `.7` slice (d1) | the pre-slice census (D pinned nowhere); the fetch through the tracked route (MATCH both pins, 118 == 118) and byte-identical to the census fetch; the exclusion RED (exactly the 32 D names); 9 fragments regenerated, 8 byte-identical; d.sexp schema ok; trial units — D without F refused by name, F + D composes 147 + 3; rv64i 52 == 52 | **met** — D pinned and fragmented, the slot unmoved |
 | `2026-10-06` | `.7` slice (c6) — THE BIND | the pre-bind census (the slot at encoding.sexp:16, 0 F rows, count_total 88, no fp:: in the evaluator); the payload landed 38/38 byte-identical from the worktree; run_rv64gc 4/4 over 114; 30/30 F forms generated; 118 == 118 vs the pinned tables; EXERCISE-COVERAGE 118/118; the matrix 28 cells; RECORD-SCHEMA, PROFILE-CONSISTENCY, EXTRACTION, DEF-GEN, GUEST-GEN, CITATION-QUOTES ok; two stale facts swept (fp.rs 362 → 290; the schema's deviation count) | **met** — F executes in the tracked engine; the 103 older guests byte-identical |
 | `2026-10-06` | `.7` slice (c5) | specfp's signed fused forms vs the sign-flip construction (464,000 cases, 0 disagreements; RED 490 / 153,438 under two mutations); the corpus re-authored + re-derived from scratch (22/22 byte-identical; f-fused moves 9 lines under the mutated reference); the scratch engine 114 guests 4/4 (RED: accrual dropped → f-arith step 9); identity 103/0 + 11 RED on the parent; FP-VECTORS unchanged | **met** — every F guest's expectation is spec-derived and the arms satisfy them on the scratch engine; the bind (c6) lands the payload |
@@ -1366,6 +1120,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice d2) | `SEMULITH-P4-0050 (leaf P4-SYSTEM.7): slice d2 — the language for D: f2f (the one new operator, gated on riscv/d), d.sem.sexp (32 rules at format 64), the assembler's D spelling derived (32/32 round trip)` | the closed (b)–(c3) part 2 checklists archived |
 | `.7` (slice d1) | `SEMULITH-P4-0049 (leaf P4-SYSTEM.7): slice d1 — the rv_d/rv64_d re-pin (32 forms) + the d.sexp fragment (requires riscv/f, owns no field; the 3 pseudo rows written out); the slice (d) split recorded` | no Rust touched; the slot unmoved |
 | `.7` (slice c6) — THE BIND | `SEMULITH-P4-0048 (leaf P4-SYSTEM.7): slice c6 — THE BIND: the unit composes riscv/f (118 forms, 114 guests, the F arms tracked)` | the staged payload landed; the worktree removed |
 | `.7` (slice c5) | `SEMULITH-P4-0047 (leaf P4-SYSTEM.7): slice c5 — the staged F corpus (11 guests, 114/114 on the scratch engine, identity 103/0 + 11 RED); specfp learns the signed fused forms` | records + the tracked reference; the payload stays staged for (c6) |
@@ -1379,6 +1134,11 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (d2) done (`SEMULITH-P4-0050`) — **the language for D**: one new
+  operator, `f2f` (the format conversion), lowered only where `riscv/d` is composed;
+  `d.sem.sexp` states the 32 D rules as F's at format 64; the assembler spells D operands
+  from the rules (32/32 against spike-dasm). Next: slice (d3) — `fp.rs`'s conversions.
 
 - `2026-10-06`: `.7` slice (d1) done (`SEMULITH-P4-0049`) — **the D tables pinned**: `rv_d`/`rv64_d`
   (32 forms) in the ledger under the bind-gated exclusion, and `definitions/riscv/d.sexp`,

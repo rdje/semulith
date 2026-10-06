@@ -30,7 +30,7 @@
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `3784aac49d6b41ad642060de4f7f2de4c12be0c13271ff50da220155c482f7fb`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `2a37e8c63b914d01a3a887171d7fe6054d5fa84eaabedd37d37b7d5ed2b6836a`
-//! Generator: `scripts/gen_definition.py` (sha256 `71a562b02e5eb830284c373702b5c27b76106e68bb922fd9a5199955d1e4f8f4`)
+//! Generator: `scripts/gen_definition.py` (sha256 `e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -84,7 +84,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "71a562b02e5eb830284c373702b5c27b76106e68bb922fd9a5199955d1e4f8f4",
+        sha256: "e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8",
     },
     inputs: &[
         InputPin {
@@ -3065,7 +3065,7 @@ pub static INSNS: &[InsnDef] = &[
 ];
 
 /// One node of a canonical semantics effect, lowered from the S-expression operator
-/// language (`schema/semantics.sexp`, the 62 forms `scripts/check_semantics.py`
+/// language (`schema/semantics.sexp`, the 63 forms `scripts/check_semantics.py`
 /// checks) by `scripts/gen_definition.py`. Literals are XLEN-wide two's-complement
 /// constants, masked to 64 bits; widths are explicit data everywhere the language
 /// states them (`Trunc`/`Sext`/`Zext`/`Bits`). Evaluation — what the forms DO — is

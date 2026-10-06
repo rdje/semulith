@@ -105,6 +105,9 @@ def check_expr(form, where: str, allowed: set[str] | None) -> None:
 FP_FORMAT_FIRST = {"fbox", "funbox", "fadd", "fsub", "fmul", "fdiv", "fsqrt", "fmadd",
                    "fmin", "fmax", "feq", "flt", "fle", "fclass"}
 FP_CONVERSIONS = {"f2i", "i2f"}
+# P4-SYSTEM.7 slice (d2): the format conversion — TWO format literals (target, source),
+# distinct: a conversion to its own format is no conversion.
+FP_FORMAT_PAIR = {"f2f"}
 FP_WIDTHS = {32, 64}
 
 
@@ -118,6 +121,7 @@ def check_fp(effect, where: str, operands: set[str]) -> None:
     - `(rounding X)` takes the instruction's own `(field rm)` — never a computed value.
     - A format is a literal 32 or 64; f2i/i2f's integer width a literal 32 or 64 and their
       signedness a literal 0 or 1 — the lowering states them as data, never evaluates them.
+      f2f's target and source formats are both literals, and distinct.
     - One operand, one register file: a field read as `(reg x)` AND as `(freg x)` names two
       different registers, and no assembler could spell it.
     """
@@ -149,6 +153,12 @@ def check_fp(effect, where: str, operands: set[str]) -> None:
             resolved = True
         elif op in FP_FORMAT_FIRST and args:
             lit_in(args[0], FP_WIDTHS, "format", op)
+        elif op in FP_FORMAT_PAIR and len(args) >= 2:
+            lit_in(args[0], FP_WIDTHS, "target format", op)
+            lit_in(args[1], FP_WIDTHS, "source format", op)
+            if args[0] == args[1]:
+                raise SemError(f"{where}: ({op} {args[0]} {args[1]} …) converts a format to "
+                               f"itself — no conversion; read the value instead")
         elif op in FP_CONVERSIONS and len(args) >= 3:
             lit_in(args[0], FP_WIDTHS, "format", op)
             lit_in(args[1], FP_WIDTHS, "integer width", op)
@@ -611,6 +621,23 @@ def _selftest() -> int:
         lambda: pair_bad(FADD + FCVT + FMV.replace("(bits 31 0 (freg rs1))",
                                                    "(add (reg rs1) (freg rs1))"),
                          "read as BOTH (reg …) and (freg …)", frag=frag_f))
+
+    # ---- the format conversion (P4-SYSTEM.7 slice d2) ------------------------------------
+    frag_d = tmp / "t-d.sexp"
+    frag_d.write_text(
+        '(fragment (id "riscv/t-pair") (kind isa-extension)\n'
+        '  (insn (name fcvt.s.d) (fixed (6 2 0x14)) (operands rd rs1 rm)))\n')
+    FCVTSD = ('(sem (insn fcvt.s.d) (source "S §1 — why") (effect (set (freg rd) (fbox 32 '
+              '(f2f 32 64 (rounding (field rm)) (freg rs1))))))\n')
+    arm("GREEN the format conversion checks with distinct literal formats",
+        lambda: pair_ok(FCVTSD, "1 of 1 declared instruction(s) have checked semantics",
+                        frag=frag_d))
+    arm("RED   a format conversion to its own format",
+        lambda: pair_bad(FCVTSD.replace("(f2f 32 64", "(f2f 64 64"),
+                         "converts a format to itself", frag=frag_d))
+    arm("RED   a format conversion's source format outside 32/64",
+        lambda: pair_bad(FCVTSD.replace("(f2f 32 64", "(f2f 32 16"),
+                         "takes its source format as a literal 32 or 64", frag=frag_d))
 
     import shutil
     shutil.rmtree(tmp)

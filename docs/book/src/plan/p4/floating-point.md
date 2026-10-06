@@ -108,3 +108,9 @@ declares that it needs F — D reuses F's register-file fields and the specifica
 depend on F; a composition that tries D without F is refused by name. Because every
 floating-point operation in the semantics language already takes its width as data, D needs
 only one new operation: converting between single and double precision.
+
+The second checkpoint wrote the 32 double-precision rules. Each is its single-precision
+counterpart at width 64 — the specification itself defines them "analogously" — except the
+two format conversions, which needed the language's one new operation. The assembler learns
+which register file each D operand uses from those rules alone, and agrees with an
+independent disassembler on all 32 instructions.
