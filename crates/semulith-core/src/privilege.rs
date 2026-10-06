@@ -212,7 +212,7 @@ fn owner_block_mask<H: PrivilegedHart>(hart: &H, owner: &str) -> u64 {
 /// The multi-owner view's read side (P4-SYSTEM.7 slice b, the two-owner fix): the
 /// descriptor's comma-separated `view_of` list as the generated mirror carries it,
 /// composed as the architecture's concatenation of each owner's field block, low to
-/// high in list order — fcsr is fflags[4:0] with frm[2:0] above it (RVI-F §20.1.1's
+/// high in list order — fcsr is fflags[4:0] with frm[2:0] above it (RVI-F §20.1.2's
 /// figure). Each owner's block is contiguous in the declarations today; a holed one
 /// is descriptor work, not a case to guess.
 fn compose_view<H: PrivilegedHart>(hart: &H, list: &str) -> u64 {

@@ -92,10 +92,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/fencei-reserved.s`  `a184809b88d96cef43b841f9eb2853575cb5c2f32294f0d4fe69168fe48320a2`
 //!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.expected.sexp`  `43cb3e21ccf6ec0e6a34da37ca0d3c9c6978cea25471c3f767f4da866ecc319f`
 //!   `profiles/rv64gc-lab-v0/guests/fencei-selfmod.s`  `39ef7e47eaf77ebb13c56ef469abb2cde318a84e533d2d1554cf6894ad430a3d`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.expected.sexp`  `ea3369f0f642d2c62fa649fd9f982796f7d6d17cda5e5a2d36f822c537f292bb`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.s`  `89e4a17dc2476936e6cccb0104fd5647b4dc1c85ba2da7b206915288b2da3688`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.expected.sexp`  `111c631a45833e658b8304828f356b5d12600fe2d2f5f020398189ce00c8c571`
-//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.s`  `a05060f593ca53dd4b6f0efdab183c4c3dc9f8b27e52ef2cc2eda8806faea405`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.expected.sexp`  `6f4973140d8e7ca4245da28e635e0b19bdeec0af9df1f8f88679bfe90e1d6404`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fcsr-view.s`  `f12cce330af01b20bda41b727e5d8bf206880240b15c2291a177e9761591471d`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.expected.sexp`  `0112911508e49ab862073883f3e1bffd563b5f7168547fe75822f6a1eb571f78`
+//!   `profiles/rv64gc-lab-v0/guests/fp-fs-off.s`  `c5b70fd27d893a8dbefc5fb0ccb2dc08980f4c6e4c4957a926ab4b6ee70dce22`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.expected.sexp`  `4caae2a18515bc4b479ca810df3edd2d23c534f19b8cb9afc081a97cb48485ac`
 //!   `profiles/rv64gc-lab-v0/guests/guest-control.s`  `497f63c79cd8e25918d845d5cc7d3430566b2f504a31cd33b2deb572f94694e6`
 //!   `profiles/rv64gc-lab-v0/guests/guest-no-device.expected.sexp`  `2be4382d503c302ed52b68335f6b52a4b8848aa80bfca4b96f503666305336b7`

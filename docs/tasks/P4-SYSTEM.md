@@ -140,7 +140,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
-  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c2) done `2026-10-06`, `SEMULITH-P4-0041`/`-0042`)
+  Status: `pending` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a)–(b) done `2026-10-06`, `SEMULITH-P4-0039`/`SEMULITH-P4-0040`; slice (c) split into (c1)–(c6), (c1)–(c2) and (c3) part 1 done `2026-10-06`, `SEMULITH-P4-0041`–`-0043`)
   Goal: name a Rust candidate; pin the exact target policy for rounding modes, flags, result bits, conversions, NaN payloads and boxing; inventory ancestry (shared SoftFloat lineage, specialization, thread-local vs global status, exact compiler and features); run independent numeric fixtures.
   Acceptance: a decision record with **measured** correctness and performance evidence. If no candidate passes, implement the required subset in Rust and defer the capability. TestFloat's usual SoftFloat expected-value path is recorded as shared ancestry (`RK07`, `EVD-04`).
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
@@ -171,7 +171,7 @@ This gate authorises the planned next engineering stage: board implementation.
 - `2026-10-06` (slice (c) execution split + a slice-(b) defect, recorded before execution;
   sources: the fetched `rv_f`/`rv64_f` (3,050/320 bytes — 26 + 4 = 30 forms, 13 pseudo
   rows: the two old fmv names, fmv.s/fabs.s/fneg.s, the 8 FP-CSR aliases — the brief's
-  census re-derived exactly); the pinned `f-st-ext.html` re-read (§20.1.1–§20.2); the
+  census re-derived exactly); the pinned `f-st-ext.html` re-read (§20.1.1–§20.1.9); the
   machinery re-measured (`gen_definition.py`'s per-fragment variant emission,
   `exec_rv64gc.rs`'s `Frame`, `riscv_asm.py`'s x-only register spelling)):
   **The defect, measured — `frm` must hold any 3-bit value.** Slice (b) declared
@@ -783,7 +783,7 @@ never raised, at every crossing. The index:
   then on the engine (the guest assembled by the tracked assembler, traced by the CLI):
 
   ```
-  f-st-ext.html §20.1.1: "FSRM … writing a new value obtained from the three
+  f-st-ext.html §20.1.2: "FSRM … writing a new value obtained from the three
   least-significant bits of integer register rs1 into frm"; rm table: 101–111 are
   "dynamic reserved rounding modes" (111: "In Rounding Mode register, reserved")
   $ semulith run fp-fcsr-view.elf --profile=rv64gc-lab-v0 --steps=20
@@ -911,6 +911,50 @@ never raised, at every crossing. The index:
   no new lesson (the pseudo-row decision is recorded above and in the fragment's
   own header).
 
+`P4-SYSTEM.7` slice (c3) part 1 — the FP-CSR locators corrected (`2026-10-06`, `SEMULITH-P4-0043`):
+
+- [x] **REPRODUCE / ISSUE** — found while locating slice (c3)'s citations: the pinned
+  chapter's own heading numbers contradict the FP-CSR locators slice (b) wrote.
+
+  ```
+  $ (the h3 census of unpriv/f-st-ext.html) → 20.1.1. F Register State / 20.1.2.
+    Floating-Point Control and Status Register / 20.1.3. NaN Generation … / 20.1.9
+  $ git grep -n "RVI-F §20.1.1" → 9 fflags/frm/fcsr lines in state.sexp, 15 directives
+    in the two FP guests (+ their derived expectations), privilege.rs:215, tests.rs:779,
+    the c1 CHANGELOG/tree lines — all naming fcsr content; only state.sexp:55 (the f
+    registers) is §20.1.1's
+  $ (the d-st-ext.html h3 census) → 21.1.1. D Register State (FLEN=64) / 21.1.2. NaN
+    Boxing — state.sexp:55 cited §21.1.2 for FLEN=64
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the locators were written from memory of the
+  ratified chapter's layout, never measured against the pinned page's headings; the
+  only citation tool cannot see the class: `grep -n "glob" scripts/check_citations.py`
+  → line 180 reads `definitions/**/*.sem.sexp` rule sources alone, and it proves a §
+  EXISTS in the pinned artifact (§20.1.1 does), not that it holds the cited content.
+  State-document locators are outside every gate. Owned: tree `CITATION-ACCURACY`
+  (opened next, a quoted-phrase-in-section gate).
+
+- [x] **FIX** — every fcsr/fflags/frm locator → §20.1.2 (state.sexp ×9, both guests'
+  directives, privilege.rs, the unit test, the c1 CHANGELOG and checklist lines);
+  state.sexp:55's FLEN=64 → §21.1.1; the split decision's "§20.1.1–§20.2" → "§20.1.9".
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ git grep -n "RVI-F §20.1.1" (live surfaces) → state.sexp:55 only (the f registers)
+  $ derive_expectations.py fp-fcsr-view.s fp-fs-off.s → 20 / 40 steps; git diff: only
+    (source …) strings moved, every (value …) byte-identical
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (103/103)
+  $ python3 scripts/check_citations.py rv64gc-lab-v0 → 52 of 52 instruction citations resolve
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`
+  (STATE-GEN/DEF-GEN/GUEST-GEN re-derived byte-exact — the mirrors re-hash only).
+
+- [x] **LOCKSTEP** — this tree, `CHANGELOG.md`; MEMORY.md (next_action unchanged in
+  substance — c3 part 2 after the CITATION-ACCURACY gate); no book surface cites these.
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -920,6 +964,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.7` slice (c3) part 1 | the pinned F/D chapters' heading census against every `RVI-F §20.1.1` / `RVI-D §21.1.2` locator; the fcsr content re-cited §20.1.2, FLEN=64 §21.1.1; both FP guests re-derived (sources only, values byte-identical); 103/103; check_citations 52/52 (its scope measured: sem files only, existence only) | **met** — the locators name the sections that hold their content; the tool gap owned by `CITATION-ACCURACY` |
 | `2026-10-06` | `.7` slice (c2) | the pre-slice census (F pinned nowhere; 7 FRAGMENTS entries; the fetched tables 26 + 4 rows, 13 pseudo rows; rs3/rm already in arg_lut.csv); the tracked-route fetch byte-identical to the census fetch; the named exclusion RED without it (118 vs 88, exactly the 30 F names); f.sexp generated (30 forms, owns rs3/rm, no pseudos), the seven others byte-identical; schema + disjointness (115-form trial union collision-free) | **met** — the F tables pinned and owned as a fragment; the scope and the slot unmoved until the bind; both profiles verify; `make gate` green |
 | `2026-10-06` | `.7` slice (c1) | the FSRM sentence + the rm table re-read against slice (b)'s frm WARL; the engine traced on fp-fcsr-view (x12 `0x45`, x14 `0x2` — retention); the fix at the declaration + both generators; the unit tests and the authoring tool corrected; the guest re-derived spec-side and RED against the unfixed legalization (step 15), green after (103/103); the tool's quote refusal fired; three ceiling crossings resolved by their own procedures (DEV_NOTES shard, archive part 3, the book partition) | **met** — frm holds any 3-bit value; the reserved-rm policy recorded (illegal-instruction, still valid per the pinned revision; Sail's `Fcsr_RM_Illegal`); `make check` rc=0, `make gate` green |
 | `2026-10-06` | `.7` slice (b) | the two latent defects re-measured live (the fsprobe: the gate absent — Ok ×6 at FS=Off; fcsr reads 0x0, writes refused); the Sail placement measurement (the FS gate rides decode-time legality — fdext_control.sail:19, fext_insts.sail:888 — dynamic state, not the encoding; the FS=Off instruction cells are the bind's, recorded); the `fp_registers` descriptor element (schema + dossier mapping + gen_state + the 4th census candidate, RED-armed); the census re-answer + the three FP-CSR statements refined; privilege.rs (the FS section; the permitted() arm; compose_view/write_legalized; FP-CSR writes mark FS=Dirty — fdext_regs.sail:455); 134/134 lib tests (6 new); the corpus 103/103 (fp-fs-off 40 steps, fp-fcsr-view 20 — EVD-05 spec-side); the matrix cells; the identity proof (101 pre-slice guests byte-identical, 5,491 trace lines, both CLIs vs the parent worktree; the RED control — both new guests diverge on the parent — caught the harness's own `--profile=` bug first); STATE-GEN 29/29 + both pairs byte-exact, DEF-GEN re-derived, DERIVED-COUNTS 430→431; `make check` rc=0, `make gate` all green, bench wasm + smoke-bench + both books | slice (b) landed: the FP state modelled and gated; next slice (c) — THE F BIND |
@@ -928,6 +973,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.7` (slice c3 part 1) | `SEMULITH-P4-0043 (leaf P4-SYSTEM.7): slice c3 part 1 — the FP-CSR locators corrected (fcsr is RVI-F §20.1.2, FLEN=64 is RVI-D §21.1.1)` | the heading census; 24+ locators re-cited; both guests re-derived sources-only; the citation tool's blind spot measured and routed to CITATION-ACCURACY |
 | `.7` (slice c2) | `SEMULITH-P4-0042 (leaf P4-SYSTEM.7): slice c2 — the rv_f/rv64_f re-pin (30 forms) + the f.sexp fragment (owns rs3/rm; the 13 pseudo rows written out, not carried)` | the tracked-route fetch byte-identical; the bind-gated exclusion RED-proven; the fragment generated, the others byte-identical; trial union 115 collision-free; both profiles verify |
 | `.7` (slice c1) | `SEMULITH-P4-0041 (leaf P4-SYSTEM.7): slice c1 — frm holds any 3-bit value (slice b's WARL retention fixed at root); the slice (c) split recorded; the P4 book chapter partitioned per leaf` | the defect measured (spec text + engine trace); the declaration fixed, both generators re-run; tests + authoring tool corrected; fp-fcsr-view RED→green; the slice (c) split (c1–c6) and the FS-gate placement decided; DEV_NOTES shard, archive part 3, the book partition (33 → 39 chapters); knowledge card promoted |
 | `.7` (slice b) | `SEMULITH-P4-0040 (leaf P4-SYSTEM.7): slice b — the FP state: the f-file census-gated, the FS gate live on the FP CSRs, the fcsr two-owner view fixed at root, the FS=Off corpus` | the defects re-measured live (the fsprobe); the Sail placement measured (decode-time legality — the instruction cells are the bind's); the fp_registers element through schema/dossier/generator + the 4th census gate (RED-armed);the census re-answer + the FP-CSR statements; privilege.rs (the FS section, the permitted() arm, compose_view/write_legalized, dirty-on-FP-CSR-write); 134/134 lib tests; 103/103 corpus (fp-fs-off + fp-fcsr-view, EVD-05); the matrix cells; the identity proof (101 byte-identical, 5,491 lines, both CLIs; the RED control diverges on the parent — and caught the harness's `--profile=` bug); STATE-GEN 29, DEF-GEN, DERIVED-COUNTS 430→431; make check + make gate green, bench wasm + smoke-bench + both books |
@@ -966,6 +1012,14 @@ only the ACTIVE leaf's rows stay inline below.
 | — | `SEMULITH-P4-0001 (tree P4-SYSTEM)` | the `.1` design brief: the pinned snapshot's privileged chapters measured present (24 priv + 46 unpriv pages); the selection decided (rv64gc-lab-v0, M/S/U, Sv39, IALIGN 16 with C, FP evidence at .7, SBI/psABI contracts); the output shape (unregistered unit dossier start) |
 
 ## Changelog
+
+- `2026-10-06`: `.7` slice (c3) part 1 done (`SEMULITH-P4-0043`) — **the FP-CSR
+  locators corrected**: the pinned chapter numbers fcsr §20.1.2 (§20.1.1 is the
+  register file) and FLEN=64 §21.1.1 (§21.1.2 is NaN boxing); slice (b)'s locators,
+  carried into c1, named the wrong sections in state.sexp, both FP guests, a doc
+  comment and a test. No gate could see it — `check_citations.py` resolves sem-file
+  locators by existence only — so the gap is owned by the new `CITATION-ACCURACY`
+  tree, executed before part 2 writes thirty new FP citations.
 
 - `2026-10-06`: `.7` slice (c2) done (`SEMULITH-P4-0042`) — **the F tables pinned and
   owned**: `rv_f`/`rv64_f` re-pinned through the tracked `extensions/` route (3,050/320

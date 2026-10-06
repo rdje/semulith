@@ -1,15 +1,15 @@
 auipc x1, 0                  #: x1 holds this instruction's own address (entry + 0x0). | RVI-RV32I §1.1.4 (D-LUI-AUIPC)
 addi x1, x1, 80              #: the trap handler sits at entry + 0x50. | RVI-RV32I §1.1.4
 csrrw x0, mtvec, x1          #: mtvec is programmed to the handler; rd=x0 discards the old value. | RVI-ZICSR §5.1.1
-csrrs x5, fflags, x0         #: FS resets Off (the laboratory's reset row): the fflags access is illegal-instruction — cause 2, xtval the instruction word, mepc this instruction (entry+0x0C). | RVP-MACHINE §2.1.1.6.7 (the Off-state sentence); RVI-F §20.1.1
+csrrs x5, fflags, x0         #: FS resets Off (the laboratory's reset row): the fflags access is illegal-instruction — cause 2, xtval the instruction word, mepc this instruction (entry+0x0C). | RVP-MACHINE §2.1.1.6.7 (the Off-state sentence); RVI-F §20.1.2
 csrrs x6, frm, x0            #: FS still Off: the frm access traps identically (mepc entry+0x10). | RVP-MACHINE §2.1.1.6.7
 csrrs x7, fcsr, x0           #: and fcsr (mepc entry+0x14) — the gate covers all three FP CSRs. | RVP-MACHINE §2.1.1.6.7
 addi x8, x0, 1               #: the FS=Initial pattern starts as a 1. | RVI-RV32I §1.1.4
 slli x8, x8, 13              #: 1 << 13 is the FS field's low bit (mstatus[14:13]). | RVP-CSR (the mstatus field table)
 csrrs x0, mstatus, x8        #: set FS=Initial; rd=x0 discards the old mstatus. | RVI-ZICSR §5.1.1
-csrrs x9, fflags, x0         #: legal now: fflags reads its reset 0 (x9 already holds 0 — the step's trap-free passage is the observation). | RVI-F §20.1.1
-csrrs x10, frm, x0           #: legal: frm reads 0 (RNE). | RVI-F §20.1.1
-csrrs x11, fcsr, x0          #: legal: the composed view reads 0. | RVI-F §20.1.1
+csrrs x9, fflags, x0         #: legal now: fflags reads its reset 0 (x9 already holds 0 — the step's trap-free passage is the observation). | RVI-F §20.1.2
+csrrs x10, frm, x0           #: legal: frm reads 0 (RNE). | RVI-F §20.1.2
+csrrs x11, fcsr, x0          #: legal: the composed view reads 0. | RVI-F §20.1.2
 csrrs x12, mstatus, x0       #: x12 observes FS=Initial with SD=0 (MPIE=1 is the trap returns' stack). | RVP-MACHINE §2.1.1.6.7
 addi x17, x0, 3              #: the FS=Dirty pattern. | RVI-RV32I §1.1.4
 slli x17, x17, 13            #: 3 << 13. | RVP-CSR (the mstatus field table)

@@ -776,7 +776,7 @@ fn fcsr_write_splits_back_into_the_owners() {
     assert_eq!(csr_read(&h, 0x001).unwrap(), 0x1F);
     assert_eq!(csr_read(&h, 0x002).unwrap(), 0x2);
     // frm holds ANY 3-bit value — "FSRM … writing a new value obtained from the three
-    // least-significant bits of integer register rs1 into frm" (RVI-F §20.1.1): slice 7
+    // least-significant bits of integer register rs1 into frm" (RVI-F §20.1.2): slice 7
     // lands (111 in frm is a dynamic RESERVED rounding mode, reachable by construction);
     // the fflags slice lands; bits 63:8 drop (WPRI).
     csr_write(&mut h, 0x003, u64::MAX).unwrap();

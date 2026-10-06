@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0043 (leaf P4-SYSTEM.7, slice c3 part 1) — the FP-CSR locators corrected
+
+- The pinned F chapter numbers the fcsr section §20.1.2 (§20.1.1 is "F Register
+  State"); the D chapter numbers FLEN=64 §21.1.1 (§21.1.2 is NaN boxing). Slice
+  (b)'s locators — carried into c1 — cited §20.1.1 for fflags/frm/fcsr content in
+  the state document (9 lines), both FP guests' directives (and so their derived
+  expectations), a privilege.rs doc comment and a unit-test comment, and §21.1.2 for
+  FLEN=64. All re-cited; both guests re-derived (sources only, every value
+  byte-identical); the hash-pinned mirrors regenerated; 103/103.
+- The class was invisible to tools: `check_citations.py` resolves only the
+  semantics files' locators, and only by existence. Owned by the new
+  `CITATION-ACCURACY` tree (a quoted-phrase-in-section gate), executed next.
+
 ## SEMULITH-P4-0042 (leaf P4-SYSTEM.7, slice c2) — the rv_f/rv64_f re-pin + the f.sexp fragment
 
 - `rv_f`/`rv64_f` re-pinned in the rv64gc ledger through the tracked `extensions/`
@@ -17,7 +30,7 @@
 ## SEMULITH-P4-0041 (leaf P4-SYSTEM.7, slice c1) — frm holds any 3-bit value: slice (b)'s WARL retention fixed at root; the slice (c) split recorded
 
 - **The defect, measured against the pinned chapter**: slice (b) declared `frm`
-  WARL one-of 0..4 (an illegal write retaining the old value); RVI-F §20.1.1 says
+  WARL one-of 0..4 (an illegal write retaining the old value); RVI-F §20.1.2 says
   FSRM writes "the three least-significant bits of integer register rs1 into frm"
   and names 101–111 dynamic reserved rounding modes — values frm must hold. Fixed
   at the declaration (`(legalize (any))`, the sentence quoted), the generated

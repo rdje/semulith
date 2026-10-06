@@ -52,7 +52,7 @@
   ;; ---- the floating-point register file (P4-SYSTEM.7 slice b — modelled after the slice-(a)
   ;;      qualification, SEMULITH-P4-0039) -----------------------------------------------------
   (fp_registers (count 32) (width_bits 64) (ids "f0..f31")
-       (authority architecture) (source "RVI-F §20.1.1 (the f registers f0-f31); RVI-D §21.1.2 (FLEN=64 with D selected; the LP64D ABI, D-ABI)")
+       (authority architecture) (source "RVI-F §20.1.1 (the f registers f0-f31); RVI-D §21.1.1 (FLEN=64 with D selected — the D Register State section; NaN-boxing of the narrower values is §21.1.2; the LP64D ABI, D-ABI)")
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.4 (UNSPECIFIED)")
               (statement "The f-file's reset content is architecturally UNSPECIFIED; the laboratory resets it to 0 — unobservable as such (FS resets Off, so the file is unreadable until software enables FP, and NaN-boxing is the write-side discipline of the instructions that fill it, not the file's). The file is census-hidden state: observations are through the x-registers alone (the leaf's decision 8 — fmv/fclass/compares/stores, fflags/frm via Zicsr).")))
 
@@ -610,30 +610,30 @@
 
   ;; ---- the floating-point CSRs (semantics landed at P4-SYSTEM.7 slice b) ----------------------
   (csr (id "fflags") (address 1) (width_bits 64) (authority architecture)
-       (source "RVI-F §20.1.1 — the FP accrued-flags register")
+       (source "RVI-F §20.1.2 — the FP accrued-flags register")
        (field (id "flags_4_0") (bit_hi 4) (bit_lo 0) (discipline warl)
               (legalize (any)) (reset "0") (reset_authority laboratory)
-              (authority architecture) (source "RVI-F §20.1.1"))
+              (authority architecture) (source "RVI-F §20.1.2"))
        (field (id "wpri_63_5") (bit_hi 63) (bit_lo 5) (discipline wpri)
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
-       (reset (value "0") (authority laboratory) (source "RVI-F §20.1.1; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
+       (reset (value "0") (authority laboratory) (source "RVI-F §20.1.2; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
               (statement "The accrued exception flags (NV/DZ/OF/UF/NX at bits 4..0): STICKY — the FP instructions accrue by OR-ing (Sail's accrue_fflags shape; the accrual lands with the F bind, slice c) and never clear themselves; software clears with an explicit write. Access is gated by mstatus.FS: at FS=Off the access is illegal-instruction (the Off-state sentence, RVP-MACHINE §2.1.1.6.7; Sail 0.14 fdext_control.sail).")))
 
   (csr (id "frm") (address 2) (width_bits 64) (authority architecture)
-       (source "RVI-F §20.1.1 — the FP rounding-mode register")
+       (source "RVI-F §20.1.2 — the FP rounding-mode register")
        (field (id "frm_2_0") (bit_hi 2) (bit_lo 0) (discipline warl)
               (legalize (any)) (reset "0") (reset_authority laboratory)
-              (authority architecture) (source "RVI-F §20.1.1"))
+              (authority architecture) (source "RVI-F §20.1.2"))
        (field (id "wpri_63_3") (bit_hi 63) (bit_lo 3) (discipline wpri)
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
-       (reset (value "0") (authority laboratory) (source "RVI-F §20.1.1; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
-              (statement "The dynamic rounding mode: the field holds ANY 3-bit value — 'FSRM … writing a new value obtained from the three least-significant bits of integer register rs1 into frm' (RVI-F §20.1.1; the spec labels no WARL on frm). 101–111 held here are the DYNAMIC RESERVED rounding modes the rm table names (its 111 row: 'In Rounding Mode register, reserved'), reachable by construction. An instruction rm field of 111 (dyn) resolves to frm; static 101/110 and dynamic 101–111 are reserved behaviour, which the laboratory takes as illegal-instruction (the ratified mandate the pinned revision weakened yet calls 'still valid behavior'; Sail's Fcsr_RM_Illegal) — the resolution is the semantics layer's (slice c). Slice (b)'s WARL one-of 0..4 with retain-on-illegal contradicted the FSRM sentence — measured and fixed at root, P4-SYSTEM.7 slice (c1). Access FS-gated as fflags.")))
+       (reset (value "0") (authority laboratory) (source "RVI-F §20.1.2; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
+              (statement "The dynamic rounding mode: the field holds ANY 3-bit value — 'FSRM … writing a new value obtained from the three least-significant bits of integer register rs1 into frm' (RVI-F §20.1.2; the spec labels no WARL on frm). 101–111 held here are the DYNAMIC RESERVED rounding modes the rm table names (its 111 row: 'In Rounding Mode register, reserved'), reachable by construction. An instruction rm field of 111 (dyn) resolves to frm; static 101/110 and dynamic 101–111 are reserved behaviour, which the laboratory takes as illegal-instruction (the ratified mandate the pinned revision weakened yet calls 'still valid behavior'; Sail's Fcsr_RM_Illegal) — the resolution is the semantics layer's (slice c). Slice (b)'s WARL one-of 0..4 with retain-on-illegal contradicted the FSRM sentence — measured and fixed at root, P4-SYSTEM.7 slice (c1). Access FS-gated as fflags.")))
 
   (csr (id "fcsr") (address 3) (width_bits 64) (view_of "fflags, frm") (authority architecture)
-       (source "RVI-F §20.1.1 — fflags and frm as one register")
-       (reset (value "fflags' and frm's") (authority laboratory) (source "RVI-F §20.1.1")
+       (source "RVI-F §20.1.2 — fflags and frm as one register")
+       (reset (value "fflags' and frm's") (authority laboratory) (source "RVI-F §20.1.2")
               (statement "The combined view of fflags (bits 4:0) and frm (bits 7:5); no storage, no independent reset. A MULTI-owner view: the read composes the owners' non-WPRI field bits low-to-high in list order and a write splits back into the owners under each owner's own field table (the engine's composition rule, P4-SYSTEM.7 slice b — the single-owner resolution read 0 and refused writes, measured pre-slice). Access FS-gated as fflags.")))
 
   ;; ---- the re-earned census (SEM-08) ----------------------------------------------------------
