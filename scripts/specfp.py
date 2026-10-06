@@ -219,25 +219,32 @@ def div(n, mode, a, b):
     return round_rational(n, x.q / y.q, mode, s)
 
 
-def fma(n, mode, a, b, c):
+def fma(n, mode, a, b, c, negate_product=False, negate_addend=False):
+    """(±(a×b)) + (±c) with ONE rounding — the four fused forms as the chapter states them
+    (RVI-F §20.1.6): FMADD (rs1×rs2)+rs3; FMSUB (rs1×rs2)−rs3; FNMSUB −(rs1×rs2)+rs3;
+    FNMADD −(rs1×rs2)−rs3 — computed from the exact signed terms, never by flipping a
+    register's sign bit (the model's method; this reference is the spec's)."""
     x, y, z = Val(n, a), Val(n, b), Val(n, c)
     # RVI-F §20.1.6: ∞×0 is invalid even with a quiet-NaN addend
     if (x.kind == "inf" and y.kind == "zero") or (x.kind == "zero" and y.kind == "inf"):
         return canonical(n), NV
     if x.nan or y.nan or z.nan:
         return nan_result(n, x, y, z)
-    ps = x.sign ^ y.sign
+    ps = x.sign ^ y.sign ^ int(negate_product)
+    zs = z.sign ^ int(negate_addend)
     if x.kind == "inf" or y.kind == "inf":
-        if z.kind == "inf" and z.sign != ps:
+        if z.kind == "inf" and zs != ps:
             return canonical(n), NV
         return inf(n, ps), 0
     if z.kind == "inf":
-        return inf(n, z.sign), 0
-    q = x.q * y.q + z.q
+        return inf(n, zs), 0
+    prod = -(x.q * y.q) if negate_product else x.q * y.q
+    add_q = -z.q if negate_addend else z.q
+    q = prod + add_q
     if q == 0:
         product_zero = x.kind == "zero" or y.kind == "zero"
         if product_zero and z.kind == "zero":
-            return round_rational(n, q, mode, zero_sum_sign(mode, ps, z.sign))
+            return round_rational(n, q, mode, zero_sum_sign(mode, ps, zs))
         return round_rational(n, q, mode, 1 if mode == RDN else 0)
     return round_rational(n, q, mode)
 

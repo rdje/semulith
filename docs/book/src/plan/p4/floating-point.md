@@ -80,3 +80,16 @@ against the hardware on every commit.
 The same checkpoint fixed where the build gets its dependencies: the backend crate had been
 resolved from a cache in the user's home directory, off the repository's volume; every cargo
 command now reads it from `.app-data/vendor/` (`make vendor`).
+
+Checkpoint (c5) wrote the **F test corpus** before the instructions are switched on: eleven
+small guest programs — the floating-point unit switched off, NaN-boxing and the bit-exact
+moves, every rounding mode (and the two reserved ones, which must trap), the five exception
+flags, the fused multiply-adds, sign injection, minimum/maximum around ±0 and NaN, the
+compares, the ten-way classification, the saturating conversions, and the rule that the
+floating-point state becomes "dirty" only when something actually changes. Every expected
+value is derived from the specification, never from the engine. Deriving the fused forms
+showed the reference could only compute the first of the four (`(a×b)+c`); it now builds
+all four from their signed terms as the chapter writes them, and is checked against a second,
+independent construction on 464,000 cases. On an engine staged outside the tracked tree the
+corpus passes 114 of 114, the 103 older programs run byte-identically, and all eleven new
+ones fail on the previous engine — as they must.
