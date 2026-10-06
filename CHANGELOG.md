@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0059 (leaf P4-SYSTEM.8, slice b) — the fault-priority table declared and pinned
+
+- `profile.sexp` declares `D-FAULT-PRIORITY` (with REQ-D-FAULT-PRIORITY and OB-FAULT-PRIORITY):
+  the pinned synchronous-exception priority table (priv §2.1.1.15), the laboratory's one
+  implementation-defined choice (load/store/AMO misaligned judged HIGH, before translation —
+  `.3` decision 7), the unreachable rows named, and the guest pinning each adjacent pair.
+- `prio-sv39` pins the four pairs no guest had: misaligned over a page fault (load and store),
+  misaligned over a physical access fault, translation succeeding then the physical access
+  refused (5/7), and illegal-instruction (FS=Off) over a page fault and over misaligned. It
+  reuses sv39-fault-invalid's page-table prologue and adds one leaf mapping outside the
+  region. 128/128 on the engine; Sail AGREE (128 steps). `make check` + `make gate` green.
+
 ## SEMULITH-P4-0058 (leaf P4-SYSTEM.8, slice a) — the CSR rd-before-trap defect fixed at root
 
 - A CSR instruction whose write is refused (a read-only CSR) committed rd and then trapped —

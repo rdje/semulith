@@ -130,3 +130,4 @@ d-f2f
 d-rounding
 mm-csr-ro-write
 mm-csr-ro-counters
+prio-sv39

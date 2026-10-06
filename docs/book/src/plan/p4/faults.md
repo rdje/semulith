@@ -1,6 +1,6 @@
 # P4.8 — Faults, restart and partial progress
 
-**Status:** Underway (slice a, 2026-10-06)
+**Status:** Underway (slices a–b, 2026-10-06)
 
 An instruction can do several things — read a register, access memory, update a control
 register, write its result. If something goes wrong part-way, what must the machine look
@@ -26,3 +26,10 @@ destination untouched, and Sail agrees step for step. A second program does the 
 against the counters; Sail cannot run that one under the matched configuration (it has no
 time source there, so the counters do not exist), and that limit is recorded rather than
 fitted. Two stale texts and one unreachable wrong cause code were corrected on the way.
+
+Slice (b) wrote down which fault wins when one instruction could raise several. The
+specification gives a fixed order — fetch problems first, then illegal instructions, then
+(at one position the implementation may choose) misalignment, then address-translation
+faults, then the physical access — and this laboratory takes misalignment early, before
+translation. A new test program builds page tables so that one instruction at a time meets
+two problems at once; every case resolves as declared, and Sail agrees on all of them.

@@ -147,7 +147,7 @@ This gate authorises the planned next engineering stage: board implementation.
   ⛔ **Routed in from `P0-PROFILE.7` on `2026-09-14`, measured rather than anticipated:** the two reference models this project uses *both* vendor Berkeley SoftFloat, and **184 of the 199 `.c` files present in both copies are byte-identical** once the release-number comment is normalized (sail 3e / spike 3d; `f64_add.c` differs by one line). A Sail-versus-Spike floating-point comparison therefore executes **one implementation twice**. This leaf's ancestry inventory starts from that fact, and its independent numeric fixtures must derive expected values from something that does not descend from SoftFloat. See [`reference_softfloat-shared-ancestry`](../decisions/reference_softfloat-shared-ancestry.md).
 
 - ID: `P4-SYSTEM.8` — **faults, restart and partial progress**
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slice (a) done `SEMULITH-P4-0058`)
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0057`; slices (a)–(b) done `SEMULITH-P4-0058`–`-0059`)
   Goal: fault priority, suppressed effects, restart locations, partial commits under the new system features (`SEM-04`, `SEM-06`).
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
@@ -165,7 +165,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); next: slice (b), the fault-priority table and its missing pairs |
+| 1 | `P4-SYSTEM.8` | `pending` | faults, restart and partial progress — the design brief recorded `2026-10-06` (the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection); (a) the CSR defect fixed at root (sail AGREE); (b) the priority table declared and pinned; next: slice (c), the typed fault-injection carrier |
 
 ## Decisions
 
@@ -816,6 +816,60 @@ never raised, at every crossing. The index:
   `CHANGELOG.md`, `MEMORY.md` (next_action → b), the book (the new P4.8 chapter, SUMMARY,
   the P4 index), `schema/semantics.sexp`.
 
+`P4-SYSTEM.8` slice (b) — the fault-priority table declared; its missing pairs pinned on both engines (`2026-10-06`, `SEMULITH-P4-0059`):
+
+- [x] **REPRODUCE / ISSUE** — the priority TOPIC was handed to `.8` four times (the archived
+  `.2`/`.3`/`.4` briefs) and never declared; the census of what was pinned:
+
+  ```
+  $ git show HEAD:profiles/rv64gc-lab-v0/profile.sexp | grep -c "D-FAULT-PRIORITY" → 0
+  pinned already: fault-fetch (fetch fault over decode), it-prio-load (misaligned over the
+    out-of-region access fault, bare), f-fs-off/d-fs-off (illegal over the access fault),
+    a-amo-sv39 (an AMO's misaligned over translation)
+  unpinned: a plain load/store's misaligned over a PAGE fault; illegal over misaligned and
+    over a page fault; translation succeeding then the physical access refused (grep of the
+    sv39 expectations for "access fault" → nothing)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the engine already orders every pair as
+  the table and `.3` decision 7 require (both engines agree below); what was missing was the
+  DECLARATION and the pins. The table, measured where it lives: priv/machine.html §2.1.1.15,
+  "Synchronous exception priority in decreasing priority order" — its one
+  implementation-defined position is load/store/AMO misaligned (high or low).
+
+- [x] **FIX** — `profile.sexp`: `D-FAULT-PRIORITY` (the table, the laboratory's HIGH choice,
+  the unreachable rows named — instruction-misaligned under IALIGN 16, breakpoints without
+  Sdtrig — and the guest pinning each adjacent pair) + REQ-D-FAULT-PRIORITY + OB-FAULT-PRIORITY
+  (identical statements, the MIRROR rule); `prio-sv39`: sv39-fault-invalid's page-table
+  prologue verbatim up to its last table store (its auipc chains are pc-relative), one leaf
+  added by absolute address (VA 0x0040_3000 → PA 0x1000_0000, outside the region), eight
+  S-mode cells; the matrix's placements; the authoring tool's header learns `prio-`.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  prio-sv39 derived spec-side (128 steps) — the cells' causes: misaligned+unmapped ld 4,
+    sd 6; aligned+unmapped 13 (the control); misaligned+mapped-outside 4; aligned
+    mapped-outside ld 5, sd 7; FS=Off flw on the unmapped VA 2; FS=Off misaligned fld 2
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 4 passed (128 guests)
+  $ compare_sail.py (matched config) → AGREE prio-sv39 128 steps; "verdict: 1 AGREE of 1", rc=0
+  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok (20 record file(s) …)
+  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 → 28 cells, every
+    disposition resolves
+  ```
+
+- [x] **NO REGRESSION** — no engine change (the guest pins existing behaviour; it passes on
+  the parent engine by design — a characterization, not a RED); `make check` rc=0; `make
+  gate` → `=== all doctrines green ===`. Observed on the way: `check_sexp_schema` judges each
+  top-level form against the declared constructs and so accepted a decision placed AFTER the
+  profile's closing form; the dossier loader (RECORD-SCHEMA, PROFILE-CONSISTENCY) refused it
+  ("expected exactly one document form … found 2") — the one-root rule is the loader's, by
+  design (record files hold many forms), and it held.
+
+- [x] **LOCKSTEP** — this tree, `profile.sexp` + the two record files, `CHANGELOG.md`,
+  `MEMORY.md` (next_action → c), the book (P4.8 chapter).
+  `promotion: declined (the priority table is the decision record itself; no new lesson).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -825,6 +879,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.8` slice (b) | the pins census; prio-sv39 derived (causes 4 6 13 4 5 7 2 2) and green on the engine (128 guests); sail AGREE 128 steps; RECORD-SCHEMA ok; the matrix 28 cells | **met** — the table declared, every realizable adjacent pair pinned on both engines |
 | `2026-10-06` | `.8` slice (a) | the probe on the HEAD engine (x5 written, then cause 2); the RED guest on the old engine (step 9); 127/127 after the fix; identity 125/0 + 2 RED; sail AGREE mm-csr-ro-write (51) and a-lrsc-fault (41), the counters guest the named Zicntr-absent cell; the tool before/after 76/76 + F/D 22/22 | **met** — a refused CSR write leaves rd untouched on both engines |
 | `2026-10-06` | `.7` slice (e3) + LEAF | the acceptance evidence re-run at HEAD: fp:: 8 passed (230 + 3,168), run_rv64gc 4/4 (125), FP-VECTORS ok (agree 2131), Sail 24 AGREE rc=0, fpcheck 0 of 63,752 vs the reference | **met** — the leaf closes |
 | `2026-10-06` | `.7` slice (e2) | 3,168 fixtures (162 combinations, 21 operations, every flag raised) pass on the first run; RED with UF removed; FP-VECTORS 7/7 (fixture DRIFT arm); the per-op cost on the final model layer and on the raw backend in one run | **met** — breadth tracked and gated; performance measured (2.8–6.9× the backend on the arithmetic core, the exact OF/UF's cost) |
@@ -852,6 +907,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.8` (slice b) | `SEMULITH-P4-0059 (leaf P4-SYSTEM.8): slice b — the fault-priority table declared (D-FAULT-PRIORITY + its mirrors); prio-sv39 pins the missing adjacent pairs, sail AGREE` | a characterization guest, no engine change |
 | `.8` (slice a) | `SEMULITH-P4-0058 (leaf P4-SYSTEM.8): slice a — the CSR rd-before-trap defect fixed at root (csr-rw, the atomic read-write; RED-first, sail AGREE on mhartid); LR's wrong unreachable cause and a-lrsc-fault's stale prose` | the brief's sail evidence corrected |
 | `.7` (slice e3) + LEAF | `SEMULITH-P4-0056 (leaf P4-SYSTEM.7): slice e3 — the decision record's closing measurement + THE LEAF ACCEPTANCE; the leaf CLOSES (F and D bound and validated)` | frontier → `.8` |
 | `.7` (slice e2) | `SEMULITH-P4-0055 (leaf P4-SYSTEM.7): slice e2 — the numeric fixtures at scale (3,168 seeded spec-side cases, every operation × format × mode, gated by FP-VECTORS) + the model layer's per-op cost measured` | the doctrine row's stale count corrected |
@@ -873,6 +929,11 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.8` slice (b) done (`SEMULITH-P4-0059`) — **the fault-priority table**:
+  declared as `D-FAULT-PRIORITY` (the pinned table, the laboratory's misaligned-high choice,
+  the unreachable rows named); `prio-sv39` pins the four missing adjacent pairs, Sail AGREE.
+  Next: slice (c) — the typed fault-injection carrier.
 
 - `2026-10-06`: `.8` slice (a) done (`SEMULITH-P4-0058`) — **the CSR defect at root**: a CSR
   instruction whose write is refused no longer commits rd — one atomic read-write judges both
