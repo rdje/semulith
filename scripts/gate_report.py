@@ -48,6 +48,78 @@ import dossier_sexp as D                                # noqa: E402
 import sexp as S                                        # noqa: E402
 
 
+# ---------------------------------------------------------------------------
+# The G-CONTRACT measure (`P4-SYSTEM.10` slice a) — ONE computation, every builder.
+# ⛔ The third wrong cut, after the two recorded in `build()`: an implemented check was any id a
+# tracked executable under `scripts/`/`crates/` NAMES — across the whole tree. MIRROR-DERIVE makes
+# 26 check ids identical across rv64i's and rv64gc's contracts (13 base mirrors, field-equal by
+# enforcement), so realizing one for rv64gc credited rv64i with a check nothing of rv64i's runs.
+# And the denominator counted every record, including those a later contract version SUPERSEDED.
+# The measure is now the unit's own: a check is implemented for a unit exactly when THAT unit's
+# registry — named by its contract document, its every entry run by `cargo test` — realizes it
+# under the obligation that declares it; the denominator is the EFFECTIVE contract.
+# ---------------------------------------------------------------------------
+
+_ENTRY = re.compile(r'\bContractCheck\s*\{\s*id:\s*"([^"]+)",\s*obligation:\s*"([^"]+)",')
+_OPENED = re.compile(r'(?<!struct )\bContractCheck\s*\{')
+
+
+def _registry_pairs(path: Path) -> set[tuple[str, str]]:
+    """The (obligation, check) pairs a registry realizes — read EXACTLY: an entry this
+    reader cannot parse is a refusal, never a silent miss (a miss would deflate the count)."""
+    text = path.read_text(encoding="utf-8")
+    entries = _ENTRY.findall(text)
+    opened = len(_OPENED.findall(text))
+    if len(entries) != opened:
+        raise SystemExit(f"gate_report: {path.relative_to(ROOT)}: {opened} ContractCheck "
+                         f"entries, {len(entries)} read exactly — the registry's shape changed "
+                         f"and this measure cannot judge it")
+    return {(ob, chk) for chk, ob in entries}
+
+
+def contract_measure(d: Path, obs: list[dict]) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
+    """(the EFFECTIVE contract's declared (obligation, check) pairs, the ones THIS unit's
+    registry realizes). The effective contract is the latest version's members and everything
+    it inherits, minus every record a version in that chain supersedes; a unit with no
+    contract document (rv64i) is all of its records. A unit whose contract names no registry
+    realizes nothing."""
+    by_id = {o["id"]: o for o in obs}
+    cdoc = d / "contract.sexp"
+    effective, registry = list(obs), None
+    if cdoc.is_file():
+        versions, regs = {}, []
+        for form in S.read_file(cdoc):
+            if not isinstance(form, list) or not form:
+                continue
+            head = str(form[0])
+            if head == "registry":
+                regs.append(str(S.field(form, "path", cdoc.name)))
+            if head != "contract":
+                continue
+            f = {str(c[0]): c for c in form[1:] if isinstance(c, list)}
+            versions[str(f["id"][1])] = {
+                "version": int(str(f["version"][1])),
+                "extends": str(f["extends"][1]) if "extends" in f else None,
+                "members": [str(S.field(c, "id", cdoc.name)) for c in S.children(form, "member")],
+                "sups": {str(S.field(c, "record", cdoc.name)) for c in S.children(form, "supersede")}}
+        numbers = sorted(v["version"] for v in versions.values())
+        if not numbers or len(numbers) != len(set(numbers)) or len(regs) > 1:
+            raise SystemExit(f"gate_report: {cdoc.relative_to(ROOT)}: the versions {numbers} and "
+                             f"{len(regs)} registry form(s) do not name one latest version and at "
+                             f"most one registry — this measure cannot judge it")
+        v = next(v for v in versions.values() if v["version"] == numbers[-1])
+        members, superseded = [], set()
+        while v is not None:
+            members += v["members"]
+            superseded |= v["sups"]
+            v = versions.get(v["extends"]) if v["extends"] else None
+        effective = [by_id[m] for m in members if m not in superseded]
+        registry = ROOT / regs[0] if regs else None
+    declared = [(o["id"], c) for o in effective for c in o["required_checks"]]
+    realized = _registry_pairs(registry) if registry is not None else set()
+    return declared, [pair for pair in declared if pair in realized]
+
+
 def build(profile: str) -> str:
     d = ROOT / "profiles" / profile
     prof = D.load_profile(d / "profile.sexp")            # SOT-FORMAT.4: one format, read via
@@ -60,20 +132,17 @@ def build(profile: str) -> str:
     for r in reqs:
         c = r["source_semantics"]["category"]
         by_class[c] = by_class.get(c, 0) + 1
-    declared_checks = sum(len(o["required_checks"]) for o in obs)
-    # An IMPLEMENTED check is one an executable actually names — by its CONCRETE id, not by its
-    # shape.
-    # ⛔ This took two wrong cuts, and both were wrong in the direction that inflates the verdict.
+    # An IMPLEMENTED check is one an executable actually REALIZES — by its CONCRETE id, not by
+    # its shape.
+    # ⛔ This took three wrong cuts, all in the direction that inflates the verdict.
     # Grepping the whole tree for the id PATTERN counted `EVIDENCE_POLICY.md`, which merely
     # describes the naming convention in prose. Narrowing to `scripts/` still counted
     # `check_requirements.sh`, which tests for the `-POS`/`-NEG` suffix as part of enforcing that
-    # the ids exist — a gate about checks is not a check. The measure is therefore exact: take the
-    # concrete ids the contract declares and ask which of them any tracked executable names.
-    declared_ids = sorted({c for o in obs for c in o["required_checks"]})
-    hits = subprocess.run(
-        ["git", "grep", "-h", "-o", "-F", "-f", "-", "--", "scripts", "crates"],
-        input="\n".join(declared_ids), capture_output=True, text=True, cwd=ROOT).stdout.split()
-    implementing = sorted(set(hits))
+    # the ids exist — a gate about checks is not a check. The concrete-id grep that followed
+    # was not unit-scoped (see `contract_measure`). The measure is the unit's own registry.
+    declared, realized = contract_measure(d, obs)
+    declared_checks = len(declared)
+    implementing = realized
 
     exps = refs.get("experiment", [])
     inds = refs.get("independence", [])
@@ -111,10 +180,12 @@ def build(profile: str) -> str:
     A("`EVD-08` forbids a report that reads `passed` while a required check is missing. This")
     A(f"profile declares **{declared_checks} required checks** across {len(obs)} obligations, of")
     A(f"which **{len(implementing)} {'is' if len(implementing) == 1 else 'are'} implemented** —")
-    A("measured by taking each concrete check id the contract declares and asking whether any")
-    A("tracked executable under `scripts/` or `crates/` names it. Not asserted, and not inferred")
-    A("from an id-shaped pattern appearing in prose. The verdict cannot be `passed`, and this")
-    A("generator has no code path that would produce it while that is true.")
+    A("measured by asking which concrete check ids of the effective contract THIS unit's check")
+    A("registry realizes under the obligation that declares them — a registry its contract")
+    A("document names, every entry run by `cargo test`; a unit with none realizes nothing. Not")
+    A("asserted, not inferred from an id-shaped pattern in prose, and not credited because")
+    A("another unit realizes the same id. The verdict cannot be `passed`, and this generator")
+    A("has no code path that would produce it while that is true.")
     A("")
     A("## Inputs (all tracked; this report reads nothing untracked)")
     A("")
@@ -541,15 +612,10 @@ def build_cpulab(profile: str) -> str:
     refs = D.load_references(d / "references.sexp")
     guests = sorted((d / "guests").glob("*.expected.sexp"))
 
-    # G-CONTRACT: the declared obligation checks vs the implemented ones (the G0 probe —
-    # exact by construction: concrete ids, tracked executables only, never prose).
-    declared_checks = sum(len(o["required_checks"]) for o in obs)
-    declared_ids = sorted({c for o in obs for c in o["required_checks"]})
-    hits = subprocess.run(
-        ["git", "grep", "-h", "-o", "-F", "-f", "-", "--", "scripts", "crates"],
-        input="\n".join(declared_ids), capture_output=True, text=True, cwd=ROOT
-    ).stdout.split()
-    implementing = sorted(set(hits))
+    # G-CONTRACT: the effective contract's declared checks vs the ones THIS unit's registry
+    # realizes (`contract_measure` — the one computation, unit-scoped).
+    declared, implementing = contract_measure(d, obs)
+    declared_checks = len(declared)
 
     # G-OBLIGATIONS: every requirement meets its predeclared verification policy.
     unresolved = [r["id"] for r in reqs if r["research_status"] != "resolved"]
@@ -889,7 +955,100 @@ def build_breadth() -> str:
     return "\n".join(L) + "\n"
 
 
+# ---------------------------------------------------------------------------
+# The measure's controls (`P4-SYSTEM.10` slice a). GATE-REPORT runs them and refuses while any
+# misses: a report is only as honest as the count it reads. Each arm builds a scratch unit under
+# `target/doctrine-selftest/` (never /tmp — §13) from the REAL rv64gc documents, mutates one thing,
+# and asks the measure. ⛔ STRICT ARITY (docs/knowledge/self-test-arms-that-never-ran.md): the
+# arm count is asserted, so an arm that silently never ran is a failure, not a pass.
+# ---------------------------------------------------------------------------
+
+def _selftest() -> int:
+    import shutil
+    import tempfile
+    base = ROOT / "target" / "doctrine-selftest"
+    base.mkdir(parents=True, exist_ok=True)
+    tmp = Path(tempfile.mkdtemp(dir=base))
+    real = ROOT / "profiles" / "rv64gc-lab-v0"
+    reg_src = (ROOT / "crates/semulith-verify/src/contract_checks_rv64gc.rs").read_text(encoding="utf-8")
+    passed, missed, ran = 0, [], 0
+    extra = ('    ContractCheck {\n        id: "CHK-ALU-IMM-POS",\n        obligation: "OB-ALU-IMM",\n'
+             '        guests: &["x"],\n    },\n')
+
+    def unit(name, contract_edit=None, registry=reg_src, with_contract=True):
+        d = tmp / name
+        d.mkdir()
+        shutil.copy(real / "contract-obligations.sexp", d)
+        reg = d / "reg.rs"
+        reg.write_text(registry, encoding="utf-8")
+        if with_contract:
+            text = (real / "contract.sexp").read_text(encoding="utf-8")
+            text = text.replace('(registry (path "crates/semulith-verify/src/contract_checks_rv64gc.rs")',
+                                f'(registry (path "{reg.relative_to(ROOT).as_posix()}")')
+            (d / "contract.sexp").write_text(contract_edit(text) if contract_edit else text, encoding="utf-8")
+        return d
+
+    def measure(d):
+        return contract_measure(d, R.load(d / "contract-obligations.sexp"))
+
+    def arm(label, fn):
+        nonlocal passed, ran
+        ran += 1
+        try:
+            fn()
+            passed += 1
+        except Exception as e:                      # noqa: BLE001 — every miss is reported
+            missed.append(f"{label}: {e}")
+
+    def counts(d, want):
+        got = tuple(len(x) for x in measure(d))
+        assert got == want, f"got (declared, realized) {got}, want {want}"
+
+    def refuses(d, needle):
+        try:
+            measure(d)
+        except SystemExit as e:
+            assert needle in str(e), f"refused, but for {e}"
+            return
+        raise AssertionError("not refused")
+
+    try:
+        arm("GREEN the real contract: 100 effective checks, 14 realized",
+            lambda: counts(unit("green"), (100, 14)))
+        add = reg_src.replace("pub static CHECKS: &[ContractCheck] = &[\n",
+                              "pub static CHECKS: &[ContractCheck] = &[\n" + extra)
+        arm("RED a shared id realized in THIS unit's registry counts for it",
+            lambda: counts(unit("shared", registry=add), (100, 15)))
+        arm("RED the same id does not credit a unit whose contract names no registry",
+            lambda: counts(unit("other", with_contract=False, registry=add), (104, 0)))
+        arm("RED dropping v1's supersessions raises the denominator to every record",
+            lambda: counts(unit("nosup", lambda s: re.sub(
+                r'\(supersede \(record "[^"]*"\) \(by "[^"]*"\) \(why "[^"]*"\)\)', "", s)), (104, 14)))
+        wrong = reg_src.replace('obligation: "OB-GC-ENV-VIRTUAL-TIME"', 'obligation: "OB-SVADE"', 1)
+        arm("RED a check registered under an obligation that does not declare it is not counted",
+            lambda: counts(unit("wrong", registry=wrong), (100, 13)))
+        odd = reg_src.replace("pub static CHECKS: &[ContractCheck] = &[\n",
+                              "pub static CHECKS: &[ContractCheck] = &[\n    ContractCheck {\n"
+                              "        obligation: \"OB-SVADE\",\n        id: \"CHK-SVADE-POS\",\n"
+                              "        guests: &[\"x\"],\n    },\n")
+        arm("RED an entry the reader cannot parse exactly is refused, never silently missed",
+            lambda: refuses(unit("odd", registry=odd), "read exactly"))
+        arm("RED two registries in one contract document are refused",
+            lambda: refuses(unit("tworeg", lambda s: s + s[s.index("(registry "):]), "at most one registry"))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    for m in missed:
+        print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
+    want = 7
+    if ran != want:
+        print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
+    print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")
+    return 0 if not missed and ran == want else 1
+
+
 def main(argv: list[str]) -> int:
+    if argv[1:] == ["--self-test"]:
+        return _selftest()
     gate = "G0"
     rest: list[str] = []
     i = 1

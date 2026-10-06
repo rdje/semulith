@@ -73,3 +73,22 @@ fn every_v1_check_and_the_partial_progress_checks_are_realized() {
         );
     }
 }
+
+/// `P4-SYSTEM.10` slice (a): the gate report counts an entry only under the obligation that
+/// declares its check, so an entry naming an undeclared id — or a declared id under another
+/// obligation — would run its guests and be counted by nothing. Refused here, where it is
+/// written.
+#[test]
+fn every_registry_entry_realizes_a_check_its_obligation_declares() {
+    let declared = declared_checks(|_| true);
+    for check in CHECKS {
+        assert!(
+            declared
+                .iter()
+                .any(|(ob, chk)| ob == check.obligation && chk == check.id),
+            "{} under {}: no obligation record declares this pair",
+            check.id,
+            check.obligation
+        );
+    }
+}

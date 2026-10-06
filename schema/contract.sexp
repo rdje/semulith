@@ -35,3 +35,12 @@
   (field (name record) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
   (field (name by) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
   (field (name why) (type string) (min-length 1)))
+
+;; The unit's check REGISTRY (P4-SYSTEM.10 slice a): the one tracked file whose entries realize
+;; this contract's declared checks, each bound to the fixtures that run it. The gate report counts
+;; a check implemented for THIS unit exactly when this registry realizes it under the obligation
+;; that declares it — never because an id appears somewhere in the tree (MIRROR-DERIVE makes ids
+;; shared across units). At most one per document; a unit with none realizes nothing.
+(construct (name registry)
+  (field (name path) (type string) (pattern "^crates/[A-Za-z0-9_/-]+\\.rs$"))
+  (field (name statement) (type string) (min-length 1)))

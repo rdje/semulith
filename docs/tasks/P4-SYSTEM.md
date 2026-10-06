@@ -160,7 +160,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 - ID: `P4-SYSTEM.10` — **the `CPU-SYSTEM` gate report**
   Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0068` — the instrument and its first honest
-  reading; the axes it finds open are owned by `.11`–`.18`)
+  reading; the axes it finds open are owned by `.11`–`.18`; slice (a) done `SEMULITH-P4-0069`)
   Goal: the full processor gate over the complete declared profile.
   Acceptance: reproducible from pinned inputs; fidelity reported per axis; missing checks read `incomplete`.
 - ID: `P4-SYSTEM.11` — **bind M** — `G-SCOPE`
@@ -221,7 +221,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.10` | `pending` | the `CPU-SYSTEM` gate report — the design brief recorded `2026-10-06` (slice (a): the contract measure unit-scoped and supersession-aware; (b) the `GS` builder over all ten axes; (c) the reports and the leaf acceptance); the open axes owned by `.11`–`.18` |
+| 1 | `P4-SYSTEM.10` | `pending` | the `CPU-SYSTEM` gate report — slice (b): the `GS` builder over all ten axes, each from the unit's own tracked files (no constant, no hard-coded count), its report, GATE-REPORT coverage, the RED proofs; (a) done — the contract measure unit-scoped |
 
 ## Decisions
 
@@ -845,6 +845,55 @@ never raised, at every crossing. The index:
   `DEV_NOTES.md` (PROMOTED — the self-test card's masking-control case), `CHANGELOG.md`,
   `MEMORY.md` (9/10; next_action → the `.10` design brief), `LIVE_STATUS.md`, the book.
 
+`P4-SYSTEM.10` slice (a) — the contract measure, unit-scoped and supersession-aware (`2026-10-06`, `SEMULITH-P4-0069`):
+
+- [x] **REPRODUCE / ISSUE** — the census at `293fad3`: the G-CONTRACT measure was a tree-wide
+  grep (`git show HEAD:scripts/gate_report.py | grep -c '"git", "grep"'` → 2: `build()` and
+  `build_cpulab()`), MIRROR-DERIVE shares 26 check ids across the units, and the denominator
+  counted v1's two superseded records (rv64gc 14 of 104).
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `gate_report.py:63-77` and `:546-552` asked "does any tracked
+  executable NAME this id", a question about the tree, not about the unit. Measured in a scratch
+  worktree (`git worktree add --detach target/p4-system-10/wt HEAD`, removed after) with
+  `CHK-ALU-IMM-POS` realized only in rv64gc's registry:
+
+  ```
+  $ git show HEAD:scripts/gate_report.py > wt/scripts/gate_report.py (HEAD's generator, rc=0)
+    → G0 "which **1 is implemented"; GC "| `G-CONTRACT` | 1 of 72 declared obligation checks implemented"
+  ```
+
+- [x] **FIX** — `contract_measure()`: the effective contract (the latest version's chain, minus
+  every superseded record; a unit with no contract document is all its records) and the pairs
+  THIS unit's registry realizes under the obligation that declares them, read exactly (an entry
+  the reader cannot parse is a refusal). The registry is named by a new `(registry (path …))`
+  construct (`schema/contract.sexp`; rv64gc's `contract.sexp` names
+  `contract_checks_rv64gc.rs`). Both builders use it. The generator gained `--self-test` (7
+  arms), run by GATE-REPORT's self-test. The registry gained the pairing test (every entry
+  realizes a check its own obligation declares). G0's measure paragraph and the book's quote
+  of it re-worded.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  the same scratch tree, the new generator → G0 "which **0 are implemented", GC "0 of 72";
+    rv64gc 15 of 100 (the shared id credited to the unit that realizes it, only)
+  live: rv64gc 14 of 100 (50 effective obligations), rv64i 0 of 72
+  $ python3 scripts/gate_report.py --self-test → 7 pass / 0 fail
+  $ bash scripts/check_gate_report.sh --self-test → 13 pass / 0 fail
+  a registry entry CHK-SVADE-POS under OB-GC-ENV-VIRTUAL-TIME (a backed-up scratch edit, restored
+    — git diff clean) → cargo test -p semulith-verify contract_checks → test result: FAILED.
+    "no obligation record declares this pair"; restored → test result: ok. 3 passed
+  ```
+
+- [x] **NO REGRESSION** — rv64i's GC and G1 reports byte-identical under the new measure
+  (`diff` empty); G0's counts and verdict unchanged, its measure paragraph re-worded;
+  `make check` rc=0; `make gate` → `=== all doctrines green ===`.
+
+- [x] **LOCKSTEP** — the generator, the schema, the contract document, the registry test, the
+  GATE-REPORT controls, G0-REPORT, the book (`plan/p0.md`'s quote; the new `plan/p4/gate.md`),
+  this tree, `CHANGELOG.md`, `MEMORY.md`.
+  promotion: declined (the cross-unit credit is recorded where it lives — the `contract_measure` comment's "third wrong cut", beside the two before it; no new general lesson beyond the zero-hits card's scoping row)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -854,6 +903,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.10` slice (a) | the measure's controls 7/7; GATE-REPORT 13/13; the cross-credit RED (old 1 of 72, new 0); the pairing RED | rv64gc 14 of 100, rv64i 0 of 72 |
 | `2026-10-06` | `.9` slice (d) + LEAF | v1 frozen; an edited v1 record named and refused (rc=1); the controls 7/7; the registry 14/14 | **met** — the leaf closes |
 | `2026-10-06` | `.9` slice (c) | CONTRACT-FREEZE ok with two supersessions; the registry 14/14; RECORD-SCHEMA ok | **met** — the wrong v0 statements corrected by v1, never rewritten |
 | `2026-10-06` | `.9` slice (b) | the registry's two tests (10 checks realized, every guest holding); RED with one entry dropped; CONTRACT-FREEZE (2 versions) and RECORD-SCHEMA ok; 135/135 | **met** — every new assumption has a positive and a negative fixture that exist and run |
@@ -889,6 +939,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.10` (slice a) | `SEMULITH-P4-0069 (leaf P4-SYSTEM.10): slice a — the contract measure becomes the unit's own: its registry, under the declaring obligation, over the effective contract` | (b) next |
 | `.10` brief | `SEMULITH-P4-0068 (tree P4-SYSTEM): the .10 design brief — the CPU-SYSTEM report is an instrument over all ten axes; the census's open axes owned by eight new leaves (.11–.18)` | the tree grows to 18 |
 | `.9` (slice d) + LEAF | `SEMULITH-P4-0067 (leaf P4-SYSTEM.9): slice d — rv64gc's ENVIRONMENT document, v1 frozen, CONTRACT-FREEZE judges before certifying; THE LEAF ACCEPTANCE — the leaf CLOSES` | frontier → `.10` |
 | `.9` (slice c) | `SEMULITH-P4-0066 (leaf P4-SYSTEM.9): slice c — v0's stale statements superseded in v1 (OB-GC-PRIV-INSNS-V1, OB-GC-ECALL-EBREAK-V1, their checks realized); the code's forward references to .9 resolved` | the two requirement mirrors named |
@@ -919,6 +970,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.10` slice (a) done (`SEMULITH-P4-0069`) — the contract measure is the unit's
+  own registry over the effective contract; rv64gc reads 14 of 100, rv64i 0 of 72.
 
 - `2026-10-06`: `.10` design brief recorded (`SEMULITH-P4-0068`) — the gate report is the
   instrument; its census found M and C unbound (an ownership gap), the contract measure not

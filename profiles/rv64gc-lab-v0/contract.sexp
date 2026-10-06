@@ -63,3 +63,6 @@
   (member (id "OB-GC-ECALL-EBREAK-V1") (sha256 "5063fd99b5c780d1ab3daf2b3bdbe5ae4454d4ce828b06b263cfbc3a2b36a4af"))
   (supersede (record "OB-GC-PRIV-INSNS") (by "OB-GC-PRIV-INSNS-V1") (why "v0 described wfi as a no-op and sfence.vma's invalidation as a no-op with no translation cache; the wait state (P4-SYSTEM.5) and the TLB (P4-SYSTEM.3) made both wrong"))
   (supersede (record "OB-ECALL-EBREAK") (by "OB-GC-ECALL-EBREAK-V1") (why "the rv64i base mirror says no privileged modes and a harness report that stops execution; this composition delivers the trap to a handler (the zicsr refinement)")))
+
+(registry (path "crates/semulith-verify/src/contract_checks_rv64gc.rs")
+  (statement "The checks this unit's contract declares, realized: each entry binds one check id, under its obligation, to the tracked guests that run it; the registry's tests run every entry under the corpus's comparison rule (P4-SYSTEM.9 slice b; named here at P4-SYSTEM.10 slice a)."))

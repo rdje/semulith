@@ -12,10 +12,12 @@
 `EVD-08` forbids a report that reads `passed` while a required check is missing. This
 profile declares **72 required checks** across 36 obligations, of
 which **0 are implemented** —
-measured by taking each concrete check id the contract declares and asking whether any
-tracked executable under `scripts/` or `crates/` names it. Not asserted, and not inferred
-from an id-shaped pattern appearing in prose. The verdict cannot be `passed`, and this
-generator has no code path that would produce it while that is true.
+measured by asking which concrete check ids of the effective contract THIS unit's check
+registry realizes under the obligation that declares them — a registry its contract
+document names, every entry run by `cargo test`; a unit with none realizes nothing. Not
+asserted, not inferred from an id-shaped pattern in prose, and not credited because
+another unit realizes the same id. The verdict cannot be `passed`, and this generator
+has no code path that would produce it while that is true.
 
 ## Inputs (all tracked; this report reads nothing untracked)
 

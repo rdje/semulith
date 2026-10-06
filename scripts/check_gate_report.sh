@@ -41,6 +41,10 @@ repo_reports() {
 
 self_test() {
   local pass=0 fail=0 prof p tmp generated report gate
+  # The CONTRACT MEASURE's own controls (P4-SYSTEM.10 slice a): every report's contract axis is
+  # this count, so a measure that stopped discriminating would sync perfectly and still lie.
+  if python3 scripts/gate_report.py --self-test >/dev/null 2>&1; then pass=$((pass+1))
+  else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: the contract measure's controls failed (scripts/gate_report.py --self-test)" >&2; fi
   # The controls run against the REAL profiles, because the generator reads a profile directory
   # and a synthetic one would be a different function. A profile with no report is skipped by the
   # real run too, so it is not a control.

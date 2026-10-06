@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0069 (leaf P4-SYSTEM.10, slice a) — the contract measure becomes the unit's own
+
+- `scripts/gate_report.py` `contract_measure()`: a check is implemented for a unit exactly when
+  THAT unit's registry realizes it under the obligation that declares it, over the EFFECTIVE
+  contract (superseded records out). The old tree-wide grep credited rv64i with a check only
+  rv64gc runs — measured in a scratch worktree (1 of 72; now 0).
+- `schema/contract.sexp`: a `registry` construct; rv64gc's contract names its registry.
+- Controls: the generator's `--self-test` (7 arms), run by GATE-REPORT; the registry's pairing
+  test (RED-proven). rv64gc reads 14 of 100; rv64i 0 of 72, its GC and G1 reports
+  byte-identical, G0's measure paragraph re-worded (and the book's quote of it).
+- Book: `plan/p4/gate.md`, the `.10` chapter.
+
 ## SEMULITH-P4-0068 (tree P4-SYSTEM) — the `.10` design brief: the gate report is an instrument; eight leaves own what it will find open
 
 - Recorded before execution. The census of rv64gc's evidence per processor-gate axis found:
