@@ -250,9 +250,11 @@
 ;;   instruction (RVI-F §20.1.2) — and the accrual marks FS Dirty iff fflags CHANGES (the
 ;;   same implementation-defined latitude, resolved as Sail 0.14's default
 ;;   Fflags_Dirty_Precise; laboratory authority). The arithmetic is rustc_apfloat behind
-;;   the model layer, which owns the target policy and the two measured LLVM-vs-IEEE flag
-;;   deviations (decision_fp-backend-qualification): an evaluator arm never touches the
-;;   backend directly.
+;;   the model layer, which owns the target policy and the measured LLVM-vs-IEEE flag
+;;   deviations — three since the record's `2026-10-06` amendment: OF on a directed-mode
+;;   clamp, UF at the smallest-normal boundary, NV on a signaling-NaN format conversion
+;;   (decision_fp-backend-qualification): an evaluator arm never touches the backend
+;;   directly.
 ;; - NaN-BOXING is the tree's, in bits (RVI-D §21.1.2): a narrower result is written
 ;;   through (fbox n v); a narrower operand is read through (funbox n v); the transfer
 ;;   instructions (FLW/FSW, FMV.X.W/FMV.W.X) move bits and never unbox — "A narrower n-bit

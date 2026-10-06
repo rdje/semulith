@@ -93,3 +93,11 @@ all four from their signed terms as the chapter writes them, and is checked agai
 independent construction on 464,000 cases. On an engine staged outside the tracked tree the
 corpus passes 114 of 114, the 103 older programs run byte-identically, and all eleven new
 ones fail on the previous engine — as they must.
+
+Checkpoint (c6) is **the bind**: the profile now composes the F extension, and its 30
+single-precision instructions execute in the tracked engine. With the floating-point unit
+off, every one of them traps before it can touch anything; otherwise each rounded operation
+takes its mode from the instruction or from `frm` (a reserved mode traps), its flags
+accumulate in `fflags`, and the state is marked dirty only when something actually changed.
+The instruction census grows from 88 to 118, matching the pinned upstream tables exactly,
+and all 114 test programs pass — the 103 that existed before byte-for-byte unchanged.

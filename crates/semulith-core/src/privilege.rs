@@ -296,6 +296,26 @@ pub fn mark_fp_dirty<H: PrivilegedHart>(hart: &mut H) {
     hart.csr_write_raw(index, value);
 }
 
+/// Accrue an FP instruction's exception flags into fflags (NV DZ OF UF NX at bits 4..0):
+/// sticky — OR'd in, never cleared by an instruction (RVI-F §20.1.2) — and FS turns Dirty
+/// exactly when fflags CHANGES. The pinned FS section leaves the unaltered-contents case
+/// implementation-defined ("If an instruction explicitly or implicitly writes a
+/// floating-point register or the fcsr but does not alter its contents … it is
+/// implementation-defined whether FS transitions to Dirty", RVP-MACHINE §2.1.1.6.7); the
+/// laboratory resolves it as Sail 0.14's default `Fflags_Dirty_Precise` (fdext_regs.sail:451,
+/// `P4-SYSTEM.7` slice c3). The caller is past the Off gate.
+pub fn accrue_fflags<H: PrivilegedHart>(hart: &mut H, flags: u64) {
+    let Some(index) = index_by_name(hart, "fflags") else {
+        return; // a profile without fflags accrues nothing
+    };
+    let old = hart.csr_raw(index);
+    let new = old | (flags & 0x1f);
+    if new != old {
+        hart.csr_write_raw(index, new);
+        mark_fp_dirty(hart);
+    }
+}
+
 // ---- the permission model (RVP-CSR §1.1.1 + the enable gates) --------------------------
 
 /// May an instruction at the current mode perform this access? The uniform model of

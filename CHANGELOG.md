@@ -1,5 +1,24 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0048 (leaf P4-SYSTEM.7, slice c6) — THE BIND: the unit composes riscv/f
+
+- `encoding.sexp`: the `f` slot becomes `(extensions "riscv/f")`; the census 88 → 118 in
+  all four places (schema, dossier reader, scope block, PROFILE-CONSISTENCY) as the 30-form
+  `f_single` family; `definition_rv64gc.rs` regenerated (30/30 F forms).
+- `exec_rv64gc.rs`: the FS=Off gate judged at the instruction head (cause 2 before any
+  effect), f-register writes marking Dirty, the rounding-mode arm (static or frm; reserved →
+  cause 2), every F operation through `fp.rs`; `privilege::accrue_fflags` (sticky, Dirty only
+  when fflags changes).
+- 11 F guests tracked (114/114; the 103 older guests byte-identical); REQ-GC-F + OB-GC-F;
+  the matrix places them on the seven existing axes (28 cells resolve); EXERCISE-COVERAGE
+  118/118; the pinned tables 118 == 118.
+- Two stale facts from earlier slices corrected: `fp.rs` cited slice (a)'s 362 overflow
+  cases (290 since the amendment); the schema's FP contract counted two backend deviations
+  (three). And one of (c5)'s: `f-sgnj`'s comment opened with `|sNaN|`, whose bar is the
+  directive separator — an empty derivation, refused by DOSSIER-SCHEMA only once the guests
+  were staged (the sweep reads `git ls-files`; it judged 202 documents, not 213); the tool
+  now refuses it, the pair re-derived; the zero-hits knowledge card extended. `make check` + `make gate` green.
+
 ## SEMULITH-P4-0047 (leaf P4-SYSTEM.7, slice c5) — the staged F corpus; specfp learns the signed fused forms
 
 - `scripts/specfp.py`: `fma` takes `negate_product`/`negate_addend` and computes FMSUB,

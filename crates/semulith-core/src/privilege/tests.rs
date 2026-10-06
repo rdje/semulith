@@ -831,3 +831,32 @@ fn mark_fp_dirty_is_the_f_write_discipline() {
     // The rest of mstatus is untouched.
     assert_eq!(read_raw(&h, "mstatus") & !(0b11 << 13), before);
 }
+
+#[test]
+fn accrued_flags_are_sticky_and_dirty_only_on_change() {
+    let mut h = Fixture::at(PrivilegeMode::M);
+    set_fs(&mut h, 2); // Clean
+    accrue_fflags(&mut h, 0);
+    assert_eq!(
+        fs(&h),
+        2,
+        "no flag raised: fflags unchanged, FS stays Clean (Precise)"
+    );
+    accrue_fflags(&mut h, 0x01); // NX
+    assert_eq!(csr_read(&h, 0x001).unwrap(), 0x01);
+    assert_eq!(fs(&h), 3, "fflags changed: FS turns Dirty");
+    set_fs(&mut h, 2);
+    accrue_fflags(&mut h, 0x01);
+    assert_eq!(
+        fs(&h),
+        2,
+        "the same flag again leaves fflags unaltered: still Clean"
+    );
+    accrue_fflags(&mut h, 0x10); // NV
+    assert_eq!(
+        csr_read(&h, 0x001).unwrap(),
+        0x11,
+        "sticky: OR'd, never cleared"
+    );
+    assert_eq!(fs(&h), 3);
+}

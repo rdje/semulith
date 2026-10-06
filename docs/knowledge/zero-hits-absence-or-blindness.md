@@ -49,6 +49,7 @@ Every zero needs a companion measurement that establishes the instrument could h
 | `find … -name X` → nothing | does the search root exist and contain anything? |
 | an API query returns `[]` | did it authenticate, and does it return rows for a known-present case? |
 | a test suite reports 0 failures | how many tests *ran*? (see [[self-test-arms-that-never-ran]]) |
+| a gate reports 0 findings over a sweep | did it enumerate the files you just added? A `git ls-files` sweep judges the index only — `git add -N` new files first |
 
 The pattern is always the same: **report the denominator next to the numerator.** `0 of 400
 symbols` and `0 of 649,743 symbols` are different sentences; `0` and `0` are the same sentence.
@@ -65,3 +66,17 @@ reading it. That cost one shallow clone and turned a false finding into a true o
 
 Related: [[self-test-arms-that-never-ran]], [[availability-is-not-identity]],
 [[a-shorter-trace-is-not-agreement]].
+
+## Measured again — a green gate over a set that lacked the new files (2026-10-06)
+
+P4-SYSTEM.7 slice (c6) added 22 untracked corpus files. `make gate` ran green twice with them
+present but unstaged; the commit's pre-commit run, after `git add`, refused one
+(`f-sgnj.expected.sexp`: an empty `derivation` — the authored comment began `|sNaN|:`, and `|`
+is the directive's derivation/source separator). DOSSIER-SCHEMA enumerates with
+`git ls-files -- 'profiles/*/*.sexp'` (`scripts/check_dossier_schema.sh:44`), and its verdict
+prints the denominator: **202** documents judged while the files were untracked, **213** once
+staged (`git ls-files … | wc -l`: 204 → 215, 2 skipped). The green runs were green over a set
+that did not contain the defect — the same rule, one level up: read the count next to "ok".
+A tracked-only sweep is right for a commit gate (it judges what will be committed); stage, or
+`git add -N`, new files before the run you intend to cite (probed: an untracked file is absent
+from `git ls-files`, an intent-to-add one is listed).

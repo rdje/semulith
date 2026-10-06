@@ -47,6 +47,15 @@
 //!   effects (the composition's declared refinement of the base requested-trap form);
 //!   a `Sem::Trap` node reaching this evaluator is a description defect, panicking like
 //!   `exec`'s vocabulary guard rather than silently inventing a behavior.
+//! - **The floating-point state** (`P4-SYSTEM.7`, schema/semantics.sexp's floating-point
+//!   block): an instruction whose rule reads or writes the FP state is ILLEGAL at
+//!   mstatus.FS = Off — judged at the head of the step, before ANY effect of the rule
+//!   ([`touches_fp_state`]; an FLW raises 2, never its load's fault); `(freg x)` reads the
+//!   pre-instruction f-file; a write to an f-register marks FS Dirty; each arithmetic operator
+//!   is [`crate::fp`]'s (the model layer over the qualified backend — never the backend
+//!   directly) and accrues its flags through [`privilege::accrue_fflags`] (sticky; Dirty iff
+//!   fflags changes); a reserved rounding mode is illegal-instruction at `(rounding …)`,
+//!   before any flag accrues.
 //! - **Reserved decode** — a word no row matches is reported as
 //!   [`StepRv64gc::ReservedDecode`] (`D-RESERVED-DECODE`): the architecture declares the
 //!   behavior UNSPECIFIED, and the conversion to the delivered illegal-instruction cause
@@ -55,6 +64,7 @@
 
 use crate::definition_rv64gc::{FieldDef, InsnDef, Sem, FIELDS, INSNS};
 use crate::env::{AccessWidth, BoundaryError, Environment, Failure, Request, Response};
+use crate::fp;
 use crate::interrupts;
 use crate::outcome::ModelError;
 use crate::privilege;
@@ -205,6 +215,15 @@ pub fn step_over(
         timekeeping::advance(state, false);
         return StepRv64gc::ReservedDecode { at: pc, word };
     };
+    // P4-SYSTEM.7: the FP-state contract's Off gate — "any instruction that attempts to read
+    // or write the corresponding state will cause an illegal-instruction exception"
+    // (RVP-MACHINE §2.1.1.6.7), judged before ANY effect of the rule (Sail 0.14 judges it at
+    // decode, fdext_control.sail:19). A delivery is a step boundary that retires nothing.
+    if touches_fp_state(insn.effect) && !privilege::fp_enabled(state) {
+        deliver(state, 2, u64::from(word), pc);
+        timekeeping::advance(state, false);
+        return StepRv64gc::Executed;
+    }
     let mut frame = Frame {
         state,
         env,
@@ -212,12 +231,14 @@ pub fn step_over(
         word,
         operands: extract(insn, word),
         pre_regs: [0; 32],
+        pre_fregs: [0; 32],
         pc_written: false,
         trapped: false,
         failed: None,
     };
     for i in 0..32 {
         frame.pre_regs[i] = frame.state.read_x(i as u8);
+        frame.pre_fregs[i] = frame.state.read_f(i as u8);
     }
     frame.run(insn.effect);
     if let Some(error) = frame.failed {
@@ -291,6 +312,8 @@ struct Frame<'a> {
     word: u32,
     operands: Vec<(&'static str, u64, u32)>,
     pre_regs: [u64; 32],
+    /// The pre-instruction f-file — `(freg x)` reads it (the READS-AND-WRITES contract).
+    pre_fregs: [u64; 32],
     pc_written: bool,
     trapped: bool,
     failed: Option<ModelError>,
@@ -501,15 +524,24 @@ impl Frame<'_> {
                 }
             }
             Sem::Set(target, value) => {
-                let Sem::Reg(name) = **target else {
-                    panic!("set writes a register")
+                let (name, float) = match **target {
+                    Sem::Reg(name) => (name, false),
+                    Sem::FReg(name) => (name, true),
+                    _ => panic!("set writes a register"),
                 };
                 let (index, _) = self.operand(name);
                 let (v, _) = self.run(value);
                 if self.trapped || self.failed.is_some() {
                     return (0, 64);
                 }
-                self.state.write_x(index as u8, v);
+                if float {
+                    // an f-register write marks FS Dirty unconditionally (the FP-state
+                    // contract; Sail 0.14's wF)
+                    self.state.write_f(index as u8, v);
+                    privilege::mark_fp_dirty(self.state);
+                } else {
+                    self.state.write_x(index as u8, v);
+                }
                 (0, 64)
             }
             Sem::SetPc(target) => {
@@ -866,7 +898,224 @@ impl Frame<'_> {
                     }
                 }
             }
+            // ---- floating point (P4-SYSTEM.7; the contracts are schema/semantics.sexp's) ----
+            Sem::FReg(name) => {
+                let (index, _) = self.operand(name);
+                (self.pre_fregs[index as usize], 64)
+            }
+            Sem::Rounding(rm) => {
+                let (field, _) = self.run(rm);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let frm = privilege::csr_state(self.state, "frm");
+                match fp::resolve_rm(field, frm) {
+                    Some(mode) => (mode.bits(), 3),
+                    None => {
+                        // a RESERVED rounding mode — static 101/110 or DYN with frm 101..111 —
+                        // is illegal-instruction (the laboratory's choice, P4-SYSTEM.7 slice c1)
+                        let word = u64::from(self.word);
+                        self.deliver(2, word);
+                        (0, 64)
+                    }
+                }
+            }
+            Sem::FBox(n, v) => {
+                let (v, _) = self.run(v);
+                (fp::fbox(u32::from(*n), v), 64)
+            }
+            Sem::FUnbox(n, v) => {
+                let (v, _) = self.run(v);
+                (fp::funbox(u32::from(*n), v), u32::from(*n))
+            }
+            Sem::FClass(n, a) => {
+                let (a, _) = self.run(a);
+                (fp::classify(u32::from(*n), a), 64)
+            }
+            Sem::FMin(n, a, b) => self.fp_pair(*n, a, b, fp::min),
+            Sem::FMax(n, a, b) => self.fp_pair(*n, a, b, fp::max),
+            Sem::FEq(n, a, b) => self.fp_compare(*n, fp::Compare::Eq, a, b),
+            Sem::FLt(n, a, b) => self.fp_compare(*n, fp::Compare::Lt, a, b),
+            Sem::FLe(n, a, b) => self.fp_compare(*n, fp::Compare::Le, a, b),
+            Sem::FSqrt(n, rm, a) => {
+                let (m, _) = self.run(rm);
+                let (a, _) = self.run(a);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let r = fp::sqrt(u32::from(*n), effective(m), a);
+                self.accrue(r, u32::from(*n))
+            }
+            Sem::FAdd(n, rm, a, b) => self.fp_rounded(*n, rm, a, b, fp::add),
+            Sem::FSub(n, rm, a, b) => self.fp_rounded(*n, rm, a, b, fp::sub),
+            Sem::FMul(n, rm, a, b) => self.fp_rounded(*n, rm, a, b, fp::mul),
+            Sem::FDiv(n, rm, a, b) => self.fp_rounded(*n, rm, a, b, fp::div),
+            Sem::FMadd(n, rm, a, b, c) => {
+                let (m, _) = self.run(rm);
+                let (a, _) = self.run(a);
+                let (b, _) = self.run(b);
+                let (c, _) = self.run(c);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let r = fp::fma(u32::from(*n), effective(m), a, b, c);
+                self.accrue(r, u32::from(*n))
+            }
+            Sem::FToI(n, iw, signed, rm, a) => {
+                let (m, _) = self.run(rm);
+                let (a, _) = self.run(a);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let r = fp::to_int(u32::from(*n), u32::from(*iw), *signed, effective(m), a);
+                self.accrue(r, u32::from(*iw))
+            }
+            Sem::IToF(n, iw, signed, rm, v) => {
+                let (m, _) = self.run(rm);
+                let (v, _) = self.run(v);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let r = fp::from_int(u32::from(*n), u32::from(*iw), *signed, effective(m), v);
+                self.accrue(r, u32::from(*n))
+            }
         }
+    }
+
+    /// Accrue a floating-point result's flags (sticky; FS Dirty iff fflags changes — the
+    /// FP-state contract) and yield its bits at `width`.
+    fn accrue(&mut self, r: fp::Flagged, width: u32) -> (u64, u32) {
+        privilege::accrue_fflags(self.state, r.flags);
+        (r.bits, width)
+    }
+
+    /// A rounded two-operand operation: the rounding mode first (a reserved one ends the
+    /// step before any flag), then the operands, then the model layer.
+    fn fp_rounded(
+        &mut self,
+        n: u8,
+        rm: &Sem,
+        a: &Sem,
+        b: &Sem,
+        op: fn(u32, fp::Rm, u64, u64) -> fp::Flagged,
+    ) -> (u64, u32) {
+        let (m, _) = self.run(rm);
+        let (a, _) = self.run(a);
+        let (b, _) = self.run(b);
+        if self.trapped || self.failed.is_some() {
+            return (0, 64);
+        }
+        let r = op(u32::from(n), effective(m), a, b);
+        self.accrue(r, u32::from(n))
+    }
+
+    /// An unrounded two-operand operation yielding a float (min/max).
+    fn fp_pair(
+        &mut self,
+        n: u8,
+        a: &Sem,
+        b: &Sem,
+        op: fn(u32, u64, u64) -> fp::Flagged,
+    ) -> (u64, u32) {
+        let (a, _) = self.run(a);
+        let (b, _) = self.run(b);
+        if self.trapped || self.failed.is_some() {
+            return (0, 64);
+        }
+        let r = op(u32::from(n), a, b);
+        self.accrue(r, u32::from(n))
+    }
+
+    /// A compare, yielding an XLEN 0/1.
+    fn fp_compare(&mut self, n: u8, kind: fp::Compare, a: &Sem, b: &Sem) -> (u64, u32) {
+        let (a, _) = self.run(a);
+        let (b, _) = self.run(b);
+        if self.trapped || self.failed.is_some() {
+            return (0, 64);
+        }
+        let r = fp::compare(u32::from(n), kind, a, b);
+        self.accrue(r, 64)
+    }
+}
+
+/// The effective rounding mode a `(rounding …)` node yielded — a description defect if it
+/// is not one (check_semantics.check_fp makes every rounded operator's rm a `(rounding …)`).
+fn effective(m: u64) -> fp::Rm {
+    fp::Rm::from_bits(m).unwrap_or_else(|| {
+        panic!("a rounded operator's mode is {m}, not a (rounding …) result — a description defect")
+    })
+}
+
+/// Does a rule read or write the floating-point state? — the Off gate's population, per the
+/// FP-state contract: any f-register (read or `set` target) and any floating-point operator.
+/// Decided from the rule itself, so no rule can forget its gate.
+fn touches_fp_state(sem: &Sem) -> bool {
+    match sem {
+        Sem::FReg(_)
+        | Sem::Rounding(_)
+        | Sem::FBox(..)
+        | Sem::FUnbox(..)
+        | Sem::FClass(..)
+        | Sem::FMin(..)
+        | Sem::FMax(..)
+        | Sem::FEq(..)
+        | Sem::FLt(..)
+        | Sem::FLe(..)
+        | Sem::FSqrt(..)
+        | Sem::FAdd(..)
+        | Sem::FSub(..)
+        | Sem::FMul(..)
+        | Sem::FDiv(..)
+        | Sem::FMadd(..)
+        | Sem::FToI(..)
+        | Sem::IToF(..) => true,
+        Sem::Lit(_)
+        | Sem::Reg(_)
+        | Sem::Imm(_)
+        | Sem::Pc
+        | Sem::Xlen
+        | Sem::Field(_)
+        | Sem::Inst
+        | Sem::Mode
+        | Sem::Nop => false,
+        Sem::Add(a, b)
+        | Sem::Sub(a, b)
+        | Sem::And(a, b)
+        | Sem::Or(a, b)
+        | Sem::Xor(a, b)
+        | Sem::Shl(a, b)
+        | Sem::Shr(a, b)
+        | Sem::Sar(a, b)
+        | Sem::Slt(a, b)
+        | Sem::Sltu(a, b)
+        | Sem::Eq(a, b)
+        | Sem::Ne(a, b)
+        | Sem::Lt(a, b)
+        | Sem::Ltu(a, b)
+        | Sem::Ge(a, b)
+        | Sem::Geu(a, b)
+        | Sem::Set(a, b)
+        | Sem::Trap(a, b)
+        | Sem::CsrWrite(a, b)
+        | Sem::TrapDeliver(a, b)
+        | Sem::TlbInvalidate(a, b) => touches_fp_state(a) || touches_fp_state(b),
+        Sem::Trunc(_, v)
+        | Sem::Sext(_, v)
+        | Sem::Zext(_, v)
+        | Sem::Bits(_, _, v)
+        | Sem::SetPc(v)
+        | Sem::CsrState(v)
+        | Sem::CsrRead(v)
+        | Sem::Xret(v) => touches_fp_state(v),
+        Sem::Load(a, b, c)
+        | Sem::Store(a, b, c)
+        | Sem::If(a, b, c)
+        | Sem::LoadReserved(a, b, c)
+        | Sem::StoreConditional(a, b, c) => {
+            touches_fp_state(a) || touches_fp_state(b) || touches_fp_state(c)
+        }
+        Sem::Amo(_, a, b, c) => touches_fp_state(a) || touches_fp_state(b) || touches_fp_state(c),
+        Sem::Seq(steps) => steps.iter().any(|s| touches_fp_state(s)),
     }
 }
 

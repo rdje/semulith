@@ -103,6 +103,13 @@ fn rounding_mode_resolution() {
     assert_eq!(resolve_rm(6, 0), None);
     assert_eq!(resolve_rm(7, 1), Some(Rm::Rtz));
     assert_eq!(resolve_rm(7, 3), Some(Rm::Rup));
+    for code in 0..=4 {
+        assert_eq!(
+            Rm::from_bits(code).map(Rm::bits),
+            Some(code),
+            "bits() inverts from_bits()"
+        );
+    }
     for frm in 5..=7 {
         assert_eq!(
             resolve_rm(7, frm),

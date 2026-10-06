@@ -106,3 +106,14 @@ fencei-reserved
 fencei-selfmod
 fp-fs-off
 fp-fcsr-view
+f-fs-off
+f-move-box
+f-arith
+f-fused
+f-sgnj
+f-minmax
+f-compare
+f-class
+f-convert
+f-rounding
+f-dirty

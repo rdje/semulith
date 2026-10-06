@@ -142,7 +142,13 @@
   ;; The one name is the pinned chapter's own instruction (FENCE.I, RVI-ZIFENCEI §4.1,
   ;; Version 2.0), realized by the rv_zifencei table's single row
   ;; (definitions/riscv/zifencei.sexp).
-  (field (name zifencei_fencei) (type string) (repeat yes) (optional yes)))
+  (field (name zifencei_fencei) (type string) (repeat yes) (optional yes))
+  ;; `P4-SYSTEM.7` slice (c6) (`2026-10-06`): F binds — the census grows 88 → 118. The
+  ;; 30 names are the pinned chapter's single-precision forms (RVI-F §20.1.5–§20.1.9,
+  ;; Version 2.2: the FLW/FSW transfers, the four fused multiply-adds, the arithmetic,
+  ;; sign injection, min/max, the conversions and moves, the compares, FCLASS.S),
+  ;; realized by the rv_f/rv64_f tables (definitions/riscv/f.sexp).
+  (field (name f_single) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

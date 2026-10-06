@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-06)_ — the bind that was already proven, a green gate that never saw the new files, and a number corrected in the slice that wrote it (P4-SYSTEM.7 slice c6)
+
+The bind itself was uneventful by design: every leg had run green in the staging worktree, so
+landing it was a byte-identical copy (38/38, `cmp`-verified) followed by the same checks in
+the tracked tree — and the one command the worktree could not run (the reference verify reads
+the untracked fetched area) ran there: 118 == 118. The interesting part was the stale-fact
+sweep. `fp.rs`'s module doc, written in slice (c4) part 2, quoted slice (a)'s 362 overflow
+cases — in the same commit whose decision-record amendment re-measured them to 290. The
+amendment updated the record; the prose that quoted the record's old number was a second
+copy nobody re-read. The schema's FP contract (slice c3) still counted two backend
+deviations, one fewer than the amendment found. Neither is gated: the claim-verification
+standard's constant sweep is the unmechanized rule that would have caught both.
+
+"Already proven" had a hole. `make gate` was green in the worktree and again in the main tree,
+and the commit's own pre-commit run refused `f-sgnj.expected.sexp`: an empty derivation. The
+authored comment began `|sNaN|:` and `|` is the directive's separator; the tool partitioned it
+instead of refusing. The two green runs never looked — DOSSIER-SCHEMA enumerates
+`git ls-files`, and the 22 new corpus files were untracked until `git add`. A tracked-only
+sweep is right for a commit gate and blind to everything not yet staged; stage (or
+`git add -N`) new files before the gate run you intend to cite.
+
+- **Validation:** 114/114 (103 byte-identical); 30/30 F forms; 118 == 118; coverage
+  118/118; the matrix 28 cells; the fixed tool refuses the old line; DOSSIER-SCHEMA ok with
+  the guests staged; `make check` + `make gate` green.
+- Promotion: PROMOTED — docs/knowledge/zero-hits-absence-or-blindness.md extended (the denominator rule, one level up) + INDEX.
+
 ## _(2026-10-06)_ — a reference stops where its first consumer stopped (P4-SYSTEM.7 slice c5)
 
 `scripts/specfp.py` was tracked at slice (c4) as the FP authority, and its `fma` computed

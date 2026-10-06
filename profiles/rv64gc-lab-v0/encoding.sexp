@@ -4,16 +4,16 @@
 ;; (slice h). The fragment-root is the FLIP's relative path — the scratch validation runs
 ;; through target/p4-system-2/definitions (a symlink), so these bytes are the flip's bytes.
 (encoding (profile "rv64gc-lab-v0") (ilen 32)
-  (comment "The composed definition: the RV64I base + Zicsr + Zicntr + the privileged system instructions + A + Zifencei — 85 instructions plus 3 pseudo spellings — A bound at P4-SYSTEM.4 slice (e), Zifencei bound at P4-SYSTEM.6 slice (b). The slots declare the unbound holes: M/F/D/C are in the profile (D-GC-COMPOSITION) but not yet evidenced — M's sem file is its own evidence leaf's (the .2 brief), F/D are .7's, C rides its leaf; partial is DECLARED, never inferred from silence (MODEL-COMPOSE.4).")
+  (comment "The composed definition: the RV64I base + Zicsr + Zicntr + the privileged system instructions + A + Zifencei + F — 115 instructions plus 3 pseudo spellings — A bound at P4-SYSTEM.4 slice (e), Zifencei bound at P4-SYSTEM.6 slice (b), F bound at P4-SYSTEM.7 slice (c6). The slots declare the unbound holes: M/D/C are in the profile (D-GC-COMPOSITION) but not yet evidenced — M's sem file is its own evidence leaf's (the .2 brief), D is .7's slice (d), C rides its leaf; partial is DECLARED, never inferred from silence (MODEL-COMPOSE.4).")
   (compose (base "riscv/rv64i")
     (extensions "riscv/zicsr")
     (extensions "riscv/zicntr")
     (extensions "riscv/system")
     (extensions "riscv/a")
     (extensions "riscv/zifencei")
+    (extensions "riscv/f")
     (status partial)
     (slot (id m) (requires "riscv/m"))
-    (slot (id f) (requires "riscv/f"))
     (slot (id d) (requires "riscv/d"))
     (slot (id c) (requires "riscv/c")))
   (fragment-root "definitions"))

@@ -17,7 +17,7 @@
 //!   "the destination format's largest finite number is exceeded in magnitude by what would
 //!   have been the rounded floating-point result were the exponent range unbounded" — where
 //!   the backend reports only INEXACT for a directed-mode clamp to the largest finite value
-//!   (362 measured cases). The unbounded rounding is computed EXACTLY, not estimated: the
+//!   (290 measured cases). The unbounded rounding is computed EXACTLY, not estimated: the
 //!   same operation in a backend format with the SAME precision and a 15-bit exponent
 //!   ([`WideSingleS`], [`WideDoubleS`]) — rounding there is rounding with an unbounded
 //!   exponent for every operation on these operands. UNDERFLOW is computed from the same
@@ -102,6 +102,19 @@ impl Rm {
             3 => Some(Rm::Rup),
             4 => Some(Rm::Rmm),
             _ => None,
+        }
+    }
+
+    /// The mode's 3-bit encoding (Table 2) — the inverse of [`Rm::from_bits`]; the value a
+    /// `(rounding …)` node yields to the arithmetic that consumes it.
+    #[must_use]
+    pub fn bits(self) -> u64 {
+        match self {
+            Rm::Rne => 0,
+            Rm::Rtz => 1,
+            Rm::Rdn => 2,
+            Rm::Rup => 3,
+            Rm::Rmm => 4,
         }
     }
 
