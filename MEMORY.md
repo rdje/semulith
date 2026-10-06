@@ -16,12 +16,12 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (9/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and seven leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), and the environment contract v1 (`.9`)).
+- **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (9/18 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and seven leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), and the environment contract v1 (`.9`)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.10` — the CPU-SYSTEM gate report: the DESIGN BRIEF first (rv64gc
-  has no report path in `scripts/gate_report.py`; its implemented-check measure is a git grep
-  of ids — not unit-scoped (`.9` slice b); the contract gap named in ENVIRONMENT.md — rv64i's
-  base OB-ENV-* never restated; fidelity per axis; missing checks read `incomplete`).
+- next_action: `P4-SYSTEM.10` slice (a) — the contract measure unit-scoped (the unit's
+  registry, named by its contract document) and supersession-aware; rv64i's G0/GC reports
+  byte-identical; RED: a shared id realized for rv64gc must not credit rv64i. Then (b) the
+  `GS` builder over all ten axes. The open axes are owned by `.11`–`.18` (the brief).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

@@ -1145,3 +1145,162 @@ brief's crossing (the ceiling was obeyed, not raised):
   vacuous at harts=1); the counter-rate and event-delivery CONTRACT wording (`.9` —
   the laboratory's domain is data here, the TLB-parameter precedent); the rv64gc
   C14/C17 dispositions (registration day); registration; the gate.
+
+<!-- archived verbatim from docs/tasks/P4-SYSTEM.md at the 2026-10-06 `.10` design (`.8` and `.9` closed) -->
+
+- `2026-10-06` (design brief for `.8`, recorded before its execution, `SEMULITH-P4-0057`;
+  sources: a read-only census of the engine's multi-suboperation paths (an explore agent's
+  report — conversation-only; every load-bearing fact below re-measured where it lives);
+  `RULES.md:27,29` (SEM-04, SEM-06); `docs/ARCHITECTURE.md:186`;
+  `docs/CPU_ENVIRONMENT.md:24`; `docs/INFORMATION_CATALOG.md:19,27` (C08, C11); the pinned
+  `priv/machine.html` synchronous-exception priority table and `unpriv/intro.html`'s trap
+  section; a scratch probe on both engines (`target/p4-system-8/probe/`)):
+  **The measured pre-conditions.** (1) **The rules**: SEM-04 — "Exposed sequencing, operand
+  visibility, partial progress, and restart state follow the target definition rather than
+  universal instruction atomicity"; SEM-06 — "Side-effecting accesses occur only at their
+  prescribed semantic point and are not rolled back by assumption". Preciseness is the EEI's
+  to declare ("The EEI defines for each trap whether it is handled precisely, though the
+  recommendation is to maintain preciseness where possible", intro.html), and this
+  laboratory declared it: rv64i's `OB-ENV-PARTIAL-PROGRESS` ("completes or faults as a
+  unit … the architectural state exactly as it was before the faulting instruction, except
+  for the fault report itself"), `.4` decision 5, `schema/semantics.sexp:200-201`. rv64gc
+  carries NO partial-progress obligation (44 obligations, none of them), and
+  `state.sexp:661-662`'s candidate "pending or partially committed effects" is `present
+  false` with "P4-SYSTEM.8 … reopens this candidate". (2) **The engine has no staging**:
+  `Frame` snapshots only reads (`pre_regs`/`pre_fregs`); every write goes straight to state;
+  the one guard is `trapped`, checked at `run`'s head and inside `Set` after the value is
+  evaluated — so the unit discipline holds only where every fault point precedes every
+  commit in tree order. (3) **A defect, measured on both engines**: a CSR instruction with
+  rd≠x0 whose WRITE is refused commits rd before it traps — the zicsr rules read
+  `(seq (set (reg rd) (csr-read …)) (csr-write …))` and `csr_write`'s permission check runs
+  second. Probe `csrrw x5, cycle, x6` in M with x5 = 7: semulith `x5 <- 5` THEN cause 2;
+  sail 0.14 (matched config) cause 2 and NO x5 write. Reachable on every read-only CSR the
+  profile carries (mhartid, cycle, time, instret) by csrrw/csrrwi always, csrrs/csrrc with
+  rs1≠x0, csrrsi/csrrci with uimm≠0; no guest exercises it (mm-readonly writes with rd=x0).
+  ⚠ **Corrected at (a)**: the sail half of this probe is confounded — the matched override
+  runs Zicntr OFF (the recorded CLINT wall), so sail traps on `cycle` because the CSR is
+  absent, not because it is read-only. Re-measured on `mhartid` (implemented on both
+  engines): sail traps with no rd write — the clean evidence (`mm-csr-ro-write`, AGREE).
+  Two smaller ones ride along: LR's boundary-Misaligned arm delivers 7 where the leaf's rule
+  is 5 (unreachable — misalignment is judged first — but wrong), and `a-lrsc-fault.s:18`'s
+  comment says the LR raises 7 while its expectations and the engine say 5. (4) **The
+  crossings that stand** (SEM-06's "not rolled back"): a load/store's TLB fill before a
+  boundary fault, the earlier levels' walk reads before a later level faults, a straddling
+  fetch's first parcel before the second faults, and an AMO's load before its store faults
+  — all IMPLICIT or completed reads, none an architectural write; today none is
+  reachable as a split by the corpus, because `FlatMemory` refuses only by region and
+  alignment and an AMO's two halves share address and width. (5) **No fault injection
+  exists for rv64gc**: `ScriptedEnv` (semulith-verify) is wired to no rv64gc run;
+  the translation tests' `WalkEnv.walk_fault` is declared and never set. (6) **Fault priority** is the pinned
+  table (`priv/machine.html`, "Synchronous exception priority in decreasing priority
+  order"): instruction-translation faults, instruction access fault, then illegal /
+  instruction-misaligned / ecall / ebreak, then (OPTIONALLY) load/store/AMO misaligned,
+  then the explicit access's translation faults, its access fault, and misaligned "if not
+  higher priority" — "implementation-defined" between misaligned and page faults. The
+  laboratory took misaligned-first at `.3` decision 7 and handed "the full priority TOPIC"
+  here (four deferrals in the archived briefs). The corpus already pins several pairs
+  (it-prio-load, it-prio-jump, the FS-Off FLW, a-amo-sv39's misaligned-before-translation).
+  **The design, decided:**
+  1. **The unit discipline is declared for rv64gc** (the leaf's subject): every instruction
+     completes or faults as a unit — a delivered synchronous exception leaves architectural
+     state as before the instruction except the trap report — and the STANDING crossings of
+     pre-condition 4 are declared, not hidden (SEM-06): implicit and completed reads that
+     reached the environment before the fault are not rolled back. It lands as rv64gc's
+     partial-progress obligation (the rv64i obligation adapted, with its POS/NEG checks
+     pointing at real guests this time) and as the state candidate's re-answer.
+  2. **The CSR defect is fixed at root in the semantics**, so the write's permission is
+     judged before any commit (sail's check-before-execute shape); the exact language form is
+     execution's to measure (the sem-corpus gate judges it). RED first: the probe becomes a
+     guest that diverges on the parent engine; sail AGREE after.
+  3. **The priority table is declared** as a profile decision quoting the pinned table and
+     naming the laboratory's one optional choice (misaligned first); every adjacent pair the
+     profile can produce gets a guest unless one already pins it (the census says which).
+  4. **Fault injection is TYPED and environment-shaped**, never a mid-instruction hook: the
+     corpus environment learns declared regions with per-kind refusal (readable but not
+     writable; not walkable; not fetchable), declared in the guest's expectations and
+     honoured by the runner and the authoring tool alike — so "a fault injected after the Nth
+     suboperation" is an AMO whose store half is refused after its load completed, a walk
+     refused at level N, a straddling fetch refused at its second parcel, an SC/FSD refused
+     at its store. The injection carrier gets its own RED/GREEN controls.
+  5. **Observation stays through x-registers** (the `.2` discipline): suppressed writes as
+     the absence of a change, memory as read-back through an allowed load; a crossing that
+     no register can show is stated in the derivation, never claimed observed.
+  6. **Execution slicing** (checkpoints, each committed with the leaf id): (a) the CSR defect
+     + the two small ones, RED-first, sail-matched; (b) the priority table declared + its
+     missing pairs; (c) the typed injection carrier (schema, runner, authoring tool, its
+     controls); (d) the injected-fault corpus + the obligation + the candidate re-answer;
+     (e) the sail matched attempt over the non-injected guests (sail's config cannot carry
+     the laboratory's refusal regions — measured at execution), the reports, the book, the
+     leaf acceptance.
+  **Not `.8`'s scope:** imprecise or deferred traps (none declared); breakpoints/triggers
+  (no Sdtrig); multi-hart partial visibility (`MC-MULTICORE`); the environment contract's
+  v1 versioning (`.9` — `.8` adds the one obligation its subject needs, under the existing
+  version's discipline); the vector extension's lane faults (C08 — V unselected); the gate.
+
+- `2026-10-06` (design brief for `.9`, recorded before its execution, `SEMULITH-P4-0063`;
+  sources: a read-only census of the contract representation, the rv64gc obligations and every
+  deferral routed to `.9` (an explore agent's report — conversation-only; the load-bearing
+  facts re-measured where they live); `schema/contract-obligations.sexp`;
+  `docs/CPU_ENVIRONMENT.md` §2–§4; `RULES.md` ENV-01; `scripts/gate_report.py`;
+  `crates/semulith-core/src/env.rs`):
+  **The measured pre-conditions.** (1) **A contract has no version mechanism**: no
+  contract-level construct exists — `contract_id`/`contract_version` repeat on every
+  obligation, nothing checks either, and the contract-level text is prose (rv64i's
+  `ENVIRONMENT.md`; rv64gc has none). "Versioned, not edited in place" is acceptance text
+  only (`MC-MULTICORE.md:39`, `DOSSIER.md:87-88`); the one precedent is the requirement rule
+  "AMENDED by a new versioned record … the old record superseded, never edited". Every
+  rv64gc obligation is `"0"` (`grep -n contract_version … | grep -vc '"0"'` → 0), and leaves
+  `.2`–`.8` added records under it. MIRROR-DERIVE requires the 13 base mirrors to keep rv64i's
+  fields. (2) **rv64gc states no environment assumption at all**: 46 obligations, every one a
+  `cpu-guarantee`. The four topics the leaf names are routed here by name a dozen times —
+  "translation inputs" (`env.rs:96-98`, `translation.rs:42-44`, `.3` decision 6), the
+  reservation's external-invalidation vocabulary and the eventuality/fairness wording
+  (`reservation.rs:26-28`, `.4`), the time supply (`timekeeping.rs:8-9`, `state.sexp:604`),
+  the interrupt sources and mtime/MMIO (`state.sexp:652`, `.5` decision 5) — and
+  `docs/CPU_ENVIRONMENT.md` §2 has a row for each (Translation, Interrupts, Counter input,
+  Reservations) that rv64i dispositioned "out of scope". (3) **Stale v0 statements**,
+  measured: `OB-GC-PRIV-INSNS` says wfi "executes as a no-op when legal" (WFI ENTERS a wait
+  since `.5` — `wait.rs`) and sfence.vma is "a stated no-op … no translation caches are
+  modelled" (a TLB since `.3`); `OB-ZICNTR`/`OB-GC-COUNTERS` defer rate and progress to
+  "P4-SYSTEM.5 and P4-SYSTEM.9"; `env.rs`'s module doc says "No device, no time source, no
+  asynchronous event". (4) **No profile check is implemented**: RECORD-SCHEMA demands a
+  `-POS` and a `-NEG` id per obligation (rule 6) but nothing names a fixture; the gate
+  report counts a check implemented only when its id appears under `scripts/`/`crates/`
+  (`gate_report.py:63-77`) — rv64i reads 0 of 72, rv64gc has no report path. (5) **The
+  boundary in code** has four request kinds and no time/interrupt/invalidation variant; time
+  is the hart's own virtual domain (`timekeeping::advance`), STIP is computed in the hart
+  (`time >= stimecmp`), MTIP/MSIP/MEIP are read-only 0 by declaration, and the reservation has
+  no external entry point beyond `clear`.
+  **The design, decided:**
+  1. **A contract becomes a versioned document**: a `contract` construct (id, version, the
+     version it extends, its member obligations, the members it supersedes) — v0 recorded as
+     it stands (46 members), v1 extending it. **"Not edited in place" is mechanized**: v0's
+     members are frozen by a content manifest (the SHARD-FREEZE pattern) and a gate refuses
+     any change to a frozen version's records; a v0 statement that later work made wrong is
+     SUPERSEDED by a v1 record with a new id, never rewritten.
+  2. **v1 states the four environment assumptions** (the first rv64gc has): translation
+     inputs (page tables are main memory, read through the walk's own request kind,
+     coherent with the hart's stores, never written — Svade; a refused walk read is the
+     original access's access fault); interrupt sources (v1's environment supplies NONE —
+     the M-level sources read-only 0, STIP the hart's own comparison, SSIP software's; a
+     platform's CLINT is a later version, P5's); counter progress (the time supply IS the
+     virtual-time domain — one tick per step boundary, retired or halted — the wake reaching
+     a halted hart without retirement); reservation invalidation (one hart: no external
+     invalidation event exists in v1, the reservation's lifetime is the hart's own rules,
+     and the "eventually" requirement holds trivially — a constrained LR/SC loop succeeds on
+     its first iteration). Each states what would make it false.
+  3. **Every new v1 assumption has a POSITIVE and a NEGATIVE fixture that exist and run**: a
+     tracked check registry maps each v1 CHK id to corpus guests, and a test executes them —
+     the gate report's own "implemented" measure then counts them honestly (an id named in
+     `crates/`). Missing fixtures are written, not waived.
+  4. **The stale v0 statements are superseded in v1** (`OB-GC-PRIV-INSNS`'s wfi/sfence
+     clauses, the counters' "deferred to .9" clauses); stale code prose (`env.rs`'s module
+     doc) is corrected in place — code comments are not contract records.
+  5. **Execution slicing**: (a) the contract construct + v0 recorded + the freeze manifest and
+     its gate (RED: an edited frozen record refused); (b) v1's four assumptions + the check
+     registry + any missing fixture; (c) the supersessions + the stale prose; (d) the
+     reports (rv64gc's ENVIRONMENT document, the book), the leaf acceptance.
+  **Not `.9`'s scope:** the CLINT/PLIC as interrupt sources (a later contract version,
+  P5-BOARD's platform); multi-hart reservation invalidation (`MC-MULTICORE` — "a new
+  contract version"); the gate report itself (`.10`); rv64i's contract (frozen at its own v0).
+

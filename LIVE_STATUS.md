@@ -41,7 +41,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 8/8 — **gate `BREADTH` RUN, verdict `passed`**: TI C6000 / SHARC unclaimed explicitly |
-| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 9/10; `.9` contract v1 done; `.10` next |
+| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 9/18; `.10` gate report; `.11`–`.18` added |
 | P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 10/12; the platform manifest landed (PLATFORM-GEN); probes/gate report gated on the CPU trajectory |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |
 | P6 — Linux userspace | LINUX | Not Started | [`P6-LINUX`](docs/tasks/P6-LINUX.md) — 8 leaves; a banner is not a pass |

@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0068 (tree P4-SYSTEM) — the `.10` design brief: the gate report is an instrument; eight leaves own what it will find open
+
+- Recorded before execution. The census of rv64gc's evidence per processor-gate axis found:
+  M and C declared but not bound (`encoding.sexp` `(status partial)`; the `.8` brief routed
+  them to leaves that were never created); the contract measure not unit-scoped (26 check ids
+  shared by MIRROR-DERIVE) and counting superseded records; the nearest report builder
+  rv64i-shaped (hard-coded 21 cells, 51 ACT4 tests, G-REPLAY read from rv64i's suites); the
+  seven Sail experiments recorded as prose, not records; all 46 requirements `planned`; no
+  rv64gc external suite, mutation suite, snapshots, replay bundles, reducer or portability
+  record.
+- The design: `.10` builds a `GS` report over all ten axes from the unit's own tracked files —
+  no constant, no hard-coded count, `passed` unreachable past an open axis — and records its
+  first honest reading. Every open axis is owned before the instrument lands: `.11` bind M ·
+  `.12` bind C · `.13` contract v2 · `.14` evidence records and obligation status · `.15`
+  regression · `.16` replay · `.17` portability · `.18` the verdict and release decision.
+- The closed `.8`/`.9` briefs archived verbatim to `archive/P4-SYSTEM-designs.md`.
+
 ## SEMULITH-P4-0067 (leaf P4-SYSTEM.9, slice d) — the ENVIRONMENT document, v1 frozen; the leaf CLOSES
 
 - `profiles/rv64gc-lab-v0/ENVIRONMENT.md`: the versions, the boundary inventory dispositioned,
