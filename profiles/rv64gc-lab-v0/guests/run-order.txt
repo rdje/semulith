@@ -128,3 +128,5 @@ d-class
 d-convert
 d-f2f
 d-rounding
+mm-csr-ro-write
+mm-csr-ro-counters

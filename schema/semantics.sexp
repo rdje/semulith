@@ -123,6 +123,15 @@
 ;; (RVP-SSTC 12.1, §2.1.1.18); and mstatus.TVM gating satp access in S (§2.1.1.6.6). A
 ;; refused access raises illegal-instruction (cause 2, xtval the instruction word).
 (operator (name csr-read) (fixed 1))
+;; (csr-rw a v) — the ATOMIC CSR read-write the CSR instructions with a destination perform
+;; (CSRRW "atomically swaps values in the CSRs and integer registers", RVI-ZICSR §5.1.1): the
+;; read and the write are judged under the permission model above (a read-only address
+;; refuses the write — "Attempts to write a read-only register raise an illegal-instruction
+;; exception"), v is written, and the OLD value is yielded. A refusal delivers cause 2 BEFORE
+;; any effect, so `(set (reg rd) (csr-rw …))` commits rd only when the instruction completes:
+;; it completes or faults as a unit (P4-SYSTEM.8 slice a — the rd-then-trap order of
+;; `(seq (set (reg rd) (csr-read …)) (csr-write …))` committed rd on a refused write).
+(operator (name csr-rw) (fixed 2))
 ;; ---- effects --------------------------------------------------------------------------------
 (operator (name set) (fixed 2))
 (operator (name set-pc) (fixed 1))

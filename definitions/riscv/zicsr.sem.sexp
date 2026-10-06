@@ -29,39 +29,37 @@
   (refines (insn "ebreak"))
 
   ;; ---- the six CSR access instructions (RVI-ZICSR §5.1.1) -----------------------------------
+  ;; P4-SYSTEM.8 slice (a): every form that WRITES the CSR and has a destination performs ONE
+  ;; atomic read-write, (csr-rw …), which judges the read and the write before the old value
+  ;; reaches rd — so a refused write (a read-only address) leaves rd untouched. The former
+  ;; (seq (set (reg rd) (csr-read …)) (csr-write …)) committed rd and THEN trapped.
   (sem (insn csrrw) (source "RVI-ZICSR §5.1.1 — atomic read/write CSR; if rd=x0 the instruction shall not read the CSR")
        (effect (if (eq (field rd) (lit 0))
                    (csr-write (field csr) (reg rs1))
-                   (seq (set (reg rd) (csr-read (field csr)))
-                        (csr-write (field csr) (reg rs1))))))
+                   (set (reg rd) (csr-rw (field csr) (reg rs1))))))
   (sem (insn csrrs) (source "RVI-ZICSR §5.1.1 — atomic read and set bits; if rs1=x0 the instruction shall not write the CSR")
        (effect (if (eq (field rs1) (lit 0))
                    (set (reg rd) (csr-read (field csr)))
-                   (seq (set (reg rd) (csr-read (field csr)))
-                        (csr-write (field csr) (or (csr-read (field csr)) (reg rs1)))))))
+                   (set (reg rd) (csr-rw (field csr) (or (csr-read (field csr)) (reg rs1)))))))
   (sem (insn csrrc) (source "RVI-ZICSR §5.1.1 — atomic read and clear bits; if rs1=x0 the instruction shall not write the CSR")
        (effect (if (eq (field rs1) (lit 0))
                    (set (reg rd) (csr-read (field csr)))
-                   (seq (set (reg rd) (csr-read (field csr)))
-                        (csr-write (field csr) (and (csr-read (field csr))
-                                                    (xor (reg rs1) (lit -1))))))))
+                   (set (reg rd) (csr-rw (field csr) (and (csr-read (field csr))
+                                                          (xor (reg rs1) (lit -1))))))))
   (sem (insn csrrwi) (source "RVI-ZICSR §5.1.1 — CSRRW with a zero-extended 5-bit immediate; if rd=x0 the instruction shall not read the CSR")
        (effect (if (eq (field rd) (lit 0))
                    (csr-write (field csr) (zext 64 (field zimm5)))
-                   (seq (set (reg rd) (csr-read (field csr)))
-                        (csr-write (field csr) (zext 64 (field zimm5)))))))
+                   (set (reg rd) (csr-rw (field csr) (zext 64 (field zimm5)))))))
   (sem (insn csrrsi) (source "RVI-ZICSR §5.1.1 — CSRRS with a zero-extended 5-bit immediate; if uimm=0 the instruction shall not write the CSR")
        (effect (if (eq (field zimm5) (lit 0))
                    (set (reg rd) (csr-read (field csr)))
-                   (seq (set (reg rd) (csr-read (field csr)))
-                        (csr-write (field csr) (or (csr-read (field csr))
-                                                   (zext 64 (field zimm5))))))))
+                   (set (reg rd) (csr-rw (field csr) (or (csr-read (field csr))
+                                                         (zext 64 (field zimm5))))))))
   (sem (insn csrrci) (source "RVI-ZICSR §5.1.1 — CSRRC with a zero-extended 5-bit immediate; if uimm=0 the instruction shall not write the CSR")
        (effect (if (eq (field zimm5) (lit 0))
                    (set (reg rd) (csr-read (field csr)))
-                   (seq (set (reg rd) (csr-read (field csr)))
-                        (csr-write (field csr) (and (csr-read (field csr))
-                                                    (xor (zext 64 (field zimm5)) (lit -1))))))))
+                   (set (reg rd) (csr-rw (field csr) (and (csr-read (field csr))
+                                                          (xor (zext 64 (field zimm5)) (lit -1))))))))
 
   ;; ---- the refinement this composition exists for (MODEL-COMPOSE.6's anticipated case) ------
   ;; rv64i's ecall/ebreak REPORT a trap to the harness — that model has no privilege machinery.

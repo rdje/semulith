@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0058 (leaf P4-SYSTEM.8, slice a) — the CSR rd-before-trap defect fixed at root
+
+- A CSR instruction whose write is refused (a read-only CSR) committed rd and then trapped —
+  the zicsr rules read into rd before judging the write. The language gains `csr-rw`, the
+  atomic read-write CSRRW's own sentence describes: both halves judged first, the old value
+  yielded only on success; the six zicsr rules use it; the evaluator implements it.
+- RED-first: `mm-csr-ro-write` failed on the old engine at step 9; after the fix 127/127,
+  identity 125/0 with both new guests RED on the parent; Sail AGREE on `mm-csr-ro-write`
+  (mhartid). `mm-csr-ro-counters` is a named not-matchable cell — the matched Sail config has
+  no Zicntr, so the brief's own Sail evidence (a `cycle` probe) is corrected in place.
+- Riding along: LR's unreachable boundary-misaligned cause 7 → 5; `a-lrsc-fault`'s prose said
+  "cause 7 every visit" (the LR's is 5) — corrected and re-derived, every value identical; the
+  authoring tool learns read-only writes, the immediate CSR forms and a family-aware header.
+  The P4.8 book chapter opens. `make check` + `make gate` green.
+
 ## SEMULITH-P4-0057 (tree P4-SYSTEM): the .8 design brief — the unit discipline declared for rv64gc; a CSR rd-before-trap defect measured on both engines; typed, environment-shaped fault injection
 
 - The `.8` brief recorded before execution: SEM-04/SEM-06 and the laboratory's declared

@@ -16,8 +16,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-overlap.s`  `9e5110b0b0840b2ac354ecf4a04a47c74b849e7b6815022b88d705e80f52c400`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-sv39.expected.sexp`  `163712f25bf9c4a0ac4c96ffe5d71cc3842e9c2c679a8ce74363c2323ef921cf`
 //!   `profiles/rv64gc-lab-v0/guests/a-amo-sv39.s`  `e206eb63bcacfcdbcc64ae4a6b8a10d99fa0a4e7b4ebf02eb859fe9322fb334f`
-//!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.expected.sexp`  `cb60dab101e92346e6e0ec2315b0882eccda01cd4c051c1f6a726e33ebe8ec76`
-//!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.s`  `7747d806d907d7b5cefde5c42ac392cf6dd3311cf0c3a57b144b890f66914178`
+//!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.expected.sexp`  `8c6cef318c55abc5ecfa0598cf3676c4b6d8839c9ff7efdab00892e36727b5e3`
+//!   `profiles/rv64gc-lab-v0/guests/a-lrsc-fault.s`  `027dc18e7905471a90e22da48dedf75a0e8c9c73f977e1626ee8fcd1615dcf14`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-illegal.expected.sexp`  `2fd2f43aad44f6da97a8d0c2bea805c4f3bcec748504a8327df883458b609185`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-illegal.s`  `06a21af22a864c488c0c25236e7cde03f1688776715f4d5e7f6565bd70819057`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-loop.expected.sexp`  `c39a0563ba8ed638a0c4e3afb85e03b2ef7b41eac9a57335cae51a91b1658928`
@@ -182,6 +182,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-legality-s.s`  `5bd84ef9d77f952bbff6f676ad8a112cedf978e0d937dc253325927f8854d652`
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-legality-u.expected.sexp`  `fda1047bb9596122e3edd2b6389d97395e4e2f57fa3c46fedd0bcaa8fb44cc76`
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-legality-u.s`  `65ff2383070b75ac69375a54b712db090d3850854953e79df9b9bc12b1d88527`
+//!   `profiles/rv64gc-lab-v0/guests/mm-csr-ro-counters.expected.sexp`  `54976110d044416f6704eb6f4be0048b6e1e727b7ea7d7440b96cae6cd7e9781`
+//!   `profiles/rv64gc-lab-v0/guests/mm-csr-ro-counters.s`  `1589751220ab2ec6a33ceb9bdf9e34e96b7e16224528cb8ca00749f49398bcfd`
+//!   `profiles/rv64gc-lab-v0/guests/mm-csr-ro-write.expected.sexp`  `ebe6918aa20042a191e54dfc98be2ab3b45938b13409bd7b8289d07ce432f175`
+//!   `profiles/rv64gc-lab-v0/guests/mm-csr-ro-write.s`  `54e9719ae91f03d8cf3aefd2a3989f1ffbb6151167ac47511c4890b1e830b30d`
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-rw.expected.sexp`  `3ca479b17bce7957c375c48acdec9be62c5843afbac4ff0a38caefbc137d8cbc`
 //!   `profiles/rv64gc-lab-v0/guests/mm-csr-rw.s`  `f2a4a44c4193e8b813619313a0207941a6556a3f0125b3991e450635a86e2770`
 //!   `profiles/rv64gc-lab-v0/guests/mm-ebreak.expected.sexp`  `aa23c5ad5056fadf5e1b71192183099c52f5e93a1c0ae861287d58b84135708c`
@@ -15527,6 +15531,170 @@ static EXPECTED_D_ROUNDING: &[Expectation] = &[
     Expectation { step: 37, writes: &[] },
 ];
 
+#[rustfmt::skip]
+static WORDS_MM_CSR_RO_WRITE: &[u32] = &[
+    0x00000097,
+    0x05408093,
+    0x30509073,
+    0x00700293,
+    0x00900313,
+    0x00B00393,
+    0x00D00413,
+    0x00F00493,
+    0x01100513,
+    0x01300593,
+    0x01500613,
+    0xF14312F3,
+    0xF14323F3,
+    0xF140E473,
+    0xF14174F3,
+    0xF141D573,
+    0xF1431073,
+    0xF14025F3,
+    0xF1407673,
+    0x342026F3,
+    0x34302773,
+    0x34202EF3,
+    0x34102F73,
+    0x004F0F13,
+    0x341F1073,
+    0x30200073,
+];
+#[rustfmt::skip]
+static EXPECTED_MM_CSR_RO_WRITE: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000054)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(5, 0x0000000000000007)] },
+    Expectation { step: 4, writes: &[(6, 0x0000000000000009)] },
+    Expectation { step: 5, writes: &[(7, 0x000000000000000B)] },
+    Expectation { step: 6, writes: &[(8, 0x000000000000000D)] },
+    Expectation { step: 7, writes: &[(9, 0x000000000000000F)] },
+    Expectation { step: 8, writes: &[(10, 0x0000000000000011)] },
+    Expectation { step: 9, writes: &[(11, 0x0000000000000013)] },
+    Expectation { step: 10, writes: &[(12, 0x0000000000000015)] },
+    Expectation { step: 11, writes: &[] },
+    Expectation { step: 12, writes: &[(29, 0x0000000000000002)] },
+    Expectation { step: 13, writes: &[(30, 0x000000008000002C)] },
+    Expectation { step: 14, writes: &[(30, 0x0000000080000030)] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[(30, 0x0000000080000034)] },
+    Expectation { step: 21, writes: &[] },
+    Expectation { step: 22, writes: &[] },
+    Expectation { step: 23, writes: &[] },
+    Expectation { step: 24, writes: &[] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[(30, 0x0000000080000038)] },
+    Expectation { step: 27, writes: &[] },
+    Expectation { step: 28, writes: &[] },
+    Expectation { step: 29, writes: &[] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[] },
+    Expectation { step: 32, writes: &[(30, 0x000000008000003C)] },
+    Expectation { step: 33, writes: &[] },
+    Expectation { step: 34, writes: &[] },
+    Expectation { step: 35, writes: &[] },
+    Expectation { step: 36, writes: &[] },
+    Expectation { step: 37, writes: &[] },
+    Expectation { step: 38, writes: &[(30, 0x0000000080000040)] },
+    Expectation { step: 39, writes: &[] },
+    Expectation { step: 40, writes: &[] },
+    Expectation { step: 41, writes: &[] },
+    Expectation { step: 42, writes: &[] },
+    Expectation { step: 43, writes: &[] },
+    Expectation { step: 44, writes: &[(30, 0x0000000080000044)] },
+    Expectation { step: 45, writes: &[] },
+    Expectation { step: 46, writes: &[] },
+    Expectation { step: 47, writes: &[(11, 0x0000000000000000)] },
+    Expectation { step: 48, writes: &[(12, 0x0000000000000000)] },
+    Expectation { step: 49, writes: &[(13, 0x0000000000000002)] },
+    Expectation { step: 50, writes: &[(14, 0x00000000F1431073)] },
+];
+
+#[rustfmt::skip]
+static WORDS_MM_CSR_RO_COUNTERS: &[u32] = &[
+    0x00000097,
+    0x04C08093,
+    0x30509073,
+    0x00700293,
+    0x00900313,
+    0x00B00393,
+    0x00D00413,
+    0x00F00493,
+    0x01100513,
+    0xC00312F3,
+    0xC02323F3,
+    0xC020E473,
+    0xC01174F3,
+    0xC011D573,
+    0xC0031073,
+    0xC00025F3,
+    0xC0206673,
+    0x342026F3,
+    0x34302773,
+    0x34202EF3,
+    0x34102F73,
+    0x004F0F13,
+    0x341F1073,
+    0x30200073,
+];
+#[rustfmt::skip]
+static EXPECTED_MM_CSR_RO_COUNTERS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x000000008000004C)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(5, 0x0000000000000007)] },
+    Expectation { step: 4, writes: &[(6, 0x0000000000000009)] },
+    Expectation { step: 5, writes: &[(7, 0x000000000000000B)] },
+    Expectation { step: 6, writes: &[(8, 0x000000000000000D)] },
+    Expectation { step: 7, writes: &[(9, 0x000000000000000F)] },
+    Expectation { step: 8, writes: &[(10, 0x0000000000000011)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(29, 0x0000000000000002)] },
+    Expectation { step: 11, writes: &[(30, 0x0000000080000024)] },
+    Expectation { step: 12, writes: &[(30, 0x0000000080000028)] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(30, 0x000000008000002C)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[] },
+    Expectation { step: 21, writes: &[] },
+    Expectation { step: 22, writes: &[] },
+    Expectation { step: 23, writes: &[] },
+    Expectation { step: 24, writes: &[(30, 0x0000000080000030)] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[] },
+    Expectation { step: 27, writes: &[] },
+    Expectation { step: 28, writes: &[] },
+    Expectation { step: 29, writes: &[] },
+    Expectation { step: 30, writes: &[(30, 0x0000000080000034)] },
+    Expectation { step: 31, writes: &[] },
+    Expectation { step: 32, writes: &[] },
+    Expectation { step: 33, writes: &[] },
+    Expectation { step: 34, writes: &[] },
+    Expectation { step: 35, writes: &[] },
+    Expectation { step: 36, writes: &[(30, 0x0000000080000038)] },
+    Expectation { step: 37, writes: &[] },
+    Expectation { step: 38, writes: &[] },
+    Expectation { step: 39, writes: &[] },
+    Expectation { step: 40, writes: &[] },
+    Expectation { step: 41, writes: &[] },
+    Expectation { step: 42, writes: &[(30, 0x000000008000003C)] },
+    Expectation { step: 43, writes: &[] },
+    Expectation { step: 44, writes: &[] },
+    Expectation { step: 45, writes: &[(11, 0x000000000000002D)] },
+    Expectation { step: 46, writes: &[(12, 0x0000000000000028)] },
+    Expectation { step: 47, writes: &[(13, 0x0000000000000002)] },
+    Expectation { step: 48, writes: &[(14, 0x00000000C0031073)] },
+];
+
 /// A tracked guest program (assembled bytes) and the specification-derived
 /// observations it must produce under the definitional interpreter.
 pub struct Guest {
@@ -16803,6 +16971,26 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 38,
         expected_fetches: 38,
         expected: EXPECTED_D_ROUNDING,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "mm-csr-ro-write",
+        entry: 0x0000000080000000,
+        words: WORDS_MM_CSR_RO_WRITE,
+        executed_steps: 51,
+        expected_fetches: 51,
+        expected: EXPECTED_MM_CSR_RO_WRITE,
+        never_written: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "mm-csr-ro-counters",
+        entry: 0x0000000080000000,
+        words: WORDS_MM_CSR_RO_COUNTERS,
+        executed_steps: 49,
+        expected_fetches: 49,
+        expected: EXPECTED_MM_CSR_RO_COUNTERS,
         never_written: &[],
         cross_model: true,
     },

@@ -102,7 +102,7 @@ WIDTH_OPS = {"trunc": "Trunc", "sext": "Sext", "zext": "Zext"}
 # the rv64i module's byte surface is frozen by DEF-GEN, and its corpus never names them.
 EXTENDED_UNARY = {"csr-state": "CsrState", "csr-read": "CsrRead", "xret": "Xret"}
 EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver",
-                   "tlb-invalidate": "TlbInvalidate"}
+                   "tlb-invalidate": "TlbInvalidate", "csr-rw": "CsrRw"}
 # P4-SYSTEM.4 slice (b): the A extension's operators. They lower only where the
 # composition composes `riscv/a` — their Sem variants emit WITH the fragment, so the
 # tracked rv64gc module (the slot still declared) keeps its byte surface until the
@@ -831,6 +831,9 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    /// `(csr-write a v)` — an architectural CSR write, legalized per the state")
         a("    /// document's declared per-field tables.")
         a("    CsrWrite(&'static Sem, &'static Sem),")
+        a("    /// `(csr-rw a v)` — the atomic CSR read-write: both judged first, v written,")
+        a("    /// the OLD value yielded; a refusal delivers cause 2 before any effect.")
+        a("    CsrRw(&'static Sem, &'static Sem),")
         a("    /// `(trap-deliver cause tval)` — synchronous trap delivery: delegation,")
         a("    /// the xPIE/xIE/xPP stack, xepc/xcause/xtval, pc <- xtvec.")
         a("    TrapDeliver(&'static Sem, &'static Sem),")

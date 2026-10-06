@@ -43,6 +43,18 @@ NaN cannot raise invalid for one, and its silence had been booked against the ba
 - A prose sweep that copies a record's count inherits the record's error: slice (c6) had
   "corrected" a schema comment from two deviations to three on the record's word.
 
+## The mirror case — an agreement for the wrong reason (2026-10-06, P4-SYSTEM.8 slice a)
+
+The `.8` brief's probe `csrrw x5, cycle, x6` trapped on Sail with no rd write, and that
+"agreement with the fix" was recorded. Re-running the guest showed the legal READ of `cycle`
+trapping on Sail too: the matched configuration runs Zicntr OFF, so `cycle` does not exist
+there and every access traps — Sail never judged read-only-ness at all. Re-measured on
+`mhartid`, which both engines implement: Sail traps with no rd write (AGREE, 51 steps).
+
+- A second engine's agreement on a TRAP is evidence only if it traps for the same reason:
+  put a legal control access to the same resource beside the refused one, so a "the thing
+  is absent" configuration shows up as a disagreement on the control.
+
 ## Evidence
 
 - `docs/decisions/decision_fp-backend-qualification.md` — the `2026-10-06` amendment.

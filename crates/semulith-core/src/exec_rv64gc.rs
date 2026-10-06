@@ -601,6 +601,26 @@ impl Frame<'_> {
                 }
                 (0, 64)
             }
+            Sem::CsrRw(a, v) => {
+                // the atomic read-write (P4-SYSTEM.8 slice a): the read and the write are both
+                // judged before the old value reaches its destination, so a refused write
+                // leaves rd untouched — the instruction completes or faults as a unit
+                let (addr, _) = self.run(a);
+                let (v, _) = self.run(v);
+                if self.trapped || self.failed.is_some() {
+                    return (0, 64);
+                }
+                let word = u64::from(self.word);
+                let Ok(old) = privilege::csr_read(self.state, addr as u16) else {
+                    self.deliver(2, word);
+                    return (0, 64);
+                };
+                if privilege::csr_write(self.state, addr as u16, v).is_err() {
+                    self.deliver(2, word);
+                    return (0, 64);
+                }
+                (old, 64)
+            }
             Sem::TrapDeliver(cause, tval) => {
                 let (c, _) = self.run(cause);
                 let (t, _) = self.run(tval);
@@ -686,7 +706,9 @@ impl Frame<'_> {
                         (0, 64)
                     }
                     Err(BoundaryError::Target(Failure::Misaligned)) => {
-                        self.deliver(7, a);
+                        // unreachable (misalignment is judged before translation) — but an LR is a LOAD:
+                        // the declared policy's cause is 5, never 7 (P4-SYSTEM.8 slice a)
+                        self.deliver(5, a);
                         (0, 64)
                     }
                     Err(BoundaryError::Violation(v)) => {
@@ -1107,6 +1129,7 @@ fn touches_fp_state(sem: &Sem) -> bool {
         | Sem::Set(a, b)
         | Sem::Trap(a, b)
         | Sem::CsrWrite(a, b)
+        | Sem::CsrRw(a, b)
         | Sem::TrapDeliver(a, b)
         | Sem::TlbInvalidate(a, b) => touches_fp_state(a) || touches_fp_state(b),
         Sem::Trunc(_, v)

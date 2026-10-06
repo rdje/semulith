@@ -26,13 +26,13 @@
 //!   `definitions/riscv/system.sexp`  `c89d687d7a52c8e1cb19e8d87633c0f3bc70a7e7819f3ba8e2c3e895f20518e9`
 //!   `definitions/riscv/zicntr.sem.sexp`  `9308b046ae1213e4302a2258c55e17e4f12f2d81f7e10c9a2e248646084b7570`
 //!   `definitions/riscv/zicntr.sexp`  `f0c483e24e2515c12f32d2a95ac55be3a663e2c7ca355cc804890a2f2c3bc675`
-//!   `definitions/riscv/zicsr.sem.sexp`  `823278a9ab48c7f95005998d183e5127f76d6c8c276f70f74a58e4cf22b64975`
+//!   `definitions/riscv/zicsr.sem.sexp`  `52a45e254513ea2b9ed6a224b5cfb17c2ae8bb2ddad711c7f9b9a02e926bc45d`
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
 //!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `aa34d38477c0de3ca5e5ae0393d40c690f601067a39f0983fa8a091156721333`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `2a37e8c63b914d01a3a887171d7fe6054d5fa84eaabedd37d37b7d5ed2b6836a`
-//! Generator: `scripts/gen_definition.py` (sha256 `e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8`)
+//! Generator: `scripts/gen_definition.py` (sha256 `da0a816e187f8633aba94cb6a2d6ee992f595f3964d54fc9e184224848321c5d`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -87,7 +87,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "e1e7183a2dd96bfcc7dcafc560e68a3215aa329dfdaa6dbf8f963ddce3032bb8",
+        sha256: "da0a816e187f8633aba94cb6a2d6ee992f595f3964d54fc9e184224848321c5d",
     },
     inputs: &[
         InputPin {
@@ -140,7 +140,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "definitions/riscv/zicsr.sem.sexp",
-            sha256: "823278a9ab48c7f95005998d183e5127f76d6c8c276f70f74a58e4cf22b64975",
+            sha256: "52a45e254513ea2b9ed6a224b5cfb17c2ae8bb2ddad711c7f9b9a02e926bc45d",
         },
         InputPin {
             path: "definitions/riscv/zicsr.sexp",
@@ -1054,14 +1054,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Field("csr"),
                 ),
             ),
-            &Sem::Seq(&[
-                &Sem::Set(
-                    &Sem::Reg("rd"),
-                    &Sem::CsrRead(
-                        &Sem::Field("csr"),
-                    ),
-                ),
-                &Sem::CsrWrite(
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
                     &Sem::Field("csr"),
                     &Sem::And(
                         &Sem::CsrRead(
@@ -1073,7 +1068,7 @@ pub static INSNS: &[InsnDef] = &[
                         ),
                     ),
                 ),
-            ]),
+            ),
         )
     },
     InsnDef {
@@ -1094,14 +1089,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Field("csr"),
                 ),
             ),
-            &Sem::Seq(&[
-                &Sem::Set(
-                    &Sem::Reg("rd"),
-                    &Sem::CsrRead(
-                        &Sem::Field("csr"),
-                    ),
-                ),
-                &Sem::CsrWrite(
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
                     &Sem::Field("csr"),
                     &Sem::And(
                         &Sem::CsrRead(
@@ -1116,7 +1106,7 @@ pub static INSNS: &[InsnDef] = &[
                         ),
                     ),
                 ),
-            ]),
+            ),
         )
     },
     InsnDef {
@@ -1137,14 +1127,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Field("csr"),
                 ),
             ),
-            &Sem::Seq(&[
-                &Sem::Set(
-                    &Sem::Reg("rd"),
-                    &Sem::CsrRead(
-                        &Sem::Field("csr"),
-                    ),
-                ),
-                &Sem::CsrWrite(
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
                     &Sem::Field("csr"),
                     &Sem::Or(
                         &Sem::CsrRead(
@@ -1153,7 +1138,7 @@ pub static INSNS: &[InsnDef] = &[
                         &Sem::Reg("rs1"),
                     ),
                 ),
-            ]),
+            ),
         )
     },
     InsnDef {
@@ -1174,14 +1159,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Field("csr"),
                 ),
             ),
-            &Sem::Seq(&[
-                &Sem::Set(
-                    &Sem::Reg("rd"),
-                    &Sem::CsrRead(
-                        &Sem::Field("csr"),
-                    ),
-                ),
-                &Sem::CsrWrite(
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
                     &Sem::Field("csr"),
                     &Sem::Or(
                         &Sem::CsrRead(
@@ -1193,7 +1173,7 @@ pub static INSNS: &[InsnDef] = &[
                         ),
                     ),
                 ),
-            ]),
+            ),
         )
     },
     InsnDef {
@@ -1212,18 +1192,13 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Field("csr"),
                 &Sem::Reg("rs1"),
             ),
-            &Sem::Seq(&[
-                &Sem::Set(
-                    &Sem::Reg("rd"),
-                    &Sem::CsrRead(
-                        &Sem::Field("csr"),
-                    ),
-                ),
-                &Sem::CsrWrite(
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
                     &Sem::Field("csr"),
                     &Sem::Reg("rs1"),
                 ),
-            ]),
+            ),
         )
     },
     InsnDef {
@@ -1245,21 +1220,16 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Field("zimm5"),
                 ),
             ),
-            &Sem::Seq(&[
-                &Sem::Set(
-                    &Sem::Reg("rd"),
-                    &Sem::CsrRead(
-                        &Sem::Field("csr"),
-                    ),
-                ),
-                &Sem::CsrWrite(
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
                     &Sem::Field("csr"),
                     &Sem::Zext(
                         64,
                         &Sem::Field("zimm5"),
                     ),
                 ),
-            ]),
+            ),
         )
     },
     InsnDef {
@@ -3703,7 +3673,7 @@ pub static INSNS: &[InsnDef] = &[
 ];
 
 /// One node of a canonical semantics effect, lowered from the S-expression operator
-/// language (`schema/semantics.sexp`, the 63 forms `scripts/check_semantics.py`
+/// language (`schema/semantics.sexp`, the 64 forms `scripts/check_semantics.py`
 /// checks) by `scripts/gen_definition.py`. Literals are XLEN-wide two's-complement
 /// constants, masked to 64 bits; widths are explicit data everywhere the language
 /// states them (`Trunc`/`Sext`/`Zext`/`Bits`). Evaluation — what the forms DO — is
@@ -3791,6 +3761,9 @@ pub enum Sem {
     /// `(csr-write a v)` — an architectural CSR write, legalized per the state
     /// document's declared per-field tables.
     CsrWrite(&'static Sem, &'static Sem),
+    /// `(csr-rw a v)` — the atomic CSR read-write: both judged first, v written,
+    /// the OLD value yielded; a refusal delivers cause 2 before any effect.
+    CsrRw(&'static Sem, &'static Sem),
     /// `(trap-deliver cause tval)` — synchronous trap delivery: delegation,
     /// the xPIE/xIE/xPP stack, xepc/xcause/xtval, pc <- xtvec.
     TrapDeliver(&'static Sem, &'static Sem),
