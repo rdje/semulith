@@ -239,6 +239,7 @@ def compose(paths: list[Path]) -> int:
                 try:
                     for sub in e[1:]:
                         check_expr(sub, where, None)
+                        check_division(sub, where)
                 except SemError as exc:
                     errors.append(str(exc))
         refined = {str(_sexp.field(r, "insn", str(p))) for r in _sexp.children(root, "refines")}
@@ -273,6 +274,56 @@ def compose(paths: list[Path]) -> int:
             print(f"  {p.name} declares refinement point(s): {', '.join(sorted(refined))}")
     print("\n  the semantics compose — every override is declared.")
     return 0
+
+
+# P4-SYSTEM.11 slice (a): the division operators' DOMAIN. A zero divisor is outside it — the
+# language states arithmetic, and what division by zero YIELDS is an ISA's choice (RISC-V a value,
+# other ISAs a trap) — so a division may appear only where its divisor is known nonzero: the
+# else-branch of an (if (eq D (lit 0)) … …), or the then-branch of an (if (ne D (lit 0)) … …),
+# with D the division's OWN divisor, structurally. A guard on another expression guards nothing.
+DIVISIONS = {"div", "divu", "rem", "remu"}
+
+
+def _canon(f):
+    if isinstance(f, list):
+        return tuple(_canon(x) for x in f)
+    return f if isinstance(f, int) else str(f)
+
+
+def check_division(effect, where: str) -> None:
+    """Refuse a division no zero-divisor guard covers (the language's domain rule)."""
+    def zero_test(cond):
+        if isinstance(cond, list) and len(cond) == 3 and str(cond[0]) in ("eq", "ne"):
+            for d, z in ((cond[1], cond[2]), (cond[2], cond[1])):
+                if isinstance(z, list) and len(z) == 2 and str(z[0]) == "lit" and z[1] == 0:
+                    # the branch where D is nonzero: else (2) under eq, then (1) under ne
+                    return _canon(d), (2 if str(cond[0]) == "eq" else 1)
+        return None
+
+    def walk(f, guarded: frozenset) -> None:
+        if not isinstance(f, list) or not f:
+            return
+        op, args = str(f[0]), f[1:]
+        if op in DIVISIONS and len(args) == 2 and _canon(args[1]) not in guarded:
+            raise SemError(f"{where}: ({op} … {_show(args[1])}) is reached where its divisor may be "
+                           f"zero — a zero divisor is outside the operator's domain; state what the "
+                           f"ISA makes it yield with (if (eq {_show(args[1])} (lit 0)) <that> ({op} …))")
+        if op == "if" and len(args) == 3:
+            walk(args[0], guarded)
+            z = zero_test(args[0])
+            for i in (1, 2):
+                walk(args[i], guarded | {z[0]} if z and z[1] == i else guarded)
+            return
+        for a in args:
+            walk(a, guarded)
+
+    walk(effect, frozenset())
+
+
+def _show(f) -> str:
+    if isinstance(f, list):
+        return "(" + " ".join(_show(x) for x in f) + ")"
+    return str(f)
 
 
 def check_pair(enc_path: Path, sem_path: Path) -> int:
@@ -350,6 +401,7 @@ def check_pair(enc_path: Path, sem_path: Path) -> int:
             try:
                 for sub in e[1:]:
                     check_expr(sub, where, allowed)
+                    check_division(sub, where)
                     if allowed is not None:
                         check_fp(sub, where, allowed)
             except SemError as exc:
@@ -638,6 +690,38 @@ def _selftest() -> int:
     arm("RED   a format conversion's source format outside 32/64",
         lambda: pair_bad(FCVTSD.replace("(f2f 32 64", "(f2f 32 16"),
                          "takes its source format as a literal 32 or 64", frag=frag_d))
+
+    # ---- the division operators' domain (P4-SYSTEM.11 slice a) -----------------------------
+    frag_m = tmp / "t-m.sexp"
+    frag_m.write_text(
+        '(fragment (id "riscv/t-pair") (kind isa-extension)\n'
+        '  (insn (name div) (fixed (14 12 0x4)) (operands rd rs1 rs2)))\n')
+    DIV = ('(sem (insn div) (source "S §1 — why") (effect (if (eq (reg rs2) (lit 0)) '
+           '(set (reg rd) (lit -1)) (set (reg rd) (div (reg rs1) (reg rs2))))))\n')
+    arm("GREEN a division in the else-branch of its own divisor's zero test checks",
+        lambda: pair_ok(DIV, "1 of 1 declared instruction(s) have checked semantics", frag=frag_m))
+    arm("GREEN a division in the then-branch of a (ne D (lit 0)) test checks",
+        lambda: pair_ok(DIV.replace("(if (eq (reg rs2) (lit 0)) (set (reg rd) (lit -1)) "
+                                    "(set (reg rd) (div (reg rs1) (reg rs2))))",
+                                    "(if (ne (lit 0) (reg rs2)) (set (reg rd) (div (reg rs1) (reg rs2))) "
+                                    "(set (reg rd) (lit -1)))"),
+                        "1 of 1 declared instruction(s) have checked semantics", frag=frag_m))
+    arm("RED   an unguarded division is refused, naming its divisor",
+        lambda: pair_bad('(sem (insn div) (source "S §1 — why") (effect (set (reg rd) '
+                         '(div (reg rs1) (reg rs2)))))\n',
+                         "(div … (reg rs2)) is reached where its divisor may be zero", frag=frag_m))
+    arm("RED   a guard on ANOTHER expression guards nothing",
+        lambda: pair_bad(DIV.replace("(eq (reg rs2) (lit 0))", "(eq (reg rs1) (lit 0))"),
+                         "is reached where its divisor may be zero", frag=frag_m))
+    arm("RED   a division in the zero branch itself is refused",
+        lambda: pair_bad(DIV.replace("(set (reg rd) (lit -1)) (set (reg rd) (div (reg rs1) (reg rs2)))",
+                                     "(set (reg rd) (rem (reg rs1) (reg rs2))) (set (reg rd) (lit 0))"),
+                         "(rem … (reg rs2)) is reached where its divisor may be zero", frag=frag_m))
+    arm("RED   a word-form guard must test the divisor the division uses",
+        lambda: pair_bad(DIV.replace("(div (reg rs1) (reg rs2))",
+                                     "(div (trunc 32 (reg rs1)) (trunc 32 (reg rs2)))"),
+                         "(div … (trunc 32 (reg rs2))) is reached where its divisor may be zero",
+                         frag=frag_m))
 
     import shutil
     shutil.rmtree(tmp)

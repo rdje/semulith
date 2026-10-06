@@ -303,6 +303,46 @@ EOF
   arm "RED the format conversion without riscv/d composed is refused, named" "$rc" 2 "$out" "does not compose riscv/d"
   cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
 
+  # ---- the M operators (P4-SYSTEM.11 slice a) ------------------------------------------------
+  # The eight variants emit exactly when the composition composes riscv/m (the M bind, slice b);
+  # the staged composition WITH M proves the lowering of all 13 M rules.
+  cp definitions/riscv/m.sexp "$t/gc/definitions/riscv/m.sexp"
+  cp definitions/riscv/m.sem.sexp "$t/gc/definitions/riscv/m.sem.sexp"
+  cat > "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" <<EOF
+(encoding (profile "rv64gc-lab-v0") (ilen 32)
+  (compose (base "riscv/rv64i")
+    (extensions "riscv/zicsr") (extensions "riscv/zicntr") (extensions "riscv/system")
+    (extensions "riscv/m")
+    (status partial) (slot (id c) (requires "riscv/c")))
+  (fragment-root "definitions"))
+EOF
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-m-definition.rs" 2>&1)"; rc=$?
+  arm "GREEN the rv64gc+M composition emits the multiply/divide module" "$rc" 0 "$out" "wrote"
+  for needle in "Mul(&'static Sem, &'static Sem)" "Sem::DivU(" "Sem::MulHsu(" "\"remuw\""; do
+    grep -qF "$needle" "$t/gc-m-definition.rs"; rc=$?
+    arm "GREEN the emitted module carries $needle" "$rc" 0 "" ""
+  done
+  # RED: an unguarded division is refused by the generator too (the semantics checker's
+  # domain rule, re-derived where the executable table is emitted).
+  sed 's/(set (reg rd) (div (reg rs1) (reg rs2)))/(set (reg rd) (div (reg rs1) (reg rs1)))/' \
+    definitions/riscv/m.sem.sexp > "$t/gc/definitions/riscv/m.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-m-definition.rs" 2>&1)"; rc=$?
+  arm "RED a division its guard does not cover is refused, naming its divisor" "$rc" 2 "$out" "(div … (reg rs1)) is reached where its divisor may be zero"
+  cp definitions/riscv/m.sem.sexp "$t/gc/definitions/riscv/m.sem.sexp"
+  # RED: an M operator where the composition does not compose riscv/m is refused, named.
+  sed 's/    (extensions "riscv\/m")//' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" > "$t/gc/enc-nom.sexp" \
+    && mv "$t/gc/enc-nom.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
+  grep -q 'extensions "riscv/m"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"; rc=$?
+  arm "GREEN the no-M composition composes no riscv/m" "$rc" 1 "" ""
+  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (mul (reg rs1) (reg rs2)))/' \
+    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-m-definition.rs" 2>&1)"; rc=$?
+  arm "RED an M operator without riscv/m composed is refused, named" "$rc" 2 "$out" "does not compose riscv/m"
+  cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \

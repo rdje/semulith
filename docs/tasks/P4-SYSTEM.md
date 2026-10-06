@@ -170,7 +170,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the full processor gate over the complete declared profile.
   Acceptance: reproducible from pinned inputs; fidelity reported per axis; missing checks read `incomplete`.
 - ID: `P4-SYSTEM.11` — **bind M** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0072`; slice (a) done `SEMULITH-P4-0073`)
   Goal: the M extension composed into the unit — `m.sem.sexp` (the 13 instructions, the
   division edge cases: divide by zero and signed overflow return their defined values, never a
   trap), the bind, an EVD-05 corpus, the Sail matched experiment.
@@ -227,14 +227,15 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.11` | `pending` | bind M — the design brief recorded `2026-10-06`; slice (a): the language — eight arithmetic operators (signed overflow wraps; a zero divisor is outside the domain, guarded in the definition), the static guard rule, the generator, the engine arms |
+| 1 | `P4-SYSTEM.11` | `pending` | bind M — slice (b): the staged EVD-05 corpus (expectations derived spec-side, every form at its edges) and the bind (the encoding composes `riscv/m`; the engine arms; the scope; `REQ-GC-M`; `OB-GC-M` in contract v2, open, realized; the interactions); (a) done |
 
 ## Decisions
 
 - `2026-10-06` (design brief for `.11`, recorded before its execution, `SEMULITH-P4-0072`;
   sources: `definitions/riscv/m.sexp`; `schema/semantics.sexp`; `scripts/gen_definition.py`;
   `crates/semulith-core/src/exec_rv64gc.rs`; `scripts/fetch_references.sh`; the Sail override;
-  RVI-M §13.1–§13.2; `GS-REPORT.md`):
+  RVI-M §11.1.1–§11.1.2 [corrected at slice (a): the brief first wrote §13, from memory — the
+  pinned snapshot's own headings number M §11.1]; `GS-REPORT.md`):
   **The measured pre-conditions.** (1) **The encoding exists, the semantics do not.**
   `m.sexp` carries 13 instructions from the pinned `rv_m`/`rv64_m` tables; `git ls-files
   'definitions/riscv/*.sem.sexp'` lists no `m.sem.sexp`. The `.2` brief assigned it to "the M
@@ -244,7 +245,7 @@ This gate authorises the planned next engineering stage: board implementation.
   definition states the ISA's choices; operators stay arithmetic.** `sll` masks its amount
   in the definition (`(shl (reg rs1) (bits 5 0 (reg rs2)))`, `rv64i.sem.sexp:104`), and the
   language's value model is "XLEN-wide two's-complement values" with width explicit
-  (`schema/semantics.sexp:73`, `:90`). (4) **M's semantics are total**: RVI-M §13.2 defines
+  (`schema/semantics.sexp:73`, `:90`). (4) **M's semantics are total**: RVI-M §11.1.2 defines
   division by zero (quotient all ones; remainder the dividend) and signed overflow (quotient
   the dividend, remainder 0) — no trap, no new state, no fault; the W forms operate on the low
   32 bits and sign-extend. (5) **The reference path is ready**: Sail's matched configuration
@@ -259,7 +260,7 @@ This gate authorises the planned next engineering stage: board implementation.
      WRAPS — the language's two's-complement value model, exactly as `add` wraps (MIN ÷ −1 =
      MIN, remainder 0 — which is RVI-M's defined result, cited in the rule, not hidden in the
      operator). **Division by zero is outside the operators' domain**: the definition states
-     RISC-V's results by a guard on the divisor, cited to §13.2's table, and the engine refuses
+     RISC-V's results by a guard on the divisor, cited to §11.1.2's Table 1, and the engine refuses
      a division reached unguarded (a definition defect, never a guest behaviour). A static
      rule in `check_semantics.py` — every `div`/`divu`/`rem`/`remu` sits in the else-branch of
      a guard that tests that same divisor against zero — RED-proven.
@@ -780,6 +781,57 @@ never raised, at every crossing. The index:
   `LIVE_STATUS.md`, `CHANGELOG.md`, the book (`plan/p4/gate.md` closed; the `plan/p4.md` index).
   promotion: declined (a closing slice — the reproduction measurement is the leaf acceptance's own evidence; no new lesson)
 
+`P4-SYSTEM.11` slice (a) — the language for M: eight arithmetic operators, the division-domain rule, `m.sem.sexp`, the generator, the model layer (`2026-10-06`, `SEMULITH-P4-0073`):
+
+- [x] **REPRODUCE / ISSUE** — the census at `a5d1eb3`: no multiply or divide in the language,
+  no M semantics, no lowering:
+
+  ```
+  $ grep -c '(operator (name mul\|(operator (name div' schema/semantics.sexp → 0 (rc=1)
+  $ git ls-files 'definitions/riscv/m.sem.sexp' → nothing
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: M's first slice, owned since the `.10` census.
+  One measured fact shaped it: values carry their width in the evaluator — `git show
+  HEAD:crates/semulith-core/src/exec_rv64gc.rs` `:387-398` (`Trunc` yields a `w`-bit value,
+  `Sar` sign-extends from it) — so the operators are width-generic and the word forms read
+  exactly like `addw`. One correction to the brief: it cited "RVI-M §13", from memory; the
+  pinned chapter's own headings (`.materials/riscv/pinned-v20260120/unpriv/m-st-ext.html`, sha256
+  `85e1db6c…` = `sources.sexp`'s pin) number it §11.1 (§11.1.1 Multiplication, §11.1.2 Division,
+  Table 1) — the brief's three locators corrected in place, marked.
+
+- [x] **FIX** — `schema/semantics.sexp`: `mul`, `mulh`, `mulhsu`, `mulhu`, `div`, `divu`, `rem`,
+  `remu` (width-generic; overflow wraps; a zero divisor outside the domain). `check_semantics.py`
+  `check_division`: a division must sit where ITS divisor is known nonzero (the else-branch of
+  `(eq D (lit 0))`, the then-branch of `(ne D (lit 0))`), in both modes; the generator re-derives
+  it. `definitions/riscv/m.sem.sexp`: 13 rules, the division-by-zero results stated by guards,
+  quoted from §11.1.2. `gen_definition.py`: `M_BINARY` behind `Surface.m` (lowered only where the
+  composition composes `riscv/m`; both tracked modules regenerated — the generator pin and the
+  derived language size 64 → 72). `crates/semulith-core/src/muldiv.rs`: the eight operators as
+  SEM-03 functions (division `None` on a zero divisor) and six tests against independent routes.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ python3 scripts/check_semantics.py definitions/riscv/m.sexp definitions/riscv/m.sem.sexp → 13 of 13 declared instruction(s) have checked semantics
+  $ python3 scripts/check_semantics.py --self-test → 32 pass / 0 fail (6 new: two guard shapes GREEN;
+    unguarded, guarded on another expression, in the zero branch, a word-form divisor mismatch RED)
+  $ bash scripts/check_definition_gen.sh --self-test → 45 pass / 0 fail (8 new: the +M composition
+    emits Mul/DivU/MulHsu/remuw; an unguarded division refused by the generator; M without riscv/m refused)
+  $ cargo test -p semulith-core muldiv → test result: ok. 6 passed
+  mutations on a backed-up copy, restored (diff clean): mulhsu reading b signed → test result: FAILED.
+    (the schoolbook product); div refusing overflow instead of wrapping → test result: FAILED. (the
+    identities and Table 1's overflow row)
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`; DEF-GEN
+  ok on both tracked modules (only the generator pin and the derived form count moved).
+
+- [x] **LOCKSTEP** — the language, the checker, the generator, the fragment's semantics, the model
+  layer, this tree (and the brief's corrected locators), the book (`plan/p4/m.md`), `CHANGELOG.md`,
+  `MEMORY.md`, `LIVE_STATUS.md` (arms 478, chapters 43).
+  promotion: declined (the §13-from-memory slip is the claim-verification standard's own rule — verify a locator against the pinned page before writing it — caught before execution by re-reading the pinned headings; no new lesson)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -789,6 +841,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.11` slice (a) | SEMANTICS 32/32; DEF-GEN 45/45; muldiv 6/6 + two mutations RED | the language carries M |
 | `2026-10-06` | `.10` slice (c) + LEAF | the four reports regenerated in a fresh worktree (no `target/`), byte-identical | **met** — the leaf closes |
 | `2026-10-06` | `.10` slice (b) | the generator's controls 17/17; GATE-REPORT 16/16, 5 reports in sync; the literal census | `GS-REPORT.md`: incomplete, 9 of 10 open, every one owned |
 | `2026-10-06` | `.10` slice (a) | the measure's controls 7/7; GATE-REPORT 13/13; the cross-credit RED (old 1 of 72, new 0); the pairing RED | rv64gc 14 of 100, rv64i 0 of 72 |
@@ -827,6 +880,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.11` (slice a) | `SEMULITH-P4-0073 (leaf P4-SYSTEM.11): slice a — the language for M: eight arithmetic operators, the division-domain rule, m.sem.sexp, the generator, the model layer` | (b) next |
 | `.11` brief | `SEMULITH-P4-0072 (tree P4-SYSTEM): the .11 design brief — bind M: eight arithmetic operators, the division-by-zero results stated in the definition, contract v2 opened` | (a) next |
 | `.10` (slice c) + LEAF | `SEMULITH-P4-0071 (leaf P4-SYSTEM.10): slice c — THE LEAF ACCEPTANCE: every report regenerates byte-identically in a checkout with no target/; the leaf CLOSES` | frontier → `.11` |
 | `.10` (slice b) | `SEMULITH-P4-0070 (leaf P4-SYSTEM.10): slice b — the GS builder over all ten axes, the unit's verified evidence manifest, the first CPU-SYSTEM report (incomplete, 9 of 10 open, every one owned)` | (c) next |
@@ -861,6 +915,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.11` slice (a) done (`SEMULITH-P4-0073`) — the language carries M (eight operators, the division-domain rule), `m.sem.sexp` written.
 
 - `2026-10-06`: `.11` design brief recorded (`SEMULITH-P4-0072`) — M binds through eight arithmetic operators, the division-by-zero results stated by guards in the definition; contract v2 opened for `OB-GC-M`. `.8`'s checklists archived (part 4).
 

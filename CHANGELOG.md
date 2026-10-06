@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0073 (leaf P4-SYSTEM.11, slice a) — the language for M
+
+- `schema/semantics.sexp`: `mul`, `mulh`, `mulhsu`, `mulhu`, `div`, `divu`, `rem`, `remu` —
+  arithmetic only, width-generic; signed overflow wraps; a zero divisor is outside the domain.
+- `check_semantics.py`: a division must sit where its own divisor is known nonzero (6 new
+  arms, 32/32); the generator re-derives the rule. `gen_definition.py`: the M variants lower
+  only where the composition composes `riscv/m` (DEF-GEN 45/45; both modules regenerated —
+  the pin and the language size 64 → 72).
+- `definitions/riscv/m.sem.sexp`: 13 rules quoting RVI-M §11.1 (the brief's "§13" corrected
+  against the pinned headings).
+- `crates/semulith-core/src/muldiv.rs`: the model layer, six tests against independent routes;
+  two mutations caught.
+- Book: `plan/p4/m.md` (43 chapters).
+
 ## SEMULITH-P4-0072 (tree P4-SYSTEM) — the `.11` design brief: bind M
 
 - Recorded before execution. Measured: `m.sexp` exists (13 instructions, pinned) with no

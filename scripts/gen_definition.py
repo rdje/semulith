@@ -129,6 +129,11 @@ F_OPERATORS = (set(F_FORMAT_UNARY) | set(F_FORMAT_BINARY) | set(F_ROUNDED_UNARY)
 # composition composes `riscv/d` (the F precedent: the tracked rv64gc module keeps its byte
 # surface until the D bind, slice d5); both formats are literals lowered as data.
 D_FORMAT_PAIR = {"f2f": "FToF"}                                                      # (op m n rm a)
+# P4-SYSTEM.11 slice (a): M's eight arithmetic operators. They lower only where the
+# composition composes `riscv/m` (the A/F/D precedent: the tracked rv64gc module keeps its
+# byte surface until the M bind, slice b).
+M_BINARY = {"mul": "Mul", "mulh": "MulH", "mulhsu": "MulHsu", "mulhu": "MulHu",
+            "div": "Div", "divu": "DivU", "rem": "Rem", "remu": "RemU"}
 
 
 class Surface:
@@ -136,13 +141,15 @@ class Surface:
     rather than one parameter per family. `extended` is the rv64gc module's privileged
     surface (P4-SYSTEM.2 slice d); `a` the A extension's (P4-SYSTEM.4 slice b) with
     `amo_set` its closed operation set; `f` the floating-point block's (P4-SYSTEM.7 slice
-    c3); `d` the format conversion D adds (P4-SYSTEM.7 slice d2). Each family emits WITH
-    its fragment: a module carrying variants its evaluator match cannot see would not
-    compile."""
+    c3); `d` the format conversion D adds (P4-SYSTEM.7 slice d2); `m` M's multiply/divide
+    (P4-SYSTEM.11 slice a). Each family emits WITH its fragment: a module carrying variants
+    its evaluator match cannot see would not compile."""
 
     def __init__(self, extended: bool = False, a: bool = False,
-                 amo_set: frozenset = frozenset(), f: bool = False, d: bool = False) -> None:
+                 amo_set: frozenset = frozenset(), f: bool = False, d: bool = False,
+                 m: bool = False) -> None:
         self.extended, self.a, self.amo_set, self.f, self.d = extended, a, amo_set, f, d
+        self.m = m
 
 
 def amo_operations(insns: dict) -> dict[int, str]:
@@ -272,6 +279,7 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
             try:
                 SEM.check_expr(effect, where, bound_operands(operand_names))
                 SEM.check_fp(effect, where, bound_operands(operand_names))
+                SEM.check_division(effect, where)
             except SEM.SemError as exc:
                 raise Refusal(str(exc))
             if insn in (pseudos or {}):
@@ -376,11 +384,13 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
     args = form[1:]
     unary = dict(BASE_UNARY, **EXTENDED_UNARY)
     binary = dict(BINARY_OPS, trap="Trap", **EXTENDED_BINARY)
+    if surface.m:
+        binary = dict(binary, **M_BINARY)
     ternary = {"load": "Load", "store": "Store", "if": "If"}
     if a_variants:
         ternary = dict(ternary, **A_TERNARY)
     if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY)
-                               | A_OPERATORS | F_OPERATORS | set(D_FORMAT_PAIR)
+                               | A_OPERATORS | F_OPERATORS | set(D_FORMAT_PAIR) | set(M_BINARY)
                                | {"field", "inst", "mode"}):
         raise Refusal(f"{where}: ({op} …) is the rv64gc module's operator surface "
                       f"(P4-SYSTEM.2 slice b) — the rv64i corpus does not lower it")
@@ -399,6 +409,11 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
                       f"(P4-SYSTEM.7 slice d2), but this composition does not compose "
                       f"riscv/d — the variant emits WITH the fragment, so a module "
                       f"carrying it without it would not compile against its evaluator")
+    if extended and not surface.m and op in M_BINARY:
+        raise Refusal(f"{where}: ({op} …) is the M extension's multiply/divide surface "
+                      f"(P4-SYSTEM.11 slice a), but this composition does not compose "
+                      f"riscv/m — the variants emit WITH the fragment, so a module "
+                      f"carrying them without it would not compile against its evaluator")
     if op == "reg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Reg({rust_str(str(args[0]))})"
     if op == "freg" and len(args) == 1 and isinstance(args[0], str):
@@ -571,11 +586,12 @@ def load_inputs(encoding_path: Path, state_path: Path):
     a_variants = "riscv/a" in names
     f_variants = "riscv/f" in names
     d_variants = "riscv/d" in names
+    m_variants = "riscv/m" in names
     return dict(profile=profile, ilen=ilen, names=names, insns=insns,
                 pseudos=pseudos, pseudo_rules=pseudo_rules, extended=extended,
                 fields=fields, rules=rules, inputs=inputs, source_pins=source_pins,
                 a_variants=a_variants, amo_ops=amo_operations(insns), f_variants=f_variants,
-                d_variants=d_variants)
+                d_variants=d_variants, m_variants=m_variants)
 
 
 def emit(data: dict, generator_sha: str) -> str:
@@ -754,7 +770,7 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        source: {rust_str(source)},")
         tree = indent_tree(emit_sem(effect, where, Surface(
             extended, data["a_variants"], frozenset(data["amo_ops"]), data["f_variants"],
-            data["d_variants"])))
+            data["d_variants"], data["m_variants"])))
         tree_lines = tree.splitlines()
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
@@ -904,6 +920,19 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    /// `(f2f m n rm a)` — an n-bit float to an m-bit float: narrowing rounds,")
         a("    /// widening is exact; a signaling NaN raises NV, any NaN yields the canonical NaN.")
         a("    FToF(u8, u8, &'static Sem, &'static Sem),")
+    if extended and data["m_variants"]:
+        # P4-SYSTEM.11 slice a's M operators — emitted exactly when the composition composes
+        # `riscv/m` (the M bind, slice b). Width-generic: each works at its operands' width.
+        for rust, what in (("Mul", "the low w bits of a×b"),
+                           ("MulH", "the high w bits of the 2w-bit a×b, signed×signed"),
+                           ("MulHsu", "the high w bits of the 2w-bit a×b, signed×unsigned"),
+                           ("MulHu", "the high w bits of the 2w-bit a×b, unsigned×unsigned"),
+                           ("Div", "a÷b signed, truncating; overflow wraps; b ≠ 0 (guarded)"),
+                           ("DivU", "a÷b unsigned; b ≠ 0 (guarded)"),
+                           ("Rem", "the signed remainder, the dividend's sign; b ≠ 0 (guarded)"),
+                           ("RemU", "the unsigned remainder; b ≠ 0 (guarded)")):
+            a(f"    /// `({rust.lower()} a b)` — {what}.")
+            a(f"    {rust}(&'static Sem, &'static Sem),")
     a("}")
     a("")
     a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")

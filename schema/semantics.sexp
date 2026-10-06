@@ -87,6 +87,26 @@
 (operator (name ltu) (fixed 2))
 (operator (name ge) (fixed 2))
 (operator (name geu) (fixed 2))
+;; ---- integer multiply and divide (P4-SYSTEM.11 slice a) — ARITHMETIC ONLY ---------------------
+;; On the same width-carrying two's-complement values: each operator works at its operands' width
+;; w (the wider of the two), reads a signed operand by sign-extending from w, and yields a w-bit
+;; result. (mul a b) the low w bits of the product; (mulh a b), (mulhsu a b), (mulhu a b) the HIGH
+;; w bits of the 2w-bit product, a×b signed×signed, signed×unsigned, unsigned×unsigned. (div a b)
+;; and (rem a b) divide signed, truncating toward zero, the remainder taking the dividend's sign;
+;; signed overflow (the most-negative value ÷ −1) WRAPS — quotient the dividend, remainder 0 —
+;; the value model's own rule, exactly as add wraps. (divu a b) and (remu a b) divide unsigned.
+;; ⛔ A ZERO DIVISOR IS OUTSIDE ALL FOUR DIVISION OPERATORS' DOMAIN. What division by zero yields
+;; is an ISA's choice (RISC-V a value, other ISAs a trap), so the DEFINITION states it, by a guard
+;; on the divisor: check_semantics refuses a division no `(if (eq D (lit 0)) … else)` covers, and
+;; the engine refuses one reached unguarded as a definition defect, never a guest behaviour.
+(operator (name mul) (fixed 2))
+(operator (name mulh) (fixed 2))
+(operator (name mulhsu) (fixed 2))
+(operator (name mulhu) (fixed 2))
+(operator (name div) (fixed 2))
+(operator (name divu) (fixed 2))
+(operator (name rem) (fixed 2))
+(operator (name remu) (fixed 2))
 ;; ---- width manipulation — explicit, because implicit width is where models diverge ----------
 (operator (name trunc) (fixed 2))
 (operator (name sext) (fixed 2))

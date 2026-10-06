@@ -21,6 +21,7 @@ pub mod exec;
 pub mod exec_rv64gc;
 pub mod fp;
 pub mod interrupts;
+pub mod muldiv;
 pub mod outcome;
 pub mod privilege;
 pub mod reservation;
