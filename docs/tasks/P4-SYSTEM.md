@@ -153,7 +153,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
 - ID: `P4-SYSTEM.9` — **environment contract v1** — `G-CONTRACT`
-  Status: `pending`
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`)
   Goal: extend the contract to cover translation inputs, interrupt sources, counter progress and reservation invalidation for this profile.
   Acceptance: every new assumption has a positive and a negative fixture; the contract is versioned, not edited in place.
 
@@ -166,9 +166,76 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 (`G-CONTRACT`) — the design brief first (`.8` closed `2026-10-06`: the unit discipline declared and checked, fault priority pinned, typed fault injection); the acceptance: every new assumption has a positive and a negative fixture, the contract versioned, not edited in place |
+| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); next: slice (a), the contract construct, v0 recorded and frozen |
 
 ## Decisions
+
+- `2026-10-06` (design brief for `.9`, recorded before its execution, `SEMULITH-P4-0063`;
+  sources: a read-only census of the contract representation, the rv64gc obligations and every
+  deferral routed to `.9` (an explore agent's report — conversation-only; the load-bearing
+  facts re-measured where they live); `schema/contract-obligations.sexp`;
+  `docs/CPU_ENVIRONMENT.md` §2–§4; `RULES.md` ENV-01; `scripts/gate_report.py`;
+  `crates/semulith-core/src/env.rs`):
+  **The measured pre-conditions.** (1) **A contract has no version mechanism**: no
+  contract-level construct exists — `contract_id`/`contract_version` repeat on every
+  obligation, nothing checks either, and the contract-level text is prose (rv64i's
+  `ENVIRONMENT.md`; rv64gc has none). "Versioned, not edited in place" is acceptance text
+  only (`MC-MULTICORE.md:39`, `DOSSIER.md:87-88`); the one precedent is the requirement rule
+  "AMENDED by a new versioned record … the old record superseded, never edited". Every
+  rv64gc obligation is `"0"` (`grep -n contract_version … | grep -vc '"0"'` → 0), and leaves
+  `.2`–`.8` added records under it. MIRROR-DERIVE requires the 13 base mirrors to keep rv64i's
+  fields. (2) **rv64gc states no environment assumption at all**: 46 obligations, every one a
+  `cpu-guarantee`. The four topics the leaf names are routed here by name a dozen times —
+  "translation inputs" (`env.rs:96-98`, `translation.rs:42-44`, `.3` decision 6), the
+  reservation's external-invalidation vocabulary and the eventuality/fairness wording
+  (`reservation.rs:26-28`, `.4`), the time supply (`timekeeping.rs:8-9`, `state.sexp:604`),
+  the interrupt sources and mtime/MMIO (`state.sexp:652`, `.5` decision 5) — and
+  `docs/CPU_ENVIRONMENT.md` §2 has a row for each (Translation, Interrupts, Counter input,
+  Reservations) that rv64i dispositioned "out of scope". (3) **Stale v0 statements**,
+  measured: `OB-GC-PRIV-INSNS` says wfi "executes as a no-op when legal" (WFI ENTERS a wait
+  since `.5` — `wait.rs`) and sfence.vma is "a stated no-op … no translation caches are
+  modelled" (a TLB since `.3`); `OB-ZICNTR`/`OB-GC-COUNTERS` defer rate and progress to
+  "P4-SYSTEM.5 and P4-SYSTEM.9"; `env.rs`'s module doc says "No device, no time source, no
+  asynchronous event". (4) **No profile check is implemented**: RECORD-SCHEMA demands a
+  `-POS` and a `-NEG` id per obligation (rule 6) but nothing names a fixture; the gate
+  report counts a check implemented only when its id appears under `scripts/`/`crates/`
+  (`gate_report.py:63-77`) — rv64i reads 0 of 72, rv64gc has no report path. (5) **The
+  boundary in code** has four request kinds and no time/interrupt/invalidation variant; time
+  is the hart's own virtual domain (`timekeeping::advance`), STIP is computed in the hart
+  (`time >= stimecmp`), MTIP/MSIP/MEIP are read-only 0 by declaration, and the reservation has
+  no external entry point beyond `clear`.
+  **The design, decided:**
+  1. **A contract becomes a versioned document**: a `contract` construct (id, version, the
+     version it extends, its member obligations, the members it supersedes) — v0 recorded as
+     it stands (46 members), v1 extending it. **"Not edited in place" is mechanized**: v0's
+     members are frozen by a content manifest (the SHARD-FREEZE pattern) and a gate refuses
+     any change to a frozen version's records; a v0 statement that later work made wrong is
+     SUPERSEDED by a v1 record with a new id, never rewritten.
+  2. **v1 states the four environment assumptions** (the first rv64gc has): translation
+     inputs (page tables are main memory, read through the walk's own request kind,
+     coherent with the hart's stores, never written — Svade; a refused walk read is the
+     original access's access fault); interrupt sources (v1's environment supplies NONE —
+     the M-level sources read-only 0, STIP the hart's own comparison, SSIP software's; a
+     platform's CLINT is a later version, P5's); counter progress (the time supply IS the
+     virtual-time domain — one tick per step boundary, retired or halted — the wake reaching
+     a halted hart without retirement); reservation invalidation (one hart: no external
+     invalidation event exists in v1, the reservation's lifetime is the hart's own rules,
+     and the "eventually" requirement holds trivially — a constrained LR/SC loop succeeds on
+     its first iteration). Each states what would make it false.
+  3. **Every new v1 assumption has a POSITIVE and a NEGATIVE fixture that exist and run**: a
+     tracked check registry maps each v1 CHK id to corpus guests, and a test executes them —
+     the gate report's own "implemented" measure then counts them honestly (an id named in
+     `crates/`). Missing fixtures are written, not waived.
+  4. **The stale v0 statements are superseded in v1** (`OB-GC-PRIV-INSNS`'s wfi/sfence
+     clauses, the counters' "deferred to .9" clauses); stale code prose (`env.rs`'s module
+     doc) is corrected in place — code comments are not contract records.
+  5. **Execution slicing**: (a) the contract construct + v0 recorded + the freeze manifest and
+     its gate (RED: an edited frozen record refused); (b) v1's four assumptions + the check
+     registry + any missing fixture; (c) the supersessions + the stale prose; (d) the
+     reports (rv64gc's ENVIRONMENT document, the book), the leaf acceptance.
+  **Not `.9`'s scope:** the CLINT/PLIC as interrupt sources (a later contract version,
+  P5-BOARD's platform); multi-hart reservation invalidation (`MC-MULTICORE` — "a new
+  contract version"); the gate report itself (`.10`); rv64i's contract (frozen at its own v0).
 
 - `2026-10-06` (design brief for `.8`, recorded before its execution, `SEMULITH-P4-0057`;
   sources: a read-only census of the engine's multi-suboperation paths (an explore agent's

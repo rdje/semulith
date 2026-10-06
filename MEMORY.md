@@ -18,11 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (8/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and six leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), and faults/restart/partial progress (`.8`)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.9` — the environment contract v1 (`G-CONTRACT`): the DESIGN BRIEF
-  first (measured pre-conditions: rv64gc-lab-env-v0's obligations, what v1 must add —
-  translation inputs, interrupt sources, counter progress, reservation invalidation — and
-  the versioning rule "versioned, not edited in place"; every new assumption a POS + NEG
-  fixture). `.8` closed `2026-10-06` (`-0062`).
+- next_action: `P4-SYSTEM.9` slice (a) — the contract construct (id, version, extends,
+  members, supersedes) in schema/, rv64gc's v0 recorded as it stands (46 members) and FROZEN
+  by a content manifest + a gate refusing edits to a frozen version (the SHARD-FREEZE
+  pattern; RED: an edited frozen record). Then (b) v1's four assumptions + the check
+  registry, (c) supersessions, (d) reports + acceptance. Brief: the tree's `.9` decision.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).
