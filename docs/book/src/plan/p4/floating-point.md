@@ -121,3 +121,8 @@ converted between formats. The fix was written — and the tests passed with it 
 Probed directly, the backend does raise the flag; every one of the 24 recorded cases came from
 the reference oracle, which has no notion of a signaling NaN at all. The qualification record
 now carries that correction: the backend has two genuine flag deviations, not three.
+
+The fourth checkpoint wrote the double-precision test programs — eleven of them, each
+expected value derived from the specification by the authoring model before any engine ran.
+On an engine staged outside the tracked tree, all 125 programs pass; the 114 that existed
+before run byte-for-byte unchanged, and every new one fails on the previous engine.

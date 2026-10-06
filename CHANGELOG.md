@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0052 (leaf P4-SYSTEM.7, slice d4) — the staged D corpus
+
+- 11 D guests staged in the bind worktree (the (c5) discipline), every expectation derived
+  spec-side by the authoring tool — taught D by taking the format as data (F's 11 guests
+  re-derive byte-identically through it): the Off gate, 64-bit transfers and a NaN-boxed
+  single read as a double, arithmetic with all five flags, the fused forms, sign injection,
+  min/max, compares, the ten classes, the integer and format conversions (boxing on the
+  single side, signaling NaNs both ways), reserved rounding modes on exact operations.
+- Three authoring defects caught and re-derived, never fitted (a misaligned doubleword
+  address, a tool vocabulary gap, a false comment found by hand-checking derived values).
+- The scratch engine (riscv/d composed, the FToF arm) passes 125/125 (RED when FToF ignores
+  its mode); identity 114/0 with every D guest RED on the parent; re-derived from scratch
+  22/22 byte-identical. No tracked content changed; `make gate` green.
+
 ## SEMULITH-P4-0051 (leaf P4-SYSTEM.7, slice d3) — fp.rs's format conversions; the record's deviation (ii) withdrawn
 
 - `fp.rs::convert(m, n, rm, a)` (FCVT.S.D/FCVT.D.S): narrowing through the backend with OF/UF

@@ -18,13 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (6/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and four leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait with the timer wake WITHOUT CPU RETIREMENT (`.5`), instruction visibility with the fence.i contract validated on both engines (`.6`, 6 AGREE of 6)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.7` slice (d4) — the staged D corpus (the (c5) shape): a bind
-  worktree composing `riscv/d` (FToF arm + `touches_fp_state` + the D Sem arms in
-  exec_rv64gc.rs), D guests (FLD/FSD, the fused/arith/sqrt forms at 64, sign injection,
-  min/max, compares, fclass, int conversions, fcvt.s.d/fcvt.d.s incl. NaN-boxing and sNaN,
-  fmv.x.d/fmv.d.x) spec-derived by the authoring tool taught D; `git add -N` new files
-  before any gate run. Then (d5) THE BIND (118 → 150). (d3) landed (`-0051`):
-  `fp::convert`; the record's deviation (ii) WITHDRAWN (it was the MPFR oracle's).
+- next_action: `P4-SYSTEM.7` slice (d5) — THE BIND, from the staged worktree
+  `target/p4-system-7/bind-d` (riscv/d composed, FToF arm, 11 D guests — 125/125 there):
+  add the census edits (118 → 150 as the `d_double` family in all four places), REQ-GC-D +
+  OB-GC-D, the matrix cells; `git add -N` the new files, gate in the worktree; land
+  byte-identical into main, re-run (incl. `fetch_references --verify-only`: 150 == 150),
+  record, commit, remove the worktree. Then (e) fixtures at scale + Sail + the leaf
+  acceptance. (d4) landed (`-0052`): the staged D corpus; the tool taught D (untracked).
+  ⚠ The live P4 tree is ~121 KiB: archive (c4)–(c6) checklists before (d5)'s records.
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).
