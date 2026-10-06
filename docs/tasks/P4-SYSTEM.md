@@ -153,7 +153,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: a fault injected after the Nth suboperation leaves the architecturally required state.
 
 - ID: `P4-SYSTEM.9` — **environment contract v1** — `G-CONTRACT`
-  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`; slice (a) done `SEMULITH-P4-0064`)
+  Status: `pending` (design brief `2026-10-06`, `SEMULITH-P4-0063`; slices (a)–(b) done `SEMULITH-P4-0064`–`-0065`)
   Goal: extend the contract to cover translation inputs, interrupt sources, counter progress and reservation invalidation for this profile.
   Acceptance: every new assumption has a positive and a negative fixture; the contract is versioned, not edited in place.
 
@@ -166,7 +166,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); (a) the contract versioned, v0 frozen; next: slice (b), v1's four assumptions and the check registry |
+| 1 | `P4-SYSTEM.9` | `pending` | environment contract v1 — the design brief recorded `2026-10-06` (a contract construct and a freeze gate; the four environment assumptions with real POS/NEG fixtures; stale v0 statements superseded); (a) the contract versioned, v0 frozen; (b) v1's four assumptions with realized fixtures; next: slice (c), the stale v0 statements superseded |
 
 ## Decisions
 
@@ -1135,6 +1135,60 @@ never raised, at every crossing. The index:
   `LIVE_STATUS.md`, `CHANGELOG.md`, `MEMORY.md` (next_action → b), the book (the new P4.9
   chapter). `promotion: declined (the mechanism is the doctrine row and the schema's own comment).`
 
+`P4-SYSTEM.9` slice (b) — contract v1: the four environment assumptions, each with realized POS/NEG fixtures; the check registry (`2026-10-06`, `SEMULITH-P4-0065`):
+
+- [x] **REPRODUCE / ISSUE** — the brief's pre-conditions 2 and 4, measured:
+
+  ```
+  $ git show HEAD:profiles/rv64gc-lab-v0/contract-obligations.sexp | grep -c environment-assumption → 0
+  $ git grep -c "CHK-ENV-" HEAD -- crates scripts → nothing (no check names a fixture)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the four topics were routed to `.9` by name
+  (`env.rs:96-98`, `reservation.rs:26-28`, `timekeeping.rs:8-9`, `state.sexp:652`) and the
+  gate report counts a check implemented only when its id appears in code
+  (`gate_report.py:63-77` — `git grep` of the id), so declared-only checks read 0 forever.
+
+- [x] **FIX** — contract v1 (`contract.sexp`: extends v0, open) with four
+  `environment-assumption` records under `rv64gc-lab-env-v1`: `OB-GC-ENV-TRANSLATION-INPUTS`
+  (walk reads are the WalkAccess kind, from the memory the hart's stores write; the
+  environment never writes a PTE; a refused walk read is the original access's access
+  fault), `OB-GC-ENV-INTERRUPT-SOURCES` (v1 supplies none: MSIP/MTIP/MEIP 0 and unwritable, STIP
+  the hart's own comparison, SSIP/SEIP software's), `OB-GC-ENV-VIRTUAL-TIME` (one tick per step
+  boundary, retired or halted or trapping; instret on retirement only; no host time),
+  `OB-GC-ENV-RESERVATION-EVENTS` (no external invalidation at one hart; the eventuality holds
+  trivially) — each stating what would falsify it, with typed parameters; the missing
+  negative fixture written (`env-irq-sources`: ones written to mip leave only SSIP/SEIP —
+  0x202 — and STIP appears only from time >= stimecmp); the check registry
+  `crates/semulith-verify/src/contract_checks_rv64gc.rs` (10 checks → guests, `.8`'s
+  partial-progress pair included) and its tests; the corpus's comparison helper moved up so
+  both judge by one rule.
+
+- [x] **ADDRESSED (verified)** —
+
+  ```
+  $ cargo test -p semulith-verify contract_checks → test result: ok. 2 passed (every
+    realized check's guests exist and hold; every v1 and partial-progress check realized —
+    10 declared, 10 registered under their own obligations)
+    RED — one registry entry dropped: FAILED, "OB-GC-ENV-INTERRUPT-SOURCES declares
+    CHK-GC-ENV-INTERRUPT-SOURCES-NEG, which no registry entry realizes"; restored → ok
+  $ bash scripts/check_contract_freeze.sh → ok (1 versioned unit(s), 2 version(s), 0 finding(s))
+  $ bash scripts/check_requirements.sh → RECORD-SCHEMA: ok
+  $ cargo test -p semulith-verify run_rv64gc → test result: ok (135 guests)
+  ```
+
+- [x] **NO REGRESSION** — v0 untouched (its pins hold); `make check` rc=0; `make gate` →
+  `=== all doctrines green ===`. On the way GATE-REPORT refused: rv64i's G0 report suddenly
+  read "2 are implemented" — the v1 records were first named `OB-ENV-VIRTUAL-TIME` etc., and
+  rv64i's own `OB-ENV-VIRTUAL-TIME` declares `CHK-ENV-VIRTUAL-TIME-POS/NEG`, so the report's
+  measure (`git grep` of a check id under `scripts/`/`crates/`) credited rv64i with rv64gc's
+  registry. The ids are now unit-unique (`OB-GC-ENV-…`, `CHK-GC-ENV-…`); the measure itself is
+  not unit-scoped — named for `.10`.
+
+- [x] **LOCKSTEP** — this tree, `contract.sexp` + the obligations file, the matrix,
+  `CHANGELOG.md`, `MEMORY.md` (next_action → c), the book (P4.9 chapter).
+  `promotion: declined (the registry's purpose is its module doc; no new lesson).`
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -1144,6 +1198,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-06` | `.9` slice (b) | the registry's two tests (10 checks realized, every guest holding); RED with one entry dropped; CONTRACT-FREEZE (2 versions) and RECORD-SCHEMA ok; 135/135 | **met** — every new assumption has a positive and a negative fixture that exist and run |
 | `2026-10-06` | `.9` slice (a) | CONTRACT-FREEZE 7/7 controls; the real contract clean (1 unit, 1 version); the schema ok; no record changed | **met** — a contract version is a checked document, v0 frozen |
 | `2026-10-06` | `.8` slice (e) + LEAF | sail over the ten `.8` guests (3 AGREE; the counters cell and the six injected guests named — each injected one diverging at its first refused access); 134/134 | **met** — the leaf closes |
 | `2026-10-06` | `.8` slice (d) | five injected guests derived (every cell as designed) and green (134 guests); RED — a refused walk read as a page fault is caught first by inj-walk-l2 (the 129 earlier guests blind); RECORD-SCHEMA ok; STATE-GEN re-derived | **met** — a fault injected at a chosen suboperation leaves the architecturally required state, on every multi-suboperation instruction the profile has |
@@ -1176,6 +1231,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.9` (slice b) | `SEMULITH-P4-0065 (leaf P4-SYSTEM.9): slice b — contract v1: four environment assumptions (translation inputs, interrupt sources, virtual time, reservation events), each with realized POS/NEG fixtures; the check registry` | env-irq-sources the one new fixture |
 | `.9` (slice a) | `SEMULITH-P4-0064 (leaf P4-SYSTEM.9): slice a — the contract becomes a versioned document (schema/contract.sexp), rv64gc's v0 recorded and frozen (46 members pinned), CONTRACT-FREEZE registered (the 37th doctrine)` | the doctrine on its five surfaces |
 | `.8` (slice e) + LEAF | `SEMULITH-P4-0062 (leaf P4-SYSTEM.8): slice e — the sail attempt over the faults corpus (3 AGREE + 7 NAMED of 10), THE LEAF ACCEPTANCE; the leaf CLOSES` | frontier → `.9` |
 | `.8` (slice d) | `SEMULITH-P4-0061 (leaf P4-SYSTEM.8): slice d — the injected-fault corpus (LR/SC/AMO halves, FP transfers, a walk refused at each Sv39 level); OB-GC-PARTIAL-PROGRESS declared; the state candidate re-answered` | fetch refusals named out (no fetch model in the authoring tool) |
@@ -1202,6 +1258,11 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-06`: `.9` slice (b) done (`SEMULITH-P4-0065`) — **contract v1's assumptions**: the
+  unit's first environment assumptions — translation inputs, interrupt sources (none), the
+  virtual-time supply, reservation events (none) — each with a positive and a negative fixture
+  a tracked registry runs. Next: slice (c) — the stale v0 statements superseded.
 
 - `2026-10-06`: `.9` slice (a) done (`SEMULITH-P4-0064`) — **the contract is versioned**: a
   contract document lists each version's records; rv64gc's v0 is recorded as it stands and

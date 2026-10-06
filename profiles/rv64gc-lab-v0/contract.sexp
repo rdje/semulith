@@ -52,3 +52,10 @@
   (member (id "OB-RESERVATION") (sha256 "5094a971c0324736e6312f1d72413cb18455a1c7b817ee35e7f15e24c0860d04"))
   (member (id "OB-SC-DETERMINISTIC") (sha256 "edb543c1fa258efa9efd7c89cc3b48ad283b74b69c2b1af4f21ff00d4682fadc"))
   (member (id "OB-ATOMIC-MISALIGN") (sha256 "16571f729fa7c8b127f8384410024a4a18cbcd2326aa5a61d8f33446b3b82f2b")))
+
+(contract (id "rv64gc-lab-env-v1") (version "1") (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v0") (status open)
+  (statement "Version 1 (P4-SYSTEM.9): v0 plus the four ENVIRONMENT ASSUMPTIONS the Linux-capable profile introduced - translation inputs, interrupt sources, counter progress, reservation invalidation - the first environment assumptions this unit states, each with a positive and a negative fixture that the check registry runs. Open until the leaf closes.")
+  (member (id "OB-GC-ENV-TRANSLATION-INPUTS"))
+  (member (id "OB-GC-ENV-INTERRUPT-SOURCES"))
+  (member (id "OB-GC-ENV-VIRTUAL-TIME"))
+  (member (id "OB-GC-ENV-RESERVATION-EVENTS")))

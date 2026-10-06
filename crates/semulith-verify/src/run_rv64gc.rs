@@ -182,5 +182,53 @@ pub fn guest(name: &str) -> &'static Guest {
         .unwrap_or_else(|| panic!("guest {name} is in the generated fixture"))
 }
 
+/// The corpus's comparison rule for one guest (the specification-derived writes per step,
+/// the never-written registers, the fetch count) — shared by the corpus proof and the
+/// contract-check registry (`P4-SYSTEM.9` slice b), so both judge by exactly one rule.
+#[cfg(test)]
+pub(crate) fn assert_guest_observations(name: &str) {
+    let g = guest(name);
+    let (trace, _env) = run_guest(g);
+    assert!(
+        trace.failed.is_none(),
+        "{name}: the run ended on a model error: {:?}",
+        trace.failed
+    );
+    assert_eq!(
+        trace.steps.len(),
+        g.executed_steps,
+        "{name}: the trace runs exactly the declared step count"
+    );
+    for (i, expected) in g.expected.iter().enumerate() {
+        assert_eq!(
+            expected.step, i,
+            "{name}: the fixture's expectations are declared in step order"
+        );
+        assert_eq!(
+            trace.steps[i].writes, expected.writes,
+            "{name}: step {i} writes match the specification-derived expectations"
+        );
+    }
+    let mut written: Vec<u8> = trace
+        .steps
+        .iter()
+        .flat_map(|s| s.writes.iter().map(|(r, _)| *r))
+        .collect();
+    written.sort_unstable();
+    for reg in g.never_written {
+        assert!(
+            !written.contains(reg),
+            "{name}: x{reg} must never be written, but the trace wrote it"
+        );
+    }
+    assert_eq!(
+        trace.fetches as usize, g.expected_fetches,
+        "{name}: the fetch-request count matches the declared expectation (one per \
+         step, minus every step whose fetch page-faults in the walk, every \
+         interrupt-delivery step, and every halted step — the `.5` `<halted>` \
+         convention: a waiting hart issues no fetch)"
+    );
+}
+
 #[cfg(test)]
 mod tests;

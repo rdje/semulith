@@ -26,6 +26,7 @@
 //! the commit gate tests).
 
 pub mod bench;
+pub mod contract_checks_rv64gc;
 pub mod elf;
 pub mod fixtures;
 pub mod graph;

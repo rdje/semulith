@@ -74,6 +74,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/dir-selfmod-fence.s`  `15f6684165d656d8af857cfcdece9a873c919f165ef979ee2c1909863df49a3e`
 //!   `profiles/rv64gc-lab-v0/guests/dir-x0-writes.expected.sexp`  `99ef2f9d93df14929678aa8b82f9c728158c82a59f14bee3bc7a3ad281624c5f`
 //!   `profiles/rv64gc-lab-v0/guests/dir-x0-writes.s`  `2daf04a0f2f0f3b7141b42e228d673c6594fe32817a94069b846054ae78c308c`
+//!   `profiles/rv64gc-lab-v0/guests/env-irq-sources.expected.sexp`  `444f6f02271adaa9752c45b8be1fa5a5c585582ee6527d2fbe814de8f8f371ce`
+//!   `profiles/rv64gc-lab-v0/guests/env-irq-sources.s`  `832d63d9fe21fa3eb3fb95e4586868236e618a1aecfe4069fc4d878d97ae66f1`
 //!   `profiles/rv64gc-lab-v0/guests/f-arith.expected.sexp`  `4386afe817bd438be693a678e51deaaa3e5b509c87150d426ea272e08c7ce2ce`
 //!   `profiles/rv64gc-lab-v0/guests/f-arith.s`  `7a8b09106877d7c1241659f05dec52781bf67e9be36e6bbf9731fecd2c2accc7`
 //!   `profiles/rv64gc-lab-v0/guests/f-class.expected.sexp`  `1cb18d66a8b1f20b5dd7d18d65e955e1fc73bc83e400b19dc5f45dbc366b0da5`
@@ -16706,6 +16708,37 @@ static NEVER_WRITTEN_INJ_WALK_L0: &[u8] = &[27];
 #[rustfmt::skip]
 static REFUSALS_INJ_WALK_L0: &[Refusal] = &[Refusal { kind: RefusalKind::Walk, base: 0x0000000080003018, size: 0x0000000000000008 }];
 
+#[rustfmt::skip]
+static WORDS_ENV_IRQ_SOURCES: &[u32] = &[
+    0x00100313,
+    0x00100413,
+    0xFFF00293,
+    0x14D29073,
+    0x34402373,
+    0x3442A073,
+    0x344023F3,
+    0x3442B073,
+    0x34402473,
+    0x14D01073,
+    0x344024F3,
+];
+#[rustfmt::skip]
+static EXPECTED_ENV_IRQ_SOURCES: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(6, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(8, 0x0000000000000001)] },
+    Expectation { step: 2, writes: &[(5, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(6, 0x0000000000000000)] },
+    Expectation { step: 5, writes: &[] },
+    Expectation { step: 6, writes: &[(7, 0x0000000000000202)] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[(8, 0x0000000000000000)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(9, 0x0000000000000020)] },
+];
+#[rustfmt::skip]
+static NEVER_WRITTEN_ENV_IRQ_SOURCES: &[u8] = &[28, 29];
+
 /// The kind of boundary request a refusal region answers with an access fault
 /// (P4-SYSTEM.8 slice c — typed fault injection, environment-shaped).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -18236,6 +18269,17 @@ pub static GUESTS: &[Guest] = &[
         expected: EXPECTED_INJ_WALK_L0,
         never_written: NEVER_WRITTEN_INJ_WALK_L0,
         refusals: REFUSALS_INJ_WALK_L0,
+        cross_model: true,
+    },
+    Guest {
+        name: "env-irq-sources",
+        entry: 0x0000000080000000,
+        words: WORDS_ENV_IRQ_SOURCES,
+        executed_steps: 11,
+        expected_fetches: 11,
+        expected: EXPECTED_ENV_IRQ_SOURCES,
+        never_written: NEVER_WRITTEN_ENV_IRQ_SOURCES,
+        refusals: &[],
         cross_model: true,
     },
 ];

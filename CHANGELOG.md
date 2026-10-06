@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0065 (leaf P4-SYSTEM.9, slice b) — contract v1: the four environment assumptions, with realized fixtures
+
+- `contract.sexp` gains v1 (extends v0, open) with the unit's first environment assumptions:
+  `OB-GC-ENV-TRANSLATION-INPUTS`, `OB-GC-ENV-INTERRUPT-SOURCES` (none supplied in v1),
+  `OB-GC-ENV-VIRTUAL-TIME` (one tick per step boundary; instret on retirement only),
+  `OB-GC-ENV-RESERVATION-EVENTS` (no external invalidation at one hart) — each saying what would
+  falsify it.
+- A tracked check registry (`contract_checks_rv64gc.rs`) binds every v1 check, and `.8`'s
+  partial-progress pair, to corpus guests and runs them under the corpus's own rule; a test
+  refuses a declared check no entry realizes (RED-proven). One new negative fixture,
+  `env-irq-sources`. `make check` + `make gate` green.
+
 ## SEMULITH-P4-0064 (leaf P4-SYSTEM.9, slice a) — the contract becomes a versioned document; v0 frozen; CONTRACT-FREEZE
 
 - `schema/contract.sexp`: one `contract` form per version — its id, number, the version it

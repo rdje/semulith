@@ -3,52 +3,8 @@
 //! `exec_rv64gc` and falsified against its specification-derived expectations (EVD-05),
 //! with the same assertion family the base profile's offline differential uses.
 
-use super::{guest, run_guest};
+use super::{assert_guest_observations, run_guest};
 use crate::guests_rv64gc::GUESTS;
-
-fn assert_guest_observations(name: &str) {
-    let g = guest(name);
-    let (trace, _env) = run_guest(g);
-    assert!(
-        trace.failed.is_none(),
-        "{name}: the run ended on a model error: {:?}",
-        trace.failed
-    );
-    assert_eq!(
-        trace.steps.len(),
-        g.executed_steps,
-        "{name}: the trace runs exactly the declared step count"
-    );
-    for (i, expected) in g.expected.iter().enumerate() {
-        assert_eq!(
-            expected.step, i,
-            "{name}: the fixture's expectations are declared in step order"
-        );
-        assert_eq!(
-            trace.steps[i].writes, expected.writes,
-            "{name}: step {i} writes match the specification-derived expectations"
-        );
-    }
-    let mut written: Vec<u8> = trace
-        .steps
-        .iter()
-        .flat_map(|s| s.writes.iter().map(|(r, _)| *r))
-        .collect();
-    written.sort_unstable();
-    for reg in g.never_written {
-        assert!(
-            !written.contains(reg),
-            "{name}: x{reg} must never be written, but the trace wrote it"
-        );
-    }
-    assert_eq!(
-        trace.fetches as usize, g.expected_fetches,
-        "{name}: the fetch-request count matches the declared expectation (one per \
-         step, minus every step whose fetch page-faults in the walk, every \
-         interrupt-delivery step, and every halted step — the `.5` `<halted>` \
-         convention: a waiting hart issues no fetch)"
-    );
-}
 
 #[test]
 fn corpus_base_mirror_smoke() {

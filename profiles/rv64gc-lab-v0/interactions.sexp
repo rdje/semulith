@@ -27,6 +27,9 @@
 ;;              nop; the budget contract
 ;;   restart    the xret/xepc return discipline: resumption of preempted control flow at
 ;;              the recorded address and mode (mret/sret, SPP/MPP, the MPRV rule)
+;; `P4-SYSTEM.9` slice (b) (`2026-10-06`): env-irq-sources — the M-level pending bits refusing a
+;; software write is the legality axis's read-only vocabulary, its every-step mip reads the
+;; progress axis. No axis is added.
 ;; `P4-SYSTEM.8` slice (d) (`2026-10-06`): the injected-fault corpus — every refused
 ;; suboperation's suppressed effect is the fault axis (fault × fault), every resume the
 ;; progress axis; inj-fp's FS-staying-Clean is fault × legality, its in-region byte edges
@@ -146,7 +149,7 @@
 (cell (axis "boundary") (axis "restart") (degenerate "no staged guest composes a data-domain edge with an xret return: the restart cells' observations are control state, and an xret to a domain-edge target (a 2-mod-4 mepc under IALIGN=16) is semantics this slice has not derived — reported, not omitted"))
 
 ;; ── legality × * ──────────────────────────────────────────────────────────────────
-(cell (axis "legality") (axis "legality") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "mm-readonly") (guest "mm-wfi") (guest "mm-sfence") (guest "mm-sret") (guest "sv39-perm-usr") (guest "a-lrsc-illegal") (guest "i-prio") (guest "fp-fs-off") (guest "fp-fcsr-view"))
+(cell (axis "legality") (axis "legality") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "mm-readonly") (guest "mm-wfi") (guest "mm-sfence") (guest "mm-sret") (guest "sv39-perm-usr") (guest "a-lrsc-illegal") (guest "i-prio") (guest "fp-fs-off") (guest "fp-fcsr-view") (guest "env-irq-sources"))
 (cell (axis "legality") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp"))
 (cell (axis "legality") (axis "progress") (guest "mm-wfi") (guest "mm-ebreak") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "sv39-tlb-fence") (guest "a-amo-aqrl") (guest "a-lrsc-mustfail") (guest "i-accept") (guest "i-enable") (guest "w-sw") (guest "f-dirty"))
 (cell (axis "legality") (axis "restart") (guest "mm-sret") (guest "mm-mret") (guest "mm-ecall-deleg") (guest "sv39-mprv") (guest "sv39-perm-usr"))
@@ -157,6 +160,6 @@
 (cell (axis "delegation") (axis "restart") (guest "mm-ecall-deleg") (guest "sv39-deleg"))
 
 ;; ── progress × *, restart × restart ───────────────────────────────────────────────
-(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem") (guest "mm-ecall-modes") (guest "sv39-translate-4k") (guest "a-lrsc-pair") (guest "a-lrsc-loop") (guest "a-lrsc-mustfail") (guest "i-prio") (guest "w-notrap") (guest "mm-wfi") (guest "fencei-selfmod"))
+(cell (axis "progress") (axis "progress") (guest "it-progress-loop") (guest "dir-memwalk") (guest "dir-chain") (guest "guest-control") (guest "scope-alu") (guest "scope-mem") (guest "mm-ecall-modes") (guest "sv39-translate-4k") (guest "a-lrsc-pair") (guest "a-lrsc-loop") (guest "a-lrsc-mustfail") (guest "i-prio") (guest "w-notrap") (guest "mm-wfi") (guest "fencei-selfmod") (guest "env-irq-sources"))
 (cell (axis "progress") (axis "restart") (guest "mm-ebreak") (guest "mm-ecall-modes") (guest "mm-sret"))
 (cell (axis "restart") (axis "restart") (guest "mm-mret") (guest "mm-sret") (guest "mm-ecall-deleg") (guest "i-nest")))

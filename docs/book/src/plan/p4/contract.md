@@ -1,6 +1,6 @@
 # P4.9 — The environment contract, version 1
 
-**Status:** Underway (slice a, 2026-10-06)
+**Status:** Underway (slices a–b, 2026-10-06)
 
 The processor model does not stand alone: it relies on its environment — memory that
 answers reads and writes, page tables that can be walked, a supply of time, events that may
@@ -16,3 +16,12 @@ seven earlier steps had added to it. A contract document now lists each version'
 version 0 is recorded exactly as it stands and frozen — every obligation's text pinned by a
 hash — and a new gate refuses any change to a frozen obligation. A statement that turns out to
 be wrong is replaced in the next version; the old one stays on the record.
+
+Slice (b) wrote version 1's four assumptions — the first things this processor's contract
+*assumes* of its environment rather than promises: page tables are read from the same memory
+the processor writes, and never written behind its back; this laboratory supplies no
+interrupt sources of its own (the timer interrupt comes from the processor's own comparison);
+time advances exactly one tick per step, even while the processor waits; and nothing outside
+the processor ever cancels a load-reserved reservation. Each assumption has a test that shows
+it holding and a test that shows what breaking it would look like, and a registry runs them
+all on every build.
