@@ -18,12 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` the doctrine adoption, proposed) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-06`, `SEMULITH-AC-0059`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (6/10 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and four leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait with the timer wake WITHOUT CPU RETIREMENT (`.5`), instruction visibility with the fence.i contract validated on both engines (`.6`, 6 AGREE of 6)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.7` slice (e) — design it first (a recorded plan in the tree, as
-  (c)/(d) were split): the independent numeric fixtures at scale (fp.rs vs the exact-rational
-  reference beyond the 230 vectors — the slice-(a) corpus is 63,752 cases, 0 disagreements),
-  the Sail encoding/state match for F/D (Sail is SoftFloat — evidence of encoding and state,
-  never numerics, EVD-04), the reports, the book, and the `.7` leaf acceptance. (d5) landed
-  (`-0053`): D BOUND — 150 forms, 125/125; F and D both execute in the tracked engine.
+- next_action: `P4-SYSTEM.7` slice (e2) — the numeric fixtures AT SCALE (the tree's (e)
+  split decision): a tracked, generated, gated fixture of seeded directed + random operands
+  per operation × mode × width, expected values from `scripts/specfp.py`, run against
+  `fp.rs` by a unit test under FP-VECTORS' DRIFT rule; and the model layer's per-op cost
+  re-measured (performance evidence). Then (e3) the reports, the book, the LEAF
+  ACCEPTANCE, frontier → `.8`. (e1) landed (`-0054`): Sail 24 AGREE of 24 (927 steps).
 - in_flight_uncommitted: none.
 - blockers: none (0 open upstream issues — `scripts/upstream_exposure.py`; never patch the
   submodule, adopt by moving the pin).

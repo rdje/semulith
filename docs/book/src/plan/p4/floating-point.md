@@ -133,3 +133,9 @@ matching the pinned upstream tables exactly, and all 125 test programs pass — 
 existed before unchanged. Both floating-point extensions now run; what remains of this leaf is
 broader numeric evidence, the structural comparison against the Sail reference, and the
 leaf's own acceptance.
+
+Slice (e) gathers the leaf's closing evidence. Its first checkpoint ran all 24 floating-point
+test programs on the Sail reference model: every one agrees with its specification-derived
+expectations, step for step (927 steps). Sail computes floating point with Berkeley SoftFloat,
+so this shows the instructions are decoded, gated, boxed and flagged the same way on both
+engines — not that the arithmetic is independently right; that is the next checkpoint's job.
