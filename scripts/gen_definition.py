@@ -27,7 +27,7 @@ clothes:
 - a unit other than `rv64i-lab-v0` or — since `P4-SYSTEM.2` slice (d), tracked since the
   slice (h) route flip — `rv64gc-lab-v0`, whose module is the committed
   `crates/semulith-core/src/definition_rv64gc.rs` (the same generator, the same census);
-- an instruction length other than 32 — this generator emits the 32-bit decode table;
+- an ILEN other than 32 — C adds 16-bit parcels within that maximum length;
 - a composition whose encoding/fragment/semantics documents the schema layer refuses;
 - a composed fragment with no semantics document beside it (`<fragment>.sem.sexp`, the
   corpus convention `scripts/check_semantics_corpus.sh` pairs by);
@@ -221,13 +221,18 @@ def bound_operands(operands: tuple[str, ...]) -> set[str]:
 
 
 def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
-                   pseudos: dict[str, R.Insn] | None = None) -> tuple[dict, dict]:
+                   pseudos: dict[str, R.Insn] | None = None) -> tuple[dict, dict, dict]:
     """Every composed fragment's semantics rules, keyed by instruction, in composition
     order, under the MODEL-COMPOSE.6 refinement rule — re-derived here (see module doc).
 
-    Returns (rules, pseudo_rules): a rule naming a PSEUDO (Zicntr's counter reads) is
-    checked against the pseudo's operand row and returned separately — it never decodes
-    (the word matches the realizing instruction), so it rides as metadata, not a table row."""
+    Returns (rules, pseudo_rules, expansions): a rule naming a PSEUDO (Zicntr's counter reads)
+    is checked against the pseudo's operand row and returned separately — it never decodes
+    (the word matches the realizing instruction), so it rides as metadata, not a table row.
+    An EXPANSION (P4-SYSTEM.12 slice b — a compressed instruction declared by the base
+    instruction it expands into) rides beside its rule: the rule entry carries its source and,
+    for an own-rule expansion (C.JALR), its effect; the expansion carries the base, the operand
+    bindings and the reserved condition. Every binding set is re-judged here against the base
+    rule it feeds: exactly the operands that rule reads."""
     try:
         SEM.load_language()
     except SEM.SemError as exc:
@@ -235,6 +240,7 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
 
     rules: dict[str, tuple[str, X.Sexp]] = {}
     pseudo_rules: dict[str, str] = {}
+    expansions: dict[str, tuple[str | None, list, X.Sexp | None]] = {}
     seen: dict[str, Path] = {}
     for name in names:
         sem_path = root / (name + ".sem.sexp")
@@ -289,6 +295,26 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
                 pseudo_rules[insn] = str(sources[0][1])
             else:
                 rules[insn] = (str(sources[0][1]), effect)
+                expansions.pop(insn, None)         # a later declared refinement replaces it
+
+        for x in X.children(doc, "expand"):
+            insn = str(X.field(x, "insn", str(sem_path)))
+            where = f"{sem_path.name} [{insn}]"
+            if insn in defined:
+                raise Refusal(f"{where}: defined twice")
+            defined.append(insn)
+            if insn not in insns:
+                raise Refusal(f"{where}: an expansion for no instruction of the composed encoding")
+            try:
+                _, base, _ = SEM.check_expand(x, where, bound_operands(insns[insn].operands))
+            except SEM.SemError as exc:
+                raise Refusal(str(exc))
+            binds = [(str(X.field(o, "name", where)), X.field(o, "value", where))
+                     for o in X.children(x, "operand")]
+            reserved = X.children(x, "reserved")
+            own = X.children(x, "effect")
+            expansions[insn] = (base, binds, reserved[0][1] if reserved else None)
+            rules[insn] = (str(X.field(x, "source", where)), own[0][1] if own else None)
 
         for r in sorted(refined - set(defined)):
             raise Refusal(f"{sem_path.name}: declares (refines (insn {rust_str(r)})) but "
@@ -314,7 +340,18 @@ def load_semantics(root: Path, names: list[str], insns: dict[str, R.Insn],
         raise Refusal(f"{len(missing)} declared instruction(s) have NO semantics: "
                       f"{', '.join(missing[:12])}{' …' if len(missing) > 12 else ''} — "
                       "the execution authority must cover every declared instruction")
-    return rules, pseudo_rules
+    # an expansion's base must be a composed instruction with a rule, and the bindings must be
+    # EXACTLY the operands that rule reads (check_semantics' compose rule, re-derived here)
+    for insn, (base, binds, _) in expansions.items():
+        if base is None:
+            continue
+        if base not in rules or base in expansions:
+            raise Refusal(f"{insn}: expands into {base!r}, which is not a composed base instruction")
+        reads = SEM.operands_read(rules[base][1])
+        bound = {n for n, _ in binds}
+        if bound != reads:
+            raise Refusal(f"{insn}: binds {sorted(bound)}, but {base}'s rule reads {sorted(reads)}")
+    return rules, pseudo_rules, expansions
 
 
 def fixed_mask(name: str, fixed: tuple[tuple[int, int, int], ...]) -> tuple[int, int]:
@@ -569,7 +606,7 @@ def load_inputs(encoding_path: Path, state_path: Path):
                               "one name, one pinned byte set")
             source_pins[pin_name] = pin_sha
 
-    rules, pseudo_rules = load_semantics(root, names, insns, pseudos)
+    rules, pseudo_rules, expansions = load_semantics(root, names, insns, pseudos)
 
     # The manifest names every canonical input (the state descriptor is fingerprinted
     # here; its executable half is `state.rs`'s own derivation, governed by STATE-GEN).
@@ -587,16 +624,24 @@ def load_inputs(encoding_path: Path, state_path: Path):
     f_variants = "riscv/f" in names
     d_variants = "riscv/d" in names
     m_variants = "riscv/m" in names
+    c_variants = "riscv/c" in names
+    if expansions and not (extended and c_variants):
+        raise Refusal("expansions require the rv64gc composition with riscv/c — the binding "
+                      "metadata emits WITH the fragment")
     return dict(profile=profile, ilen=ilen, names=names, insns=insns,
                 pseudos=pseudos, pseudo_rules=pseudo_rules, extended=extended,
                 fields=fields, rules=rules, inputs=inputs, source_pins=source_pins,
                 a_variants=a_variants, amo_ops=amo_operations(insns), f_variants=f_variants,
-                d_variants=d_variants, m_variants=m_variants)
+                d_variants=d_variants, m_variants=m_variants,
+                c_variants=c_variants, expansions=expansions)
 
 
 def emit(data: dict, generator_sha: str) -> str:
     insns = data["insns"]
     extended = data["extended"]
+    compressed = data["c_variants"]
+    surface = Surface(extended, data["a_variants"], frozenset(data["amo_ops"]),
+                      data["f_variants"], data["d_variants"], data["m_variants"])
     w = []
     a = w.append
     a("//! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_definition.py`;")
@@ -721,7 +766,14 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        lo: {lo},")
         if pieces:
             inner = ", ".join(f"({p[0]}, {p[1]})" for p in pieces)
-            a(f"        scatter: &[{inner}],")
+            inline = f"        scatter: &[{inner}],"
+            if len(inline) > 80:
+                a("        scatter: &[")
+                for top, bottom in pieces:
+                    a(f"            ({top}, {bottom}),")
+                a("        ],")
+            else:
+                a(inline)
         else:
             a("        scatter: &[],")
         a("    },")
@@ -748,10 +800,33 @@ def emit(data: dict, generator_sha: str) -> str:
     a("    /// The semantics rule's effect, lowered from the semantics data — the one")
     a("    /// executable owner of the behaviour (OWN-01).")
     a("    pub effect: &'static Sem,")
+    if compressed:
+        a("    /// Instruction length in bytes: an expansion consumes one 16-bit parcel.")
+        a("    pub length: u8,")
+        a("    /// Operand mappings evaluated over the compressed fields BEFORE the effect.")
+        a("    pub expansion: Option<&'static Expansion>,")
     a("}")
     a("")
-    ordered = sorted(insns)
-    a(f"/// The {len(ordered)} instructions of the composed definition, sorted by name. Every")
+    if compressed:
+        a("/// A compressed instruction's declared expansion. The effect is lowered from the")
+        a("/// named base rule (C.JALR has its own); bindings retain their value widths, so")
+        a("/// the base rule sign-extends a scattered immediate from its OWN top bit.")
+        a("pub struct Expansion {")
+        a("    pub base: Option<&'static str>,")
+        a("    pub bindings: &'static [OperandBinding],")
+        a("    /// Evaluated over the original fields; true delivers illegal instruction.")
+        a("    pub reserved: Option<&'static Sem>,")
+        a("}")
+        a("")
+        a("pub struct OperandBinding {")
+        a("    pub name: &'static str,")
+        a("    pub value: &'static Sem,")
+        a("}")
+        a("")
+    ordered = sorted(insns, key=lambda n: (-fixed_mask(n, insns[n].fixed)[0].bit_count(), n)) \
+        if compressed else sorted(insns)
+    order = "by descending fixed-bit specificity, then name" if compressed else "by name"
+    a(f"/// The {len(ordered)} instructions of the composed definition, sorted {order}. Every")
     a("/// declared instruction carries its semantics — completeness is a generation-time")
     a("/// refusal, not a hope (EXTRACTION).")
     a("pub static INSNS: &[InsnDef] = &[")
@@ -759,6 +834,9 @@ def emit(data: dict, generator_sha: str) -> str:
         insn = insns[name]
         mask, value = fixed_mask(name, insn.fixed)
         source, effect = data["rules"][name]
+        expansion = data["expansions"].get(name)
+        if expansion and expansion[0] is not None:
+            effect = data["rules"][expansion[0]][1]
         ops = ", ".join(rust_str(o) for o in insn.operands)
         where = f"semantics of {name}"
         a("    InsnDef {")
@@ -768,13 +846,40 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        operands: &[{ops}],")
         a(f"        from: {rust_str(insn.source)},")
         a(f"        source: {rust_str(source)},")
-        tree = indent_tree(emit_sem(effect, where, Surface(
-            extended, data["a_variants"], frozenset(data["amo_ops"]), data["f_variants"],
-            data["d_variants"], data["m_variants"])))
+        tree = indent_tree(emit_sem(effect, where, surface))
         tree_lines = tree.splitlines()
+        if compressed:
+            tree_lines[-1] += ","
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
             a(f"        {line}")
+        if compressed:
+            a(f"        length: {2 if expansion else 4},")
+            if expansion:
+                base, binds, reserved = expansion
+                a("        expansion: Some(&Expansion {")
+                a(f"            base: {'Some(' + rust_str(base) + ')' if base else 'None'},")
+                a("            bindings: &[")
+                for operand, value_expr in binds:
+                    a("                OperandBinding {")
+                    a(f"                    name: {rust_str(operand)},")
+                    lines = indent_tree(emit_sem(value_expr, where, surface)).splitlines()
+                    a(f"                    value: &{lines[0]}")
+                    for line in lines[1:]:
+                        a(f"                    {line}")
+                    a("                },")
+                a("            ],")
+                if reserved is None:
+                    a("            reserved: None,")
+                else:
+                    lines = indent_tree(emit_sem(reserved, where, surface)).splitlines()
+                    a(f"            reserved: Some(&{lines[0]}")
+                    for line in lines[1:]:
+                        a(f"            {line}")
+                    a("            ),")
+                a("        }),")
+            else:
+                a("        expansion: None,")
         a("    },")
     a("];")
     a("")
@@ -935,7 +1040,9 @@ def emit(data: dict, generator_sha: str) -> str:
             a(f"    {rust}(&'static Sem, &'static Sem),")
     a("}")
     a("")
-    a("/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")
+    a("/// Decode an instruction's bits to its definition by fixed-bit specificity: the first"
+      if compressed else
+      "/// Decode a 32-bit word to its instruction definition by the fixed bits: the first")
     a(f"/// entry whose `mask`ed bits equal its `value`. Linear over the {len(ordered)}")
     a("/// entries — no allocation, and no failure family of its own: a word no entry")
     a("/// matches is the reserved-decode case (`outcome::UndefinedCase::ReservedDecode`,")

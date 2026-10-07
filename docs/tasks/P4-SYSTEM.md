@@ -185,7 +185,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: the encoding's `m` slot filled; every M form exercised on both engines by
   expectations derived before either runs, the division edge cases included.
 - ID: `P4-SYSTEM.12` — **bind C** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`; slices (a)–(a2) done `SEMULITH-P4-0079`–`-0080`)
+  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`; slices (a)–(b) done `SEMULITH-P4-0079`–`-0081`)
   Goal: the compressed instructions at RV64 with D (Zca + Zcd, `.1`'s closure): each 16-bit
   parcel decodes to the base instruction it expands to; fetch at two-byte granularity (IALIGN
   16); the reserved and illegal encodings refused.
@@ -235,10 +235,17 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `pending` | bind C — slice (b): the language for C (the expansion construct and its checks — the base instruction named, the operands mapped, the spec's "expands into" sentence quoted; C.JALR's own rule; the reserved code points; `c.sem.sexp`; the generator's specificity decode); (a) done |
+| 1 | `P4-SYSTEM.12` | `pending` | bind C — slice (c): the engine (parcel-first fetch, length-aware pc, the expansion executor preserving mapped value widths, the 16-bit inst); (a)–(b) done; stop here at the director's crash-recovery handoff checkpoint |
 
 ## Decisions
 
+- `2026-10-07` (crash recovery, director request): recover the interrupted session and stop at
+  the next handoff-ready checkpoint. `git status --short` at `f877726` found five surviving
+  files owned by `.12` slice (b): `c.sem.sexp`, `m.sem.sexp`, `schema/semantics.sexp`,
+  `check_semantics.py`, `gen_definition.py`. The semantics controls already pass 39/39 and
+  C's pair checks 37/37; the generator loads expansions but does not yet emit them or decode
+  by specificity. Finish and verify (b), commit it, leave (c) as the precise next action,
+  and require `scripts/check_no_background_jobs.sh` to print `handoff: OK` before stopping.
 - `2026-10-06` (a found defect, owned before slice (b), `SEMULITH-P4-0080`): reading `extract()` for
   C's scattered immediates found JAL's offset sign taken from bit 19 in BOTH engines (a scattered field
   carried its field width, not its immediate's) — reproduced, fixed and pinned as slice (a2) here,
@@ -874,6 +881,73 @@ never raised, at every crossing. The index:
   (`plan/p4/c.md`).
   promotion: declined (the boundary test is the durable record; the class — small corpus programs never reach an immediate's sign boundary — is mechanized for C at slice (b), whose expansion vectors cover every immediate's extremes)
 
+`P4-SYSTEM.12` slice (b) — the language for C; interrupted session recovered (`2026-10-07`, `SEMULITH-P4-0081`):
+
+- [x] **REPRODUCE / ISSUE** — the crash left five uncommitted files at `f877726` (recorded
+  above). The committed language cannot express C's expansion declarations:
+
+  ```
+  $ git show f877726:schema/semantics.sexp > target/p4-system-12/semantics-before-recovery.sexp
+  $ python3 scripts/check_sexp_schema.py definitions/riscv/c.sem.sexp target/p4-system-12/semantics-before-recovery.sexp
+    REFUSED c.sem.sexp: construct "semantics": undeclared field "expand" (rc=1)
+  ```
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git diff -- scripts/gen_definition.py` showed the surviving
+  loader returning expansions while `load_inputs()` dropped them and `emit()` still emitted
+  only ordinary rules in name order. C's six overlaps need specificity order. The live diagnostic
+  found a second reader to extend: `bash scripts/check_semantics_corpus.sh` →
+  `CITATIONS: REFUSED: c.sem.sexp: declares no (sem …) form`; `check_citations.citations()` iterated
+  only `sem`. The first expansion probe also falsely treated C.ADDIW's zero immediate as reserved
+  (its restriction is rd=x0); the probe was corrected from §27.1.5.2, before trusting it.
+
+- [x] **FIX** — `schema/semantics.sexp` declares `expand`, `operand`, and the optional reserved
+  predicate. `c.sem.sexp` supplies 37 cited declarations: 36 named base expansions and C.JALR's
+  own pc+2 rule. M's five existing literal quotations use single quotes so CITATION-QUOTES judges
+  them too (their meaning unchanged). `check_semantics.py` checks raw-field mappings, unique
+  bindings, exactly the base rule's operand reads, the quoted expansion sentence, and the
+  own-rule alternative; the generator re-judges those rules, lowers the base effect with its
+  mappings and reserved predicate, emits instruction length, and sorts by fixed-bit specificity.
+  C metadata emits only when C is composed, so the real unit stays unbound. The long C.J scatter
+  array exposed the emitter's inline-array assumption under `rustfmt --check`; it now wraps at
+  the already-used 80-character threshold. The citation reader checks `expand` as well as `sem`.
+
+- [x] **ADDRESSED (verified)** — the permanent diagnostic is `scripts/probe_c_expansions.py`,
+  run by DEF-GEN on a disposable full composition with C; its expected names, mappings and
+  immediate limits are hand-written from §27.1.3–§27.1.5, not derived from the semantics file.
+
+  ```
+  $ python3 scripts/check_semantics.py definitions/riscv/c.sexp definitions/riscv/c.sem.sexp → 37 of 37
+  $ python3 scripts/check_semantics.py --self-test → 46 pass / 0 fail
+  $ bash scripts/check_definition_gen.sh --self-test → C expansion probe: 37 forms, 104 spec-side
+    checks; compiled decoder 8/8; DEF-GEN --self-test: 51 pass / 0 fail
+  RED controls: compact register offset +9 generates but fails (rd=16, expected 15); reversed
+    table ordering fails the compiled specialization_decode test; an unbound base operand is refused.
+  Compiled mappings also check the immediate extremes, copied base effects, C.JALR's own rule,
+    7 reserved code points and 6 HINT examples; the disposable output is rustfmt-stable.
+  $ python3 scripts/check_citation_quotes.py → 120 attributed quotes, 0 findings
+    c.sem.sexp + m.sem.sexp alone: 51 attributed, 0 findings, 0 unattributed
+  $ bash scripts/check_semantics_corpus.sh → SEMANTICS: ok (14 checks)
+  ```
+
+- [x] **NO REGRESSION** — `make check` rc=0 (the complete workspace). `git diff` over both
+  generated definition modules shows only generator/input fingerprints and M's quotation
+  spelling: existing executable tables and effects unchanged. DEF-GEN's 51 controls and the
+  semantics/citation corpus stay green; citation controls 15/15 and `make book` rc=0 (all books).
+  `make gate` → `=== all doctrines green ===`; `bash scripts/check_no_background_jobs.sh`
+  → `handoff: OK` before committing. The commit hook re-runs the gates on the staged checkpoint.
+  C execution and fetch evidence belong to slices (c)–(f),
+  so these finite declaration checks make no CPU-conformance claim.
+
+- [x] **LOCKSTEP** — this tree (crash-recovery instruction, checklist, frontier, logs), the
+  task index, MEMORY, LIVE_STATUS (11/18 unchanged; C's language ready), CHANGELOG, DEV_NOTES,
+  the doctrine/toolbox descriptions and the book (its derived index regenerated after BOOK-INDEX
+  named the new PC mention as drift). The status note was shortened when `check_readme_routes.sh`
+  measured 6,160 B over its 6,144 B ceiling; 6,138 B after, the ceiling unchanged.
+  The recovered work is committed, with (c)
+  as the next action; handoff requires a clean tree and no project-owned background job.
+  promotion: declined (the slice's findings are local reader/emitter adaptations; the permanent
+  probe and its RED controls retain the evidence)
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -883,6 +957,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-07` | `.12` slice (b) | 37/37 declarations; SEMANTICS 46/46 controls; DEF-GEN 51/51 (104 spec-side checks, compiled decoder 8/8); citations 0 findings; make check + make gate + all books green; handoff OK | the language and generator ready; crash recovered; handoff before (c) |
 | `2026-10-06` | `.12` slice (a2) | the boundary tests RED on both engines, then GREEN; both corpora unchanged (76/76) | JAL's offset sign fixed |
 | `2026-10-06` | `.12` slice (a) | C composes (37; 192 with the extensions); the disjointness self-test 17/17; the census 163 == 163 | the C fragment |
 | `2026-10-06` | `.11` slice (d) + LEAF | 13/13 forms; lab 139/139 + Sail 4/4; EVD-05 pin OK; 4,485 vectors | **met** — the leaf closes |
@@ -928,6 +1003,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice b) | `SEMULITH-P4-0081 (leaf P4-SYSTEM.12): recover the interrupted C language slice; declare expansions and decode by specificity` | handoff; (c) next |
 | `.12` (slice a2) | `SEMULITH-P4-0080 (leaf P4-SYSTEM.12): slice a2 — a found defect owned: JAL's offset sign was taken from bit 19 in both engines; pinned at the boundary and the extremes` | (b) next |
 | `.12` (slice a) | `SEMULITH-P4-0079 (leaf P4-SYSTEM.12): slice a — the C re-pin and the fragment: 37 forms, their scatter layouts, the six declared specializations` | (b) next |
 | `.12` brief | `SEMULITH-P4-0078 (tree P4-SYSTEM): the .12 design brief — bind C: each compressed form declared by its expansion, decoded by specificity, fetched parcel-first` | (a) next |
@@ -970,6 +1046,10 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-07`: `.12` slice (b) done (`SEMULITH-P4-0081`) — the interrupted session recovered:
+  C's 37 expansions, exact bindings, reserved predicates, specificity decode and a compiled
+  declaration probe. Stop at the director's requested checkpoint; the engine is slice (c).
 
 - `2026-10-06`: `.12` slice (a2) done (`SEMULITH-P4-0080`) — a found defect owned: JAL offsets beyond ±512 KiB had the wrong sign in both engines.
 

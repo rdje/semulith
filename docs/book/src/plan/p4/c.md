@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–a2, 2026-10-06)
+**Status:** Underway (slices a–b, 2026-10-07; engine next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -32,3 +32,22 @@ compressed jump has the same shape. It is now fixed in both models, tested at ex
 boundary and at both extremes, and recorded against the earlier scalar release. That release's
 recorded results are unaffected: each one is a pass, and any test that had reached this range
 would have failed.
+
+Slice (b) gives each of the 37 compressed forms its declared expansion. A compact register
+field, for example, maps its three bits to registers x8 through x15 by adding eight. Scattered
+immediate pieces are put back together with their own signed width; a load's unsigned offset
+is zero-extended first. The checker requires every operand the ordinary instruction reads to
+be supplied exactly once, and requires the specification's quoted expansion sentence to name
+that instruction. C.JALR carries the exception's own rule: its return address is pc+2.
+
+Reserved code points are declared from the specification's sentences. Hints can execute their
+ordinary expansion: writing register x0 changes nothing. The generated table tries the most
+specific encoding first, so a compressed breakpoint wins over the jump-and-link and add forms
+that also match its bits. A permanent probe checks all 37 forms and the immediate limits, then
+compiles the generated Rust and checks the mappings, effects and eight decoder cases. Giving a
+compact register the wrong offset, or reversing the table's order, makes the checks fail.
+
+The session crashed during this slice; the task-tree and surviving files recovered its exact
+frontier. The completed language slice is the handoff checkpoint. The processor still needs
+the next slice's parcel-first fetch and expansion executor before it can run compressed code;
+the declaration checks are finite evidence about the data and generator.

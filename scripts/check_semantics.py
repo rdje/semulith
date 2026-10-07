@@ -24,6 +24,7 @@ means the definition says something checkable, not that what it says is true.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -212,6 +213,8 @@ def compose(paths: list[Path]) -> int:
         return 2
     files: list[tuple[Path, list[str], set[str]]] = []
     errors: list[str] = []
+    base_reads: dict[str, set[str]] = {}            # a later refinement replaces the base's
+    expansions: dict[str, tuple[str, str, set[str]]] = {}
     for p in paths:
         try:
             load_ok = True
@@ -242,6 +245,26 @@ def compose(paths: list[Path]) -> int:
                         check_division(sub, where)
                 except SemError as exc:
                     errors.append(str(exc))
+        for s in _sexp.children(root, "sem"):
+            effs = _sexp.children(s, "effect")
+            if effs:
+                sname = str(_sexp.field(s, "insn", str(p)))
+                base_reads[sname] = operands_read(effs[0][1])
+                expansions.pop(sname, None)
+        for x in _sexp.children(root, "expand"):
+            xname = str(_sexp.field(x, "insn", str(p)))
+            where = f"{p.name} [{xname}]"
+            if xname in defined:
+                errors.append(f"{where}: defined twice")
+            defined.append(xname)
+            try:
+                _, base, bound = check_expand(x, where, None)
+                base_reads.pop(xname, None)
+                expansions.pop(xname, None)
+                if base is not None:
+                    expansions[xname] = (where, base, bound)
+            except SemError as exc:
+                errors.append(str(exc))
         refined = {str(_sexp.field(r, "insn", str(p))) for r in _sexp.children(root, "refines")}
         files.append((p, defined, refined))
 
@@ -264,6 +287,18 @@ def compose(paths: list[Path]) -> int:
         for name in defined:
             seen[name] = p
 
+    # an expansion's base must be defined in the composition, and it must bind EXACTLY the
+    # operands the base rule reads — an unbound one would read a field the compressed word does
+    # not have, an extra one binds nothing (P4-SYSTEM.12 slice b)
+    for where, base, bound in expansions.values():
+        if base not in base_reads:
+            errors.append(f"{where}: expands into {base!r}, which no fragment of this composition defines")
+            continue
+        missing, extra = sorted(base_reads[base] - bound), sorted(bound - base_reads[base])
+        if missing or extra:
+            errors.append(f"{where}: binds {sorted(bound)}, but {base}'s rule reads "
+                          f"{sorted(base_reads[base])}" + (f" — unbound: {missing}" if missing else "")
+                          + (f" — binds nothing: {extra}" if extra else ""))
     for e in errors:
         print(f"  {e}")
     if errors:
@@ -324,6 +359,89 @@ def _show(f) -> str:
     if isinstance(f, list):
         return "(" + " ".join(_show(x) for x in f) + ")"
     return str(f)
+
+
+def operands_read(effect) -> set[str]:
+    """The operand names a rule reads — every (reg X), (freg X), (imm X), (field X) with X a
+    name. An expansion must bind exactly these (P4-SYSTEM.12 slice b)."""
+    out: set[str] = set()
+    def walk(f):
+        if not isinstance(f, list) or not f:
+            return
+        op, args = str(f[0]), f[1:]
+        if op in ("reg", "freg", "imm", "field") and len(args) == 1 and isinstance(args[0], str):
+            out.add(str(args[0]))
+        for a in args:
+            walk(a)
+    walk(effect)
+    return out
+
+
+_QUOTED = re.compile(r"(?:^|(?<=[\s(\[—:;,]))'((?:[^']|'(?=[A-Za-z]))+?)'(?![A-Za-z])")
+
+
+def check_mapping(form, where: str, condition: bool = False) -> None:
+    """Mappings read raw fields, never register contents or architectural effects.
+
+    Nested forms matter too: the schema's head constraint judges only the outer value.
+    """
+    allowed = {"field", "imm", "lit", "add", "or", "zext", "sext", "bits", "trunc"}
+    if condition:
+        allowed |= {"eq", "ne", "and"}
+    if isinstance(form, list):
+        if str(form[0]) not in allowed:
+            raise SemError(f"{where}: ({form[0]} …) is not a raw-field mapping expression")
+        for arg in form[1:]:
+            check_mapping(arg, where, condition)
+
+
+def check_expand(x, where: str, fields: set[str] | None) -> tuple[str, str | None, set[str]]:
+    """One (expand …) in a fragment's own terms: (insn, base or None, the bound names).
+
+    - every binding's value, and the reserved condition, is a well-formed expression over THIS
+      instruction's fields (`fields`; None in compose mode, where arity alone is judged);
+    - a binding names an operand once;
+    - with a base (`to`): no own effect, and the source QUOTES a sentence naming the base — the
+      chapter's own "expands into" sentence (CITATION-QUOTES judges that the quote is there);
+    - without one: an own effect, checked over the fields and the bound names.
+    """
+    name = str(_sexp.field(x, "insn", where))
+    to = _sexp.children(x, "to")
+    base = str(to[0][1]) if to else None
+    bound: list[str] = []
+    for o in _sexp.children(x, "operand"):
+        n = str(_sexp.field(o, "name", where))
+        if n in bound:
+            raise SemError(f"{where}: binds operand {n!r} twice")
+        bound.append(n)
+        value = _sexp.field(o, "value", where)
+        check_expr(value, where, fields)
+        check_mapping(value, where)
+    for r in _sexp.children(x, "reserved"):
+        check_expr(r[1], where, fields)
+        check_mapping(r[1], where, condition=True)
+    effects = _sexp.children(x, "effect")
+    source = str(_sexp.field(x, "source", where))
+    if base is not None:
+        if effects:
+            raise SemError(f"{where}: expands into {base} AND carries its own effect — one or the other")
+        phrases = _QUOTED.findall(source)
+        if not any(re.search(rf"\bexpands\s+(?:into|to)\s+{re.escape(base)}\b", q, re.I)
+                   for q in phrases):
+            raise SemError(f"{where}: expands into {base}, but no quoted sentence in its source names "
+                           f"{base} — the expansion must be the chapter's own, quoted")
+    else:
+        if not effects:
+            raise SemError(f"{where}: neither expands into a base instruction nor carries its own effect")
+        own = (fields | set(bound)) if fields is not None else None
+        for e in effects:
+            for sub in e[1:]:
+                check_expr(sub, where, own)
+                check_division(sub, where)
+                reads = operands_read(sub)
+                if reads != set(bound):
+                    raise SemError(f"{where}: own rule reads {sorted(reads)}, but binds {sorted(bound)}")
+    return name, base, set(bound)
 
 
 def check_pair(enc_path: Path, sem_path: Path) -> int:
@@ -407,6 +525,19 @@ def check_pair(enc_path: Path, sem_path: Path) -> int:
             except SemError as exc:
                 errors.append(str(exc))
 
+    for x in _sexp.children(sem, "expand"):
+        xname = str(_sexp.field(x, "insn", str(sem_path)))
+        where = f"{sem_path.name} [{xname}]"
+        if xname not in operands:
+            errors.append(f"{where}: an expansion for no instruction of {enc_path.name}")
+            continue
+        if xname in covered:
+            errors.append(f"{where}: defined twice (a rule and an expansion, or two expansions)")
+        try:
+            check_expand(x, where, operands[xname])
+            covered.add(xname)
+        except SemError as exc:
+            errors.append(str(exc))
     for r in sorted(refines - defined_here):
         errors.append(f"{sem_path.name}: declares (refines \"{r}\") but defines no semantics "
                       f"for it — a declaration with no override is a lie about what this file does")
@@ -722,6 +853,61 @@ def _selftest() -> int:
                                      "(div (trunc 32 (reg rs1)) (trunc 32 (reg rs2)))"),
                          "(div … (trunc 32 (reg rs2))) is reached where its divisor may be zero",
                          frag=frag_m))
+
+    # ---- expansions (P4-SYSTEM.12 slice b) -------------------------------------------------
+    frag_c = tmp / "t-c.sexp"
+    frag_c.write_text(
+        '(fragment (id "riscv/t-pair") (kind isa-extension)\n'
+        '  (insn (name c.mv) (fixed (1 0 0x2) (15 13 0x4)) (operands rd_n0 c_rs2_n0)))\n')
+    MV = ("(expand (insn c.mv) (to add) (operand (name rd) (value (field rd_n0))) "
+          "(operand (name rs1) (value (lit 0))) (operand (name rs2) (value (field c_rs2_n0))) "
+          "(source \"S §1 — 'C.MV expands into add rd, x0, rs2'\"))\n")
+    arm("GREEN an expansion quoting the sentence that names its base checks",
+        lambda: pair_ok(MV, "1 of 1 declared instruction(s) have checked semantics", frag=frag_c))
+    arm("RED   an expansion whose quoted sentence does not name its base",
+        lambda: pair_bad(MV.replace("(to add)", "(to sub)"), "no quoted sentence in its source names sub",
+                         frag=frag_c))
+    arm("RED   an expansion with neither a base nor its own effect",
+        lambda: pair_bad(MV.replace("(to add) ", ""), "neither expands into a base instruction", frag=frag_c))
+    arm("RED   a binding over a field the instruction does not have",
+        lambda: pair_bad(MV.replace("(value (field c_rs2_n0))", "(value (field rs2_p))"),
+                         "'rs2_p' is not an operand this instruction has", frag=frag_c))
+    ADD = "(set (reg rd) (add (reg rs1) (reg rs2)))"
+    cbase = sem_file("cbase.sem.sexp", {"add": ADD})
+
+    def cfile(name, body):
+        q = tmp / name
+        q.write_text(f'(semantics (fragment "riscv/t-c") (xlen 64)\n{body})')
+        return q
+    arm("GREEN an expansion binding exactly its base rule's operands composes",
+        lambda: composes([cbase, cfile("c-ok.sem.sexp", MV)], "the semantics compose"))
+    arm("RED   an expansion leaving one of its base rule's operands unbound",
+        lambda: refuses([cbase, cfile("c-unbound.sem.sexp", MV.replace(
+            "(operand (name rs1) (value (lit 0))) ", ""))], "unbound: ['rs1']"))
+    arm("RED   an expansion into a base the composition does not define",
+        lambda: refuses([cfile("c-orphan.sem.sexp", MV)], "which no fragment of this composition defines"))
+    arm("RED   duplicate operand bindings are refused",
+        lambda: pair_bad(MV.replace('(operand (name rs1)', '(operand (name rd)'),
+                         "binds operand 'rd' twice", frag=frag_c))
+    arm("RED   an expansion with both a base and its own rule",
+        lambda: pair_bad(MV.replace('(to add)', '(to add) (effect (nop))'),
+                         "AND carries its own effect", frag=frag_c))
+    arm("RED   a base mentioned outside an expansion sentence is insufficient",
+        lambda: pair_bad(MV.replace('C.MV expands into add rd, x0, rs2', 'add is an instruction'),
+                         "no quoted sentence in its source names add", frag=frag_c))
+    arm("RED   a nested register read is not a raw-field mapping",
+        lambda: pair_bad(MV.replace('(value (field c_rs2_n0))',
+                                   '(value (add (reg c_rs2_n0) (lit 0)))'),
+                         "not a raw-field mapping expression", frag=frag_c))
+    arm("RED   an expansion binding a name the base never reads",
+        lambda: refuses([cbase, cfile("c-extra.sem.sexp", MV.replace('(to add)',
+            '(to add) (operand (name unused) (value (lit 0)))'))], "binds nothing: ['unused']"))
+    OWN = MV.replace('(to add) ', '').replace('(source ', f'(effect {ADD}) (source ')
+    arm("GREEN an own-rule expansion reads exactly its bindings",
+        lambda: pair_ok(OWN, "have checked semantics", frag=frag_c))
+    arm("RED   an own-rule expansion leaves an operand unbound",
+        lambda: pair_bad(OWN.replace('(operand (name rs1) (value (lit 0))) ', ''),
+                         "'rs1' is not an operand this instruction has", frag=frag_c))
 
     import shutil
     shutil.rmtree(tmp)

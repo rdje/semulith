@@ -96,7 +96,7 @@ def published(sources_sexp: Path, work_dir: Path) -> dict[str, set[str]]:
 def citations(semantics: Path) -> dict[tuple[str, str], list[str]]:
     form = _sexp.read_file(semantics)[0]
     out: dict[tuple[str, str], list[str]] = {}
-    for s in _sexp.children(form, "sem"):
+    for s in _sexp.children(form, "sem") + _sexp.children(form, "expand"):
         insn = str(_sexp.field(s, "insn", str(semantics)))
         src = str(_sexp.field(s, "source", str(semantics)))
         m = LOCATOR.match(src)
@@ -107,7 +107,7 @@ def citations(semantics: Path) -> dict[tuple[str, str], list[str]]:
                 f"citation a tool cannot check.")
         out.setdefault((m.group(1), m.group(2).rstrip(".")), []).append(insn)
     if not out:
-        raise CitationError(f"{semantics.name}: declares no (sem …) form")
+        raise CitationError(f"{semantics.name}: declares no (sem …) or (expand …) form")
     return out
 
 
@@ -266,6 +266,10 @@ def _selftest() -> int:
 
     arm("GREEN a locator that exists resolves",
         lambda: _eq(check(*fixture(H, sem("S §3.1.2.1"))), 0))
+    arm("GREEN an expansion-only document's locator resolves",
+        lambda: _eq(check(*fixture(H, sem("S §3.1.2.1").replace('(sem (insn', '(expand (insn'))), 0))
+    arm("RED   an expansion-only document's missing section is refused",
+        lambda: _eq(check(*fixture(H, sem("S §3.1.9").replace('(sem (insn', '(expand (insn'))), 1))
     arm("RED   a locator the document does not publish is refused",
         lambda: _eq(check(*fixture(H, sem("S §3.1.9"))), 1))
     arm("RED   a locator one level too deep is refused",

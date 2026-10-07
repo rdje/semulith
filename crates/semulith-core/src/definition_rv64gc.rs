@@ -20,7 +20,7 @@
 //!   `definitions/riscv/d.sexp`  `c0cdc058273c25ac636adb33761aac51956a534c161f17db51e5b34ebe6f0dc0`
 //!   `definitions/riscv/f.sem.sexp`  `fea32f7229d98271567372e618838f725fe9acb66d5f355ee49caf7fc071e49e`
 //!   `definitions/riscv/f.sexp`  `4d3232c6f9c9298c6814fce8c4865ae103a46f4308b7649d7b4a71be02c28a9a`
-//!   `definitions/riscv/m.sem.sexp`  `9f53ca1642ed520be3bf0cd8adc6f13dc4ceb9663575bc95524145d230097df8`
+//!   `definitions/riscv/m.sem.sexp`  `b578d2d25b55f701489671c0b2459e30b614d99c02b5c28735dc8a182179e8f3`
 //!   `definitions/riscv/m.sexp`  `0f48d4348b850b5fcfd296b220409a2a711d8b13075fdea9059b33d67544a386`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
@@ -34,7 +34,7 @@
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`
-//! Generator: `scripts/gen_definition.py` (sha256 `8827d20f555b51457b1e04335508187796cb96b879b2fffefe2a111b4e69484b`)
+//! Generator: `scripts/gen_definition.py` (sha256 `ed5c422d0deb29d4a007fd8fc4bb0f649b39d33fb31cce0115dbbc7e36364555`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -90,7 +90,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "8827d20f555b51457b1e04335508187796cb96b879b2fffefe2a111b4e69484b",
+        sha256: "ed5c422d0deb29d4a007fd8fc4bb0f649b39d33fb31cce0115dbbc7e36364555",
     },
     inputs: &[
         InputPin {
@@ -119,7 +119,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "definitions/riscv/m.sem.sexp",
-            sha256: "9f53ca1642ed520be3bf0cd8adc6f13dc4ceb9663575bc95524145d230097df8",
+            sha256: "b578d2d25b55f701489671c0b2459e30b614d99c02b5c28735dc8a182179e8f3",
         },
         InputPin {
             path: "definitions/riscv/m.sexp",
@@ -3157,7 +3157,7 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x02000033,
         operands: &["rd", "rs1", "rs2"],
         from: "rv_m",
-        source: "RVI-M §11.1.1 — MUL \"places the lower XLEN bits in the destination register\"",
+        source: "RVI-M §11.1.1 — MUL 'places the lower XLEN bits in the destination register'",
         effect: &Sem::Set(
             &Sem::Reg("rd"),
             &Sem::Mul(
@@ -3217,7 +3217,7 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x0200003b,
         operands: &["rd", "rs1", "rs2"],
         from: "rv64_m",
-        source: "RVI-M §11.1.1 — MULW \"multiplies the lower 32 bits of the source registers, placing the sign extension of the lower 32 bits of the result into the destination register\"",
+        source: "RVI-M §11.1.1 — MULW 'multiplies the lower 32 bits of the source registers, placing the sign extension of the lower 32 bits of the result into the destination register'",
         effect: &Sem::Set(
             &Sem::Reg("rd"),
             &Sem::Sext(
@@ -3277,7 +3277,7 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x02006033,
         operands: &["rd", "rs1", "rs2"],
         from: "rv_m",
-        source: "RVI-M §11.1.2 — \"For REM, the sign of a nonzero result equals the sign of the dividend\"; Table 1: a zero divisor yields the dividend, overflow 0 (the operator's wrap)",
+        source: "RVI-M §11.1.2 — 'For REM, the sign of a nonzero result equals the sign of the dividend'; Table 1: a zero divisor yields the dividend, overflow 0 (the operator's wrap)",
         effect: &Sem::If(
             &Sem::Eq(
                 &Sem::Reg("rs2"),
@@ -3327,7 +3327,7 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x0200703b,
         operands: &["rd", "rs1", "rs2"],
         from: "rv64_m",
-        source: "RVI-M §11.1.2 — \"Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero\"",
+        source: "RVI-M §11.1.2 — 'Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero'",
         effect: &Sem::If(
             &Sem::Eq(
                 &Sem::Trunc(
@@ -3373,7 +3373,7 @@ pub static INSNS: &[InsnDef] = &[
         value: 0x0200603b,
         operands: &["rd", "rs1", "rs2"],
         from: "rv64_m",
-        source: "RVI-M §11.1.2 — \"Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero\"",
+        source: "RVI-M §11.1.2 — 'Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero'",
         effect: &Sem::If(
             &Sem::Eq(
                 &Sem::Trunc(

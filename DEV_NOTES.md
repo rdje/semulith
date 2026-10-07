@@ -1,5 +1,27 @@
 # DEV_NOTES.md
 
+## _(2026-10-07)_ — recover the language slice, then prove the emitted table (P4-SYSTEM.12 slice b)
+
+Five uncommitted files survived the crash while the resume pointer still said no work was in
+flight. The task-tree frontier and design brief identified their owner unambiguously: C's
+language slice. The surviving semantics declarations checked, but the generator loaded and
+dropped their expansion metadata. Completion emits the bindings, reserved predicates, lengths
+and specificity order on a temporary C composition; the real unit's C slot stays unbound.
+
+The probe uses hand-written spec-side mappings and immediate limits, then compiles the emitted
+Rust to check those mappings, base effects, C.JALR's pc+2 rule and the decoder. It caught its own
+incorrect assumption that every reserved predicate concerned a zero immediate (C.ADDIW instead
+reserves rd=x0). The existing citation reader refused an expansion-only file because it walked
+only ordinary rules; both forms now share the locator check. C.J's longer scatter list also
+made the generator's inline-array assumption fail rustfmt; the established wrapping threshold
+fixes it without changing the existing tables.
+
+- **Validation:** 37 forms, 104 spec-side checks; compiled decoder 8/8; DEF-GEN 51/51;
+  semantics 46/46; citations 0 findings; workspace, doctrines and all books green. A wrong compact-register
+  offset and reversed specificity order both fail; an unbound base operand refuses generation.
+- Promotion: declined — local reader/emitter adaptations; the permanent probe and controls
+  retain their evidence. The director requested the next handoff checkpoint, so stop before (c).
+
 ## _(2026-10-06)_ — the doc had the right algebra; the code had the field width (P4-SYSTEM.12 slice a2)
 
 `exec.rs`'s module doc says an immediate carries its composed width — 21 for JAL's `jimm20`. The
@@ -642,4 +664,3 @@ Execution of the `.4` brief's checkpoint (d) measured:
   walk faulted on schedule. The fix is the honest one (move the data to
   base+0x4000), and the failure mode is now a named audit step: a guest's data
   addresses and its page-table addresses live in one map.
-

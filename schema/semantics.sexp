@@ -52,8 +52,9 @@
 (construct (name semantics)
   (field (name fragment) (type string))
   (field (name xlen) (type integer))
-  (field (name sem) (type form) (head sem) (repeat yes))
-  (field (name refines) (type form) (head refines) (repeat yes) (optional yes)))
+  (field (name sem) (type form) (head sem) (repeat yes) (optional yes))
+  (field (name refines) (type form) (head refines) (repeat yes) (optional yes))
+  (field (name expand) (type form) (head expand) (repeat yes) (optional yes)))
 
 (construct (name refines)
   (field (name insn) (type string)))
@@ -64,6 +65,31 @@
   (field (name effect) (type form)
          (head set) (head set-pc) (head seq) (head nop) (head if) (head store) (head trap)
          (head csr-write) (head trap-deliver) (head xret) (head tlb-invalidate)))
+
+;; ---- expansions (P4-SYSTEM.12 slice b) --------------------------------------------------------
+;; A compressed instruction is DECLARED BY ITS EXPANSION — RVI-C §27.1.1's constraint ("each RVC
+;; instruction expands into a single 32-bit instruction"), made the representation: `to` names
+;; the base instruction it expands into, and each `operand` binds one operand the BASE RULE reads
+;; (its own names — rd, rs1, rs2, imm12, bimm12, jimm20, imm20, shamt) to an expression over the
+;; compressed instruction's fields. The engine runs the base rule over those bindings. The source
+;; quotes the chapter's own "expands into" sentence, which names the base. `reserved` is a
+;; condition under which the code point is RESERVED (illegal instruction) — stated from the
+;; chapter's sentences, never inferred from upstream's field names (most of those name HINTs,
+;; which simply execute their expansion). An expansion with no `to` carries its own `effect` over
+;; its bindings: C.JALR, the one the chapter says "does not expand exactly" (§27.1.4).
+(construct (name expand)
+  (field (name insn) (type symbol))
+  (field (name to) (type symbol) (optional yes))
+  (field (name operand) (type form) (head operand) (repeat yes) (optional yes))
+  (field (name reserved) (type form) (optional yes) (head eq) (head ne) (head or) (head and))
+  (field (name effect) (type form) (optional yes)
+         (head set) (head set-pc) (head seq) (head nop) (head if) (head store) (head trap))
+  (field (name source) (type string)))
+
+(construct (name operand)
+  (field (name name) (type symbol))
+  (field (name value) (type form) (head field) (head imm) (head lit) (head add) (head or)
+         (head zext) (head sext) (head bits) (head trunc)))
 
 ;; ---- values ---------------------------------------------------------------------------------
 (operator (name reg) (fixed 1) (arg symbol))

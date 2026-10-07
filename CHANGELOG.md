@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0081 (leaf P4-SYSTEM.12, slice b) — recover C's language slice
+
+- Recovered the five unfinished files after the machine/session crash. `expand` declares
+  36 named base expansions and C.JALR's own pc+2 rule, with exact operand mappings and
+  reserved predicates quoted from RVI-C. The semantics checker refuses malformed bindings;
+  the generator emits C metadata only with C composed and decodes by fixed-bit specificity.
+- `probe_c_expansions.py`: 37 forms, 104 spec-side checks; compiled mappings/effects and
+  decoder (8/8). A wrong register offset and reversed decode order are caught. DEF-GEN
+  51/51 controls; semantics 46/46; citation reader extended to expansions; 0 quote findings.
+  M's existing quoted sentences now use the quote checker's spelling. Existing executable
+  tables unchanged; `make check`, `make gate`, all books green; handoff OK.
+- Tracking and book synchronized. Handoff before slice (c), the engine, as requested.
+
 ## SEMULITH-P4-0080 (leaf P4-SYSTEM.12, slice a2) — a found defect: JAL's offset sign, both engines
 
 - Both extractors pushed a scattered immediate at its FIELD width; `jimm20` holds imm[20:1] in
@@ -889,4 +902,3 @@
   gate` all green (DERIVED-COUNTS 429 unchanged). Next: slice (b) — pending
   evaluation + interrupt-caused delivery (both vector modes) + the acceptance
   corpus.
-

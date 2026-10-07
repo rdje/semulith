@@ -343,6 +343,48 @@ EOF
   arm "RED an M operator without riscv/m composed is refused, named" "$rc" 2 "$out" "does not compose riscv/m"
   cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
 
+  # ---- C expansions (P4-SYSTEM.12 slice b) -------------------------------------------------
+  # C stays unbound in the real unit. Its lowering is proved on a disposable composition,
+  # including compiled Rust decoding and independent operand/immediate-limit expectations.
+  cp definitions/riscv/*.sexp "$t/gc/definitions/riscv/"
+  sed 's/(slot (id c) (requires "riscv\/c"))/(extensions "riscv\/c")/' "$ENCODING_GC" \
+    > "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
+  CGEN() { python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+      --state "$STATE_GC" --out "$t/c-definition.rs"; }
+  CPROBE() { python3 scripts/probe_c_expansions.py "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+      "$t/c-definition.rs"; }
+  out="$(CGEN 2>&1)"; rc=$?
+  arm "GREEN the full composition with C emits expansion metadata" "$rc" 0 "$out" "wrote"
+  out="$(CPROBE 2>&1)"; rc=$?
+  [ "$rc" -ne 0 ] || printf '%s\n' "$out"
+  arm "GREEN C's spec-side mappings and compiled specialization decoder" "$rc" 0 "$out" "compiled decoder 8/8"
+  python3 - "$t/c-definition.rs" <<'PY'
+import re, sys
+from pathlib import Path
+p = Path(sys.argv[1]); text = p.read_text()
+begin = text.index('pub static INSNS: &[InsnDef] = &[\n') + len('pub static INSNS: &[InsnDef] = &[\n')
+end = text.index('\n];', begin)
+rows = re.split(r'(?=^    InsnDef \{)', text[begin:end], flags=re.M)
+p.write_text(text[:begin] + ''.join(reversed([row for row in rows if row])) + text[end:])
+PY
+  out="$(CPROBE 2>&1)"; rc=$?
+  arm "RED reversing specificity makes the compiled decoder fail" "$rc" 1 "$out" "specialization_decode"
+  # RED: the mapper's spec-side expectation catches a plausible but wrong compact-register
+  # offset. Generation itself succeeds: this tests correctness beyond shape/arity checks.
+  sed 's/(field rd_p) (lit 8)/(field rd_p) (lit 9)/g' definitions/riscv/c.sem.sexp \
+    > "$t/gc/definitions/riscv/c.sem.sexp"
+  out="$(CGEN 2>&1)"; rc=$?
+  arm "GREEN a well-formed wrong C mapping still generates" "$rc" 0 "$out" "wrote"
+  out="$(CPROBE 2>&1)"; rc=$?
+  arm "RED a wrong compact-register mapping is caught independently" "$rc" 1 "$out" "c.addi4spn: rd=16, expected 15"
+  cp definitions/riscv/c.sem.sexp "$t/gc/definitions/riscv/c.sem.sexp"
+  # RED: exact operand binding is re-judged at generation, not trusted from SEMANTICS.
+  sed 's/(operand (name rd) (value (lit 0))) (operand (name jimm20)/(operand (name jimm20)/' \
+    definitions/riscv/c.sem.sexp > "$t/gc/definitions/riscv/c.sem.sexp"
+  out="$(CGEN 2>&1)"; rc=$?
+  arm "RED an unbound base operand is refused by generation" "$rc" 2 "$out" "c.j: binds"
+  cp definitions/riscv/c.sem.sexp "$t/gc/definitions/riscv/c.sem.sexp"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \
