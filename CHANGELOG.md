@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0005 (leaf CI-RECOVERY.4, slice a) — handoff evidence
+
+- Record the census refusal: Kimi holds two read-only AGENTS.md handles. Push and
+  reader closure/exemption require director decisions; neither is assumed. Local
+  repairs remain verified; hosted CI and handoff resolution remain open.
+
 ## SEMULITH-CI-0004 (leaf CI-RECOVERY.3, slice b) — actual portability confirmation
 
 - Native and big-endian Miri each pass 153/153 from the fixed script snapshot. Full
@@ -927,4 +933,3 @@
   guests re-assemble byte-identical. The slot STAYS declared, the census STAYS
   87, no corpus, no Rust. `make check` rc=0, `make gate` green (DERIVED-COUNTS
   430 unchanged).
-

@@ -61,10 +61,14 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Commit: SEMULITH-CI-0003 (slice a), SEMULITH-CI-0004 (confirmation/closure)
 
 - ID: `CI-RECOVERY.4` — local/hosted evidence and follow-through
-  Status: `proposed`
+  Status: `active`
   Goal: run make ci after all repairs, record toolchain differences and omitted/absent
   legs honestly, and observe all workflows after the next cadence/approved push.
   Acceptance: no remote-green claim from local checks; failures owned until verified.
+  Handoff subtask: own the observed Kimi reader census refusal before updating the
+  resume pointer/book; resolve by director-led closure or an explicitly sanctioned
+  exemption, then rerun the actual census. Never kill an unrelated editor or invent
+  its exemption. This evidence-recording slice does not close the hosted obligation.
   Verification: pending
   Commit: pending
 
@@ -72,7 +76,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.4` | `proposed` | local repairs verified; request permitted push and observe all hosted workflows |
+| 1 | `CI-RECOVERY.4` | `active` | approval/census decisions pending; then permitted push and hosted verification |
 
 ## Decisions
 
@@ -96,15 +100,43 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 ## Open Questions
 
 - Director approval required for an exceptional push to verify the committed repairs on GitHub.
-  At c769d93: PUSH-CADENCE REFUSED, 17 ahead vs cadence 300. COMMIT.md mandates the
+  At fc21b8f: 18 ahead vs cadence 300. COMMIT.md mandates the
   scripts/approved_push.sh approval act; archive approval does not authorize this push.
   All repair code, two actual Miri targets and full local CI are ready for that decision.
+- Handoff census at fc21b8f returns rc=1 for Kimi Code PID 1292. Targeted public
+  lsof reports descriptors 55 and 59, both access mode `r`, on AGENTS.md; no other
+  repository handles were reported for that PID. This establishes an open reader,
+  not a project verification job or a claim about the app's other activity. The
+  existing census intentionally counts every repository file handle. Ask the
+  director to close Kimi or sanction its process per doctrine/sanctioned_processes.tsv
+  before handoff; no exemption or process termination has been performed.
 
 ## Blockers
 
 - Hosted result waits for a permitted push; local implementation and focused verification can proceed.
+- The handoff census remains refused until Kimi closes or the director explicitly
+  sanctions its process. Owned by `.4` with priority before handoff.
 
 ## Acceptance Checklist
+
+`.4` evidence-recording slice (a), 2026-10-08, SEMULITH-CI-0005; leaf remains active:
+
+- [x] **ROOT CAUSE** — actual unsandboxed handoff census rc=1 identifies Kimi PID
+  1292; targeted lsof reports two read-only AGENTS.md handles. The documented
+  property-based census counts these handles; no missing verification result remains.
+- [x] **ADDRESSED (record only)** — own the approval/census resolution in `.4`,
+  publish the measured modes and specific director decisions in Open Questions,
+  and update the resume pointer and book. Questions requested; neither assumed.
+  `FRONTIER-SYNC: ok (33 tree(s) mirrored by docs/TASK_TREE.md)`; make book rc=0.
+- [x] **NO REGRESSION** — `git diff --name-only fc21b8f` contains documentation
+  only; no workflow, Rust, census or exemption-registry change. The prior local CI
+  and both Miri receipts apply to the unchanged implementation; hosted remains pending.
+- [x] **FIX / LOCKSTEP** — docs/frontier, MEMORY, CHANGELOG, DEV_NOTES and book
+  record the handoff boundary. No clean-handoff assertion while the census refuses.
+  promotion: declined (session-specific handoff evidence; standing approval rules already govern the resolution).
+
+The first hook refused this new record's ADDRESSED box because it omitted its tool
+output. Added the actual frontier/book results inside that box; no checker change.
 
 `.3` slice (b), 2026-10-08, SEMULITH-CI-0004 closes the parent:
 
@@ -226,6 +258,8 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0005 (leaf CI-RECOVERY.4): record the reader census blocker before hosted verification` — evidence recording only, both director decisions pending.
 
 `SEMULITH-CI-0004 (leaf CI-RECOVERY.3): confirm both Miri targets and the full Rust 1.99 local CI suite`.
 

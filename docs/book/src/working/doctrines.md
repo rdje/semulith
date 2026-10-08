@@ -23,6 +23,13 @@ CI-RECOVERY.3 repairs cold output/provisioning paths and truthful portability ve
 Its native and big-endian interpreted core runs each pass all 153 tests; full local CI
 also passes on Rust 1.99. Hosted green still requires a successful run on a permitted push. A local green result alone cannot close that obligation.
 
+Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
+open repository file handles, including read-only editor handles. A refused census
+remains visible even when verification jobs have finished. Closing another editor
+requires appropriate authority; a standing exemption requires the director's ruling
+in `doctrine/sanctioned_processes.tsv`. An exemption changes the handoff census only;
+tracked-content gates remain enforced.
+
 ## The universal registry
 
 These ship with the discipline spine and are project-neutral:

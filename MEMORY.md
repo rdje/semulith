@@ -18,10 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `CI-RECOVERY` (3/4 — local repairs verified; native/endian Miri 153/153 each and Rust 1.99 full CI green; hosted evidence next) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-08`, `SEMULITH-AC-0060`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (11/18 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and nine leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), the environment contract v1 (`.9`), the CPU-SYSTEM report (`.10`, `incomplete`, 9/10 axes open), and M (`.11`)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `CI-RECOVERY.4` — obtain director approval for the exceptional
-  scripts/approved_push.sh act, then observe rust/doctrines/portability on the pushed SHA.
+- next_action: `CI-RECOVERY.4` — resolve the pending director decisions: exceptional
+  scripts/approved_push.sh act and Kimi reader closure/exemption; then observe all hosted workflows.
   Archive sealed; P4.12 e1d C/count staging follows CI recovery.
 - in_flight_uncommitted: none; all local verification jobs finished.
 - blockers: hosted CI remains failed on e1fe379; repairs committed and locally verified;
-  hosted verification waits for the director-approved exceptional push/run.
+  hosted verification waits for the director-approved exceptional push/run. Handoff census
+  rc=1: Kimi holds two read-only AGENTS.md handles; closure or sanctioned exemption pending.
   0 open upstream issues (`scripts/upstream_exposure.py`; submodules remain read-only).

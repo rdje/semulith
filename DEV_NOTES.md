@@ -1,5 +1,14 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — record the handoff reader without inventing authority (CI-RECOVERY.4 a)
+
+The actual process census refuses Kimi Code PID 1292. Targeted lsof identifies two
+read-only AGENTS.md descriptors, with no other repository handles for that PID.
+The census counts any repository handle, so this result is expected under its
+contract. No project verification job remains. Own closure/exemption with .4;
+only the director may sanction a process, and another editor is not ours to kill.
+Exceptional push approval is separately pending. Promotion declined in the receipt.
+
 ## _(2026-10-08)_ — confirm the repaired pipeline before publication (CI-RECOVERY.3 b)
 
 Immutable-script native and powerpc64 Miri runs each execute all 153 core tests, zero
@@ -653,4 +662,3 @@ refuses by name (fired RED once). And the book's P4 chapter carried a duplicated
   restore; INTERACTION-MATRIX ok; `make check` + `make gate` green.
 - Promotion: PROMOTED — docs/knowledge/a-legalization-rule-is-a-claim-the-spec-must-grant.md
   + INDEX (the map regenerated).
-
