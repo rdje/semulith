@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0009 (leaf CI-RECOVERY.4, slice e) — cold parcel probe owns its CSR inputs
+
+- Copy profile/state metadata into the temporary composition and encode the valid
+  unmodeled CSR by address. A tracked-only cold snapshot now passes without external
+  reference data; two regressions are refused. GUEST-GEN adds that permanent guard:
+  104/104 controls, 600 total. No corpus or engine change; hosted confirmation next.
+
 ## SEMULITH-CI-0008 (leaf CI-RECOVERY.4, slice d) — retain the hosted guest refusal diagnostic
 
 - Hosted Rust and native manifest agreement pass; doctrines fails a guest self-test

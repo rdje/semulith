@@ -11,6 +11,7 @@ import argparse
 import contextlib
 import importlib.util
 import io
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -32,6 +33,8 @@ def check(author, root):
     unit = root / 'profiles/rv64gc-lab-v0'
     unit.mkdir(parents=True)
     shutil.copytree(REPO / 'definitions', root / 'definitions')
+    for name in ('profile.sexp', 'state.sexp'):
+        shutil.copyfile(REPO / 'profiles/rv64gc-lab-v0' / name, unit / name)
     source = (REPO / 'profiles/rv64gc-lab-v0/encoding.sexp').read_text()
     source = source.replace('(slot (id c) (requires "riscv/c"))', '(extensions "riscv/c")')
     encoding = unit / 'encoding.sexp'
@@ -125,7 +128,9 @@ c.nop
     assert [st.fetch for st in run.steps] == [2, 0, 0] and run.hart.waiting
     assert [st.insn for st in run.steps] == ['wfi', '<halted>', '<halted>']
     assert (run.hart.time, run.hart.instret, run.hart.pc) == (3, 1, Q.ENTRY + 4)
-    unknown = guest('unknown', 'csrrs x1, mvendorid, x0\n')  # real CSR, outside this bounded author
+    # mvendorid (0xf11) is real but outside this unit's declared CSR vocabulary.
+    # Use its explicit spec-side address; resolving that name would need an external table.
+    unknown = guest('unknown', 'csrrs x1, 0xf11, x0\n')
     try:
         author.derive_parcel_guest(unknown, asm, 1)
     except author.Refusal as exc:
@@ -155,14 +160,46 @@ c.nop
     print(f'GC parcel guest probe: mixed bytes, budgets, visibility and head boundaries passed; 5 legacy repairs / {checked} steps')
 
 
+def check_cold():
+    """Run the public probe from tracked inputs without the local reference cache."""
+    parent = REPO / 'target/p4-system-12'
+    parent.mkdir(parents=True, exist_ok=True)
+    paths = subprocess.check_output(
+        ['git', 'ls-files', '-z', '--', 'scripts', 'definitions', 'profiles', 'schema'],
+        cwd=REPO).decode().split('\0')
+    with tempfile.TemporaryDirectory(prefix='gc-parcel-cold-', dir=parent) as td:
+        root = Path(td)
+        for name in filter(None, paths):
+            source = REPO / name
+            if source.is_symlink() or not source.is_file():
+                raise RuntimeError(f'cold probe requires a regular tracked input: {name}')
+            dest = root / name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, dest)
+        scratch = root / 'target/tmp'
+        scratch.mkdir(parents=True)
+        env = dict(os.environ, TMPDIR=str(scratch),
+                   PYTHONPYCACHEPREFIX=str(root / 'target/python-pycache'))
+        result = subprocess.run(
+            [sys.executable, str(root / 'scripts/probe_gc_parcel_guest.py')],
+            cwd=root, env=env)
+        if result.returncode:
+            return result.returncode
+    print('GC parcel cold probe: tracked-only inputs and no reference cache passed')
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     control = parser.add_mutually_exclusive_group()
+    control.add_argument('--cold', action='store_true')
     control.add_argument('--author-revision')
     control.add_argument('--mutation', choices=['byte-directives', 'padded-image', 'source-end',
                                               'fetch-count', 'fault-retirement', 'head-pending',
                                               'code-visibility', 'unknown-valid'])
     args = parser.parse_args()
+    if args.cold:
+        return check_cold()
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='gc-parcel-guest-', dir=parent) as td:

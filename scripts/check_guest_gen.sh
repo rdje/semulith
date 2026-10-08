@@ -338,6 +338,8 @@ PY
   # d3d2: exact byte guests have explicit boundary budgets and fresh memory fetches.
   out="$(python3 scripts/probe_gc_parcel_guest.py 2>&1)"; rc=$?
   arm "GREEN byte guest budgets, visibility and head boundaries" "$rc" 0 "$out" "5 legacy repairs / 176 steps"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --cold 2>&1)"; rc=$?
+  arm "GREEN parcel author controls use only tracked inputs" "$rc" 0 "$out" "tracked-only inputs and no reference cache passed"
   out="$(python3 scripts/probe_gc_parcel_guest.py --mutation byte-directives 2>&1)"; rc=$?
   arm "RED source directives follow byte PCs" "$rc" 1 "$out" "directives lost their byte PCs"
   out="$(python3 scripts/probe_gc_parcel_guest.py --mutation padded-image 2>&1)"; rc=$?

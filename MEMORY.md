@@ -21,12 +21,13 @@
 - next_action: `CI-RECOVERY.4` — CI-repair pushes now approved without asking again:
   decision_ci-recovery-push-approval. Push f4364bc completed; observe exact-SHA runs:
   rust 37800114021, doctrines 37800113792, portability 37800113741 (tree has URLs).
-  doctrines failed at GUEST-GEN self-test; inner diagnostic was suppressed. Visibility
-  repair next; rust/native hosts/manifest agreement pass, Miri still running. Repair/re-push
+  doctrines failed at GUEST-GEN self-test. Cold parcel probe omitted CSR metadata;
+  repaired locally with a permanent tracked-only guard. Push this fix; rust/native hosts/
+  manifest agreement and native Miri pass; endian still running on the first push. Repair/re-push
   as needed; authorization expires at all-three-green, then cadence resumes.
   Archive sealed; P4.12 e1d C/count staging follows CI recovery.
-- in_flight_uncommitted: none at commit; hosted Miri/endian running at f4364bc.
-- blockers: actual hosted GUEST-GEN self-test cause unidentified; diagnostic repair is owned.
+- in_flight_uncommitted: none at commit; hosted endian running at f4364bc.
+- blockers: cold fixture fix awaits hosted confirmation; scoped push approval remains active.
   Handoff census
   rc=1: Kimi holds two read-only AGENTS.md handles; closure or sanctioned exemption pending.
   0 open upstream issues (`scripts/upstream_exposure.py`; submodules remain read-only).

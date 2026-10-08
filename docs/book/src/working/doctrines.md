@@ -33,13 +33,21 @@ The first authorized recovery push is `f4364bc`: both required local full suites
 passed, and the approval record traveled in that commit. Hosted Rust, both native
 portability hosts and their manifest agreement pass. The doctrine job provisions
 mdBook, then refuses a GUEST-GEN self-test whose diagnostic was hidden by its wrapper;
-interpreted portability is still running. CI-RECOVERY.4 owns the unresolved refusal
+native Miri passes and big-endian interpretation is still running. CI-RECOVERY.4 owns the unresolved refusal
 and exact run URLs. Hosted success remains pending.
 
 GUEST-GEN now retains the full self-test output in `target/guest-gen/self-test.log`,
 prints the interpreter version and a bounded tail on failure, and keeps its refusal
 exit code. A failed doctrine job publishes that log as an artifact. The local controls
-still pass; this visibility repair does not assert that the hosted cause is fixed.
+still pass; the visibility repair by itself does not fix the hosted cause.
+
+A tracked-only cold reproduction identifies the missing input: the parcel probe's
+temporary unit copied its encoding but omitted its profile and CSR state. Copying
+those owners removes its dependency on a warm external CSR table; the deliberately
+unmodeled CSR uses its explicit address. `probe_gc_parcel_guest.py --cold` runs the
+public probe from a temporary snapshot of tracked inputs without reference caches.
+Its permanent GUEST-GEN control passes locally, alongside the prior mutations;
+hosted confirmation still requires the next approved recovery push.
 
 Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
 open repository file handles, including read-only editor handles. A refused census

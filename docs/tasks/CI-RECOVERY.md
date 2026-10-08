@@ -90,6 +90,19 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   in doctrines.yml before edits. Verify a forced failure remains rc=2 and retains
   its diagnostic, then push this visibility repair; continue through the actual
   hosted root cause without claiming this diagnostic change repairs that cause.
+  Root identified before the diagnostic push: a tracked-only cold fixture reproduces
+  the parcel probe failure at named mtvec lookup. probe_gc_parcel_guest.py copies
+  encoding/definitions into a temporary unit but omits state.sexp/profile.sexp;
+  Assembler therefore falls back to absent target/refs/riscv-opcodes/csrs.csv.
+  Own the fixture's metadata copy and explicit numeric address for the deliberately
+  unmodeled mvendorid fixture before editing. Priority: fix now under `.4`, with cold
+  baseline/mutations, native 103/103 and full CI before the already authorized push.
+  Never provision an untracked oracle or change corpus expectations to hide this.
+  Permanent guard: add --cold to the parcel probe, running its public default CLI
+  from a temporary tracked-only source snapshot with no reference cache, and one
+  GUEST-GEN GREEN arm for it. Own the updated derived control count and live/book
+  mirrors before edits. Copy only regular project inputs; no Git repository is
+  created and no external cache is changed. Existing eight mutation controls remain.
   Verification: pending
   Commit: pending
 
@@ -138,12 +151,40 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 - Hosted result pending the authorized recorded push and exact-SHA workflow runs.
 - doctrines run 37800113792 failed its GUEST-GEN self-test; inner output was
-  suppressed by the wrapper. Diagnose and repair before recovery closure; rust,
+  suppressed by the wrapper. Tracked-only fixture reproduces missing CSR-state
+  metadata in the parcel probe; fix and verify on GitHub before closure. Rust,
   both native portability hosts and manifest agreement already pass.
 - The handoff census remains refused until Kimi closes or the director explicitly
   sanctions its process. Owned by `.4` with priority before handoff.
 
 ## Acceptance Checklist
+
+`.4` cold-input repair slice (e), 2026-10-08, SEMULITH-CI-0009; hosted confirmation pending:
+
+- [x] **ROOT CAUSE** — tracked-only parcel probe reaches named mtvec lookup and
+  raises AsmError for absent target/refs/riscv-opcodes/csrs.csv. The temporary unit
+  omitted its state/profile owners; Assembler's documented fallback hid this on
+  the warm host. Removing metadata from the repaired cold control reproduces rc=1
+  and mtvec; restoring external mvendorid spelling also gives rc=1 by name.
+  Its numeric 0xf11 address is verified in pinned RVP-CSR's machine-info table
+  (priv-csrs.html:1540–1556); primary SHA matches 330a17314ef803231955a915748176e5175fc773469f25a8c6b5ae922c9df425.
+- [x] **ADDRESSED** — copy profile.sexp/state.sexp into the private full composition,
+  use the explicit address for its unmodeled-CSR case, and run public --cold from
+  a temporary tracked-only snapshot. No Git repo/external cache is created or changed.
+  `GC parcel cold probe: tracked-only inputs and no reference cache passed`, rc=0
+  on Python 3.14 and 3.11. Two regression controls above refuse rc=1; the permanent
+  GUEST-GEN GREEN arm exercises the same cold CLI on every enforcer run.
+- [x] **NO REGRESSION** — Rust 1.99 actual guest gate rc=0, stored
+  `GUEST-GEN --self-test: 104 pass / 0 fail`; all prior eight parcel mutations remain.
+  Both generated fixtures match; 42 owned texts byte-identical; 176 legacy steps
+  retain their writes/counts. `git diff --name-only -- profiles definitions crates`
+  is empty. `DERIVED-COUNTS: ok (5 derived count claim(s) re-derived)`; make book rc=0.
+- [x] **FIX / LOCKSTEP** — probe/guard, LIVE_STATUS 600 controls, MEMORY/logs/book
+  and this receipt. P4 remains 11/18, C unbound; 38 doctrines / 37 routes unchanged.
+  Original cold root evidence is retained; a first negative harness attempt outside
+  a Git root is invalid (empty inventory). Corrected controls supply the real tracked
+  inventory through a public Git stub and assert actual CSR diagnoses, not any failure.
+  promotion: declined (specific temporary-fixture repair; permanent cold control and scoped evidence preserve the lesson).
 
 `.4` diagnostic slice (d), 2026-10-08, SEMULITH-CI-0008; actual hosted cause remains open:
 
@@ -337,6 +378,11 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Verification Log
 
+Cold-input receipts under target/ci-recovery/: guest-cold-parcel-before.log has the
+mtvec failure; guest-cold-parcel-after.log and guest-permanent-cold-green.log pass.
+guest-cold-missing-metadata-red.log / guest-cold-external-csr-name-red.log each rc=1;
+guest-cold-python311-green.log rc=0; guest-cold-fixed-green.log rc=0, 104/104.
+
 Diagnostic checks: guest-forced-failure.log rc=2, guest-forced-selftest.log retains
 full sentinel; guest-diagnostic-green.log rc=0, target/guest-gen/self-test.log
 103/103. guest-selftest-python311-before.log is also 103/103. All under target/.
@@ -357,6 +403,8 @@ All three hosted runs started at 2026-10-08T15:21:39Z on that exact SHA; initial
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0009 (leaf CI-RECOVERY.4): make parcel author controls independent of warm CSR reference data` — local cold reproduction/fix; hosted next.
 
 `SEMULITH-CI-0008 (leaf CI-RECOVERY.4): preserve failed guest self-test diagnostics on GitHub` — visibility fixed, underlying hosted cause still open.
 

@@ -1,5 +1,15 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — warm reference data masked an incomplete fixture (CI-RECOVERY.4 e)
+
+A tracked-only snapshot reproduces the parcel probe's mtvec failure: its temporary
+unit omitted state/profile metadata and used the local CSR CSV fallback. Copy the
+unit owners; use 0xf11 for the intentionally unmodeled mvendorid case. --cold runs
+the public probe from a temporary tracked-only snapshot, with local temp/bytecode
+stores and no external reference data. Missing metadata and external-name controls
+both fail by their CSR diagnosis; native 104/104 passes. All 42 owned records and
+the 176 legacy observations remain exact. Promotion declined in the receipt.
+
 ## _(2026-10-08)_ — a refused self-test must expose its cause (CI-RECOVERY.4 d)
 
 The repaired hosted doctrine job provisions mdBook, then refuses GUEST-GEN. Its
@@ -641,4 +651,3 @@ the sentence (§20.1.2) — the refusal names the cure.
   doctrines; `make gate` green.
 - Promotion: declined — the lesson is mechanized: the CITATION-QUOTES row in
   DOCTRINE_ENFORCEMENT.md is its retrievable statement, and the gate enforces it.
-
