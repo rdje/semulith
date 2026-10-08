@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d3d1; byte guest budgets and production bind next)
+**Status:** Underway (slices a–d; staged corpus and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -156,6 +156,24 @@ mutations fail on these guards and fetch schedules. All 97 earlier emitted texts
 the 42 owned records, remain byte-identical; this component still leaves the older guest
 execution route in place until the next slice explicitly adds byte execution and budgets.
 
-The production profile still declares C unbound. Explicit guest budgets follow; the
-specification-derived corpus and C bind land together, then the matched Sail experiment.
-These probes are finite component evidence.
+Slice (d3d2) integrates those components into an explicit byte guest route. The caller
+declares a boundary budget. Leaving the source, entering a handler, delivering an
+interrupt or waiting cannot silently shorten it. The exact image lives in memory, whose
+current bytes supply each instruction; source annotations follow byte PCs. A word store
+that patches compressed code is visible to the next fetch. Actual parcel attempts give
+the request count, and fault/delivery/wait boundaries never retire. Unknown valid
+instruction vocabulary still refuses instead of becoming a fabricated illegal trap.
+
+Five earlier fetch/end gaps now derive all 176 committed architectural observations:
+the zero parcel after a program ends, two terminal target fetch faults, a translated
+straddle and a fetch-permission handler. Their budgets were declared before this
+experiment. Their independently derived parcel counts are 5, 5, 7, 104 and 226; the old
+word-request counts remain historical until binding changes the declared extent. Eight
+mutations fail on byte annotations, padding, source termination, counts, retirement,
+interrupt ordering, code visibility and unknown-valid refusal. The historical word route
+still reproduces all 97 earlier texts, including its 42 owned records.
+
+The production profile still declares C unbound. The staged specification-derived corpus
+and count derivation precede the C bind, then the matched Sail experiment. These probes
+are finite component evidence. The [assembler chapter](../../annex/assembler.md) documents
+the explicit authoring command and its budget semantics.

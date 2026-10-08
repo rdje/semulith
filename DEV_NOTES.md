@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — source length is not a guest budget (P4-SYSTEM.12 d3d2)
+
+The independent author has an explicit parcel route, selected by --parcels --steps N.
+It loads exact sized units, fetches current memory each step, and keys directives by
+byte PC. The declared 1..10000 boundary budget governs source run-off, faults, pending
+interrupt delivery and halted ticks; source end comments cannot shorten it. Refused
+fetches count, failed translations do not, and delivery/wait boundaries never retire.
+A store patch is visible to the next fetch, including a compressed unit in a word store.
+Known reserved C/wider-prefix bits follow the laboratory diagnostic; unknown valid
+vocabulary still refuses. All requested derivations finish before any record is written.
+
+- Validation: hand mixed image/PC/writes/annotations, repeated spellings, source run-off,
+  upper-parcel refusal, full ILEN diagnostics, code patch, pending-before-fetch, halted
+  ticks, retirement and bounded-budget/refused-batch controls. Eight mutations RED;
+  parent 740efda RED (API absent). GUEST-GEN 61/61; 97 prior texts and 42 refusals exact;
+  all 42 owned records exact. Newly emitted documents validate against the schema.
+- Five already-owned gaps repaired on the new route using budgets declared first:
+  dir-runoff 3 steps/5 parcels, fault-fetch 3/5, it-prio-jump 4/7, sv39-straddle 52/104,
+  sv39-perm-rwx 114/226. All 176 committed architectural observations match. Parcel
+  counts are independently derived and differ from the old word-request convention;
+  old records stay untouched until the C bind changes their declared extent together.
+- Promotion: declined — permanent byte/budget/visibility fixtures and eight mutations
+  retain this bounded authoring lesson. Next: staged corpus/count derivation, then bind.
+
 ## _(2026-10-08)_ — independent parcel fetch needs a correct walk (P4-SYSTEM.12 d3d1)
 
 The author now fetches from memory under the selected C/ILEN=32 profile. Each required

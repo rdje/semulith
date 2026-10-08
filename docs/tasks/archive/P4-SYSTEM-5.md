@@ -442,3 +442,38 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   no ceiling raised. Books and commit doctrine gate must pass. promotion: declined
   (the permanent engine probes and short-ILEN control retain this local fetch lesson).
 
+
+`P4-SYSTEM.12` slice (d3d1) — independent translated parcel fetch (`2026-10-08`, `SEMULITH-P4-0090`):
+
+- [x] **REPRODUCE / ISSUE** — pure Hart fixtures reproduce four walker defects on
+  f8f213c: inconsistent sign extension translates, PTE bit 63 translates, bottom pointer
+  refuses, and MPRV+MPP=S data bypasses translation. The new odd-PC fetch fixture also
+  catches mepc=0x80000001 instead of 0x80000000. Permanent parent probe rc=1 (canonical
+  guard); five defects and their immediate ownership recorded above before each repair.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show f8f213c:scripts/derive_rv64gc_expectations.py`
+  locates walk's upper-only sign check, absent PTE reserved guards, unconditional M bypass
+  and pointer-loop Refusal; `rg -n 'mepc.*self.pc|sepc.*self.pc'` finds four unmasked delivery
+  assignments. Pinned supervisor.html 2660, 2695, 2930, 2986–2996 defines non-leaf/high-bit/
+  canonical rules; machine.html 1372–1380/1425 defines effective MPRV data privilege.
+  machine.html 2951 and supervisor.html 1131 require EPC bit zero always clear.
+- [x] **FIX** — Hart.fetch_instruction walks each required two-byte parcel before its
+  memory request, records actual attempts, delivers start EPC/failing-parcel VA, and
+  retains all ILEN=32 bits for wider prefixes. Compressed neighbors untouched, unwritten
+  region bytes zero, no time/retire tick. Walk repairs sign, reserved high/non-leaf bits,
+  bottom pointer and effective MPRV/SUM/U; M/S exception/interrupt EPC clears bit zero.
+  Guest execution remains explicitly the historical word route until d3d2.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_fetch.py` rc=0: both canonical
+  signs; all ten reserved high bits × four kinds; RSW/G; non-leaf U/A/D, bottom chains;
+  effective MPRV/SUM/U; region/page-end parcels; wider ILEN prefixes; physical/walk refusals;
+  exact logs, fault VA/start EPC, M/S/interrupt alignment and Svade no-write controls pass.
+  All 9 mutations are behavioral RED with named assertions; parent f8f213c is RED.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 52 pass / 0 fail;
+  all 42 owned records exact. Complete legacy census: 97/97 prior emitted texts exact,
+  42 refusals unchanged, no new/changed outputs or historical record writes. Prior author
+  SUM/MXR/U mutations still discriminate after the effective-privilege seam update.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 530 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, C and assembler book.
+  Completed d3c/d3d0 receipts archived byte-verbatim to part 5 (reconstruction asserted);
+  no ceiling raised. Books/commit doctrine gate must pass; derived counts enumerate 530.
+  promotion: declined (permanent fetch/PTE fixtures and nine mutations retain this lesson).
+

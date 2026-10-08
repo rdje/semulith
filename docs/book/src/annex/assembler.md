@@ -211,8 +211,33 @@ Other legacy records keep their original producers and prose; this is an explici
 author, with unknown instruction shapes refused by name. Reserved OP/shift upper bits refuse
 before effects. Its data walk checks SUM, MXR and the U bit, including the rule that SUM
 allows supervisor data access to user pages but never supervisor instruction fetch there.
-C expansion and instruction-fetch translation are still upcoming authoring work. None of
-these checks turn the author into a conformance oracle.
+C expansion and instruction-fetch translation are available through the explicit byte
+route below. These checks are finite authoring evidence.
+
+For a byte-addressed guest, declare the number of step boundaries to derive:
+
+```sh
+mkdir -p target/author-example
+cp profiles/rv64gc-lab-v0/guests/dir-runoff.s target/author-example/
+python3 scripts/derive_rv64gc_expectations.py --parcels --steps 3 \
+  target/author-example/dir-runoff.s
+python3 scripts/probe_gc_parcel_guest.py
+```
+
+This authoring command writes the chosen expectation record. Use `--check` to compare an
+existing record without writing; historical word-fetch records have different request
+counts until the C bind re-derives them. A parcel budget is an integer from 1 through
+10,000 and counts every boundary, including a delivered fault, interrupt or halted tick.
+The loaded image occupies the declared region; unwritten bytes inside it read zero.
+Leaving the source or reaching a `#|end` comment cannot shorten this explicit budget.
+
+Byte PCs select source annotations, including repeated instruction spellings at different
+addresses. The next fetch reads current memory after a code store. Counts record actual
+parcel attempts: a refused request counts, while a failed translation issues none. Pending
+interrupt delivery precedes fetching, and delivery/wait boundaries do not retire. Unknown
+valid vocabulary still refuses by name; independently known reserved compressed parcels
+and wider prefixes use the laboratory illegal-instruction diagnostic. If any requested
+source refuses, the command writes no expectation record from that batch.
 
 ## The ELF writer — and a measured harness difference
 
@@ -329,6 +354,6 @@ python3 scripts/probe_gc_fetch.py
 A word prefix instead reads two parcels. A second-parcel fault saves the starting PC in
 EPC and the failed virtual address in tval. Page walks precede their physical requests;
 a failed translation issues no fetch request, while a refused request counts as an attempt.
-Fetch itself advances neither time nor retirement. These APIs are finite spec-side evidence;
-compressed guest execution with explicit budgets is the next slice. The existing
+Fetch itself advances neither time nor retirement. The explicit byte guest route above
+owns those boundaries. These APIs are finite spec-side evidence. The existing
 `--check-owned` route retains its 42 historical byte-identical records.

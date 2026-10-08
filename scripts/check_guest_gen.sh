@@ -334,6 +334,26 @@ PY
   out="$(python3 scripts/probe_gc_fetch.py --mutation unaligned-epc 2>&1)"; rc=$?
   arm "RED trap EPC always masks bit zero" "$rc" 1 "$out" "EPC bit zero was not masked"
 
+  # d3d2: exact byte guests have explicit boundary budgets and fresh memory fetches.
+  out="$(python3 scripts/probe_gc_parcel_guest.py 2>&1)"; rc=$?
+  arm "GREEN byte guest budgets, visibility and head boundaries" "$rc" 0 "$out" "5 legacy repairs / 176 steps"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation byte-directives 2>&1)"; rc=$?
+  arm "RED source directives follow byte PCs" "$rc" 1 "$out" "directives lost their byte PCs"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation padded-image 2>&1)"; rc=$?
+  arm "RED author image padding is caught" "$rc" 1 "$out" "byte guest image acquired padding"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation source-end 2>&1)"; rc=$?
+  arm "RED explicit budgets continue past source end" "$rc" 1 "$out" "explicit budget stopped at the source end"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation fetch-count 2>&1)"; rc=$?
+  arm "RED byte guest counts actual parcels" "$rc" 1 "$out" "byte guest lost actual parcel counts"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation fault-retirement 2>&1)"; rc=$?
+  arm "RED a delivered fetch fault does not retire" "$rc" 1 "$out" "fault boundary retired an instruction"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation head-pending 2>&1)"; rc=$?
+  arm "RED pending delivery precedes guest fetch" "$rc" 1 "$out" "pending interrupt fetched the instruction"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation code-visibility 2>&1)"; rc=$?
+  arm "RED the next fetch observes a code patch" "$rc" 1 "$out" "next parcel ignored the code patch"
+  out="$(python3 scripts/probe_gc_parcel_guest.py --mutation unknown-valid 2>&1)"; rc=$?
+  arm "RED unknown valid vocabulary refuses by name" "$rc" 1 "$out" "unknown valid vocabulary became an illegal trap"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

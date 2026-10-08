@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0091 (leaf P4-SYSTEM.12, slice d3d2) — explicit byte guest budgets
+
+- The independent author gains `--parcels --steps N`: exact byte images, byte-PC
+  annotations, fresh code fetches, actual parcel counts and exact boundary budgets.
+  Five legacy fetch/end gaps now match all 176 architectural observations; eight
+  mutations fail, GUEST-GEN 61/61, all 97 prior word outputs/42 owned records exact.
+  No legacy record overwritten. Staged C corpus/count derivation precedes the bind.
+
 ## SEMULITH-P4-0090 (leaf P4-SYSTEM.12, slice d3d1) — independent translated parcel fetch
 
 - Spec-side fetch walks each required two-byte parcel and records actual attempts;
