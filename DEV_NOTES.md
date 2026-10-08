@@ -1,5 +1,16 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — a mandatory book gate needs a provisioned tool (CI-RECOVERY.2)
+
+The clean doctrine runner had no mdBook. The installer pins official 0.5.4 release
+identities, verifies before extraction, and installs under .app-data/ci-tools; target/
+holds the cache. The workflow adds its bin directory to GITHUB_PATH before the gate.
+Rustup/Cargo/temp locations also derive from the repository, with self-update disabled.
+Cold PATH reproduces the old refusal; the new native tool builds all five model books,
+7/7 controls pass and corrupt cache is refused before binary replacement. Linux asset
+identity/layout verified; actual Linux execution stays with hosted verification in .4.
+Public stable/wasm provisioning succeeds locally. Promotion declined in the leaf.
+
 ## _(2026-10-08)_ — reproduce the hosted toolchain (CI-RECOVERY.1)
 
 GitHub Rust 1.99 denied a lint unseen by local 1.95. Exact-toolchain reproduction also

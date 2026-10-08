@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0002 (leaf CI-RECOVERY.2) — cold doctrine provisioning
+
+- Install digest-verified mdBook 0.5.4 before UNIT-BOOKS; keep Rust/Cargo/temp stores
+  local and provision stable/wasm explicitly. Cold missing-tool RED, native installation
+  and corrupt-cache control pass; five books and 7/7 controls green. Linux asset verified;
+  hosted execution remains pending a permitted push.
+
 ## SEMULITH-CI-0001 (leaf CI-RECOVERY.1) — strict Rust 1.99 recovery
 
 - Repair the benchmark identity-map lint and three SHA chunk lints without suppression.

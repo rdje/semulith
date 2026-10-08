@@ -359,6 +359,12 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+Registry prose follow-up owned by `.4`: the SHARD-FREEZE description in
+scripts/check_doctrines.project.sh still says the physical manifest only grows; the
+approved seal preserves append-only logical rows across archive/live manifests instead.
+The checker, doctrine family and book already state that contract. Priority: correct
+this display text with the scheduled locality/containment follow-up after CI-RECOVERY.
+
 The first commit gate refused the descriptor because FIXTURE-FINGERPRINT resolves
 `path` relative to the record directory, while this terminal uses repository-root
 identity. The new schema explicitly names its root-relative `object`; SHARD-FREEZE

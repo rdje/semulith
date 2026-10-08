@@ -33,3 +33,4 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 | `scripts/check_task_acceptance.sh --print-sig` | what does the acceptance gate actually accept as evidence right now? | `scripts/check_task_acceptance.sh --print-sig \| --print-code-re` |
 | any project check's `--self-test` | does this gate still discriminate — do its RED arms fail for the right reason? | `scripts/check_<name>.sh --self-test` |
 | `git log -S'<token>'` | when did this string enter or leave the tree, and in which work unit? | `git log -S'<token>' --oneline` |
+| `scripts/install_ci_mdbook.sh` | provision the pinned book tool for a clean doctrine runner | `bash scripts/install_ci_mdbook.sh`; digest-verified public release to .app-data/ci-tools/bin; cache under target/ci-tools; Linux x86-64 and macOS arm64 identities pinned |

@@ -44,12 +44,12 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Commit: SEMULITH-CI-0001
 
 - ID: `CI-RECOVERY.2` — provision the doctrine runner
-  Status: `proposed`
+  Status: `done`
   Goal: explicitly install a compatible mdbook in the clean GitHub job and audit the
   enforcer's other mandatory provisioning requirements using public tool interfaces.
   Acceptance: required book tool exists before the gate; cold provisioning verified.
-  Verification: pending
-  Commit: pending
+  Verification: cold missing-tool RED; verified native installation; UNIT-BOOKS 7/7 and five books; official Linux digest/layout verified.
+  Commit: SEMULITH-CI-0002
 
 - ID: `CI-RECOVERY.3` — portable cold Miri/endian legs
   Status: `proposed`
@@ -72,7 +72,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.2` | `proposed` | strict Rust repaired; provision mdbook before the doctrine runner |
+| 1 | `CI-RECOVERY.3` | `proposed` | book provisioning committed; repair cold Miri/endian execution |
 
 ## Decisions
 
@@ -99,9 +99,36 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 ## Blockers
 
-- Hosted result waits for a permitted push; the archive transition restores local commit headroom.
+- Hosted result waits for a permitted push; local implementation and focused verification can proceed.
 
 ## Acceptance Checklist
+
+`.2`, 2026-10-08, SEMULITH-CI-0002:
+
+- [x] **ROOT CAUSE** — with mdbook absent from PATH, the actual check returned rc=2:
+  `UNIT-BOOKS: REFUSED — mdbook is not on PATH; this check cannot judge.` The old
+  doctrines.yml had no book provisioning. Mandatory enforcer prerequisites enumerated
+  through `rg -n 'command -v' scripts/check_*.sh`: Python, Cargo, mdBook and standard
+  OS utilities; PORT-WEB additionally checks the installed wasm target.
+- [x] **ADDRESSED** — scripts/install_ci_mdbook.sh pins official 0.5.4 release assets
+  from https://github.com/rust-lang/mdBook/releases/tag/v0.5.4, checks the compressed
+  digest before extracting the one binary, and checks its version. Native cold run:
+  `install-ci-mdbook: verified mdbook v0.5.4 in .app-data/ci-tools/bin`; Linux asset
+  digest/layout verified independently (one mdbook member). Corrupt cache control:
+  `MDBOOK-PROVISION: corrupt cache refused before binary replacement (rc=1)`.
+  The workflow advertises GITHUB_PATH before the gate; YAML parsed and order checked.
+- [x] **NO REGRESSION** — cold PATH plus only the newly installed tool yields
+  `UNIT-BOOKS: ok (5 unit(s) — every registered unit has its book, and every book builds)`;
+  `UNIT-BOOKS --self-test: 7 pass / 0 fail`; all books via make book rc=0; bash -n rc=0.
+  The exact public rustup provisioning command installed stable 1.99.0, rustfmt/Clippy
+  and wasm into the local store, rc=0. Both tool/cache st_dev equal the repository.
+- [x] **FIX / LOCKSTEP** — installer and doctrines.yml, tool register, tree/frontier,
+  MEMORY/CHANGELOG/DEV_NOTES and book. Rust toolchains, Cargo downloads and temporary
+  outputs derive from the repository root. Existing OS Git/Bash/Python/curl/tar and
+  rustup launcher are necessary read-only system dependencies; self-update is disabled.
+  Linux execution and hosted green remain explicitly with `.4`, not implied here.
+  promotion: declined (bounded CI provisioning repair; authenticated installer and cold-run evidence capture the lesson).
+
 
 `.1`, 2026-10-08, SEMULITH-CI-0001:
 
@@ -147,6 +174,8 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Commit Log
 
+`SEMULITH-CI-0002 (leaf CI-RECOVERY.2): provision authenticated mdBook and local Rust stores before the doctrine gate`.
+
 `SEMULITH-CI-0001 (leaf CI-RECOVERY.1): repair strict Rust 1.99 lint without changing benchmark or hash results`.
 
 | Leaf | Commit subject or reference | Notes |
@@ -158,3 +187,5 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 - `2026-10-08`: Created from the director's hosted-CI status question; four repairs scheduled.
 
 - `2026-10-08`: `.1` active after archive commit `401956e`; repository clean at selection. Rust/map identity is owned before edits or toolchain provisioning.
+
+- `2026-10-08`: `.2` active after clean d6693e5. Own scripts/install_ci_mdbook.sh and doctrines.yml before edits: pin verified official 0.5.4 assets for Ubuntu x86-64 and this native macOS verification host; install only into .app-data, cache under target, advertise PATH through GITHUB_PATH. Also set repository-derived CARGO_HOME/TMPDIR for the doctrine job and select Rust stable/wasm explicitly. Linux digest/layout checked; native cold installation, corruption refusal and UNIT-BOOKS controls will verify provisioning, with Linux execution reserved for the hosted run.
