@@ -49,6 +49,10 @@ class Refusal(Exception):
     pass
 
 
+class ReservedInstruction(Refusal):
+    """Independently identified reserved bits, before any target effect."""
+
+
 def sx(v: int) -> str:
     return f"0x{v:016x}"
 
@@ -319,6 +323,20 @@ RULES = {
     "slli": ("logical left shift.", "RVI-RV64I §3.1.2.1"),
     "srli": ("logical right shift.", "RVI-RV64I §3.1.2.1"),
     "srai": ("arithmetic right shift.", "RVI-RV64I §3.1.2.1"),
+    "sll": ("left shift by the low six bits of rs2.", "RVI-RV64I §3.1.2.2"),
+    "srl": ("logical right shift by the low six bits of rs2.", "RVI-RV64I §3.1.2.2"),
+    "sra": ("arithmetic right shift by the low six bits of rs2.", "RVI-RV64I §3.1.2.2"),
+    "slliw": ("shift the low 32 bits left, then sign-extend the 32-bit result.", "RVI-RV64I §3.1.2.1"),
+    "srliw": ("shift the low 32 bits right logically, then sign-extend the result.", "RVI-RV64I §3.1.2.1"),
+    "sraiw": ("shift the signed low 32 bits right, then sign-extend the result.", "RVI-RV64I §3.1.2.1"),
+    "sllw": ("shift the low 32 bits left by rs2[4:0], then sign-extend.", "RVI-RV64I §3.1.2.2"),
+    "srlw": ("shift the low 32 bits right logically by rs2[4:0], then sign-extend.", "RVI-RV64I §3.1.2.2"),
+    "sraw": ("shift the signed low 32 bits right by rs2[4:0], then sign-extend.", "RVI-RV64I §3.1.2.2"),
+    "slt": ("one iff signed rs1 is less than signed rs2, otherwise zero.", "RVI-RV32I §1.1.4.2"),
+    "sltu": ("one iff unsigned rs1 is less than unsigned rs2, otherwise zero.", "RVI-RV32I §1.1.4.2"),
+    "slti": ("one iff signed rs1 is less than the sign-extended immediate.", "RVI-RV32I §1.1.4.1"),
+    "sltiu": ("one iff unsigned rs1 is less than the sign-extended immediate treated unsigned.", "RVI-RV32I §1.1.4.1"),
+    "xori": ("bitwise XOR with the sign-extended immediate.", "RVI-RV32I §1.1.4.1"),
     "ori": ("bitwise OR with the sign-extended immediate.", "RVI-RV32I §1.1.4"),
     "andi": ("bitwise AND with the sign-extended immediate.", "RVI-RV32I §1.1.4"),
     "xor": ("bitwise XOR.", "RVI-RV32I §1.1.4"),
@@ -326,11 +344,21 @@ RULES = {
     "and": ("bitwise AND.", "RVI-RV32I §1.1.4"),
     "ld": ("a full XLEN load needs no extension.", "RVI-RV64I §3.1.3"),
     "lw": ("LW sign-extends its 32-bit result to 64 bits.", "RVI-RV64I §3.1.3 (D-LOAD-EXT)"),
+    "lb": ("LB sign-extends the loaded byte to XLEN.", "RVI-RV32I §1.1.6"),
+    "lh": ("LH sign-extends the loaded halfword to XLEN.", "RVI-RV32I §1.1.6"),
+    "lbu": ("LBU zero-extends the loaded byte to XLEN.", "RVI-RV32I §1.1.6"),
+    "lhu": ("LHU zero-extends the loaded halfword to XLEN.", "RVI-RV32I §1.1.6"),
     "lwu": ("the SAME word, zero-extended (RV64 only).", "RVI-RV64I §3.1.3 (D-LOAD-EXT)"),
     "sd": ("SD stores the low 64 bits of rs2 — no register observation.", "RVI-RV64I §3.1.3"),
     "sw": ("SW stores the low 32 bits of rs2 — no register observation.", "RVI-RV64I §3.1.3"),
+    "sb": ("SB stores the low eight bits of rs2.", "RVI-RV32I §1.1.6"),
+    "sh": ("SH stores the low sixteen bits of rs2.", "RVI-RV32I §1.1.6"),
     "beq": ("branch if equal — a taken branch writes no register.", "RVI-RV32I §1.1.5"),
     "bne": ("branch if not equal — a taken branch writes no register.", "RVI-RV32I §1.1.5"),
+    "blt": ("branch iff signed rs1 is less than signed rs2.", "RVI-RV32I §1.1.5"),
+    "bge": ("branch iff signed rs1 is at least signed rs2.", "RVI-RV32I §1.1.5"),
+    "bltu": ("branch iff unsigned rs1 is less than unsigned rs2.", "RVI-RV32I §1.1.5"),
+    "bgeu": ("branch iff unsigned rs1 is at least unsigned rs2.", "RVI-RV32I §1.1.5"),
     "jal": ("JAL writes the return address.", "RVI-RV32I §1.1.5"),
     "jalr": ("JALR clears target bit zero and writes the following instruction address.", "RVI-RV32I §1.1.5"),
     "addw": ("the low 32 bits of the sum, sign-extended to 64 bits.", "RVI-RV64I §3.1.2.2"),
@@ -718,7 +746,12 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
                 info = {'deriv': f'unsupported wider prefix: illegal instruction, tval retains all ILEN=32 bits {bits:#010x}.',
                         'source': 'RVI-INTRO instruction-length encoding; RVP-MACHINE §2.1.1.16; ILEN=32 laboratory profile'}
             else:
-                hart.pc, info = execute(hart, bits)
+                try:
+                    hart.pc, info = execute(hart, bits)
+                except ReservedInstruction as exc:
+                    hart.deliver(2, bits)
+                    info = {'deriv': f'{exc}; the laboratory reserved diagnostic delivers cause 2 with the original word.',
+                            'source': 'RVI-RV64I §3.1.2.1; D-RESERVED-DECODE'}
         info.pop('stored', None)  # every later fetch reads the updated memory directly
         step.writes = info.pop('writes', {})
         hart.time += 1
@@ -843,7 +876,11 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             #             aligns its doubleword data address with it
             val, mn = u(x[rs1] & imm_i), "andi"
         elif f3 == 4:
-            raise Refusal("xori is outside the corpus's vocabulary — refuse, never guess")
+            val, mn = u(x[rs1] ^ imm_i), "xori"
+        elif f3 == 2:
+            val, mn = int(sext(x[rs1], 64) < imm_i), "slti"
+        elif f3 == 3:
+            val, mn = int(x[rs1] < u(imm_i)), "sltiu"
         else:
             raise Refusal(f"OP-IMM funct3 {f3} outside the corpus's vocabulary")
         return next_pc, {"writes": w(rd, val), **stock(mn)}
@@ -877,22 +914,39 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
         else:
             raise Refusal(f"M funct3 {f3} at width {L} names no M instruction — refuse, never guess")
         return next_pc, {"writes": w(rd, u(val)), **stock(mn), "new": sx(u(val))}
-    if op == 0x1b:  # ADDIW; other OP-IMM-32 forms remain outside this corpus
-        if f3 != 0:
+    if op == 0x1b:  # OP-IMM-32, with five-bit shifts and W result extension
+        if f3 == 0:
+            val, mn = x[rs1] + imm_i, "addiw"
+        elif f3 in (1, 5):
+            upper, shamt = word >> 25, (word >> 20) & 31
+            if (f3 == 1 and upper != 0) or (f3 == 5 and upper not in (0, 0x20)):
+                raise ReservedInstruction(f"OP-IMM-32 word {word:#010x}: reserved shift upper bits")
+            if f3 == 1:
+                val, mn = u(x[rs1], 32) << shamt, "slliw"
+            elif upper == 0:
+                val, mn = u(x[rs1], 32) >> shamt, "srliw"
+            else:
+                val, mn = sext(u(x[rs1], 32), 32) >> shamt, "sraiw"
+        else:
             raise Refusal(f"OP-IMM-32 word {word:#010x}: unsupported funct3")
-        val = u(sext(u(x[rs1] + imm_i, 32), 32))
-        return next_pc, {"writes": w(rd, val), **stock("addiw")}
-    if op == 0x3b:  # ADDW/SUBW, after the exact M-word family above
+        return next_pc, {"writes": w(rd, u(sext(u(val, 32), 32))), **stock(mn)}
+    if op == 0x3b:  # OP-32, after the exact M-word family above
         funct7 = word >> 25
-        if f3 != 0 or funct7 not in (0, 0x20):
+        if not ((f3 in (0, 5) and funct7 in (0, 0x20)) or (f3 == 1 and funct7 == 0)):
             raise Refusal(f"OP-32 word {word:#010x}: reserved or unsupported funct3/funct7")
-        val = x[rs1] + x[rs2] if funct7 == 0 else x[rs1] - x[rs2]
-        return next_pc, {"writes": w(rd, u(sext(u(val, 32), 32))),
-                         **stock("addw" if funct7 == 0 else "subw")}
+        shamt = x[rs2] & 31
+        if f3 == 0:
+            val, mn = (x[rs1] + x[rs2], "addw") if funct7 == 0 else (x[rs1] - x[rs2], "subw")
+        elif f3 == 1:
+            val, mn = u(x[rs1], 32) << shamt, "sllw"
+        elif funct7 == 0:
+            val, mn = u(x[rs1], 32) >> shamt, "srlw"
+        else:
+            val, mn = sext(u(x[rs1], 32), 32) >> shamt, "sraw"
+        return next_pc, {"writes": w(rd, u(sext(u(val, 32), 32))), **stock(mn)}
     if op == 0b0110011:  # OP
         funct7 = word >> 25
-        if not ((f3 == 0 and funct7 in (0, 0x20))
-                or (f3 in (4, 6, 7) and funct7 == 0)):
+        if funct7 != 0 and not (funct7 == 0x20 and f3 in (0, 5)):
             raise Refusal(f"OP word {word:#010x}: reserved or unsupported funct3/funct7")
         if f3 == 0 and (word >> 25) == 0:
             val, mn = u(x[rs1] + x[rs2]), "add"
@@ -904,6 +958,16 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             val, mn = u(x[rs1] | x[rs2]), "or"
         elif f3 == 7:
             val, mn = u(x[rs1] & x[rs2]), "and"
+        elif f3 == 1:
+            val, mn = u(x[rs1] << (x[rs2] & 63)), "sll"
+        elif f3 == 5 and funct7 == 0:
+            val, mn = x[rs1] >> (x[rs2] & 63), "srl"
+        elif f3 == 5:
+            val, mn = u(sext(x[rs1], 64) >> (x[rs2] & 63)), "sra"
+        elif f3 == 2:
+            val, mn = int(sext(x[rs1], 64) < sext(x[rs2], 64)), "slt"
+        elif f3 == 3:
+            val, mn = int(x[rs1] < x[rs2]), "sltu"
         else:
             raise Refusal(f"OP funct3 {f3}/funct7 {word >> 25} outside the corpus")
         return next_pc, {"writes": w(rd, val), **stock(mn)}
@@ -942,10 +1006,13 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
         info["stored"] = (r[1], n)     # run_guest's memory-backed fetch watches stores
         return next_pc, info
     if op == 0b1100011:  # BRANCH
-        taken = {0: x[rs1] == x[rs2], 1: x[rs1] != x[rs2]}.get(f3)
+        taken = {0: x[rs1] == x[rs2], 1: x[rs1] != x[rs2],
+                 4: sext(x[rs1], 64) < sext(x[rs2], 64),
+                 5: sext(x[rs1], 64) >= sext(x[rs2], 64),
+                 6: x[rs1] < x[rs2], 7: x[rs1] >= x[rs2]}.get(f3)
         if taken is None:
             raise Refusal(f"BRANCH funct3 {f3} outside the corpus")
-        mn = "beq" if f3 == 0 else "bne"
+        mn = {0: "beq", 1: "bne", 4: "blt", 5: "bge", 6: "bltu", 7: "bgeu"}[f3]
         return (u(pc + imm_b) if taken else next_pc), stock(mn)
     if op == 0b1101111:
         return u(pc + imm_j), {"writes": w(rd, u(next_pc)), **stock("jal")}

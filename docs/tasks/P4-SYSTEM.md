@@ -235,9 +235,23 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (e1b): author vocabulary; (e1a) privilege repair done; (e1c) cache, (e1d) staged corpus/counts, then bind/Sail |
+| 1 | `P4-SYSTEM.12` | `active` | slice (e1b2): author CSR/directives; (e1b1) integer rules done; (e1c) cache, (e1d) staged corpus/counts, then bind/Sail |
 
 ## Decisions
+
+- `2026-10-08` (e1b bounded split, before changes): e1b1 fills base integer rules:
+  immediate/register comparisons and XOR, XLEN/word shifts, signed/unsigned branches,
+  and narrow memory stock derivations. Add an explicit ReservedInstruction subtype for
+  independently identified reserved word-shift bits; the parcel route alone converts
+  that named result to the declared diagnostic. A generic unknown Refusal must remain
+  a refusal. e1b2 handles remaining CSR enables/counter rules and escaped directives.
+  Both retain the prior historical outputs and owned records, and audit all 139 parcel
+  traces before any count adoption. The unknown-valid control moves from XORI (newly
+  supported here) to the still-unmodeled but real mvendorid CSR, rather than dropping
+  the discriminator. Hand boundary/alias/shift-width/branch/memory/reserved fixtures and
+  targeted mutations must discriminate. Cached-translation disagreement remains e1c.
+  If the receipt crosses the fixed live bound, archive completed e1a and closed .11
+  design/split verbatim, assert reconstruction, and retain their retrieval pointers.
 
 - `2026-10-08` (e1 census findings / ownership, before repairs): explicit parcel runs
   over all 139 records give 113 exact architectural traces, four numerical disagreements
@@ -598,59 +612,8 @@ This gate authorises the planned next engineering stage: board implementation.
      corpus and THE BIND (`(status partial)` gone, scope 200, `REQ-GC-C`, `OB-GC-C` and the fetch
      restatement in contract v2, realized; the matrix; `gate.sexp`; identity proof); (f) the
      straddle-fault evidence, the Sail matched experiment, THE LEAF ACCEPTANCE.
-- `2026-10-06` (slice (c) execution split, recorded at its first half, `SEMULITH-P4-0075`): (c1) the
-  generated M vectors and their doctrine (M-VECTORS); (c2) the Sail matched experiment over the M
-  corpus — two instruments, each with its own evidence and its own commit. The vectors run through
-  the ENGINE, not `muldiv` alone: half of Table 1 is the definition's (its zero-divisor guards).
-- `2026-10-06` (design brief for `.11`, recorded before its execution, `SEMULITH-P4-0072`;
-  sources: `definitions/riscv/m.sexp`; `schema/semantics.sexp`; `scripts/gen_definition.py`;
-  `crates/semulith-core/src/exec_rv64gc.rs`; `scripts/fetch_references.sh`; the Sail override;
-  RVI-M §11.1.1–§11.1.2 [corrected at slice (a): the brief first wrote §13, from memory — the
-  pinned snapshot's own headings number M §11.1]; `GS-REPORT.md`):
-  **The measured pre-conditions.** (1) **The encoding exists, the semantics do not.**
-  `m.sexp` carries 13 instructions from the pinned `rv_m`/`rv64_m` tables; `git ls-files
-  'definitions/riscv/*.sem.sexp'` lists no `m.sem.sexp`. The `.2` brief assigned it to "the M
-  evidence leaf" (`archive/P4-SYSTEM-designs.md:44`) — never created; owned now. (2) **The
-  language has no multiply or divide**: `grep -n '(operator (name' schema/semantics.sexp` →
-  integer add/sub/logic/shifts/compares and width operators only. (3) **The precedent: the
-  definition states the ISA's choices; operators stay arithmetic.** `sll` masks its amount
-  in the definition (`(shl (reg rs1) (bits 5 0 (reg rs2)))`, `rv64i.sem.sexp:104`), and the
-  language's value model is "XLEN-wide two's-complement values" with width explicit
-  (`schema/semantics.sexp:73`, `:90`). (4) **M's semantics are total**: RVI-M §11.1.2 defines
-  division by zero (quotient all ones; remainder the dividend) and signed overflow (quotient
-  the dividend, remainder 0) — no trap, no new state, no fault; the W forms operate on the low
-  32 bits and sign-extend. (5) **The reference path is ready**: Sail's matched configuration
-  supports M (`(extension (name "M") (supported true))` in the override);
-  `fetch_references.sh:227-228` excludes `rv_m`/`rv64_m` from the census leg only while the
-  profile declares no M form — it flips itself. (6) **v1 is frozen**: a new obligation needs a
-  new version — v2, opened here, completed and frozen by `.13`.
-  **The design, decided:**
-  1. **Eight operators, arithmetic only.** `mul` (the low XLEN bits of the product); `mulh`,
-     `mulhsu`, `mulhu` (the high XLEN bits of the 2·XLEN-bit product, signedness named);
-     `div`, `divu`, `rem`, `remu` (truncating division and its remainder). Signed overflow
-     WRAPS — the language's two's-complement value model, exactly as `add` wraps (MIN ÷ −1 =
-     MIN, remainder 0 — which is RVI-M's defined result, cited in the rule, not hidden in the
-     operator). **Division by zero is outside the operators' domain**: the definition states
-     RISC-V's results by a guard on the divisor, cited to §11.1.2's Table 1, and the engine refuses
-     a division reached unguarded (a definition defect, never a guest behaviour). A static
-     rule in `check_semantics.py` — every `div`/`divu`/`rem`/`remu` sits in the else-branch of
-     a guard that tests that same divisor against zero — RED-proven.
-  2. **`m.sem.sexp`**: 13 rules; the W forms over sign-extended low halves, re-sign-extended.
-  3. **The bind**, as `.4`/`.6`/`.7` did it: the encoding composes `riscv/m` (the `m` slot
-     filled); the scope's `m` family (`count_total` 150 → 163); `REQ-GC-M`; `OB-GC-M` in
-     contract **v2** (`open`), its POS and NEG checks realized in the registry at once
-     (POS: the M corpus; NEG: the edge guests — no trap on a zero divisor or an overflow, an
-     x0 destination writes nothing); the interaction placements (alias: rd = rs1 = rs2 and
-     x0; boundary: the extremes); `gate.sexp`'s `.11` open item closed.
-  4. **Evidence, three independent routes**: an EVD-05 corpus (expectations derived spec-side
-     with exact integers before either engine runs; every form at its edges — zero divisor,
-     MIN ÷ −1, mixed signs, the high half's extremes); a generated table of seeded operand
-     pairs checked against the model layer (a tracked generator, the FP-VECTORS pattern —
-     G-REGRESSION's `generated` kind); and the Sail matched experiment over the corpus.
-  5. **Slices**: (a) the language — the operators, the guard rule, the generator, the engine
-     arms with their unit tests; (b) the staged corpus and the bind; (c) the generated table
-     and the Sail experiment; (d) the reports, `GS-REPORT.md` regenerated, THE LEAF
-     ACCEPTANCE.
+- Closed `.11` design and slice split: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md),
+  moved byte-verbatim at the e1b1 containment crossing; use `.12` above for current scope.
 - `2026-10-06` (design brief for `.10`, recorded before its execution, `SEMULITH-P4-0068`;
   sources: a read-only census of the gate-report path and of rv64gc's evidence per §7 axis (an
   explore agent's report — conversation-only; every load-bearing fact re-measured where it
@@ -822,39 +785,37 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 - part 5: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md) — `.12` (a), (a2),
-  (b), (d1)–(d3d2), moved byte-verbatim as their completed receipts leave the live head.
+  (b), (d1)–(e1a), plus the closed `.11` design/split, moved byte-verbatim
+  as completed records leave the live head.
 
-`P4-SYSTEM.12` slice (e1a) — independent privileged legality (`2026-10-08`, `SEMULITH-P4-0092`):
+`P4-SYSTEM.12` slice (e1b1) — independent integer vocabulary (`2026-10-08`, `SEMULITH-P4-0093`):
 
-- [x] **REPRODUCE / ISSUE** — explicit 139-guest census: 113 exact, four disagreements,
-  22 refusals. mm-readonly step 10 reads misa=1 instead of 0x800000000014112d;
-  mm-sfence misses the TVM trap; mm-sret loops through an illegal U return. Parent
-  `probe_gc_privilege_author.py --author-revision 132506f` rc=1 (fixed reset assertion).
-  The fourth (cache) defect and all vocabulary refusals are owned above before adoption.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'misa|TVM|TSR|if word ==|SFENCE'
-  scripts/derive_rv64gc_expectations.py` finds misa absent from reset/legalization and
-  no TVM/TSR/lower-mode instruction guards; known CSR privilege violations raise Refusal.
-  State candidate 71–83 declares the fixed read-only misa selection. Pinned machine.html
-  1551–1558, 1615–1620, 4353–4365 and priv-csrs.html 541–546 define interception, returns,
-  address privilege and ignored read-only fields. The selected laboratory policy is explicit.
-- [x] **FIX** — fixed misa reset from RV64+A/C/D/F/I/M/S/U, ignored field writes;
-  known CSR privilege and S satp+TVM deliver cause 2/raw bits before own effects;
-  MRET below M, SRET below S or S+TSR, SFENCE below S or S+TVM likewise. M bypass and
-  legal stack pops preserved. The unknown-valid Refusal remains outside these known faults.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_privilege_author.py` rc=0:
-  fixed fields/alias, CSR fault unit discipline, satp read/write TVM, MRET/SRET/SFENCE
-  modes/interception, M bypass and legal controls pass. All nine mutations are behavioral
-  RED. Five mode-matrix guests match 140 architectural steps (three numerical repairs,
-  two previously refused known CSR faults). Parent 132506f is RED on the reset assertion.
-- [x] **NO REGRESSION** — GUEST-GEN 71 pass / 0 fail; all 97 prior historical-route
-  texts exact, --check-owned 42 documents byte-identical. Eight extra word-route outputs
-  are not adopted/written. Complete parcel census: 118 exact, one owned cached-translation
-  disagreement and 20 named vocabulary refusals. No production fixture/record changed.
-- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 549 arms),
-  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and author/privilege/C book.
-  Completed d3d2 receipt archived byte-verbatim with reconstruction asserted, no ceiling
-  raised. Books and commit doctrine gate must pass. promotion: declined (permanent field/
-  mode fixtures and nine mutations retain this lesson; full census and schedule are durable).
+- [x] **REPRODUCE / ISSUE** — e1a census refuses 17 integer guests; parent
+  `python3 scripts/probe_gc_integer_author.py --author-revision c70693d` rc=1 on XORI.
+  Unknown-valid controls named newly supported XORI/LBU and needed a still-unmodeled CSR.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'RULES|OP-IMM-32|OP-32|BRANCH'
+  scripts/derive_rv64gc_expectations.py` finds missing comparison/XORI/shift/branch
+  computations and narrow memory stock prose. Pinned rv32.html 1038–1047, 1115–1139,
+  1413–1428, 1618–1630 and rv64.html 574–577, 645–656 give signedness, widths, offsets,
+  low-bit stores and reserved W immediate bits. Unknown instructions cannot be diagnosed
+  from the author's limited vocabulary alone; generic Refusal must remain a refusal.
+- [x] **FIX** — add integer comparisons/XORI, XLEN and word shifts, signed/unsigned
+  branches and narrow memory stock rules. ReservedInstruction identifies known W-shift
+  upper bits before effects; only that subtype delivers cause 2/raw word in parcel runs.
+  Both old unknown-vocabulary controls now use real unmodeled mvendorid, preserving RED.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_integer_author.py` rc=0:
+  22 hand arithmetic/alias/x0, ten branches (taken/untaken/equality/2-mod-4 target), narrow
+  memory width/sign/alignment and three reserved raw words pass. Eight mutations RED;
+  parent c70693d RED. All 17 formerly refused guests match 471 architectural steps.
+- [x] **NO REGRESSION** — GUEST-GEN 80 pass / 0 fail; 105 prior word texts exact,
+  --check-owned 42 byte-identical. Sixteen new word texts not adopted/written. All 139
+  parcel runs census to 135 exact, one owned cache disagreement and three named refusals:
+  a-lrsc-mustfail quoting, mm-counters and mm-stimecmp CSR enables. Record hashes unchanged.
+- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 558 arms), tree/index/logs,
+  CHANGELOG, DEV_NOTES, toolbox/doctrine and assembler/C book updated. e1a receipt and
+  closed .11 design/split archived byte-verbatim, reconstruction asserted. Books and
+  commit doctrine gate must pass. promotion: declined (hand fixtures and eight mutations
+  retain this bounded vocabulary lesson). Next e1b2 CSR/counter/directive prerequisites.
 
 ## Verification Log
 
@@ -865,6 +826,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (e1b1) | 22 hand arithmetic, ten branches, memory/reserved; 8 RED; 471 corpus steps; GUEST-GEN 80/80 | 135 exact; three refusals/cache owned next |
 | `2026-10-08` | `.12` slice (e1a) | fixed misa/mode/TVM/TSR fixtures; 9 RED; 140 mode-matrix steps; GUEST-GEN 71/71 | privilege repaired; vocabulary/cache prerequisites next |
 | `2026-10-08` | `.12` slice (d3d2) | byte/budget/head/code-visibility fixtures; 8 RED; 176 legacy steps; GUEST-GEN 61/61 | tools ready; staged C corpus/counts next |
 | `2026-10-08` | `.12` slice (d3d1) | exact parcel/PTE/MPRV/EPC fixtures; 9 RED; GUEST-GEN 52/52; 97 prior texts exact | independent fetch/walk repaired; byte guests/budgets next |
@@ -922,6 +884,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1b1) | `SEMULITH-P4-0093 (leaf P4-SYSTEM.12): derive the base integer vocabulary and reserved word-shift diagnostics` | e1b2 CSR/directives, then cache/corpus/counts |
 | `.12` (slice e1a) | `SEMULITH-P4-0092 (leaf P4-SYSTEM.12): repair fixed misa fields and privileged legality in the independent author` | (e1b) vocabulary, then cache/corpus/counts |
 | `.12` (slice d3d2) | `SEMULITH-P4-0091 (leaf P4-SYSTEM.12): derive byte-addressed guests with explicit boundary budgets` | (e1) staged corpus/counts next |
 | `.12` (slice d3d1) | `SEMULITH-P4-0090 (leaf P4-SYSTEM.12): derive exact parcel fetches and repair the spec-side Sv39 walk` | (d3d2) explicit byte guest budgets next |
@@ -976,6 +939,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (e1b1) done: base integer author rules and reserved W shifts;
+  eight RED, 17 formerly refused guests/471 steps exact; census 135/139 exact.
 
 - `2026-10-08`: `.12` (e1a) done: fixed misa and privileged legality; nine RED
   controls, five mode-matrix guests/140 steps exact; all census gaps owned before staging.

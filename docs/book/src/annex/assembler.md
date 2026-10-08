@@ -235,8 +235,8 @@ Byte PCs select source annotations, including repeated instruction spellings at 
 addresses. The next fetch reads current memory after a code store. Counts record actual
 parcel attempts: a refused request counts, while a failed translation issues none. Pending
 interrupt delivery precedes fetching, and delivery/wait boundaries do not retire. Unknown
-valid vocabulary still refuses by name; independently known reserved compressed parcels
-and wider prefixes use the laboratory illegal-instruction diagnostic. If any requested
+valid vocabulary still refuses by name; independently known reserved compressed parcels,
+word-shift bits and wider prefixes use the laboratory illegal-instruction diagnostic. If any requested
 source refuses, the command writes no expectation record from that batch.
 
 Known permission failures have architectural observations. A supervisor read or write
@@ -250,9 +250,28 @@ set; its read/write CSR address accepts a write whose fields are ignored.
 python3 scripts/probe_gc_privilege_author.py
 ```
 
-The pre-bind census covers 139 historical guests. The author currently matches 118
-architectural traces; twenty guests name unsupported vocabulary, and one cached-translation
-guest awaits its owned cache-policy repair. These prerequisites precede count adoption.
+The base integer vocabulary includes signed and unsigned comparisons, XORI, register
+and immediate shifts, all six conditional branches and byte/halfword loads and stores.
+For example, SLTIU with immediate −1 compares against 0xffffffffffffffff: the immediate
+is sign-extended before treating it as unsigned. SLL uses the low six count bits, while
+SLLW uses five and sign-extends its low-word result. An SRAW of 0x80000000 by 31 yields
+0xffffffffffffffff. Source annotations can override the stock derivation without changing
+these computed effects.
+
+```sh
+python3 scripts/probe_gc_integer_author.py
+```
+
+Hand-encoded arithmetic, branch and narrow-memory fixtures exercise those boundaries;
+eight deliberately broken variants fail. Reserved word-shift bits are diagnosed before
+effects, and parcel runs retain the complete raw word without retirement. An unmodeled
+valid CSR still refuses by name, preserving the distinction between missing author
+vocabulary and a known architectural fault.
+
+The pre-bind census covers 139 historical guests. The author currently matches 135
+architectural traces; three guests name remaining CSR/directive vocabulary, and one
+cached-translation guest awaits its owned cache-policy repair. These prerequisites
+precede count adoption.
 
 ## The ELF writer — and a measured harness difference
 

@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — author vocabulary is distinct from illegal instructions (P4-SYSTEM.12 e1b1)
+
+Seventeen pre-bind refusals named valid integer operations whose computations or stock
+prose were missing from the independent author. Added comparisons/XORI, XLEN and word
+shifts, signed/unsigned branches and narrow load/store rules from the pinned chapters.
+SLTIU sign-extends its immediate before the unsigned comparison; W shifts mask counts
+to five bits, operate on the low word and sign-extend the result. Branch offsets remain
+byte-relative and may target a two-mod-four address in this profile.
+
+Reserved W shift bits are independently known. ReservedInstruction names that outcome
+before effects, and the parcel route alone delivers the declared raw-word diagnostic.
+Generic unknown valid vocabulary remains a Refusal. The older XORI/LBU negative controls
+now use the real unmodeled mvendorid CSR, so extending coverage does not drop that guard.
+
+- Validation: 22 hand arithmetic/alias/x0 cases, ten branch cases, narrow memory
+  sign/width/alignment and three reserved raw words. Eight mutations and parent c70693d
+  fail; 17 formerly refused guests match 471 architectural steps. GUEST-GEN 80/80.
+- Regression: 105 prior historical word texts and 42 owned records byte-identical;
+  16 new word outputs not adopted/written. All 139 parcel guests: 135 exact, one owned
+  cached-translation disagreement, three named CSR/directive refusals. Record hashes
+  unchanged. e1b2 owns the remaining vocabulary, e1c the cache, before count adoption.
+- Containment: e1a receipt and closed .11 design/split moved verbatim to archive part 5;
+  reconstruction asserted, fixed ceilings preserved. Promotion: declined — hand fixtures
+  and eight mutation controls retain the lesson; remaining gaps are scheduled in the tree.
+
 ## _(2026-10-08)_ — accepted privilege paths needed independent guards (P4-SYSTEM.12 e1a)
 
 The pre-bind census ran all 139 historical guests with their already-declared budgets.

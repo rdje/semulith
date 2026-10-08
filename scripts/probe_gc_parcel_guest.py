@@ -125,11 +125,11 @@ c.nop
     assert [st.fetch for st in run.steps] == [2, 0, 0] and run.hart.waiting
     assert [st.insn for st in run.steps] == ['wfi', '<halted>', '<halted>']
     assert (run.hart.time, run.hart.instret, run.hart.pc) == (3, 1, Q.ENTRY + 4)
-    unknown = guest('unknown', 'xori x1, x0, 1\n')  # valid ISA, outside this bounded author
+    unknown = guest('unknown', 'csrrs x1, mvendorid, x0\n')  # real CSR, outside this bounded author
     try:
         author.derive_parcel_guest(unknown, asm, 1)
     except author.Refusal as exc:
-        assert 'xori' in str(exc)
+        assert 'csr 0xf11' in str(exc)
     else:
         raise AssertionError('unknown valid vocabulary became an illegal trap')
     # Derive every requested source before writing the first one.
@@ -180,8 +180,7 @@ def main():
                 'head-pending': ('pending = hart.pending()', 'pending = None'),
                 'code-visibility': ("info.pop('stored', None)  # every later fetch reads the updated memory directly",
                                     "stored = info.pop('stored', None)\n        if stored is not None:\n            for original in units:\n                if stored[0] <= original.pc < stored[0] + stored[1]:\n                    hart.write(original.pc, original.length, original.value)"),
-                'unknown-valid': ('                hart.pc, info = execute(hart, bits)',
-                                  "                try:\n                    hart.pc, info = execute(hart, bits)\n                except Refusal:\n                    hart.deliver(2, bits)\n                    info = {'deriv': 'illegal', 'source': 'mutation'}"),
+                'unknown-valid': ('except ReservedInstruction as exc:', 'except Refusal as exc:'),
             }
             if args.mutation:
                 old, new = mutations[args.mutation]

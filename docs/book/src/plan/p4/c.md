@@ -184,3 +184,18 @@ Slice (e1a) repairs the fields and permission guards; five mode-matrix guests no
 140 committed architectural steps and nine mutations fail. The census reaches 118 exact
 of 139 historical traces, with twenty named vocabulary refusals and one owned cache-policy
 disagreement. Each prerequisite is scheduled before staging can adopt parcel counts.
+
+Slice (e1b1) adds the base integer vocabulary that seventeen of those refusals named:
+comparisons and XORI, XLEN and word shifts, signed/unsigned branches, and narrow memory
+stock derivations. Word shifts use five count bits and sign-extend their 32-bit result;
+XLEN shifts use six. A named reserved-word outcome lets parcel execution deliver the
+declared diagnostic before effects, keeping the full raw word and no retirement.
+Unknown valid vocabulary continues to refuse. Its permanent controls now use an
+unmodeled real CSR because XORI and byte loads have become supported operations.
+
+Twenty-two hand arithmetic/alias/x0 cases, ten branch cases, narrow memory and reserved
+fixtures pass. Eight mutations fail, and all seventeen formerly refused guests match
+471 committed architectural steps. The census now reaches 135 exact traces, with three
+remaining CSR/directive refusals and the owned cache disagreement. All 105 earlier word
+texts and 42 owned records remain byte-identical. No production fixture or count has
+been adopted during these prerequisite repairs.

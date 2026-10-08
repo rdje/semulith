@@ -376,6 +376,26 @@ PY
   out="$(python3 scripts/probe_gc_privilege_author.py --mutation sfence-tvm 2>&1)"; rc=$?
   arm "RED S-mode SFENCE.VMA honors TVM" "$rc" 1 "$out" "S-mode SFENCE.VMA ignored TVM"
 
+  # e1b1: hand-encoded integer controls precede the expanded corpus derivation.
+  out="$(python3 scripts/probe_gc_integer_author.py 2>&1)"; rc=$?
+  arm "GREEN base integer author vocabulary" "$rc" 0 "$out" "17 corpus gaps / 471 steps"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation sltiu-sign 2>&1)"; rc=$?
+  arm "RED SLTIU extends before unsigned comparison" "$rc" 1 "$out" "SLTIU sign extension"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation xlen-count 2>&1)"; rc=$?
+  arm "RED XLEN register shifts use six count bits" "$rc" 1 "$out" "XLEN shift count"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation word-count 2>&1)"; rc=$?
+  arm "RED word register shifts use five count bits" "$rc" 1 "$out" "word shift count"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation word-sign 2>&1)"; rc=$?
+  arm "RED SRAW preserves the word sign" "$rc" 1 "$out" "word arithmetic shift"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation branch-sign 2>&1)"; rc=$?
+  arm "RED signed branches compare signed operands" "$rc" 1 "$out" "branch signed/unsigned decision"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation load-sign 2>&1)"; rc=$?
+  arm "RED narrow loads retain signed extension" "$rc" 1 "$out" "narrow load extension"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation store-width 2>&1)"; rc=$?
+  arm "RED byte stores preserve neighboring bytes" "$rc" 1 "$out" "narrow store width"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation reserved-word 2>&1)"; rc=$?
+  arm "RED reserved W shifts have no own effect" "$rc" 1 "$out" "reserved word shift acquired an effect"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0093 (leaf P4-SYSTEM.12, slice e1b1) — independent integer vocabulary
+
+- Author base comparisons/XORI, shifts, branches and narrow memory stock rules;
+  known reserved W shifts deliver raw-bit diagnostics. Eight mutations fail, 17 formerly
+  refused guests/471 steps exact; GUEST-GEN 80/80, all 105 prior texts/42 owned exact.
+  Parcel census 135 exact, three CSR/directive refusals and the owned cache disagreement.
+  No record/count adoption yet; those remaining prerequisites are the next slices.
+
 ## SEMULITH-P4-0092 (leaf P4-SYSTEM.12, slice e1a) — independent privileged legality
 
 - The author retains fixed read-only misa fields and delivers known CSR/xRET/TVM/TSR

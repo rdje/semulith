@@ -32,13 +32,12 @@ def check(author):
             raise AssertionError(f'reserved word {word:#010x} accepted')
         assert (hart.pc, hart.x, hart.csr, hart.mem) == before, 'refusal changed the hart'
     hart = author.Hart()
-    hart.x[1] = author.ENTRY
     try:
-        author.execute(hart, 0x0000C103)  # LBU x2,0(x1): valid address, unsupported stock text
+        author.execute(hart, 0xF1102273)  # CSRRS x4,mvendorid,x0: real, unmodeled CSR
     except author.Refusal as exc:
-        assert "'lbu'" in str(exc), str(exc)
+        assert 'csr 0xf11' in str(exc), str(exc)
     else:
-        raise AssertionError('unsupported LBU did not refuse by name')
+        raise AssertionError('unmodeled CSR did not refuse by name')
     # A 1-GiB leaf keeps this permission fixture independent of the instruction engine.
     hart = author.Hart()
     hart.mode = author.S
@@ -77,8 +76,7 @@ def main():
         source = (REPO / 'scripts/derive_rv64gc_expectations.py').read_text()
         changes = {
             'reserved-op': (
-                'if not ((f3 == 0 and funct7 in (0, 0x20))\n'
-                '                or (f3 in (4, 6, 7) and funct7 == 0)):',
+                'if funct7 != 0 and not (funct7 == 0x20 and f3 in (0, 5)):',
                 'if False:'),
             'reserved-shift': (
                 'if ((f3 == 1 and word >> 26 != 0)\n'
