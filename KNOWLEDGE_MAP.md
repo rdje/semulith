@@ -49,6 +49,7 @@
 - [`ARTIFACT-CLEANUP.md`](docs/tasks/ARTIFACT-CLEANUP.md)
 - [`BOOK-APPARATUS.md`](docs/tasks/BOOK-APPARATUS.md)
 - [`BOOTSTRAP.md`](docs/tasks/BOOTSTRAP.md)
+- [`CI-RECOVERY.md`](docs/tasks/CI-RECOVERY.md)
 - [`CITATION-ACCURACY.md`](docs/tasks/CITATION-ACCURACY.md)
 - [`DOC-SHARDING.md`](docs/tasks/DOC-SHARDING.md)
 - [`DSP-REVIEW.md`](docs/tasks/DSP-REVIEW.md)

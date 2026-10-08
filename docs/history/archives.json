@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "archives": [
+    {
+      "object": "docs/history/sealed/4cbc226272062441fa50998df217db74f7f2a069de54690f5a9dec9e107e4be7.tar.gz",
+      "sha256": "4cbc226272062441fa50998df217db74f7f2a069de54690f5a9dec9e107e4be7",
+      "bytes": 284500,
+      "capture": "ff75610f794b60a5bbe63c432bd4c78ebe163527",
+      "members": 211,
+      "shards": 210,
+      "source_bytes": 781740,
+      "source_lines": 9639,
+      "manifest_sha256": "c3df2144b7704b316db00670a686476ca86538f032ab512d7fb07151f4e60f56",
+      "manifest_bytes": 19964,
+      "date": "2026-10-08",
+      "reason": "Approved finite history seal; ordinary archive family reached its aggregate bound."
+    }
+  ]
+}

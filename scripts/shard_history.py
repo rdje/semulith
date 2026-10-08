@@ -97,9 +97,11 @@ def manifest_rows(shard_dir: Path, root: Path) -> list[str]:
     return rows
 
 
-def next_shard_name(shard_dir: Path) -> str:
+def next_shard_name(shard_dir: Path, root: Path) -> str:
     n = 0
-    for p in shard_dir.glob("shard-*.md"):
+    from history_archive import load_archives
+    _, archived = load_archives(root)
+    for p in list(shard_dir.glob("shard-*.md")) + [Path(name) for name in archived]:
         m = re.fullmatch(r"shard-(\d+)\.md", p.name)
         if m:
             n = max(n, int(m.group(1)))
@@ -118,6 +120,11 @@ SHARD_HEADER = (
 
 def shard(root: Path, head_rel: str, shard_dir_rel: str, manifest_rel: str,
           max_bytes: int, ceiling_bytes: int, dry_run: bool = False) -> list[str]:
+    from history_archive import ArchiveRefused, load_archives
+    try:
+        load_archives(root)
+    except (ArchiveRefused, OSError) as exc:
+        raise ShardRefused(f"archive cannot be authenticated: {exc}") from exc
     log: list[str] = []
     head = root / head_rel
     shard_dir = root / shard_dir_rel
@@ -144,7 +151,7 @@ def shard(root: Path, head_rel: str, shard_dir_rel: str, manifest_rel: str,
             raise ShardRefused(
                 f"even the newest single entry leaves the head over {max_bytes} bytes — "
                 f"a shard cannot cut into an entry; the head needs a human")
-        shard_name = next_shard_name(shard_dir)
+        shard_name = next_shard_name(shard_dir, root)
         body = "".join(b for _, b in moved)
         first_id = moved[0][0].split()[0]
         last_id = moved[-1][0].split()[0]

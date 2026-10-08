@@ -105,7 +105,7 @@ answer once ceilings fire.
   `promotion: declined (the census lesson — a verbatim-move check that reuses the mover's own row filter cannot see what the filter drops — is the existing card a-survey-that-found-things-can-still-have-missed-things.md in another costume).`
 
 - ID: `LIVE-CONTAINMENT.4` — **adopt the live-document containment doctrine**
-  Status: `proposed`
+  Status: `active`
   Goal: the guide's Phase 2 (`/Volumes/SSD/Documents/github/fsmgen/docs/LIVE_DOCUMENT_SIZE_CONTAINMENT_ADOPTION_GUIDE.md`,
   read-only external policy reference; the doctrine 32,730 B): a project-owned
   `LIVE_DOCUMENT_SIZE_CONTAINMENT.md`, this repository's own inventory and classifications
@@ -119,9 +119,27 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `proposed` | immediate archive-pressure prerequisite; exact lossless prototype above, lifecycle direction before migration |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | finite archive sealed; full inventory, neutral doctrine and checker adoption remain |
 
 ## Decisions
+
+- `2026-10-08` (director approval / .4a ownership before code): the director explicitly
+  approved the proposed tracked archive of 210 older shards, with byte-exact retrieval
+  and the browsing change. Implement only this finite pressure prerequisite now.
+  Descriptor/index fail closed on unknown fields, unsafe paths, changed/missing objects,
+  oversized metadata/payload, duplicate/extra members and per-member identity mismatch.
+  The descriptor is immutable after commit; authenticate archived manifest rows alongside
+  the live SHA manifest, retaining append-only and heading uniqueness across both.
+  Keep only active rows in the live manifest so it does not grow with sealed history.
+  Preserve shard numbering across archived names to avoid reusing retired logical paths.
+  Read/check never extract to disk or invoke Git; ordinary clones retain the tracked
+  artifact. One finite terminal (three files, one sealed object) is registered without
+  raising any existing cap. A future seal needs its own owned authority/transition.
+  Add permanent positive/negative archive controls plus the existing 14 shard controls.
+  Route all temporary gate files to target on the repository volume; the current
+  freeze wrapper's unqualified mktemp violates locality when run outside the hook.
+  Verify the 211-member capture before deleting exactly its 210 proven duplicate files;
+  full logical partition and predecessor comparison must pass before commit.
 
 - `2026-10-08` (ownership before archive experiment): P4.12 e1c1 routes an immediate
   commit-continuity dependency here. At its completed doc update, docs/changelog has
@@ -145,9 +163,9 @@ answer once ceilings fire.
   0.1–0.3 % of their ceilings after their new rows were tightened to fit. Tightening wording
   to pass a cap is the guide's named anti-pattern; this tree owns the real answer.
 
-## Pending archive lifecycle decision — `.4` pressure prerequisite
+## Approved archive lifecycle decision — `.4` slice (a)
 
-**Proposed; no live history removed, no ceiling/checker changed.** The recommended
+**Approved on 2026-10-08; implemented by slice (a).** The exact capture/proposal below is retained as decision evidence. The recommended
 choice is a query-first `archive_terminal`: seal the 210 older Markdown shards and
 manifest in one immutable, tracked, content-addressed gzip/tar artifact, with a small
 tracked descriptor and a deterministic retrieval verifier. Retain recent shards and
@@ -189,7 +207,7 @@ need their own finite capture; this descriptor is not an unrestricted overflow s
 
 The lifecycle choice changes direct historical browsing. The source guide's
 Stop conditions says: “a lifecycle choice would change what users can directly browse”.
-Direction is required for this choice before any removal or migration implementation.
+The director supplied that direction on 2026-10-08 before removal or implementation.
 The cache slice can finish cleanly first; staged C/counts resume after containment.
 
 ## Open Questions
@@ -202,6 +220,43 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 - None.
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
+
+`LIVE-CONTAINMENT.4` slice (a) — approved finite archive (`2026-10-08`, `SEMULITH-LC-0004`):
+
+- [x] **ROOT CAUSE** — Python census: live archive 212 files / 784318 B, 2114 B
+  headroom; CHANGELOG 65528 B and next whole record 2377 B. Sharding scales the
+  aggregate indefinitely. Director approved the concrete tracked terminal before code.
+  Earlier e1c0 archive cap failed at 787026 B. `rg -n mktemp
+  scripts/check_changelog_shards.sh` also found a standalone off-volume temporary.
+- [x] **FIX** — seal exact ff75610 capture, retain original manifest; bounded strict
+  descriptor and content-addressed object own full-source counts/digests. Read/check
+  authenticates all members without Git or extraction. Freeze gate authenticates the
+  live/archive logical union, immutable predecessor descriptors and heading/location
+  uniqueness. Sharder preserves retired names; gate comparison files use target/.
+  Retire only exact copied duplicates after verification. Register one finite terminal
+  with count 3 / bytes 304980 derived from immutable object plus bounded metadata.
+  Existing ceilings unchanged; full doctrine/inventory adoption remains open in .4.
+- [x] **ADDRESSED (verified)** — Python copy/verify: 210 original shards plus manifest,
+  211 members / 781740 source B / 9639 lines; every source equals its captured Git blob
+  and digest, archive digest 4cbc226272062441fa50998df217db74f7f2a069de54690f5a9dec9e107e4be7.
+  Post-retirement residue: zero retired files, recent 0209 retained. Reader rc=0:
+  HISTORY-ARCHIVE ok (one object, 210 authenticated shards). Freeze rc=0: 213 logical
+  rows after two new ordinary cuts. docs/changelog: four files / 8039 B; terminal:
+  three files / 287216 B. Self-test 31 pass / 0 fail (old 14 + GREEN/sixteen RED).
+  Controlled no-Git fixture retrieves exact bytes and predecessor row, preserves
+  retired number 0042→0043, and corruption/path/bounds/schema/duplicates refuse.
+- [x] **NO REGRESSION** — sharder self-test 12 pass / 0 fail; all earlier freeze
+  controls retained. New head cuts print completeness: CHANGELOG 69 == 68 kept + one
+  moved, 65977→63601 B; DEV_NOTES 32 == 31 kept + one moved, 49408→46983 B, order/bytes
+  exact. Full logical predecessor digest proof includes all 211 pre-transition rows.
+  No Rust, profile or expectation changes. CI-RECOVERY logs three hosted failures and
+  the additional Linux nightly-name defect; local green does not certify hosted CI.
+- [x] **LOCKSTEP** — live docs, tree/index, CI ownership tree, book, toolbox/doctrine,
+  route registry, tracked terminal/descriptor updated. DERIVED-COUNTS derives 37 routes
+  and 599 arms; source capture preserved for independent reconstruction. Tool gates,
+  book build and commit gate must be green before closure of this slice.
+  promotion: declined (strict descriptor and seventeen archive controls encode the lesson).
+
 
 `LIVE-CONTAINMENT.1` — the closed-tree register (`2026-10-06`, `SEMULITH-LC-0001`):
 
@@ -304,6 +359,22 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+The first commit gate refused the descriptor because FIXTURE-FINGERPRINT resolves
+`path` relative to the record directory, while this terminal uses repository-root
+identity. The new schema explicitly names its root-relative `object`; SHARD-FREEZE
+authenticates that object and every source member, without changing or excluding the
+generic fingerprint contract. The frozen object bytes and digests are unchanged.
+
+Additional locality defect owned by `.4`: `scripts/check_task_acceptance.sh` uses
+unqualified `mktemp -d`; `printf '%s\n' "$TMPDIR"` on this host returned the OS
+temporary directory rather than the repository. The doctrine driver does not override
+it. Other standalone entrypoints require a targeted census before a common repair.
+Priority: establish repository-local TMPDIR for ongoing runs immediately; schedule the
+entrypoint census/repair in `.4` after CI-RECOVERY and before broader containment work.
+Do not delete shared OS temporary content or claim standalone locality already fixed.
+
+Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 31/31, sharder 12/12; terminal 287216 B, ordinary shards 8039 B; gates/books at commit.
+
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 | `2026-10-06` | `.3` | the section census; the verbatim moves (35 + 76 rows, each exactly once — the first pass's dropped row caught by a positional census); REGISTRY-MIRROR's project scope (13/13; the union RED on a removed row); the families registered | **met** — DOCTRINE_ENFORCEMENT ~11 KB, TOOLBOX ~3.2 KB; the next tool and doctrine fit |
@@ -311,6 +382,8 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0004 (leaf LIVE-CONTAINMENT.4): seal the approved history archive with authenticated retrieval` — slice (a); full adoption remains.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |

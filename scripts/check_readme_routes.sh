@@ -32,7 +32,7 @@ set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
 REGISTRY="doctrine/readme_routes.tsv"
-KNOWN_LIFECYCLES="hot_live partitioned generated_index append_history frozen normative"
+KNOWN_LIFECYCLES="hot_live partitioned generated_index append_history frozen normative archive_terminal"
 
 # The two-tier per-part rule (decision_derived-members-of-bounded-families, P5-BOARD.12):
 # the per-part byte ceiling's founding failure mode is silent accretion in hand-maintained

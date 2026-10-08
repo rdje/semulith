@@ -250,6 +250,11 @@ schema/	reader_navigation	partitioned	the schema language and per-family constru
 #   per-part unchanged; health 6 -> 161 files / 580,654 B. Reviewed decision:
 #   docs/decisions/decision_changelog-family-count-rederivation.md.
 docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG.md since 2026-09-27, DEV_NOTES.md since the same day); entries are never edited after the shard	161	580654	320	786432	65536
+# LIVE-CONTAINMENT.4 slice (a) (2026-10-08): approved finite archive terminal, 210 shards.
+# One immutable 284500-byte object plus descriptor <=16384 and front door <=4096:
+# ceiling bytes =304980, count=3. Exact artifact/descriptor identity and retrieval
+# run unconditionally under SHARD-FREEZE; no existing ceiling is raised.
+docs/history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4 slice (a); finite sealed object, descriptor and retrieval front door; SHARD-FREEZE authenticates	3	288000	3	304980	0
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 # Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:
 #   docs/push-approvals.md  1,045 B at adoption (the header alone; zero entries today).

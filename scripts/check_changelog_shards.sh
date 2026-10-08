@@ -14,10 +14,10 @@
 #                  at nothing is a promise about a file that does not exist.
 #   2. FROZEN      every shard hashes to its row — one edited byte after the shard fails here,
 #                  with the file and both digests named.
-#   3. APPEND-ONLY every row committed at HEAD is present, unchanged, in the working manifest —
+#   3. APPEND-ONLY every predecessor row is unchanged in the live/archived logical union —
 #                  history may grow, it may never be rewritten. Judged against
 #                  `git show HEAD:docs/changelog/SHARDS.sha256`.
-#   4. UNIQUE      no `## ` entry heading appears twice across the live heads and the shards —
+#   4. UNIQUE      no heading appears twice across live heads/shards and authenticated archives —
 #                  the heads are independent histories, but a heading carried twice anywhere in
 #                  the family means the partition lost or copied an entry (or a head repeats its
 #                  own), and with unit-id/date-prefixed headings a real collision cannot fire
@@ -32,6 +32,8 @@
 # committed manifest onward. The shard EVENT's completeness (head-before == head-after + shard,
 # order and bytes exact) is the tool's proof, printed at the event and recorded in the tree.
 #
+# Sealed terminal descriptors/objects are authenticated by history_archive.py on every run;
+# committed descriptors remain immutable. Temporary comparison files stay under target/.
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
 set -uo pipefail
@@ -43,105 +45,7 @@ command -v python3 >/dev/null 2>&1 || {
 # $1 root  $2 shard dir rel  $3 manifest rel  $4 previous-manifest file ("" = none)
 # $5... live append-history heads (rels)
 check_shards() {
-python3 - "$@" <<'PY'
-import hashlib, re, sys, pathlib
-
-root = pathlib.Path(sys.argv[1])
-shard_rel, manifest_rel, prev_path = sys.argv[2:5]
-heads = [root / h for h in sys.argv[5:]]
-shard_dir = root / shard_rel
-manifest = root / manifest_rel
-findings = []
-
-ROW = re.compile(r"^(?P<digest>[0-9a-f]{64})  (?P<path>\S+)$")
-ENTRY = re.compile(r"^## (.+)$", re.M)
-
-shards = sorted(shard_dir.glob("*.md")) if shard_dir.is_dir() else []
-rows: list[tuple[str, str, int]] = []           # (digest, path, lineno)
-if manifest.is_file():
-    for n, line in enumerate(manifest.read_text().splitlines(), 1):
-        if not line.strip():
-            continue
-        m = ROW.match(line)
-        if not m:
-            findings.append(f"MALFORMED  {manifest_rel}:{n}: not a sha256sum row — "
-                            f"'{line}' — the manifest is data, not prose")
-            continue
-        rows.append((m.group("digest"), m.group("path"), n))
-
-if not shards and not rows:
-    print(f"NO SHARDS  {shard_rel} holds no shard and {manifest_rel} no rows — "
-          f"a freeze check with nothing frozen cannot judge")
-    print("__CHECKED__ 0"); sys.exit(2)
-
-# 1. COVERAGE ----------------------------------------------------------------------
-by_path = {}
-for digest, rel, n in rows:
-    by_path.setdefault(rel, []).append((digest, n))
-for rel, dups in sorted(by_path.items()):
-    if len(dups) > 1:
-        findings.append(f"DUPLICATE ROW {manifest_rel}: '{rel}' is manifested "
-                        f"{len(dups)} times (lines {[n for _, n in dups]})")
-for p in shards:
-    rel = p.relative_to(root).as_posix()
-    if rel not in by_path:
-        findings.append(f"UNMANIFESTED {rel}: a shard with no manifest row is frozen by nobody")
-for rel, entries in sorted(by_path.items()):
-    p = root / rel
-    if not p.is_file():
-        findings.append(f"MISSING     {rel}: manifested but does not exist")
-    elif p.parent != shard_dir:
-        findings.append(f"NOT A SHARD {rel}: the manifest may only freeze *.md files directly "
-                        f"under {shard_rel}/ — {rel} escapes the partition")
-    elif p not in shards:
-        findings.append(f"NOT A SHARD {rel}: manifested but is not a *.md shard")
-
-# 2. FROZEN ------------------------------------------------------------------------
-for digest, rel, n in rows:
-    p = root / rel
-    if p.is_file() and p.parent == shard_dir:
-        actual = hashlib.sha256(p.read_bytes()).hexdigest()
-        if actual != digest:
-            findings.append(f"THAWED      {rel}: the shard changed after the shard event — "
-                            f"manifest {digest[:12]}…, file {actual[:12]}… "
-                            f"(manifest line {n}). Entries in a shard are never edited")
-
-# 3. APPEND-ONLY -------------------------------------------------------------------
-if prev_path:
-    prev = pathlib.Path(prev_path)
-    if prev.is_file():
-        current = {}
-        for digest, rel, n in rows:
-            current[rel] = digest
-        for line in prev.read_text().splitlines():
-            m = ROW.match(line)
-            if not m:
-                continue
-            rel, digest = m.group("path"), m.group("digest")
-            if rel not in current:
-                findings.append(f"REMOVED ROW {rel}: a manifest row committed at HEAD is gone — "
-                                f"the manifest only grows, history is never rewritten")
-            elif current[rel] != digest:
-                findings.append(f"MODIFIED ROW {rel}: the manifest row changed after being "
-                                f"committed — frozen means frozen, including the manifest")
-
-# 4. UNIQUE ------------------------------------------------------------------------
-seen: dict[str, str] = {}
-for label, path in [(h.name, h) for h in heads] + [(p.name, p) for p in shards]:
-    if not path.is_file():
-        continue
-    for eid in ENTRY.findall(path.read_text()):
-        if eid in seen:
-            findings.append(f"DUPLICATED ENTRY '{eid}': appears in both {seen[eid]} and "
-                            f"{label} — the partition must hold every entry exactly once")
-        else:
-            seen[eid] = label
-
-for f in findings:
-    print(f)
-print(f"__CHECKED__ {len(rows)}")
-sys.exit(1 if findings else 0)
-PY
+python3 "$ROOT/scripts/check_history_partition.py" "${HISTORY_PREVIOUS_ARCHIVES:-}" "$@"
 }
 
 self_test() {
@@ -172,7 +76,12 @@ self_test() {
     { sha256sum "$SDIR"/*.md 2>/dev/null | sed "s|$t/||"
       for extra in "$@"; do printf '%s\n' "$extra"; done; } > "$MAN"
   }
-  run() { check_shards "$t" "docs/changelog" "docs/changelog/SHARDS.sha256" \
+  run() {
+    if [ -n "${ARCHIVE_CONTROL:-}" ]; then
+      python3 scripts/probe_history_archive.py --mutation "$ARCHIVE_CONTROL"
+      return $?
+    fi
+    check_shards "$t" "docs/changelog" "docs/changelog/SHARDS.sha256" \
             "$([ -f "$t/prev.sha256" ] && printf '%s' "$t/prev.sha256")" \
             "CHANGELOG.md" "DEV_NOTES.md"; }
   arm() { # arm <name> <expected-rc> <expected-substring>
@@ -233,6 +142,42 @@ $(printf '0%s  docs/changelog/shard-0001.md' "$(sha256sum "$SDIR/shard-0001.md" 
   rm "$SDIR/shard-0002.md"; shard1; shard2; headf; manifest
   cp "$MAN" "$t/prev.sha256"
                                                               arm "GREEN committed rows unchanged under an append-only manifest" 0 "__CHECKED__ 2"
+  # Approved finite archive: identity, bounds, retrieval and logical append-only union.
+  ARCHIVE_CONTROL=green
+  arm "GREEN archive green" 0 "identity/retrieval/predecessor/numbering passed"
+  ARCHIVE_CONTROL=missing-object
+  arm "RED archive missing-object" 1 "archive object coverage differs"
+  ARCHIVE_CONTROL=object-digest
+  arm "RED archive object-digest" 1 "archive object digest differs"
+  ARCHIVE_CONTROL=unknown-field
+  arm "RED archive unknown-field" 1 "unknown archive descriptor fields"
+  ARCHIVE_CONTROL=unsafe-path
+  arm "RED archive unsafe-path" 1 "unsafe archive path"
+  ARCHIVE_CONTROL=string-count
+  arm "RED archive string-count" 1 "archive counts must be positive integers"
+  ARCHIVE_CONTROL=duplicate-key
+  arm "RED archive duplicate-key" 1 "duplicate descriptor key"
+  ARCHIVE_CONTROL=oversized-index
+  arm "RED archive oversized-index" 1 "archive index exceeds bound"
+  ARCHIVE_CONTROL=duplicate-member
+  arm "RED archive duplicate-member" 1 "duplicate archive member"
+  ARCHIVE_CONTROL=extra-member
+  arm "RED archive extra-member" 1 "extra archive member"
+  ARCHIVE_CONTROL=unsafe-member
+  arm "RED archive unsafe-member" 1 "unsafe archive member path"
+  ARCHIVE_CONTROL=shard-digest
+  arm "RED archive shard-digest" 1 "archived shard digest differs"
+  ARCHIVE_CONTROL=expansion-bound
+  arm "RED archive expansion-bound" 1 "archive expansion exceeds bound"
+  ARCHIVE_CONTROL=missing-index
+  arm "RED archive missing-index" 1 "missing archive index"
+  ARCHIVE_CONTROL=previous-descriptor
+  arm "RED archive previous-descriptor" 1 "changed or removed committed archive descriptor"
+  ARCHIVE_CONTROL=duplicate-heading
+  arm "RED archive duplicate-heading" 1 "DUPLICATED ENTRY"
+  ARCHIVE_CONTROL=duplicate-location
+  arm "RED archive duplicate-location" 1 "DUPLICATE ARCHIVED PATH"
+  ARCHIVE_CONTROL=""
   rm -rf "$t"
   printf 'SHARD-FREEZE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -244,12 +189,17 @@ $(printf '0%s  docs/changelog/shard-0001.md' "$(sha256sum "$SDIR/shard-0001.md" 
 self_test >/dev/null 2>&1 || {
   echo "SHARD-FREEZE: REFUSED — the check does not discriminate (self-test failed)." >&2; exit 2; }
 
-prev="$(mktemp)"
+mkdir -p "$ROOT/target/history-check"
+prev="$(mktemp "$ROOT/target/history-check/previous.XXXXXX")"
+HISTORY_PREVIOUS_ARCHIVES="$(mktemp "$ROOT/target/history-check/archives.XXXXXX")"
+if ! git show HEAD:docs/history/archives.json > "$HISTORY_PREVIOUS_ARCHIVES" 2>/dev/null; then
+  rm -f "$HISTORY_PREVIOUS_ARCHIVES"; HISTORY_PREVIOUS_ARCHIVES=""
+fi
 if git show HEAD:"docs/changelog/SHARDS.sha256" > "$prev" 2>/dev/null; then :; else rm -f "$prev"; prev=""; fi
 out="$(check_shards "$ROOT" "docs/changelog" "docs/changelog/SHARDS.sha256" "$prev" \
         "CHANGELOG.md" "DEV_NOTES.md")"
 rc=$?
-rm -f "$prev"
+rm -f "$prev" "$HISTORY_PREVIOUS_ARCHIVES"
 count="$(printf '%s' "$out" | sed -n 's/^__CHECKED__ //p')"
 body="$(printf '%s' "$out" | grep -v '^__CHECKED__ ' || true)"
 if [ "$rc" -eq 2 ]; then
@@ -260,7 +210,7 @@ fi
 if [ "$rc" -ne 0 ]; then
   { echo "SHARD-FREEZE: the sharded history is thawed, incomplete, or rewritten."
     printf '%s\n' "$body" | sed 's/^/  /'
-    echo "  The SHARDS are authoritative. Restore the bytes — never edit a shard or its manifest"
+    echo "  Live and archived shards are authoritative. Restore the bytes and committed descriptor"
     echo "  to make the check pass; shard_history.py grows the partition, it never rewrites it."; } >&2
   exit 1
 fi

@@ -49,7 +49,7 @@ These ship with the discipline spine and are project-neutral:
 | `DERIVED-COUNTS` | every count a live document states about an enumerable population is re-derived |
 | `RECORD-SCHEMA` | every record file validates on its track (JSONL by schema, catalogues by the schema layer), cites only pinned sources, and states what its profile states — the JSONL track on two engines, the tracked Python validator and the workspace's Rust graph checker (`P1-LAB.7`), which re-derives the PACKAGE_CHECKS rows and enforces the §3 graph invariants over the examples bundle |
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
-| `SHARD-FREEZE` | the sharded append-history is frozen and whole — every shard under `docs/changelog/` hashes to its manifest row, the manifest only grows, and no entry heading is duplicated across the live heads (`CHANGELOG.md`, `DEV_NOTES.md`) and their shards — one shard family, two heads, a shard's first line naming the head it was cut from |
+| `SHARD-FREEZE` | live and archived history is frozen and whole: authenticate live SHA rows and sealed objects/descriptors; preserve every predecessor logical row; refuse changed descriptors, unsafe paths, corrupt/oversized data and duplicate headings/locations across both heads and all history |
 | `PORT-WEB` | the crate skeleton builds for the browser target — the workspace compiles for `wasm32-unknown-unknown`, so a host-only API cannot slip into the engine unnoticed |
 | `STATE-GEN` | the generated state module is still what the state descriptor generates — drift is refused, and the generator refuses shapes it cannot emit rather than silently guessing |
 | `DEF-GEN` | the generated definition module is still what the canonical definition generates — decode tables, lowered semantics trees, and the OWN-03 manifest with definition, generator, configuration and source fingerprints; drift is refused, the generator refuses shapes it cannot emit rather than silently guessing, and a check that cannot judge refuses rather than passing |
@@ -268,3 +268,32 @@ breach. Register it: universal checks in the driver's array, project checks in
 `scripts/check_doctrines.project.sh`. Mirror it in `DOCTRINE_ENFORCEMENT.md`. Never hardcode a
 project's paths or tool names into a neutral check — that is what the `.doctrine/` seams are
 for, and the difference between adopting a portable standard and forking someone's workflow.
+
+## Reading sealed history
+
+Older changelog and development-note shards now have a query-first archive terminal.
+The 210 older shards and their manifest retain every byte, but use a tracked immutable
+compressed object instead of individual Markdown files. Recent shards and both live
+heads remain directly readable. This approved transition restores the live collection's
+headroom; sharding alone had left its aggregate at the limit.
+
+```sh
+python3 scripts/history_archive.py
+python3 scripts/history_archive.py --read docs/changelog/shard-0001.md
+```
+
+The first command verifies all identities; the second prints the original shard.
+Both work in an ordinary shallow clone without fetching history or extracting files.
+The descriptor in docs/history/archives.json names the exact source capture, source
+counts and content-addressed object. The archive's SHA manifest authenticates each
+member. A missing object, changed descriptor or bad member fails the same unconditional
+freeze gate used locally and in CI. Restore the committed bytes when that happens.
+
+The live and archived manifests form one logical partition. Moving a row into the
+archive keeps its digest and predecessor identity; it does not delete history. The
+gate checks heading uniqueness across both live heads and the complete archive, and
+the sharder includes retired filenames when allocating its next number. Thirty-one
+positive/negative controls guard these checks. This finite terminal has one object,
+a bounded descriptor and a retrieval front door; a later seal needs its own verified
+capture and transition. Full containment-doctrine adoption remains owned by
+LIVE-CONTAINMENT.4.
