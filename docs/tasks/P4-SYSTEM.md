@@ -235,9 +235,30 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (d3b): promote/repair Sail and audit prior traces; author (d3a) committed; C expansion/fetch next |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d3c): independent C author expansion; strict Sail adapter/audit (d3b) committed; fetch/budgets d3d |
 
 ## Decisions
+
+- `2026-10-08` (d3b adapter design, before changes): keep the public Sail 0.14 trace
+  protocol and the corpus's change-observation comparison, but require every ordinary
+  expected row (including empty-write instructions). A missing row is allowed only for
+  a predeclared interrupt-delivery derivation or a <fetch ...> expectation AND a matching
+  trace event at that number; event spelling is mapped to architectural cause from the
+  pinned exception/interrupt table. Unknown/malformed/duplicate/out-of-order records refuse.
+  Failed reference processes and missing/stale output refuse; each run removes only its
+  own prior trace path before launching. Build the exact assembler byte image through
+  the tracked ELF writer's public API, eliminating the scratch builder's clang/zig path
+  assumptions. Verify the binary's dossier digest and materialize the tracked override.
+  The runner's verdict is about declared change-observations, not unrecorded state.
+  Component controls are offline; live M re-run and trace-reproduction use the acquired
+  binary. Its measured instruction-limit completion returns rc=0 (m-div, limit 29).
+  Trace audit: 95 cached corpus traces inspected, including the nested Sv39 directory;
+  79 are from AGREE-claimed cells after excluding the dossier's named not-matches. None
+  misses an ordinary expected row; nine numbered interrupt deliveries and one explicitly
+  declared fetch-page-fault step have matching trace events instead. Sixteen cached
+  not-matched cells retain their named limitations. This audit addresses absence only;
+  old process statuses were not retained, so re-running selected M cells verifies status
+  and observations on the new route. Cached audit rows: target/p4-system-12/d3b/.
 
 - `2026-10-08` (author observation audit, before permission repair): 88 of 91 emitted
   legacy derivations agree with committed step/write/fetch observations; 49 text differences
@@ -657,71 +678,6 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 
-`P4-SYSTEM.12` slice (c1) — exact parcel boundary (`2026-10-08`, `SEMULITH-P4-0082`):
-
-- [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-verify parcel_fetch` exercises a
-  two-byte region containing 0x0085: the existing word fetch returns `AccessFault`;
-  no word response can represent the successful sixteen-bit read this instruction needs.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'Request::Fetch|fetch16'
-  crates/semulith-core/src/env.rs crates/semulith-core/src/exec_rv64gc.rs` pins the mismatch:
-  Fetch is fixed at 32 bits, and the helper called fetch16 sends that request before masking
-  its answer. `fixtures.rs` correctly requires all four bytes inside the region.
-- [x] **FIX** — additive `FetchParcel { addr }` / `FetchParcel(u16)` boundary types;
-  the fixture reads exactly two bytes, aligns to two, and retains immediate code visibility.
-  Fetch counters and the comparison filter recognize both implicit-read variants;
-  fault-injection spans use two bytes for a parcel. Test providers answer the new kind.
-  Production decode/fetch remains unchanged until (c2) and the bind.
-- [x] **ADDRESSED (verified)** — `make check` rc=0; the two-byte region now supplies
-  0x0085 through a parcel request (one successful fetch), while the word request still faults.
-  Odd and outside-region parcel addresses fail with their proper target errors. A store to
-  the final halfword is visible on its next parcel fetch. The injection control refuses a
-  word crossing 0x1002 but accepts the parcel at 0x1000 and refuses the parcel at 0x1002.
-- [x] **NO REGRESSION** — `make check` rc=0: fmt, strict clippy, 150 core, 17 DSP,
-  193 verify tests; both existing corpora remain green. The pre-commit doctrine gate is
-  required for this checkpoint, and `make book` checks all books. These boundary tests
-  are finite evidence; C's execution and matched-reference evidence remain (c2)–(f).
-- [x] **LOCKSTEP** — the tree, index, MEMORY, LIVE_STATUS, CHANGELOG, DEV_NOTES and C
-  chapter updated. The closed `.11` checklists moved byte-verbatim (reconstruction asserted)
-  into archive part 4 to leave room below the unchanged per-part ceiling.
-  promotion: declined (the typed boundary and its extent tests retain this local finding).
-
-`P4-SYSTEM.12` slice (c2) — the engine, proven before C binds (`2026-10-08`, `SEMULITH-P4-0083`):
-
-- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_engine.py --engine-revision b71bc1b`
-  → 0 passed / 15 failed (compiled successfully). On a temporary C composition the old
-  evaluator reads missing base operands, advances pc by four, reads a whole word for a
-  parcel and walks the next page before it knows the length; the failures name those cases.
-- [x] **ROOT CAUSE (WHY + WHERE)** — the baseline probe's panics name
-  `exec_rv64gc.rs:331` (missing rd/rs1); its compressed-last-parcel test observes pc=0,
-  x1=0 instead of 0x5000/1. `rg -n 'wrapping_add\(4\)|operands: extract|fetch16'
-  crates/semulith-core/src/exec_rv64gc.rs` pins the hard-coded length, unmapped fields and
-  over-wide request. Generation had emitted C bindings, but no evaluator consumed them.
-- [x] **FIX** — rv64gc tables always carry length and optional expansion metadata (4/None
-  while unbound). The C-enabled table reads exact parcels in order; only a 32-bit encoding
-  requests the second. It maps all operands against the original fields before replacing
-  them, retains value widths, judges reserved predicates before effects, advances pc by the
-  declared length, and exposes the instruction's own bit width through `inst`. Legacy fetch
-  remains for the unbound table; rv64i changes only its generator fingerprint.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_engine.py` → 15 passed / 0 failed.
-  Hand-written instruction words and request schedules check signed immediates and jumps at
-  their extremes, unsigned load offsets, overlapping operands, hints, reserved parcels,
-  breakpoint specificity, FP gating/dirty state, 16/32-bit intermixing, 2-mod-4 targets,
-  address wrap and malformed-environment classification. At a last halfword, C never walks
-  the next page; a word's second-parcel page fault yields cause 12 / tval=pc+2 / epc=pc,
-  and its access-fault pair yields cause 1 with the same address discipline. No fault retires.
-- [x] **NO REGRESSION** — `make check` rc=0 (150 core / 17 DSP / 193 verify tests, strict
-  clippy and fmt). `bash scripts/check_definition_gen.sh --self-test` → 54/54: the new
-  compiled-engine GREEN and both RED mutations execute (erased mapped widths fail the
-  signed-immediate test; word-for-parcel fetch fails the mixed-length/region-end test).
-  The permanent probe runs within DEF-GEN on every commit. `git diff` on rv64i's generated
-  module shows only the generator hash changed. C remains unbound in production until (e);
-  the full corpus and matched Sail evidence remain (d)–(f), never claimed by these probes.
-- [x] **LOCKSTEP** — the tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged), task
-  index, CHANGELOG, DEV_NOTES, toolbox/doctrine descriptions, and C chapter. Two stale
-  FP open-question rows corrected from `.7`'s committed result. All books must build and
-  the commit doctrine gate must pass. `check_derived_counts.sh --list` re-derives 493 arms.
-  promotion: declined (the permanent engine probe and its RED controls retain the lesson).
-
 `P4-SYSTEM.12` slice (d1) — assemble parcels without padding (`2026-10-08`, `SEMULITH-P4-0084`):
 
 - [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_assembler.py --assembler-revision
@@ -825,6 +781,44 @@ never raised, at every crossing. The index:
   promotion: declined (the tracked producer, owned corpus and mutation probes retain this
   bounded authoring lesson; the Sail absence repair is scheduled before its next use).
 
+`P4-SYSTEM.12` slice (d3b) — Sail requires evidence of every declared step (`2026-10-08`, `SEMULITH-P4-0087`):
+
+- [x] **REPRODUCE / ISSUE** — `target/p4-system-12/d3-sail-gap.log` records the scratch
+  comparator returning AGREE for a failed process, empty trace and one ordinary no-write
+  expectation. The mock process reports rc=1; the result claims 1 steps exact. The producer
+  and builder lived only in target/p4-system-11/sail and depended on fixed clang/zig paths.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `sed -n '64,86p'
+  target/p4-system-11/sail/compare_sail.py` pins missing-row acceptance whenever wanted
+  writes are empty; `rg -n 'proc|returncode|words|CLANG'` over its comparator/builder shows
+  unjudged process status and word-only materialization. Existing delivery gaps were
+  generalized to arbitrary absence, admitting false agreement. Prior process statuses
+  were not retained; cached-trace audit can establish row evidence, not recover those statuses.
+- [x] **FIX** — tracked run_rv64gc_sail.py: exact byte ELF through the assembler/writer's
+  public API, dossier binary digest check, matched override materialized by its existing
+  owner, successful process required, stale own trace removed before launch, two runs and
+  byte-identical reproduction. Every ordinary expected row required. A declared interrupt
+  or fetch-delivery gap also needs the matching numbered public trace event. Malformed,
+  duplicate, unknown and orphan records refuse. Verdict covers declared GPR changes only.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_sail.py` rc=0: ordinary empty-write
+  rows, witnessed interrupt/fetch gaps, wrong cause, absent events, failed status, malformed/
+  duplicate/orphan records, x0/index legality, empty budget, write divergence and stale-output
+  controls. All four mutations are RED (missing-row acceptance, ignored status, unwitnessed
+  gap and stale trace reuse). Live `run_rv64gc_sail.py m-mul m-div m-word m-alias` rc=0 →
+  4 AGREE of 4 (99 steps), two exact traces each. A temporary C composition's 14-byte image
+  agrees on five independently derived writes, addresses and words, two exact traces.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 35 pass / 0 fail.
+  Strict cached audit: 79/79 AGREE-claimed trace cells pass the new adapter; no ordinary
+  row missing. Nine interrupt deliveries and one fetch-page fault instead carry matching
+  events. 95 total cached corpus traces inspected; sixteen dossier-declared not-matches
+  retain their limitations. Audit outputs in target/p4-system-12/d3b; live M checks current
+  status/digest/config plus observations. No source record, pin or production engine changed.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 512 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, assembler/C book chapters.
+  Completed .12 c1/c2 checklists appended byte-verbatim to part 5 with reconstruction asserted.
+  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 512 arms.
+  promotion: declined (the permanent adapter/probe and four mutations retain this scoped
+  absence lesson; the comparison policy's wider landing remains .14).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -834,6 +828,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (d3b) | 79/79 cached strict checks; live M 4/4 + C image; 4 RED controls; GUEST-GEN 35/35 | strict tracked Sail adapter; absence defect closed; C author next |
 | `2026-10-08` | `.12` slice (d3a) | 42 exact owned records; 7 reserved + permission probes; 6 RED controls; GUEST-GEN 30/30 | author tracked and repaired; 169 permission observations agree; Sail repair next |
 | `2026-10-08` | `.12` slice (d2) | 2 compiled image/runner probes, 2 RED controls; GUEST-GEN 23/23; make check | exact bytes ready; 188 old images/expectations unchanged; (d3) producers next |
 | `2026-10-08` | `.12` slice (d1) | 37 forms, 21 refusals, exact bytes; 3 RED controls; GUEST-GEN 20/20; corpus 77/77 | assembler ready; old guests unchanged; (d2) image generator/runner next |
@@ -885,6 +880,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice d3b) | `SEMULITH-P4-0087 (leaf P4-SYSTEM.12): track the parcel-capable Sail runner and refuse absent reference evidence` | (d3c) C author expansion next |
 | `.12` (slice d3a) | `SEMULITH-P4-0086 (leaf P4-SYSTEM.12): track the spec-side expectation author and repair its encoding and permission checks` | (d3b) Sail repair/audit next |
 | `.12` (slice d2) | `SEMULITH-P4-0085 (leaf P4-SYSTEM.12): carry exact guest byte images through generation and the rv64gc runner` | (d3) author/Sail tools next |
 | `.12` (slice d1) | `SEMULITH-P4-0084 (leaf P4-SYSTEM.12): assemble compressed instructions and preserve exact byte images` | (d2) generator/runner next |
@@ -933,6 +929,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (d3b) done: tracked strict Sail runner, 79/79 cached checks,
+  live M 4/4 and mixed C image, repeat traces exact; four absence mutations discriminate.
 
 - `2026-10-08`: `.12` (d3a) done: spec-side author tracked with non-writing checks,
   42-record owned corpus, reserved guards and SUM/MXR/U repair; six mutation controls.

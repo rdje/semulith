@@ -284,6 +284,18 @@ PY
   out="$(python3 scripts/probe_gc_author.py --mutation ignore-user 2>&1)"; rc=$?
   arm "RED a missing U-mode permission gate is caught" "$rc" 1 "$out" "U mode cannot read an S page"
 
+  # d3b: absent ordinary rows/process output must never become reference agreement.
+  out="$(python3 scripts/probe_gc_sail.py 2>&1)"; rc=$?
+  arm "GREEN strict Sail rows and witnessed delivery gaps" "$rc" 0 "$out" "failed processes and stale traces passed"
+  out="$(python3 scripts/probe_gc_sail.py --mutation permit-missing 2>&1)"; rc=$?
+  arm "RED absent ordinary no-write steps cannot agree" "$rc" 1 "$out" "empty ordinary no-write trace accepted"
+  out="$(python3 scripts/probe_gc_sail.py --mutation ignore-status 2>&1)"; rc=$?
+  arm "RED failed reference processes cannot agree" "$rc" 1 "$out" "failed reference process accepted"
+  out="$(python3 scripts/probe_gc_sail.py --mutation unwitnessed-gap 2>&1)"; rc=$?
+  arm "RED declared delivery gaps still need trace events" "$rc" 1 "$out" "unwitnessed delivery gap accepted"
+  out="$(python3 scripts/probe_gc_sail.py --mutation keep-stale 2>&1)"; rc=$?
+  arm "RED stale traces cannot stand in for a new run" "$rc" 1 "$out" "stale traces accepted as a new run"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

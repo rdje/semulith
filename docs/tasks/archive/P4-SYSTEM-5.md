@@ -160,3 +160,70 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   promotion: declined (the slice's findings are local reader/emitter adaptations; the permanent
   probe and its RED controls retain the evidence)
 
+<!-- d3b crossing: c1/c2 appended verbatim -->
+
+`P4-SYSTEM.12` slice (c1) — exact parcel boundary (`2026-10-08`, `SEMULITH-P4-0082`):
+
+- [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-verify parcel_fetch` exercises a
+  two-byte region containing 0x0085: the existing word fetch returns `AccessFault`;
+  no word response can represent the successful sixteen-bit read this instruction needs.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'Request::Fetch|fetch16'
+  crates/semulith-core/src/env.rs crates/semulith-core/src/exec_rv64gc.rs` pins the mismatch:
+  Fetch is fixed at 32 bits, and the helper called fetch16 sends that request before masking
+  its answer. `fixtures.rs` correctly requires all four bytes inside the region.
+- [x] **FIX** — additive `FetchParcel { addr }` / `FetchParcel(u16)` boundary types;
+  the fixture reads exactly two bytes, aligns to two, and retains immediate code visibility.
+  Fetch counters and the comparison filter recognize both implicit-read variants;
+  fault-injection spans use two bytes for a parcel. Test providers answer the new kind.
+  Production decode/fetch remains unchanged until (c2) and the bind.
+- [x] **ADDRESSED (verified)** — `make check` rc=0; the two-byte region now supplies
+  0x0085 through a parcel request (one successful fetch), while the word request still faults.
+  Odd and outside-region parcel addresses fail with their proper target errors. A store to
+  the final halfword is visible on its next parcel fetch. The injection control refuses a
+  word crossing 0x1002 but accepts the parcel at 0x1000 and refuses the parcel at 0x1002.
+- [x] **NO REGRESSION** — `make check` rc=0: fmt, strict clippy, 150 core, 17 DSP,
+  193 verify tests; both existing corpora remain green. The pre-commit doctrine gate is
+  required for this checkpoint, and `make book` checks all books. These boundary tests
+  are finite evidence; C's execution and matched-reference evidence remain (c2)–(f).
+- [x] **LOCKSTEP** — the tree, index, MEMORY, LIVE_STATUS, CHANGELOG, DEV_NOTES and C
+  chapter updated. The closed `.11` checklists moved byte-verbatim (reconstruction asserted)
+  into archive part 4 to leave room below the unchanged per-part ceiling.
+  promotion: declined (the typed boundary and its extent tests retain this local finding).
+
+`P4-SYSTEM.12` slice (c2) — the engine, proven before C binds (`2026-10-08`, `SEMULITH-P4-0083`):
+
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_engine.py --engine-revision b71bc1b`
+  → 0 passed / 15 failed (compiled successfully). On a temporary C composition the old
+  evaluator reads missing base operands, advances pc by four, reads a whole word for a
+  parcel and walks the next page before it knows the length; the failures name those cases.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the baseline probe's panics name
+  `exec_rv64gc.rs:331` (missing rd/rs1); its compressed-last-parcel test observes pc=0,
+  x1=0 instead of 0x5000/1. `rg -n 'wrapping_add\(4\)|operands: extract|fetch16'
+  crates/semulith-core/src/exec_rv64gc.rs` pins the hard-coded length, unmapped fields and
+  over-wide request. Generation had emitted C bindings, but no evaluator consumed them.
+- [x] **FIX** — rv64gc tables always carry length and optional expansion metadata (4/None
+  while unbound). The C-enabled table reads exact parcels in order; only a 32-bit encoding
+  requests the second. It maps all operands against the original fields before replacing
+  them, retains value widths, judges reserved predicates before effects, advances pc by the
+  declared length, and exposes the instruction's own bit width through `inst`. Legacy fetch
+  remains for the unbound table; rv64i changes only its generator fingerprint.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_engine.py` → 15 passed / 0 failed.
+  Hand-written instruction words and request schedules check signed immediates and jumps at
+  their extremes, unsigned load offsets, overlapping operands, hints, reserved parcels,
+  breakpoint specificity, FP gating/dirty state, 16/32-bit intermixing, 2-mod-4 targets,
+  address wrap and malformed-environment classification. At a last halfword, C never walks
+  the next page; a word's second-parcel page fault yields cause 12 / tval=pc+2 / epc=pc,
+  and its access-fault pair yields cause 1 with the same address discipline. No fault retires.
+- [x] **NO REGRESSION** — `make check` rc=0 (150 core / 17 DSP / 193 verify tests, strict
+  clippy and fmt). `bash scripts/check_definition_gen.sh --self-test` → 54/54: the new
+  compiled-engine GREEN and both RED mutations execute (erased mapped widths fail the
+  signed-immediate test; word-for-parcel fetch fails the mixed-length/region-end test).
+  The permanent probe runs within DEF-GEN on every commit. `git diff` on rv64i's generated
+  module shows only the generator hash changed. C remains unbound in production until (e);
+  the full corpus and matched Sail evidence remain (d)–(f), never claimed by these probes.
+- [x] **LOCKSTEP** — the tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged), task
+  index, CHANGELOG, DEV_NOTES, toolbox/doctrine descriptions, and C chapter. Two stale
+  FP open-question rows corrected from `.7`'s committed result. All books must build and
+  the commit doctrine gate must pass. `check_derived_counts.sh --list` re-derives 493 arms.
+  promotion: declined (the permanent engine probe and its RED controls retain the lesson).
+

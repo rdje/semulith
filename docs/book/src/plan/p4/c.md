@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d3a; Sail/C authoring tools and production bind next)
+**Status:** Underway (slices a–d3b; C authoring/fetch tools and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -101,8 +101,20 @@ and six mutations guard the repairs, without using the instruction engine as an 
 The author still has a bounded vocabulary: C expansion and instruction-fetch translation
 follow in later slices. Existing records keep their original provenance.
 
-The production profile still declares C unbound. Next is the tracked Sail adapter and a repair
-for its scratch comparator, which could accept an absent ordinary no-write step as agreement.
-Prior experiment traces will be audited for that gap. C authoring and parcel fetch follow;
-the specification-derived corpus and C bind land together, then the matched Sail experiment.
-These probes are finite component evidence.
+Slice (d3b) tracks the Sail runner and repairs that comparator. Every ordinary expected
+instruction needs a row, including instructions that change no register. A declared
+interrupt or fetch-fault step instead needs a matching trace event. Failed processes,
+stale output and malformed traces refuse. Two executions must reproduce the same trace.
+The runner builds exact byte images with the tracked ELF writer, checks the binary pin,
+and derives the matched configuration from its source.
+
+The audit inspected 95 cached corpus traces. All 79 from previously agreeing cells pass
+the stricter comparison; their gaps are nine declared interrupt deliveries and one fetch
+page fault, each witnessed by an event. The sixteen known not-matches keep their named
+limitations. Cached process statuses were not retained. A fresh run of all four M programs
+checks successful status and agrees on 99 steps, with identical repeat traces. A temporary
+mixed C image also agrees on its five hand-derived addresses, words and writes.
+
+The production profile still declares C unbound. Independent C authoring and parcel fetch
+follow; the specification-derived corpus and C bind land together, then the matched Sail
+experiment. These probes are finite component evidence.

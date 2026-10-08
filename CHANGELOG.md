@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0087 (leaf P4-SYSTEM.12, slice d3b) — strict tracked Sail runner
+
+- Exact byte ELF, pinned binary/config, process status, fresh trace and repeat checks;
+  every ordinary row required, delivery gaps require events. Four mutations fail;
+  GUEST-GEN 35/35. All 79 cached AGREE-claimed cells pass the stricter adapter; live
+  M 4/4 (99 steps) and a temporary mixed C image agree, repeat traces exact.
+  Production C remains unbound; independent C authoring next.
+
 ## SEMULITH-P4-0086 (leaf P4-SYSTEM.12, slice d3a) — the tracked expectation author
 
 - Promoted the spec-side producer with repository-derived paths and non-writing checks;

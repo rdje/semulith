@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — absence is not a no-write instruction (P4-SYSTEM.12 d3b)
+
+The scratch comparator skipped any absent row whose expected writes were empty and ignored
+process status. A failed process with an empty trace could agree with an ordinary nop.
+The tracked adapter requires every ordinary row and successful fresh output. A declared
+interrupt or fetch-delivery gap instead needs its matching numbered trace event; unknown,
+malformed, duplicate and orphan records refuse. Exact assembler bytes pass through the
+tracked ELF writer's public API, removing the scratch compiler-path assumptions. The binary
+is digest-checked against the dossier and the override comes from the existing conversion
+owner. Two executions must produce byte-identical traces. Comparison remains declared GPR
+change-observations, not unrecorded state.
+
+- Validation: four behavioral absence mutations RED; GUEST-GEN 35/35. All 95 cached corpus
+  traces audited: 79 from AGREE-claimed cells pass the new comparator (nine interrupt and
+  one fetch-page-fault event gaps, no ordinary gaps); sixteen named not-matches unchanged.
+  Cached process statuses are unavailable. Fresh M 4/4 verifies status and 99 observations,
+  with repeat traces identical. A temporary mixed C image verifies five hand-derived pcs,
+  words and writes, including a word at 2-mod-4 and a trailing parcel; repeats identical.
+- Promotion: declined — the permanent adapter, offline probe and mutation controls retain
+  this local lesson. Wider experimental policy remains owned by P4-SYSTEM.14.
+
 ## _(2026-10-08)_ — an author is an input worth tracking (P4-SYSTEM.12 d3a)
 
 The latest rv64gc expectation producer lived only in target/. Promotion retains its spec-side

@@ -225,6 +225,32 @@ outright (`elfloader.cc` asserts `e_shstrndx < e_shnum`, and `0 < 0` is false). 
 artifact rather than carry a per-model variant — an input only one comparator accepts is not
 a matched experiment.
 
+## Running the rv64gc Sail experiment
+
+The tracked adapter builds an ELF from the exact byte image and runs the binary pinned by
+the profile's reference dossier. It materializes the matched override through the existing
+conversion owner. For example, with the reference binary acquired:
+
+```sh
+python3 scripts/run_rv64gc_sail.py m-mul m-div m-word m-alias \
+  --out-dir target/rv64gc-sail
+```
+
+Each guest runs twice. Both processes must succeed, produce fresh trace files and yield
+byte-identical traces. Every ordinary expected instruction needs a trace row, even if it
+changes no register. A declared interrupt-delivery or fetch-fault gap instead needs its
+matching trace event. An empty or truncated trace cannot agree just because a missing
+instruction writes nothing. Malformed, duplicate and unknown records refuse by name.
+
+```sh
+# cached row evidence can be checked without launching a reference process:
+python3 scripts/run_rv64gc_sail.py --check-trace target/rv64gc-sail/m-div.0.trace m-div
+```
+
+The cached check explicitly says that process status is unavailable. The verdict covers
+the declared register change-observations, with finite-input scope; it does not certify
+unrecorded state or turn a component run into profile acceptance.
+
 ## The refusal discipline
 
 Every failure is an `AsmError` that names what could not be derived — an unknown mnemonic, a
