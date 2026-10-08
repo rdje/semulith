@@ -109,7 +109,7 @@ def next_shard_name(shard_dir: Path) -> str:
 SHARD_HEADER = (
     "# {head} shard — {first} … {last}\n"
     "\n"
-    "> Sharded from `{head}.md` when it crossed its {kib} KiB ceiling "
+    "> Sharded from `{head}.md` under its {kib} KiB ceiling "
     "(`doctrine/readme_routes.tsv`).\n"
     "> Entries in a shard are **never edited after the shard** — git history is canonical.\n"
     "\n"
@@ -299,7 +299,8 @@ def self_test() -> int:
                 (lambda s: (
                     eq(s.startswith("# DEV_NOTES shard — _(2026-09-27)_"), True),
                     eq("`DEV_NOTES.md`" in s, True),
-                    eq("crossed its 48 KiB ceiling" in s, True),
+                    eq("under its 48 KiB ceiling" in s, True),
+                    eq("when it crossed" in s, False),
                     eq("64 KiB" in s, False)))(
                     dev_shard[0].read_text())))
         arm("GREEN re-sharding CHANGELOG keeps the .1 header shape (64 KiB, named CHANGELOG)",
@@ -309,7 +310,8 @@ def self_test() -> int:
                     eq(any("sharded" in l for l in logs), True),
                     (lambda p: (
                         eq(p.read_text().startswith("# CHANGELOG shard — o3"), True),
-                        eq("crossed its 64 KiB ceiling" in p.read_text(), True)))(
+                        eq("under its 64 KiB ceiling" in p.read_text(), True),
+                        eq("when it crossed" in p.read_text(), False)))(
                         sorted((td / "docs/changelog").glob("shard-*.md"))[-1])))(
                     shard(td, "CHANGELOG.md", "docs/changelog",
                           "docs/changelog/SHARDS.sha256", 50, 65536))))

@@ -293,3 +293,80 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 500 arms.
   promotion: declined (the permanent runner probe and its mutations preserve this lesson).
 
+
+`P4-SYSTEM.12` slice (d3a) — the tracked spec-side author (`2026-10-08`, `SEMULITH-P4-0086`):
+
+- [x] **REPRODUCE / ISSUE** — `rg --files scripts` found no tracked GC author; the producer
+  lived at target/p4-system-11/tools/derive_expectations.py (sha256
+  71269627672a608885b67ede326b57f779f58a7eeee219b3b983ac26982fea53). The 139-guest census
+  found 42 exact records, 49 different outputs and 48 refusals. execute accepted reserved
+  0x04000033 / 0x04001013 / 0x04004033 as sub/slli/xor. Its permission audit mismatched
+  sv39-perm-usr at step 120 (SUM=1 rejected) and later MXR (178 vs 169 steps).
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'ROOT|sys.path|funct7|self.mode == S|not r'
+  target/p4-system-11/tools/derive_expectations.py` pins scratch-relative imports, OP's
+  unconstrained funct7, shifts' missing upper-bit check, and data walk's absent SUM/MXR/U
+  permission rules. The pinned supervisor.html lines 650–670/2478–2490 require SUM data
+  access, prohibit S instruction fetch from U pages, and permit X-only reads with MXR.
+  dir-runoff and sv39-straddle's differences trace to source-end stopping and absent fetch
+  translation; d3d owns those explicit scope gaps, not a claim of full legacy author coverage.
+- [x] **FIX** — tracked derive_rv64gc_expectations.py, repository-derived paths, --check and
+  --check-owned, all derivations computed before any write. The measured 42-record owned
+  corpus is explicit. Narrow OP/shift/misc-mem guards refuse reserved/unsupported shapes;
+  missing stock rules produce named Refusal instead of KeyError. SUM/MXR/U permission
+  rules repaired from the pinned chapter. No expectation record overwritten or fitted.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_author.py` rc=0 → 42 guest(s)
+  byte-identical; 7 reserved words refuse without effects; named LBU vocabulary refusal;
+  SUM data/fetch, U-bit and MXR direct PTE fixtures passed. All six mutations are RED:
+  OP guard, shift guard, signed division rounding, SUM, MXR and U-bit. Before the small
+  permission repair, all 91 legacy texts matched the original producer; afterwards 90 stay
+  exact and repaired sv39-perm-usr matches all 169 committed step/write observations.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 30 pass / 0 fail;
+  both generated fixtures still match and base-mirror checks hold. The probe and six RED
+  controls run on every commit. The 42 owned records stay byte-identical, and no tracked
+  guest/expectation or production engine changed. Broader legacy fetch/budget authoring
+  remains d3d; C expansions d3c. The Sail absence defect remains owned by immediate d3b.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 507 arms),
+  task index, CHANGELOG, DEV_NOTES, toolbox/doctrine, assembler/C book chapters. Completed
+  .12 a/a2/b checklists archived verbatim to part 5 with identity reconstruction asserted.
+  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 507 arms.
+  promotion: declined (the tracked producer, owned corpus and mutation probes retain this
+  bounded authoring lesson; the Sail absence repair is scheduled before its next use).
+
+`P4-SYSTEM.12` slice (d3b) — Sail requires evidence of every declared step (`2026-10-08`, `SEMULITH-P4-0087`):
+
+- [x] **REPRODUCE / ISSUE** — `target/p4-system-12/d3-sail-gap.log` records the scratch
+  comparator returning AGREE for a failed process, empty trace and one ordinary no-write
+  expectation. The mock process reports rc=1; the result claims 1 steps exact. The producer
+  and builder lived only in target/p4-system-11/sail and depended on fixed clang/zig paths.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `sed -n '64,86p'
+  target/p4-system-11/sail/compare_sail.py` pins missing-row acceptance whenever wanted
+  writes are empty; `rg -n 'proc|returncode|words|CLANG'` over its comparator/builder shows
+  unjudged process status and word-only materialization. Existing delivery gaps were
+  generalized to arbitrary absence, admitting false agreement. Prior process statuses
+  were not retained; cached-trace audit can establish row evidence, not recover those statuses.
+- [x] **FIX** — tracked run_rv64gc_sail.py: exact byte ELF through the assembler/writer's
+  public API, dossier binary digest check, matched override materialized by its existing
+  owner, successful process required, stale own trace removed before launch, two runs and
+  byte-identical reproduction. Every ordinary expected row required. A declared interrupt
+  or fetch-delivery gap also needs the matching numbered public trace event. Malformed,
+  duplicate, unknown and orphan records refuse. Verdict covers declared GPR changes only.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_sail.py` rc=0: ordinary empty-write
+  rows, witnessed interrupt/fetch gaps, wrong cause, absent events, failed status, malformed/
+  duplicate/orphan records, x0/index legality, empty budget, write divergence and stale-output
+  controls. All four mutations are RED (missing-row acceptance, ignored status, unwitnessed
+  gap and stale trace reuse). Live `run_rv64gc_sail.py m-mul m-div m-word m-alias` rc=0 →
+  4 AGREE of 4 (99 steps), two exact traces each. A temporary C composition's 14-byte image
+  agrees on five independently derived writes, addresses and words, two exact traces.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 35 pass / 0 fail.
+  Strict cached audit: 79/79 AGREE-claimed trace cells pass the new adapter; no ordinary
+  row missing. Nine interrupt deliveries and one fetch-page fault instead carry matching
+  events. 95 total cached corpus traces inspected; sixteen dossier-declared not-matches
+  retain their limitations. Audit outputs in target/p4-system-12/d3b; live M checks current
+  status/digest/config plus observations. No source record, pin or production engine changed.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 512 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, assembler/C book chapters.
+  Completed .12 c1/c2 checklists appended byte-verbatim to part 5 with reconstruction asserted.
+  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 512 arms.
+  promotion: declined (the permanent adapter/probe and four mutations retain this scoped
+  absence lesson; the comparison policy's wider landing remains .14).
+

@@ -24,7 +24,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--engine-revision')
-    control.add_argument('--mutation', choices=['erase-expansion-widths', 'word-parcel-read'])
+    control.add_argument('--mutation', choices=['erase-expansion-widths', 'word-parcel-read', 'short-ilen'])
     args = parser.parse_args()
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
@@ -57,6 +57,7 @@ def main():
                     ('Ok(Response::FetchParcel(parcel)) => Ok(parcel)',
                      'Ok(Response::Fetch(parcel)) => Ok(parcel as u16)'),
                 ],
+                'short-ilen': [('if lo & 3 != 3 {', 'if lo & 3 != 3 || lo & 0x1f == 0x1f {')],
             }
             for old, new in changes[args.mutation]:
                 if text.count(old) != 1:

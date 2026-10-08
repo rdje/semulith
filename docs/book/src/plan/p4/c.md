@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d3c; parcel fetch/budgets and production bind next)
+**Status:** Underway (slices a–d3d0; author walk/fetch, budgets and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -67,7 +67,7 @@ counter advances by two or four, and an illegal compressed instruction reports i
 bits. Hints execute without changing registers, while the declared reserved code points trap
 without retiring or leaving a partial write.
 
-A permanent fifteen-case probe compiles this evaluator against a temporary composition with
+A permanent eighteen-case probe compiles this evaluator against a temporary composition with
 C. It checks mixed instruction lengths, compact registers, signed and unsigned offsets,
 overlapping operands, jump links, floating-point gating, and faults. A compressed instruction
 in a page's final halfword never walks the next page. A 32-bit instruction in the same place
@@ -129,6 +129,15 @@ all-ones limit, so those individual-bit checks matter. Six deliberate mutations 
 including a wrong two-byte link and reporting the expanded word as the trap value. The
 42 owned records and all 91 previously emitted texts stay exact. The guest author still
 uses its earlier word fetch route; C component execution is ready for parcel fetch/budgets.
+
+While deriving the independent fetch path, slice (d3d0) found a mistake in the evaluator's
+handling of unsupported longer instructions. It stopped after one parcel when the low five
+bits were all ones. For this profile, the nonzero illegal-instruction diagnostic must retain
+the first ILEN=32 bits. An all-ones instruction was therefore reported as 0xffff instead of
+0xffffffff, and faults in its second parcel were missed. The evaluator now reads two parcels
+for every wider prefix and stops at this profile's ILEN. Three permanent cases reproduce the
+old failures and guard full bits, an access refusal and a second-page fault. The old evaluator
+and a deliberate short-ILEN mutation fail all three; the complete probe passes eighteen.
 
 The production profile still declares C unbound. Parcel fetch and explicit budgets follow; the specification-derived corpus and C bind land together, then the matched Sail
 experiment. These probes are finite component evidence.

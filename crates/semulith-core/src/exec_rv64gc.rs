@@ -324,9 +324,11 @@ fn fetch_instruction(
         }
     };
     let lo = u32::from(fetch(pc)?);
-    // ILEN=32: every longer encoding is refused by decode from its available first
-    // parcel, without requesting bytes outside this profile's maximum instruction.
-    if lo & 3 != 3 || lo & 0x1f == 0x1f {
+    // A compressed encoding needs only its first parcel. Any wider prefix needs
+    // the first ILEN=32 bits, including unsupported lengths: a nonzero illegal
+    // diagnostic must retain min(actual length, ILEN, MXLEN) bits (RVP-MACHINE
+    // 2.1.1.16). Never request a third parcel for this profile.
+    if lo & 3 != 3 {
         return Ok(lo);
     }
     Ok(lo | (u32::from(fetch(pc.wrapping_add(2))?) << 16))

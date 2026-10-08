@@ -289,3 +289,65 @@ fn straddling_word_page_fault_preserves_instruction_start() {
         .iter()
         .any(|r| matches!(r, Request::FetchParcel { addr: 0xc000 })));
 }
+
+#[test]
+fn unsupported_long_prefix_keeps_all_ilen_bits() {
+    // ILEN=32: an unsupported wider prefix still reports the first 32 bits,
+    // including the all-ones ILEN encoding (RVI-INTRO; RVP-MACHINE 2.1.1.16).
+    for word in [0xffff_ffff, 0x1234_001f] {
+        let mut s = state(PC);
+        let mut m = Memory::default();
+        m.put(PC, u64::from(word), 4);
+        assert_eq!(
+            step(&mut s, &mut m),
+            StepRv64gc::ReservedDecode { at: PC, word }
+        );
+        assert_eq!(csr(&s, "minstret"), 0);
+        assert_eq!(
+            m.requests,
+            vec![
+                Request::FetchParcel { addr: PC },
+                Request::FetchParcel { addr: PC + 2 },
+            ]
+        );
+    }
+}
+
+#[test]
+fn unsupported_long_prefix_cannot_hide_an_ilen_parcel_fault() {
+    let mut s = state(0x1ffe);
+    let mut m = Memory::default();
+    m.put(0x1ffe, 0xffff, 2);
+    assert_eq!(step(&mut s, &mut m), StepRv64gc::Executed);
+    assert_eq!(
+        (csr(&s, "mcause"), csr(&s, "mtval"), csr(&s, "mepc")),
+        (1, 0x2000, 0x1ffe)
+    );
+    assert_eq!(csr(&s, "minstret"), 0);
+    assert_eq!(
+        m.requests,
+        vec![
+            Request::FetchParcel { addr: 0x1ffe },
+            Request::FetchParcel { addr: 0x2000 },
+        ]
+    );
+}
+
+#[test]
+fn unsupported_long_prefix_observes_the_second_page_fault() {
+    let (mut s, mut m) = translated(0xffff);
+    assert_eq!(step(&mut s, &mut m), StepRv64gc::Executed);
+    assert_eq!(
+        (csr(&s, "mcause"), csr(&s, "mtval"), csr(&s, "mepc")),
+        (12, 0x5000, 0x4ffe)
+    );
+    assert_eq!(csr(&s, "minstret"), 0);
+    assert!(m.requests.contains(&Request::WalkAccess { addr: 0xa028 }));
+    assert_eq!(
+        m.requests
+            .iter()
+            .filter(|r| matches!(r, Request::FetchParcel { .. }))
+            .count(),
+        1
+    );
+}

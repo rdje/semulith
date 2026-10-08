@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0089 (leaf P4-SYSTEM.12, slice d3d0) — unsupported prefixes retain ILEN
+
+- C-enabled fetch reads every ILEN=32 parcel for a wider prefix before reserved decode;
+  full all-ones bits preserved, upper-parcel access/page faults observed, no third read.
+  Three new probes fail on the parent and short-ILEN mutation; engine 18/18, DEF-GEN
+  55/55, make check green. Shard headers now state their bound accurately for early cuts.
+  C remains unbound. Independent author walk/fetch resumes next.
+
 ## SEMULITH-P4-0088 (leaf P4-SYSTEM.12, slice d3c) — independent C author component
 
 - Hand-decode all 37 RV64+D forms from the pinned C prose/diagrams; execute spec-side
