@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d1; guest image tools and production bind next)
+**Status:** Underway (slices a–d2; expectation/Sail tools and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -84,7 +84,14 @@ refuses short units so they cannot acquire silent padding. The [assembler chapte
 gives the syntax and examples. Hand-encoded fixtures check every form, and deliberate compact
 register, label-stride and padding mutations fail the permanent checks.
 
-The production profile still declares C unbound. The next slice carries these exact images
-through guest generation and the runner, then promotes and extends the expectation author
-and Sail adapter. The specification-derived corpus and C bind land together, followed by the
-matched Sail experiment. These probes are finite component evidence.
+Slice (d2) carries exact byte images through guest generation and the rv64gc runner.
+The generator's byte mode emits u8 arrays and the runner loads them directly. The scalar
+fixture keeps its word API for replay and reduction. A generated 14-byte mixed program runs
+on the temporary C composition, checking the actual loaded bytes, a four-byte instruction at
+a two-byte offset, a jump over an illegal parcel and a trailing halfword. Its five executed
+steps request six parcels. Padding the image or moving the loader's offset makes the checks
+fail. All 139 existing rv64gc images and observations remain unchanged in this slice.
+
+The production profile still declares C unbound. The next slice promotes and extends the
+expectation author and Sail adapter. The specification-derived corpus and C bind land
+together, followed by the matched Sail experiment. These probes are finite component evidence.

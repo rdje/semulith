@@ -25,6 +25,7 @@ an expectations document it cannot reconcile, a register name outside x0..x31. A
 generator that guesses is a second definition.
 
 usage: gen_guests.py [--check] [--out PATH] [--encoding PATH] [--guests-dir PATH]
+                     [--image-format words|bytes]
 """
 
 from __future__ import annotations
@@ -78,13 +79,14 @@ def load_guest(name: str, guests_dir: Path, asm: Assembler) -> dict:
     if not expected.is_file():
         raise GenError(f"{rel(expected)}: expectations document is missing")
     try:
-        words = [word for word, _ in asm.assemble(source.read_text().splitlines())]
-    except AsmError as exc:
-        raise GenError(f"{rel(source)}: does not assemble — {exc}") from exc
-    try:
         exp = D.load_expectations(expected)
     except D.DossierError as exc:
         raise GenError(f"{rel(expected)}: does not reconcile — {exc}") from exc
+    entry = int(exp["entry"], 16)
+    try:
+        units = asm.assemble_units(source.read_text().splitlines(), base=entry)
+    except AsmError as exc:
+        raise GenError(f"{rel(source)}: does not assemble — {exc}") from exc
     steps = exp["instructions"]
     seen: set[int] = set()
     expectations: list[tuple[int, list[tuple[int, int]]]] = []
@@ -127,8 +129,9 @@ def load_guest(name: str, guests_dir: Path, asm: Assembler) -> dict:
             f"the two parcel fetches")
     return {
         "name": name,
-        "entry": int(exp["entry"], 16),
-        "words": words,
+        "entry": entry,
+        "units": units,
+        "image": b"".join(u.value.to_bytes(u.length, "little") for u in units),
         "steps": steps,
         "fetches": steps if fetches is None else fetches,
         "expectations": expectations,
@@ -147,9 +150,17 @@ def hex32(value: int) -> str:
     return f"0x{value:08X}"
 
 
-def emit(guests: list[dict], encoding: Path) -> str:
+def emit(guests: list[dict], encoding: Path, image_format: str = "words",
+         regeneration: str = "python3 scripts/gen_guests.py") -> str:
+    if image_format not in ("words", "bytes"):
+        raise GenError(f"image format {image_format!r}: wants words or bytes")
+    if image_format == "words":
+        for g in guests:
+            if any(u.length != 4 for u in g["units"]):
+                raise GenError(f"{g['name']}: short units require --image-format bytes; "
+                               "word fixture refuses padding")
     a: list[str] = []
-    a.append("//! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_guests.py`;"
+    a.append(f"//! GENERATED — do not edit (OWN-03). Regenerate with `{regeneration}`;"
              " drift between this fixture and the tracked guest sources is refused by the"
              " GUEST-GEN doctrine (`scripts/check_guest_gen.sh`). This module lowers the"
              " tracked assembly guests and their specification-derived expectations into data"
@@ -187,9 +198,14 @@ def emit(guests: list[dict], encoding: Path) -> str:
     for g in guests:
         name = g["name"].upper().replace("-", "_")
         a.append(f"#[rustfmt::skip]")
-        a.append(f"static WORDS_{name}: &[u32] = &[")
-        for word in g["words"]:
-            a.append(f"    {hex32(word)},")
+        if image_format == "bytes":
+            a.append(f"static IMAGE_{name}: &[u8] = &[")
+            for start in range(0, len(g["image"]), 16):
+                a.append("    " + ", ".join(f"0x{b:02X}" for b in g["image"][start:start + 16]) + ",")
+        else:
+            a.append(f"static WORDS_{name}: &[u32] = &[")
+            for unit in g["units"]:
+                a.append(f"    {hex32(unit.value)},")
         a.append("];")
         a.append(f"#[rustfmt::skip]")
         a.append(f"static EXPECTED_{name}: &[Expectation] = &[")
@@ -243,13 +259,22 @@ def emit(guests: list[dict], encoding: Path) -> str:
     a.append("    pub name: &'static str,")
     a.append("    /// The declared entry address (the reset vector of the laboratory).")
     a.append("    pub entry: u64,")
-    a.append("    /// The guest's instruction words, little-endian sequence.")
-    a.append("    pub words: &'static [u32],")
+    if image_format == "bytes":
+        a.append("    /// The exact little-endian program bytes, with no padding between units.")
+        a.append("    pub image: &'static [u8],")
+    else:
+        a.append("    /// The guest's instruction words, little-endian sequence.")
+        a.append("    pub words: &'static [u32],")
     a.append("    /// How many steps the program executes (the expectations declare it).")
     a.append("    pub executed_steps: usize,")
     a.append("    /// How many fetch requests the run must make (the expectations")
-    a.append("    /// declare it — one per step, minus every step whose fetch page-faults")
-    a.append("    /// in the walk and never issues a request, P4-SYSTEM.3).")
+    if image_format == "bytes":
+        a.append("    /// declare actual boundary requests, faulted ones included). A C-enabled")
+        a.append("    /// table reads one parcel for C, two for a word; walk faults, interrupts")
+        a.append("    /// and waiting can prevent requests (P4-SYSTEM.12).")
+    else:
+        a.append("    /// declare it — one per step, minus every step whose fetch page-faults")
+        a.append("    /// in the walk and never issues a request, P4-SYSTEM.3).")
     a.append("    pub expected_fetches: usize,")
     a.append("    /// The expected register writes, one entry per executed step.")
     a.append("    pub expected: &'static [Expectation],")
@@ -275,7 +300,10 @@ def emit(guests: list[dict], encoding: Path) -> str:
         a.append("    Guest {")
         a.append(f'        name: "{g["name"]}",')
         a.append(f'        entry: {hex64(g["entry"])},')
-        a.append(f"        words: WORDS_{name},")
+        if image_format == "bytes":
+            a.append(f"        image: IMAGE_{name},")
+        else:
+            a.append(f"        words: WORDS_{name},")
         a.append(f'        executed_steps: {g["steps"]},')
         a.append(f'        expected_fetches: {g["fetches"]},')
         a.append(f"        expected: EXPECTED_{name},")
@@ -313,13 +341,14 @@ def guest_names(guests_dir: Path) -> list[str]:
     return order
 
 
-def generate(encoding: Path, guests_dir: Path) -> str:
+def generate(encoding: Path, guests_dir: Path, image_format: str = "words",
+             regeneration: str = "python3 scripts/gen_guests.py") -> str:
     if not encoding.is_file():
         raise GenError(f"{encoding}: encoding composition is missing")
     asm = Assembler(encoding)
     names = guest_names(guests_dir)
     guests = [load_guest(name, guests_dir, asm) for name in names]
-    return emit(guests, encoding)
+    return emit(guests, encoding, image_format, regeneration)
 
 
 def main(argv: list[str]) -> int:
@@ -329,10 +358,24 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--encoding", type=Path, default=ENCODING)
     parser.add_argument("--guests-dir", type=Path, default=GUESTS_DIR)
+    parser.add_argument("--image-format", choices=("words", "bytes"), default="words",
+                        help="fixture representation; byte images preserve compressed units")
     args = parser.parse_args(argv)
 
+    command = "python3 scripts/gen_guests.py"
+    if (args.encoding.resolve(), args.guests_dir.resolve(), args.image_format) != (ENCODING, GUESTS_DIR, "words"):
+        import shlex
+        # Output location is not an input to the fixture. A check against a temporary
+        # copy must retain the same command as the canonical module it is checking.
+        canonical_out = {
+            "rv64i-lab-v0": OUT,
+            "rv64gc-lab-v0": REPO / "crates/semulith-verify/src/guests_rv64gc.rs",
+        }.get(args.encoding.parent.name, args.out)
+        command += " " + shlex.join(["--encoding", rel(args.encoding), "--guests-dir", rel(args.guests_dir),
+                                     "--out", rel(canonical_out), "--image-format", args.image_format])
+
     try:
-        text = generate(args.encoding, args.guests_dir)
+        text = generate(args.encoding, args.guests_dir, args.image_format, command)
     except GenError as exc:
         print(f"gen_guests: REFUSED — {exc}", file=sys.stderr)
         return 2

@@ -1,5 +1,21 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — the fixture must retain the assembler's extent (P4-SYSTEM.12 d2)
+
+A word fixture cannot represent a compressed guest. The generator now reads sized units at
+the declared entry and emits exact u8 images for rv64gc with --image-format bytes. Its runner
+loads those bytes directly. Scalar replay/reduction still consume the unchanged word API;
+word mode explicitly refuses short units. Regeneration commands identify each configuration
+and canonical output, so checking a temporary mirror does not change the generated header.
+
+- Validation: a hand-encoded 14-byte guest executes through the tracked runner on a temporary
+  C composition: a word at 2-mod-4, a jump over an illegal parcel and the trailing halfword,
+  signed writes, exact memory bytes and fetch counts. A word-only case reads two parcels.
+  Padding/loader controls RED; prior generator refuses the guest. GUEST-GEN 23/23; make check
+  green. Before/after hashes, extents and every expectation agree for 139 GC and 49 I guests.
+- Production C remains unbound; d3 promotes and extends the expectation/Sail producers.
+- Promotion: declined — the permanent compiled runner probe retains the lesson.
+
 ## _(2026-10-08)_ — an instruction image has byte lengths (P4-SYSTEM.12 d1)
 
 The assembler's word list could not carry C. Sized units retain value, byte length, pc and

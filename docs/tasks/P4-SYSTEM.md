@@ -235,9 +235,20 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (d2): guest generator and runner carry exact parcel images; (d1) assembler committed; (d3) authoring/Sail tools follow |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d3): promote and extend expectation author/Sail tools; image generator/runner (d2) committed |
 
 ## Decisions
+
+- `2026-10-08` (d2 scope before changes): retain the rv64i word fixture/API used by
+  replay/reduction and emit rv64gc's exact bytes with an explicit `--image-format bytes`
+  configuration. The generator assembles sized units; word mode refuses short units.
+  The rv64gc runner loads the byte image directly, preserving trailing parcels and
+  32-bit instructions at 2-mod-4 addresses. Compare every old image and expectation
+  against a before-change digest census; rv64i's payload remains identical (its generator
+  fingerprint necessarily changes). A temporary C composition compiles the generated
+  fixture with the tracked runner and checks mixed control flow and the loaded raw bytes;
+  padding and runner-offset mutations must fail. Re-state the fetch-count docs as actual
+  boundary requests, at most two per step. Production C stays unbound until e.
 
 - `2026-10-08` (slice d split, owned before changes): (d1) the assembler: C fields,
   compact/FP register spellings, grouped scattered immediates, `.half`, byte-addressed
@@ -851,6 +862,38 @@ never raised, at every crossing. The index:
   preserves whole entries and digests without raising a ceiling.
   promotion: declined (the permanent fixture and RED controls preserve this local lesson).
 
+`P4-SYSTEM.12` slice (d2) — exact guest images reach the runner (`2026-10-08`, `SEMULITH-P4-0085`):
+
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_guest_image.py --generator-revision
+  89a8e6d` exits 1: mixed.s does not assemble because the generator uses the refusing word
+  API. `rg -n 'guest.words|to_le_bytes' crates/semulith-verify/src/run_rv64gc.rs` on the
+  parent identifies the runner's four-byte reconstruction, unable to carry short units.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show 89a8e6d:scripts/gen_guests.py` pins
+  load_guest's word list and emit's u32 arrays; `git show 89a8e6d:crates/semulith-verify/src/run_rv64gc.rs` pins reconstruction at lines 119–123. Length was absent from the fixture.
+  The generator's rv64gc header and drift refusal also gave the default scalar regeneration
+  command; the mode-specific command now names the canonical inputs, byte mode and output.
+- [x] **FIX** — assemble sized units at the declared entry, emit exact u8 images with
+  --image-format bytes, and load them directly in rv64gc. Word mode still emits rv64i's
+  old API and explicitly refuses short units. The generated header carries the canonical
+  mode-specific command independent of a temporary check output. Fetch docs count actual
+  boundary requests (faulted included; delivery/walk/wait can prevent them).
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_guest_image.py` →
+  `test result: ok. 2 passed; 0 failed` with the tracked runner and a temporary C composition. A hand-encoded
+  14-byte image checks a word at 2-mod-4, signed results, a byte-addressed jump over an
+  illegal parcel, the final halfword, exact loaded bytes and six requests across five steps.
+  A word-only image reads two parcels. Padding and runner-offset mutations fail; word mode
+  refuses the short guest. The prior generator is RED before any engine runs.
+- [x] **NO REGRESSION** — `make check` passes fmt, strict clippy, 150 core / 17 DSP /
+  193 verify tests. `bash scripts/check_guest_gen.sh --self-test` passes 23/23, including
+  the new GREEN and both behavioral RED controls. The before/after load_guest census
+  compares 139 rv64gc + 49 rv64i image hashes/byte counts and every expectation: all unchanged.
+  `git diff -- crates/semulith-verify/src/guests.rs` is only its generator fingerprint.
+  C remains unbound in production; the existing fetch expectations remain unchanged until e.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 500 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, assembler/C book chapters.
+  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 500 arms.
+  promotion: declined (the permanent runner probe and its mutations preserve this lesson).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -860,6 +903,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (d2) | 2 compiled image/runner probes, 2 RED controls; GUEST-GEN 23/23; make check | exact bytes ready; 188 old images/expectations unchanged; (d3) producers next |
 | `2026-10-08` | `.12` slice (d1) | 37 forms, 21 refusals, exact bytes; 3 RED controls; GUEST-GEN 20/20; corpus 77/77 | assembler ready; old guests unchanged; (d2) image generator/runner next |
 | `2026-10-08` | `.12` slice (c2) | 15 engine probes (baseline 0/15); DEF-GEN 54/54; make check | C evaluator ready; exact fetch and expansion execution proven on temporary composition; (d) tools next |
 | `2026-10-08` | `.12` slice (c1) | make check; parcel extent, alignment, visibility, refusal spans | typed two-byte boundary ready; existing corpus unchanged; (c2) next |
@@ -909,6 +953,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice d2) | `SEMULITH-P4-0085 (leaf P4-SYSTEM.12): carry exact guest byte images through generation and the rv64gc runner` | (d3) author/Sail tools next |
 | `.12` (slice d1) | `SEMULITH-P4-0084 (leaf P4-SYSTEM.12): assemble compressed instructions and preserve exact byte images` | (d2) generator/runner next |
 | `.12` (slice c2) | `SEMULITH-P4-0083 (leaf P4-SYSTEM.12): execute compressed expansions and fetch only the required parcels` | (d) tools next; production C bind remains (e) |
 | `.12` (slice c1) | `SEMULITH-P4-0082 (leaf P4-SYSTEM.12): add exact two-byte instruction fetches to the environment boundary` | (c2) engine next |
@@ -955,6 +1000,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (d2) done: rv64gc byte fixtures reach the tracked runner exactly;
+  scalar payload and all old images/expectations unchanged; permanent mixed-image controls.
 
 - `2026-10-08`: `.12` (d1) done: all 37 C forms assemble; exact sized units/images and
   byte labels, reserved/specialization refusals, three mutation controls. d2 next.

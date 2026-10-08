@@ -8,9 +8,9 @@
 //! [`crate::run`] there is no trap stop: a run executes exactly the expectations' declared
 //! step count — continuation past a delivered trap into an unprogrammed vector is out of
 //! the corpus's vocabulary by convention, and the declared count is what makes the run's
-//! end observable. One fetch per step, one effect per step, register writes observed as
-//! CHANGES (a register written its own value is no observation — the same comparison rule
-//! as the base profile's offline differential).
+//! end observable. Fetch counts record actual word/parcel boundary requests. Register
+//! writes are observed as CHANGES (a register written its own value is no observation —
+//! the same comparison rule as the base profile's offline differential).
 //!
 //! The diagnostic policy's one act lives here, one layer up from the evaluator
 //! (`D-RESERVED-DECODE`): a reserved-decode report converts to the delivered
@@ -26,8 +26,9 @@ use crate::fixtures::FlatMemory;
 use crate::guests_rv64gc::{Guest, Refusal, RefusalKind, GUESTS};
 
 /// The fetch-request witness: forwards every crossing and counts fetch REQUESTS
-/// (successful or faulted — a delivered fetch-fault step's request crossed the boundary
-/// and was refused, which is still exactly one fetch for that step).
+/// (successful or faulted — a refused request still crossed the boundary). A C-enabled
+/// table issues one parcel for a compressed instruction and two for a 32-bit instruction,
+/// unless a fault or another delivery prevents a request.
 struct CountFetches<'a> {
     inner: &'a mut Refusing<'a>,
     fetches: u64,
@@ -116,11 +117,7 @@ pub struct Trace {
 #[must_use]
 pub fn run_guest(guest: &Guest) -> (Trace, FlatMemory) {
     let mut env = FlatMemory::with_fetch_align(guest.entry, 0x10000, 2);
-    let mut image = Vec::with_capacity(guest.words.len() * 4);
-    for word in guest.words {
-        image.extend_from_slice(&word.to_le_bytes());
-    }
-    env.load_image(0, &image);
+    env.load_image(0, guest.image);
     let mut state = ArchitecturalState::zeroed_at(guest.entry);
     let mut steps = Vec::new();
     let mut failed = None;
@@ -224,10 +221,8 @@ pub(crate) fn assert_guest_observations(name: &str) {
     }
     assert_eq!(
         trace.fetches as usize, g.expected_fetches,
-        "{name}: the fetch-request count matches the declared expectation (one per \
-         step, minus every step whose fetch page-faults in the walk, every \
-         interrupt-delivery step, and every halted step — the `.5` `<halted>` \
-         convention: a waiting hart issues no fetch)"
+        "{name}: the actual word/parcel boundary requests match the declared expectation \
+         (faulted requests included; walk faults, interrupts and waiting can prevent requests)"
     );
 }
 

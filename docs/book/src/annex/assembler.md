@@ -174,6 +174,20 @@ API returns four-byte words and refuses any short unit; callers must choose a si
 The C assembler probe checks 37 hand-encoded words, 21 operand refusals, HINTs and an exact mixed
 image. Wrong compact-register bases, word-stride labels and padded parcels all fail its controls.
 
+The rv64gc guest generator selects the exact byte fixture explicitly:
+
+```sh
+python3 scripts/gen_guests.py --encoding profiles/rv64gc-lab-v0/encoding.sexp \
+  --guests-dir profiles/rv64gc-lab-v0/guests --image-format bytes \
+  --out crates/semulith-verify/src/guests_rv64gc.rs
+```
+
+The generated Guest carries `image: &[u8]`; the rv64gc runner loads it directly. Default word
+mode retains the scalar fixture's `words: &[u32]` API and refuses a short unit. Representation
+does not change observations: both modes carry the same specification-derived expectations.
+A compiled probe checks exact loaded bytes and mixed instruction execution through the tracked
+runner. Padding the generated image or changing its load offset fails the check.
+
 ## The ELF writer — and a measured harness difference
 
 `write_elf64()` wraps the words in a minimal ELF64 little-endian RISC-V executable: one

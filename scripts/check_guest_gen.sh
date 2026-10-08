@@ -227,11 +227,11 @@ PY
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING_GC" \
-        --guests-dir "$GUESTS_DIR_GC" --out "$OUT_GC" 2>&1)"; rc=$?
+        --guests-dir "$GUESTS_DIR_GC" --image-format bytes --out "$OUT_GC" 2>&1)"; rc=$?
   arm "GREEN the census's rv64gc pair is in sync" "$rc" 0 "$out" "matches"
   cp "$OUT_GC" "$t/gc-fixture.rs"; printf '\n// hand edit\n' >> "$t/gc-fixture.rs"
   out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING_GC" \
-        --guests-dir "$GUESTS_DIR_GC" --out "$t/gc-fixture.rs" 2>&1)"; rc=$?
+        --guests-dir "$GUESTS_DIR_GC" --image-format bytes --out "$t/gc-fixture.rs" 2>&1)"; rc=$?
   arm "RED the census's rv64gc pair catches a hand edit" "$rc" 1 "$out" "DRIFT"
 
   # The base-mirror governor arms: the mirror holds on the real tree, and the governor
@@ -259,6 +259,14 @@ PY
   arm "RED word-stride labels are caught" "$rc" 1 "$out" "AssertionError: byte label addresses"
   out="$(python3 scripts/probe_c_assembler.py --mutation padding 2>&1)"; rc=$?
   arm "RED silently padded short units are caught" "$rc" 1 "$out" "AssertionError: exact byte image"
+
+  # d2: the emitted byte fixture is consumed by the actual runner, not a second loader.
+  out="$(python3 scripts/probe_c_guest_image.py 2>&1)"; rc=$?
+  arm "GREEN mixed C fixture executes through the tracked runner" "$rc" 0 "$out" "mixed bytes, labels, writes and parcel counts passed"
+  out="$(python3 scripts/probe_c_guest_image.py --mutation padding 2>&1)"; rc=$?
+  arm "RED a padded generated image is caught" "$rc" 1 "$out" "AssertionError: exact generated image bytes"
+  out="$(python3 scripts/probe_c_guest_image.py --mutation runner-offset 2>&1)"; rc=$?
+  arm "RED a runner that loads at the wrong offset is caught" "$rc" 1 "$out" "mixed: step 0 writes match"
 
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
@@ -293,7 +301,7 @@ printf 'GUEST-GEN: ok (%s matches the tracked guests)\n' "$OUT"
 
 # ── the census's rv64gc pair (P4-SYSTEM.2 slice h, the route flip) ─────────────────────
 out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING_GC" \
-      --guests-dir "$GUESTS_DIR_GC" --out "$OUT_GC" 2>&1)"; rc=$?
+      --guests-dir "$GUESTS_DIR_GC" --image-format bytes --out "$OUT_GC" 2>&1)"; rc=$?
 if [ "$rc" -eq 2 ]; then
   printf '%s\n' "$out" >&2
   echo "GUEST-GEN: REFUSED — the rv64gc tracked guests could not be judged." >&2
@@ -301,8 +309,8 @@ if [ "$rc" -eq 2 ]; then
 fi
 if [ "$rc" -ne 0 ]; then
   printf '%s\n' "$out" >&2
-  printf 'GUEST-GEN: FAIL — %s is out of sync with the tracked guests and their expectations. Regenerate — never edit:\n  python3 scripts/gen_guests.py\n' \
-    "$OUT_GC" >&2
+  printf 'GUEST-GEN: FAIL — %s is out of sync with the tracked guests and their expectations. Regenerate — never edit:\n  python3 scripts/gen_guests.py --encoding %s --guests-dir %s --image-format bytes --out %s\n' \
+    "$OUT_GC" "$ENCODING_GC" "$GUESTS_DIR_GC" "$OUT_GC" >&2
   exit 1
 fi
 printf 'GUEST-GEN: ok (%s matches the tracked guests)\n' "$OUT_GC"

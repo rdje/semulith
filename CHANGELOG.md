@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0085 (leaf P4-SYSTEM.12, slice d2) — exact guest byte images
+
+- rv64gc fixtures emit exact bytes and the runner loads them directly. Scalar word API
+  retained; short guests require byte mode. Mixed C/word probe checks addresses, writes,
+  trailing parcel and counts; padding/loader mutations fail. GUEST-GEN 23/23, make check
+  green; all 188 existing images/expectations unchanged. Author/Sail producers next.
+
 ## SEMULITH-P4-0084 (leaf P4-SYSTEM.12, slice d1) — the parcel assembler
 
 - Assemble all 37 C forms with declared immediate layouts and mapped register files;
