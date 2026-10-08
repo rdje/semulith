@@ -52,6 +52,9 @@ def check(author):
     hart.mode = 0
     assert hart.walk(va, 'load') == ('pa', author.ENTRY), 'U mode can read a U page'
     hart.write(root_pte, 8, ((author.ENTRY >> 12) << 10) | 0xCB)  # V/R/X/A/D, U=0
+    hart.mode = author.M
+    author.execute(hart, 0x12000073)  # legal full fence after the explicit PTE edit
+    hart.mode = 0
     assert hart.walk(va, 'load') == ('fault', 13), 'U mode cannot read an S page'
     hart.mode = author.S
     hart.write(root_pte, 8, ((author.ENTRY >> 12) << 10) | 0xC9)  # V/X/A/D, R=0

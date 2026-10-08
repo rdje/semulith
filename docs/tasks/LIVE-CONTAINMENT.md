@@ -26,8 +26,9 @@ answer once ceilings fire.
   (the registry's own rule); this tree applies controls, it does not widen numbers.
 - **No durable information is dropped**: a surface that sheds content routes it to a
   canonical, retrievable home first (the guide's non-negotiable answer).
-- Not the append-history families (`CHANGELOG.md`, `DEV_NOTES.md`): their shard transition
-  exists and works (`DOC-SHARDING`).
+- Existing append-history heads keep their lossless shard control. `.4` now owns the
+  aggregate archive transition exposed by the `2026-10-08` pressure census; sharding
+  alone controls per-file size, not aggregate growth.
 
 ## Acceptance Criteria
 
@@ -118,9 +119,24 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `proposed` | the README policy's own trigger has fired (CHANGELOG/DEV_NOTES shards, the P4 tree archive, the book partition — 2026-10-06 alone) |
+| 1 | `LIVE-CONTAINMENT.4` | `proposed` | immediate archive-pressure prerequisite; exact lossless prototype above, lifecycle direction before migration |
 
 ## Decisions
+
+- `2026-10-08` (ownership before archive experiment): P4.12 e1c1 routes an immediate
+  commit-continuity dependency here. At its completed doc update, docs/changelog has
+  212 files / 784,318 B against 786,432 B; CHANGELOG is 65,528 / 65,536 B and its
+  next whole-record cut needs 2,377 B before header/manifest. Current aggregate
+  headroom is 2,114 B. The guide's Phase 2 requires a rolling ledger to transition
+  sealed history before aggregate growth becomes unbounded; the older calendar-based
+  doubling records do not demonstrate a changed user contract under the newer policy.
+  Do not raise a cap or delete frozen history. Prepare a deterministic, same-volume
+  compressed archive of the 210 already-sealed shards captured at ff75610, preserve
+  their manifest, verify all members byte-for-byte and record tool-neutral retrieval.
+  This is a disposable read-only-source prototype, not an adopted migration. Present
+  the concrete lifecycle/browsing choice before any live removal or checker change.
+  The external guide's Stop conditions requires direction when a lifecycle choice
+  changes what users can directly browse; the recommended query-first terminal does.
 
 - `2026-10-06` (measured before opening): the drifts were found while registering
   `CITATION-QUOTES` (`SEMULITH-CA-0001`) — the Knowledge Map's subsystem paragraph names
@@ -128,6 +144,53 @@ answer once ceilings fire.
   semulith-verify`; no `app`), and three governance surfaces finished that commit within
   0.1–0.3 % of their ceilings after their new rows were tightened to fit. Tightening wording
   to pass a cap is the guide's named anti-pattern; this tree owns the real answer.
+
+## Pending archive lifecycle decision — `.4` pressure prerequisite
+
+**Proposed; no live history removed, no ceiling/checker changed.** The recommended
+choice is a query-first `archive_terminal`: seal the 210 older Markdown shards and
+manifest in one immutable, tracked, content-addressed gzip/tar artifact, with a small
+tracked descriptor and a deterministic retrieval verifier. Retain recent shards and
+both bounded heads. Historical content becomes retrievable by logical filename through
+ordinary tar/Python tools instead of being directly browsable as 210 Markdown files.
+A Git-history-only terminal is an alternative, but requires an explicit reachability,
+backup and shallow-clone recovery contract. A cap increase lacks contract-expansion
+proof and is excluded by this tree's adopted trigger.
+
+Read-only-source prototype (same-volume, disposable, not the adopted destination):
+
+- Capture: `ff75610f794b60a5bbe63c432bd4c78ebe163527`; its SHARDS.sha256 lists 210 shards.
+- `python3` prototype: all 210 Git blobs equal their working files and pinned SHA-256
+  rows; tar/gzip round-trip authenticates all 211 members, including that manifest.
+- Complete source 781,740 B; deterministic USTAR 952,320 B; gzip (mtime=0, empty
+  filename, level 9) 284,500 B (Python 3.14.7, zlib 1.2.12). SHA-256:
+  `4cbc226272062441fa50998df217db74f7f2a069de54690f5a9dec9e107e4be7`.
+- Prototype: `target/live-containment/history-review.tar.gz`; exact reproduction is
+  from the named commit's sorted logical paths, USTAR metadata (mode 0644, all other
+  fields zero/empty) and gzip settings above. No off-volume cache or workspace.
+- Tool-neutral member retrieval:
+  `tar -xOf target/live-containment/history-review.tar.gz docs/changelog/shard-0001.md`.
+  Retrieval of every member was executed and asserted byte-exact, not merely sampled.
+- The new live shard-0209 stays outside this proposed capture. Removing only the 210
+  captured live copies after approval would leave that recent shard and its live
+  manifest, restoring the ordinary family's headroom without changing frozen bytes.
+
+Proposed transaction after lifecycle direction: own a bounded `.4` migration slice;
+store the immutable artifact under `docs/history/sealed/` and one finite descriptor;
+verify former paths, exact counts/bytes/digests, record order/uniqueness and full
+retrieval; extend SHARD-FREEZE to authenticate archived rows through that descriptor
+while retaining its append-only guarantee; wire terminal pressure/path/retrieval
+checks and positive/negative controls unconditionally; update routes/book; remove
+only the proven duplicates; commit atomically. The project owns retention: tracked
+artifact survives ordinary clones, no Git-history condition, no new content appended
+to this sealed object. Missing/corrupt archive or descriptor fails closed; recovery is
+restoration of the exact digest from the committed artifact. Other archive transitions
+need their own finite capture; this descriptor is not an unrestricted overflow sink.
+
+The lifecycle choice changes direct historical browsing. The source guide's
+Stop conditions says: “a lifecycle choice would change what users can directly browse”.
+Direction is required for this choice before any removal or migration implementation.
+The cache slice can finish cleanly first; staged C/counts resume after containment.
 
 ## Open Questions
 

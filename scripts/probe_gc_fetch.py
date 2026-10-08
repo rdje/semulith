@@ -90,12 +90,14 @@ def check(author):
     h.log.clear()
     assert h.walk(0, 'fetch') == ('pa', 0) and not h.log, 'MPRV affected instruction fetch'
     h.write(base, 8, ((base >> 12) << 10) | 0xdf)  # user leaf
+    author.execute(h, 0x12000073)  # M-mode full fence exposes the edited PTE
     assert h.walk(0, 'load') == ('fault', 13), 'MPRV must apply effective S SUM=0'
     h.csr['mstatus'] |= 1 << 18
     assert h.walk(0, 'load') == ('pa', base), 'MPRV must apply effective S SUM=1'
     h.csr['mstatus'] &= ~(3 << 11)  # MPP=U
     assert h.walk(0, 'load') == ('pa', base)
     h.write(base, 8, ((base >> 12) << 10) | 0xcf)
+    author.execute(h, 0x12000073)
     assert h.walk(0, 'load') == ('fault', 13), 'MPRV must apply effective U permission'
     # Exact physical extent and implicit zero bytes beyond the payload.
     h = author.Hart()

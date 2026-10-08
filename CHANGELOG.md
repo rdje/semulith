@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0096 (leaf P4-SYSTEM.12) — independent cache
+
+- 139/139 exact; GUEST-GEN 103/103. See task receipt.
+
 ## SEMULITH-P4-0095 (leaf P4-SYSTEM.12, slice e1c0) — SFENCE register-identity scopes
 
 - Values and x0 selectors remain distinct; real page/ASID zero retains other entries.

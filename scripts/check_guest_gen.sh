@@ -416,6 +416,36 @@ PY
   out="$(python3 scripts/probe_gc_counter_author.py --mutation backslash-text 2>&1)"; rc=$?
   arm "RED backslash annotations retain their literal text" "$rc" 1 "$out" "backslash directive lost literal text"
 
+  # e1c1: independent selected cache policy, with no production engine oracle.
+  out="$(python3 scripts/probe_gc_cache_author.py 2>&1)"; rc=$?
+  arm "GREEN independent cache and cold repeat" "$rc" 0 "$out" "cached corpus exact and cold repeat"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation bypass-hit 2>&1)"; rc=$?
+  arm "RED cached mappings stay stale until a fence" "$rc" 1 "$out" "cache must retain stale mapping until fence"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation fence-value 2>&1)"; rc=$?
+  arm "RED VA scope uses register identity" "$rc" 1 "$out" "fence must use register identity and exact scope"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation fence-asid-value 2>&1)"; rc=$?
+  arm "RED ASID scope uses register identity" "$rc" 1 "$out" "fence must use register identity and exact scope"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation global-inheritance 2>&1)"; rc=$?
+  arm "RED ancestor G reaches the cached translation" "$rc" 1 "$out" "non-leaf G must propagate to cache entry"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation asid-tag 2>&1)"; rc=$?
+  arm "RED cache hits honor current ASID" "$rc" 1 "$out" "ASID change must be immediately visible"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation cached-permission 2>&1)"; rc=$?
+  arm "RED hits recheck live permissions" "$rc" 1 "$out" "cache hit must recheck live SUM"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation fault-install 2>&1)"; rc=$?
+  arm "RED faulting translations never install" "$rc" 1 "$out" "fault must not install cache entry"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation fifo-hit 2>&1)"; rc=$?
+  arm "RED hits leave FIFO age intact" "$rc" 1 "$out" "FIFO hit must not refresh replacement order"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation fence-cursor 2>&1)"; rc=$?
+  arm "RED fences leave FIFO cursor intact" "$rc" 1 "$out" "fence changed FIFO cursor"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation asid-mask 2>&1)"; rc=$?
+  arm "RED selected ASID ignores high bits" "$rc" 1 "$out" "fence must mask ASIDLEN without selecting x0 scope"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation global-retention 2>&1)"; rc=$?
+  arm "RED ASID fences preserve globals" "$rc" 1 "$out" "fence must use register identity and exact scope"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation invalid-fence 2>&1)"; rc=$?
+  arm "RED invalid VA fences have no effect" "$rc" 1 "$out" "invalid fence VA must have no effect"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation illegal-fence 2>&1)"; rc=$?
+  arm "RED illegal fences cannot touch the cache" "$rc" 1 "$out" "illegal fence must not change cache"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

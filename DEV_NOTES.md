@@ -1,5 +1,20 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — independent translation cache (P4-SYSTEM.12 e1c1)
+
+Hart.walk always rewalked PTEs while SFENCE emitted flush prose. Added the selected
+four-slot FIFO cache from state.sexp and pinned supervisor rules: 4-KiB keys, 16-bit
+ASIDs, inherited globals, cached leaf/A/D bits and live permission checks. Legal fences
+select register identity; illegal fences have no cache effect. Failed translations
+never install. Direct permission fixtures now fence explicit PTE edits.
+
+- Validation: parent ff75610 RED; 13 mutations RED; GUEST-GEN 103/103. Census 139/139
+  architectural traces exact, zero refusals; 120/121 prior word texts exact, only the
+  known incorrect unadopted cache guest corrected. All 42 owned records byte-exact.
+  Production records/counts unchanged. Full evidence: docs/tasks/P4-SYSTEM.md e1c1.
+- Promotion: declined — permanent hand fixtures and RED controls retain this lesson.
+  Archive-family pressure is routed to LIVE-CONTAINMENT.4 before further appends.
+
 ## _(2026-10-08)_ — a zero operand value is not register x0 (P4-SYSTEM.12 e1c0)
 
 SFENCE used values to choose scope, losing x0 register identity. Three evaluator tests
@@ -640,36 +655,3 @@ The `.7` brief's slice (a) measured:
 promotion: PROMOTED — `docs/knowledge/a-candidate-landscape-census-entry-is-a-lead.md`
 (the landscape-census lesson; the MPFR-measurement half lives in the decision record's
 own text, which is the durable home for backend-specific facts).
-## _(2026-10-05)_ — a designed AGREE is still a measurement, and a clause can live one hop away (P4-SYSTEM.6 slice c)
-
-Execution of the `.6` brief's checkpoint (c) measured:
-
-- **"Sail lands identically" is a hypothesis until the trace agrees.** Decision
-  2 promised AGREE by design — Sail's FENCEI is "a nop for the memory model" —
-  and the experiment's job was to measure it, not assume it. The measurement
-  has two legs before any guest runs: the override validates unchanged
-  (Zifencei already true), and Sail's OWN source carries the shall-ignore
-  sentence as a comment while its encdec binds the fields as variables — so
-  0x0011118F decodes as FENCEI on both sides. Then the traces: 6 AGREE of 6,
-  zero non-AGREE cells to name. A designed outcome with zero divergences is
-  the easiest experiment to wave through, and the one that most needs the
-  numbers written down.
-- **A referenced clause is still load-bearing — and its location is not the
-  reference.** The brief's pre-condition 2 said the fetch-cache candidate's
-  why "says 'without Zifencei'" — the clause actually lives in rv64i's
-  verbatim text, which rv64gc's candidate only references. The re-answer would
-  have been the same either way, but the imprecision is recorded because the
-  census's whole point is that these sentences are checked, not remembered
-  (promotion: declined — the re-answered candidate is in the descriptor and
-  STATE-GEN re-derives it on every change).
-- **The staleness half of an acceptance can be honest as a latitude.** The
-  goal asks "when stale state MAY persist" — and the spec's own implicit-reads
-  sentence lets a valid implementation cache every fetchable byte forever. The
-  rejected option was modelling a caching hart to make staleness executable:
-  it would contradict the unit's own `present false` census to demonstrate a
-  machine this unit is not. The latitude is pinned by declaration (the
-  sentence is located, the choice is named, the census is re-answered), which
-  is the whole truth of the position — a fixture for it would have been a lie.
-
-promotion: declined (the durability is the machinery — the six AGREEs re-run
-against the materialized override; the acceptance pair is armed by make check).

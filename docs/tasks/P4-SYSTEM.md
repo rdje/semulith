@@ -235,9 +235,31 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (e1c1): author cache; (e1c0) production fence repaired; (e1d) staged corpus/counts, then bind/Sail |
+| 1 | `P4-SYSTEM.12` | `active` | cache ready; LIVE-CONTAINMENT.4 archive prerequisite, then e1d staging / e2 bind |
 
 ## Decisions
+
+- `2026-10-08` (e1c1 execution plan, before changes): derive the declared four-slot,
+  fully associative FIFO cache independently from state.sexp's selected policy and
+  pinned supervisor 11.1.2.1/11.1.3.2/11.1.4.1. Cache successful 4-KiB translations
+  with ASIDLEN=16, inherited G and leaf permissions; recheck live mode/SUM/MXR/MPRV
+  before hits, retain cached A/D, and never install a fault. M/Bare bypass and satp
+  root/ASID changes do not implicitly flush. Hits do not refresh FIFO; fences retain
+  the replacement cursor and select x0 identity, masked ASID and canonical page.
+  Hand PTE/physical-address fixtures, all four zero-operand fences, inherited globals,
+  FIFO, stale permissions, fault non-installation and cold repeat must discriminate
+  targeted mutations and the uncached parent. Repair direct permission fixtures that
+  rewrite PTEs to execute a real legal full fence before requiring a fresh view; retain
+  their existing negative controls. Census all 139 parcel architectural traces and
+  all 121 historical word texts. The known erroneous unadopted sv39-tlb-fence word
+  output may change to the pinned policy; investigate every other difference. Keep
+  all 42 owned records byte-exact, and write no expected record or profile binding.
+  Document the author cache and its provenance without claiming CPU acceptance.
+  Archive-family pressure is now a resumption dependency: 211 files / 781,740 B
+  leave 4,692 B, while the oldest required head records total 4,628 B before shard
+  headers/manifest. Route the measured lifecycle defect to LIVE-CONTAINMENT.4;
+  record its retrieval options and exact evidence before any migration. One DEV_NOTES
+  shard and a concise changelog summary can finish this slice without a cap increase.
 
 - `2026-10-08` (e1c discovery / ownership, before changes): pinned supervisor.html
   2046–2080 selects SFENCE scope from rs1/rs2 register identities, including nonzero
@@ -766,6 +788,69 @@ never raised, at every crossing. The index:
   make book rc=0; commit doctrine gate must pass. promotion: declined (three permanent
   regressions, explicit optional API and obsolete-arity gate retain the contract lesson).
 
+`P4-SYSTEM.12` slice (e1c1) — independent selected cache (`2026-10-08`, `SEMULITH-P4-0096`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — `python3 scripts/probe_gc_cache_author.py
+  --author-revision ff75610` rc=1: “cache must retain stale mapping until fence”.
+  `rg -n 'def walk|sfence.vma' scripts/derive_rv64gc_expectations.py` locates the
+  unconditional PTE walk and fence prose without an effect. Prior parcel census
+  sv39-tlb-fence disagrees at steps 191/192/195; pinned supervisor four scopes and
+  state.sexp:664 select cached translation behavior independently of engine outputs.
+- [x] **FIX** — successful translations install four FIFO slots keyed by 4-KiB VPN
+  and 16-bit ASID; G propagates through non-leaves. Hits recheck live effective mode,
+  SUM/MXR against cached leaf permissions/A/D; faults install nothing. M/Bare bypass,
+  root-on-miss and current ASID visibility remain explicit. Legal fences use x0 identity,
+  masked ASID and canonical selected page, retaining globals when ASID-scoped and the
+  FIFO cursor for every invalidation. Illegal fences leave cache unchanged. Three
+  existing direct PTE-edit fixtures execute legal full fences before requiring freshness.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_cache_author.py` rc=0:
+  hand PTE/PA fixtures cover stale mappings, four zero-operand scopes, masked ASIDs,
+  invalid VA, illegal U/TVM fences, inherited globals, root/ASID/Bare/MPRV visibility,
+  live SUM/MXR/U, cached D=0, no-fault-installation, FIFO and independent superpage
+  keys. Cold cache guest request logs repeat exactly. Thirteen mutants each rc=1 with
+  named behavioral assertions; the uncached parent is RED. One initially overbroad
+  illegal-fence mutant failed a legal scope first; refine it to illegal cases, then
+  the gate names the intended no-effect failure. An invalid-VA guard deletion alone
+  has no observable effect for canonical cache keys; the control instead injects
+  actual invalid-address over-fencing. Final self-test: 103 pass / 0 fail.
+- [x] **NO REGRESSION** — full non-writing author census: parcel 139 exact, zero
+  disagreements/refusals; historical word route 120 exact / one corrected cache text
+  / zero new, with the same 18 bounded refusals. `--check-owned`: 42 guest(s)
+  byte-identical; no records written. All 139 expected-record hashes retained. GUEST-GEN
+  rc=0: both generated fixtures match and mirror 91 exact / seven declared rederivations.
+  DERIVED-COUNTS rc=0 derives 582 arms; make book rc=0 for project/all model books.
+  Rust/production profile/guest/count files unchanged; no broad Rust rerun warranted.
+- [x] **LOCKSTEP / PRESSURE** — MEMORY/tree/index/live docs/toolbox/doctrine and
+  C/Sv39 book updated; LIVE_STATUS remains P4 11/18, CPU-SYSTEM incomplete. DEV_NOTES
+  50,021→47,771 B, shard-0209 carries one oldest record; shard tool asserts 32 ==
+  31 kept + one moved, order/bytes exact. CHANGELOG new summary 118 B, full detail here.
+  Archive 212 files / 784,318 B, only 2,114 B remaining; next CHANGELOG cut needs
+  2,377 B before header/manifest and current head has eight bytes left. `.4` owns the
+  urgent lifecycle prerequisite, with exact 210-shard / 211-member archive retrieval
+  proof and proposed transaction in its tree. No cap or existing frozen bytes changed.
+  promotion: declined (hand cache fixtures/thirteen RED controls retain the lesson).
+
+### ROUTING EVIDENCE — archive pressure to `LIVE-CONTAINMENT.4`
+
+`python3` census: docs/changelog 784,318 / 786,432 B, CHANGELOG 65,528 / 65,536 B,
+oldest changelog record 2,377 B. A next normal cut cannot fit, independently of guest
+vocabulary/cache semantics. Earlier e1c0 failed at 787,026 B and reconstructed only
+uncommitted shards; repeating summary trimming would retain the scaling term. The
+receiving `.4` goal already owns the guide's complete route/lifecycle inventory; its
+old append-history non-goal incorrectly assumed sharding solved aggregate growth.
+Corrected that scope and scheduled a finite lossless archive transition before e1d.
+The read-only-source prototype authenticates every member; live removal/checker edits
+await direction because the guide's lifecycle stop condition changes direct browsing.
+
+### Owned e1d provenance prerequisite
+
+`rg -n 'floating-point corpus|P4-SYSTEM.7' scripts/derive_rv64gc_expectations.py`
+locates emit's fallback: non-family generic/C/Sv39 source names receive an FP-corpus
+header. No such new production record is adopted here; prior outputs keep provenance.
+Before publishing the staged C corpus/counts, e1d must derive an explicit correct
+family/provenance header and guard generic/C text, while preserving the 42 historical
+owned records. Schedule as high priority within e1d, before its first authored record.
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -775,6 +860,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (e1c1) | parent RED; 13 RED; GUEST-GEN 103/103; parcel 139 exact; 42 owned exact; books | cache repaired; archive lifecycle prerequisite before staging |
 | `2026-10-08` | `.12` slice (e1c0) | parent 0/3 then three green; two selector RED; translation 29/29; make check; DEF-GEN 56/56 | production scopes repaired; independent cache author next |
 | `2026-10-08` | `.12` slice (e1b2) | masks/30 mode gates/literal text/schema; 8 RED; 117 corpus steps; GUEST-GEN 89/89 | 138 exact, zero refusals; owned cache repair next |
 | `2026-10-08` | `.12` slice (e1b1) | 22 hand arithmetic, ten branches, memory/reserved; 8 RED; 471 corpus steps; GUEST-GEN 80/80 | 135 exact; three refusals/cache owned next |
@@ -835,6 +921,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1c1) | `SEMULITH-P4-0096 (leaf P4-SYSTEM.12): derive the selected translation cache independently` | containment lifecycle, then e1d / e2 |
 | `.12` (slice e1c0) | `SEMULITH-P4-0095 (leaf P4-SYSTEM.12): preserve SFENCE operand identity through the semantic cache interface` | e1c1 independent cache, then corpus/counts/bind |
 | `.12` (slice e1b2) | `SEMULITH-P4-0094 (leaf P4-SYSTEM.12): derive counter permissions and preserve literal expectation text` | e1c cache, then corpus/counts/bind |
 | `.12` (slice e1b1) | `SEMULITH-P4-0093 (leaf P4-SYSTEM.12): derive the base integer vocabulary and reserved word-shift diagnostics` | e1b2 CSR/directives, then cache/corpus/counts |
@@ -893,6 +980,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 ## Changelog
 
+- `2026-10-08`: `.12` (e1c1) done: independent cache, all 139 parcel traces exact;
+  archive pressure owned by LIVE-CONTAINMENT.4 before staging C/counts.
 - `2026-10-08`: `.12` (e1c0) done: fence scopes preserve x0 identity, including
   real page/ASID zero; three parent RED regressions green; two old fixture legs repaired.
 

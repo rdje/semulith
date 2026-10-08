@@ -60,7 +60,7 @@ def sx(v: int) -> str:
 
 class Hart:
     """The spec-side hart: registers, memory, the CSRs the corpus touches, the
-    reservation (the declared policy), and the Sv39 walk (the pinned 10 steps, Svade)."""
+    reservation, and Sv39 with Svade and the declared four-slot FIFO cache."""
 
     def __init__(self):
         self.x = [0] * 32
@@ -80,6 +80,10 @@ class Hart:
         self.waiting = False     # the hart wait state (decision 4), cold-ACTIVE at reset
         self.reservation = None   # (pa, width_bytes)
         self.log = []
+        # Selected laboratory policy (state.sexp SEM-08): each slot is
+        # (vpn, asid, inherited_global, physical_page_base, leaf_pte).
+        self.translation_cache = [None] * 4
+        self.translation_cursor = 0
 
     def read(self, addr, n):
         return sum(self.mem.get(addr + i, 0) << (8 * i) for i in range(n))
@@ -198,6 +202,46 @@ class Hart:
         self.pc = base + 4 * cause if vec & 0b11 == 1 else base
 
     # ---- the pinned 10-step Sv39 walk (RVP-SUPERVISOR §11.1.3.2, §11.1.4.1; Svade) ----
+    def permits_translation(self, pte, mode, kind):
+        """Current privilege/SUM/MXR, but the cached leaf's R/W/X/U/A/D bits."""
+        r, w, x = (pte >> 1) & 1, (pte >> 2) & 1, (pte >> 3) & 1
+        u, a, d = (pte >> 4) & 1, (pte >> 6) & 1, (pte >> 7) & 1
+        if mode == 0 and not u:
+            return False
+        if mode == S and u and (kind == "fetch" or not (self.csr["mstatus"] >> 18) & 1):
+            return False
+        if kind == "fetch" and not x:
+            return False
+        if kind == "load" and not (r or (x and (self.csr["mstatus"] >> 19) & 1)):
+            return False
+        if kind == "store" and not w:
+            return False
+        if kind == "atomic" and not (r and w):
+            return False
+        if not a or (kind in ("store", "atomic") and not d):
+            return False
+        return True
+
+    def invalidate_translation(self, va=None, asid=None):
+        """None names x0's broad scope; a real zero selects page/ASID zero.
+
+        Invalid selected Sv39 addresses are a no-op. A scoped ASID fence preserves
+        globals. Invalidating slots does not advance or reset FIFO replacement.
+        """
+        if va is not None:
+            upper = ((1 << 25) - 1) if va & (1 << 38) else 0
+            if va >> 39 != upper:
+                return
+        selected_asid = None if asid is None else asid & 0xffff
+        for slot, entry in enumerate(self.translation_cache):
+            if entry is None:
+                continue
+            vpn, tag, global_mapping, _, _ = entry
+            address_matches = va is None or vpn == va >> 12
+            asid_matches = selected_asid is None or (not global_mapping and tag == selected_asid)
+            if address_matches and asid_matches:
+                self.translation_cache[slot] = None
+
     def walk(self, va, kind):
         """kind in {'fetch','load','store','atomic'} -> ('pa', pa) or ('fault', cause)."""
         if kind not in ('fetch', 'load', 'store', 'atomic'):
@@ -214,8 +258,18 @@ class Hart:
         expected_upper = (1 << 25) - 1 if (va >> 38) & 1 else 0
         if va >> 39 != expected_upper:
             return ("fault", cause)
+        asid = (self.csr['satp'] >> 44) & 0xffff
+        for entry in self.translation_cache:
+            if entry is None:
+                continue
+            page, tag, global_mapping, physical_page, leaf_pte = entry
+            if page == va >> 12 and (global_mapping or tag == asid):
+                if not self.permits_translation(leaf_pte, mode, kind):
+                    return ("fault", cause)
+                return ("pa", physical_page | (va & 0xfff))
         base = (self.csr["satp"] & ((1 << 44) - 1)) << 12
         vpn = [(va >> (12 + 9 * i)) & 0x1FF for i in range(3)]
+        global_mapping = False
         for level in (2, 1, 0):
             pte_addr = base + vpn[level] * 8
             self.log.append(('walk', pte_addr, 8))
@@ -226,10 +280,10 @@ class Hart:
                 return ("fault", {"fetch": 1, "load": 5, "store": 7, "atomic": 7}[kind])
             pte = self.read(pte_addr, 8)
             v, r, w, x = pte & 1, (pte >> 1) & 1, (pte >> 2) & 1, (pte >> 3) & 1
-            u, a, d = (pte >> 4) & 1, (pte >> 6) & 1, (pte >> 7) & 1
             # Svnapot/Svpbmt are absent; every PTE bit 63:54 must be zero.
             if not v or (not r and w) or pte >> 54:
                 return ("fault", cause)
+            global_mapping = global_mapping or bool(pte & 0x20)
             if r or x:  # a leaf
                 ppn2 = (pte >> 28) & ((1 << 26) - 1)
                 ppn1 = (pte >> 19) & ((1 << 9) - 1)
@@ -240,22 +294,13 @@ class Hart:
                     return ("fault", cause)
                 # RVP-SUPERVISOR 11.1.1.1.2 and translation step 6: SUM only
                 # permits S data accesses to U pages; MXR also permits X-only loads.
-                if mode == 0 and not u:
-                    return ("fault", cause)
-                if mode == S and u and (kind == "fetch" or not (self.csr["mstatus"] >> 18) & 1):
-                    return ("fault", cause)
-                if kind == "fetch" and not x:
-                    return ("fault", cause)
-                if kind == "load" and not (r or (x and (self.csr["mstatus"] >> 19) & 1)):
-                    return ("fault", cause)
-                if kind == "store" and not w:
-                    return ("fault", cause)
-                if kind == "atomic" and not (r and w):
-                    return ("fault", cause)
-                if not a or (kind in ("store", "atomic") and not d):
+                if not self.permits_translation(pte, mode, kind):
                     return ("fault", cause)  # Svade: page fault, never an update
                 pa = (ppn2 << 30) | ((ppn1 if level <= 1 else (va >> 21) & 0x1FF) << 21) \
                     | ((ppn0 if level == 0 else (va >> 12) & 0x1FF) << 12) | (va & 0xFFF)
+                self.translation_cache[self.translation_cursor] = (
+                    va >> 12, asid, global_mapping, pa & ~0xfff, pte)
+                self.translation_cursor = (self.translation_cursor + 1) % 4
                 return ("pa", pa)
             if pte & 0xd0:  # non-leaf U/A/D are reserved (RSW/G remain allowed)
                 return ("fault", cause)
@@ -1155,6 +1200,8 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
                 h.deliver(2, raw)
                 return h.pc, {"deriv": "SFENCE.VMA below S-mode or S-mode TVM=1: illegal-instruction, no fence effect.",
                               "source": "RVP-SUPERVISOR §11.1.2.1; RVP-MACHINE §2.1.1.6.6"}
+            h.invalidate_translation(None if rs1 == 0 else x[rs1],
+                                     None if rs2 == 0 else x[rs2])
             return next_pc, stock("sfence.vma")
         raise Refusal(f"SYSTEM word {word:#x} outside the corpus")
     if op == 0b0001111:

@@ -220,3 +220,20 @@ including page/ASID zero and masked ASID bits; the earlier fence fixture is corr
 and armed with an occupied cache. The [Sv39 chapter](sv39.md) explains the four cases.
 This repair precedes the independent cache author; no evaluator output supplies its
 expected values and the staged C bind remains ahead.
+
+Slice (e1c1) completes the independent translation-cache prerequisite. The author
+now retains four FIFO translations keyed by 4 KiB page and the selected 16-bit ASID.
+A cache hit rechecks current privilege, SUM and MXR against the cached leaf bits;
+software PTE edits remain stale until the appropriate fence. Global status propagates
+from non-leaf PTEs, and ASID-selective fences preserve those entries. The four scopes
+use register identity, including a nonzero register holding zero. Failed translations
+install nothing; Bare and machine-mode accesses bypass the cache.
+
+Hand page-table fixtures check replacement order, permissions, roots, ASIDs, globals,
+zero selections and illegal/invalid fences. Thirteen deliberate mutations fail, and
+the uncached parent fails the stale-mapping fixture. All 139 historical parcel runs
+now reproduce their committed architectural observations, with a cold repeat of the
+cache guest's request schedule. All 42 owned records remain byte-identical. The known
+incorrect cache guest is the only changed text among 121 earlier word-route outputs;
+no production record is overwritten. Staging can now derive C observations and actual
+parcel counts independently, after resolving the documentation archive's owned pressure.
