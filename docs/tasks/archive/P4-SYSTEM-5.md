@@ -227,3 +227,69 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   the commit doctrine gate must pass. `check_derived_counts.sh --list` re-derives 493 arms.
   promotion: declined (the permanent engine probe and its RED controls retain the lesson).
 
+
+`P4-SYSTEM.12` slice (d1) — assemble parcels without padding (`2026-10-08`, `SEMULITH-P4-0084`):
+
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_assembler.py --assembler-revision
+  e1fe379` exits 1: c.add's rd_rs1_n0 is unsupported. The legacy assembler only returns
+  words and advances labels by four, so it cannot represent a mixed 16/32-bit program.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show e1fe379:scripts/riscv_asm.py` and
+  `rg -n 'pc \+= 4|CONTIGUOUS_OPERANDS|def assemble' scripts/riscv_asm.py` identify the
+  former hard-coded field vocabulary and word stride. Compressed immediates span several
+  declared fields; compact register indices and mapped FP register files need interpretation.
+  README's old implementation disclaimer predates the interpreter (`git blame -L 10,15
+  README.md`, planning import 724e422) and contradicts the experimental implementation.
+- [x] **FIX** — group declared immediate pieces, derive their width/signedness/alignment,
+  derive FP spelling from expansion mappings, and encode compact architectural registers.
+  Judge reserved predicates and more-specific encodings instead of silently changing the
+  requested mnemonic. Sized units retain length, byte pc and text; `.half` emits two bytes,
+  `.word` four, labels use byte offsets, and assemble_image never pads. The legacy word API
+  explicitly refuses short units. Correct README's claim scope to experimental implementations.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_assembler.py` passes 37 independent
+  hand-encoded words (every selected form), 21 operand refusals, hints, raw-half refusals,
+  mixed labels and the exact byte image. `--mutation compact-base`, `label-stride` and
+  `padding` each exit 1 at their behavioral assertion. The prior assembler is RED.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` passes 20/20;
+  `bash scripts/check_definition_gen.sh --self-test` passes 54/54 (including the C engine).
+  Both `scripts/gen_guests.py --check` invocations (rv64i and rv64gc) are byte-identical;
+  `cargo test -p semulith-verify run` passes 77/77. The permanent assembler controls execute
+  within GUEST-GEN on every commit. C remains unbound; guest image/runner integration is d2.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 497 arms),
+  task index, CHANGELOG, DEV_NOTES, README, definition toolbox/doctrine and the assembler/C
+  book chapters (including the stale RV64I/500-line description). Books and commit doctrine
+  gate must pass. Lossless DEV_NOTES sharding
+  preserves whole entries and digests without raising a ceiling.
+  promotion: declined (the permanent fixture and RED controls preserve this local lesson).
+
+`P4-SYSTEM.12` slice (d2) — exact guest images reach the runner (`2026-10-08`, `SEMULITH-P4-0085`):
+
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_guest_image.py --generator-revision
+  89a8e6d` exits 1: mixed.s does not assemble because the generator uses the refusing word
+  API. `rg -n 'guest.words|to_le_bytes' crates/semulith-verify/src/run_rv64gc.rs` on the
+  parent identifies the runner's four-byte reconstruction, unable to carry short units.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show 89a8e6d:scripts/gen_guests.py` pins
+  load_guest's word list and emit's u32 arrays; `git show 89a8e6d:crates/semulith-verify/src/run_rv64gc.rs` pins reconstruction at lines 119–123. Length was absent from the fixture.
+  The generator's rv64gc header and drift refusal also gave the default scalar regeneration
+  command; the mode-specific command now names the canonical inputs, byte mode and output.
+- [x] **FIX** — assemble sized units at the declared entry, emit exact u8 images with
+  --image-format bytes, and load them directly in rv64gc. Word mode still emits rv64i's
+  old API and explicitly refuses short units. The generated header carries the canonical
+  mode-specific command independent of a temporary check output. Fetch docs count actual
+  boundary requests (faulted included; delivery/walk/wait can prevent them).
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_guest_image.py` →
+  `test result: ok. 2 passed; 0 failed` with the tracked runner and a temporary C composition. A hand-encoded
+  14-byte image checks a word at 2-mod-4, signed results, a byte-addressed jump over an
+  illegal parcel, the final halfword, exact loaded bytes and six requests across five steps.
+  A word-only image reads two parcels. Padding and runner-offset mutations fail; word mode
+  refuses the short guest. The prior generator is RED before any engine runs.
+- [x] **NO REGRESSION** — `make check` passes fmt, strict clippy, 150 core / 17 DSP /
+  193 verify tests. `bash scripts/check_guest_gen.sh --self-test` passes 23/23, including
+  the new GREEN and both behavioral RED controls. The before/after load_guest census
+  compares 139 rv64gc + 49 rv64i image hashes/byte counts and every expectation: all unchanged.
+  `git diff -- crates/semulith-verify/src/guests.rs` is only its generator fingerprint.
+  C remains unbound in production; the existing fetch expectations remain unchanged until e.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 500 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, assembler/C book chapters.
+  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 500 arms.
+  promotion: declined (the permanent runner probe and its mutations preserve this lesson).
+

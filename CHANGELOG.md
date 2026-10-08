@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0088 (leaf P4-SYSTEM.12, slice d3c) — independent C author component
+
+- Hand-decode all 37 RV64+D forms from the pinned C prose/diagrams; execute spec-side
+  base rules at length 2, preserve original trap bits and pc+2 links. Fixed-bit guards
+  cover the missing base forms. Probe: 37 effects, 22 limits, 79 scatter bits, hints/
+  reserved/FP faults; six mutations RED. GUEST-GEN 42/42, 42 owned and 91 prior outputs
+  exact. Full parcel fetch/budgets and production C bind remain next.
+
 ## SEMULITH-P4-0087 (leaf P4-SYSTEM.12, slice d3b) — strict tracked Sail runner
 
 - Exact byte ELF, pinned binary/config, process status, fresh trace and repeat checks;

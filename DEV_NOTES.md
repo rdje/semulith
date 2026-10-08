@@ -1,5 +1,25 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — independent C rules keep lengths and original bits (P4-SYSTEM.12 d3c)
+
+The author lacked C decoding and five base shapes needed by compressed instructions.
+A separate spec_c.py reconstructs fields and base words from the pinned chapter and its
+three public SVG listings, without reading engine/assembler mappings. execute_c passes
+length 2 and original parcel bits to the existing spec-side base rules; normal word callers
+retain length 4. C.JALR reads old rs1 even when it links into that same register. Missing
+SRAI, ADDIW, ADDW/SUBW and JALR rules use fixed-bit guards; W results truncate/sign-extend.
+Reserved parcels and FS-Off traps retain the original 16-bit tval. FP loads dirty FS;
+read-only stores retain the declared Precise state. The unused ADDIW locator is repaired.
+
+- Validation: 37 expansion/effect cases, 22 limits, 79 one-hot immediate bits, 11 reserved
+  parcels, 10 hints, two branch outcomes, link aliasing, memory/FP and word-overflow checks.
+  One-hot cases catch a bit permutation that all-ones limits miss. Six mutations RED;
+  GUEST-GEN 42/42; 42 owned records exact. All 91 older emitted texts remain exact.
+  New JALR vocabulary emits six other guests; three show the already-owned source-end/fetch
+  gaps. Their names and immediate d3d repair schedule live in the tree. No record overwritten.
+- Promotion: declined — the independent component, permanent probe and six mutation controls
+  retain this bounded lesson. Guest parcel fetching/budgets and production binding follow.
+
 ## _(2026-10-08)_ — absence is not a no-write instruction (P4-SYSTEM.12 d3b)
 
 The scratch comparator skipped any absent row whose expected writes were empty and ignored

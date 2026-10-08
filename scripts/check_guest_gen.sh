@@ -296,6 +296,22 @@ PY
   out="$(python3 scripts/probe_gc_sail.py --mutation keep-stale 2>&1)"; rc=$?
   arm "RED stale traces cannot stand in for a new run" "$rc" 1 "$out" "stale traces accepted as a new run"
 
+  # d3c: independent C parcel rules, including scatter basis and original trap bits.
+  out="$(python3 scripts/probe_c_author.py 2>&1)"; rc=$?
+  arm "GREEN independent C author expansions and effects" "$rc" 0 "$out" "37 expansions/effects"
+  out="$(python3 scripts/probe_c_author.py --mutation compact-base 2>&1)"; rc=$?
+  arm "RED wrong C author compact registers" "$rc" 1 "$out" "c.addi4spn: C expansion mismatch"
+  out="$(python3 scripts/probe_c_author.py --mutation signed-immediate 2>&1)"; rc=$?
+  arm "RED wrong C author immediate sign" "$rc" 1 "$out" "c.addi: C expansion mismatch"
+  out="$(python3 scripts/probe_c_author.py --mutation link-length 2>&1)"; rc=$?
+  arm "RED wrong C author length/link" "$rc" 1 "$out" "C parcel advanced by wrong length"
+  out="$(python3 scripts/probe_c_author.py --mutation reserved-guard 2>&1)"; rc=$?
+  arm "RED reserved C author parcels cannot execute" "$rc" 1 "$out" "reserved parcel 0x0000 accepted"
+  out="$(python3 scripts/probe_c_author.py --mutation scattered-bits 2>&1)"; rc=$?
+  arm "RED a permutation of C immediate bits" "$rc" 1 "$out" "scattered bit 0x4000/6 misplaced"
+  out="$(python3 scripts/probe_c_author.py --mutation expanded-trap 2>&1)"; rc=$?
+  arm "RED C illegal traps keep the original parcel" "$rc" 1 "$out" "FP illegal trap lost original C parcel"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

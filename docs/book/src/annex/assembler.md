@@ -292,3 +292,25 @@ The chapter on the laboratory's guests (see *P2 — the first validated profile*
 those bytes are for: every value they produce was predicted from the specification before
 any model ran, and the assembler is how the *program* side of that experiment stays equally
 accountable.
+
+## Independent compressed component expectations
+
+The expectation author uses `scripts/spec_c.py` to hand-reconstruct C fields from the pinned
+specification diagrams. Its `execute_c` component handles one complete parcel. It returns
+the next address and GPR writes, so the caller can commit those writes after all reads.
+Traps and memory/FP effects use the same spec-side hart as ordinary operations.
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY'
+from derive_rv64gc_expectations import Hart, execute_c
+hart = Hart()
+next_pc, observation = execute_c(hart, 0x5081)  # C.LI x1,-32
+assert next_pc == 0x80000002
+assert observation['writes'] == {1: 0xffffffffffffffe0}
+PY
+python3 scripts/probe_c_author.py
+```
+
+This component API is finite spec-side evidence. It neither fetches the instruction nor
+runs a compressed guest yet; parcel fetching and explicit guest budgets are the next slice.
+The existing `--check-owned` route retains its 42 historical byte-identical records.

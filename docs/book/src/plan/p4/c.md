@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d3b; C authoring/fetch tools and production bind next)
+**Status:** Underway (slices a–d3c; parcel fetch/budgets and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -98,8 +98,8 @@ byte-for-byte. The broader census caught reserved upper bits being interpreted a
 operations, and missing SUM/MXR/U permissions in its data walk; both are fixed. The affected
 permission guest now matches all 169 committed step observations. Direct permission fixtures
 and six mutations guard the repairs, without using the instruction engine as an oracle.
-The author still has a bounded vocabulary: C expansion and instruction-fetch translation
-follow in later slices. Existing records keep their original provenance.
+The author still has a bounded vocabulary. C expansion follows below; instruction-fetch
+translation remains next. Existing records keep their original provenance.
 
 Slice (d3b) tracks the Sail runner and repairs that comparator. Every ordinary expected
 instruction needs a row, including instructions that change no register. A declared
@@ -115,6 +115,20 @@ limitations. Cached process statuses were not retained. A fresh run of all four 
 checks successful status and agrees on 99 steps, with identical repeat traces. A temporary
 mixed C image also agrees on its five hand-derived addresses, words and writes.
 
-The production profile still declares C unbound. Independent C authoring and parcel fetch
-follow; the specification-derived corpus and C bind land together, then the matched Sail
+Slice (d3c) adds independent C component rules. A separate spec-side decoder reconstructs
+all 37 RV64+D forms from the pinned chapter and its instruction diagrams. It reads neither
+the engine's expansion declarations nor the assembler's mappings. The ordinary spec-side
+rules now accept an instruction length, so sequential addresses and links use two bytes.
+C.JALR computes its target from the old register before returning a pc+2 link, even when
+both registers are x1. Word arithmetic truncates to 32 bits and sign-extends. Reserved
+parcels and floating-point state faults retain the original sixteen bits in the trap value.
+
+The permanent probe checks every form and its effect, immediate extremes, 79 individual
+scattered bits, hints and reserved cases. A permutation of two immediate bits can pass an
+all-ones limit, so those individual-bit checks matter. Six deliberate mutations fail,
+including a wrong two-byte link and reporting the expanded word as the trap value. The
+42 owned records and all 91 previously emitted texts stay exact. The guest author still
+uses its earlier word fetch route; C component execution is ready for parcel fetch/budgets.
+
+The production profile still declares C unbound. Parcel fetch and explicit budgets follow; the specification-derived corpus and C bind land together, then the matched Sail
 experiment. These probes are finite component evidence.

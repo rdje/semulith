@@ -235,9 +235,50 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (d3c): independent C author expansion; strict Sail adapter/audit (d3b) committed; fetch/budgets d3d |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d3d): parcel fetch and explicit run budgets; C component author (d3c) committed; production bind (e) follows |
 
 ## Decisions
+
+- `2026-10-08` (d3c legacy audit): all 91 previously emitted texts remain exact.
+  New base JALR vocabulary emits six older guests; numeric writes agree on every common
+  step. dir-chase, guest-control and fault-jalr-mis have exact counts/observations.
+  fault-fetch stops at 2 instead of 3 steps, it-prio-jump at 3 instead of 4, and
+  sv39-perm-rwx at 108 instead of 114 (fetches 108 instead of 113). These reproduce the
+  already-owned source-map/end and untranslated-fetch limitations. Add their names to
+  d3d's immediate repair corpus alongside dir-runoff and sv39-straddle; no existing
+  expectation is overwritten and they do not join the 42 owned check records yet.
+  Details: target/p4-system-12/d3c/new-legacy-observations.log and legacy-census.json.
+  Diagrams are linked under https://docs.riscv.org/reference/isa/v20260120/unpriv/_images/:
+  quadrant 0 diag-1f91aa9c4226801a769871aec6df542e2f647a16.svg;
+  quadrant 1 diag-ac100c399208ef3eb92487b098c395e35d378dbf.svg;
+  quadrant 2 diag-8418563ff7fdb02d02c93d904f77a522a33c22e2.svg.
+
+- `2026-10-08` (d3c inputs/baseline): the pinned RVI-C HTML links the public
+  v20260120 SVG listings; downloaded only those three into the task's on-volume spec
+  directory (the HTML cache deliberately holds chapters, not linked images). SHA256:
+  quadrant 0 7401e1c7d12223a1a92ad08b099185ab0c6a70e4e5bc643601eb847d9e3cf069;
+  quadrant 1 8e1cf89de48172d3fb024bacd4abd281441f8568bbedd31a62a49d5ba2f5b27b;
+  quadrant 2 8ab4b043d63f0c01920c60cdd159ce8d12b37acda68cb3054081f97508761ca4.
+  XML text extraction pins scattered fields against the diagram's bit-index row.
+  before.log: execute_c absent; C.LI parcel 0x5081 and the five needed base shapes
+  refuse. The unused ADDIW stock locator said 3.1.2.2, but its pinned operation sentence
+  is in 3.1.2.1 (rv64.html 542–545); repair that locator with the new implementation.
+
+- `2026-10-08` (d3c design, before changes): implement a separate spec-side RV64C
+  parcel decoder in scripts/spec_c.py. Its field reconstruction and expansion words are
+  hand-authored from the pinned RVI-C 27.1 prose/format diagrams, without importing the
+  engine, generated definition, c.sem.sexp or assembler maps. Retrieve the three SVG
+  instruction listings linked by the pinned HTML into target/p4-system-12/d3c/spec;
+  record their digests as working-input evidence. Add execute_c to the tracked author:
+  reserved parcels deliver cause 2 with original 16-bit tval; ordinary expansions reuse
+  spec-side base rules with an explicit instruction length. C.JALR reads the old source
+  before its pc+2 link write. Complete only the missing base forms required by C:
+  SRAI, ADDIW, ADDW/SUBW and JALR, with fixed-bit guards. Keep the existing word author
+  route and all 42 owned outputs identical until d3d introduces parcel fetch/budgets.
+  A permanent offline probe checks all 37 hand-word expansions, signed/scattered extrema,
+  hints/reserved specialization, integer/control/memory/FP effects and original trap bits;
+  compact-register, signed-immediate, link-length and reserved-guard mutations must fail.
+  This is component evidence; full compressed guest authoring and binding remain d3d/e.
 
 - `2026-10-08` (d3b adapter design, before changes): keep the public Sail 0.14 trace
   protocol and the corpus's change-observation comparison, but require every ordinary
@@ -678,71 +719,6 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 
-`P4-SYSTEM.12` slice (d1) — assemble parcels without padding (`2026-10-08`, `SEMULITH-P4-0084`):
-
-- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_assembler.py --assembler-revision
-  e1fe379` exits 1: c.add's rd_rs1_n0 is unsupported. The legacy assembler only returns
-  words and advances labels by four, so it cannot represent a mixed 16/32-bit program.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `git show e1fe379:scripts/riscv_asm.py` and
-  `rg -n 'pc \+= 4|CONTIGUOUS_OPERANDS|def assemble' scripts/riscv_asm.py` identify the
-  former hard-coded field vocabulary and word stride. Compressed immediates span several
-  declared fields; compact register indices and mapped FP register files need interpretation.
-  README's old implementation disclaimer predates the interpreter (`git blame -L 10,15
-  README.md`, planning import 724e422) and contradicts the experimental implementation.
-- [x] **FIX** — group declared immediate pieces, derive their width/signedness/alignment,
-  derive FP spelling from expansion mappings, and encode compact architectural registers.
-  Judge reserved predicates and more-specific encodings instead of silently changing the
-  requested mnemonic. Sized units retain length, byte pc and text; `.half` emits two bytes,
-  `.word` four, labels use byte offsets, and assemble_image never pads. The legacy word API
-  explicitly refuses short units. Correct README's claim scope to experimental implementations.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_assembler.py` passes 37 independent
-  hand-encoded words (every selected form), 21 operand refusals, hints, raw-half refusals,
-  mixed labels and the exact byte image. `--mutation compact-base`, `label-stride` and
-  `padding` each exit 1 at their behavioral assertion. The prior assembler is RED.
-- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` passes 20/20;
-  `bash scripts/check_definition_gen.sh --self-test` passes 54/54 (including the C engine).
-  Both `scripts/gen_guests.py --check` invocations (rv64i and rv64gc) are byte-identical;
-  `cargo test -p semulith-verify run` passes 77/77. The permanent assembler controls execute
-  within GUEST-GEN on every commit. C remains unbound; guest image/runner integration is d2.
-- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 497 arms),
-  task index, CHANGELOG, DEV_NOTES, README, definition toolbox/doctrine and the assembler/C
-  book chapters (including the stale RV64I/500-line description). Books and commit doctrine
-  gate must pass. Lossless DEV_NOTES sharding
-  preserves whole entries and digests without raising a ceiling.
-  promotion: declined (the permanent fixture and RED controls preserve this local lesson).
-
-`P4-SYSTEM.12` slice (d2) — exact guest images reach the runner (`2026-10-08`, `SEMULITH-P4-0085`):
-
-- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_guest_image.py --generator-revision
-  89a8e6d` exits 1: mixed.s does not assemble because the generator uses the refusing word
-  API. `rg -n 'guest.words|to_le_bytes' crates/semulith-verify/src/run_rv64gc.rs` on the
-  parent identifies the runner's four-byte reconstruction, unable to carry short units.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `git show 89a8e6d:scripts/gen_guests.py` pins
-  load_guest's word list and emit's u32 arrays; `git show 89a8e6d:crates/semulith-verify/src/run_rv64gc.rs` pins reconstruction at lines 119–123. Length was absent from the fixture.
-  The generator's rv64gc header and drift refusal also gave the default scalar regeneration
-  command; the mode-specific command now names the canonical inputs, byte mode and output.
-- [x] **FIX** — assemble sized units at the declared entry, emit exact u8 images with
-  --image-format bytes, and load them directly in rv64gc. Word mode still emits rv64i's
-  old API and explicitly refuses short units. The generated header carries the canonical
-  mode-specific command independent of a temporary check output. Fetch docs count actual
-  boundary requests (faulted included; delivery/walk/wait can prevent them).
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_guest_image.py` →
-  `test result: ok. 2 passed; 0 failed` with the tracked runner and a temporary C composition. A hand-encoded
-  14-byte image checks a word at 2-mod-4, signed results, a byte-addressed jump over an
-  illegal parcel, the final halfword, exact loaded bytes and six requests across five steps.
-  A word-only image reads two parcels. Padding and runner-offset mutations fail; word mode
-  refuses the short guest. The prior generator is RED before any engine runs.
-- [x] **NO REGRESSION** — `make check` passes fmt, strict clippy, 150 core / 17 DSP /
-  193 verify tests. `bash scripts/check_guest_gen.sh --self-test` passes 23/23, including
-  the new GREEN and both behavioral RED controls. The before/after load_guest census
-  compares 139 rv64gc + 49 rv64i image hashes/byte counts and every expectation: all unchanged.
-  `git diff -- crates/semulith-verify/src/guests.rs` is only its generator fingerprint.
-  C remains unbound in production; the existing fetch expectations remain unchanged until e.
-- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 500 arms),
-  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, assembler/C book chapters.
-  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 500 arms.
-  promotion: declined (the permanent runner probe and its mutations preserve this lesson).
-
 `P4-SYSTEM.12` slice (d3a) — the tracked spec-side author (`2026-10-08`, `SEMULITH-P4-0086`):
 
 - [x] **REPRODUCE / ISSUE** — `rg --files scripts` found no tracked GC author; the producer
@@ -819,6 +795,42 @@ never raised, at every crossing. The index:
   promotion: declined (the permanent adapter/probe and four mutations retain this scoped
   absence lesson; the comparison policy's wider landing remains .14).
 
+`P4-SYSTEM.12` slice (d3c) — independent C component expectations (`2026-10-08`, `SEMULITH-P4-0088`):
+
+- [x] **REPRODUCE / ISSUE** — d3c/before.log records execute_c absent and 6 named refusals:
+  C.LI 0x5081 plus SRAI, ADDIW, ADDW/SUBW and JALR base shapes. The older word-only
+  producer cannot derive compressed observations; execute's sequential advances assume 4.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'pc \+ 4|def execute|OP-IMM|1101111'
+  scripts/derive_rv64gc_expectations.py` on parent 75c79af locates the 4-byte next/link
+  values and missing base forms. Pinned c-st-ext.html 1327–1346 gives C.JALR pc+2;
+  rv64.html 542–545 gives ADDIW at 3.1.2.1 (the unused stock locator was wrong).
+  XML extraction of the three pinned diagrams exposes the scattered field positions;
+  hashes and public linked names above. No generated expansion table supplies answers.
+- [x] **FIX** — scripts/spec_c.py hand-decodes 37 RV64+D forms and reserved conditions
+  from the pinned chapter. The author executes these independently reconstructed base
+  words at length 2; C.JALR target uses old rs1 and links pc+2. Reserved parcels and
+  FS-Off faults carry original 16-bit tval. Missing base forms gain narrow fixed-bit
+  guards; word suffixes truncate then sign-extend; ADDIW locator repaired. The old guest
+  author route remains word-only until d3d. No production profile or engine changed.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_author.py` rc=0 → 37 expansion/
+  effect fixtures, 22 limits, 79 one-hot scattered bits, 11 reserved parcels, 10 hints,
+  two branch outcomes, aliasing links, integer/memory/FP state, four FS-Off original
+  parcels, a misaligned load and word overflow/zero-immediate cases all pass. All 6
+  mutations are RED (compact base, sign, length/link, reserved guard, bit permutation,
+  expanded trap bits). Parent 75c79af is RED: execute_c absent. One-hot controls
+  distinguish bit permutations that an all-ones limit alone cannot detect.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 42 pass / 0 fail;
+  `--check-owned` → 42 documents byte-identical. Full legacy before/after census:
+  91/91 previously emitted texts exact; 6 new outputs from JALR vocabulary, all common
+  numeric writes agree. Three need the already-owned fetch/end repair (named above).
+  No historical record overwritten. The normal guest generator remains unchanged.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 519 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and C/assembler book.
+  Completed d1/d2 receipts archived byte-verbatim to part 5 (reconstruction asserted);
+  no ceiling raised. Books and doctrine commit gate must pass. check_derived_counts.sh
+  re-derives 519 arms. promotion: declined (the independent decoder, permanent probe and
+  six discriminating mutations retain this component's local lesson).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -828,6 +840,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (d3c) | 37 forms/effects, 79 scatter bits, 6 RED controls; GUEST-GEN 42/42; 42 owned + 91 legacy exact | independent C component ready; fetch/budgets next |
 | `2026-10-08` | `.12` slice (d3b) | 79/79 cached strict checks; live M 4/4 + C image; 4 RED controls; GUEST-GEN 35/35 | strict tracked Sail adapter; absence defect closed; C author next |
 | `2026-10-08` | `.12` slice (d3a) | 42 exact owned records; 7 reserved + permission probes; 6 RED controls; GUEST-GEN 30/30 | author tracked and repaired; 169 permission observations agree; Sail repair next |
 | `2026-10-08` | `.12` slice (d2) | 2 compiled image/runner probes, 2 RED controls; GUEST-GEN 23/23; make check | exact bytes ready; 188 old images/expectations unchanged; (d3) producers next |
@@ -880,6 +893,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice d3c) | `SEMULITH-P4-0088 (leaf P4-SYSTEM.12): derive compressed component expectations from independent spec-side rules` | (d3d) parcel fetch/budgets next |
 | `.12` (slice d3b) | `SEMULITH-P4-0087 (leaf P4-SYSTEM.12): track the parcel-capable Sail runner and refuse absent reference evidence` | (d3c) C author expansion next |
 | `.12` (slice d3a) | `SEMULITH-P4-0086 (leaf P4-SYSTEM.12): track the spec-side expectation author and repair its encoding and permission checks` | (d3b) Sail repair/audit next |
 | `.12` (slice d2) | `SEMULITH-P4-0085 (leaf P4-SYSTEM.12): carry exact guest byte images through generation and the rv64gc runner` | (d3) author/Sail tools next |
@@ -929,6 +943,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (d3c) done: independent 37-form C component author; six RED
+  controls, 42 owned and 91 prior texts exact; parcel fetch and budgets next.
 
 - `2026-10-08`: `.12` (d3b) done: tracked strict Sail runner, 79/79 cached checks,
   live M 4/4 and mixed C image, repeat traces exact; four absence mutations discriminate.
