@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0007 (leaf CI-RECOVERY.4, slice c) — pushed recovery, hosted checks running
+
+- Authorized act pushed f4364bc after both full local CI runs passed and the
+  approval ledger was committed. Preserve all three hosted run IDs; their running
+  state remains explicit. Recovery approval and verification remain open.
+
 ## SEMULITH-CI-0006 (leaf CI-RECOVERY.4, slice b) — bounded recovery push approval
 
 - Record the director's approval of CI-repair pushes without asking again. Use the
@@ -906,4 +912,3 @@
   EXERCISE-COVERAGE 88/88; EXTRACTION ok; GUEST-GEN 16/16; UNIT-COMPOSITION 3;
   SHARD-FREEZE 186 rows. `make check` rc=0, `make gate` green (DERIVED-COUNTS
   430 unchanged).
-

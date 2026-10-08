@@ -74,6 +74,9 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   the decision/index, COMMIT/MEMORY/book/log updates and any ordinary lossless head
   sharding required by their caps; then use approved_push.sh and observe exact-SHA
   hosted results. No hook bypass, cadence change or Kimi exemption is authorized.
+  Push receipt slice: own the completed f4364bc push and three pending run IDs in
+  MEMORY/logs/book before waiting. This tracking commit carries no new repair and
+  does not claim the running hosted checks passed.
   Verification: pending
   Commit: pending
 
@@ -125,6 +128,23 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   sanctions its process. Owned by `.4` with priority before handoff.
 
 ## Acceptance Checklist
+
+`.4` push-receipt slice (c), 2026-10-08, SEMULITH-CI-0007; leaf remains active:
+
+- [x] **ROOT CAUSE** — hosted verification needed the committed repairs pushed.
+  Actual recorded act exits rc=0; output `e1fe379..f4364bc main -> main` and
+  `approved-push: pushed`. Director approval is the preceding durable decision.
+- [x] **ADDRESSED** — act runs full local CI green before its ledger commit, then
+  the normal pre-push hook reruns it green and verifies SEMULITH-PUSH-0001 covers
+  the range. `git rev-list --count origin/main..HEAD` returns 0 at f4364bc.
+- [x] **NO REGRESSION** — `gh run list --commit f4364bc316656b2d303f838bb87eadc470a75747`
+  reports all three runs in_progress, with empty conclusions; no hosted pass is
+  claimed. All tracked changes in this receipt are documentation, rc=0 for the
+  implementation-path diff against f4364bc.
+- [x] **FIX / LOCKSTEP** — MEMORY, CHANGELOG, this receipt and book preserve the
+  exact SHA and run IDs below. P4 remains 11/18; CI-RECOVERY remains 3/4. The
+  authorization remains active until actual all-three-green; Kimi remains pending.
+  promotion: declined (session execution receipt; authority already owns its durable decision).
 
 `.4` authority-recording slice (b), 2026-10-08, SEMULITH-CI-0006; leaf remains active:
 
@@ -279,6 +299,14 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Verification Log
 
+Approved act: target/ci-recovery/approved-push-1.log rc=0; both full-suite runs green.
+Approval ledger commit: f4364bc316656b2d303f838bb87eadc470a75747, SEMULITH-PUSH-0001.
+All three hosted runs started at 2026-10-08T15:21:39Z on that exact SHA; initially in_progress:
+
+- rust: https://github.com/rdje/semulith/actions/runs/37800114021
+- doctrines: https://github.com/rdje/semulith/actions/runs/37800113792
+- portability: https://github.com/rdje/semulith/actions/runs/37800113741
+
 `.1`: target/ci-recovery/clippy-before.log rc=101; check-rust-1.99.log rc=0; hash-probe.txt independently checked; bench/sha-rust-1.95.log rc=0. These are regenerable local evidence, not tracked artifacts.
 
 | Date | Leaf | Checks | Result |
@@ -287,6 +315,8 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0007 (leaf CI-RECOVERY.4): preserve the authorized push and pending hosted run receipts` — running hosted checks remain owned.
 
 `SEMULITH-CI-0006 (leaf CI-RECOVERY.4): record bounded approval for necessary GitHub CI repair pushes` — authority slice, hosted result still pending.
 

@@ -29,6 +29,11 @@ again (`decision_ci-recovery-push-approval`). Every push still uses
 guarded push. When all three workflows pass on the repaired pushed revision, this
 exception expires and the normal cadence resumes.
 
+The first authorized recovery push is `f4364bc`: both required local full suites
+passed, and the approval record traveled in that commit. Its rust, doctrines and
+portability workflows are running on GitHub; CI-RECOVERY.4 records their exact run
+URLs. Until their results are observed, hosted success remains pending.
+
 Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
 open repository file handles, including read-only editor handles. A refused census
 remains visible even when verification jobs have finished. Closing another editor

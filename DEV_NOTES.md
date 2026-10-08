@@ -1,5 +1,10 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — approval act completed (CI-RECOVERY.4 c)
+
+Both full local suites passed; SEMULITH-PUSH-0001 pushed in f4364bc. Three hosted
+run IDs are in the tree. Running checks remain unverified; no new code in this receipt.
+
 ## _(2026-10-08)_ — CI repair has bounded push authority (CI-RECOVERY.4 b)
 
 The director approves necessary recovery pushes without another question until
