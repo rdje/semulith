@@ -23,3 +23,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** pushes needed to fix GitHub CI are exceptional hence accepted
 - **Range:** origin/main..5cd7ab65e192639c06b08e1189310097d2f27984 — 20 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 5cd7ab65e192639c06b08e1189310097d2f27984 before this record was written
+
+## SEMULITH-PUSH-0002 — 2026-10-08T17:55:23+0200
+
+- **Approved by:** the director
+- **Reason:** pushes needed to fix GitHub CI are exceptional hence accepted
+- **Range:** origin/main..1f25d4871fe73fc6e078f2f13fd78fa2ff7f6a25 — 3 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 1f25d4871fe73fc6e078f2f13fd78fa2ff7f6a25 before this record was written
