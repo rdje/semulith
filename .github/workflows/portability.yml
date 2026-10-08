@@ -15,11 +15,25 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Keep tool, dependency and temporary stores local
+        run: |
+          mkdir -p .app-data/cargo-home .app-data/rustup target/ci-tmp
+          echo "CARGO_HOME=$GITHUB_WORKSPACE/.app-data/cargo-home" >> "$GITHUB_ENV"
+          echo "RUSTUP_HOME=$GITHUB_WORKSPACE/.app-data/rustup" >> "$GITHUB_ENV"
+          echo "RUSTUP_TOOLCHAIN=stable" >> "$GITHUB_ENV"
+          echo "TMPDIR=$GITHUB_WORKSPACE/target/ci-tmp" >> "$GITHUB_ENV"
+      - name: Provision stable Rust
+        run: rustup toolchain install stable --profile minimal --no-self-update
       - name: Vendor the dependency store (on-volume — .cargo/config.toml routes cargo there)
         run: make vendor
       - name: The native leg + the digest manifest
         run: bash scripts/check_portability.sh --leg native --emit-manifest manifest.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: portability-log-${{ matrix.os }}
+          path: target/portability/*.log
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
           name: manifest-${{ matrix.os }}
@@ -29,16 +43,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Keep tool, dependency and temporary stores local
+        run: |
+          mkdir -p .app-data/cargo-home .app-data/rustup target/ci-tmp
+          echo "CARGO_HOME=$GITHUB_WORKSPACE/.app-data/cargo-home" >> "$GITHUB_ENV"
+          echo "RUSTUP_HOME=$GITHUB_WORKSPACE/.app-data/rustup" >> "$GITHUB_ENV"
+          echo "TMPDIR=$GITHUB_WORKSPACE/target/ci-tmp" >> "$GITHUB_ENV"
+      - name: Verify the cold single-leg controls before provisioning Miri
+        run: bash scripts/check_portability.sh --self-test
       - name: The pinned nightly + Miri + the big-endian target
         run: |
-          rustup toolchain install nightly --component miri
-          rustup target add --toolchain nightly powerpc64-unknown-linux-gnu
+          toolchain="$(bash scripts/check_portability.sh --print-toolchain)"
+          rustup toolchain install "$toolchain" --profile minimal --component miri,rust-src --target powerpc64-unknown-linux-gnu --no-self-update
+          echo "RUSTUP_TOOLCHAIN=$toolchain" >> "$GITHUB_ENV"
       - name: Vendor the dependency store (on-volume — .cargo/config.toml routes cargo there)
         run: make vendor
       - name: The Miri leg
         run: bash scripts/check_portability.sh --leg miri
       - name: The cross-endian leg
         run: bash scripts/check_portability.sh --leg cross-endian
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: miri-logs
+          path: target/portability/*.log
+          if-no-files-found: ignore
 
   agree:
     needs: [host]

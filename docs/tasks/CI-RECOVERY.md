@@ -52,13 +52,13 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Commit: SEMULITH-CI-0002
 
 - ID: `CI-RECOVERY.3` — portable cold Miri/endian legs
-  Status: `proposed`
+  Status: `active`
   Goal: create the output directory before redirections; remove the macOS-specific
   nightly name from the cross-endian target query; audit single-leg cold execution.
   Acceptance: hand stub controls on Linux/macOS shapes discriminate both old defects;
   the actual nightly/Miri result and any remaining provisioning gap are stated exactly.
-  Verification: pending
-  Commit: pending
+  Verification: slice (a) controls 9+15 green; actual native Miri 153/153; big-endian confirmation running.
+  Commit: SEMULITH-CI-0003 (slice a); closure pending confirmation
 
 - ID: `CI-RECOVERY.4` — local/hosted evidence and follow-through
   Status: `proposed`
@@ -72,7 +72,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.3` | `proposed` | book provisioning committed; repair cold Miri/endian execution |
+| 1 | `CI-RECOVERY.3` | `active` | reproduce cold log and Linux query failures, then repair and run real Miri |
 
 ## Decisions
 
@@ -102,6 +102,36 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 - Hosted result waits for a permitted push; local implementation and focused verification can proceed.
 
 ## Acceptance Checklist
+
+`.3` slice (a), 2026-10-08, SEMULITH-CI-0003; parent remains active:
+
+- [x] **ROOT CAUSE** — parent cold Miri control rc=1, `miri.log: No such file or
+  directory`; Linux target query rc=1, `cross-endian: absent` despite a provisioned
+  target. Dated/native queries were not generic. Actual local setup exposed the parent
+  workspace and strict-vendor conflicts recorded below. Parent verdict emitted `passed`
+  for `red (manifest mismatch)`, rc=0; translated-green selector returned rc=1.
+- [x] **ADDRESSED (slice a)** — common output/Cargo/temp setup; dated nightly authority
+  exposed via --print-toolchain; separate explicit MIRI_SYSROOTs; locked root/toolchain
+  vendor synchronization before public setup. Root workspace excludes target, membership
+  remains four crates. Outcome prefixes/unknown failures counted, translated green
+  accepted, current native digest compared and digest failure refused.
+  `PORTABILITY --self-test: 9 pass / 0 fail`; `PORTABILITY-COLD: 15 pass / 0 fail`.
+- [x] **NO REGRESSION (slice a)** — final fixed script snapshot is byte-identical to
+  the working script (`cmp` rc=0). Actual native dated Miri:
+  `test result: ok. 153 passed; 0 failed; 0 ignored`, 1296.07 s; outer `miri: green`,
+  rc=0. bash -n rc=0; all three workflow YAMLs parsed and their local stores checked.
+  Cargo.lock unchanged. Big-endian confirmation is pending, not included in this claim.
+- [x] **FIX / LOCKSTEP** — instrument and independent cold controls, Cargo.toml,
+  rust/portability workflows, task/index, MEMORY, CHANGELOG, DEV_NOTES, tool/book docs.
+  Failed leg tails and log-only CI artifacts preserve future diagnosis. The dated
+  historical portability record is untouched; translation does not claim native hardware.
+  promotion: declined (specific CI repair; public-interface controls and scoped receipts retain the reproducible causes).
+
+Confirmation slice (b): observe target/ci-recovery/cross-real.log and
+ target/portability/cross.log (immutable script target/ci-recovery/portability-verified.sh),
+then record the actual outcome and run full local CI. The first live-source run was
+invalidated and stopped; only the fixed-snapshot native receipt above is accepted.
+
 
 `.2`, 2026-10-08, SEMULITH-CI-0002:
 
@@ -174,6 +204,8 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Commit Log
 
+`SEMULITH-CI-0003 (leaf CI-RECOVERY.3): repair cold portability execution and preserve failure evidence` — slice (a), big-endian confirmation pending.
+
 `SEMULITH-CI-0002 (leaf CI-RECOVERY.2): provision authenticated mdBook and local Rust stores before the doctrine gate`.
 
 `SEMULITH-CI-0001 (leaf CI-RECOVERY.1): repair strict Rust 1.99 lint without changing benchmark or hash results`.
@@ -189,3 +221,51 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 - `2026-10-08`: `.1` active after archive commit `401956e`; repository clean at selection. Rust/map identity is owned before edits or toolchain provisioning.
 
 - `2026-10-08`: `.2` active after clean d6693e5. Own scripts/install_ci_mdbook.sh and doctrines.yml before edits: pin verified official 0.5.4 assets for Ubuntu x86-64 and this native macOS verification host; install only into .app-data, cache under target, advertise PATH through GITHUB_PATH. Also set repository-derived CARGO_HOME/TMPDIR for the doctrine job and select Rust stable/wasm explicitly. Linux digest/layout checked; native cold installation, corruption refusal and UNIT-BOOKS controls will verify provisioning, with Linux execution reserved for the hosted run.
+
+- `2026-10-08`: `.3` selected with clean d055dd9 before changes. Own
+  check_portability.sh, its public-interface cold controls and portability.yml;
+  additionally align rust.yml's stores with the same repository-derived provisioning
+  contract. Pin nightly-2026-09-13 in the instrument, expose --print-toolchain to CI,
+  matching the recorded rustc/Miri 809936eac6 (2026-09-12). The old workflow claimed a
+  pin while installing floating nightly; this is a repository-owned reproducibility
+  defect. Common output/Cargo/temp setup must precede every leg. Miri sysroots need
+  explicit target-local storage: published https://github.com/rust-lang/miri documents
+  MIRI_SYSROOT for both setup destination and test input. Use setup before tests with
+  distinct native/endian sysroots, without global-cache migration or deletion.
+  Priority: all these cold-run defects repaired now, with old-script RED controls and
+  actual native/endian suites; full local/hosted follow-through remains `.4`.
+
+- `.3` additional blocking root: actual dated Miri setup with repository-local TMPDIR
+  rc=1: `current package believes it's in a workspace when it's not`, naming
+  target/portability/tmp/.tmpruv5Pu/Cargo.toml and the root Cargo.toml. Parent workspace
+  excludes vendor but not project-generated target workspaces. Own Cargo.toml now,
+  before adding target to its exclusions; no modification to toolchain sources or
+  temporary manifest internals. Verify membership unchanged and rerun actual setup.
+
+- `.3` setup rerun after target exclusion reaches dependency resolution, then rc=1:
+  `no matching package named cfg-if found`, directory source .app-data/vendor,
+  required by std in the installed rust-src component. Local TMPDIR inherits the
+  project's intentional crates.io replacement. Own synchronization of the toolchain's
+  published Cargo manifest through public `cargo vendor --locked --sync` (documented
+  https://doc.rust-lang.org/cargo/commands/cargo-vendor.html), alongside the root lock,
+  before setup. Keep replacement strict, never fall back to a global cache or edit
+  toolchain sources. Run store synchronization sequentially before either real leg.
+
+- `.3` verdict defect discovered in the affected path and reproduced before repair:
+  sourcing the parent's verdict function then calling `verdict green 'red (manifest
+  mismatch)' green green` emits `passed`, rc=0. The full runner preserves decorated
+  Rosetta outcomes, while verdict accepts only undecorated atoms; a mismatch is ignored.
+  The single-leg x86 selector also rejects decorated green; its comparison uses the old
+  frozen manifest rather than current native output. Own repairs now: normalize outcome
+  prefixes, accept translated green in the single-leg selector and compare the same live
+  guest set on both targets. Add independent public-interface translation controls;
+  do not alter the dated historical portability record or claim native x86 hardware.
+
+- `.3` verification invalidation: the first real native suite reached green, then Bash
+  emitted `cho: command not found` and started reading different statements. Root:
+  the live shell source was edited during its long run, so subsequent reads resumed at
+  stale offsets. Stopped that exact script process tree; discard this run as evidence.
+  All further long runs use an immutable same-volume script snapshot, byte-compared
+  with the final working script before signoff. The log is retained in target/ only.
+
+- `.3` owns failure-log visibility: real test/setup errors are redirected to target/portability logs. Print a bounded tail on a failed leg and attach only *.log files in CI, including on failure, so the next hosted failure is diagnosable without losing its cause.

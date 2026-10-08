@@ -19,8 +19,9 @@ local pre-push suite on 1.95. CI-RECOVERY.1 repairs the Rust lints with the exac
 toolchain; benchmark tests and independent SHA comparisons preserve results. CI-RECOVERY.2 provisions digest-verified mdBook 0.5.4 before
 the book gate, with Rust, Cargo and temporary stores rooted in the repository. A cold
 native check builds all registered books; Linux execution remains a hosted obligation.
-Cold portability paths remain under CI-RECOVERY.3, and hosted green requires a successful
-run on a permitted push. A local green result alone cannot close that obligation.
+CI-RECOVERY.3 repairs cold output/provisioning paths and truthful portability verdicts.
+Its native interpreted core run passes 153 tests; big-endian confirmation remains pending.
+Hosted green requires a successful run on a permitted push. A local green result alone cannot close that obligation.
 
 ## The universal registry
 

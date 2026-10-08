@@ -12,7 +12,7 @@
 #   x86-64       the same native leg ON x86-64. This script probes: running ON x86-64
 #                (uname), or Rosetta on arm64 macOS (`arch -x86_64`). Measured absent on
 #                the recording host (2026-09-30: `Bad CPU type in executable`).
-#   miri         `cargo +nightly miri test -p semulith-core` — the model's safe-Rust core
+#   miri         the dated nightly's `miri test -p semulith-core` — the model's safe-Rust core
 #                interpreted (UB detection). The one unsafe island (bench.rs's counting
 #                allocator, RUST-03's instrument) is deliberately outside this scope.
 #   cross-endian the same suites under Miri on powerpc64-unknown-linux-gnu (big-endian).
@@ -25,21 +25,26 @@
 # `incomplete` names each mandatory leg whose infrastructure is absent (absence is not a
 # failure and not a pass); `failed` when a runnable leg fails.
 #
-#   --self-test       the verdict logic's RED/GREEN controls over synthetic leg outcomes
+#   --self-test       verdict controls plus cold single-leg public-interface controls
+#   --print-toolchain print the one dated Miri toolchain CI must provision
 #   --leg NAME        run one leg only (native | x86-64 | miri | cross-endian) — the CI
 #                     matrix drives single legs per host job
 #   --emit-manifest F  with the native leg, write the digest manifest to F (the CI
 #                     artifact; the agreement job byte-compares both hosts' files)
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+NIGHTLY=nightly-2026-09-13
+
+[ "${1:-}" = "--print-toolchain" ] && { echo "$NIGHTLY"; exit 0; }
 
 verdict() {  # $1..$4 = native, x86_64, miri, cross_endian outcomes: green|red|absent
   local failed=() missing=()
   for leg in "$@"; do
     case "$leg" in
-      green) : ;;
-      red) failed+=("x");;
-      absent) missing+=("x");;
+      green*) : ;;
+      red*) failed+=("x");;
+      absent*) missing+=("x");;
+      *) failed+=("x");;
     esac
   done
   if [ "${#failed[@]}" -gt 0 ]; then echo "failed"; return 1
@@ -56,8 +61,12 @@ self_test() {
   arm green absent absent green incomplete "two legs absent is still incomplete, not failed"
   arm red absent green green failed "a failure outranks an absence"
   arm green red absent green failed "failure anywhere is failed"
+  arm green "red (manifest mismatch)" green green failed "a decorated failure is still a failure"
+  arm green "green (translation)" green green passed "a decorated green is still green"
+  arm green unknown green green failed "an unknown outcome cannot pass"
   printf 'PORTABILITY --self-test: %d pass / %d fail\n' "$pass" "$fail"
-  [ "$fail" -eq 0 ]
+  [ "$fail" -eq 0 ] || return 1
+  python3 "$ROOT/scripts/probe_portability.py"
 }
 
 if [ "${1:-}" = "--self-test" ]; then self_test; exit $?; fi
@@ -71,6 +80,25 @@ while [ $# -gt 0 ]; do
   esac
 done
 run_leg() { [ -z "$ONLY_LEG" ] || [ "$ONLY_LEG" = "$1" ]; }
+
+# Every single-leg job starts cold; no leg may depend on native having run first.
+export CARGO_HOME="$ROOT/.app-data/cargo-home"
+export TMPDIR="$ROOT/target/portability/tmp"
+mkdir -p "$ROOT/target/portability" "$CARGO_HOME" "$TMPDIR"
+
+run_miri() { # log, sysroot name, then optional --target arguments
+  local log="$1" scope="$2" tool_sysroot; shift 2
+  export MIRI_SYSROOT="$ROOT/target/portability/sysroots/$NIGHTLY/$scope"
+  # Setup's temporary package inherits this repository's strict source replacement.
+  # Synchronize both locked workspaces through Cargo's public vendor interface.
+  tool_sysroot="$(rustup run "$NIGHTLY" rustc --print sysroot)" || return 1
+  cargo "+$NIGHTLY" vendor --locked --sync \
+    "$tool_sysroot/lib/rustlib/src/rust/library/Cargo.toml" .app-data/vendor >"$log" 2>&1 || return 1
+  # The public setup interface builds directly at MIRI_SYSROOT. Tests then reuse it,
+  # avoiding the shared OS cache and keeping native/big-endian sysroots distinct.
+  cargo "+$NIGHTLY" miri setup "$@" >>"$log" 2>&1 &&
+    cargo "+$NIGHTLY" miri test -p semulith-core "$@" >>"$log" 2>&1
+}
 
 NATIVE=red; X86=absent; MIRI=absent; CROSS=absent
 
@@ -97,10 +125,10 @@ if run_leg native; then
 echo "== leg 1: native ($(uname -m)) =="
 # capture-then-read, never pipe into grep -q: grep -q's early exit SIGPIPEs cargo, and
 # pipefail would report the PIPE's death as the leg's verdict (measured 2026-09-30).
-mkdir -p "$ROOT/target/portability"
 NLOG="$ROOT/target/portability/native.log"; cargo test --all >"$NLOG" 2>&1; NRC=$?
 if [ "$NRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$NLOG"; then NATIVE=green; fi
 echo "native: $NATIVE"
+[ "$NATIVE" != red ] || tail -n 40 "$NLOG" >&2
 echo "  the digest manifest (the second host must reproduce it byte-identically):"
 python3 - "$ROOT" <<'PY'
 import hashlib, subprocess, sys
@@ -158,10 +186,12 @@ elif [ "$(uname -m)" = "arm64" ] && [ "$(uname -s)" = "Darwin" ]; then
       XLOG="$ROOT/target/portability/x86-64.log"
       cargo test --all --target x86_64-apple-darwin >"$XLOG" 2>&1; XRC=$?
       if [ "$XRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$XLOG"; then
-        XDG="$(manifest_digest x86_64-apple-darwin)"
-        RECORDED="$(grep -oE 'sha256 [0-9a-f]{64}' profiles/rv64i-lab-v0/portability.sexp | head -1 | cut -d' ' -f2)"
-        if [ "$XDG" = "$RECORDED" ]; then X86="green (Rosetta translation; the manifest agrees byte-identically)"
-        else X86="red (x86-64 manifest $XDG != the recorded aarch64 $RECORDED)"; fi
+        if XDG="$(manifest_digest x86_64-apple-darwin)" && NATIVE_DIGEST="$(manifest_digest "")"; then
+          if [ "$XDG" = "$NATIVE_DIGEST" ]; then X86="green (Rosetta translation; the manifest agrees byte-identically)"
+          else X86="red (x86-64 manifest $XDG != the current native $NATIVE_DIGEST)"; fi
+        else
+          X86="red (fixture digest could not be produced)"
+        fi
       fi
     else
       X86="absent (Rosetta live; provision the target: rustup target add x86_64-apple-darwin)"
@@ -175,22 +205,24 @@ fi
 
 if run_leg miri; then
 echo "== leg 3: Miri (the pinned safe-Rust core plan) =="
-if cargo +nightly miri --version >/dev/null 2>&1; then
+if cargo "+$NIGHTLY" miri --version >/dev/null 2>&1; then
   MIRI=red
-  MLOG="$ROOT/target/portability/miri.log"; cargo +nightly miri test -p semulith-core >"$MLOG" 2>&1; MRC=$?
+  MLOG="$ROOT/target/portability/miri.log"; run_miri "$MLOG" native; MRC=$?
   if [ "$MRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$MLOG"; then MIRI=green; fi
+  [ "$MIRI" != red ] || { [ ! -f "$MLOG" ] || tail -n 40 "$MLOG" >&2; }
 fi
 echo "miri: $MIRI"
 fi
 
 if run_leg cross-endian; then
 echo "== leg 4: cross-endian (Miri on big-endian powerpc64) =="
-if rustup target list --toolchain nightly-aarch64-apple-darwin --installed 2>/dev/null | grep -q "^powerpc64-unknown-linux-gnu$"; then
+if rustup target list --toolchain "$NIGHTLY" --installed 2>/dev/null | grep -q "^powerpc64-unknown-linux-gnu$"; then
   CROSS=red
-  CLOG="$ROOT/target/portability/cross.log"; cargo +nightly miri test -p semulith-core --target powerpc64-unknown-linux-gnu >"$CLOG" 2>&1; CRC=$?
+  CLOG="$ROOT/target/portability/cross.log"; run_miri "$CLOG" powerpc64 --target powerpc64-unknown-linux-gnu; CRC=$?
   if [ "$CRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$CLOG"; then CROSS=green; fi
+  [ "$CROSS" != red ] || { [ ! -f "$CLOG" ] || tail -n 40 "$CLOG" >&2; }
 else
-  CROSS="absent (rustup target add --toolchain nightly powerpc64-unknown-linux-gnu)"
+  CROSS="absent (rustup target add --toolchain $NIGHTLY powerpc64-unknown-linux-gnu)"
 fi
 echo "cross-endian: $CROSS"
 fi
@@ -200,7 +232,7 @@ fi
 if [ -n "$ONLY_LEG" ]; then
   case "$ONLY_LEG" in
     native) [ "$NATIVE" = green ];;
-    x86-64) [ "$X86" = green ];;
+    x86-64) case "$X86" in green*) true;; *) false;; esac;;
     miri) [ "$MIRI" = green ];;
     cross-endian) [ "$CROSS" = green ];;
     *) echo "check_portability: unknown leg $ONLY_LEG" >&2; exit 2;;

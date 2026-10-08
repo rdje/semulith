@@ -8,9 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
+      - name: Keep tool, dependency and temporary stores local
+        run: |
+          mkdir -p .app-data/cargo-home .app-data/rustup target/ci-tmp
+          echo "CARGO_HOME=$GITHUB_WORKSPACE/.app-data/cargo-home" >> "$GITHUB_ENV"
+          echo "RUSTUP_HOME=$GITHUB_WORKSPACE/.app-data/rustup" >> "$GITHUB_ENV"
+          echo "RUSTUP_TOOLCHAIN=stable" >> "$GITHUB_ENV"
+          echo "TMPDIR=$GITHUB_WORKSPACE/target/ci-tmp" >> "$GITHUB_ENV"
+      - name: Provision stable Rust with strict lint tools
+        run: rustup toolchain install stable --profile minimal --component rustfmt,clippy --no-self-update
       - name: Vendor the dependency store (on-volume — .cargo/config.toml routes cargo there)
         run: make vendor
       - name: Format

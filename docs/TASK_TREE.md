@@ -58,6 +58,6 @@ on the same commit. One commit per completed leaf.
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
 | [`CITATION-ACCURACY`](tasks/CITATION-ACCURACY.md) | `active` | `.2` — proposed: the Markdown census (1 of 2 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | — (3/3 leaves done; next cleanup is time-triggered) | repo-local |
-| [`CI-RECOVERY`](tasks/CI-RECOVERY.md) | `active` | `.3` — proposed: cold portability, then hosted evidence (2/4 done) | repo-local |
+| [`CI-RECOVERY`](tasks/CI-RECOVERY.md) | `active` | `.3` — active: repairs committed; endian confirmation, then hosted evidence (2/4 done) | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

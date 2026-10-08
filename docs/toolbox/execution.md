@@ -23,3 +23,4 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 | `scripts/compare_traces.py` | where do two reference models FIRST disagree, in aligned steps? | `scripts/compare_traces.py <sail-trace> <spike-log> <entry>` |
 | `scripts/fetch_sources.sh` | is the specification artifact I am reading the one the locators were written against? | `scripts/fetch_sources.sh [--verify-only] <profile>` |
 | `make check` | does the workspace build, lint clean at `-D warnings`, and pass its tests? | `make check` |
+| `scripts/check_portability.sh` | run current host, translated-host, interpreted and endian checks with explicit verdicts | `--print-toolchain`, `--self-test` (9 verdict + 15 cold controls), `--leg native`, `--leg x86-64`, `--leg miri`, `--leg cross-endian`; logs/sysroots under target/portability |

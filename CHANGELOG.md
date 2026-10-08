@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0003 (leaf CI-RECOVERY.3, slice a) — cold portability recovery
+
+- Repair output/provisioning boundaries, dated nightly selection and decorated verdicts;
+  compare current translated/native manifests and retain failure logs. Controls 9+15 green;
+  actual native Miri 153/153. Big-endian confirmation and hosted verification pending.
+
 ## SEMULITH-CI-0002 (leaf CI-RECOVERY.2) — cold doctrine provisioning
 
 - Install digest-verified mdBook 0.5.4 before UNIT-BOOKS; keep Rust/Cargo/temp stores
