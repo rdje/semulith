@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0060 (leaf ARTIFACT-CLEANUP.3) — due cleanup
+
+- Removed 102 untracked incremental caches (364,047,724 B); re-census 0. Preserved diagnostic
+  and reference logs and dependency fixtures. No product behavior or milestone state changed.
+
 ## SEMULITH-P4-0081 (leaf P4-SYSTEM.12, slice b) — recover C's language slice
 
 - Recovered the five unfinished files after the machine/session crash. `expand` declares
