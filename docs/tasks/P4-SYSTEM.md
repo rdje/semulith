@@ -235,9 +235,39 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (e1): staged C corpus and legacy parcel counts; tools (d) done; (e2) bind, then (f) Sail/acceptance |
+| 1 | `P4-SYSTEM.12` | `active` | slice (e1b): author vocabulary; (e1a) privilege repair done; (e1c) cache, (e1d) staged corpus/counts, then bind/Sail |
 
 ## Decisions
+
+- `2026-10-08` (e1 census findings / ownership, before repairs): explicit parcel runs
+  over all 139 records give 113 exact architectural traces, four numerical disagreements
+  and 22 named refusals (target/p4-system-12/e1/parcel-census.json). Root inspection:
+  mm-readonly writes misa=1 because the author has neither its fixed reset nor read-only
+  fields; mm-sfence lacks S+TVM satp/SFENCE checks and U SFENCE illegality; mm-sret lacks
+  U/TSR legality, so it loops through a forbidden return instead of the handler. The
+  sv39-tlb-fence guest sees freshly written PTEs because Hart.walk always walks while
+  SFENCE only emits prose claiming a cache flush. These are accepted-input author defects,
+  not newly demonstrated production CPU defects. Fix immediately before count adoption:
+  e1a fixes CSR/privileged legality and fixed misa with permanent direct/corpus mutations;
+  e1b fills the bounded base/CSR vocabulary named by 22 refusals (safe string emission
+  included); e1c models the declared translation cache/invalidation policy independently.
+  Each gets its own verified commit. Then e1d stages the C corpus/counts and e2 binds.
+  The four disagreeing guests' committed spec-derived observations are reproducible
+  regressions; source-line/guard locations and matched counts belong in each receipt.
+  Preserve all 42 owned records and old production fixtures throughout prerequisites.
+
+- `2026-10-08` (e1 staging plan, before experiments): census all 139 historical guests
+  on the explicit parcel author using each record's already-declared boundary count.
+  Compare every architectural write to its prior specification-derived record and
+  enumerate actual requests; do not infer new counts from engine outputs. Unknown
+  vocabulary or any numerical disagreement must be investigated and owned before the
+  count can be used. Split a bounded author prerequisite into e1a if this census needs it.
+  Then generate an independently authored C corpus covering all 37 forms, limits/hints/
+  reserved points, mixed lengths/links and translated straddles before any engine run.
+  Keep staging regenerable from tracked sources/producers under target/p4-system-12;
+  tracked production guests/counts/profile bind together in e2. The old unit and both
+  generated modules must stay exact through this staging work. The resulting permanent
+  staged-corpus probe must discriminate wrong observations/extent before binding.
 
 - `2026-10-08` (d3d2 execution design, before changes): add an explicit parcel route
   (`--parcels --steps N`) and API whose positive bounded budget controls every boundary,
@@ -792,41 +822,39 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 - part 5: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md) — `.12` (a), (a2),
-  (b), (d1)–(d3d1), moved byte-verbatim as their completed receipts leave the live head.
+  (b), (d1)–(d3d2), moved byte-verbatim as their completed receipts leave the live head.
 
-`P4-SYSTEM.12` slice (d3d2) — explicit byte guest boundaries (`2026-10-08`, `SEMULITH-P4-0091`):
+`P4-SYSTEM.12` slice (e1a) — independent privileged legality (`2026-10-08`, `SEMULITH-P4-0092`):
 
-- [x] **REPRODUCE / ISSUE** — old route emits dir-runoff 2/3 declared steps,
-  fault-fetch 2/3, it-prio-jump 3/4, sv39-straddle 44/52 and sv39-perm-rwx 108/114.
-  `probe_gc_parcel_guest.py --author-revision 740efda` rc=1 (parcel API absent).
-  Caller budgets and immediate repair ownership were recorded before experiments above.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'prog.get|ENTRY.*4|directives.get|range.10000'
-  scripts/derive_rv64gc_expectations.py` locates historical source-map termination,
-  word indexing and implicit safety limit; no fetched byte image backs ordinary code.
-  The declared region supplies zero beyond payload and delivered fetch faults are step
-  boundaries. Fixed steps already govern the tracked runner (run_rv64gc.rs 120–154).
-- [x] **FIX** — explicit --parcels/--steps route loads exact bytes, keys directives by
-  unit PC and runs exactly 1..10000 boundaries, independent of source run-off/end marker.
-  Current memory supplies every fetch, including patched compressed units. Pending/wait
-  head rules precede fetching; actual attempts supply counts; faults/deliveries/wait do
-  not retire. Independently known reserved C/wider prefixes trap; unknown valid words
-  still refuse. No partial write on a refused multi-source derivation. Historical word
-  route/check-owned retained explicitly; no legacy observation overwritten.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_parcel_guest.py` rc=0:
-  exact hand image, five byte PCs/effects, annotations at repeated spellings, budgets,
-  source run-off, upper refusal/ILEN, code patch, head interrupt/wait/time/retirement,
-  unknown-valid refusal and batch atomicity pass. Eight mutations are behavioral RED.
-  Five repaired gaps match all 176 declared architectural step observations; derived
-  parcels respectively 5, 5, 7, 104, 226. Parent 740efda is RED on the API assertion.
-- [x] **NO REGRESSION** — GUEST-GEN self-test 61 pass / 0 fail; all 97 prior emitted
-  word texts and 42 named refusals exact, --check-owned 42 documents byte-identical.
-  No tracked guest/expected record changed. Newly emitted run-off/straddle expectations
-  schema checks rc=0. The normal generator and base-mirror checks must remain exact.
-- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 539 arms),
-  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and C/assembler books.
-  Completed d3d1 receipt archived byte-verbatim with reconstruction asserted; no ceiling
-  raised. Books and commit doctrine gate must pass. promotion: declined (permanent byte
-  guest probe and eight behavioral mutations retain this local authoring lesson).
+- [x] **REPRODUCE / ISSUE** — explicit 139-guest census: 113 exact, four disagreements,
+  22 refusals. mm-readonly step 10 reads misa=1 instead of 0x800000000014112d;
+  mm-sfence misses the TVM trap; mm-sret loops through an illegal U return. Parent
+  `probe_gc_privilege_author.py --author-revision 132506f` rc=1 (fixed reset assertion).
+  The fourth (cache) defect and all vocabulary refusals are owned above before adoption.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'misa|TVM|TSR|if word ==|SFENCE'
+  scripts/derive_rv64gc_expectations.py` finds misa absent from reset/legalization and
+  no TVM/TSR/lower-mode instruction guards; known CSR privilege violations raise Refusal.
+  State candidate 71–83 declares the fixed read-only misa selection. Pinned machine.html
+  1551–1558, 1615–1620, 4353–4365 and priv-csrs.html 541–546 define interception, returns,
+  address privilege and ignored read-only fields. The selected laboratory policy is explicit.
+- [x] **FIX** — fixed misa reset from RV64+A/C/D/F/I/M/S/U, ignored field writes;
+  known CSR privilege and S satp+TVM deliver cause 2/raw bits before own effects;
+  MRET below M, SRET below S or S+TSR, SFENCE below S or S+TVM likewise. M bypass and
+  legal stack pops preserved. The unknown-valid Refusal remains outside these known faults.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_privilege_author.py` rc=0:
+  fixed fields/alias, CSR fault unit discipline, satp read/write TVM, MRET/SRET/SFENCE
+  modes/interception, M bypass and legal controls pass. All nine mutations are behavioral
+  RED. Five mode-matrix guests match 140 architectural steps (three numerical repairs,
+  two previously refused known CSR faults). Parent 132506f is RED on the reset assertion.
+- [x] **NO REGRESSION** — GUEST-GEN 71 pass / 0 fail; all 97 prior historical-route
+  texts exact, --check-owned 42 documents byte-identical. Eight extra word-route outputs
+  are not adopted/written. Complete parcel census: 118 exact, one owned cached-translation
+  disagreement and 20 named vocabulary refusals. No production fixture/record changed.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 549 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and author/privilege/C book.
+  Completed d3d2 receipt archived byte-verbatim with reconstruction asserted, no ceiling
+  raised. Books and commit doctrine gate must pass. promotion: declined (permanent field/
+  mode fixtures and nine mutations retain this lesson; full census and schedule are durable).
 
 ## Verification Log
 
@@ -837,6 +865,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (e1a) | fixed misa/mode/TVM/TSR fixtures; 9 RED; 140 mode-matrix steps; GUEST-GEN 71/71 | privilege repaired; vocabulary/cache prerequisites next |
 | `2026-10-08` | `.12` slice (d3d2) | byte/budget/head/code-visibility fixtures; 8 RED; 176 legacy steps; GUEST-GEN 61/61 | tools ready; staged C corpus/counts next |
 | `2026-10-08` | `.12` slice (d3d1) | exact parcel/PTE/MPRV/EPC fixtures; 9 RED; GUEST-GEN 52/52; 97 prior texts exact | independent fetch/walk repaired; byte guests/budgets next |
 | `2026-10-08` | `.12` slice (d3d0) | C engine 18/18; parent/mutation 3 RED; DEF-GEN 55/55; make check | every wider prefix retains ILEN bits; independent fetch/walk next |
@@ -893,6 +922,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1a) | `SEMULITH-P4-0092 (leaf P4-SYSTEM.12): repair fixed misa fields and privileged legality in the independent author` | (e1b) vocabulary, then cache/corpus/counts |
 | `.12` (slice d3d2) | `SEMULITH-P4-0091 (leaf P4-SYSTEM.12): derive byte-addressed guests with explicit boundary budgets` | (e1) staged corpus/counts next |
 | `.12` (slice d3d1) | `SEMULITH-P4-0090 (leaf P4-SYSTEM.12): derive exact parcel fetches and repair the spec-side Sv39 walk` | (d3d2) explicit byte guest budgets next |
 | `.12` (slice d3d0) | `SEMULITH-P4-0089 (leaf P4-SYSTEM.12): fetch every ILEN parcel before reporting an unsupported instruction` | (d3d1) independent walker/fetch repair next |
@@ -946,6 +976,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (e1a) done: fixed misa and privileged legality; nine RED
+  controls, five mode-matrix guests/140 steps exact; all census gaps owned before staging.
 
 - `2026-10-08`: `.12` (d3d2) done: exact byte guest budgets, annotations, current code
   and head boundaries; eight RED controls; five gaps reproduce 176 architectural steps.

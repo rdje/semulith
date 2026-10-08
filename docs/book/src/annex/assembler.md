@@ -239,6 +239,21 @@ valid vocabulary still refuses by name; independently known reserved compressed 
 and wider prefixes use the laboratory illegal-instruction diagnostic. If any requested
 source refuses, the command writes no expectation record from that batch.
 
+Known permission failures have architectural observations. A supervisor read or write
+of `satp` with TVM set delivers illegal-instruction before changing a register or CSR.
+SRET in user mode, SRET in supervisor mode with TSR set, and SFENCE.VMA below supervisor
+mode or intercepted by TVM likewise trap before their effects. MRET requires machine
+mode. The selected laboratory fixes `misa` fields read-only at its maximal RV64GC M/S/U
+set; its read/write CSR address accepts a write whose fields are ignored.
+
+```sh
+python3 scripts/probe_gc_privilege_author.py
+```
+
+The pre-bind census covers 139 historical guests. The author currently matches 118
+architectural traces; twenty guests name unsupported vocabulary, and one cached-translation
+guest awaits its owned cache-policy repair. These prerequisites precede count adoption.
+
 ## The ELF writer — and a measured harness difference
 
 `write_elf64()` wraps the words in a minimal ELF64 little-endian RISC-V executable: one

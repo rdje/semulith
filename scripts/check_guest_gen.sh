@@ -354,6 +354,28 @@ PY
   out="$(python3 scripts/probe_gc_parcel_guest.py --mutation unknown-valid 2>&1)"; rc=$?
   arm "RED unknown valid vocabulary refuses by name" "$rc" 1 "$out" "unknown valid vocabulary became an illegal trap"
 
+  # e1a: the spec-side author honors fixed fields and privileged instruction legality.
+  out="$(python3 scripts/probe_gc_privilege_author.py 2>&1)"; rc=$?
+  arm "GREEN fixed misa and privileged author legality" "$rc" 0 "$out" "5 corpus repairs / 140 steps"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation misa-reset 2>&1)"; rc=$?
+  arm "RED fixed misa reset is derived from the selected set" "$rc" 1 "$out" "misa lost the fixed selected reset"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation misa-write 2>&1)"; rc=$?
+  arm "RED writes retain read-only misa fields" "$rc" 1 "$out" "misa accepted a write to read-only fields"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation csr-privilege 2>&1)"; rc=$?
+  arm "RED CSR privilege failures suppress all own effects" "$rc" 1 "$out" "CSR privilege fault lost its unit discipline"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation satp-tvm 2>&1)"; rc=$?
+  arm "RED S-mode satp access honors TVM" "$rc" 1 "$out" "S-mode satp ignored TVM"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation mret-mode 2>&1)"; rc=$?
+  arm "RED MRET requires M-mode" "$rc" 1 "$out" "MRET below M popped the stack"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sret-mode 2>&1)"; rc=$?
+  arm "RED SRET refuses U-mode" "$rc" 1 "$out" "U-mode SRET popped the stack"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sret-tsr 2>&1)"; rc=$?
+  arm "RED S-mode SRET honors TSR" "$rc" 1 "$out" "S-mode SRET ignored TSR"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sfence-mode 2>&1)"; rc=$?
+  arm "RED SFENCE.VMA refuses U-mode" "$rc" 1 "$out" "U-mode SFENCE.VMA executed"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sfence-tvm 2>&1)"; rc=$?
+  arm "RED S-mode SFENCE.VMA honors TVM" "$rc" 1 "$out" "S-mode SFENCE.VMA ignored TVM"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0092 (leaf P4-SYSTEM.12, slice e1a) — independent privileged legality
+
+- The author retains fixed read-only misa fields and delivers known CSR/xRET/TVM/TSR
+  permission faults before effects. Five mode-matrix guests match 140 architectural
+  steps; nine mutations fail, GUEST-GEN 71/71, 97 prior texts/42 owned records exact.
+  Parcel census: 118 exact, one owned cache disagreement, 20 named vocabulary refusals.
+  Those prerequisites precede staged C/count adoption; production fixtures unchanged.
+
 ## SEMULITH-P4-0091 (leaf P4-SYSTEM.12, slice d3d2) — explicit byte guest budgets
 
 - The independent author gains `--parcels --steps N`: exact byte images, byte-PC

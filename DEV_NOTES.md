@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — accepted privilege paths needed independent guards (P4-SYSTEM.12 e1a)
+
+The pre-bind census ran all 139 historical guests with their already-declared budgets.
+It found 113 exact architectural traces, four disagreements and 22 named refusals. Three
+of those disagreements came from missing author rules: misa had no fixed reset/read-only
+field handling; satp/SFENCE ignored TVM; SRET ignored U/TSR legality. Existing known CSR
+privilege failures raised model Refusal instead of the architectural illegal instruction.
+The task owns every disagreement/refusal before adoption: privilege here, vocabulary next,
+and the declared cached-translation policy after that. No engine trace supplies counts.
+
+misa now fixes RV64 plus A/C/D/F/I/M/S/U, matching the independently selected laboratory
+policy. Writes ignore its read-only fields without making its RW address illegal. Known
+CSR access faults and xRET/SFENCE legality deliver original bits before own side effects.
+M-mode ignores S interception; legal returns retain the existing mode-stack rules.
+
+- Validation: fixed reset/ignored writes/alias, CSR unit discipline, MRET lower modes,
+  SRET U/TSR, SFENCE U/TVM, satp read/write TVM, M bypass and legal controls. Nine mutations
+  fail behaviorally; parent 132506f RED. Five mode-matrix guests match 140 architectural
+  steps, including two previously refused CSR-permission guests. GUEST-GEN 71/71.
+- Regression: all 97 prior historical-route texts and 42 owned records exact; eight extra
+  historical-route outputs are not adopted or written. Full parcel census now 118 exact,
+  one cache disagreement (sv39-tlb-fence) and 20 named vocabulary refusals, all owned.
+  Production unit/images/records unchanged. Cache repair is scheduled before C counts.
+- Promotion: declined — permanent mode/field fixtures and nine behavioral controls retain
+  this author lesson; the full-census findings and immediate schedule live in the tree.
+
 ## _(2026-10-08)_ — source length is not a guest budget (P4-SYSTEM.12 d3d2)
 
 The independent author has an explicit parcel route, selected by --parcels --steps N.

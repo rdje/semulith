@@ -477,3 +477,38 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   no ceiling raised. Books/commit doctrine gate must pass; derived counts enumerate 530.
   promotion: declined (permanent fetch/PTE fixtures and nine mutations retain this lesson).
 
+
+`P4-SYSTEM.12` slice (d3d2) — explicit byte guest boundaries (`2026-10-08`, `SEMULITH-P4-0091`):
+
+- [x] **REPRODUCE / ISSUE** — old route emits dir-runoff 2/3 declared steps,
+  fault-fetch 2/3, it-prio-jump 3/4, sv39-straddle 44/52 and sv39-perm-rwx 108/114.
+  `probe_gc_parcel_guest.py --author-revision 740efda` rc=1 (parcel API absent).
+  Caller budgets and immediate repair ownership were recorded before experiments above.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'prog.get|ENTRY.*4|directives.get|range.10000'
+  scripts/derive_rv64gc_expectations.py` locates historical source-map termination,
+  word indexing and implicit safety limit; no fetched byte image backs ordinary code.
+  The declared region supplies zero beyond payload and delivered fetch faults are step
+  boundaries. Fixed steps already govern the tracked runner (run_rv64gc.rs 120–154).
+- [x] **FIX** — explicit --parcels/--steps route loads exact bytes, keys directives by
+  unit PC and runs exactly 1..10000 boundaries, independent of source run-off/end marker.
+  Current memory supplies every fetch, including patched compressed units. Pending/wait
+  head rules precede fetching; actual attempts supply counts; faults/deliveries/wait do
+  not retire. Independently known reserved C/wider prefixes trap; unknown valid words
+  still refuse. No partial write on a refused multi-source derivation. Historical word
+  route/check-owned retained explicitly; no legacy observation overwritten.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_parcel_guest.py` rc=0:
+  exact hand image, five byte PCs/effects, annotations at repeated spellings, budgets,
+  source run-off, upper refusal/ILEN, code patch, head interrupt/wait/time/retirement,
+  unknown-valid refusal and batch atomicity pass. Eight mutations are behavioral RED.
+  Five repaired gaps match all 176 declared architectural step observations; derived
+  parcels respectively 5, 5, 7, 104, 226. Parent 740efda is RED on the API assertion.
+- [x] **NO REGRESSION** — GUEST-GEN self-test 61 pass / 0 fail; all 97 prior emitted
+  word texts and 42 named refusals exact, --check-owned 42 documents byte-identical.
+  No tracked guest/expected record changed. Newly emitted run-off/straddle expectations
+  schema checks rc=0. The normal generator and base-mirror checks must remain exact.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 539 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and C/assembler books.
+  Completed d3d1 receipt archived byte-verbatim with reconstruction asserted; no ceiling
+  raised. Books and commit doctrine gate must pass. promotion: declined (permanent byte
+  guest probe and eight behavioral mutations retain this local authoring lesson).
+

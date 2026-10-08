@@ -39,6 +39,8 @@ ENTRY = 0x8000_0000
 REGION = 0x10000  # the tracked corpus's fixture: 64 KiB at the entry
 
 M, S = 3, 1
+# The selected RV64GC M/S/U laboratory fixes every misa field read-only.
+MISA = (2 << 62) | sum(1 << (ord(letter) - ord('A')) for letter in 'ACDFIMSU')
 CAUSE = {"misaligned_atomic": 7, "load_access": 5, "store_access": 7,
          "load_page": 13, "store_page": 15, "illegal": 2}
 
@@ -65,7 +67,7 @@ class Hart:
                     "mstatus": 0xA00000000, "medeleg": 0, "satp": 0, "sepc": 0, "scause": 0,
                     "stval": 0, "sscratch": 0, "mcounteren": 0, "scounteren": 0,
                     "mie": 0, "mip": 0, "mideleg": 0, "sie": 0, "sip": 0, "stimecmp": 0,
-                    "fflags": 0, "frm": 0}   # fcsr is the composed VIEW, never storage
+                    "fflags": 0, "frm": 0, "misa": MISA}   # fcsr is a composed VIEW
         self.time = 0            # the declared virtual-time domain (one tick per step)
         self.instret = 0         # the GENUINE retirement count (never for a trapped,
                                  # delivered or halted step — the engine's !frame.trapped)
@@ -397,6 +399,8 @@ def csr_write_value(h, name, v):
     """Per-field legalization: WPRI/read-only/computed keep, OneOf judges, views write
     through to the owner under the view's own writable fields."""
     old = h.csr.get(name, 0)
+    if name == "misa":
+        return  # laboratory WARL choice: every field retains the selected maximum
     if name == "mstatus":
         new = (old & ~MSTATUS_W) | (v & MSTATUS_W)
         if (v >> 11) & 0b11 == 2:                       # MPP OneOf(0,1,3): keep the old field
@@ -968,9 +972,14 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             if name is None:
                 raise Refusal(f"csr {csr:#x} outside the corpus's vocabulary")
             if (csr >> 8) & 0b11 > h.mode:
-                raise Refusal(f"csr {name} (address {csr:#x}) accessed from mode {h.mode} — "
-                              f"the engine raises illegal-instruction here; route through "
-                              f"the S view or fix the guest")
+                origin = h.mode
+                h.deliver(2, raw)
+                return h.pc, {"deriv": f"CSR {name} requires privilege {(csr >> 8) & 3}, above mode {origin}: illegal-instruction before any register/CSR effect.",
+                              "source": "RVP-CSR §1.1.1; RVI-ZICSR §5.1.1"}
+            if name == "satp" and h.mode == S and (h.csr["mstatus"] >> 20) & 1:
+                h.deliver(2, raw)
+                return h.pc, {"deriv": "S-mode satp access with TVM=1: illegal-instruction, no register/CSR effect.",
+                              "source": "RVP-MACHINE §2.1.1.6.6"}
             if name in ("fflags", "frm", "fcsr") and (h.csr["mstatus"] >> 13) & 0b11 == 0:
                 # the FS gate (slice b): at FS=Off the FP CSRs are inaccessible — an
                 # illegal-instruction trap (cause 2, xtval the word), every mode
@@ -1033,6 +1042,10 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             return h.pc, {"deriv": "ebreak: cause 3, xtval the instruction's own address.",
                           "source": "RVP-MACHINE §2.1.3.1"}
         if word == 0x30200073:  # mret
+            if h.mode != M:
+                h.deliver(2, raw)
+                return h.pc, {"deriv": "MRET below M-mode: illegal-instruction before popping the privilege stack.",
+                              "source": "RVP-MACHINE §2.1.3.2"}
             mstatus = h.csr["mstatus"]
             mpp = (mstatus >> 11) & 0b11
             h.mode = mpp
@@ -1044,6 +1057,10 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             h.csr["mstatus"] = mstatus
             return h.csr["mepc"], stock("mret")
         if word == 0x10200073:  # sret
+            if h.mode < S or (h.mode == S and (h.csr["mstatus"] >> 22) & 1):
+                h.deliver(2, raw)
+                return h.pc, {"deriv": "SRET below S-mode or S-mode TSR=1: illegal-instruction before popping the privilege stack.",
+                              "source": "RVP-MACHINE §2.1.3.2/§2.1.1.6.6"}
             mstatus = h.csr["mstatus"]
             spp = (mstatus >> 8) & 1
             h.mode = spp
@@ -1055,6 +1072,10 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             h.csr["mstatus"] = mstatus
             return h.csr["sepc"], stock("sret")
         if (word & 0xFE007FFF) == 0x12000073:  # sfence.vma
+            if h.mode < S or (h.mode == S and (h.csr["mstatus"] >> 20) & 1):
+                h.deliver(2, raw)
+                return h.pc, {"deriv": "SFENCE.VMA below S-mode or S-mode TVM=1: illegal-instruction, no fence effect.",
+                              "source": "RVP-SUPERVISOR §11.1.2.1; RVP-MACHINE §2.1.1.6.6"}
             return next_pc, stock("sfence.vma")
         raise Refusal(f"SYSTEM word {word:#x} outside the corpus")
     if op == 0b0001111:

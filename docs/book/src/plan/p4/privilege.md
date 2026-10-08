@@ -2,6 +2,15 @@
 
 **Status:** Landed, flipped, and closed (slices a–h, 2026-10-03)
 
+The later independent expectation author now checks the same declared permissions
+(P4.12 slice e1a). Its pre-bind census found accepted paths missing fixed `misa` fields,
+TVM checks and SRET legality. Those author defects are repaired: known permission failures
+deliver illegal-instruction before own side effects, higher privilege ignores supervisor
+interception, and writes retain the selected read-only `misa` fields. Five mode-matrix
+guests reproduce 140 committed architectural steps; nine deliberate mutations fail.
+This repairs the author used to predict guest results; the production CPU's existing
+mode-matrix results remain unchanged.
+
 The leaf runs in eight checkpoints; slice (c) split cleanly into (c1) — zero Rust — and
 (c2). Slice (a): the upstream census measured what the brief delegated — Zicsr's
 six instructions are real rows in riscv-opcodes' `rv_zicsr`, mret/wfi live in `rv_system`,

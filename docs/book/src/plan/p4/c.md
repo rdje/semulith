@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d; staged corpus and production bind next)
+**Status:** Underway (tools done; author prerequisites, staged corpus and bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -177,3 +177,10 @@ The production profile still declares C unbound. The staged specification-derive
 and count derivation precede the C bind, then the matched Sail experiment. These probes
 are finite component evidence. The [assembler chapter](../../annex/assembler.md) documents
 the explicit authoring command and its budget semantics.
+
+The full pre-bind census exposed prerequisites in that independent author: fixed `misa`
+fields, privileged legality, a bounded base vocabulary and the declared translation cache.
+Slice (e1a) repairs the fields and permission guards; five mode-matrix guests now match
+140 committed architectural steps and nine mutations fail. The census reaches 118 exact
+of 139 historical traces, with twenty named vocabulary refusals and one owned cache-policy
+disagreement. Each prerequisite is scheduled before staging can adopt parcel counts.
