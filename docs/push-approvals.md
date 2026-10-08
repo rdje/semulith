@@ -16,3 +16,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** the reason they gave, verbatim
 - **Range:** `<upstream>..<HEAD>` — the commits this push carried (derived from git, never typed)
 - **Suite:** `make ci` green at the recorded HEAD before the record was written
+
+## SEMULITH-PUSH-0001 — 2026-10-08T17:19:08+0200
+
+- **Approved by:** the director
+- **Reason:** pushes needed to fix GitHub CI are exceptional hence accepted
+- **Range:** origin/main..5cd7ab65e192639c06b08e1189310097d2f27984 — 20 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 5cd7ab65e192639c06b08e1189310097d2f27984 before this record was written
