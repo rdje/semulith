@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0004 (leaf CI-RECOVERY.3, slice b) — actual portability confirmation
+
+- Native and big-endian Miri each pass 153/153 from the fixed script snapshot. Full
+  Rust 1.99 make ci passes all five legs. .3 closes; .4 owns permitted push/hosted
+  verification. P4 stays 11/18; no hosted-green claim before a successful run.
+
 ## SEMULITH-CI-0003 (leaf CI-RECOVERY.3, slice a) — cold portability recovery
 
 - Repair output/provisioning boundaries, dated nightly selection and decorated verdicts;

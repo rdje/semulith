@@ -52,13 +52,13 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Commit: SEMULITH-CI-0002
 
 - ID: `CI-RECOVERY.3` — portable cold Miri/endian legs
-  Status: `active`
+  Status: `done`
   Goal: create the output directory before redirections; remove the macOS-specific
   nightly name from the cross-endian target query; audit single-leg cold execution.
   Acceptance: hand stub controls on Linux/macOS shapes discriminate both old defects;
   the actual nightly/Miri result and any remaining provisioning gap are stated exactly.
-  Verification: slice (a) controls 9+15 green; actual native Miri 153/153; big-endian confirmation running.
-  Commit: SEMULITH-CI-0003 (slice a); closure pending confirmation
+  Verification: controls 9+15 green; immutable-snapshot native and big-endian Miri 153/153 each; full Rust 1.99 make ci green.
+  Commit: SEMULITH-CI-0003 (slice a), SEMULITH-CI-0004 (confirmation/closure)
 
 - ID: `CI-RECOVERY.4` — local/hosted evidence and follow-through
   Status: `proposed`
@@ -72,7 +72,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.3` | `active` | reproduce cold log and Linux query failures, then repair and run real Miri |
+| 1 | `CI-RECOVERY.4` | `proposed` | local repairs verified; request permitted push and observe all hosted workflows |
 
 ## Decisions
 
@@ -95,13 +95,36 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 ## Open Questions
 
-- Hosted verification waits for a permitted cadence or director-approved exceptional push.
+- Director approval required for an exceptional push to verify the committed repairs on GitHub.
+  At c769d93: PUSH-CADENCE REFUSED, 17 ahead vs cadence 300. COMMIT.md mandates the
+  scripts/approved_push.sh approval act; archive approval does not authorize this push.
+  All repair code, two actual Miri targets and full local CI are ready for that decision.
 
 ## Blockers
 
 - Hosted result waits for a permitted push; local implementation and focused verification can proceed.
 
 ## Acceptance Checklist
+
+`.3` slice (b), 2026-10-08, SEMULITH-CI-0004 closes the parent:
+
+- [x] **ROOT CAUSE** — the slice (a) causes and parent RED controls below remain the
+  diagnosis; confirmation isolates host endianness after repairing setup/provisioning.
+  `cmp scripts/check_portability.sh target/ci-recovery/portability-verified.sh` rc=0.
+- [x] **ADDRESSED** — actual big-endian powerpc64 run: `cross-endian: green`, rc=0;
+  `test result: ok. 153 passed; 0 failed; 0 ignored`, 1294.28 s. Native run above:
+  153/153, rc=0. Distinct explicit sysroots under target/portability; no shared cache
+  or source modification. The invalidated live-source run is excluded from both receipts.
+- [x] **NO REGRESSION** — repository-local Rust 1.99.0 plus pinned mdBook 0.5.4:
+  `make ci` rc=0 at c769d93, `ci: all legs green (check, gate, bench, smoke-bench, book)`.
+  All mandatory local suite legs ran; current code/script bytes unchanged in this docs
+  confirmation. Both Miri suites ran every core test, none ignored.
+- [x] **FIX / LOCKSTEP** — close `.3`; index/MEMORY point at `.4`; CHANGELOG, DEV_NOTES
+  and book record both actual results and full local CI. P4 stays 11/18, doctrine counts
+  stay 38/599 and routes 37. Hosted results remain failed at e1fe379 until verified on
+  a permitted push.
+  promotion: declined (confirmation-only receipt; concrete outputs and pending hosted obligation retained here).
+
 
 `.3` slice (a), 2026-10-08, SEMULITH-CI-0003; parent remains active:
 
@@ -127,9 +150,9 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   historical portability record is untouched; translation does not claim native hardware.
   promotion: declined (specific CI repair; public-interface controls and scoped receipts retain the reproducible causes).
 
-Confirmation slice (b): observe target/ci-recovery/cross-real.log and
- target/portability/cross.log (immutable script target/ci-recovery/portability-verified.sh),
-then record the actual outcome and run full local CI. The first live-source run was
+Confirmation slice (b) completed: target/ci-recovery/cross-real.log and
+target/portability/cross.log preserve the actual 153/153 result; full-ci.log is green.
+The immutable script snapshot remained byte-identical through both runs. The first live-source run was
 invalidated and stopped; only the fixed-snapshot native receipt above is accepted.
 
 
@@ -203,6 +226,8 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0004 (leaf CI-RECOVERY.3): confirm both Miri targets and the full Rust 1.99 local CI suite`.
 
 `SEMULITH-CI-0003 (leaf CI-RECOVERY.3): repair cold portability execution and preserve failure evidence` — slice (a), big-endian confirmation pending.
 

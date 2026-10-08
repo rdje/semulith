@@ -20,8 +20,8 @@ toolchain; benchmark tests and independent SHA comparisons preserve results. CI-
 the book gate, with Rust, Cargo and temporary stores rooted in the repository. A cold
 native check builds all registered books; Linux execution remains a hosted obligation.
 CI-RECOVERY.3 repairs cold output/provisioning paths and truthful portability verdicts.
-Its native interpreted core run passes 153 tests; big-endian confirmation remains pending.
-Hosted green requires a successful run on a permitted push. A local green result alone cannot close that obligation.
+Its native and big-endian interpreted core runs each pass all 153 tests; full local CI
+also passes on Rust 1.99. Hosted green still requires a successful run on a permitted push. A local green result alone cannot close that obligation.
 
 ## The universal registry
 

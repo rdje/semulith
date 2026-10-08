@@ -1,5 +1,14 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — confirm the repaired pipeline before publication (CI-RECOVERY.3 b)
+
+Immutable-script native and powerpc64 Miri runs each execute all 153 core tests, zero
+failures/ignored, about 22 minutes each. Full local CI then passes on Rust 1.99 with
+the pinned book tool: check, gate, bench, smoke-bench and book all green. Code bytes
+match the verified snapshot. These close the local repair, while .4 retains hosted
+verification and the exceptional push approval boundary. Historical measurements and
+the invalidated earlier run are not substituted for this evidence.
+
 ## _(2026-10-08)_ — cold portability paths and truthful verdicts (CI-RECOVERY.3 a)
 
 Cold single legs lacked their output directory and Linux queried a macOS-only nightly.
