@@ -287,6 +287,13 @@ def dict_to_form(rec: dict):
 _ESCAPES = {"\\": "\\\\", '"': '\\"', "\n": "\\n", "\t": "\\t", "\r": "\\r"}
 
 
+def quote_string(value: str) -> str:
+    """Render one literal string with the canonical reader's closed escapes."""
+    if not isinstance(value, str):
+        raise RecordRefused(f"not a string literal: {value!r}")
+    return '"' + "".join(_ESCAPES.get(c, c) for c in value) + '"'
+
+
 def _render(form) -> str:
     out = []
     for el in form:
@@ -299,7 +306,7 @@ def _render(form) -> str:
         elif isinstance(el, int):
             out.append(str(el))
         elif isinstance(el, str):
-            out.append('"' + "".join(_ESCAPES.get(c, c) for c in el) + '"')
+            out.append(quote_string(el))
         else:
             raise RecordRefused(f"cannot render {el!r}")
     return "(" + " ".join(out) + ")"

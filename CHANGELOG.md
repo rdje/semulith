@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0094 (leaf P4-SYSTEM.12, slice e1b2) — independent CSR enables and literal text
+
+- Selected counter enables and STCE fields legalize independently; S stimecmp needs
+  TM/STCE before effects. Canonical escaping preserves every literal expectation field.
+  Eight mutations fail; three formerly refused guests/117 steps exact; GUEST-GEN 89/89.
+  Census: 138 exact, zero refusals, one owned cache disagreement. All 121 prior word
+  texts/42 owned records exact; no production record/count adoption before cache repair.
+
 ## SEMULITH-P4-0093 (leaf P4-SYSTEM.12, slice e1b1) — independent integer vocabulary
 
 - Author base comparisons/XORI, shifts, branches and narrow memory stock rules;

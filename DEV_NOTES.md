@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — CSR vocabulary and quoted annotations (P4-SYSTEM.12 e1b2)
+
+The remaining three parcel refusals were mcounteren's missing address and a source
+annotation containing quotes. Registered mcounteren/scounteren/menvcfg, legalized the
+selected CY/TM/IR and STCE fields, retained WPRI and ignored unimplemented HPM fields.
+S stimecmp read/write needs both mcounteren.TM and menvcfg.STCE before own effects;
+M bypass and U address privilege remain intact. Counter accessibility changes no value
+or progression. Writable counter rebasing remains an explicit bounded-author refusal.
+
+records_sexp.quote_string exposes the existing canonical escape table. Its form renderer
+and the expectation emitter share it, so quotes, backslashes, control characters and
+Unicode round-trip for program, instruction, derivation and source. Removed the parcel
+annotation refusal; historical word routing is unchanged. No engine trace provides values.
+
+- Validation: masks/WPRI/alias, 30 counter/timer mode gates, read/write unit discipline,
+  annotation/all-field literal round-trips, non-string refusal and emitted schema. Eight
+  mutations and parent f099905 fail; three formerly refused guests match 117 steps.
+  GUEST-GEN 89/89. All 121 prior word texts and 42 owned records byte-identical.
+- Census: 138/139 architectural traces exact, zero vocabulary refusals; sv39-tlb-fence
+  steps 191/192/195 remain the owned cache-policy disagreement. Fix e1c before staging
+  C/counts. Production images/records/counts unchanged. Completed e1b1 receipt archived
+  verbatim; DEV_NOTES crosses its fixed ceiling and shards with byte/order proof.
+- Promotion: declined — permanent mode/string fixtures and eight RED controls retain
+  this bounded-author lesson; the cache's schedule and reproduction are in the tree.
+
 ## _(2026-10-08)_ — author vocabulary is distinct from illegal instructions (P4-SYSTEM.12 e1b1)
 
 Seventeen pre-bind refusals named valid integer operations whose computations or stock
@@ -630,35 +655,3 @@ Execution of the `.6` brief's checkpoint (c) measured:
 
 promotion: declined (the durability is the machinery — the six AGREEs re-run
 against the materialized override; the acceptance pair is armed by make check).
-## _(2026-10-05)_ — the mirror's byte-identity is the point, and a bind can be invisible in its own trace (P4-SYSTEM.6 slice b)
-
-Execution of the `.6` brief's checkpoint (b) measured:
-
-- **The mirror holds .s byte-identical ALWAYS — and that is the discipline, not
-  an obstacle.** My first draft restated four .s headers to the bound state, and
-  the governor measured every one as MIRROR DRIFT: the base mirror's rule is
-  that rv64gc's .s files are byte-identical to rv64i's owners with NO exception
-  list, while an .expected.sexp may differ only for a RECORDED re-derivation.
-  The `.2` slice-(g) shape was already the answer: the rv64gc-specific reading
-  lives in the expectation comment block, never in the mirrored source. The
-  decision-3 corrections (dir-selfmod-fence's data fence is not the fetch
-  synchronization; fault-selfmod's stale "without Zifencei") landed exactly
-  there, with both names joining MIRROR_REDERIVED and the reason recorded
-  beside the slice-(f)/(g) reasons (promotion: declined — the durability is the
-  machinery: the governor names drift on every gate run).
-- **A bind can be invisible in its own trace.** min-fencei's demo trace is
-  byte-identical pre- and post-bind: the pre-bind ReservedDecode delivery wrote
-  no register and vectored to mtvec=0, so the recorded step (pc, mode, writes)
-  is the same tuple as the post-bind retiring nop. The semantic change (a
-  trap-conversion vs a retirement) is real and shows in the expectations; the
-  trace just has no slot for it. it-fencei carries the visible half: the
-  continuation marker commits now (x2 ← 7), exactly as on both references.
-- **Memory-backed fetch is a derivation-level discipline too.** The new
-  fencei-selfmod guest needs the spec-side model to re-read the patched word —
-  the store's effect lands in the program map with the patch named in the insn
-  text (the `.2` comment convention, tooled at last). The engine always re-read
-  (D-CODE-VISIBILITY); the derivation tool simply had to catch up — a guest
-  whose patch the model ignores would derive the WRONG patched step silently.
-
-promotion: declined (the durability is the machinery — the mirror governor and
-the 101-guest corpus re-run every one of these).

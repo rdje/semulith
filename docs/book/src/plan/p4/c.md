@@ -199,3 +199,15 @@ fixtures pass. Eight mutations fail, and all seventeen formerly refused guests m
 remaining CSR/directive refusals and the owned cache disagreement. All 105 earlier word
 texts and 42 owned records remain byte-identical. No production fixture or count has
 been adopted during these prerequisite repairs.
+
+Slice (e1b2) resolves the last three vocabulary refusals. The independent author now
+registers and legalizes the selected counter-enable and STCE fields. Supervisor timer
+compare access needs both enable gates before effects, while machine mode bypasses
+them. Source annotations can contain quotes and backslashes; every emitted literal
+field uses the canonical renderer and round-trips through the reader and schema.
+
+Thirty mode-gate cases, mask/alias and literal-text fixtures pass; eight deliberate
+mutations fail. Three formerly refused guests match 117 architectural steps, and all
+121 prior word texts and 42 owned records remain byte-identical. The parcel census
+reaches 138 exact traces with no vocabulary refusals. The remaining guest exercises
+the declared translation cache, which must be modeled independently before count adoption.

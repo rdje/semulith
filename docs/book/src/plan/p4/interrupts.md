@@ -52,3 +52,9 @@ reproduces 11 AGREE + 1 named of 12 — verdict-neutral. The criterion closes on
 w-timer's own run: rdinstret = 11 at the handler, nothing retired across the
 halt, and the timer trap with mepc = the WFI's pc + 4. The wake occurred
 without CPU retirement: the laboratory makes time pass while nothing executes.
+
+The independent expectation author now includes the selected counter-enable and STCE
+CSR rules (P4.12 e1b2). Its finite controls check thirty counter/timer mode combinations,
+including S stimecmp read/write faults before effects and M-mode bypass. Accessibility
+never changes counter values or progression. Two earlier mode-matrix guests now derive
+through these gates; the author still explicitly refuses writable counter rebasing.

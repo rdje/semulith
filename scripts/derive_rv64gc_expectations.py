@@ -26,6 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sexp as _sexp  # noqa: E402
+import records_sexp as R  # noqa: E402 — canonical prose escaping
 from riscv_asm import Assembler  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
@@ -71,7 +72,7 @@ class Hart:
                     "mstatus": 0xA00000000, "medeleg": 0, "satp": 0, "sepc": 0, "scause": 0,
                     "stval": 0, "sscratch": 0, "mcounteren": 0, "scounteren": 0,
                     "mie": 0, "mip": 0, "mideleg": 0, "sie": 0, "sip": 0, "stimecmp": 0,
-                    "fflags": 0, "frm": 0, "misa": MISA}   # fcsr is a composed VIEW
+                    "fflags": 0, "frm": 0, "misa": MISA, "menvcfg": 0}   # fcsr is a composed VIEW
         self.time = 0            # the declared virtual-time domain (one tick per step)
         self.instret = 0         # the GENUINE retirement count (never for a trapped,
                                  # delivered or halted step — the engine's !frame.trapped)
@@ -429,7 +430,12 @@ def csr_write_value(h, name, v):
     old = h.csr.get(name, 0)
     if name == "misa":
         return  # laboratory WARL choice: every field retains the selected maximum
-    if name == "mstatus":
+    if name in ("mcounteren", "scounteren"):
+        # Only CY/TM/IR are implemented; HPM is read-only zero, high WPRI retains.
+        h.csr[name] = (old & ~0xffffffff) | (v & 7)
+    elif name == "menvcfg":
+        h.csr[name] = (old & ~(1 << 63)) | (v & (1 << 63))  # STCE; other bits WPRI
+    elif name == "mstatus":
         new = (old & ~MSTATUS_W) | (v & MSTATUS_W)
         if (v >> 11) & 0b11 == 2:                       # MPP OneOf(0,1,3): keep the old field
             new = (new & ~(0b11 << 11)) | (old & (0b11 << 11))
@@ -690,8 +696,6 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
         assert unit.text == code, 'source annotations must follow the assembled units'
         if '#:' in raw:
             directive = raw.split('#:', 1)[1].split('#|end', 1)[0]
-            if '"' in directive or '\\' in directive:
-                raise Refusal('parcel directive cannot contain a double quote or backslash')
             derivation, _, source = directive.partition('|')
             if not derivation.strip():
                 raise Refusal(f'parcel directive at pc {unit.pc:#x}: derivation is empty')
@@ -1032,6 +1036,7 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
                 0x140: "sscratch", 0x141: "sepc", 0x142: "scause", 0x143: "stval",
                 0x304: "mie", 0x303: "mideleg", 0x344: "mip",
                 0x104: "sie", 0x144: "sip", 0x14D: "stimecmp",
+                0x306: "mcounteren", 0x106: "scounteren", 0x30A: "menvcfg",
                 0xC00: "cycle", 0xC01: "time", 0xC02: "instret",
                 0xB00: "mcycle", 0xB02: "minstret",
                 0x001: "fflags", 0x002: "frm", 0x003: "fcsr", 0xF14: "mhartid"}.get(csr)
@@ -1047,6 +1052,13 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
                 h.deliver(2, raw)
                 return h.pc, {"deriv": "S-mode satp access with TVM=1: illegal-instruction, no register/CSR effect.",
                               "source": "RVP-MACHINE §2.1.1.6.6"}
+            if name == "stimecmp" and h.mode == S:
+                tm = (h.csr["mcounteren"] >> 1) & 1
+                stce = (h.csr["menvcfg"] >> 63) & 1
+                if not tm or not stce:
+                    h.deliver(2, raw)
+                    return h.pc, {"deriv": "S-mode stimecmp access needs mcounteren.TM and menvcfg.STCE: illegal-instruction before register/CSR effects.",
+                                  "source": "RVP-MACHINE §2.1.1.11/§2.1.1.18; RVP-SSTC 12.1"}
             if name in ("fflags", "frm", "fcsr") and (h.csr["mstatus"] >> 13) & 0b11 == 0:
                 # the FS gate (slice b): at FS=Off the FP CSRs are inaccessible — an
                 # illegal-instruction trap (cause 2, xtval the word), every mode
@@ -1459,6 +1471,7 @@ def execute_f(h, word, op, rd, f3, rs1, rs2, imm_i, imm_s, data_access, w, *, ne
 
 def emit(path: Path, steps: list[Step], count: int, never: list[str], refuse=()) -> str:
     fetches = sum(st.fetch for st in steps)
+    quote = R.quote_string
     # the header names the guest's OWN family (P4-SYSTEM.8 slice a: the .7 header was stamped
     # on every re-derived file); the atomics family keeps its .4 tool's exact words
     if path.stem.startswith("a-"):
@@ -1490,17 +1503,17 @@ def emit(path: Path, steps: list[Step], count: int, never: list[str], refuse=())
          ';; Validate with',
          f';;   python3 scripts/check_sexp_schema.py {path.stem}.expected.sexp schema/expectations.sexp',
          '',
-         f'(expectations (program "{path.name}") (entry "{sx(ENTRY)}") (instructions {count})'
+         f'(expectations (program {quote(path.name)}) (entry "{sx(ENTRY)}") (instructions {count})'
          + (f' (fetches {fetches})' if fetches != count else '')]
     for r in never:
-        L.append(f'  (never_written "{r}")')
+        L.append(f'  (never_written {quote(r)})')
     for k, b, s in refuse:
         L.append(f'  (refuse (kind {k}) (base "{b:#x}") (size "{s:#x}"))')
     for i, st in enumerate(steps):
         writes = " ".join(f'(write (reg "x{r}") (value "{sx(v)}"))'
                           for r, v in sorted(st.writes.items()))
-        L.append(f'  (step (n {i}) (insn "{st.insn}") (writes{" " if writes else ""}{writes})')
-        L.append(f'    (derivation "{st.deriv}") (source "{st.source}"))')
+        L.append(f'  (step (n {i}) (insn {quote(st.insn)}) (writes{" " if writes else ""}{writes})')
+        L.append(f'    (derivation {quote(st.deriv)}) (source {quote(st.source)}))')
     L.append(')')
     return "\n".join(L) + "\n"
 

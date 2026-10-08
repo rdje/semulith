@@ -235,9 +235,22 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (e1b2): author CSR/directives; (e1b1) integer rules done; (e1c) cache, (e1d) staged corpus/counts, then bind/Sail |
+| 1 | `P4-SYSTEM.12` | `active` | slice (e1c): author cache; (e1b2) CSR/directives done; (e1c) cache, (e1d) staged corpus/counts, then bind/Sail |
 
 ## Decisions
+
+- `2026-10-08` (e1b2 execution plan, before changes): register the selected
+  mcounteren/scounteren/menvcfg addresses and their declared CY/TM/IR, read-only HPM,
+  WPRI and STCE legalization. S stimecmp read/write needs TM and STCE before effects;
+  M bypass and U address privilege remain intact. Existing counter gates keep values
+  moving while inaccessible; writable counter rebasing remains an explicit vocabulary
+  refusal outside these guests, rather than a guessed storage model. Reuse a public
+  canonical quoted-string renderer for author emission (all prose/source/program strings),
+  removing the parcel directive's quote/backslash refusal. Hand mode/gate/mask/alias and
+  escaped-text/schema fixtures, targeted mutations and all 139 runs precede adoption.
+  Preserve all 121 prior word outputs/42 owned records; three repaired guests' committed
+  architectural writes are regression controls. If live histories cross their fixed caps,
+  use shard_history.py with its byte/order proof and freeze manifest, never raise bounds.
 
 - `2026-10-08` (e1b bounded split, before changes): e1b1 fills base integer rules:
   immediate/register comparisons and XOR, XLEN/word shifts, signed/unsigned branches,
@@ -785,37 +798,40 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 - part 5: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md) — `.12` (a), (a2),
-  (b), (d1)–(e1a), plus the closed `.11` design/split, moved byte-verbatim
+  (b), (d1)–(e1b1), plus the closed `.11` design/split, moved byte-verbatim
   as completed records leave the live head.
 
-`P4-SYSTEM.12` slice (e1b1) — independent integer vocabulary (`2026-10-08`, `SEMULITH-P4-0093`):
+`P4-SYSTEM.12` slice (e1b2) — independent CSR enables and literal prose (`2026-10-08`, `SEMULITH-P4-0094`):
 
-- [x] **REPRODUCE / ISSUE** — e1a census refuses 17 integer guests; parent
-  `python3 scripts/probe_gc_integer_author.py --author-revision c70693d` rc=1 on XORI.
-  Unknown-valid controls named newly supported XORI/LBU and needed a still-unmodeled CSR.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'RULES|OP-IMM-32|OP-32|BRANCH'
-  scripts/derive_rv64gc_expectations.py` finds missing comparison/XORI/shift/branch
-  computations and narrow memory stock prose. Pinned rv32.html 1038–1047, 1115–1139,
-  1413–1428, 1618–1630 and rv64.html 574–577, 645–656 give signedness, widths, offsets,
-  low-bit stores and reserved W immediate bits. Unknown instructions cannot be diagnosed
-  from the author's limited vocabulary alone; generic Refusal must remain a refusal.
-- [x] **FIX** — add integer comparisons/XORI, XLEN and word shifts, signed/unsigned
-  branches and narrow memory stock rules. ReservedInstruction identifies known W-shift
-  upper bits before effects; only that subtype delivers cause 2/raw word in parcel runs.
-  Both old unknown-vocabulary controls now use real unmodeled mvendorid, preserving RED.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_integer_author.py` rc=0:
-  22 hand arithmetic/alias/x0, ten branches (taken/untaken/equality/2-mod-4 target), narrow
-  memory width/sign/alignment and three reserved raw words pass. Eight mutations RED;
-  parent c70693d RED. All 17 formerly refused guests match 471 architectural steps.
-- [x] **NO REGRESSION** — GUEST-GEN 80 pass / 0 fail; 105 prior word texts exact,
-  --check-owned 42 byte-identical. Sixteen new word texts not adopted/written. All 139
-  parcel runs census to 135 exact, one owned cache disagreement and three named refusals:
-  a-lrsc-mustfail quoting, mm-counters and mm-stimecmp CSR enables. Record hashes unchanged.
-- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 558 arms), tree/index/logs,
-  CHANGELOG, DEV_NOTES, toolbox/doctrine and assembler/C book updated. e1a receipt and
-  closed .11 design/split archived byte-verbatim, reconstruction asserted. Books and
-  commit doctrine gate must pass. promotion: declined (hand fixtures and eight mutations
-  retain this bounded vocabulary lesson). Next e1b2 CSR/counter/directive prerequisites.
+- [x] **REPRODUCE / ISSUE** — e1b1 census: three refusals (a-lrsc-mustfail quoted
+  directive; mm-counters/mm-stimecmp CSR 0x306). Parent
+  `probe_gc_counter_author.py --author-revision f099905` rc=1 on enable legalization.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'mcounteren|scounteren|menvcfg|directive|emit'
+  scripts/derive_rv64gc_expectations.py` finds absent CSR addresses/legalization, no
+  stimecmp enable guard and a quote/backslash directive refusal; emission interpolates
+  literal text into quotes. State rows 360–389, 556–574 select CY/TM/IR, read-only HPM,
+  WPRI and STCE fields. Pinned machine.html 2778–2788, 2811–2817, 3699–3703 and
+  supervisor.html 1079–1102 define access gates and continuing counters.
+- [x] **FIX** — register enable/environment CSRs; legalize only selected writable fields
+  and retain WPRI. S stimecmp read/write needs TM and STCE before any effects, M bypass,
+  U address privilege unchanged. Public records_sexp.quote_string supplies the existing
+  canonical escapes to every emitted literal field; parcel annotations now accept quotes
+  and backslashes. Historical word routing and counter-storage rebasing refusal stay bounded.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_counter_author.py` rc=0:
+  masks/WPRI/aliases, 30 mode gates, timer read/write unit discipline, literal quotes,
+  backslashes/Unicode/control characters, non-string refusal and emitted schema pass.
+  Eight mutations RED; parent f099905 RED. Three formerly refused guests match 117 steps.
+- [x] **NO REGRESSION** — GUEST-GEN 89 pass / 0 fail; all 121 prior word outputs
+  byte-identical; --check-owned 42 exact. Complete 139 parcel census: 138 architectural
+  traces exact, zero refusals, only owned sv39-tlb-fence steps 191/192/195 disagree.
+  Production images/records/counts unchanged; independent cache repair precedes adoption.
+- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 567 arms), tree/index/logs,
+  CHANGELOG, DEV_NOTES, toolbox/doctrine and assembler/C/interrupt book updated; completed
+  e1b1 receipt moved byte-verbatim with append asserted. Governed DEV_NOTES sharding uses
+  shard-0208.md: 31 entries = 30 kept + one moved, bytes/order exact; head 50051→47812
+  bytes, freeze manifest current, no ceilings raised. make book rc=0 and
+  commit doctrine gate must pass. promotion: declined (permanent mode/string fixtures
+  and eight RED controls retain this lesson). Resume e1c cache policy.
 
 ## Verification Log
 
@@ -826,6 +842,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (e1b2) | masks/30 mode gates/literal text/schema; 8 RED; 117 corpus steps; GUEST-GEN 89/89 | 138 exact, zero refusals; owned cache repair next |
 | `2026-10-08` | `.12` slice (e1b1) | 22 hand arithmetic, ten branches, memory/reserved; 8 RED; 471 corpus steps; GUEST-GEN 80/80 | 135 exact; three refusals/cache owned next |
 | `2026-10-08` | `.12` slice (e1a) | fixed misa/mode/TVM/TSR fixtures; 9 RED; 140 mode-matrix steps; GUEST-GEN 71/71 | privilege repaired; vocabulary/cache prerequisites next |
 | `2026-10-08` | `.12` slice (d3d2) | byte/budget/head/code-visibility fixtures; 8 RED; 176 legacy steps; GUEST-GEN 61/61 | tools ready; staged C corpus/counts next |
@@ -884,6 +901,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1b2) | `SEMULITH-P4-0094 (leaf P4-SYSTEM.12): derive counter permissions and preserve literal expectation text` | e1c cache, then corpus/counts/bind |
 | `.12` (slice e1b1) | `SEMULITH-P4-0093 (leaf P4-SYSTEM.12): derive the base integer vocabulary and reserved word-shift diagnostics` | e1b2 CSR/directives, then cache/corpus/counts |
 | `.12` (slice e1a) | `SEMULITH-P4-0092 (leaf P4-SYSTEM.12): repair fixed misa fields and privileged legality in the independent author` | (e1b) vocabulary, then cache/corpus/counts |
 | `.12` (slice d3d2) | `SEMULITH-P4-0091 (leaf P4-SYSTEM.12): derive byte-addressed guests with explicit boundary budgets` | (e1) staged corpus/counts next |
@@ -939,6 +957,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (e1b2) done: independent CSR enables and literal prose;
+  eight RED, three formerly refused guests/117 steps exact; census 138/139, no refusals.
 
 - `2026-10-08`: `.12` (e1b1) done: base integer author rules and reserved W shifts;
   eight RED, 17 formerly refused guests/471 steps exact; census 135/139 exact.

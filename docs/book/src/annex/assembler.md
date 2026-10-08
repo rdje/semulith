@@ -268,10 +268,31 @@ effects, and parcel runs retain the complete raw word without retirement. An unm
 valid CSR still refuses by name, preserving the distinction between missing author
 vocabulary and a known architectural fault.
 
-The pre-bind census covers 139 historical guests. The author currently matches 135
-architectural traces; three guests name remaining CSR/directive vocabulary, and one
-cached-translation guest awaits its owned cache-policy repair. These prerequisites
-precede count adoption.
+Counter enables follow the selected state fields. Only CY, TM and IR are writable in
+`mcounteren` and `scounteren`; unimplemented HPM bits stay zero and WPRI bits retain
+their old values. S-mode `stimecmp` read/write requires both `mcounteren.TM` and
+`menvcfg.STCE`. A failed gate delivers before register or compare-field effects.
+Machine-mode bypasses these S gates. Accessibility does not stop the counters counting.
+This bounded author still refuses writable counter rebasing explicitly.
+
+Annotations may contain literal quotes and backslashes:
+
+```asm
+addi x1, x0, 1 #: the "marker" is literal; path\part is prose | RVI-RV32I §1.1.4
+```
+
+The emitter uses the canonical S-expression string renderer for program, instruction,
+derivation and source fields. It escapes quotes, backslashes and control characters;
+the reader restores the original Unicode text. This preserves the annotation's meaning
+without requiring the guest author to write S-expression escapes in a source comment.
+
+```sh
+python3 scripts/probe_gc_counter_author.py
+```
+
+The pre-bind census covers 139 historical guests. The author currently matches 138
+architectural traces with no vocabulary refusals; one cached-translation guest awaits
+its owned cache-policy repair. This prerequisite precedes count adoption.
 
 ## The ELF writer — and a measured harness difference
 

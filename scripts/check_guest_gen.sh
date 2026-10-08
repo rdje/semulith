@@ -396,6 +396,26 @@ PY
   out="$(python3 scripts/probe_gc_integer_author.py --mutation reserved-word 2>&1)"; rc=$?
   arm "RED reserved W shifts have no own effect" "$rc" 1 "$out" "reserved word shift acquired an effect"
 
+  # e1b2: selected CSR enables and every literal string retain their own rules.
+  out="$(python3 scripts/probe_gc_counter_author.py 2>&1)"; rc=$?
+  arm "GREEN counter permissions and literal author text" "$rc" 0 "$out" "3 corpus refusals / 117 steps"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation enable-mask 2>&1)"; rc=$?
+  arm "RED counter enables retain selected WARL fields" "$rc" 1 "$out" "CSR enable legalization"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation stce-mask 2>&1)"; rc=$?
+  arm "RED menvcfg writes only STCE" "$rc" 1 "$out" "CSR enable legalization"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation timer-tm 2>&1)"; rc=$?
+  arm "RED S stimecmp requires TM" "$rc" 1 "$out" "stimecmp TM gate"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation timer-stce 2>&1)"; rc=$?
+  arm "RED S stimecmp requires STCE" "$rc" 1 "$out" "stimecmp STCE gate"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation counter-enable 2>&1)"; rc=$?
+  arm "RED counter access remains gated below M" "$rc" 1 "$out" "counter mode enable gate"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation u-counter-enable 2>&1)"; rc=$?
+  arm "RED U counter access requires the S enable too" "$rc" 1 "$out" "counter mode enable gate"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation quote-text 2>&1)"; rc=$?
+  arm "RED quoted annotations retain their literal text" "$rc" 1 "$out" "quoted directive lost literal text"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation backslash-text 2>&1)"; rc=$?
+  arm "RED backslash annotations retain their literal text" "$rc" 1 "$out" "backslash directive lost literal text"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

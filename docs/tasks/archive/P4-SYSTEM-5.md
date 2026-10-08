@@ -599,3 +599,33 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   raised. Books and commit doctrine gate must pass. promotion: declined (permanent field/
   mode fixtures and nine mutations retain this lesson; full census and schedule are durable).
 
+
+`P4-SYSTEM.12` slice (e1b1) — independent integer vocabulary (`2026-10-08`, `SEMULITH-P4-0093`):
+
+- [x] **REPRODUCE / ISSUE** — e1a census refuses 17 integer guests; parent
+  `python3 scripts/probe_gc_integer_author.py --author-revision c70693d` rc=1 on XORI.
+  Unknown-valid controls named newly supported XORI/LBU and needed a still-unmodeled CSR.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'RULES|OP-IMM-32|OP-32|BRANCH'
+  scripts/derive_rv64gc_expectations.py` finds missing comparison/XORI/shift/branch
+  computations and narrow memory stock prose. Pinned rv32.html 1038–1047, 1115–1139,
+  1413–1428, 1618–1630 and rv64.html 574–577, 645–656 give signedness, widths, offsets,
+  low-bit stores and reserved W immediate bits. Unknown instructions cannot be diagnosed
+  from the author's limited vocabulary alone; generic Refusal must remain a refusal.
+- [x] **FIX** — add integer comparisons/XORI, XLEN and word shifts, signed/unsigned
+  branches and narrow memory stock rules. ReservedInstruction identifies known W-shift
+  upper bits before effects; only that subtype delivers cause 2/raw word in parcel runs.
+  Both old unknown-vocabulary controls now use real unmodeled mvendorid, preserving RED.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_integer_author.py` rc=0:
+  22 hand arithmetic/alias/x0, ten branches (taken/untaken/equality/2-mod-4 target), narrow
+  memory width/sign/alignment and three reserved raw words pass. Eight mutations RED;
+  parent c70693d RED. All 17 formerly refused guests match 471 architectural steps.
+- [x] **NO REGRESSION** — GUEST-GEN 80 pass / 0 fail; 105 prior word texts exact,
+  --check-owned 42 byte-identical. Sixteen new word texts not adopted/written. All 139
+  parcel runs census to 135 exact, one owned cache disagreement and three named refusals:
+  a-lrsc-mustfail quoting, mm-counters and mm-stimecmp CSR enables. Record hashes unchanged.
+- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 558 arms), tree/index/logs,
+  CHANGELOG, DEV_NOTES, toolbox/doctrine and assembler/C book updated. e1a receipt and
+  closed .11 design/split archived byte-verbatim, reconstruction asserted. Books and
+  commit doctrine gate must pass. promotion: declined (hand fixtures and eight mutations
+  retain this bounded vocabulary lesson). Next e1b2 CSR/counter/directive prerequisites.
+
