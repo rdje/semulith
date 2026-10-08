@@ -119,23 +119,25 @@ impl Tlb {
 
     /// SFENCE.VMA's four cases, exactly (§11.1.2.1; the over-fence latitude is
     /// recorded-not-taken). A non-canonical VA has no effect and raises nothing.
-    pub fn invalidate(&mut self, va: u64, asid: u16) {
-        let vpn = va >> 12;
-        let top = va >> 39;
-        let canonical = if (va >> 38) & 1 == 1 {
-            (1u64 << 25) - 1
-        } else {
-            0
-        };
-        if top != canonical {
-            return; // an invalid rs1 VA: no effect, no exception — the spec's sentence
+    /// `None` means the operand IS x0; `Some(0)` selects page or ASID zero.
+    pub fn invalidate(&mut self, va: Option<u64>, asid: Option<u16>) {
+        if let Some(va) = va {
+            let top = va >> 39;
+            let canonical = if (va >> 38) & 1 == 1 {
+                (1u64 << 25) - 1
+            } else {
+                0
+            };
+            if top != canonical {
+                return; // an invalid rs1 VA: no effect, no exception — the spec's sentence
+            }
         }
         for e in &mut self.entries {
-            let subsumed = match (va == 0, asid == 0) {
-                (true, true) => true,                         // all address spaces, all ASIDs
-                (true, false) => !e.global && e.asid == asid, // per-ASID, globals retained
-                (false, true) => e.vpn == vpn,                // per-address, every space
-                (false, false) => !e.global && e.asid == asid && e.vpn == vpn,
+            let subsumed = match (va, asid) {
+                (None, None) => true,
+                (None, Some(asid)) => !e.global && e.asid == asid,
+                (Some(va), None) => e.vpn == va >> 12,
+                (Some(va), Some(asid)) => !e.global && e.asid == asid && e.vpn == va >> 12,
             };
             if subsumed {
                 e.valid = false;
@@ -153,7 +155,8 @@ impl Tlb {
 /// SFENCE.VMA's effect: invalidate the hart's cache per the four cases (the legality
 /// of the fence itself — U-mode, and S with TVM=1 — is the semantics data's, in
 /// `system.sem.sexp`; this is the effect reaching the cache).
-pub fn fence<H: PrivilegedHart>(hart: &mut H, va: u64, asid: u16) {
+/// A `None` scope comes from an x0 operand; `Some(0)` is page/ASID zero.
+pub fn fence<H: PrivilegedHart>(hart: &mut H, va: Option<u64>, asid: Option<u16>) {
     hart.tlb().invalidate(va, asid);
 }
 
@@ -1291,7 +1294,7 @@ mod tests {
             "a stale hit without a fence is the spec's sanctioned staleness, not a bug"
         );
         // SFENCE.VMA at the VA: the subsuming fence — the next access re-walks
-        fence(&mut state, va, 0);
+        fence(&mut state, Some(va), None);
         assert_eq!(
             translate(&mut state, &mut env, va, AccessKind::Load),
             Translate::Physical(0x8000_8000 | (va & 0xFFF)),
@@ -1332,7 +1335,7 @@ mod tests {
             "the cached entry's D bit judges the store — a legal stale fault"
         );
         // after the fence the store walks, sees D=1, and translates
-        fence(&mut state, va, 0);
+        fence(&mut state, Some(va), None);
         assert_eq!(
             translate(&mut state, &mut env, va, AccessKind::Store),
             Translate::Physical(0x8000_4000 | (va & 0xFFF))
@@ -1355,23 +1358,23 @@ mod tests {
             table_4k(env, vg, leaf_pte(0x8000_C000, V | R | A | D | G));
             translate(state, env, vg, AccessKind::Load);
         };
-        // case all-spaces (rs1=0, rs2=0): everything goes
+        // case all-spaces (rs1=x0, rs2=x0): everything goes
         let mut state = hart();
         state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         build(&mut state, &mut env);
-        fence(&mut state, 0, 0);
+        fence(&mut state, None, None);
         assert_eq!(
             state.tlb().occupied(),
             0,
             "the all-spaces fence empties the cache"
         );
-        // case per-ASID (rs1=0, rs2≠0): non-global entries of that ASID go, G stays
+        // case per-ASID (rs1=x0, rs2≠x0): non-global entries of that ASID go, G stays
         let mut state = hart();
         state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         build(&mut state, &mut env);
-        fence(&mut state, 0, 7);
+        fence(&mut state, None, Some(7));
         assert_eq!(
             state.tlb().occupied(),
             1,
@@ -1381,24 +1384,24 @@ mod tests {
             state.tlb().lookup(vg >> 12, 42).is_some(),
             "the retained entry is the global one"
         );
-        // case per-address (rs1≠0, rs2=0): the VA's entries go in every space, G included
+        // case per-address (rs1≠x0, rs2=x0): the VA's entries go in every space, G included
         let mut state = hart();
         state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         build(&mut state, &mut env);
-        fence(&mut state, vg, 0);
+        fence(&mut state, Some(vg), None);
         assert_eq!(
             state.tlb().occupied(),
             2,
             "the per-address fence evicts the global entry too"
         );
         assert!(state.tlb().lookup(va1 >> 12, 7).is_some());
-        // case per-address+ASID (rs1≠0, rs2≠0): only the matching non-global entry goes
+        // case per-address+ASID (rs1≠x0, rs2≠x0): only the matching non-global entry goes
         let mut state = hart();
         state.set_mode(PrivilegeMode::S);
         let mut env = WalkEnv::new();
         build(&mut state, &mut env);
-        fence(&mut state, va1, 7);
+        fence(&mut state, Some(va1), Some(7));
         assert_eq!(
             state.tlb().occupied(),
             2,
@@ -1420,12 +1423,64 @@ mod tests {
         let mut env = WalkEnv::new();
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
         translate(&mut state, &mut env, va, AccessKind::Load);
-        fence(&mut state, 0x0000_8000_0000_0000, 0); // non-canonical: no effect, no exception
+        fence(&mut state, Some(0x0000_8000_0000_0000), None); // non-canonical: no effect, no exception
         assert_eq!(
             state.tlb().occupied(),
             1,
             "a non-canonical rs1 VA invalidates nothing"
         );
+    }
+
+    #[test]
+    fn fence_nonzero_asid_register_holding_zero_retains_globals_and_other_asids() {
+        check_zero_fence_scope(0x1240_0073, 0, &[false, true, true, false]);
+    }
+
+    #[test]
+    fn fence_nonzero_va_register_holding_zero_retains_other_pages() {
+        check_zero_fence_scope(0x1201_8073, 0, &[false, false, false, true]);
+    }
+
+    #[test]
+    fn fence_nonzero_zero_operands_select_page_zero_asid_zero() {
+        check_zero_fence_scope(0x1241_8073, 0, &[false, true, true, true]);
+        // Only the implemented low 16 ASID bits select a space, never the scope.
+        check_zero_fence_scope(0x1241_8073, 1 << 16, &[false, true, true, true]);
+    }
+
+    fn check_zero_fence_scope(word: u32, asid_value: u64, retained: &[bool; 4]) {
+        use crate::definition_rv64gc::INSNS;
+        use crate::exec_rv64gc::{step_over, StepRv64gc};
+
+        let mut state = hart();
+        let mut env = WalkEnv::new();
+        // Four distinct cache entries: page zero ASID 0, global page zero,
+        // page zero ASID 1, and page one ASID 0. None needs an engine-derived walk.
+        let entries = [(0, 0, false), (0, 0, true), (0, 1, false), (1, 0, false)];
+        for (vpn, asid, global) in entries {
+            state.tlb().install(TlbEntry {
+                valid: true,
+                vpn,
+                asid,
+                global,
+                r: true,
+                a: true,
+                ..TlbEntry::default()
+            });
+        }
+        state.write_x(3, 0);
+        state.write_x(4, asid_value);
+        state.set_pc(REGION_BASE);
+        env.write(REGION_BASE, 4, u64::from(word));
+        assert_eq!(step_over(&mut state, &mut env, INSNS), StepRv64gc::Executed);
+        assert_eq!(state.pc(), REGION_BASE + 4);
+        let actual = state.tlb().entries.map(|entry| entry.valid);
+        assert_eq!(
+            actual, *retained,
+            "SFENCE scope must use operand register identity"
+        );
+        assert_eq!(state.read_x(3), 0);
+        assert_eq!(state.read_x(4), asid_value);
     }
 
     #[test]
@@ -1443,13 +1498,13 @@ mod tests {
         table_4k(&mut env, va, leaf_pte(0x8000_4000, V | R | A | D));
         translate(&mut state, &mut env, va, AccessKind::Load);
         assert_eq!(state.tlb().occupied(), 1);
-        // sfence.vma x3, x4 = rs1=x3 (the VA), rs2=x4 (the ASID) — 0x12039073; executed
+        // sfence.vma x3, x4 = rs1=x3 (the VA), rs2=x4 (the ASID) — 0x12418073; executed
         // in M (never translated — the fence instruction itself fetches identity)
         state.set_mode(PrivilegeMode::M);
         state.write_x(3, va);
         state.write_x(4, 7);
         state.set_pc(REGION_BASE);
-        env.write(REGION_BASE, 4, 0x1243_8073);
+        env.write(REGION_BASE, 4, 0x1241_8073);
         assert_eq!(step_over(&mut state, &mut env, INSNS), StepRv64gc::Executed);
         assert_eq!(
             state.tlb().occupied(),
@@ -1460,11 +1515,13 @@ mod tests {
         // and a fence with rs2=x0 (the per-address case) hits nothing after it
         let mut env2 = WalkEnv::new();
         table_4k(&mut env2, va, leaf_pte(0x8000_4000, V | R | A | D));
+        state.set_mode(PrivilegeMode::S);
         translate(&mut state, &mut env2, va, AccessKind::Load);
+        assert_eq!(state.tlb().occupied(), 1);
         state.set_mode(PrivilegeMode::M);
         state.write_x(4, 0);
         state.set_pc(REGION_BASE);
-        env2.write(REGION_BASE, 4, 0x1238_0073); // sfence.vma x3, x0
+        env2.write(REGION_BASE, 4, 0x1201_8073); // sfence.vma x3, x0
         assert_eq!(
             step_over(&mut state, &mut env2, INSNS),
             StepRv64gc::Executed
@@ -1495,7 +1552,7 @@ mod tests {
                 );
                 outcomes.push(translate(&mut state, &mut env, kv, AccessKind::Load));
             }
-            fence(&mut state, 0, 7);
+            fence(&mut state, None, Some(7));
             outcomes.push(translate(&mut state, &mut env, va, AccessKind::Load));
             (outcomes, env.walks, state.tlb().occupied())
         };

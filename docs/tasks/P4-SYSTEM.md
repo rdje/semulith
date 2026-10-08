@@ -235,9 +235,36 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (e1c): author cache; (e1b2) CSR/directives done; (e1c) cache, (e1d) staged corpus/counts, then bind/Sail |
+| 1 | `P4-SYSTEM.12` | `active` | slice (e1c1): author cache; (e1c0) production fence repaired; (e1d) staged corpus/counts, then bind/Sail |
 
 ## Decisions
+
+- `2026-10-08` (e1c discovery / ownership, before changes): pinned supervisor.html
+  2046–2080 selects SFENCE scope from rs1/rs2 register identities, including nonzero
+  registers holding zero and ASIDLEN-masked zero. The production semantic operator
+  passes only values; translation::Tlb::invalidate branches on va==0/asid==0. This
+  loses identity and may over-fence even though the declared policy rejects that latitude.
+  e1c0 first reproduces through the public evaluator with seeded cache entries and
+  hand words, then carries explicit all-address/all-ASID selectors in the semantic data
+  and typed cache interface, updates all call sites and documents the corrected contract.
+  Add permanent parent/mutation controls for zero-valued nonzero operands and invalid VA;
+  maintain ordinary x0 fences, legality and existing corpus. Finish/commit this bounded
+  repair before e1c1 derives independent FIFO/cache/permission/global/fence behavior.
+  `cargo test -p semulith-core translation::tests::fence_nonzero` on c413dd3 + new
+  tests fails 0 passed / 3 failed: all entries removed, versus independently specified
+  retention vectors. History e839c1b (SEMULITH-P4-0018) introduced the value-only contract;
+  frozen .3 evidence is superseded by this receipt. Its end-to-end raw words also encode
+  wrong registers, and the second leg translates while still M so installs nothing.
+  Repair those fixtures with pinned-assembler-confirmed words and a pre-fence occupancy
+  assertion. Carry explicit optional scopes: None is x0, Some(0) is a real zero selection.
+  Semantic data supplies four arguments (values plus identity flags), rejecting old arity.
+  The new arity made four DEF-GEN literal sed injections no-ops; the gate correctly
+  refused (51 pass / four fail). Before commit, replace the disposable AST effect
+  structurally with exactly-one-match assertions, retain all four negative arms, and
+  add an obsolete two-argument arity refusal arm. This repairs the dependent fixture
+  seam rather than weakening discrimination. No engine result becomes an author
+  expectation. The new finding was surfaced in chat. Archive the closed .10 design
+  verbatim if the live task exceeds its fixed bound; assert reconstruction and retrieval.
 
 - `2026-10-08` (e1b2 execution plan, before changes): register the selected
   mcounteren/scounteren/menvcfg addresses and their declared CY/TM/IR, read-only HPM,
@@ -627,106 +654,8 @@ This gate authorises the planned next engineering stage: board implementation.
      straddle-fault evidence, the Sail matched experiment, THE LEAF ACCEPTANCE.
 - Closed `.11` design and slice split: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md),
   moved byte-verbatim at the e1b1 containment crossing; use `.12` above for current scope.
-- `2026-10-06` (design brief for `.10`, recorded before its execution, `SEMULITH-P4-0068`;
-  sources: a read-only census of the gate-report path and of rv64gc's evidence per §7 axis (an
-  explore agent's report — conversation-only; every load-bearing fact re-measured where it
-  lives); `docs/EVIDENCE_AND_GATES.md` §7; `scripts/gate_report.py`;
-  `scripts/check_gate_report.sh`; `profiles/rv64gc-lab-v0/`; `crates/semulith-cli/src/main.rs`):
-  **The measured pre-conditions.** (1) **No report path, and the nearest one is rv64i-shaped.**
-  `main()` accepts `G0`/`G1`/`GC`/`BREADTH` only (`gate_report.py:921`); `build_cpulab` carries
-  rv64i's facts as constants — `cells == 21` (`:599`), `act4_tests == 51` (`:604`), G-REPLAY
-  read from `snapshot/tests.rs` and `run/tests.rs` whatever the unit (`:574-578`), G-TRACE the
-  literal `"green"` (`:591`) — and reports 7 of §7's 10 axes (no G-SCOPE, no G-STATE). Run on
-  rv64gc to stdout (nothing written): G-REPLAY reads **green** from rv64i's suites, G-INTERACTIONS
-  reads **incomplete** because 28 ≠ 21. (2) **The contract measure is not unit-scoped.** An
-  implemented check is a `git grep` hit under `scripts/`/`crates/` (`:546-552`); MIRROR-DERIVE
-  makes 26 check ids identical across the two units (13 base mirrors, enforced field-equal by
-  `check_requirements.sh` rule 14), so realizing one for rv64gc would credit rv64i. The
-  denominator also counts the two records v1 superseded: rv64gc reads 14 of 104, the effective
-  contract is 14 of 100. (3) **G-SCOPE: M and C are not bound.** `encoding.sexp:16-18` reads
-  `(status partial)` with slots `m` and `c`; `definitions/riscv/m.sexp` exists (13
-  instructions) with no `m.sem.sexp`; no C fragment exists (`ls definitions/riscv/`). The `.8`
-  brief routed them to "the m/c slots (their leaves)" (`archive/P4-SYSTEM-designs.md:840`) —
-  **no such leaf exists**: an ownership gap, owned now. Frozen v0 statements are stale and not
-  superseded — `OB-FP-DEFER` ("implements no floating point"), `OB-ROUTE-FLIP` ("62-guest
-  corpus", "six declared slots"), `OB-RESOLUTION-ROUTE` — and `profile.sexp:20` still says
-  "FLOATING POINT IS DECLARED, NOT YET MODELLED". (4) **G-CONTRACT**: rv64i's 8 base
-  `OB-ENV-*` assumptions are not restated for this unit (`ENVIRONMENT.md`, `.9`). (5)
-  **G-TRACE**: `grep -c "(experiment" profiles/rv64gc-lab-v0/references.sexp` → 0 — the seven
-  Sail experiments (`.2`–`.8`) are prose inside sail-riscv's `matched_scope` string, so
-  PROFILE-CONSISTENCY rules 6–7 (a control and an independence row per experiment,
-  `check_profile_consistency.sh:248`, `:287`) never see them, and their comparators are scratch
-  under `target/`. (6) **G-OBLIGATIONS**: all 46 requirements read `planned` (as rv64i's 28 did);
-  census of readers of the value — `git grep -n implementation_status -- scripts crates` → 11
-  lines, every one a writer of the literal `"planned"`, a field mapping (`records_sexp.py`), or
-  `gate_report.py:556`'s count: none judges the value against evidence. No `EVIDENCE_POLICY.md`
-  for rv64gc; the 13 mirrored requirements can change only in lockstep with rv64i's
-  (`check_requirements.sh:500-504`); `REQ-D-ECALL-EBREAK` is `partial` on OQ-5 ("no privileged
-  modes"). (7) **G-REGRESSION**: the external campaign is rv64i's (`run_act4_campaign.py:43`
-  `PROFILE = "rv64i-lab-v0"`); the validator-mutation suite (`mutate.rs`) decodes rv64i's tables
-  and the CLI refuses rv64gc for it by name (`main.rs:551`). (8) **G-PORTABILITY**: the one
-  record is rv64i's `portability.sexp`; `check_portability.sh` builds its manifest from rv64i's
-  guests. (9) **G-REPLAY**: cold-reset determinism runs over all 135 rv64gc guests
-  (`run_rv64gc/tests.rs:54`); snapshots, replay bundles and the reducer are rv64i-only and the CLI
-  refuses rv64gc for each as "a later leaf" (`main.rs:684`, `:755`, `:866`, `:925`, `:996`) —
-  no leaf owns them. (10) **G-INTERACTIONS**: 28 cells, 217 resolving dispositions,
-  INTERACTION-MATRIX discovers the unit — green under a measure that is not rv64i's constant.
-  (11) **G-RELEASE**: no rv64gc release decision.
-  **The design, decided:**
-  1. **`.10` builds the instrument and records its first honest reading** — it does not close
-     the axes. A `CPU-SYSTEM` report, gate code `GS`, at `profiles/<unit>/GS-REPORT.md` (the
-     existing `G?-REPORT.md` discovery covers it once `main()` accepts `GS`), over **all ten §7
-     axes**, each measured from THIS unit's tracked files by concrete name. **No axis is a
-     constant and no count is hard-coded**: an axis whose evidence is not measurable from tracked
-     files reads `incomplete` with the reason "unmeasured", never `green`. The verdict is `passed`
-     only when all ten read green — EVD-08's shape, with no code path past an open axis.
-  2. **The contract measure becomes unit-scoped and supersession-aware**: a check is implemented
-     for a unit exactly when THAT unit's registry realizes it (the contract document names its
-     registry; a unit with none realizes 0), and the denominator is the effective contract —
-     the latest version's members and everything they inherit, minus what a version
-     supersedes. G0's and GC's rv64i reports keep reading 0 of 72 — byte-identical, proven by
-     regeneration — and a shared id realized only in rv64gc's registry must not credit rv64i
-     (RED-proven: the old measure credits it).
-  3. **Every open axis gets an owning leaf before the instrument lands** (defect ownership —
-     nothing open without an owner). The tree grows by eight leaves, ordered so that each axis is
-     measured once over the COMPLETE profile: the scope first (every later axis would be
-     re-measured after M and C bind), then the contract, the evidence records, regression,
-     replay, portability, and the verdict:
-     `.11` bind M · `.12` bind C · `.13` environment contract v2 · `.14` evidence records and
-     obligation status · `.15` regression over the complete profile · `.16` replay, snapshots and
-     reduction · `.17` portability · `.18` the CPU-SYSTEM verdict and the release decision.
-     Each executes under its own design brief.
-  4. **Slices.** (a) the unit-scoped, supersession-aware contract measure, shared by every
-     builder; (b) the `GS` builder, its report, GATE-REPORT coverage and the RED proofs (a
-     forced open axis cannot read `passed`; no hard-coded constant survives — a census);
-     (c) the reports, the book chapter, THE LEAF ACCEPTANCE ("reproducible from pinned inputs"
-     proven by regenerating in a fresh worktree byte-identically).
-  **Deferred, named:** `build_cpulab`'s rv64i constants stay — they are that report's own facts
-  and it is frozen evidence of the `CPU-LAB` decision; the board pins rv64i, not rv64gc
-  (`profiles/netboard-lab-v0/board.sexp:18-25`) — `P5-BOARD`'s, when the CPU-SYSTEM verdict
-  exists.
-- `2026-10-06` (design brief for `.9`, recorded before its execution, `SEMULITH-P4-0063`): archived verbatim to
-  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.10` design
-  (`.9` closed).
-- `2026-10-06` (design brief for `.8`, recorded before its execution, `SEMULITH-P4-0057`): archived verbatim to
-  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.10` design
-  (`.8` closed).
-- `2026-10-06` (slice (e) execution split, recorded before its execution, `SEMULITH-P4-0054`): archived verbatim to
-  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
-  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
-
-- `2026-10-06` (slice (d) execution split, recorded before its execution, `SEMULITH-P4-0049`): archived verbatim to
-  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
-  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
-
-- `2026-10-06` (slice (c4) part 1 — the data-locality decision, recorded before its execution, `SEMULITH-P4-0045`): archived verbatim to
-  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
-  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
-
-- `2026-10-06` (slice (c) execution split + the frm defect, recorded before its execution, `SEMULITH-P4-0041`): archived verbatim to
-  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
-  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
-
+- Closed `.10` design: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md),
+  moved byte-verbatim at the e1c0 crossing; the active `.12` plan is above.
 - `2026-10-05` (design brief for `.7`, recorded before its execution, `SEMULITH-P4-0038`): archived verbatim to
   [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
   brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
@@ -798,40 +727,44 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 - part 5: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md) — `.12` (a), (a2),
-  (b), (d1)–(e1b1), plus the closed `.11` design/split, moved byte-verbatim
+  (b), (d1)–(e1b2), plus closed `.10` design and `.11` design/split, moved byte-verbatim
   as completed records leave the live head.
 
-`P4-SYSTEM.12` slice (e1b2) — independent CSR enables and literal prose (`2026-10-08`, `SEMULITH-P4-0094`):
+`P4-SYSTEM.12` slice (e1c0) — SFENCE scope preserves register identity (`2026-10-08`, `SEMULITH-P4-0095`):
 
-- [x] **REPRODUCE / ISSUE** — e1b1 census: three refusals (a-lrsc-mustfail quoted
-  directive; mm-counters/mm-stimecmp CSR 0x306). Parent
-  `probe_gc_counter_author.py --author-revision f099905` rc=1 on enable legalization.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'mcounteren|scounteren|menvcfg|directive|emit'
-  scripts/derive_rv64gc_expectations.py` finds absent CSR addresses/legalization, no
-  stimecmp enable guard and a quote/backslash directive refusal; emission interpolates
-  literal text into quotes. State rows 360–389, 556–574 select CY/TM/IR, read-only HPM,
-  WPRI and STCE fields. Pinned machine.html 2778–2788, 2811–2817, 3699–3703 and
-  supervisor.html 1079–1102 define access gates and continuing counters.
-- [x] **FIX** — register enable/environment CSRs; legalize only selected writable fields
-  and retain WPRI. S stimecmp read/write needs TM and STCE before any effects, M bypass,
-  U address privilege unchanged. Public records_sexp.quote_string supplies the existing
-  canonical escapes to every emitted literal field; parcel annotations now accept quotes
-  and backslashes. Historical word routing and counter-storage rebasing refusal stay bounded.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_counter_author.py` rc=0:
-  masks/WPRI/aliases, 30 mode gates, timer read/write unit discipline, literal quotes,
-  backslashes/Unicode/control characters, non-string refusal and emitted schema pass.
-  Eight mutations RED; parent f099905 RED. Three formerly refused guests match 117 steps.
-- [x] **NO REGRESSION** — GUEST-GEN 89 pass / 0 fail; all 121 prior word outputs
-  byte-identical; --check-owned 42 exact. Complete 139 parcel census: 138 architectural
-  traces exact, zero refusals, only owned sv39-tlb-fence steps 191/192/195 disagree.
-  Production images/records/counts unchanged; independent cache repair precedes adoption.
-- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 567 arms), tree/index/logs,
-  CHANGELOG, DEV_NOTES, toolbox/doctrine and assembler/C/interrupt book updated; completed
-  e1b1 receipt moved byte-verbatim with append asserted. Governed DEV_NOTES sharding uses
-  shard-0208.md: 31 entries = 30 kept + one moved, bytes/order exact; head 50051→47812
-  bytes, freeze manifest current, no ceilings raised. make book rc=0 and
-  commit doctrine gate must pass. promotion: declined (permanent mode/string fixtures
-  and eight RED controls retain this lesson). Resume e1c cache policy.
+- [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-core
+  translation::tests::fence_nonzero` on c413dd3 + new tests: 0 passed / 3 failed.
+  Zero-valued nonzero operands flush all four seeded entries instead of their specified
+  subsets, including globals/other ASIDs/pages. ASID masking must not select full scope.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show e839c1b:crates/semulith-core/src/translation.rs`
+  shows the value-only API and va==0/asid==0 scope selection introduced by P4-0018;
+  `rg -n TlbInvalidate crates/semulith-core/src/exec_rv64gc.rs` finds the identity loss
+  in semantic lowering. Pinned supervisor.html 2046–2080 names x0 register identity;
+  the profile explicitly rejects over-fencing. Historical .3 receipts are superseded
+  here. Its two fence words name wrong registers and its second refill stays M/Bare.
+- [x] **FIX** — four-argument semantic effect carries VA/ASID plus x0-identity flags;
+  generator and evaluator preserve them. Cache/fence API uses None for x0 and Some(0)
+  for real zero selections. Invalid selected VA remains a no-op. Correct both old raw
+  words from pinned assembler checks; S refill and occupancy prove the second leg acts.
+  Four stale DEF-GEN sed mutants become asserted single-effect AST replacements.
+- [x] **ADDRESSED (verified)** — translation tests 29 passed / 0 failed, including three
+  new public-evaluator regressions and repaired occupied-cache fixture. Parent 0/3; two
+  value-selector mutations behavioral RED. Obsolete binary arity refuses by name; the
+  permanent new DEF-GEN arm proves it. All four restored surface-refusal arms discriminate.
+- [x] **NO REGRESSION** — make check rc=0: fmt, strict clippy, 153 core, 17 DSP and
+  193 verify tests pass. DEF-GEN 56 pass / 0 fail, both canonical pairs exact; scalar
+  definition differs only in two generator digest fields (normalization asserted). Stock
+  corpus retained. No expectation/guest/profile/count changes. Author cache remains the
+  next prerequisite (138/139 exact, no refusals), rather than copying evaluator outputs.
+- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 568 arms), tree/index/logs,
+  CHANGELOG/DEV_NOTES, toolbox/doctrine and C/Sv39 book updated. Prior receipt archived
+  byte-verbatim, append asserted; closed .10 design archived with reconstruction proved.
+  Initial 0209/0210 shard byte/order proofs passed, but the commit gate found archive
+  aggregate 787026 > 786432 B. Reconstructed original entries exactly, removed only
+  these uncommitted shards and restored the HEAD manifest. Shortened only new summaries;
+  all committed history bytes/order exact, full detail retained in tree/book. Fixed caps hold.
+  make book rc=0; commit doctrine gate must pass. promotion: declined (three permanent
+  regressions, explicit optional API and obsolete-arity gate retain the contract lesson).
 
 ## Verification Log
 
@@ -842,6 +775,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (e1c0) | parent 0/3 then three green; two selector RED; translation 29/29; make check; DEF-GEN 56/56 | production scopes repaired; independent cache author next |
 | `2026-10-08` | `.12` slice (e1b2) | masks/30 mode gates/literal text/schema; 8 RED; 117 corpus steps; GUEST-GEN 89/89 | 138 exact, zero refusals; owned cache repair next |
 | `2026-10-08` | `.12` slice (e1b1) | 22 hand arithmetic, ten branches, memory/reserved; 8 RED; 471 corpus steps; GUEST-GEN 80/80 | 135 exact; three refusals/cache owned next |
 | `2026-10-08` | `.12` slice (e1a) | fixed misa/mode/TVM/TSR fixtures; 9 RED; 140 mode-matrix steps; GUEST-GEN 71/71 | privilege repaired; vocabulary/cache prerequisites next |
@@ -901,6 +835,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1c0) | `SEMULITH-P4-0095 (leaf P4-SYSTEM.12): preserve SFENCE operand identity through the semantic cache interface` | e1c1 independent cache, then corpus/counts/bind |
 | `.12` (slice e1b2) | `SEMULITH-P4-0094 (leaf P4-SYSTEM.12): derive counter permissions and preserve literal expectation text` | e1c cache, then corpus/counts/bind |
 | `.12` (slice e1b1) | `SEMULITH-P4-0093 (leaf P4-SYSTEM.12): derive the base integer vocabulary and reserved word-shift diagnostics` | e1b2 CSR/directives, then cache/corpus/counts |
 | `.12` (slice e1a) | `SEMULITH-P4-0092 (leaf P4-SYSTEM.12): repair fixed misa fields and privileged legality in the independent author` | (e1b) vocabulary, then cache/corpus/counts |
@@ -957,6 +892,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (e1c0) done: fence scopes preserve x0 identity, including
+  real page/ASID zero; three parent RED regressions green; two old fixture legs repaired.
 
 - `2026-10-08`: `.12` (e1b2) done: independent CSR enables and literal prose;
   eight RED, three formerly refused guests/117 steps exact; census 138/139, no refusals.

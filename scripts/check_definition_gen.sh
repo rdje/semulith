@@ -54,6 +54,30 @@ self_test() {
   cp definitions/riscv/rv64i.sem.sexp "$t/definitions/riscv/rv64i.sem.sexp"
   GEN() { python3 scripts/gen_definition.py --encoding "$t/profiles/rv64i-lab-v0/encoding.sexp" \
           --state "$STATE" --out "$t/definition.rs" "$@"; }
+  # Replace exactly the disposable fence effect, independent of its textual layout.
+  # Literal sed matches silently became no-ops when its scope selectors were added.
+  MUTATE_FENCE() { python3 - "$1" "$2" <<'PY'
+import sys
+from pathlib import Path
+sys.path.insert(0, 'scripts')
+import sexp as S
+import records_sexp as R
+forms = S.read_file(Path('definitions/riscv/system.sem.sexp'))
+replacement = S.parse(sys.argv[1])[0]
+matches = 0
+def replace(form):
+    global matches
+    if not isinstance(form, list):
+        return form
+    if form and form[0] == 'tlb-invalidate':
+        matches += 1
+        return replacement
+    return [replace(child) for child in form]
+mutated = [replace(form) for form in forms]
+assert matches == 1, 'fence mutation must replace exactly one effect'
+Path(sys.argv[2]).write_text(R.render_forms(mutated))
+PY
+  }
 
   # ⛔ STRICT ARITY (docs/knowledge/self-test-arms-that-never-ran.md): a missing `;` before
   # an arm call swallows it silently; the guard makes that a loud failure.
@@ -174,6 +198,11 @@ EOF
   out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
         --state "$STATE" --out "$t/gc-definition.rs" 2>&1)"; rc=$?
   arm "GREEN the rv64gc composition emits the extended module" "$rc" 0 "$out" "wrote"
+  MUTATE_FENCE '(tlb-invalidate (reg rs1) (reg rs2))' "$t/gc/definitions/riscv/system.sem.sexp" || return 1
+  out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
+        --state "$STATE" --out "$t/gc-obsolete-fence.rs" 2>&1)"; rc=$?
+  arm "RED the obsolete value-only fence arity is refused" "$rc" 2 "$out" "takes 4 argument(s), got 2"
+  cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
   for needle in "TrapDeliver" "CsrRead" "Xret" "static PSEUDOS"; do
     grep -qF "$needle" "$t/gc-definition.rs"; rc=$?
     arm "GREEN the emitted module carries $needle" "$rc" 0 "" ""
@@ -223,8 +252,7 @@ EOF
   # compile against its evaluator.
   grep -v 'extensions "riscv/a"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
     > "$t/gc/enc-noa.sexp" && mv "$t/gc/enc-noa.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
-  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (store-conditional (lit 32) (reg rs1) (reg rs2)))/' \
-    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  MUTATE_FENCE '(set (reg rs1) (store-conditional (lit 32) (reg rs1) (reg rs2)))' "$t/gc/definitions/riscv/system.sem.sexp" || return 1
   out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
         --state "$STATE" --out "$t/gc-a-definition.rs" 2>&1)"; rc=$?
   arm "RED an A operator without riscv/a composed is refused, named" "$rc" 2 "$out" "does not compose riscv/a"
@@ -262,8 +290,7 @@ EOF
   # RED: an FP operator where the composition does not compose riscv/f is refused, named.
   grep -v 'extensions "riscv/f"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
     > "$t/gc/enc-nof.sexp" && mv "$t/gc/enc-nof.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
-  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (fclass 32 (reg rs2)))/' \
-    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  MUTATE_FENCE '(set (reg rs1) (fclass 32 (reg rs2)))' "$t/gc/definitions/riscv/system.sem.sexp" || return 1
   out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
         --state "$STATE" --out "$t/gc-f-definition.rs" 2>&1)"; rc=$?
   arm "RED an FP operator without riscv/f composed is refused, named" "$rc" 2 "$out" "does not compose riscv/f"
@@ -296,8 +323,7 @@ EOF
     && mv "$t/gc/enc-nod.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
   grep -q 'extensions "riscv/f"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"; rc=$?
   arm "GREEN the no-D composition still composes riscv/f" "$rc" 0 "" ""
-  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (f2f 32 64 (reg rs1) (reg rs2)))/' \
-    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  MUTATE_FENCE '(set (reg rs1) (f2f 32 64 (reg rs1) (reg rs2)))' "$t/gc/definitions/riscv/system.sem.sexp" || return 1
   out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
         --state "$STATE" --out "$t/gc-d-definition.rs" 2>&1)"; rc=$?
   arm "RED the format conversion without riscv/d composed is refused, named" "$rc" 2 "$out" "does not compose riscv/d"
@@ -336,8 +362,7 @@ EOF
     && mv "$t/gc/enc-nom.sexp" "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"
   grep -q 'extensions "riscv/m"' "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp"; rc=$?
   arm "GREEN the no-M composition composes no riscv/m" "$rc" 1 "" ""
-  sed 's/(tlb-invalidate (reg rs1) (reg rs2))/(set (reg rs1) (mul (reg rs1) (reg rs2)))/' \
-    definitions/riscv/system.sem.sexp > "$t/gc/definitions/riscv/system.sem.sexp"
+  MUTATE_FENCE '(set (reg rs1) (mul (reg rs1) (reg rs2)))' "$t/gc/definitions/riscv/system.sem.sexp" || return 1
   out="$(python3 scripts/gen_definition.py --encoding "$t/gc/profiles/rv64gc-lab-v0/encoding.sexp" \
         --state "$STATE" --out "$t/gc-m-definition.rs" 2>&1)"; rc=$?
   arm "RED an M operator without riscv/m composed is refused, named" "$rc" 2 "$out" "does not compose riscv/m"

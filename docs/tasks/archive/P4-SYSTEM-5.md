@@ -629,3 +629,137 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   commit doctrine gate must pass. promotion: declined (hand fixtures and eight mutations
   retain this bounded vocabulary lesson). Next e1b2 CSR/counter/directive prerequisites.
 
+
+`P4-SYSTEM.12` slice (e1b2) — independent CSR enables and literal prose (`2026-10-08`, `SEMULITH-P4-0094`):
+
+- [x] **REPRODUCE / ISSUE** — e1b1 census: three refusals (a-lrsc-mustfail quoted
+  directive; mm-counters/mm-stimecmp CSR 0x306). Parent
+  `probe_gc_counter_author.py --author-revision f099905` rc=1 on enable legalization.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'mcounteren|scounteren|menvcfg|directive|emit'
+  scripts/derive_rv64gc_expectations.py` finds absent CSR addresses/legalization, no
+  stimecmp enable guard and a quote/backslash directive refusal; emission interpolates
+  literal text into quotes. State rows 360–389, 556–574 select CY/TM/IR, read-only HPM,
+  WPRI and STCE fields. Pinned machine.html 2778–2788, 2811–2817, 3699–3703 and
+  supervisor.html 1079–1102 define access gates and continuing counters.
+- [x] **FIX** — register enable/environment CSRs; legalize only selected writable fields
+  and retain WPRI. S stimecmp read/write needs TM and STCE before any effects, M bypass,
+  U address privilege unchanged. Public records_sexp.quote_string supplies the existing
+  canonical escapes to every emitted literal field; parcel annotations now accept quotes
+  and backslashes. Historical word routing and counter-storage rebasing refusal stay bounded.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_counter_author.py` rc=0:
+  masks/WPRI/aliases, 30 mode gates, timer read/write unit discipline, literal quotes,
+  backslashes/Unicode/control characters, non-string refusal and emitted schema pass.
+  Eight mutations RED; parent f099905 RED. Three formerly refused guests match 117 steps.
+- [x] **NO REGRESSION** — GUEST-GEN 89 pass / 0 fail; all 121 prior word outputs
+  byte-identical; --check-owned 42 exact. Complete 139 parcel census: 138 architectural
+  traces exact, zero refusals, only owned sv39-tlb-fence steps 191/192/195 disagree.
+  Production images/records/counts unchanged; independent cache repair precedes adoption.
+- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 567 arms), tree/index/logs,
+  CHANGELOG, DEV_NOTES, toolbox/doctrine and assembler/C/interrupt book updated; completed
+  e1b1 receipt moved byte-verbatim with append asserted. Governed DEV_NOTES sharding uses
+  shard-0208.md: 31 entries = 30 kept + one moved, bytes/order exact; head 50051→47812
+  bytes, freeze manifest current, no ceilings raised. make book rc=0 and
+  commit doctrine gate must pass. promotion: declined (permanent mode/string fixtures
+  and eight RED controls retain this lesson). Resume e1c cache policy.
+
+
+- `2026-10-06` (design brief for `.10`, recorded before its execution, `SEMULITH-P4-0068`;
+  sources: a read-only census of the gate-report path and of rv64gc's evidence per §7 axis (an
+  explore agent's report — conversation-only; every load-bearing fact re-measured where it
+  lives); `docs/EVIDENCE_AND_GATES.md` §7; `scripts/gate_report.py`;
+  `scripts/check_gate_report.sh`; `profiles/rv64gc-lab-v0/`; `crates/semulith-cli/src/main.rs`):
+  **The measured pre-conditions.** (1) **No report path, and the nearest one is rv64i-shaped.**
+  `main()` accepts `G0`/`G1`/`GC`/`BREADTH` only (`gate_report.py:921`); `build_cpulab` carries
+  rv64i's facts as constants — `cells == 21` (`:599`), `act4_tests == 51` (`:604`), G-REPLAY
+  read from `snapshot/tests.rs` and `run/tests.rs` whatever the unit (`:574-578`), G-TRACE the
+  literal `"green"` (`:591`) — and reports 7 of §7's 10 axes (no G-SCOPE, no G-STATE). Run on
+  rv64gc to stdout (nothing written): G-REPLAY reads **green** from rv64i's suites, G-INTERACTIONS
+  reads **incomplete** because 28 ≠ 21. (2) **The contract measure is not unit-scoped.** An
+  implemented check is a `git grep` hit under `scripts/`/`crates/` (`:546-552`); MIRROR-DERIVE
+  makes 26 check ids identical across the two units (13 base mirrors, enforced field-equal by
+  `check_requirements.sh` rule 14), so realizing one for rv64gc would credit rv64i. The
+  denominator also counts the two records v1 superseded: rv64gc reads 14 of 104, the effective
+  contract is 14 of 100. (3) **G-SCOPE: M and C are not bound.** `encoding.sexp:16-18` reads
+  `(status partial)` with slots `m` and `c`; `definitions/riscv/m.sexp` exists (13
+  instructions) with no `m.sem.sexp`; no C fragment exists (`ls definitions/riscv/`). The `.8`
+  brief routed them to "the m/c slots (their leaves)" (`archive/P4-SYSTEM-designs.md:840`) —
+  **no such leaf exists**: an ownership gap, owned now. Frozen v0 statements are stale and not
+  superseded — `OB-FP-DEFER` ("implements no floating point"), `OB-ROUTE-FLIP` ("62-guest
+  corpus", "six declared slots"), `OB-RESOLUTION-ROUTE` — and `profile.sexp:20` still says
+  "FLOATING POINT IS DECLARED, NOT YET MODELLED". (4) **G-CONTRACT**: rv64i's 8 base
+  `OB-ENV-*` assumptions are not restated for this unit (`ENVIRONMENT.md`, `.9`). (5)
+  **G-TRACE**: `grep -c "(experiment" profiles/rv64gc-lab-v0/references.sexp` → 0 — the seven
+  Sail experiments (`.2`–`.8`) are prose inside sail-riscv's `matched_scope` string, so
+  PROFILE-CONSISTENCY rules 6–7 (a control and an independence row per experiment,
+  `check_profile_consistency.sh:248`, `:287`) never see them, and their comparators are scratch
+  under `target/`. (6) **G-OBLIGATIONS**: all 46 requirements read `planned` (as rv64i's 28 did);
+  census of readers of the value — `git grep -n implementation_status -- scripts crates` → 11
+  lines, every one a writer of the literal `"planned"`, a field mapping (`records_sexp.py`), or
+  `gate_report.py:556`'s count: none judges the value against evidence. No `EVIDENCE_POLICY.md`
+  for rv64gc; the 13 mirrored requirements can change only in lockstep with rv64i's
+  (`check_requirements.sh:500-504`); `REQ-D-ECALL-EBREAK` is `partial` on OQ-5 ("no privileged
+  modes"). (7) **G-REGRESSION**: the external campaign is rv64i's (`run_act4_campaign.py:43`
+  `PROFILE = "rv64i-lab-v0"`); the validator-mutation suite (`mutate.rs`) decodes rv64i's tables
+  and the CLI refuses rv64gc for it by name (`main.rs:551`). (8) **G-PORTABILITY**: the one
+  record is rv64i's `portability.sexp`; `check_portability.sh` builds its manifest from rv64i's
+  guests. (9) **G-REPLAY**: cold-reset determinism runs over all 135 rv64gc guests
+  (`run_rv64gc/tests.rs:54`); snapshots, replay bundles and the reducer are rv64i-only and the CLI
+  refuses rv64gc for each as "a later leaf" (`main.rs:684`, `:755`, `:866`, `:925`, `:996`) —
+  no leaf owns them. (10) **G-INTERACTIONS**: 28 cells, 217 resolving dispositions,
+  INTERACTION-MATRIX discovers the unit — green under a measure that is not rv64i's constant.
+  (11) **G-RELEASE**: no rv64gc release decision.
+  **The design, decided:**
+  1. **`.10` builds the instrument and records its first honest reading** — it does not close
+     the axes. A `CPU-SYSTEM` report, gate code `GS`, at `profiles/<unit>/GS-REPORT.md` (the
+     existing `G?-REPORT.md` discovery covers it once `main()` accepts `GS`), over **all ten §7
+     axes**, each measured from THIS unit's tracked files by concrete name. **No axis is a
+     constant and no count is hard-coded**: an axis whose evidence is not measurable from tracked
+     files reads `incomplete` with the reason "unmeasured", never `green`. The verdict is `passed`
+     only when all ten read green — EVD-08's shape, with no code path past an open axis.
+  2. **The contract measure becomes unit-scoped and supersession-aware**: a check is implemented
+     for a unit exactly when THAT unit's registry realizes it (the contract document names its
+     registry; a unit with none realizes 0), and the denominator is the effective contract —
+     the latest version's members and everything they inherit, minus what a version
+     supersedes. G0's and GC's rv64i reports keep reading 0 of 72 — byte-identical, proven by
+     regeneration — and a shared id realized only in rv64gc's registry must not credit rv64i
+     (RED-proven: the old measure credits it).
+  3. **Every open axis gets an owning leaf before the instrument lands** (defect ownership —
+     nothing open without an owner). The tree grows by eight leaves, ordered so that each axis is
+     measured once over the COMPLETE profile: the scope first (every later axis would be
+     re-measured after M and C bind), then the contract, the evidence records, regression,
+     replay, portability, and the verdict:
+     `.11` bind M · `.12` bind C · `.13` environment contract v2 · `.14` evidence records and
+     obligation status · `.15` regression over the complete profile · `.16` replay, snapshots and
+     reduction · `.17` portability · `.18` the CPU-SYSTEM verdict and the release decision.
+     Each executes under its own design brief.
+  4. **Slices.** (a) the unit-scoped, supersession-aware contract measure, shared by every
+     builder; (b) the `GS` builder, its report, GATE-REPORT coverage and the RED proofs (a
+     forced open axis cannot read `passed`; no hard-coded constant survives — a census);
+     (c) the reports, the book chapter, THE LEAF ACCEPTANCE ("reproducible from pinned inputs"
+     proven by regenerating in a fresh worktree byte-identically).
+  **Deferred, named:** `build_cpulab`'s rv64i constants stay — they are that report's own facts
+  and it is frozen evidence of the `CPU-LAB` decision; the board pins rv64i, not rv64gc
+  (`profiles/netboard-lab-v0/board.sexp:18-25`) — `P5-BOARD`'s, when the CPU-SYSTEM verdict
+  exists.
+- `2026-10-06` (design brief for `.9`, recorded before its execution, `SEMULITH-P4-0063`): archived verbatim to
+  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.10` design
+  (`.9` closed).
+- `2026-10-06` (design brief for `.8`, recorded before its execution, `SEMULITH-P4-0057`): archived verbatim to
+  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.10` design
+  (`.8` closed).
+- `2026-10-06` (slice (e) execution split, recorded before its execution, `SEMULITH-P4-0054`): archived verbatim to
+  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
+  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
+
+- `2026-10-06` (slice (d) execution split, recorded before its execution, `SEMULITH-P4-0049`): archived verbatim to
+  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
+  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
+
+- `2026-10-06` (slice (c4) part 1 — the data-locality decision, recorded before its execution, `SEMULITH-P4-0045`): archived verbatim to
+  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
+  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
+
+- `2026-10-06` (slice (c) execution split + the frm defect, recorded before its execution, `SEMULITH-P4-0041`): archived verbatim to
+  [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
+  brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
+

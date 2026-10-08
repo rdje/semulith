@@ -24,7 +24,7 @@
 //!   `definitions/riscv/m.sexp`  `0f48d4348b850b5fcfd296b220409a2a711d8b13075fdea9059b33d67544a386`
 //!   `definitions/riscv/rv64i.sem.sexp`  `c3065957307cc3fe1d58005a533e0d7291fe66ae7b05d6f8be4747e18a3aa29e`
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
-//!   `definitions/riscv/system.sem.sexp`  `cb25de97e2197c5d443779f28579589dd1384bf9eb1ae0028166678bdd94692b`
+//!   `definitions/riscv/system.sem.sexp`  `76b60136e27d23216bf1b109317107635698963073c51d44f550a39c31e599f2`
 //!   `definitions/riscv/system.sexp`  `c89d687d7a52c8e1cb19e8d87633c0f3bc70a7e7819f3ba8e2c3e895f20518e9`
 //!   `definitions/riscv/zicntr.sem.sexp`  `9308b046ae1213e4302a2258c55e17e4f12f2d81f7e10c9a2e248646084b7570`
 //!   `definitions/riscv/zicntr.sexp`  `f0c483e24e2515c12f32d2a95ac55be3a663e2c7ca355cc804890a2f2c3bc675`
@@ -34,7 +34,7 @@
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`
-//! Generator: `scripts/gen_definition.py` (sha256 `c97dc8064fe4177bbd5a6eeb8cf0bbb9dc405fa611229342dfa300d25bc37daa`)
+//! Generator: `scripts/gen_definition.py` (sha256 `52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -90,7 +90,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "c97dc8064fe4177bbd5a6eeb8cf0bbb9dc405fa611229342dfa300d25bc37daa",
+        sha256: "52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47",
     },
     inputs: &[
         InputPin {
@@ -135,7 +135,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "definitions/riscv/system.sem.sexp",
-            sha256: "cb25de97e2197c5d443779f28579589dd1384bf9eb1ae0028166678bdd94692b",
+            sha256: "76b60136e27d23216bf1b109317107635698963073c51d44f550a39c31e599f2",
         },
         InputPin {
             path: "definitions/riscv/system.sexp",
@@ -3818,6 +3818,14 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::TlbInvalidate(
                     &Sem::Reg("rs1"),
                     &Sem::Reg("rs2"),
+                    &Sem::Eq(
+                        &Sem::Field("rs1"),
+                        &Sem::Lit(0x0000000000000000),
+                    ),
+                    &Sem::Eq(
+                        &Sem::Field("rs2"),
+                        &Sem::Lit(0x0000000000000000),
+                    ),
                 ),
             ),
         ),
@@ -4498,9 +4506,9 @@ pub enum Sem {
     TrapDeliver(&'static Sem, &'static Sem),
     /// `(xret x)` — the privilege-stack pop and pc <- xepc.
     Xret(&'static Sem),
-    /// `(tlb-invalidate va asid)` — SFENCE.VMA's four specified invalidation
-    /// cases over the modelled TLB (RVP-SUPERVISOR §11.1.2.1; P4-SYSTEM.3).
-    TlbInvalidate(&'static Sem, &'static Sem),
+    /// `(tlb-invalidate va asid all-va? all-asid?)` — scope follows x0 register
+    /// identity, retaining page/ASID zero selections (RVP-SUPERVISOR §11.1.2.1).
+    TlbInvalidate(&'static Sem, &'static Sem, &'static Sem, &'static Sem),
     /// `(load-reserved width signed? addr)` — LR's load: translates under the
     /// load rules, sets/replaces the hart's reservation (physical address,
     /// width, valid), yields the loaded value (RVI-A §12.1.2).

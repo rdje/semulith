@@ -211,17 +211,19 @@
 ;; mstatus.TSR=1 in S, §2.1.1.6.6) — the operator performs the return, the rule decides
 ;; whether it may.
 (operator (name xret) (fixed 1))
-;; (tlb-invalidate va asid) — the address-translation cache invalidation of SFENCE.VMA
+;; (tlb-invalidate va asid all-va? all-asid?) — SFENCE.VMA's cache invalidation
 ;; (RVP-SUPERVISOR §11.1.2.1, P4-SYSTEM.3 decision 2): the four operand cases, as
-;; specified — va=0 with asid=0 invalidates every entry (all address spaces); va=0 with
-;; asid≠0 invalidates the non-global entries of that ASID; va≠0 with asid=0 invalidates
+;; specified — both selectors true invalidates every entry; all-va? alone invalidates
+;; the non-global entries of that ASID; all-asid? alone invalidates
 ;; the entries of that virtual page in every address space, the global entries included;
-;; va≠0 with asid≠0 invalidates the non-global entries of that virtual page in that
-;; ASID. A non-canonical va has no effect and raises nothing (the spec's own sentence).
+;; both selectors false invalidates the non-global entries of that page in that ASID.
+;; The selectors mean rs1/rs2 IS x0, not that its value is zero. Page zero and ASID zero
+;; remain ordinary selections in nonzero registers. A selected non-canonical va has
+;; no effect and raises nothing (the spec's own sentence).
 ;; The over-fence latitude (an implementation may always invalidate more) is
 ;; recorded-not-taken: the effect is exactly the four cases, so the G-bit retention and
 ;; the per-ASID cases are genuinely testable. It writes no architectural register.
-(operator (name tlb-invalidate) (fixed 2))
+(operator (name tlb-invalidate) (fixed 4))
 ;; ---- atomic memory values (P4-SYSTEM.4 slice b; the reservation contract above) ---------
 ;; (load-reserved width signed? addr) — LR's load, shaped like (load …): translates
 ;; under the LOAD rules ("load and load-reserved instructions generate load

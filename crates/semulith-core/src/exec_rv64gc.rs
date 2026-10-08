@@ -723,14 +723,20 @@ impl Frame<'_> {
                 self.pc_written = true;
                 (0, 64)
             }
-            Sem::TlbInvalidate(va, asid) => {
+            Sem::TlbInvalidate(va, asid, all_va, all_asid) => {
                 // SFENCE.VMA's real effect (P4-SYSTEM.3 decision 2): the four cases
                 // over the modelled TLB — rs1's value is the VA, rs2's low 16 bits
                 // the ASID; a non-canonical VA is a no-op by the spec's own sentence.
                 // No architectural register is written.
                 let (va, _) = self.run(va);
                 let (asid, _) = self.run(asid);
-                translation::fence(self.state, va, (asid & 0xFFFF) as u16);
+                let (all_va, _) = self.run(all_va);
+                let (all_asid, _) = self.run(all_asid);
+                translation::fence(
+                    self.state,
+                    (all_va == 0).then_some(va),
+                    (all_asid == 0).then_some((asid & 0xFFFF) as u16),
+                );
                 (0, 64)
             }
             Sem::LoadReserved(width, _signed, addr) => {
@@ -1222,8 +1228,10 @@ fn touches_fp_state(sem: &Sem) -> bool {
         | Sem::Trap(a, b)
         | Sem::CsrWrite(a, b)
         | Sem::CsrRw(a, b)
-        | Sem::TrapDeliver(a, b)
-        | Sem::TlbInvalidate(a, b) => touches_fp_state(a) || touches_fp_state(b),
+        | Sem::TrapDeliver(a, b) => touches_fp_state(a) || touches_fp_state(b),
+        Sem::TlbInvalidate(a, b, c, d) => {
+            touches_fp_state(a) || touches_fp_state(b) || touches_fp_state(c) || touches_fp_state(d)
+        }
         Sem::Trunc(_, v)
         | Sem::Sext(_, v)
         | Sem::Zext(_, v)

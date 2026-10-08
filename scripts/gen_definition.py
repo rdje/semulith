@@ -102,7 +102,8 @@ WIDTH_OPS = {"trunc": "Trunc", "sext": "Sext", "zext": "Zext"}
 # the rv64i module's byte surface is frozen by DEF-GEN, and its corpus never names them.
 EXTENDED_UNARY = {"csr-state": "CsrState", "csr-read": "CsrRead", "xret": "Xret"}
 EXTENDED_BINARY = {"csr-write": "CsrWrite", "trap-deliver": "TrapDeliver",
-                   "tlb-invalidate": "TlbInvalidate", "csr-rw": "CsrRw"}
+                   "csr-rw": "CsrRw"}
+EXTENDED_QUATERNARY = {"tlb-invalidate": "TlbInvalidate"}
 # P4-SYSTEM.4 slice (b): the A extension's operators. They lower only where the
 # composition composes `riscv/a` — their Sem variants emit WITH the fragment, so the
 # tracked rv64gc module (the slot still declared) keeps its byte surface until the
@@ -426,7 +427,7 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
     ternary = {"load": "Load", "store": "Store", "if": "If"}
     if a_variants:
         ternary = dict(ternary, **A_TERNARY)
-    if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY)
+    if not extended and op in (set(EXTENDED_UNARY) | set(EXTENDED_BINARY) | set(EXTENDED_QUATERNARY)
                                | A_OPERATORS | F_OPERATORS | set(D_FORMAT_PAIR) | set(M_BINARY)
                                | {"field", "inst", "mode"}):
         raise Refusal(f"{where}: ({op} …) is the rv64gc module's operator surface "
@@ -453,6 +454,8 @@ def emit_sem(form: X.Sexp, where: str, surface: Surface = Surface()) -> str:
                       f"carrying them without it would not compile against its evaluator")
     if op == "reg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::Reg({rust_str(str(args[0]))})"
+    if op in EXTENDED_QUATERNARY and len(args) == 4:
+        return f"Sem::{EXTENDED_QUATERNARY[op]}(\n" + "".join(f"&{sub(arg)},\n" for arg in args) + ")"
     if op == "freg" and len(args) == 1 and isinstance(args[0], str):
         return f"Sem::FReg({rust_str(str(args[0]))})"
     if op == "rounding" and len(args) == 1:
@@ -960,9 +963,9 @@ def emit(data: dict, generator_sha: str) -> str:
         a("    TrapDeliver(&'static Sem, &'static Sem),")
         a("    /// `(xret x)` — the privilege-stack pop and pc <- xepc.")
         a("    Xret(&'static Sem),")
-        a("    /// `(tlb-invalidate va asid)` — SFENCE.VMA's four specified invalidation")
-        a("    /// cases over the modelled TLB (RVP-SUPERVISOR §11.1.2.1; P4-SYSTEM.3).")
-        a("    TlbInvalidate(&'static Sem, &'static Sem),")
+        a("    /// `(tlb-invalidate va asid all-va? all-asid?)` — scope follows x0 register")
+        a("    /// identity, retaining page/ASID zero selections (RVP-SUPERVISOR §11.1.2.1).")
+        a("    TlbInvalidate(&'static Sem, &'static Sem, &'static Sem, &'static Sem),")
     if extended and data["a_variants"]:
         # P4-SYSTEM.4 slice b's A-operator surface — emitted exactly when the composition
         # composes `riscv/a` (the atomic bind, slice e): the evaluator's exhaustive match

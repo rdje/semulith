@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — a zero operand value is not register x0 (P4-SYSTEM.12 e1c0)
+
+SFENCE used values to choose scope, losing x0 register identity. Three evaluator tests
+fail on c413dd3; history e839c1b introduced the value-only API. Nonzero registers holding
+zero must select page/ASID zero, retaining other entries and globals under the declared
+no-over-fence policy. The old fixture also encoded wrong registers and refilled in M.
+
+The semantic effect now carries values and identity flags; None is x0, Some(0) a real
+zero selection. Corrected raw words and armed the S refill with an occupancy assertion.
+Four stale gate mutations now replace exactly one parsed effect; obsolete arity refuses.
+Full root/history and verification: docs/tasks/P4-SYSTEM.md e1c0 and the Sv39 book.
+
+- Validation: parent 0/3 then green; two selector mutations RED; translation 29/29;
+  make check (153 core, 17 DSP, 193 verify), DEF-GEN 56/56 and books green. Scalar
+  definition changes only two generator digests. Corpus/profile/counts unchanged.
+- Promotion: declined — permanent regressions, typed API and arity gate retain the lesson.
+  Independent author cache is next. New summaries kept bounded after archive pressure.
+
 ## _(2026-10-08)_ — CSR vocabulary and quoted annotations (P4-SYSTEM.12 e1b2)
 
 The remaining three parcel refusals were mcounteren's missing address and a source

@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0095 (leaf P4-SYSTEM.12, slice e1c0) — SFENCE register-identity scopes
+
+- Values and x0 selectors remain distinct; real page/ASID zero retains other entries.
+  Three parent RED regressions green, two old fixture legs repaired; two mutations RED.
+  make check, translation 29/29, DEF-GEN 56/56 and books pass. No corpus/count changes.
+
 ## SEMULITH-P4-0094 (leaf P4-SYSTEM.12, slice e1b2) — independent CSR enables and literal text
 
 - Selected counter enables and STCE fields legalize independently; S stimecmp needs

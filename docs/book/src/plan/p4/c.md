@@ -211,3 +211,12 @@ mutations fail. Three formerly refused guests match 117 architectural steps, and
 121 prior word texts and 42 owned records remain byte-identical. The parcel census
 reaches 138 exact traces with no vocabulary refusals. The remaining guest exercises
 the declared translation cache, which must be modeled independently before count adoption.
+
+Reviewing that cache prerequisite exposed an older production fence defect (e1c0).
+The fence used operand values to choose broad scope, confusing a nonzero register
+holding zero with register x0. The semantic effect now carries register-identity
+selectors separately from the address and ASID. Three parent-failing regressions pass,
+including page/ASID zero and masked ASID bits; the earlier fence fixture is corrected
+and armed with an occupied cache. The [Sv39 chapter](sv39.md) explains the four cases.
+This repair precedes the independent cache author; no evaluator output supplies its
+expected values and the staged C bind remains ahead.

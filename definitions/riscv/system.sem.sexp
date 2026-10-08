@@ -68,5 +68,7 @@
                    (if (and (eq (mode) (lit 1))
                             (ne (bits 20 20 (csr-state (lit 768))) (lit 0)))
                        (trap-deliver (lit 2) (inst))
-                       (tlb-invalidate (reg rs1) (reg rs2))))))
+                       (tlb-invalidate (reg rs1) (reg rs2)
+                                       (eq (field rs1) (lit 0))
+                                       (eq (field rs2) (lit 0)))))))
 )
