@@ -312,6 +312,28 @@ PY
   out="$(python3 scripts/probe_c_author.py --mutation expanded-trap 2>&1)"; rc=$?
   arm "RED C illegal traps keep the original parcel" "$rc" 1 "$out" "FP illegal trap lost original C parcel"
 
+  # d3d1: independently walk and fetch only the required ILEN parcels.
+  out="$(python3 scripts/probe_gc_fetch.py 2>&1)"; rc=$?
+  arm "GREEN independent Sv39 walk and exact parcel fetches" "$rc" 0 "$out" "exact parcel schedules passed"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation canonical-sign 2>&1)"; rc=$?
+  arm "RED a non-canonical Sv39 sign is caught" "$rc" 1 "$out" "Sv39 sign bit and upper bits disagree"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation reserved-pte 2>&1)"; rc=$?
+  arm "RED reserved Sv39 PTE high bits are caught" "$rc" 1 "$out" "reserved PTE bit 54 accepted"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation nonleaf-bits 2>&1)"; rc=$?
+  arm "RED non-leaf Sv39 reserved bits fault before descent" "$rc" 1 "$out" "non-leaf reserved bit must fault before descending"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation bottom-pointer 2>&1)"; rc=$?
+  arm "RED a bottom-level pointer produces an architectural fault" "$rc" 1 "$out" "bottom-level pointer must page-fault"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation mprv 2>&1)"; rc=$?
+  arm "RED effective MPRV data privilege is caught" "$rc" 1 "$out" "MPRV data access must use MPP"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation eager-second 2>&1)"; rc=$?
+  arm "RED a compressed fetch never probes its neighbor" "$rc" 1 "$out" "compressed region-end fetch inspected its neighbor"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation fault-tval 2>&1)"; rc=$?
+  arm "RED an upper-parcel fault preserves VA and starting EPC" "$rc" 1 "$out" "second parcel lost fault VA/start EPC"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation short-ilen 2>&1)"; rc=$?
+  arm "RED a wider prefix retains all ILEN bits" "$rc" 1 "$out" "wider prefix lost ILEN bits"
+  out="$(python3 scripts/probe_gc_fetch.py --mutation unaligned-epc 2>&1)"; rc=$?
+  arm "RED trap EPC always masks bit zero" "$rc" 1 "$out" "EPC bit zero was not masked"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

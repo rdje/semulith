@@ -88,7 +88,7 @@ def main():
                                   'q = (abs(a) + abs(b) - 1) // abs(b)'),
             'ignore-sum': ('kind == "fetch" or not (self.csr["mstatus"] >> 18) & 1', 'True'),
             'ignore-mxr': ('r or (x and (self.csr["mstatus"] >> 19) & 1)', 'r'),
-            'ignore-user': ('if self.mode == 0 and not u:', 'if False:'),
+            'ignore-user': ('if mode == 0 and not u:', 'if False:'),
         }
         old, new = changes[args.mutation]
         assert source.count(old) == 1, 'author mutation must match once'

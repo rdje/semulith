@@ -235,9 +235,17 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (d3d1): spec-side parcel fetch and Sv39 walk repair; budgets/guest integration d3d2; bind (e) follows |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d3d2): explicit budgets and byte-addressed guest execution/directives; (d3d1) walk/fetch done; bind (e) follows |
 
 ## Decisions
+
+- `2026-10-08` (d3d1 EPC defect, before repair): the new odd-PC fetch fixture
+  returns fault (0, 0x80000001), but Hart.deliver stores mepc=0x80000001 rather than
+  0x80000000. Pinned machine.html 2951 and supervisor.html 1131 require EPC bit 0 always
+  zero; bit 1 stays usable under IALIGN=16. Tool pinpoint: all four exception/interrupt
+  EPC assignments store self.pc directly, bypassing the CSR-write mask used elsewhere.
+  Own/fix immediately with this fetch slice; permanent M/S/interrupt odd-PC fixtures
+  and an unaligned-EPC mutation discriminate. The 42 historical outputs must stay exact.
 
 - `2026-10-08` (d3d0 containment dependency, before repair): sharder output reports
   DEV_NOTES 49127 B cut at --max-bytes 40960, below its 49152 B ceiling, but the new
@@ -763,77 +771,42 @@ never raised, at every crossing. The index:
 - part 4 opened at the `2026-10-06` `.11` design crossing (part 3 near its ceiling):
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
+- part 5: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md) — `.12` (a), (a2),
+  (b), (d1)–(d3d0), moved byte-verbatim as their completed receipts leave the live head.
 
-`P4-SYSTEM.12` slice (d3c) — independent C component expectations (`2026-10-08`, `SEMULITH-P4-0088`):
+`P4-SYSTEM.12` slice (d3d1) — independent translated parcel fetch (`2026-10-08`, `SEMULITH-P4-0090`):
 
-- [x] **REPRODUCE / ISSUE** — d3c/before.log records execute_c absent and 6 named refusals:
-  C.LI 0x5081 plus SRAI, ADDIW, ADDW/SUBW and JALR base shapes. The older word-only
-  producer cannot derive compressed observations; execute's sequential advances assume 4.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'pc \+ 4|def execute|OP-IMM|1101111'
-  scripts/derive_rv64gc_expectations.py` on parent 75c79af locates the 4-byte next/link
-  values and missing base forms. Pinned c-st-ext.html 1327–1346 gives C.JALR pc+2;
-  rv64.html 542–545 gives ADDIW at 3.1.2.1 (the unused stock locator was wrong).
-  XML extraction of the three pinned diagrams exposes the scattered field positions;
-  hashes and public linked names above. No generated expansion table supplies answers.
-- [x] **FIX** — scripts/spec_c.py hand-decodes 37 RV64+D forms and reserved conditions
-  from the pinned chapter. The author executes these independently reconstructed base
-  words at length 2; C.JALR target uses old rs1 and links pc+2. Reserved parcels and
-  FS-Off faults carry original 16-bit tval. Missing base forms gain narrow fixed-bit
-  guards; word suffixes truncate then sign-extend; ADDIW locator repaired. The old guest
-  author route remains word-only until d3d. No production profile or engine changed.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_author.py` rc=0 → 37 expansion/
-  effect fixtures, 22 limits, 79 one-hot scattered bits, 11 reserved parcels, 10 hints,
-  two branch outcomes, aliasing links, integer/memory/FP state, four FS-Off original
-  parcels, a misaligned load and word overflow/zero-immediate cases all pass. All 6
-  mutations are RED (compact base, sign, length/link, reserved guard, bit permutation,
-  expanded trap bits). Parent 75c79af is RED: execute_c absent. One-hot controls
-  distinguish bit permutations that an all-ones limit alone cannot detect.
-- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 42 pass / 0 fail;
-  `--check-owned` → 42 documents byte-identical. Full legacy before/after census:
-  91/91 previously emitted texts exact; 6 new outputs from JALR vocabulary, all common
-  numeric writes agree. Three need the already-owned fetch/end repair (named above).
-  No historical record overwritten. The normal guest generator remains unchanged.
-- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 519 arms),
-  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and C/assembler book.
-  Completed d1/d2 receipts archived byte-verbatim to part 5 (reconstruction asserted);
-  no ceiling raised. Books and doctrine commit gate must pass. check_derived_counts.sh
-  re-derives 519 arms. promotion: declined (the independent decoder, permanent probe and
-  six discriminating mutations retain this component's local lesson).
-
-`P4-SYSTEM.12` slice (d3d0) — retain every ILEN diagnostic bit (`2026-10-08`, `SEMULITH-P4-0089`):
-
-- [x] **REPRODUCE / ISSUE** — new permanent C engine probes on b48201c: rc=1,
-  15 passed / 3 failed. An all-ones 32-bit image returns ReservedDecode word 65535,
-  expected 4294967295. With only the first 0xffff parcel accessible, it returns that
-  reserved word instead of the expected access fault on pc+2. An unmapped second virtual
-  page is also never walked. Logs: target/p4-system-12/d3d1/ilen-parent.log.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `git show b48201c:crates/semulith-core/src/exec_rv64gc.rs`
-  locates fetch_instruction's `lo & 0x1f == 0x1f` early
-  return refuses a wider prefix from its first parcel. The pinned intro.html 1148–1153
-  defines all ones as ILEN bits long; machine.html 3427–3450 requires a nonzero illegal
-  diagnostic to carry min(actual length, ILEN, MXLEN). This profile's ILEN is 32.
-  The returned ReservedDecode word feeds the runner's nonzero illegal tval policy.
-- [x] **FIX** — only a true compressed prefix can return after 2 bytes; every wider
-  prefix fetches the remaining ILEN parcel before reserved decode. No third parcel
-  is requested. Missing/denied upper parcels retain their access/page fault, pc+2
-  tval and starting EPC. The production C slot remains unbound.
-- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_engine.py` rc=0 → 18 passed /
-  0 failed: full all-ones/other unsupported-prefix diagnostics, upper-parcel access
-  refusal, and translated second-page fault join the prior 15 controls. Parent b48201c
-  and the new short-ilen mutation are RED on all 3 new cases; every RED is a behavioral
-  failure, not a compilation failure. DEF-GEN registers that mutation permanently.
-  Sharder header controls: old producer 10 pass / 2 fail, corrected producer 12 pass /
-  0 fail; the new header states its bound accurately even below that ceiling.
-- [x] **NO REGRESSION** — `make check` rc=0 (150 core, 17 DSP, 193 verify tests, fmt and
-  strict clippy); `check_definition_gen.sh --self-test` → 55 pass / 0 fail. Existing
-  production guest images/records unchanged; this repaired path uses a temporary C
-  composition. The old erased-width and word-parcel mutations still discriminate.
-- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 520 arms),
-  task index, CHANGELOG, DEV_NOTES, definition doctrine/toolbox and C chapter. Completed
-  d3a/d3b receipts archived byte-verbatim with reconstruction asserted. DEV_NOTES sharded
-  by its governed whole-entry tool with exact reconstruction and freeze manifest updated;
-  no ceiling raised. Books and commit doctrine gate must pass. promotion: declined
-  (the permanent engine probes and short-ILEN control retain this local fetch lesson).
+- [x] **REPRODUCE / ISSUE** — pure Hart fixtures reproduce four walker defects on
+  f8f213c: inconsistent sign extension translates, PTE bit 63 translates, bottom pointer
+  refuses, and MPRV+MPP=S data bypasses translation. The new odd-PC fetch fixture also
+  catches mepc=0x80000001 instead of 0x80000000. Permanent parent probe rc=1 (canonical
+  guard); five defects and their immediate ownership recorded above before each repair.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show f8f213c:scripts/derive_rv64gc_expectations.py`
+  locates walk's upper-only sign check, absent PTE reserved guards, unconditional M bypass
+  and pointer-loop Refusal; `rg -n 'mepc.*self.pc|sepc.*self.pc'` finds four unmasked delivery
+  assignments. Pinned supervisor.html 2660, 2695, 2930, 2986–2996 defines non-leaf/high-bit/
+  canonical rules; machine.html 1372–1380/1425 defines effective MPRV data privilege.
+  machine.html 2951 and supervisor.html 1131 require EPC bit zero always clear.
+- [x] **FIX** — Hart.fetch_instruction walks each required two-byte parcel before its
+  memory request, records actual attempts, delivers start EPC/failing-parcel VA, and
+  retains all ILEN=32 bits for wider prefixes. Compressed neighbors untouched, unwritten
+  region bytes zero, no time/retire tick. Walk repairs sign, reserved high/non-leaf bits,
+  bottom pointer and effective MPRV/SUM/U; M/S exception/interrupt EPC clears bit zero.
+  Guest execution remains explicitly the historical word route until d3d2.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_fetch.py` rc=0: both canonical
+  signs; all ten reserved high bits × four kinds; RSW/G; non-leaf U/A/D, bottom chains;
+  effective MPRV/SUM/U; region/page-end parcels; wider ILEN prefixes; physical/walk refusals;
+  exact logs, fault VA/start EPC, M/S/interrupt alignment and Svade no-write controls pass.
+  All 9 mutations are behavioral RED with named assertions; parent f8f213c is RED.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 52 pass / 0 fail;
+  all 42 owned records exact. Complete legacy census: 97/97 prior emitted texts exact,
+  42 refusals unchanged, no new/changed outputs or historical record writes. Prior author
+  SUM/MXR/U mutations still discriminate after the effective-privilege seam update.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 530 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine, C and assembler book.
+  Completed d3c/d3d0 receipts archived byte-verbatim to part 5 (reconstruction asserted);
+  no ceiling raised. Books/commit doctrine gate must pass; derived counts enumerate 530.
+  promotion: declined (permanent fetch/PTE fixtures and nine mutations retain this lesson).
 
 ## Verification Log
 
@@ -844,6 +817,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (d3d1) | exact parcel/PTE/MPRV/EPC fixtures; 9 RED; GUEST-GEN 52/52; 97 prior texts exact | independent fetch/walk repaired; byte guests/budgets next |
 | `2026-10-08` | `.12` slice (d3d0) | C engine 18/18; parent/mutation 3 RED; DEF-GEN 55/55; make check | every wider prefix retains ILEN bits; independent fetch/walk next |
 | `2026-10-08` | `.12` slice (d3c) | 37 forms/effects, 79 scatter bits, 6 RED controls; GUEST-GEN 42/42; 42 owned + 91 legacy exact | independent C component ready; fetch/budgets next |
 | `2026-10-08` | `.12` slice (d3b) | 79/79 cached strict checks; live M 4/4 + C image; 4 RED controls; GUEST-GEN 35/35 | strict tracked Sail adapter; absence defect closed; C author next |
@@ -898,6 +872,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice d3d1) | `SEMULITH-P4-0090 (leaf P4-SYSTEM.12): derive exact parcel fetches and repair the spec-side Sv39 walk` | (d3d2) explicit byte guest budgets next |
 | `.12` (slice d3d0) | `SEMULITH-P4-0089 (leaf P4-SYSTEM.12): fetch every ILEN parcel before reporting an unsupported instruction` | (d3d1) independent walker/fetch repair next |
 | `.12` (slice d3c) | `SEMULITH-P4-0088 (leaf P4-SYSTEM.12): derive compressed component expectations from independent spec-side rules` | (d3d) parcel fetch/budgets next |
 | `.12` (slice d3b) | `SEMULITH-P4-0087 (leaf P4-SYSTEM.12): track the parcel-capable Sail runner and refuse absent reference evidence` | (d3c) C author expansion next |
@@ -949,6 +924,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (d3d1) done: independent translated parcel fetch, four walk
+  defects plus EPC masking repaired; nine RED controls, all 97 prior outputs exact.
 
 - `2026-10-08`: `.12` (d3d0) done: wider prefixes fetch all ILEN=32 bits; three new
   probes RED before repair, then C engine 18/18. Resume independent walker/fetch d3d1.

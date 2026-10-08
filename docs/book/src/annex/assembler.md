@@ -311,6 +311,24 @@ PY
 python3 scripts/probe_c_author.py
 ```
 
-This component API is finite spec-side evidence. It neither fetches the instruction nor
-runs a compressed guest yet; parcel fetching and explicit guest budgets are the next slice.
-The existing `--check-owned` route retains its 42 historical byte-identical records.
+The hart also offers exact translated parcel fetching. This reads memory under the fixed
+64-KiB laboratory region; the image length does not define where fetching stops.
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY'
+from derive_rv64gc_expectations import Hart, ENTRY, REGION
+hart = Hart()
+hart.pc = ENTRY + REGION - 2
+hart.write(hart.pc, 2, 0x5081)
+assert hart.fetch_instruction() == ('insn', 0x5081, 2)
+assert hart.log == [('fetch', hart.pc, 2)]  # no inaccessible neighbor read
+PY
+python3 scripts/probe_gc_fetch.py
+```
+
+A word prefix instead reads two parcels. A second-parcel fault saves the starting PC in
+EPC and the failed virtual address in tval. Page walks precede their physical requests;
+a failed translation issues no fetch request, while a refused request counts as an attempt.
+Fetch itself advances neither time nor retirement. These APIs are finite spec-side evidence;
+compressed guest execution with explicit budgets is the next slice. The existing
+`--check-owned` route retains its 42 historical byte-identical records.

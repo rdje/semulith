@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d3d0; author walk/fetch, budgets and production bind next)
+**Status:** Underway (slices a–d3d1; byte guest budgets and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -98,8 +98,8 @@ byte-for-byte. The broader census caught reserved upper bits being interpreted a
 operations, and missing SUM/MXR/U permissions in its data walk; both are fixed. The affected
 permission guest now matches all 169 committed step observations. Direct permission fixtures
 and six mutations guard the repairs, without using the instruction engine as an oracle.
-The author still has a bounded vocabulary. C expansion follows below; instruction-fetch
-translation remains next. Existing records keep their original provenance.
+The author still has a bounded vocabulary. C expansion and instruction-fetch
+translation follow below. Existing records keep their original provenance.
 
 Slice (d3b) tracks the Sail runner and repairs that comparator. Every ordinary expected
 instruction needs a row, including instructions that change no register. A declared
@@ -139,5 +139,23 @@ for every wider prefix and stops at this profile's ILEN. Three permanent cases r
 old failures and guard full bits, an access refusal and a second-page fault. The old evaluator
 and a deliberate short-ILEN mutation fail all three; the complete probe passes eighteen.
 
-The production profile still declares C unbound. Parcel fetch and explicit budgets follow; the specification-derived corpus and C bind land together, then the matched Sail
-experiment. These probes are finite component evidence.
+Slice (d3d1) gives the independent author its own translated parcel fetch. Each necessary
+parcel walks first and requests exactly two bytes from memory. A refused physical request
+counts as an attempt; a failed translation issues no instruction request. Memory outside
+the assembled payload still follows the declared region, whose unwritten bytes are zero.
+The fetch primitive delivers faults without advancing time or retirement; the guest runner
+will own those boundaries. Compressed page-end instructions never inspect the next page.
+
+The new fixtures exposed four older walk defects: an inconsistent Sv39 sign extension
+was accepted, reserved high PTE bits were ignored, a bottom-level pointer refused instead
+of page-faulting, and MPRV did not select effective data privilege. These are repaired,
+including reserved non-leaf U/A/D bits and effective SUM/U permissions. Odd instruction
+addresses exposed a fifth defect in the author: saved exception and interrupt PCs retained
+bit zero. Both M and S delivery now clear that bit while preserving bit one. Nine deliberate
+mutations fail on these guards and fetch schedules. All 97 earlier emitted texts, including
+the 42 owned records, remain byte-identical; this component still leaves the older guest
+execution route in place until the next slice explicitly adds byte execution and budgets.
+
+The production profile still declares C unbound. Explicit guest budgets follow; the
+specification-derived corpus and C bind land together, then the matched Sail experiment.
+These probes are finite component evidence.

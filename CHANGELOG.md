@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0090 (leaf P4-SYSTEM.12, slice d3d1) — independent translated parcel fetch
+
+- Spec-side fetch walks each required two-byte parcel and records actual attempts;
+  upper faults preserve starting EPC/failing VA, compressed neighbors stay untouched.
+  Repaired canonical signs, reserved PTE bits/non-leaves, bottom pointers, MPRV data
+  privilege and EPC bit zero. Nine mutations fail; GUEST-GEN 52/52, all 97 previous
+  outputs and 42 owned records exact. Explicit byte guest budgets/integration follows.
+
 ## SEMULITH-P4-0089 (leaf P4-SYSTEM.12, slice d3d0) — unsupported prefixes retain ILEN
 
 - C-enabled fetch reads every ILEN=32 parcel for a wider prefix before reserved decode;

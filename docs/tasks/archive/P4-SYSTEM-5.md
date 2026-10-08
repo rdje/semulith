@@ -370,3 +370,75 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   promotion: declined (the permanent adapter/probe and four mutations retain this scoped
   absence lesson; the comparison policy's wider landing remains .14).
 
+
+`P4-SYSTEM.12` slice (d3c) — independent C component expectations (`2026-10-08`, `SEMULITH-P4-0088`):
+
+- [x] **REPRODUCE / ISSUE** — d3c/before.log records execute_c absent and 6 named refusals:
+  C.LI 0x5081 plus SRAI, ADDIW, ADDW/SUBW and JALR base shapes. The older word-only
+  producer cannot derive compressed observations; execute's sequential advances assume 4.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'pc \+ 4|def execute|OP-IMM|1101111'
+  scripts/derive_rv64gc_expectations.py` on parent 75c79af locates the 4-byte next/link
+  values and missing base forms. Pinned c-st-ext.html 1327–1346 gives C.JALR pc+2;
+  rv64.html 542–545 gives ADDIW at 3.1.2.1 (the unused stock locator was wrong).
+  XML extraction of the three pinned diagrams exposes the scattered field positions;
+  hashes and public linked names above. No generated expansion table supplies answers.
+- [x] **FIX** — scripts/spec_c.py hand-decodes 37 RV64+D forms and reserved conditions
+  from the pinned chapter. The author executes these independently reconstructed base
+  words at length 2; C.JALR target uses old rs1 and links pc+2. Reserved parcels and
+  FS-Off faults carry original 16-bit tval. Missing base forms gain narrow fixed-bit
+  guards; word suffixes truncate then sign-extend; ADDIW locator repaired. The old guest
+  author route remains word-only until d3d. No production profile or engine changed.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_author.py` rc=0 → 37 expansion/
+  effect fixtures, 22 limits, 79 one-hot scattered bits, 11 reserved parcels, 10 hints,
+  two branch outcomes, aliasing links, integer/memory/FP state, four FS-Off original
+  parcels, a misaligned load and word overflow/zero-immediate cases all pass. All 6
+  mutations are RED (compact base, sign, length/link, reserved guard, bit permutation,
+  expanded trap bits). Parent 75c79af is RED: execute_c absent. One-hot controls
+  distinguish bit permutations that an all-ones limit alone cannot detect.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 42 pass / 0 fail;
+  `--check-owned` → 42 documents byte-identical. Full legacy before/after census:
+  91/91 previously emitted texts exact; 6 new outputs from JALR vocabulary, all common
+  numeric writes agree. Three need the already-owned fetch/end repair (named above).
+  No historical record overwritten. The normal guest generator remains unchanged.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 519 arms),
+  task index, CHANGELOG, DEV_NOTES, definition toolbox/doctrine and C/assembler book.
+  Completed d1/d2 receipts archived byte-verbatim to part 5 (reconstruction asserted);
+  no ceiling raised. Books and doctrine commit gate must pass. check_derived_counts.sh
+  re-derives 519 arms. promotion: declined (the independent decoder, permanent probe and
+  six discriminating mutations retain this component's local lesson).
+
+`P4-SYSTEM.12` slice (d3d0) — retain every ILEN diagnostic bit (`2026-10-08`, `SEMULITH-P4-0089`):
+
+- [x] **REPRODUCE / ISSUE** — new permanent C engine probes on b48201c: rc=1,
+  15 passed / 3 failed. An all-ones 32-bit image returns ReservedDecode word 65535,
+  expected 4294967295. With only the first 0xffff parcel accessible, it returns that
+  reserved word instead of the expected access fault on pc+2. An unmapped second virtual
+  page is also never walked. Logs: target/p4-system-12/d3d1/ilen-parent.log.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show b48201c:crates/semulith-core/src/exec_rv64gc.rs`
+  locates fetch_instruction's `lo & 0x1f == 0x1f` early
+  return refuses a wider prefix from its first parcel. The pinned intro.html 1148–1153
+  defines all ones as ILEN bits long; machine.html 3427–3450 requires a nonzero illegal
+  diagnostic to carry min(actual length, ILEN, MXLEN). This profile's ILEN is 32.
+  The returned ReservedDecode word feeds the runner's nonzero illegal tval policy.
+- [x] **FIX** — only a true compressed prefix can return after 2 bytes; every wider
+  prefix fetches the remaining ILEN parcel before reserved decode. No third parcel
+  is requested. Missing/denied upper parcels retain their access/page fault, pc+2
+  tval and starting EPC. The production C slot remains unbound.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_engine.py` rc=0 → 18 passed /
+  0 failed: full all-ones/other unsupported-prefix diagnostics, upper-parcel access
+  refusal, and translated second-page fault join the prior 15 controls. Parent b48201c
+  and the new short-ilen mutation are RED on all 3 new cases; every RED is a behavioral
+  failure, not a compilation failure. DEF-GEN registers that mutation permanently.
+  Sharder header controls: old producer 10 pass / 2 fail, corrected producer 12 pass /
+  0 fail; the new header states its bound accurately even below that ceiling.
+- [x] **NO REGRESSION** — `make check` rc=0 (150 core, 17 DSP, 193 verify tests, fmt and
+  strict clippy); `check_definition_gen.sh --self-test` → 55 pass / 0 fail. Existing
+  production guest images/records unchanged; this repaired path uses a temporary C
+  composition. The old erased-width and word-parcel mutations still discriminate.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 520 arms),
+  task index, CHANGELOG, DEV_NOTES, definition doctrine/toolbox and C chapter. Completed
+  d3a/d3b receipts archived byte-verbatim with reconstruction asserted. DEV_NOTES sharded
+  by its governed whole-entry tool with exact reconstruction and freeze manifest updated;
+  no ceiling raised. Books and commit doctrine gate must pass. promotion: declined
+  (the permanent engine probes and short-ILEN control retain this local fetch lesson).
+

@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — independent parcel fetch needs a correct walk (P4-SYSTEM.12 d3d1)
+
+The author now fetches from memory under the selected C/ILEN=32 profile. Each required
+parcel walks first, then issues exactly two bytes. Refused physical requests count;
+translation failures issue none. A second-parcel fault keeps the instruction start in
+EPC and the failed virtual address in tval. Wider prefixes retain all ILEN bits, while a
+compressed parcel at a region/page end leaves its neighbor untouched. Unwritten in-region
+bytes remain zero. Fetch does not tick time or retirement; guest boundaries own those.
+
+Four existing walk defects were reproduced before repair: canonical sign validation
+ignored bit 38, reserved high PTE bits passed, a bottom-level pointer raised author Refusal,
+and M-mode data skipped MPRV/MPP translation. The corrected Svade walk also rejects reserved
+non-leaf U/A/D while retaining RSW/G, and applies permissions to effective data privilege.
+Odd-PC fetch fixtures exposed a fifth defect: exception/interrupt delivery assigned EPC
+without clearing bit zero. M/S delivery now masks that bit while retaining bit one.
+
+- Validation: pure hand-parcel/PTE fixtures, both canonical signs, all ten reserved high
+  bits and four access kinds, non-leaf levels, MPRV/SUM/U, exact request/refusal schedules,
+  translated straddles, starting EPC/failing VA, M/S/interrupt EPC, and no walk writes.
+  Parent f8f213c is RED; nine mutations fail for their intended behavioral reasons.
+  GUEST-GEN 52/52; complete before/after census 97/97 exact, 42 refused unchanged;
+  all 42 owned records exact. No historical observations overwritten. Old guest route
+  remains word-based until d3d2 explicitly integrates byte execution and declared budgets.
+- Promotion: declined — the independent component, permanent fixtures and nine mutation
+  controls retain the local fetch/walk lesson. Completed receipts archived verbatim.
+
 ## _(2026-10-08)_ — a wider prefix still needs ILEN diagnostic bits (P4-SYSTEM.12 d3d0)
 
 The C evaluator stopped after its first parcel when the lowest five bits were all ones.
