@@ -21,7 +21,8 @@
 # is what the live reference comparison (scripts/run_semulith_smoke.py) is for, and why
 # finite differential testing is tested evidence, never universal proof.
 #
-# CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
+# CONTRACT: exit code is the verdict; explains on stderr; deterministic; tracked inputs
+# are read-only; self-test output is retained under target/guest-gen; no network.
 #   --self-test   run the RED/GREEN controls and exit.
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
@@ -458,8 +459,13 @@ fi
 
 # Re-run the controls before judging: a check that no longer discriminates must refuse,
 # not pass (the project-doctrine contract in scripts/check_doctrines.project.sh).
-self_test >/dev/null 2>&1 || {
+SELF_TEST_LOG="$ROOT/target/guest-gen/self-test.log"
+mkdir -p "$(dirname "$SELF_TEST_LOG")" || exit 2
+self_test >"$SELF_TEST_LOG" 2>&1 || {
+  python3 --version >&2
+  tail -n 80 "$SELF_TEST_LOG" >&2
   echo "GUEST-GEN: REFUSED — the check does not discriminate (self-test failed)." >&2
+  echo "GUEST-GEN: full self-test output is in target/guest-gen/self-test.log" >&2
   exit 2; }
 
 out="$(python3 scripts/gen_guests.py --check --encoding "$ENCODING" \

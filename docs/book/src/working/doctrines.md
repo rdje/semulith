@@ -30,9 +30,16 @@ guarded push. When all three workflows pass on the repaired pushed revision, thi
 exception expires and the normal cadence resumes.
 
 The first authorized recovery push is `f4364bc`: both required local full suites
-passed, and the approval record traveled in that commit. Its rust, doctrines and
-portability workflows are running on GitHub; CI-RECOVERY.4 records their exact run
-URLs. Until their results are observed, hosted success remains pending.
+passed, and the approval record traveled in that commit. Hosted Rust, both native
+portability hosts and their manifest agreement pass. The doctrine job provisions
+mdBook, then refuses a GUEST-GEN self-test whose diagnostic was hidden by its wrapper;
+interpreted portability is still running. CI-RECOVERY.4 owns the unresolved refusal
+and exact run URLs. Hosted success remains pending.
+
+GUEST-GEN now retains the full self-test output in `target/guest-gen/self-test.log`,
+prints the interpreter version and a bounded tail on failure, and keeps its refusal
+exit code. A failed doctrine job publishes that log as an artifact. The local controls
+still pass; this visibility repair does not assert that the hosted cause is fixed.
 
 Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
 open repository file handles, including read-only editor handles. A refused census

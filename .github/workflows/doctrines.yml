@@ -31,3 +31,10 @@ jobs:
         run: make vendor
       - name: Run the doctrine enforcer
         run: scripts/check_doctrines.sh
+      - name: Preserve the guest self-test diagnostic on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guest-self-test-log
+          path: target/guest-gen/self-test.log
+          if-no-files-found: ignore

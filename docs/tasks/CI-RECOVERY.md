@@ -77,6 +77,19 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Push receipt slice: own the completed f4364bc push and three pending run IDs in
   MEMORY/logs/book before waiting. This tracking commit carries no new repair and
   does not claim the running hosted checks passed.
+  Next repair ownership: doctrines run 37800113792 on f4364bc now fails at
+  `GUEST-GEN: REFUSED — the check does not discriminate (self-test failed)`;
+  mdBook provisioning itself passed. Own diagnosis through the public guest
+  generator/check interfaces, preservation of the failed self-test output, and
+  the evidence-backed fix in scripts/check_guest_gen.sh / scripts/gen_guests.py
+  or the actual affected repository-owned dependency. No oracle or expectation
+  weakening. Priority: blocking recovery; use the already approved next push.
+  Diagnostic slice (d): local direct self-tests pass 103/103 on Python 3.14 and
+  3.11, so hosted cause remains unidentified. Own a target-local self-test log in
+  check_guest_gen.sh, its bounded failure tail, and failure-only artifact capture
+  in doctrines.yml before edits. Verify a forced failure remains rc=2 and retains
+  its diagnostic, then push this visibility repair; continue through the actual
+  hosted root cause without claiming this diagnostic change repairs that cause.
   Verification: pending
   Commit: pending
 
@@ -124,10 +137,35 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 ## Blockers
 
 - Hosted result pending the authorized recorded push and exact-SHA workflow runs.
+- doctrines run 37800113792 failed its GUEST-GEN self-test; inner output was
+  suppressed by the wrapper. Diagnose and repair before recovery closure; rust,
+  both native portability hosts and manifest agreement already pass.
 - The handoff census remains refused until Kimi closes or the director explicitly
   sanctions its process. Owned by `.4` with priority before handoff.
 
 ## Acceptance Checklist
+
+`.4` diagnostic slice (d), 2026-10-08, SEMULITH-CI-0008; actual hosted cause remains open:
+
+- [x] **ROOT CAUSE (visibility)** — doctrines 37800113792 fails at GUEST-GEN;
+  the committed wrapper runs `self_test >/dev/null 2>&1`, hiding the failing arm.
+  Local direct self-tests: `GUEST-GEN --self-test: 103 pass / 0 fail` on both
+  Python 3.14 and 3.11. These passes do not identify the Linux cause.
+- [x] **ADDRESSED** — normal wrapper captures target/guest-gen/self-test.log,
+  prints version/last 80 lines on failure and retains rc=2. Forced Python sentinel
+  yields `GUEST-GEN --self-test: 3 pass / 100 fail`, the sentinel and REFUSED, rc=2;
+  full log retained/copied, both st_dev equal repository. Failure-only upload path
+  added to doctrines.yml; YAML parsed and bash -n rc=0.
+- [x] **NO REGRESSION** — actual Rust 1.99 default guest gate rc=0; two fixture
+  matches and base mirror 91 byte-identical / 7 re-derived. Stored controls remain
+  `103 pass / 0 fail`; no guest/generator/engine change (implementation diff empty
+  outside wrapper/workflow). make book rc=0; ordinary DEV_NOTES shard is lossless:
+  `completeness: 38 entries before == 37 kept + 1 moved, order and bytes exact`;
+  `SHARD-FREEZE: ok (216 shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)`.
+- [x] **FIX / LOCKSTEP** — shell/workflow, MEMORY/logs/book and this receipt;
+  counters remain 38/599, P4 11/18. The next authorized push must expose and own
+  the actual hosted failure. Current portability has advanced to cross-endian.
+  promotion: declined (bounded failure-visibility repair; unresolved cause and reproducible controls retained here).
 
 `.4` push-receipt slice (c), 2026-10-08, SEMULITH-CI-0007; leaf remains active:
 
@@ -299,6 +337,10 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Verification Log
 
+Diagnostic checks: guest-forced-failure.log rc=2, guest-forced-selftest.log retains
+full sentinel; guest-diagnostic-green.log rc=0, target/guest-gen/self-test.log
+103/103. guest-selftest-python311-before.log is also 103/103. All under target/.
+
 Approved act: target/ci-recovery/approved-push-1.log rc=0; both full-suite runs green.
 Approval ledger commit: f4364bc316656b2d303f838bb87eadc470a75747, SEMULITH-PUSH-0001.
 All three hosted runs started at 2026-10-08T15:21:39Z on that exact SHA; initially in_progress:
@@ -315,6 +357,8 @@ All three hosted runs started at 2026-10-08T15:21:39Z on that exact SHA; initial
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0008 (leaf CI-RECOVERY.4): preserve failed guest self-test diagnostics on GitHub` — visibility fixed, underlying hosted cause still open.
 
 `SEMULITH-CI-0007 (leaf CI-RECOVERY.4): preserve the authorized push and pending hosted run receipts` — running hosted checks remain owned.
 

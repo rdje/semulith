@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0008 (leaf CI-RECOVERY.4, slice d) — retain the hosted guest refusal diagnostic
+
+- Hosted Rust and native manifest agreement pass; doctrines fails a guest self-test
+  whose wrapper hides its output. Retain the full on-volume log and a bounded error
+  tail, with a failure-only CI artifact. Refusal remains strict; underlying hosted
+  cause stays open until the next run exposes it.
+
 ## SEMULITH-CI-0007 (leaf CI-RECOVERY.4, slice c) — pushed recovery, hosted checks running
 
 - Authorized act pushed f4364bc after both full local CI runs passed and the
