@@ -1,7 +1,7 @@
 # Annex: how the tracked assembler works
 
-`scripts/riscv_asm.py` is the project's own RV64I assembler and ELF64 writer — about 500
-lines of dependency-free Python. It exists so that every guest program's bytes can be
+`scripts/riscv_asm.py` is the project's RISC-V assembler and ELF64 writer, using the
+Python standard library. It exists so that every guest program's bytes can be
 *accounted for*: who encoded them, from which table, with which rule. This chapter walks
 through it the way the code is organized, so that a reader could write an equivalent tool —
 not just agree that this one works.
@@ -107,7 +107,7 @@ odd offset is refused rather than silently truncated.
 
 ## The front-end: two passes, deliberate smallness
 
-`assemble()` makes two passes because a branch may target a label defined *later*: pass one
+`assemble_units()` makes two passes because a branch may target a label defined *later*: pass one
 records statements and label addresses, pass two resolves a label operand to
 `target − pc` — exactly what the specification means by "added to the address of the branch
 instruction". Duplicate and undefined labels are refused.
@@ -133,16 +133,46 @@ fadd.s x1, f2, f3, 0    # refused: "operand rd is an f-register (its semantics r
 The rounding-mode field `rm` is written as its 3-bit value (`0` RNE … `4` RMM, `7` DYN): the
 mode names belong to the specification's table, not to this assembler, and the guest's
 comment names the mode. Against the second decoder, all 30 F forms round-trip through
-`spike-dasm` (which prints no rounding mode — the field is checked as bits 14..12). Pseudo-instructions (`li`, `mv`, `nop`, …) are likewise absent: every line of a
-guest is a real instruction with a real encoding, so a reader never has to wonder what a
-shorthand expanded to.
+`spike-dasm` (which prints no rounding mode — the field is checked as bits 14..12). General
+shorthands (`li`, `mv`, `nop`, …) are absent. The unit's explicitly declared architectural
+counter aliases, such as `rdcycle`, are accepted with their pinned encoding.
 
-There is exactly one escape hatch, added by `P2-SCALAR.3` for the fault guests: the
-`.word 0x…` directive places one raw 32-bit word verbatim. It exists because the honest
+The raw-data escape hatches place bytes verbatim: `.word 0x…` emits four bytes (added by
+`P2-SCALAR.3`), and `.half 0x…` emits two (added by `P4-SYSTEM.12`). They exist because the honest
 spelling of "this guest deliberately executes a *reserved* encoding" cannot go through the
 mnemonic path — the operand range checks are precisely what refuses such words there
 (`fault-reserved`'s 0xFFFFFFFF, `fault-shiftw-res`'s `slliw` with `imm[5]` set). `.word`
-takes one numeric literal, range-checked to 32 bits; anything else is refused.
+takes one numeric literal, range-checked to 32 bits; `.half` checks 16 bits.
+
+## Compressed instructions and exact byte images
+
+The 37 C forms at RV64 with D assemble on a composition that includes C. Compact fields
+spell their architectural registers x8–x15 or f8–f15, and each scattered immediate takes one
+argument. Arguments follow the encoding's declared field order. For example:
+
+```text
+c.addi x1, -32          # signed six-bit immediate
+c.addi16sp 16          # x2 is implicit
+c.addi4spn x8, 4       # x2 is implicit; unsigned offset in bytes
+c.lw x8, x8, 124       # destination, address register, unsigned byte offset
+c.fld f8, x8, 0        # the expansion declares an f destination and x address
+c.fsd x8, f9, 0        # address register, f source, byte offset
+c.lui x3, -32          # unshifted signed six-bit value: -32 << 12
+c.jalr x1              # source register; x1's link is pc+2
+c.nop                  # also accepts an explicit HINT immediate
+```
+
+Widths and low zero bits come from the declared scatter pieces. Out-of-range and misaligned
+immediates, wrong register files, and reserved operands refuse by name. If operands select a
+more specific encoding, the assembler requires that spelling: `c.mv x1, x0` would encode
+`c.jr x1`. A deliberately illegal parcel uses `.half`.
+
+`assemble_units()` returns each value with its byte length, address and original text.
+`assemble_image()` joins their little-endian bytes without padding. Labels advance by two or
+four, so a normal instruction following `c.nop` starts two bytes later. The legacy `assemble()`
+API returns four-byte words and refuses any short unit; callers must choose a sized API.
+The C assembler probe checks 37 hand-encoded words, 21 operand refusals, HINTs and an exact mixed
+image. Wrong compact-register bases, word-stride labels and padded parcels all fail its controls.
 
 ## The ELF writer — and a measured harness difference
 

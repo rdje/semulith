@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–c; tools and production bind next)
+**Status:** Underway (slices a–d1; guest image tools and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -75,6 +75,16 @@ does: if the second page faults, the trap's value names that second parcel, whil
 program counter names the instruction's start. Both the prior evaluator and deliberate
 mutations fail these checks. They run through the definition gate on every commit.
 
-The production profile still declares C unbound. The next slice teaches the assembler and
-guest tools about parcels; then the specification-derived corpus and C bind land together,
-followed by the matched Sail experiment. These probes are finite component evidence.
+Slice (d1) teaches the assembler all 37 compressed forms. It derives compact register and
+floating-point spellings from the declarations, gathers scattered immediate pieces into one
+operand, and refuses reserved operands or a spelling that would encode a different special
+case. Programs can mix two- and four-byte units; labels count bytes, and `.half` can place an
+explicit raw parcel. The byte-image API preserves those lengths exactly. The older word API
+refuses short units so they cannot acquire silent padding. The [assembler chapter](../../annex/assembler.md)
+gives the syntax and examples. Hand-encoded fixtures check every form, and deliberate compact
+register, label-stride and padding mutations fail the permanent checks.
+
+The production profile still declares C unbound. The next slice carries these exact images
+through guest generation and the runner, then promotes and extends the expectation author
+and Sail adapter. The specification-derived corpus and C bind land together, followed by the
+matched Sail experiment. These probes are finite component evidence.

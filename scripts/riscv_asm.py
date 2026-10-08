@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""A minimal RV64I assembler and ELF64 writer, for independently encoded guest programs.
+"""A RISC-V assembler and ELF64 writer, for independently encoded guest programs.
 
 WHY THIS EXISTS, and why it does not simply call a cross-compiler.
 `docs/EVIDENCE_AND_GATES.md` and rule `EVD-05` require a guest program's expected observations
 to be derived from the SPECIFICATION, not from any model's output. A toolchain would also be a
 fine encoder, but it would be one more artifact whose provenance has to be established, and on
-this host it would have to be installed off the repository volume. This assembler is 300 lines,
-reads its encodings from a pinned table, and produces a file whose every byte is accounted for.
+this host it would have to be installed off the repository volume. This assembler reads its
+encodings from pinned tables and produces a file whose every byte is accounted for.
 
 ⛔ WHERE THE ENCODINGS COME FROM, and why it is not this file.
 The pinned specification artifacts do NOT contain instruction encodings. Measured over all six
@@ -114,6 +114,16 @@ class Insn:
     operands: tuple[str, ...]
     source: str                                # which pinned file it came from
     of: str = ""                               # a pseudo-op's base (`rv_zicsr::csrrs`), else ""
+
+
+@dataclass(frozen=True)
+class AssembledUnit:
+    """One emitted unit, retaining its byte length and address (including raw data)."""
+
+    value: int
+    length: int
+    pc: int
+    text: str
 
 
 def _place(hi: int, lo: int, value: int) -> int:
@@ -325,6 +335,26 @@ def resolve_composition(enc, path: Path):
     return merged
 
 
+def _semantic_documents(path: Path):
+    """The unit's composed semantics documents, in declaration order."""
+    import sexp as _sexp
+    forms = _sexp.read_file(path)
+    enc = forms[0] if forms else []
+    comp = _sexp.children(enc, "compose")
+    if not comp:
+        return []
+    root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
+    names = [str(_sexp.field(comp[0], "base", str(path)))]
+    for e in _sexp.children(comp[0], "extensions"):
+        names += [str(x) for x in e[1:]]
+    documents = []
+    for name in names:
+        sem_path = root / (name + ".sem.sexp")
+        if sem_path.is_file():
+            documents.append((sem_path, _sexp.read_file(sem_path)[0]))
+    return documents
+
+
 def load_register_files(path: Path) -> dict[str, set[str]]:
     """Per instruction, the operand fields its semantics read or write through `(freg …)` —
     the operands this assembler spells f0..f31 (P4-SYSTEM.7 slice c3). Derived from the
@@ -334,21 +364,11 @@ def load_register_files(path: Path) -> dict[str, set[str]]:
     tables themselves imply). One field in BOTH files within one rule is refused: no spelling
     could be right (check_semantics.check_fp refuses the same rule upstream)."""
     import sexp as _sexp
-    forms = _sexp.read_file(path)
-    enc = forms[0] if forms else []
-    comp = _sexp.children(enc, "compose")
-    if not comp:
-        return {}
-    root = path.parent.parent.parent / str(_sexp.field(enc, "fragment-root", str(path)))
-    names = [str(_sexp.field(comp[0], "base", str(path)))]
-    for e in _sexp.children(comp[0], "extensions"):
-        names += [str(x) for x in e[1:]]
     files: dict[str, set[str]] = {}
-    for name in names:
-        sem_path = root / (name + ".sem.sexp")
-        if not sem_path.is_file():
-            continue
-        for rule in _sexp.children(_sexp.read_file(sem_path)[0], "sem"):
+    expansions = []
+    for sem_path, document in _semantic_documents(path):
+        expansions.extend(_sexp.children(document, "expand"))
+        for rule in _sexp.children(document, "sem"):
             insn = str(_sexp.field(rule, "insn", str(sem_path)))
             reg_ops: set[str] = set()
             freg_ops: set[str] = set()
@@ -369,6 +389,27 @@ def load_register_files(path: Path) -> dict[str, set[str]]:
                 raise AsmError(f"{sem_path.name} [{insn}]: operand(s) {sorted(both)} are read "
                                f"as BOTH (reg …) and (freg …) — no spelling could be right")
             files[insn] = freg_ops
+    # A compressed register field names the file its mapped BASE operand belongs to.
+    # Derive that relationship from the declarations, rather than a C-specific FP list.
+    for rule in expansions:
+        insn = str(_sexp.field(rule, "insn"))
+        targets = _sexp.children(rule, "to")
+        base = targets[0][1] if targets else None
+        if base is not None and str(base) not in files:
+            raise AsmError(f"{insn}: expansion base {base!r} has no register-file declaration")
+        floating = files.get(str(base), set())
+        fields = set()
+        for binding in _sexp.children(rule, "operand"):
+            if str(_sexp.field(binding, "name")) not in floating:
+                continue
+            def raw_fields(expr):
+                if isinstance(expr, list) and expr:
+                    if expr[0] == "field":
+                        fields.add(str(expr[1]))
+                    for arg in expr[1:]:
+                        raw_fields(arg)
+            raw_fields(_sexp.children(binding, "value")[0][1])
+        files[insn] = fields
     return files
 
 
@@ -453,10 +494,17 @@ class Assembler:
         state document's own addresses were checked against (the 33/33 probe)."""
         self.ialign = 32
         self.fregs: dict[str, set[str]] = {}
+        self.c_reserved = {}
         if source.is_file():
             self.arg_lut, self.insns, self.imm_layout, self.pseudos = \
                 load_canonical_encoding(source, with_pseudos=True)
             self.fregs = load_register_files(source)
+            import sexp as X
+            for _, document in _semantic_documents(source):
+                for rule in X.children(document, "expand"):
+                    predicates = X.children(rule, "reserved")
+                    if predicates:
+                        self.c_reserved[str(X.field(rule, "insn"))] = predicates[0][1]
             prof = source.parent / "profile.sexp"
             if prof.is_file():
                 import dossier_sexp as D
@@ -533,7 +581,10 @@ class Assembler:
 
     @staticmethod
     def _imm(tok: str) -> int:
-        return int(tok, 0)
+        try:
+            return int(tok, 0)
+        except ValueError:
+            raise AsmError(f"immediate {tok!r} is not a numeric literal") from None
 
     @staticmethod
     def _paren_reg(name: str, tok: str) -> int:
@@ -571,6 +622,8 @@ class Assembler:
         if insn is None:
             raise AsmError(f"{mnemonic.lower()!r} is not in the canonical definition's "
                            f"encoding space — this assembler carries no opcodes of its own")
+        if name.startswith("c."):
+            return self._encode_compressed(name, insn, args)
         for op in insn.operands:
             if op not in CONTIGUOUS_OPERANDS and op not in SCRAMBLED_OPERANDS:
                 raise AsmError(f"{name!r} uses operand field {op!r}, which this assembler "
@@ -676,6 +729,94 @@ class Assembler:
                 word |= _place(hi, lo, sh)
         return word
 
+    def _encode_compressed(self, name: str, insn: Insn, args: list[str]) -> int:
+        """One argument per register, one per grouped scattered immediate, field order.
+
+        Compact registers spell their architectural x8..x15/f8..f15 indices. Signedness
+        comes from the pinned immediate descriptor kind; the union of its pieces owns
+        the width and low zero bits. C.LUI takes its unshifted signed six-bit value.
+        Reserved/specialized encodings can always be placed explicitly with `.half`.
+        """
+        immediates = [field for field in insn.operands if field in self.imm_layout]
+        groups = []
+        for field in insn.operands:
+            if field in immediates:
+                if not any(isinstance(group, list) for group in groups):
+                    groups.append(immediates)
+            else:
+                groups.append(field)
+        if name == "c.nop" and not args:
+            args = ["0"]
+        if len(args) != len(groups):
+            raise AsmError(f"{name} expects {len(groups)} operand(s) in field order {groups}, got {len(args)}")
+        word = sum(_place(hi, lo, value) for hi, lo, value in insn.fixed)
+        for group, arg in zip(groups, args):
+            if isinstance(group, str):
+                index = self._reg_of(name, group, arg)
+                hi, lo = self.arg_lut[group]
+                if hi - lo + 1 == 3:
+                    if not 8 <= index <= 15:
+                        raise AsmError(f"{name}: compact register {arg} must be x8..x15 or f8..f15")
+                    index -= 8
+                elif hi - lo + 1 != 5:
+                    raise AsmError(f"{name}: unsupported register field {group}")
+                word |= _place(hi, lo, index)
+                continue
+            pieces = {bit for field in group for hi, lo in self.imm_layout[field]
+                      for bit in range(lo, hi + 1)}
+            low, high = min(pieces), max(pieces)
+            if pieces != set(range(low, high + 1)):
+                raise AsmError(f"{name}: immediate pieces are not a contiguous value")
+            value = self._imm(arg)
+            if name == "c.lui":
+                value <<= low
+            signed = not all(field.startswith(("c_uimm", "c_nzuimm")) for field in group)
+            limit = 1 << (high + 1 - int(signed))
+            minimum = -limit if signed else 0
+            if not minimum <= value < limit:
+                raise AsmError(f"{name}: immediate {arg} is outside its {'signed' if signed else 'unsigned'} range")
+            if value % (1 << low):
+                raise AsmError(f"{name}: immediate {arg} must be a multiple of {1 << low} bytes")
+            for field in group:
+                word |= self._place_scrambled(field, value & ((1 << (high + 1)) - 1))
+        # Do not silently assemble another member of an overlapping encoding family.
+        candidates = []
+        for candidate in self.insns.values():
+            if not candidate.name.startswith("c."):
+                continue
+            mask = sum(((1 << (hi - lo + 1)) - 1) << lo for hi, lo, _ in candidate.fixed)
+            fixed = sum(value << lo for hi, lo, value in candidate.fixed)
+            if word & mask == fixed:
+                candidates.append((mask.bit_count(), candidate.name))
+        actual = sorted(candidates, key=lambda item: (-item[0], item[1]))[0][1]
+        if actual != name:
+            raise AsmError(f"{name}: these operands encode the specialization {actual}; use that spelling or .half")
+        if name in self.c_reserved and self._reserved_value(self.c_reserved[name], word):
+            raise AsmError(f"{name}: reserved operands; use .half for the explicit code point")
+        return word
+
+    def _reserved_value(self, expr, word):
+        """Evaluate the declared pure reserved predicate over original encoding fields."""
+        head, *args = expr
+        if head == "lit":
+            return int(args[0])
+        if head in ("field", "imm"):
+            field = str(args[0])
+            hi, lo = self.arg_lut[field]
+            raw = (word >> lo) & ((1 << (hi - lo + 1)) - 1)
+            if field not in self.imm_layout:
+                return raw
+            value, cursor = 0, hi - lo + 1
+            for upper, lower in self.imm_layout[field]:
+                width = upper - lower + 1
+                cursor -= width
+                value |= ((raw >> cursor) & ((1 << width) - 1)) << lower
+            return value
+        if head in ("eq", "or"):
+            a, b = (self._reserved_value(arg, word) for arg in args)
+            return int(a == b) if head == "eq" else a | b
+        raise AsmError(f"reserved predicate {head!r} is outside the assembler's pure vocabulary")
+
     def _place_scrambled(self, field: str, imm: int) -> int:
         """Scatter `imm`'s bits into `field` per the pinned descriptor, MSB piece first."""
         hi, lo = self.arg_lut[field]
@@ -718,8 +859,8 @@ class Assembler:
             word |= self._place_scrambled("bimm12lo", u)
         return word
 
-    def assemble(self, lines: list[str], base: int = 0) -> list[tuple[int, str]]:
-        """Assemble source lines into (word, original-text) pairs.
+    def assemble_units(self, lines: list[str], base: int = 0) -> list[AssembledUnit]:
+        """Assemble source lines into sized units with their original text and byte address.
 
         Two passes, because a branch may target a label defined later. A bare name where an
         offset is expected is resolved to `target - pc`, which is what the specification means by
@@ -746,7 +887,7 @@ class Assembler:
             mnemonic, _, rest = text.partition(" ")
             args = [a.strip() for a in rest.split(",") if a.strip()]
             stmts.append((pc, text, mnemonic, args))
-            pc += 4
+            pc += 2 if mnemonic.lower() == ".half" or mnemonic.lower().startswith("c.") else 4
 
         out = []
         for at, text, mnemonic, args in stmts:
@@ -758,6 +899,7 @@ class Assembler:
             insn = self.insns.get(mnemonic.lower()) or self.pseudos.get(mnemonic.lower())
             takes_label = insn is not None and any(op in SCRAMBLED_OPERANDS
                                                    for op in insn.operands)
+            takes_label |= mnemonic.lower() in ("c.j", "c.beqz", "c.bnez")
             resolved = []
             for a in args:
                 if (takes_label
@@ -768,24 +910,38 @@ class Assembler:
                     resolved.append(str(labels[a] - at))
                 else:
                     resolved.append(a)
-            if mnemonic == ".word":
+            if mnemonic in (".word", ".half"):
                 # A raw data word (P2-SCALAR.3): the honest spelling of "this guest
                 # deliberately places these exact bytes" — the reserved encodings the
                 # mnemonic path's range checks exist to refuse. Numeric literals only.
                 if len(resolved) != 1:
-                    raise AsmError(f"{text!r}: .word takes exactly one operand")
+                    raise AsmError(f"{text!r}: {mnemonic} takes exactly one operand")
                 try:
                     value = int(resolved[0], 0)
                 except ValueError:
                     raise AsmError(
-                        f"{text!r}: .word takes a numeric literal, got {resolved[0]!r}"
+                        f"{text!r}: {mnemonic} takes a numeric literal, got {resolved[0]!r}"
                     ) from None
-                if not 0 <= value <= 0xFFFF_FFFF:
-                    raise AsmError(f"{text!r}: .word value {value:#x} is outside 32 bits")
-                out.append((value, text))
+                length = 2 if mnemonic == ".half" else 4
+                if not 0 <= value < (1 << (length * 8)):
+                    raise AsmError(f"{text!r}: {mnemonic} value {value:#x} is outside {length * 8} bits")
+                out.append(AssembledUnit(value, length, at, text))
                 continue
-            out.append((self.encode(mnemonic, resolved), text))
+            length = 2 if mnemonic.lower().startswith("c.") else 4
+            out.append(AssembledUnit(self.encode(mnemonic, resolved), length, at, text))
         return out
+
+    def assemble(self, lines: list[str], base: int = 0) -> list[tuple[int, str]]:
+        """Legacy word API. Short units require assemble_units/assemble_image explicitly."""
+        units = self.assemble_units(lines, base)
+        if any(unit.length != 4 for unit in units):
+            raise AsmError("short units require assemble_units or assemble_image; word API refuses padding")
+        return [(unit.value, unit.text) for unit in units]
+
+    def assemble_image(self, lines: list[str], base: int = 0) -> bytes:
+        """The exact little-endian byte image, with no padding between units."""
+        return b"".join(unit.value.to_bytes(unit.length, "little")
+                        for unit in self.assemble_units(lines, base))
 
 
 # ---------------------------------------------------------------------------------------

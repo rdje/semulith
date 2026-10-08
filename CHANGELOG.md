@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0084 (leaf P4-SYSTEM.12, slice d1) — the parcel assembler
+
+- Assemble all 37 C forms with declared immediate layouts and mapped register files;
+  preserve exact byte images and label addresses through sized units and `.half`.
+  The legacy word API refuses padding. 37 word fixtures, 21 refusals and three RED
+  mutations pass; GUEST-GEN 20/20, DEF-GEN 54/54, old corpus 77/77 unchanged.
+  README now states experimental implementation scope. Guest image integration next.
+
 ## SEMULITH-P4-0083 (leaf P4-SYSTEM.12, slice c2) — the C evaluator
 
 - Execute declared operand mappings with their widths; advance pc by length, preserve 16-bit

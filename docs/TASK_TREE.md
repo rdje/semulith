@@ -49,7 +49,7 @@ on the same commit. One commit per completed leaf.
 <!-- ANCHOR: trees -->
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.12` — bind C, slice (d): the parcel-aware tools; (a)–(c2) done (11/18 leaves done; `.11` closed: M bound; the CPU-SYSTEM report reads `incomplete`, 9 of 10 axes open, each owned) | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.12` — bind C, slice (d2): guest image generation/runner; (a)–(d1) done (11/18 leaves done; `.11` closed: M bound; the CPU-SYSTEM report reads `incomplete`, 9 of 10 axes open, each owned) | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.5` — firmware probes, gated on the CPU's acceptance trajectory (10/12 leaves done; the platform capability manifest landed, drift-gated by PLATFORM-GEN) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |

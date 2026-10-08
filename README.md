@@ -9,10 +9,10 @@ Semulith also has a concrete consumer: **archogen**, which generates specific-pu
 operating systems from its eADL source of truth and needs explicit platform contracts to
 execute and validate them against.
 
-> **Claim scope.** No CPU implementation, conformance result, or accepted processor profile
-> is claimed. `schemas/` and `examples/` are data-contract starters whose evidence records
-> are deliberately `planned`. *Semulith* is a proposed name; no crate, repository, domain, or
-> trademark has been reserved. See [`LIVE_STATUS.md`](LIVE_STATUS.md) for what is actually built.
+> **Claim scope.** The implementations are experimental; no conformance result or accepted
+> processor profile is claimed. `schemas/` and `examples/` are data-contract starters whose
+> evidence records are deliberately `planned`. *Semulith* is a proposed name.
+> See [`LIVE_STATUS.md`](LIVE_STATUS.md) for what is actually built.
 
 ## Start here
 

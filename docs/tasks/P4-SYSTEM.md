@@ -235,10 +235,32 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (d): parcel-aware assembler, guest generator, authoring tool and Sail harness; (a)–(c2) committed |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d2): guest generator and runner carry exact parcel images; (d1) assembler committed; (d3) authoring/Sail tools follow |
 
 ## Decisions
 
+- `2026-10-08` (slice d split, owned before changes): (d1) the assembler: C fields,
+  compact/FP register spellings, grouped scattered immediates, `.half`, byte-addressed
+  labels and an explicit sized-unit/byte-image API (the legacy word API refuses short
+  units instead of silently padding them). Operand order remains the declared field order,
+  with one argument for all pieces of an immediate; C.LUI's argument is its unshifted
+  signed six-bit value. The engine probe's words are independent assembler controls.
+  (d2) the guest generator and runner's parcel image carrier. (d3) the authoring tool
+  and Sail adapter, then their regression. Tool census `rg --files -g '*.py' -g
+  '!vendor/**'` finds no tracked rv64gc authoring/Sail runner; the current producers
+  live under `target/p4-system-11/{tools,sail}`. Their untracked status is explicit in
+  their headers, and the Sail runner's tracked landing was already owed by `.14`.
+  Own the authoring producer here too: promote it under `scripts/`, re-derive the old
+  corpus byte-identically before extending it, and retain its independent spec-side
+  rules. A fresh clone must not need these scratch producers to author the C corpus.
+  Commit `e1fe379` passed `make ci` (all five legs) and was pushed at the 300-commit
+  cadence; `target/push/last-green.txt` is the boundary's generated evidence record.
+  README review found a stale implementation disclaimer: `git blame -L 10,15 README.md`
+  dates "No CPU implementation" to the planning-package import `724e422`, before the
+  interpreter existed. The current core, CLI and experimental scalar release contradict
+  that present-tense statement. Own the correction in (d1)'s documentation sync: distinguish
+  experimental implementations from unclaimed conformance/acceptance, preserve the planned
+  synthetic examples' status, and remove the unsupported blanket reservation statement.
 - `2026-10-08` (PNT resumed; slice c split before changes): (c1) add a typed
   `FetchParcel` request/response and teach boundary providers, counters and injection spans
   its exact two-byte extent; (c2) execute expansions and fetch by length. Diagnostic
@@ -796,6 +818,39 @@ never raised, at every crossing. The index:
   the commit doctrine gate must pass. `check_derived_counts.sh --list` re-derives 493 arms.
   promotion: declined (the permanent engine probe and its RED controls retain the lesson).
 
+`P4-SYSTEM.12` slice (d1) — assemble parcels without padding (`2026-10-08`, `SEMULITH-P4-0084`):
+
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_assembler.py --assembler-revision
+  e1fe379` exits 1: c.add's rd_rs1_n0 is unsupported. The legacy assembler only returns
+  words and advances labels by four, so it cannot represent a mixed 16/32-bit program.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show e1fe379:scripts/riscv_asm.py` and
+  `rg -n 'pc \+= 4|CONTIGUOUS_OPERANDS|def assemble' scripts/riscv_asm.py` identify the
+  former hard-coded field vocabulary and word stride. Compressed immediates span several
+  declared fields; compact register indices and mapped FP register files need interpretation.
+  README's old implementation disclaimer predates the interpreter (`git blame -L 10,15
+  README.md`, planning import 724e422) and contradicts the experimental implementation.
+- [x] **FIX** — group declared immediate pieces, derive their width/signedness/alignment,
+  derive FP spelling from expansion mappings, and encode compact architectural registers.
+  Judge reserved predicates and more-specific encodings instead of silently changing the
+  requested mnemonic. Sized units retain length, byte pc and text; `.half` emits two bytes,
+  `.word` four, labels use byte offsets, and assemble_image never pads. The legacy word API
+  explicitly refuses short units. Correct README's claim scope to experimental implementations.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_assembler.py` passes 37 independent
+  hand-encoded words (every selected form), 21 operand refusals, hints, raw-half refusals,
+  mixed labels and the exact byte image. `--mutation compact-base`, `label-stride` and
+  `padding` each exit 1 at their behavioral assertion. The prior assembler is RED.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` passes 20/20;
+  `bash scripts/check_definition_gen.sh --self-test` passes 54/54 (including the C engine).
+  Both `scripts/gen_guests.py --check` invocations (rv64i and rv64gc) are byte-identical;
+  `cargo test -p semulith-verify run` passes 77/77. The permanent assembler controls execute
+  within GUEST-GEN on every commit. C remains unbound; guest image/runner integration is d2.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 497 arms),
+  task index, CHANGELOG, DEV_NOTES, README, definition toolbox/doctrine and the assembler/C
+  book chapters (including the stale RV64I/500-line description). Books and commit doctrine
+  gate must pass. Lossless DEV_NOTES sharding
+  preserves whole entries and digests without raising a ceiling.
+  promotion: declined (the permanent fixture and RED controls preserve this local lesson).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -805,6 +860,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (d1) | 37 forms, 21 refusals, exact bytes; 3 RED controls; GUEST-GEN 20/20; corpus 77/77 | assembler ready; old guests unchanged; (d2) image generator/runner next |
 | `2026-10-08` | `.12` slice (c2) | 15 engine probes (baseline 0/15); DEF-GEN 54/54; make check | C evaluator ready; exact fetch and expansion execution proven on temporary composition; (d) tools next |
 | `2026-10-08` | `.12` slice (c1) | make check; parcel extent, alignment, visibility, refusal spans | typed two-byte boundary ready; existing corpus unchanged; (c2) next |
 | `2026-10-07` | `.12` slice (b) | 37/37 declarations; SEMANTICS 46/46 controls; DEF-GEN 51/51 (104 spec-side checks, compiled decoder 8/8); citations 0 findings; make check + make gate + all books green; handoff OK | the language and generator ready; crash recovered; handoff before (c) |
@@ -853,6 +909,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice d1) | `SEMULITH-P4-0084 (leaf P4-SYSTEM.12): assemble compressed instructions and preserve exact byte images` | (d2) generator/runner next |
 | `.12` (slice c2) | `SEMULITH-P4-0083 (leaf P4-SYSTEM.12): execute compressed expansions and fetch only the required parcels` | (d) tools next; production C bind remains (e) |
 | `.12` (slice c1) | `SEMULITH-P4-0082 (leaf P4-SYSTEM.12): add exact two-byte instruction fetches to the environment boundary` | (c2) engine next |
 | `.12` (slice b) | `SEMULITH-P4-0081 (leaf P4-SYSTEM.12): recover the interrupted C language slice; declare expansions and decode by specificity` | handoff; (c) next |
@@ -898,6 +955,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (d1) done: all 37 C forms assemble; exact sized units/images and
+  byte labels, reserved/specialization refusals, three mutation controls. d2 next.
 
 - `2026-10-08`: `.12` (c2) done: parcel-first fetch and length-aware expansion execution;
   permanent 15-case probe, baseline RED, two mutation controls; DEF-GEN 54/54. (d) next.

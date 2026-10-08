@@ -249,6 +249,17 @@ PY
   out="$(judge_mirror "$GUESTS_DIR" "$t/mirror" 2>&1)"; rc=$?
   arm "RED a stale re-derivation record is named" "$rc" 1 "$out" "fault-jal-mis"
 
+  # P4-SYSTEM.12 d1: C is still unbound, so the assembler uses a temporary full
+  # composition; the expected words and byte image are hand-written spec-side fixtures.
+  out="$(python3 scripts/probe_c_assembler.py 2>&1)"; rc=$?
+  arm "GREEN C assembler words and exact byte image" "$rc" 0 "$out" "37 spec-side words"
+  out="$(python3 scripts/probe_c_assembler.py --mutation compact-base 2>&1)"; rc=$?
+  arm "RED a wrong compact-register base is caught" "$rc" 1 "$out" "c.addi4spn: 0x0044, expected 0x0040"
+  out="$(python3 scripts/probe_c_assembler.py --mutation label-stride 2>&1)"; rc=$?
+  arm "RED word-stride labels are caught" "$rc" 1 "$out" "AssertionError: byte label addresses"
+  out="$(python3 scripts/probe_c_assembler.py --mutation padding 2>&1)"; rc=$?
+  arm "RED silently padded short units are caught" "$rc" 1 "$out" "AssertionError: exact byte image"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
