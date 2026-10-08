@@ -800,14 +800,14 @@ def emit(data: dict, generator_sha: str) -> str:
     a("    /// The semantics rule's effect, lowered from the semantics data — the one")
     a("    /// executable owner of the behaviour (OWN-01).")
     a("    pub effect: &'static Sem,")
-    if compressed:
+    if extended:
         a("    /// Instruction length in bytes: an expansion consumes one 16-bit parcel.")
         a("    pub length: u8,")
         a("    /// Operand mappings evaluated over the compressed fields BEFORE the effect.")
         a("    pub expansion: Option<&'static Expansion>,")
     a("}")
     a("")
-    if compressed:
+    if extended:
         a("/// A compressed instruction's declared expansion. The effect is lowered from the")
         a("/// named base rule (C.JALR has its own); bindings retain their value widths, so")
         a("/// the base rule sign-extends a scattered immediate from its OWN top bit.")
@@ -848,12 +848,12 @@ def emit(data: dict, generator_sha: str) -> str:
         a(f"        source: {rust_str(source)},")
         tree = indent_tree(emit_sem(effect, where, surface))
         tree_lines = tree.splitlines()
-        if compressed:
+        if extended:
             tree_lines[-1] += ","
         a(f"        effect: &{tree_lines[0]}")
         for line in tree_lines[1:]:
             a(f"        {line}")
-        if compressed:
+        if extended:
             a(f"        length: {2 if expansion else 4},")
             if expansion:
                 base, binds, reserved = expansion

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0083 (leaf P4-SYSTEM.12, slice c2) — the C evaluator
+
+- Execute declared operand mappings with their widths; advance pc by length, preserve 16-bit
+  inst, reject reserved parcels before effects, fetch only needed parcels in C-enabled tables.
+  Production C stays unbound. A permanent 15-case engine probe is RED on the predecessor;
+  erased-width and word-fetch mutations fail. DEF-GEN 54/54, make check green. Tools next.
+
 ## SEMULITH-P4-0082 (leaf P4-SYSTEM.12, slice c1) — the exact parcel boundary
 
 - Added typed two-byte fetch requests/responses, fixture support, counters and injection spans.

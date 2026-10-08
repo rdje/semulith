@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–c1; engine next)
+**Status:** Underway (slices a–c; tools and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -54,10 +54,27 @@ kept only the first two; it could not fetch a compressed instruction at the end 
 memory region. The new request succeeds there, keeps the same alignment and code-visibility
 rules, and lets fault injection distinguish the requested parcel from its neighbor.
 
-For C-enabled execution, the processor will request one parcel first and request another
+For C-enabled execution, the processor requests one parcel first and requests another
 only when the instruction needs it. This replaces the earlier coalescing plan: a four-byte
 request cannot distinguish a failure in an unnecessary upper half from a failure in the
 instruction itself. Fetch counts will therefore count parcels when C binds, and the next
-environment-contract version will state that extent. The processor still needs (c2)'s fetch
-and expansion executor before it can run compressed code; boundary and declaration checks
-are finite evidence about those components.
+environment-contract version will state that extent.
+
+Slice (c2) executes each expansion's ordinary rule after evaluating its operand mappings
+against the original compressed fields. The mapped values keep their signed widths; otherwise
+an immediate of −32 could become +32 before the ordinary rule sign-extends it. The program
+counter advances by two or four, and an illegal compressed instruction reports its own sixteen
+bits. Hints execute without changing registers, while the declared reserved code points trap
+without retiring or leaving a partial write.
+
+A permanent fifteen-case probe compiles this evaluator against a temporary composition with
+C. It checks mixed instruction lengths, compact registers, signed and unsigned offsets,
+overlapping operands, jump links, floating-point gating, and faults. A compressed instruction
+in a page's final halfword never walks the next page. A 32-bit instruction in the same place
+does: if the second page faults, the trap's value names that second parcel, while the saved
+program counter names the instruction's start. Both the prior evaluator and deliberate
+mutations fail these checks. They run through the definition gate on every commit.
+
+The production profile still declares C unbound. The next slice teaches the assembler and
+guest tools about parcels; then the specification-derived corpus and C bind land together,
+followed by the matched Sail experiment. These probes are finite component evidence.

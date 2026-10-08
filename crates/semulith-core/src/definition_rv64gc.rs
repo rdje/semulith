@@ -34,7 +34,7 @@
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`
-//! Generator: `scripts/gen_definition.py` (sha256 `ed5c422d0deb29d4a007fd8fc4bb0f649b39d33fb31cce0115dbbc7e36364555`)
+//! Generator: `scripts/gen_definition.py` (sha256 `c97dc8064fe4177bbd5a6eeb8cf0bbb9dc405fa611229342dfa300d25bc37daa`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -90,7 +90,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "ed5c422d0deb29d4a007fd8fc4bb0f649b39d33fb31cce0115dbbc7e36364555",
+        sha256: "c97dc8064fe4177bbd5a6eeb8cf0bbb9dc405fa611229342dfa300d25bc37daa",
     },
     inputs: &[
         InputPin {
@@ -404,6 +404,25 @@ pub struct InsnDef {
     /// The semantics rule's effect, lowered from the semantics data — the one
     /// executable owner of the behaviour (OWN-01).
     pub effect: &'static Sem,
+    /// Instruction length in bytes: an expansion consumes one 16-bit parcel.
+    pub length: u8,
+    /// Operand mappings evaluated over the compressed fields BEFORE the effect.
+    pub expansion: Option<&'static Expansion>,
+}
+
+/// A compressed instruction's declared expansion. The effect is lowered from the
+/// named base rule (C.JALR has its own); bindings retain their value widths, so
+/// the base rule sign-extends a scattered immediate from its OWN top bit.
+pub struct Expansion {
+    pub base: Option<&'static str>,
+    pub bindings: &'static [OperandBinding],
+    /// Evaluated over the original fields; true delivers illegal instruction.
+    pub reserved: Option<&'static Sem>,
+}
+
+pub struct OperandBinding {
+    pub name: &'static str,
+    pub value: &'static Sem,
 }
 
 /// The 160 instructions of the composed definition, sorted by name. Every
@@ -423,7 +442,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "addi",
@@ -441,7 +462,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Imm("imm12"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "addiw",
@@ -468,7 +491,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "addw",
@@ -495,7 +520,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoadd.d",
@@ -512,7 +539,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoadd.w",
@@ -535,7 +564,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoand.d",
@@ -552,7 +583,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoand.w",
@@ -575,7 +608,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amomax.d",
@@ -592,7 +627,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amomax.w",
@@ -615,7 +652,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amomaxu.d",
@@ -632,7 +671,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amomaxu.w",
@@ -655,7 +696,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amomin.d",
@@ -672,7 +715,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amomin.w",
@@ -695,7 +740,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amominu.d",
@@ -712,7 +759,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amominu.w",
@@ -735,7 +784,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoor.d",
@@ -752,7 +803,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoor.w",
@@ -775,7 +828,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoswap.d",
@@ -792,7 +847,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoswap.w",
@@ -815,7 +872,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoxor.d",
@@ -832,7 +891,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "amoxor.w",
@@ -855,7 +916,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "and",
@@ -870,7 +933,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "andi",
@@ -888,7 +953,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Imm("imm12"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "auipc",
@@ -909,7 +976,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "beq",
@@ -933,7 +1002,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Nop,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "bge",
@@ -957,7 +1028,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Nop,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "bgeu",
@@ -981,7 +1054,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Nop,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "blt",
@@ -1005,7 +1080,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Nop,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "bltu",
@@ -1029,7 +1106,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Nop,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "bne",
@@ -1053,7 +1132,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Nop,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "csrrc",
@@ -1088,7 +1169,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "csrrci",
@@ -1126,7 +1209,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "csrrs",
@@ -1158,7 +1243,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "csrrsi",
@@ -1193,7 +1280,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "csrrw",
@@ -1218,7 +1307,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "csrrwi",
@@ -1249,7 +1340,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "div",
@@ -1274,7 +1367,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "divu",
@@ -1299,7 +1394,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "divuw",
@@ -1345,7 +1442,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "divw",
@@ -1391,7 +1490,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "ebreak",
@@ -1403,7 +1504,9 @@ pub static INSNS: &[InsnDef] = &[
         effect: &Sem::TrapDeliver(
             &Sem::Lit(0x0000000000000003),
             &Sem::Pc,
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "ecall",
@@ -1435,7 +1538,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x0000000000000000),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fadd.d",
@@ -1454,7 +1559,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fadd.s",
@@ -1482,7 +1589,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fclass.d",
@@ -1497,7 +1606,9 @@ pub static INSNS: &[InsnDef] = &[
                 64,
                 &Sem::FReg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fclass.s",
@@ -1515,7 +1626,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.d.l",
@@ -1535,7 +1648,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::Reg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.d.lu",
@@ -1555,7 +1670,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::Reg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.d.s",
@@ -1577,7 +1694,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.d.w",
@@ -1597,7 +1716,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::Reg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.d.wu",
@@ -1617,7 +1738,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::Reg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.l.d",
@@ -1637,7 +1760,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::FReg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.l.s",
@@ -1660,7 +1785,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.lu.d",
@@ -1680,7 +1807,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::FReg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.lu.s",
@@ -1703,7 +1832,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.s.d",
@@ -1725,7 +1856,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.s.l",
@@ -1748,7 +1881,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.s.lu",
@@ -1771,7 +1906,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.s.w",
@@ -1794,7 +1931,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.s.wu",
@@ -1817,7 +1956,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.w.d",
@@ -1840,7 +1981,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.w.s",
@@ -1866,7 +2009,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.wu.d",
@@ -1889,7 +2034,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fcvt.wu.s",
@@ -1915,7 +2062,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fdiv.d",
@@ -1934,7 +2083,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fdiv.s",
@@ -1962,7 +2113,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fence",
@@ -1971,7 +2124,9 @@ pub static INSNS: &[InsnDef] = &[
         operands: &["fm", "pred", "succ", "rs1", "rd"],
         from: "rv_i",
         source: "RVI-RV32I §1.1.7 — D-FENCE: one hart, no devices, in-order; decoded, must not trap, no observable effect",
-        effect: &Sem::Nop
+        effect: &Sem::Nop,
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fence.i",
@@ -1980,7 +2135,9 @@ pub static INSNS: &[InsnDef] = &[
         operands: &["imm12", "rs1", "rd"],
         from: "rv_zifencei",
         source: "RVI-ZIFENCEI §4.1 — the declared nop: the coherent/uncached-RAM latitude ('just the fetch pipeline needs to be flushed at a FENCE.I') meets a re-read-per-fetch machine (nothing to flush, D-CODE-VISIBILITY); funct12/rs1/rd decoded-and-ignored per the chapter's shall-ignore rule, never legalization-rejected",
-        effect: &Sem::Nop
+        effect: &Sem::Nop,
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "feq.d",
@@ -1996,7 +2153,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "feq.s",
@@ -2018,7 +2177,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fld",
@@ -2040,7 +2201,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fle.d",
@@ -2056,7 +2219,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fle.s",
@@ -2078,7 +2243,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "flt.d",
@@ -2094,7 +2261,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "flt.s",
@@ -2116,7 +2285,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "flw",
@@ -2141,7 +2312,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmadd.d",
@@ -2161,7 +2334,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs2"),
                 &Sem::FReg("rs3"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmadd.s",
@@ -2193,7 +2368,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmax.d",
@@ -2209,7 +2386,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmax.s",
@@ -2234,7 +2413,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmin.d",
@@ -2250,7 +2431,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmin.s",
@@ -2275,7 +2458,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmsub.d",
@@ -2298,7 +2483,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x8000000000000000),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmsub.s",
@@ -2333,7 +2520,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmul.d",
@@ -2352,7 +2541,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmul.s",
@@ -2380,7 +2571,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmv.d.x",
@@ -2392,7 +2585,9 @@ pub static INSNS: &[InsnDef] = &[
         effect: &Sem::Set(
             &Sem::FReg("rd"),
             &Sem::Reg("rs1"),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmv.w.x",
@@ -2411,7 +2606,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmv.x.d",
@@ -2423,7 +2620,9 @@ pub static INSNS: &[InsnDef] = &[
         effect: &Sem::Set(
             &Sem::Reg("rd"),
             &Sem::FReg("rs1"),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fmv.x.w",
@@ -2442,7 +2641,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FReg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fnmadd.d",
@@ -2468,7 +2669,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x8000000000000000),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fnmadd.s",
@@ -2506,7 +2709,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fnmsub.d",
@@ -2529,7 +2734,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs2"),
                 &Sem::FReg("rs3"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fnmsub.s",
@@ -2564,7 +2771,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsd",
@@ -2583,7 +2792,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::FReg("rs2"),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsgnj.d",
@@ -2604,7 +2815,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x8000000000000000),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsgnj.s",
@@ -2634,7 +2847,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsgnjn.d",
@@ -2658,7 +2873,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x8000000000000000),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsgnjn.s",
@@ -2691,7 +2908,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsgnjx.d",
@@ -2709,7 +2928,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x8000000000000000),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsgnjx.s",
@@ -2736,7 +2957,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsqrt.d",
@@ -2754,7 +2977,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::FReg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsqrt.s",
@@ -2778,7 +3003,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsub.d",
@@ -2797,7 +3024,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs1"),
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsub.s",
@@ -2825,7 +3054,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "fsw",
@@ -2848,7 +3079,9 @@ pub static INSNS: &[InsnDef] = &[
                 0,
                 &Sem::FReg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "jal",
@@ -2874,7 +3107,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x0000000000000004),
                 ),
             ),
-        ])
+        ]),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "jalr",
@@ -2903,7 +3138,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x0000000000000004),
                 ),
             ),
-        ])
+        ]),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lb",
@@ -2928,7 +3165,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lbu",
@@ -2953,7 +3192,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "ld",
@@ -2975,7 +3216,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lh",
@@ -3000,7 +3243,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lhu",
@@ -3025,7 +3270,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lr.d",
@@ -3041,7 +3288,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Lit(0x0000000000000000),
                 &Sem::Reg("rs1"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lr.w",
@@ -3060,7 +3309,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs1"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lui",
@@ -3078,7 +3329,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x000000000000000c),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lw",
@@ -3103,7 +3356,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "lwu",
@@ -3128,7 +3383,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "mret",
@@ -3149,7 +3406,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Lit(0x0000000000000002),
                 &Sem::Inst,
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "mul",
@@ -3164,7 +3423,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "mulh",
@@ -3179,7 +3440,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "mulhsu",
@@ -3194,7 +3457,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "mulhu",
@@ -3209,7 +3474,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "mulw",
@@ -3236,7 +3503,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "or",
@@ -3251,7 +3520,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "ori",
@@ -3269,7 +3540,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Imm("imm12"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "rem",
@@ -3294,7 +3567,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "remu",
@@ -3319,7 +3594,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "remuw",
@@ -3365,7 +3642,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "remw",
@@ -3411,7 +3690,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sb",
@@ -3433,7 +3714,9 @@ pub static INSNS: &[InsnDef] = &[
                 8,
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sc.d",
@@ -3449,7 +3732,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sc.w",
@@ -3468,7 +3753,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sd",
@@ -3487,7 +3774,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Reg("rs2"),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sfence.vma",
@@ -3531,7 +3820,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sh",
@@ -3553,7 +3844,9 @@ pub static INSNS: &[InsnDef] = &[
                 16,
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sll",
@@ -3572,7 +3865,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "slli",
@@ -3587,7 +3882,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Imm("shamt"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "slliw",
@@ -3611,7 +3908,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sllw",
@@ -3639,7 +3938,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "slt",
@@ -3654,7 +3955,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "slti",
@@ -3672,7 +3975,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Imm("imm12"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sltiu",
@@ -3690,7 +3995,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Imm("imm12"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sltu",
@@ -3705,7 +4012,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sra",
@@ -3724,7 +4033,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "srai",
@@ -3739,7 +4050,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Imm("shamt"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sraiw",
@@ -3763,7 +4076,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sraw",
@@ -3791,7 +4106,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sret",
@@ -3834,7 +4151,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Lit(0x0000000000000001),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "srl",
@@ -3853,7 +4172,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Reg("rs2"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "srli",
@@ -3868,7 +4189,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Imm("shamt"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "srliw",
@@ -3892,7 +4215,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "srlw",
@@ -3920,7 +4245,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sub",
@@ -3935,7 +4262,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "subw",
@@ -3962,7 +4291,9 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "sw",
@@ -3984,7 +4315,9 @@ pub static INSNS: &[InsnDef] = &[
                 32,
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "wfi",
@@ -4025,7 +4358,9 @@ pub static INSNS: &[InsnDef] = &[
                 ),
                 &Sem::Nop,
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "xor",
@@ -4040,7 +4375,9 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
     InsnDef {
         name: "xori",
@@ -4058,7 +4395,9 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::Imm("imm12"),
                 ),
             ),
-        )
+        ),
+        length: 4,
+        expansion: None,
     },
 ];
 

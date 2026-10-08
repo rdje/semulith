@@ -23,25 +23,25 @@
 //!   the tracked engine here — `Frame.trapped`, checked at the top of the evaluator and
 //!   before every register write).
 //! - **Translation hooks** (`P4-SYSTEM.3`): every access address passes through
-//!   [`crate::translation`] before it crosses the boundary — fetch in 16-bit
-//!   parcels (decision 5, coalescing to exactly one request whenever the parcels'
-//!   translated addresses share one physical 32-bit unit; under Bare that is every
-//!   case, so the Bare request shape is byte-exact), loads and stores after the
+//!   [`crate::translation`] before it crosses the boundary — each needed fetch parcel
+//!   is translated separately when C is bound (`P4-SYSTEM.12`). The unbound table retains
+//!   its legacy word-fetch route. Loads and stores translate after the
 //!   model-side misalignment check (the pinned implementation-defined priority,
-//!   decision 7). Bare is the exact identity path; satp.MODE=Sv39 enters the walk
-//!   — slice (c)'s — and until then is the named unimplemented case, never a wrong
-//!   answer. The effective mode is the one computation (§2.1.1.6.4): fetch uses
+//!   decision 7). Bare is the exact identity path; satp.MODE=Sv39 enters the walk.
+//!   The effective mode is the one computation (§2.1.1.6.4): fetch uses
 //!   the current mode, data accesses use MPP when MPRV=1, and M is never
 //!   translated.
 //! - **Misaligned data accesses** raise their address-misaligned cause (4/6) before the
 //!   boundary is crossed (D-MISALIGN-DATA: a request the contract forbids must not be
 //!   formed); an outside-every-region access is the boundary's `AccessFault` answer,
 //!   delivered as the matching load/store access-fault cause (5/7).
-//! - **Fetch** — one 32-bit `Fetch` per instruction in Bare (the parcels coalesce —
-//!   above). IALIGN is 16 with C, so a fetch is
+//! - **Fetch** — C-enabled tables read a `FetchParcel` first, then another only for a
+//!   32-bit instruction. The unbound production table still uses word fetches. IALIGN is
+//!   16 with C, so a fetch is
 //!   alignment-legal at any even address; the environment judges (it carries the
 //!   profile's IALIGN as data) and an `AccessFault`/`Misaligned` answer is delivered as
-//!   cause 1/0 with tval the pc. A taken branch or jump to an ODD target raises
+//!   cause 1/0 with tval the failing parcel's VA and xepc the instruction's start.
+//!   A taken branch or jump to an ODD target raises
 //!   cause 0 on the jump (D-IALIGN-16), delivered.
 //! - **Requested traps** — `ecall`/`ebreak` are the semantics data's own `trap-deliver`
 //!   effects (the composition's declared refinement of the base requested-trap form);
@@ -115,6 +115,7 @@ pub fn step_over(
     env: &mut impl Environment,
     insns: &[InsnDef],
 ) -> StepRv64gc {
+    let parcel_fetch = insns.iter().any(|insn| insn.length == 2);
     let pc = state.pc();
     // P4-SYSTEM.5 decision 4: the halted step. While WAITING the step head evaluates
     // the wake FIRST (§2.1.3.3 — a locally-enabled pending interrupt at any privilege,
@@ -142,73 +143,75 @@ pub fn step_over(
         timekeeping::advance(state, false);
         return StepRv64gc::Executed;
     }
-    // The fetch's two 16-bit parcels, translated independently (P4-SYSTEM.3 decision 5).
-    // The recorded coalescing choice: when both parcels' TRANSLATED addresses lie in one
-    // physical 32-bit unit, the fetch is exactly one request — under Bare that is every
-    // case, so the Bare request shape is byte-exact (the corpus's one-fetch-per-step
-    // census is the measurement). A page-straddling instruction fetches each parcel's
-    // own physical unit and joins the halves — two requests, its own case, never
-    // silently coalesced.
-    let parcels = translation::fetch_parcels(pc);
-    let mut parcel_pas = [0u64; 2];
-    for (i, parcel) in parcels.iter().enumerate() {
-        match translation::translate(state, env, *parcel, translation::AccessKind::Fetch) {
-            translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
-                parcel_pas[i] = pa;
-            }
-            translation::Translate::PageFault { cause, tval }
-            | translation::Translate::AccessFault { cause, tval } => {
-                deliver(state, cause, tval, pc);
-                timekeeping::advance(state, false);
-                return StepRv64gc::Executed;
-            }
-            translation::Translate::Failed(error) => return StepRv64gc::Failed(error),
-        }
-    }
-    let coalesced = parcel_pas[1] == parcel_pas[0].wrapping_add(2);
-    let mut fetch16 = |addr: u64, va: u64| -> Result<u64, StepRv64gc> {
-        // one 32-bit fetch at the parcel's physical address; the caller keeps 16 bits
-        match env.request(Request::Fetch { addr }) {
-            Ok(Response::Fetch(word)) => Ok(u64::from(word)),
-            Ok(_) => Err(StepRv64gc::Failed(ModelError::InvalidDescription {
-                what: "environment answered a Fetch with a non-fetch response",
-            })),
-            Err(BoundaryError::Target(Failure::AccessFault)) => {
-                // the boundary's access fault at fetch, delivered (cause 1, tval = the VA)
-                deliver(state, 1, va, pc);
-                timekeeping::advance(state, false);
-                Err(StepRv64gc::Executed)
-            }
-            Err(BoundaryError::Target(Failure::Misaligned)) => {
-                // an odd pc — only a manipulated xepc/xTVEC produces one under IALIGN=16;
-                // the fetch-misaligned case, delivered (cause 0, tval = the VA)
-                deliver(state, 0, va, pc);
-                timekeeping::advance(state, false);
-                Err(StepRv64gc::Executed)
-            }
-            Err(BoundaryError::Violation(violation)) => {
-                Err(StepRv64gc::Failed(ModelError::ContractViolation(violation)))
-            }
-        }
-    };
-    let word = if coalesced {
-        // the parcels' one shared physical unit: exactly one fetch request (the Bare
-        // request shape, byte-exact)
-        match fetch16(parcel_pas[0], pc) {
-            Ok(w) => w as u32,
+    // C-enabled tables use exact parcels. Until C binds, retain the production corpus's
+    // legacy fetch shape; its contract changes with the bind, never ahead of it.
+    let word = if parcel_fetch {
+        match fetch_instruction(state, env, pc) {
+            Ok(word) => word,
             Err(outcome) => return outcome,
         }
     } else {
-        // the straddle: each parcel's own unit, 16 bits from each
-        let lo = match fetch16(parcel_pas[0], parcels[0]) {
-            Ok(w) => w & 0xFFFF,
-            Err(outcome) => return outcome,
+        let parcels = translation::fetch_parcels(pc);
+        let mut parcel_pas = [0u64; 2];
+        for (i, parcel) in parcels.iter().enumerate() {
+            match translation::translate(state, env, *parcel, translation::AccessKind::Fetch) {
+                translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => {
+                    parcel_pas[i] = pa;
+                }
+                translation::Translate::PageFault { cause, tval }
+                | translation::Translate::AccessFault { cause, tval } => {
+                    deliver(state, cause, tval, pc);
+                    timekeeping::advance(state, false);
+                    return StepRv64gc::Executed;
+                }
+                translation::Translate::Failed(error) => return StepRv64gc::Failed(error),
+            }
+        }
+        let coalesced = parcel_pas[1] == parcel_pas[0].wrapping_add(2);
+        let mut fetch16 = |addr: u64, va: u64| -> Result<u64, StepRv64gc> {
+            // one 32-bit fetch at the parcel's physical address; the caller keeps 16 bits
+            match env.request(Request::Fetch { addr }) {
+                Ok(Response::Fetch(word)) => Ok(u64::from(word)),
+                Ok(_) => Err(StepRv64gc::Failed(ModelError::InvalidDescription {
+                    what: "environment answered a Fetch with a non-fetch response",
+                })),
+                Err(BoundaryError::Target(Failure::AccessFault)) => {
+                    // the boundary's access fault at fetch, delivered (cause 1, tval = the VA)
+                    deliver(state, 1, va, pc);
+                    timekeeping::advance(state, false);
+                    Err(StepRv64gc::Executed)
+                }
+                Err(BoundaryError::Target(Failure::Misaligned)) => {
+                    // an odd pc — only a manipulated xepc/xTVEC produces one under IALIGN=16;
+                    // the fetch-misaligned case, delivered (cause 0, tval = the VA)
+                    deliver(state, 0, va, pc);
+                    timekeeping::advance(state, false);
+                    Err(StepRv64gc::Executed)
+                }
+                Err(BoundaryError::Violation(violation)) => {
+                    Err(StepRv64gc::Failed(ModelError::ContractViolation(violation)))
+                }
+            }
         };
-        let hi = match fetch16(parcel_pas[1], parcels[1]) {
-            Ok(w) => w & 0xFFFF,
-            Err(outcome) => return outcome,
-        };
-        (lo | (hi << 16)) as u32
+        if coalesced {
+            // the parcels' one shared physical unit: exactly one fetch request (the Bare
+            // request shape, byte-exact)
+            match fetch16(parcel_pas[0], pc) {
+                Ok(w) => w as u32,
+                Err(outcome) => return outcome,
+            }
+        } else {
+            // the straddle: each parcel's own unit, 16 bits from each
+            let lo = match fetch16(parcel_pas[0], parcels[0]) {
+                Ok(w) => w & 0xFFFF,
+                Err(outcome) => return outcome,
+            };
+            let hi = match fetch16(parcel_pas[1], parcels[1]) {
+                Ok(w) => w & 0xFFFF,
+                Err(outcome) => return outcome,
+            };
+            (lo | (hi << 16)) as u32
+        }
     };
     let Some(insn) = insns.iter().find(|i| word & i.mask == i.value) else {
         // a step boundary without an instruction (the diagnostic policy converts one
@@ -230,6 +233,7 @@ pub fn step_over(
         env,
         pc,
         word,
+        instruction_bits: u32::from(insn.length) * 8,
         operands: extract(insn, word),
         pre_regs: [0; 32],
         pre_fregs: [0; 32],
@@ -240,6 +244,26 @@ pub fn step_over(
     for i in 0..32 {
         frame.pre_regs[i] = frame.state.read_x(i as u8);
         frame.pre_fregs[i] = frame.state.read_f(i as u8);
+    }
+    if let Some(expansion) = insn.expansion {
+        // Every mapping reads the ORIGINAL fields. Replace them only after all
+        // mappings have evaluated, retaining each value's own signed width.
+        if expansion
+            .reserved
+            .is_some_and(|predicate| frame.run(predicate).0 != 0)
+        {
+            frame.deliver(2, u64::from(word));
+        } else {
+            let operands = expansion
+                .bindings
+                .iter()
+                .map(|binding| {
+                    let (value, width) = frame.run(binding.value);
+                    (binding.name, value, width)
+                })
+                .collect();
+            frame.operands = operands;
+        }
     }
     frame.run(insn.effect);
     if let Some(error) = frame.failed {
@@ -252,13 +276,60 @@ pub fn step_over(
         frame.state.hart_state().enter();
     }
     if !frame.pc_written {
-        frame.state.set_pc(pc.wrapping_add(4));
+        frame.state.set_pc(pc.wrapping_add(u64::from(insn.length)));
     }
     // P4-SYSTEM.5 decision 1: the declared virtual-time domain ticks at every step
     // boundary; minstret counts GENUINELY — a trap-delivering instruction's step
     // retires nothing (a completed one, `!frame.trapped`, retires one)
     timekeeping::advance(frame.state, !frame.trapped);
     StepRv64gc::Executed
+}
+
+/// Fetch only the parcels this instruction needs. Each parcel is translated before
+/// its exact two-byte boundary request; a second-parcel fault carries pc+2 in xtval
+/// and the instruction's start in xepc.
+fn fetch_instruction(
+    state: &mut ArchitecturalState,
+    env: &mut impl Environment,
+    pc: u64,
+) -> Result<u32, StepRv64gc> {
+    let mut fetch = |va| {
+        let pa = match translation::translate(state, env, va, translation::AccessKind::Fetch) {
+            translation::Translate::Identity(pa) | translation::Translate::Physical(pa) => pa,
+            translation::Translate::PageFault { cause, tval }
+            | translation::Translate::AccessFault { cause, tval } => {
+                deliver(state, cause, tval, pc);
+                timekeeping::advance(state, false);
+                return Err(StepRv64gc::Executed);
+            }
+            translation::Translate::Failed(error) => return Err(StepRv64gc::Failed(error)),
+        };
+        match env.request(Request::FetchParcel { addr: pa }) {
+            Ok(Response::FetchParcel(parcel)) => Ok(parcel),
+            Ok(_) => Err(StepRv64gc::Failed(ModelError::InvalidDescription {
+                what: "environment answered a FetchParcel with a non-parcel response",
+            })),
+            Err(BoundaryError::Target(failure)) => {
+                let cause = match failure {
+                    Failure::AccessFault => 1,
+                    Failure::Misaligned => 0,
+                };
+                deliver(state, cause, va, pc);
+                timekeeping::advance(state, false);
+                Err(StepRv64gc::Executed)
+            }
+            Err(BoundaryError::Violation(violation)) => {
+                Err(StepRv64gc::Failed(ModelError::ContractViolation(violation)))
+            }
+        }
+    };
+    let lo = u32::from(fetch(pc)?);
+    // ILEN=32: every longer encoding is refused by decode from its available first
+    // parcel, without requesting bytes outside this profile's maximum instruction.
+    if lo & 3 != 3 || lo & 0x1f == 0x1f {
+        return Ok(lo);
+    }
+    Ok(lo | (u32::from(fetch(pc.wrapping_add(2))?) << 16))
 }
 
 /// Deliver a trap through the privilege machinery (the one path): cause, tval, the
@@ -311,6 +382,7 @@ struct Frame<'a> {
     env: &'a mut dyn Environment,
     pc: u64,
     word: u32,
+    instruction_bits: u32,
     operands: Vec<(&'static str, u64, u32)>,
     pre_regs: [u64; 32],
     /// The pre-instruction f-file — `(freg x)` reads it (the READS-AND-WRITES contract).
@@ -354,7 +426,7 @@ impl Frame<'_> {
             }
             Sem::Imm(name) | Sem::Field(name) => self.operand(name),
             Sem::Pc => (self.pc, 64),
-            Sem::Inst => (u64::from(self.word), 64),
+            Sem::Inst => (u64::from(self.word), self.instruction_bits),
             Sem::Mode => (self.state.mode().code(), 64),
             Sem::Xlen => (64, 64),
             Sem::Add(a, b) => arith2(self, a, b, u64::wrapping_add),

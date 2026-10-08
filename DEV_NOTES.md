@@ -1,5 +1,19 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — execute the mappings before replacing the fields (P4-SYSTEM.12 c2)
+
+C expansions reuse ordinary instruction rules, but those rules read base operand names.
+The evaluator maps all bindings over the original compressed fields, preserves each value
+and width, then replaces the operand set. Otherwise a sign bit can disappear or a mapping
+can accidentally read an already-replaced field. Exact parcel requests let the processor
+decide length before touching the next page. Restart state belongs to the instruction start;
+a fault value belongs to the failing parcel. The unbound production table retains its fetch
+shape until the bind. Its generator now emits optional expansion metadata even when absent.
+
+- Validation: 15 permanent engine probes green, all 15 RED on b71bc1b; two behavioral mutation
+  controls; DEF-GEN 54/54; strict workspace checks green. C binding/reference evidence next.
+- Promotion: declined — the tracked probe and controls retain the evidence.
+
 ## _(2026-10-08)_ — a masked word is still a four-byte request (P4-SYSTEM.12 c1)
 
 The helper named fetch16 requested four bytes and masked its reply. A two-byte instruction

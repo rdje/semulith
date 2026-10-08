@@ -235,7 +235,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (c2): parcel-first fetch and expansion execution; (a)–(c1) committed |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d): parcel-aware assembler, guest generator, authoring tool and Sail harness; (a)–(c2) committed |
 
 ## Decisions
 
@@ -255,6 +255,12 @@ This gate authorises the planned next engineering stage: board implementation.
   until the bind; the bound corpus's parcel counts are re-derived in (d)–(e), and contract
   v2 states the new extent. Register/control-flow identity remains the regression claim.
   The roadmap and leaf acceptance are unchanged; no CPU conformance claim is added.
+  Slice (c2) emits length/optional expansion metadata for every rv64gc table (length 4,
+  expansion absent while C is unbound); rv64i's table remains structurally unchanged.
+  A permanent probe builds a temporary composition with C and compiles the tracked engine
+  against that generated table. It verifies exact parcel requests, a second-parcel fault,
+  mapped immediate widths, reserved/HINT distinctions, links and FP gating. The temporary
+  composition is evidence for the engine, never a tracked unowned generated definition.
 - `2026-10-07` (crash recovery, director request): recover the interrupted session and stop at
   the next handoff-ready checkpoint. `git status --short` at `f877726` found five surviving
   files owned by `.12` slice (b): `c.sem.sexp`, `m.sem.sexp`, `schema/semantics.sexp`,
@@ -539,11 +545,11 @@ This gate authorises the planned next engineering stage: board implementation.
 - ~~Exact privilege specification revision.~~ Closed `2026-10-03` by `.1`'s
   D-PRIV-REVISION: Machine-Level ISA 1.13 + Supervisor-Level ISA 1.13 under the pinned
   `v20260120` publication.
-- Which Rust floating-point implementation, if any, qualifies. Due before `.7` completes; until
-  then floating point is **not** part of the profile.
-- What supplies an **independent** numeric expected value, given that both available reference
-  models descend from the same SoftFloat source? Routed in from `P0-PROFILE.7` with its
-  measurement; due before `.7` can call any numeric comparison independent.
+- ~~Which Rust floating-point implementation qualifies.~~ Closed by `.7`: rustc_apfloat
+  `=0.2.3` behind the measured RISC-V model layer (qualification decision and acceptance
+  measurement linked in `.7`'s Result). F/D are selected and bound; CPU acceptance stays open.
+- ~~What supplies independent numeric expectations.~~ Closed by `.7`: the spec-side exact-rational
+  reference and its hardware controls. Sail/Spike's shared SoftFloat ancestry remains recorded.
 
 ## Blockers
 
@@ -753,6 +759,43 @@ never raised, at every crossing. The index:
   into archive part 4 to leave room below the unchanged per-part ceiling.
   promotion: declined (the typed boundary and its extent tests retain this local finding).
 
+`P4-SYSTEM.12` slice (c2) — the engine, proven before C binds (`2026-10-08`, `SEMULITH-P4-0083`):
+
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/probe_c_engine.py --engine-revision b71bc1b`
+  → 0 passed / 15 failed (compiled successfully). On a temporary C composition the old
+  evaluator reads missing base operands, advances pc by four, reads a whole word for a
+  parcel and walks the next page before it knows the length; the failures name those cases.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the baseline probe's panics name
+  `exec_rv64gc.rs:331` (missing rd/rs1); its compressed-last-parcel test observes pc=0,
+  x1=0 instead of 0x5000/1. `rg -n 'wrapping_add\(4\)|operands: extract|fetch16'
+  crates/semulith-core/src/exec_rv64gc.rs` pins the hard-coded length, unmapped fields and
+  over-wide request. Generation had emitted C bindings, but no evaluator consumed them.
+- [x] **FIX** — rv64gc tables always carry length and optional expansion metadata (4/None
+  while unbound). The C-enabled table reads exact parcels in order; only a 32-bit encoding
+  requests the second. It maps all operands against the original fields before replacing
+  them, retains value widths, judges reserved predicates before effects, advances pc by the
+  declared length, and exposes the instruction's own bit width through `inst`. Legacy fetch
+  remains for the unbound table; rv64i changes only its generator fingerprint.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_c_engine.py` → 15 passed / 0 failed.
+  Hand-written instruction words and request schedules check signed immediates and jumps at
+  their extremes, unsigned load offsets, overlapping operands, hints, reserved parcels,
+  breakpoint specificity, FP gating/dirty state, 16/32-bit intermixing, 2-mod-4 targets,
+  address wrap and malformed-environment classification. At a last halfword, C never walks
+  the next page; a word's second-parcel page fault yields cause 12 / tval=pc+2 / epc=pc,
+  and its access-fault pair yields cause 1 with the same address discipline. No fault retires.
+- [x] **NO REGRESSION** — `make check` rc=0 (150 core / 17 DSP / 193 verify tests, strict
+  clippy and fmt). `bash scripts/check_definition_gen.sh --self-test` → 54/54: the new
+  compiled-engine GREEN and both RED mutations execute (erased mapped widths fail the
+  signed-immediate test; word-for-parcel fetch fails the mixed-length/region-end test).
+  The permanent probe runs within DEF-GEN on every commit. `git diff` on rv64i's generated
+  module shows only the generator hash changed. C remains unbound in production until (e);
+  the full corpus and matched Sail evidence remain (d)–(f), never claimed by these probes.
+- [x] **LOCKSTEP** — the tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged), task
+  index, CHANGELOG, DEV_NOTES, toolbox/doctrine descriptions, and C chapter. Two stale
+  FP open-question rows corrected from `.7`'s committed result. All books must build and
+  the commit doctrine gate must pass. `check_derived_counts.sh --list` re-derives 493 arms.
+  promotion: declined (the permanent engine probe and its RED controls retain the lesson).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -762,6 +805,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (c2) | 15 engine probes (baseline 0/15); DEF-GEN 54/54; make check | C evaluator ready; exact fetch and expansion execution proven on temporary composition; (d) tools next |
 | `2026-10-08` | `.12` slice (c1) | make check; parcel extent, alignment, visibility, refusal spans | typed two-byte boundary ready; existing corpus unchanged; (c2) next |
 | `2026-10-07` | `.12` slice (b) | 37/37 declarations; SEMANTICS 46/46 controls; DEF-GEN 51/51 (104 spec-side checks, compiled decoder 8/8); citations 0 findings; make check + make gate + all books green; handoff OK | the language and generator ready; crash recovered; handoff before (c) |
 | `2026-10-06` | `.12` slice (a2) | the boundary tests RED on both engines, then GREEN; both corpora unchanged (76/76) | JAL's offset sign fixed |
@@ -809,6 +853,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice c2) | `SEMULITH-P4-0083 (leaf P4-SYSTEM.12): execute compressed expansions and fetch only the required parcels` | (d) tools next; production C bind remains (e) |
 | `.12` (slice c1) | `SEMULITH-P4-0082 (leaf P4-SYSTEM.12): add exact two-byte instruction fetches to the environment boundary` | (c2) engine next |
 | `.12` (slice b) | `SEMULITH-P4-0081 (leaf P4-SYSTEM.12): recover the interrupted C language slice; declare expansions and decode by specificity` | handoff; (c) next |
 | `.12` (slice a2) | `SEMULITH-P4-0080 (leaf P4-SYSTEM.12): slice a2 — a found defect owned: JAL's offset sign was taken from bit 19 in both engines; pinned at the boundary and the extremes` | (b) next |
@@ -854,6 +899,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 ## Changelog
 
+- `2026-10-08`: `.12` (c2) done: parcel-first fetch and length-aware expansion execution;
+  permanent 15-case probe, baseline RED, two mutation controls; DEF-GEN 54/54. (d) next.
 - `2026-10-08`: `.12` (c1) done: typed parcel boundary and extent tests; PNT resumed.
   The closed `.11` checklists archived verbatim to part 4.
 - `2026-10-07`: `.12` slice (b) done (`SEMULITH-P4-0081`) — the interrupted session recovered:

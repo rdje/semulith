@@ -385,6 +385,15 @@ PY
   arm "RED an unbound base operand is refused by generation" "$rc" 2 "$out" "c.j: binds"
   cp definitions/riscv/c.sem.sexp "$t/gc/definitions/riscv/c.sem.sexp"
 
+  # P4-SYSTEM.12 c2: compile the TRACKED evaluator on the temporary C composition.
+  # Each RED arm requires a behavioral test failure, never a compile/tool failure.
+  out="$(python3 scripts/probe_c_engine.py 2>&1)"; rc=$?
+  arm "GREEN C's exact parcel and expansion execution" "$rc" 0 "$out" "15 passed; 0 failed"
+  out="$(python3 scripts/probe_c_engine.py --mutation erase-expansion-widths 2>&1)"; rc=$?
+  arm "RED losing a mapped immediate's width changes execution" "$rc" 1 "$out" "c_engine::signed_immediates_keep_their_mapped_widths ... FAILED"
+  out="$(python3 scripts/probe_c_engine.py --mutation word-parcel-read 2>&1)"; rc=$?
+  arm "RED a word read crosses the first parcel's region" "$rc" 1 "$out" "c_engine::mixed_lengths_at_two_mod_four_and_exact_region_end ... FAILED"
+
   # The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror
   # pair — pinned against the REAL pair, not a synthetic one.
   out="$(python3 scripts/gen_definition.py --check --encoding "$ENCODING_GC" --state "$STATE_GC" \

@@ -19,15 +19,10 @@
 //!   the V/reserved/RW/PBMT/N checks, superpage misalignment, non-leaf D/A/U
 //!   reserved, U/SUM/MXR and R/W/X permissions, Svade's page-fault-instead-of-
 //!   update, and the physical address by level).
-//! - **Fetch in 16-bit parcels** (decision 5): each parcel's address translates
-//!   independently, forward-compatible with the C slot (`DIFF-FETCH-GRANULARITY` —
-//!   Sail's two-16-bit-fetch granularity is the measured reference precedent). The
-//!   recorded coalescing choice: when both parcels' TRANSLATED addresses lie in one
-//!   physical 32-bit unit, the fetch issues exactly one `Request::Fetch` — under
-//!   Bare that is every case, so the Bare request shape is byte-exact (measured:
-//!   the corpus's one-fetch-per-step census is unchanged). The page-straddling
-//!   case (parcels mapping non-contiguously) fetches each parcel's own unit —
-//!   slice (c)'s, named here as its own case rather than silently coalesced.
+//! - **Fetch in 16-bit parcels**: each requested parcel's address translates
+//!   independently (`DIFF-FETCH-GRANULARITY`). C-enabled tables request exactly the first
+//!   parcel before deciding whether a second is needed (`P4-SYSTEM.12`). Until the C bind,
+//!   the production table retains decision 5's legacy coalescing route in `exec_rv64gc`.
 //! - **The page-fault causes enter core as raw u64** (12/13/15, RVP-SUPERVISOR's
 //!   cause table): the typed-enum asymmetry is a stated choice — the base
 //!   profile's `outcome.rs` enumerates rv64i's cause vocabulary because rv64i's
