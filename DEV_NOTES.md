@@ -1,5 +1,25 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — an author is an input worth tracking (P4-SYSTEM.12 d3a)
+
+The latest rv64gc expectation producer lived only in target/. Promotion retains its spec-side
+rules and adds repository-derived paths and non-writing checks. A 139-program census measured
+42 byte-identical authored records, 49 other outputs and 48 unsupported programs. Only the
+42 are the declared owned check corpus; no historical expectation is overwritten. All 91
+outputs stayed exact before semantic repairs. Reserved OP/shift bits previously selected
+ordinary operations; narrow fixed-bit guards now refuse them and unknown stock mnemonics
+refuse by name. The permission audit found missing SUM/MXR/U checks, repaired from the pinned
+supervisor chapter. The affected guest now agrees on all 169 committed observations; the
+other 90 legacy output texts are unchanged.
+
+- Validation: owned 42 exact, seven reserved refusals, direct SUM/MXR/U PTE fixtures, six
+  behavioral RED mutations; GUEST-GEN 30/30. The component probe uses no instruction engine.
+- Scope: source-end stopping and missing instruction-fetch translation still limit this
+  author; d3d owns run-off/straddle support before C evidence. The scratch Sail comparator
+  also admitted an empty failed trace as AGREE for ordinary no-write steps; d3b owns repair
+  and an audit of prior traces. Both findings are durable in the task tree.
+- Promotion: declined — the tracked author, owned corpus and controls retain the local lesson.
+
 ## _(2026-10-08)_ — the fixture must retain the assembler's extent (P4-SYSTEM.12 d2)
 
 A word fixture cannot represent a compressed guest. The generator now reads sized units at

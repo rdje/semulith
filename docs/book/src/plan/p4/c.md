@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–d2; expectation/Sail tools and production bind next)
+**Status:** Underway (slices a–d3a; Sail/C authoring tools and production bind next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -92,6 +92,17 @@ a two-byte offset, a jump over an illegal parcel and a trailing halfword. Its fi
 steps request six parcels. Padding the image or moving the loader's offset makes the checks
 fail. All 139 existing rv64gc images and observations remain unchanged in this slice.
 
-The production profile still declares C unbound. The next slice promotes and extends the
-expectation author and Sail adapter. The specification-derived corpus and C bind land
-together, followed by the matched Sail experiment. These probes are finite component evidence.
+Slice (d3a) promotes the expectation author into tracked code. It computes values from
+spec-side rules and offers non-writing checks. Its 42 declared historical records re-derive
+byte-for-byte. The broader census caught reserved upper bits being interpreted as ordinary
+operations, and missing SUM/MXR/U permissions in its data walk; both are fixed. The affected
+permission guest now matches all 169 committed step observations. Direct permission fixtures
+and six mutations guard the repairs, without using the instruction engine as an oracle.
+The author still has a bounded vocabulary: C expansion and instruction-fetch translation
+follow in later slices. Existing records keep their original provenance.
+
+The production profile still declares C unbound. Next is the tracked Sail adapter and a repair
+for its scratch comparator, which could accept an absent ordinary no-write step as agreement.
+Prior experiment traces will be audited for that gap. C authoring and parcel fetch follow;
+the specification-derived corpus and C bind land together, then the matched Sail experiment.
+These probes are finite component evidence.

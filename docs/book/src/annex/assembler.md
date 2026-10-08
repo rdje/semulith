@@ -188,6 +188,32 @@ does not change observations: both modes carry the same specification-derived ex
 A compiled probe checks exact loaded bytes and mixed instruction execution through the tracked
 runner. Padding the generated image or changing its load offset fails the check.
 
+## The spec-side expectation author
+
+`scripts/derive_rv64gc_expectations.py` computes expected observations independently of the
+instruction engine, using hand-written specification rules and the exact-rational FP
+reference. A source directive can explain the computed result and name its locator:
+
+```text
+addi x5, x0, 1  #: the stage marker begins at 1. | RVI-RV32I 1.1.4
+```
+
+```sh
+# compare the explicit historical author corpus without changing a file:
+python3 scripts/derive_rv64gc_expectations.py --check-owned
+# inspect one record for drift, or author it deliberately:
+python3 scripts/derive_rv64gc_expectations.py --check profiles/rv64gc-lab-v0/guests/m-div.s
+python3 scripts/derive_rv64gc_expectations.py profiles/rv64gc-lab-v0/guests/m-div.s
+```
+
+The promotion census identifies 42 records that this producer re-derives byte-for-byte.
+Other legacy records keep their original producers and prose; this is an explicit bounded
+author, with unknown instruction shapes refused by name. Reserved OP/shift upper bits refuse
+before effects. Its data walk checks SUM, MXR and the U bit, including the rule that SUM
+allows supervisor data access to user pages but never supervisor instruction fetch there.
+C expansion and instruction-fetch translation are still upcoming authoring work. None of
+these checks turn the author into a conformance oracle.
+
 ## The ELF writer — and a measured harness difference
 
 `write_elf64()` wraps the words in a minimal ELF64 little-endian RISC-V executable: one

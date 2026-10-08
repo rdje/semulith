@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0086 (leaf P4-SYSTEM.12, slice d3a) — the tracked expectation author
+
+- Promoted the spec-side producer with repository-derived paths and non-writing checks;
+  42 owned records regenerate exactly. Repaired reserved OP/shift over-decode and SUM/MXR/U
+  permissions; repaired permission guest agrees on all 169 observations. Six mutations
+  fail, GUEST-GEN 30/30. No records overwritten. Sail's absent-trace defect owned next;
+  C expansion/fetch authoring follows. Completed .12 checklists archived verbatim.
+
 ## SEMULITH-P4-0085 (leaf P4-SYSTEM.12, slice d2) — exact guest byte images
 
 - rv64gc fixtures emit exact bytes and the runner loads them directly. Scalar word API

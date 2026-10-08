@@ -235,9 +235,59 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | slice (d3): promote and extend expectation author/Sail tools; image generator/runner (d2) committed |
+| 1 | `P4-SYSTEM.12` | `active` | slice (d3b): promote/repair Sail and audit prior traces; author (d3a) committed; C expansion/fetch next |
 
 ## Decisions
+
+- `2026-10-08` (author observation audit, before permission repair): 88 of 91 emitted
+  legacy derivations agree with committed step/write/fetch observations; 49 text differences
+  are mostly original authoring prose/format. Three numerical mismatches were investigated:
+  dir-runoff intentionally expects the implicit zero instruction after the payload, while
+  the tool stops at source end; sv39-straddle runs translated code outside its source map,
+  while this tool has no fetch translation; both are explicitly owned by d3d's fetch/budget
+  work before C evidence. sv39-perm-usr differs at step 120: the producer rejects an S load
+  from U=1 with SUM=1 and ignores MXR. The pinned supervisor.html lines 650–670 and
+  2478–2490 require those permissions, matching the committed guest. Fix these small data
+  permission omissions in d3a, including U-mode's U-bit requirement; direct PTE fixtures
+  check SUM data/fetch separation, MXR and U-mode. Re-measure the affected legacy output
+  against the committed observations; the 42 owned byte-identical records must stay exact.
+
+- `2026-10-08` (author census, d3a): the existing producer regenerates 42 committed
+  expectation documents byte-identically; 49 other derivations differ and 48 guests refuse
+  (139 inspected). Retain the 42 as the explicit owned check corpus; compare all 91 emitted
+  before/after texts during promotion without overwriting a record. Older incompatible
+  programs are outside this producer's current vocabulary, not newly authored evidence.
+  `execute(Hart(), 0x04000033)`, 0x04001013 and 0x04004033 all accept reserved upper bits
+  as sub/slli/xor. Land narrow independent fixed-bit guards now; add misc-mem's reserved
+  funct3 guard and turn unsupported stock mnemonics into named Refusal rather than KeyError.
+  The C additions follow after this safe promotion. Baseline outputs/census retained under
+  target/p4-system-12/d3-author-{before,census}.json. New checker output reports the owned
+  corpus and behavioral controls; the malformed-word cases must refuse before effects.
+
+- `2026-10-08` (d3 execution split, before changes): d3a promotes the existing spec-side
+  expectation author with repository-derived paths and a non-writing --check mode, and
+  measures its exact corpus of byte-identical re-derivations. The small reserved OP/shift
+  guards and named unsupported-mnemonic refusals land here before this producer is exposed;
+  C and fetch extensions follow in d3c/d3d. Its unsupported older guests
+  remain explicit scope, never a claim that it authored every legacy record. The reserved
+  OP/shift over-decode repair carries spec-side controls.
+  d3b promotes/repairs the Sail adapter. d3c teaches independent C expansions; d3d adds
+  parcel-wise fetch and explicit run budgets (split further if needed); the bound C corpus
+  then uses tracked tools.
+  Completed .12 (a), (a2), (b) checklists move byte-verbatim to archive/P4-SYSTEM-5.md;
+  reconstruction proved identical before editing the live tree. No ceiling changes.
+  **Owned Sail comparator defect (priority: before the C matched experiment, d3b):**
+  `target/p4-system-12/d3-sail-gap.log` reproduces AGREE for a failed reference, empty trace,
+  and one expected ordinary no-write step. compare_sail.py skips any missing row when its
+  expected writes are empty and ignores process status. That admits absent evidence. The
+  tracked adapter must distinguish an explicitly declared delivery gap from a missing
+  ordinary instruction and refuse failed/incomplete reference runs. Audit prior selected
+  experiment traces for missing ordinary rows before retaining their conclusions.
+  **Owned author over-decode (priority: d3a):** execute's OP branch selects sub for any
+  nonzero funct7 with funct3=0 and accepts xor/or/and regardless of funct7; the SLLI branch
+  ignores reserved upper bits. Reproduce reserved words against the scratch producer,
+  require a named refusal or the profile's declared illegal delivery, and regression-check
+  every previously authored record. No C evidence may use the producer before this fix.
 
 - `2026-10-08` (d2 scope before changes): retain the rv64i word fixture/API used by
   replay/reduction and emit rv64gc's exact bytes with an explicit `--image-format bytes`
@@ -607,163 +657,6 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 
-`P4-SYSTEM.12` slice (a) — the C re-pin and the fragment: 37 forms, their scatter layouts, the declared specializations (`2026-10-06`, `SEMULITH-P4-0079`):
-
-- [x] **REPRODUCE / ISSUE** — at `2c7c454` no C table is on disk or pinned and no fragment exists:
-
-  ```
-  $ ls target/refs/riscv-opcodes/ | grep -c _c → 0
-  $ git ls-files 'definitions/riscv/c.sexp' → nothing
-  $ python3 scripts/check_encoding_disjoint.py definitions/riscv/c.sexp (first draft, before the rule) → rc=1:
-    COLLISIONS … c.addi16sp overlaps c.lui, c.ebreak overlaps c.jalr, c.jr overlaps c.mv … REJECTED
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: C's first slice. Two measured facts shaped it:
-  the base layout loader accepted only `imm[…]` descriptors (`git show HEAD:scripts/riscv_asm.py`,
-  `load_immediate_layout` — the C pieces read `uimm[…]`, `nzimm[…]`, `nzuimm[…]`); and the
-  disjointness rule had no notion of an overlap BY DESIGN, which the pinned table itself lists
-  (`constants.py` `overlapping_instructions`, six pairs).
-
-- [x] **FIX** — the ledger re-pins `rv_c` (23 rows), `rv64_c` (10), `rv_c_d` (4) by content (the
-  RV32-only tables deliberately not pinned); `fetch_references.sh`'s census gains the named C
-  exclusion (flips when the scope declares a `c.` form); `load_immediate_layout` takes a field set
-  and the C descriptors (the base path byte-identical: all nine fragments regenerate unchanged);
-  `gen_fragments.py` emits `definitions/riscv/c.sexp` — 37 forms, 11 register fields, 24
-  immediate-piece scatter layouts, and the six upstream overlaps as `(specializes …)` oriented by
-  the fixed bits (refused at generation if neither row contains the other); `schema/fragment.sexp`
-  gains the construct; the resolver carries it; `check_encoding_disjoint.judge_overlaps` accepts
-  exactly the DECLARED strict specializations — one rule, used by UNIT-COMPOSITION too.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 scripts/check_encoding_disjoint.py definitions/riscv/c.sexp → composed set: 37 instruction(s);
-    declared specializations: 6 (the special row decodes first); no collisions … the fragments COMPOSE
-  $ python3 scripts/check_encoding_disjoint.py <rv64i zicsr f d a m c> → composed set: 192 instruction(s) … COMPOSE
-  $ python3 scripts/check_encoding_disjoint.py --self-test → 17 pass / 0 fail (5 new: a declared strict
-    specialization GREEN; the same overlap undeclared, a reversed declaration, a declaration naming an absent
-    row, an overlap the declaration does not name — each RED)
-  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 → MATCH rv_c / rv64_c / rv_c_d; MATCH encoding
-    tables vs profile scope 163 == 163 (C excluded by name until the bind); fetch_references: ok
-  every C piece layout reconciles with its field width (24 of 24; e.g. c_imm12 (12, 2) [(11,11),(4,4),(9,8),(10,10),(6,6),(7,7),(3,1),(5,5)])
-  ```
-
-- [x] **NO REGRESSION** — the nine existing fragments byte-identical (`git status --short definitions` →
-  only `c.sexp` new); `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — the ledger, the fetch/census script, the loader, the fragment generator, the
-  fragment and its schema, the resolver, the disjointness rule and UNIT-COMPOSITION, `GS-REPORT.md`,
-  this tree, `CHANGELOG.md`, `MEMORY.md`, the book (`plan/p4/c.md`, new).
-  promotion: declined (the overlap-by-design rule is recorded in its schema construct and its checker; no general lesson)
-
-`P4-SYSTEM.12` slice (a2) — a found defect, owned: JAL's offset sign taken from bit 19 in both engines (`2026-10-06`, `SEMULITH-P4-0080`):
-
-- [x] **REPRODUCE / ISSUE** — found reading `extract()` for slice (b) (C's immediates are scattered
-  pieces too), then reproduced on both CLIs with assembler-built ELFs:
-
-  ```
-  $ semulith run jal-back-rv64i-lab-v0.elf --profile=rv64i-lab-v0 --steps=2 (rc=1) → trap cause=0x00
-    tval=0x000000008007fffe — the specification's target is 0x7ff7fffe (pc - 0x80002)
-  $ semulith run jal-fwd-rv64gc-lab-v0.elf --profile=rv64gc-lab-v0 --steps=2 → [1] [M]: 0x000000007ff80000
-    — the specification's target is 0x80080000 (pc + 0x80000)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — both extractors push a scattered field at its FIELD width:
-  `git show HEAD:crates/semulith-core/src/exec.rs` (`let width = u32::from(f.hi - f.lo + 1)` in the
-  generic arm) and `exec_rv64gc.rs` `extract()` (the same). `jimm20` is 20 bits wide but carries
-  imm[20:1], so `(sext 64 (imm jimm20))` extended from bit 19. `exec.rs`'s own module doc states the
-  intended algebra — "an `Imm` carries its composed field width (12/13/21/20 for
-  imm12/bimm12/jimm20/imm20)" — and `bimm12` was special-cased to 13; `jimm20` never was. No corpus
-  program jumps ±512 KiB.
-
-- [x] **FIX** — a scattered field carries the width of the immediate it composes (its highest piece
-  bit + 1) in both extractors; `jal_offsets_at_the_sign_boundary_reach_their_targets` in both engines'
-  tests (the words from the tracked assembler: a below-boundary control, +2^19, −2^19 − 4, and both
-  extremes); the rv64i release decision amended (the released evidence unaffected by construction).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  before the fix: cargo test -p semulith-core jal_offsets → test result: FAILED. "jal 0x80000 … left:
-    18446744073709031424, right: 528384"; cargo test -p semulith-verify jal_offsets → test result: FAILED.
-  after: both → test result: ok. 1 passed
-  $ cargo test -p semulith-verify run → test result: ok. 76 passed (both corpora: no guest's observations moved)
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — both engines and their tests, the rv64i release decision (amendment), this tree
-  (the execution decision recorded), `DEV_NOTES.md`, `CHANGELOG.md`, `MEMORY.md`, the book
-  (`plan/p4/c.md`).
-  promotion: declined (the boundary test is the durable record; the class — small corpus programs never reach an immediate's sign boundary — is mechanized for C at slice (b), whose expansion vectors cover every immediate's extremes)
-
-`P4-SYSTEM.12` slice (b) — the language for C; interrupted session recovered (`2026-10-07`, `SEMULITH-P4-0081`):
-
-- [x] **REPRODUCE / ISSUE** — the crash left five uncommitted files at `f877726` (recorded
-  above). The committed language cannot express C's expansion declarations:
-
-  ```
-  $ git show f877726:schema/semantics.sexp > target/p4-system-12/semantics-before-recovery.sexp
-  $ python3 scripts/check_sexp_schema.py definitions/riscv/c.sem.sexp target/p4-system-12/semantics-before-recovery.sexp
-    REFUSED c.sem.sexp: construct "semantics": undeclared field "expand" (rc=1)
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `git diff -- scripts/gen_definition.py` showed the surviving
-  loader returning expansions while `load_inputs()` dropped them and `emit()` still emitted
-  only ordinary rules in name order. C's six overlaps need specificity order. The live diagnostic
-  found a second reader to extend: `bash scripts/check_semantics_corpus.sh` →
-  `CITATIONS: REFUSED: c.sem.sexp: declares no (sem …) form`; `check_citations.citations()` iterated
-  only `sem`. The first expansion probe also falsely treated C.ADDIW's zero immediate as reserved
-  (its restriction is rd=x0); the probe was corrected from §27.1.5.2, before trusting it.
-
-- [x] **FIX** — `schema/semantics.sexp` declares `expand`, `operand`, and the optional reserved
-  predicate. `c.sem.sexp` supplies 37 cited declarations: 36 named base expansions and C.JALR's
-  own pc+2 rule. M's five existing literal quotations use single quotes so CITATION-QUOTES judges
-  them too (their meaning unchanged). `check_semantics.py` checks raw-field mappings, unique
-  bindings, exactly the base rule's operand reads, the quoted expansion sentence, and the
-  own-rule alternative; the generator re-judges those rules, lowers the base effect with its
-  mappings and reserved predicate, emits instruction length, and sorts by fixed-bit specificity.
-  C metadata emits only when C is composed, so the real unit stays unbound. The long C.J scatter
-  array exposed the emitter's inline-array assumption under `rustfmt --check`; it now wraps at
-  the already-used 80-character threshold. The citation reader checks `expand` as well as `sem`.
-
-- [x] **ADDRESSED (verified)** — the permanent diagnostic is `scripts/probe_c_expansions.py`,
-  run by DEF-GEN on a disposable full composition with C; its expected names, mappings and
-  immediate limits are hand-written from §27.1.3–§27.1.5, not derived from the semantics file.
-
-  ```
-  $ python3 scripts/check_semantics.py definitions/riscv/c.sexp definitions/riscv/c.sem.sexp → 37 of 37
-  $ python3 scripts/check_semantics.py --self-test → 46 pass / 0 fail
-  $ bash scripts/check_definition_gen.sh --self-test → C expansion probe: 37 forms, 104 spec-side
-    checks; compiled decoder 8/8; DEF-GEN --self-test: 51 pass / 0 fail
-  RED controls: compact register offset +9 generates but fails (rd=16, expected 15); reversed
-    table ordering fails the compiled specialization_decode test; an unbound base operand is refused.
-  Compiled mappings also check the immediate extremes, copied base effects, C.JALR's own rule,
-    7 reserved code points and 6 HINT examples; the disposable output is rustfmt-stable.
-  $ python3 scripts/check_citation_quotes.py → 120 attributed quotes, 0 findings
-    c.sem.sexp + m.sem.sexp alone: 51 attributed, 0 findings, 0 unattributed
-  $ bash scripts/check_semantics_corpus.sh → SEMANTICS: ok (14 checks)
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0 (the complete workspace). `git diff` over both
-  generated definition modules shows only generator/input fingerprints and M's quotation
-  spelling: existing executable tables and effects unchanged. DEF-GEN's 51 controls and the
-  semantics/citation corpus stay green; citation controls 15/15 and `make book` rc=0 (all books).
-  `make gate` → `=== all doctrines green ===`; `bash scripts/check_no_background_jobs.sh`
-  → `handoff: OK` before committing. The commit hook re-runs the gates on the staged checkpoint.
-  C execution and fetch evidence belong to slices (c)–(f),
-  so these finite declaration checks make no CPU-conformance claim.
-
-- [x] **LOCKSTEP** — this tree (crash-recovery instruction, checklist, frontier, logs), the
-  task index, MEMORY, LIVE_STATUS (11/18 unchanged; C's language ready), CHANGELOG, DEV_NOTES,
-  the doctrine/toolbox descriptions and the book (its derived index regenerated after BOOK-INDEX
-  named the new PC mention as drift). The status note was shortened when `check_readme_routes.sh`
-  measured 6,160 B over its 6,144 B ceiling; 6,138 B after, the ceiling unchanged.
-  The recovered work is committed, with (c)
-  as the next action; handoff requires a clean tree and no project-owned background job.
-  promotion: declined (the slice's findings are local reader/emitter adaptations; the permanent
-  probe and its RED controls retain the evidence)
-
 `P4-SYSTEM.12` slice (c1) — exact parcel boundary (`2026-10-08`, `SEMULITH-P4-0082`):
 
 - [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-verify parcel_fetch` exercises a
@@ -894,6 +787,44 @@ never raised, at every crossing. The index:
   Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 500 arms.
   promotion: declined (the permanent runner probe and its mutations preserve this lesson).
 
+`P4-SYSTEM.12` slice (d3a) — the tracked spec-side author (`2026-10-08`, `SEMULITH-P4-0086`):
+
+- [x] **REPRODUCE / ISSUE** — `rg --files scripts` found no tracked GC author; the producer
+  lived at target/p4-system-11/tools/derive_expectations.py (sha256
+  71269627672a608885b67ede326b57f779f58a7eeee219b3b983ac26982fea53). The 139-guest census
+  found 42 exact records, 49 different outputs and 48 refusals. execute accepted reserved
+  0x04000033 / 0x04001013 / 0x04004033 as sub/slli/xor. Its permission audit mismatched
+  sv39-perm-usr at step 120 (SUM=1 rejected) and later MXR (178 vs 169 steps).
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'ROOT|sys.path|funct7|self.mode == S|not r'
+  target/p4-system-11/tools/derive_expectations.py` pins scratch-relative imports, OP's
+  unconstrained funct7, shifts' missing upper-bit check, and data walk's absent SUM/MXR/U
+  permission rules. The pinned supervisor.html lines 650–670/2478–2490 require SUM data
+  access, prohibit S instruction fetch from U pages, and permit X-only reads with MXR.
+  dir-runoff and sv39-straddle's differences trace to source-end stopping and absent fetch
+  translation; d3d owns those explicit scope gaps, not a claim of full legacy author coverage.
+- [x] **FIX** — tracked derive_rv64gc_expectations.py, repository-derived paths, --check and
+  --check-owned, all derivations computed before any write. The measured 42-record owned
+  corpus is explicit. Narrow OP/shift/misc-mem guards refuse reserved/unsupported shapes;
+  missing stock rules produce named Refusal instead of KeyError. SUM/MXR/U permission
+  rules repaired from the pinned chapter. No expectation record overwritten or fitted.
+- [x] **ADDRESSED (verified)** — `python3 scripts/probe_gc_author.py` rc=0 → 42 guest(s)
+  byte-identical; 7 reserved words refuse without effects; named LBU vocabulary refusal;
+  SUM data/fetch, U-bit and MXR direct PTE fixtures passed. All six mutations are RED:
+  OP guard, shift guard, signed division rounding, SUM, MXR and U-bit. Before the small
+  permission repair, all 91 legacy texts matched the original producer; afterwards 90 stay
+  exact and repaired sv39-perm-usr matches all 169 committed step/write observations.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh --self-test` → 30 pass / 0 fail;
+  both generated fixtures still match and base-mirror checks hold. The probe and six RED
+  controls run on every commit. The 42 owned records stay byte-identical, and no tracked
+  guest/expectation or production engine changed. Broader legacy fetch/budget authoring
+  remains d3d; C expansions d3c. The Sail absence defect remains owned by immediate d3b.
+- [x] **LOCKSTEP** — tree/frontier/logs, MEMORY, LIVE_STATUS (11/18 unchanged, 507 arms),
+  task index, CHANGELOG, DEV_NOTES, toolbox/doctrine, assembler/C book chapters. Completed
+  .12 a/a2/b checklists archived verbatim to part 5 with identity reconstruction asserted.
+  Books and commit doctrine gate must pass; check_derived_counts.sh re-derives 507 arms.
+  promotion: declined (the tracked producer, owned corpus and mutation probes retain this
+  bounded authoring lesson; the Sail absence repair is scheduled before its next use).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -903,6 +834,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (d3a) | 42 exact owned records; 7 reserved + permission probes; 6 RED controls; GUEST-GEN 30/30 | author tracked and repaired; 169 permission observations agree; Sail repair next |
 | `2026-10-08` | `.12` slice (d2) | 2 compiled image/runner probes, 2 RED controls; GUEST-GEN 23/23; make check | exact bytes ready; 188 old images/expectations unchanged; (d3) producers next |
 | `2026-10-08` | `.12` slice (d1) | 37 forms, 21 refusals, exact bytes; 3 RED controls; GUEST-GEN 20/20; corpus 77/77 | assembler ready; old guests unchanged; (d2) image generator/runner next |
 | `2026-10-08` | `.12` slice (c2) | 15 engine probes (baseline 0/15); DEF-GEN 54/54; make check | C evaluator ready; exact fetch and expansion execution proven on temporary composition; (d) tools next |
@@ -953,6 +885,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice d3a) | `SEMULITH-P4-0086 (leaf P4-SYSTEM.12): track the spec-side expectation author and repair its encoding and permission checks` | (d3b) Sail repair/audit next |
 | `.12` (slice d2) | `SEMULITH-P4-0085 (leaf P4-SYSTEM.12): carry exact guest byte images through generation and the rv64gc runner` | (d3) author/Sail tools next |
 | `.12` (slice d1) | `SEMULITH-P4-0084 (leaf P4-SYSTEM.12): assemble compressed instructions and preserve exact byte images` | (d2) generator/runner next |
 | `.12` (slice c2) | `SEMULITH-P4-0083 (leaf P4-SYSTEM.12): execute compressed expansions and fetch only the required parcels` | (d) tools next; production C bind remains (e) |
@@ -1000,6 +933,9 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 | `.7` (slice a) | `SEMULITH-P4-0039 (leaf P4-SYSTEM.7): slice a — the backend qualification: rustc_apfloat QUALIFIED (the arithmetic core MPFR-exact; softfloat fails §6 on capability)` | the re-measurement (licenses, provenance, the TestFloat claim unverifiable); the capability census (softfloat's five §6 gaps; apfloat's sqrt absence); the MPFR path (system libmpfr, four measured corrections); 63,752 probe cases — zero arithmetic-core disagreements, 612/386 all named; softfloat's 68 all NaN-sign; the timing table; the wasm proof; the decision record + INDEX + the PROMOTED knowledge card; the pinned dependency (Cargo.lock 4→7, the re-export compile-use); make check + make gate green (DERIVED-COUNTS 430), bench wasm + smoke-bench + both books |
 
 ## Changelog
+
+- `2026-10-08`: `.12` (d3a) done: spec-side author tracked with non-writing checks,
+  42-record owned corpus, reserved guards and SUM/MXR/U repair; six mutation controls.
 
 - `2026-10-08`: `.12` (d2) done: rv64gc byte fixtures reach the tracked runner exactly;
   scalar payload and all old images/expectations unchanged; permanent mixed-image controls.

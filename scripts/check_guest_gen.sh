@@ -268,6 +268,22 @@ PY
   out="$(python3 scripts/probe_c_guest_image.py --mutation runner-offset 2>&1)"; rc=$?
   arm "RED a runner that loads at the wrong offset is caught" "$rc" 1 "$out" "mixed: step 0 writes match"
 
+  # d3a: promote the independent author, preserve its owned records, refuse reserved bits.
+  out="$(python3 scripts/probe_gc_author.py 2>&1)"; rc=$?
+  arm "GREEN tracked author re-derives its owned corpus and refuses reserved bits" "$rc" 0 "$out" "owned corpus passed"
+  out="$(python3 scripts/probe_gc_author.py --mutation reserved-op 2>&1)"; rc=$?
+  arm "RED a missing OP fixed-bit guard is caught" "$rc" 1 "$out" "reserved word 0x04000033 accepted"
+  out="$(python3 scripts/probe_gc_author.py --mutation reserved-shift 2>&1)"; rc=$?
+  arm "RED a missing shift fixed-bit guard is caught" "$rc" 1 "$out" "reserved word 0x04001013 accepted"
+  out="$(python3 scripts/probe_gc_author.py --mutation division-rounding 2>&1)"; rc=$?
+  arm "RED division rounding away from zero changes the authored M record" "$rc" 1 "$out" "DRIFT — m-div"
+  out="$(python3 scripts/probe_gc_author.py --mutation ignore-sum 2>&1)"; rc=$?
+  arm "RED a missing SUM permission is caught" "$rc" 1 "$out" "SUM=1 permits S data on U pages"
+  out="$(python3 scripts/probe_gc_author.py --mutation ignore-mxr 2>&1)"; rc=$?
+  arm "RED a missing MXR permission is caught" "$rc" 1 "$out" "MXR=1 permits an X-only load"
+  out="$(python3 scripts/probe_gc_author.py --mutation ignore-user 2>&1)"; rc=$?
+  arm "RED a missing U-mode permission gate is caught" "$rc" 1 "$out" "U mode cannot read an S page"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
