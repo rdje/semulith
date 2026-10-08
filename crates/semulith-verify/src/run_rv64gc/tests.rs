@@ -66,6 +66,20 @@ fn every_guest_re_executes_identically_from_cold_reset() {
     }
 }
 
+#[test]
+fn parcel_injection_does_not_refuse_an_unrequested_next_parcel() {
+    use super::{refused, Refusal, RefusalKind};
+    use semulith_core::env::Request;
+    let regions = [Refusal {
+        kind: RefusalKind::Fetch,
+        base: 0x1002,
+        size: 2,
+    }];
+    assert!(!refused(&regions, &Request::FetchParcel { addr: 0x1000 }));
+    assert!(refused(&regions, &Request::FetchParcel { addr: 0x1002 }));
+    assert!(refused(&regions, &Request::Fetch { addr: 0x1000 }));
+}
+
 /// The injection carrier's predicate (`P4-SYSTEM.8` slice c): a request is refused exactly
 /// when its kind matches and its bytes intersect the region — no more, no less.
 #[test]

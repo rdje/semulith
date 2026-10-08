@@ -484,7 +484,7 @@ struct Counting<'a, E: Environment> {
 impl<E: Environment> Environment for Counting<'_, E> {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         match request {
-            Request::Fetch { .. } => self.census.fetches += 1,
+            Request::Fetch { .. } | Request::FetchParcel { .. } => self.census.fetches += 1,
             Request::Load { .. } => self.census.loads += 1,
             Request::Store { .. } => self.census.stores += 1,
             Request::WalkAccess { .. } => self.census.walks += 1,

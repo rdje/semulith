@@ -1,5 +1,17 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — a masked word is still a four-byte request (P4-SYSTEM.12 c1)
+
+The helper named fetch16 requested four bytes and masked its reply. A two-byte instruction
+at the end of a region still faulted. FetchParcel pins its two-byte extent in the boundary
+types, and providers, counters and injection spans honor it. C-enabled execution will use
+exact parcels; preserving one request per 32-bit instruction would require a partial-success
+protocol without a measured need. The production table remains unbound in this slice.
+
+- Validation: two-byte region success, word refusal, odd/outside faults, immediate visibility,
+  injection extent; make check green (150 core / 17 DSP / 193 verify).
+- Promotion: declined — the boundary extent tests retain this local finding.
+
 ## _(2026-10-07)_ — recover the language slice, then prove the emitted table (P4-SYSTEM.12 slice b)
 
 Five uncommitted files survived the crash while the resume pointer still said no work was in

@@ -35,7 +35,7 @@ struct CountFetches<'a> {
 
 impl Environment for CountFetches<'_> {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
-        if matches!(request, Request::Fetch { .. }) {
+        if matches!(request, Request::Fetch { .. } | Request::FetchParcel { .. }) {
             self.fetches += 1;
         }
         self.inner.request(request)
@@ -55,6 +55,7 @@ struct Refusing<'a> {
 fn request_span(request: &Request) -> (RefusalKind, u64, u64) {
     match *request {
         Request::Fetch { addr } => (RefusalKind::Fetch, addr, 4),
+        Request::FetchParcel { addr } => (RefusalKind::Fetch, addr, 2),
         Request::Load { width, addr } => (RefusalKind::Load, addr, width.bytes()),
         Request::Store { width, addr, .. } => (RefusalKind::Store, addr, width.bytes()),
         Request::WalkAccess { addr } => (RefusalKind::Walk, addr, 8),

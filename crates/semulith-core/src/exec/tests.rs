@@ -68,6 +68,18 @@ impl Environment for TestEnv {
                 }
                 Ok(Response::Fetch(self.read(addr, AccessWidth::W) as u32))
             }
+            Request::FetchParcel { addr } => {
+                if self.fetch_fault {
+                    return Err(Failure::AccessFault.into());
+                }
+                if addr % 2 != 0 {
+                    return Err(Failure::Misaligned.into());
+                }
+                if !self.contains(addr, AccessWidth::H) {
+                    return Err(Failure::AccessFault.into());
+                }
+                Ok(Response::FetchParcel(self.read(addr, AccessWidth::H) as u16))
+            }
             Request::Load { width, addr } => {
                 if addr % width.bytes() != 0 {
                     return Err(Failure::Misaligned.into());

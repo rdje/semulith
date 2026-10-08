@@ -13,8 +13,8 @@
 //!
 //! The contract pins, as types rather than prose:
 //!
-//! - **Widths** (`AccessWidth`): loads/stores of 8/16/32/64 bits, fetch of 32 — the width
-//!   set of OB-ENV-ACCESS-WIDTHS. Any other width is unrepresentable, which is stronger
+//! - **Widths** (`AccessWidth`): loads/stores of 8/16/32/64 bits, word fetch of 32 and
+//!   parcel fetch of 16 (`P4-SYSTEM.12`). Any other width is unrepresentable, which is stronger
 //!   than reporting it: a request the contract does not offer cannot be formed.
 //! - **Addresses**: bare `u64` byte addresses (OB-ENV-ADDRESS-UNITS). SEM-05: no host
 //!   pointer ever stands in for a guest address; the space is one 64-bit byte space
@@ -31,8 +31,8 @@
 //! pins).
 
 /// Access widths the contract offers: loads/stores of 8, 16, 32, 64 bits (`B`/`H`/`W`/`D`,
-/// the load/store mnemonics' suffixes). OB-ENV-ACCESS-WIDTHS. Fetch is always 32 bits and
-/// says so by construction — it is its own request variant, width not carried.
+/// the load/store mnemonics' suffixes). OB-ENV-ACCESS-WIDTHS. Fetch widths are pinned by
+/// their own request variants, rather than an arbitrary access width.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AccessWidth {
     /// 8 bits — `LB`/`LBU`/`SB`.
@@ -73,7 +73,15 @@ pub enum Request {
     /// 32 bits, never more, never fewer; the harness performs no fetch the model did not
     /// request and no fetch has a side effect).
     Fetch {
-        /// Address of the instruction unit; must be 4-byte aligned.
+        /// Address of the instruction unit; aligned to the profile's IALIGN.
+        addr: u64,
+    },
+    /// An implicit instruction read of exactly one 16-bit little-endian parcel.
+    /// Used by the C-enabled profile; never reads the following parcel. The CPU
+    /// decides from bits [1:0] whether another parcel is architecturally needed.
+    /// `P4-SYSTEM.12`; the effective contract records belong to v2.
+    FetchParcel {
+        /// Byte address of the parcel; must be two-byte aligned.
         addr: u64,
     },
     /// An explicit read of `width` bits at `addr`.
@@ -111,6 +119,8 @@ pub enum Request {
 pub enum Response {
     /// The fetched instruction word.
     Fetch(u32),
+    /// Exactly one 16-bit instruction parcel, without sign extension.
+    FetchParcel(u16),
     /// The read value: exactly `width` raw bits, little-endian assembled, **not**
     /// extended — sign/zero extension into XLEN is the instruction layer's rule
     /// (REQ-D-LOAD-EXT), not the boundary's.

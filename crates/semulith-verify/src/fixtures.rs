@@ -138,6 +138,7 @@ impl Environment for FlatMemory {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         let (addr, width) = match request {
             Request::Fetch { addr } => (addr, AccessWidth::W),
+            Request::FetchParcel { addr } => (addr, AccessWidth::H),
             Request::Load { width, addr } | Request::Store { width, addr, .. } => (addr, width),
             Request::WalkAccess { addr } => (addr, AccessWidth::D),
         };
@@ -145,10 +146,10 @@ impl Environment for FlatMemory {
         // address alone). A FETCH aligns to the profile's IALIGN (the fixture's declared
         // fetch alignment); a data access aligns to its own width; a walk access aligns
         // to the PTE's 8 bytes.
-        let align = if matches!(request, Request::Fetch { .. }) {
-            self.fetch_align
-        } else {
-            width.bytes()
+        let align = match request {
+            Request::Fetch { .. } => self.fetch_align,
+            Request::FetchParcel { .. } => 2,
+            _ => width.bytes(),
         };
         if !addr.is_multiple_of(align) {
             return Err(Failure::Misaligned.into());
@@ -162,6 +163,10 @@ impl Environment for FlatMemory {
                 // address is visible to the next fetch immediately.
                 self.fetch_count += 1;
                 Ok(Response::Fetch(self.read(addr, AccessWidth::W) as u32))
+            }
+            Request::FetchParcel { .. } => {
+                self.fetch_count += 1;
+                Ok(Response::FetchParcel(self.read(addr, AccessWidth::H) as u16))
             }
             Request::Load { .. } => Ok(Response::Load(self.read(addr, width))),
             Request::Store { data, .. } => {

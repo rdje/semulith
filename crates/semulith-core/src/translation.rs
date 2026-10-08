@@ -569,6 +569,16 @@ mod tests {
                     }
                     Ok(Response::Fetch(self.read(addr, 4) as u32))
                 }
+                Request::FetchParcel { addr } => {
+                    self.fetches += 1;
+                    if addr % 2 != 0 {
+                        return Err(Failure::Misaligned.into());
+                    }
+                    if !(REGION_BASE..REGION_BASE + 0x20000 - 1).contains(&addr) {
+                        return Err(Failure::AccessFault.into());
+                    }
+                    Ok(Response::FetchParcel(self.read(addr, 2) as u16))
+                }
                 Request::Load { width, addr } => {
                     if addr % width.bytes() != 0 {
                         return Err(Failure::Misaligned.into());

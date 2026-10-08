@@ -55,7 +55,12 @@ pub fn run_guest(guest_name: &str, mutation_name: &str) -> Result<GuestRun, Stri
     let (trace, crossings) = run_over(&mut env, guest.entry, guest.executed_steps, &table);
     let data_crossings = crossings
         .iter()
-        .filter(|c| !matches!(c.request, Request::Fetch { .. }))
+        .filter(|c| {
+            !matches!(
+                c.request,
+                Request::Fetch { .. } | Request::FetchParcel { .. }
+            )
+        })
         .count();
     let census_pinned = mutate::pinned_census(guest.name).len();
     let census_met = data_crossings == census_pinned;

@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (slices a–b, 2026-10-07; engine next)
+**Status:** Underway (slices a–c1; engine next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -47,7 +47,17 @@ that also match its bits. A permanent probe checks all 37 forms and the immediat
 compiles the generated Rust and checks the mappings, effects and eight decoder cases. Giving a
 compact register the wrong offset, or reversing the table's order, makes the checks fail.
 
-The session crashed during this slice; the task-tree and surviving files recovered its exact
-frontier. The completed language slice is the handoff checkpoint. The processor still needs
-the next slice's parcel-first fetch and expansion executor before it can run compressed code;
-the declaration checks are finite evidence about the data and generator.
+The session crashed during slice (b); the task-tree and surviving files recovered its exact
+frontier. PNT resumed on October 8. Slice (c1) adds an exact two-byte instruction request to
+the environment boundary. The old request always read four bytes, even when the processor
+kept only the first two; it could not fetch a compressed instruction at the end of a two-byte
+memory region. The new request succeeds there, keeps the same alignment and code-visibility
+rules, and lets fault injection distinguish the requested parcel from its neighbor.
+
+For C-enabled execution, the processor will request one parcel first and request another
+only when the instruction needs it. This replaces the earlier coalescing plan: a four-byte
+request cannot distinguish a failure in an unnecessary upper half from a failure in the
+instruction itself. Fetch counts will therefore count parcels when C binds, and the next
+environment-contract version will state that extent. The processor still needs (c2)'s fetch
+and expansion executor before it can run compressed code; boundary and declaration checks
+are finite evidence about those components.

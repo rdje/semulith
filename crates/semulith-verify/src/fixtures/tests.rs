@@ -13,6 +13,48 @@ use super::{FlatMemory, ScriptedEnv};
 
 const BASE: u64 = 0x1000;
 
+#[test]
+fn parcel_fetch_touches_exactly_two_bytes() {
+    let mut mem = FlatMemory::with_fetch_align(BASE, 2, 2);
+    mem.load_image(0, &[0x85, 0x00]);
+    // The old four-byte request cannot supply this legal two-byte instruction.
+    assert_eq!(
+        mem.request(Request::Fetch { addr: BASE }),
+        Err(Failure::AccessFault.into())
+    );
+    assert_eq!(
+        mem.request(Request::FetchParcel { addr: BASE }),
+        Ok(Response::FetchParcel(0x0085))
+    );
+    assert_eq!(mem.fetch_count(), 1);
+    assert_eq!(
+        mem.request(Request::FetchParcel { addr: BASE + 1 }),
+        Err(Failure::Misaligned.into())
+    );
+    assert_eq!(
+        mem.request(Request::FetchParcel { addr: BASE + 2 }),
+        Err(Failure::AccessFault.into())
+    );
+}
+
+#[test]
+fn parcel_fetch_sees_code_writes_and_uses_parcel_alignment() {
+    // Parcel alignment is two bytes even in a fixture whose word fetch aligns to four.
+    let mut mem = FlatMemory::new(BASE, 4);
+    assert_eq!(
+        mem.request(Request::Store {
+            width: AccessWidth::H,
+            addr: BASE + 2,
+            data: 0xabcd
+        }),
+        Ok(Response::StoreDone)
+    );
+    assert_eq!(
+        mem.request(Request::FetchParcel { addr: BASE + 2 }),
+        Ok(Response::FetchParcel(0xabcd))
+    );
+}
+
 fn load(width: AccessWidth, addr: u64) -> Request {
     Request::Load { width, addr }
 }

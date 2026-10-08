@@ -185,7 +185,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: the encoding's `m` slot filled; every M form exercised on both engines by
   expectations derived before either runs, the division edge cases included.
 - ID: `P4-SYSTEM.12` — **bind C** — `G-SCOPE`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; design brief `2026-10-06`, `SEMULITH-P4-0078`; slices (a)–(b) done `SEMULITH-P4-0079`–`-0081`)
+  Status: `active` (PNT resumed `2026-10-08`; slices (a)–(b) done `SEMULITH-P4-0079`–`-0081`)
   Goal: the compressed instructions at RV64 with D (Zca + Zcd, `.1`'s closure): each 16-bit
   parcel decodes to the base instruction it expands to; fetch at two-byte granularity (IALIGN
   16); the reserved and illegal encodings refused.
@@ -235,10 +235,26 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `pending` | bind C — slice (c): the engine (parcel-first fetch, length-aware pc, the expansion executor preserving mapped value widths, the 16-bit inst); (a)–(b) done; stop here at the director's crash-recovery handoff checkpoint |
+| 1 | `P4-SYSTEM.12` | `active` | slice (c2): parcel-first fetch and expansion execution; (a)–(c1) committed |
 
 ## Decisions
 
+- `2026-10-08` (PNT resumed; slice c split before changes): (c1) add a typed
+  `FetchParcel` request/response and teach boundary providers, counters and injection spans
+  its exact two-byte extent; (c2) execute expansions and fetch by length. Diagnostic
+  `rg -n 'Request::Fetch|fetch16' crates/semulith-core/src/{env,exec_rv64gc}.rs` shows
+  that the existing helper named fetch16 actually requests four bytes. Even its
+  page-straddle path therefore reads beyond a parcel. A two-byte region cannot supply
+  a legal compressed instruction through that interface. This boundary defect is owned
+  here and verified independently of the decoder before execution changes.
+  Revise the brief's coalescing choice for the C-enabled table: fetch the first parcel
+  exactly, then the second only for a 32-bit instruction. A four-byte speculative request
+  cannot distinguish a fault on an unnecessary upper half from a fault on the first half.
+  Keeping a one-request count would require a new partial-success protocol without a
+  demonstrated need. The unbound production table retains its existing word-fetch route
+  until the bind; the bound corpus's parcel counts are re-derived in (d)–(e), and contract
+  v2 states the new extent. Register/control-flow identity remains the regression claim.
+  The roadmap and leaf acceptance are unchanged; no CPU conformance claim is added.
 - `2026-10-07` (crash recovery, director request): recover the interrupted session and stop at
   the next handoff-ready checkpoint. `git status --short` at `f877726` found five surviving
   files owned by `.12` slice (b): `c.sem.sexp`, `m.sem.sexp`, `schema/semantics.sexp`,
@@ -550,246 +566,7 @@ never raised, at every crossing. The index:
   complete — (the `.9` slice-(d) crossing).
 - part 4 opened at the `2026-10-06` `.11` design crossing (part 3 near its ceiling):
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
-  (a)–(c) at the `.11` slice-(d) crossing.
-
-`P4-SYSTEM.11` slice (a) — the language for M: eight arithmetic operators, the division-domain rule, `m.sem.sexp`, the generator, the model layer (`2026-10-06`, `SEMULITH-P4-0073`):
-
-- [x] **REPRODUCE / ISSUE** — the census at `a5d1eb3`: no multiply or divide in the language,
-  no M semantics, no lowering:
-
-  ```
-  $ grep -c '(operator (name mul\|(operator (name div' schema/semantics.sexp → 0 (rc=1)
-  $ git ls-files 'definitions/riscv/m.sem.sexp' → nothing
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: M's first slice, owned since the `.10` census.
-  One measured fact shaped it: values carry their width in the evaluator — `git show
-  HEAD:crates/semulith-core/src/exec_rv64gc.rs` `:387-398` (`Trunc` yields a `w`-bit value,
-  `Sar` sign-extends from it) — so the operators are width-generic and the word forms read
-  exactly like `addw`. One correction to the brief: it cited "RVI-M §13", from memory; the
-  pinned chapter's own headings (`.materials/riscv/pinned-v20260120/unpriv/m-st-ext.html`, sha256
-  `85e1db6c…` = `sources.sexp`'s pin) number it §11.1 (§11.1.1 Multiplication, §11.1.2 Division,
-  Table 1) — the brief's three locators corrected in place, marked.
-
-- [x] **FIX** — `schema/semantics.sexp`: `mul`, `mulh`, `mulhsu`, `mulhu`, `div`, `divu`, `rem`,
-  `remu` (width-generic; overflow wraps; a zero divisor outside the domain). `check_semantics.py`
-  `check_division`: a division must sit where ITS divisor is known nonzero (the else-branch of
-  `(eq D (lit 0))`, the then-branch of `(ne D (lit 0))`), in both modes; the generator re-derives
-  it. `definitions/riscv/m.sem.sexp`: 13 rules, the division-by-zero results stated by guards,
-  quoted from §11.1.2. `gen_definition.py`: `M_BINARY` behind `Surface.m` (lowered only where the
-  composition composes `riscv/m`; both tracked modules regenerated — the generator pin and the
-  derived language size 64 → 72). `crates/semulith-core/src/muldiv.rs`: the eight operators as
-  SEM-03 functions (division `None` on a zero divisor) and six tests against independent routes.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 scripts/check_semantics.py definitions/riscv/m.sexp definitions/riscv/m.sem.sexp → 13 of 13 declared instruction(s) have checked semantics
-  $ python3 scripts/check_semantics.py --self-test → 32 pass / 0 fail (6 new: two guard shapes GREEN;
-    unguarded, guarded on another expression, in the zero branch, a word-form divisor mismatch RED)
-  $ bash scripts/check_definition_gen.sh --self-test → 45 pass / 0 fail (8 new: the +M composition
-    emits Mul/DivU/MulHsu/remuw; an unguarded division refused by the generator; M without riscv/m refused)
-  $ cargo test -p semulith-core muldiv → test result: ok. 6 passed
-  mutations on a backed-up copy, restored (diff clean): mulhsu reading b signed → test result: FAILED.
-    (the schoolbook product); div refusing overflow instead of wrapping → test result: FAILED. (the
-    identities and Table 1's overflow row)
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`; DEF-GEN
-  ok on both tracked modules (only the generator pin and the derived form count moved).
-
-- [x] **LOCKSTEP** — the language, the checker, the generator, the fragment's semantics, the model
-  layer, this tree (and the brief's corrected locators), the book (`plan/p4/m.md`), `CHANGELOG.md`,
-  `MEMORY.md`, `LIVE_STATUS.md` (arms 478, chapters 43).
-  promotion: declined (the §13-from-memory slip is the claim-verification standard's own rule — verify a locator against the pinned page before writing it — caught before execution by re-reading the pinned headings; no new lesson)
-
-`P4-SYSTEM.11` slice (b) — THE BIND: the unit composes `riscv/m`; the M corpus; `OB-GC-M` in contract v2 (`2026-10-06`, `SEMULITH-P4-0074`):
-
-- [x] **REPRODUCE / ISSUE** — the pre-bind census at `b943d35`:
-
-  ```
-  $ git show HEAD:profiles/rv64gc-lab-v0/encoding.sexp | grep -c "slot (id m)" → 1
-  $ git show HEAD:crates/semulith-core/src/definition_rv64gc.rs | grep -c '"mulhsu"' → 0
-  $ git show HEAD:profiles/rv64gc-lab-v0/profile.sexp | grep -o "(count_total [0-9]*)" → (count_total 150)
-  $ git show HEAD:profiles/rv64gc-lab-v0/references.sexp | grep -c '(name "rv_m")' → 0
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — M was a declared slot until its language existed (slice a).
-  Four things measured on the way, each owned here: (1) the authoring tool's OP branch
-  (`target/p4-system-7/tools/derive_expectations.py`, `elif f3 == 0` → `sub`) would have
-  derived `mul` as subtraction silently — the M branch decodes funct7=1 first; (2) seven expected
-  results landed in registers already 0 — no change observed, an engine writing nothing would
-  pass — sentinels added before re-deriving; (3) rv64gc's ledger never pinned `rv_m`/`rv64_m`
-  (`fetch_references.sh --verify-only` → "tables enumerate 150, profile declares 163", rc=1) — the
-  D-bind precedent's re-pin; (4) the generator's slice-(a) controls pinned the live unit's counts
-  (`python3 scripts/gate_report.py --self-test` → 12 pass / 5 fail at the contract's growth) — the
-  hard-coded unit fact `.10` removed from the report, in its own controls.
-
-- [x] **FIX** — `encoding.sexp` composes `riscv/m` (slot `c` the one left); the census 150 → 163 in
-  all four places (`m_muldiv`, RVI-M §11.1.1–§11.1.2); `definition_rv64gc.rs` regenerated (the M
-  variants); `exec_rv64gc.rs`: the M arms through `muldiv` (a zero divisor reached unguarded a
-  definition defect; a trapped step divides nothing); four guests (`m-mul`, `m-div`, `m-word`,
-  `m-alias`) + `run-order.txt` + `guests_rv64gc.rs` (139); the ledger re-pins `rv_m`/`rv64_m` (the
-  bytes `m.sexp` names); `REQ-GC-M`; `OB-GC-M` in contract **v2** (`open`, extends v1), its POS
-  and NEG realized in the registry (the test generalized: every check since v1, 16); the matrix's
-  placements (alias×alias, alias×boundary, boundary×boundary, boundary×progress); `gate.sexp`'s M
-  item closed; `GS-REPORT.md` regenerated; the generator's controls rewritten as deltas from a
-  run-time baseline plus an independent recount; the `profiles/` byte ceiling re-derived
-  (`decision_profiles-family-processor-corpus.md`).
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  EVD-05: the four expectation digests pinned with 0 M arms in the engine and 0 M variants in the
-    module; after the bind: sha256sum -c → m-alias/m-div/m-mul/m-word.expected.sexp: OK
-  $ cargo test -p semulith-verify run_rv64gc → test result: ok. 5 passed (139 guests)
-  $ python3 target/p4-system-11/identity_m.py <bound CLI> <parent CLI> (rc=0) → identity: 135 byte-identical,
-    0 diverge (pre-slice guests); RED m-alias/m-div/m-mul/m-word: diverges on the parent engine
-  $ bash scripts/fetch_references.sh --verify-only rv64gc-lab-v0 → MATCH encoding tables vs profile scope 163 == 163, symmetric difference NONE
-  $ bash scripts/check_exercise_coverage.sh → 163/163
-  $ python3 scripts/check_interaction_matrix.py profiles/rv64gc-lab-v0 → 28 cells declared, every disposition resolves
-  $ bash scripts/check_contract_freeze.sh → CONTRACT-FREEZE: ok (1 versioned unit(s), 3 version(s), 0 finding(s))
-  $ cargo test -p semulith-verify contract_checks → test result: ok. 3 passed (16 checks since v1)
-  $ python3 scripts/gate_report.py --self-test → 17 pass / 0 fail; mutations (restored, cmp clean):
-    supersessions ignored → 16 pass / 1 fail (the independent recount); the fn check skipped → 16 pass / 1 fail
-  GS-REPORT: G-SCOPE "unfilled slots: `c`"; G-CONTRACT "16 of 102 … latest version `rv64gc-lab-env-v2` open"
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`; the 135
-  pre-slice guests byte-identical on the bound engine.
-
-- [x] **LOCKSTEP** — the encoding, the scope (schema, reader, consistency check, profile), the
-  ledger, the module, the engine, the corpus, the records, the contract, the registry, the matrix,
-  the manifest, the report, the routes registry and its decision (+ INDEX row), this tree,
-  `DEV_NOTES.md` (PROMOTED — the self-test card's pinned-control case), `CHANGELOG.md`, `MEMORY.md`,
-  `LIVE_STATUS.md`, the book (`plan/p4/m.md`).
-
-`P4-SYSTEM.11` slice (c1) — the generated M vectors through the engine; M-VECTORS (the 38th doctrine) (`2026-10-06`, `SEMULITH-P4-0075`):
-
-- [x] **REPRODUCE / ISSUE** — the brief's decision 4 asks for a generated operand table checked
-  against the model layer, the FP-VECTORS pattern; at `23418c1` none exists:
-
-  ```
-  $ git ls-files 'scripts/gen_m_vectors.py' 'crates/semulith-verify/src/m_vectors*' → nothing
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the evidence slice. One choice measured first:
-  checking the table against `muldiv` alone would skip the half of Table 1 that lives in the
-  DEFINITION (the zero-divisor guards — `git show HEAD:definitions/riscv/m.sem.sexp | grep -c
-  "(lit 0))"` → 8), so the table runs through `exec_rv64gc::step` — decode, rule, guard,
-  operators at their width — with the words built from the chapter's R-type layout, not read from
-  the generated decode table.
-
-- [x] **FIX** — `scripts/gen_m_vectors.py`: exact Python integers, truncation written out, Table
-  1's rows by name, 4,485 vectors (15 edge operands pairwise, 20 seeded against 5 divisors, over
-  the 13 forms) → `crates/semulith-verify/src/m_vectors/vectors.txt`; `m_vectors/tests.rs`
-  `every_generated_vector_holds_through_the_engine` (rd, `Executed`, pc + 4 — no trap; the
-  table's own declared count judged); `scripts/check_m_vectors.sh` — M-VECTORS: DRIFT + the
-  reference judged against the chapter's stated identities on an operand set the table does not
-  use (judge first, controls only to certify a pass); registered in `check_doctrines.project.sh`,
-  `DOCTRINE_ENFORCEMENT.md`, `docs/doctrines/definition.md`, `docs/toolbox/definition.md`, the
-  book; `gate.sexp`'s G-REGRESSION `generated` evidence gains the table.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ cargo test -p semulith-verify m_vectors → test result: ok. 1 passed (4485 vectors through the engine)
-  $ bash scripts/check_m_vectors.sh → M-VECTORS: ok (4485 vectors in sync with the generator; the reference
-    judged on 151x48 operand pairs at both widths; 0 finding(s))
-  $ bash scripts/check_m_vectors.sh --self-test → 6 pass / 0 fail (a hand-edited vector DRIFT; a flooring
-    reference, a zero-divisor-yields-0 reference, a signed-rs2 MULHSU, an unextended word result — each RED by its finding)
-  one vector hand-edited (backed up, restored, cmp clean) → test result: FAILED. "div 8000000000000000
-    ffffffffffffffff 0: rd 0x8000000000000000, the reference 0x0"; M-VECTORS → DRIFT, rc=1
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — the generator, the table, the test, the doctrine and its five registrations,
-  the manifest, `GS-REPORT.md`, this tree (the (c) split recorded), `CHANGELOG.md`, `MEMORY.md`,
-  `LIVE_STATUS.md` (38 doctrines), the book (`plan/p4/m.md`).
-  promotion: declined (an evidence slice on the FP-VECTORS precedent; its one judgment call — run the table through the engine, since half of Table 1 is the definition's — is recorded in its doctrine and test docs)
-
-`P4-SYSTEM.11` slice (c2) — the Sail matched experiment over the M corpus: 4 AGREE of 4 (`2026-10-06`, `SEMULITH-P4-0076`):
-
-- [x] **REPRODUCE / ISSUE** — the brief's decision 4's third route; the matched configuration
-  measured first (the cached JSON re-materialized from the tracked override — byte-identical):
-
-  ```
-  $ python3 -c "…D.materialize_sail_override(…, 'rv64gc-lab-v0')" (rc=0); cmp before/after → unchanged
-  M supported: {'supported': True}
-  ```
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the reference route. The `.7` harness
-  (`target/p4-system-7/sail/build_elfs.py`, `compare_sail.py`) copied to
-  `target/p4-system-11/sail/` with the four `m-*` names; the comparison rule is the corpus's own
-  (a register observation is a CHANGE):
-
-  ```
-  $ python3 target/p4-system-11/sail/build_elfs.py (rc=0) → built m-mul.elf (26 words), m-div (27), m-word (32), m-alias (14)
-  ```
-
-- [x] **FIX** — the experiment recorded in the sail-riscv `matched_scope` (the eighth — prose, as
-  the seven before it; `.14` makes them records): the result, the pair's independence for integer
-  M stated as what is true by construction (no shared code), the comparator's discrimination;
-  `gate.sexp`'s G-TRACE item counts eight; `GS-REPORT.md` regenerated.
-
-- [x] **ADDRESSED (verified)** —
-
-  ```
-  $ python3 target/p4-system-11/sail/compare_sail.py (rc=0) → AGREE m-mul 26, m-div 27, m-word 32, m-alias 14
-    steps' change-observations exact; verdict: 4 AGREE of 4
-  a planted wrong overflow quotient in a scratch copy (SAIL_GUESTS) → DIVERGE m-div step 17 (div x22, x20, x21):
-    sail {'x22': 9223372036854775808}, expectations {'x22': 0}; verdict: 3 AGREE of 4, rc=1
-  ```
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — the ledger, the manifest, `GS-REPORT.md`, this tree, `CHANGELOG.md`,
-  `MEMORY.md`, the book (`plan/p4/m.md`).
-  promotion: declined (a reference run on the .7 harness; the comparator's RED control is the standing practice)
-
-`P4-SYSTEM.11` slice (d) — THE LEAF ACCEPTANCE; the leaf CLOSES (`2026-10-06`, `SEMULITH-P4-0077`):
-
-- [x] **REPRODUCE / ISSUE** — the leaf's acceptance reads "the encoding's `m` slot filled; every M
-  form exercised on both engines by expectations derived before either runs, the division edge
-  cases included"; at `1372feb` every piece was landed and not yet judged as the acceptance.
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — not a defect: the closing step, measured from the tree:
-
-  ```
-  $ git grep -c "slot (id m)" -- profiles/rv64gc-lab-v0/encoding.sexp → nothing, rc=1
-  the four m-* guests' mnemonics against the 13 forms → 13 of 13 M forms exercised; missing: none
-  lines citing Table 1 (zero divisor / overflow) in m-div, m-word, m-alias → 17
-  ```
-
-- [x] **FIX** — the leaf's status **done** and its Result; `.9`'s and `.10`'s closed checklists
-  archived verbatim to part 4 (the live part at 122,947 B before, 101,350 B after); the frontier →
-  `.12` (bind C, its design brief first); `docs/TASK_TREE.md`, MEMORY, LIVE_STATUS; the book.
-
-- [x] **ADDRESSED (verified)** — the acceptance's evidence, each from its slice:
-
-  ```
-  (b) $ cargo test -p semulith-verify run_rv64gc → test result: ok. 5 passed (139 guests); identity 135/0 + 4 RED
-  (b) EVD-05: sha256sum -c of the four expectations, pinned with 0 M arms in the engine → OK ×4
-  (c1) $ cargo test -p semulith-verify m_vectors → test result: ok. 1 passed (4485 vectors through the engine)
-  (c2) $ python3 target/p4-system-11/sail/compare_sail.py → verdict: 4 AGREE of 4 (rc=0)
-  ```
-
-- [x] **THE LEAF ACCEPTANCE** — "the encoding's `m` slot filled": the encoding composes `riscv/m`,
-  the slot is gone, and the CPU-SYSTEM report's G-SCOPE names only `c` unfilled. "Every M form
-  exercised on both engines": 13 of 13 forms in the four guests, run on the lab engine (139/139,
-  the pre-slice corpus byte-identical) and on Sail (4 AGREE of 4 — for integer M a pair sharing
-  no code). "By expectations derived before either runs": derived spec-side with exact integers
-  and digest-pinned while the engine had no M arm, unchanged after both runs. "The division edge
-  cases included": Table 1's rows at both widths — 17 guest lines (division by zero ×4 forms ×2
-  widths, overflow ×2 widths, a divisor zero only as a word, x0 destinations) — and the 4,485
-  generated vectors, every edge pair among them, through the engine.
-
-- [x] **NO REGRESSION** — `make check` rc=0; `make gate` → `=== all doctrines green ===`.
-
-- [x] **LOCKSTEP** — this tree (status, Result, frontier; the archive crossing), `docs/TASK_TREE.md`,
-  `MEMORY.md`, `LIVE_STATUS.md`, `CHANGELOG.md`, the book (`plan/p4/m.md` closed; the `plan/p4.md` index).
-  promotion: declined (a closing slice; the leaf's lessons were promoted at slice b)
+  (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 
 `P4-SYSTEM.12` slice (a) — the C re-pin and the fragment: 37 forms, their scatter layouts, the declared specializations (`2026-10-06`, `SEMULITH-P4-0079`):
 
@@ -948,6 +725,34 @@ never raised, at every crossing. The index:
   promotion: declined (the slice's findings are local reader/emitter adaptations; the permanent
   probe and its RED controls retain the evidence)
 
+`P4-SYSTEM.12` slice (c1) — exact parcel boundary (`2026-10-08`, `SEMULITH-P4-0082`):
+
+- [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-verify parcel_fetch` exercises a
+  two-byte region containing 0x0085: the existing word fetch returns `AccessFault`;
+  no word response can represent the successful sixteen-bit read this instruction needs.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `rg -n 'Request::Fetch|fetch16'
+  crates/semulith-core/src/env.rs crates/semulith-core/src/exec_rv64gc.rs` pins the mismatch:
+  Fetch is fixed at 32 bits, and the helper called fetch16 sends that request before masking
+  its answer. `fixtures.rs` correctly requires all four bytes inside the region.
+- [x] **FIX** — additive `FetchParcel { addr }` / `FetchParcel(u16)` boundary types;
+  the fixture reads exactly two bytes, aligns to two, and retains immediate code visibility.
+  Fetch counters and the comparison filter recognize both implicit-read variants;
+  fault-injection spans use two bytes for a parcel. Test providers answer the new kind.
+  Production decode/fetch remains unchanged until (c2) and the bind.
+- [x] **ADDRESSED (verified)** — `make check` rc=0; the two-byte region now supplies
+  0x0085 through a parcel request (one successful fetch), while the word request still faults.
+  Odd and outside-region parcel addresses fail with their proper target errors. A store to
+  the final halfword is visible on its next parcel fetch. The injection control refuses a
+  word crossing 0x1002 but accepts the parcel at 0x1000 and refuses the parcel at 0x1002.
+- [x] **NO REGRESSION** — `make check` rc=0: fmt, strict clippy, 150 core, 17 DSP,
+  193 verify tests; both existing corpora remain green. The pre-commit doctrine gate is
+  required for this checkpoint, and `make book` checks all books. These boundary tests
+  are finite evidence; C's execution and matched-reference evidence remain (c2)–(f).
+- [x] **LOCKSTEP** — the tree, index, MEMORY, LIVE_STATUS, CHANGELOG, DEV_NOTES and C
+  chapter updated. The closed `.11` checklists moved byte-verbatim (reconstruction asserted)
+  into archive part 4 to leave room below the unchanged per-part ceiling.
+  promotion: declined (the typed boundary and its extent tests retain this local finding).
+
 ## Verification Log
 
 Every closed leaf's rows live verbatim in [`archive/P4-SYSTEM-2.md`](archive/P4-SYSTEM-2.md):
@@ -957,6 +762,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.12` slice (c1) | make check; parcel extent, alignment, visibility, refusal spans | typed two-byte boundary ready; existing corpus unchanged; (c2) next |
 | `2026-10-07` | `.12` slice (b) | 37/37 declarations; SEMANTICS 46/46 controls; DEF-GEN 51/51 (104 spec-side checks, compiled decoder 8/8); citations 0 findings; make check + make gate + all books green; handoff OK | the language and generator ready; crash recovered; handoff before (c) |
 | `2026-10-06` | `.12` slice (a2) | the boundary tests RED on both engines, then GREEN; both corpora unchanged (76/76) | JAL's offset sign fixed |
 | `2026-10-06` | `.12` slice (a) | C composes (37; 192 with the extensions); the disjointness self-test 17/17; the census 163 == 163 | the C fragment |
@@ -1003,6 +809,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice c1) | `SEMULITH-P4-0082 (leaf P4-SYSTEM.12): add exact two-byte instruction fetches to the environment boundary` | (c2) engine next |
 | `.12` (slice b) | `SEMULITH-P4-0081 (leaf P4-SYSTEM.12): recover the interrupted C language slice; declare expansions and decode by specificity` | handoff; (c) next |
 | `.12` (slice a2) | `SEMULITH-P4-0080 (leaf P4-SYSTEM.12): slice a2 — a found defect owned: JAL's offset sign was taken from bit 19 in both engines; pinned at the boundary and the extremes` | (b) next |
 | `.12` (slice a) | `SEMULITH-P4-0079 (leaf P4-SYSTEM.12): slice a — the C re-pin and the fragment: 37 forms, their scatter layouts, the six declared specializations` | (b) next |
@@ -1047,6 +854,8 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 ## Changelog
 
+- `2026-10-08`: `.12` (c1) done: typed parcel boundary and extent tests; PNT resumed.
+  The closed `.11` checklists archived verbatim to part 4.
 - `2026-10-07`: `.12` slice (b) done (`SEMULITH-P4-0081`) — the interrupted session recovered:
   C's 37 expansions, exact bindings, reserved predicates, specificity decode and a compiled
   declaration probe. Stop at the director's requested checkpoint; the engine is slice (c).
