@@ -930,7 +930,7 @@ pub fn agree(a: &ModeRun, b: &ModeRun, names: (&str, &str)) -> Result<(), String
                 .iter()
                 .zip(sb.iter())
                 .position(|(x, y)| x != y)
-                .map_or(sa.len().min(sb.len()), |i| i);
+                .unwrap_or(sa.len().min(sb.len()));
             return Err(format!(
                 "observation streams of {} and {} first differ at step {at} ({}: {} steps, {}: {} steps)",
                 names.0,

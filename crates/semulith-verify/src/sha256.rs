@@ -51,11 +51,10 @@ fn small_sigma1(x: u32) -> u32 {
     x.rotate_right(17) ^ x.rotate_right(19) ^ (x >> 10)
 }
 
-fn compress(state: &mut [u32; 8], block: &[u8]) {
-    debug_assert_eq!(block.len(), 64);
+fn compress(state: &mut [u32; 8], block: &[u8; 64]) {
     let mut w = [0u32; 64];
-    for (i, chunk) in block.chunks_exact(4).enumerate() {
-        w[i] = u32::from_be_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]);
+    for (i, chunk) in block.as_chunks::<4>().0.iter().enumerate() {
+        w[i] = u32::from_be_bytes(*chunk);
     }
     for i in 16..64 {
         w[i] = small_sigma1(w[i - 2])
@@ -96,11 +95,10 @@ pub fn sha256_hex(bytes: &[u8]) -> String {
     let mut state = H0;
     let bit_len = (bytes.len() as u64).wrapping_mul(8);
 
-    let mut iter = bytes.chunks_exact(64);
-    for block in &mut iter {
+    let (blocks, rem) = bytes.as_chunks::<64>();
+    for block in blocks {
         compress(&mut state, block);
     }
-    let rem = iter.remainder();
 
     // padding: 0x80, zeros to 56 mod 64, then the 64-bit big-endian bit length
     let mut tail = [0u8; 128];
@@ -108,7 +106,7 @@ pub fn sha256_hex(bytes: &[u8]) -> String {
     tail[rem.len()] = 0x80;
     let tail_len = if rem.len() < 56 { 64 } else { 128 };
     tail[tail_len - 8..tail_len].copy_from_slice(&bit_len.to_be_bytes());
-    for block in tail[..tail_len].chunks_exact(64) {
+    for block in tail[..tail_len].as_chunks::<64>().0 {
         compress(&mut state, block);
     }
 

@@ -1,5 +1,16 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — reproduce the hosted toolchain (CI-RECOVERY.1)
+
+GitHub Rust 1.99 denied a lint unseen by local 1.95. Exact-toolchain reproduction also
+found three SHA constant-chunk lints. Replaced the identity map with unwrap_or; used
+array chunks for SHA words, full blocks and padding, preserving the remainder and
+making compression accept exactly 64 bytes. No lint suppression or result change.
+Rust 1.99 make check passes; 259 deterministic inputs match Python hashlib. Existing
+benchmark 14/14 and SHA 2/2 suites also pass under 1.95. Project-local tools/cache/temp
+live in .app-data/target; no shared toolchain writes. Promotion declined in the leaf.
+These local results do not establish hosted CI green; workflow repairs remain next.
+
 ## _(2026-10-08)_ — a bounded history head needs an archive terminal (LIVE-CONTAINMENT.4 a)
 
 The live shard family had 2,114 B left while the next whole-record cut needed 2,377 B

@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0001 (leaf CI-RECOVERY.1) — strict Rust 1.99 recovery
+
+- Repair the benchmark identity-map lint and three SHA chunk lints without suppression.
+  Rust 1.99 make check green; 259 independent hash comparisons; 1.95 benchmark/hash
+  suites green. Doctrine/Miri provisioning and actual hosted verification remain.
+
 ## SEMULITH-LC-0004 (leaf LIVE-CONTAINMENT.4, slice a) — approved sealed history terminal
 
 - Preserve 210 shards and their manifest byte-exact in one tracked 284,500-byte object;

@@ -34,12 +34,14 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Children: `CI-RECOVERY.1`, `CI-RECOVERY.2`, `CI-RECOVERY.3`, `CI-RECOVERY.4`
 
 - ID: `CI-RECOVERY.1` — strict stable Clippy
-  Status: `proposed`
+  Status: `done`
   Goal: replace the map_or identity in bench.rs with its equivalent unwrap_or; run
   strict lint and meaningful benchmark diagnostics on the current/tested toolchain.
+  Also repair the three constant-size chunk lints in sha256.rs exposed by Rust 1.99
+  before editing those paths; preserve digest/padding behavior with known-answer tests.
   Acceptance: no lint suppression; same first-difference behavior; strict lint green.
-  Verification: pending
-  Commit: pending
+  Verification: Rust 1.99 make check green; 259 hashlib comparisons; 1.95 bench 14/14 and SHA 2/2.
+  Commit: SEMULITH-CI-0001
 
 - ID: `CI-RECOVERY.2` — provision the doctrine runner
   Status: `proposed`
@@ -70,7 +72,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.1` | `proposed` | after LIVE-CONTAINMENT.4 slice (a) restores commit headroom |
+| 1 | `CI-RECOVERY.2` | `proposed` | strict Rust repaired; provision mdbook before the doctrine runner |
 
 ## Decisions
 
@@ -101,6 +103,27 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 ## Acceptance Checklist
 
+`.1`, 2026-10-08, SEMULITH-CI-0001:
+
+- [x] **ROOT CAUSE** — repository-local Rust/Clippy 1.99.0 reproduced
+  `clippy::map_or_identity` in bench.rs and three `clippy::chunks_exact_to_as_chunks`
+  errors in sha256.rs; strict lint rc=101. The latter path is unchanged since e1fe379
+  (`git diff e1fe379..HEAD -- crates/semulith-verify/src/sha256.rs`: empty).
+- [x] **ADDRESSED** — `RUSTUP_TOOLCHAIN=1.99.0 make check` rc=0: strict lint has no
+  suppression. `Option::unwrap_or` preserves the mismatch index/fallback; fixed-size
+  array chunks preserve SHA blocks/remainders and make the private 64-byte compression
+  boundary a type contract. `SHA-PROBE: 259 independent hashlib comparisons passed`
+  across lengths 0–256, 4096 and 65536, deterministic nonuniform input.
+- [x] **NO REGRESSION** — Rust 1.99 make check rc=0 (fmt, all-target/all-feature lint,
+  all workspace tests); existing 14 benchmark and two SHA suites pass. Rust 1.95 focused
+  rerun: `test result: ok. 14 passed; 0 failed` and `2 passed; 0 failed`.
+- [x] **FIX / LOCKSTEP** — bench.rs and sha256.rs, this tree/frontier/index, MEMORY,
+  CHANGELOG, DEV_NOTES, LIVE_STATUS and book. No workflow change yet; GitHub remains
+  unverified for these local commits. Toolchain/cache/scratch stay in .app-data/target;
+  shared rustup launcher is read-only, provisioning uses `--no-self-update`.
+  promotion: declined (ordinary lint/API maintenance; toolchain/evidence scope retained in this receipt and the book).
+
+
 Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 - [x] **ROOT CAUSE** — `gh run view --log-failed` located `clippy::map_or_identity`
@@ -116,11 +139,15 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Verification Log
 
+`.1`: target/ci-recovery/clippy-before.log rc=101; check-rust-1.99.log rc=0; hash-probe.txt independently checked; bench/sha-rust-1.95.log rc=0. These are regenerable local evidence, not tracked artifacts.
+
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0001 (leaf CI-RECOVERY.1): repair strict Rust 1.99 lint without changing benchmark or hash results`.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
@@ -129,3 +156,5 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 ## Changelog
 
 - `2026-10-08`: Created from the director's hosted-CI status question; four repairs scheduled.
+
+- `2026-10-08`: `.1` active after archive commit `401956e`; repository clean at selection. Rust/map identity is owned before edits or toolchain provisioning.

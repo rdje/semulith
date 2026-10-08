@@ -13,6 +13,13 @@ merely discouraged:
 
 `make gate` is that command. Thirteen checks run today.
 
+Local checks and hosted CI are separate evidence. The 2026-10-08 pushed revision failed
+strict Rust lint on 1.99, book provisioning and a cold Miri log path, despite a green
+local pre-push suite on 1.95. CI-RECOVERY.1 repairs the Rust lints with the exact newer
+toolchain; benchmark tests and independent SHA comparisons preserve results. Workflow
+provisioning remains under CI-RECOVERY.2/.3, and hosted green requires a successful run
+on a permitted push. A local green result alone cannot close that obligation.
+
 ## The universal registry
 
 These ship with the discipline spine and are project-neutral:
