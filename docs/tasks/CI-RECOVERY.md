@@ -69,6 +69,11 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   resume pointer/book; resolve by director-led closure or an explicitly sanctioned
   exemption, then rerun the actual census. Never kill an unrelated editor or invent
   its exemption. This evidence-recording slice does not close the hosted obligation.
+  Authorized next slice: record the director's 2026-10-08 approval of all pushes
+  needed for this CI recovery, expiring when all three hosted workflows pass. Own
+  the decision/index, COMMIT/MEMORY/book/log updates and any ordinary lossless head
+  sharding required by their caps; then use approved_push.sh and observe exact-SHA
+  hosted results. No hook bypass, cadence change or Kimi exemption is authorized.
   Verification: pending
   Commit: pending
 
@@ -76,9 +81,15 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.4` | `active` | approval/census decisions pending; then permitted push and hosted verification |
+| 1 | `CI-RECOVERY.4` | `active` | recovery pushes approved; observe hosted workflows and resolve reader census |
 
 ## Decisions
+
+- `2026-10-08`: director approves pushes needed to fix GitHub CI without asking
+  again, until GitHub CI passes; then ordinary cadence resumes. Durable authority:
+  docs/decisions/decision_ci-recovery-push-approval.md. Use the existing recorded
+  approval act on every necessary repair push; no hook/cadence change. All three
+  workflows must succeed on the repaired pushed SHA before retiring the exception.
 
 - `2026-10-08`: read GitHub runs via authenticated gh. The latest pushed revision
   e1fe37942cba2eb4014a7a0f30dc7b9c8e0734e7 has three failures, and the current f356d76
@@ -99,10 +110,6 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 ## Open Questions
 
-- Director approval required for an exceptional push to verify the committed repairs on GitHub.
-  At fc21b8f: 18 ahead vs cadence 300. COMMIT.md mandates the
-  scripts/approved_push.sh approval act; archive approval does not authorize this push.
-  All repair code, two actual Miri targets and full local CI are ready for that decision.
 - Handoff census at fc21b8f returns rc=1 for Kimi Code PID 1292. Targeted public
   lsof reports descriptors 55 and 59, both access mode `r`, on AGENTS.md; no other
   repository handles were reported for that PID. This establishes an open reader,
@@ -113,11 +120,32 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 ## Blockers
 
-- Hosted result waits for a permitted push; local implementation and focused verification can proceed.
+- Hosted result pending the authorized recorded push and exact-SHA workflow runs.
 - The handoff census remains refused until Kimi closes or the director explicitly
   sanctions its process. Owned by `.4` with priority before handoff.
 
 ## Acceptance Checklist
+
+`.4` authority-recording slice (b), 2026-10-08, SEMULITH-CI-0006; leaf remains active:
+
+- [x] **ROOT CAUSE** — director explicitly grants the needed CI-repair pushes and
+  requires ordinary cadence after hosted success. `git rev-list --count origin/main..HEAD`
+  returns 19 at 2f29664; previous remote remains e1fe379 with all three workflows failed.
+- [x] **ADDRESSED** — verbatim authority and exact-SHA/all-three-green expiry recorded
+  in decision_ci-recovery-push-approval; COMMIT, prior cadence decision, MEMORY/frontier
+  and book aligned. `FRONTIER-SYNC: ok (33 tree(s) mirrored by docs/TASK_TREE.md)`;
+  make book rc=0. Existing recorded approval act remains the execution path.
+- [x] **NO REGRESSION** — `git diff --name-only -- .githooks scripts .github Cargo.toml
+  Cargo.lock crates` is empty, rc=0. Normal sharder moves one old entry verbatim:
+  `completeness: 74 entries before == 73 kept + 1 moved, order and bytes exact`;
+  `SHARD-FREEZE: ok (215 shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)`.
+  The preserved entry separator becomes a blank line at head EOF; that is the sole
+  default diff whitespace warning. All other whitespace checks pass with only
+  blank-at-eof excluded. Neither cadence nor a tracked history byte is weakened.
+- [x] **FIX / LOCKSTEP** — records/index, COMMIT, MEMORY/frontier, live logs and book;
+  new ordinary shard/manifest retain authenticated archive union. P4 stays 11/18.
+  Hosted verification and Kimi decision stay open; approval questions are not repeated.
+  promotion: completed (director ruling in docs/decisions/decision_ci-recovery-push-approval.md).
 
 `.4` evidence-recording slice (a), 2026-10-08, SEMULITH-CI-0005; leaf remains active:
 
@@ -255,9 +283,12 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-08` | `.4` b | remote SHA/runs, frontier, freeze, book, implementation diff | approval scope recorded; 215 logical rows authenticated; hosted run next |
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0006 (leaf CI-RECOVERY.4): record bounded approval for necessary GitHub CI repair pushes` — authority slice, hosted result still pending.
 
 `SEMULITH-CI-0005 (leaf CI-RECOVERY.4): record the reader census blocker before hosted verification` — evidence recording only, both director decisions pending.
 

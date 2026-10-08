@@ -1,5 +1,12 @@
 # DEV_NOTES.md
 
+## _(2026-10-08)_ — CI repair has bounded push authority (CI-RECOVERY.4 b)
+
+The director approves necessary recovery pushes without another question until
+GitHub CI passes. Record the scope and all-three-green expiry in a decision and
+COMMIT/book; preserve the full-CI/ledger act and ordinary cadence afterward.
+This grants no Kimi closure/exemption. No hook or cadence code changes.
+
 ## _(2026-10-08)_ — record the handoff reader without inventing authority (CI-RECOVERY.4 a)
 
 The actual process census refuses Kimi Code PID 1292. Targeted lsof identifies two

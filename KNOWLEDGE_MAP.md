@@ -86,6 +86,7 @@
 - [`decision_canonical-definition-input.md`](docs/decisions/decision_canonical-definition-input.md)
 - [`decision_changelog-family-aggregate-rederivation.md`](docs/decisions/decision_changelog-family-aggregate-rederivation.md)
 - [`decision_changelog-family-count-rederivation.md`](docs/decisions/decision_changelog-family-count-rederivation.md)
+- [`decision_ci-recovery-push-approval.md`](docs/decisions/decision_ci-recovery-push-approval.md)
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
 - [`decision_decisions-family-aggregate-rederivation.md`](docs/decisions/decision_decisions-family-aggregate-rederivation.md)

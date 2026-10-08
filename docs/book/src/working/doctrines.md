@@ -23,6 +23,12 @@ CI-RECOVERY.3 repairs cold output/provisioning paths and truthful portability ve
 Its native and big-endian interpreted core runs each pass all 153 tests; full local CI
 also passes on Rust 1.99. Hosted green still requires a successful run on a permitted push. A local green result alone cannot close that obligation.
 
+The director has approved the pushes needed for this CI recovery without asking
+again (`decision_ci-recovery-push-approval`). Every push still uses
+`scripts/approved_push.sh`: full local CI, a committed approval record, then the
+guarded push. When all three workflows pass on the repaired pushed revision, this
+exception expires and the normal cadence resumes.
+
 Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
 open repository file handles, including read-only editor handles. A refused census
 remains visible even when verification jobs have finished. Closing another editor

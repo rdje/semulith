@@ -47,7 +47,12 @@ written here so it remains a decision someone made rather than an oversight nobo
 - **Routine work:** commit per `COMMIT.md`, do not push, do not ask about pushing.
 - **Reached 300?** `scripts/check_push_cadence.sh --status` says so, and the push is permitted.
 - **Need an earlier push?** Say why, and let the director decide. If they approve, pass their reason
-  through: `SEMULITH_PUSH_APPROVED='<their reason>' git push`.
+  through `scripts/approved_push.sh '<their reason>'` per COMMIT.md: full local CI,
+  committed approval ledger, then the guarded push. The original variable-only mechanism
+  described above has since been hardened; the variable alone is insufficient.
+- **Current recovery exception:** [[decision_ci-recovery-push-approval]] records the
+  director's approval for the pushes needed to repair the current GitHub CI failures.
+  Do not ask again within that scope; ordinary cadence resumes after all three workflows pass.
 - **The number lives in `scripts/check_push_cadence.sh` and nowhere else.** `COMMIT.md` restates it
   and that script's self-test checks the two agree — the same no-duplicated-fact rule the canonical
   definition uses.
