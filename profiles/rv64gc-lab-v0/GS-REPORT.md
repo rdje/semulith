@@ -29,7 +29,7 @@ is not a claim with a denominator.
 | Axis | Owner | Open item |
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
-| `G-CONTRACT` | `P4-SYSTEM.13` | The 23 remaining runtime guarantee pairs need realization. The privilege-mode, Sv39, Svade, IALIGN-16 and Zicntr witnesses are bound. Physical byte addresses, data widths/attributes, event positioning, one-hart ordering and full cold reset now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen. |
+| `G-CONTRACT` | `P4-SYSTEM.13` | The 23 remaining runtime guarantee pairs need realization. Before SSTC credit, P4-SYSTEM.13 owns the confirmed STCE-clear software-STIP defect and terminal-zero timer observation gap, with corpus preparation then architecture/contract and direct-witness repairs. The privilege-mode, Sv39, Svade, IALIGN-16 and Zicntr witnesses are bound. Physical byte addresses, data widths/attributes, event positioning, one-hart ordering and full cold reset now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen. |
 | `G-TRACE` | `P4-SYSTEM.14` | The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
@@ -67,7 +67,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 d822920b551f9ed274b3bc1220170013d73ed5e37bbf34a2e38fcea11ef503c4`
+  `sha256 74c0b55977a7434a033a3454d39cb99f6aeb5fd1a81be3e56ed80ea2ebcb958d`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

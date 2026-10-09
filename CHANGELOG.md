@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0126 (leaf P4-SYSTEM.13 c13) — diagnose Sstc prerequisites
+
+- Confirm a terminal-zero timer witness hole: forced S access traps still match
+  all 35 guest observations / 70 parcels. Separately reproduce the processor's
+  discarded STCE-clear software STIP write through public CSR APIs (rc101).
+- Trace the unconditional comparator to 47badd2 and frozen-v1 wording. Own the
+  corpus preparation, architecture/author/v2 repair and direct S-mode witness
+  sequence before credit. No production/guest/author changes; G-CONTRACT stays 68/114.
+- Synchronize known limitations and next actions in book, dossier and gate opening.
+
+
 ## SEMULITH-P4-0125 (leaf P4-SYSTEM.13 c12) — realize base-counter inclusion
 
 - Bind counter reads and read-only refusals; 101 boundaries / 202 parcels

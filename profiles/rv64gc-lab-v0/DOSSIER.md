@@ -140,6 +140,8 @@ Ordering selects a sequential one-hart RVWMO realization, not all weak outcomes.
 Reset includes retained cache/reservation/wait owners; cold fcsr is internally
 zero but FS-gated, and computed pending state differs from raw mip storage.
 All evidence retains its finite scope; no firmware or Linux acceptance is claimed.
+SSTC remains uncredited: STCE-clear software STIP is broken, and the terminal
+zero-read guest misses a final trap. P4-SYSTEM.13 owns both prerequisite repairs.
 
 Review [the contract book](docs/book/src/plan/p4/contract-v2.md) and
 [runtime witnesses](docs/book/src/plan/p4/contract-runtime.md) for examples.

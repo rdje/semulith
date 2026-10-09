@@ -164,3 +164,34 @@ acceptance are still open.
 
 G-CONTRACT is now 68/114: thirteen scope pairs, sixteen guest pairs and five
 typed boundary pairs. Twenty-three runtime pairs and final freeze remain.
+
+
+## Sstc prerequisites: two discovered defects
+
+Sstc is not yet credited. Review found two issues before its pair could bind.
+First, mm-stimecmp ends with a legal zero-valued S-mode read. Forcing every
+S-mode stimecmp access to trap still matches all 35 GPR-change observations
+and 70 parcel requests. Its last boundary instead traps with cause 2 and
+mepc=0x80000044, but the budget ends before a handler read. A terminal absence
+of a register change cannot establish that access succeeded.
+
+Second, the implementation always computes STIP from time >= stimecmp, even
+with menvcfg.STCE clear. The pinned machine chapter 2.1.1.18 requires STIP's
+non-Sstc behavior when STCE=0; section 2.1.1.9 then permits M-mode software
+to write mip.STIP. A public CSR diagnostic starts in M with STCE=0 and
+stimecmp=UINT64_MAX, writes mip=32, then reads mip & 32. The current model
+returns 0; the pinned fallback requires 32. This is a processor defect, beyond
+the terminal-observation gap. The unconditional overlay originated at P4.2 d.
+The frozen v1 interrupt-source wording also assumes the comparison unconditionally.
+
+The repair is owned by P4-SYSTEM.13 and precedes SSTC credit. Nine timer guests
+will first enable STCE explicitly, with fresh independent derivations and
+appropriate timer thresholds. The cold STCE=0 choice stays. A separate repair
+will implement the software-writable fallback, recheck CSR transitions and
+synchronize the independent author, state and cold/event fixtures. Open v2 will
+supersede the old interrupt-source record; frozen records and historical receipts
+remain intact. Finally, direct S-mode compare programming, nonzero read-back,
+pending-state observations and handler-visible refusals will close the witness gap.
+
+G-CONTRACT remains 68/114, v2 open. These defects are scheduled prerequisites,
+not deferred acceptance or a new firmware/Linux capability claim.

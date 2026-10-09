@@ -359,3 +359,11 @@ observations, examples, comparison limits and control receipts. Current census:
 sixteen guest pairs and five typed boundary pairs. Twenty-three runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
+
+
+SSTC is pending: the current STIP comparator overlay ignores STCE=0, whose
+software-writable fallback is required by the pinned machine chapter. The old
+mm-stimecmp terminal zero read also misses an unexpected final trap. Both are
+owned prerequisites in P4-SYSTEM.13; the runtime book records reproductions and
+the corpus-preparation, architecture/contract repair and direct-witness sequence.
+No SSTC check credit is awarded before these repairs.

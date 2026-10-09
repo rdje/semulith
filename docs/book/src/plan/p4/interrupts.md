@@ -66,3 +66,12 @@ preserves pending/enabled owner state. At cold reset, computed `mip.STIP` is one
 because time equals `stimecmp`, while `sip` is zero because `mideleg` is zero.
 Interrupt selection and WFI wake still use the machine owners and their explicit
 delegation rules; the CSR-view repair does not change those rules.
+
+
+P4.13's later Sstc review found a pending production defect: the STIP overlay
+currently ignores STCE=0, which must restore the software-writable M-mode
+fallback. It also found that mm-stimecmp's terminal zero read cannot distinguish
+success from a final trap. Both repairs are owned before SSTC contract credit;
+[the runtime chapter](contract-runtime.md#sstc-prerequisites-two-discovered-defects)
+gives the public reproduction and the ordered repair plan. The earlier timer
+receipts above describe their recorded inputs and do not establish this missing case.

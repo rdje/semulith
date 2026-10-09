@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — Sstc review exposes a terminal witness hole and STCE fallback defect (P4-SYSTEM.13 c13)
+
+Before binding SSTC, an in-memory author copy forces every S stimecmp access
+illegal. mm-stimecmp still matches all 35 changes / 70 parcels; final boundary
+34 traps cause 2, EPC=0x80000044, but its zero read would also change nothing.
+The existing budget stops before a handler read. No production failure follows
+from this diagnostic alone: it establishes the guest's observation gap.
+
+Pinned RVP-MACHINE 2.1.1.18 additionally requires STCE=0 to restore non-Sstc
+STIP behavior; 2.1.1.9 then makes mip.STIP software-writable in M. A public CSR
+probe on current core sets stimecmp=MAX while STCE=0, writes mip=32 and reads
+mip&32: actual 0, required 32, rc101. computed() always overlays the comparator;
+computed-field writes ignore proposed STIP. git log -S and 47badd2's diff locate
+introduction at P4.2 d. Frozen v1's interrupt-source assumption repeats it.
+Machine/supervisor/Sstc artifacts rehashed to all three pinned digests.
+
+Own both repairs before SSTC credit. Keep cold STCE=0: prepare nine comparator
+programs with explicit enable instructions and fresh independent observations,
+including threshold/step changes and honest provenance. Then repair dynamic
+STIP source/writability, author/state/reset/event fixtures and open-v2
+supersession. Only then add direct S-mode compare programming/read-back and
+handler-visible refusals to the registry. Full CI at behavior milestones.
+Profile pressure must be measured before adoption; duplicated ENVIRONMENT
+protocol prose can move verbatim to a linked book part within existing caps.
+This commit is diagnosis/design only; production/guest/author inputs unchanged,
+G-CONTRACT remains 68/114, 23 runtime pairs then freeze. LIVE_STATUS unchanged
+(P4 12/18, 639 arms, 46 chapters). Promotion declined: owning task, explicit
+canonical gate opening and runtime book retain reproductions and schedule.
+
+
 ## _(2026-10-10)_ — counter inclusion retains separate progress and access contracts (P4-SYSTEM.13 c12)
 
 OB-ZICNTR binds mm-counters / mm-csr-ro-counters. Rate and progress

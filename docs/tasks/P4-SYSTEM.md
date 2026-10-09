@@ -460,6 +460,119 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c13 — supervisor timer programming (`2026-10-10`, `SEMULITH-P4-0126`)
+
+Own before changes on clean 8d29fff. Review OB-SSTC/D-SSTC, pinned RVP-SSTC
+12.1 and supervisor/machine stimecmp/STCE clauses, real CSR permission/computed
+pending/timekeeping paths, complete mm-stimecmp/i-timer/w-timer observations
+and interrupt/runtime book. Before credit, test a suspected terminal witness
+hole: mm-stimecmp's legal S read at its last boundary returns zero, so both
+success and an unexpected trap may produce no observed GPR change within budget.
+Census all corpus stimecmp writes and counter/STCE setup; record actual outcome.
+
+If confirmed, own the verification defect here and fix it before binding.
+Add a named direct execution evidence kind distinct from provider-assumption
+fixtures. Its Sstc positive check runs existing i-timer/w-timer guests plus an
+actual S-mode CSR instruction sequence: nonzero compare programming/read-back,
+cleared/reasserted/cleared delegated timer pending observations and continuation
+markers must reject an unexpected trap. Negative check runs mm-stimecmp plus
+literal S missing-TM/missing-STCE and U privilege refusals before destination/
+compare effects, read back through M handler instructions. Initial state and
+literal words/expected observations are specified independently of engine output.
+Use real parcel fetch and interpreter; do not add production semantics.
+
+Preserve prior 68 entries, all contract/guest/author bytes and frozen pins. Bind
+existing CHK-SSTC IDs and extend coverage to 70 only once direct fixtures pass.
+Independently replay old guests, demonstrate the suspected old witness miss and
+new fixture discrimination, run timer permission/author controls, make check,
+focused gates and full CI as the new evidence mechanism milestone. Update current
+profile table/counts, book, live docs and task receipts, then commit. Expected
+70/114, 22 runtime pairs then freeze; next base arithmetic pair after this slice.
+
+#### c13 STCE pending-state investigation — owned before diagnostic
+
+Re-reading pinned machine 2.1.1.18 additionally exposes a possible architectural
+conflict: with menvcfg.STCE=0, STIP reverts as if Sstc were not implemented;
+2.1.1.9 then makes mip.STIP software-writable. Current computed() ignores STCE
+and state fields always compute STIP. Investigate through public CSR APIs with
+stimecmp above time and STCE clear; do not classify as harmless laboratory
+latitude or credit SSTC before resolving the source/contract conflict. If
+confirmed, split this slice: commit the bounded diagnosis/design (no new credit),
+then a separately owned c13a architectural prerequisite before c13b witnesses.
+A repair must preserve frozen records by v2 supersession, synchronize current
+state/author/guest inputs and fresh evidence, and pass full CI. Old receipts
+remain historical; all affected timer observations must be re-earned, not fitted.
+
+#### c13 confirmed verification defect — terminal zero timer read
+
+Reproduction: execute an in-memory copy of derive_rv64gc_expectations with its
+single `if not tm or not stce:` replaced by `if True:`. Replaying mm-stimecmp
+still matches all 35 committed changes and 70 parcels, but boundary 34 traps
+with cause 2, mepc=0x80000044, final mode M. Its zero-valued legal S read
+produces no change, and the fixed budget stops before a handler observation.
+Impact: this guest alone cannot discriminate S timer availability; do not bind
+Sstc as an adequate positive witness. Production failure has not been observed.
+
+Corpus census: rg stimecmp/menvcfg/mcounteren across all 167 source guests
+finds only mm-stimecmp opens TM/STCE for timer access; it only reads stimecmp.
+Timer writes in the other programs run in M. Existing core permission and
+independent author matrix test gates, but no existing registered guest witnesses
+S-mode compare programming/read-back. Own a direct registered execution fixture
+in c13 now, with explicit nonzero values and handler-visible refusal cases.
+Original guest/expectation records remain historical exact inputs; no need to
+rewrite their scope or the observation contract. Priority: before SSTC credit.
+
+#### c13 confirmed architectural defect and bounded repair order
+
+Public-API diagnostic compiled against current semulith-core: cold state,
+M mode, STCE=0, stimecmp=u64::MAX; csr_write(0x344,32) succeeds but
+csr_read(0x344)&32 returns 0. Literal pinned fallback requires 32.
+Executable target/p4-system-13/c13/stip_probe exits 101 with that assertion.
+RVP-MACHINE 2.1.1.18 says STCE-clear STIP reverts as if Sstc absent;
+2.1.1.9 makes mip.STIP software-writable in that case. Rehashed machine
+271851 B b63fe335…17fea, supervisor 186455 B d5186efc…651a, Sstc
+27429 B 30bea862…216e1. Root: computed() unconditionally overlays time>=compare
+and computed-field writes always retain, while state.sexp declares that rule
+unconditionally. git log -S locates introduction at 47badd2 (P4.2 d), confirmed
+by its diff. Frozen v1 OB-GC-ENV-INTERRUPT-SOURCES repeats that assumption.
+
+Priority: architectural prerequisite before any SSTC credit. Keep cold STCE=0;
+do not change reset merely to preserve old observations. No external-source
+expansion: software-writable STIP is hart software, not an injected device.
+Bounded work, each green and committed before the next:
+
+1. **c13a1 corpus preparation**: nine timer-source programs (c-irq,
+   env-irq-sources, i-prio, i-timer, mm-wfi, w-deleg, w-notrap, w-sw,
+   w-timer) explicitly enable STCE in M before using the comparator. Preserve
+   mm-stimecmp's deliberately closed gates. Derive observations before engine
+   execution; adjust authored timer thresholds for the added setup boundaries,
+   preserve meaningful control flow and declare new provenance. Reconcile the
+   historical author's owned-record protocol explicitly rather than copying
+   capture headers to a new derivation. Regenerate guest mirrors, fresh public
+   reference attempts where affected, current descriptions and full CI. Measure
+   profile family pressure before adoption; if needed move duplicated ENVIRONMENT
+   protocol prose verbatim to a linked book chapter within existing caps.
+2. **c13a2 architecture/contract repair**: gate comparator overlay on STCE;
+   STCE-clear mip.STIP is software-writable, sip.STIP remains read-only.
+   Explicitly select retained raw software STIP across enabled comparator views,
+   if permitted by the pinned text; test transitions and all CSR forms. Repair
+   the independent author from the same clauses, direct cold/reset/event fixtures
+   and current state narrative. Supersede frozen v1 interrupt-source wording in
+   open v2 with named realized checks; correct the open v2 reset description.
+   Frozen records/pins and historical receipts stay byte-exact. Reproduce RED
+   before/after public CSR/instruction regressions and full CI. Recheck every
+   affected input and gate count, without awarding SSTC early.
+3. **c13b Sstc witnesses**: registered direct execution pair, actual S compare
+   programming/read-back/pending/continuation and illegal-before-effects cases,
+   plus old guests. Explicitly demonstrate the terminal-zero control now fails.
+   Only then bind CHK-SSTC and extend effective realization to 70/114.
+
+This c13 commit is bounded diagnosis/design only: no production/guest/author
+change, no new contract credit (68/114 remains). Director decision/access is not
+needed to repair the pinned-rule mismatch; unresolved implementation facts are
+re-verified during their owned slice. Promotion declined here: task, pending
+book section and canonical gate opening retain both defects and exact schedule.
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -598,6 +711,32 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c13 diagnosis) (`2026-10-10`, `SEMULITH-P4-0126`):
+
+- [x] **WITNESS ROOT CAUSE** — python3 in-memory author replay rc=0: forced S timer refusal still
+  matches mm-stimecmp: 35 boundaries / 70 parcels; last step traps cause 2,
+  mepc=0x80000044. Budget ends at a zero-valued read, with no distinguishing
+  register change. Corpus source census in c13 decision records the scope.
+- [x] **ARCHITECTURAL ROOT CAUSE** — rustc public csr_write/csr_read probe
+  compiled against current core exits 101: STCE=0, stimecmp=MAX, write
+  mip.STIP=1, observed 0 instead of required 32. Pinned machine 2.1.1.18/
+  2.1.1.9 fallback clauses re-read; three artifact pins match. git log -S
+  and git show 47badd2 locate unconditional computed overlay at P4.2 d.
+  Frozen v1 source wording also identified, not rewritten.
+- [x] **OWNED / SCHEDULED** — rg c13a1/c13a2/c13b in this tree reports
+  all three owned stages: c13a1 nine-guest
+  explicit-enable preparation, c13a2 dynamic STIP/author/state/v2 repair,
+  and c13b registered direct S programming/refusal witnesses. Priority before
+  any SSTC credit. Keep cold STCE=0; all behavior milestones require full CI.
+  This bounded unit completes diagnosis/design, not either defect's closure.
+- [x] **NO REGRESSION / LOCKSTEP** — Python identity: 340 contract/
+  guest/author files byte-exact; git diff crates/scripts empty. Registry
+  4 passed / 0 failed; DOSSIER-SCHEMA 270 / two skips; CONTRACT-FREEZE
+  three versions / zero findings; gate controls 17 pass / 0 fail; books rc=0.
+  G-CONTRACT unchanged 68/114; known limitation and next actions synchronized.
+  LIVE_STATUS unchanged: P4 12/18, 639 arms, 46 chapters.
+  promotion: declined (task, book and gate retain reproductions and repair ownership).
 
 `P4-SYSTEM.13` slice (c12) (`2026-10-10`, `SEMULITH-P4-0125`):
 
@@ -757,6 +896,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c13 diagnosis | forced S refusal missed by 35/70 terminal guest; public STCE-clear STIP regression rc101; pins/history; 340 inputs exact; registry 4/0; schema/freeze/gate 17/17/books | two defects owned before SSTC; 68/114 unchanged |
 | `2026-10-10` | `.13` c12 | counter guests 101 boundaries / 202 parcels exact; three controls; core permission 1/0; author 30 mode gates; Rust 163/17/198; 66 entries + 340 inputs exact; lossless archive; focused gates/books | 68/114, v2 open |
 | `2026-10-10` | `.13` c11 | four alignment programs / 165 boundaries / 319 parcels; four in-memory controls; prior 64 bindings + 340 inputs exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 66/114, v2 open |
 | `2026-10-10` | `.13` c10 | four Svade programs / 434 boundaries / 868 parcels; two controls incl. correct fault + bad PTE; core 1/0; Rust 163/17/198; prior 62 bindings + 340 files exact; focused gates/books | 64/114, v2 open |
@@ -786,6 +926,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c13 diagnosis | `SEMULITH-P4-0126 (leaf P4-SYSTEM.13): own the STCE fallback defect and terminal timer witness gap` | c13a1 explicit timer enable, then architecture repair and Sstc witnesses |
 | `.13` c12 | `SEMULITH-P4-0125 (leaf P4-SYSTEM.13): realize base-counter inclusion and read-only refusals` | c13 Sstc, then 22 runtime pairs |
 | `.13` c11 | `SEMULITH-P4-0124 (leaf P4-SYSTEM.13): realize halfword alignment and precise parcel-fault checks` | c12 Zicntr, then 23 runtime pairs |
 | `.13` c10 | `SEMULITH-P4-0123 (leaf P4-SYSTEM.13): realize Svade checks with fault and PTE-preservation witnesses` | c11 IALIGN-16, then 24 runtime pairs |
@@ -812,6 +953,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c13 diagnosis (SEMULITH-P4-0126): reproduce
+  terminal-zero timer guest miss and public STCE-clear STIP write defect;
+  root/history/pins checked. Own staged repair sequence before SSTC credit.
+  No production/guest/author changes; 68/114 unchanged, defects remain open.
 
 - `2026-10-10`: `.13` c12 (SEMULITH-P4-0125): bind base-counter
   inclusion/read-only refusal; independent 101-boundary replay exact, three
