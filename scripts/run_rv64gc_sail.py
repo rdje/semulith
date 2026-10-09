@@ -37,7 +37,9 @@ INTERRUPTS = {'supervisor-software-interrupt': 1, 'machine-software-interrupt': 
               'supervisor-timer-interrupt': 5, 'machine-timer-interrupt': 7,
               'supervisor-external-interrupt': 9, 'machine-external-interrupt': 11}
 INT_LABELS = {'SSI': 1, 'MSI': 3, 'STI': 5, 'MTI': 7, 'SEI': 9, 'MEI': 11}
-DECLARED_INTERRUPT = re.compile(r'^the pending evaluation takes the (SSI|MSI|STI|MTI|SEI|MEI) interrupt in ([MSU]):')
+DECLARED_INTERRUPT = re.compile(
+    r'^(?:the pending evaluation takes the (?P<label>SSI|MSI|STI|MTI|SEI|MEI) interrupt in [MSU]:'
+    r'|pending interrupt (?P<cause>1|3|5|7|9|11) delivers in [MSU] before instruction fetch;)')
 
 
 class SailError(Exception):
@@ -104,8 +106,10 @@ def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, 
         want = {k: int(v, 16) for k, v in e['writes'].items()}
         event = deliveries.get(n)
         declared = DECLARED_INTERRUPT.match(e['derivation'])
+        declared_cause = (int(declared['cause']) if declared and declared['cause'] is not None
+                          else INT_LABELS[declared['label']] if declared else None)
         if n not in rows:
-            interrupt = declared is not None and event == ('int', INT_LABELS[declared[1]])
+            interrupt = declared is not None and event == ('int', declared_cause)
             fetch_fault = (e['insn'].startswith('<fetch ') and event is not None
                            and event[0] == 'exc' and event[1] in (1, 12))
             if not want and (interrupt or fetch_fault):

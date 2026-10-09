@@ -1,5 +1,18 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — distinguish an adapter gap from timer supply (P4-SYSTEM.12 e2d)
+
+All 37 C forms occur in actual Sail rows: 27 guests / 412 boundaries agree twice.
+The parcel author's numeric interrupt annotation was absent from the legacy adapter;
+a witnessed event reproduced the refusal. Accept both exact spellings with the same
+cause/event requirement, retain missing/wrong-event and row controls, and mutate the
+new support away. c-irq still differs at 9 because the public reference supplies no
+STIP in the zero-stimecmp probe. Its seven-boundary diagnostic and config variants
+are tracked, with exact fresh repeats; no source inspection or fitted expectations.
+A wrong C.LI expectation fails a fresh run at 0. GUEST-GEN 128/128, 627 registered
+arms. Current reference prose drops implementation assumptions; .14 owns the wider
+maintained-knowledge sweep. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — the C bind changes only independently declared extents (P4-SYSTEM.12 e2c)
 
 The staged 28 C programs/records land exact alongside the complete composition,

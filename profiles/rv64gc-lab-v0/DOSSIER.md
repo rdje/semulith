@@ -89,7 +89,8 @@ exact two-byte physical fetch supply. Frozen resolution-era statements remain
 historical records until `.13` supplies versioned supersessions. Requirement status
 promotion and experiment records belong to `.14`; CPU-SYSTEM acceptance has not
 been reached. The [C chapter](../../docs/book/src/plan/p4/c.md) records its binding
-and the matched Sail verification still to run before leaf closure.
+and matched Sail result (27 agreeing guests, one measured timer-platform difference);
+full CI and final leaf signoff remain next.
 
 ## Open questions
 

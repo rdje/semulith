@@ -32,7 +32,7 @@ Every diagnostic here is **tracked**, so a number it produced can be re-derived 
 reader — that is leg 3 of `docs/CLAIM_VERIFICATION.md`, and an instrument living in a scratch
 directory is a "trust me" with extra steps.
 
-The tools live in four family tables under [`docs/toolbox/`](docs/toolbox/) — partitioned at
+The tools live in family tables under [`docs/toolbox/`](docs/toolbox/) — partitioned at
 `LIVE-CONTAINMENT.3` when this file reached 20,478 of its 20,480 bytes. Pick the family that
 matches your question:
 
@@ -40,6 +40,7 @@ matches your question:
 | --- | --- |
 | [governance](docs/toolbox/governance.md) | Repository discipline — the doctrine enforcer, mirrors, routing, history, push, provenance |
 | [definition](docs/toolbox/definition.md) | The canonical definition — S-expressions, schemas, fragments, semantics, generators, citations |
+| [guest evidence](docs/toolbox/guest-evidence.md) | Independent guest authoring, staged observations/counts, and public reference probes |
 | [composition](docs/toolbox/composition.md) | Composition and the board — records, assumptions, composed units, the board, its platform export |
 | [execution](docs/toolbox/execution.md) | Execution and evidence — the engines, the guests, coverage, references, bench, materials |
 

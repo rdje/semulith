@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0103 (leaf P4-SYSTEM.12 e2d) — matched C evidence
+
+- Sail: 27 AGREE / 412 boundaries, all 37 C forms, exact repeat traces; c-irq's
+  timer-platform difference reproduced through public stimecmp/mip/config APIs.
+  Wrong C.LI expectation diverges in a fresh run. Repair parcel interrupt annotation
+  handling with a fifth negative control; GUEST-GEN 128/128. Corpus unchanged.
+- Reference assumptions now cite public behavior; wider sweep and registry/book
+  owned by .14. CPU-SYSTEM incomplete; full CI/final C-leaf signoff next.
+
 ## SEMULITH-P4-0102 (leaf P4-SYSTEM.12 e2c) — bind C atomically
 
 - Complete composition: 197 instructions + three pseudos; all 200 spellings

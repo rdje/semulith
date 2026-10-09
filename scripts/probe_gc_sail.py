@@ -53,6 +53,15 @@ def check(adapter, root):
             'interrupt event excused an ordinary instruction')
     refused(lambda: S.compare_trace(interrupt, event.replace('software', 'external')),
             'missing expected step 0', 'wrong interrupt cause accepted')
+    parcel_interrupt = expected('c.addi x10, 1',
+        'pending interrupt 5 delivers in M before instruction fetch; EPC is this boundary PC, no retirement.')
+    timer_event = event.replace('software', 'timer')
+    assert S.compare_trace(parcel_interrupt, timer_event)[0] == 'AGREE'
+    refused(lambda: S.compare_trace(parcel_interrupt, ''), 'missing expected step 0',
+            'unwitnessed parcel delivery accepted')
+    refused(lambda: S.compare_trace(parcel_interrupt, event), 'missing expected step 0',
+            'wrong parcel delivery cause accepted')
+    assert S.compare_trace(parcel_interrupt, NOP)[0] == 'DIVERGE'
     fetch = expected('<fetch page fault at 0x403000>', 'The fetch walk denies execute permission.')
     fetch_event = 'handling exc#fetch-page-fault at priv M | tval=0x0000000000403000\n'
     assert S.compare_trace(fetch, fetch_event)[0] == 'AGREE'
@@ -96,7 +105,7 @@ def check(adapter, root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mutation', choices=['permit-missing', 'ignore-status',
-                                              'unwitnessed-gap', 'keep-stale'])
+                                              'unwitnessed-gap', 'keep-stale', 'ignore-parcel-interrupt'])
     args = parser.parse_args()
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
@@ -110,8 +119,11 @@ def main():
                     'raise SailError(f\'missing expected step {n} ({e["insn"]}); absent evidence is not agreement\')',
                     'continue'),
                 'ignore-status': ('if returncode != 0:', 'if False:'),
-                'unwitnessed-gap': ("declared is not None and event == ('int', INT_LABELS[declared[1]])",
+                'unwitnessed-gap': ("declared is not None and event == ('int', declared_cause)",
                                    'declared is not None'),
+                'ignore-parcel-interrupt': (
+                    "        declared = DECLARED_INTERRUPT.match(e['derivation'])",
+                    "        declared = DECLARED_INTERRUPT.match(e['derivation']) if not e['derivation'].startswith('pending interrupt ') else None"),
                 'keep-stale': ('trace.unlink(missing_ok=True)', 'pass'),
             }
             old, new = changes[args.mutation]

@@ -18,10 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (11/18 — the profile resolved as `rv64gc-lab-v0` (`.1`), the privileged machinery landed (`.2`), and nine leaves CLOSED: Sv39 (`.3`), atomics (`.4`), interrupts/counters/wait (`.5`), the fence.i contract (`.6`), the FP backend with F and D bound (`.7`), faults/restart/partial progress (`.8`), the environment contract v1 (`.9`), the CPU-SYSTEM report (`.10`, `incomplete`, 8/10 axes open), and M (`.11`)).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.12` e2d — matched Sail over the 28 bound C guests,
-  with an observed wrong-expectation control and explicit platform differences.
-  C bound at e2c: 167 guests, 200/200 spellings, 139 old PC/mode/write traces exact.
-  Registry 20/106; v2 open; CPU-SYSTEM incomplete (8/10 axes). Cleanup done.
+- next_action: `P4-SYSTEM.12` e2e — full CI and final C-leaf acceptance,
+  then .13's effective contract completion/freeze. C bound; Sail 27 AGREE / 412
+  boundaries, all 37 forms, plus one public-probed timer-platform difference.
+  Wrong expectation/annotation controls discriminate. Registry 20/106, v2 open.
+  Registration/unit book and black-box assumption sweep owned by .14. Cleanup done.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (production C bound at e2c; matched Sail verification next)
+**Status:** Underway (C bound and Sail checked; full CI and final leaf signoff next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -343,3 +343,38 @@ observations and counts. The Rust checks pass, GUEST-GEN passes 127 controls, an
 EXERCISE-COVERAGE reports 200/200. These are finite laboratory results; matched
 Sail verification precedes closing `.12`, and CPU-SYSTEM remains incomplete on
 its other axes.
+
+
+Slice (e2d) runs the pinned Sail binary through its public interface over all 28 C
+guests. Twenty-seven agree over 412 declared boundaries, with two complete traces
+byte-identical for each. Actual Sail instruction rows include all 37 selected C
+spellings. The matched set includes C.JALR's old-source link alias, hints, reserved
+operands, FS-Off memory, ILEN=32 diagnostics, LR/SC and both translated page-edge
+programs. A fresh run with C.LI's expected value changed by one fails at boundary 0.
+
+The remaining guest, `c-irq`, differs at boundary 9: Sail executes C.ADDI while the
+laboratory delivers its virtual-time-driven supervisor timer interrupt. The public
+reproducer is:
+
+```sh
+python3 scripts/probe_gc_sail_timer.py
+```
+
+It sets `stimecmp=0`, reads it back, and reads `mip` at two later boundaries. Sail
+returns STIP=0 both times; the laboratory's independent derivation gives STIP=1.
+Two fresh reference traces repeat exactly. The public configuration validator refuses
+Zicntr without a time source and refuses CLINT in the existing memory map because no
+CLINT region is declared. Adding a device would change the selected platform. This
+is a measured reference-platform limit; the committed timer expectation is retained.
+
+The experiment also exposed an adapter defect: it recognized the historical author’s
+interrupt description but not the parcel author’s numeric-cause description. Both
+exact spellings now require the matching trace event. Missing/wrong events and an
+instruction row at that delivery boundary fail; disabling the new spelling fails the
+permanent control. GUEST-GEN passes 128 controls.
+
+These comparisons judge declared GPR changes and witnessed delivery gaps. They do
+not independently compare unrecorded PCs, words, FP registers, memory, CSRs or physical
+request counts. The trap CSR values read back into GPRs are within the comparison.
+The ninth experiment is recorded in the reference dossier; structured experiment and
+independence records remain `.14`'s work. Full CI and leaf acceptance follow at (e2e).

@@ -285,3 +285,92 @@ owned records. Schedule as high priority within e1d, before its first authored r
   record its retrieval options and exact evidence before any migration. One DEV_NOTES
   shard and a concise changelog summary can finish this slice without a cap increase.
 
+
+## Closed e2c binding design
+
+- `2026-10-09` (e2c atomic bind, before changes): bind the production C fragment,
+  complete status, staged 28 guest source/expectation pairs and run-order entries,
+  and the independently staged 139 historical extents together. Use the shared
+  direct-field transformer; assert every other historical byte/source unchanged.
+  Regenerate the rv64gc definition/guest modules through their owners and derive
+  scope/coverage (expected 200 spellings, including three existing pseudo forms).
+  Add REQ-GC-C / OB-GC-C and the two-byte environment-fetch assumption to open v2;
+  realize every new POS/NEG check, preserve all frozen v0/v1 records and pins, and
+  leave v2 open for .13. Map all new guests into the existing seven-axis matrix,
+  replacing the boundary/restart degeneracy with compressed trap/resume evidence.
+  Run focused corpus/contract checks, make check for generated Rust, doctrine gates
+  and books; matched Sail follows as its own slice before closing .12. CPU-SYSTEM
+  remains incomplete on its other axes. Retain parent/new engine identity evidence
+  for historical writes and fault PCs, counts differing only as derived; new C
+  guests must discriminate the unbound parent. Review/update the affected book and
+  dossier/current gate records, generator comments and count-cap projection.
+  Owned documentation defects found during this interface review: DOSSIER.md claim
+  scope and 'not have yet' still describe the unregistered resolution despite the
+  tracked implementation; P4 overview likewise says unregistered/no FP/M unbound,
+  and its C frontier stops at d3d0. Reproduce by those phrases versus current files
+  and registry; impact is the director's inaccurate review surface. Fix those current
+  claims in this bind, retain explicitly dated historical selection decisions, and
+  link the generated report for the remaining limits. Initial generation refused
+  the new c_compressed group because the closed profile grammar/mapping had no C
+  scope family; extend both together and verify schema plus lossless round-trip
+  before regenerating the fixture. The interim Rust check correctly rejected its
+  still-old fixture counts/missing C guests, not a processor observation change.
+  Extraction then refuses all 37 C forms: its semantic census visits only sem,
+  never expand. Own the integration fix here: count expansion rows only after the
+  existing SEM composition validator accepts their base/bindings; retain duplicate
+  checks and add valid/missing-base/unbound/unknown-mapping controls. No new checker
+  or bypass of the semantic authority. The real mirror stale-control's old setup
+  now fails at a copied rv64i observation, not the stale-exception predicate
+  (stale-control-before.log). Restore the current count for its clean pair and use
+  the comment-only dir-selfmod-fence exception with independently verified extent;
+  require the actual stale-normalization reason. Gate manifest's G-SCOPE text
+  also says no C fragment exists although definitions/riscv/c.sexp is tracked; remove
+  that resolved open item at the complete bind and regenerate reports.
+  PROFILE-CONSISTENCY also refuses PARTS DRIFT (52 + 111 != 200): its
+  closed extension-family sum omits c_compressed despite the updated loader.
+  Own the matching census extension and good-C/wrong-part controls before signoff.
+  Wire the Python extraction controls into the registered shell gate; otherwise
+  its new expansion refusals would run only by explicit invocation.
+  Final registry census (git ls-files materials/units.sexp docs/models) confirms
+  RV64GC is still unregistered and has no per-unit book. The draft's contrary
+  claim was wrong and is corrected before commit. Own registration/category
+  dispositions and its dedicated book at .14, before evidence promotion/signoff;
+  the project P4 chapters remain the current review surface.
+
+
+
+
+`P4-SYSTEM.12` slice (e2c) — atomic C binding (`2026-10-09`, `SEMULITH-P4-0102`):
+
+- [x] **ROOT CAUSE** — git show a909ad8:profiles/rv64gc-lab-v0/encoding.sexp
+  composes no C; source/scope/contract are not yet
+  bound. Stage expectations before running the changed engine. Generator first
+  refused the missing c_compressed grammar, extraction omitted expand rows, and
+  PROFILE-CONSISTENCY omitted C in its part sum; real mirror stale control failed
+  at an unrelated copied observation. Each reproduced and repaired at its owner.
+- [x] **ADDRESSED** — compose C complete, 197 instructions/three pseudos; adopt
+  all 56 staged source/record files byte-exact, 28 run-order entries, and 139
+  independently derived count changes (4,888 words -> 9,770 parcels at 4,913
+  boundaries). REQ-GC-C, OB-GC-C and exact parcel supply join open v2; four checks
+  realized. Registry 20/106; frozen v0/v1 records/pins unchanged. All C guests
+  join the seven-axis matrix, replacing boundary/restart degeneracy (two remain).
+  python3 scripts/gen_definition.py / gen_guests.py rc=0; both modules regenerated.
+  Extract expansions through existing
+  SEM composition validation; four controls discriminate. Good-C/wrong-part
+  census controls pass. Stale mirror control requires its intended refusal reason.
+- [x] **NO REGRESSION** — make check rc=0 (core 153, verify 193); all 167 directed
+  guests and registry entries pass. Parent/current CLI traces for all 139 old
+  guests are byte-identical (PC, mode, GPR writes); all source and non-count record
+  bytes exact. Five new public-CLI C traces discriminate the unbound parent.
+  GUEST-GEN 127/127; coverage/extraction 200/200; CONTRACT-FREEZE and dossier
+  consistency pass. Evidence logs: target/p4-system-12/e2c/. Full doctrine hook
+  and books enforced at commit. Project arms 626; unrelated scalar/state modules
+  unchanged. Attempted full gate with a temporary index was invalid: nested Git
+  self-tests replaced that disposable index; real index SHA-256 stayed exact.
+  Run the full gate at the normal staged commit boundary instead.
+- [x] **LOCKSTEP** — current dossier/environment/P4 overview/C chapter repaired,
+  report regenerated: G-SCOPE green, CPU-SYSTEM incomplete on 8/10 axes. Live
+  P4 stays 11/18; matched Sail e2d precedes leaf closure. Closed notes/receipts
+  moved verbatim to archive part 6, reconstruction asserted, fixed caps retained.
+  promotion: declined (schema/semantic/census/byte/control checks retain the rule).
+

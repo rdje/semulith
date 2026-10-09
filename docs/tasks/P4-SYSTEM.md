@@ -209,6 +209,8 @@ This gate authorises the planned next engineering stage: board implementation.
   Register rv64gc-lab-v0 in materials/units.sexp with its required-category
   dispositions and dedicated generated book; validate the six-unit census and
   every registry/book consequence before evidence signoff (owned e2c finding).
+  Sweep maintained knowledge/plans for dependency assumptions based on submodule
+  internals; replace them with public-contract evidence (owned e2d finding).
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -238,59 +240,43 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | C bound at e2c; e2d matched Sail next |
+| 1 | `P4-SYSTEM.12` | `active` | C bound/Sail checked; e2e full CI and signoff next |
 
 ## Decisions
 
-- `2026-10-09` (e2c atomic bind, before changes): bind the production C fragment,
-  complete status, staged 28 guest source/expectation pairs and run-order entries,
-  and the independently staged 139 historical extents together. Use the shared
-  direct-field transformer; assert every other historical byte/source unchanged.
-  Regenerate the rv64gc definition/guest modules through their owners and derive
-  scope/coverage (expected 200 spellings, including three existing pseudo forms).
-  Add REQ-GC-C / OB-GC-C and the two-byte environment-fetch assumption to open v2;
-  realize every new POS/NEG check, preserve all frozen v0/v1 records and pins, and
-  leave v2 open for .13. Map all new guests into the existing seven-axis matrix,
-  replacing the boundary/restart degeneracy with compressed trap/resume evidence.
-  Run focused corpus/contract checks, make check for generated Rust, doctrine gates
-  and books; matched Sail follows as its own slice before closing .12. CPU-SYSTEM
-  remains incomplete on its other axes. Retain parent/new engine identity evidence
-  for historical writes and fault PCs, counts differing only as derived; new C
-  guests must discriminate the unbound parent. Review/update the affected book and
-  dossier/current gate records, generator comments and count-cap projection.
-  Owned documentation defects found during this interface review: DOSSIER.md claim
-  scope and 'not have yet' still describe the unregistered resolution despite the
-  tracked implementation; P4 overview likewise says unregistered/no FP/M unbound,
-  and its C frontier stops at d3d0. Reproduce by those phrases versus current files
-  and registry; impact is the director's inaccurate review surface. Fix those current
-  claims in this bind, retain explicitly dated historical selection decisions, and
-  link the generated report for the remaining limits. Initial generation refused
-  the new c_compressed group because the closed profile grammar/mapping had no C
-  scope family; extend both together and verify schema plus lossless round-trip
-  before regenerating the fixture. The interim Rust check correctly rejected its
-  still-old fixture counts/missing C guests, not a processor observation change.
-  Extraction then refuses all 37 C forms: its semantic census visits only sem,
-  never expand. Own the integration fix here: count expansion rows only after the
-  existing SEM composition validator accepts their base/bindings; retain duplicate
-  checks and add valid/missing-base/unbound/unknown-mapping controls. No new checker
-  or bypass of the semantic authority. The real mirror stale-control's old setup
-  now fails at a copied rv64i observation, not the stale-exception predicate
-  (stale-control-before.log). Restore the current count for its clean pair and use
-  the comment-only dir-selfmod-fence exception with independently verified extent;
-  require the actual stale-normalization reason. Gate manifest's G-SCOPE text
-  also says no C fragment exists although definitions/riscv/c.sexp is tracked; remove
-  that resolved open item at the complete bind and regenerate reports.
-  PROFILE-CONSISTENCY also refuses PARTS DRIFT (52 + 111 != 200): its
-  closed extension-family sum omits c_compressed despite the updated loader.
-  Own the matching census extension and good-C/wrong-part controls before signoff.
-  Wire the Python extraction controls into the registered shell gate; otherwise
-  its new expansion refusals would run only by explicit invocation.
-  Final registry census (git ls-files materials/units.sexp docs/models) confirms
-  RV64GC is still unregistered and has no per-unit book. The draft's contrary
-  claim was wrong and is corrected before commit. Own registration/category
-  dispositions and its dedicated book at .14, before evidence promotion/signoff;
-  the project P4 chapters remain the current review surface.
-
+- `2026-10-09` (e2d matched Sail, before experiments): exercise all 28 committed
+  C guests through scripts/run_rv64gc_sail.py and the dossier-digest-verified public
+  Sail binary/config. Keep each guest result, two fresh repeat traces, input hashes
+  and the complete declared observation budget. Do not change expectations to fit
+  a reference. Plant an independently wrong expected register value and require
+  DIVERGE. Derive which of the 37 C forms execute in the matched subset. Investigate
+  every refusal/disagreement through public inputs/outputs before classifying it;
+  the known timer-platform boundary is a hypothesis to measure, not a waiver.
+  Own adapter defects here with permanent negative controls before acceptance.
+  Preserve the production sources/expectations and engine modules unless a measured
+  defect requires a separately owned repair. Update the reference dossier, C book,
+  gate digest and live frontier; commit this slice before leaf signoff/full CI.
+  Current references.sexp contains implementation-based Sail assertions (timer
+  internals, wait-exit placement and source comments), contrary to the director's
+  read-only-black-box boundary. Remove those dependency assumptions when recording
+  this public-interface experiment; retain measured outputs, configuration limits
+  and provenance. Schedule the wider maintained-knowledge/plan assumption sweep
+  at .14 before evidence promotion; archived history is not integration authority.
+  Initial public runs: 27 AGREE, c-irq DIVERGE at boundary 9. Its parcel
+  derivation says 'pending interrupt 5 delivers...', which the adapter's legacy
+  label-only regex cannot recognize. Reproduce with that annotation plus a
+  witnessed timer event: missing-step refusal. Extend only the two declared
+  spellings, preserve cause matching, and add positive/missing/wrong-cause/row
+  controls plus a mutation disabling parcel annotation support. Confirm the timer
+  platform root with a public stimecmp/mip probe and repeat the unchanged corpus.
+  Track that seven-boundary live diagnostic as probe_gc_sail_timer.py so its
+  source, independently derived expectations, public validation variants and two
+  fresh trace runs can be reproduced after ignored artifacts are lost. Reuse the
+  existing pin, path, assembler, author and trace owners; no submodule inspection.
+  The new live-probe row pushes docs/toolbox/definition.md to 16,576 B, over
+  its fixed 16,384 B part cap. Split guest-author/staging/Sail rows verbatim into
+  guest-evidence.md and link it from the bounded TOOLBOX index; assert every row
+  retained exactly once, rather than raising the ceiling.
 
 
 - `2026-10-08` (e1c discovery / ownership, before changes): pinned supervisor.html
@@ -796,41 +782,40 @@ Corrected that scope and scheduled a finite lossless archive transition before e
 The read-only-source prototype authenticates every member; live removal/checker edits
 await direction because the guide's lifecycle stop condition changes direct browsing.
 
-`P4-SYSTEM.12` slice (e2c) — atomic C binding (`2026-10-09`, `SEMULITH-P4-0102`):
+`P4-SYSTEM.12` slice (e2d) — public-interface Sail evidence (`2026-10-09`, `SEMULITH-P4-0103`):
 
-- [x] **ROOT CAUSE** — git show a909ad8:profiles/rv64gc-lab-v0/encoding.sexp
-  composes no C; source/scope/contract are not yet
-  bound. Stage expectations before running the changed engine. Generator first
-  refused the missing c_compressed grammar, extraction omitted expand rows, and
-  PROFILE-CONSISTENCY omitted C in its part sum; real mirror stale control failed
-  at an unrelated copied observation. Each reproduced and repaired at its owner.
-- [x] **ADDRESSED** — compose C complete, 197 instructions/three pseudos; adopt
-  all 56 staged source/record files byte-exact, 28 run-order entries, and 139
-  independently derived count changes (4,888 words -> 9,770 parcels at 4,913
-  boundaries). REQ-GC-C, OB-GC-C and exact parcel supply join open v2; four checks
-  realized. Registry 20/106; frozen v0/v1 records/pins unchanged. All C guests
-  join the seven-axis matrix, replacing boundary/restart degeneracy (two remain).
-  python3 scripts/gen_definition.py / gen_guests.py rc=0; both modules regenerated.
-  Extract expansions through existing
-  SEM composition validation; four controls discriminate. Good-C/wrong-part
-  census controls pass. Stale mirror control requires its intended refusal reason.
-- [x] **NO REGRESSION** — make check rc=0 (core 153, verify 193); all 167 directed
-  guests and registry entries pass. Parent/current CLI traces for all 139 old
-  guests are byte-identical (PC, mode, GPR writes); all source and non-count record
-  bytes exact. Five new public-CLI C traces discriminate the unbound parent.
-  GUEST-GEN 127/127; coverage/extraction 200/200; CONTRACT-FREEZE and dossier
-  consistency pass. Evidence logs: target/p4-system-12/e2c/. Full doctrine hook
-  and books enforced at commit. Project arms 626; unrelated scalar/state modules
-  unchanged. Attempted full gate with a temporary index was invalid: nested Git
-  self-tests replaced that disposable index; real index SHA-256 stayed exact.
-  Run the full gate at the normal staged commit boundary instead.
-- [x] **LOCKSTEP** — current dossier/environment/P4 overview/C chapter repaired,
-  report regenerated: G-SCOPE green, CPU-SYSTEM incomplete on 8/10 axes. Live
-  P4 stays 11/18; matched Sail e2d precedes leaf closure. Closed notes/receipts
-  moved verbatim to archive part 6, reconstruction asserted, fixed caps retained.
-  promotion: declined (schema/semantic/census/byte/control checks retain the rule).
+- [x] **ROOT CAUSE** — the committed 28-guest corpus runs through the pinned
+  public reference. Initial results 27 AGREE, one c-irq DIVERGE rc=1 at boundary 9.
+  A parcel interrupt annotation with a witnessed STI event raises missing-step
+  refusal in the parent adapter (legacy label spelling only). This is an adapter
+  defect, separately from the measured timer supply. No expectation is fitted.
+- [x] **ADDRESSED** — scripts/run_rv64gc_sail.py now recognizes both exact
+  author spellings with the same required cause/event. scripts/probe_gc_sail.py
+  rc=0: matching parcel event, absent/wrong event and an instruction row discriminate;
+  disabling parcel support rc=1, named missing step. Existing four mutants retain
+  their refusals. New live probe_gc_sail_timer.py derives seven boundaries before
+  Sail: stimecmp reads 0, mip reads 0 twice versus laboratory 32; two fresh traces
+  exact. Public validator: baseline valid; Zicntr alone has no time source, CLINT
+  toggles have no mapped CLINT region. This proves the declared platform difference
+  without submodule implementation access or adding a device to force a match.
+- [x] **NO REGRESSION** — all 28 rerun: 27 AGREE / 412 boundaries, two traces
+  byte-identical each; all 37 selected spellings present in actual Sail rows.
+  c-irq remains named platform difference at 9 (a row instead of STI delivery).
+  Fresh public run with wrong C.LI expected value DIVERGE, rc=1, first boundary.
+  GUEST-GEN 128 pass / 0 fail; 627 registered arms. Corpus, expected values,
+  generated Rust and frozen contracts unchanged from 2611340. Live diagnostic
+  rc=0; artifacts target/p4-system-12/e2d/. No new Rust; full CI at e2e signoff.
+- [x] **LOCKSTEP** — ninth experiment recorded in matched_scope; structured
+  evidence remains .14's. Removed implementation-derived reference assumptions,
+  retained public observations/configuration limits and explicit GPR-only scope.
+  Book/dossier/toolbox/doctrine/gate/live frontier updated; CPU-SYSTEM incomplete,
+  P4 11/18. Closed e2c plan/receipt archived verbatim, reconstruction asserted;
+  fixed caps retained. Toolbox: 21 rows moved verbatim into guest-evidence.md,
+  bounded index updated, every row retained once. .14 owns registry/book and the
+  wider black-box assumption sweep.
+  promotion: declined (tracked public diagnostic and negative controls retain it).
 
-Completed e1c1/e1d0/e1d1/e1d2/e2a/e2b receipts and pre-bind designs: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+Completed e1c1/e1d0/e1d1/e1d2/e2a/e2b/e2c receipts and pre-bind designs: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Verification Log
 
@@ -841,6 +826,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.12` slice (e2d) | Sail 27/28, 412 boundaries, 37 forms; timer public probe; wrong value/annotation RED; GUEST-GEN 128 | measured matched subset; full CI/signoff next |
 | `2026-10-09` | `.12` slice (e2c) | make check; 139 exact parent traces; five C parent controls; GUEST-GEN 127; extraction/coverage 200; frozen contract | C bound; Sail next |
 | `2026-10-08` | `.12` slice (e1c1) | parent RED; 13 RED; GUEST-GEN 103/103; parcel 139 exact; 42 owned exact; books | cache repaired; archive lifecycle prerequisite before staging |
 | `2026-10-08` | `.12` slice (e1c0) | parent 0/3 then three green; two selector RED; translation 29/29; make check; DEF-GEN 56/56 | production scopes repaired; independent cache author next |
@@ -903,6 +889,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e2d) | `SEMULITH-P4-0103 (leaf P4-SYSTEM.12): verify compressed execution against Sail and reproduce its timer-platform limit` | e2e full CI/signoff |
 | `.12` (slice e2c) | `SEMULITH-P4-0102 (leaf P4-SYSTEM.12): bind compressed execution and its independently derived parcel corpus` | e2d matched Sail |
 | `.12` (slice e2b) | `SEMULITH-P4-0101 (leaf P4-SYSTEM.12): retain historical capture text while independently checking parcel extents` | e2c atomic bind, then matched Sail |
 | `.12` (slice e2a) | `SEMULITH-P4-0100 (leaf P4-SYSTEM.12): govern independently checked parcel counts without exempting mirror content` | e2b atomic bind, then matched Sail |

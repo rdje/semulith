@@ -282,6 +282,8 @@ PYCODE
   arm "RED declared delivery gaps still need trace events" "$rc" 1 "$out" "unwitnessed delivery gap accepted"
   out="$(python3 scripts/probe_gc_sail.py --mutation keep-stale 2>&1)"; rc=$?
   arm "RED stale traces cannot stand in for a new run" "$rc" 1 "$out" "stale traces accepted as a new run"
+  out="$(python3 scripts/probe_gc_sail.py --mutation ignore-parcel-interrupt 2>&1)"; rc=$?
+  arm "RED parcel interrupt annotations require their witnessed event" "$rc" 1 "$out" "missing expected step 0 (c.addi x10, 1)"
 
   # d3c: independent C parcel rules, including scatter basis and original trap bits.
   out="$(python3 scripts/probe_c_author.py 2>&1)"; rc=$?
