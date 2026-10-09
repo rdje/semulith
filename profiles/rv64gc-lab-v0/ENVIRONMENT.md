@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c4b (`2026-10-09`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c5 (`2026-10-09`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -22,7 +22,7 @@ cross-record checks. This containment change adds no contract credit. See
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
-| v2 | open; `.13` owns completion/freeze | 8 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority, physical byte addresses and data access; three boundary assumptions remain |
+| v2 | open; `.13` owns completion/freeze | 9 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority, physical byte addresses, data access and event positioning; two boundary assumptions remain |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -37,7 +37,8 @@ cross-record checks. This containment change adds no contract credit. See
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
 | Address units | **in scope — physical 8-bit bytes** | `OB-GC-ENV-ADDRESS-UNITS` (v2): full unsigned 64-bit addresses; translated instruction/data accesses and physical PTE reads; direct typed pair |
 | Data widths/attributes | **in scope — B/H/W/D, little-endian main memory** | `OB-GC-ENV-DATA-ACCESS` (v2): whole responses, low-width stores, executable bytes, no MMIO; direct typed pair |
-| Reset, ordering, event delivery | **remaining named gaps** | Three GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
+| Event delivery | **in scope — between steps** | `OB-GC-ENV-EVENT-DELIVERY` (v2): pending/wake before fetch; typed guard rejects in-request attempts; no external source added |
+| Reset, ordering | **remaining named gaps** | Two GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
 
 ## The four v1 assumptions — and what would make each false
 
@@ -66,7 +67,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-two direct boundary pairs, 52 checks are realized in the effective contract;
+three direct boundary pairs, 54 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -244,6 +245,27 @@ independent byte witness; ordinary CPU validation checks kinds/widths and cannot
 infer memory contents. A valid-content control passes, while disabling the auditor
 makes the reversed-byte negative fixture fail. This is finite provider evidence.
 All 50 prior registry entries and frozen parts/memberships remain byte-exact.
-The effective census is 54 obligations / 108 checks, 52 realized: thirteen scope
-pairs, eleven guest pairs and two typed boundary pairs. Three assumptions remain;
+At c4b the effective census reached 54 obligations / 108 checks, 52 realized:
+thirteen scope pairs, eleven guest pairs and two typed boundary pairs.
+
+## Event positioning (P4-SYSTEM.13 c5)
+
+OB-GC-ENV-EVENT-DELIVERY separates delivery location from source permission.
+The hart evaluates pending interrupts and WFI wake at the step head before fetch;
+virtual time advances once per completed/trapping/waiting boundary. This still
+supplies no external IRQs, reservation invalidations or host-time input.
+
+Adapters can call env::check_event_delivery before applying an event. A declared
+BetweenInstructions location passes; DuringRequest(request) returns the typed
+EventDuringRequest violation. This opt-in guard does not detect arbitrary hidden
+host mutation, and introduces no event queue or payload into the CPU runner.
+The direct positive pair observes an ADDI reaching the timer threshold followed
+by an unfetched-PC interrupt, then WFI and two idle steps followed by timer wake.
+Literal cycle/retirement/parcel counts distinguish those boundaries.
+Five deliberately in-request attempts reach exact typed errors through the real
+GC engine, including its legacy word-table seam. PC, mode, destination, trap
+state, counters and memory stay unchanged. Disabling the guard loses every
+negative case. All 52 earlier registry entries and frozen bytes remain exact.
+Current census: 55 effective obligations / 110 checks, 54 realized; thirteen scope
+pairs, eleven guest pairs and three typed boundary pairs. Ordering/reset remain;
 v2 is open.

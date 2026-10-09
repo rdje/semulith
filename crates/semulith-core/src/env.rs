@@ -152,6 +152,11 @@ pub enum Failure {
 /// this family into `ModelError::ContractViolation`, never a target exception.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ContractViolation {
+    /// An adapter attempted event delivery while answering a memory request.
+    EventDuringRequest {
+        /// The in-flight request at the forbidden delivery point.
+        request: Request,
+    },
     /// A success answer belongs to another request kind.
     WrongResponseKind {
         /// The request the CPU issued.
@@ -246,6 +251,27 @@ pub fn request_checked<E: Environment + ?Sized>(
         }
     }
     Ok(response)
+}
+
+/// Where an adapter proposes to supply an event. Location permission does not
+/// authorize an event source; this laboratory still supplies no external IRQs.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum EventDeliveryPoint {
+    /// The previous step has ended and the next step has not begun.
+    BetweenInstructions,
+    /// The CPU is waiting for an answer to this request.
+    DuringRequest(Request),
+}
+
+/// Validate an adapter's declared delivery location. Adapters must call this
+/// before applying an event; it cannot detect hidden mutation by arbitrary code.
+pub fn check_event_delivery(point: EventDeliveryPoint) -> Result<(), ContractViolation> {
+    match point {
+        EventDeliveryPoint::BetweenInstructions => Ok(()),
+        EventDeliveryPoint::DuringRequest(request) => {
+            Err(ContractViolation::EventDuringRequest { request })
+        }
+    }
 }
 
 #[cfg(test)]

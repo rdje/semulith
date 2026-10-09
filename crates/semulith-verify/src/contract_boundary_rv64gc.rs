@@ -16,6 +16,7 @@ use semulith_core::state_rv64gc::{
 use crate::fixtures::{FlatMemory, ScriptedEnv};
 
 mod data_access;
+mod event_delivery;
 
 /// A named direct boundary check, rather than an unrelated passing guest.
 #[derive(Clone, Copy, Debug)]
@@ -28,6 +29,10 @@ pub enum BoundaryCheck {
     DataAccessPositive,
     /// Malformed success shapes and a reversed-byte provider are typed violations.
     DataAccessNegative,
+    /// Pending evaluation and timer wake occur between instructions.
+    EventDeliveryPositive,
+    /// An adapter's attempted in-request delivery is a typed contract violation.
+    EventDeliveryNegative,
 }
 
 impl BoundaryCheck {
@@ -38,6 +43,8 @@ impl BoundaryCheck {
             Self::AddressUnitsNegative => address_units_negative(),
             Self::DataAccessPositive => data_access::positive(),
             Self::DataAccessNegative => data_access::negative(),
+            Self::EventDeliveryPositive => event_delivery::positive(),
+            Self::EventDeliveryNegative => event_delivery::negative(),
         }
     }
 }

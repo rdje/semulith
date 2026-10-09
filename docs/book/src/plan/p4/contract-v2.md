@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and two typed boundary pairs landed; v2 remains open.
+**Status:** State inventory, scope pairs, three corrections and three typed boundary pairs landed; v2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -8,15 +8,15 @@ stages. This work checks every effective obligation, fills the remaining boundar
 assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
-corrections replace four old records; the address-unit and data-access assumptions bring the
-effective census to 54 obligations and 108 checks, with 52 checks running through
+corrections replace four old records; the address-unit, data-access and event-positioning assumptions bring the
+effective census to 55 obligations and 110 checks, with 54 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
 cannot establish a scope declaration.
 
-Three boundary topics remain: event delivery, ordering, and reset.
+Two boundary topics remain: ordering and reset.
 The scalar profile's assumptions cannot be
 copied unchanged. For example, this processor can take interrupts, fetches exact
 16-bit parcels, selects RVWMO, and resets floating-point, translation-cache,
@@ -343,5 +343,49 @@ negative fixture fail because the CPU executes the wrong value.
 The CPU can validate response shape but cannot infer a provider's memory contents.
 The content auditor establishes this finite fixture's behavior. It is not a
 universal content check in ordinary execution. All prior entries and frozen
-records remain exact. The census is now 54 effective obligations, 108 declared
-checks and 52 realized checks; event delivery, ordering and reset remain open.
+records remain exact. At c4b the census reached 54 effective obligations, 108 declared
+checks and 52 realized checks; event delivery, ordering and reset remained open.
+
+## Event delivery between steps
+
+`OB-GC-ENV-EVENT-DELIVERY` states where input changes belong. The hart evaluates
+eligible pending interrupts and WFI wake at the head of a step, before requesting
+any instruction parcel. One virtual tick follows each completed, trapping or idle
+step. A timer threshold reached by that tick is considered at the next head.
+No memory callback splits an instruction by delivering an event.
+
+Location permission and source permission are separate. The current laboratory
+still supplies no external interrupt controller, reservation invalidation or
+host-time input. An adapter can validate a proposed location before applying an
+otherwise authorized input:
+
+```rust
+check_event_delivery(EventDeliveryPoint::BetweenInstructions) // Ok(())
+check_event_delivery(EventDeliveryPoint::DuringRequest(request))
+// Err(ContractViolation::EventDuringRequest { request })
+```
+
+The guard checks the location the adapter declares. It cannot discover arbitrary
+hidden host mutation. There is no new event payload, queue or guest observation,
+and normal instruction execution uses its existing pending/timekeeping owners.
+
+The positive fixture arranges two ADDIs with the timer threshold at one tick:
+
+| Step | Result | mcycle | minstret | Parcel requests so far |
+| --- | --- | --- | --- | --- |
+| 1 | x6 becomes 1; PC reaches 0x1004 and the timer becomes pending | 1 | 1 | 2 |
+| 2 | Interrupt cause bit 63 plus code 5; mepc=0x1004, PC=0x1100; second ADDI unfetched | 2 | 1 | 2 |
+
+A second arrangement executes WFI with threshold 3. WFI retires once, then two
+idle steps move mcycle through 2 and 3 without fetch or retirement. The fourth
+step wakes and delivers, with mepc at WFI's successor, mcycle=4 and minstret=1.
+The only two parcel requests are WFI's original fetch.
+
+The negative pair attempts delivery while answering each of Fetch, FetchParcel,
+Load, Store and WalkAccess. Every real-engine path returns the exact typed
+location violation, preserving PC, mode, destination, trap state, counters and
+memory. Fetch uses the public legacy table seam over the same GC evaluator.
+Disabling the location guard lets every bad schedule escape and makes each
+negative fixture fail. These finite checks bring the effective census to
+55 obligations, 110 declared checks and 54 realized checks. Ordering and cold
+reset remain, and version 2 stays open.

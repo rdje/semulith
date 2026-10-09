@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0116 (leaf P4-SYSTEM.13 c5) — realize event-positioning assumptions
+
+- Add a v2 assumption with direct timer/head and WFI/idle/wake evidence.
+  An explicit adapter location guard preserves source authority and rejects
+  in-request attempts with typed errors; its opt-in limit is documented.
+- All five request kinds discriminate when the guard is disabled. Rust
+  157/17/196 passes; G-CONTRACT 54/110, ordering/reset remain and v2 is open.
+
 ## SEMULITH-P4-0115 (leaf P4-SYSTEM.13 c4b) — realize data-width and memory-attribute assumptions
 
 - Add a v2 assumption with direct typed positive/negative registry evidence:

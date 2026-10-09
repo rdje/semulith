@@ -1,5 +1,22 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — event location is distinct from source authority (P4-SYSTEM.13 c5)
+
+The source/time v1 assumptions did not declare delivery positioning. Add one
+open-v2 assumption/pair: head evaluation before fetch and a tick per step
+boundary, with the current no-external-source/no-host-time choices retained.
+env::check_event_delivery accepts a declared BetweenInstructions location and
+returns typed EventDuringRequest otherwise. This opt-in adapter guard cannot
+discover hidden host mutation and introduces no event payload or queue.
+Direct fixtures observe an ADDI reaching a timer threshold then delivery before
+the next fetch, plus WFI/two idle boundaries/timer wake with one retirement.
+Five forbidden in-request attempts use actual GC paths, including its public
+legacy word-table seam; mode, PC, destination, trap state, counters and memory
+remain unchanged. Disabling the guard loses every negative case.
+make check: 157 core / 17 DSP / 196 verify. Credit 54/110, 55 effective
+obligations; ordering/reset and remaining runtime checks keep v2 open.
+Promotion declined in leaf: canonical assumption, guard, fixtures and book retain it.
+
 ## _(2026-10-09)_ — data attributes need both byte and shape witnesses (P4-SYSTEM.13 c4b)
 
 Add one open-v2 data-access assumption with a named direct registry pair.

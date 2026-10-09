@@ -498,6 +498,27 @@ effect and exec Store path explain the actual trace. Corrected the literal
 negative expectation; added direct high-input-bit store checks so provider
 truncation is independently tested rather than hidden by CPU operand narrowing.
 
+**c5 typed event-delivery pair** (SEMULITH-P4-0116): c4b committed clean;
+review interrupts/timekeeping, the step head, v1's source/time assumptions and
+book interrupt/contract chapters. Declare event positioning separately from
+source availability: this lab still supplies no external IRQ source, reservation
+invalidation or host-time input. Pending/wake evaluation occurs at the step head
+before any parcel request; one virtual tick follows each completed/trapping/
+waiting boundary, never a memory callback. Add an explicit typed location guard
+in env.rs, reusable by adapters: BetweenInstructions is permitted as a location
+(not authority for a source), DuringRequest is EventDuringRequest. No event payload,
+queue, source, guest observation or production scheduler is introduced. This
+opt-in adapter guard cannot discover hidden mutation by arbitrary host code.
+Positive direct fixtures execute a timer threshold between two ADDIs and a WFI
+idle/wake sequence, checking literal counters, unfetched EPC and parcel counts.
+Negative providers attempt delivery inside each request kind, must reach exact
+typed violations through the real GC engine, and preserve PC/destination/trap
+state. Disable the phase guard in a permanent control: the same negative fixture
+must fail because the bad schedule escapes. Preserve all 52 prior entries and
+frozen bytes; add one open-v2 assumption/pair and retain the post-v0 guard,
+expected 54/110. Run Rust, schema/freeze, gate controls and books; synchronize
+live docs/GS. Ordering/reset remain afterward; v2 stays open.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -641,6 +662,30 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c5) (`2026-10-09`, `SEMULITH-P4-0116`):
+
+- [x] **ROOT CAUSE** — git show 9ea649e:profiles/rv64gc-lab-v0/contract.sexp:
+  eight v2 members, no event-positioning record. Reviewed v1's no-source/time
+  rules, interrupt/timekeeping owners and step head before parcel requests.
+  Source permission and delivery location remain separate; no event source added.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed, including the new direct pair. Actual timer threshold
+  between ADDIs and WFI/two idle boundaries/wake retain literal cycle/retire/fetch
+  counts and unfetched EPC. Five in-request attempts produce exact typed
+  EventDuringRequest errors with PC/mode/destination/trap/counters/memory intact.
+  cargo test -p semulith-verify contract_boundary_rv64gc: 2 passed; disabled location guard loses
+  all five negative cases. Opt-in limit explicitly retained.
+- [x] **NO REGRESSION** — make check rc=0: 157 core / 17 DSP / 196 verify.
+  PRIOR-EVIDENCE: all 52 entries, frozen parts/memberships and old root prefix
+  byte-exact. RECORD-SCHEMA: ok (20 files); CONTRACT-FREEZE: 3 versions,
+  0 findings; gate_report --self-test: 17 pass / 0 fail; make book rc=0.
+  Post-v0 born-realized guard retained, now 54 checks; no guest changes.
+- [x] **LOCKSTEP** — G-CONTRACT: 54/110, 55 effective obligations,
+  nine open-v2 members. Book/ENVIRONMENT/dossier/gate/GS and toolbox/live
+  pointer synchronized. LIVE_STATUS reviewed unchanged: P4 12/18, 634 arms,
+  45 chapters. Ordering/reset remain; v2 and CPU-SYSTEM incomplete.
+  promotion: declined (canonical assumption, guard, fixtures and book retain it).
 
 `P4-SYSTEM.13` slice (c4b) (`2026-10-09`, `SEMULITH-P4-0115`):
 
@@ -930,6 +975,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c5 | Rust 157/17/196; timer/head and WFI/idle/wake; 5 phase violations + disabled guard; old bytes exact; schema/freeze; gate 17/17; books | 54/110 realized, v2 open |
 | `2026-10-09` | `.13` c4b | Rust 157/17/195; literal byte/width pairs; 12 negative cases; auditor disabled; old bytes exact; schema/freeze; gate 17/17; books | 52/108 realized, v2 open |
 | `2026-10-09` | `.13` c4a | public before/after; 4 boundary controls; Rust 157/17/194; C engine 18; freeze/dossier; gate 17/17 | full make ci all five legs green; 50/106 unchanged |
 | `2026-10-09` | `.13` c3 | exact typed Sv39/address fixtures; three provider violations; Rust; schema/freeze; gate 17/17; books | 50/106 realized, v2 open |
@@ -949,6 +995,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c5 | `SEMULITH-P4-0116 (leaf P4-SYSTEM.13): realize event positioning at explicit step boundaries` | c6 one-hart ordering, then cold reset |
 | `.13` c4b | `SEMULITH-P4-0115 (leaf P4-SYSTEM.13): realize data-access assumptions with independent byte witnesses` | c5 event delivery, then ordering/reset |
 | `.13` c4a | `SEMULITH-P4-0114 (leaf P4-SYSTEM.13): validate environment success responses before CPU consumption` | c4b data widths/attributes with direct pair |
 | `.13` c3 | `SEMULITH-P4-0113 (leaf P4-SYSTEM.13): realize physical byte-address assumptions with typed boundary fixtures` | data widths/attributes, then three remaining assumptions |
@@ -965,6 +1012,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c5 (SEMULITH-P4-0116): event positioning born
+  realized; explicit location guard with no source authority, direct timer/head
+  and WFI/idle/wake counts, five typed forbidden phases and disabled controls.
+  Old entries/frozen bytes exact; 54/110, ordering/reset remain and v2 open.
 
 - `2026-10-09`: `.13` c4b (SEMULITH-P4-0115): data widths/attributes
   born realized with literal byte witnesses, direct high-bit and actual CPU

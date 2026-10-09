@@ -122,7 +122,7 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 52/108 checks realized (thirteen scope pairs, eleven guest pairs and two typed boundary pairs).
+contract stays open with 54/110 checks realized (thirteen scope pairs, eleven guest pairs and three typed boundary pairs).
 
 The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
@@ -135,15 +135,24 @@ the fixed authored-part cap remains 65,536 bytes. Schema, freeze and registry
 consumers judge the same expanded catalog. The new address-unit assumption
 adds a typed pair: three bad address adapters remain contract violations, while
 a legitimate access failure delivers a target exception. Data widths/attributes now
-have a direct pair as well; three boundary assumptions still need declarations
-and working checks.
+have a direct pair as well. Event positioning now has its own pair; ordering
+and reset still need declarations and working checks.
 
 
 Every CPU boundary call now uses shared success-response validation: wrong kinds
 and over-wide raw loads report typed provider violations before instruction data
 is consumed. Target failures remain target exceptions. This c4a prerequisite
 repair added no registry credit at c4a (50/106). The c4b data-access pair brings
-G-CONTRACT to 52/108; v2 remains open. Exact literal byte witnesses, whole-region
+G-CONTRACT to 52/108 at that slice. Exact literal byte witnesses, whole-region
 failure controls and twelve malformed/reversed-byte cases run through the registry.
 Valid-width wrong content is audited by the fixture, distinct from CPU shape
 validation; disabling that auditor is detected.
+
+
+Event positioning adds the third direct boundary pair. Timer thresholds and WFI
+idle wake are observed at step boundaries before fetch, with literal counters and
+unfetched EPC. Five in-request attempts return typed EventDuringRequest errors;
+disabling the location guard loses all five. The opt-in adapter guard grants no
+source permission and cannot detect hidden host mutation; no event payload or
+queue was added. G-CONTRACT is 54/110 and v2 remains open for ordering/reset and
+remaining instruction checks.
