@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and four typed boundary pairs landed; v2 remains open.
+**Status:** State inventory, scope pairs, three corrections and all five typed boundary pairs landed; remaining runtime checks keep v2 open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -8,15 +8,15 @@ stages. This work checks every effective obligation, fills the remaining boundar
 assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
-corrections replace four old records; four new boundary assumptions bring the
-effective census to 56 obligations and 112 checks, with 56 checks running through
+corrections replace four old records; five new boundary assumptions bring the
+effective census to 57 obligations and 114 checks, with 58 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
 cannot establish a scope declaration.
 
-Cold reset is the remaining boundary topic.
+Cold reset completes the named boundary-assumption work.
 The scalar profile's assumptions cannot be
 copied unchanged. For example, this processor can take interrupts, fetches exact
 16-bit parcels, selects RVWMO, and resets floating-point, translation-cache,
@@ -84,8 +84,8 @@ the current owner value visible immediately. The independent expectation author
 now applies the same specified rule and reads `sip` through its sole `mip`
 owner. Eight masks in both modes and all six CSR instruction forms exercise
 the repair; five author mutations distinguish the missing masks and owner.
-The existing guest records remain byte-identical. Contract credits stay 56/112;
-the full-cold-reset pair follows this prerequisite.
+The existing guest records remain byte-identical. This prerequisite kept contract
+credits at 56/112; the full-cold-reset pair below follows it.
 
 ## Executable scope checks
 
@@ -457,5 +457,53 @@ discarded-store control stops at its first bad load so a later AMO request check
 cannot mask the value-auditor bypass.
 
 All earlier registry entries and frozen records remain exact. The effective
-census is 56 obligations, 112 declared checks and 56 realized checks. Full cold
-reset and remaining instruction checks keep version 2 open.
+census reached 56 obligations, 112 declared checks and 56 realized checks at c6.
+Full cold reset follows below; remaining instruction checks keep version 2 open.
+
+## Full cold reset
+
+Before the first fetch, the laboratory reconstructs every state owner. The reset
+fixture deliberately dirties them all, calls the real generated `reset(entry)`
+and reconstructs memory. Its witness uses literal canonical reset values, rather
+than asking a second fresh CPU what the answer should be.
+
+| Owner | Required cold state |
+| --- | --- |
+| x0–x31 | Zero; x0 remains constant |
+| f0–f31 | Zero 64-bit bit patterns |
+| PC and mode | Selected image entry; M |
+| `misa` | `0x800000000014112d` |
+| `mstatus` | Raw `0xa00000000`, including FS=Off |
+| Other 24 CSR owners | Raw zero, including the power-on `mcause` |
+| Seven CSR views | Derived from their reset owners under their access rules |
+| Main memory | Loaded image bytes; zero throughout the rest of each declared region |
+| TLB | Default entries and FIFO position zero |
+| Reservation | Address/width zero, invalid |
+| Hart state | ACTIVE |
+
+For example, cold `sstatus=0x200000000`, `sie=0`, `sip=0`, and the counter
+views are zero. `fcsr` internally composes zero, but architectural access is
+illegal while FS is Off. Computed `mip=0x20` reflects time=`stimecmp`=0; it
+does not contradict zero raw pending storage. The reset-row prose now states
+that distinction explicitly.
+
+The startup auditor checks these values before calling the CPU. A passing
+fixture executes the hand-encoded `ADDI x6,x0,7` with two parcel reads, one
+retirement and one virtual-time tick. A bad reset returns typed
+`ResetStateMismatch { component, index }` before any fetch, target exception
+or state change. This is a fixture controller; it does not add a reset request
+to the CPU's memory interface or claim arbitrary host-state detection.
+
+There are 128 independently poisoned cases: every nonconstant integer register,
+FP register and CSR owner, PC/mode, TLB content, a cursor-only TLB, valid and
+cleared-but-retained reservations, WAITING, and every image/outside-image byte.
+The cursor case has zero occupied entries; checking only occupancy would miss
+it. Core tests pin private TLB/reservation cold fields to literal zeros so the
+equality witnesses cannot merely agree with a wrong constructor. Disabling the
+auditor loses every negative case.
+
+Only cold reset is supported. Snapshot restoration and warm/retained-state
+ordering need their own implementation and contract. The pair brings the
+current census to 57 effective obligations, 114 declared checks and 58 realized
+checks: thirteen scope pairs, eleven guest pairs and five direct boundary pairs.
+The remaining 28 runtime pairs must be realized before version 2 freezes.

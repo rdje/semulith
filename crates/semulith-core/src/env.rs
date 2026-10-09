@@ -152,6 +152,14 @@ pub enum Failure {
 /// this family into `ModelError::ContractViolation`, never a target exception.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ContractViolation {
+    /// A startup fixture auditor found retained or incorrectly reconstructed cold state.
+    /// This is checked before the first CPU fetch, not inferred from instruction behavior.
+    ResetStateMismatch {
+        /// The state owner or view whose independent reset witness did not match.
+        component: &'static str,
+        /// Integer/FP register number or memory-byte offset, when applicable.
+        index: Option<usize>,
+    },
     /// An adapter attempted event delivery while answering a memory request.
     EventDuringRequest {
         /// The in-flight request at the forbidden delivery point.

@@ -122,7 +122,7 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 56/112 checks realized (thirteen scope pairs, eleven guest pairs and four typed boundary pairs).
+contract stays open with 58/114 checks realized (thirteen scope pairs, eleven guest pairs and five typed boundary pairs).
 
 The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
@@ -136,7 +136,7 @@ consumers judge the same expanded catalog. The new address-unit assumption
 adds a typed pair: three bad address adapters remain contract violations, while
 a legitimate access failure delivers a target exception. Data widths/attributes now
 have direct pairs as well. Event positioning and one-hart ordering each have
-their direct pair. Cold reset still needs its declaration and checks.
+their direct pair. Full cold reset now has its declaration and independent startup pair.
 
 
 Every CPU boundary call now uses shared success-response validation: wrong kinds
@@ -158,5 +158,10 @@ queue was added. At c5 G-CONTRACT reached 54/110. One-hart ordering now adds the
 boundary pair, reaching 56/112: literal store/load/overlap/AMO conversations and
 rewritten code with/without FENCE.I. Three discarded-store/stale-parcel cases
 and disabled-auditor controls discriminate. This selects a sequential one-hart
-RVWMO realization, not all weak outcomes. V2 remains open for cold reset and
-remaining instruction checks.
+RVWMO realization, not all weak outcomes. Full cold reset follows at c7b:
+literal owner/view values, actual reset and memory reconstruction, 128 typed
+pre-fetch failures and disabled-auditor controls. An empty TLB with retained
+FIFO and a cleared reservation with retained fields both fail. Cold fcsr is
+internally zero but architecturally gated by FS=Off. The current census is
+57 effective obligations / 114 checks, 58 realized; remaining instruction
+checks keep v2 open.

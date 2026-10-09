@@ -18,6 +18,7 @@ use crate::fixtures::{FlatMemory, ScriptedEnv};
 mod data_access;
 mod event_delivery;
 mod ordering;
+mod reset;
 
 /// Compare a fixture provider with its independently specified response witness.
 fn response_matches(
@@ -39,6 +40,10 @@ fn response_matches(
 /// A named direct boundary check, rather than an unrelated passing guest.
 #[derive(Clone, Copy, Debug)]
 pub enum BoundaryCheck {
+    /// Every declared cold-state owner and CSR view is reconstructed before fetch.
+    ResetPositive,
+    /// Retained or malformed cold state fails the independent startup auditor.
+    ResetNegative,
     /// Physical byte-address requests and their exact supplied values.
     AddressUnitsPositive,
     /// Wrong units, narrowed addresses and untranslated addresses are violations.
@@ -61,6 +66,8 @@ impl BoundaryCheck {
     /// Run the exact fixture bound by the contract registry.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::ResetPositive => reset::positive(),
+            Self::ResetNegative => reset::negative(),
             Self::AddressUnitsPositive => address_units_positive(),
             Self::AddressUnitsNegative => address_units_negative(),
             Self::DataAccessPositive => data_access::positive(),

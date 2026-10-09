@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0119 (leaf P4-SYSTEM.13 c7b) — realize full cold-reset assumptions
+
+- Add literal full-state/image witnesses, actual reset and a typed startup
+  auditor before fetch. All 128 poisoned register/CSR/retained-owner/byte cases
+  discriminate when auditing is disabled; private cold fields have literal checks.
+- Respect cold FP-CSR access gating and distinguish raw from computed pending
+  reset state. Rust 161/17/198, schema/freeze and gate controls pass; prior
+  evidence exact. G-CONTRACT 58/114; five boundary pairs complete, v2 open
+  for 28 runtime pairs. Full make ci passes all five legs.
+
 ## SEMULITH-P4-0118 (leaf P4-SYSTEM.13 c7a) — repair delegated supervisor interrupt CSR views
 
 - Apply mideleg's read-only-zero rule to shared sip/sie reads and writes;

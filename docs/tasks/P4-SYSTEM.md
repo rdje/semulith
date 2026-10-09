@@ -568,6 +568,31 @@ prior entries/frozen bytes retained. Run Rust, schema/freeze, gate controls/book
 and full CI for completion of the boundary-assumption milestone. V2 remains open
 for 28 runtime pairs; no freeze or CPU-SYSTEM closure until all checks pass.
 
+c7b execution readiness: c7a committed as 8676d88, tree clean/message zero,
+actual unsandboxed census handoff OK. Re-read pinned RVP-MACHINE 2.1.4 reset
+paragraph, canonical CSR reset rows and generated reset/public state accessors,
+Tlb/Reservation/HartState contracts, FlatMemory construction, registry/guards,
+CPU_ENVIRONMENT and the privilege/interrupt/contract book sections. Own the
+fixture-only ResetStateMismatch diagnostic with component and optional index.
+Independently literal all raw CSR reset values and seven view values; never
+use ArchitecturalState::zeroed_at as the expected-value oracle. Negative cases
+cover each nonconstant integer, each FP/CSR owner, PC/mode, TLB content and
+cursor-only retention, valid and cleared-but-retained reservation, wait, and
+every image/outside-image byte. Each case must fail before fetch without target
+effects; disabling the cold-state auditor must lose every case. Full CI at this
+boundary-assumption milestone; frozen parts/prior registry entries byte-exact.
+Canonical reset review also found mip's old statement "Nothing pending at reset"
+contradicts its live computed STIP at time=stimecmp=0 (already reproduced in c7a).
+Correct that prose to distinguish zero raw storage from computed pending state,
+regenerate fingerprints and retain the actual reset values unchanged in c7b.
+The seven-view witness respects FP access gating: cold FS=Off makes architectural
+fcsr access illegal, while its internal composition is zero. Check that refusal
+and composition, rather than changing FS or demanding a legal cold fcsr read.
+Anchor the fixture's private-owner equality witnesses with literal field checks
+in the owning core tests: default/new TLB entries and FIFO=0, reservation
+address/width=0 and invalid. Comparing two constructors alone would not independently
+pin those values if the shared constructor changed. No public API expansion.
+
 **c7a supervisor interrupt-view prerequisite** (SEMULITH-P4-0118): reset
 review found a suspicious omission in privilege.rs: csr_read masks sip/sie to
 their declared fields but does not intersect mideleg; csr_write likewise needs
@@ -750,6 +775,31 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c7b) (`2026-10-10`, `SEMULITH-P4-0119`):
+
+- [x] **ROOT CAUSE** — git show 8676d88:profiles/rv64gc-lab-v0/contract.sexp:
+  ten v2 members, full GC reset undeclared. Read pinned machine reset paragraph
+  and canonical rows; public reset reconstructs 26 raw owners and hidden state.
+  mip's "Nothing pending" prose contradicts computed STIP=1; distinguish raw
+  storage/live view without changing reset values. Cold fcsr read is FS-gated.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_boundary_rv64gc:
+  4 passed / 0 failed. Literal state/image checks precede actual ADDI; 128
+  independently poisoned cases yield exact typed ResetStateMismatch, no fetch
+  or target/state/memory effects. Disabled auditor loses every case. make check
+  rc=0 includes the registry's positive/negative pair and literal private TLB/
+  reservation cold-field tests. Empty FIFO=1 and cleared reservation discriminate.
+- [x] **NO REGRESSION** — make check rc=0: 161 core / 17 DSP / 198 verify.
+  PRIOR-EVIDENCE: all 56 old entries, root prefix, frozen parts/memberships
+  byte-exact. RECORD-SCHEMA: ok (20 files); CONTRACT-FREEZE: 3 versions,
+  0 findings; gate_report --self-test: 17 pass / 0 fail. Full make ci rc=0:
+  all five legs green (check, gate, bench, smoke-bench, book).
+- [x] **LOCKSTEP** — git diff --check rc=0; G-CONTRACT 58/114 with
+  57 effective obligations, eleven open-v2 members. State/definition fingerprints,
+  canonical reset prose, book, ENVIRONMENT, dossier, GS and live pointer sync.
+  LIVE_STATUS reviewed unchanged: P4 12/18, 639 arms, 45 chapters. All five
+  boundary pairs complete; 28 runtime pairs remain, then freeze. promotion:
+  declined (canonical record, fixture/core controls and book retain it).
 
 `P4-SYSTEM.13` slice (c7a) (`2026-10-09`, `SEMULITH-P4-0118`):
 
@@ -1117,6 +1167,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
 | `2026-10-09` | `.13` c7a | public before/after; 3 Rust view controls / 192 CPU steps; author 42 exact; Rust 160/17/197; GUEST-GEN 135/0 | final make ci all five legs green; delegation/owner repaired; 56/112 unchanged |
 | `2026-10-09` | `.13` c6 | Rust 157/17/197; literal order/overlap/AMO + 4 aq/rl; warmed rewrites; 3 violations + disabled auditor; old bytes exact; schema/freeze; gate 17/17; books | 56/112 realized, v2 open |
 | `2026-10-09` | `.13` c5 | Rust 157/17/196; timer/head and WFI/idle/wake; 5 phase violations + disabled guard; old bytes exact; schema/freeze; gate 17/17; books | 54/110 realized, v2 open |
@@ -1139,6 +1190,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
 | `.13` c7a | `SEMULITH-P4-0118 (leaf P4-SYSTEM.13): enforce delegation in supervisor interrupt CSR views` | c7b full cold reset, then 28 runtime pairs |
 | `.13` c6 | `SEMULITH-P4-0117 (leaf P4-SYSTEM.13): realize one-hart ordering with independent conversations` | c7 full cold reset, then 28 runtime pairs |
 | `.13` c5 | `SEMULITH-P4-0116 (leaf P4-SYSTEM.13): realize event positioning at explicit step boundaries` | c6 one-hart ordering, then cold reset |
@@ -1158,6 +1210,12 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c7b (SEMULITH-P4-0119): full cold reset born
+  realized with literal owner/view/image checks before actual ADDI. All 128
+  typed bad resets and disabled auditing discriminate; private cold fields
+  independently pinned. Respect FS=Off and correct raw/computed mip prose.
+  Prior bytes exact; 58/114, all five boundary pairs complete and v2 open.
 
 - `2026-10-09`: `.13` c7a (SEMULITH-P4-0118): confirmed missing delegation
   masks in shared supervisor CSR views and independent author; author also

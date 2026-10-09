@@ -663,6 +663,30 @@ mod tests {
     }
 
     #[test]
+    fn full_cold_tlb_has_literal_zero_entries_and_fifo_position() {
+        // P4-SYSTEM.13 c7b: independently anchor the private-owner witness
+        // used by the startup fixture, rather than compare two constructors.
+        let empty = TlbEntry {
+            valid: false,
+            global: false,
+            asid: 0,
+            vpn: 0,
+            pa_base: 0,
+            r: false,
+            w: false,
+            x: false,
+            u: false,
+            a: false,
+            d: false,
+            level: 0,
+        };
+        for tlb in [Tlb::new(), Tlb::default()] {
+            assert_eq!(tlb.entries, [empty; 4]);
+            assert_eq!(tlb.cursor, 0);
+        }
+    }
+
+    #[test]
     fn m_mode_is_never_translated_even_under_sv39() {
         let mut state = hart();
         sv39(&mut state);

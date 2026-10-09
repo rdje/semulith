@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c6 (`2026-10-09`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c7b (`2026-10-10`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -22,7 +22,7 @@ cross-record checks. This containment change adds no contract credit. See
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
-| v2 | open; `.13` owns completion/freeze | 10 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority, physical byte addresses, data access, event positioning and ordering; cold reset remains |
+| v2 | open; `.13` owns completion/freeze | 11 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority, physical byte addresses, data access, event positioning, ordering and full cold reset |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -39,7 +39,7 @@ cross-record checks. This containment change adds no contract credit. See
 | Data widths/attributes | **in scope — B/H/W/D, little-endian main memory** | `OB-GC-ENV-DATA-ACCESS` (v2): whole responses, low-width stores, executable bytes, no MMIO; direct typed pair |
 | Event delivery | **in scope — between steps** | `OB-GC-ENV-EVENT-DELIVERY` (v2): pending/wake before fetch; typed guard rejects in-request attempts; no external source added |
 | Ordering | **in scope — synchronous one-hart realization** | `OB-GC-ENV-ORDERING` (v2): latest preceding stores, consecutive AMO suboperations, coherent parcels; direct typed pair, no exhaustive weak-outcome claim |
-| Reset | **remaining named gap** | Full GC cold state still needs its assumption/pair under `.13` |
+| Reset | **in scope — full cold state** | `OB-GC-ENV-RESET` (v2): complete owner/view and image witnesses before fetch; no warm reset |
 
 ## The four v1 assumptions — and what would make each false
 
@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-four direct boundary pairs, 56 checks are realized in the effective contract;
+five direct boundary pairs, 58 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -288,7 +288,34 @@ with/without the fence. They produce exact typed ResponseValueMismatch errors
 without a target trap or wrong destination effect. Disabling value auditing loses
 each case. The discarded-store control stops at its first bad load so the later
 AMO's independent request check cannot mask that bypass.
-All 54 earlier entries and frozen bytes remain exact. Current census: 56 effective
+All 54 earlier entries and frozen bytes remain exact. At c6: 56 effective
 obligations / 112 checks, 56 realized; thirteen scope pairs, eleven guest pairs
 and four direct boundary pairs. Cold reset and remaining execution checks keep
 v2 open.
+
+## Full cold reset (P4-SYSTEM.13 c7b)
+
+OB-GC-ENV-RESET reconstructs every declared owner before the first fetch: integer
+and FP files, entry PC/M mode, 26 raw CSR owners, memory/image, TLB entries and
+FIFO position, reservation address/width/validity and ACTIVE wait state. Literal
+reset witnesses pin misa=0x800000000014112d, mstatus=0xa00000000 and every other
+raw CSR owner zero. All seven views are checked under their access rules:
+sstatus=0x200000000, sip/sie and counter views zero, fcsr internally zero but
+architecturally inaccessible at FS=Off. Computed mip.STIP is one at time=stimecmp=0;
+the canonical raw reset statement now distinguishes that live overlay.
+
+The positive fixture dirties all owners, calls the real state reset and reconstructs
+zeroed memory with the image. After validation, literal ADDI x6,x0,7 retires once
+with two parcels and one tick. There are 128 negative fixtures, each poisoning one
+register/CSR or retained owner, including an empty TLB with FIFO=1, a cleared but
+retained reservation and every memory byte. Exact typed ResetStateMismatch names
+the component/index; no fetch, target trap or state/memory change occurs. Disabling
+the startup auditor loses each case. Literal core private-field tests anchor the
+TLB/reservation equality witnesses independently of their constructors.
+
+This fixture controller is finite startup evidence, not host-reset detection,
+snapshot serialization or a new CPU memory request. No warm reset is supported.
+All 56 prior entries, old root prefix and frozen parts/memberships stay exact.
+Current census: 57 effective obligations / 114 checks, 58 realized; thirteen scope
+pairs, eleven guest pairs and five direct boundary pairs. The 28 remaining runtime
+pairs keep v2 open until they run and the membership freezes.

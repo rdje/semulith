@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — full cold reset needs every owner before fetch (P4-SYSTEM.13 c7b)
+
+Read pinned RVP-MACHINE 2.1.4 and all canonical reset rows, public state/reset,
+TLB/reservation/wait contracts and memory construction. Add OB-GC-ENV-RESET
+born realized, with a fixture-only startup auditor returning ResetStateMismatch
+and its component/index. Positive dirties all owners, calls actual reset and
+reconstructs memory; literal CSR/view/image witnesses precede actual ADDI.
+No generated fresh-state value is used as the register/CSR expectation oracle.
+
+128 cases poison every nonconstant x, f and raw CSR owner; PC/mode, TLB
+content/cursor, reservation valid or cleared with retained fields, WAITING and
+every image/outside-image byte. Each exact typed failure occurs before fetch
+and preserves the whole poisoned state/memory. Disabling startup auditing
+loses every case. Empty TLB occupancy alone misses FIFO=1; full Eq includes it.
+Core private-field tests independently pin constructor entries/FIFO and
+reservation address/width/validity, avoiding circular constructor agreement.
+
+Cold fcsr composes zero but FS=Off makes architectural reads illegal; respect
+that gate rather than enable FP to get a value. mip's old "Nothing pending"
+reset prose contradicted its computed STIP=1; distinguish raw zero storage
+from the live overlay. Reset values/implementation unchanged; fingerprints
+regenerated. Cold SIP=0 because mideleg=0. No warm reset, host mutation
+detection or snapshot implementation is claimed.
+
+make check: 161 core / 17 DSP / 198 verify; schema 20 files, freeze 3 versions
+zero findings and gate controls 17/17 pass. All 56 prior registry entries, root
+prefix and frozen parts/memberships byte-exact. Full make ci all five legs green. Census
+57 effective obligations / 114 checks, 58 realized; 28 runtime pairs keep v2
+open. Promotion declined: canonical record, fixture/core controls and book retain it.
+
 ## _(2026-10-09)_ — delegated supervisor CSR views are read-only zero otherwise (P4-SYSTEM.13 c7a)
 
 Cold-reset review found shared CSR reads/writes missing mideleg's dynamic

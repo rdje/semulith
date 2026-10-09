@@ -320,7 +320,7 @@
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.1.9; §2.1.4 (UNSPECIFIED)")
-              (statement "Nothing pending at reset. Pending-state behaviour is P4-SYSTEM.5's.")))
+              (statement "Raw pending storage is zero at reset. Live computed STIP is one because time=stimecmp=0; reset mie=0 disables it and mideleg=0 hides it from sip. Pending-state behaviour is P4-SYSTEM.5's.")))
 
   (csr (id "mscratch") (address 832) (width_bits 64) (authority architecture)
        (source "RVP-MACHINE §2.1.1.13")

@@ -102,6 +102,12 @@ mod tests {
     #[test]
     fn cold_reservation_is_invalid_and_never_matches() {
         let r = Reservation::new();
+        assert_eq!(r.physical_address, 0, "the selected full-cold owner value");
+        assert_eq!(
+            r.width, 0,
+            "cleared-but-retained width is not full cold state"
+        );
+        assert!(!r.valid);
         assert!(!r.matches(A, 4));
         assert!(!r.matches(0, 0));
     }
