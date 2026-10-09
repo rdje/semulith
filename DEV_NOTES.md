@@ -1,5 +1,14 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — count migration is narrower than a mirror waiver (P4-SYSTEM.12 e2a)
+
+The prior governor refuses staged parcel extents as full-byte drift. Its replacement
+selects C through the shared assembler, independently checks every supplied trace and
+request extent, and transforms only the owner's direct fetches field. Strings, nested
+fields, comments and CRLF remain bytes to compare. The seven historical exceptions
+must still differ after normalization. Four weakened-check mutants fail; the unbound
+production route remains 91 exact / seven declared. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — stage C observations before executing the model (P4-SYSTEM.12 e1d2)
 
 The tracked producer declares 28 programs and budgets covering 37 compressed forms.

@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0100 (leaf P4-SYSTEM.12 e2a) — govern parcel-count migration
+
+- C composition selects independent write/request derivation and a direct-fetch-field
+  transform; all other mirror bytes and seven explicit exceptions stay governed.
+  Unbound byte comparison unchanged. Literal/extent/drift controls pass; four mutants
+  refuse. GUEST-GEN 122/122, production unchanged; atomic bind next.
+
 ## SEMULITH-P4-0099 (leaf P4-SYSTEM.12 e1d2) — stage the C corpus
 
 - 28 independently authored guests cover all 37 selected forms: 429 declared

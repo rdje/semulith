@@ -41,56 +41,16 @@ OUT="crates/semulith-verify/src/guests.rs"
 # guests' expectation comments — the fence.i bind makes "without Zifencei" stale in
 # this unit, and the data fence is not the fetch synchronization: the chapter
 # guarantees visibility only after a FENCE.I, the data fence's role is cross-hart).
-# Every other mirrored file is byte-identical to its rv64i owner, and the governor
-# below names any drift.
+# With C unbound, every other mirrored file is byte-identical to its rv64i owner.
+# The C bind migrates only independently checked parcel extents; other bytes stay governed.
 ENCODING_GC="profiles/rv64gc-lab-v0/encoding.sexp"
 GUESTS_DIR_GC="profiles/rv64gc-lab-v0/guests"
 OUT_GC="crates/semulith-verify/src/guests_rv64gc.rs"
-MIRROR_REDERIVED="fault-jal-mis fault-jalr-mis it-prio-jump it-fencei min-fencei dir-selfmod-fence fault-selfmod"
-
-# ── the base-mirror governor (P4-SYSTEM.2 slice f disposition, registered at the flip) ─
-# The rv64gc guests/ directory is a DERIVED mirror of rv64i's: every mirrored file is
-# byte-identical to its owner, and exactly the named re-derived files differ — each with
-# its reason recorded. A silent edit on either side breaks a pair and is named. Defined
-# before the self-test so the arms below exercise the same function the gate runs.
-judge_mirror() { # $1 owner dir  $2 mirror dir — prints a verdict line, rc is the verdict
-  local owner="$1" mirror="$2" name fail=0 count=0
-  for f in "$owner"/*.s; do
-    name="$(basename "$f")"
-    [ -f "$mirror/$name" ] || continue   # a guest the mirror does not carry is the
-                                         # corpus's own record (c-scope.c disposition)
-    count=$((count+1))
-    cmp -s "$f" "$mirror/$name" || {
-      printf 'GUEST-GEN: MIRROR DRIFT — guests/%s is no longer byte-identical to %s; a re-derivation is a recorded act, not a silent edit\n' \
-        "$name" "$f" >&2
-      fail=1
-    }
-  done
-  local rederived=0
-  for f in "$mirror"/*.expected.sexp; do
-    name="$(basename "$f")"
-    [ -f "$owner/$name" ] || continue
-    if cmp -s "$owner/$name" "$f"; then
-      count=$((count+1))
-    else
-      case " $MIRROR_REDERIVED " in
-        *" ${name%.expected.sexp} "*) rederived=$((rederived+1)) ;;
-        *) printf 'GUEST-GEN: MIRROR DRIFT — guests/%s differs from %s but is not one of the recorded re-derivations (%s)\n' \
-             "$name" "$owner/$name" "$MIRROR_REDERIVED" >&2
-           fail=1 ;;
-      esac
-    fi
-  done
-  for name in $MIRROR_REDERIVED; do
-    if cmp -s "$owner/$name.expected.sexp" "$mirror/$name.expected.sexp" 2>/dev/null; then
-      printf 'GUEST-GEN: MIRROR DRIFT — %s is recorded as re-derived but matches its owner byte-identically; the record is stale\n' \
-        "$name" >&2
-      fail=1
-    fi
-  done
-  [ "$fail" -eq 0 ] || return 1
-  printf 'the base mirror holds: %d file(s) byte-identical, %d recorded re-derivation(s)\n' \
-    "$count" "$rederived"
+# The tracked governor owns the seven exceptions. With C composed, it derives all
+# writes/request counts, then compares only the count-adjusted owner; every other
+# byte stays governed. The unbound route retains exact byte comparison.
+judge_mirror() {
+  python3 scripts/check_gc_mirror.py --owner "$1" --mirror "$2" --encoding "$ENCODING_GC"
 }
 
 # ── self-test ────────────────────────────────────────────────────────────────────────────────
@@ -249,6 +209,17 @@ PY
   cp "$GUESTS_DIR/fault-jal-mis.expected.sexp" "$t/mirror/fault-jal-mis.expected.sexp"
   out="$(judge_mirror "$GUESTS_DIR" "$t/mirror" 2>&1)"; rc=$?
   arm "RED a stale re-derivation record is named" "$rc" 1 "$out" "fault-jal-mis"
+
+  out="$(python3 scripts/check_gc_mirror.py --self-test 2>&1)"; rc=$?
+  arm "GREEN mirror migration checks extents and literal fields" "$rc" 0 "$out" "literal fields pass"
+  out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-counts 2>&1)"; rc=$?
+  arm "RED mirror migration cannot ignore request counts" "$rc" 1 "$out" "accepted declared parcel count"
+  out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-noncount 2>&1)"; rc=$?
+  arm "RED mirror migration cannot exempt other bytes" "$rc" 1 "$out" "accepted non-count mirror drift"
+  out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source 2>&1)"; rc=$?
+  arm "RED mirror migration keeps source bytes exact" "$rc" 1 "$out" "accepted source mirror is not byte-identical"
+  out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-stale 2>&1)"; rc=$?
+  arm "RED parcel counts cannot preserve a stale exception" "$rc" 1 "$out" "accepted re-derivation is stale"
 
   # P4-SYSTEM.12 d1: C is still unbound, so the assembler uses a temporary full
   # composition; the expected words and byte image are hand-written spec-side fixtures.

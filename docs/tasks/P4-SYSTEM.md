@@ -235,9 +235,23 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | C corpus/counts staged; e2 bind contracts next |
+| 1 | `P4-SYSTEM.12` | `active` | mirror/count preflight ready; e2b atomic C bind next |
 
 ## Decisions
+
+- `2026-10-09` (e2a bind preflight, before changes): own the mirror/count governor
+  prerequisite here before the atomic bind. Diagnose the current governor against a
+  target-local copy with independently staged parcel counts: exact byte comparison
+  must refuse. Replace only its fetch-field comparison for a C-composed unit with a
+  surgical transformation; compare every other byte and retain the seven declared
+  semantic re-derivations, which must still differ after count normalization. Independently
+  derive all supplied records' writes and actual request counts before accepting any
+  parcel extent. The unbound production route stays byte-exact. Add permanent controls
+  for word/mixed/runoff extents, wrong counts, non-count comments/observations/source
+  drift, stale re-derivations, duplicate/nested/string field traps and exact repeat.
+  No production record/composition/module change in this prerequisite. Correct the
+  active brief's superseded coalescing sentence to the c1 parcel-first decision already
+  recorded below. Commit e2a, then e2b binds the staged corpus and contract together.
 
 - `2026-10-09` (e1d2 corpus design, before changes): primary RVI-C chapter read in
   full from the pinned cache, digest 3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb.
@@ -684,9 +698,9 @@ This gate authorises the planned next engineering stage: board implementation.
      upstream's `n0`/`nz` names, because most of those name HINTs, which simply execute their
      expansion (an x0 destination writes nothing).
   3. **The fetch reads a parcel, decides the length, and touches the next parcel only for a
-     32-bit instruction**: translate parcel 0; within one page, one request covers both parcels
-     (the corpus's fetch counts unchanged); at a page's last halfword, parcel 0 is fetched alone
-     and parcel 1 is translated and fetched only if bits [1:0] are 11 — a fault there reports the
+     32-bit instruction** (c1 supersedes the original coalescing choice): translate and
+     fetch parcel 0 exactly; parcel 1 is translated and fetched only if bits [1:0] are 11.
+     Historical observations stay fixed; counts are independently re-derived. A fault reports the
      second parcel's address in xtval and the instruction's start in xepc. The pc advances by
      the instruction's length; `(inst)` is the instruction's own bits (16 for C). The boundary's
      fetch contract is restated in contract v2 (a parcel-granular fetch the environment answers).
@@ -786,33 +800,34 @@ never raised, at every crossing. The index:
   (b), (d1)–(e1c0), plus closed `.10` design and `.11` design/split, moved byte-verbatim
   as completed records leave the live head.
 
-`P4-SYSTEM.12` slice (e1d2) — specification-derived compressed corpus (`2026-10-09`, `SEMULITH-P4-0099`):
+`P4-SYSTEM.12` slice (e2a) — govern the count-only mirror migration (`2026-10-09`, `SEMULITH-P4-0100`):
 
-- [x] **REPRODUCE / ROOT CAUSE** — e1d requires a new C corpus before binding.
-  `python3 scripts/stage_gc_c_corpus.py` rc=0: 28 staged guests, all 37 selected
-  forms, 429 predeclared boundaries, 708 actual parcels. The production encoding
-  still carries the C slot. Primary chapter digest re-verified and read in full.
-- [x] **FIX / ADDRESSED** — tracked producer declares programs/budgets and hand
-  final/PC/state checkpoints before any processor-engine run. Independent author
-  derives every observation and request. Coverage requires an actual expansion
-  derivation, excluding source annotations at interrupt/fetch-fault boundaries.
-  `--check` rc=0, schemas 28/28. Observation and extent mutants each rc=1 with
-  named semantic reasons; a saved budget changed 15->16 makes --check DRIFT (rc=1),
-  then regeneration restores exact output. Initial LR/SC source syntax was refused;
-  corrected to the documented parenthesized-address interface, no oracle changed.
-- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 117 pass / 0 fail,
-  both generated fixtures and base mirror exact. `python3 scripts/derive_gc_parcel_counts.py
-  --check` rc=0: all 139 historical traces still exact at 4,913 boundaries / 9,770
-  requests; its conservative fingerprints regenerated for the new producer. All
-  142 production records/encoding/generated modules byte-exact against 4754419.
-  DERIVED-COUNTS --list derives 613 arms. No Rust or production guest/count changes.
-- [x] **LOCKSTEP** — MEMORY/frontier/index/live status (P4 remains 11/18), logs,
-  toolbox/doctrine and C book updated. Closed e1d0/e1d1 receipts moved byte-verbatim
-  to archive part 6, reconstruction asserted; bounds unchanged. `make book` and
-  commit gate enforced. Staged sources/records total 204,698 B: projected profile
-  family 519 files / 3,091,575 B before bind metadata, inside current 600 / 3,145,728
-  ceilings. Next: e2 preflight of count/mirror contracts, atomic C bind, matched Sail.
-  promotion: declined (permanent source/hand/mutation/drift controls retain the method).
+- [x] **REPRODUCE / ROOT CAUSE** — target-local copy adopts independently staged
+  parcel counts; current shell governor rc=1 at bound-alias, because full-byte
+  comparison cannot express the declared extent migration. Log e2a/before.log.
+  Production is still unbound and no production file changes in this prerequisite.
+- [x] **FIX / ADDRESSED** — `python3 scripts/check_gc_mirror.py --self-test` rc=0:
+  hand word/mixed/runoff counts, repeat, composition selection, wrong count,
+  comment/CRLF/write/source drift, stale exceptions, duplicate/direct/nested/string
+  field controls pass. C mode independently derives every supplied guest's writes
+  and actual requests before surgical direct-field transformation; all other bytes
+  governed. The seven named re-derivations must still differ after normalization.
+  Four weakened-check mutations each rc=1 for the intended accepted-defect reason.
+- [x] **NO REGRESSION** — real target-local migrated corpus on temporary full-C
+  composition rc=0: 49 exact files + 42 checked count-only records + seven declared
+  re-derivations; same copy with unbound composition rc=1. Production governor
+  rc=0: 91 exact / zero adjusted / seven declared, unchanged from pre-slice.
+  `bash scripts/check_guest_gen.sh` rc=0: 122 pass / 0 fail, both generated fixtures
+  exact. All 142 production records/encoding/modules byte-exact against 413c7da.
+  DERIVED-COUNTS derives 618 arms. No Rust change.
+- [x] **LOCKSTEP** — live docs/frontier/toolbox/doctrine and C book synchronized;
+  P4 remains 11/18. e1d2 receipt moved byte-verbatim (2,185 B) to archive part 6,
+  reconstruction asserted. Fixed ceilings unchanged. Active brief now names c1's
+  parcel-first replacement, removing the superseded coalescing direction.
+  `make book` rc=0. First hook refused derived book-index drift; regenerated through
+  gen_book_index.py, then rebuilt the book. Next e2b: atomic composition/corpus/
+  contract bind, then matched Sail and leaf acceptance. Commit gate enforced.
+  promotion: declined (permanent literal/extent/mutation controls retain the distinction).
 
 ### ROUTING EVIDENCE — archive pressure to `LIVE-CONTAINMENT.4`
 
@@ -835,7 +850,7 @@ Before publishing the staged C corpus/counts, e1d must derive an explicit correc
 family/provenance header and guard generic/C text, while preserving the 42 historical
 owned records. Schedule as high priority within e1d, before its first authored record.
 
-Completed e1c1/e1d0/e1d1 receipts: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+Completed e1c1/e1d0/e1d1/e1d2 receipts: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Verification Log
 
@@ -907,6 +922,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e2a) | `SEMULITH-P4-0100 (leaf P4-SYSTEM.12): govern independently checked parcel counts without exempting mirror content` | e2b atomic bind, then matched Sail |
 | `.12` (slice e1d2) | `SEMULITH-P4-0099 (leaf P4-SYSTEM.12): stage the specification-derived compressed corpus before binding C` | e2 bind contracts, then matched Sail |
 | `.12` (slice e1d1) | `SEMULITH-P4-0098 (leaf P4-SYSTEM.12): stage independently derived parcel counts for the historical corpus` | e1d2 C corpus, then e2 bind |
 | `.12` (slice e1d0) | `SEMULITH-P4-0097 (leaf P4-SYSTEM.12): preserve historical provenance and label new author routes honestly` | e1d staged C corpus/counts, then e2 bind |

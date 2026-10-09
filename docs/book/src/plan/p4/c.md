@@ -297,3 +297,12 @@ before any instruction effect. Both runs issue 101 physical parcel requests, but
 use 52 and 51 declared boundaries respectively. Their trap values name the next
 page; the saved instruction PCs distinguish a new fetch from a straddling one.
 The production composition and records remain unchanged until the atomic bind.
+
+Slice (e2a) prepares the production mirror check for that migration. Once C is
+composed, it first re-derives every supplied guest's architectural writes and actual
+parcel requests. It then changes only the RV64I owner's direct `fetches` field for
+comparison. Every other byte, including comments and line endings, remains checked.
+The seven historical re-derivations must still differ after count normalization;
+a count change alone cannot preserve a stale exception. With C unbound, the original
+byte-exact rule still applies. Wrong counts, changed writes, comment/source drift,
+textual field lookalikes and stale exceptions have permanent refusing controls.

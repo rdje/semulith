@@ -98,3 +98,31 @@ Completed receipts moved byte-verbatim from the active tree, continuing part 5.
   is clean. Next e1d2: the independently authored C corpus.
   promotion: declined (permanent hand/RED/drift controls retain the count distinction).
 
+`P4-SYSTEM.12` slice (e1d2) — specification-derived compressed corpus (`2026-10-09`, `SEMULITH-P4-0099`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — e1d requires a new C corpus before binding.
+  `python3 scripts/stage_gc_c_corpus.py` rc=0: 28 staged guests, all 37 selected
+  forms, 429 predeclared boundaries, 708 actual parcels. The production encoding
+  still carries the C slot. Primary chapter digest re-verified and read in full.
+- [x] **FIX / ADDRESSED** — tracked producer declares programs/budgets and hand
+  final/PC/state checkpoints before any processor-engine run. Independent author
+  derives every observation and request. Coverage requires an actual expansion
+  derivation, excluding source annotations at interrupt/fetch-fault boundaries.
+  `--check` rc=0, schemas 28/28. Observation and extent mutants each rc=1 with
+  named semantic reasons; a saved budget changed 15->16 makes --check DRIFT (rc=1),
+  then regeneration restores exact output. Initial LR/SC source syntax was refused;
+  corrected to the documented parenthesized-address interface, no oracle changed.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 117 pass / 0 fail,
+  both generated fixtures and base mirror exact. `python3 scripts/derive_gc_parcel_counts.py
+  --check` rc=0: all 139 historical traces still exact at 4,913 boundaries / 9,770
+  requests; its conservative fingerprints regenerated for the new producer. All
+  142 production records/encoding/generated modules byte-exact against 4754419.
+  DERIVED-COUNTS --list derives 613 arms. No Rust or production guest/count changes.
+- [x] **LOCKSTEP** — MEMORY/frontier/index/live status (P4 remains 11/18), logs,
+  toolbox/doctrine and C book updated. Closed e1d0/e1d1 receipts moved byte-verbatim
+  to archive part 6, reconstruction asserted; bounds unchanged. `make book` and
+  commit gate enforced. Staged sources/records total 204,698 B: projected profile
+  family 519 files / 3,091,575 B before bind metadata, inside current 600 / 3,145,728
+  ceilings. Next: e2 preflight of count/mirror contracts, atomic C bind, matched Sail.
+  promotion: declined (permanent source/hand/mutation/drift controls retain the method).
+
