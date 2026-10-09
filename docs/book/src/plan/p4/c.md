@@ -237,3 +237,11 @@ cache guest's request schedule. All 42 owned records remain byte-identical. The 
 incorrect cache guest is the only changed text among 121 earlier word-route outputs;
 no production record is overwritten. Staging can now derive C observations and actual
 parcel counts independently, after resolving the documentation archive's owned pressure.
+
+Before staging the C corpus, slice (e1d0) repairs the author's provenance headers.
+New derivations name the tracked spec-side author and the route actually executed:
+word execution or explicit-budget parcel execution. A filename does not establish
+which earlier corpus produced a record. The 42 canonical historical word records
+keep their exact capture headers; copied names and new parcel derivations receive
+new provenance. Generic and compressed examples, schema checks and four deliberate
+mutations guard this distinction. No existing expectation record changes.

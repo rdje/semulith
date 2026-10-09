@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0097 (leaf P4-SYSTEM.12 e1d0) — author provenance
+
+- New outputs name their actual author/route; 42 historical records stay exact.
+  Generic/C and borrowed-name controls discriminate; GUEST-GEN 109/109.
+
 ## SEMULITH-CI-0010 (leaf CI-RECOVERY.4, slice f) — interrupted CI recovery closed
 
 - Recover the staged receipt after the machine crash. Hosted Rust, doctrines and

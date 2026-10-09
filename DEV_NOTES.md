@@ -1,5 +1,12 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — filenames do not carry capture history (P4-SYSTEM.12 e1d0)
+
+emit's fallback stamped generic/C outputs as the FP corpus. Historical headers now
+require a canonical owned word input; new outputs name the actual author/route.
+No chronology is invented. Generic, borrowed-name, C/schema and parcel controls
+pass; four mutants fail, 42 owned records exact. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — recover hosted proof and preserve its clocks (CI-RECOVERY.4 f)
 
 The crash left this receipt staged. Rust, doctrines and all portability legs pass

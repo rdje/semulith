@@ -449,6 +449,17 @@ PY
   out="$(python3 scripts/probe_gc_cache_author.py --mutation illegal-fence 2>&1)"; rc=$?
   arm "RED illegal fences cannot touch the cache" "$rc" 1 "$out" "illegal fence must not change cache"
 
+  out="$(python3 scripts/probe_gc_provenance.py 2>&1)"; rc=$?
+  arm "GREEN new author provenance and historical captures" "$rc" 0 "$out" "GC provenance probe:"
+  out="$(python3 scripts/probe_gc_provenance.py --mutation filename-history 2>&1)"; rc=$?
+  arm "RED a borrowed name cannot inherit history" "$rc" 1 "$out" "generic output inherited FP provenance"
+  out="$(python3 scripts/probe_gc_provenance.py --mutation parcel-history 2>&1)"; rc=$?
+  arm "RED a parcel re-derivation cannot inherit history" "$rc" 1 "$out" "generic output inherited FP provenance"
+  out="$(python3 scripts/probe_gc_provenance.py --mutation parcel-route 2>&1)"; rc=$?
+  arm "RED parcel provenance must name its route" "$rc" 1 "$out" "new output omitted its execution route"
+  out="$(python3 scripts/probe_gc_provenance.py --mutation fp-fallback 2>&1)"; rc=$?
+  arm "RED generic output cannot inherit FP provenance" "$rc" 1 "$out" "generic output inherited FP provenance"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

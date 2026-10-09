@@ -825,7 +825,8 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
 
 def run_parcel_guest(path: Path, asm: Assembler, budget: int) -> tuple[str, int]:
     run = derive_parcel_guest(path, asm, budget)
-    return emit(path, run.steps, len(run.steps), run.never, run.refusals), len(run.steps)
+    return emit(path, run.steps, len(run.steps), run.never, run.refusals,
+                route='parcels'), len(run.steps)
 
 
 def execute_c(h: Hart, parcel: int) -> tuple[int, dict]:
@@ -1516,12 +1517,25 @@ def execute_f(h, word, op, rd, f3, rs1, rs2, imm_i, imm_s, data_access, w, *, ne
     raise Refusal(f"OP-FP word {word:#010x} outside the corpus")
 
 
-def emit(path: Path, steps: list[Step], count: int, never: list[str], refuse=()) -> str:
+def emit(path: Path, steps: list[Step], count: int, never: list[str], refuse=(),
+         *, route: str = 'word') -> str:
     fetches = sum(st.fetch for st in steps)
     quote = R.quote_string
-    # the header names the guest's OWN family (P4-SYSTEM.8 slice a: the .7 header was stamped
-    # on every re-derived file); the atomics family keeps its .4 tool's exact words
-    if path.stem.startswith("a-"):
+    if route not in ('word', 'parcels'):
+        raise Refusal(f'unknown expectation author route: {route}')
+    # These capture headers belong only to the explicitly owned canonical word
+    # records. A copied filename or a new parcel derivation cannot inherit history.
+    historical = (route == 'word' and path.stem in OWNED_GUESTS
+                  and path.resolve() == (REPO / 'profiles/rv64gc-lab-v0/guests' / path.name).resolve())
+    if not historical:
+        extent = ('word route' if route == 'word'
+                  else 'explicit-budget parcel route (C-capable)')
+        head = [f';; {path.stem}.expected.sexp — spec-side observations for `{path.name}`.',
+                f';; Author: scripts/derive_rv64gc_expectations.py; {extent}.',
+                ';; EVD-05: values derive from independent spec-side rules and the declared',
+                ';; laboratory policies; each step names its derivation and source.',
+                ';; This derivation makes no processor conformance or original-capture claim.']
+    elif path.stem.startswith("a-"):
         head = [f';; {path.stem}.expected.sexp — the expected observations for `{path.name}` (P4-SYSTEM.4',
                 ';; slice d, the atomics corpus). EVD-05: every value below was derived from the pinned',
                 ';; chapters and the declared deterministic SC policy (state.sexp) by the spec-side',

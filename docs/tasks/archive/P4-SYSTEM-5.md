@@ -763,3 +763,39 @@ Completed `.12` acceptance checklists (a), (a2), (b), moved verbatim from
   [`archive/P4-SYSTEM-designs.md`](archive/P4-SYSTEM-designs.md) at the `.8` design
   brief's crossing (`2026-10-06`, `.7` closed; the ceiling was obeyed, not raised).
 
+`P4-SYSTEM.12` slice (e1c0) — SFENCE scope preserves register identity (`2026-10-08`, `SEMULITH-P4-0095`):
+
+- [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-core
+  translation::tests::fence_nonzero` on c413dd3 + new tests: 0 passed / 3 failed.
+  Zero-valued nonzero operands flush all four seeded entries instead of their specified
+  subsets, including globals/other ASIDs/pages. ASID masking must not select full scope.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `git show e839c1b:crates/semulith-core/src/translation.rs`
+  shows the value-only API and va==0/asid==0 scope selection introduced by P4-0018;
+  `rg -n TlbInvalidate crates/semulith-core/src/exec_rv64gc.rs` finds the identity loss
+  in semantic lowering. Pinned supervisor.html 2046–2080 names x0 register identity;
+  the profile explicitly rejects over-fencing. Historical .3 receipts are superseded
+  here. Its two fence words name wrong registers and its second refill stays M/Bare.
+- [x] **FIX** — four-argument semantic effect carries VA/ASID plus x0-identity flags;
+  generator and evaluator preserve them. Cache/fence API uses None for x0 and Some(0)
+  for real zero selections. Invalid selected VA remains a no-op. Correct both old raw
+  words from pinned assembler checks; S refill and occupancy prove the second leg acts.
+  Four stale DEF-GEN sed mutants become asserted single-effect AST replacements.
+- [x] **ADDRESSED (verified)** — translation tests 29 passed / 0 failed, including three
+  new public-evaluator regressions and repaired occupied-cache fixture. Parent 0/3; two
+  value-selector mutations behavioral RED. Obsolete binary arity refuses by name; the
+  permanent new DEF-GEN arm proves it. All four restored surface-refusal arms discriminate.
+- [x] **NO REGRESSION** — make check rc=0: fmt, strict clippy, 153 core, 17 DSP and
+  193 verify tests pass. DEF-GEN 56 pass / 0 fail, both canonical pairs exact; scalar
+  definition differs only in two generator digest fields (normalization asserted). Stock
+  corpus retained. No expectation/guest/profile/count changes. Author cache remains the
+  next prerequisite (138/139 exact, no refusals), rather than copying evaluator outputs.
+- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 568 arms), tree/index/logs,
+  CHANGELOG/DEV_NOTES, toolbox/doctrine and C/Sv39 book updated. Prior receipt archived
+  byte-verbatim, append asserted; closed .10 design archived with reconstruction proved.
+  Initial 0209/0210 shard byte/order proofs passed, but the commit gate found archive
+  aggregate 787026 > 786432 B. Reconstructed original entries exactly, removed only
+  these uncommitted shards and restored the HEAD manifest. Shortened only new summaries;
+  all committed history bytes/order exact, full detail retained in tree/book. Fixed caps hold.
+  make book rc=0; commit doctrine gate must pass. promotion: declined (three permanent
+  regressions, explicit optional API and obsolete-arity gate retain the contract lesson).
+

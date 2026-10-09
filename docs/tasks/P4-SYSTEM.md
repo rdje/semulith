@@ -235,9 +235,19 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | cache ready; archive sealed and hosted CI verified; e1d staging / e2 bind next |
+| 1 | `P4-SYSTEM.12` | `active` | provenance repaired; C corpus/count staging / e2 bind next |
 
 ## Decisions
+
+- `2026-10-09` (e1d0 provenance prerequisite, before changes): emit currently falls
+  through to the FP-corpus header for generic/C/Sv39 source names. Preserve exact
+  historical headers only for the 42 canonical owned sources on their word route;
+  every new output names the tracked spec-side author and its actual word or
+  explicit-budget C-capable parcel route, without inventing original family or
+  pre-engine chronology. Guard generic sources, borrowed historical basenames,
+  raw C parcels and parcel re-derivation of an owned input, with parent and targeted
+  mutations. Check all 42 owned records exact and historical record hashes unchanged.
+  Commit this bounded repair before e1d stages any new corpus/count records.
 
 - `2026-10-08` (e1c1 execution plan, before changes): derive the declared four-slot,
   fully associative FIFO cache independently from state.sexp's selected policy and
@@ -749,44 +759,8 @@ never raised, at every crossing. The index:
   [`archive/P4-SYSTEM-4.md`](archive/P4-SYSTEM-4.md) — `.8` slices (a)–(e); `.9` (a)–(d) and `.10`
   (a)–(c) at the `.11` slice-(d) crossing; `.11` (a)–(d) at the `.12` slice-(c1) crossing.
 - part 5: [`archive/P4-SYSTEM-5.md`](archive/P4-SYSTEM-5.md) — `.12` (a), (a2),
-  (b), (d1)–(e1b2), plus closed `.10` design and `.11` design/split, moved byte-verbatim
+  (b), (d1)–(e1c0), plus closed `.10` design and `.11` design/split, moved byte-verbatim
   as completed records leave the live head.
-
-`P4-SYSTEM.12` slice (e1c0) — SFENCE scope preserves register identity (`2026-10-08`, `SEMULITH-P4-0095`):
-
-- [x] **REPRODUCE / ISSUE** — `cargo test -p semulith-core
-  translation::tests::fence_nonzero` on c413dd3 + new tests: 0 passed / 3 failed.
-  Zero-valued nonzero operands flush all four seeded entries instead of their specified
-  subsets, including globals/other ASIDs/pages. ASID masking must not select full scope.
-- [x] **ROOT CAUSE (WHY + WHERE)** — `git show e839c1b:crates/semulith-core/src/translation.rs`
-  shows the value-only API and va==0/asid==0 scope selection introduced by P4-0018;
-  `rg -n TlbInvalidate crates/semulith-core/src/exec_rv64gc.rs` finds the identity loss
-  in semantic lowering. Pinned supervisor.html 2046–2080 names x0 register identity;
-  the profile explicitly rejects over-fencing. Historical .3 receipts are superseded
-  here. Its two fence words name wrong registers and its second refill stays M/Bare.
-- [x] **FIX** — four-argument semantic effect carries VA/ASID plus x0-identity flags;
-  generator and evaluator preserve them. Cache/fence API uses None for x0 and Some(0)
-  for real zero selections. Invalid selected VA remains a no-op. Correct both old raw
-  words from pinned assembler checks; S refill and occupancy prove the second leg acts.
-  Four stale DEF-GEN sed mutants become asserted single-effect AST replacements.
-- [x] **ADDRESSED (verified)** — translation tests 29 passed / 0 failed, including three
-  new public-evaluator regressions and repaired occupied-cache fixture. Parent 0/3; two
-  value-selector mutations behavioral RED. Obsolete binary arity refuses by name; the
-  permanent new DEF-GEN arm proves it. All four restored surface-refusal arms discriminate.
-- [x] **NO REGRESSION** — make check rc=0: fmt, strict clippy, 153 core, 17 DSP and
-  193 verify tests pass. DEF-GEN 56 pass / 0 fail, both canonical pairs exact; scalar
-  definition differs only in two generator digest fields (normalization asserted). Stock
-  corpus retained. No expectation/guest/profile/count changes. Author cache remains the
-  next prerequisite (138/139 exact, no refusals), rather than copying evaluator outputs.
-- [x] **LOCKSTEP** — MEMORY, LIVE_STATUS (11/18 unchanged, 568 arms), tree/index/logs,
-  CHANGELOG/DEV_NOTES, toolbox/doctrine and C/Sv39 book updated. Prior receipt archived
-  byte-verbatim, append asserted; closed .10 design archived with reconstruction proved.
-  Initial 0209/0210 shard byte/order proofs passed, but the commit gate found archive
-  aggregate 787026 > 786432 B. Reconstructed original entries exactly, removed only
-  these uncommitted shards and restored the HEAD manifest. Shortened only new summaries;
-  all committed history bytes/order exact, full detail retained in tree/book. Fixed caps hold.
-  make book rc=0; commit doctrine gate must pass. promotion: declined (three permanent
-  regressions, explicit optional API and obsolete-arity gate retain the contract lesson).
 
 `P4-SYSTEM.12` slice (e1c1) — independent selected cache (`2026-10-08`, `SEMULITH-P4-0096`):
 
@@ -829,6 +803,31 @@ never raised, at every crossing. The index:
   urgent lifecycle prerequisite, with exact 210-shard / 211-member archive retrieval
   proof and proposed transaction in its tree. No cap or existing frozen bytes changed.
   promotion: declined (hand cache fixtures/thirteen RED controls retain the lesson).
+
+`P4-SYSTEM.12` slice (e1d0) — honest author provenance (`2026-10-09`, `SEMULITH-P4-0097`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — `python3 scripts/probe_gc_provenance.py
+  --author-revision 5ac3514` rc=1: generic output inherited FP provenance.
+  `rg -n 'floating-point corpus|def emit' scripts/derive_rv64gc_expectations.py`
+  pinpoints emit's unconditional FP fallback, inferred from unmatched filenames.
+- [x] **FIX / ADDRESSED** — the tracked author names its actual word or explicit-budget
+  C-capable parcel route. Historical capture headers apply only to the 42 canonical
+  owned word inputs, never copied names or a new parcel derivation. No invented
+  pre-engine chronology. `python3 scripts/probe_gc_provenance.py` rc=0: generic,
+  nine borrowed names, raw C.ADDI observation/schema, owned parcel route, unknown-route
+  refusal and all 42 historical records exact. Four targeted mutations each rc=1
+  with the intended provenance/route reason. No production record is written.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 109 pass / 0 fail;
+  both tracked generated fixtures exact, base mirror 91 exact / seven declared.
+  DERIVED-COUNTS --list derives 605 arms. Only new-output comments change; existing
+  139 expectation files, production encoding and Rust modules unchanged.
+- [x] **LOCKSTEP** — MEMORY/frontier/live status (P4 11/18 unchanged), logs,
+  toolbox/doctrine and C book updated. Completed e1c0 receipt moved verbatim to
+  archive part 5 (2,979 B); reconstruction asserted, archive 63,976 B. README neutral
+  body and claim-verification source body identical to read-only policy sources.
+  Containment guide read (SHA-256 8f77fa39c9bcb9cfc43166259a627a6ced64682030088400b727dccc5d674a53);
+  full adoption remains LIVE-CONTAINMENT.4. `make book` and commit gate must pass.
+  promotion: declined (permanent provenance fixtures and four RED controls retain the rule).
 
 ### ROUTING EVIDENCE — archive pressure to `LIVE-CONTAINMENT.4`
 
@@ -921,6 +920,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1d0) | `SEMULITH-P4-0097 (leaf P4-SYSTEM.12): preserve historical provenance and label new author routes honestly` | e1d staged C corpus/counts, then e2 bind |
 | `.12` (slice e1c1) | `SEMULITH-P4-0096 (leaf P4-SYSTEM.12): derive the selected translation cache independently` | containment lifecycle, then e1d / e2 |
 | `.12` (slice e1c0) | `SEMULITH-P4-0095 (leaf P4-SYSTEM.12): preserve SFENCE operand identity through the semantic cache interface` | e1c1 independent cache, then corpus/counts/bind |
 | `.12` (slice e1b2) | `SEMULITH-P4-0094 (leaf P4-SYSTEM.12): derive counter permissions and preserve literal expectation text` | e1c cache, then corpus/counts/bind |
