@@ -27,7 +27,7 @@ out wrong is **superseded by a later version, never rewritten**. Written at `P4-
 | Waiting | **in scope** | `OB-GC-PRIV-INSNS-V1` (v1): a legal wfi enters the wait; the wake needs no retirement |
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
-| Data access, reset, ordering, code visibility, address units | **remaining named gaps** | The other seven rv64i `OB-ENV-*` assumptions await `.13`'s unit-specific disposition; shared boundary types are not contract records |
+| Data widths/attributes, reset, ordering, event delivery, address units | **remaining named gaps** | Five GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
 
 ## The four v1 assumptions — and what would make each false
 
@@ -55,7 +55,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
-fixtures. Together with M's pair and seven scope pairs, 34 checks are realized in the effective contract;
+fixtures. Across the full registry, including eleven scope pairs, 42 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -72,7 +72,7 @@ frozen v0 obligations; the contract is where v1 corrects them.
 ## Positive and negative fixtures
 
 Every v1 check, `.8`'s partial-progress pair, the M/C/fetch pairs, and the
-seven scope pairs are **realized**: the registry
+eleven scope pairs are **realized**: the registry
 `crates/semulith-verify/src/contract_checks_rv64gc.rs` binds each check id to tracked guests, and
 its tests run the guest entries under the corpus's comparison rule. Scope entries run
 `python3 scripts/check_gc_contract_scope.py --check CHECK-ID` over parsed canonical
@@ -108,11 +108,11 @@ unbound C, fragment base and completeness respectively; each must fail for its
 own reason. Disabled-profile/disabled-fragment controls fail the negative check,
 and an unknown id refuses. No live file is changed by a check. This establishes
 the declared selection, not instruction execution or universal conformance.
-The 20 existing guest bindings remain exact. G-CONTRACT is 22/106, v2 open.
+The 20 existing guest bindings remain exact. At b2, G-CONTRACT reached 22/106, v2 open.
 
 ## Structured scope evidence (P4-SYSTEM.13 b3)
 
-Seven scope pairs now run through the registry. Six new predicates add 17
+At b3, seven scope pairs run through the registry. Six new predicates add 17
 violating copies; with composition's six, 23 specific violations are rejected.
 These checks validate declarations and their internal consistency. They do not
 execute CSR field semantics, validate external firmware or prove an ISA.
@@ -130,4 +130,25 @@ Privilege artifacts were rehashed when the expected identities were recorded;
 normal scope checks bind the declarations to those identities without requiring
 the untracked artifact cache. Artifact-byte verification is the citation check's
 separate role. The scope-name check reuses the extraction owner's resolution.
-G-CONTRACT is 34/106; v2 remains open.
+At b3, G-CONTRACT reached 34/106; v2 remains open.
+
+## Remaining scope evidence (P4-SYSTEM.13 b5)
+
+Four more pairs realize the remaining selection records. Their predicates validate
+the declarations below and require 16 independently changed copies to fail for
+specific reasons. Eleven scope pairs now realize 22 checks; with the twenty guest
+checks, G-CONTRACT is 42/106. Version 2 remains open.
+
+| Obligation | Selection validated | Negative copies |
+| --- | --- | --- |
+| OB-ABI | LP64D, ELFCLASS64/double float ABI, ABI_FLEN=64, pinned clang/lld target, D/F and 32×64 FP state, psABI 1.0 source identity | soft-float ABI, wrong toolchain pin, absent D, narrow FP file, different source hash |
+| OB-SBI | SBI 2.0 route through real M-mode firmware into S mode, explicit refusal of silent host substitution, source identity | older SBI, host substitution, no M mode, different source hash |
+| OB-RVWMO | RVWMO 2.0 selected with A at one hart; multicore work retains its own route | substituted model, extra hart, absent A, wrong chapter revision |
+| OB-PRIV-INSNS | exact MRET/SRET/WFI/SFENCE.VMA scope and their resolved encodings | same-count wrong form, missing encoding, altered decision |
+
+The psABI/SBI artifacts were rehashed when recording the expected identities;
+ordinary checks compare declarations without requiring the artifact cache or
+installed toolchain. These are selection checks: they do not execute a compiled
+LP64D program, supply firmware, boot Linux, or explore every RVWMO outcome.
+Instruction behavior retains its separate execution evidence. All 34 prior
+registry entries, including every guest binding, remain byte-identical.

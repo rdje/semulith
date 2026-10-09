@@ -1,5 +1,18 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — selection evidence keeps later implementation claims open (P4-SYSTEM.13 b5)
+
+Realize ABI/SBI/RVWMO/privileged scope as predicates over decisions, state, source
+identities and resolved encodings. Sixteen violating copies include narrow FP,
+host firmware substitution, an extra hart and a same-count wrong privileged form.
+Rehash cached psABI 1.0/SBI 2.0 public artifacts before fixing expected identities;
+ordinary checks compare declarations without a cache or toolchain dependency.
+Keep every prior registry entry byte-exact. Eleven scope pairs plus twenty guest
+checks realize 42/106, with firmware/LP64D execution/Linux boot still unclaimed.
+Regenerate GS after the final dossier-doc edit: its source digest covers those
+documents too. The hook caught only that stale digest; regenerate through its owner.
+Promotion declined in leaf: predicates, canonical decisions and book retain it.
+
 ## _(2026-10-09)_ — a printed version is not an enforced pin (P4-SYSTEM.13 b4)
 
 A copied public C-build flow accepted fake clang/LLD 99.0.0 and emitted an ELF.

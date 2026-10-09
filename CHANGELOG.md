@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0110 (leaf P4-SYSTEM.13 b5) — realize the remaining selection pairs
+
+- ABI, SBI, RVWMO and privileged-form pairs validate canonical selections; sixteen
+  violating copies discriminate. psABI/SBI public artifact identities rehashed.
+  Scope evidence claims no implemented firmware, LP64D execution or Linux boot.
+- All 34 old registry entries and canonical/frozen inputs exact. make check,
+  gate controls 17/17, freeze and books pass; G-CONTRACT 42/106, v2 remains open.
+
 ## SEMULITH-P4-0109 (leaf P4-SYSTEM.13 b4) — enforce the pinned guest toolchain
 
 - Reproduce acceptance of explicit version-99 tools and ACT4's missing-path crash.

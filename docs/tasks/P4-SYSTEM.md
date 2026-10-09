@@ -342,6 +342,19 @@ controls for rejection before output writes, explicit override refusal, backend
 failure and successful selection, alongside a real pinned C build. No external
 test-suite or submodule implementation inspection is needed.
 
+**b5 remaining selection pairs** (SEMULITH-P4-0110): own ABI, SBI, RVWMO and
+privileged-instruction scope predicates and their independent violating copies.
+Validate LP64D/64-bit FP selection and the pinned psABI source; SBI 2.0's real
+M-mode firmware route and source identity; one-hart RVWMO/A selection; and the
+exact four privileged forms in both profile scope and resolved encoding.
+These are scope selections, not evidence of an installed compiler in offline CI,
+implemented firmware, Linux boot or exploration of every weak-memory outcome.
+Retain all prior guest bindings and frozen records byte-exact. Run all new pairs
+in normal Rust tests, then update GS/ENVIRONMENT/dossier/book and the live pointer.
+Read canonical decisions, sources, state and the prior scope implementation first;
+rehash the locally acquired psABI/SBI public artifacts before fixing their expected
+identities. If unavailable, record the narrower declaration-only provenance honestly.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -486,6 +499,28 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (b5) (`2026-10-09`, `SEMULITH-P4-0110`):
+
+- [x] **ROOT CAUSE** — git show 389b8d7 registry: 34 entries, seven scope
+  pairs; ABI/SBI/RVWMO/privileged selection checks absent. Rehash public cache:
+  psABI a8d06bdcaa82a6a4567a1904dc27ef1ca1043ebaa1f523558c927a9d72bc23d9;
+  SBI 63084f54f382715efb340f46695d0e5cebd98965292d034d1b184b1abd3a682b.
+- [x] **ADDRESSED** — GC-CONTRACT-SCOPE: all four new POS/NEG pairs hold;
+  16 violating copies refused for specific reasons. All 34 prior entries
+  byte-exact, six canonical documents unchanged. Static checks establish choices,
+  not an installed compiler, firmware, Linux boot or complete weak-model exploration.
+- [x] **NO REGRESSION** — make check rc=0 (core 153, DSP 17, verify 194);
+  gate_report --self-test: 17 pass / 0 fail; CONTRACT-FREEZE: ok, 0 findings.
+  All eleven scope pairs run and all 39 violating copies discriminate. Books and
+  focused tree/frontier/bounds verified; no frozen byte or pin changed. First
+  hook refused only GS source digest: stdout diff isolated it to the final dossier
+  doc edits. Regenerated GS after those edits; GATE-REPORT focused recheck passes.
+- [x] **LOCKSTEP** — generated GS 42/106 realized, v2 open. ENVIRONMENT's
+  current summary and stale seven-gap row corrected to the five-topic census;
+  dossier/book/tool catalog/live pointer synchronized. LIVE_STATUS reviewed:
+  unchanged, P4 12/18, 629 registered arms, CPU-SYSTEM incomplete eight axes.
+  promotion: declined (canonical decisions, predicates and book retain it).
+
 `P4-SYSTEM.13` slice (b4) (`2026-10-09`, `SEMULITH-P4-0109`):
 
 - [x] **ROOT CAUSE** — isolated public build reproduction: rc=0, clang/LLD
@@ -629,6 +664,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` b5 | four scope pairs/16 violations; Rust; old-entry/input identity; gate 17/17; freeze/books | 42/106 realized, v2 open |
 | `2026-10-09` | `.13` b4 | toolchain 20/20 and mutant; pinned C exact ELF; ACT4 7/7; GUEST-GEN 130; books | pins enforced, contract credit unchanged |
 | `2026-10-09` | `.13` b3 | six scope pairs/17 violations; Rust; gate 17/17; freeze; exact bindings; shard reconstruction/freeze; books | 34/106 realized, v2 open |
 | `2026-10-09` | `.13` b2 | make check; scope POS/NEG and disabled/unknown controls; exact old bindings; gate 17/17; freeze/books | 22/106 realized, v2 open |
@@ -642,6 +678,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` b5 | `SEMULITH-P4-0110 (leaf P4-SYSTEM.13): realize the remaining scope selections` | boundary assumptions, current replacements and runtime checks |
 | `.13` b4 | `SEMULITH-P4-0109 (leaf P4-SYSTEM.13): enforce the pinned toolchain in both guest build paths` | remaining scope pairs and versioned declarations |
 | `.13` b3 | `SEMULITH-P4-0108 (leaf P4-SYSTEM.13): realize six structured scope pairs and retain bounded history` | remaining scope dispositions and versioned declarations |
 | `.13` b2 | `SEMULITH-P4-0107 (leaf P4-SYSTEM.13): run explicit scope evidence through the contract registry` | remaining scope checks, then versioned declarations with evidence |
@@ -653,6 +690,9 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` b5 (SEMULITH-P4-0110): four scope pairs and 16
+  specific violating copies. psABI/SBI identities rehashed; prior entries exact.
+  Eleven scope pairs/42 checks realized; v2 open, no later implementation claim.
 - `2026-10-09`: `.13` b4 (SEMULITH-P4-0109): reproduced and repaired pin
   enforcement/ACT4 missing-path refusal. Shared resolver, 20 controls and mutant;
   real C ELF exact. Contract unchanged; registered arms 629.

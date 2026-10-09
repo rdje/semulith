@@ -18,12 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` — finish the ABI/firmware/order/instruction-scope
-  dispositions, then bind five boundary assumptions and three v2 replacements
-  with real checks. b1 state repaired; b2/b3 seven scope pairs realized, 34/106
-  checks, v2 open. Full plan in Decisions; .14 owns registration/evidence.
-  b4 repaired shared pinned tool selection; 20 controls, C ELF unchanged.
-  Frozen v0/v1 unchanged. Notes/changelog sharded losslessly under fixed bounds.
+- next_action: `P4-SYSTEM.13` — bind five boundary assumptions and three v2
+  replacements with real checks, then realize remaining execution/boundary pairs.
+  b1 state repaired; b2/b3/b5 eleven scope pairs realized, 42/106 checks, v2 open.
+  b4 shared toolchain repair verified; all old registry entries remain exact.
+  Full plan/census in Decisions; .14 owns registration/evidence. Frozen v0/v1
+  unchanged. Notes/history archived losslessly under fixed bounds.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

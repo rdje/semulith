@@ -27,8 +27,48 @@ pub struct ContractCheck {
 /// The realized checks: v1's four environment assumptions and its two superseding
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
-/// `.13` b2/b3 add seven scope pairs; each remaining record stays uncredited.
+/// `.13` b2/b3/b5 add eleven scope pairs; each remaining record stays uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-ABI-POS",
+        obligation: "OB-ABI",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-ABI-NEG",
+        obligation: "OB-ABI",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-SBI-POS",
+        obligation: "OB-SBI",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-SBI-NEG",
+        obligation: "OB-SBI",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-RVWMO-POS",
+        obligation: "OB-RVWMO",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-RVWMO-NEG",
+        obligation: "OB-RVWMO",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-PRIV-INSNS-POS",
+        obligation: "OB-PRIV-INSNS",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-PRIV-INSNS-NEG",
+        obligation: "OB-PRIV-INSNS",
+        evidence: Evidence::Scope,
+    },
     ContractCheck {
         id: "CHK-EXT-CLOSURE-POS",
         obligation: "OB-EXT-CLOSURE",

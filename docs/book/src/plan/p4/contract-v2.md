@@ -1,13 +1,13 @@
 # P4.13 — Completing the environment contract
 
-**Status:** Census, state inventory and seven executable scope pairs landed; version 2 remains open.
+**Status:** Census, state inventory and eleven executable scope pairs landed; version 2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
 stages. This work checks every effective obligation, fills the remaining boundary
 assumptions, and realizes each declared check before freezing version 2.
 
-The census finds 53 effective obligations and 106 checks. Thirty-four checks currently
+The census finds 53 effective obligations and 106 checks. Forty-two checks currently
 run through the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
@@ -99,7 +99,7 @@ A different well-formed digest fails. The two public pages were rehashed when
 these expectations were recorded; the ordinary scope check needs no artifact
 cache and makes no fresh artifact-byte verification claim.
 
-The seven scope pairs plus the twenty existing guest checks now realize 34 of
+At b3, seven scope pairs plus the twenty existing guest checks realized 34 of
 106 checks. These are selection and consistency checks. CSR field behavior and
 instruction semantics retain their execution evidence; firmware is still future
 work. Older notes and changelog entries were archived verbatim with exact
@@ -129,3 +129,27 @@ cover both callers and refusal paths; disabling identity checking makes the
 controls fail. The installed pinned tools still build the exact same C ELF.
 That guest uses RV64I/LP64; the selected GC LP64D ABI still needs its own scope
 checks, and firmware implementation remains later work.
+
+## ABI, firmware, ordering and privileged scope
+
+Four further pairs bring the effective contract to 42 of 106 realized checks.
+They check selections, with a positive predicate and specific violating copies:
+
+| Selection | What must hold | Example violation |
+| --- | --- | --- |
+| ABI | LP64D, 64-bit integer and FP state, D/F, declared compiler/target and exact psABI 1.0 identity | narrow the FP file while retaining LP64D |
+| Firmware route | SBI 2.0 through real M-mode firmware into S mode, with no silent host substitution | replace the real-firmware requirement with host SBI |
+| Memory model | RVWMO 2.0 with A at one hart; multicore retains its separate route | change the selected hart count to two |
+| Privileged forms | MRET, SRET, WFI and SFENCE.VMA in the scope and resolved encoding | retain four names but replace one with HRET |
+
+Sixteen violating copies must fail for their own reasons. The ABI and SBI source
+artifacts were rehashed when the expected identities were recorded; ordinary
+checks bind their declarations without requiring those cached files. All prior
+registry entries remain byte-identical.
+
+Scope evidence does not establish execution of an LP64D program, implemented
+firmware, Linux boot or exploration of every weak-memory outcome. Those claims
+retain their own work and evidence. Eleven scope pairs now run in the normal test
+suite alongside the existing twenty guest checks. Remaining instruction and
+boundary checks, the five assumptions and the versioned corrections still keep
+contract v2 open.

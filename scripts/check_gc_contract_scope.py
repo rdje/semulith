@@ -32,7 +32,8 @@ CSR_NAMES = set("mhartid misa mstatus mtvec medeleg mideleg mie mip mscratch mep
                 "sie sip scounteren satp stimecmp cycle time instret fflags frm fcsr".split())
 CSR_VIEWS = {"sstatus": "mstatus", "sie": "mie", "sip": "mip", "cycle": "mcycle",
              "time": "mcycle", "instret": "minstret", "fcsr": "fflags, frm"}
-STRUCTURED = {"EXT-CLOSURE", "PRIV-REVISION", "CSR-SET", "NO-PMP", "NO-H", "SCOPE-CENSUS"}
+STRUCTURED = {"EXT-CLOSURE", "PRIV-REVISION", "CSR-SET", "NO-PMP", "NO-H", "SCOPE-CENSUS",
+              "ABI", "SBI", "RVWMO", "PRIV-INSNS"}
 # Rehashed from the public pinned v20260120 pages at P4-SYSTEM.13 b3. The check
 # binds the declaration to these identities; artifact-byte verification remains
 # CITATIONS' responsibility and is not inferred from the version string.
@@ -40,6 +41,15 @@ PRIVILEGE_PINS = {
     "RVP-MACHINE": "b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea",
     "RVP-SUPERVISOR": "d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a",
 }
+# Rehashed public artifacts at P4-SYSTEM.13 b5. Ordinary checks bind declared
+# identities, without requiring the cache or claiming a new byte verification.
+ABI_SBI_PINS = {
+    "RVI-PSABI": ("riscv/riscv-elf-psabi-1.0.pdf",
+                  "a8d06bdcaa82a6a4567a1904dc27ef1ca1043ebaa1f523558c927a9d72bc23d9"),
+    "RVI-SBI": ("riscv/riscv-sbi-2.0.pdf",
+                "63084f54f382715efb340f46695d0e5cebd98965292d034d1b184b1abd3a682b"),
+}
+PRIVILEGED_FORMS = {"MRET", "SRET", "WFI", "SFENCE.VMA"}
 
 
 class ScopeRefused(Exception):
@@ -161,6 +171,52 @@ def structured(key: str, data: dict) -> str | None:
             return "SCOPE-COUNT"
         if declared != data["encoding_names"]:
             return "SCOPE-SET"
+    elif key == "ABI":
+        declaration = str(S.field(named(profile, "decision", "D-ABI"), "statement"))
+        if (not declaration.startswith("The toolchain ABI is LP64D —")
+                or any(part not in declaration for part in
+                       ("ELFCLASS64", "EF_RISCV_FLOAT_ABI_DOUBLE", "ABI_FLEN=64",
+                        "clang/lld 21.1.8", "rv64gc target"))):
+            return "ABI-CHOICE"
+        fp = S.children(state, "fp_registers")
+        if (S.field(profile, "xlen") != 64 or not {"D", "F"} <= extensions
+                or len(fp) != 1 or S.field(fp[0], "count") != 32
+                or S.field(fp[0], "width_bits") != 64 or S.field(fp[0], "ids") != "f0..f31"):
+            return "ABI-STATE"
+        source = named(sources, "source", "RVI-PSABI")
+        if (S.field(source, "file"), S.field(source, "sha256")) != ABI_SBI_PINS["RVI-PSABI"]:
+            return "ABI-SOURCE"
+    elif key == "SBI":
+        declaration = str(S.field(named(profile, "decision", "D-SBI"), "statement"))
+        if (not declaration.startswith("The firmware contract for the Linux boot route is SBI 2.0:")
+                or any(part not in declaration for part in
+                       ("M-mode firmware", "S-mode kernel", "real firmware",
+                        "a host-modelled SBI is a different contract, never silently substituted"))):
+            return "SBI-CHOICE"
+        if not {"M", "S"} <= set(values(profile, "privilege_modes")):
+            return "SBI-MODES"
+        source = named(sources, "source", "RVI-SBI")
+        if (S.field(source, "file"), S.field(source, "sha256")) != ABI_SBI_PINS["RVI-SBI"]:
+            return "SBI-SOURCE"
+    elif key == "RVWMO":
+        declaration = str(S.field(named(profile, "decision", "D-RVWMO"), "statement"))
+        if (not declaration.startswith("The memory consistency model is RVWMO:")
+                or "multicore exposure of the weak model is MC-MULTICORE's" not in declaration):
+            return "RVWMO-CHOICE"
+        if S.field(profile, "harts") != 1 or "A" not in extensions:
+            return "RVWMO-SELECTION"
+        if S.field(named(sources, "source", "RVI-RVWMO"), "chapter_version") != "2.0":
+            return "RVWMO-REVISION"
+    elif key == "PRIV-INSNS":
+        scope = S.children(profile, "scope")[0]
+        selected = values(scope, "system_privileged")
+        if len(selected) != 4 or set(selected) != PRIVILEGED_FORMS:
+            return "PRIVILEGED-SCOPE"
+        if not {name.lower() for name in PRIVILEGED_FORMS} <= data["encoding_names"]:
+            return "PRIVILEGED-ENCODING"
+        declaration = str(S.field(named(profile, "decision", "D-PRIV-INSNS"), "statement"))
+        if not declaration.startswith("The privileged instructions in scope are mret, sret, wfi and sfence.vma"):
+            return "PRIVILEGED-CHOICE"
     else:
         raise ScopeRefused(f"UNKNOWN-SCOPE: {key}")
     return None
@@ -177,6 +233,13 @@ def structured_fixtures(key: str, original: dict) -> list[tuple[str, dict, str]]
     def remove_extension(data, ext):
         p = data["profile"]
         p.remove(next(c for c in S.children(p, "extensions") if c[1] == ext))
+
+    def replace_choice(data, ident, old, new):
+        decision = named(data["profile"], "decision", ident)
+        statement = str(S.field(decision, "statement"))
+        if old not in statement:
+            raise ScopeRefused(f"CONTROL: {ident} lacks {old}")
+        set_field(decision, "statement", statement.replace(old, new))
 
     if key == "EXT-CLOSURE":
         add("D without F", "DEPENDENCY-D-F", lambda d: remove_extension(d, "F"))
@@ -224,6 +287,42 @@ def structured_fixtures(key: str, original: dict) -> list[tuple[str, dict, str]]
             scope = S.children(d["profile"], "scope")[0]
             S.children(scope, "c_compressed")[0][1] = "C.UNKNOWN"
         add("same count, wrong name", "SCOPE-SET", wrong_name)
+    elif key == "ABI":
+        add("soft-float ABI", "ABI-CHOICE", lambda d: replace_choice(d, "D-ABI", "LP64D", "LP64"))
+        add("wrong toolchain pin", "ABI-CHOICE",
+            lambda d: replace_choice(d, "D-ABI", "21.1.8", "99.0.0"))
+        add("no D", "ABI-STATE", lambda d: remove_extension(d, "D"))
+        add("narrow FP file", "ABI-STATE", lambda d: set_field(
+            S.children(d["state"], "fp_registers")[0], "width_bits", 32))
+        add("different psABI source", "ABI-SOURCE", lambda d: set_field(
+            named(d["sources"], "source", "RVI-PSABI"), "sha256", "0" * 64))
+    elif key == "SBI":
+        add("older SBI", "SBI-CHOICE", lambda d: replace_choice(d, "D-SBI", "SBI 2.0", "SBI 1.0"))
+        add("host substitution", "SBI-CHOICE", lambda d: replace_choice(
+            d, "D-SBI", "a host-modelled SBI is a different contract, never silently substituted",
+            "a host-modelled SBI is substituted"))
+        def no_machine(d):
+            p = d["profile"]
+            p.remove(next(c for c in S.children(p, "privilege_modes") if c[1] == "M"))
+        add("no firmware mode", "SBI-MODES", no_machine)
+        add("different SBI source", "SBI-SOURCE", lambda d: set_field(
+            named(d["sources"], "source", "RVI-SBI"), "sha256", "0" * 64))
+    elif key == "RVWMO":
+        add("stronger model substituted", "RVWMO-CHOICE",
+            lambda d: replace_choice(d, "D-RVWMO", "is RVWMO:", "is sequential consistency:"))
+        add("multicore scope", "RVWMO-SELECTION", lambda d: set_field(d["profile"], "harts", 2))
+        add("no atomics", "RVWMO-SELECTION", lambda d: remove_extension(d, "A"))
+        add("wrong memory revision", "RVWMO-REVISION", lambda d: set_field(
+            named(d["sources"], "source", "RVI-RVWMO"), "chapter_version", "1.0"))
+    elif key == "PRIV-INSNS":
+        def wrong_privileged(d):
+            scope = S.children(d["profile"], "scope")[0]
+            S.children(scope, "system_privileged")[0][1] = "HRET"
+        add("same count, wrong privileged form", "PRIVILEGED-SCOPE", wrong_privileged)
+        add("unresolved privileged form", "PRIVILEGED-ENCODING",
+            lambda d: d["encoding_names"].remove("sfence.vma"))
+        add("different privileged choice", "PRIVILEGED-CHOICE",
+            lambda d: replace_choice(d, "D-PRIV-INSNS", "mret, sret, wfi and sfence.vma", "mret only"))
     return fixtures
 
 
