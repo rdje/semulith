@@ -1,5 +1,33 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — inherited global mappings belong to the walk path (P4-SYSTEM.13 c9a)
+
+Sv39 contract review found CPU walk caching leaf G only, while the independent
+spec author accumulated G correctly. Rehash/read pinned supervisor artifact:
+186,455 B, d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a,
+11.1.3.1 non-leaf G inheritance and 11.1.2.1 fence scopes. The profile selects
+exact retention rather than ISA over-fence latitude. Public translate regression
+on e4e657f fails rc101: root-only G yields load access fault 5 instead of cached
+PA after ASID/root switch. Actual SFENCE.VMA 0x12400073 regression fails rc101:
+occupancy 0 instead of retained 1. This is a selected-policy defect, not a claim
+that every ISA hart must retain every global entry.
+
+Accumulate G from each traversed PTE after encoding checks; existing finish
+permissions/Svade and successful-install discipline unchanged. Eight G masks
+cover both ancestors and leaf, plus nonglobal and every combination. Switch to
+an inaccessible root/other ASID to distinguish real cache hit from re-walk;
+switch back also verifies no root-triggered flush. Thirty-two actual CPU fences
+exercise both ASID scopes and both broad scopes after a PPN rewrite, checking
+retained/refreshed PA and exact walk counts. Both tests fail before and pass after.
+
+Focused translation 32/0 and make check 163 core / 17 DSP / 198 verify pass.
+Independent cache author passes unchanged; its inheritance mutant fails rc1
+with the intended non-leaf propagation assertion. Full make ci all five legs
+green. Mark c7b census prose historical to avoid contradictory current counts. Contract,
+registry and guest inputs are unchanged; G-CONTRACT remains 60/114, v2 open.
+LIVE_STATUS unchanged: P4 12/18, 639 arms, 45 chapters. Promotion declined:
+production rule, permanent discriminating regressions and book retain it.
+
 ## _(2026-10-10)_ — realize privilege modes through existing ISA observations (P4-SYSTEM.13 c8)
 
 The frozen privilege-mode guarantee lacked bindings despite thirteen P4.2 guests

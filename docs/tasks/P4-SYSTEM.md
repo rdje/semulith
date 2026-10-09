@@ -659,6 +659,43 @@ Run focused matrix/registry checks, make check, schema/freeze/gate controls,
 books and commit hooks. Update canonical current counts, book and live pointer;
 review LIVE_STATUS without fabricating milestone progress. Commit before c9.
 
+### `.13` c9a — investigate inherited-global translation (`2026-10-10`, `SEMULITH-P4-0121`)
+
+Priority prerequisite to OB-SV39 realization, owned before reproduction/changes.
+Review found walk builds TlbEntry.global from the leaf alone, whereas the
+independent author accumulates G along the traversal. Pinned supervisor artifact
+rehashed d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a,
+186455 bytes; read 11.1.3.1: non-leaf G makes subsequent mappings global.
+This repository selects exact ASID/fence retention rather than over-fencing.
+Potential impact: ASID changes re-walk instead of reusing inherited globals;
+ASID-selective fences discard them and expose PTE changes prematurely under
+the selected cache policy. Do not classify solely from source inspection.
+
+Reproduce through public translate and actual SFENCE.VMA instructions with
+hand-built PTEs; vary G at each of three levels, both ancestor levels together
+and no-G control. Pin inherited cache hit/no walk across ASID/root changes,
+both ASID-selective fence scopes, and subsequent full/address-only invalidation.
+If confirmed, accumulate G in the single walk owner; preserve permissions,
+fault priority and existing corpus observations. No author rewrite to fit CPU.
+Require a pre-fix failing regression and green repair, ordinary translation and
+full Rust tests, author cache controls, frozen-byte checks and full make ci.
+Record root cause and finite policy scope in book/live docs; contract count
+stays 60/114 in this prerequisite. Commit before c9b binding OB-SV39.
+Also own the small current-doc correction: label c7b counts explicitly as
+historical, so its 58/114 receipt cannot contradict the current 60/114 census.
+
+c9a confirmed with independent literal PTEs and public calls on parent e4e657f:
+`cargo test -p semulith-core global_from_any_walk_level_survives_asid_and_root_changes`
+rc=101: mask 1 returns AccessFault cause 5/tval 0x402007 instead of
+Physical 0x80004007. `cargo test -p semulith-core
+actual_fences_retain_inherited_globals_only_for_asid_scopes` rc=101: root G,
+ASID fence 0x12400073 leaves occupancy 0 instead of 1. Root cause is leaf-only
+assignment of cached global flag. Accumulate G from every traversed PTE after
+encoding checks; install only after existing permission/Svade checks succeed.
+Eight root/middle/leaf G masks include nonglobal and all combinations; 32 actual
+fence instructions cover both ASID-selective and both broad scopes. Keep the
+independent author unchanged: its own inheritance mutant is already discriminated.
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -797,6 +834,29 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c9a) (`2026-10-10`, `SEMULITH-P4-0121`):
+
+- [x] **ROOT CAUSE** — git show e4e657f:crates/semulith-core/src/translation.rs:
+  global assigned only from leaf. Pinned supervisor 186455 B rehashed to
+  d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a;
+  read inheritance/fence rules. Both new cargo test regressions rc=101 on
+  parent: wrong load access fault and premature actual ASID-fence invalidation.
+- [x] **ADDRESSED** — cargo test -p semulith-core translation::tests:
+  32 passed / 0 failed. Eight G masks and 32 actual fences discriminate
+  inherited hits and exact retention/invalidation. Shared walk accumulates G;
+  permission/fault/install owners unchanged. Cache author rc=0; its existing
+  inheritance mutation rc=1 with intended non-leaf propagation assertion.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 / verify 198.
+  make ci rc=0: all five legs green (check, gate, bench, smoke-bench, book).
+  Python comparison: 342 contract/guest/author/registry files byte-exact;
+  CONTRACT-FREEZE rc=0, three versions / zero findings. Logs under
+  target/p4-system-13/c9a; no expectations fitted to the repair.
+- [x] **LOCKSTEP** — git diff --check rc=0. Book/profile/live pointer
+  record repaired selected-policy scope; c7b counts explicitly historical.
+  LIVE_STATUS unchanged: P4 12/18, 639 arms, 45 chapters. G-CONTRACT 60/114
+  and v2 open; c9b realization next. promotion: declined — implementation,
+  permanent discriminating tests and book retain this local repair.
 
 `P4-SYSTEM.13` slice (c8) (`2026-10-10`, `SEMULITH-P4-0120`):
 
@@ -1210,6 +1270,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c9a | parent failures; eight G masks / 32 actual fences; translation 32/0; author + inheritance mutant; Rust 163/17/198; 342 files exact | make ci all five legs green; 60/114 unchanged |
 | `2026-10-10` | `.13` c8 | 13 mode guests / 481 boundaries; prior 58 bindings + 339 files exact; Rust 161/17/198; schema/freeze/gate 17/17; shards/books | 60/114, v2 open |
 | `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
 | `2026-10-09` | `.13` c7a | public before/after; 3 Rust view controls / 192 CPU steps; author 42 exact; Rust 160/17/197; GUEST-GEN 135/0 | final make ci all five legs green; delegation/owner repaired; 56/112 unchanged |
@@ -1234,6 +1295,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c9a | `SEMULITH-P4-0121 (leaf P4-SYSTEM.13): preserve inherited-global mappings in the shared Sv39 walk` | c9b OB-SV39, then 26 runtime pairs |
 | `.13` c8 | `SEMULITH-P4-0120 (leaf P4-SYSTEM.13): realize privilege-mode checks through the complete existing matrix` | c9 OB-SV39, then 26 runtime pairs |
 | `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
 | `.13` c7a | `SEMULITH-P4-0118 (leaf P4-SYSTEM.13): enforce delegation in supervisor interrupt CSR views` | c7b full cold reset, then 28 runtime pairs |
@@ -1255,6 +1317,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c9a (SEMULITH-P4-0121): reproduced and repaired
+  leaf-only G retention; eight path masks and 32 actual fence instructions
+  discriminate. Independent author unchanged; full CI green, 60/114 unchanged.
 
 - `2026-10-10`: `.13` c8 (SEMULITH-P4-0120): bind both privilege-mode
   checks to the full 13-guest matrix, 481 boundaries and unchanged comparison

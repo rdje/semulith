@@ -504,9 +504,9 @@ auditor loses every negative case.
 
 Only cold reset is supported. Snapshot restoration and warm/retained-state
 ordering need their own implementation and contract. The pair brings the
-current census to 57 effective obligations, 114 declared checks and 58 realized
+c7b census to 57 effective obligations, 114 declared checks and 58 realized
 checks: thirteen scope pairs, eleven guest pairs and five direct boundary pairs.
-The remaining 28 runtime pairs must be realized before version 2 freezes.
+At c7b, 28 runtime pairs remained before version 2 could freeze.
 
 
 ## Privilege-mode guarantees through the existing matrix
@@ -537,3 +537,17 @@ prove every possible mode-dependent execution or Linux capability.
 The current census is 60/114 realized: thirteen scope pairs, twelve guest
 pairs and five typed boundary pairs. Twenty-seven runtime pairs and final
 freeze remain. All previous bindings and frozen declarations are unchanged.
+
+
+## Sv39 prerequisite: inherited global translations
+
+Before binding OB-SV39, review exposed a mismatch between the CPU walk and
+its selected cache policy. The CPU remembered only leaf G; an ancestor's G
+was lost. Literal PTE regressions reproduced an access fault after an ASID/root
+change and premature invalidation by an actual ASID-selective SFENCE.VMA.
+The walker now accumulates G along the path. Root/middle/leaf combinations,
+no-G controls and all four actual fence scopes discriminate the repair.
+
+The independent expectation author already inherited G correctly and remains
+unchanged. This fixes the declared retention policy rather than broadening the
+ISA claim. G-CONTRACT remains 60/114 until the runtime pairs themselves bind.

@@ -316,7 +316,7 @@ TLB/reservation equality witnesses independently of their constructors.
 This fixture controller is finite startup evidence, not host-reset detection,
 snapshot serialization or a new CPU memory request. No warm reset is supported.
 All 56 prior entries, old root prefix and frozen parts/memberships stay exact.
-Current census: 57 effective obligations / 114 checks, 58 realized; thirteen scope
+At c7b the census was 57 effective obligations / 114 checks, 58 realized; thirteen scope
 pairs, eleven guest pairs and five direct boundary pairs. The 28 remaining runtime
 pairs keep v2 open until they run and the membership freezes.
 
@@ -343,3 +343,14 @@ Current census: 57 effective obligations / 114 checks, 60 realized: thirteen
 scope pairs, twelve guest pairs and five typed boundary pairs. The remaining
 27 runtime pairs and final freeze keep version 2 open. Declarations, pins and
 prior bindings are unchanged.
+
+
+### Inherited-global cache-policy repair (P4-SYSTEM.13 c9a)
+
+Before OB-SV39 binds, the CPU walker now retains G from any traversed PTE,
+including either non-leaf. This matches RVP-SUPERVISOR 11.1.3.1 and the
+already-correct independent author. Eight G masks and 32 actual SFENCE.VMA
+instructions witness ASID/root hits, both ASID-selective retention scopes and
+both broader invalidation scopes. The old code failed both public-interface
+regressions. Exact retention is this laboratory's selected cache policy; the
+ISA permits other cache choices. No contract credit or declarations change.

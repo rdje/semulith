@@ -57,7 +57,8 @@ pub const TLB_CAPACITY: usize = 4;
 pub struct TlbEntry {
     /// The entry holds a translation.
     pub valid: bool,
-    /// The G bit: retained across per-ASID and per-address+ASID fences (§11.1.2.1).
+    /// G from any PTE along the walk: retained across per-ASID and
+    /// per-address+ASID fences (§11.1.3.1, §11.1.2.1).
     pub global: bool,
     /// The ASID the translation was installed under (satp.ASID, 16 bits).
     pub asid: u16,
@@ -410,6 +411,7 @@ fn walk<H: PrivilegedHart>(
     // Step 1: a = satp.PPN × 4096; i = LEVELS-1 (= 2, Sv39's three levels).
     let mut a = (satp & ((1u64 << 44) - 1)) << 12;
     let mut i: i64 = 2;
+    let mut global = false;
     loop {
         // Step 2: read the level-i PTE at a + va.vpn[i] × PTESIZE through the
         // walk-access boundary kind; a boundary fault is the ACCESS fault of the
@@ -450,6 +452,8 @@ fn walk<H: PrivilegedHart>(
         if pte >> 54 != 0 {
             return page_fault(kind, va);
         }
+        // §11.1.3.1: a non-leaf G makes every subsequent mapping global.
+        global |= pte & (1 << 5) != 0;
         let ppn = (pte >> 10) & ((1u64 << 44) - 1);
         if r == 0 && x == 0 {
             // Step 6 (non-leaf): a pointer PTE at the last level is invalid; and the
@@ -471,11 +475,10 @@ fn walk<H: PrivilegedHart>(
         // walk proved, let finish judge it with the current effective mode, and
         // install only on success — a faulting access installs nothing, so the next
         // access re-walks and re-faults (Svade's fault path must not be cached).
-        let g = (pte >> 5) & 1 == 1;
         let pa = (ppn << 12) | (va & ((1u64 << (12 + 9 * i)) - 1));
         let entry = TlbEntry {
             valid: true,
-            global: g,
+            global,
             asid,
             vpn: va >> 12,
             pa_base: pa & !0xFFF,
@@ -1213,6 +1216,114 @@ mod tests {
 
     fn sv39_asid(state: &mut ArchitecturalState, asid: u64) {
         state.write_csr(CSR_SATP, (8u64 << 60) | (asid << 44) | (ROOT >> 12));
+    }
+
+    // The mask independently selects G at root, middle and leaf. A leaf-only
+    // implementation loses masks 1, 2 and 3; zero is the non-global control.
+    fn global_path(env: &mut WalkEnv, va: u64, mask: u8) -> u64 {
+        let leaf_addr = L0T + ((va >> 12) & 0x1ff) * 8;
+        table_4k(env, va, leaf_pte(0x8000_4000, V | R | A | D));
+        for (bit, addr) in [
+            (1, ROOT + ((va >> 30) & 0x1ff) * 8),
+            (2, L1T + ((va >> 21) & 0x1ff) * 8),
+            (4, leaf_addr),
+        ] {
+            if mask & bit != 0 {
+                env.write(addr, 8, env.read(addr, 8) | G);
+            }
+        }
+        leaf_addr
+    }
+
+    #[test]
+    fn global_from_any_walk_level_survives_asid_and_root_changes() {
+        let va = 0x0040_2007;
+        for mask in 0..8 {
+            let mut state = hart();
+            sv39_asid(&mut state, 7);
+            state.set_mode(PrivilegeMode::S);
+            let mut env = WalkEnv::new();
+            global_path(&mut env, va, mask);
+            assert_eq!(
+                translate(&mut state, &mut env, va, AccessKind::Load),
+                Translate::Physical(0x8000_4007)
+            );
+            assert_eq!(env.walks, 3);
+
+            // The other ASID's root cannot answer even one read. Global hits
+            // must use the cached translation, regardless of where G appeared.
+            state.write_csr(CSR_SATP, (8 << 60) | (9 << 44) | (0x9000_0000 >> 12));
+            let expected = if mask == 0 {
+                Translate::AccessFault { cause: 5, tval: va }
+            } else {
+                Translate::Physical(0x8000_4007)
+            };
+            assert_eq!(
+                translate(&mut state, &mut env, va, AccessKind::Load),
+                expected,
+                "G mask {mask}: global status must include every traversed PTE"
+            );
+            assert_eq!(env.walks, if mask == 0 { 4 } else { 3 });
+            assert_eq!(state.tlb().lookup(va >> 12, 7).unwrap().global, mask != 0);
+            // A root change alone does not flush the original ASID's entry.
+            state.write_csr(CSR_SATP, (8 << 60) | (7 << 44) | (0x9000_0000 >> 12));
+            let before = env.walks;
+            assert_eq!(
+                translate(&mut state, &mut env, va, AccessKind::Load),
+                Translate::Physical(0x8000_4007)
+            );
+            assert_eq!(env.walks, before);
+        }
+    }
+
+    #[test]
+    fn actual_fences_retain_inherited_globals_only_for_asid_scopes() {
+        use crate::exec_rv64gc::{step, StepRv64gc};
+
+        let va = 0x0040_2007;
+        for mask in 0..8 {
+            // rs1=x3 selects this page; rs2=x4 selects ASID 7. x0 selects
+            // broad scope. These literal words also exercise actual decoding.
+            for (word, asid_scope) in [
+                (0x1240_0073, true),
+                (0x1241_8073, true),
+                (0x1200_0073, false),
+                (0x1201_8073, false),
+            ] {
+                let mut state = hart();
+                sv39_asid(&mut state, 7);
+                state.set_mode(PrivilegeMode::S);
+                let mut env = WalkEnv::new();
+                let leaf_addr = global_path(&mut env, va, mask);
+                assert_eq!(
+                    translate(&mut state, &mut env, va, AccessKind::Load),
+                    Translate::Physical(0x8000_4007)
+                );
+                let flags = V | R | A | D | if mask & 4 != 0 { G } else { 0 };
+                env.write(leaf_addr, 8, leaf_pte(0x8000_5000, flags));
+                state.set_mode(PrivilegeMode::M); // identity fetch isolates fence scope
+                state.set_pc(REGION_BASE);
+                state.write_x(3, va);
+                state.write_x(4, 7);
+                env.write(REGION_BASE, 4, word);
+                assert_eq!(step(&mut state, &mut env), StepRv64gc::Executed);
+                assert_eq!(state.pc(), REGION_BASE + 4);
+                assert_eq!((state.read_x(3), state.read_x(4)), (va, 7));
+
+                let retained = mask != 0 && asid_scope;
+                assert_eq!(
+                    state.tlb().occupied(),
+                    usize::from(retained),
+                    "G mask {mask}, fence {word:#x}: exact selected retention"
+                );
+                state.set_mode(PrivilegeMode::S);
+                assert_eq!(
+                    translate(&mut state, &mut env, va, AccessKind::Load),
+                    Translate::Physical(if retained { 0x8000_4007 } else { 0x8000_5007 })
+                );
+                assert_eq!(env.walks, if retained { 3 } else { 6 });
+            }
+        }
     }
 
     #[test]

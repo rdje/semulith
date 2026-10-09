@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0121 (leaf P4-SYSTEM.13 c9a) — retain inherited-global translations
+
+- Accumulate G from every traversed PTE in the shared CPU walker, matching
+  the selected cache policy. Parent regressions reproduce a wrong access
+  fault and premature ASID-fence invalidation; eight masks/32 actual fences pass.
+- Independent author unchanged; inheritance mutant discriminates. Focused
+  translation and make check 163/17/198 pass. Full CI all five legs green; no contract
+  credit change (60/114), existing guest inputs and frozen declarations exact.
+
 ## SEMULITH-P4-0120 (leaf P4-SYSTEM.13 c8) — realize privilege-mode runtime checks
 
 - Bind both declared checks to the complete existing 13-guest mode matrix,

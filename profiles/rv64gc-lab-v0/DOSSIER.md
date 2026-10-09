@@ -173,3 +173,10 @@ reads witness M/S/U exceptions, delegation and permissions; the shared corpus
 rule compares GPR changes, never-written registers and physical fetches.
 ENVIRONMENT.md lists the exact positive/negative bindings and finite scope.
 Twenty-seven runtime pairs remain before the v2 freeze.
+
+
+Sv39 runtime-contract review repaired inherited-global retention in the CPU
+walker: G now accumulates from every traversed PTE. Independent literal PTEs,
+ASID/root changes and all four actual fence scopes discriminate the repair;
+the existing spec-side author and corpus expectations stay unchanged.
+This prerequisite retains 60/114 credit and the exact selected cache policy.
