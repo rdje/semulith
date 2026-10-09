@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — address units need a real boundary witness (P4-SYSTEM.13 c3)
+
+Retain the normal guard requiring every post-v0 declaration to be born realized;
+add the five remaining assumptions one paired slice at a time. The first pins
+unsigned 64-bit physical addresses in 8-bit bytes. Evidence::Boundary runs a
+named direct Rust fixture, rather than attributing an unrelated guest to it.
+Hand-selected FlatMemory offsets/stores above 32 bits and a scripted Sv39 LB
+observe actual byte offsets, physical walk/data/fetch addresses and two parcels.
+Three provider adapters distort data to word indices, truncate a walk to 32 bits
+or substitute a fetch VA; the real engine preserves exact typed ResponseMismatch
+errors without a delivered trap or destination effect. A legal walk access fault
+still delivers cause 1, so target failure and contract violation stay separate.
+All 48 prior entries, root prefix, frozen parts and memberships remain byte-exact.
+make check and schema/freeze pass; gate controls 17/17. Census: 53 effective
+obligations, 106 checks, 50 realized. Four assumptions and remaining runtime pairs
+keep v2 open; production boundary behavior/guest vocabulary unchanged.
+Promotion declined in leaf: canonical record, direct fixture and book retain it.
+
 ## _(2026-10-09)_ — partition frozen catalogs through one reader (P4-SYSTEM.13 c2)
 
 The obligation source had only 2,522 bytes left under its fixed 65,536-byte cap.

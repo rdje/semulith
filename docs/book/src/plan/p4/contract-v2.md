@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs and three versioned corrections landed; version 2 remains open.
+**Status:** State inventory, scope pairs, three corrections and the typed address-unit pair landed; v2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -8,15 +8,16 @@ stages. This work checks every effective obligation, fills the remaining boundar
 assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
-corrections replace four old records; 52 obligations and 104 checks are now effective,
-with 48 checks running through the unit's registry. A check will receive credit only when its actual
+corrections replace four old records; the new address-unit assumption brings the
+effective census to 53 obligations and 106 checks, with 50 checks running through
+the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
 cannot establish a scope declaration.
 
-Five boundary topics remain: address units, access widths and memory attributes,
-event delivery, ordering, and reset. The scalar profile's assumptions cannot be
+Four boundary topics remain: access widths and memory attributes, event delivery,
+ordering, and reset. The scalar profile's assumptions cannot be
 copied unchanged. For example, this processor can take interrupts, fetches exact
 16-bit parcels, selects RVWMO, and resets floating-point, translation-cache,
 reservation and wait state as well as integer registers and CSRs. Time, parcel
@@ -177,8 +178,8 @@ records; numeric behavior retains its independent vectors and guest observations
 The generated-definition check calls the existing generators, so it verifies
 fresh mirrors without implementing another generation rule.
 
-These six checks bring the effective census to 48 of 104 checks. Version 2 stays
-open; five boundary assumptions and the remaining execution pairs still need work.
+Those six checks brought the effective census to 48 of 104 checks at c1. The
+address-unit pair below brings it to 50 of 106. Version 2 stays open.
 
 ## Keeping the catalog bounded without rewriting history
 
@@ -192,10 +193,10 @@ parts, in version order:
 ```
 
 Paths start at the repository root, so moving the checkout keeps them valid.
-The v0 and v1 parts contain their original contiguous record bytes. Expansion
-reproduces all 63,014 pre-split bytes exactly, including order and blank lines;
-all 58 record mappings and frozen pins are unchanged. The root is now 9,003 bytes,
-the v0 part 47,168 and the v1 part 7,009. No size ceiling was raised and no duplicate
+The v0 and v1 parts contain their original contiguous record bytes. At c2, expansion
+reproduced all 63,014 pre-split bytes exactly, including order and blank lines;
+all 58 record mappings and frozen pins were unchanged. At that split the root was
+9,003 bytes, the v0 part 47,168 and the v1 part 7,009. No size ceiling was raised and no duplicate
 materialized catalog is maintained.
 
 `scripts/record_catalog.py` is the one expansion owner. The record loader, freeze
@@ -217,3 +218,43 @@ python3 scripts/probe_record_catalog.py
 The probe has 31 controls, including relocation and malformed includes. Disabling
 expansion makes it fail. RECORD-SCHEMA also plants invalid included fields and
 duplicate IDs across distinct parts. Partitioning adds no contract-check credit.
+
+## Physical byte addresses: a typed boundary pair
+
+`OB-GC-ENV-ADDRESS-UNITS` states that requests carry unsigned 64-bit physical
+addresses in 8-bit bytes. The CPU translates instruction and data VAs before
+crossing the boundary; page-table reads already name physical addresses. Bare
+translation preserves the address. A host pointer, word index or narrowed integer
+cannot substitute for that declared address.
+
+The positive check first addresses distinct bytes in a main-memory region above
+32 bits, including a byte store that preserves its neighbors. It then runs the
+real interpreter on a hand-encoded `LB x6, 0(x5)` under Sv39. The independent script
+expects exactly these crossings:
+
+| Request | Physical address | Supplied value |
+| --- | --- | --- |
+| Root PTE read | `0x1_0000_1000` | pointer to the next table |
+| Level-1 PTE read | `0x1_0000_2010` | pointer to the last table |
+| Leaf PTE read | `0x1_0000_3000` | executable/readable leaf at `0x1_0000_4000` |
+| First instruction parcel | `0x1_0000_4000` | `0x8303` |
+| Second instruction parcel | `0x1_0000_4002` | `0x0002` |
+| Byte load | `0x1_0000_400b` | `0xee` |
+
+The guest VA is `0x0040_0000`; x5 contains VA+11. The instruction produces
+`x6 = 0xffff_ffff_ffff_ffee` and advances PC by four. All scripted requests are
+consumed, so a missing or extra walk/fetch cannot silently pass.
+
+Three negative providers distort one boundary address: divide the data address
+by four, truncate the root-walk address to 32 bits, or use the guest VA for a
+physical fetch. Each reaches the exact `ContractViolation::ResponseMismatch`
+through `ModelError`, leaving PC, destination and trap CSRs untouched. A separate
+legal access-failure response still delivers instruction access-fault cause 1,
+with the guest VA in mepc/mtval. This distinguishes a broken provider from a
+target exception.
+
+The registry now has explicit `Evidence::Boundary` entries. Its normal tests run
+both fixtures and retain the rule that every post-v0 declaration is born realized.
+Frozen records and all earlier registry entries are unchanged. Four boundary
+assumptions and the remaining execution pairs still need work; these finite
+fixtures do not prove correctness for every possible address or environment.

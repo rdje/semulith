@@ -2,7 +2,7 @@
 //!
 //! Each obligation declares positive and negative checks. This registry binds exact
 //! (obligation, check) pairs to evidence the normal test suite runs: tracked corpus
-//! guests or named static predicates over canonical scope declarations. Scope checks
+//! guests, direct typed boundary fixtures, or static scope predicates. Scope checks
 //! validate selection and consistency, never instruction execution. Their negative
 //! fixtures must violate a named predicate; guests retain their own comparison rule.
 
@@ -12,6 +12,8 @@ pub enum Evidence {
     Guests(&'static [&'static str]),
     /// Run this check id through the tracked scope predicate and its negative copies.
     Scope,
+    /// Run the named direct fixture, including typed violation discrimination.
+    Boundary(crate::contract_boundary_rv64gc::BoundaryCheck),
 }
 
 /// One declared check of a contract obligation, realized as executable evidence.
@@ -27,8 +29,23 @@ pub struct ContractCheck {
 /// The realized checks: v1's four environment assumptions and its two superseding
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
-/// `.13` adds eleven scope pairs and c1's three current guarantees; remaining records stay uncredited.
+/// `.13` adds eleven scope pairs, three current guarantees and the typed address-unit pair;
+/// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-GC-ENV-ADDRESS-UNITS-POS",
+        obligation: "OB-GC-ENV-ADDRESS-UNITS",
+        evidence: Evidence::Boundary(
+            crate::contract_boundary_rv64gc::BoundaryCheck::AddressUnitsPositive,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-GC-ENV-ADDRESS-UNITS-NEG",
+        obligation: "OB-GC-ENV-ADDRESS-UNITS",
+        evidence: Evidence::Boundary(
+            crate::contract_boundary_rv64gc::BoundaryCheck::AddressUnitsNegative,
+        ),
+    },
     ContractCheck {
         id: "CHK-GC-FP-QUALIFIED-V2-POS",
         obligation: "OB-GC-FP-QUALIFIED-V2",

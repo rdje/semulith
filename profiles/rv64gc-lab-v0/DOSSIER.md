@@ -122,7 +122,7 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 48/104 checks realized (thirteen scope pairs and eleven guest pairs).
+contract stays open with 50/106 checks realized (thirteen scope pairs, eleven guest pairs and one typed boundary pair).
 
 The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
@@ -130,6 +130,9 @@ records remain intact; ENVIRONMENT.md names each replacement and its checks.
 Current profile comments and historical-decision notes follow those dispositions.
 
 The obligation catalog includes frozen v0/v1 parts through the shared expansion
-owner. The split preserves all 63,014 expanded bytes and all 58 record mappings;
+owner. At c2 the split preserved all 63,014 expanded bytes and 58 record mappings;
 the fixed authored-part cap remains 65,536 bytes. Schema, freeze and registry
-consumers judge that same expanded catalog; contract credit remains 48/104.
+consumers judge the same expanded catalog. The new address-unit assumption
+adds a typed pair: three bad address adapters remain contract violations, while
+a legitimate access failure delivers a target exception. Four boundary assumptions
+still need declarations and working checks.

@@ -54,6 +54,9 @@ fn every_realized_check_runs_its_evidence_and_it_holds() {
                     String::from_utf8_lossy(&result.stderr)
                 );
             }
+            Evidence::Boundary(boundary) => {
+                assert_eq!(boundary.run(), Ok(()), "{}: {boundary:?}", check.id);
+            }
         }
     }
 }
@@ -110,7 +113,7 @@ fn declared_checks(select: impl Fn(&str) -> bool) -> Vec<(String, String)> {
 #[test]
 fn every_check_bound_through_the_scope_slice_is_realized() {
     // every version after v0 is born realized: v1's four assumptions and two supersessions,
-    // v2's M/C guarantees and parcel-fetch assumption as they bind, partial progress,
+    // v2's guarantees and assumptions as they bind, partial progress,
     // the eleven static selection pairs (P4-SYSTEM.13 b2/b3/b5), and c1's three corrections.
     let declared = declared_checks(|l| {
         !l.contains("(contract_version \"0\")")
@@ -129,8 +132,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        48,
-        "v1's six records, v2's M/C/fetch records, partial progress, eleven selection records and three v2 corrections, POS + NEG"
+        50,
+        "v1's six records, v2's M/C/fetch/address records, partial progress, eleven selection records and three v2 corrections, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

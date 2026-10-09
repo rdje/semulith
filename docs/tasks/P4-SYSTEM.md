@@ -412,6 +412,28 @@ now in c2 as a small review-surface correction: retain the real remaining five
 boundary assumptions, unrealized checks and open freeze, without extra credit.
 Regenerate GS through its owner after that canonical correction.
 
+**c3 typed address-unit pair** (SEMULITH-P4-0113): the existing normal-suite
+coverage guard requires every post-v0 record to be born realized. Retain it;
+add the five assumptions one paired slice at a time, starting with physical
+8-bit-byte addresses. Add OB-GC-ENV-ADDRESS-UNITS and its v2 membership, with a
+named typed-boundary evidence variant and direct Rust fixture; no new check
+credit from an unrelated guest or configuration predicate. Review env.rs,
+FlatMemory/ScriptedEnv, exec_rv64gc translation and the generated state interface.
+Positive evidence uses nonzero byte offsets above 32 bits, exact FlatMemory
+responses/stores and a hand-scripted three-level Sv39 LB step: distinct VA/PA,
+physical walk addresses, two parcel requests and a physical data request.
+Negative providers deliberately scale a data address to word units, truncate a
+walk address to 32 bits, or substitute a VA for a physical fetch. The same real
+engine must report the exact typed ContractViolation::ResponseMismatch through
+ModelError, with no delivered trap or destination write. Include a legitimate
+access-failure control to preserve the target-failure distinction. Bind both
+entries in the normal registry; update its exact coverage guard without weakening
+post-v0 coverage. Preserve every old record/entry and frozen membership byte.
+Read-only schema/freeze, Rust checks and gate controls are required; GS/book/live
+docs must state 53 effective obligations/106 checks, 50 realized if re-derived.
+Four assumptions remain afterward; v2 stays open. No production boundary behavior
+or guest-observation vocabulary changes in this slice.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -555,6 +577,29 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c3) (`2026-10-09`, `SEMULITH-P4-0113`):
+
+- [x] **ROOT CAUSE** — git show 460e4d8: catalog has no GC address-unit
+  assumption; normal registry guard requires every post-v0 declaration realized.
+  Read env/fixtures/interpreter/translation/state interfaces and boundary closure;
+  data widths/events/ordering/reset retain distinct next-slice ownership.
+- [x] **ADDRESSED** — cargo test contract_checks_rv64gc: 4 passed / 0 failed.
+  One v2 record/pair, explicit Boundary evidence: full-width byte offsets/stores,
+  exact six-request Sv39 LB, three deliberately distorted providers each matching
+  typed ResponseMismatch through ModelError, no trap or destination effect.
+  Legitimate walk access-failure response delivers cause 1 with VA mepc/mtval.
+- [x] **NO REGRESSION** — make check rc=0 (153 core, 17 DSP, 194 verify);
+  RECORD-SCHEMA: ok (20 files); CONTRACT-FREEZE: ok (3 versions, 0 findings);
+  gate_report --self-test: 17 pass / 0 fail. REGISTRY: all 48 prior entries
+  byte-exact; FROZEN PARTS: byte-identical to HEAD, old root prefix and frozen
+  membership forms exact. make book rc=0. Post-v0 guard retained, now 50 checks.
+- [x] **LOCKSTEP** — G-CONTRACT: 106 declared / 50 realized, 53 effective
+  obligations. Book/ENVIRONMENT/dossier/gate/GS, toolbox and live pointer synced.
+  LIVE_STATUS reviewed unchanged: P4 12/18, 634 registered arms, 45 chapters;
+  CPU-SYSTEM incomplete, v2 open. Four boundary assumptions owned next.
+  promotion: declined (canonical record, named direct fixture and book retain it).
+
 
 `P4-SYSTEM.13` slice (c2) (`2026-10-09`, `SEMULITH-P4-0112`):
 
@@ -767,6 +812,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c3 | exact typed Sv39/address fixtures; three provider violations; Rust; schema/freeze; gate 17/17; books | 50/106 realized, v2 open |
 | `2026-10-09` | `.13` c2 | exact stream/mappings; 31 controls + mutant; Rust; schema/freeze; gate 17/17 | make ci all five legs green; 48/104 unchanged |
 | `2026-10-09` | `.13` c1 | Rust; schema/freeze; three owner generators; nine violations; exact old bytes; gate 17/17; books | 48/104 realized, v2 open |
 | `2026-10-09` | `.13` b5 | four scope pairs/16 violations; Rust; old-entry/input identity; gate 17/17; freeze/books | 42/106 realized, v2 open |
@@ -783,6 +829,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c3 | `SEMULITH-P4-0113 (leaf P4-SYSTEM.13): realize physical byte-address assumptions with typed boundary fixtures` | data widths/attributes, then three remaining assumptions |
 | `.13` c2 | `SEMULITH-P4-0112 (leaf P4-SYSTEM.13): partition obligation catalogs without changing expanded records` | five boundary assumptions, then remaining runtime pairs |
 | `.13` c1 | `SEMULITH-P4-0111 (leaf P4-SYSTEM.13): supersede obsolete stages and correct fault-priority wording` | lossless catalog partition, then five boundary assumptions |
 | `.13` b5 | `SEMULITH-P4-0110 (leaf P4-SYSTEM.13): realize the remaining scope selections` | boundary assumptions, current replacements and runtime checks |
@@ -796,6 +843,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c3 (SEMULITH-P4-0113): physical byte-address
+  assumption born realized; named direct boundary evidence, real Sv39 request
+  script and three typed violations, separate target-failure control. Prior bytes
+  exact; 50/106 realized, four assumptions remain, v2 open.
 
 - `2026-10-09`: `.13` c2 (SEMULITH-P4-0112): lossless frozen-part
   partition, shared expansion/schema origins, annotation repair and 31 controls.

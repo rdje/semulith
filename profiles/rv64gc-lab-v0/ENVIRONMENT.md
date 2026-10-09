@@ -8,11 +8,11 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c2 (`2026-10-09`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c3 (`2026-10-09`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
-The c2 split reconstructs the original 63,014 bytes exactly; all 58 records and
-frozen hashes are unchanged. Schema validation judges every source part before
+The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
+records and frozen hashes. Subsequent additions live in the root. Schema validation judges every source part before
 cross-record checks. This containment change adds no contract credit. See
 `docs/decisions/decision_obligation-catalog-parts.md` for the include contract.
 
@@ -22,7 +22,7 @@ cross-record checks. This containment change adds no contract credit. See
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
-| v2 | open; `.13` owns completion/freeze | 6 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current generated route and corrected fault priority; five boundary assumptions remain |
+| v2 | open; `.13` owns completion/freeze | 7 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority and physical byte addresses; four boundary assumptions remain |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -35,7 +35,8 @@ cross-record checks. This containment change adds no contract credit. See
 | Waiting | **in scope** | `OB-GC-PRIV-INSNS-V1` (v1): a legal wfi enters the wait; the wake needs no retirement |
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
-| Data widths/attributes, reset, ordering, event delivery, address units | **remaining named gaps** | Five GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
+| Address units | **in scope — physical 8-bit bytes** | `OB-GC-ENV-ADDRESS-UNITS` (v2): full unsigned 64-bit addresses; translated instruction/data accesses and physical PTE reads; direct typed pair |
+| Data widths/attributes, reset, ordering, event delivery | **remaining named gaps** | Four GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
 
 ## The four v1 assumptions — and what would make each false
 
@@ -188,6 +189,24 @@ Spike share their numeric implementation. Numeric and instruction guarantees kee
 their own vector/guest evidence. The generated-route check delegates to existing
 state/definition/guest generators, adding no second generation implementation.
 
-The effective census is now 52 obligations, 104 checks and 48 realized checks.
-Thirteen scope pairs and eleven guest pairs run through the registry. Five new
-boundary assumptions and remaining execution checks still keep v2 open.
+At c1 the effective census was 52 obligations, 104 checks and 48 realized checks.
+The address-unit pair below brings it to 53 obligations, 106 checks and 50 realized:
+thirteen scope pairs, eleven guest pairs and one direct boundary pair. Four boundary
+assumptions and remaining execution checks still keep v2 open.
+
+## Physical byte addresses (P4-SYSTEM.13 c3)
+
+`OB-GC-ENV-ADDRESS-UNITS` requires full unsigned 64-bit physical addresses in
+8-bit bytes for parcels, data and page-table reads. Sv39 instruction/data VAs
+are translated by the CPU before the request; Bare addresses pass unchanged.
+The environment substitutes neither host pointers nor word indices nor VAs.
+
+`contract_boundary_rv64gc.rs` checks distinct byte offsets and stores above 32
+bits, then executes a hand-scripted Sv39 LB: guest VA 0x00400000 maps to physical
+0x100004000, with physical PTE reads and exactly two requested instruction parcels.
+Three deliberately distorted providers (data word index, truncated walk address,
+virtual fetch address) must return exact typed ResponseMismatch violations through
+ModelError, with PC/destination/trap state unchanged. A legitimate walk access
+failure instead delivers cause 1 with the guest VA in mepc/mtval. Both entries run
+in the normal registry suite; all earlier entries and frozen bytes remain exact.
+This is finite boundary evidence, not proof over every address or provider.

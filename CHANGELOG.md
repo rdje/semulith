@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0113 (leaf P4-SYSTEM.13 c3) — realize physical byte-address assumptions
+
+- Add one v2 assumption with its named typed-boundary pair. Full-width byte
+  offsets and a hand-scripted Sv39 step observe real physical requests.
+- Three distorted providers yield exact typed contract violations; a legal access
+  failure still delivers a target exception. Preserve all old entries/frozen bytes
+  and post-v0 coverage. Rust/schema/freeze and gate controls pass; 50/106 realized,
+  v2 open, four remaining boundary assumptions owned next.
+
 ## SEMULITH-P4-0112 (leaf P4-SYSTEM.13 c2) — partition obligation catalogs losslessly
 
 - Explicit root-relative v0/v1 parts share one expansion owner with all consumers;
