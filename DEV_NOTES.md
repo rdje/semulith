@@ -1,5 +1,17 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — a printed version is not an enforced pin (P4-SYSTEM.13 b4)
+
+A copied public C-build flow accepted fake clang/LLD 99.0.0 and emitted an ELF.
+ACT4's duplicate resolver raised FileNotFoundError for a missing explicit compiler.
+One resolver now validates exact identities before any probe output, refuses bad
+explicit overrides, uses portable executable lookup and cleans unique on-volume
+backend probes. Both callers use it; the C flags/link arguments are unchanged.
+Twenty isolated controls exercise both callers, backend refusal, version query
+failure, symbol-reader identity and PATH/Zig discovery. Disabling identity checking
+fails three controls. The real C ELF SHA-256 remains f438ec2182ac57603c35e472942b7fa9de95cccc764bdf831c43288e7b50f437.
+Promotion: amended the owning toolchain decision and book; no duplicate note needed.
+
 ## _(2026-10-09)_ — check identity and set equality rather than two agreeing omissions (P4-SYSTEM.13 b3)
 
 Six structured scope pairs join composition: closure, privilege revision, CSR

@@ -37,6 +37,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 import dossier_sexp as D
+import riscv_toolchain as T
 
 ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
                            capture_output=True, text=True, check=True).stdout.strip())
@@ -76,44 +77,13 @@ def require() -> None:
 
 
 def toolchain() -> tuple[str, list[str], str]:
-    """The pinned toolchain, probed exactly as scripts/build_c_guest.sh does."""
-    import os
-    probe_out = OUT / ".probe.o"
-    OUT.mkdir(parents=True, exist_ok=True)
-    clang = None
-    candidates = [os.environ.get("SEMULITH_RISCV_CLANG") or "",
-                  "/opt/homebrew/opt/llvm@21/bin/clang", "clang"]
-    for cand in candidates:
-        if not cand:
-            continue
-        proc = subprocess.run(
-            [cand, "--target=riscv64-unknown-elf", "-march=rv64i", "-mabi=lp64",
-             "-x", "c", "-c", "-o", str(probe_out), "-"],
-            input=b"int f(int a, int b) { return a + b; }\n",
-            capture_output=True, check=False)
-        if proc.returncode == 0:
-            clang = cand
-            break
-    probe_out.unlink(missing_ok=True)
-    if clang is None:
-        raise Refusal("no clang with a RISC-V backend (probed $SEMULITH_RISCV_CLANG, "
-                      "/opt/homebrew/opt/llvm@21/bin/clang, clang) — see "
-                      "docs/decisions/decision_c-guest-routing-and-toolchain.md")
-    if os.environ.get("SEMULITH_RISCV_LLD"):
-        lld = [os.environ["SEMULITH_RISCV_LLD"]]
-    elif subprocess.run(["command", "-v", "ld.lld"], capture_output=True,
-                        check=False).returncode == 0:
-        lld = ["ld.lld"]
-    elif subprocess.run(["command", "-v", "zig"], capture_output=True,
-                        check=False).returncode == 0:
-        lld = ["zig", "ld.lld"]
-    else:
-        raise Refusal("no ld.lld (probed $SEMULITH_RISCV_LLD, ld.lld, zig)")
-    nm = str(Path(clang).parent / "llvm-nm")
-    if not Path(nm).exists():
-        raise Refusal(f"{nm} is missing — the symbol reader comes from the pinned "
-                      f"clang's own LLVM keg")
-    return clang, lld, nm
+    """Use the same pinned identities and backend probe as the C guest build."""
+    try:
+        tools = T.select(OUT, require_nm=True)
+    except T.Refusal as error:
+        raise Refusal(str(error)) from error
+    assert tools.nm is not None
+    return tools.clang, list(tools.lld), tools.nm
 
 
 def build(clang: str, lld: list[str], name: str) -> Path:

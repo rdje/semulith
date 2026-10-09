@@ -22,6 +22,7 @@
   dispositions, then bind five boundary assumptions and three v2 replacements
   with real checks. b1 state repaired; b2/b3 seven scope pairs realized, 34/106
   checks, v2 open. Full plan in Decisions; .14 owns registration/evidence.
+  b4 repaired shared pinned tool selection; 20 controls, C ELF unchanged.
   Frozen v0/v1 unchanged. Notes/changelog sharded losslessly under fixed bounds.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).

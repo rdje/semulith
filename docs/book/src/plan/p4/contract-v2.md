@@ -104,3 +104,28 @@ The seven scope pairs plus the twenty existing guest checks now realize 34 of
 instruction semantics retain their execution evidence; firmware is still future
 work. Older notes and changelog entries were archived verbatim with exact
 reconstruction, so their history remains available within the fixed size limits.
+
+## Enforcing the guest toolchain
+
+Before realizing the ABI scope, review found that the legacy C build printed
+its tool versions without enforcing them. An isolated reproduction accepted
+version-99 compiler and linker stand-ins. ACT4's duplicated discovery also crashed
+when an explicit compiler was missing. Both callers now use the same resolver.
+
+The resolver validates clang/LLD 21.1.8, Zig 0.16.0 when used as the linker driver,
+and ACT4's LLVM 21.1.8 symbol reader. It checks these identities before writing a
+backend probe. An explicit override that is missing, has the wrong version, or
+cannot compile RV64I is refused; no fallback bypasses that override. For example:
+
+```bash
+bash scripts/build_c_guest.sh c-scope
+SEMULITH_RISCV_CLANG=tools/clang bash scripts/build_c_guest.sh c-scope
+```
+
+The second command succeeds only when `tools/clang` exists and satisfies the
+same pin and backend requirements. Probe files remain under the repository's
+output directory and are cleaned on either outcome. Twenty isolated controls
+cover both callers and refusal paths; disabling identity checking makes the
+controls fail. The installed pinned tools still build the exact same C ELF.
+That guest uses RV64I/LP64; the selected GC LP64D ABI still needs its own scope
+checks, and firmware implementation remains later work.

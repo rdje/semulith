@@ -477,6 +477,11 @@ PYCODE
   out="$(python3 scripts/stage_gc_c_corpus.py --mutation extent 2>&1)"; rc=$?
   arm "RED staged compressed extent remains checked" "$rc" 1 "$out" "staged extent differs from actual requests"
 
+  out="$(python3 scripts/probe_riscv_toolchain.py 2>&1)"; rc=$?
+  arm "GREEN pinned toolchain public selection" "$rc" 0 "$out" "Toolchain probe: 20/20 controls passed"
+  out="$(python3 scripts/probe_riscv_toolchain.py --mutation ignore-version 2>&1)"; rc=$?
+  arm "RED toolchain identity cannot be bypassed" "$rc" 1 "$out" "CONTROL-MISSED: C/wrong-clang"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

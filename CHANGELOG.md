@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0109 (leaf P4-SYSTEM.13 b4) — enforce the pinned guest toolchain
+
+- Reproduce acceptance of explicit version-99 tools and ACT4's missing-path crash.
+  Share identity validation/discovery; wrong or unavailable overrides refuse,
+  before probe/build writes. Pin compiler/linker, Zig driver and ACT4 symbol reader.
+- Twenty isolated controls plus identity-bypass mutant; GUEST-GEN 130 controls.
+  Real pinned C ELF remains byte-identical; ACT4 parser controls pass 7/7.
+  Contract credit stays 34/106; two new registered arms raise the total to 629.
+
 ## SEMULITH-P4-0108 (leaf P4-SYSTEM.13 b3) — realize structured scope pairs
 
 - Six further pairs validate dependency closure, pinned privilege revisions, CSR

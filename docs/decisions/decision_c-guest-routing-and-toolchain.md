@@ -52,3 +52,27 @@
 - Related: [[decision_reference-acquisition-route]] (a binary is not evidence),
   [[reference_what-running-real-rust-actually-requires]] (why C is the first guest path),
   [[decision_push-cadence]] (unchanged — 124/300).
+
+## Enforcement repair — 2026-10-09 (P4-SYSTEM.13 b4)
+
+The original script probed RISC-V capability and printed versions, but did not
+validate the pins above. An isolated copy accepted explicit tools reporting
+clang/LLD 99.0.0 and built an ELF. The ACT4 duplicate also crashed on an absent
+explicit compiler path. Both are repaired through `scripts/riscv_toolchain.py`:
+
+- Validate clang 21.1.8 and LLD 21.1.8 identities before creating a backend probe.
+  The Zig driver, when used, must report 0.16.0 via its public `version` command.
+  ACT4 additionally validates the matching LLVM 21.1.8 symbol reader.
+- An explicit `SEMULITH_RISCV_CLANG` or `SEMULITH_RISCV_LLD` is authoritative.
+  Missing tools, wrong identities or a failed backend probe refuse by name;
+  discovery never bypasses a bad override. Without overrides, discovery may find
+  an installed tool with the same pinned identity; it installs nothing.
+- Probe files use unique temporary directories under the caller's repository-local
+  output directory and are removed on success or refusal. Identity refusals leave
+  existing guest objects and ELF files untouched.
+
+`bash scripts/build_c_guest.sh c-scope` remains the public C-build entry point.
+`scripts/probe_riscv_toolchain.py` supplies 20 isolated controls; GUEST-GEN also
+runs an identity-bypass mutant. The real pinned build's ELF remained byte-identical.
+This legacy guest uses RV64I/LP64. It is not evidence of an implemented GC LP64D
+firmware or operating-system environment.

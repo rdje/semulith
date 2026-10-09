@@ -323,6 +323,25 @@ record or freeze in this slice. Before appending notes beyond their fixed bound,
 use shard_history.py on DEV_NOTES (and CHANGELOG if useful) under this same
 slice's ownership, retain verbatim reconstruction and frozen shard manifest.
 
+**b4 toolchain identity defect / ABI prerequisite** (SEMULITH-P4-0109): while
+reviewing the ABI contract, build_c_guest.sh's public flow was found to probe
+RISC-V capability and print versions but not enforce the compiler/linker versions
+the pinned toolchain decision requires. Own reproduction through an on-volume
+wrapper reporting another version while forwarding the installed tool, preserve
+existing artifacts, and fix the script if the control confirms acceptance.
+Priority: now, before crediting ABI/toolchain scope. Require explicit overrides
+to refuse mismatched identities and validate selected tools before output writes;
+retain successful pinned-tool builds and add permanent public-interface controls.
+Read the guest-toolchain decision, script callers and its existing GUEST-GEN
+coverage before editing. No install or off-repository write. This is a bounded
+contract-enforcement repair within .13, not a roadmap pivot.
+Include the ACT4 caller's duplicated discovery in this same repair: diagnose its
+missing-candidate and shell-builtin lookup paths through public tool selection,
+then use one pinned resolver for both callers. Own isolated, on-volume fake-tool
+controls for rejection before output writes, explicit override refusal, backend
+failure and successful selection, alongside a real pinned C build. No external
+test-suite or submodule implementation inspection is needed.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -467,6 +486,27 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (b4) (`2026-10-09`, `SEMULITH-P4-0109`):
+
+- [x] **ROOT CAUSE** — isolated public build reproduction: rc=0, clang/LLD
+  99.0.0 accepted and ELF emitted. ACT4 public toolchain() with absent explicit
+  compiler raised FileNotFoundError. Logs target/p4-system-13/b4/reproduction.log;
+  no original guest artifact touched. Wrapper-root/relative override behavior
+  retained and tested from another directory. Host `command` lookup happened to work;
+  do not misclassify it as a reproduced host defect.
+- [x] **ADDRESSED** — Toolchain probe: 20/20 controls passed. Shared resolver
+  rejects wrong/missing explicit tools, validates identities before probe writes,
+  cleans unique local probes and returns named refusals through both callers.
+  ignore-version rc=1, CONTROL-MISSED for C wrong-clang/wrong-lld/suffix-version.
+- [x] **NO REGRESSION** — real build rc=0, ELF before/after SHA-256
+  f438ec2182ac57603c35e472942b7fa9de95cccc764bdf831c43288e7b50f437;
+  ACT4 parser self-test 7 pass / 0 fail; focused GUEST-GEN and books verified.
+  No Rust changed; no installation, off-repository write or suite inspection.
+- [x] **LOCKSTEP** — owning decision amended, book/tool catalog and live resume
+  pointer synchronized. Two GUEST-GEN arms: total 629, GUEST-GEN 130.
+  Contract stays 34/106, v2 open; P4 12/18, CPU-SYSTEM incomplete eight axes.
+  promotion: owning decision and book retain the enforcement repair.
+
 `P4-SYSTEM.13` slice (b3) (`2026-10-09`, `SEMULITH-P4-0108`):
 
 - [x] **ROOT CAUSE** — git show 0365bd8:crates/semulith-verify/src/contract_checks_rv64gc.rs
@@ -589,6 +629,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` b4 | toolchain 20/20 and mutant; pinned C exact ELF; ACT4 7/7; GUEST-GEN 130; books | pins enforced, contract credit unchanged |
 | `2026-10-09` | `.13` b3 | six scope pairs/17 violations; Rust; gate 17/17; freeze; exact bindings; shard reconstruction/freeze; books | 34/106 realized, v2 open |
 | `2026-10-09` | `.13` b2 | make check; scope POS/NEG and disabled/unknown controls; exact old bindings; gate 17/17; freeze/books | 22/106 realized, v2 open |
 | `2026-10-09` | `.13` b1 | make check; executable identity; state/schema/freeze; books and focused gates | complete state inventory; no behavior change |
@@ -601,6 +642,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` b4 | `SEMULITH-P4-0109 (leaf P4-SYSTEM.13): enforce the pinned toolchain in both guest build paths` | remaining scope pairs and versioned declarations |
 | `.13` b3 | `SEMULITH-P4-0108 (leaf P4-SYSTEM.13): realize six structured scope pairs and retain bounded history` | remaining scope dispositions and versioned declarations |
 | `.13` b2 | `SEMULITH-P4-0107 (leaf P4-SYSTEM.13): run explicit scope evidence through the contract registry` | remaining scope checks, then versioned declarations with evidence |
 | `.13` b1 | `SEMULITH-P4-0106 (leaf P4-SYSTEM.13): re-answer the complete state inventory without changing execution` | versioned declarations and check realization |
@@ -611,6 +653,9 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` b4 (SEMULITH-P4-0109): reproduced and repaired pin
+  enforcement/ACT4 missing-path refusal. Shared resolver, 20 controls and mutant;
+  real C ELF exact. Contract unchanged; registered arms 629.
 - `2026-10-09`: `.13` b3 (SEMULITH-P4-0108): six structured scope pairs,
   17 violating copies, exact public privilege identities; 34/106 realized.
   Notes/history sharded losslessly into 0217/0218; fixed caps/freeze retained.
