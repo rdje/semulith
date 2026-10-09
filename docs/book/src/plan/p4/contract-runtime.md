@@ -93,5 +93,40 @@ at the first load. The normal independent author agrees with all four programs,
 byte image across both faults. Guest inputs and production behavior are unchanged.
 
 These witnesses retain the existing ISA observation vocabulary and finite scope.
-The selected policy faults instead of updating A/D; Svadu is excluded. Current
-G-CONTRACT is 64/114, with twenty-five runtime pairs and final freeze remaining.
+The selected policy faults instead of updating A/D; Svadu is excluded. At c10,
+G-CONTRACT was 64/114, with twenty-five runtime pairs and final freeze remaining.
+
+
+## IALIGN-16: legal halfwords and required parcels
+
+OB-IALIGN-16 binds c-links, c-page-end and sv39-straddle positively, and
+c-page-straddle negatively. With C, both 16-bit and 32-bit instructions may
+start at an address congruent to two modulo four. The instruction-length limit
+remains 32 bits. These four programs use 165 boundaries and 319 parcel requests.
+
+In c-links, C.JALR targets 0x8000000e and saves 0x8000000a, its pc+2 link;
+the subroutine writes x10=1 and returns through that halfword link. In
+sv39-straddle, a 32-bit ADDI starts at 0x80000ffe across noncontiguous physical
+pages and writes x21=42 at step 44. The next instruction writes x22=7.
+
+The two page-edge programs distinguish instruction length and fault timing:
+
+| Program | Page-end result | Handler observations |
+| --- | --- | --- |
+| c-page-end | C.NOP executes at step 44; next instruction fetch faults at 45 | cause 12; mtval and mepc both 0x80001000 |
+| c-page-straddle | Required second parcel faults at step 44 before instruction effects | cause 12; mtval 0x80001000, mepc 0x80000ffe |
+
+The negative witness is an instruction page fault, not an alignment exception.
+A successful first parcel cannot authorize skipping the second one. Conversely,
+a compressed instruction must not fetch an unnecessary second parcel.
+
+The independent author reproduces every committed register change and request
+count. Four in-memory controls fail: enforcing four-byte parcel alignment (step
+0), enforcing four-byte PC alignment (c-links step 3), over-fetching compressed
+instructions (page-end step 45), and substituting the instruction start for the
+failed parcel's trap value (straddle step 46). No source or expectation changes.
+The existing comparison also checks never-written registers; direct trace PC/mode
+comparison is not added. This is finite evidence for the selected contract.
+
+G-CONTRACT is now 66/114: thirteen scope pairs, fifteen guest pairs and five
+typed boundary pairs. Twenty-four runtime pairs and final freeze remain.

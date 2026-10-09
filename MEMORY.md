@@ -18,13 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c11 — realize OB-IALIGN-16, then remaining
-  24 runtime guarantee pairs (census/planned guests in tree).
-  c10 binds Svade success/refusal with full PTE read-backs: four programs,
-  434 boundaries / 868 parcels, independent author exact. Two in-memory
-  controls discriminate bypassed A/D faults and a PTE write despite correct
-  fault delivery (read-back step 133). Existing whole-image core test passes.
-  64/114, v2 open; all 62 prior bindings / 340 input files exact.
+- next_action: `P4-SYSTEM.13` c12 — realize OB-ZICNTR, then remaining
+  23 runtime guarantee pairs (census/planned guests in tree).
+  c11 binds IALIGN-16: four programs / 165 boundaries / 319 parcels,
+  independent author exact; four in-memory controls discriminate strict
+  alignment, over-fetch and wrong second-parcel tval. Existing guest/frozen
+  inputs and 64 prior bindings exact. G-CONTRACT 66/114, v2 open.
   .14 owns requirement statuses and experiments; detailed census in tree.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).

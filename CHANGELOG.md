@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0124 (leaf P4-SYSTEM.13 c11) — realize halfword alignment
+
+- Bind legal halfword links, mixed-length translated fetch and precise second-
+  parcel refusal: four programs / 165 boundaries / 319 parcels independently exact.
+  Four alignment/over-fetch/trap-value controls discriminate.
+- All 64 prior bindings and 340 input files exact. Registry 4/0, Rust 163/17/198,
+  schema/freeze, gate controls 17/17 and books pass. G-CONTRACT 66/114 open;
+  24 runtime pairs then freeze remain. Current profile table/book synchronized.
+
+
 ## SEMULITH-P4-0123 (leaf P4-SYSTEM.13 c10) — realize Svade faults and PTE preservation
 
 - Bind successful leaf-size and A/D-refusal witnesses, including full PTE

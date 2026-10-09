@@ -755,6 +755,29 @@ ENVIRONMENT's runtime progress likewise becomes a current exact binding table;
 worked observations/controls remain in the new book chapter. Future profile
 updates maintain current bindings rather than append duplicate slice histories.
 
+### `.13` c11 — halfword instruction alignment (`2026-10-10`, `SEMULITH-P4-0124`)
+
+Own before changes on clean c0507d0. Read frozen OB-IALIGN-16, RVI-C
+27.1 (95631 B, pinned 3f7e7d85…49d6aeb), affected parcel fetch/SetPc
+and independent author paths, four complete programs/expectations and C/runtime
+book sections. POS binds c-links, c-page-end and sv39-straddle; NEG binds
+c-page-straddle. Legal halfword links and a 32-bit instruction at page+0xffe
+must execute. A compressed page-end instruction needs one parcel; a wider
+instruction needs its second parcel. The refusal is instruction page fault 12,
+not an alignment exception: mtval is the failed next-page parcel, mepc the
+original halfword instruction. Existing changes/counts and never-written rule
+remain the observation contract; no new trace-PC comparison or universal proof.
+
+Independently replay all four budgets/observations and add in-memory alignment
+and second-parcel fault controls if the actual vocabulary supports them. Bind
+the two existing IDs, extend required coverage to 66, preserve all 64 prior
+entries and contract/guest/author bytes. Run registry, make check, schema/freeze,
+gate controls, routing and books. Update current profile table/counts and runtime
+book; keep old slice counts historical. Expected 66/114, 24 runtime pairs then
+freeze; c12 Zicntr next. Commit before advancing. If active task part pressure
+requires it, move older completed receipts verbatim to new archive part 7 with
+ordered reconstruction proof and current pointers; do not raise ceilings.
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -893,6 +916,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c11) (`2026-10-10`, `SEMULITH-P4-0124`):
+
+- [x] **ROOT CAUSE** — git show c0507d0:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  frozen CHK-IALIGN-16 POS/NEG absent. RVI-C rehash: 95631 B,
+  3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb.
+  Reviewed full meaningful source (zero padding counted), expected steps,
+  parcel/SetPc paths and C/runtime book; no production defect found.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. POS c-links/c-page-end/sv39-straddle; NEG
+  c-page-straddle. Independent replay: four programs, 165 boundaries,
+  319 parcels, all changes/counts exact. In-memory four-byte parcel/PC,
+  compressed over-fetch and wrong second-parcel tval controls fail at
+  steps 0/3/45/46. Required coverage extends to 66 without weakening guards.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 /
+  verify 198; Python identity: 64 prior bindings and 340 input files exact.
+  DOSSIER-SCHEMA 270 validated, two declared skips; CONTRACT-FREEZE three
+  versions / zero findings; gate_report --self-test 17 pass / 0 fail;
+  make book rc=0. No production execution or expectation changes.
+  First hook rejected a misplaced commit-log row in the verification table;
+  restore its date prefix and move the new row to Commit Log. Recheck staged
+  TABLE-ARITY-RATCHET before retry; no runtime changes needed.
+- [x] **LOCKSTEP** — git diff --check rc=0. Profile table and book
+  agree on 66/114, 24 pairs then freeze; .14 status/experiment ownership
+  unchanged. LIVE_STATUS unchanged: P4 12/18, 639 arms, 46 chapters.
+  promotion: declined — registry, immutable expectations and runtime book
+  retain the finite observation/controls. c12 Zicntr next; v2 remains open.
 
 `P4-SYSTEM.13` slice (c10) (`2026-10-10`, `SEMULITH-P4-0123`):
 
@@ -1376,6 +1426,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c11 | four alignment programs / 165 boundaries / 319 parcels; four in-memory controls; prior 64 bindings + 340 inputs exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 66/114, v2 open |
 | `2026-10-10` | `.13` c10 | four Svade programs / 434 boundaries / 868 parcels; two controls incl. correct fault + bad PTE; core 1/0; Rust 163/17/198; prior 62 bindings + 340 files exact; focused gates/books | 64/114, v2 open |
 | `2026-10-10` | `.13` c9b | 14 Sv39 guests / 1417 boundaries / 2832 parcels; independent author exact; prior 60 bindings + 339 files exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 62/114, v2 open |
 | `2026-10-10` | `.13` c9a | parent failures; eight G masks / 32 actual fences; translation 32/0; author + inheritance mutant; Rust 163/17/198; 342 files exact | make ci all five legs green; 60/114 unchanged |
@@ -1403,6 +1454,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c11 | `SEMULITH-P4-0124 (leaf P4-SYSTEM.13): realize halfword alignment and precise parcel-fault checks` | c12 Zicntr, then 23 runtime pairs |
 | `.13` c10 | `SEMULITH-P4-0123 (leaf P4-SYSTEM.13): realize Svade checks with fault and PTE-preservation witnesses` | c11 IALIGN-16, then 24 runtime pairs |
 | `.13` c9b | `SEMULITH-P4-0122 (leaf P4-SYSTEM.13): realize Sv39 checks through the complete translation matrix` | c10 OB-SVADE, then 25 runtime pairs |
 | `.13` c9a | `SEMULITH-P4-0121 (leaf P4-SYSTEM.13): preserve inherited-global mappings in the shared Sv39 walk` | c9b OB-SV39, then 26 runtime pairs |
@@ -1427,6 +1479,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c11 (SEMULITH-P4-0124): bind halfword control
+  flow and translated page-edge successes/refusal; all four independent runs
+  exact, four controls discriminate. 66/114; frozen/prior inputs preserved.
+  Current book/profile bindings synchronized; c12 Zicntr next.
 
 - `2026-10-10`: `.13` c10 (SEMULITH-P4-0123): bind Svade success/fault
   witnesses with full PTE read-backs. Independent replay and two controls

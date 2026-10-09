@@ -1,5 +1,27 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — halfword alignment includes precise parcel refusal (P4-SYSTEM.13 c11)
+
+Bind OB-IALIGN-16 POS to c-links/c-page-end/sv39-straddle, NEG to
+c-page-straddle. Rehash/read RVI-C 27.1 and review actual fetch/target paths.
+C.JALR saves pc+2 and reaches 0x8000000e; translated ADDI at page+0xffe
+executes across noncontiguous physical pages. C.NOP at that offset retires
+before the following fetch faults; the wider instruction faults on its second
+parcel before effects. Cause 12 is a page fault, not an alignment exception.
+Straddle handler reads mtval=0x80001000, mepc=0x80000ffe.
+
+Independent replay exactly reproduces four programs / 165 boundaries /
+319 physical parcels. In-memory author controls enforce four-byte parcel
+alignment (fails step 0), four-byte PC alignment (c-links step 3), unnecessary
+compressed over-fetch (page-end 45), and instruction-start tval for the second
+parcel (straddle 46). Four controls discriminate without rewriting source.
+All 64 prior registry entries and 340 contract/guest/author files byte-exact.
+Registry 4/0; make check 163 core / 17 DSP / 198 verify; schema/freeze,
+gate controls 17/17 and books pass. 66/114, 24 pairs then freeze remain.
+LIVE_STATUS unchanged: P4 12/18, 639 arms, 46 chapters. Promotion declined:
+registry, immutable expectations and runtime book retain finite evidence/limits.
+
+
 ## _(2026-10-10)_ — correct faults alone do not establish Svade preservation (P4-SYSTEM.13 c10)
 
 Bind OB-SVADE POS to the three leaf-size programs, NEG to sv39-svade.
