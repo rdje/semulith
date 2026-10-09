@@ -55,7 +55,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
-fixtures. Together with M's pair and the composition scope pair, 22 checks are realized in the effective contract;
+fixtures. Together with M's pair and seven scope pairs, 34 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -72,7 +72,7 @@ frozen v0 obligations; the contract is where v1 corrects them.
 ## Positive and negative fixtures
 
 Every v1 check, `.8`'s partial-progress pair, the M/C/fetch pairs, and the
-composition scope pair are **realized**: the registry
+seven scope pairs are **realized**: the registry
 `crates/semulith-verify/src/contract_checks_rv64gc.rs` binds each check id to tracked guests, and
 its tests run the guest entries under the corpus's comparison rule. Scope entries run
 `python3 scripts/check_gc_contract_scope.py --check CHECK-ID` over parsed canonical
@@ -109,3 +109,25 @@ own reason. Disabled-profile/disabled-fragment controls fail the negative check,
 and an unknown id refuses. No live file is changed by a check. This establishes
 the declared selection, not instruction execution or universal conformance.
 The 20 existing guest bindings remain exact. G-CONTRACT is 22/106, v2 open.
+
+## Structured scope evidence (P4-SYSTEM.13 b3)
+
+Seven scope pairs now run through the registry. Six new predicates add 17
+violating copies; with composition's six, 23 specific violations are rejected.
+These checks validate declarations and their internal consistency. They do not
+execute CSR field semantics, validate external firmware or prove an ISA.
+
+| Obligation | What the scope predicate checks | Negative copies |
+| --- | --- | --- |
+| OB-EXT-CLOSURE | D requires F, F requires Zicsr; RV64+D C selects its Zcd memory forms | remove F/Zicsr or C.FLD |
+| OB-PRIV-REVISION | v20260120 and Machine/Supervisor 1.13 with exact declared page identities | publication, each chapter revision, valid but different hash |
+| OB-CSR-SET | exact committed CSR names, unique addresses, seven views and their owners | shorten both lists, change time's owner, duplicate an address |
+| OB-NO-PMP | explicit exclusion and no PMP CSR selection | introduce pmpcfg0 or declare inclusion |
+| OB-NO-H | extension/mode/CSR selection and explicit exclusion | select H, introduce hstatus, declare inclusion |
+| OB-SCOPE-CENSUS | enumeration count/uniqueness and equality with resolved encoding names | wrong total, same-count wrong name |
+
+Privilege artifacts were rehashed when the expected identities were recorded;
+normal scope checks bind the declarations to those identities without requiring
+the untracked artifact cache. Artifact-byte verification is the citation check's
+separate role. The scope-name check reuses the extraction owner's resolution.
+G-CONTRACT is 34/106; v2 remains open.

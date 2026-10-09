@@ -1,13 +1,13 @@
 # P4.13 — Completing the environment contract
 
-**Status:** Census, state inventory and first executable scope pair landed; version 2 remains open.
+**Status:** Census, state inventory and seven executable scope pairs landed; version 2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
 stages. This work checks every effective obligation, fills the remaining boundary
 assumptions, and realizes each declared check before freezing version 2.
 
-The census finds 53 effective obligations and 106 checks. Twenty-two checks currently
+The census finds 53 effective obligations and 106 checks. Thirty-four checks currently
 run through the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
@@ -78,5 +78,29 @@ check must then fail. Unknown check ids are refused. All copies stay in memory.
 
 This adds two real checks without running an unrelated program as evidence of
 selection. All twenty earlier guest bindings stay unchanged. The effective
-contract now realizes 22 of 106 checks; the remaining obligations and version-2
-freeze still have work to do.
+contract reached 22 of 106 checks at that slice. The following structured
+scope checks raise it to 34; version 2 remains open.
+
+## Structured scope and identity
+
+Six more scope pairs validate the extension dependencies, privilege-source
+revision, CSR inventory, PMP and hypervisor exclusions, and equality between the
+profile's instruction names and the resolved encoding. Their 17 violating copies
+must each fail for a specific reason. Two examples show why a count or an agreement
+between files is insufficient:
+
+- Removing `fcsr` from both the profile and state lists leaves them agreeing, but
+  violates the independently stated committed CSR selection.
+- Replacing one C instruction name with an unknown name leaves the count intact,
+  but violates equality with the composed encoding.
+
+The privilege check also binds the declared version to exact source identities.
+A different well-formed digest fails. The two public pages were rehashed when
+these expectations were recorded; the ordinary scope check needs no artifact
+cache and makes no fresh artifact-byte verification claim.
+
+The seven scope pairs plus the twenty existing guest checks now realize 34 of
+106 checks. These are selection and consistency checks. CSR field behavior and
+instruction semantics retain their execution evidence; firmware is still future
+work. Older notes and changelog entries were archived verbatim with exact
+reconstruction, so their history remains available within the fixed size limits.

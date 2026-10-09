@@ -122,4 +122,4 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening only. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 22/106 checks realized (composition scope pair added at b2).
+contract stays open with 34/106 checks realized (seven scope pairs at b2/b3).

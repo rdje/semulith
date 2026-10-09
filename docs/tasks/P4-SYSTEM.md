@@ -313,6 +313,16 @@ After this mechanism commits, extend scope realizations and then bind new v2
 declarations with their actual evidence. This dependency ordering refines the
 original bounded-unit plan; the final acceptance is unchanged.
 
+**b3 structured scope pairs** (SEMULITH-P4-0108): own extension dependency
+closure, privilege source revisions, CSR-name/storage/view inventory, no-PMP,
+no-H and scope/composed-name equality. Validate canonical parsed declarations;
+each negative case changes a fresh in-memory copy and must fail for its named
+reason. Retain b2 controls and old guest bindings. Extend the normal registry
+coverage guard, run make check and the gate/freeze controls; no new contract
+record or freeze in this slice. Before appending notes beyond their fixed bound,
+use shard_history.py on DEV_NOTES (and CHANGELOG if useful) under this same
+slice's ownership, retain verbatim reconstruction and frozen shard manifest.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -457,6 +467,29 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (b3) (`2026-10-09`, `SEMULITH-P4-0108`):
+
+- [x] **ROOT CAUSE** — git show 0365bd8:crates/semulith-verify/src/contract_checks_rv64gc.rs
+  realizes only one static scope pair. Six structured declarations still have
+  no runnable pairs. Read their actual fields and rehash both public privilege
+  pages; machine b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea,
+  supervisor d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a.
+- [x] **ADDRESSED** — GC-CONTRACT-SCOPE: all six new POS/NEG pairs hold;
+  17 isolated violating copies refused for exact reasons. Joint CSR omission,
+  same-count wrong instruction name and valid-but-wrong digest discriminate.
+  Existing b2 controls retained; all 20 old guest binding lists exact. Canonical
+  input hashes unchanged by the checks. Scope evidence remains selection-only.
+- [x] **NO REGRESSION** — make check rc=0 (core 153, DSP 17, verify 194);
+  gate_report --self-test: 17 pass / 0 fail; CONTRACT-FREEZE: ok, 0 findings.
+  SHARD-FREEZE: ok, 220 frozen rows, exact partition. Sharder reconstruction:
+  notes 45=33+12 entries, changelog 86=75+11, byte/order exact. Books,
+  tree/frontier/bounds pass; no cap raised or frozen record edited.
+- [x] **LOCKSTEP** — GS 34/106 realized, v2 open; registry/coverage guard,
+  ENVIRONMENT/dossier/book/tool catalog and live pointer synchronized. New
+  immutable shards 0217/0218 preserve older notes/history. LIVE_STATUS reviewed,
+  unchanged (P4 12/18, 45 chapters, CPU-SYSTEM incomplete on eight axes).
+  promotion: declined (permanent predicates, records and v2 book retain it).
+
 `P4-SYSTEM.13` slice (b2) (`2026-10-09`, `SEMULITH-P4-0107`):
 
 - [x] **ROOT CAUSE** — git show d592759:crates/semulith-verify/src/contract_checks_rv64gc.rs
@@ -556,6 +589,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` b3 | six scope pairs/17 violations; Rust; gate 17/17; freeze; exact bindings; shard reconstruction/freeze; books | 34/106 realized, v2 open |
 | `2026-10-09` | `.13` b2 | make check; scope POS/NEG and disabled/unknown controls; exact old bindings; gate 17/17; freeze/books | 22/106 realized, v2 open |
 | `2026-10-09` | `.13` b1 | make check; executable identity; state/schema/freeze; books and focused gates | complete state inventory; no behavior change |
 | `2026-10-09` | `.13` a | full effective census; gate controls 17/17; freeze; books; tree/frontier/bounds | plan complete; declarations next |
@@ -567,6 +601,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` b3 | `SEMULITH-P4-0108 (leaf P4-SYSTEM.13): realize six structured scope pairs and retain bounded history` | remaining scope dispositions and versioned declarations |
 | `.13` b2 | `SEMULITH-P4-0107 (leaf P4-SYSTEM.13): run explicit scope evidence through the contract registry` | remaining scope checks, then versioned declarations with evidence |
 | `.13` b1 | `SEMULITH-P4-0106 (leaf P4-SYSTEM.13): re-answer the complete state inventory without changing execution` | versioned declarations and check realization |
 | `.13` a | `SEMULITH-P4-0105 (leaf P4-SYSTEM.13): census the effective contract and plan every check realization` | five boundary assumptions and v2 replacements |
@@ -576,6 +611,9 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` b3 (SEMULITH-P4-0108): six structured scope pairs,
+  17 violating copies, exact public privilege identities; 34/106 realized.
+  Notes/history sharded losslessly into 0217/0218; fixed caps/freeze retained.
 - `2026-10-09`: `.13` b2 (SEMULITH-P4-0107): explicit guest/scope evidence,
   composition pair and six violating copies. Disabled predicates/unknown id
   discriminate in normal tests; prior bindings exact. G-CONTRACT 22/106, open.

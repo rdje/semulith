@@ -93,16 +93,22 @@ fn declared_checks(select: impl Fn(&str) -> bool) -> Vec<(String, String)> {
 fn every_check_bound_through_the_scope_slice_is_realized() {
     // every version after v0 is born realized: v1's four assumptions and two supersessions,
     // v2's M/C guarantees and parcel-fetch assumption as they bind, partial progress,
-    // and the first static scope pair (P4-SYSTEM.13 b2).
+    // and the seven static scope pairs (P4-SYSTEM.13 b2/b3).
     let declared = declared_checks(|l| {
         !l.contains("(contract_version \"0\")")
             || l.starts_with("(obligation (id \"OB-GC-PARTIAL-PROGRESS\")")
             || l.starts_with("(obligation (id \"OB-GC-COMPOSITION\")")
+            || l.starts_with("(obligation (id \"OB-EXT-CLOSURE\")")
+            || l.starts_with("(obligation (id \"OB-PRIV-REVISION\")")
+            || l.starts_with("(obligation (id \"OB-CSR-SET\")")
+            || l.starts_with("(obligation (id \"OB-NO-PMP\")")
+            || l.starts_with("(obligation (id \"OB-NO-H\")")
+            || l.starts_with("(obligation (id \"OB-SCOPE-CENSUS\")")
     });
     assert_eq!(
         declared.len(),
-        22,
-        "v1's six records, v2's M/C/fetch records, partial progress and composition, POS + NEG"
+        34,
+        "v1's six records, v2's M/C/fetch records, partial progress and seven scope records, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);
