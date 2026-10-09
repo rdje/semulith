@@ -245,3 +245,25 @@ which earlier corpus produced a record. The 42 canonical historical word records
 keep their exact capture headers; copied names and new parcel derivations receive
 new provenance. Generic and compressed examples, schema checks and four deliberate
 mutations guard this distinction. No existing expectation record changes.
+
+Slice (e1d1) makes the historical count migration reproducible before adopting it.
+The tracked census executes all 139 programs through the independent parcel author,
+using each record's already-declared boundary budget. All architectural register
+observations match across 4,913 boundaries. The actual request logs total 9,770
+parcels; the historical records count 4,888 word requests. Doubling is insufficient:
+
+| Guest | Historical requests | Derived parcels |
+| --- | --- | --- |
+| dir-runoff | 3 | 5 |
+| fault-fetch | 3 | 5 |
+| it-prio-jump | 4 | 7 |
+| mm-mret | 43 | 85 |
+| sv39-straddle | 53 | 104 |
+
+A zero-filled runoff instruction needs one parcel, while a failed translation can
+prevent a physical fetch. The census counts the requests that actually occur. It
+checks every derived architectural write and reconciles the per-step count with
+the complete request log. Its staging manifest fingerprints the source records,
+metadata, definitions and producing tools. A changed observation, incorrect extent
+or damaged stored count is rejected. Existing production records remain unchanged;
+the bind will adopt the derived extent alongside C and its new corpus.

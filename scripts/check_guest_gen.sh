@@ -460,6 +460,15 @@ PY
   out="$(python3 scripts/probe_gc_provenance.py --mutation fp-fallback 2>&1)"; rc=$?
   arm "RED generic output cannot inherit FP provenance" "$rc" 1 "$out" "generic output inherited FP provenance"
 
+  out="$(python3 scripts/derive_gc_parcel_counts.py --self-test 2>&1)"; rc=$?
+  arm "GREEN independent count fixtures and manifest drift" "$rc" 0 "$out" "GC count self-test:"
+  out="$(python3 scripts/derive_gc_parcel_counts.py --out target/guest-gen/parcel-counts.json 2>&1)"; rc=$?
+  arm "GREEN full historical parcel count census" "$rc" 0 "$out" "exact architectural traces;"
+  out="$(python3 scripts/derive_gc_parcel_counts.py --mutation observation 2>&1)"; rc=$?
+  arm "RED count adoption refuses changed observations" "$rc" 1 "$out" "architectural observations differ at boundary"
+  out="$(python3 scripts/derive_gc_parcel_counts.py --mutation extent 2>&1)"; rc=$?
+  arm "RED count adoption checks actual request log" "$rc" 1 "$out" "parcel count differs from actual request log"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
