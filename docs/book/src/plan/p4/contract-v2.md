@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and the typed address-unit pair landed; v2 remains open.
+**Status:** State inventory, scope pairs, three corrections and two typed boundary pairs landed; v2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -8,16 +8,16 @@ stages. This work checks every effective obligation, fills the remaining boundar
 assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
-corrections replace four old records; the new address-unit assumption brings the
-effective census to 53 obligations and 106 checks, with 50 checks running through
+corrections replace four old records; the address-unit and data-access assumptions bring the
+effective census to 54 obligations and 108 checks, with 52 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
 cannot establish a scope declaration.
 
-Four boundary topics remain: access widths and memory attributes, event delivery,
-ordering, and reset. The scalar profile's assumptions cannot be
+Three boundary topics remain: event delivery, ordering, and reset.
+The scalar profile's assumptions cannot be
 copied unchanged. For example, this processor can take interrupts, fetches exact
 16-bit parcels, selects RVWMO, and resets floating-point, translation-cache,
 reservation and wait state as well as integer registers and CSRs. Time, parcel
@@ -295,5 +295,53 @@ untouched. The legitimate access-fault control still delivers load cause 5.
 Four permanent core tests exercise all 25 request/response-kind combinations,
 narrow-width edges, full-width values, unchanged target failures and existing
 violations, and actual GC/scalar/translation paths. Normal guest observations
-still pass. This repair adds no contract-check credit: the census stays 50 of
-106 realized, with four boundary assumptions still to declare and realize.
+still pass. At c4a this repair added no contract-check credit: the census stayed
+50 of 106 realized, with four boundary assumptions still to declare and realize.
+
+## Data widths and physical memory attributes
+
+`OB-GC-ENV-DATA-ACCESS` now supplies the data-width and memory-attribute assumption
+with its own positive and negative registry fixtures. The physical map is
+executable little-endian main memory without MMIO. Reads have no memory side
+effects; a store writes its low requested bytes and preserves every other byte.
+Each request completes as a whole or fails as a whole. The selected CPU alignment
+check still precedes translation under the separate fault-priority guarantee.
+
+The fixture begins with these independent bytes at address 0x1020:
+
+```text
+address:  1020 1021 1022 1023 1024 1025 1026 1027
+byte:       88   77   66   55   44   33   22   11
+```
+
+| Width | Exact raw load | Bytes written by a store of 0xfedcba9876543210 |
+| --- | --- | --- |
+| B, 8 bits | 0x88 | 10 |
+| H, 16 bits | 0x7788 | 10 32 |
+| W, 32 bits | 0x55667788 | 10 32 54 76 |
+| D, 64 bits | 0x1122334455667788 | 10 32 54 76 98 ba dc fe |
+
+Hand-encoded LBU/LHU/LWU/LD and SB/SH/SW/SD consume those values through the real
+engine. Direct store requests retain high source bits, independently checking
+the provider's low-byte rule; CPU narrow stores already narrow their operands.
+A parcel read observes the same bytes, and repeated reads preserve memory.
+
+Eight region-edge cases refuse a load or store of every width. For B the address
+is the first byte outside the region; H/W/D straddle its end. Causes 5/7 retain
+the instruction in mepc and data address in mtval. The destination and entire
+memory image stay unchanged, including the valid prefix of a refused store.
+
+The negative pair runs twelve bad providers: wrong kinds for each of four loads
+and stores, a first out-of-range raw B/H/W bit, and a reversed-byte D value.
+Malformed shapes reach the shared validator. The reversed value fits 64 bits,
+so a fixture-only auditor compares it with the independent byte witness and
+returns `ResponseValueMismatch { request, expected, arrived }`. These failures
+reach the typed model-error channel without a target trap or destination write.
+A correct-content control passes; disabling the auditor makes the reversed-byte
+negative fixture fail because the CPU executes the wrong value.
+
+The CPU can validate response shape but cannot infer a provider's memory contents.
+The content auditor establishes this finite fixture's behavior. It is not a
+universal content check in ordinary execution. All prior entries and frozen
+records remain exact. The census is now 54 effective obligations, 108 declared
+checks and 52 realized checks; event delivery, ordering and reset remain open.

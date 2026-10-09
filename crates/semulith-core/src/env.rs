@@ -166,6 +166,16 @@ pub enum ContractViolation {
         /// The unmodified invalid answer, retained for diagnosis.
         value: u64,
     },
+    /// A fixture auditor observed a value different from its independent memory witness.
+    /// The CPU cannot infer this from response shape alone.
+    ResponseValueMismatch {
+        /// The request whose value was checked.
+        request: Request,
+        /// The response prescribed by the fixture's independent witness.
+        expected: Response,
+        /// The provider's unmodified response.
+        arrived: Response,
+    },
     /// A scripted environment was asked something its script does not say: the scripted
     /// request and the request that arrived differ. `scripted` is what the fixture was
     /// told to expect, `arrived` is what crossed the boundary.

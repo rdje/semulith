@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — data attributes need both byte and shape witnesses (P4-SYSTEM.13 c4b)
+
+Add one open-v2 data-access assumption with a named direct registry pair.
+Independent bytes/values/encodings check all four widths, executable little-endian
+main memory, low-byte stores and eight load/store region-edge failures without
+partial effects. Direct stores retain high input bits: the initial negative
+fixture expected full SB input 0x1234 but the CPU correctly narrows it to 0x34.
+Correct that literal expectation and test provider narrowing independently.
+Twelve negative cases reject wrong kinds, over-wide loads and reversed D bytes.
+Only the fixture's independent content witness can detect valid-width wrong
+bytes; ResponseValueMismatch retains request/expected/arrived. The CPU's shared
+shape validator is unchanged. Valid-content control passes; disabling the auditor
+lets the bad load execute and makes the negative fixture fail.
+make check: 157 core / 17 DSP / 195 verify. All 50 prior entries, frozen
+parts/memberships and old root prefix remain byte-exact. Credit becomes 52/108,
+54 effective obligations; event delivery, ordering and reset remain. V2 open.
+Promotion declined in leaf: canonical assumption, direct fixtures and book retain it.
+
 ## _(2026-10-09)_ — reject malformed answers before consuming them (P4-SYSTEM.13 c4a)
 
 The public GC probe supplied StoreDone to FetchParcel and a 9-bit 0x1ff answer to

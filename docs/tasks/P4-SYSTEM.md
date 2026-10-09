@@ -471,6 +471,33 @@ c3's summary paragraph was not updated with the new registry pair. Owned/fixed
 in c4a: correct that paragraph through its canonical document and regenerate GS.
 The actual registry, records and credit are unchanged.
 
+**c4b typed data-access pair** (SEMULITH-P4-0115): with c4a committed and
+the tree clean, add OB-GC-ENV-DATA-ACCESS to open v2, born realized. Review
+core env/request_checked, FlatMemory/ScriptedEnv, real GC load/store paths,
+OB-ENDIAN/OB-ADDRESS-SPACE and this book's contract chapter. Declare B/H/W/D
+raw data widths, little-endian executable main memory without MMIO, exact
+whole-request success/failure and low-width stores; alignment-before-translation
+remains the CPU's existing priority guarantee. Positive fixtures independently
+pin byte arrays, raw values and low-width store neighbors for all widths; actual
+hand-encoded loads/stores must use those requests. Probe aligned region-straddling
+failures for every width and confirm no partial store or destination effect.
+Negative providers supply over-wide B/H/W values and wrong success kinds to the
+real engine, preserving typed violations and no delivered trap. A direct fixture
+auditor compares exact expected response values, detects reversed-byte answers
+and reports a distinct typed ResponseValueMismatch; CPU shape validation cannot
+infer a provider's storage contents. This is finite provider evidence, not a
+universal memory-content oracle. Reuse the shared shape validator, no duplicated
+kind/width logic. Add BoundaryCheck variants and both registry entries, retain
+all 50 prior entries/frozen records and the post-v0 guard (expected 52/108).
+Run Rust, schema/freeze, direct positive/negative and disabled-auditor controls,
+gate self-tests and books. Synchronize live docs/GS; three assumptions remain,
+v2 stays open. No guest vocabulary, production memory map or cap change.
+Initial registry test caught an incorrect fixture expectation: SB's request data
+is 0x34 after the CPU narrows source 0x1234, not 0x1234. The generated store
+effect and exec Store path explain the actual trace. Corrected the literal
+negative expectation; added direct high-input-bit store checks so provider
+truncation is independently tested rather than hidden by CPU operand narrowing.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -614,6 +641,31 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c4b) (`2026-10-09`, `SEMULITH-P4-0115`):
+
+- [x] **ROOT CAUSE** — git show f5d96bf:profiles/rv64gc-lab-v0/contract.sexp:
+  seven v2 members, address units declared but no data-width/attribute
+  assumption. Existing shared shape validator cannot infer stored byte content.
+  Reviewed env, FlatMemory, store narrowing/translation and canonical priority.
+  Initial registry test failed for the fixture's wrong SB data expectation;
+  actual request data=52, not 4660. Corrected the literal; engine behavior valid.
+- [x] **ADDRESSED** — make check rc=0: new pair runs through the normal
+  registry. Literal B/H/W/D values and direct/CPU stores; executable bytes and
+  eight whole-region failure cases preserve destination/memory. Twelve negative
+  providers produce exact typed errors without target traps. Auditor valid-content
+  control passes; disabling it lets reversed bytes execute, detected by the
+  permanent test. CPU validation retains its shared shape-only owner.
+- [x] **NO REGRESSION** — make check rc=0: 157 core / 17 DSP / 195 verify.
+  PRIOR-EVIDENCE: all 50 entries, frozen parts/memberships and old root prefix
+  byte-exact. RECORD-SCHEMA: ok (20 files); CONTRACT-FREEZE: 3 versions,
+  0 findings. gate_report --self-test: 17 pass / 0 fail; make book rc=0.
+  Post-v0 born-realized guard retained, now 52 checks; no guest expectations change.
+- [x] **LOCKSTEP** — G-CONTRACT: 52/108, 54 effective obligations,
+  eight open-v2 members. Book/ENVIRONMENT/dossier/gate/GS and toolbox/live
+  pointer synchronized. LIVE_STATUS reviewed unchanged: P4 12/18, 634 arms,
+  45 chapters. Three assumptions remain; v2/CPU-SYSTEM incomplete.
+  promotion: declined (canonical assumption, direct fixtures and book retain it).
 
 `P4-SYSTEM.13` slice (c4a) (`2026-10-09`, `SEMULITH-P4-0114`):
 
@@ -878,6 +930,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c4b | Rust 157/17/195; literal byte/width pairs; 12 negative cases; auditor disabled; old bytes exact; schema/freeze; gate 17/17; books | 52/108 realized, v2 open |
 | `2026-10-09` | `.13` c4a | public before/after; 4 boundary controls; Rust 157/17/194; C engine 18; freeze/dossier; gate 17/17 | full make ci all five legs green; 50/106 unchanged |
 | `2026-10-09` | `.13` c3 | exact typed Sv39/address fixtures; three provider violations; Rust; schema/freeze; gate 17/17; books | 50/106 realized, v2 open |
 | `2026-10-09` | `.13` c2 | exact stream/mappings; 31 controls + mutant; Rust; schema/freeze; gate 17/17 | make ci all five legs green; 48/104 unchanged |
@@ -896,6 +949,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c4b | `SEMULITH-P4-0115 (leaf P4-SYSTEM.13): realize data-access assumptions with independent byte witnesses` | c5 event delivery, then ordering/reset |
 | `.13` c4a | `SEMULITH-P4-0114 (leaf P4-SYSTEM.13): validate environment success responses before CPU consumption` | c4b data widths/attributes with direct pair |
 | `.13` c3 | `SEMULITH-P4-0113 (leaf P4-SYSTEM.13): realize physical byte-address assumptions with typed boundary fixtures` | data widths/attributes, then three remaining assumptions |
 | `.13` c2 | `SEMULITH-P4-0112 (leaf P4-SYSTEM.13): partition obligation catalogs without changing expanded records` | five boundary assumptions, then remaining runtime pairs |
@@ -911,6 +965,12 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c4b (SEMULITH-P4-0115): data widths/attributes
+  born realized with literal byte witnesses, direct high-bit and actual CPU
+  stores, eight whole failures and twelve typed bad answers. Content auditor's
+  disabled control discriminates. Old entries/frozen bytes exact; 52/108,
+  three assumptions remain and v2 stays open.
 
 - `2026-10-09`: `.13` c4a (SEMULITH-P4-0114): reproduce and repair
   wrong-kind/over-wide success responses in one shared validator across all

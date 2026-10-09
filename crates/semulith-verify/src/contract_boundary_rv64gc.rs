@@ -15,6 +15,8 @@ use semulith_core::state_rv64gc::{
 
 use crate::fixtures::{FlatMemory, ScriptedEnv};
 
+mod data_access;
+
 /// A named direct boundary check, rather than an unrelated passing guest.
 #[derive(Clone, Copy, Debug)]
 pub enum BoundaryCheck {
@@ -22,6 +24,10 @@ pub enum BoundaryCheck {
     AddressUnitsPositive,
     /// Wrong units, narrowed addresses and untranslated addresses are violations.
     AddressUnitsNegative,
+    /// Exact B/H/W/D values, low-width stores and whole-region access behavior.
+    DataAccessPositive,
+    /// Malformed success shapes and a reversed-byte provider are typed violations.
+    DataAccessNegative,
 }
 
 impl BoundaryCheck {
@@ -30,6 +36,8 @@ impl BoundaryCheck {
         match self {
             Self::AddressUnitsPositive => address_units_positive(),
             Self::AddressUnitsNegative => address_units_negative(),
+            Self::DataAccessPositive => data_access::positive(),
+            Self::DataAccessNegative => data_access::negative(),
         }
     }
 }

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0115 (leaf P4-SYSTEM.13 c4b) — realize data-width and memory-attribute assumptions
+
+- Add a v2 assumption with direct typed positive/negative registry evidence:
+  literal B/H/W/D bytes, low-width stores, executable memory and whole failures.
+- Twelve malformed/reversed-byte cases and a disabled content-auditor control
+  discriminate. Rust 157/17/195 passes; all prior entries/frozen bytes exact.
+  G-CONTRACT 52/108; three assumptions remain and v2 stays open.
+
 ## SEMULITH-P4-0114 (leaf P4-SYSTEM.13 c4a) — validate environment success responses
 
 - Repair confirmed wrong-family and silently accepted over-wide provider answers.

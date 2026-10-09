@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c3 (`2026-10-09`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c4b (`2026-10-09`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -22,7 +22,7 @@ cross-record checks. This containment change adds no contract credit. See
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
-| v2 | open; `.13` owns completion/freeze | 7 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority and physical byte addresses; four boundary assumptions remain |
+| v2 | open; `.13` owns completion/freeze | 8 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current route, fault priority, physical byte addresses and data access; three boundary assumptions remain |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -36,7 +36,8 @@ cross-record checks. This containment change adds no contract credit. See
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
 | Address units | **in scope — physical 8-bit bytes** | `OB-GC-ENV-ADDRESS-UNITS` (v2): full unsigned 64-bit addresses; translated instruction/data accesses and physical PTE reads; direct typed pair |
-| Data widths/attributes, reset, ordering, event delivery | **remaining named gaps** | Four GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
+| Data widths/attributes | **in scope — B/H/W/D, little-endian main memory** | `OB-GC-ENV-DATA-ACCESS` (v2): whole responses, low-width stores, executable bytes, no MMIO; direct typed pair |
+| Reset, ordering, event delivery | **remaining named gaps** | Three GC-specific assumptions await `.13`; time/fetch/partial progress and code visibility already have GC dispositions |
 
 ## The four v1 assumptions — and what would make each false
 
@@ -65,7 +66,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-direct physical-address pair, 50 checks are realized in the effective contract;
+two direct boundary pairs, 52 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -220,5 +221,29 @@ consumed. Wrong kinds and Load values wider than the requested B/H/W width are
 typed contract violations; D permits the full u64 range. Valid values, legitimate
 target failures and existing violations pass unchanged. This repairs the observed
 wrong-family and silently accepted over-wide responses without adding contract
-credit. Four core controls include the exact real-engine reproduction; the next
-slice still owns the explicit data-width/physical-attribute assumption and pair.
+credit. Four core controls include the exact real-engine reproduction. The c4b section
+below supplies the explicit data-width/physical-attribute assumption and pair.
+
+## Data widths and physical memory attributes (P4-SYSTEM.13 c4b)
+
+OB-GC-ENV-DATA-ACCESS supplies exact B/H/W/D raw values and whole-request
+responses from executable little-endian main memory, without MMIO. Stores write
+only the low requested bytes; failed stores write none. The CPU's selected
+alignment-before-translation rule remains OB-GC-FAULT-PRIORITY-V2.
+
+The direct pair uses literal bytes, values and instruction words for all four
+widths. Direct high-input-bit stores independently test the provider's low-byte
+behavior; actual CPU stores also test their narrowed requests. Eight region-edge
+load/store failures deliver causes 5/7, preserve the destination and all memory,
+and retain the original instruction/address in mepc/mtval. Twelve negative
+cases cover eight wrong-kind answers, three over-wide raw loads and one
+reversed-byte answer. They remain typed violations without trap/destination effects.
+
+ResponseValueMismatch is emitted by a fixture-only content auditor with an
+independent byte witness; ordinary CPU validation checks kinds/widths and cannot
+infer memory contents. A valid-content control passes, while disabling the auditor
+makes the reversed-byte negative fixture fail. This is finite provider evidence.
+All 50 prior registry entries and frozen parts/memberships remain byte-exact.
+The effective census is 54 obligations / 108 checks, 52 realized: thirteen scope
+pairs, eleven guest pairs and two typed boundary pairs. Three assumptions remain;
+v2 is open.

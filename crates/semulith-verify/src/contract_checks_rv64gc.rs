@@ -29,9 +29,23 @@ pub struct ContractCheck {
 /// The realized checks: v1's four environment assumptions and its two superseding
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
-/// `.13` adds eleven scope pairs, three current guarantees and the typed address-unit pair;
+/// `.13` adds eleven scope pairs, three current guarantees and two typed boundary pairs;
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-GC-ENV-DATA-ACCESS-POS",
+        obligation: "OB-GC-ENV-DATA-ACCESS",
+        evidence: Evidence::Boundary(
+            crate::contract_boundary_rv64gc::BoundaryCheck::DataAccessPositive,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-GC-ENV-DATA-ACCESS-NEG",
+        obligation: "OB-GC-ENV-DATA-ACCESS",
+        evidence: Evidence::Boundary(
+            crate::contract_boundary_rv64gc::BoundaryCheck::DataAccessNegative,
+        ),
+    },
     ContractCheck {
         id: "CHK-GC-ENV-ADDRESS-UNITS-POS",
         obligation: "OB-GC-ENV-ADDRESS-UNITS",
