@@ -235,7 +235,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | cache ready; LIVE-CONTAINMENT.4 archive prerequisite, then e1d staging / e2 bind |
+| 1 | `P4-SYSTEM.12` | `active` | cache ready; archive sealed and hosted CI verified; e1d staging / e2 bind next |
 
 ## Decisions
 

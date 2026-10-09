@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-08`
-- **Status:** `active`
+- **Status:** `fulfilled` — all three hosted workflows passed on the repaired pushed revision
 - **Owner / source:** director instruction, `2026-10-08`; owned by CI-RECOVERY.4
 
 ## The decision
@@ -37,3 +37,17 @@ range; their presence does not extend this approval to unrelated future pushes.
 No authority to terminate Kimi Code or sanction its process is granted here.
 
 Related: [[decision_push-cadence]]. Workflow: `COMMIT.md`.
+
+## Fulfillment — observed after crash recovery, 2026-10-09
+
+`gh run list --commit 76882c8c710db3163fed31ffec583a8c1eed49bc` reports
+`completed` / `success` for all three workflows on that exact repaired pushed SHA:
+
+- [Rust](https://github.com/rdje/semulith/actions/runs/37805020620).
+- [Doctrines](https://github.com/rdje/semulith/actions/runs/37805020628).
+- [Portability](https://github.com/rdje/semulith/actions/runs/37805020582), including
+  both native hosts, manifest agreement and both 153-test interpreted targets.
+
+Portability completed at `2026-10-08T16:28:37Z`; the approval expired when the
+last workflow passed. Ordinary cadence now applies, including to the local recovery
+receipt. No further push is made under this authorization.

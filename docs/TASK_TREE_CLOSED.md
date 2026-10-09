@@ -11,6 +11,7 @@ tree, and an open tree here — or a completed one there — is a breach.
 <!-- ANCHOR: closed -->
 | Tree | Status | Outcome | Owner |
 | --- | --- | --- | --- |
+| [`CI-RECOVERY`](tasks/CI-RECOVERY.md) | `done` | — (4/4 leaves done; all three hosted workflows pass at 76882c8; scoped push approval expired; actual handoff census clear) | repo-local |
 | [`SEMULITH-TREES`](tasks/SEMULITH-TREES.md) | `done` | — (4/4 leaves complete) | repo-local |
 | [`P0-PROFILE`](tasks/P0-PROFILE.md) | `done` (reopened once, for `.10` — a measured defect the first nine leaves carried) | — (10/10 leaves complete) | repo-local |
 | [`P1-LAB`](tasks/P1-LAB.md) | `done` (reopened once, for `.13` — the `.11` allocation figures had to be proven, not reported) | — (13/13 leaves complete; gate G1 RUN, verdict `incomplete` — criterion 6 routed to the P2-SCALAR tree) | repo-local |

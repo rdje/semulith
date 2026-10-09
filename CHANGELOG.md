@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-CI-0010 (leaf CI-RECOVERY.4, slice f) — interrupted CI recovery closed
+
+- Recover the staged receipt after the machine crash. Hosted Rust, doctrines and
+  every portability leg pass on 76882c8; both Miri targets pass 153/153. Retire the
+  scoped push approval and preserve interpreter-time versus external wall-time evidence.
+  Authorized Kimi closure clears the actual handoff census; close the tree 4/4 and
+  leave P4 staging for the next session. All six books build; doctrine gates verify the commit.
+
 ## SEMULITH-CI-0009 (leaf CI-RECOVERY.4, slice e) — cold parcel probe owns its CSR inputs
 
 - Copy profile/state metadata into the temporary composition and encode the valid

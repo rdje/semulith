@@ -18,23 +18,22 @@ strict Rust lint on 1.99, book provisioning and a cold Miri log path, despite a 
 local pre-push suite on 1.95. CI-RECOVERY.1 repairs the Rust lints with the exact newer
 toolchain; benchmark tests and independent SHA comparisons preserve results. CI-RECOVERY.2 provisions digest-verified mdBook 0.5.4 before
 the book gate, with Rust, Cargo and temporary stores rooted in the repository. A cold
-native check builds all registered books; Linux execution remains a hosted obligation.
+native check builds all registered books; the repaired hosted doctrine run confirms Linux execution.
 CI-RECOVERY.3 repairs cold output/provisioning paths and truthful portability verdicts.
 Its native and big-endian interpreted core runs each pass all 153 tests; full local CI
-also passes on Rust 1.99. Hosted green still requires a successful run on a permitted push. A local green result alone cannot close that obligation.
+also passes on Rust 1.99. Hosted green requires a successful run on a permitted push. A local green result alone cannot close that obligation.
 
-The director has approved the pushes needed for this CI recovery without asking
-again (`decision_ci-recovery-push-approval`). Every push still uses
-`scripts/approved_push.sh`: full local CI, a committed approval record, then the
-guarded push. When all three workflows pass on the repaired pushed revision, this
-exception expires and the normal cadence resumes.
+The director approved the pushes needed for this CI recovery without asking
+again (`decision_ci-recovery-push-approval`). Each used `scripts/approved_push.sh`:
+full local CI, a committed approval record, then the guarded push. All three
+workflows now pass on repaired revision `76882c8`; that exception has expired and
+the normal cadence applies again.
 
 The first authorized recovery push is `f4364bc`: both required local full suites
-passed, and the approval record traveled in that commit. Hosted Rust, both native
-portability hosts and their manifest agreement pass. The doctrine job provisions
-mdBook, then refuses a GUEST-GEN self-test whose diagnostic was hidden by its wrapper;
-native Miri passes and big-endian interpretation is still running. CI-RECOVERY.4 owns the unresolved refusal
-and exact run URLs. Hosted success remains pending.
+passed, and the approval record traveled in that commit. Hosted Rust and every
+portability leg pass there, including both 153-test interpreted targets. The doctrine
+job provisions mdBook, then refuses a GUEST-GEN self-test whose diagnostic was hidden
+by its wrapper. CI-RECOVERY.4 preserves the failure and exact run URLs.
 
 GUEST-GEN now retains the full self-test output in `target/guest-gen/self-test.log`,
 prints the interpreter version and a bounded tail on failure, and keeps its refusal
@@ -46,8 +45,15 @@ temporary unit copied its encoding but omitted its profile and CSR state. Copyin
 those owners removes its dependency on a warm external CSR table; the deliberately
 unmodeled CSR uses its explicit address. `probe_gc_parcel_guest.py --cold` runs the
 public probe from a temporary snapshot of tracked inputs without reference caches.
-Its permanent GUEST-GEN control passes locally, alongside the prior mutations;
-hosted confirmation still requires the next approved recovery push.
+Its permanent GUEST-GEN control passes locally, alongside the prior mutations.
+The second recorded recovery push, `76882c8`, passes hosted Rust, the entire
+doctrine enforcer and every portability leg. Its native x86-64 Linux and ARM64
+macOS manifests agree; native and powerpc64 Miri each pass 153 tests, none failed
+or ignored. The exact run receipts retire the scoped push exception.
+
+Miri's printed test durations use its default simulated clock. External GitHub step
+timestamps supply wall-time evidence; the timing reference records the observed
+difference. Test counts remain exact, and isolation stays enabled.
 
 Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
 open repository file handles, including read-only editor handles. A refused census
@@ -55,6 +61,11 @@ remains visible even when verification jobs have finished. Closing another edito
 requires appropriate authority; a standing exemption requires the director's ruling
 in `doctrine/sanctioned_processes.tsv`. An exemption changes the handoff census only;
 tracked-content gates remain enforced.
+
+During the 2026-10-09 crash recovery, the actual census found Kimi Code still holding
+two read-only AGENTS.md handles. The director authorized its closure; SIGTERM stopped
+the app and five helpers, and the actual census then reported `handoff: OK`.
+CI-RECOVERY closes 4/4 with both hosted and local handoff obligations verified.
 
 ## The universal registry
 

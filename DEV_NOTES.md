@@ -1,5 +1,18 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — recover hosted proof and preserve its clocks (CI-RECOVERY.4 f)
+
+The crash left this receipt staged. Rust, doctrines and all portability legs pass
+at 76882c8 after the cold CSR fixture fix; the exact-SHA artifacts confirm native
+and endian each pass 153/153. The scoped push approval is fulfilled. First run's reported
+1294-second durations differ from GitHub's 771/779-second step spans: Miri's default
+isolation simulates clocks. Preserve raw receipts, use external time for elapsed
+comparisons, and leave isolation unchanged. Promotion recorded in the timing reference.
+The sandbox's census is invalid because ps is denied. The actual census finds Kimi
+with two read-only AGENTS.md handles; the director authorizes closure. SIGTERM stops
+the app and five helpers, zero survivors; the actual census then reports handoff: OK.
+CI-RECOVERY closes 4/4; P4 staging is the next action, left for the resumed session.
+
 ## _(2026-10-08)_ — warm reference data masked an incomplete fixture (CI-RECOVERY.4 e)
 
 A tracked-only snapshot reproduces the parcel probe's mtvec failure: its temporary

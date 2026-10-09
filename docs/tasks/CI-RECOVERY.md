@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `CI-RECOVERY`
-- Status: `active`
+- Status: `done`
 - Roadmap lane: cross-cutting verification / zero-defect ownership; no milestone credit
 - Created: `2026-10-08`
 - Owner: repo-local workflow
@@ -29,7 +29,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 ## Task Tree
 
 - ID: `CI-RECOVERY`
-  Status: `active`
+  Status: `done`
   Goal: restore hosted CI and truthful validation claims
   Children: `CI-RECOVERY.1`, `CI-RECOVERY.2`, `CI-RECOVERY.3`, `CI-RECOVERY.4`
 
@@ -61,7 +61,7 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   Commit: SEMULITH-CI-0003 (slice a), SEMULITH-CI-0004 (confirmation/closure)
 
 - ID: `CI-RECOVERY.4` — local/hosted evidence and follow-through
-  Status: `active`
+  Status: `done`
   Goal: run make ci after all repairs, record toolchain differences and omitted/absent
   legs honestly, and observe all workflows after the next cadence/approved push.
   Acceptance: no remote-green claim from local checks; failures owned until verified.
@@ -103,16 +103,36 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
   GUEST-GEN GREEN arm for it. Own the updated derived control count and live/book
   mirrors before edits. Copy only regular project inputs; no Git repository is
   created and no external cache is changed. Existing eight mutation controls remain.
-  Verification: pending
-  Commit: pending
+  Monitoring receipt slice (f): own the completed second approval act at 76882c8,
+  its three hosted run pointers and the first run's 153/153 native/endian artifacts.
+  Also own the timing correction: interpreted test-reported seconds differ from
+  GitHub step wall time; verify the published Miri isolation contract and record
+  a reference/index plus live/book correction without changing test isolation.
+  Crash recovery completion (2026-10-09), before edits: preserve the interrupted
+  staged slice (f), verify the three run conclusions at the full pushed SHA and
+  download its Miri artifacts. Own closure of this leaf/tree, retirement of the
+  scoped push approval, active/closed indexes, next-action and P4 frontier mirrors,
+  live/book/log updates and the final actual handoff census. Stop after the clean
+  checkpoint; do not begin P4 staging or push under the expired authorization.
+  Verification: all three hosted workflows pass at 76882c8; native/endian Miri
+  153/153 each; scoped push approval expired; authorized Kimi closure followed by
+  actual unsandboxed `handoff: OK`, rc=0
+  Commit: SEMULITH-CI-0010
 
 ## Current Frontier
 
-| Order | Leaf | Status | Why next |
-| --- | --- | --- | --- |
-| 1 | `CI-RECOVERY.4` | `active` | recovery pushes approved; observe hosted workflows and resolve reader census |
+None — all four leaves are complete. Stop at the recovered handoff checkpoint.
+The next implementation action remains P4-SYSTEM.12 e1d C/count staging; it has
+not begun during this recovery.
 
 ## Decisions
+
+- `2026-10-09`: director authorizes forcing Kimi Code to quit/close or release
+  its AGENTS.md handles during recovery. Revalidated OS process 733 is the exact
+  Kimi Code executable, parent 1, with five helper children. This authorizes
+  termination of that app family and a fresh actual handoff census; no standing
+  exemption is added. The earlier no-termination constraint is superseded only
+  for this explicitly authorized closure.
 
 - `2026-10-08`: director approves pushes needed to fix GitHub CI without asking
   again, until GitHub CI passes; then ordinary cadence resumes. Durable authority:
@@ -139,25 +159,67 @@ verify their exact cold-run triggers and distinguish local evidence from hosted 
 
 ## Open Questions
 
-- Handoff census at fc21b8f returns rc=1 for Kimi Code PID 1292. Targeted public
+- Historical handoff census at fc21b8f returns rc=1 for Kimi Code PID 1292. Targeted public
   lsof reports descriptors 55 and 59, both access mode `r`, on AGENTS.md; no other
   repository handles were reported for that PID. This establishes an open reader,
   not a project verification job or a claim about the app's other activity. The
-  existing census intentionally counts every repository file handle. Ask the
-  director to close Kimi or sanction its process per doctrine/sanctioned_processes.tsv
-  before handoff; no exemption or process termination has been performed.
+  existing census intentionally counts every repository file handle. This historical
+  question is resolved by the director-authorized closure below; no exemption was added.
+
+- `2026-10-09` recovery: the sandbox denies `ps` (rc=126), so the sandboxed
+  census's apparent rc=0 is invalid evidence. The actual unsandboxed census returns
+  rc=1 for Kimi Code PID 733. Targeted `lsof -a -p 733 -Fpfan` identifies read-only
+  AGENTS.md descriptors 84 and 86. No app termination or exemption was inferred from
+  the crash. The director subsequently authorized closure: SIGTERM stops PID 733
+  and all five identified helpers, zero survivors, rc=0; SIGKILL is unnecessary.
+  The fresh unsandboxed census prints `handoff: OK`, rc=0. No open question remains.
 
 ## Blockers
 
-- Hosted result pending the authorized recorded push and exact-SHA workflow runs.
-- doctrines run 37800113792 failed its GUEST-GEN self-test; inner output was
-  suppressed by the wrapper. Tracked-only fixture reproduces missing CSR-state
-  metadata in the parcel probe; fix and verify on GitHub before closure. Rust,
-  both native portability hosts and manifest agreement already pass.
-- The handoff census remains refused until Kimi closes or the director explicitly
-  sanctions its process. Owned by `.4` with priority before handoff.
+- None. Repaired pushed SHA 76882c8 passes Rust, doctrines and portability;
+  authorized Kimi closure clears the actual handoff census. The scoped push
+  approval has expired; ordinary cadence applies.
 
 ## Acceptance Checklist
+
+`.4` monitoring/recovery slice (f), 2026-10-08–2026-10-09, SEMULITH-CI-0010:
+
+- [x] **ROOT CAUSE** — first doctrine failure is locally reproduced and repaired
+  in (e). Second act exits rc=0 and pushes 76882c8 with SEMULITH-PUSH-0002. The
+  machine crash leaves eight documentation files staged and the monitoring commit
+  unfinished. `gh run list --commit 76882c8c710db3163fed31ffec583a8c1eed49bc`
+  now reports all three workflows `completed` / `success` on that exact SHA.
+- [x] **ADDRESSED** — save second run IDs/URLs and first Miri artifacts in the
+  tree/book and retire the scoped approval in its decision/index and COMMIT.
+  `gh run download 37805020582 --name miri-logs` exits rc=0; both repaired-SHA
+  logs report 153 passed, zero failed/ignored. First-run logs also report 153/153.
+  Their 1294.44/1294.07 printed seconds differ from external 771/779
+  step seconds; published Miri isolation replaces clocks, and runner/Cargo configure
+  no disable flag. Durable timing reference preserves raw values and clock identity.
+  Director-authorized SIGTERM closes Kimi plus five helpers, zero survivors, rc=0;
+  the fresh unsandboxed census reports `handoff: OK`, rc=0, with no exemption added.
+- [x] **NO REGRESSION** — `git diff --name-only 76882c8 -- .githooks scripts .github
+  Cargo.toml Cargo.lock crates` is empty, rc=0; make book rc=0. No isolation or
+  other verification setting changes. Hosted doctrine log has pinned mdBook 0.5.4
+  verified and `=== all doctrines green ===`; all-three-green now has exact-SHA evidence.
+  Recovery rerun: `FRONTIER-SYNC: ok (33 tree(s) mirrored by docs/TASK_TREE.md)`;
+  `TREE-CLAIMS: ok (4 live document(s) state nothing the trees contradict)`;
+  working and staged `git diff --check` rc=0; all six books build.
+- [x] **FIX / LOCKSTEP** — reference/index, MEMORY, logs, task and book. P4 stays
+  11/18; 38/600 and 37 routes unchanged. First hosted run remains historical;
+  the repaired revision's portability result closes the hosted obligation.
+  Close this tree 4/4 and move its completed row into docs/TASK_TREE_CLOSED.md;
+  next implementation stays P4-SYSTEM.12 e1d, unstarted in this recovery.
+  promotion: completed (docs/decisions/reference_miri-reported-time-is-simulated.md).
+
+The first slice (f) commit hook refused its ADDRESSED box because the printed
+semicolon-separated test counts were not an accepted evidence token. Recorded the
+actual artifact-download rc=0 in that box; the checker and historical boxes are unchanged.
+
+The recovered commit's first hook run refuses LIVE_STATUS.md at 6,163 bytes,
+above its 6,144-byte ceiling. The new P4 note is shortened while preserving its
+status and next action; no ceiling changes. Books/frontier/whitespace checks had
+passed before that attempt; the complete hook is rerun on the corrected staged set.
 
 `.4` cold-input repair slice (e), 2026-10-08, SEMULITH-CI-0009; hosted confirmation pending:
 
@@ -378,6 +440,36 @@ Discovery receipt only; the four repair leaves remain proposed and unverified.
 
 ## Verification Log
 
+Crash recovery, `2026-10-09`: HEAD/index intact at 76882c8; eight documentation
+files staged, no implementation diff against that pushed SHA. Exact-SHA `gh run
+list` reports all three workflows completed/success. Portability's four jobs pass:
+native Linux, native macOS, byte-identical manifest agreement and Miri. The Miri job
+completes at `2026-10-08T16:28:37Z`; its native and cross-endian artifact logs each
+report `test result: ok. 153 passed; 0 failed; 0 ignored`, none filtered out.
+Downloaded via `gh run download 37805020582 --name miri-logs`, rc=0, into
+target/ci-recovery/hosted-miri-2/. The previous pending receipt is preserved below
+as the state observed before the interruption; it is superseded by this completion.
+
+Actual unsandboxed handoff census rc=1, Kimi PID 733 with two read-only AGENTS.md
+handles (84/86); no session verification worker remains. Sandboxed census rc=0
+is discarded because public `ps` returns `Operation not permitted`, rc=126.
+Director then authorizes closure. Revalidated app family: PID 733 plus helpers
+1282/1284/1291/1355/1567. SIGTERM stops all six, zero survivors, rc=0; no SIGKILL
+or exemption is used. Actual census after closure: `handoff: OK`, rc=0; five
+inherited-cwd/no-handle session processes are advisory only. Both obligations
+are complete; this local recovery receipt is not pushed under the expired exception.
+
+Second approved act: target/ci-recovery/approved-push-2.log rc=0, both full suites
+green; SEMULITH-PUSH-0002 at 76882c8c710db3163fed31ffec583a8c1eed49bc. Hosted
+rust and doctrines succeed; portability queued at this receipt:
+
+- rust: https://github.com/rdje/semulith/actions/runs/37805020620
+- doctrines: https://github.com/rdje/semulith/actions/runs/37805020628
+- portability: https://github.com/rdje/semulith/actions/runs/37805020582
+
+First portability 37800113741 succeeds: both native hosts and manifest agreement;
+native Miri/endian each 153/153 in target/ci-recovery/hosted-miri-1/{miri,cross}.log.
+
 Cold-input receipts under target/ci-recovery/: guest-cold-parcel-before.log has the
 mtvec failure; guest-cold-parcel-after.log and guest-permanent-cold-green.log pass.
 guest-cold-missing-metadata-red.log / guest-cold-external-csr-name-red.log each rc=1;
@@ -403,6 +495,8 @@ All three hosted runs started at 2026-10-08T15:21:39Z on that exact SHA; initial
 | `2026-10-08` | discovery | gh run list/view, current-path diff, toolchain versions | three failures remain; roots and priority owned above |
 
 ## Commit Log
+
+`SEMULITH-CI-0010 (leaf CI-RECOVERY.4): recover interrupted session and close hosted CI recovery` — all-three-green verified; scoped push approval retired; actual handoff census clear.
 
 `SEMULITH-CI-0009 (leaf CI-RECOVERY.4): make parcel author controls independent of warm CSR reference data` — local cold reproduction/fix; hosted next.
 

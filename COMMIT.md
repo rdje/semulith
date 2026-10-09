@@ -104,12 +104,11 @@ index them regardless of what happens here afterwards. So the two acts are gover
 - ⛔ **An agent may not supply that approval on its own judgement.** The single failure this rule
   exists to prevent is a capable assistant deciding, reasonably and unilaterally, that this
   particular push is surely fine.
-- **Current CI recovery is already approved** by the director (`2026-10-08`): perform
-  the pushes needed to repair GitHub CI without asking again, through the same full-suite
-  and recorded approval act. This authorization expires when rust, doctrines and portability
-  pass on the repaired pushed revision; ordinary cadence then applies again. Scope and expiry:
-  `docs/decisions/decision_ci-recovery-push-approval.md`. It grants no standing exception
-  for unrelated work or later CI failures.
+- **The 2026-10-08 CI-recovery push approval has expired.** Rust, doctrines and
+  portability all pass on repaired pushed revision `76882c8`; the successful runs
+  are recorded in `docs/decisions/decision_ci-recovery-push-approval.md`.
+  Ordinary cadence applies again. That completed authorization grants no exception
+  for this recovery receipt, unrelated work or later CI failures.
 - The `pre-push` hook refuses rather than warns, because a warning at an outward-facing boundary is
   read after the bytes have left. Check the current standing at any time:
 
