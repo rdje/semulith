@@ -205,7 +205,7 @@ This gate authorises the planned next engineering stage: board implementation.
   all five legs; C-leaf acceptance does not close CPU-SYSTEM (8/10 axes open).
   Plans/receipts/logs: archive parts 5/6; C chapter is the review narrative.
 - ID: `P4-SYSTEM.13` — **environment contract v2** — `G-CONTRACT`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
+  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution `2026-10-09`, `SEMULITH-P4-0105`)
   Goal: the effective contract complete and realized — rv64i's base boundary assumptions
   restated for this unit; the stale frozen v0 statements superseded; M's and C's guarantees;
   every declared check realized in the unit's registry (a static realization for a scope
@@ -252,12 +252,167 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.13` | `pending` | complete/realize effective contract v2, then freeze |
+| 1 | `P4-SYSTEM.13` | `active` | census/design, complete/realize effective contract v2, then freeze |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.13` execution plan (`2026-10-09`, `SEMULITH-P4-0105`)
+
+Ownership precedes changes. Read ROADMAP P4, CPU_ENVIRONMENT, the v1 book chapter,
+ENVIRONMENT, all 55 obligation records, version membership, registry/tests, typed
+boundary, FlatMemory and the GC runner before implementation. The shared
+gate_report.contract_measure reports 53 effective obligations / 106 checks,
+20 realized. Frozen v0/v1 records and pins must remain byte-identical.
+
+Bounded units, each verified and committed before the next:
+
+1. **Census/design**: enumerate effective records with their actual realization
+   method, remaining boundary assumptions and stale statements. Resolve questionable
+   wording with a diagnostic before classifying it. Produce the user-readable v2
+   plan and a reproducible inventory; no premature G-CONTRACT credit.
+2. **Versioned declarations**: add unit-specific boundary assumptions and replace
+   stale inherited records in open v2, preserving every frozen line. Re-answer the
+   hidden-state consequence against the actual state inventory. Each declared
+   contract violation must remain distinct from a target exception.
+3. **Scope checks**: realize dossier/configuration obligations with explicit static
+   predicates and independent negative controls; extend the registry to name what
+   actually runs. A passing unrelated guest cannot realize a scope declaration.
+4. **Execution/boundary checks**: bind remaining guarantees to discriminating corpus
+   or direct typed-boundary fixtures; add missing fixtures where the census finds
+   no adequate evidence. Run every registry entry and refuse missing/misbound ids.
+5. **Signoff/freeze**: only after all effective checks run, freeze v2 with exact
+   member pins, regenerate GS, verify the gate's verdict and full local CI, then
+   close .13. .14 retains requirement-status/experiment-record/registration work.
+
+No implementation-language, backend, board or observation-vocabulary expansion
+is authorized by this plan. Static checks establish declared scope and its
+consistency, not universal instruction correctness. Runtime checks retain their
+finite corpus and boundary scope.
+
+### `.13` census and dispositions (slice a)
+
+Reproduction uses the existing single owner, not another effective-contract parser:
+`gate_report.contract_measure(Path("profiles/rv64gc-lab-v0"),
+records_sexp.load(Path("profiles/rv64gc-lab-v0/contract-obligations.sexp")))`.
+Group its declared `(obligation, check)` pairs by obligation; join records by id.
+Measured 55 total records, 53 effective, 106 checks, 20 realized. The two excluded
+records are the v1 supersessions OB-GC-PRIV-INSNS and OB-ECALL-EBREAK. JSON receipt:
+`target/p4-system-13/a/inventory.json` (regenerable, not required by builds).
+
+This table is the **planned realization**, not credit for checks not yet registered.
+POS/NEG details must be reviewed against each guest's actual instructions and
+expectations during slice d; a fixture name alone is insufficient evidence.
+
+| Effective obligation | Registered checks | Planned realization / disposition |
+| --- | --- | --- |
+| `OB-GC-COMPOSITION` | 0/2 | Static: exact profile/encoding extension set |
+| `OB-EXT-CLOSURE` | 0/2 | Static: dependency closure including D/F/Zicsr and Zca/Zcd |
+| `OB-PRIV-REVISION` | 0/2 | Static: source ids, versions and digest pins |
+| `OB-PRIV-MODES` | 0/2 | Runtime: mm-ecall-modes / mm-csr-legality-u; static mode set |
+| `OB-SV39` | 0/2 | Runtime: sv39-translate-4k/2m/1g / sv39-fault-canonical |
+| `OB-SVADE` | 0/2 | Runtime: sv39-translate-4k / sv39-svade; assert PTE unchanged |
+| `OB-FAULT-PRIORITY` | 0/2 | Replace in v2: distinguish triggers from environment break |
+| `OB-GC-PARTIAL-PROGRESS` | 2/2 | Registered: injected carrier/atomic/FP faults and CSR refusal |
+| `OB-IALIGN-16` | 0/2 | Runtime: c-links / c-page-straddle; static ILEN/IALIGN |
+| `OB-ZICNTR` | 0/2 | Runtime: mm-counters / mm-csr-ro-counters; static scope |
+| `OB-SSTC` | 0/2 | Runtime: i-timer / mm-stimecmp |
+| `OB-FP-DEFER` | 0/2 | Replace in v2: qualified backend identity and evidence limits |
+| `OB-ABI` | 0/2 | Static: LP64D choice, pinned toolchain contract; no ABI-run claim |
+| `OB-SBI` | 0/2 | Static: future firmware requirement; no implemented SBI claim |
+| `OB-CSR-SET` | 0/2 | Static: all 33 CSR identities/storage/views; runtime permission fixtures |
+| `OB-NO-PMP` | 0/2 | Static: explicit exclusion and absence from CSR/definition selection |
+| `OB-NO-H` | 0/2 | Static: explicit exclusion, mode set and extension selection |
+| `OB-RVWMO` | 0/2 | Static: one-hart selected legal sequential subset; runtime aq/rl fixture |
+| `OB-PRIV-INSNS` | 0/2 | Static four-form scope plus runtime mm-mret/mm-sret/mm-wfi/mm-sfence |
+| `OB-RESOLUTION-ROUTE` | 0/2 | Replace together with OB-ROUTE-FLIP by current definition record |
+| `OB-ROUTE-FLIP` | 0/2 | Replace together with OB-RESOLUTION-ROUTE; no historical slot counts |
+| `OB-SCOPE-CENSUS` | 0/2 | Static: scope enumeration equals complete composed definitions/pseudos |
+| `OB-ALU-IMM` | 0/2 | Runtime: scope-alu / bound-arith,bound-ext |
+| `OB-ALU-REG` | 0/2 | Runtime: scope-alu / bound-arith,bound-alias |
+| `OB-ENDIAN` | 0/2 | Direct boundary: byte-order fixture / reversed-byte control |
+| `OB-FENCE` | 0/2 | Runtime: fault-fence,scope-mem / reserved fm/pred/succ fixture |
+| `OB-JALR-LSB` | 0/2 | Runtime: dir-chain / fault-jalr-mis (now legal halfword target) |
+| `OB-LOAD-EXT` | 0/2 | Runtime: dir-ext-matrix / bound-ext; boundary low-bit stores |
+| `OB-LOAD-X0` | 0/2 | Runtime: dir-x0-writes / fault-ld-x0-fault,fault-ld-x0-mis |
+| `OB-LUI-AUIPC` | 0/2 | Runtime: smoke-arith / bound-arith |
+| `OB-NO-DELAY-SLOTS` | 0/2 | Runtime: scope-branch / dir-cmp-branch,dir-chain |
+| `OB-SHAMT` | 0/2 | Runtime: bound-shift / bound-shiftw,fault-shiftw-res |
+| `OB-WSUFFIX` | 0/2 | Runtime: bound-arith / bound-shiftw,bound-ext |
+| `OB-XLEN` | 0/2 | Static width plus runtime bound-arith / it-fault-wrap-ld |
+| `OB-GC-CSR-ACCESS` | 0/2 | Runtime: mm-csr-rw / mm-csr-ro-write,mm-csr-legality-s/u |
+| `OB-GC-COUNTERS` | 0/2 | Runtime: mm-counters / mm-csr-ro-counters |
+| `OB-WALK-IMPLICIT` | 0/2 | Direct boundary request-kind witness; runtime inj-walk-l2/l1/l0 |
+| `OB-GC-ATOMICS` | 0/2 | Runtime: a-amo-arith/minmax-w/d / a-lrsc-mustfail,a-amo-sv39 |
+| `OB-GC-FENCEI` | 0/2 | Runtime: fencei-selfmod / fencei-reserved |
+| `OB-GC-F` | 0/2 | Runtime: all f-* and fp-* fixtures; independent numeric vectors |
+| `OB-GC-D` | 0/2 | Runtime: all d-* fixtures; independent numeric vectors |
+| `OB-RESERVATION` | 0/2 | Runtime: a-lrsc-pair / a-lrsc-fault,a-lrsc-mustfail |
+| `OB-SC-DETERMINISTIC` | 0/2 | Runtime: a-lrsc-loop / a-lrsc-mustfail |
+| `OB-ATOMIC-MISALIGN` | 0/2 | Runtime: aligned a-lrsc-pair / a-lrsc-illegal,a-amo-overlap |
+| `OB-GC-ENV-TRANSLATION-INPUTS` | 2/2 | Registered: translation/Svade vs refused walk reads |
+| `OB-GC-ENV-INTERRUPT-SOURCES` | 2/2 | Registered: timer/software pending vs nonexistent sources |
+| `OB-GC-ENV-VIRTUAL-TIME` | 2/2 | Registered: counters/timer vs halted retirement |
+| `OB-GC-ENV-RESERVATION-EVENTS` | 2/2 | Registered: constrained loop/pair vs hart-caused failure |
+| `OB-GC-PRIV-INSNS-V1` | 2/2 | Registered: wait/fence and permissions/wake without delivery |
+| `OB-GC-ECALL-EBREAK-V1` | 2/2 | Registered: modes/breakpoint and delegated delivery |
+| `OB-GC-M` | 2/2 | Registered: multiply/word and divide/alias edge cases |
+| `OB-GC-C` | 2/2 | Registered: all 28 C guests |
+| `OB-GC-ENV-FETCH-SUPPLY` | 2/2 | Registered: page-end/link vs straddle/fetch fault |
+
+#### Boundary closure
+
+Five new assumptions are needed: address units, access widths/physical memory
+attributes, event-delivery point, ordering, and cold reset. The scalar contract's
+eight assumptions minus fetch leave seven, but virtual time already has a v1
+replacement and partial progress is covered by the GC guarantee plus atomic
+responses. Code visibility is OB-GC-FENCEI and the typed memory provider. Do not
+copy scalar rules saying no asynchronous interrupt, 32-bit fetch, no memory-model
+claim or integer-only reset into this composition.
+
+The five new records must state physical requests versus translated guest VAs,
+8-bit byte addresses, B/H/W/D data widths, exact full responses or failures,
+alignment before translation, executable main memory without MMIO, little-endian
+storage, instruction-boundary interrupt evaluation, one-hart sequential ordering
+as a legal RVWMO subset, and the full declared cold state. Negative response-shape
+or schedule fixtures are **contract violations**, not architectural trap causes.
+Warm reset, external IRQ sources and multi-agent reservations remain out of scope.
+
+#### Stale wording owned and scheduled for slice b
+
+- OB-FP-DEFER: replace the qualification-stage wording by the qualified backend and
+  finite numeric-evidence limits; preserve shared-ancestry constraints.
+- OB-RESOLUTION-ROUTE and OB-ROUTE-FLIP: one current generated-definition record
+  replaces both historical stage statements. Validate current scope, not stale
+  62-guest/six-slot counts. Original records stay frozen; requirement-status work
+  remains .14's.
+- **Additional defect, reproduced**: OB-FAULT-PRIORITY says "no breakpoint exists
+  (no Sdtrig)" although EBREAK and C.EBREAK deliver cause 3. RVP-MACHINE Table 7
+  distinguishes instruction/data address triggers from environment break.
+  Rehashed the pinned public machine.html: SHA-256
+  b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea.
+  c-breakpoint.expected.sexp step 4 reads mcause=3. Root cause: a blanket absence
+  phrase used for the absent address-trigger rows. Impact: contradictory effective
+  contract prose, not an observed engine fault. Supersede the frozen record in v2
+  with precise wording; annotate the old decision without rewriting its mirrored
+  statement. No absence-of-Sdtrig claim will suppress EBREAK coverage.
+
+The state consequence must include the FP file, 26 CSR storage owners (33 CSR
+names including views), TLB, reservation and wait state as well as x/pc/mode and
+memory. CSR views introduce no independent state; virtual time resides in mcycle.
+The generated state's actual fields were read to establish this census. No replay
+support is implied; implementing it remains .16.
+
+Static realization will use explicit predicates over canonical parsed documents,
+with a genuine violating copy for each negative check. Registry entries will name
+static or typed-boundary checks as explicitly as guest checks, and all entries will
+run in the normal suite. G-CONTRACT must keep counting only the effective unit's
+exact declared pairs. Freeze only after all checks pass.
+
+Promotion: declined — the canonical versioned records and the v2 book chapter
+retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Open Questions
 
@@ -275,6 +430,26 @@ Closed records through `.12` are preserved verbatim in
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (a) (`2026-10-09`, `SEMULITH-P4-0105`):
+
+- [x] **ROOT CAUSE** — shared gate_report.contract_measure on the real records:
+  55 total, 53 effective, 106 declared checks, 20 realized. Read every statement
+  and current registry; table above accounts for all 53 ids exactly once. Pinned
+  RVP-MACHINE hash b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea
+  matches its source pin; Table 7 and C.EBREAK fixture reproduce
+  the additional priority-wording defect, owned for slice b.
+- [x] **ADDRESSED** — complete per-record realization plan and five-item boundary
+  closure recorded before implementation. Frozen records untouched, no check
+  credit added. Static scope, runtime observations and typed boundary controls
+  have separate explicit evidence requirements. CONTRACT-FREEZE: ok
+  (1 versioned unit(s), 3 version(s), 0 finding(s)). State consequence repair owned.
+- [x] **NO REGRESSION** — gate_report --self-test: 17 pass / 0 fail;
+  CONTRACT-FREEZE ok, 3 versions / 0 findings. make book rc=0; TREE-CLAIMS,
+  FRONTIER-SYNC and README-ROUTING-CLOSURE rc=0. Documentation-only slice.
+- [x] **LOCKSTEP** — task/frontier, MEMORY, LIVE_STATUS, changelog, notes and v2
+  book chapter synchronized. P4 stays 12/18; CPU-SYSTEM incomplete; 45 chapters.
+  promotion: declined (versioned records and book retain the scope decisions).
 
 `P4-SYSTEM.12` FINAL LEAF ACCEPTANCE (`2026-10-09`, `SEMULITH-P4-0104`):
 
@@ -310,6 +485,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` a | full effective census; gate controls 17/17; freeze; books; tree/frontier/bounds | plan complete; declarations next |
 | `2026-10-09` | `.12` FINAL | make ci all five legs; 37 forms/167 guests; prior traces exact; Sail 27 + one public-probed limit | met; .13 next |
 
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
@@ -318,12 +494,16 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` a | `SEMULITH-P4-0105 (leaf P4-SYSTEM.13): census the effective contract and plan every check realization` | five boundary assumptions and v2 replacements |
 | `.12` FINAL | `SEMULITH-P4-0104 (leaf P4-SYSTEM.12): close compressed-instruction acceptance after the complete local CI suite` | `.13` contract v2 completion/freeze |
 
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` a (SEMULITH-P4-0105): activate full 53-obligation census,
+  five boundary topics and evidence-method plan. Additional priority wording
+  defect reproduced against pinned public table, correction owned. No new credit.
 - `2026-10-09`: `.12` CLOSED (SEMULITH-P4-0104): complete C composition and
   independently derived corpus/counts, matched Sail subset/public timer limit,
   all CI legs green. P4 12/18; .13 next. Closed live-head records moved verbatim

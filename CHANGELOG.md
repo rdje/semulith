@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0105 (leaf P4-SYSTEM.13 a) — contract census and realization plan
+
+- Enumerate all 53 effective obligations (106 checks, 20 realized); map each to
+  scope, runtime or direct-boundary evidence before granting new credit. Five
+  boundary assumptions remain; preserve frozen records and replace stale stages.
+- Reproduce the fault-priority wording defect against the pinned public table and
+  C.EBREAK fixture; own its v2 correction. Gate controls 17/17, freeze gate green.
+
 ## SEMULITH-P4-0104 (leaf P4-SYSTEM.12 e2e) — close C acceptance
 
 - Named full CI green: Rust/checks, all doctrines, wasm bench, bench smoke and books.

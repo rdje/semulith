@@ -31,6 +31,7 @@
         - [P4.10 — The CPU-SYSTEM gate report](plan/p4/gate.md)
         - [P4.11 — Integer multiply and divide (M)](plan/p4/m.md)
         - [P4.12 — Compressed instructions (C)](plan/p4/c.md)
+        - [P4.13 — Completing the environment contract](plan/p4/contract-v2.md)
     - [P5–P7 — board, Linux, computer](plan/p5-p7.md)
     - [Multicore and optimization](plan/multicore.md)
 

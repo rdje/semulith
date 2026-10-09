@@ -1,5 +1,16 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — complete the effective contract without copying obsolete assumptions (P4-SYSTEM.13 a)
+
+The shared gate measure reports 55 records / 53 effective / 106 checks / 20
+realized. A complete per-record census separates scope predicates from executable
+guarantees. Five remaining scalar boundary topics need GC-specific records; time,
+fetch and partial progress already have GC dispositions. The pinned priority
+table distinguishes address triggers from environment break; the frozen blanket
+no-breakpoint phrase contradicts C.EBREAK cause 3. Own its supersession alongside
+the qualification and pipeline-stage corrections. No engine change or premature
+check credit. Promotion declined in the leaf; versioned records/book retain it.
+
 ## _(2026-10-09)_ — C signoff retains its limits and retrieval path (P4-SYSTEM.12 e2e)
 
 The named full make ci passes every leg on the completed C implementation: core
