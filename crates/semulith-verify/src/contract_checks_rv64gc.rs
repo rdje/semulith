@@ -27,8 +27,38 @@ pub struct ContractCheck {
 /// The realized checks: v1's four environment assumptions and its two superseding
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
-/// `.13` b2/b3/b5 add eleven scope pairs; each remaining record stays uncredited.
+/// `.13` adds eleven scope pairs and c1's three current guarantees; remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-GC-FP-QUALIFIED-V2-POS",
+        obligation: "OB-GC-FP-QUALIFIED-V2",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-GC-FP-QUALIFIED-V2-NEG",
+        obligation: "OB-GC-FP-QUALIFIED-V2",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-GC-DEFINITION-V2-POS",
+        obligation: "OB-GC-DEFINITION-V2",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-GC-DEFINITION-V2-NEG",
+        obligation: "OB-GC-DEFINITION-V2",
+        evidence: Evidence::Scope,
+    },
+    ContractCheck {
+        id: "CHK-GC-FAULT-PRIORITY-V2-POS",
+        obligation: "OB-GC-FAULT-PRIORITY-V2",
+        evidence: Evidence::Guests(&["prio-sv39", "it-prio-load", "a-amo-sv39", "fault-fetch"]),
+    },
+    ContractCheck {
+        id: "CHK-GC-FAULT-PRIORITY-V2-NEG",
+        obligation: "OB-GC-FAULT-PRIORITY-V2",
+        evidence: Evidence::Guests(&["f-fs-off", "d-fs-off", "c-breakpoint", "mm-ebreak"]),
+    },
     ContractCheck {
         id: "CHK-ABI-POS",
         obligation: "OB-ABI",

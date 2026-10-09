@@ -120,6 +120,11 @@ integer file, PC/mode, FP file, 26 CSR storage owners behind 33 names, memory,
 four-entry TLB plus FIFO cursor, reservation and ACTIVE/WAITING state. Time is
 stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
-code is unchanged. This closes the stale-consequence opening only. Requirement
+code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 42/106 checks realized (eleven scope pairs at b2/b3/b5).
+contract stays open with 48/104 checks realized (thirteen scope pairs and eleven guest pairs).
+
+The effective v2 contract now replaces the pre-qualification FP condition, both
+historical definition stages and the blanket no-breakpoint wording. Their frozen
+records remain intact; ENVIRONMENT.md names each replacement and its checks.
+Current profile comments and historical-decision notes follow those dispositions.

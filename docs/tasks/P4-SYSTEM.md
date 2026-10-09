@@ -355,6 +355,36 @@ Read canonical decisions, sources, state and the prior scope implementation firs
 rehash the locally acquired psABI/SBI public artifacts before fixing their expected
 identities. If unavailable, record the narrower declaration-only provenance honestly.
 
+**c1 versioned current guarantees** (SEMULITH-P4-0111): replace frozen
+OB-FP-DEFER with OB-GC-FP-QUALIFIED-V2, both historical route records with
+OB-GC-DEFINITION-V2, and OB-FAULT-PRIORITY with OB-GC-FAULT-PRIORITY-V2.
+Add three v2 members/four explicit supersessions without changing any frozen
+record or membership. Bind six checks immediately: qualification/definition
+selection predicates with independent negative copies, and existing priority
+guests reviewed at instruction/expectation level. Scope predicates validate the
+qualified backend identity and current generated route; FP numeric behavior
+retains its distinct vector/guest evidence. Qualification and closing records,
+Cargo pins, current composition, generated mirrors and public priority table
+are the relevant sources. Repair stale current profile header/comments; retain
+historical decision statements and requirement mirrors with explicit notes naming
+their v2 replacement. No new decision-id mirror family or backend implementation
+inspection. Run Rust, schema/freeze and owner generation checks; regenerate GS
+only after final dossier edits. Expected effective census: 52 obligations/104
+checks, 48 realized, v2 open; re-derive rather than hard-code acceptance.
+
+**Capacity finding / c2 ownership** (SEMULITH-P4-0112): `wc -c` after c1's
+three additions reports contract-obligations.sexp at 63,014 bytes against the
+fixed 65,536-byte authored-part ceiling: 2,522 bytes remain before five complete
+boundary assumptions. Priority: next, before adding them; never raise the cap.
+Own a lossless version-partition of this catalogue and the minimal explicit
+catalogue-include support needed by its real consumers. Census raw readers first
+(record loader, freeze checker, registry tests and any others); use one expansion
+owner, validate relative paths/cycles/missing parts, preserve every frozen record
+byte and expanded order, and keep aggregate storage bounded without a duplicate
+materialized catalogue. Treat this as a dedicated, fully checked slice; do not
+mix the boundary declarations into the format migration. Review the existing
+schema/loader contracts and book before choosing its final representation.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -498,6 +528,30 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c1) (`2026-10-09`, `SEMULITH-P4-0111`):
+
+- [x] **ROOT CAUSE** — git show 23f3e68 contract records: old FP condition,
+  resolution/partial stages and no-breakpoint phrase still effective. Public
+  RVP-MACHINE Table 7 distinguishes address triggers/environment break;
+  c-breakpoint step 4 observes x7=3. Canonical Cargo pins and active qualification
+  records confirm the completed backend choice; no dependency internals inspected.
+- [x] **ADDRESSED** — three v2 members, four supersessions, six realized checks;
+  GC-CONTRACT-SCOPE: CHK-GC-FP-QUALIFIED-V2-NEG holds (5 violating copies refused);
+  CHK-GC-DEFINITION-V2-NEG holds (4 violating copies refused), both rc=0.
+  Read-only owner generation checks all pass. Priority guests cover competing faults,
+  FS-Off and both environment-break spellings. Profile current comments repaired;
+  historical decision/requirement statements retained with replacement notes.
+- [x] **NO REGRESSION** — make check rc=0 (153 core, 17 DSP, 194 verify);
+  RECORD-SCHEMA: ok, 20 files; CONTRACT-FREEZE: ok, 0 findings; gate controls 17/17.
+  All previous obligation bytes/frozen memberships and 42 registry entries exact.
+  Books and tree/frontier/bounds pass. New census: 58 total, 52 effective, 104
+  declared checks, 48 realized. No cap raised or frozen statement rewritten.
+- [x] **LOCKSTEP** — GS 48/104, v2 open; ENVIRONMENT/dossier/book/tool catalog
+  and live pointer synchronized. Catalog capacity measured 63,014/65,536 bytes;
+  c2 owns partition next, before boundary assumptions. LIVE_STATUS unchanged:
+  P4 12/18, 629 registered arms, CPU-SYSTEM incomplete eight axes.
+  promotion: declined (versioned records, permanent checks and book retain it).
 
 `P4-SYSTEM.13` slice (b5) (`2026-10-09`, `SEMULITH-P4-0110`):
 
@@ -664,6 +718,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c1 | Rust; schema/freeze; three owner generators; nine violations; exact old bytes; gate 17/17; books | 48/104 realized, v2 open |
 | `2026-10-09` | `.13` b5 | four scope pairs/16 violations; Rust; old-entry/input identity; gate 17/17; freeze/books | 42/106 realized, v2 open |
 | `2026-10-09` | `.13` b4 | toolchain 20/20 and mutant; pinned C exact ELF; ACT4 7/7; GUEST-GEN 130; books | pins enforced, contract credit unchanged |
 | `2026-10-09` | `.13` b3 | six scope pairs/17 violations; Rust; gate 17/17; freeze; exact bindings; shard reconstruction/freeze; books | 34/106 realized, v2 open |
@@ -678,6 +733,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c1 | `SEMULITH-P4-0111 (leaf P4-SYSTEM.13): supersede obsolete stages and correct fault-priority wording` | lossless catalog partition, then five boundary assumptions |
 | `.13` b5 | `SEMULITH-P4-0110 (leaf P4-SYSTEM.13): realize the remaining scope selections` | boundary assumptions, current replacements and runtime checks |
 | `.13` b4 | `SEMULITH-P4-0109 (leaf P4-SYSTEM.13): enforce the pinned toolchain in both guest build paths` | remaining scope pairs and versioned declarations |
 | `.13` b3 | `SEMULITH-P4-0108 (leaf P4-SYSTEM.13): realize six structured scope pairs and retain bounded history` | remaining scope dispositions and versioned declarations |
@@ -690,6 +746,9 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` c1 (SEMULITH-P4-0111): three current guarantees
+  replace four old records, six checks realized; profile current comments repaired,
+  historical mirrors/frozen bytes exact. 48/104 realized; c2 catalog partition next.
 - `2026-10-09`: `.13` b5 (SEMULITH-P4-0110): four scope pairs and 16
   specific violating copies. psABI/SBI identities rehashed; prior entries exact.
   Eleven scope pairs/42 checks realized; v2 open, no later implementation claim.

@@ -11,10 +11,14 @@ from __future__ import annotations
 
 import argparse
 import copy
+import re
+import subprocess
+import sys
 from pathlib import Path
 
 import sexp as S
 import check_extraction as E
+import records_sexp as R
 
 ROOT = Path(__file__).resolve().parent.parent
 UNIT = ROOT / "profiles/rv64gc-lab-v0"
@@ -33,7 +37,7 @@ CSR_NAMES = set("mhartid misa mstatus mtvec medeleg mideleg mie mip mscratch mep
 CSR_VIEWS = {"sstatus": "mstatus", "sie": "mie", "sip": "mip", "cycle": "mcycle",
              "time": "mcycle", "instret": "minstret", "fcsr": "fflags, frm"}
 STRUCTURED = {"EXT-CLOSURE", "PRIV-REVISION", "CSR-SET", "NO-PMP", "NO-H", "SCOPE-CENSUS",
-              "ABI", "SBI", "RVWMO", "PRIV-INSNS"}
+              "ABI", "SBI", "RVWMO", "PRIV-INSNS", "GC-FP-QUALIFIED-V2", "GC-DEFINITION-V2"}
 # Rehashed from the public pinned v20260120 pages at P4-SYSTEM.13 b3. The check
 # binds the declaration to these identities; artifact-byte verification remains
 # CITATIONS' responsibility and is not inferred from the version string.
@@ -50,6 +54,10 @@ ABI_SBI_PINS = {
                 "63084f54f382715efb340f46695d0e5cebd98965292d034d1b184b1abd3a682b"),
 }
 PRIVILEGED_FORMS = {"MRET", "SRET", "WFI", "SFENCE.VMA"}
+BACKEND_ARTIFACT = "0.2.3+llvm-462a31f5a5ab"
+BACKEND_CHECKSUM = "486c2179b4796f65bfe2ee33679acf0927ac83ecf583ad6c91c3b4570911b9ad"
+QUALIFICATION_RECORDS = {"docs/decisions/decision_fp-backend-qualification.md",
+                         "docs/decisions/reference_fp-model-layer-acceptance.md"}
 
 
 class ScopeRefused(Exception):
@@ -217,6 +225,34 @@ def structured(key: str, data: dict) -> str | None:
         declaration = str(S.field(named(profile, "decision", "D-PRIV-INSNS"), "statement"))
         if not declaration.startswith("The privileged instructions in scope are mret, sret, wfi and sfence.vma"):
             return "PRIVILEGED-CHOICE"
+    elif key == "GC-FP-QUALIFIED-V2":
+        params = data["record"]["parameters"]
+        if (params.get("backend") != "rustc_apfloat"
+                or params.get("backend_requirement") != "=0.2.3"
+                or params.get("backend_artifact") != BACKEND_ARTIFACT
+                or data["backend_requirement"] != ["=0.2.3"]
+                or data["backend_lock"] != [(BACKEND_ARTIFACT, BACKEND_CHECKSUM)]):
+            return "QUALIFIED-BACKEND-PIN"
+        if (params.get("model_layer") != "crates/semulith-core/src/fp.rs"
+                or not data["model_present"] or not {"F", "D"} <= extensions):
+            return "QUALIFIED-MODEL-SELECTION"
+        if ({params.get("qualification_record"), params.get("closing_record")} != QUALIFICATION_RECORDS
+                or data["active_qualification_records"] != QUALIFICATION_RECORDS):
+            return "QUALIFICATION-RECORDS"
+        if params.get("sail_spike_numeric_independent") is not False:
+            return "QUALIFICATION-INDEPENDENCE"
+    elif key == "GC-DEFINITION-V2":
+        vehicle = S.children(profile, "vehicle")
+        if len(vehicle) != 1 or S.field(vehicle[0], "route") != "generated-definition":
+            return "CURRENT-DEFINITION-ROUTE"
+        part = S.children(data["encoding"], "compose")[0]
+        if S.field(part, "status") != "complete" or S.children(part, "slot"):
+            return "CURRENT-DEFINITION-COMPOSITION"
+        if structured("SCOPE-CENSUS", data) is not None:
+            return "CURRENT-DEFINITION-SCOPE"
+        if set(data["generation_checks"]) != {"state", "definition", "guests"} or not all(
+                data["generation_checks"].values()):
+            return "CURRENT-DEFINITION-MIRRORS"
     else:
         raise ScopeRefused(f"UNKNOWN-SCOPE: {key}")
     return None
@@ -323,7 +359,72 @@ def structured_fixtures(key: str, original: dict) -> list[tuple[str, dict, str]]
             lambda d: d["encoding_names"].remove("sfence.vma"))
         add("different privileged choice", "PRIVILEGED-CHOICE",
             lambda d: replace_choice(d, "D-PRIV-INSNS", "mret, sret, wfi and sfence.vma", "mret only"))
+    elif key == "GC-FP-QUALIFIED-V2":
+        add("different manifest pin", "QUALIFIED-BACKEND-PIN",
+            lambda d: d.update(backend_requirement=["=0.2.4"]))
+        add("different artifact checksum", "QUALIFIED-BACKEND-PIN",
+            lambda d: d.update(backend_lock=[(BACKEND_ARTIFACT, "0" * 64)]))
+        add("no model layer", "QUALIFIED-MODEL-SELECTION", lambda d: d.update(model_present=False))
+        add("qualification withdrawn", "QUALIFICATION-RECORDS",
+            lambda d: d["active_qualification_records"].remove(next(iter(QUALIFICATION_RECORDS))))
+        add("shared lineage called independent", "QUALIFICATION-INDEPENDENCE",
+            lambda d: d["record"]["parameters"].update(sail_spike_numeric_independent=True))
+    elif key == "GC-DEFINITION-V2":
+        add("old resolution vehicle", "CURRENT-DEFINITION-ROUTE", lambda d: set_field(
+            S.children(d["profile"], "vehicle")[0], "route", S.Symbol("profile-resolution")))
+        add("partial composition", "CURRENT-DEFINITION-COMPOSITION", lambda d: set_field(
+            S.children(d["encoding"], "compose")[0], "status", S.Symbol("partial")))
+        add("scope disagrees", "CURRENT-DEFINITION-SCOPE",
+            lambda d: d["encoding_names"].remove("sfence.vma"))
+        add("stale generated mirror", "CURRENT-DEFINITION-MIRRORS",
+            lambda d: d["generation_checks"].update(definition=False))
     return fixtures
+
+
+def current_guarantee_data(key: str, data: dict) -> None:
+    """Read selected pins or ask the existing generators; no second generator."""
+    if key == "GC-FP-QUALIFIED-V2":
+        records = [r for r in R.load(UNIT / "contract-obligations.sexp") if r["id"] == "OB-" + key]
+        if len(records) != 1:
+            raise ScopeRefused(f"RECORD: expected exactly one OB-{key}")
+        data["record"] = records[0]
+        # Judge the literal forms Cargo currently owns. Cargo itself validates the
+        # manifest/lock grammar; an unsupported pin spelling refuses this scope
+        # predicate instead of silently guessing another TOML interpretation.
+        manifest = (ROOT / "crates/semulith-core/Cargo.toml").read_text()
+        data["backend_requirement"] = re.findall(r'^rustc_apfloat\s*=\s*"([^"]+)"\s*$', manifest, re.M)
+        locks = []
+        for block in (ROOT / "Cargo.lock").read_text().split("[[package]]"):
+            if re.search(r'^name = "rustc_apfloat"$', block, re.M):
+                version = re.findall(r'^version = "([^"]+)"$', block, re.M)
+                checksum = re.findall(r'^checksum = "([^"]+)"$', block, re.M)
+                locks.append((version[0] if len(version) == 1 else None,
+                              checksum[0] if len(checksum) == 1 else None))
+        data["backend_lock"] = locks
+        data["model_present"] = (ROOT / "crates/semulith-core/src/fp.rs").is_file()
+        data["active_qualification_records"] = {
+            path for path in QUALIFICATION_RECORDS if (ROOT / path).is_file()
+            and '- **Status:** `active`' in (ROOT / path).read_text()}
+    elif key == "GC-DEFINITION-V2":
+        data["encoding"] = document(UNIT / "encoding.sexp", "encoding")
+        prefix = "profiles/rv64gc-lab-v0"
+        commands = {
+            "state": ["scripts/gen_state.py", "--state", f"{prefix}/state.sexp",
+                      "--out", "crates/semulith-core/src/state_rv64gc.rs"],
+            "definition": ["scripts/gen_definition.py", "--encoding", f"{prefix}/encoding.sexp",
+                           "--state", f"{prefix}/state.sexp", "--out",
+                           "crates/semulith-core/src/definition_rv64gc.rs"],
+            "guests": ["scripts/gen_guests.py", "--encoding", f"{prefix}/encoding.sexp",
+                       "--guests-dir", f"{prefix}/guests", "--image-format", "bytes",
+                       "--out", "crates/semulith-verify/src/guests_rv64gc.rs"],
+        }
+        data["generation_checks"] = {}
+        for name, command in commands.items():
+            result = subprocess.run([sys.executable, *command, "--check"], cwd=ROOT,
+                                    capture_output=True, text=True, check=False)
+            data["generation_checks"][name] = result.returncode == 0
+            if result.returncode:
+                print(f"GC-CONTRACT-SCOPE generator {name}: {result.stdout}{result.stderr}")
 
 
 def run_structured(check: str, key: str) -> str:
@@ -331,6 +432,7 @@ def run_structured(check: str, key: str) -> str:
             "state": document(UNIT / "state.sexp", "state"),
             "sources": document(UNIT / "sources.sexp", "sources"),
             "encoding_names": E._encoding_names(UNIT)}
+    current_guarantee_data(key, data)
     reason = structured(key, data)
     if reason is not None:
         raise ScopeRefused(f"{check}: canonical declaration violates {reason}")

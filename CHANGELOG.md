@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0111 (leaf P4-SYSTEM.13 c1) — supersede obsolete contract stages
+
+- Three v2 guarantees replace four v0 records: qualified FP, current generated
+  definition and corrected fault priority. Preserve old lines/memberships and
+  historical requirement mirrors; repair current profile comments and add notes.
+- Six checks run: pin/qualification and delegated-generator scope pairs with nine
+  violations, plus reviewed priority/breakpoint guests. make check, schema/freeze,
+  gate 17/17 and books pass; 48/104 realized, v2 open. Catalog partition owned next.
+
 ## SEMULITH-P4-0110 (leaf P4-SYSTEM.13 b5) — realize the remaining selection pairs
 
 - ABI, SBI, RVWMO and privileged-form pairs validate canonical selections; sixteen

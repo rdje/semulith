@@ -14,7 +14,7 @@ out wrong is **superseded by a later version, never rewritten**. Written at `P4-
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
-| v2 | open; `.13` owns completion/freeze | 3 (+ inherited effective v1) | M, C and exact parcel-fetch supply; remaining boundary assumptions and stale-statement supersessions follow |
+| v2 | open; `.13` owns completion/freeze | 6 (+ inherited v1, minus 4 superseded) | M, C, parcel supply, qualified FP, current generated route and corrected fault priority; five boundary assumptions remain |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -55,7 +55,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
-fixtures. Across the full registry, including eleven scope pairs, 42 checks are realized in the effective contract;
+fixtures. Across the full registry, including thirteen scope pairs, 48 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -72,7 +72,7 @@ frozen v0 obligations; the contract is where v1 corrects them.
 ## Positive and negative fixtures
 
 Every v1 check, `.8`'s partial-progress pair, the M/C/fetch pairs, and the
-eleven scope pairs are **realized**: the registry
+thirteen scope pairs and c1's priority pair are **realized**: the registry
 `crates/semulith-verify/src/contract_checks_rv64gc.rs` binds each check id to tracked guests, and
 its tests run the guest entries under the corpus's comparison rule. Scope entries run
 `python3 scripts/check_gc_contract_scope.py --check CHECK-ID` over parsed canonical
@@ -152,3 +152,34 @@ installed toolchain. These are selection checks: they do not execute a compiled
 LP64D program, supply firmware, boot Linux, or explore every RVWMO outcome.
 Instruction behavior retains its separate execution evidence. All 34 prior
 registry entries, including every guest binding, remain byte-identical.
+
+## Current guarantees replace frozen stages (P4-SYSTEM.13 c1)
+
+Version 2 adds three current guarantees and explicitly supersedes four v0 records.
+Every old record line and frozen version membership remains byte-identical. The
+historical profile decisions and requirement mirrors retain their text, with notes
+pointing to the effective replacements. Current profile comments describe the
+implemented F/D support and complete generated-definition route.
+
+| Frozen record | Effective v2 replacement | Evidence |
+| --- | --- | --- |
+| OB-FP-DEFER | OB-GC-FP-QUALIFIED-V2 | exact manifest/artifact pins, model selection, active qualification/closing records and shared numeric ancestry; five violating copies |
+| OB-RESOLUTION-ROUTE, OB-ROUTE-FLIP | OB-GC-DEFINITION-V2 | complete generated route/scope and all three owner generators' read-only drift checks; four violating copies |
+| OB-FAULT-PRIORITY | OB-GC-FAULT-PRIORITY-V2 | priority guests, FS-Off cases, EBREAK and C.EBREAK observations |
+
+Address triggers are absent because Sdtrig is absent. Environment-break
+exceptions remain: EBREAK and C.EBREAK deliver cause 3, with the instruction's
+start in xepc and xtval. The same cause code does not mean the same priority-table
+row. Ordinary data alignment is checked before translation; atomics retain their
+selected access-fault causes at that point. Executable fixtures cover the named
+cases, without claiming every possible fault combination.
+
+Qualification scope binds rustc_apfloat's exact artifact behind the model layer
+and the active evidence records. It preserves the independence limit: Sail and
+Spike share their numeric implementation. Numeric and instruction guarantees keep
+their own vector/guest evidence. The generated-route check delegates to existing
+state/definition/guest generators, adding no second generation implementation.
+
+The effective census is now 52 obligations, 104 checks and 48 realized checks.
+Thirteen scope pairs and eleven guest pairs run through the registry. Five new
+boundary assumptions and remaining execution checks still keep v2 open.

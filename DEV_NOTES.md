@@ -1,5 +1,18 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — supersede the stage without rewriting its historical mirrors (P4-SYSTEM.13 c1)
+
+Three v2 guarantees replace four obsolete v0 statements: qualified FP selection,
+current generated definition, and fault priority distinguishing address triggers
+from environment break. All old obligation bytes and frozen membership forms stay
+exact. Current profile comments are repaired; historical decision statements and
+requirement mirrors retain explicit replacement notes. Two scope pairs check pins,
+active qualification records and existing owner generators; nine violating copies.
+The priority pair runs reviewed competing-fault/FS-Off and EBREAK fixtures.
+make check passes; effective census 52/104, 48 realized. Catalog size is 63,014 of
+65,536 bytes: c2 owns lossless partition before five assumptions, with no cap rise.
+Promotion declined in leaf: versioned records, permanent checks and book retain it.
+
 ## _(2026-10-09)_ — selection evidence keeps later implementation claims open (P4-SYSTEM.13 b5)
 
 Realize ABI/SBI/RVWMO/privileged scope as predicates over decisions, state, source

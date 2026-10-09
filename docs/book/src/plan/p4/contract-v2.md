@@ -1,14 +1,15 @@
 # P4.13 — Completing the environment contract
 
-**Status:** Census, state inventory and eleven executable scope pairs landed; version 2 remains open.
+**Status:** State inventory, scope pairs and three versioned corrections landed; version 2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
 stages. This work checks every effective obligation, fills the remaining boundary
 assumptions, and realizes each declared check before freezing version 2.
 
-The census finds 53 effective obligations and 106 checks. Forty-two checks currently
-run through the unit's registry. A check will receive credit only when its actual
+The original census found 53 effective obligations and 106 checks. Three versioned
+corrections replace four old records; 52 obligations and 104 checks are now effective,
+with 48 checks running through the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
@@ -21,11 +22,10 @@ copied unchanged. For example, this processor can take interrupts, fetches exact
 reservation and wait state as well as integer registers and CSRs. Time, parcel
 fetch and partial progress already have GC-specific records.
 
-Some inherited statements need replacements. Two describe obsolete definition
-stages; another describes the earlier floating-point qualification condition.
-The fault-priority statement also needs more precise language: address triggers
-are absent, while EBREAK and C.EBREAK still raise environment-break exceptions
-with cause 3. The pinned priority table distinguishes these cases.
+Version 2 now replaces the inherited definition stages and the earlier
+floating-point qualification condition. It also corrects fault-priority language:
+address triggers are absent, while EBREAK and C.EBREAK still raise environment-break
+exceptions with cause 3. The pinned priority table distinguishes these cases.
 
 Versioning preserves the record. Frozen version-0 and version-1 statements and
 their hashes stay unchanged; version 2 names each replacement and why it replaces
@@ -151,5 +151,33 @@ Scope evidence does not establish execution of an LP64D program, implemented
 firmware, Linux boot or exploration of every weak-memory outcome. Those claims
 retain their own work and evidence. Eleven scope pairs now run in the normal test
 suite alongside the existing twenty guest checks. Remaining instruction and
-boundary checks, the five assumptions and the versioned corrections still keep
-contract v2 open.
+boundary checks and the five assumptions still keep contract v2 open.
+
+## Three current guarantees, four historical records
+
+The effective contract now replaces the obsolete statements without rewriting
+history. Frozen v0/v1 records and pins are unchanged. Profile decisions and their
+requirement mirrors keep their historical statements, with notes identifying the
+effective replacements; current profile comments describe the implemented state.
+
+| Current v2 guarantee | What it replaces | What its checks run |
+| --- | --- | --- |
+| Qualified FP selection | pre-qualification FP condition | exact manifest/lock pins, model selection, active qualification records and numeric-independence limit; five violating copies |
+| Complete generated definition | resolution stage and partial-composition checkpoint | complete route/scope plus the existing state, definition and guest generators in read-only check mode; four violating copies |
+| Corrected fault priority | blanket absence of breakpoint exceptions | priority/FS-Off guests and both EBREAK spellings, with their actual trap observations |
+
+For example, C.EBREAK delivers cause 3 with its own address in xepc and xtval.
+Absent address-trigger support does not remove that exception. The pinned table
+places address triggers and environment break in different rows, despite their
+shared cause code. Data alignment retains the laboratory's choice before
+translation, including the selected LR and SC/AMO access-fault codes.
+
+The qualification check confirms the selected artifact and active evidence
+records; numeric behavior retains its independent vectors and guest observations.
+The generated-definition check calls the existing generators, so it verifies
+fresh mirrors without implementing another generation rule.
+
+These six checks bring the effective census to 48 of 104 checks. Version 2 stays
+open. Before adding the five boundary assumptions, the obligation catalog will be
+partitioned losslessly: it is 63,014 bytes against a fixed 65,536-byte authored-part
+ceiling. Frozen lines and expanded order must survive that migration exactly.
