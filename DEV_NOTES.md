@@ -1,5 +1,11 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — recurring cleanup (ARTIFACT-CLEANUP.4)
+
+Census, tracked/symlink exclusions and exact deletion remove 249 incremental bins /
+861,367,249 B; residue zero. Evidence and inputs retained. Actual process census
+clear. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — filenames do not carry capture history (P4-SYSTEM.12 e1d0)
 
 emit's fallback stamped generic/C outputs as the FP corpus. Historical headers now

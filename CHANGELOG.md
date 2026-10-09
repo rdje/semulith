@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0061 (leaf ARTIFACT-CLEANUP.4) — due cleanup
+
+- Removed 249 untracked incremental bins / 861,367,249 B; residue zero.
+  Diagnostic/reference evidence and dependency inputs retained; process census clear.
+
 ## SEMULITH-P4-0097 (leaf P4-SYSTEM.12 e1d0) — author provenance
 
 - New outputs name their actual author/route; 42 historical records stay exact.
