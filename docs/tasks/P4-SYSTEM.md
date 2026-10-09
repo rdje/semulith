@@ -287,6 +287,20 @@ Bounded units, each verified and committed before the next:
    member pins, regenerate GS, verify the gate's verdict and full local CI, then
    close .13. .14 retains requirement-status/experiment-record/registration work.
 
+Slice b begins with a bounded **b1 state-inventory repair** (SEMULITH-P4-0106),
+committed before the declarations/realizations. Own the stale pre-bind header,
+mtime comment and census answer/consequence in state.sexp; regenerate its Rust
+mirror through gen_state, prove executable definitions unchanged, run make check
+and STATE-GEN, remove only the resolved .13 G-STATE opening, regenerate GS and
+update the book. No snapshot implementation or new contract credit in b1.
+
+b1 dependent-manifest repair (same owner): the first commit hook reproduced
+DEF-GEN self-test 55 pass / 1 fail. Direct gen_definition --check reports only
+the old state.sexp source pin in the definition module's OWN-03 manifest. The
+state descriptor is an input to both generators; regenerate definition_rv64gc.rs
+through its owner, assert everything except the two state-identity occurrences
+byte-identical, and rerun make check plus DEF-GEN before retrying the commit.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -431,6 +445,30 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (b1) (`2026-10-09`, `SEMULITH-P4-0106`):
+
+- [x] **ROOT CAUSE** — git show d9eba37:profiles/rv64gc-lab-v0/state.sexp
+  consequence listed the .2 snapshot, while generated fields include fregs,
+  TLB, reservation and hart_state; translation::Tlb also carries a FIFO cursor.
+  The old header still said staged/profile-resolution and external mtime.
+- [x] **ADDRESSED** — STATE-GEN: ok, canonical descriptor and generated metadata
+  agree. All twelve candidates and complete consequence re-answered, 26 storage
+  owners distinguished from 33 CSR names; clock storage and reset/continuation
+  distinction explicit. Executable-definition comparison before/after: identical,
+  SHA-256 9617e2829fcf7bc425f196af17664cff744c258861ad710675cccf9b8c31f9c8.
+  Definition regeneration differs only at two state-source hash occurrences;
+  replacing that hash reconstructs the entire prior module exactly.
+- [x] **NO REGRESSION** — make check rc=0 (core 153, DSP 17, verify 193),
+  all 167 guests and cold re-execution pass. CONTRACT-FREEZE: ok, 3 versions,
+  0 findings. STATE-GEN and DEF-GEN: ok after both owner regenerations;
+  schema, books, tree/frontier/bounds pass. No executable
+  behavior changed; frozen obligation text unchanged.
+- [x] **LOCKSTEP** — remove only resolved .13 G-STATE opening, regenerate GS;
+  G-STATE still incomplete for .14's requirement statuses, G-CONTRACT 20/106
+  open. Dossier/book/live pointer updated. LIVE_STATUS reviewed, unchanged:
+  P4 12/18, 45 chapters, CPU-SYSTEM incomplete. Serialization stays .16.
+  promotion: declined (canonical descriptor and v2 book retain the inventory).
+
 `P4-SYSTEM.13` slice (a) (`2026-10-09`, `SEMULITH-P4-0105`):
 
 - [x] **ROOT CAUSE** — shared gate_report.contract_measure on the real records:
@@ -485,6 +523,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` b1 | make check; executable identity; state/schema/freeze; books and focused gates | complete state inventory; no behavior change |
 | `2026-10-09` | `.13` a | full effective census; gate controls 17/17; freeze; books; tree/frontier/bounds | plan complete; declarations next |
 | `2026-10-09` | `.12` FINAL | make ci all five legs; 37 forms/167 guests; prior traces exact; Sail 27 + one public-probed limit | met; .13 next |
 
@@ -494,6 +533,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` b1 | `SEMULITH-P4-0106 (leaf P4-SYSTEM.13): re-answer the complete state inventory without changing execution` | versioned declarations and check realization |
 | `.13` a | `SEMULITH-P4-0105 (leaf P4-SYSTEM.13): census the effective contract and plan every check realization` | five boundary assumptions and v2 replacements |
 | `.12` FINAL | `SEMULITH-P4-0104 (leaf P4-SYSTEM.12): close compressed-instruction acceptance after the complete local CI suite` | `.13` contract v2 completion/freeze |
 
@@ -501,6 +541,9 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` b1 (SEMULITH-P4-0106): complete state inventory and
+  stale-header/time-source repair, generated metadata only. Executable definitions
+  identical; make check passes. Resolved census opening, .14 status work retained.
 - `2026-10-09`: `.13` a (SEMULITH-P4-0105): activate full 53-obligation census,
   five boundary topics and evidence-method plan. Additional priority wording
   defect reproduced against pinned public table, correction owned. No new credit.

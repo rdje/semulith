@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0106 (leaf P4-SYSTEM.13 b1) — complete the state inventory
+
+- Re-answer all twelve candidates and the complete state consequence: FP, 26 CSR
+  owners/33 names, TLB replacement state, reservation and wait state included.
+  Repair stale staging/mtime prose; regenerate state and definition provenance
+  metadata, executable definitions unchanged.
+- make check and STATE-GEN pass. Resolve the census G-STATE opening; status
+  derivation remains .14, replay remains .16, contract credit remains 20/106.
+
 ## SEMULITH-P4-0105 (leaf P4-SYSTEM.13 a) — contract census and realization plan
 
 - Enumerate all 53 effective obligations (106 checks, 20 realized); map each to

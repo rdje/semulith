@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** Census and execution plan landed; version 2 remains open.
+**Status:** Census and complete state inventory landed; version 2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -33,3 +33,32 @@ the old statement. The complete per-obligation plan is in the active task tree's
 `.13` census. Completion requires every effective check to run, the state census
 to describe the actual complete state, and version 2 to be frozen. Until then,
 G-CONTRACT and CPU-SYSTEM remain incomplete.
+
+## Complete state inventory
+
+The state census now describes the whole selected laboratory profile. Its twelve
+candidates are answered, and its consequence names every state owner:
+
+| State | What must be retained for exact continuation |
+| --- | --- |
+| Integer registers and control | x1–x31, PC and current privilege mode; x0 is constant |
+| Floating point | f0–f31, each 64 bits |
+| CSRs | 26 storage owners behind 33 named CSRs |
+| Memory | The laboratory's main-memory bytes |
+| Translation cache | Four TLB entries and the FIFO replacement position |
+| Reservation | Physical address, width and validity |
+| Waiting | ACTIVE or WAITING |
+
+CSR aliases add no storage. For example, `time` and `cycle` view `mcycle`, and
+`fcsr` combines `fflags` and `frm`. The virtual clock is already part of those
+owners; this laboratory has no external timer or interrupt-controller state.
+Cold reset constructs all owners anew. Exact continuation must also preserve
+the current TLB replacement position, reservation and wait state: cold reset is
+not a substitute for restoring them.
+
+This correction changes the declared inventory and its generated metadata.
+The definition module also records the updated state-source hash in its
+provenance manifest. Storage, reset values, accessors and execution remain
+byte-identical. Snapshot
+and replay serialization still belong to P4.16; this inventory does not claim
+that those features are implemented.

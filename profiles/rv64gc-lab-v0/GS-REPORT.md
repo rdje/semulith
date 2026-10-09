@@ -28,7 +28,6 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-STATE` | `P4-SYSTEM.13` | The hidden-state census's consequence still describes the P4-SYSTEM.2 snapshot (the integer file, pc, memory, mode and 33 CSRs); every later candidate is answered but the consequence was never re-answered. |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-CONTRACT` | `P4-SYSTEM.13` | Most frozen v0 checks remain unrealized; the remaining rv64i base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE). |
 | `G-TRACE` | `P4-SYSTEM.14` | The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
@@ -68,7 +67,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 741c48d6be59dcff6653792dc44c24215e64d87472267582d6fda38dc903df5a`
+  `sha256 ef92379b263561193126aa0fdafbbfecf473d71aa6c120ee27699d6680071081`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

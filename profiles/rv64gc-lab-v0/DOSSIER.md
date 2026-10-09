@@ -112,3 +112,14 @@ remains next at `.13`; CPU-SYSTEM is still incomplete.
   effect the laboratory need not produce. Svadu is NOT selected: menvcfg's ADUE stays
   WPRI. The Sail matched override's `Svade` flag is `true` (the resolution-era reference flip
   measured no verdict change in that earlier corpus).
+
+## Complete state inventory (P4-SYSTEM.13 b1)
+
+The canonical state census now accounts for the complete selected laboratory:
+integer file, PC/mode, FP file, 26 CSR storage owners behind 33 names, memory,
+four-entry TLB plus FIFO cursor, reservation and ACTIVE/WAITING state. Time is
+stored in mcycle; views add no storage, and no external device supplies state.
+The generated metadata is synchronized; executable storage/reset/accessor
+code is unchanged. This closes the stale-consequence opening only. Requirement
+status derivation remains .14, exact snapshot/replay serialization .16, and the
+contract stays open with 20/106 checks realized.

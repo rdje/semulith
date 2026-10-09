@@ -20,8 +20,6 @@
   (test (file "crates/semulith-verify/src/run_rv64gc/tests.rs") (fn "every_guest_re_executes_identically_from_cold_reset"))
   (statement "Every guest re-executes identically from cold reset: the run is a function of the definition and the program."))
 
-(open (axis G-STATE) (owner "P4-SYSTEM.13")
-  (statement "The hidden-state census's consequence still describes the P4-SYSTEM.2 snapshot (the integer file, pc, memory, mode and 33 CSRs); every later candidate is answered but the consequence was never re-answered."))
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")

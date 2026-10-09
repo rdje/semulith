@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `f489828cb52c62310bc65a486585c141b1348aac2fb91c97da8e482601f2f608`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, the 32 × 64-bit
@@ -1734,7 +1734,7 @@ pub struct HiddenStateCensus {
 
 pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
     question: "Is there any state, not listed above, that can influence a future supported observation? (SEM-08, catalog C02 — re-earned for the privileged state)",
-    answer: "No — for this stage of the profile, with every candidate below accounted for and the later slices that reopen them named.",
+    answer: "No - for the complete selected single-hart laboratory profile: all twelve candidates below are answered. The consequence enumerates every state owner; a new extension or environment contract must reopen this census.",
     candidates: &[
         HiddenStateCandidate {
             candidate: "the 33 CSRs of D-CSR-SET",
@@ -1759,7 +1759,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "environment state (mtime, interrupt sources, the time register's value)",
             present: true,
-            why: "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely; and by slice (b) for the PENDING/SOURCE-EVALUATION part (the (a)(b)(c) taken-rule with the global rule, the delegation mask and the fixed priorities, interrupt-caused delivery honoring both xtvec.MODEs). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)",
+            why: "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely; and by slice (b) for the PENDING/SOURCE-EVALUATION part (the (a)(b)(c) taken-rule with the global rule, the delegation mask and the fixed priorities, interrupt-caused delivery honoring both xtvec.MODEs). The present state is the virtual-time domain stored in mcycle, plus the declared software-pending and timer-comparison CSR state. There is no separate mtime/mtimecmp storage, CLINT, PLIC or external source in this laboratory; those belong to a later board contract, not an unlisted state owner here",
         },
         HiddenStateCandidate {
             candidate: "PMP configuration",
@@ -1797,5 +1797,5 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
             why: "answered by P4-SYSTEM.5 slice (c): one hart-state bit — ACTIVE or WAITING (Sail 0.14's HART_WAITING precedent), cold-ACTIVE at reset. A legal WFI ENTERS waiting (the nop latitude recorded-not-taken — taking it would leave the leaf's acceptance untestable); while WAITING a step retires nothing, issues no fetch, advances the virtual-time domain one tick, and the step's head evaluates the wake — resume on a locally-enabled pending interrupt at any privilege level, regardless of the global enables and of mideleg (RVP-MACHINE §2.1.3.3's musts); on resume the taken-rule decides trap (xepc = the WFI's pc + 4) or pc + 4 continuation. The bit is a pure function of the hart's own history — changed only by the hart's own WFI/wake — so cold-reset re-execution stays trace-identical (the TLB/reservation determinism argument)",
         },
     ],
-    consequence: "A complete snapshot for this stage is the integer file, pc, memory, the current mode, and the 33 CSRs' storage (mstatus/mie/mip once — views carry none). Each later slice reopens its named candidate: .3 translation state, .4 the reservation, .5 interrupt/counter progress, .7 the FP file, .8 partial effects, .9 the environment contract.",
+    consequence: "Complete state for future observations in this selected laboratory profile consists of x0-x31 (x0 constant), pc, current privilege mode, f0-f31 at FLEN=64, the 26 CSR storage owners behind 33 CSR names, main-memory bytes, the four-entry TLB with its FIFO replacement position, the physical-address/width/valid reservation, and the ACTIVE/WAITING hart state. CSR views carry no independent storage: sstatus/sie/sip share mstatus/mie/mip, cycle and time share mcycle, instret shares minstret, and fcsr composes fflags/frm. Virtual time, pending bits and stimecmp are already in those owners; no external timer/controller/device state is supplied. There is no instruction-cache, pending partial commit, PMP, H or V state in scope. Cold reset reconstructs each declared owner; an exact continuation must retain the current TLB replacement position, reservation and wait state as well as registers and memory. This is a state inventory, not a claim that snapshot/replay serialization is implemented; P4-SYSTEM.16 owns that implementation and its harness witnesses. A new extension or environment contract reopens the census.",
 };

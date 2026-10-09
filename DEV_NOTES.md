@@ -1,5 +1,17 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — state inventory distinguishes cold reset from exact continuation (P4-SYSTEM.13 b1)
+
+The old consequence omitted the FP file, TLB, reservation and wait bit, and
+counted CSR names rather than storage owners. Read the generated state fields and
+TLB cursor, then re-answer the canonical descriptor. Time is the mcycle domain,
+with no separate CLINT storage. Regeneration changes only source identity and
+census prose; all executable definitions remain byte-identical. The commit hook
+also caught the dependent definition manifest: regenerate its two state-source
+pins, assert every other byte identical. make check
+passes; remove only the resolved census opening. Serialization remains .16.
+Promotion declined in the leaf: canonical descriptor and v2 book retain it.
+
 ## _(2026-10-09)_ — complete the effective contract without copying obsolete assumptions (P4-SYSTEM.13 a)
 
 The shared gate measure reports 55 records / 53 effective / 106 checks / 20

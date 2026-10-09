@@ -1,13 +1,10 @@
 ;; state.sexp — the architectural-state document of `rv64gc-lab-v0` (P4-SYSTEM.2 slice c1).
 ;; One document form; validate with
-;;   python3 scripts/check_sexp_schema.py target/p4-system-2/state.sexp schema/state.sexp
+;;   python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/state.sexp schema/state.sexp
 ;;
-;; ⛔ STAGED, NOT PLACED (2026-10-03): the unit declares (vehicle (route profile-resolution)),
-;; under which a state.sexp in profiles/rv64gc-lab-v0/ is a refused contradiction (EXTRACTION).
-;; This document therefore lives at target/p4-system-2/state.sexp — untracked, fully validated
-;; from here (the commands are the slice's checklist), and MOVES into the unit unchanged at the
-;; atomic route flip (P4-SYSTEM.2 slice h). Nothing under profiles/ is allowed to reference it
-;; until then.
+;; Canonical, bound state: the profile declares generated-definition. This document
+;; owns the generated state_rv64gc.rs module; STATE-GEN re-derives it on every commit.
+;; The complete inventory was re-answered at P4-SYSTEM.13 slice b1.
 ;;
 ;; RESET PHILOSOPHY (the rv64i laboratory-reset precedent, extended): RVP-MACHINE §2.1.4 fixes
 ;; little (mode <- M; mstatus.MIE <- 0; mstatus.MPRV <- 0; misa <- the maximal extension set;
@@ -20,13 +17,14 @@
 ;; VIEWS HAVE NO STORAGE: sstatus/sie/sip restrict mstatus/mie/mip; cycle/instret shadow
 ;; mcycle/minstret. A `view_of` row declares the underlying register; a write through a view is
 ;; a write to the underlying storage under the view's mask (the alias discipline the integer
-;; file already states). The `time` register is special: its value source is the ENVIRONMENT's
-;; memory-mapped mtime — environment state, not a CSR (P4-SYSTEM.5/.9's contract).
+;; file already states). The `time` register views the laboratory virtual-time domain
+;; stored in mcycle. No CLINT, mtime/mtimecmp or external interrupt source exists in
+;; this laboratory contract (OB-GC-ENV-VIRTUAL-TIME / OB-GC-ENV-INTERRUPT-SOURCES).
 
 (state
   (profile_id "rv64gc-lab-v0")
   (xlen 64)
-  (note "Architectural state of the resolved rv64gc-lab-v0 selection (P4-SYSTEM.1): the RV64I integer file and pc; the current privilege mode (M/S/U, D-PRIV-MODES); the f0-f31 floating-point file at FLEN=64 (P4-SYSTEM.7 slice b); and the 33 CSRs of D-CSR-SET with their per-field WPRI/WARL/WLRL tables. Staged at target/p4-system-2/ until the route flip; see the header.")
+  (note "Architectural state of the resolved rv64gc-lab-v0 selection (P4-SYSTEM.1): the RV64I integer file and pc; the current privilege mode (M/S/U, D-PRIV-MODES); the f0-f31 floating-point file at FLEN=64 (P4-SYSTEM.7 slice b); and the 33 CSRs of D-CSR-SET with their per-field WPRI/WARL/WLRL tables. Bound canonical state; complete inventory re-answered at P4-SYSTEM.13 slice b1. TLB, reservation and wait state are declared by their census candidates below.")
   (integer_registers
     (count 32) (width_bits 64) (ids "x0..x31") (authority architecture)
     (source "RVI-RV32I §1.1.1; RVI-RV64I §3.1.1")
@@ -639,7 +637,7 @@
   ;; ---- the re-earned census (SEM-08) ----------------------------------------------------------
   (hidden_state_census
     (question "Is there any state, not listed above, that can influence a future supported observation? (SEM-08, catalog C02 — re-earned for the privileged state)")
-    (answer "No — for this stage of the profile, with every candidate below accounted for and the later slices that reopen them named.")
+    (answer "No - for the complete selected single-hart laboratory profile: all twelve candidates below are answered. The consequence enumerates every state owner; a new extension or environment contract must reopen this census.")
       (candidates (checked (candidate "the 33 CSRs of D-CSR-SET") (present true)
                (why "declared above, each with its per-field discipline table; the privilege stack (xIE/xPIE/xPP) is mstatus FIELDS, architected state, not hidden state")))
       (candidates (checked (candidate "the current privilege mode") (present true)
@@ -649,7 +647,7 @@
       (candidates (checked (candidate "floating-point registers f0-f31 and the fcsr behaviour") (present true)
                (why "answered by P4-SYSTEM.7 slice (b) after slice (a)'s qualification (SEMULITH-P4-0039, rustc_apfloat): the file is modelled — 32 x 64-bit (FLEN=64 with D, the LP64D ABI), declared above with its laboratory reset; mstatus.FS gates the FP instructions AND the fflags/frm/fcsr CSRs (four-state FS, reset 0 = Off, Dirty on any FP state write — Sail 0.14's dirty_fd_context measured; SD is the computed summary and follows); fflags is the sticky accrued-flags register (software-clearable); frm holds any 3-bit value (the FSRM sentence — slice (c1) corrected slice (b)'s WARL one-of 0..4), with the dyn/reserved-rm resolution stated; fcsr is the two-owner VIEW, composed by the engine from fflags[4:0] and frm[2:0] (the pre-slice single-owner resolution read 0 and refused writes — measured, fixed at root). Observation stays through the x-registers (decision 8): the file itself is never an expectations-vocabulary item")))
       (candidates (checked (candidate "environment state (mtime, interrupt sources, the time register's value)") (present true)
-               (why "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely; and by slice (b) for the PENDING/SOURCE-EVALUATION part (the (a)(b)(c) taken-rule with the global rule, the delegation mask and the fixed priorities, interrupt-caused delivery honoring both xtvec.MODEs). mtime/mtimecmp and the interrupt controllers stay memory-mapped ENVIRONMENT state, not CSRs (the .9 contract)")))
+               (why "answered by P4-SYSTEM.5 slice (a) for the COUNTER-PROGRESS part: the laboratory declares the virtual-time domain — one tick per step boundary, retired or halted (authority laboratory, Zicntr §6.1's rate latitude; the domain IS the environment's supply, the contract wording .9's) — mcycle is the domain's storage, time views it, minstret counts genuinely; and by slice (b) for the PENDING/SOURCE-EVALUATION part (the (a)(b)(c) taken-rule with the global rule, the delegation mask and the fixed priorities, interrupt-caused delivery honoring both xtvec.MODEs). The present state is the virtual-time domain stored in mcycle, plus the declared software-pending and timer-comparison CSR state. There is no separate mtime/mtimecmp storage, CLINT, PLIC or external source in this laboratory; those belong to a later board contract, not an unlisted state owner here")))
       (candidates (checked (candidate "PMP configuration") (present false)
                (why "PMP is excluded at v0 (D-NO-PMP)")))
       (candidates (checked (candidate "hypervisor state") (present false)
@@ -664,4 +662,4 @@
                (why "answered by P4-SYSTEM.3 slice (d): a minimal fully-specified TLB — 4 entries, fully-associative, FIFO replacement, ASID-tagged at ASIDLEN 16, keyed by 4 KiB page, G-bit entries retained across per-ASID and per-address+ASID fences (authority laboratory; the cache is a pure function of the hart's own history, so cold-reset re-execution stays trace-identical and a cold-restored cache is always a legal state)")))
       (candidates (checked (candidate "hart wait state (ACTIVE/WAITING)") (present true)
                (why "answered by P4-SYSTEM.5 slice (c): one hart-state bit — ACTIVE or WAITING (Sail 0.14's HART_WAITING precedent), cold-ACTIVE at reset. A legal WFI ENTERS waiting (the nop latitude recorded-not-taken — taking it would leave the leaf's acceptance untestable); while WAITING a step retires nothing, issues no fetch, advances the virtual-time domain one tick, and the step's head evaluates the wake — resume on a locally-enabled pending interrupt at any privilege level, regardless of the global enables and of mideleg (RVP-MACHINE §2.1.3.3's musts); on resume the taken-rule decides trap (xepc = the WFI's pc + 4) or pc + 4 continuation. The bit is a pure function of the hart's own history — changed only by the hart's own WFI/wake — so cold-reset re-execution stays trace-identical (the TLB/reservation determinism argument)")))
-    (consequence "A complete snapshot for this stage is the integer file, pc, memory, the current mode, and the 33 CSRs' storage (mstatus/mie/mip once — views carry none). Each later slice reopens its named candidate: .3 translation state, .4 the reservation, .5 interrupt/counter progress, .7 the FP file, .8 partial effects, .9 the environment contract.")))
+    (consequence "Complete state for future observations in this selected laboratory profile consists of x0-x31 (x0 constant), pc, current privilege mode, f0-f31 at FLEN=64, the 26 CSR storage owners behind 33 CSR names, main-memory bytes, the four-entry TLB with its FIFO replacement position, the physical-address/width/valid reservation, and the ACTIVE/WAITING hart state. CSR views carry no independent storage: sstatus/sie/sip share mstatus/mie/mip, cycle and time share mcycle, instret shares minstret, and fcsr composes fflags/frm. Virtual time, pending bits and stimecmp are already in those owners; no external timer/controller/device state is supplied. There is no instruction-cache, pending partial commit, PMP, H or V state in scope. Cold reset reconstructs each declared owner; an exact continuation must retain the current TLB replacement position, reservation and wait state as well as registers and memory. This is a state inventory, not a claim that snapshot/replay serialization is implemented; P4-SYSTEM.16 owns that implementation and its harness witnesses. A new extension or environment contract reopens the census.")))

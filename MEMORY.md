@@ -20,7 +20,7 @@
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
 - next_action: `P4-SYSTEM.13` slice b — add five GC boundary assumptions and
   supersede four stale records with three current v2 records; re-answer the state
-  census. Slice-a full inventory/realization plan is in the active tree Decisions.
+  census. Full inventory/realization plan is in Decisions; b1 state census repaired.
   Frozen v0/v1 untouched; 20/106 checks realized; .14 owns registration/evidence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
