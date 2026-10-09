@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c9b (`2026-10-10`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c10 (`2026-10-10`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-five direct boundary pairs, 62 checks are realized in the effective contract;
+five direct boundary pairs, 64 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -321,60 +321,37 @@ pairs, eleven guest pairs and five direct boundary pairs. The 28 remaining runti
 pairs keep v2 open until they run and the membership freezes.
 
 
-## Privilege-mode runtime witnesses (P4-SYSTEM.13 c8)
+## Current runtime guarantee bindings
 
-OB-PRIV-MODES now binds both checks to the existing thirteen-guest P4.2 matrix:
+The normal registry runs these exact existing programs under the corpus rule:
+GPR changes at each declared boundary, never-written registers and physical
+fetch counts. Handler reads witness cause/EPC/status; no direct trace PC/mode
+comparison or universal execution proof is introduced. Whole programs include
+legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 
-| Check | Tracked witnesses | Focus |
-| --- | --- | --- |
-| CHK-PRIV-MODES-POS | mm-csr-rw, mm-ebreak, mm-ecall-modes, mm-ecall-deleg, mm-counters | CSR operations, M/S/U exceptions, delegated delivery and counter enables |
-| CHK-PRIV-MODES-NEG | mm-csr-legality-s, mm-csr-legality-u, mm-mret, mm-readonly, mm-stimecmp, mm-wfi, mm-sfence, mm-sret | Permission refusals and return/interception gates |
+| Obligation/check | Exact guest names (shared prefix abbreviated) |
+| --- | --- |
+| OB-PRIV-MODES POS | mm-csr-rw, mm-ebreak, mm-ecall-modes, mm-ecall-deleg, mm-counters |
+| OB-PRIV-MODES NEG | mm-csr-legality-s/u, mm-mret, mm-readonly, mm-stimecmp, mm-wfi, mm-sfence, mm-sret |
+| OB-SV39 POS | sv39-translate-4k/2m/1g, sv39-mprv, sv39-tlb-fence, sv39-straddle |
+| OB-SV39 NEG | sv39-fault-canonical/invalid/reserved/superpage, sv39-perm-rwx/usr, sv39-svade, sv39-deleg |
+| OB-SVADE POS | sv39-translate-4k/2m/1g |
+| OB-SVADE NEG | sv39-svade |
 
-These are whole programs: legal setup, legal cells and refused cells can occur
-in either group. All 481 declared execution boundaries run under the existing
-GPR-change, never-written and physical-fetch-count comparison rule. Trap causes,
-EPCs and status are observed by handler CSR reads. For example, mm-ecall-modes
-observes causes 11, 9 and 8 in x7 at zero-based steps 8, 28 and 53;
-mm-csr-legality-s/u observe cause 2 at steps 11/10. These finite witnesses do
-not establish universal coverage of every possible mode-dependent execution.
-There is no new direct PC/mode comparison, firmware or Linux acceptance claim.
+The privilege matrix spans 481 boundaries; Sv39 spans 1,417 boundaries / 2,832
+parcels; Svade spans 434 / 868. Independent author replay agrees exactly.
+Inherited-global CPU retention is repaired: G from any traversed PTE survives
+ASID-selective fences under the selected cache policy. Eight masks and 32 actual
+fences discriminate that repair; the independent author was already correct.
 
-At c8 the census was 57 effective obligations / 114 checks, 60 realized: thirteen
-scope pairs, twelve guest pairs and five typed boundary pairs. The remaining
-27 runtime pairs and final freeze kept version 2 open. Declarations, pins and
-prior bindings are unchanged.
+Svade's negative guest observes A=0/D=0 faults, a legal D=0 load and complete
+unchanged PTEs 0x2000188f/0x2000184f at steps 133/134. A control that sets A
+while returning the correct fault is caught at step 133; bypassing A/D refusal
+fails at step 90. The whole-image core test also verifies preservation.
 
-
-### Inherited-global cache-policy repair (P4-SYSTEM.13 c9a)
-
-Before OB-SV39 binds, the CPU walker now retains G from any traversed PTE,
-including either non-leaf. This matches RVP-SUPERVISOR 11.1.3.1 and the
-already-correct independent author. Eight G masks and 32 actual SFENCE.VMA
-instructions witness ASID/root hits, both ASID-selective retention scopes and
-both broader invalidation scopes. The old code failed both public-interface
-regressions. Exact retention is this laboratory's selected cache policy; the
-ISA permits other cache choices. No contract credit or declarations change.
-
-
-## Sv39 runtime witnesses (P4-SYSTEM.13 c9b)
-
-OB-SV39 now binds its existing checks to all fourteen P4.3 programs:
-
-| Check | Guests | Focus |
-| --- | --- | --- |
-| CHK-SV39-POS | sv39-translate-4k/2m/1g, sv39-mprv, sv39-tlb-fence, sv39-straddle | Three leaf sizes, effective mode, selected cache policy and noncontiguous parcel translation |
-| CHK-SV39-NEG | sv39-fault-canonical/invalid/reserved/superpage, sv39-perm-rwx/usr, sv39-svade, sv39-deleg | Precise faults, permissions, missing A/D and delegated delivery |
-
-All 1,417 execution boundaries and 2,832 physical parcel requests are checked
-under the existing corpus rule. The independent parcel author re-derives all
-fourteen change sequences and fetch counts exactly; no inputs are rewritten.
-For example, sv39-perm-rwx reads store/load/instruction page-fault causes
-15/13/12 into x7 at steps 94/101/109. The canonical-address guest observes
-cause 13 at step 51 and the original VA in mtval. Handler reads, continuation
-markers and expected absent writes witness precise delivery and suppression.
-These finite programs do not prove all Sv39 executions or Linux capability.
-
-Current census: 57 effective obligations / 114 checks, 62 realized: thirteen
-scope pairs, thirteen guest pairs and five typed boundary pairs. Twenty-six
-runtime pairs and final freeze remain; v2 stays open. All sixty prior registry
-entries and all contract/guest inputs remain byte-identical.
+The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
+observations, examples, comparison limits and control receipts. Current census:
+57 effective obligations / 114 checks, 64 realized: thirteen scope pairs,
+fourteen guest pairs and five typed boundary pairs. Twenty-five runtime pairs
+and final freeze keep v2 open. This table remains current; slice history stays
+in the task tree, development notes and changelog.

@@ -717,6 +717,44 @@ its message explicitly rejects over-fencing and tests leaf globals only.
 c9a (7569fe2) now owns/fixes the missing ancestor case; archived historical
 receipts remain unchanged. No other history audit is implied by this binding.
 
+### `.13` c10 — Svade runtime pair (`2026-10-10`, `SEMULITH-P4-0123`)
+
+Own before changes on clean 89a62a4. Read OB-SVADE/D-SVADE, state ADUE
+exclusion, pinned supervisor A/D schemes, finish/cached permissions, original
+programs/expectations and P4.3/v2 book. Bind POS to sv39-translate-4k/2m/1g
+and NEG to sv39-svade. Preserve the existing full-width PTE read-back witnesses,
+not merely fault causes: A=0 leaf 0x2000188f and D=0 leaf 0x2000184f at
+steps 133/134; the three success guests read original PTEs at their final steps.
+The D=0 load is legal (step 100), A=0 load faults 13 and D=0 store faults 15
+(observed steps 94/107). Existing core step9 test also checks the whole byte
+image unchanged. No new observation vocabulary or hardware-update claim.
+
+Re-derive the four programs' changes/fetch counts independently and run focused
+core Svade/registry plus make check, schema/freeze/gate controls/books/hooks.
+All 62 prior entries and all contract/guest bytes stay exact. Extend required
+bindings without weakening post-v0 guard; expected 64/114 with 25 runtime
+pairs then freeze. Update current book/profile/live counts, qualify old counts
+historically and commit before c11 IALIGN-16. No production behavior change.
+Independence controls use in-memory author copies only: bypass A/D refusal,
+and set A in a PTE while still returning the correct fault. The latter must
+preserve fault observations and fail specifically at the later PTE read-back,
+showing that the check observes absence of mutation as well as fault delivery.
+
+c10 containment correction owned before edits: first commit attempt refused
+README-ROUTING-CLOSURE because contract-v2.md reached 33700 > 32768 bytes.
+Split the completed runtime-witness sections byte-verbatim into a linked P4.13
+runtime chapter; retain index/navigation and update the chapter census through
+its owner. Profiles family is 3144422 / 3145728 bytes: consolidate DOSSIER's
+duplicated chronological contract progress into a current summary and pointers
+to ENVIRONMENT, book and task receipts. Contract records and frozen inputs
+remain exact. This is adopted routing/compaction within existing responsibilities,
+not a cap increase or relocation of unbounded pressure. Measure all family axes,
+run routing controls, books and retry hooks before completion. Preserve detailed
+history in committed task/development/changelog records; do not erase receipts.
+ENVIRONMENT's runtime progress likewise becomes a current exact binding table;
+worked observations/controls remain in the new book chapter. Future profile
+updates maintain current bindings rather than append duplicate slice histories.
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -855,6 +893,31 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c10) (`2026-10-10`, `SEMULITH-P4-0123`):
+
+- [x] **ROOT CAUSE** — git show 89a62a4:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  OB-SVADE's checks absent despite existing fault and full PTE witnesses.
+  Read selected A/D scheme, ADUE exclusion and finish/cache permissions.
+  A correct fault alone cannot establish the absence of a PTE update.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. Three success/PTE-read-back guests and sv39-svade
+  run 434 boundaries / 868 parcels; independent replay exact. In-memory
+  controls discriminate at step 90 (A/D bypass) and 133 (A write with correct
+  fault causes). Whole PTE values 0x2000188f/0x2000184f remain observed.
+- [x] **NO REGRESSION** — cargo test -p semulith-core
+  step9_svade_faults_and_the_pte_is_byte_untouched: 1 passed / 0 failed.
+  make check rc=0: core 163 / DSP 17 / verify 198. Python comparison:
+  62 prior bindings and 340 contract/guest/author files byte-exact. Schema
+  and freeze zero findings; gate controls 17/17; make book rc=0.
+  First hook refused book part 33700 > 32768; runtime sections split with
+  exact ordered reconstruction 28722+4978=33700. Routing rc=0 after fix;
+  profile duplicate-progress compaction preserves detailed receipts and caps.
+- [x] **LOCKSTEP** — git diff --check rc=0. G-CONTRACT 64/114 with
+  25 runtime pairs then freeze; book/profile/live pointer synchronized,
+  prior counts historical. LIVE_STATUS retains P4 12/18 and 639 arms;
+  chapter count re-derived as 46, the only changed live metric. promotion: declined — registry, immutable expectations and
+  book retain this realization. c11 IALIGN-16 next; v2 remains open.
 
 `P4-SYSTEM.13` slice (c9b) (`2026-10-10`, `SEMULITH-P4-0122`):
 
@@ -1313,6 +1376,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c10 | four Svade programs / 434 boundaries / 868 parcels; two controls incl. correct fault + bad PTE; core 1/0; Rust 163/17/198; prior 62 bindings + 340 files exact; focused gates/books | 64/114, v2 open |
 | `2026-10-10` | `.13` c9b | 14 Sv39 guests / 1417 boundaries / 2832 parcels; independent author exact; prior 60 bindings + 339 files exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 62/114, v2 open |
 | `2026-10-10` | `.13` c9a | parent failures; eight G masks / 32 actual fences; translation 32/0; author + inheritance mutant; Rust 163/17/198; 342 files exact | make ci all five legs green; 60/114 unchanged |
 | `2026-10-10` | `.13` c8 | 13 mode guests / 481 boundaries; prior 58 bindings + 339 files exact; Rust 161/17/198; schema/freeze/gate 17/17; shards/books | 60/114, v2 open |
@@ -1339,6 +1403,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c10 | `SEMULITH-P4-0123 (leaf P4-SYSTEM.13): realize Svade checks with fault and PTE-preservation witnesses` | c11 IALIGN-16, then 24 runtime pairs |
 | `.13` c9b | `SEMULITH-P4-0122 (leaf P4-SYSTEM.13): realize Sv39 checks through the complete translation matrix` | c10 OB-SVADE, then 25 runtime pairs |
 | `.13` c9a | `SEMULITH-P4-0121 (leaf P4-SYSTEM.13): preserve inherited-global mappings in the shared Sv39 walk` | c9b OB-SV39, then 26 runtime pairs |
 | `.13` c8 | `SEMULITH-P4-0120 (leaf P4-SYSTEM.13): realize privilege-mode checks through the complete existing matrix` | c9 OB-SV39, then 26 runtime pairs |
@@ -1362,6 +1427,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c10 (SEMULITH-P4-0123): bind Svade success/fault
+  witnesses with full PTE read-backs. Independent replay and two controls
+  discriminate even a PTE update with correct fault delivery. Prior bytes
+  unchanged; focused checks/books pass, 64/114 and v2 open.
 
 - `2026-10-10`: `.13` c9b (SEMULITH-P4-0122): bind Sv39 checks to
   all fourteen guests; independent 1417-boundary / 2832-parcel observations

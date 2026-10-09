@@ -113,78 +113,35 @@ remains next at `.13`; CPU-SYSTEM is still incomplete.
   WPRI. The Sail matched override's `Svade` flag is `true` (the resolution-era reference flip
   measured no verdict change in that earlier corpus).
 
-## Complete state inventory (P4-SYSTEM.13 b1)
+## Complete state and current contract
 
-The canonical state census now accounts for the complete selected laboratory:
-integer file, PC/mode, FP file, 26 CSR storage owners behind 33 names, memory,
-four-entry TLB plus FIFO cursor, reservation and ACTIVE/WAITING state. Time is
-stored in mcycle; views add no storage, and no external device supplies state.
-The generated metadata is synchronized; executable storage/reset/accessor
-code is unchanged. This closes the stale-consequence opening. Requirement
-status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 62/114 checks realized (thirteen scope pairs, thirteen guest pairs and five typed boundary pairs).
+The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
+33 names, main memory, four TLB entries plus FIFO position, reservation and
+ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
+Requirement statuses remain .14's work; exact snapshot/replay serialization .16's.
 
-The effective v2 contract now replaces the pre-qualification FP condition, both
-historical definition stages and the blanket no-breakpoint wording. Their frozen
-records remain intact; ENVIRONMENT.md names each replacement and its checks.
-Current profile comments and historical-decision notes follow those dispositions.
+The effective contract has 57 obligations / 114 checks, 64 realized: thirteen
+scope pairs, fourteen guest pairs and five typed boundary pairs. Version 2 is
+open for twenty-five runtime pairs and final freeze. Frozen v0/v1 text, membership
+and pins remain unchanged. The shared catalog expansion/schema/freeze owners
+judge the same records. V2 supersedes the pre-qualification FP condition, both
+historical definition stages and blanket no-breakpoint wording.
 
-The obligation catalog includes frozen v0/v1 parts through the shared expansion
-owner. At c2 the split preserved all 63,014 expanded bytes and 58 record mappings;
-the fixed authored-part cap remains 65,536 bytes. Schema, freeze and registry
-consumers judge the same expanded catalog. The new address-unit assumption
-adds a typed pair: three bad address adapters remain contract violations, while
-a legitimate access failure delivers a target exception. Data widths/attributes now
-have direct pairs as well. Event positioning and one-hart ordering each have
-their direct pair. Full cold reset now has its declaration and independent startup pair.
+| Current evidence | Canonical detail |
+| --- | --- |
+| Physical addresses, data widths/attributes, event positioning, ordering, cold reset | Five direct typed pairs in ENVIRONMENT.md and the contract book |
+| Success-response shape validation | Shared CPU boundary validator; target failures remain target exceptions |
+| Value/phase/startup auditing | Independent fixture controls; adapters cannot detect hidden host mutation or grant interrupt-source authority |
+| Privilege modes, Sv39, Svade | Exact guest bindings in ENVIRONMENT.md; worked observations and controls in the runtime book |
+| Inherited-global cache repair | G accumulates along the walk; actual ASID/root/fence regressions; independent author unchanged |
 
+The boundary fixtures distinguish provider violations from target exceptions.
+Ordering selects a sequential one-hart RVWMO realization, not all weak outcomes.
+Reset includes retained cache/reservation/wait owners; cold fcsr is internally
+zero but FS-gated, and computed pending state differs from raw mip storage.
+All evidence retains its finite scope; no firmware or Linux acceptance is claimed.
 
-Every CPU boundary call now uses shared success-response validation: wrong kinds
-and over-wide raw loads report typed provider violations before instruction data
-is consumed. Target failures remain target exceptions. This c4a prerequisite
-repair added no registry credit at c4a (50/106). The c4b data-access pair brings
-G-CONTRACT to 52/108 at that slice. Exact literal byte witnesses, whole-region
-failure controls and twelve malformed/reversed-byte cases run through the registry.
-Valid-width wrong content is audited by the fixture, distinct from CPU shape
-validation; disabling that auditor is detected.
-
-
-Event positioning adds the third direct boundary pair. Timer thresholds and WFI
-idle wake are observed at step boundaries before fetch, with literal counters and
-unfetched EPC. Five in-request attempts return typed EventDuringRequest errors;
-disabling the location guard loses all five. The opt-in adapter guard grants no
-source permission and cannot detect hidden host mutation; no event payload or
-queue was added. At c5 G-CONTRACT reached 54/110. One-hart ordering now adds the fourth direct
-boundary pair, reaching 56/112: literal store/load/overlap/AMO conversations and
-rewritten code with/without FENCE.I. Three discarded-store/stale-parcel cases
-and disabled-auditor controls discriminate. This selects a sequential one-hart
-RVWMO realization, not all weak outcomes. Full cold reset follows at c7b:
-literal owner/view values, actual reset and memory reconstruction, 128 typed
-pre-fetch failures and disabled-auditor controls. An empty TLB with retained
-FIFO and a cleared reservation with retained fields both fail. Cold fcsr is
-internally zero but architecturally gated by FS=Off. The current census is
-57 effective obligations / 114 checks, 62 realized; remaining instruction
-checks keep v2 open.
-
-
-The privilege-mode guarantee now runs the full thirteen-guest P4.2 mode matrix
-through its two declared checks (481 execution boundaries). Existing handler
-reads witness M/S/U exceptions, delegation and permissions; the shared corpus
-rule compares GPR changes, never-written registers and physical fetches.
-ENVIRONMENT.md lists the exact positive/negative bindings and finite scope.
-At c8, twenty-seven runtime pairs remained before the v2 freeze.
-
-
-Sv39 runtime-contract review repaired inherited-global retention in the CPU
-walker: G now accumulates from every traversed PTE. Independent literal PTEs,
-ASID/root changes and all four actual fence scopes discriminate the repair;
-the existing spec-side author and corpus expectations stay unchanged.
-This prerequisite retains 60/114 credit and the exact selected cache policy.
-
-
-The Sv39 guarantee now binds all fourteen existing translation guests to its
-positive/negative checks (1,417 boundaries, 2,832 physical parcel requests).
-Independent parcel-author changes and fetch counts agree exactly with every
-committed expectation. Three leaf sizes, effective mode/cache/straddle and
-fault/permission/delegation paths retain their finite observation scope.
-The effective registry now realizes 62/114; twenty-six runtime pairs remain.
+Review [the contract book](docs/book/src/plan/p4/contract-v2.md) and
+[runtime witnesses](docs/book/src/plan/p4/contract-runtime.md) for examples.
+Detailed slice history lives in docs/tasks/P4-SYSTEM.md, DEV_NOTES.md and CHANGELOG.md;
+this dossier maintains the current state rather than duplicate progress histories.

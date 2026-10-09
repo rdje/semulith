@@ -1,5 +1,40 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — correct faults alone do not establish Svade preservation (P4-SYSTEM.13 c10)
+
+Bind OB-SVADE POS to the three leaf-size programs, NEG to sv39-svade.
+Read frozen decision/record, menvcfg's WPRI 62:0 exclusion of ADUE, pinned
+supervisor A/D schemes, finish/cache permissions and original observations.
+The three successes read original PTEs in x17 at steps 110/98/88. The negative
+guest observes A=0 load cause 13 (step 94), legal D=0 load value 0x42424242
+(step 100), D=0 store cause 15 (107), then complete PTEs 0x2000188f and
+0x2000184f at 133/134. Existing core step9 test compares full byte images.
+
+Independent replay agrees for four programs / 434 boundaries / 868 parcels.
+Two author copies run only in memory. Replace permits_translation's A/D refusal
+condition with False: first mismatch at step 90. Separately inject
+self.write(pte_addr, 8, pte | 0x40) before the walk's permission-failure return.
+The fault causes at 94/107 remain correct; first mismatch is precisely step 133,
+x17=0x200018cf instead of 0x2000188f. This control establishes that the later
+read-back discriminates an implicit PTE update even with correct trap delivery.
+Source files are never rewritten. Normal author/CPU observations remain intact.
+
+All 62 prior bindings and 340 contract/guest/author files byte-exact. Focused
+core Svade 1/0, registry 4/0 and make check 163 core / 17 DSP / 198 verify;
+schema/freeze, gate controls 17/17 and books pass. G-CONTRACT 64/114, 25 pairs
+then freeze remain. LIVE_STATUS keeps P4 12/18 and 639 arms; its derived chapter count is now 46.
+Promotion declined: registry, immutable expectation values and book retain it.
+
+The first commit hook refused contract-v2.md at 33,700 > 32,768 bytes.
+Move the runtime sections byte-verbatim into contract-runtime.md: 28,722-byte
+prefix + 4,978-byte suffix reconstructs the original exactly. Link both chapters,
+register the new navigation entry and derive the chapter census (46). Consolidate
+DOSSIER/ENVIRONMENT's repeated progress histories into current summaries/bindings;
+worked examples remain in the book, full receipts in task/notes/changelog.
+Profiles family falls from 3,144,422 to 3,138,746 bytes before final staging;
+no contract/guest/author input or fixed ceiling changes. Routing and books pass.
+Future profile changes update the current binding table rather than append history.
+
 ## _(2026-10-10)_ — bind Sv39 without rewriting its witnesses (P4-SYSTEM.13 c9b)
 
 After the inherited-global repair, bind OB-SV39 to all fourteen P4.3 programs.

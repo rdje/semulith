@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0123 (leaf P4-SYSTEM.13 c10) — realize Svade faults and PTE preservation
+
+- Bind successful leaf-size and A/D-refusal witnesses, including full PTE
+  read-backs and the legal D=0 load. Independent four-program replay agrees;
+  bypassed faults and an implicit PTE write despite correct traps discriminate.
+- All 62 prior bindings and 340 contract/guest/author files unchanged. Rust
+  163/17/198, focused core/registry, schema/freeze, gate controls and books pass.
+  G-CONTRACT 64/114; twenty-five runtime pairs then freeze remain.
+- Split runtime book sections losslessly below fixed chapter caps; consolidate
+  duplicate profile progress into current bindings. Routing passes; 46 chapters.
+
+
 ## SEMULITH-P4-0122 (leaf P4-SYSTEM.13 c9b) — realize Sv39 runtime checks
 
 - Bind both checks to all fourteen translation guests: three leaf sizes,

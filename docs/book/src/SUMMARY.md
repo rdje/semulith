@@ -32,6 +32,7 @@
         - [P4.11 — Integer multiply and divide (M)](plan/p4/m.md)
         - [P4.12 — Compressed instructions (C)](plan/p4/c.md)
         - [P4.13 — Completing the environment contract](plan/p4/contract-v2.md)
+            - [Runtime contract witnesses](plan/p4/contract-runtime.md)
     - [P5–P7 — board, Linux, computer](plan/p5-p7.md)
     - [Multicore and optimization](plan/multicore.md)
 

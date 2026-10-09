@@ -9,7 +9,7 @@ assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
 corrections replace four old records; five new boundary assumptions bring the
-effective census to 57 obligations and 114 checks, with 62 checks running through
+effective census to 57 obligations and 114 checks, with 64 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
@@ -509,69 +509,10 @@ checks: thirteen scope pairs, eleven guest pairs and five direct boundary pairs.
 At c7b, 28 runtime pairs remained before version 2 could freeze.
 
 
-## Privilege-mode guarantees through the existing matrix
+## Runtime guarantee witnesses
 
-The next runtime pair is OB-PRIV-MODES. Both checks now execute the complete
-thirteen-guest P4.2 matrix, totaling 481 declared execution boundaries. This
-reuses specification-derived expectations without changing instructions or
-expected results.
-
-The positive group runs mm-csr-rw, mm-ebreak, mm-ecall-modes, mm-ecall-deleg
-and mm-counters. The negative group runs mm-csr-legality-s/u, mm-mret,
-mm-readonly, mm-stimecmp, mm-wfi, mm-sfence and mm-sret. These are whole
-programs with legal setup and both legal/refused cells; the labels describe
-which behavior each group witnesses.
-
-For a concrete mode observation, mm-ecall-modes reads mcause into x7:
-M-mode ECALL yields 11 at step 8, S-mode yields 9 at step 28, and U-mode
-yields 8 at step 53 (steps start at zero). The S/U CSR-legality programs
-observe illegal-instruction cause 2 at steps 11/10. Other cells read trap
-EPC/status and exercise delegation, return and counter/timer gates.
-
-The shared comparison rule checks exact register changes at each step,
-never-written registers and physical fetch counts. Mode and trap state are
-observed through instructions and handler reads; this does not introduce a
-direct comparison of trace PC/mode fields. Finite matrix evidence does not
-prove every possible mode-dependent execution or Linux capability.
-
-At c8 the census was 60/114 realized: thirteen scope pairs, twelve guest
-pairs and five typed boundary pairs. At that slice, twenty-seven runtime pairs
-and final freeze remained. All previous bindings and frozen declarations are unchanged.
-
-
-## Sv39 prerequisite: inherited global translations
-
-Before binding OB-SV39, review exposed a mismatch between the CPU walk and
-its selected cache policy. The CPU remembered only leaf G; an ancestor's G
-was lost. Literal PTE regressions reproduced an access fault after an ASID/root
-change and premature invalidation by an actual ASID-selective SFENCE.VMA.
-The walker now accumulates G along the path. Root/middle/leaf combinations,
-no-G controls and all four actual fence scopes discriminate the repair.
-
-The independent expectation author already inherited G correctly and remains
-unchanged. This fixes the declared retention policy rather than broadening the
-ISA claim. At c9a G-CONTRACT remained 60/114 until the runtime pairs themselves bind.
-
-
-## Sv39 runtime checks
-
-After the inherited-global prerequisite, OB-SV39's two checks now execute
-all fourteen P4.3 translation programs. The positive group covers 4 KiB,
-2 MiB and 1 GiB leaves, MPRV's effective mode, stale/fenced mappings and
-an instruction straddling noncontiguous physical pages. The negative group
-covers noncanonical addresses, invalid/reserved PTEs, misaligned superpages,
-R/W/X and U/SUM/MXR permissions, Svade faults and delegated fault delivery.
-ENVIRONMENT.md lists every binding.
-
-For example, sv39-perm-rwx reads page-fault causes 15, 13 and 12 into x7
-at steps 94, 101 and 109: store, load and instruction faults respectively.
-The canonical-address guest reads cause 13 at step 51 and the original
-address through mtval. Register changes, expected absent writes, handler
-reads and continuation markers retain the existing comparison vocabulary.
-
-The matrix spans 1,417 execution boundaries and 2,832 physical parcel
-requests. Re-executing the independent parcel author reproduces every
-committed register-change sequence and fetch count exactly. Neither the
-programs nor their expectations changed. This is finite translation evidence,
-not universal Sv39 or Linux acceptance. The effective registry now realizes
-62/114 checks; twenty-six runtime pairs and final freeze remain.
+The [runtime contract chapter](contract-runtime.md)
+contains the privilege-mode, Sv39 and Svade bindings, worked observations,
+inherited-global repair and discriminating controls. Current G-CONTRACT is
+64/114; twenty-five runtime pairs and final freeze remain. The split retains
+all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
