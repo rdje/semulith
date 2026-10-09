@@ -23,7 +23,7 @@
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
-  (statement "The 28 remaining runtime guarantee pairs need realization. Physical byte addresses, data widths/attributes, event positioning, one-hart ordering and full cold reset now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen."))
+  (statement "The 27 remaining runtime guarantee pairs need realization. The privilege-mode matrix is bound. Physical byte addresses, data widths/attributes, event positioning, one-hart ordering and full cold reset now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
   (statement "The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")

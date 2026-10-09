@@ -114,13 +114,15 @@ fn declared_checks(select: impl Fn(&str) -> bool) -> Vec<(String, String)> {
 fn every_check_bound_through_the_scope_slice_is_realized() {
     // every version after v0 is born realized: v1's four assumptions and two supersessions,
     // v2's guarantees and assumptions as they bind, partial progress,
-    // the eleven static selection pairs (P4-SYSTEM.13 b2/b3/b5), and c1's three corrections.
+    // the eleven static selection pairs (P4-SYSTEM.13 b2/b3/b5), c1's three corrections,
+    // and c8's privilege-mode matrix.
     let declared = declared_checks(|l| {
         !l.contains("(contract_version \"0\")")
             || l.starts_with("(obligation (id \"OB-GC-PARTIAL-PROGRESS\")")
             || l.starts_with("(obligation (id \"OB-GC-COMPOSITION\")")
             || l.starts_with("(obligation (id \"OB-EXT-CLOSURE\")")
             || l.starts_with("(obligation (id \"OB-PRIV-REVISION\")")
+            || l.starts_with("(obligation (id \"OB-PRIV-MODES\")")
             || l.starts_with("(obligation (id \"OB-CSR-SET\")")
             || l.starts_with("(obligation (id \"OB-NO-PMP\")")
             || l.starts_with("(obligation (id \"OB-NO-H\")")
@@ -132,8 +134,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        58,
-        "v1's six records, v2's M/C/fetch/address/data/event/ordering/reset records, partial progress, eleven selection records and three v2 corrections, POS + NEG"
+        60,
+        "v1's six records, v2's M/C/fetch/address/data/event/ordering/reset records, partial progress, eleven selection records, three v2 corrections and privilege modes, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

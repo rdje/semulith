@@ -122,7 +122,7 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 58/114 checks realized (thirteen scope pairs, eleven guest pairs and five typed boundary pairs).
+contract stays open with 60/114 checks realized (thirteen scope pairs, twelve guest pairs and five typed boundary pairs).
 
 The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
@@ -163,5 +163,13 @@ literal owner/view values, actual reset and memory reconstruction, 128 typed
 pre-fetch failures and disabled-auditor controls. An empty TLB with retained
 FIFO and a cleared reservation with retained fields both fail. Cold fcsr is
 internally zero but architecturally gated by FS=Off. The current census is
-57 effective obligations / 114 checks, 58 realized; remaining instruction
+57 effective obligations / 114 checks, 60 realized; remaining instruction
 checks keep v2 open.
+
+
+The privilege-mode guarantee now runs the full thirteen-guest P4.2 mode matrix
+through its two declared checks (481 execution boundaries). Existing handler
+reads witness M/S/U exceptions, delegation and permissions; the shared corpus
+rule compares GPR changes, never-written registers and physical fetches.
+ENVIRONMENT.md lists the exact positive/negative bindings and finite scope.
+Twenty-seven runtime pairs remain before the v2 freeze.

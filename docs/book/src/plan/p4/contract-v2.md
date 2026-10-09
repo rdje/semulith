@@ -9,7 +9,7 @@ assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
 corrections replace four old records; five new boundary assumptions bring the
-effective census to 57 obligations and 114 checks, with 58 checks running through
+effective census to 57 obligations and 114 checks, with 60 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
@@ -507,3 +507,33 @@ ordering need their own implementation and contract. The pair brings the
 current census to 57 effective obligations, 114 declared checks and 58 realized
 checks: thirteen scope pairs, eleven guest pairs and five direct boundary pairs.
 The remaining 28 runtime pairs must be realized before version 2 freezes.
+
+
+## Privilege-mode guarantees through the existing matrix
+
+The next runtime pair is OB-PRIV-MODES. Both checks now execute the complete
+thirteen-guest P4.2 matrix, totaling 481 declared execution boundaries. This
+reuses specification-derived expectations without changing instructions or
+expected results.
+
+The positive group runs mm-csr-rw, mm-ebreak, mm-ecall-modes, mm-ecall-deleg
+and mm-counters. The negative group runs mm-csr-legality-s/u, mm-mret,
+mm-readonly, mm-stimecmp, mm-wfi, mm-sfence and mm-sret. These are whole
+programs with legal setup and both legal/refused cells; the labels describe
+which behavior each group witnesses.
+
+For a concrete mode observation, mm-ecall-modes reads mcause into x7:
+M-mode ECALL yields 11 at step 8, S-mode yields 9 at step 28, and U-mode
+yields 8 at step 53 (steps start at zero). The S/U CSR-legality programs
+observe illegal-instruction cause 2 at steps 11/10. Other cells read trap
+EPC/status and exercise delegation, return and counter/timer gates.
+
+The shared comparison rule checks exact register changes at each step,
+never-written registers and physical fetch counts. Mode and trap state are
+observed through instructions and handler reads; this does not introduce a
+direct comparison of trace PC/mode fields. Finite matrix evidence does not
+prove every possible mode-dependent execution or Linux capability.
+
+The current census is 60/114 realized: thirteen scope pairs, twelve guest
+pairs and five typed boundary pairs. Twenty-seven runtime pairs and final
+freeze remain. All previous bindings and frozen declarations are unchanged.

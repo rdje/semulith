@@ -637,6 +637,28 @@ is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
 finite corpus and boundary scope.
 
+### `.13` c8 — privilege-mode runtime pair (`2026-10-10`, `SEMULITH-P4-0120`)
+
+Own before changes: bind OB-PRIV-MODES's existing POS/NEG ids to the complete
+13-guest P4.2 mode matrix. POS exercises CSR access, breakpoint/ECALL modes,
+delegation and counter gates; NEG exercises S/U CSR refusal, return gates,
+read-only writes, stimecmp, WFI and SFENCE.VMA permission. Whole guests can
+contain both legal and refused cells; POS/NEG labels identify the witness focus.
+Read all thirteen sources and the shared expectation/comparison owners before
+binding. Retain the exact GPR-change, never-written and fetch-count rule: mode
+and trap state are observed through ISA handler reads, not newly claimed direct
+PC/mode comparisons. No universal mode-coverage, firmware or Linux claim.
+Extend the required-binding regression guard without weakening post-v0 birth
+realization. Preserve all 58 prior entries, all contract declarations and frozen
+pins byte-for-byte. Expected census: 60/114; 27 runtime pairs then freeze remain.
+
+This unit also owns routine DEV_NOTES pressure maintenance: use the existing
+whole-entry sharder at a 32 KiB target, assert ordered byte reconstruction and
+run SHARD-FREEZE. Fixed caps and sealed archive descriptors remain unchanged.
+Run focused matrix/registry checks, make check, schema/freeze/gate controls,
+books and commit hooks. Update canonical current counts, book and live pointer;
+review LIVE_STATUS without fabricating milestone progress. Commit before c9.
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -775,6 +797,27 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c8) (`2026-10-10`, `SEMULITH-P4-0120`):
+
+- [x] **ROOT CAUSE** — git show e0f3dae:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  no OB-PRIV-MODES binding despite the thirteen-guest P4.2 matrix. Read all
+  program sources, expectation owner and shared comparison rule. Handler
+  reads witness causes/EPC/status; no direct PC/mode comparison is claimed.
+- [x] **ADDRESSED** — cargo test -p semulith-verify corpus_mode_matrix:
+  1 passed / 0 failed; all 13 programs / 481 boundaries. Registry focused
+  tests 4 passed / 0 failed, required-binding guard retains post-v0 birth
+  realization and adds this old pair. POS legal-mode and NEG permission
+  witnesses retain their original expected changes and refusal observations.
+- [x] **NO REGRESSION** — make check rc=0: core 161 / DSP 17 / verify 198.
+  Python byte comparison: all 58 prior entries and 339 contract/guest files
+  exact. Schema/freeze zero findings, gate controls 17/17; make book rc=0.
+  sharder completeness: 45 before = 35 kept + 10 moved, ordered bytes exact;
+  SHARD-FREEZE rc=0. Fixed caps and sealed archive descriptors unchanged.
+- [x] **LOCKSTEP** — git diff --check rc=0. G-CONTRACT 60/114;
+  book/profile/live pointer synchronized; LIVE_STATUS reviewed unchanged
+  (P4 12/18, 639 arms, 45 chapters). 27 runtime pairs then freeze remain;
+  promotion: declined — exact bindings, canonical scope and book retain it.
 
 `P4-SYSTEM.13` slice (c7b) (`2026-10-10`, `SEMULITH-P4-0119`):
 
@@ -1167,6 +1210,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c8 | 13 mode guests / 481 boundaries; prior 58 bindings + 339 files exact; Rust 161/17/198; schema/freeze/gate 17/17; shards/books | 60/114, v2 open |
 | `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
 | `2026-10-09` | `.13` c7a | public before/after; 3 Rust view controls / 192 CPU steps; author 42 exact; Rust 160/17/197; GUEST-GEN 135/0 | final make ci all five legs green; delegation/owner repaired; 56/112 unchanged |
 | `2026-10-09` | `.13` c6 | Rust 157/17/197; literal order/overlap/AMO + 4 aq/rl; warmed rewrites; 3 violations + disabled auditor; old bytes exact; schema/freeze; gate 17/17; books | 56/112 realized, v2 open |
@@ -1190,6 +1234,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c8 | `SEMULITH-P4-0120 (leaf P4-SYSTEM.13): realize privilege-mode checks through the complete existing matrix` | c9 OB-SV39, then 26 runtime pairs |
 | `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
 | `.13` c7a | `SEMULITH-P4-0118 (leaf P4-SYSTEM.13): enforce delegation in supervisor interrupt CSR views` | c7b full cold reset, then 28 runtime pairs |
 | `.13` c6 | `SEMULITH-P4-0117 (leaf P4-SYSTEM.13): realize one-hart ordering with independent conversations` | c7 full cold reset, then 28 runtime pairs |
@@ -1210,6 +1255,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c8 (SEMULITH-P4-0120): bind both privilege-mode
+  checks to the full 13-guest matrix, 481 boundaries and unchanged comparison
+  rule. Prior bytes exact; lossless DEV_NOTES shard 0219; 60/114, v2 open.
 
 - `2026-10-10`: `.13` c7b (SEMULITH-P4-0119): full cold reset born
   realized with literal owner/view/image checks before actual ADDI. All 128

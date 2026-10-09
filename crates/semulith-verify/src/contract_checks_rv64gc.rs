@@ -29,9 +29,35 @@ pub struct ContractCheck {
 /// The realized checks: v1's four environment assumptions and its two superseding
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
-/// `.13` adds eleven selection pairs, three current guarantees and five typed boundary pairs;
+/// `.13` adds eleven selection pairs, three current guarantees, five typed boundary pairs
+/// and the existing privilege-mode matrix;
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-PRIV-MODES-POS",
+        obligation: "OB-PRIV-MODES",
+        evidence: Evidence::Guests(&[
+            "mm-csr-rw",
+            "mm-ebreak",
+            "mm-ecall-modes",
+            "mm-ecall-deleg",
+            "mm-counters",
+        ]),
+    },
+    ContractCheck {
+        id: "CHK-PRIV-MODES-NEG",
+        obligation: "OB-PRIV-MODES",
+        evidence: Evidence::Guests(&[
+            "mm-csr-legality-s",
+            "mm-csr-legality-u",
+            "mm-mret",
+            "mm-readonly",
+            "mm-stimecmp",
+            "mm-wfi",
+            "mm-sfence",
+            "mm-sret",
+        ]),
+    },
     ContractCheck {
         id: "CHK-GC-ENV-RESET-POS",
         obligation: "OB-GC-ENV-RESET",

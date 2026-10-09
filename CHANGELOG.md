@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0120 (leaf P4-SYSTEM.13 c8) — realize privilege-mode runtime checks
+
+- Bind both declared checks to the complete existing 13-guest mode matrix,
+  481 execution boundaries, retaining the corpus observation rule and finite scope.
+- All 58 prior bindings and 339 contract/guest files exact; Rust 161/17/198,
+  schema/freeze, gate controls and books pass. G-CONTRACT 60/114, v2 open.
+- Shard ten oldest development-note entries into 0219; ordered byte
+  reconstruction and SHARD-FREEZE pass without raising fixed caps.
+
 ## SEMULITH-P4-0119 (leaf P4-SYSTEM.13 c7b) — realize full cold-reset assumptions
 
 - Add literal full-state/image witnesses, actual reset and a typed startup

@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c7b (`2026-10-10`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c8 (`2026-10-10`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-five direct boundary pairs, 58 checks are realized in the effective contract;
+five direct boundary pairs, 60 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -319,3 +319,27 @@ All 56 prior entries, old root prefix and frozen parts/memberships stay exact.
 Current census: 57 effective obligations / 114 checks, 58 realized; thirteen scope
 pairs, eleven guest pairs and five direct boundary pairs. The 28 remaining runtime
 pairs keep v2 open until they run and the membership freezes.
+
+
+## Privilege-mode runtime witnesses (P4-SYSTEM.13 c8)
+
+OB-PRIV-MODES now binds both checks to the existing thirteen-guest P4.2 matrix:
+
+| Check | Tracked witnesses | Focus |
+| --- | --- | --- |
+| CHK-PRIV-MODES-POS | mm-csr-rw, mm-ebreak, mm-ecall-modes, mm-ecall-deleg, mm-counters | CSR operations, M/S/U exceptions, delegated delivery and counter enables |
+| CHK-PRIV-MODES-NEG | mm-csr-legality-s, mm-csr-legality-u, mm-mret, mm-readonly, mm-stimecmp, mm-wfi, mm-sfence, mm-sret | Permission refusals and return/interception gates |
+
+These are whole programs: legal setup, legal cells and refused cells can occur
+in either group. All 481 declared execution boundaries run under the existing
+GPR-change, never-written and physical-fetch-count comparison rule. Trap causes,
+EPCs and status are observed by handler CSR reads. For example, mm-ecall-modes
+observes causes 11, 9 and 8 in x7 at zero-based steps 8, 28 and 53;
+mm-csr-legality-s/u observe cause 2 at steps 11/10. These finite witnesses do
+not establish universal coverage of every possible mode-dependent execution.
+There is no new direct PC/mode comparison, firmware or Linux acceptance claim.
+
+Current census: 57 effective obligations / 114 checks, 60 realized: thirteen
+scope pairs, twelve guest pairs and five typed boundary pairs. The remaining
+27 runtime pairs and final freeze keep version 2 open. Declarations, pins and
+prior bindings are unchanged.
