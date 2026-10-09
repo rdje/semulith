@@ -360,12 +360,17 @@ reproducer is:
 python3 scripts/probe_gc_sail_timer.py
 ```
 
-It sets `stimecmp=0`, reads it back, and reads `mip` at two later boundaries. Sail
+The current corrected reproducer first enables STCE and reads back bit 63,
+then sets `stimecmp=0`, reads it back, and reads `mip` at two later boundaries. Sail
 returns STIP=0 both times; the laboratory's independent derivation gives STIP=1.
 Two fresh reference traces repeat exactly. The public configuration validator refuses
 Zicntr without a time source and refuses CLINT in the existing memory map because no
 CLINT region is declared. Adding a device would change the selected platform. This
-is a measured reference-platform limit; the committed timer expectation is retained.
+is a measured reference-platform limit with STCE enabled; the committed timer
+expectation is retained. The earlier seven-boundary probe left STCE clear,
+confounding its laboratory result with the later-discovered overlay defect.
+P4.13 c13a1 corrects that probe to ten boundaries and checks STCE read-back
+on both independent sides; the earlier observation alone did not establish the cause.
 
 The experiment also exposed an adapter defect: it recognized the historical author’s
 interrupt description but not the parcel author’s numeric-cause description. Both
@@ -388,3 +393,11 @@ public reference results meet the leaf's acceptance. The timer-platform limit re
 explicit. P4 is now 12/18; CPU-SYSTEM remains incomplete, with contract v2 completion
 and realization next at `.13`. Closed planning and detailed receipts remain verbatim
 in the task-tree archives; this chapter is the current review narrative.
+
+P4.13 c13a1 later re-derives c-irq after explicit STCE setup: its budget is now
+19 boundaries / 32 parcels; the timer delivery is at boundary 11. The historical
+receipts above retain their original inputs. The owned-author protocol now keeps
+41 historical captures plus freshly derived env-irq-sources with a fixed
+13-boundary parcel budget; new provenance never borrows a capture header.
+[The runtime chapter](contract-runtime.md#explicit-comparator-setup-before-fallback-repair)
+records the current nine-program preparation and reference qualifications.

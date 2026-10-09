@@ -460,6 +460,46 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c13a1 — explicit timer-source setup (`2026-10-10`, `SEMULITH-P4-0127`)
+
+Own before changes on clean 618b7d2. Implement the first c13 prerequisite only:
+prepare c-irq, env-irq-sources, i-prio, i-timer, mm-wfi, w-deleg, w-notrap,
+w-sw and w-timer with two M-mode STCE setup instructions using unused x31.
+Keep cold STCE=0 and mm-stimecmp unchanged. Declare each budget as old+2
+before deriving. Shift finite compare deadlines by two ticks to retain the
+same interrupt/wait schedule. Verify assembled body bytes except those declared
+immediates, then independently derive all GPR changes and parcel requests before
+any processor execution. Re-author stale source timing/address prose accurately;
+w-timer's old mepc comment says 0x80000044 while its instruction/expectation is
+0x8000002c (WFI+4); reproduce by assembly, correct to new WFI+4, and close here.
+
+The old public timer diagnostic also leaves STCE clear, so its STIP=1
+laboratory side is confounded by the known overlay defect. Repair it here with
+explicit STCE setup and a read-back witness before interpreting the reference
+limit. Re-derive a ten-boundary fixture and require actual menvcfg bit 63 from
+Sail's public CSR read. Remove maintained plat_have_clint implementation naming;
+use only public configuration, validation and traces. This is the same explicit
+setup prerequisite, not a second direction. Own and close this evidence defect
+before c13a1 signoff; retain historical receipts qualified by their old inputs.
+
+The author's historical-owned set loses only env-irq-sources: 41 historical
+captures stay exact; that guest becomes an explicitly budgeted fresh parcel
+record. Keep --check-owned at 42 records (41 historical + one fresh), fresh
+route headers and canonical write guards. Extend its existing extent/provenance
+diagnostics with fresh-record/budget drift controls; observe each mutant RED
+before registration. Preserve every other source/expectation and all contract
+records/pins byte-exact. Measure profile containment before adoption. If necessary,
+move duplicated protocol prose verbatim into a linked book part within fixed caps.
+
+Regenerate the Rust guest mirror, replay all 167 guests and registry, run author
+controls, fresh pinned Sail attempts for nine inputs (qualify public platform
+limits), focused gates, make check and full make ci. Update current book/profile
+counts (privilege matrix 483 boundaries), provenance, live docs and receipts.
+Also correct the current ENVIRONMENT summary still saying 64 realized checks
+against the already verified 68; no new credit. G-CONTRACT remains 68/114,
+no production STIP repair or SSTC credit. Commit green
+before c13a2. Verification/commit receipts follow in their canonical sections.
+
 ### `.13` c13 — supervisor timer programming (`2026-10-10`, `SEMULITH-P4-0126`)
 
 Own before changes on clean 8d29fff. Review OB-SSTC/D-SSTC, pinned RVP-SSTC
@@ -557,7 +597,9 @@ Bounded work, each green and committed before the next:
    Explicitly select retained raw software STIP across enabled comparator views,
    if permitted by the pinned text; test transitions and all CSR forms. Repair
    the independent author from the same clauses, direct cold/reset/event fixtures
-   and current state narrative. Supersede frozen v1 interrupt-source wording in
+   and current state narrative. Update the public timer-platform probe to enable
+   STCE explicitly before deriving comparison-dependent reads (completed by c13a1).
+   Supersede frozen v1 interrupt-source wording in
    open v2 with named realized checks; correct the open v2 reset description.
    Frozen records/pins and historical receipts stay byte-exact. Reproduce RED
    before/after public CSR/instruction regressions and full CI. Recheck every
@@ -711,6 +753,54 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c13a1) (`2026-10-10`, `SEMULITH-P4-0127`):
+
+- [x] **ROOT CAUSE / OWNERSHIP** — git show 618b7d2 timer sources:
+  nine comparator programs omit STCE setup; cold STCE=0 is retained.
+  Python assembly reproduces old w-timer WFI+4=0x8000002c and expectation
+  x12=0x8000002c, contradicting source comment 0x80000044. The old public
+  timer probe also omits STCE; its laboratory pending claim is confounded
+  by c13's known production defect. Both documentation/evidence defects
+  are owned here, alongside the existing preparation prerequisite.
+- [x] **ADDRESSED / INDEPENDENT BEFORE ENGINE** — python3
+  target/p4-system-13/c13a1/stage.py rc=0: nine programs, 281 boundaries / 524 parcels. Each budget old+2
+  declared before deriving, body PCs old+8 and bytes exact except the eight
+  declared deadline ADDIs (old+2). All body GPR changes match the exact
+  address/counter/deadline transformation; actual request logs match counts.
+  x31 unused before setup. Fresh route provenance carries no capture claim;
+  nine source/record pairs 84576 -> 64696 B (19880 B saved). Current
+  w-timer instret=13, time=17, mepc=0x80000034; two idle steps retained.
+- [x] **AUTHOR / DISCRIMINATION** — python3 derive_rv64gc_expectations.py
+  --check-owned: 42 byte-identical (41 historical + fresh env-irq-sources,
+  fixed budget 13). probe_gc_owned_extent.py rc0: both branches refuse
+  count/observation/comment/CRLF drift; repeat/write guards pass. Fresh-budget
+  and fresh-word-route mutants each rc1 with env-irq-sources DRIFT before
+  their two gate arms were registered. Provenance probe rc0; counter author
+  30 mode gates / 117 corpus steps exact. Full independent parcel census:
+  167 exact traces / 5360 boundaries / 10514 actual requests.
+- [x] **PUBLIC REFERENCE EVIDENCE REPAIRED** — python3 probe_gc_sail_timer.py
+  rc0: ten pre-derived boundaries, STCE read-back 0x8000000000000000 on
+  both sides; Sail pending 0/0 versus laboratory 1/1, two identical traces.
+  Removing enable makes its public read-back guard refuse. Nine fresh Sail
+  attempts: w-sw AGREE (19 steps, two identical traces); six DIVERGE at
+  c-irq 11 / env-irq-sources 12 / i-prio 26 / i-timer 5 / mm-wfi 11 /
+  w-deleg 14. w-notrap and w-timer processes rc1 after illegal disabled
+  time/instret reads and trap loops; old inputs reproduce rc1 too. Public
+  configuration variants reject Zicntr without time source and CLINT without
+  mapped region. Failed processes receive no credit. No submodule internals.
+- [x] **NO REGRESSION / LOCKSTEP** — make ci rc0: check, gate, bench,
+  smoke-bench and all books green (Rust core163 / DSP17 / verify198).
+  First CI refused stale GS digest after Rust passed; regenerated before
+  green rerun. Registry 4/0; schema 270 / two skips; freeze three versions /
+  zero findings; gate controls 17/0. Python identity: 316 other guest files,
+  four contract/version files and registry exact. GUEST-GEN 137 arms, project
+  total 641; README routes profiles 3120707/3145728 B, fixed ceilings
+  unchanged. git diff --check rc0. Current matrix 483 boundaries and
+  summary 68 checks corrected; book/toolbox/profile/pointer synchronized.
+  LIVE_STATUS now 641 arms; P4 12/18 and 46 chapters unchanged. No new
+  contract credit: 68/114. Next c13a2 architecture/author/state/v2 repair.
+  promotion: declined (tracked diagnostics, current protocol and worked runtime book retain the evidence and correction).
 
 `P4-SYSTEM.13` slice (c13 diagnosis) (`2026-10-10`, `SEMULITH-P4-0126`):
 
@@ -896,6 +986,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c13a1 | independent nine-guest 281/524, full 167/5360/10514; 42 owned; two new RED controls; corrected public probe and nine attempts; identity; full CI rc0; registry/schema/freeze/gate controls | explicit setup ready; 68/114 unchanged; c13a2 next |
 | `2026-10-10` | `.13` c13 diagnosis | forced S refusal missed by 35/70 terminal guest; public STCE-clear STIP regression rc101; pins/history; 340 inputs exact; registry 4/0; schema/freeze/gate 17/17/books | two defects owned before SSTC; 68/114 unchanged |
 | `2026-10-10` | `.13` c12 | counter guests 101 boundaries / 202 parcels exact; three controls; core permission 1/0; author 30 mode gates; Rust 163/17/198; 66 entries + 340 inputs exact; lossless archive; focused gates/books | 68/114, v2 open |
 | `2026-10-10` | `.13` c11 | four alignment programs / 165 boundaries / 319 parcels; four in-memory controls; prior 64 bindings + 340 inputs exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 66/114, v2 open |
@@ -926,6 +1017,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c13a1 | `SEMULITH-P4-0127 (leaf P4-SYSTEM.13): prepare explicit STCE timer inputs and repair public evidence` | c13a2 dynamic STIP/author/state/v2 supersession, then direct Sstc witnesses |
 | `.13` c13 diagnosis | `SEMULITH-P4-0126 (leaf P4-SYSTEM.13): own the STCE fallback defect and terminal timer witness gap` | c13a1 explicit timer enable, then architecture repair and Sstc witnesses |
 | `.13` c12 | `SEMULITH-P4-0125 (leaf P4-SYSTEM.13): realize base-counter inclusion and read-only refusals` | c13 Sstc, then 22 runtime pairs |
 | `.13` c11 | `SEMULITH-P4-0124 (leaf P4-SYSTEM.13): realize halfword alignment and precise parcel-fault checks` | c12 Zicntr, then 23 runtime pairs |
@@ -953,6 +1045,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c13a1 (SEMULITH-P4-0127): explicit STCE setup
+  in nine timer guests, fresh derivations/provenance and owned-record protocol;
+  repair confounded public diagnostic with read-back. Full CI green; 68/114
+  unchanged. Dynamic fallback and direct S witnesses remain next.
 
 - `2026-10-10`: `.13` c13 diagnosis (SEMULITH-P4-0126): reproduce
   terminal-zero timer guest miss and public STCE-clear STIP write defect;

@@ -1,12 +1,17 @@
+# P4-SYSTEM.13 c13a1: fresh spec-side parcel derivation, 13 boundaries.
+# With STCE enabled, M-source bits stay zero, SSIP/SEIP are software writable, and STIP follows the comparator.
+# Enable menvcfg.STCE in M. RV64 LUI sign extension sets bit 63; other bits are WPRI.
+lui x31, 0x80000
+csrrs x0, menvcfg, x31
 #|never: x28, x29
-addi x6, x0, 1               #: a sentinel the first mip read must REPLACE. | RVI-RV32I §1.1.4
-addi x8, x0, 1               #: another sentinel. | RVI-RV32I §1.1.4
-addi x5, x0, -1              #: all ones … | RVI-RV32I §1.1.4
-csrrw x0, stimecmp, x5       #: stimecmp <- the maximum: STIP, the hart's own comparison, reads 0 (time is far below). | RVP-SSTC 12.1
-csrrs x6, mip, x0            #: mip before: no source has asserted anything — 0. | RVP-MACHINE §2.1.1.9
-csrrs x0, mip, x5            #: software writes ONES to every mip bit, the M-level sources' MSIP (3), MTIP (7) and MEIP (11) among them. | RVP-MACHINE §2.1.1.9
-csrrs x7, mip, x0            #: only the software-writable SSIP and SEIP took (0x202): MSIP, MTIP and MEIP stay 0 — this environment supplies no source, and a write cannot be one. | RVP-MACHINE §2.1.1.9; the contract v1's interrupt-source assumption
-csrrc x0, mip, x5            #: software clears what it can. | RVP-MACHINE §2.1.1.9
-csrrs x8, mip, x0            #: back to 0: nothing is pending that software did not set. | RVP-MACHINE §2.1.1.9
-csrrw x0, stimecmp, x0       #: stimecmp <- 0: now time >= stimecmp … | RVP-SSTC 12.1
-csrrs x9, mip, x0            #: … so STIP (bit 5) reads 1 — the hart's own comparison, the one timer source v1 has. | RVP-SSTC 12.1 #|end
+addi x6, x0, 1
+addi x8, x0, 1
+addi x5, x0, -1
+csrrw x0, stimecmp, x5
+csrrs x6, mip, x0
+csrrs x0, mip, x5
+csrrs x7, mip, x0
+csrrc x0, mip, x5
+csrrs x8, mip, x0
+csrrw x0, stimecmp, x0
+csrrs x9, mip, x0 #|end

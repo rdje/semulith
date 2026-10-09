@@ -5,7 +5,7 @@
 ## Privilege-mode guarantees through the existing matrix
 
 The next runtime pair is OB-PRIV-MODES. Both checks now execute the complete
-thirteen-guest P4.2 matrix, totaling 481 declared execution boundaries. This
+thirteen-guest P4.2 matrix, totaling 483 declared execution boundaries. This
 reuses specification-derived expectations without changing instructions or
 expected results.
 
@@ -165,6 +165,64 @@ acceptance are still open.
 G-CONTRACT is now 68/114: thirteen scope pairs, sixteen guest pairs and five
 typed boundary pairs. Twenty-three runtime pairs and final freeze remain.
 
+
+## Explicit comparator setup before fallback repair
+
+The nine timer-source programs now enable menvcfg.STCE in M before relying on
+stimecmp. Cold STCE remains zero. Two four-byte instructions use unused x31:
+
+```asm
+lui x31, 0x80000       # RV64 sign extension sets bit 63
+csrrs x0, menvcfg, x31 # select comparator-driven STIP; other bits are WPRI
+```
+
+Every body instruction moves eight bytes. Finite deadlines move two ticks, so
+interrupts and halted spans retain their relative schedules. The independent
+parcel author derives all new observations before processor execution; every
+body write agrees with the declared address/counter/deadline transformation.
+The nine inputs total 281 boundaries and 524 actual parcel requests.
+
+| Guest | Boundaries | Parcels | New finite compare deadlines |
+| --- | ---: | ---: | --- |
+| c-irq | 19 | 32 | 11 |
+| env-irq-sources | 13 | 26 | maximum, then 0 |
+| i-prio | 65 | 124 | reset comparison at 0, then disarm |
+| i-timer | 28 | 54 | 10 |
+| mm-wfi | 63 | 118 | 13 and 27 |
+| w-deleg | 28 | 52 | 15 |
+| w-notrap | 21 | 36 | 10 and 16 |
+| w-sw | 19 | 38 | disarmed above the observed time range |
+| w-timer | 25 | 44 | 15 |
+
+For w-timer, WFI retires at boundary 12, boundaries 13–14 remain halted, and
+boundary 15 delivers STI without fetching or retiring. The handler reads
+instret=13 at boundary 16 and time=17 at boundary 17. It then observes cause
+0x8000000000000005 and mepc=0x80000034, the WFI continuation. The earlier
+source comment's 0x80000044 was incorrect: its old assembled continuation and
+observation were 0x8000002c. The added setup moves that continuation by eight.
+
+Fresh records name the actual parcel route without inheriting capture chronology.
+`--check-owned` now checks 41 unchanged historical captures and the fresh
+13-boundary env-irq-sources record. Its budget is fixed in the author, never
+read from the expected output. Wrong-budget and word-route controls fail; both
+historical and fresh records reject count, observation, comment and line-ending
+drift. mm-stimecmp's deliberately closed gates remain unchanged.
+
+Fresh pinned Sail attempts agree on w-sw (19 boundaries, two identical traces).
+Six inputs diverge: c-irq at 11, env-irq-sources at 12, i-prio at 26,
+i-timer at 5, mm-wfi at 11 and w-deleg at 14. The trace witnesses absent
+comparator pending or continued execution instead of declared delivery/wait.
+w-notrap and w-timer processes refuse (rc1): their time/instret reads trap with
+Zicntr disabled and enter trap loops. Old inputs reproduce those refusals.
+The public timer diagnostic now enables STCE and reads back bit 63 on both
+sides before comparing pending state (ten boundaries, repeat traces identical).
+Its old seven-boundary STCE-clear result was confounded by the overlay defect
+and cannot alone establish a reference cause. Public configuration validation
+still rejects Zicntr without a time source and
+CLINT without a mapped region. These are qualified reference-platform limits;
+failed processes are never counted as agreement. Structured experiments remain
+P4-SYSTEM.14's work. The full independent corpus now spans 5,360 boundaries and
+10,514 parcel requests over the same 167 programs; the contract stays 68/114.
 
 ## Sstc prerequisites: two discovered defects
 

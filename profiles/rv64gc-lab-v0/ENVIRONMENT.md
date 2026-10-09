@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-five direct boundary pairs, 64 checks are realized in the effective contract;
+five direct boundary pairs, 68 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -342,7 +342,7 @@ legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 | OB-ZICNTR POS | mm-counters |
 | OB-ZICNTR NEG | mm-csr-ro-counters |
 
-The privilege matrix spans 481 boundaries; Sv39 spans 1,417 boundaries / 2,832
+The privilege matrix spans 483 boundaries; Sv39 spans 1,417 boundaries / 2,832
 parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319; Zicntr spans 101 / 202. Independent author replay agrees exactly.
 Inherited-global CPU retention is repaired: G from any traversed PTE survives
 ASID-selective fences under the selected cache policy. Eight masks and 32 actual
@@ -367,3 +367,11 @@ mm-stimecmp terminal zero read also misses an unexpected final trap. Both are
 owned prerequisites in P4-SYSTEM.13; the runtime book records reproductions and
 the corpus-preparation, architecture/contract repair and direct-witness sequence.
 No SSTC check credit is awarded before these repairs.
+
+Timer-source inputs explicitly enable menvcfg.STCE in M (nine programs,
+281 boundaries / 524 parcels) before comparator use. Fresh parcel-route records
+retain no historical capture claim; the author's checked set is 41 historical
+captures plus fresh env-irq-sources with an explicit budget of 13. All 167 programs
+independently replay across 5,360 boundaries / 10,514 parcels. The runtime book
+contains setup, worked wake values and fresh Sail attempt qualifications.
+STCE fallback and direct S-mode witnesses remain the next owned prerequisites.

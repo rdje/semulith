@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0127 (leaf P4-SYSTEM.13 c13a1) — prepare explicit timer comparator setup
+
+- Enable STCE in nine guests; independently derive 281 boundaries / 524 parcels
+  before engine runs, preserving relative interrupt/wait schedules. Correct the
+  stale WFI continuation comment; fresh records name their actual parcel route.
+- Keep 41 historical captures plus one fixed-budget fresh record under
+  --check-owned; two new refusing controls registered after observed RED.
+- Repair the public timer diagnostic's missing enable/read-back; qualify all
+  nine fresh Sail attempts. Preserve other inputs, frozen records and 68/114
+  credit. Full CI and commit gates verify the prepared corpus.
+
+
 ## SEMULITH-P4-0126 (leaf P4-SYSTEM.13 c13) — diagnose Sstc prerequisites
 
 - Confirm a terminal-zero timer witness hole: forced S access traps still match

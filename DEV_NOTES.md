@@ -1,5 +1,45 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — explicit comparator setup preserves timer schedules (P4-SYSTEM.13 c13a1)
+
+Nine timer-source guests now enable STCE in M with LUI x31,0x80000 and CSRRS
+menvcfg; x31 was unused. Independent derivation preceded processor execution.
+Budgets increase by two, bodies move eight bytes and finite deadlines increase
+by two ticks. All body instruction bytes except declared deadline immediates
+and all GPR observations under that exact transformation agree. The nine inputs
+span 281 boundaries / 524 parcels; full corpus 167 / 5360 / 10514. mm-stimecmp
+and 316 other guest files, all four contract/version files and registry stay exact.
+Removing stale inline chronology while providing fresh route provenance saves
+19880 B across the nine source/record pairs; fixed family ceilings need no change.
+The w-timer comment's old mepc=0x80000044 was wrong: assembly and observation
+both give old WFI+4=0x8000002c, now 0x80000034. Handler instret/time now 13/17.
+
+Historical author ownership is explicit: 41 captures stay exact; env-irq-sources
+is a fresh parcel record with fixed author budget 13. --check-owned still checks
+42 inputs. Both branches refuse count/write/comment/line-ending drift; new
+wrong-budget and word-route mutants fail before their two GUEST-GEN registrations.
+
+Fresh public Sail attempts: w-sw agrees (19 steps, two identical traces); six
+inputs diverge at declared timer/wait observations, and w-notrap/w-timer processes
+refuse rc1 after disabled counter reads and trap loops. Old inputs reproduce the
+process refusals. The older timer diagnostic left STCE clear and therefore
+confounded its laboratory result with the known overlay defect. Repaired here:
+ten boundaries, explicit enable and bit-63 read-back on both independent sides.
+It still observes Sail STIP=0 at both reads, versus laboratory 1; traces repeat
+exactly. Removing enable makes its read-back guard refuse. Public config rejects
+Zicntr without a time source and CLINT without a region. No submodule internals
+are used; remove the maintained implementation-specific symbol from the book.
+
+First full CI passed Rust 163/17/198 but refused a stale GS digest; regenerate
+before final CI. Final make ci passes all five legs; Rust 163/17/198, registry
+4/0, schema270/two skips, freeze3/zero findings and gate controls17/0.
+Current docs also correct an old 64-check summary to verified 68.
+No architectural fallback repair or new contract credit in this prerequisite.
+Next c13a2 dynamic STIP/author/state/v2 supersession, then c13b direct S witnesses.
+Promotion declined: the current owned-record protocol and worked timer example
+are maintained in tracked author diagnostics and the runtime book.
+
+
 ## _(2026-10-10)_ — Sstc review exposes a terminal witness hole and STCE fallback defect (P4-SYSTEM.13 c13)
 
 Before binding SSTC, an in-memory author copy forces every S stimecmp access

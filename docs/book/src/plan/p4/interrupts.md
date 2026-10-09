@@ -44,7 +44,8 @@ Sail configuration (the override materialized fresh, validate-config clean),
 six guests AGREE (i-accept, i-deleg, i-enable, i-nest, i-vector, w-sw; 218
 steps, Sail numbering the delivery step and printing no row — the laboratory's
 own convention). The six named divergences are all platform-shaped, never
-semantic: Sail's timer gates on `plat_have_clint` (i-prio, i-timer); its WFI is
+semantic in that historical classification: under the public matched configuration,
+Sail does not assert comparator STIP (i-prio, i-timer); its WFI is
 a nop under the matched platform (the four `<halted>`-step guests); and
 mm-wfi's TW cell is the named gap, freshly measured — with the wait modeled the
 delivered trap is identical, 30/30. The `.4` re-run under the fresh override
@@ -75,3 +76,10 @@ success from a final trap. Both repairs are owned before SSTC contract credit;
 [the runtime chapter](contract-runtime.md#sstc-prerequisites-two-discovered-defects)
 gives the public reproduction and the ordered repair plan. The earlier timer
 receipts above describe their recorded inputs and do not establish this missing case.
+
+The current timer corpus explicitly enables STCE before comparator use. Its
+fresh w-timer run reads instret=13 and time=17 after the same two idle boundaries,
+with mepc=0x80000034. Earlier numeric receipts above refer to their historical
+inputs. [The runtime chapter](contract-runtime.md#explicit-comparator-setup-before-fallback-repair)
+shows the setup, all nine budgets, the worked wake sequence and reference limits.
+The fallback defect and terminal S-mode witness repair remain pending.

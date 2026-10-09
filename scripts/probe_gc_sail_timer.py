@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Reproduce the pinned Sail timer-platform limit through its public interface.
 
-Live diagnostic, not an offline CI gate. The laboratory derives its seven-boundary
+Live diagnostic, not an offline CI gate. The laboratory derives its ten-boundary
 expectations before the reference executes; no expectation is fitted to the output.
 """
 from __future__ import annotations
@@ -16,7 +16,10 @@ import dossier_sexp as D
 from riscv_asm import Assembler, AsmError, write_elf64
 import run_rv64gc_sail as S
 
-SOURCE = """addi x3, x0, 0
+SOURCE = """lui x31, 0x80000
+csrrs x0, menvcfg, x31
+csrrs x9, menvcfg, x0
+addi x3, x0, 0
 csrrw x0, stimecmp, x3
 c.nop
 csrrs x10, mip, x0
@@ -33,7 +36,7 @@ def run(output: Path) -> dict:
     source = output / 'timer.s'
     source.write_text(SOURCE)
     asm = Assembler(S.UNIT / 'encoding.sexp')
-    record, _ = Q.run_parcel_guest(source, asm, 7)
+    record, _ = Q.run_parcel_guest(source, asm, 10)
     expected_path = output / 'timer.expected.sexp'
     expected_path.write_text(record)
     expected = D.load_expectations(expected_path)
@@ -60,7 +63,7 @@ def run(output: Path) -> dict:
     for repetition in range(2):
         trace = output / f'timer.{repetition}.trace'
         trace.unlink(missing_ok=True)
-        proc = subprocess.run([str(binary), '--config-override', str(config), '--inst-limit', '7',
+        proc = subprocess.run([str(binary), '--config-override', str(config), '--inst-limit', '10',
                                '--trace-instr', '--trace-gpr', '--trace-csr', '--trace-interrupt',
                                '--trace-exception', '--trace-output', str(trace), str(elf)],
                               capture_output=True, text=True)
@@ -73,17 +76,21 @@ def run(output: Path) -> dict:
     text = traces[0].decode()
     verdict, detail = S.compare_trace(expected, text)
     rows, _ = S.parse_trace(text)
-    if set(rows) != set(range(7)):
-        raise S.SailError('timer probe did not execute exactly seven instruction rows')
+    if set(rows) != set(range(10)):
+        raise S.SailError('timer probe did not execute exactly ten instruction rows')
+    # Read-back guards the selected comparator view on both independent sides.
+    if (rows[2].writes.get('x9') != 1 << 63
+            or expected['step'][2]['writes'] != {'x9': '0x8000000000000000'}):
+        raise S.SailError('STCE setup/read-back did not establish the comparator view')
     # The reference logs destinations even when their values do not change.
-    observed = {reg: rows[n].writes.get(reg) for n, reg in ((3, 'x10'), (6, 'x12'))}
+    observed = {reg: rows[n].writes.get(reg) for n, reg in ((6, 'x10'), (9, 'x12'))}
     wanted = {reg: int(expected['step'][n]['writes'][reg], 16)
-              for n, reg in ((3, 'x10'), (6, 'x12'))}
-    if (verdict != 'DIVERGE' or rows[4].writes.get('x11') != 0
+              for n, reg in ((6, 'x10'), (9, 'x12'))}
+    if (verdict != 'DIVERGE' or rows[7].writes.get('x11') != 0
             or observed != {'x10': 0, 'x12': 0} or wanted != {'x10': 32, 'x12': 32}):
         raise S.SailError(f'timer-platform observation changed: {verdict}; {observed}; {wanted}')
     result = {'verdict': 'NAMED-PLATFORM-DIFFERENCE', 'detail': detail,
-              'mip_reads_sail': observed, 'mip_reads_laboratory': wanted,
+              'stce_readback': '0x8000000000000000', 'mip_reads_sail': observed, 'mip_reads_laboratory': wanted,
               'repeat': 'byte-identical', 'config_validations': validations}
     (output / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
@@ -98,7 +105,7 @@ def main() -> int:
     except (S.SailError, Q.Refusal, AsmError, D.DossierError, OSError, ValueError, KeyError) as exc:
         print(f'REFUSED: {exc}')
         return 2
-    print('NAMED-PLATFORM-DIFFERENCE: stimecmp=0, Sail mip.STIP=0 at both reads; '
+    print('NAMED-PLATFORM-DIFFERENCE: STCE=1, stimecmp=0, Sail mip.STIP=0 at both reads; '
           'laboratory mip.STIP=1; two fresh traces byte-identical')
     print(result['detail'])
     return 0

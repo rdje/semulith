@@ -471,6 +471,10 @@ PYCODE
 
   out="$(python3 scripts/probe_gc_owned_extent.py 2>&1)"; rc=$?
   arm "GREEN historical text survives the C extent migration" "$rc" 0 "$out" "write guard and explicit route pass"
+  out="$(python3 scripts/probe_gc_owned_extent.py --mutation fresh-budget 2>&1)"; rc=$?
+  arm "RED fresh owned records keep declared budgets" "$rc" 1 "$out" "fresh owned check"
+  out="$(python3 scripts/probe_gc_owned_extent.py --mutation fresh-word-route 2>&1)"; rc=$?
+  arm "RED fresh owned records keep parcel provenance" "$rc" 1 "$out" "fresh owned check"
   out="$(python3 scripts/probe_gc_owned_extent.py --mutation old-counts 2>&1)"; rc=$?
   arm "RED historical checks cannot retain word counts with C" "$rc" 1 "$out" "bound migrated historical check"
   out="$(python3 scripts/probe_gc_owned_extent.py --mutation parcel-prose 2>&1)"; rc=$?

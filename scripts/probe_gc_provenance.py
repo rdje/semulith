@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check author provenance without inferring a record's history from its filename.
 
-The 42 owned historical word records keep their capture headers. New derivations
+The 41 historical word records keep their capture headers; env-irq-sources is fresh. New derivations
 name the tracked author and actual route; no engine or reference output is used.
 """
 from __future__ import annotations
@@ -69,8 +69,14 @@ def check(author, root):
         assert 'unknown expectation author route' in str(exc)
     else:
         raise AssertionError('unknown author route was accepted')
+    assert len(author.OWNED_GUESTS) == 41
+    assert author.PARCEL_OWNED_GUESTS == {'env-irq-sources': 13}
+    fresh = REPO / 'profiles/rv64gc-lab-v0/guests/env-irq-sources.s'
+    text, count = author.check_owned_guest(fresh, asm)
+    neutral(text, 'explicit-budget parcel route (C-capable)')
+    assert count == 13 and text == fresh.with_suffix('.expected.sexp').read_text()
     assert author.main(['probe', '--check-owned']) == 0
-    print('GC provenance probe: generic/9 borrowed names/C/schema/new owned route; 42 historical records exact')
+    print('GC provenance probe: generic/9 borrowed names/C/schema/new owned route; 41 historical captures + one fresh record exact')
 
 
 def main():
