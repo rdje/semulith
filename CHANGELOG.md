@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0099 (leaf P4-SYSTEM.12 e1d2) — stage the C corpus
+
+- 28 independently authored guests cover all 37 selected forms: 429 declared
+  boundaries / 708 parcels. Hand arithmetic, memory, links, IRQ/LRSC, traps and
+  translated-straddle checkpoints pass; observation/extent and saved-drift controls
+  discriminate. Schemas 28/28; production files unchanged. Bind and Sail remain next.
+
 ## SEMULITH-P4-0098 (leaf P4-SYSTEM.12 e1d1) — stage parcel counts
 
 - Re-derive all 139 historical write traces at 4,913 declared boundaries; stage

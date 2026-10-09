@@ -267,3 +267,33 @@ the complete request log. Its staging manifest fingerprints the source records,
 metadata, definitions and producing tools. A changed observation, incorrect extent
 or damaged stored count is rejected. Existing production records remain unchanged;
 the bind will adopt the derived extent alongside C and its new corpus.
+
+Slice (e1d2) stages 28 new guest programs and their independent observations before
+any processor-engine run. They cover all 37 selected compressed forms across 429
+declared boundaries and 708 parcel requests. The producer records each budget,
+checks hand-derived register values and selected PCs, validates all 28 expectation
+schemas, and fingerprints its inputs. Repeating staging is byte-exact. Changing an
+observation, request extent or saved budget is rejected.
+
+The programs cover signed and scaled immediate limits, 64-bit shifts, 32-bit
+wrap/sign extension, overlapping operands, x0 and hints, compact and stack-relative
+integer/D memory, both branch outcomes, backward branches and extreme jumps. The
+mixed call returns through C.JALR with its source also serving as the link register;
+its saved link is exactly pc+2. A timer interrupts between two compressed
+instructions and returns to the saved two-byte boundary. A constrained LR/SC pair
+with compressed arithmetic stores the incremented value successfully.
+
+Reserved operands preserve their original sixteen bits in the delivered diagnostic;
+C.EBREAK instead takes the breakpoint cause and the declared PC trap value. All four
+compressed D memory forms are illegal with FS off before any data access. An
+all-ones instruction retains the full ILEN=32 diagnostic, rather than stopping at
+its first parcel.
+
+Two translated programs reuse the public Sv39 guest's page tables with execute
+permission removed from the second page. A C.NOP in the first page's final halfword
+executes with one request; the following boundary faults on the next page. A 32-bit
+instruction at that same halfword faults while fetching its required second parcel,
+before any instruction effect. Both runs issue 101 physical parcel requests, but
+use 52 and 51 declared boundaries respectively. Their trap values name the next
+page; the saved instruction PCs distinguish a new fetch from a straddling one.
+The production composition and records remain unchanged until the atomic bind.

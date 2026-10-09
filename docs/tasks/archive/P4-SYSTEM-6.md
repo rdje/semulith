@@ -44,3 +44,57 @@ Completed receipts moved byte-verbatim from the active tree, continuing part 5.
   proof and proposed transaction in its tree. No cap or existing frozen bytes changed.
   promotion: declined (hand cache fixtures/thirteen RED controls retain the lesson).
 
+`P4-SYSTEM.12` slice (e1d0) — honest author provenance (`2026-10-09`, `SEMULITH-P4-0097`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — `python3 scripts/probe_gc_provenance.py
+  --author-revision 5ac3514` rc=1: generic output inherited FP provenance.
+  `rg -n 'floating-point corpus|def emit' scripts/derive_rv64gc_expectations.py`
+  pinpoints emit's unconditional FP fallback, inferred from unmatched filenames.
+- [x] **FIX / ADDRESSED** — the tracked author names its actual word or explicit-budget
+  C-capable parcel route. Historical capture headers apply only to the 42 canonical
+  owned word inputs, never copied names or a new parcel derivation. No invented
+  pre-engine chronology. `python3 scripts/probe_gc_provenance.py` rc=0: generic,
+  nine borrowed names, raw C.ADDI observation/schema, owned parcel route, unknown-route
+  refusal and all 42 historical records exact. Four targeted mutations each rc=1
+  with the intended provenance/route reason. No production record is written.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 109 pass / 0 fail;
+  both tracked generated fixtures exact, base mirror 91 exact / seven declared.
+  DERIVED-COUNTS --list derives 605 arms. Only new-output comments change; existing
+  139 expectation files, production encoding and Rust modules unchanged.
+- [x] **LOCKSTEP** — MEMORY/frontier/live status (P4 11/18 unchanged), logs,
+  toolbox/doctrine and C book updated. Completed e1c0 receipt moved verbatim to
+  archive part 5 (2,979 B); reconstruction asserted, archive 63,976 B. README neutral
+  body and claim-verification source body identical to read-only policy sources.
+  Containment guide read (SHA-256 8f77fa39c9bcb9cfc43166259a627a6ced64682030088400b727dccc5d674a53);
+  full adoption remains LIVE-CONTAINMENT.4. `make book` and commit gate must pass.
+  promotion: declined (permanent provenance fixtures and four RED controls retain the rule).
+
+`P4-SYSTEM.12` slice (e1d1) — historical parcel-count staging (`2026-10-09`, `SEMULITH-P4-0098`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — `python3 scripts/derive_gc_parcel_counts.py`
+  rc=0: derives 139 exact architectural write traces at their 4,913 declared boundaries:
+  4,888 prior word requests -> 9,770 actual parcel requests. Five guests differ
+  from blind doubling (runoff/fetch faults). The encoding's C slot remains unbound;
+  e1d's declared count-provenance prerequisite precedes adopting any new extent.
+- [x] **FIX / ADDRESSED** — tracked census derives each run independently, checks
+  all writes against its prior record and the step fetch sum against the actual
+  request log. Deterministic staging manifest carries 393 conservative input hashes,
+  including instrument code, schemas/definition data, unit metadata and every paired
+  source/record. `python3 scripts/derive_gc_parcel_counts.py --check` rc=0; no guest
+  record written. Hand word/mixed/runoff counts and repeat pass. Observation/extent
+  mutations each rc=1 with the intended boundary/request-log diagnosis; a damaged
+  stored count is DRIFT (rc=1), the unchanged manifest is green.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 113 pass / 0 fail,
+  both generated fixtures and the base mirror exact. Existing 139 expectation records,
+  encoding and both generated Rust modules remain byte-exact against eaad766;
+  no Rust change, no broad Rust rerun warranted. DERIVED-COUNTS --list derives 609 arms.
+- [x] **LOCKSTEP** — MEMORY/frontier/index, live status (P4 11/18 unchanged), logs,
+  C book and toolbox/doctrine updated. e1c1 moved byte-verbatim to archive part 6
+  (3,392 B; reconstruction asserted). `scripts/shard_history.py` cuts CHANGELOG
+  79 == 76 kept + 3 moved (65,383 -> 57,215 B) and DEV_NOTES 41 == 35 + 6
+  (48,995 -> 40,281 B), bytes/order exact; shards 0215/0216, fixed bounds unchanged.
+  `make book` rc=0; commit gate enforced. Git diff whitespace check reports only
+  retained whole-record blank separators at the two sharded heads' EOF; code diff
+  is clean. Next e1d2: the independently authored C corpus.
+  promotion: declined (permanent hand/RED/drift controls retain the count distinction).
+

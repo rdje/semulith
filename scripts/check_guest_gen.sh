@@ -469,6 +469,15 @@ PY
   out="$(python3 scripts/derive_gc_parcel_counts.py --mutation extent 2>&1)"; rc=$?
   arm "RED count adoption checks actual request log" "$rc" 1 "$out" "parcel count differs from actual request log"
 
+  out="$(python3 scripts/stage_gc_c_corpus.py 2>&1)"; rc=$?
+  arm "GREEN independent compressed corpus staging" "$rc" 0 "$out" "37 forms,"
+  out="$(python3 scripts/stage_gc_c_corpus.py --check 2>&1)"; rc=$?
+  arm "GREEN compressed corpus stages deterministically" "$rc" 0 "$out" "no production files written"
+  out="$(python3 scripts/stage_gc_c_corpus.py --mutation observation 2>&1)"; rc=$?
+  arm "RED staged compressed observations remain checked" "$rc" 1 "$out" "staged architectural observations differ"
+  out="$(python3 scripts/stage_gc_c_corpus.py --mutation extent 2>&1)"; rc=$?
+  arm "RED staged compressed extent remains checked" "$rc" 1 "$out" "staged extent differs from actual requests"
+
   rm -rf "$t"
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

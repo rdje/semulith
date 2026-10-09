@@ -235,9 +235,24 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | historical parcel counts staged; e1d2 C corpus / e2 bind next |
+| 1 | `P4-SYSTEM.12` | `active` | C corpus/counts staged; e2 bind contracts next |
 
 ## Decisions
+
+- `2026-10-09` (e1d2 corpus design, before changes): primary RVI-C chapter read in
+  full from the pinned cache, digest 3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb.
+  Track a staging producer with predeclared budgets for all 37 selected forms:
+  signed/scaled limits, word overflow, aliases/x0/HINTs, stack/compact integer and D
+  memory, mixed branches and pc+2 links (rd=rs1), LR/SC with valid C arithmetic,
+  reserved original-bit diagnostics/EBREAK and four FS=Off memory gates. Derive
+  all expected values spec-side before engine runs. Adapt the existing public
+  sv39-straddle source into C.NOP at the final halfword versus a required second
+  parcel on a non-executable page; budgets 52 and 51, cause 12/tval next page,
+  saved start PCs and actual requests hand-checked. Use temporary full-C composition
+  with copied profile/state metadata, emit only target-local staged sources/records
+  and a fingerprinted manifest, and discriminate changed observations/extent.
+  Production sources/counts/composition/modules remain untouched until e2. Archive
+  completed e1d0 verbatim to part 6 to preserve the fixed live-tree ceiling.
 
 - `2026-10-09` (e1d split, before changes): e1d1 first tracks a reproducible,
   non-writing census of all historical guests at their already-declared budgets.
@@ -771,59 +786,33 @@ never raised, at every crossing. The index:
   (b), (d1)–(e1c0), plus closed `.10` design and `.11` design/split, moved byte-verbatim
   as completed records leave the live head.
 
-`P4-SYSTEM.12` slice (e1d0) — honest author provenance (`2026-10-09`, `SEMULITH-P4-0097`):
+`P4-SYSTEM.12` slice (e1d2) — specification-derived compressed corpus (`2026-10-09`, `SEMULITH-P4-0099`):
 
-- [x] **REPRODUCE / ROOT CAUSE** — `python3 scripts/probe_gc_provenance.py
-  --author-revision 5ac3514` rc=1: generic output inherited FP provenance.
-  `rg -n 'floating-point corpus|def emit' scripts/derive_rv64gc_expectations.py`
-  pinpoints emit's unconditional FP fallback, inferred from unmatched filenames.
-- [x] **FIX / ADDRESSED** — the tracked author names its actual word or explicit-budget
-  C-capable parcel route. Historical capture headers apply only to the 42 canonical
-  owned word inputs, never copied names or a new parcel derivation. No invented
-  pre-engine chronology. `python3 scripts/probe_gc_provenance.py` rc=0: generic,
-  nine borrowed names, raw C.ADDI observation/schema, owned parcel route, unknown-route
-  refusal and all 42 historical records exact. Four targeted mutations each rc=1
-  with the intended provenance/route reason. No production record is written.
-- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 109 pass / 0 fail;
-  both tracked generated fixtures exact, base mirror 91 exact / seven declared.
-  DERIVED-COUNTS --list derives 605 arms. Only new-output comments change; existing
-  139 expectation files, production encoding and Rust modules unchanged.
-- [x] **LOCKSTEP** — MEMORY/frontier/live status (P4 11/18 unchanged), logs,
-  toolbox/doctrine and C book updated. Completed e1c0 receipt moved verbatim to
-  archive part 5 (2,979 B); reconstruction asserted, archive 63,976 B. README neutral
-  body and claim-verification source body identical to read-only policy sources.
-  Containment guide read (SHA-256 8f77fa39c9bcb9cfc43166259a627a6ced64682030088400b727dccc5d674a53);
-  full adoption remains LIVE-CONTAINMENT.4. `make book` and commit gate must pass.
-  promotion: declined (permanent provenance fixtures and four RED controls retain the rule).
-
-`P4-SYSTEM.12` slice (e1d1) — historical parcel-count staging (`2026-10-09`, `SEMULITH-P4-0098`):
-
-- [x] **REPRODUCE / ROOT CAUSE** — `python3 scripts/derive_gc_parcel_counts.py`
-  rc=0: derives 139 exact architectural write traces at their 4,913 declared boundaries:
-  4,888 prior word requests -> 9,770 actual parcel requests. Five guests differ
-  from blind doubling (runoff/fetch faults). The encoding's C slot remains unbound;
-  e1d's declared count-provenance prerequisite precedes adopting any new extent.
-- [x] **FIX / ADDRESSED** — tracked census derives each run independently, checks
-  all writes against its prior record and the step fetch sum against the actual
-  request log. Deterministic staging manifest carries 393 conservative input hashes,
-  including instrument code, schemas/definition data, unit metadata and every paired
-  source/record. `python3 scripts/derive_gc_parcel_counts.py --check` rc=0; no guest
-  record written. Hand word/mixed/runoff counts and repeat pass. Observation/extent
-  mutations each rc=1 with the intended boundary/request-log diagnosis; a damaged
-  stored count is DRIFT (rc=1), the unchanged manifest is green.
-- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 113 pass / 0 fail,
-  both generated fixtures and the base mirror exact. Existing 139 expectation records,
-  encoding and both generated Rust modules remain byte-exact against eaad766;
-  no Rust change, no broad Rust rerun warranted. DERIVED-COUNTS --list derives 609 arms.
-- [x] **LOCKSTEP** — MEMORY/frontier/index, live status (P4 11/18 unchanged), logs,
-  C book and toolbox/doctrine updated. e1c1 moved byte-verbatim to archive part 6
-  (3,392 B; reconstruction asserted). `scripts/shard_history.py` cuts CHANGELOG
-  79 == 76 kept + 3 moved (65,383 -> 57,215 B) and DEV_NOTES 41 == 35 + 6
-  (48,995 -> 40,281 B), bytes/order exact; shards 0215/0216, fixed bounds unchanged.
-  `make book` rc=0; commit gate enforced. Git diff whitespace check reports only
-  retained whole-record blank separators at the two sharded heads' EOF; code diff
-  is clean. Next e1d2: the independently authored C corpus.
-  promotion: declined (permanent hand/RED/drift controls retain the count distinction).
+- [x] **REPRODUCE / ROOT CAUSE** — e1d requires a new C corpus before binding.
+  `python3 scripts/stage_gc_c_corpus.py` rc=0: 28 staged guests, all 37 selected
+  forms, 429 predeclared boundaries, 708 actual parcels. The production encoding
+  still carries the C slot. Primary chapter digest re-verified and read in full.
+- [x] **FIX / ADDRESSED** — tracked producer declares programs/budgets and hand
+  final/PC/state checkpoints before any processor-engine run. Independent author
+  derives every observation and request. Coverage requires an actual expansion
+  derivation, excluding source annotations at interrupt/fetch-fault boundaries.
+  `--check` rc=0, schemas 28/28. Observation and extent mutants each rc=1 with
+  named semantic reasons; a saved budget changed 15->16 makes --check DRIFT (rc=1),
+  then regeneration restores exact output. Initial LR/SC source syntax was refused;
+  corrected to the documented parenthesized-address interface, no oracle changed.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 117 pass / 0 fail,
+  both generated fixtures and base mirror exact. `python3 scripts/derive_gc_parcel_counts.py
+  --check` rc=0: all 139 historical traces still exact at 4,913 boundaries / 9,770
+  requests; its conservative fingerprints regenerated for the new producer. All
+  142 production records/encoding/generated modules byte-exact against 4754419.
+  DERIVED-COUNTS --list derives 613 arms. No Rust or production guest/count changes.
+- [x] **LOCKSTEP** — MEMORY/frontier/index/live status (P4 remains 11/18), logs,
+  toolbox/doctrine and C book updated. Closed e1d0/e1d1 receipts moved byte-verbatim
+  to archive part 6, reconstruction asserted; bounds unchanged. `make book` and
+  commit gate enforced. Staged sources/records total 204,698 B: projected profile
+  family 519 files / 3,091,575 B before bind metadata, inside current 600 / 3,145,728
+  ceilings. Next: e2 preflight of count/mirror contracts, atomic C bind, matched Sail.
+  promotion: declined (permanent source/hand/mutation/drift controls retain the method).
 
 ### ROUTING EVIDENCE — archive pressure to `LIVE-CONTAINMENT.4`
 
@@ -846,7 +835,7 @@ Before publishing the staged C corpus/counts, e1d must derive an explicit correc
 family/provenance header and guard generic/C text, while preserving the 42 historical
 owned records. Schedule as high priority within e1d, before its first authored record.
 
-Completed e1c1 receipt: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+Completed e1c1/e1d0/e1d1 receipts: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Verification Log
 
@@ -918,6 +907,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e1d2) | `SEMULITH-P4-0099 (leaf P4-SYSTEM.12): stage the specification-derived compressed corpus before binding C` | e2 bind contracts, then matched Sail |
 | `.12` (slice e1d1) | `SEMULITH-P4-0098 (leaf P4-SYSTEM.12): stage independently derived parcel counts for the historical corpus` | e1d2 C corpus, then e2 bind |
 | `.12` (slice e1d0) | `SEMULITH-P4-0097 (leaf P4-SYSTEM.12): preserve historical provenance and label new author routes honestly` | e1d staged C corpus/counts, then e2 bind |
 | `.12` (slice e1c1) | `SEMULITH-P4-0096 (leaf P4-SYSTEM.12): derive the selected translation cache independently` | containment lifecycle, then e1d / e2 |

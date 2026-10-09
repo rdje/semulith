@@ -1,5 +1,16 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — stage C observations before executing the model (P4-SYSTEM.12 e1d2)
+
+The tracked producer declares 28 programs and budgets covering 37 compressed forms.
+The independent author derives 429 boundaries / 708 parcels; hand checkpoints pin
+signed/scaled limits, word overflow, aliases, hints, D memory, pc+2 links, IRQ return,
+LR/SC, reserved/FS-Off traps and ILEN=32 bits. Adapt the public Sv39 guest's next leaf
+to non-executable: final-halfword C.NOP succeeds, a required second parcel faults;
+both runs issue 101 requests but take 52 versus 51 boundaries. New expectations
+validate, repeat exactly and reject observation/extent or saved-budget corruption.
+Production files stay exact. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — count actual requests before migrating extent (P4-SYSTEM.12 e1d1)
 
 All 139 historical traces match the independent parcel author at 4,913 declared
