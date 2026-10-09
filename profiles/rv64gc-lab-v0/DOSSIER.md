@@ -120,9 +120,9 @@ The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
 ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
 Requirement statuses remain .14's work; exact snapshot/replay serialization .16's.
 
-The effective contract has 57 obligations / 114 checks, 66 realized: thirteen
-scope pairs, fifteen guest pairs and five typed boundary pairs. Version 2 is
-open for twenty-four runtime pairs and final freeze. Frozen v0/v1 text, membership
+The effective contract has 57 obligations / 114 checks, 68 realized: thirteen
+scope pairs, sixteen guest pairs and five typed boundary pairs. Version 2 is
+open for twenty-three runtime pairs and final freeze. Frozen v0/v1 text, membership
 and pins remain unchanged. The shared catalog expansion/schema/freeze owners
 judge the same records. V2 supersedes the pre-qualification FP condition, both
 historical definition stages and blanket no-breakpoint wording.
@@ -132,7 +132,7 @@ historical definition stages and blanket no-breakpoint wording.
 | Physical addresses, data widths/attributes, event positioning, ordering, cold reset | Five direct typed pairs in ENVIRONMENT.md and the contract book |
 | Success-response shape validation | Shared CPU boundary validator; target failures remain target exceptions |
 | Value/phase/startup auditing | Independent fixture controls; adapters cannot detect hidden host mutation or grant interrupt-source authority |
-| Privilege modes, Sv39, Svade, IALIGN-16 | Exact guest bindings in ENVIRONMENT.md; worked observations and controls in the runtime book |
+| Privilege modes, Sv39, Svade, IALIGN-16, Zicntr | Exact guest bindings in ENVIRONMENT.md; worked observations and controls in the runtime book |
 | Inherited-global cache repair | G accumulates along the walk; actual ASID/root/fence regressions; independent author unchanged |
 
 The boundary fixtures distinguish provider violations from target exceptions.

@@ -1,5 +1,33 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — counter inclusion retains separate progress and access contracts (P4-SYSTEM.13 c12)
+
+OB-ZICNTR binds mm-counters / mm-csr-ro-counters. Rate and progress
+remain v1's declared virtual-time contract; OB-GC-COUNTERS remains its own
+later pair. Exact selection excludes Zihpm; three counter spellings are CSRRS
+specializations. Initial M reads are 0/1/2; S/U cycle retries read 25/51 after
+separate enable gates. The guest does not read S TIME: existing core permission
+fixture covers its TM gate (1/0), and independent author checks all three
+counters in thirty counter/timer mode cases with source fields pinned.
+
+Both guests independently match 101 boundaries / 202 parcels. Existing total-
+and U-counter gate mutants rc1 with the intended assertion. In-memory read-only
+write-as-read control first clobbers x5 at step 9 (9 instead of sentinel 7).
+The real six refusals preserve destinations, including rd=x0 write semantics;
+subsequent reads give cycle=45 and instret=40. Input sources remain unchanged.
+Registry 4/0, make check 163/17/198, schema/freeze, gate 17/17 and books pass.
+66 prior bindings / 340 inputs exact. G-CONTRACT 68/114; 23 pairs then freeze.
+LIVE_STATUS unchanged (P4 12/18, 639 arms, 46 chapters). Promotion declined:
+registry, exact selection and runtime book retain finite evidence and limits.
+
+Active task head was 124649 B before ownership. Move completed early designs
+(25612 B) and acceptance (26817 B) verbatim to archive part 7 (52711 B).
+Ordered inverse reconstruction of the owned pre-move 126563 B head is exact,
+SHA256 5b9c5f51506236994e0617d875990ed17e4712cf539b85f6de17042e580c3225.
+Both moved blocks also match the prior commit. New head 74439 B before receipt;
+frontier/census/current plans remain live, old archives/ceilings unchanged.
+
+
 ## _(2026-10-10)_ — halfword alignment includes precise parcel refusal (P4-SYSTEM.13 c11)
 
 Bind OB-IALIGN-16 POS to c-links/c-page-end/sv39-straddle, NEG to

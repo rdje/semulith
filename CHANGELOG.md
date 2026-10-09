@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0125 (leaf P4-SYSTEM.13 c12) — realize base-counter inclusion
+
+- Bind counter reads and read-only refusals; 101 boundaries / 202 parcels
+  independently exact, three controls discriminate. Existing S TIME permission
+  and author mode checks pass; progress remains the declared virtual-time policy.
+- All 66 earlier bindings / 340 inputs exact. Rust 163/17/198, registry 4/0,
+  schema/freeze, gate 17/17 and books pass. 68/114; 23 pairs then freeze remain.
+- Move 52429 B completed task receipts verbatim to archive part 7, with exact
+  inverse reconstruction; fixed caps retained. Current table/book synchronized.
+
+
 ## SEMULITH-P4-0124 (leaf P4-SYSTEM.13 c11) — realize halfword alignment
 
 - Bind legal halfword links, mixed-length translated fetch and precise second-

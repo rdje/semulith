@@ -128,5 +128,39 @@ failed parcel's trap value (straddle step 46). No source or expectation changes.
 The existing comparison also checks never-written registers; direct trace PC/mode
 comparison is not added. This is finite evidence for the selected contract.
 
-G-CONTRACT is now 66/114: thirteen scope pairs, fifteen guest pairs and five
-typed boundary pairs. Twenty-four runtime pairs and final freeze remain.
+At c11, G-CONTRACT was 66/114: thirteen scope pairs, fifteen guest pairs and five
+typed boundary pairs. Twenty-four runtime pairs and final freeze remained.
+
+
+## Zicntr: included counters and read-only refusals
+
+OB-ZICNTR binds mm-counters positively and mm-csr-ro-counters negatively.
+Zicntr adds the cycle, time and instret counter views beyond the G abbreviation;
+Zihpm is excluded by the exact profile/CSR scope checks. The three assembler
+spellings are read-only CSRRS specializations, not three new instruction encodings.
+Counter rate and progress retain the existing virtual-time contract.
+
+In mm-counters, the initial M-mode reads observe cycle=0, time=1 and instret=2.
+The zero cycle read causes no register change. A gated S-mode cycle read delivers
+cause 2; enabling mcounteren.CY permits x8=25 at step 25. In U, scounteren.CY
+must also be enabled before x13=51 at step 51. The program's S-mode cells read
+cycle; the existing core permission test separately checks S TIME's TM gate.
+The independent author's existing mode matrix checks all three counters in M/S/U.
+
+The negative guest attempts six writes to the read-only counter views through
+register/immediate forms, including CSRRW with rd=x0. Every refusal preserves
+its destination sentinel. Later legal zero-source reads observe cycle=45 and
+instret=40 at steps 45/46; the differing counts retain the declared rule that
+trapping instructions do not retire. The handler reads cause 2 and the final
+refused instruction bits through ordinary GPR observations.
+
+Independent replay reproduces both programs, 101 boundaries and 202 parcels.
+Existing counter-enable and U-enable controls fail the mode-gate assertion.
+An in-memory control replaces a forbidden write with a successful read: step 9
+clobbers x5 with 9 instead of preserving its sentinel 7, and fails. No guest,
+expectation or author source is rewritten. This pair is finite inclusion/refusal
+evidence; OB-GC-COUNTERS remains a separate later binding. Firmware and Linux
+acceptance are still open.
+
+G-CONTRACT is now 68/114: thirteen scope pairs, sixteen guest pairs and five
+typed boundary pairs. Twenty-three runtime pairs and final freeze remain.

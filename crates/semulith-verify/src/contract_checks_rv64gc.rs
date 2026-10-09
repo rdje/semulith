@@ -30,9 +30,19 @@ pub struct ContractCheck {
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
 /// `.13` adds eleven selection pairs, three current guarantees, five typed boundary pairs
-/// and the existing privilege-mode, Sv39, Svade and halfword-alignment witnesses;
+/// and the existing privilege-mode, Sv39, Svade, halfword-alignment and counter witnesses;
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-ZICNTR-POS",
+        obligation: "OB-ZICNTR",
+        evidence: Evidence::Guests(&["mm-counters"]),
+    },
+    ContractCheck {
+        id: "CHK-ZICNTR-NEG",
+        obligation: "OB-ZICNTR",
+        evidence: Evidence::Guests(&["mm-csr-ro-counters"]),
+    },
     ContractCheck {
         id: "CHK-IALIGN-16-POS",
         obligation: "OB-IALIGN-16",

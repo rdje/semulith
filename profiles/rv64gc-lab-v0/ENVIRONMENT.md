@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c11 (`2026-10-10`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c12 (`2026-10-10`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -339,9 +339,11 @@ legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 | OB-SVADE NEG | sv39-svade |
 | OB-IALIGN-16 POS | c-links, c-page-end, sv39-straddle |
 | OB-IALIGN-16 NEG | c-page-straddle |
+| OB-ZICNTR POS | mm-counters |
+| OB-ZICNTR NEG | mm-csr-ro-counters |
 
 The privilege matrix spans 481 boundaries; Sv39 spans 1,417 boundaries / 2,832
-parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319. Independent author replay agrees exactly.
+parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319; Zicntr spans 101 / 202. Independent author replay agrees exactly.
 Inherited-global CPU retention is repaired: G from any traversed PTE survives
 ASID-selective fences under the selected cache policy. Eight masks and 32 actual
 fences discriminate that repair; the independent author was already correct.
@@ -353,7 +355,7 @@ fails at step 90. The whole-image core test also verifies preservation.
 
 The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
 observations, examples, comparison limits and control receipts. Current census:
-57 effective obligations / 114 checks, 66 realized: thirteen scope pairs,
-fifteen guest pairs and five typed boundary pairs. Twenty-four runtime pairs
+57 effective obligations / 114 checks, 68 realized: thirteen scope pairs,
+sixteen guest pairs and five typed boundary pairs. Twenty-three runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
