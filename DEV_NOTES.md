@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — ordering evidence needs an independent conversation (P4-SYSTEM.13 c6)
+
+Rehash/read pinned RVWMO and Zifencei: program/global order, load-value/atomicity/
+progress constraints and local fetch synchronization support this selected
+sequential one-hart/coherent realization, without exhaustive weak-outcome claims.
+One v2 assumption/pair runs literal SW/LWU/overlap/AMO requests for all aq/rl bits,
+then warmed-code rewrites with/without FENCE.I. ScriptedEnv owns request order;
+factor c4b's response-value comparison into one shared fixture owner.
+Acknowledged discarded stores and stale parcels reach exact typed value errors
+without wrong destination effects/traps. Disabled auditing loses all three cases.
+Initially the bad load reached a later AMO whose changed store value was caught
+by request matching. Stop that bypass control at its first bad load, retaining
+the complete five-step positive conversation and all independent request checks.
+This distinguishes the specific auditor from a sibling guard masking its bypass.
+make check: 157 core / 17 DSP / 197 verify; schema/freeze, gate 17/17 and books
+pass. All prior entries/frozen bytes remain exact; 56/112, cold reset remains, v2 open.
+Promotion declined in leaf: canonical assumption, focused controls and book retain it.
+
 ## _(2026-10-09)_ — event location is distinct from source authority (P4-SYSTEM.13 c5)
 
 The source/time v1 assumptions did not declare delivery positioning. Add one

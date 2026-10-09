@@ -65,7 +65,7 @@
   (supersede (record "OB-ECALL-EBREAK") (by "OB-GC-ECALL-EBREAK-V1") (why "the rv64i base mirror says no privileged modes and a harness report that stops execution; this composition delivers the trap to a handler (the zicsr refinement)")))
 
 (contract (id "rv64gc-lab-env-v2") (version "2") (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v1") (status open)
-  (statement "Version 2, opened at P4-SYSTEM.11 slice (b) (2026-10-06): the guarantees of the extensions bound after v1 froze - M first (OB-GC-M), then C and exact parcel-fetch supply at .12 e2c; three current guarantees replace four stale v0 statements at .13 c1; physical byte addresses bind at .13 c3 and data widths/attributes at c4b and event positioning at c5; ordering/reset assumptions follow, and P4-SYSTEM.13 freezes it only after every effective check runs.")
+  (statement "Version 2, opened at P4-SYSTEM.11 slice (b) (2026-10-06): the guarantees of the extensions bound after v1 froze - M first (OB-GC-M), then C and exact parcel-fetch supply at .12 e2c; three current guarantees replace four stale v0 statements at .13 c1; physical byte addresses bind at .13 c3 and data widths/attributes at c4b, event positioning at c5 and one-hart ordering at c6; cold reset follows, and P4-SYSTEM.13 freezes it only after every effective check runs.")
   (member (id "OB-GC-M"))
   (member (id "OB-GC-C"))
   (member (id "OB-GC-ENV-FETCH-SUPPLY"))
@@ -75,6 +75,7 @@
   (member (id "OB-GC-ENV-ADDRESS-UNITS"))
   (member (id "OB-GC-ENV-DATA-ACCESS"))
   (member (id "OB-GC-ENV-EVENT-DELIVERY"))
+  (member (id "OB-GC-ENV-ORDERING"))
   (supersede (record "OB-FP-DEFER") (by "OB-GC-FP-QUALIFIED-V2") (why "P4-SYSTEM.13 c1 replaces the obsolete stage or incorrect blanket absence with the current, checked guarantee"))
   (supersede (record "OB-RESOLUTION-ROUTE") (by "OB-GC-DEFINITION-V2") (why "P4-SYSTEM.13 c1 replaces the obsolete stage or incorrect blanket absence with the current, checked guarantee"))
   (supersede (record "OB-ROUTE-FLIP") (by "OB-GC-DEFINITION-V2") (why "P4-SYSTEM.13 c1 replaces the obsolete stage or incorrect blanket absence with the current, checked guarantee"))

@@ -519,6 +519,35 @@ frozen bytes; add one open-v2 assumption/pair and retain the post-v0 guard,
 expected 54/110. Run Rust, schema/freeze, gate controls and books; synchronize
 live docs/GS. Ordering/reset remain afterward; v2 stays open.
 
+**c6 typed ordering pair** (SEMULITH-P4-0117): c5 committed clean. Reviewed
+FlatMemory, ordinary/atomic request paths, FENCE/FENCE.I and the ordering/visibility
+book chapters. Rehashed pinned RVWMO (121633 bytes, SHA-256
+6126b0e31c33f3ff492308c14f264e9f86ae0d30dfeddaa6f834191c0ab37d91) and
+Zifencei (32380 bytes, SHA-256
+4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91),
+then read global/program order, load-value/atomicity/progress axioms and local
+instruction visibility. Declare one-hart synchronous request order, latest
+preceding stores and always-coherent fetch as this laboratory's selected RVWMO
+realization, not exploration of all weak outcomes. No host buffering, concurrent
+agent or delayed completion. Add one v2 assumption/pair born realized (56/112).
+Positive direct fixtures use hand-encoded store/load/overlap/AMO ordering and
+code rewrite with/without FENCE.I, with an independent exact conversation over
+real memory and actual CPU steps. Negative providers acknowledge discarded
+stores or serve a stale parcel cache; the independent fixture auditor reports
+ResponseValueMismatch before a wrong result is consumed. Factor the existing
+c4b value comparison into one fixture owner shared with c6, leaving production
+shape validation unchanged. Disabled-value-auditor controls must lose every
+negative fixture; valid fixtures must still pass. Preserve all 54 prior entries,
+all frozen bytes and born-realized guard. Run Rust, schema/freeze, focused gate
+controls and books; sync live docs/GS and commit. Cold reset remains afterward.
+Initial disabled-auditor control reached the later AMO, whose store value
+became 1 after the stale load; ScriptedEnv then correctly rejected its request
+against the independent expected 0x1122aa45. This sibling check masked the
+specific value-auditor bypass. Reduce the discarded-store observation to the
+first two instructions (acknowledged store, bad load); keep the full five-step
+conversation for positive ordering. The disabled value guard must then let the
+bad load execute, without weakening request-order validation.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -662,6 +691,31 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c6) (`2026-10-09`, `SEMULITH-P4-0117`):
+
+- [x] **ROOT CAUSE** — git show 7bc9485:profiles/rv64gc-lab-v0/contract.sexp:
+  nine v2 members, ordering not yet declared. Rehashed/read RVWMO and Zifencei
+  pinned artifacts (digests in design above); reviewed request completion,
+  overlap/AMO and coherent-fetch owners. Selected realization stays one-hart.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. New pair runs literal five-instruction store/load/overlap/
+  AMO conversations for all aq/rl bits and two warmed-code rewrites. Three bad
+  providers return exact typed value mismatches without wrong destination effects
+  or target traps. cargo test -p semulith-verify contract_boundary_rv64gc:
+  3 passed. Reduced bypass observation to first bad load after a sibling request
+  guard initially caught its later AMO; disabled value auditing now loses all
+  three cases without weakening request-order checks. Shared fixture value owner.
+- [x] **NO REGRESSION** — make check rc=0: 157 core / 17 DSP / 197 verify.
+  PRIOR-EVIDENCE: all 54 entries, frozen parts/memberships and old root prefix
+  byte-exact. RECORD-SCHEMA: ok (20 files); CONTRACT-FREEZE: 3 versions,
+  0 findings; gate_report --self-test: 17 pass / 0 fail; make book rc=0.
+  Post-v0 born-realized guard retained, now 56 checks; no guest changes.
+- [x] **LOCKSTEP** — G-CONTRACT: 56/112, 56 effective obligations,
+  ten open-v2 members. Book/ENVIRONMENT/dossier/gate/GS and toolbox/live
+  pointer synchronized. LIVE_STATUS reviewed unchanged: P4 12/18, 634 arms,
+  45 chapters. Cold reset and 28 runtime pairs remain; v2/CPU-SYSTEM incomplete.
+  promotion: declined (canonical assumption, focused controls and book retain it).
 
 `P4-SYSTEM.13` slice (c5) (`2026-10-09`, `SEMULITH-P4-0116`):
 
@@ -975,6 +1029,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c6 | Rust 157/17/197; literal order/overlap/AMO + 4 aq/rl; warmed rewrites; 3 violations + disabled auditor; old bytes exact; schema/freeze; gate 17/17; books | 56/112 realized, v2 open |
 | `2026-10-09` | `.13` c5 | Rust 157/17/196; timer/head and WFI/idle/wake; 5 phase violations + disabled guard; old bytes exact; schema/freeze; gate 17/17; books | 54/110 realized, v2 open |
 | `2026-10-09` | `.13` c4b | Rust 157/17/195; literal byte/width pairs; 12 negative cases; auditor disabled; old bytes exact; schema/freeze; gate 17/17; books | 52/108 realized, v2 open |
 | `2026-10-09` | `.13` c4a | public before/after; 4 boundary controls; Rust 157/17/194; C engine 18; freeze/dossier; gate 17/17 | full make ci all five legs green; 50/106 unchanged |
@@ -995,6 +1050,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c6 | `SEMULITH-P4-0117 (leaf P4-SYSTEM.13): realize one-hart ordering with independent conversations` | c7 full cold reset, then 28 runtime pairs |
 | `.13` c5 | `SEMULITH-P4-0116 (leaf P4-SYSTEM.13): realize event positioning at explicit step boundaries` | c6 one-hart ordering, then cold reset |
 | `.13` c4b | `SEMULITH-P4-0115 (leaf P4-SYSTEM.13): realize data-access assumptions with independent byte witnesses` | c5 event delivery, then ordering/reset |
 | `.13` c4a | `SEMULITH-P4-0114 (leaf P4-SYSTEM.13): validate environment success responses before CPU consumption` | c4b data widths/attributes with direct pair |
@@ -1012,6 +1068,12 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c6 (SEMULITH-P4-0117): one-hart ordering born
+  realized with exact store/load/overlap/AMO conversations and coherent warmed
+  rewrites. Three typed bad-provider cases and disabled auditor discriminate;
+  bypass observation avoids sibling-guard masking. Source pins rehashed, old
+  entries/frozen bytes exact; 56/112, cold reset remains and v2 open.
 
 - `2026-10-09`: `.13` c5 (SEMULITH-P4-0116): event positioning born
   realized; explicit location guard with no source authority, direct timer/head

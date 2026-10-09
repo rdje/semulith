@@ -132,8 +132,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        54,
-        "v1's six records, v2's M/C/fetch/address/data/event records, partial progress, eleven selection records and three v2 corrections, POS + NEG"
+        56,
+        "v1's six records, v2's M/C/fetch/address/data/event/ordering records, partial progress, eleven selection records and three v2 corrections, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

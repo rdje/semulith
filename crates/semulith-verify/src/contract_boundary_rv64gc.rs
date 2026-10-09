@@ -17,6 +17,24 @@ use crate::fixtures::{FlatMemory, ScriptedEnv};
 
 mod data_access;
 mod event_delivery;
+mod ordering;
+
+/// Compare a fixture provider with its independently specified response witness.
+fn response_matches(
+    request: Request,
+    expected: Response,
+    arrived: Response,
+) -> Result<Response, BoundaryError> {
+    if arrived != expected {
+        return Err(ContractViolation::ResponseValueMismatch {
+            request,
+            expected,
+            arrived,
+        }
+        .into());
+    }
+    Ok(arrived)
+}
 
 /// A named direct boundary check, rather than an unrelated passing guest.
 #[derive(Clone, Copy, Debug)]
@@ -33,6 +51,10 @@ pub enum BoundaryCheck {
     EventDeliveryPositive,
     /// An adapter's attempted in-request delivery is a typed contract violation.
     EventDeliveryNegative,
+    /// One-hart store/load/AMO order and immediate instruction visibility.
+    OrderingPositive,
+    /// Acknowledged discarded stores and a stale fetch cache are typed violations.
+    OrderingNegative,
 }
 
 impl BoundaryCheck {
@@ -45,6 +67,8 @@ impl BoundaryCheck {
             Self::DataAccessNegative => data_access::negative(),
             Self::EventDeliveryPositive => event_delivery::positive(),
             Self::EventDeliveryNegative => event_delivery::negative(),
+            Self::OrderingPositive => ordering::positive(),
+            Self::OrderingNegative => ordering::negative(),
         }
     }
 }

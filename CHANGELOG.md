@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0117 (leaf P4-SYSTEM.13 c6) — realize one-hart ordering assumptions
+
+- Bind synchronous latest-store/overlap/AMO order and coherent code rewrite
+  to independent conversations, all aq/rl bits and FENCE.I/no-fence paths.
+- Three discarded-store/stale-parcel cases and disabled-value-auditor controls
+  discriminate; response comparison has one fixture owner. Old evidence exact.
+  Rust 157/17/197, schema/freeze, gate controls and books pass. G-CONTRACT 56/112;
+  cold reset and remaining runtime checks keep v2 open.
+
 ## SEMULITH-P4-0116 (leaf P4-SYSTEM.13 c5) — realize event-positioning assumptions
 
 - Add a v2 assumption with direct timer/head and WFI/idle/wake evidence.

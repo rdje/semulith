@@ -23,7 +23,7 @@
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
-  (statement "Remaining effective checks need realization; two GC-specific boundary assumptions (ordering and cold reset) still need declarations and typed controls. Physical byte addresses, data widths/attributes and event positioning now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen."))
+  (statement "Remaining effective checks need realization; one GC-specific boundary assumption (cold reset) still needs a declaration and typed controls. Physical byte addresses, data widths/attributes, event positioning and one-hart ordering now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
   (statement "The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")

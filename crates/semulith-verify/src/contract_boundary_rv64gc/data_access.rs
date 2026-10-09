@@ -241,14 +241,7 @@ impl Environment for ValueAuditor {
                 })
         {
             let expected = Response::Load(0x1122_3344_5566_7788);
-            if arrived != expected {
-                return Err(ContractViolation::ResponseValueMismatch {
-                    request,
-                    expected,
-                    arrived,
-                }
-                .into());
-            }
+            return super::response_matches(request, expected, arrived);
         }
         Ok(arrived)
     }

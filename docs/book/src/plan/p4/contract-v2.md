@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and three typed boundary pairs landed; v2 remains open.
+**Status:** State inventory, scope pairs, three corrections and four typed boundary pairs landed; v2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -8,15 +8,15 @@ stages. This work checks every effective obligation, fills the remaining boundar
 assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
-corrections replace four old records; the address-unit, data-access and event-positioning assumptions bring the
-effective census to 55 obligations and 110 checks, with 54 checks running through
+corrections replace four old records; four new boundary assumptions bring the
+effective census to 56 obligations and 112 checks, with 56 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
 cannot establish a scope declaration.
 
-Two boundary topics remain: ordering and reset.
+Cold reset is the remaining boundary topic.
 The scalar profile's assumptions cannot be
 copied unchanged. For example, this processor can take interrupts, fetches exact
 16-bit parcels, selects RVWMO, and resets floating-point, translation-cache,
@@ -386,6 +386,53 @@ Load, Store and WalkAccess. Every real-engine path returns the exact typed
 location violation, preserving PC, mode, destination, trap state, counters and
 memory. Fetch uses the public legacy table seam over the same GC evaluator.
 Disabling the location guard lets every bad schedule escape and makes each
-negative fixture fail. These finite checks bring the effective census to
-55 obligations, 110 declared checks and 54 realized checks. Ordering and cold
-reset remain, and version 2 stays open.
+negative fixture fail. At c5 these finite checks brought the effective census to
+55 obligations, 110 declared checks and 54 realized checks.
+
+## One-hart request order and coherent code
+
+`OB-GC-ENV-ORDERING` declares the laboratory's sequential realization of RVWMO.
+Requests complete synchronously in issued order. A load observes the latest
+preceding store to each of its bytes; no host buffer, concurrent writer or delayed
+completion intervenes. With one hart, consecutive AMO suboperations have no other
+agent between them. This chooses a legal realization, while exploration of all
+weaker outcomes and multicore retain their separate work.
+
+The pinned RVWMO chapter defines global order, preserved program order and the
+load-value, atomicity and progress constraints. Selecting the one-hart program
+order and latest preceding stores meets those constraints here. The pinned
+FENCE.I chapter separately orders preceding stores before later instruction
+fetches. The laboratory's coherent reads provide immediate visibility even
+without that synchronization, a stronger choice than the architectural minimum.
+Both source artifacts were digest-verified when this pair was authored.
+
+The positive fixture specifies a literal request/response conversation:
+
+| Instruction | Required observation at data address 0x1040 |
+| --- | --- |
+| SW x6,0(x5) | Complete store of 0x11223344 |
+| LWU x7,0(x5) | Read 0x11223344 |
+| SB x8,1(x5) | Write 0xaa to byte 0x1041 only |
+| LWU x9,0(x5) | Read overlapping result 0x1122aa44 |
+| AMOADD.W x10,x11,(x5) | Read old 0x1122aa44, store 0x1122aa45, return old value |
+
+All four aq/rl combinations run the same five-step conversation, with ten parcel
+requests. An independent script owns request-order checks; the shared fixture
+value auditor checks supplied values. It does not replace the ordinary CPU's
+shape validator or infer arbitrary storage contents.
+
+Two code-rewrite fixtures first execute ADDI x12,x0,1 to warm its address. They
+rewind to a writer, patch that instruction to ADDI x12,x0,7, then reach it by normal
+fallthrough, once directly and once through FENCE.I. Both finish with x12=7.
+The warm step counts: three total retirements without the fence, four with it.
+
+The negative provider either acknowledges a store without retaining it or serves
+old instruction parcels after the patch. All three cases return exact typed
+`ResponseValueMismatch` errors before a wrong destination write; no target trap
+is delivered. Disabling value auditing loses each negative fixture. The
+discarded-store control stops at its first bad load so a later AMO request check
+cannot mask the value-auditor bypass.
+
+All earlier registry entries and frozen records remain exact. The effective
+census is 56 obligations, 112 declared checks and 56 realized checks. Full cold
+reset and remaining instruction checks keep version 2 open.

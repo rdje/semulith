@@ -122,7 +122,7 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 54/110 checks realized (thirteen scope pairs, eleven guest pairs and three typed boundary pairs).
+contract stays open with 56/112 checks realized (thirteen scope pairs, eleven guest pairs and four typed boundary pairs).
 
 The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
@@ -135,8 +135,8 @@ the fixed authored-part cap remains 65,536 bytes. Schema, freeze and registry
 consumers judge the same expanded catalog. The new address-unit assumption
 adds a typed pair: three bad address adapters remain contract violations, while
 a legitimate access failure delivers a target exception. Data widths/attributes now
-have a direct pair as well. Event positioning now has its own pair; ordering
-and reset still need declarations and working checks.
+have direct pairs as well. Event positioning and one-hart ordering each have
+their direct pair. Cold reset still needs its declaration and checks.
 
 
 Every CPU boundary call now uses shared success-response validation: wrong kinds
@@ -154,5 +154,9 @@ idle wake are observed at step boundaries before fetch, with literal counters an
 unfetched EPC. Five in-request attempts return typed EventDuringRequest errors;
 disabling the location guard loses all five. The opt-in adapter guard grants no
 source permission and cannot detect hidden host mutation; no event payload or
-queue was added. G-CONTRACT is 54/110 and v2 remains open for ordering/reset and
+queue was added. At c5 G-CONTRACT reached 54/110. One-hart ordering now adds the fourth direct
+boundary pair, reaching 56/112: literal store/load/overlap/AMO conversations and
+rewritten code with/without FENCE.I. Three discarded-store/stale-parcel cases
+and disabled-auditor controls discriminate. This selects a sequential one-hart
+RVWMO realization, not all weak outcomes. V2 remains open for cold reset and
 remaining instruction checks.
