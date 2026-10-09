@@ -18,14 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c9b — realize OB-SV39, then remaining
-  26 runtime guarantee pairs (census/planned guests in tree).
-  c9a fixes CPU walk's leaf-only G retention: accumulate all PTE levels.
-  Two regressions fail on parent; eight G masks and 32 actual SFENCE
-  instructions pass; author already correct and inheritance mutant fails.
-  60/114, five typed boundary pairs complete, v2 open. Frozen declarations,
-  prior bindings and all guest inputs unchanged. .14 owns requirement
-  statuses and experiments. Detailed ownership/census in tree.
+- next_action: `P4-SYSTEM.13` c10 — realize OB-SVADE, then remaining
+  25 runtime guarantee pairs (census/planned guests in tree).
+  c9b binds all 14 Sv39 guests: 1417 boundaries / 2832 parcels;
+  independent parcel-author changes and fetch counts all exact.
+  c9a inherited-global prerequisite committed 7569fe2, full CI green.
+  62/114, five typed boundary pairs complete, v2 open. All 60 prior
+  entries and 339 contract/guest files exact. Post-v0 born-realized guard
+  retained. .14 owns requirement statuses and experiments; census in tree.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

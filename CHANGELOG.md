@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0122 (leaf P4-SYSTEM.13 c9b) — realize Sv39 runtime checks
+
+- Bind both checks to all fourteen translation guests: three leaf sizes,
+  effective mode/cache/straddle, fault/permission/delegation and Svade paths.
+- Independent author reproduces all 1,417 boundaries / 2,832 fetches exactly;
+  all sixty prior bindings and 339 contract/guest files unchanged. Focused
+  registry, Rust 163/17/198, schema/freeze, gate controls and books pass.
+  G-CONTRACT 62/114; twenty-six runtime pairs then freeze remain.
+
 ## SEMULITH-P4-0121 (leaf P4-SYSTEM.13 c9a) — retain inherited-global translations
 
 - Accumulate G from every traversed PTE in the shared CPU walker, matching

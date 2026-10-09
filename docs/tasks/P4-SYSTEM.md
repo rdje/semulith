@@ -696,6 +696,27 @@ Eight root/middle/leaf G masks include nonglobal and all combinations; 32 actual
 fence instructions cover both ASID-selective and both broad scopes. Keep the
 independent author unchanged: its own inheritance mutant is already discriminated.
 
+### `.13` c9b — Sv39 runtime pair (`2026-10-10`, `SEMULITH-P4-0122`)
+
+Own before changes after c9a commits cleanly. Bind OB-SV39's two existing ids
+to all fourteen translation guests: POS 4k/2m/1g, MPRV, cache/fence and
+noncontiguous straddle; NEG canonical/invalid/reserved/superpage faults,
+R/W/X and U/SUM/MXR permission, Svade and delegated faults. Read actual
+sources (collapse repeated zero-word padding with counted runs), canonical
+translation/CSR interfaces, all expectation observations and P4.3 book.
+Re-derive each program's changes/fetch count with the independent parcel author
+against the committed observations; preserve every input and old binding.
+Use the existing corpus comparison rule, finite 1417-boundary evidence, no
+universal Sv39/Linux claim. Extend required-binding guard; expect 62/114,
+26 runtime pairs then freeze. Rust/focused registry, schema/freeze/gate controls,
+books and hooks; update current counts while keeping old slice receipts historical.
+
+Relevant historical audit: git log -S 'global: g,' identifies e839c1b,
+P4-SYSTEM.3 slice d. Its diff introduced the leaf-only cached G assignment;
+its message explicitly rejects over-fencing and tests leaf globals only.
+c9a (7569fe2) now owns/fixes the missing ancestor case; archived historical
+receipts remain unchanged. No other history audit is implied by this binding.
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -834,6 +855,28 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c9b) (`2026-10-10`, `SEMULITH-P4-0122`):
+
+- [x] **ROOT CAUSE** — git show 7569fe2:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  OB-SV39's two frozen checks absent from registry; fourteen P4.3 guests
+  already exist. Read translation/CSR paths, source programs with counted
+  zero-word padding, expectations and book. Historical G defect owned/fixed
+  separately at c9a; no old receipt rewritten.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. POS six translation/mode/cache/straddle guests; NEG
+  eight fault/permission/Svade/delegation guests. Independent parcel author:
+  14 programs, 1417 boundaries, all changes and 2832 fetch counts exact.
+  Required-binding guard adds this pair; post-v0 realization guard retained.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 / verify 198.
+  Python comparison: 60 prior registry entries and 339 contract/guest files
+  byte-exact. Schema/freeze zero findings; gate controls 17 pass / 0 fail;
+  make book rc=0. Focused checks appropriate for evidence bindings only.
+- [x] **LOCKSTEP** — git diff --check rc=0. Book/profile/live pointer
+  synchronized at G-CONTRACT 62/114; 26 runtime pairs then freeze remain.
+  LIVE_STATUS unchanged: P4 12/18, 639 arms, 45 chapters. Finite comparison
+  scope explicit. promotion: declined — bindings, canonical scope and book
+  retain it; c10 OB-SVADE next, no premature version or CPU closure.
 
 `P4-SYSTEM.13` slice (c9a) (`2026-10-10`, `SEMULITH-P4-0121`):
 
@@ -1270,6 +1313,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c9b | 14 Sv39 guests / 1417 boundaries / 2832 parcels; independent author exact; prior 60 bindings + 339 files exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 62/114, v2 open |
 | `2026-10-10` | `.13` c9a | parent failures; eight G masks / 32 actual fences; translation 32/0; author + inheritance mutant; Rust 163/17/198; 342 files exact | make ci all five legs green; 60/114 unchanged |
 | `2026-10-10` | `.13` c8 | 13 mode guests / 481 boundaries; prior 58 bindings + 339 files exact; Rust 161/17/198; schema/freeze/gate 17/17; shards/books | 60/114, v2 open |
 | `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
@@ -1295,6 +1339,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c9b | `SEMULITH-P4-0122 (leaf P4-SYSTEM.13): realize Sv39 checks through the complete translation matrix` | c10 OB-SVADE, then 25 runtime pairs |
 | `.13` c9a | `SEMULITH-P4-0121 (leaf P4-SYSTEM.13): preserve inherited-global mappings in the shared Sv39 walk` | c9b OB-SV39, then 26 runtime pairs |
 | `.13` c8 | `SEMULITH-P4-0120 (leaf P4-SYSTEM.13): realize privilege-mode checks through the complete existing matrix` | c9 OB-SV39, then 26 runtime pairs |
 | `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
@@ -1317,6 +1362,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c9b (SEMULITH-P4-0122): bind Sv39 checks to
+  all fourteen guests; independent 1417-boundary / 2832-parcel observations
+  exact. Prior bytes unchanged; Rust/focused gates/books pass, 62/114 open.
 
 - `2026-10-10`: `.13` c9a (SEMULITH-P4-0121): reproduced and repaired
   leaf-only G retention; eight path masks and 32 actual fence instructions

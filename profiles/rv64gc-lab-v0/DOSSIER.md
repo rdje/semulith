@@ -122,7 +122,7 @@ stored in mcycle; views add no storage, and no external device supplies state.
 The generated metadata is synchronized; executable storage/reset/accessor
 code is unchanged. This closes the stale-consequence opening. Requirement
 status derivation remains .14, exact snapshot/replay serialization .16, and the
-contract stays open with 60/114 checks realized (thirteen scope pairs, twelve guest pairs and five typed boundary pairs).
+contract stays open with 62/114 checks realized (thirteen scope pairs, thirteen guest pairs and five typed boundary pairs).
 
 The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
@@ -163,7 +163,7 @@ literal owner/view values, actual reset and memory reconstruction, 128 typed
 pre-fetch failures and disabled-auditor controls. An empty TLB with retained
 FIFO and a cleared reservation with retained fields both fail. Cold fcsr is
 internally zero but architecturally gated by FS=Off. The current census is
-57 effective obligations / 114 checks, 60 realized; remaining instruction
+57 effective obligations / 114 checks, 62 realized; remaining instruction
 checks keep v2 open.
 
 
@@ -172,7 +172,7 @@ through its two declared checks (481 execution boundaries). Existing handler
 reads witness M/S/U exceptions, delegation and permissions; the shared corpus
 rule compares GPR changes, never-written registers and physical fetches.
 ENVIRONMENT.md lists the exact positive/negative bindings and finite scope.
-Twenty-seven runtime pairs remain before the v2 freeze.
+At c8, twenty-seven runtime pairs remained before the v2 freeze.
 
 
 Sv39 runtime-contract review repaired inherited-global retention in the CPU
@@ -180,3 +180,11 @@ walker: G now accumulates from every traversed PTE. Independent literal PTEs,
 ASID/root changes and all four actual fence scopes discriminate the repair;
 the existing spec-side author and corpus expectations stay unchanged.
 This prerequisite retains 60/114 credit and the exact selected cache policy.
+
+
+The Sv39 guarantee now binds all fourteen existing translation guests to its
+positive/negative checks (1,417 boundaries, 2,832 physical parcel requests).
+Independent parcel-author changes and fetch counts agree exactly with every
+committed expectation. Three leaf sizes, effective mode/cache/straddle and
+fault/permission/delegation paths retain their finite observation scope.
+The effective registry now realizes 62/114; twenty-six runtime pairs remain.

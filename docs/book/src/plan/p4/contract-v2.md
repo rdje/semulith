@@ -9,7 +9,7 @@ assumptions, and realizes each declared check before freezing version 2.
 
 The original census found 53 effective obligations and 106 checks. Three versioned
 corrections replace four old records; five new boundary assumptions bring the
-effective census to 57 obligations and 114 checks, with 60 checks running through
+effective census to 57 obligations and 114 checks, with 62 checks running through
 the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
@@ -534,9 +534,9 @@ observed through instructions and handler reads; this does not introduce a
 direct comparison of trace PC/mode fields. Finite matrix evidence does not
 prove every possible mode-dependent execution or Linux capability.
 
-The current census is 60/114 realized: thirteen scope pairs, twelve guest
-pairs and five typed boundary pairs. Twenty-seven runtime pairs and final
-freeze remain. All previous bindings and frozen declarations are unchanged.
+At c8 the census was 60/114 realized: thirteen scope pairs, twelve guest
+pairs and five typed boundary pairs. At that slice, twenty-seven runtime pairs
+and final freeze remained. All previous bindings and frozen declarations are unchanged.
 
 
 ## Sv39 prerequisite: inherited global translations
@@ -550,4 +550,28 @@ no-G controls and all four actual fence scopes discriminate the repair.
 
 The independent expectation author already inherited G correctly and remains
 unchanged. This fixes the declared retention policy rather than broadening the
-ISA claim. G-CONTRACT remains 60/114 until the runtime pairs themselves bind.
+ISA claim. At c9a G-CONTRACT remained 60/114 until the runtime pairs themselves bind.
+
+
+## Sv39 runtime checks
+
+After the inherited-global prerequisite, OB-SV39's two checks now execute
+all fourteen P4.3 translation programs. The positive group covers 4 KiB,
+2 MiB and 1 GiB leaves, MPRV's effective mode, stale/fenced mappings and
+an instruction straddling noncontiguous physical pages. The negative group
+covers noncanonical addresses, invalid/reserved PTEs, misaligned superpages,
+R/W/X and U/SUM/MXR permissions, Svade faults and delegated fault delivery.
+ENVIRONMENT.md lists every binding.
+
+For example, sv39-perm-rwx reads page-fault causes 15, 13 and 12 into x7
+at steps 94, 101 and 109: store, load and instruction faults respectively.
+The canonical-address guest reads cause 13 at step 51 and the original
+address through mtval. Register changes, expected absent writes, handler
+reads and continuation markers retain the existing comparison vocabulary.
+
+The matrix spans 1,417 execution boundaries and 2,832 physical parcel
+requests. Re-executing the independent parcel author reproduces every
+committed register-change sequence and fetch count exactly. Neither the
+programs nor their expectations changed. This is finite translation evidence,
+not universal Sv39 or Linux acceptance. The effective registry now realizes
+62/114 checks; twenty-six runtime pairs and final freeze remain.

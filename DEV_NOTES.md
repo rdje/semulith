@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — bind Sv39 without rewriting its witnesses (P4-SYSTEM.13 c9b)
+
+After the inherited-global repair, bind OB-SV39 to all fourteen P4.3 programs.
+POS covers 4k/2m/1g leaves, MPRV, TLB/fences and noncontiguous straddle; NEG
+covers canonical/invalid/reserved/superpage faults, permissions, Svade and
+delegation. Read meaningful source including counted zero-word padding, actual
+translation/CSR paths and expected observations. Matrix totals 1,417 boundaries
+and 2,832 physical parcel requests; handler reads and changes retain the existing
+comparison rule. No direct PC/mode, universal translation or Linux claim.
+
+The independent diagnostic imports dossier_sexp.load_expectations,
+riscv_asm.Assembler and derive_rv64gc_expectations.derive_parcel_guest. For each
+of the fourteen sv39-*.s files it uses the declared instruction budget, compares
+all step.writes with the committed write dictionaries and counts 'fetch' records
+in hart.log against declared fetches. Every program agrees exactly; no inputs
+written. Existing author controls and c9a's before/after regressions discriminate.
+
+All sixty prior bindings and 339 contract/guest files byte-exact. Registry tests
+4/0 and make check 163 core / 17 DSP / 198 verify; schema/freeze, gate controls
+17/17 and books pass. G-CONTRACT 62/114, 26 runtime pairs then freeze remain.
+LIVE_STATUS unchanged (P4 12/18, 639 arms, 45 chapters). Historical audit locates
+leaf-only G introduction at e839c1b, repaired in 7569fe2; old receipts unchanged.
+Promotion declined: exact registry, canonical scope and book retain this binding.
+
 ## _(2026-10-10)_ — inherited global mappings belong to the walk path (P4-SYSTEM.13 c9a)
 
 Sv39 contract review found CPU walk caching leaf G only, while the independent

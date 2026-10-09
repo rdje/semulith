@@ -8,7 +8,7 @@ and its explicitly included [v0](contract-v0.obligations.sexp) and
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c8 (`2026-10-10`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c9b (`2026-10-10`).
 
 `scripts/record_catalog.py` expands repository-root-relative includes in order.
 The c2 split reconstructed the original 63,014 bytes exactly, preserving its 58
@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-five direct boundary pairs, 60 checks are realized in the effective contract;
+five direct boundary pairs, 62 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -339,9 +339,9 @@ mm-csr-legality-s/u observe cause 2 at steps 11/10. These finite witnesses do
 not establish universal coverage of every possible mode-dependent execution.
 There is no new direct PC/mode comparison, firmware or Linux acceptance claim.
 
-Current census: 57 effective obligations / 114 checks, 60 realized: thirteen
+At c8 the census was 57 effective obligations / 114 checks, 60 realized: thirteen
 scope pairs, twelve guest pairs and five typed boundary pairs. The remaining
-27 runtime pairs and final freeze keep version 2 open. Declarations, pins and
+27 runtime pairs and final freeze kept version 2 open. Declarations, pins and
 prior bindings are unchanged.
 
 
@@ -354,3 +354,27 @@ instructions witness ASID/root hits, both ASID-selective retention scopes and
 both broader invalidation scopes. The old code failed both public-interface
 regressions. Exact retention is this laboratory's selected cache policy; the
 ISA permits other cache choices. No contract credit or declarations change.
+
+
+## Sv39 runtime witnesses (P4-SYSTEM.13 c9b)
+
+OB-SV39 now binds its existing checks to all fourteen P4.3 programs:
+
+| Check | Guests | Focus |
+| --- | --- | --- |
+| CHK-SV39-POS | sv39-translate-4k/2m/1g, sv39-mprv, sv39-tlb-fence, sv39-straddle | Three leaf sizes, effective mode, selected cache policy and noncontiguous parcel translation |
+| CHK-SV39-NEG | sv39-fault-canonical/invalid/reserved/superpage, sv39-perm-rwx/usr, sv39-svade, sv39-deleg | Precise faults, permissions, missing A/D and delegated delivery |
+
+All 1,417 execution boundaries and 2,832 physical parcel requests are checked
+under the existing corpus rule. The independent parcel author re-derives all
+fourteen change sequences and fetch counts exactly; no inputs are rewritten.
+For example, sv39-perm-rwx reads store/load/instruction page-fault causes
+15/13/12 into x7 at steps 94/101/109. The canonical-address guest observes
+cause 13 at step 51 and the original VA in mtval. Handler reads, continuation
+markers and expected absent writes witness precise delivery and suppression.
+These finite programs do not prove all Sv39 executions or Linux capability.
+
+Current census: 57 effective obligations / 114 checks, 62 realized: thirteen
+scope pairs, thirteen guest pairs and five typed boundary pairs. Twenty-six
+runtime pairs and final freeze remain; v2 stays open. All sixty prior registry
+entries and all contract/guest inputs remain byte-identical.

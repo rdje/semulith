@@ -30,9 +30,35 @@ pub struct ContractCheck {
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
 /// `.13` adds eleven selection pairs, three current guarantees, five typed boundary pairs
-/// and the existing privilege-mode matrix;
+/// and the existing privilege-mode and Sv39 matrices;
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-SV39-POS",
+        obligation: "OB-SV39",
+        evidence: Evidence::Guests(&[
+            "sv39-translate-4k",
+            "sv39-translate-2m",
+            "sv39-translate-1g",
+            "sv39-mprv",
+            "sv39-tlb-fence",
+            "sv39-straddle",
+        ]),
+    },
+    ContractCheck {
+        id: "CHK-SV39-NEG",
+        obligation: "OB-SV39",
+        evidence: Evidence::Guests(&[
+            "sv39-fault-canonical",
+            "sv39-fault-invalid",
+            "sv39-fault-reserved",
+            "sv39-fault-superpage",
+            "sv39-perm-rwx",
+            "sv39-perm-usr",
+            "sv39-svade",
+            "sv39-deleg",
+        ]),
+    },
     ContractCheck {
         id: "CHK-PRIV-MODES-POS",
         obligation: "OB-PRIV-MODES",
