@@ -1,5 +1,15 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — historical text and new extent have separate derivations (P4-SYSTEM.12 e2b)
+
+A C-composed snapshot rejects the 42 historical captures after only their parcel
+counts migrate. Keep the word-derived text, independently compare parcel writes and
+actual requests, then transform only the count. The helper is shared by author and
+mirror. Default canonical word writes refuse; explicit parcel writes keep their new
+route provenance. Four mutants discriminate. The unstaged cold test correctly found
+the new helper missing from git ls-files; a temporary index includes pending inputs
+without changing the real index. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — count migration is narrower than a mirror waiver (P4-SYSTEM.12 e2a)
 
 The prior governor refuses staged parcel extents as full-byte drift. Its replacement

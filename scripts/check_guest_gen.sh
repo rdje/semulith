@@ -440,6 +440,17 @@ PY
   out="$(python3 scripts/derive_gc_parcel_counts.py --mutation extent 2>&1)"; rc=$?
   arm "RED count adoption checks actual request log" "$rc" 1 "$out" "parcel count differs from actual request log"
 
+  out="$(python3 scripts/probe_gc_owned_extent.py 2>&1)"; rc=$?
+  arm "GREEN historical text survives the C extent migration" "$rc" 0 "$out" "write guard and explicit route pass"
+  out="$(python3 scripts/probe_gc_owned_extent.py --mutation old-counts 2>&1)"; rc=$?
+  arm "RED historical checks cannot retain word counts with C" "$rc" 1 "$out" "bound migrated historical check"
+  out="$(python3 scripts/probe_gc_owned_extent.py --mutation parcel-prose 2>&1)"; rc=$?
+  arm "RED extent migration keeps historical capture text" "$rc" 1 "$out" "bound migrated historical check"
+  out="$(python3 scripts/probe_gc_owned_extent.py --mutation bad-request-log 2>&1)"; rc=$?
+  arm "RED historical extent reconciles actual requests" "$rc" 1 "$out" "parcel extent differs from actual requests"
+  out="$(python3 scripts/probe_gc_owned_extent.py --mutation permit-word-write 2>&1)"; rc=$?
+  arm "RED default word route cannot overwrite a bound record" "$rc" 1 "$out" "canonical word write accepted"
+
   out="$(python3 scripts/stage_gc_c_corpus.py 2>&1)"; rc=$?
   arm "GREEN independent compressed corpus staging" "$rc" 0 "$out" "37 forms,"
   out="$(python3 scripts/stage_gc_c_corpus.py --check 2>&1)"; rc=$?

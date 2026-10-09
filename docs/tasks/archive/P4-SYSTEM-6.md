@@ -126,3 +126,49 @@ Completed receipts moved byte-verbatim from the active tree, continuing part 5.
   ceilings. Next: e2 preflight of count/mirror contracts, atomic C bind, matched Sail.
   promotion: declined (permanent source/hand/mutation/drift controls retain the method).
 
+`P4-SYSTEM.12` slice (e2a) — govern the count-only mirror migration (`2026-10-09`, `SEMULITH-P4-0100`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — target-local copy adopts independently staged
+  parcel counts; current shell governor rc=1 at bound-alias, because full-byte
+  comparison cannot express the declared extent migration. Log e2a/before.log.
+  Production is still unbound and no production file changes in this prerequisite.
+- [x] **FIX / ADDRESSED** — `python3 scripts/check_gc_mirror.py --self-test` rc=0:
+  hand word/mixed/runoff counts, repeat, composition selection, wrong count,
+  comment/CRLF/write/source drift, stale exceptions, duplicate/direct/nested/string
+  field controls pass. C mode independently derives every supplied guest's writes
+  and actual requests before surgical direct-field transformation; all other bytes
+  governed. The seven named re-derivations must still differ after normalization.
+  Four weakened-check mutations each rc=1 for the intended accepted-defect reason.
+- [x] **NO REGRESSION** — real target-local migrated corpus on temporary full-C
+  composition rc=0: 49 exact files + 42 checked count-only records + seven declared
+  re-derivations; same copy with unbound composition rc=1. Production governor
+  rc=0: 91 exact / zero adjusted / seven declared, unchanged from pre-slice.
+  `bash scripts/check_guest_gen.sh` rc=0: 122 pass / 0 fail, both generated fixtures
+  exact. All 142 production records/encoding/modules byte-exact against 413c7da.
+  DERIVED-COUNTS derives 618 arms. No Rust change.
+- [x] **LOCKSTEP** — live docs/frontier/toolbox/doctrine and C book synchronized;
+  P4 remains 11/18. e1d2 receipt moved byte-verbatim (2,185 B) to archive part 6,
+  reconstruction asserted. Fixed ceilings unchanged. Active brief now names c1's
+  parcel-first replacement, removing the superseded coalescing direction.
+  `make book` rc=0. First hook refused derived book-index drift; regenerated through
+  gen_book_index.py, then rebuilt the book. Next e2b: atomic composition/corpus/
+  contract bind, then matched Sail and leaf acceptance. Commit gate enforced.
+  promotion: declined (permanent literal/extent/mutation controls retain the distinction).
+
+## Closed design — e1d2 corpus
+
+- `2026-10-09` (e1d2 corpus design, before changes): primary RVI-C chapter read in
+  full from the pinned cache, digest 3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb.
+  Track a staging producer with predeclared budgets for all 37 selected forms:
+  signed/scaled limits, word overflow, aliases/x0/HINTs, stack/compact integer and D
+  memory, mixed branches and pc+2 links (rd=rs1), LR/SC with valid C arithmetic,
+  reserved original-bit diagnostics/EBREAK and four FS=Off memory gates. Derive
+  all expected values spec-side before engine runs. Adapt the existing public
+  sv39-straddle source into C.NOP at the final halfword versus a required second
+  parcel on a non-executable page; budgets 52 and 51, cause 12/tval next page,
+  saved start PCs and actual requests hand-checked. Use temporary full-C composition
+  with copied profile/state metadata, emit only target-local staged sources/records
+  and a fingerprinted manifest, and discriminate changed observations/extent.
+  Production sources/counts/composition/modules remain untouched until e2. Archive
+  completed e1d0 verbatim to part 6 to preserve the fixed live-tree ceiling.
+

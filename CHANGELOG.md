@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0101 (leaf P4-SYSTEM.12 e2b) — preserve historical capture text
+
+- Bound --check-owned derives parcel observations/requests independently while
+  preserving capture text through the shared direct-count transform. Canonical
+  default word writes refuse after C binds. Snapshot/drift/write controls and four
+  mutants discriminate; GUEST-GEN 127/127, production unchanged. Atomic bind next.
+
 ## SEMULITH-P4-0100 (leaf P4-SYSTEM.12 e2a) — govern parcel-count migration
 
 - C composition selects independent write/request derivation and a direct-fetch-field

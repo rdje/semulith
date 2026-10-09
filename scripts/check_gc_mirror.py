@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-import re
 import shutil
 import sys
 import tempfile
@@ -20,6 +19,7 @@ import dossier_sexp as D
 import records_sexp as R
 from riscv_asm import Assembler, AsmError
 import sexp as S
+from expectations_text import with_fetches
 
 REPO = Path(__file__).resolve().parent.parent
 OWNER = REPO / 'profiles/rv64i-lab-v0/guests'
@@ -27,42 +27,6 @@ MIRROR = REPO / 'profiles/rv64gc-lab-v0/guests'
 ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
 REDERIVED = frozenset(('fault-jal-mis', 'fault-jalr-mis', 'it-prio-jump',
                        'it-fencei', 'min-fencei', 'dir-selfmod-fence', 'fault-selfmod'))
-# Strings and comments are indivisible tokens: a textual "(fetches ...)" there
-# must never become a field. The canonical parser validates the complete stream.
-TOKENS = re.compile(r';[^\n]*|"(?:\\.|[^"\\])*"|[()]|[^\s();"]+')
-
-
-def with_fetches(text, value):
-    """Insert/replace exactly one direct field, preserving every other byte."""
-    forms = S.parse(text)
-    records = [f for f in forms if isinstance(f, list) and f and f[0] == 'expectations']
-    if len(records) != 1:
-        raise Counts.CensusRefused('mirror needs exactly one expectations form')
-    record = records[0]
-    S.field(record, 'instructions')
-    if S.children(record, 'fetches'):
-        S.field(record, 'fetches')  # refuse duplicate/malformed fields before surgery
-    stack, fields = [], {}
-    for token in TOKENS.finditer(text):
-        word = token[0]
-        if word.startswith(';'):
-            continue
-        if word == '(':
-            stack.append([token.start(), None])
-        elif word == ')':
-            start, head = stack.pop()
-            if len(stack) == 1 and stack[0][1] == 'expectations' and head in ('instructions', 'fetches'):
-                fields[head] = (start, token.end())
-        elif stack and stack[-1][1] is None:
-            stack[-1][1] = word
-    if 'instructions' not in fields:
-        raise Counts.CensusRefused('cannot locate the canonical direct instructions field')
-    replacement = f'(fetches {value})'
-    if 'fetches' in fields:
-        start, end = fields['fetches']
-        return text[:start] + replacement + text[end:]
-    _, end = fields['instructions']
-    return text[:end] + ' ' + replacement + text[end:]
 
 
 def judge(owner, mirror, asm, *, parcels, rederived=REDERIVED, mutation=None):
@@ -199,6 +163,13 @@ def self_test(asm, mutation):
             assert 'expected exactly one (fetches' in str(exc), str(exc)
         else:
             raise AssertionError('duplicate field accepted')
+        for value in (-1, True, '2) (extra 1'):
+            try:
+                with_fetches(tricky, value)
+            except S.SexpError as exc:
+                assert 'nonnegative integer' in str(exc), str(exc)
+            else:
+                raise AssertionError('invalid count accepted')
     print('GC mirror self-test: hand extents, repeat, count/comment/write/source/stale controls and literal fields pass')
 
 

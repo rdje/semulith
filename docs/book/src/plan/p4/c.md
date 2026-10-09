@@ -306,3 +306,12 @@ The seven historical re-derivations must still differ after count normalization;
 a count change alone cannot preserve a stale exception. With C unbound, the original
 byte-exact rule still applies. Wrong counts, changed writes, comment/source drift,
 textual field lookalikes and stale exceptions have permanent refusing controls.
+
+Slice (e2b) applies the same separation to the 42 historical author-owned records.
+With C composed, `--check-owned` regenerates the original word-derived capture text,
+then independently executes the fixed budget through the parcel author. Every
+architectural write must agree, and the extent must match the actual request log.
+Only the direct count changes; capture headers and derivation prose stay exact.
+With C unbound, the historical check keeps its original byte-exact route. A default
+word-route write to a canonical C-composed record refuses before any output changes;
+new authoring requires explicit `--parcels --steps N`, which records that route.
