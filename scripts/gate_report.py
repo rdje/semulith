@@ -43,7 +43,8 @@ ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
                            capture_output=True, text=True, check=True).stdout.strip())
 
 sys.path.insert(0, str(ROOT / "scripts"))
-import records_sexp as R                                # noqa: E402
+import records_sexp as R
+import record_catalog as C                                # noqa: E402
 import dossier_sexp as D                                # noqa: E402
 import sexp as S                                        # noqa: E402
 
@@ -1274,7 +1275,7 @@ def _selftest() -> int:
     def unit(name, contract_edit=None, registry=reg_src, with_contract=True):
         d = tmp / name
         d.mkdir()
-        shutil.copy(real / "contract-obligations.sexp", d)
+        (d / "contract-obligations.sexp").write_text(C.text(real / "contract-obligations.sexp"))
         reg = d / "reg.rs"
         reg.write_text(registry, encoding="utf-8")
         if with_contract:
@@ -1367,7 +1368,8 @@ def _selftest() -> int:
             g = tmp / f"gs-{name}"
             g.mkdir()
             for doc in docs:
-                text = (real / doc).read_text(encoding="utf-8")
+                text = (C.text(real / doc) if doc == "contract-obligations.sexp"
+                        else (real / doc).read_text(encoding="utf-8"))
                 for target, fn in (edits or {}).items():
                     if target == doc:
                         text = fn(text)

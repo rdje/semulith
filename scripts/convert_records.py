@@ -79,15 +79,11 @@ def _to_sexp(src: Path, out: Path) -> None:
 def _to_jsonl(src: Path, out: Path) -> None:
     _kind(src)
     try:
-        forms = S.read_file(src)
-    except S.SexpError as exc:
+        records = R.load(src)
+    except (S.SexpError, R.RecordRefused) as exc:
         raise SystemExit(f"REFUSED: {src}: does not parse — {exc}")
-    if not forms:
+    if not records:
         raise SystemExit(f"REFUSED: {src} holds no forms")
-    try:
-        records = [R.form_to_dict(f) for f in forms]
-    except (R.RecordRefused, S.SexpError) as exc:
-        raise SystemExit(f"REFUSED: {src}: {exc}")
     lines = [json.dumps(r, ensure_ascii=False) for r in records]
     out.write_text("".join(l + "\n" for l in lines))
     print(f"wrote {out} ({len(records)} record(s))")
@@ -98,8 +94,7 @@ def _verify(jsonl: Path, sexp: Path) -> int:
     source = jsonl.read_text()
     records = _read_jsonl(jsonl)
     try:
-        forms = S.read_file(sexp)
-        back = [R.form_to_dict(f) for f in forms]
+        back = R.load(sexp)
         re_dumped = "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in back)
     except (S.SexpError, R.RecordRefused) as exc:
         print(f"ROUND-TRIP FAIL: {sexp}: {exc}")

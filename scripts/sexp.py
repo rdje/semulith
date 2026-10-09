@@ -123,6 +123,35 @@ def read_file(path: Path) -> list[Sexp]:
     return parse(path.read_text(), str(path))
 
 
+# Strings/comments stay indivisible while locating source spans. The canonical
+# parser validates the stream first; this token view never interprets semantics.
+TOKENS = re.compile(r';[^\n]*|"(?:\\.|[^"\\])*"|[()]|[^\s();"]+')
+
+
+def forms_with_spans(text: str, where: str = "<sexp>") -> list[tuple[Sexp, int, int]]:
+    """Validated top-level forms with character spans, preserving source bytes."""
+    forms = parse(text, where)
+    depth, start = 0, 0
+    spans = []
+    for token in TOKENS.finditer(text):
+        word = token[0]
+        if word.startswith(';'):
+            continue
+        if word == '(':
+            if depth == 0:
+                start = token.start()
+            depth += 1
+        elif word == ')':
+            depth -= 1
+            if depth == 0:
+                spans.append((start, token.end()))
+        elif depth == 0:
+            spans.append((token.start(), token.end()))
+    if len(forms) != len(spans):
+        raise SexpError(f"{where}: token spans disagree with the canonical parse")
+    return [(form, start, end) for form, (start, end) in zip(forms, spans)]
+
+
 # ---------------------------------------------------------------------------------------
 # Small, explicit accessors. A canonical-definition file is read through these rather than by
 # indexing, so a shape change is an error with a name instead of an IndexError somewhere later.

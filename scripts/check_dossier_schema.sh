@@ -48,11 +48,12 @@ else:
     docs = sorted((root / "profiles").glob("*/*.sexp"))
 
 findings, validated, skipped = [], [], []
-# The two suffixed document families map to their family schema: <guest>.expected.sexp →
-# expectations.sexp, <name>.override.sexp → override.sexp. Everything else needs a
+# Suffixed documents map to their family schema: expectations, overrides and
+# obligation-catalog parts. Everything else needs a
 # same-named schema or it is skipped — and counted by name in the verdict.
 SUFFIX_SCHEMAS = ((".expected.sexp", "expectations.sexp"),
-                  (".override.sexp", "override.sexp"))
+                  (".override.sexp", "override.sexp"),
+                  (".obligations.sexp", "contract-obligations.sexp"))
 for doc in sorted(docs):
     schema_name = doc.name
     for suffix, family in SUFFIX_SCHEMAS:

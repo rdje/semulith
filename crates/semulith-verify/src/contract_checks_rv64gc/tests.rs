@@ -4,8 +4,26 @@ use super::{Evidence, CHECKS};
 use crate::guests_rv64gc::GUESTS;
 use crate::run_rv64gc::assert_guest_observations;
 
-const OBLIGATIONS: &str =
-    include_str!("../../../../profiles/rv64gc-lab-v0/contract-obligations.sexp");
+fn obligations() -> &'static str {
+    static TEXT: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    TEXT.get_or_init(|| {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let result = std::process::Command::new("python3")
+            .current_dir(root)
+            .args([
+                "scripts/record_catalog.py",
+                "profiles/rv64gc-lab-v0/contract-obligations.sexp",
+                "--stdout",
+            ])
+            .output()
+            .expect("the catalog expansion owner must run");
+        assert!(
+            result.status.success(),
+            "catalog expansion failed: {result:?}"
+        );
+        String::from_utf8(result.stdout).expect("canonical catalogs are UTF-8")
+    })
+}
 
 #[test]
 fn every_realized_check_runs_its_evidence_and_it_holds() {
@@ -70,7 +88,7 @@ fn scope_controls_reject_disabled_predicates_and_unknown_checks() {
 /// The `required_checks` ids of every obligation record the predicate selects.
 fn declared_checks(select: impl Fn(&str) -> bool) -> Vec<(String, String)> {
     let mut out = Vec::new();
-    for line in OBLIGATIONS
+    for line in obligations()
         .lines()
         .filter(|l| l.starts_with("(obligation ") && select(l))
     {

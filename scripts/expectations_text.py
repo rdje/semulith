@@ -6,12 +6,11 @@ whitespace and every other field byte-for-byte. Shared by the author and governo
 """
 from __future__ import annotations
 
-import re
 import sexp as S
 
 # Strings and comments are indivisible tokens: a textual "(fetches ...)" there
 # must never become a field. The canonical parser validates the complete stream.
-TOKENS = re.compile(r';[^\n]*|"(?:\\.|[^"\\])*"|[()]|[^\s();"]+')
+TOKENS = S.TOKENS
 
 
 def with_fetches(text, value):

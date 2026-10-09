@@ -178,6 +178,42 @@ The generated-definition check calls the existing generators, so it verifies
 fresh mirrors without implementing another generation rule.
 
 These six checks bring the effective census to 48 of 104 checks. Version 2 stays
-open. Before adding the five boundary assumptions, the obligation catalog will be
-partitioned losslessly: it is 63,014 bytes against a fixed 65,536-byte authored-part
-ceiling. Frozen lines and expanded order must survive that migration exactly.
+open; five boundary assumptions and the remaining execution pairs still need work.
+
+## Keeping the catalog bounded without rewriting history
+
+The catalog reached 63,014 bytes against its fixed 65,536-byte authored-part cap.
+It now retains the six current v2 records and explicitly includes two frozen
+parts, in version order:
+
+```lisp
+(include-obligations (path "profiles/rv64gc-lab-v0/contract-v0.obligations.sexp"))
+(include-obligations (path "profiles/rv64gc-lab-v0/contract-v1.obligations.sexp"))
+```
+
+Paths start at the repository root, so moving the checkout keeps them valid.
+The v0 and v1 parts contain their original contiguous record bytes. Expansion
+reproduces all 63,014 pre-split bytes exactly, including order and blank lines;
+all 58 record mappings and frozen pins are unchanged. The root is now 9,003 bytes,
+the v0 part 47,168 and the v1 part 7,009. No size ceiling was raised and no duplicate
+materialized catalog is maintained.
+
+`scripts/record_catalog.py` is the one expansion owner. The record loader, freeze
+checker, conversion tools and Rust registry declaration test all use it. Only real
+top-level forms expand: a directive inside a quoted statement or a comment remains
+literal text. Missing parts, cycles, repeated parts, noncanonical paths and symlink
+escapes refuse with named errors. The schema checks every original source, retaining
+the part name in a refusal; existing duplicate-ID and reference checks then judge
+the expanded records. Reserved `(comment "annotation")` forms survive in the source
+but do not become records.
+
+For a read-only view of the whole catalog, run:
+
+```sh
+python3 scripts/record_catalog.py profiles/rv64gc-lab-v0/contract-obligations.sexp --stdout
+python3 scripts/probe_record_catalog.py
+```
+
+The probe has 31 controls, including relocation and malformed includes. Disabling
+expansion makes it fail. RECORD-SCHEMA also plants invalid included fields and
+duplicate IDs across distinct parts. Partitioning adds no contract-check credit.

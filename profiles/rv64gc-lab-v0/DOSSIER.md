@@ -128,3 +128,8 @@ The effective v2 contract now replaces the pre-qualification FP condition, both
 historical definition stages and the blanket no-breakpoint wording. Their frozen
 records remain intact; ENVIRONMENT.md names each replacement and its checks.
 Current profile comments and historical-decision notes follow those dispositions.
+
+The obligation catalog includes frozen v0/v1 parts through the shared expansion
+owner. The split preserves all 63,014 expanded bytes and all 58 record mappings;
+the fixed authored-part cap remains 65,536 bytes. Schema, freeze and registry
+consumers judge that same expanded catalog; contract credit remains 48/104.

@@ -21,6 +21,12 @@
 
 (schema (id "contract-obligations"))
 
+;; An explicit authored-part reference. Expansion, path confinement and cycle/
+;; duplicate-part refusal belong to scripts/record_catalog.py; record shape is
+;; still this schema, including after expansion.
+(construct (name include-obligations)
+  (field (name path) (type string) (min-length 1)))
+
 (construct (name obligation)
   (field (name id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
   (field (name contract_id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))

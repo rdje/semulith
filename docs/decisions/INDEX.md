@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [`decision_obligation-catalog-parts.md`](decision_obligation-catalog-parts.md) | `decision` | explicit root-relative parts share one expansion owner; frozen bytes/order and fixed caps survive partition |
 | [`decision_claim-verification-adopted.md`](decision_claim-verification-adopted.md) | `decision` | "checked" means re-derived, falsified and durable; a missing leg is named, never omitted |
 | [`decision_delivery-provenance-is-frozen.md`](decision_delivery-provenance-is-frozen.md) | `decision` | a delivered manifest records what arrived; its live rows are declared, not silently drifting |
 | [`reference_upstream-spine-defects.md`](reference_upstream-spine-defects.md) | `reference` | four bedrock-template defects found by use, fixed locally through seams, unfixed upstream |

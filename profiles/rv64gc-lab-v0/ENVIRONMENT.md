@@ -2,11 +2,19 @@
 
 Contract ids: `rv64gc-lab-env-v0`, `rv64gc-lab-env-v1` (extends v0), and
 `rv64gc-lab-env-v2` (open, extends v1).
-The records live one per line in [`contract-obligations.sexp`](contract-obligations.sexp); which
+The records live one per line in [`contract-obligations.sexp`](contract-obligations.sexp)
+and its explicitly included [v0](contract-v0.obligations.sexp) and
+[v1](contract-v1.obligations.sexp) parts; which
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.12` e2c (`2026-10-09`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.13` c2 (`2026-10-09`).
+
+`scripts/record_catalog.py` expands repository-root-relative includes in order.
+The c2 split reconstructs the original 63,014 bytes exactly; all 58 records and
+frozen hashes are unchanged. Schema validation judges every source part before
+cross-record checks. This containment change adds no contract credit. See
+`docs/decisions/decision_obligation-catalog-parts.md` for the include contract.
 
 ## The versions
 

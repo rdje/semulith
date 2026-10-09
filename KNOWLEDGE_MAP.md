@@ -106,6 +106,7 @@
 - [`decision_mdbook-incremental-engaging.md`](docs/decisions/decision_mdbook-incremental-engaging.md)
 - [`decision_memory-next-action-pointer.md`](docs/decisions/decision_memory-next-action-pointer.md)
 - [`decision_models-family-five-books.md`](docs/decisions/decision_models-family-five-books.md)
+- [`decision_obligation-catalog-parts.md`](docs/decisions/decision_obligation-catalog-parts.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
 - [`decision_profiles-family-composed-units.md`](docs/decisions/decision_profiles-family-composed-units.md)

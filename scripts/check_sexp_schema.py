@@ -559,29 +559,36 @@ def validate_form(form, constructs: dict[str, Construct], operators: dict[str, O
                                           f'repeats {vals[i]!r} — unique means written once')
 
 
-def validate_file(path: Path, constructs: dict[str, Construct],
-                  operators: dict[str, Operator]) -> list[str]:
-    """Every refusal, by name. An empty list is the pass verdict."""
+def validate_text(text: str, constructs: dict[str, Construct],
+                  operators: dict[str, Operator], where: str,
+                  *, parse_where: str | None = None) -> list[str]:
+    """Validate one source stream, retaining its origin in every refusal."""
     try:
-        forms = S.read_file(path)
+        forms = S.parse(text, parse_where or where)
     except S.SexpError as exc:
-        return [f"{path.name}: does not even parse: {exc}"]
+        return [f"{where}: does not even parse: {exc}"]
     errors: list[str] = []
     for form in forms:
         if not isinstance(form, list) or not form:
-            errors.append(f"{path.name}: top level holds a non-form {form!r}")
+            errors.append(f"{where}: top level holds a non-form {form!r}")
             continue
         if _is_comment(form):
             try:
-                _check_comment(form, path.name)
+                _check_comment(form, where)
             except SchemaError as exc:
                 errors.append(str(exc))
             continue
         try:
-            validate_form(form, constructs, operators, path.name)
+            validate_form(form, constructs, operators, where)
         except SchemaError as exc:
             errors.append(str(exc))
     return errors
+
+
+def validate_file(path: Path, constructs: dict[str, Construct],
+                  operators: dict[str, Operator]) -> list[str]:
+    """Every refusal, by name. An empty list is the pass verdict."""
+    return validate_text(path.read_text(), constructs, operators, path.name, parse_where=str(path))
 
 
 def check(file: Path, schema: Path) -> int:

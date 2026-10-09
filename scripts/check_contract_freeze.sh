@@ -27,6 +27,7 @@ import hashlib, re, sys
 from pathlib import Path
 sys.path.insert(0, "scripts")
 import sexp as S
+import record_catalog as C
 
 root = Path(sys.argv[1])
 findings, units, versions_seen = [], 0, 0
@@ -34,7 +35,12 @@ for cdoc in sorted(root.glob("profiles/*/contract.sexp")):
     units += 1
     unit = cdoc.parent.name
     obs = {}
-    for line in (cdoc.parent / "contract-obligations.sexp").read_text(encoding="utf-8").splitlines():
+    try:
+        catalog = C.text(cdoc.parent / "contract-obligations.sexp", root=root)
+    except (C.CatalogRefused, S.SexpError) as error:
+        findings.append(f"UNREADABLE CATALOG {unit}: {error}")
+        continue
+    for line in catalog.splitlines():
         m = re.match(r'\(obligation \(id "([^"]+)"\) \(contract_id "([^"]+)"\) \(contract_version "([^"]+)"\)', line)
         if m:
             obs[m.group(1)] = (line, m.group(2), m.group(3))
@@ -125,8 +131,13 @@ self_test() {
         "$1" "$3" "$5" "$2" "$4" >&2
     fi
   }
-  fresh() { rm -rf "$t/profiles"; mkdir -p "$t/profiles/u"; cp profiles/rv64gc-lab-v0/contract.sexp \
-      profiles/rv64gc-lab-v0/contract-obligations.sexp "$t/profiles/u/"; ln -sfn "$ROOT/scripts" "$t/scripts"; }
+  fresh() {
+    rm -rf "$t/profiles"; mkdir -p "$t/profiles/u"
+    cp profiles/rv64gc-lab-v0/contract.sexp "$t/profiles/u/"
+    python3 scripts/record_catalog.py profiles/rv64gc-lab-v0/contract-obligations.sexp --stdout \
+      > "$t/profiles/u/contract-obligations.sexp"
+    ln -sfn "$ROOT/scripts" "$t/scripts"
+  }
   u="$t/profiles/u"
   fresh
   out="$(cd "$t" && judge "$t" 2>&1)"; rc=$?

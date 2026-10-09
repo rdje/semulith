@@ -384,6 +384,33 @@ byte and expanded order, and keep aggregate storage bounded without a duplicate
 materialized catalogue. Treat this as a dedicated, fully checked slice; do not
 mix the boundary declarations into the format migration. Review the existing
 schema/loader contracts and book before choosing its final representation.
+The consumer census finds dictionary readers already using records_sexp; raw
+exceptions are CONTRACT-FREEZE, the Rust registry declaration test, legacy record
+conversion, and gate-report scratch-copy controls. Select explicit
+`include-obligations` forms with repository-root-relative paths, handled by one
+record_catalog expansion owner; records_sexp delegates to it. Share validated
+top-level token spans through sexp rather than line-matching directive-looking
+prose. Keep root header/current v2 lines in place; move v0/v1 contiguous bytes to
+two authored parts and assert expanded bytes equal the pre-partition catalogue.
+Validate included records as well as directive shape, add part-schema routing,
+flatten scratch copies through the owner, and let registry tests read the same
+expanded stream at runtime. Exercise missing/cyclic/duplicate/escaping/malformed
+includes, literal strings/comments, relocation and schema failures. Extend the
+existing RECORD-SCHEMA controls; run focused checks and full CI at this format
+milestone. No boundary record is added by c2 and G-CONTRACT credit stays 48/104.
+Reader defect reproduced during that census: a valid top-level `(comment ...)`
+plus a real obligation yields schema errors=[] but records_sexp.load refuses
+"not a record form". Target receipt: c2/comment-reproduction.log. Impact: the
+record reader rejects the one format's reserved annotations. Own and fix now in
+c2 by skipping reserved top-level annotation forms in the record mapping path;
+schema validation retains annotation-shape ownership. Add a permanent control.
+Signoff defect discovered by `rg` of GS-REPORT.md line 32: its G-CONTRACT gap
+still says four frozen statements require replacements, despite c1's explicit
+supersessions. Root cause: the maintained open-axis statement in gate.sexp lines
+25–26 was not updated; the report generator correctly copied it. Own and repair
+now in c2 as a small review-surface correction: retain the real remaining five
+boundary assumptions, unrealized checks and open freeze, without extra credit.
+Regenerate GS through its owner after that canonical correction.
 
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
@@ -528,6 +555,28 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c2) (`2026-10-09`, `SEMULITH-P4-0112`):
+
+- [x] **ROOT CAUSE** — wc -c: catalog 63014/65536, only 2522 bytes before
+  five complete boundary assumptions. Comment reproduction: schema errors=[],
+  R.load refused "not a record form". Consumer census identifies raw freeze,
+  conversion, declaration-test and scratch-copy paths; no dependency internals.
+- [x] **ADDRESSED** — PARTITION: 63014 expanded bytes exactly preserved;
+  58 records unchanged in order. Root/v0/v1: 9003/47168/7009 bytes, fixed caps.
+  RECORD-CATALOG-CONTROLS: 31 pass / 0 fail; disabled expansion rc=1 with
+  CONTROL-MISSED. Shared owner, original-source schema validation and exact
+  frozen-line hashes; annotations map to no records, schema retains their shape.
+- [x] **NO REGRESSION** — make check rc=0 (153 core, 17 DSP, 194 verify);
+  RECORD-SCHEMA: ok (20 files); CONTRACT-FREEZE: ok (3 versions, 0 findings);
+  gate_report --self-test: 17 pass / 0 fail. First make ci: Rust/project doctrines green; signoff box and Knowledge Map
+  refused. Both owned doc fixes applied; final make ci rc=0: all legs green
+  (check, gate, bench, smoke-bench, book). 58-record JSONL round-trip byte-exact.
+- [x] **LOCKSTEP** — book/ENVIRONMENT/dossier, durable include decision, toolbox
+  and live pointer synchronized. DERIVED-COUNTS --list: 634 self-test arms, 38
+  doctrines, 45 chapters. P4 12/18; G-CONTRACT stays 48/104, v2 open.
+  promotion: decision_obligation-catalog-parts and permanent probe retain it.
+
 
 `P4-SYSTEM.13` slice (c1) (`2026-10-09`, `SEMULITH-P4-0111`):
 
@@ -718,6 +767,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c2 | exact stream/mappings; 31 controls + mutant; Rust; schema/freeze; gate 17/17 | make ci all five legs green; 48/104 unchanged |
 | `2026-10-09` | `.13` c1 | Rust; schema/freeze; three owner generators; nine violations; exact old bytes; gate 17/17; books | 48/104 realized, v2 open |
 | `2026-10-09` | `.13` b5 | four scope pairs/16 violations; Rust; old-entry/input identity; gate 17/17; freeze/books | 42/106 realized, v2 open |
 | `2026-10-09` | `.13` b4 | toolchain 20/20 and mutant; pinned C exact ELF; ACT4 7/7; GUEST-GEN 130; books | pins enforced, contract credit unchanged |
@@ -733,6 +783,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c2 | `SEMULITH-P4-0112 (leaf P4-SYSTEM.13): partition obligation catalogs without changing expanded records` | five boundary assumptions, then remaining runtime pairs |
 | `.13` c1 | `SEMULITH-P4-0111 (leaf P4-SYSTEM.13): supersede obsolete stages and correct fault-priority wording` | lossless catalog partition, then five boundary assumptions |
 | `.13` b5 | `SEMULITH-P4-0110 (leaf P4-SYSTEM.13): realize the remaining scope selections` | boundary assumptions, current replacements and runtime checks |
 | `.13` b4 | `SEMULITH-P4-0109 (leaf P4-SYSTEM.13): enforce the pinned toolchain in both guest build paths` | remaining scope pairs and versioned declarations |
@@ -745,6 +796,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c2 (SEMULITH-P4-0112): lossless frozen-part
+  partition, shared expansion/schema origins, annotation repair and 31 controls.
+  Fixed caps, all old bytes/order/pins and 48/104 credit retained; full CI green.
+  Stale canonical gate-gap description corrected through its owner.
 
 - `2026-10-09`: `.13` c1 (SEMULITH-P4-0111): three current guarantees
   replace four old records, six checks realized; profile current comments repaired,

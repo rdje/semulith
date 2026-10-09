@@ -95,6 +95,7 @@ sys.path.insert(0, "scripts")
 from validate_records import validate_jsonl, UnsupportedSchema
 import sexp as S
 import records_sexp as R
+import record_catalog as C
 import dossier_sexp as D
 import check_sexp_schema as K
 
@@ -166,9 +167,19 @@ for cat in catalogues:
     #    wrong value type, and every FACET the record contracts carry.
     try:
         constructs, operators = K.load_schema(schema)
-        errors = K.validate_file(cat, constructs, operators)
     except (K.SchemaError, S.SexpError) as exc:
         print(f"UNSUPPORTED {schema_rel}: {exc}"); print("__CHECKED__ 0"); sys.exit(2)
+    try:
+        sources = {}
+        C.text(cat, root=root, source_texts=sources)
+        errors = []
+        for source, text in sources.items():
+            errors += K.validate_text(text, constructs, operators,
+                                      source.relative_to(root.resolve()).as_posix(),
+                                      parse_where=str(source))
+    except (C.CatalogRefused, S.SexpError) as exc:
+        findings.append(f"INVALID    {cat.relative_to(root)}: does not even parse or expand: {exc}")
+        continue
     for e in errors:
         findings.append(f"INVALID    {e}")
     if errors:
@@ -234,7 +245,7 @@ for cat in catalogues:
                             f"'{derived}'")
         continue
     try:
-        recs = R.load(cat)
+        recs = R.load(cat, root=root)
     except (R.RecordRefused, S.SexpError) as exc:
         findings.append(f"UNREADABLE {cat.relative_to(root)}: conforms to its schema but does "
                         f"not map to records — {exc}")
@@ -297,7 +308,7 @@ for cat in catalogues:
         ob_file = cat.parent / "contract-obligations.sexp"
         if ob_file.is_file() and (cat.parent / "profile.sexp").is_file():
             try:
-                obs = R.load(ob_file)
+                obs = R.load(ob_file, root=root)
             except (R.RecordRefused, S.SexpError):
                 obs = None
             if obs is not None:
@@ -385,7 +396,7 @@ for cat in catalogues:
         units_path = cat.parent / "units.sexp"
         if units_path.is_file():
             try:
-                unit_kinds = {u.get("id"): u.get("kind") for u in R.load(units_path)}
+                unit_kinds = {u.get("id"): u.get("kind") for u in R.load(units_path, root=root)}
             except (R.RecordRefused, S.SexpError):
                 findings.append(
                     f"UNREADABLE {units_path.name}: the unit registry beside {cat.name} does "
@@ -471,8 +482,8 @@ if reg_path.is_file():
         if not owner_p.is_file() or not mirror_p.is_file():
             continue                        # existence is the FACT-OWNERSHIP gate's leg
         checked.append(kind)
-        owner_recs = R.load(owner_p)
-        mirror_by_id = {r["id"]: r for r in R.load(mirror_p)}
+        owner_recs = R.load(owner_p, root=root)
+        mirror_by_id = {r["id"]: r for r in R.load(mirror_p, root=root)}
         owner_by_id = {r["id"]: r for r in owner_recs}
         if which == "requirements":
             # the mirrored set, re-derived: the owner's records covering a base-form
@@ -517,7 +528,7 @@ if reg_path.is_file():
             # closure (the owner's base-covering records + their dependencies) computed
             # from the owner's requirements catalogue, then the obligations they name.
             req_cat = owner_p.parent / "requirements.sexp"
-            owner_reqs = R.load(req_cat)
+            owner_reqs = R.load(req_cat, root=root)
             owner_req_by_id = {r["id"]: r for r in owner_reqs}
             owner_scope = D.load_profile(owner_p.parent / "profile.sexp")["scope"]
             base = {m.lower() for v in owner_scope.values()
@@ -580,9 +591,10 @@ self_test() {
   REQ='{"id":"REQ-D-A","profile_ids":["p"],"kind":"state","statement":"S","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"applicability":"included","research_status":"resolved","implementation_status":"planned","source_semantics":{"category":"defined","detail":"d"},"risk":"low","obligation_ids":["OB-A"],"dependencies":[],"implementation_refs":[],"evidence_ids":[]}'
   OB='{"id":"OB-A","contract_id":"c","contract_version":"0","profile_ids":["p"],"direction":"cpu-guarantee","statement":"S","authority":"architecture","source_refs":[{"source_id":"SRC-A","locator":"§1"}],"parameters":{},"dependencies":[],"required_checks":["CHK-A-POS","CHK-A-NEG"]}'
 
+  arm_command=(check_records "$t")
   arm() {
     argc 3 "$#" arm || return
-    out="$(check_records "$t" 2>&1)"; rc=$?
+    out="$("${arm_command[@]}" 2>&1)"; rc=$?
     if [ "$rc" != "$2" ]; then
       fail=$((fail+1)); printf 'RECORD-SCHEMA self-test MISS: %s expected rc=%s got rc=%s\n%s\n' "$1" "$2" "$rc" "$out" >&2
     elif ! printf '%s' "$out" | grep -qF "$3"; then
@@ -645,6 +657,18 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
                                                               arm "RED   an architectural rule labelled a laboratory choice" 1 "AUTHORITY DOWNGRADE"
   obs "$OB"
   rm -f "$t/p/requirements.sexp";                             arm "RED   an obligation catalogue alone still checks" 0 "__CHECKED__ 1"
+  # Partitioned catalogs retain schema validation and cross-record identity checks.
+  mv "$t/p/contract-obligations.sexp" "$t/p/part.obligations.sexp"
+  printf '(include-obligations (path "p/part.obligations.sexp"))\n' > "$t/p/contract-obligations.sexp"
+                                                              arm "GREEN an included obligation is schema checked and linked" 0 "__CHECKED__ 1"
+  sed 's/cpu-guarantee/unknown-direction/' "$t/p/part.obligations.sexp" > "$t/p/bad.obligations.sexp"
+  printf '(include-obligations (path "p/bad.obligations.sexp"))\n' > "$t/p/contract-obligations.sexp"
+                                                              arm "RED   an included invalid record names its origin" 1 "p/bad.obligations.sexp"
+  cp "$t/p/part.obligations.sexp" "$t/p/second.obligations.sexp"
+  printf '(include-obligations (path "p/part.obligations.sexp"))\n(include-obligations (path "p/second.obligations.sexp"))\n' > "$t/p/contract-obligations.sexp"
+                                                              arm "RED   duplicate ids across distinct parts remain refused" 1 "DUPLICATE ID"
+  mv "$t/p/part.obligations.sexp" "$t/p/contract-obligations.sexp"
+  rm -f "$t/p/bad.obligations.sexp" "$t/p/second.obligations.sexp"
   reqs "$REQ"; rm -f "$t/p/contract-obligations.sexp"
   # ---- rule 9 MIRROR: an obligation naming its requirement restates it ------------------------
   reqs "$REQ"; obs "$OB"
@@ -782,6 +806,10 @@ pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
   rm -f "$t/p/requirements.jsonl" "$t/p/requirements.sexp" "$t/p/contract-obligations.sexp"
                                                               arm "REFUSE nothing to check at all" 2 "NO RECORDS"
 
+  arm_command=(python3 scripts/probe_record_catalog.py)
+  arm "GREEN catalog reader controls" 0 "31 pass / 0 fail"
+  arm_command=(python3 scripts/probe_record_catalog.py --mutation ignore-includes)
+  arm "RED lost include expansion" 1 "CONTROL-MISSED"
   rm -rf "$t"
   printf 'RECORD-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

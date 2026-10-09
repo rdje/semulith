@@ -29,6 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sexp as S                                # noqa: E402
+import record_catalog as C                      # noqa: E402
 
 
 class RecordRefused(Exception):
@@ -319,9 +320,16 @@ def render_forms(forms) -> str:
 
 # --------------------------------------------------------------------------- files
 
-def load(path: Path) -> list[dict]:
+def load(path: Path, *, root: Path | None = None) -> list[dict]:
     """A converted record file as JSON-shaped dicts, in file order."""
-    return [form_to_dict(f) for f in S.read_file(Path(path))]
+    try:
+        forms = S.parse(C.text(Path(path), root=root), str(path))
+    except C.CatalogRefused as error:
+        raise RecordRefused(str(error)) from error
+    # Reserved annotations add no records. Their shape is the schema's concern,
+    # just as it is for annotations inside a record.
+    return [form_to_dict(f) for f in forms
+            if not (isinstance(f, list) and f and f[0] == "comment")]
 
 
 def dump(records: list[dict]) -> str:

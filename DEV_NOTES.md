@@ -1,5 +1,25 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — partition frozen catalogs through one reader (P4-SYSTEM.13 c2)
+
+The obligation source had only 2,522 bytes left under its fixed 65,536-byte cap.
+Move contiguous v0/v1 bytes into explicit root-relative parts; the expansion owner
+reconstructs all 63,014 old bytes and 58 record mappings exactly. Root/parts are
+9,003 / 47,168 / 7,009 bytes; no duplicate catalog or raised ceiling. Freeze,
+conversion, registry declaration tests and scratch mutation copies share expansion.
+Schema validation retains every source origin, then existing ID/reference rules
+judge the expanded records. A schema-valid top-level comment previously failed
+record mapping; annotations now add no records and retain schema ownership.
+The canonical reader owns validated token spans, shared with expectation editing.
+31 isolated controls include relocation, multiline literal directives, path/cycle
+refusals and symlink loops; disabling expansion turns the same suite RED.
+RECORD-SCHEMA has 48 controls (+5), registered total re-derived as 634. make check
+passes; gate controls 17/17 and freeze pass. Full make ci passes all five legs. Its first run passed Rust/project checks
+but refused a pending checklist box and stale Knowledge Map; both repaired
+before the final green run. Correct the stale canonical G-CONTRACT gap statement too: c1
+already supplies its four supersessions; the generator was copying obsolete text.
+Promotion: decision_obligation-catalog-parts, permanent controls and book retain it.
+
 ## _(2026-10-09)_ — supersede the stage without rewriting its historical mirrors (P4-SYSTEM.13 c1)
 
 Three v2 guarantees replace four obsolete v0 statements: qualified FP selection,

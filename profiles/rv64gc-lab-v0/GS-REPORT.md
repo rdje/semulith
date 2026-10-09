@@ -29,7 +29,7 @@ is not a claim with a denominator.
 | Axis | Owner | Open item |
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
-| `G-CONTRACT` | `P4-SYSTEM.13` | Most frozen v0 checks remain unrealized; the remaining rv64i base boundary assumptions are not restated for this unit; four frozen v0 statements require current replacements (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE, and the no-breakpoint wording in OB-FAULT-PRIORITY). |
+| `G-CONTRACT` | `P4-SYSTEM.13` | Remaining effective checks need realization; five GC-specific boundary assumptions still need declarations and typed controls. The four obsolete v0 statements have explicit v2 replacements; version 2 stays open until all effective pairs pass and its membership is frozen. |
 | `G-TRACE` | `P4-SYSTEM.14` | The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
@@ -67,7 +67,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 f1935477c8686a302cf5e1848ae89ac488904e92e8bbceeb6ec54aca43618afb`
+  `sha256 aaa766f45bc708f1424f86467602ffb0966e47e360be0bff6876623c8429453b`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

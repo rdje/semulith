@@ -18,13 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c2 — losslessly partition the obligation catalog
-  before adding five boundary assumptions: 63,014/65,536 bytes, fixed cap.
-  Census raw readers; use one explicit include/expansion owner, preserve frozen
-  lines/order, no duplicate materialized catalog. Detailed ownership in Decisions.
-  c1 three current guarantees replace four frozen stages: 48/104 checks realized,
-  v2 open. Then boundary and remaining execution checks; .14 owns status/evidence.
-  All previous registry entries/frozen bytes preserved; b4 toolchain repair verified.
+- next_action: `P4-SYSTEM.13` c3 — declare five GC-specific boundary assumptions
+  (byte physical addresses, data widths/attributes, event delivery, one-hart
+  ordering and cold reset), then realize their exact typed controls and remaining
+  runtime pairs. c2 partition preserves all 63,014 expanded bytes/58 mappings;
+  one include owner, fixed caps, annotation repair, full CI green. 48/104 checks
+  realized, v2 open. .14 owns requirement statuses and experiment records.
+  Detailed ownership/census in the active tree; frozen v0/v1 records unchanged.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

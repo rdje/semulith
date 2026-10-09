@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0112 (leaf P4-SYSTEM.13 c2) — partition obligation catalogs losslessly
+
+- Explicit root-relative v0/v1 parts share one expansion owner with all consumers;
+  63,014 expanded bytes, 58 mappings, order and frozen pins remain exact. Fixed
+  caps retained; root now 9,003 bytes. Schema checks include part origins.
+- Repair top-level annotation mapping; 31 controls and disabled-expansion mutant,
+  included-schema and duplicate-ID controls. RECORD-SCHEMA 48 (+5), global 634;
+  Full make ci passes all five legs. Correct stale canonical gate-gap text;
+  contract credit stays 48/104, v2 open.
+
 ## SEMULITH-P4-0111 (leaf P4-SYSTEM.13 c1) — supersede obsolete contract stages
 
 - Three v2 guarantees replace four v0 records: qualified FP, current generated
