@@ -1,5 +1,37 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — delegated supervisor CSR views are read-only zero otherwise (P4-SYSTEM.13 c7a)
+
+Cold-reset review found shared CSR reads/writes missing mideleg's dynamic
+view mask. Rehash/read RVP-MACHINE 2.1.1.9 (machine artifact SHA-256
+b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea):
+nondelegated sip/sie bits must be read-only zero. The same public API probe
+before repair exposed 0x222 in both views and erased mie/SSIP on zero writes.
+After repair it exposes zero, preserves mie/mip=0x222, and the delegated
+positive control still reads 0x222. One shared dynamic mask applies after
+computed fields on read and preserves hidden owner bits on legalized write.
+Interrupt arbitration, WFI wake and the M owners keep their specified rules.
+
+The independent author's new controls also found sip reading a fake separate
+dictionary owner; remove those view slots and overlay timer state on sole mip.
+Canonical state/semantics prose and regenerated fingerprints carry the rule.
+Three Rust tests exercise eight delegation masks in M/S, clear/set/revoke,
+readonly SEIP/STIP and 192 actual CPU CSR steps across all six forms/views.
+The initial S-mode instruction fixture correctly took a higher-M interrupt:
+isolate view tests by disarming pending for sie, disabling enables for sip.
+Five independent author mutations distinguish both read masks, write masks
+and sip ownership. The first GUEST-GEN run overlapped the initial failing
+author control (134/1); rerun against the corrected owner in full CI.
+The first full CI instead caught the sip-owner mutant at an unnamed chained
+re-delegation assertion. Split/named those assertions; all five mutations now
+fail with their exact reason. Final GUEST-GEN 135/0; make ci all five legs green.
+
+make check passes 160 core / 17 DSP / 197 verify. The public before/after probe
+discriminates; author checks preserve 42 historical records byte-exact, and
+all committed guests still match. No guest/contract record rewrite or added
+credit: 56/112 remains open. Cold reset follows as c7b. Full CI receipt is in
+the owning leaf. No knowledge promotion: canonical rule, tests and book retain it.
+
 ## _(2026-10-09)_ — ordering evidence needs an independent conversation (P4-SYSTEM.13 c6)
 
 Rehash/read pinned RVWMO and Zifencei: program/global order, load-value/atomicity/

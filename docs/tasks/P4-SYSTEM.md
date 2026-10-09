@@ -548,6 +548,65 @@ first two instructions (acknowledged store, bad load); keep the full five-step
 conversation for positive ordering. The disabled value guard must then let the
 bad load execute, without weakening request-order validation.
 
+**c7b typed full-cold-reset pair** (SEMULITH-P4-0119): after c7a's prerequisite;
+review state.sexp's full census/reset rows, generated state/reset API, CSR views,
+TLB/reservation/wait public contracts, memory construction and book state inventory.
+Add the final missing boundary assumption to open v2, born realized (58/114).
+Cold reset reconstructs x/pc/mode, f-file, all 26 CSR owners and seven views,
+memory/image, TLB including FIFO position, reservation and ACTIVE wait state.
+Pin independent literal reset values from canonical rows: misa
+0x800000000014112d, mstatus 0xa00000000, other raw CSR owners zero; computed
+STIP is 1 at time=stimecmp=0, but enables are zero. Warm reset is not supported.
+Positive fixture dirties every owner, calls the real state reset and reconstructs
+memory, then validates each owner before executing a hand-encoded ADDI. Negative
+fixtures retain one owner class, each CSR/register where meaningful, and a TLB
+with invalid entries but nonzero FIFO cursor. A fixture-only cold-state auditor
+returns typed ResetStateMismatch with a named component before the first fetch;
+no production CPU reset behavior is changed. Disable that auditor in controls:
+every bad reset must escape the negative fixture. Source/read receipts and exact
+prior entries/frozen bytes retained. Run Rust, schema/freeze, gate controls/books
+and full CI for completion of the boundary-assumption milestone. V2 remains open
+for 28 runtime pairs; no freeze or CPU-SYSTEM closure until all checks pass.
+
+**c7a supervisor interrupt-view prerequisite** (SEMULITH-P4-0118): reset
+review found a suspicious omission in privilege.rs: csr_read masks sip/sie to
+their declared fields but does not intersect mideleg; csr_write likewise needs
+inspection before any change. The pinned RVP-MACHINE 2.1.1.9 explicitly makes
+nondelegated sip/sie bits read-only zero. Supervisor artifact rehashed to
+d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a;
+machine delegation paragraph read from the pinned artifact. Own/reproduce now
+through public CSR read/write and real instruction APIs before committing the
+full cold-reset assumption. If confirmed, repair the shared CSR-view owner,
+not per-instruction behavior or interrupt arbitration; preserve underlying mip/mie
+and computed STIP behavior. Independently test delegation/read/write/clear/revoke
+and source visibility, all three S bits and both M/S access modes. Existing
+canonical state/semantics and independent expectation author must stay aligned;
+inspect those owners before edits, update book/live docs and actual guest
+expectations only from the corrected specified rule. No silent expectation
+rewrites. Run Rust, focused generator/corpus checks and full CI for this
+architectural behavior repair. This defect takes priority over c7b, is owned here,
+and must be resolved and verified before reset evidence is claimed.
+
+Confirmed through the public API before repair: `cargo build -p semulith-core`
+and the on-volume `target/p4-system-13/c7/supervisor-view-probe.rs` give
+undelegated sie/sip = 0x222/0x222; writes of zero erase mie and SSIP despite
+mideleg=0 (mie=0, computed mip=0x220). Delegating 0x222 is the valid control.
+RVP-MACHINE artifact SHA-256 reverified
+b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea.
+Root cause: both shared architectural read/write paths omit the dynamic
+delegation mask; the independent Python author repeats the omission. Correct
+both owners, annotate canonical view rules and add separate read/write bypass
+mutants for sip/sie to GUEST-GEN before claiming repaired evidence. Inspect all
+existing sip/sie guest uses; update only specification-derived differences.
+Contract credits remain 56/112 in this prerequisite.
+Initial new controls exposed a second author defect in the same view owner:
+sip read a separate zero-initialized dictionary slot rather than mip storage.
+The existing guests did not observe that old value. Remove the fake view slots
+and compute pending from the one mip owner. The first actual S-mode CSR fixture
+instead took a legitimate higher-M interrupt before fetch: isolate view semantics
+by clearing pending for sie instructions and clearing enables for sip instructions;
+do not change arbitration to make a test execute.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -691,6 +750,35 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c7a) (`2026-10-09`, `SEMULITH-P4-0118`):
+
+- [x] **ROOT CAUSE** — cargo build -p semulith-core; public CSR probe before:
+  undelegated sie/sip=0x222, zero writes erase mie/SSIP. Rehash/read pinned
+  RVP-MACHINE 2.1.1.9 (digest above); shared read/write paths miss mideleg.
+  New author controls expose separate sip dictionary owner as a second defect.
+- [x] **ADDRESSED** — cargo test -p semulith-core privilege::tests::interrupt_views:
+  3 passed / 0 failed, eight masks in M/S and 192 real CSR instruction steps.
+  Same public probe after: sie/sip=0, zero writes preserve mie/mip=0x222;
+  delegated positive remains 0x222. python3 scripts/probe_gc_privilege_author.py
+  rc=0: 42 historical records byte-identical and five mode-matrix guests / 140
+  steps. Independent rule/owner corrections and five bypass mutations owned.
+  The first S-mode fixture took a legitimate higher-M interrupt; isolate pending/
+  enables in test setup, preserving arbitration. No instruction-specific fix.
+- [x] **CONTROL DIAGNOSTIC** — make ci first run rc=2, GUEST-GEN 134/1:
+  sip-owner mutant fails at the re-delegation control before its later mask-2
+  read, but that chained assertion had no diagnostic. Split read assertions
+  and name sip's owner/delegation failure at every read control. Keep the
+  strict gate's reason check; rerun full CI rather than accept wrong-reason RED.
+- [x] **NO REGRESSION** — make check rc=0: 160 core / 17 DSP / 197 verify,
+  all existing guest records untouched. Frozen obligation records, memberships
+  and registry entries unchanged. Initial GUEST-GEN overlaps initial author
+  failure (134/1); final make ci rc=0, all five legs green; GUEST-GEN 135/0.
+- [x] **LOCKSTEP** — git diff --check rc=0; canonical state/semantics,
+  generated state/definition fingerprints, book and toolbox updated. LIVE_STATUS
+  snapshot: P4 12/18, 45 chapters; arms 639 (+5, repository-derived). Contract
+  56/112 unchanged, cold reset c7b and 28 runtime pairs remain; v2 open.
+  promotion: declined (canonical rule, permanent controls and book retain it).
 
 `P4-SYSTEM.13` slice (c6) (`2026-10-09`, `SEMULITH-P4-0117`):
 
@@ -1029,6 +1117,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c7a | public before/after; 3 Rust view controls / 192 CPU steps; author 42 exact; Rust 160/17/197; GUEST-GEN 135/0 | final make ci all five legs green; delegation/owner repaired; 56/112 unchanged |
 | `2026-10-09` | `.13` c6 | Rust 157/17/197; literal order/overlap/AMO + 4 aq/rl; warmed rewrites; 3 violations + disabled auditor; old bytes exact; schema/freeze; gate 17/17; books | 56/112 realized, v2 open |
 | `2026-10-09` | `.13` c5 | Rust 157/17/196; timer/head and WFI/idle/wake; 5 phase violations + disabled guard; old bytes exact; schema/freeze; gate 17/17; books | 54/110 realized, v2 open |
 | `2026-10-09` | `.13` c4b | Rust 157/17/195; literal byte/width pairs; 12 negative cases; auditor disabled; old bytes exact; schema/freeze; gate 17/17; books | 52/108 realized, v2 open |
@@ -1050,6 +1139,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c7a | `SEMULITH-P4-0118 (leaf P4-SYSTEM.13): enforce delegation in supervisor interrupt CSR views` | c7b full cold reset, then 28 runtime pairs |
 | `.13` c6 | `SEMULITH-P4-0117 (leaf P4-SYSTEM.13): realize one-hart ordering with independent conversations` | c7 full cold reset, then 28 runtime pairs |
 | `.13` c5 | `SEMULITH-P4-0116 (leaf P4-SYSTEM.13): realize event positioning at explicit step boundaries` | c6 one-hart ordering, then cold reset |
 | `.13` c4b | `SEMULITH-P4-0115 (leaf P4-SYSTEM.13): realize data-access assumptions with independent byte witnesses` | c5 event delivery, then ordering/reset |
@@ -1068,6 +1158,12 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c7a (SEMULITH-P4-0118): confirmed missing delegation
+  masks in shared supervisor CSR views and independent author; author also
+  read a separate sip owner. Repaired and directly reproduced before/after;
+  actual CSR instructions, all masks/M/S and five mutations discriminate.
+  Existing guest records exact; contract credit unchanged. Cold reset c7b next.
 
 - `2026-10-09`: `.13` c6 (SEMULITH-P4-0117): one-hart ordering born
   realized with exact store/load/overlap/AMO conversations and coherent warmed

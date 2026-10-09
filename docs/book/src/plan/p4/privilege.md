@@ -11,6 +11,16 @@ guests reproduce 140 committed architectural steps; nine deliberate mutations fa
 This repairs the author used to predict guest results; the production CPU's existing
 mode-matrix results remain unchanged.
 
+P4.13's cold-reset review later found and repaired a production CSR-view defect:
+`sie` and `sip` must hide every interrupt bit not delegated by `mideleg`
+(RVP-MACHINE §2.1.1.9). Hidden bits read zero and ignore writes, while the
+underlying `mie`/`mip` state remains intact. The shared CSR read/write machinery
+now applies that rule in both M and S modes. The independent author also uses
+`mip` as `sip`'s sole owner. Eight delegation masks, all six CSR instruction
+forms, revocation and five deliberate author mutations discriminate the repair;
+the existing guest records remain unchanged. See the
+[reset prerequisite examples](contract-v2.md#supervisor-interrupt-views-before-cold-reset).
+
 The leaf runs in eight checkpoints; slice (c) split cleanly into (c1) — zero Rust — and
 (c2). Slice (a): the upstream census measured what the brief delegated — Zicsr's
 six instructions are real rows in riscv-opcodes' `rv_zicsr`, mret/wfi live in `rv_system`,

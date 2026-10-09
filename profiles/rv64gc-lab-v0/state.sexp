@@ -17,7 +17,9 @@
 ;; VIEWS HAVE NO STORAGE: sstatus/sie/sip restrict mstatus/mie/mip; cycle/instret shadow
 ;; mcycle/minstret. A `view_of` row declares the underlying register; a write through a view is
 ;; a write to the underlying storage under the view's mask (the alias discipline the integer
-;; file already states). The `time` register views the laboratory virtual-time domain
+;; file already states). For sie/sip that mask also intersects current mideleg: undelegated
+;; bits are read-only zero (RVP-MACHINE §2.1.1.9), including computed pending bits.
+;; The `time` register views the laboratory virtual-time domain
 ;; stored in mcycle. No CLINT, mtime/mtimecmp or external interrupt source exists in
 ;; this laboratory contract (OB-GC-ENV-VIRTUAL-TIME / OB-GC-ENV-INTERRUPT-SOURCES).
 
@@ -522,8 +524,8 @@
        (field (id "wpri_63_10") (bit_hi 63) (bit_lo 10) (discipline wpri)
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
-       (reset (value "the mie subset, per its fields") (authority laboratory) (source "RVP-SUPERVISOR §11.1.1.3")
-              (statement "A view of mie restricted to the supervisor bits; no storage, no independent reset.")))
+       (reset (value "the delegated mie subset, per its fields") (authority laboratory) (source "RVP-SUPERVISOR §11.1.1.3; RVP-MACHINE §2.1.1.9")
+              (statement "A view of mie restricted to supervisor bits delegated by current mideleg; undelegated bits are read-only zero (RVP-MACHINE §2.1.1.9). No storage, no independent reset; reset mideleg=0 makes the view zero.")))
 
   (csr (id "sip") (address 324) (width_bits 64) (view_of "mip") (authority architecture)
        (source "RVP-SUPERVISOR §11.1.1.3")
@@ -548,8 +550,8 @@
        (field (id "wpri_63_10") (bit_hi 63) (bit_lo 10) (discipline wpri)
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
-       (reset (value "the mip subset, per its fields") (authority laboratory) (source "RVP-SUPERVISOR §11.1.1.3")
-              (statement "A view of mip restricted to the supervisor bits; no storage, no independent reset.")))
+       (reset (value "the delegated mip subset, per its fields") (authority laboratory) (source "RVP-SUPERVISOR §11.1.1.3; RVP-MACHINE §2.1.1.9")
+              (statement "A view of mip restricted to supervisor bits delegated by current mideleg; undelegated bits are read-only zero even when pending (RVP-MACHINE §2.1.1.9). No storage, no independent reset; reset mideleg=0 makes the view zero despite computed STIP=1.")))
 
   (csr (id "scounteren") (address 262) (width_bits 64) (authority architecture)
        (source "RVP-SUPERVISOR §11.1.1.5")

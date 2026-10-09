@@ -57,12 +57,35 @@ Cold reset constructs all owners anew. Exact continuation must also preserve
 the current TLB replacement position, reservation and wait state: cold reset is
 not a substitute for restoring them.
 
-This correction changes the declared inventory and its generated metadata.
+The initial inventory correction changes the declared inventory and its generated metadata.
 The definition module also records the updated state-source hash in its
 provenance manifest. Storage, reset values, accessors and execution remain
 byte-identical. Snapshot
 and replay serialization still belong to P4.16; this inventory does not claim
 that those features are implemented.
+
+## Supervisor interrupt views before cold reset
+
+The reset review found a production defect: `sie`/`sip` were restricted to
+supervisor bit positions but omitted their dynamic `mideleg` mask. The pinned
+machine chapter (§2.1.1.9) requires undelegated bits to be read-only zero.
+The shared CSR machinery now filters reads after computing live pending bits
+and ignores writes to hidden owner bits. This applies in both M and S modes.
+
+| Machine state | Architectural supervisor view |
+| --- | --- |
+| `mie=0x222`, `mideleg=0` | `sie=0`; writing zero preserves `mie=0x222` |
+| Pending SSIP/STIP/SEIP, `mideleg=0x2` | `sip=0x2`; only delegated SSIP is writable |
+| Same pending state, `mideleg=0x222` | `sip=0x222`; STIP/SEIP remain read-only |
+| Cold reset: time=`stimecmp`=0, `mideleg=0` | `mip=0x20`, `sip=0`, `sie=0` |
+
+Revoking delegation hides a bit without erasing its owner. Re-delegating makes
+the current owner value visible immediately. The independent expectation author
+now applies the same specified rule and reads `sip` through its sole `mip`
+owner. Eight masks in both modes and all six CSR instruction forms exercise
+the repair; five author mutations distinguish the missing masks and owner.
+The existing guest records remain byte-identical. Contract credits stay 56/112;
+the full-cold-reset pair follows this prerequisite.
 
 ## Executable scope checks
 

@@ -75,7 +75,7 @@ class Hart:
         self.csr = {"mtvec": 0, "mepc": 0, "mcause": 0, "mtval": 0, "mscratch": 0,
                     "mstatus": 0xA00000000, "medeleg": 0, "satp": 0, "sepc": 0, "scause": 0,
                     "stval": 0, "sscratch": 0, "mcounteren": 0, "scounteren": 0,
-                    "mie": 0, "mip": 0, "mideleg": 0, "sie": 0, "sip": 0, "stimecmp": 0,
+                    "mie": 0, "mip": 0, "mideleg": 0, "stimecmp": 0,
                     "fflags": 0, "frm": 0, "misa": MISA, "menvcfg": 0}   # fcsr is a composed VIEW
         self.time = 0            # the declared virtual-time domain (one tick per step)
         self.instret = 0         # the GENUINE retirement count (never for a trapped,
@@ -139,10 +139,10 @@ class Hart:
         # route to S program separately; see sv39-deleg's template)
         return self.csr.get("stvec", 0) & ~0b11
 
-    def mip_value(self, which):
+    def mip_value(self):
         """mip/sip with the live STIP overlay (time >= stimecmp — slice a's ticking
         domain; the SSIP/SEIP bits are storage)."""
-        base = self.csr[which]
+        base = self.csr["mip"]
         stip = 1 if self.time >= self.csr["stimecmp"] else 0
         return (base & ~(1 << 5)) | (stip << 5)
 
@@ -151,14 +151,14 @@ class Hart:
         pending interrupt at any privilege level, regardless of the global enables and
         of mideleg — exactly mip & mie != 0, mip with the live STIP overlay (the timer's
         arrival during the halt is the acceptance's wake source)."""
-        return (self.mip_value("mip") & self.csr["mie"]) != 0
+        return (self.mip_value() & self.csr["mie"]) != 0
 
     def pending(self):
         """The (a)(b)(c) taken-rule at the step head (decision 3): the fixed priority
         walk MEI MSI MTI SEI SSI STI; the M-source bits read 0 in this platform."""
         for cause in (11, 3, 7, 9, 1, 5):
             bit = 1 << cause
-            if not (self.mip_value("mip") & bit and self.csr["mie"] & bit):
+            if not (self.mip_value() & bit and self.csr["mie"] & bit):
                 continue
             if self.csr["mideleg"] & bit:
                 if self.mode == 3:
@@ -435,7 +435,7 @@ AMO_OP = {0x00: "add", 0x01: "swap", 0x04: "xor", 0x0C: "and", 0x08: "or",
           0x10: "signed min", 0x14: "signed max", 0x18: "unsigned min", 0x1C: "unsigned max"}
 
 
-# ---- CSR view/legalization mirrors (the engine's field tables, state_rv64gc.rs) ---------
+# ---- CSR view/legalization rules (pinned chapters and selected state.sexp) -------------
 MSTATUS_W = 0x7E79AA           # SIE,MIE,SPIE,MPIE,SPP,MPP,FS,MPRV,SUM,MXR,TVM,TW,TSR
 SSTATUS_R = 0x80000003000DE722  # the view's named fields incl. VS/XS/UXL and the SD slot
 SSTATUS_W = 0xC6122            # SIE,SPIE,SPP,FS,SUM,MXR
@@ -449,10 +449,11 @@ def mstatus_read(h):
 
 def csr_read_value(h, name):
     if name in ("mip", "sip"):
-        v = h.mip_value(name)
-        return v & 0x222 if name == "sip" else v
+        v = h.mip_value()
+        # RVP-MACHINE 2.1.1.9: nondelegated supervisor bits are read-only zero.
+        return v & 0x222 & h.csr["mideleg"] if name == "sip" else v
     if name == "sie":
-        return h.csr["mie"] & 0x222
+        return h.csr["mie"] & 0x222 & h.csr["mideleg"]
     if name == "mstatus":
         return mstatus_read(h)
     if name == "sstatus":
@@ -496,12 +497,14 @@ def csr_write_value(h, name, v):
         h.csr["mip"] = (old & ~0x202) | (v & 0x202)     # SSIP/SEIP writable; STIP computed; the rest read-only 0
     elif name == "sip":
         m = h.csr["mip"]
-        h.csr["mip"] = (m & ~0x2) | (v & 0x2)           # SSIP only — SEIP/STIP are read-only in the S view
+        writable = 0x2 & h.csr["mideleg"]  # delegated SSIP only; SEIP/STIP remain read-only
+        h.csr["mip"] = (m & ~writable) | (v & writable)
     elif name == "mie":
         h.csr["mie"] = (old & ~0xAAA) | (v & 0xAAA)
     elif name == "sie":
         m = h.csr["mie"]
-        h.csr["mie"] = (m & ~0x222) | (v & 0x222)
+        writable = 0x222 & h.csr["mideleg"]
+        h.csr["mie"] = (m & ~writable) | (v & writable)
     elif name == "mideleg":
         h.csr["mideleg"] = (old & ~0x222) | (v & 0x222)
     elif name in ("mtvec", "stvec"):

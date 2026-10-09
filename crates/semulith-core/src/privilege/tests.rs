@@ -8,6 +8,8 @@
 
 use super::*;
 
+mod interrupt_views;
+
 /// The fixture's storage CSRs (views carry none); `stvec`/`scounteren`/`sepc`/`scause`/
 /// `stval` are S-level storage registers at their own addresses, as the document has them.
 const STORAGE: &[(&str, u16)] = &[

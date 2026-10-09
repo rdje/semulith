@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0118 (leaf P4-SYSTEM.13 c7a) — repair delegated supervisor interrupt CSR views
+
+- Apply mideleg's read-only-zero rule to shared sip/sie reads and writes;
+  preserve hidden machine owners and computed pending state. Repair the
+  independent author's missing masks and separate sip owner.
+- Eight masks in M/S and all six CSR forms pass through real CPU steps;
+  five author bypass mutations discriminate. Rust 160/17/197 passes;
+  existing guest records exact. Full make ci passes all five legs; contract credit
+  stays 56/112. Full cold reset follows this verified prerequisite.
+
 ## SEMULITH-P4-0117 (leaf P4-SYSTEM.13 c6) — realize one-hart ordering assumptions
 
 - Bind synchronous latest-store/overlap/AMO order and coherent code rewrite

@@ -21,7 +21,8 @@
 //! The pending state read goes through `csr_state`, so mip's STIP arrives COMPUTED
 //! (time ≥ stimecmp — slice (a) made time move; the STIP-at-reset quirk is live).
 //! sip/sie expose the same bit positions as mip/mie for the three causes, so the
-//! views' own gating needs no separate read (the S-subset fields coincide at 1/5/9).
+//! views' own gating needs no separate read: the S-subset fields coincide at 1/5/9,
+//! and this evaluator explicitly tests mideleg before applying the target-level rule.
 
 use crate::privilege::{self, PrivilegeMode, PrivilegedHart};
 

@@ -410,6 +410,16 @@ fn meta_by_name_addr<H: PrivilegedHart>(hart: &H, address: u16) -> Option<&'stat
 
 // ---- reads and writes through the model ------------------------------------------------
 
+/// RVP-MACHINE §2.1.1.9: only delegated interrupts appear in the supervisor
+/// pending/enable views; every other bit is read-only zero. This dynamic mask
+/// applies after computed fields on reads and preserves hidden owner bits on writes.
+fn interrupt_view_mask<H: PrivilegedHart>(hart: &H, name: &str) -> u64 {
+    match name {
+        "sip" | "sie" => csr_state_raw(hart, "mideleg"),
+        _ => u64::MAX,
+    }
+}
+
 /// An architectural CSR READ (`csr-read`): the permission model, then the value — views
 /// resolve to their underlying storage under the view's field mask, and computed fields
 /// compute. The address a CSR instruction supplies is 12 bits by construction.
@@ -454,7 +464,7 @@ pub fn csr_read<H: PrivilegedHart>(hart: &H, address: u16) -> Result<u64, Illega
                 viewed = (viewed & !field_mask(f)) | (computed(hart, f) & field_mask(f));
             }
         }
-        Ok(viewed)
+        Ok(viewed & interrupt_view_mask(hart, meta.name))
     } else {
         Ok(value)
     }
@@ -559,7 +569,8 @@ fn write_legalized<H: PrivilegedHart>(hart: &mut H, index: usize, table_name: &s
     }
     // Bits no field covers: a complete table accounts for every bit (the generator
     // refuses a holed one); anything uncovered is preserved rather than guessed.
-    hart.csr_write_raw(index, (new & covered) | (old & !covered));
+    let writable = covered & interrupt_view_mask(hart, table_name);
+    hart.csr_write_raw(index, (new & writable) | (old & !writable));
 }
 
 // ---- trap delivery and xret -------------------------------------------------------------

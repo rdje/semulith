@@ -4,6 +4,7 @@
 RVP-CSR 1.1.1 defines CSR address privilege and ignored read-only fields;
 RVP-MACHINE 2.1.1.6.6/2.1.3.2 supplies TVM/TSR and xRET legality. Five
 committed spec-derived mode-matrix guests discriminate the repaired corpus paths.
+RVP-MACHINE 2.1.1.9 additionally gates supervisor interrupt views by mideleg.
 """
 from __future__ import annotations
 
@@ -21,7 +22,50 @@ from riscv_asm import Assembler
 REPO = Path(__file__).resolve().parent.parent
 
 
+def interrupt_views(author):
+    masks = (0, 0x2, 0x20, 0x22, 0x200, 0x202, 0x220, 0x222)
+    for mode in (author.M, author.S):
+        for delegated in masks:
+            hart = author.Hart()
+            hart.mode = mode
+            hart.csr.update(mie=0x222, mip=0x202, mideleg=delegated)
+            assert author.csr_read_value(hart, 'sie') == delegated, 'sie exposed an undelegated bit'
+            assert author.csr_read_value(hart, 'sip') == delegated, 'sip delegation/owner read mismatch'
+            author.csr_write_value(hart, 'sie', 0)
+            author.csr_write_value(hart, 'sip', 0)
+            assert hart.csr['mie'] == 0x222 & ~delegated, 'sie wrote an undelegated bit'
+            assert hart.csr['mip'] == 0x202 & ~(delegated & 2), 'sip wrote an undelegated bit'
+            assert author.csr_read_value(hart, 'sip') == delegated & 0x220, 'sip wrote a read-only pending bit'
+            author.csr_write_value(hart, 'sie', 0xffffffffffffffff)
+            author.csr_write_value(hart, 'sip', 0xffffffffffffffff)
+            assert hart.csr['mie'] == 0x222 and hart.csr['mip'] == 0x202
+            author.csr_write_value(hart, 'mideleg', 0)
+            assert author.csr_read_value(hart, 'sie') == 0, 'sie revocation read mismatch'
+            assert author.csr_read_value(hart, 'sip') == 0, 'sip delegation/owner read mismatch'
+            author.csr_write_value(hart, 'mideleg', 0x222)
+            assert author.csr_read_value(hart, 'sie') == 0x222, 'sie re-delegation read mismatch'
+            assert author.csr_read_value(hart, 'sip') == 0x222, 'sip delegation/owner read mismatch'
+            hart.csr['stimecmp'] = 1
+            assert author.csr_read_value(hart, 'sip') == 0x202
+
+    # Hand encodings: all CSR read/modify/write forms return only delegated old bits.
+    for mode in (author.M, author.S):
+        for delegated in masks:
+            for base, owner, initial, writable, afters in (
+                    (0x10400000, 'mie', 0x222, delegated, (0, 0x222, 0x222, 2, 0x222, 0x220)),
+                    (0x14400000, 'mip', 0x202, delegated & 2, (0x200, 0x202, 0x202, 0x202, 0x202, 0x200))):
+                for suffix, after in zip((0x112f3, 0x122f3, 0x132f3, 0x152f3, 0x162f3, 0x172f3), afters):
+                    hart = author.Hart()
+                    hart.mode = mode
+                    hart.csr.update(mie=0x222, mip=0x202, mideleg=delegated)
+                    pc, info = author.execute(hart, base | suffix)
+                    assert pc == Q.ENTRY + 4 and not hart.trapped
+                    assert info['writes'] == {5: delegated}, 'CSR instruction returned a hidden interrupt bit'
+                    assert hart.csr[owner] == (initial & ~writable) | (after & writable)
+
+
 def check(author):
+    interrupt_views(author)
     hart = author.Hart()
     assert author.csr_read_value(hart, 'misa') == 0x800000000014112d, 'misa lost the fixed selected reset'
     for value in (0, 1, 0xffffffffffffffff):
@@ -94,7 +138,10 @@ def main():
     control.add_argument('--author-revision')
     control.add_argument('--mutation', choices=['misa-reset', 'misa-write', 'csr-privilege',
                                               'satp-tvm', 'mret-mode', 'sret-mode',
-                                              'sret-tsr', 'sfence-mode', 'sfence-tvm'])
+                                              'sret-tsr', 'sfence-mode', 'sfence-tvm',
+                                              'sip-read-delegation', 'sie-read-delegation',
+                                              'sip-write-delegation', 'sie-write-delegation',
+                                              'sip-owner'])
     args = parser.parse_args()
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
@@ -104,6 +151,14 @@ def main():
             source = (subprocess.check_output(['git', 'show', f'{args.author_revision}:scripts/derive_rv64gc_expectations.py'], cwd=REPO).decode()
                       if args.author_revision else (REPO / 'scripts/derive_rv64gc_expectations.py').read_text())
             changes = {
+                'sip-owner': ('v = h.mip_value()',
+                              'v = h.mip_value() if name == "mip" else (h.mip_value() & 0x20)'),
+                'sip-read-delegation': ('return v & 0x222 & h.csr["mideleg"] if name == "sip" else v',
+                                        'return v & 0x222 if name == "sip" else v'),
+                'sie-read-delegation': ('return h.csr["mie"] & 0x222 & h.csr["mideleg"]',
+                                        'return h.csr["mie"] & 0x222'),
+                'sip-write-delegation': ('writable = 0x2 & h.csr["mideleg"]', 'writable = 0x2'),
+                'sie-write-delegation': ('writable = 0x222 & h.csr["mideleg"]', 'writable = 0x222'),
                 'misa-reset': ('"misa": MISA', '"misa": 0'),
                 'misa-write': ('if name == "misa":\n        return', 'if False:\n        return'),
                 'csr-privilege': ('if (csr >> 8) & 0b11 > h.mode:', 'if False:'),

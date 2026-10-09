@@ -367,6 +367,18 @@ PYCODE
   out="$(python3 scripts/probe_gc_privilege_author.py --mutation sfence-tvm 2>&1)"; rc=$?
   arm "RED S-mode SFENCE.VMA honors TVM" "$rc" 1 "$out" "S-mode SFENCE.VMA ignored TVM"
 
+  # P4-SYSTEM.13 c7a: nondelegated supervisor interrupt bits are read-only zero.
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sip-read-delegation 2>&1)"; rc=$?
+  arm "RED sip hides undelegated pending sources" "$rc" 1 "$out" "sip delegation/owner read mismatch"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sie-read-delegation 2>&1)"; rc=$?
+  arm "RED sie hides undelegated enables" "$rc" 1 "$out" "sie exposed an undelegated bit"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sip-write-delegation 2>&1)"; rc=$?
+  arm "RED sip preserves undelegated pending sources" "$rc" 1 "$out" "sip wrote an undelegated bit"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sie-write-delegation 2>&1)"; rc=$?
+  arm "RED sie preserves undelegated enables" "$rc" 1 "$out" "sie wrote an undelegated bit"
+  out="$(python3 scripts/probe_gc_privilege_author.py --mutation sip-owner 2>&1)"; rc=$?
+  arm "RED sip reads its mip owner" "$rc" 1 "$out" "sip delegation/owner read mismatch"
+
   # e1b1: hand-encoded integer controls precede the expanded corpus derivation.
   out="$(python3 scripts/probe_gc_integer_author.py 2>&1)"; rc=$?
   arm "GREEN base integer author vocabulary" "$rc" 0 "$out" "17 corpus gaps / 471 steps"

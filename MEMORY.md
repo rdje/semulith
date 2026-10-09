@@ -18,12 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c7 — declare full cold reset with its
+- next_action: `P4-SYSTEM.13` c7b — declare full cold reset with its
   direct typed registry pair, then realize the remaining 28 runtime pairs.
-  c6 supplies one-hart ordering: literal store/load/overlap/AMO conversations,
-  all aq/rl bits and warmed code rewrite with/without FENCE.I. Discarded stores
-  and stale parcels are typed violations; disabled auditor discriminates.
-  Selected sequential realization, no exhaustive weak-outcome claim. 56/112; v2 open.
+  c7a repairs the confirmed supervisor interrupt-view prerequisite: sip/sie
+  intersect mideleg on reads/writes, preserve hidden owners and computed MIP.
+  Independent author owns sip through mip; eight masks, M/S, six CSR forms
+  and five bypass controls discriminate. Cold SIP=0 while MIP=0x20.
+  Existing guest records exact; 56/112 unchanged; v2 open.
   Post-v0 declarations must arrive realized; all prior entries/frozen bytes exact.
   .14 owns requirement statuses and experiments. Detailed ownership/census in tree.
 - in_flight_uncommitted: none at commit.

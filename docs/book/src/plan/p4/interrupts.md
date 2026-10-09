@@ -58,3 +58,11 @@ CSR rules (P4.12 e1b2). Its finite controls check thirty counter/timer mode comb
 including S stimecmp read/write faults before effects and M-mode bypass. Accessibility
 never changes counter values or progression. Two earlier mode-matrix guests now derive
 through these gates; the author still explicitly refuses writable counter rebasing.
+
+Supervisor interrupt CSR visibility is also conditional on delegation. P4.13
+repairs the shared `sip`/`sie` view logic and the independent author: undelegated
+bits read zero and ignore writes, even if `mip` is pending. Revoking delegation
+preserves pending/enabled owner state. At cold reset, computed `mip.STIP` is one
+because time equals `stimecmp`, while `sip` is zero because `mideleg` is zero.
+Interrupt selection and WFI wake still use the machine owners and their explicit
+delegation rules; the CSR-view repair does not change those rules.

@@ -168,6 +168,8 @@
 ;; §11.1.1.5); mcounteren.TM gating stimecmp and menvcfg.STCE gating it for modes below M
 ;; (RVP-SSTC 12.1, §2.1.1.18); and mstatus.TVM gating satp access in S (§2.1.1.6.6). A
 ;; refused access raises illegal-instruction (cause 2, xtval the instruction word).
+;; Views read their owner's declared subset, including computed fields; sip/sie also
+;; intersect current mideleg (RVP-MACHINE §2.1.1.9: undelegated bits read-only zero).
 (operator (name csr-read) (fixed 1))
 ;; (csr-rw a v) — the ATOMIC CSR read-write the CSR instructions with a destination perform
 ;; (CSRRW "atomically swaps values in the CSRs and integer registers", RVI-ZICSR §5.1.1): the
@@ -193,6 +195,8 @@
 ;; change when a field's discipline is declared or refined. That seam is deliberate: the
 ;; semantics say "the write happens under the declared discipline"; the document says what
 ;; the discipline IS.
+;; Writes through sip/sie preserve undelegated owner bits under that same dynamic
+;; mask; delegation changes visibility, not the stored pending/enable state.
 (operator (name csr-write) (fixed 2))
 ;; (trap-deliver c t) — a SYNCHRONOUS trap delivered by the architecture (not reported to
 ;; the harness, rv64i's (trap …) vocabulary): the delegation selection (medeleg bit c and
