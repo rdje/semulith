@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0104 (leaf P4-SYSTEM.12 e2e) — close C acceptance
+
+- Named full CI green: Rust/checks, all doctrines, wasm bench, bench smoke and books.
+  C acceptance met: complete 37-form expansion composition, 167 guests, precise
+  parcel faults and matched Sail subset with its timer limit. P4 12/18; .13 next.
+- Closed live-head planning/receipts/logs moved byte-verbatim to archive part 6;
+  full reverse reconstruction asserted, fixed caps retained. CPU-SYSTEM incomplete.
+
 ## SEMULITH-P4-0103 (leaf P4-SYSTEM.12 e2d) — matched C evidence
 
 - Sail: 27 AGREE / 412 boundaries, all 37 C forms, exact repeat traces; c-irq's

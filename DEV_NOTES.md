@@ -1,5 +1,16 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — C signoff retains its limits and retrieval path (P4-SYSTEM.12 e2e)
+
+The named full make ci passes every leg on the completed C implementation: core
+153, DSP 17, verify 193; doctrine/wasm/bench-smoke/books green. Leaf acceptance
+covers its declarations, compiled controls, independently authored corpus and
+precise fault restart, with the measured Sail timer limit retained. Close .12,
+P4 12/18, then complete/realize v2 at .13. Move 100,163 B of closed live-head
+sections verbatim into archive part 6; reverse every replacement and assert the
+full original file reconstructed. Archive remains within 131,072 B; the active
+head becomes about 34 KB. No code change. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — distinguish an adapter gap from timer supply (P4-SYSTEM.12 e2d)
 
 All 37 C forms occur in actual Sail rows: 27 guests / 412 boundaries agree twice.

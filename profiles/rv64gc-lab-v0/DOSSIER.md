@@ -90,7 +90,8 @@ historical records until `.13` supplies versioned supersessions. Requirement sta
 promotion and experiment records belong to `.14`; CPU-SYSTEM acceptance has not
 been reached. The [C chapter](../../docs/book/src/plan/p4/c.md) records its binding
 and matched Sail result (27 agreeing guests, one measured timer-platform difference);
-full CI and final leaf signoff remain next.
+full CI and final C-leaf signoff are complete. Contract v2 completion/realization
+remains next at `.13`; CPU-SYSTEM is still incomplete.
 
 ## Open questions
 

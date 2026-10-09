@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (C bound and Sail checked; full CI and final leaf signoff next)
+**Status:** Landed and closed (2026-10-09; final signoff e2e)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -378,3 +378,13 @@ not independently compare unrecorded PCs, words, FP registers, memory, CSRs or p
 request counts. The trap CSR values read back into GPRs are within the comparison.
 The ninth experiment is recorded in the reference dossier; structured experiment and
 independence records remain `.14`'s work. Full CI and leaf acceptance follow at (e2e).
+
+
+Slice (e2e) closes the C leaf after the named full local suite passes: Rust format,
+strict Clippy, all tests (153 core, 17 DSP, 193 verification), every doctrine,
+the wasm bench, headless bench smoke and all books. The source expansion citations,
+compiled mappings/decoder, complete scope/corpus, precise parcel-fault behavior and
+public reference results meet the leaf's acceptance. The timer-platform limit remains
+explicit. P4 is now 12/18; CPU-SYSTEM remains incomplete, with contract v2 completion
+and realization next at `.13`. Closed planning and detailed receipts remain verbatim
+in the task-tree archives; this chapter is the current review narrative.
