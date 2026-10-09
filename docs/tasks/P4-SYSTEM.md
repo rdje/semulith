@@ -301,6 +301,18 @@ state descriptor is an input to both generators; regenerate definition_rv64gc.rs
 through its owner, assert everything except the two state-identity occurrences
 byte-identical, and rerun make check plus DEF-GEN before retrying the commit.
 
+**b2 registry evidence mechanism** (SEMULITH-P4-0107): scope-check support is a
+prerequisite of declaring the scope replacements born realized. Introduce an
+explicit guest/scope evidence type, preserve all existing guest bindings, and
+realize only OB-GC-COMPOSITION's existing pair first. A tracked read-only Python
+predicate checks parsed profile/encoding selection; its negative check mutates
+copies (missing/extra extensions, wrong base/width and partial composition), and
+normal Rust tests run both entries plus disabled-predicate controls. Unknown ids
+refuse. No rewrite of frozen records, no new runtime guarantee, no freeze.
+After this mechanism commits, extend scope realizations and then bind new v2
+declarations with their actual evidence. This dependency ordering refines the
+original bounded-unit plan; the final acceptance is unchanged.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -445,6 +457,27 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (b2) (`2026-10-09`, `SEMULITH-P4-0107`):
+
+- [x] **ROOT CAUSE** — git show d592759:crates/semulith-verify/src/contract_checks_rv64gc.rs
+  binds evidence only through guests. OB-GC-COMPOSITION declares a selection,
+  so an unrelated passing instruction run would not realize its POS/NEG pair.
+  The slice-a census identified scope predicates as its proper evidence method.
+- [x] **ADDRESSED** — GC-CONTRACT-SCOPE: CHK-GC-COMPOSITION-POS holds
+  (parsed profile and complete composition); NEG holds (6 violating copies refused).
+  Explicit guest/scope registry dispatch runs both. Ignoring profile/fragments
+  each returns rc=1 CONTROL-MISSED; unknown id rc=2 UNKNOWN-CHECK. All 20 old
+  id/obligation/guest lists compared exact before/after. No live check writes files.
+- [x] **NO REGRESSION** — make check rc=0 (core 153, DSP 17, verify 194),
+  all 167 guests and scope controls pass. gate_report --self-test: 17 pass / 0 fail;
+  CONTRACT-FREEZE: ok, 3 versions / 0 findings. Books and focused tree/frontier/
+  bounds pass. Frozen v0/v1 records/pins unchanged, no new runtime guarantee.
+- [x] **LOCKSTEP** — GS regenerated: G-CONTRACT 22/106, v2 open; priority wording
+  replacement now named among four open corrections. ENVIRONMENT, dossier, v2
+  chapter, tool catalog, notes/changelog/live pointer synchronized. LIVE_STATUS
+  reviewed, unchanged (P4 12/18, 45 chapters). CPU-SYSTEM incomplete, eight axes.
+  promotion: declined (registry, permanent controls and v2 book retain it).
+
 `P4-SYSTEM.13` slice (b1) (`2026-10-09`, `SEMULITH-P4-0106`):
 
 - [x] **ROOT CAUSE** — git show d9eba37:profiles/rv64gc-lab-v0/state.sexp
@@ -523,6 +556,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` b2 | make check; scope POS/NEG and disabled/unknown controls; exact old bindings; gate 17/17; freeze/books | 22/106 realized, v2 open |
 | `2026-10-09` | `.13` b1 | make check; executable identity; state/schema/freeze; books and focused gates | complete state inventory; no behavior change |
 | `2026-10-09` | `.13` a | full effective census; gate controls 17/17; freeze; books; tree/frontier/bounds | plan complete; declarations next |
 | `2026-10-09` | `.12` FINAL | make ci all five legs; 37 forms/167 guests; prior traces exact; Sail 27 + one public-probed limit | met; .13 next |
@@ -533,6 +567,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` b2 | `SEMULITH-P4-0107 (leaf P4-SYSTEM.13): run explicit scope evidence through the contract registry` | remaining scope checks, then versioned declarations with evidence |
 | `.13` b1 | `SEMULITH-P4-0106 (leaf P4-SYSTEM.13): re-answer the complete state inventory without changing execution` | versioned declarations and check realization |
 | `.13` a | `SEMULITH-P4-0105 (leaf P4-SYSTEM.13): census the effective contract and plan every check realization` | five boundary assumptions and v2 replacements |
 | `.12` FINAL | `SEMULITH-P4-0104 (leaf P4-SYSTEM.12): close compressed-instruction acceptance after the complete local CI suite` | `.13` contract v2 completion/freeze |
@@ -541,6 +576,9 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-09`: `.13` b2 (SEMULITH-P4-0107): explicit guest/scope evidence,
+  composition pair and six violating copies. Disabled predicates/unknown id
+  discriminate in normal tests; prior bindings exact. G-CONTRACT 22/106, open.
 - `2026-10-09`: `.13` b1 (SEMULITH-P4-0106): complete state inventory and
   stale-header/time-source repair, generated metadata only. Executable definitions
   identical; make check passes. Resolved census opening, .14 status work retained.

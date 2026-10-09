@@ -1,13 +1,13 @@
 # P4.13 — Completing the environment contract
 
-**Status:** Census and complete state inventory landed; version 2 remains open.
+**Status:** Census, state inventory and first executable scope pair landed; version 2 remains open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
 stages. This work checks every effective obligation, fills the remaining boundary
 assumptions, and realizes each declared check before freezing version 2.
 
-The census finds 53 effective obligations and 106 checks. Twenty checks currently
+The census finds 53 effective obligations and 106 checks. Twenty-two checks currently
 run through the unit's registry. A check will receive credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
@@ -62,3 +62,21 @@ provenance manifest. Storage, reset values, accessors and execution remain
 byte-identical. Snapshot
 and replay serialization still belong to P4.16; this inventory does not claim
 that those features are implemented.
+
+## Executable scope checks
+
+The registry now distinguishes guest evidence from scope evidence. Its normal
+Rust tests run every entry. The first scope pair checks the composition selection:
+RV64I with 64-bit registers, the exact selected extension set, its nine encoding
+fragments, and a complete composition.
+
+The negative check first requires the real declarations to pass, then changes six
+independent copies: remove C, add H, change XLEN, leave C unbound, change the base
+fragment, or mark the composition partial. Each copy must fail for its specific
+reason. Further controls deliberately disable each predicate family; the negative
+check must then fail. Unknown check ids are refused. All copies stay in memory.
+
+This adds two real checks without running an unrelated program as evidence of
+selection. All twenty earlier guest bindings stay unchanged. The effective
+contract now realizes 22 of 106 checks; the remaining obligations and version-2
+freeze still have work to do.

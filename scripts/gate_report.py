@@ -1269,7 +1269,7 @@ def _selftest() -> int:
     reg_src = (ROOT / "crates/semulith-verify/src/contract_checks_rv64gc.rs").read_text(encoding="utf-8")
     passed, missed, ran = 0, [], 0
     extra = ('    ContractCheck {\n        id: "CHK-ALU-IMM-POS",\n        obligation: "OB-ALU-IMM",\n'
-             '        guests: &["x"],\n    },\n')
+             '        evidence: Evidence::Guests(&["x"]),\n    },\n')
 
     def unit(name, contract_edit=None, registry=reg_src, with_contract=True):
         d = tmp / name
@@ -1352,7 +1352,7 @@ def _selftest() -> int:
         odd = reg_src.replace("pub static CHECKS: &[ContractCheck] = &[\n",
                               "pub static CHECKS: &[ContractCheck] = &[\n    ContractCheck {\n"
                               "        obligation: \"OB-SVADE\",\n        id: \"CHK-SVADE-POS\",\n"
-                              "        guests: &[\"x\"],\n    },\n")
+                              "        evidence: Evidence::Guests(&[\"x\"]),\n    },\n")
         arm("RED an entry the reader cannot parse exactly is refused, never silently missed",
             lambda: refuses(unit("odd", registry=odd), "read exactly"))
         arm("RED two registries in one contract document are refused",

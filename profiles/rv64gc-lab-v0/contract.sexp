@@ -71,4 +71,4 @@
   (member (id "OB-GC-ENV-FETCH-SUPPLY")))
 
 (registry (path "crates/semulith-verify/src/contract_checks_rv64gc.rs")
-  (statement "The checks this unit's contract declares, realized: each entry binds one check id, under its obligation, to the tracked guests that run it; the registry's tests run every entry under the corpus's comparison rule (P4-SYSTEM.9 slice b; named here at P4-SYSTEM.10 slice a)."))
+  (statement "The checks this unit's contract declares, realized: each entry binds one check id, under its obligation, to tracked guests or a named scope predicate. The registry tests run every guest under the corpus comparison rule and every scope check through its tracked predicate/violating copies (P4-SYSTEM.13 b2); scope evidence validates declarations, never instruction execution."))

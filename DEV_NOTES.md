@@ -1,5 +1,15 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — scope checks need their own executable evidence (P4-SYSTEM.13 b2)
+
+The guest-only registry could not truthfully realize selection obligations with
+unrelated executions. Add explicit guest/scope evidence and run scope ids through
+a read-only parsed-declaration predicate. Composition POS validates the canonical
+selection; NEG requires six violating copies to fail for precise reasons. Normal
+Rust tests also disable each predicate family and refuse an unknown id. Preserve
+all 20 prior guest bindings exactly; G-CONTRACT advances to 22/106 while v2 stays
+open. Promotion declined in the leaf: registry, permanent controls and book retain it.
+
 ## _(2026-10-09)_ — state inventory distinguishes cold reset from exact continuation (P4-SYSTEM.13 b1)
 
 The old consequence omitted the FP file, TLB, reservation and wait bit, and

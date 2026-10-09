@@ -12,7 +12,7 @@
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
-| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 20 of 106 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` open | **incomplete** |
+| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 22 of 106 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` open | **incomplete** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
 | `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 48 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); predeclared policy (`EVIDENCE_POLICY.md`): absent | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
@@ -29,7 +29,7 @@ is not a claim with a denominator.
 | Axis | Owner | Open item |
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
-| `G-CONTRACT` | `P4-SYSTEM.13` | Most frozen v0 checks remain unrealized; the remaining rv64i base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE). |
+| `G-CONTRACT` | `P4-SYSTEM.13` | Most frozen v0 checks remain unrealized; the remaining rv64i base boundary assumptions are not restated for this unit; four frozen v0 statements require current replacements (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE, and the no-breakpoint wording in OB-FAULT-PRIORITY). |
 | `G-TRACE` | `P4-SYSTEM.14` | The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
@@ -67,7 +67,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 ef92379b263561193126aa0fdafbbfecf473d71aa6c120ee27699d6680071081`
+  `sha256 ab74de9254198758e8f98dd779b3971fd5d26a0c60c857633f6725f52ccdb965`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

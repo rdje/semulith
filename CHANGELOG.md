@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0107 (leaf P4-SYSTEM.13 b2) — execute scope checks through the registry
+
+- Explicit guest/scope evidence; all 20 existing guest bindings preserved exact.
+  Composition POS/NEG run parsed declarations and six violating copies. Disabled
+  predicates and unknown-id controls discriminate in the normal Rust suite.
+- make check, gate controls 17/17 and freeze gate pass; G-CONTRACT 22/106, open.
+  Scope evidence establishes selection/consistency, never instruction correctness.
+
 ## SEMULITH-P4-0106 (leaf P4-SYSTEM.13 b1) — complete the state inventory
 
 - Re-answer all twelve candidates and the complete state consequence: FP, 26 CSR

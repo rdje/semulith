@@ -55,7 +55,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
-fixtures. Together with M's pair, 20 checks are realized in the effective contract;
+fixtures. Together with M's pair and the composition scope pair, 22 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -71,10 +71,13 @@ frozen v0 obligations; the contract is where v1 corrects them.
 
 ## Positive and negative fixtures
 
-Every v1 check — and `.8`'s partial-progress pair — is **realized**: the registry
+Every v1 check, `.8`'s partial-progress pair, the M/C/fetch pairs, and the
+composition scope pair are **realized**: the registry
 `crates/semulith-verify/src/contract_checks_rv64gc.rs` binds each check id to tracked guests, and
-its tests run them under the corpus's comparison rule and refuse a declared check no entry
-realizes. A positive fixture exercises the assumption holding; a negative one exercises what would
+its tests run the guest entries under the corpus's comparison rule. Scope entries run
+`python3 scripts/check_gc_contract_scope.py --check CHECK-ID` over parsed canonical
+declarations and violating in-memory copies. The tests refuse a missing check among
+the pairs bound so far; G-CONTRACT continues to count all remaining missing pairs. A positive fixture exercises the assumption holding; a negative one exercises what would
 falsify it (a refused walk read, a software write that must not take, a counter that must not
 move, an SC that must fail for the hart's own reasons).
 
@@ -95,3 +98,14 @@ move, an SC that must fail for the hart's own reasons).
 - **External reservation invalidation** (another hart, a device): `MC-MULTICORE`, as "a new
   contract version; the single-core contract is not edited in place".
 - **The G-CONTRACT verdict**: `P4-SYSTEM.10`'s gate report.
+
+## Scope evidence (P4-SYSTEM.13 b2)
+
+OB-GC-COMPOSITION's existing POS/NEG pair now runs a static predicate. It checks
+RV64I/XLEN=64, the exact selected extensions, the nine encoding fragments and
+complete composition. Six independent copies violate missing C, extra H, XLEN,
+unbound C, fragment base and completeness respectively; each must fail for its
+own reason. Disabled-profile/disabled-fragment controls fail the negative check,
+and an unknown id refuses. No live file is changed by a check. This establishes
+the declared selection, not instruction execution or universal conformance.
+The 20 existing guest bindings remain exact. G-CONTRACT is 22/106, v2 open.

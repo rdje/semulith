@@ -23,7 +23,7 @@
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
-  (statement "Most frozen v0 checks remain unrealized; the remaining rv64i base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE)."))
+  (statement "Most frozen v0 checks remain unrealized; the remaining rv64i base boundary assumptions are not restated for this unit; four frozen v0 statements require current replacements (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE, and the no-breakpoint wording in OB-FAULT-PRIORITY)."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
   (statement "The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")

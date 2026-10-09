@@ -1,7 +1,6 @@
-//! The registry's proof: every realized check runs, and every check a v1 obligation (or the
-//! partial-progress guarantee) declares is realized.
+//! Every registered check runs, and every check bound through the current slice is present.
 
-use super::CHECKS;
+use super::{Evidence, CHECKS};
 use crate::guests_rv64gc::GUESTS;
 use crate::run_rv64gc::assert_guest_observations;
 
@@ -9,22 +8,63 @@ const OBLIGATIONS: &str =
     include_str!("../../../../profiles/rv64gc-lab-v0/contract-obligations.sexp");
 
 #[test]
-fn every_realized_check_runs_its_guests_and_they_hold() {
+fn every_realized_check_runs_its_evidence_and_it_holds() {
     for check in CHECKS {
-        assert!(
-            !check.guests.is_empty(),
-            "{}: a check that names no guest checks nothing",
-            check.id
-        );
-        for name in check.guests {
-            assert!(
-                GUESTS.iter().any(|g| g.name == *name),
-                "{}: names {name}, which is not a tracked guest",
-                check.id
-            );
-            assert_guest_observations(name);
+        match check.evidence {
+            Evidence::Guests(guests) => {
+                assert!(
+                    !guests.is_empty(),
+                    "{}: a check that names no guest checks nothing",
+                    check.id
+                );
+                for name in guests {
+                    assert!(
+                        GUESTS.iter().any(|g| g.name == *name),
+                        "{}: names {name}, which is not a tracked guest",
+                        check.id
+                    );
+                    assert_guest_observations(name);
+                }
+            }
+            Evidence::Scope => {
+                let result = scope_check(check.id, None);
+                assert!(
+                    result.status.success(),
+                    "{}: scope check failed: {}{}",
+                    check.id,
+                    String::from_utf8_lossy(&result.stdout),
+                    String::from_utf8_lossy(&result.stderr)
+                );
+            }
         }
     }
+}
+
+fn scope_check(id: &str, mutation: Option<&str>) -> std::process::Output {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let mut command = std::process::Command::new("python3");
+    command
+        .current_dir(root)
+        .args(["scripts/check_gc_contract_scope.py", "--check", id]);
+    if let Some(mutation) = mutation {
+        command.args(["--mutation", mutation]);
+    }
+    command.output().expect("the named scope checker must run")
+}
+
+#[test]
+fn scope_controls_reject_disabled_predicates_and_unknown_checks() {
+    for mutation in ["ignore-profile", "ignore-fragments"] {
+        let result = scope_check("CHK-GC-COMPOSITION-NEG", Some(mutation));
+        assert_eq!(result.status.code(), Some(1), "{mutation}");
+        assert!(
+            String::from_utf8_lossy(&result.stdout).contains("CONTROL-MISSED:"),
+            "{mutation}: must fail for a missed violating fixture: {result:?}"
+        );
+    }
+    let result = scope_check("CHK-GC-UNKNOWN-POS", None);
+    assert_eq!(result.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&result.stdout).contains("UNKNOWN-CHECK:"));
 }
 
 /// The `required_checks` ids of every obligation record the predicate selects.
@@ -50,17 +90,19 @@ fn declared_checks(select: impl Fn(&str) -> bool) -> Vec<(String, String)> {
 }
 
 #[test]
-fn every_check_declared_since_v1_and_the_partial_progress_checks_are_realized() {
+fn every_check_bound_through_the_scope_slice_is_realized() {
     // every version after v0 is born realized: v1's four assumptions and two supersessions,
-    // v2's M/C guarantees and parcel-fetch assumption as they bind, and the partial-progress guarantee
+    // v2's M/C guarantees and parcel-fetch assumption as they bind, partial progress,
+    // and the first static scope pair (P4-SYSTEM.13 b2).
     let declared = declared_checks(|l| {
         !l.contains("(contract_version \"0\")")
             || l.starts_with("(obligation (id \"OB-GC-PARTIAL-PROGRESS\")")
+            || l.starts_with("(obligation (id \"OB-GC-COMPOSITION\")")
     });
     assert_eq!(
         declared.len(),
-        20,
-        "v1's six records, v2's M/C/fetch records, and partial progress, POS + NEG each"
+        22,
+        "v1's six records, v2's M/C/fetch records, partial progress and composition, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);
