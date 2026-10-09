@@ -6,6 +6,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
+| `crates/semulith-core/src/env/tests.rs` | do success responses match their request kind/raw width and preserve target failures as distinct from provider violations? | `cargo test -p semulith-core env::tests`; 25 kind combinations, width edges and real GC/scalar/translation paths; all CPU crossings share `env::request_checked` |
 | `crates/semulith-verify/src/contract_boundary_rv64gc.rs` | do direct GC boundary fixtures discriminate physical byte addresses and typed provider violations from target exceptions? | `cargo test -p semulith-verify contract_checks_rv64gc`; `Evidence::Boundary` runs the named pair, full-width offsets, exact Sv39 requests and three deliberately distorted providers |
 | `scripts/gate_report.py` | what does the gate actually say right now, and why is it not `passed`? | `scripts/gate_report.py <profile> [--gate G0|G1] [--stdout]` |
 | `scripts/compare_platforms.py` | what platform does each reference actually advertise, and where does it differ from the profile and from the other model? | `scripts/compare_platforms.py` |

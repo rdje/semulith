@@ -136,3 +136,9 @@ consumers judge the same expanded catalog. The new address-unit assumption
 adds a typed pair: three bad address adapters remain contract violations, while
 a legitimate access failure delivers a target exception. Four boundary assumptions
 still need declarations and working checks.
+
+
+Every CPU boundary call now uses shared success-response validation: wrong kinds
+and over-wide raw loads report typed provider violations before instruction data
+is consumed. Target failures remain target exceptions. This c4a prerequisite
+repair adds no registry credit; G-CONTRACT stays 50/106 and v2 remains open.

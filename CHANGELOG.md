@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0114 (leaf P4-SYSTEM.13 c4a) — validate environment success responses
+
+- Repair confirmed wrong-family and silently accepted over-wide provider answers.
+  One validator handles all 12 CPU crossings; malformed kinds/raw widths become
+  typed contract violations. Valid answers and target failures pass unchanged.
+- Four permanent controls cover the kind matrix, width edges and real engines;
+  same public before/after probe discriminates. make check: 157/17/194 pass;
+  full make ci passes all five legs. Repair a stale documentation credit count.
+  Contract credit remains 50/106; explicit data-attribute pair follows separately.
+
 ## SEMULITH-P4-0113 (leaf P4-SYSTEM.13 c3) — realize physical byte-address assumptions
 
 - Add one v2 assumption with its named typed-boundary pair. Full-width byte

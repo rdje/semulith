@@ -416,7 +416,7 @@ fn walk<H: PrivilegedHart>(
         // ORIGINAL access type (never a page fault, never substituted).
         let vpn_i = (va >> (12 + 9 * i)) & 0x1FF;
         let pte_addr = a + vpn_i * 8;
-        let pte = match env.request(Request::WalkAccess { addr: pte_addr }) {
+        let pte = match crate::env::request_checked(env, Request::WalkAccess { addr: pte_addr }) {
             Ok(Response::WalkAccess(v)) => v,
             Ok(_) => {
                 return Translate::Failed(crate::outcome::ModelError::InvalidDescription {

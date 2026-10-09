@@ -89,7 +89,7 @@ pub fn step_over(
     insns: &[InsnDef],
 ) -> StepOutcome {
     let pc = state.pc();
-    let word = match env.request(Request::Fetch { addr: pc }) {
+    let word = match crate::env::request_checked(env, Request::Fetch { addr: pc }) {
         Ok(Response::Fetch(word)) => word,
         Ok(_) => {
             return StepOutcome::Failed(ModelError::InvalidDescription {
@@ -389,10 +389,13 @@ impl<E: Environment> Frame<'_, E> {
                         at: addr,
                     }));
                 }
-                match self.env.request(Request::Load {
-                    width: access,
-                    addr,
-                }) {
+                match crate::env::request_checked(
+                    self.env,
+                    Request::Load {
+                        width: access,
+                        addr,
+                    },
+                ) {
                     Ok(Response::Load(value)) => Ok((value, access.bits())),
                     Ok(_) => Err(StepOutcome::Failed(ModelError::InvalidDescription {
                         what: "environment answered a Load with a non-load response",
@@ -425,11 +428,14 @@ impl<E: Environment> Frame<'_, E> {
                         at: addr,
                     }));
                 }
-                match self.env.request(Request::Store {
-                    width: access,
-                    addr,
-                    data: value,
-                }) {
+                match crate::env::request_checked(
+                    self.env,
+                    Request::Store {
+                        width: access,
+                        addr,
+                        data: value,
+                    },
+                ) {
                     Ok(Response::StoreDone) => Ok((0, 64)),
                     Ok(_) => Err(StepOutcome::Failed(ModelError::InvalidDescription {
                         what: "environment answered a Store with a non-store response",

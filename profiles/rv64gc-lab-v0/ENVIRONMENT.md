@@ -64,7 +64,8 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
-fixtures. Across the full registry, including thirteen scope pairs, 48 checks are realized in the effective contract;
+fixtures. Across the full registry, including thirteen scope pairs and the
+direct physical-address pair, 50 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -210,3 +211,14 @@ ModelError, with PC/destination/trap state unchanged. A legitimate walk access
 failure instead delivers cause 1 with the guest VA in mepc/mtval. Both entries run
 in the normal registry suite; all earlier entries and frozen bytes remain exact.
 This is finite boundary evidence, not proof over every address or provider.
+
+
+## Shared success-response validation (P4-SYSTEM.13 c4a)
+
+All CPU requests pass through env::request_checked before their answers are
+consumed. Wrong kinds and Load values wider than the requested B/H/W width are
+typed contract violations; D permits the full u64 range. Valid values, legitimate
+target failures and existing violations pass unchanged. This repairs the observed
+wrong-family and silently accepted over-wide responses without adding contract
+credit. Four core controls include the exact real-engine reproduction; the next
+slice still owns the explicit data-width/physical-attribute assumption and pair.

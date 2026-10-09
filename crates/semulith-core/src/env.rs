@@ -24,8 +24,9 @@
 //!   OB-MISALIGN-DATA. These are legitimate environment answers, never model errors; the
 //!   instruction layer converts them into typed target outcomes (`P1-LAB.5`).
 //! - **Contract violations** (`ContractViolation`): the environment broke a rule — a
-//!   different family from `Failure` (SEM-01's separation, boundary-local until `.5`
-//!   integrates it into the typed outcome families).
+//!   different family from `Failure`, propagated as `ModelError::ContractViolation`.
+//!   Every CPU crossing uses [`request_checked`] to validate response kind and raw
+//!   load width before the instruction or translation layer consumes the answer.
 //!
 //! Little-endian throughout (REQ-D-ENDIAN, an execution-environment choice this profile
 //! pins).
@@ -147,10 +148,24 @@ pub enum Failure {
 
 /// The environment broke the contract. Distinct from [`Failure`] in kind, not just name:
 /// a `Failure` answers the CPU under a target rule; a `ContractViolation` reports the
-/// environment (or a fixture standing in for it) to the harness. `P1-LAB.5` re-homes this
-/// into the typed outcome families; until then it is the boundary's own error family.
+/// environment (or a fixture standing in for it) to the harness. `P1-LAB.5` integrates
+/// this family into `ModelError::ContractViolation`, never a target exception.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ContractViolation {
+    /// A success answer belongs to another request kind.
+    WrongResponseKind {
+        /// The request the CPU issued.
+        request: Request,
+        /// The incompatible answer supplied by the environment.
+        response: Response,
+    },
+    /// A raw load answer contains nonzero bits above its requested width.
+    LoadValueOutOfWidth {
+        /// The width requested by the CPU.
+        width: AccessWidth,
+        /// The unmodified invalid answer, retained for diagnosis.
+        value: u64,
+    },
     /// A scripted environment was asked something its script does not say: the scripted
     /// request and the request that arrived differ. `scripted` is what the fixture was
     /// told to expect, `arrived` is what crossed the boundary.
@@ -193,6 +208,34 @@ impl From<ContractViolation> for BoundaryError {
 pub trait Environment {
     /// Cross the boundary once.
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError>;
+}
+
+/// Cross the CPU boundary and validate its success answer in one place.
+///
+/// Target-facing failures and already typed violations pass through unchanged.
+/// Wrong answer kinds and over-wide raw loads are provider contract violations;
+/// they must not become target exceptions or silently truncated usable data.
+pub fn request_checked<E: Environment + ?Sized>(
+    env: &mut E,
+    request: Request,
+) -> Result<Response, BoundaryError> {
+    let response = env.request(request)?;
+    let kind_matches = match request {
+        Request::Fetch { .. } => matches!(response, Response::Fetch(_)),
+        Request::FetchParcel { .. } => matches!(response, Response::FetchParcel(_)),
+        Request::Load { .. } => matches!(response, Response::Load(_)),
+        Request::Store { .. } => matches!(response, Response::StoreDone),
+        Request::WalkAccess { .. } => matches!(response, Response::WalkAccess(_)),
+    };
+    if !kind_matches {
+        return Err(ContractViolation::WrongResponseKind { request, response }.into());
+    }
+    if let (Request::Load { width, .. }, Response::Load(value)) = (request, response) {
+        if width.bits() < 64 && value >> width.bits() != 0 {
+            return Err(ContractViolation::LoadValueOutOfWidth { width, value }.into());
+        }
+    }
+    Ok(response)
 }
 
 #[cfg(test)]

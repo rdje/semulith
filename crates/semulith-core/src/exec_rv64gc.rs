@@ -170,7 +170,7 @@ pub fn step_over(
         let coalesced = parcel_pas[1] == parcel_pas[0].wrapping_add(2);
         let mut fetch16 = |addr: u64, va: u64| -> Result<u64, StepRv64gc> {
             // one 32-bit fetch at the parcel's physical address; the caller keeps 16 bits
-            match env.request(Request::Fetch { addr }) {
+            match crate::env::request_checked(env, Request::Fetch { addr }) {
                 Ok(Response::Fetch(word)) => Ok(u64::from(word)),
                 Ok(_) => Err(StepRv64gc::Failed(ModelError::InvalidDescription {
                     what: "environment answered a Fetch with a non-fetch response",
@@ -304,7 +304,7 @@ fn fetch_instruction(
             }
             translation::Translate::Failed(error) => return Err(StepRv64gc::Failed(error)),
         };
-        match env.request(Request::FetchParcel { addr: pa }) {
+        match crate::env::request_checked(env, Request::FetchParcel { addr: pa }) {
             Ok(Response::FetchParcel(parcel)) => Ok(parcel),
             Ok(_) => Err(StepRv64gc::Failed(ModelError::InvalidDescription {
                 what: "environment answered a FetchParcel with a non-parcel response",
@@ -523,7 +523,7 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 };
-                match self.env.request(Request::Load { width, addr: pa }) {
+                match crate::env::request_checked(self.env, Request::Load { width, addr: pa }) {
                     Ok(Response::Load(v)) => (v, w as u32),
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {
@@ -581,11 +581,14 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 };
-                match self.env.request(Request::Store {
-                    width,
-                    addr: pa,
-                    data: v,
-                }) {
+                match crate::env::request_checked(
+                    self.env,
+                    Request::Store {
+                        width,
+                        addr: pa,
+                        data: v,
+                    },
+                ) {
                     Ok(Response::StoreDone) => (0, 64),
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {
@@ -778,7 +781,7 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 };
-                match self.env.request(Request::Load { width, addr: pa }) {
+                match crate::env::request_checked(self.env, Request::Load { width, addr: pa }) {
                     Ok(Response::Load(v)) => {
                         // a COMPLETED LR registers the reservation — any LR replaces
                         // (decision 4); the faulting paths above establish nothing
@@ -852,11 +855,14 @@ impl Frame<'_> {
                     self.state.reservation().clear();
                     return (1, 64);
                 }
-                match self.env.request(Request::Store {
-                    width,
-                    addr: pa,
-                    data: v,
-                }) {
+                match crate::env::request_checked(
+                    self.env,
+                    Request::Store {
+                        width,
+                        addr: pa,
+                        data: v,
+                    },
+                ) {
                     Ok(Response::StoreDone) => {
                         self.state.reservation().clear();
                         (0, 64)
@@ -921,7 +927,10 @@ impl Frame<'_> {
                 // The boundary pair (decision 5): a load followed by a store to the
                 // same address — the nine operations are the model's, never the
                 // environment's (a Request::Atomic variant would push them there).
-                let old = match self.env.request(Request::Load { width, addr: pa }) {
+                let old = match crate::env::request_checked(
+                    self.env,
+                    Request::Load { width, addr: pa },
+                ) {
                     Ok(Response::Load(v)) => v,
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {
@@ -984,11 +993,14 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 } & mask;
-                match self.env.request(Request::Store {
-                    width,
-                    addr: pa,
-                    data: new,
-                }) {
+                match crate::env::request_checked(
+                    self.env,
+                    Request::Store {
+                        width,
+                        addr: pa,
+                        data: new,
+                    },
+                ) {
                     Ok(Response::StoreDone) => (old, w as u32),
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {

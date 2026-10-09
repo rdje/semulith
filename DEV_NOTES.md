@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — reject malformed answers before consuming them (P4-SYSTEM.13 c4a)
+
+The public GC probe supplied StoreDone to FetchParcel and a 9-bit 0x1ff answer to
+an 8-bit Load: the former became InvalidDescription, the latter executed and wrote
+all ones. A legitimate AccessFault control delivered cause 5. Handlers matched
+kinds locally and accepted every u64 Load value; no shared response validator.
+One env::request_checked now owns kind/raw-width validation across all 12 CPU
+crossings, including scalar, parcel, walk and LR/SC/AMO paths. WrongResponseKind
+retains the request/answer; LoadValueOutOfWidth retains width/value. Correct
+responses, existing violations and Target failures pass unchanged, with no silent
+truncation. Re-running the same probe yields typed ContractViolation failures,
+x6=0 and mcause=0 for both malformed cases; the target-failure control keeps 5.
+Four permanent tests cover the 25 kind combinations, width edges/full D range,
+error passthrough and actual GC/scalar/translation paths. make check passes:
+157 core / 17 DSP / 194 verify. Full make ci passes all five legs. The first
+run refused checklist command signatures; exact invocations/results repaired the
+signoff and the final run passed. A stale ENVIRONMENT summary said 48 after c3's
+pair; corrected it to the measured 50 and regenerated GS through its owner.
+No new record/registry entry or credit: 50/106 stays open; c4b owns data attributes.
+Promotion declined in leaf: shared owner, permanent reproduction and book retain it.
+
 ## _(2026-10-09)_ — address units need a real boundary witness (P4-SYSTEM.13 c3)
 
 Retain the normal guard requiring every post-v0 declaration to be born realized;

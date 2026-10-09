@@ -434,6 +434,43 @@ docs must state 53 effective obligations/106 checks, 50 realized if re-derived.
 Four assumptions remain afterward; v2 stays open. No production boundary behavior
 or guest-observation vocabulary changes in this slice.
 
+**c4a response-validation prerequisite** (SEMULITH-P4-0114): before declaring
+widths/attributes, diagnose wrong response kinds and over-wide Load values through
+the real GC boundary. The interface promises exact raw-width responses, and the
+contract requires violating providers to use the typed violation family. Current
+call-site census: word/parcel fetch, ordinary load/store, LR/SC/AMO and page-walk
+reads in exec.rs, exec_rv64gc.rs and translation.rs. Generate an on-volume public
+API probe, record before/after outcomes, then own any confirmed mismatch now.
+If reproduced, put response validation in one env.rs owner: preserve legitimate
+Target failures and valid answers, reject wrong success kinds and nonzero bits
+above a requested Load width with named ContractViolation variants. Route every
+CPU boundary crossing through it, including the legacy scalar path; do not copy
+the validator into handlers or fixtures. Read core boundary/outcome tests and
+standalone engine-probe consumers before changing interfaces. Add independent
+request/response matrix, width-edge, real-engine and target-failure controls.
+Keep existing enums' cases intact and add typed variants; no guest semantics,
+valid traces, frozen records or check credit change. Retain 50/106 and v2 open;
+width/attribute assumption with its direct registry pair follows in c4b. Run Rust,
+focused fixture/generator/gate checks and full CI for the shared boundary change;
+synchronize live docs and book, then commit this prerequisite separately.
+Confirmed reproduction, target/p4-system-13/c4a/before.log:
+wrong-kind -> Failed(InvalidDescription "environment answered a FetchParcel
+with a non-parcel response"); over-wide-byte (Load 0x1ff for B) -> Executed,
+x6=0xffffffffffffffff; legitimate AccessFault -> Executed, mcause=5.
+Impact: malformed provider responses either enter the wrong model-error family
+or silently pass as usable data. Root cause: handlers only match response kinds
+locally and ordinary loads accept all u64 values without a shared width check.
+Priority now, owned c4a; both defects must be fixed and the probe rerun before
+claiming response-contract evidence. Existing valid provider behavior must stay
+exact. The planned independent permanent controls will retain this reproduction.
+
+Associated documentation drift found by rg: ENVIRONMENT's compressed-supply
+paragraph still said 48 realized checks after c3 added its direct address pair;
+the later address section and generated GS already report 50/106. Root cause:
+c3's summary paragraph was not updated with the new registry pair. Owned/fixed
+in c4a: correct that paragraph through its canonical document and regenerate GS.
+The actual registry, records and credit are unchanged.
+
 No implementation-language, backend, board or observation-vocabulary expansion
 is authorized by this plan. Static checks establish declared scope and its
 consistency, not universal instruction correctness. Runtime checks retain their
@@ -577,6 +614,35 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+`P4-SYSTEM.13` slice (c4a) (`2026-10-09`, `SEMULITH-P4-0114`):
+
+- [x] **ROOT CAUSE** — git show adf9218:crates/semulith-core/src/exec_rv64gc.rs:
+  line 310 names
+  the non-parcel InvalidDescription; lines 526/781/924 issue unchecked Loads.
+  Public before.log: wrong FetchParcel answer became
+  InvalidDescription; Load B 0x1ff executed with x6=all ones. AccessFault
+  control delivered cause 5. Census: 12 raw CPU crossings; local kind matching
+  and no raw-load-width validation explain both reproduced defects.
+- [x] **ADDRESSED** — cargo test -p semulith-core env::tests: 8 passed,
+  0 failed. Same after.log: WrongResponseKind and LoadValueOutOfWidth
+  propagate through ModelError::ContractViolation; x6=0, mcause=0. Legitimate
+  AccessFault keeps cause 5. One request_checked owner validates all crossings.
+  Four permanent tests cover 25 kind combinations, independent width edges,
+  exact error passthrough and actual GC/scalar/translation paths.
+- [x] **NO REGRESSION** — make check rc=0: 157 core / 17 DSP / 194 verify.
+  C engine probe: 18 passed / 0 failed, exact parcel/expansion checks passed.
+  CONTRACT-FREEZE: 3 versions, 0 findings; DOSSIER-SCHEMA: 270 checked,
+  2 named baseline skips; gate_report --self-test: 17 pass / 0 fail.
+  First make ci refused checklist evidence signatures; corrected exact commands
+  and results pass TASK-ACCEPTANCE. Final make ci rc=0: all five legs green
+  (check, gate, bench, smoke-bench, book).
+  No record, membership, registry entry or valid guest expectation changed.
+- [x] **LOCKSTEP** — book/P1 context/ENVIRONMENT/dossier/GS, toolbox,
+  DEV_NOTES/CHANGELOG and live resume pointer synchronized. G-CONTRACT stays
+  50/106, v2 open; c4b owns data widths/attributes with its direct pair.
+  LIVE_STATUS reviewed unchanged: P4 12/18, 634 arms, 45 chapters.
+  promotion: declined (shared owner, permanent reproduction and book retain it).
 
 `P4-SYSTEM.13` slice (c3) (`2026-10-09`, `SEMULITH-P4-0113`):
 
@@ -812,6 +878,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.13` c4a | public before/after; 4 boundary controls; Rust 157/17/194; C engine 18; freeze/dossier; gate 17/17 | full make ci all five legs green; 50/106 unchanged |
 | `2026-10-09` | `.13` c3 | exact typed Sv39/address fixtures; three provider violations; Rust; schema/freeze; gate 17/17; books | 50/106 realized, v2 open |
 | `2026-10-09` | `.13` c2 | exact stream/mappings; 31 controls + mutant; Rust; schema/freeze; gate 17/17 | make ci all five legs green; 48/104 unchanged |
 | `2026-10-09` | `.13` c1 | Rust; schema/freeze; three owner generators; nine violations; exact old bytes; gate 17/17; books | 48/104 realized, v2 open |
@@ -829,6 +896,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c4a | `SEMULITH-P4-0114 (leaf P4-SYSTEM.13): validate environment success responses before CPU consumption` | c4b data widths/attributes with direct pair |
 | `.13` c3 | `SEMULITH-P4-0113 (leaf P4-SYSTEM.13): realize physical byte-address assumptions with typed boundary fixtures` | data widths/attributes, then three remaining assumptions |
 | `.13` c2 | `SEMULITH-P4-0112 (leaf P4-SYSTEM.13): partition obligation catalogs without changing expanded records` | five boundary assumptions, then remaining runtime pairs |
 | `.13` c1 | `SEMULITH-P4-0111 (leaf P4-SYSTEM.13): supersede obsolete stages and correct fault-priority wording` | lossless catalog partition, then five boundary assumptions |
@@ -843,6 +911,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-09`: `.13` c4a (SEMULITH-P4-0114): reproduce and repair
+  wrong-kind/over-wide success responses in one shared validator across all
+  12 CPU crossings. Independent matrix/width and real-engine controls preserve
+  legitimate target failures. No new credit; 50/106 remains open.
 
 - `2026-10-09`: `.13` c3 (SEMULITH-P4-0113): physical byte-address
   assumption born realized; named direct boundary evidence, real Sv39 request

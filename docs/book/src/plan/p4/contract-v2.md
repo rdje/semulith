@@ -258,3 +258,42 @@ both fixtures and retain the rule that every post-v0 declaration is born realize
 Frozen records and all earlier registry entries are unchanged. Four boundary
 assumptions and the remaining execution pairs still need work; these finite
 fixtures do not prove correctness for every possible address or environment.
+
+## Checking success responses before consuming them
+
+While preparing the data-access assumption, the public boundary probe found two
+defects. A provider answering `FetchParcel` with `StoreDone` reached
+`InvalidDescription`. A provider supplying `Load(0x1ff)` for an 8-bit load was
+accepted, and the LB wrote all ones into its destination. Both responses break
+the environment contract; neither should become usable instruction data.
+
+`semulith_core::env::request_checked` now validates every CPU crossing in one
+place: scalar word fetch/load/store, GC parcel fetch/load/store, LR/SC/AMO accesses
+and implicit page-table reads. Providers still implement `Environment::request`.
+CPU consumers call the checked entry point, which forwards exactly one unmodified
+request and validates the answer before the interpreter consumes it.
+
+| Request | Only valid success kind |
+| --- | --- |
+| `Fetch` | `Fetch(u32)` |
+| `FetchParcel` | `FetchParcel(u16)` |
+| `Load` | `Load(u64)` with no nonzero bits above the requested B/H/W/D width |
+| `Store` | `StoreDone` |
+| `WalkAccess` | `WalkAccess(u64)` |
+
+A wrong kind returns `ContractViolation::WrongResponseKind`, retaining the
+request and response. An over-wide load returns `LoadValueOutOfWidth`, retaining
+the requested width and original value. The validator does not truncate the bad
+answer into an apparently valid one. All 64 bits remain legal for a D-width load.
+Sign or zero extension into XLEN still belongs to the instruction.
+
+For example, `Load(0xff)` is a valid raw byte answer; `Load(0x100)` is a violation.
+`Load(u64::MAX)` is valid for D and invalid for B/H/W. The original two probe cases
+now reach `ModelError::ContractViolation`, with destination and trap state
+untouched. The legitimate access-fault control still delivers load cause 5.
+
+Four permanent core tests exercise all 25 request/response-kind combinations,
+narrow-width edges, full-width values, unchanged target failures and existing
+violations, and actual GC/scalar/translation paths. Normal guest observations
+still pass. This repair adds no contract-check credit: the census stays 50 of
+106 realized, with four boundary assumptions still to declare and realize.
