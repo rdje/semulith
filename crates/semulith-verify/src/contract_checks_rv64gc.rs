@@ -12,7 +12,7 @@ pub enum Evidence {
     Guests(&'static [&'static str]),
     /// Run this check id through the tracked scope predicate and its negative copies.
     Scope,
-    /// Run the named direct fixture, including typed violation discrimination.
+    /// Run the named direct fixture; provider violations are discriminated where relevant.
     Boundary(crate::contract_boundary_rv64gc::BoundaryCheck),
 }
 
@@ -33,6 +33,20 @@ pub struct ContractCheck {
 /// and the existing privilege-mode, Sv39, Svade, halfword-alignment and counter witnesses;
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-GC-ENV-INTERRUPT-SOURCES-V2-POS",
+        obligation: "OB-GC-ENV-INTERRUPT-SOURCES-V2",
+        evidence: Evidence::Boundary(
+            crate::contract_boundary_rv64gc::BoundaryCheck::InterruptSourcesPositive,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-GC-ENV-INTERRUPT-SOURCES-V2-NEG",
+        obligation: "OB-GC-ENV-INTERRUPT-SOURCES-V2",
+        evidence: Evidence::Boundary(
+            crate::contract_boundary_rv64gc::BoundaryCheck::InterruptSourcesNegative,
+        ),
+    },
     ContractCheck {
         id: "CHK-ZICNTR-POS",
         obligation: "OB-ZICNTR",

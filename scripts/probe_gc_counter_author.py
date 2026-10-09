@@ -82,6 +82,29 @@ def check(author, root):
     _, info = author.execute(hart, 0x14d292f3)
     assert info['writes'] == {5: 101} and hart.csr['stimecmp'] == 0x55 and hart.x[5] == 0x55
 
+    # Literal STCE/source combinations: software pending ignores compare when disabled.
+    for enabled, compare, raw, visible in (
+        (0, 0, 0, 0), (0, 101, 0, 0), (0, 0, 32, 32), (0, 101, 32, 32),
+        (1 << 63, 0, 0, 32), (1 << 63, 101, 0, 0),
+        (1 << 63, 0, 32, 32), (1 << 63, 101, 32, 0),
+    ):
+        hart = author.Hart()
+        hart.csr.update(menvcfg=enabled, stimecmp=compare, mip=raw, mideleg=32)
+        assert author.csr_read_value(hart, 'mip') == visible, 'STIP source selection'
+        assert author.csr_read_value(hart, 'sip') == visible, 'delegated STIP source'
+        author.csr_write_value(hart, 'sip', 0)
+        assert hart.csr['mip'] == raw, 'sip STIP is always read-only'
+        author.csr_write_value(hart, 'mip', 0)
+        assert hart.csr['mip'] == (raw if enabled else 0), 'STIP write mask'
+        author.csr_write_value(hart, 'mip', 0xffffffffffffffff)
+        assert hart.csr['mip'] == (0x202 | raw if enabled else 0x222), 'STIP write mask'
+    hart = author.Hart()
+    hart.csr.update(mip=32, stimecmp=101)
+    author.csr_write_value(hart, 'menvcfg', 1 << 63)
+    assert author.csr_read_value(hart, 'mip') == 0 and hart.csr['mip'] == 32, 'STIP retained software storage'
+    author.csr_write_value(hart, 'menvcfg', 0)
+    assert author.csr_read_value(hart, 'mip') == 32, 'STIP retained software storage'
+
     asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
     source = root / 'quoted.s'
     source.write_text('addi x1, x0, 1 #: quoted "rule" and path\\part §27 | source "label" \\ locator\n')
@@ -123,7 +146,7 @@ def check(author, root):
         assert [st.writes for st in run.steps] == writes, f'{name}: CSR/directive architectural observations differ'
         total += len(run.steps)
     assert author.main(['probe', '--check-owned']) == 0
-    print(f'GC counter author probe: enable masks/aliases, 30 mode gates, quoted text/schema; 3 corpus refusals / {total} steps')
+    print(f'GC counter author probe: enable masks/aliases, 30 mode gates, eight STIP source/write cases and retention, quoted text/schema; 3 corpus refusals / {total} steps')
 
 
 def main():
@@ -131,6 +154,11 @@ def main():
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--author-revision')
     changes = {
+        'stip-source': ('if not (self.csr["menvcfg"] >> 63) & 1:', 'if False:'),
+        'stip-fallback-write': ('writable = 0x202 if (h.csr["menvcfg"] >> 63) & 1 else 0x222', 'writable = 0x202'),
+        'stip-enabled-write': ('writable = 0x202 if (h.csr["menvcfg"] >> 63) & 1 else 0x222', 'writable = 0x222'),
+        'stip-retention': ('h.csr[name] = (old & ~(1 << 63)) | (v & (1 << 63))',
+                           'h.csr[name] = (old & ~(1 << 63)) | (v & (1 << 63)); h.csr["mip"] &= ~32'),
         'enable-mask': ('(old & ~0xffffffff) | (v & 7)', 'v'),
         'stce-mask': ('(old & ~(1 << 63)) | (v & (1 << 63))', 'v'),
         'timer-tm': ('if not tm or not stce:', 'if not stce:'),

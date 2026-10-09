@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and all five typed boundary pairs landed; remaining runtime checks keep v2 open.
+**Status:** State inventory, scope pairs, three corrections and six direct assumption pairs landed; remaining runtime checks keep v2 open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -516,3 +516,11 @@ contains the privilege-mode, Sv39, Svade, IALIGN-16 and Zicntr bindings, worked 
 inherited-global repair and discriminating controls. Current G-CONTRACT is
 68/114; twenty-three runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
+
+P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth
+open-v2 member: STCE=0 software STIP versus STCE=1 comparator pending, with
+explicit raw-software retention. Cold pending is zero; v2 event/reset records
+follow that rule. The replacement direct pair preserves effective 68/114 credit;
+[the runtime chapter](contract-runtime.md#stce-dependent-pending-and-the-v2-source-contract)
+gives the selection table, worked transitions, instruction witnesses and limits.
+Frozen v0/v1 records and pins stay exact. SSTC programming witnesses remain open.

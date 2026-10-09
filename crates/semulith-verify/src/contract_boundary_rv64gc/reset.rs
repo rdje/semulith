@@ -25,7 +25,7 @@ const IMAGE: [u8; 4] = [0x13, 0x03, 0x70, 0x00];
 
 // CSR identity is by architectural address, independent of generated storage order.
 // mcause=0 is the laboratory's declared power-on cause; misa/mstatus are the
-// only nonzero RAW owners. mip.STIP is computed separately below.
+// only nonzero raw owners. Cold STCE=0 selects zero software mip.STIP.
 const RAW: [(&str, u16, u64); 26] = [
     ("mhartid", 0xf14, 0),
     ("misa", 0x301, 0x8000_0000_0014_112d),
@@ -117,8 +117,8 @@ fn cold_state(
         None,
     )?;
     require(
-        privilege::csr_read(state, 0x344) == Ok(0x20),
-        "computed mip",
+        privilege::csr_read(state, 0x344) == Ok(0),
+        "mip pending",
         None,
     )?;
     // Literal core field tests independently anchor these private-owner cold

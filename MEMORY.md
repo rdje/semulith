@@ -18,16 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c13a2 — repair dynamic STIP fallback, independent
-  author/state/reset/event fixtures and open-v2 interrupt-source supersession.
-  c13a1 prepared nine guests with explicit STCE (281 boundaries / 524 parcels),
-  41 historical + one fixed-budget fresh owned record; whole corpus 5360/10514.
-  Public timer probe now enables/read-backs STCE; qualified reference limits
-  remain. Keep cold STCE=0. Public CSR reproduction still rc101, introduced
-  47badd2. Then c13b direct S programming/refusal witnesses must discriminate
-  old terminal-zero guest gap. Full plan/reproductions in task/book.
-  No new credit: 68/114 open, 23 runtime pairs then freeze. .14 owns statuses
-  and experiments; preserve frozen records and historical receipts.
+- next_action: `P4-SYSTEM.13` c13b — direct Sstc programming/refusal
+  witnesses must discriminate the old terminal-zero guest gap. c13a2 repaired
+  STCE-clear software STIP, comparator selection, raw retention and sip read-only
+  behavior; original public CSR reproduction now rc0. Open-v2 source supersession
+  replaces historical credit: 68/114, 23 runtime pairs then freeze.
+  All 167 guests (5360 boundaries / 10514 parcels) and 42 owned records exact;
+  frozen v0/v1 preserved. Corrected Sail probe still has its qualified comparator
+  difference. Full plan/reproductions in task/book. .14 owns statuses and
+  experiments; do not close CPU-SYSTEM from finite contract witnesses.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

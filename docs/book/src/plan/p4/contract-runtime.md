@@ -162,8 +162,8 @@ expectation or author source is rewritten. This pair is finite inclusion/refusal
 evidence; OB-GC-COUNTERS remains a separate later binding. Firmware and Linux
 acceptance are still open.
 
-G-CONTRACT is now 68/114: thirteen scope pairs, sixteen guest pairs and five
-typed boundary pairs. Twenty-three runtime pairs and final freeze remain.
+At c12, G-CONTRACT reached 68/114: thirteen scope pairs, sixteen guest pairs
+and five typed boundary pairs. Twenty-three runtime pairs and final freeze remain.
 
 
 ## Explicit comparator setup before fallback repair
@@ -233,23 +233,71 @@ and 70 parcel requests. Its last boundary instead traps with cause 2 and
 mepc=0x80000044, but the budget ends before a handler read. A terminal absence
 of a register change cannot establish that access succeeded.
 
-Second, the implementation always computes STIP from time >= stimecmp, even
+Second, before c13a2 the implementation always computed STIP from time >= stimecmp, even
 with menvcfg.STCE clear. The pinned machine chapter 2.1.1.18 requires STIP's
 non-Sstc behavior when STCE=0; section 2.1.1.9 then permits M-mode software
 to write mip.STIP. A public CSR diagnostic starts in M with STCE=0 and
-stimecmp=UINT64_MAX, writes mip=32, then reads mip & 32. The current model
-returns 0; the pinned fallback requires 32. This is a processor defect, beyond
+stimecmp=UINT64_MAX, writes mip=32, then reads mip & 32. On baseline 618b7d2 the model
+returned 0; the pinned fallback requires 32. This is a processor defect, beyond
 the terminal-observation gap. The unconditional overlay originated at P4.2 d.
 The frozen v1 interrupt-source wording also assumes the comparison unconditionally.
 
-The repair is owned by P4-SYSTEM.13 and precedes SSTC credit. Nine timer guests
-will first enable STCE explicitly, with fresh independent derivations and
-appropriate timer thresholds. The cold STCE=0 choice stays. A separate repair
-will implement the software-writable fallback, recheck CSR transitions and
-synchronize the independent author, state and cold/event fixtures. Open v2 will
-supersede the old interrupt-source record; frozen records and historical receipts
-remain intact. Finally, direct S-mode compare programming, nonzero read-back,
-pending-state observations and handler-visible refusals will close the witness gap.
+The architectural prerequisite is repaired by c13a2, after c13a1's explicit
+setup. The terminal witness hole remains open for c13b; no SSTC credit follows
+from repairing interrupt pending. Frozen records and old receipts stay intact.
 
-G-CONTRACT remains 68/114, v2 open. These defects are scheduled prerequisites,
-not deferred acceptance or a new firmware/Linux capability claim.
+## STCE-dependent pending and the v2 source contract
+
+Cold STCE=0 now exposes raw software mip.STIP=0. In M, software can set and
+clear this bit independently of time/stimecmp. Setting STCE selects the unsigned
+comparison instead, makes mip.STIP read-only, and retains the raw software bit
+behind that view. Clearing STCE exposes the retained bit. This retention is an
+explicit laboratory choice: the pinned rule selects behavior without specifying
+transition storage. Existing mip storage owns it; no hidden latch is added.
+
+| STCE | Raw software STIP | time >= stimecmp | Read mip.STIP | M write to STIP |
+| ---: | ---: | ---: | ---: | --- |
+| 0 | 0 | either | 0 | set or clear software storage |
+| 0 | 1 | either | 1 | set or clear software storage |
+| 1 | either | false | 0 | ignored, software storage retained |
+| 1 | either | true | 1 | ignored, software storage retained |
+
+sip.STIP remains read-only in both cases and is visible only when delegated.
+MSIP/MTIP/MEIP remain zero and unwritable: no platform source is supplied.
+For example, with STCE=0 and compare=MAX, writing mip=32 and reading it returns
+32. Enabling STCE then reads zero; writing mip=0 leaves raw software STIP=1.
+Disabling STCE reads 32 again. Software can then clear it with a legal M write.
+
+Open v2 supersedes OB-GC-ENV-INTERRUPT-SOURCES with
+OB-GC-ENV-INTERRUPT-SOURCES-V2. The event record refers to that source rule;
+the cold-reset record now states pending zero. The frozen v1 statement remains
+historical exact text. The registry retains its old checks as historical test
+bindings and adds the replacement's direct POS/NEG pair. The effective census
+stays 57 obligations / 114 checks, 68 realized: thirteen scope pairs, fifteen
+guest pairs and six direct assumption pairs. Twelve v2 members remain open.
+Coverage counts only registered checks whose records remain effective. The
+report's independent recount and synthetic realized-record supersession control
+verify this distinction; removing that filter fails both controls.
+
+The new POS executes thirteen literal instructions (26 parcels): software
+set/read/clear, explicit comparator enable/read-back, compare=0 assertion,
+disable/recovered zero and a visible continuation marker. NEG executes fourteen
+instructions (28 parcels) across all-one M pending writes, enabled-comparator
+write refusal/retention, and read-only delegated sip in M/S under both STCE
+settings. Every instruction checks all GPRs, exact raw mip, mode, PC and parcel
+count. Sentinels distinguish zero reads from unexpected traps. An ignored
+architectural write is expected CPU behavior, never a typed provider violation.
+Historical source guests continue to run through their earlier registry entries.
+
+Four new core regressions first failed on the old processor; after repair they
+pass, including 48 actual instruction cases over all six CSR forms, two raw
+software states, both compare conditions and both STCE settings. Five-bit CSR
+immediates cannot set bit 5; their other pending writes still obey the selected
+mask. The independent author tests eight literal source/write combinations and
+retention; four deliberate source/write/retention mutations each fail. All 167
+guest observations and 42 owned records remain exact. The original public CSR
+reproduction changes from rc101 to rc0; the corrected public Sail diagnostic
+still reports its qualified comparator-platform difference with STCE verified.
+
+G-CONTRACT remains 68/114, v2 open. The remaining S-mode witness repair precedes SSTC credit; no firmware/Linux
+capability follows from the pending-state repair.

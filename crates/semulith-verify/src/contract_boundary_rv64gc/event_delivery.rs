@@ -9,8 +9,8 @@ use semulith_core::exec_rv64gc::{self, StepRv64gc};
 use semulith_core::outcome::ModelError;
 use semulith_core::privilege::{PrivilegeMode, PrivilegedHart};
 use semulith_core::state_rv64gc::{
-    ArchitecturalState, CSR_MCAUSE, CSR_MCYCLE, CSR_MEPC, CSR_MIE, CSR_MINSTRET, CSR_MSTATUS,
-    CSR_MTVAL, CSR_MTVEC, CSR_SATP, CSR_STIMECMP,
+    ArchitecturalState, CSR_MCAUSE, CSR_MCYCLE, CSR_MENVCFG, CSR_MEPC, CSR_MIE, CSR_MINSTRET,
+    CSR_MSTATUS, CSR_MTVAL, CSR_MTVEC, CSR_SATP, CSR_STIMECMP,
 };
 
 use crate::fixtures::FlatMemory;
@@ -27,6 +27,7 @@ fn memory_with_word(word: u32) -> FlatMemory {
 
 fn timer_state(threshold: u64) -> ArchitecturalState {
     let mut hart = ArchitecturalState::zeroed_at(ENTRY);
+    hart.write_csr(CSR_MENVCFG, 1 << 63); // fixture selects comparator-driven pending
     hart.write_csr(CSR_STIMECMP, threshold);
     hart.write_csr(CSR_MSTATUS, 8); // MIE
     hart.write_csr(CSR_MIE, 32); // STIE, no external source

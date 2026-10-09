@@ -1317,6 +1317,9 @@ def _selftest() -> int:
     every = sum(len(o["required_checks"]) for o in obs_real)
     superseded = set(re.findall(r'\(supersede \(record "([^"]+)"\)',
                                 (real / "contract.sexp").read_text(encoding="utf-8")))
+    all_declared = {(o["id"], chk) for o in obs_real for chk in o["required_checks"]}
+    effective_declared = {pair for pair in all_declared if pair[0] not in superseded}
+    registered = {(ob, chk) for chk, ob in _ENTRY.findall(reg_src)}
     try:
         base = tuple(len(x) for x in measure(unit("green")))
     except Exception as e:                          # noqa: BLE001 — every arm then misses
@@ -1327,12 +1330,30 @@ def _selftest() -> int:
         counts(d, (base[0] + dd, base[1] + dr))
 
     def independent():
-        # every record's checks minus the superseded records' — no version chain walked — and
-        # every registry entry (each a declared pair: the Rust pairing test's guarantee)
-        want = (sum(len(o["required_checks"]) for o in obs_real if o["id"] not in superseded),
-                len(_ENTRY.findall(reg_src)))
+        # Recount without walking the version chain or calling the production measure. Old
+        # registry entries remain executable history when their records are superseded, so
+        # only the intersection with effective declared pairs earns current credit.
+        want = (len(effective_declared), len(effective_declared & registered))
         assert base == want, f"the measure {base}, an independent recount {want}"
         assert 0 < base[1] <= base[0], f"a degenerate baseline {base}"
+
+    def supersede_realized():
+        candidate = sorted(effective_declared & registered)[0][0]
+        removed = {pair for pair in effective_declared if pair[0] == candidate}
+
+        def edit(text):
+            forms = S.parse(text, where="synthetic realized supersession")
+            latest = max((f for f in forms if isinstance(f, list) and f and str(f[0]) == "contract"),
+                         key=lambda f: int(S.field(f, "version", "synthetic contract")))
+            replacement = next(str(S.field(m, "id", "synthetic member"))
+                               for m in S.children(latest, "member")
+                               if str(S.field(m, "id", "synthetic member")) != candidate)
+            latest.append([S.Symbol("supersede"), [S.Symbol("record"), candidate],
+                           [S.Symbol("by"), replacement],
+                           [S.Symbol("why"), "synthetic realized supersession control"]])
+            return R.render_forms(forms)
+
+        delta(unit("supersede-realized", edit), -len(removed), -len(removed & registered))
 
     try:
         arm("GREEN the measure agrees with an independent recount of the real contract", independent)
@@ -1346,7 +1367,9 @@ def _selftest() -> int:
             lambda: (assert_eq(bool(superseded), True),
                      counts(unit("nosup", lambda s: re.sub(
                          r'\(supersede \(record "[^"]*"\) \(by "[^"]*"\) \(why "[^"]*"\)\)', "", s)),
-                         (every, base[1]))))
+                         (every, len(all_declared & registered)))))
+        arm("RED superseding a realized record removes its declared and realized credit",
+            supersede_realized)
         wrong = reg_src.replace('obligation: "OB-GC-ENV-VIRTUAL-TIME"', 'obligation: "OB-SVADE"', 1)
         arm("RED a check registered under an obligation that does not declare it is not counted (-1)",
             lambda: delta(unit("wrong", registry=wrong), 0, -1))
@@ -1467,7 +1490,7 @@ def _selftest() -> int:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 17
+    want = 18
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")

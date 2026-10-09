@@ -5,12 +5,15 @@
 use super::*;
 use crate::env::{BoundaryError, Environment, Request, Response};
 use crate::exec_rv64gc::{step, StepRv64gc};
-use crate::state_rv64gc::{ArchitecturalState, CSR_MIDELEG, CSR_MIE, CSR_MIP, CSR_STIMECMP};
+use crate::state_rv64gc::{
+    ArchitecturalState, CSR_MENVCFG, CSR_MIDELEG, CSR_MIE, CSR_MIP, CSR_STIMECMP,
+};
 
 const MASKS: [u64; 8] = [0, 0x2, 0x20, 0x22, 0x200, 0x202, 0x220, 0x222];
 
 fn pending_state(mode: PrivilegeMode, delegated: u64) -> ArchitecturalState {
     let mut state = ArchitecturalState::zeroed_at(0x1000);
+    state.write_csr(CSR_MENVCFG, 1 << 63); // select the comparator view tested here
     state.set_mode(mode);
     state.write_csr(CSR_MIDELEG, delegated);
     state.write_csr(CSR_MIE, 0x222);
@@ -66,7 +69,7 @@ fn delegation_changes_visibility_without_changing_pending_or_enabled_state() {
     state.reset(0x1000);
     assert_eq!(csr_read(&state, 0x104), Ok(0));
     assert_eq!(csr_read(&state, 0x144), Ok(0));
-    assert_eq!(csr_read(&state, 0x344), Ok(0x20)); // raw M view still computes STIP
+    assert_eq!(csr_read(&state, 0x344), Ok(0)); // cold STCE selects zero software pending
 }
 
 struct Instruction {

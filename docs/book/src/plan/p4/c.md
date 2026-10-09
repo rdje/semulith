@@ -276,6 +276,13 @@ checks hand-derived register values and selected PCs, validates all 28 expectati
 schemas, and fingerprints its inputs. Repeating staging is byte-exact. Changing an
 observation, request extent or saved budget is rejected.
 
+After the STCE source repair at [.13 c13a2](contract-runtime.md#stce-dependent-pending-and-the-v2-source-contract),
+the maintained staging blueprint explicitly enables the comparator, matching the
+adopted c-irq body and observations. Its deadline/budget increase by two, saved
+PC by eight and retired count by two. Current staging totals are 431 boundaries /
+712 parcels; the historical e1d2 totals above describe its original inputs.
+Deterministic staging and observation/extent refusal controls still pass.
+
 The programs cover signed and scaled immediate limits, 64-bit shifts, 32-bit
 wrap/sign extension, overlapping operands, x0 and hints, compact and stack-relative
 integer/D memory, both branch outcomes, backward branches and extreme jumps. The

@@ -2,7 +2,9 @@
 //!
 //! These fixtures use hand-selected boundary values and the real interpreter.
 //! Violating providers must reach the contract-error channel without delivering
-//! an architectural exception. The registry names each positive/negative check.
+//! an architectural exception. Pending-source fixtures also exercise ignored
+//! architectural writes, which are not provider violations. The registry names
+//! each positive/negative check.
 
 use semulith_core::env::{
     AccessWidth, BoundaryError, ContractViolation, Environment, Failure, Request, Response,
@@ -17,6 +19,7 @@ use crate::fixtures::{FlatMemory, ScriptedEnv};
 
 mod data_access;
 mod event_delivery;
+mod interrupt_sources;
 mod ordering;
 mod reset;
 
@@ -40,6 +43,10 @@ fn response_matches(
 /// A named direct boundary check, rather than an unrelated passing guest.
 #[derive(Clone, Copy, Debug)]
 pub enum BoundaryCheck {
+    /// No external sources; STCE selects software or comparator pending.
+    InterruptSourcesPositive,
+    /// Forbidden pending writes are ignored, with exact raw-owner witnesses.
+    InterruptSourcesNegative,
     /// Every declared cold-state owner and CSR view is reconstructed before fetch.
     ResetPositive,
     /// Retained or malformed cold state fails the independent startup auditor.
@@ -66,6 +73,8 @@ impl BoundaryCheck {
     /// Run the exact fixture bound by the contract registry.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::InterruptSourcesPositive => interrupt_sources::positive(),
+            Self::InterruptSourcesNegative => interrupt_sources::negative(),
             Self::ResetPositive => reset::positive(),
             Self::ResetNegative => reset::negative(),
             Self::AddressUnitsPositive => address_units_positive(),

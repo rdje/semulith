@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0128 (leaf P4-SYSTEM.13 c13a2) — select architectural STIP sources
+
+- Repair STCE-clear software STIP writes/cold pending, selected comparator and
+  retained software state; preserve delegated sip read-only behavior. Four
+  RED/GREEN core regressions cover all six CSR forms; independent author adds
+  eight source cases and four discriminating controls.
+- Supersede the frozen source assumption in open v2 with 27 direct instruction
+  witnesses / 54 parcels. Preserve historical bindings and effective 68/114
+  credit. Fix gate-report self-test recount for realized-record supersession.
+- Keep all guests/frozen records exact, regenerate state mirrors, synchronize
+  worked book examples, and shard completed notes losslessly under fixed caps.
+  Full make ci passes all five legs; Rust167/17/198 and doctrines/books green.
+
+
 ## SEMULITH-P4-0127 (leaf P4-SYSTEM.13 c13a1) — prepare explicit timer comparator setup
 
 - Enable STCE in nine guests; independently derive 281 boundaries / 524 parcels

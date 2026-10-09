@@ -164,8 +164,8 @@ pub fn deliver<H: PrivilegedHart>(hart: &mut H, pend: Pending, next_pc: u64) -> 
 mod tests {
     use super::*;
     use crate::state_rv64gc::{
-        ArchitecturalState, CSR_MIDELEG, CSR_MIE, CSR_MIP, CSR_MSTATUS, CSR_MTVEC, CSR_STIMECMP,
-        CSR_STVEC,
+        ArchitecturalState, CSR_MENVCFG, CSR_MIDELEG, CSR_MIE, CSR_MIP, CSR_MSTATUS, CSR_MTVEC,
+        CSR_STIMECMP, CSR_STVEC,
     };
 
     fn hart() -> ArchitecturalState {
@@ -369,6 +369,7 @@ mod tests {
     #[test]
     fn the_timers_arrival_wakes_through_the_domain() {
         let mut h = hart();
+        set(&mut h, CSR_MENVCFG, 1 << 63); // this fixture selects the comparator
         h.write_csr(CSR_STIMECMP, 2);
         set(&mut h, CSR_MIE, 1 << 5); // STIE
         assert!(!wake_pending(&h), "time 0 < 2: the timer has not arrived");

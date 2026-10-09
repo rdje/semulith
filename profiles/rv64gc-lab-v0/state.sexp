@@ -287,8 +287,8 @@
               (legalize (read-only 0)) (reset "0") (reset_authority architecture)
               (authority laboratory) (source "RVP-MACHINE §2.1.1.9"))
        (field (id "STIP") (bit_hi 5) (bit_lo 5) (discipline warl)
-              (legalize (computed)) (reset "0") (reset_authority architecture)
-              (authority architecture) (source "RVP-MACHINE §2.1.1.9; RVP-SSTC 12.1"))
+              (legalize (computed)) (reset "0") (reset_authority laboratory)
+              (authority architecture) (source "RVP-MACHINE §2.1.1.9; §2.1.1.18; RVP-SSTC 12.1"))
        (field (id "MTIP") (bit_hi 7) (bit_lo 7) (discipline warl)
               (legalize (read-only 0)) (reset "0") (reset_authority architecture)
               (authority laboratory) (source "RVP-MACHINE §2.1.1.9"))
@@ -320,7 +320,7 @@
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.1.9; §2.1.4 (UNSPECIFIED)")
-              (statement "Raw pending storage is zero at reset. Live computed STIP is one because time=stimecmp=0; reset mie=0 disables it and mideleg=0 hides it from sip. Pending-state behaviour is P4-SYSTEM.5's.")))
+              (statement "Raw pending storage is zero at reset. Cold menvcfg.STCE=0 selects software mip.STIP, which reads zero independently of time=stimecmp=0. M software may set/clear this bit. STCE=1 instead exposes unsigned time>=stimecmp and makes STIP read-only; writes and comparator selection retain its raw software owner, the laboratory transition choice. sip.STIP is always read-only and delegation-masked. No new pending storage or external source is introduced.")))
 
   (csr (id "mscratch") (address 832) (width_bits 64) (authority architecture)
        (source "RVP-MACHINE §2.1.1.13")
@@ -551,7 +551,7 @@
               (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-CSR §1.1.3.1"))
        (reset (value "the delegated mip subset, per its fields") (authority laboratory) (source "RVP-SUPERVISOR §11.1.1.3; RVP-MACHINE §2.1.1.9")
-              (statement "A view of mip restricted to supervisor bits delegated by current mideleg; undelegated bits are read-only zero even when pending (RVP-MACHINE §2.1.1.9). No storage, no independent reset; reset mideleg=0 makes the view zero despite computed STIP=1.")))
+              (statement "A view of mip restricted to supervisor bits delegated by current mideleg; undelegated bits are read-only zero even when pending (RVP-MACHINE §2.1.1.9). No storage, no independent reset; reset mideleg=0 and cold software mip.STIP=0 make the view zero. Its STIP value follows the owner's STCE selection, but sip.STIP is always read-only.")))
 
   (csr (id "scounteren") (address 262) (width_bits 64) (authority architecture)
        (source "RVP-SUPERVISOR §11.1.1.5")

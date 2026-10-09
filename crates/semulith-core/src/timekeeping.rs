@@ -50,7 +50,7 @@ pub fn advance<H: PrivilegedHart>(hart: &mut H, retired: bool) {
 mod tests {
     use super::*;
     use crate::privilege::{self, PrivilegeMode};
-    use crate::state_rv64gc::{ArchitecturalState, CSR_STIMECMP};
+    use crate::state_rv64gc::{ArchitecturalState, CSR_MENVCFG, CSR_STIMECMP};
 
     fn hart() -> ArchitecturalState {
         ArchitecturalState::zeroed_at(0x8000_0000)
@@ -110,11 +110,13 @@ mod tests {
     #[test]
     fn the_ticking_stip_reflects_time_against_stimecmp() {
         let mut h = hart();
-        // the reset quirk, live: time 0 >= stimecmp 0, so STIP computes 1 at reset
+        assert_eq!(privilege::csr_state(&h, "mip") & (1 << 5), 0);
+        h.write_csr(CSR_MENVCFG, 1 << 63);
+        // Enabling STCE selects the comparator: time 0 >= stimecmp 0.
         assert_eq!(
             privilege::csr_state(&h, "mip") & (1 << 5),
             1 << 5,
-            "STIP at reset"
+            "STIP after explicit comparator enable"
         );
         h.write_csr(CSR_STIMECMP, 3);
         assert_eq!(

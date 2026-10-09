@@ -419,6 +419,15 @@ PYCODE
   out="$(python3 scripts/probe_gc_counter_author.py --mutation backslash-text 2>&1)"; rc=$?
   arm "RED backslash annotations retain their literal text" "$rc" 1 "$out" "backslash directive lost literal text"
 
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation stip-source 2>&1)"; rc=$?
+  arm "RED STIP source follows STCE" "$rc" 1 "$out" "STIP source selection"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation stip-fallback-write 2>&1)"; rc=$?
+  arm "RED STCE-clear software STIP is writable" "$rc" 1 "$out" "STIP write mask"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation stip-enabled-write 2>&1)"; rc=$?
+  arm "RED STCE-enabled comparator STIP is read-only" "$rc" 1 "$out" "STIP write mask"
+  out="$(python3 scripts/probe_gc_counter_author.py --mutation stip-retention 2>&1)"; rc=$?
+  arm "RED comparator selection retains software pending" "$rc" 1 "$out" "STIP retained software storage"
+
   # e1c1: independent selected cache policy, with no production engine oracle.
   out="$(python3 scripts/probe_gc_cache_author.py 2>&1)"; rc=$?
   arm "GREEN independent cache and cold repeat" "$rc" 0 "$out" "cached corpus exact and cold repeat"

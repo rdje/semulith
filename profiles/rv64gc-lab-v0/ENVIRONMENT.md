@@ -41,7 +41,7 @@ cross-record checks. This containment change adds no contract credit. See
 | Ordering | **in scope — synchronous one-hart realization** | `OB-GC-ENV-ORDERING` (v2): latest preceding stores, consecutive AMO suboperations, coherent parcels; direct typed pair, no exhaustive weak-outcome claim |
 | Reset | **in scope — full cold state** | `OB-GC-ENV-RESET` (v2): complete owner/view and image witnesses before fetch; no warm reset |
 
-## The four v1 assumptions — and what would make each false
+## The four frozen v1 assumptions — historical statements
 
 | Assumption | It is false if … |
 | --- | --- |
@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-five direct boundary pairs, 68 checks are realized in the effective contract;
+six direct assumption pairs, 68 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -356,17 +356,22 @@ fails at step 90. The whole-image core test also verifies preservation.
 The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
 observations, examples, comparison limits and control receipts. Current census:
 57 effective obligations / 114 checks, 68 realized: thirteen scope pairs,
-sixteen guest pairs and five typed boundary pairs. Twenty-three runtime pairs
+fifteen guest pairs and six direct assumption pairs. Twenty-three runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
 
 
-SSTC is pending: the current STIP comparator overlay ignores STCE=0, whose
-software-writable fallback is required by the pinned machine chapter. The old
-mm-stimecmp terminal zero read also misses an unexpected final trap. Both are
-owned prerequisites in P4-SYSTEM.13; the runtime book records reproductions and
-the corpus-preparation, architecture/contract repair and direct-witness sequence.
-No SSTC check credit is awarded before these repairs.
+SSTC is pending because mm-stimecmp's terminal zero read misses an unexpected
+final trap; direct S-mode witnesses remain c13b's prerequisite. The STCE fallback
+is repaired by c13a2 and v2 supersedes the old interrupt-source assumption.
+When STCE=0, M software sets/clears raw mip.STIP; when STCE=1, read-only STIP
+exposes unsigned time>=stimecmp while retaining the software bit behind that view.
+sip.STIP remains read-only and delegated. Cold pending is zero. MSIP/MTIP/MEIP
+remain unwritable zero; no external source or additional state is introduced.
+The replacement direct pair executes 27 literal boundaries / 54 parcels across
+software/comparator transitions and forbidden writes. Ignored architectural writes
+are expected CPU behavior, never typed provider violations. The runtime book
+contains the exact selection table, transitions, witnesses and finite limits.
 
 Timer-source inputs explicitly enable menvcfg.STCE in M (nine programs,
 281 boundaries / 524 parcels) before comparator use. Fresh parcel-route records
@@ -374,4 +379,4 @@ retain no historical capture claim; the author's checked set is 41 historical
 captures plus fresh env-irq-sources with an explicit budget of 13. All 167 programs
 independently replay across 5,360 boundaries / 10,514 parcels. The runtime book
 contains setup, worked wake values and fresh Sail attempt qualifications.
-STCE fallback and direct S-mode witnesses remain the next owned prerequisites.
+The STCE fallback is repaired; direct S-mode witnesses remain the next prerequisite.

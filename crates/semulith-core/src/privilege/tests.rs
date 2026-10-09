@@ -9,6 +9,7 @@
 use super::*;
 
 mod interrupt_views;
+mod supervisor_timer;
 
 /// The fixture's storage CSRs (views carry none); `stvec`/`scounteren`/`sepc`/`scause`/
 /// `stval` are S-level storage registers at their own addresses, as the document has them.

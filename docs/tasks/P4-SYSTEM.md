@@ -460,6 +460,80 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c13a2 — dynamic STIP fallback (`2026-10-10`, `SEMULITH-P4-0128`)
+
+Own before changes on clean 7222cdc. Read pinned machine 2.1.1.9/2.1.1.18,
+supervisor pending/compare clauses, computed/CSR legalization paths, real-state
+interrupt-view fixtures, timekeeping, event/reset witnesses, independent author,
+version records, registry/tests and current book. Machine text explicitly makes
+STCE-clear pending behave as absent Sstc and then permits M software STIP writes.
+Keep the 26 owners: raw mip holds software STIP; when STCE=1 expose unsigned
+time>=stimecmp and ignore M writes to STIP. sip.STIP remains read-only and only
+visible when delegated. Retain raw software STIP behind the enabled view as an
+explicit laboratory choice where the pinned text imposes no transition storage
+rule. No external source, counter reset change or hidden latch is introduced.
+
+Before production edits, add focused real-state regressions and demonstrate RED
+for cold pending=0, STCE-clear software set/clear, selected comparator transitions,
+retained software state, delegated sip read-only behavior and all six actual CSR
+forms (register operands can touch bit5; five-bit immediate operands cannot set
+it). Each instruction case checks old destination, exact raw owner, mode/PC and
+two fetch parcels. Repair computed overlay and conditional field legalization at
+the shared CSR boundary, not individual instruction handlers. Update existing
+interrupt-view/timekeeping and interrupts::timer-arrival fixtures to explicitly enable STCE where testing the
+comparator, and reset expectations to cold zero. Enable event timer setup without
+adding executed setup steps. Repair independent author from the same clauses;
+extend its finite matrix and deliberate mutants, observe RED before adding gate
+arms. Recheck all 167 guests and 42 owned records unchanged after c13a1.
+
+Supersede frozen OB-GC-ENV-INTERRUPT-SOURCES with open-v2
+OB-GC-ENV-INTERRUPT-SOURCES-V2 and a named direct boundary POS/NEG pair:
+no external sources, explicit STCE-dependent software/comparator provenance,
+read-only M sources and sip.STIP, retained raw policy and transitions. Fixtures
+run real CSR instructions with literal independent witnesses, plus the existing
+source guests. Negative witnesses reject forbidden pending writes, preserving
+raw owners; no invented provider response violation is claimed for an ignored
+architectural write. Existing historical registry entries remain tested; the new
+pair replaces their effective credit, keeping 68/114. Update v2 event dependency
+and reset statement, never frozen records/member pins. Require all 70 declared
+bindings through this slice. Update state descriptions/field reset authority,
+regenerate state and definition input-pin mirrors and GS, and document examples/limits before signoff.
+
+The affected privilege/author FP-dirty comments still name Sail implementation
+symbols/file locations. Remove those maintained internal assumptions while
+editing these files; verify replacement rationale from pinned architectural FS
+clauses. Broader dependency-assumption census remains .14's existing owned work.
+Measure live-doc pressure: if DEV_NOTES cannot fit this receipt under its fixed
+ceiling, move completed entries verbatim into the next governed archive part,
+prove ordered inverse reconstruction and preserve links before adding the entry.
+Gate-report self-tests reveal a separate owned oracle defect: they assume every
+registry entry is effective, and that removing supersessions cannot restore
+previously realized credit. Adding the first supersession of an already realized
+record yields GREEN recount 114/70 versus correct 114/68 and nosup 128/70 versus
+assumed 128/68 (15/17 controls). Production contract_measure correctly filters
+effective pairs. Repair the independent self-test recount to intersect exact
+non-superseded declared pairs with independently read registry pairs; derive the
+nosup delta from realized superseded pairs. Add one synthetic supersession of a
+currently realized record so this condition remains exercised after live changes,
+observe its old-assumption mutant RED before registering the added arm. Keep
+production measure/verdict unchanged. This is blocking self-test correctness,
+fixed here before signoff rather than fitting its constants to 68/70.
+
+Full CI exposes one additional stale comparator fixture: the compressed corpus
+stager's independent c-irq blueprint still omits STCE and expects the old
+17-boundary schedule. Its two GREEN staging arms fail hand checkpoint x7 after
+the architectural repair (139/141). Own the blueprint repair here: prepend the
+same explicit enable as the adopted source, increase deadline/budget by two,
+advance handler/interrupt PCs by eight and retired count by two. Require the
+independent generated blueprint body to match the adopted guest's assembled
+bytes and all observations, while preserving all production guest records.
+The stager's deterministic and observation/extent controls must all pass.
+
+Run focused RED/GREEN regressions, author mutants, registry/schema/freeze/gates,
+public CSR original reproduction (101 -> 0), corrected public Sail diagnostic,
+make check and full make ci. Commit the architectural repair before c13b direct
+S programming/refusal witnesses. No SSTC credit yet; cold STCE stays zero.
+
 ### `.13` c13a1 — explicit timer-source setup (`2026-10-10`, `SEMULITH-P4-0127`)
 
 Own before changes on clean 618b7d2. Implement the first c13 prerequisite only:
@@ -754,6 +828,40 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c13a2) (`2026-10-10`, `SEMULITH-P4-0128`):
+
+- [x] **ARCHITECTURAL RED/GREEN** — cargo test -p semulith-core supervisor_timer:
+  before repair four fail (rc101), after four pass (rc0), including 48 actual
+  CSR instructions and exact old destination/raw source/parcel witnesses.
+  Original public target/p4-system-13/c13a2/stip_probe rc0 replaces baseline101.
+- [x] **AUTHOR / INPUTS** — python3 scripts/probe_gc_counter_author.py rc=0:
+  eight literal STIP cases/retention and counter corpus117; four new mutants
+  each rc1 before registration. Full independent corpus 167/5360/10514 and
+  --check-owned42 exact. python3 target/p4-system-13/c13a2/identity.py rc=0:
+  335 guest files, 52 frozen record lines, both frozen forms and 68 bindings
+  exact; 114 declared / 68 effective realized. No SSTC credit.
+- [x] **SOURCE CONTRACT / REPORT** — cargo test -p semulith-verify
+  contract_checks_rv64gc rc=0: four tests pass, all70 registry entries run.
+  Direct replacement source pair executes 27 boundaries / 54 parcels.
+  python3 scripts/gate_report.py --self-test rc=0: 18 pass / 0 fail;
+  unfiltered supersession mutant rc1: new arm and independent recount fail.
+  Schema270/two skips; CONTRACT-FREEZE three versions/zero findings.
+- [x] **CONTAINMENT / REVIEW** — python3 scripts/shard_history.py rc=0:
+  21 completed entries moved to 15329-B shard-0220; exact ordered inverse
+  SHA256 b2fc35ed2b74186ccd13b60fda26e891c7ad39f5ee81f7d99403785712bf8306
+  matches prior committed notes. Caps unchanged. make check rc=0:
+  Rust167/17/198, fmt/clippy clean. Corrected public Sail timer probe rc0:
+  repeated traces, STCE read-back verified, qualified pending difference remains.
+- [x] **STAGING REPAIR** — python3 scripts/stage_gc_c_corpus.py rc=0:
+  28 guests / 37 forms / 431 boundaries / 712 parcels; --check rc0.
+  Observation/extent mutants rc1 with precise record refusal. Independent
+  assembly/record comparison reports adopted c-irq exact (19/32), preserving
+  all production inputs; resolves the full-CI 139/141 staging failure.
+- [x] **FINAL SIGNOFF** — make ci rc=0: all five legs green (check, gate,
+  bench, smoke-bench, book), Rust167/17/198; all doctrines green. Book and
+  current source/status sync reviewed. c13a2 complete; c13b next after commit.
+  promotion: declined (versioned source contract, controls, history and worked runtime book retain the correction).
+
 `P4-SYSTEM.13` slice (c13a1) (`2026-10-10`, `SEMULITH-P4-0127`):
 
 - [x] **ROOT CAUSE / OWNERSHIP** — git show 618b7d2 timer sources:
@@ -986,6 +1094,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c13a2 | core RED/GREEN4; author8 cases/four mutants; source27/54; identity335/52/68; public CSR0; Rust167/17/198; schema/freeze; gate18/0; lossless shard; full CI all five legs green | 68/114; c13b direct Sstc witnesses next |
 | `2026-10-10` | `.13` c13a1 | independent nine-guest 281/524, full 167/5360/10514; 42 owned; two new RED controls; corrected public probe and nine attempts; identity; full CI rc0; registry/schema/freeze/gate controls | explicit setup ready; 68/114 unchanged; c13a2 next |
 | `2026-10-10` | `.13` c13 diagnosis | forced S refusal missed by 35/70 terminal guest; public STCE-clear STIP regression rc101; pins/history; 340 inputs exact; registry 4/0; schema/freeze/gate 17/17/books | two defects owned before SSTC; 68/114 unchanged |
 | `2026-10-10` | `.13` c12 | counter guests 101 boundaries / 202 parcels exact; three controls; core permission 1/0; author 30 mode gates; Rust 163/17/198; 66 entries + 340 inputs exact; lossless archive; focused gates/books | 68/114, v2 open |
@@ -1017,6 +1126,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c13a2 | `SEMULITH-P4-0128 (leaf P4-SYSTEM.13): repair STCE-dependent pending and effective source evidence` | c13b direct S programming/refusal witnesses |
 | `.13` c13a1 | `SEMULITH-P4-0127 (leaf P4-SYSTEM.13): prepare explicit STCE timer inputs and repair public evidence` | c13a2 dynamic STIP/author/state/v2 supersession, then direct Sstc witnesses |
 | `.13` c13 diagnosis | `SEMULITH-P4-0126 (leaf P4-SYSTEM.13): own the STCE fallback defect and terminal timer witness gap` | c13a1 explicit timer enable, then architecture repair and Sstc witnesses |
 | `.13` c12 | `SEMULITH-P4-0125 (leaf P4-SYSTEM.13): realize base-counter inclusion and read-only refusals` | c13 Sstc, then 22 runtime pairs |
@@ -1045,6 +1155,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c13a2 (SEMULITH-P4-0128): dynamic STIP and source
+  supersession repaired, raw retention explicit, direct27/54 and core48 cases.
+  Independent author/controls and effective-report oracle repaired; old inputs
+  and frozen records exact, 68/114 unchanged. Direct S witnesses next.
 
 - `2026-10-10`: `.13` c13a1 (SEMULITH-P4-0127): explicit STCE setup
   in nine timer guests, fresh derivations/provenance and owned-record protocol;

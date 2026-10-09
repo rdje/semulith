@@ -63,16 +63,18 @@ through these gates; the author still explicitly refuses writable counter rebasi
 Supervisor interrupt CSR visibility is also conditional on delegation. P4.13
 repairs the shared `sip`/`sie` view logic and the independent author: undelegated
 bits read zero and ignore writes, even if `mip` is pending. Revoking delegation
-preserves pending/enabled owner state. At cold reset, computed `mip.STIP` is one
-because time equals `stimecmp`, while `sip` is zero because `mideleg` is zero.
+preserves pending/enabled owner state. That earlier repair still assumed computed `mip.STIP=1` at reset. The later
+STCE repair below corrects this: cold STCE=0 exposes software pending zero,
+and `sip` is zero with `mideleg=0`.
 Interrupt selection and WFI wake still use the machine owners and their explicit
 delegation rules; the CSR-view repair does not change those rules.
 
 
-P4.13's later Sstc review found a pending production defect: the STIP overlay
-currently ignores STCE=0, which must restore the software-writable M-mode
+P4.13's later Sstc review found a production defect (repaired by c13a2): the STIP overlay
+then ignored STCE=0, which must restore the software-writable M-mode
 fallback. It also found that mm-stimecmp's terminal zero read cannot distinguish
-success from a final trap. Both repairs are owned before SSTC contract credit;
+success from a final trap. The pending fallback is now repaired; the terminal witness repair remains
+owned before SSTC contract credit;
 [the runtime chapter](contract-runtime.md#sstc-prerequisites-two-discovered-defects)
 gives the public reproduction and the ordered repair plan. The earlier timer
 receipts above describe their recorded inputs and do not establish this missing case.
@@ -82,4 +84,7 @@ fresh w-timer run reads instret=13 and time=17 after the same two idle boundarie
 with mepc=0x80000034. Earlier numeric receipts above refer to their historical
 inputs. [The runtime chapter](contract-runtime.md#explicit-comparator-setup-before-fallback-repair)
 shows the setup, all nine budgets, the worked wake sequence and reference limits.
-The fallback defect and terminal S-mode witness repair remain pending.
+The fallback defect is repaired: cold pending is zero, M software owns STIP
+with STCE clear, and enabling the comparator retains raw software pending.
+The terminal S-mode witness repair remains pending. The runtime chapter gives
+the current selection table, transitions and v2 supersession.

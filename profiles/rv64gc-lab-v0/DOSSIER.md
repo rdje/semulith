@@ -121,15 +121,17 @@ ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage
 Requirement statuses remain .14's work; exact snapshot/replay serialization .16's.
 
 The effective contract has 57 obligations / 114 checks, 68 realized: thirteen
-scope pairs, sixteen guest pairs and five typed boundary pairs. Version 2 is
+scope pairs, fifteen guest pairs and six direct assumption pairs. Version 2 is
 open for twenty-three runtime pairs and final freeze. Frozen v0/v1 text, membership
 and pins remain unchanged. The shared catalog expansion/schema/freeze owners
 judge the same records. V2 supersedes the pre-qualification FP condition, both
-historical definition stages and blanket no-breakpoint wording.
+historical definition stages, blanket no-breakpoint wording and the unconditional
+v1 STIP comparator assumption. STCE-clear software pending is repaired; direct
+S-mode programming/refusal witnesses still precede SSTC credit.
 
 | Current evidence | Canonical detail |
 | --- | --- |
-| Physical addresses, data widths/attributes, event positioning, ordering, cold reset | Five direct typed pairs in ENVIRONMENT.md and the contract book |
+| Physical addresses, data widths/attributes, event positioning, ordering, cold reset | Five direct typed pairs plus the STCE source pair in ENVIRONMENT.md and the contract book |
 | Success-response shape validation | Shared CPU boundary validator; target failures remain target exceptions |
 | Value/phase/startup auditing | Independent fixture controls; adapters cannot detect hidden host mutation or grant interrupt-source authority |
 | Privilege modes, Sv39, Svade, IALIGN-16, Zicntr | Exact guest bindings in ENVIRONMENT.md; worked observations and controls in the runtime book |
@@ -140,8 +142,9 @@ Ordering selects a sequential one-hart RVWMO realization, not all weak outcomes.
 Reset includes retained cache/reservation/wait owners; cold fcsr is internally
 zero but FS-gated, and computed pending state differs from raw mip storage.
 All evidence retains its finite scope; no firmware or Linux acceptance is claimed.
-SSTC remains uncredited: STCE-clear software STIP is broken, and the terminal
-zero-read guest misses a final trap. P4-SYSTEM.13 owns both prerequisite repairs.
+STCE-clear software STIP is repaired; SSTC remains uncredited because the
+terminal zero-read guest misses a final trap. P4-SYSTEM.13 c13b owns the
+direct S-mode programming/refusal witnesses that must close that gap.
 
 Review [the contract book](docs/book/src/plan/p4/contract-v2.md) and
 [runtime witnesses](docs/book/src/plan/p4/contract-runtime.md) for examples.

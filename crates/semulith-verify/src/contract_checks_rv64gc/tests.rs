@@ -138,8 +138,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        68,
-        "v1's six records, v2's M/C/fetch/address/data/event/ordering/reset records, partial progress, eleven selection records, three v2 corrections, privilege modes, Sv39, Svade, halfword alignment and Zicntr, POS + NEG"
+        70,
+        "v1's six records, v2's M/C/fetch/address/data/event/ordering/reset records, partial progress, eleven selection records, three v2 corrections, privilege modes, Sv39, Svade, halfword alignment Zicntr and v2 interrupt-source supersession, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

@@ -64,8 +64,8 @@ pub enum Legalize {
     /// `(one-of V …)` — the enumerated set; an illegal write retains the old value (the
     /// WARL laboratory choice, recorded in the state document).
     OneOf(&'static [u64]),
-    /// `(computed)` — the engine computes the field (mstatus.SD, mip.STIP); writes do
-    /// not apply.
+    /// `(computed)` — the engine selects the field value (mstatus.SD, mip.STIP).
+    /// Writes retain it except for mip.STIP in the STCE-clear software view.
     Computed,
 }
 
@@ -238,8 +238,9 @@ fn field_mask(f: &FieldMeta) -> u64 {
 }
 
 /// The `(computed)` fields this slice owns. SD is the FS/XS/VS summary (RVP-MACHINE
-/// §2.1.1.6.7); STIP is the stimecmp-vs-time comparison (RVP-SSTC 12.1 — the timer
-/// signal's progress is the environment contract's, P4-SYSTEM.5/.9). Any other computed
+/// §2.1.1.6.7); STIP selects software mip storage when STCE=0, otherwise the
+/// unsigned stimecmp-vs-time comparison (RVP-MACHINE §2.1.1.9/§2.1.1.18).
+/// Timer progress is the environment contract's, P4-SYSTEM.5/.9. Any other computed
 /// field is generator work: it computes as its stored bits until its owner lands.
 fn computed<H: PrivilegedHart>(hart: &H, f: &FieldMeta) -> u64 {
     match (f.csr, f.name) {
@@ -251,9 +252,13 @@ fn computed<H: PrivilegedHart>(hart: &H, f: &FieldMeta) -> u64 {
             u64::from(fs == 3 || xs == 3 || vs == 3) << f.bit_lo
         }
         ("mip", "STIP") | ("sip", "STIP") => {
-            let time = csr_state_raw(hart, "time");
-            let stimecmp = csr_state_raw(hart, "stimecmp");
-            u64::from(time >= stimecmp) << f.bit_lo
+            if (csr_state_raw(hart, "menvcfg") >> STCE) & 1 == 0 {
+                csr_state_raw(hart, "mip") & field_mask(f)
+            } else {
+                let time = csr_state_raw(hart, "time");
+                let stimecmp = csr_state_raw(hart, "stimecmp");
+                u64::from(time >= stimecmp) << f.bit_lo
+            }
         }
         _ => hart.csr_raw(index_by_name(hart, f.csr).unwrap_or(0)) & field_mask(f),
     }
@@ -519,9 +524,9 @@ pub fn csr_write<H: PrivilegedHart>(
         })?;
         write_legalized(hart, index, meta.name, value);
     }
-    // An FP-CSR write is an FP state change: FS marks Dirty (Sail 0.14's write_fcsr →
-    // dirty_fd_context_if_present, measured at fdext_regs.sail:455). SD follows, being
-    // computed.
+    // RVP-MACHINE §2.1.1.6.7 permits conservative dirtiness tracking, including
+    // unchanged fcsr writes. The laboratory marks every legal FP-CSR write Dirty;
+    // SD follows the selected FS state.
     if matches!(meta.name, "fflags" | "frm" | "fcsr") {
         mark_fp_dirty(hart);
     }
@@ -529,8 +534,9 @@ pub fn csr_write<H: PrivilegedHart>(
 }
 
 /// The per-field legalization write into one CSR's storage — `csr-write`'s lowering:
-/// WPRI preserves, WARL/WLRL apply their `(legalize …)` rule, computed fields ignore the
-/// write; a register with NO field table is atomic (a scratch, a tval) — the whole word
+/// WPRI preserves, WARL/WLRL apply their `(legalize …)` rule. Computed fields retain
+/// storage, except mip.STIP when STCE=0 selects its writable software view. A register
+/// with NO field table is atomic (a scratch, a tval) — the whole word
 /// is writable storage.
 fn write_legalized<H: PrivilegedHart>(hart: &mut H, index: usize, table_name: &str, value: u64) {
     let old = hart.csr_raw(index);
@@ -553,6 +559,12 @@ fn write_legalized<H: PrivilegedHart>(hart: &mut H, index: usize, table_name: &s
         let legal = match f.discipline {
             FieldDiscipline::Wpri => kept, // preserve
             FieldDiscipline::Warl | FieldDiscipline::Wlrl => match f.legalize {
+                Some(Legalize::Computed)
+                    if (f.csr, f.name) == ("mip", "STIP")
+                        && (csr_state_raw(hart, "menvcfg") >> STCE) & 1 == 0 =>
+                {
+                    incoming
+                }
                 None | Some(Legalize::Computed) => kept,
                 Some(Legalize::Any) => incoming,
                 Some(Legalize::ReadOnly(_)) => kept,

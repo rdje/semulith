@@ -28,7 +28,7 @@ def interrupt_views(author):
         for delegated in masks:
             hart = author.Hart()
             hart.mode = mode
-            hart.csr.update(mie=0x222, mip=0x202, mideleg=delegated)
+            hart.csr.update(mie=0x222, mip=0x202, mideleg=delegated, menvcfg=1 << 63)
             assert author.csr_read_value(hart, 'sie') == delegated, 'sie exposed an undelegated bit'
             assert author.csr_read_value(hart, 'sip') == delegated, 'sip delegation/owner read mismatch'
             author.csr_write_value(hart, 'sie', 0)
@@ -57,7 +57,7 @@ def interrupt_views(author):
                 for suffix, after in zip((0x112f3, 0x122f3, 0x132f3, 0x152f3, 0x162f3, 0x172f3), afters):
                     hart = author.Hart()
                     hart.mode = mode
-                    hart.csr.update(mie=0x222, mip=0x202, mideleg=delegated)
+                    hart.csr.update(mie=0x222, mip=0x202, mideleg=delegated, menvcfg=1 << 63)
                     pc, info = author.execute(hart, base | suffix)
                     assert pc == Q.ENTRY + 4 and not hart.trapped
                     assert info['writes'] == {5: delegated}, 'CSR instruction returned a hidden interrupt bit'

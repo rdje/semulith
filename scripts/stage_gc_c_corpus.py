@@ -90,13 +90,14 @@ def programs(asm):
                          'c.sd x8, x9, 0', 'lr.d x10, (x8)', 'c.addi x10, 1',
                          'c.li x11, -1', 'sc.d x11, x10, (x8)', 'c.ld x12, x8, 0'],
               9, {10: 6, 11: 0, 12: 6}, 'lrsc'),
-        Guest('c-irq', ['auipc x1, 0', 'addi x1, x1, 40', 'csrrw x0, mtvec, x1',
-                        'addi x2, x0, 32', 'csrrw x0, mie, x2', 'addi x3, x0, 9',
+        Guest('c-irq', ['lui x31, 0x80000', 'csrrs x0, menvcfg, x31',
+                        'auipc x1, 0', 'addi x1, x1, 40', 'csrrw x0, mtvec, x1',
+                        'addi x2, x0, 32', 'csrrw x0, mie, x2', 'addi x3, x0, 11',
                         'csrrw x0, stimecmp, x3', 'csrrsi x0, mstatus, 8',
                         'c.li x10, 1', 'c.addi x10, 1', 'c.j done', 'c.nop',
                         'csrrs x7, mcause, x0', 'csrrs x8, mepc, x0',
                         'csrrw x0, mie, x0', 'mret', 'done: c.nop'],
-              17, {7: (1 << 63) | 5, 8: Q.ENTRY + 34, 10: 2}, 'irq'),
+              19, {7: (1 << 63) | 5, 8: Q.ENTRY + 42, 10: 2}, 'irq'),
         Guest('c-wide-illegal', ['auipc x1, 0', 'addi x1, x1, 24',
                                 'csrrw x0, mtvec, x1', '.word 0xffffffff',
                                 'addi x20, x0, 7', 'c.j done', 'c.nop',
@@ -207,8 +208,8 @@ def build(root, *, mutation=None):
         elif guest.check == 'lrsc':
             assert run.hart.reservation is None and run.hart.read(Q.ENTRY + 1024, 8) == 6, 'C constrained LR/SC result'
         elif guest.check == 'irq':
-            assert run.steps[9].pc == Q.ENTRY + 34 and run.steps[9].fetch == 0, 'interrupt compressed boundary PC'
-            assert run.hart.instret == 16, 'interrupt boundary retired'
+            assert run.steps[11].pc == Q.ENTRY + 42 and run.steps[11].fetch == 0, 'interrupt compressed boundary PC'
+            assert run.hart.instret == 18, 'interrupt boundary retired'
         for step in run.steps:
             insn = step.insn.split()[0]
             # A source annotation at an interrupt/fetch-fault boundary is not an

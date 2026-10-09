@@ -141,9 +141,10 @@ class Hart:
         return self.csr.get("stvec", 0) & ~0b11
 
     def mip_value(self):
-        """mip/sip with the live STIP overlay (time >= stimecmp — slice a's ticking
-        domain; the SSIP/SEIP bits are storage)."""
+        """STCE-clear software pending, or enabled unsigned timer comparison."""
         base = self.csr["mip"]
+        if not (self.csr["menvcfg"] >> 63) & 1:
+            return base
         stip = 1 if self.time >= self.csr["stimecmp"] else 0
         return (base & ~(1 << 5)) | (stip << 5)
 
@@ -470,8 +471,10 @@ def csr_read_value(h, name):
 
 
 def _dirty_fp(h):
-    """Any FP-CSR write marks FS=Dirty (Sail 0.14's write_fcsr → dirty_fd_context_if_present,
-    fdext_regs.sail:455); SD is computed from FS."""
+    """Conservative FS=Dirty on legal FP-CSR writes, including unchanged values.
+
+    RVP-MACHINE 2.1.1.6.7 permits imprecise dirtiness; SD summarizes FS.
+    """
     h.csr["mstatus"] |= 0b11 << 13
 
 
@@ -495,7 +498,8 @@ def csr_write_value(h, name, v):
         m = h.csr["mstatus"]
         h.csr["mstatus"] = (m & ~SSTATUS_W) | (v & SSTATUS_W)
     elif name == "mip":
-        h.csr["mip"] = (old & ~0x202) | (v & 0x202)     # SSIP/SEIP writable; STIP computed; the rest read-only 0
+        writable = 0x202 if (h.csr["menvcfg"] >> 63) & 1 else 0x222
+        h.csr["mip"] = (old & ~writable) | (v & writable)  # STIP software-writable only with STCE=0
     elif name == "sip":
         m = h.csr["mip"]
         writable = 0x2 & h.csr["mideleg"]  # delegated SSIP only; SEIP/STIP remain read-only
