@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-stimecmp.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-stimecmp.s") (entry "0x0000000080000000") (instructions 35)
+(expectations (program "mm-stimecmp.s") (entry "0x0000000080000000") (instructions 35) (fetches 70)
   (step (n 0) (insn "csrrs x5, stimecmp, x0") (writes)
     (derivation "in M, stimecmp is always accessible and resets to 0 — x5 already holds 0, no change observed.") (source "RVP-SSTC §2.1 (stimecmp); the state document's reset"))
   (step (n 1) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000004")))

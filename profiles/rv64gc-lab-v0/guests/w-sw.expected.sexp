@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py w-sw.expected.sexp schema/expectations.sexp
 
-(expectations (program "w-sw.s") (entry "0x0000000080000000") (instructions 17)
+(expectations (program "w-sw.s") (entry "0x0000000080000000") (instructions 17) (fetches 34)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "addi x13, x0, 1") (writes (write (reg "x13") (value "0x0000000000000001")))

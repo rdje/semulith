@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py m-div.expected.sexp schema/expectations.sexp
 
-(expectations (program "m-div.s") (entry "0x0000000080000000") (instructions 27)
+(expectations (program "m-div.s") (entry "0x0000000080000000") (instructions 27) (fetches 54)
   (step (n 0) (insn "addi x5, x0, -7") (writes (write (reg "x5") (value "0xfffffffffffffff9")))
     (derivation "the dividend -7.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "addi x6, x0, 2") (writes (write (reg "x6") (value "0x0000000000000002")))

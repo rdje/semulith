@@ -172,3 +172,116 @@ Completed receipts moved byte-verbatim from the active tree, continuing part 5.
   Production sources/counts/composition/modules remain untouched until e2. Archive
   completed e1d0 verbatim to part 6 to preserve the fixed live-tree ceiling.
 
+`P4-SYSTEM.12` slice (e2b) — historical author extent preflight (`2026-10-09`, `SEMULITH-P4-0101`):
+
+- [x] **REPRODUCE / ROOT CAUSE** — full-C target-local snapshot with independently
+  migrated counts makes --check-owned rc=1: all 42 records DRIFT (e2b/before.log).
+  The historical word route regenerates capture text and word extent together;
+  the new boundary needs a separately derived count, not replacement prose.
+- [x] **FIX / ADDRESSED** — `python3 scripts/probe_gc_owned_extent.py` rc=0:
+  42-record unbound check, full-C unmigrated refusal, migrated/repeat checks,
+  count/write/comment/CRLF drift, canonical word-write refusal with byte identity,
+  and explicit parcel write/provenance pass. Bound checks compare independently
+  derived parcel writes to the historical derivation and reconcile the actual
+  request log before the shared direct-field transform. Four author mutants each
+  rc=1: old counts, parcel prose, bad request log and permitted word overwrite.
+- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 127 pass / 0 fail;
+  both generated fixtures and production mirror (91 exact/seven declared) match.
+  First unstaged cold check named the new untracked helper as missing; a temporary
+  target-local index included the pending Python files for the tracked-input test.
+  Actual index SHA-256 unchanged (verified); no gate weakened. All 142 production
+  records/encoding/modules byte-exact against ce6a6d8. No Rust change; 623 arms.
+- [x] **LOCKSTEP** — live docs/frontier/book/toolbox/doctrine updated, P4 11/18
+  unchanged. Closed e2a receipt and e1d2 design moved byte-verbatim to archive part 6;
+  reconstruction asserted, fixed caps unchanged. `make book` and commit gate enforced.
+  Next e2c binds the production composition, staged corpus/counts, contract and matrix;
+  matched Sail and leaf acceptance follow.
+  promotion: declined (permanent snapshot/byte/write/mutation controls retain the rule).
+
+
+## Closed pre-bind design notes (e2b/e2a)
+
+- `2026-10-09` (e2b author preflight, before changes): the bind also changes the
+  42 historical author-owned records' extents. Own this prerequisite before e2c's
+  atomic bind: reproduce --check-owned on a target-local full-C snapshot with
+  independently staged parcel counts. Preserve the original word-derived capture
+  text; independently execute each fixed budget, compare every write and actual
+  request log, and transform only its direct fetch field. Share the surgical helper
+  with the mirror governor through a small text module, avoiding a dependency from
+  the author to its governor. Unbound historical checks stay byte-exact. Refuse a
+  default word-route CLI write to a canonical C-composed record; an explicit parcel
+  route remains available. Retain controls for migrated/unmigrated counts, wrong
+  observations/comments, request-log disagreement, write refusal and the original
+  42 records. Archive closed e2a verbatim; production remains unchanged here.
+
+- `2026-10-09` (e2a bind preflight, before changes): own the mirror/count governor
+  prerequisite here before the atomic bind. Diagnose the current governor against a
+  target-local copy with independently staged parcel counts: exact byte comparison
+  must refuse. Replace only its fetch-field comparison for a C-composed unit with a
+  surgical transformation; compare every other byte and retain the seven declared
+  semantic re-derivations, which must still differ after count normalization. Independently
+  derive all supplied records' writes and actual request counts before accepting any
+  parcel extent. The unbound production route stays byte-exact. Add permanent controls
+  for word/mixed/runoff extents, wrong counts, non-count comments/observations/source
+  drift, stale re-derivations, duplicate/nested/string field traps and exact repeat.
+  No production record/composition/module change in this prerequisite. Correct the
+  active brief's superseded coalescing sentence to the c1 parcel-first decision already
+  recorded below. Commit e2a, then e2b binds the staged corpus and contract together.
+
+
+## Closed e1d staging/provenance design notes
+
+- `2026-10-09` (e1d split, before changes): e1d1 first tracks a reproducible,
+  non-writing census of all historical guests at their already-declared budgets.
+  Compare every independently derived architectural write to the existing records;
+  derive parcel counts from actual request logs and check the per-step sum. Emit a
+  deterministic fingerprinted staging manifest, with no production count changes.
+  Hand word/mixed/runoff counts, wrong-observation and wrong-extent controls must
+  discriminate. Then e1d2 authors the C corpus before e2 binds. Archive e1c1 verbatim
+  to part 6 at the live-tree ceiling, with exact reconstruction asserted.
+
+- `2026-10-09` (e1d0 provenance prerequisite, before changes): emit currently falls
+  through to the FP-corpus header for generic/C/Sv39 source names. Preserve exact
+  historical headers only for the 42 canonical owned sources on their word route;
+  every new output names the tracked spec-side author and its actual word or
+  explicit-budget C-capable parcel route, without inventing original family or
+  pre-engine chronology. Guard generic sources, borrowed historical basenames,
+  raw C parcels and parcel re-derivation of an owned input, with parent and targeted
+  mutations. Check all 42 owned records exact and historical record hashes unchanged.
+  Commit this bounded repair before e1d stages any new corpus/count records.
+
+
+### Owned e1d provenance prerequisite
+
+`rg -n 'floating-point corpus|P4-SYSTEM.7' scripts/derive_rv64gc_expectations.py`
+locates emit's fallback: non-family generic/C/Sv39 source names receive an FP-corpus
+header. No such new production record is adopted here; prior outputs keep provenance.
+Before publishing the staged C corpus/counts, e1d must derive an explicit correct
+family/provenance header and guard generic/C text, while preserving the 42 historical
+owned records. Schedule as high priority within e1d, before its first authored record.
+
+
+## Closed e1c1 cache design
+
+- `2026-10-08` (e1c1 execution plan, before changes): derive the declared four-slot,
+  fully associative FIFO cache independently from state.sexp's selected policy and
+  pinned supervisor 11.1.2.1/11.1.3.2/11.1.4.1. Cache successful 4-KiB translations
+  with ASIDLEN=16, inherited G and leaf permissions; recheck live mode/SUM/MXR/MPRV
+  before hits, retain cached A/D, and never install a fault. M/Bare bypass and satp
+  root/ASID changes do not implicitly flush. Hits do not refresh FIFO; fences retain
+  the replacement cursor and select x0 identity, masked ASID and canonical page.
+  Hand PTE/physical-address fixtures, all four zero-operand fences, inherited globals,
+  FIFO, stale permissions, fault non-installation and cold repeat must discriminate
+  targeted mutations and the uncached parent. Repair direct permission fixtures that
+  rewrite PTEs to execute a real legal full fence before requiring a fresh view; retain
+  their existing negative controls. Census all 139 parcel architectural traces and
+  all 121 historical word texts. The known erroneous unadopted sv39-tlb-fence word
+  output may change to the pinned policy; investigate every other difference. Keep
+  all 42 owned records byte-exact, and write no expected record or profile binding.
+  Document the author cache and its provenance without claiming CPU acceptance.
+  Archive-family pressure is now a resumption dependency: 211 files / 781,740 B
+  leave 4,692 B, while the oldest required head records total 4,628 B before shard
+  headers/manifest. Route the measured lifecycle defect to LIVE-CONTAINMENT.4;
+  record its retrieval options and exact evidence before any migration. One DEV_NOTES
+  shard and a concise changelog summary can finish this slice without a cap increase.
+

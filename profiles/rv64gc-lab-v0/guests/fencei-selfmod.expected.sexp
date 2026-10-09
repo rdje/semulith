@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py fencei-selfmod.expected.sexp schema/expectations.sexp
 
-(expectations (program "fencei-selfmod.s") (entry "0x0000000080000000") (instructions 8)
+(expectations (program "fencei-selfmod.s") (entry "0x0000000080000000") (instructions 8) (fetches 16)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "lui   x1, 0x00700") (writes (write (reg "x1") (value "0x0000000000700000")))

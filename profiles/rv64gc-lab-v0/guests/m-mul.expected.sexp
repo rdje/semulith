@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py m-mul.expected.sexp schema/expectations.sexp
 
-(expectations (program "m-mul.s") (entry "0x0000000080000000") (instructions 26)
+(expectations (program "m-mul.s") (entry "0x0000000080000000") (instructions 26) (fetches 52)
   (step (n 0) (insn "addi x5, x0, 7") (writes (write (reg "x5") (value "0x0000000000000007")))
     (derivation "a small positive operand, 7.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "addi x6, x0, -3") (writes (write (reg "x6") (value "0xfffffffffffffffd")))

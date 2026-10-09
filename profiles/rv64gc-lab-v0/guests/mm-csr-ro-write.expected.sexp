@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-csr-ro-write.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-csr-ro-write.s") (entry "0x0000000080000000") (instructions 51)
+(expectations (program "mm-csr-ro-write.s") (entry "0x0000000080000000") (instructions 51) (fetches 102)
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "x1 holds this instruction's own address.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 84") (writes (write (reg "x1") (value "0x0000000080000054")))

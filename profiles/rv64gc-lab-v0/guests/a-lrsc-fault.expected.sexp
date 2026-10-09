@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py a-lrsc-fault.expected.sexp schema/expectations.sexp
 
-(expectations (program "a-lrsc-fault.s") (entry "0x0000000080000000") (instructions 41)
+(expectations (program "a-lrsc-fault.s") (entry "0x0000000080000000") (instructions 41) (fetches 82)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

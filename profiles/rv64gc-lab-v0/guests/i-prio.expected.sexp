@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py i-prio.expected.sexp schema/expectations.sexp
 
-(expectations (program "i-prio.s") (entry "0x0000000080000000") (instructions 63) (fetches 60)
+(expectations (program "i-prio.s") (entry "0x0000000080000000") (instructions 63) (fetches 120)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

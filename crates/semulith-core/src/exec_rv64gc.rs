@@ -36,7 +36,7 @@
 //!   formed); an outside-every-region access is the boundary's `AccessFault` answer,
 //!   delivered as the matching load/store access-fault cause (5/7).
 //! - **Fetch** — C-enabled tables read a `FetchParcel` first, then another only for a
-//!   32-bit instruction. The unbound production table still uses word fetches. IALIGN is
+//!   32-bit instruction. A table without C retains word fetches. IALIGN is
 //!   16 with C, so a fetch is
 //!   alignment-legal at any even address; the environment judges (it carries the
 //!   profile's IALIGN as data) and an `AccessFault`/`Misaligned` answer is delivered as

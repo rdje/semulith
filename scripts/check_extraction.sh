@@ -121,6 +121,16 @@ PY2
 $RULE2"; unit_docs "$t/profiles/good"
   sem "$RULE
 $RULE2"; unit_docs "$t/profiles/bad"
+  # P4-SYSTEM.12 e2c: run the Python contract controls at the registered boundary.
+  score() {
+    if [ "$2" -eq 0 ] && printf '%s' "$3" | grep -qF 'check_extraction --self-test: 17 pass / 0 fail'; then
+      pass=$((pass+1))
+    else
+      fail=$((fail+1)); printf 'EXTRACTION self-test MISS: %s\n%s\n' "$1" "$3" >&2
+    fi
+  }
+  out="$(python3 scripts/check_extraction.py --self-test 2>&1)"; rc=$?
+  score "Python extraction/expansion controls discriminate" "$rc" "$out"
   arm "GREEN a sufficient unit is discovered and judged" 0 "SUFFICIENT"
 
   sem "$RULE"; unit_docs "$t/profiles/bad"   # bad loses sub's semantics

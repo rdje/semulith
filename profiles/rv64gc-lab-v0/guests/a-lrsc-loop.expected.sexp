@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py a-lrsc-loop.expected.sexp schema/expectations.sexp
 
-(expectations (program "a-lrsc-loop.s") (entry "0x0000000080000000") (instructions 11)
+(expectations (program "a-lrsc-loop.s") (entry "0x0000000080000000") (instructions 11) (fetches 22)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "addi x10, x0, 1") (writes (write (reg "x10") (value "0x0000000000000001")))

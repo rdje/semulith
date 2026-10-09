@@ -1,19 +1,20 @@
-# DOSSIER — `rv64gc-lab-v0` (development — the resolution stage)
+# DOSSIER — `rv64gc-lab-v0` (development — complete instruction composition)
 
 The P4 profile, resolved: the **Linux-capable** processor this project validates next,
 selected and recorded by `P4-SYSTEM.1` (design brief `2026-10-02`, executed
-`2026-10-03` — [`docs/tasks/P4-SYSTEM.md`](../docs/tasks/P4-SYSTEM.md), Decisions).
+`2026-10-03` — [`docs/tasks/P4-SYSTEM.md`](../../docs/tasks/P4-SYSTEM.md), Decisions).
 Nothing here is inferred from the letters "GC": every element below carries its source
 locator, and the dependency closure is measured against the pinned publication.
 
-> **Claim scope.** This unit is a **profile resolution**: the selection is exact and
-> citable, and the definition pipeline (encoding fragments, semantics, guests) has not
-> started — the dossier declares the `profile-resolution` vehicle route
-> (`D-RESOLUTION-ROUTE`) and the definition-pipeline gates refuse any
-> definition-pipeline document beside the declaration. No model code exists for this
-> unit, and nothing here is an execution result. F and D are in the profile, but the
-> model implements no floating point until the backend passes qualification
-> (`P4-SYSTEM.7`); the `CPU-SYSTEM` gate verdict will read `incomplete` until then.
+> **Claim scope.** This `generated-definition` unit executes its complete
+> instruction composition: RV64I, M/A/F/D/C, Zicsr, Zicntr and Zifencei, with the
+> declared privileged machinery. The scope is 200 spellings (197 instructions and
+> three counter pseudos); all are exercised by the 167-guest directed corpus.
+> F/D use the qualified Rust backend (`P4-SYSTEM.7`); C bound at `.12` slice e2c.
+> This is finite laboratory evidence. The generated [CPU-SYSTEM report](GS-REPORT.md)
+> remains `incomplete` on contract, evidence, regression, replay, portability and
+> release work. The original profile-resolution declarations below describe the
+> selection history; stale frozen obligations are owned by `.13` for supersession.
 
 ## The selection, at a glance
 
@@ -57,16 +58,14 @@ pinned chapter that states it.
 
 ## Decisions with their own weight
 
-- **FP is declared, not yet modelled** (`D-FP-DEFER`): the standard RV64G userspace ABI
-  is LP64D (`RVI-PSABI` §2.4–§2.5: the hardware floating-point calling convention with
-  ABI_FLEN=64), which requires D — so F and D are in the profile from day one, and the
-  *model* implements none of it until `P4-SYSTEM.7` qualifies an FP backend. The
-  alternative (resolve rv64imac now, add FD later) was weighed and rejected: it would
-  fork the profile identity at the `.7` landing, and the honest-verdict machinery
-  already carries declared-but-unevidenced scope as `incomplete`, never as a pass. And
-  a Sail-versus-Spike FP comparison is **one implementation twice** (the SoftFloat
-  shared ancestry, 184/199 files byte-identical) — `.7`'s fixtures must derive expected
-  values from outside that lineage.
+- **FP qualification preceded implementation** (historical `D-FP-DEFER`): the
+  standard RV64G userspace ABI is LP64D (`RVI-PSABI` §2.4–§2.5), requiring D.
+  The initial resolution included F/D and deferred their implementation until
+  `P4-SYSTEM.7` qualified `rustc_apfloat` with independent exact-rational fixtures.
+  F and D now execute through that backend. Resolving rv64imac first was rejected
+  because it would fork the profile identity. Sail-versus-Spike FP comparison is
+  **one implementation twice** (shared SoftFloat ancestry, 184/199 files identical),
+  so it remains unsuitable as independent numeric evidence.
 - **Sv39's precedent and its warning** (`D-SV39`): the pinned SoC manual's U54 implements
   Bare + Sv39 — and **raises page faults rather than setting PTE A/D bits**
   (`SIFIVE-FU540-C000` §4.7). The privileged architecture permits both behaviours; which
@@ -78,15 +77,19 @@ pinned chapter that states it.
   every cited row re-hashed against the tracked `SHA256SUMS`. The census rows'
   corrections land with this unit's category-needs dispositions at registration day.
 
-## What this unit does NOT have yet
+## Current implementation and remaining acceptance
 
-No `encoding.sexp`, no `state.sexp` census, no `guests/`, no `interactions.sexp`, no
-reference dossier, no expectations — the definition pipeline starts at `P4-SYSTEM.2`.
-No registration in `materials/units.sexp`, no book under `docs/models/` — registration
-day is a later leaf (the `.2`/`.11` precedent: one coherent registration day with its
-generator consequences). The environment contract (`rv64gc-lab-env-v0`) is **v0**: the
-resolution's obligations only; `P4-SYSTEM.9` extends it to v1 (versioned, never edited
-in place).
+The unit owns its encoding/semantic composition, state census, specification-derived
+expectations, interaction matrix and pinned reference dossier. It remains unregistered in
+`materials/units.sexp` and has no dedicated book under `docs/models/`. Registration,
+category dispositions and that book are owned by `.14` before evidence signoff;
+the project P4 chapters are the current review surface.
+The environment contract has frozen v0/v1 and open v2; v2 now carries M, C and
+exact two-byte physical fetch supply. Frozen resolution-era statements remain
+historical records until `.13` supplies versioned supersessions. Requirement status
+promotion and experiment records belong to `.14`; CPU-SYSTEM acceptance has not
+been reached. The [C chapter](../../docs/book/src/plan/p4/c.md) records its binding
+and the matched Sail verification still to run before leaf closure.
 
 ## Open questions
 
@@ -105,5 +108,5 @@ in place).
   a page fault (scause/stval via csrr) but cannot evidence an implicit PTE write, so the
   hardware-update default would price a new observation vocabulary to test a side
   effect the laboratory need not produce. Svadu is NOT selected: menvcfg's ADUE stays
-  WPRI. The Sail matched override's `Svade` flag is `true` (the reference flip
-  measured: no guest's verdict changes — no guest activates translation).
+  WPRI. The Sail matched override's `Svade` flag is `true` (the resolution-era reference flip
+  measured no verdict change in that earlier corpus).

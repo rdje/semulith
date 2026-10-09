@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py sv39-perm-usr.expected.sexp schema/expectations.sexp
 
-(expectations (program "sv39-perm-usr.s") (entry "0x0000000080000000") (instructions 169) (fetches 169) (never_written "x15") (never_written "x23")
+(expectations (program "sv39-perm-usr.s") (entry "0x0000000080000000") (instructions 169) (fetches 338) (never_written "x15") (never_written "x23")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "the trap vector materializes pc-relative (auipc forms pc + 0; the addi carries the layout-audited delta).") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 508") (writes (write (reg "x1") (value "0x00000000800001fc")))

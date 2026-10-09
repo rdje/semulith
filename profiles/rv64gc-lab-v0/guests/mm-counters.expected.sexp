@@ -7,7 +7,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-counters.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-counters.s") (entry "0x0000000080000000") (instructions 52)
+(expectations (program "mm-counters.s") (entry "0x0000000080000000") (instructions 52) (fetches 104)
   (step (n 0) (insn "rdcycle x5") (writes)
     (derivation "in M the counters are always readable; the laboratory's counters read 0 — and x5 already holds 0, so no change is observed.") (source "RVI-Zicntr §2.1 (RDCYCLE); the laboratory's fixed-zero counter policy"))
     (step (n 1) (insn "rdtime x6") (writes (write (reg "x6") (value "0x0000000000000001")))

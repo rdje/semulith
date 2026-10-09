@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py inj-walk-l2.expected.sexp schema/expectations.sexp
 
-(expectations (program "inj-walk-l2.s") (entry "0x0000000080000000") (instructions 85)
+(expectations (program "inj-walk-l2.s") (entry "0x0000000080000000") (instructions 85) (fetches 170)
   (never_written "x27")
   (refuse (kind walk) (base "0x80001000") (size "0x8"))
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

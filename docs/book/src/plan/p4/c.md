@@ -1,6 +1,6 @@
 # P4.12 — Compressed instructions (C)
 
-**Status:** Underway (tools done; author prerequisites, staged corpus and bind next)
+**Status:** Underway (production C bound at e2c; matched Sail verification next)
 
 The C extension lets a program use 16-bit instructions alongside the usual 32-bit ones. Linux
 software is built to use them. They save space, and each one is simply a shorter spelling of an
@@ -173,8 +173,9 @@ mutations fail on byte annotations, padding, source termination, counts, retirem
 interrupt ordering, code visibility and unknown-valid refusal. The historical word route
 still reproduces all 97 earlier texts, including its 42 owned records.
 
-The production profile still declares C unbound. The staged specification-derived corpus
-and count derivation precede the C bind, then the matched Sail experiment. These probes
+At slice (d3d2), the production profile still declared C unbound. The staged
+specification-derived corpus and count derivation preceded the C bind at (e2c),
+with the matched Sail experiment next. These probes
 are finite component evidence. The [assembler chapter](../../annex/assembler.md) documents
 the explicit authoring command and its budget semantics.
 
@@ -296,7 +297,7 @@ instruction at that same halfword faults while fetching its required second parc
 before any instruction effect. Both runs issue 101 physical parcel requests, but
 use 52 and 51 declared boundaries respectively. Their trap values name the next
 page; the saved instruction PCs distinguish a new fetch from a straddling one.
-The production composition and records remain unchanged until the atomic bind.
+At (e1d2), production composition and records remained unchanged pending the atomic bind.
 
 Slice (e2a) prepares the production mirror check for that migration. Once C is
 composed, it first re-derives every supplied guest's architectural writes and actual
@@ -315,3 +316,30 @@ Only the direct count changes; capture headers and derivation prose stay exact.
 With C unbound, the historical check keeps its original byte-exact route. A default
 word-route write to a canonical C-composed record refuses before any output changes;
 new authoring requires explicit `--parcels --steps N`, which records that route.
+
+
+Slice (e2c) binds C in production as one coherent change. The composition is complete:
+197 instruction rules plus three counter pseudos, with all 200 spellings exercised.
+The 28 staged C programs and their specification-derived records land byte-exact;
+the directed corpus grows from 139 to 167. The old records change only their direct
+fetch counts, from 4,888 word requests to 9,770 parcels across 4,913 boundaries.
+Every other byte and every historical source stays exact. All 139 historical engine
+PC/mode/register-write traces also remain byte-identical to the unbound parent;
+five public-CLI C controls distinguish that parent from the bound model.
+
+The open v2 contract now includes C's guarantee and exact two-byte physical fetch
+supply. Their four positive/negative check IDs are realized, bringing the registry
+to 20 checks. Frozen v0/v1 records and pins remain unchanged. All new guests join
+the seven-axis matrix; compressed faults and interrupt return replace the earlier
+boundary/restart degeneracy. Two other declared degeneracies remain.
+
+Integration exposed two checker gaps and a scope grammar omission. The profile
+grammar, its loader and the consistency part-sum now agree on the C family;
+good-C and wrong-part controls check the latter. Extraction counts expansions
+only after the existing semantic composition validator accepts their base and
+operand mappings; absent bases, missing operands and unknown mappings refuse.
+The mirror stale-exception control now reaches that predicate with otherwise valid
+observations and counts. The Rust checks pass, GUEST-GEN passes 127 controls, and
+EXERCISE-COVERAGE reports 200/200. These are finite laboratory results; matched
+Sail verification precedes closing `.12`, and CPU-SYSTEM remains incomplete on
+its other axes.

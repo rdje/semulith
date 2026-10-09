@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py sv39-svade.expected.sexp schema/expectations.sexp
 
-(expectations (program "sv39-svade.s") (entry "0x0000000080000000") (instructions 135) (fetches 135)
+(expectations (program "sv39-svade.s") (entry "0x0000000080000000") (instructions 135) (fetches 270)
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "the trap vector materializes pc-relative (auipc forms pc + 0; the addi carries the layout-audited delta).") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 428") (writes (write (reg "x1") (value "0x00000000800001ac")))

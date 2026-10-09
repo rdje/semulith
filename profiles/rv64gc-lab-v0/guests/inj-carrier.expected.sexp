@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py inj-carrier.expected.sexp schema/expectations.sexp
 
-(expectations (program "inj-carrier.s") (entry "0x0000000080000000") (instructions 45)
+(expectations (program "inj-carrier.s") (entry "0x0000000080000000") (instructions 45) (fetches 90)
   (refuse (kind store) (base "0x80000400") (size "0x8"))
   (refuse (kind load) (base "0x80000408") (size "0x8"))
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

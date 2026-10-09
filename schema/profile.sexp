@@ -159,7 +159,9 @@
   ;; names are the pinned chapter's multiply/divide forms (RVI-M §11.1.1–§11.1.2, Version 2.0:
   ;; MUL/MULH/MULHSU/MULHU, DIV/DIVU/REM/REMU and the RV64 word forms MULW/DIVW/DIVUW/REMW/
   ;; REMUW), realized by the rv_m/rv64_m tables (definitions/riscv/m.sexp).
-  (field (name m_muldiv) (type string) (repeat yes) (optional yes)))
+  (field (name m_muldiv) (type string) (repeat yes) (optional yes))
+  ;; P4-SYSTEM.12 e2c: the RV64+D C selection (Zca + Zcd), 37 forms; scope 200.
+  (field (name c_compressed) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
   (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))

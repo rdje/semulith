@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py fencei-reserved.expected.sexp schema/expectations.sexp
 
-(expectations (program "fencei-reserved.s") (entry "0x0000000080000000") (instructions 2)
+(expectations (program "fencei-reserved.s") (entry "0x0000000080000000") (instructions 2) (fetches 4)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn ".word 0x0011118F") (writes)

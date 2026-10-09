@@ -205,10 +205,25 @@ PY
   out="$(judge_mirror "$GUESTS_DIR" "$t/mirror" 2>&1)"; rc=$?
   arm "RED a drifted mirror file is named" "$rc" 1 "$out" "bound-arith"
   rm "$t/mirror/bound-arith.expected.sexp"
-  cp "$GUESTS_DIR/bound-arith.expected.sexp" "$t/mirror/bound-arith.expected.sexp"
-  cp "$GUESTS_DIR/fault-jal-mis.expected.sexp" "$t/mirror/fault-jal-mis.expected.sexp"
+  cp "$GUESTS_DIR_GC/bound-arith.expected.sexp" "$t/mirror/bound-arith.expected.sexp"
+  # A comment-only exception keeps valid observations. In C mode its count must
+  # remain independently derived, so this arm reaches the stale-record predicate.
+  python3 - "$ENCODING_GC" "$GUESTS_DIR/dir-selfmod-fence.expected.sexp" "$t/mirror/dir-selfmod-fence.expected.sexp" <<'PYCODE'
+import sys
+from pathlib import Path
+sys.path.insert(0, 'scripts')
+import dossier_sexp as D
+from expectations_text import with_fetches
+from riscv_asm import Assembler
+encoding, owner, mirror = map(Path, sys.argv[1:])
+text = owner.read_bytes().decode('utf-8')
+if 'c.nop' in Assembler(encoding).insns:
+    prior = D.load_expectations(mirror)
+    text = with_fetches(text, prior.get('fetches', prior['instructions']))
+mirror.write_bytes(text.encode('utf-8'))
+PYCODE
   out="$(judge_mirror "$GUESTS_DIR" "$t/mirror" 2>&1)"; rc=$?
-  arm "RED a stale re-derivation record is named" "$rc" 1 "$out" "fault-jal-mis"
+  arm "RED a stale re-derivation record is named" "$rc" 1 "$out" "recorded re-derivation is stale after count normalization"
 
   out="$(python3 scripts/check_gc_mirror.py --self-test 2>&1)"; rc=$?
   arm "GREEN mirror migration checks extents and literal fields" "$rc" 0 "$out" "literal fields pass"
@@ -221,8 +236,8 @@ PY
   out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-stale 2>&1)"; rc=$?
   arm "RED parcel counts cannot preserve a stale exception" "$rc" 1 "$out" "accepted re-derivation is stale"
 
-  # P4-SYSTEM.12 d1: C is still unbound, so the assembler uses a temporary full
-  # composition; the expected words and byte image are hand-written spec-side fixtures.
+  # P4-SYSTEM.12 d1: isolate the full C composition; the expected words and byte
+  # image are hand-written spec-side fixtures, independent of the live corpus.
   out="$(python3 scripts/probe_c_assembler.py 2>&1)"; rc=$?
   arm "GREEN C assembler words and exact byte image" "$rc" 0 "$out" "37 spec-side words"
   out="$(python3 scripts/probe_c_assembler.py --mutation compact-base 2>&1)"; rc=$?

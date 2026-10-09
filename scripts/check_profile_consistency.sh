@@ -109,13 +109,13 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
         # (the rv64gc census: base 40 + rv64i 12 + zicsr 6 + system 4 + zicntr 3 = 65;
         # P4-SYSTEM.4 slice (e): + a_atomics 22 = 87; P4-SYSTEM.6 slice (b): + zifencei_fencei 1 = 88;
         # P4-SYSTEM.7 slice (c6): + f_single 30 = 118; slice (d5): + d_double 32 = 150;
-        # P4-SYSTEM.11 slice (b): + m_muldiv 13 = 163)
+        # P4-SYSTEM.11 slice (b): + m_muldiv 13 = 163; .12 e2c: + c_compressed 37 = 200)
         a, b = scope.get("count_base"), scope.get("count_rv64i_additions")
         if a is not None and b is not None and declared is not None:
             ext = sum(len(scope.get(k) or [])
                       for k in ("zicsr_csrs", "system_privileged", "zicntr_counters",
                                 "a_atomics", "zifencei_fencei", "f_single", "d_double",
-                                "m_muldiv"))
+                                "m_muldiv", "c_compressed"))
             if a + b + ext != declared:
                 findings.append(
                     f"PARTS DRIFT {name}: count_base {a} + count_rv64i_additions {b}"
@@ -434,6 +434,10 @@ EOF
                                                               arm "RED   count drifts from enumeration" 1 "COUNT DRIFT"
   good; sed -i.bak 's/(count_base 2)/(count_base 9)/' "$t/p/profile.sexp"
                                                               arm "RED   parts do not sum"     1 "PARTS DRIFT"
+  good; sed -i.bak 's/(count_total 3)/(count_total 4)/; s/(count_rv64i_additions 1)/(count_rv64i_additions 1) (c_compressed "C.NOP")/' "$t/p/profile.sexp"
+                                                              arm "GREEN C contributes to the extension census" 0 "__CHECKED__ 1"
+  sed -i.bak 's/(count_base 2)/(count_base 3)/' "$t/p/profile.sexp"
+                                                              arm "RED   C does not hide a wrong base part" 1 "PARTS DRIFT"
   good; sed -i.bak 's/(authority architecture)/(authority vibes)/' "$t/p/profile.sexp"
                                                               arm "RED   unknown authority"    1 "BAD AUTHORITY"
   good; sed -i.bak '/(source /d' "$t/p/profile.sexp"

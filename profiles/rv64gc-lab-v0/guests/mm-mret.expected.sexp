@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-mret.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-mret.s") (entry "0x0000000080000000") (instructions 43)
+(expectations (program "mm-mret.s") (entry "0x0000000080000000") (instructions 43) (fetches 85)
   (step (n 0) (insn "addi x3, x0, 1") (writes (write (reg "x3") (value "0x0000000000000001")))
     (derivation "the MPP=S pattern starts as a 1.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "slli x3, x3, 11") (writes (write (reg "x3") (value "0x0000000000000800")))

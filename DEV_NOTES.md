@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-09)_ — the C bind changes only independently declared extents (P4-SYSTEM.12 e2c)
+
+The staged 28 C programs/records land exact alongside the complete composition,
+200-form scope, v2 C/fetch records, registry and matrix. All 139 older sources and
+non-count record bytes remain exact; their PC/mode/write traces match the saved
+parent CLI byte-for-byte. Five public-CLI C traces distinguish the parent. Fetch
+counts total 9,770 actual parcels, derived before adoption, not blindly doubled.
+The ignored manifest's fingerprint closure changed after author prerequisites;
+re-derivation kept all guest rows identical before adoption.
+
+Integration exposed omitted C scope grammar/mapping and part sums, omitted
+expansion semantics, and a stale-exception control failing for a copied wrong
+observation. Repair each owner, delegate expansion validation to SEM, and require
+the control's actual refusal. Three registered arms, including all 17 Python contract controls; total 626. make check passes all 167;
+registry 20/106, v2 open, CPU-SYSTEM 8/10 axes open. Current resolution-era dossier
+and P4 overview claims corrected; historical frozen records retained for .13.
+A full gate with exported GIT_INDEX_FILE was invalid: nested Git controls replaced
+that disposable index. Real index digest remained exact; use normal staged hooks
+for the full gate. A final registry census corrected the draft's assumed registration:
+RV64GC remains unregistered, with its dedicated book now explicitly owned by .14. Promotion declined in the leaf.
+
 ## _(2026-10-09)_ — historical text and new extent have separate derivations (P4-SYSTEM.12 e2b)
 
 A C-composed snapshot rejects the 42 historical captures after only their parcel

@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py fp-fcsr-view.expected.sexp schema/expectations.sexp
 
-(expectations (program "fp-fcsr-view.s") (entry "0x0000000080000000") (instructions 20)
+(expectations (program "fp-fcsr-view.s") (entry "0x0000000080000000") (instructions 20) (fetches 40)
   (step (n 0) (insn "addi x8, x0, 1") (writes (write (reg "x8") (value "0x0000000000000001")))
     (derivation "the FS=Initial pattern starts as a 1.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "slli x8, x8, 13") (writes (write (reg "x8") (value "0x0000000000002000")))

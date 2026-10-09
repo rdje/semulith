@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py a-lrsc-pair.expected.sexp schema/expectations.sexp
 
-(expectations (program "a-lrsc-pair.s") (entry "0x0000000080000000") (instructions 14)
+(expectations (program "a-lrsc-pair.s") (entry "0x0000000080000000") (instructions 14) (fetches 28)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "addi x10, x0, 1") (writes (write (reg "x10") (value "0x0000000000000001")))

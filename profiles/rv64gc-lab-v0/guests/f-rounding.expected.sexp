@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py f-rounding.expected.sexp schema/expectations.sexp
 
-(expectations (program "f-rounding.s") (entry "0x0000000080000000") (instructions 41)
+(expectations (program "f-rounding.s") (entry "0x0000000080000000") (instructions 41) (fetches 82)
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "x1 holds this instruction's own address.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 104") (writes (write (reg "x1") (value "0x0000000080000068")))

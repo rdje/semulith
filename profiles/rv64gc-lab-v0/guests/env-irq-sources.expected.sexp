@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py env-irq-sources.expected.sexp schema/expectations.sexp
 
-(expectations (program "env-irq-sources.s") (entry "0x0000000080000000") (instructions 11)
+(expectations (program "env-irq-sources.s") (entry "0x0000000080000000") (instructions 11) (fetches 22)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "addi x6, x0, 1") (writes (write (reg "x6") (value "0x0000000000000001")))

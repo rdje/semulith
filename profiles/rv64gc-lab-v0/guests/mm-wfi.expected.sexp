@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-wfi.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-wfi.s") (entry "0x0000000080000000") (instructions 61) (fetches 57)
+(expectations (program "mm-wfi.s") (entry "0x0000000080000000") (instructions 61) (fetches 114)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

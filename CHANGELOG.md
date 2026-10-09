@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0102 (leaf P4-SYSTEM.12 e2c) — bind C atomically
+
+- Complete composition: 197 instructions + three pseudos; all 200 spellings
+  exercised by 167 guests. Adopt 28 pre-derived C guests and independently derived
+  parcel counts for 139 older records; every other historical byte/trace stays exact.
+- C/parcel-fetch v2 records and four checks realized (20/106); v0/v1 frozen unchanged.
+  Repair expansion extraction, C census integration and the real stale mirror control.
+  Rust checks, 127 guest controls and books pass; Sail next, CPU-SYSTEM incomplete.
+
 ## SEMULITH-P4-0101 (leaf P4-SYSTEM.12 e2b) — preserve historical capture text
 
 - Bound --check-owned derives parcel observations/requests independently while

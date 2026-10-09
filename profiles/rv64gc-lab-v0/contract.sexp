@@ -65,8 +65,10 @@
   (supersede (record "OB-ECALL-EBREAK") (by "OB-GC-ECALL-EBREAK-V1") (why "the rv64i base mirror says no privileged modes and a harness report that stops execution; this composition delivers the trap to a handler (the zicsr refinement)")))
 
 (contract (id "rv64gc-lab-env-v2") (version "2") (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v1") (status open)
-  (statement "Version 2, opened at P4-SYSTEM.11 slice (b) (2026-10-06): the guarantees of the extensions bound after v1 froze - M first (OB-GC-M); C's guarantees, the base boundary assumptions restated for this unit, and the supersessions of the stale v0 statements follow (P4-SYSTEM.12, .13), and P4-SYSTEM.13 freezes it.")
-  (member (id "OB-GC-M")))
+  (statement "Version 2, opened at P4-SYSTEM.11 slice (b) (2026-10-06): the guarantees of the extensions bound after v1 froze - M first (OB-GC-M), then C and exact parcel-fetch supply at .12 e2c; the remaining base boundary assumptions and supersessions of stale v0 statements follow at .13, and P4-SYSTEM.13 freezes it.")
+  (member (id "OB-GC-M"))
+  (member (id "OB-GC-C"))
+  (member (id "OB-GC-ENV-FETCH-SUPPLY")))
 
 (registry (path "crates/semulith-verify/src/contract_checks_rv64gc.rs")
   (statement "The checks this unit's contract declares, realized: each entry binds one check id, under its obligation, to the tracked guests that run it; the registry's tests run every entry under the corpus's comparison rule (P4-SYSTEM.9 slice b; named here at P4-SYSTEM.10 slice a)."))

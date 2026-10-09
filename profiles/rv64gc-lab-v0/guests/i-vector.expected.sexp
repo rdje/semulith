@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py i-vector.expected.sexp schema/expectations.sexp
 
-(expectations (program "i-vector.s") (entry "0x0000000080000000") (instructions 53) (fetches 51)
+(expectations (program "i-vector.s") (entry "0x0000000080000000") (instructions 53) (fetches 102)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

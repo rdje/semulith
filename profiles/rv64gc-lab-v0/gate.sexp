@@ -20,8 +20,6 @@
   (test (file "crates/semulith-verify/src/run_rv64gc/tests.rs") (fn "every_guest_re_executes_identically_from_cold_reset"))
   (statement "Every guest re-executes identically from cold reset: the run is a function of the definition and the program."))
 
-(open (axis G-SCOPE) (owner "P4-SYSTEM.12")
-  (statement "C is declared by the profile and not bound: the encoding's c slot is unfilled; no compressed fragment exists."))
 (open (axis G-STATE) (owner "P4-SYSTEM.13")
   (statement "The hidden-state census's consequence still describes the P4-SYSTEM.2 snapshot (the integer file, pc, memory, mode and 33 CSRs); every later candidate is answered but the consequence was never re-answered."))
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
@@ -29,7 +27,7 @@
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
   (statement "v0's checks are declared and not realized; rv64i's base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE)."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
-  (statement "The eight Sail matched experiments (P4-SYSTEM.2 to .8, and .11's M corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them, and their comparators are scratch."))
+  (statement "The eight Sail matched experiments (P4-SYSTEM.2 to .8, and .11's M corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")
   (statement "Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5."))
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")

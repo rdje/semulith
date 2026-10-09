@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py sv39-deleg.expected.sexp schema/expectations.sexp
 
-(expectations (program "sv39-deleg.s") (entry "0x0000000080000000") (instructions 82) (fetches 82) (never_written "x14")
+(expectations (program "sv39-deleg.s") (entry "0x0000000080000000") (instructions 82) (fetches 164) (never_written "x14")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "a trap vector materializes pc-relative.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 280") (writes (write (reg "x1") (value "0x0000000080000118")))

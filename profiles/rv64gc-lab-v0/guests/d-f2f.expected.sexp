@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py d-f2f.expected.sexp schema/expectations.sexp
 
-(expectations (program "d-f2f.s") (entry "0x0000000080000000") (instructions 65)
+(expectations (program "d-f2f.s") (entry "0x0000000080000000") (instructions 65) (fetches 130)
   (step (n 0) (insn "addi x31, x0, 1") (writes (write (reg "x31") (value "0x0000000000000001")))
     (derivation "the FS=Initial pattern starts as a 1.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "slli x31, x31, 13") (writes (write (reg "x31") (value "0x0000000000002000")))

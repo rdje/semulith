@@ -206,6 +206,9 @@ This gate authorises the planned next engineering stage: board implementation.
   independence rows, its runner tracked; the unit's predeclared verification policy (EVD-03);
   each requirement's `implementation_status` derived from its evidence by a rule a gate
   re-checks, never typed; the mirrored records' lockstep with rv64i resolved.
+  Register rv64gc-lab-v0 in materials/units.sexp with its required-category
+  dispositions and dedicated generated book; validate the six-unit census and
+  every registry/book consequence before evidence signoff (owned e2c finding).
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -235,77 +238,60 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.12` | `active` | author/mirror preflight ready; e2c atomic C bind next |
+| 1 | `P4-SYSTEM.12` | `active` | C bound at e2c; e2d matched Sail next |
 
 ## Decisions
 
-- `2026-10-09` (e2b author preflight, before changes): the bind also changes the
-  42 historical author-owned records' extents. Own this prerequisite before e2c's
-  atomic bind: reproduce --check-owned on a target-local full-C snapshot with
-  independently staged parcel counts. Preserve the original word-derived capture
-  text; independently execute each fixed budget, compare every write and actual
-  request log, and transform only its direct fetch field. Share the surgical helper
-  with the mirror governor through a small text module, avoiding a dependency from
-  the author to its governor. Unbound historical checks stay byte-exact. Refuse a
-  default word-route CLI write to a canonical C-composed record; an explicit parcel
-  route remains available. Retain controls for migrated/unmigrated counts, wrong
-  observations/comments, request-log disagreement, write refusal and the original
-  42 records. Archive closed e2a verbatim; production remains unchanged here.
+- `2026-10-09` (e2c atomic bind, before changes): bind the production C fragment,
+  complete status, staged 28 guest source/expectation pairs and run-order entries,
+  and the independently staged 139 historical extents together. Use the shared
+  direct-field transformer; assert every other historical byte/source unchanged.
+  Regenerate the rv64gc definition/guest modules through their owners and derive
+  scope/coverage (expected 200 spellings, including three existing pseudo forms).
+  Add REQ-GC-C / OB-GC-C and the two-byte environment-fetch assumption to open v2;
+  realize every new POS/NEG check, preserve all frozen v0/v1 records and pins, and
+  leave v2 open for .13. Map all new guests into the existing seven-axis matrix,
+  replacing the boundary/restart degeneracy with compressed trap/resume evidence.
+  Run focused corpus/contract checks, make check for generated Rust, doctrine gates
+  and books; matched Sail follows as its own slice before closing .12. CPU-SYSTEM
+  remains incomplete on its other axes. Retain parent/new engine identity evidence
+  for historical writes and fault PCs, counts differing only as derived; new C
+  guests must discriminate the unbound parent. Review/update the affected book and
+  dossier/current gate records, generator comments and count-cap projection.
+  Owned documentation defects found during this interface review: DOSSIER.md claim
+  scope and 'not have yet' still describe the unregistered resolution despite the
+  tracked implementation; P4 overview likewise says unregistered/no FP/M unbound,
+  and its C frontier stops at d3d0. Reproduce by those phrases versus current files
+  and registry; impact is the director's inaccurate review surface. Fix those current
+  claims in this bind, retain explicitly dated historical selection decisions, and
+  link the generated report for the remaining limits. Initial generation refused
+  the new c_compressed group because the closed profile grammar/mapping had no C
+  scope family; extend both together and verify schema plus lossless round-trip
+  before regenerating the fixture. The interim Rust check correctly rejected its
+  still-old fixture counts/missing C guests, not a processor observation change.
+  Extraction then refuses all 37 C forms: its semantic census visits only sem,
+  never expand. Own the integration fix here: count expansion rows only after the
+  existing SEM composition validator accepts their base/bindings; retain duplicate
+  checks and add valid/missing-base/unbound/unknown-mapping controls. No new checker
+  or bypass of the semantic authority. The real mirror stale-control's old setup
+  now fails at a copied rv64i observation, not the stale-exception predicate
+  (stale-control-before.log). Restore the current count for its clean pair and use
+  the comment-only dir-selfmod-fence exception with independently verified extent;
+  require the actual stale-normalization reason. Gate manifest's G-SCOPE text
+  also says no C fragment exists although definitions/riscv/c.sexp is tracked; remove
+  that resolved open item at the complete bind and regenerate reports.
+  PROFILE-CONSISTENCY also refuses PARTS DRIFT (52 + 111 != 200): its
+  closed extension-family sum omits c_compressed despite the updated loader.
+  Own the matching census extension and good-C/wrong-part controls before signoff.
+  Wire the Python extraction controls into the registered shell gate; otherwise
+  its new expansion refusals would run only by explicit invocation.
+  Final registry census (git ls-files materials/units.sexp docs/models) confirms
+  RV64GC is still unregistered and has no per-unit book. The draft's contrary
+  claim was wrong and is corrected before commit. Own registration/category
+  dispositions and its dedicated book at .14, before evidence promotion/signoff;
+  the project P4 chapters remain the current review surface.
 
-- `2026-10-09` (e2a bind preflight, before changes): own the mirror/count governor
-  prerequisite here before the atomic bind. Diagnose the current governor against a
-  target-local copy with independently staged parcel counts: exact byte comparison
-  must refuse. Replace only its fetch-field comparison for a C-composed unit with a
-  surgical transformation; compare every other byte and retain the seven declared
-  semantic re-derivations, which must still differ after count normalization. Independently
-  derive all supplied records' writes and actual request counts before accepting any
-  parcel extent. The unbound production route stays byte-exact. Add permanent controls
-  for word/mixed/runoff extents, wrong counts, non-count comments/observations/source
-  drift, stale re-derivations, duplicate/nested/string field traps and exact repeat.
-  No production record/composition/module change in this prerequisite. Correct the
-  active brief's superseded coalescing sentence to the c1 parcel-first decision already
-  recorded below. Commit e2a, then e2b binds the staged corpus and contract together.
 
-- `2026-10-09` (e1d split, before changes): e1d1 first tracks a reproducible,
-  non-writing census of all historical guests at their already-declared budgets.
-  Compare every independently derived architectural write to the existing records;
-  derive parcel counts from actual request logs and check the per-step sum. Emit a
-  deterministic fingerprinted staging manifest, with no production count changes.
-  Hand word/mixed/runoff counts, wrong-observation and wrong-extent controls must
-  discriminate. Then e1d2 authors the C corpus before e2 binds. Archive e1c1 verbatim
-  to part 6 at the live-tree ceiling, with exact reconstruction asserted.
-
-- `2026-10-09` (e1d0 provenance prerequisite, before changes): emit currently falls
-  through to the FP-corpus header for generic/C/Sv39 source names. Preserve exact
-  historical headers only for the 42 canonical owned sources on their word route;
-  every new output names the tracked spec-side author and its actual word or
-  explicit-budget C-capable parcel route, without inventing original family or
-  pre-engine chronology. Guard generic sources, borrowed historical basenames,
-  raw C parcels and parcel re-derivation of an owned input, with parent and targeted
-  mutations. Check all 42 owned records exact and historical record hashes unchanged.
-  Commit this bounded repair before e1d stages any new corpus/count records.
-
-- `2026-10-08` (e1c1 execution plan, before changes): derive the declared four-slot,
-  fully associative FIFO cache independently from state.sexp's selected policy and
-  pinned supervisor 11.1.2.1/11.1.3.2/11.1.4.1. Cache successful 4-KiB translations
-  with ASIDLEN=16, inherited G and leaf permissions; recheck live mode/SUM/MXR/MPRV
-  before hits, retain cached A/D, and never install a fault. M/Bare bypass and satp
-  root/ASID changes do not implicitly flush. Hits do not refresh FIFO; fences retain
-  the replacement cursor and select x0 identity, masked ASID and canonical page.
-  Hand PTE/physical-address fixtures, all four zero-operand fences, inherited globals,
-  FIFO, stale permissions, fault non-installation and cold repeat must discriminate
-  targeted mutations and the uncached parent. Repair direct permission fixtures that
-  rewrite PTEs to execute a real legal full fence before requiring a fresh view; retain
-  their existing negative controls. Census all 139 parcel architectural traces and
-  all 121 historical word texts. The known erroneous unadopted sv39-tlb-fence word
-  output may change to the pinned policy; investigate every other difference. Keep
-  all 42 owned records byte-exact, and write no expected record or profile binding.
-  Document the author cache and its provenance without claiming CPU acceptance.
-  Archive-family pressure is now a resumption dependency: 211 files / 781,740 B
-  leave 4,692 B, while the oldest required head records total 4,628 B before shard
-  headers/manifest. Route the measured lifecycle defect to LIVE-CONTAINMENT.4;
-  record its retrieval options and exact evidence before any migration. One DEV_NOTES
-  shard and a concise changelog summary can finish this slice without a cap increase.
 
 - `2026-10-08` (e1c discovery / ownership, before changes): pinned supervisor.html
   2046–2080 selects SFENCE scope from rs1/rs2 register identities, including nonzero
@@ -798,32 +784,6 @@ never raised, at every crossing. The index:
   (b), (d1)–(e1c0), plus closed `.10` design and `.11` design/split, moved byte-verbatim
   as completed records leave the live head.
 
-`P4-SYSTEM.12` slice (e2b) — historical author extent preflight (`2026-10-09`, `SEMULITH-P4-0101`):
-
-- [x] **REPRODUCE / ROOT CAUSE** — full-C target-local snapshot with independently
-  migrated counts makes --check-owned rc=1: all 42 records DRIFT (e2b/before.log).
-  The historical word route regenerates capture text and word extent together;
-  the new boundary needs a separately derived count, not replacement prose.
-- [x] **FIX / ADDRESSED** — `python3 scripts/probe_gc_owned_extent.py` rc=0:
-  42-record unbound check, full-C unmigrated refusal, migrated/repeat checks,
-  count/write/comment/CRLF drift, canonical word-write refusal with byte identity,
-  and explicit parcel write/provenance pass. Bound checks compare independently
-  derived parcel writes to the historical derivation and reconcile the actual
-  request log before the shared direct-field transform. Four author mutants each
-  rc=1: old counts, parcel prose, bad request log and permitted word overwrite.
-- [x] **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0: 127 pass / 0 fail;
-  both generated fixtures and production mirror (91 exact/seven declared) match.
-  First unstaged cold check named the new untracked helper as missing; a temporary
-  target-local index included the pending Python files for the tracked-input test.
-  Actual index SHA-256 unchanged (verified); no gate weakened. All 142 production
-  records/encoding/modules byte-exact against ce6a6d8. No Rust change; 623 arms.
-- [x] **LOCKSTEP** — live docs/frontier/book/toolbox/doctrine updated, P4 11/18
-  unchanged. Closed e2a receipt and e1d2 design moved byte-verbatim to archive part 6;
-  reconstruction asserted, fixed caps unchanged. `make book` and commit gate enforced.
-  Next e2c binds the production composition, staged corpus/counts, contract and matrix;
-  matched Sail and leaf acceptance follow.
-  promotion: declined (permanent snapshot/byte/write/mutation controls retain the rule).
-
 ### ROUTING EVIDENCE — archive pressure to `LIVE-CONTAINMENT.4`
 
 `python3` census: docs/changelog 784,318 / 786,432 B, CHANGELOG 65,528 / 65,536 B,
@@ -836,16 +796,41 @@ Corrected that scope and scheduled a finite lossless archive transition before e
 The read-only-source prototype authenticates every member; live removal/checker edits
 await direction because the guide's lifecycle stop condition changes direct browsing.
 
-### Owned e1d provenance prerequisite
+`P4-SYSTEM.12` slice (e2c) — atomic C binding (`2026-10-09`, `SEMULITH-P4-0102`):
 
-`rg -n 'floating-point corpus|P4-SYSTEM.7' scripts/derive_rv64gc_expectations.py`
-locates emit's fallback: non-family generic/C/Sv39 source names receive an FP-corpus
-header. No such new production record is adopted here; prior outputs keep provenance.
-Before publishing the staged C corpus/counts, e1d must derive an explicit correct
-family/provenance header and guard generic/C text, while preserving the 42 historical
-owned records. Schedule as high priority within e1d, before its first authored record.
+- [x] **ROOT CAUSE** — git show a909ad8:profiles/rv64gc-lab-v0/encoding.sexp
+  composes no C; source/scope/contract are not yet
+  bound. Stage expectations before running the changed engine. Generator first
+  refused the missing c_compressed grammar, extraction omitted expand rows, and
+  PROFILE-CONSISTENCY omitted C in its part sum; real mirror stale control failed
+  at an unrelated copied observation. Each reproduced and repaired at its owner.
+- [x] **ADDRESSED** — compose C complete, 197 instructions/three pseudos; adopt
+  all 56 staged source/record files byte-exact, 28 run-order entries, and 139
+  independently derived count changes (4,888 words -> 9,770 parcels at 4,913
+  boundaries). REQ-GC-C, OB-GC-C and exact parcel supply join open v2; four checks
+  realized. Registry 20/106; frozen v0/v1 records/pins unchanged. All C guests
+  join the seven-axis matrix, replacing boundary/restart degeneracy (two remain).
+  python3 scripts/gen_definition.py / gen_guests.py rc=0; both modules regenerated.
+  Extract expansions through existing
+  SEM composition validation; four controls discriminate. Good-C/wrong-part
+  census controls pass. Stale mirror control requires its intended refusal reason.
+- [x] **NO REGRESSION** — make check rc=0 (core 153, verify 193); all 167 directed
+  guests and registry entries pass. Parent/current CLI traces for all 139 old
+  guests are byte-identical (PC, mode, GPR writes); all source and non-count record
+  bytes exact. Five new public-CLI C traces discriminate the unbound parent.
+  GUEST-GEN 127/127; coverage/extraction 200/200; CONTRACT-FREEZE and dossier
+  consistency pass. Evidence logs: target/p4-system-12/e2c/. Full doctrine hook
+  and books enforced at commit. Project arms 626; unrelated scalar/state modules
+  unchanged. Attempted full gate with a temporary index was invalid: nested Git
+  self-tests replaced that disposable index; real index SHA-256 stayed exact.
+  Run the full gate at the normal staged commit boundary instead.
+- [x] **LOCKSTEP** — current dossier/environment/P4 overview/C chapter repaired,
+  report regenerated: G-SCOPE green, CPU-SYSTEM incomplete on 8/10 axes. Live
+  P4 stays 11/18; matched Sail e2d precedes leaf closure. Closed notes/receipts
+  moved verbatim to archive part 6, reconstruction asserted, fixed caps retained.
+  promotion: declined (schema/semantic/census/byte/control checks retain the rule).
 
-Completed e1c1/e1d0/e1d1/e1d2/e2a receipts and e1d2 design: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+Completed e1c1/e1d0/e1d1/e1d2/e2a/e2b receipts and pre-bind designs: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Verification Log
 
@@ -856,6 +841,7 @@ only the ACTIVE leaf's rows stay inline below.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-09` | `.12` slice (e2c) | make check; 139 exact parent traces; five C parent controls; GUEST-GEN 127; extraction/coverage 200; frozen contract | C bound; Sail next |
 | `2026-10-08` | `.12` slice (e1c1) | parent RED; 13 RED; GUEST-GEN 103/103; parcel 139 exact; 42 owned exact; books | cache repaired; archive lifecycle prerequisite before staging |
 | `2026-10-08` | `.12` slice (e1c0) | parent 0/3 then three green; two selector RED; translation 29/29; make check; DEF-GEN 56/56 | production scopes repaired; independent cache author next |
 | `2026-10-08` | `.12` slice (e1b2) | masks/30 mode gates/literal text/schema; 8 RED; 117 corpus steps; GUEST-GEN 89/89 | 138 exact, zero refusals; owned cache repair next |
@@ -917,6 +903,7 @@ slice-(c5) crossing; only the ACTIVE leaf's rows stay inline below.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.12` (slice e2c) | `SEMULITH-P4-0102 (leaf P4-SYSTEM.12): bind compressed execution and its independently derived parcel corpus` | e2d matched Sail |
 | `.12` (slice e2b) | `SEMULITH-P4-0101 (leaf P4-SYSTEM.12): retain historical capture text while independently checking parcel extents` | e2c atomic bind, then matched Sail |
 | `.12` (slice e2a) | `SEMULITH-P4-0100 (leaf P4-SYSTEM.12): govern independently checked parcel counts without exempting mirror content` | e2b atomic bind, then matched Sail |
 | `.12` (slice e1d2) | `SEMULITH-P4-0099 (leaf P4-SYSTEM.12): stage the specification-derived compressed corpus before binding C` | e2 bind contracts, then matched Sail |

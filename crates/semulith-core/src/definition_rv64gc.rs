@@ -16,6 +16,8 @@
 //! Canonical inputs (sha256):
 //!   `definitions/riscv/a.sem.sexp`  `929f7d11f11856e303460d4f4c9f5094314a8090ce7ce710efe83fb5dfb9c306`
 //!   `definitions/riscv/a.sexp`  `f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b`
+//!   `definitions/riscv/c.sem.sexp`  `1b714d3bba66df6e35f13b94352be6a8c800f7fb72c35c2442fec0742df01eb3`
+//!   `definitions/riscv/c.sexp`  `eb9bf4ff15e699f345f68f05934fd8dc14c5f67b06b84f0c4254562f02c50223`
 //!   `definitions/riscv/d.sem.sexp`  `92e92f9242414c53f2297962a236e9318822318acb322cb65fe4969e63ac375e`
 //!   `definitions/riscv/d.sexp`  `c0cdc058273c25ac636adb33761aac51956a534c161f17db51e5b34ebe6f0dc0`
 //!   `definitions/riscv/f.sem.sexp`  `fea32f7229d98271567372e618838f725fe9acb66d5f355ee49caf7fc071e49e`
@@ -32,7 +34,7 @@
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
 //!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
-//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9`
+//!   `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `0d063715bce44cd265341d92b2fb4bf9b172901ab730de6198f9132cb52638ae`
 //! Generator: `scripts/gen_definition.py` (sha256 `52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47`)
 
@@ -87,6 +89,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         "riscv/f",
         "riscv/d",
         "riscv/m",
+        "riscv/c",
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
@@ -100,6 +103,14 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         InputPin {
             path: "definitions/riscv/a.sexp",
             sha256: "f5e99591cadc1500bbc8333c95cd0c4548aae0d7aa007dfb9fd6bdfeb56ebe1b",
+        },
+        InputPin {
+            path: "definitions/riscv/c.sem.sexp",
+            sha256: "1b714d3bba66df6e35f13b94352be6a8c800f7fb72c35c2442fec0742df01eb3",
+        },
+        InputPin {
+            path: "definitions/riscv/c.sexp",
+            sha256: "eb9bf4ff15e699f345f68f05934fd8dc14c5f67b06b84f0c4254562f02c50223",
         },
         InputPin {
             path: "definitions/riscv/d.sem.sexp",
@@ -167,7 +178,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/encoding.sexp",
-            sha256: "1f5e1587e01c3bf7cc84d96f6c3b84c5ecde0ce0cf2eb9ff0e89e8742c3b98e9",
+            sha256: "8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0",
         },
         InputPin {
             path: "profiles/rv64gc-lab-v0/state.sexp",
@@ -178,6 +189,10 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         SourcePin {
             file: "rv64_a",
             sha256: "819e0487131bc97cfc0b6f3de62390f2f9936b43e80aef7c6cec14fbe7c7a1b6",
+        },
+        SourcePin {
+            file: "rv64_c",
+            sha256: "1c51536f890d0ab1dec9b75980ef1e71ce03194eeb99f294c86d1b337807f284",
         },
         SourcePin {
             file: "rv64_d",
@@ -198,6 +213,14 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         SourcePin {
             file: "rv_a",
             sha256: "d9eaa988c4779ca352d9da9eabacf6c71771d0b81e04b234302627f69e0863d9",
+        },
+        SourcePin {
+            file: "rv_c",
+            sha256: "f97db59ffe15873bf4af8ab53694f703a90d582c2602ee876d8578824b1feda8",
+        },
+        SourcePin {
+            file: "rv_c_d",
+            sha256: "c52a9107d44ba9edb39d8fda880779f46cf648351cb9a666008ddbe8c1e0ca7a",
         },
         SourcePin {
             file: "rv_d",
@@ -249,7 +272,7 @@ pub struct FieldDef {
     pub scatter: &'static [(u8, u8)],
 }
 
-/// The 21 operand fields the composed fragments declare, sorted by
+/// The 56 operand fields the composed fragments declare, sorted by
 /// name: what the decoder extracts, and how the scrambled immediates unscramble.
 /// Every declared operand names a field — this generator refuses one that does not,
 /// because extraction for it would be silent (ARCHITECTURE §2: an unsupported
@@ -272,6 +295,177 @@ pub static FIELDS: &[FieldDef] = &[
         hi: 11,
         lo: 7,
         scatter: &[(4, 1), (11, 11)],
+    },
+    FieldDef {
+        name: "c_bimm9hi",
+        hi: 12,
+        lo: 10,
+        scatter: &[(8, 8), (4, 3)],
+    },
+    FieldDef {
+        name: "c_bimm9lo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(7, 6), (2, 1), (5, 5)],
+    },
+    FieldDef {
+        name: "c_imm12",
+        hi: 12,
+        lo: 2,
+        scatter: &[
+            (11, 11),
+            (4, 4),
+            (9, 8),
+            (10, 10),
+            (6, 6),
+            (7, 7),
+            (3, 1),
+            (5, 5),
+        ],
+    },
+    FieldDef {
+        name: "c_imm6hi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(5, 5)],
+    },
+    FieldDef {
+        name: "c_imm6lo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(4, 0)],
+    },
+    FieldDef {
+        name: "c_nzimm10hi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(9, 9)],
+    },
+    FieldDef {
+        name: "c_nzimm10lo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(4, 4), (6, 6), (8, 7), (5, 5)],
+    },
+    FieldDef {
+        name: "c_nzimm18hi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(17, 17)],
+    },
+    FieldDef {
+        name: "c_nzimm18lo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(16, 12)],
+    },
+    FieldDef {
+        name: "c_nzimm6hi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(5, 5)],
+    },
+    FieldDef {
+        name: "c_nzimm6lo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(4, 0)],
+    },
+    FieldDef {
+        name: "c_nzuimm10",
+        hi: 12,
+        lo: 5,
+        scatter: &[(5, 4), (9, 6), (2, 2), (3, 3)],
+    },
+    FieldDef {
+        name: "c_nzuimm6hi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(5, 5)],
+    },
+    FieldDef {
+        name: "c_nzuimm6lo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(4, 0)],
+    },
+    FieldDef {
+        name: "c_rs1_n0",
+        hi: 11,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "c_rs2",
+        hi: 6,
+        lo: 2,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "c_rs2_n0",
+        hi: 6,
+        lo: 2,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "c_uimm7hi",
+        hi: 12,
+        lo: 10,
+        scatter: &[(5, 3)],
+    },
+    FieldDef {
+        name: "c_uimm7lo",
+        hi: 6,
+        lo: 5,
+        scatter: &[(2, 2), (6, 6)],
+    },
+    FieldDef {
+        name: "c_uimm8hi",
+        hi: 12,
+        lo: 10,
+        scatter: &[(5, 3)],
+    },
+    FieldDef {
+        name: "c_uimm8lo",
+        hi: 6,
+        lo: 5,
+        scatter: &[(7, 6)],
+    },
+    FieldDef {
+        name: "c_uimm8sp_s",
+        hi: 12,
+        lo: 7,
+        scatter: &[(5, 2), (7, 6)],
+    },
+    FieldDef {
+        name: "c_uimm8sphi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(5, 5)],
+    },
+    FieldDef {
+        name: "c_uimm8splo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(4, 2), (7, 6)],
+    },
+    FieldDef {
+        name: "c_uimm9sp_s",
+        hi: 12,
+        lo: 7,
+        scatter: &[(5, 3), (8, 6)],
+    },
+    FieldDef {
+        name: "c_uimm9sphi",
+        hi: 12,
+        lo: 12,
+        scatter: &[(5, 5)],
+    },
+    FieldDef {
+        name: "c_uimm9splo",
+        hi: 6,
+        lo: 2,
+        scatter: &[(4, 3), (8, 6)],
     },
     FieldDef {
         name: "csr",
@@ -328,6 +522,36 @@ pub static FIELDS: &[FieldDef] = &[
         scatter: &[],
     },
     FieldDef {
+        name: "rd_n0",
+        hi: 11,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "rd_n2",
+        hi: 11,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "rd_p",
+        hi: 4,
+        lo: 2,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "rd_rs1_n0",
+        hi: 11,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "rd_rs1_p",
+        hi: 9,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
         name: "rl",
         hi: 25,
         lo: 25,
@@ -346,9 +570,27 @@ pub static FIELDS: &[FieldDef] = &[
         scatter: &[],
     },
     FieldDef {
+        name: "rs1_n0",
+        hi: 11,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "rs1_p",
+        hi: 9,
+        lo: 7,
+        scatter: &[],
+    },
+    FieldDef {
         name: "rs2",
         hi: 24,
         lo: 20,
+        scatter: &[],
+    },
+    FieldDef {
+        name: "rs2_p",
+        hi: 4,
+        lo: 2,
         scatter: &[],
     },
     FieldDef {
@@ -425,1075 +667,10 @@ pub struct OperandBinding {
     pub value: &'static Sem,
 }
 
-/// The 160 instructions of the composed definition, sorted by name. Every
+/// The 197 instructions of the composed definition, sorted by descending fixed-bit specificity, then name. Every
 /// declared instruction carries its semantics — completeness is a generation-time
 /// refusal, not a hope (EXTRACTION).
 pub static INSNS: &[InsnDef] = &[
-    InsnDef {
-        name: "add",
-        mask: 0xfe00707f,
-        value: 0x00000033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4 — overflow ignored; the result wraps modulo 2^XLEN",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Add(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "addi",
-        mask: 0x0000707f,
-        value: 0x00000013,
-        operands: &["rd", "rs1", "imm12"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4 — the immediate is sign-extended; overflow is ignored",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Add(
-                &Sem::Reg("rs1"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Imm("imm12"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "addiw",
-        mask: 0x0000707f,
-        value: 0x0000001b,
-        operands: &["rd", "rs1", "imm12"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2 — D-WSUFFIX: overflow ignored, low 32 bits sign-extended",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Add(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Sext(
-                            32,
-                            &Sem::Imm("imm12"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "addw",
-        mask: 0xfe00707f,
-        value: 0x0000003b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.2 — D-WSUFFIX",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Add(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs2"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoadd.d",
-        mask: 0xf800707f,
-        value: 0x0000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOADD.D atomically adds rs2's 64 bits to the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x00, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                0,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoadd.w",
-        mask: 0xf800707f,
-        value: 0x0000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOADD.W atomically adds rs2's low 32 bits to the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x00, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    0,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoand.d",
-        mask: 0xf800707f,
-        value: 0x6000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOAND.D atomically ANDs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x0c, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                12,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoand.w",
-        mask: 0xf800707f,
-        value: 0x6000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOAND.W atomically ANDs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x0c, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    12,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amomax.d",
-        mask: 0xf800707f,
-        value: 0xa000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOMAX.D atomically takes the signed maximum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x14, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                20,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amomax.w",
-        mask: 0xf800707f,
-        value: 0xa000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOMAX.W atomically takes the signed maximum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x14, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    20,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amomaxu.d",
-        mask: 0xf800707f,
-        value: 0xe000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOMAXU.D atomically takes the unsigned maximum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x1c, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                28,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amomaxu.w",
-        mask: 0xf800707f,
-        value: 0xe000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOMAXU.W atomically takes the unsigned maximum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x1c, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    28,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amomin.d",
-        mask: 0xf800707f,
-        value: 0x8000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOMIN.D atomically takes the signed minimum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x10, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                16,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amomin.w",
-        mask: 0xf800707f,
-        value: 0x8000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOMIN.W atomically takes the signed minimum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x10, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    16,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amominu.d",
-        mask: 0xf800707f,
-        value: 0xc000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOMINU.D atomically takes the unsigned minimum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x18, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                24,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amominu.w",
-        mask: 0xf800707f,
-        value: 0xc000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOMINU.W atomically takes the unsigned minimum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x18, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    24,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoor.d",
-        mask: 0xf800707f,
-        value: 0x4000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOOR.D atomically ORs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x08, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                8,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoor.w",
-        mask: 0xf800707f,
-        value: 0x4000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOOR.W atomically ORs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x08, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    8,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoswap.d",
-        mask: 0xf800707f,
-        value: 0x0800302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOSWAP.D atomically writes rs2's 64 bits to the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x01, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                1,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoswap.w",
-        mask: 0xf800707f,
-        value: 0x0800202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOSWAP.W atomically writes rs2's low 32 bits to the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x01, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    1,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoxor.d",
-        mask: 0xf800707f,
-        value: 0x2000302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.4 — AMOXOR.D atomically XORs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x04, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Amo(
-                4,
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "amoxor.w",
-        mask: 0xf800707f,
-        value: 0x2000202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.4 — AMOXOR.W atomically XORs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x04, the encoding's own funct5)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Amo(
-                    4,
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Reg("rs1"),
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "and",
-        mask: 0xfe00707f,
-        value: 0x00007033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::And(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "andi",
-        mask: 0x0000707f,
-        value: 0x00007013,
-        operands: &["rd", "rs1", "imm12"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::And(
-                &Sem::Reg("rs1"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Imm("imm12"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "auipc",
-        mask: 0x0000007f,
-        value: 0x00000017,
-        operands: &["rd", "imm20"],
-        from: "rv_i",
-        source: "RVI-RV64I §3.1.2.1 — D-LUI-AUIPC; the offset is added to the address OF THIS INSTRUCTION",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Add(
-                &Sem::Pc,
-                &Sem::Sext(
-                    64,
-                    &Sem::Shl(
-                        &Sem::Imm("imm20"),
-                        &Sem::Lit(0x000000000000000c),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "beq",
-        mask: 0x0000707f,
-        value: 0x00000063,
-        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.2",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("bimm12"),
-                    ),
-                ),
-            ),
-            &Sem::Nop,
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "bge",
-        mask: 0x0000707f,
-        value: 0x00005063,
-        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.2 — signed comparison",
-        effect: &Sem::If(
-            &Sem::Ge(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("bimm12"),
-                    ),
-                ),
-            ),
-            &Sem::Nop,
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "bgeu",
-        mask: 0x0000707f,
-        value: 0x00007063,
-        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.2 — unsigned comparison",
-        effect: &Sem::If(
-            &Sem::Geu(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("bimm12"),
-                    ),
-                ),
-            ),
-            &Sem::Nop,
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "blt",
-        mask: 0x0000707f,
-        value: 0x00004063,
-        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.2 — signed comparison",
-        effect: &Sem::If(
-            &Sem::Lt(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("bimm12"),
-                    ),
-                ),
-            ),
-            &Sem::Nop,
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "bltu",
-        mask: 0x0000707f,
-        value: 0x00006063,
-        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.2 — unsigned comparison",
-        effect: &Sem::If(
-            &Sem::Ltu(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("bimm12"),
-                    ),
-                ),
-            ),
-            &Sem::Nop,
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "bne",
-        mask: 0x0000707f,
-        value: 0x00001063,
-        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.2",
-        effect: &Sem::If(
-            &Sem::Ne(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("bimm12"),
-                    ),
-                ),
-            ),
-            &Sem::Nop,
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "csrrc",
-        mask: 0x0000707f,
-        value: 0x00003073,
-        operands: &["rd", "rs1", "csr"],
-        from: "rv_zicsr",
-        source: "RVI-ZICSR §5.1.1 — atomic read and clear bits; if rs1=x0 the instruction shall not write the CSR",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Field("rs1"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRead(
-                    &Sem::Field("csr"),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRw(
-                    &Sem::Field("csr"),
-                    &Sem::And(
-                        &Sem::CsrRead(
-                            &Sem::Field("csr"),
-                        ),
-                        &Sem::Xor(
-                            &Sem::Reg("rs1"),
-                            &Sem::Lit(0xffffffffffffffff),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "csrrci",
-        mask: 0x0000707f,
-        value: 0x00007073,
-        operands: &["rd", "csr", "zimm5"],
-        from: "rv_zicsr",
-        source: "RVI-ZICSR §5.1.1 — CSRRC with a zero-extended 5-bit immediate; if uimm=0 the instruction shall not write the CSR",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Field("zimm5"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRead(
-                    &Sem::Field("csr"),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRw(
-                    &Sem::Field("csr"),
-                    &Sem::And(
-                        &Sem::CsrRead(
-                            &Sem::Field("csr"),
-                        ),
-                        &Sem::Xor(
-                            &Sem::Zext(
-                                64,
-                                &Sem::Field("zimm5"),
-                            ),
-                            &Sem::Lit(0xffffffffffffffff),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "csrrs",
-        mask: 0x0000707f,
-        value: 0x00002073,
-        operands: &["rd", "rs1", "csr"],
-        from: "rv_zicsr",
-        source: "RVI-ZICSR §5.1.1 — atomic read and set bits; if rs1=x0 the instruction shall not write the CSR",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Field("rs1"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRead(
-                    &Sem::Field("csr"),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRw(
-                    &Sem::Field("csr"),
-                    &Sem::Or(
-                        &Sem::CsrRead(
-                            &Sem::Field("csr"),
-                        ),
-                        &Sem::Reg("rs1"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "csrrsi",
-        mask: 0x0000707f,
-        value: 0x00006073,
-        operands: &["rd", "csr", "zimm5"],
-        from: "rv_zicsr",
-        source: "RVI-ZICSR §5.1.1 — CSRRS with a zero-extended 5-bit immediate; if uimm=0 the instruction shall not write the CSR",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Field("zimm5"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRead(
-                    &Sem::Field("csr"),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRw(
-                    &Sem::Field("csr"),
-                    &Sem::Or(
-                        &Sem::CsrRead(
-                            &Sem::Field("csr"),
-                        ),
-                        &Sem::Zext(
-                            64,
-                            &Sem::Field("zimm5"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "csrrw",
-        mask: 0x0000707f,
-        value: 0x00001073,
-        operands: &["rd", "rs1", "csr"],
-        from: "rv_zicsr",
-        source: "RVI-ZICSR §5.1.1 — atomic read/write CSR; if rd=x0 the instruction shall not read the CSR",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Field("rd"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::CsrWrite(
-                &Sem::Field("csr"),
-                &Sem::Reg("rs1"),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRw(
-                    &Sem::Field("csr"),
-                    &Sem::Reg("rs1"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "csrrwi",
-        mask: 0x0000707f,
-        value: 0x00005073,
-        operands: &["rd", "csr", "zimm5"],
-        from: "rv_zicsr",
-        source: "RVI-ZICSR §5.1.1 — CSRRW with a zero-extended 5-bit immediate; if rd=x0 the instruction shall not read the CSR",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Field("rd"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::CsrWrite(
-                &Sem::Field("csr"),
-                &Sem::Zext(
-                    64,
-                    &Sem::Field("zimm5"),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::CsrRw(
-                    &Sem::Field("csr"),
-                    &Sem::Zext(
-                        64,
-                        &Sem::Field("zimm5"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "div",
-        mask: 0xfe00707f,
-        value: 0x02004033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.2 — signed division rounding towards zero; Table 1: a zero divisor yields a quotient with all bits set, overflow the dividend (the operator's wrap)",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Reg("rs2"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Lit(0xffffffffffffffff),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Div(
-                    &Sem::Reg("rs1"),
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "divu",
-        mask: 0xfe00707f,
-        value: 0x02005033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.2 — unsigned division; Table 1: a zero divisor yields 2^XLEN − 1, all bits set",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Reg("rs2"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Lit(0xffffffffffffffff),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::DivU(
-                    &Sem::Reg("rs1"),
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "divuw",
-        mask: 0xfe00707f,
-        value: 0x0200503b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_m",
-        source: "RVI-M §11.1.2 — DIVUW as unsigned integers, the 32-bit quotient sign-extended; Table 1 at L = 32: 2^32 − 1",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Trunc(
-                    32,
-                    &Sem::Reg("rs2"),
-                ),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Lit(0xffffffffffffffff),
-                    ),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::DivU(
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs1"),
-                            ),
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs2"),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "divw",
-        mask: 0xfe00707f,
-        value: 0x0200403b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_m",
-        source: "RVI-M §11.1.2 — DIVW divides the lower 32 bits of rs1 by the lower 32 bits of rs2 as signed integers, the 32-bit quotient sign-extended; Table 1 at L = 32",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Trunc(
-                    32,
-                    &Sem::Reg("rs2"),
-                ),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Lit(0xffffffffffffffff),
-                    ),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Div(
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs1"),
-                            ),
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs2"),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
     InsnDef {
         name: "ebreak",
         mask: 0xffffffff,
@@ -1543,51 +720,111 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "fadd.d",
-        mask: 0xfe00007f,
-        value: 0x02000053,
-        operands: &["rd", "rs1", "rs2", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — FADD.S's addition at format 64, rounded by rm",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FAdd(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::FReg("rs1"),
-                &Sem::FReg("rs2"),
+        name: "mret",
+        mask: 0xffffffff,
+        value: 0x30200073,
+        operands: &[],
+        from: "rv_system",
+        source: "RVP-MACHINE §2.1.3.2 — xRET executes in mode x or higher; in a less-privileged mode it raises illegal-instruction (xtval = the instruction word)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Mode,
+                &Sem::Lit(0x0000000000000003),
+            ),
+            &Sem::Xret(
+                &Sem::Lit(0x0000000000000003),
+            ),
+            &Sem::TrapDeliver(
+                &Sem::Lit(0x0000000000000002),
+                &Sem::Inst,
             ),
         ),
         length: 4,
         expansion: None,
     },
     InsnDef {
-        name: "fadd.s",
-        mask: 0xfe00007f,
-        value: 0x00000053,
-        operands: &["rd", "rs1", "rs2", "rm"],
-        from: "rv_f",
-        source: "RVI-F §20.1.6 — FADD.S performs 'single-precision floating-point addition' between rs1 and rs2, rounded by rm",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::FAdd(
-                    32,
-                    &Sem::Rounding(
-                        &Sem::Field("rm"),
+        name: "sret",
+        mask: 0xffffffff,
+        value: 0x10200073,
+        operands: &[],
+        from: "rv_s",
+        source: "RVP-MACHINE §2.1.3.2 — legal in M and in S, illegal in U; in S with mstatus.TSR=1 it raises illegal-instruction (§2.1.1.6.6; TSR is bit 22, mstatus is 0x300 — the pinned encoding.h masks)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Mode,
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::TrapDeliver(
+                &Sem::Lit(0x0000000000000002),
+                &Sem::Inst,
+            ),
+            &Sem::If(
+                &Sem::And(
+                    &Sem::Eq(
+                        &Sem::Mode,
+                        &Sem::Lit(0x0000000000000001),
                     ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs1"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
+                    &Sem::Ne(
+                        &Sem::Bits(
+                            22,
+                            22,
+                            &Sem::CsrState(
+                                &Sem::Lit(0x0000000000000300),
+                            ),
+                        ),
+                        &Sem::Lit(0x0000000000000000),
                     ),
                 ),
+                &Sem::TrapDeliver(
+                    &Sem::Lit(0x0000000000000002),
+                    &Sem::Inst,
+                ),
+                &Sem::Xret(
+                    &Sem::Lit(0x0000000000000001),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "wfi",
+        mask: 0xffffffff,
+        value: 0x10500073,
+        operands: &[],
+        from: "rv_system",
+        source: "RVP-MACHINE §2.1.3.3 — legality: illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21), always legal in M; a LEGAL wfi enters the wait state — the halt entry is the step machinery's (P4-SYSTEM.5 decision 4; the nop latitude recorded-not-taken, the header)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Mode,
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::TrapDeliver(
+                &Sem::Lit(0x0000000000000002),
+                &Sem::Inst,
+            ),
+            &Sem::If(
+                &Sem::And(
+                    &Sem::Lt(
+                        &Sem::Mode,
+                        &Sem::Lit(0x0000000000000003),
+                    ),
+                    &Sem::Ne(
+                        &Sem::Bits(
+                            21,
+                            21,
+                            &Sem::CsrState(
+                                &Sem::Lit(0x0000000000000300),
+                            ),
+                        ),
+                        &Sem::Lit(0x0000000000000000),
+                    ),
+                ),
+                &Sem::TrapDeliver(
+                    &Sem::Lit(0x0000000000000002),
+                    &Sem::Inst,
+                ),
+                &Sem::Nop,
             ),
         ),
         length: 4,
@@ -1624,6 +861,169 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FUnbox(
                     32,
                     &Sem::FReg("rs1"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmv.d.x",
+        mask: 0xfff0707f,
+        value: 0xf2000053,
+        operands: &["rd", "rs1"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — 'FMV.D.X moves the double-precision value encoded in IEEE 754-2008 standard encoding from the integer register rs1 to the floating-point register rd'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Reg("rs1"),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmv.w.x",
+        mask: 0xfff0707f,
+        value: 0xf0000053,
+        operands: &["rd", "rs1"],
+        from: "rv_f",
+        source: "RVI-F §20.1.7 — FMV.W.X moves the single 'from the lower 32 bits of integer register rs1 to the floating-point register rd'; 'The bits are not modified in the transfer' — NaN-boxed into FLEN",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::Bits(
+                    31,
+                    0,
+                    &Sem::Reg("rs1"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmv.x.d",
+        mask: 0xfff0707f,
+        value: 0xe2000053,
+        operands: &["rd", "rs1"],
+        from: "rv64_d",
+        source: "RVI-D §21.1.5 — 'FMV.X.D moves the double-precision value in floating-point register rs1 to a representation in IEEE 754-2008 standard encoding in integer register rd'; 'FMV.X.D and FMV.D.X do not modify the bits being transferred'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::FReg("rs1"),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmv.x.w",
+        mask: 0xfff0707f,
+        value: 0xe0000053,
+        operands: &["rd", "rs1"],
+        from: "rv_f",
+        source: "RVI-F §20.1.7 — FMV.X.W moves rs1's single to 'the lower 32 bits of integer register rd'; 'For RV64, the higher 32 bits of the destination register are filled with copies of the floating-point number’s sign bit'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Bits(
+                    31,
+                    0,
+                    &Sem::FReg("rs1"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sfence.vma",
+        mask: 0xfe007fff,
+        value: 0x12000073,
+        operands: &["rs1", "rs2"],
+        from: "rv_s",
+        source: "RVP-SUPERVISOR §11.1.2.1 — the translation fence; illegal in U (§11.1.9's shared-permission sentence) and in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6; TVM is bit 20); the invalidation effect is the four specified cases over the modelled TLB (P4-SYSTEM.3 decision 2; the header records the superseded time-scoped nop)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Mode,
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::TrapDeliver(
+                &Sem::Lit(0x0000000000000002),
+                &Sem::Inst,
+            ),
+            &Sem::If(
+                &Sem::And(
+                    &Sem::Eq(
+                        &Sem::Mode,
+                        &Sem::Lit(0x0000000000000001),
+                    ),
+                    &Sem::Ne(
+                        &Sem::Bits(
+                            20,
+                            20,
+                            &Sem::CsrState(
+                                &Sem::Lit(0x0000000000000300),
+                            ),
+                        ),
+                        &Sem::Lit(0x0000000000000000),
+                    ),
+                ),
+                &Sem::TrapDeliver(
+                    &Sem::Lit(0x0000000000000002),
+                    &Sem::Inst,
+                ),
+                &Sem::TlbInvalidate(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                    &Sem::Eq(
+                        &Sem::Field("rs1"),
+                        &Sem::Lit(0x0000000000000000),
+                    ),
+                    &Sem::Eq(
+                        &Sem::Field("rs2"),
+                        &Sem::Lit(0x0000000000000000),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "lr.d",
+        mask: 0xf9f0707f,
+        value: 0x1000302f,
+        operands: &["rd", "rs1", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.2 — LR.D loads a doubleword from rs1's address into rd and registers a reservation on the addressed bytes; a full XLEN load needs no extension",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::LoadReserved(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Reg("rs1"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "lr.w",
+        mask: 0xf9f0707f,
+        value: 0x1000202f,
+        operands: &["rd", "rs1", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.2 — LR.W loads a word from rs1's address, sign-extends it into rd, and registers a reservation on the addressed bytes (the reservation contract is the operators', schema/semantics.sexp)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::LoadReserved(
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Lit(0x0000000000000001),
+                    &Sem::Reg("rs1"),
                 ),
             ),
         ),
@@ -2067,38 +1467,37 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "fdiv.d",
-        mask: 0xfe00007f,
-        value: 0x1a000053,
-        operands: &["rd", "rs1", "rs2", "rm"],
+        name: "fsqrt.d",
+        mask: 0xfff0007f,
+        value: 0x5a000053,
+        operands: &["rd", "rs1", "rm"],
         from: "rv_d",
-        source: "RVI-D §21.1.4 — FDIV.S's division of rs1 by rs2 at format 64, rounded by rm",
+        source: "RVI-D §21.1.4 — FSQRT.S's square root of rs1 at format 64; the row's rs2 field is fixed 0",
         effect: &Sem::Set(
             &Sem::FReg("rd"),
-            &Sem::FDiv(
+            &Sem::FSqrt(
                 64,
                 &Sem::Rounding(
                     &Sem::Field("rm"),
                 ),
                 &Sem::FReg("rs1"),
-                &Sem::FReg("rs2"),
             ),
         ),
         length: 4,
         expansion: None,
     },
     InsnDef {
-        name: "fdiv.s",
-        mask: 0xfe00007f,
-        value: 0x18000053,
-        operands: &["rd", "rs1", "rs2", "rm"],
+        name: "fsqrt.s",
+        mask: 0xfff0007f,
+        value: 0x58000053,
+        operands: &["rd", "rs1", "rm"],
         from: "rv_f",
-        source: "RVI-F §20.1.6 — 'FDIV.S performs the single-precision floating-point division of rs1 by rs2'",
+        source: "RVI-F §20.1.6 — 'FSQRT.S computes the square root of rs1'; the row's rs2 field is fixed 0",
         effect: &Sem::Set(
             &Sem::FReg("rd"),
             &Sem::FBox(
                 32,
-                &Sem::FDiv(
+                &Sem::FSqrt(
                     32,
                     &Sem::Rounding(
                         &Sem::Field("rm"),
@@ -2107,9 +1506,51 @@ pub static INSNS: &[InsnDef] = &[
                         32,
                         &Sem::FReg("rs1"),
                     ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "add",
+        mask: 0xfe00707f,
+        value: 0x00000033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4 — overflow ignored; the result wraps modulo 2^XLEN",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "addw",
+        mask: 0xfe00707f,
+        value: 0x0000003b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.2 — D-WSUFFIX",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Add(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs2"),
+                        ),
                     ),
                 ),
             ),
@@ -2118,24 +1559,169 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "fence",
-        mask: 0x0000707f,
-        value: 0x0000000f,
-        operands: &["fm", "pred", "succ", "rs1", "rd"],
+        name: "and",
+        mask: 0xfe00707f,
+        value: 0x00007033,
+        operands: &["rd", "rs1", "rs2"],
         from: "rv_i",
-        source: "RVI-RV32I §1.1.7 — D-FENCE: one hart, no devices, in-order; decoded, must not trap, no observable effect",
-        effect: &Sem::Nop,
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::And(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
         length: 4,
         expansion: None,
     },
     InsnDef {
-        name: "fence.i",
-        mask: 0x0000707f,
-        value: 0x0000100f,
-        operands: &["imm12", "rs1", "rd"],
-        from: "rv_zifencei",
-        source: "RVI-ZIFENCEI §4.1 — the declared nop: the coherent/uncached-RAM latitude ('just the fetch pipeline needs to be flushed at a FENCE.I') meets a re-read-per-fetch machine (nothing to flush, D-CODE-VISIBILITY); funct12/rs1/rd decoded-and-ignored per the chapter's shall-ignore rule, never legalization-rejected",
-        effect: &Sem::Nop,
+        name: "div",
+        mask: 0xfe00707f,
+        value: 0x02004033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — signed division rounding towards zero; Table 1: a zero divisor yields a quotient with all bits set, overflow the dividend (the operator's wrap)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Lit(0xffffffffffffffff),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Div(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "divu",
+        mask: 0xfe00707f,
+        value: 0x02005033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — unsigned division; Table 1: a zero divisor yields 2^XLEN − 1, all bits set",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Lit(0xffffffffffffffff),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::DivU(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "divuw",
+        mask: 0xfe00707f,
+        value: 0x0200503b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — DIVUW as unsigned integers, the 32-bit quotient sign-extended; Table 1 at L = 32: 2^32 − 1",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Lit(0xffffffffffffffff),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::DivU(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "divw",
+        mask: 0xfe00707f,
+        value: 0x0200403b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — DIVW divides the lower 32 bits of rs1 by the lower 32 bits of rs2 as signed integers, the 32-bit quotient sign-extended; Table 1 at L = 32",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Lit(0xffffffffffffffff),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Div(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
         length: 4,
         expansion: None,
     },
@@ -2175,30 +1761,6 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FUnbox(
                     32,
                     &Sem::FReg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fld",
-        mask: 0x0000707f,
-        value: 0x00003007,
-        operands: &["rd", "rs1", "imm12"],
-        from: "rv_d",
-        source: "RVI-D §21.1.3 — 'The FLD instruction loads a double-precision floating-point value from memory into floating-point register rd', base+offset like the integer loads; 'FLD and FSD do not modify the bits being transferred'",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::Load(
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Lit(0x0000000000000000),
-                &Sem::Add(
-                    &Sem::Reg("rs1"),
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("imm12"),
-                    ),
                 ),
             ),
         ),
@@ -2283,89 +1845,6 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FUnbox(
                     32,
                     &Sem::FReg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "flw",
-        mask: 0x0000707f,
-        value: 0x00002007,
-        operands: &["rd", "rs1", "imm12"],
-        from: "rv_f",
-        source: "RVI-F §20.1.5 — 'The FLW instruction loads a single-precision floating-point value from memory into floating-point register rd', base+offset like the integer loads; the 32 loaded bits are NaN-boxed into FLEN (RVI-D §21.1.2's transfer rule) and 'FLW and FSW do not modify the bits being transferred'",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::Load(
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Lit(0x0000000000000000),
-                    &Sem::Add(
-                        &Sem::Reg("rs1"),
-                        &Sem::Sext(
-                            64,
-                            &Sem::Imm("imm12"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmadd.d",
-        mask: 0x0600007f,
-        value: 0x02000043,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — the computational instructions 'are defined analogously to their single-precision counterparts, but operate on double-precision operands and produce double-precision results': FMADD.S's (rs1×rs2)+rs3 with one rounding",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FMadd(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::FReg("rs1"),
-                &Sem::FReg("rs2"),
-                &Sem::FReg("rs3"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmadd.s",
-        mask: 0x0600007f,
-        value: 0x00000043,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_f",
-        source: "RVI-F §20.1.6 — 'FMADD.S computes (rs1×rs2)+rs3' with one rounding; ∞×0 raises NV even with a quiet-NaN addend (the operator's contract)",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::FMadd(
-                    32,
-                    &Sem::Rounding(
-                        &Sem::Field("rm"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs1"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs3"),
-                    ),
                 ),
             ),
         ),
@@ -2458,340 +1937,6 @@ pub static INSNS: &[InsnDef] = &[
                     ),
                 ),
             ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmsub.d",
-        mask: 0x0600007f,
-        value: 0x02000047,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — FMSUB.S's (rs1×rs2)−rs3 at format 64: rs3's sign bit flipped into the one fused operation",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FMadd(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::FReg("rs1"),
-                &Sem::FReg("rs2"),
-                &Sem::Xor(
-                    &Sem::FReg("rs3"),
-                    &Sem::Lit(0x8000000000000000),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmsub.s",
-        mask: 0x0600007f,
-        value: 0x00000047,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_f",
-        source: "RVI-F §20.1.6 — 'FMSUB.S computes (rs1×rs2)−rs3': rs3's sign bit flipped into the one fused operation",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::FMadd(
-                    32,
-                    &Sem::Rounding(
-                        &Sem::Field("rm"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs1"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
-                    ),
-                    &Sem::Xor(
-                        &Sem::FUnbox(
-                            32,
-                            &Sem::FReg("rs3"),
-                        ),
-                        &Sem::Lit(0x0000000080000000),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmul.d",
-        mask: 0xfe00007f,
-        value: 0x12000053,
-        operands: &["rd", "rs1", "rs2", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — FMUL.S's multiplication at format 64, rounded by rm",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FMul(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::FReg("rs1"),
-                &Sem::FReg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmul.s",
-        mask: 0xfe00007f,
-        value: 0x10000053,
-        operands: &["rd", "rs1", "rs2", "rm"],
-        from: "rv_f",
-        source: "RVI-F §20.1.6 — FMUL.S performs single-precision floating-point multiplication between rs1 and rs2, rounded by rm",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::FMul(
-                    32,
-                    &Sem::Rounding(
-                        &Sem::Field("rm"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs1"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmv.d.x",
-        mask: 0xfff0707f,
-        value: 0xf2000053,
-        operands: &["rd", "rs1"],
-        from: "rv64_d",
-        source: "RVI-D §21.1.5 — 'FMV.D.X moves the double-precision value encoded in IEEE 754-2008 standard encoding from the integer register rs1 to the floating-point register rd'",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::Reg("rs1"),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmv.w.x",
-        mask: 0xfff0707f,
-        value: 0xf0000053,
-        operands: &["rd", "rs1"],
-        from: "rv_f",
-        source: "RVI-F §20.1.7 — FMV.W.X moves the single 'from the lower 32 bits of integer register rs1 to the floating-point register rd'; 'The bits are not modified in the transfer' — NaN-boxed into FLEN",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::Bits(
-                    31,
-                    0,
-                    &Sem::Reg("rs1"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmv.x.d",
-        mask: 0xfff0707f,
-        value: 0xe2000053,
-        operands: &["rd", "rs1"],
-        from: "rv64_d",
-        source: "RVI-D §21.1.5 — 'FMV.X.D moves the double-precision value in floating-point register rs1 to a representation in IEEE 754-2008 standard encoding in integer register rd'; 'FMV.X.D and FMV.D.X do not modify the bits being transferred'",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::FReg("rs1"),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fmv.x.w",
-        mask: 0xfff0707f,
-        value: 0xe0000053,
-        operands: &["rd", "rs1"],
-        from: "rv_f",
-        source: "RVI-F §20.1.7 — FMV.X.W moves rs1's single to 'the lower 32 bits of integer register rd'; 'For RV64, the higher 32 bits of the destination register are filled with copies of the floating-point number’s sign bit'",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Bits(
-                    31,
-                    0,
-                    &Sem::FReg("rs1"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fnmadd.d",
-        mask: 0x0600007f,
-        value: 0x0200004f,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — FNMADD.S's −(rs1×rs2)−rs3 at format 64: rs1's and rs3's sign bits flipped",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FMadd(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::Xor(
-                    &Sem::FReg("rs1"),
-                    &Sem::Lit(0x8000000000000000),
-                ),
-                &Sem::FReg("rs2"),
-                &Sem::Xor(
-                    &Sem::FReg("rs3"),
-                    &Sem::Lit(0x8000000000000000),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fnmadd.s",
-        mask: 0x0600007f,
-        value: 0x0000004f,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_f",
-        source: "RVI-F §20.1.6 — 'FNMADD.S computes −(rs1×rs2)−rs3': rs1's and rs3's sign bits flipped",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::FMadd(
-                    32,
-                    &Sem::Rounding(
-                        &Sem::Field("rm"),
-                    ),
-                    &Sem::Xor(
-                        &Sem::FUnbox(
-                            32,
-                            &Sem::FReg("rs1"),
-                        ),
-                        &Sem::Lit(0x0000000080000000),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
-                    ),
-                    &Sem::Xor(
-                        &Sem::FUnbox(
-                            32,
-                            &Sem::FReg("rs3"),
-                        ),
-                        &Sem::Lit(0x0000000080000000),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fnmsub.d",
-        mask: 0x0600007f,
-        value: 0x0200004b,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — FNMSUB.S's −(rs1×rs2)+rs3 at format 64: rs1's sign bit flipped, so the product is negated before the single rounding",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FMadd(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::Xor(
-                    &Sem::FReg("rs1"),
-                    &Sem::Lit(0x8000000000000000),
-                ),
-                &Sem::FReg("rs2"),
-                &Sem::FReg("rs3"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fnmsub.s",
-        mask: 0x0600007f,
-        value: 0x0000004b,
-        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
-        from: "rv_f",
-        source: "RVI-F §20.1.6 — 'FNMSUB.S computes −(rs1×rs2)+rs3': rs1's sign bit flipped, so the product is negated before the single rounding",
-        effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FBox(
-                32,
-                &Sem::FMadd(
-                    32,
-                    &Sem::Rounding(
-                        &Sem::Field("rm"),
-                    ),
-                    &Sem::Xor(
-                        &Sem::FUnbox(
-                            32,
-                            &Sem::FReg("rs1"),
-                        ),
-                        &Sem::Lit(0x0000000080000000),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs2"),
-                    ),
-                    &Sem::FUnbox(
-                        32,
-                        &Sem::FReg("rs3"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "fsd",
-        mask: 0x0000707f,
-        value: 0x00003027,
-        operands: &["imm12hi", "rs1", "rs2", "imm12lo"],
-        from: "rv_d",
-        source: "RVI-D §21.1.3 — 'FSD stores a double-precision value from the floating-point registers to memory'; 'the payloads of non-canonical NaNs are preserved'",
-        effect: &Sem::Store(
-            &Sem::Lit(0x0000000000000040),
-            &Sem::Add(
-                &Sem::Reg("rs1"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Imm("imm12"),
-                ),
-            ),
-            &Sem::FReg("rs2"),
         ),
         length: 4,
         expansion: None,
@@ -2962,37 +2107,1135 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "fsqrt.d",
-        mask: 0xfff0007f,
-        value: 0x5a000053,
-        operands: &["rd", "rs1", "rm"],
-        from: "rv_d",
-        source: "RVI-D §21.1.4 — FSQRT.S's square root of rs1 at format 64; the row's rs2 field is fixed 0",
+        name: "mul",
+        mask: 0xfe00707f,
+        value: 0x02000033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — MUL 'places the lower XLEN bits in the destination register'",
         effect: &Sem::Set(
-            &Sem::FReg("rd"),
-            &Sem::FSqrt(
-                64,
-                &Sem::Rounding(
-                    &Sem::Field("rm"),
-                ),
-                &Sem::FReg("rs1"),
+            &Sem::Reg("rd"),
+            &Sem::Mul(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
             ),
         ),
         length: 4,
         expansion: None,
     },
     InsnDef {
-        name: "fsqrt.s",
-        mask: 0xfff0007f,
-        value: 0x58000053,
-        operands: &["rd", "rs1", "rm"],
+        name: "mulh",
+        mask: 0xfe00707f,
+        value: 0x02001033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, signed×signed",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::MulH(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "mulhsu",
+        mask: 0xfe00707f,
+        value: 0x02002033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, signed rs1 × unsigned rs2",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::MulHsu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "mulhu",
+        mask: 0xfe00707f,
+        value: 0x02003033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, unsigned×unsigned",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::MulHu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "mulw",
+        mask: 0xfe00707f,
+        value: 0x0200003b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.1 — MULW 'multiplies the lower 32 bits of the source registers, placing the sign extension of the lower 32 bits of the result into the destination register'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Mul(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "or",
+        mask: 0xfe00707f,
+        value: 0x00006033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Or(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "rem",
+        mask: 0xfe00707f,
+        value: 0x02006033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — 'For REM, the sign of a nonzero result equals the sign of the dividend'; Table 1: a zero divisor yields the dividend, overflow 0 (the operator's wrap)",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Reg("rs1"),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Rem(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "remu",
+        mask: 0xfe00707f,
+        value: 0x02007033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_m",
+        source: "RVI-M §11.1.2 — the unsigned remainder; Table 1: a zero divisor yields the dividend",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs2"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Reg("rs1"),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::RemU(
+                    &Sem::Reg("rs1"),
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "remuw",
+        mask: 0xfe00707f,
+        value: 0x0200703b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — 'Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero'",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs1"),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::RemU(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "remw",
+        mask: 0xfe00707f,
+        value: 0x0200603b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_m",
+        source: "RVI-M §11.1.2 — 'Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero'",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs1"),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Rem(
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs1"),
+                            ),
+                            &Sem::Trunc(
+                                32,
+                                &Sem::Reg("rs2"),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sll",
+        mask: 0xfe00707f,
+        value: 0x00001033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV64I §3.1.2.2 — D-SHAMT: only the low 6 bits of rs2 at XLEN=64",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Shl(
+                &Sem::Reg("rs1"),
+                &Sem::Bits(
+                    5,
+                    0,
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "slliw",
+        mask: 0xfe00707f,
+        value: 0x0000101b,
+        operands: &["rd", "rs1", "shamtw"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.1 — D-SHAMT: a 5-bit amount for the *W shifts",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Shl(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Imm("shamt"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sllw",
+        mask: 0xfe00707f,
+        value: 0x0000103b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.2 — the *W shifts use rs2[4:0], not rs2[5:0]",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Shl(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Bits(
+                            4,
+                            0,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "slt",
+        mask: 0xfe00707f,
+        value: 0x00002033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Slt(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sltu",
+        mask: 0xfe00707f,
+        value: 0x00003033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sltu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sra",
+        mask: 0xfe00707f,
+        value: 0x40005033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV64I §3.1.2.2 — D-SHAMT",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sar(
+                &Sem::Reg("rs1"),
+                &Sem::Bits(
+                    5,
+                    0,
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sraiw",
+        mask: 0xfe00707f,
+        value: 0x4000501b,
+        operands: &["rd", "rs1", "shamtw"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.1 — arithmetic, on the low 32 bits",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Sar(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Imm("shamt"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sraw",
+        mask: 0xfe00707f,
+        value: 0x4000503b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.2 — rs2[4:0]",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Sar(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Bits(
+                            4,
+                            0,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "srl",
+        mask: 0xfe00707f,
+        value: 0x00005033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV64I §3.1.2.2 — D-SHAMT",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Shr(
+                &Sem::Reg("rs1"),
+                &Sem::Bits(
+                    5,
+                    0,
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "srliw",
+        mask: 0xfe00707f,
+        value: 0x0000501b,
+        operands: &["rd", "rs1", "shamtw"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.1 — logical, on the low 32 bits",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Shr(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Imm("shamt"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "srlw",
+        mask: 0xfe00707f,
+        value: 0x0000503b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.2 — rs2[4:0]",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Shr(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Bits(
+                            4,
+                            0,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sub",
+        mask: 0xfe00707f,
+        value: 0x40000033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sub(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "subw",
+        mask: 0xfe00707f,
+        value: 0x4000003b,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.2 — D-WSUFFIX",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Sub(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "xor",
+        mask: 0xfe00707f,
+        value: 0x00004033,
+        operands: &["rd", "rs1", "rs2"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Xor(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "c.ebreak",
+        mask: 0x0000ffff,
+        value: 0x00009002,
+        operands: &[],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.6 — 'Debuggers can use the C.EBREAK instruction, which expands to ebreak'",
+        effect: &Sem::TrapDeliver(
+            &Sem::Lit(0x0000000000000003),
+            &Sem::Pc,
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("ebreak"),
+            bindings: &[
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "slli",
+        mask: 0xfc00707f,
+        value: 0x00001013,
+        operands: &["rd", "rs1", "shamtd"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.1 — D-SHAMT: a 6-bit shift amount at XLEN=64",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Shl(
+                &Sem::Reg("rs1"),
+                &Sem::Imm("shamt"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "srai",
+        mask: 0xfc00707f,
+        value: 0x40005013,
+        operands: &["rd", "rs1", "shamtd"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.1 — D-SHAMT; arithmetic, the sign bit is replicated",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sar(
+                &Sem::Reg("rs1"),
+                &Sem::Imm("shamt"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "srli",
+        mask: 0xfc00707f,
+        value: 0x00005013,
+        operands: &["rd", "rs1", "shamtd"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2.1 — D-SHAMT; logical, zeros shifted in",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Shr(
+                &Sem::Reg("rs1"),
+                &Sem::Imm("shamt"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoadd.d",
+        mask: 0xf800707f,
+        value: 0x0000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOADD.D atomically adds rs2's 64 bits to the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x00, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                0,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoadd.w",
+        mask: 0xf800707f,
+        value: 0x0000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOADD.W atomically adds rs2's low 32 bits to the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x00, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    0,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoand.d",
+        mask: 0xf800707f,
+        value: 0x6000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOAND.D atomically ANDs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x0c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                12,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoand.w",
+        mask: 0xf800707f,
+        value: 0x6000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOAND.W atomically ANDs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x0c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    12,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amomax.d",
+        mask: 0xf800707f,
+        value: 0xa000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMAX.D atomically takes the signed maximum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x14, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                20,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amomax.w",
+        mask: 0xf800707f,
+        value: 0xa000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMAX.W atomically takes the signed maximum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x14, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    20,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amomaxu.d",
+        mask: 0xf800707f,
+        value: 0xe000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMAXU.D atomically takes the unsigned maximum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x1c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                28,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amomaxu.w",
+        mask: 0xf800707f,
+        value: 0xe000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMAXU.W atomically takes the unsigned maximum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x1c, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    28,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amomin.d",
+        mask: 0xf800707f,
+        value: 0x8000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMIN.D atomically takes the signed minimum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x10, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                16,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amomin.w",
+        mask: 0xf800707f,
+        value: 0x8000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMIN.W atomically takes the signed minimum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x10, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    16,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amominu.d",
+        mask: 0xf800707f,
+        value: 0xc000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOMINU.D atomically takes the unsigned minimum of the memory doubleword at rs1's address and rs2's 64 bits, and writes the OLD doubleword to rd (op 0x18, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                24,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amominu.w",
+        mask: 0xf800707f,
+        value: 0xc000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOMINU.W atomically takes the unsigned minimum of the memory word at rs1's address and rs2's low 32 bits, and writes the OLD word, sign-extended, to rd (op 0x18, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    24,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoor.d",
+        mask: 0xf800707f,
+        value: 0x4000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOOR.D atomically ORs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x08, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                8,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoor.w",
+        mask: 0xf800707f,
+        value: 0x4000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOOR.W atomically ORs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x08, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    8,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoswap.d",
+        mask: 0xf800707f,
+        value: 0x0800302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOSWAP.D atomically writes rs2's 64 bits to the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x01, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                1,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoswap.w",
+        mask: 0xf800707f,
+        value: 0x0800202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOSWAP.W atomically writes rs2's low 32 bits to the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x01, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    1,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoxor.d",
+        mask: 0xf800707f,
+        value: 0x2000302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.4 — AMOXOR.D atomically XORs rs2's 64 bits into the memory doubleword at rs1's address and writes the OLD doubleword to rd (op 0x04, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Amo(
+                4,
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "amoxor.w",
+        mask: 0xf800707f,
+        value: 0x2000202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.4 — AMOXOR.W atomically XORs rs2's low 32 bits into the memory word at rs1's address and writes the OLD word, sign-extended, to rd (op 0x04, the encoding's own funct5)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Amo(
+                    4,
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Reg("rs1"),
+                    &Sem::Trunc(
+                        32,
+                        &Sem::Reg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sc.d",
+        mask: 0xf800707f,
+        value: 0x1800302f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv64_a",
+        source: "RVI-A §12.1.2 — SC.D conditionally stores rs2's 64 bits to rs1's address and writes the code to rd (0 success / 1 failure); success or failure, the reservation is cleared — the section's own sentence",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::StoreConditional(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "sc.w",
+        mask: 0xf800707f,
+        value: 0x1800202f,
+        operands: &["rd", "rs1", "rs2", "aq", "rl"],
+        from: "rv_a",
+        source: "RVI-A §12.1.2 — SC.W conditionally stores rs2's low 32 bits to rs1's address and writes the code to rd (0 success / 1 failure; the deterministic never-spurious policy is decision 3's, stated at the operator); success or failure, the reservation is cleared — the section's own sentence",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::StoreConditional(
+                &Sem::Lit(0x0000000000000020),
+                &Sem::Reg("rs1"),
+                &Sem::Trunc(
+                    32,
+                    &Sem::Reg("rs2"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fadd.d",
+        mask: 0xfe00007f,
+        value: 0x02000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FADD.S's addition at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FAdd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fadd.s",
+        mask: 0xfe00007f,
+        value: 0x00000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
         from: "rv_f",
-        source: "RVI-F §20.1.6 — 'FSQRT.S computes the square root of rs1'; the row's rs2 field is fixed 0",
+        source: "RVI-F §20.1.6 — FADD.S performs 'single-precision floating-point addition' between rs1 and rs2, rounded by rm",
         effect: &Sem::Set(
             &Sem::FReg("rd"),
             &Sem::FBox(
                 32,
-                &Sem::FSqrt(
+                &Sem::FAdd(
                     32,
                     &Sem::Rounding(
                         &Sem::Field("rm"),
@@ -3000,6 +3243,112 @@ pub static INSNS: &[InsnDef] = &[
                     &Sem::FUnbox(
                         32,
                         &Sem::FReg("rs1"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fdiv.d",
+        mask: 0xfe00007f,
+        value: 0x1a000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FDIV.S's division of rs1 by rs2 at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FDiv(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fdiv.s",
+        mask: 0xfe00007f,
+        value: 0x18000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_f",
+        source: "RVI-F §20.1.6 — 'FDIV.S performs the single-precision floating-point division of rs1 by rs2'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FDiv(
+                    32,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs1"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmul.d",
+        mask: 0xfe00007f,
+        value: 0x12000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FMUL.S's multiplication at format 64, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMul(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmul.s",
+        mask: 0xfe00007f,
+        value: 0x10000053,
+        operands: &["rd", "rs1", "rs2", "rm"],
+        from: "rv_f",
+        source: "RVI-F §20.1.6 — FMUL.S performs single-precision floating-point multiplication between rs1 and rs2, rounded by rm",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FMul(
+                    32,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs1"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
                     ),
                 ),
             ),
@@ -3059,6 +3408,992 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
+        name: "c.jalr",
+        mask: 0x0000f07f,
+        value: 0x00009002,
+        operands: &["c_rs1_n0"],
+        from: "rv_c",
+        source: "RVI-C §27.1.4 — 'C.JALR expands to jalr x1, 0(rs1)'; 'Strictly speaking, C.JALR does not expand exactly to a base RVI instruction as the value added to the PC to form the link address is 2 rather than 4' — its own rule: jalr's, the link pc+2",
+        effect: &Sem::Seq(&[
+            &Sem::SetPc(
+                &Sem::And(
+                    &Sem::Reg("rs1"),
+                    &Sem::Lit(0xfffffffffffffffe),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Lit(0x0000000000000002),
+                ),
+            ),
+        ]),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: None,
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Lit(0x0000000000000001)
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Field("c_rs1_n0")
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.jr",
+        mask: 0x0000f07f,
+        value: 0x00008002,
+        operands: &["rs1_n0"],
+        from: "rv_c",
+        source: "RVI-C §27.1.4 — 'C.JR expands to jalr x0, 0(rs1)'; 'C.JR is valid only when rs1≠x0; the code point with rs1=x0 is reserved'",
+        effect: &Sem::Seq(&[
+            &Sem::SetPc(
+                &Sem::And(
+                    &Sem::Add(
+                        &Sem::Reg("rs1"),
+                        &Sem::Sext(
+                            64,
+                            &Sem::Imm("imm12"),
+                        ),
+                    ),
+                    &Sem::Lit(0xfffffffffffffffe),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Lit(0x0000000000000004),
+                ),
+            ),
+        ]),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("jalr"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Field("rs1_n0")
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Field("rs1_n0"),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "addi",
+        mask: 0x0000707f,
+        value: 0x00000013,
+        operands: &["rd", "rs1", "imm12"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4 — the immediate is sign-extended; overflow is ignored",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "addiw",
+        mask: 0x0000707f,
+        value: 0x0000001b,
+        operands: &["rd", "rs1", "imm12"],
+        from: "rv64_i",
+        source: "RVI-RV64I §3.1.2 — D-WSUFFIX: overflow ignored, low 32 bits sign-extended",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Add(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Sext(
+                            32,
+                            &Sem::Imm("imm12"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "andi",
+        mask: 0x0000707f,
+        value: 0x00007013,
+        operands: &["rd", "rs1", "imm12"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::And(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "beq",
+        mask: 0x0000707f,
+        value: 0x00000063,
+        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.2",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "bge",
+        mask: 0x0000707f,
+        value: 0x00005063,
+        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.2 — signed comparison",
+        effect: &Sem::If(
+            &Sem::Ge(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "bgeu",
+        mask: 0x0000707f,
+        value: 0x00007063,
+        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.2 — unsigned comparison",
+        effect: &Sem::If(
+            &Sem::Geu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "blt",
+        mask: 0x0000707f,
+        value: 0x00004063,
+        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.2 — signed comparison",
+        effect: &Sem::If(
+            &Sem::Lt(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "bltu",
+        mask: 0x0000707f,
+        value: 0x00006063,
+        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.2 — unsigned comparison",
+        effect: &Sem::If(
+            &Sem::Ltu(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "bne",
+        mask: 0x0000707f,
+        value: 0x00001063,
+        operands: &["bimm12hi", "rs1", "rs2", "bimm12lo"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.2",
+        effect: &Sem::If(
+            &Sem::Ne(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "c.addi16sp",
+        mask: 0x0000ef83,
+        value: 0x00006101,
+        operands: &["c_nzimm10hi", "c_nzimm10lo"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.2 — 'It expands into addi x2, x2, nzimm[9:4]'; 'C.ADDI16SP is valid only when nzimm≠0; the code point with nzimm=0 is reserved'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addi"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_nzimm10hi"),
+                        &Sem::Imm("c_nzimm10lo"),
+                    )
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Or(
+                    &Sem::Imm("c_nzimm10hi"),
+                    &Sem::Imm("c_nzimm10lo"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "c.addw",
+        mask: 0x0000fc63,
+        value: 0x00009c21,
+        operands: &["rd_rs1_p", "rs2_p"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.5.3 — 'C.ADDW expands into addw rd′, rd′, rs2′'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Add(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.and",
+        mask: 0x0000fc63,
+        value: 0x00008c61,
+        operands: &["rd_rs1_p", "rs2_p"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.3 — 'C.AND expands into and rd′, rd′, rs2′'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::And(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("and"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.nop",
+        mask: 0x0000ef83,
+        value: 0x00000001,
+        operands: &["c_nzimm6hi", "c_nzimm6lo"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.2 — 'The code points with rd=x0 encode the C.NOP instruction'; 'C.ADDI expands into addi rd, rd, imm' — with rd = x0 (its nonzero-immediate code points HINTs: no state changes)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addi"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_nzimm6hi"),
+                        &Sem::Imm("c_nzimm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.or",
+        mask: 0x0000fc63,
+        value: 0x00008c41,
+        operands: &["rd_rs1_p", "rs2_p"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.3 — 'C.OR expands into or rd′, rd′, rs2′'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Or(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("or"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.sub",
+        mask: 0x0000fc63,
+        value: 0x00008c01,
+        operands: &["rd_rs1_p", "rs2_p"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.3 — 'C.SUB expands into sub rd′, rd′, rs2′'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sub(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("sub"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.subw",
+        mask: 0x0000fc63,
+        value: 0x00009c01,
+        operands: &["rd_rs1_p", "rs2_p"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.5.3 — 'C.SUBW expands into subw rd′, rd′, rs2′'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Sub(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs2"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("subw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.xor",
+        mask: 0x0000fc63,
+        value: 0x00008c21,
+        operands: &["rd_rs1_p", "rs2_p"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.3 — 'C.XOR expands into xor rd′, rd′, rs2′'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Xor(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("xor"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "csrrc",
+        mask: 0x0000707f,
+        value: 0x00003073,
+        operands: &["rd", "rs1", "csr"],
+        from: "rv_zicsr",
+        source: "RVI-ZICSR §5.1.1 — atomic read and clear bits; if rs1=x0 the instruction shall not write the CSR",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Field("rs1"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRead(
+                    &Sem::Field("csr"),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
+                    &Sem::Field("csr"),
+                    &Sem::And(
+                        &Sem::CsrRead(
+                            &Sem::Field("csr"),
+                        ),
+                        &Sem::Xor(
+                            &Sem::Reg("rs1"),
+                            &Sem::Lit(0xffffffffffffffff),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "csrrci",
+        mask: 0x0000707f,
+        value: 0x00007073,
+        operands: &["rd", "csr", "zimm5"],
+        from: "rv_zicsr",
+        source: "RVI-ZICSR §5.1.1 — CSRRC with a zero-extended 5-bit immediate; if uimm=0 the instruction shall not write the CSR",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Field("zimm5"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRead(
+                    &Sem::Field("csr"),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
+                    &Sem::Field("csr"),
+                    &Sem::And(
+                        &Sem::CsrRead(
+                            &Sem::Field("csr"),
+                        ),
+                        &Sem::Xor(
+                            &Sem::Zext(
+                                64,
+                                &Sem::Field("zimm5"),
+                            ),
+                            &Sem::Lit(0xffffffffffffffff),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "csrrs",
+        mask: 0x0000707f,
+        value: 0x00002073,
+        operands: &["rd", "rs1", "csr"],
+        from: "rv_zicsr",
+        source: "RVI-ZICSR §5.1.1 — atomic read and set bits; if rs1=x0 the instruction shall not write the CSR",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Field("rs1"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRead(
+                    &Sem::Field("csr"),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
+                    &Sem::Field("csr"),
+                    &Sem::Or(
+                        &Sem::CsrRead(
+                            &Sem::Field("csr"),
+                        ),
+                        &Sem::Reg("rs1"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "csrrsi",
+        mask: 0x0000707f,
+        value: 0x00006073,
+        operands: &["rd", "csr", "zimm5"],
+        from: "rv_zicsr",
+        source: "RVI-ZICSR §5.1.1 — CSRRS with a zero-extended 5-bit immediate; if uimm=0 the instruction shall not write the CSR",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Field("zimm5"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRead(
+                    &Sem::Field("csr"),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
+                    &Sem::Field("csr"),
+                    &Sem::Or(
+                        &Sem::CsrRead(
+                            &Sem::Field("csr"),
+                        ),
+                        &Sem::Zext(
+                            64,
+                            &Sem::Field("zimm5"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "csrrw",
+        mask: 0x0000707f,
+        value: 0x00001073,
+        operands: &["rd", "rs1", "csr"],
+        from: "rv_zicsr",
+        source: "RVI-ZICSR §5.1.1 — atomic read/write CSR; if rd=x0 the instruction shall not read the CSR",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Field("rd"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::CsrWrite(
+                &Sem::Field("csr"),
+                &Sem::Reg("rs1"),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
+                    &Sem::Field("csr"),
+                    &Sem::Reg("rs1"),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "csrrwi",
+        mask: 0x0000707f,
+        value: 0x00005073,
+        operands: &["rd", "csr", "zimm5"],
+        from: "rv_zicsr",
+        source: "RVI-ZICSR §5.1.1 — CSRRW with a zero-extended 5-bit immediate; if rd=x0 the instruction shall not read the CSR",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Field("rd"),
+                &Sem::Lit(0x0000000000000000),
+            ),
+            &Sem::CsrWrite(
+                &Sem::Field("csr"),
+                &Sem::Zext(
+                    64,
+                    &Sem::Field("zimm5"),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::CsrRw(
+                    &Sem::Field("csr"),
+                    &Sem::Zext(
+                        64,
+                        &Sem::Field("zimm5"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fence",
+        mask: 0x0000707f,
+        value: 0x0000000f,
+        operands: &["fm", "pred", "succ", "rs1", "rd"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.7 — D-FENCE: one hart, no devices, in-order; decoded, must not trap, no observable effect",
+        effect: &Sem::Nop,
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fence.i",
+        mask: 0x0000707f,
+        value: 0x0000100f,
+        operands: &["imm12", "rs1", "rd"],
+        from: "rv_zifencei",
+        source: "RVI-ZIFENCEI §4.1 — the declared nop: the coherent/uncached-RAM latitude ('just the fetch pipeline needs to be flushed at a FENCE.I') meets a re-read-per-fetch machine (nothing to flush, D-CODE-VISIBILITY); funct12/rs1/rd decoded-and-ignored per the chapter's shall-ignore rule, never legalization-rejected",
+        effect: &Sem::Nop,
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fld",
+        mask: 0x0000707f,
+        value: 0x00003007,
+        operands: &["rd", "rs1", "imm12"],
+        from: "rv_d",
+        source: "RVI-D §21.1.3 — 'The FLD instruction loads a double-precision floating-point value from memory into floating-point register rd', base+offset like the integer loads; 'FLD and FSD do not modify the bits being transferred'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Load(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Add(
+                    &Sem::Reg("rs1"),
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("imm12"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "flw",
+        mask: 0x0000707f,
+        value: 0x00002007,
+        operands: &["rd", "rs1", "imm12"],
+        from: "rv_f",
+        source: "RVI-F §20.1.5 — 'The FLW instruction loads a single-precision floating-point value from memory into floating-point register rd', base+offset like the integer loads; the 32 loaded bits are NaN-boxed into FLEN (RVI-D §21.1.2's transfer rule) and 'FLW and FSW do not modify the bits being transferred'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::Load(
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Lit(0x0000000000000000),
+                    &Sem::Add(
+                        &Sem::Reg("rs1"),
+                        &Sem::Sext(
+                            64,
+                            &Sem::Imm("imm12"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fsd",
+        mask: 0x0000707f,
+        value: 0x00003027,
+        operands: &["imm12hi", "rs1", "rs2", "imm12lo"],
+        from: "rv_d",
+        source: "RVI-D §21.1.3 — 'FSD stores a double-precision value from the floating-point registers to memory'; 'the payloads of non-canonical NaNs are preserved'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000040),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::FReg("rs2"),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
         name: "fsw",
         mask: 0x0000707f,
         value: 0x00002027,
@@ -3080,34 +4415,6 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::FReg("rs2"),
             ),
         ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "jal",
-        mask: 0x0000007f,
-        value: 0x0000006f,
-        operands: &["rd", "jimm20"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.5.1 — JAL adds the offset to THIS instruction's address and stores pc+4 in rd; the misaligned-target check precedes the link write (§1.1.5.2)",
-        effect: &Sem::Seq(&[
-            &Sem::SetPc(
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Sext(
-                        64,
-                        &Sem::Imm("jimm20"),
-                    ),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Add(
-                    &Sem::Pc,
-                    &Sem::Lit(0x0000000000000004),
-                ),
-            ),
-        ]),
         length: 4,
         expansion: None,
     },
@@ -3275,65 +4582,6 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "lr.d",
-        mask: 0xf9f0707f,
-        value: 0x1000302f,
-        operands: &["rd", "rs1", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.2 — LR.D loads a doubleword from rs1's address into rd and registers a reservation on the addressed bytes; a full XLEN load needs no extension",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::LoadReserved(
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Lit(0x0000000000000000),
-                &Sem::Reg("rs1"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "lr.w",
-        mask: 0xf9f0707f,
-        value: 0x1000202f,
-        operands: &["rd", "rs1", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.2 — LR.W loads a word from rs1's address, sign-extends it into rd, and registers a reservation on the addressed bytes (the reservation contract is the operators', schema/semantics.sexp)",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::LoadReserved(
-                    &Sem::Lit(0x0000000000000020),
-                    &Sem::Lit(0x0000000000000001),
-                    &Sem::Reg("rs1"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "lui",
-        mask: 0x0000007f,
-        value: 0x00000037,
-        operands: &["rd", "imm20"],
-        from: "rv_i",
-        source: "RVI-RV64I §3.1.2.1 — D-LUI-AUIPC",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Shl(
-                    &Sem::Imm("imm20"),
-                    &Sem::Lit(0x000000000000000c),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
         name: "lw",
         mask: 0x0000707f,
         value: 0x00002003,
@@ -3388,143 +4636,6 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "mret",
-        mask: 0xffffffff,
-        value: 0x30200073,
-        operands: &[],
-        from: "rv_system",
-        source: "RVP-MACHINE §2.1.3.2 — xRET executes in mode x or higher; in a less-privileged mode it raises illegal-instruction (xtval = the instruction word)",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Mode,
-                &Sem::Lit(0x0000000000000003),
-            ),
-            &Sem::Xret(
-                &Sem::Lit(0x0000000000000003),
-            ),
-            &Sem::TrapDeliver(
-                &Sem::Lit(0x0000000000000002),
-                &Sem::Inst,
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "mul",
-        mask: 0xfe00707f,
-        value: 0x02000033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.1 — MUL 'places the lower XLEN bits in the destination register'",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Mul(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "mulh",
-        mask: 0xfe00707f,
-        value: 0x02001033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, signed×signed",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::MulH(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "mulhsu",
-        mask: 0xfe00707f,
-        value: 0x02002033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, signed rs1 × unsigned rs2",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::MulHsu(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "mulhu",
-        mask: 0xfe00707f,
-        value: 0x02003033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.1 — the upper XLEN bits of the full 2×XLEN-bit product, unsigned×unsigned",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::MulHu(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "mulw",
-        mask: 0xfe00707f,
-        value: 0x0200003b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_m",
-        source: "RVI-M §11.1.1 — MULW 'multiplies the lower 32 bits of the source registers, placing the sign extension of the lower 32 bits of the result into the destination register'",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Mul(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs2"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "or",
-        mask: 0xfe00707f,
-        value: 0x00006033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Or(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
         name: "ori",
         mask: 0x0000707f,
         value: 0x00006013,
@@ -3538,156 +4649,6 @@ pub static INSNS: &[InsnDef] = &[
                 &Sem::Sext(
                     64,
                     &Sem::Imm("imm12"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "rem",
-        mask: 0xfe00707f,
-        value: 0x02006033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.2 — 'For REM, the sign of a nonzero result equals the sign of the dividend'; Table 1: a zero divisor yields the dividend, overflow 0 (the operator's wrap)",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Reg("rs2"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Reg("rs1"),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Rem(
-                    &Sem::Reg("rs1"),
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "remu",
-        mask: 0xfe00707f,
-        value: 0x02007033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_m",
-        source: "RVI-M §11.1.2 — the unsigned remainder; Table 1: a zero divisor yields the dividend",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Reg("rs2"),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Reg("rs1"),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::RemU(
-                    &Sem::Reg("rs1"),
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "remuw",
-        mask: 0xfe00707f,
-        value: 0x0200703b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_m",
-        source: "RVI-M §11.1.2 — 'Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero'",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Trunc(
-                    32,
-                    &Sem::Reg("rs2"),
-                ),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs1"),
-                    ),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::RemU(
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs1"),
-                            ),
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs2"),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "remw",
-        mask: 0xfe00707f,
-        value: 0x0200603b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_m",
-        source: "RVI-M §11.1.2 — 'Both REMW and REMUW always sign-extend the 32-bit result to 64 bits, including on a divide by zero'",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Trunc(
-                    32,
-                    &Sem::Reg("rs2"),
-                ),
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Reg("rs1"),
-                    ),
-                ),
-            ),
-            &Sem::Set(
-                &Sem::Reg("rd"),
-                &Sem::Sext(
-                    64,
-                    &Sem::Trunc(
-                        32,
-                        &Sem::Rem(
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs1"),
-                            ),
-                            &Sem::Trunc(
-                                32,
-                                &Sem::Reg("rs2"),
-                            ),
-                        ),
-                    ),
                 ),
             ),
         ),
@@ -3719,45 +4680,6 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "sc.d",
-        mask: 0xf800707f,
-        value: 0x1800302f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv64_a",
-        source: "RVI-A §12.1.2 — SC.D conditionally stores rs2's 64 bits to rs1's address and writes the code to rd (0 success / 1 failure); success or failure, the reservation is cleared — the section's own sentence",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::StoreConditional(
-                &Sem::Lit(0x0000000000000040),
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sc.w",
-        mask: 0xf800707f,
-        value: 0x1800202f,
-        operands: &["rd", "rs1", "rs2", "aq", "rl"],
-        from: "rv_a",
-        source: "RVI-A §12.1.2 — SC.W conditionally stores rs2's low 32 bits to rs1's address and writes the code to rd (0 success / 1 failure; the deterministic never-spurious policy is decision 3's, stated at the operator); success or failure, the reservation is cleared — the section's own sentence",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::StoreConditional(
-                &Sem::Lit(0x0000000000000020),
-                &Sem::Reg("rs1"),
-                &Sem::Trunc(
-                    32,
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
         name: "sd",
         mask: 0x0000707f,
         value: 0x00003023,
@@ -3774,60 +4696,6 @@ pub static INSNS: &[InsnDef] = &[
                 ),
             ),
             &Sem::Reg("rs2"),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sfence.vma",
-        mask: 0xfe007fff,
-        value: 0x12000073,
-        operands: &["rs1", "rs2"],
-        from: "rv_s",
-        source: "RVP-SUPERVISOR §11.1.2.1 — the translation fence; illegal in U (§11.1.9's shared-permission sentence) and in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6; TVM is bit 20); the invalidation effect is the four specified cases over the modelled TLB (P4-SYSTEM.3 decision 2; the header records the superseded time-scoped nop)",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Mode,
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::TrapDeliver(
-                &Sem::Lit(0x0000000000000002),
-                &Sem::Inst,
-            ),
-            &Sem::If(
-                &Sem::And(
-                    &Sem::Eq(
-                        &Sem::Mode,
-                        &Sem::Lit(0x0000000000000001),
-                    ),
-                    &Sem::Ne(
-                        &Sem::Bits(
-                            20,
-                            20,
-                            &Sem::CsrState(
-                                &Sem::Lit(0x0000000000000300),
-                            ),
-                        ),
-                        &Sem::Lit(0x0000000000000000),
-                    ),
-                ),
-                &Sem::TrapDeliver(
-                    &Sem::Lit(0x0000000000000002),
-                    &Sem::Inst,
-                ),
-                &Sem::TlbInvalidate(
-                    &Sem::Reg("rs1"),
-                    &Sem::Reg("rs2"),
-                    &Sem::Eq(
-                        &Sem::Field("rs1"),
-                        &Sem::Lit(0x0000000000000000),
-                    ),
-                    &Sem::Eq(
-                        &Sem::Field("rs2"),
-                        &Sem::Lit(0x0000000000000000),
-                    ),
-                ),
-            ),
         ),
         length: 4,
         expansion: None,
@@ -3850,117 +4718,6 @@ pub static INSNS: &[InsnDef] = &[
             ),
             &Sem::Trunc(
                 16,
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sll",
-        mask: 0xfe00707f,
-        value: 0x00001033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV64I §3.1.2.2 — D-SHAMT: only the low 6 bits of rs2 at XLEN=64",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Shl(
-                &Sem::Reg("rs1"),
-                &Sem::Bits(
-                    5,
-                    0,
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "slli",
-        mask: 0xfc00707f,
-        value: 0x00001013,
-        operands: &["rd", "rs1", "shamtd"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.1 — D-SHAMT: a 6-bit shift amount at XLEN=64",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Shl(
-                &Sem::Reg("rs1"),
-                &Sem::Imm("shamt"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "slliw",
-        mask: 0xfe00707f,
-        value: 0x0000101b,
-        operands: &["rd", "rs1", "shamtw"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.1 — D-SHAMT: a 5-bit amount for the *W shifts",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Shl(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Imm("shamt"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sllw",
-        mask: 0xfe00707f,
-        value: 0x0000103b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.2 — the *W shifts use rs2[4:0], not rs2[5:0]",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Shl(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Bits(
-                            4,
-                            0,
-                            &Sem::Reg("rs2"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "slt",
-        mask: 0xfe00707f,
-        value: 0x00002033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Slt(
-                &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
         ),
@@ -4008,302 +4765,6 @@ pub static INSNS: &[InsnDef] = &[
         expansion: None,
     },
     InsnDef {
-        name: "sltu",
-        mask: 0xfe00707f,
-        value: 0x00003033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sltu(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sra",
-        mask: 0xfe00707f,
-        value: 0x40005033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV64I §3.1.2.2 — D-SHAMT",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sar(
-                &Sem::Reg("rs1"),
-                &Sem::Bits(
-                    5,
-                    0,
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "srai",
-        mask: 0xfc00707f,
-        value: 0x40005013,
-        operands: &["rd", "rs1", "shamtd"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.1 — D-SHAMT; arithmetic, the sign bit is replicated",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sar(
-                &Sem::Reg("rs1"),
-                &Sem::Imm("shamt"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sraiw",
-        mask: 0xfe00707f,
-        value: 0x4000501b,
-        operands: &["rd", "rs1", "shamtw"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.1 — arithmetic, on the low 32 bits",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Sar(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Imm("shamt"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sraw",
-        mask: 0xfe00707f,
-        value: 0x4000503b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.2 — rs2[4:0]",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Sar(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Bits(
-                            4,
-                            0,
-                            &Sem::Reg("rs2"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sret",
-        mask: 0xffffffff,
-        value: 0x10200073,
-        operands: &[],
-        from: "rv_s",
-        source: "RVP-MACHINE §2.1.3.2 — legal in M and in S, illegal in U; in S with mstatus.TSR=1 it raises illegal-instruction (§2.1.1.6.6; TSR is bit 22, mstatus is 0x300 — the pinned encoding.h masks)",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Mode,
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::TrapDeliver(
-                &Sem::Lit(0x0000000000000002),
-                &Sem::Inst,
-            ),
-            &Sem::If(
-                &Sem::And(
-                    &Sem::Eq(
-                        &Sem::Mode,
-                        &Sem::Lit(0x0000000000000001),
-                    ),
-                    &Sem::Ne(
-                        &Sem::Bits(
-                            22,
-                            22,
-                            &Sem::CsrState(
-                                &Sem::Lit(0x0000000000000300),
-                            ),
-                        ),
-                        &Sem::Lit(0x0000000000000000),
-                    ),
-                ),
-                &Sem::TrapDeliver(
-                    &Sem::Lit(0x0000000000000002),
-                    &Sem::Inst,
-                ),
-                &Sem::Xret(
-                    &Sem::Lit(0x0000000000000001),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "srl",
-        mask: 0xfe00707f,
-        value: 0x00005033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV64I §3.1.2.2 — D-SHAMT",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Shr(
-                &Sem::Reg("rs1"),
-                &Sem::Bits(
-                    5,
-                    0,
-                    &Sem::Reg("rs2"),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "srli",
-        mask: 0xfc00707f,
-        value: 0x00005013,
-        operands: &["rd", "rs1", "shamtd"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.1 — D-SHAMT; logical, zeros shifted in",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Shr(
-                &Sem::Reg("rs1"),
-                &Sem::Imm("shamt"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "srliw",
-        mask: 0xfe00707f,
-        value: 0x0000501b,
-        operands: &["rd", "rs1", "shamtw"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.1 — logical, on the low 32 bits",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Shr(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Imm("shamt"),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "srlw",
-        mask: 0xfe00707f,
-        value: 0x0000503b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.2 — rs2[4:0]",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Shr(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Bits(
-                            4,
-                            0,
-                            &Sem::Reg("rs2"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "sub",
-        mask: 0xfe00707f,
-        value: 0x40000033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sub(
-                &Sem::Reg("rs1"),
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "subw",
-        mask: 0xfe00707f,
-        value: 0x4000003b,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv64_i",
-        source: "RVI-RV64I §3.1.2.2 — D-WSUFFIX",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Sext(
-                64,
-                &Sem::Trunc(
-                    32,
-                    &Sem::Sub(
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs1"),
-                        ),
-                        &Sem::Trunc(
-                            32,
-                            &Sem::Reg("rs2"),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
         name: "sw",
         mask: 0x0000707f,
         value: 0x00002023,
@@ -4321,66 +4782,6 @@ pub static INSNS: &[InsnDef] = &[
             ),
             &Sem::Trunc(
                 32,
-                &Sem::Reg("rs2"),
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "wfi",
-        mask: 0xffffffff,
-        value: 0x10500073,
-        operands: &[],
-        from: "rv_system",
-        source: "RVP-MACHINE §2.1.3.3 — legality: illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21), always legal in M; a LEGAL wfi enters the wait state — the halt entry is the step machinery's (P4-SYSTEM.5 decision 4; the nop latitude recorded-not-taken, the header)",
-        effect: &Sem::If(
-            &Sem::Eq(
-                &Sem::Mode,
-                &Sem::Lit(0x0000000000000000),
-            ),
-            &Sem::TrapDeliver(
-                &Sem::Lit(0x0000000000000002),
-                &Sem::Inst,
-            ),
-            &Sem::If(
-                &Sem::And(
-                    &Sem::Lt(
-                        &Sem::Mode,
-                        &Sem::Lit(0x0000000000000003),
-                    ),
-                    &Sem::Ne(
-                        &Sem::Bits(
-                            21,
-                            21,
-                            &Sem::CsrState(
-                                &Sem::Lit(0x0000000000000300),
-                            ),
-                        ),
-                        &Sem::Lit(0x0000000000000000),
-                    ),
-                ),
-                &Sem::TrapDeliver(
-                    &Sem::Lit(0x0000000000000002),
-                    &Sem::Inst,
-                ),
-                &Sem::Nop,
-            ),
-        ),
-        length: 4,
-        expansion: None,
-    },
-    InsnDef {
-        name: "xor",
-        mask: 0xfe00707f,
-        value: 0x00004033,
-        operands: &["rd", "rs1", "rs2"],
-        from: "rv_i",
-        source: "RVI-RV32I §1.1.4",
-        effect: &Sem::Set(
-            &Sem::Reg("rd"),
-            &Sem::Xor(
-                &Sem::Reg("rs1"),
                 &Sem::Reg("rs2"),
             ),
         ),
@@ -4406,6 +4807,1524 @@ pub static INSNS: &[InsnDef] = &[
         ),
         length: 4,
         expansion: None,
+    },
+    InsnDef {
+        name: "fmadd.d",
+        mask: 0x0600007f,
+        value: 0x02000043,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — the computational instructions 'are defined analogously to their single-precision counterparts, but operate on double-precision operands and produce double-precision results': FMADD.S's (rs1×rs2)+rs3 with one rounding",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+                &Sem::FReg("rs3"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmadd.s",
+        mask: 0x0600007f,
+        value: 0x00000043,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_f",
+        source: "RVI-F §20.1.6 — 'FMADD.S computes (rs1×rs2)+rs3' with one rounding; ∞×0 raises NV even with a quiet-NaN addend (the operator's contract)",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FMadd(
+                    32,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs1"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs3"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmsub.d",
+        mask: 0x0600007f,
+        value: 0x02000047,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FMSUB.S's (rs1×rs2)−rs3 at format 64: rs3's sign bit flipped into the one fused operation",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::FReg("rs1"),
+                &Sem::FReg("rs2"),
+                &Sem::Xor(
+                    &Sem::FReg("rs3"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fmsub.s",
+        mask: 0x0600007f,
+        value: 0x00000047,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_f",
+        source: "RVI-F §20.1.6 — 'FMSUB.S computes (rs1×rs2)−rs3': rs3's sign bit flipped into the one fused operation",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FMadd(
+                    32,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs1"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
+                    ),
+                    &Sem::Xor(
+                        &Sem::FUnbox(
+                            32,
+                            &Sem::FReg("rs3"),
+                        ),
+                        &Sem::Lit(0x0000000080000000),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fnmadd.d",
+        mask: 0x0600007f,
+        value: 0x0200004f,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FNMADD.S's −(rs1×rs2)−rs3 at format 64: rs1's and rs3's sign bits flipped",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Xor(
+                    &Sem::FReg("rs1"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+                &Sem::FReg("rs2"),
+                &Sem::Xor(
+                    &Sem::FReg("rs3"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fnmadd.s",
+        mask: 0x0600007f,
+        value: 0x0000004f,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_f",
+        source: "RVI-F §20.1.6 — 'FNMADD.S computes −(rs1×rs2)−rs3': rs1's and rs3's sign bits flipped",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FMadd(
+                    32,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::Xor(
+                        &Sem::FUnbox(
+                            32,
+                            &Sem::FReg("rs1"),
+                        ),
+                        &Sem::Lit(0x0000000080000000),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
+                    ),
+                    &Sem::Xor(
+                        &Sem::FUnbox(
+                            32,
+                            &Sem::FReg("rs3"),
+                        ),
+                        &Sem::Lit(0x0000000080000000),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fnmsub.d",
+        mask: 0x0600007f,
+        value: 0x0200004b,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_d",
+        source: "RVI-D §21.1.4 — FNMSUB.S's −(rs1×rs2)+rs3 at format 64: rs1's sign bit flipped, so the product is negated before the single rounding",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FMadd(
+                64,
+                &Sem::Rounding(
+                    &Sem::Field("rm"),
+                ),
+                &Sem::Xor(
+                    &Sem::FReg("rs1"),
+                    &Sem::Lit(0x8000000000000000),
+                ),
+                &Sem::FReg("rs2"),
+                &Sem::FReg("rs3"),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "fnmsub.s",
+        mask: 0x0600007f,
+        value: 0x0000004b,
+        operands: &["rd", "rs1", "rs2", "rs3", "rm"],
+        from: "rv_f",
+        source: "RVI-F §20.1.6 — 'FNMSUB.S computes −(rs1×rs2)+rs3': rs1's sign bit flipped, so the product is negated before the single rounding",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::FBox(
+                32,
+                &Sem::FMadd(
+                    32,
+                    &Sem::Rounding(
+                        &Sem::Field("rm"),
+                    ),
+                    &Sem::Xor(
+                        &Sem::FUnbox(
+                            32,
+                            &Sem::FReg("rs1"),
+                        ),
+                        &Sem::Lit(0x0000000080000000),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs2"),
+                    ),
+                    &Sem::FUnbox(
+                        32,
+                        &Sem::FReg("rs3"),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "auipc",
+        mask: 0x0000007f,
+        value: 0x00000017,
+        operands: &["rd", "imm20"],
+        from: "rv_i",
+        source: "RVI-RV64I §3.1.2.1 — D-LUI-AUIPC; the offset is added to the address OF THIS INSTRUCTION",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Pc,
+                &Sem::Sext(
+                    64,
+                    &Sem::Shl(
+                        &Sem::Imm("imm20"),
+                        &Sem::Lit(0x000000000000000c),
+                    ),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "c.andi",
+        mask: 0x0000ec03,
+        value: 0x00008801,
+        operands: &["rd_rs1_p", "c_imm6hi", "c_imm6lo"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.2 — 'C.ANDI expands to andi rd′, rd′, imm'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::And(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("andi"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_imm6hi"),
+                        &Sem::Imm("c_imm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.srai",
+        mask: 0x0000ec03,
+        value: 0x00008401,
+        operands: &["rd_rs1_p", "c_nzuimm6lo", "c_nzuimm6hi"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.5.2 — 'C.SRAI expands to srai rd′, rd′, shamt'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sar(
+                &Sem::Reg("rs1"),
+                &Sem::Imm("shamt"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("srai"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "shamt",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_nzuimm6hi"),
+                        &Sem::Imm("c_nzuimm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.srli",
+        mask: 0x0000ec03,
+        value: 0x00008001,
+        operands: &["rd_rs1_p", "c_nzuimm6lo", "c_nzuimm6hi"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.5.2 — 'C.SRLI expands into srli rd′, rd′, shamt' (the shamt=0 code points HINTs)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Shr(
+                &Sem::Reg("rs1"),
+                &Sem::Imm("shamt"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("srli"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "shamt",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_nzuimm6hi"),
+                        &Sem::Imm("c_nzuimm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "jal",
+        mask: 0x0000007f,
+        value: 0x0000006f,
+        operands: &["rd", "jimm20"],
+        from: "rv_i",
+        source: "RVI-RV32I §1.1.5.1 — JAL adds the offset to THIS instruction's address and stores pc+4 in rd; the misaligned-target check precedes the link write (§1.1.5.2)",
+        effect: &Sem::Seq(&[
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("jimm20"),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Lit(0x0000000000000004),
+                ),
+            ),
+        ]),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "lui",
+        mask: 0x0000007f,
+        value: 0x00000037,
+        operands: &["rd", "imm20"],
+        from: "rv_i",
+        source: "RVI-RV64I §3.1.2.1 — D-LUI-AUIPC",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Shl(
+                    &Sem::Imm("imm20"),
+                    &Sem::Lit(0x000000000000000c),
+                ),
+            ),
+        ),
+        length: 4,
+        expansion: None,
+    },
+    InsnDef {
+        name: "c.add",
+        mask: 0x0000f003,
+        value: 0x00009002,
+        operands: &["rd_rs1_n0", "c_rs2_n0"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.3 — 'C.ADD expands into add rd, rd, rs2' (the rd=x0 code points HINTs)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("add"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Field("c_rs2_n0")
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.mv",
+        mask: 0x0000f003,
+        value: 0x00008002,
+        operands: &["rd_n0", "c_rs2_n0"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.3 — 'C.MV expands into add rd, x0, rs2' (the rd=x0 code points HINTs)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("add"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Field("c_rs2_n0")
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.addi",
+        mask: 0x0000e003,
+        value: 0x00000001,
+        operands: &["rd_rs1_n0", "c_nzimm6lo", "c_nzimm6hi"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.2 — 'C.ADDI expands into addi rd, rd, imm' (the rd≠0, imm=0 code points HINTs)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addi"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_nzimm6hi"),
+                        &Sem::Imm("c_nzimm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.addi4spn",
+        mask: 0x0000e003,
+        value: 0x00000000,
+        operands: &["rd_p", "c_nzuimm10"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.2 — 'expands to addi rd′, x2, nzuimm[9:2]'; 'C.ADDI4SPN is valid only when nzuimm≠0; the code points with nzuimm=0 are reserved' (the all-zero parcel among them)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addi"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Imm("c_nzuimm10"),
+                    )
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Imm("c_nzuimm10"),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "c.addiw",
+        mask: 0x0000e003,
+        value: 0x00002001,
+        operands: &["rd_rs1_n0", "c_imm6lo", "c_imm6hi"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.5.2 — 'C.ADDIW expands into addiw rd, rd, imm'; 'C.ADDIW is valid only when rd≠x0; the code points with rd=x0 are reserved'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Trunc(
+                    32,
+                    &Sem::Add(
+                        &Sem::Trunc(
+                            32,
+                            &Sem::Reg("rs1"),
+                        ),
+                        &Sem::Sext(
+                            32,
+                            &Sem::Imm("imm12"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addiw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_imm6hi"),
+                        &Sem::Imm("c_imm6lo"),
+                    )
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Field("rd_rs1_n0"),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "c.beqz",
+        mask: 0x0000e003,
+        value: 0x0000c001,
+        operands: &["rs1_p", "c_bimm9lo", "c_bimm9hi"],
+        from: "rv_c",
+        source: "RVI-C §27.1.4 — 'It expands to beq rs1′, x0, offset'",
+        effect: &Sem::If(
+            &Sem::Eq(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("beq"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "bimm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_bimm9hi"),
+                        &Sem::Imm("c_bimm9lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.bnez",
+        mask: 0x0000e003,
+        value: 0x0000e001,
+        operands: &["rs1_p", "c_bimm9lo", "c_bimm9hi"],
+        from: "rv_c",
+        source: "RVI-C §27.1.4 — 'It expands to bne rs1′, x0, offset'",
+        effect: &Sem::If(
+            &Sem::Ne(
+                &Sem::Reg("rs1"),
+                &Sem::Reg("rs2"),
+            ),
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("bimm12"),
+                    ),
+                ),
+            ),
+            &Sem::Nop,
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("bne"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "bimm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_bimm9hi"),
+                        &Sem::Imm("c_bimm9lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.fld",
+        mask: 0x0000e003,
+        value: 0x00002000,
+        operands: &["rd_p", "rs1_p", "c_uimm8lo", "c_uimm8hi"],
+        from: "rv_c_d",
+        source: "RVI-C §27.1.3.2 — 'It expands to fld rd′, offset(rs1′)' — the offset zero-extended, scaled by 8",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Load(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Add(
+                    &Sem::Reg("rs1"),
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("imm12"),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("fld"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm8hi"),
+                            &Sem::Imm("c_uimm8lo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.fldsp",
+        mask: 0x0000e003,
+        value: 0x00002002,
+        operands: &["rd", "c_uimm9sphi", "c_uimm9splo"],
+        from: "rv_c_d",
+        source: "RVI-C §27.1.3.1 — 'It expands to fld rd, offset(x2)'",
+        effect: &Sem::Set(
+            &Sem::FReg("rd"),
+            &Sem::Load(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Add(
+                    &Sem::Reg("rs1"),
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("imm12"),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("fld"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm9sphi"),
+                            &Sem::Imm("c_uimm9splo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.fsd",
+        mask: 0x0000e003,
+        value: 0x0000a000,
+        operands: &["rs1_p", "rs2_p", "c_uimm8lo", "c_uimm8hi"],
+        from: "rv_c_d",
+        source: "RVI-C §27.1.3.2 — 'It expands to fsd rs2′, offset(rs1′)'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000040),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::FReg("rs2"),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("fsd"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm8hi"),
+                            &Sem::Imm("c_uimm8lo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.fsdsp",
+        mask: 0x0000e003,
+        value: 0x0000a002,
+        operands: &["c_rs2", "c_uimm9sp_s"],
+        from: "rv_c_d",
+        source: "RVI-C §27.1.3.1 — 'It expands to fsd rs2, offset(x2)'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000040),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::FReg("rs2"),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("fsd"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Field("c_rs2")
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Imm("c_uimm9sp_s"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.j",
+        mask: 0x0000e003,
+        value: 0x0000a001,
+        operands: &["c_imm12"],
+        from: "rv_c",
+        source: "RVI-C §27.1.4 — 'C.J expands to jal x0, offset'",
+        effect: &Sem::Seq(&[
+            &Sem::SetPc(
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("jimm20"),
+                    ),
+                ),
+            ),
+            &Sem::Set(
+                &Sem::Reg("rd"),
+                &Sem::Add(
+                    &Sem::Pc,
+                    &Sem::Lit(0x0000000000000004),
+                ),
+            ),
+        ]),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("jal"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "jimm20",
+                    value: &Sem::Imm("c_imm12")
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.ld",
+        mask: 0x0000e003,
+        value: 0x00006000,
+        operands: &["rd_p", "rs1_p", "c_uimm8lo", "c_uimm8hi"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.3.2 — 'It expands to ld rd′, offset(rs1′)' — the offset zero-extended, scaled by 8",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Load(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Add(
+                    &Sem::Reg("rs1"),
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("imm12"),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("ld"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm8hi"),
+                            &Sem::Imm("c_uimm8lo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.ldsp",
+        mask: 0x0000e003,
+        value: 0x00006002,
+        operands: &["rd_n0", "c_uimm9sphi", "c_uimm9splo"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.3.1 — 'It expands to ld rd, offset(x2)'; 'C.LDSP is valid only when rd≠x0; the code points with rd=x0 are reserved'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Load(
+                &Sem::Lit(0x0000000000000040),
+                &Sem::Lit(0x0000000000000000),
+                &Sem::Add(
+                    &Sem::Reg("rs1"),
+                    &Sem::Sext(
+                        64,
+                        &Sem::Imm("imm12"),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("ld"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm9sphi"),
+                            &Sem::Imm("c_uimm9splo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Field("rd_n0"),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "c.li",
+        mask: 0x0000e003,
+        value: 0x00004001,
+        operands: &["rd_n0", "c_imm6lo", "c_imm6hi"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.1 — 'C.LI expands into addi rd, x0, imm' (the rd=x0 code points HINTs)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("addi"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000000)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_imm6hi"),
+                        &Sem::Imm("c_imm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.lui",
+        mask: 0x0000e003,
+        value: 0x00006001,
+        operands: &["rd_n2", "c_nzimm18hi", "c_nzimm18lo"],
+        from: "rv_c",
+        source: "RVI-C §27.1.5.1 — 'C.LUI expands into lui rd, imm'; 'The code points with imm=0 are reserved' — imm the 6-bit nzimm[17:12], sign-extended",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Shl(
+                    &Sem::Imm("imm20"),
+                    &Sem::Lit(0x000000000000000c),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("lui"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_n2")
+                },
+                OperandBinding {
+                    name: "imm20",
+                    value: &Sem::Sext(
+                        20,
+                        &Sem::Bits(
+                            17,
+                            12,
+                            &Sem::Or(
+                                &Sem::Imm("c_nzimm18hi"),
+                                &Sem::Imm("c_nzimm18lo"),
+                            ),
+                        ),
+                    )
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Or(
+                    &Sem::Imm("c_nzimm18hi"),
+                    &Sem::Imm("c_nzimm18lo"),
+                ),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "c.lw",
+        mask: 0x0000e003,
+        value: 0x00004000,
+        operands: &["rd_p", "rs1_p", "c_uimm7lo", "c_uimm7hi"],
+        from: "rv_c",
+        source: "RVI-C §27.1.3.2 — 'It expands to lw rd′, offset(rs1′)' — the offset zero-extended, scaled by 4",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Load(
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Lit(0x0000000000000001),
+                    &Sem::Add(
+                        &Sem::Reg("rs1"),
+                        &Sem::Sext(
+                            64,
+                            &Sem::Imm("imm12"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("lw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Add(
+                        &Sem::Field("rd_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm7hi"),
+                            &Sem::Imm("c_uimm7lo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.lwsp",
+        mask: 0x0000e003,
+        value: 0x00004002,
+        operands: &["rd_n0", "c_uimm8sphi", "c_uimm8splo"],
+        from: "rv_c",
+        source: "RVI-C §27.1.3.1 — 'It expands to lw rd, offset(x2)'; 'C.LWSP is valid only when rd≠x0; the code points with rd=x0 are reserved'",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Sext(
+                64,
+                &Sem::Load(
+                    &Sem::Lit(0x0000000000000020),
+                    &Sem::Lit(0x0000000000000001),
+                    &Sem::Add(
+                        &Sem::Reg("rs1"),
+                        &Sem::Sext(
+                            64,
+                            &Sem::Imm("imm12"),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("lw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm8sphi"),
+                            &Sem::Imm("c_uimm8splo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: Some(&Sem::Eq(
+                &Sem::Field("rd_n0"),
+                &Sem::Lit(0x0000000000000000),
+            )
+            ),
+        }),
+    },
+    InsnDef {
+        name: "c.sd",
+        mask: 0x0000e003,
+        value: 0x0000e000,
+        operands: &["rs1_p", "rs2_p", "c_uimm8hi", "c_uimm8lo"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.3.2 — 'It expands to sd rs2′, offset(rs1′)'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000040),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::Reg("rs2"),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("sd"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm8hi"),
+                            &Sem::Imm("c_uimm8lo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.sdsp",
+        mask: 0x0000e003,
+        value: 0x0000e002,
+        operands: &["c_rs2", "c_uimm9sp_s"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.3.1 — 'It expands to sd rs2, offset(x2)'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000040),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::Reg("rs2"),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("sd"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Field("c_rs2")
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Imm("c_uimm9sp_s"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.slli",
+        mask: 0x0000e003,
+        value: 0x00000002,
+        operands: &["rd_rs1_n0", "c_nzuimm6hi", "c_nzuimm6lo"],
+        from: "rv64_c",
+        source: "RVI-C §27.1.5.2 — 'C.SLLI expands into slli rd, rd, shamt[5:0]' (the shamt=0 or rd=x0 code points HINTs)",
+        effect: &Sem::Set(
+            &Sem::Reg("rd"),
+            &Sem::Shl(
+                &Sem::Reg("rs1"),
+                &Sem::Imm("shamt"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("slli"),
+            bindings: &[
+                OperandBinding {
+                    name: "rd",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Field("rd_rs1_n0")
+                },
+                OperandBinding {
+                    name: "shamt",
+                    value: &Sem::Or(
+                        &Sem::Imm("c_nzuimm6hi"),
+                        &Sem::Imm("c_nzuimm6lo"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.sw",
+        mask: 0x0000e003,
+        value: 0x0000c000,
+        operands: &["rs1_p", "rs2_p", "c_uimm7lo", "c_uimm7hi"],
+        from: "rv_c",
+        source: "RVI-C §27.1.3.2 — 'It expands to sw rs2′, offset(rs1′)'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000020),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::Trunc(
+                32,
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("sw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Add(
+                        &Sem::Field("rs1_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Add(
+                        &Sem::Field("rs2_p"),
+                        &Sem::Lit(0x0000000000000008),
+                    )
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Or(
+                            &Sem::Imm("c_uimm7hi"),
+                            &Sem::Imm("c_uimm7lo"),
+                        ),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
+    },
+    InsnDef {
+        name: "c.swsp",
+        mask: 0x0000e003,
+        value: 0x0000c002,
+        operands: &["c_rs2", "c_uimm8sp_s"],
+        from: "rv_c",
+        source: "RVI-C §27.1.3.1 — 'It expands to sw rs2, offset(x2)'",
+        effect: &Sem::Store(
+            &Sem::Lit(0x0000000000000020),
+            &Sem::Add(
+                &Sem::Reg("rs1"),
+                &Sem::Sext(
+                    64,
+                    &Sem::Imm("imm12"),
+                ),
+            ),
+            &Sem::Trunc(
+                32,
+                &Sem::Reg("rs2"),
+            ),
+        ),
+        length: 2,
+        expansion: Some(&Expansion {
+            base: Some("sw"),
+            bindings: &[
+                OperandBinding {
+                    name: "rs1",
+                    value: &Sem::Lit(0x0000000000000002)
+                },
+                OperandBinding {
+                    name: "rs2",
+                    value: &Sem::Field("c_rs2")
+                },
+                OperandBinding {
+                    name: "imm12",
+                    value: &Sem::Zext(
+                        12,
+                        &Sem::Imm("c_uimm8sp_s"),
+                    )
+                },
+            ],
+            reserved: None,
+        }),
     },
 ];
 
@@ -4585,8 +6504,8 @@ pub enum Sem {
     RemU(&'static Sem, &'static Sem),
 }
 
-/// Decode a 32-bit word to its instruction definition by the fixed bits: the first
-/// entry whose `mask`ed bits equal its `value`. Linear over the 160
+/// Decode an instruction's bits to its definition by fixed-bit specificity: the first
+/// entry whose `mask`ed bits equal its `value`. Linear over the 197
 /// entries — no allocation, and no failure family of its own: a word no entry
 /// matches is the reserved-decode case (`outcome::UndefinedCase::ReservedDecode`,
 /// REQ-D-RESERVED-DECODE), and that classification is the caller's, not this

@@ -27,6 +27,8 @@ fails the contract is not a definition an engine could consume — it is a wish.
 
 from __future__ import annotations
 
+import contextlib
+import io
 import sys
 from pathlib import Path
 
@@ -99,6 +101,7 @@ def _semantics_names(unit: Path) -> tuple[set[str], list[str]]:
         raise ExtractionRefused(f"the semantic language does not load — {exc}")
     defined: set[str] = set()
     problems: list[str] = []
+    has_expansions = False
     for p in present:
         try:
             SEM._schema_validate_sem_file(p)
@@ -112,7 +115,9 @@ def _semantics_names(unit: Path) -> tuple[set[str], list[str]]:
         # refinement of nothing, a refinement with no override) stay the compose gate's
         # own jurisdiction — this leg only stops false-positiving an honest one.
         refined = {str(S.field(r, "insn", str(p))) for r in S.children(root, "refines")}
-        for s in S.children(root, "sem"):
+        expansions = S.children(root, "expand")
+        has_expansions |= bool(expansions)
+        for s in S.children(root, "sem") + expansions:
             name = str(S.field(s, "insn", str(p)))
             if name in defined and name not in refined:
                 problems.append(f"{p.name} [{name}]: defined twice across the unit's semantics "
@@ -125,6 +130,15 @@ def _semantics_names(unit: Path) -> tuple[set[str], list[str]]:
                         SEM.check_expr(sub, f"{p.name} [{name}]", None)
                 except SEM.SemError as exc:
                     problems.append(str(exc))
+    if has_expansions:
+        # An expansion is executable semantics only when the composition provides
+        # its base and every operand it reads. Keep that judgement with SEM's owner,
+        # including mapping/arity/refinement checks, rather than duplicating it here.
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+            verdict = SEM.compose(present)
+        if verdict != 0:
+            problems.append(output.getvalue().strip())
     return defined, problems
 
 
@@ -517,6 +531,30 @@ def _selftest() -> int:
     build_refines(declared=False)
     arm("RED   an undeclared re-definition is a duplicate, named",
         lambda: refused("defined twice"))
+
+    # P4-SYSTEM.12 e2c: expansions count only with a validated base and bindings.
+    expansion = ('(expand (insn sub) (to add) '
+                 '(operand (name rd) (value (field rd))) '
+                 '(operand (name rs1) (value (field rs1))) '
+                 '(operand (name rs2) (value (field rs2))) '
+                 '(source "S §1 — \'sub expands into add\'"))\n')
+
+    def build_expand(rule):
+        build(sem_rules=("add",))
+        path = tmp / "definitions/riscv/t.sem.sexp"
+        path.write_text(path.read_text().rstrip()[:-1] + rule + ')\n')
+
+    build_expand(expansion)
+    arm("GREEN a checked expansion is executable semantics", sufficient)
+    build_expand(expansion.replace('(to add)', '(to ghost)').replace('into add', 'into ghost'))
+    arm("RED   an expansion whose base is absent cannot be extracted",
+        lambda: refused("which no fragment of this composition defines"))
+    build_expand(expansion.replace('(operand (name rs2) (value (field rs2))) ', ''))
+    arm("RED   an expansion missing a base operand cannot be extracted",
+        lambda: refused("unbound: ['rs2']"))
+    build_expand(expansion.replace('(value (field rs2))', '(value (bogus rs2))'))
+    arm("RED   an unknown expansion mapping cannot be extracted",
+        lambda: refused("bogus"))
 
     import shutil
     shutil.rmtree(tmp)

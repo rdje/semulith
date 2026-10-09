@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-csr-rw.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-csr-rw.s") (entry "0x0000000080000000") (instructions 9)
+(expectations (program "mm-csr-rw.s") (entry "0x0000000080000000") (instructions 9) (fetches 18)
   (step (n 0) (insn "addi x1, x0, 42") (writes (write (reg "x1") (value "0x000000000000002a")))
     (derivation "an immediate load, so the CSR value is observable.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "csrrw x2, mscratch, x1") (writes)

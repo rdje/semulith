@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py a-lrsc-illegal.expected.sexp schema/expectations.sexp
 
-(expectations (program "a-lrsc-illegal.s") (entry "0x0000000080000000") (instructions 33)
+(expectations (program "a-lrsc-illegal.s") (entry "0x0000000080000000") (instructions 33) (fetches 66)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))

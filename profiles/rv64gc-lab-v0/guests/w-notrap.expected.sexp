@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py w-notrap.expected.sexp schema/expectations.sexp
 
-(expectations (program "w-notrap.s") (entry "0x0000000080000000") (instructions 19) (fetches 16)
+(expectations (program "w-notrap.s") (entry "0x0000000080000000") (instructions 19) (fetches 32)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "addi x8, x0, 8") (writes (write (reg "x8") (value "0x0000000000000008")))

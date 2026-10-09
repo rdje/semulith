@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-sfence.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-sfence.s") (entry "0x0000000080000000") (instructions 43)
+(expectations (program "mm-sfence.s") (entry "0x0000000080000000") (instructions 43) (fetches 86)
   (step (n 0) (insn "sfence.vma x0, x0") (writes)
     (derivation "SFENCE.VMA in M is always legal.") (source "RVP-INSNS §4.2.1 (sfence.vma)"))
   (step (n 1) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000004")))

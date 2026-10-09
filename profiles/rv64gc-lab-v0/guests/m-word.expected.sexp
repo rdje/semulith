@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py m-word.expected.sexp schema/expectations.sexp
 
-(expectations (program "m-word.s") (entry "0x0000000080000000") (instructions 32)
+(expectations (program "m-word.s") (entry "0x0000000080000000") (instructions 32) (fetches 64)
   (step (n 0) (insn "lui x5, 0x12345") (writes (write (reg "x5") (value "0x0000000012345000")))
     (derivation "garbage for the HIGH word of the first operand …") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "addi x5, x5, 0x678") (writes (write (reg "x5") (value "0x0000000012345678")))

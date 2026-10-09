@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py prio-sv39.expected.sexp schema/expectations.sexp
 
-(expectations (program "prio-sv39.s") (entry "0x0000000080000000") (instructions 128)
+(expectations (program "prio-sv39.s") (entry "0x0000000080000000") (instructions 128) (fetches 256)
   (never_written "x28")
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "x1 holds this instruction's own address.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))

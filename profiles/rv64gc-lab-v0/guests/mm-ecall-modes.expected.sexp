@@ -4,7 +4,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py mm-ecall-modes.expected.sexp schema/expectations.sexp
 
-(expectations (program "mm-ecall-modes.s") (entry "0x0000000080000000") (instructions 61)
+(expectations (program "mm-ecall-modes.s") (entry "0x0000000080000000") (instructions 61) (fetches 122)
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "auipc writes the instruction's own address (entry + 0x0).") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 152") (writes (write (reg "x1") (value "0x0000000080000098")))

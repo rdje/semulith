@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py m-alias.expected.sexp schema/expectations.sexp
 
-(expectations (program "m-alias.s") (entry "0x0000000080000000") (instructions 14)
+(expectations (program "m-alias.s") (entry "0x0000000080000000") (instructions 14) (fetches 28)
   (step (n 0) (insn "addi x5, x0, 6") (writes (write (reg "x5") (value "0x0000000000000006")))
     (derivation "6.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "mul x5, x5, x5") (writes (write (reg "x5") (value "0x0000000000000024")))

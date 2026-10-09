@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py a-amo-overlap.expected.sexp schema/expectations.sexp
 
-(expectations (program "a-amo-overlap.s") (entry "0x0000000080000000") (instructions 16)
+(expectations (program "a-amo-overlap.s") (entry "0x0000000080000000") (instructions 16) (fetches 32)
   (never_written "x28")
   (never_written "x29")
   (step (n 0) (insn "addi x10, x0, 1") (writes (write (reg "x10") (value "0x0000000000000001")))

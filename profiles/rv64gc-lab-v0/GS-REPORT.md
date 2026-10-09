@@ -4,17 +4,17 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (9 of 10): `G-SCOPE`, `G-STATE`, `G-CONTRACT`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-REPLAY`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (8 of 10): `G-STATE`, `G-CONTRACT`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-REPLAY`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
 | Axis | Required (§7) | Measured state | Verdict |
 | --- | --- | --- | --- |
-| `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 8 extensions; status `partial`; unfilled slots: `c` | **incomplete** |
+| `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
-| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 16 of 102 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` open | **incomplete** |
+| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 20 of 106 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` open | **incomplete** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 47 requirements: 47 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); predeclared policy (`EVIDENCE_POLICY.md`): absent | **incomplete** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 48 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); predeclared policy (`EVIDENCE_POLICY.md`): absent | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 2 of 5 required kinds evidenced — open: `external`, `workload`, `validator-mutation` | **incomplete** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 0 of 3 required kinds evidenced — open: `x86-64`, `aarch64`, `miri` | **incomplete** |
@@ -28,11 +28,10 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-SCOPE` | `P4-SYSTEM.12` | C is declared by the profile and not bound: the encoding's c slot is unfilled; no compressed fragment exists. |
 | `G-STATE` | `P4-SYSTEM.13` | The hidden-state census's consequence still describes the P4-SYSTEM.2 snapshot (the integer file, pc, memory, mode and 33 CSRs); every later candidate is answered but the consequence was never re-answered. |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-CONTRACT` | `P4-SYSTEM.13` | v0's checks are declared and not realized; rv64i's base boundary assumptions are not restated for this unit; three frozen v0 statements are stale and not superseded (OB-FP-DEFER, OB-ROUTE-FLIP, OB-RESOLUTION-ROUTE). |
-| `G-TRACE` | `P4-SYSTEM.14` | The eight Sail matched experiments (P4-SYSTEM.2 to .8, and .11's M corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them, and their comparators are scratch. |
+| `G-TRACE` | `P4-SYSTEM.14` | The eight Sail matched experiments (P4-SYSTEM.2 to .8, and .11's M corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
@@ -69,7 +68,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 6add9552acb74b4639c36677c1e4adca5f307b6bf2d9b12f4c59aa8293a5bddd`
+  `sha256 e876de0b276a7c744112cf21cbc0b3a5196cca14fe264df3382e82eb3a131c66`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py inj-atomics.expected.sexp schema/expectations.sexp
 
-(expectations (program "inj-atomics.s") (entry "0x0000000080000000") (instructions 47)
+(expectations (program "inj-atomics.s") (entry "0x0000000080000000") (instructions 47) (fetches 94)
   (never_written "x27")
   (refuse (kind store) (base "0x80000400") (size "0x10"))
   (refuse (kind load) (base "0x80000420") (size "0x10"))

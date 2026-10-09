@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py fp-fs-off.expected.sexp schema/expectations.sexp
 
-(expectations (program "fp-fs-off.s") (entry "0x0000000080000000") (instructions 40)
+(expectations (program "fp-fs-off.s") (entry "0x0000000080000000") (instructions 40) (fetches 80)
   (step (n 0) (insn "auipc x1, 0") (writes (write (reg "x1") (value "0x0000000080000000")))
     (derivation "x1 holds this instruction's own address (entry + 0x0).") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 1) (insn "addi x1, x1, 80") (writes (write (reg "x1") (value "0x0000000080000050")))

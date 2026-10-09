@@ -1,12 +1,12 @@
 # `rv64gc-lab-env` — the environment contract for `rv64gc-lab-v0`
 
-Contract ids: `rv64gc-lab-env-v0` (version 0) and `rv64gc-lab-env-v1` (version 1, extends v0).
+Contract ids: `rv64gc-lab-env-v0`, `rv64gc-lab-env-v1` (extends v0), and
+`rv64gc-lab-env-v2` (open, extends v1).
 The records live one per line in [`contract-obligations.sexp`](contract-obligations.sexp); which
 records make up which version is [`contract.sexp`](contract.sexp) (schema `schema/contract.sexp`),
 judged by **CONTRACT-FREEZE** (`scripts/check_contract_freeze.sh`): every record belongs to
 exactly one version, and a frozen version's records are pinned by sha256 — a statement that turns
-out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9`
-(`2026-10-06`).
+out wrong is **superseded by a later version, never rewritten**. Written at `P4-SYSTEM.9` (`2026-10-06`), updated through `.12` e2c (`2026-10-09`).
 
 ## The versions
 
@@ -14,6 +14,7 @@ out wrong is **superseded by a later version, never rewritten**. Written at `P4-
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
+| v2 | open; `.13` owns completion/freeze | 3 (+ inherited effective v1) | M, C and exact parcel-fetch supply; remaining boundary assumptions and stale-statement supersessions follow |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -25,7 +26,8 @@ out wrong is **superseded by a later version, never rewritten**. Written at `P4-
 | Reservations | **in scope — no external event** | `OB-GC-ENV-RESERVATION-EVENTS` (v1); `OB-RESERVATION`, `OB-SC-DETERMINISTIC` (v0) |
 | Waiting | **in scope** | `OB-GC-PRIV-INSNS-V1` (v1): a legal wfi enters the wait; the wake needs no retirement |
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
-| Fetch, data access, reset, ordering, code visibility, address units | **not restated — named gap** | rv64i's `OB-ENV-*` assumptions (8) were never mirrored into this contract; the boundary *types* are shared (`crates/semulith-core/src/env.rs`), the records are rv64i's. A later version must disposition them (`.10` reports the gap) |
+| Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
+| Data access, reset, ordering, code visibility, address units | **remaining named gaps** | The other seven rv64i `OB-ENV-*` assumptions await `.13`'s unit-specific disposition; shared boundary types are not contract records |
 
 ## The four v1 assumptions — and what would make each false
 
@@ -35,6 +37,27 @@ out wrong is **superseded by a later version, never rewritten**. Written at `P4-
 | `OB-GC-ENV-INTERRUPT-SOURCES` — v1 supplies no source: MSIP/MTIP/MEIP read 0 and cannot be written; STIP is the hart's `time >= stimecmp`; SSIP/SEIP are software's | a pending bit became 1 without the hart's comparison or a software write of a software-writable bit |
 | `OB-GC-ENV-VIRTUAL-TIME` — one tick per step boundary, retired, trapping or halted alike; instret on retirement only; no host time | time stood still while the hart waited, moved with host time, or instret counted a trap or a halted step |
 | `OB-GC-ENV-RESERVATION-EVENTS` — no external invalidation at one hart; a constrained LR/SC loop's first SC succeeds | a reservation vanished without the hart's own LR or SC, or a constrained loop's first SC failed |
+
+## Open v2: compressed execution and parcel supply
+
+`OB-GC-C` states the 37 compressed forms' expansions, compact registers and signed/scaled
+immediates, mixed two/four-byte PCs, C.JALR's old-source target and pc+2 link, hints,
+breakpoint/reserved/FS-Off outcomes, LR/SC preservation and precise straddling faults.
+`OB-GC-ENV-FETCH-SUPPLY` states the environment's narrower role: answer each physical
+`FetchParcel` with exactly sixteen executable bits or a declared failure, without extra
+requests or side effects. CPU decode chooses whether the second parcel is needed.
+
+The count is actual physical parcel requests, including refused ones. Translation faults
+before a request add zero. For example, `c-page-end` executes C.NOP at a page's last
+halfword without reading the next page; `c-page-straddle` faults on the second parcel
+of a 32-bit instruction at that address, reporting the second parcel VA and original
+instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundaries.
+
+The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
+`CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
+fixtures. Together with M's pair, 20 checks are realized in the effective contract;
+the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
+pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
 ## Supersessions (v1 corrects v0 without rewriting it)
 

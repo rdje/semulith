@@ -21,8 +21,58 @@ pub struct ContractCheck {
 
 /// The realized checks: v1's four environment assumptions and its two superseding
 /// guarantees, `.8`'s partial-progress guarantee (whose statement already named its
-/// fixtures), and v2's guarantees as each binds — M first (`P4-SYSTEM.11` slice b).
+/// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-GC-C-POS",
+        obligation: "OB-GC-C",
+        guests: &[
+            "c-immediates",
+            "c-alu",
+            "c-word",
+            "c-hints",
+            "c-memory",
+            "c-links",
+            "c-branches",
+            "c-backward",
+            "c-j-limits",
+            "c-lrsc",
+            "c-irq",
+            "c-page-end",
+        ],
+    },
+    ContractCheck {
+        id: "CHK-GC-C-NEG",
+        obligation: "OB-GC-C",
+        guests: &[
+            "c-wide-illegal",
+            "c-res-zero",
+            "c-res-addi16sp",
+            "c-res-lui",
+            "c-res-addiw",
+            "c-res-lwsp",
+            "c-res-ldsp",
+            "c-res-jr",
+            "c-res-ca",
+            "c-res-quadrant0",
+            "c-breakpoint",
+            "c-off-fld",
+            "c-off-fldsp",
+            "c-off-fsd",
+            "c-off-fsdsp",
+            "c-page-straddle",
+        ],
+    },
+    ContractCheck {
+        id: "CHK-GC-ENV-FETCH-SUPPLY-POS",
+        obligation: "OB-GC-ENV-FETCH-SUPPLY",
+        guests: &["c-page-end", "c-links"],
+    },
+    ContractCheck {
+        id: "CHK-GC-ENV-FETCH-SUPPLY-NEG",
+        obligation: "OB-GC-ENV-FETCH-SUPPLY",
+        guests: &["c-page-straddle", "fault-fetch"],
+    },
     ContractCheck {
         id: "CHK-GC-M-POS",
         obligation: "OB-GC-M",

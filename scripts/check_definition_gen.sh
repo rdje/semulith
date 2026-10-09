@@ -369,7 +369,7 @@ EOF
   cp definitions/riscv/system.sem.sexp "$t/gc/definitions/riscv/system.sem.sexp"
 
   # ---- C expansions (P4-SYSTEM.12 slice b) -------------------------------------------------
-  # C stays unbound in the real unit. Its lowering is proved on a disposable composition,
+  # C lowering is proved on a disposable composition, independent of the live binding,
   # including compiled Rust decoding and independent operand/immediate-limit expectations.
   cp definitions/riscv/*.sexp "$t/gc/definitions/riscv/"
   sed 's/(slot (id c) (requires "riscv\/c"))/(extensions "riscv\/c")/' "$ENCODING_GC" \
