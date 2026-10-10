@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -100,11 +100,41 @@ cleanup happened and what it removed.
   remove exactly the reviewed candidates, prove residue zero, overwrite the latest
   record, pass the doctrine gate and commit before returning to `P4-SYSTEM.12`.
 
+- ID: `ARTIFACT-CLEANUP.5` — **the 2026-10-10 recurring cleanup**
+  Status: `done` (`2026-10-10`, `SEMULITH-AC-0062`)
+  Goal: the prior run is2026-10-09 17:21:23UTC; perform this recurring run at
+  approximately24hours, on clean214a524 with brief0/actual census rc=0. Read
+  standing safe-scope/exclusions, current artifact record and book task-tree
+  workflow before changes. Census target/.app-data with no symlink traversal
+  or nested repository inspection; select only project-local untracked cargo
+  incremental .bin outputs. Preserve diagnostic/reference logs, crate-source
+  fixtures, all dependency inputs and tracked files. Save path/count/byte/hash
+  identities before deletion, revalidate all candidates, delete exactly them,
+  then prove selected residue0 and retained inputs/evidence hashes exact.
+  Acceptance: before/after evidence, overwrite-only latest record, task/index/
+  live/book synchronization, focused doc gates/six books and committed clean
+  handoff before P4-SYSTEM.14 a7. No running build during deletion.
+  Evidence: target/artifact-cleanup-0062; all scratch on repository volume.
+
+Result: completed2026-10-10T17:22:34.381524+00:00; exact saved204paths/978509475B
+revalidated by size/device/inode/mtime/SHA and all-candidate safety preflight,
+then unlinked. Twelve cargo incremental roots (84debug/18wasm and102scratch);
+repeat census and every saved path show residue0. Release/deps stray bins/logs0.
+Retain6192diagnostic logs/7913221B,62reference logs/2097132B and7dependency
+source fixtures/1056B:6261files/10011409B, all SHA/bytes exact. Both target and
+.app-data are real directories on the repository device; skip symlinks and
+three nested repositories, no writes across any Git/volume boundary. Actual
+pre-delete process census rc=0/handoff: OK; no active build. Latest record
+has one entry. Focused9/six books/verify rc=0; all code/profile/catalog/frozen/
+registry/history/LIVE exact. P4 13/18/CPU incomplete7axes unchanged.
+promotion: declined (standing safe-scope procedure and measured exclusions remain in this recurring tree).
+Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated consequences.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | all four leaves done; next cleanup time-triggered (~24 h) |
+| — | — | — | all five leaves done; next cleanup time-triggered (~24 h) |
 
 ## Decisions
 
@@ -184,10 +214,25 @@ cleanup happened and what it removed.
   behavior changes, so no product/book rewrite. promotion: declined (recurring procedure
   and measured exclusions remain in this tree). Return to P4-SYSTEM.12 e1d after commit.
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.5)
+
+- [x] **ROOT CAUSE** — cleanup.py --plan rc=0: prior2026-10-09 record,
+  approximately24h recurrence;204 safe incremental paths/978509475B from twelve
+  roots, stray release/deps0; tracked/symlink/nested-Git/volume exclusions checked.
+- [x] **ADDRESSED** — cleanup.py --delete/verify.py rc=0:204paths→0,
+  exact saved all-candidate identity preflight;6261retained input/evidence hashes
+  and bytes exact; latest one-entry record overwritten with2026-10-10 receipt.
+- [x] **NO REGRESSION** — actual pre-delete census rc=0/handoff: OK;
+  focused9/six books/verify.py rc=0, all code/canonical/frozen/registry/history/
+  LIVE unchanged. No active build, tracked-file or dependency-input deletion.
+- [x] **LOCKSTEP** — task/index/latest record/MEMORY/DEV/CHANGELOG/book aligned;
+  resume P4-SYSTEM.14 a7 after committed clean actual census.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.5` | exact204path/978509475B identity+safe-scope preflight, actual pre-delete census, delete/re-census | residue0;6261kept/10011409B SHA exact; focused9/six books/verify rc=0, code/canonical/history/LIVE exact |
 | `2026-10-09` | `.4` | Python census, tracked/symlink/size exclusions, exact deletion, repeat census; actual process census | 249 bins / 861,367,249 B -> 0; all evidence/input logs retained; handoff OK |
 | `2026-10-08` | `.3` | Python `Path.rglob` census, tracked-file exclusion, deletion, re-census; `du -sh target .app-data` | 102 incremental bins / 364,047,724 B → 0; target 4.8 G → 4.5 G; .app-data 1.4 G unchanged; diagnostic/reference logs and dependency fixtures retained |
 | `2026-10-06` | `ARTIFACT-CLEANUP` (time-triggered run) | pre-delete census: `find target .app-data -path '*incremental*' -name '*.bin'` + per-dir `uniq -c` | 192 files / 607 M, all in cargo `*/incremental/*` dirs (144 `target/debug`, 36 wasm32, 12 the `.7` scratch probe's own `target/p4-system-7/fsprobe/target/debug`); 0 stray `.bin`/`.log` in `target/release`/`target/debug/deps`; 62 `target/refs/**/*.log` (2.2 M) kept by standing policy; 7 crate-source fixtures kept |
@@ -217,6 +262,7 @@ cleanup happened and what it removed.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.5` | `SEMULITH-AC-0062 (leaf ARTIFACT-CLEANUP.5): remove recurring incremental caches and retain evidence` | 2026-10-10;204files/978509475B, residue0;6261retained inputs/evidence hashes exact |
 | `.4` | `SEMULITH-AC-0061 (leaf ARTIFACT-CLEANUP.4): remove due incremental caches and preserve evidence inputs` | 2026-10-09 cleanup; 249 files / 861,367,249 B |
 | `.3` | `SEMULITH-AC-0060 (leaf ARTIFACT-CLEANUP.3): remove the due incremental caches; preserve diagnostic evidence` | 2026-10-08 cleanup, 102 files / 364,047,724 B |
 | `ARTIFACT-CLEANUP` (run) | `SEMULITH-AC-0059 (tree ARTIFACT-CLEANUP): …` | the 2026-10-06 cleanup — 192 incremental caches, 607 MB |
@@ -231,6 +277,8 @@ cleanup happened and what it removed.
 | `ARTIFACT-CLEANUP.1` | `SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1): …` | first §8 cleanup; record + registry row in the creating commit |
 
 ## Changelog
+
+- `2026-10-10`: `.5` done;204 cargo incremental caches/978509475B removed, residue0;6261retained input/evidence files SHA exact, no tracked deletion. Latest record/index/book aligned, focused9/six books green.
 
 - `2026-10-08`: `.3` done; 102 incremental caches removed (364,047,724 B), residue 0.
   Diagnostic and reference logs, dependency fixtures retained; latest record overwritten.

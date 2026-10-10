@@ -43,6 +43,11 @@ Do not pivot to a different tree while the repository is dirty. Handoff-ready me
 modified or untracked work except the task-tree file itself. Finish the leaf, get clean, then
 switch — even when asked to switch immediately.
 
+Recurring artifact cleanup follows the same ownership and commit rule. The
+latest date and removal summary live in `docs/ARTIFACT_CLEANUP.md` as one
+overwritten entry; before/after censuses and retained-input checks live in the
+recurring task tree. Diagnostic evidence and dependency inputs remain inputs.
+
 ## Every lane of the plan, and who owns it
 
 Included live from `docs/TASK_TREE.md`, so this map cannot drift from the index the repository

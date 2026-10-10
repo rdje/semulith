@@ -1,6 +1,23 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — recurring artifact cleanup (ARTIFACT-CLEANUP.5)
+
+Last run2026-10-09 17:21:23UTC; recurrence completed2026-10-10T17:22:34.381524+00:00.
+Census204untracked Cargo incremental caches/978509475B in12roots. Same-volume
+real-directory checks, no symlink traversal and three nested-Git skips; allow
+only dep-graph/query-cache/work-products.bin in debug/release incremental roots.
+All saved path/device/inode/size/mtime/SHA checks complete before any unlink;
+actual process census rc=0/handoff: OK. Delete exactly204; repeat residue0.
+
+Retain6192diagnostic logs/7913221B,62reference logs/2097132B and7crate-source
+fixtures/1056B (6261files/10011409B), all hashes exact. Stray release/deps0.
+Latest record one-entry, tree/index/book/resume aligned. Focused9/six books/
+verify rc=0; all code/profiles/canonical/frozen/registry/history/LIVE exact,
+114/114 frozen/P4 13/18/CPU incomplete7axes. Evidence target/artifact-cleanup-0062.
+Return to P4-SYSTEM.14 a7/0198 canonical reference rows and derived consequences.
+promotion: declined (standing cleanup scope and measured safe procedure already live in the recurring tree).
+
 ## _(2026-10-10)_ — withdraw maintained internal ancestry assertions (P4-SYSTEM.14 a6)
 
 Roots147de764/95f1c5c7 retained internal-source census/lineage conclusions and
