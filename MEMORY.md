@@ -18,20 +18,18 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a7/0198 — canonical rv64i six-pair and
-  GC candidate reference rows. Replace unsupported implementation lineage with
-  public-contract evidence/explicit unexamined scope; preserve ACT campaign's
-  actual Sail-produced expectation dependence. Account for every derived report,
-  rv64i dossier/board pin and model-book consequence before committing.
-  A6 corrects maintained ancestry/FP acceptance/search/card/.7/.1/book assertions;
-  five exact historical payloads16309B, full57117B task inverse, three damaged
-  controls. Realized1/1/focused12/six books/verify green; all code/producers/
-  profiles/frozen/registry/history/LIVE exact,114/114 frozen14, CPU incomplete7axes,
-  P4 13/18, arms669. No new lineage/conformance/requirement-status credit.
-  Then evidence policy/records/status derivation and sixth-unit registration.
-  CleanupAC0062:204incremental caches/978509475B removed, residue0;
-  6261retained inputs/evidence hashes exact, focused9/six books green.
-  No push below cadence.
+- next_action: `P4-SYSTEM.14` — predeclared evidence policy (EVD-03), then
+  structured matched experiment/control records and tracked runners, mechanically
+  derived requirement status, sixth-unit registration/book/category dispositions.
+  Read current policy/schema/gate contracts before choosing the next bounded slice.
+  A7/0198 corrects canonical rv64i six-pair/GC candidate and summary rationale,
+  G0 emitted prose and twelve materials-book groups. Capture31spans/35880B,
+  four full-source inverses/three damaged controls; all report/board/model-table
+  consequences regenerated with exact inverse. Focused15/six books/verify green.
+  Other canonical/pins/experiments, runtime/frozen/registry/fixtures/history/LIVE
+  exact;114/114 frozen14, CPU incomplete7axes/P4 13/18/arms669. No independence,
+  conformance or status credit. CleanupAC0062 last run2026-10-10,204caches removed,
+  retained6261inputs/evidence hashes exact. No push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

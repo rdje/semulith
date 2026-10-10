@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0198 (leaf P4-SYSTEM.14) — correct canonical reference evidence and derived claims
+
+- Preserve31 historical spans with four full-source inverses; reject three damaged controls and authenticate the pinned HTML inputs.
+- Correct canonical lineage, G0 producer and materials scope; regenerate reports, board metadata and model tables with exact derived inverses. Focused15/six books/invariants pass; runtime/frozen114/114/registry/fixtures/prior history/LIVE remain exact, no new conformance credit.
+
 ## SEMULITH-AC-0062 (leaf ARTIFACT-CLEANUP.5) — remove recurring incremental caches and retain evidence
 
 - Remove exactly204 untracked Cargo incremental caches/978509475B after identity/safety preflight and actual no-job census; residue0, all6261retained input/evidence hashes exact.

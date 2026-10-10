@@ -296,6 +296,81 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a7 — correct canonical reference lineage and derived claims (completed, SEMULITH-P4-0198)
+
+Owned on clean4fe4c01, brief0/actual census rc=0 after recurring cleanup.
+Read .14 priority/ROADMAP P4, canonical rv64i six-pair and GC candidate fields,
+schema/consistency/gate reporter contracts, ACT campaign's actual Sail-signature
+producer, board dossier pin/generators and both affected model materials chapters
+before edits. Replace unsupported encoding/FP/integer/QEMU ancestry assumptions
+with explicitly unexamined implementation lineage and bounded public-observation
+scope; retain ACT campaign's actual Sail-produced expectation dependence.
+Preserve every unaffected canonical field/pin/experiment/byte through scoped
+span replacements and complete two-source inverses; retain changed old spans
+in a bounded withdrawn historical capture (not redundant full dossiers).
+Account for all rv64i G0/G1/GC and GC GS report, board dossier pin/derived
+composition/platform, and per-unit materials-book consequences through their
+published generators. Prove report/output inverses against actual scoped deltas
+and stale-output controls; preserve CPU expressions/registry/frozen contracts,
+fixtures and previously frozen histories. No new independence/conformance/
+requirement-status credit. Focused affected gates, public interface checks as
+needed, six books, make check if required by tracked Rust changes; no new tests
+for prose. Evidence target/p4-system-14/a7; fixed caps/on-volume scratch.
+
+Additional root found while preparing this slice: rv64i G0 limitation5 repeats
+"specification contains no instruction encodings; source upstream of one comparator
+and not the other". Reproduce in tracked G0-REPORT.md and generator lines263–265;
+scoped blame pins producer rootbf71f9c5. This hardcoded maintained generator
+claim would survive canonical row correction. Own its repair here, replacing
+only the three emitted prose strings with canonical/public input and lineage
+limits; preserve complete Python source/AST-except-these-strings inverse and
+all report verdict/measurement algorithms. No dependency implementation read.
+
+The affected rv64i materials chapter also repeats text-only-image absence and
+encoding-ancestry claims, a stale normal-assembler route, acquired ACT labelled
+unacquired, and unqualified40-guest/492-step counts. Own these related prose
+repairs here before edits, preserving each changed span and the full chapter
+inverse; current numerical scope routes to generated reports. No count credit.
+
+Final affected-field review also owns GC Sail matched_scope's parenthetical
+still citing the withdrawn SoftFloat lineage inventory; scoped -S history pins
+its introducing root190d16b. Replace only that parenthetical with finite-agreement
+lineage limits; preserve every numerical/experiment/configuration observation,
+include its old bytes in the same capture, and repeat affected report/checks.
+
+Result: scoped own-history census identifies original inventory/format/book roots
+8a48da5/5c00809/b55c378, report producerbf71f9c5 and summary introduction190d16b
+(retained by d892571). Preserve31 old spans from four sources in35880B capture
+`docs/tasks/archive/P4-SYSTEM-reference-a7.md`, SHA256
+bf6e6d091e86743f4a0ca0ea15a129059cd426cbc60b51d153bcce8a439b0031.
+Complete originals total156499B; offsets/lengths/SHA reconstruct each whole
+source exactly, including twelve chapter groups and the three-string reporter
+block. Three damaged byte/marker/payload controls reject. Authenticate pinned
+RV32I107630B/SHA2563b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec
+and RV64I49246B/SHA2566eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd;
+HTML contains31/11images, invalidating the old text-only absence inference.
+Correct six rv64i rows, six candidate lineages, canonical comments/assembler
+note and one GC matched-scope parenthetical. All other parsed fields/pins/
+experiment observations exact. Three G0 verdicts now not-examined; own ACT
+Sail-produced expectation dependency stays shared. Python AST changes only
+three report prose constants. Materials chapter routes actual canonical/legacy
+assembler paths, acquired ACT and current generated corpus counts; dated
+reported metrics stay explicitly bounded. No fresh reference/campaign replay.
+Five initial stale drift controls RED1 plus stale platform pin RED2; regeneration/current
+GREEN0. Final summary correction adds the sixth RED1 stale GS control before regeneration.
+Twenty derived artifacts' full inverses permit only actual source/dossier SHA
+bindings and G0's three row verdicts/one limitation block; G1 and all other
+report verdicts/measurements remain exact. rv64i dossierf9246561→91b271ea,
+GC GS changes only its measured dossier fingerprint.
+Board pin changes only that rv64i digest; wiring/policies/contract bytes exact.
+Focused15 (doc9/profile/board/platform/materials/composition/unit-books),
+six books/verify.py rc=0; runtime/frozen114/114/registry/fixtures/prior history/
+LIVE exact and fixed caps. No independence/conformance/status credit.
+Evidence target/p4-system-14/a7; complete task/journal inverses retain prior history.
+promotion: declined (existing ancestry/search records and canonical declared evidence retain the routine correction; historical spans and exact inverses preserve the transition).
+Next .14 predeclared policy, structured matched experiments/controls/runners,
+mechanically derived requirement status and sixth-unit registration.
+
 ### `.14` a6 — withdraw maintained internal ancestry assertions (completed, SEMULITH-P4-0197)
 
 Owned on clean6d6d9ca, brief0/actual census rc=0. Read .14 priority/roadmap,
@@ -581,6 +656,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a7 — **ROOT CAUSE**: canonical.py/archive.py/scoped history rc=0:
+ canonical inventory, reporterbf71f9c5 and GC summary190d16b retain unsupported
+ ancestry/text-search assertions; authenticated HTML contains31/11images.
+- [x] `.14` a7 — **ADDRESSED**: archive.py/derived.py/verify.py rc=0:
+31 historical spans/four full-source inverses, three damaged controls reject;
+canonical rows/candidates/comments, three report strings and twelve book groups
+corrected; all stale controls reject, documented regeneration is current.
+- [x] `.14` a7 — **NO REGRESSION**: focused15/make book/verify.py rc=0:
+20 derived artifact inverses and complete Python AST-except-three-constants;
+all other canonical/pin/experiment data, runtime/frozen/registry/fixtures/history/
+LIVE exact,114/114 frozen, fixed caps; no new independence/conformance credit.
+
 - [x] `.14` a6 — **ROOT CAUSE**: repair.py/scoped blame rc=0:
  147de764/95f1c5c7 maintained internal census/lineage and clone advice, plus
  closed .7/.1 current-use routes; original files/card/note enumerated before edits.
@@ -658,6 +745,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a7 | 31 historical spans/four full-source inverses; three damaged controls; authenticated HTML; canonical/report/board/book drift controls | focused15/six books/verify rc=0; other data/runtime/frozen/prior history/LIVE exact,114/114 frozen |
 | `2026-10-10` | `.14` a6 | five exact historical payloads/full task inverse; three damaged controls; corrected maintained reference/card/.7/.1/book scope | realized1/1/focused12/six books/verify rc=0; all code/producer/profile/frozen/prior history/LIVE exact;114/114 frozen |
 | `2026-10-10` | `.14` a5 | root133e7229/public chapter+diagram auth; canonical two-span/generated three-SHA/report fingerprint inverse; three stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; fields/runtime/frozen/fixtures/history/LIVE exact;114/114 frozen |
 | `2026-10-10` | `.14` a4 | five chapter digests/three public SVG coordinate proofs; full comment/one-why/generated inverses; two stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; executable/canonical-except-why/frozen/history/LIVE exact;114/114 frozen |
@@ -673,6 +761,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a7 | `SEMULITH-P4-0198 (leaf P4-SYSTEM.14): correct canonical reference evidence and derived claims` | predeclared policy, structured experiment/control records, status derivation and sixth-unit registration |
 | `.14` a6 | `SEMULITH-P4-0197 (leaf P4-SYSTEM.14): withdraw maintained internal ancestry assertions` | a7/0198 canonical reference rows and all generated consequences |
 | `.14` a5 | `SEMULITH-P4-0196 (leaf P4-SYSTEM.14): correct canonical state source citations` | a6/0197 maintained reference/decision/knowledge and .7 current-use rationale; then canonical references |
 | `.14` a4 | `SEMULITH-P4-0195 (leaf P4-SYSTEM.14): ground privilege and wait-state rationales` | a5/0196 canonical state/reference/decision/knowledge rationale sweep |
@@ -683,6 +772,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-10`: `.14` a7 (SEMULITH-P4-0198): preserve31 historical spans/full-source inverses, correct canonical/report/materials evidence scope and regenerate all consequences; damaged/stale controls, focused15/six books/invariants green.
 
 - `2026-10-10`: `.14` a6 (SEMULITH-P4-0197): preserve five exact historical payloads, correct maintained ancestry/acceptance/search/card/book scope, three damaged controls reject; realized1/1/focused12/six books/invariants green.
 

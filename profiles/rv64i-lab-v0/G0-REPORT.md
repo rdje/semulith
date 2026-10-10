@@ -74,9 +74,9 @@ trap as well as arithmetic.
 
 | Independence: subsystem | Pair | Verdict |
 | --- | --- | --- |
-| instruction encoding | sail-riscv ↔ spike | **not-shared** |
-| floating point | sail-riscv ↔ spike | **shared** |
-| integer semantics | sail-riscv ↔ spike | **no-evidence-of-sharing** |
+| instruction encoding | sail-riscv ↔ spike | **not-examined** |
+| floating point | sail-riscv ↔ spike | **not-examined** |
+| integer semantics | sail-riscv ↔ spike | **not-examined** |
 | expected-result derivation | act4 ↔ sail-riscv | **shared** |
 | all | qemu ↔ sail-riscv | **not-examined** |
 | all | qemu ↔ spike | **not-examined** |
@@ -99,9 +99,9 @@ pair reads exactly like an independent one.
 4. **The effective reference configuration is our merge, not the model's report.** The Sail
    model will not emit its merged configuration; the one self-description it does emit is
    its ISA string, which is pinned and re-derived.
-5. **Encodings come from a different provenance than the semantics.** The pinned
-   specification contains no instruction encodings; that source is upstream of one
-   comparator and not the other.
+5. **Encoding provenance does not establish comparator independence.** Canonical inputs
+   identify the public encoding artifacts; a text-only search cannot establish absent
+   diagram content or implementation ancestry. Finite agreement adds no lineage proof.
 
 ## Commands that re-derive this report's inputs
 

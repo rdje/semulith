@@ -1,6 +1,34 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — correct canonical reference evidence and derived claims (P4-SYSTEM.14 a7)
+
+The six rv64i pair rows and GC candidate rationales retained unsupported ancestry
+conclusions; G0 generatorbf71f9c5 independently emitted the same assertion. GC
+matched_scope retained a related parenthetical introduced by190d16b. Scope own
+history, never dependency internals. Capture31 old spans in35880B archive/SHA256
+bf6e6d091e86743f4a0ca0ea15a129059cd426cbc60b51d153bcce8a439b0031;
+all four whole originals (156499B) reconstruct exactly. Three damaged controls
+reject. Authenticate pinned RV32/RV64 HTML107630/49246B and31/11images; negative
+text hits cannot establish image absence or implementation ancestry.
+
+Canonical pairs/candidates/comments and the GC parenthetical now bound public
+observations/unknown ancestry; own ACT campaign's Sail-signature dependence stays
+shared. Python AST differs only in three emitted G0 prose constants. Twelve
+materials-book groups correct stale assembler/acquisition/count/lineage scope.
+All unaffected parsed fields/pins/experiment observations remain exact. No fresh
+reference run, new numeric evidence or requirement-status credit.
+
+Actual stale report/book/board/platform controls reject; regenerate through
+published interfaces. Twenty derived artifact inverses permit only measured SHA
+bindings and G0's three row verdicts/one limitation block. Board digest pin is the
+only authored board change; all wiring/contract/runtime/frozen/registry/fixtures/
+prior history/LIVE exact. Focused15/six books/verify rc=0;114/114 frozen14,
+CPU incomplete7axes/P4 13/18. Evidence target/p4-system-14/a7, fixed caps.
+promotion: declined (maintained ancestry/search records and exact historical inverses retain this routine repair).
+Next .14 predeclared policy, structured experiments/controls/runners, derived
+requirement status and sixth-unit registration.
+
 ## _(2026-10-10)_ — recurring artifact cleanup (ARTIFACT-CLEANUP.5)
 
 Last run2026-10-09 17:21:23UTC; recurrence completed2026-10-10T17:22:34.381524+00:00.

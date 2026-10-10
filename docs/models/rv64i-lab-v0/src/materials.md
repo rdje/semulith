@@ -54,11 +54,11 @@ ECALL/EBREAK, and the HINT tables. RV64I is written as a *set of deltas* against
 chapter, so nearly every rule in the dossier cites it. Its prose is where every guest
 expectation value is derived from before any model runs (EVD-05).
 
-**Does not supply:** the RV64 deltas (those are the next artifact), and — measured, not
-assumed — **any instruction encodings**. The format diagrams in this chapter are *images*:
-`grep -cE '[01]{7}'` over the pinned bytes returns 0. The semantics are all present in
-prose; the bit layouts are simply not in the document. That measurement is what forced
-the second provenance below.
+**Does not supply:** the RV64 deltas (those are the next artifact), or a
+machine-readable opcode table. The authenticated HTML includes format images;
+a text-only search cannot establish what those diagrams contain. This chapter's
+prose grounds the semantics, while the separately pinned encoding artifacts below
+record the machine-readable inputs used by this project.
 
 ### `RVI-RV64I`
 
@@ -67,82 +67,68 @@ amounts, LWU/LD/SD, and the RV64I HINT table. Short enough to read end to end �
 you should, because this chapter plus the one above *is* the whole instruction
 specification of this unit.
 
-**Does not supply:** the base rules it modifies (it is a delta document — read it
-together with `RVI-RV32I`, never alone), and again no encodings, for the same measured
-reason. It also does not say how the *W forms' sign extension interacts with a garbage
-upper half — that rule is derived from its prose ("ignoring the upper 32 bits") and is
-pinned by the `bound-arith` guest, not quoted from a table.
+**Does not supply:** the base rules it modifies (read it with `RVI-RV32I`),
+or a machine-readable opcode table. Image content cannot be ruled out by searching
+HTML text. The *W forms' sign extension with a garbage upper half is derived from
+the prose ("ignoring the upper 32 bits") and pinned by the `bound-arith` guest.
 
 ## The encoding tables
 
-The one place this model's definition comes from somewhere other than the specification —
-and this section is the honest account of that, because the project first *recorded it
-wrong* and then corrected itself.
-
-**The measured gap.** The three pinned artifacts above contain no instruction encodings
-(the format diagrams are images; the measurement is the grep above, run over all six
-pinned artifacts at acquisition time). Semantics in prose, encodings nowhere. So the bit
-layouts had to come from somewhere else, and that somewhere is recorded as its own
-provenance rather than blurred into "the specification":
+The machine-readable encoding artifacts have their own recorded identity.
+The pinned specification's HTML includes diagrams, so zero text-search hits do
+not prove that the specification lacks encodings. The table below identifies the
+project's declared inputs without making an implementation-ancestry claim.
 
 {{#include materials/encoding-tables.md}}
 
 ### `RISCV-OPCODES`
 
-RISC-V International's machine-readable opcode tables: the fixed bits and operand lists
-per instruction (`rv_i`, `rv64_i`), the operand field positions (`arg_lut.csv`), and the
-B/J scrambled-immediate layouts (`constants.py`) — which the pinned specification renders
-only as images. The project's assembler *parses* these files and refuses any immediate
-layout whose accounted bits do not total the field width; it carries no opcode constant of
-its own, so a typo cannot invent an instruction (see the project book's assembler annex,
-`docs/book/src/annex/assembler.md`).
+RISC-V International's machine-readable opcode tables record fixed bits and
+operand lists (`rv_i`, `rv64_i`), operand positions (`arg_lut.csv`) and immediate
+layout descriptors (`constants.py`). The normal assembler reads the composed
+canonical `encoding.sexp`; its separate legacy table-directory route parses these
+upstream artifacts. Finite word comparisons and refusal controls check the
+recorded encodings and layouts (see `docs/book/src/annex/assembler.md`). They do
+not guarantee that every possible encoding error is absent.
 
-⭐ **The shared-ancestry statement, plainly.** This source is *upstream of Spike* — whose
-`encoding.h` declares itself generated from it — and **not** of the Sail model, which
-hand-writes 59 files of `encdec` mappings and never mentions it. So when Sail decodes the
-project's guest bytes as intended, that is a genuinely *independent* confirmation of the
-encoding; when Spike does, it is not — it is the same table answering twice. The project
-initially recorded "our encodings are confirmed by the references" without this
-distinction; the independence inventory in `references.sexp` is the correction, and it is
-why the differential's encoding leg rests on Sail alone. The follow-up question — does the
-official specification's **PDF** rendering carry the format tables as selectable text,
-which would let encodings be re-sourced from the primary document — was investigated with
-a tool at `MODEL-BOOKS.2` and answered **yes** (same publication, same revision; the
-evidence and its two qualifications are in the gaps chapter). The re-sourcing itself is
-future, reviewed work, not done today.
+**Lineage limit.** Public artifact identities and finite decoder observations do
+not establish whether Sail, Spike or this project share an implementation ancestor.
+The canonical inventory now marks those ancestry questions `not-examined`; neither
+agreement nor a negative text search establishes independence. The earlier
+PDF investigation at `MODEL-BOOKS.2` remains dated reported history, with its two
+qualifications in the gaps chapter. No fresh PDF replay or encoding re-sourcing
+is claimed here.
 
-**Does not supply:** semantics. These tables say which bits mean *which instruction*,
-never what the instruction *does* — no expected value, no trap behavior, no boundary rule
-is ever derived from here. It also does not supply the B/J immediate layouts as prose:
-`constants.py` states them as descriptors the assembler must parse and self-check, and a
-layout it cannot reconcile is one it will not use.
+**Does not supply:** semantics. These tables identify instruction bits, never
+expected values, trap behavior or boundary rules. Nor do they prove comparator
+independence. Their layout descriptors are inputs to the legacy parser; the
+normal assembler uses the composed canonical encoding space.
 
 ## The reference models
 
-Three obtained implementations and one deliberately-unacquired test corpus. A reference
-here is a *differential partner*, never a source of truth: agreement is tested evidence
-for these inputs, and the dossier records what each model actually is — including the two
-that were tried and rejected as routes, and the one whose independence is unexamined.
+The generated table records acquired implementations and the acquired ACT test
+corpus. A reference is a differential partner: agreement is finite evidence for
+the exercised inputs. Acquisition, configuration and observed agreement each have
+their own scope; none by itself authenticates implementation ancestry.
 
 {{#include materials/reference-models.md}}
 
 ### `sail-riscv`
 
-The primary oracle candidate: the RISC-V International reference formal model, release
-0.14, a prebuilt binary pinned by digest. It is the reference that can be *configured to
-match this profile's whole platform* — memory regions, no CLINT, no interrupt generator —
-via the tracked override, and it is the encoding-independent comparator (above). The
-matched-profile control that demonstrated what configuration is worth: flipping its
-misaligned policy back to "handled invisibly", changing nothing else, produced a real
-divergence against Spike — the two models agree *because* the profile is matched.
+The primary oracle candidate: the RISC-V International reference formal model,
+release 0.14, a prebuilt binary pinned by digest. Its tracked override selects the
+profile's memory regions, no CLINT and no interrupt generator. In the recorded
+matched-profile control, changing only its misalignment policy to "handled
+invisibly" produced a divergence against Spike. That finite control shows a
+configuration-sensitive result; it proves neither general agreement nor lineage.
 
-**Does not supply:** an independence guarantee for expected-value derivation (ACT's
-signatures are computed by a configured Sail model — see `act4`), nor the *effective
-merged configuration* — measured: the model will not emit it (`--print-default-config`
-ignores the override), so the effective configuration is recorded as (release default) +
-(tracked override), and the merge is ours, not the model's report. And notably it does not
-supply a 64-bit-wide access-fault tval: measured at the interaction-matrix design probes,
-sail 0.14 masks it to its 56-bit physical-address width (`DIFF-TVAL-PHYS-MASK`).
+**Does not supply:** authenticated implementation independence. In this project's
+ACT campaign, Sail produces the expected signatures (see `act4`). It also does not
+emit the effective merged configuration: the recorded `--print-default-config`
+probe ignores the override, so the effective configuration is represented as
+release default plus tracked override. The interaction-matrix probes record a
+further limit: Sail 0.14 masks access-fault tval to its 56-bit physical-address
+width (`DIFF-TVAL-PHYS-MASK`).
 
 ### `spike`
 
@@ -152,12 +138,12 @@ emits *no* commit record for a trapping instruction, and reassembling that split
 what stopped a truncated trace reading as agreement (the lesson the comparator's
 length-mismatch refusal now enforces).
 
-**Does not supply:** a matched platform. Spike bundles a *board* with its CPU — a
-core-local interruptor, a PLIC, a UART — and offers no option to remove them
-(`DIFF-PLATFORM-SPIKE`), so guests touching its device addresses disable the Spike
-comparison and print the skip. Nor does it supply encoding independence: its encodings
-are generated from the same riscv-opcodes tables this project parses, so Spike agreeing
-with our bytes is the same table agreeing with itself.
+**Does not supply:** a matched platform. Spike bundles a board with a core-local
+interruptor, PLIC and UART; the recorded public-interface investigation found no
+option to remove them (`DIFF-PLATFORM-SPIKE`). Guests touching its device addresses
+therefore skip the Spike comparison. Encoding agreement on exercised inputs also
+supplies no authenticated ancestry conclusion; the canonical inventory marks the
+implementation-lineage question `not-examined`.
 
 ### `qemu`
 
@@ -180,13 +166,14 @@ pinned at commit `e2216915…` holding only `tests/env/`, `tests/rv64i/I/` and `
 `target/refs/riscv-arch-test/` beside the reference binaries. The docs and test-plan half
 remains the catalogued material `RISCV-ARCH-TEST-ACT4`.
 
-**Does not supply:** a second opinion, ever. ACT computes its expected results using a
-*configured Sail model*, so ACT agreeing with sail-riscv is one semantics answering twice
-— the single most important lineage fact in the dossier. ACT's value is *external tests*,
-which is a different kind of value from independence — and that value is now realized:
-`P2-SCALAR.5` strand 2 ran the RV64I campaign three-way (51 test files, 17,017 signature
-slots, every verdict pass, every signature agreeing with the Sail-derived one; the record
-is `profiles/rv64i-lab-v0/act4.sexp`, the story the evidence chapter's).
+**Does not supply:** an independent expected-result producer in this project's
+recorded campaign. `scripts/run_act4_campaign.py` runs Sail and compares both Spike
+and semulith signatures with Sail's signature. That is an observable dependence
+of this pipeline, without a claim about every ACT configuration or implementation.
+ACT supplies externally chosen tests. The dated `P2-SCALAR.5` strand-2 record
+reports 51 RV64I test files and 17,017 signature slots, all passing against the
+Sail-produced expectations (`profiles/rv64i-lab-v0/act4.sexp`); this correction
+does not claim a fresh campaign replay.
 
 ## The internal contracts
 
@@ -262,17 +249,17 @@ checks; whether any executable names them is what gate `G0` measures — and it 
 
 ### `guests/`
 
-The EVD-05 guest corpus: independently encoded programs whose every expected observation
-was derived from the pinned specification prose *before any model ran* — an expected value
-copied from a model's output tests self-consistency and nothing else. The guests are the
-executable half of the bill: the offline differential re-runs them against these
-expectations on every commit, and the live smoke runs them against both references.
+The EVD-05 guest corpus uses the canonical encoding space and expected
+observations derived from pinned specification prose before model comparison.
+An expected value copied from model output would test self-consistency. The
+offline differential checks these declared expectations; live reference runs
+supply additional finite observations for their recorded inputs.
 
-**Does not supply:** proof. Forty guests and 492 aligned steps is finite, tested evidence
-— explicitly not universal trace inclusion, and the two references can agree while both
-are wrong where they share ancestry. The corpus also does not supply its own coverage
-claim: the denominator lives in the profile's scope, and `EXERCISE-COVERAGE` re-derives
-the ratio.
+**Does not supply:** proof or authenticated implementation independence. Current
+corpus counts and coverage come from the generated `G0-REPORT.md` and `GC-REPORT.md`
+in `profiles/rv64i-lab-v0/`, rather than a second mutable count here. The scope
+provides the coverage denominator, which `EXERCISE-COVERAGE` re-derives. Finite
+agreement is not universal trace inclusion.
 
 ### `interactions.sexp`
 
