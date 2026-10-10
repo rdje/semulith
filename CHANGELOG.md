@@ -1,6 +1,16 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0171 (leaf P4-SYSTEM.13 c29e) — ground reference overview in public evidence
+
+- Withdraw internal-source ancestry assumptions from current P0/P4/LIVE prose;
+  preserve nine original spans6177B in finite archive with three exact inverses.
+- State public observation/independent expected-value and gate-presence limits.
+  Canonical/knowledge sweep remains owned by .14; no new independence credit.
+- Fresh scalar4/34/all12raw and FP24/927 repeat exact; FP230+3168/hardware2131,
+  focused/all six books rc=0. Registry104/effective102/114/status/counts unchanged.
+  LIVE6135→6131B, caps fixed. C30 GC-COUNTERS next.
+
 ## SEMULITH-P4-0170 (leaf P4-SYSTEM.13 c29e1) — contain completed task and development receipts
 
 - Preserve five completed task spans79234B in finite archive10/81004B;

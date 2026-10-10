@@ -23,7 +23,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Requirements catalogue seeded | Done | `P0-PROFILE.3` (+ `MODEL-METHOD.10`) — 28 machine-readable records, every declared instruction covered; in the one format since `SOT-FORMAT.3`, schema-validated |
 | Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; commentary survives as first-class `(comment …)` forms |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 36 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 72 checks **declared not implemented** |
-| Reference independence inventoried | Done | 6 pairs, 4 verdicts; FP **shared** (184/199 files identical), routed to `P4-SYSTEM.7` |
+| Reference independence inventoried | Done | Historical 6 rows; ancestry basis withdrawn; current record sweep: `P4-SYSTEM.14` |
 
 | North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 5 units today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |

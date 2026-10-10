@@ -231,7 +231,9 @@ This gate authorises the planned next engineering stage: board implementation.
   Sweep maintained knowledge/plans for dependency assumptions based on submodule
   internals; replace them with public-contract evidence (owned e2d finding).
   C29e prerequisite census names active reference_softfloat-shared-ancestry
-  decision/INDEX, zero-hits-absence-or-blindness card and canonical rv64i
+  decision/INDEX, reference_fp-model-layer-acceptance record,
+  zero-hits-absence-or-blindness card, closed .7 task rationale
+  and canonical rv64i
   six-pair reference rows plus GC candidate lineage. Address these first in
   the .14 sweep; P0/P4 overview and LIVE repair remains c29e. Schema/consistency
   check only require declared pair/evidence/consequence and legal verdict;
@@ -335,7 +337,7 @@ registry104/effective102/114/LIVE change or cap increase; book worked example.
 Focused/all six books rc=0; previous Rust167/17/223 applies. Verify.py rc=0;
 evidence target/p4-system-13/c29e1. Hooks then c29e after clean workflow/census.
 
-### `.13` c29e — retire internal-ancestry assumptions in the early overview (queued)
+### `.13` c29e — retire internal-ancestry assumptions in the early overview (completed, `SEMULITH-P4-0171`)
 
 Scoped c29d navigation encounters plan/p0.md's "Three models" section and
 LIVE_STATUS's independence-inventory row. Root147de76 records source-tree
@@ -351,6 +353,48 @@ observations from independent expected values. .14 retains structured evidence/
 status alignment; log any canonical-record conflict rather than grant new credit.
 Update book/live receipts with focused checks/all six books and clean workflow.
 Priority next, then GC-COUNTERS; a scoped repair, not a repository-wide audit claim.
+C29e activates on clean6b37d57/brief0/actual census rc=0. The scoped P0 repair
+also qualifies early candidate/encoding/ISA-string prose that relies on internal
+causes or inference. Preserve every replaced span with source identities and
+full inverse in new finite archive/P4-SYSTEM-reference-c29e.md; existing archives
+stay frozen. P4 condition retains qualification/target-policy/public-API/artifact
+requirements and independent fixtures; LIVE inventory row becomes historical
+with .14's outstanding current-basis sweep explicit, without changing status.
+Read full P0/P4 chapters, affected root147de76 history, current schema/consistency/
+report consumers and measured base2experiments/6rows versus GC0/0. Re-authenticate
+public scalar/FP results and independently derived expectations; no new
+independence or contract credit. Closed .7 task rationale joins .14's scoped sweep.
+
+Completed: root147de76's source-inspection/ancestry narrative is historical,
+not a current dependency basis. Nine replaced P0/P4/LIVE spans6177B retained
+in finite reference-c29e archive17817B, SHA
+d7df7f4fceaf2819fdc8def054c89c99c3ec16b268fd831653381c283ea30bb1.
+Verify.py rc=0 authenticates payloads and full three-source byte/order/SHA
+inverses; bad marker/corrupt byte/omission refuse. Public.py rc=0: fresh
+scalar4/34/all12raw and FP24/927 pairs exact against c29e0/c29c. FP-VECTORS
+rc=0:230+3168 and hardware2131. No reference-internal cause/ancestry assumption
+supports current overview; gate-presence limits and independent expectations
+explicit. Canonical base2experiments/6rows vsGC0/0 unchanged; .14 owns named
+record/decision/knowledge/closed-task sweep, no new independence credit.
+First live row exceeded6144B and was refused before archive credit; restore
+only owned exact-source replacements, shorten and authenticate final6131B
+(old6135). All statuses/counts/core/canonical/frozen/registry104/history exact,
+effective102/114 unchanged. Focused/all six books rc=0; previous Rust167/17/223
+applies. Evidence target/p4-system-13/c29e. Commit/brief0/actual census then c30.
+
+### `.13` c30 — realize GC-COUNTERS execution checks (queued)
+
+Next runtime pair after c29e's clean workflow. Review frozen obligation and
+current requirements, selected counter/CSR/virtual-time policies, public engine/
+environment interfaces, generated instruction effects, companion guests, registry
+and tests, plus v2/runtime/counter book sections. Refine a bounded literal
+counter-transition design before implementation; expected values come from
+selected rules, never captured outputs. Discriminate wrong effects and disabled
+observers, prove missing binding RED before registration, preserve prior104 and
+frozen inputs. Add only the two owned GC-COUNTERS execution bindings after checks
+pass; focused Rust/public/corpus checks and synchronized docs/book, commit clean
+before GC-CSR-ACCESS/F/D/reservation/SC pairs or freeze. .14 evidence/status sweep
+remains separately scheduled; no inference of completed credit in this plan.
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -494,6 +538,25 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c29e — **ROOT CAUSE**: root147de76 history plus schema/
+ consistency/report consumer census identify internal-source ancestry claims in
+ P0/P4/LIVE, while consumers check declaration presence/legal values only.
+ Public.py rc=0 measures base2experiments/6rows vsGC0/0; current basis and .14
+ ownership must remain explicit, without inferring independence from agreement.
+- [x] `.13` c29e — **ADDRESSED**: verify.py rc=0: nine historical spans
+ 6177B preserved in finite17817B archive, three complete source inverses/SHA
+ exact; corruption/marker/omission controls refuse. P0/P4 explain public artifact/
+ trace limits, independently derived values and actual gate behavior. LIVE row
+ historical/withdrawn, named .14 sweep covers canonical/decision/knowledge/closed
+ .7 rationale. Final row6131B under6144; initial oversized proposal refused.
+- [x] `.13` c29e — **NO REGRESSION**: public.py/verify.py rc=0:
+ authenticated fresh scalar4/34/all12raw and FP24/927 pairs byte-exact against
+ prior receipts; FP-VECTORS rc=0:230directed+3168fixtures/hardware2131. All other
+ book/core/author/canonical/frozen/registry104/history/knowledge bytes exact;
+ effective102/114 and all LIVE statuses/counts unchanged. Focused/all six books
+ rc=0; fixed family/part caps, previous Rust167/17/223 applies. C30 next.
+ promotion: declined (existing public-boundary and independent-expectation discipline; exact historical archive, current book and scheduled .14 sweep retain the scoped repair).
+
 - [x] `.13` c29e1 — **ROOT CAUSE**: prepare.py rc=0: committed task
  124305B leaves6767B under fixed131072; DEV36965B exceeds36864 health target
  (below49152 hard cap). Five whole completed spans79234B measured and owned
@@ -528,6 +591,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
+| `2026-10-10` | `.13` c29e | root history/consumer census; nine preserved spans/three exact source inverses; corrupt/marker/omission refuse; fresh scalar4/34/FP24/927 exact; FP230+3168/hardware2131 | registry104/effective102/114 and LIVE statuses/counts unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29e1 | five whole payloads/full task inverse; damaged payload controls refuse; sharder12/0/dry-run; four whole DEV entries/full inverse; prior history/protected inputs/fixed caps | registry104/effective102/114 and LIVE unchanged; focused/all six books rc=0; hooks next |
 
 ## Commit Log
@@ -537,9 +601,16 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | Leaf | Subject | Next |
 | --- | --- | --- |
 
+| `.13` c29e | `SEMULITH-P4-0171 (leaf P4-SYSTEM.13): ground reference overview in public evidence` | c30 GC-COUNTERS, remaining runtime pairs/freeze |
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29e (SEMULITH-P4-0171): withdraw internal-ancestry
+ basis from current P0/P4/LIVE overview; preserve6177B in exact finite archive.
+ Public scalar4/34/FP24/927 repeat, independent numeric/gate-presence limits
+ explicit. .14 owns named record sweep; effective102/114/status/counts unchanged.
+ Focused/all six books rc=0; c30 GC-COUNTERS next.
 
 - `2026-10-10`: `.13` c29e1 (SEMULITH-P4-0170): task five whole spans79234B to archive10; DEV four whole entries7098B to0228. Full source inverses/order/SHA, prior history and fixed caps preserved. Effective102/114 and LIVE unchanged; book worked example, focused/all six books rc=0. C29e next.
 

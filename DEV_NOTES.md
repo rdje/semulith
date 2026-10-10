@@ -1,6 +1,29 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — ground reference overview in public evidence (P4-SYSTEM.13 c29e)
+
+Root147de76 introduced source-tree counts/ancestry inferences into P0/P4/LIVE.
+Read full chapters and actual schema/consistency/report consumers; these check
+row/field presence and legal verdicts, not the truth of implementation ancestry.
+Current overview now uses public artifacts/observations, explicit limitations
+and independently derived expected values. Nine old spans6177B preserved in
+finite17817B archive, SHA
+d7df7f4fceaf2819fdc8def054c89c99c3ec16b268fd831653381c283ea30bb1.
+Three full source inverses byte/order/SHA exact; corrupt/marker/omission reject.
+
+Public.py/verify.py rc=0: authenticated scalar4/34/all12raw exact against
+c29e0; FP24/927 pairs exact againstc29c. FP-VECTORS rc=0:230directed+3168
+fixtures, hardware2131. Canonical base2experiments/6rows vsGC0/0 unchanged.
+.14 already owns named decision/knowledge/canonical/closed .7 rationale sweep;
+encountered acceptance reference added to its scope. No independence credit.
+First row failed6144B cap before archive credit; restore only owned exact-source
+replacements, shorten final row6131B (old6135). Status/counts unchanged.
+Core/author/canonical/frozen/registry104/prior history exact; effective102/114.
+Focused/all six books rc=0, previous Rust167/17/223 applies. Evidence
+target/p4-system-13/c29e. Next c30 GC-COUNTERS after clean workflow/census.
+promotion: declined (existing public-boundary/independent-expectation discipline; exact archive, current book and scheduled .14 sweep retain the scoped repair).
+
 ## _(2026-10-10)_ — contain completed task and development receipts (P4-SYSTEM.13 c29e1)
 
 Source442a57d task124305B, only6767B below fixed131072. Five whole spans
