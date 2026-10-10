@@ -527,9 +527,9 @@ The [memory runtime chapter](contract-memory.md) retains eleven-form load/store
 extension, discarded-load requests/faults, selected byte-order observations and
 FENCE field/no-effect and atomic pre-translation alignment observations.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
-100/114; seven runtime pairs and final freeze remain. The
+102/114; six runtime pairs and final freeze remain. The
 [instruction-visibility chapter](fence-i.md#direct-contract-observations) adds
-ignored-field and patched-parcel FENCE.I witnesses. The split retains
+ignored-field and patched-parcel FENCE.I witnesses. The [atomics chapter](atomics.md#direct-contract-observations) adds literal A-operation, alias, reservation-effect and translated-fault witnesses. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 
 The profile's live environment document now keeps its effective interface and

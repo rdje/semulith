@@ -53,6 +53,12 @@ full state and exact requests. Halfword patches of 16-/32-bit targets at0/2 mod4
 remain visible with standard/nonzero FENCE.I and under the coherent no-fence
 control. Worked programs and controls: `docs/book/src/plan/p4/fence-i.md`.
 
+GC-ATOMICS binds literal nine-operation W/D values, LR/SC success/failure,
+ordering encodings, representative source/destination aliases and exact
+state/request effects. Three-level translated AMOs and page/physical failures
+retain their store/AMO fault kinds. Worked values, paths and finite limits:
+`docs/book/src/plan/p4/atomics.md#direct-contract-observations`.
+
 The matched Sail override sets scalar misaligned-atomicity granule exponent0.
 A 16-byte granule permits contained AMOs despite AccessFault, so that former
 setting did not match the unconditional laboratory alignment rule. Public

@@ -4,6 +4,7 @@
 //! 11.1.1.12 and RVP-MACHINE 2.1.1.11/2.1.1.18. No processor semantics live here.
 
 mod atomic_align;
+mod atomics;
 mod fence;
 mod fence_i;
 mod jalr;
@@ -26,6 +27,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// All 22 atomic forms with literal data, aliases and exact boundary effects.
+    AtomicsPositive,
+    /// Failed conditional stores and translated/physical AMO faults.
+    AtomicsNegative,
     /// Canonical instruction synchronization and immediate coherent code visibility.
     FenceIPositive,
     /// Ignored FENCE.I fields preserve all state and patched parcel behavior.
@@ -65,6 +70,14 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::AtomicsPositive => &[
+                "a-amo-arith-w",
+                "a-amo-arith-d",
+                "a-amo-minmax-w",
+                "a-amo-minmax-d",
+                "a-lrsc-pair",
+            ],
+            Self::AtomicsNegative => &["a-lrsc-mustfail", "a-amo-sv39"],
             Self::FenceIPositive => &["fencei-selfmod", "fault-selfmod"],
             Self::FenceINegative => &["fencei-reserved"],
             Self::AtomicAlignPositive => &["a-lrsc-pair"],
@@ -87,6 +100,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::AtomicsPositive => atomics::positive(),
+            Self::AtomicsNegative => atomics::negative(),
             Self::FenceIPositive => fence_i::positive(),
             Self::FenceINegative => fence_i::negative(),
             Self::AtomicAlignPositive => atomic_align::positive(),

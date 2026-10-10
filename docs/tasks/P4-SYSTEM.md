@@ -587,6 +587,49 @@ RED101 then two registry entries. Direct61620/123222/123294 requests, companions
 Focused gates/all six books rc=0; hooks next. Next c28e below, then seven runtime
 pairs/freeze. .14 still owns statuses/experiments.
 
+### `.13` c29 — discriminate the A-extension execution contract (completed, `SEMULITH-P4-0162`)
+
+Activated on clean bfd11bc after the completed workflow/actual census. Read
+REQ-GC-ATOMICS, frozen OB-GC-ATOMICS and dependencies, A semantic forms,
+evaluator/public reservation/translation interfaces, existing observers and
+atomics book. Own new direct Execution pair plus named existing A guests.
+Before executing the CPU, authenticate pinned A/Sv39 sources and derive literal
+AMO vectors/words/expectations independently. Cover nine operations at W/D,
+all ordering bits, M/S/U, x0 and source/destination aliases; LR/SC success/failure
+with full retained-state and exact request/memory observations. Add direct
+three-level AMO translation and unreadable/unwritable/A/D/page and physical
+failure controls; never claim multicore atomicity from a one-hart request pair.
+
+Require missing-binding RED, wrong public instruction tables and corrupted
+captures to fail named observations, plus actual request-auditor/translation
+mutations RED and exact restoration. Preserve frozen records, old registry,
+core behavior, author/canonical guests and historical receipts. Update worked
+book/environment/current coverage, regenerate reports after all profile edits,
+run focused gates/make check/all six books, then commit/brief0/actual census.
+.14 retains statuses and structured experiments. Follow-up c29a owns the
+internal-dependency commentary encountered below before the next runtime pair.
+
+Result: authenticated sources and independent12024 value/state boundaries/992
+words before CPU;144 physical-failure plans observed separately. Missing-binding
+RED101, then two Execution entries. Direct12168/24336/45840 requests, seven
+companions198/396 =>pair12366/24732. Nine wrong tables/14 captures reject;
+actual request auditor/Atomic→Load mutations RED101 and restored exact SHA.
+make check rc0 Rust167/17/223. Initial scratch Trunc/Sext width-node misuse
+corrected to scalar API before runtime RED credit. Registry104/effective102/114;
+six remaining pairs/freeze. Core/author/frozen/old102 registry/archives exact.
+Next c29a dependency-rationale replacement, then GC-COUNTERS. .14 retains records.
+
+### `.13` c29a — replace obsolete atomic dependency assumptions (queued, priority next)
+
+Encountered in c29 interface review: reservation.rs names zalrsc_insts.sail's
+internal cancellation/error sites; exec_rv64gc.rs SC commentary and atomics
+book also assert internal cancellation behavior. Reproduce relevant completed,
+failed and faulting LR/SC cases only through public CLI/declared profile,
+then replace maintained explanatory assumptions and annotate relevant old
+receipts without rewriting history. Never inspect dependency implementation.
+Own source-comment/provenance effects and exact behavior verification separately
+after c29 is clean. Local ISA/profile policy, not those assertions, grounds c29.
+
 ### `.13` c28e — remove the obsolete internal-reference rationale (completed, `SEMULITH-P4-0161`)
 
 Activated on clean99369ab after actual census rc=0/brief0. Relevant history:
@@ -763,6 +806,23 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c29 — **ROOT CAUSE**: completeness control rc=101 names missing
+  CHK-GC-ATOMICS-POS. Authenticated A56889B/SHAafbd8def and Sv39186455B/
+  SHAd5186efc; independent author/assembler rc=0 validates12024 boundaries and
+  992 words before CPU. Original corpus alone lacks full request/state observer.
+- [x] `.13` c29 — **ADDRESSED**: direct rc=0:12168 boundaries/24336 parcels/
+  45840 requests; literal values/aliases/order/modes/LRSC plus six bad leaf and
+  two physical refusal paths. Nine wrong tables/14 captures reject. Actual
+  request/permission mutations RED101 then restored exact SHA; missing pair
+  binds via two Execution entries. Seven companions198/396 =>pair12366/24732.
+- [x] `.13` c29 — **NO REGRESSION**: verify.py rc=0: old102 registry entries,
+  core/author/generated/canonical/frozen/archives exact; independent full167/
+  5365/10524 corpus unchanged. Effective102/114, six pairs/freeze; Rust167/17/
+  223, focused gates/all six books rc=0. LIVE652/49/P4 12/18 unchanged. .14 owns
+  statuses/structured records. Next c29a obsolete internal rationale, owned
+  priority-next; c29 excludes those assumptions.
+  promotion: declined (established direct-observer discipline; worked atomics book and refusing controls retain diagnosis and finite limits).
+
 - [x] `.13` c28e — **ROOT CAUSE**: scoped text/history census rc=0:
   b5621de introduced the internal-file quotation; maintained semantics/book and
   old .6 Result repeat it. User §20 requires public dependency boundaries.
@@ -933,6 +993,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29 | independent12024/992 words; nine wrong tables/14 captures; request/permission/missing-binding RED101 restored; old102/core/inputs exact; full167 corpus | direct12168/24336/45840 requests, pair12366/24732; effective102/114; Rust167/17/223; focused/all six books rc0; hooks next |
 | `2026-10-10` | `.13` c28e | public6/29 repeated, wrong marker DIVERGE1; semantic forms exact; provenance RED1 then two-SHA-only regeneration; profile/core/registry identity | effective100/114 unchanged; Rust167/17/220; DEF-GEN/SEMANTICS/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28d | independent61440/36;11 bad tables/16 captures; request/wait/missing-binding RED101 restored; prior100/core/inputs exact; full167 corpus | direct61620/123222, pair61637/123256; effective100/114; Rust167/17/220; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28c | budget/legacy RED1→GREEN0; five mutations reject;149AGREE/4566,14 prior differences, three failures/one disabled refused; atomic242 regression; strict parser/input/author/registry identity | effective98/114 unchanged; GUEST147/focused/all six books rc=0; hooks next |
@@ -948,6 +1009,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29 | `SEMULITH-P4-0162 (leaf P4-SYSTEM.13): discriminate atomic execution and faults` | c29a public atomic rationale, then six runtime pairs/freeze |
 | `.13` c28e | `SEMULITH-P4-0161 (leaf P4-SYSTEM.13): ground fence reference claims in public evidence` | c29 GC-ATOMICS, remaining runtime pairs/freeze |
 | `.13` c28d | `SEMULITH-P4-0160 (leaf P4-SYSTEM.13): observe FENCE.I visibility and ignored fields` | c28e obsolete dependency rationale, then seven runtime pairs/freeze |
 | `.13` c28c | `SEMULITH-P4-0159 (leaf P4-SYSTEM.13): bound public reference runs` | c28d GC-FENCEI, remaining runtime pairs/freeze |
@@ -958,6 +1020,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29 (SEMULITH-P4-0162): bind GC-ATOMICS with
+  direct12168/24336/45840, pair12366/24732; literal arithmetic/aliases/LRSC,
+  translated page/physical faults and full state. Independent12024/992 words,
+  wrong tables/captures and actual request/permission controls refuse/restored.
+  Registry104/effective102/114; c29a owns encountered internal rationale next.
 
 - `2026-10-10`: `.13` c28e (SEMULITH-P4-0161): replace internal-source
   FENCE.I rationale with ISA/public observations, annotate old receipt. Six

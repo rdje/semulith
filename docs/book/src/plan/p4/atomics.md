@@ -96,3 +96,97 @@ the contract, and the decision record. The acceptance reads as measured:
 single-core reservation behaviour is validated — atomic widths, reservation
 semantics, failed conditional stores, overlap and external-write cases — and the
 multicore memory model stays `MC-MULTICORE`'s, never smuggled.
+
+
+## Direct contract observations
+
+P4.13 c29 binds OB-GC-ATOMICS to direct CPU execution and seven unchanged A
+companions. The independent values come from the authenticated pinned RVI-A
+12.1.2/12.1.4 page (56,889 bytes; SHA-256
+`afbd8def7bdf64287ef51a9cb14dd654fba0f0cfeef63bccdfd47408f5b0dff2`)
+and supervisor translation chapter (186,455 bytes; SHA-256
+`d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a`).
+The nine operations are ADD, SWAP, XOR, AND, OR, signed MIN/MAX and unsigned
+MIN/MAX. Literal result tables are derived before CPU execution and checked
+against the independent author, rather than copied from processor output.
+
+Ten data pairs include zero, all ones, addition overflow, both signed endpoints,
+complementary bit patterns, and two address/zero source controls. Each crosses
+22 forms, W/D, four aq/rl combinations, M/S/U and rd=x0/x6/x7/x9, giving
+10,560 successful boundaries. x6 is the address register and x9 the ordinary
+source. Thus rd=rs1 and rd=rs2 cannot accidentally replace the original address
+or source used by the instruction. The two extra source controls use rs2=rs1
+and rs2=x0 for AMO/SC; LR always retains its required rs2=0 encoding. The
+assembler independently verifies 992 distinct words, including every ordering
+suffix. This is a finite matrix, not every register/value combination.
+
+For example, at address 0x1080 let the original doubleword be
+`0x1122334480000001` and rs2 be `0x8877665544332211`:
+
+| Instruction | rd receives | Stored low-width value |
+| --- | --- | --- |
+| AMOADD.W | `0xffffffff80000001` | `0xc4332212` |
+| AMOSWAP.W | `0xffffffff80000001` | `0x44332211` |
+| AMOMIN.W | `0xffffffff80000001` | `0x80000001` |
+| AMOMAX.W | `0xffffffff80000001` | `0x44332211` |
+| AMOMINU.W | `0xffffffff80000001` | `0x44332211` |
+| AMOMAXU.W | `0xffffffff80000001` | `0x80000001` |
+
+All word operations leave the four adjacent upper bytes `44 33 22 11` intact.
+AMOs return the original value even when rd aliases a source; rd=x0 suppresses
+only the register write. The observed boundary is exactly two instruction
+parcels, then Load followed by Store of the declared width at the same physical
+address. The environment supplies raw bits; the CPU owns the operation and
+word-result sign extension. There are no additional walk requests in Bare mode.
+
+LR returns the original value and replaces the reservation with the accessed
+physical address/width. Successful SC writes the source's low-width bytes,
+returns zero and clears the reservation. Another 960 direct SC cells start with
+a valid reservation at a different address: they return one, clear it and issue
+no data request or memory write. The unchanged a-lrsc-mustfail guest also retains
+its no-LR, width/address mismatch, replacement and intervening-SC history cases.
+Dedicated reservation/deterministic-policy bindings remain separate work.
+
+The translated AMO fixture runs M-mode instruction fetch with MPRV/MPP=S data
+access. VA 0x10000 maps to PA 0x5000 through these literal PTEs:
+
+```
+WalkAccess 0x2000 -> 0x0000000000000c01   (next table 0x3000)
+WalkAccess 0x3000 -> 0x0000000000001001   (next table 0x4000)
+WalkAccess 0x4080 -> 0x00000000000014c7   (R/W/A/D leaf at PA 0x5000)
+Load       0x5000
+Store      0x5000
+```
+
+All nine AMOs, both widths and all four ordering encodings run this successful
+path (72 cells). The TLB receives the literal permission-bearing entry, while
+all PTE bytes remain unchanged. Six bad leaf configurations—V=0, write-only,
+read-only, A=0, D=0 and a U page with SUM clear—give 432 page-fault cells. They
+stop after the three walk reads, deliver cause 15 with mtval=VA and mepc=the
+instruction PC, and preserve rd/memory/reservation. An AMO cannot substitute
+load-page-fault cause 13. Another 144 cells refuse either the physical Load or
+Store; both deliver cause 7 with the virtual tval. A refused Store follows the
+successful Load but changes no bytes or destination register.
+
+Every boundary compares all GPRs/FPRs, 26 CSR owners, memory, PC/mode,
+reservation including invalid retained fields, complete TLB/cursor, wait state,
+exact requests, accepted parcels and execution outcome. Successful boundaries
+advance mcycle 41→42, minstret 17→18 and PC by four; traps advance only mcycle.
+The independent author checks 12,024 value/state boundaries and fetch/walk logs.
+It omits explicit data-request logs and retained invalid reservation fields;
+the direct observer owns those and the 144 physical-failure cases.
+
+Nine deliberately wrong public instruction tables fail named observations:
+a state-identical extra Load, skipped operation, missing Store, wrong operation,
+missing word sign extension, extra CSR write, extra SC, TLB invalidation and
+wrong next PC. Fourteen corrupt captures independently challenge the auditor.
+Disabling the actual request predicate wrongly admits the extra Load and makes
+the control RED. Changing the actual AMO translation kind to Load makes its
+fault-kind witness RED. Both mutations are restored byte-for-byte before normal
+checks. The completeness control first rejects an unregistered GC-ATOMICS pair.
+
+The direct total is **12,168 boundaries, 24,336 parcels and 45,840 requests**.
+The arith/minmax W/D, LR/SC pair, must-fail and Sv39 companion guests add
+198 boundaries/396 parcels: the registered pair totals **12,366/24,732**.
+The request pair witnesses this single-hart, side-effect-free-memory contract;
+it proves no multicore indivisibility, weak-memory ordering or device behavior.

@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+
+## _(2026-10-10)_ — discriminate atomic execution and faults (P4-SYSTEM.13 c29)
+
+Missing-binding control selects GC-ATOMICS/count104 and fails rc101 for
+CHK-GC-ATOMICS-POS before registration. Authenticate RVI-A56889B/SHAafbd8def
+and supervisor186455B/SHAd5186efc; independent literal tables/assembler992
+words/author12024 boundaries precede CPU execution. Initial scratch Sem
+width-node construction corrected to published scalar Trunc/Sext API before
+runtime control credit. Ten vectors ×11operations×W/D×aqrl×M/S/U×four rd patterns
+=10560 successful cells; includes rd=rs1/rs2/x0 and two rs2 alias/zero controls.
+Another960 SC address-mismatch cells return1/clear/no data requests.
+
+Three-level MPRV AMO path: VA10000→PA5000, Walk2000/3000/4080 with PTEs
+c01/1001/14c7. Nineops×two widths×four ordering cells:72 successes,432 page
+faults (six leaf configurations),144 physical load/store refusals. Trap cause15
+for pages/7 for physical failures, virtual tval, unchanged rd/memory/reservation.
+Full GPR/FPR/26CSR/memory/reservation/TLB cursor/wait/PC/mode/outcome/request
+observer; direct12168 boundaries/24336 parcels/45840 requests. Seven unchanged
+companions198/396 give pair12366/24732. Author omits explicit data requests,
+retained invalid fields and two-phase physical refusals; direct observer owns
+these distinctions. No multicore proof from a one-hart request pair.
+
+Nine wrong public tables and14 corrupt captures reject; request auditor off
+admits state-identical extra Load (RED101), Atomic→Load translation gives
+wrong page cause (RED101). Both actual sources restored by SHA before normal
+checks. Registry104/effective102/114, six pairs/freeze remain. make check rc0:
+167 core/17DSP/223 verifier; independent full167 corpus and focused/all six
+books recorded in tree. Frozen/core/author/old102 registry/archives exact.
+
+Encountered internal atomic cancellation/error-site rationales are owned by
+priority-next c29a; c29 derives no dependency assumptions from them. All work
+and measurements: target/p4-system-13/c29, tracked worked atomics book/tree.
+promotion: declined (established direct-observer discipline; the worked atomic values, request paths and refusing controls retain the reusable evidence).
+
 ## _(2026-10-10)_ — ground fence reference claims in public evidence (P4-SYSTEM.13 c28e)
 
 Scoped history/text census identifies b5621de's internal Sail-file quotation in

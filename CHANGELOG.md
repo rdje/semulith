@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+
+## SEMULITH-P4-0162 (leaf P4-SYSTEM.13 c29) — discriminate atomic execution and faults
+
+- Bind GC-ATOMICS with literal W/D nine-operation values, LR/SC success/failure,
+  all ordering encodings, M/S/U and representative source/destination aliases.
+- Observe full state/requests, three-level AMO mapping, page fault15 and physical
+  fault7; direct12168/24336/45840 requests, companions198/396, pair12366/24732.
+- Independent12024 states/992 words; nine bad tables/14 captures, actual
+  request/permission mutations and missing binding reject/restored. Registry104,
+  effective102/114. make check167/17/223, focused gates/all six books green.
+- Own obsolete internal atomic rationale c29a as priority next; six runtime
+  pairs/freeze remain. No frozen record, CPU behavior or canonical guest change.
+
 ## SEMULITH-P4-0161 (leaf P4-SYSTEM.13 c28e) — ground fence reference claims in public evidence
 
 - Replace the old internal-reference FENCE.I rationale with ISA/public behavior
