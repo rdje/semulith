@@ -293,6 +293,26 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c22a — preserve whole development receipts under fixed caps (`2026-10-10`, `SEMULITH-P4-0147`)
+
+Owned on clean 8f3376f after hooks/empty brief/actual census. DEV_NOTES is 47,462 B
+under 49,152 B fixed ceiling, leaving 1,690 B for the next verification receipt.
+Reviewed sharder, split_entries/inverse contract, sealed history reader, manifest
+freeze checker, route cap, current task-tree book and latest seven older entries.
+Dry-run rc=0 targets 32,768 B without changing the cap: 20 entries=13 kept+7 moved,
+head 31,228 B, next shard 0224. This is lossless containment, not new CPU credit.
+
+Own original SHA256/length, run existing sharder, retain all seven entry bytes/
+order (including their old footer), and append a fresh live navigation footer.
+Add this unit's bounded note and prove removing only new note/footer reconstructs
+exact original from kept+shard entries. Old manifest prefix/sealed archive/files
+must stay exact; append only one new frozen row. Keep all code/canonical/guest/
+registry/frozen bytes unchanged, effective 88/114. Update task/resume/changelog
+and mdBook with the actual preservation example. Verify inverse, no-op re-run,
+prior 90 bindings/112 base+348 GC inputs, focused shards/bounds/frontier/counts/
+freeze/reports/schema/index/all six books and hooks. Commit/brief/clean/actual
+census before c22b JALR-LSB. .14 retains statuses/experiments.
+
 ### `.13` c21b — immediate control transfers (`2026-10-10`, `SEMULITH-P4-0146`)
 
 Owned on clean 88230fb after hooks/empty brief/actual census. Review ROADMAP P4,
@@ -670,6 +690,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c22a — **ROOT CAUSE**: measured DEV_NOTES 47,462 B under
+  fixed 49,152 B cap (1,690 B room). Existing sharder dry-run rc=0 targets 32,768 B,
+  predicts 20=13 retained+7 moved and head 31,228 B; preserve whole receipts before
+  further feature work. `python3 scripts/shard_history.py --head DEV_NOTES.md
+  --max-bytes 32768 --dry-run` reproduces the route and exact prospective partition.
+
+- [x] `.13` c22a — **ADDRESSED**: existing sharder rc=0 moves seven oldest
+  entries into shard 0224, suffix 16,234 B SHA256 0ad12ca063f04407f2aee04a06b2bec7a250050fc9135d5f8044f0bed7631af1.
+  Remove only new c22a receipt/navigation footer and reconstruct original 47,462 B
+  SHA256 8f3064fc70b5929072632f333171ba281d77a926a512013ae3d827f2a9277a46 from 13+7 entries,
+  order/bytes exact (`python3 target/p4-system-13/c22a/verify.py`, rc=0).
+  New live navigation retained; old footer remains verbatim in archived payload.
+  Re-run is a no-op rc=0; manifest appends one row only (16 live+210 sealed=226).
+  Caps unchanged; book explains the preservation example.
+
+- [x] `.13` c22a — **NO REGRESSION**: prior 15 manifest rows/frozen shards
+  and sealed history/index exact; authenticated archive 210 rows. All 90 bindings/
+  core/author/generated/frozen/schema/doctrine and 112 base/348 GC canonical/guest
+  inputs exact; effective 88/114 unchanged (same inverse/identity script rc=0).
+  No Rust changes. Focused gates/books rc=0: 226 frozen rows, 37 fixed route
+  caps, 33 frontiers, six derived claims, 40 index rows, three contract versions/
+  zero findings, five fresh reports, 270 schema inputs/two named skips, main+five
+  model books; whitespace rc=0. Hooks precede c22b JALR-LSB. LIVE_STATUS
+  unchanged (650 arms, 48 chapters, P4 12/18); .14 retains statuses/experiments.
+  promotion: declined (existing whole-entry policy; exact preservation proof
+  retained here, in the live receipt and book example).
+
 - [x] `.13` c21b — **ROOT CAUSE**: NO-DELAY-SLOTS remained declared/
   unbound. Authenticated RV32I 1.1.5 and canonical eight associations reviewed;
   declaration gate observed missing CHK-NO-DELAY-SLOTS-POS rc=101
@@ -881,6 +928,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c22a | 20=13+7 ordered inverse/hash exact; old manifest/sealed bytes exact; one appended row; no-op; prior inputs/runtime exact; focused gates/books | effective 88/114 unchanged; 226 frozen rows; hooks before c22b |
 | `2026-10-10` | `.13` c21b | 13 author/13 public delayed-PC controls; 63/111; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 90; effective 88/114; focused gates/books rc=0; hooks before c22a |
 | `2026-10-10` | `.13` c21a | ordered suffix/inverse hashes exact; all prior registry/input/core/frozen bytes exact; navigation/counts; focused gates/books | effective 86/114 unchanged; book 48 chapters; hooks before c21b |
 | `2026-10-10` | `.13` c20 | 9 author/9 public provider controls, 256 byte values; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 88; effective 86/114; focused gates/books rc=0; hooks before c21a |
@@ -913,6 +961,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c22a | `SEMULITH-P4-0147 (leaf P4-SYSTEM.13): retain whole development receipts under fixed bounds` | c22b JALR-LSB, then remaining runtime pairs/freeze |
 | `.13` c21b | `SEMULITH-P4-0146 (leaf P4-SYSTEM.13): realize immediate control-transfer observations` | c22a live-note containment, then c22b JALR-LSB |
 | `.13` c21a | `SEMULITH-P4-0145 (leaf P4-SYSTEM.13): preserve memory witnesses in a bounded book chapter` | c21b NO-DELAY-SLOTS, then remaining runtime pairs/freeze |
 | `.13` c20 | `SEMULITH-P4-0144 (leaf P4-SYSTEM.13): realize little-endian byte-lane observations` | c21a book partition, then c21b NO-DELAY-SLOTS |
@@ -940,6 +989,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c22a (SEMULITH-P4-0147): preserve whole older
+  development receipts as 13 live+7 archived, byte/order inverse exact; fixed cap
+  unchanged. Append one frozen row, preserve old/sealed history. Effective 88/114
+  unchanged; c22b JALR-LSB follows hooks/brief/clean actual census.
 
 - `2026-10-10`: `.13` c21b (SEMULITH-P4-0146): bind immediate control
   transfers after 13 author/13 public delayed-PC controls over 63/111. Base eight

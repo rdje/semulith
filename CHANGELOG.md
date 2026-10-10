@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0147 (leaf P4-SYSTEM.13 c22a) — retain whole development receipts under fixed bounds
+
+- Move seven oldest whole notes into shard 0224, preserving all bytes and order.
+  Original 47,462 B reconstructs exactly from 13 retained and 7 moved entries;
+  fixed 48 KiB cap unchanged. Append only one manifest row; old history exact.
+- Update resume/task/book with the inverse proof. All code/canonical/guest/
+  registry/generated/frozen bytes exact, effective 88/114 unchanged.
+- LIVE_STATUS unchanged (650 arms, 48 chapters, P4 12/18). Focused gates and
+  all books precede hooks. Next c22b JALR-LSB.
+
 ## SEMULITH-P4-0146 (leaf P4-SYSTEM.13 c21b) — realize immediate control-transfer observations
 
 - Bind NO-DELAY-SLOTS over five unchanged guests, 63 boundaries/111 parcels.

@@ -65,6 +65,18 @@ a reader refutes a leaf by reading one paragraph rather than by trusting the tre
 is weaker than a test. The honest statement is: the plan is the oracle for these trees, and
 nothing mechanically proves a tree still matches it.
 
+## Keeping verification receipts bounded
+
+Completed development notes move as whole entries into authenticated history
+shards; their contents are retained, not summarized away. P4.13 c22a moved seven
+older entries from a 47,462-byte live head, leaving thirteen entries / 31,228 bytes
+before the new receipt. Removing only that new receipt and navigation footer,
+then concatenating the live prefix and archived suffix, reconstructs the original
+bytes and entry order exactly. The owning task records source/suffix SHA256 and
+lengths. The frozen manifest gains one row; earlier rows and sealed history remain
+unchanged. The 48 KiB live ceiling stays fixed, and the book retains the worked
+feature examples independently of the session notes.
+
 ## Why this shape
 
 A session can be lost at any moment: a crash, a context reset, a change of tool, a change of
