@@ -1,6 +1,23 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — report generated index bytes accurately (P4-SYSTEM.13 c29d1)
+
+Real CLI snapshot:23612 reported bytes vs24064 actual UTF-8 bytes,40 terms.
+Probe RED rc=1. Root gen_book_index.py success message uses len(content), a
+character count. Change only that expression to out.stat().st_size, measuring
+the file actually written; render/write/check paths remain exact.
+
+Same-input CLI GREEN rc=0 reports24064; before/after bytes identical SHA
+ac9ff0d07fb058d99938111d5b9c56c89c4baa23e7ab89be408d5bce03f1575b.
+Quiet --check rc=0. Book explains the measured Unicode difference and corrects
+the c29b1 receipt's stale c29c/c29d-next tense. No new test/doctrine arm or
+contract credit. Focused/all six books rc=0; final BOOK-INDEX/all six books
+rc=0 after prose spacing. Previous Rust167/17/223 applies.
+Evidence target/p4-system-13/c29d1. Next c29e public-ancestry repair, then
+GC-COUNTERS and remaining runtime pairs/freeze.
+promotion: declined (existing byte-measurement discipline; real Unicode CLI control and book retain the reporting diagnosis).
+
 ## _(2026-10-10)_ — retain book verification history under fixed caps (P4-SYSTEM.13 c29d)
 
 Actual tracked book family starts51files/511554B (source-only census511245B

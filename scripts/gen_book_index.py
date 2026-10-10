@@ -175,7 +175,7 @@ def main() -> int:
 
     out.write_text(content, encoding="utf-8")
     n_terms = content.count("\n| ") - 2  # minus the header and separator rows
-    print(f"gen_book_index: wrote {out} ({len(content)} bytes, {n_terms} indexed terms)")
+    print(f"gen_book_index: wrote {out} ({out.stat().st_size} bytes, {n_terms} indexed terms)")
     return 0
 
 

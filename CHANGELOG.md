@@ -1,6 +1,15 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0168 (leaf P4-SYSTEM.13 c29d1) — report generated index bytes accurately
+
+- Correct index-generator success reporting from character count to actual
+  stored bytes. Real Unicode capture RED rc=1→GREEN rc=0:23612→24064 bytes.
+- Same-input output remains byte-identical/40 terms; quiet check mode unchanged.
+  Book documents the distinction and completed c29c/c29d receipt tense.
+- No runtime/registry/contract credit change; focused/all six books in tree.
+  C29e public-ancestry repair next, then GC-COUNTERS.
+
 ## SEMULITH-P4-0167 (leaf P4-SYSTEM.13 c29d) — retain book verification history under fixed caps
 
 - Contain45 dated receipt spans across four P4 chapters, retaining current

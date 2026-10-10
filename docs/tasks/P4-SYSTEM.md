@@ -876,7 +876,7 @@ knowledge/LIVE exact; effective102/114 unchanged. Focused/all six books rc=0;
 prior Rust167/17/223 applies. Evidence target/p4-system-13/c29d. Hooks next,
 then c29d1 stdout byte-count fix, c29e public-evidence repair, GC-COUNTERS.
 
-### `.13` c29d1 — report generated index bytes accurately (queued)
+### `.13` c29d1 — report generated index bytes accurately (completed, `SEMULITH-P4-0168`)
 
 Actual c29d regeneration prints23612 "bytes" while index.md contains24064
 UTF-8 bytes. Root gen_book_index.py:178 uses len(content), a character count;
@@ -887,6 +887,27 @@ receipt to fail that assertion, then correct the byte count. Keep generated
 index bytes/terms and check-mode behavior exact, use focused BOOK-INDEX and
 normal docs/books/commit workflow. No new doctrine arm needed. Priority next,
 then c29e and GC-COUNTERS; all c29d cap measurements use stat/encoded bytes.
+
+Activated on clean71285e0 after brief0/actual census rc=0. Read full generator,
+BOOK-INDEX control/check routes, and task-tree book receipt instructions. Own
+only its success-message size expression: measure the written file with stat,
+preserving render/write/check behavior and every output byte. First run the real
+CLI to target-local output and reject its size claim against stat (RED), then
+correct and prove byte-identical output, correct size/40 terms and quiet check.
+Update the book's byte-measurement example and historical c29c/c29d next-action
+tense. No new test arm; normal BOOK-INDEX controls plus focused/all six books.
+Commit/brief0/actual census before c29e.
+
+Completed: real CLI reports23612 bytes for24064-byte UTF-8 output; probe
+RED rc=1. Exact one-expression correction len(content)→out.stat().st_size;
+same-input probe GREEN rc=0,24064 bytes/40 terms. Output bytes identical SHA
+ac9ff0d07fb058d99938111d5b9c56c89c4baa23e7ab89be408d5bce03f1575b;
+quiet --check rc=0. Book byte-count example and historical next-action tense
+corrected. All other code/author/canonical/generated/frozen/registry104/archive/
+LIVE exact, effective102/114 unchanged. Focused/all six books rc=0, final
+BOOK-INDEX/all six books rc=0 after prose spacing; previous Rust167/17/223
+applies. Actual book51files/505485B, fixed caps unchanged. Evidence
+ target/p4-system-13/c29d1. Hooks next; c29e after clean workflow/actual census.
 
 ### `.13` c29e — retire internal-ancestry assumptions in the early overview (queued)
 
@@ -1046,6 +1067,24 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29d1 — **ROOT CAUSE**: probe.py before RED rc=1:
+  reported23612=Python characters, actual UTF-8 file24064 bytes/40 terms.
+  Root gen_book_index.py:178 uses len(content) in its success receipt; output
+  content itself matches the canonical generated index exactly.
+- [x] `.13` c29d1 — **ADDRESSED**: probe.py after GREEN rc=0,
+  reports24064 bytes from written-file stat; verify.py rc=0 proves exactly
+  one expression changed. Before/after/canonical output bytes identical SHA
+  ac9ff0d07fb058d99938111d5b9c56c89c4baa23e7ab89be408d5bce03f1575b;
+  quiet --check rc=0. Book captures the Unicode measurement and completed
+  c29c/c29d receipt tense. No new test/doctrine arm or output-format change.
+- [x] `.13` c29d1 — **NO REGRESSION**: verify.py rc=0: all other
+  code/author/canonical/generated/frozen/registry104/history/LIVE exact;
+  effective102/114 unchanged. Focused/all six books rc=0; final BOOK-INDEX
+  and all six books rc=0 after prose spacing. Previous Rust167/17/223 applies;
+  fixed caps unchanged, actual book51files/505485B. Next c29e public-evidence
+  basis repair, then GC-COUNTERS and remaining six runtime pairs/freeze.
+  promotion: declined (existing byte-measurement discipline; real Unicode CLI control and book retain the reporting diagnosis).
 
 - [x] `.13` c29d — **ROOT CAUSE**: census.py/prepare.py rc=0:
   actual tracked book51files/511554B against524288B; four sources106679B.
@@ -1319,6 +1358,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29d1 | real CLI reporting RED1→GREEN0; exact single-expression delta; output SHA/40 terms/quiet check exact; protected inputs/caps | effective102/114 unchanged; focused/final BOOK-INDEX/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29d |45 exact spans/four full source inverses; corruption/offset/omission refused; all original code/commands/tables/links/headings retained; fixed family caps | book504796B; registry104/effective102/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29c | public24/927 plus identical-write12 exact; provenance RED1; exact five prose/one detail/three hashes/two metadata strings; full corpus and protected bytes | effective102/114 unchanged; Rust167/17/223; generators/SEMANTICS/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29b1 | sharder12/0; two exact source inverses/order/SHA; prior17live/210sealed history exact; fixed new-file census/core/input identity | logical229 rows; effective102/114 unchanged; focused/all six books rc=0; hooks next |
@@ -1340,6 +1380,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29d1 | `SEMULITH-P4-0168 (leaf P4-SYSTEM.13): report generated index bytes accurately` | c29e public ancestry basis, then GC-COUNTERS |
 | `.13` c29d | `SEMULITH-P4-0167 (leaf P4-SYSTEM.13): retain book verification history under fixed caps` | c29d1 byte-count receipt, c29e public ancestry basis, then GC-COUNTERS |
 | `.13` c29c | `SEMULITH-P4-0166 (leaf P4-SYSTEM.13): align state-source rationale and FP policy detail` | c29d book containment, then GC-COUNTERS |
 | `.13` c29b1 | `SEMULITH-P4-0165 (leaf P4-SYSTEM.13): retain exact history under fixed caps` | c29c source prose/F detail, then c29d book containment |
@@ -1356,6 +1397,11 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29d1 (SEMULITH-P4-0168): written-file stat
+  replaces character count in generator stdout; real Unicode RED1→GREEN0,
+  exact output SHA/40 terms/quiet check. Book measurement and receipt tense
+  synchronized; effective102/114 unchanged. C29e next after clean workflow.
 
 - `2026-10-10`: `.13` c29d (SEMULITH-P4-0167): contain45 historical
   book receipt spans with exact full source inverses; all current code/commands/

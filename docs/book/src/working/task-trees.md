@@ -132,8 +132,22 @@ The manifest gains only two rows. Its earlier17 rows and the210 sealed shards
 remain exact, giving229 logical rows (19live+210sealed). Each new shard names
 its source head and is frozen. Live/per-part/family ceilings stay fixed; current
 feature examples remain in their own chapters. Code, profile inputs, frozen
-contracts and registry bindings are unchanged. C29c's next policy/source-prose
-repair and c29d's book containment remain live in the task tree.
+contracts and registry bindings were unchanged. The subsequent c29c policy/
+source-prose repair and c29d book containment are complete; their receipts
+remain in the task tree.
+
+
+
+### Measure stored bytes, including UTF-8
+
+Size claims use encoded file bytes. At the c29d1 diagnostic, the index generator
+reported 23,612 "bytes" for a file containing 24,064 bytes: it had counted Python
+characters, which omit UTF-8's extra bytes for non-ASCII text. The generator now
+reports the written file's `stat().st_size`. Its output bytes and 40 indexed terms
+are unchanged, and `--check` still succeeds quietly. The byte-count assertion
+fails on the old message and passes after the reporting-only correction.
+Containment and inverse proofs measure actual bytes throughout; a character
+count cannot establish available space under a byte cap.
 
 
 ## Why this shape
