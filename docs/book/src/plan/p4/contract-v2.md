@@ -512,8 +512,10 @@ At c7b, 28 runtime pairs remained before version 2 could freeze.
 ## Runtime guarantee witnesses
 
 The [runtime contract chapter](contract-runtime.md)
-contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr, Sstc and immediate/register-ALU and U-immediate bindings, worked observations,
-inherited-global repair and discriminating controls. Current G-CONTRACT is
+contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr and Sstc evidence.
+The [integer runtime chapter](contract-integer.md) retains immediate/register ALU
+and U-immediate bindings, worked values and the newly diagnosed SRAW coverage hole.
+Both retain independent controls and finite evidence limits. Current G-CONTRACT is
 76/114; nineteen runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 

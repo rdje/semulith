@@ -743,3 +743,1050 @@ finite corpus and boundary scope.
 
 
 Active frontier: [`docs/tasks/P4-SYSTEM.md`](docs/tasks/P4-SYSTEM.md).
+
+
+## Runtime designs
+
+### `.13` c8 — privilege-mode runtime pair (`2026-10-10`, `SEMULITH-P4-0120`)
+
+Own before changes: bind OB-PRIV-MODES's existing POS/NEG ids to the complete
+13-guest P4.2 mode matrix. POS exercises CSR access, breakpoint/ECALL modes,
+delegation and counter gates; NEG exercises S/U CSR refusal, return gates,
+read-only writes, stimecmp, WFI and SFENCE.VMA permission. Whole guests can
+contain both legal and refused cells; POS/NEG labels identify the witness focus.
+Read all thirteen sources and the shared expectation/comparison owners before
+binding. Retain the exact GPR-change, never-written and fetch-count rule: mode
+and trap state are observed through ISA handler reads, not newly claimed direct
+PC/mode comparisons. No universal mode-coverage, firmware or Linux claim.
+Extend the required-binding regression guard without weakening post-v0 birth
+realization. Preserve all 58 prior entries, all contract declarations and frozen
+pins byte-for-byte. Expected census: 60/114; 27 runtime pairs then freeze remain.
+
+This unit also owns routine DEV_NOTES pressure maintenance: use the existing
+whole-entry sharder at a 32 KiB target, assert ordered byte reconstruction and
+run SHARD-FREEZE. Fixed caps and sealed archive descriptors remain unchanged.
+Run focused matrix/registry checks, make check, schema/freeze/gate controls,
+books and commit hooks. Update canonical current counts, book and live pointer;
+review LIVE_STATUS without fabricating milestone progress. Commit before c9.
+
+### `.13` c9a — investigate inherited-global translation (`2026-10-10`, `SEMULITH-P4-0121`)
+
+Priority prerequisite to OB-SV39 realization, owned before reproduction/changes.
+Review found walk builds TlbEntry.global from the leaf alone, whereas the
+independent author accumulates G along the traversal. Pinned supervisor artifact
+rehashed d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a,
+186455 bytes; read 11.1.3.1: non-leaf G makes subsequent mappings global.
+This repository selects exact ASID/fence retention rather than over-fencing.
+Potential impact: ASID changes re-walk instead of reusing inherited globals;
+ASID-selective fences discard them and expose PTE changes prematurely under
+the selected cache policy. Do not classify solely from source inspection.
+
+Reproduce through public translate and actual SFENCE.VMA instructions with
+hand-built PTEs; vary G at each of three levels, both ancestor levels together
+and no-G control. Pin inherited cache hit/no walk across ASID/root changes,
+both ASID-selective fence scopes, and subsequent full/address-only invalidation.
+If confirmed, accumulate G in the single walk owner; preserve permissions,
+fault priority and existing corpus observations. No author rewrite to fit CPU.
+Require a pre-fix failing regression and green repair, ordinary translation and
+full Rust tests, author cache controls, frozen-byte checks and full make ci.
+Record root cause and finite policy scope in book/live docs; contract count
+stays 60/114 in this prerequisite. Commit before c9b binding OB-SV39.
+Also own the small current-doc correction: label c7b counts explicitly as
+historical, so its 58/114 receipt cannot contradict the current 60/114 census.
+
+c9a confirmed with independent literal PTEs and public calls on parent e4e657f:
+`cargo test -p semulith-core global_from_any_walk_level_survives_asid_and_root_changes`
+rc=101: mask 1 returns AccessFault cause 5/tval 0x402007 instead of
+Physical 0x80004007. `cargo test -p semulith-core
+actual_fences_retain_inherited_globals_only_for_asid_scopes` rc=101: root G,
+ASID fence 0x12400073 leaves occupancy 0 instead of 1. Root cause is leaf-only
+assignment of cached global flag. Accumulate G from every traversed PTE after
+encoding checks; install only after existing permission/Svade checks succeed.
+Eight root/middle/leaf G masks include nonglobal and all combinations; 32 actual
+fence instructions cover both ASID-selective and both broad scopes. Keep the
+independent author unchanged: its own inheritance mutant is already discriminated.
+
+### `.13` c9b — Sv39 runtime pair (`2026-10-10`, `SEMULITH-P4-0122`)
+
+Own before changes after c9a commits cleanly. Bind OB-SV39's two existing ids
+to all fourteen translation guests: POS 4k/2m/1g, MPRV, cache/fence and
+noncontiguous straddle; NEG canonical/invalid/reserved/superpage faults,
+R/W/X and U/SUM/MXR permission, Svade and delegated faults. Read actual
+sources (collapse repeated zero-word padding with counted runs), canonical
+translation/CSR interfaces, all expectation observations and P4.3 book.
+Re-derive each program's changes/fetch count with the independent parcel author
+against the committed observations; preserve every input and old binding.
+Use the existing corpus comparison rule, finite 1417-boundary evidence, no
+universal Sv39/Linux claim. Extend required-binding guard; expect 62/114,
+26 runtime pairs then freeze. Rust/focused registry, schema/freeze/gate controls,
+books and hooks; update current counts while keeping old slice receipts historical.
+
+Relevant historical audit: git log -S 'global: g,' identifies e839c1b,
+P4-SYSTEM.3 slice d. Its diff introduced the leaf-only cached G assignment;
+its message explicitly rejects over-fencing and tests leaf globals only.
+c9a (7569fe2) now owns/fixes the missing ancestor case; archived historical
+receipts remain unchanged. No other history audit is implied by this binding.
+
+### `.13` c10 — Svade runtime pair (`2026-10-10`, `SEMULITH-P4-0123`)
+
+Own before changes on clean 89a62a4. Read OB-SVADE/D-SVADE, state ADUE
+exclusion, pinned supervisor A/D schemes, finish/cached permissions, original
+programs/expectations and P4.3/v2 book. Bind POS to sv39-translate-4k/2m/1g
+and NEG to sv39-svade. Preserve the existing full-width PTE read-back witnesses,
+not merely fault causes: A=0 leaf 0x2000188f and D=0 leaf 0x2000184f at
+steps 133/134; the three success guests read original PTEs at their final steps.
+The D=0 load is legal (step 100), A=0 load faults 13 and D=0 store faults 15
+(observed steps 94/107). Existing core step9 test also checks the whole byte
+image unchanged. No new observation vocabulary or hardware-update claim.
+
+Re-derive the four programs' changes/fetch counts independently and run focused
+core Svade/registry plus make check, schema/freeze/gate controls/books/hooks.
+All 62 prior entries and all contract/guest bytes stay exact. Extend required
+bindings without weakening post-v0 guard; expected 64/114 with 25 runtime
+pairs then freeze. Update current book/profile/live counts, qualify old counts
+historically and commit before c11 IALIGN-16. No production behavior change.
+Independence controls use in-memory author copies only: bypass A/D refusal,
+and set A in a PTE while still returning the correct fault. The latter must
+preserve fault observations and fail specifically at the later PTE read-back,
+showing that the check observes absence of mutation as well as fault delivery.
+
+c10 containment correction owned before edits: first commit attempt refused
+README-ROUTING-CLOSURE because contract-v2.md reached 33700 > 32768 bytes.
+Split the completed runtime-witness sections byte-verbatim into a linked P4.13
+runtime chapter; retain index/navigation and update the chapter census through
+its owner. Profiles family is 3144422 / 3145728 bytes: consolidate DOSSIER's
+duplicated chronological contract progress into a current summary and pointers
+to ENVIRONMENT, book and task receipts. Contract records and frozen inputs
+remain exact. This is adopted routing/compaction within existing responsibilities,
+not a cap increase or relocation of unbounded pressure. Measure all family axes,
+run routing controls, books and retry hooks before completion. Preserve detailed
+history in committed task/development/changelog records; do not erase receipts.
+ENVIRONMENT's runtime progress likewise becomes a current exact binding table;
+worked observations/controls remain in the new book chapter. Future profile
+updates maintain current bindings rather than append duplicate slice histories.
+
+### `.13` c11 — halfword instruction alignment (`2026-10-10`, `SEMULITH-P4-0124`)
+
+Own before changes on clean c0507d0. Read frozen OB-IALIGN-16, RVI-C
+27.1 (95631 B, pinned 3f7e7d85…49d6aeb), affected parcel fetch/SetPc
+and independent author paths, four complete programs/expectations and C/runtime
+book sections. POS binds c-links, c-page-end and sv39-straddle; NEG binds
+c-page-straddle. Legal halfword links and a 32-bit instruction at page+0xffe
+must execute. A compressed page-end instruction needs one parcel; a wider
+instruction needs its second parcel. The refusal is instruction page fault 12,
+not an alignment exception: mtval is the failed next-page parcel, mepc the
+original halfword instruction. Existing changes/counts and never-written rule
+remain the observation contract; no new trace-PC comparison or universal proof.
+
+Independently replay all four budgets/observations and add in-memory alignment
+and second-parcel fault controls if the actual vocabulary supports them. Bind
+the two existing IDs, extend required coverage to 66, preserve all 64 prior
+entries and contract/guest/author bytes. Run registry, make check, schema/freeze,
+gate controls, routing and books. Update current profile table/counts and runtime
+book; keep old slice counts historical. Expected 66/114, 24 runtime pairs then
+freeze; c12 Zicntr next. Commit before advancing. If active task part pressure
+requires it, move older completed receipts verbatim to new archive part 7 with
+ordered reconstruction proof and current pointers; do not raise ceilings.
+
+### `.13` c12 — base-counter inclusion (`2026-10-10`, `SEMULITH-P4-0125`)
+
+Own before changes on clean 3be1785. Read OB-ZICNTR/D-ZICNTR, RVI-ZICNTR
+6.1/6.1.1 (40747 B, pinned 8d619d6e…7f4fa81c), state counter owners/views,
+public permission/timekeeping paths, mm-counters/mm-csr-ro-counters programs
+and all observations, and privilege/interrupt/runtime books. Bind POS to
+mm-counters and NEG to mm-csr-ro-counters. Rate/progress remain v1's declared
+virtual-time contract; OB-GC-COUNTERS remains its own later pair. Existing exact
+composition/CSR scope checks exclude Zihpm. Do not imply the guests alone
+exercise S-mode time: the existing core counter permission fixture tests S
+TIME's independent TM gate, and the independent author probe covers all three
+counter gates in M/S/U. Run both supporting checks explicitly.
+
+Independent replay must match both budgets/changes/parcels. Exercise existing
+counter-enable and U-counter-enable refusing controls; add an in-memory
+read-only-write bypass control against the actual sentinel guest if supported.
+Preserve 66 prior entries and all frozen/guest/author inputs; required coverage
+becomes 68. Focused registry, make check, schema/freeze, gate controls, routing,
+books and hooks precede commit. Update current table/counts, book and pointer;
+expected 68/114, 23 runtime pairs then freeze; c13 Sstc next.
+
+Containment owned in this slice: active task part is 124649 B, leaving little
+room for subsequent receipts. Move completed b1–c7a/c7b design blocks and old
+c7b-through-a plus final .12 acceptance blocks byte-verbatim into new archive
+part 7. Keep current execution plan/frontier/census and c8+ receipts live. Prove
+ordered inverse reconstruction, link both blocks and prior archives, keep fixed
+part/family caps and finite archive descriptors unchanged. Historical receipts
+stay intact, and every ticked acceptance retains its original command/output.
+
+### `.13` c16 — U-immediate sign extension and instruction PC (`2026-10-10`, `SEMULITH-P4-0133`)
+
+Owned before edits on clean 8ef8419 after c15 hooks, brief clearing and actual
+job census. Read OB-LUI-AUIPC/REQ-D-LUI-AUIPC/D-LUI-AUIPC and rehash/read
+RVI-RV64I 3.1.2.1 (49,246 B, SHA256 6eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd).
+Review two canonical semantics rows, 20-bit/shifted widths, sign extension,
+constant instruction PC and wrapping-add lowering, independent word author,
+selected scope-alu/dir-chase/bound-arith source/expectations and current book.
+POS uses scope-alu plus dir-chase; NEG bound-arith's signed/unsigned U-offset
+edges. Independently replay all observations and demonstrate zero extension,
+wrong shift, next-PC/extended-base-PC and nonwrapping addition alternatives
+fail named steps. Whole legal programs; NEG is not a trap requirement.
+Preserve all old registry/frozen/core/expectation/author data and assembled bytes;
+require 78 registry entries, effective 76/114 (18 guest pairs), nineteen runtime
+pairs/freeze. Focused make check, author/identity, schema/freeze/report/book gates.
+
+Small encountered documentation defect owned here: both smoke-arith source
+headers still name profile.toml and claim the assembler cannot read B/J formats.
+Reproduce by reading lines 3–6 in both profiles; the active data is profile.sexp
+and the assembler now supports B/J. History identifies b8d09f5 as the original
+pre-completion comment and 133e722 as the unchanged GC copy. Correct only these
+headers now; compare assembled old/new images and expected observations exactly.
+No guest instruction or historical receipt is rewritten. Record the correction
+in the worked book. Next OB-SHAMT after this bounded unit commits.
+
+Hook dependency correction owned before dependent edits: PLATFORM-GEN refused
+because the base smoke comment changes the rv64i dossier digest. Reproduction:
+scripts/check_platform_gen.sh --self-test rc=1 names stale pin f24ca76d…8a74e
+versus live 9f7cecb3…d784. This is the required pin propagation, not a changed
+CPU or board capability. Deliberately rederive the pin through the shared digest
+owner, then regenerate board artifacts, platform export and model-book materials.
+Check that all generated semantic data are unchanged apart from the dossier pin
+and provenance fingerprints. Re-run board/platform/material/report/schema gates
+before the same c16 commit; do not pivot or bypass the hook.
+
+### `.13` c15 — register ALU guarantees (`2026-10-10`, `SEMULITH-P4-0132`)
+
+Owned before changes on clean 4beadff, after committed c14b checks/hooks and
+actual job census. Read OB-ALU-REG and its requirement/decision; pinned
+RVI-RV32I 1.1.4.2 (same 107630-B/3b20e92f…ad75ec snapshot rehashed at c14b).
+Review seven semantic rows, wrapping Add/Sub and signed/unsigned comparison
+lowering, pre-state GPR write discipline, scope-alu/bound-arith/bound-alias
+sources and observations, integer author/probe, registry/tests and runtime book.
+
+POS runs scope-alu and bound-arith for ADD/SUB/SLT/SLTU/XOR/OR/AND, signed
+extremes, bitwise distinctions and ignored overflow. NEG runs bound-alias for
+source/destination overlap, visible zero comparisons and hardwired x0 contexts.
+Whole legal programs; NEG rejects semantic alternatives, not required traps.
+Independently replay every observation/parcel, then demonstrate saturating
+ADD/SUB, swapped signedness, wrong bitwise operators and premature aliased-source
+clearing fail named steps. Existing integer-author controls remain the durable
+proof route; slice-specific in-memory copies are diagnostics, no new semantics.
+
+Preserve all 74 prior entries and all core/guest/author/canonical/frozen bytes.
+Bind CHK-ALU-REG only after independent checks; require 76 registry bindings,
+effective 74/114 (17 guest pairs), 20 remaining runtime pairs/freeze. Update
+current book/ENV/dossier/GS and durable pointers/history. Focused make check,
+registry/author/controls, schema/freeze/report and book gates precede commit;
+no new mechanism warrants repeated full CI. Next OB-LUI-AUIPC.
+
+### `.13` c14b — immediate ALU guarantees (`2026-10-10`, `SEMULITH-P4-0131`)
+
+Owned before changes on clean 99b32e3, after gate-control commit/hooks and actual
+job census. Read OB-ALU-IMM/REQ-D-ALU-IMM/D-ALU-IMM; rehash RVI-RV32I
+107630 B to 3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec
+and read 1.1.4.1. Review six canonical semantic rows, shared wrapping Add/bitwise/
+comparison lowering, GPR writes, full scope-alu/bound-arith sources/expectations,
+integer author/probe, registry comparison and runtime book before binding.
+
+POS names scope-alu, covering ADDI/SLTI/SLTIU/XORI/ORI/ANDI with signed and
+unsigned comparisons and visible zero overwrite. NEG names bound-arith for
+ADDI wrap and extreme immediates/comparisons. Both are whole legal programs;
+NEG rejects incorrect semantic alternatives, not an invented architectural
+trap. Independently replay every write and parcel count before credit. Prove
+zero-extended SLTIU/logical immediate, unsigned SLTI and saturating ADDI copies
+fail meaningful observations, retaining initial-source words and budgets. Use
+existing integer-author control as the durable refusing mechanism; finite
+in-memory copies add slice-specific discrimination without production edits.
+
+Preserve all 72 prior entries and all core/guest/author/canonical/frozen bytes.
+Bind existing CHK-ALU-IMM IDs only after checks, extend declared registry coverage
+to74/effective 72. Update current taxonomy (16 guest pairs), ENV/dossier/GS,
+worked book values and live pointer/history/task receipts. Run focused registry,
+independent author/control, make check, schema/freeze/report controls and books;
+full CI only if findings warrant a milestone. Commit before next OB-ALU-REG;
+expected 72/114, 21 runtime pairs and final freeze remain.
+
+### `.13` c14a — contract-count controls without missing-id assumptions (`2026-10-10`, `SEMULITH-P4-0130`)
+
+Owned before code changes on clean 834499b, after full CI/hooks and actual job
+census. Scoped review: contract_measure, independent recount, _selftest fixtures,
+GATE-REPORT wrapper, current runtime-book known finding and .13 completion plan.
+Reproduction already RED: simulating valid CHK-ALU-IMM-POS registration makes
+shared-id +1 arm expect114/72 but get114/71 (17/18). The measure is correct;
+the test's example ceases to be missing when the next planned pair binds.
+
+Repair only the oracle before c14b ALU credit. Always declare one reserved
+synthetic check on an independently selected effective record in scratch
+catalogs, then count it only when that unit names the exact registry pair.
+Using a synthetic declaration avoids a live-unregistered-pair branch and its
+full-coverage edge case. Actual catalog/forms/pins/registry and production
+measure stay unchanged. No new CPU credit: 70/114 remains open.
+
+Keep cross-unit non-credit and wrong-owner/shape/supersession controls. Add
+permanent duplicate-registration and all-effective-checks-realized controls:
+saturate a scratch registry from independently recounted pairs, then introduce
+and bind the synthetic declaration. Coverage must still distinguish 114/114,
+115/114 and 115/115 without pinning those live numbers. Run the former ALU
+example already-bound scratch control and an over-credit/duplicate mutant RED
+before increasing strict declared arm count from 18 to 20. Verify all generated
+reports byte-identical, wrapper controls, book, live-doc bounds and hooks;
+commit this bounded repair before c14b runtime binding. No Rust or profile
+canonical data changes; ordinary focused checks suffice after prior full CI.
+
+### `.13` c13b — observable S-mode timer witnesses (`2026-10-10`, `SEMULITH-P4-0129`)
+
+Owned before changes on clean f769e91, after its full CI/hooks and actual job
+census. Scoped review: pinned Sstc 12.1, supervisor 11.1.1.12, machine TM/STCE
+clauses; OB-SSTC/D-SSTC, CSR permissions, timer progress, actual parcel engine,
+registry/test dispatch, corpus comparison and current runtime/interrupt book.
+No production semantics or canonical/guest/author input changes are needed.
+
+Add a named Execution evidence kind distinct from provider-assumption Boundary.
+Its Sstc POS runs i-timer/w-timer companions plus thirteen real S instructions:
+program compare 16/read-back, observe pending 0, program 0/observe 32, program 32/
+read-back/observe 0, then write/read-back 0x8000000000000020 from seeded x12
+to exercise the full 64-bit compare field. Seed TM/STCE/delegation, leave interrupt enables clear;
+nonzero values and sentinels make each read/write visible. Per-step audit all
+GPRs, S mode/next PC, exact raw compare, time/retirement and two fetch parcels;
+no M round trip can hide inside the fixed budget. NEG runs mm-stimecmp plus
+three six-step literal cases: S missing TM, S missing STCE, U despite open gates.
+CSRRW must trap before old-destination/compare/source effects; actual M handler
+instructions read cause 2, offending word, original EPC and unchanged compare 101,
+then continue with marker 42. Audit exact trap owners and full registers per step.
+
+Extend independent counter-author probe with the same independently specified
+literal witness sequences. Keep original production author and all historical
+inputs exact. Reproduce forced-all-S-illegal author copy: old mm-stimecmp still
+matches 35/70 but direct POS must fail visibly. Permanently test that disabled
+TM/STCE causes POS refusal and opening a NEG gate is rejected. Observe controls
+before registry credit. Disabled-witness control observed rc1 with explicit
+terminal-control-missed reason before adding its one GUEST-GEN self-test arm;
+normal counter probe verifies 31 new boundaries /62 parcels plus old 35/70 miss.
+Registry companions use the existing shared corpus
+comparison helper; never duplicate its observation rule. Bind existing CHK-SSTC
+only after both direct checks and controls pass, extend declared coverage to 72
+registry entries /70 effective checks, preserving earlier 70 entries byte-exact.
+
+Update current taxonomy (one direct execution pair), dossier/env/GS, book worked
+values and repaired-gap status, live pointer/history and task receipts. Preserve
+all frozen forms/pins and guest/state/definition bytes. Focused author/core/
+registry checks, schema/freeze/gate controls, make check and full CI (new evidence
+mechanism milestone) precede commit; fixed caps stay unchanged. Then select the
+next unbound effective runtime pair (22 remain), without freezing early.
+
+Next-slice defect owned/scheduled in c14 before ALU binding: gate_report's
+shared-id +1 control hard-codes CHK-ALU-IMM-POS as unregistered. A scratch
+registry with that valid pair already bound makes only this arm fail (17/18):
+actual114/71, expected114/72 because inserting a duplicate cannot add credit.
+Reproduction: python3 in-memory gate_report self-test with the one synthetic
+ALU entry, target/p4-system-13/c13b/next-alu-gate-control.log rc1. Production
+measure is correct. Priority: blocking c14 before its first binding. Replace the
+hard-coded pair with an independently selected effective unregistered pair;
+add a control that repeats the experiment when the old example is already bound.
+If no unregistered pair remains, use a deliberate synthetic declared fixture,
+not a live-id assumption. Preserve cross-unit and duplicate-count discrimination.
+This pending repair does not change the current70/114 result or c13b signoff.
+
+### `.13` c13a2 — dynamic STIP fallback (`2026-10-10`, `SEMULITH-P4-0128`)
+
+Own before changes on clean 7222cdc. Read pinned machine 2.1.1.9/2.1.1.18,
+supervisor pending/compare clauses, computed/CSR legalization paths, real-state
+interrupt-view fixtures, timekeeping, event/reset witnesses, independent author,
+version records, registry/tests and current book. Machine text explicitly makes
+STCE-clear pending behave as absent Sstc and then permits M software STIP writes.
+Keep the 26 owners: raw mip holds software STIP; when STCE=1 expose unsigned
+time>=stimecmp and ignore M writes to STIP. sip.STIP remains read-only and only
+visible when delegated. Retain raw software STIP behind the enabled view as an
+explicit laboratory choice where the pinned text imposes no transition storage
+rule. No external source, counter reset change or hidden latch is introduced.
+
+Before production edits, add focused real-state regressions and demonstrate RED
+for cold pending=0, STCE-clear software set/clear, selected comparator transitions,
+retained software state, delegated sip read-only behavior and all six actual CSR
+forms (register operands can touch bit5; five-bit immediate operands cannot set
+it). Each instruction case checks old destination, exact raw owner, mode/PC and
+two fetch parcels. Repair computed overlay and conditional field legalization at
+the shared CSR boundary, not individual instruction handlers. Update existing
+interrupt-view/timekeeping and interrupts::timer-arrival fixtures to explicitly enable STCE where testing the
+comparator, and reset expectations to cold zero. Enable event timer setup without
+adding executed setup steps. Repair independent author from the same clauses;
+extend its finite matrix and deliberate mutants, observe RED before adding gate
+arms. Recheck all 167 guests and 42 owned records unchanged after c13a1.
+
+Supersede frozen OB-GC-ENV-INTERRUPT-SOURCES with open-v2
+OB-GC-ENV-INTERRUPT-SOURCES-V2 and a named direct boundary POS/NEG pair:
+no external sources, explicit STCE-dependent software/comparator provenance,
+read-only M sources and sip.STIP, retained raw policy and transitions. Fixtures
+run real CSR instructions with literal independent witnesses, plus the existing
+source guests. Negative witnesses reject forbidden pending writes, preserving
+raw owners; no invented provider response violation is claimed for an ignored
+architectural write. Existing historical registry entries remain tested; the new
+pair replaces their effective credit, keeping 68/114. Update v2 event dependency
+and reset statement, never frozen records/member pins. Require all 70 declared
+bindings through this slice. Update state descriptions/field reset authority,
+regenerate state and definition input-pin mirrors and GS, and document examples/limits before signoff.
+
+The affected privilege/author FP-dirty comments still name Sail implementation
+symbols/file locations. Remove those maintained internal assumptions while
+editing these files; verify replacement rationale from pinned architectural FS
+clauses. Broader dependency-assumption census remains .14's existing owned work.
+Measure live-doc pressure: if DEV_NOTES cannot fit this receipt under its fixed
+ceiling, move completed entries verbatim into the next governed archive part,
+prove ordered inverse reconstruction and preserve links before adding the entry.
+Gate-report self-tests reveal a separate owned oracle defect: they assume every
+registry entry is effective, and that removing supersessions cannot restore
+previously realized credit. Adding the first supersession of an already realized
+record yields GREEN recount 114/70 versus correct 114/68 and nosup 128/70 versus
+assumed 128/68 (15/17 controls). Production contract_measure correctly filters
+effective pairs. Repair the independent self-test recount to intersect exact
+non-superseded declared pairs with independently read registry pairs; derive the
+nosup delta from realized superseded pairs. Add one synthetic supersession of a
+currently realized record so this condition remains exercised after live changes,
+observe its old-assumption mutant RED before registering the added arm. Keep
+production measure/verdict unchanged. This is blocking self-test correctness,
+fixed here before signoff rather than fitting its constants to 68/70.
+
+Full CI exposes one additional stale comparator fixture: the compressed corpus
+stager's independent c-irq blueprint still omits STCE and expects the old
+17-boundary schedule. Its two GREEN staging arms fail hand checkpoint x7 after
+the architectural repair (139/141). Own the blueprint repair here: prepend the
+same explicit enable as the adopted source, increase deadline/budget by two,
+advance handler/interrupt PCs by eight and retired count by two. Require the
+independent generated blueprint body to match the adopted guest's assembled
+bytes and all observations, while preserving all production guest records.
+The stager's deterministic and observation/extent controls must all pass.
+
+Run focused RED/GREEN regressions, author mutants, registry/schema/freeze/gates,
+public CSR original reproduction (101 -> 0), corrected public Sail diagnostic,
+make check and full make ci. Commit the architectural repair before c13b direct
+S programming/refusal witnesses. No SSTC credit yet; cold STCE stays zero.
+
+### `.13` c13a1 — explicit timer-source setup (`2026-10-10`, `SEMULITH-P4-0127`)
+
+Own before changes on clean 618b7d2. Implement the first c13 prerequisite only:
+prepare c-irq, env-irq-sources, i-prio, i-timer, mm-wfi, w-deleg, w-notrap,
+w-sw and w-timer with two M-mode STCE setup instructions using unused x31.
+Keep cold STCE=0 and mm-stimecmp unchanged. Declare each budget as old+2
+before deriving. Shift finite compare deadlines by two ticks to retain the
+same interrupt/wait schedule. Verify assembled body bytes except those declared
+immediates, then independently derive all GPR changes and parcel requests before
+any processor execution. Re-author stale source timing/address prose accurately;
+w-timer's old mepc comment says 0x80000044 while its instruction/expectation is
+0x8000002c (WFI+4); reproduce by assembly, correct to new WFI+4, and close here.
+
+The old public timer diagnostic also leaves STCE clear, so its STIP=1
+laboratory side is confounded by the known overlay defect. Repair it here with
+explicit STCE setup and a read-back witness before interpreting the reference
+limit. Re-derive a ten-boundary fixture and require actual menvcfg bit 63 from
+Sail's public CSR read. Remove maintained plat_have_clint implementation naming;
+use only public configuration, validation and traces. This is the same explicit
+setup prerequisite, not a second direction. Own and close this evidence defect
+before c13a1 signoff; retain historical receipts qualified by their old inputs.
+
+The author's historical-owned set loses only env-irq-sources: 41 historical
+captures stay exact; that guest becomes an explicitly budgeted fresh parcel
+record. Keep --check-owned at 42 records (41 historical + one fresh), fresh
+route headers and canonical write guards. Extend its existing extent/provenance
+diagnostics with fresh-record/budget drift controls; observe each mutant RED
+before registration. Preserve every other source/expectation and all contract
+records/pins byte-exact. Measure profile containment before adoption. If necessary,
+move duplicated protocol prose verbatim into a linked book part within fixed caps.
+
+Regenerate the Rust guest mirror, replay all 167 guests and registry, run author
+controls, fresh pinned Sail attempts for nine inputs (qualify public platform
+limits), focused gates, make check and full make ci. Update current book/profile
+counts (privilege matrix 483 boundaries), provenance, live docs and receipts.
+Also correct the current ENVIRONMENT summary still saying 64 realized checks
+against the already verified 68; no new credit. G-CONTRACT remains 68/114,
+no production STIP repair or SSTC credit. Commit green
+before c13a2. Verification/commit receipts follow in their canonical sections.
+
+### `.13` c13 — supervisor timer programming (`2026-10-10`, `SEMULITH-P4-0126`)
+
+Own before changes on clean 8d29fff. Review OB-SSTC/D-SSTC, pinned RVP-SSTC
+12.1 and supervisor/machine stimecmp/STCE clauses, real CSR permission/computed
+pending/timekeeping paths, complete mm-stimecmp/i-timer/w-timer observations
+and interrupt/runtime book. Before credit, test a suspected terminal witness
+hole: mm-stimecmp's legal S read at its last boundary returns zero, so both
+success and an unexpected trap may produce no observed GPR change within budget.
+Census all corpus stimecmp writes and counter/STCE setup; record actual outcome.
+
+If confirmed, own the verification defect here and fix it before binding.
+Add a named direct execution evidence kind distinct from provider-assumption
+fixtures. Its Sstc positive check runs existing i-timer/w-timer guests plus an
+actual S-mode CSR instruction sequence: nonzero compare programming/read-back,
+cleared/reasserted/cleared delegated timer pending observations and continuation
+markers must reject an unexpected trap. Negative check runs mm-stimecmp plus
+literal S missing-TM/missing-STCE and U privilege refusals before destination/
+compare effects, read back through M handler instructions. Initial state and
+literal words/expected observations are specified independently of engine output.
+Use real parcel fetch and interpreter; do not add production semantics.
+
+Preserve prior 68 entries, all contract/guest/author bytes and frozen pins. Bind
+existing CHK-SSTC IDs and extend coverage to 70 only once direct fixtures pass.
+Independently replay old guests, demonstrate the suspected old witness miss and
+new fixture discrimination, run timer permission/author controls, make check,
+focused gates and full CI as the new evidence mechanism milestone. Update current
+profile table/counts, book, live docs and task receipts, then commit. Expected
+70/114, 22 runtime pairs then freeze; next base arithmetic pair after this slice.
+
+#### c13 STCE pending-state investigation — owned before diagnostic
+
+Re-reading pinned machine 2.1.1.18 additionally exposes a possible architectural
+conflict: with menvcfg.STCE=0, STIP reverts as if Sstc were not implemented;
+2.1.1.9 then makes mip.STIP software-writable. Current computed() ignores STCE
+and state fields always compute STIP. Investigate through public CSR APIs with
+stimecmp above time and STCE clear; do not classify as harmless laboratory
+latitude or credit SSTC before resolving the source/contract conflict. If
+confirmed, split this slice: commit the bounded diagnosis/design (no new credit),
+then a separately owned c13a architectural prerequisite before c13b witnesses.
+A repair must preserve frozen records by v2 supersession, synchronize current
+state/author/guest inputs and fresh evidence, and pass full CI. Old receipts
+remain historical; all affected timer observations must be re-earned, not fitted.
+
+#### c13 confirmed verification defect — terminal zero timer read
+
+Reproduction: execute an in-memory copy of derive_rv64gc_expectations with its
+single `if not tm or not stce:` replaced by `if True:`. Replaying mm-stimecmp
+still matches all 35 committed changes and 70 parcels, but boundary 34 traps
+with cause 2, mepc=0x80000044, final mode M. Its zero-valued legal S read
+produces no change, and the fixed budget stops before a handler observation.
+Impact: this guest alone cannot discriminate S timer availability; do not bind
+Sstc as an adequate positive witness. Production failure has not been observed.
+
+Corpus census: rg stimecmp/menvcfg/mcounteren across all 167 source guests
+finds only mm-stimecmp opens TM/STCE for timer access; it only reads stimecmp.
+Timer writes in the other programs run in M. Existing core permission and
+independent author matrix test gates, but no existing registered guest witnesses
+S-mode compare programming/read-back. Own a direct registered execution fixture
+in c13 now, with explicit nonzero values and handler-visible refusal cases.
+Original guest/expectation records remain historical exact inputs; no need to
+rewrite their scope or the observation contract. Priority: before SSTC credit.
+
+#### c13 confirmed architectural defect and bounded repair order
+
+Public-API diagnostic compiled against current semulith-core: cold state,
+M mode, STCE=0, stimecmp=u64::MAX; csr_write(0x344,32) succeeds but
+csr_read(0x344)&32 returns 0. Literal pinned fallback requires 32.
+Executable target/p4-system-13/c13/stip_probe exits 101 with that assertion.
+RVP-MACHINE 2.1.1.18 says STCE-clear STIP reverts as if Sstc absent;
+2.1.1.9 makes mip.STIP software-writable in that case. Rehashed machine
+271851 B b63fe335…17fea, supervisor 186455 B d5186efc…651a, Sstc
+27429 B 30bea862…216e1. Root: computed() unconditionally overlays time>=compare
+and computed-field writes always retain, while state.sexp declares that rule
+unconditionally. git log -S locates introduction at 47badd2 (P4.2 d), confirmed
+by its diff. Frozen v1 OB-GC-ENV-INTERRUPT-SOURCES repeats that assumption.
+
+Priority: architectural prerequisite before any SSTC credit. Keep cold STCE=0;
+do not change reset merely to preserve old observations. No external-source
+expansion: software-writable STIP is hart software, not an injected device.
+Bounded work, each green and committed before the next:
+
+1. **c13a1 corpus preparation**: nine timer-source programs (c-irq,
+   env-irq-sources, i-prio, i-timer, mm-wfi, w-deleg, w-notrap, w-sw,
+   w-timer) explicitly enable STCE in M before using the comparator. Preserve
+   mm-stimecmp's deliberately closed gates. Derive observations before engine
+   execution; adjust authored timer thresholds for the added setup boundaries,
+   preserve meaningful control flow and declare new provenance. Reconcile the
+   historical author's owned-record protocol explicitly rather than copying
+   capture headers to a new derivation. Regenerate guest mirrors, fresh public
+   reference attempts where affected, current descriptions and full CI. Measure
+   profile family pressure before adoption; if needed move duplicated ENVIRONMENT
+   protocol prose verbatim to a linked book chapter within existing caps.
+2. **c13a2 architecture/contract repair**: gate comparator overlay on STCE;
+   STCE-clear mip.STIP is software-writable, sip.STIP remains read-only.
+   Explicitly select retained raw software STIP across enabled comparator views,
+   if permitted by the pinned text; test transitions and all CSR forms. Repair
+   the independent author from the same clauses, direct cold/reset/event fixtures
+   and current state narrative. Update the public timer-platform probe to enable
+   STCE explicitly before deriving comparison-dependent reads (completed by c13a1).
+   Supersede frozen v1 interrupt-source wording in
+   open v2 with named realized checks; correct the open v2 reset description.
+   Frozen records/pins and historical receipts stay byte-exact. Reproduce RED
+   before/after public CSR/instruction regressions and full CI. Recheck every
+   affected input and gate count, without awarding SSTC early.
+3. **c13b Sstc witnesses**: registered direct execution pair, actual S compare
+   programming/read-back/pending/continuation and illegal-before-effects cases,
+   plus old guests. Explicitly demonstrate the terminal-zero control now fails.
+   Only then bind CHK-SSTC and extend effective realization to 70/114.
+
+This c13 commit is bounded diagnosis/design only: no production/guest/author
+change, no new contract credit (68/114 remains). Director decision/access is not
+needed to repair the pinned-rule mismatch; unresolved implementation facts are
+re-verified during their owned slice. Promotion declined here: task, pending
+book section and canonical gate opening retain both defects and exact schedule.
+
+
+
+## Runtime acceptance
+
+`P4-SYSTEM.13` slice (c16) (`2026-10-10`, `SEMULITH-P4-0133`):
+
+- [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c16/probe.py
+  rc=0: three guests / 79 boundaries / 158 parcels exact; seven wrong alternatives
+  fail intended scope step 3, bound step 29 or chase step 0. Integer author probe
+  rc=0: 22 arithmetic/10 branch cases, 17 gaps/471 steps, 42 owned records exact.
+- [x] **IDENTITY / RUST** — python3 target/p4-system-13/c16/identity.py rc=0:
+  all 76 prior entries, author/core/frozen records exact; GC's other 347 inputs
+  exact. Both corrected smoke headers preserve twelve instructions / 48 bytes;
+  generated data bodies exact, only two source fingerprints regenerate.
+  make check rc=0: Rust 167/17/201, fmt/clippy clean. Registry 78, effective 76/114.
+- [x] **SCHEMA / REPORT / BOOK** — scripts/check_contract_freeze.sh rc=0:
+  three versions/zero findings; scripts/check_dossier_schema.sh rc=0: 270/two
+  named skips. scripts/check_gate_report.sh rc=0: five reports in sync;
+  python3 scripts/gate_report.py --self-test rc=0: 20/0. make book rc=0:
+  main/model books build; git diff --check rc=0. Nineteen runtime pairs/freeze
+  remain, OB-SHAMT next. scripts/check_guest_gen.sh rc=0: both generated
+  fixtures and governed mirror match, all 142 controls pass.
+- [x] **DEPENDENT PIN CLOSURE** — scripts/check_platform_gen.sh --self-test
+  initially rc=1 with named stale f24ca76d…8a74e pin. After shared-digest re-pin,
+  scripts/check_platform_gen.sh rc=0 and --self-test 11/0; scripts/check_board_gen.sh
+  rc=0: one board/seven outputs byte-exact. scripts/check_materials_bill.sh rc=0:
+  all five books match. python3 target/p4-system-13/c16/board-identity.py rc=0:
+  eight S-expression documents exact except dossier pin, map and four fragment
+  bodies exact except displayed pin. Refreshed schema/report checks pass again.
+  promotion: declined (canonical rules, counterexamples and worked runtime book retain the realization and header correction).
+
+`P4-SYSTEM.13` slice (c15) (`2026-10-10`, `SEMULITH-P4-0132`):
+
+- [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c15/probe.py
+  rc=0: three guests / 99 boundaries / 198 parcels exact. Eight alternatives
+  fail intended steps: saturation 5/6, swapped comparison signedness 11/13,
+  wrong AND/OR/XOR 5/6/7, premature aliased-source clearing 24.
+  python3 scripts/probe_gc_integer_author.py rc=0: 22 arithmetic/10 branches,
+  17 corpus gaps/471 steps and 42 owned records exact.
+- [x] **IDENTITY / RUST** — python3 target/p4-system-13/c15/identity.py rc=0:
+  348 canonical/guest files and four author/generated files exact; core unchanged,
+  all 74 earlier entries exact. make check rc=0: Rust 167/17/201, fmt/clippy clean;
+  registry 76, effective 74/114, twenty runtime pairs remain.
+- [x] **SIGNOFF** — scripts/check_contract_freeze.sh rc=0: three versions/zero
+  findings; scripts/check_dossier_schema.sh rc=0: 270/two named skips.
+  scripts/check_gate_report.sh rc=0: five generated reports in sync;
+  python3 scripts/gate_report.py --self-test rc=0: 20/0. make book rc=0:
+  main/model books build; git diff --check rc=0. c15 complete; OB-LUI-AUIPC next.
+  promotion: declined (exact bindings, counterexamples and worked runtime book retain the realization).
+
+`P4-SYSTEM.13` slice (c14b) (`2026-10-10`, `SEMULITH-P4-0131`):
+
+- [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c14b/probe.py
+  rc=0: two guests/62 boundaries/124 parcels exact; five wrong alternatives
+  fail intended steps17/14/8/10/8 (SLTIU/SLTI/ANDI/XORI/ADDI saturation).
+  python3 scripts/probe_gc_integer_author.py rc=0: 22 arithmetic/10 branches,
+  17 corpus gaps/471 steps and 42 owned records exact; sign mutant rc1 with
+  SLTIU sign extension reason. Negative binding rejects semantic countermodels,
+  not invented traps for legal ALU instructions.
+- [x] **IDENTITY / RUST** — python3 target/p4-system-13/c14b/identity.py rc=0:
+  348 canonical/guest files+four author/generated files exact; core unchanged,
+  all 72 previous entries exact. make check rc=0: Rust167/17/201, fmt/clippy clean;
+  all 74 registry entries run. Gate-report --self-test 20/0 with actual ALU binding;
+  effective114/72, 21 runtime pairs remain.
+- [x] **SIGNOFF** — CONTRACT-FREEZE three versions/zero findings;
+  DOSSIER-SCHEMA270/two named skips. scripts/check_gate_report.sh rc=0:
+  five generated reports in sync. make book rc=0: main/model books build;
+  diff check clean. c14b complete; OB-ALU-REG next after commit.
+  promotion: declined (exact bindings, independent counterexamples and worked runtime book retain the realization).
+
+`P4-SYSTEM.13` slice (c14a) (`2026-10-10`, `SEMULITH-P4-0130`):
+
+- [x] **ROOT / REPAIR / RED** — python3 scripts/gate_report.py --self-test
+  rc=0:20 pass/0 fail. Original simulated ALU binding failed17/18; now passes20/0.
+  Duplicate-credit mutant rc1:19/20, specifically new duplicate-registration arm,
+  observed before strict declared count20. Full-coverage fixture distinguishes
+  complete, new unbound and newly bound check without live missing-id constants.
+- [x] **SCOPE IDENTITY** — python3 target/p4-system-13/c14a/identity.py rc=0:
+  production AST outside _selftest exact, all crates/profiles/author bytes exact,
+  effective114/70 unchanged. No canonical/frozen record or actual registry edit.
+- [x] **SIGNOFF** — scripts/check_gate_report.sh rc=0: five generated reports
+  in sync; all20 Python controls pass. make book rc=0: main/model books built.
+  DERIVED-COUNTS --self-test10/0; diff check clean. c14a complete; c14b next.
+  promotion: declined (synthetic oracle, duplicate/full-coverage controls and runtime book retain the correction).
+
+`P4-SYSTEM.13` slice (c13b) (`2026-10-10`, `SEMULITH-P4-0129`):
+
+- [x] **DIRECT EXECUTION / CONTROLS** — cargo test -p semulith-verify
+  contract_execution_rv64gc rc=0: three tests pass. POS thirteen S instructions
+  /26 parcels includes full 64-bit compare read-back; NEG three six-step cases
+  /36 parcels includes actual M-handler trap/unchanged-compare reads. All GPRs,
+  mode/PC, compare, counters/fetches and NEG trap owners exact. Closed POS gates
+  and opened NEG gate controls refuse at boundaries 2/1 respectively.
+- [x] **INDEPENDENT / TERMINAL RED** — python3 scripts/probe_gc_counter_author.py
+  rc=0: direct 31/62 exact; forced-S-illegal old guest 35/70 still matches but
+  new POS refuses boundary 2. --disable-sstc-witness rc1 with explicit terminal
+  control-missed reason observed before its GUEST-GEN arm registration. All 42
+  owned records exact; production author unchanged.
+- [x] **REGISTRY / IDENTITY** — cargo test -p semulith-verify
+  contract_checks_rv64gc rc=0: four tests pass, all 72 entries run.
+  python3 target/p4-system-13/c13b/identity.py rc=0: 348 profile canonical/guest
+  files and four author/generated files exact; core unchanged; 70 prior entries
+  exact; 114 declared/70 realized. python3 scripts/derive_gc_parcel_counts.py
+  rc=0: 167 exact traces /5360 boundaries /10514 parcels, no input writes.
+  python3 scripts/gate_report.py --self-test rc=0: 18 pass/0 fail.
+- [x] **FINAL SIGNOFF** — make ci rc=0: all five legs green, Rust167/17/201,
+  all doctrines and books green. CONTRACT-FREEZE three versions/zero findings;
+  DOSSIER-SCHEMA270/two named skips. Current book/status sync reviewed;
+  c13b complete, c14 gate-control repair and OB-ALU-IMM next after commit.
+  promotion: declined (direct execution witnesses, discriminating control and worked runtime book retain the correction).
+
+`P4-SYSTEM.13` slice (c13a2) (`2026-10-10`, `SEMULITH-P4-0128`):
+
+- [x] **ARCHITECTURAL RED/GREEN** — cargo test -p semulith-core supervisor_timer:
+  before repair four fail (rc101), after four pass (rc0), including 48 actual
+  CSR instructions and exact old destination/raw source/parcel witnesses.
+  Original public target/p4-system-13/c13a2/stip_probe rc0 replaces baseline101.
+- [x] **AUTHOR / INPUTS** — python3 scripts/probe_gc_counter_author.py rc=0:
+  eight literal STIP cases/retention and counter corpus117; four new mutants
+  each rc1 before registration. Full independent corpus 167/5360/10514 and
+  --check-owned42 exact. python3 target/p4-system-13/c13a2/identity.py rc=0:
+  335 guest files, 52 frozen record lines, both frozen forms and 68 bindings
+  exact; 114 declared / 68 effective realized. No SSTC credit.
+- [x] **SOURCE CONTRACT / REPORT** — cargo test -p semulith-verify
+  contract_checks_rv64gc rc=0: four tests pass, all70 registry entries run.
+  Direct replacement source pair executes 27 boundaries / 54 parcels.
+  python3 scripts/gate_report.py --self-test rc=0: 18 pass / 0 fail;
+  unfiltered supersession mutant rc1: new arm and independent recount fail.
+  Schema270/two skips; CONTRACT-FREEZE three versions/zero findings.
+- [x] **CONTAINMENT / REVIEW** — python3 scripts/shard_history.py rc=0:
+  21 completed entries moved to 15329-B shard-0220; exact ordered inverse
+  SHA256 b2fc35ed2b74186ccd13b60fda26e891c7ad39f5ee81f7d99403785712bf8306
+  matches prior committed notes. Caps unchanged. make check rc=0:
+  Rust167/17/198, fmt/clippy clean. Corrected public Sail timer probe rc0:
+  repeated traces, STCE read-back verified, qualified pending difference remains.
+- [x] **STAGING REPAIR** — python3 scripts/stage_gc_c_corpus.py rc=0:
+  28 guests / 37 forms / 431 boundaries / 712 parcels; --check rc0.
+  Observation/extent mutants rc1 with precise record refusal. Independent
+  assembly/record comparison reports adopted c-irq exact (19/32), preserving
+  all production inputs; resolves the full-CI 139/141 staging failure.
+- [x] **FINAL SIGNOFF** — make ci rc=0: all five legs green (check, gate,
+  bench, smoke-bench, book), Rust167/17/198; all doctrines green. Book and
+  current source/status sync reviewed. c13a2 complete; c13b next after commit.
+  promotion: declined (versioned source contract, controls, history and worked runtime book retain the correction).
+
+`P4-SYSTEM.13` slice (c13a1) (`2026-10-10`, `SEMULITH-P4-0127`):
+
+- [x] **ROOT CAUSE / OWNERSHIP** — git show 618b7d2 timer sources:
+  nine comparator programs omit STCE setup; cold STCE=0 is retained.
+  Python assembly reproduces old w-timer WFI+4=0x8000002c and expectation
+  x12=0x8000002c, contradicting source comment 0x80000044. The old public
+  timer probe also omits STCE; its laboratory pending claim is confounded
+  by c13's known production defect. Both documentation/evidence defects
+  are owned here, alongside the existing preparation prerequisite.
+- [x] **ADDRESSED / INDEPENDENT BEFORE ENGINE** — python3
+  target/p4-system-13/c13a1/stage.py rc=0: nine programs, 281 boundaries / 524 parcels. Each budget old+2
+  declared before deriving, body PCs old+8 and bytes exact except the eight
+  declared deadline ADDIs (old+2). All body GPR changes match the exact
+  address/counter/deadline transformation; actual request logs match counts.
+  x31 unused before setup. Fresh route provenance carries no capture claim;
+  nine source/record pairs 84576 -> 64696 B (19880 B saved). Current
+  w-timer instret=13, time=17, mepc=0x80000034; two idle steps retained.
+- [x] **AUTHOR / DISCRIMINATION** — python3 derive_rv64gc_expectations.py
+  --check-owned: 42 byte-identical (41 historical + fresh env-irq-sources,
+  fixed budget 13). probe_gc_owned_extent.py rc0: both branches refuse
+  count/observation/comment/CRLF drift; repeat/write guards pass. Fresh-budget
+  and fresh-word-route mutants each rc1 with env-irq-sources DRIFT before
+  their two gate arms were registered. Provenance probe rc0; counter author
+  30 mode gates / 117 corpus steps exact. Full independent parcel census:
+  167 exact traces / 5360 boundaries / 10514 actual requests.
+- [x] **PUBLIC REFERENCE EVIDENCE REPAIRED** — python3 probe_gc_sail_timer.py
+  rc0: ten pre-derived boundaries, STCE read-back 0x8000000000000000 on
+  both sides; Sail pending 0/0 versus laboratory 1/1, two identical traces.
+  Removing enable makes its public read-back guard refuse. Nine fresh Sail
+  attempts: w-sw AGREE (19 steps, two identical traces); six DIVERGE at
+  c-irq 11 / env-irq-sources 12 / i-prio 26 / i-timer 5 / mm-wfi 11 /
+  w-deleg 14. w-notrap and w-timer processes rc1 after illegal disabled
+  time/instret reads and trap loops; old inputs reproduce rc1 too. Public
+  configuration variants reject Zicntr without time source and CLINT without
+  mapped region. Failed processes receive no credit. No submodule internals.
+- [x] **NO REGRESSION / LOCKSTEP** — make ci rc0: check, gate, bench,
+  smoke-bench and all books green (Rust core163 / DSP17 / verify198).
+  First CI refused stale GS digest after Rust passed; regenerated before
+  green rerun. Registry 4/0; schema 270 / two skips; freeze three versions /
+  zero findings; gate controls 17/0. Python identity: 316 other guest files,
+  four contract/version files and registry exact. GUEST-GEN 137 arms, project
+  total 641; README routes profiles 3120707/3145728 B, fixed ceilings
+  unchanged. git diff --check rc0. Current matrix 483 boundaries and
+  summary 68 checks corrected; book/toolbox/profile/pointer synchronized.
+  LIVE_STATUS now 641 arms; P4 12/18 and 46 chapters unchanged. No new
+  contract credit: 68/114. Next c13a2 architecture/author/state/v2 repair.
+  promotion: declined (tracked diagnostics, current protocol and worked runtime book retain the evidence and correction).
+
+`P4-SYSTEM.13` slice (c13 diagnosis) (`2026-10-10`, `SEMULITH-P4-0126`):
+
+- [x] **WITNESS ROOT CAUSE** — python3 in-memory author replay rc=0: forced S timer refusal still
+  matches mm-stimecmp: 35 boundaries / 70 parcels; last step traps cause 2,
+  mepc=0x80000044. Budget ends at a zero-valued read, with no distinguishing
+  register change. Corpus source census in c13 decision records the scope.
+- [x] **ARCHITECTURAL ROOT CAUSE** — rustc public csr_write/csr_read probe
+  compiled against current core exits 101: STCE=0, stimecmp=MAX, write
+  mip.STIP=1, observed 0 instead of required 32. Pinned machine 2.1.1.18/
+  2.1.1.9 fallback clauses re-read; three artifact pins match. git log -S
+  and git show 47badd2 locate unconditional computed overlay at P4.2 d.
+  Frozen v1 source wording also identified, not rewritten.
+- [x] **OWNED / SCHEDULED** — rg c13a1/c13a2/c13b in this tree reports
+  all three owned stages: c13a1 nine-guest
+  explicit-enable preparation, c13a2 dynamic STIP/author/state/v2 repair,
+  and c13b registered direct S programming/refusal witnesses. Priority before
+  any SSTC credit. Keep cold STCE=0; all behavior milestones require full CI.
+  This bounded unit completes diagnosis/design, not either defect's closure.
+- [x] **NO REGRESSION / LOCKSTEP** — Python identity: 340 contract/
+  guest/author files byte-exact; git diff crates/scripts empty. Registry
+  4 passed / 0 failed; DOSSIER-SCHEMA 270 / two skips; CONTRACT-FREEZE
+  three versions / zero findings; gate controls 17 pass / 0 fail; books rc=0.
+  G-CONTRACT unchanged 68/114; known limitation and next actions synchronized.
+  LIVE_STATUS unchanged: P4 12/18, 639 arms, 46 chapters.
+  promotion: declined (task, book and gate retain reproductions and repair ownership).
+
+`P4-SYSTEM.13` slice (c12) (`2026-10-10`, `SEMULITH-P4-0125`):
+
+- [x] **ROOT CAUSE** — git show 3be1785:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  CHK-ZICNTR POS/NEG absent. RVI-ZICNTR rehash: 40747 B,
+  8d619d6ef71d6cd87415342782aa615a0aff121a537342e4497658947f4fa81c.
+  Read owners/views, full guest observations, permission/timekeeping paths
+  and book. Exact profile/CSR scope already excludes Zihpm.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. POS mm-counters, NEG mm-csr-ro-counters.
+  Independent replay 101 boundaries / 202 parcels exact. Existing author
+  gate controls rc1 with counter mode enable gate; in-memory read-only
+  bypass fails at step 9 (x5=9 instead of sentinel 7). Coverage now 68.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 /
+  verify 198. Existing core counter_gating_mcounteren_then_scounteren:
+  1 passed / 0 failed, including S TIME. Counter author: 30 mode gates,
+  117 corpus steps and 42 owned records exact. 66 prior entries / 340
+  contract/guest/author files exact. DOSSIER-SCHEMA 270 / two skips;
+  freeze three versions / zero findings; gate controls 17/0; books rc=0.
+- [x] **CONTAINMENT** — Python ordered inverse reconstruction exact:
+  25612 B designs + 26817 B acceptance moved verbatim to archive part 7,
+  52711 B; active owned head 126563 -> 74439 B before new receipts.
+  SHA256 5b9c5f51506236994e0617d875990ed17e4712cf539b85f6de17042e580c3225.
+  Both moved blocks also match committed 3be1785 bytes; old archives and
+  all fixed ceilings/finite archive descriptors unchanged.
+- [x] **LOCKSTEP** — git diff --check rc=0. Current table, book and
+  pointer agree on 68/114, 23 pairs then freeze. LIVE_STATUS unchanged:
+  P4 12/18, 639 arms, 46 chapters. .14 retains status/experiment ownership.
+  promotion: declined — registry, canonical selection and runtime book
+  retain evidence/limits; c13 Sstc next, v2 stays open.
+
+`P4-SYSTEM.13` slice (c11) (`2026-10-10`, `SEMULITH-P4-0124`):
+
+- [x] **ROOT CAUSE** — git show c0507d0:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  frozen CHK-IALIGN-16 POS/NEG absent. RVI-C rehash: 95631 B,
+  3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb.
+  Reviewed full meaningful source (zero padding counted), expected steps,
+  parcel/SetPc paths and C/runtime book; no production defect found.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. POS c-links/c-page-end/sv39-straddle; NEG
+  c-page-straddle. Independent replay: four programs, 165 boundaries,
+  319 parcels, all changes/counts exact. In-memory four-byte parcel/PC,
+  compressed over-fetch and wrong second-parcel tval controls fail at
+  steps 0/3/45/46. Required coverage extends to 66 without weakening guards.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 /
+  verify 198; Python identity: 64 prior bindings and 340 input files exact.
+  DOSSIER-SCHEMA 270 validated, two declared skips; CONTRACT-FREEZE three
+  versions / zero findings; gate_report --self-test 17 pass / 0 fail;
+  make book rc=0. No production execution or expectation changes.
+  First hook rejected a misplaced commit-log row in the verification table;
+  restore its date prefix and move the new row to Commit Log. Recheck staged
+  TABLE-ARITY-RATCHET before retry; no runtime changes needed.
+- [x] **LOCKSTEP** — git diff --check rc=0. Profile table and book
+  agree on 66/114, 24 pairs then freeze; .14 status/experiment ownership
+  unchanged. LIVE_STATUS unchanged: P4 12/18, 639 arms, 46 chapters.
+  promotion: declined — registry, immutable expectations and runtime book
+  retain the finite observation/controls. c12 Zicntr next; v2 remains open.
+
+`P4-SYSTEM.13` slice (c10) (`2026-10-10`, `SEMULITH-P4-0123`):
+
+- [x] **ROOT CAUSE** — git show 89a62a4:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  OB-SVADE's checks absent despite existing fault and full PTE witnesses.
+  Read selected A/D scheme, ADUE exclusion and finish/cache permissions.
+  A correct fault alone cannot establish the absence of a PTE update.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. Three success/PTE-read-back guests and sv39-svade
+  run 434 boundaries / 868 parcels; independent replay exact. In-memory
+  controls discriminate at step 90 (A/D bypass) and 133 (A write with correct
+  fault causes). Whole PTE values 0x2000188f/0x2000184f remain observed.
+- [x] **NO REGRESSION** — cargo test -p semulith-core
+  step9_svade_faults_and_the_pte_is_byte_untouched: 1 passed / 0 failed.
+  make check rc=0: core 163 / DSP 17 / verify 198. Python comparison:
+  62 prior bindings and 340 contract/guest/author files byte-exact. Schema
+  and freeze zero findings; gate controls 17/17; make book rc=0.
+  First hook refused book part 33700 > 32768; runtime sections split with
+  exact ordered reconstruction 28722+4978=33700. Routing rc=0 after fix;
+  profile duplicate-progress compaction preserves detailed receipts and caps.
+- [x] **LOCKSTEP** — git diff --check rc=0. G-CONTRACT 64/114 with
+  25 runtime pairs then freeze; book/profile/live pointer synchronized,
+  prior counts historical. LIVE_STATUS retains P4 12/18 and 639 arms;
+  chapter count re-derived as 46, the only changed live metric. promotion: declined — registry, immutable expectations and
+  book retain this realization. c11 IALIGN-16 next; v2 remains open.
+
+`P4-SYSTEM.13` slice (c9b) (`2026-10-10`, `SEMULITH-P4-0122`):
+
+- [x] **ROOT CAUSE** — git show 7569fe2:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  OB-SV39's two frozen checks absent from registry; fourteen P4.3 guests
+  already exist. Read translation/CSR paths, source programs with counted
+  zero-word padding, expectations and book. Historical G defect owned/fixed
+  separately at c9a; no old receipt rewritten.
+- [x] **ADDRESSED** — cargo test -p semulith-verify contract_checks_rv64gc:
+  4 passed / 0 failed. POS six translation/mode/cache/straddle guests; NEG
+  eight fault/permission/Svade/delegation guests. Independent parcel author:
+  14 programs, 1417 boundaries, all changes and 2832 fetch counts exact.
+  Required-binding guard adds this pair; post-v0 realization guard retained.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 / verify 198.
+  Python comparison: 60 prior registry entries and 339 contract/guest files
+  byte-exact. Schema/freeze zero findings; gate controls 17 pass / 0 fail;
+  make book rc=0. Focused checks appropriate for evidence bindings only.
+- [x] **LOCKSTEP** — git diff --check rc=0. Book/profile/live pointer
+  synchronized at G-CONTRACT 62/114; 26 runtime pairs then freeze remain.
+  LIVE_STATUS unchanged: P4 12/18, 639 arms, 45 chapters. Finite comparison
+  scope explicit. promotion: declined — bindings, canonical scope and book
+  retain it; c10 OB-SVADE next, no premature version or CPU closure.
+
+`P4-SYSTEM.13` slice (c9a) (`2026-10-10`, `SEMULITH-P4-0121`):
+
+- [x] **ROOT CAUSE** — git show e4e657f:crates/semulith-core/src/translation.rs:
+  global assigned only from leaf. Pinned supervisor 186455 B rehashed to
+  d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a;
+  read inheritance/fence rules. Both new cargo test regressions rc=101 on
+  parent: wrong load access fault and premature actual ASID-fence invalidation.
+- [x] **ADDRESSED** — cargo test -p semulith-core translation::tests:
+  32 passed / 0 failed. Eight G masks and 32 actual fences discriminate
+  inherited hits and exact retention/invalidation. Shared walk accumulates G;
+  permission/fault/install owners unchanged. Cache author rc=0; its existing
+  inheritance mutation rc=1 with intended non-leaf propagation assertion.
+- [x] **NO REGRESSION** — make check rc=0: core 163 / DSP 17 / verify 198.
+  make ci rc=0: all five legs green (check, gate, bench, smoke-bench, book).
+  Python comparison: 342 contract/guest/author/registry files byte-exact;
+  CONTRACT-FREEZE rc=0, three versions / zero findings. Logs under
+  target/p4-system-13/c9a; no expectations fitted to the repair.
+- [x] **LOCKSTEP** — git diff --check rc=0. Book/profile/live pointer
+  record repaired selected-policy scope; c7b counts explicitly historical.
+  LIVE_STATUS unchanged: P4 12/18, 639 arms, 45 chapters. G-CONTRACT 60/114
+  and v2 open; c9b realization next. promotion: declined — implementation,
+  permanent discriminating tests and book retain this local repair.
+
+`P4-SYSTEM.13` slice (c8) (`2026-10-10`, `SEMULITH-P4-0120`):
+
+- [x] **ROOT CAUSE** — git show e0f3dae:crates/semulith-verify/src/contract_checks_rv64gc.rs:
+  no OB-PRIV-MODES binding despite the thirteen-guest P4.2 matrix. Read all
+  program sources, expectation owner and shared comparison rule. Handler
+  reads witness causes/EPC/status; no direct PC/mode comparison is claimed.
+- [x] **ADDRESSED** — cargo test -p semulith-verify corpus_mode_matrix:
+  1 passed / 0 failed; all 13 programs / 481 boundaries. Registry focused
+  tests 4 passed / 0 failed, required-binding guard retains post-v0 birth
+  realization and adds this old pair. POS legal-mode and NEG permission
+  witnesses retain their original expected changes and refusal observations.
+- [x] **NO REGRESSION** — make check rc=0: core 161 / DSP 17 / verify 198.
+  Python byte comparison: all 58 prior entries and 339 contract/guest files
+  exact. Schema/freeze zero findings, gate controls 17/17; make book rc=0.
+  sharder completeness: 45 before = 35 kept + 10 moved, ordered bytes exact;
+  SHARD-FREEZE rc=0. Fixed caps and sealed archive descriptors unchanged.
+- [x] **LOCKSTEP** — git diff --check rc=0. G-CONTRACT 60/114;
+  book/profile/live pointer synchronized; LIVE_STATUS reviewed unchanged
+  (P4 12/18, 639 arms, 45 chapters). 27 runtime pairs then freeze remain;
+  promotion: declined — exact bindings, canonical scope and book retain it.
+
+
+## Runtime verification
+
+| Date | Leaf | Checks | Result |
+| --- | --- | --- | --- |
+| `2026-10-10` | `.13` c16 | independent 79/158; seven mutants; smoke images 12/48 each; generated data exact; prior 76 bindings; Rust 167/17/201; report 20/0; schema/freeze/books; board pin/semantic identity/platform 11/0 | 76/114; OB-SHAMT next |
+| `2026-10-10` | `.13` c15 | independent 99/198; eight countermodels; integer 22+10/471/42; identity 348+4+74; Rust 167/17/201; oracle 20/0; schema/freeze/books | 74/114; OB-LUI-AUIPC next |
+| `2026-10-10` | `.13` c14b | independent62/124; five countermodels; integer22+10/471/42; identity348+4+72; Rust167/17/201; oracle20/0 | 72/114; OB-ALU-REG next |
+| `2026-10-10` | `.13` c14a | original ALU-bound17/18 RED; corrected20/0; duplicate-credit mutant19/20; production AST/input identity | 70/114 unchanged; c14b OB-ALU-IMM next |
+| `2026-10-10` | `.13` c13b | direct 3/0; registry 4/0; independent31/62 and terminal35/70 control; identity348+4+70; corpus 167/5360/10514; report 18/0; full CI all five legs green, Rust167/17/201, schema/freeze | 70/114; OB-ALU-IMM next |
+| `2026-10-10` | `.13` c13a2 | core RED/GREEN4; author8 cases/four mutants; source27/54; identity335/52/68; public CSR0; Rust167/17/198; schema/freeze; gate18/0; lossless shard; full CI all five legs green | 68/114; c13b direct Sstc witnesses next |
+| `2026-10-10` | `.13` c13a1 | independent nine-guest 281/524, full 167/5360/10514; 42 owned; two new RED controls; corrected public probe and nine attempts; identity; full CI rc0; registry/schema/freeze/gate controls | explicit setup ready; 68/114 unchanged; c13a2 next |
+| `2026-10-10` | `.13` c13 diagnosis | forced S refusal missed by 35/70 terminal guest; public STCE-clear STIP regression rc101; pins/history; 340 inputs exact; registry 4/0; schema/freeze/gate 17/17/books | two defects owned before SSTC; 68/114 unchanged |
+| `2026-10-10` | `.13` c12 | counter guests 101 boundaries / 202 parcels exact; three controls; core permission 1/0; author 30 mode gates; Rust 163/17/198; 66 entries + 340 inputs exact; lossless archive; focused gates/books | 68/114, v2 open |
+| `2026-10-10` | `.13` c11 | four alignment programs / 165 boundaries / 319 parcels; four in-memory controls; prior 64 bindings + 340 inputs exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 66/114, v2 open |
+| `2026-10-10` | `.13` c10 | four Svade programs / 434 boundaries / 868 parcels; two controls incl. correct fault + bad PTE; core 1/0; Rust 163/17/198; prior 62 bindings + 340 files exact; focused gates/books | 64/114, v2 open |
+| `2026-10-10` | `.13` c9b | 14 Sv39 guests / 1417 boundaries / 2832 parcels; independent author exact; prior 60 bindings + 339 files exact; Rust 163/17/198; schema/freeze/gate 17/17/books | 62/114, v2 open |
+| `2026-10-10` | `.13` c9a | parent failures; eight G masks / 32 actual fences; translation 32/0; author + inheritance mutant; Rust 163/17/198; 342 files exact | make ci all five legs green; 60/114 unchanged |
+| `2026-10-10` | `.13` c8 | 13 mode guests / 481 boundaries; prior 58 bindings + 339 files exact; Rust 161/17/198; schema/freeze/gate 17/17; shards/books | 60/114, v2 open |
+
+
+## Runtime commits
+
+| Leaf | Subject | Next |
+| --- | --- | --- |
+| `.13` c16 | `SEMULITH-P4-0133 (leaf P4-SYSTEM.13): realize signed U-immediates and instruction-address addition` | c17 OB-SHAMT |
+| `.13` c15 | `SEMULITH-P4-0132 (leaf P4-SYSTEM.13): realize register ALU wrapping and operand overlap` | c16 OB-LUI-AUIPC |
+| `.13` c14b | `SEMULITH-P4-0131 (leaf P4-SYSTEM.13): realize immediate ALU guarantees through boundary guests` | c15 OB-ALU-REG |
+| `.13` c14a | `SEMULITH-P4-0130 (leaf P4-SYSTEM.13): remove missing-id assumptions from contract-count controls` | c14b OB-ALU-IMM |
+| `.13` c13b | `SEMULITH-P4-0129 (leaf P4-SYSTEM.13): bind observable supervisor timer execution and refusals` | c14 OB-ALU-IMM, then remaining21 pairs and freeze |
+| `.13` c13a2 | `SEMULITH-P4-0128 (leaf P4-SYSTEM.13): repair STCE-dependent pending and effective source evidence` | c13b direct S programming/refusal witnesses |
+| `.13` c13a1 | `SEMULITH-P4-0127 (leaf P4-SYSTEM.13): prepare explicit STCE timer inputs and repair public evidence` | c13a2 dynamic STIP/author/state/v2 supersession, then direct Sstc witnesses |
+| `.13` c13 diagnosis | `SEMULITH-P4-0126 (leaf P4-SYSTEM.13): own the STCE fallback defect and terminal timer witness gap` | c13a1 explicit timer enable, then architecture repair and Sstc witnesses |
+| `.13` c12 | `SEMULITH-P4-0125 (leaf P4-SYSTEM.13): realize base-counter inclusion and read-only refusals` | c13 Sstc, then 22 runtime pairs |
+| `.13` c11 | `SEMULITH-P4-0124 (leaf P4-SYSTEM.13): realize halfword alignment and precise parcel-fault checks` | c12 Zicntr, then 23 runtime pairs |
+| `.13` c10 | `SEMULITH-P4-0123 (leaf P4-SYSTEM.13): realize Svade checks with fault and PTE-preservation witnesses` | c11 IALIGN-16, then 24 runtime pairs |
+| `.13` c9b | `SEMULITH-P4-0122 (leaf P4-SYSTEM.13): realize Sv39 checks through the complete translation matrix` | c10 OB-SVADE, then 25 runtime pairs |
+| `.13` c9a | `SEMULITH-P4-0121 (leaf P4-SYSTEM.13): preserve inherited-global mappings in the shared Sv39 walk` | c9b OB-SV39, then 26 runtime pairs |
+| `.13` c8 | `SEMULITH-P4-0120 (leaf P4-SYSTEM.13): realize privilege-mode checks through the complete existing matrix` | c9 OB-SV39, then 26 runtime pairs |
+
+
+## Runtime changelog
+
+- `2026-10-10`: `.13` c16 (SEMULITH-P4-0133): U-immediates bind exact
+  79/158 with seven sign/shift/PC/wrap alternatives caught. Correct stale smoke
+  headers with exact assembled images; focused checks pass, 76/114 open.
+
+- `2026-10-10`: `.13` c15 (SEMULITH-P4-0132): register ALU pair binds
+  exact 99/198 with eight wrong alternatives caught, including overlapping sources.
+  Prior inputs/bindings exact; focused checks pass, 74/114 open; OB-LUI-AUIPC next.
+
+- `2026-10-10`: `.13` c14b (SEMULITH-P4-0131): immediate ALU pair
+  binds exact62/124 corpus with five wrong semantic alternatives caught.
+  Earlier inputs/bindings exact; Rust/gate oracle pass,72/114 open.
+
+- `2026-10-10`: `.13` c14a (SEMULITH-P4-0130): shared-id oracle now
+  synthetic, duplicate/full-coverage controls discriminate; actual production
+  measure and70/114 unchanged. Next ALU binding no longer trips the old example.
+
+- `2026-10-10`: `.13` c13b (SEMULITH-P4-0129): direct Execution pair
+  closes terminal-zero SSTC coverage hole; S full-width programming/read-back
+  and M-handler-visible refusals total31/62. Independent forced-trap and
+  disabled-verifier controls discriminate; old inputs exact,70/114 open.
+
+- `2026-10-10`: `.13` c13a2 (SEMULITH-P4-0128): dynamic STIP and source
+  supersession repaired, raw retention explicit, direct27/54 and core48 cases.
+  Independent author/controls and effective-report oracle repaired; old inputs
+  and frozen records exact, 68/114 unchanged. Direct S witnesses next.
+
+- `2026-10-10`: `.13` c13a1 (SEMULITH-P4-0127): explicit STCE setup
+  in nine timer guests, fresh derivations/provenance and owned-record protocol;
+  repair confounded public diagnostic with read-back. Full CI green; 68/114
+  unchanged. Dynamic fallback and direct S witnesses remain next.
+
+- `2026-10-10`: `.13` c13 diagnosis (SEMULITH-P4-0126): reproduce
+  terminal-zero timer guest miss and public STCE-clear STIP write defect;
+  root/history/pins checked. Own staged repair sequence before SSTC credit.
+  No production/guest/author changes; 68/114 unchanged, defects remain open.
+
+- `2026-10-10`: `.13` c12 (SEMULITH-P4-0125): bind base-counter
+  inclusion/read-only refusal; independent 101-boundary replay exact, three
+  controls discriminate; S TIME permission supporting test passes. 68/114.
+  Earlier designs/acceptance archived verbatim with inverse reconstruction;
+  fixed caps retained. Current table/book synchronized; c13 Sstc next.
+
+- `2026-10-10`: `.13` c11 (SEMULITH-P4-0124): bind halfword control
+  flow and translated page-edge successes/refusal; all four independent runs
+  exact, four controls discriminate. 66/114; frozen/prior inputs preserved.
+  Current book/profile bindings synchronized; c12 Zicntr next.
+
+- `2026-10-10`: `.13` c10 (SEMULITH-P4-0123): bind Svade success/fault
+  witnesses with full PTE read-backs. Independent replay and two controls
+  discriminate even a PTE update with correct fault delivery. Prior bytes
+  unchanged; focused checks/books pass, 64/114 and v2 open.
+
+- `2026-10-10`: `.13` c9b (SEMULITH-P4-0122): bind Sv39 checks to
+  all fourteen guests; independent 1417-boundary / 2832-parcel observations
+  exact. Prior bytes unchanged; Rust/focused gates/books pass, 62/114 open.
+
+- `2026-10-10`: `.13` c9a (SEMULITH-P4-0121): reproduced and repaired
+  leaf-only G retention; eight path masks and 32 actual fence instructions
+  discriminate. Independent author unchanged; full CI green, 60/114 unchanged.
+
+- `2026-10-10`: `.13` c8 (SEMULITH-P4-0120): bind both privilege-mode
+  checks to the full 13-guest matrix, 481 boundaries and unchanged comparison
+  rule. Prior bytes exact; lossless DEV_NOTES shard 0219; 60/114, v2 open.
+
+
+Active frontier: [`docs/tasks/P4-SYSTEM.md`](docs/tasks/P4-SYSTEM.md).

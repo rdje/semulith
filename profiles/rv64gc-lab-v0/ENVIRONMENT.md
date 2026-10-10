@@ -361,7 +361,8 @@ unchanged PTEs 0x2000188f/0x2000184f at steps 133/134. A control that sets A
 while returning the correct fault is caught at step 133; bypassing A/D refusal
 fails at step 90. The whole-image core test also verifies preservation.
 
-The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
+The [system runtime book](docs/book/src/plan/p4/contract-runtime.md) and
+[integer runtime book](docs/book/src/plan/p4/contract-integer.md) retain worked
 observations, examples, comparison limits and control receipts. Current census:
 57 effective obligations / 114 checks, 76 realized: thirteen scope pairs,
 eighteen guest pairs, six direct assumption pairs and one direct execution pair. Nineteen runtime pairs

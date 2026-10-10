@@ -33,6 +33,7 @@
         - [P4.12 — Compressed instructions (C)](plan/p4/c.md)
         - [P4.13 — Completing the environment contract](plan/p4/contract-v2.md)
             - [Runtime contract witnesses](plan/p4/contract-runtime.md)
+            - [Integer runtime witnesses](plan/p4/contract-integer.md)
     - [P5–P7 — board, Linux, computer](plan/p5-p7.md)
     - [Multicore and optimization](plan/multicore.md)
 
