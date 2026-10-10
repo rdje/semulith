@@ -1,6 +1,24 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — freeze the complete environment contract (P4-SYSTEM.13 c36)
+
+All57effective obligations/114checks ran in c35, but v2 was still open.
+Derive SHA256 of each of its14exact canonical record lines, excluding newline;
+freeze only v2 status/membership/statement. V0/v1 manifest prefix and all
+obligation lines/pins remain exact. Scratch judge body is copied byte-exact
+from CONTRACT-FREEZE: intact GREEN0; edited SC record, missing pin and dropped
+membership each RED1 with its named cause. No production judge/code change.
+
+Full make ci rc=0: Rust173/17/253, all doctrine/self-tests, wasm bench,
+headless smoke and6books. GS now derives G-CONTRACT green114/114/frozen;
+CPU-SYSTEM remains incomplete on7axes. Close .13 and activate .14; update
+frontier/LIVE/book/resume routes together. Final focused9/six books and invariant
+verifier rc=0, preserved CPU/catalog/registry/fixtures/prior journals/history,
+fixed caps. Evidence target/p4-system-13/c36. Next priority .14 provenance/note
+repairs, before policy/experiments/status/unit-registration signoff.
+promotion: declined (existing frozen-record protocol/judge and current canonical pins/book/report retain this result; no new evidence ancestry).
+
 ## _(2026-10-10)_ — qualify and bind deterministic SC (P4-SYSTEM.13 c35)
 
 Root495b4b86's live SC wording and the reservation inspection explanation omit

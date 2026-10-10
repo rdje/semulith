@@ -346,7 +346,7 @@ remains a permitted selected-policy difference, with no new reference result or
 lineage credit. Only inspection wording and source fingerprints regenerate in
 core state/definition mirrors; storage, reset, legalization and instruction
 semantics stay unchanged. The [current contract summary](contract-v2.md#runtime-guarantee-witnesses)
-owns the effective count; full CI and frozen v2 membership still follow.
+owns the effective count; v2 membership is now frozen with all114checks realized.
 
 ## Historical introduction and checkpoint receipt
 

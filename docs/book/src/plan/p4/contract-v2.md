@@ -1,11 +1,11 @@
 # P4.13 — Completing the environment contract
 
-**Status:** Every effective check is bound and exercised; full CI and the final membership freeze keep v2 open.
+**Status:** All 114 effective checks are bound and exercised. Version 2 has 14 byte-pinned members; full CI passes and P4.13 is closed.
 
 The complete instruction set now runs, including multiply/divide and compressed
-instructions. Its contract still contains declarations inherited from earlier
-stages. This work checks every effective obligation, fills the remaining boundary
-assumptions, and realizes each declared check before freezing version 2.
+instructions. Its contract includes declarations inherited from earlier
+stages. This work checked every effective obligation, filled the remaining boundary
+assumptions, and realized each declared check before freezing version 2.
 
 The effective contract contains 57 obligations and 114 checks. The
 [runtime witness summary](#runtime-guarantee-witnesses) gives the current realized
@@ -29,9 +29,9 @@ exceptions with cause 3. The pinned priority table distinguishes these cases.
 Versioning preserves the record. Frozen version-0 and version-1 statements and
 their hashes stay unchanged; version 2 names each replacement and why it replaces
 the old statement. The complete per-obligation plan is in the active task tree's
-`.13` census. Completion requires every effective check to run, the state census
-to describe the actual complete state, and version 2 to be frozen. Until then,
-G-CONTRACT and CPU-SYSTEM remain incomplete.
+`.13` census. Every effective check now runs, the state census describes the complete state,
+and version 2 is frozen. G-CONTRACT is green; CPU-SYSTEM remains incomplete
+on seven other axes. Requirement status and structured evidence belong to .14.
 
 ## Complete state inventory
 
@@ -95,7 +95,7 @@ reason. Further controls deliberately disable each predicate family; the negativ
 check must then fail. Unknown check ids are refused. All copies stay in memory.
 
 Selection evidence comes from these explicit predicates, rather than an
-unrelated passing program. Version 2 remains open.
+unrelated passing program. The final frozen membership is described below.
 
 ## Structured scope and identity
 
@@ -164,8 +164,8 @@ registry entries remain byte-identical.
 Scope evidence does not establish execution of an LP64D program, implemented
 firmware, Linux boot or exploration of every weak-memory outcome. Those claims
 retain their own work and evidence. Eleven scope pairs now run in the normal test
-suite alongside the existing twenty guest checks. Remaining instruction and
-boundary checks and the five assumptions still keep contract v2 open.
+suite alongside the original twenty guest checks. Later instruction and
+boundary witnesses complete the effective contract, as summarized below.
 
 ## Three current guarantees, four historical records
 
@@ -498,7 +498,7 @@ FENCE field/no-effect and atomic pre-translation alignment observations.
 The [satp prerequisite](sv39.md#unsupported-satp-mode-ignores-the-whole-write)
 repairs unsupported MODE whole-write suppression before CSR-access binding.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
-114/114; full CI and the final freeze remain. The [complete finite F witnesses](floating-point.md#complete-finite-f-contract-witnesses) now bind all30forms, including numeric, transfer/sign/boxing and refusal observations. The [complete finite D witnesses](floating-point.md#complete-finite-d-contract-witnesses) now bind all32forms, retaining the numeric prerequisite and adding raw transfers, mixed-format rules and refusals. GC-COUNTERS now adds
+114/114 with frozen v2 membership. The [complete finite F witnesses](floating-point.md#complete-finite-f-contract-witnesses) now bind all30forms, including numeric, transfer/sign/boxing and refusal observations. The [complete finite D witnesses](floating-point.md#complete-finite-d-contract-witnesses) now bind all32forms, retaining the numeric prerequisite and adding raw transfers, mixed-format rules and refusals. GC-COUNTERS now adds
 [all-mode, all-enable-mask direct observations](contract-runtime.md#counter-reads-all-privilege-and-enable-mask-combinations).
 GC-CSR-ACCESS adds [all-form privilege, gate and suppression observations](privilege.md#direct-csr-access-contract-observations), including the separately qualified no-read table check.
 Its prerequisite c30a repairs explicit counter writes replacing their own increment;
@@ -516,7 +516,7 @@ The pair checks 62,176 direct boundaries, including physical permission before
 failed-SC completion. The [qualified deterministic SC policy](atomics.md#qualified-deterministic-sc-policy)
 now binds both SC checks to those shared direct inputs plus unchanged companions,
 with explicit completed-outcome prerequisites. Registry116 realizes all114effective
-checks; v2 has14members and remains open. Frozen v0/v1 remain byte-exact.
+checks; v2 has14frozen members. Frozen v0/v1 remain byte-exact.
 
 The profile's live environment document now keeps its effective interface and
 derived-report pointers. Its earlier progress sections and completed c17 task
@@ -524,7 +524,7 @@ receipts remain byte-verbatim in `docs/tasks/archive/P4-SYSTEM-8.md`, with sourc
 lengths/hashes. This book retains the feature examples and current witness summary.
 
 P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth
-open-v2 member: STCE=0 software STIP versus STCE=1 comparator pending, with
+then-open v2 member: STCE=0 software STIP versus STCE=1 comparator pending, with
 explicit raw-software retention. Cold pending is zero; v2 event/reset records
 follow that rule;
 [the runtime chapter](contract-runtime.md#stce-dependent-pending-and-the-v2-source-contract)
@@ -532,7 +532,23 @@ gives the selection table, worked transitions, instruction witnesses and limits.
 Frozen v0/v1 records and pins stay exact. Sstc now binds a direct Execution pair:
 31 boundaries / 62 parcels, S programming/read-back and handler-visible refusals,
 plus original timer guests. [Worked values and controls](contract-runtime.md#observable-s-mode-timer-programming-and-refusals)
-close the terminal-zero witness hole; v2 remains open.
+close the terminal-zero witness hole.
+
+## Frozen membership
+
+Version 2 pins each of its 14 exact canonical obligation lines by SHA-256,
+excluding the line ending. Included catalog parts expand in their original order;
+v0/v1 records and pins remain byte-for-byte unchanged. Seven explicit
+supersessions yield 57 effective obligations with 114 realized checks; the registry
+also retains two superseded checks, so its total is 116.
+
+A later correction needs a new version. Scratch copies of the frozen candidate
+confirm that editing its SC record, omitting that record's pin or dropping its
+membership is refused; the intact candidate passes. The full five-leg local CI
+passes: strict Rust checks, all doctrines, wasm bench, headless smoke and six
+books. P4.14 follows with the owned provenance corrections, structured evidence
+and derived requirement status. This contract milestone grants no reference independence,
+CPU acceptance, board authorization or Linux-boot claim.
 
 ## Historical verification receipts
 

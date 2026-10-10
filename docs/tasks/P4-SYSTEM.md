@@ -212,7 +212,7 @@ This gate authorises the planned next engineering stage: board implementation.
   all five legs; C-leaf acceptance does not close CPU-SYSTEM (8/10 axes open).
   Plans/receipts/logs: archive parts 5/6; C chapter is the review narrative.
 - ID: `P4-SYSTEM.13` — **environment contract v2** — `G-CONTRACT`
-  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution `2026-10-09`, `SEMULITH-P4-0105`)
+  Status: `done` (closed `2026-10-10`, `SEMULITH-P4-0191`; GS G-CONTRACT green,114/114 effective checks,14frozen-v2 members; full CI green)
   Goal: the effective contract complete and realized — rv64i's base boundary assumptions
   restated for this unit; the stale frozen v0 statements superseded; M's and C's guarantees;
   every declared check realized in the unit's registry (a static realization for a scope
@@ -220,7 +220,7 @@ This gate authorises the planned next engineering stage: board implementation.
   re-answered.
   Acceptance: the `GS` report's G-CONTRACT row reads every effective check realized; v2 frozen.
 - ID: `P4-SYSTEM.14` — **evidence records and obligation status** — `G-TRACE`, `G-OBLIGATIONS`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
+  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution follows .13 signoff `2026-10-10`)
   Goal: every matched experiment a structured `experiment` record with its control and
   independence rows, its runner tracked; the unit's predeclared verification policy (EVD-03);
   each requirement's `implementation_status` derived from its evidence by a rule a gate
@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.13` | `active` | census/design, complete/realize effective contract v2, then freeze |
+| 1 | `P4-SYSTEM.14` | `active` | priority provenance/note repairs, then policy, experiment records, status derivation and unit registration |
 
 ## Decisions
 
@@ -924,6 +924,33 @@ measured doctrine arms669. Only that LIVE count changes, every milestone exact.
 Focused9docs/records, six books and final invariant verifier rc=0. Book51/511940B leaves12348B, largest32746B; fixed caps. Prior journal payload/order exact; no Rust change, prior173/17/253 applies.
 
 
+### `.13` c36 — freeze the complete contract (completed, SEMULITH-P4-0191)
+
+Ownership before changes: all57effective obligations/114checks ran green in c35;
+registry116, v2 has14members. Read roadmap P4, .13 acceptance/design, contract
+manifest/catalog, freeze judge, GS/report and current v2/atomics/ENV chapters.
+Freeze only v2 with SHA-256 of each exact canonical record line (no newline),
+preserving all v0/v1 bytes, obligations, registry/fixtures and CPU sources.
+Judge the final frozen candidate with full `make ci` (five named legs/six books),
+plus intact/edited-record/missing-pin/dropped-member scratch controls over v2.
+Re-derive GS; require G-CONTRACT green while CPU-SYSTEM remains incomplete on
+its other7axes. Close .13 only after signoff; activate .14 and synchronize all
+frontiers/live/book records. No new independence or conformance claim; no push.
+Verify prior frozen blocks, catalog/CPU/fixtures/history and fixed caps exact.
+Evidence target/p4-system-13/c36, same-volume TMPDIR. Root/repair/regression
+receipts must name actual tools and outcomes; promotion decided at signoff.
+
+Result: freeze.py rc=0 derives14pins over exact expanded record lines (no newline),
+intact scratch GREEN0; edited SC record/missing SC pin/dropped SC member RED1
+with named causes. Real CONTRACT-FREEZE rc=0, v0/v1 manifest prefix exact.
+Full `make ci` rc=0: Rust173/17/253; every doctrine/self-test, wasm bench,
+headless smoke and all6books green. No runtime/canonical/fixture/catalog change.
+GS derives114/114 effective checks and latest v2 frozen; G-CONTRACT green,
+CPU-SYSTEM incomplete7/10axes. .13 acceptance met; .14 now owns the frontier.
+Final docs gates/books/invariant verifier confirm closure and fixed caps.
+Promotion: declined — canonical frozen pins, existing versioning judge and
+current book/report retain the result; no new method or independence claim.
+
 ### `.13` c35 — qualify and bind deterministic SC (completed, SEMULITH-P4-0190)
 
 Owned on clean64461b9/brief0/actual handoff census rc=0. Read roadmap P4/.13,
@@ -1137,6 +1164,17 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c36 — **ROOT CAUSE**: freeze.py/contract_measure rc=0:
+  all114effective checks already exercised, v2 still open with14unpinned members;
+  derive exact no-newline SHA256 pins from expanded canonical records.
+- [x] `.13` c36 — **ADDRESSED**: freeze.py/CONTRACT-FREEZE/GS rc=0:
+  intact GREEN0, edited record/missing pin/dropped member RED1; v2 frozen,
+  G-CONTRACT green, CPU-SYSTEM incomplete7/10; .13 closed and .14 active.
+- [x] `.13` c36 — **NO REGRESSION**: make ci/focused9/make book/verify.py rc=0:
+  Rust173/17/253, all doctrines, wasm/bench/smoke, six books; v0/v1 prefix,
+  obligations/CPU/registry/fixtures/prior journals/history exact, fixed caps.
+
+
 - [x] `.13` c35 — **ROOT CAUSE**: source-auth/metadata/blame rc=0:
   root495b4b86 SC statements/current6addc986 inspection omit completed-path
   prerequisites; pinned A requires permission before retirement. Missing-binding
@@ -1263,6 +1301,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c36 |14exact pins; intact GREEN0/3damaged v2 controls RED1; full make ci/final focused9/books/invariant verifier | rc=0; Rust173/17/253,6books; G-CONTRACT green114/114 frozen, CPU incomplete7/10; .14 frontier |
 | `2026-10-10` | `.13` c35 | missing-binding RED→2Execution rows; isolated shared62176census/194688requests;35restored controls; fresh167corpus/alias example | Rust173/17/253/focused15/six books/verify rc=0; registry116/effective114/114 open; frozen/storage/semantics/old inputs/history/LIVE exact |
 | `2026-10-10` | `.13` c34c | false-acceptance RED1→62/0; disabled predicate RED1; exact guard inverse and protected census | record gate/focused9/six books/verify rc=0; CPU/data/frozen/history/milestones exact; arms669 |
 | `2026-10-10` | `.13` c34b | missing-binding RED→2Execution rows;62176direct boundaries/194688requests;31Rust+3schema guards;13new version controls | Rust173/17/253/record-schema61/0/focused15/six books rc=0; registry114/effective112/114; frozen/selector/CPU/data/history/milestones exact; arms668 |
@@ -1279,6 +1318,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c36 | `SEMULITH-P4-0191 (leaf P4-SYSTEM.13): freeze the complete environment contract` | priority .14 provenance/note repairs, then evidence signoff work |
 | `.13` c35 | `SEMULITH-P4-0190 (leaf P4-SYSTEM.13): qualify and bind deterministic SC` | c36/0191 full CI and v2 freeze, then priority .14 sweep |
 | `.13` c34c | `SEMULITH-P4-0189 (leaf P4-SYSTEM.13): preserve authority in versioned requirement mirrors` | deterministic SC c35/0190, full CI/freeze, priority .14 |
 | `.13` c34b | `SEMULITH-P4-0188 (leaf P4-SYSTEM.13): qualify and bind reservation guarantees` | deterministic SC qualification/pair, full CI/freeze, then priority .14 sweep |
@@ -1292,6 +1332,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 
 ## Changelog
+
+- `2026-10-10`: `.13` c36 (SEMULITH-P4-0191): freeze14v2 members after114/114checks;3damaged controls rejected, full CI/focused9/six books/invariants green. Close .13, activate .14; CPU incomplete7axes.
 
 - `2026-10-10`: `.13` c35 (SEMULITH-P4-0190): qualified SC prerequisite mirrors/inspection text, v2 supersession+2Execution bindings;35controls, shared62176census and fresh167corpus green; registry116/effective114/114, final CI/freeze next.
 

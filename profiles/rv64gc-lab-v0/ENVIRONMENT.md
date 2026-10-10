@@ -1,7 +1,7 @@
 # `rv64gc-lab-env` — the environment contract for `rv64gc-lab-v0`
 
 Contract ids: `rv64gc-lab-env-v0`, `rv64gc-lab-env-v1` (extends v0), and
-`rv64gc-lab-env-v2` (open, extends v1).
+`rv64gc-lab-env-v2` (frozen, extends v1).
 The records live one per line in [`contract-obligations.sexp`](contract-obligations.sexp)
 and its explicitly included [v0](contract-v0.obligations.sexp) and
 [v1](contract-v1.obligations.sexp) parts; which
@@ -89,7 +89,7 @@ negative controls and platform limits: `docs/book/src/plan/p4/c.md`.
 | --- | --- | --- | --- |
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
-| v2 | open; `.13` owns completion/freeze | canonical membership in `contract.sexp`; inherits v1 | M, C, parcel supply, qualified FP, current route, fault priority, physical byte addresses, data access, event positioning, ordering, full cold reset and STCE-selected interrupt sources |
+| v2 | frozen at `.13` c36 | 14 pinned members; inherits v1 with seven supersessions | M, C, parcel supply, qualified FP, current route, fault priority, byte addresses, data access, events, ordering, cold reset, STCE sources, qualified reservations and SC |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -136,8 +136,8 @@ The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, [GS-REPORT.md](GS-REPORT.md) derives the
 effective realization census from the canonical catalog and registered checks.
-Remaining unbound checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
-pins are unchanged. V2 stays open until `.13` completes and freezes it.
+All114effective checks are realized; G-CONTRACT is green with frozen v2.
+Frozen v0/v1 text and pins are unchanged. CPU-SYSTEM retains seven open axes.
 
 ## Supersessions (v1 corrects v0 without rewriting it)
 
@@ -216,7 +216,7 @@ are in the FP book. Fifteen new wrong effects/18actual disabled controls fail
 then restore; missing-binding RED precedes2entries, prior110exact. That D-binding
 checkpoint had registry112/effective110/114; GS-REPORT owns the current census.
 Independent author/new/prior matrices/corpus agree; shared specfp adds no numeric
-lineage. The deterministic SC pair and final freeze remain open.
+lineage. The SC pair and freeze now complete G-CONTRACT; GS owns its measure.
 
 GC-F binds203832positive/12852refusal-fault boundaries across all30forms:
 numeric111744, transfer/sign/boxing/directed92088, FS-Off1080,
@@ -227,7 +227,7 @@ sticky flags and selected reservation preservation have literal examples
 in the FP book. Twelve new wrong effects and16actual disabled controls
 discriminate. Prior108entries/frozen inputs remain exact; now registry110,
 effective108/114. Independent author agrees; its shared specfp origin adds
-no numeric lineage. Reservation/SC and final freeze remain open.
+no numeric lineage. Reservation/SC and freeze now complete G-CONTRACT.
 
 GC-CSR-ACCESS binds4480legal/8480refused single boundaries across six forms,
 M/S/U, aliases, source-field/value suppression and15selected CSR contexts.
@@ -289,5 +289,5 @@ that is overlapping coverage with the reservation pair, not new unique cells.
 Pair+loop and mustfail+fault companions add96boundaries/192parcels. The atomics
 chapter gives the worked alias history,35actual guard/route controls and finite
 author/reference limits. Registry116 realizes all114effective checks under57
-obligations; latest v2 has14members and stays open for full CI and membership
-freeze. GS-REPORT owns the current measure and CPU-SYSTEM verdict.
+obligations; latest v2 has14byte-pinned frozen members. Full five-leg CI passed at .13 signoff.
+ GS-REPORT owns the current measure and incomplete CPU-SYSTEM verdict.

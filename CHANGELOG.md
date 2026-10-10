@@ -1,6 +1,12 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0191 (leaf P4-SYSTEM.13) — freeze the complete environment contract
+
+- Freeze14v2 members with exact canonical-record SHA256 pins; preserve all v0/v1 bytes, obligations, runtime and fixtures. Intact candidate passes; edited record/missing pin/dropped membership controls each refuse.
+- Full five-leg CI passes, including Rust173/17/253 and six books; final focused9/books/invariants green. G-CONTRACT green114/114; CPU-SYSTEM incomplete7/10axes.
+- Close .13, activate .14; synchronize P4 13/18, live/book/frontier/resume pointers. Priority provenance/note repairs precede evidence records/status and unit registration.
+
 ## SEMULITH-P4-0190 (leaf P4-SYSTEM.13) — qualify and bind deterministic SC
 
 - Qualify completed SC permission/trap prerequisites in live mirrors and inspection wording; supersede the frozen statement with v2 member14 and two Execution bindings. Regenerate inspection text/fingerprints only, preserving CPU semantics and frozen records.

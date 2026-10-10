@@ -4,7 +4,7 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (8 of 10): `G-STATE`, `G-CONTRACT`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-REPLAY`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (7 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-REPLAY`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
@@ -12,7 +12,7 @@
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
-| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` open | **incomplete** |
+| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` frozen | **green** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
 | `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 48 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); predeclared policy (`EVIDENCE_POLICY.md`): absent | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
@@ -29,7 +29,6 @@ is not a claim with a denominator.
 | Axis | Owner | Open item |
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
-| `G-CONTRACT` | `P4-SYSTEM.13` | P4-SYSTEM.13 owns realization of the remaining effective runtime pairs and the final v2 freeze. The G-CONTRACT criterion derives coverage from the executable registry; the active task tree and runtime book chapters retain completed witnesses and the next slice. Version 2 stays open until every effective check passes and its membership is frozen. P4-SYSTEM.14 retains requirement-status mirrors and structured experiment records. |
 | `G-TRACE` | `P4-SYSTEM.14` | The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
@@ -67,7 +66,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 5402b4ed583a605669bff97ae7efc23a43ead3201089ee6923176ef4371dfdc6`
+  `sha256 06ec92368ac7c613cf54536e90013dc1bd22cbf2af8cb456108074bb75d0a764`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

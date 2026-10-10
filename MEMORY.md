@@ -16,17 +16,16 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
+- **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c36/0191 — run full CI, then freeze v2
-  membership/pins and close .13 only after signoff. Deterministic SC c35 now
-  binds both checks: registry116/effective114/114,14open-v2 members. Shared
-  reservation/SC fixtures62176boundaries/194688requests,35actual controls restored,
-  fresh167/5365/10524 corpus and worked alias history exact. Rust173/17/253,
-  focused15/six books/invariant verifier green. Frozen/storage/semantics/old
-  fixtures/registry/history/LIVE exact; core inspection string/3hashes only.
-  Book room8165B, fixed caps; doctrine arms669. Then priority .14 provenance/
-  note sweep and remaining evidence work; no push below cadence.
+- next_action: `P4-SYSTEM.14` a1/0192 — priority provenance/note sweep:
+  reproduce/correct generator sNaN conversion notes and regenerate note-only
+  outputs with numeric bits/flags exact; then the remaining owned lineage
+  rationales before evidence signoff. Read .14's complete prerequisites first.
+  .13 c36 froze14v2 members after114/114checks; full five-leg CI and final
+  focused9/six books/invariant verifier green. Rust173/17/253, registry116;
+  G-CONTRACT green, CPU-SYSTEM incomplete7axes. V0/v1, catalog/CPU/fixtures/
+  prior history unchanged. Fixed caps; doctrine arms669. No push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.
