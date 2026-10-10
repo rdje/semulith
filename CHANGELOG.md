@@ -1,6 +1,16 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0178 (leaf P4-SYSTEM.13 c32b0) — contain privilege timeline and development receipts
+
+- Preserve10whole checkpoint paragraphs/8436payload B in finite12446B archive;
+  full14486B source inverse exact, corruption/marker/omission controls refuse.
+- Retain current features, commands/examples/tables/headings/links and CSR
+  controls; save5723chapter B, add worked inverse under unchanged caps.
+- Sharder12/0; five whole DEV entries→0230, full35081B inverse and prior history
+  exact. Core/data/frozen/registry108/effective106/114/LIVE unchanged; previous
+  Rust173/17/234 applies, focused/six books green. C32b/0179 completes F next.
+
 ## SEMULITH-P4-0177 (leaf P4-SYSTEM.13 c32a) — witness numeric F instructions before binding
 
 - Drive23numeric F forms/111744full-state boundaries/223488parcels from governed

@@ -204,3 +204,13 @@ A session can be lost at any moment: a crash, a context reset, a change of tool,
 model. The tree is the layer that makes that survivable — its frontier row *is* the next step,
 and the acceptance checklist is why a successor can trust the previous step without repeating
 it.
+
+A later privilege-timeline containment applies the same complete-source inverse
+at one span. Its map in `docs/tasks/archive/P4-SYSTEM-book-c32b0.md` records
+source `21a997f`, 14,486 bytes and SHA-256
+`bc97a1b69d515c5a9b0af2dd9022084bac7c08e8dc8955720e2901756595382f`.
+Check the retained chapter's proposed digest, replace the exact replacement at
+the recorded byte offset with the marked original 8,436-byte payload, then
+verify the entire restored source against that commit. Corruption, a missing
+marker or an omitted payload must refuse. Current features and CSR examples
+stay in the book; historical checkpoint counts stay in the immutable archive.

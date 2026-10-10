@@ -781,8 +781,117 @@ internal-reference rationale along with prior provenance work. No numeric defect
 or new backend independence inferred. Next c32b completes F before D.
 promotion: declined (governed independent numeric data, permanent full-state controls and the worked FP chapter retain this finite prerequisite; .14 owns the stale explanation repair).
 
-C32b/SEMULITH-P4-0178 is queued; refine remaining witnesses and all-form census
-before its code. No registry credit or status change in c32a.
+### `.13` c32b0 — contain privilege timeline and development receipts (completed, `SEMULITH-P4-0178`)
+
+Owned before feature code on clean21a997f except the owning task-tree's c32b
+refinement; brief0/actual census rc=0. No F code/registry changes since c32a.
+Book520432B/524288 leaves3856B for F completion, D and reservation/SC examples;
+DEV35081B/36864 health leaves1783B for their receipts. Use the existing adopted
+containment pattern; LIVE-CONTAINMENT.4 still owns full guide adoption.
+
+Review privilege chapter's complete old checkpoint timeline and current CSR
+examples, relevant public code/requirements/runtime/Sv39/wait book sections.
+Archive only the old whole timeline span with source-order/bytes/SHA and exact
+replacement metadata. Retain every current feature explained there in concise
+maintained prose, every command/example/table/link or an equivalent retrieval
+route, all current CSR examples and finite evidence limits. Reconstruct the
+entire original chapter and its SHA before mutation; corrupt/missing-marker/
+omitted-payload controls must refuse. No cap change or silent deletion.
+
+Use published DEV sharder self-test/dry-run/apply; preserve whole oldest entries,
+complete source inverse/order/SHA and every prior sealed/live history row.
+Add current receipt after partition. Book worked inverse example/index and live
+pointers, focused/six books, protected core/canonical/frozen/registry108/effective
+106/114/history/LIVE identity; previous Rust173/17/234 applies. Commit clean,
+then c32b/0179 implements the refined F checks. This prerequisite adds no credit.
+
+C32b0 result:
+
+Book520432B leaves3856B for F/D/reservation/SC examples; DEV35081B leaves
+1783B under36864health. Own containment before any c32b feature code on clean
+21a997f except owning task refinement. Existing policy/pattern applies;
+LIVE-CONTAINMENT.4 still owns full adoption, no cap or doctrine change.
+
+Ten whole privilege checkpoint paragraphs8436B preserved in finite archive
+12446B SHA05f01eab66883cc336f8144dc7d4b9f8cf51aeba568a7c17489624fea89ba604.
+Complete source14486B SHAbc97a1b69d515c5a9b0af2dd9022084bac7c08e8dc8955720e2901756595382f
+inverse/order exact before mutation; corrupted/missing-marker/omitted payloads
+refuse. Maintained prose retains privilege/state/views/field disciplines,
+CSR atomicity/traps/xRET, mode interception, Zicntr pseudos/IALIGN/ELF/CLI and
+links to current runtime/Sv39/interrupt-wait examples/finite limits. All original
+headings/commands/fences/tables/links and current CSR examples retained. Chapter
+14486→8763B saves5723B before new worked inverse/index. Initial drafted wait
+chapter name corrected through actual book inventory; ELF/CLI behavior reverified
+in own published command surface before sealing archive. Final SHA above.
+
+Published sharder self-test12/0, dry/apply exact: DEV18entries/35081B→13/24602B;
+five whole oldest entries10479B→0230/10712B SHAa35be3c2ebfcfd0d44bc266a40acab63fe142c44e13fabbace740f502312e81f.
+Full source inverse SHA0942d64e7e25d2b6d5dfd3a7f1866ddfd5aed7a52bea0b8f97a476526379d491;
+prior21manifest rows/210sealed exact,232logical=22live+210sealed. Own receipt/
+retrieval footer follows partition; no sealed edits. Core/numericdata/canonical/
+frozen/registry108/effective106/114/LIVE exact; prior Rust173/17/234 applies.
+Book inverse/index/live pointers synchronized; focused/six books green, fixed
+caps. Evidence target/p4-system-13/c32b0; c32b/0179 next, F before D/remaining pairs.
+promotion: declined (established exact-byte containment; finite archive and worked inverse preserve this routine application without another knowledge card).
+
+### `.13` c32b — complete F transfers, boxing and refusals (queued, `SEMULITH-P4-0179`)
+
+Owned on clean21a997f/brief0/actual census rc=0 after c32a; no dirty pivot.
+C32a remains numeric-only, registry108/effective106/114. Review authenticated
+F20.1.2–.8/D21.1.2/CSR/FS rules, generated30F effects, core ENV/FP/CSR/step
+interfaces, v1 reservation policy, FlatMemory and FP/v2/runtime books before
+changes. Public selected reservation contract says nothing except own LR/SC
+changes it: ordinary FSW preserves even an overlapping reservation. Do not
+invent store invalidation from another implementation or policy.
+
+Refined remaining scope before code:
+- Extract a private common seed/observer helper from numeric fixture, preserving
+  all111744 numeric observations byte-for-byte in effect; new child module holds
+  transfer/sign cases. No core/generated/canonical/numeric-data changes.
+- Seven forms: FLW/FSW, FMV.X.W/FMV.W.X, FSGNJ/N/X.S. Twelve low-bit classes
+  cover signed zeros, normals/subnormals/infinities and quiet/signaling payloads.
+  Sign matrix12×12×4proper/invalid upper layouts×3forms×M/S/U×six destinations
+  0/5/6/7/8/31×flags0/31:62208boundaries. Unboxed computational inputs become
+  canonical qNaNs; properly boxed sign operations preserve payload/signaling
+  bits, accrue no flags, and write boxed outputs/Dirty even unchanged values.
+- Raw moves12low×3upperpatterns×3modes×6destinations×2flag seeds×2forms:
+  2592cases. Integer-source moves discard upper32bits; integer destinations
+  signextend bit31, including unboxed raw F sources; x0 suppresses only result,
+  f0 writable. Read-only moves preserve Clean and flags; writes mark Dirty.
+- FLW12payloads×3aligned offsets×3modes×6destinations×2flags=1296;
+  FSW12payloads×3upperpatterns×3offsets×3modes×3sourcefields0/6/31×2flags=1944.
+  Exact W request/data/extent, full byte image/surrounding bytes, payloads,
+  boxing, FS and all other state/reservation/TLBcursor observed. Add explicit
+  identical-value load/move write controls; refine their finite count literally.
+- FS-Off every30F forms×M/S/U×six destination/source choices×2flags=1080.
+  Only two fetch requests allowed, including load/store with unmapped or
+  misaligned data address. Exact illegal trap/cycle/nonretirement and no own
+  effects. Census words against published compiled table's rv_f/rv64_f set30.
+- All17rounded forms ×19reserved settings (static5/6×all8frm plus DYNfrm5/6/7)
+  ×3modes×6destinations×2flags=11628 exact traps. Valid static rm with reserved
+  frm remains positive c32a evidence. Ordinary FLW/FSW misaligned/access-fault
+  controls additionally check target cause/VA/request termination and preservation.
+- Invalid numeric boxes: all19numeric float-reading forms (FMA variants included),
+  only masks for operands actually present, legal static/DYN modes and aliases.
+  Literal qNaN/canonical/class/compare/minmax/saturation/NV expectations before
+  execution; raw moves/transfers remain payload controls. Explicit directed
+  rounding ties, underflow-after-rounding, exact subnormal/no-UF, saturation and
+  fused single-rounding cases retain bit/flag results from authenticated rules
+  and independent specfp rederivation, never model-layer output. Refine counts
+  from actual cases, distinguishing their shared independent numeric origin.
+- Full previous GPR/FPR/26rawowners/PC/mode/reservation/TLBcursor/wait/memory/
+  exact requests/extent/outcome comparator. Permanent well-formed wrong tables,
+  bad captures and actual disabled FS/RM/boxing/width/sign/suppression/auditor
+  controls must discriminate then restore. Missing-binding RED before exactly2
+  Execution entries; prior108 byte-exact, effective108/114 only after whole F
+  positive/negative and actual companion guest checks pass. No status/freeze credit.
+- FP/focused Rust/six books, environment/GS/book/index/live pointers, fixed caps,
+  clean commit. Book520432B leaves3856B; DEV35081B leaves1783B under health36864:
+  if final receipts exceed safe room, own containment as a prerequisite and commit
+  current completed work first. Do not raise caps or silently omit examples.
+
+After F, D then reservation/SC/freeze; .14 evidence/provenance sweep remains owned.
+
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -925,6 +1034,21 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c32b0 — **ROOT CAUSE**: partition.py/census rc=0 measures
+ book520432B/3856room and DEV35081B/1783health room before F/D/remaining receipts.
+ Ten whole historical privilege paragraphs8436B selected; current CSR examples
+ and features retained. C32a clean21a997f/brief0/actual census rc=0 before ownership.
+- [x] `.13` c32b0 — **ADDRESSED**: verifier rc=0:12446B finite archive,
+ complete14486B source inverse/SHA exact; corrupt/marker/omission refuse.
+ Chapter saves5723B, all original headings/fences/tables/links and features remain.
+ Sharder12/0/dry/apply rc=0; five whole DEV entries10479B→0230/10712B, full35081B
+ inverse/order/SHA exact before own receipt/footer; prior21live/210sealed exact.
+- [x] `.13` c32b0 — **NO REGRESSION**: verifier/focused/six books rc=0:
+ core/data/canonical/frozen/registry108/effective106/114/LIVE exact; fixed caps,
+ 232logical history rows. Previous Rust173/17/234 applies; no runtime change.
+ Book worked inverse/index and live pointers sync, c32b/0179 refined/queued.
+ promotion: declined (existing exact-byte containment, finite archive and worked inverse retain this application).
 
 - [x] `.13` c32a — **ROOT CAUSE**: source/verify.py rc=0 authenticates
  F/D/FS sections and regenerates3168existing rows exactly. Numeric model-layer
@@ -1078,6 +1202,8 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
+| `2026-10-10` | `.13` c32b0 | ten whole paragraphs/full source inverse and damaged controls; sharder12/0/five whole DEV entries/full inverse; protected/history identity | save5723chapter B; registry108/effective106/114/LIVE unchanged; focused/six books rc=0; prior Rust173/17/234 applies; hooks next |
+
 | `2026-10-10` | `.13` c32a | independent111744/23forms/full167corpus;20wrong effects/routes/16bad captures/8actual disabled controls RED101→restored | Rust173/17/234; registry108/effective106/114/core/data/frozen/history/LIVE exact; FP/focused/six books rc=0; hooks next |
 
 | `2026-10-10` | `.13` c31 | independent matrix/12096author+864refusals/full167corpus;13wrong effects/16bad captures/15disabled controls+missing binding RED101→restored | Rust173/17/230; registry108/effective106/114; frozen/core/history/LIVE exact; focused/six books rc=0; hooks next |
@@ -1099,6 +1225,8 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | Leaf | Subject | Next |
 | --- | --- | --- |
 
+| `.13` c32b0 | `SEMULITH-P4-0178 (leaf P4-SYSTEM.13): contain privilege timeline and development receipts` | c32b/0179 F transfers/boxing/FS-Off/rounding refusals and final bindings |
+
 | `.13` c32a | `SEMULITH-P4-0177 (leaf P4-SYSTEM.13): witness numeric F instructions before binding` | c32b transfers/boxing/FS-Off/rounding refusals and final F bindings |
 
 | `.13` c31 | `SEMULITH-P4-0176 (leaf P4-SYSTEM.13): bind CSR access, permissions and suppression` | GC-F before D/reservation/SC/freeze; .14 evidence sweep remains |
@@ -1108,6 +1236,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c32b0 (SEMULITH-P4-0178): finite privilege
+ timeline archive/full14486B inverse,10whole paragraphs8436B,save5723chapter B;
+ sharder12/0,five whole DEV entries→0230/full35081B inverse/prior history exact.
+ Fixed caps/core/data/registry108/effective106/114/LIVE unchanged; focused/six
+ books green, prior Rust173/17/234 applies. C32b/0179 refined and queued.
 
 - `2026-10-10`: `.13` c32a (SEMULITH-P4-0177): private23form numeric
  instruction witness111744boundaries/223488parcels,20wrong tables/16bad captures/
