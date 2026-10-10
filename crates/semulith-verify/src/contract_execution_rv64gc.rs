@@ -30,6 +30,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// All thirty-two D forms, raw transfers, format rules and numeric observations.
+    DPositive,
+    /// Every D FS-Off form, reserved rounding setting and ordinary memory fault.
+    DNegative,
     /// All thirty single-precision forms, numeric vectors, bit transfers and boxing.
     FPositive,
     /// Every FS-Off form, reserved rounding setting and ordinary F memory fault.
@@ -85,6 +89,18 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::DPositive => &[
+                "d-arith",
+                "d-fused",
+                "d-minmax",
+                "d-compare",
+                "d-class",
+                "d-convert",
+                "d-sgnj",
+                "d-move",
+                "d-f2f",
+            ],
+            Self::DNegative => &["d-fs-off", "d-rounding", "d-f2f", "d-move"],
             Self::FPositive => &[
                 "f-arith",
                 "f-fused",
@@ -133,6 +149,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::DPositive => floating::double_positive(),
+            Self::DNegative => floating::double_negative(),
             Self::FPositive => floating::positive(),
             Self::FNegative => floating::negative(),
             Self::CsrAccessPositive => csr_access::positive(),

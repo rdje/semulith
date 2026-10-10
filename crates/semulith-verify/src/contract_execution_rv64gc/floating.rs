@@ -1,4 +1,4 @@
-//! Finite F witnesses and the numeric D prerequisite (P4-SYSTEM.13 c32/c33a).
+//! Complete finite F/D instruction witnesses (P4-SYSTEM.13 c32/c33).
 //! Expected bits/flags come from the existing FP-VECTORS-governed spec-side data.
 //! The production arithmetic backend is never used to construct an expectation.
 use crate::fixtures::FlatMemory;
@@ -194,6 +194,7 @@ fn execute(
     let executed = exec_rv64gc::step_over(h, observer, table) == StepRv64gc::Executed;
     judge(&Observation::capture(h, observer, executed), expected)
 }
+mod double;
 mod single;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -390,11 +391,14 @@ impl Cell {
         )
     }
     fn fixture(self) -> (ArchitecturalState, Observer, Observation) {
+        self.fixture_fs(2)
+    }
+    fn fixture_fs(self, fs: u64) -> (ArchitecturalState, Observer, Observation) {
         let v = self.vector;
         let (mut h, observer) = seed(
             self.word(),
             self.mode,
-            2,
+            fs,
             if self.dynamic { u64::from(v.rm) } else { 7 },
             self.flags,
         );
@@ -505,6 +509,13 @@ pub(super) fn positive() -> Result<(), String> {
 }
 pub(super) fn negative() -> Result<(), String> {
     single::negative_over(INSNS)
+}
+pub(super) fn double_positive() -> Result<(), String> {
+    numeric_over(INSNS, 64)?;
+    double::positive_over(INSNS)
+}
+pub(super) fn double_negative() -> Result<(), String> {
+    double::negative_over(INSNS)
 }
 #[cfg(test)]
 mod tests {

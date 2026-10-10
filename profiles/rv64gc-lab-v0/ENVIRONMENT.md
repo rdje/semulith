@@ -207,11 +207,15 @@ set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
 Core and independent-author controls plus finite public M-mode read-back support
 the repair. The Sv39 book section gives the example and limits; no binding credit.
 
-C33a adds the D numeric prerequisite:25forms/123264boundaries/246528parcels,
-including both format conversions. The shared private fixture preserves all
-F observations. Independent author agrees; shared specfp adds no lineage.
-D transfers/signs/boxing/refusals and bindings remain; registry110/effective
-108/114 unchanged. The FP book gives literal narrowing/widening examples.
+GC-D binds219960positive/14292refusal-fault boundaries across all32forms:
+123264numeric plus96696transfer/sign/format/directed/enabled-FS observations;
+FS-Off1152, reserved-rounding12996 and memory faults144. Full state/memory,
+468504parcels and2844D requests are observed. Literal raw64payloads, boxed
+single interpretation, widening boxes, same-value Dirty and rounding examples
+are in the FP book. Fifteen new wrong effects/18actual disabled controls fail
+then restore; missing-binding RED precedes2entries, prior110exact. Registry112,
+effective110/114. Independent author/new/prior matrices/corpus agree; shared
+specfp adds no numeric lineage. Reservation/SC and final freeze remain open.
 
 GC-F binds203832positive/12852refusal-fault boundaries across all30forms:
 numeric111744, transfer/sign/boxing/directed92088, FS-Off1080,
@@ -222,7 +226,7 @@ sticky flags and selected reservation preservation have literal examples
 in the FP book. Twelve new wrong effects and16actual disabled controls
 discriminate. Prior108entries/frozen inputs remain exact; now registry110,
 effective108/114. Independent author agrees; its shared specfp origin adds
-no numeric lineage. D/reservation/SC and final freeze remain open.
+no numeric lineage. Reservation/SC and final freeze remain open.
 
 GC-CSR-ACCESS binds4480legal/8480refused single boundaries across six forms,
 M/S/U, aliases, source-field/value suppression and15selected CSR contexts.

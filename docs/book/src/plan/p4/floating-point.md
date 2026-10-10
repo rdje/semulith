@@ -187,8 +187,8 @@ instruction observations. The following c32b witnesses complete the F checks.
 tracked companion guests. The numeric matrix above remains unchanged. C32b
 adds **92,088 positive boundaries** and **12,852 refusal/fault boundaries**;
 together they observe all30 F forms over216,684 single-instruction boundaries.
-This realizes the two F checks, taking effective G-CONTRACT to108/114. D,
-reservation and deterministic SC remain, followed by final contract freeze.
+This realized the two F checks, taking effective G-CONTRACT to108/114.
+The D completion below advances that count; reservation/SC and freeze remain.
 Finite coverage does not mean an accepted processor profile.
 
 The seven remaining forms preserve the distinctions that arithmetic tests
@@ -273,7 +273,7 @@ their original expectations, and the original167-guest corpus remains exact.
 C33a generalizes the private numeric fixture by explicit source and result
 width. The shared module is now `floating.rs`, with F's remaining cases in
 `floating/single.rs`; all216,684 F boundaries remain unchanged in effect.
-D receives no registry credit yet: effective G-CONTRACT stays108/114.
+C33a deliberately gave D no registry credit; the completion below now binds it.
 
 The D matrix includes1,504 ordinary double rows and160 format-conversion rows
 from the same governed numeric data. Both destination widths belong to D.
@@ -298,7 +298,62 @@ use the same pre-execution comparator as F. Sixteen wrong numeric routes and
 nine actual disabled controls must fail before source restoration. The
 independent instruction author agrees on all new cases; it shares `specfp`
 with the vector generator, adding no numeric lineage. The original167-guest
-corpus remains exact. D binding follows only after its remaining checks pass.
+corpus remains exact. The following completion supplies the remaining D checks.
+
+## Complete finite D contract witnesses
+
+`CHK-GC-D-POS` and `CHK-GC-D-NEG` now bind all32 D forms with direct witnesses
+and tracked companion guests. The numeric prerequisite remains123,264 positive
+boundaries. Completion adds96,696 positive and14,292 refusal/fault boundaries:
+**234,252 boundaries, 468,504 fetch parcels and2,844 data requests** in total.
+Effective G-CONTRACT becomes110/114; reservation, deterministic SC and final
+freeze remain open. These finite observations do not accept the CPU profile.
+
+| Operation / input | Expected observation |
+| --- | --- |
+| FLD / FMV.D.X, `0x7ff0123456789abc` | Full64 signaling payload retained, no NV, FS Dirty even when destination bits were identical. |
+| FSD, same payload | Eight bytes `bc 9a 78 56 34 12 f0 7f`; neighboring bytes and FS preserved. |
+| FMV.X.D, `0xffffffff3f800000` | Exactly the same64bits, with no computational unboxing or word sign extension. |
+| FSGNJ.D with negative second sign | First magnitude/payload retained, second sign copied. FSGNJN negates that sign; FSGNJX XORs both signs. No flags. |
+| Boxed single `0xffffffff7fa12345` used by D arithmetic | A negative double quiet NaN; canonical D result, no signaling NV from its low single payload. |
+| FCVT.D.S, proper boxed `0x7fa12345` | Canonical double `0x7ff8000000000000`, NV. Improper upper32bits instead supply canonical single qNaN, no NV. |
+| `1 + 2^-53` | RNE/RTZ/RDN:`0x3ff0000000000000`; RUP/RMM:`0x3ff0000000000001`; NX. Negative tie distinguishes RDN/RUP. |
+| `0x0010000000000000 * 0x3fefffffffffffff` | RNE/RUP/RMM:minimum normal; RTZ/RDN:largest subnormal; UF+NX in every mode under the unbounded-exponent rounding rule above. |
+| Same minimum normal times `0x3feffffffffffffe` | Exact largest subnormal `0x000fffffffffffff`, no flags. |
+| Fused `(1+2^-52)*(1-2^-52)-1` | Exact `-2^-104`, bits `0xb970000000000000`, no flags; all four signed-term forms. |
+
+Sixteen raw64patterns cover all ten classes, signed NaN payloads, boxed singles
+and an ordinary non-boxed double. Sign operations cross both operands:27,648
+cases. Raw moves add1,152; loads1,728 and stores864 at offsets0/8/16 compare
+exact D requests and32 surrounding bytes. Stores retain an overlapping
+reservation under this selected one-hart policy. Same-value writes add72.
+All matrices cross M/S/U, source aliases, x0/f0 and flags0/31. Another2,304
+representative cases exercise every form with FS Initial and Dirty; Clean is
+covered by the main matrices. x0 discards results; f0 remains writable.
+
+Boxed-single-as-double observations add38,448 cases over all20 numeric forms
+that read full-width FP operands and applicable operand positions. They retain
+min/max one-NaN selection, classification bit9, FEQ versus FLT/FLE NV behavior,
+integer saturation and sticky flags. FCVT.D.S adds12,960 proper/improper-box
+cases. Directed ties, exact/tiny results, four fused forms and six signed
+range/NaN inputs across four integer conversions add11,520 cases, including
+all legal static/DYN rounding modes. Word integer results sign-extend.
+
+Every D form refuses FS Off:1,152 cases. All19 rounded forms cross19 reserved
+rm/frm settings:12,996 cases, including exact FCVT.D.W[U]/D.S. Unmapped or
+misaligned data addresses establish FS gate priority: only fetch occurs before
+cause2. Ordinary memory faults add144 cases, with cause4/6 before data access
+or cause5/7 after one D request. Exact trap stack, nonretirement and suppression
+of instruction-owned writes are compared with full state, requests and memory.
+
+Fifteen new wrong transfer/sign/memory/format effects supplement16 numeric
+wrong routes. Sixteen corrupted captures and18 actual disabled controls fail
+before byte restoration. A proposed unused Bits-node mutation did not reach
+the compiled sign operation; only the corrected masked-AND control is credited.
+Missing-binding failure precedes the two entries; prior110 entries remain exact.
+The independent instruction author agrees on all new and prior cases and the
+167-guest corpus. It shares `specfp` with the numeric generator; agreement adds
+no numeric lineage. Frozen records, numeric data and production core are exact.
 
 ## Historical verification receipts
 

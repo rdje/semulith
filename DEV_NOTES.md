@@ -1,6 +1,30 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — complete and bind finite D witnesses (P4-SYSTEM.13 c33b)
+
+Complete D owned before code on clean4f07283. Numeric123264 preserved;
+additional96696positive +14292negative =234252boundaries/468504parcels/
+2844Drequests across all32forms. Shared numeric fixture accepts private FS
+argument, defaultClean/F unchanged. Literal raw64transfer/sign, boxed-single
+D qNaN interpretation, proper/improper single widening, tie/tiny/exact/FMA/
+saturation rules, Initial/Dirty representatives, all32FS-Off/19rounded reserved
+settings and precise memory faults compare full state/requests/memory before
+execution. All aliases, flags, f0/x0, selected reservation/TLB/wait retained.
+Fifteen new well-formed wrong effects +16prior numeric routes discriminate;
+16bad captures and18actual disabled controls RED101 then byte-restored/12GREEN.
+Unused Bits-node sign mutant was non-reaching; preserved passing log, traced
+published compiled masked-And and corrected actual mutant RED101 before credit.
+Missing D binding RED101 precedes exactly2Execution entries, prior110exact;
+registry112/effective110/114. Independent author110988new cases/all32forms,
+prior Dnumeric/F/full167/5365/10524corpus and symbolic assembly exact; literal
+numeric expectations re-derived specfp, shared ancestry adds no new lineage.
+Rust173/17/242, FP/focused/six books rc=0. Core/data/canonical/frozen/history/
+LIVE exact; book/ENV/GS/index/pointers sync. Artifacts target/p4-system-13/c33b.
+Own task-history containment before reservation/SC, then full CI/freeze;
+.14 evidence/provenance/stale-note sweep remains owned.
+promotion: declined (permanent shared witnesses and worked D examples preserve this existing finite-contract method without a duplicate card).
+
 ## _(2026-10-10)_ — contain FP timeline and development receipts (P4-SYSTEM.13 c33b0)
 
 Governed book51tracked members/523133B leaves1155B, DEV31448B leaves5416B

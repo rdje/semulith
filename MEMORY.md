@@ -18,16 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c33b/0182 — refine/complete D transfers/signs,
-  boxed-single interpretation/FCVT.D.S invalid boxes, all32 FS-Off/19rounded
-  form reserved refusals, faults/directed rules/disabled controls. Missing
-  binding RED then2Execution entries; preserve numeric D123264/all F matrices.
-  C33b0 retains FP10576B intro/full24259B inverse, saves5114B; five whole DEV
-  entries→0231/full31448B inverse; all history exact. Full tracked-family
-  census fixes omitted309B book.toml; no cap/gate change. Focused/six books green,
-  prior Rust173/17/239 applies; core/data/canonical/frozen/history/LIVE/
-  registry110/effective108/114 exact. D/reservation/SC/freeze and .14 sweep open.
-  No push below cadence; read c33b refinement before code.
+- next_action: `P4-SYSTEM.13` c33c/0183 — own completed-task-history
+  containment before reservation/SC: measure full tracked family/part budgets,
+  preserve whole completed c29e–c33b units/full-source inverse and damaged
+  controls in finite archive11, retain active .13/.14 ownership/frontier.
+  D now complete:32forms/234252boundaries/468504parcels/2844requests;
+  independent new/prior matrices/corpus exact,15new wrong effects/18actual
+  disabled controls restored. Rust173/17/242, FP/focused/six books green.
+  Registry112/effective110/114; prior110bindings/core/data/canonical/frozen/
+  history/LIVE exact. Book/ENV/GS/index synced, fixed caps. Reservation/SC/
+  full CI/freeze and .14 sweep remain; no push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

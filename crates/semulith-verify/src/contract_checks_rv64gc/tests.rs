@@ -184,6 +184,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
             || l.starts_with("(obligation (id \"OB-GC-COUNTERS\")")
             || l.starts_with("(obligation (id \"OB-GC-CSR-ACCESS\")")
             || l.starts_with("(obligation (id \"OB-GC-F\")")
+            || l.starts_with("(obligation (id \"OB-GC-D\")")
             || l.starts_with("(obligation (id \"OB-CSR-SET\")")
             || l.starts_with("(obligation (id \"OB-NO-PMP\")")
             || l.starts_with("(obligation (id \"OB-NO-H\")")
@@ -195,7 +196,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        110,
+        112,
         "every declared POS/NEG check of the completed slices is selected"
     );
     for (ob, chk) in declared {

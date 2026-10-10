@@ -1050,16 +1050,84 @@ Evidence target/p4-system-13/c33b0; c33b/0182 completes D next, then reservation
 SC/freeze and .14 evidence/provenance sweep.
 promotion: declined (existing exact-byte containment, finite archive and worked full-family census/inverse retain this application and its corrected measurement).
 
-### `.13` c33b — complete D transfers, format rules and refusals (queued)
+### `.13` c33b — complete D transfers, format rules and refusals (completed, SEMULITH-P4-0182)
 
-Own remaining GC-D after numeric prerequisite; measure book/DEV pressure before
-code. Seven raw64 transfer/sign forms, NaN-boxed singles seen by D as negative
-qNaNs, FCVT.D.S invalid-box canonical input, directed tie/underflow/saturation/
-NaN/FMA rules, all32FS-Off and19rounded-form reserved settings including
-FCVT.D.W[U]/D.S exact operations; full-state faults and controls. Preserve all
-F/numeric D matrices and prior110bindings. Missing-binding RED precedes exactly
-2DExecution entries/effective110/114. Review/refine finite matrices, selected
-reservation policy and independent expectations first. Then reservation/SC/freeze.
+Owned on clean4f07283/brief0/actual census rc=0 after c33b0. Governed book
+519157B leaves5131B; DEV25681 below36864health. Review pinned D/F/Machine,
+OB-GC-D/REQ-GC-D, compiled32forms/19rounded, current shared fixture/FP/ENV/
+step interfaces, v1 reservation policy and FP/v2 books before changes.
+Refined finite matrices before code (all M/S/U, six choices0/5/6/7/8/31,
+flags0/31 unless source choice explicitly three):
+- Sixteen raw64patterns cover all ten classes, both NaN signs/payloads,
+ boxed-single qNaNs and a non-boxed pattern that D reads as an ordinary64value.
+ Sign16×16×3×36=27648, moves16×2×36=1152; exact full64bits, no flags,
+ x0 discard/f0 writable and Dirty on FP writes only.
+- FLD16×offset0/8/16×36=1728; FSD16×3offset×M/S/U×sources0/6/31×flags=864.
+ Exact D request/data and32surrounding bytes, reservation retained even overlap.
+ Same-value load/move72controls mark Dirty. Misaligned/unmapped fault144cases
+ retain exact causes/VA/request termination and all nontrap state.
+- Representative FSInitial/Dirty cases for all32forms:25numeric first governed
+ rows plus7transfer/sign forms, each×2states×36=2304. Generalize common numeric
+ fixture's FS input privately while preserving defaultClean matrices. All
+ rounded selectors still resolve where a legal mode cannot affect the result.
+- Full-width D reading a boxed single sees a negative qNaN, including when its
+ low single looks signaling. Three boxed low patterns0/1.0/sNaN across all20
+ full-width FP-reading numeric forms (19ordinary+FCVT.S.D), applicable operand
+ masks, static/DYN modes and aliases:38448. Literal canonical/minmax/class/
+ compare/saturating outputs and flags; source operand positions checked.
+- FCVT.D.S:12single patterns×3upperpatterns×5rm×static/DYN×36=12960.
+ Proper-box widening literal map independently specfp-derived before code;
+ two improper upper patterns read canonical qNaN/NV0, proper sNaN raisesNV.
+- Directed D ties±1±2^-53, tiny minnormal×(1-2^-53) UF+NX in every mode,
+ exact largest subnormal noflags, four fused variants giving-2^-104,
+ sixrange/NaN inputs×fourintegerconversions, allrm/static-DYN/aliases:11520.
+ Literal bits/flags re-derived with specfp, no production expected calls.
+- FSOff32×36=1152; all19rounded forms×19reserved settings×36=12996,
+ including FCVT.D.W[U]/D.S exact operations. Memory addresses force gate
+ priority over misalignment/accessfault. Traps only fetch twice, exact Mstack/
+ cause2/word/mepc/cycle/nonretirement and no own writes. Plus144memoryfaults.
+Control setup root cause (tools-first before credit): a proposed Bits63:63
+mutation passes the D test because compiled FSGNJ.D/N/X use masked And, not
+that unused extraction node. Preserve the passing log as unused-bits-control-
+green.log; own/retest the actually executed sign-mask And path instead. No
+comparison escape or target defect inferred from a non-reaching mutation.
+
+Additional positive96696 + numeric123264 =219960; negative14292; total234252
+boundaries/468504parcels/2844data requests. Verify counts independently and
+full-state/memory/owners/TLBcursor/reservation/wait/requests/extent, before run.
+Well-formed wrong routes/effects, bad captures and actual disabled FS/RM/
+format/boxing/width/sign/f0/suppression/observers must fail then byte-restore.
+Missing D binding RED precedes exactly2Execution entries; prior110exact,
+registry112/effective110/114 only after complete witnesses/companions pass.
+No frozen/canonical/core/data changes intended. Independent author/new and
+prior matrices/corpus exact, shared specfp adds no numeric lineage. Rust/FP/
+focused/six books; book/ENV/GS/index/pointers/caps and clean commit. Reserve
+part space for receipts; own task-history containment before remaining pairs
+if needed. Then reservation/SC/full CI/freeze; .14 sweep remains scheduled.
+
+Result:
+
+Complete D owned before code on clean4f07283. Numeric123264 preserved;
+additional96696positive +14292negative =234252boundaries/468504parcels/
+2844Drequests across all32forms. Shared numeric fixture accepts private FS
+argument, defaultClean/F unchanged. Literal raw64transfer/sign, boxed-single
+D qNaN interpretation, proper/improper single widening, tie/tiny/exact/FMA/
+saturation rules, Initial/Dirty representatives, all32FS-Off/19rounded reserved
+settings and precise memory faults compare full state/requests/memory before
+execution. All aliases, flags, f0/x0, selected reservation/TLB/wait retained.
+Fifteen new well-formed wrong effects +16prior numeric routes discriminate;
+16bad captures and18actual disabled controls RED101 then byte-restored/12GREEN.
+Unused Bits-node sign mutant was non-reaching; preserved passing log, traced
+published compiled masked-And and corrected actual mutant RED101 before credit.
+Missing D binding RED101 precedes exactly2Execution entries, prior110exact;
+registry112/effective110/114. Independent author110988new cases/all32forms,
+prior Dnumeric/F/full167/5365/10524corpus and symbolic assembly exact; literal
+numeric expectations re-derived specfp, shared ancestry adds no new lineage.
+Rust173/17/242, FP/focused/six books rc=0. Core/data/canonical/frozen/history/
+LIVE exact; book/ENV/GS/index/pointers sync. Artifacts target/p4-system-13/c33b.
+Own task-history containment before reservation/SC, then full CI/freeze;
+.14 evidence/provenance/stale-note sweep remains owned.
+promotion: declined (permanent shared witnesses and worked D examples preserve this existing finite-contract method without a duplicate card).
 
 
 
@@ -1121,7 +1189,7 @@ expectations during slice d; a fixture name alone is insufficient evidence.
 | `OB-GC-ATOMICS` | 0/2 | Runtime: a-amo-arith/minmax-w/d / a-lrsc-mustfail,a-amo-sv39 |
 | `OB-GC-FENCEI` | 0/2 | Runtime: fencei-selfmod / fencei-reserved |
 | `OB-GC-F` | 2/2 | Execution: all30forms, numeric/transfer/boxing/directed/refusal witnesses + companions |
-| `OB-GC-D` | 0/2 | Runtime: all d-* fixtures; independent numeric vectors |
+| `OB-GC-D` | 2/2 | Execution: all32forms, numeric/raw64/format/directed/refusal witnesses + companions |
 | `OB-RESERVATION` | 0/2 | Runtime: a-lrsc-pair / a-lrsc-fault,a-lrsc-mustfail |
 | `OB-SC-DETERMINISTIC` | 0/2 | Runtime: a-lrsc-loop / a-lrsc-mustfail |
 | `OB-ATOMIC-MISALIGN` | 0/2 | Runtime: aligned a-lrsc-pair / a-lrsc-illegal,a-amo-overlap |
@@ -1204,6 +1272,18 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c33b — **ROOT CAUSE**: verify.py rc=0 authenticates D/F/Machine
+ rules/all32forms and independently derives110988new cases before binding.
+ Non-reaching Bits mutation traced to compiled masked-And, corrected RED101.
+- [x] `.13` c33b — **ADDRESSED**: direct suites rc=0:219960positive/
+ 14292negative/234252boundaries,31Dwrong routes/effects and16bad captures;
+ 18actual disabled controls RED101→byte-restored/12GREEN. Missing-binding
+ RED101→2entries/prior110exact; registry112/effective110/114.
+- [x] `.13` c33b — **NO REGRESSION**: make check/verify/focused/six books rc=0:
+ Rust173/17/242; all F/prior Dnumeric/full167corpus exact. Core/data/canonical/
+ frozen/history/LIVE exact; book/ENV/GS/index/pointers sync, fixed caps.
+ promotion: declined (permanent shared witnesses and worked D examples retain this existing finite-contract application).
 
 - [x] `.13` c33b0 — **ROOT CAUSE**: census/partition.py rc=0:
  full51-member book523133B/1155room; Markdown-only scratch omits309B book.toml.
@@ -1411,6 +1491,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c33b | independent110988new/all32D/prior matrices/full167corpus;15new wrong effects/16bad captures/18disabled controls+missing binding RED101→restored | Rust173/17/242; prior110bindings/core/data/frozen/history/LIVE exact; registry112/effective110/114; FP/focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c33b0 | full24259B FP inverse/damaged controls/current-feature preservation; full31448B DEV inverse/sharder12/0; full-family census correction309B | save5114chapter B; history/core/data/canonical/frozen/LIVE/registry110/effective108/114 exact; focused/six books rc=0; prior Rust173/17/239 applies; hooks next |
 | `2026-10-10` | `.13` c33a | independent123264/25Dforms/all F matrices/full167corpus;16wrong D routes/9disabled controls RED101→restored | Rust173/17/239; core/data/canonical/frozen/history/LIVE/registry110/effective108/114 exact; FP/focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c32b | all30F/216684boundaries; independent new104940+prior111744/full167corpus;12new wrong effects/16bad captures/16disabled controls+missing binding RED101→restored | Rust173/17/237; prior108bindings/core/data/canonical/frozen/history/LIVE exact; registry110/effective108/114; FP/focused/six books rc=0; hooks next |
@@ -1437,6 +1518,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c33b | `SEMULITH-P4-0182 (leaf P4-SYSTEM.13): complete and bind finite D witnesses` | own c33c/0183 completed-task containment before reservation/SC/full CI/freeze; .14 sweep owned |
 | `.13` c33b0 | `SEMULITH-P4-0181 (leaf P4-SYSTEM.13): contain FP timeline and development receipts` | c33b/0182 complete D witnesses/bindings, then reservation/SC/freeze |
 | `.13` c33a | `SEMULITH-P4-0180 (leaf P4-SYSTEM.13): witness numeric D instructions before binding` | remaining D controls/bindings, then reservation/SC/freeze; measure containment first |
 | `.13` c32b | `SEMULITH-P4-0179 (leaf P4-SYSTEM.13): complete and bind finite F witnesses` | GC-D before reservation/SC/freeze; .14 evidence sweep scheduled |
@@ -1452,6 +1534,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c33b (SEMULITH-P4-0182): all32D/234252boundaries,
+ independent new/prior matrices/corpus exact, wrong/disabled controls fail/
+ restore; Rust173/17/242, FP/focused/six books green. Registry112/effective
+ 110/114, prior110/core/data/frozen/history/LIVE exact. Contain task history
+ before reservation/SC/full CI/freeze; .14 sweep owned.
 
 - `2026-10-10`: `.13` c33b0 (SEMULITH-P4-0181): finite FP intro/full
  source inverse, current features/example retained, save5114B; five whole DEV
