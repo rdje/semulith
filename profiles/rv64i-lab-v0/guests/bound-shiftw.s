@@ -70,3 +70,6 @@
       addi x13, x0, -1              # -1: every low-5 read sees 31
       sllw x14, x8, x13             # rs2[4:0] = 31: bit 0 reaches bit 31
       sraw x15, x8, x13             # rs2[4:0] = 31: all sign
+
+      # ---- SRAW independently pins the five-bit mask: 96 reads as zero ----
+      sraw x16, x8, x10             # identity of low32, sign-extended; six-bit count 32 gives all sign

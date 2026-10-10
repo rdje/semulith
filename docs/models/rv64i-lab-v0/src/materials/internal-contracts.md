@@ -18,5 +18,5 @@
 | `encoding.sexp` | the composed encoding space (fragments resolved, collision-free, gated by UNIT-COMPOSITION) | composes `riscv/rv64i` |
 | `requirements.sexp` | the predeclared requirements, one per decision (RECORD-SCHEMA cross-checks the statements verbatim) | 28 requirements |
 | `contract-obligations.sexp` | the environment contract (`rv64i-lab-env-v0`): every obligation with positive AND negative checks | 36 obligations, 72 declared checks |
-| `guests/` | the EVD-05 guest corpus: independently encoded programs and specification-derived expectations | 49 guests, 643 expected steps |
+| `guests/` | the EVD-05 guest corpus: independently encoded programs and specification-derived expectations | 49 guests, 644 expected steps |
 | `interactions.sexp` | the declared interaction matrix (P2-SCALAR.4), gated by INTERACTION-MATRIX | 21 cells over 6 axes |

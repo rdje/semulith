@@ -1,5 +1,48 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — close SRAW mask discrimination with a pre-derived boundary (P4-SYSTEM.13 c17b)
+
+Append SRAW x16,x8,x10 = 0x40a4583b at 0x800000dc to both bound-shiftw profiles.
+Existing x8=0xffffffff80000001 and x10=96 give count zero; literal expected x16
+is 0xffffffff80000001, recorded before either engine executes. Preserve all 55
+old instruction positions/bytes and observations. Budgets become 56 steps, base
+56 word requests / GC 112 parcels. Correct SRLW step 51's explanatory six-bit
+alternative to zero in the explicitly defined wide evaluator; its required
+expected identity remains unchanged. No production instruction rule changes.
+
+The isolated SRAW author now fails only new boundary 55; public step_over bad
+table also fails there (rc101). The normal independent corpus matches all 167
+guests / 5361 boundaries / 10516 parcels. Add one hand-encoded count-96/garbage-
+upper-word case and isolated sraw-count mutation to the durable integer probe.
+Observe rc1 with SRAW five-bit count before registering the GUEST-GEN arm.
+Normal probe: 23 arithmetic/10 branches, 17 gaps/472 steps, 42 owned records exact.
+GUEST-GEN 143, global arms 647. Fresh pinned Sail agrees on 56 declared rows and
+change observations; two traces byte-identical, including the added SRAW.
+
+Identity keeps 110 other base and 346 other GC canonical/guest files, all core,
+definitions, production author, frozen records and 78 entries exact. Both Rust
+guest fixtures retain every other guest datum byte-exact. Re-pin base dossier
+from 9f7cecb3…d784 to df48b3a6…f38a, regenerate board/platform/model-book outputs;
+parsed board data stays exact except the pin, map/material bodies except display
+and provenance. Rust make check passes 167/17/201; focused gates and final make ci
+pass all five legs (check, gate, bench, smoke-bench, main/model books).
+SRAW count-mask coverage and SRLW explanatory defects closed,
+no new contract credit: 76/114, nineteen pairs/freeze remain. Initial CI refused
+the base material's old 643 expected-step total; second refused G0/G1's matching
+old totals. Re-derive through the owners; fresh base live smoke rc0 verifies all
+enabled comparisons, including bound-shiftw against Sail/Spike over 56 steps.
+
+Adjacent width review confirms a separate evidence defect, OPEN priority-next
+c17c before c17d SHAMT binding: isolated SRAW and SRAIW full-width source authors
+each match the entire 167/5361/10516 corpus. Public bad tables match 105 boundaries;
+all 38 arithmetic-W source occurrences already are canonical signed words.
+Both literal SRAW/SRAIW with x8=0x0000000080000001 and count one distinguish
+correct 0xffffffffc0000000 from bad 0x40000000. The current count-zero witness
+cannot test pre-shift truncation. Core correct; add derived witnesses and durable
+isolated controls next. Task and integer book retain the diagnosis and ownership.
+promotion: declined (durable author case/refusing control, boundary guest and integer runtime book retain the verified repair).
+
+
 ## _(2026-10-10)_ — diagnose SRAW mask coverage and retain bounded evidence (P4-SYSTEM.13 c17a)
 
 Before registering SHAMT, isolate SRAW's five-to-six-bit count mutation in a

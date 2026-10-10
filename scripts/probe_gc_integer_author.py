@@ -59,6 +59,7 @@ def check(author, parent):
         (register(0x33, 1, rd=1), 3, 2, 12, 'alias reads pre-state'),
         (register(0x3b, 5, 0x20, rd=1), 0x80000000, 31, MASK, 'alias reads pre-state'),
         (immediate(0x13, 4, -1, rd=0), MASK, 0, 0, 'x0 discards integer writes'),
+        (register(0x3b, 5, 0x20), 0x1234567880000001, 96, 0xffffffff80000001, 'SRAW five-bit count'),
     ]
     for word, a, b, expected, message in cases:
         hart = author.Hart()
@@ -152,6 +153,7 @@ def main():
         'xlen-count': ('u(x[rs1] << (x[rs2] & 63)), "sll"', 'u(x[rs1] << (x[rs2] & 31)), "sll"'),
         'word-count': ('shamt = x[rs2] & 31', 'shamt = x[rs2] & 63'),
         'word-sign': ('sext(u(x[rs1], 32), 32) >> shamt, "sraw"', 'u(x[rs1], 32) >> shamt, "sraw"'),
+        'sraw-count': ('sext(u(x[rs1], 32), 32) >> shamt, "sraw"', 'sext(u(x[rs1], 32), 32) >> (x[rs2] & 63), "sraw"'),
         'branch-sign': ('4: sext(x[rs1], 64) < sext(x[rs2], 64)', '4: x[rs1] < x[rs2]'),
         'load-sign': ('mn in ("lb", "lh", "lw")', 'mn in ("lh", "lw")'),
         'store-width': ('widths = {0: (1, "sb")', 'widths = {0: (2, "sb")'),

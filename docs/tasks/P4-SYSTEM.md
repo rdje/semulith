@@ -293,6 +293,74 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c17b — discriminate SRAW's five-bit count (`2026-10-10`, `SEMULITH-P4-0135`)
+
+Owned before edits on clean a635eb5 after c17a hooks, brief clearing and actual
+job census. Resume the confirmed corpus defect, priority now. Relevant SHAMT
+requirement, pinned RV64I 3.1.2.1–2, all twelve semantic rows/evaluator widths,
+source/expectation/mirror generator and new integer book reviewed. No production
+SRAW repair is needed: its mask is already correct. Add SRAW x16,x8,x10 (word
+0x40a4583b) after the old 55-step bound-shiftw program in BOTH profiles. Inputs
+already hold x8=0xffffffff80000001, x10=96; low-five count=0, expected x16 exactly
+0xffffffff80000001. Derive this literal before either model executes. Preserve
+all old observed values, instruction bytes and positions; extend budgets by one
+step (base 56 word requests; GC 112 parcels). Correct SRLW step 51's explanatory
+six-bit alternative to the explicitly defined wide-evaluator zero result.
+
+Add one hand-encoded SRAW/count-96 case and an isolated sraw-count author mutation
+to the durable integer probe. Observe its named RED before registering a new
+GUEST-GEN arm, then update derived live count. Normal probe should retain old
+cases/42 owned records with one added case and corpus step. Independently compare
+all corpus observations, show the formerly surviving public bad table now fails
+only the new boundary, run the correct core corpus and a fresh repeated public
+Sail run. Regenerate both guest fixtures, deliberate base dossier/board pin and
+all dependent board/platform/book/report artifacts; prove only allowed guest,
+provenance/pin and witness changes. Preserve frozen records/78 registry entries,
+effective 76/114. Update book/task/live pointers and focused gates; run one full
+make ci for this evidence repair milestone before commit. c17c repairs the
+separately confirmed source-width witnesses; c17d then binds SHAMT.
+
+Initial milestone CI rc2: Rust/check passed, gate refused MATERIALS-BILL's base
+internal-contracts fragment, which derives total expected steps (643 to 644). Own the
+remaining model-book propagation here; regenerate rv64i materials through its
+owner, inspect the derived change, then rerun the same full CI. No skipped gate
+or rewritten frozen receipt.
+
+Second milestone CI rc2: G0/G1 also retained the old derived 643-step total.
+Regenerate all five reports after final profile documentation, run their wrapper,
+then rerun full CI. Fresh scripts/run_semulith_smoke.py rc0 independently verifies
+the changed base program against both Sail and Spike over 56 aligned steps;
+all enabled corpus comparisons/reproductions pass, with standing declared
+divergences and guest-no-device's disabled Spike comparison preserved.
+
+### `.13` next width review — owned before diagnostic (`2026-10-10`)
+
+Adjacent OB-WSUFFIX review identifies a separate risk to settle before new
+registration: existing SRAW/SRAIW inputs may all already be sign-extended from
+32 bits. Replacing only their pre-shift truncation by a 64-bit input could then
+survive the corpus even though the selected rule is correct. Diagnose isolated
+SRAW and SRAIW source-width copies against the independent full corpus and public
+step_over table seam. Literal zero-extended input 0x0000000080000001 shifted
+arithmetically by one should yield 0xffffffffc0000000; the deliberately wrong
+64-bit input variant yields 0x40000000 after the required result truncation.
+If confirmed, own priority-next source-width witness repair before further
+shift/W registration; keep c17b's count-mask repair bounded and commit it first.
+No production implementation changes are authorized by this diagnostic plan.
+
+CONFIRMED OPEN, owned priority-next c17c (`SEMULITH-P4-0136`): isolated SRAW
+and SRAIW full-width source authors EACH still match all 167/5361/10516 corpus
+observations (python3 target/p4-system-13/c17b/width-author.py rc0). Public
+step_over bad tables match three programs/105 boundaries; all 38 arithmetic-W
+source occurrences are already sign-extended 32-bit values. Both literal words
+0x40a4583b (SRAW) and 0x4014581b (SRAIW) distinguish the source-width rules with
+x8=0x0000000080000001, count one: correct 0xffffffffc0000000, bad 0x40000000
+(cargo run --manifest-path target/p4-system-13/c17b/width-review/Cargo.toml rc0).
+The existing count-96 witness uses count zero, so it cannot close this separate
+width gap. Append pre-derived noncanonical-source witnesses in both profiles,
+register isolated durable controls only after RED, and verify correct core,
+independent author and fresh reference before SHAMT/W credit. Production is
+correct; this is a missing-discrimination defect, with impact limited to evidence.
+
 ### `.13` c17a — shift-mask diagnosis and bounded evidence (`2026-10-10`, `SEMULITH-P4-0134`)
 
 Owned before edits on clean 0115438 after c16 hooks, brief clearing and actual
@@ -469,6 +537,43 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c17b) (`2026-10-10`, `SEMULITH-P4-0135`):
+
+- [x] **ROOT CAUSE / PRE-DERIVED DISCRIMINATOR** — python3
+  target/p4-system-13/c17b/probe.py rc=0: both profiles retain all 55 old instruction
+  positions/bytes/observed values, append literal 0x40a4583b at 0x800000dc with
+  x16=0xffffffff80000001. Normal full GC corpus exact 167/5361/10516. Isolated
+  six-bit SRAW author now fails only new boundary 55. Public bad-table cargo run
+  rc101 names bound-shiftw step 55; correct core make check rc=0, Rust167/17/201.
+- [x] **ADDRESSED / DURABLE CONTROL / REFERENCE** — python3 scripts/probe_gc_integer_author.py
+  --mutation sraw-count observed rc1, SRAW five-bit count, BEFORE arm registration.
+  Normal probe rc=0: 23 arithmetic/10 branch cases, 17 gaps/472 steps, 42 owned
+  records exact. python3 scripts/run_rv64gc_sail.py --out-dir
+  target/p4-system-13/c17b/sail bound-shiftw rc=0: AGREE all 56 declared rows/
+  change observations; two traces byte-identical. Correct SRLW expected value
+  unchanged; only its explicit countermodel explanation changes.
+- [x] **NO REGRESSION / IDENTITY / DEPENDENCIES** — python3 target/p4-system-13/c17b/identity.py
+  rc=0: 110 other base/346 other GC canonical/guest files exact; core/definition/
+  production author, frozen records and 78 entries exact. Both generated guest
+  files retain every other datum exact. python3
+  target/p4-system-13/c17b/board-identity.py rc=0: eight S-expression board data
+  documents exact except new shared dossier pin df48b3a6…f38a; map/four material
+  bodies exact except displayed pin. Derived counts rc=0: five claims, 647 arms;
+  gate-report Python controls20/0. Effective 76/114 unchanged.
+- [x] **MILESTONE SIGNOFF** — make ci rc0: check (Rust 167/17/201), all doctrines,
+  bench, smoke-bench and main/five model books green. First two attempts refused
+  stale base materials then G0/G1 step totals; owner regeneration corrected both,
+  scripts/check_gate_report.sh rc0 five fresh reports and MATERIALS-BILL rc0 five
+  units before final CI. Fresh base live smoke rc0 all enabled comparisons, changed
+  guest Sail/Spike 56 steps and repeated trace exact. Then hooks/brief/clean/job
+  census; scripts/check_guest_gen.sh --self-test rc0: 143 pass / 0 fail.
+  c17c repairs source-width
+  coverage before c17d SHAMT binding.
+  First hook refused missing required ROOT CAUSE/ADDRESSED/NO REGRESSION labels
+  after historical checklists moved to the archive; current boxes now name their
+  evidence roles explicitly. Re-run staged TASK-ACCEPTANCE before hook retry.
+  promotion: declined (durable control, pre-derived witness and integer book retain the verified correction).
+
 `P4-SYSTEM.13` slice (c17a) (`2026-10-10`, `SEMULITH-P4-0134`):
 
 - [x] **DIAGNOSIS / OWNERSHIP** — python3 target/p4-system-13/c17a/probe.py
@@ -510,6 +615,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c17b | literal append/old 55 exact; isolated author/public RED only step 55; independent 167/5361/10516; Sail 56 repeated; base live Sail/Spike; all other data exact; Rust 167/17/201; final make ci five legs | count-mask defect closed; width holes OPEN c17c; 76/114 unchanged |
 | `2026-10-10` | `.13` c17a | bad SRAW corpus 167/5360/10514 still matches; public 3/104 miss; count-96 distinguishes; lossless history/task/book proof; focused governance/books | hole OPEN c17b; 76/114 unchanged |
 | `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
 | `2026-10-09` | `.13` c7a | public before/after; 3 Rust view controls / 192 CPU steps; author 42 exact; Rust 160/17/197; GUEST-GEN 135/0 | final make ci all five legs green; delegation/owner repaired; 56/112 unchanged |
@@ -534,6 +640,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c17b | `SEMULITH-P4-0135 (leaf P4-SYSTEM.13): close SRAW count-mask discrimination with a derived boundary` | c17c source-width repair, c17d SHAMT |
 | `.13` c17a | `SEMULITH-P4-0134 (leaf P4-SYSTEM.13): diagnose SRAW mask coverage and retain bounded evidence` | c17b repair, c17c binding |
 | `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
 | `.13` c7a | `SEMULITH-P4-0118 (leaf P4-SYSTEM.13): enforce delegation in supervisor interrupt CSR views` | c7b full cold reset, then 28 runtime pairs |
@@ -556,6 +663,11 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-10`: `.13` c17b (SEMULITH-P4-0135): append independently derived
+  count-96 boundary; durable isolated control and public wrong table fail only
+  new step. Correct SRLW explanation; refresh all dependent data and base counts.
+  Final full CI and fresh live references green. Own confirmed source-width
+  witness defects priority-next c17c; effective 76/114 unchanged.
 - `2026-10-10`: `.13` c17a (SEMULITH-P4-0134): confirm six-bit SRAW
   coverage miss with independent full corpus and public engine; count-96 literal
   discriminates. Own priority-next repair before binding. Losslessly bound two

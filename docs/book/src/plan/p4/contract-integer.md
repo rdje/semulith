@@ -136,8 +136,64 @@ A literal public-interface witness already distinguishes the rules:
 | x8=0xffffffff80000001, x10=96; SRAW x16,x8,x10 (0x40a4583b) | count 0; x16=0xffffffff80000001 | count 32; x16=0xffffffffffffffff |
 
 The independent author and public core agree on both outcomes. The production
-rule is correct; the defect is missing corpus discrimination. Priority-next c17b
-will add this pre-derived boundary witness to both mirrored profiles, preserve
-every old observation, and repair the SRLW counterexample's explanatory arithmetic.
-Then c17c may register the shift pair after independent controls. Until that
-repair is verified, the defect remains open and G-CONTRACT stays 76/114.
+rule is correct; the defect was missing corpus discrimination. c17b's verified
+repair below adds the pre-derived boundary witness and corrects the SRLW
+counterexample's explanatory arithmetic. G-CONTRACT stays 76/114 until c17d
+registers the shift pair after source-width repair and its independent controls.
+
+## Repair: SRAW independently discriminates the count mask
+
+At c17b, both bound-shiftw programs append SRAW x16,x8,x10 at address
+0x800000dc, after all 55 original instructions. Its literal word is 0x40a4583b.
+The existing x8=0xffffffff80000001 and x10=96 make rs2[4:0]=0: low32 remains
+0x80000001, sign-extended to x16=0xffffffff80000001. That expected value was
+recorded before either engine ran. The independent author matches every old
+observation and the new boundary; all old instruction bytes and positions remain.
+The base program now takes 56 word requests; the GC program takes 112 parcels.
+
+The previously surviving six-bit SRAW author fails only at new boundary 55.
+The same public processor bad-table diagnostic also fails exactly there: its
+all-ones result disagrees with the committed identity. The correct core corpus
+passes. A durable hand-encoded author case uses garbage upper bits
+0x1234567880000001 and count 96, requiring the same sign-extended low word.
+Its isolated sraw-count mutation fails with the named five-bit-count reason
+before a new GUEST-GEN control is registered. The ordinary probe now has 23
+arithmetic/10 branch cases, 17 corpus gaps / 472 steps and 42 owned records exact.
+GUEST-GEN has 143 controls; the registered doctrine total becomes 647.
+
+SRLW step 51 keeps its correct expected value. Its explanation now names a
+specific countermodel: widening the count in the present wide evaluator shifts
+the low 32-bit logical input by 32 and produces zero. The old explanatory
+0xffffffff80000000 was incorrect; no rule is asserted for every possible wrong
+implementation. SRAW's arithmetic fill instead makes that erroneous shift all-ones.
+
+The full independent GC corpus matches 167 guests / 5,361 boundaries / 10,516
+parcels. Pinned Sail 0.14 agrees on all 56 declared boundary-program rows and
+change observations, with two fresh traces byte-identical. This is finite integer
+evidence; the standing reference/platform and FP-independence limits still apply.
+Only the selected guest data, diagnostic control and their provenance change.
+The base dossier digest and dependent board/platform/model-book pins are rederived;
+all other generated guest/board semantics and all 78 registry entries stay exact.
+The SRAW count-mask coverage and SRLW explanation defects are closed. Contract
+credit stays 76/114; nineteen runtime pairs and freeze remain.
+
+## Open evidence gap: arithmetic-W source width
+
+The adjacent c17b review found a separate missing discriminator. Replacing only
+SRAW's or SRAIW's pre-shift 32-bit source truncation with a 64-bit read still
+matches the entire 167-guest corpus. Public processor bad tables also match all
+105 boundaries of the three affected programs. All 38 arithmetic-W source
+occurrences already contain sign-extended 32-bit values; arithmetic right shift
+therefore gives the same answer at both widths. The new count-96 witness uses
+count zero, so it does not exercise this distinction either.
+
+| Input / instruction | Correct 32-bit source | Incorrect 64-bit source |
+| --- | --- | --- |
+| x8=0x0000000080000001, x10=1; SRAW x16,x8,x10 (0x40a4583b) | x16=0xffffffffc0000000 | x16=0x0000000040000000 |
+| x8=0x0000000080000001; SRAIW x16,x8,1 (0x4014581b) | x16=0xffffffffc0000000 | x16=0x0000000040000000 |
+
+Both public literal experiments confirm these outcomes. The production rules
+already truncate correctly. This corpus evidence defect remains OPEN and owned
+priority-next by c17c: add pre-derived noncanonical-source witnesses to both
+profiles and durable isolated author controls, then verify the engine and fresh
+reference. c17d SHAMT and subsequent word-result registration wait for that repair.

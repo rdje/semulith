@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/netboard-lab-v0/board.sexp`  `b77201f143e2b0dd3b785e2f7750b6828e1cbe9220c755bfe06ea3bf8c983a50`
+     `profiles/netboard-lab-v0/board.sexp`  `1679e6d1c2d92b86a69b4b177f71a19d6e79792894b97d563630de6632a517b3`
      Generator: `scripts/gen_model_book.py` (sha256 `2f062f639b366734683fc5121779bd446fef1ac3c66b7766326deb9f92b855a2`) -->
 
 A board adds no encoding space: the instruction encodings a guest can execute are exactly its processor's — pinned by unit id + version + dossier digest in `board.sexp` and billed in the processor unit's own book. The board's contract surface is the memory map, the device windows and the declared absences.

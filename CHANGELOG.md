@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0135 (leaf P4-SYSTEM.13 c17b) — close SRAW mask discrimination
+
+- Append pre-derived count-96 SRAW to both boundary programs; all 55 old positions
+  and observations stay exact. Previously surviving author/public bad table now
+  fail only new boundary 55. Correct SRLW explanatory arithmetic.
+- Register isolated SRAW control after observed RED; GUEST-GEN 143, total arms
+  647. Independent corpus 167/5361/10516, fresh Sail 56 rows/repeat exact.
+- Preserve core/author/frozen records/78 bindings; refresh generated fixtures and
+  dependent board pins and base step summaries. Fresh live base smoke passes,
+  including both references on the changed 56-step program. Effective 76/114
+  unchanged. Own separately confirmed source-width coverage holes as priority-next
+  c17c; c17d SHAMT follows repair. Focused checks and final full CI five legs pass.
+
+
 ## SEMULITH-P4-0134 (leaf P4-SYSTEM.13 c17a) — own SRAW mask coverage and bound evidence
 
 - Confirm isolated six-bit SRAW passes the full old corpus and all three public

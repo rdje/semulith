@@ -395,20 +395,29 @@ contains setup, worked wake values and fresh Sail attempt qualifications.
 The STCE fallback and direct S-mode contract witness are repaired; remaining
 runtime pairs keep v2 open.
 
-Immediate ALU binds scope-alu/bound-arith (62 boundaries /124 parcels). Both
+At c14b, immediate ALU bound scope-alu/bound-arith (62 boundaries /124 parcels). Both
 whole legal programs use the corpus comparison rule; NEG discriminates wrong
 sign extension, comparison signedness and saturation, not a trap requirement.
 Five in-memory countermodels fail their named observations; the runtime book
 retains exact values. All prior inputs and 72 bindings stay exact.
 
-Register ALU binds scope-alu/bound-arith/bound-alias (99 boundaries / 198 parcels).
+At c15, register ALU bound scope-alu/bound-arith/bound-alias (99 boundaries / 198 parcels).
 Seven forms cover wrap, signed/unsigned comparison, bitwise distinctions and
 pre-state operand overlap. Eight wrong alternatives fail exact observations;
 all 74 prior bindings and inputs stay exact. The runtime book retains values and
 finite scope; no architectural trap is invented for these legal counterexamples.
 
-U-immediate bindings span 79 boundaries / 158 parcels across scope-alu,
+At c16, U-immediate bindings spanned 79 boundaries / 158 parcels across scope-alu,
 dir-chase and bound-arith. Seven incorrect sign/shift/PC/wrap alternatives fail
 named observations. The runtime book shows both signed edges, exact PC values
 and limits. No instruction, expectation, author or core changes; both smoke
 headers were corrected and their twelve instructions / 48 bytes kept exact.
+
+c17b repairs SRAW count-mask discrimination before shift registration. Both
+bound-shiftw profiles append a pre-derived count-96 SRAW, keeping all 55 old
+instruction positions and observed values. GC now has 56 boundaries / 112 parcels;
+the isolated six-bit author and public bad table fail only the new boundary.
+SRLW's explanatory countermodel is corrected without changing its expected value.
+The full independent corpus is 167 / 5361 / 10516; pinned Sail agrees on 56 rows,
+two traces exact. Production core/author and 78 bindings stay exact; 76/114
+credit remains. Worked values and finite limits are in the integer runtime book.
