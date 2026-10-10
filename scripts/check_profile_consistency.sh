@@ -25,7 +25,8 @@
 #      that gets skipped when three models are sitting there apparently agreeing.
 #   6. An EXPERIMENT that claims agreement must record the CONTROL that was observed failing.
 #      ⭐ This is `TOOLBOX.md`'s rule one level up: a gate never seen RED is not known to work,
-#      and a *comparison* never seen to diverge is not known to detect divergence. An
+#      and a *comparison* never seen to diverge is not known to detect divergence.
+#      Experiment IDs are unique and every compared model names a distinct candidate. An
 #      experiment row saying "the two models agree" with no control is the most convincing
 #      wrong record a project can hold, because it is true and worthless at the same time.
 #   7. Every PAIR of models an experiment compares must have an INDEPENDENCE row. ⭐ This is the
@@ -247,8 +248,21 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
                     findings.append(
                         f"NO REASON  {name}/{cid}: status is '{st}' with no status_reason; "
                         f"SRC-02 makes an honest 'no route' legitimate, but it has to say why")
+            experiment_ids = set()
             for x in rf.get("experiment", []):
                 xid = x.get("id", "<unnamed>")
+                if xid in experiment_ids:
+                    findings.append(
+                        f"DUPLICATE EXPERIMENT ID {name}/{xid}: identity appears twice")
+                experiment_ids.add(xid)
+                models = x.get("models") or []
+                if len(models) != len(set(models)):
+                    findings.append(
+                        f"REPEATED EXPERIMENT MODEL {name}/{xid}: models must be distinct")
+                for model in models:
+                    if model not in seen:
+                        findings.append(
+                            f"UNKNOWN EXPERIMENT MODEL {name}/{xid}: '{model}' is not a candidate")
                 for k in ("program", "models", "verdict", "reproduced"):
                     if not x.get(k):
                         findings.append(
@@ -266,10 +280,11 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
             for ind in rf.get("independence", []):
                 pair = ind.get("pair") or []
                 label = "/".join(pair) if pair else "<unpaired>"
-                if len(pair) != 2:
+                if len(pair) != 2 or len(set(pair)) != 2:
                     findings.append(
                         f"BAD PAIR   {name}/{label}: an independence record names "
-                        f"{len(pair)} model(s); independence is a property of a PAIR")
+                        f"{len(pair)} model(s), {len(set(pair))} distinct; "
+                        f"independence is a property of two distinct candidates")
                 else:
                     examined.add(frozenset(pair))
                     for m in pair:
@@ -519,6 +534,18 @@ EOF
                 (verdict "not-examined")
                 (evidence "none")
                 (consequence "owner named"))'
+  # Stable experiment identities must resolve to distinct declared candidates.
+  refs "$(printf '%s' "$EXP" | sed 's/(models "c1")/(models "c9")/'))"
+                                                              arm "RED   a single experiment model is undeclared" 1 "UNKNOWN EXPERIMENT MODEL"
+  DUP_EXP='
+  (experiment (id "e1") (program "other.s") (models "c1")
+              (verdict "DIVERGE") (reproduced "yes") (control "different result observed"))'
+  refs "$EXP$DUP_EXP)";                                        arm "RED   conflicting experiments share an identity" 1 "DUPLICATE EXPERIMENT ID"
+  SELF_IND="$(printf '%s' "$IND_ROW" | sed 's/(pair "c2")/(pair "c1")/')"
+  refs "$(printf '%s' "$EXP" | sed 's/(models "c1")/(models "c1") (models "c1")/')$C2$SELF_IND)"
+                                                              arm "RED   repeated experiment models cannot fake a comparison" 1 "REPEATED EXPERIMENT MODEL"
+  refs "$EXP$C2$SELF_IND)";                                     arm "RED   independence needs two distinct identities" 1 "BAD PAIR"
+
   refs "$EXP$C2$IND_ROW)";                                      arm "GREEN an independence record parses" 0 "__CHECKED__ 1"
   refs "$EXP$C2$(printf '%s' "$IND_ROW" | sed 's/not-examined/probably fine/'))"
                                                               arm "RED   an unknown independence verdict" 1 "BAD VERDICT"

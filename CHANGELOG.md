@@ -1,6 +1,12 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0202 (leaf P4-SYSTEM.14) — reject invalid experiment identities
+
+- Reproduce four false GREENs: unknown model, conflicting experiment IDs, repeated models and a self-paired independence row. Enforce identity/membership/distinctness through the existing checker; retain valid data and grammar.
+- PROFILE-CONSISTENCY50/0 (old46/4); four independently restored predicates each49/1; current five dossiers/focused13/seven books/protected scope pass. Correct stale schema count and three current-corpus descriptions; derive732arms.
+- Runtime/canonical/profile/frozen/fixtures/history/archive, existing caps and milestone states unchanged; CPU incomplete7axes/P4 13/18. Structured GC records and policy-derived statuses remain next.
+
 ## SEMULITH-LC-0008 (leaf LIVE-CONTAINMENT.4) — publish temporary-control procedures in the book
 
 - Replace the book's path-only reference with a live include of the full authoritative control matrix, reproduction and limits; add five runnable positive examples.

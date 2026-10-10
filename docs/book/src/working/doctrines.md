@@ -94,7 +94,7 @@ These ship with the discipline spine and are project-neutral:
 | `DELIVERY-PROVENANCE` | every delivered manifest row carries exactly one declared disposition, and the frozen ones still hash to the delivered bytes |
 | `FIXTURE-FINGERPRINT` | every record pinning a file's `sha256` still describes the tree |
 | `README-ROUTING-CLOSURE` | every destination the landing page routes to is governed, exists, and stays under its ceiling — the per-part ceiling two-tiered: authored members are bounded, regeneration-gated derived members are exempt as a checked property (a fact-ownership mirror row with a regeneration governor), reported as proof |
-| `PROFILE-CONSISTENCY` | a profile dossier's declared counts equal its enumeration, and every decision carries an authority and a source |
+| `PROFILE-CONSISTENCY` | a profile dossier's counts match its enumeration, decisions carry authority/source, and experiment IDs/models/pairs resolve without duplicate identities |
 | `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
 | `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next, and every tree has exactly one row — the index while open, `docs/TASK_TREE_CLOSED.md` once done |
 | `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |
@@ -356,8 +356,8 @@ know they exist. And both repaired checks were removed from `update_scaffold.sh`
 so a scaffold update cannot quietly undo them.
 
 `SEAM-INTEGRITY` then guards all of it by asserting **behaviour rather than presence** — every
-acceptance box already committed must still be accepted, and the two gates must still agree on
-what an instrument is. That last rule is the structural one: the divergence between those two
+current tracked acceptance box must match a declared evidence signature, and the two gates
+must still agree on what an instrument is. That last rule is the structural one: the divergence between those two
 lists refused honest evidence three times before it was fixed rather than patched.
 
 ## Adding one

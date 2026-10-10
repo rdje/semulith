@@ -18,10 +18,9 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: resume `P4-SYSTEM.14` structured experiments, mechanical
-  policy/status checks and requirement-mirror reconciliation. Read its frontier,
-  schema/references.sexp and dossier_sexp.py before owning the next finite slice.
-  LC0006 archive and LC0007 scratch repair are complete; LC0008 exposes the full
-  control reference in the book. LIVE-CONTAINMENT.4 still owns full adoption.
+- next_action: resume `P4-SYSTEM.14` after a11's experiment identity repair.
+  Use the existing references.sexp grammar/dossier mapping to select the first
+  finite structured GC experiment slice; declare exact controls, producers,
+  inputs/observations and limits before fresh runs. Policy/status/mirrors follow.
 - in_flight_uncommitted: none after this commit.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

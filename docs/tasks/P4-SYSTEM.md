@@ -289,12 +289,65 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | containment transition review before structured experiments, policy/status checks and mirror reconciliation |
+| 1 | `P4-SYSTEM.14` | `active` | experiment identity controls, then structured experiments, policy/status checks and mirror reconciliation |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a11 — experiment identity edges (completed, SEMULITH-P4-0202)
+
+Owned on cleanae9b1ce, brief0/untracked, actual process census OK, before changes.
+Read ROADMAP P4/.14, EVIDENCE_AND_GATES graph invariants, GC policy, existing
+reference schema/dossier mapping, PROFILE-CONSISTENCY implementation/46 controls
+and GC book evidence chapter. The existing experiment grammar is the starting
+point; do not create a parallel record format. Before adding GC records, reproduce
+single unknown experiment models, duplicate experiment IDs, repeated models and
+self-paired independence through the actual checker and existing fixture interface.
+The current loop checks thin metadata/pairs but appears to omit these identity
+edges. If confirmed, repair them with four discriminating controls and retain the
+entire existing behavior on valid dossiers. No metadata success implies adequate
+verification, independence or CPU acceptance; structured GC runs/status remain next.
+
+The reference-schema header also carries39controls versus46actual named arms;
+correct its stale measurement without changing the grammar. Related documentation
+inspection finds docs/doctrines/governance.md's SEAM row still saying boxes already
+committed remain accepted, despite LC0007's precise current-tracked-corpus contract.
+The same targeted census finds that phrase in the check's R2 comment and the
+book doctrine chapter. Own all three small wording corrections here before edits;
+no new historical-check promise.
+Preserve all runtime/canonical/profile/frozen/fixture/history/archive data, existing
+ceilings and milestone states. Re-derive control counts; synchronize doctrine/book/
+resume/frontier docs, run focused checks and seven books, then commit this slice.
+Evidence target/p4-system-14/a11; all temporary storage stays on the repository volume.
+
+Reproduction confirms all four false GREENs. Adding only the four controls to the
+unchanged production prefix produces46pass/4fail; each invalid fixture returned0
+with __CHECKED__1. Prefix SHA is recorded in before-function.json. Scoped git -S
+pins the experiment metadata loop tob8d09f5 (P0.6) and pair logic to147de76 (P0.7).
+Root causes: no per-experiment ID set, no model-membership/distinctness checks,
+and pair cardinality counts two entries rather than two distinct candidates.
+Impact: invalid evidence graph metadata can be accepted; current GC has no
+structured records and valid existing scalar records remain the preservation control.
+Own immediate predicate repairs plus one-at-a-time restored-predicate mutations;
+then structured records can safely use this existing grammar. No historical CPU
+or independence credit follows from repairing metadata validation.
+
+Result: all four invalid fixtures now refuse with their named reason. Existing
+46 controls plus four new controls pass50/0; current five dossiers remain GREEN0.
+Removing each repaired predicate independently yields49/1, including the repeated-
+model arm requiring its own reason when a bad self-pair also refuses. All original
+valid-data controls stay intact. Focused13 and seven books pass; schema grammar
+AST is identical, all canonical/runtime/profile/frozen/fixture/history/archive
+populations remain byte-exact. Global census39doctrines/732arms/38routes is derived.
+Book examples explain invalid identities and the metadata/adequacy boundary.
+Stale schema count removed; all three current-corpus descriptions corrected.
+CPU-SYSTEM incomplete7axes/P4 13/18/114effective checks and all ceilings unchanged.
+Next: structured GC records/controls/producers, policy/status derivation and mirrors.
+promotion: declined (the declared graph invariant, permanent controls and book retain the repair).
+
+
 
 ### `.14` a10 — register the sixth modelled unit and its materials book (completed, SEMULITH-P4-0201)
 
@@ -895,6 +948,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a11 — **ROOT CAUSE**: checker-prefix equality and published controls
+  rc=1: PROFILE-CONSISTENCY46pass/4fail; each invalid fixture returned0/__CHECKED__1.
+  Scoped git -S pins b8d09f5/147de76. IDs/membership/distinctness were not judged.
+- [x] `.14` a11 — **ADDRESSED**: PROFILE-CONSISTENCY50pass/0fail and actual
+  five dossiers GREEN0; four restored-predicate controls each49pass/1fail, rc=1,
+  for the intended missing rule. No new independence or adequacy claim.
+- [x] `.14` a11 — **NO REGRESSION**: focused13/make book/scope rc=0: seven books,
+  reference-schema AST identical and protected runtime/canonical/profile/frozen/
+  fixtures/earlier history/archive exact. Derived39/732/38; live/book/registry/
+  frontier/resume synchronized; CPU incomplete7axes/P4 13/18 remain unchanged.
+  promotion: declined (existing graph contract, permanent controls and book).
+
 - [x] `.14` a10 — **ROOT CAUSE**: controls/reader-control/history rc=0:
  989a7b53 drops later requires;5c00809 catalogue labels wrong;d0f55ca census
  reasons stale;26113403/07844c3a/01154383 current dossier stale/unsupported.
@@ -1014,10 +1079,16 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a11: original46/4, repaired50/0/current5 dossiers, four independent predicate
+controls49/1, focused13/seven books/protected scope/schema AST rc=0; no CPU credit.
+First commit gate caught a misplaced row/date cell from an unanchored cell match;
+restore the whole verification row and insert the commit row under its exact header.
+
 Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a11 | original46/4, repaired50/0/current5 dossiers; four predicate controls49/1; schema AST/protected scope/rendered examples | focused13/seven books rc=0; CPU and canonical data unchanged |
 | `2026-10-10` | `.14` a10 | six-unit/24category registration; missing controls; scope10/0 versus old8/2; generator3/3; complete source/derived/history inverses | focused20/seven books/eight rendered chapters/full five-leg CI rc=0; statuses/runtime/frozen/history exact |
 | `2026-10-10` | `.14` a9 | rooted fallback; producer24/0, old fallback21/3; real stale control; source/full-report inverse; actual future GC ownership | focused9/six books/rendered explanation/verify rc=0; other reports/data/runtime/frozen/history/LIVE exact |
 | `2026-10-10` | `.14` a8 | prospective policy; four captured spans/three source inverses; three damaged controls; one-literal AST/manifest/20-output inverses; stale controls | focused15/six books/rendered policy/verify rc=0; all statuses/runtime/frozen/history/LIVE exact |
@@ -1037,6 +1108,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a11 | `SEMULITH-P4-0202 (leaf P4-SYSTEM.14): reject invalid experiment identities` | structured GC experiments/controls/producers, policy/status derivation and mirrors |
 | `.14` a10 | `SEMULITH-P4-0201 (leaf P4-SYSTEM.14): register RV64GC and enforce every required category` | containment prototype/review under LIVE-CONTAINMENT.4, then .14 experiments/policy/status/mirrors |
 | `.14` a9 | `SEMULITH-P4-0200 (leaf P4-SYSTEM.14): correct BREADTH evidence attribution` | a10/0201 sixth-unit registration/materials/book and family contract review |
 | `.14` a8 | `SEMULITH-P4-0199 (leaf P4-SYSTEM.14): declare prospective evidence requalification policy` | a9/0200 sixth-unit registration/materials/book and measured family contract; then experiment/policy/status gates |

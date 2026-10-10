@@ -21,7 +21,7 @@
 #
 #   R1 CONSUMED   the neutral check still reads both seam files. A declaration nothing consumes
 #                 is inert, and inert is indistinguishable from correct.
-#   R2 REGRESSION every ticked hard-gated acceptance box already committed in `docs/tasks/` must
+#   R2 REGRESSION every current tracked hard-gated acceptance box in `docs/tasks/` must
 #                 STILL be accepted by the effective signature set. The corpus is the project's
 #                 own history, so there are no fixtures to go stale — narrowing the tokens, or
 #                 losing them, makes previously-passing evidence fail.

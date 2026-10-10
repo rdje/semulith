@@ -2,7 +2,7 @@
 ;;
 ;; `SOT-FORMAT.4`: the retired references.toml is one document form. A candidate list is the
 ;; easiest document to fill from reputation, so the load-bearing fields (role, status,
-;; origin, lineage) are required here and PROFILE-CONSISTENCY's 39 arms enforce the rest —
+;; origin, lineage) are required here and PROFILE-CONSISTENCY controls enforce the rest —
 ;; an `obtained` claim must name a binary and its digest, an agreement must record the
 ;; control that was observed failing, and every compared pair must have an independence
 ;; row. `sha256` fields carry the 64-hex facet. The dossier's extensive ⚠️ commentary
