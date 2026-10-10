@@ -27,8 +27,11 @@ For example, rm=0 selects RNE regardless of frm; rm=7 with frm=3 selects RUP;
 rm=5 or rm=7 with frm=7 traps. FP instructions and FP CSR accesses require FS enabled
 in every privilege mode. The instruction gate runs before any instruction
 effect, so an FS-Off FLW raises illegal-instruction before attempting its data
-access. Every f-register write marks Dirty, even unchanged values; flag accrual
-marks Dirty only when stored bits change. The public observations below
+access. Every legal explicit f-register or FP-CSR write marks Dirty, even unchanged
+values; flag accrual marks Dirty only when stored bits change. These are the
+laboratory's selected policies under pinned Machine §2.1.1.6.7's latitude for
+unchanged contents, rather than a requirement to copy a reference's default.
+The public observations below
 separately distinguish raw CSR storage from the computed SD view.
 
 The profile composes30 real F forms and32 real D forms from pinned encoding

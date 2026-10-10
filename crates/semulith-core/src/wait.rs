@@ -1,5 +1,5 @@
-//! The hart's wait state — `P4-SYSTEM.5` decision 4 (ACTIVE/WAITING, Sail 0.14's
-//! `HART_WAITING` precedent, `step.sail:11`), the additive module the state document's
+//! The hart's wait state — `P4-SYSTEM.5` decision 4: the laboratory selects an
+//! ACTIVE/WAITING bit under RVP-MACHINE §2.1.3.3. The state document's
 //! SEM-08 census declares (the `hart wait state (ACTIVE/WAITING)` candidate — the TLB/
 //! reservation discipline: hart state the census accounts for before the module carries
 //! it).

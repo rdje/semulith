@@ -296,6 +296,80 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a4 — ground privilege and wait-state rationales (completed, SEMULITH-P4-0195)
+
+Owned on cleanf7d87ee, brief0/actual census rc=0. Read .14 priorities, ROADMAP
+P4, affected privilege helpers/comments/canonical wait census, FP/privilege/wait
+book, generator interfaces and existing permission/Dirty/wait witnesses before
+changes. Reproduce internal Sail FP-gate/Dirty/default-policy citations, stale
+"no FP instruction decodes yet", encoding-header rationale for privileged fields,
+and HART_WAITING precedent in the census. Audit scoped roots with blame.
+Replace rationale with authenticated published Machine/Supervisor/Sstc/F
+requirements, architectural diagrams/field selections and explicit laboratory
+policy. Inspect public artifacts as necessary; no dependency implementation
+read/pin change. Preserve all algorithms, constants, field selection/storage/reset
+and current selected waiting/Dirty behavior. Change only privilege comments and
+wait-census wording; regenerate required inspection string/state fingerprints
+through documented generators. Prove complete comment/metadata inverses and all
+prior canonical/fixture/catalog/frozen/registry/history/LIVE identity.
+Run strict make check, focused15 gates and six books; keep current book examples
+accurate and record actual source authentication/finite limits. Then remaining
+reference/decision/knowledge rationale sweep before evidence signoff.
+Evidence target/p4-system-14/a4; all scratch/cache outputs on-volume; fixed caps.
+
+Scoped book review also reproduces the wait chapter's unqualified G-CONTRACT
+70/114 checkpoint, while canonical GS now derives114/114 frozen/green. Own
+its root census and repair here: route current coverage to the contract summary
+instead of retaining another mutable numerator. Counter-rebasing refusal prose
+is still accurate (author line541); do not rewrite it as completed support.
+
+Next priority canonical sweep also owns state.sexp header/CSR-source encoding.h
+citations (lines14/86), found during this review. Correct those maintained
+source assertions with their generated consequences before evidence signoff;
+a4 keeps the declared one-why-string scope and does not alter them.
+
+Affected-test review additionally owns wait.rs's same HART_WAITING/step.sail
+comment and privilege/tests.rs's encoding-header rationale plus stale17-CSR
+count (actual STORAGE23). Repair these small Rust-comment defects in a4,
+with exact inverses and a fresh strict check; no fixture values change.
+
+GATE-REPORT correctly rejects the state-source digest drift (focused rc=1);
+own its required documented GS regeneration here. Prove its entire report
+inverse differs only in dossier fingerprint; verdict/coverage remain unchanged.
+
+Result: roots4ee9d0b3 FP gate, dd9bc1cd Dirty default,47badd28 constants,
+c9c6b462 wait rationale and834499b7 stale70/114 reproduced by scoped blame.
+Authenticate all five cached Intro/Machine/Supervisor/Sstc/F chapters against
+tracked SHA256SUMS. Intro38003B/SHA25612c7a31aafbc32fa1f4fab82d60786c65af35f68e648aca7575a05034edf525e;
+Machine271851B/SHA256b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea.
+Three diagrams are fresh public captures linked by that authenticated Machine
+chapter, not pre-existing cache digest pins: mstatus9530B/SHA256dc77d3d5de9459c708b208587d42f0cc7e436dd299181d60e90d6ecce1d3c469,
+mcounteren9977B/SHA25638b69c4995417a3797208e9b17011a4f3fda8a73cf4c42fc3d2a2b3e6b149d76,
+menvcfg7845B/SHA256830daf921ae77ecb61237c7caba482123e644f552e8a095864726675d62346b5.
+XML label/tick coordinates prove unchanged SIE1/MIE3/SPIE5/MPIE7/SPP8,
+VS9:10/MPP11:12/FS13:14/XS15:16/MPRV17/TVM20/SD63, CY0/TM1/IR2,
+STCE63. Public Machine Figure7/17/24 and Intro Table1 ground constants;
+§2.1.1.6.7/§2.1.3.3 and selected laboratory policies ground Dirty/wait state.
+Remove internal function/default/encoding-header rationale and stale no-FP-decode
+comment from privilege.rs; correct wait.rs and actual23-CSR fixture header.
+One canonical wait why-string changes, no fields/storage/reset/policy; sourceSHA
+e8366fe1a614df7b802699bab0a71a68d73c43f6d8ede0471b8460604e7aac52→e7349c0c70f27b1840acbdb808c471c60042393cb5fd7e7ae98c2022f111e81c.
+Published state/definition --check each RED1 before regeneration, GREEN0 after;
+complete source/comment inverses, one generated inspection string plus three SHA
+occurrences exact. GATE-REPORT stale digest RED1; documented regeneration
+changes only dossier fingerprint06ec9236→7f7fca37, full report inverse exact,
+verdict/coverage unchanged. Books explain public constants/selected Dirty policy and route
+current wait-contract coverage; author counter-rebasing refusal remains accurate.
+Make check Rust173/17/253, focused15/six books/verify rc=0. Other canonical data,
+frozen records/registry/fixtures/code/history/LIVE exact;114/114 frozen,
+CPU incomplete7axes. No new independence or conformance credit. Evidence
+ target/p4-system-14/a4 (source-auth/diagram-proof/metadata-inverse/controls).
+promotion: declined (public pins, canonical policies and exact inverses retain this routine correction).
+First hook RED on task-acceptance/lesson-promotion/seam receipt formats;
+add actual verify.py rc=0 inside ADDRESSED and the required decline token,
+without weakening any gate. Next a5/0196 canonical state source
+and current reference/decision/knowledge rationale sweep before evidence signoff.
+
 ### `.14` a3 — contain completed contract and append histories (completed, SEMULITH-P4-0194)
 
 Owned on clean2c3ef6b, brief0 and actual census rc=0. External containment guide
@@ -423,6 +497,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a4 — **ROOT CAUSE**: repair.py/source-auth/diagram proof rc=0;
+  scoped blame identifies internal/default rationale, stale no-FP-decode/17-CSR
+  comments and834499b7's stale70/114 checkpoint; five public chapters authenticated.
+- [x] `.14` a4 — **ADDRESSED**: verify.py rc=0, exact complete comment/one-why/metadata inverses;
+  diagrams validate unchanged positions; published state/definition stale RED1→
+  current GREEN0; public rules/selected policies and three book routes corrected.
+- [x] `.14` a4 — **NO REGRESSION**: make check173/17/253, focused15,
+  six books/verify.py rc=0; all executable expressions/constants, other canonical/
+  frozen/registry/fixture/history/LIVE bytes exact,114/114 frozen and fixed caps.
+
+
 - [x] `.14` a3 — **ROOT CAUSE**: partition.py/census rc=0:
   DEV36359B vs36864health and task117546B before further .14 receipts;
   identify five complete closed-.13 spans76064B and whole oldest journal entries.
@@ -467,6 +552,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a4 | five chapter digests/three public SVG coordinate proofs; full comment/one-why/generated inverses; two stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; executable/canonical-except-why/frozen/history/LIVE exact;114/114 frozen |
 | `2026-10-10` | `.14` a3 | five-span76064B/full117546B inverse; six damaged controls; published sharder12/0/dry parity; DEV8/CHANGELOG22 whole records | focused9/six books/verify rc=0; immutable prior history/code/data/LIVE exact; fixed caps, v2 frozen114/114 |
 | `2026-10-10` | `.14` a2 | public-source/root census; authenticated F; Python AST/Rust inverse;167old/new images/fresh GPR+fetch corpus | Rust173/17/253/focused15/6books/verify rc=0; canonical/profile/frozen/registry/LIVE/history exact |
 | `2026-10-10` | `.14` a1 | stale labels/root99475c13; exact230numeric/3168fixture inverse; generator RED1→GREEN0/stale scratch RED1 | make check Rust173/17/253, focused10 incl hardware/self-tests,6books/verify rc=0; CPU/frozen/registry/LIVE/history exact |
@@ -479,6 +565,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a4 | `SEMULITH-P4-0195 (leaf P4-SYSTEM.14): ground privilege and wait-state rationales` | a5/0196 canonical state/reference/decision/knowledge rationale sweep |
 | `.14` a3 | `SEMULITH-P4-0194 (leaf P4-SYSTEM.14): contain completed contract and append histories` | a4/0195 privilege/state provenance, then remaining canonical/reference rationale sweep |
 | `.14` a2 | `SEMULITH-P4-0193 (leaf P4-SYSTEM.14): correct public-source rationales` | bounded append-history/task containment a3/0194, then remaining provenance sweep |
 | `.14` a1 | `SEMULITH-P4-0192 (leaf P4-SYSTEM.14): correct signaling-NaN fixture notes` | a2/0193 public-source rationale sweep, remaining provenance prerequisites |
@@ -486,6 +573,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-10`: `.14` a4 (SEMULITH-P4-0195): replace privileged/wait internal rationale and stale decode/fixture/count comments with public diagrams/rules and selected policies; complete comment/metadata inverses, generator controls, strict/focused15/six books green.
 
 - `2026-10-10`: `.14` a3 (SEMULITH-P4-0194): move five whole closed-.13 spans to archive12, preserve full source inverse and six damaged controls; published DEV8/CHANGELOG22 whole-entry partitions, docs gates/six books/caps green.
 

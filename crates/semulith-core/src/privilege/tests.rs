@@ -1,10 +1,10 @@
 //! The fixture hart and the machinery's test corpus (P4-SYSTEM.2 slice d).
 //!
 //! The fixture is a TEST DOUBLE: it carries the state document's facts in miniature (a
-//! 17-CSR subset), so the machinery's rules are exercised without the generated module.
-//! The addresses and bit positions are the pinned csrs.csv / encoding.h values (the
-//! rv64gc-lab-v0 encoding-source pin); the generated table — derived from the tracked
-//! descriptor at the flip — is the same data at full size.
+//! 23-CSR subset), so the machinery's rules are exercised without the generated module.
+//! Addresses and bit positions follow the canonical state descriptor and published
+//! RVP-CSR listing / RVP-MACHINE register diagrams; the generated table carries the
+//! descriptor at full size.
 
 use super::*;
 

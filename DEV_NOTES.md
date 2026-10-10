@@ -1,6 +1,29 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — ground privilege and wait-state rationales (P4-SYSTEM.14 a4)
+
+Scoped roots4ee9d0b3/dd9bc1cd/47badd28/c9c6b462 retain internal Sail functions,
+Dirty defaults, encoding-header and wait-state rationale;834499b7 retains stale
+70/114 coverage. Correct privilege.rs/wait.rs comments, stale no-FP-decode and
+actual23-CSR fixture header. Authenticated Intro/Machine/Supervisor/Sstc/F and
+fresh published Figure7/17/24 SVG coordinates establish unchanged bit positions;
+source-auth.json/diagram-proof.json distinguish fresh captures from cached pins.
+Use public Off/Dirty/WFI requirements and explicit laboratory choices; update
+FP/privilege/wait books together. Counter-rebasing author refusal is still real.
+
+Exactly one wait-census why-string changes; stateSHA becomese7349c0c70f27b1840acbdb808c471c60042393cb5fd7e7ae98c2022f111e81c.
+Published state/definition stale --check RED1, regeneration0, current --check0.
+Full source/comment inverses and generated one-string/three-SHA inverse exact;
+no executable expression, constant, field/reset or policy changes. GATE-REPORT
+rejects stale dossier digest; documented regeneration changes only its fingerprint,
+with complete report inverse and unchanged verdict/coverage. Make check
+Rust173/17/253, focused15/six books/verify rc=0; frozen114/114, registry116,
+other canonical/fixtures/history/LIVE and fixed caps exact. No new independence
+or conformance credit. Evidence target/p4-system-14/a4; next canonical source/
+reference/decision/knowledge rationale sweep, then .14 evidence deliverables.
+promotion: declined (public pins, selected canonical policies and exact inverse receipt retain this correction).
+
 ## _(2026-10-10)_ — contain completed contract and append histories (P4-SYSTEM.14 a3)
 
 DEV36359B nears36864health; task117546B before more evidence receipts.

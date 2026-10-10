@@ -89,8 +89,9 @@ The fallback defect is repaired: cold pending is zero, M software owns STIP
 with STCE clear, and enabling the comparator retains raw software pending.
 Direct S-mode compare programming/read-back and handler-visible refusal cases
 now close the contract witness hole. [Worked values](contract-runtime.md#observable-s-mode-timer-programming-and-refusals)
-show the 31-boundary pair, trap controls and finite scope. G-CONTRACT is 70/114;
-no firmware/Linux acceptance follows.
+show the 31-boundary pair, trap controls and finite scope. The
+[current contract summary](contract-v2.md#runtime-guarantee-witnesses) gives
+derived coverage; no firmware/Linux acceptance follows.
 
 Explicit writes to mcycle/minstret replace their own instruction's update,
 including unchanged writes; refused writes retain the ordinary nonretiring trap

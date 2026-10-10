@@ -5,11 +5,11 @@
 //! legalization IS, what trap delivery DOES) exactly once; the DATA — which CSRs exist,
 //! which fields they carry, what each field legalizes to — derives from the profile's
 //! state document through the generated module (`gen_state.py`), which implements
-//! [`PrivilegedHart`]. Nothing here names an address or a bit position the descriptor
-//! does not carry: the register-level constants (the counter-enable bit positions, the
-//! mstatus stack fields, the mode codes) cite the pinned `encoding.h` masks of the
-//! rv64gc encoding-source pin — the specification renders those layouts as figure
-//! images (RVP-CSR §1.1.1's address conventions are text).
+//! [`PrivilegedHart`]. Register storage and field disciplines come from that descriptor.
+//! The engine's field-position constants follow the published register diagrams in the
+//! pinned Machine-Level ISA; mode codes follow the Privileged ISA introduction. The
+//! constants below name those public locators, including the separate menvcfg.STCE
+//! field (RVP-CSR §1.1.1 supplies the CSR address conventions).
 //!
 //! The instruction-level LEGALITY of the privileged instructions (xRET in a
 //! less-privileged mode, WFI under TW, SFENCE.VMA under TVM) is the instructions' own
@@ -19,11 +19,11 @@
 //!
 //! References below: RVP-MACHINE = the pinned Machine-Level ISA chapter (v1.13),
 //! RVP-SUPERVISOR = Supervisor-Level ISA (v1.13), RVP-CSR = the CSR listing chapter,
-//! RVP-SSTC = the Sstc chapter — the rv64gc-lab-v0 pinned pages.
+//! RVP-SSTC = the Sstc chapter, RVP-INTRO = the Privileged ISA introduction — the
+//! rv64gc-lab-v0 pinned pages.
 
-/// The current privilege mode of a hart. The codes are the architecture's own — the
-/// pinned `encoding.h`'s `PRV_U`/`PRV_S`/`PRV_M` (the specification states the two-bit
-/// encoding in the xPP figure); the mode is hart state, not a CSR (RVP-INTRO).
+/// The current privilege mode of a hart. RVP-INTRO Table 1 assigns U/S/M the codes
+/// 0/1/3 (binary 00/01/11); the mode is hart state, not a CSR.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum PrivilegeMode {
     /// User mode (code 0).
@@ -246,9 +246,9 @@ fn computed<H: PrivilegedHart>(hart: &H, f: &FieldMeta) -> u64 {
     match (f.csr, f.name) {
         ("mstatus", "SD") | ("sstatus", "SD") => {
             let mstatus = csr_state_raw(hart, "mstatus");
-            let fs = (mstatus >> 13) & 0b11; // the pinned encoding.h's MSTATUS_FS
-            let xs = (mstatus >> 15) & 0b11; // MSTATUS_XS
-            let vs = (mstatus >> 9) & 0b11; // MSTATUS_VS
+            let fs = (mstatus >> 13) & 0b11; // FS, RVP-MACHINE Figure 7
+            let xs = (mstatus >> 15) & 0b11; // XS, RVP-MACHINE Figure 7
+            let vs = (mstatus >> 9) & 0b11; // VS, RVP-MACHINE Figure 7
             u64::from(fs == 3 || xs == 3 || vs == 3) << f.bit_lo
         }
         ("mip", "STIP") | ("sip", "STIP") => {
@@ -271,8 +271,8 @@ fn csr_state_raw<H: PrivilegedHart>(hart: &H, name: &str) -> u64 {
 
 // ---- the floating-point state gate (RVP-MACHINE §2.1.1.6.7) ------------------------------
 
-/// The mstatus.FS field's low bit (the pinned encoding.h's MSTATUS_FS shift): the values
-/// are 0 Off, 1 Initial, 2 Clean, 3 Dirty.
+/// The mstatus.FS field's low bit (RVP-MACHINE Figure 7): the values are 0 Off,
+/// 1 Initial, 2 Clean, 3 Dirty (§2.1.1.6.7's status encoding table).
 const FS_LO: u8 = 13;
 
 /// The current value of mstatus.FS, read from raw storage.
@@ -280,19 +280,19 @@ pub fn fs<H: PrivilegedHart>(hart: &H) -> u64 {
     (csr_state_raw(hart, "mstatus") >> FS_LO) & 0b11
 }
 
-/// May software touch the floating-point state? — the Off sentence: at FS=Off the unit's
-/// FP instructions AND its FP CSRs are illegal (Sail 0.14's `currentlyEnabled(Ext_F)` is
-/// `mstatus[FS] != 0b00`, measured at fdext_control.sail:19). The CSR side is enforced in
-/// `permitted`; the instruction side calls this from the F/D binds' evaluator arms
-/// (P4-SYSTEM.7 slices c/d — no FP instruction decodes yet).
+/// May software touch the floating-point state? RVP-MACHINE §2.1.1.6.7 makes any
+/// instruction that reads or writes extension state illegal when its status is Off.
+/// The unit enforces this for FP CSRs in `permitted` and for the implemented F/D
+/// instructions in their evaluator arms, before their own effects.
 pub fn fp_enabled<H: PrivilegedHart>(hart: &H) -> bool {
     fs(hart) != 0
 }
 
-/// The Dirty-on-f-write discipline (Sail 0.14's `dirty_fd_context`, fdext_regs.sail:110):
-/// any FP state change — an f-file write, an FP-CSR write, flag accrual — marks
-/// FS=Dirty. SD is a computed field, so setting FS suffices. The caller is past the
-/// gate (FS is never Off here), and 3 is in the field's declared one-of set.
+/// Mark FP state Dirty. Under RVP-MACHINE §2.1.1.6.7's permitted latitude, this
+/// laboratory selects Dirty on every legal explicit f-register or FP-CSR write,
+/// including unchanged values; flag accrual calls this only when stored bits change.
+/// SD is computed from the status fields, so setting FS suffices. The caller is past
+/// the Off gate, and 3 is in the field's declared one-of set.
 pub fn mark_fp_dirty<H: PrivilegedHart>(hart: &mut H) {
     let Some(index) = index_by_name(hart, "mstatus") else {
         return; // a profile without mstatus carries no FS — nothing to mark
@@ -303,12 +303,11 @@ pub fn mark_fp_dirty<H: PrivilegedHart>(hart: &mut H) {
 
 /// Accrue an FP instruction's exception flags into fflags (NV DZ OF UF NX at bits 4..0):
 /// sticky — OR'd in, never cleared by an instruction (RVI-F §20.1.2) — and FS turns Dirty
-/// exactly when fflags CHANGES. The pinned FS section leaves the unaltered-contents case
-/// implementation-defined ("If an instruction explicitly or implicitly writes a
-/// floating-point register or the fcsr but does not alter its contents … it is
-/// implementation-defined whether FS transitions to Dirty", RVP-MACHINE §2.1.1.6.7); the
-/// laboratory resolves it as Sail 0.14's default `Fflags_Dirty_Precise` (fdext_regs.sail:451,
-/// `P4-SYSTEM.7` slice c3). The caller is past the Off gate.
+/// exactly when fflags CHANGES. RVP-MACHINE §2.1.1.6.7 leaves Dirty transitions on
+/// unchanged FP contents implementation-defined when FS is Initial or Clean. This
+/// laboratory selects unchanged status for unchanged flag accrual; explicit f-register
+/// and FP-CSR writes use the conservative policy documented by `mark_fp_dirty`.
+/// The caller is past the Off gate.
 pub fn accrue_fflags<H: PrivilegedHart>(hart: &mut H, flags: u64) {
     let Some(index) = index_by_name(hart, "fflags") else {
         return; // a profile without fflags accrues nothing
@@ -354,18 +353,17 @@ pub fn permitted<H: PrivilegedHart>(
     }
     let name = meta_by_name_addr(hart, address).map(|m| m.name);
     match name {
-        // mstatus.FS gates the floating-point CSRs in every mode (the Off-state
-        // sentence, RVP-MACHINE §2.1.1.6.7; Sail 0.14's fdext_control.sail
-        // is_CSR_accessible 0x001–0x003 = currentlyEnabled(Ext_F) — the same rule).
+        // mstatus.FS gates the floating-point CSRs in every mode under the
+        // Off-state rule, RVP-MACHINE §2.1.1.6.7.
         // P4-SYSTEM.7 slice (b): the pre-slice absence of this arm measured at the
         // probe (all six permitted() calls Ok at FS=Off).
         Some("fflags" | "frm" | "fcsr") if !fp_enabled(hart) => {
             return refuse("mstatus.FS is Off: the FP CSRs are inaccessible");
         }
-        // The counter-enable gates: cycle/time/instret below M need mcounteren's CY/TM/IR
-        // (bit positions: the pinned encoding.h's MCOUNTEREN_CY/TM/IR shifts), and in U
-        // additionally scounteren's (RVP-SUPERVISOR §11.1.1.5). The counters keep
-        // counting while gated — the gate is on ACCESS (§2.1.1.11).
+        // The counter-enable gates: cycle/time/instret below M need mcounteren's
+        // CY/TM/IR (RVP-MACHINE §2.1.1.11, Figure 17), and in U additionally
+        // scounteren's (RVP-SUPERVISOR §11.1.1.5). The counters keep counting
+        // while gated — these bits control accessibility only.
         Some(n @ ("cycle" | "time" | "instret")) => {
             let bit = match n {
                 "cycle" => COUNTEREN_CY,
@@ -605,8 +603,8 @@ fn write_legalized<H: PrivilegedHart>(hart: &mut H, index: usize, table_name: &s
 
 // ---- trap delivery and xret -------------------------------------------------------------
 
-/// The mstatus stack field positions — the pinned `encoding.h`'s masks (MSTATUS_SIE …),
-/// the specification's figure 3 rendered as data there. xIE/xPIE/xPP per level.
+/// The mstatus field positions (RVP-MACHINE Figure 7), including xIE/xPIE/xPP
+/// per privilege level, MPRV and TVM.
 const SIE: u8 = 1;
 const SPIE: u8 = 5;
 const SPP: u8 = 8;
@@ -615,8 +613,9 @@ const MPIE: u8 = 7;
 const MPP_LO: u8 = 11;
 const MPRV: u8 = 17;
 const TVM: u8 = 20;
+/// menvcfg.STCE is bit 63 (RVP-MACHINE Figure 24; RVP-SSTC §12.1).
 const STCE: u8 = 63;
-/// The counter-enable bit positions (the pinned encoding.h's MCOUNTEREN_CY/TM/IR shifts).
+/// The counter-enable bit positions (RVP-MACHINE Figure 17).
 const COUNTEREN_CY: u8 = 0;
 const COUNTEREN_TM: u8 = 1;
 const COUNTEREN_IR: u8 = 2;

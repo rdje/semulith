@@ -38,6 +38,13 @@ uses that same profile alignment. CLI run and demo accept explicit profile
 selection; rv64i remains the default, and commands whose machinery is still
 rv64i-specific refuse rv64gc by name.
 
+The engine's M/S/U codes follow pinned Privileged ISA introduction Table 1
+(0/1/3). Its mstatus positions follow Machine-Level ISA Figure 7; CY/TM/IR
+follow Figure 17 (bits 0/1/2), and menvcfg.STCE follows Figure 24 (bit 63).
+These published diagrams ground the constants; they do not prove the engine's
+execution behavior. The worked access, trap and return observations provide
+that finite check.
+
 The state definition owns M/S/U mode, 33 CSR names with 26 underlying storage
 owners, resets and field disciplines. Views share their owners. WPRI/WARL/WLRL
 and computed fields are explicit metadata; instruction accesses use the same
