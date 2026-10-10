@@ -245,6 +245,13 @@ This gate authorises the planned next engineering stage: board implementation.
   comments. Own these in the same priority-first .14 provenance sweep before
   evidence signoff; current counter witnesses derive from authenticated ISA and
   selected laboratory policies, not those rationales.
+  C32 source census additionally finds current fp.rs.resolve_rm's internal Sail
+  function rationale and two generator note templates still calling signaling-NaN
+  conversions "the backend's deviation (ii)". Root99475c13 retained these notes;
+  qualification amendment d3 withdraws that alleged backend defect, but 3
+  generated vector notes still repeat it. Reproduce with generator/templates and
+  vector note census; priority before .14 evidence signoff, owned repair of prose
+  and exact note-only published regeneration, preserving all numeric bits/flags.
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -691,6 +698,92 @@ passing control and explicitly distinguish published semantic-table inspection
 from the direct state/request witness; do not invent an observable read effect.
 
 
+### `.13` c32 — realize single-precision instruction checks (active; c32a completed `SEMULITH-P4-0177`)
+
+Owned on clean9e11070/brief0/actual census rc=0 after c31. Read frozen
+OB-GC-F/REQ-GC-F, ROADMAP P4 and floating-point book. Thirty F forms, static/
+dynamic rounding and reserved-mode refusal, sticky flags/tininess-after-rounding,
+canonical arithmetic NaNs versus payload-preserving transfers/sign injection,
+D-required NaN boxing and invalid-box canonical input, integer saturation/NV,
+FS-Off priority and selected Dirty policy all require discriminating evidence.
+Refine a bounded direct instruction matrix before code, using public core/FP/
+state/ENV interfaces and independently authored exact vectors; never copy core
+outputs as expected values. Existing qualified model-layer tests do not alone
+bind instruction routing, alias effects, whole state or memory boundary requests.
+
+Safe subdivision before witness code: c32a/SEMULITH-P4-0177 first owns the
+numeric instruction witness with no F binding credit; c32b then owns remaining
+transfers/boxing/negative-gate/direct-rule controls and the final POS/NEG binding.
+C32a reuses the existing FP-VECTORS-governed text data, not model-layer outputs:
+1504single rows excluding D format conversions; four FMA sign variants expand
+this to1744. Static/DYN for1360rounded cases and one mode for384unrounded cases
+produce3104settings, crossed with M/S/U, rd0/5/6/7/8/31 (all three FP source
+aliases) and initial flags0/31 with FS Clean:111744boundaries/223488parcels.
+Static rounding runs with reserved frm7 to prove it is ignored. DYN uses each
+vector's mode. All23numeric F forms, boxed input/output, 32-bit integer result
+sign extension, sticky flags and selected Dirtiness, full state/exact two parcel
+requests. Reuse independent data through an explicit repository-relative
+include; no fixture/generator/core change, no new expected values from execution.
+Compile the private witness under tests until c32b wires the production registry.
+Permanent wrong effects/corrupt captures, actual disabled auditor/logger/DYN/
+boxing/flag paths and independent row/decode derivation before credit. Preserve
+registry108/effective106/114 and all frozen/canonical bytes in c32a; focused
+Rust/FP/six books and clean commit, then c32b. Its expected witnesses separately
+cover30forms FS-Off and17rounded forms reserved modes plus seven transfer/sign
+forms and explicit directed numeric/invalid-box cases; refine before its code.
+
+Census existing directed/generated numeric fixtures and hardware/generator
+controls; authenticate F/D/Machine source sections. Preserve prior108 registry
+entries, frozen records, independent167 corpus, core/canonical/history/LIVE.
+Require missing-binding RED before exactly2Execution entries; literal bad tables,
+corrupted captures and actual disabled observations/rounding/FS/boxing paths
+must fail and restore. POS/NEG companions chosen by actual guest contents, not
+prefix alone. Keep public reference observations finite and distinct from
+independent numeric expectations. Book/environment/GS/live pointers, focused
+Rust/FP gates/six books, then clean commit before GC-D. Refine counts/scope from
+actual fixture interfaces; if the matrix needs safe subdivisions, own them here
+and finish each before credit. No freeze/status/experiment credit in this slice.
+
+C32a result:
+
+Safe subdivision before code separates numeric23forms from c32b's seven
+transfer/sign forms, invalid-box/directed cases and all-form/rounding refusals;
+no F registry credit here. Authenticated F/D/Machine sections; existing3168-row
+FP-VECTORS text regenerates exactly SHA5eb35db218f585e56e4eb9145c530e7d50f6841569195560de72d76feeb831c5.
+Reuse1504single rows excluding D conversions, four FMA algebra/sign variants→
+1744cases,1360rounded×static/DYN+384unrounded→3104settings. M/S/U×rd0/5/6/7/8/31×
+flags0/31 with FS Clean gives111744boundaries/223488parcels. Staticrm ignores
+reservedfrm7; dynamic uses vector mode. Integer32results signextend, FP0writes,
+x0discard, allthree FP source aliases, stickyflags and selectedDirty observed.
+Expectedfull GPR/FPR/26owners/PC/mode/reservation/TLBcursor/wait/memory/requests/
+extent/outcome precedes execution. Core/backend never authors expected values.
+
+Four suites rc=0,7wrong effects+13wrong routes/16bad captures discriminate.
+Eight actual disabled controls RED101 then byte-restored: F/X/CSR auditor,
+request logger,DYN resolution,boxing,flag accrual,Dirty marking. Scratch copied
+capture named an unimported counter constant; changed it to the relevant frm.
+A proposed sqrt→add mutant lacks rs2 in the original encoding and panics at
+operand lookup; replaced by valid sqrt→integer-conversion wrong route before
+credit. No project defect inferred from malformed diagnostic input.
+
+Independent author111744states exact; symbolic assembly validates encodings/
+aliases, full167/5365/10524 corpus exact. Author and generator both use specfp,
+so this adds no numeric lineage; core observes fetch/counter progression
+separately. Core/data/canonical/frozen/history/LIVE/registry108/effective106/114
+byte-exact; makecheck173/17/234. FP/focused/six books green; environment/GS digest/
+book/index/pointers sync, fixed caps. Evidence target/p4-system-13/c32.
+
+Source census also owns a prose defect before .14 evidence signoff: generator
+root99475c13 still labels signaling-NaN conversion as backend deviation(ii),
+although qualification amendment d3 withdraws it; two templates/3generated
+notes reproduce. The .14 sweep now owns exact note-only regeneration and fp.rs's
+internal-reference rationale along with prior provenance work. No numeric defect
+or new backend independence inferred. Next c32b completes F before D.
+promotion: declined (governed independent numeric data, permanent full-state controls and the worked FP chapter retain this finite prerequisite; .14 owns the stale explanation repair).
+
+C32b/SEMULITH-P4-0178 is queued; refine remaining witnesses and all-form census
+before its code. No registry credit or status change in c32a.
+
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
 ### `.13` census and dispositions (slice a)
@@ -833,6 +926,21 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c32a — **ROOT CAUSE**: source/verify.py rc=0 authenticates
+ F/D/FS sections and regenerates3168existing rows exactly. Numeric model-layer
+ tests alone do not bind whole instruction observations. Safe23form numeric
+ subdivision owned before code; no F binding credit yet.
+- [x] `.13` c32a — **ADDRESSED**: four direct suites rc=0:
+ 111744boundaries/223488parcels, full state/aliases/static-DYN/flags/Dirty;
+ 20wrong effects/routes and16bad captures discriminate. Eight actual disabled
+ auditor/logger/DYN/boxing/flags/Dirty controls RED rc=101 then byte-restored.
+- [x] `.13` c32a — **NO REGRESSION**: makecheck/verify.py rc=0:
+ Rust173/17/234, author111744states/symbolic assembly/full167/5365/10524 exact;
+ shared specfp origin explicit, no new lineage. Core/data/canonical/frozen/
+ history/LIVE/registry108/effective106/114 exact. FP/focused/six books rc=0;
+ fixed caps/book/environment/GS/pointers sync. C32b remains queued.
+ promotion: declined (governed vectors, permanent instruction witnesses and worked FP example retain this finite prerequisite; .14 owns measured stale explanation).
+
 - [x] `.13` c31 — **ROOT CAUSE**: source/verify.py rc=0 authenticates
  Zicsr/CSR/privileged gates; completed selector RED rc=101 names missing binding.
  Existing companions did not realize this distinct guarantee. Matrix12960 literal
@@ -970,6 +1078,8 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
+| `2026-10-10` | `.13` c32a | independent111744/23forms/full167corpus;20wrong effects/routes/16bad captures/8actual disabled controls RED101→restored | Rust173/17/234; registry108/effective106/114/core/data/frozen/history/LIVE exact; FP/focused/six books rc=0; hooks next |
+
 | `2026-10-10` | `.13` c31 | independent matrix/12096author+864refusals/full167corpus;13wrong effects/16bad captures/15disabled controls+missing binding RED101→restored | Rust173/17/230; registry108/effective106/114; frozen/core/history/LIVE exact; focused/six books rc=0; hooks next |
 
 | `2026-10-10` | `.13` c31a | source/root history; initial and disabled core/author guards RED→4176core/3540author cells; independent167 corpus,3hash-only provenance; Sail/Spike9M repeat exact | Rust173/17/226,GUEST150/0,arms655; registry106/effective104/114 unchanged; focused/six books rc=0; hooks next |
@@ -989,6 +1099,8 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | Leaf | Subject | Next |
 | --- | --- | --- |
 
+| `.13` c32a | `SEMULITH-P4-0177 (leaf P4-SYSTEM.13): witness numeric F instructions before binding` | c32b transfers/boxing/FS-Off/rounding refusals and final F bindings |
+
 | `.13` c31 | `SEMULITH-P4-0176 (leaf P4-SYSTEM.13): bind CSR access, permissions and suppression` | GC-F before D/reservation/SC/freeze; .14 evidence sweep remains |
 
 | `.13` c30a | `SEMULITH-P4-0172 (leaf P4-SYSTEM.13): honor explicit counter-write precedence` | c30 GC-COUNTERS, remaining pairs/freeze; contain docs before fixed caps |
@@ -996,6 +1108,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c32a (SEMULITH-P4-0177): private23form numeric
+ instruction witness111744boundaries/223488parcels,20wrong tables/16bad captures/
+ 8actual disabled controls; independentauthor/full167corpus exact. Rust173/17/234,
+ FP/focused/six books green; registry108/effective106/114/LIVE unchanged. C32b
+ queued; stale conversion-deviation notes owned in .14 before evidence signoff.
 
 - `2026-10-10`: `.13` c31 (SEMULITH-P4-0176): bindCSR-access,
  4480legal/8480refused full-state boundaries,15actual disabled controls and

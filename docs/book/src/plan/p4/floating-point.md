@@ -202,6 +202,51 @@ Its stale-provenance refusals and complete source identities are retained
 with the historical receipts below.
 
 
+
+## Numeric instruction observations before F contract binding
+
+The private c32a witness drives **23 numeric F instructions** through the real
+instruction decoder and executor. It reuses 1,504 single-precision rows from
+the existing `FP-VECTORS`-governed text fixtures, excluding D's format
+conversions. Expected bits and flags come from the exact-arithmetic reference;
+the witness never calls the production FP backend to construct an expectation.
+The shared fixture is included through a repository-relative path and remains
+byte-checked by its existing generator and hardware controls.
+
+Four fused forms use sign-adjusted inputs to retain the independent `a*b+c`
+expected value. For example, the vector `(1+2^-23)*(1-2^-23)-1` is exactly
+`-2^-46`, with no flags, under every rounding mode. FMADD uses addend `-1`;
+FMSUB uses addend `+1`; FNMSUB negates the first multiplicand and uses
+addend `-1`; FNMADD negates that multiplicand and uses addend `+1`. Each instruction still
+rounds once. Wrong fused routing is rejected rather than accepted from a
+matching operation name.
+
+The expanded rows produce 3,104 static/dynamic settings. Rounded static
+instructions run with `frm=7` to prove that their own valid rm overrides it;
+dynamic instructions use each vector's mode. Unrounded operations also ignore
+reserved frm. Across M/S/U, destinations 0/5/6/7/8/31 and initial flags 0/31,
+**111,744 boundaries** preserve the literal full-state expectations and issue
+exactly 223,488 fetch parcels. Destinations include all three FP source aliases;
+f0 is writable, while an integer x0 destination discards only its result.
+Word-sized integer conversion results are sign-extended to XLEN, including
+unsigned conversion results whose bit 31 is set.
+
+Every case starts FS Clean. An f-register write makes it Dirty; an integer
+result preserves Clean when its accrued flags leave stored flags unchanged.
+Flags remain sticky. All GPR/FPR values, raw CSR owners, PC/mode, reservation,
+TLB entries/FIFO cursor, wait state, full memory, request sequence and extent
+are compared. Twenty wrong effects/routes and sixteen corrupted captures
+exercise the auditor; actual disabled observation, dynamic-rounding, boxing,
+flag-accrual and Dirty paths must fail before byte restoration.
+
+The independent instruction author agrees on the same numeric cases and the
+original 167-guest corpus remains exact. The author and vector generator share
+`specfp`; this agreement adds no new numeric lineage. These are finite numeric
+instruction observations, not complete F contract realization: seven transfer/
+sign forms, invalid-box and directed-rule cases, FS-Off and reserved-rounding
+refusals, and final registry bindings belong to c32b. Effective G-CONTRACT
+remains 106/114 until that work passes.
+
 ## Historical verification receipts
 
 Dated progress counts, pre-bind identity checks and exact provenance receipts

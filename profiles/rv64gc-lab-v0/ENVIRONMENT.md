@@ -207,6 +207,13 @@ set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
 Core and independent-author controls plus finite public M-mode read-back support
 the repair. The Sv39 book section gives the example and limits; no binding credit.
 
+C32a adds a private numeric F instruction witness before final F binding:
+23forms/111744boundaries/223488parcels reuse the governed independent numeric
+data, with full-state/alias/static-DYN/flags/Dirty observations and real disabled
+controls. The author and generator share specfp, so their agreement adds no
+numeric lineage. Transfer/sign/invalid-box/FS-Off/reserved-mode checks and F
+bindings remain c32b's work; registry108/effective106/114 is unchanged.
+
 GC-CSR-ACCESS binds4480legal/8480refused single boundaries across six forms,
 M/S/U, aliases, source-field/value suppression and15selected CSR contexts.
 Full state/memory/exact requests are compared; refusal preserves destination

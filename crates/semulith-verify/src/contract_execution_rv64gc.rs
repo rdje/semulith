@@ -9,6 +9,8 @@ mod counters;
 mod csr_access;
 mod fence;
 mod fence_i;
+#[cfg(test)]
+mod fp32;
 mod jalr;
 mod load_x0;
 mod walk;

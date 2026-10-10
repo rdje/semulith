@@ -1,6 +1,43 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — witness numeric F instructions before binding (P4-SYSTEM.13 c32a)
+
+Safe subdivision before code separates numeric23forms from c32b's seven
+transfer/sign forms, invalid-box/directed cases and all-form/rounding refusals;
+no F registry credit here. Authenticated F/D/Machine sections; existing3168-row
+FP-VECTORS text regenerates exactly SHA5eb35db218f585e56e4eb9145c530e7d50f6841569195560de72d76feeb831c5.
+Reuse1504single rows excluding D conversions, four FMA algebra/sign variants→
+1744cases,1360rounded×static/DYN+384unrounded→3104settings. M/S/U×rd0/5/6/7/8/31×
+flags0/31 with FS Clean gives111744boundaries/223488parcels. Staticrm ignores
+reservedfrm7; dynamic uses vector mode. Integer32results signextend, FP0writes,
+x0discard, allthree FP source aliases, stickyflags and selectedDirty observed.
+Expectedfull GPR/FPR/26owners/PC/mode/reservation/TLBcursor/wait/memory/requests/
+extent/outcome precedes execution. Core/backend never authors expected values.
+
+Four suites rc=0,7wrong effects+13wrong routes/16bad captures discriminate.
+Eight actual disabled controls RED101 then byte-restored: F/X/CSR auditor,
+request logger,DYN resolution,boxing,flag accrual,Dirty marking. Scratch copied
+capture named an unimported counter constant; changed it to the relevant frm.
+A proposed sqrt→add mutant lacks rs2 in the original encoding and panics at
+operand lookup; replaced by valid sqrt→integer-conversion wrong route before
+credit. No project defect inferred from malformed diagnostic input.
+
+Independent author111744states exact; symbolic assembly validates encodings/
+aliases, full167/5365/10524 corpus exact. Author and generator both use specfp,
+so this adds no numeric lineage; core observes fetch/counter progression
+separately. Core/data/canonical/frozen/history/LIVE/registry108/effective106/114
+byte-exact; makecheck173/17/234. FP/focused/six books green; environment/GS digest/
+book/index/pointers sync, fixed caps. Evidence target/p4-system-13/c32.
+
+Source census also owns a prose defect before .14 evidence signoff: generator
+root99475c13 still labels signaling-NaN conversion as backend deviation(ii),
+although qualification amendment d3 withdraws it; two templates/3generated
+notes reproduce. The .14 sweep now owns exact note-only regeneration and fp.rs's
+internal-reference rationale along with prior provenance work. No numeric defect
+or new backend independence inferred. Next c32b completes F before D.
+promotion: declined (governed independent numeric data, permanent full-state controls and the worked FP chapter retain this finite prerequisite; .14 owns the stale explanation repair).
+
 ## _(2026-10-10)_ — bind CSR access, permissions and suppression (P4-SYSTEM.13 c31)
 
 Authenticated Zicsr5.1.1/CSR1.1.1/Machine FS/TVM/counter sections,
