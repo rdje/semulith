@@ -1,67 +1,27 @@
 #!/usr/bin/env python3
-"""A RISC-V assembler and ELF64 writer, for independently encoded guest programs.
+"""A RISC-V assembler and ELF64 writer for accountable guest bytes.
 
-WHY THIS EXISTS, and why it does not simply call a cross-compiler.
-`docs/EVIDENCE_AND_GATES.md` and rule `EVD-05` require a guest program's expected observations
-to be derived from the SPECIFICATION, not from any model's output. A toolchain would also be a
-fine encoder, but it would be one more artifact whose provenance has to be established, and on
-this host it would have to be installed off the repository volume. This assembler reads its
-encodings from pinned tables and produces a file whose every byte is accounted for.
+Guest expectations derive from the specification rather than model output (EVD-05).
+The assembler records the other side of that experiment: the exact input image.
 
-⛔ WHERE THE ENCODINGS COME FROM, and why it is not this file.
-The pinned specification artifacts do NOT contain instruction encodings. Measured over all six
-of them (three HTML pages and their text renderings): `grep -cE '[01]{7}'` -> 0, 0, 0, 0, 0, 0.
-The format diagrams are IMAGES (31 in the RV32I chapter alone), so the bit layouts are simply
-not in the bytes this project pinned. The SEMANTICS are all there in prose — which is the half
-that matters for expected values — but the encodings had to come from somewhere else.
+The normal API is Assembler(profiles/<unit>/encoding.sexp). It resolves the tracked
+composition and reads fixed bits, operand fields and scattered immediate layouts
+from canonical fragments. The composed semantics determine x/f register spelling;
+profile data supplies IALIGN, and owned state data supplies CSR names when present.
+This constructor returns before the legacy upstream-table directory route. That
+route remains available to table-derivation tooling; guests use canonical inputs.
 
-They come from `riscv-opcodes` (RISC-V International, BSD-3-Clause), pinned under
-`target/refs/riscv-opcodes/` and re-derived by `scripts/fetch_references.sh`:
-    extensions/rv_i, extensions/rv64_i   the fixed bits and operand list per instruction
-    extensions/rv_zicsr, rv_zicntr, rv_system, rv_s   Zicsr, Zicntr and the privileged
-                                         system instructions (the rv64gc pin, P4-SYSTEM.2)
-    extensions/rv_a, extensions/rv64_a   the A extension's 22 atomic forms (the rv64gc
-                                         pin, P4-SYSTEM.4 slice a)
-    extensions/rv_f, extensions/rv64_f   the F extension's 30 forms (the rv64gc pin,
-                                         P4-SYSTEM.7 slice c2)
-    arg_lut.csv                          the operand field positions
-    csrs.csv                             the CSR name-to-address map (csr operand spellings)
-This module PARSES those files. It does not carry an opcode constant of its own, so a typo here
-cannot invent an instruction — it can only fail to find one.
+Operand fields are range-checked. Branch/jump immediates are byte offsets, with odd
+offsets refused. C instructions use exact two-byte parcels; assemble_units and
+assemble_image preserve mixed-length images. Unknown instructions and incompatible
+operand spellings refuse rather than silently selecting another encoding.
 
-⛔ WHICH REGISTER FILE AN OPERAND NAMES IS DERIVED, NOT TYPED (P4-SYSTEM.7 slice c3). The pinned
-rows name only the FIELD (`rd rs1 rs2 rs3`); `fcvt.w.s rd, rs1` reads an f-register and writes
-an x-register, and nothing in the table says so. The semantics do: a rule reads `(freg rs1)` or
-`(reg rs1)`. A unit's assembler therefore reads its composed fragments' `.sem.sexp` rules and
-spells an operand `f0..f31` exactly when its rule names it through `(freg …)`, `x0..x31`
-otherwise — and refuses the other spelling BY NAME, so `fadd.s x1, x2, x3` is an error, never
-a silently different instruction. The rounding-mode field `rm` is spelled as its 3-bit value
-(0..7; the mode names live in the specification's Table 2, which this module does not carry —
-a guest's directive names the mode).
-
-⚠️ SHARED ANCESTRY, STATED NOT HIDDEN. `riscv-opcodes` is upstream of both Sail and Spike for
-encodings, so "our bytes decode the way the model expects" is NOT an independent confirmation of
-the encoding. It is independent for SEMANTICS, which is what the differential test is actually
-for. The mitigation applied is a second decoder from a different codebase: `spike-dasm` is asked
-to disassemble the bytes this module emits, and must return the mnemonics that were requested.
-
-⛔ THE B AND J SCRAMBLE IS DERIVED, NOT TYPED. Those two formats spread their immediate across
-non-adjacent fields, and that layout is one of the things the pinned specification renders only as
-an image. It is NOT typed here: `riscv-opcodes`'s `src/riscv_opcodes/constants.py` states it in
-machine-readable form —
-
-    "imm20":    "imm[31:12]"
-    "bimm12hi": "imm[12|10:5]"        "bimm12lo": "imm[4:1|11]"
-    "jimm20":   "imm[20|10:1|11|19:12]"
-
-— and this module parses those descriptors. The derivation is SELF-VALIDATING: the bits a
-descriptor accounts for must total exactly the width of the field it fills (7, 5, 20, 20), and
-`load_immediate_layout()` refuses the table if any of them disagrees. A layout this module cannot
-reconcile is a layout it will not use.
-
-⚠️ Every immediate here is in BYTES and the low bit is not encoded: the specification states that
-B- and J-immediates encode "signed offsets in multiples of 2 bytes". An odd offset is refused
-rather than silently truncated.
+Canonical data and a correct field census do not prove the encoder correct.
+Directed specification-derived words, operand refusals and published decoder
+observations check finite inputs. A spike-dasm mnemonic round-trip establishes
+that observation only: it supplies no evidence about Sail/Spike implementation
+ancestry or semantic independence. Reference comparisons retain their explicit
+input scope and lineage limits; agreement alone earns neither claim.
 """
 
 from __future__ import annotations

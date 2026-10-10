@@ -1,6 +1,25 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — correct public-source rationales (P4-SYSTEM.14 a2)
+
+Own b8d09f53 assembler ancestry/semantic-independence claim, repeated in annex
+root4855c22a; the old text-only source census also overstates the current route.
+Refresh the module around actual canonical API/early return, range checks and
+finite public decoder observations, with explicit lineage limits. Correct book
+opening/limits together. FP.resolve_rm rootb1e64d3b cites an internal Sail function;
+replace with authenticated pinned F20.1.2's permission and the laboratory choice,
+with static/DYN/reserved examples in the FP book. No dependency source inspection.
+
+Repair.py rc=0 proves executable Python AST and Rust comment inverse exact;
+F70860B/SHA2568e42e6ae9b3ab18fcf9c3d4f26a1a251310e3fd08b67368235fb5e9affd32edd.
+All167old/new byte images and fresh GPR/fetch author167/5365/10524 exact;
+no new FP-data derivation or independence. Make check Rust173/17/253,
+focused15/six books/verify rc=0. Canonical/profile/frozen/registry/history/LIVE,
+other executable code and fixed caps exact. Evidence target/p4-system-14/a2.
+Next bounded append-history/task containment, then remaining provenance repairs.
+promotion: declined (current API/public F source/book and exact inverse receipt retain this correction).
+
 ## _(2026-10-10)_ — correct signaling-NaN fixture notes (P4-SYSTEM.14 a1)
 
 Root99475c13's d3 generator comment/two templates still said a format-conversion

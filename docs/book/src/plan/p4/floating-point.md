@@ -21,7 +21,10 @@ Every cargo invocation uses the project-local `.app-data/vendor/` store through
 The canonical state owns f0–f31 at FLEN=64 and fcsr's two-owner view, composed
 from fflags and frm. Frm stores any three-bit value. A rounded instruction
 uses its static rm or, for DYN, frm; this laboratory selects an illegal trap
-for reserved modes. FP instructions and FP CSR accesses require FS enabled
+for reserved modes. Pinned F §20.1.2 reserves static rm=5/6 and dynamic
+frm=5/6/7 and explicitly permits the selected illegal-instruction behavior.
+For example, rm=0 selects RNE regardless of frm; rm=7 with frm=3 selects RUP;
+rm=5 or rm=7 with frm=7 traps. FP instructions and FP CSR accesses require FS enabled
 in every privilege mode. The instruction gate runs before any instruction
 effect, so an FS-Off FLW raises illegal-instruction before attempting its data
 access. Every f-register write marks Dirty, even unchanged values; flag accrual

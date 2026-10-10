@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0193 (leaf P4-SYSTEM.14) — correct public-source rationales
+
+- Replace assembler module/annex unsupported lineage claims and stale route rationale with canonical API and finite published observations; cite pinned F permission and selected policy for reserved rounding.
+- Preserve Python executable AST/Rust behavior, all167guest byte images and fresh GPR/fetch corpus; Rust173/17/253, focused15/six books/invariants pass. Canonical data, profiles/frozen/registry/history/LIVE remain exact.
+
 ## SEMULITH-P4-0192 (leaf P4-SYSTEM.14) — correct signaling-NaN fixture notes
 
 - Remove the withdrawn backend-defect claim from one generator comment/two templates and regenerate three directed labels. Preserve all230numeric rows and3168fixture bytes exactly; stale tracked/scratch notes reject before/after regeneration controls.

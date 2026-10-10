@@ -296,6 +296,44 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a2 — correct public-source rationales (completed, SEMULITH-P4-0193)
+
+Owned on clean fd84cf0, brief0, actual census rc=0. Read .14 prerequisites,
+ROADMAP P4, assembler source/public canonical constructor route, FP rounding
+resolver/test and pinned F20.1.2, assembler annex/current FP book. Reproduce
+b8d09f53 module rationale claiming Sail/Spike encoding ancestry and semantic
+independence; annex repeats it at root4855c22a. Decoder agreement cannot establish
+either lineage claim. The old six-artifact census is also presented as the current
+source route although canonical Assembler returns before the legacy table path.
+Refresh the module documentation around its actual canonical API, finite
+published-artifact checks and explicit lineage limits; fix the annex in lockstep.
+FP resolve_rm rootb1e64d3b cites an internal Sail function for reserved-mode
+behavior. Replace that rationale with pinned F's reserved-encoding permission
+and the explicit laboratory choice; document static/DYN examples.
+No dependency implementation read/pin change; no algorithm/API/encoding/FP change.
+Prove Python AST excluding the module docstring and Rust after comment inversion
+exact; fresh all167guest words/expectations and existing rounding tests unchanged.
+Run strict make check, focused generator/profile/docs gates and six books;
+record source authentication, exact inverses and all fixed family caps. Preserve
+all canonical data, profiles/frozen contracts, registry, prior history and LIVE.
+Evidence target/p4-system-14/a2; then remaining privilege/state/reference rationale
+sweep before .14 evidence signoff. No new independence or conformance credit.
+
+Result: repair.py rc=0 authenticates pinned F70860B/SHA2568e42e6ae9b3ab18fcf9c3d4f26a1a251310e3fd08b67368235fb5e9affd32edd,
+locates reserved-mode permission and canonical constructor's early return;
+Python executable AST SHA256ab7f6ce6342fdb66232655438ea35a8f6f5f43094c4f910ae83599c8223d2bcd
+and Rust comment inverse exact. Blame reproduces b8d09f53/4855c22a/b1e64d3b.
+Module/annex now describe canonical inputs and finite public observations with
+explicit lineage limits; FP comment/book cite F20.1.2 and selected policy.
+Corpus.py rc=0: all167old/new guest byte images exact, fresh GPR/fetch author
+comparison167/5365/10524 exact (not a new FP-data or independence derivation).
+Make check Rust173/17/253, focused15/six books/invariant verifier rc=0.
+No canonical/profile/frozen/registry/history/LIVE/other executable code changes;
+fixed caps. No new gate or conformance credit. Append heads now need bounded
+containment before the next provenance receipt; own a3/0194 on the clean commit.
+Promotion: declined — canonical API/public F source, current book and exact
+inverse receipt retain this correction; broader provenance sweep remains owned.
+
 ### `.14` a1 — correct signaling-NaN fixture notes (completed, SEMULITH-P4-0192)
 
 Owned on clean a1efac4, brief0 and actual handoff census rc=0. Read ROADMAP
@@ -1195,6 +1233,18 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a2 — **ROOT CAUSE**: repair.py/blame rc=0:
+  b8d09f53/4855c22a unsupported encoding ancestry/semantic independence;
+  b1e64d3b internal Sail rationale. Authenticate pinned F's actual permission.
+- [x] `.14` a2 — **ADDRESSED**: repair.py/corpus.py rc=0:
+  public canonical-route/finite-observation rationale and selected rounding policy;
+  Python AST/Rust comment inverse exact; all167old/new images and GPR/fetch
+  author167/5365/10524 exact, no new independence claim.
+- [x] `.14` a2 — **NO REGRESSION**: make check/focused15/make book/verify.py rc=0:
+  Rust173/17/253, existing rounding/generator controls and six books; canonical/
+  profiles/frozen/registry/history/LIVE/other code exact; fixed caps.
+
+
 - [x] `.14` a1 — **ROOT CAUSE**: repair.py/blame rc=0: root99475c13
   one comment/two templates/three labels repeat withdrawn d3 backend-NV defect;
   current conversion and qualification correction agree on INVALID_OP.
@@ -1343,6 +1393,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a2 | public-source/root census; authenticated F; Python AST/Rust inverse;167old/new images/fresh GPR+fetch corpus | Rust173/17/253/focused15/6books/verify rc=0; canonical/profile/frozen/registry/LIVE/history exact |
 | `2026-10-10` | `.14` a1 | stale labels/root99475c13; exact230numeric/3168fixture inverse; generator RED1→GREEN0/stale scratch RED1 | make check Rust173/17/253, focused10 incl hardware/self-tests,6books/verify rc=0; CPU/frozen/registry/LIVE/history exact |
 | `2026-10-10` | `.13` c36 |14exact pins; intact GREEN0/3damaged v2 controls RED1; full make ci/final focused9/books/invariant verifier | rc=0; Rust173/17/253,6books; G-CONTRACT green114/114 frozen, CPU incomplete7/10; .14 frontier |
 | `2026-10-10` | `.13` c35 | missing-binding RED→2Execution rows; isolated shared62176census/194688requests;35restored controls; fresh167corpus/alias example | Rust173/17/253/focused15/six books/verify rc=0; registry116/effective114/114 open; frozen/storage/semantics/old inputs/history/LIVE exact |
@@ -1361,6 +1412,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a2 | `SEMULITH-P4-0193 (leaf P4-SYSTEM.14): correct public-source rationales` | bounded append-history/task containment a3/0194, then remaining provenance sweep |
 | `.14` a1 | `SEMULITH-P4-0192 (leaf P4-SYSTEM.14): correct signaling-NaN fixture notes` | a2/0193 public-source rationale sweep, remaining provenance prerequisites |
 | `.13` c36 | `SEMULITH-P4-0191 (leaf P4-SYSTEM.13): freeze the complete environment contract` | priority .14 provenance/note repairs, then evidence signoff work |
 | `.13` c35 | `SEMULITH-P4-0190 (leaf P4-SYSTEM.13): qualify and bind deterministic SC` | c36/0191 full CI and v2 freeze, then priority .14 sweep |
@@ -1376,6 +1428,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 
 ## Changelog
+
+- `2026-10-10`: `.14` a2 (SEMULITH-P4-0193): replace assembler module/annex unsupported lineage and FP internal rationale with canonical API/finite observations/pinned F permission; exact executable inverses,167images/corpus and strict/focused15/books green.
 
 - `2026-10-10`: `.14` a1 (SEMULITH-P4-0192): remove withdrawn signaling-NaN backend-defect claim from generator comment/two templates/three labels; numeric230/fixture3168 exact, strict/focused10/books/invariants green; remaining provenance sweep next.
 

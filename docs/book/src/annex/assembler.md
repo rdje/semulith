@@ -9,13 +9,12 @@ not just agree that this one works.
 ## Why it exists at all
 
 The laboratory's evidence rules (EVD-05) require a guest's expected observations to be
-derived from the **specification**, never from a model's output. The same discipline applies
-to the program's bytes: they must be encoded independently of the models under test. A
-cross-compiler would encode them fine, but it would be one more artifact whose provenance
-has to be established, installed, and pinned. The assembler is the smaller, auditable thing:
-it reads its encodings from pinned tables, carries **no opcode constant of its own**, and
-refuses anything it cannot derive. A typo in it cannot invent an instruction — it can only
-fail to find one.
+derived from the **specification**, never from a model's output. The program's exact bytes
+also need an accountable encoder and canonical inputs. The normal constructor reads the
+unit's tracked composition, fields and immediate layouts; it returns before the legacy
+upstream-table route. A cross-compiler could also encode the program with its artifact and
+configuration recorded. Range checks refuse invalid operands, but they do not prove an
+encoder correct: directed words and image/refusal controls test that separately.
 
 ## The pipeline it sits in
 
@@ -342,14 +341,16 @@ that everything else is a loud refusal.
 
 ## What it does not claim
 
-The pinned specification artifacts do not contain the encodings (the format diagrams are
-images — measured: zero bit-pattern strings in any of them), so the encodings come from
-`riscv-opcodes`, which is *also* upstream of Sail and Spike. That shared ancestry is stated,
-not hidden: byte-level agreement with the references is **not** an independent confirmation
-of the encodings. The recorded mitigation (P0-PROFILE.6) is a second decoder from a
-different codebase — `spike-dasm` was asked to disassemble the emitted bytes and required to
-return the mnemonics that were requested. What the live differential independently confirms
-is the *semantics*, which is what it is for.
+Canonical encodings are tracked data, with their pinned public-artifact provenance and
+directed specification-derived word checks. The old text-only census did not establish
+what encoding diagrams contain. The recorded `spike-dasm` observations (P0-PROFILE.6)
+check that finite emitted inputs disassemble to the requested mnemonics. They establish
+neither Sail/Spike implementation ancestry nor independent semantic lineage.
+
+A live differential adds observations under its declared program, platform and comparison
+rule. Expected values retain their specification-side derivation and documented shared
+sources. Agreement alone supplies no additional independence claim; no dependency
+implementation inspection is needed to qualify these public input/output observations.
 
 ## Try it
 

@@ -132,9 +132,9 @@ impl Rm {
 
 /// The `(rounding rm)` resolution: the effective mode for an instruction's rm field, with
 /// DYN (111) reading `frm`; `None` is a RESERVED rounding mode — static 101/110 or DYN with
-/// frm holding 101–111 — which the laboratory takes as illegal-instruction (the pinned
-/// revision's "reserved" behavior; its ratified mandate "still valid"; Sail 0.14's
-/// `Fcsr_RM_Illegal` — `P4-SYSTEM.7` slice (c1)).
+/// frm holding 101–111 (RVI-F §20.1.2, Table 2). The pinned revision reserves these
+/// encodings and explicitly permits an illegal-instruction exception; this laboratory
+/// selects that permitted behavior (`P4-SYSTEM.7` slice (c1)).
 #[must_use]
 pub fn resolve_rm(rm_field: u64, frm: u64) -> Option<Rm> {
     match rm_field {
