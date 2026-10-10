@@ -449,3 +449,68 @@ independent normal 167/5365/10524 replay and full local CI (check, doctrines,
 bench, bench smoke, main and five model books). All protected runtime/canonical/frozen data and 90 prior
 bindings remain exact; effective G-CONTRACT stays **88/114**, thirteen runtime
 pairs and final freeze outstanding.
+
+## JALR: observe the computed target directly (c22b2)
+
+OB-JALR-LSB now binds direct Execution checks. Each case starts at PC=0x1000
+in M mode with a literal JALR word. All GPRs have distinct sentinel values;
+x6 supplies the source and x5 receives link 0x1004, except where stated.
+The following targets were derived before execution from RV32I 1.1.5.1:
+add the signed 12-bit immediate in RV64, then clear bit 0. C 27.1 permits bit 1.
+
+| Case | Source | Immediate | Word | Required target |
+| --- | --- | --- | --- | --- |
+| Even | 0x1080 | 0 | 0x000302e7 | 0x1080 |
+| Odd | 0x1081 | 0 | 0x000302e7 | 0x1080 |
+| Positive limit | 0x1080 | 2047 | 0x7ff302e7 | 0x187e |
+| Retain bit 1 | 0x1083 | 0 | 0x000302e7 | 0x1082 |
+| Carry before masking | 0x1081 | 1 | 0x001302e7 | 0x1082 |
+| Odd immediate | 0x1080 | 1 | 0x001302e7 | 0x1080 |
+| Negative one | 0x1082 | -1 | 0xfff302e7 | 0x1080 |
+| Negative limit | 0x1881 | -2048 | 0x800302e7 | 0x1080 |
+| Wrap | 0xffffffffffffffff | 3 | 0x003302e7 | 2 |
+| Preserve high bits | 0x100001083 | 0 | 0x000302e7 | 0x100001082 |
+| Alias x6 destination/source | 0x1081 | 1 | 0x00130367 | 0x1082 |
+| Discard link in x0 | 0x1083 | 0 | 0x00030067 | 0x1082 |
+| x0 source | 0 | -1 | 0xfff002e7 | 0xfffffffffffffffe |
+| Next fetch at low target | 3 | 0 | 0x000302e7 | 2 |
+| Next fetch outside region | 0x40000003 | 0 | 0x000302e7 | 0x40000002 |
+
+The observer checks exact post-step PC, every GPR including x0 and the aliased
+link, M mode, cause/EPC/tval, cycle and retirement, every actual environment
+request, and unchanged memory. The jump requests only its two instruction
+parcels, at 0x1000 and 0x1002. It does not fetch its target during that boundary.
+The last two cases explicitly run the next boundary: one refused parcel at the
+required target delivers cause 1, EPC/tval equal to that target, and PC=0x1100.
+The completed link remains; two cycles have elapsed but only JALR retired.
+FlatMemory's accepted-fetch counter stays two; the observer also records the
+third, refused request. The finite direct census is **15 cases / 17 boundaries /
+32 parcel attempts**: POS 3/6 and NEG 14/26.
+
+| Deliberately wrong public base-JALR effect | Required failing observation |
+| --- | --- |
+| Clear bits 0 and 1 | Retain-bit-1 target 0x1082 |
+| Omit masking | Odd-source target 0x1080 |
+| Mask the source before addition | Carry-before-masking target 0x1082 |
+| Mask the immediate before addition | Carry-before-masking target 0x1082 |
+| Zero-extend the immediate | Negative-one target 0x1080 |
+| Truncate the target to 32 bits | High target 0x100001082 |
+| Write pc+2 as the link | Even case requires x5=0x1004 |
+| Use the new link as an aliased source | Alias target 0x1082 |
+
+All eight fail the named target or link observation. The first proposed alias
+control merely reordered the link and target effects; tools showed that it is
+equivalent because register reads use the pre-instruction snapshot. It remains
+a passing control. The incorrect alias effect explicitly substitutes the new
+pc+4 link as the base when rd=rs1. Disabling the PC observation lets bit-1
+erasure escape and makes the control test fail; restoring it passes.
+
+The declaration test first refused the missing binding. POS also runs unchanged
+guest-control/dir-chase (30 boundaries/60 parcels); NEG runs fault-jalr-mis/
+it-prio-jump (6/11). Together with the direct cases the pair runs **53/103**.
+The independent author reproduces every literal case and the full unchanged
+167/5365/10524 corpus. Prior 90 registry entries, all canonical inputs, CPU,
+author, generated fixtures and frozen contracts stay exact. Rust 167/17/208
+passes. Registry 92 realizes **90/114** effective checks: thirteen scope,
+23 guest, six boundary and three execution pairs. Twelve runtime pairs and
+final freeze remain; these finite witnesses establish no universal ISA claim.

@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0149 (leaf P4-SYSTEM.13 c22b2) — observe JALR targets and links directly
+
+- Bind JALR-LSB through 15 literal cases/17 boundaries/32 parcels and unchanged
+  companion guests: pair total 53/103. Observe targets, links, exact requests and
+  next-boundary faults; eight incorrect effects and disabled-PC observer reject.
+- Retain reordered-link GREEN: pre-state register reads make it equivalent.
+  Explicit new-link alias control rejects. Prior 90 bindings/112 base+348 GC
+  inputs/core/author/generated/frozen bytes exact; independent full corpus exact.
+- Rust 167/17/208; registry92/effective90/114, twelve pairs/freeze remain.
+  LIVE_STATUS unchanged (652 arms,48 chapters,P4 12/18). Focused gates/all six
+  books rc=0; hooks precede the bounded control-transfer chapter and XLEN.
+
 ## SEMULITH-P4-0148 (leaf P4-SYSTEM.13 c22b1) — correct inherited GC alignment evidence and own target checks
 
 - Correct six source/expectation annotations for three GC IALIGN=16 guests;

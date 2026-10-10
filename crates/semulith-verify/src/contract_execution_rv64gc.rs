@@ -3,6 +3,7 @@
 //! Literal CSR words and values follow RVP-SSTC 12.1, RVP-SUPERVISOR
 //! 11.1.1.12 and RVP-MACHINE 2.1.1.11/2.1.1.18. No processor semantics live here.
 
+mod jalr;
 mod load_x0;
 
 use semulith_core::exec_rv64gc::{self, StepRv64gc};
@@ -20,6 +21,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Literal ordinary JALR targets and pc+4 links.
+    JalrPositive,
+    /// Adversarial sums, aliases and next-boundary target fetch faults.
+    JalrNegative,
     /// All seven x0 loads still issue exactly one data request.
     LoadX0Positive,
     /// Discarded destinations retain access, alignment and page faults.
@@ -35,6 +40,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::JalrPositive => &["guest-control", "dir-chase"],
+            Self::JalrNegative => &["fault-jalr-mis", "it-prio-jump"],
             Self::LoadX0Positive => &["scope-mem", "dir-x0-writes"],
             Self::LoadX0Negative => &["fault-ld-x0-fault", "fault-ld-x0-mis"],
             Self::SstcPositive => &["i-timer", "w-timer"],
@@ -45,6 +52,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::JalrPositive => jalr::positive(),
+            Self::JalrNegative => jalr::negative(),
             Self::LoadX0Positive => load_x0::positive(),
             Self::LoadX0Negative => load_x0::negative(),
             Self::SstcPositive => positive(enabled_supervisor()),

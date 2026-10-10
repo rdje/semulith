@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — observe JALR targets and links directly (P4-SYSTEM.13 c22b2)
+
+The old GC comparison admits base-JALR bit-1 erasure across all 167 guests.
+Bind literal Execution POS/NEG after declaration missing-entry RED rc=101.
+Fifteen direct cases cover ordinary/odd targets, immediate limits, carry before
+masking, negatives, wrap, high bits, aliases, x0 and two next-fetch faults:
+17 boundaries/32 actual parcels. All GPR/PC/mode/trap/counters/requests/memory
+are observed; companion guests add 36/71, making the pair 53/103.
+
+Eight incorrect public effects fail named observations. A source-disabled PC
+observer lets bit-1 erasure escape (meaningful test RED rc=101); restore GREEN.
+Reordering link before target alone is equivalent: Frame snapshots register
+reads before all effects. Investigated the initial invalid control, retain its
+GREEN result and explicitly use the new link as the aliased base for the RED.
+No production CPU/author/generated/canonical change. Prior 90 bindings exact;
+independent direct 15/17/32 and full 167/5365/10524 replay/identity rc=0.
+
+make check rc=0 (Rust 167/17/208). Registry92/effective90/114, twelve runtime
+pairs/freeze remain. Focused gates/all six books rc=0; hooks precede c23a book
+containment then c23b XLEN. Integer chapter 31,694/32,768 B; retain every
+witness byte in the next split. LIVE_STATUS unchanged (652 arms,48 chapters,P4 12/18).
+promotion: declined (finite target/request distinction and equivalent-mutation
+root diagnosis retained with worked examples in book/tree).
+
 ## _(2026-10-10)_ — correct inherited IALIGN evidence and own JALR target gap (P4-SYSTEM.13 c22b1)
 
 Six GC source/expectation files for fault-jal-mis, fault-jalr-mis and it-prio-jump

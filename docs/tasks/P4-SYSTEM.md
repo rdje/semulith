@@ -347,6 +347,55 @@ review evidence before finalizing finite cases. Only verified work may earn
 90/114 (twelve runtime pairs/freeze). .14 retains statuses/experiments. Commit/
 brief/clean/actual census after each subunit; no new core defect inferred yet.
 
+### `.13` c22b2 — direct JALR target witnesses (`SEMULITH-P4-0149`)
+
+Owned on clean 461c1a1 after empty brief/actual census. Reviewed frozen v0
+OB-JALR-LSB, unchanged REQ-D-JALR-LSB (only base jalr), authenticated
+RV32I1.1.5.1/C27.1, generated correct SetPc-before-link semantics, public
+step_over/environment/state API, FlatMemory and ExecutionCheck/registry/test
+interfaces. Integer book retains the all-167 wrong-mask survivor and root repair.
+
+Implement only direct verification: three POS rows (even/odd source, +2047), ten
+adversarial NEG rows (bit1, low-bit carry, odd immediate, -1, -2048, RV64 wrap,
+high bits, rd=rs1, rd=x0, rs1=x0), and two next-boundary target-fetch faults
+(target2 and40000002). Literal words/inputs/targets/linkpc+4 precede execution;
+all GPRs, PC/mode/trap/counters, exact request sequence and memory are observed.
+No target fetch occurs during JALR; fault cases explicitly add one refused parcel
+at the next boundary. 15 cases/17 boundaries/32 actual parcel attempts, of which
+POS3/6 and NEG14/26. Confirm literal encodings/values independently spec-side.
+
+Exercise isolated public base-JALR effects: absent mask, clearing bit1 too,
+masking source/immediate before addition, unsigned immediate, 32-bit target,
+wrong link and link-before-aliased-source. Require named first differences, and
+an actual disabled-PC-observer source mutation must fail then restore. Add the
+obligation to the completed-selection test first: missing registry RED rc=101
+before two Execution bindings with unchanged companion guests. Independently
+replay all167/5365/10524 and preserve prior90 bindings, all112 base/348 GC input,
+core/author/generated/frozen bytes. Only then earn registry92/effective90/114;
+twelve runtime pairs/freeze remain. Update task/live/book/profile/report, make
+check, focused gates/books, commit/clear brief/clean actual census; .14 retains
+statuses/structured experiments/registration. No new processor implementation.
+
+Control diagnosis before binding: normal 15-case witness passes, but the proposed
+link-before-target bad table also passes alias (cargo test rc=101 only because
+expect_err wrongly assumed otherwise). Root tools read Frame initialization and
+Sem::Reg: all GPR reads use pre_regs captured before effects, so reordering alone
+is semantically equivalent. Retain that as GREEN; explicitly substitute pc+4 as
+the base when rd=rs1 to model the wrong new-link read, then require alias RED.
+No CPU defect inferred from an equivalent mutation; source snapshot contract
+preserved. Actual disabled-PC-observer control and full replay still required.
+
+### `.13` c23 — bounded book then XLEN (next)
+
+c23a (`SEMULITH-P4-0150`) owns a lossless ordered-suffix move of immediate
+transfers and both JALR sections from the 31,694 B integer chapter (1,074 B
+remaining under 32,768 B cap) to a control-transfer chapter. Keep every witness
+byte, inverse/hash proof, navigation/SUMMARY/index/GS pointers and chapter-count
+mirror synchronized; no cap or runtime credit changes. Commit clean before
+c23b (`SEMULITH-P4-0151`) scoped review/realization of OB-XLEN: literal 64-bit
+register/address observations plus wrong-width controls, preserving the finite
+Sv39 laboratory scope. Remaining runtime pairs and final freeze then follow.
+
 ### `.13` c22a — preserve whole development receipts under fixed caps (`2026-10-10`, `SEMULITH-P4-0147`)
 
 Owned on clean 8f3376f after hooks/empty brief/actual census. DEV_NOTES is 47,462 B
@@ -744,6 +793,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c22b2 — **ROOT CAUSE**: old all-167 GC observations admit
+  base-JALR bit-1 erasure (c22b1 public reproduction rc=0). Declaration coverage
+  now selects OB-JALR-LSB and refuses the missing binding, cargo test rc=101
+  naming CHK-JALR-LSB-POS. Literal words/targets authenticated spec-side rc=0.
+  Initial reordered-link control was equivalent; Frame pre_regs/Reg root read
+  identifies why (initial witness test rc=101 from incorrect expect_err).
+
+- [x] `.13` c22b2 — **ADDRESSED**: 15 direct literal cases/17 boundaries/
+  32 actual parcels observe every GPR, target/link, mode/trap/counters, exact
+  requests and memory. Eight bad public effects fail named observations; the
+  reordered effect remains GREEN, explicit new-link alias effect RED. Actual
+  disabled-PC observer lets bit-1 erasure escape, test rc=101; restored witness
+  tests rc=0. Offline independent author matches all 15/17/32 (verify.py rc=0).
+  Two Execution entries plus companion guests total53/103; book retains matrix.
+
+- [x] `.13` c22b2 — **NO REGRESSION**: make check rc=0 (Rust167/17/208).
+  verify.py rc=0 proves prior90 registry bindings, all112 base/348 GC canonical/
+  guest inputs, core/author/generated/schema/doctrine/frozen bytes exact and
+  full independent167/5365/10524 unchanged. Registry92/effective90/114;
+  thirteen scope/23 guest/six boundary/three execution pairs, twelve runtime
+  pairs/freeze remain. Focused gates rc=0 (GUEST-GEN147, 226 frozen shards,
+  fixed bounds, 33 frontiers, six derived claims, 40 index rows, frozen contracts,
+  five fresh reports, schema270/two named skips); all six books rc=0. Whitespace
+  rc=0. Hooks precede c23a lossless book containment then c23b XLEN. LIVE_STATUS unchanged (652 arms,48 chapters,
+  P4 12/18). .14 retains statuses/experiments. promotion: declined (finite
+  target/request witnesses and equivalent-control diagnosis retained in book/tree).
+
 - [x] `.13` c22b1 — **ROOT CAUSE**: mirror import133e722 retains base
   IALIGN=32 trap/no-link prose in six files despite GC numeric link writes;
   2611340 adds parcels only. Relevant histories audited through base roots
@@ -1014,6 +1090,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c22b2 | 15 literal cases/17 boundaries/32 parcels; eight incorrect effects; reordered GREEN; disabled-PC and missing-binding RED; prior90/input/core bytes exact; independent full167; Rust167/17/208 | registry92/effective90/114; twelve pairs/freeze; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c22b1 | literal normal states; public base-JALR bit1 survivor across all 167; six annotation repairs; pinned image-identical source governor and two bypass REDs; executable arrays/prior bytes exact; Rust 167/17/206; full CI five legs green | effective 88/114 unchanged; direct c22b2 target witness next |
 | `2026-10-10` | `.13` c22a | 20=13+7 ordered inverse/hash exact; old manifest/sealed bytes exact; one appended row; no-op; prior inputs/runtime exact; focused gates/books | effective 88/114 unchanged; 226 frozen rows; hooks before c22b |
 | `2026-10-10` | `.13` c21b | 13 author/13 public delayed-PC controls; 63/111; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 90; effective 88/114; focused gates/books rc=0; hooks before c22a |
@@ -1048,6 +1125,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c22b2 | `SEMULITH-P4-0149 (leaf P4-SYSTEM.13): observe JALR targets and links directly` | c23a bounded control-transfer book, then c23b XLEN |
 | `.13` c22b1 | `SEMULITH-P4-0148 (leaf P4-SYSTEM.13): correct inherited GC alignment evidence and own target checks` | priority c22b2 direct JALR target-state pair |
 | `.13` c22a | `SEMULITH-P4-0147 (leaf P4-SYSTEM.13): retain whole development receipts under fixed bounds` | c22b JALR-LSB, then remaining runtime pairs/freeze |
 | `.13` c21b | `SEMULITH-P4-0146 (leaf P4-SYSTEM.13): realize immediate control-transfer observations` | c22a live-note containment, then c22b JALR-LSB |
@@ -1077,6 +1155,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c22b2 (SEMULITH-P4-0149): close direct JALR target
+  witness gap with literal state/request cases and eight bad effects, including
+  meaningful disabled-PC RED. Prior inputs/runtime exact; registry92/effective
+  90/114, twelve pairs/freeze. Book containment before XLEN.
 
 - `2026-10-10`: `.13` c22b1 (SEMULITH-P4-0148): correct six inherited
   GC IALIGN annotations, retain all images/numeric observations/budgets and base
