@@ -321,3 +321,71 @@ without retained invalid fields. The direct CPU observer owns those stronger
 observations. This finite evidence establishes the selected alignment policy;
 it does not close the separate atomic arithmetic, reservation-policy or
 multicore obligations. Those retain their own checks.
+
+## Matching the reference's atomicity granule
+
+The c27 source review exposed a configuration mismatch that the original A
+experiment could not distinguish. RVI-A 12.1.4 permits an optional misaligned-
+atomicity granule. An AMO contained within that granule need not fault. The Sail
+override carried scalar granule exponent 4 (16 bytes) alongside amo=AccessFault,
+introduced at 859e5cc's privileged match. The old a-lrsc-fault AMO uses address
+0x800000fe: its four-byte access crosses a 16-byte boundary and therefore traps
+under either configuration. Agreement on that address did not establish the
+unconditional alignment rule.
+
+A new literal program initializes its data bytes and seeds x5=17, then executes
+AMOADD.W x5,x6,(x2) with x2=0x80000101 and x6=42. Its following instructions read
+mcause, mtval and the two aligned doublewords containing the data. Those
+instructions are also the trap handler, so both outcomes reach the same read-backs.
+Expectations are derived before the reference runs.
+
+| Observation | Laboratory and corrected override | Former 16-byte granule |
+| --- | --- | --- |
+| AMO destination x5 | stays 17 | becomes 0, the old memory value |
+| mcause / mtval | 7 / 0x80000101 | 0 / 0 |
+| Aligned data read-back at 0x80000100 | 0 | 0x2a00 |
+
+Two fresh traces reproduce the wrong completion exactly. Validated public
+configuration copies isolate the setting: exponent 0 restores the fault;
+exponents 3 and 4 permit this contained word AMO. The public schema allows
+integer exponents 0–12, and the public ISA string is identical before/after.
+The tracked override now changes exactly the scalar exponent 4→0. The vector
+parameter, instruction selection and frozen laboratory obligations stay unchanged.
+This repairs a local matching configuration; Sail correctly implemented its
+previously supplied granule.
+
+Run the durable public qualification with the acquired pinned binary:
+
+```bash
+python3 scripts/probe_gc_sail_atomic_align.py
+```
+
+It checks 242 cases over all 22 atomic forms, W/D, ordering bits clear and bare
+M mode. Each width has one aligned address, every contained misaligned offset,
+and every misaligned offset crossing the next 16-byte boundary: seven W cells
+and fifteen D cells per operation. Each 13-boundary program verifies literal
+instruction PCs/words, declared GPR changes and CSR/data read-backs. There are
+3,146 boundaries per repetition, with two fresh byte-identical traces per case.
+A validated copy restoring the 16-byte granule must reproduce the specific
+AMOADD.W completion and diverge at boundary 8. Missing, failed, incomplete or
+non-repeating traces refuse. Outputs stay below the repository's target directory.
+This live diagnostic requires the reference binary; it is not an offline CI
+member and adds no registered doctrine or CPU-contract credit.
+
+All original twelve A guests were re-run: eleven agree over 290 declared
+boundaries with repeated traces; a-lrsc-mustfail retains the permitted width-SC
+policy difference at step 22. The broader before/after run captures instruction,
+GPR/FPR/CSR, memory, walk/cache and exception/interrupt traces. All 164 successful
+old-guest traces are byte-identical across configurations and repetitions. Three
+old runs retain the same process failures: mm-counters, w-notrap and w-timer
+reach a trap loop without the matched counter/timer source. They are explicit
+limits and earn no successful-trace credit. These observations are reference
+configuration regression evidence, not agreement of every guest with the CPU.
+
+The broad run also found a separate adapter defect: its two extra steps can run
+off a completed program and produce repeated fetch faults. It then refuses the
+entire trace for duplicate delivery, even when the declared prefix is complete.
+The public dir-chase adapter refuses at step 17; the same binary/configuration/
+ELF with its exact 17-step budget agrees. P4.13 c28c owns the bounded repair and
+its missing-evidence/parcel-gap controls before the next runtime binding.
+Structured experiment records and requirement statuses remain P4.14's work.

@@ -33,7 +33,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`all-green-but-the-product-has-not-moved.md`](all-green-but-the-product-has-not-moved.md) | every check is green and the infrastructure is beautiful — why hasn't the product moved? |
 | [`pin-the-mechanism-slope-before-the-number.md`](pin-the-mechanism-slope-before-the-number.md) | my measurement says "1.4 allocations per step" — is that signoff-grade? |
 | [`an-inherited-label-is-a-claim-to-re-derive.md`](an-inherited-label-is-a-claim-to-re-derive.md) | a design brief names a device — can I trust the label, or must I measure it? |
-| [`an-identity-proof-needs-a-must-diverge-control.md`](an-identity-proof-needs-a-must-diverge-control.md) | my before/after comparison is byte-identical on every case — how do I know the harness can tell different apart at all? |
+| [`an-identity-proof-needs-a-must-diverge-control.md`](an-identity-proof-needs-a-must-diverge-control.md) | my before/after comparison is byte-identical on every case — how do I know the harness can tell different apart at all? Also: can an agreeing address hide an unmatched memory attribute? |
 | [`a-legalization-rule-is-a-claim-the-spec-must-grant.md`](a-legalization-rule-is-a-claim-the-spec-must-grant.md) | I am about to declare a CSR field WARL with a laboratory legal-value set — what must the specification say first? |
 | [`a-locality-claim-covers-every-reader-of-the-store.md`](a-locality-claim-covers-every-reader-of-the-store.md) | a dependency cache was fetched on-volume — are the builds using it? |
 | [`an-oracle-can-share-the-convention-it-judges.md`](an-oracle-can-share-the-convention-it-judges.md) | my independent oracle agrees with the implementation — is that evidence, or a shared convention? |

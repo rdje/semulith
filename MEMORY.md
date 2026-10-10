@@ -18,13 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c28b (SEMULITH-P4-0158) — qualify the
-  Sail override's public contained-vs-crossing misaligned AMO behavior before
-  GC-FENCEI. Override has exponent4 granule; old matched AMO crosses it. Result
-  pending/unclassified; task owns published-interface probes and any repair.
-  c28a shards seven exact DEV entries18245 B; inverse restores47951 B/SHA.
-  Code/inputs/registry100/effective98/114 unchanged; eight runtime pairs/freeze.
-  Rust167/17/217, GUEST147, doctrine652,49 chapters; .14 owns statuses/experiments.
+- next_action: `P4-SYSTEM.13` c28c (SEMULITH-P4-0159) — repair the public
+  Sail adapter's post-budget duplicate-fetch refusal. dir-chase rc2 with +2
+  steps, exact17 gives AGREE; all25 observed tail refusals need assessment.
+  c28b corrects scalar MAG4→0; qualified242 cases/3146 boundaries per repeat,
+  wrong-granule control DIVERGEs. Prior164 successful guest traces identical;
+  three named counter/timer process failures excluded. Registry100/effective98/114,
+  eight runtime pairs/freeze; GC-FENCEI c28d next. Rust167/17/217, GUEST147,
+  doctrine652,49 chapters unchanged; .14 owns statuses/experiment records.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

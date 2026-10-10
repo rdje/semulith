@@ -34,3 +34,26 @@ guests diverging as required.
 - The sibling shape — agreement over a truncated prefix — is
   [`a-shorter-trace-is-not-agreement.md`](a-shorter-trace-is-not-agreement.md); this card
   is the same lesson one level up: agreement over identical FAILURES.
+
+## A matching address can hide an unmatched memory attribute
+
+P4-SYSTEM.13 c28b found a concrete example in the public Sail configuration.
+Its 16-byte misaligned-atomicity granule permitted an AMO wholly inside that
+granule despite amo=AccessFault. The old matched AMO crossed the boundary and
+trapped under both settings. Eleven agreeing A guests and byte-identical old
+traces therefore could not establish the intended unconditional alignment rule.
+
+A new AMOADD.W at 0x80000101 distinguishes them: the laboratory faults cause7
+and preserves rd=17/memory; the old reference completes, writes rd=0 and stores
+42 at the misaligned address. Scalar exponent0 repairs the configuration.
+The live `scripts/probe_gc_sail_atomic_align.py` checks 242 derived cases and
+requires a copy restoring exponent4 to reproduce that specific divergence.
+It uses only the pinned binary's public validation and trace interfaces.
+
+An identity count is regression evidence over its measured inputs. Add cases
+on both sides of an attribute's boundary before claiming that the configurations
+match. Require successful fresh runs: the accompanying corpus comparison names
+164 successful identical traces separately from three unchanged process failures.
+The worked observations and limits are in
+`docs/book/src/plan/p4/contract-memory.md#matching-the-references-atomicity-granule`;
+the task retains the configuration delta and source history.

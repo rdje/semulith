@@ -48,6 +48,12 @@ full trap/request/state and prior-reservation observations. LR uses cause5;
 SC/AMO cause7 before data translation. Aligned LR/SC controls and worked limits:
 `docs/book/src/plan/p4/contract-memory.md`.
 
+The matched Sail override sets scalar misaligned-atomicity granule exponent0.
+A 16-byte granule permits contained AMOs despite AccessFault, so that former
+setting did not match the unconditional laboratory alignment rule. Public
+qualification: `scripts/probe_gc_sail_atomic_align.py`; worked evidence/limits:
+`docs/book/src/plan/p4/contract-memory.md`.
+
 ## The versions
 
 | Version | Status | Members | What it is |

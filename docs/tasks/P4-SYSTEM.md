@@ -420,7 +420,18 @@ registry100/effective98/114 unchanged. Update bounded live docs/book/task,
 sharder controls, focused bounds/freeze/frontier/count/index/report/schema and
 all six books/hooks; commit/empty brief/clean actual census before c28b.
 
-### `.13` c28b — qualify the public AMO granule boundary (priority next)
+### `.13` c28b — qualify the public AMO granule boundary (completed, `SEMULITH-P4-0158`)
+
+Activated on clean a186409 after full containment workflow/actual census.
+Read published adapter/trace parser/ELF assembler and independent author, tracked
+Sail configuration/reference hash, A/machine primary clauses and memory/atomics
+book. Initial finite diagnostic: a 13-boundary M program seeds rd=17, performs
+AMOADD.W at0x80000101, then reads mcause/mtval and two aligned data doublewords.
+Handler is the common following instruction, so trap vs completion is observed
+by values independently of branch layout. Derive expectations before execution,
+zero-pad the ELF's data cells, validate the exact baseline override, require
+fresh successful/repeated traces. If it disagrees, test the granule parameter
+through validated copies before changing any canonical input. No new credit.
 
 Owned concrete evidence question found while reviewing c27's pinned A12.1.4:
 optional misaligned-atomicity granule permits an AMO wholly within its granule.
@@ -429,16 +440,69 @@ The historical matched a-lrsc-fault uses 0x800000fe (A-2), whose W access crosse
 a 16-byte boundary; it does not distinguish contained-AMO behavior. No new
 matched-reference claim was made for c27's8800 direct cases, but the frozen
 reference-matched policy needs a public-boundary qualification before relying
-on broader equivalence. Result pending, not classified as a production defect.
-Run pinned Sail through its published CLI/our adapter on contained and crossing
-misalignments at both widths, retaining fresh traces and a legal aligned control.
-Inspect only public inputs/validation/outputs; no reference implementation or
-submodule internals. If a discrepancy reproduces, log exact scope/root cause,
-fix the matched configuration or record its true limitation and schedule the
-required revalidation before closure. Preserve frozen statements; core's chosen
-access-fault policy is independently permitted without the optional granule.
-GC-FENCEI follows qualification (c28c); .14 still owns structured experiment
-records/statuses. c28a restores receipt room before this investigation.
+on broader equivalence. Initial public reproduction CONFIRMED reference-configuration defect, priority
+fix-now: validated tracked baseline, AMOADD.W at0x80000101 completes instead of
+cause7. x5 changes17→0, mcause/mtval read0, aligned data read-back0x2a00; two
+fresh13-row traces byte-identical, adapter DIVERGE at8. Laboratory expectation
+was derived before either run. No production-core defect or new contract credit.
+Public variant isolation rc=0: exponents0/1/2 validate and fault cause7 at the
+contained W case;3/4 validate but complete/write. Public default/schema describe
+the field as a granule exponent (schema integer0..12); baseline/no-granule public
+ISA strings are identical. Thus AccessFault does not override the present MAG.
+History859e5cc introduced the carried parameter at the privileged match; the A
+experiment's boundary-crossing witness could not distinguish it. This is a local
+matching-configuration defect, not an upstream Sail defect.
+
+Repair scope owned before changes: change exactly scalar MAG exponent4→0 in
+GC reference override, leaving vector/external/scalar/base-profile state and all
+frozen declarations/guests exact. Add durable public diagnostic242 cases =22
+forms × (W7/D15 offset cells), bare M, ordering bits clear, rd17 sentinel,13
+boundaries each, aligned/contained/crossing with fresh repeated traces. Derive
+all expectations first and retain a validated wrong-granule4 DIVERGE control.
+Re-run original twelve A guests and public traces of the entire167-guest corpus
+under both configurations, distinguishing output identity from laboratory
+agreement. Update live references/book/task and generated GS only after final
+profile edits; no new contract/doctrine credit or .14 experiment registration.
+If any old guest changes, diagnose/own it before proceeding. Focused checks,
+probe/adapter controls/books/hooks and exact field/input/registry identity before
+commit/brief0/clean actual census. Qualification completed:242/3146 per repeat
+AGREE, wrong-granule control DIVERGE at8, original11 A agreements/290 boundaries
+and unchanged width-SC difference. All167 old traces identical before/after;
+164 successful, three unchanged named counter/timer failures excluded. Existing
+must-diverge-control card/INDEX gains the worked boundary counterexample; all
+prior card bytes retained, family30/95032 B under fixed caps. No .14 status or
+structured experiment credit. New adapter defect c28c below takes priority over
+GC-FENCEI c28d. Focused checks/all six books rc=0; hooks at commit.
+
+### `.13` c28c — keep post-budget reference faults from invalidating evidence (priority next)
+
+Owned defect found in c28b's broader public regression, priority-next before
+GC-FENCEI. Published adapter run dir-chase (cross_model=true) rc=2, duplicate
+fetch delivery at step17 despite complete17-step guest prefix. Same pinned binary/
+configuration/ELF with --inst-limit17 gives fresh rc=0, AGREE all17 declared rows.
+Adapter requests instructions+2 and parses the whole result before judging its
+budget; post-program run-off faults at PC0 repeat without instruction rows and
+are mapped to the same next index, so valid in-budget evidence is refused.
+Current public A/B raw traces:164 successful byte-identical pairs and three
+unchanged process failures (mm-counters,w-notrap,w-timer; absent matched counter/
+timer source). These failures earn no agreement/identity-as-success credit.
+Twenty-five adapter refusals on successful raw traces include the same tail
+shape; do not claim they are all repaired from the single initial reproduction.
+
+After c28b is committed/clean, audit actual trace/limit semantics and existing
+parcel-delivery/negative/stale-trace contracts before choosing the smallest repair.
+Own exact budget or bounded-prefix handling with permanent offline controls;
+truncated required evidence, in-budget malformed/duplicate records, failed process
+and stale output must still refuse. Re-run ordinary/mixed-C/witnessed-fetch-gap
+live cases and all adapter controls; assess the whole observed25-tail-refusal
+set. Keep intentional timer/counter and width-SC platform differences explicit.
+No matched-input/status/contract credit unless independently verified. GC-FENCEI
+follows as c28d. Root cause/source-history and actual policy change belong here.
+
+C28b promotes the worked counterexample into the existing must-diverge-control
+card/INDEX (same question, no new family member); prior card bytes retained.
+Knowledge family30 files/95032 B under fixed30/98304; no cap increase.
+
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -581,6 +645,26 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c28b — **ROOT CAUSE**: baseline public reproduction DIVERGE
+  at8, repeated13 rows; old durable probe rc=2 on contained AMO. Scalar MAG4
+  permits completion despite AccessFault; validated variants isolate parameter,
+  history859e5cc carried it. Old800000fe witness crosses16 B and cannot
+  distinguish. Primary A12.1.4/public schema0..12/ISA strings checked; no upstream
+  or CPU defect. Separate post-budget adapter defect owned c28c priority-next.
+- [x] `.13` c28b — **ADDRESSED**: public probe rc=0 after scalar4→0,
+  242 cases/3146 boundaries per repetition, all22 forms/W7/D15 offset cells,
+  fresh successful byte-identical pairs and literal PC/word/read-backs. Validated
+  restored-MAG4 control DIVERGE at8 with rd0/cause0/tval0/data2a00. All
+  expectations derived before execution. Existing knowledge card/INDEX promoted.
+- [x] `.13` c28b — **NO REGRESSION**: verify.py rc=0: only declared
+  scalar/reference-prose deltas;112 base/348 GC inputs, core/author/frozen/prior
+  registry/archives exact otherwise. Independent corpus167/5365/10524 exact;
+  original A11AGREE/290 plus named width-SC difference. All167 raw traces
+  identical:164 successful and three unchanged counter/timer failures excluded.
+  Adapter controls/focused gates/all six books rc=0; hooks next. Registry100/
+  effective98/114 and LIVE652/49/P4 12/18 unchanged; previous Rust167/17/217.
+  c28c owns all25 observed tail refusals before GC-FENCEI c28d.
+
 - [x] `.13` c28a — **ROOT CAUSE**: census rc=0: DEV47951/49152 B,
  1201 B room; source SHA2566d0ccb9383365685023d20543138f1e47735360257fe1fb9fe9560e91ecb70c3.
   Prospective published target30000 partitions23 entries into16 kept/7 moved,
@@ -670,6 +754,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c28b | public242/3146 repeated; restored granule DIVERGE; original A11AGREE/one named difference;164 successful old traces exact/three failures excluded; scalar/input/corpus/registry identity | effective98/114 unchanged; adapter controls/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28a | sharder12/0; seven whole entries18245 B; exact47951 B source inverse/SHA; prior16 rows/sealed history/code/inputs exact; explicit caps | registry100/effective98/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c27 | independent176 words/8896 states; seven wrong effects/thirteen captures; auditor/LR/missing-binding RED101 and restored; full167 corpus/core/prior98 exact except gate note | direct8896/17792, pair8959/17918; effective98/114; Rust167/17/217; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c26b | helper controls RED rc=1; hostile/direct15/0,15/0,8/0 rc=0; normal paths/real ledger/CPU/registry/frozen exact | effective96/114 and registered652 unchanged; focused/all six books rc=0; hooks next |
@@ -681,12 +766,19 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c28b | `SEMULITH-P4-0158 (leaf P4-SYSTEM.13): qualify the public AMO granule boundary` | c28c post-budget adapter repair, then GC-FENCEI c28d |
 | `.13` c28a | `SEMULITH-P4-0157 (leaf P4-SYSTEM.13): retain bounded development receipts` | c28b public AMO granule qualification, then GC-FENCEI |
 | `.13` c27 | `SEMULITH-P4-0156 (leaf P4-SYSTEM.13): observe atomic alignment before translation` | c28a DEV containment, c28b GC-FENCEI, remaining runtime pairs/freeze |
 | `.13` c26b | `SEMULITH-P4-0155 (leaf P4-SYSTEM.13): align push guidance and local self-tests` | c27 ATOMIC-MISALIGN, remaining runtime pairs/freeze |
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c28b (SEMULITH-P4-0158): scalar MAG4→0;
+  public242/3146 pairs and wrong-granule control. Prior164 successful traces
+  identical/three named failures excluded; original A outcome unchanged. Exact
+  core/inputs/registry100/effective98/114 otherwise; knowledge-card promotion.
+  Own post-budget adapter refusal c28c before GC-FENCEI c28d.
 
 - `2026-10-10`: `.13` c28a (SEMULITH-P4-0157): exact seven-entry DEV
   suffix18245 B to shard0225; source inverse47951 B/SHA, prior history exact,

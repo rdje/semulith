@@ -1,5 +1,42 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — qualify the public AMO granule boundary (P4-SYSTEM.13 c28b)
+
+Confirmed local reference-configuration defect: scalar MAG exponent4 allows
+contained AMOs despite amo=AccessFault. Historical a-lrsc-fault at800000fe crosses
+16 B, so its agreement did not distinguish this case. Public two-fresh-trace
+AMOADD.W at80000101 with rd17/data0 completes, writes rd0/data2a00, cause/tval0;
+independent prior expectation faults7/tval80000101/preserves rd17/data0. History
+859e5cc carried that parameter at privileged match. Validated exponent copies
+0/1/2 fault this W case,3/4 complete; public schema0..12 and ISA strings checked.
+No upstream or laboratory-core defect: the reference follows its supplied granule.
+
+Change only scalar MAG4→0; vector/base override and frozen declarations exact.
+New live public probe derives expectations first for242 cases (all22 atomic
+forms, W7/D15 aligned/contained/crossing offsets, bare M, ordering clear). Each
+13-row trace checks PC/word and declared GPR/CSR/data read-backs; each case has
+two fresh successful byte-identical traces. Total3146 boundaries per repetition.
+Validated restored-MAG4 control DIVERGEs at8 with actual completion read-backs;
+old canonical config refuses rc2, corrected config rc0. Not a registered CI member
+or new contract evidence. Missing/failed/incomplete/nonrepeat traces refuse.
+
+Original A corpus11AGREE/290 boundaries plus same permitted width-SC difference.
+All167 raw before/after/repeated traces identical;164 successful, three unchanged
+process failures (mm-counters,w-notrap,w-timer) excluded from successful credit.
+Whole-corpus identity is not CPU agreement. Broader run found owned adapter defect:
++2 steps produce duplicate post-program fetch delivery; dir-chase refuses rc2,
+exact17 agrees. c28c priority-next before GC-FENCEI assesses all25 tail refusals
+with permanent missing-evidence/parcel-gap controls. Matching limits stay explicit.
+
+verify.py rc0: exact one scalar/one live matching-scope prose delta; all prior
+canonical/core/author/frozen/registry/archive bytes exact. Independent corpus
+167/5365/10524, registry100/effective98/114 unchanged. Adapter offline controls
+rc0; focused gates/all six books rc0; hooks next. LIVE652/49/P4 12/18 unchanged;
+no Rust changes, prior167/17/217 applies. Promote the worked counterexample into
+existing must-diverge-control card/INDEX, retaining prior bytes under fixed caps.
+Evidence: target/p4-system-13/c28b (live traces, variants, corpus, inverse proof).
+
+
 ## _(2026-10-10)_ — retain bounded development receipts (P4-SYSTEM.13 c28a)
 
 DEV head47951/49152 B leaves1201 B. Published sharder target30000 moves seven
