@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — contract-count controls survive complete registration (P4-SYSTEM.13 c14a)
+
+The shared-id self-test hard-coded CHK-ALU-IMM-POS as unregistered. Simulating
+its valid registration produced 17/18 controls: inserting it again cannot earn
+another check, so actual 114/71 correctly disagreed with expected 114/72.
+The production measure was right; fix the test before the planned ALU binding.
+Scratch catalogs now add one reserved check to an independently selected
+effective record. It earns credit only through that unit's exact registry pair;
+an undeclared or unbound copy earns none, and a unit without a registry gets none.
+New duplicate and full-coverage controls require no real check to stay missing.
+The full fixture realizes every effective pair, then independently distinguishes
+a new unbound declaration and its binding. Duplicate-credit mutant fails 19/20;
+all 20 corrected controls and the formerly failing ALU-bound fixture pass.
+Production AST outside _selftest, all crates/profile/author bytes and 70/114 stay
+exact. The report wrapper verifies all generated reports; no new CPU credit.
+No Rust change; report wrapper verifies five reports, all20 controls pass,
+make book succeeds and derived-count controls10/0. Commit hooks precede c14b. Next
+c14b OB-ALU-IMM. Promotion declined: live oracle controls and runtime book retain
+this correction and its future full-coverage edge case.
+
+
 ## _(2026-10-10)_ — observable supervisor timer programming (P4-SYSTEM.13 c13b)
 
 The terminal-zero guest defect is closed for SSTC contract coverage by direct

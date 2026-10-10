@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0130 (leaf P4-SYSTEM.13 c14a) — remove missing-id assumptions from gate tests
+
+- Replace the shared-id test's live ALU assumption with a scratch declaration.
+  Add duplicate and full-coverage controls; 20/0 pass, including simulated ALU
+  registration. A duplicate-credit mutant fails before arm registration.
+- Preserve production measure, every report and all core/profile inputs;
+  effective 70/114 unchanged. Synchronize the review book and resume pointer
+  before the next runtime binding.
+
+
 ## SEMULITH-P4-0129 (leaf P4-SYSTEM.13 c13b) — bind observable Sstc execution
 
 - Add direct Execution evidence plus existing timer companions. S programs and

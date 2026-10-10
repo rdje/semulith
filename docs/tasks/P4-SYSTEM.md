@@ -460,6 +460,33 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c14a — contract-count controls without missing-id assumptions (`2026-10-10`, `SEMULITH-P4-0130`)
+
+Owned before code changes on clean 834499b, after full CI/hooks and actual job
+census. Scoped review: contract_measure, independent recount, _selftest fixtures,
+GATE-REPORT wrapper, current runtime-book known finding and .13 completion plan.
+Reproduction already RED: simulating valid CHK-ALU-IMM-POS registration makes
+shared-id +1 arm expect114/72 but get114/71 (17/18). The measure is correct;
+the test's example ceases to be missing when the next planned pair binds.
+
+Repair only the oracle before c14b ALU credit. Always declare one reserved
+synthetic check on an independently selected effective record in scratch
+catalogs, then count it only when that unit names the exact registry pair.
+Using a synthetic declaration avoids a live-unregistered-pair branch and its
+full-coverage edge case. Actual catalog/forms/pins/registry and production
+measure stay unchanged. No new CPU credit: 70/114 remains open.
+
+Keep cross-unit non-credit and wrong-owner/shape/supersession controls. Add
+permanent duplicate-registration and all-effective-checks-realized controls:
+saturate a scratch registry from independently recounted pairs, then introduce
+and bind the synthetic declaration. Coverage must still distinguish 114/114,
+115/114 and 115/115 without pinning those live numbers. Run the former ALU
+example already-bound scratch control and an over-credit/duplicate mutant RED
+before increasing strict declared arm count from 18 to 20. Verify all generated
+reports byte-identical, wrapper controls, book, live-doc bounds and hooks;
+commit this bounded repair before c14b runtime binding. No Rust or profile
+canonical data changes; ordinary focused checks suffice after prior full CI.
+
 ### `.13` c13b — observable S-mode timer witnesses (`2026-10-10`, `SEMULITH-P4-0129`)
 
 Owned before changes on clean f769e91, after its full CI/hooks and actual job
@@ -882,6 +909,21 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c14a) (`2026-10-10`, `SEMULITH-P4-0130`):
+
+- [x] **ROOT / REPAIR / RED** — python3 scripts/gate_report.py --self-test
+  rc=0:20 pass/0 fail. Original simulated ALU binding failed17/18; now passes20/0.
+  Duplicate-credit mutant rc1:19/20, specifically new duplicate-registration arm,
+  observed before strict declared count20. Full-coverage fixture distinguishes
+  complete, new unbound and newly bound check without live missing-id constants.
+- [x] **SCOPE IDENTITY** — python3 target/p4-system-13/c14a/identity.py rc=0:
+  production AST outside _selftest exact, all crates/profiles/author bytes exact,
+  effective114/70 unchanged. No canonical/frozen record or actual registry edit.
+- [x] **SIGNOFF** — scripts/check_gate_report.sh rc=0: five generated reports
+  in sync; all20 Python controls pass. make book rc=0: main/model books built.
+  DERIVED-COUNTS --self-test10/0; diff check clean. c14a complete; c14b next.
+  promotion: declined (synthetic oracle, duplicate/full-coverage controls and runtime book retain the correction).
+
 `P4-SYSTEM.13` slice (c13b) (`2026-10-10`, `SEMULITH-P4-0129`):
 
 - [x] **DIRECT EXECUTION / CONTROLS** — cargo test -p semulith-verify
@@ -1174,6 +1216,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c14a | original ALU-bound17/18 RED; corrected20/0; duplicate-credit mutant19/20; production AST/input identity | 70/114 unchanged; c14b OB-ALU-IMM next |
 | `2026-10-10` | `.13` c13b | direct 3/0; registry 4/0; independent31/62 and terminal35/70 control; identity348+4+70; corpus 167/5360/10514; report 18/0; full CI all five legs green, Rust167/17/201, schema/freeze | 70/114; OB-ALU-IMM next |
 | `2026-10-10` | `.13` c13a2 | core RED/GREEN4; author8 cases/four mutants; source27/54; identity335/52/68; public CSR0; Rust167/17/198; schema/freeze; gate18/0; lossless shard; full CI all five legs green | 68/114; c13b direct Sstc witnesses next |
 | `2026-10-10` | `.13` c13a1 | independent nine-guest 281/524, full 167/5360/10514; 42 owned; two new RED controls; corrected public probe and nine attempts; identity; full CI rc0; registry/schema/freeze/gate controls | explicit setup ready; 68/114 unchanged; c13a2 next |
@@ -1207,6 +1250,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c14a | `SEMULITH-P4-0130 (leaf P4-SYSTEM.13): remove missing-id assumptions from contract-count controls` | c14b OB-ALU-IMM |
 | `.13` c13b | `SEMULITH-P4-0129 (leaf P4-SYSTEM.13): bind observable supervisor timer execution and refusals` | c14 OB-ALU-IMM, then remaining21 pairs and freeze |
 | `.13` c13a2 | `SEMULITH-P4-0128 (leaf P4-SYSTEM.13): repair STCE-dependent pending and effective source evidence` | c13b direct S programming/refusal witnesses |
 | `.13` c13a1 | `SEMULITH-P4-0127 (leaf P4-SYSTEM.13): prepare explicit STCE timer inputs and repair public evidence` | c13a2 dynamic STIP/author/state/v2 supersession, then direct Sstc witnesses |
@@ -1237,6 +1281,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c14a (SEMULITH-P4-0130): shared-id oracle now
+  synthetic, duplicate/full-coverage controls discriminate; actual production
+  measure and70/114 unchanged. Next ALU binding no longer trips the old example.
 
 - `2026-10-10`: `.13` c13b (SEMULITH-P4-0129): direct Execution pair
   closes terminal-zero SSTC coverage hole; S full-width programming/read-back

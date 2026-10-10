@@ -1269,13 +1269,12 @@ def _selftest() -> int:
     real = ROOT / "profiles" / "rv64gc-lab-v0"
     reg_src = (ROOT / "crates/semulith-verify/src/contract_checks_rv64gc.rs").read_text(encoding="utf-8")
     passed, missed, ran = 0, [], 0
-    extra = ('    ContractCheck {\n        id: "CHK-ALU-IMM-POS",\n        obligation: "OB-ALU-IMM",\n'
-             '        evidence: Evidence::Guests(&["x"]),\n    },\n')
-
-    def unit(name, contract_edit=None, registry=reg_src, with_contract=True):
+    def unit(name, contract_edit=None, registry=reg_src, with_contract=True, catalog_edit=None):
         d = tmp / name
         d.mkdir()
-        (d / "contract-obligations.sexp").write_text(C.text(real / "contract-obligations.sexp"))
+        catalog = C.text(real / "contract-obligations.sexp")
+        (d / "contract-obligations.sexp").write_text(
+            catalog_edit(catalog) if catalog_edit else catalog)
         reg = d / "reg.rs"
         reg.write_text(registry, encoding="utf-8")
         if with_contract:
@@ -1320,6 +1319,29 @@ def _selftest() -> int:
     all_declared = {(o["id"], chk) for o in obs_real for chk in o["required_checks"]}
     effective_declared = {pair for pair in all_declared if pair[0] not in superseded}
     registered = {(ob, chk) for chk, ob in _ENTRY.findall(reg_src)}
+    # The example must not depend on a live check remaining unregistered. Declare
+    # this reserved check only in scratch catalogs; its owner is effective today.
+    shared_pair = (sorted(effective_declared)[0][0], "CHK-GATE-SHARED-CONTROL")
+    assert not any(chk == shared_pair[1] for _, chk in all_declared)
+
+    def entry(pair):
+        ob, chk = pair
+        return (f'    ContractCheck {{\n        id: "{chk}",\n        obligation: "{ob}",\n'
+                '        evidence: Evidence::Guests(&["x"]),\n    },\n')
+
+    def registry_with(registry, entries):
+        marker = "pub static CHECKS: &[ContractCheck] = &[\n"
+        assert registry.count(marker) == 1
+        return registry.replace(marker, marker + entries, 1)
+
+    def declare_shared(text):
+        forms = S.parse(text, where="synthetic shared check")
+        record = next(f for f in forms if isinstance(f, list) and f and str(f[0]) == "obligation"
+                      and str(S.field(f, "id", "synthetic obligation")) == shared_pair[0])
+        record.append([S.Symbol("required_checks"), shared_pair[1]])
+        return R.render_forms(forms)
+
+    extra = entry(shared_pair)
     try:
         base = tuple(len(x) for x in measure(unit("green")))
     except Exception as e:                          # noqa: BLE001 — every arm then misses
@@ -1355,14 +1377,28 @@ def _selftest() -> int:
 
         delta(unit("supersede-realized", edit), -len(removed), -len(removed & registered))
 
+    def full_coverage():
+        missing = sorted(effective_declared - registered)
+        complete = registry_with(reg_src, "".join(entry(pair) for pair in missing))
+        counts(unit("complete", registry=complete), (base[0], base[0]))
+        counts(unit("complete-unbound", registry=complete, catalog_edit=declare_shared),
+               (base[0] + 1, base[0]))
+        counts(unit("complete-bound", registry=registry_with(complete, extra), catalog_edit=declare_shared),
+               (base[0] + 1, base[0] + 1))
+
     try:
         arm("GREEN the measure agrees with an independent recount of the real contract", independent)
-        add = reg_src.replace("pub static CHECKS: &[ContractCheck] = &[\n",
-                              "pub static CHECKS: &[ContractCheck] = &[\n" + extra)
-        arm("RED a shared id realized in THIS unit's registry counts for it (+1 realized)",
-            lambda: delta(unit("shared", registry=add), 0, 1))
+        add = registry_with(reg_src, extra)
+        arm("RED a synthetic declared check earns credit only in THIS unit's registry",
+            lambda: (delta(unit("shared-undeclared", registry=add), 0, 0),
+                     delta(unit("shared-unbound", catalog_edit=declare_shared), 1, 0),
+                     delta(unit("shared", registry=add, catalog_edit=declare_shared), 1, 1)))
         arm("RED the same id does not credit a unit whose contract names no registry",
-            lambda: counts(unit("other", with_contract=False, registry=add), (every, 0)))
+            lambda: counts(unit("other", with_contract=False, registry=add, catalog_edit=declare_shared),
+                           (every + 1, 0)))
+        arm("RED duplicate registration cannot count a declared check twice",
+            lambda: delta(unit("duplicate", registry=registry_with(add, extra), catalog_edit=declare_shared), 1, 1))
+        arm("RED full coverage still distinguishes a new declaration from its realization", full_coverage)
         arm("RED dropping the supersessions raises the denominator to every record",
             lambda: (assert_eq(bool(superseded), True),
                      counts(unit("nosup", lambda s: re.sub(
@@ -1490,7 +1526,7 @@ def _selftest() -> int:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 18
+    want = 20
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")

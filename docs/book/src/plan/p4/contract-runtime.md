@@ -369,7 +369,12 @@ six direct assumption pairs and one direct execution pair. The registry keeps
 72 entries, including the two superseded historical source checks. Twenty-two
 runtime pairs and final freeze remain; v2 and CPU-SYSTEM stay open.
 
-Before the next ALU-immediate binding, c14 owns a gate self-test repair: the test
-assumes that ALU check is still unregistered. A simulated valid binding makes
-that test expect duplicate coverage; the production count remains correct.
-This is scheduled before adding the next pair, not treated as missing CPU behavior.
+Before ALU-immediate binding, c14a repairs a gate self-test that assumed its
+example check was still unregistered. That assumption failed under a simulated
+valid binding even though production coverage stayed correct. The test now adds
+a synthetic declaration only in scratch data and measures its own registration.
+Duplicate registration cannot add credit; the controls also fill every effective
+check and then add a new declaration, distinguishing full coverage from a newly
+missing check. All twenty controls pass, including the previously failing ALU
+binding. A duplicate-counting mutant fails. Production measure and reports stay
+exact; this repair grants no CPU credit.
