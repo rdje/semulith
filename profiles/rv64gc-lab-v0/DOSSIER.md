@@ -120,9 +120,9 @@ The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
 ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
 Requirement statuses remain .14's work; exact snapshot/replay serialization .16's.
 
-The effective contract has 57 obligations / 114 checks, 70 realized: thirteen
-scope pairs, fifteen guest pairs, six direct assumption pairs and one direct
-execution pair. Version 2 is open for twenty-two runtime pairs and final freeze. Frozen v0/v1 text, membership
+The effective contract has 57 obligations / 114 checks, 72 realized: thirteen
+scope pairs, sixteen guest pairs, six direct assumption pairs and one direct
+execution pair. Version 2 is open for twenty-one runtime pairs and final freeze. Frozen v0/v1 text, membership
 and pins remain unchanged. The shared catalog expansion/schema/freeze owners
 judge the same records. V2 supersedes the pre-qualification FP condition, both
 historical definition stages, blanket no-breakpoint wording and the unconditional
@@ -135,7 +135,7 @@ evidence plus its original guest companions (31 new boundaries / 62 parcels).
 | Physical addresses, data widths/attributes, event positioning, ordering, cold reset | Five direct typed pairs plus the STCE source pair in ENVIRONMENT.md and the contract book |
 | Success-response shape validation | Shared CPU boundary validator; target failures remain target exceptions |
 | Value/phase/startup auditing | Independent fixture controls; adapters cannot detect hidden host mutation or grant interrupt-source authority |
-| Privilege modes, Sv39, Svade, IALIGN-16, Zicntr | Exact guest bindings in ENVIRONMENT.md; worked observations and controls in the runtime book |
+| Privilege modes, Sv39, Svade, IALIGN-16, Zicntr, immediate ALU | Exact guest bindings in ENVIRONMENT.md; worked observations and controls in the runtime book |
 | Inherited-global cache repair | G accumulates along the walk; actual ASID/root/fence regressions; independent author unchanged |
 
 The boundary fixtures distinguish provider violations from target exceptions.

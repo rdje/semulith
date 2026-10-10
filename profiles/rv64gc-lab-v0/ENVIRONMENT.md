@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-six direct assumption pairs and one direct execution pair, 70 checks are realized in the effective contract;
+six direct assumption pairs and one direct execution pair, 72 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -343,6 +343,8 @@ legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 | OB-ZICNTR NEG | mm-csr-ro-counters |
 | OB-SSTC POS | Execution::SstcPositive (thirteen S instructions), plus i-timer/w-timer |
 | OB-SSTC NEG | Execution::SstcNegative (three refusal/handler cases), plus mm-stimecmp |
+| OB-ALU-IMM POS | scope-alu |
+| OB-ALU-IMM NEG | bound-arith |
 
 The privilege matrix spans 483 boundaries; Sv39 spans 1,417 boundaries / 2,832
 parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319; Zicntr spans 101 / 202. Independent author replay agrees exactly.
@@ -357,8 +359,8 @@ fails at step 90. The whole-image core test also verifies preservation.
 
 The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
 observations, examples, comparison limits and control receipts. Current census:
-57 effective obligations / 114 checks, 70 realized: thirteen scope pairs,
-fifteen guest pairs, six direct assumption pairs and one direct execution pair. Twenty-two runtime pairs
+57 effective obligations / 114 checks, 72 realized: thirteen scope pairs,
+sixteen guest pairs, six direct assumption pairs and one direct execution pair. Twenty-one runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
 
@@ -387,3 +389,9 @@ independently replay across 5,360 boundaries / 10,514 parcels. The runtime book
 contains setup, worked wake values and fresh Sail attempt qualifications.
 The STCE fallback and direct S-mode contract witness are repaired; remaining
 runtime pairs keep v2 open.
+
+Immediate ALU binds scope-alu/bound-arith (62 boundaries /124 parcels). Both
+whole legal programs use the corpus comparison rule; NEG discriminates wrong
+sign extension, comparison signedness and saturation, not a trap requirement.
+Five in-memory countermodels fail their named observations; the runtime book
+retains exact values. All prior inputs and 72 bindings stay exact.

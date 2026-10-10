@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — bind immediate ALU arithmetic and counterexamples (P4-SYSTEM.13 c14b)
+
+Rehash/read the pinned RV32I 1.1.4.1 clauses; six authored semantic rows match
+sign extension, wrapping arithmetic, signed/unsigned comparison and logical
+operations. POS names scope-alu, NEG bound-arith; both whole legal programs.
+Their 31+31 boundaries /62+62 parcels independently match every committed GPR
+change. Scope steps 8/9/10 read ANDI/ORI/XORI values 0xffffffff80000000,
+0xffffffff800007ff and 0x7fffffff; step 16 observes the visible 1-to-0 unsigned result,
+step 17 proves SLTIU sign-extends -1 before unsigned comparison. Boundary step 8
+wraps INT64_MIN + -1 to 0x7fffffffffffffff; steps 9/10 cover -2048/+2047.
+
+Five in-memory author alternatives fail exact observations: zero-extended SLTIU
+at scope step 17, unsigned SLTI at step 14, zero-extended ANDI/XORI at steps 8/10, saturating ADDI at
+bound step 8. Existing integer-author sign mutant refuses; normal 22 arithmetic/10
+branch cases and 17 corpus gaps/471 steps pass, plus 42 owned records exact.
+The new binding changes no instruction, expectation, canonical record, author
+or core semantics. Identity: 348 profile files+four author/generated files and 72
+prior entries exact. Registry: 74, effective 72/114:13 scope,16 guest,6 direct
+assumption,1 execution pair. Gate oracle 20/0 passes with actual ALU registered.
+make check passes Rust 167/17/201 and fmt/clippy. Focused schema270/two skips,
+freeze3/zero findings, five report freshness checks and books pass. Hooks precede
+commit; no new mechanism warrants repeated full CI.
+Next OB-ALU-REG; 21 runtime pairs/freeze remain. Promotion declined: exact guest
+bindings, original expected observations and worked runtime book retain it.
+
+
 ## _(2026-10-10)_ — contract-count controls survive complete registration (P4-SYSTEM.13 c14a)
 
 The shared-id self-test hard-coded CHK-ALU-IMM-POS as unregistered. Simulating

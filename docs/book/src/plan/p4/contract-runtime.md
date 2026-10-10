@@ -364,10 +364,10 @@ unexpected traps when either permission gate is cleared, and reject a NEG case
 when its gate is opened and the write succeeds. The original observation rule is
 preserved; additional direct evidence closes the coverage hole.
 
-Current G-CONTRACT is **70/114**: thirteen scope pairs, fifteen guest pairs,
+At c13b, G-CONTRACT reached **70/114**: thirteen scope pairs, fifteen guest pairs,
 six direct assumption pairs and one direct execution pair. The registry keeps
 72 entries, including the two superseded historical source checks. Twenty-two
-runtime pairs and final freeze remain; v2 and CPU-SYSTEM stay open.
+runtime pairs and final freeze then remained; v2 and CPU-SYSTEM stayed open.
 
 Before ALU-immediate binding, c14a repairs a gate self-test that assumed its
 example check was still unregistered. That assumption failed under a simulated
@@ -378,3 +378,41 @@ check and then add a new declaration, distinguishing full coverage from a newly
 missing check. All twenty controls pass, including the previously failing ALU
 binding. A duplicate-counting mutant fails. Production measure and reports stay
 exact; this repair grants no CPU credit.
+
+
+## Immediate ALU semantics through existing boundary programs
+
+At c14b, CHK-ALU-IMM-POS runs scope-alu and NEG runs bound-arith. Both are
+whole legal programs; NEG rejects incorrect semantic alternatives such as
+saturation or wrong signedness, rather than requiring a trap for valid ALU
+instructions. All six forms are exercised: ADDI, SLTI, SLTIU, XORI, ORI and ANDI.
+Their shared twelve-bit immediate sign-extends before the operation. ADDI wraps
+modulo 2^64; SLTI compares signed, while SLTIU treats the sign-extended immediate
+as unsigned. These clauses are pinned at RVI-RV32I 1.1.4.1.
+
+Each guest spans 31 boundaries /62 parcel requests; all committed GPR changes,
+never-written registers and fetch counts use the existing corpus rule. Independent
+replay agrees with the entire 62/124 pair. Representative zero-based steps:
+
+| Guest/step | Operation | Observed value |
+| --- | --- | --- |
+| scope-alu, step 8 | ANDI x9,x4,-1, x4=0xffffffff80000000 | x9=0xffffffff80000000 |
+| scope-alu, step 9 | ORI x10,x4,2047 | x10=0xffffffff800007ff |
+| scope-alu, step 10 | XORI x11,x4,-1 | x11=0x000000007fffffff |
+| scope-alu, step 14 | SLTI x14,x4,1 | x14=1 |
+| scope-alu, step 16 | SLTIU x15,x4,1 | x15=0, visibly overwriting 1 |
+| scope-alu, step 17 | SLTIU x16,x4,-1 | x16=1 |
+| bound-arith, step 8 | ADDI x7,INT64_MIN,-1 | x7=0x7fffffffffffffff |
+| bound-arith, steps 9/10 | ADDI with -2048 /2047 | x8=0xfffffffffffff800 /x9=0x7ff |
+
+Five in-memory author copies are deliberately wrong. Zero-extended SLTIU fails
+scope-alu, step 17; unsigned SLTI fails at step 14; zero-extended ANDI fails at step 8; zero-extended XORI
+fails at step 10; saturating ADDI fails bound-arith, step 8. The existing integer-author sign
+control also refuses. No source, expectation, frozen record, production author
+or processor semantics changes. All 72 prior registry entries remain exact.
+The repaired gate oracle passes with the ALU pair now actually registered.
+
+Current G-CONTRACT is **72/114**: thirteen scope pairs, sixteen guest pairs,
+six direct assumption pairs and one direct execution pair. The registry has 74
+entries including two historical superseded bindings. Twenty-one runtime pairs
+and final freeze remain; no universal execution or firmware acceptance is claimed.

@@ -18,14 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c14b — realize OB-ALU-IMM with exact existing
-  guest bindings and discriminating controls. c14a repaired the gate self-test's
-  assumption that its ALU example remained unregistered: synthetic declaration,
-  duplicate and full-coverage controls20/0; production measure/reports unchanged.
-  Current70/114, 22 runtime pairs then freeze. c13b Sstc direct execution and
-  companion guests retain their finite scope; task/runtime book hold values and
-  terminal-zero controls. Preserve all prior inputs/frozen records and reference
-  limits. .14 owns statuses/experiments; CPU-SYSTEM remains open.
+- next_action: `P4-SYSTEM.13` c15 — realize OB-ALU-REG from existing
+  scope/boundary arithmetic and alias guests, with independent discriminating
+  controls. c14b immediate ALU binds scope-alu/bound-arith: 62 boundaries/124
+  parcels exact; five semantic countermodels refuse. Current 72/114, 21 runtime
+  pairs and freeze remain. Prior 72 registry entries, 348 canonical/guest inputs,
+  four author/generated files and production core exact. Gate controls 20/0
+  survive actual ALU binding. Values/controls in task and runtime book.
+  Preserve frozen records/reference limits; .14 owns statuses/experiments.
+  CPU-SYSTEM remains open.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

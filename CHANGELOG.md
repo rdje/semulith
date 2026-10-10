@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0131 (leaf P4-SYSTEM.13 c14b) — realize immediate ALU guarantees
+
+- Bind scope-alu/bound-arith to the existing POS/NEG IDs. All 62 boundaries /124
+  parcels independently exact; five wrong semantic alternatives discriminate.
+- Preserve all inputs and 72 prior bindings; effective 72/114, 21 pairs/freeze
+  remain. Repaired gate oracle 20/0 passes with actual ALU registration.
+- Synchronize worked book/current counts and resume pointer. make check passes
+  Rust 167/17/201; focused contract/report/book gates precede commit.
+
+
 ## SEMULITH-P4-0130 (leaf P4-SYSTEM.13 c14a) — remove missing-id assumptions from gate tests
 
 - Replace the shared-id test's live ALU assumption with a scratch declaration.

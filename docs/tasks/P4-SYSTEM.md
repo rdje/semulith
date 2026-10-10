@@ -460,6 +460,33 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c14b — immediate ALU guarantees (`2026-10-10`, `SEMULITH-P4-0131`)
+
+Owned before changes on clean 99b32e3, after gate-control commit/hooks and actual
+job census. Read OB-ALU-IMM/REQ-D-ALU-IMM/D-ALU-IMM; rehash RVI-RV32I
+107630 B to 3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec
+and read 1.1.4.1. Review six canonical semantic rows, shared wrapping Add/bitwise/
+comparison lowering, GPR writes, full scope-alu/bound-arith sources/expectations,
+integer author/probe, registry comparison and runtime book before binding.
+
+POS names scope-alu, covering ADDI/SLTI/SLTIU/XORI/ORI/ANDI with signed and
+unsigned comparisons and visible zero overwrite. NEG names bound-arith for
+ADDI wrap and extreme immediates/comparisons. Both are whole legal programs;
+NEG rejects incorrect semantic alternatives, not an invented architectural
+trap. Independently replay every write and parcel count before credit. Prove
+zero-extended SLTIU/logical immediate, unsigned SLTI and saturating ADDI copies
+fail meaningful observations, retaining initial-source words and budgets. Use
+existing integer-author control as the durable refusing mechanism; finite
+in-memory copies add slice-specific discrimination without production edits.
+
+Preserve all 72 prior entries and all core/guest/author/canonical/frozen bytes.
+Bind existing CHK-ALU-IMM IDs only after checks, extend declared registry coverage
+to74/effective 72. Update current taxonomy (16 guest pairs), ENV/dossier/GS,
+worked book values and live pointer/history/task receipts. Run focused registry,
+independent author/control, make check, schema/freeze/report controls and books;
+full CI only if findings warrant a milestone. Commit before next OB-ALU-REG;
+expected 72/114, 21 runtime pairs and final freeze remain.
+
 ### `.13` c14a — contract-count controls without missing-id assumptions (`2026-10-10`, `SEMULITH-P4-0130`)
 
 Owned before code changes on clean 834499b, after full CI/hooks and actual job
@@ -909,6 +936,26 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c14b) (`2026-10-10`, `SEMULITH-P4-0131`):
+
+- [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c14b/probe.py
+  rc=0: two guests/62 boundaries/124 parcels exact; five wrong alternatives
+  fail intended steps17/14/8/10/8 (SLTIU/SLTI/ANDI/XORI/ADDI saturation).
+  python3 scripts/probe_gc_integer_author.py rc=0: 22 arithmetic/10 branches,
+  17 corpus gaps/471 steps and 42 owned records exact; sign mutant rc1 with
+  SLTIU sign extension reason. Negative binding rejects semantic countermodels,
+  not invented traps for legal ALU instructions.
+- [x] **IDENTITY / RUST** — python3 target/p4-system-13/c14b/identity.py rc=0:
+  348 canonical/guest files+four author/generated files exact; core unchanged,
+  all 72 previous entries exact. make check rc=0: Rust167/17/201, fmt/clippy clean;
+  all 74 registry entries run. Gate-report --self-test 20/0 with actual ALU binding;
+  effective114/72, 21 runtime pairs remain.
+- [x] **SIGNOFF** — CONTRACT-FREEZE three versions/zero findings;
+  DOSSIER-SCHEMA270/two named skips. scripts/check_gate_report.sh rc=0:
+  five generated reports in sync. make book rc=0: main/model books build;
+  diff check clean. c14b complete; OB-ALU-REG next after commit.
+  promotion: declined (exact bindings, independent counterexamples and worked runtime book retain the realization).
+
 `P4-SYSTEM.13` slice (c14a) (`2026-10-10`, `SEMULITH-P4-0130`):
 
 - [x] **ROOT / REPAIR / RED** — python3 scripts/gate_report.py --self-test
@@ -1216,6 +1263,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c14b | independent62/124; five countermodels; integer22+10/471/42; identity348+4+72; Rust167/17/201; oracle20/0 | 72/114; OB-ALU-REG next |
 | `2026-10-10` | `.13` c14a | original ALU-bound17/18 RED; corrected20/0; duplicate-credit mutant19/20; production AST/input identity | 70/114 unchanged; c14b OB-ALU-IMM next |
 | `2026-10-10` | `.13` c13b | direct 3/0; registry 4/0; independent31/62 and terminal35/70 control; identity348+4+70; corpus 167/5360/10514; report 18/0; full CI all five legs green, Rust167/17/201, schema/freeze | 70/114; OB-ALU-IMM next |
 | `2026-10-10` | `.13` c13a2 | core RED/GREEN4; author8 cases/four mutants; source27/54; identity335/52/68; public CSR0; Rust167/17/198; schema/freeze; gate18/0; lossless shard; full CI all five legs green | 68/114; c13b direct Sstc witnesses next |
@@ -1250,6 +1298,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c14b | `SEMULITH-P4-0131 (leaf P4-SYSTEM.13): realize immediate ALU guarantees through boundary guests` | c15 OB-ALU-REG |
 | `.13` c14a | `SEMULITH-P4-0130 (leaf P4-SYSTEM.13): remove missing-id assumptions from contract-count controls` | c14b OB-ALU-IMM |
 | `.13` c13b | `SEMULITH-P4-0129 (leaf P4-SYSTEM.13): bind observable supervisor timer execution and refusals` | c14 OB-ALU-IMM, then remaining21 pairs and freeze |
 | `.13` c13a2 | `SEMULITH-P4-0128 (leaf P4-SYSTEM.13): repair STCE-dependent pending and effective source evidence` | c13b direct S programming/refusal witnesses |
@@ -1281,6 +1330,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c14b (SEMULITH-P4-0131): immediate ALU pair
+  binds exact62/124 corpus with five wrong semantic alternatives caught.
+  Earlier inputs/bindings exact; Rust/gate oracle pass,72/114 open.
 
 - `2026-10-10`: `.13` c14a (SEMULITH-P4-0130): shared-id oracle now
   synthetic, duplicate/full-coverage controls discriminate; actual production
