@@ -28,8 +28,8 @@ exceptions with cause 3. The pinned priority table distinguishes these cases.
 
 Versioning preserves the record. Frozen version-0 and version-1 statements and
 their hashes stay unchanged; version 2 names each replacement and why it replaces
-the old statement. The complete per-obligation plan is in the active task tree's
-`.13` census. Every effective check now runs, the state census describes the complete state,
+the old statement. The complete per-obligation plan and closed receipts remain in
+`docs/tasks/archive/P4-SYSTEM-12.md`. Every effective check now runs, the state census describes the complete state,
 and version 2 is frozen. G-CONTRACT is green; CPU-SYSTEM remains incomplete
 on seven other axes. Requirement status and structured evidence belong to .14.
 
