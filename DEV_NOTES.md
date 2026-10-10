@@ -1,6 +1,37 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — bind CSR access, permissions and suppression (P4-SYSTEM.13 c31)
+
+Authenticated Zicsr5.1.1/CSR1.1.1/Machine FS/TVM/counter sections,
+Supervisor gates and Sstc12.1; frozen requirement and public engine/state/table
+interfaces reviewed before code. Literal expected full state precedes execution.
+Fifteen contexts cross six forms/M/S/U/source0/6/31/rd0/5/6/31/two seeds and
+register0/high/MAX (one immediate input):4480legal+8480refused boundaries,
+25920parcels. Source uses pre-state, suppression uses field identity; unchanged
+FP-CSR writes dirty. Exact M trap/cycle/nonretirement, full GPR/FPR/26owners,
+PC/mode/reservation/TLB+FIFO/wait/memory/requests/extent/outcome observed.
+
+Four direct suites:13wrong effects,16bad captures, passing extra-read dynamic
+control plus rejecting compiled-table inspection. No selected read side effect
+exposes that extra read, so no dynamic no-read credit or new trace API. Fifteen
+actual disabled controls RED101 then byte-restored: CSR auditor/request logger/
+table inspector/address privilege/RO/FS/TM/STCE/TVM and all6suppression branches.
+Initial wrong-control old/input were equal; changed input makes substitution
+observable, then13/13discriminate. Scratch generator shadow/author fixture entry/
+ambiguous STCE mutation selector corrected before any credit; core unchanged.
+
+Completed selector RED101 names missing CSR-access binding before exactly2
+Execution entries. Independent decode/literal census12960 and author12096exact;
+864unknown cases remain explicit vocabulary refusals, no author trap comparison.
+Author fixture entry relocated for matrix only/restored before independent167/
+5365/10524 corpus, all exact. Prior106 registry entries/frozen/canonical/core/
+history/LIVE byte-exact, registry108/effective106/114. Make check173/17/230;
+focused/six books green. Environment/GS/book/index/pointer synchronized, fixed
+caps. Evidence target/p4-system-13/c31. Next GC-F before D/reservation/SC/freeze;
+.14 retains requirement/evidence sweep.
+promotion: declined (normative CSR rules, permanent discriminating fixtures and the worked privilege chapter retain this bounded binding and its evidence limits).
+
 ## _(2026-10-10)_ — ignore complete satp writes with unsupported modes (P4-SYSTEM.13 c31a)
 
 Prerequisite review authenticates supervisor11.1.1.11 whole-write rule. Core

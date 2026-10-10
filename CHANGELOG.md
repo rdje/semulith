@@ -1,6 +1,17 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0176 (leaf P4-SYSTEM.13 c31) — bind CSR access, permissions and suppression
+
+- Bind4480legal/8480refused full-state boundaries across six forms, modes,
+  gates, aliases and source-field/value distinction;25920parcels.
+- Thirteen wrong effects/sixteen bad captures/15actual disabled controls
+  discriminate; passing extra-read control explicitly limits dynamic evidence,
+  separate compiled-table inspection rejects it. Missing binding RED first.
+- Independent author12096exact+864named vocabulary refusals; full167corpus
+  exact, prior106 entries/frozen/core/history/LIVE unchanged. Rust173/17/230,
+  focused/six books green; registry108/effective106/114, four pairs/freeze remain.
+
 ## SEMULITH-P4-0175 (leaf P4-SYSTEM.13 c31a) — ignore complete satp writes with unsupported modes
 
 - Fix core ASID/PPN updates and author invalid-value writes when satp.MODE is

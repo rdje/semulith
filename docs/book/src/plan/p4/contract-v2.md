@@ -497,8 +497,9 @@ FENCE field/no-effect and atomic pre-translation alignment observations.
 The [satp prerequisite](sv39.md#unsupported-satp-mode-ignores-the-whole-write)
 repairs unsupported MODE whole-write suppression before CSR-access binding.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
-104/114; five runtime pairs and final freeze remain. GC-COUNTERS now adds
+106/114; four runtime pairs and final freeze remain. GC-COUNTERS now adds
 [all-mode, all-enable-mask direct observations](contract-runtime.md#counter-reads-all-privilege-and-enable-mask-combinations).
+GC-CSR-ACCESS adds [all-form privilege, gate and suppression observations](privilege.md#direct-csr-access-contract-observations), including the separately qualified no-read table check.
 Its prerequisite c30a repairs explicit counter writes replacing their own increment;
 [the runtime example](contract-runtime.md#writable-counters-explicit-writes-replace-their-own-increment)
 shows the literal read-back, source-field distinction and public reference limits.

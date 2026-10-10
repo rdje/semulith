@@ -613,8 +613,9 @@ statuses/counts unchanged. GS digest only; environment/Sv39/privilege/v2/index
 synchronized, book513190B under fixed524288. Focused/six books rc=0.
 Evidence target/p4-system-13/c31a; workflow then c31, effective104/114 unchanged.
 
-### `.13` c31 — realize CSR-access instruction checks (queued)
+### `.13` c31 — realize CSR-access instruction checks (completed, `SEMULITH-P4-0176`)
 
+Owned on cleanbbe6b65/brief0/actual census rc=0 after c31a repair.
 Own on c30b clean workflow before changes. Read frozen OB-GC-CSR-ACCESS and
 REQ-GC-CSR-ACCESS, authenticated Zicsr and privileged CSR/FS/gate sections,
 state/address map, generated six CSR instruction effects and public engine/
@@ -626,6 +627,63 @@ safe finite scope. Expected state precedes execution; meaningful bad-table and
 corrupted-capture/disabled-observer controls, independent derivation and prior
 registry/canonical/frozen identity. Missing-binding RED before exactly2entries;
 focused Rust/checks/book, commit clean. No status/experiment/freeze credit.
+
+Refined bounded design:15contexts — M/S scratch; cycle's four M/S enable
+combinations; stimecmp's four TM/STCE combinations; satp with TVM0/1; fcsr with
+FSOff/Initial; one unimplemented M-level address. Cross M/S/U, all6CSR forms,
+source fields0/6/31, three register values0/high/MAX (one for immediate forms),
+rd0/5/6/31 and two initial-value patterns:12960single-boundary cases. Satp starts
+Bare0 so S/U fetch is valid; c31a separately covers priorSv39/unsupported writes.
+Expected source reads use pre-state, five-bit immediates zero-extend, set/clear
+suppression depends on field identity, refusals preserve destination/owners and
+produce exact M trap/retirement. FP legal writes mark Dirty even unchanged.
+Full GPR/FPR/CSR storage owners,PC/mode,reservation,TLB/cursor,wait,memory,
+request order/extent/outcome captured. Wrong tables/each corrupted component and
+actual disabled auditor/permission/suppression paths must discriminate.
+
+The no-read condition has no selected CSR read side effect to expose dynamically.
+Measure an extra same-CSR read on rd0 swapping as a passing equivalence control;
+separately inspect the published compiled semantic table's selected rd0 branch
+for a write-only CSR action with no read-containing operand. A wrong extra-read
+branch must fail that inspection while its state witness passes. Keep this limit
+explicit in task/book, not an invented memory request or new tracing API. Refine
+only after real measurements. Completed selector missing-binding RED before
+exactly2Execution entries; prior106 byte-exact and effective104→106/114 only after
+normal checks. POS mm-csr-rw; NEG mm-csr-ro-write/mm-csr-legality-s/u. No frozen
+statements or requirement statuses change. Prefer privilege chapter for worked
+CSR examples so runtime's31190B cap remains safe; book family513190B leaves11098B.
+
+C31 result:
+
+Authenticated Zicsr5.1.1/CSR1.1.1/Machine FS/TVM/counter sections,
+Supervisor gates and Sstc12.1; frozen requirement and public engine/state/table
+interfaces reviewed before code. Literal expected full state precedes execution.
+Fifteen contexts cross six forms/M/S/U/source0/6/31/rd0/5/6/31/two seeds and
+register0/high/MAX (one immediate input):4480legal+8480refused boundaries,
+25920parcels. Source uses pre-state, suppression uses field identity; unchanged
+FP-CSR writes dirty. Exact M trap/cycle/nonretirement, full GPR/FPR/26owners,
+PC/mode/reservation/TLB+FIFO/wait/memory/requests/extent/outcome observed.
+
+Four direct suites:13wrong effects,16bad captures, passing extra-read dynamic
+control plus rejecting compiled-table inspection. No selected read side effect
+exposes that extra read, so no dynamic no-read credit or new trace API. Fifteen
+actual disabled controls RED101 then byte-restored: CSR auditor/request logger/
+table inspector/address privilege/RO/FS/TM/STCE/TVM and all6suppression branches.
+Initial wrong-control old/input were equal; changed input makes substitution
+observable, then13/13discriminate. Scratch generator shadow/author fixture entry/
+ambiguous STCE mutation selector corrected before any credit; core unchanged.
+
+Completed selector RED101 names missing CSR-access binding before exactly2
+Execution entries. Independent decode/literal census12960 and author12096exact;
+864unknown cases remain explicit vocabulary refusals, no author trap comparison.
+Author fixture entry relocated for matrix only/restored before independent167/
+5365/10524 corpus, all exact. Prior106 registry entries/frozen/canonical/core/
+history/LIVE byte-exact, registry108/effective106/114. Make check173/17/230;
+focused/six books green. Environment/GS/book/index/pointer synchronized, fixed
+caps. Evidence target/p4-system-13/c31. Next GC-F before D/reservation/SC/freeze;
+.14 retains requirement/evidence sweep.
+promotion: declined (normative CSR rules, permanent discriminating fixtures and the worked privilege chapter retain this bounded binding and its evidence limits).
+
 After c31, F before D, reservation and deterministic SC; .14 remains owned.
 Before claiming dynamic no-read suppression, measure whether an added read of
 the same side-effect-free CSR is observationally equivalent. If so, retain that
@@ -775,6 +833,22 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c31 — **ROOT CAUSE**: source/verify.py rc=0 authenticates
+ Zicsr/CSR/privileged gates; completed selector RED rc=101 names missing binding.
+ Existing companions did not realize this distinct guarantee. Matrix12960 literal
+ cases owned before code; no frozen statement or requirement-status rewrite.
+- [x] `.13` c31 — **ADDRESSED**: four direct suites rc=0:4480legal/
+ 8480refused boundaries/25920parcels,13wrong effects/16bad captures. Fifteen actual
+ auditor/logger/table/permission/suppression controls RED rc=101 then byte-restored.
+ Extra-read table dynamically passes, separate no-read inspection rejects it;
+ disabling inspection loses that control. Missing binding precedes exactly2entries.
+- [x] `.13` c31 — **NO REGRESSION**: make check/verify.py rc=0:
+ Rust173/17/230, independent author12096exact/864named vocabulary refusals
+ (no unknown-trap author credit), prior167/5365/10524 exact. Prior106 bindings,
+ frozen/canonical/core/history/LIVE byte-exact; registry108/effective106/114.
+ Focused/six books rc=0, fixed caps; environment/GS/book/pointers synchronized.
+ promotion: declined (normative CSR rules, permanent controls and worked book retain this finite binding and explicit evidence limits).
+
 - [x] `.13` c31a — **ROOT CAUSE**: authenticated supervisor11.1.1.11
  rc=0 requires unsupported MODE whole-write ignore. Root47badd2 field-only
  legalization/core API and instruction tests RED rc=101:0→0123456789abcdef;
@@ -896,6 +970,8 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
+| `2026-10-10` | `.13` c31 | independent matrix/12096author+864refusals/full167corpus;13wrong effects/16bad captures/15disabled controls+missing binding RED101→restored | Rust173/17/230; registry108/effective106/114; frozen/core/history/LIVE exact; focused/six books rc=0; hooks next |
+
 | `2026-10-10` | `.13` c31a | source/root history; initial and disabled core/author guards RED→4176core/3540author cells; independent167 corpus,3hash-only provenance; Sail/Spike9M repeat exact | Rust173/17/226,GUEST150/0,arms655; registry106/effective104/114 unchanged; focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c31a | `SEMULITH-P4-0175 (leaf P4-SYSTEM.13): ignore complete satp writes with unsupported modes` | c31 CSR-access, then F/D/reservation/SC and freeze |
 | `.13` c30b | 32whole paragraphs/five full inverses; corrupt/marker/omission refuse; sharder12/0,6whole DEV entries/full inverse; prior history/protected inputs fixed | archive44570B, save6516chapter B; registry106/effective104/114/LIVE unchanged; focused/six books rc=0; hooks next |
@@ -913,11 +989,19 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | Leaf | Subject | Next |
 | --- | --- | --- |
 
+| `.13` c31 | `SEMULITH-P4-0176 (leaf P4-SYSTEM.13): bind CSR access, permissions and suppression` | GC-F before D/reservation/SC/freeze; .14 evidence sweep remains |
+
 | `.13` c30a | `SEMULITH-P4-0172 (leaf P4-SYSTEM.13): honor explicit counter-write precedence` | c30 GC-COUNTERS, remaining pairs/freeze; contain docs before fixed caps |
 | `.13` c29e | `SEMULITH-P4-0171 (leaf P4-SYSTEM.13): ground reference overview in public evidence` | c30 GC-COUNTERS, remaining runtime pairs/freeze |
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c31 (SEMULITH-P4-0176): bindCSR-access,
+ 4480legal/8480refused full-state boundaries,15actual disabled controls and
+ missing binding RED101; no-read dynamic equivalence/table evidence explicit.
+ Independent12096+864refusals/full167corpus exact,Rust173/17/230,focused/six books
+ green; registry108/effective106/114,LIVE unchanged. GC-F next.
 
 - `2026-10-10`: `.13` c31a (SEMULITH-P4-0175): repair unsupported
  satp.MODE whole-write ignore in core/independent author, permissions first;

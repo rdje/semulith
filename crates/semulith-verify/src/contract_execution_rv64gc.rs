@@ -6,6 +6,7 @@
 mod atomic_align;
 mod atomics;
 mod counters;
+mod csr_access;
 mod fence;
 mod fence_i;
 mod jalr;
@@ -28,6 +29,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Six CSR forms, aliases, suppression and selected legal access gates.
+    CsrAccessPositive,
+    /// Atomic privilege, read-only, unknown and gated CSR refusals.
+    CsrAccessNegative,
     /// All three counter reads under every M/S gate mask and mode.
     CountersPositive,
     /// Closed counter gates preserve destination/state and retire no instruction.
@@ -75,6 +80,10 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::CsrAccessPositive => &["mm-csr-rw"],
+            Self::CsrAccessNegative => {
+                &["mm-csr-ro-write", "mm-csr-legality-s", "mm-csr-legality-u"]
+            }
             Self::CountersPositive => &["mm-counters"],
             Self::CountersNegative => &["mm-counters", "mm-csr-ro-counters"],
             Self::AtomicsPositive => &[
@@ -107,6 +116,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::CsrAccessPositive => csr_access::positive(),
+            Self::CsrAccessNegative => csr_access::negative(),
             Self::CountersPositive => counters::positive(),
             Self::CountersNegative => counters::negative(),
             Self::AtomicsPositive => atomics::positive(),

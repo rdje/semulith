@@ -207,6 +207,16 @@ set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
 Core and independent-author controls plus finite public M-mode read-back support
 the repair. The Sv39 book section gives the example and limits; no binding credit.
 
+GC-CSR-ACCESS binds4480legal/8480refused single boundaries across six forms,
+M/S/U, aliases, source-field/value suppression and15selected CSR contexts.
+Full state/memory/exact requests are compared; refusal preserves destination
+and owners before M trap delivery. Actual disabled permissions/suppression/
+observers discriminate. An extra same-CSR read on rd0 swaps is dynamically
+indistinguishable for these side-effect-free CSRs; a separate published-table
+inspection rejects that branch. The privilege book explains this limit and
+worked examples. Independent author12096cases agree;864unknown CSR cases are
+named vocabulary refusals, not author trap evidence. Frozen records unchanged.
+
 GC-COUNTERS now binds direct Execution witnesses: 4032 legal and2880 gated
 single-boundary reads across M/S/U, all enable masks, three views, three destination
 choices and four counter pairs. Full state, memory, requests and retirement are
