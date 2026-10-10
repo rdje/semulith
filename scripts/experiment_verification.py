@@ -107,6 +107,12 @@ def check_experiment(form: list, scope: Scope) -> list[str]:
         for oid in prop["obligation_ids"]:
             if oid not in scope.obligation_ids:
                 issue("OBLIGATION SCOPE", prop["id"] + " -> " + oid)
+        witness = prop.get("gpr_witness")
+        if witness is not None:
+            if not 0 <= witness["step_n"] < experiment["instructions"]:
+                issue("GPR WITNESS BUDGET", prop["id"] + ": step outside declared budget")
+            if "gpr-change" not in prop["observation_kinds"]:
+                issue("GPR WITNESS KIND", prop["id"] + ": needs gpr-change observation")
 
     paths = {}
     for family in ("input", "observation"):
@@ -173,6 +179,10 @@ def check_experiment(form: list, scope: Scope) -> list[str]:
     controlled_runs = set()
     for control in indexes["control_run"].values():
         cid = control["id"]
+        if "baseline_id" in control:
+            control_baseline = runs.get(control["baseline_id"])
+            if control_baseline is None or control_baseline["kind"] != "baseline":
+                issue("CONTROL BASELINE", cid + ": must name a baseline run")
         run = runs.get(control["run_id"])
         if run is None or run["kind"] != "control":
             issue("CONTROL EDGE", cid + ": must name a control run")

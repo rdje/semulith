@@ -55,13 +55,45 @@ The current gate report is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}
 
-## First comparison method — declared, implementation pending
+## First comparison method — typed grammar exists, evaluator pending
 
 The following contract adds a typed witness and an exact wrong-value control.
-Its new syntax and capture artifacts are prospective; production qualification
-stays closed. The declaration gives no new requirement or CPU acceptance credit.
+Witness/baseline syntax and generic relationship checks exist; capture artifacts
+and the method evaluator remain pending. Production qualification stays closed. The declaration gives no new requirement or CPU acceptance credit.
 
 {{#include ../../../decisions/decision_sail-gpr-comparison-method.md:method}}
+
+## Typed witness and control-baseline checks
+
+A property may now carry one `gpr_witness` with integer `step_n` and a canonical
+register `x1` through `x31`. Shape validation rejects missing/duplicated/unknown
+witness fields, wrong types/arity and other register spellings. After raw shape
+validation, the graph checker requires `0 <= step_n < instructions` in the parent
+experiment and `gpr-change` among that property's observation kinds. A control's
+optional `baseline_id` must resolve to an actual baseline run, rather than a repeat,
+control or missing ID. The single mapper preserves both additions; it refuses
+unknown witness fields and repeated whole witness children.
+
+Legacy/generic graphs may omit these optional fields. A generic control may name
+any declared baseline; the future first-method evaluator must require its sole
+baseline, exactly one witness and the intended value difference. A valid locator
+does not prove the property, bind an obligation to an observation or qualify a run.
+No receipt, dependency-manifest mapping or canonical capture is added by this step.
+
+Run the offline controls from the repository root:
+
+```bash
+python3 scripts/probe_experiment_verification.py --case locators
+python3 scripts/probe_experiment_verification.py --case locator-shape
+python3 scripts/probe_experiment_verification.py --case locator-mapper
+python3 scripts/probe_experiment_graph.py
+python3 -O scripts/probe_experiment_graph.py
+```
+
+The graph suite checks valid first/last boundaries, absent optional fields and
+invalid budget/kind/baseline endpoints. Three in-memory guard omissions must each
+fail on their named cases; production code has no bypass option. These synthetic
+records exercise readers only and confer no execution or CPU acceptance credit.
 
 ## Checking identities and declared relationships
 

@@ -166,6 +166,12 @@ EOF
   arm "RED verification unsupported closed vocabularies" "$rc" 0 "$out" "VERIFICATION vocabulary: ok"
   out="$(verification_case mapper-refusal 2>&1)"; rc=$?
   arm "RED mapper unknown nested fields and duplicate blocks" "$rc" 0 "$out" "VERIFICATION mapper-refusal: ok"
+  out="$(verification_case locators 2>&1)"; rc=$?
+  arm "GREEN typed witness and baseline roundtrip preserves values" "$rc" 0 "$out" "VERIFICATION locators: ok"
+  out="$(verification_case locator-shape 2>&1)"; rc=$?
+  arm "RED malformed witness and baseline fields refuse by shape" "$rc" 0 "$out" "VERIFICATION locator-shape: ok"
+  out="$(verification_case locator-mapper 2>&1)"; rc=$?
+  arm "RED mapper refuses unknown or repeated witness children" "$rc" 0 "$out" "VERIFICATION locator-mapper: ok"
 
   # Shape permits repeated write forms; the mapping boundary enforces key identity.
   cp "$ROOT/schema/expectations.sexp" "$t/schema/expectations.sexp"

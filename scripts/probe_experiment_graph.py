@@ -2,8 +2,11 @@
 """Offline identity/edge controls; synthetic records earn no qualification."""
 from __future__ import annotations
 
+import argparse
 import copy
 from pathlib import Path
+import sys
+import types
 
 import dossier_sexp as D
 import experiment_verification as V
@@ -62,6 +65,31 @@ def run_controls() -> int:
             pair.update(left="producer-1", right="producer-1")
 
     judge("complete declared graph", V.check_experiment(form(fixture()), SCOPE))
+    document = fixture()
+    graph = document["experiment"][0]["verification"]
+    graph["property"][0]["gpr_witness"] = {"step_n": 0, "register": "x1"}
+    graph["control_run"][0]["baseline_id"] = "baseline-1"
+    judge("typed witness and control baseline", V.check_experiment(form(document), SCOPE))
+    document["experiment"][0]["instructions"] = 9
+    graph["property"][0]["gpr_witness"] = {"step_n": 8, "register": "x31"}
+    judge("last declared witness boundary", V.check_experiment(form(document), SCOPE))
+    graph["control_run"][0]["baseline_id"] = "baseline-2"
+    judge("generic baseline edge may select another baseline", V.check_experiment(form(document), SCOPE))
+    for step in (-1, 1, 2):
+        mutation("witness step " + str(step), lambda g, n=step: g["property"][0].update(
+            gpr_witness={"step_n": n, "register": "x1"}), "GPR WITNESS BUDGET")
+    document = fixture()
+    document["experiment"][0]["instructions"] = 0
+    document["experiment"][0]["verification"]["property"][0]["gpr_witness"] = {
+        "step_n": 0, "register": "x1"}
+    judge("witness cannot fit empty budget", V.check_experiment(form(document), SCOPE),
+          "GPR WITNESS BUDGET")
+    mutation("GPR witness without GPR observation", lambda g: g["property"][0].update(
+        observation_kinds=["witnessed-delivery"], gpr_witness={"step_n": 0, "register": "x1"}),
+        "GPR WITNESS KIND")
+    for baseline in ("missing", "control-1", "repeat-1"):
+        mutation("control baseline " + baseline,
+                 lambda g, b=baseline: g["control_run"][0].update(baseline_id=b), "CONTROL BASELINE")
     # A failed control remains honestly recordable. Adequacy is a later evaluation.
     document = fixture()
     graph = document["experiment"][0]["verification"]
@@ -181,5 +209,28 @@ def run_controls() -> int:
     return 1 if failed else 0
 
 
+def main():
+    global V
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--mutation", choices=("ignore-witness-budget", "ignore-witness-kind",
+                                               "ignore-control-baseline"))
+    args = parser.parse_args()
+    if args.mutation:
+        root = Path(__file__).resolve().parent.parent
+        path = root / "scripts/experiment_verification.py"
+        source = path.read_text()
+        span = {"ignore-witness-budget": 'if not 0 <= witness["step_n"] < experiment["instructions"]:',
+                "ignore-witness-kind": 'if "gpr-change" not in prop["observation_kinds"]:',
+                "ignore-control-baseline": 'if control_baseline is None or control_baseline["kind"] != "baseline":'}[args.mutation]
+        if source.count(span) != 1:
+            raise ValueError("graph mutation must match exactly once: " + args.mutation)
+        module = types.ModuleType("experiment_graph_mutant")
+        module.__file__ = str(path)
+        sys.modules[module.__name__] = module
+        exec(compile(source.replace(span, "if False:"), str(path), "exec"), module.__dict__)
+        V = module
+    return run_controls()
+
+
 if __name__ == "__main__":
-    raise SystemExit(run_controls())
+    raise SystemExit(main())

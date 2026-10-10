@@ -289,16 +289,27 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a20 typed witness/baseline grammar, artifact mapping/evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | a21 bounded pin-only reads, artifact mappings/evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
-### `.14` a20 — carry typed witnesses and control baselines (scheduled, SEMULITH-P4-0211)
+### `.14` a21 — bound pin-only authentication (scheduled, SEMULITH-P4-0212)
 
-After a19's clean COMMIT workflow, implement only optional singular gpr_witness
+After a20's clean COMMIT workflow, add an explicit bounded metadata-only pin API
+sharing the authenticated traversal and cleanup owner, as the declared method
+requires. Preserve legacy pin calls and snapshot semantics; test pre-read bounds,
+invalid limits, races, partial I/O/cleanup and no retained payload, including
+independent omitted-bound controls under optimization. Review exact read limits
+before claiming them. Artifact schemas/mappings and bounded evaluator follow.
+Own focused checks, public API/book/live sync, protected scope and COMMIT workflow.
+
+### `.14` a20 — carry typed witnesses and control baselines (completed, SEMULITH-P4-0211)
+
+Owned on cleanae248c6, brief0/untracked and actual process census OK, before edits.
+Implement only optional singular gpr_witness
 (step_n integer, register string) on properties and optional baseline_id on controls
 in the existing reference schema/single mapper. Preserve all old mapped records;
 no canonical capture, receipt/manifest implementation or qualification yet.
@@ -309,6 +320,29 @@ prove removed guards fail for named reasons. New fields alone never credit a
 property. Keep generic graphs compatible and the blanket unqualified guard closed.
 Own exact old dictionaries/protected bytes, focused checks, book/live sync and
 normal COMMIT workflow. Artifact mappings and bounded evaluator follow separately.
+The generic graph checks any declared witness is in the parent boundary budget
+and includes gpr-change vocabulary; any declared baseline_id must resolve to a
+baseline run. First-method required fields/exact value discrimination remain
+future evaluator checks. Own the stale schema comment about relationship checks.
+Implemented in the existing schema/mapper and graph owner. All x1..x31 spellings
+pass; type/arity/unknown/duplicate/missing fields and noncanonical registers refuse.
+Generic optionality remains, including a valid different baseline; exact method
+requirements stay pending. Three independently omitted graph guards expose four
+budget, one kind and three baseline failures, also optimized. Shape/mapper tests
+pass optimized; writer omissions and removed register facet discriminate.
+The old graph evaluator with the new grammar/mapper gives66/8; current74/0.
+Actual old schema separately refuses each field; do not confuse the isolated
+owner substitution with running the complete old pipeline. All243canonical
+mapped dictionaries remain exact. Production prefix accepts valid typed fields,
+refuses invalid bounds/baselines by name and retains missing-artifact/unqualified
+refusal; its on-volume fixture is removed, no reference execution occurs.
+Initial empty-string diagnostic expectation was corrected to the checker's exact
+min-length wording; the before-schema instrument now isolates fields because one
+root returns its first failure. No production validation was weakened.
+Focused13/schema25/0/profile57/0/seven books/eleven rendered boundaries/literal
+example and protected scope pass; derive763outer arms. No canonical/cap/status
+advance. Evidence target/p4-system-14/a20. Next a21 bounded metadata-only reads.
+
 
 ### `.14` a19 — method-specific comparison contract (completed, SEMULITH-P4-0210)
 
@@ -1208,6 +1242,15 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a20 — **ROOT CAUSE**: proof.py rc=0 confirms old schema rejects
+  new fields; old graph owner with new grammar/mapper66/8 lacks their relationships.
+- [x] `.14` a20 — **ADDRESSED**: graph74/0/optimized74/0 and proof.py rc=0;
+  three omissions lose4/1/3 named refusals, also optimized; typed roundtrip/shape/
+  mapper, writer/facet omissions and actual production integration discriminate.
+- [x] `.14` a20 — **NO REGRESSION**: focused13/schema25/0/profile57/0,
+  seven books/rendered.py/proof.py rc=0; all243canonical dictionaries exact,
+  literal syntax accepted without credit; scope.py rc=0 protects all other bytes.
+
 - [x] `.14` a19 — **ROOT CAUSE**: proof.py rc=0 confirms today's schema refuses
   gpr_witness/baseline_id; generic names/verdicts cannot express exact discrimination.
 - [x] `.14` a19 — **ADDRESSED**: rendered.py/proof.py rc=0; prospective method
@@ -1416,6 +1459,13 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a20: focused13/schema25/0/profile57/0/graph74/0 (also optimized), three graph
+predicate omissions4/1/3 failures (also optimized), shape/mapper/writer/facet
+controls, actual production prefix/fixture cleanup, all243dictionary inverse,
+seven books/eleven rendered boundaries/literal syntax/protected scope rc=0.
+Correct two test-instrument assumptions before drawing results; no new capture,
+qualified record or acceptance advance. Global arm enumeration763, no cap changes.
+
 a19: focused10/seven books/15 rendered checks/old-book inverse, current named
 syntax refusals, docstring executable-AST proof, sharder12/0 and exact29==27+2
 whole-entry/old-manifest inverses/protected scope rc=0. New method remains a
@@ -1485,6 +1535,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a20 | `SEMULITH-P4-0211 (leaf P4-SYSTEM.14): carry typed GPR witnesses and control baselines` | a21 bounded pin-only reads, artifact mappings/evaluator, retention and first canonical capture |
 | `.14` a19 | `SEMULITH-P4-0210 (leaf P4-SYSTEM.14): declare the first Sail GPR comparison method` | a20 typed witness/baseline grammar, artifact mappings/evaluator, retention and first canonical capture |
 | `.14` a18 | `SEMULITH-P4-0209 (leaf P4-SYSTEM.14): refuse duplicate expectation writes` | a19 method-specific comparison contract, evaluator, retention and first canonical capture |
 | `.14` a17 | `SEMULITH-P4-0208 (leaf P4-SYSTEM.14): return bounded authenticated snapshots` | a18 duplicate expectation writes, comparison/qualification, retention and first canonical capture |

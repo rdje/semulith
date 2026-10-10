@@ -19,7 +19,7 @@ import sexp as S
 ROOT = Path(__file__).resolve().parent.parent
 CASES = ("complete", "roundtrip", "legacy", "unknown", "type", "arity", "duplicate",
          "missing", "collection", "digest", "version", "unique", "vocabulary",
-         "mapper-refusal")
+         "mapper-refusal", "locators", "locator-shape", "locator-mapper")
 REPEATED_SCALARS = {"limitations", "obligation_ids", "observation_kinds", "input_ids",
                     "shared_input_ids", "argv", "producer_ids", "observation_ids",
                     "mutation_input_ids", "property_ids"}
@@ -94,6 +94,16 @@ def only(form, head):
     return children[0]
 
 
+def locator_fixture():
+    document = fixture()
+    block = document["experiment"][0]["verification"]
+    block["property"][0]["gpr_witness"] = {"step_n": 0, "register": "x1"}
+    block["property"][1]["gpr_witness"] = {"step_n": 0, "register": "x31"}
+    for number, control in enumerate(block["control_run"], 1):
+        control["baseline_id"] = f"baseline-{number}"
+    return document
+
+
 def graph(form):
     return only(only(form, "experiment"), "verification")
 
@@ -130,6 +140,83 @@ def check_case(case: str):
         # Compare the independently constructed data, not the writer with itself.
         parsed = S.parse(R.render_forms([form]))[0]
         require(D.references_to_doc(parsed) == fixture(), "nested data lost or changed")
+    elif case == "locators":
+        document = locator_fixture()
+        form = D.references_to_form(document)
+        require(not errors(form), f"typed locator fixture refused: {errors(form)}")
+        parsed = S.parse(R.render_forms([form]))[0]
+        require(D.references_to_doc(parsed) == document, "witness/baseline data lost or changed")
+        for number in range(1, 32):
+            document["experiment"][0]["verification"]["property"][0]["gpr_witness"]["register"] = f"x{number}"
+            require(not errors(D.references_to_form(document)), f"canonical register x{number} refused")
+    elif case == "locator-shape":
+        form = D.references_to_form(locator_fixture())
+
+        def witness(changed):
+            return only(S.children(graph(changed), "property")[0], "gpr_witness")
+
+        for field, value, reason in (("step_n", "0", "want integer"),
+                                     ("register", 1, "want string")):
+            changed = copy.deepcopy(form)
+            only(witness(changed), field)[1] = value
+            refuses(changed, reason)
+        for field in ("step_n", "register"):
+            for action, reason in (("missing", "missing required field"),
+                                   ("duplicate", "duplicated single-valued field"),
+                                   ("arity", "wrong arity")):
+                changed = copy.deepcopy(form)
+                target = witness(changed)
+                child = only(target, field)
+                if action == "missing":
+                    target.remove(child)
+                elif action == "duplicate":
+                    target.append(copy.deepcopy(child))
+                else:
+                    child.append("extra")
+                refuses(changed, reason)
+        for register in ("x0", "x32", "x01", "X1", "x-1", ""):
+            changed = copy.deepcopy(form)
+            only(witness(changed), "register")[1] = register
+            refuses(changed, "does not match")
+        changed = copy.deepcopy(form)
+        witness(changed).append([S.Symbol("unexpected_witness_field"), "bad"])
+        refuses(changed, 'undeclared field "unexpected_witness_field"')
+        changed = copy.deepcopy(form)
+        prop = S.children(graph(changed), "property")[0]
+        prop.append(copy.deepcopy(witness(changed)))
+        refuses(changed, "duplicated single-valued field")
+        for action, reason in (("type", "want string"), ("empty", "shorter than min-length 1"),
+                               ("arity", "wrong arity"),
+                               ("duplicate", "duplicated single-valued field")):
+            changed = copy.deepcopy(form)
+            target = S.children(graph(changed), "control_run")[0]
+            child = only(target, "baseline_id")
+            if action == "type":
+                child[1] = 1
+            elif action == "empty":
+                child[1] = ""
+            elif action == "arity":
+                child.append("extra")
+            else:
+                target.append(copy.deepcopy(child))
+            refuses(changed, reason)
+    elif case == "locator-mapper":
+        for action in ("unknown", "duplicate"):
+            form = D.references_to_form(locator_fixture())
+            prop = S.children(graph(form), "property")[0]
+            witness = only(prop, "gpr_witness")
+            if action == "unknown":
+                witness.append([S.Symbol("unexpected_witness_field"), "bad"])
+                reason = "unexpected_witness_field"
+            else:
+                prop.append(copy.deepcopy(witness))
+                reason = "appears 2 times"
+            try:
+                D.references_to_doc(form)
+            except D.DossierError as error:
+                require(reason in str(error), str(error))
+            else:
+                raise ValueError("mapper ignored malformed witness: " + action)
     elif case == "legacy":
         count = experiments = 0
         for path in sorted((ROOT / "profiles").glob("*/references.sexp")):

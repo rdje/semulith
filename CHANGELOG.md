@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0211 (leaf P4-SYSTEM.14) — carry typed GPR witnesses and control baselines
+
+- Add optional witness/baseline syntax to the existing reference schema/mapper; check witness budget/GPR kind and baseline endpoints. Preserve generic records; full method/artifacts and qualification remain pending.
+- Graph74/0 and guard omissions4/1/3 discriminate, also optimized. Shape/roundtrip/mapper/writer/facet and actual production integration pass; all243canonical dictionaries exact. Focused13/schema25/0/profile57/0/seven books/eleven rendered checks/literal syntax/protected scope pass; derive763 outer arms. No canonical capture, CPU status or cap advance.
+
 ## SEMULITH-P4-0210 (leaf P4-SYSTEM.14) — declare the first Sail GPR comparison method
 
 - Specify the prospective one-witness baseline/repeat/wrong-value protocol, typed relationships, exact artifact/producer roles, dependency closure, invocation/receipt checks and finite byte budgets. Include the full authoritative method in the GC book; method success remains distinct from full policy/acceptance.

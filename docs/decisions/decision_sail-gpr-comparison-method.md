@@ -2,9 +2,9 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — prospective contract; implementation and canonical captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19, `SEMULITH-P4-0210`; matched-experiment contract, GC verification policy and public Sail adapter
-answers: What must the first Sail GPR comparison evaluator actually check, and which claims remain outside its scope?
+- **Status:** `active` — typed witness/baseline grammar implemented; method/artifacts and canonical captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a20, `SEMULITH-P4-0210`–`0211`; matched-experiment contract, GC verification policy and public Sail adapter
+answers: Which typed witness/baseline checks exist, what must the first Sail GPR evaluator still check, and which claims remain outside its scope?
 
 ## The fact / decision
 
@@ -13,8 +13,10 @@ Declare comparison rule `sail-gpr-change-v1` within the existing
 `matched-gpr-v1` verification envelope. Its first supported unit is one property,
 one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
-existing grammar does **not** yet implement the new witness/baseline fields or
-receipt/dependency-manifest artifacts below; production qualification stays closed.
+grammar implements optional witness/baseline fields. Generic graph checks validate
+witness bounds/observation kind and declared baseline endpoints; they do not execute
+this method. Receipt/dependency-manifest artifacts and method evaluation remain
+pending; production qualification stays closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.
@@ -41,7 +43,7 @@ full verification-policy adequacy remain separately reviewed/checked obligations
 
 ## Typed witness and run relationships
 
-Add an optional singular `gpr_witness` child to a generic property, required by
+The optional singular `gpr_witness` child on a generic property is required by
 this rule. It has exactly `step_n` (integer) and `register` (string). The step is
 in the complete declared budget; the register is canonical `x1` through `x31`.
 The baseline expectation must declare a change for that register at that step.
@@ -50,7 +52,7 @@ Exactly one property with observation kind `gpr-change` is supported per unit.
 Multiple obligation IDs may still express a many-to-many claim, but the witness
 cannot discharge an unrelated obligation merely because its ID was named.
 
-Add optional `baseline_id` to a generic control record, required by this rule.
+The optional `baseline_id` on a generic control record is required by this rule.
 It names this unit's sole baseline. `repeat_of` already names that baseline for
 the sole repeat. The control's `property_ids` contains exactly the sole property;
 its `mutation_input_ids` contains exactly its changed expectation input. This
@@ -58,7 +60,9 @@ rule requires expected and observed control verdict `DIVERGE`, never `REFUSED`.
 Other honestly recorded outcomes remain valid historical data without this
 method's success credit.
 
-The following is prospective syntax, **not accepted by today's schema**:
+The schema and single mapper accept the following typed syntax. These placeholder
+IDs are illustrative; no capture has been executed or qualified. Generic validation
+does not yet enforce this method's mandatory fields or exact value discrimination:
 
 ```lisp
 (property (id "quotient") (requirement_id "REQ-example")

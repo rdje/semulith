@@ -679,6 +679,7 @@ _EXPERIMENT_SPEC = [("id", "str"), ("program", "str"), ("instructions", "int"),
 # Schema facets and evidence adequacy are separate checks, not parser side effects.
 _VERIFICATION_SPEC = [("format_version", "str"), ("comparison_rule", "str"),
                       ("limitations", "strs")]
+_GPR_WITNESS_SPEC = [("step_n", "int"), ("register", "str")]
 _VERIFICATION_PARTS = (
     ("property", [("id", "str"), ("requirement_id", "str"),
                   ("obligation_ids", "strs"), ("observation_kinds", "strs"),
@@ -692,7 +693,8 @@ _VERIFICATION_PARTS = (
     ("run", [("id", "str"), ("kind", "str"), ("argv", "strs"),
              ("input_ids", "strs"), ("producer_ids", "strs"), ("repeat_of", "str"),
              ("process_exit", "int"), ("verdict", "str"), ("observation_ids", "strs")]),
-    ("control_run", [("id", "str"), ("run_id", "str"), ("mutation_input_ids", "strs"),
+    ("control_run", [("id", "str"), ("run_id", "str"), ("baseline_id", "str"),
+                     ("mutation_input_ids", "strs"),
                      ("property_ids", "strs"), ("expected_verdict", "str"),
                      ("observed_verdict", "str"), ("reason", "str")]),
     ("producer_pair", [("id", "str"), ("left", "str"), ("right", "str"),
@@ -706,7 +708,11 @@ def _verification_to_form(doc: dict) -> list:
     form = [S.Symbol("verification"), *_emit_flat(_VERIFICATION_SPEC, doc)]
     for head, spec in _VERIFICATION_PARTS:
         for rec in doc.get(head, []):
-            form.append([S.Symbol(head), *_emit_flat(spec, rec)])
+            child = [S.Symbol(head), *_emit_flat(spec, rec)]
+            if head == "property" and "gpr_witness" in rec:
+                child.append([S.Symbol("gpr_witness"),
+                              *_emit_flat(_GPR_WITNESS_SPEC, rec["gpr_witness"])])
+            form.append(child)
     return form
 
 
@@ -714,8 +720,16 @@ def _verification_to_doc(form) -> dict:
     d = _read_flat(_VERIFICATION_SPEC, form, "verification",
                    skip=tuple(head for head, _ in _VERIFICATION_PARTS))
     for head, spec in _VERIFICATION_PARTS:
-        records = [_read_flat(spec, c, f"verification/{head}")
-                   for c in _children_in(form, head)]
+        records = []
+        for child in _children_in(form, head):
+            record = _read_flat(spec, child, f"verification/{head}",
+                                skip=("gpr_witness",) if head == "property" else ())
+            if head == "property":
+                witness = _opt_child(child, "gpr_witness")
+                if witness is not None:
+                    record["gpr_witness"] = _read_flat(
+                        _GPR_WITNESS_SPEC, witness, "verification/property/gpr_witness")
+            records.append(record)
         if records:
             d[head] = records
     return d

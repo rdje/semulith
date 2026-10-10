@@ -669,7 +669,13 @@ EOF
 
   rm -rf "$t"
   out="$(python3 "$ROOT/scripts/probe_experiment_graph.py" 2>&1)"; rc=$?
-  score "GREEN structured verification identity and edge controls" "$rc" 0 "$out" "EXPERIMENT-GRAPH: 63 pass / 0 fail"
+  score "GREEN structured verification identity and edge controls" "$rc" 0 "$out" "EXPERIMENT-GRAPH: 74 pass / 0 fail"
+  out="$(python3 "$ROOT/scripts/probe_experiment_graph.py" --mutation ignore-witness-budget 2>&1)"; rc=$?
+  score "RED omitted witness budget guard loses four named refusals" "$rc" 1 "$out" "EXPERIMENT-GRAPH: 70 pass / 4 fail"
+  out="$(python3 "$ROOT/scripts/probe_experiment_graph.py" --mutation ignore-witness-kind 2>&1)"; rc=$?
+  score "RED omitted witness kind guard loses its named refusal" "$rc" 1 "$out" "EXPERIMENT-GRAPH: 73 pass / 1 fail"
+  out="$(python3 "$ROOT/scripts/probe_experiment_graph.py" --mutation ignore-control-baseline 2>&1)"; rc=$?
+  score "RED omitted control baseline guard loses three named refusals" "$rc" 1 "$out" "EXPERIMENT-GRAPH: 71 pass / 3 fail"
   out="$(python3 "$ROOT/scripts/probe_experiment_artifacts.py" 2>&1)"; rc=$?
   score "GREEN structured artifact pin controls" "$rc" 0 "$out" "EXPERIMENT-ARTIFACTS: 39 pass / 0 fail; descriptors/fixture cleaned"
   out="$(python3 "$ROOT/scripts/probe_experiment_snapshots.py" 2>&1)"; rc=$?

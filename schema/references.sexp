@@ -90,7 +90,7 @@
   (field (name verification) (type form) (head verification) (optional yes)))
 
 ;; Prospective matched-GPR capture graph. Shape is not qualification: while the
-;; relationship/artifact evaluator is pending, PROFILE-CONSISTENCY refuses these
+;; comparison/policy evaluator is pending, PROFILE-CONSISTENCY refuses these
 ;; blocks. Legacy experiments without a block retain their original mapping.
 (construct (name verification)
   (field (name format_version) (type string) (pattern "^matched-gpr-v1$"))
@@ -110,7 +110,12 @@
   (field (name obligation_ids) (type string) (repeat yes) (min 1) (unique yes) (min-length 1))
   (field (name observation_kinds) (type string) (repeat yes) (min 1) (unique yes)
     (pattern "^(gpr-change|witnessed-delivery)$"))
-  (field (name statement) (type string) (min-length 1)))
+  (field (name statement) (type string) (min-length 1))
+  (field (name gpr_witness) (type form) (head gpr_witness) (optional yes)))
+
+(construct (name gpr_witness)
+  (field (name step_n) (type integer))
+  (field (name register) (type string) (pattern "^x([1-9]|[12][0-9]|3[01])$")))
 
 (construct (name input)
   (field (name id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
@@ -148,6 +153,7 @@
 (construct (name control_run)
   (field (name id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
   (field (name run_id) (type string) (min-length 1))
+  (field (name baseline_id) (type string) (optional yes) (min-length 1))
   (field (name mutation_input_ids) (type string) (repeat yes) (min 1) (unique yes) (min-length 1))
   (field (name property_ids) (type string) (repeat yes) (min 1) (unique yes) (min-length 1))
   (field (name expected_verdict) (type string) (pattern "^(DIVERGE|REFUSED)$"))

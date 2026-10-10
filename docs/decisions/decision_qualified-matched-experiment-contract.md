@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — grammar/mapping, declared edges and file pins implemented; comparison/qualification and retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a19, `SEMULITH-P4-0203`–`0210`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a20, `SEMULITH-P4-0203`–`0211`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -22,7 +22,8 @@ through anchored same-volume traversal. a16 repairs Sail comparison to refuse
 rows/witnessed deliveries beyond the declared step budget, before value comparison.
 a17 adds immutable snapshots from the same authenticated read, with an explicit
 caller byte bound and no data on failure. a18 refuses repeated expectation write
-keys in the mapper and dossier gate before dictionary collapse. DOSSIER-SCHEMA checks its shape;
+keys before dictionary collapse. a20 adds optional GPR witnesses and control
+baselines, with generic budget/kind/endpoint checks. DOSSIER-SCHEMA checks shape;
 PROFILE-CONSISTENCY refuses every block as `UNQUALIFIED EXPERIMENT VERIFICATION`
 while comparison/qualification evaluation is pending. Legacy flat metadata and
 experiment/model/pair checks remain intact. No GC record is qualified. This contract applies
