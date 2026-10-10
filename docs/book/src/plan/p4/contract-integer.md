@@ -422,3 +422,59 @@ copies differed only in Antora metadata, while the readers accepted mismatched
 pins. The authenticated snapshot was used here. c18c repairs both readers with
 shared exact-hash/length refusal and restores only the three fetched pages from
 the verified snapshot; all pins and architecture text stay unchanged.
+
+
+## Loads into x0 still execute (P4.13 c19)
+
+RV32I 1.1.6 requires a load whose destination is x0 to raise exceptions and
+cause other side effects even though its value is discarded. OB-LOAD-X0 now
+uses direct execution witnesses for every associated form, with the older guests
+as companions. The instructions are literal encodings of LB/LH/LW/LBU/LHU/LWU/LD
+x0,0(x5), executed through the public table interface. An environment wrapper logs
+actual requests; it implements no instruction semantics.
+
+| Case | Forms | Required data boundary | Architectural result |
+| --- | --- | --- | --- |
+| Aligned success at 0x1080 | all seven | exactly one Load with the form's width/address | PC 0x1004; one retired instruction |
+| Environment access refusal at 0x1080 | all seven | exactly one Load, answered AccessFault | cause 5, EPC 0x1000, tval 0x1080, PC 0x1100; no retirement |
+| Misaligned address 0x1081 | LH/LW/LHU/LWU/LD | no data request | cause 4, EPC 0x1000, tval 0x1081, PC 0x1100; no retirement |
+| Sv39 invalid root PTE | all seven | exactly one implicit WalkAccess at 0x2000; no Load | cause 13, EPC 0x1000, tval 0x1080, PC 0x1100; no retirement |
+
+Every case also requires two fetch parcels, one cycle boundary, unchanged GPRs
+(including x0 and a nonzero sentinel in each other register), unchanged memory
+and M mode after the step. The page-fault case uses MPRV/MPP=S for the data access;
+the instruction fetch remains bare M mode. These are 26 direct boundaries / 52
+parcels. Companion scope-mem and dir-x0-writes contribute 47/94; the two
+fault-ld-x0 guests contribute 5/10, giving 78/156 in total.
+
+The companions alone cannot establish this guarantee. Investigation found that
+the GC corpus comparison checks register changes, never-written registers and
+fetch counts, but not the final trap state or data requests. An isolated author
+that skips loads only when rd=0 still matches all 167 programs, 5,365 boundaries
+and 10,524 parcels. A separate client reproduces this through the public CPU
+interface with a conditional bad table. Both fault guests still satisfy their
+old observations, although their architectural outcomes differ:
+
+| Guest | Correct final state | Incorrect skipped-load state |
+| --- | --- | --- |
+| fault-ld-x0-fault | cause 5, EPC 0x80000004, tval 0x40000000, PC 0, retired 1; one Load | cause/EPC/tval 0, PC 0x80000008, retired 2; no Load |
+| fault-ld-x0-mis | cause 4, EPC 0x80000008, tval 0x80000402, PC 0, retired 2; no Load | cause/EPC/tval 0, PC 0x8000000c, retired 3; no Load |
+
+This is a missing observation in the old GC witness, not a processor defect.
+The inherited base-profile tests separately inspect load crossings and faults;
+the GC mirror's shared comparison did not inherit those assertions. The new
+negative witness explicitly checks all three fault cases for each applicable
+form. Erasing any form fails; duplicating any form fails the success request log.
+Disabling the request comparison first makes the erased-load control fail its
+own expected-refusal assertion. Disabling access-fault injection is also rejected.
+The declaration test first fails on the missing LOAD-X0 binding before either
+execution entry is registered.
+
+Normal Rust checks pass 167 core / 17 DSP / 206 verify tests. Independent normal
+replay and all prior 84 bindings, 112 base / 348 GC canonical and guest inputs,
+production rules, author, generated data and frozen records remain exact.
+Registry entries become 86; effective G-CONTRACT is **84/114**: thirteen scope,
+twenty-one guest, six boundary and two direct-execution pairs. Fifteen runtime
+pairs and final freeze remain. Request logs prove the access occurs; they do not
+add a device or claim unimplemented MMIO behavior. Byte-order selection and other
+remaining obligations retain their own witnesses.

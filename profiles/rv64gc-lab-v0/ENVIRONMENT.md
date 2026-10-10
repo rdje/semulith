@@ -16,6 +16,10 @@ records and frozen hashes. Subsequent additions live in the root. Schema validat
 cross-record checks. This containment change adds no contract credit. See
 `docs/decisions/decision_obligation-catalog-parts.md` for the include contract.
 
+OB-LOAD-X0 uses direct request and trap-state witnesses for all seven load forms;
+the legacy GC register/fetch comparison alone cannot distinguish a skipped x0
+load. Worked cases and mutation controls: `docs/book/src/plan/p4/contract-integer.md`.
+
 ## The versions
 
 | Version | Status | Members | What it is |

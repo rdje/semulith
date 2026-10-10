@@ -293,6 +293,43 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c19 — loads into x0 retain requests and faults (`2026-10-10`, `SEMULITH-P4-0143`)
+
+Owned before edits on clean a76bdda after full CI, commit/hooks/brief/actual job
+census. Read ROADMAP P4, CPU_ENVIRONMENT, frozen OB-LOAD-X0/REQ-D-LOAD-X0
+(all seven forms), authenticated RV32I 1.1.6, load/set evaluator, typed request/
+failure protocol, GC runner/registry and direct-execution infrastructure, existing
+memory-boundary witnesses, base x0 crossing tests and GC success/fault guests.
+Integer/runtime/v2 books provide review context. Effective 82/114, registry 84.
+
+Measured evidence limit: base run/tests pins six dir-x0-writes load crossings;
+GC runner compares writes/never-written/fetches and discards returned memory.
+The success guest's empty register observations alone cannot distinguish an erased
+load. Initial c19 isolated-author probe also leaves fault-ld-x0-fault writes
+unchanged, contrary to the probe's assumption. Own this surprising fault-witness
+gap now: trace the GC comparison and both fault fixtures, reproduce through the
+public table interface/full corpus, and repair with the direct NEG trap/request
+witness before credit. No processor defect is inferred. Preserve existing guest bytes and add a direct GC request observer,
+without inventing side-effecting platform memory or duplicating CPU semantics.
+
+Use literal LB/LH/LW/LBU/LHU/LWU/LD x0,0(x5) words. POS requires exactly one
+width/address load request, unchanged GPRs/x0, PC+4, two parcels and retirement.
+NEG requires load access fault for all seven, misalignment for five wider forms,
+and Sv39 invalid-PTE load page fault for all seven with an explicit implicit walk.
+Check original EPC/tval/cause, handler PC, no retirement and exact request lists.
+Companion POS guests scope-mem/dir-x0-writes and NEG fault-ld-x0-fault/-mis
+retain their corpus rule. A fixture log observes crossings, not a new I/O contract.
+
+Before credit, prove fourteen independent public bad tables (each form erased or
+duplicated) rejected by success witnesses, erased forms rejected by fault witness,
+and enabled/disabled fault-injection controls discriminate. Extend declaration
+coverage to 86 and observe missing-entry RED before adding Execution bindings.
+Run focused tests then make check, independent full167/5365/10524, exact prior84
+registry and112 base/348 GC inputs/production/author/generated/frozen identity,
+focused reports/freeze/schema/counts/bounds/books and hooks. Only then record
+84/114 (fifteen runtime pairs/freeze remain). .14 retains statuses/experiments.
+Commit/brief/clean/actual census before c20 endian or next bounded runtime pair.
+
 ### `.13` c18b — independently realize load extension and store truncation (`2026-10-10`, `SEMULITH-P4-0141`)
 
 Owned before edits on clean 6726658 after c18a hooks/brief/actual job census.
@@ -558,6 +595,36 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c19 — **ROOT CAUSE**: old GC corpus rule lacks data-request/final
+  trap observations. Initial probe's presumed fault discrimination was false;
+  investigated before credit. Isolated author and independent public conditional
+  x0-erasure table both satisfy all 167/5365/10524 old observations, but fault
+  PC/cause/EPC/tval/retirement differ. Root mirror 133e722, original fixtures
+  a199ccf, registry reuse 072b211; base-specific checks remain valid. No core bug.
+  `python3 target/p4-system-13/c19/probe.py` and public offline Cargo client
+  (`target/p4-system-13/c19/engine/Cargo.toml`), rc=0. Book retains exact states.
+
+- [x] `.13` c19 — **ADDRESSED**: all seven literal encodings now require exact
+  request sequences and trap/PC/GPR/mode/cycle/retirement/memory state. Direct
+  success/access/alignment/page cases 26/52 plus companion 52/104 =78/156.
+  Seven erased and seven duplicate public tables refuse; erasure fails all 19
+  applicable fault cases. Disabled observer makes terminal control RED rc=101
+  (`target/p4-system-13/c19/disable-observer.py`), restored exact; disabled
+  access-fault injection refuses. Missing registry declaration first RED rc=101,
+  then exact two Execution bindings. make check rc=0 (Rust 167/17/206).
+
+- [x] `.13` c19 — **NO REGRESSION**: prior 84 bindings and 112 base/348 GC
+  canonical/guest inputs, core/author/definitions/generated/frozen exact
+  (`python3 target/p4-system-13/c19/identity.py`, rc=0). Registry 86, effective
+  84/114; thirteen scope/twenty-one guest/six boundary/two execution pairs.
+  Fifteen runtime pairs/freeze remain; .14 retains statuses/experiments. Focused
+  gates/books rc=0: 225 frozen rows, 37 fixed route caps, 33 frontiers, six
+  derived count claims, three contract versions/zero findings, five fresh reports,
+  270 schema inputs/two named skips, main+five model books; whitespace rc=0.
+  Hooks precede c20 ENDIAN. LIVE_STATUS unchanged (650 arms,
+  47 chapters, P4 12/18). promotion: declined (worked literal matrix, root cause,
+  public counterexample and evidence limits retained in integer book and task).
+
 - [x] `.13` c18c — **ROOT CAUSE**: actual public locator/quote tools returned
   rc=0 on three mismatched fetched source hashes; exact diff is Antora metadata,
   all architectural bytes unchanged. Roots 32b72dbc/3afd2757/bf2070a7: neither
@@ -656,6 +723,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c19 | 26 direct cases, 14 bad tables, all 19 erased fault cases; disabled observer RED; public full-corpus gap; Rust 167/17/206; prior bytes exact | registry 86; effective 84/114; focused gates/books rc=0; hooks before c20 |
 | `2026-10-10` | `.13` c18c | new controls RED then21/15/8 green; actual hash refusals; seven routes;72-file snapshot/three-file restore; prior input/registry identity | make ci all five legs green; effective 82/114 unchanged; arms 650 |
 | `2026-10-10` | `.13` c18b | 17 isolated countermodels; literal edges; declaration RED then Rust 167/17/203; author 167/5365/10524; prior bytes exact; focused gates/books | registry 84, effective 82/114; c18c source identity next |
 | `2026-10-10` | `.13` c18a | six payloads and two inverse partitions exact; 112/348 input identity; shard/bounds/frontier/counts/freeze/reports/books | focused gates rc=0; effective 80/114 unchanged; hooks before c18b |
@@ -684,6 +752,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c19 | `SEMULITH-P4-0143 (leaf P4-SYSTEM.13): realize discarded-load requests and faults` | c20 ENDIAN, then remaining runtime pairs/freeze |
 | `.13` c18c | `SEMULITH-P4-0142 (leaf P4-SYSTEM.13): authenticate citation source bytes before judging text` | c19 LOAD-X0, then remaining runtime pairs/freeze |
 | `.13` c18b | `SEMULITH-P4-0141 (leaf P4-SYSTEM.13): realize load extension and low-bit stores` | priority c18c citation source identity, then c19 LOAD-X0 |
 | `.13` c18a | `SEMULITH-P4-0140 (leaf P4-SYSTEM.13): retain bounded history and derive current contract summaries` | c18b OB-LOAD-EXT, then remaining runtime pairs |
@@ -707,6 +776,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c19 (SEMULITH-P4-0143): direct x0 request/trap
+  witnesses close the old GC comparison gap, reproduced across all 167 guests
+  through author and public tables. All seven forms discriminate before credit;
+  84/114, prior bytes exact. c20 ENDIAN follows hooks/brief/clean census.
 
 - `2026-10-10`: `.13` c18c (SEMULITH-P4-0142): close source-identity
   exposure in both citation readers and fetched/cache presence dispatch, with

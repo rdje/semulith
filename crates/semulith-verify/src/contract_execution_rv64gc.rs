@@ -3,6 +3,8 @@
 //! Literal CSR words and values follow RVP-SSTC 12.1, RVP-SUPERVISOR
 //! 11.1.1.12 and RVP-MACHINE 2.1.1.11/2.1.1.18. No processor semantics live here.
 
+mod load_x0;
+
 use semulith_core::exec_rv64gc::{self, StepRv64gc};
 use semulith_core::state_rv64gc::{
     ArchitecturalState, PrivilegeMode, CSR_MCAUSE, CSR_MCOUNTEREN, CSR_MCYCLE, CSR_MENVCFG,
@@ -18,6 +20,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// All seven x0 loads still issue exactly one data request.
+    LoadX0Positive,
+    /// Discarded destinations retain access, alignment and page faults.
+    LoadX0Negative,
     /// S programs and reads its timer without an M-mode round trip.
     SstcPositive,
     /// Closed TM/STCE gates and U privilege refuse before destination/compare effects.
@@ -29,6 +35,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::LoadX0Positive => &["scope-mem", "dir-x0-writes"],
+            Self::LoadX0Negative => &["fault-ld-x0-fault", "fault-ld-x0-mis"],
             Self::SstcPositive => &["i-timer", "w-timer"],
             Self::SstcNegative => &["mm-stimecmp"],
         }
@@ -37,6 +45,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::LoadX0Positive => load_x0::positive(),
+            Self::LoadX0Negative => load_x0::negative(),
             Self::SstcPositive => positive(enabled_supervisor()),
             Self::SstcNegative => {
                 for (mode, tm, stce) in [

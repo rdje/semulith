@@ -18,17 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c19 — review LOAD-X0 side effects/fault matrix,
-  prove discrimination independently, then bind its POS/NEG pair. c18c closes
-  source identity exposure: both citation readers verify exact SHA256/byte length,
-  shared presence dispatch judges fetched-only data and refuses partial/corrupt
-  evidence. Controls locator21/0, quote15/0, SEMANTICS8/0; actual mismatches refused
-  before restoring exactly three project-owned fetched HTML files (226648 B)
-  from authenticated 72-file snapshot, pins/body unchanged. Full CI receipt in task.
-  All 84 registry bindings/core/author/generated/frozen and 112 base/348 GC inputs
-  exact. Effective 82/114, sixteen runtime pairs/freeze remain. Corpus
-  167/5365/10524; GUEST-GEN 145, doctrine 650 arms, book 47 chapters.
-  c18a historical inverse proofs in archive 8/shard 0223 (225 rows).
+- next_action: `P4-SYSTEM.13` c20 — review ENDIAN byte-order obligations,
+  prove independent literal byte/width discrimination, then bind its POS/NEG pair.
+  c19 realizes LOAD-X0 with 26 direct request/trap boundaries plus 52 companion
+  boundaries (78/156). Old GC register/fetch observations accept conditional x0
+  load erasure across all 167 guests; direct witnesses close the gap for all seven
+  forms, with erased/duplicated table controls and disabled observer/injection.
+  Registry 86, effective 84/114; fifteen runtime pairs/freeze remain. All prior
+  84 bindings/core/author/generated/frozen and 112 base/348 GC inputs exact.
+  Corpus 167/5365/10524; GUEST-GEN 145, doctrine 650 arms, book 47 chapters.
   .14 owns statuses/structured experiments/registration.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).

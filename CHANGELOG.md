@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0143 (leaf P4-SYSTEM.13 c19) — realize discarded-load requests and faults
+
+- Bind all seven x0 load forms with literal request/trap witnesses: 26 direct
+  boundaries plus 52 unchanged companion boundaries, 78 boundaries/156 parcels.
+- Old GC register/fetch checks accept conditional x0-load erasure across all 167
+  guests. Public reproduction establishes the gap; new direct checks reject each
+  erased/duplicated form and require access, alignment and page-fault outcomes.
+  Disabled observer and fault-injection controls discriminate before credit.
+- Rust 167/17/206, independent 167/5365/10524 and prior input/registry/frozen
+  identity verified. Registry 86, effective 84/114; fifteen runtime pairs/freeze
+  remain. LIVE_STATUS unchanged (650 arms, 47 chapters, P4 12/18). Next c20 ENDIAN.
+
 ## SEMULITH-P4-0142 (leaf P4-SYSTEM.13 c18c) — authenticate citation source bytes before judging text
 
 - Both readers now verify exact source SHA256 and byte length. Shared wrapper

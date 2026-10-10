@@ -1,5 +1,38 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — require x0 load requests and delivered faults (P4-SYSTEM.13 c19)
+
+The GC mirror's shared corpus rule compares register changes, never-written
+registers and fetch counts; neither final trap state nor data requests is judged.
+Root is the route flip/mirror at 133e722 (base fault fixtures originate a199ccf;
+registry reuses that rule from 072b211). Base-specific crossing/fault assertions
+remain valid. Isolated author and independent public conditional bad table both
+skip loads only when rd=0 and still satisfy all 167/5365/10524 old observations,
+including the two fault guests. Their cause/EPC/tval/PC/retirement actually differ:
+book retains exact before/after values. Own and resolve this previously uncredited
+LOAD-X0 witness gap here; no core misbehavior was found.
+
+New literal public-interface cases cover all seven load encodings: seven success,
+seven access refusals, five misalignments and seven Sv39 invalid-root page faults.
+Audit exact width/address request sequence, GPRs/x0, PC, mode, cause/EPC/tval,
+cycles, retirement, parcels and memory. Page faults require the implicit root
+walk and no explicit Load. Direct 26/52 plus unchanged companions 52/104=78/156.
+Seven erased and seven duplicate tables refuse; each erased form also fails each
+applicable fault case. Disabling the request observer causes the terminal control
+to fail rc=101; restoring it passes. Disabled access-fault injection also refuses.
+Declaration test first missing-entry RED rc=101, then two exact Execution bindings.
+
+make check rc=0 (167 core/17 DSP/206 verify). Independent author/public probes
+rc=0; exact prior 84 registry entries and 112 base/348 GC input files, core,
+definitions, author, generated data and frozen records verified rc=0. Registry 86,
+effective 84/114, fifteen runtime pairs/freeze remain. LIVE_STATUS unchanged:
+650 arms, 47 chapters, P4 12/18. Book retains matrix, root cause and finite limits.
+Focused gates/books rc=0 (shards, fixed bounds, frontiers, counts, frozen contracts,
+fresh reports, schema, main+five model books). Hooks precede c20 ENDIAN.
+promotion: declined (the worked
+request/trap distinction and controls remain in the integer book and owning tree).
+
+
 ## _(2026-10-10)_ — authenticate citation evidence at both readers (P4-SYSTEM.13 c18c)
 
 Actual locator/quote readers both returned rc=0 on three fetched RISC-V HTML
