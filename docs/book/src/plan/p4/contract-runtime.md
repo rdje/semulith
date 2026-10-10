@@ -396,3 +396,87 @@ Immediate/register ALU and U-immediate evidence now lives in the
 ## U-immediates use a signed offset and the instruction address
 
 [Read the preserved section](contract-integer.md#u-immediates-use-a-signed-offset-and-the-instruction-address).
+
+## Implicit Sv39 reads have their own request kind
+
+OB-WALK-IMPLICIT binds a direct CPU Execution pair at P4.13 c24. The
+laboratory spells every page-table read as WalkAccess, an implicit physical
+8-byte read. Instruction fetch remains FetchParcel; an explicit LD or SD
+remains Load or Store after translation. RVP-SUPERVISOR 11.1.3.2 supplies the
+walk algorithm, and Sv39 selects three levels with eight-byte PTEs. Svade
+raises a page fault when A, or D for a write, needs setting. The laboratory
+permits no implicit PTE writes.
+
+Earlier evidence remains: the typed address-units fixture already runs a
+three-level CPU fetch/data path, core translation tests cover faults and cache
+rules, and XLEN/LOAD-X0 have direct walk observations. This pair adds a finite,
+explicit request-and-state matrix to the CPU guarantee's registry binding.
+
+All cases use a fresh 64 KiB memory image at PA 0x80000000, satp
+0x8000000000080002 and zero unlisted PTEs. Pointer PTEs have only V;
+leaf flags 0xcf set V/R/W/X/A/D and clear U/G. Literal paths are:
+
+| Leaf size | Physical PTE addresses, in order | PTE values, in order |
+| --- | --- | --- |
+| 1 GiB | 0x80002000 | 0x200000cf |
+| 2 MiB | 0x80002000, 0x80003008 | 0x20000c01, 0x200000cf |
+| 4 KiB | 0x80002000, 0x80003008, 0x80004008 | 0x20000c01, 0x20001001, 0x200004cf |
+
+Nine successful cases cross each path with instruction fetch, LD and SD. Fetch
+runs in S at VA 0x1000 for the 1 GiB leaf or 0x201000 for the smaller leaves;
+all map to PA 0x80001000. Two ADDIs write x7=1 then x8=2. The first parcel
+causes one walk; the second parcel and the next instruction reuse the same-page
+translation. Each case has four FetchParcel requests plus its one, two or three
+WalkAccess requests.
+
+Data cases fetch in M at PA 0x80000000 with MPRV=1/MPP=S, so only data
+translation uses Sv39. The corresponding virtual data address ends in 0x1080
+and maps to PA 0x80001080. Two LDs read 0x0123456789abcdef from that address.
+Two SDs write 0x8877665544332211 there and 0x1122334455667788 eight bytes later.
+The first explicit access walks; the second hits the same 4 KiB cache entry.
+Each case has four FetchParcel requests, two explicit data requests and the
+literal walk prefix. Fetch parcels precede the data walk; translated instruction
+fetch walks before its parcels. Exact request order distinguishes these paths.
+
+Eleven fault cases stop at the attempted access:
+
+| Refusal | Cases | Required observation |
+| --- | --- | --- |
+| Leaf A=0 | Fetch, LD, SD at depth three | Causes 12/13/15; three walk reads, no translated fetch/data request |
+| Leaf D=0 | SD at depth three | Cause 15; three walk reads, no Store |
+| Invalid PTE | Fetch at root, middle or leaf | Cause 12; exactly one, two or three walk reads, no parcel |
+| Refused walk read | LD at root, middle or leaf | Cause 5, original virtual data address in mtval; no Load |
+| Noncanonical VA 0x4000000000 | LD | Cause 13 before any walk or data request |
+
+Data-fault cases still fetch their instruction's two M-mode parcels. Every fault
+enters M at handler 0x80000100, records the original instruction PC in mepc,
+consumes one cycle and retires nothing. GPRs and the complete memory image stay
+unchanged. In particular A/D remain clear: no implicit write is hidden behind
+the right trap. Successes check complete GPR/PC/mode/status/satp/trap/counter
+state after each boundary and permit only the two planned explicit stores.
+
+The direct matrix totals 20 cases, 29 boundaries, 50 parcels and 104 requests
+(66 successful-path, 38 fault-path requests). POS companions sv39-translate-1g
+and sv39-translate-2m retain 188 boundaries/376 parcels; NEG inj-walk-l2/l1/l0
+retain 255/510. The combined pair totals 472/936. Its seven corrupted-capture
+controls change walk kind/count/address, introduce a PTE Store, disguise a
+fetch as a data read, or change a faulting PTE's A byte. All are refused.
+Disabling the real request predicate makes its control fail. Temporary actual
+walker mutations also fail: using Load+D with a matching Load response keeps
+the PTE value but changes the request kind; writing A before delivering the
+same Svade fault adds a forbidden Store. With the request predicate disabled,
+the successful Load-disguised paths retain exact state and memory. This equivalence
+does not extend to a provider refusing only WalkAccess: the disguised Load bypasses
+that refusal, which a whole-matrix state-only probe correctly rejects. For write-A,
+disabling only request judgment still rejects changed memory; disabling both
+request and memory judgment leaves the exact original trap/state green. Thus the
+extra write is detected even when its trap report is right. Production walker
+and observer bytes are restored.
+
+Independent specification-side derivation checks literal instruction words,
+PTE mappings, full GPR/PC/mode/trap/counter/memory results and fetch/walk logs
+for all 20 cases. Its log omits explicit data requests; the direct CPU observer
+checks those separately. These finite cases do not exhaust page-table shapes,
+permissions, ASIDs, cache eviction, speculative alternatives or all access-fault
+kinds. They verify the selected laboratory's concrete request contract and
+same-page cache behavior without changing Sv39 or its frozen declarations.

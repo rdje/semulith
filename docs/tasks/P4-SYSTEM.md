@@ -450,15 +450,44 @@ match the independent author. The author logs only walk/fetch (nine entries per
 case), not data requests; do not invent independent boundary credit for LD/SD.
 The actual public CPU observer must separately judge all11 requests per case.
 
-### `.13` c24 — implicit walk requests (next, `SEMULITH-P4-0152`)
+### `.13` c24 — implicit walk requests (completed, `SEMULITH-P4-0152`)
 
-Review OB-WALK-IMPLICIT/REQ-D-WALK-IMPLICIT, actual public CPU walk/fetch paths,
-Svade and selected cache policy, existing typed translation-input assumption and
-runtime book. Own direct literal one/two/three-level walk requests, fetch/data
-separation, fault termination/no implicit writes and cache-hit limits, with
-meaningful controls/disabled observer before credit. Finalize finite cases only
-after scoped review. Preserve canonical/frozen data and prior94 bindings; only
-verified work may earn94/114. Complete normal commit workflow before next pair.
+Owned on clean 0c49b15 after complete workflow. Reviewed OB-WALK-IMPLICIT,
+REQ-D-WALK-IMPLICIT, public walk/finish/cache and CPU execution, typed boundary
+fixture, existing translation tests, runtime/v2 book and roadmap P4. Existing
+address-units fixture already executes a three-level CPU fetch/data walk; core
+fault/cache tests and XLEN/LOAD-X0 direct walks also remain. This slice binds the
+missing CPU-guarantee pair; it does not claim prior walk evidence was absent.
+
+Finite direct plan: nine successful cases (Fetch/LD/SD × one/two/three levels),
+two boundaries each; eleven single-boundary refusals (A-clear Fetch/LD/SD,
+D-clear SD, invalid root/middle/leaf fetch, refused root/middle/leaf LD,
+noncanonical LD). Exact literal PTE paths distinguish WalkAccess, FetchParcel
+and explicit Load/Store. Observe all GPRs, PC/mode/trap/counters, whole memory,
+ordered requests and same-page second-boundary cache hits. Svade/fault paths
+must stop without data effects or any PTE writes. Pre-derive words, paths and
+complete state with independent author; explicitly retain its no-data-log limit.
+
+Seven corrupted-capture controls alter kind, count, address, fetch kind or PTE
+bytes. Disable the actual request predicate and require its control to fail;
+restore. Temporarily mutate the actual walker to use Load+D/Response::Load and
+to write A before faulting: each must fail a named observation, then restore
+all core bytes. Select declaration first, demonstrate missing-binding RED, then
+bind two Execution entries and unchanged translation/injected-fault companions.
+Preserve prior94 registry bindings,112 base/348 GC canonical inputs, author,
+generated/frozen data and production core. Only verified work earns registry96/
+effective94/114 (ten runtime pairs/freeze). make check, independent full corpus,
+focused gates/all books/hooks, commit/empty brief/clean actual census. .14 owns
+statuses/structured experiments. No CPU behavior or platform mapping change.
+
+### `.13` c25 — FENCE ordering and field treatment (next, `SEMULITH-P4-0153`)
+
+Review frozen OB-FENCE and requirement, authenticated FENCE rules, public decoder/
+effect/execution and selected one-hart ordering, existing fence fixtures, runtime
+book. Finalize finite meaningful legal/future-field controls before changes;
+choose actual CPU observations and unchanged companions without promising a
+trap the specification does not require. Preserve prior96 bindings/canonical/
+frozen data. Commit verified slice before remaining atomics/FP/CSR/counter pairs.
 
 ### `.13` c22a — preserve whole development receipts under fixed caps (`2026-10-10`, `SEMULITH-P4-0147`)
 
@@ -857,6 +886,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c24 — **ROOT CAUSE**: OB-WALK-IMPLICIT unbound, not absent walk
+  evidence. Existing typed address fixture executes a three-level CPU path; core
+  tests and prior direct walks remain. Authenticated source identity/algorithm
+  review and independent20-case literal/state/memory/fetch-walk proof rc=0.
+  Declaration selects pair then refuses missing CHK-WALK-IMPLICIT-POS, rc=101.
+- [x] `.13` c24 — **ADDRESSED**: twenty direct CPU cases/29 boundaries/50
+  parcels/104 requests check exact WalkAccess/FetchParcel/data order, three leaf
+  sizes, second-boundary cache hits and eleven fault terminations/no PTE writes.
+  Seven corrupted-capture controls GREEN rc=0; actual disabled-request predicate
+  RED rc=101. Actual walker Load+D with matching response and write-A-before-
+  fault mutants RED rc=101 at request predicate; all production bytes restored.
+  State isolation rc=0: successful walk-as-Load paths retain exact memory/state
+  with request predicate disabled. All-case state-only probe RED rc=101 at
+  Denied(1): a Load bypasses the observer's Walk-only refusal. This limits the
+  equivalence claim; production behavior is correct. Write-A with request guard
+  disabled still memory-RED rc=101; request+memory guards disabled yields exact
+  original trap/state GREEN rc=0. Restored make check rc=0.
+  Unchanged companion188/376 POS+255/510 NEG, total pair472/936. State includes
+  all GPR/PC/mode/status/satp/trap/counters and complete memory, not trace fields.
+- [x] `.13` c24 — **NO REGRESSION**: make check rc=0, Rust167/17/212. verify.py
+  rc=0: prior94 registry bindings,112 base/348 GC inputs/core/author/generated/
+  frozen bytes exact; full independent167/5365/10524 unchanged. Effective94/114,
+  registry96;13 scope/23 guest/6 boundary/5 execution pairs, ten runtime pairs/
+  freeze. Focused gates/all six books rc=0. Hooks precede c25. LIVE unchanged652 arms/49 chapters/
+  P4 12/18; .14 retains statuses/experiments. promotion: declined (finite request
+  matrix and author data-log limit retained in runtime chapter/tree).
+
 - [x] `.13` c23b — **ROOT CAUSE**: OB-XLEN declared/unbound. Authenticated
   RV64I3.1.1 fixes 64-bit registers/addresses; Sv39 canonical subset retained.
   Four words/two PTEs/mappings and independent GPR/PC/U/memory/fetch-walk proof
@@ -1203,6 +1259,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c24 |20 actual CPU cases29/50/104; seven captures/disabled observer/two walker mutations; missing binding RED; independent literals/full167/prior94 identity; Rust167/17/212 | registry96/effective94/114; ten pairs/freeze; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c23b | two U/Sv39 width cases8/16/22; seven narrow effects fail both; disabled-GPR/missing-binding RED; literal author/full167/prior92 identity; Rust167/17/210 | registry94/effective92/114; eleven pairs/freeze; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c23a | 9,822 B suffix/inverse hashes exact; all runtime/input/frozen bytes exact; new-file cap census51 | registry92/effective90/114 unchanged; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c22b2 | 15 literal cases/17 boundaries/32 parcels; eight incorrect effects; reordered GREEN; disabled-PC and missing-binding RED; prior90/input/core bytes exact; independent full167; Rust167/17/208 | registry92/effective90/114; twelve pairs/freeze; focused gates/all six books rc=0; hooks next |
@@ -1240,6 +1297,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c24 | `SEMULITH-P4-0152 (leaf P4-SYSTEM.13): observe implicit Sv39 requests and no-write faults` | c25 FENCE, then remaining pairs/freeze |
 | `.13` c23b | `SEMULITH-P4-0151 (leaf P4-SYSTEM.13): retain 64-bit user registers and addresses` | c24 WALK-IMPLICIT, then remaining pairs/freeze |
 | `.13` c23a | `SEMULITH-P4-0150 (leaf P4-SYSTEM.13): retain control-transfer witnesses in a bounded chapter` | c23b XLEN, then remaining pairs/freeze |
 | `.13` c22b2 | `SEMULITH-P4-0149 (leaf P4-SYSTEM.13): observe JALR targets and links directly` | c23a bounded control-transfer book, then c23b XLEN |
@@ -1272,6 +1330,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c24 (SEMULITH-P4-0152): bind direct implicit-walk
+  request/no-write fault matrix with discriminating controls. Prior94/input/core/
+  frozen bytes exact; registry96/effective94/114, ten runtime pairs/freeze.
+  c25 FENCE follows complete commit workflow.
 
 - `2026-10-10`: `.13` c23b (SEMULITH-P4-0151): realize XLEN with direct
   U/Sv39 high-address programs and fourteen narrow-effect refusals; actual disabled

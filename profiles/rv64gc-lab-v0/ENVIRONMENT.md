@@ -35,6 +35,10 @@ XLEN binds direct full-width GPR/data/PC observations in U mode at two canonical
 Sv39 addresses with high bits set. Seven 32-bit truncation controls fail in both
 programs. Worked mappings and limits: `docs/book/src/plan/p4/contract-integer.md`.
 
+WALK-IMPLICIT binds literal one/two/three-level CPU request paths, same-page
+hits and fault termination with unchanged PTEs. Worked paths and controls:
+`docs/book/src/plan/p4/contract-runtime.md#implicit-sv39-reads-have-their-own-request-kind`.
+
 ## The versions
 
 | Version | Status | Members | What it is |

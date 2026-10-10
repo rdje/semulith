@@ -5,6 +5,7 @@
 
 mod jalr;
 mod load_x0;
+mod walk;
 mod xlen;
 
 use semulith_core::exec_rv64gc::{self, StepRv64gc};
@@ -22,6 +23,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Literal one/two/three-level walks and same-page cache hits.
+    WalkPositive,
+    /// Fault termination, no implicit writes and original access-fault kind.
+    WalkNegative,
     /// Full-width registers and a canonical user address above 32 bits.
     XlenPositive,
     /// Sign-extended canonical user addresses and high-bit data remain intact.
@@ -45,6 +50,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::WalkPositive => &["sv39-translate-1g", "sv39-translate-2m"],
+            Self::WalkNegative => &["inj-walk-l2", "inj-walk-l1", "inj-walk-l0"],
             Self::XlenPositive => &["scope-alu"],
             Self::XlenNegative => &["bound-arith", "sv39-fault-canonical"],
             Self::JalrPositive => &["guest-control", "dir-chase"],
@@ -59,6 +66,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::WalkPositive => walk::positive(),
+            Self::WalkNegative => walk::negative(),
             Self::XlenPositive => xlen::positive(),
             Self::XlenNegative => xlen::negative(),
             Self::JalrPositive => jalr::positive(),

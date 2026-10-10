@@ -1,5 +1,34 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — observe implicit Sv39 requests and no-write faults (P4-SYSTEM.13 c24)
+
+Bind WALK-IMPLICIT with 20 actual CPU cases: nine Fetch/LD/SD × one/two/three
+levels, two boundaries each; eleven Svade/invalid/refused/noncanonical faults.
+Direct total29 boundaries/50 parcels/104 requests. Literal physical paths and
+full GPR/PC/mode/status/satp/trap/counters/memory precede CPU execution. Exact
+requests distinguish walks, parcels and explicit data; second access hits the
+same-page cache. Faults leave all PTE bytes unchanged and stop before data.
+Existing three-level CPU boundary/core tests remain; this binds the missing pair.
+
+Seven corrupted-capture controls reject; actual disabled-request observer RED
+rc=101. Actual walker Load+D/Response::Load and write-A-before-fault mutations
+both RED rc=101 at request predicate, then core bytes restored. Missing-binding
+RED rc=101 precedes two Execution entries. Successful walk-as-Load paths
+retain state/memory with request guard disabled, rc=0; all-case state-only probe
+correctly RED rc=101 because Walk-only refusal is bypassed. Write-A with request
+guard disabled still memory-RED rc=101; with request+memory guards disabled,
+original trap/state GREEN rc=0. Final restored make check rc=0. Authenticated supervisor/introduction
+sources; independent20-case word/path/state/memory/fetch-walk proof rc=0. Author
+omits explicit data logs; public observer verifies those. Companions188/376 POS,
+255/510 NEG plus direct29/50 yield472/936.
+
+verify.py rc=0: prior94 bindings,112 base/348 GC inputs/core/author/generated/
+frozen bytes exact; full167/5365/10524 unchanged. make check rc=0, Rust167/17/212.
+Registry96/effective94/114 (13 scope/23 guest/6 boundary/5 execution pairs), ten
+runtime pairs/freeze. LIVE unchanged652 arms/49 chapters/P4 12/18. Focused gates/
+all six books rc=0. Hooks precede c25. promotion: declined (finite matrix and independent-log limits
+retained in worked runtime chapter and tree). c25 FENCE follows clean workflow.
+
 ## _(2026-10-10)_ — retain 64-bit user registers and addresses (P4-SYSTEM.13 c23b)
 
 Authenticated RV64I3.1.1 fixes XLEN=64; Sv39 keeps its canonical subset. Two
@@ -12,7 +41,11 @@ are observed: two cases/eight boundaries/16 parcels/22 total requests.
 Seven isolated public effects narrow ADDI/LD/SD/AUIPC/next-PC values or addresses;
 all 14 case/control combinations fail. Actual disabled-GPR auditor lets unused
 x7 truncation escape (meaningful RED rc=101); restored. Declaration missing-
-binding RED rc=101 precedes two Execution entries. Independent author matches
+binding RED rc=101 precedes two Execution entries. Successful walk-as-Load paths
+retain state/memory with request guard disabled, rc=0; all-case state-only probe
+correctly RED rc=101 because Walk-only refusal is bypassed. Write-A with request
+guard disabled still memory-RED rc=101; with request+memory guards disabled,
+original trap/state GREEN rc=0. Final restored make check rc=0. Independent author matches
 words/PTEs/canonical mappings/GPR/PC/U/memory and fetch/walk logs; it does not
 log data requests, which the public CPU observer separately verifies.
 
