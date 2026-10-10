@@ -121,13 +121,22 @@ answer once ceilings fire.
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `active` | finite archive sealed; full inventory, neutral doctrine and checker adoption remain |
 
+## Approved task-history migration — .4c / SEMULITH-LC-0006
+
+Director approval2026-10-10 covers the reviewed12 closed P4 histories. Own one
+atomic copy/verify/use/retire transition: strict finite descriptor and tracked
+object, bounded no-Git reader, deterministic navigation stubs preserving incoming
+anchors, unconditional TASK-HISTORY gate and fail-closed controls. The active
+P4 graph, original consumer bodies, earlier terminal and existing caps stay exact.
+Full containment adoption remains .4 work. This finite slice is complete; verification below.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
   P4 archive files only. Prototype/consumers/retrieval proof:
   docs/decisions/decision_task-history-seal-review.md; evidence
   target/live-containment/task-history-review. No removal/cap/checker change.
-  Prototype/retrieval/controls/focused9/seven books rc=0; changed browsing needs direction before transition.
+  .4c/LC0006: director approved2026-10-10; own bounded reader, freeze, controls, stubs and atomic migration.
 
 - `2026-10-08` (director approval / .4a ownership before code): the director explicitly
   approved the proposed tracked archive of 210 older shards, with byte-exact retrieval
@@ -226,6 +235,36 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 - None.
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
+
+`LIVE-CONTAINMENT.4` slice (c), `SEMULITH-LC-0006` (approved2026-10-10):
+
+- [x] **ROOT CAUSE** — `git ls-tree -r -l 63ae063 -- docs/tasks/` census, rc=0:
+  TASK-HISTORY-CENSUS: 89files/3,145,703B, only25B under3,145,728. Closed historical narratives add a
+  scaling term; another split does not reduce the aggregate. The director approved
+  the reviewed12-file finite capture and changed browsing before migration.
+- [x] **FIX** — exact tracked375029B object plus immutable967B descriptor; bounded
+  standard-library reader authenticates all13members before stdout.12 exact stubs
+  retain paths/eight anchors; TASK-HISTORY checks identities, predecessor, navigation,
+  incoming anchors and absence of live narrative includes unconditionally. No cap grows.
+- [x] **ADDRESSED** — `python3` capture/migrate/verify.py rc=0: all12originals
+  equal Git47cb436 and review pins;1,144,703B/15,055lines remain retrievable.
+  Stubs7,040B release1,137,663B. All27external reference records preserved;
+  permanent links checker rc=0 validates16links including archived cross-links.
+  The checked reproduction recipe rebuilds exactly the reviewed archive after retirement.
+- [x] **NO REGRESSION** — `bash scripts/check_task_history.sh --self-test`
+  46pass/0fail; all12Python/tar reads exact in relocated no-Git fixture with no
+  extraction or writes. Corrupt valid-path reads emit no stdout; malformed metadata,
+  unsafe/duplicate/extra/missing/oversized members, changed pins/stubs/links refuse.
+  Focused15 and `make ci` rc=0 (Rust173/17/253, all doctrines, bench, smoke, seven books).
+  Full predecessor inverses and unchanged canonical/runtime/frozen/fixtures/earlier
+  history proof rc=0; active P4 graph and profile ENVIRONMENT exact.
+- [x] **LOCKSTEP** — live docs, decision approval/recipe, terminal, routing and
+  doctrine/toolbox mirrors, book/history navigation/index updated. Complete old
+  book retrieval section moved verbatim (SHAac1fe971d0c567c86b3a63a22b845c9c284cfb223c0e38b2196b8dbf88372759).
+  Derived counts39doctrines/718arms/38routes; CPU/P4/P5 milestones unchanged.
+  Evidence: target/live-containment/task-history-seal. Full .4 adoption remains open.
+  promotion: declined (the finite decision, checked reader and46 controls encode this transition).
+
 
 `LIVE-CONTAINMENT.4` slice (a) — approved finite archive (`2026-10-08`, `SEMULITH-LC-0004`):
 
@@ -365,6 +404,9 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4c: capture/migration/reproduction/consumer/predecessor proof, focused15,46controls,
+seven books and full five-leg `make ci` rc=0; byte-exact retention with no cap raise.
+
 .4b: prototype/reproduction/controls/focused9/seven books rc=0.
 
 Registry prose follow-up owned by `.4`: the SHARD-FREEZE description in
@@ -396,6 +438,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0006 (leaf LIVE-CONTAINMENT.4): seal closed P4 task history` — .4c complete; full adoption remains.
 
 `SEMULITH-LC-0005 (leaf LIVE-CONTAINMENT.4): prepare finite task-history archive review`
 

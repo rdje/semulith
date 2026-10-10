@@ -254,6 +254,11 @@ docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG
 # One immutable 284500-byte object plus descriptor <=16384 and front door <=4096:
 # ceiling bytes =304980, count=3. Exact artifact/descriptor identity and retrieval
 # run unconditionally under SHARD-FREEZE; no existing ceiling is raised.
+# LIVE-CONTAINMENT.4c / SEMULITH-LC-0006, approved2026-10-10: one finite12-file P4 seal.
+# Object375029B + bounded descriptor8192B + front door4096B = ceiling387317B;
+# exactly3 tracked files. TASK-HISTORY enforces identities, coverage and retrieval.
+# Navigation stays in docs/tasks/ and its existing aggregate; no existing cap grows.
+docs/task-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4c; immutable finite capture, descriptor and retrieval front door; TASK-HISTORY authenticates	3	385000	3	387317	0
 docs/history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4 slice (a); finite sealed object, descriptor and retrieval front door; SHARD-FREEZE authenticates	3	288000	3	304980	0
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 # Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:

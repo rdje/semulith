@@ -1,0 +1,32 @@
+{
+  "anchors": {
+    "docs/tasks/archive/P4-SYSTEM-11.md": [
+      "commits",
+      "verification"
+    ],
+    "docs/tasks/archive/P4-SYSTEM-12.md": [
+      "acceptance",
+      "changelog",
+      "commits",
+      "designs",
+      "verification"
+    ],
+    "docs/tasks/archive/P4-SYSTEM-8.md": [
+      "profile-progress"
+    ]
+  },
+  "approved_on": "2026-10-10",
+  "capture": "47cb4365b6b0ec38b76ac7863e3ad39eb82e3b1c",
+  "compressed_bytes": 375029,
+  "kind": "sealed-task-history",
+  "manifest": "docs/history/task-history-manifest.json",
+  "manifest_bytes": 2418,
+  "manifest_sha256": "63c450410ee2e1ca339d57970abf39214e49b7259ea6cd18b7c425718d0b6e89",
+  "object": "docs/task-history/sealed/892f5c98fb8567392fea2b0a615baab3bd2aa4a38768517e0f3c7b418887242d.tar.gz",
+  "schema_version": 1,
+  "sha256": "892f5c98fb8567392fea2b0a615baab3bd2aa4a38768517e0f3c7b418887242d",
+  "source_bytes": 1144703,
+  "source_files": 12,
+  "source_lines": 15055,
+  "tar_bytes": 1167360
+}

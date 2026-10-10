@@ -1,6 +1,38 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — approved finite P4 task-history seal (LIVE-CONTAINMENT.4c)
+
+The director approved the12-file proposal before this migration. Clean63ae063 has
+only25B of task-family aggregate room. Authenticate every original against Git47cb436
+and the reviewed manifest, then retain the byte-identical375029B USTAR/gzip object.
+The immutable967B descriptor pins source identities/counts and eight incoming anchors.
+Only after all originals and independent tar reads match, replace exactly their live
+bodies with12checked navigation pages totaling7040B; all original1144703B/15055lines
+remain retrievable, releasing1137663B without changing an earlier ceiling.
+
+TASK-HISTORY is an unconditional commit/CI gate. The standard-library reader bounds
+metadata, object and decompression; authenticates the entire13-member capture before
+stdout; rejects malformed/duplicate/unsafe/extra/missing data and descriptor changes;
+checks every generated navigation page. The link checker preserves incoming anchors
+and refuses live includes of sealed narratives.46controls discriminate, including
+all12Python/tar reads from a relocated no-Git fixture with no writes/extraction and a
+valid-path corrupted read emitting no stdout. The reviewed recipe still rebuilds the
+exact object after retirement. Five original consumer files retain all27reference
+records;16actual links including archive cross-links validate.
+
+The existing changelog retrieval section moves to the task/history book chapter in
+full (SHAac1fe971d0c567c86b3a63a22b845c9c284cfb223c0e38b2196b8dbf88372759).
+Complete predecessor inverses and scope census preserve unrelated canonical inputs,
+runtime, frozen114/114, fixtures, prior history and active P4 graph. Focused15 and
+full five-leg make ci pass, Rust173/17/253/seven books. Counts39doctrines/718arms/
+38routes derive from populations. CPU acceptance stays incomplete7axes/P4 13/18.
+The terminal is finite3files, ceiling387317B=object375029+descriptor8192+front4096.
+No ordinary appends; future seals need their own owned transition. Full containment
+adoption remains .4 work; P4.14 experiments/policy/status are the next milestone work.
+Evidence target/live-containment/task-history-seal; all scratch stays on volume.
+promotion: declined (the finite decision, strict reader and controls are the durable lesson).
+
 ## _(2026-10-10)_ — finite task-history review, direction pending (LIVE-CONTAINMENT.4b)
 
 On clean47cb436, task family89/3145153B has575B of aggregate room. Own only a

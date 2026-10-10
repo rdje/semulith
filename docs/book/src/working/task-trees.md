@@ -254,14 +254,69 @@ same-volume byte census; keep file count, aggregate bytes and per-part caps
 as separate checks. The corrected planning receipt and inverse retain the
 measurement's source and scope.
 
-## A finite history seal awaiting direction
+## Reading sealed history
 
-At capture47cb436 the task family has only575B of its fixed3MiB aggregate left.
-`LIVE-CONTAINMENT.4` owns a concrete review of12 closed P4 archive files:
-1,144,703 original bytes reproduced exactly in a375,029-byte prototype of the proposed tracked
-archive. No source has been removed. The proposed transition keeps navigation
-stubs at existing paths/anchors and reads full historical narratives through a
-verified reader or ordinary tar. The active graph and feature books stay directly
-readable. This changes historical browsing and requires the director's direction;
-the earlier changelog seal approval does not cover it. Exact capture, consumers,
-controls and reproduction recipe: `docs/decisions/decision_task-history-seal-review.md`.
+Older changelog and development-note shards now have a query-first archive terminal.
+The 210 older shards and their manifest retain every byte, but use a tracked immutable
+compressed object instead of individual Markdown files. Recent shards and both live
+heads remain directly readable. This approved transition restores the live collection's
+headroom; sharding alone had left its aggregate at the limit.
+
+```sh
+python3 scripts/history_archive.py
+python3 scripts/history_archive.py --read docs/changelog/shard-0001.md
+```
+
+The first command verifies all identities; the second prints the original shard.
+Both work in an ordinary shallow clone without fetching history or extracting files.
+The descriptor in docs/history/archives.json names the exact source capture, source
+counts and content-addressed object. The archive's SHA manifest authenticates each
+member. A missing object, changed descriptor or bad member fails the same unconditional
+freeze gate used locally and in CI. Restore the committed bytes when that happens.
+
+The live and archived manifests form one logical partition. Moving a row into the
+archive keeps its digest and predecessor identity; it does not delete history. The
+gate checks heading uniqueness across both live heads and the complete archive, and
+the sharder includes retired filenames when allocating its next number. Thirty-one
+positive/negative controls guard these checks. This finite terminal has one object,
+a bounded descriptor and a retrieval front door; a later seal needs its own verified
+capture and transition. Full containment-doctrine adoption remains owned by
+LIVE-CONTAINMENT.4.
+
+
+### Reading closed P4 task histories
+
+The director approved the12-file task-history seal on2026-10-10. The base P4
+archive and parts2–12 retain every original byte in a tracked375,029-byte object,
+with12 navigation pages at their former paths and eight incoming section anchors.
+The active18-node graph and current evidence leaf remain directly readable.
+Historical links lead to a navigation page that gives the original identity and
+read command; the page discloses that the historical body is in the archive.
+
+```sh
+python3 scripts/task_history_archive.py
+python3 scripts/task_history_archive.py --list
+python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-12.md
+python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-8.md | rg -n 'profile-progress'
+bash scripts/check_task_history.sh
+```
+
+Verification authenticates the whole terminal before printing any requested
+original. All12 originals (1,144,703bytes/15,055lines) and the original manifest
+are retained. The reader uses Python's standard library without Git, network or
+extraction; ordinary/shallow clones carry the tracked object. Ordinary tar also
+retrieves every original exactly. The descriptor is immutable and independently
+pinned, with bounded metadata, decompression and regular members. Missing,
+corrupt, extra, unsafe or oversized content and changed navigation fail closed.
+Restore the exact committed bytes on failure.46 permanent controls run under
+TASK-HISTORY, including relocated no-Git retrieval and malicious archive cases.
+
+The [terminal front door](../../../task-history/README.md) gives tar commands,
+search, retention and failure handling. The exact manifest and reproducible
+serialization remain in `docs/decisions/decision_task-history-seal-review.md`.
+The twelve navigation pages total7,040bytes; this transition releases1,137,663B
+from the existing task-family aggregate. Existing incoming link targets
+remain unchanged, and no earlier ceiling changes. The three-file terminal has a fixed387,317B bound derived
+from its immutable object plus bounded metadata. Nothing appends to it; a future
+capture needs its own owned, verified transition. Full containment adoption
+remains open under LIVE-CONTAINMENT.4. Archival grants no CPU acceptance credit.

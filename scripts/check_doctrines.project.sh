@@ -54,6 +54,7 @@ PROJECT_DOCTRINES=(
   "FP-VECTORS|the floating-point model layer's unit vectors are still the byte-exact output of the spec-side exact-rational IEEE reference, and that reference still agrees with the host's hardware IEEE on directed ties and seeded cases — an expected value edited by hand is DRIFT|scripts/check_fp_vectors.sh"
   "CONTRACT-FREEZE|an environment contract is versioned, not edited in place — every obligation record belongs to exactly one version of its unit's contract.sexp, of that version, and a frozen version's records still match their sha256 pins; a wrong statement is superseded by a later version, never rewritten|scripts/check_contract_freeze.sh"
   "M-VECTORS|the M extension's instruction vectors (run through the engine) are still the byte-exact output of the spec-side exact-integer reference, and that reference still obeys the chapter's own stated identities (dividend = divisor × quotient + remainder, the remainder's magnitude and sign, Table 1's zero-divisor and overflow rows, the 2·XLEN product split, the word forms' sign extension) — an expected value edited by hand is DRIFT|scripts/check_m_vectors.sh"
+  "TASK-HISTORY|the approved finite P4 history seal authenticates every original, immutable descriptor and navigation path without Git or extraction; corruption, unsafe paths and bounds fail closed|scripts/check_task_history.sh"
 )
 
 fails=0

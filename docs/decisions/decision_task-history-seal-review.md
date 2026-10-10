@@ -1,6 +1,6 @@
-# Proposed finite P4 task-history seal — direction pending
+# Finite P4 task-history seal — approved and implemented
 
-- Type: `decision` (proposal, not authorization)
+- Type: `decision` (review retained below; director approval2026-10-10)
 - Owner: `LIVE-CONTAINMENT.4` slice (b), `SEMULITH-LC-0005`
 - Capture: `47cb4365b6b0ec38b76ac7863e3ad39eb82e3b1c`
 - Decision needed: retain original historical narratives through a verified,
@@ -11,6 +11,29 @@ of room. These are retained historical snapshots, growing with completed work.
 The active P4 task still carries its full18-node graph and current evidence leaf.
 A new ordinary slice would exhaust the aggregate; sharding alone does not remove
 that scaling term. No existing ceiling is raised by this proposal.
+
+## Director approval and implementation — 2026-10-10
+
+The director authorized the task-history/archive decision and required signoff
+quality. `LIVE-CONTAINMENT.4c` / `SEMULITH-LC-0006` implements this exact finite
+capture. The original proposal below records the review boundary, including its
+then-pending authorization; those historical statements do not describe now.
+
+`docs/task-history/descriptor.json` and its immutable tracked object preserve all
+12 originals and the exact manifest. The object is byte-identical to the reviewed
+prototype.12 navigation pages total7,040B and retain all eight incoming anchors;
+the five original consumer bodies need no seal-related rewrite. The task family
+releases1,137,663B. TASK-HISTORY runs strict whole-terminal/retrieval/navigation
+and predecessor checks unconditionally, with46 controls. Metadata and expansion
+are bounded; unknown, unsafe, duplicate, corrupt or missing data refuses before
+stdout. Project-owned retention works without Git history/network/extraction.
+The three-file terminal has a387,317B ceiling (375,029object+8,192descriptor+
+4,096front door), leaving all existing ceilings unchanged. Future seals require
+their own owned finite transition. See `docs/task-history/README.md`.
+
+The recipe below now retrieves each authenticated original through the checked
+reader before repeating the reviewed serialization. It remains runnable after
+migration; the archive does not depend on this recipe or the former live bodies.
 
 ## Concrete recommendation
 
@@ -206,7 +229,7 @@ It records historical identities, not a claim about mutable current state.
 
 ## Reproduce the review before migration
 
-The original sources remain present. The following checked recipe rebuilds the
+The originals are retained in the seal. The following checked recipe rebuilds the
 exact artifact from this manifest on the repository volume (Python3.14.7,
 zlib1.2.12). It needs neither a donor repository nor the previous scratch files.
 USTAR members follow manifest order, then the manifest; mode0644 and all other
@@ -214,7 +237,7 @@ metadata zero/empty. Gzip level9/mtime0 has no source filename.
 
 ```python
 from pathlib import Path
-import gzip, hashlib, io, json, tarfile
+import gzip, hashlib, io, json, subprocess, sys, tarfile
 p = Path("docs/decisions/decision_task-history-seal-review.md")
 text = p.read_text()
 manifest = text.split("<!-- capture-manifest -->\n```json\n", 1)[1].split("```", 1)[0].encode()
@@ -222,7 +245,7 @@ assert len(manifest) == 2418
 assert hashlib.sha256(manifest).hexdigest() == "63c450410ee2e1ca339d57970abf39214e49b7259ea6cd18b7c425718d0b6e89"
 items = []
 for row in json.loads(manifest)["members"]:
-    data = Path(row["path"]).read_bytes()
+    data = subprocess.check_output([sys.executable, "scripts/task_history_archive.py", "--read", row["path"]])
     assert len(data) == row["bytes"] and data.count(b"\n") == row["lines"]
     assert hashlib.sha256(data).hexdigest() == row["sha256"]
     items.append((row["path"], data))
@@ -245,4 +268,5 @@ output.write_bytes(blob)
 
 Verification: prototype/reproduction/consumer/negative controls/focused9 and
 seven books rc=0, recorded by `SEMULITH-LC-0005`.
-This proposal is awaiting direction; it is not a migration authorization.
+The review above was committed before direction; the dated approval now authorizes
+the implemented finite migration. Full containment adoption remains open.
