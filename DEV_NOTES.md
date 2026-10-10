@@ -1,5 +1,24 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — refuse duplicate expectation keys (P4-SYSTEM.14 a18)
+
+Public mapper/adapter reproduction: conflicting x1 values are shape-valid, collapse
+to the last value, then AGREE. Reject duplicate write keys per step in the single
+mapper, even for equal values; dossier gate maps expectations after shape checks.
+Name program/step/key. Preserve distinct keys, empty writes, device labels and
+repeated keys in different steps; grammar unchanged. Mapping12/0, optimized12/0,
+guard removal six intended failures, actual gate0→1 and cached adapter refusal2
+pass. DOSSIER-SCHEMA22/0 and existing mapper14/0 pass.
+
+Raw census222documents/6057steps/4105entries finds zero duplicates. Initial census
+misused S.field's scalar return; corrected the instrument before drawing a result.
+Expanded probe's first emitter had a late global declaration; the new positive/
+reason-specific arms refused it. Fix the declaration and rerun all controls.
+All243canonical dictionaries exact; full five-leg CI, Rust173/17/253 and seven
+books/literal+rendered refusal pass. No canonical capture/status/cap change.
+Evidence target/p4-system-14/a18.
+promotion: matched-experiment decision and GC book own the identity rule and limits.
+
 ## _(2026-10-11)_ — bounded authenticated snapshots (P4-SYSTEM.14 a17)
 
 PinResult intentionally carries metadata. Reopening after its check can observe

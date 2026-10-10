@@ -289,3 +289,52 @@ process authentication, currentness for an entire dependency graph, execution of
 a control, evidence adequacy or retention. Production still refuses every v1
 block pending comparison/qualification evaluation; no canonical capture or CPU
 acceptance credit follows from this API.
+
+## Expectation write keys cannot collapse
+
+Each step's `writes` collection maps register names to expected values. A key
+must occur once within that step. This conflicting illustrative document has
+valid repeated-form shape, but the mapper and dossier gate refuse it:
+
+```lisp
+(expectations (program "illustration.s") (instructions 1)
+  (step (n 0) (insn "addi x1, x0, 1")
+    (writes
+      (write (reg "x1") (value "0x2"))
+      (write (reg "x1") (value "0x1")))
+    (derivation "illustrative conflicting input, not source-derived evidence")
+    (source "fixture")))
+```
+
+The refusal names the program, step and key:
+`expectations 'illustration.s' step 0: duplicate write register 'x1'`.
+Repeating the same value also refuses; choosing either the first or last value
+would conceal the repeated identity. The same register can appear in different
+steps, and distinct keys can have equal values. Empty writes and device register
+labels retain their existing meanings.
+
+P4.14 a18 reproduced the preceding failure: dictionary construction silently
+kept the last conflicting value, allowing a trace matching that value to report
+`AGREE`. The repair lives in the single `expectations_to_doc` mapping owner, so
+the public loader and cached Sail CLI refuse before comparison. DOSSIER-SCHEMA
+also invokes that mapper after successful expectation shape validation. The
+schema grammar is unchanged: shape checking alone cannot establish key identity.
+
+```bash
+python3 scripts/probe_expectation_mapping.py
+python3 -O scripts/probe_expectation_mapping.py
+bash scripts/check_dossier_schema.sh --self-test
+python3 scripts/probe_expectation_mapping.py --emit conflicting
+```
+
+The last command prints an intentionally invalid mapping fixture; it executes no
+reference and creates no capture. Twelve controls check positive mappings,
+conflicting/identical/nonadjacent/late duplicates and actual loader paths. Removing
+the duplicate guard must fail six duplicate cases, including under optimization.
+The dossier gate separately exercises valid, conflicting and identical-key files
+through its actual sweep. A raw census found no repeated keys in the 222 current
+canonical expectation documents; all valid mapped dictionaries remain unchanged.
+
+This identity check does not validate source derivations or make expected values
+correct. It supplies no execution, producer-independence, policy-adequacy or CPU
+acceptance credit. Structured comparison/qualification remains pending.

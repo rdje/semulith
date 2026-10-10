@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0209 (leaf P4-SYSTEM.14) — refuse duplicate expectation writes
+
+- Reproduce conflicting write keys silently collapsing before an AGREE result. Reject repeated per-step keys at the single mapper and after dossier shape checks, including equal-valued duplicates; preserve valid inputs and schema grammar.
+- Mapping12/0 (also optimized), six failed cases on guard removal, actual gate/CLI integration, dossier22/0 and mapper14/0 pass. Raw canonical census222documents/6057steps/4105entries has zero duplicates. No canonical qualification or CPU acceptance credit; derive757 outer arms. All243valid dictionaries exact; full five-leg CI/Rust173/17/253/seven books and literal/rendered example pass.
+
 ## SEMULITH-P4-0208 (leaf P4-SYSTEM.14) — return bounded authenticated snapshots
 
 - Share the anchored pin reader with an immutable snapshot API requiring an explicit byte bound. Refuse oversize before payload reading and return no data on any failure; avoid reopening validated filenames.

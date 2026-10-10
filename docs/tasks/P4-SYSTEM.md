@@ -289,15 +289,30 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a18 duplicate-write mapping repair, comparison/qualification, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | a19 method-specific comparison contract, evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
-### `.14` a18 — reject duplicate expectation writes (scheduled next, SEMULITH-P4-0209)
+### `.14` a19 — method-specific comparison contract (scheduled next, SEMULITH-P4-0210)
 
+Before implementation/canonical capture, specify the first supported comparison
+rule using authenticated snapshots. The generic graph names properties but not
+machine-readable step/register or delivery witnesses; declare how a changed value
+is tied to the claimed property and baseline. Specify expectation/trace/process
+artifact roles, control/baseline relationships, producer/input closure, permitted
+invocation differences, repeat equality, and per-file/aggregate byte budgets.
+Decide needed typed schema additions explicitly; free-form names/verdicts supply
+no discrimination credit. Use the public adapter vocabulary and retain honest
+unsupported/failed/unavailable outcomes. Keep full policy adequacy/currentness and
+retention separate; declare bounded retention before fresh canonical capture.
+This is the next finite .14 unit after a18's clean COMMIT workflow.
+
+### `.14` a18 — reject duplicate expectation writes (completed, SEMULITH-P4-0209)
+
+Owned on cleanaa66aad, brief0/untracked and actual process census OK, before edits.
 Priority high; own the shared expectation-mapping defect discovered during a17
 comparison-interface review. Reproduce through public functions: one step has
 (write (reg "x1") (value "0x2")) followed by the same register with value0x1.
@@ -310,6 +325,26 @@ meaningful removal proof, all existing dossier/mapping consumers and book limits
 No canonical duplicate is asserted; census existing expectations and preserve
 all valid dictionaries. Execute after a17's clean COMMIT workflow, before the
 comparison evaluator. Evidence target/p4-system-14/a18; no new tree pivot.
+Read the mapper, schema/kernel, dossier gate, guest generator and GC book contracts.
+Canonical raw census:222expectation documents/6057steps/4105write entries, zero
+repeated keys. The first diagnostic incorrectly indexed S.field's scalar return;
+check its public contract and rerun on whole keys before drawing any conclusion.
+Guard the single mapper and run it after expectation shape validation in the
+existing dossier gate. Own real gate/CLI integration and optimized controls;
+preserve all243existing mapped dictionaries and schema/runtime/canonical bytes.
+Run full CI for this shared-mapping milestone; notes remain bounded through the
+existing lossless sharder only if needed. No grammar/cap expansion or fresh capture.
+
+Verified: mapping12/0/optimized12/0; deleting the duplicate guard exposes six
+intended failures in both modes. Actual dossier check_tree before0/current1 and
+cached adapter CLI2 confirm public-path refusal. DOSSIER-SCHEMA22/0, existing
+mapper14/0; all243mapped canonical dictionaries exact, raw222documents/6057steps/
+4105write entries with zero duplicates. Full make ci rc=0: check/gate/bench/
+smoke-bench/book, Rust173/17/253 and seven books. Literal book example is shape-
+valid then refused with the exact diagnostic; rendered rule/limits pass. Protected
+scope checked before commit; schema/runtime/canonical/history/caps unchanged.
+Derive757outer arms. No reference run, canonical qualification or CPU acceptance
+credit. promotion: matched-experiment decision and GC book retain the rule.
 
 ### `.14` a17 — bounded authenticated comparison snapshots (completed, SEMULITH-P4-0208)
 
@@ -1138,6 +1173,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a18 — **ROOT CAUSE**: before.log rc=0: conflicting expectation
+  writes collapse to the last value before public comparison AGREE; old gate0.
+- [x] `.14` a18 — **ADDRESSED**: mapping12/0/optimized12/0/proof.py rc=0;
+  removed guard exposes six intended failures, actual gate1/cached CLI2;
+  DOSSIER-SCHEMA22/0 and exact rendered book refusal discriminate.
+- [x] `.14` a18 — **NO REGRESSION**: make ci rc=0 all five legs,
+  Rust173/17/253/seven books; canonical.py rc=0 proves243dictionaries exact and
+  222expectation files clean; scope.py rc=0 proves all other tracked files exact.
+
+
 - [x] `.14` a17 — **ROOT CAUSE**: gap.py rc=0 demonstrates pin metadata
   followed by a later path read can observe different bytes; prior pin39/0 passes.
 - [x] `.14` a17 — **ADDRESSED**: snapshots24/0/optimized24/0/proof.py rc=0:
@@ -1327,6 +1372,13 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a18: mapping12/0/optimized12/0, guard-removal six failures, actual dossier/CLI
+integration, schema22/0/mapper14/0,243dictionary inverse/raw222document census,
+full five-leg CI/Rust173/17/253/seven books/literal+rendered example/protected
+scope rc=0. Expanded emitter's late global declaration was caught by all five
+new reason-specific arms; corrected before rerunning green. No canonical credit.
+
+
 a17: snapshot24/0/optimized24/0, five mutants normal/optimized, pin39/0 before/
 after plus twelve predicate removals, actual book helper, profile54/0/focused13/
 seven books/rendered API/protected scope rc=0. No Rust changes; qualification closed.
@@ -1384,6 +1436,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a18 | `SEMULITH-P4-0209 (leaf P4-SYSTEM.14): refuse duplicate expectation writes` | a19 method-specific comparison contract, evaluator, retention and first canonical capture |
 | `.14` a17 | `SEMULITH-P4-0208 (leaf P4-SYSTEM.14): return bounded authenticated snapshots` | a18 duplicate expectation writes, comparison/qualification, retention and first canonical capture |
 | `.14` a16 | `SEMULITH-P4-0207 (leaf P4-SYSTEM.14): refuse surplus Sail observations` | authenticated bounded snapshots, comparison/qualification, retention and fresh canonical capture |
 | `.14` a15 | `SEMULITH-P4-0206 (leaf P4-SYSTEM.14): authenticate experiment file pins` | comparison/qualification evaluator, bounded retention, first fresh capture |

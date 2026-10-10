@@ -1052,6 +1052,7 @@ def expectations_to_form(doc: dict) -> list:
 
 
 def expectations_to_doc(form) -> dict:
+    """Map expectations without collapsing repeated write keys within a step."""
     S.head(form, "expectations")
     doc = {"program": _s(_req(form, "program", "expectations")),
            "cross_model": _opt_bool_in(form, "cross_model", "expectations"),
@@ -1086,7 +1087,11 @@ def expectations_to_doc(form) -> dict:
         writes = {}
         wf = _child_in(sf, "writes")
         for w in _children_in(wf, "write"):
-            writes[_s(_req(w, "reg", "write"))] = _s(_req(w, "value", "write"))
+            reg = _s(_req(w, "reg", "write"))
+            if reg in writes:
+                raise DossierError(f"expectations {doc['program']!r} step {_req(sf, 'n', 'step')}: "
+                                   f"duplicate write register {reg!r}")
+            writes[reg] = _s(_req(w, "value", "write"))
         step = {"n": _req(sf, "n", "step"),
                 "insn": _s(_req(sf, "insn", "step")),
                 "writes": writes,

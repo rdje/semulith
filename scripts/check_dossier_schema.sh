@@ -40,6 +40,8 @@ from pathlib import Path
 
 root = Path(sys.argv[1]); mode = sys.argv[2]
 checker = Path(sys.argv[3])
+sys.path.insert(0, str(checker.parent))
+import dossier_sexp as D
 if mode == "git":
     out = subprocess.run(["git", "ls-files", "--", "profiles/*/*.sexp"],
                          capture_output=True, text=True, check=True).stdout
@@ -71,6 +73,13 @@ for doc in sorted(docs):
         findings.append(f"CANNOT JUDGE {tag}: {(r.stderr or r.stdout).strip()}")
     elif r.returncode != 0:
         findings.append(f"REFUSED {tag}: {(r.stderr or r.stdout).strip().splitlines()[0]}")
+    elif doc.name.endswith(".expected.sexp"):
+        try:
+            D.load_expectations(doc)  # Reject duplicate dynamic write keys before dict collapse.
+        except D.DossierError as exc:
+            findings.append(f"REFUSED {tag}: {exc}")
+        else:
+            validated.append(tag)
     else:
         validated.append(tag)
 for f in findings:
@@ -157,6 +166,22 @@ EOF
   arm "RED verification unsupported closed vocabularies" "$rc" 0 "$out" "VERIFICATION vocabulary: ok"
   out="$(verification_case mapper-refusal 2>&1)"; rc=$?
   arm "RED mapper unknown nested fields and duplicate blocks" "$rc" 0 "$out" "VERIFICATION mapper-refusal: ok"
+
+  # Shape permits repeated write forms; the mapping boundary enforces key identity.
+  cp "$ROOT/schema/expectations.sexp" "$t/schema/expectations.sexp"
+  python3 "$ROOT/scripts/probe_expectation_mapping.py" --emit positive > "$t/profiles/p/fixture.expected.sexp"
+  out="$(check_tree "$t" fs 2>&1)"; rc=$?
+  arm "GREEN valid expectation keys pass shape and mapping" "$rc" 0 "$out" "__VALIDATED__ 2"
+  python3 "$ROOT/scripts/probe_expectation_mapping.py" --emit conflicting > "$t/profiles/p/fixture.expected.sexp"
+  out="$(check_tree "$t" fs 2>&1)"; rc=$?
+  arm "RED conflicting expectation keys refuse before dict collapse" "$rc" 1 "$out" "duplicate write register 'x1'"
+  python3 "$ROOT/scripts/probe_expectation_mapping.py" --emit identical > "$t/profiles/p/fixture.expected.sexp"
+  out="$(check_tree "$t" fs 2>&1)"; rc=$?
+  arm "RED identical repeated expectation keys also refuse" "$rc" 1 "$out" "duplicate write register 'x1'"
+  out="$(python3 "$ROOT/scripts/probe_expectation_mapping.py" 2>&1)"; rc=$?
+  arm "GREEN lossless expectation mapping and loader controls" "$rc" 0 "$out" "EXPECTATION-MAPPING: 12 pass / 0 fail; fixture cleaned"
+  out="$(python3 "$ROOT/scripts/probe_expectation_mapping.py" --mutation ignore-duplicate-writes 2>&1)"; rc=$?
+  arm "RED removed expectation key guard exposes conflicting input" "$rc" 1 "$out" "EXPECTATION MISS conflicting keys: duplicate write accepted"
 
   rm -rf "$t"
   printf 'DOSSIER-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
