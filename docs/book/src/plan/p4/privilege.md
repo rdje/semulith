@@ -41,6 +41,7 @@ rv64i-specific refuse rv64gc by name.
 The engine's M/S/U codes follow pinned Privileged ISA introduction Table 1
 (0/1/3). Its mstatus positions follow Machine-Level ISA Figure 7; CY/TM/IR
 follow Figure 17 (bits 0/1/2), and menvcfg.STCE follows Figure 24 (bit 63).
+The canonical mstatus source names the same RV64 diagram.
 These published diagrams ground the constants; they do not prove the engine's
 execution behavior. The worked access, trap and return observations provide
 that finite check.

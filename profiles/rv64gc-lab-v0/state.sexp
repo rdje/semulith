@@ -10,9 +10,9 @@
 ;; little (mode <- M; mstatus.MIE <- 0; mstatus.MPRV <- 0; misa <- the maximal extension set;
 ;; pc <- the reset vector; mcause <- the reset cause) and leaves "all other hart state
 ;; UNSPECIFIED". Every UNSPECIFIED reset below is a laboratory pick of a defined value —
-;; authority laboratory, stated per field, never silence. Bit POSITIONS derive from the pinned
-;; encoding.h masks (the specification renders the layouts as figure images); discipline terms
-;; are RVP-CSR §1.1.3.1–3's.
+;; authority laboratory, stated per field, never silence. Bit POSITIONS follow the published
+;; layouts in each CSR's cited chapter; mstatus uses RVP-MACHINE Figure 7 (RV64).
+;; Discipline terms are RVP-CSR §1.1.3.1–3's.
 ;;
 ;; VIEWS HAVE NO STORAGE: sstatus/sie/sip restrict mstatus/mie/mip; cycle/instret shadow
 ;; mcycle/minstret. A `view_of` row declares the underlying register; a write through a view is
@@ -83,7 +83,7 @@
               (statement "The misa register is reset to enable the maximal set of supported extensions — here exactly the declared selection; the laboratory makes the whole register read-only at that value (a legal WARL choice, recorded rather than hidden).")))
 
   (csr (id "mstatus") (address 768) (width_bits 64) (authority architecture)
-       (source "RVP-MACHINE §2.1.1.6; bit positions from the pinned encoding.h masks")
+       (source "RVP-MACHINE §2.1.1.6, Figure 7 (RV64 mstatus)")
        (field (id "SIE") (bit_hi 1) (bit_lo 1) (discipline warl)
               (legalize (one-of 0 1)) (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-MACHINE §2.1.1.6.1"))

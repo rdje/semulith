@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `e7349c0c70f27b1840acbdb808c471c60042393cb5fd7e7ae98c2022f111e81c`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, the 32 × 64-bit

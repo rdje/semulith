@@ -1,6 +1,23 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — correct canonical state source citations (P4-SYSTEM.14 a5)
+
+Both remaining canonical encoding-header assertions originate at133e7229.
+Re-authenticate pinned Machine chapter271851B and prior published RV64 mstatus
+Figure7 capture9530B; change one state header and one source string to public
+chapter layouts/RV64 Figure7. Full two-span source inverse exact; new stateSHA
+0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8. Every field/reset/legalization/policy/census
+byte remains exact. Privilege book names the same canonical/public layout.
+
+Published state/definition/report stale RED1→regenerate0→current0; complete
+mirrors differ only in three stateSHA occurrences, GS only in dossier fingerprint
+7f7fca37→a67d9847. Make check Rust173/17/253, focused15/six books/verify0;
+other canonical/catalog/frozen/registry/fixtures/history/LIVE and fixed caps exact.
+No independence/conformance credit; evidence target/p4-system-14/a5. Next
+maintained reference/decision/knowledge/.7 rationale, then canonical references.
+promotion: declined (existing citation policy, public pins and exact inverse receipt retain this correction).
+
 ## _(2026-10-10)_ — ground privilege and wait-state rationales (P4-SYSTEM.14 a4)
 
 Scoped roots4ee9d0b3/dd9bc1cd/47badd28/c9c6b462 retain internal Sail functions,

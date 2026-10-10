@@ -296,6 +296,41 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a5 — correct canonical state source citations (completed, SEMULITH-P4-0196)
+
+Owned on cleanfbb494a, brief0/actual census rc=0. Read .14 priority/ROADMAP P4,
+canonical state header/mstatus source, relevant public Machine Figure7 capture,
+generator/drift interfaces and privilege book before changes. Correct the two
+remaining maintained encoding-header assertions: use each CSR's published
+chapter layout and explicitly RV64 mstatus Figure7. Preserve every field,
+value/reset/discipline/why and runtime expression. Change one header comment
+and one source string only, then documented state/definition/GS regeneration.
+Prove complete canonical/source/generated/report inverses; stale state/definition/
+GS controls RED before regeneration and GREEN after. Re-authenticate cached
+Machine chapter and prior published SVG capture; no dependency implementation
+inspection or pin change. Strict make check, focused15 and six books; update
+book/live records and keep all frozen/catalog/fixtures/history/LIVE bytes exact.
+Bound this slice before the remaining reference/decision/knowledge sweep (a6).
+Evidence target/p4-system-14/a5; on-volume scratch, fixed family caps.
+
+Result: scoped blame pins both assertions to133e7229. Re-authenticate cached
+Machine271851B/SHA256b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea and a4's
+published RV64 mstatus Figure7 SVG9530B/SHA256dc77d3d5de9459c708b208587d42f0cc7e436dd299181d60e90d6ecce1d3c469.
+Correct state header and mstatus source locator only; every other byte reconstructs
+exactly. StateSHAe7349c0c70f27b1840acbdb808c471c60042393cb5fd7e7ae98c2022f111e81c→0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8.
+Published state/definition/report stale checks each RED1, regeneration/current0;
+complete generated mirrors differ only in three state SHA occurrences; complete
+GS inverse differs only in dossier fingerprint7f7fca37→a67d9847.
+All fields/reset/legalization/policies/census contents, runtime and frozen records
+remain exact. Privilege book names the same canonical/public layout.
+Make check Rust173/17/253, focused15/six books/verify rc=0; canonical-except-two-
+spans, registry/catalog/fixtures/history/LIVE exact,114/114 frozen, fixed caps.
+No independence or conformance credit. Evidence target/p4-system-14/a5.
+promotion: declined (public source pins, exact inverses and existing citation policy retain this routine correction).
+Next a6/0197 maintained reference/decision/knowledge and closed-.7 current-use
+rationale repair; then canonical six-pair/GC reference records and generated
+consequences, before .14 policy/experiment/status/registration deliverables.
+
 ### `.14` a4 — ground privilege and wait-state rationales (completed, SEMULITH-P4-0195)
 
 Owned on cleanf7d87ee, brief0/actual census rc=0. Read .14 priorities, ROADMAP
@@ -497,6 +532,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a5 — **ROOT CAUSE**: scoped blame/repair.py rc=0: both
+  canonical encoding-header assertions originate at133e7229; authenticate the
+  pinned Machine chapter and published RV64 mstatus diagram before replacing them.
+- [x] `.14` a5 — **ADDRESSED**: repair.py/verify.py rc=0: two-span
+  canonical inverse, three generated SHA occurrences and one report fingerprint
+  only; stale state/definition/report RED1→current GREEN0; privilege book aligned.
+- [x] `.14` a5 — **NO REGRESSION**: make check173/17/253, focused15,
+  six books/verify.py rc=0; all fields/reset/policies/runtime/census/frozen/
+  registry/fixtures/history/LIVE exact,114/114 frozen, fixed caps unchanged.
+
+
 - [x] `.14` a4 — **ROOT CAUSE**: repair.py/source-auth/diagram proof rc=0;
   scoped blame identifies internal/default rationale, stale no-FP-decode/17-CSR
   comments and834499b7's stale70/114 checkpoint; five public chapters authenticated.
@@ -552,6 +598,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a5 | root133e7229/public chapter+diagram auth; canonical two-span/generated three-SHA/report fingerprint inverse; three stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; fields/runtime/frozen/fixtures/history/LIVE exact;114/114 frozen |
 | `2026-10-10` | `.14` a4 | five chapter digests/three public SVG coordinate proofs; full comment/one-why/generated inverses; two stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; executable/canonical-except-why/frozen/history/LIVE exact;114/114 frozen |
 | `2026-10-10` | `.14` a3 | five-span76064B/full117546B inverse; six damaged controls; published sharder12/0/dry parity; DEV8/CHANGELOG22 whole records | focused9/six books/verify rc=0; immutable prior history/code/data/LIVE exact; fixed caps, v2 frozen114/114 |
 | `2026-10-10` | `.14` a2 | public-source/root census; authenticated F; Python AST/Rust inverse;167old/new images/fresh GPR+fetch corpus | Rust173/17/253/focused15/6books/verify rc=0; canonical/profile/frozen/registry/LIVE/history exact |
@@ -565,6 +612,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a5 | `SEMULITH-P4-0196 (leaf P4-SYSTEM.14): correct canonical state source citations` | a6/0197 maintained reference/decision/knowledge and .7 current-use rationale; then canonical references |
 | `.14` a4 | `SEMULITH-P4-0195 (leaf P4-SYSTEM.14): ground privilege and wait-state rationales` | a5/0196 canonical state/reference/decision/knowledge rationale sweep |
 | `.14` a3 | `SEMULITH-P4-0194 (leaf P4-SYSTEM.14): contain completed contract and append histories` | a4/0195 privilege/state provenance, then remaining canonical/reference rationale sweep |
 | `.14` a2 | `SEMULITH-P4-0193 (leaf P4-SYSTEM.14): correct public-source rationales` | bounded append-history/task containment a3/0194, then remaining provenance sweep |
@@ -573,6 +621,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-10`: `.14` a5 (SEMULITH-P4-0196): correct canonical state header/mstatus source to public chapter layouts/RV64 Figure7; exact two-span/three-SHA/report inverse, three stale controls, strict/focused15/six books green.
 
 - `2026-10-10`: `.14` a4 (SEMULITH-P4-0195): replace privileged/wait internal rationale and stale decode/fixture/count comments with public diagrams/rules and selected policies; complete comment/metadata inverses, generator controls, strict/focused15/six books green.
 
