@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — retain 64-bit user registers and addresses (P4-SYSTEM.13 c23b)
+
+Authenticated RV64I3.1.1 fixes XLEN=64; Sv39 keeps its canonical subset. Two
+four-word U/Sv39 programs start at VA 0x100001000/0xffffffff80001000 and map to
+PA0x80001000 through one A/D-set user 1GiB leaf each. ADDI retains a high pointer,
+LD/SD retain all payload bits, AUIPC retains virtual PC. Literal high-bit sentinels
+precede register writes. All GPRs/PC/U/UXL/trap/counters/memory and actual requests
+are observed: two cases/eight boundaries/16 parcels/22 total requests.
+
+Seven isolated public effects narrow ADDI/LD/SD/AUIPC/next-PC values or addresses;
+all 14 case/control combinations fail. Actual disabled-GPR auditor lets unused
+x7 truncation escape (meaningful RED rc=101); restored. Declaration missing-
+binding RED rc=101 precedes two Execution entries. Independent author matches
+words/PTEs/canonical mappings/GPR/PC/U/memory and fetch/walk logs; it does not
+log data requests, which the public CPU observer separately verifies.
+
+verify.py rc=0: prior 92 entries/all 112 base+348 GC input/core/author/generated/
+frozen bytes exact; normal full 167/5365/10524 unchanged. Companions 31/62 POS,
+89/178 NEG plus direct 8/16 yield pair 128/256. make check rc=0 (Rust 167/17/210).
+Registry 94/effective 92/114; eleven runtime pairs/freeze. LIVE_STATUS unchanged
+(652 arms,49 chapters,P4 12/18). Focused gates/all six books rc=0; hooks precede
+c24 WALK-IMPLICIT. promotion: declined (finite virtual-width/physical-request
+separation and author-log limits retained in worked book matrix and owning tree).
+
 ## _(2026-10-10)_ — preserve control-transfer witnesses in a bounded chapter (P4-SYSTEM.13 c23a)
 
 Integer runtime chapter reached 31,694/32,768 B (1,074 B room). Move its whole

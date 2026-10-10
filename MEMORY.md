@@ -18,13 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c23b (SEMULITH-P4-0151) — review/realize
-  OB-XLEN with literal 64-bit register/address witnesses and wrong-width controls.
-  c23a moves the 9,822 B control-transfer suffix losslessly into its own book
-  chapter; integer/control now 21,969/10,013 B. Prior runtime/input/frozen bytes
-  exact. Registry 92/effective 90/114; twelve runtime pairs/freeze.
-  GUEST-GEN147, doctrine 652 arms, book 49 chapters. .14 retains statuses/
-  structured experiments/registration.
+- next_action: `P4-SYSTEM.13` c24 (SEMULITH-P4-0152) — review/realize
+  WALK-IMPLICIT with actual CPU walk/fetch requests and Svade no-write witnesses.
+  c23b binds XLEN: two U/Sv39 high-address programs, seven narrow effects fail
+  both cases, actual disabled-GPR auditor RED. Prior 92/input/core/frozen bytes
+  exact; full 167/5365/10524 unchanged. Registry 94/effective 92/114;
+  eleven runtime pairs/freeze. GUEST-GEN 147, doctrine 652 arms, book 49 chapters.
+  .14 retains statuses/structured experiments/registration.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

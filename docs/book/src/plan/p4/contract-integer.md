@@ -359,3 +359,62 @@ frozen records and all prior 80 bindings remain exact. Registry entries become
 boundary and one direct-execution pairs. Seventeen runtime pairs and freeze
 remain. Negative fixtures are legal semantic counterexamples, with no invented
 target traps. Standing finite-evidence/reference/platform limits remain.
+
+## XLEN: retain 64-bit registers and user addresses (c23b)
+
+RV64I 3.1.1 widens the integer file and supported user address space to 64 bits.
+Sv39 still requires bits 63–39 to equal bit 38. A 64-bit address representation
+does not make every value canonical or mapped. The direct XLEN pair exercises
+both canonical halves in U mode with Sv39 active, using ordinary laboratory RAM.
+
+| Direct case | Virtual entry | Physical root PTE address | Data payload |
+| --- | --- | --- | --- |
+| POS, above 32 bits | 0x0000000100001000 | 0x80002020 | 0x0123456789abcdef |
+| NEG, upper canonical half | 0xffffffff80001000 | 0x80002ff0 | 0xfedcba9876543210 |
+
+Each fresh root at 0x80002000 contains exactly one valid 1 GiB user leaf:
+PTE=0x200000df, with R/W/X/U/A/D set. The rest are zero. Both entries map their
+program to PA=0x80001000; virtual data at entry+0x80 maps to PA=0x80001080.
+The provider contains 16 KiB of executable little-endian RAM at 0x80000000.
+No physical map or MMU width is added to the production profile.
+
+Every writable GPR starts with an independently expected high-bit sentinel,
+0x0123456700000000 plus its register number; x6 is replaced with the full virtual
+data pointer. An attempted all-ones write to x0 must leave zero. Expected values
+are established before these writes, so a narrow register file cannot supply
+its own expectations through read-back. Four literal instruction words follow:
+
+| Word | Instruction | Required observation |
+| --- | --- | --- |
+| 0x00030393 | ADDI x7,x6,0 | x7 retains the complete virtual pointer |
+| 0x00033403 | LD x8,0(x6) | x8 receives all 64 payload bits |
+| 0x00833423 | SD x8,8(x6) | Eight bytes at PA=0x80001088 receive the complete payload |
+| 0x00000497 | AUIPC x9,0 | x9 receives the current virtual PC, entry+12 |
+
+For example, the upper-half case produces x7=0xffffffff80001080,
+x8=0xfedcba9876543210 and x9=0xffffffff8000100c. After every boundary the
+observer checks all GPRs, exact virtual PC, U mode/UXL=64, trap state, cycle and
+retirement, every physical request and the whole memory image. The only memory
+change is the declared eight-byte store. Each case issues one cold WalkAccess,
+eight FetchParcel requests, one D load and one D store: four boundaries/eight
+parcels/eleven total requests. A/D were already set, so no PTE writes occur.
+The two direct cases total **8 boundaries / 16 parcels / 22 requests**.
+
+Seven isolated public table effects truncate one item to 32 bits: ADDI result,
+LD address, SD address, LD value, SD value, AUIPC result or next PC. All fourteen
+case/control combinations fail a named request or state observation. Truncated
+virtual data addresses reach an invalid root entry; truncated values lose the
+payload's upper half. Disabling the GPR audit lets the otherwise unused x7
+truncation escape and makes the control test fail; restoring it passes.
+
+The independent author confirms the literal words, canonical mappings, GPR/PC/U/
+counter/memory values and fetch/walk logs. It does not log data boundary requests;
+the public CPU observer separately checks those. The declaration test first
+refused the missing binding. Unchanged companion guests are POS scope-alu
+(31/62) and NEG bound-arith/sv39-fault-canonical (89/178). Including the direct
+cases, the pair runs **128 boundaries / 256 parcels**. The full independent
+167/5365/10524 corpus and all prior inputs/runtime/frozen data remain exact.
+Rust 167/17/210 passes. Registry 94 realizes **92/114** effective checks:
+thirteen scope, 23 guest, six boundary and four execution pairs. Eleven runtime
+pairs and final freeze remain. This is finite width evidence under the selected
+translation and provider rules.

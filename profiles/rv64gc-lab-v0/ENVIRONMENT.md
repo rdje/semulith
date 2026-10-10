@@ -31,6 +31,10 @@ addition, bit-1 retention, RV64 wrap, aliases and next-boundary target faults.
 The old register/fetch corpus comparison alone admits bit-1 erasure; direct PC
 observation rejects it. Worked matrix: `docs/book/src/plan/p4/contract-control.md`.
 
+XLEN binds direct full-width GPR/data/PC observations in U mode at two canonical
+Sv39 addresses with high bits set. Seven 32-bit truncation controls fail in both
+programs. Worked mappings and limits: `docs/book/src/plan/p4/contract-integer.md`.
+
 ## The versions
 
 | Version | Status | Members | What it is |

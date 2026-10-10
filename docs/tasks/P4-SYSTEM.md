@@ -385,7 +385,7 @@ the base when rd=rs1 to model the wrong new-link read, then require alias RED.
 No CPU defect inferred from an equivalent mutation; source snapshot contract
 preserved. Actual disabled-PC-observer control and full replay still required.
 
-### `.13` c23 — bounded book then XLEN (next)
+### `.13` c23 — bounded book then XLEN
 
 c23a (`SEMULITH-P4-0150`) owns a lossless ordered-suffix move of immediate
 transfers and both JALR sections from the 31,694 B integer chapter (1,074 B
@@ -410,6 +410,55 @@ all books/hooks, commit/brief/clean actual census before c23b.
 c23b (`SEMULITH-P4-0151`) scoped review/realization of OB-XLEN: literal 64-bit
 register/address observations plus wrong-width controls, preserving the finite
 Sv39 laboratory scope. Remaining runtime pairs and final freeze then follow.
+
+### `.13` c23b — user integer/address width (`SEMULITH-P4-0151`)
+
+Owned on clean 529f464 after empty brief/actual census. Read frozen OB-XLEN,
+REQ-D-XLEN (state, no instruction association), 64-bit integer/PC descriptors,
+public state/environment/execution and Sem table interfaces, existing arithmetic
+and Sv39 canonical-fault guests, typed address-unit assumption and integer book.
+Authenticated RV64I3.1.1 states 64-bit registers/user addresses; supervisor Sv39
+requires bits63–39 equal bit38. Preserve the selected 39-bit canonical subset;
+64-bit representation does not claim all 2^64 addresses map.
+
+Implement a direct Execution pair: two four-instruction U/Sv39 programs at
+VA0x0000000100001000 (POS) and VA0xffffffff80001000 (NEG), both translated to
+PA0x80001000. Each fresh root0x80002000 has exactly one 1GiB user R/W/X A/D-set
+leaf, literal PTE0x200000df at root+0x20 or root+0xff0. Other entries are zero.
+ADDI x7,x6,0 retains full virtual data pointer, LD x8,0(x6) loads literal64-bit
+payload, SD x8,8(x6) stores it whole, AUIPC x9,0 retains full current virtual PC.
+Initialize every writable GPR with independent high-bit sentinel expectations;
+observe all GPRs/x0, PC/U mode, trap/counters, whole memory and exact physical
+request sequence (one cold walk, eight fetch parcels, one load and one store per
+case). Two cases/eight boundaries/16 parcels/22 total requests; validate words,
+PTEs, translations and observations independently spec-side before binding.
+
+Seven isolated public table controls truncate ADDI result, LD address, SD address,
+LD value, SD value, AUIPC result or next PC to32 bits; each must fail a named
+observation. Actual disabled-GPR auditor must let the unused x7 truncation escape,
+then restore. Declaration selects OB-XLEN first and must refuse missing binding
+before two Execution entries; proposed unchanged companions POS scope-alu, NEG
+bound-arith/sv39-fault-canonical subject to exact replay. Preserve prior92 entries,
+all112 base/348 GC input/core/author/generated/frozen bytes. Only verified work
+may earn registry94/effective92/114 (eleven runtime pairs/freeze). make check,
+focused gates/all books/hooks, commit/brief/clean actual census; .14 retains
+statuses/experiments. No CPU implementation, wider MMU or platform map change.
+
+Pre-derived probe rc=0: all four literal words, both root PTE addresses/values,
+canonical mappings, complete GPR/PC/U/counter/memory states and fetch/walk logs
+match the independent author. The author logs only walk/fetch (nine entries per
+case), not data requests; do not invent independent boundary credit for LD/SD.
+The actual public CPU observer must separately judge all11 requests per case.
+
+### `.13` c24 — implicit walk requests (next, `SEMULITH-P4-0152`)
+
+Review OB-WALK-IMPLICIT/REQ-D-WALK-IMPLICIT, actual public CPU walk/fetch paths,
+Svade and selected cache policy, existing typed translation-input assumption and
+runtime book. Own direct literal one/two/three-level walk requests, fetch/data
+separation, fault termination/no implicit writes and cache-hit limits, with
+meaningful controls/disabled observer before credit. Finalize finite cases only
+after scoped review. Preserve canonical/frozen data and prior94 bindings; only
+verified work may earn94/114. Complete normal commit workflow before next pair.
 
 ### `.13` c22a — preserve whole development receipts under fixed caps (`2026-10-10`, `SEMULITH-P4-0147`)
 
@@ -808,6 +857,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c23b — **ROOT CAUSE**: OB-XLEN declared/unbound. Authenticated
+  RV64I3.1.1 fixes 64-bit registers/addresses; Sv39 canonical subset retained.
+  Four words/two PTEs/mappings and independent GPR/PC/U/memory/fetch-walk proof
+  rc=0. Declaration test selects XLEN and refuses missing CHK-XLEN-POS, rc=101.
+  The author's log excludes data requests; actual CPU observer owns that evidence.
+
+- [x] `.13` c23b — **ADDRESSED**: literal U/Sv39 programs at VA 0x100001000
+  and 0xffffffff80001000 map to PA0x80001000. Independent high-bit expectations
+  observe all GPR/PC/U/UXL/trap/counters/memory and 22 actual requests (8/16).
+  Seven narrow public effects fail both cases (14 combinations); disabled-GPR
+  source auditor lets unused x7 truncation escape (cargo test rc=101), restored
+  witnesses rc=0. Two Execution entries plus exact companions yield 128/256.
+  Book retains mappings, words and limits; no production map/MMU change.
+
+- [x] `.13` c23b — **NO REGRESSION**: make check rc=0 (Rust 167/17/210).
+  verify.py rc=0 proves prior 92 registry entries, all 112 base/348 GC canonical/
+  guest inputs, core/author/generated/schema/doctrine/frozen bytes exact and
+  full independent 167/5365/10524 unchanged. Registry 94/effective 92/114;
+  thirteen scope/23 guest/six boundary/four execution pairs, eleven runtime
+  pairs/freeze remain. Focused gates rc=0 (GUEST-GEN147, 226 frozen rows,
+  fixed bounds, 33 frontiers, six derived claims, 40 index rows, frozen contracts,
+  five fresh reports, schema270/two named skips); all six books rc=0. Whitespace
+  rc=0. Hooks precede c24 WALK-IMPLICIT.
+  LIVE_STATUS unchanged (652 arms,49 chapters,P4 12/18); .14 retains statuses/
+  experiments. promotion: declined (finite width witnesses and author-log limits
+  retained with worked examples in book/tree).
+
 - [x] `.13` c23a — **ROOT CAUSE**: integer book is 31,694/32,768 B,
   leaving 1,074 B before XLEN and remaining runtime receipts. Ordered suffix
   census 9,822 B covers immediate transfers and both JALR sections; source hash
@@ -1127,6 +1203,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c23b | two U/Sv39 width cases8/16/22; seven narrow effects fail both; disabled-GPR/missing-binding RED; literal author/full167/prior92 identity; Rust167/17/210 | registry94/effective92/114; eleven pairs/freeze; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c23a | 9,822 B suffix/inverse hashes exact; all runtime/input/frozen bytes exact; new-file cap census51 | registry92/effective90/114 unchanged; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c22b2 | 15 literal cases/17 boundaries/32 parcels; eight incorrect effects; reordered GREEN; disabled-PC and missing-binding RED; prior90/input/core bytes exact; independent full167; Rust167/17/208 | registry92/effective90/114; twelve pairs/freeze; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c22b1 | literal normal states; public base-JALR bit1 survivor across all 167; six annotation repairs; pinned image-identical source governor and two bypass REDs; executable arrays/prior bytes exact; Rust 167/17/206; full CI five legs green | effective 88/114 unchanged; direct c22b2 target witness next |
@@ -1163,6 +1240,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c23b | `SEMULITH-P4-0151 (leaf P4-SYSTEM.13): retain 64-bit user registers and addresses` | c24 WALK-IMPLICIT, then remaining pairs/freeze |
 | `.13` c23a | `SEMULITH-P4-0150 (leaf P4-SYSTEM.13): retain control-transfer witnesses in a bounded chapter` | c23b XLEN, then remaining pairs/freeze |
 | `.13` c22b2 | `SEMULITH-P4-0149 (leaf P4-SYSTEM.13): observe JALR targets and links directly` | c23a bounded control-transfer book, then c23b XLEN |
 | `.13` c22b1 | `SEMULITH-P4-0148 (leaf P4-SYSTEM.13): correct inherited GC alignment evidence and own target checks` | priority c22b2 direct JALR target-state pair |
@@ -1194,6 +1272,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c23b (SEMULITH-P4-0151): realize XLEN with direct
+  U/Sv39 high-address programs and fourteen narrow-effect refusals; actual disabled
+  GPR-auditor/missing-binding RED. Prior input/runtime exact; registry94/effective
+  92/114, eleven runtime pairs/freeze. c24 WALK-IMPLICIT follows clean workflow.
 
 - `2026-10-10`: `.13` c23a (SEMULITH-P4-0150): move whole control-transfer
   suffix with exact inverse; all runtime/input/frozen bytes unchanged. Integer/
