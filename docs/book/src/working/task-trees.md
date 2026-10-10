@@ -94,6 +94,18 @@ frontier, census and next action stay live; feature examples remain in their
 book chapters. Neither the task-family nor per-part cap grows, and this move
 adds no CPU-contract credit.
 
+P4.13 c28a repeats the whole-entry proof for development notes. Source `5daa7bb`
+holds 23 entries/47,951 bytes, only 1,201 bytes below the fixed 49,152-byte cap.
+The published sharder targets 30,000 bytes: sixteen entries remain in 29,706
+bytes; seven oldest entries move as an exact 18,245-byte suffix into shard 0225
+(18,478 bytes including its wrapper). Remove only the new receipt/navigation
+footer and concatenate the retained prefix and archived suffix to reconstruct
+the source, SHA256
+`6d0ccb9383365685023d20543138f1e47735360257fe1fb9fe9560e91ecb70c3`.
+The earlier manifest rows and sealed history stay byte-exact, and no bound grows.
+The task keeps the next evidence question live: qualify the public Sail override's
+contained-versus-crossing AMO granule behavior before the next runtime binding.
+
 ## Why this shape
 
 A session can be lost at any moment: a crash, a context reset, a change of tool, a change of

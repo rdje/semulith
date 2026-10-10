@@ -405,6 +405,41 @@ boxes/promotion, commit/empty brief/clean actual census before next pair. DEV
 currently46003/49152 B: keep receipt bounded; contain before a later receipt if
 needed, without weakening caps. No new doctrine or requirement-status change.
 
+### `.13` c28a — retain bounded development receipts (completed, `SEMULITH-P4-0157`)
+
+Owned on clean5daa7bb after full workflow/actual census. DEV_NOTES47951/49152 B
+leaves1201 B. Source SHA2566d0ccb9383365685023d20543138f1e47735360257fe1fb9fe9560e91ecb70c3.
+Read canonical sharder/manifest/freeze/bounds contracts and book task-tree
+receipt protocol. Target30000 using published --head DEV_NOTES.md --max-bytes:
+23 entries =16 kept +7 oldest moved, exact18245 B suffix, partition29706 B.
+New shard0225 with wrappers; authenticate source/suffix/entry order and inverse
+including any new footer/receipt removal. Earlier16 manifest rows/210 archived
+logical shards/sealed object exact. Family currently17 files/173677 B, per-part
+65536/family786432 fixed; live49152 unchanged. No runtime/profile/input changes,
+registry100/effective98/114 unchanged. Update bounded live docs/book/task,
+sharder controls, focused bounds/freeze/frontier/count/index/report/schema and
+all six books/hooks; commit/empty brief/clean actual census before c28b.
+
+### `.13` c28b — qualify the public AMO granule boundary (priority next)
+
+Owned concrete evidence question found while reviewing c27's pinned A12.1.4:
+optional misaligned-atomicity granule permits an AMO wholly within its granule.
+The tracked Sail override has granule exponent4 (16 B) alongside amo AccessFault.
+The historical matched a-lrsc-fault uses 0x800000fe (A-2), whose W access crosses
+a 16-byte boundary; it does not distinguish contained-AMO behavior. No new
+matched-reference claim was made for c27's8800 direct cases, but the frozen
+reference-matched policy needs a public-boundary qualification before relying
+on broader equivalence. Result pending, not classified as a production defect.
+Run pinned Sail through its published CLI/our adapter on contained and crossing
+misalignments at both widths, retaining fresh traces and a legal aligned control.
+Inspect only public inputs/validation/outputs; no reference implementation or
+submodule internals. If a discrepancy reproduces, log exact scope/root cause,
+fix the matched configuration or record its true limitation and schedule the
+required revalidation before closure. Preserve frozen statements; core's chosen
+access-fault policy is independently permitted without the optional granule.
+GC-FENCEI follows qualification (c28c); .14 still owns structured experiment
+records/statuses. c28a restores receipt room before this investigation.
+
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
 ### `.13` census and dispositions (slice a)
@@ -546,6 +581,23 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c28a — **ROOT CAUSE**: census rc=0: DEV47951/49152 B,
+ 1201 B room; source SHA2566d0ccb9383365685023d20543138f1e47735360257fe1fb9fe9560e91ecb70c3.
+  Prospective published target30000 partitions23 entries into16 kept/7 moved,
+  exact18245 B suffix; family17 files/173677 B before new shard.
+- [x] `.13` c28a — **ADDRESSED**: sharder rc=0,12 controls/0 fail;
+  shard0225=18478 B, live partition29706 B. verify.py rc=0 removes only new
+  receipt/footer, reconstructs exact committed47951 B/source SHA in original
+  entry order. Suffix SHA2cd85b0620a097a68dcb3d4c33384949601b1b06c2e7fb94ba4f7fb207fa5852;
+  shard SHA9917a51413d8946b9059b36bd489321ea33f11c45651f94e5e497039998ee33f.
+- [x] `.13` c28a — **NO REGRESSION**: verify.py rc=0; earlier16 manifest
+  rows/210 archived shards/sealed descriptor/object exact, all code/canonical/
+  author/generated/frozen/prior archives exact, registry100/effective98/114.
+  Explicit new-file/cap census; focused gates/all six books rc=0; hooks next.
+  LIVE652 arms/49 chapters/P4 12/18 unchanged. No Rust changes; prior167/17/217.
+  promotion: declined (established lossless partition; authenticated shard and worked task-tree book retain proof).
+  Next c28b public AMO granule qualification, result pending; GC-FENCEI follows.
+
 - [x] `.13` c27 — **ROOT CAUSE**: completeness test rc=101 on missing
   CHK-ATOMIC-MISALIGN-POS before registration. Authenticated A/machine sources
   and frozen contract choose LR5 vs SC/AMO7 before translation. Live gate owner
@@ -618,6 +670,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c28a | sharder12/0; seven whole entries18245 B; exact47951 B source inverse/SHA; prior16 rows/sealed history/code/inputs exact; explicit caps | registry100/effective98/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c27 | independent176 words/8896 states; seven wrong effects/thirteen captures; auditor/LR/missing-binding RED101 and restored; full167 corpus/core/prior98 exact except gate note | direct8896/17792, pair8959/17918; effective98/114; Rust167/17/217; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c26b | helper controls RED rc=1; hostile/direct15/0,15/0,8/0 rc=0; normal paths/real ledger/CPU/registry/frozen exact | effective96/114 and registered652 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c26a | six payloads81532 B; exact source inverse123960 B/SHA; earlier parts/code/input/registry/frozen exact; explicit caps/new-file census | effective96/114 unchanged; focused/all six books rc=0; hooks next |
@@ -628,11 +681,17 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c28a | `SEMULITH-P4-0157 (leaf P4-SYSTEM.13): retain bounded development receipts` | c28b public AMO granule qualification, then GC-FENCEI |
 | `.13` c27 | `SEMULITH-P4-0156 (leaf P4-SYSTEM.13): observe atomic alignment before translation` | c28a DEV containment, c28b GC-FENCEI, remaining runtime pairs/freeze |
 | `.13` c26b | `SEMULITH-P4-0155 (leaf P4-SYSTEM.13): align push guidance and local self-tests` | c27 ATOMIC-MISALIGN, remaining runtime pairs/freeze |
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c28a (SEMULITH-P4-0157): exact seven-entry DEV
+  suffix18245 B to shard0225; source inverse47951 B/SHA, prior history exact,
+  fixed caps and runtime100/effective98/114 unchanged. c28b owns public Sail
+  contained-AMO granule qualification before GC-FENCEI; result pending.
 
 - `2026-10-10`: `.13` c27 (SEMULITH-P4-0156): bind ATOMIC-MISALIGN with
   direct8896/17792 and full state/request/reservation observations; pair8959/17918.

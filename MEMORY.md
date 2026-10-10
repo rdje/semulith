@@ -18,12 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c28a (SEMULITH-P4-0157) — contain DEV_NOTES
-  by exact ordered sharding under fixed caps before c28b GC-FENCEI. c27 binds
-  ATOMIC-MISALIGN: direct8896/17792/17888 requests, pair8959/17918; seven bad
-  effects/thirteen captures and actual auditor/LR mutants reject/restored.
-  Registry100/effective98/114; eight runtime pairs/freeze. Prior98/core/author/
-  frozen exact; only gate open-owner prose corrected to derived coverage.
+- next_action: `P4-SYSTEM.13` c28b (SEMULITH-P4-0158) — qualify the
+  Sail override's public contained-vs-crossing misaligned AMO behavior before
+  GC-FENCEI. Override has exponent4 granule; old matched AMO crosses it. Result
+  pending/unclassified; task owns published-interface probes and any repair.
+  c28a shards seven exact DEV entries18245 B; inverse restores47951 B/SHA.
+  Code/inputs/registry100/effective98/114 unchanged; eight runtime pairs/freeze.
   Rust167/17/217, GUEST147, doctrine652,49 chapters; .14 owns statuses/experiments.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).

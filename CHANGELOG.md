@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0157 (leaf P4-SYSTEM.13 c28a) — retain bounded development receipts
+
+- Move seven whole entries/18245 B to authenticated shard0225; retain16/23 in
+  29706 B before new receipt. Exact inverse restores committed47951 B/SHA;
+  earlier manifest/sealed history unchanged, fixed caps stay.
+- Sharder12/0; identity/inverse/focused gates/all six books rc=0; hooks next.
+  Runtime/registry100/effective98/114 and LIVE652/49/P4 12/18 unchanged.
+- Own public contained-AMO granule qualification as next c28b, then GC-FENCEI.
+
 ## SEMULITH-P4-0156 (leaf P4-SYSTEM.13 c27) — observe atomic alignment before translation
 
 - Bind both widths/all22 forms/four ordering settings across aligned pairs and
