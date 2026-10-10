@@ -4,7 +4,7 @@
 
 ## Privilege-mode guarantees through the existing matrix
 
-The next runtime pair is OB-PRIV-MODES. Both checks now execute the complete
+At .13 c8, OB-PRIV-MODES bound both checks to the complete
 thirteen-guest P4.2 matrix, totaling 483 declared execution boundaries. This
 reuses specification-derived expectations without changing instructions or
 expected results.
@@ -226,7 +226,8 @@ P4-SYSTEM.14's work. The full independent corpus now spans 5,360 boundaries and
 
 ## Sstc prerequisites: two discovered defects
 
-Sstc is not yet credited. Review found two issues before its pair could bind.
+Review found two issues before the Sstc pair could bind. c13a2 and c13b
+repair them below, preserving the diagnostic evidence.
 First, mm-stimecmp ends with a legal zero-valued S-mode read. Forcing every
 S-mode stimecmp access to trap still matches all 35 GPR-change observations
 and 70 parcel requests. Its last boundary instead traps with cause 2 and
@@ -243,8 +244,9 @@ the terminal-observation gap. The unconditional overlay originated at P4.2 d.
 The frozen v1 interrupt-source wording also assumes the comparison unconditionally.
 
 The architectural prerequisite is repaired by c13a2, after c13a1's explicit
-setup. The terminal witness hole remains open for c13b; no SSTC credit follows
-from repairing interrupt pending. Frozen records and old receipts stay intact.
+setup. c13b closes the contract witness hole with direct S-mode programming and
+refusal cases. Repairing interrupt pending alone granted no SSTC credit. Frozen
+records and old receipts stay intact.
 
 ## STCE-dependent pending and the v2 source contract
 
@@ -299,5 +301,75 @@ guest observations and 42 owned records remain exact. The original public CSR
 reproduction changes from rc101 to rc0; the corrected public Sail diagnostic
 still reports its qualified comparator-platform difference with STCE verified.
 
-G-CONTRACT remains 68/114, v2 open. The remaining S-mode witness repair precedes SSTC credit; no firmware/Linux
-capability follows from the pending-state repair.
+At c13a2, G-CONTRACT stayed 68/114 with v2 open. Direct S-mode witnesses below
+then earn the SSTC pair; neither slice establishes firmware/Linux capability.
+
+
+## Observable S-mode timer programming and refusals
+
+At c13b, CHK-SSTC-POS/NEG bind a named **Execution** evidence pair, distinct
+from provider-assumption Boundary fixtures and static Scope checks. The normal
+registry test runs each direct witness and its companion guests through the
+existing corpus comparison rule. POS companions are i-timer and w-timer; NEG
+retains mm-stimecmp. Original guests, expectations and frozen records are exact.
+The new direct sequences use values fixed before processor runs, with independent
+replay through the specification-side counter-author probe.
+
+The positive fixture starts in S with mcounteren.TM=1, menvcfg.STCE=1 and
+mideleg.STIP=1. Interrupt enables remain clear, so pending can be read without
+interrupt delivery. Compare/time start at zero; x6 through x11 and x13 start at 0x55.
+x12 supplies the literal full-width compare value 0x8000000000000020.
+Each row is one actual 32-bit instruction fetched as two parcels:
+
+| Boundary | Instruction | Destination observation | Compare after |
+| --- | --- | --- | --- |
+| 1 | ADDI x5,x0,16 | x5=16 | 0 |
+| 2 | CSRRW x6,stimecmp,x5 | x6=0 (old compare) | 16 |
+| 3 | CSRRS x7,stimecmp,x0 | x7=16 | 16 |
+| 4 | CSRRS x8,sip,x0 | x8=0 (timer not pending) | 16 |
+| 5 | ADDI x5,x0,0 | x5=0 | 16 |
+| 6 | CSRRW x0,stimecmp,x5 | none | 0 |
+| 7 | CSRRS x9,sip,x0 | x9=32 (timer pending) | 0 |
+| 8 | ADDI x5,x0,32 | x5=32 | 0 |
+| 9 | CSRRW x0,stimecmp,x5 | none | 32 |
+| 10 | CSRRS x10,stimecmp,x0 | x10=32 | 32 |
+| 11 | CSRRS x11,sip,x0 | x11=0 (timer cleared) | 32 |
+| 12 | CSRRW x0,stimecmp,x12 | none | 0x8000000000000020 |
+| 13 | CSRRS x13,stimecmp,x0 | x13=0x8000000000000020 | 0x8000000000000020 |
+
+Every boundary checks all 32 GPRs, S mode, exact next PC, raw compare, time,
+retirement and fetch count. After thirteen boundaries, time=instret=13 and the
+fixture has made 26 parcel requests. Full-width S write/read-back retains bit63. These observations establish actual S
+programming/read-back and continuation without an M round trip. The selected
+laboratory immediately reflects comparator changes; the architectural source
+allows eventual reflection and possible spurious interrupts. This finite fixture
+does not require every platform to share the laboratory's exact latency.
+
+The negative fixture has three cases: S with TM clear and STCE set; S with TM
+set and STCE clear; U with both gates set. Each starts with compare=101,
+x5=33 and destination x6=0x55, then executes CSRRW x6,stimecmp,x5 (0x14d29373).
+The instruction must deliver cause2 before changing source, destination or
+compare. Actual M-handler instructions then read mcause=2, mtval=0x14d29373,
+mepc=0x1000 and stimecmp=101, followed by ADDI x11,x0,42. Every step checks
+all GPRs, M mode/PC, compare, time/retirement, parcel count and the three trap
+owners. Each case spans six boundaries / twelve parcels; the first does not
+retire, leaving five retired instructions. Direct POS+NEG total 31/62.
+
+The forced-all-S-access-illegal author copy still matches mm-stimecmp's old
+35 changes / 70 parcels, ending in M at the unexpected final trap. The new
+positive witness rejects that same defect model at boundary2. Disabling the
+positive verifier makes the terminal control fail explicitly; its RED arm is
+registered only after that failure is observed. Real-engine controls also reject
+unexpected traps when either permission gate is cleared, and reject a NEG case
+when its gate is opened and the write succeeds. The original observation rule is
+preserved; additional direct evidence closes the coverage hole.
+
+Current G-CONTRACT is **70/114**: thirteen scope pairs, fifteen guest pairs,
+six direct assumption pairs and one direct execution pair. The registry keeps
+72 entries, including the two superseded historical source checks. Twenty-two
+runtime pairs and final freeze remain; v2 and CPU-SYSTEM stay open.
+
+Before the next ALU-immediate binding, c14 owns a gate self-test repair: the test
+assumes that ALU check is still unregistered. A simulated valid binding makes
+that test expect duplicate coverage; the production count remains correct.
+This is scheduled before adding the next pair, not treated as missing CPU behavior.

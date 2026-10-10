@@ -2,8 +2,8 @@
 //!
 //! Each obligation declares positive and negative checks. This registry binds exact
 //! (obligation, check) pairs to evidence the normal test suite runs: tracked corpus
-//! guests, direct typed boundary fixtures, or static scope predicates. Scope checks
-//! validate selection and consistency, never instruction execution. Their negative
+//! guests, direct boundary/architectural execution fixtures, or static scope predicates.
+//! Scope checks validate selection and consistency, never instruction execution. Their negative
 //! fixtures must violate a named predicate; guests retain their own comparison rule.
 
 /// The evidence a declared contract check actually runs.
@@ -14,6 +14,8 @@ pub enum Evidence {
     Scope,
     /// Run the named direct fixture; provider violations are discriminated where relevant.
     Boundary(crate::contract_boundary_rv64gc::BoundaryCheck),
+    /// Run the named architectural witness and its declared companion guests.
+    Execution(crate::contract_execution_rv64gc::ExecutionCheck),
 }
 
 /// One declared check of a contract obligation, realized as executable evidence.
@@ -33,6 +35,20 @@ pub struct ContractCheck {
 /// and the existing privilege-mode, Sv39, Svade, halfword-alignment and counter witnesses;
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
+    ContractCheck {
+        id: "CHK-SSTC-POS",
+        obligation: "OB-SSTC",
+        evidence: Evidence::Execution(
+            crate::contract_execution_rv64gc::ExecutionCheck::SstcPositive,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-SSTC-NEG",
+        obligation: "OB-SSTC",
+        evidence: Evidence::Execution(
+            crate::contract_execution_rv64gc::ExecutionCheck::SstcNegative,
+        ),
+    },
     ContractCheck {
         id: "CHK-GC-ENV-INTERRUPT-SOURCES-V2-POS",
         obligation: "OB-GC-ENV-INTERRUPT-SOURCES-V2",

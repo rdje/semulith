@@ -73,8 +73,8 @@ delegation rules; the CSR-view repair does not change those rules.
 P4.13's later Sstc review found a production defect (repaired by c13a2): the STIP overlay
 then ignored STCE=0, which must restore the software-writable M-mode
 fallback. It also found that mm-stimecmp's terminal zero read cannot distinguish
-success from a final trap. The pending fallback is now repaired; the terminal witness repair remains
-owned before SSTC contract credit;
+success from a final trap. The pending fallback and contract witness are now
+repaired by c13a2/c13b;
 [the runtime chapter](contract-runtime.md#sstc-prerequisites-two-discovered-defects)
 gives the public reproduction and the ordered repair plan. The earlier timer
 receipts above describe their recorded inputs and do not establish this missing case.
@@ -86,5 +86,7 @@ inputs. [The runtime chapter](contract-runtime.md#explicit-comparator-setup-befo
 shows the setup, all nine budgets, the worked wake sequence and reference limits.
 The fallback defect is repaired: cold pending is zero, M software owns STIP
 with STCE clear, and enabling the comparator retains raw software pending.
-The terminal S-mode witness repair remains pending. The runtime chapter gives
-the current selection table, transitions and v2 supersession.
+Direct S-mode compare programming/read-back and handler-visible refusal cases
+now close the contract witness hole. [Worked values](contract-runtime.md#observable-s-mode-timer-programming-and-refusals)
+show the 31-boundary pair, trap controls and finite scope. G-CONTRACT is 70/114;
+no firmware/Linux acceptance follows.

@@ -1,5 +1,44 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — observable supervisor timer programming (P4-SYSTEM.13 c13b)
+
+The terminal-zero guest defect is closed for SSTC contract coverage by direct
+Execution evidence, separate from provider-assumption Boundary and static Scope.
+Registry tests run the new architectural witness plus companion guests using
+one existing corpus comparison helper. POS retains i-timer/w-timer; NEG retains
+mm-stimecmp. No production semantics or old input changes are introduced.
+
+POS executes thirteen S instructions /26 parcels with TM/STCE/delegation seeded
+and interrupt enables clear. It programs compare 16, reads16 and pending 0,
+programs 0 and reads pending 32, programs 32/read-back/cleared pending, then writes
+and reads 0x8000000000000020 to retain the full 64-bit compare value. Sentinels
+make zero reads visible. Each boundary checks all 32 GPRs, S mode/next PC, raw
+compare, time/retirement and fetch count; no M round trip hides inside the budget.
+NEG has three six-step cases: S missing TM, S missing STCE, U despite open gates.
+CSRRW must deliver cause2 before source/destination/compare effects. Actual M
+handler reads cause2, offending word 0x14d29373, EPC 0x1000 and unchanged compare 101,
+then writes marker42. Trap owners and all GPRs/mode/PC/counters/fetches are exact;
+first step does not retire. Direct pair totals 31 boundaries /62 parcels.
+
+Independent counter-author replay agrees with all literal values. Its scratch
+forced-all-S-illegal copy still matches old mm-stimecmp's 35/70, ending unexpectedly
+in M, but the new POS refuses at boundary 2. Disabling that positive verifier
+fails with a terminal-control-missed reason before its new GUEST-GEN arm is
+registered. Real-engine tests reject POS with either gate closed, and reject
+NEG with opened permission. Three direct tests and four registry tests pass.
+GUEST-GEN142, registered shell arms646. Full make ci passes all five legs; Rust167/17/201, all doctrines/books green.
+
+Identity: 348 profile canonical/guest files and four author/generated files exact,
+core entirely unchanged, all 70 prior registry entries exact. Full independent
+corpus remains 167/5360/10514 and --check-owned 42 exact. Schema/freeze/gate owners
+retain their authority; report controls 18/0. Registry now 72 including historical
+superseded checks, effective 70/114:13 scope,15 guest,6 direct assumption,1 direct
+execution pair. Twenty-two runtime pairs and freeze remain. Next OB-ALU-IMM;
+CPU-SYSTEM/firmware/Linux acceptance is not implied.
+Promotion declined: the live execution mechanism, refusing control and worked
+runtime book retain the lesson with its exact old/new witness behavior.
+
+
 ## _(2026-10-10)_ — STCE selects software or comparator STIP (P4-SYSTEM.13 c13a2)
 
 Pinned Machine 2.1.1.18 makes STCE-clear STIP behave as absent Sstc;

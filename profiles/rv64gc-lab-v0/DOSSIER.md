@@ -120,14 +120,15 @@ The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
 ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
 Requirement statuses remain .14's work; exact snapshot/replay serialization .16's.
 
-The effective contract has 57 obligations / 114 checks, 68 realized: thirteen
-scope pairs, fifteen guest pairs and six direct assumption pairs. Version 2 is
-open for twenty-three runtime pairs and final freeze. Frozen v0/v1 text, membership
+The effective contract has 57 obligations / 114 checks, 70 realized: thirteen
+scope pairs, fifteen guest pairs, six direct assumption pairs and one direct
+execution pair. Version 2 is open for twenty-two runtime pairs and final freeze. Frozen v0/v1 text, membership
 and pins remain unchanged. The shared catalog expansion/schema/freeze owners
 judge the same records. V2 supersedes the pre-qualification FP condition, both
 historical definition stages, blanket no-breakpoint wording and the unconditional
 v1 STIP comparator assumption. STCE-clear software pending is repaired; direct
-S-mode programming/refusal witnesses still precede SSTC credit.
+S-mode programming/refusal witnesses now bind SSTC through direct Execution
+evidence plus its original guest companions (31 new boundaries / 62 parcels).
 
 | Current evidence | Canonical detail |
 | --- | --- |
@@ -142,9 +143,9 @@ Ordering selects a sequential one-hart RVWMO realization, not all weak outcomes.
 Reset includes retained cache/reservation/wait owners; cold fcsr is internally
 zero but FS-gated, and computed pending state differs from raw mip storage.
 All evidence retains its finite scope; no firmware or Linux acceptance is claimed.
-STCE-clear software STIP is repaired; SSTC remains uncredited because the
-terminal zero-read guest misses a final trap. P4-SYSTEM.13 c13b owns the
-direct S-mode programming/refusal witnesses that must close that gap.
+STCE-clear software STIP and the SSTC contract witness are repaired. Direct
+S programming/read-back and handler-visible refusals reject the forced-S-trap
+defect that the unchanged terminal zero-read guest alone still misses.
 
 Review [the contract book](docs/book/src/plan/p4/contract-v2.md) and
 [runtime witnesses](docs/book/src/plan/p4/contract-runtime.md) for examples.

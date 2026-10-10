@@ -427,6 +427,8 @@ PYCODE
   arm "RED STCE-enabled comparator STIP is read-only" "$rc" 1 "$out" "STIP write mask"
   out="$(python3 scripts/probe_gc_counter_author.py --mutation stip-retention 2>&1)"; rc=$?
   arm "RED comparator selection retains software pending" "$rc" 1 "$out" "STIP retained software storage"
+  out="$(python3 scripts/probe_gc_counter_author.py --disable-sstc-witness 2>&1)"; rc=$?
+  arm "RED a disabled Sstc witness misses the terminal trap control" "$rc" 1 "$out" "Sstc terminal control missed: disabled positive witness"
 
   # e1c1: independent selected cache policy, with no production engine oracle.
   out="$(python3 scripts/probe_gc_cache_author.py 2>&1)"; rc=$?

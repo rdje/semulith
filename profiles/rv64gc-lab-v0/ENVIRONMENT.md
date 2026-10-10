@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-six direct assumption pairs, 68 checks are realized in the effective contract;
+six direct assumption pairs and one direct execution pair, 70 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -323,13 +323,13 @@ pairs keep v2 open until they run and the membership freezes.
 
 ## Current runtime guarantee bindings
 
-The normal registry runs these exact existing programs under the corpus rule:
+Guest-only registry bindings run these exact existing programs under the corpus rule:
 GPR changes at each declared boundary, never-written registers and physical
 fetch counts. Handler reads witness cause/EPC/status; no direct trace PC/mode
 comparison or universal execution proof is introduced. Whole programs include
 legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 
-| Obligation/check | Exact guest names (shared prefix abbreviated) |
+| Obligation/check | Exact executable evidence (shared guest prefixes abbreviated) |
 | --- | --- |
 | OB-PRIV-MODES POS | mm-csr-rw, mm-ebreak, mm-ecall-modes, mm-ecall-deleg, mm-counters |
 | OB-PRIV-MODES NEG | mm-csr-legality-s/u, mm-mret, mm-readonly, mm-stimecmp, mm-wfi, mm-sfence, mm-sret |
@@ -341,6 +341,8 @@ legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 | OB-IALIGN-16 NEG | c-page-straddle |
 | OB-ZICNTR POS | mm-counters |
 | OB-ZICNTR NEG | mm-csr-ro-counters |
+| OB-SSTC POS | Execution::SstcPositive (thirteen S instructions), plus i-timer/w-timer |
+| OB-SSTC NEG | Execution::SstcNegative (three refusal/handler cases), plus mm-stimecmp |
 
 The privilege matrix spans 483 boundaries; Sv39 spans 1,417 boundaries / 2,832
 parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319; Zicntr spans 101 / 202. Independent author replay agrees exactly.
@@ -355,14 +357,18 @@ fails at step 90. The whole-image core test also verifies preservation.
 
 The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
 observations, examples, comparison limits and control receipts. Current census:
-57 effective obligations / 114 checks, 68 realized: thirteen scope pairs,
-fifteen guest pairs and six direct assumption pairs. Twenty-three runtime pairs
+57 effective obligations / 114 checks, 70 realized: thirteen scope pairs,
+fifteen guest pairs, six direct assumption pairs and one direct execution pair. Twenty-two runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
 
 
-SSTC is pending because mm-stimecmp's terminal zero read misses an unexpected
-final trap; direct S-mode witnesses remain c13b's prerequisite. The STCE fallback
+SSTC binds direct S programming/read-back/pending/continuation and handler-visible
+refusal witnesses at c13b, 31 boundaries / 62 parcels. All GPRs, mode/PC, compare,
+counters and fetches are checked; zero-read sentinels distinguish unexpected traps.
+Forced S access traps still escape old mm-stimecmp's 35/70, but fail the new witness
+at boundary 2. Disabling that verifier fails its registered terminal control.
+The STCE fallback
 is repaired by c13a2 and v2 supersedes the old interrupt-source assumption.
 When STCE=0, M software sets/clears raw mip.STIP; when STCE=1, read-only STIP
 exposes unsigned time>=stimecmp while retaining the software bit behind that view.
@@ -379,4 +385,5 @@ retain no historical capture claim; the author's checked set is 41 historical
 captures plus fresh env-irq-sources with an explicit budget of 13. All 167 programs
 independently replay across 5,360 boundaries / 10,514 parcels. The runtime book
 contains setup, worked wake values and fresh Sail attempt qualifications.
-The STCE fallback is repaired; direct S-mode witnesses remain the next prerequisite.
+The STCE fallback and direct S-mode contract witness are repaired; remaining
+runtime pairs keep v2 open.

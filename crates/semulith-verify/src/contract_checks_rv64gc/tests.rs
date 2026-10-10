@@ -30,19 +30,7 @@ fn every_realized_check_runs_its_evidence_and_it_holds() {
     for check in CHECKS {
         match check.evidence {
             Evidence::Guests(guests) => {
-                assert!(
-                    !guests.is_empty(),
-                    "{}: a check that names no guest checks nothing",
-                    check.id
-                );
-                for name in guests {
-                    assert!(
-                        GUESTS.iter().any(|g| g.name == *name),
-                        "{}: names {name}, which is not a tracked guest",
-                        check.id
-                    );
-                    assert_guest_observations(name);
-                }
+                run_guests(check.id, guests);
             }
             Evidence::Scope => {
                 let result = scope_check(check.id, None);
@@ -57,7 +45,25 @@ fn every_realized_check_runs_its_evidence_and_it_holds() {
             Evidence::Boundary(boundary) => {
                 assert_eq!(boundary.run(), Ok(()), "{}: {boundary:?}", check.id);
             }
+            Evidence::Execution(execution) => {
+                run_guests(check.id, execution.guests());
+                assert_eq!(execution.run(), Ok(()), "{}: {execution:?}", check.id);
+            }
         }
+    }
+}
+
+fn run_guests(id: &str, guests: &[&str]) {
+    assert!(
+        !guests.is_empty(),
+        "{id}: a check that names no guest checks nothing"
+    );
+    for name in guests {
+        assert!(
+            GUESTS.iter().any(|g| g.name == *name),
+            "{id}: names {name}, which is not a tracked guest"
+        );
+        assert_guest_observations(name);
     }
 }
 
@@ -127,6 +133,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
             || l.starts_with("(obligation (id \"OB-SVADE\")")
             || l.starts_with("(obligation (id \"OB-IALIGN-16\")")
             || l.starts_with("(obligation (id \"OB-ZICNTR\")")
+            || l.starts_with("(obligation (id \"OB-SSTC\")")
             || l.starts_with("(obligation (id \"OB-CSR-SET\")")
             || l.starts_with("(obligation (id \"OB-NO-PMP\")")
             || l.starts_with("(obligation (id \"OB-NO-H\")")
@@ -138,8 +145,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        70,
-        "v1's six records, v2's M/C/fetch/address/data/event/ordering/reset records, partial progress, eleven selection records, three v2 corrections, privilege modes, Sv39, Svade, halfword alignment Zicntr and v2 interrupt-source supersession, POS + NEG"
+        72,
+        "v1's six records, v2's guarantees/assumptions, partial progress, eleven selection records, three v2 corrections, privilege modes, Sv39, Svade, halfword alignment, Zicntr, v2 interrupt sources and direct Sstc execution, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

@@ -28,6 +28,7 @@
 pub mod bench;
 pub mod contract_boundary_rv64gc;
 pub mod contract_checks_rv64gc;
+pub mod contract_execution_rv64gc;
 pub mod elf;
 pub mod fixtures;
 pub mod graph;

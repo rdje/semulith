@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and six direct assumption pairs landed; remaining runtime checks keep v2 open.
+**Status:** State inventory, scope pairs, three corrections and six direct assumption pairs and Sstc execution landed; remaining runtime checks keep v2 open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -514,7 +514,7 @@ At c7b, 28 runtime pairs remained before version 2 could freeze.
 The [runtime contract chapter](contract-runtime.md)
 contains the privilege-mode, Sv39, Svade, IALIGN-16 and Zicntr bindings, worked observations,
 inherited-global repair and discriminating controls. Current G-CONTRACT is
-68/114; twenty-three runtime pairs and final freeze remain. The split retains
+70/114; twenty-two runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 
 P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth
@@ -523,4 +523,7 @@ explicit raw-software retention. Cold pending is zero; v2 event/reset records
 follow that rule. The replacement direct pair preserves effective 68/114 credit;
 [the runtime chapter](contract-runtime.md#stce-dependent-pending-and-the-v2-source-contract)
 gives the selection table, worked transitions, instruction witnesses and limits.
-Frozen v0/v1 records and pins stay exact. SSTC programming witnesses remain open.
+Frozen v0/v1 records and pins stay exact. Sstc now binds a direct Execution pair:
+31 boundaries / 62 parcels, S programming/read-back and handler-visible refusals,
+plus original timer guests. [Worked values and controls](contract-runtime.md#observable-s-mode-timer-programming-and-refusals)
+close the terminal-zero witness hole; v2 remains open.

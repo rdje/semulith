@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0129 (leaf P4-SYSTEM.13 c13b) — bind observable Sstc execution
+
+- Add direct Execution evidence plus existing timer companions. S programs and
+  reads its full 64-bit compare value; handler-visible refusals preserve effects.
+  Literal direct witnesses span31 boundaries /62 parcels with all GPRs/mode/PC,
+  compare, trap owners, counters and fetches checked.
+- Reproduce the old35/70 terminal-zero miss; the new witness rejects forced
+  S traps, and disabling its verifier fails a newly registered control.
+- Preserve production/core/canonical/guest inputs and earlier bindings. Bind
+  CHK-SSTC to reach70/114, synchronize book/current docs; v2 remains open for22
+  pairs and freeze. Full make ci passes all five legs; Rust167/17/201, doctrines/books green.
+
+
 ## SEMULITH-P4-0128 (leaf P4-SYSTEM.13 c13a2) — select architectural STIP sources
 
 - Repair STCE-clear software STIP writes/cold pending, selected comparator and
