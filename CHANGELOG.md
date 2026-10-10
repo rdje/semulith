@@ -1,6 +1,18 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0164 (leaf P4-SYSTEM.13 c29b) — ground FP-state claims in public evidence
+
+- Replace two internal-reference comments and unsupported backend rationale.
+  Correct book prose: every f-register write marks Dirty, even an identical value.
+- Independent/direct/public12-step witness agrees; read-only control stays Clean,
+  wrong Clean expectation diverges10. Existing24 public FP pairs/927 agree.
+- Non-comment code/profile/author/generated/registry/frozen/archive bytes exact;
+  effective102/114 unchanged. Rust167/17/223, focused/all six books green.
+- Own DEV containment c29b1, state/requirement prose c29c and book containment
+  c29d before the remaining runtime pairs.
+
+
 ## SEMULITH-P4-0163 (leaf P4-SYSTEM.13 c29a) — ground atomic rationale in public evidence
 
 - Replace internal cancellation/error/reset-site claims with declared ISA/profile

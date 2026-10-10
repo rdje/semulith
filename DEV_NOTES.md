@@ -1,6 +1,36 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — ground FP-state claims in public evidence (P4-SYSTEM.13 c29b)
+
+Scoped exec review found fdext_control.sail:19/wF implementation references.
+FP book twice says Dirty only on actual value changes, unlike its own
+write-Dirty operator paragraph/current evaluator. Source history dd9bc1c ported
+those comments. Authenticated RVP-MACHINE2.1.1.6.7 explicitly permits Dirty on
+unchanged f/fcsr writes; the laboratory selects every f-register write.
+
+Diagnose.py rc=0: independent12-step same-value write before CPU; temporary
+core probe observes identical f1 bits with FS Dirty after FMV.D.X, and Clean
+after read-only FMV.X.D. Initial scratch comparison confused raw CSR owner
+with computed architectural view; corrected to privilege::csr_read before
+credit. Source restored SHAab6cdb46…170017a. Public12/24parcels AGREE twice;
+wrong Clean expectation DIVERGE10. Existing24 FP guests/927 boundaries AGREE
+in two identical traces each. Machine/F/D ISA and binary pins authenticated.
+
+Two evaluator comment repairs, two book dirty-sentence corrections and a
+reference-backend assumption replaced by scoped public-observation limits.
+Exact declared text delta/all non-comment Rust lines preserved. Entire profiles/
+reports/canonical/author/generated/registry104/frozen/archive bytes exact;
+independent167/5365/10524 unchanged. make check rc=0 Rust167/17/223; focused/
+all six books in tree. No policy/behavior or contract credit change (102/114).
+
+C29b1 owns DEV sharding before source-prose/provenance c29c (additional state
+internal names and stale F requirement detail). C29d owns bounded book history
+containment before remaining runtime features; fixed ceilings stay unchanged.
+Evidence: target/p4-system-13/c29b and worked floating-point book.
+promotion: declined (existing published-interface policy; the identical-value/read-only/wrong-Clean controls and book retain the diagnosis).
+
+
 ## _(2026-10-10)_ — ground atomic rationale in public evidence (P4-SYSTEM.13 c29a)
 
 Scoped history:1c554fc introduced reservation.rs internal Err/cancellation-site

@@ -221,8 +221,8 @@ pub fn step_over(
     };
     // P4-SYSTEM.7: the FP-state contract's Off gate — "any instruction that attempts to read
     // or write the corresponding state will cause an illegal-instruction exception"
-    // (RVP-MACHINE §2.1.1.6.7), judged before ANY effect of the rule (Sail 0.14 judges it at
-    // decode, fdext_control.sail:19). A delivery is a step boundary that retires nothing.
+    // (RVP-MACHINE §2.1.1.6.7), judged before any effect of the rule. The public
+    // FS-Off guests observe this priority (P4.13 c29b). Delivery retires nothing.
     if touches_fp_state(insn.effect) && !privilege::fp_enabled(state) {
         deliver(state, 2, u64::from(word), pc);
         timekeeping::advance(state, false);
@@ -622,8 +622,8 @@ impl Frame<'_> {
                     return (0, 64);
                 }
                 if float {
-                    // an f-register write marks FS Dirty unconditionally (the FP-state
-                    // contract; Sail 0.14's wF)
+                    // Every f-register write marks FS Dirty under the selected policy,
+                    // including an unchanged value (RVP-MACHINE §2.1.1.6.7's latitude).
                     self.state.write_f(index as u8, v);
                     privilege::mark_fp_dirty(self.state);
                 } else {

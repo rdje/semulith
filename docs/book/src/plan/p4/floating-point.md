@@ -85,8 +85,9 @@ Checkpoint (c5) wrote the **F test corpus** before the instructions are switched
 small guest programs — the floating-point unit switched off, NaN-boxing and the bit-exact
 moves, every rounding mode (and the two reserved ones, which must trap), the five exception
 flags, the fused multiply-adds, sign injection, minimum/maximum around ±0 and NaN, the
-compares, the ten-way classification, the saturating conversions, and the rule that the
-floating-point state becomes "dirty" only when something actually changes. Every expected
+compares, the ten-way classification, the saturating conversions, and the selected
+dirty rule: every f-register write marks Dirty, while accrued flags mark Dirty
+when their stored bits change. Every expected
 value is derived from the specification, never from the engine. Deriving the fused forms
 showed the reference could only compute the first of the four (`(a×b)+c`); it now builds
 all four from their signed terms as the chapter writes them, and is checked against a second,
@@ -98,7 +99,8 @@ Checkpoint (c6) is **the bind**: the profile now composes the F extension, and i
 single-precision instructions execute in the tracked engine. With the floating-point unit
 off, every one of them traps before it can touch anything; otherwise each rounded operation
 takes its mode from the instruction or from `frm` (a reserved mode traps), its flags
-accumulate in `fflags`, and the state is marked dirty only when something actually changed.
+accumulate in `fflags`, every f-register write marks Dirty, and flag accrual marks
+Dirty when it changes the stored flags.
 The instruction census grows from 88 to 118, matching the pinned upstream tables exactly,
 and all 114 test programs pass — the 103 that existed before byte-for-byte unchanged.
 
@@ -136,9 +138,9 @@ leaf's own acceptance.
 
 Slice (e) gathers the leaf's closing evidence. Its first checkpoint ran all 24 floating-point
 test programs on the Sail reference model: every one agrees with its specification-derived
-expectations, step for step (927 steps). Sail computes floating point with Berkeley SoftFloat,
-so this shows the instructions are decoded, gated, boxed and flagged the same way on both
-engines — not that the arithmetic is independently right; that is the next checkpoint's job.
+expectations, step for step (927 steps). This public comparison measures the named
+decode, gating, boxing, value and flag observations. The next checkpoint supplies
+independent numeric evidence; no reference-backend implementation assumption is needed.
 
 The second checkpoint made the numeric evidence broad and permanent: 3,168 generated test
 cases — every floating-point operation, in both widths and all five rounding modes, with
@@ -152,3 +154,46 @@ acceptance asked for: correctness measured three ways — thousands of specifica
 cases checked on every build, zero disagreements across the original 63,752-case corpus, and
 all floating-point programs agreeing with the Sail reference — and the measured cost of the
 model layer. Single and double precision are part of the processor.
+
+
+## Public FP-state observations
+
+P4.13 c29b replaces internal-reference explanations with authenticated
+RVP-MACHINE 2.1.1.6.7 and public instruction observations. FS Off requires an
+illegal-instruction exception before the instruction accesses FP state. The
+same chapter explicitly leaves Dirty-on-an-unchanged-write implementation
+defined. This laboratory chooses Dirty on every f-register write, including a
+write of the value already present. Read-only moves preserve Clean, while
+accrued flags mark Dirty when their stored bits change. Earlier book prose
+incorrectly generalized the flag rule to every FP write; it is corrected above.
+
+A twelve-instruction witness enables FP, writes1 to f1, sets FS Clean, writes
+the same1 to f1 again, and reads mstatus and f1 through integer registers:
+
+```
+before identical FMV.D.X: mstatus = 0x0000000a00004000 (FS Clean, SD=0)
+after  identical FMV.D.X: mstatus = 0x8000000a00006000 (FS Dirty, SD=1)
+FMV.X.D read-back:        x12 = 1
+```
+
+The independent author derives these observations before CPU execution. A
+separate direct core probe preserves f1's full bits and confirms Dirty after
+the same-value write; its read-only FMV.X.D control preserves Clean. CSR storage
+and architectural CSR views are distinguished: SD is computed by the public
+CSR-read interface. The temporary diagnostic is removed and its source file
+restored byte-for-byte before normal verification.
+
+The public reference agrees on all12 boundaries in two byte-identical traces.
+Changing only the expected post-write status to Clean is rejected at10.
+All24 existing f-/d-/fp- guests also agree over927 boundaries, each in two fresh
+identical traces. They include FS-Off, fcsr views, flag dirtiness and the numeric
+families. These are finite observations of the published interface, without a
+claim about the reference's internal functions or arithmetic backend.
+
+The machine chapter is authenticated at271851 bytes/SHA-256
+`b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea`;
+the F/D pages are authenticated through their existing dossier pins too.
+Instruction behavior, generated sources, canonical guests, frozen contracts and
+registry bindings remain exact. G-CONTRACT stays102/114. C29c owns the remaining
+state-source internal rationale and stale F requirement detail; numerical
+contract realization and structured experiment registration remain separate work.

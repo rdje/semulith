@@ -657,7 +657,7 @@ Independent167/5365/10524 unchanged. make check rc=0 Rust167/17/223; focused/
 all six books rc=0, hooks next. Effective102/114 and LIVE652/49/P4 12/18 unchanged.
 Commit/brief0/actual census, then c29b before GC-COUNTERS; .14 retains records.
 
-### `.13` c29b — replace FP internal-reference rationale (queued, priority next)
+### `.13` c29b — replace FP internal-reference rationale (completed, `SEMULITH-P4-0164`)
 
 Encountered in the same scoped exec_rv64gc.rs review: FS-Off commentary names
 fdext_control.sail:19 and register-write commentary cites Sail's internal wF.
@@ -668,6 +668,66 @@ adversarial marker, replace those rationales, annotate related historical
 receipts without modifying sealed payloads and prove behavior unchanged.
 No dependency implementation inspection or pin changes. Priority next, then
 GC-COUNTERS and remaining runtime pairs/freeze.
+
+Activated on clean6385f2c after actual census rc=0/brief0. Read full relevant
+FP-state clauses/semantics and floating-point book; finish any truncated reads
+before changes. Encountered two book sentences asserting Dirty only on actual
+value changes, while the current code marks Dirty on every f-register write.
+Do not classify from prose alone: independently derive a same-value f-write
+and read-only control, exercise public Sail and a temporary direct core test,
+restore the direct fixture by SHA, then correct the measured book statement.
+Own these diagnostics before any temporary code or artifact is written. Bind
+the two comment repairs to pinned machine/F/D ISA and public FP guests plus
+wrong expected marker. Preserve all non-comment code and every profile/source/
+generated/registry/frozen/archive byte. make check/focused/books/commit workflow
+required. c29c below owns additional encountered state-source prose; no feature
+pivot or current contract credit.
+
+Diagnosis (target/p4-system-13/c29b/diagnose.py rc=0): independent12-step
+same-value f-write witness derived before CPU; temporary direct test observes
+unchanged f1 but Dirty after FMV.D.X, and unchanged f1/Clean after FMV.X.D.
+Direct file restored SHAab6cdb4698f469a38bbe6da6ca53d6560cfd20733ca232f2804c07577170017a.
+Public witness AGREE12 twice identically; wrong Clean expectation DIVERGE10.
+Initial diagnostic compared raw CSR storage with an architectural view;
+corrected to public privilege::csr_read before credit. Thus the book's two
+only-on-value-change sentences are stale, not an evaluator defect. Current
+REQ-GC-F detail correction remains owned by c29c. Also replace the same book's
+unattributed reference-backend assertion with the actual public-observation
+limit; no backend implementation assumption is required for this evidence.
+
+Result: independent/direct/public12 same-value witness and read-only control
+confirm selected Dirty rule; wrong Clean expectation DIVERGE10. Public24/927
+pairs agree. Exact comment-only code and measured book corrections; entire
+profiles/author/generated/registry/frozen/archives unchanged. Historical FP
+internal quotation in docs/tasks/archive/P4-SYSTEM-3.md (.7 slice-b Off-gate
+receipt) is retained history, not a current dependency assumption. make check
+rc=0 Rust167/17/223; focused/all six books rc=0, hooks next. Effective102/114
+unchanged. Next c29b1 containment, c29c source prose, c29d book containment.
+
+### `.13` c29b1 — keep development receipts below the fixed ceiling (queued, priority next)
+
+C29b receipt approaches the fixed49152B DEV ceiling. Before further units,
+measure committed source/whole-entry suffix, use published shard_history.py
+with existing target/caps, preserve old sealed rows and exact inverse bytes/
+SHA, record a bounded receipt and worked provenance example. No cap increase
+or feature deletion. Full focused/book/commit workflow, then c29c.
+
+### `.13` c29c — qualify state-source rationale and FP policy detail (queued, priority next)
+
+Encountered during c29b state reading: live state.sexp prose names internal
+accrue_fflags, fdext_control.sail, Fcsr_RM_Illegal and dirty_fd_context. Its
+reservation census also calls the selected trap-retention rule the exact
+specification set. REQ-GC-F's source_semantics detail says Dirty only when
+state actually changes, inconsistent with the current any-f-write rule if
+c29b's diagnostic confirms it. Own measured correction of these explanatory
+fields after c29b is clean. Preserve actual field/CSR/census/interface and all
+frozen obligation bytes; use published gen_state/gen_definition routes and
+prove only required source-provenance deltas in generated modules. Check
+policy mirrors rather than assuming a frozen statement needs rewriting.
+Read any relevant source/record/book dependencies before editing. Priority next,
+then GC-COUNTERS and remaining pairs/freeze; containment before fixed caps
+would be reached. No dependency implementation inspection or pin change.
+
 
 
 ### `.13` c28e — remove the obsolete internal-reference rationale (completed, `SEMULITH-P4-0161`)
@@ -704,6 +764,19 @@ regenerate affected provenance using published project tools and prove unchanged
 instruction behavior/guest inputs/frozen obligations. No reference implementation
 inspection or pin change. Priority-next before remaining runtime pairs; current
 c28d derivation excludes these assertions and uses authenticated ISA/local provider.
+
+### `.13` c29d — contain book execution history before further feature witnesses (queued)
+
+Current book family approaches fixed524288B total; six runtime pairs need new
+worked feature examples. After c29c, census actual chapter/total bytes and
+identify historical execution receipts already duplicated in canonical task
+records. Preserve any removed payloads byte-for-byte under tracked repository
+history with authenticated inverse/routes; retain every current behavior,
+contract, interface, example and user instruction in the book. Replace only
+historical verification detail with precise routes/bounded summaries, keeping
+all feature documentation complete. Own a bounded source-specific design before
+edits, preserve fixed chapter/family caps and gate counts, verify all six books
+and exact inverses, commit clean before GC-COUNTERS. No broad rewrite or cap rise.
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -845,6 +918,22 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29b — **ROOT CAUSE**: diagnose.py rc=0 independently derives
+  identical-value write, direct probe confirms Dirty/read-only Clean and restores
+  source SHA. Public12 repeats AGREE, wrong Clean DIVERGE10. Source-auth rc=0
+  confirms implementation-defined unchanged-write rule; old book claims stricter
+  behavior and evaluator comments name internals (dd9bc1c history).
+- [x] `.13` c29b — **ADDRESSED**: two comment deltas and measured book
+  dirty-rule/backend-rationale replacements; exact non-comment code verify.py
+  rc=0. Public24/927 pairs AGREE. Historical quotation annotated via live route;
+  source-prose/F-detail follow-up owned c29c, containment c29b1/c29d scheduled.
+- [x] `.13` c29b — **NO REGRESSION**: verify.py rc=0: entire profiles/
+  reports/author/generated/registry104/frozen/archive/knowledge bytes exact;
+  independent167/5365/10524 unchanged. make check rc=0 Rust167/17/223; focused/
+  all six books rc=0. Effective102/114 and LIVE652/49/P4 12/18 unchanged; .14
+  retains statuses/experiments. Next c29b1 exact DEV containment, then c29c.
+  promotion: declined (established public-boundary discipline; worked FP book retains the identical-value and wrong-Clean evidence).
 
 - [x] `.13` c29a — **ROOT CAUSE**: scoped history/text census rc=0 identifies
   1c554fc/495b4b8 internal reservation/error/reset rationales and the current
@@ -1050,6 +1139,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29b | independent/direct/public12; wrong Clean DIVERGE10; public24/927 repeated; exact comments/non-comment/input identity; full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29a | public11/290 repeated; named width difference repeated; wrong SC DIVERGE39; exact comment/non-comment/dossier identity and full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29 | independent12024/992 words; nine wrong tables/14 captures; request/permission/missing-binding RED101 restored; old102/core/inputs exact; full167 corpus | direct12168/24336/45840 requests, pair12366/24732; effective102/114; Rust167/17/223; focused/all six books rc0; hooks next |
 | `2026-10-10` | `.13` c28e | public6/29 repeated, wrong marker DIVERGE1; semantic forms exact; provenance RED1 then two-SHA-only regeneration; profile/core/registry identity | effective100/114 unchanged; Rust167/17/220; DEF-GEN/SEMANTICS/focused/all six books rc=0; hooks next |
@@ -1067,6 +1157,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29b | `SEMULITH-P4-0164 (leaf P4-SYSTEM.13): ground FP-state claims in public evidence` | c29b1 DEV containment, c29c prose/provenance, c29d book containment |
 | `.13` c29a | `SEMULITH-P4-0163 (leaf P4-SYSTEM.13): ground atomic rationale in public evidence` | c29b FP rationale, then GC-COUNTERS/six pairs/freeze |
 | `.13` c29 | `SEMULITH-P4-0162 (leaf P4-SYSTEM.13): discriminate atomic execution and faults` | c29a public atomic rationale, then six runtime pairs/freeze |
 | `.13` c28e | `SEMULITH-P4-0161 (leaf P4-SYSTEM.13): ground fence reference claims in public evidence` | c29 GC-ATOMICS, remaining runtime pairs/freeze |
@@ -1079,6 +1170,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29b (SEMULITH-P4-0164): replace FP internal
+  rationale and correct stale book dirty rule via independent/direct/public12,
+  wrong Clean DIVERGE10, public24/927 pairs. Code comments only, inputs/frozen/
+  registry exact,102/114 unchanged. C29b1/c29c/c29d own containment and source
+  prose before remaining six runtime pairs/freeze.
 
 - `2026-10-10`: `.13` c29a (SEMULITH-P4-0163): replace internal
   atomic source rationales with ISA/profile/public evidence.11AGREE/290 pairs,
