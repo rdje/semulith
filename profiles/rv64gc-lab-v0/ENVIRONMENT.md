@@ -22,6 +22,10 @@ load. OB-ENDIAN binds cross-width byte-lane observations that discriminate even
 paired read/write reversal, while byte accesses remain invariant. Worked cases
 and mutation controls: `docs/book/src/plan/p4/contract-memory.md`.
 
+NO-DELAY-SLOTS binds skipped-write and fall-through observations for all eight
+base branch/jump forms, with mixed-length C integration. Worked controls:
+`docs/book/src/plan/p4/contract-integer.md`.
+
 ## The versions
 
 | Version | Status | Members | What it is |

@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — require immediate architectural transfers (P4-SYSTEM.13 c21b)
+
+NO-DELAY-SLOTS was declared/unbound. Authenticated RV32I 1.1.5 and all eight
+requirement associations reviewed. POS guest-control/c-branches and NEG
+scope-branch/dir-cmp-branch/c-links retain exact 63/111 observations. Base skipped
+writes pin x6/x13, x20–x24 and x8; not-taken fall-through remains visible. C
+programs add five compressed control forms and mixed 2/4-byte lengths.
+
+Thirteen isolated author drivers defer one named taken transfer until after one
+actual instruction, preserving correct link values. All fail named observations.
+A separate public-CPU delayed-PC driver reproduces all thirteen first differences;
+normal driver matches writes, never-written markers and fetch counts. Book retains
+the matrix. No production/author/guest change or pipeline implementation claim.
+Declaration test first missing-entry RED rc=101; then exact two Guest bindings.
+make check rc=0 (Rust 167/17/206). Independent probes/full 167/5365/10524 rc=0;
+prior 88 bindings/112 base+348 GC inputs/core/author/generated/frozen identity rc=0.
+Registry 90, effective 88/114: scope 13/guest 23/boundary 6/execution 2 pairs; thirteen
+runtime pairs/freeze remain. LIVE_STATUS unchanged (650 arms, 48 chapters, P4 12/18).
+Focused gates/books rc=0 (shards, fixed bounds, frontiers, six derived claims,
+frozen contracts, fresh reports, schema, main+five model books). Hooks precede
+c22a live-note containment, then c22b JALR-LSB.
+promotion: declined (ordinary control-flow discrimination and finite limits
+retained with exact witnesses in integer book and owning tree).
+
+
 ## _(2026-10-10)_ — keep memory witnesses in a bounded book chapter (P4-SYSTEM.13 c21a)
 
 The integer chapter reached 32,287 B against fixed 32,768 B per-part ceiling,

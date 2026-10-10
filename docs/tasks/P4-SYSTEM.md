@@ -293,6 +293,35 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c21b — immediate control transfers (`2026-10-10`, `SEMULITH-P4-0146`)
+
+Owned on clean 88230fb after hooks/empty brief/actual census. Review ROADMAP P4,
+CPU_ENVIRONMENT, frozen OB-NO-DELAY-SLOTS/REQ-D-NO-DELAY-SLOTS (JAL/JALR and
+six conditional branches), authenticated RV32I 1.1.5, SetPc/branch semantics and
+public parcel step, independent parcel author, GC comparison/registry and
+integer/runtime/v2 books. Existing guest-control/scope-branch/dir-cmp-branch
+carry skipped register writes; c-branches/c-links add mixed-length integration.
+Current 86/114, registry 88; canonical/frozen/production bytes must stay exact.
+
+Before credit, independently derive all selected observations, never-written
+markers and fetch counts. For each of the eight base forms and five C control
+forms, use an isolated wrong driver that defers a taken transfer by one actual
+instruction (the source instruction length governs sequential PC). A pending
+transfer applies only after that slot; the control itself keeps its correct link.
+Require a named visible difference; investigate any survivor before classification.
+Reproduce base/C variants through the public CPU interface with a separate
+pending-PC driver; preserve the production interpreter and author. Not-taken
+branches remain ordinary fall-through, not an invented duplicate boundary.
+
+Candidate POS guest-control/c-branches; NEG scope-branch/dir-cmp-branch/c-links,
+if measured evidence supports every associated form. Extend declaration coverage
+and observe missing-binding RED before two Guest entries. Run make check, normal
+full independent 167/5365/10524, exact prior 88 registry/112 base+348 GC input/
+core/author/generated/frozen identity, focused gates/books and hooks. Only then
+record 88/114, thirteen runtime pairs/freeze. .14 retains statuses/experiments.
+Commit/brief/clean/actual census before next bounded pair, containing live notes
+first if the fixed cap leaves inadequate room.
+
 ### `.13` c21a — retain memory witnesses in a bounded chapter (`2026-10-10`, `SEMULITH-P4-0145`)
 
 Owned on clean 2f45c52 after hooks/empty brief/actual job census. The integer
@@ -641,6 +670,34 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c21b — **ROOT CAUSE**: NO-DELAY-SLOTS remained declared/
+  unbound. Authenticated RV32I 1.1.5 and canonical eight associations reviewed;
+  declaration gate observed missing CHK-NO-DELAY-SLOTS-POS rc=101
+  (`target/p4-system-13/c21b/registry-red.log`). Existing negative register writes
+  distinguish delayed taken transfers; independently derived all five guests and
+  normal corpus (`python3 target/p4-system-13/c21b/probe.py`, rc=0).
+
+- [x] `.13` c21b — **ADDRESSED**: POS guest-control/c-branches, NEG
+  scope-branch/dir-cmp-branch/c-links, all eight base and five C control forms
+  over 63/111. Thirteen isolated author drivers defer a named taken transfer by
+  one actual instruction, with correct links/lengths; every one fails. Separate
+  public delayed-PC driver reproduces all thirteen first differences; normal
+  driver retains writes/never-written/fetches (offline Cargo client
+  `target/p4-system-13/c21b/engine/Cargo.toml`, rc=0). Book retains exact matrix.
+  make check rc=0 (Rust 167/17/206) after exact two Guest entries.
+
+- [x] `.13` c21b — **NO REGRESSION**: independent full 167/5365/10524 exact;
+  all prior 88 registry entries and 112 base/348 GC canonical+guest inputs, core/
+  author/definitions/generated/frozen bytes exact (`python3
+  target/p4-system-13/c21b/identity.py`, rc=0). Registry 90, effective 88/114;
+  taxonomy 13 scope/23 guest/6 boundary/2 execution pairs. Thirteen runtime pairs/
+  freeze remain. Focused gates/books rc=0: 225 frozen rows, 37 fixed route caps,
+  33 frontiers, six derived claims, three contract versions/zero findings, five
+  fresh reports, 270 schema inputs/two named skips, main+five model books;
+  whitespace rc=0. Hooks precede c22a live-note containment then c22b JALR-LSB. LIVE_STATUS unchanged (650 arms, 48 chapters, P4 12/18).
+  .14 retains statuses/experiments. promotion: declined (worked control-flow
+  matrix and finite evidence limits retained in the integer book/owning tree).
+
 - [x] `.13` c21a — **ROOT CAUSE**: measured integer book 32,287 B under
   fixed 32,768 B part cap (481 B room). Family 49 tracked files/448,559 B under
   80/524,288, so a bounded split is available. Existing examples must remain
@@ -824,6 +881,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c21b | 13 author/13 public delayed-PC controls; 63/111; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 90; effective 88/114; focused gates/books rc=0; hooks before c22a |
 | `2026-10-10` | `.13` c21a | ordered suffix/inverse hashes exact; all prior registry/input/core/frozen bytes exact; navigation/counts; focused gates/books | effective 86/114 unchanged; book 48 chapters; hooks before c21b |
 | `2026-10-10` | `.13` c20 | 9 author/9 public provider controls, 256 byte values; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 88; effective 86/114; focused gates/books rc=0; hooks before c21a |
 | `2026-10-10` | `.13` c19 | 26 direct cases, 14 bad tables, all 19 erased fault cases; disabled observer RED; public full-corpus gap; Rust 167/17/206; prior bytes exact | registry 86; effective 84/114; focused gates/books rc=0; hooks before c20 |
@@ -855,6 +913,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c21b | `SEMULITH-P4-0146 (leaf P4-SYSTEM.13): realize immediate control-transfer observations` | c22a live-note containment, then c22b JALR-LSB |
 | `.13` c21a | `SEMULITH-P4-0145 (leaf P4-SYSTEM.13): preserve memory witnesses in a bounded book chapter` | c21b NO-DELAY-SLOTS, then remaining runtime pairs/freeze |
 | `.13` c20 | `SEMULITH-P4-0144 (leaf P4-SYSTEM.13): realize little-endian byte-lane observations` | c21a book partition, then c21b NO-DELAY-SLOTS |
 | `.13` c19 | `SEMULITH-P4-0143 (leaf P4-SYSTEM.13): realize discarded-load requests and faults` | c20 ENDIAN, then remaining runtime pairs/freeze |
@@ -881,6 +940,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c21b (SEMULITH-P4-0146): bind immediate control
+  transfers after 13 author/13 public delayed-PC controls over 63/111. Base eight
+  and C five forms discriminate; effective 88/114, prior bytes exact. c22a live-note
+  containment then c22b JALR-LSB after hooks/brief/clean actual census.
 
 - `2026-10-10`: `.13` c21a (SEMULITH-P4-0145): exact ordered suffix
   and inverse preserve all memory witness bytes in a bounded chapter; caps fixed.

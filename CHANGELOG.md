@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0146 (leaf P4-SYSTEM.13 c21b) — realize immediate control-transfer observations
+
+- Bind NO-DELAY-SLOTS over five unchanged guests, 63 boundaries/111 parcels.
+  Thirteen isolated author and thirteen public delayed-PC variants fail, covering
+  all eight associated base forms and five compressed integration forms.
+- Declaration missing-entry RED precedes exact binding. Rust 167/17/206,
+  normal independent 167/5365/10524 and prior 88 bindings/input/core/author/
+  generated/frozen identity verified. Registry 90, effective 88/114; thirteen pairs/freeze.
+- Book retains skipped writes, fall-through, lengths and limits. LIVE_STATUS
+  unchanged (650 arms, 48 chapters, P4 12/18). Next c22a live-note containment,
+  then c22b JALR-LSB.
+
 ## SEMULITH-P4-0145 (leaf P4-SYSTEM.13 c21a) — preserve memory witnesses in a bounded book chapter
 
 - Move LOAD-EXT, LOAD-X0 and ENDIAN sections byte-exactly into a dedicated

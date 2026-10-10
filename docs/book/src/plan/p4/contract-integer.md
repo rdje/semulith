@@ -358,3 +358,44 @@ frozen records and all prior 80 bindings remain exact. Registry entries become
 boundary and one direct-execution pairs. Seventeen runtime pairs and freeze
 remain. Negative fixtures are legal semantic counterexamples, with no invented
 target traps. Standing finite-evidence/reference/platform limits remain.
+
+
+## Transfers take effect without a visible delay slot (P4.13 c21b)
+
+RV32I 1.1.5 requires unconditional jumps and conditional branches to have no
+architecturally visible delay slots. NO-DELAY-SLOTS now binds POS to guest-control
+and c-branches, NEG to scope-branch, dir-cmp-branch and c-links. Together these
+unchanged programs span 63 boundaries / 111 fetch parcels and observe every
+associated base form: JAL, JALR, BEQ, BNE, BLT, BGE, BLTU and BGEU. The five C
+control forms additionally test immediate transfer with two-byte instructions.
+
+Taken transfers skip visible writes. guest-control never writes x6 or x13;
+scope-branch never writes x20–x24; dir-cmp-branch never writes x8. Not-taken
+branches execute their ordinary fall-through writes. c-branches skips two 32-bit
+ADDI markers while executing eight compressed boundaries; c-links mixes ten
+boundaries and thirteen parcels, including the PC+2 C.JALR link and C.JR return.
+
+Thirteen isolated author drivers deliberately defer one named taken transfer
+until after the next actual instruction. Each keeps the correct link value and
+uses the control instruction's own length to locate the incorrect slot. This
+isolates a visible delay from a separate link-value or fixed-length bug. An
+independent public-CPU driver reproduces the same first differences:
+
+| Delayed form | Guest / first wrong boundary (zero-based) |
+| --- | --- |
+| JAL / JALR | guest-control 8 / 11: forbidden x6 / x13 writes |
+| BNE | guest-control 3: executes JAL instead of the loop decrement |
+| BEQ / BLT / BGE / BLTU / BGEU | scope-branch 4 / 7 / 10 / 13 / 16: forbidden x20 / x21 / x22 / x23 / x24 writes |
+| C.J / C.JR / C.JALR | c-links 6 / 5 / 3: dead halfword or wrong next register observation |
+| C.BEQZ / C.BNEZ | c-branches 2 / 4: executes the skipped ADDI marker |
+
+All thirteen variants fail before credit. The unmodified public driver matches
+all five guests, including never-written registers and parcel counts. Independent
+normal replay matches the entire 167-program corpus, 5,365 boundaries / 10,524
+parcels. The declaration test first fails on the missing binding, then all Rust
+checks pass (167 core / 17 DSP / 206 verify). All prior 88 bindings, canonical/
+guest inputs, core, author, generated data and frozen records remain exact.
+At c21b, registry entries reach 90, effective G-CONTRACT **88/114**: thirteen scope,
+twenty-three guest, six boundary and two direct-execution pairs. Thirteen runtime
+pairs/freeze remain. These observations constrain architectural effects; they do
+not prescribe a processor pipeline or establish untested target-fault behavior.

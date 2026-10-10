@@ -173,6 +173,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
             || l.starts_with("(obligation (id \"OB-LOAD-EXT\")")
             || l.starts_with("(obligation (id \"OB-LOAD-X0\")")
             || l.starts_with("(obligation (id \"OB-ENDIAN\")")
+            || l.starts_with("(obligation (id \"OB-NO-DELAY-SLOTS\")")
             || l.starts_with("(obligation (id \"OB-CSR-SET\")")
             || l.starts_with("(obligation (id \"OB-NO-PMP\")")
             || l.starts_with("(obligation (id \"OB-NO-H\")")
@@ -184,8 +185,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        88,
-        "v1/v2 bindings, partial progress, selection/correction records, privilege modes, translation/alignment/counters, direct Sstc and immediate/register ALU, U-immediates, shifts, word results and load/store extension and discarded-load requests/faults and byte order, POS + NEG"
+        90,
+        "every declared POS/NEG check of the completed slices is selected"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);
