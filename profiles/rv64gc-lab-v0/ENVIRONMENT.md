@@ -59,6 +59,12 @@ state/request effects. Three-level translated AMOs and page/physical failures
 retain their store/AMO fault kinds. Worked values, paths and finite limits:
 `docs/book/src/plan/p4/atomics.md#direct-contract-observations`.
 
+The selected FP dirtiness policy marks Dirty on every legal f-register or
+explicit fflags/frm/fcsr write, including unchanged values. Flag accrual marks
+Dirty when stored flag bits change. RVP-MACHINE 2.1.1.6.7 permits the unchanged-
+write choice; public identical-write and read-only observations are documented
+in `docs/book/src/plan/p4/floating-point.md#public-fp-state-observations`.
+
 The matched Sail override sets scalar misaligned-atomicity granule exponent0.
 A 16-byte granule permits contained AMOs despite AccessFault, so that former
 setting did not match the unconditional laboratory alignment rule. Public

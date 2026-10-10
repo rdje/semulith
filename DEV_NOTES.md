@@ -1,6 +1,35 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — align state-source rationale and FP policy detail (P4-SYSTEM.13 c29c)
+
+Fresh public24 FP pairs/927 boundaries and identical-write12 reproduce c29b
+raw traces exactly before source edits. Current REQ-GC-F statement equals its
+frozen OB-GC-F mirror: Dirty whenever values change is non-exclusive. Only
+its explanatory detail incorrectly restricts Dirty to actual changes.
+
+Five exact state prose deltas remove internal reference names, qualify LR/SC
+trap retention as selected policy and describe any legal f/explicit FP-CSR
+write versus changed-bit flag accrual. Correct only F source_semantics.detail;
+all parsed state structure/other values and frozen bytes remain exact.
+The scoped live-tree numeric question also replaces its backend ancestry
+rationale with existing exact-rational/hardware/public evidence.
+Both published stale-provenance checks RED rc=1, then generators rc=0.
+The first hash-only assertion failed because gen_state.py:801 deliberately
+emits census why metadata. Diagnose the exact diff: state module changes one
+source hash plus precisely two read-only explanation strings; definition
+changes two hashes. Revised exact replacements prove all other bytes unchanged.
+Source SHA6f94e9cfa8fb8aa31daed162f37b22714db1512c6cd252063efcaa3d185a094c
+→882483e090230562e4c932f0abd2095ab8b9819c7a4e0223be33069b3695d8e3.
+
+Book/environment describe the same policy. GS regenerated after final profile
+prose. Independent167/5365/10524, registry104/effective102/114 and frozen history
+remain unchanged. make check rc=0 Rust167/17/223; normal generators/SEMANTICS
+and focused/all six books rc=0; evidence under
+target/p4-system-13/c29c. No behavior/status/experiment credit change. Next c29d
+book containment, then GC-COUNTERS and remaining runtime pairs/freeze.
+promotion: declined (established descriptor-to-inspection derivation; exact metadata/provenance proof and selected policy retained in the book and task).
+
 ## _(2026-10-10)_ — retain exact history under fixed caps (P4-SYSTEM.13 c29b1)
 
 Committed ce3a53b heads: DEV46505B/24 entries, CHANGELOG56022B/97 entries.

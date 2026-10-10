@@ -740,7 +740,7 @@ caps and all core/author/canonical/generated/frozen/registry104 exact; effective
 102/114 unchanged. Book AMO historical next question corrected/routed. Focused/
 all six books rc=0; hooks next, then c29c after clean workflow/actual census.
 
-### `.13` c29c — qualify state-source rationale and FP policy detail (queued, priority next)
+### `.13` c29c — qualify state-source rationale and FP policy detail (completed, `SEMULITH-P4-0166`)
 
 Encountered during c29b state reading: live state.sexp prose names internal
 accrue_fflags, fdext_control.sail, Fcsr_RM_Illegal and dirty_fd_context. Its
@@ -756,7 +756,48 @@ Read any relevant source/record/book dependencies before editing. Priority next,
 then GC-COUNTERS and remaining pairs/freeze; containment before fixed caps
 would be reached. No dependency implementation inspection or pin change.
 
+Activated on clean4e40a60 after actual census rc=0/brief0. Read the exact
+state CSR reset prose/census, current requirement and frozen statement,
+privilege::csr_write/flag-accrual policy, c29b direct/public diagnosis and full
+FP book. Published state generator pair uses state.sexp, core arith.rs and
+state_rv64gc.rs; definition pair uses encoding.sexp/state.sexp and
+definition_rv64gc.rs.
+Before editing, capture exact proposed text deltas and state-source SHA; run
+fresh public identical-write/FP evidence and compare with c29b raw traces.
+Change only identified explanatory strings: remove four internal names,
+qualify reservation trap retention as selected policy and clarify Dirty for
+f-register/explicit FP-CSR writes versus flag accrual. Correct only
+REQ-GC-F source_semantics detail after checking the unchanged non-exclusive
+statement/frozen mirror. Preserve all field tables, owners, resets, census
+presence, requirement associations and frozen bytes.
 
+Both published --check commands must first refuse stale provenance, then
+regenerate (never hand-edit outputs). Measure actual generated diff and prove
+all executable structure exact. The first stricter hash-only assertion failed:
+gen_state.py:801 deliberately carries each census `why` into read-only metadata.
+The actual required delta is one state-source hash plus the two selected census
+explanations in state_rv64gc.rs, and two hashes in definition_rv64gc.rs. Verify
+those exact replacements, not a blanket metadata exclusion. Regenerate GS only after final
+profile prose and update book/live receipts. make check, STATE-GEN/DEF-GEN/
+SEMANTICS plus focused/all six books and full commit/brief0/actual census.
+The scoped live-tree review also encounters a closed numeric-expectation
+question retaining a reference-backend ancestry rationale. Own its replacement
+here with the already measured exact-rational, hardware and public evidence;
+sealed historical quotations stay intact. No new realized checks/status/experiment records. Next c29d book containment,
+then GC-COUNTERS and six runtime pairs/freeze.
+
+
+Completed: prepare/verify rc=0, fresh public24/927 pairs plus identical-write12
+exact against c29b; statement/frozen mirror unchanged. Both provenance checks
+RED rc=1, published generators rc=0. Exact generated state delta: one source
+hash and two census explanations; definition delta: two hashes, all other
+bytes exact. Old state SHA6f94e9cfa8fb8aa31daed162f37b22714db1512c6cd252063efcaa3d185a094c
+→882483e090230562e4c932f0abd2095ab8b9819c7a4e0223be33069b3695d8e3.
+Independent167/5365/10524 unchanged; registry104/effective102/114 unchanged.
+make check rc=0 Rust167/17/223; normal STATE-GEN/DEF-GEN/SEMANTICS and
+focused/all six books rc=0. Book/environment/GS agree; histories/canonical
+inputs/author/frozen/LIVE exact except identified current prose/provenance.
+Evidence target/p4-system-13/c29c. Hooks next, then c29d after clean workflow.
 
 ### `.13` c28e — remove the obsolete internal-reference rationale (completed, `SEMULITH-P4-0161`)
 
@@ -939,13 +980,32 @@ retain the scope decisions; this census remains the detailed execution receipt.
   `=0.2.3` behind the measured RISC-V model layer (qualification decision and acceptance
   measurement linked in `.7`'s Result). F/D are selected and bound; CPU acceptance stays open.
 - ~~What supplies independent numeric expectations.~~ Closed by `.7`: the spec-side exact-rational
-  reference and its hardware controls. Sail/Spike's shared SoftFloat ancestry remains recorded.
+  reference and its hardware controls. Public instruction comparisons supplement
+  that evidence; no reference-backend ancestry assumption is used.
 
 ## Blockers
 
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29c — **ROOT CAUSE**: prepare.py rc=0 authenticates
+  statement/frozen mirror and repeats public24/927 plus identical-write12
+  byte-exact. State explanation names internals; F detail restricts Dirty
+  unlike the diagnosed any-write rule. Both stale provenance checks rc=1.
+- [x] `.13` c29c — **ADDRESSED**: verify.py/check-generated.py rc=0
+  prove five exact state prose changes, one F-detail change and unchanged
+  parsed structure. Generator hash-only assertion exposed intended census
+  metadata emission; exact revised proof permits only one hash/two explanation
+  strings in state and two hashes in definition. Book/environment/GS and live
+  numeric-evidence rationale synchronized through published interfaces.
+- [x] `.13` c29c — **NO REGRESSION**: verify.py rc=0: all other
+  code/author/canonical/frozen/history/registry104/LIVE exact, independent
+  corpus167/5365/10524 and effective102/114 unchanged. make check rc=0
+  Rust167/17/223; STATE-GEN/DEF-GEN/SEMANTICS/focused/all six books rc=0.
+  Fixed caps unchanged; .14 keeps statuses/experiments. Next c29d book
+  containment before GC-COUNTERS and remaining runtime pairs/freeze.
+  promotion: declined (established descriptor derivation; exact metadata/provenance proof and selected policy are retained in the book and task).
 
 - [x] `.13` c29b1 — **ROOT CAUSE**: prepare.py rc=0 measures committed
   DEV46505/49152B and CHANGELOG56022/65536B; exact source SHA and24/97
@@ -1183,6 +1243,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29c | public24/927 plus identical-write12 exact; provenance RED1; exact five prose/one detail/three hashes/two metadata strings; full corpus and protected bytes | effective102/114 unchanged; Rust167/17/223; generators/SEMANTICS/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29b1 | sharder12/0; two exact source inverses/order/SHA; prior17live/210sealed history exact; fixed new-file census/core/input identity | logical229 rows; effective102/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29b | independent/direct/public12; wrong Clean DIVERGE10; public24/927 repeated; exact comments/non-comment/input identity; full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29a | public11/290 repeated; named width difference repeated; wrong SC DIVERGE39; exact comment/non-comment/dossier identity and full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
@@ -1202,6 +1263,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29c | `SEMULITH-P4-0166 (leaf P4-SYSTEM.13): align state-source rationale and FP policy detail` | c29d book containment, then GC-COUNTERS |
 | `.13` c29b1 | `SEMULITH-P4-0165 (leaf P4-SYSTEM.13): retain exact history under fixed caps` | c29c source prose/F detail, then c29d book containment |
 | `.13` c29b | `SEMULITH-P4-0164 (leaf P4-SYSTEM.13): ground FP-state claims in public evidence` | c29b1 DEV containment, c29c prose/provenance, c29d book containment |
 | `.13` c29a | `SEMULITH-P4-0163 (leaf P4-SYSTEM.13): ground atomic rationale in public evidence` | c29b FP rationale, then GC-COUNTERS/six pairs/freeze |
@@ -1216,6 +1278,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29c (SEMULITH-P4-0166): exact state prose/F
+  detail repair, frozen statement preserved; provenance RED1 then published
+  generation. Three source hashes/two census explanations only; public24/927
+  and identical-write12 exact,102/114 unchanged. Book/environment/GS sync;
+  c29d book containment next.
 
 - `2026-10-10`: `.13` c29b1 (SEMULITH-P4-0165): whole DEV9 and
   CHANGELOG38 entry suffixes to frozen0226/0227; exact source inverses/order/

@@ -163,8 +163,9 @@ RVP-MACHINE 2.1.1.6.7 and public instruction observations. FS Off requires an
 illegal-instruction exception before the instruction accesses FP state. The
 same chapter explicitly leaves Dirty-on-an-unchanged-write implementation
 defined. This laboratory chooses Dirty on every f-register write, including a
-write of the value already present. Read-only moves preserve Clean, while
-accrued flags mark Dirty when their stored bits change. Earlier book prose
+write of the value already present. Every legal explicit write to fflags, frm
+or fcsr also marks Dirty, including an unchanged value. Read-only moves preserve
+Clean, while accrued flags mark Dirty when their stored bits change. Earlier book prose
 incorrectly generalized the flag rule to every FP write; it is corrected above.
 
 A twelve-instruction witness enables FP, writes1 to f1, sets FS Clean, writes
@@ -194,6 +195,20 @@ The machine chapter is authenticated at271851 bytes/SHA-256
 `b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea`;
 the F/D pages are authenticated through their existing dossier pins too.
 Instruction behavior, generated sources, canonical guests, frozen contracts and
-registry bindings remain exact. G-CONTRACT stays102/114. C29c owns the remaining
-state-source internal rationale and stale F requirement detail; numerical
-contract realization and structured experiment registration remain separate work.
+registry bindings remain exact. G-CONTRACT stays102/114. C29c corrects the
+state descriptor and F requirement detail to state the same selected policy;
+the current requirement statement and frozen obligation remain identical. The
+statement promises Dirty whenever values change, without excluding unchanged
+writes. Numerical contract realization and structured experiment registration
+remain separate work.
+
+The descriptor is also an inspection source. Published regeneration changes
+its source hash from `6f94e9cf…85a094c` to `882483e0…695d8e3`; the generated
+state module additionally carries the corrected reservation and FP census
+explanations. Exactly those two read-only strings and one hash change there;
+exactly two hashes change in the generated instruction definition. State layout,
+CSR owners, resets, accessors and instruction definitions remain byte-identical.
+Both stale-provenance checks refuse before regeneration. Fresh public FP
+observations repeat the24/927 pairs and identical-write12 witness byte-for-byte.
+Full source identities and exact replacement proofs are in
+`docs/tasks/P4-SYSTEM.md` (c29c).
