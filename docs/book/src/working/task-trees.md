@@ -134,9 +134,36 @@ its source head and is frozen. Live/per-part/family ceilings stay fixed; current
 feature examples remain in their own chapters. Code, profile inputs, frozen
 contracts and registry bindings were unchanged. The subsequent c29c policy/
 source-prose repair and c29d book containment are complete; their receipts
-remain in the task tree.
+remain accessible through the task tree’s history routes.
 
 
+
+### Preserve completed task receipts and live development history
+
+P4.13 c29e1 starts from committed `442a57d`: the live task tree is 124,305
+bytes under its fixed 131,072-byte ceiling. Five whole completed spans total
+79,234 bytes: c26a–c29e0 designs and acceptance, plus the complete verification,
+commit and changelog sections. [Archive 10](../../../tasks/archive/P4-SYSTEM-10.md)
+retains every byte in source order, including earlier history routes. It is
+81,004 bytes with wrappers. The live partition is 45,649 bytes before its new
+receipt; the frontier, open plans, census and decisions remain live.
+
+Extract the five marked payloads, authenticate their lengths and SHA256, replace
+only the new routes and remove only the new ownership/receipt text: the complete
+source reconstructs to 124,305 bytes, SHA256
+`45f985e70054d5d5fc5683dcc637a679e7fc14f2c7526b0830776e09f3ef57e8`.
+A corrupt payload, absent marker or omitted payload refuses authentication.
+Earlier archives remain immutable.
+
+The same unit uses the published sharder for `DEV_NOTES.md`: its 20 entries /
+36,965 bytes partition into 16 retained entries /29,867 bytes and four oldest
+entries /7,098 payload bytes. Shard 0228 is 7,331 bytes with its wrapper.
+Concatenating the retained prefix and exact suffix reconstructs the source in
+order, SHA256
+`48db9ec6872bf4c7b019286ddd63878ed56579b9f369231a494e0a97c6f01e76`.
+The earlier 19 manifest rows and 210 sealed shards remain exact: 230 logical
+rows are now 20 live plus 210 sealed. No cap or CPU-contract credit changes;
+current feature examples remain in their chapters.
 
 ### Measure stored bytes, including UTF-8
 

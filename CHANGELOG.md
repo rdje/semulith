@@ -1,6 +1,15 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0170 (leaf P4-SYSTEM.13 c29e1) — contain completed task and development receipts
+
+- Preserve five completed task spans79234B in finite archive10/81004B;
+  full124305B source inverse exact. Damaged/omitted payload controls reject.
+- Published sharder moves four whole DEV entries7098B to0228; exact source
+  order/bytes/SHA and prior archives/history preserved. Fixed caps unchanged.
+- Book retains inverse example; focused/all six books in tree. No runtime,
+  registry104/effective102/114 or LIVE change. Next c29e overview repair.
+
 ## SEMULITH-P4-0169 (leaf P4-SYSTEM.13 c29e0) — refuse false scalar-reference credit
 
 - Reproduce arithmetic PASS from three exit7 processes reusing valid old traces.
