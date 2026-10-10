@@ -85,7 +85,7 @@ feature examples independently of the session notes.
 P4.13 c26a applies the same discipline to the task tree itself. At 123,960 bytes,
 the live tree had 7,112 bytes of room under its fixed 131,072-byte part ceiling.
 Six completed spans totaled 81,532 bytes; archive 8 already held 59,436, so those
-payloads could not fit there. [Archive 9](../../../tasks/archive/P4-SYSTEM-9.md)
+payloads could not fit there. [Archive 9](#read-task-history)
 retains all six payloads in source order with individual byte lengths and SHA256
 markers, including older log rows in their original context. It is 83,418 bytes
 with wrappers; the live partition is 45,205 bytes before the new receipt.
@@ -115,40 +115,44 @@ wrong-granule control.
 
 
 
-P4.13 c29b1 partitions two committed append-history heads from ce3a53b:
+The whole P4.13 c29b1 append-history receipt is retained in
+[archive 13](#read-task-history).
 
-| Head | Source bytes/entries | Retained entries/bytes | Moved entries/payload bytes | New shard |
-| --- | --- | --- | --- | --- |
-| DEV_NOTES.md | 46,505 /24 | 15 /28,705 | 9 /17,800 | 0226 (18,033 bytes) |
-| CHANGELOG.md | 56,022 /97 | 59 /39,870 | 38 /16,152 | 0227 (16,389 bytes) |
+P4.14 a22 preserves six completed a1–a19 spans (88,967 bytes) and that whole
+1,462-byte book receipt in ordinary archive 13. Seven marked bodies reconstruct
+both complete sources from `329259e`: task 130,487 bytes and book 18,441 bytes.
+All 21 corrupt, missing-marker and omitted-body controls refuse. Two older
+relative history links keep their original live context. Part13 is directly
+readable Markdown; the closed sealed reader still serves exactly its 12 originals.
+Recent work, the active frontier and current feature examples remain live.
+The notes partition preserves all 30 entries as 28 live plus two archived, with
+exact bytes and order. Established size ceilings and CPU status stay unchanged.
 
-The published sharder targets30,000 and40,000 bytes respectively. Both dry runs
-preserve the heads, manifest and prior history; the12-control self-test passes.
-Actual mutations run sequentially, so numbering advances from0226 to0227.
-Removing each new receipt/footer and concatenating its retained prefix with the
-shard's payload reconstructs its exact original bytes and entry order:
+### Read task history
 
-- DEV source SHA256:
-  `92b5766fb8f41f3e563647aace6e20893e40bb8c02639e728dd1f841e84ca1f5`.
-- CHANGELOG source SHA256:
-  `b451f91d5f4ebb1cbb498fd3dc0166b3044c4af09031a8a23537aaaf967feb93`.
+Run these commands from the repository root. Sealed parts1–12 use the checked
+reader; select the numbered part you need, for example archive9:
 
-The manifest gains only two rows. Its earlier17 rows and the210 sealed shards
-remain exact, giving229 logical rows (19live+210sealed). Each new shard names
-its source head and is frozen. Live/per-part/family ceilings stay fixed; current
-feature examples remain in their own chapters. Code, profile inputs, frozen
-contracts and registry bindings were unchanged. The subsequent c29c policy/
-source-prose repair and c29d book containment are complete; their receipts
-remain accessible through the task tree’s history routes.
+```sh
+python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
+```
 
+Ordinary part13 and named book receipts remain directly readable Markdown:
 
+```sh
+cat docs/tasks/archive/P4-SYSTEM-13.md
+cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
+```
+
+These instructions stay in the book because mdBook rewrites external Markdown
+links to HTML files that it does not generate.
 
 ### Preserve completed task receipts and live development history
 
 P4.13 c29e1 starts from committed `442a57d`: the live task tree is 124,305
 bytes under its fixed 131,072-byte ceiling. Five whole completed spans total
 79,234 bytes: c26a–c29e0 designs and acceptance, plus the complete verification,
-commit and changelog sections. [Archive 10](../../../tasks/archive/P4-SYSTEM-10.md)
+commit and changelog sections. [Archive 10](#read-task-history)
 retains every byte in source order, including earlier history routes. It is
 81,004 bytes with wrappers. The live partition is 45,649 bytes before its new
 receipt; the frontier, open plans, census and decisions remain live.
@@ -171,7 +175,7 @@ rows are now 20 live plus 210 sealed. No cap or CPU-contract credit changes;
 current feature examples remain in their chapters.
 
 P4.13 c33c repeats the task inverse from `92c5855`: five whole completed
-c29e1–c33b spans total82,856 bytes. [Archive 11](../../../tasks/archive/P4-SYSTEM-11.md)
+c29e1–c33b spans total82,856 bytes. [Archive 11](#read-task-history)
 retains them in84,762 bytes with source/payload SHA256 markers. The live
 partition is46,007 bytes before receipts. Restoring only its five routes and
 removing the new ownership/receipts reproduces all127,192 source bytes in order;
@@ -182,7 +186,7 @@ frontier and census remain live; earlier history and fixed caps stay exact.
 
 P4.13 c30b captures committed `0e9949b`: five contract chapters contain
 32 historical verification/provenance paragraphs totaling19,833 payload bytes.
-The finite [book receipt archive](../../../tasks/archive/P4-SYSTEM-book-c30b.md)
+The finite [book receipt archive](#read-task-history)
 is44,570 bytes, SHA256
 `fc0fd50d403f46dd41434e00e49435240e04ef44c4ae926e9b9b991e98ea753a`.
 Its inverse map and marked payloads reconstruct all five complete source chapters,

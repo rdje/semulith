@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — preserve completed evidence records (P4-SYSTEM.14 a22)
+
+Before the task's fixed128KiB ceiling, move six whole completed a1–a19 spans
+(88967B) and one whole old book receipt(1462B) into ordinary part13. Preserve
+source offsets, lengths and hashes; authenticate seven bodies and reconstruct
+the complete task130487B/book18441B sources. All21 corrupt/missing-marker/
+omitted-body controls refuse. First inverse harness mistakenly dropped the old
+scheduled-a22 block; exact diff isolated it, restore that predecessor block and
+rerun before signoff. Two older relative history routes stay in their source
+context; ten incoming root links require no moved anchors/live includes.
+
+Part13 stays outside the closed twelve-file seal. Current features, active graph,
+frontier and recent receipts remain directly live. Published DEV sharder targets
+45000:30entries/48712B==28kept/43759B+2moved/4953B, exact bytes/order;
+shard0238 is5186B SHA25691157a12f0d07f51181885936cc6c0771bd84b633c2f84810c350c7b0da9ef3c.
+Earlier manifest/history exact. Focused10/sharder12/0/TASK-HISTORY46, seven books,
+rendered navigation/source inverses/protected scope pass. No code/canonical/
+qualification/CPU/LIVE or cap change;768outer arms. Next rendered-link census, then bounded artifact mappings.
+Actual rendered check caught mdBook rewriting archive links to missing HTML.
+Own/fix five current chapter routes through local reading instructions; preserve
+four original targets in the inverse map. High-priority broader book census is
+a23 next, before artifact mappings. Exclude the generated heading self-link
+from the content-link meter before accepting five repaired routes. Three literal
+book retrieval commands return exact originals;1281 protected files exact. Evidence target/p4-system-14/a22; CI a18 green.
+promotion: declined (finite preservation receipts; existing task-book policy unchanged).
+
 ## _(2026-10-11)_ — bound authentication reads (P4-SYSTEM.14 a21)
 
 Separate retention from limits in the shared anchored reader; expose read_bounded_pin
@@ -635,74 +661,4 @@ verifier rc=0. Atomics/v2/ENV/derived GS/index/current docs sync; prior
 CPU semantic/canonical/guest/frozen/history/LIVE data and fixed caps exact.
 Next full CI and freeze c36/0191, then priority .14 sweep. Evidence target/p4-system-13/c35.
 promotion: declined (shared finite witnesses, current policy/example and actual route controls retain this binding; no new independent evidence ancestry).
-
-## _(2026-10-10)_ — preserve authority in versioned requirement mirrors (P4-SYSTEM.13 c34c)
-
-A synthetic active replacement repeats its architectural requirement exactly
-but claims laboratory authority. New permanent control is RED1 against the
-prior guard: expected record rejection, actual rc=0. Rootd3fecbf3 rule7 follows
-requirement.obligation_ids; root3ceebc55 explicit mirrors and b61ad39 versioning
-can reach a replacement outside that historical list. Extend rule7 to explicit
-mirrors not already checked through that list; never weaken mirror equality,
-version membership, frozen pins or inherited supersession. No current profile
-record or CPU behavior is defective in this probe.
-
-Fixed self-test62/0; disabling the actual new predicate in a copied script makes
-its named control RED1 again. Real-record gate GREEN0. All original61controls
-retain their verdicts, including malformed routes, pins, live drift and genuine
-laboratory declarations. Re-derive669doctrine arms, update only that LIVE number.
-Current doctrine explanation fits its existing part cap. Runtime/profiles/data/
-frozen/archive/history/milestone identity verified; prior Rust173/17/253 applies.
-Focused9docs/records and six books rc=0; evidence target/p4-system-13/c34c.
-Next deterministic SC c35/0190, full CI/freeze, then owned priority .14 sweep.
-promotion: declined (the current doctrine example, permanent authority refusal and its disabled-predicate control retain this narrow enforcement repair).
-
-## _(2026-10-10)_ — qualify and bind reservation guarantees (P4-SYSTEM.13 c34b)
-
-Live D/REQ reservation mirrors root495b4b86 overstated the ISA's unique
-invalidation set; frozen partition460e4d8 preserves that old statement. Qualify
-the selected physical/width/ordinary-instruction/trap policy and add matching
-OB-GC-RESERVATION-V2 with its member/supersession. Core public matches comments
-root1c554fcf now separate reservation matching from alignment, translation and
-physical permission. CPU semantic expressions/data unchanged; old frozen bytes
-and all prior112registry entries exact. Completeness selector unchanged: update
-measured census114, missing-binding RED101 names CHK-RESERVATION-POS, then add
-both Execution rows. Registry114/effective112/114,13open-v2 members.
-
-The same60640history/fault and1536architectural permission expectations become
-ordinary registered fixtures; Result helpers preserve setup/literals and five
-test names. Positive56448 +fault4192 +permission1536 =62176direct boundaries/
-124352parcels/35680data/12384walks/22272permissions,194688requests. Actual
-registered census emits those audited families, then restores source exactly.
-Companion pair/mustfail/fault guests add85/170. Prior60640/205word and1536/32word
-author derivations apply to unchanged inputs; fresh167/5365/10524 corpus exact.
-Author cannot observe explicit data requests/invalid retained fields; direct
-witnesses own those. No new numeric/reference independence or conformance claim.
-
-Sixteen wrong effects/16bad captures persist;29prior actual guard controls plus
-2registered-route error controls RED101 and byte-restored. Normal registry
-GREEN0 after restoration. Strict Rust173/17/253 rc=0. Atomics/v2/ENV/index/GS
-reflect current policy and finite scope; verify/focused15/six books rc=0. Prior
-canonical/guest/frozen/archives/history/milestone rows/caps exact. Full receipts, input
-identities and controls: docs/tasks/P4-SYSTEM.md c34b; artifacts
-target/p4-system-13/c34b. Next SC qualification/pair, full CI/freeze, then owned
-priority .14 source/note sweep; no push below cadence.
-promotion: declined (existing frozen-safe/full-state method and actual registered propagation controls; no additional retrievable record needed).
-
-
-
-Commit integration for SEMULITH-P4-0188: RECORD-SCHEMA rc=1 exposed rule9's
-version-unaware mirror comparison (root3ceebc55). The focused15 checks omitted
-this distinct record gate; DOSSIER-SCHEMA checks shape. Retain the frozen bytes,
-add explicit requirement_id on the new replacement, and authenticate the frozen
-pin plus the active consecutive inheritance/supersession route before permitting
-historical wording to differ. The effective replacement still mirrors the same
-current requirement exactly. Thirteen new durable controls cover two replacements,
-missing route, nonfrozen history, changed pin, wrong/drifting/missing mirror,
-broken inheritance, wrong/missing member, duplicate ownership, malformed manifest
-and ordinary live drift. Fixed self-test61/0; actual old/pin/current-mirror guard
-controls and real-record gate are recorded in target/p4-system-13/c34b/schema.
-Derived arm census668 replaces655; only that LIVE number changes. Prior runtime
-strict checks remain applicable. Focused15 and six books rc=0; final verifier authenticates frozen/CPU/data/history/milestone invariants.
-promotion: declined (the existing version/pin and mirror rules now compose under a bounded, discriminating integration guard).
 

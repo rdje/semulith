@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0213 (leaf P4-SYSTEM.14) — preserve completed evidence records
+
+- Preserve six whole completed task spans and one older book receipt in bounded ordinary archive13; keep current features/frontier/recent work live and source-context navigation intact. No existing cap or sealed capture changes.
+- Seven authenticated bodies reconstruct both full sources;21 corrupt/missing-marker/omitted-body controls refuse. Published DEV sharding preserves30==28+2 entries/4953B and prior manifest/history. Correct the inverse harness's omitted scheduled-owner block before signoff. Focused10/sharder12/0/TASK-HISTORY46/seven books/rendered/scope pass; code, canonical data, qualification, CPU states and768arms unchanged. Fix five rendered archive routes through book-local reading instructions; own the broader navigation census next.
+
 ## SEMULITH-P4-0212 (leaf P4-SYSTEM.14) — bound pin-only reads and snapshot probes
 
 - Add explicit bounded pin-only authentication without payload retention; cap snapshot growth probes while preserving stability/cleanup checks and legacy pin behavior. Per-call bounds do not yet enforce aggregate method budgets.

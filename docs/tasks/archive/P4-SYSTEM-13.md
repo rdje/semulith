@@ -1,0 +1,1307 @@
+# P4-SYSTEM — completed .14 a1–a19 records and one earlier book receipt
+
+This ordinary Markdown part preserves complete historical records from committed
+`329259e89db937e156dabc68482aec0a55f6acea`. The live task, frontier and recent
+a20/a21 records remain in `docs/tasks/P4-SYSTEM.md`; current feature explanations
+remain in their book chapters. The two earlier relative task-history routes stay
+in the live source, where their original context still resolves correctly.
+
+This part is outside the closed twelve-file sealed capture. Read this file
+directly; use `scripts/task_history_archive.py --read` for those twelve originals.
+No seal, earlier archive, contract, evidence status or size ceiling changes.
+
+## Book navigation inverse
+
+The live book repairs four older links by changing only each target below to
+`#read-task-history`, keeping its original label. Restore these target strings
+when reconstructing the committed book; the new a22 receipt/reading instructions
+are removed with its new route. The original fifth (part13) route did not exist
+in the committed source. Rendered controls verify the book-local destination.
+
+- `../../../tasks/archive/P4-SYSTEM-9.md`
+- `../../../tasks/archive/P4-SYSTEM-10.md`
+- `../../../tasks/archive/P4-SYSTEM-11.md`
+- `../../../tasks/archive/P4-SYSTEM-book-c30b.md`
+
+## Exact source and inverse map
+
+Offsets below are zero-based UTF-8 byte ranges, end exclusive. Each marked body
+is verbatim source, in source order within its source file. Authenticate each
+body's byte length and SHA256; restoring the bodies in place of the new live
+routes, restoring the committed scheduled-a22 block and removing only new a22
+receipts reconstructs both full committed sources. The finite unit verifies those inverses and refuses corrupt bodies,
+missing markers and omitted bodies. These receipts describe that verification;
+they do not add this part to the sealed reader's authenticated path set.
+
+- `docs/tasks/P4-SYSTEM.md`: 130487 bytes, SHA256 `78f9284172966834b77e24bbf584d07aa55e699c9a46a4d4be389cfef6cef8fe`.
+- `docs/book/src/working/task-trees.md`: 18441 bytes, SHA256 `8d78a049e0e0c12d9675e1055f5ca69bf49f39e7461d012f404ae369f78165aa`.
+
+| Source | Body anchor | Start | End | Bytes | SHA256 |
+| --- | --- | ---: | ---: | ---: | --- |
+| `docs/tasks/P4-SYSTEM.md` | `decisions` | 37425 | 101370 | 63945 | `bb335225c649b36c290348e182daba33e9d7e7d7d14758d7f8dbc3bcece57384` |
+| `docs/tasks/P4-SYSTEM.md` | `acceptance` | 103620 | 117055 | 13435 | `c44a79daa8eb99c3c53c4ae4e6d5b750407eefefa0250d4ff2d67bb10b384c0c` |
+| `docs/tasks/P4-SYSTEM.md` | `verification` | 118028 | 120703 | 2675 | `cf1c0e644c9986dad0c1ab227b7c01a127e10232c5cfa1c3a0db6221877296db` |
+| `docs/tasks/P4-SYSTEM.md` | `verification-table` | 120781 | 123742 | 2961 | `bf8b4ab588483ed1278fa3d1e9eb26bfe57d0080da70a165ce60c2ba0207a09f` |
+| `docs/tasks/P4-SYSTEM.md` | `commits` | 124357 | 127898 | 3541 | `0427cfb7041149a77ddb0b33151e5891ba6287fc816d7161db706a7a81e5cea5` |
+| `docs/tasks/P4-SYSTEM.md` | `changelog` | 127993 | 130403 | 2410 | `f06972d17ce5de54e689db06e4c10b2949921aa721377ef2d93d9d86a86f7b1b` |
+| `docs/book/src/working/task-trees.md` | `book-receipt-c29b1` | 6259 | 7721 | 1462 | `8b4ac59b6f2f2b708ef63c6776a6fecc5bb04d7280d4a3a4bc249c7b6e1017dd` |
+
+<a id="decisions"></a>
+
+## decisions
+
+<!-- BEGIN P4-A22 decisions bytes=63945 sha256=bb335225c649b36c290348e182daba33e9d7e7d7d14758d7f8dbc3bcece57384 -->
+### `.14` a19 — method-specific comparison contract (completed, SEMULITH-P4-0210)
+
+Owned on clean443174d, brief0/untracked and actual process census OK, before edits.
+Before implementation/canonical capture, specify the first supported comparison
+rule using authenticated snapshots. The generic graph names properties but not
+machine-readable step/register or delivery witnesses; declare how a changed value
+is tied to the claimed property and baseline. Specify expectation/trace/process
+artifact roles, control/baseline relationships, producer/input closure, permitted
+invocation differences, repeat equality, and per-file/aggregate byte budgets.
+Decide needed typed schema additions explicitly; free-form names/verdicts supply
+no discrimination credit. Use the public adapter vocabulary and retain honest
+unsupported/failed/unavailable outcomes. Keep full policy adequacy/currentness and
+retention separate; declare bounded retention before fresh canonical capture.
+This is a declaration-only .14 slice: create a bounded method decision included
+live in the GC book; no executable/schema/canonical capture or qualification change.
+Also own the stale shape-probe docstring (it still says relationship/artifact checks
+are pending): correct only that currency claim and prove its executable AST exact.
+Own whole-entry DEV sharding if needed, with byte/order inverse and immutable old
+manifest records; never rewrite old notes or raise a ceiling.
+Check the public adapter, expected-file schema/mapping, generic graph, GC policy,
+EVD rules and gate/report consumers. Resolve first-method scope, typed witnesses,
+exact control discrimination, trust/availability/clone behavior and limits before
+implementation. Own focused doctrine/book checks, exact protected scope and normal
+COMMIT workflow. Evidence target/p4-system-14/a19, all scratch on this volume.
+The new decision fixes sail-gpr-change-v1 to one explicit witness and three runs,
+with exact control/producer/artifact relationships, finite closure/read limits and
+separate offline provenance/replay availability. No file pin is waived; hashes
+cannot attest a process. Actual schema refuses both prospective fields by name.
+Focused10/seven books/15 rendered checks and old-book inverse pass. Correct the
+stale shape-probe docstring with executable AST exact. Shard two complete old
+notes,29==27+2 exact bytes/order,4171B SHA f7355839fce7c1483a4ef078b2111854543e9a7bd505f8d6ff7c591b449c3433;
+old manifest prefix exact. Its original final blank separator is retained; scope
+git whitespace relaxation to blank-at-eof on this new shard alone. No cap rise.
+Latest full CI remains a18's all-five-leg green; no executable changes here.
+
+### `.14` a18 — reject duplicate expectation writes (completed, SEMULITH-P4-0209)
+
+Owned on cleanaa66aad, brief0/untracked and actual process census OK, before edits.
+Priority high; own the shared expectation-mapping defect discovered during a17
+comparison-interface review. Reproduce through public functions: one step has
+(write (reg "x1") (value "0x2")) followed by the same register with value0x1.
+The expectation schema reports no findings, expectations_to_doc collapses it to
+{x1:0x1}, and the public Sail comparator reports AGREE on an x1=1 trace. Impact:
+a conflicting input can appear self-consistent after information loss. Fix at
+the single mapping boundary before qualifying comparisons; reject duplicate
+registers even when their values match. Own permanent loader/mapping controls,
+meaningful removal proof, all existing dossier/mapping consumers and book limits.
+No canonical duplicate is asserted; census existing expectations and preserve
+all valid dictionaries. Execute after a17's clean COMMIT workflow, before the
+comparison evaluator. Evidence target/p4-system-14/a18; no new tree pivot.
+Read the mapper, schema/kernel, dossier gate, guest generator and GC book contracts.
+Canonical raw census:222expectation documents/6057steps/4105write entries, zero
+repeated keys. The first diagnostic incorrectly indexed S.field's scalar return;
+check its public contract and rerun on whole keys before drawing any conclusion.
+Guard the single mapper and run it after expectation shape validation in the
+existing dossier gate. Own real gate/CLI integration and optimized controls;
+preserve all243existing mapped dictionaries and schema/runtime/canonical bytes.
+Run full CI for this shared-mapping milestone; notes remain bounded through the
+existing lossless sharder only if needed. No grammar/cap expansion or fresh capture.
+
+Verified: mapping12/0/optimized12/0; deleting the duplicate guard exposes six
+intended failures in both modes. Actual dossier check_tree before0/current1 and
+cached adapter CLI2 confirm public-path refusal. DOSSIER-SCHEMA22/0, existing
+mapper14/0; all243mapped canonical dictionaries exact, raw222documents/6057steps/
+4105write entries with zero duplicates. Full make ci rc=0: check/gate/bench/
+smoke-bench/book, Rust173/17/253 and seven books. Literal book example is shape-
+valid then refused with the exact diagnostic; rendered rule/limits pass. Protected
+scope checked before commit; schema/runtime/canonical/history/caps unchanged.
+Derive757outer arms. No reference run, canonical qualification or CPU acceptance
+credit. promotion: matched-experiment decision and GC book retain the rule.
+
+### `.14` a17 — bounded authenticated comparison snapshots (completed, SEMULITH-P4-0208)
+
+Owned on cleane0ed462, brief0/untracked and actual process census OK, before edits.
+Comparison must consume the bytes that passed pin authentication: reopening a
+validated filename can observe a later replacement. Extend the single anchored
+reader with an immutable snapshot result and a required explicit nonnegative
+byte limit. Keep the existing streaming pin-only API/results unchanged. Refuse
+oversized snapshots before payload reading; return data only after SHA/size/path/
+volume/stability checks and close callbacks succeed. No data on any refusal,
+mismatch or unavailable result; no unsafe second open, cache or new store.
+Read the reader/control/public comparison contracts and GC book; own positive,
+limit, partial-I/O, close/race, immutable-result and no-reopen controls, including
+optimization and independent predicate omissions. Keep PROFILE qualification
+closed and canonical records/retention/caps unchanged. Publish the API, example,
+working-memory and check-time limits in the GC book; focused consumers, all old
+pin controls, protected byte scope, seven books and COMMIT workflow before next.
+Evidence target/p4-system-14/a17, all project scratch on this volume. Snapshot
+limits are caller bounds, not a retention decision or authentication of execution.
+
+Verified: snapshot24/0/optimized24/0 and five independent mutations detected in
+normal/optimized runs. Pin39/0 on predecessor/current, all twelve old pin predicate
+controls still discriminate; profile54/0. The actual book helper's success and
+mismatch paths pass. Focused13/seven books/rendered snapshot contract and protected
+scope are verified before commit. No production v1 qualification or canonical/
+runtime/generated/archive/cap changes. Derive752outer arms; CPU/P4/P5 unchanged.
+promotion: matched-experiment decision and GC book own snapshots and limits.
+
+### `.14` a16 — refuse observations beyond the declared Sail budget (completed, SEMULITH-P4-0207)
+
+Owned on clean11ee6d4, brief0/untracked and actual process census OK, before edits.
+Priority high; own and fix the false-AGREE comparator defect before comparison
+qualification work. Read the adapter, offline probes, GUEST-GEN registration and
+assembler/GC book contracts. Reproduction: compare the one-step NOP expectation
+against NOP plus a step1 row (including an x1 write), or a following interrupt or
+fetch-delivery event. All three currently return AGREE: parsing retains these
+observations, but comparison iterates only expected steps and never rejects the
+tail. An exact runtime instruction limit cannot replace validation of retained
+or offline traces. Reject out-of-budget rows and witnessed deliveries before
+comparing values; preserve the declared GPR/delivery vocabulary and honest scope.
+Add positive boundary cases, separate removal controls and focused downstream
+checks. Publish behavior/examples in the book; no canonical capture or qualification
+credit. Existing pinned public atomic/timer diagnostic protocols may be rerun. Use the existing lossless live-note sharder if the new entry reaches its
+ceiling; prove whole-entry partition/inverse and immutable old history. Run the
+ordinary COMMIT workflow before proceeding. Evidence target/p4-system-14/a16.
+
+Verified: budget5tails/3positive, two independent omissions with intended reasons
+in normal/optimized runs; GUEST-GEN152/0; focused13 and sharder12/0. Replay all167
+guests/334 existing exact-corpus traces: verdict/reason pairs match predecessor,
+300AGREE/30DIVERGE/4REFUSED (cached status only). Existing live public atomic242/
+3146boundaries per repetition and timer diagnostics retain results; no new v1
+canonical records or adequacy credit. Seven books/rendered budget examples pass.
+Protected1265other tracked files exact; old notes partition28==26+2 byte/order
+exact and old manifest is exact prefix. New shard0236 is4765B, SHA256
+a9cb338afe09e535aa6d8b0cf9a62cad8ccd720f4ed5eed9391af782d726a5fe.
+Derive751outer arms; caps/runtime/canonical/archive/CPU acceptance unchanged.
+The new shard preserves the original entry's final blank separator byte-exact.
+Ordinary git diff whitespace checking flags that newly added EOF separator;
+check every other path normally and this one with blank-at-eof disabled only.
+No tracked whitespace policy, checker or retained shard bytes are changed.
+promotion: matched-experiment decision and GC book retain the rule and limits.
+
+### `.14` a15 — authenticate declared input and observation files (completed, SEMULITH-P4-0206)
+
+Owned on clean9b14365, brief0/untracked and actual process census OK, before edits.
+Implement a repository-root-derived, read-only pin checker for existing v1 input/
+observation records. Reuse the lexical path rule; verify regular files, same-volume
+directory traversal, SHA256 and recorded observation sizes. Refuse symlinks,
+nested Git repositories, special files and concurrent replacement; keep missing
+or unreadable files explicitly unavailable. Stream within the initial file size,
+with bounded working memory and descriptor cleanup. No Git/extraction dependency,
+new artifact store, cap raise, external implementation inspection or fresh capture.
+Read the existing adapter boundary, evidence policy/contract and locality controls.
+Own positive/adversarial pin, path, unavailable, race and resource-lifetime controls.
+Keep qualification closed pending comparison/policy evaluation. Integrate the pin
+diagnostics without changing legacy records; verify scoped consumers and books,
+then the ordinary COMMIT workflow. Evidence target/p4-system-14/a15, all on-volume.
+Next comparison evaluation, then measured bounded retention and the first capture.
+
+Pin39/0 (also optimized), graph63/0/profile53/0 and twelve independent predicate
+omissions pass. Actual2MiB-plus files exercise production chunk sizes. Timed file/
+parent/Git-marker changes refuse; the final filename is replaced after fstat to
+isolate pathname binding. Every normal/error branch observes descriptor cleanup;
+injected close failure occurs after a real close and verifies remaining callbacks
+and unavailable result. One owned on-volume fixture lifetime cleans all files;
+mocked device changes make no foreign write; marker-only cases create no Git repo.
+Actual prefix integration: predecessor9b14365 only pending guard, current bad-hash/
+missing-file cases get pin diagnostics, matching graph/files remain unqualified.
+Focused13/seven books/full rendered reader semantics and examples pass; protected
+other code/schema/mapping/canonical/runtime/generated/archive populations and caps
+remain exact. Derive39doctrines/749named outer arms/38routes; CPU/P4/P5 unchanged.
+promotion: matched-experiment decision plus live GC book retain pin semantics/limits.
+
+### `.14` a14 — validate capture identities and declared edges (completed, SEMULITH-P4-0205)
+
+Owned on clean9ec6bfe, brief0/untracked and actual process census OK, before edits.
+Implement a raw-form entrypoint that validates schema before mapping and checks
+unique child identities, scoped requirement/effective-obligation IDs, producer
+and input edges, run observations/repeats, controls and pair relationships.
+Read the canonical catalogue shapes, existing contract_measure public interface,
+reference schema/mapping, GC evidence policy and review book first. Reuse the
+existing effective-contract measurement rather than inventing a second selector.
+Invoke these checks from PROFILE-CONSISTENCY for v1 records, retaining its blanket
+pending-evaluator refusal: identity/edge consistency is not artifact authentication,
+adequacy, actual mutation/execution or qualification. Preserve all legacy inputs,
+generated consumers, runtime, archive and caps. Exercise positive/negative edge
+cases and predicate removals, focused gates/seven books before the commit workflow.
+Evidence target/p4-system-14/a14, entirely on the repository volume. Artifact pins,
+comparison evaluation, bounded retention and the first fresh capture follow.
+
+Graph63/0 (also Python optimized), PROFILE-CONSISTENCY52/0 and schema17/0 pass.
+Nine independent predicate removals expose intended controls; require reused-
+observation and control-endpoint reasons specifically so a secondary orphan does
+not mask a missing predicate. Actual checker integration shows old9ec6bfe only
+reported the pending guard, while current missing-repeat/raw-duplicate cases carry
+their new reasons. A consistent graph still receives only the pending qualifier
+refusal. Reproduce initial C0/DEL-only path false GREEN for U+0085, fix the predicate
+to include C1 and retain that regression. Focused13/seven books/rendered explanation
+pass; all other tracked populations/canonical/generated/archive/caps exact.
+Derive39doctrines/748named outer arms/38routes; CPU incomplete/P4 13/18 unchanged.
+promotion: matched-experiment decision plus the live GC book retain all new scope/limits.
+
+### `.14` a13 — structured verification grammar and mapping (completed, SEMULITH-P4-0204)
+
+Owned on clean6afe055, brief0/untracked and actual process census OK, before edits.
+Implement the declared optional matched-gpr-v1 block in references.sexp and the
+single dossier mapper. Preserve every legacy dictionary and generated consumer.
+Add discriminating nested schema and roundtrip controls. Keep PROFILE-CONSISTENCY
+closed on any new block until relationship/artifact evaluation is implemented;
+syntax support alone earns no qualification. No canonical capture, runtime change,
+status advance, retention store or cap raise. Review the contract and GC evidence
+book, map all child fields once, exercise loss/unknown/type/cardinality controls,
+then focused gates/full CI/seven books and protected scope before committing.
+Evidence target/p4-system-14/a13; all scratch stays on the repository volume.
+Next relationship/pin/artifact evaluator, then bounded retention and fresh capture.
+
+Grammar/mapping and the fail-closed consistency guard are implemented. Schema17/0,
+consistency51/0, focused13 and seven books pass. Predecessor6afe055 refuses/drops
+the new block; all243 old dictionaries/three reference dossiers and old schema
+constructs/fields are exact. Seven lost-family controls, three removed facets and
+qualification-guard removal50/1 expose their intended failures. Complete book
+example/CLI validate as syntax only. Full five-leg shared-mapping CI passes:
+Rust173/17/253, all doctrines, browser build/smoke and seven books. Protected
+runtime/canonical/profile/frozen/archive populations and fixed caps stay exact.
+Derive39doctrines/747named arms/38routes. No CPU credit; evaluator next.
+promotion: decision_qualified-matched-experiment-contract.md owns vocabulary and limits.
+
+### `.14` a12 — declare the qualified experiment contract (completed, SEMULITH-P4-0203)
+
+Owned on clean8fcc277, brief0/untracked and actual process census OK, before edits.
+The existing experiment grammar carries flat historical metadata; .14/policy needs
+pinned inputs, actual observations/repeats/controls, property scope and producer
+relationships before fresh qualification. Declare the prospective matched-GPR v1
+contract in one decision record, include it directly in the GC review book, and
+specify the schema/mapping/validator/runner/retention work as explicit next slices.
+Use the existing references.sexp experiment as the parent, not a parallel format.
+Preserve legacy records and distinguish recorded captures from computed adequacy.
+No grammar, gate, input data, ceiling or CPU acceptance change in this declaration.
+
+Read existing reference schema/mapping, public GC adapter, policy and EVIDENCE_AND_GATES;
+record exact type/identity/currentness/negative-control/independence obligations and
+finite scope. A declaration alone cannot qualify a record. Resolve artifact retention
+and measured family budgets before any fresh capture becomes a canonical input;
+no unbounded log sink or silent absent-artifact credit. Verify book inclusion, all
+seven builds, INDEX/map/caps/live gates and protected byte scope, then commit.
+Evidence target/p4-system-14/a12, on the repository volume. Status: complete.
+Decision docs/decisions/decision_qualified-matched-experiment-contract.md owns the
+prospective contract and explicit implementation/retention sequence. Nine focused
+gates and seven books pass; the complete field matrix, worked control example,
+first/last limits and pending-implementation status render. An in-memory probe of
+the actual mapper refuses the undeclared verification field, confirming this is
+only a declaration. All code/schema/runtime/profile/frozen/history/archive/LIVE
+bytes remain exact; no ceiling or gate changes. Next implement the shared schema/
+mapping and relationship/artifact verifier, then retention and first fresh capture.
+promotion: decision_qualified-matched-experiment-contract.md retains the declaration.
+
+### `.14` a11 — experiment identity edges (completed, SEMULITH-P4-0202)
+
+Owned on cleanae9b1ce, brief0/untracked, actual process census OK, before changes.
+Read ROADMAP P4/.14, EVIDENCE_AND_GATES graph invariants, GC policy, existing
+reference schema/dossier mapping, PROFILE-CONSISTENCY implementation/46 controls
+and GC book evidence chapter. The existing experiment grammar is the starting
+point; do not create a parallel record format. Before adding GC records, reproduce
+single unknown experiment models, duplicate experiment IDs, repeated models and
+self-paired independence through the actual checker and existing fixture interface.
+The current loop checks thin metadata/pairs but appears to omit these identity
+edges. If confirmed, repair them with four discriminating controls and retain the
+entire existing behavior on valid dossiers. No metadata success implies adequate
+verification, independence or CPU acceptance; structured GC runs/status remain next.
+
+The reference-schema header also carries39controls versus46actual named arms;
+correct its stale measurement without changing the grammar. Related documentation
+inspection finds docs/doctrines/governance.md's SEAM row still saying boxes already
+committed remain accepted, despite LC0007's precise current-tracked-corpus contract.
+The same targeted census finds that phrase in the check's R2 comment and the
+book doctrine chapter. Own all three small wording corrections here before edits;
+no new historical-check promise.
+Preserve all runtime/canonical/profile/frozen/fixture/history/archive data, existing
+ceilings and milestone states. Re-derive control counts; synchronize doctrine/book/
+resume/frontier docs, run focused checks and seven books, then commit this slice.
+Evidence target/p4-system-14/a11; all temporary storage stays on the repository volume.
+
+Reproduction confirms all four false GREENs. Adding only the four controls to the
+unchanged production prefix produces46pass/4fail; each invalid fixture returned0
+with __CHECKED__1. Prefix SHA is recorded in before-function.json. Scoped git -S
+pins the experiment metadata loop tob8d09f5 (P0.6) and pair logic to147de76 (P0.7).
+Root causes: no per-experiment ID set, no model-membership/distinctness checks,
+and pair cardinality counts two entries rather than two distinct candidates.
+Impact: invalid evidence graph metadata can be accepted; current GC has no
+structured records and valid existing scalar records remain the preservation control.
+Own immediate predicate repairs plus one-at-a-time restored-predicate mutations;
+then structured records can safely use this existing grammar. No historical CPU
+or independence credit follows from repairing metadata validation.
+
+Result: all four invalid fixtures now refuse with their named reason. Existing
+46 controls plus four new controls pass50/0; current five dossiers remain GREEN0.
+Removing each repaired predicate independently yields49/1, including the repeated-
+model arm requiring its own reason when a bad self-pair also refuses. All original
+valid-data controls stay intact. Focused13 and seven books pass; schema grammar
+AST is identical, all canonical/runtime/profile/frozen/fixture/history/archive
+populations remain byte-exact. Global census39doctrines/732arms/38routes is derived.
+Book examples explain invalid identities and the metadata/adequacy boundary.
+Stale schema count removed; all three current-corpus descriptions corrected.
+CPU-SYSTEM incomplete7axes/P4 13/18/114effective checks and all ceilings unchanged.
+Next: structured GC records/controls/producers, policy/status derivation and mirrors.
+promotion: declined (the declared graph invariant, permanent controls and book retain the repair).
+
+
+
+### `.14` a10 — register the sixth modelled unit and its materials book (completed, SEMULITH-P4-0201)
+
+Owned on clean81856a6, brief0/actual census rc=0. Read .14/ROADMAP P4, unit/
+category schemas and registry/census contracts, INFORMATION_CATALOG C01–C24,
+current GC source/profile/reference/requirements scope, public model-book interfaces,
+BREADTH ownership and prior family-budget decisions before edits. Register the
+existing rv64gc-lab-v0 processor, all24 category dispositions with precise scope/
+required subset, and its own book with generated identity fragments and thorough
+source/reference/contract limits/examples. Collection/registration grants no
+conformance/status/release credit. Preserve all existing unit rows and authored
+canonical/runtime/frozen/registry/fixture data; use published generators for
+new book/BREADTH/index consequences. Review actual six-unit/book family contract;
+no cap raise merely to land content. Profiles' six physical directories already
+exist under processor-corpus bound; registration itself adds no new profile data.
+Preflight task room9793B/book3890B/profiles8197B and every new file/aggregate.
+
+Related census review owns two rv64i reason defects before edits: C12 says the
+privileged volume is absent from the pinned snapshot (actual GC source ledger and
+book authenticate its cached privileged chapters); C24 says P1 snapshot/versioning
+is not built (P1-LAB.10 completed2026-09-28, current scalar tools exist). Both
+phrases originate atd0f55ca. Correct only these stale reasons, retaining excluded
+RV64i translation and the precise current operational scope; preserve exact old
+spans/full census source inverse. Other categories remain untouched unless their
+own inspected public facts expose a necessary, explicitly owned repair.
+
+Verify required-category completeness and scope, schema/materials/unit-books/
+extraction/exercise/interaction/definition/report/count routes, deliberate missing-
+category/book/changed-table refusals and generated output/source inverses. Review
+rendered new book and all seven builds. Full CI at this six-unit milestone;
+record actual leg results without release credit. Keep book/live docs/resume
+aligned with registration counts. Next structured experiments/mechanical policy/
+status/mirror checks; first perform existing containment work if measured family
+pressure requires it. Evidence target/p4-system-14/a10, same-volume scratch.
+
+GC book preview additionally reproduces generator5c00809 assumptions:48
+requirements/25decisions contradict "one per decision"; raw66obligations/132
+checks span v0(46)/v1(6)/v2(14) but are labelled v0 alone; generated guest prose
+still says "independently encoded", and matrix provenance is hardcoded P2.
+Own these before publication: accurate catalogue/mirror/encoding/matrix labels,
+all declared contract identities with raw counts explicitly distinct from
+GS effective coverage. Add a meaningful unordered/mixed-contract regression
+control through the existing MATERIALS-BILL test path; prove original first-ID
+selection fails. Regenerate every existing book fingerprint consequence and
+preserve all unaffected fragment bytes via exact inverse. No runtime/effective
+contract/requirement change or new independence credit. Keep this registration
+slice bounded; update any actual outer-arm census mechanically if it changes.
+
+
+Registration review also reproduces stale current GC DOSSIER prose:26113403
+retains unsupported Sail/Spike implementation ancestry and open-contract/banner
+language;07844c3a leaves .13 next;01154383 leaves76/114 and open-v2. Own the
+small current-dossier repair here because registration must update its own review
+surface. Preserve each complete old paragraph in the new book's explicit historical
+capture, with source digest and full inverse/damaged controls; regenerate only
+measured GS dossier digest consequences. Canonical executable records, all
+requirements/statuses, runtime and frozen data remain unchanged. Review new-book
+and profile-family measured headroom without raising any ceiling to land text.
+
+Actual negative control exposes functional defect989a7b53:unit_to_dict reads
+req[0] only, silently discarding later schema-valid repeated requires fields.
+GC C07 removal wrongly returns0; existing multi-category units suffer the same
+coverage blind spot. Own immediate one-line shared mapping repair through the
+existing _strings repeated-atom reader, three meaningful scope-gate controls
+(all declared covered; second missing; second absent), old-reader mutation and
+whole-corpus canonical roundtrip. Mechanically regenerate named-arm census and
+all declared consequences; no requirement/CPU acceptance credit. Keep registry
+and category checks in this same bounded registration slice.
+
+Result: six registered units; GC all24 category rows/19 required categories,
+34 materials sections and14 book files. Authenticate all24 unchanged source
+artifacts (21 HTML/3 PDFs) via public cached routes. New book covers materials,
+choices, source→check method, references, directly included policy/GS and five
+historical dossier groups. Five-group full source inverse and three damaged
+controls preserve the old wording; corrected current account withdraws unsupported
+ancestry and stale open-v2/76/114 prose. Only GS's measured dossier digest changes
+(3d0e5cd84a7b3c6dd2f632ff2938482e263b4bcd26114ba1193e95fcb5b54224).
+
+Generator5c00809 disclosures repaired: all declared contract IDs, historical raw
+catalogue counts, requirement mirrors without one-per-decision, canonical guest
+encoding and unit-owned matrix. Mixed-version tests3/3; original first-ID role
+fails2/errors1. All20 existing fragments reproduced byte-exact by the original
+generator and regenerated through the new one; no other fragment changes.
+BREADTH registration changes only count5→6, processor count2→3 and own-GS row.
+
+Actual missing-C07 control exposed989a7b53 reader dropping later requires.
+Shared _strings now reads every sibling. Scope tests10/0; original mapping in
+memory8/2, including both later missing/absent false passes. All six unit dicts
+roundtrip their complete14/14/4/9/9/19 required lists; wrong arity refuses.
+Missing-category/book/changed-table controls RED1; corresponding valid checks
+GREEN0. Two scalar reasons corrected, all other existing census/unit bytes exact.
+
+Focused20, seven books, eight rendered chapters and full five-leg CI rc=0;
+strict Rust173/17/253. Exact source/generated/census/report inverses hold.
+All executable canonical data, requirements/statuses, runtime, frozen records,
+fixtures and prior history unchanged. LIVE changes only units5→6/arms669→672;
+milestones unchanged (P4 13/18, CPU incomplete7axes,114/114 frozen14).
+No conformance, independence, status or release credit. No ceiling raised;
+models74/228035B before final journal receipt, far inside100/655360B.
+Evidence target/p4-system-14/a10; book history is the tracked old-dossier capture.
+promotion: declined (the shared-format contract, permanent negative controls and model book retain this routine repair; no new general policy).
+
+#### ROUTING EVIDENCE — containment prerequisite
+
+Task family89/3140683B before this receipt,5045B below3145728B. This is retained
+history growth across task trees, not new GC runtime/data. The separate profiles
+family already contains six physical dossiers and has8234B room; models74/228035B
+and main book51/520773B. Re-measure after commit. Existing LIVE-CONTAINMENT.4 owns
+immediate finite history transition review before experiment growth. Its source
+guide requires direction for changed direct browsing; the prior210-changelog
+approval does not authorize task archives. Prepare a concrete lossless prototype
+and consumer/retrieval proof first. Then resume .14 experiments/policy/status/
+mirror reconciliation. This route does not close CPU evidence work.
+
+### `.14` a9 — repair BREADTH evidence attribution (completed, SEMULITH-P4-0200)
+
+Owned on cleanf429eb4, brief0/actual census rc=0 after a8 workflow. Registration
+preflight finds a real report defect: BREADTH's evidence table maps every unit
+except rv64i to "axis 1 above (EXPERIMENTAL)", which describes DSP56300 only.
+Reproduce docs/BREADTH-REPORT.md's netboard/UART/LAN9118 rows; the same fallback
+would falsely attribute the prospective GC registration to DSP evidence. Scoped
+blame pins producer root87f114d2; -S registry history pins the three-unit
+registration expansion345c63f that exposed the two-unit assumption. Impact is
+wrong evidence attribution, no observed runtime or gate-verdict defect.
+Read BREADTH builder/self-test harness, existing unit registry, gate/drift contracts,
+ROADMAP P3/P4 and current P4/gate book before edits. Fix this prerequisite before
+sixth-unit registration, in the same .14 ownership. Each unit names only its own
+actual G?-REPORT files; only the declared DSP subset may cite axis1. Otherwise
+state registered dossier/no unit gate report. Render declared kind when a
+nonprocessor has no architecture field, without inventing an architecture.
+Preserve BREADTH criteria, survey/unclaimed families and verdict; registration
+or a report path must never become CPU/device/board acceptance.
+
+Add meaningful synthetic own-report/cross-unit-refusal/DSP regression controls
+inside existing producer self-tests, with exact arm census, and restore the old
+fallback in memory to prove the new controls fail. Real stale BREADTH RED before
+published regeneration, GREEN after. Prove full report inverse permits only
+specified attribution/header/kind rows; all other reports, profile/canonical/
+frozen/registry/runtime/fixtures/historical files and LIVE byte-exact. Update
+book/report-limit explanation, task/journals/resume; fixed budgets, focused gates
+and six books. No Rust changes expected; no new ancestry/conformance/status or
+release credit. Evidence target/p4-system-14/a9; all scratch on-volume.
+Then a10/0201 sixth-unit registration/materials/book and measured family contract,
+followed by structured evidence and mechanical policy/status/mirror checks.
+
+Result: root87f114d2's two-unit fallback survives the345c63f registration
+expansion. Current BREADTH rows falsely assign netboard/UART/LAN9118 the DSP
+experiment; the forthcoming GC unit would inherit it. Replace fallback with
+per-unit tracked report selection, exactly scoped to its directory/report names;
+only the named DSP subset cites axis1. Board/device rows explicitly have no unit
+gate report and use declared kind where architecture does not apply. Scalar row
+names its own G0/G1/GC artifacts. No gate-presence or registration acceptance.
+Four synthetic own-scalar/own-further-GS/cross-unit-nested-nonreport/DSP controls
+pass; complete producer24/0. Restore the exact old fallback in memory: three
+ownership arms fail,21/3 rc=1, while all old20 controls hold. Actual unregistered
+GC helper probe identifies only its own GS report, ready for registration.
+Real stale BREADTH RED1, published regeneration/current GREEN0. Full source
+inverse exact; entire report inverse changes only the header and four specified
+rows (five spans), preserving all criteria/verdict/survey/unclaimed content.
+P3 book explains correct attribution/no acceptance; rendered paragraph passes.
+Focused9/six books/verify.py rc=0. All other reports, canonical/profile/requirements/
+decisions/registry/frozen114/114/runtime/fixtures/prior history/LIVE byte-exact;
+producer inner24arms are one existing outer GATE-REPORT arm, global669 unchanged.
+Fixed caps, no new ancestry/conformance/status/release credit.
+Evidence target/p4-system-14/a9; task/journal/source/report inverses exact.
+promotion: declined (existing EVD graph ownership and generated report/book retain the correction and rooted regression controls).
+Next a10/0201 sixth-unit registration/materials/book, reviewing actual family
+contracts before experiment growth; then structured records and policy/status/
+mirror checks. Profiles8197B room unchanged; task/book budgets rechecked.
+
+### `.14` a8 — declare evidence requalification policy (completed, SEMULITH-P4-0199)
+
+Owned on cleane3a5a72, brief0/actual census rc=0 after a7 workflow. Read EVD-03,
+EVIDENCE_AND_GATES, ROADMAP P4/.14, current requirement/category/risk schemas and
+catalogue, scalar policy, GS policy-presence measure/manifest, P4/gate book and
+published report/board/model generators before edits. Declare GC's policy before
+forthcoming .14 qualification runs, explicitly after existing implementation;
+never backdate it or grandfather past passing observations. Cover source-semantic
+classes, risk/feature-specific obligations, exact observation/producer/lineage
+limits, controls/replay/freshness and prospective status/supersession rules.
+No status/ancestry/release credit from the declaration itself. Preserve all runtime,
+requirements, decisions, frozen contracts, registry, fixture and historical bytes.
+
+Own two current policy defects: scalar EVIDENCE_POLICY's live184/199/shared and
+integer negative-search ancestry assertions plus "66 checks ... today" are stale;
+-S history pins both tobf71f9c5. Preserve complete old policy and exact full-source
+inverse, repair only affected prose, retain the original2026-09-14 declaration
+as explicitly historical. GS producerf8567fb labels a tracked-file presence check
+"predeclared policy"; make the output say policy-document presence, without
+changing its algorithm or claiming authenticated timing/adequacy. Policy
+mechanical adequacy/status derivation remains owned by .14's next slices.
+Gate manifest's G-CONTRACT open statement still says final freeze remains open
+although G-CONTRACT derives green114/114 frozen; remove that resolved open item
+and update only the G-OBLIGATIONS policy prose, preserving all evidence/kind rules.
+Capture withdrawn old spans, no dependency implementation read or pin change.
+
+Retained profile D-RESOLUTION-ROUTE/D-ROUTE-FLIP/D-FP-DEFER explicitly identify
+historical/superseded statements in their notes. Preserve them; next .14 status
+mapping must validate replacement authority/effective scope, never count old FP
+ancestry as current evidence or silently drop an included requirement.
+Synchronize existing gate/P4 book with the complete policy, every report/dossier/
+board/model consequence, live records and resume. Exact source/AST/derived and
+historical inverses; stale controls plus focused15/six books. make check only if
+Rust changes. No new tests for documentation/literal labels. Evidence
+ target/p4-system-14/a8; fixed caps/on-volume scratch. Next structured experiments,
+policy/status gates, mirror reconciliation and sixth-unit registration.
+
+Result: GC EVIDENCE_POLICY.md9230B declares future requalification after existing
+implementation, without backdating or grandfathering old passing observations.
+Category/risk/feature rules are cumulative; require exact expected/observed
+producers, subsystem lineage limits, adversarial controls, repeated/current runs,
+checked status/supersession and all remaining release axes. Full canonical policy
+is included in the existing gate book; rendered content and overview anchor pass.
+All48GC/28scalar statuses, runtime, requirements/decisions,114/114 frozen14,
+registry/fixtures/prior history/LIVE remain byte-exact; CPU incomplete7axes.
+Preserve complete old scalar policy plus old label/two gate-open spans in10402B
+archive `docs/tasks/archive/P4-SYSTEM-policy-a8.md`, SHA256
+ 072a661729355267bcff4bd0f638e03b37e67304b9c7cfe083e05749b9c595d2.
+Four spans/three original sources97409B reconstruct exactly; three damaged
+byte/marker/payload controls reject. Scalar class requirements/original dated
+declaration retained, withdrawn ancestry/live count corrected. Producer AST
+differs only in one f-string literal: report now measures policy-document
+presence, without authenticating timing or adequacy. Remove resolved contract
+open item/update obligations policy prose; all evidence/kind/verdict rules exact.
+Four stale-output controls RED1 and stale platform pin RED2; documented
+regeneration/current GREEN0. Twenty derived artifact inverses permit actual SHA
+bindings plus GS's policy-document measurement and one open-item statement;
+all verdicts, counts and other report measurements exact. Other board wiring/
+contracts/canonical inputs untouched. Focused15/six books/verify.py rc=0.
+Fixed-family census before final receipts: book519914B (4374room),
+tasks3126194B (19534room), profiles3137531B (8197room), knowledge94704B.
+Next a9/0200 is the already-owned sixth-unit registration/materials/book before
+adding experiment data; review actual expanded registration contract and standing
+family arithmetic, never raise ceilings merely to land content. Re-measure task/
+book budgets before edits and perform existing containment work when required.
+Then structured experiments, mechanical policy/status checks and mirror
+reconciliation. No independence/conformance/requirement-status/release credit.
+Evidence target/p4-system-14/a8; complete task/journal inverses retain history.
+promotion: declined (canonical policy and existing evidence/claim standards retain the normative disposition; captured old sources preserve the transition).
+
+### `.14` a7 — correct canonical reference lineage and derived claims (completed, SEMULITH-P4-0198)
+
+Owned on clean4fe4c01, brief0/actual census rc=0 after recurring cleanup.
+Read .14 priority/ROADMAP P4, canonical rv64i six-pair and GC candidate fields,
+schema/consistency/gate reporter contracts, ACT campaign's actual Sail-signature
+producer, board dossier pin/generators and both affected model materials chapters
+before edits. Replace unsupported encoding/FP/integer/QEMU ancestry assumptions
+with explicitly unexamined implementation lineage and bounded public-observation
+scope; retain ACT campaign's actual Sail-produced expectation dependence.
+Preserve every unaffected canonical field/pin/experiment/byte through scoped
+span replacements and complete two-source inverses; retain changed old spans
+in a bounded withdrawn historical capture (not redundant full dossiers).
+Account for all rv64i G0/G1/GC and GC GS report, board dossier pin/derived
+composition/platform, and per-unit materials-book consequences through their
+published generators. Prove report/output inverses against actual scoped deltas
+and stale-output controls; preserve CPU expressions/registry/frozen contracts,
+fixtures and previously frozen histories. No new independence/conformance/
+requirement-status credit. Focused affected gates, public interface checks as
+needed, six books, make check if required by tracked Rust changes; no new tests
+for prose. Evidence target/p4-system-14/a7; fixed caps/on-volume scratch.
+
+Additional root found while preparing this slice: rv64i G0 limitation5 repeats
+"specification contains no instruction encodings; source upstream of one comparator
+and not the other". Reproduce in tracked G0-REPORT.md and generator lines263–265;
+scoped blame pins producer rootbf71f9c5. This hardcoded maintained generator
+claim would survive canonical row correction. Own its repair here, replacing
+only the three emitted prose strings with canonical/public input and lineage
+limits; preserve complete Python source/AST-except-these-strings inverse and
+all report verdict/measurement algorithms. No dependency implementation read.
+
+The affected rv64i materials chapter also repeats text-only-image absence and
+encoding-ancestry claims, a stale normal-assembler route, acquired ACT labelled
+unacquired, and unqualified40-guest/492-step counts. Own these related prose
+repairs here before edits, preserving each changed span and the full chapter
+inverse; current numerical scope routes to generated reports. No count credit.
+
+Final affected-field review also owns GC Sail matched_scope's parenthetical
+still citing the withdrawn SoftFloat lineage inventory; scoped -S history pins
+its introducing root190d16b. Replace only that parenthetical with finite-agreement
+lineage limits; preserve every numerical/experiment/configuration observation,
+include its old bytes in the same capture, and repeat affected report/checks.
+
+Result: scoped own-history census identifies original inventory/format/book roots
+8a48da5/5c00809/b55c378, report producerbf71f9c5 and summary introduction190d16b
+(retained by d892571). Preserve31 old spans from four sources in35880B capture
+`docs/tasks/archive/P4-SYSTEM-reference-a7.md`, SHA256
+bf6e6d091e86743f4a0ca0ea15a129059cd426cbc60b51d153bcce8a439b0031.
+Complete originals total156499B; offsets/lengths/SHA reconstruct each whole
+source exactly, including twelve chapter groups and the three-string reporter
+block. Three damaged byte/marker/payload controls reject. Authenticate pinned
+RV32I107630B/SHA2563b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec
+and RV64I49246B/SHA2566eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd;
+HTML contains31/11images, invalidating the old text-only absence inference.
+Correct six rv64i rows, six candidate lineages, canonical comments/assembler
+note and one GC matched-scope parenthetical. All other parsed fields/pins/
+experiment observations exact. Three G0 verdicts now not-examined; own ACT
+Sail-produced expectation dependency stays shared. Python AST changes only
+three report prose constants. Materials chapter routes actual canonical/legacy
+assembler paths, acquired ACT and current generated corpus counts; dated
+reported metrics stay explicitly bounded. No fresh reference/campaign replay.
+Five initial stale drift controls RED1 plus stale platform pin RED2; regeneration/current
+GREEN0. Final summary correction adds the sixth RED1 stale GS control before regeneration.
+Twenty derived artifacts' full inverses permit only actual source/dossier SHA
+bindings and G0's three row verdicts/one limitation block; G1 and all other
+report verdicts/measurements remain exact. rv64i dossierf9246561→91b271ea,
+GC GS changes only its measured dossier fingerprint.
+Board pin changes only that rv64i digest; wiring/policies/contract bytes exact.
+Focused15 (doc9/profile/board/platform/materials/composition/unit-books),
+six books/verify.py rc=0; runtime/frozen114/114/registry/fixtures/prior history/
+LIVE exact and fixed caps. No independence/conformance/status credit.
+Evidence target/p4-system-14/a7; complete task/journal inverses retain prior history.
+promotion: declined (existing ancestry/search records and canonical declared evidence retain the routine correction; historical spans and exact inverses preserve the transition).
+Next .14 predeclared policy, structured matched experiments/controls/runners,
+mechanically derived requirement status and sixth-unit registration.
+
+### `.14` a6 — withdraw maintained internal ancestry assertions (completed, SEMULITH-P4-0197)
+
+Owned on clean6d6d9ca, brief0/actual census rc=0. Read .14 priority/roadmap,
+all three maintained reference/card records, decision INDEX, closed .7 current
+card, FP book and Knowledge Map/generator before edits. Root census the active
+SoftFloat/shared-encoding/integer independence assertions and clone/read-internals
+advice; no dependency implementation inspection. Preserve complete old
+reference_softfloat-shared-ancestry, reference_fp-model-layer-acceptance,
+zero-hits card and closed .7 card bytes in one dated, explicitly withdrawn
+historical capture with lengths/SHA and full inverse checks. Correct maintained
+records/INDEX/card/.7 current-use assertions around declared public contracts,
+finite dated input/output observations, selected policies and lineage limits.
+Preserve the accurate measured-again card suffix byte-for-byte, original numeric
+records/producer/runtime/profile/catalog/frozen/history/LIVE; no new independent
+ancestry/conformance or requirement-status credit. Update the FP book route and
+regenerate the Knowledge Map/index only through documented tools. Deliberately
+damage archive bytes/markers/payload to prove inverse verifier rejection.
+Focused doc9 plus PROFILE-CONSISTENCY/FP-VECTORS/KNOWLEDGE-MAP and six books;
+existing realized-check runner as current runtime confirmation. No new tests for
+prose changes. Next canonical rv64i six-pair and GC candidate reference rows
+with all generated consequences (a7), before evidence deliverables.
+Related review also owns the closed .1 profile card's inherited SoftFloat
+constraint phrase; preserve that exact note and correct its current-use route
+in this same slice before verification.
+
+Evidence target/p4-system-14/a6; fixed family caps and on-volume scratch.
+
+Result: scoped own-history census locates147de764 reference/card assertions
+and95f1c5c7 FP acceptance rationale. Preserve three complete old files plus
+closed .7 card and exact .1 note in16309B archive
+`docs/tasks/archive/P4-SYSTEM-reference-a6.md`, SHA256
+4e8117ae923453984269714de47a53af6eb0434a3cdd66bd5b6e478a75caa510. Five payload lengths/SHA/order and whole
+original source identities exact; full source task57117B/SHA256
+dd1b5200b600db531cea9ef57db284407e9df9c353277aaa496dc3047152ba73 reconstructs through owned/doc/card/note inverses.
+Three damaged byte/marker/payload controls reject. Earlier archives untouched.
+Maintained ancestry record withdraws internal/negative-search conclusions and
+explains legal declaration versus authenticated lineage. FP acceptance separates
+current governed230/3168 inputs from dated63752/24-agreement/927-step/host-cost
+receipts; no scratch replay claim. Knowledge card removes clone/read-internals
+advice and false absence proof; its accurate measured-again suffix byte-exact.
+Decision INDEX/.7/.1/FP book align; generated Map/book index remain byte-identical.
+Current realized-check runner1/1, focused12 (doc9/profile/FP-VECTORS/Map),
+six books/verify rc=0. All executable/producer/profile/canonical/catalog/frozen/
+registry/fixtures/prior history/LIVE exact,114/114 frozen; fixed caps.
+No new lineage/conformance/requirement-status credit. Evidence target/p4-system-14/a6.
+promotion: declined (existing retrievable record/card corrected in place; preserved history and exact inverses retain the routine transition).
+Next a7/0198 canonical rv64i six-pair and GC candidate references with all
+report/board/model-book consequences; then .14 evidence deliverables.
+
+### `.14` a5 — correct canonical state source citations (completed, SEMULITH-P4-0196)
+
+Owned on cleanfbb494a, brief0/actual census rc=0. Read .14 priority/ROADMAP P4,
+canonical state header/mstatus source, relevant public Machine Figure7 capture,
+generator/drift interfaces and privilege book before changes. Correct the two
+remaining maintained encoding-header assertions: use each CSR's published
+chapter layout and explicitly RV64 mstatus Figure7. Preserve every field,
+value/reset/discipline/why and runtime expression. Change one header comment
+and one source string only, then documented state/definition/GS regeneration.
+Prove complete canonical/source/generated/report inverses; stale state/definition/
+GS controls RED before regeneration and GREEN after. Re-authenticate cached
+Machine chapter and prior published SVG capture; no dependency implementation
+inspection or pin change. Strict make check, focused15 and six books; update
+book/live records and keep all frozen/catalog/fixtures/history/LIVE bytes exact.
+Bound this slice before the remaining reference/decision/knowledge sweep (a6).
+Evidence target/p4-system-14/a5; on-volume scratch, fixed family caps.
+
+Result: scoped blame pins both assertions to133e7229. Re-authenticate cached
+Machine271851B/SHA256b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea and a4's
+published RV64 mstatus Figure7 SVG9530B/SHA256dc77d3d5de9459c708b208587d42f0cc7e436dd299181d60e90d6ecce1d3c469.
+Correct state header and mstatus source locator only; every other byte reconstructs
+exactly. StateSHAe7349c0c70f27b1840acbdb808c471c60042393cb5fd7e7ae98c2022f111e81c→0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8.
+Published state/definition/report stale checks each RED1, regeneration/current0;
+complete generated mirrors differ only in three state SHA occurrences; complete
+GS inverse differs only in dossier fingerprint7f7fca37→a67d9847.
+All fields/reset/legalization/policies/census contents, runtime and frozen records
+remain exact. Privilege book names the same canonical/public layout.
+Make check Rust173/17/253, focused15/six books/verify rc=0; canonical-except-two-
+spans, registry/catalog/fixtures/history/LIVE exact,114/114 frozen, fixed caps.
+No independence or conformance credit. Evidence target/p4-system-14/a5.
+promotion: declined (public source pins, exact inverses and existing citation policy retain this routine correction).
+Next a6/0197 maintained reference/decision/knowledge and closed-.7 current-use
+rationale repair; then canonical six-pair/GC reference records and generated
+consequences, before .14 policy/experiment/status/registration deliverables.
+
+### `.14` a4 — ground privilege and wait-state rationales (completed, SEMULITH-P4-0195)
+
+Owned on cleanf7d87ee, brief0/actual census rc=0. Read .14 priorities, ROADMAP
+P4, affected privilege helpers/comments/canonical wait census, FP/privilege/wait
+book, generator interfaces and existing permission/Dirty/wait witnesses before
+changes. Reproduce internal Sail FP-gate/Dirty/default-policy citations, stale
+"no FP instruction decodes yet", encoding-header rationale for privileged fields,
+and HART_WAITING precedent in the census. Audit scoped roots with blame.
+Replace rationale with authenticated published Machine/Supervisor/Sstc/F
+requirements, architectural diagrams/field selections and explicit laboratory
+policy. Inspect public artifacts as necessary; no dependency implementation
+read/pin change. Preserve all algorithms, constants, field selection/storage/reset
+and current selected waiting/Dirty behavior. Change only privilege comments and
+wait-census wording; regenerate required inspection string/state fingerprints
+through documented generators. Prove complete comment/metadata inverses and all
+prior canonical/fixture/catalog/frozen/registry/history/LIVE identity.
+Run strict make check, focused15 gates and six books; keep current book examples
+accurate and record actual source authentication/finite limits. Then remaining
+reference/decision/knowledge rationale sweep before evidence signoff.
+Evidence target/p4-system-14/a4; all scratch/cache outputs on-volume; fixed caps.
+
+Scoped book review also reproduces the wait chapter's unqualified G-CONTRACT
+70/114 checkpoint, while canonical GS now derives114/114 frozen/green. Own
+its root census and repair here: route current coverage to the contract summary
+instead of retaining another mutable numerator. Counter-rebasing refusal prose
+is still accurate (author line541); do not rewrite it as completed support.
+
+Next priority canonical sweep also owns state.sexp header/CSR-source encoding.h
+citations (lines14/86), found during this review. Correct those maintained
+source assertions with their generated consequences before evidence signoff;
+a4 keeps the declared one-why-string scope and does not alter them.
+
+Affected-test review additionally owns wait.rs's same HART_WAITING/step.sail
+comment and privilege/tests.rs's encoding-header rationale plus stale17-CSR
+count (actual STORAGE23). Repair these small Rust-comment defects in a4,
+with exact inverses and a fresh strict check; no fixture values change.
+
+GATE-REPORT correctly rejects the state-source digest drift (focused rc=1);
+own its required documented GS regeneration here. Prove its entire report
+inverse differs only in dossier fingerprint; verdict/coverage remain unchanged.
+
+Result: roots4ee9d0b3 FP gate, dd9bc1cd Dirty default,47badd28 constants,
+c9c6b462 wait rationale and834499b7 stale70/114 reproduced by scoped blame.
+Authenticate all five cached Intro/Machine/Supervisor/Sstc/F chapters against
+tracked SHA256SUMS. Intro38003B/SHA25612c7a31aafbc32fa1f4fab82d60786c65af35f68e648aca7575a05034edf525e;
+Machine271851B/SHA256b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea.
+Three diagrams are fresh public captures linked by that authenticated Machine
+chapter, not pre-existing cache digest pins: mstatus9530B/SHA256dc77d3d5de9459c708b208587d42f0cc7e436dd299181d60e90d6ecce1d3c469,
+mcounteren9977B/SHA25638b69c4995417a3797208e9b17011a4f3fda8a73cf4c42fc3d2a2b3e6b149d76,
+menvcfg7845B/SHA256830daf921ae77ecb61237c7caba482123e644f552e8a095864726675d62346b5.
+XML label/tick coordinates prove unchanged SIE1/MIE3/SPIE5/MPIE7/SPP8,
+VS9:10/MPP11:12/FS13:14/XS15:16/MPRV17/TVM20/SD63, CY0/TM1/IR2,
+STCE63. Public Machine Figure7/17/24 and Intro Table1 ground constants;
+§2.1.1.6.7/§2.1.3.3 and selected laboratory policies ground Dirty/wait state.
+Remove internal function/default/encoding-header rationale and stale no-FP-decode
+comment from privilege.rs; correct wait.rs and actual23-CSR fixture header.
+One canonical wait why-string changes, no fields/storage/reset/policy; sourceSHA
+e8366fe1a614df7b802699bab0a71a68d73c43f6d8ede0471b8460604e7aac52→e7349c0c70f27b1840acbdb808c471c60042393cb5fd7e7ae98c2022f111e81c.
+Published state/definition --check each RED1 before regeneration, GREEN0 after;
+complete source/comment inverses, one generated inspection string plus three SHA
+occurrences exact. GATE-REPORT stale digest RED1; documented regeneration
+changes only dossier fingerprint06ec9236→7f7fca37, full report inverse exact,
+verdict/coverage unchanged. Books explain public constants/selected Dirty policy and route
+current wait-contract coverage; author counter-rebasing refusal remains accurate.
+Make check Rust173/17/253, focused15/six books/verify rc=0. Other canonical data,
+frozen records/registry/fixtures/code/history/LIVE exact;114/114 frozen,
+CPU incomplete7axes. No new independence or conformance credit. Evidence
+ target/p4-system-14/a4 (source-auth/diagram-proof/metadata-inverse/controls).
+promotion: declined (public pins, canonical policies and exact inverses retain this routine correction).
+First hook RED on task-acceptance/lesson-promotion/seam receipt formats;
+add actual verify.py rc=0 inside ADDRESSED and the required decline token,
+without weakening any gate. Next a5/0196 canonical state source
+and current reference/decision/knowledge rationale sweep before evidence signoff.
+
+### `.14` a3 — contain completed contract and append histories (completed, SEMULITH-P4-0194)
+
+Owned on clean2c3ef6b, brief0 and actual census rc=0. External containment guide
+read in full, read-only; full doctrine adoption stays owned by LIVE-CONTAINMENT.4.
+Apply existing local routes/caps: DEV36359B vs36864health, CHANGELOG45620B,
+P4 task117546B vs131072part. Preserve all unique closed .13 design/census/
+acceptance/verification/commit/changelog receipt spans byte-exact in finite
+archive12; keep complete live graph, .14 prerequisites, current frontier and .14
+receipts. Authenticate complete source inverse and damaged payload/marker/route
+controls, plus immutable prior archives. Use published sharder for oldest whole
+journal entries with exact ordered inverses, dry-run parity and prior shard
+identity. Target DEV<=20000B/CHANGELOG<=30000B before new receipts, retaining
+local ceilings. Preflight file-count/part/aggregate budgets for every new file;
+no raised cap, changed browsing contract, deletion or compressed archive.
+Update book census route/current docs/resume. No code/profile/frozen/registry/
+canonical/LIVE change. Run focused docs gates, history controls and six books;
+then remaining .14 privilege/state/reference provenance repairs. Evidence
+ target/p4-system-14/a3; all scratch on the repository volume.
+
+Result: source2c3ef6b117546B/1468lines/SHA256b3a1e477c3e36b45c35ac17888b6ab93f82d9424c205642c3049598fe0d51c15;
+five whole .13 spans76064B to archive12/77961B/SHA256c37126b4351abd7c78f119f223d3fbe78701bebc11c2d1df71f0ac3f4301b575.
+Partition43240B before final receipt; full source inverse restores every retained
+segment and payload in order. Four damaged task-byte/marker/payload/route
+controls refuse; two damaged journal payloads refuse (six total). Prior task
+archives and sealed/live history exact. Complete live graph/.14/frontier retained.
+Published sharder12/0; dry-run predicts exact names/content and changes nothing.
+DEV8whole oldest entries→0234/17278B/SHA2568f80e26f8d5ab5ddee176e15aa07c8125593f30ae725bd61a28ba84efd770726;
+head36359→19314B before receipt,10kept. CHANGELOG22→0235/16377B/SHA256fa6638de3a381f673a3e720f351d2a9fe8a5c92e861b0ba7caf46eb02f6fec10;
+head45620→29480B,43kept. Whole ordered journal inverses exact, manifest25→27live
+rows;237logical shards (27live/210sealed). No caps raised or browse change.
+Current v2 book routes the complete .13 census to archive12. Focused9/history
+controls/six books/final verifier rc=0; all code/canonical/profiles/frozen/registry/
+LIVE/prior history exact, effective114/114 frozen; fixed family budgets.
+Promotion: declined — published sharder/frozen history and source-specific inverse
+retain this routine bounded transition. Next a4/0195 privilege/state rationale,
+then remaining reference/decision/knowledge repairs before evidence signoff.
+
+### `.14` a2 — correct public-source rationales (completed, SEMULITH-P4-0193)
+
+Owned on clean fd84cf0, brief0, actual census rc=0. Read .14 prerequisites,
+ROADMAP P4, assembler source/public canonical constructor route, FP rounding
+resolver/test and pinned F20.1.2, assembler annex/current FP book. Reproduce
+b8d09f53 module rationale claiming Sail/Spike encoding ancestry and semantic
+independence; annex repeats it at root4855c22a. Decoder agreement cannot establish
+either lineage claim. The old six-artifact census is also presented as the current
+source route although canonical Assembler returns before the legacy table path.
+Refresh the module documentation around its actual canonical API, finite
+published-artifact checks and explicit lineage limits; fix the annex in lockstep.
+FP resolve_rm rootb1e64d3b cites an internal Sail function for reserved-mode
+behavior. Replace that rationale with pinned F's reserved-encoding permission
+and the explicit laboratory choice; document static/DYN examples.
+No dependency implementation read/pin change; no algorithm/API/encoding/FP change.
+Prove Python AST excluding the module docstring and Rust after comment inversion
+exact; fresh all167guest words/expectations and existing rounding tests unchanged.
+Run strict make check, focused generator/profile/docs gates and six books;
+record source authentication, exact inverses and all fixed family caps. Preserve
+all canonical data, profiles/frozen contracts, registry, prior history and LIVE.
+Evidence target/p4-system-14/a2; then remaining privilege/state/reference rationale
+sweep before .14 evidence signoff. No new independence or conformance credit.
+
+Result: repair.py rc=0 authenticates pinned F70860B/SHA2568e42e6ae9b3ab18fcf9c3d4f26a1a251310e3fd08b67368235fb5e9affd32edd,
+locates reserved-mode permission and canonical constructor's early return;
+Python executable AST SHA256ab7f6ce6342fdb66232655438ea35a8f6f5f43094c4f910ae83599c8223d2bcd
+and Rust comment inverse exact. Blame reproduces b8d09f53/4855c22a/b1e64d3b.
+Module/annex now describe canonical inputs and finite public observations with
+explicit lineage limits; FP comment/book cite F20.1.2 and selected policy.
+Corpus.py rc=0: all167old/new guest byte images exact, fresh GPR/fetch author
+comparison167/5365/10524 exact (not a new FP-data or independence derivation).
+Make check Rust173/17/253, focused15/six books/invariant verifier rc=0.
+No canonical/profile/frozen/registry/history/LIVE/other executable code changes;
+fixed caps. No new gate or conformance credit. Append heads now need bounded
+containment before the next provenance receipt; own a3/0194 on the clean commit.
+Promotion: declined — canonical API/public F source, current book and exact
+inverse receipt retain this correction; broader provenance sweep remains owned.
+
+### `.14` a1 — correct signaling-NaN fixture notes (completed, SEMULITH-P4-0192)
+
+Owned on clean a1efac4, brief0 and actual handoff census rc=0. Read ROADMAP
+P4, .14 prerequisites, generator/FP-VECTORS, public model conversion and book
+qualification correction plus d3 amendment. Reproduce root99475c13's one
+comment/two note templates, repeated in3generated rows: they still claim a
+backend deviation/patch withdrawn by the same qualification amendment.
+Impact: false maintained evidence rationale, not an observed numeric defect.
+Correct only that comment and those templates; regenerate through the published
+command. Require full inverse after replacing notes, exact all230numeric rows
+and3168fixture bytes, all canonical/profile/frozen/registry/history unchanged.
+Demonstrate generator drift RED before regeneration and stale-note scratch
+control rejection. Run make check (generated Rust changes), FP-VECTORS with
+hardware oracle/self-tests, focused doc gates and six books. Sync current FP
+book/DEV/changelog/resume; no new numeric independence or gate credit.
+Then continue remaining owned .14 provenance corrections before evidence signoff.
+Evidence target/p4-system-14/a1; same-volume temporary files and fixed caps.
+
+Result: repair.py rc=0 reproduces one stale comment/two templates and3rows
+(root99475c13, d3 withdrawal); generator --check RED1 before regeneration,
+GREEN0 after the published regeneration, stale-note scratch copy RED1.
+Exact source/vector inverses differ only by that comment/three labels; all230
+numeric tuples exact (SHA2562396bd49c45bd49145085887c09f76df8d53b5ba44b00e93fc8cea67bf8f3a29),
+3168fixture bytes exact (SHA2565eb35db218f585e56e4eb9145c530e7d50f6841569195560de72d76feeb831c5).
+Make check rc=0 Rust173/17/253; focused10 incl FP-VECTORS hardware/self-tests,
+six books and invariant verifier rc=0. All other CPU/source/profile/canonical/
+frozen/registry/history/LIVE bytes exact; fixed caps. No new gate/lineage credit.
+Promotion: declined — the original qualification correction, generator labels,
+current FP book and this exact regeneration receipt retain the bounded repair.
+Next a2/0193 public-source rationale sweep, then the remaining .14 prerequisites.
+
+
+<!-- END P4-A22 decisions -->
+
+<a id="acceptance"></a>
+
+## acceptance
+
+<!-- BEGIN P4-A22 acceptance bytes=13435 sha256=c44a79daa8eb99c3c53c4ae4e6d5b750407eefefa0250d4ff2d67bb10b384c0c -->
+- [x] `.14` a19 — **ROOT CAUSE**: proof.py rc=0 confirms today's schema refuses
+  gpr_witness/baseline_id; generic names/verdicts cannot express exact discrimination.
+- [x] `.14` a19 — **ADDRESSED**: rendered.py/proof.py rc=0; prospective method
+  declares typed relationships, exact control, closure, trust/replay and byte limits;
+  all15 rendered boundaries and the complete old-book inverse pass.
+- [x] `.14` a19 — **NO REGRESSION**: focused10/seven books/sharder12/0 rc=0;
+  executable AST,29entry whole-note partition/old manifest and fixed caps exact;
+  scope.py rc=0 protects every other tracked file, including canonical/history/LIVE.
+
+- [x] `.14` a18 — **ROOT CAUSE**: before.log rc=0: conflicting expectation
+  writes collapse to the last value before public comparison AGREE; old gate0.
+- [x] `.14` a18 — **ADDRESSED**: mapping12/0/optimized12/0/proof.py rc=0;
+  removed guard exposes six intended failures, actual gate1/cached CLI2;
+  DOSSIER-SCHEMA22/0 and exact rendered book refusal discriminate.
+- [x] `.14` a18 — **NO REGRESSION**: make ci rc=0 all five legs,
+  Rust173/17/253/seven books; canonical.py rc=0 proves243dictionaries exact and
+  222expectation files clean; scope.py rc=0 proves all other tracked files exact.
+
+
+- [x] `.14` a17 — **ROOT CAUSE**: gap.py rc=0 demonstrates pin metadata
+  followed by a later path read can observe different bytes; prior pin39/0 passes.
+- [x] `.14` a17 — **ADDRESSED**: snapshots24/0/optimized24/0/proof.py rc=0:
+  five independent mutants expose their controls, no failure data/reopen, explicit
+  bounds and immutable bytes; actual book helper success/mismatch paths pass.
+- [x] `.14` a17 — **NO REGRESSION**: focused13/profile54/0/seven books rc=0;
+  old pin39/0 and twelve predicate removals still discriminate; scope.py rc=0
+  proves other tracked populations exact; no canonical qualification/CPU credit.
+
+
+- [x] `.14` a16 — **ROOT CAUSE**: before.log rc=0 reproduces three false
+  agreements on surplus rows/interrupt/fetch deliveries in predecessor11ee6d4.
+- [x] `.14` a16 — **ADDRESSED**: proof.log rc=0: five tails/three positives,
+  separate row/delivery omissions fail for intended reasons, also optimized;
+  GUEST-GEN152/0 rc=0 preserves the prior offline controls.
+- [x] `.14` a16 — **NO REGRESSION**: focused13/seven books rc=0;
+  corpus334 exact before/after verdict/reason pairs and live atomic/timer rc=0;
+  scope.py rc=0 proves1265other files exact and old-note28==26+2 partition.
+
+
+- [x] `.14` a15 — **ROOT CAUSE**: integration.py rc=0: predecessor9b14365
+  lacks pin diagnostics; matching metadata alone cannot authenticate file bytes.
+- [x] `.14` a15 — **ADDRESSED**: EXPERIMENT-ARTIFACTS39/0/optimized39/0 rc=0:
+  twelve predicate removals expose intended failures; actual anchored reads,
+  race controls, bounded chunks and descriptor/fixture cleanup discriminate.
+- [x] `.14` a15 — **NO REGRESSION**: focused13 rc=0, graph63/0/profile53/0:
+  make book/rendered reader/scope proof rc=0: seven books, all other tracked
+  populations/caps exact; qualification closed, no CPU acceptance change.
+
+- [x] `.14` a14 — **ROOT CAUSE**: integration.py/C1 probe rc=0: predecessor
+  reports only pending guard; initial path predicate accepts U+0085 incorrectly.
+- [x] `.14` a14 — **ADDRESSED**: EXPERIMENT-GRAPH63/0 (also optimized),
+  PROFILE-CONSISTENCY52/0 rc=0; nine predicate removals expose intended reasons;
+  C1 regression refuses; actual raw duplicate/repeat checks fire before credit.
+- [x] `.14` a14 — **NO REGRESSION**: focused13/make book/scope proof rc=0:
+  seven books/full rendered explanation; old code/schema/data/generated/archive
+  populations and fixed caps exact; qualification closed, no CPU acceptance change.
+
+- [x] `.14` a13 — **ROOT CAUSE**: prove.py rc=0: old6afe055 schema/mapper
+  refuse verification; old writer loses nested data; new grammar needed by a12.
+- [x] `.14` a13 — **ADDRESSED**: schema/profile self-tests rc=0 (17/0 and51/0):
+  nested records/argv exact; seven lost-child/three facet controls refuse;
+  deleting qualification guard gives50/1 for intended reason, no premature credit.
+- [x] `.14` a13 — **NO REGRESSION**: focused13/make book/prove.py rc=0:
+  seven books, complete example,243 dictionaries/old schema exact; make ci rc=0,
+  Rust173/17/253/all five legs green, protected data/archive and caps unchanged.
+
+- [x] `.14` a12 — **ROOT CAUSE**: actual mapper probe rc=0 confirms
+  EXPERIMENT-CONTRACT-CURRENT: undeclared verification field refuses; existing
+  flat metadata does not implement the prospective pinned-capture contract.
+- [x] `.14` a12 — **ADDRESSED**: EXPERIMENT-CONTRACT-BOOK rc=0: full required
+  matrix, worked control protocol and pending-implementation status rendered.
+  The decision declares future validation/retention without new qualification credit.
+- [x] `.14` a12 — **NO REGRESSION**: focused9/make book/protected scope rc=0:
+  seven books; all code/schema/runtime/canonical/profile/frozen/history/archive/
+  LIVE exact. No caps/grammar/gates/statuses changed; P4 remains13/18.
+  promotion: decision_qualified-matched-experiment-contract.md.
+
+- [x] `.14` a11 — **ROOT CAUSE**: checker-prefix equality and published controls
+  rc=1: PROFILE-CONSISTENCY46pass/4fail; each invalid fixture returned0/__CHECKED__1.
+  Scoped git -S pins b8d09f5/147de76. IDs/membership/distinctness were not judged.
+- [x] `.14` a11 — **ADDRESSED**: PROFILE-CONSISTENCY50pass/0fail and actual
+  five dossiers GREEN0; four restored-predicate controls each49pass/1fail, rc=1,
+  for the intended missing rule. No new independence or adequacy claim.
+- [x] `.14` a11 — **NO REGRESSION**: focused13/make book/scope rc=0: seven books,
+  reference-schema AST identical and protected runtime/canonical/profile/frozen/
+  fixtures/earlier history/archive exact. Derived39/732/38; live/book/registry/
+  frontier/resume synchronized; CPU incomplete7axes/P4 13/18 remain unchanged.
+  promotion: declined (existing graph contract, permanent controls and book).
+
+- [x] `.14` a10 — **ROOT CAUSE**: controls/reader-control/history rc=0:
+ 989a7b53 drops later requires;5c00809 catalogue labels wrong;d0f55ca census
+ reasons stale;26113403/07844c3a/01154383 current dossier stale/unsupported.
+- [x] `.14` a10 — **ADDRESSED**: controls/inverses.py rc=0: full six-unit
+ lists/24GC rows; scope10/0 versus old8/2; generator3/3 versus old2fail/1error;
+ exact source/20fragment/report inverses and three damaged captures refused.
+- [x] `.14` a10 — **NO REGRESSION**: focused20/make book/make ci/inverses.py rc=0:
+ Rust173/17/253, seven books/eight rendered chapters; all requirements/runtime/
+ frozen114/114/fixtures/prior history exact; units6/arms672, milestones unchanged.
+
+
+- [x] `.14` a9 — **ROOT CAUSE**: scoped blame/-S history/repair.py rc=0:
+87f114d2 producer fallback plus345c63f registry expansion reproduce three
+wrong DSP attributions and prospective GC failure before registration.
+- [x] `.14` a9 — **ADDRESSED**: producer controls/verify.py rc=0:
+24/0; restoring original fallback fails three ownership cases,21/3 rc=1;
+real stale report RED1/regeneration GREEN0, full source/five-span report inverse,
+actual future GC owner and rendered book explanation verified.
+- [x] `.14` a9 — **NO REGRESSION**: focused9/make book/verify.py rc=0:
+six books; all other reports/data/requirements/runtime/frozen/registry/fixtures/
+history/LIVE exact,114/114 frozen and global669 unchanged; fixed caps.
+
+- [x] `.14` a8 — **ROOT CAUSE**: scoped -S history/repair.py rc=0:
+ bf71f9c5 scalar ancestry/live-count assertions and f8567fb presence label;
+ GC policy absent and resolved G-CONTRACT open prose still retained.
+- [x] `.14` a8 — **ADDRESSED**: repair.py/archive.py/verify.py rc=0:
+ prospective policy included in book, scalar policy corrected with four captured
+ spans/three full-source inverses and three damaged controls; producer one-literal
+ AST delta, manifest/every derived output inverse exact, stale controls reject.
+- [x] `.14` a8 — **NO REGRESSION**: focused15/make book/verify.py rc=0:
+ six books/rendered policy/anchor, all48GC/28scalar statuses and requirements,
+ runtime/frozen/registry/fixtures/previous history/LIVE exact, fixed caps;
+ CPU incomplete7axes,114/114 frozen; no policy-presence acceptance credit.
+
+- [x] `.14` a7 — **ROOT CAUSE**: canonical.py/archive.py/scoped history rc=0:
+ canonical inventory, reporterbf71f9c5 and GC summary190d16b retain unsupported
+ ancestry/text-search assertions; authenticated HTML contains31/11images.
+- [x] `.14` a7 — **ADDRESSED**: archive.py/derived.py/verify.py rc=0:
+31 historical spans/four full-source inverses, three damaged controls reject;
+canonical rows/candidates/comments, three report strings and twelve book groups
+corrected; all stale controls reject, documented regeneration is current.
+- [x] `.14` a7 — **NO REGRESSION**: focused15/make book/verify.py rc=0:
+20 derived artifact inverses and complete Python AST-except-three-constants;
+all other canonical/pin/experiment data, runtime/frozen/registry/fixtures/history/
+LIVE exact,114/114 frozen, fixed caps; no new independence/conformance credit.
+
+- [x] `.14` a6 — **ROOT CAUSE**: repair.py/scoped blame rc=0:
+ 147de764/95f1c5c7 maintained internal census/lineage and clone advice, plus
+ closed .7/.1 current-use routes; original files/card/note enumerated before edits.
+- [x] `.14` a6 — **ADDRESSED**: archive_controls.py/verify.py rc=0:
+ five exact historical payloads/full task inverse, three damaged controls reject;
+ current records/INDEX/card/.7/.1/book corrected, accurate card suffix exact.
+- [x] `.14` a6 — **NO REGRESSION**: realized-check runner1/1,
+ focused12/six books/verify.py rc=0; all runtime/producer/profile/canonical/
+ frozen/registry/fixtures/history/LIVE exact,114/114 frozen and fixed caps.
+
+
+- [x] `.14` a5 — **ROOT CAUSE**: scoped blame/repair.py rc=0: both
+  canonical encoding-header assertions originate at133e7229; authenticate the
+  pinned Machine chapter and published RV64 mstatus diagram before replacing them.
+- [x] `.14` a5 — **ADDRESSED**: repair.py/verify.py rc=0: two-span
+  canonical inverse, three generated SHA occurrences and one report fingerprint
+  only; stale state/definition/report RED1→current GREEN0; privilege book aligned.
+- [x] `.14` a5 — **NO REGRESSION**: make check173/17/253, focused15,
+  six books/verify.py rc=0; all fields/reset/policies/runtime/census/frozen/
+  registry/fixtures/history/LIVE exact,114/114 frozen, fixed caps unchanged.
+
+
+- [x] `.14` a4 — **ROOT CAUSE**: repair.py/source-auth/diagram proof rc=0;
+  scoped blame identifies internal/default rationale, stale no-FP-decode/17-CSR
+  comments and834499b7's stale70/114 checkpoint; five public chapters authenticated.
+- [x] `.14` a4 — **ADDRESSED**: verify.py rc=0, exact complete comment/one-why/metadata inverses;
+  diagrams validate unchanged positions; published state/definition stale RED1→
+  current GREEN0; public rules/selected policies and three book routes corrected.
+- [x] `.14` a4 — **NO REGRESSION**: make check173/17/253, focused15,
+  six books/verify.py rc=0; all executable expressions/constants, other canonical/
+  frozen/registry/fixture/history/LIVE bytes exact,114/114 frozen and fixed caps.
+
+
+- [x] `.14` a3 — **ROOT CAUSE**: partition.py/census rc=0:
+  DEV36359B vs36864health and task117546B before further .14 receipts;
+  identify five complete closed-.13 spans76064B and whole oldest journal entries.
+- [x] `.14` a3 — **ADDRESSED**: partition.py/journals.py/inverse.py rc=0:
+  archive12/77961B, full117546B source inverse exact; six damaged task/journal
+  controls refuse; published sharder12/0, DEV8/CHANGELOG22 whole entry inverses
+  and dry-run parity exact; graph/.14/frontier retained, current book route fixed.
+- [x] `.14` a3 — **NO REGRESSION**: focused9/make book/verify.py rc=0:
+  six books, history freeze/partition checks; all code/canonical/profile/frozen/
+  registry/history/LIVE exact; effective114/114 frozen and all fixed caps.
+
+
+- [x] `.14` a2 — **ROOT CAUSE**: repair.py/blame rc=0:
+  b8d09f53/4855c22a unsupported encoding ancestry/semantic independence;
+  b1e64d3b internal Sail rationale. Authenticate pinned F's actual permission.
+- [x] `.14` a2 — **ADDRESSED**: repair.py/corpus.py rc=0:
+  public canonical-route/finite-observation rationale and selected rounding policy;
+  Python AST/Rust comment inverse exact; all167old/new images and GPR/fetch
+  author167/5365/10524 exact, no new independence claim.
+- [x] `.14` a2 — **NO REGRESSION**: make check/focused15/make book/verify.py rc=0:
+  Rust173/17/253, existing rounding/generator controls and six books; canonical/
+  profiles/frozen/registry/history/LIVE/other code exact; fixed caps.
+
+
+- [x] `.14` a1 — **ROOT CAUSE**: repair.py/blame rc=0: root99475c13
+  one comment/two templates/three labels repeat withdrawn d3 backend-NV defect;
+  current conversion and qualification correction agree on INVALID_OP.
+- [x] `.14` a1 — **ADDRESSED**: repair.py/generator rc=0: change only
+  comment/templates/three generated notes; stale tracked/scratch notes RED1,
+  published regeneration GREEN0; all230numeric tuples/3168fixture bytes exact.
+- [x] `.14` a1 — **NO REGRESSION**: make check/focused10/make book/verify.py rc=0:
+  Rust173/17/253, FP-VECTORS hardware/self-tests, six books; prior CPU/catalog/
+  frozen/registry/profile/canonical/history/LIVE exact; fixed caps.
+
+
+
+<!-- END P4-A22 acceptance -->
+
+<a id="verification"></a>
+
+## verification
+
+<!-- BEGIN P4-A22 verification bytes=2675 sha256=cf1c0e644c9986dad0c1ab227b7c01a127e10232c5cfa1c3a0db6221877296db -->
+a19: focused10/seven books/15 rendered checks/old-book inverse, current named
+syntax refusals, docstring executable-AST proof, sharder12/0 and exact29==27+2
+whole-entry/old-manifest inverses/protected scope rc=0. New method remains a
+prospective declaration; full CI most recently passed at a18. No qualification.
+
+a18: mapping12/0/optimized12/0, guard-removal six failures, actual dossier/CLI
+integration, schema22/0/mapper14/0,243dictionary inverse/raw222document census,
+full five-leg CI/Rust173/17/253/seven books/literal+rendered example/protected
+scope rc=0. Expanded emitter's late global declaration was caught by all five
+new reason-specific arms; corrected before rerunning green. No canonical credit.
+
+
+a17: snapshot24/0/optimized24/0, five mutants normal/optimized, pin39/0 before/
+after plus twelve predicate removals, actual book helper, profile54/0/focused13/
+seven books/rendered API/protected scope rc=0. No Rust changes; qualification closed.
+New duplicate-write mapping defect reproduced/owned as high-priority a18 next.
+
+
+a16: false-AGREE reproduction, budget5tails/3positive, two independent omissions
+normal/optimized, GUEST-GEN152/0, focused13/sharder12/0/seven books/rendered budget,
+334cached-trace exact outcome pairs, live public atomic/timer, protected scope and
+whole-entry notes partition rc=0. No Rust changes; qualifier remains closed.
+
+
+a15: pin39/0/optimized39/0, graph63/0, profile53/0, twelve predicate removals,
+actual checker before/after, focused13/seven books/full rendered reader/protected
+scope rc=0. No Rust changes; comparison/policy qualification remains pending.
+
+a14: graph63/0/optimized63/0, profile52/0, schema17/0, nine predicate removals,
+actual checker before/after and C1 false-GREEN repair, focused13/seven books/
+rendered explanation/protected scope rc=0. No Rust changes; qualification pending.
+
+a13: schema17/0, consistency51/0, predecessor/inverse/lost-child/facet/guard controls,
+focused13/seven books/complete illustrative syntax/full five-leg CI rc=0;
+Rust173/17/253. First SEAM check caught a missing rc signature in the new acceptance
+line; correct that line to name the actual tool result, leaving gate rules intact.
+
+a12: focused9/seven books/full rendered contract/actual undeclared-field refusal/
+protected scope rc=0; declaration only, no implementation or acceptance credit.
+
+a11: original46/4, repaired50/0/current5 dossiers, four independent predicate
+controls49/1, focused13/seven books/protected scope/schema AST rc=0; no CPU credit.
+First commit gate caught a misplaced row/date cell from an unanchored cell match;
+restore the whole verification row and insert the commit row under its exact header.
+
+<!-- END P4-A22 verification -->
+
+<a id="verification-table"></a>
+
+## verification-table
+
+<!-- BEGIN P4-A22 verification-table bytes=2961 sha256=bf8b4ab588483ed1278fa3d1e9eb26bfe57d0080da70a165ce60c2ba0207a09f -->
+| Date | Leaf | Checks | Result |
+| --- | --- | --- | --- |
+| `2026-10-10` | `.14` a11 | original46/4, repaired50/0/current5 dossiers; four predicate controls49/1; schema AST/protected scope/rendered examples | focused13/seven books rc=0; CPU and canonical data unchanged |
+| `2026-10-10` | `.14` a10 | six-unit/24category registration; missing controls; scope10/0 versus old8/2; generator3/3; complete source/derived/history inverses | focused20/seven books/eight rendered chapters/full five-leg CI rc=0; statuses/runtime/frozen/history exact |
+| `2026-10-10` | `.14` a9 | rooted fallback; producer24/0, old fallback21/3; real stale control; source/full-report inverse; actual future GC ownership | focused9/six books/rendered explanation/verify rc=0; other reports/data/runtime/frozen/history/LIVE exact |
+| `2026-10-10` | `.14` a8 | prospective policy; four captured spans/three source inverses; three damaged controls; one-literal AST/manifest/20-output inverses; stale controls | focused15/six books/rendered policy/verify rc=0; all statuses/runtime/frozen/history/LIVE exact |
+| `2026-10-10` | `.14` a7 | 31 historical spans/four full-source inverses; three damaged controls; authenticated HTML; canonical/report/board/book drift controls | focused15/six books/verify rc=0; other data/runtime/frozen/prior history/LIVE exact,114/114 frozen |
+| `2026-10-10` | `.14` a6 | five exact historical payloads/full task inverse; three damaged controls; corrected maintained reference/card/.7/.1/book scope | realized1/1/focused12/six books/verify rc=0; all code/producer/profile/frozen/prior history/LIVE exact;114/114 frozen |
+| `2026-10-10` | `.14` a5 | root133e7229/public chapter+diagram auth; canonical two-span/generated three-SHA/report fingerprint inverse; three stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; fields/runtime/frozen/fixtures/history/LIVE exact;114/114 frozen |
+| `2026-10-10` | `.14` a4 | five chapter digests/three public SVG coordinate proofs; full comment/one-why/generated inverses; two stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; executable/canonical-except-why/frozen/history/LIVE exact;114/114 frozen |
+| `2026-10-10` | `.14` a3 | five-span76064B/full117546B inverse; six damaged controls; published sharder12/0/dry parity; DEV8/CHANGELOG22 whole records | focused9/six books/verify rc=0; immutable prior history/code/data/LIVE exact; fixed caps, v2 frozen114/114 |
+| `2026-10-10` | `.14` a2 | public-source/root census; authenticated F; Python AST/Rust inverse;167old/new images/fresh GPR+fetch corpus | Rust173/17/253/focused15/6books/verify rc=0; canonical/profile/frozen/registry/LIVE/history exact |
+| `2026-10-10` | `.14` a1 | stale labels/root99475c13; exact230numeric/3168fixture inverse; generator RED1→GREEN0/stale scratch RED1 | make check Rust173/17/253, focused10 incl hardware/self-tests,6books/verify rc=0; CPU/frozen/registry/LIVE/history exact |
+
+<!-- END P4-A22 verification-table -->
+
+<a id="commits"></a>
+
+## commits
+
+| Leaf | Subject | Next |
+| --- | --- | --- |
+<!-- BEGIN P4-A22 commits bytes=3541 sha256=0427cfb7041149a77ddb0b33151e5891ba6287fc816d7161db706a7a81e5cea5 -->
+| `.14` a19 | `SEMULITH-P4-0210 (leaf P4-SYSTEM.14): declare the first Sail GPR comparison method` | a20 typed witness/baseline grammar, artifact mappings/evaluator, retention and first canonical capture |
+| `.14` a18 | `SEMULITH-P4-0209 (leaf P4-SYSTEM.14): refuse duplicate expectation writes` | a19 method-specific comparison contract, evaluator, retention and first canonical capture |
+| `.14` a17 | `SEMULITH-P4-0208 (leaf P4-SYSTEM.14): return bounded authenticated snapshots` | a18 duplicate expectation writes, comparison/qualification, retention and first canonical capture |
+| `.14` a16 | `SEMULITH-P4-0207 (leaf P4-SYSTEM.14): refuse surplus Sail observations` | authenticated bounded snapshots, comparison/qualification, retention and fresh canonical capture |
+| `.14` a15 | `SEMULITH-P4-0206 (leaf P4-SYSTEM.14): authenticate experiment file pins` | comparison/qualification evaluator, bounded retention, first fresh capture |
+| `.14` a14 | `SEMULITH-P4-0205 (leaf P4-SYSTEM.14): validate capture identities and declared edges` | artifact/pin/comparison evaluator, bounded retention, first fresh capture |
+| `.14` a13 | `SEMULITH-P4-0204 (leaf P4-SYSTEM.14): carry structured experiment verification` | relationship/pin/artifact evaluator, bounded retention, first fresh capture |
+| `.14` a12 | `SEMULITH-P4-0203 (leaf P4-SYSTEM.14): declare the qualified matched-experiment contract` | shared schema/mapping/validator, bounded retention, first fresh capture |
+| `.14` a11 | `SEMULITH-P4-0202 (leaf P4-SYSTEM.14): reject invalid experiment identities` | structured GC experiments/controls/producers, policy/status derivation and mirrors |
+| `.14` a10 | `SEMULITH-P4-0201 (leaf P4-SYSTEM.14): register RV64GC and enforce every required category` | containment prototype/review under LIVE-CONTAINMENT.4, then .14 experiments/policy/status/mirrors |
+| `.14` a9 | `SEMULITH-P4-0200 (leaf P4-SYSTEM.14): correct BREADTH evidence attribution` | a10/0201 sixth-unit registration/materials/book and family contract review |
+| `.14` a8 | `SEMULITH-P4-0199 (leaf P4-SYSTEM.14): declare prospective evidence requalification policy` | a9/0200 sixth-unit registration/materials/book and measured family contract; then experiment/policy/status gates |
+| `.14` a7 | `SEMULITH-P4-0198 (leaf P4-SYSTEM.14): correct canonical reference evidence and derived claims` | predeclared policy, structured experiment/control records, status derivation and sixth-unit registration |
+| `.14` a6 | `SEMULITH-P4-0197 (leaf P4-SYSTEM.14): withdraw maintained internal ancestry assertions` | a7/0198 canonical reference rows and all generated consequences |
+| `.14` a5 | `SEMULITH-P4-0196 (leaf P4-SYSTEM.14): correct canonical state source citations` | a6/0197 maintained reference/decision/knowledge and .7 current-use rationale; then canonical references |
+| `.14` a4 | `SEMULITH-P4-0195 (leaf P4-SYSTEM.14): ground privilege and wait-state rationales` | a5/0196 canonical state/reference/decision/knowledge rationale sweep |
+| `.14` a3 | `SEMULITH-P4-0194 (leaf P4-SYSTEM.14): contain completed contract and append histories` | a4/0195 privilege/state provenance, then remaining canonical/reference rationale sweep |
+| `.14` a2 | `SEMULITH-P4-0193 (leaf P4-SYSTEM.14): correct public-source rationales` | bounded append-history/task containment a3/0194, then remaining provenance sweep |
+| `.14` a1 | `SEMULITH-P4-0192 (leaf P4-SYSTEM.14): correct signaling-NaN fixture notes` | a2/0193 public-source rationale sweep, remaining provenance prerequisites |
+
+<!-- END P4-A22 commits -->
+
+<a id="changelog"></a>
+
+## changelog
+
+<!-- BEGIN P4-A22 changelog bytes=2410 sha256=f06972d17ce5de54e689db06e4c10b2949921aa721377ef2d93d9d86a86f7b1b -->
+- `2026-10-10`: `.14` a10 (SEMULITH-P4-0201): register sixth unit/book; fix repeated-category blind spot and catalogue disclosures; full five-leg CI green; containment review next.
+- `2026-10-10`: `.14` a9 (SEMULITH-P4-0200): replace incorrect shared DSP fallback with own tracked report attribution/explicit no unit gate result; producer24/0, old fallback21/3, stale control, focused9/six books/inverses green.
+
+- `2026-10-10`: `.14` a8 (SEMULITH-P4-0199): declare GC requalification policy without backdating, repair scalar policy/presence label/manifest, preserve exact historical and derived inverses; stale/damaged controls, focused15/six books/rendered policy green, statuses unchanged.
+
+- `2026-10-10`: `.14` a7 (SEMULITH-P4-0198): preserve31 historical spans/full-source inverses, correct canonical/report/materials evidence scope and regenerate all consequences; damaged/stale controls, focused15/six books/invariants green.
+
+- `2026-10-10`: `.14` a6 (SEMULITH-P4-0197): preserve five exact historical payloads, correct maintained ancestry/acceptance/search/card/book scope, three damaged controls reject; realized1/1/focused12/six books/invariants green.
+
+- `2026-10-10`: `.14` a5 (SEMULITH-P4-0196): correct canonical state header/mstatus source to public chapter layouts/RV64 Figure7; exact two-span/three-SHA/report inverse, three stale controls, strict/focused15/six books green.
+
+- `2026-10-10`: `.14` a4 (SEMULITH-P4-0195): replace privileged/wait internal rationale and stale decode/fixture/count comments with public diagrams/rules and selected policies; complete comment/metadata inverses, generator controls, strict/focused15/six books green.
+
+- `2026-10-10`: `.14` a3 (SEMULITH-P4-0194): move five whole closed-.13 spans to archive12, preserve full source inverse and six damaged controls; published DEV8/CHANGELOG22 whole-entry partitions, docs gates/six books/caps green.
+
+- `2026-10-10`: `.14` a2 (SEMULITH-P4-0193): replace assembler module/annex unsupported lineage and FP internal rationale with canonical API/finite observations/pinned F permission; exact executable inverses,167images/corpus and strict/focused15/books green.
+
+- `2026-10-10`: `.14` a1 (SEMULITH-P4-0192): remove withdrawn signaling-NaN backend-defect claim from generator comment/two templates/three labels; numeric230/fixture3168 exact, strict/focused10/books/invariants green; remaining provenance sweep next.
+
+
+<!-- END P4-A22 changelog -->
+
+<a id="book-receipt-c29b1"></a>
+
+## book-receipt-c29b1
+
+<!-- BEGIN P4-A22 book-receipt-c29b1 bytes=1462 sha256=8b4ac59b6f2f2b708ef63c6776a6fecc5bb04d7280d4a3a4bc249c7b6e1017dd -->
+P4.13 c29b1 partitions two committed append-history heads from ce3a53b:
+
+| Head | Source bytes/entries | Retained entries/bytes | Moved entries/payload bytes | New shard |
+| --- | --- | --- | --- | --- |
+| DEV_NOTES.md | 46,505 /24 | 15 /28,705 | 9 /17,800 | 0226 (18,033 bytes) |
+| CHANGELOG.md | 56,022 /97 | 59 /39,870 | 38 /16,152 | 0227 (16,389 bytes) |
+
+The published sharder targets30,000 and40,000 bytes respectively. Both dry runs
+preserve the heads, manifest and prior history; the12-control self-test passes.
+Actual mutations run sequentially, so numbering advances from0226 to0227.
+Removing each new receipt/footer and concatenating its retained prefix with the
+shard's payload reconstructs its exact original bytes and entry order:
+
+- DEV source SHA256:
+  `92b5766fb8f41f3e563647aace6e20893e40bb8c02639e728dd1f841e84ca1f5`.
+- CHANGELOG source SHA256:
+  `b451f91d5f4ebb1cbb498fd3dc0166b3044c4af09031a8a23537aaaf967feb93`.
+
+The manifest gains only two rows. Its earlier17 rows and the210 sealed shards
+remain exact, giving229 logical rows (19live+210sealed). Each new shard names
+its source head and is frozen. Live/per-part/family ceilings stay fixed; current
+feature examples remain in their own chapters. Code, profile inputs, frozen
+contracts and registry bindings were unchanged. The subsequent c29c policy/
+source-prose repair and c29d book containment are complete; their receipts
+remain accessible through the task tree’s history routes.
+
+
+
+<!-- END P4-A22 book-receipt-c29b1 -->
