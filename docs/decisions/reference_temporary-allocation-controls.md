@@ -4,6 +4,7 @@
 - Owner: `LIVE-CONTAINMENT.4d`, `SEMULITH-LC-0007`, 2026-10-10
 - answers: How are temporary paths and fixture cleanup checked without making a foreign write?
 
+<!-- ANCHOR: controls -->
 The f699474 source census finds12 unqualified shell allocations (ten in scripts,
 two in executable task artifacts) and two unqualified Python self-test allocators.
 The materials self-test's individual mkdtemp fixtures also lack cleanup. Repair
@@ -22,6 +23,16 @@ its scratch parent, checks allocation failure and retains an exit cleanup trap.
 | `--mode children` | Actual environment-setting blocks from14entrypoints, with unset and foreign inherited defaults:28child checks. The push block runs in function scope, as in its real entrypoint. |
 | `--mode parent` | Synth's actual parent/allocation block in a fresh repository-local fixture. The f699474 block fails without a parent; the repaired block allocates successfully. |
 | `--mode bare-shell`, `bare-python`, `residue`, `unconstrained-child` | Deliberately unqualified allocators, a leaking qualified fixture and an unconstrained child. Each fails for its named reason; only this invocation's proven fixture directories are cleaned. |
+
+Run the positive controls from the repository root:
+
+```bash
+python3 scripts/probe_temporary_locality.py --mode shell
+python3 scripts/probe_temporary_locality.py --mode python
+python3 scripts/probe_temporary_locality.py --mode children
+python3 scripts/probe_temporary_locality.py --mode parent
+bash scripts/check_seam_integrity.sh --self-test
+```
 
 `--revision f699474` replays predecessor source read-only. Shell44/56 and Python0/2
 were observed RED; current56/56 and2/2 pass. The first narrow extractor counted
@@ -52,3 +63,4 @@ Production acceptance vocabulary is unchanged. The complete published probe now
 runs under SEAM-INTEGRITY so later vocabulary expansion cannot silently invalidate
 its discriminating input. Reporting also correctly calls this the current tracked
 acceptance corpus; it does not claim to compare each box with its historical commit.
+<!-- ANCHOR_END: controls -->

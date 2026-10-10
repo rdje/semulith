@@ -1,6 +1,20 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — expose temporary controls in the review book (LIVE-CONTAINMENT.4e)
+
+LC0007's book paragraph names the detailed reference path without including its
+mode matrix or limitations. The director reviews the book, so this leaves that
+new workflow insufficiently reviewable there. Anchor the canonical reference body,
+include it directly in the existing chapter and add five runnable positive examples.
+Whole old reference bytes remain after removing only anchors/examples; replacing
+the new include with the original paragraph reconstructs the complete old chapter.
+Seven books build; rendered first/last limits and all five commands are present.
+Focused8/protected scope1269unchanged rc=0. No implementation,
+profile, archive, cap or LIVE change; full containment adoption still remains.
+Evidence target/live-containment/locality-book, on the repository volume.
+promotion: declined (the existing canonical reference and direct include retain the lesson).
+
 ## _(2026-10-10)_ — repository-volume scratch and discriminating acceptance fixture (LIVE-CONTAINMENT.4d)
 
 The previously owned bare task-acceptance allocator reproduces across12 shell

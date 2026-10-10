@@ -163,6 +163,20 @@ Status: complete; final full CI passes all five legs, Rust173/17/253, seven book
 Evidence: target/live-containment/locality; durable control scope is
 docs/decisions/reference_temporary-allocation-controls.md.
 
+## .4e / SEMULITH-LC-0008 — complete the book's temporary-control review surface
+
+Owned on clean1146d1b, brief0/untracked and actual process census OK, before edits.
+The rendered task-tree chapter contains only a code-formatted repository path to
+reference_temporary-allocation-controls.md, so a book-only reader cannot inspect
+its mode matrix, reproduction or limits there. Correct this review-surface gap
+with an anchored live include of the authoritative reference body and runnable
+positive examples, preserving every prior reference byte through a simple inverse.
+Use the existing chapter; keep all ceilings and LIVE/CPU/runtime/archive state exact.
+Verify all seven books, rendered first/last content and examples, source inverse,
+map/index/caps/table/path/currentness checks, then commit before resuming P4.14.
+Status: complete; all seven books and complete source inverses pass.
+Evidence target/live-containment/locality-book.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -268,6 +282,19 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 - None.
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
+
+`LIVE-CONTAINMENT.4` slice (e), `SEMULITH-LC-0008`:
+
+- [x] **ROOT CAUSE** — `git show 1146d1b:docs/book/src/working/task-trees.md`
+  rc=0 shows only a code-formatted reference path for temporary controls; no
+  mode matrix or runnable examples reaches the book-only review surface.
+- [x] **ADDRESSED** — source/render verification rc=0: LOCALITY-BOOK: complete
+  reference/book inverses exact; five rendered examples and first/last limits present.
+  The anchored live include keeps the detailed matrix and limits in their owner.
+- [x] **NO REGRESSION** — `make book` rc=0: seven books build. Focused8 rc=0; LOCALITY-BOOK-SCOPE:1269 tracked files unchanged
+  rc=0. No code/runtime/
+  profile/archive/cap/LIVE change. Earlier reference bytes are all retained.
+  promotion: declined (the canonical reference and direct book include are sufficient).
 
 `LIVE-CONTAINMENT.4` slice (d), `SEMULITH-LC-0007`:
 
@@ -457,6 +484,9 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4e: seven books, whole reference/book inverses and rendered five-command/first-
+last checks, focused8 and protected scope1269unchanged rc=0.
+
 .4d: focused11, shell56/56, Python2/2, children28, four named negatives, parent,
 SEAM19/0, acceptance10/0, waiver5/0, synth6/0 and protected scope rc=0.
 First full CI refused because registry editing overlapped the running shell reader;
@@ -499,6 +529,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0008 (leaf LIVE-CONTAINMENT.4): publish temporary-control procedures in the book` — .4e complete.
 
 `SEMULITH-LC-0007 (leaf LIVE-CONTAINMENT.4): keep temporary allocations on the repository volume` — .4d complete; full containment adoption remains.
 

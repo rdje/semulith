@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-LC-0008 (leaf LIVE-CONTAINMENT.4) — publish temporary-control procedures in the book
+
+- Replace the book's path-only reference with a live include of the full authoritative control matrix, reproduction and limits; add five runnable positive examples.
+- Seven books, rendered commands/limits and complete old reference/book inverses pass. Focused8/protected census1269unchanged pass; runtime, profiles, archive, existing caps and LIVE unchanged. Resume P4.14.
+
 ## SEMULITH-LC-0007 (leaf LIVE-CONTAINMENT.4) — keep temporary allocations on the repository volume
 
 - Repair12 shell sites/two Python self-test allocators, fixture cleanup and synth's missing scratch parent; constrain child TMPDIR at14 entrypoints. Guard56 shell sites,2 Python tests and28 child defaults with named negative and optimization controls.

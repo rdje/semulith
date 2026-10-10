@@ -321,7 +321,6 @@ from its immutable object plus bounded metadata. Nothing appends to it; a future
 capture needs its own owned, verified transition. Full containment adoption
 remains open under LIVE-CONTAINMENT.4. Archival grants no CPU acceptance credit.
 
-Standalone checks use repository-derived temporary parents, including retained
-probe scripts. SEAM-INTEGRITY exercises allocation/cleanup and child-default
-controls before judging the current tracked acceptance corpus. See
-`docs/decisions/reference_temporary-allocation-controls.md` for scope and replay.
+## Repository-volume temporary storage
+
+{{#include ../../../decisions/reference_temporary-allocation-controls.md:controls}}
