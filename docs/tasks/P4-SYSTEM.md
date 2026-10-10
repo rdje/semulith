@@ -293,6 +293,60 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c22b — JALR target masking, owned prerequisite and realization (`2026-10-10`)
+
+Owned on clean a8b4e4c after hooks/empty brief/actual census. Scoped review finds
+an inherited documentation defect in fault-jalr-mis.s and its expectation prose:
+IALIGN=32 trap/no-link assertions contradict the GC expectation and actual final
+state (PC2, cause0, x5=0x80000008). The two-boundary/four-parcel budget ends on
+JALR; it does not fetch the target and may not discriminate clearing bit1 too.
+Root source import133e722; 2611340 adds parcels but retains old derivations. The
+initial census's dir-chain candidate contains no JALR; actual dir-chase must be
+reviewed. Own both misleading notes and suspected witness gap now, before credit.
+
+**c22b1 (`SEMULITH-P4-0148`)**: review frozen OB-JALR-LSB/REQ-D-JALR-LSB,
+authenticated RV32I1.1.5.1/C alignment, affected source/expectation/generation and
+book. Audit relevant file history; reproduce literal normal final state, census
+all JALR guests, and public isolated base-JALR table clearing both bits across the
+whole167 corpus. Investigate before classifying any survivor. Correct only GC
+profile source/derivation prose (keep historical basename, formal writes/budgets/
+images fixed); regenerate owned guest pins. Document proven finite gap and plan
+independent target-state witnesses as priority-next c22b2. Preserve base input,
+core/author/frozen/90 registry and88/114 credit. Run make check, GUEST-GEN,
+independent full replay/identity, focused gates/books and hooks; commit clean.
+
+Measured c22b1 result: isolated public base-JALR table masks with~3 instead of~1.
+It still satisfies all167/5365/10524 old write/never-written/fetch observations;
+fault-jalr-mis finalPC changes2→0 with identical link/cause/retirement. This proves
+the missing target-state observation; production table is correct. Full source
+census finds six base-JALR guests (dir-chase, fault-jalr-mis, fault-fetch,
+guest-control, it-prio-jump, sv39-perm-rwx). Related IALIGN prose census identifies
+three GC re-derivations, each with inherited false source/expectation claims:
+fault-jal-mis, fault-jalr-mis, it-prio-jump (six input files). it-prio-jump's last
+step is a target fetch fault, despite its copied JALR mnemonic. Own these same-
+root annotation repairs in c22b1, preserve all images/numeric writes/budgets,
+and inspect all relevant source histories. c22b2 target-state repair stays next.
+
+The first focused gate exposed a related governor constraint: GUEST-GEN's
+142/145 self-test arms pass, but the real-tree mirror and two dependent controls
+refuse these corrected sources because check_gc_mirror.py permits only exact
+source bytes. Own its repair here before modifying it: three explicit reviewed
+owner/mirror SHA256 pairs, stale-pin rejection and independent identical assembled
+(value/length/PC) images; all other sources remain byte-exact. Retain seven
+expectation exceptions and independent write/parcel checks. Add pinned-source
+positive/negative fixtures and isolated pin/image bypass controls under GUEST-GEN,
+update actual arm mirrors, rerun focused gates and full CI because the governor
+changes. No global comment exemption or gate waiver. This is the same annotation
+prerequisite, not additional JALR credit; c22b2 remains next after a clean commit.
+
+**c22b2 (`SEMULITH-P4-0149`, next)**: direct literal JALR requests/state cases
+must distinguish bit0 masking after signed-immediate addition, bit1 retention,
+carry/negative/wrap and aliased link source as applicable. Prove isolated bad
+tables and disabled observer before two Execution bindings/declaration RED;
+review evidence before finalizing finite cases. Only verified work may earn
+90/114 (twelve runtime pairs/freeze). .14 retains statuses/experiments. Commit/
+brief/clean/actual census after each subunit; no new core defect inferred yet.
+
 ### `.13` c22a — preserve whole development receipts under fixed caps (`2026-10-10`, `SEMULITH-P4-0147`)
 
 Owned on clean 8f3376f after hooks/empty brief/actual census. DEV_NOTES is 47,462 B
@@ -690,6 +744,38 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c22b1 — **ROOT CAUSE**: mirror import133e722 retains base
+  IALIGN=32 trap/no-link prose in six files despite GC numeric link writes;
+  2611340 adds parcels only. Relevant histories audited through base roots
+  a199ccf/25862a2. Literal normal final states reproduce. Public isolated base
+  JALR `&~3` table still satisfies all 167/5365/10524 old observations while
+  finalPC2→0 and target-fault EPC/tval40000002→40000000. Reproduction offline
+  Cargo client (`target/p4-system-13/c22b1/engine/Cargo.toml`), rc=0. Full source
+  census gives six JALR guests; initial dir-chain proposal was not a witness.
+  GUEST-GEN initially refuses corrected source bytes (142/145 pass, rc=2).
+
+- [x] `.13` c22b1 — **ADDRESSED**: authenticated RV32I1.1.5.1/C27.1
+  guide six annotation repairs: legal halfword jumps/link writes, declared budgets,
+  next target fetch fault and corrected final mnemonic. Historical names/base
+  files preserved. Numeric writes/budgets/images exact; generated Rust changes
+  only six input hashes (`python3 target/p4-system-13/c22b1/identity.py`, rc=0).
+  Book retains three literal states and public survivor. Missing target witness
+  owned priority-next c22b2 with direct state/bad-table/disabled-observer plan;
+  no JALR credit added here. make check rc=0 (Rust 167/17/206). Three reviewed
+  source pairs now require exact owner/mirror hashes and identical assembled
+  images; stale exceptions, changed pins and changed images reject. Direct
+  governor/self-test rc=0; isolated pin/image bypasses rc=1.
+
+- [x] `.13` c22b1 — **NO REGRESSION**: 112 base files byte-exact;342 GC
+  files byte-exact plus six metadata-only exceptions; all executable fixture
+  arrays, 90 registry/core/author/definitions/schema/doctrine/frozen bytes exact.
+  Normal independent 167/5365/10524 exact (same identity script rc=0). Registry 90,
+  effective 88/114 unchanged; thirteen runtime pairs/freeze. GUEST-GEN rc=0
+  (147/0 self-test); make ci rc=0 (check, all doctrines, bench, smoke-bench,
+  main plus five model books). Whitespace rc=0; hooks precede c22b2. LIVE_STATUS changes only doctrine
+  arms 650→652 (48 chapters / P4 12/18 unchanged); .14 retains statuses/experiments. promotion: declined (worked
+  target-state distinction, retained source history and owned repair in book/tree).
+
 - [x] `.13` c22a — **ROOT CAUSE**: measured DEV_NOTES 47,462 B under
   fixed 49,152 B cap (1,690 B room). Existing sharder dry-run rc=0 targets 32,768 B,
   predicts 20=13 retained+7 moved and head 31,228 B; preserve whole receipts before
@@ -928,6 +1014,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c22b1 | literal normal states; public base-JALR bit1 survivor across all 167; six annotation repairs; pinned image-identical source governor and two bypass REDs; executable arrays/prior bytes exact; Rust 167/17/206; full CI five legs green | effective 88/114 unchanged; direct c22b2 target witness next |
 | `2026-10-10` | `.13` c22a | 20=13+7 ordered inverse/hash exact; old manifest/sealed bytes exact; one appended row; no-op; prior inputs/runtime exact; focused gates/books | effective 88/114 unchanged; 226 frozen rows; hooks before c22b |
 | `2026-10-10` | `.13` c21b | 13 author/13 public delayed-PC controls; 63/111; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 90; effective 88/114; focused gates/books rc=0; hooks before c22a |
 | `2026-10-10` | `.13` c21a | ordered suffix/inverse hashes exact; all prior registry/input/core/frozen bytes exact; navigation/counts; focused gates/books | effective 86/114 unchanged; book 48 chapters; hooks before c21b |
@@ -961,6 +1048,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c22b1 | `SEMULITH-P4-0148 (leaf P4-SYSTEM.13): correct inherited GC alignment evidence and own target checks` | priority c22b2 direct JALR target-state pair |
 | `.13` c22a | `SEMULITH-P4-0147 (leaf P4-SYSTEM.13): retain whole development receipts under fixed bounds` | c22b JALR-LSB, then remaining runtime pairs/freeze |
 | `.13` c21b | `SEMULITH-P4-0146 (leaf P4-SYSTEM.13): realize immediate control-transfer observations` | c22a live-note containment, then c22b JALR-LSB |
 | `.13` c21a | `SEMULITH-P4-0145 (leaf P4-SYSTEM.13): preserve memory witnesses in a bounded book chapter` | c21b NO-DELAY-SLOTS, then remaining runtime pairs/freeze |
@@ -989,6 +1077,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c22b1 (SEMULITH-P4-0148): correct six inherited
+  GC IALIGN annotations, retain all images/numeric observations/budgets and base
+  inputs. Public wrong base-JALR mask survives old full corpus; target-state
+  repair owned priority-next c22b2. Effective88/114 unchanged; core correct.
 
 - `2026-10-10`: `.13` c22a (SEMULITH-P4-0147): preserve whole older
   development receipts as 13 live+7 archived, byte/order inverse exact; fixed cap

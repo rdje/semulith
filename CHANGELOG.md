@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0148 (leaf P4-SYSTEM.13 c22b1) — correct inherited GC alignment evidence and own target checks
+
+- Correct six source/expectation annotations for three GC IALIGN=16 guests;
+  preserve all images, numeric observations and budgets. Generated Rust changes
+  only six input hashes; base inputs and executable arrays stay byte-exact.
+- Public base-JALR bit-1 erasure still passes all 167 old guest observations,
+  despite wrong final target/fault addresses. Own direct target-state repair
+  next in c22b2; no premature contract credit or observed processor defect.
+- Rust 167/17/206, independent 167/5365/10524 and protected identity verified.
+  Registry 90/effective 88/114 unchanged. LIVE_STATUS arms 650→652; 48 chapters/P4 12/18 unchanged. GUEST-GEN rc=0 (147/0 self-test), full CI all five legs rc=0; hooks follow.
+
+The first GUEST-GEN run refused source annotations (142/145 pass). Its governor
+now pins exactly three reviewed base/GC source pairs and independently requires
+identical assembled images. Stale exceptions and changed owner/mirror pins or
+instructions refuse; two isolated bypass mutations fail. All other source bytes,
+seven expectation exceptions and write/parcel checks remain governed.
+
 ## SEMULITH-P4-0147 (leaf P4-SYSTEM.13 c22a) — retain whole development receipts under fixed bounds
 
 - Move seven oldest whole notes into shard 0224, preserving all bytes and order.

@@ -1,9 +1,10 @@
-# fault-jalr-mis.s — the P2-SCALAR.3 fault guest: a JALR whose target keeps bit 1 set.
+# fault-jalr-mis.s — historical basename; GC JALR retains target bit 1.
 #
-# D-JALR-LSB clears only bit 0 of the target, so x1 = 3 yields 2 — still not 4-byte
-# aligned under IALIGN=32, and the trap is raised ON THE JUMP (D-IALIGN,
-# D-MISALIGN-REPORT) with tval = 2. The link write is suppressed exactly as for JAL
-# (the DEFECT-B pin, `never_written x5`).
+# D-JALR-LSB adds the immediate, then clears only bit 0: 3 becomes 2. Under
+# this profile's IALIGN=16 that target is aligned, so JALR writes x5=0x80000008.
+# The two-boundary/four-parcel budget ends on the jump without fetching address 2.
+# Its register/fetch observations alone cannot distinguish a wrong target of 0;
+# direct target-state witnesses are required before OB-JALR-LSB receives credit.
 
-      addi  x1, x0, 3          # target material: 3 & ~1 = 2 — misaligned under IALIGN=32
-      jalr  x5, x1, 0          # trap (0x00, 0x2) on the jump; x5 must never be written
+      addi  x1, x0, 3          # target material: both low bits set
+      jalr  x5, x1, 0          # legal target 2; preserve bit 1 and write the link

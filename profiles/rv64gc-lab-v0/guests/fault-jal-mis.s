@@ -1,11 +1,9 @@
-# fault-jal-mis.s — the P2-SCALAR.3 fault guest: a JAL to a misaligned target.
+# fault-jal-mis.s — historical basename; GC halfword-aligned JAL target.
 #
-# D-IALIGN + D-MISALIGN-REPORT: a taken jump whose target is not 4-byte aligned raises
-# instruction-address-misaligned ON THE JUMP, tval = the target value. ⭐ And the link
-# write is SUPPRESSED: an instruction that raises a synchronous exception retires no
-# architectural write — both references suppress it (measured), and this guest is the
-# DEFECT-B pin (the model once wrote x5 before trapping; `never_written x5` is the
-# negative observation that catches a regression).
+# This mirror uses IALIGN=16. Target 0x80000006 is legal and JAL writes its
+# pc+4 link (0x80000008) to x5. The two-boundary/four-parcel budget ends after
+# the jump; it does not fetch the target. The base IALIGN=32 fault/no-link
+# observation does not transfer to this profile.
 
-      addi  x1, x0, 1          # an ordinary write first, so the trap is not the only step
-      jal   x5, 2              # target = 0x80000006 — not 4-byte aligned: trap on the jump
+      addi  x1, x0, 1          # ordinary first write
+      jal   x5, 2              # legal halfword target 0x80000006; link is written

@@ -18,14 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c22b — review JALR-LSB with legal halfword
-  targets and odd-target masking; independently discriminate before binding.
-  c22a retains original twenty development entries as 13 retained+7 archived in shard 0224;
-  inverse source hash/length and old manifest/sealed-history identity verified.
-  Caps fixed; all code/canonical/guest/registry/generated/frozen bytes exact.
-  Registry 90/effective 88/114 unchanged; thirteen runtime pairs/freeze remain.
-  Corpus 167/5365/10524; GUEST-GEN 145, doctrine 650 arms, book 48 chapters.
-  .14 owns statuses/structured experiments/registration.
+- next_action: `P4-SYSTEM.13` c22b2 (SEMULITH-P4-0149) — implement
+  literal direct JALR target/link/request witnesses and independent bad-table/
+  disabled-observer controls before binding its pair. c22b1 corrects inherited
+  IALIGN prose in six GC input files; images/numeric writes/budgets unchanged,
+  generated fixture differs only by six input hashes. Three source exceptions
+  require exact owner/mirror pins and identical assembled images. Public base JALR `&~3`
+  still passes ALL167/5365/10524 old observations while final target/fault EPC
+  differ; this gap is owned priority-next. Core is correct. Registry90/effective
+  88/114 unchanged; thirteen runtime pairs/freeze. GUEST-GEN147, doctrine652 arms,
+  book48 chapters. .14 owns statuses/structured experiments/registration.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

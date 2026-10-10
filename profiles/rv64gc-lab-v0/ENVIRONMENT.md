@@ -26,6 +26,10 @@ NO-DELAY-SLOTS binds skipped-write and fall-through observations for all eight
 base branch/jump forms, with mixed-length C integration. Worked controls:
 `docs/book/src/plan/p4/contract-integer.md`.
 
+JALR-LSB remains uncredited: the inherited guest prose is corrected for IALIGN=16,
+but existing register/fetch observations do not judge every computed target.
+Direct target-state witnesses are owned next; see the integer runtime chapter.
+
 ## The versions
 
 | Version | Status | Members | What it is |

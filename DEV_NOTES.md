@@ -1,5 +1,37 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — correct inherited IALIGN evidence and own JALR target gap (P4-SYSTEM.13 c22b1)
+
+Six GC source/expectation files for fault-jal-mis, fault-jalr-mis and it-prio-jump
+retain base IALIGN=32 trap/no-link prose despite current GC link writes. Import
+133e722 copied it; 2611340 added parcels but retained derivations. Full relevant
+source histories audited (base roots a199ccf/25862a2). Authenticated RV32I/C
+sources confirm IALIGN=16 halfword targets. Correct prose and last it-prio-jump
+mnemonic to <fetch fault>; historical basenames and base input files stay fixed.
+Literal final states reproduced through independent author and public CPU.
+
+An isolated public BASE JALR table masks with ~3 instead of ~1; all 167/5365/10524
+old observations still pass. fault-jalr-mis final PC 2→0; it-prio-jump fault
+EPC/tval40000002→40000000. The GC rule lacks these observations. Production
+is correct. Own priority-next c22b2 direct target-state witnesses before credit.
+The initial census's dir-chain candidate has no JALR; actual six-guest census
+and finite limits are in task/book. Do not treat this diagnostic as a realized pair.
+
+Identity rc=0: 112 base exact; 342 GC exact plus six annotation-only changes, all
+images/numeric writes/budgets unchanged. Generated Rust differs ONLY by six input
+hash strings; executable arrays byte-exact. All 90 registry/core/author/frozen
+bytes exact; effective 88/114 unchanged. Normal full167/5365/10524 rc=0; make check
+rc=0 (Rust167/17/206). GUEST-GEN rc=0 (147/0 self-test); make ci rc=0 (all five legs, including
+all six books). Hooks precede c22b2.
+LIVE_STATUS changes only doctrine arms 650→652 (48 chapters / P4 12/18 unchanged). promotion: declined
+(worked target/observation distinction and priority repair retained in book/tree).
+
+The first GUEST-GEN run refused source annotations (142/145 pass). Its governor
+now pins exactly three reviewed base/GC source pairs and independently requires
+identical assembled images. Stale exceptions and changed owner/mirror pins or
+instructions refuse; two isolated bypass mutations fail. All other source bytes,
+seven expectation exceptions and write/parcel checks remain governed.
+
 ## _(2026-10-10)_ — retain whole development receipts (P4-SYSTEM.13 c22a)
 
 Live notes reached 47,462 B under fixed 49,152 B cap. Existing sharder targets

@@ -48,7 +48,8 @@ GUESTS_DIR_GC="profiles/rv64gc-lab-v0/guests"
 OUT_GC="crates/semulith-verify/src/guests_rv64gc.rs"
 # The tracked governor owns the seven exceptions. With C composed, it derives all
 # writes/request counts, then compares only the count-adjusted owner; every other
-# byte stays governed. The unbound route retains exact byte comparison.
+# byte stays governed. Three reviewed source annotation exceptions have exact
+# owner/mirror pins and identical assembled images; all other sources stay exact.
 judge_mirror() {
   python3 scripts/check_gc_mirror.py --owner "$1" --mirror "$2" --encoding "$ENCODING_GC"
 }
@@ -235,6 +236,10 @@ PYCODE
   arm "RED mirror migration keeps source bytes exact" "$rc" 1 "$out" "accepted source mirror is not byte-identical"
   out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-stale 2>&1)"; rc=$?
   arm "RED parcel counts cannot preserve a stale exception" "$rc" 1 "$out" "accepted re-derivation is stale"
+  out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source-pins 2>&1)"; rc=$?
+  arm "RED source annotations require exact reviewed pins" "$rc" 1 "$out" "accepted source re-derivation pins differ"
+  out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source-image 2>&1)"; rc=$?
+  arm "RED reviewed source annotations cannot change instructions" "$rc" 1 "$out" "accepted source re-derivation changes assembled image"
 
   # P4-SYSTEM.12 d1: isolate the full C composition; the expected words and byte
   # image are hand-written spec-side fixtures, independent of the live corpus.

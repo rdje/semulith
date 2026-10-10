@@ -399,3 +399,53 @@ At c21b, registry entries reach 90, effective G-CONTRACT **88/114**: thirteen sc
 twenty-three guest, six boundary and two direct-execution pairs. Thirteen runtime
 pairs/freeze remain. These observations constrain architectural effects; they do
 not prescribe a processor pipeline or establish untested target-fault behavior.
+
+
+## JALR prerequisite: distinguish the target from the recorded writes (c22b1)
+
+Review for OB-JALR-LSB found inherited base-profile prose in three GC guests.
+The base's IALIGN=32 fault/no-link claims had been copied while the GC records
+already expected a written link under IALIGN=16. Their source comments and
+expectation derivations now describe the current profile. Historical filenames
+stay fixed. Authenticated RV32I 1.1.5.1 requires addition of the signed immediate
+before clearing bit 0; C 27.1 permits halfword-aligned targets.
+
+| Guest | Current declared observation and directly reproduced state |
+| --- | --- |
+| fault-jal-mis | Two boundaries/four parcels end after JAL: PC=0x80000006, x5=0x80000008, no trap; target fetch is outside the budget |
+| fault-jalr-mis | Two/four end after JALR: (3+0)&~1=2, PC=2, x5=0x80000008, no trap; target fetch is outside the budget |
+| it-prio-jump | JALR writes x5=0x8000000c; the fourth boundary attempts target parcel 0x40000002 and delivers cause 1 with EPC/tval=0x40000002; seven total parcels |
+
+The last it-prio-jump annotation now says `<fetch fault>` rather than repeating
+JALR. All images, instruction words, numeric writes, never-written lists and
+budgets stay exact. Regeneration changes only six input-hash strings in the Rust
+fixture; its executable arrays remain byte-identical. The base profile's files
+are unchanged. History roots are the mirror import 133e722 and later parcel-only
+update 2611340, which retained the older prose.
+
+The first GUEST-GEN run refused these corrections: its source mirror required
+byte identity even for the three known IALIGN expectation re-derivations. The
+repaired governor names only these three source exceptions, pins both base and
+reviewed GC SHA256 values, and independently compares assembled value/length/PC
+images. Stale exceptions, changed pins on either side, and changed instructions
+are refused. Every other source retains byte comparison; seven expectation
+exceptions and all independent write/parcel checks stay active. Two new
+weakened-check controls must fail when pin or image checking is bypassed.
+
+The review also proves why these records cannot alone realize the JALR guarantee.
+An isolated public table changes only base JALR's target mask from `& ~1` to
+`& ~3`. All 167 existing programs still satisfy their checked register changes,
+never-written registers and fetch counts: 5,365 boundaries / 10,524 parcels.
+The wrong table changes fault-jalr-mis final PC from 2 to 0; it also changes
+it-prio-jump's fault EPC/tval to 0x40000000. Those states are outside the old GC
+comparison. Correct production JALR preserves bit 1 in both cases.
+
+This is an evidence gap, not a newly observed CPU defect. c22b2 owns the priority
+repair: literal post-step target/link/request witnesses, including low-bit carry,
+negative immediates, wrap and source/link aliasing, with deliberately wrong public
+tables before registration. JALR remains uncredited until that work passes.
+The annotation repair passes Rust 167/17/206, GUEST-GEN (147 self-test arms),
+independent normal 167/5365/10524 replay and full local CI (check, doctrines,
+bench, bench smoke, main and five model books). All protected runtime/canonical/frozen data and 90 prior
+bindings remain exact; effective G-CONTRACT stays **88/114**, thirteen runtime
+pairs and final freeze outstanding.

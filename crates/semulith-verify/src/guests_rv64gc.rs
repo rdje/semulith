@@ -166,10 +166,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/fault-fetch.s`  `2f8a8057a999629fd6a411d65e5a3ed4c8bd65e36508bc9904b60d9099477bf1`
 //!   `profiles/rv64gc-lab-v0/guests/fault-hints.expected.sexp`  `4e0f3622e7b3754cd8c34455fb9ffc96f9a24acddf5e9a251fefb733037f2a41`
 //!   `profiles/rv64gc-lab-v0/guests/fault-hints.s`  `ee84d9e8eb066e36153ef677fd41c3f3a8e641ec606310d5340f039c53a36821`
-//!   `profiles/rv64gc-lab-v0/guests/fault-jal-mis.expected.sexp`  `66cdff449554b153cd458d65b570fb12c9c85f5689dda9017a9952419ea60802`
-//!   `profiles/rv64gc-lab-v0/guests/fault-jal-mis.s`  `cd96d5b0fb65172725a1d4eba62d01c5efa303b8a71e574d77449b470dfde38a`
-//!   `profiles/rv64gc-lab-v0/guests/fault-jalr-mis.expected.sexp`  `446fe637543d9ad94c62be2002e6561ce191b7be0b1090dee4fa153b4e6eed32`
-//!   `profiles/rv64gc-lab-v0/guests/fault-jalr-mis.s`  `ae910bf22b13c543a6888b27d875aa72b4fea5659c2511ae5cbe1dd68e41ee28`
+//!   `profiles/rv64gc-lab-v0/guests/fault-jal-mis.expected.sexp`  `4c2b6779e0d60c6ad8a5494e83e44cb3c0df20bd466878e1aa5836953a902598`
+//!   `profiles/rv64gc-lab-v0/guests/fault-jal-mis.s`  `5438f3f7b3a1c3e4e70b670fda4cd462db069f0c7511bc6a238ae6e4e2f39f09`
+//!   `profiles/rv64gc-lab-v0/guests/fault-jalr-mis.expected.sexp`  `e0088cf1652c8a60921fe3fca3ebef80f2528e7411997954e12df077409af967`
+//!   `profiles/rv64gc-lab-v0/guests/fault-jalr-mis.s`  `b081cd8da4afc549481376ed4b65ff733d896d406c869c3fea2fac6c6c511c5a`
 //!   `profiles/rv64gc-lab-v0/guests/fault-ld-mis-d.expected.sexp`  `8fad39f1d8177a6459af54f01fa75af7eddf417e3f1bc9888b123d350e5f1248`
 //!   `profiles/rv64gc-lab-v0/guests/fault-ld-mis-d.s`  `3d21d3718ccdada0fe113d67d495717feacbd074d3712a6c0ec2204e339a0efd`
 //!   `profiles/rv64gc-lab-v0/guests/fault-ld-mis-h.expected.sexp`  `6041d50306867b10b205c930fab1015bfddab6829ca2361c078146e6aca47296`
@@ -238,8 +238,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/it-fault-wrap-sd.s`  `b84984b4f170336c92639fe40336141a6fff6951024dad8df94c460b670aff9f`
 //!   `profiles/rv64gc-lab-v0/guests/it-fencei.expected.sexp`  `c42f07326ea5c574c75d750c72a5589b668ed429416858c84201c5e2072b26c5`
 //!   `profiles/rv64gc-lab-v0/guests/it-fencei.s`  `44471db1f1454d90484e182fe083101c9e9357e829e1c39a37c8536d496cbda5`
-//!   `profiles/rv64gc-lab-v0/guests/it-prio-jump.expected.sexp`  `367e85eb59109d0e92f0e5bca354621b82c63aee359cff042c02c916c1276d3f`
-//!   `profiles/rv64gc-lab-v0/guests/it-prio-jump.s`  `5c4c0442f763a484321617598885dc49c534505b60eada2a0499c930414a2206`
+//!   `profiles/rv64gc-lab-v0/guests/it-prio-jump.expected.sexp`  `d05d26495ef8aed7fad01b8f10771d92b320a310fca7fad48b7c943e6591cfd3`
+//!   `profiles/rv64gc-lab-v0/guests/it-prio-jump.s`  `902b69d51d96b421e81cca81bd098374e9a6b4e4f695665d7e7a61505fd0dad2`
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-load.expected.sexp`  `90ede38022f4fa166e0fcefdb3f3bd0a3198162fc6969ea331ae0f9cd125b958`
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-load.s`  `ad39fe5f0a602818f486e66ea50ac30be9fc8975da300250b10d050eebd7a05a`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.expected.sexp`  `4ae864b4b05a4464d92cd78bc45b970f7b36c45fe452ae079845b3b22c7f9a27`
