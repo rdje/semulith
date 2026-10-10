@@ -25,6 +25,9 @@ const MODES: [PrivilegeMode; 3] = [PrivilegeMode::M, PrivilegeMode::S, Privilege
 // RVI-A 12.1.4: ADD, SWAP, XOR, AND, OR, signed MIN/MAX, unsigned MIN/MAX.
 const FUNCTIONS: [u32; 9] = [0, 1, 4, 12, 8, 16, 20, 24, 28];
 
+#[cfg(test)]
+mod reservation;
+
 struct Vector {
     old: u64,
     source: u64,

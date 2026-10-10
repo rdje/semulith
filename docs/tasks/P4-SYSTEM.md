@@ -417,6 +417,159 @@ reservation witnesses, then SC/full CI/freeze; .14 sweep remains scheduled.
 promotion: declined (finite source inverse, permanent public examples and named .14 repair preserve this existing containment/evidence discipline).
 
 
+### `.13` c34a — witness reservation histories before binding (completed, SEMULITH-P4-0185)
+
+Owned on cleane8163fe/brief0/actual census rc=0. Review frozen OB-RESERVATION/
+REQ-D-RESERVATION, current state/semantics/public reservation/step interfaces,
+existing A full-state fixture and companions, atomics/v2/ENV books. Governed
+book520166B leaves4122B; DEV30682B below36864health, fixed caps.
+
+Source/consumer prerequisite: root495b4b8 copied the "exactly the specification's
+one-hart set" invalidation phrase into decision D-RESERVATION, requirement
+REQ-D-RESERVATION and frozen OB-RESERVATION (460e4d8 only partitions it).
+Authenticated A12.1.2/12.1.3 SHAafbd8def7bdf64287ef51a9cb14dd654fba0f0cfeef63bccdfd47408f5b0dff2
+states reservation-set/aliasing latitude and occasional SC failure; trap
+retention is this laboratory's selected policy, not a universal ISA command.
+Current core/book already distinguish the selection. Own correcting all live
+mirrors via a frozen-safe open-v2 supersession at c34b, before binding credit.
+Consumer tests automatically require every v2 member realized; do not weaken
+that selector for a declaration-only intermediate commit. Safe subdivision:
+c34a witnesses/diagnostic only, unbound; c34b adds the qualified decision/
+requirement/v2 record and its2Execution bindings together. Reuse pending
+CHK-RESERVATION-POS/NEG under new OB-GC-RESERVATION-V2; preserve frozen v0/v1
+bytes, prior112registry and effective110/114 until c34b completes.
+
+Refine finite matrices before code. Reuse parent atomics private observer/
+auditor and literal initial state in child module, expectations built before
+execution, including complete GPR/FPR/26CSR owners/PC/mode/reservation retained
+fields/TLBcursor/wait/full memory/exact cumulative requests/retirement/extent.
+Ordinary histories cross W/D,4aq-rl,M/S/U,rd0/6/7/9 and selected literal data;
+LR replacement, matching/wrong-address/width/no-LR/intervening-SC behavior,
+success AND failure clearing seen by a following SC, selected ordinary overlap
+preservation. Public companion trapped-SC/recovery remains; direct misaligned,
+unmapped/refused and translated LR/SC faults preserve prior reservation with
+precise kind/cause/VA/request termination. Physical alias fixtures use distinct
+VAs mapped to same/different PA, repeated SC translation-cache hits, literal
+PTE/TLB outcomes. Choose exact bounded counts in refinement before implementation.
+Well-formed wrong instruction effects and bad capture components must fail;
+actual disabled reservation establish/clear/match/trap preservation/request/
+auditor paths must fail then byte-restore. Pair histories must discriminate
+mutator defects even if the literal expected reservation uses public state
+construction helpers. No production matches result constructs expectations.
+Independent author/assembler/new matrices and all167/5365/10524 prior corpus
+exact; public evidence scope explicit. Rust/focused/six books and current
+examples/live docs, clean commit before c34b record/bindings; .14 sweep owned.
+
+
+C34a source review reproduces a physical-permission defect before binding:
+cold SC.W to unmapped0 retires with rd1 in the public core step (only2fetch
+parcels), while the independent author traps cause7. Two fresh Sail calls
+produce4byte-identical cause7 traces; two public Spike runs rc=0 produce
+identical raw trap_store_access_fault/tval0 logs. Authenticated A12.1.2
+norm:sc_retire_permission requires memory permission before SC retirement;
+RVWMO's absence of failed-SC memory operations does not remove that check.
+Root495b4b86 returns1 after translation and before any Store; own Environment
+trait has only request, with no physical permission-only operation. Author
+root022f5575 checks the laboratory region before reservation match. This is a
+core/boundary gap, not evidence of an author fault or a reference-lineage claim.
+Reproduce target/p4-system-13/c34a/sc-diagnostic.py, sc-public.py, sc-spike.py;
+all temporary Rust diagnostic bytes restored, fresh binary identity recorded.
+Priority next c34b0/SEMULITH-P4-0186, before any reservation/SC binding:
+provide a side-effect-free physical store-permission boundary operation,
+version its open-v2 contract without editing frozen v0/v1, and discriminate
+unmapped/refused nonmatching SC without issuing a data Load/Store. Audit all
+public adapters, snapshots/request consumers, existing contract witnesses and
+independent author refusal semantics. Retain target exceptions versus provider
+violations, VA trap payload, reservation trap-retention and precise request
+termination; require defect RED then repair GREEN, actual disabled guard RED,
+focused/full Rust/book gates. Scope refinement after clean c34a commit; do not
+dirty-pivot or leave a merely reported defect. C34a's finite selected cells do
+not cover this unresolved no-match physical-permission cell and add no binding
+credit. C34b record/binding work follows the repair, with IDs renumbered as needed.
+
+C34a finite refinement before code (counts independently recomputable):
+- Bare multiplicity1152 =2widths×4ordering×M/S/U×4destination layouts×
+ 4literal parent vectors0/1/2/7×3SC sources(x9/address/x0). LR destinations
+ 0/6/7/9 include rs1/source aliases; first SC destinations0/10/9/7 include
+ its rs1=x10/source=x9. Independent later address registers retain addresses.
+ Seven histories with lengths4/4/3/3/3/2/4: two LRs at distinct addresses then
+ old-address SC failure; two LRs then new-address success; wrong-address SC;
+ matching SC; mismatched-width SC; invalid retained/no LR; same-address LR
+ width replacement. Every completed SC is followed by a must-fail SC, proving
+ success/failure clear. Each expected SC outcome is scenario-literal, never
+ Reservation.matches. Totals8064histories/26496boundaries/13824data requests.
+- Six preservation histories LR→overlap SW/SD/FSD/AMOADD or ALU/FENCE→matching
+ SC→must-fail SC, same1152multiplicity:6912histories/27648boundaries/19584data
+ requests. Full surrounding bytes and all other state prove selected ordinary
+ overlap retention; both narrow/full writes and non-data operations covered.
+- Physical aliases: same/different PA×2width×4ordering×4dest×4vectors×3sources
+ =768MPRV-S sequences LR→SC→repeated SC,2304boundaries/1152data/4608walks.
+ Two distinct VAs map to PA5000 or separate3000; repeated SC must use cached
+ translation, with literal permission/TLB/FIFO state and no repeated walk.
+ Positive total15744sequences/56448boundaries/34560data/4608walks.
+- Bare faults: LR3faulttypes×4prior reservation states×2width×4ordering×
+ 3modes×4dest=1152; SCmisalignment×4states=384; SCunmapped/refused with
+ matching reservation=192. Total1728boundaries/960data requests. A nonmatching
+ Bare SC need not issue a Store; do not invent a provider fault without one.
+- MPRV-S translated faults: LR5bad leaf states (V0,W-only,X-only,A0,U/SUM0),
+ SC7 (same plus R-only/D0), each×2width×4ordering×4priorstates×4dest=1536.
+ Walk refusals at each of3levels×LR/SC×samewidth/order/priorstates/dest=768.
+ Data refusal: LR4priorstates/SC1matchingstate×2width×4order×4dest=160.
+ Total2464translated boundaries/160data/6624walks, precise LR5/13 versus
+ SC7/15 causes, full VA and trap stack. Prior valid/invalid-retained/cold/
+ different-width reservations are compared exactly; no external event added.
+ Negative total4192boundaries/1120data/6624walks. Combined60640boundaries,
+ 121280parcels/35680data/11232walks=168192requests, all expected before stepping.
+Actual-control refinement before mutation: ten common full-state judge predicates
+(requests/memory/x/f/CSR/reservation/TLB/wait/PC-mode/extent), six reservation
+helper mutations (establish/clear/valid/address/width/always-fail), trap clear,
+pre-translation nonmatch bypass, LR cause, SC alignment, request logging, global
+TLB install and ordinary-store clearing:23 actual disabled controls, each must
+fail a named new test rc=101 for an observed assertion, then restore every byte.
+Export all prebuilt plans before stepping in temporary diagnostic code, restore,
+and cross-derive each architectural boundary with the independent author plus
+canonical assembler words. That author does not observe explicit data requests
+or invalid retained reservation fields; direct full-state/request witnesses do.
+Keep this as a safe unbound prerequisite; c34b's frozen-safe declaration mirrors
+and2bindings must land together because the completed selector admits all v2.
+
+Result:
+
+Unbound reservation-history prerequisite:15744positive sequences/56448boundaries
+and4192fault boundaries, total60640/121280parcels/35680data/11232walks/168192
+requests. All expectations precede execution. Seven replacement/clear/width/
+no-LR histories, six ordinary-overlap/ALU/FENCE preservation histories and
+same/different-PA aliases cross widths/orderings/destination/source aliases and
+literal values; faults compare prior valid/invalid-retained/cold states. Complete
+GPR/FPR/26CSR owners/PC/mode/memory/reservation retained fields/TLBcursor/wait/
+requests/outcome audited.16well-formed wrong effects,16bad captures and23actual
+disabled guards fail; finally byte-restored, paired SC literals discriminate
+global establish/clear/TLB helpers despite their expected-state use.
+Independent author cross-derives all60640prebuilt boundaries and canonical205
+words;167/5365/10524 prior corpus exact. Author omits explicit data requests and
+invalid retained reservation fields; direct observer owns those. Temporary
+export code restored. Initial scratch assembler check passed raw field counts
+where public LR/SC syntax needs ordering suffixes/parenthesized address; fixed
+before syntax credit, no model defect inferred. Rust173/17/246, focused13and
+six books rc=0. Core/data/canonical/frozen/archives/history/LIVE and prior112
+registry/effective110/114 exact. No new binding or conformance/lineage credit.
+Source prerequisite roots495b4b8/460e4d8:3mirrors incorrectly universalize
+selected invalidation/trap policy. Consumer admits every non-v0 obligation;
+c34b must qualify live mirrors and add a frozen-safe v2 replacement with its
+2bindings together, never weaken that selector.
+New owned defect: cold Bare SC.W to unmapped0 retires rd1 in core; independent
+author and4fresh public Sail traces/two public Spike raw logs trap cause7/tval0.
+Pinned A12.1.2 requires memory permission before SC retirement. Root495b4b86
+returns1 before any physical boundary request; Environment offers no permission-
+only operation. Root022f5575 author checks region before match. Public binary
+identities/fresh successful runs/repeats recorded; no dependency internals read.
+Next priority c34b0/0186 repairs this side-effect-free physical permission seam
+before binding; refine scope on clean commit. Existing finite witness cells
+exclude this unresolved no-match cell. Named .14 provenance sweep remains owned.
+Evidence target/p4-system-13/c34a; fixed caps, no push below cadence.
+promotion: declined (finite full-state witnesses reuse the existing contract method; newly measured permission defect has immediate owned repair before binding).
+
+
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -560,6 +713,22 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c34a — **ROOT CAUSE**: diagnose.py rc=0: authenticated A/
+ privileged sources, root495b4b8 three policy mirrors and non-v0 realization
+ selector verified. sc-diagnostic/public/spike.py rc=0: unmapped cold SC
+ discrepancy reproduced/root495b4b86 permission seam, immediate c34b0 owned.
+- [x] `.13` c34a — **ADDRESSED**: derive-plans.py rc=0: all60640prebuilt
+ boundaries/205canonical words/prior167/5365/10524 exact;4newtests GREEN,
+ 16wrong effects/16bad captures rejected. mutations.py rc=0:23actual guards
+ RED rc=101 then restored, including shared-helper paired-history controls.
+ Source/consumer qualification diagnosed; unbound witness subset excludes the
+ newly discovered permission cell until immediate c34b0 repair before binding.
+- [x] `.13` c34a — **NO REGRESSION**: make check/verify/focused/six books
+ rc=0: Rust173/17/246; core/data/canonical/frozen/archives/history/LIVE/prior112
+ registry/effective110/114 exact. Book/index/environment/report/resume/receipts
+ sync. No new realized check, reference lineage or conformance claim.
+ promotion: declined (existing full-state method plus immediate owned permission repair preserve the findings without a new knowledge card).
+
 - [x] `.13` c33d — **ROOT CAUSE**: census/partition.py rc=0: full51-member
  book523938B/350room, original7179B introduction/440B checkpoint selected
  before change. Own-script blame pins ancestry wording rootb8d09f53, .14 owned.
@@ -604,6 +773,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c34a |60640prebuilt full-state boundaries/205canonical words/prior corpus;16wrong/16capture/23actual guards RED-restored; public permission diagnosis | Rust173/17/246/focused/six books rc=0; registry112/effective110/114/core/data/frozen/history/LIVE exact; immediate c34b0 permission repair before binding |
 | `2026-10-10` | `.13` c33d | whole7179B intro/440B checkpoint/full14853B source inverse; damaged controls refuse; canonical88words/independent worked example | archive8886B/save4084chapter B; prior history/core/data/frozen/LIVE/registry112/effective110/114 exact; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
 | `2026-10-10` | `.13` c33c | five whole payloads/full127192B task inverse/order/SHA; damaged controls refuse; prior archive/history identity and full-family budgets | archive11/84762B; partition46007B; registry112/effective110/114/LIVE unchanged; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
 
@@ -614,11 +784,18 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c34a | `SEMULITH-P4-0185 (leaf P4-SYSTEM.13): witness reservation histories before binding` | own c34b0/0186 physical SC permission repair before qualified reservation/SC bindings/full CI/freeze |
 | `.13` c33d | `SEMULITH-P4-0184 (leaf P4-SYSTEM.13): contain atomics timeline before final pairs` | own c34/0185 reservation witnesses before SC/full CI/freeze; .14 sweep owned |
 | `.13` c33c | `SEMULITH-P4-0183 (leaf P4-SYSTEM.13): contain completed task receipts` | own c33d/0184 atomics-book containment, then reservation/SC/full CI/freeze; .14 sweep owned |
 
 
 ## Changelog
+
+- `2026-10-10`: `.13` c34a (SEMULITH-P4-0185): unbound60640boundaries/
+ 121280parcels/168192requests;16wrong/16capture/23actual controls discriminate,
+ independent author/205words/prior corpus exact; Rust173/17/246/focused/books
+ green. Core/data/frozen/history/LIVE/effective110/114 exact. Own immediate
+ c34b0 physical SC permission repair, then qualified reservation/SC bindings.
 
 - `2026-10-10`: `.13` c33d (SEMULITH-P4-0184): whole atomics intro/checkpoint
  7619B→8886B archive/full14853B inverse; save4084B, all direct/public examples

@@ -253,3 +253,12 @@ realization count. Source review uses the authenticated local snapshot; the
 fetched-page identity refusal is enforced by P4-SYSTEM.13 c18c: locator and quote
 readers verify exact source hashes/lengths before using a page. Restored fetched
 copies match the unchanged pins; only absent evidence permits a named skip.
+
+### Reservation witness prerequisite and physical permission repair
+
+Unbound full-state histories cover60640boundaries/121280parcels/168192requests;
+[the atomics chapter](docs/book/src/plan/p4/atomics.md#reservation-histories-before-binding)
+explains selected replacement/clear/trap/alias policies and the finite limits.
+Current realized110/114 is unchanged. Cold failed SC to unmapped0 exposes a
+physical-permission gap before retirement; fresh public Sail/Spike trap cause7.
+P4-SYSTEM.13 c34b0 owns repair before the reservation/SC bindings and freeze.

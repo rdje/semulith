@@ -177,6 +177,41 @@ its102/114 checkpoint is historical. See [contract v2](contract-v2.md#runtime-gu
 for the current measure. Structured experiment registration remains
 P4-SYSTEM.14's work.
 
+## Reservation histories before binding
+
+The new unbound prerequisite checks 60,640 boundaries: 56,448 normal steps and
+4,192 fault steps. Seven histories exercise replacement by the latest LR,
+wrong address/width, no LR, and clearing after both successful and failed SC.
+Six more insert SW, SD, FSD, AMOADD, ADDI or FENCE before the SC, checking this
+profile's selected preservation policy. Width, ordering, mode, destination/source
+aliases and four data vectors vary. Distinct virtual addresses map to the same
+or different physical addresses; repeated SC checks a cached translation.
+
+For example, LR at A followed by LR at B replaces A's reservation. SC at A
+returns1 and clears B's reservation, so a following SC at B also returns1.
+If the first SC instead targets B, it stores and returns0; a repeated SC still
+returns1. Trapping LR/SC cases preserve the prior reservation under the selected
+laboratory policy, including its retained fields when invalid.
+
+The direct observer compares every state owner, surrounding memory, exact
+request sequence and retirement. The finite total includes 121,280 fetch parcels,
+35,680 data requests and11,232 walk reads. Sixteen wrong instruction effects,
+16 corrupt captures and23 disabled guards discriminate; paired outcomes catch
+broken construction helpers even when expected state uses those same helpers.
+The independent author checks every planned boundary and205 canonical words;
+it does not observe explicit data requests or invalid retained reservation fields.
+These witnesses add no registry credit: the effective measure remains110/114.
+
+The prerequisite also exposes an unresolved physical-permission defect. Cold
+`sc.w x7, x9, (x0)` to unmapped zero returns ordinary failure in Semulith, while
+the independent author and fresh public Sail/Spike runs take cause7 with tval0.
+The pinned A12.1.2 requires memory permission before SC retirement. Translation
+checks alone do not enforce the laboratory's physical-region permission when
+a nonmatching SC skips Store. P4.13 c34b0 owns an immediate side-effect-free
+permission-boundary repair before reservation/SC binding. This unresolved cell
+is outside the finite passing matrix above. Policy wording must also distinguish
+ISA requirements from this profile's selected trap/alias/width rules.
+
 ## Historical introduction and checkpoint receipt
 
 The original six-slice timeline and c29a checkpoint paragraph remain verbatim
