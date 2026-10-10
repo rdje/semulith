@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — discriminate the selected little-endian byte lanes (P4-SYSTEM.13 c20)
+
+OB-ENDIAN was declared but unbound. Authenticated RV32I 1.1.6 delegates the
+choice to the EEI and requires byte-address invariance; canonical profile chooses
+little-endian. POS scope-mem and NEG dir-ext-matrix independently match 64/128,
+all seven integer load/four store forms. The NEG matrix stores sign-edge values
+then reads different widths/addresses. It distinguishes a pair of wrong read/
+write orders that a same-width round trip might hide.
+
+Nine isolated author controls reverse each LH/LHU/LW/LWU/LD, SH/SW/SD, or both
+directions. All fail NEG at named steps; SH-only reversal survives scope-mem's
+all-ones store, while SW fails its later pattern at step 28. A separate public
+client reverses H/W/D provider reads/writes/both: nine more NEG refusals. Byte
+reversal changes neither selected guest; all 256 public byte values keep their
+address/value. Existing literal DataAccess witnesses give provider composition
+context; no new core/author/guest semantics or configurable endian mode.
+
+Declaration check observed missing-entry RED rc=101 before registration. Exact
+two Guest bindings pass make check rc=0 (Rust 167/17/206). Independent author/
+public probes rc=0, full 167/5365/10524 normal replay exact; identity rc=0 for all
+prior 86 bindings and 112 base/348 GC inputs/core/author/generated/frozen bytes.
+Registry 88, effective 86/114: scope 13/guest 22/boundary 6/execution 2 pairs; fourteen
+runtime pairs/freeze remain. Book retains lane values, controls and limits.
+LIVE_STATUS unchanged (650 arms, 47 chapters, P4 12/18). Focused gates/books rc=0 (shards, fixed bounds, frontiers, six derived claims,
+frozen contracts, fresh reports, schema, main+five model books). Hooks precede
+c21a book partition under fixed cap, then c21b NO-DELAY-SLOTS.
+promotion: declined (ordinary lane/symmetry reasoning retained with worked
+observations in the integer book and owning task).
+
+
 ## _(2026-10-10)_ — require x0 load requests and delivered faults (P4-SYSTEM.13 c19)
 
 The GC mirror's shared corpus rule compares register changes, never-written

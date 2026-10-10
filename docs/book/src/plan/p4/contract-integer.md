@@ -478,3 +478,45 @@ twenty-one guest, six boundary and two direct-execution pairs. Fifteen runtime
 pairs and final freeze remain. Request logs prove the access occurs; they do not
 add a device or claim unimplemented MMIO behavior. Byte-order selection and other
 remaining obligations retain their own witnesses.
+
+
+## Selected little-endian byte order (P4.13 c20)
+
+OB-ENDIAN records an EEI choice. RV32I 1.1.6 permits either byte order and
+requires byte-address invariance; this profile selects little-endian. The pinned
+107,630-byte chapter was authenticated before review. CHK-ENDIAN-POS now runs
+scope-mem and NEG runs dir-ext-matrix: 64 boundaries / 128 parcels covering all
+seven integer loads and four stores. NEG means a wrong order produces different
+legal observations, not that a big-endian RISC-V system must trap.
+
+The matrix stores one sign bit and reads different widths and byte addresses:
+
+| Stored value/width | Bytes at increasing addresses | Selected observations (zero-based steps) |
+| --- | --- | --- |
+| 0x80 / SB | 80 00 00 00 00 00 00 00 | LB=-128 at 5; LBU=0x80 at 6; LH=0x80 at 7; LD=0x80 at 9 |
+| 0x8000 / SH | 00 80 00 00 00 00 00 00 | LB at offset 0 is 0 at 13; LB at offset 1 is -128 at 14; LHU=0x8000 at 15 |
+| 0x80000000 / SW | 00 00 00 80 00 00 00 00 | LB at offset 3 is -128 at 22; LH at offset 2 is -32768 at 23; LWU=0x80000000 at 24 |
+| 0x8000000000000000 / SD | 00 00 00 00 00 00 00 80 | high-byte/halfword reads retain their prior values at 30/31; high LW=-2147483648 at 32; LD=0x8000000000000000 at 33 |
+
+Nine isolated author copies reverse each LH/LHU/LW/LWU/LD read, each SH/SW/SD
+write, or both directions together. The NEG matrix rejects all nine, first at
+steps 7/15/8/24/9, 13/22/30, and 7 respectively. Reversing SH alone survives
+scope-mem because its halfword store is all ones; the cross-width matrix removes
+that symmetry. SW reversal is caught later in scope-mem at step 28. A matching
+store/load reversal cannot hide behind a same-width round trip here.
+
+A separate public-interface client reverses H/W/D provider reads, writes and
+both together: all nine variants fail the NEG observations. Byte reversal changes
+neither selected guest, and all 256 byte values retain their exact address/value
+through the public provider interface. Existing direct data-access witnesses also
+pin literal B/H/W/D values, low-width stores, neighboring bytes and a typed
+refusal for a reversed valid-width response. The normal CPU trusts conforming
+provider content; the independent fixture auditor detects incorrect content.
+
+The declaration check first fails on the missing ENDIAN binding, then passes.
+Normal Rust checks and independent full 167/5365/10524 replay pass. All prior 86
+bindings and canonical/guest/core/author/generated/frozen data remain exact.
+At c20, registry entries reach 88, effective G-CONTRACT **86/114**: thirteen scope,
+twenty-two guest, six boundary and two direct-execution pairs. Fourteen runtime
+pairs/freeze remain. This is evidence for the selected ordinary-memory byte
+order; it does not add selectable big-endian execution or a device model.

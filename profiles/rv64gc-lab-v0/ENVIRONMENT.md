@@ -18,7 +18,9 @@ cross-record checks. This containment change adds no contract credit. See
 
 OB-LOAD-X0 uses direct request and trap-state witnesses for all seven load forms;
 the legacy GC register/fetch comparison alone cannot distinguish a skipped x0
-load. Worked cases and mutation controls: `docs/book/src/plan/p4/contract-integer.md`.
+load. OB-ENDIAN binds cross-width byte-lane observations that discriminate even
+paired read/write reversal, while byte accesses remain invariant. Worked cases
+and mutation controls: `docs/book/src/plan/p4/contract-integer.md`.
 
 ## The versions
 

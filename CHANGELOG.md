@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0144 (leaf P4-SYSTEM.13 c20) — realize little-endian byte-lane observations
+
+- Bind ENDIAN through scope-mem/dir-ext-matrix, 64 boundaries/128 parcels.
+  Nine isolated author and nine public provider reversals fail NEG, including
+  paired read/write reversals; all 256 byte values retain their address/value.
+- Declaration missing-entry RED precedes exact binding. Rust 167/17/206 and
+  full independent 167/5365/10524 pass; all prior 86 bindings/input/core/author/
+  generated/frozen bytes exact. Registry 88, effective 86/114; fourteen pairs/freeze.
+- Book retains lane values, symmetry limits and controls. LIVE_STATUS unchanged
+  (650 arms, 47 chapters, P4 12/18). Next c21a fixed-cap book partition, then
+  c21b NO-DELAY-SLOTS; no new endian mode or device behavior.
+
 ## SEMULITH-P4-0143 (leaf P4-SYSTEM.13 c19) — realize discarded-load requests and faults
 
 - Bind all seven x0 load forms with literal request/trap witnesses: 26 direct

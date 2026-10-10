@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and six direct assumption pairs and Sstc execution landed; remaining runtime checks keep v2 open.
+**Status:** State inventory, scope pairs, three corrections and six direct assumption pairs and direct execution witnesses landed; remaining runtime checks keep v2 open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -518,12 +518,12 @@ The [runtime contract chapter](contract-runtime.md)
 contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr and Sstc evidence.
 The [integer runtime chapter](contract-integer.md) retains immediate/register ALU,
 U-immediate, twelve-form shift, nine-form RV64I word-result and eleven-form
-load/store extension and discarded-load request/fault bindings,
+load/store extension, discarded-load request/fault and selected byte-order bindings,
 worked values and verified SRAW/SRAIW
 count-mask/source-width witness repairs and the verified SHAMT requirement-
 association correction. Both chapters retain
 independent controls and finite evidence limits. Current G-CONTRACT is
-84/114; fifteen runtime pairs and final freeze remain. The split retains
+86/114; fourteen runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 
 The profile's live environment document now keeps its effective interface and

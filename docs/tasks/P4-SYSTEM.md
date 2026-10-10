@@ -293,6 +293,33 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c20 — little-endian byte lanes (`2026-10-10`, `SEMULITH-P4-0144`)
+
+Owned on clean 6ea2f6b after hooks/empty brief/actual job census. Review ROADMAP
+P4, CPU_ENVIRONMENT, frozen OB-ENDIAN/REQ-D-ENDIAN and selected profile field,
+authenticated RV32I 1.1.6, generic typed load/store path, FlatMemory read/write,
+existing DataAccess literal/auditor witnesses, scope-mem/dir-ext-matrix sources
+and expectations, registry/tests and integer/v2 books. Current 84/114, registry 86.
+
+Little-endian is this EEI's choice, not the only RISC-V choice. Byte accesses
+are invariant under byte order; multi-byte values place the least-significant
+byte at the lowest address. Existing cross-width legal programs can prove the
+selected rule without new production code. POS scope-mem, NEG dir-ext-matrix
+if isolated controls discriminate all relevant lanes; do not rely only on a
+same-width store/load round trip, where paired reversals could cancel.
+
+Before binding, independently replay both and inspect literal byte/half/word/
+double observations; reverse each LH/LHU/LW/LWU/LD read and SH/SW/SD store
+separately, then both directions together. Require named differences, including
+in the cross-width NEG program. Check byte-address invariance with all 256 byte
+values and use the existing direct B/H/W/D provider tests as composition context.
+Preserve all guest/canonical/author/core/generated/frozen data. Observe missing
+binding RED after extending declaration coverage, then append exact two Guest
+entries. make check, full independent 167/5365/10524, prior86 registry/input
+identity, focused gates/books and hooks. Only measured evidence earns 86/114;
+fourteen runtime pairs/freeze then remain. .14 retains statuses/experiments.
+Commit/brief/clean/actual census before c21 bounded runtime pair.
+
 ### `.13` c19 — loads into x0 retain requests and faults (`2026-10-10`, `SEMULITH-P4-0143`)
 
 Owned before edits on clean a76bdda after full CI, commit/hooks/brief/actual job
@@ -595,6 +622,36 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c20 — **ROOT CAUSE**: ENDIAN remained declared/unbound. Gate
+  observed missing CHK-ENDIAN-POS (`cargo test -p semulith-verify
+  every_check_bound_through_the_scope_slice_is_realized`, rc=101). Authenticated
+  RV32I 1.1.6 and canonical little selection reviewed; byte order is an EEI choice.
+  Scope-mem's all-ones SH is symmetric under reversal, so its success observations
+  alone are insufficient. Independent cross-width probe confirms the NEG matrix
+  discriminates (`python3 target/p4-system-13/c20/probe.py`, rc=0).
+
+- [x] `.13` c20 — **ADDRESSED**: bind scope-mem POS and dir-ext-matrix NEG,
+  all eleven integer load/store forms over 64/128. Nine isolated author copies
+  (five reads/three writes/both directions) fail NEG at named steps. Independent
+  public H/W/D read/write/both provider variants also fail all nine; B variants
+  leave both guests exact and all 256 public byte values preserve address/value
+  (`target/p4-system-13/c20/engine/Cargo.toml`, offline Cargo run rc=0). Same-width
+  round-trip symmetry cannot evade the cross-width witnesses. make check rc=0,
+  Rust 167/17/206, after exact two registry entries.
+
+- [x] `.13` c20 — **NO REGRESSION**: normal independent 167/5365/10524 exact;
+  prior 86 bindings/112 base+348 GC canonical/guest inputs, core/definitions/
+  author/generated/frozen bytes exact (`python3 target/p4-system-13/c20/identity.py`,
+  rc=0). Registry 88, effective 86/114, fourteen runtime pairs/freeze remain;
+  taxonomy 13 scope/22 guest/6 boundary/2 execution pairs. Focused gates/books
+  rc=0: 225 frozen rows, 37 fixed route caps, 33 frontiers, six derived claims,
+  three contract versions/zero findings, five fresh reports, 270 schema inputs/
+  two named skips, main+five model books. Hooks precede c21a bounded book
+  partition then c21b NO-DELAY-SLOTS. .14 retains
+  statuses/experiments. LIVE_STATUS unchanged (650 arms, 47 chapters, P4 12/18).
+  promotion: declined (worked lanes, symmetry controls and finite limits retained
+  in the integer book and owning task).
+
 - [x] `.13` c19 — **ROOT CAUSE**: old GC corpus rule lacks data-request/final
   trap observations. Initial probe's presumed fault discrimination was false;
   investigated before credit. Isolated author and independent public conditional
@@ -723,6 +780,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c20 | 9 author/9 public provider controls, 256 byte values; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 88; effective 86/114; focused gates/books rc=0; hooks before c21a |
 | `2026-10-10` | `.13` c19 | 26 direct cases, 14 bad tables, all 19 erased fault cases; disabled observer RED; public full-corpus gap; Rust 167/17/206; prior bytes exact | registry 86; effective 84/114; focused gates/books rc=0; hooks before c20 |
 | `2026-10-10` | `.13` c18c | new controls RED then21/15/8 green; actual hash refusals; seven routes;72-file snapshot/three-file restore; prior input/registry identity | make ci all five legs green; effective 82/114 unchanged; arms 650 |
 | `2026-10-10` | `.13` c18b | 17 isolated countermodels; literal edges; declaration RED then Rust 167/17/203; author 167/5365/10524; prior bytes exact; focused gates/books | registry 84, effective 82/114; c18c source identity next |
@@ -752,6 +810,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c20 | `SEMULITH-P4-0144 (leaf P4-SYSTEM.13): realize little-endian byte-lane observations` | c21a book partition, then c21b NO-DELAY-SLOTS |
 | `.13` c19 | `SEMULITH-P4-0143 (leaf P4-SYSTEM.13): realize discarded-load requests and faults` | c20 ENDIAN, then remaining runtime pairs/freeze |
 | `.13` c18c | `SEMULITH-P4-0142 (leaf P4-SYSTEM.13): authenticate citation source bytes before judging text` | c19 LOAD-X0, then remaining runtime pairs/freeze |
 | `.13` c18b | `SEMULITH-P4-0141 (leaf P4-SYSTEM.13): realize load extension and low-bit stores` | priority c18c citation source identity, then c19 LOAD-X0 |
@@ -776,6 +835,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c20 (SEMULITH-P4-0144): bind ENDIAN cross-width
+  witnesses over 64/128 after nine author/nine public reversal controls; byte
+  address invariance across 256 values exact. Effective86/114, all prior bytes exact.
+  c21a fixed-cap integer book partition then c21b NO-DELAY-SLOTS after hooks.
 
 - `2026-10-10`: `.13` c19 (SEMULITH-P4-0143): direct x0 request/trap
   witnesses close the old GC comparison gap, reproduced across all 167 guests
