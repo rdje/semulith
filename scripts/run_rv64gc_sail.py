@@ -37,6 +37,8 @@ INTERRUPTS = {'supervisor-software-interrupt': 1, 'machine-software-interrupt': 
               'supervisor-timer-interrupt': 5, 'machine-timer-interrupt': 7,
               'supervisor-external-interrupt': 9, 'machine-external-interrupt': 11}
 INT_LABELS = {'SSI': 1, 'MSI': 3, 'STI': 5, 'MTI': 7, 'SEI': 9, 'MEI': 11}
+# The historical word-less target-fetch record predates the parcel author's spelling.
+LEGACY_FETCH = re.compile(r'the fetch at 0x[0-9A-Fa-f]+ — no word fetched')
 DECLARED_INTERRUPT = re.compile(
     r'^(?:the pending evaluation takes the (?P<label>SSI|MSI|STI|MTI|SEI|MEI) interrupt in [MSU]:'
     r'|pending interrupt (?P<cause>1|3|5|7|9|11) delivers in [MSU] before instruction fetch;)')
@@ -105,17 +107,19 @@ def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, 
         n = e['n']
         want = {k: int(v, 16) for k, v in e['writes'].items()}
         event = deliveries.get(n)
+        fetch_declared = (e['insn'].startswith('<fetch ')
+                          or LEGACY_FETCH.fullmatch(e['insn']) is not None)
         declared = DECLARED_INTERRUPT.match(e['derivation'])
         declared_cause = (int(declared['cause']) if declared and declared['cause'] is not None
                           else INT_LABELS[declared['label']] if declared else None)
         if n not in rows:
             interrupt = declared is not None and event == ('int', declared_cause)
-            fetch_fault = (e['insn'].startswith('<fetch ') and event is not None
+            fetch_fault = (fetch_declared and event is not None
                            and event[0] == 'exc' and event[1] in (1, 12))
             if not want and (interrupt or fetch_fault):
                 continue
             raise SailError(f'missing expected step {n} ({e["insn"]}); absent evidence is not agreement')
-        if declared or e['insn'].startswith(('<halted>', '<fetch ')):
+        if declared or fetch_declared or e['insn'].startswith('<halted>'):
             return 'DIVERGE', f'step {n}: Sail printed an instruction row for declared delivery/wait'
         changes = {}
         for reg, value in rows[n].writes.items():
@@ -169,12 +173,14 @@ def run_guest(name: str, binary: Path, output: Path, encoding: Path, guests: Pat
     write_elf64(elf, int(expected['entry'], 16), payload, asm.ialign)
     # Use the existing conversion owner; materialization is a derived foreign-tool input.
     config = D.materialize_sail_override(REPO, 'rv64gc-lab-v0')
+    # The public limit counts boundary attempts, including fetch-delivery gaps.
+    # Extra attempts after a completed guest can create duplicate no-row faults.
     traces = []
     for repetition in range(2):
         trace = output / f'{name}.{repetition}.trace'
         trace.unlink(missing_ok=True)  # exactly this adapter's artifact, preventing stale success
         proc = subprocess.run([str(binary), '--config-override', str(config),
-                               '--inst-limit', str(expected['instructions'] + 2),
+                               '--inst-limit', str(expected['instructions']),
                                '--trace-instr', '--trace-gpr', '--trace-exception',
                                '--trace-output', str(trace), str(elf)],
                               capture_output=True, text=True, check=False)

@@ -1,5 +1,45 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — bound public reference runs (P4-SYSTEM.13 c28c)
+
+History75c79af introduced instructions+2;190d16b retained it while extending
+interrupt vocabulary. Full dir-chase17-row prefix ends EBREAK, then two unclaimed
+fetch-at-zero events map to duplicate boundary17. Public exact limit17 agrees.
+Across167 fresh exact-limit pairs,24/25 previous tail refusals initially agree;
+125 prior agreements/14 differences remain. Last fault-fetch has actual cause1
+at boundary2 but legacy "the fetch at ... — no word fetched" is unrecognized.
+Canonical133e722 record predates adapter; parsed corpus has one legacy/four modern
+fetch-gap cells. No record is rewritten to fit the adapter.
+
+Use exact declared limit; retain strict entire-trace parser byte-identically.
+Recognize exact historical hexadecimal-address syntax alongside <fetch ...>,
+requiring real fetch-class event/empty writes and rejecting instruction rows.
+Offline orchestration control first RED rc1 (declared1 got3); legacy control
+RED rc1 (actual event refused). Both GREEN rc0 after repair. Duplicate/malformed
+events, truncated final row after interior gap, missing gap, bad legacy syntax
+and attempted GPR-write waiver refuse. Five existing mutations remain RED rc1;
+existing GUEST-GEN arm retains its success sentinel, no new arm/global count.
+
+Normal live runner167:149AGREE/4566 declared boundaries with two fresh identical
+traces;14 unchanged policy/platform differences; four refusals = three process
+failures (mm-counters,w-notrap,w-timer) + cross_model=false guest-no-device.
+Raw diagnostic includes that disabled guest, so its raw agreement is not runner
+credit. All25 tail-shaped raw refusals now compare over complete declared data;
+24 are enabled and repaired. Required C page-edge and terminal historical fetch
+cases agree. Early targeted command used nonexistent c-jalr; corrected inventory
+census uses actual names, no missing-file result counted as verification.
+Public atomic regression242/3146 and wrong-granule control rc0. Finite GPR changes/
+delivery presence only; event tval/PC/word/FP/memory/request checks not claimed.
+
+verify.py rc0: strict parser/core/author/all previous inputs/frozen/registry100
+exact except one live reference-scope prose delta; independent167/5365/10524;
+effective98/114 unchanged. Focused gates/all six books rc0; hooks next. LIVE652/
+49/P4 12/18 unchanged; no Rust edits, previous167/17/217 applies. Promote existing
+shorter-trace knowledge card/INDEX, retain old bytes/fixed caps. Next c28d GC-FENCEI
+SEMULITH-P4-0160, remaining runtime pairs/freeze; .14 statuses/experiments remain.
+Evidence: target/p4-system-13/c28c (RED controls, exact raw/runner census, proof).
+
+
 ## _(2026-10-10)_ — qualify the public AMO granule boundary (P4-SYSTEM.13 c28b)
 
 Confirmed local reference-configuration defect: scalar MAG exponent4 allows

@@ -408,3 +408,62 @@ receipts above retain their original inputs. The owned-author protocol now keeps
 13-boundary parcel budget; new provenance never borrows a capture header.
 [The runtime chapter](contract-runtime.md#explicit-comparator-setup-before-fallback-repair)
 records the current nine-program preparation and reference qualifications.
+
+## Bounded reference runs
+
+P4.13 c28c repairs two adapter defects found during the atomic-reference review.
+A guest's declared budget counts architectural boundaries, including delivery
+attempts that fetch no instruction. The adapter had asked Sail for two additional
+attempts. For dir-chase, all 17 declared rows were present, ending in EBREAK;
+the extra attempts fetched at the default trap address zero and produced two
+fetch-access faults without instruction rows. The strict parser mapped both to
+boundary 17 and correctly rejected their duplicate delivery. The runner had
+requested evidence outside its claim and then let that tail invalidate the
+complete intended run.
+
+The runner now passes the exact declared count to the public --inst-limit option.
+The same pinned binary, configuration and ELF produce an agreeing 17-boundary
+trace. The parser still reads the whole supplied trace and refuses malformed,
+duplicate or out-of-order records. It does not discard a suspicious suffix or
+accept a shorter prefix. Cached traces with the old duplicate tail still refuse.
+
+The remaining fault-fetch refusal exposed a second vocabulary mismatch. Its
+historical record says "the fetch at 0x40000000 — no word fetched"; later parcel
+records use "<fetch ...>". The actual trace contains a fetch-access-fault event at
+boundary 2, after LUI/JALR. The adapter now recognizes that exact legacy syntax
+with a hexadecimal address. Both spellings still require an actual fetch-class
+event and empty declared GPR writes. An instruction row there diverges; missing,
+non-fetch or malformed events refuse. Canonical expectations are unchanged.
+The adapter compares delivery presence/class; it does not compare event tval
+against the expectation prose.
+
+```sh
+python3 scripts/run_rv64gc_sail.py dir-chase fault-fetch c-links c-page-end c-page-straddle
+python3 scripts/probe_gc_sail.py
+```
+
+The offline probe exercises the real runner with a process stub that requires the
+exact limit and writes two fresh complete traces. It fails on the former +2
+invocation. A separate control fails when legacy syntax is unrecognized. Further
+controls retain the complete three-boundary sequence with an interior witnessed
+gap and reject a missing final row, an unwitnessed gap, duplicate/malformed
+deliveries, invalid legacy syntax and an attempted GPR-write waiver. The five
+existing broken-adapter mutations still fail. These checks run in the existing
+GUEST-GEN arm; no new registered arm or CPU-contract credit is claimed.
+
+Two fresh exact-limit raw traces per guest assess all 167 existing programs.
+All 25 formerly observed tail refusals have complete agreeing declared evidence
+after the vocabulary repair. One has cross_model=false and remains refused by
+the normal runner; raw diagnostic comparison does not override that guard.
+The normal runner records 149 AGREE over 4,566 declared boundaries with fresh
+byte-identical pairs, 14 unchanged policy/platform DIVERGE, and four REFUSED:
+mm-counters, w-notrap and w-timer still fail without the matched time source;
+guest-no-device is disabled. All 125 prior agreements and all 14 prior differences
+remain. Required second-parcel and first-parcel page faults, mixed C/32-bit code,
+and the historical terminal fetch event retain their evidence.
+
+These are finite GPR change-observations and witnessed delivery gaps. PC/word,
+FP registers, direct CSR state, memory and requests remain outside this adapter's
+comparison except where read back into declared GPR changes. Requirement statuses,
+structured experiment records and independent evidence classification remain
+P4.14's work. Contract realization stays 98/114.

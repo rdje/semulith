@@ -474,7 +474,7 @@ prior card bytes retained, family30/95032 B under fixed caps. No .14 status or
 structured experiment credit. New adapter defect c28c below takes priority over
 GC-FENCEI c28d. Focused checks/all six books rc=0; hooks at commit.
 
-### `.13` c28c — keep post-budget reference faults from invalidating evidence (priority next)
+### `.13` c28c — keep post-budget reference faults from invalidating evidence (completed, `SEMULITH-P4-0159`)
 
 Owned defect found in c28b's broader public regression, priority-next before
 GC-FENCEI. Published adapter run dir-chase (cross_model=true) rc=2, duplicate
@@ -489,6 +489,34 @@ timer source). These failures earn no agreement/identity-as-success credit.
 Twenty-five adapter refusals on successful raw traces include the same tail
 shape; do not claim they are all repaired from the single initial reproduction.
 
+Activated on clean0d49d27 after actual census rc=0/brief0. Read roadmap P4,
+evidence/CPU boundary contracts, public runner/parser/offline controls, parcel
+book and guest records. History75c79af introduced +2 with the adapter;190d16b
+added the numeric-cause delivery spelling without changing budget. Initial
+repair candidate: use the exact declared architectural-boundary limit, preserving
+the entire strict parser/comparator. First measure all167 exact-limit public
+runs (two fresh traces) and compare the observed25 tail-refusal set; include
+required second-parcel delivery and mixed C. Add a runner-orchestration control
+which rejects the old +2 invocation before any production change; retain every
+existing missing/duplicate/malformed/failed/stale refusal and mutation control.
+
+Exact-limit diagnostic rc=0: all167 fresh repeated pairs captured,24 of25
+old tail refusals become AGREE;125 prior AGREE/14 DIVERGE unchanged. Three
+counter/timer process failures remain. The last fault-fetch has an actual
+cause1 delivery at boundary2 but adapter refuses: canonical historical insn
+"the fetch at 0x40000000 — no word fetched" is not the later <fetch ...>
+spelling. Confirmed second adapter vocabulary defect, fix-now within this same
+bounded repair. Census of parsed167 expectations finds one historical word-less
+spelling and four modern fetch-gap cells; keep exact legacy syntax recognized,
+require real fetch-class event/empty writes, reject instruction rows there.
+Do not rewrite frozen/canonical records to fit the adapter. Add legacy missing/
+wrong-event/row controls first; no claim on unrecorded trap addresses/CSR state.
+Raw census includes guest-no-device cross_model=false; normal run must still
+refuse it, and its raw comparison earns no runner agreement credit. Root cause
+predates current adapter:133e722 carries legacy record;75c79af only recognizes
+new spelling. New exact-budget orchestration control is RED rc=1 on old code
+(limit3 where declared1); same strict parser and other controls pass before it.
+
 After c28b is committed/clean, audit actual trace/limit semantics and existing
 parcel-delivery/negative/stale-trace contracts before choosing the smallest repair.
 Own exact budget or bounded-prefix handling with permanent offline controls;
@@ -496,8 +524,15 @@ truncated required evidence, in-budget malformed/duplicate records, failed proce
 and stale output must still refuse. Re-run ordinary/mixed-C/witnessed-fetch-gap
 live cases and all adapter controls; assess the whole observed25-tail-refusal
 set. Keep intentional timer/counter and width-SC platform differences explicit.
-No matched-input/status/contract credit unless independently verified. GC-FENCEI
-follows as c28d. Root cause/source-history and actual policy change belong here.
+Completed outcome: normal runner149 AGREE/4566 boundaries,14 unchanged
+DIVERGE, three process failures plus disabled guest refused. All25 raw tail
+cases assessed and now compare completely, including one excluded disabled case;
+24 enabled repairs. Both new controls first RED1 then GREEN0; five old mutations
+still RED1. Strict parser/core/author/frozen/registry exact; one live reference
+prose delta declared. Atomic242 regression/focused/all six books rc=0; hooks next.
+Promote existing shorter-trace card/INDEX under fixed caps, previous bytes retained.
+No status/structured-experiment/contract credit. Next c28d GC-FENCEI,
+SEMULITH-P4-0160, then remaining runtime pairs/freeze. .14 still owns records.
 
 C28b promotes the worked counterexample into the existing must-diverge-control
 card/INDEX (same question, no new family member); prior card bytes retained.
@@ -645,6 +680,27 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c28c — **ROOT CAUSE**: public dir-chase rc=2 with complete17
+  rows plus two post-budget fetch deliveries; exact17 AGREE. History75c79af
+  introduced +2,190d16b retained it. Exact-limit167 diagnostic rc=0;24/25 tail
+  refusals resolve, fault-fetch actual event refused due legacy syntax from
+  133e722. Parsed census one legacy/four modern fetch-gap cells. New permanent
+  budget control RED rc=1 (limit3 vs1), legacy control RED rc=1 (missing step0).
+- [x] `.13` c28c — **ADDRESSED**: probe rc=0 with exact budget and
+  exact legacy syntax; strict parser byte-identical. Five previous mutations
+  rc=1. New duplicate/malformed/truncated/interior-gap/write-waiver controls
+  refuse. Real runner census rc=0:149 AGREE/4566 boundaries with fresh identical
+  pairs,14 unchanged differences, three named process failures and disabled
+  guest refused. All25 raw tail cases compare completely; only24 enabled.
+  Existing shorter-trace knowledge card/INDEX promoted with old bytes retained.
+- [x] `.13` c28c — **NO REGRESSION**: verify.py rc=0; all125 prior
+  agreements/14 differences preserved; pinned source/binary/config/core/author/
+  frozen/registry100/archives exact. Prior112 base/348 GC canonical inputs exact
+  except declared live reference prose. Independent167/5365/10524 corpus exact;
+  atomic242/3146 paired regression rc=0. GUEST147/focused/all six books rc=0;
+  hooks next. Effective98/114 and LIVE652/49/P4 12/18 unchanged, previous Rust
+  167/17/217 applies. Next c28d GC-FENCEI; .14 statuses/experiments unchanged.
+
 - [x] `.13` c28b — **ROOT CAUSE**: baseline public reproduction DIVERGE
   at8, repeated13 rows; old durable probe rc=2 on contained AMO. Scalar MAG4
   permits completion despite AccessFault; validated variants isolate parameter,
@@ -754,6 +810,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c28c | budget/legacy RED1→GREEN0; five mutations reject;149AGREE/4566,14 prior differences, three failures/one disabled refused; atomic242 regression; strict parser/input/author/registry identity | effective98/114 unchanged; GUEST147/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28b | public242/3146 repeated; restored granule DIVERGE; original A11AGREE/one named difference;164 successful old traces exact/three failures excluded; scalar/input/corpus/registry identity | effective98/114 unchanged; adapter controls/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28a | sharder12/0; seven whole entries18245 B; exact47951 B source inverse/SHA; prior16 rows/sealed history/code/inputs exact; explicit caps | registry100/effective98/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c27 | independent176 words/8896 states; seven wrong effects/thirteen captures; auditor/LR/missing-binding RED101 and restored; full167 corpus/core/prior98 exact except gate note | direct8896/17792, pair8959/17918; effective98/114; Rust167/17/217; focused/all six books rc=0; hooks next |
@@ -766,6 +823,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c28c | `SEMULITH-P4-0159 (leaf P4-SYSTEM.13): bound public reference runs` | c28d GC-FENCEI, remaining runtime pairs/freeze |
 | `.13` c28b | `SEMULITH-P4-0158 (leaf P4-SYSTEM.13): qualify the public AMO granule boundary` | c28c post-budget adapter repair, then GC-FENCEI c28d |
 | `.13` c28a | `SEMULITH-P4-0157 (leaf P4-SYSTEM.13): retain bounded development receipts` | c28b public AMO granule qualification, then GC-FENCEI |
 | `.13` c27 | `SEMULITH-P4-0156 (leaf P4-SYSTEM.13): observe atomic alignment before translation` | c28a DEV containment, c28b GC-FENCEI, remaining runtime pairs/freeze |
@@ -773,6 +831,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c28c (SEMULITH-P4-0159): exact public Sail
+  budget/legacy fetch vocabulary; strict parser retained.149AGREE/4566 with
+  fresh pairs,14 unchanged differences, three failures/one disabled refused.
+  All25 raw tail cases assessed;24 enabled. New controls RED1→GREEN0, five
+  prior mutations reject. Effective98/114 unchanged; c28d GC-FENCEI next.
 
 - `2026-10-10`: `.13` c28b (SEMULITH-P4-0158): scalar MAG4→0;
   public242/3146 pairs and wrong-granule control. Prior164 successful traces

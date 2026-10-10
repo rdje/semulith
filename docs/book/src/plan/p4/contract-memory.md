@@ -386,6 +386,7 @@ The broad run also found a separate adapter defect: its two extra steps can run
 off a completed program and produce repeated fetch faults. It then refuses the
 entire trace for duplicate delivery, even when the declared prefix is complete.
 The public dir-chase adapter refuses at step 17; the same binary/configuration/
-ELF with its exact 17-step budget agrees. P4.13 c28c owns the bounded repair and
-its missing-evidence/parcel-gap controls before the next runtime binding.
+ELF with its exact 17-step budget agrees. P4.13 c28c repairs the runner budget and
+legacy word-less fetch vocabulary while preserving strict missing-evidence and
+parcel-gap controls; see `docs/book/src/plan/p4/c.md#bounded-reference-runs`.
 Structured experiment records and requirement statuses remain P4.14's work.

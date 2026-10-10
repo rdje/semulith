@@ -23,7 +23,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`a-pdf-text-layer-is-not-the-page.md`](a-pdf-text-layer-is-not-the-page.md) | a PDF's text layer disagrees with its own page (or another extraction mode) — which do I trust? |
 | [`reduced-width-verification-of-signed-ops.md`](reduced-width-verification-of-signed-ops.md) | my exhaustive reduced-width test fails on signed operations — is the primitive wrong? |
 | [`availability-is-not-identity.md`](availability-is-not-identity.md) | the package manager has a formula with the right name — is it the right software? |
-| [`a-shorter-trace-is-not-agreement.md`](a-shorter-trace-is-not-agreement.md) | my differential comparison says the two models agree — over how many steps? |
+| [`a-shorter-trace-is-not-agreement.md`](a-shorter-trace-is-not-agreement.md) | my differential comparison says the two models agree — over how many steps? Also: can an overlong producer run invalidate a complete declared trace? |
 | [`zero-hits-absence-or-blindness.md`](zero-hits-absence-or-blindness.md) | my search returned zero hits — is that absence, or is my instrument blind? (also: my gate is green — did it enumerate the files I just added?) |
 | [`device-unit-applicability-by-declaration.md`](device-unit-applicability-by-declaration.md) | my new unit isn't a processor — how do the gates know what applies to it? |
 | [`a-duplicate-id-is-a-contradiction-not-a-shadowing.md`](a-duplicate-id-is-a-contradiction-not-a-shadowing.md) | my id-keyed map handles duplicate records fine — why did the gate stay green on a catalogue arguing with itself? |

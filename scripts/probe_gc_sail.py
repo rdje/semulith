@@ -79,6 +79,37 @@ def check(adapter, root):
             'x0 trace write is nonzero', 'nonzero x0 write accepted')
     refused(lambda: S.compare_trace(expected(), event.replace('supervisor-software-interrupt', 'new-name')),
             'unknown int spelling', 'unknown interrupt spelling accepted')
+    # Keep parsing strict: extra or malformed deliveries cannot erase a required row.
+    refused(lambda: S.compare_trace(fetch, fetch_event + fetch_event),
+            'duplicate delivery', 'duplicate in-budget delivery accepted')
+    refused(lambda: S.compare_trace(fetch, fetch_event.replace('tval=0x', 'bad=0x')),
+            'malformed trace', 'malformed required delivery accepted')
+    three = expected()
+    three['instructions'] = 3
+    three['step'] = [dict(expected()['step'][0], n=0),
+                     dict(fetch['step'][0], n=1),
+                     dict(expected()['step'][0], n=2)]
+    complete = NOP + fetch_event + NOP.replace('[0]', '[2]')
+    assert S.compare_trace(three, complete)[0] == 'AGREE'
+    refused(lambda: S.compare_trace(three, NOP + fetch_event),
+            'missing expected step 2', 'truncated trace after a witnessed gap accepted')
+    refused(lambda: S.compare_trace(three, NOP + NOP.replace('[0]', '[2]')),
+            'missing expected step 1', 'an unwitnessed interior gap accepted')
+    legacy = expected('the fetch at 0x40000000 — no word fetched',
+                      'D-FETCH-FAULT-REPORT: target access-fault, no word fetched.')
+    access_event = fetch_event.replace('fetch-page-fault', 'fetch-access-fault')
+    assert S.compare_trace(legacy, access_event)[0] == 'AGREE', 'legacy word-less fetch refused'
+    refused(lambda: S.compare_trace(legacy, ''), 'missing expected step 0',
+            'unwitnessed legacy word-less fetch accepted')
+    refused(lambda: S.compare_trace(legacy, access_event.replace('fetch-access', 'load-access')),
+            'missing expected step 0', 'non-fetch event excused a legacy fetch')
+    assert S.compare_trace(legacy, NOP)[0] == 'DIVERGE'
+    refused(lambda: S.compare_trace(dict(legacy, step=[dict(legacy['step'][0], writes={'x1': '0x1'})]),
+                                     access_event), 'missing expected step 0',
+            'fetch delivery excused a declared GPR write')
+    lookalike = expected('the fetch at some address — no word fetched')
+    refused(lambda: S.compare_trace(lookalike, access_event), 'missing expected step 0',
+            'undeclared legacy fetch spelling accepted')
     changed = NOP + 'x1 <- 0x0000000000000001\n'
     assert S.compare_trace(expected(), changed)[0] == 'DIVERGE'
     assert S.compare_trace(expected(writes={'x1': '0x1'}), changed)[0] == 'AGREE'
@@ -99,7 +130,30 @@ def check(adapter, root):
                 'reference produced no trace', 'stale traces accepted as a new run')
     finally:
         S.subprocess.run = original_run
-    print('GC Sail probe: ordinary rows, witnessed gaps, failed processes and stale traces passed')
+    # Exercise the real runner. The pinned public binary counts the declared
+    # boundaries, including witnessed delivery gaps. Over-running a finished ELF
+    # can create duplicate no-row fetch faults unrelated to the claimed prefix.
+    calls = []
+
+    def fresh_run(argv, **kwargs):
+        limit = argv[argv.index('--inst-limit') + 1]
+        assert limit == '1', f'runner must request the declared budget 1, got {limit}'
+        trace = Path(argv[argv.index('--trace-output') + 1])
+        assert not trace.exists(), 'a previous trace survived before the fresh run'
+        calls.append(trace)
+        trace.write_text(NOP)
+        return SimpleNamespace(returncode=0, stdout='', stderr='')
+
+    try:
+        S.subprocess.run = fresh_run
+        verdict, detail = S.run_guest('nop', Path('fake-sail'), out,
+                                     REPO / 'profiles/rv64gc-lab-v0/encoding.sexp', guests)
+        assert verdict == 'AGREE' and 'two traces byte-identical' in detail
+        assert calls == [out / 'nop.0.trace', out / 'nop.1.trace']
+    finally:
+        S.subprocess.run = original_run
+    print('GC Sail probe: exact runner budget, complete rows/gaps and strict records; '
+          'failed processes and stale traces passed')
 
 
 def main():

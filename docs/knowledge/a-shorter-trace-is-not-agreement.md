@@ -63,3 +63,19 @@ agreement must name the control that was observed failing, or `PROFILE-CONSISTEN
 
 Related: [[self-test-arms-that-never-ran]], [[re-derivable-vs-cited-evidence]],
 [[availability-is-not-identity]].
+
+## Bound the producer without weakening the consumer
+
+P4-SYSTEM.13 c28c found the complementary failure: the public Sail runner asked
+for two attempts beyond a guest's declared budget. A complete 17-boundary
+program ended in EBREAK; extra fetches at zero produced duplicate no-row faults.
+The strict parser refused the whole trace. Exact --inst-limit17 removes the
+unclaimed tail while retaining every required row and witnessed gap. The parser
+still refuses malformed or duplicate input; it does not silently truncate it.
+
+A remaining historical word-less fetch was real evidence in an older spelling,
+not an absent row to waive. Recognize the exact declared vocabulary, require a
+fetch-class event and empty writes, and reject an instruction row there. New
+controls first fail the old budget and missing vocabulary. A three-boundary
+sequence with an interior delivery still needs its final row. The worked limits
+and public corpus result are in `docs/book/src/plan/p4/c.md#bounded-reference-runs`.

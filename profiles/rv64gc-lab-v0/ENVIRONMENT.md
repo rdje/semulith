@@ -54,6 +54,11 @@ setting did not match the unconditional laboratory alignment rule. Public
 qualification: `scripts/probe_gc_sail_atomic_align.py`; worked evidence/limits:
 `docs/book/src/plan/p4/contract-memory.md`.
 
+The public Sail runner requests exactly each declared boundary budget and still
+requires every ordinary row or witnessed delivery gap. Its historical word-less
+fetch spelling is supported without rewriting expectations. Worked observations,
+negative controls and platform limits: `docs/book/src/plan/p4/c.md`.
+
 ## The versions
 
 | Version | Status | Members | What it is |
