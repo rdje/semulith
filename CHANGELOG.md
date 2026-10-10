@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-LC-0005 (leaf LIVE-CONTAINMENT.4) — prepare finite task-history archive review
+
+- Verify a deterministic12-file closed-P4 archive prototype with exact source/manifest identities, all Python/tar retrievals and four fail-closed controls; preserve originals.
+- Record five consumer files and proposed navigation stubs retaining paths/eight anchors; publish the exact manifest/reproduction and pending browsing decision. No removal, ceiling/checker/runtime/profile/status change; focused9/seven books pass.
+
 ## SEMULITH-P4-0201 (leaf P4-SYSTEM.14) — register RV64GC and enforce every required category
 
 - Register the sixth unit, all24 category dispositions and its dedicated14-file model book; authenticate24 pins and keep acquisition/implementation/acceptance distinct.

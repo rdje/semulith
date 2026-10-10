@@ -123,6 +123,12 @@ answer once ceilings fire.
 
 ## Decisions
 
+- `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
+  P4 archive files only. Prototype/consumers/retrieval proof:
+  docs/decisions/decision_task-history-seal-review.md; evidence
+  target/live-containment/task-history-review. No removal/cap/checker change.
+  Prototype/retrieval/controls/focused9/seven books rc=0; changed browsing needs direction before transition.
+
 - `2026-10-08` (director approval / .4a ownership before code): the director explicitly
   approved the proposed tracked archive of 210 older shards, with byte-exact retrieval
   and the browsing change. Implement only this finite pressure prerequisite now.
@@ -359,6 +365,8 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4b: prototype/reproduction/controls/focused9/seven books rc=0.
+
 Registry prose follow-up owned by `.4`: the SHARD-FREEZE description in
 scripts/check_doctrines.project.sh still says the physical manifest only grows; the
 approved seal preserves append-only logical rows across archive/live manifests instead.
@@ -388,6 +396,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0005 (leaf LIVE-CONTAINMENT.4): prepare finite task-history archive review`
 
 `SEMULITH-LC-0004 (leaf LIVE-CONTAINMENT.4): seal the approved history archive with authenticated retrieval` — slice (a); full adoption remains.
 

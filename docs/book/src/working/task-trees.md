@@ -253,3 +253,15 @@ measured revision the full51-member book was523133bytes, leaving1155 under
 same-volume byte census; keep file count, aggregate bytes and per-part caps
 as separate checks. The corrected planning receipt and inverse retain the
 measurement's source and scope.
+
+## A finite history seal awaiting direction
+
+At capture47cb436 the task family has only575B of its fixed3MiB aggregate left.
+`LIVE-CONTAINMENT.4` owns a concrete review of12 closed P4 archive files:
+1,144,703 original bytes reproduced exactly in a375,029-byte prototype of the proposed tracked
+archive. No source has been removed. The proposed transition keeps navigation
+stubs at existing paths/anchors and reads full historical narratives through a
+verified reader or ordinary tar. The active graph and feature books stay directly
+readable. This changes historical browsing and requires the director's direction;
+the earlier changelog seal approval does not cover it. Exact capture, consumers,
+controls and reproduction recipe: `docs/decisions/decision_task-history-seal-review.md`.

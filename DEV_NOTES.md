@@ -1,6 +1,27 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — finite task-history review, direction pending (LIVE-CONTAINMENT.4b)
+
+On clean47cb436, task family89/3145153B has575B of aggregate room. Own only a
+read-only-source prototype of12 closed P4 history files, not an archive migration.
+All1144703B/15055lines equal captured Git blobs and pins; deterministic USTAR/
+gzip13-member capture375029B, SHA892f5c98fb8567392fea2b0a615baab3bd2aa4a38768517e0f3c7b418887242d.
+Every original retrieved through Python/tar exactly; four corrupted/member/escape
+controls refuse. Five external consumer files/27records, no direct book includes;
+6830B proposed stubs retain paths/eight anchors, avoiding changes to immutable
+shard0221 or canonical GC ENVIRONMENT. Reduction1137873B; active graph untouched.
+
+The tracked proposal owns the exact manifest, lifecycle/retention/failure contract,
+consumer dispositions and executable reproduction. Source guide Stop conditions
+requires direction for changed direct browsing; previous changelog approval is
+finite and separate. No original removed, cap/checker/runtime/profile change or
+acceptance credit. Full .4 adoption remains open. Focused9/seven books rc=0;
+next action is the browsing decision, then approved migration and
+return to P4.14 experiments/policy/status/mirrors. Evidence target/live-containment/
+task-history-review; no project-owned off-volume storage.
+promotion: declined (the proposed decision is the complete finite authority/retention review; no additional general lesson).
+
 ## _(2026-10-10)_ — sixth-unit registration and scope-reader repair (P4-SYSTEM.14 a10)
 
 Register existing GC processor with24 category rows/19 required and its14-file
