@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — grammar/mapping, declared edges and file pins implemented; comparison/qualification and retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a18, `SEMULITH-P4-0203`–`0209`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a19, `SEMULITH-P4-0203`–`0210`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -41,8 +41,10 @@ single dossier mapping owner rather than introducing a second source format.
 
 ## How to apply
 
-The first implementation is limited to the public adapter's declared GPR-change
-and witnessed-delivery observations. Its method version is `matched-gpr-v1`.
+The `matched-gpr-v1` envelope carries GPR-change and witnessed-delivery observations.
+The prospective first comparison rule, `sail-gpr-change-v1`, credits GPR witnesses;
+its exact controls, closure, bounds and replay limits are declared in
+`docs/decisions/decision_sail-gpr-comparison-method.md`. Implementation is pending.
 It cannot establish unrecorded FP registers, memory, CSRs, request counts or full
 architectural equivalence. Other observation methods need their own explicit
 versioned contract before they receive credit.
@@ -53,7 +55,7 @@ relationships and authenticated execution evidence remain separate requirements.
 | Information | Required content and relationship |
 | --- | --- |
 | Version and property scope | Exact method version; requirement and effective-obligation IDs; the particular observations supported for each property. Existence of an ID does not establish coverage. |
-| Inputs | Unique input ID, role, canonical repository-relative path and SHA256 for each definition, source, policy, configuration, guest, expectation, adapter, runner and reference-build dependency used. Explicitly record shared inputs. |
+| Inputs | Unique ID, role, canonical relative path and SHA256 for all project dependencies used, including a finite manifest whose leaves must be checked. External executable identity/replay availability follow the method contract; no declared file pin is excused. Record shared inputs. |
 | Producers | Unique producer ID and role, with input IDs identifying its implementation/configuration. Reference producers resolve to the existing candidate inventory; expected-result producers have their own declared identity rather than being invented external models. |
 | Comparison rule | Exact rule/adapter identity, permitted differences and the complete observed vocabulary; normalization and masks are inputs, never unexplained exceptions. |
 | Observations | Unique artifact ID, role, repository-relative path, byte size and SHA256. Bind raw observations and process stdout/stderr where relevant, with the successful process status captured separately. |

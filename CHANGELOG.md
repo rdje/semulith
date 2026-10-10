@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0210 (leaf P4-SYSTEM.14) — declare the first Sail GPR comparison method
+
+- Specify the prospective one-witness baseline/repeat/wrong-value protocol, typed relationships, exact artifact/producer roles, dependency closure, invocation/receipt checks and finite byte budgets. Include the full authoritative method in the GC book; method success remains distinct from full policy/acceptance.
+- Separate retained executable provenance from fresh replay availability, without excusing declared project-file pins or claiming hash-based execution attestation. Current schema refuses the new syntax. Correct a stale probe docstring with executable AST exact; preserve two oldest notes via lossless sharding. Focused10/sharder12/0/seven books,15 rendered contract checks and old-book/protected inverses pass. No canonical capture, qualification, behavior or cap change.
+
 ## SEMULITH-P4-0209 (leaf P4-SYSTEM.14) — refuse duplicate expectation writes
 
 - Reproduce conflicting write keys silently collapsing before an AGREE result. Reject repeated per-step keys at the single mapper and after dossier shape checks, including equal-valued duplicates; preserve valid inputs and schema grammar.

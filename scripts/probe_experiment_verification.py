@@ -3,7 +3,7 @@
 
 These synthetic pins and observations are not execution evidence. No artifacts are
 read or created. DOSSIER-SCHEMA owns the outer named arms; qualification stays closed
-in PROFILE-CONSISTENCY until its separate relationship/artifact evaluator exists.
+in PROFILE-CONSISTENCY pending separate comparison and policy evaluation.
 """
 from __future__ import annotations
 

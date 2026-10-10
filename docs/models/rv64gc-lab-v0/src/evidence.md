@@ -55,6 +55,14 @@ The current gate report is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}
 
+## First comparison method — declared, implementation pending
+
+The following contract adds a typed witness and an exact wrong-value control.
+Its new syntax and capture artifacts are prospective; production qualification
+stays closed. The declaration gives no new requirement or CPU acceptance credit.
+
+{{#include ../../../decisions/decision_sail-gpr-comparison-method.md:method}}
+
 ## Checking identities and declared relationships
 
 `PROFILE-CONSISTENCY` now passes each new verification experiment's raw form to

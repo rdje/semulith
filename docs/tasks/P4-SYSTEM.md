@@ -289,15 +289,30 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a19 method-specific comparison contract, evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | a20 typed witness/baseline grammar, artifact mapping/evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
-### `.14` a19 — method-specific comparison contract (scheduled next, SEMULITH-P4-0210)
+### `.14` a20 — carry typed witnesses and control baselines (scheduled, SEMULITH-P4-0211)
 
+After a19's clean COMMIT workflow, implement only optional singular gpr_witness
+(step_n integer, register string) on properties and optional baseline_id on controls
+in the existing reference schema/single mapper. Preserve all old mapped records;
+no canonical capture, receipt/manifest implementation or qualification yet.
+Read the declared first-method contract, schema facets/mapping, raw graph checks,
+profile gate, shape/edge probes and GC book. Add meaningful shape/roundtrip and
+relationship controls, including duplicate/unknown children and wrong baseline;
+prove removed guards fail for named reasons. New fields alone never credit a
+property. Keep generic graphs compatible and the blanket unqualified guard closed.
+Own exact old dictionaries/protected bytes, focused checks, book/live sync and
+normal COMMIT workflow. Artifact mappings and bounded evaluator follow separately.
+
+### `.14` a19 — method-specific comparison contract (completed, SEMULITH-P4-0210)
+
+Owned on clean443174d, brief0/untracked and actual process census OK, before edits.
 Before implementation/canonical capture, specify the first supported comparison
 rule using authenticated snapshots. The generic graph names properties but not
 machine-readable step/register or delivery witnesses; declare how a changed value
@@ -308,7 +323,27 @@ Decide needed typed schema additions explicitly; free-form names/verdicts supply
 no discrimination credit. Use the public adapter vocabulary and retain honest
 unsupported/failed/unavailable outcomes. Keep full policy adequacy/currentness and
 retention separate; declare bounded retention before fresh canonical capture.
-This is the next finite .14 unit after a18's clean COMMIT workflow.
+This is a declaration-only .14 slice: create a bounded method decision included
+live in the GC book; no executable/schema/canonical capture or qualification change.
+Also own the stale shape-probe docstring (it still says relationship/artifact checks
+are pending): correct only that currency claim and prove its executable AST exact.
+Own whole-entry DEV sharding if needed, with byte/order inverse and immutable old
+manifest records; never rewrite old notes or raise a ceiling.
+Check the public adapter, expected-file schema/mapping, generic graph, GC policy,
+EVD rules and gate/report consumers. Resolve first-method scope, typed witnesses,
+exact control discrimination, trust/availability/clone behavior and limits before
+implementation. Own focused doctrine/book checks, exact protected scope and normal
+COMMIT workflow. Evidence target/p4-system-14/a19, all scratch on this volume.
+The new decision fixes sail-gpr-change-v1 to one explicit witness and three runs,
+with exact control/producer/artifact relationships, finite closure/read limits and
+separate offline provenance/replay availability. No file pin is waived; hashes
+cannot attest a process. Actual schema refuses both prospective fields by name.
+Focused10/seven books/15 rendered checks and old-book inverse pass. Correct the
+stale shape-probe docstring with executable AST exact. Shard two complete old
+notes,29==27+2 exact bytes/order,4171B SHA f7355839fce7c1483a4ef078b2111854543e9a7bd505f8d6ff7c591b449c3433;
+old manifest prefix exact. Its original final blank separator is retained; scope
+git whitespace relaxation to blank-at-eof on this new shard alone. No cap rise.
+Latest full CI remains a18's all-five-leg green; no executable changes here.
 
 ### `.14` a18 — reject duplicate expectation writes (completed, SEMULITH-P4-0209)
 
@@ -1173,6 +1208,15 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a19 — **ROOT CAUSE**: proof.py rc=0 confirms today's schema refuses
+  gpr_witness/baseline_id; generic names/verdicts cannot express exact discrimination.
+- [x] `.14` a19 — **ADDRESSED**: rendered.py/proof.py rc=0; prospective method
+  declares typed relationships, exact control, closure, trust/replay and byte limits;
+  all15 rendered boundaries and the complete old-book inverse pass.
+- [x] `.14` a19 — **NO REGRESSION**: focused10/seven books/sharder12/0 rc=0;
+  executable AST,29entry whole-note partition/old manifest and fixed caps exact;
+  scope.py rc=0 protects every other tracked file, including canonical/history/LIVE.
+
 - [x] `.14` a18 — **ROOT CAUSE**: before.log rc=0: conflicting expectation
   writes collapse to the last value before public comparison AGREE; old gate0.
 - [x] `.14` a18 — **ADDRESSED**: mapping12/0/optimized12/0/proof.py rc=0;
@@ -1372,6 +1416,11 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a19: focused10/seven books/15 rendered checks/old-book inverse, current named
+syntax refusals, docstring executable-AST proof, sharder12/0 and exact29==27+2
+whole-entry/old-manifest inverses/protected scope rc=0. New method remains a
+prospective declaration; full CI most recently passed at a18. No qualification.
+
 a18: mapping12/0/optimized12/0, guard-removal six failures, actual dossier/CLI
 integration, schema22/0/mapper14/0,243dictionary inverse/raw222document census,
 full five-leg CI/Rust173/17/253/seven books/literal+rendered example/protected
@@ -1436,6 +1485,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a19 | `SEMULITH-P4-0210 (leaf P4-SYSTEM.14): declare the first Sail GPR comparison method` | a20 typed witness/baseline grammar, artifact mappings/evaluator, retention and first canonical capture |
 | `.14` a18 | `SEMULITH-P4-0209 (leaf P4-SYSTEM.14): refuse duplicate expectation writes` | a19 method-specific comparison contract, evaluator, retention and first canonical capture |
 | `.14` a17 | `SEMULITH-P4-0208 (leaf P4-SYSTEM.14): return bounded authenticated snapshots` | a18 duplicate expectation writes, comparison/qualification, retention and first canonical capture |
 | `.14` a16 | `SEMULITH-P4-0207 (leaf P4-SYSTEM.14): refuse surplus Sail observations` | authenticated bounded snapshots, comparison/qualification, retention and fresh canonical capture |
