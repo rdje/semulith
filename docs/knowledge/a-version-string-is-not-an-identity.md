@@ -72,3 +72,28 @@ makes running them first the honest move rather than a defensive one.
 
 Related: [[availability-is-not-identity]], [[a-parse-without-error-is-not-a-faithful-read]],
 [[re-derivable-vs-cited-evidence]].
+
+## A correct locator still needs authenticated bytes at the reader
+
+At P4-SYSTEM.13 c18c (`SEMULITH-P4-0142`), the three fetched RISC-V HTML pages
+had the right version, filenames, section numbers and byte lengths. Their hashes
+differed from the ledger: an Antora UI-version metadata value had changed. The
+locator and quote checks still returned green because both read the fetched
+files without comparing source identity. The authenticated snapshot matched the
+original pins; a full byte diff isolated the metadata, with architectural bodies
+unchanged. That narrow difference explained the mismatch but did not grant
+permission to call different bytes the pinned artifact.
+
+Both readers now share an exact SHA256/byte-length check before using a page.
+Same-size altered text, a wrong length pin and missing identity must refuse.
+Presence alone decides whether the wrapper can attempt a check: a fetched-only
+installation is checked, a partial or corrupt route refuses, and total absence
+allows a named skip. Cache errors cannot be converted into an absence skip.
+A valid second route does not silently excuse a corrupt preferred route.
+
+The controls were observed failing against the old readers, then passing after
+repair. Real mismatched pages were refused before the project restored exactly
+three fetched copies (226,648 bytes) from the authenticated 72-file snapshot.
+All source pins stayed unchanged. The task retains reproduction, route controls,
+restoration and verification receipts. The rule extends the earlier publication
+lesson: authenticate at the final evidence reader, as well as at acquisition.

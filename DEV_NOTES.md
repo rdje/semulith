@@ -1,5 +1,49 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — authenticate citation evidence at both readers (P4-SYSTEM.13 c18c)
+
+Actual locator/quote readers both returned rc=0 on three fetched RISC-V HTML
+pages whose hashes differed from the source ledger, despite identical lengths.
+Full byte diff isolates one Antora UI-version metadata value per page; architecture
+text unchanged. The snapshot matches exact pins. The failure is reader identity,
+not an ISA disagreement: published read headings without checking bytes, and
+quote corpus used the same preferred fetched route. History roots: 32b72dbc's
+reader, 3afd2757's route, bf2070a7's quote consumer. SEMANTICS also gated locator
+work only on cache availability; cache failures could become an absence skip.
+
+Shared verified_source now requires a regular file, valid SHA256/byte-length pin,
+exact length and exact digest before either reader uses a page. Both paths refuse
+alteration and malformed identity clearly; no silent fallback or repin. Shared
+presence-only dispatch checks fetched-only data, treats partial/corrupt evidence
+as present and permits a named skip only for absence. Cache resolution errors
+propagate; quote entrypoint distinguishes source refusal from a text mismatch.
+Non-snapshot http_status=0 handling and explicit synthetic --pages interface stay
+unchanged. Locator controls run with SEMANTICS. All self-test scratch now derives
+from target/doctrine-selftest; synthetic root paths are relative, not serialized
+absolute paths. Correct the old pre-integration "not a commit gate" docstring.
+
+Observed new controls against old code: locator 15 pass/3 fail (same-size text,
+wrong length, absent identity), quote 14/1 (default-corpus changed bytes accepted).
+After repair: locator 21/0, quote 15/0, SEMANTICS 8/0. Actual mismatched pages then
+refuse through locator/quote tools and both wrappers (rc=1/2/1/2), naming source
+and sha256. Seven route cases cover total absence, fetched-only, cache-only,
+changed preferred source with valid fallback, quote integration, changed cache
+page with valid manifest and corrupt manifest. No named skip hides corruption.
+
+Authenticate snapshot manifest and all 72 files (0 failures), save/verify the old
+three fetched pages on-volume, prove metadata-only diff, restore exactly 3 files /
+226648 B and rehash against unchanged ledger. Public locators resolve 10 files/
+12 bindings; quote corpus 118 attributed, 0 findings, 88 unattributed, two named
+non-HTML source IDs (three instances). All 84 registry entries, production/core/
+author/generated/frozen and 112 base/348 GC input files remain exact; 82/114 unchanged.
+make ci rc=0, all five legs green (Rust 167/17/203, doctrines, bench, smoke bench,
+main+five model books). Focused identities/controls/routes also rc=0. LIVE_STATUS
+changes only doctrine arms 649→650; 47 chapters/P4 12/18 unchanged. Next c19 LOAD-X0.
+
+Promoted to [a-version-string-is-not-an-identity](docs/knowledge/a-version-string-is-not-an-identity.md)
+and its index: authenticating at acquisition does not authenticate a later reader;
+presence dispatch must never turn corruption into absence.
+
 ## _(2026-10-10)_ — realize load extension and low-bit stores (P4-SYSTEM.13 c18b)
 
 Bind LOAD-EXT POS scope-mem, NEG bound-ext/dir-ext-matrix, all eleven forms and

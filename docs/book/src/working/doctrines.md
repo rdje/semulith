@@ -135,6 +135,30 @@ fired RED before being registered, and each **refuses** â€” exit 2, not exit 0 â
 passing if its own self-test stops discriminating. A check that cannot judge must never report
 that the rule holds.
 
+
+### Citation readers authenticate the artifact before judging its text
+
+Both the locator reader (`scripts/check_citations.py --corpus`) and default
+quote reader require the source ledger's exact SHA256 and byte length. A fetched
+working area is preferred; otherwise the materials snapshot supplies the page.
+An existing but altered preferred copy refuses, even when a valid snapshot is
+available. Missing or malformed identity also refuses. `http_status 0` pins
+retain their named non-HTML treatment, and explicit synthetic `--pages` quote
+fixtures keep their existing interface.
+
+For example, c18c found the three base HTML pages had unchanged architecture
+text and section numbers but a different Antora metadata value. Both old readers
+passed; repaired readers named RVI-INTRO and its mismatched hash. After verifying
+the snapshot manifest and all 72 files, the project restored only those three
+fetched copies, 226,648 bytes. The pins were unchanged. Same-size altered text,
+wrong lengths and absent identity now have discriminating controls.
+
+Wrapper dispatch distinguishes absence from corruption. Fetched-only evidence
+is judged. Partial directories, altered source pages and bad snapshot manifests
+reach a refusal; only absence of both routes permits the named skip. Locator
+controls run with SEMANTICS, and quote controls include the default corpus path.
+This authenticates the cited artifact; paraphrase accuracy still needs review.
+
 ## A document that restates a registry is a mirror, and mirrors rot
 
 The last two rows above exist because of a defect found by resuming this repository rather than

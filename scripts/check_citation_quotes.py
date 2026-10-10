@@ -54,6 +54,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sexp as _sexp                                                    # noqa: E402
+import check_citations as _C                                            # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -210,23 +211,18 @@ def judge(files: list[Path], pages: dict[str, Path | None], label) -> int:
 def corpus_pages() -> dict[str, Path | None]:
     """Every source id the profiles pin → its page on disk (None for a declared PDF pin),
     through check_citations' own route (the fetched area, else the materials cache)."""
-    import check_citations as _C
     import dossier_sexp as _D
     pages: dict[str, Path | None] = {}
     for sp in sorted((REPO / "profiles").glob("*/sources.sexp")):
         cfg = _D.load_sources(sp)
-        wd, _route = _C._work_dir(cfg)
+        wd = None
         for s in cfg.get("source", []):
             if s.get("http_status") == 0:
                 pages.setdefault(s["id"], None)
                 continue
-            p = wd / s["file"]
-            if p.is_file():
-                pages[s["id"]] = p
-            elif s["id"] not in pages:
-                raise Refusal(f"{s['id']}: the pinned page {p.relative_to(REPO)} is absent — "
-                              f"fetch it (scripts/materials.py --fetch or scripts/fetch_sources.sh); "
-                              f"a check that cannot judge never reports green")
+            if wd is None:
+                wd, _route = _C._work_dir(cfg)
+            pages[s["id"]] = _C.verified_source(s, wd)
     return pages
 
 
@@ -247,7 +243,7 @@ def main(argv: list[str]) -> int:
                                  capture_output=True, text=True).stdout.split()
         return judge([REPO / t for t in tracked], corpus_pages(),
                      lambda f: f.relative_to(REPO).as_posix())
-    except Refusal as exc:
+    except (Refusal, _C.CitationError, _sexp.SexpError, KeyError, OSError) as exc:
         print(f"CITATION-QUOTES: REFUSED — {exc}", file=sys.stderr)
         return 2
 

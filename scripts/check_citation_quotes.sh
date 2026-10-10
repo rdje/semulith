@@ -118,6 +118,32 @@ self_test() {
   out="$(python3 "$TOOL" --bogus 2>&1)"; rc=$?
   arm "RED an unknown invocation is refused, not judged" "$rc" 2 "$out" "Usage:"
 
+  out="$(python3 - "$t/identity" <<'PY'
+import hashlib, sys
+from pathlib import Path
+sys.path.insert(0, "scripts")
+import check_citations as C
+import check_citation_quotes as Q
+root = Path(sys.argv[1])
+(root / "profiles/p").mkdir(parents=True)
+(root / "w").mkdir()
+original = '<h2>1.1. Alpha</h2><p>The quick brown fox.</p>'
+(root / "w/a.html").write_text(original.replace("brown", "black"))
+digest = hashlib.sha256(original.encode()).hexdigest()
+(root / "profiles/p/sources.sexp").write_text(
+    f'(sources (work_dir "w") (source (id "SPEC") (file "a.html") '
+    f'(sha256 "{digest}") (bytes {len(original.encode())})))\n')
+C.REPO = Q.REPO = root
+try:
+    Q.corpus_pages()
+except C.CitationError as exc:
+    print(exc)
+    sys.exit(1)
+print("accepted altered quote page")
+PY
+)"; rc=$?
+  arm "RED the default quote corpus refuses altered source bytes" "$rc" 1 "$out" "sha256"
+
   rm -rf "$t"
   printf 'CITATION-QUOTES --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -136,23 +162,34 @@ self_test >/dev/null 2>&1 || {
 
 # The cache route (check_citations' own): the fetched working area, else the manifest-verified
 # materials cache. Neither present → a NAMED SKIP, never a pass.
-if ! python3 - <<'PY' >/dev/null 2>&1
+out="$(python3 - <<'PYCODE'
 import sys
-from pathlib import Path
 sys.path.insert(0, "scripts")
-import materials as _m
-rel = _m.resolve(_m.load(), "RVI-PINNED-V20260120")
-fetched = Path("target/sources")
-sys.exit(0 if (Path(rel) / "unpriv").is_dir() or fetched.is_dir() else 1)
-PY
-then
+import check_citations as C
+import sexp
+try:
+    sys.exit(0 if C.artifacts_available() else 1)
+except (C.CitationError, sexp.SexpError, KeyError, OSError) as exc:
+    print(exc)
+    sys.exit(2)
+PYCODE
+)"; rc=$?
+if [ "$rc" -eq 1 ]; then
   echo "CITATION-QUOTES: NAMED SKIP — the pinned pages are absent (neither the fetched working area nor the materials cache); quotes cannot be judged offline. Run scripts/materials.py --fetch."
   exit 0
+fi
+if [ "$rc" -ne 0 ]; then
+  printf 'CITATION-QUOTES: REFUSED — source availability cannot be judged: %s\n' "$out" >&2
+  exit 2
 fi
 
 out="$(python3 "$TOOL" 2>&1)"; rc=$?
 if [ "$rc" -ne 0 ]; then
   printf '%s\n' "$out" >&2
+  if [ "$rc" -eq 2 ]; then
+    echo 'CITATION-QUOTES: REFUSED — source evidence cannot be judged.' >&2
+    exit 2
+  fi
   printf 'CITATION-QUOTES: FAIL — a quoted phrase is not in the section its locator names. Re-cite it (the finding names where the phrase is) — never loosen the match.\n' >&2
   exit "$rc"
 fi

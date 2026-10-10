@@ -17,15 +17,17 @@ exactly that numbering. 52 of 52 resolved.
 The claim held. The gap it exposed was real anyway: **nothing could have settled it mechanically**,
 so the question could only be answered by a person going and looking. That is the gap this closes.
 
-⛔ AND IT IS NOT A COMMIT GATE. The pinned artifacts are fetched into an untracked working area,
-they need the network, and the rendering declares no redistribution licence (`OQ-4` in the
-dossier), so a fresh clone cannot run this. When the evidence is absent this tool REFUSES AND SAYS
-HOW TO GET IT. A check that reports success when its evidence is missing is the failure mode it
-was built to prevent.
+The SEMANTICS doctrine runs this reader and its controls on every commit. Fetched
+pages are preferred; otherwise the authenticated materials snapshot supplies them.
+Both routes require exact source hashes and byte lengths before section resolution.
+A standalone invocation refuses absent evidence; doctrine wrappers print a named
+skip only when neither artifact route is present. Partial or altered evidence
+refuses. No network access or repinning happens in this reader.
 """
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -64,6 +66,50 @@ def _rel(p: Path) -> str:
         return p.as_posix()
 
 
+def verified_source(source: dict, work_dir: Path) -> Path:
+    """Refuse unpinned bytes before either citation reader uses a source page."""
+    path = work_dir / source["file"]
+    if not path.is_file():
+        raise CitationError(f"{source['id']}: {_rel(path)} is missing; run scripts/fetch_sources.sh")
+    digest, size = source.get("sha256"), source.get("bytes")
+    if (not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)
+            or type(size) is not int or size < 0):
+        raise CitationError(f"{source['id']}: missing or invalid source identity (sha256/bytes)")
+    data = path.read_bytes()
+    if len(data) != size:
+        raise CitationError(f"{source['id']}: {_rel(path)} byte length {len(data)} differs "
+                            f"from pinned {size}; restore the exact pinned artifact")
+    actual = hashlib.sha256(data).hexdigest()
+    if actual != digest:
+        raise CitationError(f"{source['id']}: {_rel(path)} sha256 {actual} differs from pinned "
+                            f"{digest}; restore the exact pinned artifact, never repin to pass")
+    return path
+
+
+def artifacts_available(repo: Path | None = None) -> bool:
+    """Presence for named-skip dispatch, never an identity verdict.
+
+    A partial or corrupt directory is present and must reach the refusing reader.
+    A fetched-only installation must be judged even without a materials cache.
+    """
+    repo = repo or REPO
+    for sp in sorted((repo / "profiles").glob("*/sources.sexp")):
+        cfg = _D.load_sources(sp)
+        if (any(s.get("http_status") != 0 for s in cfg.get("source", []))
+                and (repo / cfg["work_dir"]).is_dir()):
+            return True
+    import materials as _m
+    catalog = repo / "materials/catalog.sexp"
+    if not catalog.is_file():
+        return False
+    try:
+        cat = _m.load(catalog)
+        rec = cat["materials"]["RVI-PINNED-V20260120"]
+    except (_m.MaterialError, _sexp.SexpError, KeyError, OSError) as exc:
+        raise CitationError(f"source availability cannot be judged: {exc}") from exc
+    return (repo / cat["cache_root"] / rec["cache_path"]).exists()
+
+
 def published(sources_sexp: Path, work_dir: Path) -> dict[str, set[str]]:
     cfg = _D.load_sources(sources_sexp)   # SOT-FORMAT.4: the ledger behind the mapping
     if not work_dir.is_dir():
@@ -81,9 +127,7 @@ def published(sources_sexp: Path, work_dir: Path) -> dict[str, set[str]]:
         if s.get("http_status") == 0:
             skipped.append(s["id"])
             continue
-        p = work_dir / s["file"]
-        if not p.exists():
-            raise CitationError(f"{s['id']}: {_rel(p)} is missing; run scripts/fetch_sources.sh")
+        p = verified_source(s, work_dir)
         out[s["id"]] = headings(p.read_text())
     if not out:
         raise CitationError(f"{_rel(sources_sexp)} declares no (source …) form")
@@ -140,7 +184,7 @@ def check(sources_sexp: Path, work_dir: Path, semantics: Path) -> int:
     return 0
 
 
-def _work_dir(cfg: dict) -> tuple[Path, str]:
+def _work_dir(cfg: dict, repo: Path | None = None) -> tuple[Path, str]:
     """Where the pinned pages are RIGHT NOW, and which route found them.
 
     The fetched working area is the primary route. ⛔ But it is untracked and needs the network,
@@ -149,22 +193,23 @@ def _work_dir(cfg: dict) -> tuple[Path, str]:
     route was used is PRINTED, because a check whose evidence could come from two places and does
     not say which is a check whose result cannot be reproduced.
     """
-    wd = REPO / cfg["work_dir"]
+    repo = repo or REPO
+    wd = repo / cfg["work_dir"]
     if wd.is_dir():
         return wd, f"fetched working area {cfg['work_dir']}"
     try:
         import materials as _m
-        cat = _m.load()
-        rel = _m.resolve(cat, "RVI-PINNED-V20260120")
+        cat = _m.load(repo / "materials/catalog.sexp")
+        rel = _m.resolve(cat, "RVI-PINNED-V20260120", repo=repo)
         # P4-SYSTEM.1 (rv64gc-lab-v0): a profile may pin pages from BOTH the unpriv/ and
         # priv/ subtrees — its `file` fields then carry the subdirectory, and the cache
         # root is the snapshot itself. Bare file fields (rv64i-lab-v0) keep the legacy
         # unpriv/ root. Derived from the declaration, and the route is PRINTED either way.
         if any("/" in s.get("file", "") for s in cfg.get("source", [])):
-            return REPO / rel, f"materials cache {rel} (manifest-verified, offline)"
-        return REPO / rel / "unpriv", f"materials cache {rel}/unpriv (manifest-verified, offline)"
-    except Exception:                                   # noqa: BLE001 — fall back to the refusal
-        return wd, f"fetched working area {cfg['work_dir']}"
+            return repo / rel, f"materials cache {rel} (manifest-verified, offline)"
+        return repo / rel / "unpriv", f"materials cache {rel}/unpriv (manifest-verified, offline)"
+    except (_m.MaterialError, _sexp.SexpError, KeyError, OSError) as exc:
+        raise CitationError(f"the pinned source route is unavailable: {exc}") from exc
 
 
 def corpus(repo: Path) -> int:
@@ -191,7 +236,7 @@ def corpus(repo: Path) -> int:
         cfg = _D.load_sources(sp)
         if not cited_ids & {s["id"] for s in cfg.get("source", [])}:
             continue
-        wd, _route = _work_dir(cfg)
+        wd, _route = _work_dir(cfg, repo)
         pins[sp.parent.name] = (sp, published(sp, wd))
     rc, checked = 0, 0
     for sem in sems:
@@ -206,7 +251,7 @@ def corpus(repo: Path) -> int:
         for name in full:
             sp, _have = pins[name]
             cfg = _D.load_sources(sp)
-            wd, route = _work_dir(cfg)
+            wd, route = _work_dir(cfg, repo)
             print(f"{sem.name} against {name} (via {route}):")
             rc |= check(sp, wd, sem)
             checked += 1
@@ -239,8 +284,10 @@ def main(argv: list[str]) -> int:
 
 
 def _selftest() -> int:
-    import tempfile, textwrap
+    import tempfile
     passed = failed = 0
+    temporary_root = REPO / "target/doctrine-selftest"
+    temporary_root.mkdir(parents=True, exist_ok=True)
 
     def arm(label, fn):
         nonlocal passed, failed
@@ -254,10 +301,13 @@ def _selftest() -> int:
             print(f"  ok    {label}"); passed += 1
 
     def fixture(html: str, sem: str) -> tuple[Path, Path, Path]:
-        d = Path(tempfile.mkdtemp())
+        d = Path(tempfile.mkdtemp(dir=temporary_root))
         (d / "w").mkdir()
         (d / "w" / "a.html").write_text(html)
-        (d / "sources.sexp").write_text('(sources (work_dir "w") (source (id "S") (file "a.html")))\n')
+        digest = hashlib.sha256(html.encode()).hexdigest()
+        (d / "sources.sexp").write_text(
+            f'(sources (work_dir "w") (source (id "S") (file "a.html") '
+            f'(sha256 "{digest}") (bytes {len(html.encode())})))\n')
         (d / "s.sexp").write_text(sem)
         return d / "sources.sexp", d / "w", d / "s.sexp"
 
@@ -285,6 +335,16 @@ def _selftest() -> int:
     arm("RED   a pinned file missing from a present working area is refused", lambda: _raises(
         lambda: (lambda t: (t[1] / "a.html").unlink() or check(*t))(fixture(H, sem("S §3.1"))),
         "is missing"))
+    arm("RED   same-size altered bytes refuse even with unchanged headings", lambda: _raises(
+        lambda: (lambda t: ((t[1] / "a.html").write_text(H.replace("Thing", "Other")),
+                            check(*t))[1])(fixture(H, sem("S §3.1"))), "sha256"))
+    arm("RED   a wrong byte-length pin refuses even when the digest matches", lambda: _raises(
+        lambda: (lambda t: (t[0].write_text(t[0].read_text().replace(
+            f'(bytes {len(H.encode())})', '(bytes 1)')), check(*t))[1])(
+                fixture(H, sem("S §3.1"))), "byte length"))
+    arm("RED   absent source identity refuses rather than trusting the filename", lambda: _raises(
+        lambda: (lambda t: (t[0].write_text(re.sub(r'\(sha256 "[0-9a-f]+"\)', '',
+            t[0].read_text())), check(*t))[1])(fixture(H, sem("S §3.1"))), "source identity"))
     arm("RED   semantics declaring no rule is refused", lambda: _raises(
         lambda: check(*fixture(H, "(semantics (fragment \"x\"))")), "declares no (sem"))
     arm("GREEN an unnumbered heading is not mistaken for a section", lambda: _eq(
@@ -293,14 +353,16 @@ def _selftest() -> int:
         headings('<h3><a class="x" href="#y">3.1.2.</a> <span>Sub</span></h3>'), {"3.1.2"}))
 
     def corpus_fixture():
-        d = Path(tempfile.mkdtemp())
+        d = Path(tempfile.mkdtemp(dir=temporary_root))
         (d / "definitions" / "riscv").mkdir(parents=True)
         for prof, sid, html_text in (("p1", "S", H), ("p2", "T", "<h2>7.1. Other</h2>")):
             w = d / "profiles" / prof / "w"
             w.mkdir(parents=True)
             (w / "a.html").write_text(html_text)
+            digest = hashlib.sha256(html_text.encode()).hexdigest()
             (d / "profiles" / prof / "sources.sexp").write_text(
-                f'(sources (work_dir "{w}") (source (id "{sid}") (file "a.html")))\n')
+                f'(sources (work_dir "profiles/{prof}/w") (source (id "{sid}") (file "a.html") '
+                f'(sha256 "{digest}") (bytes {len(html_text.encode())})))\n')
         return d
 
     def corpus_sem(d, name, loc):
@@ -316,6 +378,14 @@ def _selftest() -> int:
     arm("RED   --corpus: a locator the pinning profile does not publish fails resolution",
         lambda: _eq((lambda d: (corpus_sem(d, "z.sem.sexp", "T §7.1.9"), corpus(d))[1])(
             corpus_fixture()), 1))
+    arm("GREEN fetched-only artifacts are available without a materials cache",
+        lambda: _eq(artifacts_available(corpus_fixture()), True))
+    arm("GREEN an absent artifact set permits named-skip dispatch",
+        lambda: _eq(artifacts_available(Path(tempfile.mkdtemp(dir=temporary_root))), False))
+    arm("GREEN a partial fetched directory reaches refusal rather than named skip",
+        lambda: _eq((lambda d: ((d / 'profiles/p1/w/a.html').unlink(),
+                               (d / 'profiles/p2/w/a.html').unlink(),
+                               artifacts_available(d))[-1])(corpus_fixture()), True))
 
     print(f"check_citations --self-test: {passed} pass / {failed} fail")
     return 1 if failed else 0

@@ -108,24 +108,23 @@ for doc in unit_docs:
 # Judged only on the real corpus: fixture locators are synthetic, and a self-test must never
 # depend on the environment's cache state.
 if mode == "git":
+    import check_citations as CIT
     try:
-        import materials as _m
-        cat = _m.load()
-        rel = _m.resolve(cat, "RVI-PINNED-V20260120")
-        cache = root / rel / "unpriv"
-        have_cache = cache.is_dir()
-    except Exception:                               # noqa: BLE001 — the route itself is absent
-        have_cache = False
-    if have_cache:
-        checked += 1
-        r = subprocess.run([sys.executable, "scripts/check_citations.py", "--corpus"],
-                           capture_output=True, text=True)
-        if r.returncode != 0:
-            findings.append("CITATIONS: " + (r.stdout.strip().splitlines() or [r.stderr.strip()])[-1])
+        have_cache = CIT.artifacts_available(root)
+    except (CIT.CitationError, _sexp.SexpError, KeyError, OSError) as exc:
+        findings.append(f"CITATIONS: REFUSED — {exc}")
     else:
-        notes.append("CITATIONS: NAMED SKIP — neither the fetched working area nor the manifest-"
-                     "verified materials cache is present; locators cannot be judged offline. "
-                     "Run scripts/materials.py --fetch; a check that cannot judge never reports green.")
+        if have_cache:
+            checked += 1
+            r = subprocess.run([sys.executable, "scripts/check_citations.py", "--corpus"],
+                               capture_output=True, text=True)
+            if r.returncode != 0:
+                findings.append("CITATIONS: " + (r.stderr.strip().splitlines()
+                                or r.stdout.strip().splitlines())[-1])
+        else:
+            notes.append("CITATIONS: NAMED SKIP — neither the fetched working area nor the manifest-"
+                         "verified materials cache is present; locators cannot be judged offline. "
+                         "Run scripts/materials.py --fetch; a check that cannot judge never reports green.")
 else:
     notes.append("CITATIONS: NAMED SKIP — self-test mode judges synthetic locators never; the "
                  "citation arm runs on the tracked corpus only.")
@@ -210,6 +209,8 @@ $RULE2"; unit "";          arm "GREEN the citation arm names its skip when the c
 
 self_test >/dev/null 2>&1 || {
   echo "SEMANTICS: REFUSED — the check does not discriminate (self-test failed)." >&2; exit 2; }
+python3 scripts/check_citations.py --self-test >/dev/null 2>&1 || {
+  echo "SEMANTICS: REFUSED — citation identity/locator controls failed." >&2; exit 2; }
 
 out="$(check_corpus "$ROOT" git)"; rc=$?
 count="$(printf '%s' "$out" | sed -n 's/^__CHECKED__ //p')"

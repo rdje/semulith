@@ -321,7 +321,7 @@ remain) only after actual evidence passes; .14 retains statuses/experiments.
 Commit/brief/clean/actual census before priority-next c18c source identity repair,
 then c19 LOAD-X0 or the next bounded runtime pair.
 
-### `.13` c18c — source identity refusal on fetched citation route (priority next)
+### `.13` c18c — source identity refusal on fetched citation route (`2026-10-10`, `SEMULITH-P4-0142`)
 
 Owned at discovery during c18b, before any repair. Reproduction: sha256sum on
 `target/sources/riscv-v20260120/{rv32,rv64}.html` differs from sources.sexp,
@@ -343,6 +343,41 @@ frozen definitions, restore only provably project-owned fetched source copies fr
 verified local snapshot after comparing the full declared source set. Validate
 locators/quotes, both route choices/refusals, focused doctrine counts and books.
 This is evidence-reader integrity, not an architectural body or processor defect.
+
+The follow-up also owns wrapper dispatch: SEMANTICS previously checked only
+materials-cache availability, despite its fetched-or-cache message. Cache errors
+could become an absence skip. Both wrappers must share presence-only dispatch;
+partial/corrupt evidence is present and must reach an explicit identity refusal.
+The locator tool's original "not a commit gate" docstring also predates its
+SEMANTICS integration; correct that scoped interface description.
+
+Implementation ownership reaffirmed on clean 9fa6d19 after c18b commit/hooks/
+brief/actual census. Read both citation tools in full affected paths, shell
+wrappers/controls, SEMANTICS cache dispatch, materials resolver/manifest contract,
+source schemas, source/book/doctrine documentation and derived-count ownership.
+Full declared fetched source census finds intro.html also differs by the same
+UI meta value: all three base HTML pages, with no architecture-body change.
+
+First capture both public readers returning green on the mismatched directory.
+Add shared verified-source-path ownership: all snapshot readers require a regular
+file and exact declared SHA256/byte length before reading it; declare non-snapshot
+http_status=0 skips unchanged. Locator reader and default quote corpus must call
+it, preserving the explicit synthetic --pages mode. Refuse mismatch clearly with
+source/path/recovery instruction; never switch to another route silently. Catch
+shared refusals in quote entrypoint. Cache dispatch must also judge a fetched-only
+route, preserving named absence skip. Add independent RED controls for same-size
+alteration, size mismatch, absent identity and quote-path integration as appropriate;
+first see new controls fail on old readers. Existing controls keep their meanings,
+fixtures gain actual hashes/lengths, all test scratch remains under target.
+
+After observed refusal, compare all three fetched pages against verified snapshot
+and save a diagnostic copy on-volume, then restore exactly those project-owned
+HTML pages and rehash. Keep all pins, snapshot, normative bodies and contracts
+unchanged. Validate fetched/default/cache/absence routes, both public readers,
+Python controls, SEMANTICS and CITATION-QUOTES controls and doctrine count, focused
+book/bounds/shards/frontier/reports/freeze/schema. Full CI is warranted for this
+shared evidence boundary repair before next runtime credit. Update book/live/
+resume/task/notes, commit, empty brief and clear actual jobs before c19 LOAD-X0.
 
 ### `.13` c18a — bound live history and correct its current pointer (`2026-10-10`, `SEMULITH-P4-0140`)
 
@@ -523,6 +558,36 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c18c — **ROOT CAUSE**: actual public locator/quote tools returned
+  rc=0 on three mismatched fetched source hashes; exact diff is Antora metadata,
+  all architectural bytes unchanged. Roots 32b72dbc/3afd2757/bf2070a7: neither
+  final reader authenticated the preferred path. SEMANTICS checked only cache
+  availability and swallowed route errors. New controls observed before patch:
+  `python3 scripts/check_citations.py --self-test` rc=1, 15 pass/3 fail;
+  `scripts/check_citation_quotes.sh --self-test` rc=1, 14 pass/1 fail, accepted
+  altered default quote page. Reproduction/impact/ownership retained in c18c plan.
+
+- [x] `.13` c18c — **ADDRESSED**: shared exact file/SHA256/byte-length
+  verification and presence-only dispatch. Locator 21/0, quote 15/0, SEMANTICS 8/0
+  (`python3 scripts/check_citations.py --self-test`,
+  `scripts/check_citation_quotes.sh --self-test`,
+  `scripts/check_semantics_corpus.sh --self-test`, rc=0 each). Actual bad pages
+  refused by tools/wrappers rc=1/2/1/2, naming source and hash. Seven route cases
+  discriminate (`python3 target/p4-system-13/c18c/routes.py`, rc=0). Authenticate
+  snapshot 72/0, save old copies, verify metadata-only difference and restore
+  exactly three fetched files/226648 B, unchanged pins. All new test paths local
+  and relative. Knowledge card/index and book/toolbox/doctrine interfaces updated.
+
+- [x] `.13` c18c — **NO REGRESSION**: all 84 registry/core/author/generated/
+  frozen/canonical definitions and 112 base/348 GC inputs byte-exact; unchanged
+  82/114 (`python3 target/p4-system-13/c18c/identity.py`, rc=0). Public locators
+  resolve 10 semantic files/12 bindings; quote corpus 118 attributed/0 findings,
+  88 unattributed, DS00002266B×2/LIMITATIONS×1 uncheckable. `make ci` rc=0, all five legs green: Rust 167/17/203, all doctrines, bench,
+  smoke bench, main+five model books. Bounds/counts/reports/freeze/schema included
+  in that gate; focused identities/controls/routes also rc=0. LIVE_STATUS only arms 649→650; chapters 47/P4 12/18 unchanged. Lesson
+  promoted to existing source-identity card and index. Hooks/brief/clean/census
+  precede c19 LOAD-X0; no registry or processor credit is added by this repair.
+
 - [x] `.13` c18b — **ROOT CAUSE**: frozen LOAD-EXT's eleven instruction
   associations were declared but unbound. Reviewed authenticated RV64I 3.1.3 /
   RV32I 1.1.6, definitions/evaluator, runner and existing memory matrix. Literal
@@ -591,6 +656,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c18c | new controls RED then21/15/8 green; actual hash refusals; seven routes;72-file snapshot/three-file restore; prior input/registry identity | make ci all five legs green; effective 82/114 unchanged; arms 650 |
 | `2026-10-10` | `.13` c18b | 17 isolated countermodels; literal edges; declaration RED then Rust 167/17/203; author 167/5365/10524; prior bytes exact; focused gates/books | registry 84, effective 82/114; c18c source identity next |
 | `2026-10-10` | `.13` c18a | six payloads and two inverse partitions exact; 112/348 input identity; shard/bounds/frontier/counts/freeze/reports/books | focused gates rc=0; effective 80/114 unchanged; hooks before c18b |
 | `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
@@ -618,6 +684,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c18c | `SEMULITH-P4-0142 (leaf P4-SYSTEM.13): authenticate citation source bytes before judging text` | c19 LOAD-X0, then remaining runtime pairs/freeze |
 | `.13` c18b | `SEMULITH-P4-0141 (leaf P4-SYSTEM.13): realize load extension and low-bit stores` | priority c18c citation source identity, then c19 LOAD-X0 |
 | `.13` c18a | `SEMULITH-P4-0140 (leaf P4-SYSTEM.13): retain bounded history and derive current contract summaries` | c18b OB-LOAD-EXT, then remaining runtime pairs |
 | `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
@@ -640,6 +707,12 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c18c (SEMULITH-P4-0142): close source-identity
+  exposure in both citation readers and fetched/cache presence dispatch, with
+  observed RED controls and actual hash refusals. Restore only three fetched pages
+  from authenticated snapshot, pins/architecture bodies exact. Promote the lesson;
+  effective82/114 unchanged, arms650. c19 LOAD-X0 follows full CI and commit.
 
 - `2026-10-10`: `.13` c18b (SEMULITH-P4-0141): bind all eleven load/store
   extension forms over 111/222, with seventeen isolated countermodels rejected

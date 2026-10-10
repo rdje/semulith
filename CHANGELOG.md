@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0142 (leaf P4-SYSTEM.13 c18c) — authenticate citation source bytes before judging text
+
+- Both readers now verify exact source SHA256 and byte length. Shared wrapper
+  dispatch judges fetched-only evidence and refuses partial/corrupt routes; only
+  absent routes permit named skips. Preserve non-HTML and synthetic interfaces.
+- New locator/quote controls first fail on old code, then pass 21/0 and 15/0;
+  actual mismatched sources refuse through both tools/wrappers. Seven route cases
+  discriminate. Restore exactly three fetched files from authenticated 72-file
+  snapshot, with metadata-only diff and unchanged source pins/architecture bodies.
+- All production/input/registry/frozen bytes exact; 82/114 unchanged. Full CI and
+  books verified before hooks. Promote the reader-identity lesson. LIVE_STATUS
+  arms 649→650, chapters 47 and P4 12/18 unchanged. Next c19 LOAD-X0.
+
 ## SEMULITH-P4-0141 (leaf P4-SYSTEM.13 c18b) — realize load extension and low-bit stores
 
 - Bind all eleven forms across scope-mem/bound-ext/dir-ext-matrix, 111/222.

@@ -135,4 +135,6 @@ bound-ext/dir-ext-matrix's signed edges and wider read-backs distinguish correct
 load extension and low-bit stores from seventeen isolated wrong alternatives.
 All earlier inputs and frozen declarations remain exact; GS derives the updated
 realization count. Source review uses the authenticated local snapshot; the
-separate fetched-page identity refusal is owned by P4-SYSTEM.13 c18c.
+fetched-page identity refusal is enforced by P4-SYSTEM.13 c18c: locator and quote
+readers verify exact source hashes/lengths before using a page. Restored fetched
+copies match the unchanged pins; only absent evidence permits a named skip.

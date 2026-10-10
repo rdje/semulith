@@ -418,6 +418,7 @@ Address faults, x0 side effects and the selected endian policy retain their own
 contract obligations.
 
 Source review also exposed a separate evidence-reader defect: the fetched HTML
-copies differ only in Antora metadata, but citation readers do not currently
-refuse their mismatched pins. The authenticated snapshot was used here. Owned
-priority-next c18c repairs identity refusal before further runtime bindings.
+copies differed only in Antora metadata, while the readers accepted mismatched
+pins. The authenticated snapshot was used here. c18c repairs both readers with
+shared exact-hash/length refusal and restores only the three fetched pages from
+the verified snapshot; all pins and architecture text stay unchanged.

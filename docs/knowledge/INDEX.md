@@ -28,7 +28,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 | [`device-unit-applicability-by-declaration.md`](device-unit-applicability-by-declaration.md) | my new unit isn't a processor — how do the gates know what applies to it? |
 | [`a-duplicate-id-is-a-contradiction-not-a-shadowing.md`](a-duplicate-id-is-a-contradiction-not-a-shadowing.md) | my id-keyed map handles duplicate records fine — why did the gate stay green on a catalogue arguing with itself? |
 | [`a-parse-without-error-is-not-a-faithful-read.md`](a-parse-without-error-is-not-a-faithful-read.md) | my reader parsed the file without error — can I trust the strings it handed back? |
-| [`a-version-string-is-not-an-identity.md`](a-version-string-is-not-an-identity.md) | someone says my pinned source does not exist — is my pin wrong, or are we reading different publications? |
+| [`a-version-string-is-not-an-identity.md`](a-version-string-is-not-an-identity.md) | someone says my pinned source does not exist — is my pin wrong, or are we reading different publications? Also: why must locator/quote readers authenticate cached bytes? |
 | [`a-survey-that-found-things-can-still-have-missed-things.md`](a-survey-that-found-things-can-still-have-missed-things.md) | my survey found plenty — how do I know it found everything? |
 | [`all-green-but-the-product-has-not-moved.md`](all-green-but-the-product-has-not-moved.md) | every check is green and the infrastructure is beautiful — why hasn't the product moved? |
 | [`pin-the-mechanism-slope-before-the-number.md`](pin-the-mechanism-slope-before-the-number.md) | my measurement says "1.4 allocations per step" — is that signoff-grade? |
