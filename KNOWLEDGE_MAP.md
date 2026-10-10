@@ -131,5 +131,6 @@
 - [`reference_fp-model-layer-acceptance.md`](docs/decisions/reference_fp-model-layer-acceptance.md)
 - [`reference_miri-reported-time-is-simulated.md`](docs/decisions/reference_miri-reported-time-is-simulated.md)
 - [`reference_softfloat-shared-ancestry.md`](docs/decisions/reference_softfloat-shared-ancestry.md)
+- [`reference_temporary-allocation-controls.md`](docs/decisions/reference_temporary-allocation-controls.md)
 - [`reference_upstream-spine-defects.md`](docs/decisions/reference_upstream-spine-defects.md)
 - [`reference_what-running-real-rust-actually-requires.md`](docs/decisions/reference_what-running-real-rust-actually-requires.md)

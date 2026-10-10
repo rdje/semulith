@@ -130,6 +130,39 @@ anchors, unconditional TASK-HISTORY gate and fail-closed controls. The active
 P4 graph, original consumer bodies, earlier terminal and existing caps stay exact.
 Full containment adoption remains .4 work. This finite slice is complete; verification below.
 
+## .4d / SEMULITH-LC-0007 — standalone temporary storage
+
+Owned on cleanf699474 before census artifacts or code changes. Resolve the
+previously logged unqualified mktemp defects in task acceptance and other
+entrypoints; enumerate own shell/Python/JS/Rust temporary allocators first.
+Keep every allocation on the repository volume even with an external TMPDIR,
+including nested gate calls, and verify cleanup/standalone behavior. Repair the
+already-owned stale SHARD-FREEZE registry description in this same maintenance
+slice. Current-corpus SEAM-INTEGRITY also calls newly staged boxes "committed";
+source inspection shows it reads current tracked task files. Own that reporting
+correction and its regression control; no historical-preservation claim added.
+An actual published task-acceptance probe run returned9pass/1fail at CTRL-4b.
+`git log -S`/blame pins d8c2337: the generic gate-shape signature began accepting
+WIDGET-COVERAGE, so the old custom-seam fixture no longer isolates that seam.
+Own a token-only fixture correction and permanent whole-probe regression arm in
+this slice; production acceptance vocabulary stays unchanged.
+The expanded census includes executable task artifacts: two more unqualified
+WORK allocations, plus synth's qualified allocation without creating its parent
+or checking mktemp failure (a following cp could receive an empty scratch root).
+Own these same-volume/fail-closed fixes in .4d before editing those files; the
+published probe workflows and their behavior remain the verification interface.
+Acceptance: targeted before/after controls and full doctrine/book checks; preserve
+archive pins, runtime/canonical/profile/frozen data and all existing ceilings.
+Then resume P4.14 structured experiments. Full .4 adoption remains open.
+Controlled in-memory execution of the new shell shim at optimization levels0/1
+shows its assert guard disappears at level1: mock allocator called despite an
+unqualified template. No allocation occurred. Own explicit non-assert guards and
+an optimized-interpreter negative control here before signoff; retain the mock
+proof in target/live-containment/locality/optimization-before.json.
+Status: complete; final full CI passes all five legs, Rust173/17/253, seven books.
+Evidence: target/live-containment/locality; durable control scope is
+docs/decisions/reference_temporary-allocation-controls.md.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -235,6 +268,26 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 - None.
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
+
+`LIVE-CONTAINMENT.4` slice (d), `SEMULITH-LC-0007`:
+
+- [x] **ROOT CAUSE** — `python3 scripts/probe_temporary_locality.py --mode shell
+  --revision f699474` rc=1: TMP-LOCALITY:44/56 shell sites qualified and cleaned;
+  Python predecessor0/2 and synth parent control also RED1. Published acceptance
+  probes9pass/1fail at CTRL-4b; scoped git log/blame pins generic signature d8c2337.
+- [x] **ADDRESSED** — locality modes shell/python/children/parent rc=0:
+  TMP-LOCALITY:56/56 shell,2/2 Python,28 child environments and fresh synth parent
+  pass. Four named negative modes each rc=1 before a foreign allocation or after
+  observing controlled residue. Materials20/0 and comparator4/0 clean all fixtures.
+- [x] **NO REGRESSION** — `make ci` rc=0, all five legs, Rust173/17/253,
+  seven books; focused11 rc=0, SEAM-INTEGRITY19/0,
+  archive46/0, acceptance10/0, waiver5/0, synth6/0. Scope verifier rc=0 preserves
+  canonical/runtime/profile/frozen/fixtures/earlier history and archive pins.
+- [x] **LOCKSTEP** — `bash scripts/check_derived_counts.sh --list` rc=0 derives
+ 39doctrines/728arms/38routes/49main chapters/0open upstream issues. Reference,
+  doctrine/toolbox/INDEX/map, live docs and task-history book explain the exact
+  finite control scope; all earlier caps remain. CPU/P4/P5 milestones unchanged.
+  promotion: reference_temporary-allocation-controls.md owns the durable controls.
 
 `LIVE-CONTAINMENT.4` slice (c), `SEMULITH-LC-0006` (approved2026-10-10):
 
@@ -404,6 +457,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4d: focused11, shell56/56, Python2/2, children28, four named negatives, parent,
+SEAM19/0, acceptance10/0, waiver5/0, synth6/0 and protected scope rc=0.
+First full CI refused because registry editing overlapped the running shell reader;
+syntax is green, sources fixed for complete rerun (target/live-containment/locality).
+Final full CI after explicit-guard hardening rc=0: all five legs/seven books,
+Rust173/17/253. Mock optimization levels0/1/2 refuse before allocator; optimized
+shell56/56 passes. The two original follow-ups below are resolved by this slice.
+
 .4c: capture/migration/reproduction/consumer/predecessor proof, focused15,46controls,
 seven books and full five-leg `make ci` rc=0; byte-exact retention with no cap raise.
 
@@ -438,6 +499,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0007 (leaf LIVE-CONTAINMENT.4): keep temporary allocations on the repository volume` — .4d complete; full containment adoption remains.
 
 `SEMULITH-LC-0006 (leaf LIVE-CONTAINMENT.4): seal closed P4 task history` — .4c complete; full adoption remains.
 

@@ -14,12 +14,15 @@
 #
 # Each probe builds a throwaway git repository, because the check reads the STAGED diff.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 GUARD="$ROOT/scripts/check_task_acceptance.sh"
 [ -f "$GUARD" ] || { echo "probe: REFUSED — $GUARD not found" >&2; exit 2; }
 
 pass=0; fail=0
-WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
+WORK="$(mktemp -d "$ROOT/target/tmp/task_acceptance.XXXXXX")" || exit 2; trap 'rm -rf "$WORK"' EXIT
 
 mkrepo() { # $1 = name -> repo dir
   local d="$WORK/$1"
@@ -144,16 +147,17 @@ probe CTRL-3 "$d" 0 ""
 # ---------------------------------------------------------------- ⭐ CTRL-4: the project seam
 # A project declares its OWN tool's signature; a box evidenced only by that token must pass.
 # This is what keeps the check neutral instead of hardcoding one project's vocabulary.
+# Use a token outside the generic SCREAMING-KEBAB verdict family, so this tests the seam.
 d="$(mkrepo ctrl4)"; codechange "$d"
 mkdir -p "$d/.doctrine"
-printf '# our own tools\nWIDGET-COVERAGE:\n' > "$d/.doctrine/evidence_tokens.txt"
+printf '# our own tools\nwidget_evidence_ok\n' > "$d/.doctrine/evidence_tokens.txt"
 cat > "$d/docs/tasks/TREE.md" <<'EOF'
 # TREE
 
 ## Acceptance Checklist
-- [x] **ROOT CAUSE (WHY + WHERE)** — `WIDGET-COVERAGE: missing=3` located it.
-- [x] **ADDRESSED (verified)** — `WIDGET-COVERAGE: missing=0` after the fix.
-- [x] **NO REGRESSION** — `WIDGET-COVERAGE: missing=0` across all suites.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `widget_evidence_ok missing=3` located it.
+- [x] **ADDRESSED (verified)** — `widget_evidence_ok missing=0` after the fix.
+- [x] **NO REGRESSION** — `widget_evidence_ok missing=0` across all suites.
 EOF
 git -C "$d" add -A >/dev/null
 probe CTRL-4 "$d" 0 "task-acceptance: OK"

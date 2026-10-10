@@ -15,7 +15,10 @@
 # (the pluggable slot) — never edit this driver's universal registry.
 set -uo pipefail   # deliberately NOT -e: run ALL checks, collect every result, then report.
 
-ROOT="$(git rev-parse --show-toplevel)"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2
+# Project-owned temporary data must remain on this repository's volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 cd "$ROOT"
 
 # Universal registry. Each entry: "ID|what it proves|relative/path/to/check.sh"

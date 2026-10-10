@@ -44,7 +44,10 @@
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 
 NEUTRAL="scripts/check_task_acceptance.sh"
 TOKENS=".doctrine/evidence_tokens.txt"
@@ -86,7 +89,7 @@ HISTORICAL_OVERMATCH_RE='(^|/)(crates|src|scripts)/|\.(rs|sh)$|(^|/)Makefile$'
 # the same scoping the neutral check uses — a token elsewhere in the file must not count.
 boxes_regression() { # $1 signature regex  $2 directory of task files
   local sig="$1" dir="$2" bad=0 f tmp
-  tmp="$(mktemp)"
+  tmp="$(mktemp "$ROOT/target/tmp/check_seam_integrity.XXXXXX")" || return 2
   while IFS= read -r f; do
     case "$f" in */TEMPLATE.md) continue ;; esac
     [ -r "$f" ] || continue
@@ -115,7 +118,7 @@ boxes_regression() { # $1 signature regex  $2 directory of task files
     while IFS= read -r l; do
       if [ "$l" = $'\036' ]; then
         if [ -n "$box" ] && ! printf '%s' "$box" | grep -qE "$sig"; then
-          echo "  REGRESSED $f: a box that was accepted when it was committed no longer matches"
+          echo "  REGRESSED $f: a current tracked acceptance box lacks a declared evidence signature"
           echo "    $(printf '%s' "$box" | head -1 | cut -c1-96)"
           bad=1
         fi
@@ -206,7 +209,7 @@ self_test() {
     else pass=$((pass+1)); fi
   }
 
-  # ---- R2: a committed box whose evidence is a plain census — the exact shape refused three
+  # ---- R2: a tracked box whose evidence is a plain census — the exact shape refused three
   # times before the tokens were declared.
   {
     printf '%s\n' '- [x] **ROOT CAUSE (WHY + WHERE)** — census over the pinned chapters:'
@@ -216,9 +219,9 @@ self_test() {
   } > "$t/leaf.md"
   ( cd "$t" && git init -q . && git add leaf.md ) >/dev/null 2>&1
   out="$( cd "$t" && boxes_regression "$full" . 2>&1 )"; rc=$?
-  score "GREEN declared tokens still accept a committed box" 0 "" "$rc" "$out"
+  score "GREEN declared tokens accept a current tracked box" 0 "" "$rc" "$out"
   out="$( cd "$t" && boxes_regression "$narrow" . 2>&1 )"; rc=$?
-  score "RED   losing the tokens regresses a committed box" 1 "REGRESSED" "$rc" "$out"
+  score "RED   losing tokens rejects a current tracked box" 1 "current tracked acceptance box lacks a declared evidence signature" "$rc" "$out"
 
   # ---- R3/R4: classification properties, with the globals shadowed for the duration.
   # ⛔ The fixture is built with printf, one path per line, and its line count is ASSERTED —
@@ -249,6 +252,29 @@ self_test() {
   score "RED   an acceptance set that ignores the census list" 1 "VOCABULARY GAP" "$rc" "$out"
   out="$(vocabulary_agreement "$full" "$t/absent.sh" 2>&1)"; rc=$?
   score "RED   the census gate is gone, so nothing can be compared" 1 "NO CENSUS GATE" "$rc" "$out"
+
+  # R6: direct allocations and nested child defaults stay on volume.
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode shell 2>&1)"; rc=$?
+  score "GREEN shell allocation sites are qualified and cleaned" 0 "shell sites qualified and cleaned" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode python 2>&1)"; rc=$?
+  score "GREEN Python fixture allocations are qualified and cleaned" 0 "Python self-tests qualified and cleaned" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode children 2>&1)"; rc=$?
+  score "GREEN entrypoints constrain unset and foreign child defaults" 0 "unset/foreign child environments constrained" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode bare-shell 2>&1)"; rc=$?
+  score "RED bare shell allocation refuses before a foreign write" 1 "unqualified shell allocation" "$rc" "$out"
+  out="$(PYTHONOPTIMIZE=1 python3 "$ROOT/scripts/probe_temporary_locality.py" --mode bare-shell 2>&1)"; rc=$?
+  score "RED Python optimization cannot disable the shell allocator guard" 1 "unqualified shell allocation" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode bare-python 2>&1)"; rc=$?
+  score "RED bare Python allocation refuses before a foreign write" 1 "unqualified Python allocation" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode residue 2>&1)"; rc=$?
+  score "RED a qualified fixture still needs complete cleanup" 1 "fixture residue" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode unconstrained-child 2>&1)"; rc=$?
+  score "RED a child with a foreign default fails the locality contract" 1 "child temporary root differs" "$rc" "$out"
+  out="$(python3 "$ROOT/scripts/probe_temporary_locality.py" --mode parent 2>&1)"; rc=$?
+  score "GREEN standalone synth creates its scratch parent before allocation" 0 "scratch parent created before guarded allocation" "$rc" "$out"
+
+  out="$(bash "$ROOT/docs/tasks/artifacts/task_acceptance/run_task_acceptance_probes.sh" 2>&1)"; rc=$?
+  score "GREEN custom-vocabulary fixture still needs the declared seam" 0 "probes: 10 pass / 0 fail" "$rc" "$out"
 
   rm -rf "$t"
   printf 'SEAM-INTEGRITY --self-test: %d pass / %d fail\n' "$pass" "$fail"
@@ -285,7 +311,7 @@ sig="$(effective_sig)";  [ -n "$sig" ] || {
 code_re="$(effective_code_re)"; [ -n "$code_re" ] || {
   echo "SEAM-INTEGRITY: REFUSED — $NEUTRAL --print-code-re produced nothing; cannot judge." >&2; exit 2; }
 
-# R2 — the project's own committed acceptance boxes must still be accepted.
+# R2 — current tracked acceptance boxes must match the declared signatures.
 out="$(boxes_regression "$sig" docs/tasks)" || fail=1
 report="$report$out"
 # R3/R4 — classification properties over the tracked tree.
@@ -303,6 +329,6 @@ if [ "$fail" -ne 0 ]; then
     echo "  weakening this check is not."; } >&2
   exit 1
 fi
-printf 'SEAM-INTEGRITY: ok (%s committed acceptance box(es) still accepted; classification properties hold)\n' \
+printf 'SEAM-INTEGRITY: ok (%s current tracked acceptance box(es) match declared signatures; classification properties hold)\n' \
   "$(git ls-files docs/tasks | grep -E '\.md$' | grep -v TEMPLATE | xargs grep -hcE '^[[:space:]]*-[[:space:]]*\[[xX]\]' 2>/dev/null | paste -sd+ - | bc 2>/dev/null || echo '?')"
 exit 0

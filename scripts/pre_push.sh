@@ -35,6 +35,9 @@ repo_root() { git rev-parse --show-toplevel 2>/dev/null; }
 
 run_boundary() { # $1 = repo root
   local root="$1" out rc
+  local TMPDIR="$root/target/tmp"
+  mkdir -p "$TMPDIR" || return 2
+  export TMPDIR
   # 1. cadence first — the cheap refusal never burns the suite.
   out="$(cd "$root" && bash "$HERE/check_push_cadence.sh" --gate 2>&1)"; rc=$?
   if [ "$rc" -ne 0 ]; then

@@ -24,6 +24,9 @@
 set -euo pipefail
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 UP="docs/upstream"
 STATES="draft reported acknowledged disputed fixed-upstream verified closed wontfix"
 SEVERITIES="high medium low"
@@ -189,7 +192,7 @@ PY
 }
 
 selftest() {
-  local pass=0 fail=0 tmp; tmp="$(mktemp -d)"
+  local pass=0 fail=0 tmp; tmp="$(mktemp -d "$ROOT/target/tmp/check_upstream_index.XXXXXX")" || return 2
   mk() { # mk <dir> <id> <state> <severity>
     mkdir -p "$tmp/docs/upstream/linkedspec/$1"
     cat > "$tmp/docs/upstream/linkedspec/$1/issue.sexp" <<EOF

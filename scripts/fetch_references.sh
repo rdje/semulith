@@ -20,7 +20,10 @@
 #     --verify-only   re-derive the recorded hashes from what is already on disk; fetch nothing.
 #     <profile>       defaults to rv64i-lab-v0.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 
 VERIFY_ONLY=0
 [ "${1:-}" = "--verify-only" ] && { VERIFY_ONLY=1; shift; }
@@ -277,7 +280,7 @@ fi
 # can build a model without the network; this proves the fragments have not drifted from the
 # tables they were generated from, whenever those tables are present.
 if [ -d definitions ] && [ -d "$ENC_DIR" ]; then
-  if tmp_dir="$(mktemp -d)" && python3 - "$tmp_dir" <<'PY'
+  if tmp_dir="$(mktemp -d "$ROOT/target/tmp/fetch_references.XXXXXX")" && python3 - "$tmp_dir" <<'PY'
 import sys, pathlib, shutil, subprocess
 tmp = pathlib.Path(sys.argv[1])
 shutil.copytree("definitions", tmp / "have")

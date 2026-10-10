@@ -18,11 +18,10 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: resume `P4-SYSTEM.14` structured experiments/controls and mechanical
-  policy/status checks, then mirror reconciliation. The director-approved finite
-  task-history transition is complete (`SEMULITH-LC-0006`); its descriptor, reader,
-  navigation and46controls are committed. `docs/task-history/README.md` is the
-  retrieval front door. Full five-leg CI green; Rust173/17/253, seven books.
-  No CPU acceptance credit: incomplete7axes, P4 13/18 and frozen114/114 unchanged.
-- in_flight_uncommitted: none at commit.
-- blockers: none; full containment adoption remains owned by LIVE-CONTAINMENT.4.
+- next_action: resume `P4-SYSTEM.14` structured experiments, mechanical
+  policy/status checks and requirement-mirror reconciliation. Read its frontier
+  and existing reference experiment schema/checker before owning the next finite
+  slice. LC0006 finite archive and LC0007 standalone scratch repair are complete;
+  LIVE-CONTAINMENT.4 still owns full inventory/doctrine adoption.
+- in_flight_uncommitted: none after this commit.
+- blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

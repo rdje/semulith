@@ -35,7 +35,10 @@
 # deterministic; read-only; staged-scope-aware; path-agnostic; fast.
 set -uo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)" || exit 2
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 cd "$ROOT" || exit 1
 
 # Staged task-tree files only. No staged set (e.g. a manual run) => nothing to judge.
@@ -70,7 +73,7 @@ for file in $staged; do
   # match, printf takes SIGPIPE (141), and `pipefail` promotes 141 to the pipeline status. This
   # site would then `continue` — i.e. SKIP the file and let an unrouted waiver through. It fails
   # OPEN, which is the worst direction. Measured on the originating project: PIPESTATUS=(141 0).
-  added_file="$(mktemp)"; printf '%s\n' "$added" > "$added_file"
+  added_file="$(mktemp "$ROOT/target/tmp/check_waiver_routing.XXXXXX")" || exit 2; printf '%s\n' "$added" > "$added_file"
   if ! grep -qE "$WAIVER_RE" "$added_file"; then rm -f "$added_file"; continue; fi
   rm -f "$added_file"
 
@@ -90,7 +93,7 @@ for file in $staged; do
     [ -n "$ln" ] || continue
     lo=$(( ln > WINDOW ? ln - WINDOW : 1 )); hi=$(( ln + WINDOW ))
     win="$(sed -n "${lo},${hi}p" "$file" 2>/dev/null)"
-    win_file="$(mktemp)"; printf '%s\n' "$win" > "$win_file"
+    win_file="$(mktemp "$ROOT/target/tmp/check_waiver_routing.XXXXXX")" || exit 2; printf '%s\n' "$win" > "$win_file"
     if ! grep -qE "$OWNER_RE" "$win_file"; then
       rm -f "$win_file"
       undischarged="${undischarged}${file}:${ln}: $(sed -n "${ln}p" "$file")"$'\n'

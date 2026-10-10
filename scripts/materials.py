@@ -291,6 +291,15 @@ def main(argv: list[str]) -> int:
 # meaningful after the repository is moved. The arms that matter are the RED ones.
 # ---------------------------------------------------------------------------------------
 def _selftest() -> int:
+    import tempfile
+
+    parent = REPO / "target/doctrine-selftest"
+    parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="materials-", dir=parent) as directory:
+        return _selftest_in(Path(directory))
+
+
+def _selftest_in(temporary_root: Path) -> int:
     import tempfile, textwrap
     passed = failed = 0
 
@@ -316,7 +325,7 @@ def _selftest() -> int:
     D3 = hashlib.sha256(b"abc").hexdigest()
 
     def written(text: str) -> Path:
-        d = Path(tempfile.mkdtemp()); (d / "materials").mkdir()
+        d = Path(tempfile.mkdtemp(dir=temporary_root)); (d / "materials").mkdir()
         (d / "materials" / "catalog.sexp").write_text(text)
         return d
 

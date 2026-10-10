@@ -77,7 +77,9 @@ def compare(path_a: Path, path_b: Path) -> tuple[bool, str]:
 
 def self_test() -> int:
     arms = 0
-    with tempfile.TemporaryDirectory() as td:
+    temporary_root = Path(__file__).resolve().parent.parent / "target/doctrine-selftest"
+    temporary_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="compare-dumps-", dir=temporary_root) as td:
         d = Path(td)
 
         def write(name: str, text: str) -> Path:

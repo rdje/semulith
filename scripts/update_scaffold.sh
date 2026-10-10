@@ -11,9 +11,12 @@
 set -euo pipefail
 URL="${1:-}"
 [ -n "$URL" ] || { echo "usage: scripts/update_scaffold.sh <bedrock-repo-url-or-local-path>" >&2; exit 2; }
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 
-tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+tmp="$(mktemp -d "$ROOT/target/tmp/update_scaffold.XXXXXX")" || exit 2; trap 'rm -rf "$tmp"' EXIT
 if [ -d "$URL/.git" ]; then
   cp -R "$URL" "$tmp/bedrock"
 else

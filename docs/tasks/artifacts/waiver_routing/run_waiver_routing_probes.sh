@@ -25,12 +25,15 @@
 #
 # Each probe builds a throwaway git repository, because the check reads the STAGED diff.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 GUARD="$ROOT/scripts/check_waiver_routing.sh"
 [ -f "$GUARD" ] || { echo "probe: REFUSED — $GUARD not found" >&2; exit 2; }
 
 pass=0; fail=0
-WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
+WORK="$(mktemp -d "$ROOT/target/tmp/waiver_routing.XXXXXX")" || exit 2; trap 'rm -rf "$WORK"' EXIT
 
 # $1 = name, $2 = guard to install -> prints the repo dir
 mkrepo() {

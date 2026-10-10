@@ -29,7 +29,10 @@
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 
 REGISTRY="doctrine/readme_routes.tsv"
 KNOWN_LIFECYCLES="hot_live partitioned generated_index append_history frozen normative archive_terminal"
@@ -129,7 +132,7 @@ verify_routes() {
   local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" fo="${6:-}" bad=0 tmp
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
-  tmp="$(mktemp -d)"
+  tmp="$(mktemp -d "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || return 2
   awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$registry" > "$tmp/destinations"
   [ -s "$tmp/destinations" ] || { echo "  EMPTY registry $registry"; rm -rf "$tmp"; return 1; }
 
@@ -308,7 +311,7 @@ regen_set_registered scripts/check_doctrines.project.sh || {
 out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)" || fail=1
 
 # (2) every path-shaped destination the guard actually emits must be governed
-dests="$(mktemp)"; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"
+dests="$(mktemp "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || exit 2; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"
 while IFS= read -r t; do
   [ -n "$t" ] || continue
   governed "$t" "$dests" || { out="$out"$'\n'"  UNGOVERNED emitted-hint destination '$t' — the guard routes authors there and nothing bounds it"; fail=1; }

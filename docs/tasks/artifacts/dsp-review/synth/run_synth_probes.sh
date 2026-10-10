@@ -15,7 +15,10 @@
 # dsp56300-lab-v0 / F3): the schema learned memory_spaces, so the pin moved one layer down
 # — schema accepts, the generator refuses by name.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 DIR="docs/tasks/artifacts/dsp-review/synth"
 pass=0; fail=0
 
@@ -42,7 +45,9 @@ probe "nonstandard width (24-bit) refuses by name" 2 \
 probe "a second address space now VALIDATES at the schema layer" 0 \
   "conforms to state.sexp" \
   python3 scripts/check_sexp_schema.py "$DIR/state-spaces.sexp" schema/state.sexp
-SCRATCH="$(mktemp -d "$ROOT/target/doctrine-selftest/synth-XXXXXX")"
+mkdir -p "$ROOT/target/doctrine-selftest" || exit 2
+SCRATCH="$(mktemp -d "$ROOT/target/doctrine-selftest/synth-XXXXXX")" || exit 2
+trap 'rm -rf "$SCRATCH"' EXIT
 cp "$DIR/state-spaces.sexp" "$SCRATCH/state.sexp"
 probe "a second address space still refuses at the generator, by name" 2 \
   "memory_spaces declared" \

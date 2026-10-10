@@ -25,7 +25,10 @@
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 
 # ── hashing helper: refuse rather than skip if no hasher exists ──────────────────────────────
 sha256_of() {
@@ -49,7 +52,7 @@ verify_package() {
   [ -f "$manifest" ] || { echo "  MISSING $manifest"; return 1; }
   [ -f "$disp" ]     || { echo "  MISSING $disp (the dispositions are DATA, not prose)"; return 1; }
 
-  local tmp; tmp="$(mktemp -d)"
+  local tmp; tmp="$(mktemp -d "$ROOT/target/tmp/check_delivery_provenance.XXXXXX")" || return 2
   awk 'NF>=2 {print $2}' "$manifest" | sort > "$tmp/manifest_paths"
   awk -F'\t' '!/^#/ && NF>=3 {print $2}' "$disp" | sort > "$tmp/disposed_paths"
 

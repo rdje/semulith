@@ -33,7 +33,10 @@
 # CONTRACT (DOCTRINE_ENFORCEMENT.md §4): exit code is the verdict; explains on stderr;
 # deterministic; read-only; staged-scope-aware; path-agnostic.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
+# All scratch, including child-tool defaults, stays on the repository volume.
+mkdir -p "$ROOT/target/tmp" || exit 2
+export TMPDIR="$ROOT/target/tmp"
 
 # ── what counts as a code change ─────────────────────────────────────────────────────────────
 # ⛔ `^(crates|src|scripts)/`, NOT `(^|/)(…)/`. The unanchored form matches the `src/` segment
@@ -109,7 +112,7 @@ staged="$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || true)"
 # grep a FILE, never `printf "$var" | grep -q`: under pipefail, grep -q exits at the first match
 # and the producer takes SIGPIPE, so the pipeline reports FAILURE ON SUCCESS once the input is
 # large. That failure mode is silent and, at a `|| continue`, fails OPEN.
-tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+tmp="$(mktemp -d "$ROOT/target/tmp/check_task_acceptance.XXXXXX")" || exit 2; trap 'rm -rf "$tmp"' EXIT
 printf '%s\n' "$staged" > "$tmp/staged.txt"
 
 grep -E "$code_re" "$tmp/staged.txt" > "$tmp/code.txt" 2>/dev/null || true
