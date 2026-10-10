@@ -234,7 +234,7 @@ def emit(guests: list[dict], encoding: Path, image_format: str = "words",
     a.append("    Fetch,")
     a.append("    /// An explicit read.")
     a.append("    Load,")
-    a.append("    /// An explicit write.")
+    a.append("    /// An explicit write or a side-effect-free store-permission check.")
     a.append("    Store,")
     a.append("    /// A page-table-walk read.")
     a.append("    Walk,")

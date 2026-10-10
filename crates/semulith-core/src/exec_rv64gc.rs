@@ -860,6 +860,20 @@ impl Frame<'_> {
                 // The public a-lrsc-fault experiment observes the later aligned SC
                 // succeeding after a trapped misaligned SC (P4.13 c29a).
                 if !self.state.reservation().matches(pa, (w / 8) as u8) {
+                    // A12.1.2 requires permission before retirement even on failure.
+                    // This boundary check has no data-memory read/write side effect.
+                    if let Err(error) = crate::env::request_checked(
+                        self.env,
+                        Request::StorePermission { width, addr: pa },
+                    ) {
+                        match error {
+                            BoundaryError::Target(_) => self.deliver(7, a),
+                            BoundaryError::Violation(violation) => {
+                                self.failed = Some(ModelError::ContractViolation(violation));
+                            }
+                        }
+                        return (0, 64);
+                    }
                     self.state.reservation().clear();
                     return (1, 64);
                 }

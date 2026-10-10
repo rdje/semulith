@@ -168,7 +168,7 @@ fn forbidden(at: Request, word: u32, guard: bool) -> Result<(), String> {
     Ok(())
 }
 
-const ATTEMPTS: [(Request, u32); 5] = [
+const ATTEMPTS: [(Request, u32); 6] = [
     (Request::Fetch { addr: ENTRY }, 0x0010_0313),
     (Request::FetchParcel { addr: ENTRY }, 0x0010_0313),
     (
@@ -187,6 +187,13 @@ const ATTEMPTS: [(Request, u32); 5] = [
         0x0062_8023,
     ),
     (Request::WalkAccess { addr: 0x2000 }, 0x0010_0313),
+    (
+        Request::StorePermission {
+            width: AccessWidth::W,
+            addr: DATA,
+        },
+        0x1802_a32f,
+    ),
 ];
 
 pub(super) fn negative() -> Result<(), String> {

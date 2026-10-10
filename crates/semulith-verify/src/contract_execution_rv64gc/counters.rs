@@ -387,7 +387,7 @@ mod tests {
                 PrivilegeMode::M,
                 0,
                 &Sem::StoreConditional(&Sem::Lit(64), &Sem::Lit(DATA + 8), &Sem::Lit(0)),
-                "reservation differs",
+                "requests differ",
             ),
             (
                 PrivilegeMode::M,

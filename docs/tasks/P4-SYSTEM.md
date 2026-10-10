@@ -573,6 +573,138 @@ promotion: declined (finite full-state witnesses reuse the existing contract met
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
+### `.13` c34b0 — check physical permission on failed SC (completed, SEMULITH-P4-0186)
+
+Owned on clean691c608/brief0/actual census rc=0 after c34a. Re-read pinned
+A12.1.2 norm:sc_retire_permission, the own Environment/SC/FlatMemory boundary,
+all Request consumers (rg -l Request:: crates), generated refusal interface,
+request shape/address/data/event/order fixtures, reservation/atomic witnesses
+and current atomics/v2/environment books. Roadmap .13 closes no guarantee
+without actual executable checks; newly measured unmapped-SC defect is priority
+before reservation/SC binding. Do not inspect dependency implementations.
+
+Smallest seam: add Request::StorePermission{width,addr} and corresponding void
+Response::StorePermitted. It validates physical write permission with no byte
+read/write, counter fetch or target event. Only a nonmatching SC issues it,
+after alignment/Store translation and before clear/rd1/retirement. Matching SC
+keeps its Store, which already validates permission. Permission failure takes
+cause7 with original VA and preserves reservation/rd; wrong response/typed
+provider violation remains ModelError, never target trap. No Store/Load is
+invented for failed SC. FlatMemory checks full aligned region and returns void;
+all forwarding/scripted providers preserve observable request/answer kinds.
+
+Extend already-open v2 address/data/event statements and their bound executable
+pairs, keeping12members/prior112registry/effective110/114 and frozen v0/v1 exact.
+No extra unbound record or selector exemption. GC experiment refusal category
+Store includes explicit writes and permission checks at the same physical byte
+span; update the generator-owned public comment and regenerate exactly that
+comment, retaining every guest image/value/fetch/refusal datum. This matches the
+independent author's existing pre-match region/store-refusal permission check;
+direct providers can still distinguish actual Store from StorePermission.
+Census records permission checks separately from explicit data stores; GC
+snapshot/replay remains explicitly unsupported, no serialization scope added.
+
+Before repair add permanent unmapped cold-SC witness and require RED101 at the
+trap/full-state assertion, then fix. Expand finite W/D×4ordering×M/S/U×
+4destinations×4nonmatching prior states at aligned mapped/unmapped and refused
+permission boundaries; translated success/failure uses PA in request and VA
+in trap, repeated cached SC has no walk. Matching success/refused Store,
+misalignment/translation faults before permission, and malformed permission
+answers distinguish the branches. Extend bound boundary width/edge/no-effect,
+address high-bit and every-kind event fixtures. Actual skip-permission,
+permission-as-Store, fault-as-failure and malformed-as-target mutations must
+fail named tests, then restore. New API is side-effect-free by provider bytes/
+full-state/request audits, not a name-based claim.
+
+C34a's unchanged architectural cells gain20736permission-only requests
+(19584Bare+1152aliases), so60640boundaries/121280parcels/35680data/11232walks/
+20736permissions=188928requests. Parent A adds960permission checks, direct
+12168boundaries/24336parcels/46800requests. Re-derive exact counts, retain all
+numeric/architectural outcomes, prebuilt independent author/canonical words/
+full prior corpus, core response matching and refusal adapter controls.
+Rust/focused checks/full local CI for this boundary milestone; synchronize
+current book examples/limits and live docs, with fixed caps. Then clean commit
+before qualified reservation supersession/binding, SC/full CI/freeze and .14.
+
+C34b0 full-CI diagnostic (owned before provider repair): the first full CI
+and focused run stop at DEF-GEN. Running check_definition_gen.sh --self-test
+rc=1 reveals52pass/4fail: the standalone C-only probe's exhaustive Memory
+provider does not handle the new StorePermission enum variant (E0004), so its
+GREEN and3behavioral RED controls never compile. This is integration scope,
+not evidence that the generator lost discrimination. Extend that C-only provider
+with an explicit unexpected-SC permission panic, retaining all18C checks and
+three compiled behavioral mutations. Preserve failed logs, rerun sequentially;
+credit full CI only after all five legs actually complete. No wildcard escape.
+Repair validated: full make ci rc=0, including the18C-only probes and all
+3compiled behavioral mutations through DEF-GEN. Failed logs retained as
+ci-integration-red.log/focused-integration-red.log; no generator/input change.
+
+C34b0 refinement: permanent defect witness first RED101 (rd changed instead
+of trap). A temporary raw-CSR diagnostic then found the reused parent trap
+expectation retaining MPRV in a Bare case (difference0x20000); that helper is
+for translated AMOs. Build mode/status-specific literal expectations, not from
+actual output. All12atomic tests now pass, including1152Bare+384translated
+permission cells,80malformed answers,8provider-misalignment answers and1
+refused-data-Store no-issue cell:1625newboundaries/3250parcels/1152walks/
+1625permissions,6027requests. No data access in these cells.
+Strict compile identifies two exhaustive test providers; extend the GC walk
+provider and explicitly refuse the GC-only kind in the RV64I-only fixture.
+Three pre-existing wrong-SC table controls now fail first on the added request
+rather than the later reservation difference. Update those expected reasons;
+keep independent corrupt-reservation captures/actual disabled auditor controls.
+Actual-control refinement: skip permission, permission-as-Store, target-fault-
+as-failure, malformed-as-target, permission-region bypass and provider byte
+write behind StorePermitted:6new RED101 controls then exact restoration, plus
+all23prior actual guards under the new request shape. All structural/numeric
+outcomes remain checked before source or registry credit.
+
+Result:
+
+Repair root495b4b86's failed-SC physical-permission gap. Before code repair,
+permanent cold unmapped-SC test RED101: rd changed instead of trap. Core now
+requests side-effect-free StorePermission after Store translation on nonmatch;
+only StorePermitted permits clear/rd1/retirement. Target refusal traps7 with
+original VA and preserves prior state; malformed replies remain ModelError.
+Matching SC retains Store's permission check. FlatMemory checks full aligned
+span without byte access/fetch increment; forwarding, scripted, refusal and
+census adapters cover the new kind separately from explicit data stores.
+Open-v2 address/data/event statements and bound fixtures extend together;
+12members/prior112registry/effective110/114 and frozen v0/v1 exact. Published
+Store refusal category includes permission checks; generator-owned comments
+and fingerprints regenerated, all guest arrays/data/canonical expectations exact.
+Independent author already checks region/store-category refusal before match;
+its explanatory comment now states the category, not an invented data write.
+New1625full-state boundaries/3250parcels/1152walks/1625permissions=6027requests:
+1152Bare+384translated permission cells,80malformed replies,8provider-misalignment
+answers and1unissued-Store control. Independent author1536architectural cells/
+32canonical words and prior167/5365/10524 exact; provider-contract answers and
+invalid retained reservation fields remain direct evidence. Prior60640boundary
+architectural expectations unchanged, now20736permissions/188928requests;
+parent A gains960permissions/46800direct requests, no data/value change.
+Six actual permission controls plus all23prior guards RED101 then restored;
+valid StorePermitted with a hidden byte write fails memory audit. Initial
+fault-control needle expected GPR change, but first rd0 case reports CSR owners;
+corrected before credit, no lost control. Temporary export code restored.
+Raw-CSR diagnostic identifies new Bare expectation's reused translated-AMO
+MPRV0x20000; replace by independent mode/status literals. Three old wrong-SC
+table controls now name the first extra permission request; independent corrupt-
+reservation captures/disabled auditors still discriminate. Two exhaustive test
+providers and the standalone C-only provider extended explicitly; no wildcard.
+Rust173/17/253, focused14,
+full make ci all five legs and six books rc=0. All other core/definition/data/
+canonical/frozen/archives/history/LIVE and prior registry exact. Current book/
+ENV/report/pointers sync, fixed caps. Evidence target/p4-system-13/c34b0.
+Owned c34b1 documentation defect discovered while preparing containment:
+rg current C chapter finds present-tense "Contract realization stays98/114"
+(spaced source text), rootd8925716 at c.md:433, although gate_report measures
+110/114. Impact: book review misstates current realization. C34b1 will replace
+that historical tail with an explicit current-report route, preserving the exact
+old receipt in its source inverse. No runtime or reference agreement change.
+Next own c34b1/0187 book/development containment before qualified reservation
+supersession+binding, SC/full CI/freeze and priority .14 sweep; book has569B
+room before final receipts. No new G-CONTRACT or reference-lineage credit.
+promotion: declined (the existing boundary/full-state method owns this defect, repair and discriminating controls; no new knowledge card needed).
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -713,6 +845,22 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c34b0 — **ROOT CAUSE**: defect-red.log cargo test rc=101:
+ cold unmapped SC changes rd rather than traps; prior public core/author/Sail/
+ Spike diagnosis pins root495b4b86. expectation-diagnostic rc=0 identifies
+ parent translated-AMO expectation's MPRV bit, independently corrected for Bare.
+- [x] `.13` c34b0 — **ADDRESSED**: cargo test/derive-plans.py rc=0:
+ 1625new full-state boundaries,1536independent architectural cells/32words,
+ exact20736new permission checks in prior60640cells, parent A+960. mutations.py
+ rc=0:6new/23prior actual controls RED101, byte-restored; no matching-SC Store
+ replaced, no explicit data operation for nonmatch. Bound v2 pairs/adapters sync.
+- [x] `.13` c34b0 — **NO REGRESSION**: make check/verify/focused/full
+ make ci/six books rc=0: Rust173/17/253; guest arrays/canonical data/frozen v0/v1/
+ archives/history/LIVE/prior112registry/effective110/114 exact. Open-v2 remains
+ 12members; no premature reservation/SC binding. Book/ENV/report/pointers sync,
+ next bounded containment owned before binding; every cap fixed.
+ promotion: declined (existing boundary and full-state evidence preserves the repair and controls with a precise next action).
+
 - [x] `.13` c34a — **ROOT CAUSE**: diagnose.py rc=0: authenticated A/
  privileged sources, root495b4b8 three policy mirrors and non-v0 realization
  selector verified. sc-diagnostic/public/spike.py rc=0: unmapped cold SC
@@ -773,6 +921,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c34b0 | defect RED101→1625new full-state cells/1536author cells/32words;6new+23prior actual controls RED-restored; bound v2 request fixtures | Rust173/17/253/focused/full CI/six books rc=0; all canonical guest data/frozen/history/LIVE/prior registry/effective110/114 exact; contain book/DEV before binding |
 | `2026-10-10` | `.13` c34a |60640prebuilt full-state boundaries/205canonical words/prior corpus;16wrong/16capture/23actual guards RED-restored; public permission diagnosis | Rust173/17/246/focused/six books rc=0; registry112/effective110/114/core/data/frozen/history/LIVE exact; immediate c34b0 permission repair before binding |
 | `2026-10-10` | `.13` c33d | whole7179B intro/440B checkpoint/full14853B source inverse; damaged controls refuse; canonical88words/independent worked example | archive8886B/save4084chapter B; prior history/core/data/frozen/LIVE/registry112/effective110/114 exact; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
 | `2026-10-10` | `.13` c33c | five whole payloads/full127192B task inverse/order/SHA; damaged controls refuse; prior archive/history identity and full-family budgets | archive11/84762B; partition46007B; registry112/effective110/114/LIVE unchanged; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
@@ -784,12 +933,20 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c34b0 | `SEMULITH-P4-0186 (leaf P4-SYSTEM.13): check physical permission on failed SC` | own c34b1/0187 bounded book/development containment, then qualified reservation/SC bindings/full CI/freeze |
 | `.13` c34a | `SEMULITH-P4-0185 (leaf P4-SYSTEM.13): witness reservation histories before binding` | own c34b0/0186 physical SC permission repair before qualified reservation/SC bindings/full CI/freeze |
 | `.13` c33d | `SEMULITH-P4-0184 (leaf P4-SYSTEM.13): contain atomics timeline before final pairs` | own c34/0185 reservation witnesses before SC/full CI/freeze; .14 sweep owned |
 | `.13` c33c | `SEMULITH-P4-0183 (leaf P4-SYSTEM.13): contain completed task receipts` | own c33d/0184 atomics-book containment, then reservation/SC/full CI/freeze; .14 sweep owned |
 
 
 ## Changelog
+
+- `2026-10-10`: `.13` c34b0 (SEMULITH-P4-0186): nonmatching SC checks
+ side-effect-free physical permission before retirement; denied/malformed
+ answers preserve target/provider distinction.1625newcells/1536authorcells,
+ 6new+23prior actual controls discriminate; Rust173/17/253/focused/CI/books
+ green. Prior guest data/frozen/history/LIVE/registry/effective110/114 exact;
+ contain book/DEV before qualified reservation/SC bindings and freeze.
 
 - `2026-10-10`: `.13` c34a (SEMULITH-P4-0185): unbound60640boundaries/
  121280parcels/168192requests;16wrong/16capture/23actual controls discriminate,

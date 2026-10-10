@@ -25,7 +25,7 @@ use the original address/source, and x0 discards only its destination result.
 
 The selected reservation is hart state `(physical address, width, valid)`.
 A completed LR replaces it. A completed SC clears it on success or failure,
-even at another address; traps preserve it. SC succeeds exactly when valid,
+even at another address; traps preserve it. After alignment and permission checks, SC succeeds when valid,
 physical address and width all match; otherwise it returns 1 without storing.
 This laboratory chooses no spurious failure and exact-width matching. These
 are declared profile policies within the architecture's permitted latitude;
@@ -35,7 +35,8 @@ Ordinary instructions do not provide external invalidation events here.
 AMOs translate once with store/AMO permissions, then issue consecutive Load
 and Store requests at the same physical address. The returned value precedes
 the update. A failed SC may already have issued translation reads before its
-reservation match; failure suppresses its data Store. Under the selected
+reservation match; failure suppresses its data Store. A nonmatching SC still
+issues a side-effect-free physical StorePermission check before retiring. Under the selected
 misalignment policy, LR takes access-fault cause 5, SC/AMO cause 7, before
 translation. A translated AMO page fault is cause 15 rather than load cause 13.
 Precise traps preserve the old reservation and suppress destination writes.
@@ -94,7 +95,7 @@ LR returns the original value and replaces the reservation with the accessed
 physical address/width. Successful SC writes the source's low-width bytes,
 returns zero and clears the reservation. Another 960 direct SC cells start with
 a valid reservation at a different address: they return one, clear it and issue
-no data request or memory write. The unchanged a-lrsc-mustfail guest also retains
+no data Load/Store or memory write; each now makes a StorePermission request. The unchanged a-lrsc-mustfail guest also retains
 its no-LR, width/address mismatch, replacement and intervening-SC history cases.
 Dedicated reservation/deterministic-policy bindings remain separate work.
 
@@ -136,7 +137,7 @@ the control RED. Changing the actual AMO translation kind to Load makes its
 fault-kind witness RED. Both mutations are restored byte-for-byte before normal
 checks. The completeness control first rejects an unregistered GC-ATOMICS pair.
 
-The direct total is **12,168 boundaries, 24,336 parcels and 45,840 requests**.
+The direct total is **12,168 boundaries, 24,336 parcels and 46,800 requests**.
 The arith/minmax W/D, LR/SC pair, must-fail and Sv39 companion guests add
 198 boundaries/396 parcels: the registered pair totals **12,366/24,732**.
 The request pair witnesses this single-hart, side-effect-free-memory contract;
@@ -195,22 +196,40 @@ laboratory policy, including its retained fields when invalid.
 
 The direct observer compares every state owner, surrounding memory, exact
 request sequence and retirement. The finite total includes 121,280 fetch parcels,
-35,680 data requests and11,232 walk reads. Sixteen wrong instruction effects,
+35,680 data requests,11,232 walk reads and20,736 permission checks:188,928
+requests in all. Sixteen wrong instruction effects,
 16 corrupt captures and23 disabled guards discriminate; paired outcomes catch
 broken construction helpers even when expected state uses those same helpers.
 The independent author checks every planned boundary and205 canonical words;
 it does not observe explicit data requests or invalid retained reservation fields.
 These witnesses add no registry credit: the effective measure remains110/114.
 
-The prerequisite also exposes an unresolved physical-permission defect. Cold
-`sc.w x7, x9, (x0)` to unmapped zero returns ordinary failure in Semulith, while
-the independent author and fresh public Sail/Spike runs take cause7 with tval0.
-The pinned A12.1.2 requires memory permission before SC retirement. Translation
-checks alone do not enforce the laboratory's physical-region permission when
-a nonmatching SC skips Store. P4.13 c34b0 owns an immediate side-effect-free
-permission-boundary repair before reservation/SC binding. This unresolved cell
-is outside the finite passing matrix above. Policy wording must also distinguish
-ISA requirements from this profile's selected trap/alias/width rules.
+## Failed SC still checks physical permission
+
+Cold `sc.w x7, x9, (x0)` to unmapped zero now takes cause7 with tval0,
+without writing x7 or retiring. Previously it returned ordinary failure before
+crossing the physical boundary. The pinned A12.1.2 requires memory permission
+before SC retirement; fresh public Sail/Spike observations also take this trap.
+
+After alignment and Store translation, a nonmatching SC issues
+`StorePermission { width, addr: physical_address }`. `StorePermitted` allows
+failure code1 and reservation clearing. A denied check traps with the original
+VA and preserves the reservation. The check reads/writes no bytes and counts
+no fetch. Matching SC uses Store's existing permission check. A malformed
+permission answer is a typed provider violation, with no architectural trap.
+For example, a mapped nonmatching SC can retire with1 even if a provider would
+refuse an actual Store that was never issued. The experiment's `store` refusal
+category covers both writes and permission checks; direct providers can
+select their exact request kind.
+
+The repair adds1,625full-state boundaries:1,152Bare and384translated permission
+cases,80malformed answers,8provider-misalignment answers and the unissued-Store
+control. The independent author cross-derives the1,536architectural permission
+cells; contract-error answers are direct boundary evidence. Six new disabled
+paths and all23prior guards discriminate and restore. Existing bound address,
+width/region and every-kind event fixtures cover the added operation; frozen
+v0/v1 remain unchanged. Policy qualification and dedicated reservation/SC
+binding still follow; G-CONTRACT remains110/114.
 
 ## Historical introduction and checkpoint receipt
 

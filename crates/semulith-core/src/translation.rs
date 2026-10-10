@@ -599,6 +599,15 @@ mod tests {
                     self.write(addr, width.bytes(), data);
                     Ok(Response::StoreDone)
                 }
+                Request::StorePermission { width, addr } => {
+                    if addr % width.bytes() != 0 {
+                        return Err(Failure::Misaligned.into());
+                    }
+                    if addr < REGION_BASE || addr > REGION_BASE + 0x20000 - width.bytes() {
+                        return Err(Failure::AccessFault.into());
+                    }
+                    Ok(Response::StorePermitted)
+                }
                 Request::WalkAccess { addr } => {
                     self.walks += 1;
                     if addr % 8 != 0 {

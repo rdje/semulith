@@ -421,7 +421,7 @@ mod tests {
                     &Sem::StoreConditional(&Sem::Lit(64), &Sem::Lit(DATA + 0x30), &Sem::Lit(0)),
                     &Sem::TrapDeliver(&Sem::Lit(5), &Sem::Reg("rs1")),
                 ]),
-                "reservation differs",
+                "requests differ",
             ),
         ];
         for (effect, reason) in cases {

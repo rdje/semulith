@@ -28,6 +28,10 @@
 //!   Every CPU crossing uses [`request_checked`] to validate response kind and raw
 //!   load width before the instruction or translation layer consumes the answer.
 //!
+//! V2 additionally offers [`Request::StorePermission`], a physical write-permission
+//! check without a data access. Failed SC must pass it before retirement; successful
+//! SC uses Store's existing permission check. Its only success is StorePermitted.
+//!
 //! Little-endian throughout (REQ-D-ENDIAN, an execution-environment choice this profile
 //! pins).
 
@@ -101,6 +105,16 @@ pub enum Request {
         /// Value; the access writes `data & (2^width - 1)`, little-endian.
         data: u64,
     },
+    /// Validate permission for a physical store of `width` at `addr`, without
+    /// reading or writing any bytes. A nonmatching SC uses this after translation:
+    /// A12.1.2 forbids retirement without permission even when no Store occurs.
+    /// `rv64gc-lab-env-v2` owns this additive boundary operation.
+    StorePermission {
+        /// Width whose entire byte span must permit a store.
+        width: AccessWidth,
+        /// Physical byte address, naturally aligned to the width.
+        addr: u64,
+    },
     /// An implicit page-table-WALK access: the translation machinery's own 8-byte
     /// read of a page-table entry at a PHYSICAL `addr` (P4-SYSTEM.3 decision 6 — the
     /// D-FETCH-IMPLICIT precedent applied: an implicit access is observable as its own
@@ -128,6 +142,8 @@ pub enum Response {
     Load(u64),
     /// The store completed.
     StoreDone,
+    /// The requested physical store permission is valid; no bytes were accessed.
+    StorePermitted,
     /// The page-table entry a walk access read: exactly 64 raw bits, little-endian.
     WalkAccess(u64),
 }
@@ -248,6 +264,7 @@ pub fn request_checked<E: Environment + ?Sized>(
         Request::FetchParcel { .. } => matches!(response, Response::FetchParcel(_)),
         Request::Load { .. } => matches!(response, Response::Load(_)),
         Request::Store { .. } => matches!(response, Response::StoreDone),
+        Request::StorePermission { .. } => matches!(response, Response::StorePermitted),
         Request::WalkAccess { .. } => matches!(response, Response::WalkAccess(_)),
     };
     if !kind_matches {

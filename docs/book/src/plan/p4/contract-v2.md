@@ -284,6 +284,7 @@ request and validates the answer before the interpreter consumes it.
 | `FetchParcel` | `FetchParcel(u16)` |
 | `Load` | `Load(u64)` with no nonzero bits above the requested B/H/W/D width |
 | `Store` | `StoreDone` |
+| `StorePermission` | `StorePermitted`; no byte read/write |
 | `WalkAccess` | `WalkAccess(u64)` |
 
 A wrong kind returns `ContractViolation::WrongResponseKind`, retaining the
@@ -385,7 +386,7 @@ step wakes and delivers, with mepc at WFI's successor, mcycle=4 and minstret=1.
 The only two parcel requests are WFI's original fetch.
 
 The negative pair attempts delivery while answering each of Fetch, FetchParcel,
-Load, Store and WalkAccess. Every real-engine path returns the exact typed
+Load, Store, StorePermission and WalkAccess. Every real-engine path returns the exact typed
 location violation, preserving PC, mode, destination, trap state, counters and
 memory. Fetch uses the public legacy table seam over the same GC evaluator.
 Disabling the location guard lets every bad schedule escape and makes each

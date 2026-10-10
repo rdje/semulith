@@ -172,3 +172,35 @@ fn jal_offsets_at_the_sign_boundary_reach_their_targets() {
         );
     }
 }
+
+#[test]
+fn store_refusals_cover_permission_checks_at_the_exact_physical_span() {
+    use super::{refused, Refusal, RefusalKind, Request};
+    use semulith_core::env::AccessWidth;
+    let refusals = [Refusal {
+        kind: RefusalKind::Store,
+        base: 0x1_0000_1007,
+        size: 1,
+    }];
+    assert!(refused(
+        &refusals,
+        &Request::StorePermission {
+            width: AccessWidth::D,
+            addr: 0x1_0000_1000
+        }
+    ));
+    assert!(!refused(
+        &refusals,
+        &Request::StorePermission {
+            width: AccessWidth::W,
+            addr: 0x1_0000_1000
+        }
+    ));
+    assert!(!refused(
+        &refusals,
+        &Request::Load {
+            width: AccessWidth::D,
+            addr: 0x1_0000_1000
+        }
+    ));
+}

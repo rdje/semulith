@@ -100,7 +100,7 @@
 //!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `00e86c26cf8a113499fc2c3f3abaf96953347efb620a031771147001018fd84b`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.expected.sexp`  `081ed9427c790df38822107188dd91b03847e92bcb0a722f420eb7e89a289e35`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
-//! Generator: `scripts/gen_guests.py` (sha256 `cd5ab265f1f20eca0579bcf30dd0d44f325ac343396d82b8124d8cbe1df78e7d`)
+//! Generator: `scripts/gen_guests.py` (sha256 `cefce8dfb55619694bb4420affbe8f8951ee32ae810834015616127979b45de3`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
 //! byte-stable by construction (one entry per line), so regeneration and the
@@ -1777,7 +1777,7 @@ pub enum RefusalKind {
     Fetch,
     /// An explicit read.
     Load,
-    /// An explicit write.
+    /// An explicit write or a side-effect-free store-permission check.
     Store,
     /// A page-table-walk read.
     Walk,

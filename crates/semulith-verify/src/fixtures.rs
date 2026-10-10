@@ -139,7 +139,9 @@ impl Environment for FlatMemory {
         let (addr, width) = match request {
             Request::Fetch { addr } => (addr, AccessWidth::W),
             Request::FetchParcel { addr } => (addr, AccessWidth::H),
-            Request::Load { width, addr } | Request::Store { width, addr, .. } => (addr, width),
+            Request::Load { width, addr }
+            | Request::Store { width, addr, .. }
+            | Request::StorePermission { width, addr } => (addr, width),
             Request::WalkAccess { addr } => (addr, AccessWidth::D),
         };
         // Alignment is judged before region membership (misalignment is a property of the
@@ -173,6 +175,7 @@ impl Environment for FlatMemory {
                 self.write(addr, width, data);
                 Ok(Response::StoreDone)
             }
+            Request::StorePermission { .. } => Ok(Response::StorePermitted),
             Request::WalkAccess { .. } => {
                 // A walk access is an 8-byte physical read; it is NOT a fetch (the
                 // one-fetch-per-step census keeps its meaning) and never a store.

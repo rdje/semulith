@@ -6,18 +6,27 @@ struct Counts {
     boundaries: usize,
     data: usize,
     walks: usize,
+    permissions: usize,
 }
 impl Counts {
     fn add(&mut self, other: Self) {
         self.boundaries += other.boundaries;
         self.data += other.data;
         self.walks += other.walks;
+        self.permissions += other.permissions;
     }
-    fn require(self, boundaries: usize, data: usize, walks: usize) -> Result<(), String> {
+    fn require(
+        self,
+        boundaries: usize,
+        data: usize,
+        walks: usize,
+        permissions: usize,
+    ) -> Result<(), String> {
         let expected = Self {
             boundaries,
             data,
             walks,
+            permissions,
         };
         if self != expected {
             return Err(format!(
@@ -155,6 +164,11 @@ impl Plan {
                 // Scenario-literal success; the production match predicate is never consulted.
                 if succeeds {
                     store(expected, pa, n, expected.x[source as usize]);
+                } else {
+                    expected.requests.push(Request::StorePermission {
+                        width: width(n),
+                        addr: pa,
+                    });
                 }
                 if rd != 0 {
                     expected.x[rd as usize] = u64::from(!succeeds);
@@ -221,6 +235,11 @@ impl Plan {
                 .requests
                 .iter()
                 .filter(|r| matches!(r, Request::Load { .. } | Request::Store { .. }))
+                .count(),
+            permissions: last
+                .requests
+                .iter()
+                .filter(|r| matches!(r, Request::StorePermission { .. }))
                 .count(),
             walks: last
                 .requests
@@ -355,7 +374,7 @@ fn histories_over(table: &[InsnDef]) -> Result<(), String> {
             }
         }
     }
-    counts.require(54144, 33408, 0)
+    counts.require(54144, 33408, 0, 19584)
 }
 fn aliases_over(table: &[InsnDef]) -> Result<(), String> {
     let mut counts = Counts::default();
@@ -388,7 +407,7 @@ fn aliases_over(table: &[InsnDef]) -> Result<(), String> {
             }
         }
     }
-    counts.require(2304, 1152, 4608)
+    counts.require(2304, 1152, 4608, 1152)
 }
 fn bare_faults_over(table: &[InsnDef]) -> Result<(), String> {
     let mut counts = Counts::default();
@@ -463,7 +482,7 @@ fn bare_faults_over(table: &[InsnDef]) -> Result<(), String> {
             }
         }
     }
-    counts.require(1728, 960, 0)
+    counts.require(1728, 960, 0, 0)
 }
 fn translated_faults_over(table: &[InsnDef]) -> Result<(), String> {
     let mut counts = Counts::default();
@@ -572,7 +591,7 @@ fn translated_faults_over(table: &[InsnDef]) -> Result<(), String> {
             }
         }
     }
-    counts.require(2464, 160, 6624)
+    counts.require(2464, 160, 6624, 0)
 }
 pub(super) fn positive_over(table: &[InsnDef]) -> Result<(), String> {
     histories_over(table)?;

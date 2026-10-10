@@ -58,7 +58,9 @@ fn request_span(request: &Request) -> (RefusalKind, u64, u64) {
         Request::Fetch { addr } => (RefusalKind::Fetch, addr, 4),
         Request::FetchParcel { addr } => (RefusalKind::Fetch, addr, 2),
         Request::Load { width, addr } => (RefusalKind::Load, addr, width.bytes()),
-        Request::Store { width, addr, .. } => (RefusalKind::Store, addr, width.bytes()),
+        Request::Store { width, addr, .. } | Request::StorePermission { width, addr } => {
+            (RefusalKind::Store, addr, width.bytes())
+        }
         Request::WalkAccess { addr } => (RefusalKind::Walk, addr, 8),
     }
 }

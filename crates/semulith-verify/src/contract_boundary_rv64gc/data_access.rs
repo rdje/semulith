@@ -54,6 +54,16 @@ pub(super) fn positive() -> Result<(), String> {
                 ));
             }
         }
+        let fetches = memory.fetch_count();
+        if request_checked(&mut memory, Request::StorePermission { width, addr: DATA })
+            != Ok(Response::StorePermitted)
+            || memory.bytes() != before
+            || memory.fetch_count() != fetches
+        {
+            return Err(format!(
+                "{width:?}: permission check accessed bytes or counted a fetch"
+            ));
+        }
         // Main memory is also executable; instruction and data reads share bytes.
         if request_checked(&mut memory, Request::FetchParcel { addr: DATA })
             != Ok(Response::FetchParcel(0x7788))
@@ -128,6 +138,19 @@ pub(super) fn positive() -> Result<(), String> {
             }
         }
     }
+    for (width, bytes, _, _, _) in CASES {
+        let mut memory = memory_for_fault(0, bytes);
+        let before = memory.bytes().to_vec();
+        if request_checked(&mut memory, Request::StorePermission { width, addr: DATA })
+            != Err(semulith_core::env::Failure::AccessFault.into())
+            || memory.bytes() != before
+            || memory.fetch_count() != 0
+        {
+            return Err(format!(
+                "{width:?}: permission check accepted a partial region"
+            ));
+        }
+    }
     let (hart, outcome) = audited_step(Response::Load(0x1122_3344_5566_7788), true);
     if outcome != StepRv64gc::Executed || hart.read_x(6) != 0x1122_3344_5566_7788 {
         return Err(format!(
@@ -150,7 +173,9 @@ struct AnswerProvider {
 impl Environment for AnswerProvider {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         match request {
-            Request::Load { .. } | Request::Store { .. } => Ok(self.answer),
+            Request::Load { .. } | Request::Store { .. } | Request::StorePermission { .. } => {
+                Ok(self.answer)
+            }
             _ => self.memory.request(request),
         }
     }
@@ -219,6 +244,24 @@ pub(super) fn negative() -> Result<(), String> {
             Response::Load(value),
             ContractViolation::LoadValueOutOfWidth { width, value },
         )?;
+    }
+    for (word, width) in [(0x1802_a32f, AccessWidth::W), (0x1802_b32f, AccessWidth::D)] {
+        for response in [
+            Response::Fetch(0),
+            Response::FetchParcel(0),
+            Response::Load(0),
+            Response::StoreDone,
+            Response::WalkAccess(0),
+        ] {
+            require_violation(
+                word,
+                response,
+                ContractViolation::WrongResponseKind {
+                    request: Request::StorePermission { width, addr: DATA },
+                    response,
+                },
+            )?;
+        }
     }
     endian_violation(true)
 }

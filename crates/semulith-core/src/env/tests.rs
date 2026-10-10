@@ -88,6 +88,10 @@ fn every_response_kind_is_paired_with_only_its_request_kind() {
             data: 0x1234,
         },
         Request::WalkAccess { addr: 0x3000 },
+        Request::StorePermission {
+            width: AccessWidth::W,
+            addr: 0x2004,
+        },
     ];
     let responses = [
         Response::Fetch(0x1234),
@@ -95,6 +99,7 @@ fn every_response_kind_is_paired_with_only_its_request_kind() {
         Response::Load(0xff),
         Response::StoreDone,
         Response::WalkAccess(u64::MAX),
+        Response::StorePermitted,
     ];
     for (i, request) in requests.into_iter().enumerate() {
         for (j, response) in responses.into_iter().enumerate() {

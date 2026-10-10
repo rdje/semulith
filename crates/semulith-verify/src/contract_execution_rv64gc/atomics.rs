@@ -26,6 +26,8 @@ const MODES: [PrivilegeMode; 3] = [PrivilegeMode::M, PrivilegeMode::S, Privilege
 const FUNCTIONS: [u32; 9] = [0, 1, 4, 12, 8, 16, 20, 24, 28];
 
 #[cfg(test)]
+mod permissions;
+#[cfg(test)]
 mod reservation;
 
 struct Vector {
@@ -586,6 +588,11 @@ fn ordinary(
                     vector.source
                 },
             );
+        } else {
+            f.expected.requests.push(Request::StorePermission {
+                width: width(n),
+                addr: DATA,
+            });
         }
         f.expected.reservation.clear();
         f.retire(rd, u64::from(!success));

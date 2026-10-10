@@ -52,6 +52,9 @@ impl Environment for Memory {
                 self.put(addr, data, width.bytes());
                 Ok(Response::StoreDone)
             }
+            Request::StorePermission { .. } => {
+                panic!("C-only instruction probe must not issue an SC permission check")
+            }
             Request::WalkAccess { addr } => Ok(Response::WalkAccess(self.read(addr, 8)?)),
         }
     }

@@ -917,7 +917,9 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             return ("fault", {"load": 5, "store": 7, "atomic": 7}[kind], va)
         # P4-SYSTEM.8 slice (c): a declared refusal answers the boundary request with an
         # access fault — an AMO issues a load then a store, and either refused is cause 7;
-        # a plain or reserved load's is 5, a store's or SC's 7 (the engine's own mapping)
+        # a plain or reserved load's is 5, a store's or SC's 7. The experiment's
+        # store refusal category includes SC's physical permission-only check;
+        # it does not imply a failed SC issued an explicit data write.
         halves = {"load": ("load",), "store": ("store",), "atomic": ("load", "store")}[kind]
         for half in halves:
             if h.refused(half, pa, width_bits // 8):

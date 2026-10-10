@@ -332,3 +332,33 @@ fn instrumented_allocates_the_writes_vec_only_on_a_visible_change() {
         );
     }
 }
+
+#[test]
+fn permission_requests_have_a_separate_census_without_data_access() {
+    let mut memory = FlatMemory::new(ENTRY, 64);
+    memory.load_image(32, &[0x11, 0x22, 0x33, 0x44]);
+    let before = memory.bytes().to_vec();
+    let mut census = Census::default();
+    {
+        let mut counting = Counting {
+            inner: &mut memory,
+            census: &mut census,
+        };
+        assert_eq!(
+            counting.request(Request::StorePermission {
+                width: semulith_core::env::AccessWidth::W,
+                addr: ENTRY + 32,
+            }),
+            Ok(Response::StorePermitted)
+        );
+    }
+    assert_eq!(
+        census,
+        Census {
+            store_permissions: 1,
+            ..Census::default()
+        }
+    );
+    assert_eq!(memory.bytes(), before);
+    assert_eq!(memory.fetch_count(), 0);
+}

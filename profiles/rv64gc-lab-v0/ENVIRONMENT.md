@@ -256,9 +256,13 @@ copies match the unchanged pins; only absent evidence permits a named skip.
 
 ### Reservation witness prerequisite and physical permission repair
 
-Unbound full-state histories cover60640boundaries/121280parcels/168192requests;
+Unbound full-state histories cover60640boundaries/121280parcels/188928requests,
+including20736side-effect-free StorePermission checks;
 [the atomics chapter](docs/book/src/plan/p4/atomics.md#reservation-histories-before-binding)
 explains selected replacement/clear/trap/alias policies and the finite limits.
-Current realized110/114 is unchanged. Cold failed SC to unmapped0 exposes a
-physical-permission gap before retirement; fresh public Sail/Spike trap cause7.
-P4-SYSTEM.13 c34b0 owns repair before the reservation/SC bindings and freeze.
+Current realized110/114 is unchanged. Cold failed SC to unmapped0 now traps7
+before retirement, matching the fresh public Sail/Spike observation. A failed
+SC must obtain StorePermitted after translation without a data access; malformed
+answers remain typed provider violations. The open-v2 address/data/event pairs
+cover the added operation; frozen v0/v1 stay exact. P4-SYSTEM.13 c34b0 repairs
+the gap before dedicated reservation/SC binding and freeze.

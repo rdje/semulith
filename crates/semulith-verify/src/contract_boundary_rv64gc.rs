@@ -119,6 +119,12 @@ impl Environment for AddressProvider {
                 width,
                 addr: addr / 4,
             },
+            (Mapping::DataWordIndex, Request::StorePermission { width, addr }) => {
+                Request::StorePermission {
+                    width,
+                    addr: addr / 4,
+                }
+            }
             (Mapping::WalkTruncated32, Request::WalkAccess { addr }) => Request::WalkAccess {
                 addr: u64::from(addr as u32),
             },
@@ -134,11 +140,12 @@ impl Environment for AddressProvider {
 fn scripted_step(
     mapping: Mapping,
     access_failure: bool,
+    permission: bool,
 ) -> (ArchitecturalState, StepRv64gc, usize) {
     let mut state = ArchitecturalState::zeroed_at(VA);
     state.set_mode(PrivilegeMode::S);
     state.write_csr(CSR_SATP, (8 << 60) | (ROOT >> 12));
-    state.write_x(5, VA + 11);
+    state.write_x(5, VA + if permission { 8 } else { 11 });
     // LB x6, 0(x5) = 0x00028303. Svade leaf: V/R/W/X/A/D set, U/G clear.
     let mut script = vec![
         (
@@ -155,18 +162,37 @@ fn scripted_step(
         ),
         (
             Request::FetchParcel { addr: PA },
-            Ok(Response::FetchParcel(0x8303)),
+            Ok(Response::FetchParcel(if permission {
+                0xa32f
+            } else {
+                0x8303
+            })),
         ),
         (
             Request::FetchParcel { addr: PA + 2 },
-            Ok(Response::FetchParcel(0x0002)),
+            Ok(Response::FetchParcel(if permission {
+                0x1802
+            } else {
+                0x0002
+            })),
         ),
         (
-            Request::Load {
-                width: AccessWidth::B,
-                addr: PA + 11,
+            if permission {
+                Request::StorePermission {
+                    width: AccessWidth::W,
+                    addr: PA + 8,
+                }
+            } else {
+                Request::Load {
+                    width: AccessWidth::B,
+                    addr: PA + 11,
+                }
             },
-            Ok(Response::Load(0xee)),
+            Ok(if permission {
+                Response::StorePermitted
+            } else {
+                Response::Load(0xee)
+            }),
         ),
     ];
     if access_failure {
@@ -238,7 +264,7 @@ fn address_units_positive() -> Result<(), String> {
     if memory.bytes()[4..7] != [0xaa, 0x34, 0xcc] {
         return Err("byte store changed the wrong offset or neighboring bytes".into());
     }
-    let (state, outcome, remaining) = scripted_step(Mapping::Exact, false);
+    let (state, outcome, remaining) = scripted_step(Mapping::Exact, false, false);
     if outcome != StepRv64gc::Executed
         || remaining != 0
         || state.pc() != VA + 4
@@ -248,6 +274,16 @@ fn address_units_positive() -> Result<(), String> {
             "physical Sv39 LB: {outcome:?}, remaining={remaining}, pc={:#x}, x6={:#x}",
             state.pc(),
             state.read_x(6)
+        ));
+    }
+    let (state, outcome, remaining) = scripted_step(Mapping::Exact, false, true);
+    if outcome != StepRv64gc::Executed
+        || remaining != 0
+        || state.pc() != VA + 4
+        || state.read_x(6) != 1
+    {
+        return Err(format!(
+            "physical Sv39 SC permission: {outcome:?}, remaining={remaining}"
         ));
     }
     Ok(())
@@ -277,7 +313,7 @@ fn address_units_negative() -> Result<(), String> {
             Request::FetchParcel { addr: VA },
         ),
     ] {
-        let (state, outcome, _) = scripted_step(mapping, false);
+        let (state, outcome, _) = scripted_step(mapping, false, false);
         let expected = StepRv64gc::Failed(ModelError::ContractViolation(
             ContractViolation::ResponseMismatch { scripted, arrived },
         ));
@@ -294,8 +330,32 @@ fn address_units_negative() -> Result<(), String> {
             ));
         }
     }
+    let scripted = Request::StorePermission {
+        width: AccessWidth::W,
+        addr: PA + 8,
+    };
+    let arrived = Request::StorePermission {
+        width: AccessWidth::W,
+        addr: (PA + 8) / 4,
+    };
+    let (state, outcome, _) = scripted_step(Mapping::DataWordIndex, false, true);
+    if outcome
+        != StepRv64gc::Failed(ModelError::ContractViolation(
+            ContractViolation::ResponseMismatch { scripted, arrived },
+        ))
+        || state.pc() != VA
+        || state.mode() != PrivilegeMode::S
+        || state.read_x(6) != 0
+        || state.read_csr(CSR_MCAUSE) != 0
+        || state.read_csr(CSR_MEPC) != 0
+        || state.read_csr(CSR_MTVAL) != 0
+    {
+        return Err(format!(
+            "permission byte-address violation changed state: {outcome:?}"
+        ));
+    }
     // A legitimate physical access failure still delivers a target exception.
-    let (state, outcome, _) = scripted_step(Mapping::Exact, true);
+    let (state, outcome, _) = scripted_step(Mapping::Exact, true, false);
     if outcome != StepRv64gc::Executed
         || state.mode() != PrivilegeMode::M
         || state.read_csr(CSR_MCAUSE) != 1
