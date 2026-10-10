@@ -153,6 +153,8 @@ PY
 }
 
 self_test() {
+  # Semantic catalogue controls complement the byte-drift controls below.
+  python3 scripts/test_gen_model_book.py || return 1
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
   t="$(SELFTEST_TMP)"

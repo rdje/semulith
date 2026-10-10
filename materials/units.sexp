@@ -22,3 +22,6 @@
 (unit (id "netboard-lab-v0") (kind board) (layer board) (book "docs/models/netboard-lab-v0/") (requires "C14") (requires "C17") (requires "C19") (requires "C21"))
 (unit (id "sifive-uart-lab-v0") (kind device) (layer device) (book "docs/models/sifive-uart-lab-v0/") (requires "C01") (requires "C02") (requires "C10") (requires "C11") (requires "C14") (requires "C17") (requires "C19") (requires "C22") (requires "C23"))
 (unit (id "lan9118-lab-v0") (kind device) (layer device) (book "docs/models/lan9118-lab-v0/") (requires "C01") (requires "C02") (requires "C10") (requires "C11") (requires "C14") (requires "C17") (requires "C19") (requires "C22") (requires "C23"))
+
+;; P4-SYSTEM.14 registration: collection scope, not CPU-SYSTEM acceptance.
+(unit (id "rv64gc-lab-v0") (kind processor) (layer processor) (book "docs/models/rv64gc-lab-v0/") (requires "C01") (requires "C02") (requires "C03") (requires "C04") (requires "C05") (requires "C06") (requires "C07") (requires "C09") (requires "C10") (requires "C11") (requires "C12") (requires "C13") (requires "C14") (requires "C15") (requires "C16") (requires "C17") (requires "C22") (requires "C23") (requires "C24"))

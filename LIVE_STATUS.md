@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (38 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 669 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
+| Project doctrines (38 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 672 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps 85 lines / 4,864 B; 37 destinations governed; containment deferred with a trigger |
 | mdBook is the review surface | Done | 49 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
@@ -25,7 +25,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 36 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 72 checks **declared not implemented** |
 | Reference independence inventoried | Done | Historical 6 rows; ancestry basis withdrawn; current record sweep: `P4-SYSTEM.14` |
 
-| North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 5 units today |
+| North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 6 units today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
 | Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
 | Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 18/18 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |

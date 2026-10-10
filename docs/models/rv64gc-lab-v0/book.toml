@@ -1,0 +1,11 @@
+[book]
+title = "rv64gc-lab-v0 — the model book"
+description = "The selected RV64GC processor: pinned materials, declared laboratory choices, evidence and remaining acceptance."
+authors = ["Semulith maintainers"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "rust"
+git-repository-url = ""
+no-section-label = false

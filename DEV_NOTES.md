@@ -1,6 +1,37 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — sixth-unit registration and scope-reader repair (P4-SYSTEM.14 a10)
+
+Register existing GC processor with24 category rows/19 required and its14-file
+book. Authenticate24 source pins;34 per-material limits, worked choices/method,
+reference scope, directly included prospective policy/GS and five-group historical
+capture. Registration, implementation and acceptance remain separate. Models74/
+228035B fit standing100/655360B; no cap change. Correct two scalar census reasons
+(privileged source present; P1 scalar operational tools exist), exact old-span inverse.
+
+Functional negative control finds989a7b53 unit_to_dict keeps req[0] only.
+Use shared repeated-atom _strings; all six lists roundtrip14/14/4/9/9/19.
+Scope10/0; exact original reader8/2 in memory. C07 removal now RED1, previously
+wrong GREEN0; later missing/absent controls permanent. Wrong arity refuses.
+Three generator cases exercise unordered/mixed version catalogue disclosure;
+original first-contract role fails2/errors1. Repair5c00809 one-per-decision,
+v0-only/raw-effective conflation, independence and matrix-provenance labels.
+All20 old fragments predicted byte-exact by original code; published regeneration
+permits only those disclosures/fingerprint. Current GC dossier stale76/114/open
+v2 and unsupported ancestry corrected; five captured groups/full source inverse,
+three damaged controls. GS changes only dossier digest; BREADTH only three
+registration spans. Missing book/table controls discriminate. All other canonical/
+requirements/statuses/runtime/frozen/fixtures/prior history exact.
+
+Focused20/seven books/eight rendered chapters/full five-leg CI rc=0;
+Rust173/17/253; units6/arms672, milestones unchanged, CPU incomplete7axes and
+114/114 frozen14. No ancestry/conformance/release credit. Task family nearly full:
+route measured history pressure to existing LIVE-CONTAINMENT.4 before experiment
+growth; prepare finite prototype/consumer proof before browsing decision. Existing
+changelog seal approval is not task-history authority. Evidence target/p4-system-14/a10.
+promotion: declined (shared mapping contract, permanent controls and model book capture the routine repair).
+
 ## _(2026-10-10)_ — BREADTH evidence attribution (P4-SYSTEM.14 a9)
 
 Producer87f114d2 assumed two units: scalar gets GC, every other unit gets DSP

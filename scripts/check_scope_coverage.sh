@@ -142,6 +142,19 @@ self_test() {
 (category-need (category "C07") (layer processor) (kind k) (unit "p") (disposition missing) (reason "excluded subsystem"))'
   arm "GREEN a missing category the scope does NOT require is legal" 0 "__CHECKED__ 1"
 
+  # Every repeated requires field participates, not only the first child.
+  units '(unit (id "p") (kind processor) (layer processor) (book "b") (requires "C01") (requires "C07"))'
+  needs '(category-need (category "C01") (layer processor) (kind k) (unit "p") (disposition covered) (material "M"))
+(category-need (category "C07") (layer processor) (kind k) (unit "p") (disposition covered) (material "M"))'
+  arm "GREEN every repeated required category is covered" 0 "__CHECKED__ 1"
+
+  needs '(category-need (category "C01") (layer processor) (kind k) (unit "p") (disposition covered) (material "M"))
+(category-need (category "C07") (layer processor) (kind k) (unit "p") (disposition missing) (reason "owed"))'
+  arm "RED   later repeated required category is missing" 1 "p requires C07"
+
+  needs '(category-need (category "C01") (layer processor) (kind k) (unit "p") (disposition covered) (material "M"))'
+  arm "RED   later repeated required category has no census row" 1 "p requires C07"
+
   rm -rf "$t"
   printf 'SCOPE-COVERAGE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

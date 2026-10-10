@@ -289,12 +289,125 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | priority provenance/note repairs, then policy, experiment records, status derivation and unit registration |
+| 1 | `P4-SYSTEM.14` | `active` | containment transition review before structured experiments, policy/status checks and mirror reconciliation |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a10 — register the sixth modelled unit and its materials book (completed, SEMULITH-P4-0201)
+
+Owned on clean81856a6, brief0/actual census rc=0. Read .14/ROADMAP P4, unit/
+category schemas and registry/census contracts, INFORMATION_CATALOG C01–C24,
+current GC source/profile/reference/requirements scope, public model-book interfaces,
+BREADTH ownership and prior family-budget decisions before edits. Register the
+existing rv64gc-lab-v0 processor, all24 category dispositions with precise scope/
+required subset, and its own book with generated identity fragments and thorough
+source/reference/contract limits/examples. Collection/registration grants no
+conformance/status/release credit. Preserve all existing unit rows and authored
+canonical/runtime/frozen/registry/fixture data; use published generators for
+new book/BREADTH/index consequences. Review actual six-unit/book family contract;
+no cap raise merely to land content. Profiles' six physical directories already
+exist under processor-corpus bound; registration itself adds no new profile data.
+Preflight task room9793B/book3890B/profiles8197B and every new file/aggregate.
+
+Related census review owns two rv64i reason defects before edits: C12 says the
+privileged volume is absent from the pinned snapshot (actual GC source ledger and
+book authenticate its cached privileged chapters); C24 says P1 snapshot/versioning
+is not built (P1-LAB.10 completed2026-09-28, current scalar tools exist). Both
+phrases originate atd0f55ca. Correct only these stale reasons, retaining excluded
+RV64i translation and the precise current operational scope; preserve exact old
+spans/full census source inverse. Other categories remain untouched unless their
+own inspected public facts expose a necessary, explicitly owned repair.
+
+Verify required-category completeness and scope, schema/materials/unit-books/
+extraction/exercise/interaction/definition/report/count routes, deliberate missing-
+category/book/changed-table refusals and generated output/source inverses. Review
+rendered new book and all seven builds. Full CI at this six-unit milestone;
+record actual leg results without release credit. Keep book/live docs/resume
+aligned with registration counts. Next structured experiments/mechanical policy/
+status/mirror checks; first perform existing containment work if measured family
+pressure requires it. Evidence target/p4-system-14/a10, same-volume scratch.
+
+GC book preview additionally reproduces generator5c00809 assumptions:48
+requirements/25decisions contradict "one per decision"; raw66obligations/132
+checks span v0(46)/v1(6)/v2(14) but are labelled v0 alone; generated guest prose
+still says "independently encoded", and matrix provenance is hardcoded P2.
+Own these before publication: accurate catalogue/mirror/encoding/matrix labels,
+all declared contract identities with raw counts explicitly distinct from
+GS effective coverage. Add a meaningful unordered/mixed-contract regression
+control through the existing MATERIALS-BILL test path; prove original first-ID
+selection fails. Regenerate every existing book fingerprint consequence and
+preserve all unaffected fragment bytes via exact inverse. No runtime/effective
+contract/requirement change or new independence credit. Keep this registration
+slice bounded; update any actual outer-arm census mechanically if it changes.
+
+
+Registration review also reproduces stale current GC DOSSIER prose:26113403
+retains unsupported Sail/Spike implementation ancestry and open-contract/banner
+language;07844c3a leaves .13 next;01154383 leaves76/114 and open-v2. Own the
+small current-dossier repair here because registration must update its own review
+surface. Preserve each complete old paragraph in the new book's explicit historical
+capture, with source digest and full inverse/damaged controls; regenerate only
+measured GS dossier digest consequences. Canonical executable records, all
+requirements/statuses, runtime and frozen data remain unchanged. Review new-book
+and profile-family measured headroom without raising any ceiling to land text.
+
+Actual negative control exposes functional defect989a7b53:unit_to_dict reads
+req[0] only, silently discarding later schema-valid repeated requires fields.
+GC C07 removal wrongly returns0; existing multi-category units suffer the same
+coverage blind spot. Own immediate one-line shared mapping repair through the
+existing _strings repeated-atom reader, three meaningful scope-gate controls
+(all declared covered; second missing; second absent), old-reader mutation and
+whole-corpus canonical roundtrip. Mechanically regenerate named-arm census and
+all declared consequences; no requirement/CPU acceptance credit. Keep registry
+and category checks in this same bounded registration slice.
+
+Result: six registered units; GC all24 category rows/19 required categories,
+34 materials sections and14 book files. Authenticate all24 unchanged source
+artifacts (21 HTML/3 PDFs) via public cached routes. New book covers materials,
+choices, source→check method, references, directly included policy/GS and five
+historical dossier groups. Five-group full source inverse and three damaged
+controls preserve the old wording; corrected current account withdraws unsupported
+ancestry and stale open-v2/76/114 prose. Only GS's measured dossier digest changes
+(3d0e5cd84a7b3c6dd2f632ff2938482e263b4bcd26114ba1193e95fcb5b54224).
+
+Generator5c00809 disclosures repaired: all declared contract IDs, historical raw
+catalogue counts, requirement mirrors without one-per-decision, canonical guest
+encoding and unit-owned matrix. Mixed-version tests3/3; original first-ID role
+fails2/errors1. All20 existing fragments reproduced byte-exact by the original
+generator and regenerated through the new one; no other fragment changes.
+BREADTH registration changes only count5→6, processor count2→3 and own-GS row.
+
+Actual missing-C07 control exposed989a7b53 reader dropping later requires.
+Shared _strings now reads every sibling. Scope tests10/0; original mapping in
+memory8/2, including both later missing/absent false passes. All six unit dicts
+roundtrip their complete14/14/4/9/9/19 required lists; wrong arity refuses.
+Missing-category/book/changed-table controls RED1; corresponding valid checks
+GREEN0. Two scalar reasons corrected, all other existing census/unit bytes exact.
+
+Focused20, seven books, eight rendered chapters and full five-leg CI rc=0;
+strict Rust173/17/253. Exact source/generated/census/report inverses hold.
+All executable canonical data, requirements/statuses, runtime, frozen records,
+fixtures and prior history unchanged. LIVE changes only units5→6/arms669→672;
+milestones unchanged (P4 13/18, CPU incomplete7axes,114/114 frozen14).
+No conformance, independence, status or release credit. No ceiling raised;
+models74/228035B before final journal receipt, far inside100/655360B.
+Evidence target/p4-system-14/a10; book history is the tracked old-dossier capture.
+promotion: declined (the shared-format contract, permanent negative controls and model book retain this routine repair; no new general policy).
+
+#### ROUTING EVIDENCE — containment prerequisite
+
+Task family89/3140683B before this receipt,5045B below3145728B. This is retained
+history growth across task trees, not new GC runtime/data. The separate profiles
+family already contains six physical dossiers and has8234B room; models74/228035B
+and main book51/520773B. Re-measure after commit. Existing LIVE-CONTAINMENT.4 owns
+immediate finite history transition review before experiment growth. Its source
+guide requires direction for changed direct browsing; the prior210-changelog
+approval does not authorize task archives. Prepare a concrete lossless prototype
+and consumer/retrieval proof first. Then resume .14 experiments/policy/status/
+mirror reconciliation. This route does not close CPU evidence work.
 
 ### `.14` a9 — repair BREADTH evidence attribution (completed, SEMULITH-P4-0200)
 
@@ -782,6 +895,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a10 — **ROOT CAUSE**: controls/reader-control/history rc=0:
+ 989a7b53 drops later requires;5c00809 catalogue labels wrong;d0f55ca census
+ reasons stale;26113403/07844c3a/01154383 current dossier stale/unsupported.
+- [x] `.14` a10 — **ADDRESSED**: controls/inverses.py rc=0: full six-unit
+ lists/24GC rows; scope10/0 versus old8/2; generator3/3 versus old2fail/1error;
+ exact source/20fragment/report inverses and three damaged captures refused.
+- [x] `.14` a10 — **NO REGRESSION**: focused20/make book/make ci/inverses.py rc=0:
+ Rust173/17/253, seven books/eight rendered chapters; all requirements/runtime/
+ frozen114/114/fixtures/prior history exact; units6/arms672, milestones unchanged.
+
+
 - [x] `.14` a9 — **ROOT CAUSE**: scoped blame/-S history/repair.py rc=0:
 87f114d2 producer fallback plus345c63f registry expansion reproduce three
 wrong DSP attributions and prospective GC failure before registration.
@@ -894,6 +1018,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a10 | six-unit/24category registration; missing controls; scope10/0 versus old8/2; generator3/3; complete source/derived/history inverses | focused20/seven books/eight rendered chapters/full five-leg CI rc=0; statuses/runtime/frozen/history exact |
 | `2026-10-10` | `.14` a9 | rooted fallback; producer24/0, old fallback21/3; real stale control; source/full-report inverse; actual future GC ownership | focused9/six books/rendered explanation/verify rc=0; other reports/data/runtime/frozen/history/LIVE exact |
 | `2026-10-10` | `.14` a8 | prospective policy; four captured spans/three source inverses; three damaged controls; one-literal AST/manifest/20-output inverses; stale controls | focused15/six books/rendered policy/verify rc=0; all statuses/runtime/frozen/history/LIVE exact |
 | `2026-10-10` | `.14` a7 | 31 historical spans/four full-source inverses; three damaged controls; authenticated HTML; canonical/report/board/book drift controls | focused15/six books/verify rc=0; other data/runtime/frozen/prior history/LIVE exact,114/114 frozen |
@@ -912,6 +1037,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a10 | `SEMULITH-P4-0201 (leaf P4-SYSTEM.14): register RV64GC and enforce every required category` | containment prototype/review under LIVE-CONTAINMENT.4, then .14 experiments/policy/status/mirrors |
 | `.14` a9 | `SEMULITH-P4-0200 (leaf P4-SYSTEM.14): correct BREADTH evidence attribution` | a10/0201 sixth-unit registration/materials/book and family contract review |
 | `.14` a8 | `SEMULITH-P4-0199 (leaf P4-SYSTEM.14): declare prospective evidence requalification policy` | a9/0200 sixth-unit registration/materials/book and measured family contract; then experiment/policy/status gates |
 | `.14` a7 | `SEMULITH-P4-0198 (leaf P4-SYSTEM.14): correct canonical reference evidence and derived claims` | predeclared policy, structured experiment/control records, status derivation and sixth-unit registration |
@@ -926,6 +1052,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-10`: `.14` a10 (SEMULITH-P4-0201): register sixth unit/book; fix repeated-category blind spot and catalogue disclosures; full five-leg CI green; containment review next.
 - `2026-10-10`: `.14` a9 (SEMULITH-P4-0200): replace incorrect shared DSP fallback with own tracked report attribution/explicit no unit gate result; producer24/0, old fallback21/3, stale control, focused9/six books/inverses green.
 
 - `2026-10-10`: `.14` a8 (SEMULITH-P4-0199): declare GC requalification policy without backdating, repair scalar policy/presence label/manifest, preserve exact historical and derived inverses; stale/damaged controls, focused15/six books/rendered policy green, statuses unchanged.

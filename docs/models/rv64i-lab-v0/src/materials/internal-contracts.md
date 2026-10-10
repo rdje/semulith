@@ -9,14 +9,14 @@
      `profiles/rv64i-lab-v0/requirements.sexp`  `90a59a0632237add610cce2fc15cc30b5c674402336eba36cd1d0bbe999c6bea`
      `profiles/rv64i-lab-v0/contract-obligations.sexp`  `28d6f8fb2c74fce030f27d6b6d4102e32b7c62776cd713cbe2279b0845b6ccce`
      `profiles/rv64i-lab-v0/interactions.sexp`  `d0e9b94a55066cf2c80fbcc17bbab3fe6b590ee4d6e8d2a4a6453026028cd159`
-     Generator: `scripts/gen_model_book.py` (sha256 `2f062f639b366734683fc5121779bd446fef1ac3c66b7766326deb9f92b855a2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |
 | `profile.sexp` | the unit's declaration: scope, decisions, authorities | 28 decisions, 52 declared instruction forms |
 | `state.sexp` | the architectural-state census, including the hidden-state census | 32 integer registers, XLEN 64, hidden state: No — for this profile, and only because of what it excludes. |
 | `encoding.sexp` | the composed encoding space (fragments resolved, collision-free, gated by UNIT-COMPOSITION) | composes `riscv/rv64i` |
-| `requirements.sexp` | the predeclared requirements, one per decision (RECORD-SCHEMA cross-checks the statements verbatim) | 28 requirements |
-| `contract-obligations.sexp` | the environment contract (`rv64i-lab-env-v0`): every obligation with positive AND negative checks | 36 obligations, 72 declared checks |
-| `guests/` | the EVD-05 guest corpus: independently encoded programs and specification-derived expectations | 49 guests, 648 expected steps |
-| `interactions.sexp` | the declared interaction matrix (P2-SCALAR.4), gated by INTERACTION-MATRIX | 21 cells over 6 axes |
+| `requirements.sexp` | the requirement catalogue; RECORD-SCHEMA cross-checks declared decision mirrors verbatim | 28 requirements |
+| `contract-obligations.sexp` | the declared environment-obligation catalogue (`rv64i-lab-env-v0`): positive AND negative checks per record; counts include historical records | 36 catalogue obligations, 72 declared checks |
+| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 49 guests, 648 expected steps |
+| `interactions.sexp` | the unit's declared interaction matrix, gated by INTERACTION-MATRIX | 21 cells over 6 axes |

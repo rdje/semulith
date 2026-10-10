@@ -18,7 +18,7 @@ generator has no code path to `passed` while an axis's anchors are absent.
 
 | Input | Contents |
 | --- | --- |
-| `materials/units.sexp` | 5 registered units — the COMPLETE claim list |
+| `materials/units.sexp` | 6 registered units — the COMPLETE claim list |
 | `profiles/dsp56300-lab-v0/` | scope 19 forms, vehicle `sibling-crate`, 6 `.a56` guests, the recorded comparison contract |
 | `crates/semulith-dsp56300` | the sibling-crate model, 17 commit-level tests |
 | `schema/state.sexp`, `schema/profile.sexp` + `scripts/dossier_sexp.py` | the abstraction's exercised-case constructs, declared and carried |
@@ -87,6 +87,7 @@ exactly by a registered unit:
 | `netboard-lab-v0` | board | registered dossier; no unit gate report |
 | `sifive-uart-lab-v0` | device | registered dossier; no unit gate report |
 | `lan9118-lab-v0` | device | registered dossier; no unit gate report |
+| `rv64gc-lab-v0` | RISC-V | `profiles/rv64gc-lab-v0/GS-REPORT.md` |
 
 Every other family the work has surveyed is **unclaimed**, explicitly:
 
@@ -104,7 +105,7 @@ never evidence about any real processor — they claim no compatibility, by rule
 ## What this verdict does NOT mean
 
 - **No stable-general-API claim beyond the exercised cases.** The abstraction supports
-  the 2 registered processor units' shapes, measured; a further family may demand constructs
+  the 3 registered processor units' shapes, measured; a further family may demand constructs
   nobody has needed yet (the slice-gated `P3-BREADTH.1` legs — F2 grouping, F4/F5
   VLIW visibility — are recorded, unbuilt, and named).
 - **No DSP56300 family compatibility.** The subset is EXPERIMENTAL; the differential

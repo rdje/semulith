@@ -12,9 +12,10 @@ locator, and the dependency closure is measured against the pinned publication.
 > three counter pseudos); all are exercised by the 167-guest directed corpus.
 > F/D use the qualified Rust backend (`P4-SYSTEM.7`); C bound at `.12` slice e2c.
 > This is finite laboratory evidence. The generated [CPU-SYSTEM report](GS-REPORT.md)
-> remains `incomplete` on contract, evidence, regression, replay, portability and
-> release work. The original profile-resolution declarations below describe the
-> selection history; stale frozen obligations are owned by `.13` for supersession.
+> owns the current acceptance verdict. Instruction composition and realized
+> environment checks do not close evidence, regression, replay, portability or
+> release obligations. Resolution-era declarations below retain their history;
+> effective membership and supersessions are defined in contract.sexp.
 
 ## The selection, at a glance
 
@@ -63,9 +64,11 @@ pinned chapter that states it.
   The initial resolution included F/D and deferred their implementation until
   `P4-SYSTEM.7` qualified `rustc_apfloat` with independent exact-rational fixtures.
   F and D now execute through that backend. Resolving rv64imac first was rejected
-  because it would fork the profile identity. Sail-versus-Spike FP comparison is
-  **one implementation twice** (shared SoftFloat ancestry, 184/199 files identical),
-  so it remains unsuitable as independent numeric evidence.
+  because it would fork the profile identity. Comparator implementation ancestry
+  has not been authenticated through public evidence. Sail/Spike agreement is
+  finite evidence on the declared observations, with no numeric independence
+  credit. The original unsupported rationale is retained in the model book's
+  historical capture, not used as a current assumption.
 - **Sv39's precedent and its warning** (`D-SV39`): the pinned SoC manual's U54 implements
   Bare + Sv39 — and **raises page faults rather than setting PTE A/D bits**
   (`SIFIVE-FU540-C000` §4.7). The privileged architecture permits both behaviours; which
@@ -75,23 +78,23 @@ pinned chapter that states it.
   recorded the privileged volume as "absent from this unprivileged snapshot"; measured
   `2026-10-02`, the pinned snapshot carries `priv/` (24 pages) and `unpriv/` (46 pages),
   every cited row re-hashed against the tracked `SHA256SUMS`. The census rows'
-  corrections land with this unit's category-needs dispositions at registration day.
+  corrections are recorded with this unit's category-needs dispositions at registration day.
 
 ## Current implementation and remaining acceptance
 
-The unit owns its encoding/semantic composition, state census, specification-derived
-expectations, interaction matrix and pinned reference dossier. It remains unregistered in
-`materials/units.sexp` and has no dedicated book under `docs/models/`. Registration,
-category dispositions and that book are owned by `.14` before evidence signoff;
-the project P4 chapters are the current review surface.
-The environment contract has frozen v0/v1 and open v2; v2 now carries M, C and
-exact two-byte physical fetch supply. Frozen resolution-era statements remain
-historical records until `.13` supplies versioned supersessions. Requirement status
-promotion and experiment records belong to `.14`; CPU-SYSTEM acceptance has not
-been reached. The [C chapter](../../docs/book/src/plan/p4/c.md) records its binding
-and matched Sail result (27 agreeing guests, one measured timer-platform difference);
-full CI and final C-leaf signoff are complete. Contract v2 completion/realization
-remains next at `.13`; CPU-SYSTEM is still incomplete.
+The unit owns its encoding/semantic composition, state census, expectations,
+interaction matrix and pinned reference dossier. Registration, the complete category
+census and the dedicated book are recorded in materials/units.sexp,
+materials/category-needs.sexp and docs/models/rv64gc-lab-v0/. The book distinguishes
+acquired facts, implementation and evidence acceptance. Historical matched results
+remain finite observations; structured experiments and requirement-status derivation
+remain .14 work. CPU-SYSTEM acceptance has not been reached.
+
+Contract membership and realization are derived in [GS-REPORT.md](GS-REPORT.md).
+The latest v2 is frozen; supersessions preserve earlier frozen text and pins.
+The [C chapter](docs/book/src/plan/p4/c.md) records its binding and finite matched
+comparison. The full [verification policy](EVIDENCE_POLICY.md) is prospective after
+implementation: earlier successful runs are not automatically requalified.
 
 ## Open questions
 
@@ -120,15 +123,13 @@ The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
 ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
 Requirement statuses remain .14's work; exact snapshot/replay serialization .16's.
 
-The effective contract has 57 obligations / 114 checks, 76 realized: thirteen
-scope pairs, eighteen guest pairs, six direct assumption pairs and one direct
-execution pair. Version 2 is open for nineteen runtime pairs and final freeze. Frozen v0/v1 text, membership
-and pins remain unchanged. The shared catalog expansion/schema/freeze owners
-judge the same records. V2 supersedes the pre-qualification FP condition, both
-historical definition stages, blanket no-breakpoint wording and the unconditional
-v1 STIP comparator assumption. STCE-clear software pending is repaired; direct
-S-mode programming/refusal witnesses now bind SSTC through direct Execution
-evidence plus its original guest companions (31 new boundaries / 62 parcels).
+The effective contract and executable registry are complete at the .13 checkpoint;
+[GS-REPORT.md](GS-REPORT.md) derives their current denominator and realization.
+Frozen v0/v1/v2 text, membership and pins remain unchanged. Shared catalog/schema/
+freeze owners judge the same records. V2 supersedes the earlier FP condition,
+definition stages, blanket no-breakpoint wording and v1 STIP comparator assumption.
+STCE-clear software pending and direct S-mode programming/refusal witnesses are
+bound through direct Execution evidence with their original guest companions.
 
 | Current evidence | Canonical detail |
 | --- | --- |

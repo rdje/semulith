@@ -8,7 +8,7 @@
      `profiles/sifive-uart-lab-v0/requirements.sexp`  `110876c5e3190c3ff2bdc7526ad05f4e33fcd7f3152d28b90285ce1e29cfb4d3`
      `profiles/sifive-uart-lab-v0/contract-obligations.sexp`  `2042125eee217e78c065f408247ba6cfdd29f0c19ebc8bb85e5492e43222d96f`
      `profiles/sifive-uart-lab-v0/sources.sexp`  `f723943561eba48d768d48be6e668b4998274e8d97f89b4315479bce1cc4a016`
-     Generator: `scripts/gen_model_book.py` (sha256 `2f062f639b366734683fc5121779bd446fef1ac3c66b7766326deb9f92b855a2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |

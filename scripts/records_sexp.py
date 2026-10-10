@@ -154,7 +154,7 @@ def unit_to_dict(form) -> dict:
            "book": _s(S.field(form, "book"))}
     req = S.children(form, "requires")
     if req:
-        out["requires"] = [_s(x) for x in req[0][1:]]
+        out["requires"] = _strings(req, "requires")
     return out
 
 

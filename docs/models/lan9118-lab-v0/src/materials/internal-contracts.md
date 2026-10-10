@@ -8,7 +8,7 @@
      `profiles/lan9118-lab-v0/requirements.sexp`  `705c93d1c6676beb5d0322d69590a11a794f543f416b5feaedba28494642f781`
      `profiles/lan9118-lab-v0/contract-obligations.sexp`  `5525c294ee520283a31b82c43a381173ef2482a93991f99d79811fab6cb04beb`
      `profiles/lan9118-lab-v0/sources.sexp`  `eee2e26aac26903c0beec6ae72232bca49b7d79998fa2e01de12a6f244b4479b`
-     Generator: `scripts/gen_model_book.py` (sha256 `2f062f639b366734683fc5121779bd446fef1ac3c66b7766326deb9f92b855a2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |

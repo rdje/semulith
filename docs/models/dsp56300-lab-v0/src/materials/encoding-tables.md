@@ -5,7 +5,7 @@
 <!-- Canonical inputs (sha256):
      `profiles/dsp56300-lab-v0/references.sexp`  `3f844efe5200c8456596e083fa568bdf00b044e60bf9c7a3072b3b7c6aede372`
      `profiles/dsp56300-lab-v0/profile.sexp`  `dc42143565a8a6c65087a2834456df32b0a8eddcf8c216c247e2e7bbb75442dd`
-     Generator: `scripts/gen_model_book.py` (sha256 `2f062f639b366734683fc5121779bd446fef1ac3c66b7766326deb9f92b855a2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 This unit declares its vehicle as `(route sibling-crate)`: the encoding space has no `encoding_source` record because it lives in the sibling crate's hand-written decoder — every mask is cited per form to the pinned family manual and cross-checked against the pinned assembler (`crates/semulith-dsp56300`).
 

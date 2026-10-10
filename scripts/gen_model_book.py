@@ -394,6 +394,16 @@ def _emit_contracts_board(profile_dir: Path) -> str:
     return "\n".join(a)
 
 
+def _processor_catalogue_role(obligations: list[dict]) -> str:
+    """Describe every declared contract version, without claiming effective coverage."""
+    if not obligations:
+        raise GenError("contract-obligations.sexp: the obligation catalogue is empty")
+    identities = ", ".join(f"`{cid}`" for cid in
+                           sorted({o["contract_id"] for o in obligations}))
+    return (f"the declared environment-obligation catalogue ({identities}): "
+            "positive AND negative checks per record; counts include historical records")
+
+
 def _emit_contracts_processor(profile_dir: Path) -> str:
     profile_path = profile_dir / "profile.sexp"
     reqs_path = profile_dir / "requirements.sexp"
@@ -463,14 +473,12 @@ def _emit_contracts_processor(profile_dir: Path) -> str:
                  "measured a lane, not an extension (`P3-BREADTH.5` slice 3); the sibling "
                  "crate is the declared, exercised vehicle | no document — the reopening "
                  "conditions are named in the tree |")
-    a.append(f"| `requirements.sexp` | the predeclared requirements, one per decision "
-             f"(RECORD-SCHEMA cross-checks the statements verbatim) | {n_reqs} requirements |")
-    a.append(f"| `contract-obligations.sexp` | the environment contract "
-             f"(`{obs[0]['contract_id']}`): every obligation with positive AND negative "
-             f"checks | "
-             f"{len(obs)} obligations, {n_checks} declared checks |")
+    a.append(f"| `requirements.sexp` | the requirement catalogue; RECORD-SCHEMA "
+             f"cross-checks declared decision mirrors verbatim | {n_reqs} requirements |")
+    a.append(f"| `contract-obligations.sexp` | {_processor_catalogue_role(obs)} | "
+             f"{len(obs)} catalogue obligations, {n_checks} declared checks |")
     if guests:
-        a.append(f"| `guests/` | the EVD-05 guest corpus: independently encoded programs and "
+        a.append(f"| `guests/` | the EVD-05 guest corpus: canonically encoded programs and "
                  f"specification-derived expectations | {len(guests)} guests, "
                  f"{steps} expected steps |")
     else:
@@ -479,7 +487,7 @@ def _emit_contracts_processor(profile_dir: Path) -> str:
         a.append(f"| `guests/` | the synthetic guest corpus: checkpoint-compared `.a56` "
                  f"programs, canonical end-state dumps against the pinned reference "
                  f"(`cyc` never compared) | {len(guests_a56)} guests |")
-    a.append(f"| `interactions.sexp` | the declared interaction matrix (P2-SCALAR.4), "
+    a.append(f"| `interactions.sexp` | the unit's declared interaction matrix, "
              f"gated by INTERACTION-MATRIX | {n_cells} cells over {n_axes} axes |")
     a.append("")
     return "\n".join(a)

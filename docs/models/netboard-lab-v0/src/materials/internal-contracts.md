@@ -5,7 +5,7 @@
 <!-- Canonical inputs (sha256):
      `profiles/netboard-lab-v0/board.sexp`  `accb4e78fbacdae5e1905c3068f5a0072229707a2982a29443df67f7402ffc03`
      `profiles/netboard-lab-v0/DOSSIER.md`  `c756dc44c4045edefce45cfd465a05ed13bd261183bb7512c4df5e3a6dc03019`
-     Generator: `scripts/gen_model_book.py` (sha256 `2f062f639b366734683fc5121779bd446fef1ac3c66b7766326deb9f92b855a2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |
