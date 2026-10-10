@@ -7,17 +7,12 @@ instructions. Its contract still contains declarations inherited from earlier
 stages. This work checks every effective obligation, fills the remaining boundary
 assumptions, and realizes each declared check before freezing version 2.
 
-The original census found 53 effective obligations and 106 checks. Early
-declaration slices replaced four old records with three current guarantees and
-added five boundary assumptions, bringing the effective census to 57 obligations
-and 114 checks. The later interrupt-source replacement preserves that size. The
+The effective contract contains 57 obligations and 114 checks. The
 [runtime witness summary](#runtime-guarantee-witnesses) gives the current realized
 count, derived from the canonical catalog and executable registry by the GS report.
-A check receives credit only when its actual
-fixture runs: instruction guarantees use executable observations; a scope choice
-such as the selected firmware ABI uses a predicate over the canonical documents
-and a negative fixture that violates that predicate. Running an unrelated program
-cannot establish a scope declaration.
+Instruction guarantees require executable observations. Scope choices require
+predicates over canonical declarations and violating negative fixtures; an
+unrelated passing program cannot establish a scope declaration.
 
 Cold reset completes the named boundary-assumption work.
 The scalar profile's assumptions cannot be
@@ -85,8 +80,6 @@ the current owner value visible immediately. The independent expectation author
 now applies the same specified rule and reads `sip` through its sole `mip`
 owner. Eight masks in both modes and all six CSR instruction forms exercise
 the repair; five author mutations distinguish the missing masks and owner.
-The existing guest records remain byte-identical. This prerequisite kept contract
-credits at 56/112; the full-cold-reset pair below follows it.
 
 ## Executable scope checks
 
@@ -200,19 +193,18 @@ fresh mirrors without implementing another generation rule.
 
 ## Keeping the catalog bounded without rewriting history
 
-The catalog reached 63,014 bytes against its fixed 65,536-byte authored-part cap.
-It now retains the six current v2 records and explicitly includes two frozen
-parts, in version order:
+The catalog separates its current v2 records from frozen v0/v1 parts,
+included in version order:
 
 ```lisp
 (include-obligations (path "profiles/rv64gc-lab-v0/contract-v0.obligations.sexp"))
 (include-obligations (path "profiles/rv64gc-lab-v0/contract-v1.obligations.sexp"))
 ```
 
-Paths start at the repository root, so moving the checkout keeps them valid.
-The frozen parts contain their original contiguous record bytes. Expansion at
-the split reproduced the original 63,014 bytes, order, 58 mappings and frozen
-pins exactly. No ceiling was raised or duplicate materialized catalog added.
+Paths start at the repository root. Frozen parts retain their original
+contiguous record bytes; expansion reproduces catalog order and frozen pins
+without a duplicate materialized catalog or a larger cap. The split's exact
+source identity and reconstruction receipt remain below.
 
 `scripts/record_catalog.py` is the one expansion owner. The record loader, freeze
 checker, conversion tools and Rust registry declaration test all use it. Only real
@@ -397,8 +389,7 @@ Load, Store and WalkAccess. Every real-engine path returns the exact typed
 location violation, preserving PC, mode, destination, trap state, counters and
 memory. Fetch uses the public legacy table seam over the same GC evaluator.
 Disabling the location guard lets every bad schedule escape and makes each
-negative fixture fail. At c5 these finite checks brought the effective census to
-55 obligations, 110 declared checks and 54 realized checks.
+negative fixture fail.
 
 ## One-hart request order and coherent code
 
@@ -415,7 +406,6 @@ order and latest preceding stores meets those constraints here. The pinned
 FENCE.I chapter separately orders preceding stores before later instruction
 fetches. The laboratory's coherent reads provide immediate visibility even
 without that synchronization, a stronger choice than the architectural minimum.
-Both source artifacts were digest-verified when this pair was authored.
 
 The positive fixture specifies a literal request/response conversation:
 
@@ -523,7 +513,7 @@ lengths/hashes. This book retains the feature examples and current witness summa
 P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth
 open-v2 member: STCE=0 software STIP versus STCE=1 comparator pending, with
 explicit raw-software retention. Cold pending is zero; v2 event/reset records
-follow that rule. The replacement direct pair preserves effective 68/114 credit;
+follow that rule;
 [the runtime chapter](contract-runtime.md#stce-dependent-pending-and-the-v2-source-contract)
 gives the selection table, worked transitions, instruction witnesses and limits.
 Frozen v0/v1 records and pins stay exact. Sstc now binds a direct Execution pair:
@@ -537,3 +527,7 @@ Dated progress counts, pre-bind identity checks and exact provenance receipts
 are preserved in `docs/tasks/archive/P4-SYSTEM-book-c29d.md`, section `contract-v2`.
 That record authenticates the original chapter and every removed span; all
 current feature examples and commands remain here.
+
+Further exact chronology and pre-bind identity receipts are preserved in
+`docs/tasks/archive/P4-SYSTEM-book-c30b.md`, section `contract-v2`.
+Current feature explanations, examples, controls and limits remain here.

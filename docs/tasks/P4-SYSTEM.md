@@ -507,8 +507,12 @@ v2 stays open. Environment/runtime/v2/index synchronized, runtime31904B under
 32768; fixed book family cap unchanged. Focused gates/all six books rc=0.
 Evidence target/p4-system-13/c30; hooks/brief0/actual census before c30b.
 
-### `.13` c30b — contain book and development receipts (queued)
+### `.13` c30b — contain book and development receipts (completed, `SEMULITH-P4-0174`)
 
+Owned on clean0e9949b/brief0/actual census rc=0; prior c30 workflow complete.
+Read external containment guide, local adoption frontier, sharder/manifests and
+paragraph census of nine P4 chapters before selecting any historical span.
+No new doctrine adoption claim; LIVE-CONTAINMENT.4 remains its own active owner.
 Own on c30's clean commit before any containment edit. Runtime31904B leaves864B
 and the book family approaches524288B; DEV crosses its36864B health threshold
 with c30 receipts. Read live-containment guide, manifests, whole-entry sharder,
@@ -521,6 +525,45 @@ Do not raise caps or change core/canonical/frozen/registry/effective/LIVE facts.
 Update book worked containment example and live pointers; focused checks/six
 books then clean commit. Afterward c31 GC-CSR-ACCESS, then F/D/reservation/SC;
 .14 evidence sweep remains owned. No dirty-tree pivot.
+
+C30b result: paragraph census of nine chapters selected32whole historical/
+provenance paragraphs across five contract chapters,19833payload bytes. Finite
+book-c30b archive44570B, SHA fc0fd50d403f46dd41434e00e49435240e04ef44c4ae926e9b9b991e98ea753a.
+Five complete source inverses/order/bytes/SHA exact before mutation; corrupt,
+missing-marker and omitted-payload controls refuse. Every original command,
+fenced example/table/heading/link remains. Maintained feature explanations,
+controls and finite limits preserved; outdated progress prose remains historical
+only in archive. Net6516chapter bytes saved, runtime31904→31190B. Existing
+archives unchanged; canonical catalog/registry derive current counts.
+
+Published sharder self-test12/0, dry-run exact. DEV20entries/37272B→14/25777B,
+6whole oldest entries11495B in0229/11728B, SHA28158818e9beee37e8b76333824d8e659ab68482c120015cac32217a658d4d27.
+Full inverse sourceSHA ca539130cb7acaa823caaa17c2f32a086f33b9df8aa7b71cc19dc0ce820c07df;
+prior20manifest rows/210sealed exact,231logical=21live+210sealed. Own new
+receipt follows the partition, below fixed health/hard caps. Core/canonical/
+frozen/registry106/effective104/114/LIVE unchanged; prior Rust170/17/226 applies.
+Book worked example/index and live pointers synchronized; focused/six books
+rc=0. The focused gates and six books pass; the final whitespace check initially
+reports rc=2 for a newly terminal blank separator after sharding. A live history
+footer preserves that separator and retrieval path; inverse strips only that
+new footer, final git diff --check rc=0. Sentence continuity corrected before
+sealing archive; final source inverses and main-book rebuild rc=0.
+Evidence target/p4-system-13/c30b; workflow then c31 GC-CSR-ACCESS.
+
+### `.13` c31 — realize CSR-access instruction checks (queued)
+
+Own on c30b clean workflow before changes. Read frozen OB-GC-CSR-ACCESS and
+REQ-GC-CSR-ACCESS, authenticated Zicsr and privileged CSR/FS/gate sections,
+state/address map, generated six CSR instruction effects and public engine/
+observer interfaces, old companions and relevant book sections. Refine bounded
+literal matrix for exact read/write suppression, permission/refusal atomicity,
+all six forms, modes and source-field versus source-value distinction. Cover
+implemented M/S/U/read-only/unknown addresses and FP/gate prerequisites within
+safe finite scope. Expected state precedes execution; meaningful bad-table and
+corrupted-capture/disabled-observer controls, independent derivation and prior
+registry/canonical/frozen identity. Missing-binding RED before exactly2entries;
+focused Rust/checks/book, commit clean. No status/experiment/freeze credit.
+After c31, F before D, reservation and deterministic SC; .14 remains owned.
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -664,6 +707,21 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c30b — **ROOT CAUSE**: census/prepare.py rc=0 measures
+ runtime31904B/book515564B and DEV37272B over36864B health. Thirty-two whole
+ historical/provenance paragraphs selected; current features/controls remain.
+ Prior c30 workflow clean0e9949b/brief0/actual census rc=0 before activation.
+- [x] `.13` c30b — **ADDRESSED**: inverse verifier rc=0:44570B finite
+ archive/19833payload bytes, five full source inverses/SHA; corrupt/marker/
+ omission controls refuse. Net6516chapter bytes saved, all commands/fences/
+ tables/headings/links retained. Sharder12/0/dry-run/apply rc=0: six whole DEV
+ entries11495B→0229/11728B, full37272B inverse exact, retained25777B before receipt.
+- [x] `.13` c30b — **NO REGRESSION**: protected-byte/focused checks and
+ six books rc=0: prior20manifest rows/210sealed exact,231logical=21live+210sealed;
+ core/canonical/frozen/registry106/effective104/114/LIVE exact, caps fixed.
+ Prior Rust170/17/226 applies; book worked example/index/live pointers synchronized.
+ promotion: declined (existing containment policy, exact finite archive and book inverse example retain this routine application without another knowledge card).
+
 - [x] `.13` c30 — **ROOT CAUSE**: verify.py rc=0 authenticates Zicntr/
  Zicsr/Machine/Supervisor sections and independently derives6912 cells; completed
  selector RED rc=101 names missing CHK-GC-COUNTERS-POS. Existing inclusion guests
@@ -752,7 +810,9 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
-| `2026-10-10` | `.13` c30 | independent6912-cell/full167 corpus;11wrong effects/16bad captures; actual auditor/logger/M/S gates and missing binding RED101→restored; prior104 exact | Rust170/17/226; registry106/effective104/114, LIVE unchanged; focused/six books rc=0; hooks next |
+| `2026-10-10` | `.13` c30b | 32whole paragraphs/five full inverses; corrupt/marker/omission refuse; sharder12/0,6whole DEV entries/full inverse; prior history/protected inputs fixed | archive44570B, save6516chapter B; registry106/effective104/114/LIVE unchanged; focused/six books rc=0; hooks next |
+| `2026-10-10` | `.13` c30b | `SEMULITH-P4-0174 (leaf P4-SYSTEM.13): contain contract and development receipts` | c31 CSR-access, then F/D/reservation/SC and freeze |
+| `.13` c30 | independent6912-cell/full167 corpus;11wrong effects/16bad captures; actual auditor/logger/M/S gates and missing binding RED101→restored; prior104 exact | Rust170/17/226; registry106/effective104/114, LIVE unchanged; focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c30 | `SEMULITH-P4-0173 (leaf P4-SYSTEM.13): bind counter reads and privilege gates` | c30b book/DEV containment, then CSR-access/F/D/reservation/SC and freeze |
 | `.13` c30a | authenticated ISA/root history; initial/no-op recorder RED101→restored1776/3504/7008; exact two prose/three hashes; independent167 corpus; Spike4/41/42 repeated, Sail limits | Rust170/17/223; effective102/114/LIVE unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29e | root history/consumer census; nine preserved spans/three exact source inverses; corrupt/marker/omission refuse; fresh scalar4/34/FP24/927 exact; FP230+3168/hardware2131 | registry104/effective102/114 and LIVE statuses/counts unchanged; focused/all six books rc=0; hooks next |
@@ -770,6 +830,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c30b (SEMULITH-P4-0174): preserve32whole
+ historical book paragraphs with five full source inverses; save6516chapter B,
+ retain commands/examples/tables/links/controls. DEV six whole entries→0229,
+ full inverse/prior history exact; fixed caps, registry106/effective104/114/LIVE
+ unchanged. Focused/six books rc=0. C31 GC-CSR-ACCESS next.
 
 - `2026-10-10`: `.13` c30 (SEMULITH-P4-0173): bind GC-COUNTERS with
  4032legal/2880gated full-state boundaries; actual disabled observers/gates and

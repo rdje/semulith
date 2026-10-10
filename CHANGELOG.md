@@ -1,6 +1,16 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0174 (leaf P4-SYSTEM.13 c30b) — contain contract and development receipts
+
+- Preserve32whole historical book paragraphs/19833payload B in finite44570B
+  archive; five full source inverses exact, damaged/marker/omission controls refuse.
+- Save6516chapter B while retaining all commands/examples/tables/headings/links,
+  current features, controls and limits; fixed caps and book worked inverse.
+- Sharder12/0, six whole DEV entries→0229/full37272B inverse; prior history exact.
+- Core/canonical/frozen/registry106/effective104/114/LIVE unchanged; focused/six
+  books rc=0, prior Rust170/17/226 applies. C31 GC-CSR-ACCESS next.
+
 ## SEMULITH-P4-0173 (leaf P4-SYSTEM.13 c30) — bind counter reads and privilege gates
 
 - Bind GC-COUNTERS with4032legal/2880gated single-boundary reads, all modes/

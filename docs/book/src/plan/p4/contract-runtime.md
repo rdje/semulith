@@ -278,31 +278,21 @@ The nine inputs total 281 boundaries and 524 actual parcel requests.
 For w-timer, WFI retires at boundary 12, boundaries 13–14 remain halted, and
 boundary 15 delivers STI without fetching or retiring. The handler reads
 instret=13 at boundary 16 and time=17 at boundary 17. It then observes cause
-0x8000000000000005 and mepc=0x80000034, the WFI continuation. The earlier
-source comment's 0x80000044 was incorrect: its old assembled continuation and
-observation were 0x8000002c. The added setup moves that continuation by eight.
+0x8000000000000005 and mepc=0x80000034, the WFI continuation.
 
-Fresh records name the actual parcel route without inheriting capture chronology.
-`--check-owned` now checks 41 unchanged historical captures and the fresh
-13-boundary env-irq-sources record. Its budget is fixed in the author, never
-read from the expected output. Wrong-budget and word-route controls fail; both
-historical and fresh records reject count, observation, comment and line-ending
-drift. mm-stimecmp's deliberately closed gates remain unchanged.
+Author budgets are fixed in the author, never read from expected output.
+`--check-owned` rejects count, observation, comment and line-ending drift in
+historical and fresh records. Wrong-budget and word-route controls fail.
+mm-stimecmp retains its deliberately closed gates.
 
-Fresh pinned Sail attempts agree on w-sw (19 boundaries, two identical traces).
-Six inputs diverge: c-irq at 11, env-irq-sources at 12, i-prio at 26,
-i-timer at 5, mm-wfi at 11 and w-deleg at 14. The trace witnesses absent
-comparator pending or continued execution instead of declared delivery/wait.
-w-notrap and w-timer processes refuse (rc1): their time/instret reads trap with
-Zicntr disabled and enter trap loops. Old inputs reproduce those refusals.
-The public timer diagnostic now enables STCE and reads back bit 63 on both
-sides before comparing pending state (ten boundaries, repeat traces identical).
-Its old seven-boundary STCE-clear result was confounded by the overlay defect
-and cannot alone establish a reference cause. Public configuration validation
-still rejects Zicntr without a time source and
-CLINT without a mapped region. These are qualified reference-platform limits;
-failed processes are never counted as agreement. Structured experiments remain
-P4-SYSTEM.14's work.
+Pinned public Sail observations agree on w-sw but differ at declared
+interrupt/comparator/wait behavior for c-irq, env-irq-sources, i-prio, i-timer,
+mm-wfi and w-deleg. w-notrap and w-timer refuse after Zicntr-disabled reads.
+The corrected public timer diagnostic verifies STCE read-back before comparing
+pending state; its earlier STCE-clear result was confounded by the overlay
+defect. Configuration validation refuses Zicntr without a time source and CLINT
+without a mapped region. Failed processes receive no agreement credit. Exact
+attempt receipts remain below; structured experiments belong to P4-SYSTEM.14.
 
 ## Sstc prerequisites: two discovered defects
 
@@ -354,9 +344,7 @@ Open v2 supersedes OB-GC-ENV-INTERRUPT-SOURCES with
 OB-GC-ENV-INTERRUPT-SOURCES-V2. The event record refers to that source rule;
 the cold-reset record now states pending zero. The frozen v1 statement remains
 historical exact text. The registry retains its old checks as historical test
-bindings and adds the replacement's direct POS/NEG pair. The effective census
-stays 57 obligations / 114 checks, 68 realized: thirteen scope pairs, fifteen
-guest pairs and six direct assumption pairs. Twelve v2 members remain open.
+bindings and adds the replacement's direct POS/NEG pair. Twelve v2 members remain open.
 Coverage counts only registered checks whose records remain effective. The
 report's independent recount and synthetic realized-record supersession control
 verify this distinction; removing that filter fails both controls.
@@ -376,8 +364,7 @@ pass, including 48 actual instruction cases over all six CSR forms, two raw
 software states, both compare conditions and both STCE settings. Five-bit CSR
 immediates cannot set bit 5; their other pending writes still obey the selected
 mask. The independent author tests eight literal source/write combinations and
-retention; four deliberate source/write/retention mutations each fail. All 167
-guest observations and 42 owned records remain exact. The original public CSR
+retention; four deliberate source/write/retention mutations each fail. The original public CSR
 reproduction changes from rc101 to rc0; the corrected public Sail diagnostic
 still reports its qualified comparator-platform difference with STCE verified.
 
@@ -558,3 +545,7 @@ Dated progress counts, pre-bind identity checks and exact provenance receipts
 are preserved in `docs/tasks/archive/P4-SYSTEM-book-c29d.md`, section `contract-runtime`.
 That record authenticates the original chapter and every removed span; all
 current feature examples and commands remain here.
+
+Further exact chronology and pre-bind identity receipts are preserved in
+`docs/tasks/archive/P4-SYSTEM-book-c30b.md`, section `contract-runtime`.
+Current feature explanations, examples, controls and limits remain here.

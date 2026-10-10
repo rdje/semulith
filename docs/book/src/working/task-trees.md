@@ -165,6 +165,27 @@ The earlier 19 manifest rows and 210 sealed shards remain exact: 230 logical
 rows are now 20 live plus 210 sealed. No cap or CPU-contract credit changes;
 current feature examples remain in their chapters.
 
+### Retain book history while keeping current explanations live
+
+P4.13 c30b captures committed `0e9949b`: five contract chapters contain
+32 historical verification/provenance paragraphs totaling19,833 payload bytes.
+The finite [book receipt archive](../../../tasks/archive/P4-SYSTEM-book-c30b.md)
+is44,570 bytes, SHA256
+`fc0fd50d403f46dd41434e00e49435240e04ef44c4ae926e9b9b991e98ea753a`.
+Its inverse map and marked payloads reconstruct all five complete source chapters,
+checking their individual lengths and hashes. Corrupt, missing-marker and omitted
+payload controls refuse. The current chapters retain every original command,
+fenced example, table, heading and link, plus current feature explanations,
+controls and finite limits. The book saves6,516 chapter bytes before this receipt
+and index regeneration; no ceiling changes.
+
+The same unit moves six whole oldest DEV entries:20entries/37,272bytes become
+14retained/25,777bytes plus11,495payload bytes in shard0229/11,728bytes.
+Retained prefix plus shard payload reconstructs source SHA256
+`ca539130cb7acaa823caaa17c2f32a086f33b9df8aa7b71cc19dc0ce820c07df`.
+Its manifest gains one row; earlier20live rows/210sealed shards remain exact,
+for231logical rows. Code, canonical/frozen inputs and contract bindings stay exact.
+
 ### Measure stored bytes, including UTF-8
 
 Size claims use encoded file bytes. At the c29d1 diagnostic, the index generator

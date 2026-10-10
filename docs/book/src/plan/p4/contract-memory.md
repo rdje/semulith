@@ -52,16 +52,10 @@ committed observation before registry credit:
 | SB/SH/SW saturate instead of truncating | bound-ext steps 42/44; scope-mem step 28 |
 | SD truncated to low 32 source bits | scope-mem LWU step 17 |
 
-The declaration test first fails with CHK-LOAD-EXT-POS missing, then passes when
-both exact bindings are registered. Normal independent replay matches the entire
-167-program corpus, 5,365 boundaries/10,524 parcels. All earlier 82 bindings,
-canonical and guest inputs, generated data, production rules/author and frozen
-records remain exact. Registry entries become 84, effective G-CONTRACT **82/114**:
-thirteen scope, twenty-one guest, six boundary and one direct-execution pairs.
-Sixteen runtime pairs and freeze remain. These finite, legal counterexamples do
-not require target traps and do not establish untested memory-system behavior.
-Address faults, x0 side effects and the selected endian policy retain their own
-contract obligations.
+These finite legal counterexamples require no target traps and establish no
+untested memory-system behavior. Address faults, x0 side effects and selected
+byte order retain separate obligations. Pre-bind failure, exact prior-input
+identity and dated progress receipts remain below.
 
 Source review also exposed a separate evidence-reader defect: the fetched HTML
 copies differed only in Antora metadata, while the readers accepted mismatched
@@ -116,14 +110,10 @@ own expected-refusal assertion. Disabling access-fault injection is also rejecte
 The declaration test first fails on the missing LOAD-X0 binding before either
 execution entry is registered.
 
-Normal Rust checks pass 167 core / 17 DSP / 206 verify tests. Independent normal
-replay and all prior 84 bindings, 112 base / 348 GC canonical and guest inputs,
-production rules, author, generated data and frozen records remain exact.
-Registry entries become 86; effective G-CONTRACT is **84/114**: thirteen scope,
-twenty-one guest, six boundary and two direct-execution pairs. Fifteen runtime
-pairs and final freeze remain. Request logs prove the access occurs; they do not
-add a device or claim unimplemented MMIO behavior. Byte-order selection and other
-remaining obligations retain their own witnesses.
+Request logs establish that discarded-result accesses occur; they add no
+device or unimplemented MMIO behavior. Byte-order selection and other
+obligations retain their own witnesses. Exact prior-input and dated verification
+receipts remain below.
 
 
 ## Selected little-endian byte order (P4.13 c20)
@@ -159,13 +149,9 @@ pin literal B/H/W/D values, low-width stores, neighboring bytes and a typed
 refusal for a reversed valid-width response. The normal CPU trusts conforming
 provider content; the independent fixture auditor detects incorrect content.
 
-The declaration check first fails on the missing ENDIAN binding, then passes.
-Normal Rust checks and independent full 167/5365/10524 replay pass. All prior 86
-bindings and canonical/guest/core/author/generated/frozen data remain exact.
-At c20, registry entries reach 88, effective G-CONTRACT **86/114**: thirteen scope,
-twenty-two guest, six boundary and two direct-execution pairs. Fourteen runtime
-pairs/freeze remain. This is evidence for the selected ordinary-memory byte
-order; it does not add selectable big-endian execution or a device model.
+These observations establish the selected ordinary-memory byte order. They
+add no selectable big-endian execution or device model. Missing-binding,
+prior-input identity and dated verification receipts remain below.
 
 ## FENCE accepts future fields and preserves one-hart state
 
@@ -390,3 +376,9 @@ ELF with its exact 17-step budget agrees. P4.13 c28c repairs the runner budget a
 legacy word-less fetch vocabulary while preserving strict missing-evidence and
 parcel-gap controls; see `docs/book/src/plan/p4/c.md#bounded-reference-runs`.
 Structured experiment records and requirement statuses remain P4.14's work.
+
+## Historical verification receipts
+
+Further exact chronology and pre-bind identity receipts are preserved in
+`docs/tasks/archive/P4-SYSTEM-book-c30b.md`, section `contract-memory`.
+Current feature explanations, examples, controls and limits remain here.

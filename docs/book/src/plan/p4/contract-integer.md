@@ -33,9 +33,7 @@ replay agrees with the entire 62/124 pair. Representative zero-based steps:
 Five in-memory author copies are deliberately wrong. Zero-extended SLTIU fails
 scope-alu, step 17; unsigned SLTI fails at step 14; zero-extended ANDI fails at step 8; zero-extended XORI
 fails at step 10; saturating ADDI fails bound-arith, step 8. The existing integer-author sign
-control also refuses. No source, expectation, frozen record, production author
-or processor semantics changes. All 72 prior registry entries remain exact.
-The repaired gate oracle passes with the ALU pair now actually registered.
+control also refuses.
 
 At c14b, G-CONTRACT reached **72/114**: thirteen scope pairs, sixteen guest pairs,
 six direct assumption pairs and one direct execution pair. The registry has 74
@@ -70,8 +68,7 @@ bound-arith steps 5/6; swapped comparison signedness at scope-alu steps 11/13; w
 operators at scope-alu steps 5/6/7; cleared aliased ADD sources at bound-alias step 24. The
 existing integer-author controls and full normal corpus comparison retain their
 authority. NEG rejects these semantic alternatives, not a required trap for
-valid register arithmetic. All 74 earlier registry entries and every old input
-remain exact; no processor or production-author semantics changes.
+valid register arithmetic.
 
 At c15, G-CONTRACT reached **74/114**: thirteen scope pairs, seventeen guest pairs,
 six direct assumption pairs and one direct execution pair. The registry keeps 76
@@ -103,15 +100,6 @@ extension or missing shift at scope step 3; AUIPC zero extension, missing shift
 or unsigned saturation at bound step 29; next-PC or sign-extended base-PC at
 chase step 0. The whole programs and their intermediate observations matter.
 NEG rejects wrong legal arithmetic, not a required architectural exception.
-The existing independent integer probe remains green; no production rule or
-expected value changes. Both smoke-arith headers now name profile.sexp and the
-assembler's implemented B/J support; each still assembles to the same twelve
-instructions / 48 bytes. Generated guest data is exact, with only those source
-fingerprint comments regenerated. That base-profile comment also changes the dossier
-digest: the commit hook refused the stale board processor pin. The pin was deliberately
-rederived through the shared digest owner, then board/platform artifacts and model-book
-materials regenerated. Their semantic data, map and text stay exact except that identity
-pin and provenance fingerprints. Frozen records and all 76 earlier entries stay exact.
 
 Current G-CONTRACT is **76/114**: thirteen scope pairs, eighteen guest pairs,
 six direct assumption pairs and one direct execution pair. There are 78 registry
@@ -149,9 +137,7 @@ At c17b, both bound-shiftw programs append SRAW x16,x8,x10 at address
 0x800000dc, after all 55 original instructions. Its literal word is 0x40a4583b.
 The existing x8=0xffffffff80000001 and x10=96 make rs2[4:0]=0: low32 remains
 0x80000001, sign-extended to x16=0xffffffff80000001. That expected value was
-recorded before either engine ran. The independent author matches every old
-observation and the new boundary; all old instruction bytes and positions remain.
-The base program now takes 56 word requests; the GC program takes 112 parcels.
+recorded before either engine ran.
 
 The previously surviving six-bit SRAW author fails only at new boundary 55.
 The same public processor bad-table diagnostic also fails exactly there: its
@@ -159,9 +145,7 @@ all-ones result disagrees with the committed identity. The correct core corpus
 passes. A durable hand-encoded author case uses garbage upper bits
 0x1234567880000001 and count 96, requiring the same sign-extended low word.
 Its isolated sraw-count mutation fails with the named five-bit-count reason
-before a new GUEST-GEN control is registered. The ordinary probe now has 23
-arithmetic/10 branch cases, 17 corpus gaps / 472 steps and 42 owned records exact.
-GUEST-GEN has 143 controls; the registered doctrine total becomes 647.
+before a new GUEST-GEN control is registered.
 
 SRLW step 51 keeps its correct expected value. Its explanation now names a
 specific countermodel: widening the count in the present wide evaluator shifts
@@ -169,15 +153,10 @@ the low 32-bit logical input by 32 and produces zero. The old explanatory
 0xffffffff80000000 was incorrect; no rule is asserted for every possible wrong
 implementation. SRAW's arithmetic fill instead makes that erroneous shift all-ones.
 
-The full independent GC corpus matches 167 guests / 5,361 boundaries / 10,516
-parcels. Pinned Sail 0.14 agrees on all 56 declared boundary-program rows and
-change observations, with two fresh traces byte-identical. This is finite integer
-evidence; the standing reference/platform and FP-independence limits still apply.
-Only the selected guest data, diagnostic control and their provenance change.
-The base dossier digest and dependent board/platform/model-book pins are rederived;
-all other generated guest/board semantics and all 78 registry entries stay exact.
-The SRAW count-mask coverage and SRLW explanation defects are closed. Contract
-credit stays 76/114; nineteen runtime pairs and freeze remain.
+The count-mask diagnostic also matched 56 declared Sail boundary rows with
+two identical fresh traces. This is finite integer evidence, subject to the
+reference/platform and FP-independence limits. Its provenance propagation and
+dated corpus/contract counts are retained in the receipts below.
 
 <a id="open-evidence-gap-arithmetic-w-source-width"></a>
 
@@ -216,23 +195,17 @@ The arithmetic low word is -2147483647. Shifting it right by one rounds down to
 64-bit value. The wrong full-width read instead sees positive 2147483649 and
 yields 0x40000000. Each isolated bad author now disagrees only at its new boundary
 (58 for SRAW, 59 for SRAIW); public engine bad tables first fail at those same
-boundaries. All 56 prior positions, bytes, expectations and observations stay exact.
+boundaries.
 
 The durable probe's existing garbage-upper-word hand cases also distinguish both
 rules. New sraw-width and sraiw-width controls were observed RED with their named
-arithmetic-word reasons before registration. The probe retains 23 arithmetic/10
-branch cases and 42 owned records, with 17 corpus gaps / 476 steps. GUEST-GEN
-now has 145 controls, and the doctrine total becomes 649.
+arithmetic-word reasons before registration.
 
-The correct engine passes the full corpus. The independent author matches all
-167 guests / 5,365 boundaries / 10,524 parcels. Pinned Sail agrees on the changed
-60-step program's declared rows/change observations and repeats byte-identically;
-the base live smoke also compares it against both Sail and Spike. The base budget
-is 60 word requests, the GC budget 120 parcels. These source-width evidence defects
-are closed; production rules and all 78 registry entries remain unchanged.
-G-CONTRACT stays 76/114 with nineteen runtime pairs and freeze remaining. c17d
-may now register SHAMT after its independent mask controls. The finite-reference
-and platform limits above continue to apply.
+The completed source-width program has 60 boundaries: 60 base word requests
+or120 GC parcels. Pinned Sail matches its declared rows/change observations
+and repeats identically; the base live smoke compares both Sail and Spike.
+These finite observations close the source-width evidence gaps without
+changing production rules; the standing reference/platform limits apply.
 
 ## Shift-count domains: all twelve forms
 
@@ -270,13 +243,9 @@ from hiding the mask error: zero count preserves that signed word, while the
 six-bit copy produces all ones. The subsequent source-width witnesses remain
 exact and continue to distinguish pre-shift truncation independently.
 
-The correct engine and author match all selected observations and the complete
-167 / 5,365 / 10,524 corpus. All canonical inputs, guest data, production author,
-core, frozen records and prior 78 bindings remain exact. Registry entries become
-80; effective G-CONTRACT becomes **78/114**: thirteen scope pairs, nineteen guest
-pairs, six boundary pairs and one direct-execution pair. Eighteen runtime pairs
-and final freeze remain. This credit is finite evidence for these inputs; the
-standing independence/platform limits still apply.
+The selected observations and complete independent corpus agree. This is
+finite evidence for these inputs; standing independence/platform limits apply.
+Dated registry/corpus and pre-bind identity receipts remain below.
 
 The scoped review also found incomplete requirement metadata: REQ-D-SHAMT's
 statement names all twelve forms, while its base and GC insns fields omit
@@ -284,8 +253,8 @@ SLLW/SRLW/SRAW. The original base association commit added nine, and GC copied
 that list. The aggregate extraction gate still sees the three forms through
 WSUFFIX; it does not establish each requirement's association completeness.
 The frozen statement and the twelve-form execution evidence above are correct.
-At c17d this metadata defect was OPEN and owned priority-next by c17e, before
-word-result registration. Implementation-status/experiment work stays .14.
+The association repair below closes that metadata defect; implementation-status
+and experiment work remains P4-SYSTEM.14.
 
 c17e closes it by appending only SLLW/SRLW/SRAW associations in both requirement
 catalogs. Every other requirement field, record and frozen obligation remains
@@ -295,12 +264,10 @@ Both were observed RED against the old nine-form catalogs, then GREEN after
 the three additions; ordering is immaterial and duplicate associations are refused.
 The aggregate extraction and mirror checks also pass with the repaired catalogs.
 
-The change propagates through the base dossier pin into the composed board's
-requirement metadata, platform provenance and model/report outputs. It adds no
-instruction or observation and changes no runtime behavior. All guest data,
-production rules, frozen records and 80 registry entries stay exact; effective
-G-CONTRACT remains 78/114. c17f now reviews all nine word-result forms before
-binding WSUFFIX. Eighteen runtime pairs and final freeze remain.
+Requirement associations propagate through the base dossier pin into board
+metadata, platform provenance and generated model/report outputs. This changes
+metadata, not instruction behavior or observations; its exact propagation
+receipt is preserved below.
 
 ## Signed word results: truncation, extension and wrapping
 
@@ -352,13 +319,9 @@ upper bits before an otherwise correct final low32 truncation is observationally
 equivalent: those operations' low 32 result bits depend only on the low input
 bits. Such equivalent rewrites are not classified as faulty countermodels.
 
-The normal author/core matches all selected observations and the full
-167 / 5,365 / 10,524 corpus. Canonical inputs, generated data, production rules,
-frozen records and all prior 80 bindings remain exact. Registry entries become
-82; effective G-CONTRACT becomes **80/114**: thirteen scope, twenty guest, six
-boundary and one direct-execution pairs. Seventeen runtime pairs and freeze
-remain. Negative fixtures are legal semantic counterexamples, with no invented
-target traps. Standing finite-evidence/reference/platform limits remain.
+Normal author/core observations agree. Negative fixtures are legal semantic
+counterexamples, with no invented target traps. Standing finite-evidence,
+reference and platform limits remain; dated progress receipts are below.
 
 ## XLEN: retain 64-bit registers and user addresses (c23b)
 
@@ -412,9 +375,13 @@ counter/memory values and fetch/walk logs. It does not log data boundary request
 the public CPU observer separately checks those. The declaration test first
 refused the missing binding. Unchanged companion guests are POS scope-alu
 (31/62) and NEG bound-arith/sv39-fault-canonical (89/178). Including the direct
-cases, the pair runs **128 boundaries / 256 parcels**. The full independent
-167/5365/10524 corpus and all prior inputs/runtime/frozen data remain exact.
-Rust 167/17/210 passes. Registry 94 realizes **92/114** effective checks:
-thirteen scope, 23 guest, six boundary and four execution pairs. Eleven runtime
-pairs and final freeze remain. This is finite width evidence under the selected
+cases, the pair runs **128 boundaries / 256 parcels**. This is finite width evidence under the selected
 translation and provider rules.
+
+
+
+## Historical verification receipts
+
+Further exact chronology and pre-bind identity receipts are preserved in
+`docs/tasks/archive/P4-SYSTEM-book-c30b.md`, section `contract-integer`.
+Current feature explanations, examples, controls and limits remain here.

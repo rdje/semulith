@@ -33,16 +33,10 @@ independent public-CPU driver reproduces the same first differences:
 | C.J / C.JR / C.JALR | c-links 6 / 5 / 3: dead halfword or wrong next register observation |
 | C.BEQZ / C.BNEZ | c-branches 2 / 4: executes the skipped ADDI marker |
 
-All thirteen variants fail before credit. The unmodified public driver matches
-all five guests, including never-written registers and parcel counts. Independent
-normal replay matches the entire 167-program corpus, 5,365 boundaries / 10,524
-parcels. The declaration test first fails on the missing binding, then all Rust
-checks pass (167 core / 17 DSP / 206 verify). All prior 88 bindings, canonical/
-guest inputs, core, author, generated data and frozen records remain exact.
-At c21b, registry entries reach 90, effective G-CONTRACT **88/114**: thirteen scope,
-twenty-three guest, six boundary and two direct-execution pairs. Thirteen runtime
-pairs/freeze remain. These observations constrain architectural effects; they do
-not prescribe a processor pipeline or establish untested target-fault behavior.
+All thirteen variants fail; the unmodified driver matches all five programs,
+including never-written registers and parcel counts. These observations
+constrain architectural effects, not processor pipelines or untested target
+faults. Exact pre-bind identity and dated verification receipts remain below.
 
 
 ## JALR prerequisite: distinguish the target from the recorded writes (c22b1)
@@ -84,15 +78,10 @@ The wrong table changes fault-jalr-mis final PC from 2 to 0; it also changes
 it-prio-jump's fault EPC/tval to 0x40000000. Those states are outside the old GC
 comparison. Correct production JALR preserves bit 1 in both cases.
 
-This is an evidence gap, not a newly observed CPU defect. c22b2 owns the priority
-repair: literal post-step target/link/request witnesses, including low-bit carry,
-negative immediates, wrap and source/link aliasing, with deliberately wrong public
-tables before registration. JALR remains uncredited until that work passes.
-The annotation repair passes Rust 167/17/206, GUEST-GEN (147 self-test arms),
-independent normal 167/5365/10524 replay and full local CI (check, doctrines,
-bench, bench smoke, main and five model books). All protected runtime/canonical/frozen data and 90 prior
-bindings remain exact; effective G-CONTRACT stays **88/114**, thirteen runtime
-pairs and final freeze outstanding.
+This was an observation gap: the direct witness below adds literal post-step
+target/link/request checks for low-bit carry, negative immediates, wrapping and
+source/link aliasing. Wrong public tables must fail before registration. The
+annotation repair's exact identity and full-CI receipt is preserved below.
 
 ## JALR: observe the computed target directly (c22b2)
 
@@ -153,8 +142,11 @@ The declaration test first refused the missing binding. POS also runs unchanged
 guest-control/dir-chase (30 boundaries/60 parcels); NEG runs fault-jalr-mis/
 it-prio-jump (6/11). Together with the direct cases the pair runs **53/103**.
 The independent author reproduces every literal case and the full unchanged
-167/5365/10524 corpus. Prior 90 registry entries, all canonical inputs, CPU,
-author, generated fixtures and frozen contracts stay exact. Rust 167/17/208
-passes. Registry 92 realizes **90/114** effective checks: thirteen scope,
-23 guest, six boundary and three execution pairs. Twelve runtime pairs and
-final freeze remain; these finite witnesses establish no universal ISA claim.
+167/5365/10524 corpus. These finite witnesses establish no universal ISA claim.
+
+
+## Historical verification receipts
+
+Further exact chronology and pre-bind identity receipts are preserved in
+`docs/tasks/archive/P4-SYSTEM-book-c30b.md`, section `contract-control`.
+Current feature explanations, examples, controls and limits remain here.
