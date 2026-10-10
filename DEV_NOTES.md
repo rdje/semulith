@@ -1,6 +1,24 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — correct signaling-NaN fixture notes (P4-SYSTEM.14 a1)
+
+Root99475c13's d3 generator comment/two templates still said a format-conversion
+sNaN was backend deviation(ii), requiring a patch; three generated labels repeat
+it. The d3 qualification amendment withdrew that claim: backend INVALID_OP
+already supplies NV, the old MPFR oracle could not represent signaling NaNs.
+Public model conversion/current book agree. Correct comment/templates, regenerate
+through the published command; no numeric/reference/runtime change.
+
+Repair.py rc=0 proves all230numeric tuples and3168fixture bytes exact, full
+source/vector inverses after restoring only comment/labels. Generator --check
+RED1 before regeneration, GREEN0 afterward; stale-note scratch copy RED1.
+Strict make check Rust173/17/253 rc=0, focused10 incl FP-VECTORS hardware
+cross-check/self-tests and six books/invariant verifier rc=0. All other CPU,
+profiles/catalog/frozen/registry/canonical/history/LIVE bytes exact; fixed caps.
+Evidence target/p4-system-14/a1; then remaining .14 public-source/provenance sweep.
+promotion: declined (original qualification correction, generator labels/current book and bounded exact-regeneration receipt retain this repair).
+
 ## _(2026-10-10)_ — freeze the complete environment contract (P4-SYSTEM.13 c36)
 
 All57effective obligations/114checks ran in c35, but v2 was still open.

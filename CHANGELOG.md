@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0192 (leaf P4-SYSTEM.14) — correct signaling-NaN fixture notes
+
+- Remove the withdrawn backend-defect claim from one generator comment/two templates and regenerate three directed labels. Preserve all230numeric rows and3168fixture bytes exactly; stale tracked/scratch notes reject before/after regeneration controls.
+- Rust173/17/253, focused10 including FP-VECTORS hardware/self-tests, six books and exact invariant verifier pass. CPU/profile/frozen/registry/LIVE/history remain unchanged; continue owned provenance repairs before evidence signoff.
+
 ## SEMULITH-P4-0191 (leaf P4-SYSTEM.13) — freeze the complete environment contract
 
 - Freeze14v2 members with exact canonical-record SHA256 pins; preserve all v0/v1 bytes, obligations, runtime and fixtures. Intact candidate passes; edited record/missing pin/dropped membership controls each refuse.

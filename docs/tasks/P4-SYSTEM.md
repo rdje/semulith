@@ -296,6 +296,37 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a1 — correct signaling-NaN fixture notes (completed, SEMULITH-P4-0192)
+
+Owned on clean a1efac4, brief0 and actual handoff census rc=0. Read ROADMAP
+P4, .14 prerequisites, generator/FP-VECTORS, public model conversion and book
+qualification correction plus d3 amendment. Reproduce root99475c13's one
+comment/two note templates, repeated in3generated rows: they still claim a
+backend deviation/patch withdrawn by the same qualification amendment.
+Impact: false maintained evidence rationale, not an observed numeric defect.
+Correct only that comment and those templates; regenerate through the published
+command. Require full inverse after replacing notes, exact all230numeric rows
+and3168fixture bytes, all canonical/profile/frozen/registry/history unchanged.
+Demonstrate generator drift RED before regeneration and stale-note scratch
+control rejection. Run make check (generated Rust changes), FP-VECTORS with
+hardware oracle/self-tests, focused doc gates and six books. Sync current FP
+book/DEV/changelog/resume; no new numeric independence or gate credit.
+Then continue remaining owned .14 provenance corrections before evidence signoff.
+Evidence target/p4-system-14/a1; same-volume temporary files and fixed caps.
+
+Result: repair.py rc=0 reproduces one stale comment/two templates and3rows
+(root99475c13, d3 withdrawal); generator --check RED1 before regeneration,
+GREEN0 after the published regeneration, stale-note scratch copy RED1.
+Exact source/vector inverses differ only by that comment/three labels; all230
+numeric tuples exact (SHA2562396bd49c45bd49145085887c09f76df8d53b5ba44b00e93fc8cea67bf8f3a29),
+3168fixture bytes exact (SHA2565eb35db218f585e56e4eb9145c530e7d50f6841569195560de72d76feeb831c5).
+Make check rc=0 Rust173/17/253; focused10 incl FP-VECTORS hardware/self-tests,
+six books and invariant verifier rc=0. All other CPU/source/profile/canonical/
+frozen/registry/history/LIVE bytes exact; fixed caps. No new gate/lineage credit.
+Promotion: declined — the original qualification correction, generator labels,
+current FP book and this exact regeneration receipt retain the bounded repair.
+Next a2/0193 public-source rationale sweep, then the remaining .14 prerequisites.
+
 ### `.13` execution plan (`2026-10-09`, `SEMULITH-P4-0105`)
 
 Ownership precedes changes. Read ROADMAP P4, CPU_ENVIRONMENT, the v1 book chapter,
@@ -1164,6 +1195,17 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a1 — **ROOT CAUSE**: repair.py/blame rc=0: root99475c13
+  one comment/two templates/three labels repeat withdrawn d3 backend-NV defect;
+  current conversion and qualification correction agree on INVALID_OP.
+- [x] `.14` a1 — **ADDRESSED**: repair.py/generator rc=0: change only
+  comment/templates/three generated notes; stale tracked/scratch notes RED1,
+  published regeneration GREEN0; all230numeric tuples/3168fixture bytes exact.
+- [x] `.14` a1 — **NO REGRESSION**: make check/focused10/make book/verify.py rc=0:
+  Rust173/17/253, FP-VECTORS hardware/self-tests, six books; prior CPU/catalog/
+  frozen/registry/profile/canonical/history/LIVE exact; fixed caps.
+
+
 - [x] `.13` c36 — **ROOT CAUSE**: freeze.py/contract_measure rc=0:
   all114effective checks already exercised, v2 still open with14unpinned members;
   derive exact no-newline SHA256 pins from expanded canonical records.
@@ -1301,6 +1343,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a1 | stale labels/root99475c13; exact230numeric/3168fixture inverse; generator RED1→GREEN0/stale scratch RED1 | make check Rust173/17/253, focused10 incl hardware/self-tests,6books/verify rc=0; CPU/frozen/registry/LIVE/history exact |
 | `2026-10-10` | `.13` c36 |14exact pins; intact GREEN0/3damaged v2 controls RED1; full make ci/final focused9/books/invariant verifier | rc=0; Rust173/17/253,6books; G-CONTRACT green114/114 frozen, CPU incomplete7/10; .14 frontier |
 | `2026-10-10` | `.13` c35 | missing-binding RED→2Execution rows; isolated shared62176census/194688requests;35restored controls; fresh167corpus/alias example | Rust173/17/253/focused15/six books/verify rc=0; registry116/effective114/114 open; frozen/storage/semantics/old inputs/history/LIVE exact |
 | `2026-10-10` | `.13` c34c | false-acceptance RED1→62/0; disabled predicate RED1; exact guard inverse and protected census | record gate/focused9/six books/verify rc=0; CPU/data/frozen/history/milestones exact; arms669 |
@@ -1318,6 +1361,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a1 | `SEMULITH-P4-0192 (leaf P4-SYSTEM.14): correct signaling-NaN fixture notes` | a2/0193 public-source rationale sweep, remaining provenance prerequisites |
 | `.13` c36 | `SEMULITH-P4-0191 (leaf P4-SYSTEM.13): freeze the complete environment contract` | priority .14 provenance/note repairs, then evidence signoff work |
 | `.13` c35 | `SEMULITH-P4-0190 (leaf P4-SYSTEM.13): qualify and bind deterministic SC` | c36/0191 full CI and v2 freeze, then priority .14 sweep |
 | `.13` c34c | `SEMULITH-P4-0189 (leaf P4-SYSTEM.13): preserve authority in versioned requirement mirrors` | deterministic SC c35/0190, full CI/freeze, priority .14 |
@@ -1332,6 +1376,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 
 ## Changelog
+
+- `2026-10-10`: `.14` a1 (SEMULITH-P4-0192): remove withdrawn signaling-NaN backend-defect claim from generator comment/two templates/three labels; numeric230/fixture3168 exact, strict/focused10/books/invariants green; remaining provenance sweep next.
 
 - `2026-10-10`: `.13` c36 (SEMULITH-P4-0191): freeze14v2 members after114/114checks;3damaged controls rejected, full CI/focused9/six books/invariants green. Close .13, activate .14; CPU incomplete7axes.
 

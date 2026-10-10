@@ -64,7 +64,9 @@ flag. The directed boundary examples below make the selected rule concrete.
 The qualification corrected its original MPFR overflow/underflow judgment and
 withdrew a supposed signaling-NaN format-conversion backend defect: that backend
 already raised NV, while the original MPFR oracle did not represent signaling
-NaNs. The corrected record names two genuine flag deviations, not three. This
+NaNs. The corrected record names two genuine flag deviations, not three. The generator
+comment and three directed conversion labels now follow that correction; all
+230 numeric rows and 3,168 fixture rows retain their exact bits and flags. This
 history is evidence about the named measurements, not permission to infer
 reference internals. The model's current conversion behavior is checked against
 the independent exact-arithmetic rules and the instruction witnesses below.

@@ -114,7 +114,7 @@ for a, note in ((QNAN, "NaN → the maximum, NV (Table 5)"), (INF, "+∞ → the
 
 # P4-SYSTEM.7 slice (d3): the format conversions (row n = the TARGET format; the source is the
 # other one). Narrowing rounds with IEEE's OF/UF on the unbounded value; widening is exact; a
-# signaling NaN raises NV — the backend's deviation (ii), which fp.rs patches.
+# signaling NaN raises NV; convert uses the backend's measured INVALID_OP status.
 D_THIRD, D_TINY_UP, D_TIE_EVEN, D_TIE_UP = 0x3FD5555555555555, 0x380FFFFFE0000000, 0x3FF0000010000000, 0x3FF0000030000000
 D_SNAN, D_QNAN = 0x7FF4000000000000, 0x7FF8000000000001
 for rm in range(5):
@@ -132,12 +132,12 @@ for rm in range(5):
         lambda: S.convert(32, 64, rm, D_TIE_EVEN))
     row("f2f", 32, rm, D_TIE_UP, 0, 0, "1 + 3·2^-24 → single: a tie whose even neighbour is above",
         lambda: S.convert(32, 64, rm, D_TIE_UP))
-for a, note in ((D_SNAN, "double sNaN → single: canonical, NV (the backend's deviation (ii))"),
+for a, note in ((D_SNAN, "double sNaN → single: canonical, NV"),
                 (D_QNAN, "double qNaN with a payload → single: canonical, no flag"),
                 (0x8000000000000000, "double -0 → single -0"), (0xFFF0000000000000, "double -∞ → single -∞"),
                 (D_ONE, "double 1.0 → single 1.0 exactly")):
     row("f2f", 32, 0, a, 0, 0, note, lambda: S.convert(32, 64, 0, a))
-for a, note in ((SNAN, "single sNaN → double: canonical, NV (the backend's deviation (ii))"),
+for a, note in ((SNAN, "single sNaN → double: canonical, NV"),
                 (QNAN, "single qNaN → double: canonical, no flag"),
                 (F_MIN_SUB, "single min subnormal → double: exact (a normal double)"),
                 (F_MAX, "single MAX → double: exact"), (NZ, "single -0 → double -0"),
