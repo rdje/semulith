@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0140 (leaf P4-SYSTEM.13 c18a) — retain bounded history and derive current contract summaries
+
+- Preserve completed c17 task receipts and 22,982 B of profile progress in archive
+  8, with exact source lengths/hashes and ordered reconstruction. Shard eight
+  whole DEV entries to 0223; old 21 = 13 live + 8 archived, byte-exact inverse.
+- Correct stale live v2 membership/count/interrupt summaries through canonical
+  membership, GS and current book pointers. Historical claims stay contextualized
+  and byte-exact. No fixed cap, code, input, frozen contract or registry change.
+- Partition/source identity and focused shard/bounds/frontier/counts/freeze/
+  reports/books verified before commit hooks. Effective 80/114 and LIVE_STATUS
+  649 arms/47 chapters/P4 12/18 unchanged. Next c18b load extension.
+
 ## SEMULITH-P4-0139 (leaf P4-SYSTEM.13 c17f) — realize signed word results and ignored overflow
 
 - Reject sixteen isolated zero-extension/source-width/saturation alternatives

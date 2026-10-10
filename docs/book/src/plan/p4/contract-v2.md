@@ -7,10 +7,13 @@ instructions. Its contract still contains declarations inherited from earlier
 stages. This work checks every effective obligation, fills the remaining boundary
 assumptions, and realizes each declared check before freezing version 2.
 
-The original census found 53 effective obligations and 106 checks. Three versioned
-corrections replace four old records; five new boundary assumptions bring the
-effective census to 57 obligations and 114 checks, with 64 checks running through
-the unit's registry. A check will receive credit only when its actual
+The original census found 53 effective obligations and 106 checks. Early
+declaration slices replaced four old records with three current guarantees and
+added five boundary assumptions, bringing the effective census to 57 obligations
+and 114 checks. The later interrupt-source replacement preserves that size. The
+[runtime witness summary](#runtime-guarantee-witnesses) gives the current realized
+count, derived from the canonical catalog and executable registry by the GS report.
+A check receives credit only when its actual
 fixture runs: instruction guarantees use executable observations; a scope choice
 such as the selected firmware ABI uses a predicate over the canonical documents
 and a negative fixture that violates that predicate. Running an unrelated program
@@ -521,6 +524,11 @@ association correction. Both chapters retain
 independent controls and finite evidence limits. Current G-CONTRACT is
 80/114; seventeen runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
+
+The profile's live environment document now keeps its effective interface and
+derived-report pointers. Its earlier progress sections and completed c17 task
+receipts remain byte-verbatim in `docs/tasks/archive/P4-SYSTEM-8.md`, with source
+lengths/hashes. This book retains the feature examples and current witness summary.
 
 P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth
 open-v2 member: STCE=0 software STIP versus STCE=1 comparator pending, with
