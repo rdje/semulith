@@ -207,12 +207,16 @@ set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
 Core and independent-author controls plus finite public M-mode read-back support
 the repair. The Sv39 book section gives the example and limits; no binding credit.
 
-C32a adds a private numeric F instruction witness before final F binding:
-23forms/111744boundaries/223488parcels reuse the governed independent numeric
-data, with full-state/alias/static-DYN/flags/Dirty observations and real disabled
-controls. The author and generator share specfp, so their agreement adds no
-numeric lineage. Transfer/sign/invalid-box/FS-Off/reserved-mode checks and F
-bindings remain c32b's work; registry108/effective106/114 is unchanged.
+GC-F binds203832positive/12852refusal-fault boundaries across all30forms:
+numeric111744, transfer/sign/boxing/directed92088, FS-Off1080,
+reserved-rounding11628 and ordinary memory faults144. Full state, exact
+parcels/W requests and surrounding memory precede expected comparisons.
+Payload transfers, improper-box computational qNaNs, same-value Dirty,
+sticky flags and selected reservation preservation have literal examples
+in the FP book. Twelve new wrong effects and16actual disabled controls
+discriminate. Prior108entries/frozen inputs remain exact; now registry110,
+effective108/114. Independent author agrees; its shared specfp origin adds
+no numeric lineage. D/reservation/SC and final freeze remain open.
 
 GC-CSR-ACCESS binds4480legal/8480refused single boundaries across six forms,
 M/S/U, aliases, source-field/value suppression and15selected CSR contexts.

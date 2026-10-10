@@ -1,6 +1,44 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — complete and bind finite F witnesses (P4-SYSTEM.13 c32b)
+
+Completed F after committed numeric prerequisite and containment. Authenticated
+F20.1.2–.8/D21.1.2/Machine FS rules; shared seed extraction preserves111744
+numeric boundaries. Additional sign62208/moves2592/FLW1296/FSW1944/identical72/
+invalid-box12456/directed11520=92088positive; positive total203832. FS-Off1080,
+reserved modes11628 and memory faults144=12852negative. Combined216684boundaries,
+433368parcels and3348data requests. All30forms,17rounded forms,19float-reading
+numeric forms; M/S/U, six destination/source choices and sticky flag seeds.
+Exact full-state owners/request/memory/TLBcursor/reservation preservation;
+FSW never invents ordinary-store invalidation. Raw payload transfer versus
+computational unboxing, sign payloads, f0/x0, word-result sign extension,
+same-value Dirty and literal ties/UF/exact subnormal/FMA/saturation covered.
+
+Twelve well-formed wrong transfer/sign/memory effects plus prior20numeric
+controls discriminate;16corrupted captures retained. Sixteen actual disabled
+controls RED101 then byte-restored: requests/memory/F/X/CSR/reservation/TLB
+auditors,FS gate,reserved RM,input boxing,load width,sign bit,f0write,
+trap-write suppression,request capture,Dirty. Missing binding RED101 names
+OB-GC-F/CHK-GC-F-POS before exactly2Execution entries. Prior108registry entries
+byte-exact; registry110/effective108/114. Companion guests run unchanged.
+Scratch control omitted Load's signed operand and used a non-constant
+expression where static semantic references are required; corrected before
+credit. Audit selector expected4rather than5width sites; narrowed actual first
+load site with full five-site census. Independent assembler needs FSW's
+published3operand spelling; corrected before author credit. No project defect
+inferred from these diagnostic setup errors.
+
+Independent author92088positive/12852negative exact across all30forms; directed
+literals re-derived via specfp. Prior numeric111744 and167/5365/10524corpus exact.
+Author and vector generator share specfp, no additional numeric lineage; core
+separately measures exact boundary requests/retirement/raw storage owners.
+Make check173/17/237; FP/focused/six books rc=0. Core/numeric data/canonical/
+frozen/history/LIVE remain byte-exact. Environment/GS/book/index/pointers sync,
+fixed caps retained; artifacts target/p4-system-13/c32b. Next GC-D then
+reservation/SC/freeze; .14 evidence/provenance sweep remains scheduled.
+promotion: declined (permanent F witnesses, governed numeric data and worked FP book examples retain the finite observations without another knowledge card).
+
 ## _(2026-10-10)_ — contain privilege timeline and development receipts (P4-SYSTEM.13 c32b0)
 
 Book520432B leaves3856B for F/D/reservation/SC examples; DEV35081B leaves

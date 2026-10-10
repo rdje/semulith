@@ -9,7 +9,6 @@ mod counters;
 mod csr_access;
 mod fence;
 mod fence_i;
-#[cfg(test)]
 mod fp32;
 mod jalr;
 mod load_x0;
@@ -31,6 +30,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// All thirty single-precision forms, numeric vectors, bit transfers and boxing.
+    FPositive,
+    /// Every FS-Off form, reserved rounding setting and ordinary F memory fault.
+    FNegative,
     /// Six CSR forms, aliases, suppression and selected legal access gates.
     CsrAccessPositive,
     /// Atomic privilege, read-only, unknown and gated CSR refusals.
@@ -82,6 +85,18 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::FPositive => &[
+                "f-arith",
+                "f-fused",
+                "f-minmax",
+                "f-compare",
+                "f-class",
+                "f-convert",
+                "f-sgnj",
+                "f-move-box",
+                "f-dirty",
+            ],
+            Self::FNegative => &["f-fs-off", "fp-fs-off", "f-rounding", "f-move-box"],
             Self::CsrAccessPositive => &["mm-csr-rw"],
             Self::CsrAccessNegative => {
                 &["mm-csr-ro-write", "mm-csr-legality-s", "mm-csr-legality-u"]
@@ -118,6 +133,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::FPositive => fp32::positive(),
+            Self::FNegative => fp32::negative(),
             Self::CsrAccessPositive => csr_access::positive(),
             Self::CsrAccessNegative => csr_access::negative(),
             Self::CountersPositive => counters::positive(),

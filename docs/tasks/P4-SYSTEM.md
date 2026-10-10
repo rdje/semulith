@@ -698,7 +698,7 @@ passing control and explicitly distinguish published semantic-table inspection
 from the direct state/request witness; do not invent an observable read effect.
 
 
-### `.13` c32 — realize single-precision instruction checks (active; c32a completed `SEMULITH-P4-0177`)
+### `.13` c32 — realize single-precision instruction checks (completed; c32a completed `SEMULITH-P4-0177`)
 
 Owned on clean9e11070/brief0/actual census rc=0 after c31. Read frozen
 OB-GC-F/REQ-GC-F, ROADMAP P4 and floating-point book. Thirty F forms, static/
@@ -834,9 +834,9 @@ Book inverse/index/live pointers synchronized; focused/six books green, fixed
 caps. Evidence target/p4-system-13/c32b0; c32b/0179 next, F before D/remaining pairs.
 promotion: declined (established exact-byte containment; finite archive and worked inverse preserve this routine application without another knowledge card).
 
-### `.13` c32b — complete F transfers, boxing and refusals (queued, `SEMULITH-P4-0179`)
+### `.13` c32b — complete F transfers, boxing and refusals (completed, `SEMULITH-P4-0179`)
 
-Owned on clean21a997f/brief0/actual census rc=0 after c32a; no dirty pivot.
+Owned on clean153e081/brief0/actual census rc=0 after c32b0; no dirty pivot.
 C32a remains numeric-only, registry108/effective106/114. Review authenticated
 F20.1.2–.8/D21.1.2/CSR/FS rules, generated30F effects, core ENV/FP/CSR/step
 interfaces, v1 reservation policy, FlatMemory and FP/v2/runtime books before
@@ -886,11 +886,62 @@ Refined remaining scope before code:
   Execution entries; prior108 byte-exact, effective108/114 only after whole F
   positive/negative and actual companion guest checks pass. No status/freeze credit.
 - FP/focused Rust/six books, environment/GS/book/index/live pointers, fixed caps,
-  clean commit. Book520432B leaves3856B; DEV35081B leaves1783B under health36864:
+  clean commit. Containment now leaves book515412B/8876B room; DEV below health36864:
   if final receipts exceed safe room, own containment as a prerequisite and commit
   current completed work first. Do not raise caps or silently omit examples.
 
+C32b result:
+
+Completed F after committed numeric prerequisite and containment. Authenticated
+F20.1.2–.8/D21.1.2/Machine FS rules; shared seed extraction preserves111744
+numeric boundaries. Additional sign62208/moves2592/FLW1296/FSW1944/identical72/
+invalid-box12456/directed11520=92088positive; positive total203832. FS-Off1080,
+reserved modes11628 and memory faults144=12852negative. Combined216684boundaries,
+433368parcels and3348data requests. All30forms,17rounded forms,19float-reading
+numeric forms; M/S/U, six destination/source choices and sticky flag seeds.
+Exact full-state owners/request/memory/TLBcursor/reservation preservation;
+FSW never invents ordinary-store invalidation. Raw payload transfer versus
+computational unboxing, sign payloads, f0/x0, word-result sign extension,
+same-value Dirty and literal ties/UF/exact subnormal/FMA/saturation covered.
+
+Twelve well-formed wrong transfer/sign/memory effects plus prior20numeric
+controls discriminate;16corrupted captures retained. Sixteen actual disabled
+controls RED101 then byte-restored: requests/memory/F/X/CSR/reservation/TLB
+auditors,FS gate,reserved RM,input boxing,load width,sign bit,f0write,
+trap-write suppression,request capture,Dirty. Missing binding RED101 names
+OB-GC-F/CHK-GC-F-POS before exactly2Execution entries. Prior108registry entries
+byte-exact; registry110/effective108/114. Companion guests run unchanged.
+Scratch control omitted Load's signed operand and used a non-constant
+expression where static semantic references are required; corrected before
+credit. Audit selector expected4rather than5width sites; narrowed actual first
+load site with full five-site census. Independent assembler needs FSW's
+published3operand spelling; corrected before author credit. No project defect
+inferred from these diagnostic setup errors.
+
+Independent author92088positive/12852negative exact across all30forms; directed
+literals re-derived via specfp. Prior numeric111744 and167/5365/10524corpus exact.
+Author and vector generator share specfp, no additional numeric lineage; core
+separately measures exact boundary requests/retirement/raw storage owners.
+Make check173/17/237; FP/focused/six books rc=0. Core/numeric data/canonical/
+frozen/history/LIVE remain byte-exact. Environment/GS/book/index/pointers sync,
+fixed caps retained; artifacts target/p4-system-13/c32b. Next GC-D then
+reservation/SC/freeze; .14 evidence/provenance sweep remains scheduled.
+promotion: declined (permanent F witnesses, governed numeric data and worked FP book examples retain the finite observations without another knowledge card).
+
 After F, D then reservation/SC/freeze; .14 evidence/provenance sweep remains owned.
+
+### `.13` c33 — realize double-precision instruction checks (queued)
+
+F now bound; own GC-D before code. Review OB-GC-D/REQ-GC-D and F dependency,
+authenticated D21.1.2–.7/F shared rules, current qualified model interface,
+compiled32D forms, independent FP-VECTORS data, public author and FP/v2 books.
+Refine25numeric forms including both format conversions and seven memory/move/
+sign forms; all-form FS-Off, reserved rounding, directed values/flags, width/
+fault/boxing and full-state controls. Decide safe subdivisions before witness
+code; preserve prior110bindings/core/numeric data/frozen inputs and lineage
+limits. Missing-binding RED precedes exactly2Execution entries. D then
+reservation/SC, full gate/freeze; .14 remains scheduled. No cap increases.
+
 
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
@@ -950,7 +1001,7 @@ expectations during slice d; a fixture name alone is insufficient evidence.
 | `OB-WALK-IMPLICIT` | 0/2 | Direct boundary request-kind witness; runtime inj-walk-l2/l1/l0 |
 | `OB-GC-ATOMICS` | 0/2 | Runtime: a-amo-arith/minmax-w/d / a-lrsc-mustfail,a-amo-sv39 |
 | `OB-GC-FENCEI` | 0/2 | Runtime: fencei-selfmod / fencei-reserved |
-| `OB-GC-F` | 0/2 | Runtime: all f-* and fp-* fixtures; independent numeric vectors |
+| `OB-GC-F` | 2/2 | Execution: all30forms, numeric/transfer/boxing/directed/refusal witnesses + companions |
 | `OB-GC-D` | 0/2 | Runtime: all d-* fixtures; independent numeric vectors |
 | `OB-RESERVATION` | 0/2 | Runtime: a-lrsc-pair / a-lrsc-fault,a-lrsc-mustfail |
 | `OB-SC-DETERMINISTIC` | 0/2 | Runtime: a-lrsc-loop / a-lrsc-mustfail |
@@ -1034,6 +1085,19 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c32b — **ROOT CAUSE**: authenticated source/verify.py rc=0:
+ F30forms/17rounded/19numeric float-readers; literal policy/bit expectations,
+ shared numeric lineage explicit; seed preserves prior111744observations.
+- [x] `.13` c32b — **ADDRESSED**: direct suites/registry rc=0:
+ positive203832/negative12852,216684boundaries/433368parcels/3348data requests;
+ 12new wrong effects/16bad captures/16actual disabled controls RED rc=101,
+ byte-restored; missing F binding RED rc=101 before2entries/prior108exact.
+- [x] `.13` c32b — **NO REGRESSION**: make check/verify/focused/six books rc=0:
+ Rust173/17/237, independent new104940/prior111744numeric and167/5365/10524
+ corpus exact; core/data/canonical/frozen/history/LIVE exact. Registry110,
+ effective108/114; docs/GS/index sync, caps retained; D/reservation/SC/freeze open.
+ promotion: declined (permanent witnesses, governed data and worked FP chapter retain the finite checks).
 
 - [x] `.13` c32b0 — **ROOT CAUSE**: partition.py/census rc=0 measures
  book520432B/3856room and DEV35081B/1783health room before F/D/remaining receipts.
@@ -1201,6 +1265,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c32b | all30F/216684boundaries; independent new104940+prior111744/full167corpus;12new wrong effects/16bad captures/16disabled controls+missing binding RED101→restored | Rust173/17/237; prior108bindings/core/data/canonical/frozen/history/LIVE exact; registry110/effective108/114; FP/focused/six books rc=0; hooks next |
 
 | `2026-10-10` | `.13` c32b0 | ten whole paragraphs/full source inverse and damaged controls; sharder12/0/five whole DEV entries/full inverse; protected/history identity | save5723chapter B; registry108/effective106/114/LIVE unchanged; focused/six books rc=0; prior Rust173/17/234 applies; hooks next |
 
@@ -1224,6 +1289,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c32b | `SEMULITH-P4-0179 (leaf P4-SYSTEM.13): complete and bind finite F witnesses` | GC-D before reservation/SC/freeze; .14 evidence sweep scheduled |
 
 | `.13` c32b0 | `SEMULITH-P4-0178 (leaf P4-SYSTEM.13): contain privilege timeline and development receipts` | c32b/0179 F transfers/boxing/FS-Off/rounding refusals and final bindings |
 
@@ -1236,6 +1302,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c32b (SEMULITH-P4-0179): complete F checks,
+ 216684full-state boundaries/all30forms; independent new/prior matrices and
+ corpus exact, wrong/disabled controls discriminate/restored. Registry110/
+ effective108/114, Rust173/17/237; FP/focused/six books green. Core/data/frozen/
+ history/LIVE exact. GC-D next, then reservation/SC/freeze; .14 sweep owned.
 
 - `2026-10-10`: `.13` c32b0 (SEMULITH-P4-0178): finite privilege
  timeline archive/full14486B inverse,10whole paragraphs8436B,save5723chapter B;

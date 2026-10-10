@@ -1,4 +1,4 @@
-//! Instruction-level single-precision numeric observations (P4-SYSTEM.13 c32a).
+//! Complete finite single-precision instruction witnesses (P4-SYSTEM.13 c32a/b).
 //! Expected bits/flags come from the existing FP-VECTORS-governed spec-side data.
 //! The production arithmetic backend is never used to construct an expectation.
 use crate::fixtures::FlatMemory;
@@ -102,6 +102,99 @@ fn judge(actual: &Observation, expected: &Observation) -> Result<(), String> {
     }
     Ok(())
 }
+
+// Shared prestate only: callers derive their own effects before executing.
+fn seed(
+    word: u32,
+    mode: PrivilegeMode,
+    fs: u64,
+    frm: u64,
+    flags: u64,
+) -> (ArchitecturalState, Observer) {
+    let mut h = ArchitecturalState::zeroed_at(ENTRY);
+    h.set_mode(mode);
+    h.write_csr(CSR_MSTATUS, 0xa_0000_0000 | (fs << 13)); // Caller selects FS; no interrupt enables.
+    h.write_csr(CSR_FFLAGS, flags);
+    // Static rm must ignore a reserved frm. DYN must use the vector's legal mode.
+    h.write_csr(CSR_FRM, frm);
+    h.write_csr(CSR_MCYCLE, 41);
+    h.write_csr(CSR_MINSTRET, 17);
+    h.write_csr(CSR_MTVEC, HANDLER);
+    h.write_csr(CSR_MCAUSE, 0x55);
+    h.write_csr(CSR_MEPC, 0x1200);
+    h.write_csr(CSR_MTVAL, 0x7788);
+    h.write_csr(CSR_MSCRATCH, 0x1122_3344_5566_7788);
+    for r in 1..32 {
+        h.write_x(r, 0x1111_2222_3333_0000 + u64::from(r));
+    }
+    for r in 0..32 {
+        h.write_f(r, 0x7ff8_0000_0000_1000 + u64::from(r));
+    }
+    h.reservation().establish(DATA, 8);
+    for i in 0_u64..5 {
+        h.tlb().install(TlbEntry {
+            valid: true,
+            global: i.is_multiple_of(2),
+            asid: 0x12,
+            vpn: 0x40 + i,
+            pa_base: 0x9000 + i * 0x1000,
+            r: true,
+            w: true,
+            x: true,
+            u: false,
+            a: true,
+            d: true,
+            level: 0,
+        });
+    }
+    let mut memory = FlatMemory::with_fetch_align(ENTRY, 0x200, 2);
+    memory.load_image(0, &word.to_le_bytes());
+    memory.load_image(0x80, &0x8877_6655_4433_2211_u64.to_le_bytes());
+    let observer = Observer {
+        memory,
+        requests: Vec::new(),
+    };
+    (h, observer)
+}
+fn retired(h: &mut ArchitecturalState, observer: &Observer) -> Observation {
+    let mut expected = Observation::capture(h, observer, true);
+    expected.requests = vec![
+        Request::FetchParcel { addr: ENTRY },
+        Request::FetchParcel { addr: ENTRY + 2 },
+    ];
+    expected.parcels = 2;
+    expected.pc = ENTRY + 4;
+    expected.csrs[CSR_MCYCLE] = 42;
+    expected.csrs[CSR_MINSTRET] = 18;
+    expected
+}
+fn trapped(h: &mut ArchitecturalState, observer: &Observer, cause: u64, tval: u64) -> Observation {
+    let mode = match h.mode() {
+        PrivilegeMode::M => 3,
+        PrivilegeMode::S => 1,
+        PrivilegeMode::U => 0,
+    };
+    let mut expected = retired(h, observer);
+    expected.pc = HANDLER;
+    expected.mode = PrivilegeMode::M;
+    expected.csrs[CSR_MINSTRET] = 17;
+    expected.csrs[CSR_MCAUSE] = cause;
+    expected.csrs[CSR_MEPC] = ENTRY;
+    expected.csrs[CSR_MTVAL] = tval;
+    expected.csrs[CSR_MSTATUS] =
+        (expected.csrs[CSR_MSTATUS] & !((3 << 11) | (1 << 7) | (1 << 3))) | (mode << 11);
+    expected
+}
+fn execute(
+    h: &mut ArchitecturalState,
+    observer: &mut Observer,
+    table: &[InsnDef],
+    expected: &Observation,
+) -> Result<(), String> {
+    let executed = exec_rv64gc::step_over(h, observer, table) == StepRv64gc::Executed;
+    judge(&Observation::capture(h, observer, executed), expected)
+}
+mod remaining;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Op {
@@ -282,25 +375,13 @@ impl Cell {
     }
     fn fixture(self) -> (ArchitecturalState, Observer, Observation) {
         let v = self.vector;
-        let mut h = ArchitecturalState::zeroed_at(ENTRY);
-        h.set_mode(self.mode);
-        h.write_csr(CSR_MSTATUS, 0xa_0000_4000); // Clean, no interrupt enables.
-        h.write_csr(CSR_FFLAGS, self.flags);
-        // Static rm must ignore a reserved frm. DYN must use the vector's legal mode.
-        h.write_csr(CSR_FRM, if self.dynamic { u64::from(v.rm) } else { 7 });
-        h.write_csr(CSR_MCYCLE, 41);
-        h.write_csr(CSR_MINSTRET, 17);
-        h.write_csr(CSR_MTVEC, HANDLER);
-        h.write_csr(CSR_MCAUSE, 0x55);
-        h.write_csr(CSR_MEPC, 0x1200);
-        h.write_csr(CSR_MTVAL, 0x7788);
-        h.write_csr(CSR_MSCRATCH, 0x1122_3344_5566_7788);
-        for r in 1..32 {
-            h.write_x(r, 0x1111_2222_3333_0000 + u64::from(r));
-        }
-        for r in 0..32 {
-            h.write_f(r, 0x7ff8_0000_0000_1000 + u64::from(r));
-        }
+        let (mut h, observer) = seed(
+            self.word(),
+            self.mode,
+            2,
+            if self.dynamic { u64::from(v.rm) } else { 7 },
+            self.flags,
+        );
         // Fused variants receive sign-adjusted inputs so the existing independent
         // a*b+c vector remains the expected result under each instruction's algebra.
         let a = if v.op == Op::Fma && self.fused >= 2 {
@@ -319,39 +400,7 @@ impl Cell {
         if v.op.integer_source() {
             h.write_x(6, v.a);
         }
-        h.reservation().establish(DATA, 8);
-        for i in 0_u64..5 {
-            h.tlb().install(TlbEntry {
-                valid: true,
-                global: i.is_multiple_of(2),
-                asid: 0x12,
-                vpn: 0x40 + i,
-                pa_base: 0x9000 + i * 0x1000,
-                r: true,
-                w: true,
-                x: true,
-                u: false,
-                a: true,
-                d: true,
-                level: 0,
-            });
-        }
-        let mut memory = FlatMemory::with_fetch_align(ENTRY, 0x200, 2);
-        memory.load_image(0, &self.word().to_le_bytes());
-        memory.load_image(0x80, &0x8877_6655_4433_2211_u64.to_le_bytes());
-        let observer = Observer {
-            memory,
-            requests: Vec::new(),
-        };
-        let mut expected = Observation::capture(&mut h, &observer, true);
-        expected.requests = vec![
-            Request::FetchParcel { addr: ENTRY },
-            Request::FetchParcel { addr: ENTRY + 2 },
-        ];
-        expected.parcels = 2;
-        expected.pc = ENTRY + 4;
-        expected.csrs[CSR_MCYCLE] = 42;
-        expected.csrs[CSR_MINSTRET] = 18;
+        let mut expected = retired(&mut h, &observer);
         let accrued = self.flags | v.flags;
         expected.csrs[CSR_FFLAGS] = accrued;
         if v.op.integer_destination() {
@@ -412,6 +461,13 @@ fn numeric_over(table: &[InsnDef]) -> Result<(), String> {
         return Err(format!("numeric matrix extent {count}"));
     }
     Ok(())
+}
+pub(super) fn positive() -> Result<(), String> {
+    numeric_over(INSNS)?;
+    remaining::positive_over(INSNS)
+}
+pub(super) fn negative() -> Result<(), String> {
+    remaining::negative_over(INSNS)
 }
 #[cfg(test)]
 mod tests {

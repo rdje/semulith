@@ -18,15 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c32b/0179 — implement refined GC-F transfers,
-  invalid-box/directed cases,30form FS-Off/17rounded-form reserved refusals;
-  missing binding RED then2Execution entries. Read c32b detailed design first.
-  C32b0 contains10whole privilege paragraphs with full14486B inverse,5723B saved,
-  five whole DEV entries→0230/full35081B inverse, all prior history exact.
-  Focused/six books green; prior Rust173/17/234 applies. Core/data/canonical/
-  registry108/effective106/114/LIVE unchanged. Four pairs/freeze open; .14 owns
-  evidence/provenance sweep including measured stale conversion notes. No push
-  below cadence. Book/DEV room restored before feature code.
+- next_action: `P4-SYSTEM.13` c33 — GC-D, after completed F binding.
+  Refine32D forms from pinned D/F rules and independent governed vectors:
+ 25numeric forms including2format conversions, seven transfers/sign forms,
+  FS-Off/reserved-rounding and fault/boxing/directed controls. Split safely
+  before code if needed; missing-binding RED then2Execution entries.
+  C32b F203832positive/12852negative full-state boundaries green;16actual
+  disabled controls restored, independent author and prior167corpus exact.
+  Rust173/17/237, focused/six books green; registry110/effective108/114.
+  D/reservation/SC/freeze open; .14 owns evidence/provenance/stale-note sweep.
+  Core/data/canonical/frozen/history/LIVE exact. No push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

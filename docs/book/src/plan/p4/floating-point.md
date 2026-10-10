@@ -205,7 +205,7 @@ with the historical receipts below.
 
 ## Numeric instruction observations before F contract binding
 
-The private c32a witness drives **23 numeric F instructions** through the real
+The c32a witness drives **23 numeric F instructions** through the real
 instruction decoder and executor. It reuses 1,504 single-precision rows from
 the existing `FP-VECTORS`-governed text fixtures, excluding D's format
 conversions. Expected bits and flags come from the exact-arithmetic reference;
@@ -242,10 +242,94 @@ flag-accrual and Dirty paths must fail before byte restoration.
 The independent instruction author agrees on the same numeric cases and the
 original 167-guest corpus remains exact. The author and vector generator share
 `specfp`; this agreement adds no new numeric lineage. These are finite numeric
-instruction observations, not complete F contract realization: seven transfer/
-sign forms, invalid-box and directed-rule cases, FS-Off and reserved-rounding
-refusals, and final registry bindings belong to c32b. Effective G-CONTRACT
-remains 106/114 until that work passes.
+instruction observations. The following c32b witnesses complete the F checks.
+
+
+## Complete finite F contract witnesses
+
+`CHK-GC-F-POS` and `CHK-GC-F-NEG` now run direct instruction witnesses and
+tracked companion guests. The numeric matrix above remains unchanged. C32b
+adds **92,088 positive boundaries** and **12,852 refusal/fault boundaries**;
+together they observe all30 F forms over216,684 single-instruction boundaries.
+This realizes the two F checks, taking effective G-CONTRACT to108/114. D,
+reservation and deterministic SC remain, followed by final contract freeze.
+Finite coverage does not mean an accepted processor profile.
+
+The seven remaining forms preserve the distinctions that arithmetic tests
+cannot establish:
+
+| Operation | Worked observation |
+| --- | --- |
+| FLW | Memory word `0x7fa12345` becomes `0xffffffff7fa12345`; signaling payload unchanged, no flags, FS Dirty. |
+| FSW | Register `0x123456787fa12345` stores exactly four bytes `45 23 a1 7f`; upper bits and neighboring bytes do not reach memory. FS stays Clean. |
+| FMV.X.W | The same improperly boxed register yields integer `0x000000007fa12345`; raw low bits bypass computational unboxing. A negative low word sign-extends to XLEN. |
+| FMV.W.X | Integer `0x123456787fa12345` becomes `0xffffffff7fa12345`; only the low word transfers, and FS becomes Dirty. |
+| FSGNJ.S | Properly boxed signaling payload `0x7fa12345` with a negative second operand becomes `0xffa12345`; no NV flag. |
+| FSGNJN.S / FSGNJX.S | Negate the second sign / XOR both signs while preserving the first operand's magnitude and NaN payload. |
+
+Twelve low patterns cover all ten FP classes, with signed zeros, normals,
+subnormals, infinities and quiet/signaling payloads. The three sign operations
+cross both inputs, all four proper/improper-box layouts, M/S/U, six destination
+choices and two initial flag sets:62,208 cases. An improperly boxed sign input
+first becomes canonical qNaN; a properly boxed signaling input retains its bits.
+Raw moves add2,592 cases over three upper patterns, including unboxed sources.
+The integer x0 destination discards only its result; f0 remains writable.
+
+FLW adds1,296 cases and FSW1,944, at offsets0/4/8. Exact W requests, store data,
+full surrounding memory, preservation of Clean on a store, and all other state
+are compared. FSW preserves the overlapping reservation: this laboratory's
+selected policy changes it only through its own LR/SC. Seventy-two additional
+same-value FLW/FMV.W.X controls prove that even an unchanged f-register write
+makes FS Dirty. These start Clean and preserve the existing payload and flags.
+
+Invalid-box numeric cases cover all19 F forms that read floating operands,
+including each fused form and only operands that actually exist. Over12,456
+cases, arithmetic produces boxed canonical qNaN; classification yields bit9;
+FEQ yields0 without NV while FLT/FLE yield0 with NV. Min/max with one improper
+input select the proper operand; two improper inputs yield canonical qNaN.
+Conversions of the resulting qNaN saturate to the signed/unsigned maximum
+with NV. An unsigned word result `0xffffffff` still sign-extends to XLEN.
+Aliases, static/DYN rounding, sticky flags and Dirty-on-new-flags remain observed.
+
+Another11,520 directed cases make rounding and range behavior explicit:
+
+| Inputs / operation | Expected bits and flags |
+| --- | --- |
+| `1 + 2^-24` | RNE/RTZ/RDN:`0x3f800000`; RUP/RMM:`0x3f800001`; NX. The negative tie distinguishes RDN from RUP. |
+| `0x00800000 * 0x3f7fffff` | RNE/RUP/RMM:`0x00800000`; RTZ/RDN:`0x007fffff`; UF+NX in every mode. |
+| `0x00800000 * 0x3f7ffffe` | Exact largest subnormal:`0x007fffff`, no flags. |
+| Fused `(1+2^-23)*(1-2^-23)-1` | Exactly `-2^-46` (`0xa8800000`), no flags; all four forms use the signed-term construction above. |
+| Infinity, NaN or magnitude `2^64` converted to integer | Saturate by sign and destination range with NV; negative out-of-range unsigned inputs yield0. |
+
+The UF boundary uses the selected IEEE rule: judge the rounded result as if
+the exponent range were unbounded. Thus rounding to the smallest normal in
+the destination format alone does not establish absence of underflow. The
+literal expectations are re-derived with the independent exact-arithmetic
+`specfp` reference. The instruction author and numeric generator share it;
+their agreement adds no new numeric lineage.
+
+The negative witness checks every F form with FS Off:30forms×M/S/U×six
+register choices×two flag sets=1,080 cases. Loads/stores use an unmapped or
+misaligned data address, yet only the two fetch parcels occur before cause2.
+All17 rounded forms additionally cross19 reserved settings: static rm5/6
+with every frm value, plus DYN with frm5/6/7. These11,628 cases trap with the
+instruction word in mtval, instruction-start mepc, correct M privilege stack,
+one cycle increment, no retirement and no instruction-owned writes.
+Valid static rm ignoring reserved frm remains positive numeric evidence.
+Ordinary memory faults add144 cases: cause4/6 before a data request for
+misalignment, cause5/7 after exactly one W request at an unmapped address.
+Faults retain FP state, flags, reservation, TLB cursor and memory.
+
+Every expected state is constructed before execution. The comparator checks
+all GPR/FPR values,26 raw CSR owners, PC/mode, reservation, TLB entries/FIFO
+cursor, wait state, full memory, exact requests, fetch extent and outcome.
+Twelve new wrong effects/routes complement the earlier20 numeric controls;
+16 corrupted captures and16 actual disabled controls discriminate. Disabled
+FS/rounding/boxing/width/sign/f0/trap-write/Dirty paths and observers must fail,
+then source bytes are restored. The completed-check selector fails by the
+missing F check name before the two registry entries are added. Prior108
+entries and frozen/canonical inputs remain exact. Companion guests retain
+their original expectations, and the original167-guest corpus remains exact.
 
 ## Historical verification receipts
 
