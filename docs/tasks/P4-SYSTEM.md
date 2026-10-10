@@ -447,7 +447,7 @@ initial checker-name127 and scratch heading assertion earn no credit. Fixed caps
 book513368B/runtime29842B. Evidence target/p4-system-13/c30a. Hooks then c30
 on clean workflow/census; contain book/DEV before subsequent additions exceed caps.
 
-### `.13` c30 — realize GC-COUNTERS execution checks (queued)
+### `.13` c30 — realize GC-COUNTERS execution checks (completed, `SEMULITH-P4-0173`)
 
 Next runtime pair after c29e's clean workflow. Review frozen obligation and
 current requirements, selected counter/CSR/virtual-time policies, public engine/
@@ -460,6 +460,67 @@ frozen inputs. Add only the two owned GC-COUNTERS execution bindings after check
 pass; focused Rust/public/corpus checks and synchronized docs/book, commit clean
 before GC-CSR-ACCESS/F/D/reservation/SC pairs or freeze. .14 evidence/status sweep
 remains separately scheduled; no inference of completed credit in this plan.
+
+Owned on clean8074c65/brief0/actual census rc=0. Read frozen OB-GC-COUNTERS/
+REQ-GC-COUNTERS and authenticated Zicntr6.1.1/Machine2.1.1.11/Supervisor11.1.1.5,
+selected state/timekeeping/permission/generated CSRRS path, public step_over/
+PrivilegedHart/FlatMemory/request interfaces and registry/completed-selection
+consumers. P0/runtime/v2/interrupt chapters and ROADMAP P4 reviewed. Pseudos are
+assembler spellings; the engine executes generic CSRRS, so controls mutate that
+published instruction-table row, never dependency internals.
+
+Direct literal three-address matrix: M/S/U, all8mcounteren×8scounteren masks,
+rd0/5/31 and four explicit zero/distinct/high/wrapping counter initial pairs.
+4032legal POS and2880gated NEG cases, one boundary/two parcels each. Values are
+pre-boundary cycle/time=mcycle and instret=minstret. M bypasses both gates;
+S needs the corresponding M bit, U both bits. Closed gates trap with exact
+cause2/tval/epc/MPP stack and no destination write; cycle advances, instret does
+not. Gate masks remain unchanged, counting never gates. Seed and observe all
+GPR/FPR/CSR owners, PC/mode, reservation, TLB including nonzero FIFO cursor,
+wait, memory, request order/extent and outcome. Literal expectations precede runs.
+
+Wrong caller-supplied CSRRS effects must fail named observations (wrong counter,
+constant/truncated reads, gate bypass, unwanted state/request/trap/PC/reservation/
+TLB effects). Corrupted captures must test every observed component. Disable an
+actual auditor predicate and an actual counter gate, require failures, restore.
+Independently decode/derive all finite cases; full167 corpus/input and prior104
+binding identity. Add OB-GC-COUNTERS to completed-selection first, missing binding
+RED101, then exactly two Execution entries with existing companion guests.
+Only after Rust/focused checks earn registry106/effective104/114; then five pairs
+and freeze. Book room2926B at runtime29842B: keep the worked matrix within the
+fixed cap; own containment before subsequent additions would cross it.
+
+C30 result: initial fixture compile rc=101 found a missing InsnDef.from copy;
+corrected before credit. Three permanent suites GREEN rc=0:6912boundaries/
+13824parcels,11caller-table wrong effects and16corrupted captures. Side-effect
+controls use rd0 so a missing GPR result cannot mask their named CSR/FPR/PC/
+reservation/TLB discrepancy. Actual disabled CSR auditor/request logger/M gate/
+S gate each RED rc=101; exact restoration then3tests green. Completed selector
+requires106 first: missing CHK-GC-COUNTERS-POS RED rc=101; add exactly2Execution
+entries, all6registry tests green. Prior104 entries byte-exact.
+
+Verify.py rc=0 authenticates four source artifacts, independently decodes and
+derives all6912 literal cells and the complete167/5365/10524 corpus. Core,
+canonical/frozen/guest/author/history/LIVE bytes unchanged. Make check rc=0:
+Rust170/17/226. GS effective104/114, registry106; five runtime pairs remain,
+v2 stays open. Environment/runtime/v2/index synchronized, runtime31904B under
+32768; fixed book family cap unchanged. Focused gates/all six books rc=0.
+Evidence target/p4-system-13/c30; hooks/brief0/actual census before c30b.
+
+### `.13` c30b — contain book and development receipts (queued)
+
+Own on c30's clean commit before any containment edit. Runtime31904B leaves864B
+and the book family approaches524288B; DEV crosses its36864B health threshold
+with c30 receipts. Read live-containment guide, manifests, whole-entry sharder,
+book index/routes and affected chapters. Preserve whole completed historical
+receipts in an authenticated finite task archive; retain feature explanations,
+commands, worked values, controls and every current link. Prove exact full-source
+inverses/order/bytes/hashes plus corrupt/missing/omitted-payload controls. Use
+published DEV sharder for whole oldest entries, preserve prior sealed history.
+Do not raise caps or change core/canonical/frozen/registry/effective/LIVE facts.
+Update book worked containment example and live pointers; focused checks/six
+books then clean commit. Afterward c31 GC-CSR-ACCESS, then F/D/reservation/SC;
+.14 evidence sweep remains owned. No dirty-tree pivot.
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -603,6 +664,22 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c30 — **ROOT CAUSE**: verify.py rc=0 authenticates Zicntr/
+ Zicsr/Machine/Supervisor sections and independently derives6912 cells; completed
+ selector RED rc=101 names missing CHK-GC-COUNTERS-POS. Existing inclusion guests
+ did not bind this distinct runtime guarantee; no frozen statement rewrite.
+- [x] `.13` c30 — **ADDRESSED**: three direct suites rc=0,4032legal+
+ 2880gated boundaries/13824parcels;11wrong effects/16bad captures discriminate
+ full state, memory, exact requests and extent. Actual disabled CSR auditor,
+ request logger, M/S gates each RED rc=101 then byte-restored. Exactly2Execution
+ entries,6registry tests rc=0; prior104 entries exact, effective104/114.
+- [x] `.13` c30 — **NO REGRESSION**: make check/verify.py rc=0:
+ Rust170/17/226; independent167/5365/10524 corpus exact; core/canonical/frozen/
+ guest/author/history/LIVE unchanged. GUEST148/0 and focused/six books rc=0.
+ Runtime31904B within fixed32768B; book/DEV containment queued before next pair.
+ Environment/GS/book/index synchronized; five pairs/freeze remain open.
+ promotion: declined (normative counter rules, permanent discriminating fixtures and the worked book section retain this finite contract binding).
+
 - [x] `.13` c30a — **ROOT CAUSE**: four normative artifacts authenticated
  rc=0; Machine2.1.1.10/Zicsr5.1.1 require explicit-write precedence. Root
  e37e664 timekeeping unconditionally increments after guest writes. Public-step
@@ -675,7 +752,9 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
-| `2026-10-10` | `.13` c30a | authenticated ISA/root history; initial/no-op recorder RED101→restored1776/3504/7008; exact two prose/three hashes; independent167 corpus; Spike4/41/42 repeated, Sail limits | Rust170/17/223; effective102/114/LIVE unchanged; focused/all six books rc=0; hooks next |
+| `2026-10-10` | `.13` c30 | independent6912-cell/full167 corpus;11wrong effects/16bad captures; actual auditor/logger/M/S gates and missing binding RED101→restored; prior104 exact | Rust170/17/226; registry106/effective104/114, LIVE unchanged; focused/six books rc=0; hooks next |
+| `2026-10-10` | `.13` c30 | `SEMULITH-P4-0173 (leaf P4-SYSTEM.13): bind counter reads and privilege gates` | c30b book/DEV containment, then CSR-access/F/D/reservation/SC and freeze |
+| `.13` c30a | authenticated ISA/root history; initial/no-op recorder RED101→restored1776/3504/7008; exact two prose/three hashes; independent167 corpus; Spike4/41/42 repeated, Sail limits | Rust170/17/223; effective102/114/LIVE unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29e | root history/consumer census; nine preserved spans/three exact source inverses; corrupt/marker/omission refuse; fresh scalar4/34/FP24/927 exact; FP230+3168/hardware2131 | registry104/effective102/114 and LIVE statuses/counts unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29e1 | five whole payloads/full task inverse; damaged payload controls refuse; sharder12/0/dry-run; four whole DEV entries/full inverse; prior history/protected inputs/fixed caps | registry104/effective102/114 and LIVE unchanged; focused/all six books rc=0; hooks next |
 
@@ -691,6 +770,11 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c30 (SEMULITH-P4-0173): bind GC-COUNTERS with
+ 4032legal/2880gated full-state boundaries; actual disabled observers/gates and
+ missing-binding RED101, independent full matrix/corpus exact. Rust170/17/226,
+ registry106/effective104/114, LIVE unchanged; focused/six books rc=0. C30b next.
 
 - `2026-10-10`: `.13` c30a (SEMULITH-P4-0172): fix actual explicit
  counter-write extra increment; old/no-op recorder RED101, restored1776cases/

@@ -5,6 +5,7 @@
 
 mod atomic_align;
 mod atomics;
+mod counters;
 mod fence;
 mod fence_i;
 mod jalr;
@@ -27,6 +28,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// All three counter reads under every M/S gate mask and mode.
+    CountersPositive,
+    /// Closed counter gates preserve destination/state and retire no instruction.
+    CountersNegative,
     /// All 22 atomic forms with literal data, aliases and exact boundary effects.
     AtomicsPositive,
     /// Failed conditional stores and translated/physical AMO faults.
@@ -70,6 +75,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::CountersPositive => &["mm-counters"],
+            Self::CountersNegative => &["mm-counters", "mm-csr-ro-counters"],
             Self::AtomicsPositive => &[
                 "a-amo-arith-w",
                 "a-amo-arith-d",
@@ -100,6 +107,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::CountersPositive => counters::positive(),
+            Self::CountersNegative => counters::negative(),
             Self::AtomicsPositive => atomics::positive(),
             Self::AtomicsNegative => atomics::negative(),
             Self::FenceIPositive => fence_i::positive(),

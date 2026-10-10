@@ -150,7 +150,7 @@ Existing counter-enable and U-enable controls fail the mode-gate assertion.
 An in-memory control replaces a forbidden write with a successful read: step 9
 clobbers x5 with 9 instead of preserving its sentinel 7, and fails. No guest,
 expectation or author source is rewritten. This pair is finite inclusion/refusal
-evidence; OB-GC-COUNTERS remains a separate later binding. Firmware and Linux
+evidence; the direct OB-GC-COUNTERS binding below adds full-state observations. Firmware and Linux
 acceptance are still open.
 
 
@@ -208,6 +208,44 @@ owner write. Enabling only Zicntr in a temporary override is refused by its
 public validator because no time source is configured. Those platform limits
 remain explicit; the comparator is not weakened to turn the refusal into
 agreement. This prerequisite repair adds no GC-COUNTERS registry credit.
+
+## Counter reads: all privilege and enable-mask combinations
+
+OB-GC-COUNTERS now binds direct Execution checks plus mm-counters (POS)
+and mm-counters/mm-csr-ro-counters (NEG). Zicntr 6.1.1 defines rdcycle,
+rdtime and rdinstret as CSRRS with rs1=x0. Machine 2.1.1.11 and Supervisor
+11.1.1.5 govern their accessibility:
+
+| Origin | Required enable bits for the selected counter |
+| --- | --- |
+| M | None |
+| S | mcounteren.CY, TM or IR |
+| U | The corresponding bit in both mcounteren and scounteren |
+
+The direct matrix crosses M/S/U, all eight masks in each enable register,
+three counter addresses, rd=x0/x5/x31 and four initial counter pairs. Its
+4,032 legal and 2,880 gated cases each execute one boundary/two parcels.
+Expectations are literal transitions constructed before the CPU runs.
+
+With mcycle=41/minstret=17, legal cycle/time reads return41 and instret
+returns17; afterward storage is42/18. A closed gate delivers cause2 to M,
+records the exact instruction in mtval and 0x1000 in mepc, sets MPP to the
+origin, preserves rd and leaves storage42/17. Counting continues while
+access is gated. The high-bit and MAX cases check full64-bit reads and
+wrapping increments. rd=x0 still checks permission and retirement.
+
+Each case compares all integer/floating registers, every CSR storage owner,
+PC/mode, reservation, TLB entries and FIFO cursor, active wait state, memory,
+exact two-parcel request order and execution outcome. A forbidden data read,
+store or walk cannot hide behind the right destination value.
+
+Eleven wrong instruction effects and sixteen damaged captures fail named
+observations. Disabling the real CSR auditor, request logger or either
+counter gate makes its test fail; sources are restored before verification.
+Independent specification-side decoding/derivation confirms all6,912 cases.
+The original167-program corpus remains exact. These finite cases establish
+the selected virtual-time/read/access contract, without claiming arbitrary
+initial CSR states, counter rates, overflow interrupts or Linux readiness.
 
 ## Explicit comparator setup before fallback repair
 

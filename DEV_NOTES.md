@@ -1,6 +1,33 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — bind counter reads and privilege gates (P4-SYSTEM.13 c30)
+
+Authenticated Zicntr6.1.1/Zicsr5.1.1/Machine2.1.1.11/Supervisor11.1.1.5,
+read public engine/CSR/environment contracts and frozen OB-GC-COUNTERS. Engine
+executes generic CSRRS, with counter pseudos assembler metadata only. Literal
+expectations precede execution; cycle/time read mcycle and instret minstret.
+M bypasses gates, S needs corresponding M bit, U both M/S bits; counting
+continues while access is gated. Full M trap state and nonretirement observed.
+
+Three suites pass6912boundaries/13824parcels:4032legal/2880gated cells across
+modes,8×8enable masks,three counters,rd0/5/31,four zero/distinct/high/wrap seeds.
+All GPR/FPR/CSR owners,PC/mode,reservation,TLB/cursor,wait,memory,requests,
+extent/outcome compared. Eleven wrong effects use rd0 for side-effect-only
+controls; sixteen bad captures test each auditor component. Actual disabled
+CSR predicate/request logger/M gate/S gate each RED rc=101 then byte-restored.
+Initial fixture missing InsnDef.from compile error corrected before credit.
+
+Completed selector first requires106: missing binding RED rc=101 by name;
+exactly two Execution entries then all6registry tests green. Verify.py rc=0:
+independent decode/derive all6912cells and full167/5365/10524 corpus exact;
+prior104 entries/core/canonical/frozen/guests/author/history/LIVE byte-identical.
+Make check rc=0 Rust170/17/226. GS registry106/effective104/114, five pairs and
+freeze remain. Environment/runtime/v2/index synchronized; runtime31904B under
+32768. GUEST148/0/focused/all six books rc=0. Evidence target/p4-system-13/c30.
+C30b owns book/DEV containment before further binding additions; caps fixed.
+promotion: declined (normative rules, permanent controls and worked book examples retain the finite evidence without a separate knowledge card).
+
 ## _(2026-10-10)_ — honor explicit counter-write precedence (P4-SYSTEM.13 c30a)
 
 C30 prerequisite review encounters write-then-increment in timekeeping, root

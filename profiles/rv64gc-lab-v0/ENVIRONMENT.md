@@ -201,6 +201,13 @@ Earlier progress sections are preserved byte-verbatim in
 source context and hashes. Historical self-descriptions do not override the
 current contract, report or executable registry.
 
+GC-COUNTERS now binds direct Execution witnesses: 4032 legal and2880 gated
+single-boundary reads across M/S/U, all enable masks, three views, three destination
+choices and four counter pairs. Full state, memory, requests and retirement are
+observed; named wrong effects, corrupted captures and disabled observers/gates
+must fail. The runtime chapter gives worked values and finite limits. Existing
+counter companions retain their original expectations; no frozen record changes.
+
 The integer chapter also covers load/store extension: scope-mem's pattern and
 bound-ext/dir-ext-matrix's signed edges and wider read-backs distinguish correct
 load extension and low-bit stores from seventeen isolated wrong alternatives.

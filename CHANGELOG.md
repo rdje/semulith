@@ -1,6 +1,17 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0173 (leaf P4-SYSTEM.13 c30) — bind counter reads and privilege gates
+
+- Bind GC-COUNTERS with4032legal/2880gated single-boundary reads, all modes/
+  masks/counters/rd choices and high/wrapping seeds; full state/memory/requests.
+- Eleven wrong effects/sixteen corrupted captures; actual disabled auditor,
+  request logger/M/S gates and missing binding RED101, restored green.
+- Independent6912-cell/full167 corpus exact; prior104 bindings and frozen/
+  canonical/core/LIVE unchanged. Rust170/17/226, focused/all six books rc=0.
+- Registry106/effective104/114; five pairs/freeze remain. Environment/GS/book
+  synchronized; c30b owns book/DEV containment before next runtime additions.
+
 ## SEMULITH-P4-0172 (leaf P4-SYSTEM.13 c30a) — honor explicit counter-write precedence
 
 - Fix guest mcycle/minstret writes receiving their own extra increment;

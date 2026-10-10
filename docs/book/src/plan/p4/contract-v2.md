@@ -505,8 +505,9 @@ The [memory runtime chapter](contract-memory.md) retains eleven-form load/store
 extension, discarded-load requests/faults, selected byte-order observations and
 FENCE field/no-effect and atomic pre-translation alignment observations.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
-102/114; six runtime pairs and final freeze remain. Before the GC-COUNTERS
-binding, c30a repairs explicit counter writes replacing their own increment;
+104/114; five runtime pairs and final freeze remain. GC-COUNTERS now adds
+[all-mode, all-enable-mask direct observations](contract-runtime.md#counter-reads-all-privilege-and-enable-mask-combinations).
+Its prerequisite c30a repairs explicit counter writes replacing their own increment;
 [the runtime example](contract-runtime.md#writable-counters-explicit-writes-replace-their-own-increment)
 shows the literal read-back, source-field distinction and public reference limits.
 This prerequisite adds no registry credit. The
