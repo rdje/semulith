@@ -30,6 +30,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Selected LR replacement, completed SC clearing and physical-alias histories.
+    ReservationPositive,
+    /// Traps preserve prior reservations; failed SC still checks physical permission.
+    ReservationNegative,
     /// All thirty-two D forms, raw transfers, format rules and numeric observations.
     DPositive,
     /// Every D FS-Off form, reserved rounding setting and ordinary memory fault.
@@ -89,6 +93,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::ReservationPositive => &["a-lrsc-pair"],
+            Self::ReservationNegative => &["a-lrsc-mustfail", "a-lrsc-fault"],
             Self::DPositive => &[
                 "d-arith",
                 "d-fused",
@@ -149,6 +155,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::ReservationPositive => atomics::reservation_positive(),
+            Self::ReservationNegative => atomics::reservation_negative(),
             Self::DPositive => floating::double_positive(),
             Self::DNegative => floating::double_negative(),
             Self::FPositive => floating::positive(),

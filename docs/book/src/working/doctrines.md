@@ -261,6 +261,25 @@ REGISTRY-MIRROR: a doctrine document no longer mirrors the enforcer registry.
 That is the whole argument for gating mirrors rather than remembering them. The omission that
 previously survived two registrations unnoticed now survives about ninety seconds.
 
+## Frozen mirrors and current requirements
+
+RECORD-SCHEMA requires a live obligation's `requirement_id` mirror to state
+exactly what its requirement states. A frozen historical statement may differ
+only through an authenticated replacement: its original record line must still
+match its frozen SHA-256 pin, and the active consecutive version chain must
+supersede it with an effective record that explicitly mirrors the same requirement.
+The replacement must state the current requirement exactly. Each intermediate
+supersession must replace an inherited record with a member of its own version.
+
+For example, correcting the selected reservation policy leaves frozen
+`OB-RESERVATION` intact. Open v2 supplies `OB-GC-RESERVATION-V2`, which mirrors
+the corrected `REQ-D-RESERVATION`. Without that route, or with an altered pin,
+wrong requirement or drifting replacement, the mirror gate still rejects the
+catalogue. CONTRACT-FREEZE separately checks the complete version inventory.
+Thirteen versioning controls exercise this distinction; schema validity alone
+cannot establish it. Run `bash scripts/check_requirements.sh --self-test` to
+exercise them, and the script without arguments to check the real records.
+
 ## The self-test that ran a third of its arms
 
 `FRONTIER-SYNC`'s controls were written, run, and reported `4 pass / 0 fail`. Fourteen arms

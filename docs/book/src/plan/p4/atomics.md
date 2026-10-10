@@ -97,7 +97,8 @@ returns zero and clears the reservation. Another 960 direct SC cells start with
 a valid reservation at a different address: they return one, clear it and issue
 no data Load/Store or memory write; each now makes a StorePermission request. The unchanged a-lrsc-mustfail guest also retains
 its no-LR, width/address mismatch, replacement and intervening-SC history cases.
-Dedicated reservation/deterministic-policy bindings remain separate work.
+The dedicated reservation pair covers the histories below; deterministic SC
+policy binding remains separate work.
 
 The translated AMO fixture runs M-mode instruction fetch with MPRV/MPP=S data
 access. VA 0x10000 maps to PA 0x5000 through these literal PTEs:
@@ -180,7 +181,8 @@ P4-SYSTEM.14's work.
 
 ## Reservation histories before binding
 
-The new unbound prerequisite checks 60,640 boundaries: 56,448 normal steps and
+These histories began as an unbound prerequisite and now run in the dedicated
+reservation pair. They check 60,640 boundaries: 56,448 normal steps and
 4,192 fault steps. Seven histories exercise replacement by the latest LR,
 wrong address/width, no LR, and clearing after both successful and failed SC.
 Six more insert SW, SD, FSD, AMOADD, ADDI or FENCE before the SC, checking this
@@ -202,7 +204,9 @@ requests in all. Sixteen wrong instruction effects,
 broken construction helpers even when expected state uses those same helpers.
 The independent author checks every planned boundary and205 canonical words;
 it does not observe explicit data requests or invalid retained reservation fields.
-These witnesses add no registry credit: the effective measure remains110/114.
+The qualified v2 replacement now binds both reservation checks. The
+[current contract summary](contract-v2.md#runtime-guarantee-witnesses) owns
+the realization measure; the dedicated SC policy pair still follows.
 
 ## Failed SC still checks physical permission
 
@@ -228,8 +232,59 @@ control. The independent author cross-derives the1,536architectural permission
 cells; contract-error answers are direct boundary evidence. Six new disabled
 paths and all23prior guards discriminate and restore. Existing bound address,
 width/region and every-kind event fixtures cover the added operation; frozen
-v0/v1 remain unchanged. Policy qualification and dedicated reservation/SC
-binding still follow; G-CONTRACT remains110/114.
+v0/v1 remain unchanged. The reservation binding below includes all 1,536
+architectural permission cases. The other 89 cases remain direct tests. Existing
+environment pairs cover their declared boundary rules; these add no extra credit.
+
+## Qualified reservation guarantee
+
+The frozen `OB-RESERVATION` said invalidation was exactly the specification's
+one-hart set. That wording overstated the authority of the selected policy.
+`OB-GC-RESERVATION-V2` supersedes it without changing frozen v0/v1. The live
+profile decision and requirement use the same qualified statement. V2 has
+13 members; the replacement and its two executable bindings land together.
+
+This laboratory chooses an exact physical address, byte width and validity bit.
+Virtual aliases can pair when their physical address and width agree. Exact-width
+matching, preserving the reservation across ordinary same-hart instructions,
+and retaining it across traps are declared choices, rather than the ISA's only
+permitted realization. The environment supplies no other-hart or device writes.
+
+| Boundary | Selected reservation effect |
+| --- | --- |
+| Completed LR | Replace address/width and set valid |
+| Completed SC, success or failure, at any address | Clear valid; retain address/width bookkeeping |
+| LR/SC alignment, translation or physical access fault | Preserve prior valid/address/width and suppress destination writes |
+| Ordinary instruction | Preserve the reservation; direct histories include SW, SD, FSD, AMOADD, ADDI and FENCE |
+| Cold reset | Address=0, width=0, valid=false |
+
+SC can complete only after alignment, Store translation and physical write
+permission pass. `Reservation::matches` supplies the selected reservation
+condition; a true result alone does not authorize a store or retirement.
+The separate deterministic SC guarantee owns the no-spurious-failure choice.
+The replacement selects this one-hart policy and does not claim multicore
+behavior or every architecturally permitted reservation outcome.
+
+`CHK-RESERVATION-POS` runs the 56,448 normal/history/alias boundaries above.
+`CHK-RESERVATION-NEG` runs 4,192 fault boundaries plus the 1,536 architectural
+permission cases, including their successful controls. The direct pair totals
+**62,176 boundaries, 124,352 parcels, 35,680 data accesses, 12,384 walks and
+22,272 permission checks: 194,688 requests**. The unchanged pair, must-fail and
+trap-retention companion guests add 85 boundaries and 170 parcels.
+
+The expectations still precede execution. The independently authored 60,640
+history/fault boundaries and 1,536 permission cells retain their earlier
+values and canonical-word derivations. Provider-contract errors and invalid
+retained fields remain direct evidence outside that author's observations.
+Sixteen wrong effects, 16 corrupt captures and 29 prior disabled guards still
+discriminate. Two additional controls return an error from each registered
+reservation witness; the registry test rejects both, confirming propagation.
+Every source is restored before normal checks. The completeness test first
+rejects the missing binding by name; its non-v0 selector is unchanged.
+
+No CPU semantics, guest data or reference lineage changes here. The remaining
+deterministic SC pair and final freeze keep the contract open; CPU acceptance
+retains its separate evidence gates.
 
 ## Historical introduction and checkpoint receipt
 

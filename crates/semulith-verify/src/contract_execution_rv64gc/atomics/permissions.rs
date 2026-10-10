@@ -1,6 +1,8 @@
 //! Failed SC checks physical permission without issuing a data read or write.
 use super::*;
+#[cfg(test)]
 use semulith_core::env::ContractViolation;
+#[cfg(test)]
 use semulith_core::outcome::ModelError;
 
 fn seed(fixture: &mut Fixture, prior: usize, n: u32) {
@@ -39,8 +41,7 @@ fn expect_fault(fixture: &mut Fixture, va: u64) {
         (old & !((3 << 11) | (1 << 7) | (1 << 3))) | (mode << 11) | ((old & 8) << 4);
 }
 
-#[test]
-fn failed_sc_checks_physical_permissions_before_retirement() {
+fn bare_permissions() -> Result<(), String> {
     let mut count = 0;
     for n in [4, 8] {
         for order in 0..4 {
@@ -66,11 +67,9 @@ fn failed_sc_checks_physical_permissions_before_retirement() {
                             } else {
                                 expect_fault(&mut fixture, address);
                             }
-                            assert_eq!(
-                                judge(&fixture.observe(INSNS), &fixture.expected),
-                                Ok(()),
-                                "n={n} order={order} mode={mode:?} rd={rd} prior={prior} access={access}"
-                            );
+                            judge(&fixture.observe(INSNS), &fixture.expected).map_err(|e| {
+                                format!("permission W{n} order{order} {mode:?} rd{rd} prior{prior} access{access}: {e}")
+                            })?;
                             count += 1;
                         }
                     }
@@ -78,11 +77,15 @@ fn failed_sc_checks_physical_permissions_before_retirement() {
             }
         }
     }
-    assert_eq!(count, 1152);
+    if count != 1152 {
+        return Err(format!(
+            "Bare permission matrix extent {count}, expected 1152"
+        ));
+    }
+    Ok(())
 }
 
-#[test]
-fn translated_failed_sc_uses_physical_permission_and_virtual_fault_payload() {
+fn translated_permissions() -> Result<(), String> {
     let mut count = 0;
     for n in [4, 8] {
         for order in 0..4 {
@@ -142,20 +145,44 @@ fn translated_failed_sc_uses_physical_permission_and_virtual_fault_payload() {
                         } else {
                             expect_fault(&mut fixture, VA);
                         }
-                        assert_eq!(judge(&fixture.observe(INSNS), &fixture.expected), Ok(()));
+                        judge(&fixture.observe(INSNS), &fixture.expected).map_err(|e| {
+                            format!("translated permission W{n} order{order} rd{rd} prior{prior} access{access}: {e}")
+                        })?;
                         count += 1;
                     }
                 }
             }
         }
     }
-    assert_eq!(count, 384);
+    if count != 384 {
+        return Err(format!(
+            "translated permission matrix extent {count}, expected 384"
+        ));
+    }
+    Ok(())
 }
 
+pub(super) fn physical_permissions() -> Result<(), String> {
+    bare_permissions()?;
+    translated_permissions()
+}
+
+#[test]
+fn failed_sc_checks_physical_permissions_before_retirement() {
+    assert_eq!(bare_permissions(), Ok(()));
+}
+
+#[test]
+fn translated_failed_sc_uses_physical_permission_and_virtual_fault_payload() {
+    assert_eq!(translated_permissions(), Ok(()));
+}
+
+#[cfg(test)]
 struct Answer<'a> {
     observer: &'a mut Observer,
     answer: Result<Response, BoundaryError>,
 }
+#[cfg(test)]
 impl Environment for Answer<'_> {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         if matches!(request, Request::StorePermission { .. }) {

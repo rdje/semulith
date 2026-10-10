@@ -18,16 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c34b/0188 — qualify the three live reservation
-  policy mirrors and add frozen-safe OB-GC-RESERVATION-V2 with its two bindings
-  together; the non-v0 selector requires simultaneous realization. Then SC,
-  full CI/freeze and priority .14 provenance/note sweep. No cap increases.
-  C34b1 preserves full C chapter source/inverse, saves17043B, retains current
-  features/public limits and verifies a10byte/4boundary/5parcel worked example.
-  DEV6+CHANGELOG23oldest whole entries move to0232/0233; history235logical.
-  Prior code/data/canonical/frozen/registry112/effective110/114/LIVE exact.
-  C34b0 repaired physical SC permission; Rust173/17/253/full CI green applies.
-  Verify/derive/focused8docs/six books green; book17612B room. No push below cadence.
+- next_action: `P4-SYSTEM.13` c35/0189 — qualify and bind deterministic SC,
+  then full CI and freeze v2. Reservation c34b now qualifies2live mirrors/
+  public matching comments and supersedes frozen OB-RESERVATION with v2's
+  matching replacement+2Execution bindings. Selector unchanged; missing-binding
+  RED before credit. Registry114/effective112/114,13open-v2 members.
+  Registered62176direct boundaries/194688requests;31actual controls restored,
+  fresh167/5365/10524 corpus exact. CPU semantics/data/frozen/prior registry/
+  history/archives/milestone rows/caps exact. Rust173/17/253/verify/focused15/six books green.
+  Frozen-mirror guard repaired with61self-tests/13new controls; arms668.
+  Then priority .14 provenance/note sweep. Book room retained; no push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

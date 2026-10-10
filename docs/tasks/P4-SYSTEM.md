@@ -776,6 +776,124 @@ Then qualified reservation supersession+binding c34b/0188, SC/full CI/freeze
 and owned priority .14 sweep. Evidence target/p4-system-13/c34b1.
 promotion: declined (existing finite inverse, current-book and append-history controls own this containment and count correction; no new knowledge card).
 
+### `.13` c34b — qualify and bind the reservation guarantee (completed, SEMULITH-P4-0188)
+
+Owned on clean5c7080b/brief0/actual handoff census rc=0 after c34b1. Read
+roadmap P4/.13, authenticated pinned A12.1.2 (56889B/SHAafbd8def), current
+D-RESERVATION/REQ-D-RESERVATION/frozen OB-RESERVATION, reservation/SC core,
+full-state reservation+permission fixtures, ExecutionCheck/registry/selector,
+version membership and atomics/v2/environment books. Current registry112,
+effective110/114; open v2 has12members, frozen v0/v1 unchanged. No dependency
+implementation or pin inspection. Old3copies include the frozen record: qualify
+only the2live mirrors and a new v2 replacement, never edit the frozen copy.
+
+Root495b4b86's wording presents the selected invalidation/trap/width/alias
+policy as exactly the specification's set. Keep the actual selected behavior,
+qualify architecture versus laboratory authority, completed LR/SC versus traps,
+physical exact-width matching and ordinary-instruction preservation. Physical
+permission must precede completion/clearing. Source review also finds public
+Reservation::matches comments calling its predicate the whole success rule/
+architecture license; qualify that existing comment under this same owner:
+public-comment blame root1c554fcf (76–80); live mirror roots495b4b86, frozen
+partition460e4d8. Matching is the selected reservation condition, never a replacement for
+alignment, translation and physical permission. No runtime semantic change.
+
+Add OB-GC-RESERVATION-V2, superseding frozen OB-RESERVATION, reusing its
+CHK-RESERVATION-POS/NEG ids. Membership13 and those2executable bindings land
+together: the non-v0 completeness selector remains unchanged. Change only its
+measured completed-check census112→114, then require an actual missing-binding
+RED naming CHK-RESERVATION before adding the registry rows. Expected final
+registry114/effective112/114; re-derive before credit. New metadata is laboratory
+policy, not an independent/conformance result; keep every frozen record/pin.
+
+Promote the60640full-state reservation boundaries to ordinary compiled
+fixtures. Also promote the1536architectural physical-permission cases from
+c34b0 into Result-returning fixture helpers, retaining the same5test entry
+points and literals; malformed-provider80/misalignment8/unissued-Store1
+remain direct tests plus existing bound environment checks. Positive execution
+runs56448normal/alias boundaries; negative runs4192faults plus1536permission
+cells (including their successful controls). Direct total62176boundaries/
+124352parcels/35680data/12384walks/22272permissions=194688requests. Re-derive
+counts and preserve expectations/205+32canonical words/prior corpus. Companion
+pair/mustfail/fault guests use existing comparison, with no guest data change.
+
+Existing16wrong effects/16corrupt captures and29actual guards must still
+fail after promotion/refactor and restore exactly; production registry fixtures
+must execute and propagate failures. Run strict Rust, focused profile/generator/
+contract/doc gates and six books. Update current policy/examples/limits and
+realization summaries, ENV/derived GS/current docs; protect all other canonical
+code/data, historical archives/history/LIVE/caps. Clean commit before separately
+qualifying/binding deterministic SC, full CI/freeze and owned priority .14 sweep.
+Evidence target/p4-system-13/c34b. Any failed integration belongs to this slice.
+Missing-binding control: cargo test exact completeness rc=101, one test:
+OB-GC-RESERVATION-V2 declares CHK-RESERVATION-POS, no registry entry realizes it.
+The census was deliberately114 before this run; selector unchanged. Now bind
+both rows and promote the same prebuilt direct expectations, then require GREEN.
+
+Result:
+
+Qualified D-RESERVATION/REQ-D-RESERVATION and added matching laboratory
+OB-GC-RESERVATION-V2. Frozen OB-RESERVATION remains byte-exact; explicit member/
+supersession in open v2 gives13members, still57effective obligations/114checks.
+Core public comments root1c554fcf no longer call matches the whole success rule
+or architecture license; alignment/translation/physical permission are separate
+preconditions. Actual CPU statements/data/semantics remain byte-exact after
+comment removal. Live mirror roots495b4b86 and frozen partition460e4d8 recorded.
+Completeness selector unchanged; census deliberately114 before missing-binding
+RED101 naming CHK-RESERVATION-POS. Add2Execution rows under the new record:
+registry112→114/effective110→112of114. All prior112rows remain exact.
+Promote the same60640history/fault expectations and1536architectural permission
+cells. Result-returning helpers propagate failures; five permission test names,
+setup/values/trap formulas and89other direct cases retained. Sixteen wrong
+effects/16corrupt captures remain discriminating. All29prior actual guards
+RED101/restored, plus2new registered-route error controls RED101/restored;
+normal full registry evidence GREEN0. No compile failure counted as a control.
+Temporary census prints the4audited reservation families and1152Bare/384translated
+permission counts through actual registered execution, then restores both sources
+byte-for-byte. Full-state/request judges already compare actual to each prebuilt
+witness:56448positive +4192fault +1536permission =62176direct boundaries,
+124352parcels/35680data/12384walks/22272permissions=194688requests. Three unchanged
+companions add85boundaries/170parcels. Old60640/205word and1536/32word independent
+architectural derivations apply to unchanged expectation inputs; fresh full prior
+167/5365/10524 corpus agrees. This does not reclassify numeric/reference lineage
+or extend the author's explicit-data/invalid-retained-field observation boundary.
+Strict Rust173/17/253 rc=0. Current atomics/v2/ENV/derived GS/index synchronized;
+GS112/114, still incomplete/open and8of10CPU axes open. Boundaries and public
+finite limits remain explicit. Frozen versions/pins, old registry/selector,
+canonical data/guest arrays, archives/history/LIVE/caps unchanged. Profiles raw
+member census delegates the two-tier per-part exemption to README-ROUTES;
+fixed aggregate/file limits are also measured. Focused14/six books rc=0.
+Book51/510708B leaves13580B; tasks85 stay within the fixed3MiB bound.
+Then qualify/bind deterministic SC separately, full CI/freeze and priority .14
+source/note sweep. Evidence target/p4-system-13/c34b. No push below cadence.
+promotion: declined (existing full-state/boundary method, frozen-safe supersession and registered propagation controls preserve this qualification without a new knowledge card).
+
+
+Commit integration defect (owned here before repair): pre-commit rc=1 rejects
+RECORD-SCHEMA rule9: frozen OB-RESERVATION still mirrors the old requirement.
+The focused14 set did not include RECORD-SCHEMA; DOSSIER-SCHEMA validates
+shape, not the mirror relationship. Root3ceebc55 rule9 predates versioning and
+checks every historical record against the current requirement. CONTRACT-FREEZE
+requires old bytes retained; skipping all superseded ids would weaken the guard.
+Repair only the authenticated frozen historical-mirror case: require an exact
+pinned member and a valid inheritance/supersession route to a current replacement
+which explicitly mirrors the same requirement. Live and unversioned mirrors,
+malformed routes, altered pins and drifting/missing replacements must still fail.
+Add durable RED/GREEN controls, include RECORD-SCHEMA in focused checks, update
+its mdBook explanation and derived arm count; preserve frozen bytes and runtime
+inputs. Verification and acceptance stay pending until the repaired gate passes.
+Evidence target/p4-system-13/c34b/schema. No change of task-tree or scope credit.
+Resolution: real-record defect RED1→GREEN0; new self-test61pass/0fail,
+13new durable controls. The old guard, disabled pin predicate and disabled
+current-replacement equality each make the self-test RED1 with its named MISS.
+No tracked source is changed by these copied-script controls. Replacement now
+explicitly names requirement_id; every frozen record/pin remains byte-exact.
+Focused15 (now including RECORD-SCHEMA)/six books/final verifier rc=0.
+Book51/511918B leaves12370B; largest part32768B. Prior Rust173/17/253 applies.
+LIVE milestone rows unchanged; derived arm census only655→668. Commit complete
+only after hooks pass, brief0, clean tree and actual job census rc=0.
+
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -916,6 +1034,20 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c34b — **ROOT CAUSE**: source-auth/blame/verify.py rc=0:
+  root495b4b86 policy overstatement, root1c554fcf public prerequisite omission;
+  missing-binding RED101. Record-gate defect RED1 identifies root3ceebc55's
+  version-unaware comparison; frozen460e4d8 partition must remain exact.
+- [x] `.13` c34b — **ADDRESSED**: make check/census.py/route-controls.py
+  rc=0: qualified3live statements/new13thv2 member +2Execution bindings,
+  registry114/effective112/114;62176boundaries/194688requests;31Rust controls
+  RED101/restored. Record-gate GREEN0/self-test61/0;13new version controls and
+  3copied actual guards RED1 discriminate; authenticated current mirror route.
+- [x] `.13` c34b — **NO REGRESSION**: verify.py/focused15/make book
+  rc=0: Rust173/17/253, six books, fresh167/5365/10524 corpus; unchanged
+  expectation inputs retain prior205/32word derivations. Frozen/selector/old
+  registry/CPU semantics/data/canonical/archives/history/milestone rows/caps
+  exact; only LIVE's derived arm count655→668. No cap increased.
 - [x] `.13` c34b1 — **ROOT CAUSE**: verify.py rc=0: committed book
   523719B leaves569B; full C chapter29216B authenticates source9b5a2b0e;
   current tail's98/114 rootd8925716 conflicts with measured effective110/114.
@@ -1003,6 +1135,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c34b | missing-binding RED→2Execution rows;62176direct boundaries/194688requests;31Rust+3schema guards;13new version controls | Rust173/17/253/record-schema61/0/focused15/six books rc=0; registry114/effective112/114; frozen/selector/CPU/data/history/milestones exact; arms668 |
 | `2026-10-10` | `.13` c34b1 | full C source capture/inverse, five damaged controls;37hand words/21refusals/mixed4/5/full167corpus; DEV6+CHANGELOG23 whole entries | verify/derive/focused8docs/six books rc=0; fixed caps, prior code/data/frozen/history/LIVE/registry exact |
 | `2026-10-10` | `.13` c34b0 | defect RED101→1625new full-state cells/1536author cells/32words;6new+23prior actual controls RED-restored; bound v2 request fixtures | Rust173/17/253/focused/full CI/six books rc=0; all canonical guest data/frozen/history/LIVE/prior registry/effective110/114 exact; contain book/DEV before binding |
 | `2026-10-10` | `.13` c34a |60640prebuilt full-state boundaries/205canonical words/prior corpus;16wrong/16capture/23actual guards RED-restored; public permission diagnosis | Rust173/17/246/focused/six books rc=0; registry112/effective110/114/core/data/frozen/history/LIVE exact; immediate c34b0 permission repair before binding |
@@ -1016,6 +1149,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c34b | `SEMULITH-P4-0188 (leaf P4-SYSTEM.13): qualify and bind reservation guarantees` | deterministic SC qualification/pair, full CI/freeze, then priority .14 sweep |
+
 | `.13` c34b1 | `SEMULITH-P4-0187 (leaf P4-SYSTEM.13): contain C chronology and append histories` | qualified reservation supersession+binding c34b/0188, then SC/full CI/freeze and priority .14 sweep |
 
 | `.13` c34b0 | `SEMULITH-P4-0186 (leaf P4-SYSTEM.13): check physical permission on failed SC` | own c34b1/0187 bounded book/development containment, then qualified reservation/SC bindings/full CI/freeze |
@@ -1026,6 +1161,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 ## Changelog
 
+- `2026-10-10`: `.13` c34b (SEMULITH-P4-0188): qualify live reservation mirrors/public matches comments, frozen-safe v2 supersession plus2Execution checks;62176direct boundaries/31controls; registry114/effective112/114.
 - `2026-10-10`: `.13` c34b1 (SEMULITH-P4-0187): preserve full C source/inverse, current mixed-length guide and report route; whole DEV/CHANGELOG partition; verify/derive/focused8docs/six books rc=0.
 - `2026-10-10`: `.13` c34b0 (SEMULITH-P4-0186): nonmatching SC checks
  side-effect-free physical permission before retirement; denied/malformed

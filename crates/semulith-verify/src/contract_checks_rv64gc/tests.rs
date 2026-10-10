@@ -196,7 +196,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        112,
+        114,
         "every declared POS/NEG check of the completed slices is selected"
     );
     for (ob, chk) in declared {

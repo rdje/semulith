@@ -47,8 +47,9 @@
 #     9. MIRROR     an obligation carrying parameters.requirement_id restates that requirement's
 #                   statement, so the pair must state EXACTLY the same fact — the obligation is a
 #                   derived mirror, and a mirror that drifts is a fact stated in two ungoverned
-#                   (MODEL-METHOD.7). The 8 environment-assumptions keep their own statements:
-#                   the arm keys on the parameter, not the direction.
+#                   (MODEL-METHOD.7). An unchanged frozen mirror may instead resolve through
+#                   authenticated version supersession to a current mirror of that requirement.
+#                   The arm keys on the parameter, not the direction.
 #    10. UNITS       the modelled-unit registry (materials/units.sexp) is never empty — a census
 #                   over no units is a claim about nothing (MODEL-METHOD.2).
 #    11. LAYERS      a category-need dispositioned `missing` owes a reason, a `covered` row names
@@ -90,7 +91,7 @@ command -v python3 >/dev/null 2>&1 || {
 
 check_records() {
 python3 - "$1" <<'PY'
-import json, pathlib, sys
+import hashlib, json, pathlib, sys
 sys.path.insert(0, "scripts")
 from validate_records import validate_jsonl, UnsupportedSchema
 import sexp as S
@@ -117,6 +118,96 @@ SEXP_SCHEMA_FOR = {
     "act4.sexp": "schema/act4.sexp",
 }
 ARCH_AUTHORITY = "architecture"
+
+def frozen_mirror_replacement(cat, obs, original):
+    """Resolve a pinned historical mirror; every other mismatch stays a rejection.
+
+    CONTRACT-FREEZE owns the complete version inventory. This narrow check independently
+    authenticates the historical bytes and the active inheritance/supersession route before
+    allowing a historical statement to differ from its requirement's current statement.
+    """
+    manifest = cat.parent / "contract.sexp"
+    if not manifest.is_file():
+        raise ValueError("no version manifest")
+    schema = root / "schema/contract.sexp"
+    constructs, operators = K.load_schema(schema)
+    text = manifest.read_text()
+    if K.validate_text(text, constructs, operators, str(manifest)):
+        raise ValueError("invalid version manifest")
+    versions, numbers, owners = {}, set(), {}
+    for form in S.parse(text, str(manifest)):
+        if S.head(form) != "contract":
+            continue
+        vid, number = S.field(form, "id"), int(S.field(form, "version"))
+        if vid in versions or number in numbers:
+            raise ValueError("ambiguous version identity")
+        numbers.add(number)
+        members = {}
+        for member in S.children(form, "member"):
+            oid = S.field(member, "id")
+            if oid in owners:
+                raise ValueError("record has multiple version owners")
+            owners[oid] = vid
+            pins = S.children(member, "sha256")
+            members[oid] = pins[0][1] if pins else None
+        parent = S.children(form, "extends")
+        versions[vid] = dict(number=number, status=S.field(form, "status"),
+                             parent=parent[0][1] if parent else None,
+                             members=members, supers=S.children(form, "supersede"))
+    if not versions:
+        raise ValueError("no declared versions")
+    oid = original["id"]
+    owner = owners.get(oid)
+    if owner is None or versions[owner]["status"] != "frozen":
+        raise ValueError("historical mirror is not frozen")
+    if (original["contract_id"], int(original["contract_version"])) != (
+            owner, versions[owner]["number"]):
+        raise ValueError("historical mirror belongs to another version")
+    lines = [line for line in C.text(cat.parent / "contract-obligations.sexp",
+                                    root=root).splitlines()
+             if line.startswith(f'(obligation (id "{oid}") ')]
+    if len(lines) != 1 or hashlib.sha256(lines[0].encode()).hexdigest() != \
+            versions[owner]["members"][oid]:
+        raise ValueError("historical mirror does not match its frozen pin")
+    chain, current = [], max(versions, key=lambda key: versions[key]["number"])
+    while current is not None:
+        if current not in versions or current in chain:
+            raise ValueError("broken version inheritance")
+        chain.append(current)
+        parent = versions[current]["parent"]
+        if parent is not None and (parent not in versions or
+                versions[parent]["number"] + 1 != versions[current]["number"]):
+            raise ValueError("broken version inheritance")
+        current = parent
+    if owner not in chain:
+        raise ValueError("historical mirror is outside the active version chain")
+    effective, redirects = set(), {}
+    by_ob = {o["id"]: o for o in obs}
+    for vid in reversed(chain):
+        version = versions[vid]
+        own = set(version["members"])
+        for member in own:
+            record = by_ob.get(member)
+            if record is None or (record["contract_id"], int(record["contract_version"])) != (
+                    vid, version["number"]):
+                raise ValueError("version member has no matching record")
+        for supersede in version["supers"]:
+            old, new = S.field(supersede, "record"), S.field(supersede, "by")
+            if old not in effective or new not in own or old in redirects:
+                raise ValueError("invalid historical-mirror supersession")
+            effective.remove(old)
+            redirects[old] = new
+        effective.update(own)
+    replacement = oid
+    while replacement in redirects:
+        replacement = redirects[replacement]
+    if replacement == oid or replacement not in effective:
+        raise ValueError("no effective replacement for the historical mirror")
+    record = by_ob[replacement]
+    if (record.get("parameters") or {}).get("requirement_id") != \
+            (original.get("parameters") or {}).get("requirement_id"):
+        raise ValueError("replacement does not mirror the same requirement")
+    return record
 
 # ⛔ Exclude `target/` only when it is the FIRST component RELATIVE TO ROOT (the self-test
 # fixtures live under target/doctrine-selftest/, and an absolute-path test would filter every
@@ -353,11 +444,19 @@ for cat in catalogues:
                             f"names '{mirror_rid}' as its requirement, which "
                             f"{cat.name} does not define — a mirror of nothing")
                     elif o.get("statement") != r.get("statement"):
+                        try:
+                            replacement = frozen_mirror_replacement(cat, obs, o)
+                            if replacement.get("statement") == r.get("statement"):
+                                continue
+                            reason = "effective replacement also drifts"
+                        except (ValueError, OSError, K.SchemaError, S.SexpError,
+                                C.CatalogRefused) as error:
+                            reason = str(error)
                         findings.append(
                             f"MIRROR DRIFT contract-obligations.sexp [{o.get('id')}]: names "
                             f"'{mirror_rid}' as its requirement but states a different fact. "
                             f"An obligation is a derived mirror of its requirement; a mirror "
-                            f"that drifts is one fact stated two ways")
+                            f"that drifts is one fact stated two ways ({reason})")
 
         # 4. COVERAGE — against the profile this catalogue belongs to
         prof = cat.parent / "profile.sexp"
@@ -678,6 +777,62 @@ pathlib.Path('$t/p/contract-obligations.sexp').write_text(R.dump(recs))"; }
                                                               arm "RED   an obligation that drifted from its requirement" 1 "MIRROR DRIFT"
   obs "$(printf '%s' "$OB" | python3 -c "import json,sys; r=json.load(sys.stdin); r['parameters']={'requirement_id':'REQ-D-GHOST'}; r['statement']='S'; print(json.dumps(r,ensure_ascii=False))")"
                                                               arm "RED   a mirror of a requirement that does not exist" 1 "MIRROR WITHOUT SOURCE"
+  # A frozen mirror is history only with an authenticated active replacement route.
+  versioned_mirror() {
+    argc 1 "$#" versioned_mirror || return
+    python3 - "$t" "$1" <<'PYFIXTURE'
+import hashlib, json, pathlib, sys
+sys.path.insert(0, "scripts")
+import records_sexp as R
+root, scenario = pathlib.Path(sys.argv[1]), sys.argv[2]
+base = {"profile_ids": ["p"], "direction": "cpu-guarantee", "authority": "architecture",
+        "source_refs": [{"source_id": "SRC-A", "locator": "§1"}],
+        "parameters": {"requirement_id": "REQ-D-A"}, "dependencies": [],
+        "required_checks": ["CHK-A-POS", "CHK-A-NEG"]}
+records = [dict(base, id=oid, contract_id=f"p-env-v{n}", contract_version=str(n), statement=statement)
+           for n, oid, statement in [(0, "OB-A", "Historical"),
+                                     (1, "OB-A-MID", "Intermediate"),
+                                     (2, "OB-A-V2", "S")]]
+lines = R.dump(records).splitlines()
+pins = [hashlib.sha256(line.encode()).hexdigest() for line in lines]
+status, pin, parent = "frozen", pins[0], "p-env-v1"
+old, new, middle = "OB-A-MID", "OB-A-V2", "OB-A-MID"
+if scenario == "unfrozen": status = "open"
+if scenario == "pin": pin = "0" * 64
+if scenario == "drift": records[2]["statement"] = "wrong"
+if scenario == "no-mirror": records[2]["parameters"] = {}
+if scenario == "other-requirement": records[2]["parameters"] = {"requirement_id": "REQ-D-OTHER"}
+if scenario == "inheritance": parent = "p-env-v0"
+if scenario == "member": records[2]["contract_id"] = "p-env-v0"
+if scenario == "absent": new = "OB-GHOST"
+if scenario == "duplicate": middle = "OB-A"
+if scenario == "live": records[2]["statement"] = "wrong"; records[0]["statement"] = "S"; records[1]["statement"] = "S"
+lines = R.dump(records).splitlines()
+if scenario == "live": pins = [hashlib.sha256(line.encode()).hexdigest() for line in lines]; pin = pins[0]
+versions = [f'(contract (id "p-env-v0") (version "0") (profile_ids "p") (status {status}) (statement "v0") (member (id "OB-A") (sha256 "{pin}")))',
+            f'(contract (id "p-env-v1") (version "1") (profile_ids "p") (extends "p-env-v0") (status frozen) (statement "v1") (member (id "{middle}") (sha256 "{pins[1]}")) (supersede (record "OB-A") (by "{middle}") (why "replacement")))',
+            f'(contract (id "p-env-v2") (version "2") (profile_ids "p") (extends "{parent}") (status open) (statement "v2") (member (id "OB-A-V2")) (supersede (record "{old}") (by "{new}") (why "replacement")))']
+if scenario == "no-route": versions[2] = versions[2].replace(f' (supersede (record "{old}") (by "{new}") (why "replacement"))', '')
+if scenario == "schema": versions[2] = versions[2].replace('(status open)', '(status invented)')
+(root / "p/contract-obligations.sexp").write_text(R.dump(records))
+(root / "p/contract.sexp").write_text("\n".join(versions) + "\n")
+PYFIXTURE
+  }
+  reqs "$REQ"
+  versioned_mirror valid;       arm "GREEN a frozen mirror follows two authenticated replacements" 0 "__CHECKED__ 2"
+  versioned_mirror no-route;    arm "RED   historical mirror has no effective replacement" 1 "effective replacement also drifts"
+  versioned_mirror unfrozen;    arm "RED   an open historical record is still a live mirror" 1 "historical mirror is not frozen"
+  versioned_mirror pin;         arm "RED   changed frozen bytes are never exempt" 1 "does not match its frozen pin"
+  versioned_mirror drift;       arm "RED   the active replacement must match the current requirement" 1 "effective replacement also drifts"
+  versioned_mirror no-mirror;   arm "RED   a replacement must explicitly mirror the same requirement" 1 "does not mirror the same requirement"
+  versioned_mirror other-requirement; arm "RED   a replacement cannot mirror another requirement" 1 "does not mirror the same requirement"
+  versioned_mirror inheritance; arm "RED   a replacement must follow consecutive inheritance" 1 "broken version inheritance"
+  versioned_mirror member;      arm "RED   a replacement must belong to its declared version" 1 "version member has no matching record"
+  versioned_mirror absent;      arm "RED   a supersession target must be a current member" 1 "invalid historical-mirror supersession"
+  versioned_mirror duplicate;   arm "RED   version ownership must be unambiguous" 1 "multiple version owners"
+  versioned_mirror schema;      arm "RED   a malformed manifest grants no mirror exemption" 1 "invalid version manifest"
+  versioned_mirror live;        arm "RED   an effective open mirror still rejects ordinary drift" 1 "historical mirror is not frozen"
+  rm -f "$t/p/contract.sexp"
   rm -f "$t/p/contract-obligations.sexp"
   # ---- rule 14 MIRROR-DERIVE: the base-corpus mirror, registry-driven ---------------------------
   # Fixture: an owner unit o/ and a mirror unit m/ beside a registry row. The owner's

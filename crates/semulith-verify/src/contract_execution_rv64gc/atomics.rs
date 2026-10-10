@@ -25,9 +25,7 @@ const MODES: [PrivilegeMode; 3] = [PrivilegeMode::M, PrivilegeMode::S, Privilege
 // RVI-A 12.1.4: ADD, SWAP, XOR, AND, OR, signed MIN/MAX, unsigned MIN/MAX.
 const FUNCTIONS: [u32; 9] = [0, 1, 4, 12, 8, 16, 20, 24, 28];
 
-#[cfg(test)]
 mod permissions;
-#[cfg(test)]
 mod reservation;
 
 struct Vector {
@@ -684,6 +682,15 @@ fn translated(function: u32, n: u32, order: u32, leaf_flags: u64, fail: u8) -> F
         }
     }
     f
+}
+
+pub(super) fn reservation_positive() -> Result<(), String> {
+    reservation::positive_over(INSNS)
+}
+
+pub(super) fn reservation_negative() -> Result<(), String> {
+    reservation::negative_over(INSNS)?;
+    permissions::physical_permissions()
 }
 
 pub(super) fn positive() -> Result<(), String> {

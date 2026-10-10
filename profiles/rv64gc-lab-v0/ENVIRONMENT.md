@@ -213,9 +213,10 @@ FS-Off1152, reserved-rounding12996 and memory faults144. Full state/memory,
 468504parcels and2844D requests are observed. Literal raw64payloads, boxed
 single interpretation, widening boxes, same-value Dirty and rounding examples
 are in the FP book. Fifteen new wrong effects/18actual disabled controls fail
-then restore; missing-binding RED precedes2entries, prior110exact. Registry112,
-effective110/114. Independent author/new/prior matrices/corpus agree; shared
-specfp adds no numeric lineage. Reservation/SC and final freeze remain open.
+then restore; missing-binding RED precedes2entries, prior110exact. That D-binding
+checkpoint had registry112/effective110/114; GS-REPORT owns the current census.
+Independent author/new/prior matrices/corpus agree; shared specfp adds no numeric
+lineage. The deterministic SC pair and final freeze remain open.
 
 GC-F binds203832positive/12852refusal-fault boundaries across all30forms:
 numeric111744, transfer/sign/boxing/directed92088, FS-Off1080,
@@ -254,15 +255,21 @@ fetched-page identity refusal is enforced by P4-SYSTEM.13 c18c: locator and quot
 readers verify exact source hashes/lengths before using a page. Restored fetched
 copies match the unchanged pins; only absent evidence permits a named skip.
 
-### Reservation witness prerequisite and physical permission repair
+### Qualified reservation and physical permission
 
-Unbound full-state histories cover60640boundaries/121280parcels/188928requests,
-including20736side-effect-free StorePermission checks;
-[the atomics chapter](docs/book/src/plan/p4/atomics.md#reservation-histories-before-binding)
-explains selected replacement/clear/trap/alias policies and the finite limits.
-Current realized110/114 is unchanged. Cold failed SC to unmapped0 now traps7
-before retirement, matching the fresh public Sail/Spike observation. A failed
-SC must obtain StorePermitted after translation without a data access; malformed
-answers remain typed provider violations. The open-v2 address/data/event pairs
-cover the added operation; frozen v0/v1 stay exact. P4-SYSTEM.13 c34b0 repairs
-the gap before dedicated reservation/SC binding and freeze.
+OB-GC-RESERVATION-V2 supersedes the frozen invalidation wording with selected
+physical/width/trap policies. Its two Execution checks run62176direct boundaries/
+124352parcels/194688requests, including1536architectural physical-permission
+cases; three unchanged companions add85boundaries/170parcels. Full state,
+retained reservation fields, memory and exact requests are observed.
+[The atomics chapter](docs/book/src/plan/p4/atomics.md#qualified-reservation-guarantee)
+gives the selected transition table, worked histories, controls and finite limits.
+
+The prior60640history/fault cells retain their values and20736permission checks;
+newly bound permission cells add1536checks and1152walks. Cold failed SC to
+unmapped0 traps7 before retirement, matching the named fresh public observation.
+A failed SC obtains StorePermitted after translation without a data access;
+malformed answers remain typed provider violations. Current realization comes
+from GS-REPORT; the reservation pair raises its checkpoint to112/114 with
+registry114 and13open-v2 members. Frozen v0/v1 remain exact. The deterministic
+SC pair and final freeze follow; no conformance or reference-lineage credit.

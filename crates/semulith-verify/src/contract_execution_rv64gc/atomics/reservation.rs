@@ -1,4 +1,4 @@
-//! Unbound reservation-history prerequisite; expectations precede execution.
+//! Qualified one-hart reservation histories; expectations precede execution.
 use super::*;
 
 #[derive(Debug, Default, PartialEq, Eq)]

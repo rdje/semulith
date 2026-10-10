@@ -27,14 +27,13 @@
 //!   `OB-GC-ENV-RESERVATION-EVENTS` states it (P4-SYSTEM.9); a multi-agent environment
 //!   that delivers one is a later contract version (`MC-MULTICORE`).
 //!
-//! The deterministic SC policy is the state document's DATA (decision 3, stated beside
-//! the reservation in `state.sexp`): an SC succeeds iff [`Reservation::matches`] holds —
-//! reservation valid ∧ physical address equal ∧ width equal, the width clause reading
-//! §12.1.2's "the SC's address is not within the reservation set" against the minimal
-//! set. The reservation is a pure function of the hart's own history: invalid at reset,
-//! changed only by the hart's own LR/SC, so cold-reset re-execution stays
-//! trace-identical and a cold-restored (invalid) reservation is always a legal state
-//! (the TLB's recorded determinism argument, `P4-SYSTEM.3` decision 2).
+//! The deterministic SC policy is selected laboratory data (decision 3). After
+//! alignment, translation and physical permission pass, SC succeeds when the
+//! reservation is valid and both physical address and width match. Exact-width
+//! matching and no spurious failure choose one permitted behavior; the predicate
+//! alone does not authorize retirement or a memory store. The reservation is a
+//! pure function of this laboratory hart's LR/SC history and cold reset, so the
+//! same cold-restored execution retains the selected deterministic behavior.
 
 /// The reservation itself: three fields, no allocation (RUST-03).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -72,12 +71,10 @@ impl Reservation {
         self.valid = false;
     }
 
-    /// The deterministic SC policy's condition (decision 3): the reservation is valid
-    /// AND the physical address equals AND the width equals — the width clause is
-    /// §12.1.2's "the SC's address is not within the reservation set" read against the
-    /// minimal set: a `.D` SC after a `.W` LR covers bytes outside the reserved four,
-    /// so it cannot pair. This is the whole success rule — the policy never fails
-    /// spuriously, so a `true` here is the architecture's license to perform the store.
+    /// The selected reservation condition: valid, equal physical address and
+    /// equal byte width. Exact-width matching and no spurious failure are
+    /// laboratory choices. The caller must separately validate alignment,
+    /// translation and physical write permission before completing SC.
     #[must_use]
     pub fn matches(&self, physical_address: u64, width: u8) -> bool {
         self.valid && self.physical_address == physical_address && self.width == width
