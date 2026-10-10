@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — register ALU wrapping and operand overlap (P4-SYSTEM.13 c15)
+
+Read pinned RV32I 1.1.4.2, seven semantic rows and shared lowering/GPR discipline.
+POS binds scope-alu/bound-arith; NEG bound-alias. Independent replay matches
+31+31+37 boundaries / 198 parcels and every committed observation. Selected
+witnesses distinguish AND/OR/XOR (0x450/0x674/0x224), signed/unsigned -1 comparisons,
+INT64_MAX +1 and INT64_MIN -1 wrapping, and aliased ADD x20,x20,x20 from 5 to 10.
+SUB and SLT identical-source results visibly overwrite earlier values with zero.
+
+Eight in-memory author alternatives fail their named steps: saturating ADD/SUB
+at boundary steps 5/6, swapped SLT/SLTU signedness at scope steps 11/13, wrong
+AND/OR/XOR at scope steps 5/6/7, prematurely cleared aliased ADD sources at alias
+step 24. The durable integer-author probe retains 22 arithmetic/10 branch cases,
+17 corpus gaps/471 steps and 42 owned records exact. NEG is a semantic
+counterexample witness for legal programs, not an invented trap requirement.
+Identity retains all 348 canonical/guest files, four author/generated files,
+all core bytes and 74 earlier entries. Registry 76, effective 74/114: thirteen
+scope pairs, seventeen guest pairs, six assumption pairs and one execution pair.
+make check passes Rust 167/17/201, fmt/clippy; schema 270/two named skips,
+freeze three/zero findings, report controls 20/0 and five fresh reports, and
+main/model book builds pass. Twenty runtime pairs/freeze remain; next OB-LUI-AUIPC.
+promotion: declined (existing bindings, observations and worked runtime book retain the finite realization).
+
+
 ## _(2026-10-10)_ — bind immediate ALU arithmetic and counterexamples (P4-SYSTEM.13 c14b)
 
 Rehash/read the pinned RV32I 1.1.4.1 clauses; six authored semantic rows match

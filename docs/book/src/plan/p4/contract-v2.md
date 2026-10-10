@@ -512,9 +512,9 @@ At c7b, 28 runtime pairs remained before version 2 could freeze.
 ## Runtime guarantee witnesses
 
 The [runtime contract chapter](contract-runtime.md)
-contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr, Sstc and immediate-ALU bindings, worked observations,
+contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr, Sstc and immediate/register-ALU bindings, worked observations,
 inherited-global repair and discriminating controls. Current G-CONTRACT is
-72/114; twenty-one runtime pairs and final freeze remain. The split retains
+74/114; twenty runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 
 P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth

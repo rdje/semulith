@@ -412,7 +412,43 @@ control also refuses. No source, expectation, frozen record, production author
 or processor semantics changes. All 72 prior registry entries remain exact.
 The repaired gate oracle passes with the ALU pair now actually registered.
 
-Current G-CONTRACT is **72/114**: thirteen scope pairs, sixteen guest pairs,
+At c14b, G-CONTRACT reached **72/114**: thirteen scope pairs, sixteen guest pairs,
 six direct assumption pairs and one direct execution pair. The registry has 74
 entries including two historical superseded bindings. Twenty-one runtime pairs
 and final freeze remain; no universal execution or firmware acceptance is claimed.
+
+## Register ALU wrapping, signedness and overlapping operands
+
+At c15, CHK-ALU-REG-POS runs scope-alu and bound-arith; NEG runs bound-alias.
+These whole legal programs cover ADD, SUB, SLT, SLTU, XOR, OR and AND. Overflow
+is ignored: ADD/SUB retain the low 64 bits. SLT compares signed values; SLTU
+compares unsigned. Logical forms operate bitwise. Both sources are read from
+the pre-state before the destination is written, including rd=rs1=rs2.
+Pinned RVI-RV32I 1.1.4.2 supplies these rules; shifts have their own contract pair.
+
+Independent replay matches every committed observation: scope-alu 31/62,
+bound-arith 31/62 and bound-alias 37/74 (99 boundaries  / 198 parcels total).
+Selected zero-based observations make the differences visible:
+
+| Guest/step | Operation or operands | Value |
+| --- | --- | --- |
+| scope-alu, steps 5/6/7 | AND/OR/XOR of 0x654 and 0x470 | 0x450 / 0x674 / 0x224 |
+| scope-alu, step 11 | Signed SLT of -1 and 1620 | x12=1 |
+| scope-alu, step 13 | Unsigned SLTU of the same bits | x13=0, overwriting 1 |
+| bound-arith, step 5 | INT64_MAX +1 | x3=0x8000000000000000 |
+| bound-arith, step 6 | INT64_MIN -1 | x5=0x7fffffffffffffff |
+| bound-alias, step 24 | ADD x20,x20,x20 with x20=5 | x20=10 |
+| bound-alias, steps 26/28 | SUB/SLT with identical sources | x21=0 / x22=0, both visible overwrites |
+
+Eight deliberately incorrect author copies fail exact steps: saturation at
+bound-arith steps 5/6; swapped comparison signedness at scope-alu steps 11/13; wrong AND/OR/XOR
+operators at scope-alu steps 5/6/7; cleared aliased ADD sources at bound-alias step 24. The
+existing integer-author controls and full normal corpus comparison retain their
+authority. NEG rejects these semantic alternatives, not a required trap for
+valid register arithmetic. All 74 earlier registry entries and every old input
+remain exact; no processor or production-author semantics changes.
+
+Current G-CONTRACT is **74/114**: thirteen scope pairs, seventeen guest pairs,
+six direct assumption pairs and one direct execution pair. The registry keeps 76
+entries, including two superseded historical checks. Twenty runtime pairs and
+final freeze remain; CPU-SYSTEM stays open.

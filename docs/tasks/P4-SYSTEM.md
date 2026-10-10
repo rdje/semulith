@@ -460,6 +460,31 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c15 — register ALU guarantees (`2026-10-10`, `SEMULITH-P4-0132`)
+
+Owned before changes on clean 4beadff, after committed c14b checks/hooks and
+actual job census. Read OB-ALU-REG and its requirement/decision; pinned
+RVI-RV32I 1.1.4.2 (same 107630-B/3b20e92f…ad75ec snapshot rehashed at c14b).
+Review seven semantic rows, wrapping Add/Sub and signed/unsigned comparison
+lowering, pre-state GPR write discipline, scope-alu/bound-arith/bound-alias
+sources and observations, integer author/probe, registry/tests and runtime book.
+
+POS runs scope-alu and bound-arith for ADD/SUB/SLT/SLTU/XOR/OR/AND, signed
+extremes, bitwise distinctions and ignored overflow. NEG runs bound-alias for
+source/destination overlap, visible zero comparisons and hardwired x0 contexts.
+Whole legal programs; NEG rejects semantic alternatives, not required traps.
+Independently replay every observation/parcel, then demonstrate saturating
+ADD/SUB, swapped signedness, wrong bitwise operators and premature aliased-source
+clearing fail named steps. Existing integer-author controls remain the durable
+proof route; slice-specific in-memory copies are diagnostics, no new semantics.
+
+Preserve all 74 prior entries and all core/guest/author/canonical/frozen bytes.
+Bind CHK-ALU-REG only after independent checks; require 76 registry bindings,
+effective 74/114 (17 guest pairs), 20 remaining runtime pairs/freeze. Update
+current book/ENV/dossier/GS and durable pointers/history. Focused make check,
+registry/author/controls, schema/freeze/report and book gates precede commit;
+no new mechanism warrants repeated full CI. Next OB-LUI-AUIPC.
+
 ### `.13` c14b — immediate ALU guarantees (`2026-10-10`, `SEMULITH-P4-0131`)
 
 Owned before changes on clean 99b32e3, after gate-control commit/hooks and actual
@@ -936,6 +961,25 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c15) (`2026-10-10`, `SEMULITH-P4-0132`):
+
+- [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c15/probe.py
+  rc=0: three guests / 99 boundaries / 198 parcels exact. Eight alternatives
+  fail intended steps: saturation 5/6, swapped comparison signedness 11/13,
+  wrong AND/OR/XOR 5/6/7, premature aliased-source clearing 24.
+  python3 scripts/probe_gc_integer_author.py rc=0: 22 arithmetic/10 branches,
+  17 corpus gaps/471 steps and 42 owned records exact.
+- [x] **IDENTITY / RUST** — python3 target/p4-system-13/c15/identity.py rc=0:
+  348 canonical/guest files and four author/generated files exact; core unchanged,
+  all 74 earlier entries exact. make check rc=0: Rust 167/17/201, fmt/clippy clean;
+  registry 76, effective 74/114, twenty runtime pairs remain.
+- [x] **SIGNOFF** — scripts/check_contract_freeze.sh rc=0: three versions/zero
+  findings; scripts/check_dossier_schema.sh rc=0: 270/two named skips.
+  scripts/check_gate_report.sh rc=0: five generated reports in sync;
+  python3 scripts/gate_report.py --self-test rc=0: 20/0. make book rc=0:
+  main/model books build; git diff --check rc=0. c15 complete; OB-LUI-AUIPC next.
+  promotion: declined (exact bindings, counterexamples and worked runtime book retain the realization).
+
 `P4-SYSTEM.13` slice (c14b) (`2026-10-10`, `SEMULITH-P4-0131`):
 
 - [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c14b/probe.py
@@ -1263,6 +1307,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c15 | independent 99/198; eight countermodels; integer 22+10/471/42; identity 348+4+74; Rust 167/17/201; oracle 20/0; schema/freeze/books | 74/114; OB-LUI-AUIPC next |
 | `2026-10-10` | `.13` c14b | independent62/124; five countermodels; integer22+10/471/42; identity348+4+72; Rust167/17/201; oracle20/0 | 72/114; OB-ALU-REG next |
 | `2026-10-10` | `.13` c14a | original ALU-bound17/18 RED; corrected20/0; duplicate-credit mutant19/20; production AST/input identity | 70/114 unchanged; c14b OB-ALU-IMM next |
 | `2026-10-10` | `.13` c13b | direct 3/0; registry 4/0; independent31/62 and terminal35/70 control; identity348+4+70; corpus 167/5360/10514; report 18/0; full CI all five legs green, Rust167/17/201, schema/freeze | 70/114; OB-ALU-IMM next |
@@ -1298,6 +1343,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c15 | `SEMULITH-P4-0132 (leaf P4-SYSTEM.13): realize register ALU wrapping and operand overlap` | c16 OB-LUI-AUIPC |
 | `.13` c14b | `SEMULITH-P4-0131 (leaf P4-SYSTEM.13): realize immediate ALU guarantees through boundary guests` | c15 OB-ALU-REG |
 | `.13` c14a | `SEMULITH-P4-0130 (leaf P4-SYSTEM.13): remove missing-id assumptions from contract-count controls` | c14b OB-ALU-IMM |
 | `.13` c13b | `SEMULITH-P4-0129 (leaf P4-SYSTEM.13): bind observable supervisor timer execution and refusals` | c14 OB-ALU-IMM, then remaining21 pairs and freeze |
@@ -1330,6 +1376,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c15 (SEMULITH-P4-0132): register ALU pair binds
+  exact 99/198 with eight wrong alternatives caught, including overlapping sources.
+  Prior inputs/bindings exact; focused checks pass, 74/114 open; OB-LUI-AUIPC next.
 
 - `2026-10-10`: `.13` c14b (SEMULITH-P4-0131): immediate ALU pair
   binds exact62/124 corpus with five wrong semantic alternatives caught.

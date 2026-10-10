@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-six direct assumption pairs and one direct execution pair, 72 checks are realized in the effective contract;
+six direct assumption pairs and one direct execution pair, 74 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -345,6 +345,8 @@ legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 | OB-SSTC NEG | Execution::SstcNegative (three refusal/handler cases), plus mm-stimecmp |
 | OB-ALU-IMM POS | scope-alu |
 | OB-ALU-IMM NEG | bound-arith |
+| OB-ALU-REG POS | scope-alu, bound-arith |
+| OB-ALU-REG NEG | bound-alias |
 
 The privilege matrix spans 483 boundaries; Sv39 spans 1,417 boundaries / 2,832
 parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319; Zicntr spans 101 / 202. Independent author replay agrees exactly.
@@ -359,8 +361,8 @@ fails at step 90. The whole-image core test also verifies preservation.
 
 The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
 observations, examples, comparison limits and control receipts. Current census:
-57 effective obligations / 114 checks, 72 realized: thirteen scope pairs,
-sixteen guest pairs, six direct assumption pairs and one direct execution pair. Twenty-one runtime pairs
+57 effective obligations / 114 checks, 74 realized: thirteen scope pairs,
+seventeen guest pairs, six direct assumption pairs and one direct execution pair. Twenty runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
 
@@ -395,3 +397,9 @@ whole legal programs use the corpus comparison rule; NEG discriminates wrong
 sign extension, comparison signedness and saturation, not a trap requirement.
 Five in-memory countermodels fail their named observations; the runtime book
 retains exact values. All prior inputs and 72 bindings stay exact.
+
+Register ALU binds scope-alu/bound-arith/bound-alias (99 boundaries / 198 parcels).
+Seven forms cover wrap, signed/unsigned comparison, bitwise distinctions and
+pre-state operand overlap. Eight wrong alternatives fail exact observations;
+all 74 prior bindings and inputs stay exact. The runtime book retains values and
+finite scope; no architectural trap is invented for these legal counterexamples.

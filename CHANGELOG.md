@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0132 (leaf P4-SYSTEM.13 c15) — realize register ALU guarantees
+
+- Bind three existing guests; independently match 99 boundaries / 198 parcels.
+  Eight alternatives discriminate wrapping, signedness, bitwise operations and
+  overlapping operands. Preserve all inputs/core and 74 prior bindings.
+- Effective 74/114; 20 runtime pairs/freeze remain. Registry 76, gate controls
+  20/0; make check Rust 167/17/201. Synchronize worked book/current counts and
+  resume pointer; focused contract/report/book gates precede commit.
+
+
 ## SEMULITH-P4-0131 (leaf P4-SYSTEM.13 c14b) — realize immediate ALU guarantees
 
 - Bind scope-alu/bound-arith to the existing POS/NEG IDs. All 62 boundaries /124
