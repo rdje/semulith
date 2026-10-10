@@ -1,6 +1,26 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — contain completed task receipts (P4-SYSTEM.13 c33c)
+
+Full tracked-family census on clean92c5855: tasks82/2914171B, live127192B;
+book51/523390B. Five whole completed c29e1–c33b spans82856B move verbatim
+in order to archive11/84762B SHAee6d39437ea5a5ee5d3ea981665b486e3db29f68987f00faea04da9296ad8302.
+Live partition46007B before receipt. Full committed127192B source inverse
+SHA6e0c4fe3b78d09da814fbc3937b935b441111c34a0c004ece5e99a8ab71119e9 exact;
+corrupt byte/absent marker/omitted payload controls refuse. Retained live
+segments/.13/.14/frontier/census and prior archives/history exact. Source's D
+parent active wording is historical; c33b completed it. No cap increases.
+Initial scratch ownership delimiter omitted surrounding inserted newlines;
+exact common prefix/suffix diagnostic identifies the whole1093B insertion,
+then source authentication passes before archive credit. No project data lost.
+Verifier/focused/six books rc=0; core/data/canonical/frozen/registry112/effective
+110/114/LIVE exact. Prior Rust173/17/242 applies: no runtime change. Book worked
+route/index/live pointers sync. Evidence target/p4-system-13/c33c. Next own
+c33d atomics-book timeline containment before reservation/SC examples, then
+reservation/SC/full CI/freeze; .14 priority provenance/note sweep still owned.
+promotion: declined (finite source-specific inverse and worked archive example retain this existing containment method).
+
 ## _(2026-10-10)_ — complete and bind finite D witnesses (P4-SYSTEM.13 c33b)
 
 Complete D owned before code on clean4f07283. Numeric123264 preserved;

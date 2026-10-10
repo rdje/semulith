@@ -1,6 +1,15 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0183 (leaf P4-SYSTEM.13 c33c) — contain completed task receipts
+
+- Preserve five whole completed spans/82856B in finite archive11/84762B;
+  authenticate full127192B source inverse/order/SHA and damaged controls.
+- Live partition46007B retains frontier/.13/.14/census; prior archives/history,
+  core/data/frozen/registry112/effective110/114/LIVE exact. Fixed caps.
+- Focused gates/six books green; prior Rust173/17/242 applies. Own atomics-book
+  timeline containment before remaining reservation/SC examples and freeze.
+
 ## SEMULITH-P4-0182 (leaf P4-SYSTEM.13 c33b) — complete and bind finite D witnesses
 
 - Bind all32Dforms with219960positive/14292refusal-fault boundaries, preserving

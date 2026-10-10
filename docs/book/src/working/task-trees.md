@@ -165,6 +165,14 @@ The earlier 19 manifest rows and 210 sealed shards remain exact: 230 logical
 rows are now 20 live plus 210 sealed. No cap or CPU-contract credit changes;
 current feature examples remain in their chapters.
 
+P4.13 c33c repeats the task inverse from `92c5855`: five whole completed
+c29e1–c33b spans total82,856 bytes. [Archive 11](../../../tasks/archive/P4-SYSTEM-11.md)
+retains them in84,762 bytes with source/payload SHA256 markers. The live
+partition is46,007 bytes before receipts. Restoring only its five routes and
+removing the new ownership/receipts reproduces all127,192 source bytes in order;
+corrupt, absent-marker and omitted-payload controls refuse. Active .13/.14,
+frontier and census remain live; earlier history and fixed caps stay exact.
+
 ### Retain book history while keeping current explanations live
 
 P4.13 c30b captures committed `0e9949b`: five contract chapters contain
