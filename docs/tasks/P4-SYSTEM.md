@@ -289,22 +289,56 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a21 bounded pin-only reads, artifact mappings/evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | a22 completed-unit containment, artifact mappings/evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
-### `.14` a21 — bound pin-only authentication (scheduled, SEMULITH-P4-0212)
+### `.14` a22 — contain completed evidence-unit records (scheduled, SEMULITH-P4-0213)
 
-After a20's clean COMMIT workflow, add an explicit bounded metadata-only pin API
+After a21's clean COMMIT workflow, preserve whole completed .14 unit records in a
+bounded task archive, with exact source inverse/order, retrieval/link checks and
+focused book/live sync. The active root is approaching its existing128KiB cap;
+make room without rewriting history or raising ceilings, then artifact mappings.
+
+### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
+
+Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.
+Add an explicit bounded metadata-only pin API
 sharing the authenticated traversal and cleanup owner, as the declared method
 requires. Preserve legacy pin calls and snapshot semantics; test pre-read bounds,
 invalid limits, races, partial I/O/cleanup and no retained payload, including
 independent omitted-bound controls under optimization. Review exact read limits
-before claiming them. Artifact schemas/mappings and bounded evaluator follow.
+before claiming them. before.py rc=0 measures the documented old snapshot growth
+sentinel: limit3 reads[3,1]/consumes4, then refuses growth with no payload/leak.
+This is not false agreement; the prospective method's hard read budget is stricter.
+Own separating payload retention from byte limits and bounding all bytes consumed;
+strengthen snapshot reads at the exact cap while preserving successful bytes and
+legacy unbounded pin behavior. When no sentinel fits, final descriptor/path
+metadata checks must still refuse growth/replacement. Retain all existing controls.
+Own the a21 snapshot-probe false RED: short-read-before.log rc=0 shows summing
+requested bytes rejects legitimate partial reads. Count consumed bytes instead;
+permanently run the complete snapshot suite through a short-read stream. This is
+an uncommitted test-instrument defect, not a reader failure; fix before signoff.
+
+Artifact schemas/mappings and bounded evaluator follow.
 Own focused checks, public API/book/live sync, protected scope and COMMIT workflow.
+If live-task capacity requires it, own a lossless whole-completed-unit partition
+with exact source inverse and preserved links; no history rewrite or ceiling rise.
+No partition needed in a21; a22 owns it before further growth. Bounded pins and
+snapshots now consume at most the call cap; legacy pin behavior retained.
+Limits53/0 (also optimized), four omissions6/5/10/3 failures (also optimized),
+old pins39/snapshots24 and17 old predicate omissions pass. Actual cap3 growth
+reads3 instead of4; refuses with no payload/leak. Correct the requested-byte
+meter and permanently exercise the snapshot suite with legitimate short reads;
+restoring that meter yields52/1 with the exact named regression.
+Focused13/profile62/0/schema25/0/seven books/public book helper/rendered/protected
+scope pass. No canonical/qualification/cap/status advance; derive768outer arms.
+Evidence target/p4-system-14/a21; latest full CI remains a18 green.
+
+
 
 ### `.14` a20 — carry typed witnesses and control baselines (completed, SEMULITH-P4-0211)
 
@@ -1242,6 +1276,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a21 — **ROOT CAUSE**: before.py/proof.py rc=0 measure the old
+  documented sentinel consuming4 at cap3; short-read-before.log rc=0 isolates
+  the requested-byte meter's false RED, distinct from reader correctness.
+- [x] `.14` a21 — **ADDRESSED**: limits53/0/optimized53/0/proof.py rc=0;
+  four omissions lose6/5/10/3 cases also optimized; wrong meter52/1 discriminates;
+  actual bounded book helper and cap3 read census pass with fixture/fd cleanup.
+- [x] `.14` a21 — **NO REGRESSION**: focused13/profile62/0/schema25/0,
+  pins39/snapshots24/17 old predicate controls/seven books rc=0; rendered checks
+  and scope.py rc=0 protect every other tracked file and existing ceilings.
+
 - [x] `.14` a20 — **ROOT CAUSE**: proof.py rc=0 confirms old schema rejects
   new fields; old graph owner with new grammar/mapper66/8 lacks their relationships.
 - [x] `.14` a20 — **ADDRESSED**: graph74/0/optimized74/0 and proof.py rc=0;
@@ -1459,6 +1503,12 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a21: limits53/0 also optimized; four mutants6/5/10/3, also optimized;
+old pins39/snapshots24/17 omissions; exact cap3 consumed3 vs old4, book helper,
+wrong-meter52/1, focused13/profile62/0/schema25/0/seven books/rendered/protected
+scope rc=0. Fix the new short-read test instrument before signoff. No capture
+or qualification credit; per-call bounds leave aggregate method budgets pending.
+
 a20: focused13/schema25/0/profile57/0/graph74/0 (also optimized), three graph
 predicate omissions4/1/3 failures (also optimized), shape/mapper/writer/facet
 controls, actual production prefix/fixture cleanup, all243dictionary inverse,
@@ -1535,6 +1585,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a21 | `SEMULITH-P4-0212 (leaf P4-SYSTEM.14): bound pin-only reads and snapshot probes` | a22 completed-unit containment, artifact mappings/evaluator, retention and fresh captures |
 | `.14` a20 | `SEMULITH-P4-0211 (leaf P4-SYSTEM.14): carry typed GPR witnesses and control baselines` | a21 bounded pin-only reads, artifact mappings/evaluator, retention and first canonical capture |
 | `.14` a19 | `SEMULITH-P4-0210 (leaf P4-SYSTEM.14): declare the first Sail GPR comparison method` | a20 typed witness/baseline grammar, artifact mappings/evaluator, retention and first canonical capture |
 | `.14` a18 | `SEMULITH-P4-0209 (leaf P4-SYSTEM.14): refuse duplicate expectation writes` | a19 method-specific comparison contract, evaluator, retention and first canonical capture |

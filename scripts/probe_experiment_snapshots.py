@@ -153,17 +153,19 @@ def run_controls():
 
         payload = b"L" * (2 * A.CHUNK_BYTES + 17)
         base.joinpath("large").write_bytes(payload)
-        requests = []
+        requests, consumed = [], []
 
         def bounded_read(descriptor, count):
             requests.append(count)
-            return original_read(descriptor, count)
+            data = original_read(descriptor, count)
+            consumed.append(len(data))
+            return data
 
         with patch.object(A.os, "read", bounded_read):
             judge("multi-chunk snapshot", checked(base, P.record("large", payload), len(payload)),
                   "matched", "match", payload)
-        if len(requests) < 4 or max(requests) > A.CHUNK_BYTES:
-            raise ValueError("snapshot read exceeded chunk bound or lost multi-chunk witness")
+        if len(requests) < 3 or max(requests) > A.CHUNK_BYTES or sum(consumed) != len(payload):
+            raise ValueError("snapshot read exceeded chunk/total bound or lost multi-chunk witness")
     if base.exists():
         raise ValueError("snapshot fixture was not removed")
     print(f"EXPERIMENT-SNAPSHOTS: {passed} pass / {failed} fail; descriptors/fixture cleaned")

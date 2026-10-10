@@ -56,13 +56,15 @@ def _git_boundary(directory_fd: int):
 
 
 def _read_pinned(root: Path, record_kind: str, record: dict,
-                 snapshot_limit: int | None = None) -> Snapshot:
+                 byte_limit: int | None = None, *, retain_payload: bool = False) -> Snapshot:
     """Authenticate one input/observation pin without following symlinks.
 
     The caller supplies the trusted runtime repository root. Record shape normally
     comes from the reference schema; standalone calls also refuse invalid pins.
-    Directory descriptors anchor traversal. Reads stop at the initial file size
-    plus one byte. Every acquired descriptor gets a close callback; remaining
+    Directory descriptors anchor traversal. Legacy reads stop at the initial size
+    plus one byte. Bounded reads never request a growth sentinel beyond the byte
+    limit; final file/path identities still detect growth at the exact cap.
+    Every acquired descriptor gets a close callback; remaining
     callbacks run even if one close fails, and that failure yields no pin match.
     """
     rid, raw = record.get("id", "<unnamed>"), record.get("path", "")
@@ -113,13 +115,14 @@ def _read_pinned(root: Path, record_kind: str, record: dict,
                 raise UnsafeArtifact("file crosses repository volume")
             if not stat.S_ISREG(before.st_mode):
                 raise UnsafeArtifact("artifact is not a regular file")
-            if snapshot_limit is not None and before.st_size > snapshot_limit:
-                raise UnsafeArtifact("artifact exceeds snapshot byte limit")
+            if byte_limit is not None and before.st_size > byte_limit:
+                label = "snapshot" if retain_payload else "pin"
+                raise UnsafeArtifact(f"artifact exceeds {label} byte limit")
             if size_pin is not None and before.st_size != size_pin:
                 return result("mismatch", "observation byte size differs", before.st_size)
 
             digest, remaining = hashlib.sha256(), before.st_size
-            chunks = [] if snapshot_limit is not None else None
+            chunks = [] if retain_payload else None
             while remaining:
                 chunk = os.read(file_fd, min(remaining, CHUNK_BYTES))
                 if not chunk:
@@ -128,7 +131,7 @@ def _read_pinned(root: Path, record_kind: str, record: dict,
                 if chunks is not None:
                     chunks.append(chunk)
                 remaining -= len(chunk)
-            if os.read(file_fd, 1):
+            if (byte_limit is None or before.st_size < byte_limit) and os.read(file_fd, 1):
                 raise UnsafeArtifact("artifact grew during reading")
             if _identity(os.fstat(file_fd)) != _identity(before):
                 raise UnsafeArtifact("artifact changed during reading")
@@ -164,6 +167,19 @@ def read_pinned(root: Path, record_kind: str, record: dict) -> PinResult:
     return _read_pinned(root, record_kind, record).pin
 
 
+def read_bounded_pin(root: Path, record_kind: str, record: dict, *, max_bytes: int) -> PinResult:
+    """Authenticate with an explicit total read bound and no retained payload.
+
+    Oversized files refuse before payload reading. Invalid limits refuse before
+    opening; zero permits an empty file without a read. All traversal, stability
+    and cleanup checks are shared with the legacy pin and snapshot APIs.
+    """
+    if type(max_bytes) is not int or max_bytes < 0:
+        return PinResult(record_kind, record.get("id", "<unnamed>"),
+                         record.get("path", ""), "refused", "invalid pin byte limit")
+    return _read_pinned(root, record_kind, record, byte_limit=max_bytes).pin
+
+
 def read_snapshot(root: Path, record_kind: str, record: dict, *, max_bytes: int) -> Snapshot:
     """Return immutable authenticated bytes with an explicit caller byte bound.
 
@@ -177,7 +193,7 @@ def read_snapshot(root: Path, record_kind: str, record: dict, *, max_bytes: int)
     if type(max_bytes) is not int or max_bytes < 0:
         return Snapshot(PinResult(record_kind, record.get("id", "<unnamed>"),
                                   record.get("path", ""), "refused", "invalid snapshot byte limit"), None)
-    return _read_pinned(root, record_kind, record, snapshot_limit=max_bytes)
+    return _read_pinned(root, record_kind, record, byte_limit=max_bytes, retain_payload=True)
 
 
 def check_files(root: Path, verification: dict) -> list[PinResult]:

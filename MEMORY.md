@@ -18,11 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a21/0212: bound pin-only authentication through
-  the existing traversal/cleanup owner, verifying actual read limits and legacy
-  behavior. Typed optional GPR witnesses/control baselines now have shape/mapping
-  and generic graph checks; method contract is in its decision/GC book. Keep
-  qualification closed. Artifact mappings/evaluator/collector, measured retention,
-  fresh captures and full policy/status/mirrors follow; latest full CI a18 green.
+- next_action: `P4-SYSTEM.14` a22/0213: losslessly partition completed .14 unit
+  records before the active task root reaches its existing128KiB cap; shard notes
+  if needed, preserve exact inverse/order/retrieval and all ceilings. Then artifact
+  schemas/mappings, method evaluator/collector, measured retention, fresh captures
+  and full policy/status/mirrors. Typed locators and per-call pin/snapshot bounds
+  exist; qualification remains closed. Latest full CI a18 green; no canonical v1.
 - in_flight_uncommitted: none after this commit.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

@@ -2,9 +2,9 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — typed witness/baseline grammar implemented; method/artifacts and canonical captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a20, `SEMULITH-P4-0210`–`0211`; matched-experiment contract, GC verification policy and public Sail adapter
-answers: Which typed witness/baseline checks exist, what must the first Sail GPR evaluator still check, and which claims remain outside its scope?
+- **Status:** `active` — typed grammar and bounded readers implemented; method/artifacts and canonical captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a21, `SEMULITH-P4-0210`–`0212`; matched-experiment contract, GC verification policy and public Sail adapter
+answers: Which typed witness/baseline and bounded-read checks exist, what must the first Sail GPR evaluator still check, and which claims remain outside its scope?
 
 ## The fact / decision
 
@@ -170,7 +170,9 @@ Bound aggregate retained snapshot payload to 16 MiB per experiment. Other princi
 files need pin-only authentication; do not load them without an explicit bound.
 Project dependency pins may stream without retaining payload; bound one dependency
 read to 8 MiB and the aggregate authenticated project-file reads to 128 MiB.
-The reader needs a bounded pin-only operation before this rule is implemented.
+`read_bounded_pin` now enforces an explicit total read cap without retaining payload;
+`read_snapshot` shares the bound, including growth probes. Legacy `read_pinned` has
+no total byte cap. The future evaluator still owns the aggregate method budgets.
 Counts/bytes are checked before allocating/reading beyond a bound. Parsed objects,
 chunks and immutable copies add memory: these payload bounds are not exact process
 RAM ceilings. Overflow refuses, never truncates to fit.

@@ -268,6 +268,48 @@ state, memory and requests are uncredited except where read into the declared GP
 changes. Validating a trace budget does not authenticate execution or qualify a
 structured experiment. No canonical capture or requirement status changes here.
 
+## Authenticating a pin with a total read bound
+
+`read_bounded_pin` returns the same immutable `PinResult` as `read_pinned`, while
+requiring keyword `max_bytes`. The limit is a nonnegative integer, excluding
+booleans; invalid limits refuse before opening a path. Oversized files refuse
+before payload reading. It uses the same anchored traversal, SHA256, identity,
+volume/Git-boundary and cleanup checks, without retaining snapshot payload.
+
+```python
+from pathlib import Path
+from experiment_artifacts import read_bounded_pin
+
+# record is an already schema/graph-validated project-file input.
+pin = read_bounded_pin(Path.cwd(), "input", record, max_bytes=8 * 1024 * 1024)
+if pin.disposition != "matched":
+    raise ValueError(pin.disposition + ": " + pin.reason)
+```
+
+Both bounded APIs now keep every read within the call's budget. If the initial
+file fills the limit, there is no room for the usual one-byte growth probe; final
+descriptor/path metadata checks still refuse growth or replacement. With room
+remaining, the growth probe stays within the limit. A zero-bound empty file needs
+no read. Before this change, a snapshot at its payload cap could consume one extra
+growth byte, then correctly refuse without returning data. That documented
+sentinel did not produce agreement; the prospective method needs stricter bounds.
+
+Legacy `read_pinned` retains its streaming/chunk limit and initial-size-plus-one
+probe, with no total byte cap. The new per-call limit does not enforce aggregate
+experiment budgets: the future evaluator must reserve/account for those separately.
+None of these APIs authenticates a process or qualifies a comparison.
+
+```bash
+python3 scripts/probe_experiment_read_limits.py
+python3 -O scripts/probe_experiment_read_limits.py
+```
+
+The 53 controls measure actual reads, exact/zero limits, growth with/without room,
+short reads, refusals and cleanup. Four separate mutations remove the pin bound,
+invalid-limit check, sentinel budget or payload-retention separation; each must
+fail on named cases, including under optimization. The prior pin/snapshot suites
+and their independent guard-omission controls remain in force.
+
 ## Taking bounded snapshots for comparison
 
 A pin-only result describes a file during its check. Reopening that filename later

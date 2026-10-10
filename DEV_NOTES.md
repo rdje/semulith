@@ -1,5 +1,27 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — bound authentication reads (P4-SYSTEM.14 a21)
+
+Separate retention from limits in the shared anchored reader; expose read_bounded_pin
+with required nonnegative/nonboolean max_bytes and no payload. Snapshot growth
+probes also stay within the cap. At an exact cap, metadata checks refuse growth
+without another read; legacy pin-only behavior remains. Actual cap3 diagnostic:
+old snapshot consumes4 then refuses, current consumes3 and refuses without data.
+No old false agreement is claimed. Aggregate method budgets remain evaluator work.
+
+Limits53/0 also optimized; four independent omissions lose6/5/10/3 intended cases,
+also optimized. Preserve pins39/snapshots24 and17 old omission controls, plus real
+multi-chunk pin reads and cleanup. Review reproduced a new probe's false RED on
+legitimate short reads: it summed requested bytes. Count consumed bytes and run
+the complete snapshot suite through short reads; reinstated wrong meter52/1 fails
+exactly that case. The literal book harness initially passed a Path, correctly
+refused; use its required canonical string before accepting the result.
+
+Focused13/profile62/0/schema25/0, seven books, actual book helper, rendered checks
+and protected scope pass. Derive768outer arms; no canonical/qualification/status/
+cap advance. Evidence target/p4-system-14/a21; latest full CI a18 green.
+promotion: matched-experiment/first-method decisions and GC-book read-budget API.
+
 ## _(2026-10-11)_ — typed comparison locators (P4-SYSTEM.14 a20)
 
 Carry optional singular gpr_witness(step_n,register) and control baseline_id in the

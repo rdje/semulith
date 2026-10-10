@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0212 (leaf P4-SYSTEM.14) — bound pin-only reads and snapshot probes
+
+- Add explicit bounded pin-only authentication without payload retention; cap snapshot growth probes while preserving stability/cleanup checks and legacy pin behavior. Per-call bounds do not yet enforce aggregate method budgets.
+- Limits53/0 and four omissions6/5/10/3 discriminate, also optimized; old pins39/snapshots24/17 omissions pass. Correct a requested-byte test meter with a permanent short-read regression (wrong meter52/1). Focused13/profile62/0/schema25/0/seven books/public example/rendered/protected checks pass; derive768 outer arms. No canonical capture, qualification, CPU state or cap change.
+
 ## SEMULITH-P4-0211 (leaf P4-SYSTEM.14) — carry typed GPR witnesses and control baselines
 
 - Add optional witness/baseline syntax to the existing reference schema/mapper; check witness budget/GPR kind and baseline endpoints. Preserve generic records; full method/artifacts and qualification remain pending.

@@ -680,6 +680,16 @@ EOF
   score "GREEN structured artifact pin controls" "$rc" 0 "$out" "EXPERIMENT-ARTIFACTS: 39 pass / 0 fail; descriptors/fixture cleaned"
   out="$(python3 "$ROOT/scripts/probe_experiment_snapshots.py" 2>&1)"; rc=$?
   score "GREEN bounded authenticated snapshot controls" "$rc" 0 "$out" "EXPERIMENT-SNAPSHOTS: 24 pass / 0 fail; descriptors/fixture cleaned"
+  out="$(python3 "$ROOT/scripts/probe_experiment_read_limits.py" 2>&1)"; rc=$?
+  score "GREEN explicit pin and snapshot read-budget controls" "$rc" 0 "$out" "EXPERIMENT-READ-LIMITS: 53 pass / 0 fail; descriptors/fixture cleaned"
+  out="$(python3 "$ROOT/scripts/probe_experiment_read_limits.py" --mutation ignore-pin-limit 2>&1)"; rc=$?
+  score "RED omitted pin limit reads an oversized payload" "$rc" 1 "$out" "READ-LIMIT MISS oversized pin refuses before reading"
+  out="$(python3 "$ROOT/scripts/probe_experiment_read_limits.py" --mutation ignore-invalid-pin-limit 2>&1)"; rc=$?
+  score "RED omitted pin-limit validation opens a path" "$rc" 1 "$out" "READ-LIMIT MISS invalid pin limit -1"
+  out="$(python3 "$ROOT/scripts/probe_experiment_read_limits.py" --mutation ignore-sentinel-budget 2>&1)"; rc=$?
+  score "RED unbounded growth sentinel exceeds snapshot cap" "$rc" 1 "$out" "READ-LIMIT MISS snapshot growth-at-cap consumes at most bound"
+  out="$(python3 "$ROOT/scripts/probe_experiment_read_limits.py" --mutation retain-pin-payload 2>&1)"; rc=$?
+  score "RED pin-only path retaining snapshot payload is detected" "$rc" 1 "$out" "READ-LIMIT MISS pin-only creates no snapshot payload"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

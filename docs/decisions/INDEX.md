@@ -6,7 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
-| [`decision_sail-gpr-comparison-method.md`](decision_sail-gpr-comparison-method.md) | `decision` | typed GPR witness/baseline grammar checked; finite first-method artifacts/closure, provenance/replay contract; evaluator pending |
+| [`decision_sail-gpr-comparison-method.md`](decision_sail-gpr-comparison-method.md) | `decision` | typed GPR witness/baseline grammar and bounded readers checked; finite first-method artifacts/closure and provenance/replay contract; evaluator pending |
 | [`decision_qualified-matched-experiment-contract.md`](decision_qualified-matched-experiment-contract.md) | `decision` | matched-GPR syntax, declared edges, file pins, bounded snapshots, unique expectation writes and Sail step-budget checks; comparison/qualification and retention pending |
 | [`decision_obligation-catalog-parts.md`](decision_obligation-catalog-parts.md) | `decision` | explicit root-relative parts share one expansion owner; frozen bytes/order and fixed caps survive partition |
 | [`decision_claim-verification-adopted.md`](decision_claim-verification-adopted.md) | `decision` | "checked" means re-derived, falsified and durable; a missing leg is named, never omitted |
