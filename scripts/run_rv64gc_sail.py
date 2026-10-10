@@ -102,6 +102,10 @@ def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, 
     if [e['n'] for e in steps] != list(range(count)):
         raise SailError('expectation steps are incomplete, duplicated or out of order')
     rows, deliveries = parse_trace(text)
+    if extra_rows := sorted(n for n in rows if n >= count):
+        raise SailError(f'instruction steps {extra_rows} outside declared budget [0, {count})')
+    if extra_deliveries := sorted(n for n in deliveries if n >= count):
+        raise SailError(f'delivery steps {extra_deliveries} outside declared budget [0, {count})')
     registers = {f'x{i}': 0 for i in range(32)}
     for e in steps:
         n = e['n']

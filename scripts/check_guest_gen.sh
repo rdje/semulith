@@ -292,6 +292,11 @@ PYCODE
   out="$(python3 scripts/probe_gc_sail.py --mutation ignore-parcel-interrupt 2>&1)"; rc=$?
   arm "RED parcel interrupt annotations require their witnessed event" "$rc" 1 "$out" "missing expected step 0 (c.addi x10, 1)"
 
+  out="$(python3 scripts/probe_gc_sail.py --mutation ignore-extra-rows 2>&1)"; rc=$?
+  arm "RED Sail trace rows cannot exceed the declared budget" "$rc" 1 "$out" "out-of-budget instruction row accepted"
+  out="$(python3 scripts/probe_gc_sail.py --mutation ignore-extra-deliveries 2>&1)"; rc=$?
+  arm "RED Sail witnessed deliveries cannot exceed the declared budget" "$rc" 1 "$out" "out-of-budget interrupt delivery accepted"
+
   # d3c: independent C parcel rules, including scatter basis and original trap bits.
   out="$(python3 scripts/probe_c_author.py 2>&1)"; rc=$?
   arm "GREEN independent C author expansions and effects" "$rc" 0 "$out" "37 expansions/effects"

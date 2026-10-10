@@ -319,7 +319,9 @@ Each guest runs twice. Both processes must succeed, produce fresh trace files an
 byte-identical traces. Every ordinary expected instruction needs a trace row, even if it
 changes no register. A declared interrupt-delivery or fetch-fault gap instead needs its
 matching trace event. An empty or truncated trace cannot agree just because a missing
-instruction writes nothing. Malformed, duplicate and unknown records refuse by name.
+instruction writes nothing. Instruction rows and witnessed deliveries outside the declared
+step budget refuse, including a tail after an earlier value difference. Malformed,
+duplicate and unknown records refuse by name.
 
 ```sh
 # cached row evidence can be checked without launching a reference process:

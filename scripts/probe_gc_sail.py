@@ -26,14 +26,41 @@ def refused(fn, reason, failure):
     try:
         fn()
     except S.SailError as exc:
-        assert reason in str(exc), str(exc)
+        if reason not in str(exc):
+            raise AssertionError(str(exc))
     else:
         raise AssertionError(failure)
+
+
+def check_budget(adapter):
+    """Tail controls remain effective under Python optimization."""
+    event = 'handling int#supervisor-software-interrupt at priv M | tval=0x0000000000000000\n'
+    fetch = 'handling exc#fetch-page-fault at priv M | tval=0x0000000000403000\n'
+    cases = (
+        ('instruction row', NOP + NOP.replace('[0]', '[1]') +
+         'x1 <- 0x0000000000000001\n', 'instruction steps [1]'),
+        ('distant instruction row', NOP + NOP.replace('[0]', '[99]'), 'instruction steps [99]'),
+        ('tail after an earlier value difference', NOP + 'x1 <- 0x0000000000000001\n' +
+         NOP.replace('[0]', '[1]'), 'instruction steps [1]'),
+        ('interrupt delivery', NOP + event, 'delivery steps [1]'),
+        ('fetch delivery', NOP + fetch, 'delivery steps [1]'),
+    )
+    for name, text, reason in cases:
+        refused(lambda: adapter.compare_trace(expected(), text), reason,
+                'out-of-budget ' + name + ' accepted')
+    # Positive comparisons still require the exact last in-budget boundary.
+    for want, text in ((expected(), NOP),
+                       (expected(writes={'x1': '0x1'}), NOP + 'x1 <- 0x0000000000000001\n'),
+                       (expected('<fetch page fault at 0x403000>'), fetch)):
+        if adapter.compare_trace(want, text)[0] != 'AGREE':
+            raise AssertionError('exact last boundary refused')
+    print('Sail budget: 5 tail refusals / 3 exact-boundary agreements')
 
 
 def check(adapter, root):
     global S
     S = adapter
+    check_budget(adapter)
     assert S.compare_trace(expected(), NOP)[0] == 'AGREE'
     assert S.compare_trace(expected(), NOP + 'x0 <- 0x0000000000000000\n')[0] == 'AGREE'
     refused(lambda: S.compare_trace(expected(), ''), 'missing expected step 0',
@@ -159,7 +186,8 @@ def check(adapter, root):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mutation', choices=['permit-missing', 'ignore-status',
-                                              'unwitnessed-gap', 'keep-stale', 'ignore-parcel-interrupt'])
+                                              'unwitnessed-gap', 'keep-stale', 'ignore-parcel-interrupt',
+                                              'ignore-extra-rows', 'ignore-extra-deliveries'])
     args = parser.parse_args()
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
@@ -179,9 +207,15 @@ def main():
                     "        declared = DECLARED_INTERRUPT.match(e['derivation'])",
                     "        declared = DECLARED_INTERRUPT.match(e['derivation']) if not e['derivation'].startswith('pending interrupt ') else None"),
                 'keep-stale': ('trace.unlink(missing_ok=True)', 'pass'),
+                'ignore-extra-rows': ('if extra_rows := sorted(n for n in rows if n >= count):',
+                                      'if False:'),
+                'ignore-extra-deliveries': (
+                    'if extra_deliveries := sorted(n for n in deliveries if n >= count):',
+                    'if False:'),
             }
             old, new = changes[args.mutation]
-            assert source.count(old) == 1, 'Sail mutation must match once'
+            if source.count(old) != 1:
+                raise AssertionError('Sail mutation must match once')
             path = root / 'sail_control.py'
             path.write_text(source.replace(old, new))
             spec = importlib.util.spec_from_file_location('sail_control', path)

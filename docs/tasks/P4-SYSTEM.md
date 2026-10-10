@@ -296,6 +296,40 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a16 — refuse observations beyond the declared Sail budget (completed, SEMULITH-P4-0207)
+
+Owned on clean11ee6d4, brief0/untracked and actual process census OK, before edits.
+Priority high; own and fix the false-AGREE comparator defect before comparison
+qualification work. Read the adapter, offline probes, GUEST-GEN registration and
+assembler/GC book contracts. Reproduction: compare the one-step NOP expectation
+against NOP plus a step1 row (including an x1 write), or a following interrupt or
+fetch-delivery event. All three currently return AGREE: parsing retains these
+observations, but comparison iterates only expected steps and never rejects the
+tail. An exact runtime instruction limit cannot replace validation of retained
+or offline traces. Reject out-of-budget rows and witnessed deliveries before
+comparing values; preserve the declared GPR/delivery vocabulary and honest scope.
+Add positive boundary cases, separate removal controls and focused downstream
+checks. Publish behavior/examples in the book; no canonical capture or qualification
+credit. Existing pinned public atomic/timer diagnostic protocols may be rerun. Use the existing lossless live-note sharder if the new entry reaches its
+ceiling; prove whole-entry partition/inverse and immutable old history. Run the
+ordinary COMMIT workflow before proceeding. Evidence target/p4-system-14/a16.
+
+Verified: budget5tails/3positive, two independent omissions with intended reasons
+in normal/optimized runs; GUEST-GEN152/0; focused13 and sharder12/0. Replay all167
+guests/334 existing exact-corpus traces: verdict/reason pairs match predecessor,
+300AGREE/30DIVERGE/4REFUSED (cached status only). Existing live public atomic242/
+3146boundaries per repetition and timer diagnostics retain results; no new v1
+canonical records or adequacy credit. Seven books/rendered budget examples pass.
+Protected1265other tracked files exact; old notes partition28==26+2 byte/order
+exact and old manifest is exact prefix. New shard0236 is4765B, SHA256
+a9cb338afe09e535aa6d8b0cf9a62cad8ccd720f4ed5eed9391af782d726a5fe.
+Derive751outer arms; caps/runtime/canonical/archive/CPU acceptance unchanged.
+The new shard preserves the original entry's final blank separator byte-exact.
+Ordinary git diff whitespace checking flags that newly added EOF separator;
+check every other path normally and this one with blank-at-eof disabled only.
+No tracked whitespace policy, checker or retained shard bytes are changed.
+promotion: matched-experiment decision and GC book retain the rule and limits.
+
 ### `.14` a15 — authenticate declared input and observation files (completed, SEMULITH-P4-0206)
 
 Owned on clean9b14365, brief0/untracked and actual process census OK, before edits.
@@ -1062,6 +1096,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a16 — **ROOT CAUSE**: before.log rc=0 reproduces three false
+  agreements on surplus rows/interrupt/fetch deliveries in predecessor11ee6d4.
+- [x] `.14` a16 — **ADDRESSED**: proof.log rc=0: five tails/three positives,
+  separate row/delivery omissions fail for intended reasons, also optimized;
+  GUEST-GEN152/0 rc=0 preserves the prior offline controls.
+- [x] `.14` a16 — **NO REGRESSION**: focused13/seven books rc=0;
+  corpus334 exact before/after verdict/reason pairs and live atomic/timer rc=0;
+  scope.py rc=0 proves1265other files exact and old-note28==26+2 partition.
+
+
 - [x] `.14` a15 — **ROOT CAUSE**: integration.py rc=0: predecessor9b14365
   lacks pin diagnostics; matching metadata alone cannot authenticate file bytes.
 - [x] `.14` a15 — **ADDRESSED**: EXPERIMENT-ARTIFACTS39/0/optimized39/0 rc=0:
@@ -1231,6 +1275,12 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a16: false-AGREE reproduction, budget5tails/3positive, two independent omissions
+normal/optimized, GUEST-GEN152/0, focused13/sharder12/0/seven books/rendered budget,
+334cached-trace exact outcome pairs, live public atomic/timer, protected scope and
+whole-entry notes partition rc=0. No Rust changes; qualifier remains closed.
+
+
 a15: pin39/0/optimized39/0, graph63/0, profile53/0, twelve predicate removals,
 actual checker before/after, focused13/seven books/full rendered reader/protected
 scope rc=0. No Rust changes; comparison/policy qualification remains pending.
@@ -1276,6 +1326,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a16 | `SEMULITH-P4-0207 (leaf P4-SYSTEM.14): refuse surplus Sail observations` | authenticated bounded snapshots, comparison/qualification, retention and fresh canonical capture |
 | `.14` a15 | `SEMULITH-P4-0206 (leaf P4-SYSTEM.14): authenticate experiment file pins` | comparison/qualification evaluator, bounded retention, first fresh capture |
 | `.14` a14 | `SEMULITH-P4-0205 (leaf P4-SYSTEM.14): validate capture identities and declared edges` | artifact/pin/comparison evaluator, bounded retention, first fresh capture |
 | `.14` a13 | `SEMULITH-P4-0204 (leaf P4-SYSTEM.14): carry structured experiment verification` | relationship/pin/artifact evaluator, bounded retention, first fresh capture |

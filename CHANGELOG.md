@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0207 (leaf P4-SYSTEM.14) — refuse surplus Sail observations
+
+- Reproduce/fix false agreement on extra instruction rows or witnessed deliveries. Validate the full declared budget before value comparison; preserve the finite GPR/delivery vocabulary.
+- Five tail/three exact-boundary cases and two check-removal controls pass, including optimized budget checks. Existing live atomic/timer diagnostics retain their expected results. Preserve two complete old notes through lossless sharding; no canonical qualification or CPU acceptance credit. Focused13/GUEST-GEN152/0/sharder12/0/seven books and334cached outcome-pair/protected-scope checks pass. Derive751 outer arms.
+
 ## SEMULITH-P4-0206 (leaf P4-SYSTEM.14) — authenticate experiment file pins
 
 - Add descriptor-anchored, same-volume regular-file authentication for declared input/observation SHA256 and sizes, with matched/mismatch/unavailable/refused results. Refuse symlinks, nested Git boundaries, special files and concurrent replacement; bound streaming reads and close callbacks.

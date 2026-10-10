@@ -195,3 +195,35 @@ stand in for a required complete trace. Full dependency currentness, producer
 adequacy and policy-derived coverage remain pending. Even when every declared
 file matches, production still reports `UNQUALIFIED EXPERIMENT VERIFICATION`.
 No fresh canonical capture or CPU acceptance credit is created by these checks.
+
+## Sail comparison requires the complete declared budget
+
+The public Sail adapter compares finite GPR changes and witnessed interrupt/fetch
+deliveries. A one-step expectation permits only boundary0. Appending instruction
+row1, even with no register change, or a delivery at boundary1 is refused as
+`outside declared budget [0, 1)`. A distant row99 also refuses. All parsed rows and
+witnessed deliveries are checked **before** value comparison; an earlier wrong
+value cannot hide a surplus tail behind a `DIVERGE` result. Missing required rows
+retain their existing refusal, and valid last-boundary rows/deliveries still agree.
+
+P4.14 a16 reproduced three false agreements in the preceding adapter: it parsed
+the surplus observations but iterated only the expected steps. The runtime's exact
+instruction limit did not validate arbitrary retained traces. The repair applies
+to both live runs and the cached `--check-trace` path.
+
+```bash
+python3 scripts/probe_gc_sail.py
+bash scripts/check_guest_gen.sh --self-test
+```
+
+The budget controls exercise five tails and three genuine exact-boundary
+agreements. Two separate mutations remove the row and delivery checks; each must
+fail for its intended reason. These new checks and refusal-reason assertions
+remain active under Python optimization; this makes no blanket optimization
+claim for the older probe assertions. The existing live atomic-alignment and
+timer diagnostics use the pinned public binary and retain their expected results.
+
+The comparison vocabulary remains limited: PC/word, FP registers, direct CSR
+state, memory and requests are uncredited except where read into the declared GPR
+changes. Validating a trace budget does not authenticate execution or qualify a
+structured experiment. No canonical capture or requirement status changes here.

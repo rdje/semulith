@@ -3,8 +3,8 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — grammar/mapping, declared edges and file pins implemented; comparison/qualification and retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a15, `SEMULITH-P4-0203`–`0206`; existing GC verification policy and evidence-graph requirements
-answers: What syntax, identity/edge and file-pin checks are implemented for matched-GPR captures, and why does qualification remain closed?
+- **Owner / source:** `P4-SYSTEM.14` a12–a16, `SEMULITH-P4-0203`–`0207`; existing GC verification policy and evidence-graph requirements
+answers: Which matched-GPR syntax, edge, pin and Sail trace-budget checks exist, and why does qualification remain closed?
 
 ## The fact / decision
 
@@ -18,7 +18,9 @@ that its evidence is adequate or current.
 **Current implementation:** a13 implements the optional block in the existing
 reference schema and single dossier mapper. a14 adds raw-form schema validation,
 scoped identities and declared-edge checks; a15 authenticates declared file pins
-through anchored same-volume traversal. DOSSIER-SCHEMA checks its shape;
+through anchored same-volume traversal. a16 repairs Sail comparison to refuse
+rows/witnessed deliveries beyond the declared step budget, before value comparison.
+DOSSIER-SCHEMA checks its shape;
 PROFILE-CONSISTENCY refuses every block as `UNQUALIFIED EXPERIMENT VERIFICATION`
 while comparison/qualification evaluation is pending. Legacy flat metadata and
 experiment/model/pair checks remain intact. No GC record is qualified. This contract applies
