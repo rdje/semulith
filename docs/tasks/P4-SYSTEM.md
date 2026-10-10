@@ -252,6 +252,14 @@ This gate authorises the planned next engineering stage: board implementation.
   generated vector notes still repeat it. Reproduce with generator/templates and
   vector note census; priority before .14 evidence signoff, owned repair of prose
   and exact note-only published regeneration, preserving all numeric bits/flags.
+  C33d's public syntax review additionally finds scripts/riscv_asm.py's live
+  module docstring claiming Sail/Spike encoding ancestry and semantic independence.
+  git blame lines42–46 pins rootb8d09f53. Reproduce by reading that own-script
+  paragraph; impact is unsupported maintained evidence rationale, no observed
+  encoding fault. Own correction with the priority-first .14 provenance sweep
+  before evidence signoff, using public artifacts/contracts and explicit lineage
+  limits. Canonical Assembler(profile/encoding.sexp) returns before the upstream
+  table-directory fallback; current witnesses do not inspect dependency source.
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -365,6 +373,48 @@ route/index/live pointers sync. Evidence target/p4-system-13/c33c. Next own
 c33d atomics-book timeline containment before reservation/SC examples, then
 reservation/SC/full CI/freeze; .14 priority provenance/note sweep still owned.
 promotion: declined (finite source-specific inverse and worked archive example retain this existing containment method).
+
+
+### `.13` c33d — contain atomics timeline before final pairs (completed, SEMULITH-P4-0184)
+
+Owned on clean2c5a9fd/brief0/actual census rc=0. Governed book51/523938B
+leaves350B; live task49054B/131072. Read full atomics chapter, current A
+semantics/selected reservation policy, public guest syntax and v2 counts.
+Preserve whole original introduction before Direct contract observations in
+new finite archive/P4-SYSTEM-book-c33d.md with source/payload length/SHA and
+complete chapter inverse. Replace timeline by current22form/ordering/width/
+LR-SC/AMO/fault-policy explanation, worked syntax and public evidence limits.
+Qualify last c29a checkpoint102/114 as historical with current contract route;
+preserve that whole original paragraph too. Retain all other original headings,
+tables/fences/feature examples/public observations byte-exact, prior archives/
+history/core/data/canonical/frozen/registry112/effective110/114/LIVE exact.
+Corrupt/absent-marker/omitted controls refuse. No bound grows. Full tracked
+family/part census, worked inverse route/index/live receipts, focused/six books,
+clean commit before reservation/SC/full CI/freeze; .14 sweep stays owned.
+
+Result:
+
+Governed book51/523938B leaves350B on clean2c5a9fd. Preserve whole original
+7179B atomics introduction plus440B c29a checkpoint paragraph in finite
+8886B archive SHA80c1896a54884aa9cd955eddd3ee372b2937ee7239de02bd61fbc88365d854a3.
+Full14853B committed-source inverse/order SHA2da8559ebe63d0b838ee8e16e5f62da0908a716142278c2c9ee1a4e662c22461
+exact; corrupt/absent-marker/omitted-payload controls refuse. Chapter14853→
+10769B saves4084B. All original headings/tables/translation fence/direct and
+public evidence body byte-exact. Current22forms/nineAMOs/W-D/aq-rl/physical
+width-valid reservation/selected LR-SC/fault rules and public evidence limits
+remain explained; new three-step syntax yields oldwordSExt/SC0/readback42.
+Canonical assembler22forms/88ordering words and independent-author worked
+sequence exact. Initial scratch unpack assumed a pair; published assemble API
+returns a list of(word,text), corrected before any syntax credit. No model fault.
+Scoped own-script review finds assembler module docstring's ancestry/semantic-
+independence assertions, rootb8d09f53; .14 priority repair owned before evidence
+signoff. Canonical encoding route returns before upstream-table fallback.
+Verify/focused/six books rc=0. Prior archives/history/core/data/canonical/frozen/
+registry112/effective110/114/LIVE exact; prior Rust173/17/242 applies. Current
+c29a count explicitly historical, live v2 route; book worked inverse/index/
+pointers sync, fixed caps. Evidence target/p4-system-13/c33d. Next own c34
+reservation witnesses, then SC/full CI/freeze; .14 sweep remains scheduled.
+promotion: declined (finite source inverse, permanent public examples and named .14 repair preserve this existing containment/evidence discipline).
 
 
 
@@ -510,6 +560,19 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c33d — **ROOT CAUSE**: census/partition.py rc=0: full51-member
+ book523938B/350room, original7179B introduction/440B checkpoint selected
+ before change. Own-script blame pins ancestry wording rootb8d09f53, .14 owned.
+- [x] `.13` c33d — **ADDRESSED**: verify.py rc=0: archive8886B/full14853B
+ inverse/order/SHA exact; damaged byte/absent-marker/omission refuse; save4084B.
+ All original headings/tables/fence/direct/public evidence body byte-exact;
+ current policies and canonical88word/independent worked example verified.
+- [x] `.13` c33d — **NO REGRESSION**: verify/focused/six books rc=0:
+ prior archives/history/core/data/canonical/frozen/registry112/effective110/114/
+ LIVE exact; prior Rust173/17/242 applies. Book/index/pointers/receipts sync,
+ historical checkpoint qualified, named .14 repair scheduled, fixed caps.
+ promotion: declined (finite inverse and worked examples preserve this existing containment method; provenance repair has its named .14 owner).
+
 - [x] `.13` c33c — **ROOT CAUSE**: census/partition.py rc=0: live127192/
  131072B; five whole completed spans82856B identified before changes. Scratch
  insertion diagnosed exactly; all active .13/.14 ownership stays live.
@@ -541,6 +604,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c33d | whole7179B intro/440B checkpoint/full14853B source inverse; damaged controls refuse; canonical88words/independent worked example | archive8886B/save4084chapter B; prior history/core/data/frozen/LIVE/registry112/effective110/114 exact; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
 | `2026-10-10` | `.13` c33c | five whole payloads/full127192B task inverse/order/SHA; damaged controls refuse; prior archive/history identity and full-family budgets | archive11/84762B; partition46007B; registry112/effective110/114/LIVE unchanged; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
 
 
@@ -550,10 +614,17 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c33d | `SEMULITH-P4-0184 (leaf P4-SYSTEM.13): contain atomics timeline before final pairs` | own c34/0185 reservation witnesses before SC/full CI/freeze; .14 sweep owned |
 | `.13` c33c | `SEMULITH-P4-0183 (leaf P4-SYSTEM.13): contain completed task receipts` | own c33d/0184 atomics-book containment, then reservation/SC/full CI/freeze; .14 sweep owned |
 
 
 ## Changelog
+
+- `2026-10-10`: `.13` c33d (SEMULITH-P4-0184): whole atomics intro/checkpoint
+ 7619B→8886B archive/full14853B inverse; save4084B, all direct/public examples
+ exact. Worked88words/independent sequence, focused/six books green. .14 owns
+ rootb8d09f53 assembler rationale repair; registry112/effective110/114/LIVE
+ unchanged. Reservation/SC/full CI/freeze next, fixed caps.
 
 - `2026-10-10`: `.13` c33c (SEMULITH-P4-0183): five whole completed spans
  82856B→archive11/84762B; full127192B source inverse/damaged controls pass.

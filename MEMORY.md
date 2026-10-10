@@ -18,16 +18,18 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c33d/0184 — own atomics-book timeline
-  containment before reservation/SC examples: full tracked-family census,
-  whole original introduction/full chapter inverse and damaged controls;
-  retain current feature explanations, commands/tables/public evidence.
-  C33c preserved82856B completed task spans→archive11/84762B; full127192B
-  source inverse/order/SHA exact, damaged controls refuse. Active .13/.14/
-  frontier/census/prior history retained. Focused/six books green; prior Rust
-  173/17/242 applies. Core/data/canonical/frozen/registry112/effective110/114/
-  LIVE exact, fixed caps. Reservation/SC/full CI/freeze and .14 sweep remain.
-  No push below cadence; read c33c receipt before owning next slice.
+- next_action: `P4-SYSTEM.13` c34/0185 — own/refine reservation witnesses
+  before code: current frozen guarantee/selected physical-width-valid policy,
+  pinned A/privileged rules, all LR/SC replacement/clear/trap histories,
+  aliases/faults/requests/full state and actual disabled controls. Verify
+  ISA-versus-selected-policy wording before binding. Missing-binding RED,
+  then2entries only after dedicated witnesses/companions; SC/full CI/freeze next.
+  C33d saved4101atomics chapter B; full14853B source inverse/damaged controls,
+  canonical88ordering words/independent worked LR-SC example exact. Focused/
+  six books green; prior Rust173/17/242 applies. Core/data/frozen/history/LIVE/
+  registry112/effective110/114 exact. .14 additionally owns rootb8d09f53
+  assembler ancestry/semantic-independence rationale repair before signoff.
+  Fixed caps; no push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

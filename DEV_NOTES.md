@@ -1,6 +1,30 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — contain atomics timeline before final pairs (P4-SYSTEM.13 c33d)
+
+Governed book51/523938B leaves350B on clean2c5a9fd. Preserve whole original
+7179B atomics introduction plus440B c29a checkpoint paragraph in finite
+8886B archive SHA80c1896a54884aa9cd955eddd3ee372b2937ee7239de02bd61fbc88365d854a3.
+Full14853B committed-source inverse/order SHA2da8559ebe63d0b838ee8e16e5f62da0908a716142278c2c9ee1a4e662c22461
+exact; corrupt/absent-marker/omitted-payload controls refuse. Chapter14853→
+10769B saves4084B. All original headings/tables/translation fence/direct and
+public evidence body byte-exact. Current22forms/nineAMOs/W-D/aq-rl/physical
+width-valid reservation/selected LR-SC/fault rules and public evidence limits
+remain explained; new three-step syntax yields oldwordSExt/SC0/readback42.
+Canonical assembler22forms/88ordering words and independent-author worked
+sequence exact. Initial scratch unpack assumed a pair; published assemble API
+returns a list of(word,text), corrected before any syntax credit. No model fault.
+Scoped own-script review finds assembler module docstring's ancestry/semantic-
+independence assertions, rootb8d09f53; .14 priority repair owned before evidence
+signoff. Canonical encoding route returns before upstream-table fallback.
+Verify/focused/six books rc=0. Prior archives/history/core/data/canonical/frozen/
+registry112/effective110/114/LIVE exact; prior Rust173/17/242 applies. Current
+c29a count explicitly historical, live v2 route; book worked inverse/index/
+pointers sync, fixed caps. Evidence target/p4-system-13/c33d. Next own c34
+reservation witnesses, then SC/full CI/freeze; .14 sweep remains scheduled.
+promotion: declined (finite source inverse, permanent public examples and named .14 repair preserve this existing containment/evidence discipline).
+
 ## _(2026-10-10)_ — contain completed task receipts (P4-SYSTEM.13 c33c)
 
 Full tracked-family census on clean92c5855: tasks82/2914171B, live127192B;

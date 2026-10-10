@@ -194,6 +194,14 @@ Retained prefix plus shard payload reconstructs source SHA256
 Its manifest gains one row; earlier20live rows/210sealed shards remain exact,
 for231logical rows. Code, canonical/frozen inputs and contract bindings stay exact.
 
+P4.13 c33d retains the original7,179-byte atomics introduction and440-byte
+checkpoint paragraph in an8,886-byte finite archive. Its complete14,853-byte
+source inverse authenticates both payloads in order and refuses damaged controls.
+The current chapter saves4,084 bytes while retaining all original headings,
+tables, translation fence and direct/public evidence body. A new canonical
+assembly example is also checked by the independent instruction author.
+The old c29a count is explicitly historical; current counts route to contract v2.
+
 ### Measure stored bytes, including UTF-8
 
 Size claims use encoded file bytes. At the c29d1 diagnostic, the index generator
