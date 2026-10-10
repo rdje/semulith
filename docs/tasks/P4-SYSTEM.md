@@ -550,6 +550,69 @@ new footer, final git diff --check rc=0. Sentence continuity corrected before
 sealing archive; final source inverses and main-book rebuild rc=0.
 Evidence target/p4-system-13/c30b; workflow then c31 GC-CSR-ACCESS.
 
+### `.13` c31a — preserve satp on unsupported MODE writes (completed, `SEMULITH-P4-0175`)
+
+Owned on cleanecba295/brief0/actual census rc=0, before c31 code or registry
+changes. C31 prerequisite review authenticates RVP-SUPERVISOR11.1.1.11
+SHA d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a,
+186455B: unsupported satp.MODE makes the entire write have no effect. Current
+field legalizer retains only MODE while ASID/PPN accept incoming bits; the
+independent author's fallback accepts the whole unsupported value. Suspected
+real defects, priority-now, owned here rather than granting new contract credit.
+
+Reproduce through public CSR write and instruction step with old valid Bare/
+Sv39, a differing unsupported MODE/ASID/PPN candidate; expect old entire satp,
+old read-back in rd, ordinary retirement, no trap and no other state/request
+changes. Probe permission refusal before ignore in S/TVM and U. Review relevant
+root history, descriptor/field interfaces, generated provenance, independent
+author/controls and privilege/Sv39/runtime book sections before repair.
+
+Initial public tests RED rc=101: API and instruction suites both observe
+0x0123456789abcdef instead of unchanged0 after unsupported MODE;72permission
+refusals pass. Independent cache-author probe RED rc=1 names whole-write
+ignore. Root own-repository blame:47badd2/P4-0008 introduced field-only
+legalization;022f557/P4-0086 author fallback stores unsupported satp verbatim.
+Thus both diagnosed defects reproduce; priority repair here, no binding credit.
+
+After real RED, repair only the whole-register acceptance rule and independent
+author. Derive supported MODE set from canonical field metadata in the core,
+retain current0/8 selection and valid writes. Permanent legal/unsupported/suppressed/
+refused controls for all six CSR forms, aliases and high ASID/PPN values; disable
+actual guards and require RED before restoration. No private dependency source.
+Update explanatory descriptor/book; published regeneration/provenance check if
+needed, exact semantic/code delta census. Preserve all167 corpus observations,
+frozen/catalog/registry106/effective104/114/LIVE/history bytes; current selected
+bare policy remains explicit. Focused Rust/author/checks/six books then commit
+clean before c31. New findings stay owned; never treat suspicious input as credit.
+
+C31a result: three public core suites GREEN rc=0:576API cases,3528two-boundary
+write/read-back cases across all6forms plus72permission refusals;4176cases,
+7128instruction boundaries/14256parcels. Full GPR/FPR/CSR owners,PC/mode,
+counters,reservation,TLB/cursor,wait and exact requests observed. The core
+checks supported MODE through canonical metadata before any field write;
+permission checks still precede ignore. The independent author separately
+implements0/8 whole-write acceptance;3528literal transitions+12refusals pass,
+cache/42owned records exact. Actual core guard RED rc=101(two failed), actual
+author guard RED rc=1; sources byte-restored. Two permanent bad authors accept
+whole unsupported values or only lower fields: both RED rc=1 before GUEST
+registration. Disable actual author auditor and both escape rc=0, contradicting
+the registered rc1 boundary; restored checker rejects both. No false credit.
+
+Fresh authenticated public Sail and Spike each execute9M boundaries and two
+byte-identical traces; old0x8000000000000002 remains after attempted MODE15/
+PPN0x123. Wrong partial-write read-back discriminates. Finite observation only,
+no full-profile/independence claim. Descriptor one explanatory string only,
+provenance RED rc=1 then published generation rc=0: exactly3hash replacements;
+stateSHA e917c4464e1c4f61d2d61d48e9189e8720af6a4096fd1bd46dadeb947d74e87d.
+Selected Bare nonzero lower-field UNSPEC latitude remains explicit; no new mode.
+
+Verify.py/make check rc=0: independent167/5365/10524 exact; author AST only
+new satp branch, frozen/canonical numerical values/registry106/history exact.
+Rust173/17/226. GUEST150/0; measured doctrine655; LIVE only653→655 arms, all
+statuses/counts unchanged. GS digest only; environment/Sv39/privilege/v2/index
+synchronized, book513190B under fixed524288. Focused/six books rc=0.
+Evidence target/p4-system-13/c31a; workflow then c31, effective104/114 unchanged.
+
 ### `.13` c31 — realize CSR-access instruction checks (queued)
 
 Own on c30b clean workflow before changes. Read frozen OB-GC-CSR-ACCESS and
@@ -564,6 +627,11 @@ corrupted-capture/disabled-observer controls, independent derivation and prior
 registry/canonical/frozen identity. Missing-binding RED before exactly2entries;
 focused Rust/checks/book, commit clean. No status/experiment/freeze credit.
 After c31, F before D, reservation and deterministic SC; .14 remains owned.
+Before claiming dynamic no-read suppression, measure whether an added read of
+the same side-effect-free CSR is observationally equivalent. If so, retain that
+passing control and explicitly distinguish published semantic-table inspection
+from the direct state/request witness; do not invent an observable read effect.
+
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -707,6 +775,24 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c31a — **ROOT CAUSE**: authenticated supervisor11.1.1.11
+ rc=0 requires unsupported MODE whole-write ignore. Root47badd2 field-only
+ legalization/core API and instruction tests RED rc=101:0→0123456789abcdef;
+ permission suite passes. Root022f557 author fallback RED rc=1. Both owned now.
+- [x] `.13` c31a — **ADDRESSED**: core3suites rc=0:4176cases/
+ 7128boundaries/14256parcels, metadata-owned supported set, permissions first;
+ author3528+12/cache/42owned rc=0. Actual disabled core/author guards RED rc=101/
+ rc=1 then byte-restored;2permanent bad authors RED rc=1 before registration,
+ disabled auditor loses both controls. One descriptor prose string/provenance
+ RED rc=1→published generation rc=0, exactly3hash replacements only.
+- [x] `.13` c31a — **NO REGRESSION**: verify.py/make check rc=0:
+ independent167/5365/10524 exact, Rust173/17/226; author AST onlysatp branch;
+ canonical numerical/frozen/registry106/history bytes exact,effective104/114.
+ Public Sail/Spike9M/two repeats each exact, wrong partial result discriminates.
+ GUEST150/0/focused/six books rc=0; measured arms655, LIVE only653→655, statuses/
+ counts unchanged. GS digest only, environment/book synchronized; fixed caps.
+ promotion: declined (normative whole-write rule, permanent core/author controls and worked Sv39 example retain this diagnosed repair).
+
 - [x] `.13` c30b — **ROOT CAUSE**: census/prepare.py rc=0 measures
  runtime31904B/book515564B and DEV37272B over36864B health. Thirty-two whole
  historical/provenance paragraphs selected; current features/controls remain.
@@ -810,7 +896,9 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
-| `2026-10-10` | `.13` c30b | 32whole paragraphs/five full inverses; corrupt/marker/omission refuse; sharder12/0,6whole DEV entries/full inverse; prior history/protected inputs fixed | archive44570B, save6516chapter B; registry106/effective104/114/LIVE unchanged; focused/six books rc=0; hooks next |
+| `2026-10-10` | `.13` c31a | source/root history; initial and disabled core/author guards RED→4176core/3540author cells; independent167 corpus,3hash-only provenance; Sail/Spike9M repeat exact | Rust173/17/226,GUEST150/0,arms655; registry106/effective104/114 unchanged; focused/six books rc=0; hooks next |
+| `2026-10-10` | `.13` c31a | `SEMULITH-P4-0175 (leaf P4-SYSTEM.13): ignore complete satp writes with unsupported modes` | c31 CSR-access, then F/D/reservation/SC and freeze |
+| `.13` c30b | 32whole paragraphs/five full inverses; corrupt/marker/omission refuse; sharder12/0,6whole DEV entries/full inverse; prior history/protected inputs fixed | archive44570B, save6516chapter B; registry106/effective104/114/LIVE unchanged; focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c30b | `SEMULITH-P4-0174 (leaf P4-SYSTEM.13): contain contract and development receipts` | c31 CSR-access, then F/D/reservation/SC and freeze |
 | `.13` c30 | independent6912-cell/full167 corpus;11wrong effects/16bad captures; actual auditor/logger/M/S gates and missing binding RED101→restored; prior104 exact | Rust170/17/226; registry106/effective104/114, LIVE unchanged; focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c30 | `SEMULITH-P4-0173 (leaf P4-SYSTEM.13): bind counter reads and privilege gates` | c30b book/DEV containment, then CSR-access/F/D/reservation/SC and freeze |
@@ -830,6 +918,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c31a (SEMULITH-P4-0175): repair unsupported
+ satp.MODE whole-write ignore in core/independent author, permissions first;
+ real old/disabled guards RED, full4176core/3540author cases green. Descriptor
+ prose/3hashes only; independent167 corpus and public Sail/Spike9M repeats exact.
+ Rust173/17/226,GUEST150/0,arms655, effective104/114 unchanged; c31 next.
 
 - `2026-10-10`: `.13` c30b (SEMULITH-P4-0174): preserve32whole
  historical book paragraphs with five full source inverses; save6516chapter B,

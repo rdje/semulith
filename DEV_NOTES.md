@@ -1,6 +1,38 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — ignore complete satp writes with unsupported modes (P4-SYSTEM.13 c31a)
+
+Prerequisite review authenticates supervisor11.1.1.11 whole-write rule. Core
+root47badd2 retained MODE but wrote ASID/PPN; author root022f557 stored unsupported
+value verbatim. Public API/instruction suites RED101:old0→0123456789abcdef;
+permission suite green. Author probe RED1. Owned priority-now before CSR credit.
+
+Core now checks supported MODE from canonical metadata before touching fields,
+after permissions. Author separately accepts selected0/8 or ignores whole write.
+Three core suites green:576API+3528two-step read-back+72permission cases,
+4176total/7128boundaries/14256parcels, all6forms/aliases/suppression/highbits,
+full GPR/FPR/CSR/PC/mode/counter/reservation/TLB/cursor/wait/request observations.
+Author3528+12 transitions/refusals plus existingcache/42owned exact. Actual
+core/author guard disable RED101/RED1, restored. Two permanent author mutants
+(whole invalid or lower-field-only writes) RED1; disabled auditor lets both
+escape0, which contradicts their requiredRED boundary. Registered only after
+observed failures, GUEST150/0, derived655arms. LIVE only653→655; statuses exact.
+
+Public authenticated Sail/Spike nine-instruction M construction/read-back each
+repeat identically:old8000000000000002 remains after attemptedf000000000000123.
+Wrong partial lower-field result discriminates. Finite only, no profile match/
+independence claim. One descriptor explanatory string, provenanceRED1→generation0,
+exactly3hashes; state e917c4464e1c4f61d2d61d48e9189e8720af6a4096fd1bd46dadeb947d74e87d.
+Bare/nonzero lower-field UNSPEC latitude explicit; no translation-scope expansion.
+
+Verify.py rc=0: author AST onlynew satp branch, independent167/5365/10524 exact;
+canonical numerical/frozen/registry106/history unchanged, effective104/114. Make
+check173/17/226; focused/six books rc=0. Environment/GS(digest only)/Sv39/privilege/
+v2/index sync; book513190B fixed caps. Evidence target/p4-system-13/c31a. C31
+CSR access next; queued no-read observability qualification before dynamic claim.
+promotion: declined (normative whole-write rule, permanent discriminating regressions and worked Sv39 example retain the diagnosed repair).
+
 ## _(2026-10-10)_ — contain contract and development receipts (P4-SYSTEM.13 c30b)
 
 Owned after clean0e9949b/brief0/actual census. External containment guide/local

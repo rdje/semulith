@@ -585,7 +585,7 @@
               (legalize (any)) (reset "0") (reset_authority laboratory)
               (authority architecture) (source "RVP-SUPERVISOR §11.1.1.11"))
        (reset (value "0") (authority laboratory) (source "RVP-SUPERVISOR §11.1.1.11; RVP-MACHINE §2.1.4 (UNSPECIFIED)")
-              (statement "Bare at reset: no translation until S-mode software chooses Sv39. satp's BEHAVIOUR (the walk, A/D, ASIDs) is P4-SYSTEM.3's; only its storage, discipline and access permissions (TVM) are .2's.")))
+              (statement "Bare at reset: no translation until S-mode software chooses Sv39. The selected MODE set is 0/8. After permission checks, an architectural write with any unsupported MODE leaves the entire satp unchanged, including ASID and PPN (RVP-SUPERVISOR §11.1.1.11); field-by-field MODE retention alone is insufficient. Accepted writes apply the declared fields. Bare with nonzero lower fields has architectural UNSPECIFIED latitude; these storage tables retain those fields without broadening the translation claim. The walk, A/D and ASIDs are P4-SYSTEM.3's; storage and TVM permissions are .2's.")))
 
   (csr (id "stimecmp") (address 333) (width_bits 64) (authority architecture)
        (source "RVP-SUPERVISOR §11.1.1.12; RVP-SSTC 12.1")

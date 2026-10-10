@@ -18,15 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c31 — GC-CSR-ACCESS; refine queued literal
-  all-form/mode/permission/read-write-suppression design before code changes.
-  C30b preserves32historical book paragraphs/five exact full-source inverses,
-  corrupt/marker/omission controls refuse; saves6516chapter B under fixed caps.
-  DEV six whole entries→0229, full37272B inverse; prior history exact.
-  Core/canonical/frozen/registry106/effective104/114/LIVE unchanged;
-  prior Rust170/17/226 applies, focused/six books green. Five pairs/freeze open.
-  GUEST148/doctrine653/49chapters; .14 owns named provenance/evidence sweep.
-  No push below cadence.
+- next_action: `P4-SYSTEM.13` c31 — CSR-access; refine queued all-form/
+  mode/gate/suppression design before code. C31a fixes real unsupported satp.MODE
+  partial-write/core and full-invalid-write/author defects, permissions first.
+  Old/disabled guards RED,4176core/3540author cells green; descriptor prose and
+  three source hashes only, independent167/5365/10524 exact, public Sail/Spike9M
+  repeats exact. Rust173/17/226,GUEST150/0,measured arms655; focused/six books
+  green. Registry106/effective104/114 unchanged, five pairs/freeze open.
+  LIVE only arm count655; .14 owns named evidence sweep. No push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

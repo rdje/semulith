@@ -489,6 +489,24 @@ pub fn csr_write<H: PrivilegedHart>(
         address,
         why: "unimplemented",
     })?;
+    // RVP-SUPERVISOR 11.1.1.11: unsupported satp.MODE ignores the ENTIRE
+    // write, including ASID/PPN. Permission checks still precede this rule.
+    // The descriptor owns the supported set; field-by-field legalization alone
+    // would retain MODE while incorrectly accepting the other fields.
+    if meta.name == "satp" {
+        for field in hart
+            .csr_fields()
+            .iter()
+            .filter(|f| f.csr == "satp" && f.name == "MODE")
+        {
+            if let Some(Legalize::OneOf(supported)) = field.legalize {
+                let incoming = (value & field_mask(field)) >> field.bit_lo;
+                if !supported.contains(&incoming) {
+                    return Ok(());
+                }
+            }
+        }
+    }
     if let Some(list) = meta.view_of {
         if list.contains(',') {
             // The multi-owner write (P4-SYSTEM.7 slice b) — the composition's inverse:

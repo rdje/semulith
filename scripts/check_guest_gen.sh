@@ -443,6 +443,12 @@ PYCODE
   out="$(python3 scripts/probe_gc_counter_author.py --disable-sstc-witness 2>&1)"; rc=$?
   arm "RED a disabled Sstc witness misses the terminal trap control" "$rc" 1 "$out" "Sstc terminal control missed: disabled positive witness"
 
+  # c31a: unsupported satp.MODE ignores all fields, not only MODE.
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation satp-ignore 2>&1)"; rc=$?
+  arm "RED unsupported satp MODE ignores the complete write" "$rc" 1 "$out" "satp unsupported MODE must ignore whole write"
+  out="$(python3 scripts/probe_gc_cache_author.py --mutation satp-field-only 2>&1)"; rc=$?
+  arm "RED unsupported satp MODE preserves ASID and PPN" "$rc" 1 "$out" "satp unsupported MODE must ignore whole write"
+
   # e1c1: independent selected cache policy, with no production engine oracle.
   out="$(python3 scripts/probe_gc_cache_author.py 2>&1)"; rc=$?
   arm "GREEN independent cache and cold repeat" "$rc" 0 "$out" "cached corpus exact and cold repeat"

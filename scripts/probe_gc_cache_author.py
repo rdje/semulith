@@ -46,7 +46,55 @@ def fence(author, h, word=0x12000073):
     assert not h.trapped and not info.get('writes'), 'legal fence changed architectural registers'
 
 
+def check_satp_writes(author):
+    """Literal CSR transitions, including whole-write ignore for unsupported MODE.
+
+    RVP-SUPERVISOR 11.1.1.11; accepted modes are the selected Bare/Sv39.
+    No CPU execution or captured expectations supply these values.
+    """
+    count = 0
+    for before in (0, 0x8abcd123456789ab):
+        for op in (1, 2, 3, 5, 6, 7):
+            for source in (0, 6, 31):
+                for mode in range(16):
+                    for payload in (0, 0x0123456789abcdef, 0x0fffffffffffffff):
+                        if op >= 5 and (mode or payload):
+                            continue
+                        for rd in (0, 5, 6, 31):
+                            h = author.Hart()
+                            h.csr['satp'] = before
+                            h.x[6] = h.x[31] = (mode << 60) | payload
+                            operand = source if op >= 5 else h.x[source]
+                            value = (operand if op in (1, 5) else
+                                     before | operand if op in (2, 6) else before & ~operand)
+                            writes = op in (1, 5) or source != 0
+                            expected = value if writes and value >> 60 in (0, 8) else before
+                            old_csrs = dict(h.csr)
+                            want_csrs = dict(old_csrs, satp=expected)
+                            old_x = list(h.x)
+                            word = 0x18000073 | (source << 15) | (op << 12) | (rd << 7)
+                            pc, info = author.execute(h, word)
+                            assert not h.trapped and pc == author.ENTRY + 4, 'satp legal instruction trapped'
+                            assert h.csr == want_csrs, 'satp unsupported MODE must ignore whole write'
+                            assert h.x == old_x, 'author must return GPR writes without applying them'
+                            assert info.get('writes', {}) == ({rd: before} if rd else {}), 'satp old-value destination differs'
+                            count += 1
+    assert count == 3528
+    # Permissions precede whole-write ignore; unsupported data never bypasses them.
+    for mode, status in ((author.S, 1 << 20), (0, 0)):
+        for op in (1, 2, 3, 5, 6, 7):
+            h = author.Hart()
+            h.mode, h.csr['mstatus'] = mode, status
+            h.x[6] = 0xfabcdfffffffffff
+            word = 0x18000073 | (6 << 15) | (op << 12) | (5 << 7)
+            pc, info = author.execute(h, word, raw=word)
+            assert h.trapped and h.csr['mcause'] == 2 and h.csr['mtval'] == word
+            assert h.csr['satp'] == 0 and not info.get('writes'), 'satp permission must precede ignore'
+    print('GC satp author: 3528 literal CSR transitions and 12 permission refusals')
+
+
 def check(author):
+    check_satp_writes(author)
     base = author.ENTRY
     h = table(author)
     assert h.walk(7, 'load') == ('pa', base + 0x4007)
@@ -224,6 +272,12 @@ def main():
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--author-revision')
     changes = {
+        'satp-ignore': ('if v >> 60 not in (0, 8):\n            return',
+                        'if False:\n            return'),
+        'satp-field-only': ('if v >> 60 not in (0, 8):\n            return',
+                            'if v >> 60 not in (0, 8):\n'
+                            '            h.csr[name] = (old & (0xf << 60)) | (v & ((1 << 60) - 1))\n'
+                            '            return'),
         'bypass-hit': ('if page == va >> 12 and (global_mapping or tag == asid):', 'if False:'),
         'fence-value': ('None if rs1 == 0 else x[rs1]', 'None if x[rs1] == 0 else x[rs1]'),
         'fence-asid-value': ('None if rs2 == 0 else x[rs2]', 'None if x[rs2] == 0 else x[rs2]'),

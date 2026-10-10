@@ -494,6 +494,8 @@ JALR's inherited-annotation diagnosis and direct target/link/request witnesses.
 The [memory runtime chapter](contract-memory.md) retains eleven-form load/store
 extension, discarded-load requests/faults, selected byte-order observations and
 FENCE field/no-effect and atomic pre-translation alignment observations.
+The [satp prerequisite](sv39.md#unsupported-satp-mode-ignores-the-whole-write)
+repairs unsupported MODE whole-write suppression before CSR-access binding.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
 104/114; five runtime pairs and final freeze remain. GC-COUNTERS now adds
 [all-mode, all-enable-mask direct observations](contract-runtime.md#counter-reads-all-privilege-and-enable-mask-combinations).

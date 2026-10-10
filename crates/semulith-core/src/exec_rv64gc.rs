@@ -1391,3 +1391,5 @@ fn extract(insn: &InsnDef, word: u32) -> Vec<(&'static str, u64, u32)> {
 
 #[cfg(test)]
 mod counter_writes;
+#[cfg(test)]
+mod satp_writes;

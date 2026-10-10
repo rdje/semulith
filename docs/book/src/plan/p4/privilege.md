@@ -21,6 +21,12 @@ forms, revocation and five deliberate author mutations discriminate the repair;
 the existing guest records remain unchanged. See the
 [reset prerequisite examples](contract-v2.md#supervisor-interrupt-views-before-cold-reset).
 
+The later [satp whole-write repair](sv39.md#unsupported-satp-mode-ignores-the-whole-write)
+checks permissions before ignoring unsupported MODE writes. MODE retention alone
+cannot implement that rule: ASID and PPN must also remain unchanged. The core
+uses canonical field metadata; literal instruction/read-back controls independently
+guard the processor and expectation author.
+
 The leaf runs in eight checkpoints; slice (c) split cleanly into (c1) — zero Rust — and
 (c2). Slice (a): the upstream census measured what the brief delegated — Zicsr's
 six instructions are real rows in riscv-opcodes' `rv_zicsr`, mret/wfi live in `rv_system`,

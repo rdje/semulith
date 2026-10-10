@@ -531,6 +531,12 @@ def csr_write_value(h, name, v):
         h.csr["fflags"] = (h.csr["fflags"] & ~0x1F) | (v & 0x1F)
         h.csr["frm"] = (h.csr["frm"] & ~0x7) | ((v >> 5) & 0x7)
         _dirty_fp(h)
+    elif name == "satp":
+        # RVP-SUPERVISOR 11.1.1.11: unsupported MODE ignores the whole write.
+        # Bare/Sv39 is the selected profile; ASID/PPN must also remain unchanged.
+        if v >> 60 not in (0, 8):
+            return
+        h.csr[name] = v
     elif name in ("mcycle", "minstret"):
         raise Refusal(f"csr {name} write: writable counter rebasing is outside this "
                       f"bounded author's scope; model its explicit-write precedence "

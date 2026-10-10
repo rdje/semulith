@@ -201,6 +201,12 @@ Earlier progress sections are preserved byte-verbatim in
 source context and hashes. Historical self-descriptions do not override the
 current contract, report or executable registry.
 
+Before CSR-access binding, c31a repairs unsupported satp.MODE writes: after
+permission checks, the entire write is ignored, including ASID/PPN. The supported
+set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
+Core and independent-author controls plus finite public M-mode read-back support
+the repair. The Sv39 book section gives the example and limits; no binding credit.
+
 GC-COUNTERS now binds direct Execution witnesses: 4032 legal and2880 gated
 single-boundary reads across M/S/U, all enable masks, three views, three destination
 choices and four counter pairs. Full state, memory, requests and retirement are

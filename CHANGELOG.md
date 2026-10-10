@@ -1,6 +1,17 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0175 (leaf P4-SYSTEM.13 c31a) — ignore complete satp writes with unsupported modes
+
+- Fix core ASID/PPN updates and author invalid-value writes when satp.MODE is
+  unsupported; preserve whole register after permission checks, metadata-owned set.
+- Real old/disabled guards RED→4176core/3540author cells green; two bad-author
+  controls discriminate. Public Sail/Spike9M read-back repeats exact, finite only.
+- Descriptor prose/three hashes only; independent167 corpus exact. Rust173/17/226,
+  GUEST150/0/655arms, focused/six books rc=0; book/environment/GS synchronized.
+- Registry106/effective104/114 unchanged; LIVE only arm count655, statuses unchanged.
+  C31 CSR-access next, then F/D/reservation/SC and freeze.
+
 ## SEMULITH-P4-0174 (leaf P4-SYSTEM.13 c30b) — contain contract and development receipts
 
 - Preserve32whole historical book paragraphs/19833payload B in finite44570B
