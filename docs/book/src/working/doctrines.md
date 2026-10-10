@@ -263,22 +263,23 @@ previously survived two registrations unnoticed now survives about ninety second
 
 ## Frozen mirrors and current requirements
 
-RECORD-SCHEMA requires a live obligation's `requirement_id` mirror to state
-exactly what its requirement states. A frozen historical statement may differ
-only through an authenticated replacement: its original record line must still
-match its frozen SHA-256 pin, and the active consecutive version chain must
-supersede it with an effective record that explicitly mirrors the same requirement.
-The replacement must state the current requirement exactly. Each intermediate
-supersession must replace an inherited record with a member of its own version.
+RECORD-SCHEMA requires an obligation's `requirement_id` mirror to state its
+requirement exactly. A frozen historical statement may differ only when its
+record line still matches its frozen SHA-256 pin and the active consecutive
+version chain supersedes it with an effective mirror of that same requirement.
+Each supersession replaces an inherited record with its own version's member.
 
-For example, correcting the selected reservation policy leaves frozen
-`OB-RESERVATION` intact. Open v2 supplies `OB-GC-RESERVATION-V2`, which mirrors
-the corrected `REQ-D-RESERVATION`. Without that route, or with an altered pin,
-wrong requirement or drifting replacement, the mirror gate still rejects the
-catalogue. CONTRACT-FREEZE separately checks the complete version inventory.
-Thirteen versioning controls exercise this distinction; schema validity alone
-cannot establish it. Run `bash scripts/check_requirements.sh --self-test` to
-exercise them, and the script without arguments to check the real records.
+For example, correcting the reservation policy retains frozen `OB-RESERVATION`.
+V2's `OB-GC-RESERVATION-V2` mirrors the current `REQ-D-RESERVATION`. A missing
+route, altered pin, wrong requirement or drifting replacement still rejects.
+CONTRACT-FREEZE checks the complete version inventory.
+
+Authority also follows explicit requirement mirrors, including replacements
+outside historical `obligation_ids`. A requirement classified
+`defined` requires `authority architecture`: identical wording with
+`authority laboratory` is rejected. Selected laboratory policies remain valid.
+Fourteen version/authority controls distinguish these cases. Run `bash scripts/check_requirements.sh --self-test` for
+the controls, or without arguments to check the real records.
 
 ## The self-test that ran a third of its arms
 

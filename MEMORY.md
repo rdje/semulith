@@ -18,16 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c35/0189 — qualify and bind deterministic SC,
-  then full CI and freeze v2. Reservation c34b now qualifies2live mirrors/
-  public matching comments and supersedes frozen OB-RESERVATION with v2's
-  matching replacement+2Execution bindings. Selector unchanged; missing-binding
-  RED before credit. Registry114/effective112/114,13open-v2 members.
-  Registered62176direct boundaries/194688requests;31actual controls restored,
-  fresh167/5365/10524 corpus exact. CPU semantics/data/frozen/prior registry/
-  history/archives/milestone rows/caps exact. Rust173/17/253/verify/focused15/six books green.
-  Frozen-mirror guard repaired with61self-tests/13new controls; arms668.
-  Then priority .14 provenance/note sweep. Book room retained; no push below cadence.
+- next_action: `P4-SYSTEM.13` c35/0190 — qualify and bind deterministic SC,
+  then full CI/freeze and priority .14 provenance/note sweep. Reservation
+  c34b binds62176direct boundaries/194688requests,31Rust controls; registry114/
+  effective112/114,13open-v2 members. Frozen-mirror and authority gates repaired:
+  record-schema62/0,14version/authority controls, doctrine arms669. Rust173/17/253
+  applies unchanged; focused9/six books/invariant verifier green. CPU/profiles/
+  contracts/frozen/history/milestones exact. Book room12348B, fixed caps.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

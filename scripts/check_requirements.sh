@@ -438,6 +438,16 @@ for cat in catalogues:
                     if not mirror_rid:
                         continue
                     r = by_id.get(mirror_rid)
+                    # Rule 7 also follows explicit mirrors: a versioned replacement
+                    # may not be listed in the requirement's historical obligation_ids.
+                    if (r is not None
+                            and o.get("id") not in r.get("obligation_ids", [])
+                            and (r.get("source_semantics") or {}).get("category") == "defined"
+                            and o.get("authority") != ARCH_AUTHORITY):
+                        findings.append(
+                            f"AUTHORITY DOWNGRADE contract-obligations.sexp [{o.get('id')}]: "
+                            f"its explicit requirement mirror '{mirror_rid}' is architecturally "
+                            f"'defined', but the obligation claims authority '{o.get('authority')}'")
                     if r is None:
                         findings.append(
                             f"MIRROR WITHOUT SOURCE contract-obligations.sexp [{o.get('id')}]: "
@@ -800,6 +810,7 @@ old, new, middle = "OB-A-MID", "OB-A-V2", "OB-A-MID"
 if scenario == "unfrozen": status = "open"
 if scenario == "pin": pin = "0" * 64
 if scenario == "drift": records[2]["statement"] = "wrong"
+if scenario == "authority": records[2]["authority"] = "laboratory"
 if scenario == "no-mirror": records[2]["parameters"] = {}
 if scenario == "other-requirement": records[2]["parameters"] = {"requirement_id": "REQ-D-OTHER"}
 if scenario == "inheritance": parent = "p-env-v0"
@@ -832,6 +843,7 @@ PYFIXTURE
   versioned_mirror duplicate;   arm "RED   version ownership must be unambiguous" 1 "multiple version owners"
   versioned_mirror schema;      arm "RED   a malformed manifest grants no mirror exemption" 1 "invalid version manifest"
   versioned_mirror live;        arm "RED   an effective open mirror still rejects ordinary drift" 1 "historical mirror is not frozen"
+  versioned_mirror authority;   arm "RED   a replacement cannot downgrade architectural authority" 1 "AUTHORITY DOWNGRADE"
   rm -f "$t/p/contract.sexp"
   rm -f "$t/p/contract-obligations.sexp"
   # ---- rule 14 MIRROR-DERIVE: the base-corpus mirror, registry-driven ---------------------------

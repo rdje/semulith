@@ -894,6 +894,36 @@ LIVE milestone rows unchanged; derived arm census only655→668. Commit complete
 only after hooks pass, brief0, clean tree and actual job census rc=0.
 
 
+### `.13` c34c — preserve authority in versioned requirement mirrors (completed, SEMULITH-P4-0189)
+
+Owned on cleanb61ad39/brief0/actual handoff census rc=0. Before deterministic
+SC, probe one suspected gate edge: rule7 follows requirement.obligation_ids,
+while a superseding replacement names the requirement through requirement_id.
+A replacement could mirror the exact architectural statement but downgrade its
+authority to laboratory. Use a synthetic versioned catalogue through the real
+RECORD-SCHEMA function; diagnose before classifying. If reproduced, extend the
+authority check to explicit requirement mirrors without relaxing statement,
+pin, inheritance or ordinary checks. Add one permanent rejecting control and
+actual disabled-guard control; keep all current profiles/records/Rust/data/
+frozen/history/milestones exact. Only the derived arm count may change.
+Update the current doctrine explanation within its existing32768B cap, task/
+live receipts and memory; focused record/doc gates and six books, clean commit.
+Then deterministic SC c35/0190, full CI/freeze and owned priority .14 sweep.
+Evidence target/p4-system-13/c34c; this is gate authority, not a CPU finding.
+
+Diagnosis: defect-red.log self-test RED1 expected record rc=1 but actual0 on
+OB-A-V2 with exact statement S/requirement category defined/authority laboratory.
+Rootd3fecbf3 rule7 follows only requirement.obligation_ids; root3ceebc55 mirror
+parameter and b61ad39 supersession route admit a replacement outside that list.
+Resolved by checking architectural authority on explicit mirrors not already
+checked by the historical obligation list. Equality/version/pin guards retained.
+Self-test62/0; copied disabled actual authority predicate produces named RED1,
+normal real catalogue GREEN0. No current CPU/profile record failure observed.
+Fourteen version/authority controls now coexist with all earlier verdicts;
+measured doctrine arms669. Only that LIVE count changes, every milestone exact.
+Focused9docs/records, six books and final invariant verifier rc=0. Book51/511940B leaves12348B, largest32746B; fixed caps. Prior journal payload/order exact; no Rust change, prior173/17/253 applies.
+
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -1034,6 +1064,17 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c34c — **ROOT CAUSE**: defect-red.log self-test rc=1:
+  architectural replacement's false acceptance actual0 instead of expected1;
+  blame rootd3fecbf3's obligation_ids route misses explicit replacement mirrors.
+- [x] `.13` c34c — **ADDRESSED**: self-test/real record gate rc=0:
+  62pass/0fail with new authority refusal; copied actual disabled predicate
+  rc=1 produces named MISS. Previous mirror/version/pin controls retain verdicts.
+- [x] `.13` c34c — **NO REGRESSION**: verify.py/focused9/make book rc=0:
+  prior guard inverse and CPU/profiles/contracts/frozen/history/milestone bytes
+  exact; six books, fixed caps, prior Rust173/17/253 applies. LIVE count only
+ 668→669; registry114/effective112/114 unchanged.
+
 - [x] `.13` c34b — **ROOT CAUSE**: source-auth/blame/verify.py rc=0:
   root495b4b86 policy overstatement, root1c554fcf public prerequisite omission;
   missing-binding RED101. Record-gate defect RED1 identifies root3ceebc55's
@@ -1135,6 +1176,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c34c | false-acceptance RED1→62/0; disabled predicate RED1; exact guard inverse and protected census | record gate/focused9/six books/verify rc=0; CPU/data/frozen/history/milestones exact; arms669 |
 | `2026-10-10` | `.13` c34b | missing-binding RED→2Execution rows;62176direct boundaries/194688requests;31Rust+3schema guards;13new version controls | Rust173/17/253/record-schema61/0/focused15/six books rc=0; registry114/effective112/114; frozen/selector/CPU/data/history/milestones exact; arms668 |
 | `2026-10-10` | `.13` c34b1 | full C source capture/inverse, five damaged controls;37hand words/21refusals/mixed4/5/full167corpus; DEV6+CHANGELOG23 whole entries | verify/derive/focused8docs/six books rc=0; fixed caps, prior code/data/frozen/history/LIVE/registry exact |
 | `2026-10-10` | `.13` c34b0 | defect RED101→1625new full-state cells/1536author cells/32words;6new+23prior actual controls RED-restored; bound v2 request fixtures | Rust173/17/253/focused/full CI/six books rc=0; all canonical guest data/frozen/history/LIVE/prior registry/effective110/114 exact; contain book/DEV before binding |
@@ -1149,6 +1191,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c34c | `SEMULITH-P4-0189 (leaf P4-SYSTEM.13): preserve authority in versioned requirement mirrors` | deterministic SC c35/0190, full CI/freeze, priority .14 |
 | `.13` c34b | `SEMULITH-P4-0188 (leaf P4-SYSTEM.13): qualify and bind reservation guarantees` | deterministic SC qualification/pair, full CI/freeze, then priority .14 sweep |
 
 | `.13` c34b1 | `SEMULITH-P4-0187 (leaf P4-SYSTEM.13): contain C chronology and append histories` | qualified reservation supersession+binding c34b/0188, then SC/full CI/freeze and priority .14 sweep |
@@ -1160,6 +1203,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 
 ## Changelog
+
+- `2026-10-10`: `.13` c34c (SEMULITH-P4-0189): close false acceptance of laboratory-authority replacement for architectural requirement;62/0/disabled-predicate RED1/focused9/six books green, fixed caps and protected CPU/frozen data.
 
 - `2026-10-10`: `.13` c34b (SEMULITH-P4-0188): qualify live reservation mirrors/public matches comments, frozen-safe v2 supersession plus2Execution checks;62176direct boundaries/31controls; registry114/effective112/114.
 - `2026-10-10`: `.13` c34b1 (SEMULITH-P4-0187): preserve full C source/inverse, current mixed-length guide and report route; whole DEV/CHANGELOG partition; verify/derive/focused8docs/six books rc=0.

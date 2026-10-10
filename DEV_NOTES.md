@@ -1,6 +1,27 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — preserve authority in versioned requirement mirrors (P4-SYSTEM.13 c34c)
+
+A synthetic active replacement repeats its architectural requirement exactly
+but claims laboratory authority. New permanent control is RED1 against the
+prior guard: expected record rejection, actual rc=0. Rootd3fecbf3 rule7 follows
+requirement.obligation_ids; root3ceebc55 explicit mirrors and b61ad39 versioning
+can reach a replacement outside that historical list. Extend rule7 to explicit
+mirrors not already checked through that list; never weaken mirror equality,
+version membership, frozen pins or inherited supersession. No current profile
+record or CPU behavior is defective in this probe.
+
+Fixed self-test62/0; disabling the actual new predicate in a copied script makes
+its named control RED1 again. Real-record gate GREEN0. All original61controls
+retain their verdicts, including malformed routes, pins, live drift and genuine
+laboratory declarations. Re-derive669doctrine arms, update only that LIVE number.
+Current doctrine explanation fits its existing part cap. Runtime/profiles/data/
+frozen/archive/history/milestone identity verified; prior Rust173/17/253 applies.
+Focused9docs/records and six books rc=0; evidence target/p4-system-13/c34c.
+Next deterministic SC c35/0190, full CI/freeze, then owned priority .14 sweep.
+promotion: declined (the current doctrine example, permanent authority refusal and its disabled-predicate control retain this narrow enforcement repair).
+
 ## _(2026-10-10)_ — qualify and bind reservation guarantees (P4-SYSTEM.13 c34b)
 
 Live D/REQ reservation mirrors root495b4b86 overstated the ISA's unique

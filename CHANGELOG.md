@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0189 (leaf P4-SYSTEM.13) — preserve authority in versioned requirement mirrors
+
+- Reject a superseding explicit mirror that downgrades an architectural requirement to laboratory authority, even when its statement is identical; retain valid laboratory policies and frozen-mirror qualification.
+- Reproduce false acceptance RED1, pass62record self-tests and an actual disabled-predicate control; preserve all CPU/profile/contract/history/milestone data. Re-derive669doctrine arms; focused9/six books rc=0.
+
 ## SEMULITH-P4-0188 (leaf P4-SYSTEM.13) — qualify and bind reservation guarantees
 
 - Qualify the selected reservation policy in live mirrors and public matching comments; supersede the frozen record through a matching v2 replacement and two Execution bindings, preserving all frozen bytes.
