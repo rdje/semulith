@@ -166,3 +166,78 @@ At c20, registry entries reach 88, effective G-CONTRACT **86/114**: thirteen sco
 twenty-two guest, six boundary and two direct-execution pairs. Fourteen runtime
 pairs/freeze remain. This is evidence for the selected ordinary-memory byte
 order; it does not add selectable big-endian execution or a device model.
+
+## FENCE accepts future fields and preserves one-hart state
+
+OB-FENCE binds a direct CPU Execution pair at P4.13 c25. RVI-RV32I 1.1.7
+requires base implementations to treat reserved fence configurations as ordinary
+FENCE and to ignore rs1/rd. FENCE.TSO has fm=8, pred=RW and succ=RW; implementing
+it as the stronger FENCE RW,RW is permitted. With this laboratory's one hart,
+no external devices and synchronous instruction execution, all these forms
+retire without an observable fence effect. Ordinary counter/PC advance still
+occurs. The NEG check exercises adversarial accepted encodings; it does not
+invent an illegal-instruction expectation for reserved fence fields.
+
+The field matrix crosses all 4,096 fm/pred/succ configurations with M, S and U
+and five rs1/rd pairs: 0/0, 0/31, 31/0, 31/31 and 7/13. That is 61,440 actual
+CPU boundaries, each fetching exactly two 16-bit parcels. The word is packed as
+config<<20 | rs1<<15 | rd<<7 | 0x0f and independently checked by the assembler.
+These are all twelve-bit fence configurations with representative register
+pairs, rather than all 32×32 register combinations.
+
+POS selects the 256 fm=0 configurations and exact FENCE.TSO with rs1=rd=0,
+in all three modes: 771 boundaries. NEG runs the remaining 60,669 cases.
+Every case compares all 32 integer registers, all 32 floating-point registers,
+26 CSR owners, PC, mode and the complete memory image. CSR expectations begin
+from seeded state before CPU execution; only mcycle/minstret advance. High-bit
+GPR and FPR sentinels, scratch/trap CSR values, fflags=0x15, frm=3 and FS=Dirty
+make unwanted writes visible. Counters start at 41/17 and must become 42/18;
+PC advances from 0x1000 to 0x1004. The only boundary requests are parcels at
+0x1000 and 0x1002; no explicit memory request is added by FENCE.
+
+Three literal forms also run inside each integration sequence:
+
+| Form | Word | Meaning |
+| --- | --- | --- |
+| Ordinary | 0x0ff0000f | fm=0, pred=succ=15, rs1=rd=0 |
+| TSO | 0x8330000f | fm=8, pred=succ=RW, rs1=rd=0 |
+| Reserved/ignored fields | 0xffff8f8f | fm=pred=succ=15, rs1=rd=31 |
+
+LR.D x7,(x6); FENCE; SC.D x8,x9,(x6); LD x10,0(x6) executes in M with
+x6=0x1080. LR reads 0x1122334455667788. FENCE must preserve its reservation;
+SC writes 0x8877665544332211 and reports x8=0; LD reads that value into x10.
+Each four-boundary program has eight parcels and exactly three data requests
+(Load, Store, Load). All state and bytes are checked after each boundary,
+including unchanged memory immediately after the fence.
+
+ADDI x7,0,1; FENCE; ADDI x8,0,2 executes in S at VA 0x1000. Satp
+0x8000000000080002 selects root PA 0x80002000, whose PTE 0x200000cf maps a
+1 GiB S leaf to PA 0x80001000. The first ADDI performs one WalkAccess and two
+parcels. FENCE and the next ADDI reuse that same-page mapping without another
+walk. Each three-boundary program has six parcels and seven requests. This
+observes translation preservation through subsequent execution rather than
+reading hidden cache fields.
+
+The direct pair totals 61,461 boundaries, 122,922 parcels and 122,934 requests.
+Unchanged scope-alu (31/62) and fault-fence (8/16) companions bring the pair to
+61,500 boundaries/123,000 parcels. The old fault-fence program already cites
+the correct reserved-field rule. The independent author's stock FENCE locator
+had instead pointed at 1.1.6, Load and Store Instructions, since its promotion
+in commit 022f557. The one-line correction now points at 1.1.7, Memory Ordering
+Instructions; no canonical guest text, value, word or generated fixture changes.
+
+Ten isolated instruction-table controls reject restrictive fm/register masks,
+GPR/FPR/CSR writes, a Store, trap delivery, a skipped PC, consumption of the
+reservation and translation-cache invalidation. Restrictive masks return
+ReservedDecode and do not retire, so the counter expectation detects them.
+The reservation consumer fails when the later SC omits its required Store;
+the cache invalidator fails when the final ADDI issues an extra WalkAccess.
+Disabling the actual GPR predicate makes the bad-write control fail, confirming
+that the observation is needed. The production table/core are unchanged.
+
+Independent specification-side replay verifies every matrix word and complete
+state/memory result, plus all six integration programs and their fetch/walk
+logs. Its log omits the nine LR/SC/LD data requests, which the direct CPU
+observer checks separately. These checks establish the selected one-hart
+behavior and field treatment. They do not exercise multiple-hart ordering,
+external devices, all register-pair combinations or every atomic/cache policy.

@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — observe FENCE fields and preservation (P4-SYSTEM.13 c25)
+
+Authenticated RV32I1.1.7 requires reserved-config acceptance and ignored rs1/rd.
+Direct matrix4096 configs × three modes × five register pairs=61440 boundaries,
+plus three LR.D/FENCE/SC.D/LD and three translated ADDI/FENCE/ADDI programs.
+Full GPR/FPR/26 CSR owner/PC/mode/memory and exact requests preserve reservations
+and warm mappings. Direct61461/122922/122934requests; companions39/78 yield
+pair61500/123000. POS ordinary/TSO; NEG adversarial accepted forms, not traps.
+
+Ten wrong tables reject; initial mask-control reason was corrected with public
+step_over diagnosis: ReservedDecode advances time but not retirement, so CSR
+counter comparison fails before final outcome. Actual disabled-GPR observer RED
+rc=101, restored; missing-binding RED rc=101 before two Execution entries.
+Small provenance defect owned/fixed: STOCK fence's1.1.6 locator introduced by
+022f557 points at Load/Store, correct Memory Ordering is1.1.7. Exact one-line
+source delta; canonical fault-fence already correct. Independent all61440 words/
+full states and six integration programs rc=0; author omits nine data requests,
+which public CPU observer judges separately. No architectural defect found.
+
+verify.py rc=0: prior96 entries/112 base+348 GC input/core/generated/frozen bytes
+exact; all scripts/author bytes exact except locator. Full167/5365/10524 unchanged.
+make check rc=0, Rust167/17/214. Registry98/effective96/114, nine pairs/freeze.
+LIVE unchanged652 arms/49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks next.
+promotion: declined (finite matrix, masks' retirement distinction and author-log
+limits retained in worked memory chapter/tree). c26a task containment next.
+
 ## _(2026-10-10)_ — observe implicit Sv39 requests and no-write faults (P4-SYSTEM.13 c24)
 
 Bind WALK-IMPLICIT with 20 actual CPU cases: nine Fetch/LD/SD × one/two/three

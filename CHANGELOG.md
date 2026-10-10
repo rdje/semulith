@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0153 (leaf P4-SYSTEM.13 c25) — observe FENCE fields and preservation
+
+- Bind FENCE with61440 field/mode cases and six reservation/cache programs;
+  direct61461/122922, pair61500/123000 with unchanged companions. All GPR/FPR/
+  CSR owners/memory and exact requests observed; ten wrong-table controls and
+  disabled-GPR/missing-binding controls reject.
+- Correct only author stock FENCE locator1.1.6→1.1.7; all canonical inputs,
+  prior96 bindings/core/generated/frozen bytes exact. Independent words/state/
+  full167 corpus match. Rust167/17/214; registry98/effective96/114.
+- LIVE unchanged652 arms/49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks next;
+  c26a bounds task receipts before remaining nine runtime pairs/freeze.
+
 ## SEMULITH-P4-0152 (leaf P4-SYSTEM.13 c24) — observe implicit Sv39 requests and no-write faults
 
 - Bind WALK-IMPLICIT through20 CPU cases/29 boundaries/50 parcels/104 requests:

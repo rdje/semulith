@@ -429,7 +429,7 @@ RULES = {
     "lr.d": ("LR.D loads the doubleword into rd and registers the reservation.", "RVI-A §12.1.2"),
     "sc.w": ("SC.W conditionally stores and writes the code to rd (0/1 — the declared deterministic policy).", "RVI-A §12.1.2; state.sexp's reservation candidate"),
     "sc.d": ("SC.D conditionally stores and writes the code to rd (0/1).", "RVI-A §12.1.2; state.sexp's reservation candidate"),
-    "fence": ("a nop under this profile (D-FENCE).", "RVI-RV32I §1.1.6"),
+    "fence": ("a nop under this profile (D-FENCE).", "RVI-RV32I §1.1.7"),
 }
 AMO_TEXT = ("the atomic {op}: memory <- {new}, rd <- the OLD value {old}"
             " — one store/AMO-rules translation, the load-then-store pair.", "RVI-A §12.1.4")

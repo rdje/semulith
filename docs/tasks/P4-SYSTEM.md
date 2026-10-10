@@ -480,14 +480,55 @@ effective94/114 (ten runtime pairs/freeze). make check, independent full corpus,
 focused gates/all books/hooks, commit/empty brief/clean actual census. .14 owns
 statuses/structured experiments. No CPU behavior or platform mapping change.
 
-### `.13` c25 — FENCE ordering and field treatment (next, `SEMULITH-P4-0153`)
+### `.13` c25 — FENCE ordering and field treatment (completed, `SEMULITH-P4-0153`)
 
-Review frozen OB-FENCE and requirement, authenticated FENCE rules, public decoder/
-effect/execution and selected one-hart ordering, existing fence fixtures, runtime
-book. Finalize finite meaningful legal/future-field controls before changes;
-choose actual CPU observations and unchanged companions without promising a
-trap the specification does not require. Preserve prior96 bindings/canonical/
-frozen data. Commit verified slice before remaining atomics/FP/CSR/counter pairs.
+Owned on clean c28d531 after workflow/census. Reviewed frozen OB-FENCE/REQ-D-
+FENCE, generated mask707f/Nop and public CPU semantics, one-hart provider order,
+canonical fault-fence/scope-alu and runtime/memory book. Authenticated RV32I
+SHA3b20e92f... confirms section1.1.7: reserved configurations execute as FENCE,
+TSO may strengthen to RW,RW; rs1/rd are ignored. Negative check means adversarial
+accepted configurations, never an invented illegal trap.
+
+Own small citation defect: author RULES["fence"] cites1.1.6 (Load/Store), while
+actual Memory Ordering is1.1.7. Reproduce through execute(Hart(),0x0ff0000f)'s
+source; impact future stock-derived provenance, not execution/numeric values.
+Full relevant line history: introduced by022f557 (P4-0086), blame unchanged;
+canonical fault-fence already cites correct1.1.7. Fix only this locator and prove
+exact one-line source delta; all canonical/guest/generated/frozen data unchanged.
+
+Finite CPU plan: every4096 fm/pred/succ configuration × three modes × five
+rs1/rd pairs (0/0,0/31,31/0,31/31,7/13) =61440 one-boundary cases. POS ordinary
+fm0 plus exactTSO with zero ignored fields (771); NEG remaining60669 all still
+must retire. Observe all GPR/FPR/26 CSR owners except normal cycle/retirement,
+PC/mode/wholememory and exactly two parcels; no extra data/fetch request.
+Add three four-boundary LR.D/FENCE/SC.D/LD and three three-boundary translated
+ADDI/FENCE/ADDI sequences for ordinary/TSO/reserved fields. Preserve reservation
+and same-page translation through actual next instructions, not hidden readback.
+Prederive all words/states and author fetch/walk logs, retaining no-data-log limit.
+Direct total61461 boundaries/122922 parcels, subject to actual verification.
+
+Ten isolated table controls: reject fm, reject ignored registers, GPR/FPR/CSR
+write, memory Store, trap, wrongPC, consume reservation, flush translation. Each
+must fail its named actual observation. Disable actual register predicate and
+require bad-write control RED; restore. Select missing declaration first, then
+bind two Execution entries (companions scope-alu/fault-fence). Preserve prior96
+bindings/input/core and all author bytes except exactly fixed locator; only
+verified work earns registry98/effective96/114, nine runtime pairs/freeze.
+make check, independent full corpus, focused gates/all six books/hooks, commit/
+brief/clean actual census. Keep book example in bounded memory chapter. Next
+c26 containment before further receipts; .14 retains statuses/experiments.
+
+### `.13` c26a — preserve whole completed task receipts (next, `SEMULITH-P4-0154`)
+
+C25's receipt approaches the131072 B fixed task part ceiling. Own a lossless
+whole-section move of completed c18–c25 design/acceptance/log records to the
+existing archive family, preserving exact original bytes, order and inverse
+hashes. Review archive8 room, task-tree/readme cap rules and historical reader
+before selecting finite ranges; retain active frontier/census/next action and
+route links. No code/canonical/registry/contract credit change. Document the
+worked inverse in book, verify all fixed caps/history/frontier/counts/freeze/
+reports and books/hooks, commit/empty brief/actual census before next runtime
+pair. Finalize next pair only on clean completed c26a.
 
 ### `.13` c22a — preserve whole development receipts under fixed caps (`2026-10-10`, `SEMULITH-P4-0147`)
 
@@ -886,6 +927,31 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c25 — **ROOT CAUSE**: frozen FENCE pair unbound; authenticated
+  RV32I1.1.7 requires accepted reserved configs and ignored fields. Author stock
+  source incorrectly points at1.1.6; execute(Hart(),0x0ff0000f) rc=0 reproduces.
+  Relevant line introduced022f557 and unchanged (git log -S/blame rc=0); canonical
+  fault-fence already correct. Declaration missing CHK-FENCE-POS RED rc=101.
+- [x] `.13` c25 — **ADDRESSED**: all61440 field/mode/representative-register
+  cases plus six reservation/translation programs GREEN rc=0. Literal direct
+  total61461/122922/122934 requests; pair61500/123000 with scope-alu/fault-fence.
+  Observe all GPR/FPR/26 CSR owners/PC/mode/memory/exact requests. Ten wrong
+  tables reject; actual disabled-GPR predicate RED rc=101 and restored. Initial
+  mask-control reason diagnosis: public ReservedDecode advances cycle without
+  retirement, so CSR counter predicate fails before outcome (read step_over
+  branch, rc=0). Corrected named controls GREEN rc=0. Exact stock locator-only
+  correction; reserved fence fields still execute, never invented illegal traps.
+- [x] `.13` c25 — **NO REGRESSION**: make check rc=0, Rust167/17/214.
+  Independent61440 words/full GPR/FPR/CSR/memory states plus six integration
+  programs rc=0; author logs omit nine data requests, CPU observer owns them.
+  verify.py rc=0: prior96 entries/112 base+348 GC inputs/core/generated/frozen
+  bytes exact; scripts/author precisely locator-only delta. Full167/5365/10524
+  unchanged. Registry98/effective96/114;13 scope/23 guest/6 boundary/6 execution
+  pairs (raw registry includes two superseded guest entries). Nine runtime pairs/freeze remain.
+  Focused gates/all six books rc=0; hooks next. LIVE unchanged652 arms/49 chapters/P4 12/18;
+  .14 retains statuses/experiments. promotion: declined (finite matrix and
+  mask-retirement/log limits retained in worked memory chapter/tree).
+
 - [x] `.13` c24 — **ROOT CAUSE**: OB-WALK-IMPLICIT unbound, not absent walk
   evidence. Existing typed address fixture executes a three-level CPU path; core
   tests and prior direct walks remain. Authenticated source identity/algorithm
@@ -1259,6 +1325,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c25 |61440 field cases+six integration programs; ten wrong tables/disabled observer/missing binding; exact locator correction; independent/full167/prior96 identity; Rust167/17/214 | registry98/effective96/114; nine pairs/freeze; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c24 |20 actual CPU cases29/50/104; seven captures/disabled observer/two walker mutations; missing binding RED; independent literals/full167/prior94 identity; Rust167/17/212 | registry96/effective94/114; ten pairs/freeze; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c23b | two U/Sv39 width cases8/16/22; seven narrow effects fail both; disabled-GPR/missing-binding RED; literal author/full167/prior92 identity; Rust167/17/210 | registry94/effective92/114; eleven pairs/freeze; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c23a | 9,822 B suffix/inverse hashes exact; all runtime/input/frozen bytes exact; new-file cap census51 | registry92/effective90/114 unchanged; focused gates/all six books rc=0; hooks next |
@@ -1297,6 +1364,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c25 | `SEMULITH-P4-0153 (leaf P4-SYSTEM.13): observe FENCE fields and preservation` | c26a receipt containment, then remaining pairs/freeze |
 | `.13` c24 | `SEMULITH-P4-0152 (leaf P4-SYSTEM.13): observe implicit Sv39 requests and no-write faults` | c25 FENCE, then remaining pairs/freeze |
 | `.13` c23b | `SEMULITH-P4-0151 (leaf P4-SYSTEM.13): retain 64-bit user registers and addresses` | c24 WALK-IMPLICIT, then remaining pairs/freeze |
 | `.13` c23a | `SEMULITH-P4-0150 (leaf P4-SYSTEM.13): retain control-transfer witnesses in a bounded chapter` | c23b XLEN, then remaining pairs/freeze |
@@ -1330,6 +1398,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c25 (SEMULITH-P4-0153): bind FENCE field/no-effect
+  observations and reservation/cache preservation, fix exact author source
+  locator. Prior96/input/core/generated/frozen bytes exact; registry98/effective
+  96/114, nine runtime pairs/freeze. c26a task containment follows workflow.
 
 - `2026-10-10`: `.13` c24 (SEMULITH-P4-0152): bind direct implicit-walk
   request/no-write fault matrix with discriminating controls. Prior94/input/core/

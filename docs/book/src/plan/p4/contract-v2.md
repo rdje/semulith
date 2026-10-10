@@ -524,9 +524,10 @@ values, SRAW/SRAIW count-mask/source-width repairs and SHAMT requirement correct
 The [control transfer chapter](contract-control.md) retains immediate transfers,
 JALR's inherited-annotation diagnosis and direct target/link/request witnesses.
 The [memory runtime chapter](contract-memory.md) retains eleven-form load/store
-extension, discarded-load requests/faults and the selected byte-order observations.
+extension, discarded-load requests/faults, selected byte-order observations and
+FENCE field/no-effect observations.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
-94/114; ten runtime pairs and final freeze remain. The split retains
+96/114; nine runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 
 The profile's live environment document now keeps its effective interface and

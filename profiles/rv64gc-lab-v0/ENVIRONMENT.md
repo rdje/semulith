@@ -39,6 +39,10 @@ WALK-IMPLICIT binds literal one/two/three-level CPU request paths, same-page
 hits and fault termination with unchanged PTEs. Worked paths and controls:
 `docs/book/src/plan/p4/contract-runtime.md#implicit-sv39-reads-have-their-own-request-kind`.
 
+FENCE binds all fm/pred/succ configurations across modes with representative
+ignored register fields, plus reservation/cache preservation. Reserved fence
+fields execute normally. Worked matrix: `docs/book/src/plan/p4/contract-memory.md`.
+
 ## The versions
 
 | Version | Status | Members | What it is |
