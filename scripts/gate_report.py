@@ -1063,8 +1063,26 @@ def _units() -> list[dict]:
     return units
 
 
+def _breadth_unit_evidence(uid: str, tracked: set[str]) -> str:
+    """Attribute only tracked reports directly owned by this unit.
+
+    DSP56300's experiment is the specifically named subset in axis 1; it is
+    never a fallback for another processor, a device or a board.
+    """
+    directory = f"profiles/{uid}"
+    reports = sorted(path for path in tracked
+                     if path.rpartition("/")[0] == directory
+                     and re.fullmatch(r"G.-REPORT\.md", path.rpartition("/")[2]))
+    if reports:
+        return ", ".join(f"`{path}`" for path in reports)
+    if uid == "dsp56300-lab-v0":
+        return "axis 1 above (EXPERIMENTAL)"
+    return "registered dossier; no unit gate report"
+
+
 def build_breadth() -> str:
     units = _units()
+    tracked = _tracked()
     dsp = ROOT / "profiles/dsp56300-lab-v0"
     dsp_prof = D.load_profile(dsp / "profile.sexp")
     dsp_refs_text = (dsp / "references.sexp").read_text()
@@ -1206,10 +1224,12 @@ def build_breadth() -> str:
     A("The claim list is the unit registry, and it is complete — a family is claimed")
     A("exactly by a registered unit:")
     A("")
-    A("| Unit | Architecture | Evidence record |")
+    A("| Unit | Architecture / kind | Evidence record |")
     A("| --- | --- | --- |")
     for u in units:
-        A(f"| `{u['id']}` | {archs.get(u['id'], '?')} | {'the GC per-axis report' if u['id'] == 'rv64i-lab-v0' else 'axis 1 above (EXPERIMENTAL)'} |")
+        architecture = archs.get(u["id"]) or u["kind"]
+        evidence = _breadth_unit_evidence(u["id"], tracked)
+        A(f"| `{u['id']}` | {architecture} | {evidence} |")
     A("")
     A("Every other family the work has surveyed is **unclaimed**, explicitly:")
     A("")
@@ -1522,11 +1542,30 @@ def _selftest() -> int:
                      assert_eq(_gs_verdict({**{a: ("", True) for a in GS_AXES}, "G-REPLAY": ("", False)}),
                                ("incomplete", ["G-REPLAY"])),
                      assert_eq(_gs_verdict({a: ("", True) for a in GS_AXES[:-1]})[0], "incomplete")))
+        # A registered unit cannot inherit another unit's experiment. Use a
+        # synthetic tracked inventory so these cases do not depend on which
+        # real units are registered or on downloaded/generated files.
+        reports = {"profiles/scalar-lab-v0/GC-REPORT.md",
+                   "profiles/system-lab-v0/GS-REPORT.md",
+                   "profiles/device-lab-v0/nested/G0-REPORT.md",
+                   "profiles/device-lab-v0/EVIDENCE_POLICY.md"}
+        arm("GREEN BREADTH attributes a scalar's own tracked report",
+            lambda: assert_eq(_breadth_unit_evidence("scalar-lab-v0", reports),
+                              "`profiles/scalar-lab-v0/GC-REPORT.md`"))
+        arm("GREEN BREADTH attributes a further processor's own GS report",
+            lambda: assert_eq(_breadth_unit_evidence("system-lab-v0", reports),
+                              "`profiles/system-lab-v0/GS-REPORT.md`"))
+        arm("RED BREADTH refuses other-unit, nested and non-report evidence",
+            lambda: assert_eq(_breadth_unit_evidence("device-lab-v0", reports),
+                              "registered dossier; no unit gate report"))
+        arm("GREEN only the named DSP subset cites axis 1",
+            lambda: assert_eq(_breadth_unit_evidence("dsp56300-lab-v0", reports),
+                              "axis 1 above (EXPERIMENTAL)"))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 20
+    want = 24
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")

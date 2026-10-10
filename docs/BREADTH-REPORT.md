@@ -80,13 +80,13 @@ the day a pin goes stale.
 The claim list is the unit registry, and it is complete — a family is claimed
 exactly by a registered unit:
 
-| Unit | Architecture | Evidence record |
+| Unit | Architecture / kind | Evidence record |
 | --- | --- | --- |
-| `rv64i-lab-v0` | RISC-V | the GC per-axis report |
+| `rv64i-lab-v0` | RISC-V | `profiles/rv64i-lab-v0/G0-REPORT.md`, `profiles/rv64i-lab-v0/G1-REPORT.md`, `profiles/rv64i-lab-v0/GC-REPORT.md` |
 | `dsp56300-lab-v0` | DSP56300 | axis 1 above (EXPERIMENTAL) |
-| `netboard-lab-v0` | ? | axis 1 above (EXPERIMENTAL) |
-| `sifive-uart-lab-v0` |  | axis 1 above (EXPERIMENTAL) |
-| `lan9118-lab-v0` |  | axis 1 above (EXPERIMENTAL) |
+| `netboard-lab-v0` | board | registered dossier; no unit gate report |
+| `sifive-uart-lab-v0` | device | registered dossier; no unit gate report |
+| `lan9118-lab-v0` | device | registered dossier; no unit gate report |
 
 Every other family the work has surveyed is **unclaimed**, explicitly:
 

@@ -296,6 +296,62 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a9 — repair BREADTH evidence attribution (completed, SEMULITH-P4-0200)
+
+Owned on cleanf429eb4, brief0/actual census rc=0 after a8 workflow. Registration
+preflight finds a real report defect: BREADTH's evidence table maps every unit
+except rv64i to "axis 1 above (EXPERIMENTAL)", which describes DSP56300 only.
+Reproduce docs/BREADTH-REPORT.md's netboard/UART/LAN9118 rows; the same fallback
+would falsely attribute the prospective GC registration to DSP evidence. Scoped
+blame pins producer root87f114d2; -S registry history pins the three-unit
+registration expansion345c63f that exposed the two-unit assumption. Impact is
+wrong evidence attribution, no observed runtime or gate-verdict defect.
+Read BREADTH builder/self-test harness, existing unit registry, gate/drift contracts,
+ROADMAP P3/P4 and current P4/gate book before edits. Fix this prerequisite before
+sixth-unit registration, in the same .14 ownership. Each unit names only its own
+actual G?-REPORT files; only the declared DSP subset may cite axis1. Otherwise
+state registered dossier/no unit gate report. Render declared kind when a
+nonprocessor has no architecture field, without inventing an architecture.
+Preserve BREADTH criteria, survey/unclaimed families and verdict; registration
+or a report path must never become CPU/device/board acceptance.
+
+Add meaningful synthetic own-report/cross-unit-refusal/DSP regression controls
+inside existing producer self-tests, with exact arm census, and restore the old
+fallback in memory to prove the new controls fail. Real stale BREADTH RED before
+published regeneration, GREEN after. Prove full report inverse permits only
+specified attribution/header/kind rows; all other reports, profile/canonical/
+frozen/registry/runtime/fixtures/historical files and LIVE byte-exact. Update
+book/report-limit explanation, task/journals/resume; fixed budgets, focused gates
+and six books. No Rust changes expected; no new ancestry/conformance/status or
+release credit. Evidence target/p4-system-14/a9; all scratch on-volume.
+Then a10/0201 sixth-unit registration/materials/book and measured family contract,
+followed by structured evidence and mechanical policy/status/mirror checks.
+
+Result: root87f114d2's two-unit fallback survives the345c63f registration
+expansion. Current BREADTH rows falsely assign netboard/UART/LAN9118 the DSP
+experiment; the forthcoming GC unit would inherit it. Replace fallback with
+per-unit tracked report selection, exactly scoped to its directory/report names;
+only the named DSP subset cites axis1. Board/device rows explicitly have no unit
+gate report and use declared kind where architecture does not apply. Scalar row
+names its own G0/G1/GC artifacts. No gate-presence or registration acceptance.
+Four synthetic own-scalar/own-further-GS/cross-unit-nested-nonreport/DSP controls
+pass; complete producer24/0. Restore the exact old fallback in memory: three
+ownership arms fail,21/3 rc=1, while all old20 controls hold. Actual unregistered
+GC helper probe identifies only its own GS report, ready for registration.
+Real stale BREADTH RED1, published regeneration/current GREEN0. Full source
+inverse exact; entire report inverse changes only the header and four specified
+rows (five spans), preserving all criteria/verdict/survey/unclaimed content.
+P3 book explains correct attribution/no acceptance; rendered paragraph passes.
+Focused9/six books/verify.py rc=0. All other reports, canonical/profile/requirements/
+decisions/registry/frozen114/114/runtime/fixtures/prior history/LIVE byte-exact;
+producer inner24arms are one existing outer GATE-REPORT arm, global669 unchanged.
+Fixed caps, no new ancestry/conformance/status/release credit.
+Evidence target/p4-system-14/a9; task/journal/source/report inverses exact.
+promotion: declined (existing EVD graph ownership and generated report/book retain the correction and rooted regression controls).
+Next a10/0201 sixth-unit registration/materials/book, reviewing actual family
+contracts before experiment growth; then structured records and policy/status/
+mirror checks. Profiles8197B room unchanged; task/book budgets rechecked.
+
 ### `.14` a8 — declare evidence requalification policy (completed, SEMULITH-P4-0199)
 
 Owned on cleane3a5a72, brief0/actual census rc=0 after a7 workflow. Read EVD-03,
@@ -726,6 +782,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a9 — **ROOT CAUSE**: scoped blame/-S history/repair.py rc=0:
+87f114d2 producer fallback plus345c63f registry expansion reproduce three
+wrong DSP attributions and prospective GC failure before registration.
+- [x] `.14` a9 — **ADDRESSED**: producer controls/verify.py rc=0:
+24/0; restoring original fallback fails three ownership cases,21/3 rc=1;
+real stale report RED1/regeneration GREEN0, full source/five-span report inverse,
+actual future GC owner and rendered book explanation verified.
+- [x] `.14` a9 — **NO REGRESSION**: focused9/make book/verify.py rc=0:
+six books; all other reports/data/requirements/runtime/frozen/registry/fixtures/
+history/LIVE exact,114/114 frozen and global669 unchanged; fixed caps.
+
 - [x] `.14` a8 — **ROOT CAUSE**: scoped -S history/repair.py rc=0:
  bf71f9c5 scalar ancestry/live-count assertions and f8567fb presence label;
  GC policy absent and resolved G-CONTRACT open prose still retained.
@@ -827,6 +894,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a9 | rooted fallback; producer24/0, old fallback21/3; real stale control; source/full-report inverse; actual future GC ownership | focused9/six books/rendered explanation/verify rc=0; other reports/data/runtime/frozen/history/LIVE exact |
 | `2026-10-10` | `.14` a8 | prospective policy; four captured spans/three source inverses; three damaged controls; one-literal AST/manifest/20-output inverses; stale controls | focused15/six books/rendered policy/verify rc=0; all statuses/runtime/frozen/history/LIVE exact |
 | `2026-10-10` | `.14` a7 | 31 historical spans/four full-source inverses; three damaged controls; authenticated HTML; canonical/report/board/book drift controls | focused15/six books/verify rc=0; other data/runtime/frozen/prior history/LIVE exact,114/114 frozen |
 | `2026-10-10` | `.14` a6 | five exact historical payloads/full task inverse; three damaged controls; corrected maintained reference/card/.7/.1/book scope | realized1/1/focused12/six books/verify rc=0; all code/producer/profile/frozen/prior history/LIVE exact;114/114 frozen |
@@ -844,6 +912,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a9 | `SEMULITH-P4-0200 (leaf P4-SYSTEM.14): correct BREADTH evidence attribution` | a10/0201 sixth-unit registration/materials/book and family contract review |
 | `.14` a8 | `SEMULITH-P4-0199 (leaf P4-SYSTEM.14): declare prospective evidence requalification policy` | a9/0200 sixth-unit registration/materials/book and measured family contract; then experiment/policy/status gates |
 | `.14` a7 | `SEMULITH-P4-0198 (leaf P4-SYSTEM.14): correct canonical reference evidence and derived claims` | predeclared policy, structured experiment/control records, status derivation and sixth-unit registration |
 | `.14` a6 | `SEMULITH-P4-0197 (leaf P4-SYSTEM.14): withdraw maintained internal ancestry assertions` | a7/0198 canonical reference rows and all generated consequences |
@@ -856,6 +925,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-10`: `.14` a9 (SEMULITH-P4-0200): replace incorrect shared DSP fallback with own tracked report attribution/explicit no unit gate result; producer24/0, old fallback21/3, stale control, focused9/six books/inverses green.
 
 - `2026-10-10`: `.14` a8 (SEMULITH-P4-0199): declare GC requalification policy without backdating, repair scalar policy/presence label/manifest, preserve exact historical and derived inverses; stale/damaged controls, focused15/six books/rendered policy green, statuses unchanged.
 

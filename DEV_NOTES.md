@@ -1,6 +1,30 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — BREADTH evidence attribution (P4-SYSTEM.14 a9)
+
+Producer87f114d2 assumed two units: scalar gets GC, every other unit gets DSP
+axis1. Registry expansion345c63f exposes false board/UART/LAN9118 attributions;
+GC registration would inherit the same defect. Select only each unit's own
+tracked G?-REPORT names, exactly scoped to its directory; only DSP subset cites
+axis1. Otherwise state registered dossier/no unit gate report. Architecture
+falls back to declared kind for board/devices, without invented architecture.
+Criteria, survey/unclaimed families, counts and verdict stay exact.
+
+Four synthetic ownership controls inside existing producer self-test:24/0.
+Restore original fallback in memory: three ownership cases fail,21/3 rc=1;
+old20 controls still pass. Actual GC helper probe identifies its own GS report.
+Real stale BREADTH RED1, documented regeneration/current GREEN0. Full source
+inverse and whole-report inverse (header/four rows only) exact. Book explains
+per-unit attribution without acceptance; rendered paragraph verified.
+Focused9/six books/verify rc=0; every other report/profile/canonical/requirement/
+registry/frozen/runtime/fixture/history/LIVE byte-exact,114/114 frozen14,
+CPU incomplete7axes/P4 13/18/global669 unchanged. Fixed caps, no new credit.
+Evidence target/p4-system-14/a9; source/task/journal inverses retain prior history.
+promotion: declined (existing evidence graph doctrine and generated report/book retain the routine repair and rooted regression).
+Next a10/0201 sixth-unit registration/materials/book and measured family contract,
+then structured experiments and policy/status/mirror gates.
+
 ## _(2026-10-10)_ — prospective evidence requalification policy (P4-SYSTEM.14 a8)
 
 GC policy9230B instantiates the existing evidence/claim standards before the
